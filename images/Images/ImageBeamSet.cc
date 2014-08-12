@@ -322,132 +322,20 @@ const GaussianBeam& ImageBeamSet::getMedianAreaBeamForPol(
 	return _beams(pos[0], pos[1]);
 }
 
-GaussianBeam ImageBeamSet::getCommonBeam() const {
-	if (empty()) {
-		throw AipsError("This beam set is empty.");
+GaussianBeam ImageBeamSet::getMedianAreaBeam() const {
+	Vector<uInt> indices;
+	IPosition shape = _beams.shape();
+	if (shape[0] > 1 && shape[1] > 1) {
+		GenSortIndirect<Double>::sort(indices, Vector<Double>(_areas.tovector()));
+		return _beams.tovector()[indices[indices.size()/2]];
 	}
-	if (allTrue(_beams == GaussianBeam::NULL_BEAM)) {
-		throw AipsError("All beams are null.");
+	else {
+		GenSortIndirect<Double>::sort(indices, _areas);
+		GaussianBeam medbeam = shape[0] > 1
+			? _beams(indices[indices.size()/2], 0)
+			: _beams(0, indices[indices.size()/2]);
+		return medbeam;
 	}
-	if (allTrue(_beams == _beams(IPosition(2, 0)))) {
-		return _beams(IPosition(2, 0));
-	}
-	BeamIter end = _beams.end();
-	Bool largestBeamWorks = True;
-	Angular2DGaussian junk;
-	GaussianBeam problemBeam;
-	Double myMajor = _maxBeam.getMajor("arcsec");
-	Double myMinor = _maxBeam.getMinor("arcsec");
-
-	for (
-		BeamIter iBeam = _beams.begin();
-		iBeam != end; iBeam++
-	) {
-		if (*iBeam != _maxBeam && !iBeam->isNull()) {
-			myMajor = max(myMajor, iBeam->getMajor("arcsec"));
-			myMinor = max(myMinor, iBeam->getMinor("arcsec"));
-			try {
-				if (iBeam->deconvolve(junk, _maxBeam)) {
-					largestBeamWorks = False;
-					problemBeam = *iBeam;
-				}
-			}
-			catch (const AipsError& x) {
-				largestBeamWorks = False;
-				problemBeam = *iBeam;
-			}
-		}
-	}
-	if (largestBeamWorks) {
-		return _maxBeam;
-	}
-
-	// transformation 1, rotate so one of the ellipses' major axis lies
-	// along the x axis. Ellipse A is _maxBeam, ellipse B is problemBeam,
-	// ellipse C is our wanted ellipse
-
-	Double tB1 = problemBeam.getPA("rad", True) - _maxBeam.getPA("rad", True);
-
-	if (abs(tB1) == C::pi / 2) {
-		Bool maxHasMajor = _maxBeam.getMajor("arcsec")
-				>= problemBeam.getMajor("arcsec");
-		// handle the situation of right angles explicitly because things blow up otherwise
-		Quantity major =
-				maxHasMajor ? _maxBeam.getMajor() : problemBeam.getMajor();
-		Quantity minor =
-				maxHasMajor ? problemBeam.getMajor() : _maxBeam.getMajor();
-		Quantity pa =
-				maxHasMajor ? _maxBeam.getPA(True) : problemBeam.getPA(True);
-		return GaussianBeam(major, minor, pa);
-	}
-
-	Double aA1 = _maxBeam.getMajor("arcsec");
-	Double bA1 = _maxBeam.getMinor("arcsec");
-	Double aB1 = problemBeam.getMajor("arcsec");
-	Double bB1 = problemBeam.getMinor("arcsec");
-
-	// transformation 2: Squeeze along the x axis and stretch along y axis so
-	// ellipse A becomes a circle, preserving its area
-	Double aA2 = sqrt(aA1 * bA1);
-	Double bA2 = aA2;
-	Double p = aA2 / aA1;
-	Double q = bA2 / bA1;
-
-	// ellipse B's parameters after transformation 2
-	Double aB2, bB2, tB2;
-
-	_transformEllipseByScaling(aB2, bB2, tB2, aB1, bB1, tB1, p, q);
-
-	// Now the enclosing transformed ellipse, C, has semi-major axis equal to aB2,
-	// minor axis is aA2 == bA2, and the pa is tB2
-	Double aC2 = aB2;
-	Double bC2 = aA2;
-	Double tC2 = tB2;
-
-	// Now reverse the transformations, first transforming ellipse C by shrinking the coordinate
-	// system of transformation 2 yaxis and expanding its xaxis to return to transformation 1.
-
-	Double aC1, bC1, tC1;
-	_transformEllipseByScaling(aC1, bC1, tC1, aC2, bC2, tC2, 1 / p, 1 / q);
-
-	// now rotate by _maxBeam.getPA() to get the untransformed enclosing ellipse
-
-	Double aC = aC1;
-	Double bC = bC1;
-	Double tC = tC1 + _maxBeam.getPA("rad", True);
-
-	// confirm that we can indeed convolve both beams with the enclosing ellipse
-	GaussianBeam newMaxBeam = GaussianBeam(Quantity(aC, "arcsec"),
-			Quantity(bC, "arcsec"), Quantity(tC, "rad"));
-	// Sometimes (due to precision issues I suspect), the found beam has to be increased slightly
-	// so our deconvolving method doesn't fail
-	Bool ok = False;
-	while (!ok) {
-		try {
-			if (_maxBeam.deconvolve(junk, newMaxBeam)) {
-				throw AipsError();
-			}
-			if (problemBeam.deconvolve(junk, newMaxBeam)) {
-				throw AipsError();
-			}
-			ok = True;
-		}
-		catch (const AipsError& x) {
-			// deconvolution issues, increase the enclosing beam size slightly
-			aC *= 1.001;
-			bC *= 1.001;
-			newMaxBeam = GaussianBeam(Quantity(aC, "arcsec"),
-					Quantity(bC, "arcsec"), Quantity(tC, "rad"));
-		}
-	}
-	// create a new beam set to run this method on, replacing _maxBeam with ellipse C
-
-	ImageBeamSet newBeamSet(*this);
-	Array<GaussianBeam> newBeams = _beams.copy();
-	newBeams(_maxBeamPos) = newMaxBeam;
-	newBeamSet.setBeams(newBeams);
-
-	return newBeamSet.getCommonBeam();
 }
 
 const GaussianBeam ImageBeamSet::getSmallestMinorAxisBeam() const {
@@ -479,61 +367,6 @@ const GaussianBeam ImageBeamSet::getSmallestMinorAxisBeam() const {
 		}
 	}
 	return res;
-}
-
-void ImageBeamSet::_transformEllipseByScaling(Double& transformedMajor,
-		Double& transformedMinor, Double& transformedPA, Double major,
-		Double minor, Double pa, Double xScaleFactor, Double yScaleFactor) {
-	Double mycos = cos(pa);
-	Double mysin = sin(pa);
-	Double cos2 = mycos * mycos;
-	Double sin2 = mysin * mysin;
-	Double major2 = major * major;
-	Double minor2 = minor * minor;
-	Double a = cos2 / (major2) + sin2 / (minor2);
-	Double b = -2 * mycos * mysin * (1 / (major2) - 1 / (minor2));
-	Double c = sin2 / (major2) + cos2 / (minor2);
-
-	Double xs = xScaleFactor * xScaleFactor;
-	Double ys = yScaleFactor * yScaleFactor;
-
-	Double r = a / xs;
-	Double s = b * b / (4 * xs * ys);
-	Double t = c / ys;
-
-	Double u = r - t;
-	Double u2 = u * u;
-
-	Double f1 = u2 + 4 * s;
-	Double f2 = sqrt(f1) * abs(u);
-
-	Double j1 = (f2 + f1) / f1 / 2;
-	Double j2 = (-f2 + f1) / f1 / 2;
-
-	Double k1 = (j1 * r + j1 * t - t) / (2 * j1 - 1);
-	Double k2 = (j2 * r + j2 * t - t) / (2 * j2 - 1);
-
-	Double c1 = sqrt(1 / k1);
-	Double c2 = sqrt(1 / k2);
-
-	if (c1 == c2) {
-		// the transformed ellipse is a circle
-		transformedMajor = sqrt(k1);
-		transformedMinor = transformedMajor;
-		transformedPA = 0;
-	} else if (c1 > c2) {
-		// c1 is the major axis and so j1 is the solution for the corresponding pa
-		// of the transformed ellipse
-		transformedMajor = c1;
-		transformedMinor = c2;
-		transformedPA = (pa >= 0 ? 1 : -1) * acos(sqrt(j1));
-	} else {
-		// c2 is the major axis and so j2 is the solution for the corresponding pa
-		// of the transformed ellipse
-		transformedMajor = c2;
-		transformedMinor = c1;
-		transformedPA = (pa >= 0 ? 1 : -1) * acos(sqrt(j2));
-	}
 }
 
 void ImageBeamSet::_calculateAreas() {

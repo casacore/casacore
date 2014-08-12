@@ -126,6 +126,11 @@ void newtab (uInt nrrow, const DataManager& stman)
     AlwaysAssertExit (allEQ (stra1(i), emptyArray));
     AlwaysAssertExit (allEQ (stra2(i), emptyArray));
     AlwaysAssertExit (allEQ (stra3(i), emptyArray));
+    AlwaysAssertExit (  str1.isDefined(i));
+    AlwaysAssertExit (  str2.isDefined(i));
+    AlwaysAssertExit (  stra1.isDefined(i));
+    AlwaysAssertExit (  stra2.isDefined(i));
+    AlwaysAssertExit (  stra3.isDefined(i));
     AlwaysAssertExit (! stra4.isDefined(i));
     AlwaysAssertExit (  b1.isDefined(i));
     AlwaysAssertExit (  ba1.isDefined(i));
@@ -139,7 +144,31 @@ void newtab (uInt nrrow, const DataManager& stman)
     AlwaysAssertExit (  dca1.isDefined(i));
     AlwaysAssertExit (  dca2.isDefined(i));
     AlwaysAssertExit (! dca3.isDefined(i));
+    AlwaysAssertExit (  str1.hasContent(i));
+    AlwaysAssertExit (  str2.hasContent(i));
+    AlwaysAssertExit (  stra1.hasContent(i));
+    AlwaysAssertExit (  stra2.hasContent(i));
+    AlwaysAssertExit (  stra3.hasContent(i));
+    AlwaysAssertExit (! stra4.hasContent(i));
+    AlwaysAssertExit (  b1.hasContent(i));
+    AlwaysAssertExit (  ba1.hasContent(i));
+    AlwaysAssertExit (  ba2.hasContent(i));
+    AlwaysAssertExit (! ba3.hasContent(i));
+    AlwaysAssertExit (  f1.hasContent(i));
+    AlwaysAssertExit (  fa1.hasContent(i));
+    AlwaysAssertExit (  fa2.hasContent(i));
+    AlwaysAssertExit (! fa3.hasContent(i));
+    AlwaysAssertExit (  dc1.hasContent(i));
+    AlwaysAssertExit (  dca1.hasContent(i));
+    AlwaysAssertExit (  dca2.hasContent(i));
+    AlwaysAssertExit (! dca3.hasContent(i));
   }
+  fa3.put (nrrow-1, Array<Float>());
+  dca3.put (nrrow-1, Array<DComplex>(IPosition(2,2,0)));
+  AlwaysAssertExit (  fa3.isDefined(nrrow-1));
+  AlwaysAssertExit (  dca3.isDefined(nrrow-1));
+  AlwaysAssertExit (! fa3.hasContent(nrrow-1));
+  AlwaysAssertExit (! dca3.hasContent(nrrow-1));
 }
 
 void checktab1()
@@ -173,6 +202,11 @@ void checktab1()
     AlwaysAssertExit (allEQ (stra1(i), emptyArray));
     AlwaysAssertExit (allEQ (stra2(i), emptyArray));
     AlwaysAssertExit (allEQ (stra3(i), emptyArray));
+    AlwaysAssertExit (  str1.isDefined(i));
+    AlwaysAssertExit (  str2.isDefined(i));
+    AlwaysAssertExit (  stra1.isDefined(i));
+    AlwaysAssertExit (  stra2.isDefined(i));
+    AlwaysAssertExit (  stra3.isDefined(i));
     AlwaysAssertExit (! stra4.isDefined(i));
     AlwaysAssertExit (  b1.isDefined(i));
     AlwaysAssertExit (  ba1.isDefined(i));
@@ -181,11 +215,34 @@ void checktab1()
     AlwaysAssertExit (  f1.isDefined(i));
     AlwaysAssertExit (  fa1.isDefined(i));
     AlwaysAssertExit (  fa2.isDefined(i));
-    AlwaysAssertExit (! fa3.isDefined(i));
     AlwaysAssertExit (  dc1.isDefined(i));
     AlwaysAssertExit (  dca1.isDefined(i));
     AlwaysAssertExit (  dca2.isDefined(i));
-    AlwaysAssertExit (! dca3.isDefined(i));
+    AlwaysAssertExit (  str1.hasContent(i));
+    AlwaysAssertExit (  str2.hasContent(i));
+    AlwaysAssertExit (  stra1.hasContent(i));
+    AlwaysAssertExit (  stra2.hasContent(i));
+    AlwaysAssertExit (  stra3.hasContent(i));
+    AlwaysAssertExit (! stra4.hasContent(i));
+    AlwaysAssertExit (  b1.hasContent(i));
+    AlwaysAssertExit (  ba1.hasContent(i));
+    AlwaysAssertExit (  ba2.hasContent(i));
+    AlwaysAssertExit (! ba3.hasContent(i));
+    AlwaysAssertExit (  f1.hasContent(i));
+    AlwaysAssertExit (  fa1.hasContent(i));
+    AlwaysAssertExit (  fa2.hasContent(i));
+    AlwaysAssertExit (  dc1.hasContent(i));
+    AlwaysAssertExit (  dca1.hasContent(i));
+    AlwaysAssertExit (  dca2.hasContent(i));
+    if (i == nrrow-1) {
+      AlwaysAssertExit (  fa3.isDefined(i));
+      AlwaysAssertExit (  dca3.isDefined(i));
+    } else {
+      AlwaysAssertExit (! fa3.isDefined(i));
+      AlwaysAssertExit (! dca3.isDefined(i));
+    }
+    AlwaysAssertExit (! fa3.hasContent(i));
+    AlwaysAssertExit (! dca3.hasContent(i));
   }
 }
 

@@ -584,12 +584,23 @@ template<class T> void indgen(Array<T> &a, T start, T inc);
 // Fills all elements of "array" with a sequence starting with 0
 // and ending with nelements() - 1. The first axis varies
 // most rapidly.
-template<class T>  void indgen(Array<T> &a);
+template<class T> inline void indgen(Array<T> &a)
+  { indgen(a, T(0), T(1)); }
 // 
 // Fills all elements of "array" with a sequence starting with start
 // incremented by one for each position in the array. The first axis varies
 // most rapidly.
-template<class T>  void indgen(Array<T> &a, T start);
+template<class T> inline void indgen(Array<T> &a, T start)
+  { indgen(a, start, T(1)); }
+
+// Create a Vector of the given length and fill it with the start value
+// incremented with <code>inc</code> for each element.
+template<class T> inline Vector<T> indgen(uInt length, T start, T inc)
+{
+  Vector<T> x(length);
+  indgen(x, start, inc);
+  return x;
+}
 
 
 // Sum of every element of the array.
@@ -660,8 +671,10 @@ template<class T> T median(const Array<T> &a, Block<T> &tmp, Bool sorted,
 template<class T> T median(const Array<T> &a, Bool sorted, Bool takeEvenMean,
 			   Bool inPlace=False)
     { Block<T> tmp; return median (a, tmp, sorted, takeEvenMean, inPlace); }
-template<class T> inline T median(const Array<T> &a, Bool sorted=False)
+template<class T> inline T median(const Array<T> &a, Bool sorted)
     { return median (a, sorted, (a.nelements() <= 100), False); }
+template<class T> inline T median(const Array<T> &a)
+    { return median (a, False, (a.nelements() <= 100), False); }
 template<class T> inline T medianInPlace(const Array<T> &a, Bool sorted=False)
     { return median (a, sorted, (a.nelements() <= 100), True); }
 // </group>
@@ -674,8 +687,10 @@ template<class T> T madfm(const Array<T> &a, Block<T> &tmp, Bool sorted,
 template<class T> T madfm(const Array<T> &a, Bool sorted, Bool takeEvenMean,
                           Bool inPlace=False)
     { Block<T> tmp; return madfm(a, tmp, sorted, takeEvenMean, inPlace); }
-template<class T> inline T madfm(const Array<T> &a, Bool sorted=False)
+template<class T> inline T madfm(const Array<T> &a, Bool sorted)
     { return madfm(a, sorted, (a.nelements() <= 100), False); }
+template<class T> inline T madfm(const Array<T> &a)
+    { return madfm(a, False, (a.nelements() <= 100), False); }
 template<class T> inline T madfmInPlace(const Array<T> &a, Bool sorted=False)
     { return madfm(a, sorted, (a.nelements() <= 100), True); }
 // </group>

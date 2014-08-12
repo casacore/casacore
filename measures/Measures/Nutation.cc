@@ -349,8 +349,6 @@ void Nutation::calcNut(Double time, Bool calcDer) {
        checkEpoch_p != checkDerEpoch_p)) {
     t = checkEpoch_p;
     checkDerEpoch_p = t;
-    Double dEps = 0;
-    Double dPsi = 0;
     switch (method_p) {
     case B1950:
       t = (t - MeasData::MJDB1900)/MeasData::JDCEN;
@@ -360,10 +358,6 @@ void Nutation::calcNut(Double time, Bool calcDer) {
       t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       break;
     default:
-      if (AipsrcValue<Bool>::get(Nutation::myUseiers_reg)) {
-	dPsi = MeasTable::dPsiEps(0, t);
-	dEps = MeasTable::dPsiEps(1, t);
-      }
       t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       break;
     }

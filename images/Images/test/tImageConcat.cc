@@ -478,7 +478,88 @@ int main() {
 
 
     }
-  } catch(AipsError x) {
+    {
+    	cout << "*** Stokes concatenation" << endl;
+    	CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
+    	TempImage<Float> i0(TiledShape(IPosition(4, 5, 5, 4, 5)), csys);
+    	TempImage<Float> i1(TiledShape(IPosition(4, 5, 5, 4, 5)), csys);
+    	SubImage<Float> s0(i0, Slicer(
+    		IPosition(4, 0), IPosition(4, 4, 4, 0, 4),
+    		Slicer::endIsLast)
+    	);
+    	SubImage<Float> s1(i0, Slicer(
+    		IPosition(4, 0, 0, 2, 0), IPosition(4, 4, 4, 2, 4),
+    		Slicer::endIsLast)
+    	);
+    	cout << "first " << s0.coordinates().stokesCoordinate().stokes() << endl;
+    	cout << "second " << s1.coordinates().stokesCoordinate().stokes() << endl;
+    	ImageConcat<Float> concat(2);
+    	concat.setImage(s0, False);
+    	concat.setImage(s1, False);
+        Vector<Int> outStokes = concat.coordinates().stokesCoordinate().stokes();
+        AlwaysAssert(outStokes.size() == 2, AipsError);
+        AlwaysAssert(outStokes[0] == 1, AipsError);
+        AlwaysAssert(outStokes[1] == 3, AipsError);
+    }
+    {
+        cout << "Test adding first image contiguous, next not produces expected world values" << endl;
+    	CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
+        TempImage<Float> i0(TiledShape(IPosition(4, 5, 5, 4, 5)), csys);
+    	SubImage<Float> s0(i0, Slicer(
+    		IPosition(4, 0), IPosition(4, 4, 4, 3, 0),
+    		Slicer::endIsLast)
+    	);
+    	SubImage<Float> s1(i0, Slicer(
+    		IPosition(4, 0, 0, 0, 1), IPosition(4, 4, 4, 3, 1),
+    		Slicer::endIsLast)
+    	);
+    	SubImage<Float> s3(i0, Slicer(
+    		IPosition(4, 0, 0, 0, 3), IPosition(4, 4, 4, 3, 3),
+    		Slicer::endIsLast)
+    	);
+        ImageConcat<Float> concat(3);
+        concat.setImage(s0, False);
+        Vector<Int> v0(4, 0);
+        Vector<Int> v1(4, 0);
+        v1[3] = 1;
+        Vector<Int> v2(4, 0);
+        v2[3] = 2;
+        AlwaysAssert(
+            concat.coordinates().toWorld(v0)[3] == s0.coordinates().toWorld(v0)[3],
+            AipsError
+        );
+        concat.setImage(s1, False);
+        AlwaysAssert(
+            concat.coordinates().toWorld(v0)[3] == s0.coordinates().toWorld(v0)[3],
+            AipsError
+        );
+        AlwaysAssert(
+            concat.coordinates().toWorld(v1)[3] == s1.coordinates().toWorld(v0)[3],
+            AipsError
+        );
+        concat.setImage(s3, True);
+        cout << "get " << std::setprecision(10) << concat.coordinates().toWorld(v0)[3] << endl;
+        cout << "exp " << std::setprecision(10) << s0.coordinates().toWorld(v0)[3] << endl;
+        AlwaysAssert(
+            concat.coordinates().toWorld(v0)[3] == s0.coordinates().toWorld(v0)[3],
+            AipsError
+        );
+        cout << "get " << std::setprecision(10) << concat.coordinates().toWorld(v1)[3] << endl;
+        cout << "exp " << std::setprecision(10) << s1.coordinates().toWorld(v0)[3] << endl;
+        AlwaysAssert(
+            concat.coordinates().toWorld(v1)[3] == s1.coordinates().toWorld(v0)[3],
+            AipsError
+        );
+        cout << "get " << std::setprecision(10) << concat.coordinates().toWorld(v2)[3] << endl;
+        cout << "exp " << std::setprecision(10) << s3.coordinates().toWorld(v0)[3] << endl;
+        cout << "spec values " << std::setprecision(10) << concat.coordinates().spectralCoordinate().worldValues() << endl;
+        AlwaysAssert(
+            concat.coordinates().toWorld(v2)[3] == s3.coordinates().toWorld(v0)[3],
+            AipsError
+        );
+  
+    }
+  } catch(const AipsError& x) {
     cerr << x.getMesg() << endl;
     return 1;
   } 

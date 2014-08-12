@@ -377,12 +377,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	Vector<Int> polnIDs;
 
 	String s(":"), spwExpr, polnExpr;
-	Int nSpw, nTokens;
+	Int nTokens;
 	//
 	// User suppport: Check if they tried [SPW:CHAN:]POLN kind of
 	// specification.  Darn - String::freq(...) does not work!
 	//
-	nSpw=tokenize(polnSpecList[i],s,tokens);
+	tokenize(polnSpecList[i],s,tokens);
 	tokenize(tokens[0],s,tmp);
 	nTokens = tokens.nelements();
 

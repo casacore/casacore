@@ -79,6 +79,7 @@ IO/RegularFileIO.cc
 IO/StreamIO.cc
 IO/LargeRegularFileIO.cc
 IO/MemoryIO.cc
+IO/MultiFile.cc
 IO/BucketCache.cc
 IO/BaseSinkSource.cc
 IO/MMapIO.cc
@@ -414,6 +415,7 @@ IO/LockFile.h
 IO/MemoryIO.h
 IO/MMapfdIO.h
 IO/MMapIO.h
+IO/MultiFile.h
 IO/RawIO.h
 IO/RegularFileIO.h
 IO/StreamIO.h

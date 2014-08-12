@@ -130,17 +130,29 @@ public:
     {}
 
     // This copy constructor allows <src>CountedPtr</src>s to be
-    // initialized from other <src>CountedPtr</src>s.
+    // initialized from other <src>CountedPtr</src>s for which the pointer TP*
+    // is convertible to T*.
     //
-//    CountedPtr(const CountedPtr<t> &val) : ref(val.ref) {
-//	if (ref)
-//	    (*ref).count++;
-//    }
+    template<typename TP>
+    CountedPtr(const CountedPtr<TP>& that)
+      : pointerRep_p(that.pointerRep_p)
+    {}
 
     // This destructor only deletes the really stored data when it was
     // initialized as deletable and the reference count is zero.
-    //
+    // 
     ~CountedPtr() {}
+
+    // This assignment operator allows <src>CountedPtr</src>s to be
+    // copied from other <src>CountedPtr</src>s for which the pointer TP*
+    // is convertible to t*.
+    //
+    template<typename TP>
+    CountedPtr<t>& operator=(const CountedPtr<TP>& that)
+    {
+      pointerRep_p = that.pointerRep_p;
+      return *this;
+    }
 
     // Reset the pointer.
     void reset (t *val, Bool delit=True)
@@ -229,7 +241,9 @@ public:
     // Test if it contains a valid pointer.
     operator bool() const { return get() != 0; }
 
-protected:
+private:
+  // Make all types of CountedPtr a friend for the templated operator=.
+  template<typename TP> friend class CountedPtr;
 
 #ifdef AIPS_CXX11
     typedef std::shared_ptr<t> PointerRep;
@@ -242,6 +256,7 @@ protected:
     PointerRep pointerRep_p;
 };
 
+// A shared_ptr is used as implementation.
 inline Bool countedPtrShared()
   { return True; }
 

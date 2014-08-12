@@ -6,14 +6,13 @@ tEarthMagneticMachine
 tMBaseline
 tMDirection
 tMEarthMagnetic
+tMFrequency
 tMeasComet
-tMeasIERS
 tMeasJPL
 tMeasMath
 tMeasure
 tMeasureHolder
 tMuvw
-tNutation
 tParAngleMachine
 tQuality
 tRecordTransformable

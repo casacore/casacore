@@ -281,6 +281,8 @@ private:
    // the first image, this function just sets up worldValues and pixelValues
    void setCoordinates();
 
+   void _updatePixelAndWorldValues(uInt iIm);
+
   //# Make members of parent class known.
 public:
   using ImageInterface<T>::logger;

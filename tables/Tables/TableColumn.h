@@ -219,6 +219,10 @@ public:
     Bool isDefined (uInt rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->isDefined (rownr); }
 
+    // Does the column has content in the given row (default is the first row)?
+    // It has if it is defined and does not contain an empty array.
+    Bool hasContent (uInt rownr=0) const;
+
     // Get the #dimensions of an array in a particular cell.
     uInt ndim (uInt rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->ndim (rownr); }

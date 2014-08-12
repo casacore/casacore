@@ -159,8 +159,8 @@ public:
     //        (Starting with wcs FITS multiple coordinate representations
     //         can be stored in a FITS file)
     //   <li> <src>whichHDU</src> Zero-relative hdu. The default is correct for
-    //        a primary array, set it for an image extension. Only zero has been
-    //        tested.
+    //        a primary array, set it for an image extension. A value of -1
+    //        makes the code look for the first readable HDU.
     //   <li> <src>memoryInMB</src>. Setting this to zero will result in
     //        row-by-row copying, otherwise it will attempt to with as large
     //        a chunk-size as possible, while fitting in the desired memory.
@@ -174,7 +174,7 @@ public:
 			    const String &imageName,
 			    const String &fitsName, 
 			    uInt whichRep = 0,
-			    uInt whichHDU = 0,
+			    Int whichHDU = 0,
 			    uInt memoryInMB = 64,
 			    Bool allowOverwrite=False,
                             Bool zeroBlanks=False);

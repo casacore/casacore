@@ -79,9 +79,11 @@ const String ImageFITSConverter::CASAMBM = "casambm";
 Bool ImageFITSConverter::FITSToImage(
 	ImageInterface<Float> *&newImage, String &error,
 	const String &imageName, const String &fitsName,
-	uInt whichRep, uInt whichHDU, uInt memoryInMB,
+	uInt whichRep, Int whichHDU, uInt memoryInMB,
 	Bool allowOverwrite, Bool zeroBlanks
 ) {
+        LogIO os(LogOrigin("ImageFITSConverter"));
+
 	newImage = 0;
 	error = "";
 	// First make sure that imageName is writable and does not already
@@ -120,115 +122,177 @@ Bool ImageFITSConverter::FITSToImage(
 	//
 	// Advance to the right HDU
 	//
-	for (uInt i=0; i<whichHDU; i++) {
-		infile.skip_hdu();
-		if (infile.err()) {
-			error = "Error advancing to image in file: " + fitsName;
-			return False;
+	Int theHDU = whichHDU;
+	Int numHDU = infile.getnumhdu();
+	if(whichHDU<0){
+		// look for first readable HDU
+		for(Int i=0; i<numHDU; i++){
+		  os << LogIO::NORMAL << "Processing HDU " << i << LogIO::POST;
+		  if (infile.err() ||
+		      infile.rectype() != FITS::HDURecord ||
+		      (infile.hdutype() != FITS::PrimaryArrayHDU &&
+		       infile.hdutype() != FITS::ImageExtensionHDU)) {
+		    infile.skip_hdu();
+		  }
+		  else{
+		    theHDU = i;
+		    break;
+		  }
 		}
+		if(theHDU<0){
+		  stringstream ss;
+		  ss << numHDU;
+		  error = "There are " + String(ss.str()) + " HDUs in FITS file " +fitsName + " . None of them is an image.";
+		  return False;
+		}		  
 	}
-	//
-	// Make sure the current spot in the FITS file is an image
-	//
-
-
-	if (infile.rectype() != FITS::HDURecord ||
-			(infile.hdutype() != FITS::PrimaryArrayHDU &&
-					infile.hdutype() != FITS::ImageExtensionHDU)) {
-		error = "No image at specified location in file " + fitsName;
-		return False;
+	else{
+	       for (Int i=0; i<whichHDU; i++) {
+		 infile.skip_hdu();
+		 if (infile.err()) {
+		   error = "Error advancing to image in file: " + fitsName;
+		   return False;
+		 }
+	       }
+	       if (infile.rectype() != FITS::HDURecord ||
+		   (infile.hdutype() != FITS::PrimaryArrayHDU &&
+		    infile.hdutype() != FITS::ImageExtensionHDU)) {
+		 error = "No image at specified location in file " + fitsName;
+		 return False;
+	       }
 	}
+
 	// The rest has to be done in a type dependent way - hand over to template
 	// functions.
-	switch(infile.datatype()) {
-	case FITS::BYTE:
-	{
-		if (infile.hdutype() == FITS::PrimaryArrayHDU) {
-			PrimaryArray<unsigned char> fitsdata(infile);
-			ImageFITSConverterImpl<PrimaryArray<unsigned char> >::FITSToImage(
-				newImage, error, imageName, whichRep,
-				fitsdata, fitsName, TpChar, memoryInMB, zeroBlanks
-			);
-		}
-		else {
-			ImageExtension<unsigned char> fitsdata(infile);
-			ImageFITSConverterImpl<ImageExtension<unsigned char> >::FITSToImage(
-				newImage, error, imageName, whichRep,
-				fitsdata, fitsName, TpChar, memoryInMB, zeroBlanks
-			);
-		}
-	}
-	break;
-	case FITS::SHORT: {
-		if (infile.hdutype() == FITS::PrimaryArrayHDU) {
-			PrimaryArray<short> fitsdata(infile);
-			ImageFITSConverterImpl<PrimaryArray<short> >::FITSToImage(
-				newImage, error, imageName,
-				whichRep, fitsdata, fitsName, TpShort, memoryInMB, zeroBlanks
-			);
-		}
-		else {
-			ImageExtension<short> fitsdata(infile);
-			ImageFITSConverterImpl<ImageExtension<short> >::FITSToImage(
-				newImage, error, imageName, whichRep,
-				fitsdata, fitsName, TpShort, memoryInMB, zeroBlanks
-			);
-		}
-	}
-	break;
-	case FITS::LONG: {
-		if (infile.hdutype() == FITS::PrimaryArrayHDU) {
-			PrimaryArray<FitsLong> fitsdata(infile);
-			ImageFITSConverterImpl<PrimaryArray<FitsLong> >::FITSToImage(
-				newImage, error, imageName, whichRep, fitsdata,
-				fitsName, TpInt, memoryInMB, zeroBlanks
-			);
-		}
-		else {
-			ImageExtension<FitsLong> fitsdata(infile);
-			ImageFITSConverterImpl<ImageExtension<FitsLong> >::FITSToImage(
-				newImage, error, imageName, whichRep, fitsdata,
-				fitsName, TpInt, memoryInMB, zeroBlanks
-			);
-		}
-	}
-	break;
-	case FITS::FLOAT: {
-		if (infile.hdutype() == FITS::PrimaryArrayHDU) {
-			PrimaryArray<Float> fitsdata(infile);
-			ImageFITSConverterImpl<PrimaryArray<Float> >::FITSToImage(
-				newImage, error, imageName, whichRep,
-				fitsdata, fitsName, TpFloat, memoryInMB, zeroBlanks
-			);
-		}
-		else {
-			ImageExtension<Float> fitsdata(infile);
-			ImageFITSConverterImpl<ImageExtension<Float> >::FITSToImage(
-				newImage, error, imageName, whichRep,
-				fitsdata, fitsName, TpFloat, memoryInMB, zeroBlanks
-			);
-		}
-	}
-	break;
-	case FITS::DOUBLE: {
-		if (infile.hdutype() == FITS::PrimaryArrayHDU) {
-			PrimaryArray<Double> fitsdata(infile);
-			ImageFITSConverterImpl<PrimaryArray<Double> >::FITSToImage(
-				newImage, error, imageName, whichRep,
-				fitsdata, fitsName, TpDouble,  memoryInMB, zeroBlanks
-			);
-		}
-		else {
-			ImageExtension<Double> fitsdata(infile);
-			ImageFITSConverterImpl<ImageExtension<Double> >::FITSToImage(
-				newImage, error, imageName, whichRep,
-				fitsdata, fitsName, TpDouble, memoryInMB, zeroBlanks);
-		}
-	}
-	break;
-	default:
+	Bool success=False;
+	while(!success && theHDU<numHDU){
+	  try{
+	    switch(infile.datatype()) {
+	    case FITS::BYTE:
+	      if (infile.hdutype() == FITS::PrimaryArrayHDU) {
+		PrimaryArray<unsigned char> fitsdata(infile);
+		ImageFITSConverterImpl<PrimaryArray<unsigned char> >::FITSToImage(
+										  newImage, error, imageName, whichRep,
+										  fitsdata, fitsName, TpChar, memoryInMB, zeroBlanks
+										  );
+	      }
+	      else {
+		ImageExtension<unsigned char> fitsdata(infile);
+		ImageFITSConverterImpl<ImageExtension<unsigned char> >::FITSToImage(
+										    newImage, error, imageName, whichRep,
+										    fitsdata, fitsName, TpChar, memoryInMB, zeroBlanks
+										    );
+	      }
+	      success = True;
+	      break;
+	    case FITS::SHORT:
+	      if (infile.hdutype() == FITS::PrimaryArrayHDU) {
+		PrimaryArray<short> fitsdata(infile);
+		ImageFITSConverterImpl<PrimaryArray<short> >::FITSToImage(
+									  newImage, error, imageName,
+									  whichRep, fitsdata, fitsName, TpShort, memoryInMB, zeroBlanks
+									  );
+	      }
+	      else {
+		ImageExtension<short> fitsdata(infile);
+		ImageFITSConverterImpl<ImageExtension<short> >::FITSToImage(
+									    newImage, error, imageName, whichRep,
+									    fitsdata, fitsName, TpShort, memoryInMB, zeroBlanks
+									    );
+	      }
+	      success = True;
+	      break;
+	    case FITS::LONG:
+	      if (infile.hdutype() == FITS::PrimaryArrayHDU) {
+		PrimaryArray<FitsLong> fitsdata(infile);
+		ImageFITSConverterImpl<PrimaryArray<FitsLong> >::FITSToImage(
+									     newImage, error, imageName, whichRep, fitsdata,
+									     fitsName, TpInt, memoryInMB, zeroBlanks
+									     );
+	      }
+	      else {
+		ImageExtension<FitsLong> fitsdata(infile);
+		ImageFITSConverterImpl<ImageExtension<FitsLong> >::FITSToImage(
+									       newImage, error, imageName, whichRep, fitsdata,
+									       fitsName, TpInt, memoryInMB, zeroBlanks
+									       );
+	      }
+	      success = True;
+	      break;
+	    case FITS::FLOAT: 
+	      if (infile.hdutype() == FITS::PrimaryArrayHDU) {
+		PrimaryArray<Float> fitsdata(infile);
+		ImageFITSConverterImpl<PrimaryArray<Float> >::FITSToImage(
+									  newImage, error, imageName, whichRep,
+									  fitsdata, fitsName, TpFloat, memoryInMB, zeroBlanks
+									  );
+	      }
+	      else {
+		ImageExtension<Float> fitsdata(infile);
+		ImageFITSConverterImpl<ImageExtension<Float> >::FITSToImage(
+									    newImage, error, imageName, whichRep,
+									    fitsdata, fitsName, TpFloat, memoryInMB, zeroBlanks
+									    );
+	      }
+	      success = True;
+	      break;
+	    case FITS::DOUBLE: 
+	      if (infile.hdutype() == FITS::PrimaryArrayHDU) {
+		PrimaryArray<Double> fitsdata(infile);
+		ImageFITSConverterImpl<PrimaryArray<Double> >::FITSToImage(
+									   newImage, error, imageName, whichRep,
+									   fitsdata, fitsName, TpDouble,  memoryInMB, zeroBlanks
+									   );
+	      }
+	      else {
+		ImageExtension<Double> fitsdata(infile);
+		ImageFITSConverterImpl<ImageExtension<Double> >::FITSToImage(
+									     newImage, error, imageName, whichRep,
+									     fitsdata, fitsName, TpDouble, memoryInMB, zeroBlanks);
+	      }
+	      success = True;
+	      break;
+	    default:
+	      if(whichHDU>=0){
 		error = "Unknown datatype  - no data returned";
 		return False;
+	      }
+	      success = False;
+	    }
+	  }
+	  catch(AipsError x){
+	    if(whichHDU>=0){
+	      throw(x);
+	    }
+	    else{
+	      success = False;
+	    }
+	  }
+	  if(whichHDU>=0){
+	    break;
+	  }
+	  else if(!success){
+	    // skip to next useful HDU 
+	    while(theHDU<numHDU){
+	      os << LogIO::WARN << "This HDU (" << theHDU << ") did not contain a legible image." << LogIO::POST;  
+	      infile.skip_hdu();
+	      theHDU++;
+	      if (!(infile.err() ||
+		    infile.rectype() != FITS::HDURecord ||
+		    (infile.hdutype() != FITS::PrimaryArrayHDU &&
+		     infile.hdutype() != FITS::ImageExtensionHDU))) {
+		os << LogIO::WARN << "Next candidate image HDU is #" << theHDU 
+		   << " (use the whichhdu parameter to address HDUs directly)" << LogIO::POST;  
+		break;
+	      }
+	    }
+	  }
+	}
+	if(!success){
+	  stringstream ss;
+	  ss << numHDU;
+	  error = "There are " + String(ss.str()) + " HDUs in FITS file " +fitsName + " . None of them is a legible image.";
+	  return False;
 	}
 	return True;
 }
@@ -448,7 +512,7 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue,
     ignore(2) = "^naxis";
     ignore(3) = "^naxis$";
     ignore(4) = "^pc.....";
-    ignore(5) = "^pc.....$";
+    ignore(5) = "^pc......";
     FITSKeywordUtil::removeKeywords(headerRec, ignore);
 //
     return cSys;

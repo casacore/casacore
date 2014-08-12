@@ -411,11 +411,11 @@ SpectralCoordinate FrequencyAligner<T>::alignedSpectralCoordinate (Bool doLinear
 
    MDoppler::Types doppler = itsSpecCoord.velocityDoppler();
    String velUnit = itsSpecCoord.velocityUnit();
-   Bool ok = sC.setVelocity (velUnit, doppler);
+   sC.setVelocity (velUnit, doppler);
   
 // Axis names
 
-   ok = sC.setWorldAxisNames(itsSpecCoord.worldAxisNames());
+   sC.setWorldAxisNames(itsSpecCoord.worldAxisNames());
 //
    return sC;
 }

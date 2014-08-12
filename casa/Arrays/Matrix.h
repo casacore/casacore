@@ -44,7 +44,9 @@ template<class T> class Vector;
 //
 // Matrix objects are two-dimensional specializations (e.g., more convenient
 // and efficient indexing) of the general Array class. You might also want
-// to look at the Array documentation to see inherited functionality.
+// to look at the Array documentation to see inherited functionality. A
+// tutorial on using the array classes in general is available in the
+// "AIPS++ Programming Manual".
 //
 // Generally the member functions of Array are also available in
 // Matrix versions which take a pair of integers where the array 
@@ -123,6 +125,10 @@ public:
 
     // Define a destructor, otherwise the (SUN) compiler makes a static one.
     virtual ~Matrix();
+
+    // Create an identity matrix of side length n. (Could not do this as a constructor
+    // because of ambiguities with other constructors).
+    static Matrix<T> identity (uInt n);
 
     // Assign the other array (which must be dimension 2) to this matrix.
     // If the shapes mismatch, this array is resized.
@@ -223,42 +229,21 @@ public:
     // Returns a reference to the i'th row.
     // <group>
     Vector<T> row(uInt i);
-#if defined (AIPS_IRIX)
-    Vector<T> row(uInt i) const;
-#else
     const Vector<T> row(uInt i) const;
-#endif
     // </group>
 
     // Returns a reference to the j'th column
     // <group>
     Vector<T> column(uInt j);
-#if defined (AIPS_IRIX)
-    Vector<T> column(uInt j) const;
-#else
     const Vector<T> column(uInt j) const;
-#endif
     // </group>
 
     // Returns a diagonal from the Matrix. The Matrix must be square.
-    // <group>
-    Vector<T> diagonal( )
-      { return diagonal (0); }
-#if defined (AIPS_IRIX)
-    Vector<T> diagonal( ) const
-      { return diagonal (0); }
-#else
-    const Vector<T> diagonal( ) const
-      { return diagonal (0); }
-#endif
     // n==0 is the main diagonal. n>0 is above the main diagonal, n<0
     // is below it.
-    Vector<T> diagonal(Int n);
-#if defined (AIPS_IRIX)
-    Vector<T> diagonal(Int n) const;
-#else
-    const Vector<T> diagonal(Int n) const;
-#endif
+    // <group>
+    Vector<T> diagonal(Int n=0);
+    const Vector<T> diagonal(Int n=0) const;
     // </group>
 
     // Take a slice of this matrix. Slices are always indexed starting

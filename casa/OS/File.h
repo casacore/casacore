@@ -321,6 +321,32 @@ inline void File::getstat (void* buf) const
 
 
 
+//# The ifdef's below are similar to those in IO/LargeIOFuncDef.h.
+#if !defined(AIPS_NOLARGEFILE)
+# ifdef AIPS_LINUX
+#  if !defined(_LARGEFILE64_SOURCE)
+#   define _LARGEFILE64_SOURCE
+#  endif
+# endif
+#if defined(AIPS_DARWIN) || defined(AIPS_BSD)
+# define fileFSTAT fstat
+# define fileLSTAT lstat
+# define fileSTAT  stat
+# define fileSTATFS  statfs
+#else
+# define fileFSTAT fstat64
+# define fileLSTAT lstat64
+# define fileSTAT  stat64
+# define fileSTATFS  statfs64
+#endif
+#else
+# define fileFSTAT fstat
+# define fileLSTAT lstat
+# define fileSTAT  stat
+# define fileSTATFS  statfs
+#endif
+
+
 
 } //# NAMESPACE CASA - END
 

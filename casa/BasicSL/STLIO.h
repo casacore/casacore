@@ -39,6 +39,9 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+  //# Forward Declarations
+  class AipsIO;
+
   // <summary>
   //    Input/output operators for STL-like containers.
   // </summary>
@@ -156,6 +159,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     { os.output() << a; return os; }
   // </group>
 
+  // Read or write the contents of an STL vector from/to AipsIO.
+  // The container is written in the same way as Block,
+  // thus can be read back that way and vice-versa.
+  // <group>
+  template<typename T>
+  AipsIO& operator>> (AipsIO& ios, std::vector<T>&);
+  template<typename T>
+  AipsIO& operator<< (AipsIO& ios, const std::vector<T>&);
+  // </group>
 
 } //# NAMESPACE CASA - END
 

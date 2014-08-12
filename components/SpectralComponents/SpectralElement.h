@@ -33,7 +33,7 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/RecordInterface.h>
 ///#include <casa/Utilities/CountedPtr.h>
-#include <tr1/memory>
+#include <casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -173,9 +173,9 @@ protected:
 
 	void _setType(const Types type);
 
-	void _setFunction(const std::tr1::shared_ptr<Function<Double, Double> >& f);
+	void _setFunction(const CountedPtr<Function<Double, Double> >& f);
 
-	virtual std::tr1::shared_ptr<Function<Double, Double> > _getFunction() const {
+	virtual CountedPtr<Function<Double, Double> > _getFunction() const {
 		return _function;
 	}
 
@@ -193,7 +193,7 @@ private:
 	// Solved is the default.
 	Vector<Bool> _fixed;
 
-	std::tr1::shared_ptr<Function<Double, Double> > _function;
+	CountedPtr<Function<Double, Double> > _function;
 
 };
 

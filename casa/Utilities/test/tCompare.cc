@@ -82,7 +82,7 @@ void sort2 (Int option)
   arr[9] = -5;
   CountedPtr<BaseCompare> cmp(new CompareIntervalReal<Double>(2,1));
   Sort sort;
-  sort.sortKey (arr, cmp, sizeof(String));
+  sort.sortKey (arr, cmp, sizeof(Double));
   Vector<uInt> inx;
   sort.sort (inx, 10, option);
   for (uInt i=0; i<inx.size(); ++i) {
@@ -91,7 +91,7 @@ void sort2 (Int option)
   cout << endl;
 }
 
-// Test integer
+// Test other interval.
 void sort3 (Int option)
 {
   Double arr[10];
@@ -107,7 +107,7 @@ void sort3 (Int option)
   arr[9] = -5;
   CountedPtr<BaseCompare> cmp(new CompareIntervalReal<Double>(3,0));
   Sort sort;
-  sort.sortKey (arr, cmp, sizeof(String));
+  sort.sortKey (arr, cmp, sizeof(Double));
   Vector<uInt> inx;
   sort.sort (inx, 10, option);
   for (uInt i=0; i<inx.size(); ++i) {

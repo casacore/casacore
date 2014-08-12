@@ -100,12 +100,10 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 	ndim = shape.nelements();
 	// Create image
 
-	Bool isTempImage = False;
 	try {
 		if (newImageName.empty()) {
 			pNewImage = new TempImage<Float>(shape, coords);
 			os << LogIO::NORMAL << "Created (temp)image of shape " << shape << LogIO::POST;
-			isTempImage = True;
 		} else {
 			pNewImage = new PagedImage<Float>(shape, coords, newImageName);
 			os << LogIO::NORMAL << "Created image of shape " << shape << LogIO::POST;

@@ -586,7 +586,6 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 
   String proj1, proj2;
   Bool isGalactic = False;
-  Bool failedDirection = False;
   if (longAxis >= 0) {
     proj1 = ctype(longAxis);
     proj2 = ctype(latAxis);
@@ -621,7 +620,6 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	"from this miriad header.  Will make a LinearCoordinate instead" << LogIO::POST;
       longAxis = -1;
       latAxis = -1;
-      failedDirection = True;
     }
   }
 

@@ -39,7 +39,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 LorentzianSpectralElement::LorentzianSpectralElement()
 : PCFSpectralElement(SpectralElement::LORENTZIAN, Vector<Double>(3)) {
 	_setFunction(
-		std::tr1::shared_ptr<Lorentzian1D<Double> >(
+		CountedPtr<Lorentzian1D<Double> >(
 			new Lorentzian1D<Double>(1)
 		)
 	);
@@ -56,7 +56,7 @@ LorentzianSpectralElement::LorentzianSpectralElement(
 		throw AipsError("Lorentzian fwhm cannot equal 0");
 	}
 	_setFunction(
-		std::tr1::shared_ptr<Lorentzian1D<Double> >(
+		CountedPtr<Lorentzian1D<Double> >(
 			new Lorentzian1D<Double>(ampl, center, fwhm)
 		)
 	);
@@ -69,7 +69,7 @@ LorentzianSpectralElement::LorentzianSpectralElement(
 		throw AipsError("Lorentzian fwhm cannot equal 0");
 	}
 	_setFunction(
-		std::tr1::shared_ptr<Lorentzian1D<Double> >(
+		CountedPtr<Lorentzian1D<Double> >(
 			new Lorentzian1D<Double>(param[AMP], param[CENTER], param[WIDTH])
 		)
 	);

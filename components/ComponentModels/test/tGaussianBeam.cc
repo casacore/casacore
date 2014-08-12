@@ -25,7 +25,7 @@
 
 #include <casa/aips.h>
 #include <casa/Quanta/QLogical.h>
-#include <components/ComponentModels/GaussianBeam.h>
+#include <scimath/Mathematics/GaussianBeam.h>
 #include <casa/Containers/Record.h>
 
 #include <casa/namespace.h>

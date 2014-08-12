@@ -113,7 +113,7 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
       // This version of TEN based query is about 60X faster than the
       // slower code below
       //
-      Int nSpwRows, nDDIDRows;
+      Int nDDIDRows;
       //      TableExprNode uvwDist = sqrt(sumSquare(ms()->col(MS::columnName(MS::UVW))));
 
       //
@@ -139,7 +139,6 @@ const TableExprNode *MSUvDistParse::selectUVRange(const Double& startUV,
       // where the ref. freq. info. is picked up.
       //
       Vector<Int> mapDDID2SpwID;
-      nSpwRows = msSpwCol.nrow();
       nDDIDRows = msDataDescSubTable.nrow();
       mapDDID2SpwID.resize(nDDIDRows);
 

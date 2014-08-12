@@ -351,11 +351,6 @@ template<class T>  T min(const Array<T> &a)
 template<class T>  T max(const Array<T> &a)
     { T Min, Max; minMax(Min, Max, a); return Max; }
 
-template<class T>  void indgen(Array<T> &a) {indgen(a, T(0), T(1));}
-
-template<class T>  void indgen(Array<T> &a, T start) 
-{indgen(a, start, T(1));}
-
 template<class T> void operator+= (Array<T> &left, const T &other)
 {
     arrayTransformInPlace (left, other, std::plus<T>());

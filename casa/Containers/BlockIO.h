@@ -102,6 +102,8 @@ template<class T> void showBlock (std::ostream& ios, const Block<T>& blk)
 // to write the block out to either <src>AipsIO</src> or
 // <src>ostream</src>. A shift operator is also provided for
 // reading a <src>Block</src> in from <src>AipsIO</src>.
+// <note> STL containers like vector and list are written in the same way as
+// a Block, so they can be written one way and read back the other.
 //
 // <group>
 template<class T> AipsIO& operator<< (AipsIO& ios, const Block<T>& blk)

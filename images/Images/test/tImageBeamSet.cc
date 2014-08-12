@@ -442,26 +442,6 @@ int main() {
         	}
         }
         {
-        	cout << "*** test getCommonBeam 1" << endl;
-        	Matrix<GaussianBeam> beams(1, 2);
-        	GaussianBeam beam1(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(0, "deg")
-        	);
-        	GaussianBeam beam2(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(60, "deg")
-        	);
-        	beams(0, 0) = beam1;
-        	beams(0, 1) = beam2;
-        	ImageBeamSet beamSet(beams);
-        	GaussianBeam myBeam = beamSet.getCommonBeam();
-        	cout << "Minimum area enclosing beam " << myBeam << endl;
-        	AlwaysAssert(abs(myBeam.getPA("deg", True) - 30) < 1e-7, AipsError);
-        	AlwaysAssert(myBeam.getMajor("arcsec") < 4.486, AipsError);
-        	AlwaysAssert(myBeam.getMinor("arcsec") < 3.292, AipsError);
-        }
-        {
           cout << "*** test equivalent()" << endl;
           GaussianBeam beam(Quantity(4, "arcsec"), Quantity(3, "arcsec"),
                             Quantity(40, "deg"));
@@ -527,202 +507,6 @@ int main() {
             AlwaysAssert(! set2.equivalent(set1), AipsError);
           }
         }
-
-        {
-        	cout << "*** test getCommonBeam 2" << endl;
-        	Matrix<GaussianBeam> beams(1, 2);
-        	GaussianBeam beam1(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(20, "deg")
-        	);
-        	GaussianBeam beam2(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(80, "deg")
-        	);
-        	beams(0, 0) = beam1;
-        	beams(0, 1) = beam2;
-        	ImageBeamSet beamSet(beams);
-        	GaussianBeam myBeam = beamSet.getCommonBeam();
-        	cout << "Minimum area enclosing beam " << myBeam << endl;
-        	AlwaysAssert(abs(myBeam.getPA("deg", True) - 50) < 1e-7, AipsError);
-        	AlwaysAssert(myBeam.getMajor("arcsec") < 4.486, AipsError);
-        	AlwaysAssert(myBeam.getMinor("arcsec") < 3.292, AipsError);
-        }
-        {
-        	cout << "*** test getCommonBeam 3" << endl;
-        	Matrix<GaussianBeam> beams(1, 2);
-        	GaussianBeam beam1(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(1, "deg")
-            );
-        	GaussianBeam beam2(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(89, "deg")
-        	);
-        	beams(0, 0) = beam1;
-        	beams(0, 1) = beam2;
-        	ImageBeamSet beamSet(beams);
-        	GaussianBeam myBeam = beamSet.getCommonBeam();
-        	cout << "Minimum area enclosing beam " << myBeam << endl;
-        	AlwaysAssert(abs(myBeam.getPA("deg", True) - 45) < 1e-7, AipsError);
-        	AlwaysAssert(myBeam.getMajor("arcsec") < 4.042, AipsError);
-        	AlwaysAssert(myBeam.getMinor("arcsec") < 3.958, AipsError);
-        }
-        {
-        	cout << "*** test getCommonBeam 4" << endl;
-        	Matrix<GaussianBeam> beams(1, 2);
-        	GaussianBeam beam1(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(0, "deg")
-        	);
-        	GaussianBeam beam2(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(90, "deg")
-        	);
-        	beams(0, 0) = beam1;
-        	beams(0, 1) = beam2;
-        	ImageBeamSet beamSet(beams);
-        	GaussianBeam myBeam = beamSet.getCommonBeam();
-        	cout << "Minimum area enclosing beam " << myBeam << endl;
-        	//AlwaysAssert(abs(myBeam.getPA("deg", True) - 45) < 1e-7, AipsError);
-        	AlwaysAssert(myBeam.getMajor("arcsec") == 4, AipsError);
-        	AlwaysAssert(myBeam.getMinor("arcsec") == 4, AipsError);
-
-        }
-        {
-        	cout << "*** test getCommonBeam 5" << endl;
-        	Matrix<GaussianBeam> beams(1, 2);
-        	GaussianBeam beam1(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(0, "deg")
-        	);
-        	GaussianBeam beam2(
-        		Quantity(1.5, "arcsec"), Quantity(1, "arcsec"),
-        		Quantity(90, "deg")
-        	);
-        	beams(0, 0) = beam1;
-        	beams(0, 1) = beam2;
-        	ImageBeamSet beamSet(beams);
-        	GaussianBeam myBeam = beamSet.getCommonBeam();
-        	cout << "Minimum area enclosing beam " << myBeam << endl;
-        	AlwaysAssert(myBeam.getPA("deg", True) == 0, AipsError);
-        	AlwaysAssert(myBeam.getMajor("arcsec") == 4, AipsError);
-        	AlwaysAssert(myBeam.getMinor("arcsec") == 2, AipsError);
-        }
-        {
-        	cout << "*** test getCommonBeam 6" << endl;
-        	Matrix<GaussianBeam> beams(1, 2);
-        	GaussianBeam beam1(
-        		Quantity(8, "arcsec"), Quantity(1, "arcsec"),
-        		Quantity(0, "deg")
-        	);
-        	GaussianBeam beam2(
-        		Quantity(4, "arcsec"), Quantity(1, "arcsec"),
-        		Quantity(20, "deg")
-        	);
-        	beams(0, 0) = beam1;
-        	beams(0, 1) = beam2;
-        	ImageBeamSet beamSet(beams);
-        	GaussianBeam myBeam = beamSet.getCommonBeam();
-        	cout << "Minimum area enclosing beam " << myBeam << endl;
-        	AlwaysAssert(abs(myBeam.getPA("deg", True) - 2.76795337) < 1e-5, AipsError);
-        	AlwaysAssert(myBeam.getMajor("arcsec") < 8.377, AipsError);
-        	AlwaysAssert(myBeam.getMinor("arcsec") < 1.628, AipsError);
-        }
-        {
-        	cout << "*** test getCommonBeam 7" << endl;
-        	Matrix<GaussianBeam> beams(1, 2);
-        	GaussianBeam beam1(
-        		Quantity(4, "arcsec"), Quantity(1, "arcsec"),
-        		Quantity(0, "deg")
-        	);
-        	GaussianBeam beam2(
-        		Quantity(8, "arcsec"), Quantity(1, "arcsec"),
-        		Quantity(20, "deg")
-        	);
-        	beams(0, 0) = beam1;
-        	beams(0, 1) = beam2;
-        	ImageBeamSet beamSet(beams);
-        	GaussianBeam myBeam = beamSet.getCommonBeam();
-        	cout << "Minimum area enclosing beam " << myBeam << endl;
-        	AlwaysAssert(abs(myBeam.getPA("deg", True) - 17.232049) < 1e-5, AipsError);
-        	AlwaysAssert(myBeam.getMajor("arcsec") < 8.369, AipsError);
-        	AlwaysAssert(myBeam.getMinor("arcsec") < 1.626, AipsError);
-        }
-        {
-        	cout << "*** test getCommonBeam 8" << endl;
-        	Matrix<GaussianBeam> beams(1, 4);
-        	GaussianBeam beam1(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(0, "deg")
-        	);
-        	GaussianBeam beam2(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(60, "deg")
-        	);
-        	GaussianBeam beam3(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(20, "deg")
-        	);
-        	GaussianBeam beam4(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(40, "deg")
-        	);
-        	beams(0, 0) = beam1;
-        	beams(0, 1) = beam2;
-        	beams(0, 2) = beam3;
-        	beams(0, 3) = beam4;
-        	ImageBeamSet beamSet(beams);
-        	GaussianBeam myBeam = beamSet.getCommonBeam();
-        	cout << "Minimum area enclosing beam " << myBeam << endl;
-        }
-        {
-        	cout << "*** test getCommonBeam 9" << endl;
-        	Matrix<GaussianBeam> beams(1, 4);
-        	GaussianBeam beam1(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(0, "deg")
-        	);
-        	GaussianBeam beam2(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(20, "deg")
-        	);
-        	GaussianBeam beam3(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(40, "deg")
-        	);
-        	GaussianBeam beam4(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(60, "deg")
-        	);
-        	beams(0, 0) = beam1;
-        	beams(0, 1) = beam2;
-        	beams(0, 2) = beam3;
-        	beams(0, 3) = beam4;
-        	ImageBeamSet beamSet(beams);
-        	GaussianBeam myBeam = beamSet.getCommonBeam();
-        	cout << "Minimum area enclosing beam " << myBeam << endl;
-        }
-        {
-        	cout << "*** test getCommonBeam 10" << endl;
-        	Matrix<GaussianBeam> beams(1, 2);
-        	GaussianBeam beam1(
-        		Quantity(4, "arcsec"), Quantity(2, "arcsec"),
-        		Quantity(0, "deg")
-            );
-        	GaussianBeam beam2(
-        		Quantity(1, "arcsec"), Quantity(1, "arcsec"),
-        		Quantity(0, "deg")
-            );
-        	beams(0, 0) = beam1;
-        	beams(0, 1) = beam2;
-        	ImageBeamSet beamSet(beams);
-        	GaussianBeam myBeam = beamSet.getCommonBeam();
-        	cout << "Minimum area enclosing beam " << myBeam << endl;
-        	AlwaysAssert(myBeam.getPA("deg", True) == 0, AipsError);
-        	AlwaysAssert(myBeam.getMajor("arcsec") == 4, AipsError);
-            AlwaysAssert(myBeam.getMinor("arcsec") == 2, AipsError);
-        }
         {
         	cout << "*** test getSmallestMinorAxis" << endl;
         	Matrix<GaussianBeam> beams(1, 4);
@@ -768,6 +552,55 @@ int main() {
         		&& gotSet.equivalent(beamSet),
         		AipsError
         	);
+
+        }
+        {
+        	cout << "*** Test getMedianAreaBeam()" << endl;
+        	Matrix<GaussianBeam> beams(3, 4);
+        	uInt count = 1;
+        	Matrix<GaussianBeam>::iterator iter = beams.begin();
+        	Matrix<GaussianBeam>::iterator end = beams.end();
+        	Quantity radius;
+        	while (iter != end) {
+        		radius = Quantity(count, "arcsec");
+        		iter->setMajorMinor(radius, radius);
+        		iter++;
+        		count++;
+        	}
+        	radius = Quantity(6.5, "arcsec");
+        	beams(2,2) = GaussianBeam(radius, radius, Quantity(0, "deg"));
+        	ImageBeamSet bs(beams);
+        	AlwaysAssert(bs.getMedianAreaBeam() == beams(2, 2), AipsError);
+
+        	Matrix<GaussianBeam> beams2(1, 12);
+        	count = 1;
+        	iter = beams2.begin();
+        	end = beams2.end();
+        	while (iter != end) {
+        		radius = Quantity(count, "arcsec");
+        		iter->setMajorMinor(radius, radius);
+        		iter++;
+        		count++;
+        	}
+        	radius = Quantity(6.5, "arcsec");
+        	beams2(0,10) = GaussianBeam(radius, radius, Quantity(0, "deg"));
+        	ImageBeamSet bs2(beams2);
+        	AlwaysAssert(bs2.getMedianAreaBeam() == beams2(0, 10), AipsError);
+
+        	Matrix<GaussianBeam> beams3(12, 1);
+        	count = 1;
+        	iter = beams3.begin();
+        	end = beams3.end();
+        	while (iter != end) {
+        		radius = Quantity(count, "arcsec");
+        		iter->setMajorMinor(radius, radius);
+        		iter++;
+        		count++;
+        	}
+        	radius = Quantity(6.5, "arcsec");
+        	beams3(8, 0) = GaussianBeam(radius, radius, Quantity(0, "deg"));
+        	ImageBeamSet bs3(beams3);
+        	AlwaysAssert(bs3.getMedianAreaBeam() == beams3(8,0), AipsError);
 
         }
 	}

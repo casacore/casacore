@@ -2372,7 +2372,6 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       }
 
       // renumber consecutively
-      Bool rowsRenumbered(False);
       Int nnrow = 0;
       for (Int j=0 ; j < newNumrows_this ; ++j){
 	if(newThisId(j) > nnrow){ 
@@ -2382,7 +2381,6 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
 	  //sourceRow.putMatchingFields(j, sourceRecord);
 	  tempSourceIndex2.define(newThisId(j), nnrow);
 	  sourceCol.sourceId().put(j, nnrow);
-	  rowsRenumbered = True;
 	}
       }
 	

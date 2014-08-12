@@ -169,7 +169,6 @@ void MeasIERS::initMeas() {
   RORecordFieldPtr<Double> rfp[N_Types];
   Double dt;
   String vs;
-  Bool ok = True;
   for (Int which=0; which<N_Files; ++which) {
     if (!MeasIERS::getTable(tab, kws, row,
                             rfp, vs, dt, 
@@ -183,7 +182,6 @@ void MeasIERS::initMeas() {
          << "Cannot read IERS (Earth axis data) table " << tp[which]
          << "\nCalculations will proceed with lower precision"
          << LogIO::POST;
-      ok = False;
     } else {
       MeasIERS::openNote(&MeasIERS::closeMeas);
       // Read the entire file.
@@ -193,7 +191,6 @@ void MeasIERS::initMeas() {
       // Check if MJD in first and last row match and have step 1.
       const Vector<Double>& mjds = ldat[which][0];
       if (mjds[mjds.size()-1] != mjds[0] + mjds.size()-1) {
-        ok = False;
         LogIO os(LogOrigin("MeasIERS",
                            String("initMeas(MeasIERS::Files)"),
                            WHERE));

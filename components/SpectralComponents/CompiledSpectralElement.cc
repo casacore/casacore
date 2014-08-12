@@ -104,14 +104,14 @@ Double CompiledSpectralElement::operator()(const Double x) const {
 
 const String& CompiledSpectralElement::getFunction() const {
 	// return _function;
-	std::tr1::shared_ptr<Function<Double, Double> >  f = _getFunction();
+	CountedPtr<Function<Double, Double> >  f = _getFunction();
 	return dynamic_cast<CompiledFunction<Double> *>(SpectralElement::_getFunction().get())->getText();
 }
 
 
 void CompiledSpectralElement::_setFunction(const String& function) {
 	//_function = function;
-	std::tr1::shared_ptr<Function<Double, Double> > f = _getFunction();
+	CountedPtr<Function<Double, Double> > f = _getFunction();
 	CompiledFunction<Double> *cf = f.get() == 0
 		? new CompiledFunction<Double>()
 		: dynamic_cast<CompiledFunction<Double> *>(f.get());
