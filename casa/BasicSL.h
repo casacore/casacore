@@ -35,6 +35,8 @@
 #include <casa/BasicSL/IComplex.h>
 #include <casa/BasicSL/RegexBase.h>
 #include <casa/BasicSL/String.h>
+#include <casa/BasicSL/STLIO.h>
+#include <casa/BasicSL/STLMath.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -72,6 +74,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> Class <linkto class=String:description>
 //       String</linkto>
 //       for handling character strings.
+//  <li> STLMath.h has some functions doing math on std::vector objects.
+//  <li> STLIO.h has some functions showing a container on std::ostream or LogIO.
 // </ul>
 //
 // <note role=tip> You may want to look at the individual header files
