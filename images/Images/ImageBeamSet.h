@@ -28,7 +28,7 @@
 
 #include <casa/aips.h>
 #include <casa/Arrays/Matrix.h>
-#include <components/ComponentModels/GaussianBeam.h>
+#include <scimath/Mathematics/GaussianBeam.h>
 //#include <measures/Measures/Stokes.h>
 //#include <map>
 
@@ -216,8 +216,12 @@ public:
       { return _minBeam; }
 
     // Get the beam in the set which has the largest area.
+    // Get the beam in the set which has the largest area.
     GaussianBeam getMaxAreaBeam() const
       { return _maxBeam; }
+
+    // Get the beam in the set which has the median area.
+    GaussianBeam getMedianAreaBeam() const;
 
     // Get the position of the beam with the minimum area.
     IPosition getMinAreaBeamPosition() const
@@ -227,13 +231,13 @@ public:
     IPosition getMaxAreaBeamPosition() const
       { return _maxBeamPos; }
 
-    //<group>
     // Get the minimal, maximal, and median area beams and positions in the beam set matrix for
     // the given stokes. If the stokes axis has length 1 in the beam matrix,
     // it is valid for all stokes and no checking is done that <src>stokes</src> is valid;
     // the requested beam for the entire beam set is simply returned in this case. If the
     // number of stokes in the beam matrix is >1, checking is done that the specified value
     // of <src>stokes</src> is valid and if not, an exception is thrown.
+    // <group>
     const GaussianBeam& getMinAreaBeamForPol(IPosition& pos,
                                              uInt stokes) const;
 
@@ -246,27 +250,18 @@ public:
 
     static const String& className();
 
-	// Get a beam to which all other beams in the set can be convolved.
-	// If all other beams can be convolved to the maximum area beam in the set, that beam will be returned.
-	// If not, this is guaranteed to be the minimum area beam to which
-	// all beams in the set can be convolved if all but one of the beams in the set can be convolved to the beam in the set with the
-	// largest area. Otherwise, the returned beam may or may not be the smallest possible beam to which all the beams in the set
-	// can be convolved.
-	GaussianBeam getCommonBeam() const;
+    // Get the beam that has the smallest minor axis. If multiple beams have the smallest minor axis,
+    // the beam in this subset with the smallest area will be returned.
+    const GaussianBeam getSmallestMinorAxisBeam() const;
 
-	// Get the beam that has the smallest minor axis. If multiple beams have the smallest minor axis,
-	// the beam in this subset with the smallest area will be returned.
-	const GaussianBeam getSmallestMinorAxisBeam() const;
+    // convert ImageBeamSet to and from record
+    // <group>
+    static ImageBeamSet fromRecord(const Record& rec);
+    Record toRecord() const;
+    //</group>
 
-	// <group>
-	// convert ImageBeamSet to and from record
-	static ImageBeamSet fromRecord(const Record& rec);
-
-	Record toRecord() const;
-	//</group>
-
-	// If verbose, log all beams, if not just summarize beam stats.
-	void summarize(LogIO& log, Bool verbose, const CoordinateSystem& csys) const;
+    // If verbose, log all beams, if not just summarize beam stats.
+    void summarize(LogIO& log, Bool verbose, const CoordinateSystem& csys) const;
 
 private:
 
@@ -279,12 +274,6 @@ private:
 	IPosition _minBeamPos, _maxBeamPos;
 
 	void _calculateAreas();
-
-	static void _transformEllipseByScaling(
-		Double& transformedMajor, Double& transformedMinor,
-		Double& transformedPa, Double major, Double minor,
-		Double pa, Double xScaleFactor, Double yScaleFactor
-	);
 
 	static void _chanInfoToStream(
 		ostream& os, const SpectralCoordinate *spCoord,

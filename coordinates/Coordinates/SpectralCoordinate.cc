@@ -1456,7 +1456,6 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion1 (const RecordInterface& 
 
 // Create new SpectralCoordinate  (will be in Hz regarldess of unit)
 
-    Bool ok(True);
     SpectralCoordinate* pSpectral = 0;
     Unit qUnit(unit);
     Quantum<Double> qRestFreq(restfreq, qUnit);
@@ -1467,15 +1466,15 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion1 (const RecordInterface& 
 
 // Set units first !
 
-       ok = pSpectral->setWorldAxisUnits(pTabular->worldAxisUnits());
-       ok = pSpectral->setReferencePixel(pTabular->referencePixel());
-       ok = pSpectral->setReferenceValue(pTabular->referenceValue());
+       pSpectral->setWorldAxisUnits(pTabular->worldAxisUnits());
+       pSpectral->setReferencePixel(pTabular->referencePixel());
+       pSpectral->setReferenceValue(pTabular->referenceValue());
     } else {
        Quantum<Double> qcrval(pTabular->referenceValue()(0), qUnit);       
        Quantum<Double> qcdelt(pTabular->increment()(0), qUnit);
        Double crpix(pTabular->referencePixel()(0));
        pSpectral = new SpectralCoordinate (freqSys, qcrval, qcdelt, crpix, qRestFreq);
-       ok = pSpectral->setWorldAxisUnits(pTabular->worldAxisUnits());
+       pSpectral->setWorldAxisUnits(pTabular->worldAxisUnits());
     }
     AlwaysAssert(pSpectral, AipsError);
 
@@ -1567,7 +1566,6 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion2 (const RecordInterface& 
     Unit qUnit(unit);
     Quantum<Double> qRestFreq(restfreq, qUnit);
 //
-    Bool ok(True);
     SpectralCoordinate* pSpectral = 0;
     if (subrec.isDefined("tabular")) {
 
@@ -1583,9 +1581,9 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion2 (const RecordInterface& 
        pSpectral = new SpectralCoordinate (freqSys, qWorlds, qRestFreq);
        AlwaysAssert(pSpectral, AipsError);
 //
-       ok = pSpectral->setReferencePixel(pTabular->referencePixel());
-       ok = pSpectral->setReferenceValue(pTabular->referenceValue());   // Hz
-       ok = pSpectral->setLinearTransform(pTabular->linearTransform());  
+       pSpectral->setReferencePixel(pTabular->referencePixel());
+       pSpectral->setReferenceValue(pTabular->referenceValue());   // Hz
+       pSpectral->setLinearTransform(pTabular->linearTransform());  
        delete pTabular;
        pTabular = 0;
     } else if (subrec.isDefined("wcs")) {
@@ -1604,7 +1602,7 @@ SpectralCoordinate* SpectralCoordinate::restoreVersion2 (const RecordInterface& 
 //
        Matrix<Double> xform(1,1);
        xform = pc;
-       ok = pSpectral->setLinearTransform(xform);
+       pSpectral->setLinearTransform(xform);
     } else {
        return 0;
     }
@@ -1962,8 +1960,10 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
     if (Restfreq > 0) {
 	header.define("restfrq", Restfreq); // FITS standard v3.0 is RESTFRQ, no longer RESTFREQ
 	header.setComment("restfrq", "Rest Frequency (Hz)"); 
-	header.define("specsys", Specsys);
-	header.setComment("specsys", "Spectral reference frame"); 
+	if(!Specsys.empty()){
+	  header.define("specsys", Specsys);
+	  header.setComment("specsys", "Spectral reference frame"); 
+	}
     }
     if (HaveAlt && !preferWavelength) { // alternate representation not valid for ctype WAVE
 	header.define("altrval", Altrval);

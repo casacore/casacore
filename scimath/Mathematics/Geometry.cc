@@ -27,10 +27,7 @@
 //   
 
 #include <scimath/Mathematics/Geometry.h>
-
 #include <casa/Arrays/MatrixMath.h>
-
-#include <utility>
 
 namespace casa {
 

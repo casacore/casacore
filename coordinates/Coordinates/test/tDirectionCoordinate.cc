@@ -439,6 +439,38 @@ int main()
     	  AlwaysAssert(! dc.hasSquarePixels(), AipsError);
 
       }
+      {
+    	  // test isNCP()
+    	  Vector<Double> parms(2, 0);
+    	  Projection projection(Projection::SIN, parms);
+    	  Double refLong = 0;
+    	  Double refLat = 0.5;
+    	  Double inc = C::pi/180/3600;
+    	  Matrix<Double> xform = Matrix<Double>::identity(2);
+    	  Double refX = 0;
+    	  Double refY = 0;
+    	  DirectionCoordinate dc(
+    	      MDirection::J2000, projection,
+    	      refLong, refLat, inc, -inc,
+    	  	  xform, refX, refY
+    	  );
+    	  AlwaysAssert(! dc.isNCP(), AipsError);
+    	  parms[1] = 1/tan(refLat);
+    	  projection = Projection(Projection::SIN, parms);
+    	  dc = DirectionCoordinate(
+    	      MDirection::J2000, projection,
+    	      refLong, refLat, inc, -inc,
+    	      xform, refX, refY
+    	  );
+    	  AlwaysAssert(dc.isNCP(), AipsError);
+    	  projection = Projection(Projection::TAN, parms);
+    	  dc = DirectionCoordinate(
+    	      MDirection::J2000, projection,
+    	      refLong, refLat, inc, -inc,
+    	      xform, refX, refY
+    	  );
+    	  AlwaysAssert(! dc.isNCP(), AipsError);
+      }
 
   } catch (const AipsError& x) {
       cerr << "aipserror: error " << x.getMesg() << endl;

@@ -42,7 +42,7 @@ const Double GaussianSpectralElement::SigmaToFWHM = sqrt(8.0*C::ln2);
 GaussianSpectralElement::GaussianSpectralElement()
 : PCFSpectralElement(SpectralElement::GAUSSIAN, 1, 0, 2*sqrt(C::ln2)/C::pi) {
 	_setFunction(
-		std::tr1::shared_ptr<Gaussian1D<Double> >(
+		CountedPtr<Gaussian1D<Double> >(
 			new Gaussian1D<Double>(1, 0, 1)
 		)
 	);
@@ -53,7 +53,7 @@ GaussianSpectralElement::GaussianSpectralElement(
 	const Double ampl, const Double center, const Double sigma
 ) : PCFSpectralElement(SpectralElement::GAUSSIAN, ampl, center, sigma) {
 	_setFunction(
-		std::tr1::shared_ptr<Gaussian1D<Double> >(
+		CountedPtr<Gaussian1D<Double> >(
 			new Gaussian1D<Double>(ampl, center, sigma*SigmaToFWHM)
 		)
 	);
@@ -62,7 +62,7 @@ GaussianSpectralElement::GaussianSpectralElement(
 GaussianSpectralElement::GaussianSpectralElement(
 	const Vector<Double> &param
 ) : PCFSpectralElement(SpectralElement::GAUSSIAN, param) {
-	std::tr1::shared_ptr<Gaussian1D<Double> >(
+	CountedPtr<Gaussian1D<Double> >(
 		new Gaussian1D<Double>(param[AMP], param[CENTER], param[WIDTH]*SigmaToFWHM)
 	);
 }

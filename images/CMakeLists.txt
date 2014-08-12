@@ -59,8 +59,8 @@ ${FLEX_ImageExprGram_OUTPUTS}
 
 target_link_libraries (
 casa_images
+casa_coordinates
 casa_mirlib
-casa_components
 casa_lattices
 )
 
@@ -152,6 +152,12 @@ Regions/WCPolygon.h
 Regions/WCRegion.h
 Regions/WCUnion.h
 DESTINATION include/casacore/images/Regions
+)
+
+# Temporary hack until all packages use scimath/GaussianBeam
+install (FILES
+Images/GaussianBeam.h
+DESTINATION include/casacore/components/ComponentModels
 )
 
 install (FILES

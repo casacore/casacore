@@ -360,6 +360,26 @@ void TableColumn::throwNotWritable() const
                     baseTabPtr_p->tableName() + " is not writable");
 }
 
+Bool TableColumn::hasContent (uInt rownr) const
+{
+  Bool retval = !isNull() && isDefined(rownr);
+  if (retval  &&  columnDesc().isArray()) {
+    // The first cell seems to have something, but check for
+    // degenerate Arrays.
+    IPosition shp(shape(rownr));
+    if (shp.empty()) {
+      retval = False;
+    } else {
+      for (uInt i=0; i<shp.size(); ++i){
+        if (shp[i] == 0) {
+          retval = False;
+          break;
+        }
+      }
+    }
+  }
+  return retval;
+}
 
 } //# NAMESPACE CASA - END
 

@@ -35,9 +35,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Operators
 template<class T>
 T PowerLogarithmicPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
-	if (x <= 0) {
-		throw AipsError("PowerLogarithmicPolynomial<T>::eval(): x must be greater than zero");
-	}
+  // Test below outcommented, because pointer can never be <0.
+  // Test on x[0]<=0 gives compile error if T is AutoDiffA<Double>.
+  ///if (x <= 0) {
+  ///		throw AipsError("PowerLogarithmicPolynomial<T>::eval(): x must be greater than zero");
+  ///	}
 	T lnx = log(x[0]);
 	Int j = nparameters();
 	T accum = param_p[--j];

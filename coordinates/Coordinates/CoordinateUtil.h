@@ -454,6 +454,12 @@ static Bool dropRemovedAxes (
                                  const String& unit, const String& spcquant);
 
   //#/// Kept setRestFrequency for CASA-4.2
+// Does the CoordinateSystem hold just the sky?
+// Returns True if CS pixel axis 0 is the longitude and 1 latitude  
+// else returns False
+   static Bool isSky (LogIO& os, const CoordinateSystem& cSys);
+
+  //#/// Kept setRestFrequency for CASA-4.2
 // Set rest frequency of SpectralCoordinate in CoordinateSystem.
 // Unit must be consistent with Hz or m.
 // Returns False if invalid inputs (and CS not changed) and an error message.

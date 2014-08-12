@@ -588,7 +588,6 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape,
 //
    uInt nDone = 0;
    if (n>=4) {
-      Bool ok = True;
       nDone = 4;
       if (doneStokes) {
          CoordinateUtil::addFreqAxis(csys);
@@ -601,7 +600,6 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape,
                CoordinateUtil::addFreqAxis(csys);
                doneFreq = True;
             } else {
-               ok = False;
                nDone = 3;
             }
          } 
@@ -1426,6 +1424,33 @@ Bool CoordinateUtil::setSpectralFormatting (String& errorMsg,
 }
    
 
+Bool CoordinateUtil::isSky (LogIO& os, const CoordinateSystem& cSys) {   
+    const uInt nPixelAxes = cSys.nPixelAxes();
+
+    if (nPixelAxes != 2) {
+        os << "The CoordinateSystem is not two dimensional. It has " 
+            << nPixelAxes << " dimensions" << LogIO::EXCEPTION;
+    }  
+    Bool xIsLong = True;
+    Int dirCoordinate = cSys.findCoordinate(Coordinate::DIRECTION);
+    if (dirCoordinate==-1) {
+        os << "There is no DirectionCoordinate (sky) in this CoordinateSystem" << LogIO::EXCEPTION;
+    }
+    Vector<Int> dirPixelAxes = cSys.pixelAxes(dirCoordinate);
+    if (dirPixelAxes(0) == -1 || dirPixelAxes(1) == -1) {
+        os << "The pixel axes for the DirectionCoordinate have been removed" << LogIO::EXCEPTION;
+    }
+ 
+    // Which axis is longitude and which is latitude
+
+    if(dirPixelAxes(0)==0 && dirPixelAxes(1)==1) {
+        xIsLong = True;
+    } else {
+        xIsLong = False;
+    }
+    return xIsLong;
+} 
+
 Bool CoordinateUtil::setRestFrequency (String& errorMsg, CoordinateSystem& cSys,
                                        const String& unit,
                                        const Double& value)
@@ -1753,7 +1778,6 @@ Bool CoordinateUtil::dropRemovedAxes (
 // There should be no axes in common in these two lists because
 // when a world axis is removed, so is its pixel axis
 
-   Bool ok; 
    Double replacement;
 
    if (k>0) {
@@ -1762,7 +1786,7 @@ Bool CoordinateUtil::dropRemovedAxes (
 
       for (uInt i=0; i<removeWorld.nelements(); i++) {
          replacement = csysIn.referenceValue()(removeWorld[i]);
-         ok = csysOut.removeWorldAxis(removeWorld[i], replacement);
+         csysOut.removeWorldAxis(removeWorld[i], replacement);
       }
    }
    if (l>0) {
@@ -1771,7 +1795,7 @@ Bool CoordinateUtil::dropRemovedAxes (
 //
       for (uInt i=0; i<removePixel.nelements(); i++) {
          replacement = csysIn.referencePixel()(removePixel[i]);
-         ok = csysOut.removePixelAxis(removePixel[i], replacement);
+         csysOut.removePixelAxis(removePixel[i], replacement);
       }
    }
    if (preserveAxesOrder) {

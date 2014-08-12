@@ -71,7 +71,7 @@ bool AipsIOReaderWriter::read(Record& region){
 // currently only supports a single region contained within
 // the file.  It would be nice to be able to have multiple
 // regions in a single file.
-bool AipsIOReaderWriter::read(const ImageRegion *region){
+bool AipsIOReaderWriter::read(ImageRegion*& region){
 
     try {
 	// open the file

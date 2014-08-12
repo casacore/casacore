@@ -35,6 +35,7 @@
 #include <casa/OS/EnvVar.h>
 #include <casa/Quanta/QLogical.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
+#include <measures/Measures/MDirection.h>
 
 #include <casa/BasicSL/STLIO.h>
 #include <iomanip>
@@ -1329,27 +1330,62 @@ void testIt(MSMetaData& md) {
 				AlwaysAssert(abs(centers[i].getValue("Hz")/mine[i] - 1) < 1e-8, AipsError);
 			}
 		}
-                {
- 			cout << "*** Test getFieldsForSourceMap" << endl;
- 			std::map<Int, std::set<Int> > res = md.getFieldsForSourceMap();
- 			std::map<Int, std::set<String> > res2 = md.getFieldNamesForSourceMap();
- 
- 			String names[] = {
- 				"3C279", "J1337-129", "Titan", "J1625-254", "V866 Sco", "RNO 90"
- 			};
- 			AlwaysAssert(res.size() == 6, AipsError);
- 			AlwaysAssert(res2.size() == 6, AipsError);
- 			for (Int i=0; i<6; i++) {
- 				AlwaysAssert(res[i].size() == 1 && *(res[i].begin()) == i, AipsError);
- 				AlwaysAssert(
- 					res2[i].size() == 1 && *(res2[i].begin()) == names[i], AipsError
- 				);
- 			}
- 		}
- 		{
+		{
+			cout << "*** Test getFieldsForSourceMap" << endl;
+			std::map<Int, std::set<Int> > res = md.getFieldsForSourceMap();
+			std::map<Int, std::set<String> > res2 = md.getFieldNamesForSourceMap();
+
+			String names[] = {
+				"3C279", "J1337-129", "Titan", "J1625-254", "V866 Sco", "RNO 90"
+			};
+			AlwaysAssert(res.size() == 6, AipsError);
+			AlwaysAssert(res2.size() == 6, AipsError);
+			for (Int i=0; i<6; i++) {
+				AlwaysAssert(res[i].size() == 1 && *(res[i].begin()) == i, AipsError);
+				AlwaysAssert(
+					res2[i].size() == 1 && *(res2[i].begin()) == names[i], AipsError
+				);
+			}
+		}
+		{
+			cout << "*** Test getPointingDirection" << endl;
+			Int ant1, ant2;
+			Double time;
+			std::pair<MDirection, MDirection> pDirs = md.getPointingDirection(
+				ant1, ant2, time, 500
+			);
+			AlwaysAssert(ant1 == 7, AipsError);
+			AlwaysAssert(ant2 == 11, AipsError);
+			AlwaysAssert(time == 4842824902.632, AipsError);
+			AlwaysAssert(
+				near(pDirs.first.getAngle().getValue()[0], -1.231522504, 2e-10),
+				AipsError
+			);
+			AlwaysAssert(
+				near(pDirs.first.getAngle().getValue()[1], 0.8713643132, 1e-9),
+				AipsError
+			);
+			AlwaysAssert(
+				near(pDirs.second.getAngle().getValue()[0], -1.231504278, 4e-10),
+				AipsError
+			);
+			AlwaysAssert(
+				near(pDirs.second.getAngle().getValue()[1], 0.8713175514, 1e-9),
+				AipsError
+			);
+		}
+		{
+			cout << "*** Test getTimeRange()" << endl;
+			std::pair<Double, Double> timerange = md.getTimeRange();
+			AlwaysAssert(near(timerange.first, 4842824745.020, 1e-12), AipsError);
+			AlwaysAssert(near(timerange.second, 4842830012.448, 1e-12), AipsError);
+
+		}
+		{
 			cout << "*** cache size " << md.getCache() << endl;
-                }
+		}
 	}
+
 }
 
 int main() {

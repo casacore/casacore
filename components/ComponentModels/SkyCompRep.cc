@@ -29,7 +29,7 @@
 #include <components/ComponentModels/ComponentType.h>
 #include <components/ComponentModels/ConstantSpectrum.h>
 #include <components/ComponentModels/PointShape.h>
-#include <components/ComponentModels/GaussianBeam.h>
+#include <components/ComponentModels/Angular2DGaussian.h>
 #include <components/ComponentModels/GaussianShape.h>
 #include <components/ComponentModels/DiskShape.h>
 #include <components/ComponentModels/LimbDarkenedDiskShape.h>

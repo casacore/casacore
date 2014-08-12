@@ -13,7 +13,8 @@ tFluxStandard3
 tFluxStandard4
 tGaussianComponent
 tGaussianShape
-tGaussianBeam
+#tAngular2DGaussian
+#tGaussianBeam
 tLimbDarkenedDiskShape
 tPointComponent
 tPointShape

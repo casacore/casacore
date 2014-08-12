@@ -43,6 +43,7 @@ tExprNodeUDF
 tForwardCol
 tForwardColRow
 tIncrementalStMan
+tIncrementalStMan2
 tMappedArrayEngine
 tMemoryStMan
 tMemoryTable

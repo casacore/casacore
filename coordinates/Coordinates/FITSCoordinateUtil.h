@@ -144,6 +144,9 @@ public:
     static Vector<String> cTypeFromDirection (Bool& isNCP, const Projection& proj,
                                               const Vector<String>& axisNames,
                                               Double refLat, Bool printError);
+    static Vector<String> cTypeFromDirection (const Projection& proj,
+                                              const Vector<String>& axisNames,
+                                              Bool printError);
 
 private:
     // Generate actual FITS keywords

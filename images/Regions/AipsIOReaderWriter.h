@@ -77,7 +77,7 @@ public:
     //<group>
     // Implements RSFileReader::read.
     bool read(Record& region);
-    bool read(const ImageRegion *region);
+    bool read(ImageRegion*& region);
     //</group>
 
 

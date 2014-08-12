@@ -90,13 +90,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     ROMSDataDescColumns msDataDescSubTable(ddSubTable_p);
 
     Vector<Int> mapDDID2SpwID, notFoundIDs;
-    Int nSpwRows, nDDIDRows;
+    Int nDDIDRows;
     Bool Found;
     TableExprNode condition;
     const String DATA_DESC_ID = MS::columnName(MS::DATA_DESC_ID),
       FLAG_COL = MS::columnName(MS::FLAG);
     
-    nSpwRows = msSpwSubTable.nrow();
     nDDIDRows = msDataDescSubTable.nrow();
     mapDDID2SpwID.resize(nDDIDRows);
 

@@ -219,7 +219,7 @@ StIndArray* ISMIndColumn::putArrayPtr (uInt rownr, const IPosition& shape,
     // putXXXV resulting in two calls to putShape.
     if (ptr != 0  &&  rownr+1 == lastRowPut_p) {
 	ptr->getShape (*iosfile_p);
-	if (shape == ptr->shape()) {
+	if (shape.isEqual (ptr->shape())) {
 	    return ptr;
 	}
     }

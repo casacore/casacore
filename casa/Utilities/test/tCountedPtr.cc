@@ -34,8 +34,29 @@
 #include <casa/namespace.h>
 // class myobj is defined in tCountedPtr.h
 
-const char *prt(CountedPtr<myobj> &obj) {
+String prt(CountedPtr<myobj> &obj) {
   return obj->name();
+}
+
+void testDerived()
+{
+  cout << "start testDerived" << endl;
+  {
+    CountedPtr<myobj>  v0 (new myobj("v0"));
+    CountedPtr<myobj>  v1 (new myobj1("v1"));
+    CountedPtr<myobj1> v2 (new myobj1("v2"));
+    CountedPtr<myobj>  v3(v1);
+    CountedPtr<myobj>  v4(v2);
+    cout << v0->name() << ' ' << v1->name() << ' ' << v2->name() << ' '
+         << v3->name() << ' ' << v4->name() << endl;
+    v0 = v1;
+    cout << v0->name() << ' ' << v1->name() << ' ' << v2->name() << ' '
+         << v3->name() << ' ' << v4->name() << endl;
+    v0 = v2;
+    cout << v0->name() << ' ' << v1->name() << ' ' << v2->name() << ' '
+         << v3->name() << ' ' << v4->name() << endl;
+  }
+  cout << "end testDerived" << endl;
 }
 
 int main() {
@@ -88,6 +109,9 @@ int main() {
     var2->name() << ".." <<
     prt(var3) << ".." <<
     var4->name() << ".." << endl;
+
+  // Test with a derived class.
+  testDerived();
 
   return 0;
 }

@@ -6,6 +6,7 @@ tCombinatorics
 tConvolver
 tFFTServer
 tFFTServer2
+tGaussianBeam
 tGeometry
 tHistAcc
 tInterpolateArray1D

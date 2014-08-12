@@ -883,7 +883,6 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 				Vector<Double> time=msc.time().getColumn();
 				Vector<Int> fieldId=msc.fieldId().getColumn();
 				Int lastFieldId=-1;
-				Double lastTime=-1;
 				Double startOfDay=( nSlot>0 ?
 						C::day*int(time(0)/C::day) : 0);
 				Int nT = (average ? 1 : nSlot);
@@ -924,7 +923,6 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 									phaseDirMeas(curFieldId,times(k)));
 						ep.set(MVEpoch(times(k)/C::day));
 						msd_p.setEpoch(ep);
-						lastTime=times(k);
 						if (doHA) ha(k)=msd_p.hourAngle()/C::_2pi*C::day;
 						if (doLAST) last(k)=msd_p.last().getValue().get();
 					}

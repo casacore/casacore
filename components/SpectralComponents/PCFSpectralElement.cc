@@ -206,7 +206,7 @@ void PCFSpectralElement::_initFunction() {
 	// Just need something we can instantiate, subclasses should set their
 	// own functions in their constructors
 	_setFunction(
-		std::tr1::shared_ptr<Function<Double> >(
+		CountedPtr<Function<Double> >(
 			new Gaussian1D<Double>()
 		)
 	);

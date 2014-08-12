@@ -50,8 +50,42 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     throw exc(casa_log_oss.str());   \
   } while (0)
 
-// Throw an AipsError exception containing the file and line.
-#define ThrowCc(m) throw AipsError ((m), __FILE__, __LINE__)
+// The Assert macro is an alias to the standard assert macro when NDEBUG is defined.  When
+// NDEBUG is not defined (release build) then a throw is used to report the error.
+
+#ifdef NDEBUG
+#define AssertCc(c) {assert (c); }
+#else
+#define AssertCc(c) { if (! (c)) {casa::AipsError::throwIf (True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
+#endif
+
+#define AssertAlways(c) { if (! (c)) {casa::AipsError::throwIf (True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
+
+#define WarnCc(m)\
+{\
+    LogIO   os(LogOrigin("", __func__, __LINE__, WHERE));\
+    os << LogIO::WARN << m << LogIO::POST;\
+}
+
+
+// Asserts when in debug build and issues a warning message to the log in release.
+#if defined (NDEBUG)
+#define AssertOrWarn(c,m) {assert (c);}
+#else
+#define AssertOrWarn(c,m)\
+{ if (! (c)) {\
+    WarnCc (m);\
+  }\
+}
+#endif
+
+#if defined (NDEBUG)
+#    define ThrowCc(m) \
+    { AipsError anAipsError ((m), __FILE__, __LINE__);\
+      throw anAipsError; }
+#else
+#    define ThrowCc(m) throw AipsError ((m), __FILE__, __LINE__)
+#endif
 
 // Throw an AipsError exception if the condition is true.
 #define ThrowIf(c,m) {if (c) {casa::AipsError::throwIf (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}

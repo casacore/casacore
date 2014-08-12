@@ -54,15 +54,16 @@
 #include <fits/FITS/FITSDateUtil.h>
 #include <measures/Measures/MDoppler.h>
 #include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MFrequency.h>
 
 #include <casa/iostream.h>
-
 
 #include <wcslib/wcs.h>
 #include <wcslib/wcshdr.h>
 #include <wcslib/wcsfix.h>
 #include <wcslib/wcsmath.h>
 #include <wcslib/fitshdr.h>
+
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -1410,9 +1411,54 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //
     {
         if (wcs.specsys[0]=='\0') {
-	    os << LogIO::NORMAL << "No frequency system is defined - TopoCentric assumed" << LogIO::POST;
-	    type = MFrequency::TOPO;
-	    return True;
+	    if (wcs.velref==0) { // velref was also not given
+	        os << LogIO::NORMAL << "Neither SPECSYS nor VELREF keyword given, spectral reference frame not defined ..." 
+		   << LogIO::POST;
+	        type = MFrequency::Undefined;
+	        return True;
+	    }
+	    else { // velref was given
+	        Int vref = wcs.velref;
+	        os << LogIO::NORMAL << "No SPECSYS but found (deprecated) VELREF keyword with value " << vref << LogIO::POST;
+	        if(vref>256){
+		  vref -= 256;
+		}
+		switch(vref){
+		case 1:
+		  type = MFrequency::LSRK;
+		  os << LogIO::NORMAL << "  => LSRK assumed" << LogIO::POST;
+		  break;
+		case 2:
+		  type = MFrequency::BARY;
+		  os << LogIO::NORMAL << "  => BARY assumed" << LogIO::POST;
+		  break;
+		case 3:
+		  type = MFrequency::TOPO;
+		  os << LogIO::NORMAL << "  => TOPO assumed" << LogIO::POST;
+		  break;
+		case 4:
+		  type = MFrequency::LSRD;
+		  os << LogIO::NORMAL << "  => LSRD assumed" << LogIO::POST;
+		  break;
+		case 5:
+		  type = MFrequency::GEO;
+		  os << LogIO::NORMAL << "  => GEO assumed" << LogIO::POST;
+		  break;
+		case 6:
+		  type = MFrequency::REST;
+		  os << LogIO::NORMAL << "  => REST assumed" << LogIO::POST;
+		  break;
+		case 7:
+		  type = MFrequency::GALACTO;
+		  os << LogIO::NORMAL << "  => GALACTO assumed" << LogIO::POST;
+		  break;
+		default:
+		  type = MFrequency::TOPO;
+		  os << LogIO::WARN << "Undefined by AIPS convention. TOPO assumed." << LogIO::POST;
+		  break;
+		}
+		return True;
+	    }
 	}
 	String specSys(wcs.specsys);
 	specSys.upcase();
@@ -1557,7 +1603,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Observer and Telescope are in the FITS cards record.
 
 	Vector<String> error;
-	Bool ok = oi.fromFITS (error, header);
+	oi.fromFITS (error, header);
 
 // Now overwrite the date info from the wcs struct
 
@@ -1568,7 +1614,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	}
 //
 	MEpoch::Types timeSystem;
-	ok = MEpoch::getType (timeSystem, timeSysStr);
+	MEpoch::getType (timeSystem, timeSysStr);
 
 // The date information is in the WCS structure
 // 'mjdobs' takes precedence over 'dateobs'
@@ -1603,17 +1649,31 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 
-    Vector<String> FITSCoordinateUtil::cTypeFromDirection(Bool& isNCP, const Projection& proj,
-							  const Vector<String>& axisNames,
-							  Double, Bool printError) 
-    //
-    // RefLat in radians
-    //
-    {  
+    Vector<String> FITSCoordinateUtil::cTypeFromDirection(
+    	Bool& isNCP, const Projection& proj,
+    	const Vector<String>& axisNames,
+    	Double refLat, Bool printError
+    ) {
+    	//
+    	// RefLat in radians
+    	//
+    	{
+    		DirectionCoordinate dc(
+    			MDirection::J2000, proj,
+    			0, refLat, 1e-5, -1e-5,
+    			Matrix<Double>::identity(2), 0, 0
+    		);
+    		isNCP = dc.isNCP();
+    	}
+    	return cTypeFromDirection(proj, axisNames, printError);
+    }
+
+    Vector<String> FITSCoordinateUtil::cTypeFromDirection (
+    	const Projection& proj, const Vector<String>& axisNames, Bool printError
+    ) {
 	LogIO os(LogOrigin("FITSCoordinateUtil", "cTypeFromDirection", WHERE));
 	Vector<String> ctype(2);
 
-	isNCP = False;
 	for (uInt i=0; i<2; i++) {
 	    String name = axisNames(i);
 	    while (name.length() < 4) {

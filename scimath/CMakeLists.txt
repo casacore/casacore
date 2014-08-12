@@ -19,6 +19,7 @@ Mathematics/Interpolate2D.cc
 Mathematics/FFTPack.cc
 Mathematics/FFTW.cc
 Mathematics/FFTServer.cc
+Mathematics/GaussianBeam.cc
 Mathematics/Geometry.cc
 Mathematics/NNLSMatrixSolver.cc
 Mathematics/MatrixSolver.cc
@@ -236,6 +237,7 @@ Mathematics/DFTServer.tcc
 Mathematics/FFTPack.h
 Mathematics/FFTServer.h
 Mathematics/FFTW.h
+Mathematics/GaussianBeam.h
 Mathematics/Geometry.h
 Mathematics/Gridder.h
 Mathematics/Gridder.tcc

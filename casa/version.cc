@@ -39,8 +39,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // Get the version of casacore on CASA's vendor branch
   const std::string getVersionCASA()
   {
-    static std::string version("googlecode-" + getVersion());
-    return version;
+    return CASACORE_VERSION;
   }
 
 } //# NAMESPACE CASA - END

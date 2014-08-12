@@ -239,9 +239,9 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 	}
 
 	// Make objects
-	ROMSColumns msc(*pMS);
-	Double startTime, stopTime;
-	minMax(startTime, stopTime, msc.time().getColumn());
+	std::pair<Double, Double> timerange = _msmd->getTimeRange();
+	Double startTime = timerange.first;
+	Double stopTime = timerange.second;
 	Double exposTime = stopTime - startTime;
 	//    Double exposTime = sum(msc.exposure().getColumn());
 	MVTime startMVT(startTime/86400.0), stopMVT(stopTime/86400.0);
@@ -585,8 +585,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 					}
 
 					// new btime:
-					// btime=thistime;
-					btime = _msmd->getTimeRangeForScan(thisscan)[0];
+					btime = _msmd->getTimeRangeForScan(thisscan).first;
 					// next last day is this day
 					lastday=day;
 
@@ -597,15 +596,15 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 
 				//						etime=thistime;
 				//etime=timecol(nrow-1);   //CAS-2751
-				etime = _msmd->getTimeRangeForScan(thisscan)[1];
+				etime = _msmd->getTimeRangeForScan(thisscan).second;
 			} else {
-				vector<Double> timeRange = _msmd->getTimeRangeForScan(thisscan);
+                                std::pair<Double, Double> timeRange = _msmd->getTimeRangeForScan(thisscan);
 				// initialize btime and etime
 				//btime=thistime;
-				btime = timeRange[0];
+				btime = timeRange.first;
 				//						etime=thistime;
 				//etime=timecol(nrow-1);  //CAS-2751
-				etime = timeRange[1];
+				etime = timeRange.second;
 				// no longer first time thru
 				firsttime=False;
 			}
@@ -842,7 +841,7 @@ void MSSummary::getScanSummary (Record& outRec) const
 		Int nddi(1);
 		Int nst(1);
 		Double btime(0.0), etime(0.0);
-		Double lastday(0.0), day(0.0);
+		Double day(0.0);
 		Bool firsttime(True);
 		Int thisnrow(0);
 		Double meanIntTim(0.0);
@@ -970,8 +969,6 @@ void MSSummary::getScanSummary (Record& outRec) const
 
 					// new btime:
 					btime=thistime;
-					// next last day is this day
-					lastday=day;
 
 					thisnrow=0;
 					meanIntTim=0.;

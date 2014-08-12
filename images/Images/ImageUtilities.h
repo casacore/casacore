@@ -30,7 +30,7 @@
 
 
 #include <casa/aips.h>
-#include <components/ComponentModels/GaussianBeam.h>
+#include <scimath/Mathematics/GaussianBeam.h>
 #include <lattices/Lattices/TiledShape.h>
 #include <casa/Utilities/PtrHolder.h>
 
@@ -173,42 +173,6 @@ public:
 // are returned as given.
    static String shortAxisName (const String& axisName);
 
-//
-// Convert 2d shape from world (world parameters=x, y, major axis, 
-// minor axis, position angle) to pixel (major, minor, pa).  
-// Can handle quantum units 'pix'.  If one width is 
-// in pixel units both must be in pixel units.  pixelAxes describes which
-// 2 pixel axes of the coordinate system our 2D shape is in.
-// If axes are not from the same coordinate type units must be pixels.
-// If doRef is True, then x and y are taken from the reference
-// value rather than the parameters vector.
-//
-// On input, pa is N->E (at ref pix) for celestial planes.
-// Otherwise pa is in pixel coordinate system +x -> +y
-// On output, pa (radians) is positive +x -> +y in pixel frame
-   static void worldWidthsToPixel (Vector<Double>& dParameters,
-                                   const Vector<Quantum<Double> >& parameters,
-                                   const CoordinateSystem& cSys,
-                                   const IPosition& pixelAxes,
-                                   Bool doRef=False); 
-
-
-// Convert 2d shape  from pixels (parameters=x,y, major axis, 
-// minor axis, position angle) to world (major, minor, pa)
-// at specified location. pixelAxes describes which
-// 2 pixel axes of the coordinate system our 2D shape is in.
-// If doRef is True, then x and y are taken from the reference
-// pixel rather than the paraneters vector.
-//
-// On input pa is positive for +x -> +y in pixel frame
-// On output pa is positive N->E
-// Returns True if major/minor exchanged themselves on conversion to world.
-   static Bool pixelWidthsToWorld (GaussianBeam& wParameters,
-                                   const Vector<Double>& pParameters,
-                                   const CoordinateSystem& cSys,
-                                   const IPosition& pixelAxes,
-                                   Bool doRef=False); 
-
    // write the specified image and add the specified pixels to it.
    // Currently no checks are done to ensure the pixel array size and
    // mapShape are compatible; the caller is responsible for this check.
@@ -229,34 +193,6 @@ public:
 	   String& xUnit, String& doppler,
 	   const uInt axis, const CoordinateSystem& csys
    );
-
-private:
-
-// Convert 2d sky shape (parameters=major axis, minor axis, position angle) 
-// from pixels to world at reference pixel. pixelAxes describes which
-// 2 pixel axes of the coordinate system our 2D shape is in.
-// On input pa is positive for +x -> +y in pixel frame
-// On output pa is positive N->E
-// Returns True if major/minor exchanged themselves on conversion to world.
-   static Bool _skyPixelWidthsToWorld (Angular2DGaussian& gauss2d,
-                                       const CoordinateSystem& cSys,
-                                       const Vector<Double>& pParameters,
-                                       const IPosition& pixelAxes, Bool doRef);
-
-// Convert a length and position angle in world units (for a non-coupled 
-// coordinate) to pixels. The length is in some 2D plane in the 
-// CoordinateSystem specified  by pixelAxes.
-   static Double _worldWidthToPixel (Double positionAngle,
-                                     const Quantum<Double>& length,
-                                     const CoordinateSystem& cSys,
-                                     const IPosition& pixelAxes);
-
-
-
-   static Quantum<Double> _pixelWidthToWorld (Double positionAngle,
-                                              Double length,
-                                              const CoordinateSystem& cSys,
-                                              const IPosition& pixelAxes);
 };
 
 

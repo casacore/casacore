@@ -71,7 +71,6 @@ template<class T> Matrix<T>::Matrix(uInt l1, uInt l2, const T &initialValue)
     DebugAssert(ok(), ArrayError);
 }
 
-
 template<class T> Matrix<T>::Matrix(const Matrix<T> &other)
 : Array<T>(other)
 {
@@ -318,11 +317,7 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
     return tmp;  // should match Vector<T>(const Array<T> &)
 }
 
-#if defined (AIPS_IRIX)
-template<class T> Vector<T> Matrix<T>::row(uInt n) const
-#else
 template<class T> const Vector<T> Matrix<T>::row(uInt n) const
-#endif
 {
     DebugAssert(ok(), ArrayError);
     // Cast away constness of this so we do not have to duplicate code.
@@ -332,11 +327,7 @@ template<class T> const Vector<T> Matrix<T>::row(uInt n) const
     return This->row(n);
 }
 
-#if defined (AIPS_IRIX)
-template<class T> Vector<T> Matrix<T>::column(uInt n) const
-#else
 template<class T> const Vector<T> Matrix<T>::column(uInt n) const
-#endif
 {
     DebugAssert(ok(), ArrayError);
     // Cast away constness of this so we do not have to duplicate code.
@@ -346,12 +337,8 @@ template<class T> const Vector<T> Matrix<T>::column(uInt n) const
     return This->column(n);
 }
 
-// If the matrix isn't squre, this will throw an exception.
-#if defined (AIPS_IRIX)
-template<class T> Vector<T> Matrix<T>::diagonal(Int n) const
-#else
+// If the matrix isn't square, this will throw an exception.
 template<class T> const Vector<T> Matrix<T>::diagonal(Int n) const
-#endif
 {
     DebugAssert(ok(), ArrayError);
     // Cast away constness of this so we do not have to duplicate code.
@@ -370,6 +357,16 @@ template<class T> void Matrix<T>::makeIndexingConstants()
     yinc_p = this->inc_p(1)*this->originalLength_p(0);
 }
 
+template<class T> Matrix<T> Matrix<T>::identity(uInt n)
+{
+    Matrix<T> m(n, n, T(0));
+    T* ptr = m.data();
+    for (uInt i=0; i<n; i++) {
+        *ptr = T(1);
+        ptr += n+1;
+    }
+    return m;
+}
 
 template<class T>
 void Matrix<T>::doNonDegenerate (const Array<T> &other,

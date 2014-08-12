@@ -129,9 +129,8 @@ int main() {
       // divide up -1 to 1 by 80000 segments and get corresponding one
       Double rho = -1.0;
       Double incr = 2.0/80001.0;
-      Double r;
       for (uInt i=0;i<80001;i++) {
-	r = vv.r(rho);
+	vv.r(rho);
 	rho += incr;
       }
       timer.show("After 80000 calls to ()");
@@ -162,9 +161,8 @@ int main() {
       // divide up -1 to 1 by 80000 segments and get corresponding one
       Double rho = -1.0;
       Double incr = 2.0/80001.0;
-      Double r;
       for (uInt i=0;i<80001;i++) {
-	r = vv.r(rho);
+	vv.r(rho);
 	rho += incr;
       }
       timer.show("After 80000 calls to ()");

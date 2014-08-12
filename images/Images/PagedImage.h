@@ -195,7 +195,7 @@ public:
   virtual ImageInterface<T>* cloneII() const;
 
   // Return the name of this derived class.
-  String className() const
+  static String className()
     { return "PagedImage"; }
 
   // Get the image type (returns name of this derived class).

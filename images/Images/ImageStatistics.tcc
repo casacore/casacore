@@ -452,12 +452,6 @@ void ImageStatistics<T>::displayStats(
 	// the setw manipulator fails, so I go to a lot of trouble
 	// with ostringstreams (which are useable only once).
 	const Int oPrec = 6;
-	Int oWidth = 14;
-	T* dummy = 0;
-	DataType type = whatType(dummy);
-	if (type==TpComplex) {
-		oWidth = 32;
-	}
 	setStream(os_p.output(), oPrec);
 
 	Unit bunit = pInImage_p->units();

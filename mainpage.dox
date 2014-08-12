@@ -148,12 +148,6 @@ namespace casa {
 ///   </td>
 ///   </tr>
 ///   <tr>
-///   <td><a href="group__components.html">components</a></td>
-///   <td>
-///   Sky components (point sources, gaussians, etc.)
-///   </td>
-///   </tr>
-///   <tr>
 ///   <td><a href="group__images.html">images</a></td>
 ///   <td>
 ///   N-dim <a href="group__Images__module.html">images</a> with masks,
@@ -213,12 +207,8 @@ namespace casa {
 ///   <td>fits measures tables scimath casa wcslib cfitsio</td>
 ///   </tr>
 ///   <tr>
-///   <td><a href="group__components.html">components</a></td>
-///   <td>coordinates fits measures tables scimath casa wcslib cfitsio</td>
-///   </tr>
-///   <tr>
 ///   <td><a href="group__images.html">images</a></td>
-///   <td>components coordinates fits measures tables scimath casa
+///   <td>coordinates fits measures tables scimath casa
 ///      mirlib wcslib cfitsio</td>
 ///   </tr>
 ///   </table>

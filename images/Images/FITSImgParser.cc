@@ -856,21 +856,16 @@ Bool FITSExtInfo::operator==(const FITSExtInfo &extinfo)
 
 String FITSExtInfo::get_extexpr(void)
 {
-	String extexpr=name_p + "[";
+        String extexpr=name_p + "[" + String::toString(extindex_p);
 
 	if (extname_p.length() > 0){
-		extexpr += extname_p;
+		extexpr += ':' + extname_p;
 
 		if (extversion_p > -1){
 		ostringstream os;
 		os << extversion_p;
 		extexpr += "," + String(os);
 		}
-	}
-	else {
-		ostringstream os;
-		os << extindex_p;
-		extexpr += String(os);
 	}
 
 	extexpr += "]";

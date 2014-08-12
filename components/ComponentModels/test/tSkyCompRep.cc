@@ -44,7 +44,7 @@
 #include <components/ComponentModels/ConstantSpectrum.h>
 #include <components/ComponentModels/Flux.h>
 #include <components/ComponentModels/GaussianShape.h>
-#include <components/ComponentModels/GaussianBeam.h>
+#include <components/ComponentModels/Angular2DGaussian.h>
 #include <components/ComponentModels/PointShape.h>
 #include <components/ComponentModels/SkyCompRep.h>
 #include <components/ComponentModels/SpectralIndex.h>

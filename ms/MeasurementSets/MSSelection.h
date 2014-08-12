@@ -173,8 +173,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Helper method for converting name vectors to expression strings
     static String nameExprStr(Vector<String> name);
     
-    // Expression accessors.  The following set*Expr() methods only
-    // set the expressions.  Parsing is done with a call to
+    // Expression setters.  The following set*Expr() methods only set
+    // the expressions.  Parsing is done with a call to
     // toTableExprNode().
     Bool setAntennaExpr(const String& antennaExpr);
     Bool setFieldExpr(const String& fieldExpr);
@@ -387,6 +387,23 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     void resetMS(const MeasurementSet& ms) {resetTEN(); ms_p=&ms;};
     void resetTEN() {fullTEN_p=TableExprNode();};
     
+    
+    // The MSSelection object is designed to be re-usable object.  The
+    // following reset() methods set the internal state of the object
+    // to same state as with the equivalent constructor.
+    //
+    // mode can be one of the MSSModes.  MSSMode::PARSE_NOW will parse
+    // the given expressions and internally hold the final TEN
+    // (i.e. will also internally call toTableExprNode()).  The
+    // internal TEN can be accessed via the getTEN() method.
+    // MSSMode::PARSE_LATER will only set the expression strings.
+    // Parsing will be done later with a call to toTableExprNode().
+    //
+    // This version, here for backward compatibility reasons,
+    // internally constructs a <li> <linkto
+    // class="MSSelectableTable">MSSelectableTable</linkto> object and
+    // calls the reset() method below that works with
+    // MSSelectableTable.
     void reset(const MeasurementSet& ms,
 	       const MSSMode& mode           = PARSE_NOW,
 	       const String& timeExpr        = "",
@@ -400,6 +417,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	       const String& arrayExpr       = "",
 	       const String& stateExpr       = "",
 	       const String& observationExpr = "");
+
+    // This version of reset() works with generic MSSeletableTable
+    // object.  Accessing the services of the MSSelection module via
+    // this interface is recommended over the version of reset() that
+    // uses MeasurementSet.
     void reset(MSSelectableTable& msLike,
 	       const MSSMode& mode           = PARSE_NOW,
 	       const String& timeExpr        = "",
@@ -413,17 +435,37 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	       const String& arrayExpr       = "",
 	       const String& stateExpr       = "",
 	       const String& observationExpr = "");
+
+    // Set the maximum value acceptable for SCAN, OBSERVATION or
+    // SUB-ARRAY IDs. The main-table columns for these do not refere
+    // to rows of sub-tables and therefore there is no cheap way to
+    // find a valid range for these which can be used in the parsers
+    // to generate error or warning messages if a value outside the
+    // range is used in the expressions.  The default maximum value
+    // for scan, observation and sub-array IDs is 1000.
+    inline void setMaxScans(const Int& n=1000) {maxScans_p=n;};
+    inline void setMaxObs(const Int& n=1000)   {maxObs_p=n;};
+    inline void setMaxArray(const Int& n=1000) {maxArray_p=n;};
     
-    void setMaxScans(const Int& n) {maxScans_p=n;};
-    void setMaxObs(const Int& n) {maxObs_p=n;};
-    
+    // Set the error handler to be used for reporting errors while
+    // parsing the type of expression give by the first argument.
     void setErrorHandler(const MSExprType type, MSSelectionErrorHandler* mssEH,
 			 const Bool overRide=False);
     
+    // Initialize the error handler.  This is set the error-handler to
+    // the user supplied error handler via setErrorHandler() or to the
+    // default built-in error handler.
     void initErrorHandler(const MSExprType tye=NO_EXPR);
 
+    // Execute the handleError() method of the error-handlers.  This
+    // is called in the catch code for any exceptions emitted from any
+    // of the parsers. It is also called at the end of the
+    // parsing cycle.
     void runErrorHandler();
+
+    // Return the pointer to the MS used internally.
     const MeasurementSet* getMS(MSSelectableTable* msLike);
+
   private:
     // Set into the order of the selection expression
     Bool setOrder(MSSelection::MSExprType type);

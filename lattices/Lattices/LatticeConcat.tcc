@@ -390,17 +390,16 @@ void LatticeConcat<T>::doPutSlice (const Array<T>& buffer, const IPosition& wher
       throw(AipsError("Some of the underlying lattices are not writable"));
    }
 //
-   Bool ok = False;
    if (dimUpOne_p) {
 
 // Increase dimensionality by one
 
-     ok = putSlice1 (buffer, where, stride, nLattices);
+     putSlice1 (buffer, where, stride, nLattices);
    } else {
 
 // No dimensionality increase
 
-     ok = putSlice2 (buffer, where, stride, nLattices);
+     putSlice2 (buffer, where, stride, nLattices);
    }
 }        
 

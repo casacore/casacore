@@ -239,7 +239,7 @@ int main(int argc, const char* argv[])
   tim.mark();
   for (Int i=0; i<N; i++) {
     Double res = mv(va, par, x);
-    if (False) res=1;
+    res *= 1.0;
   }
   cout << "mv: ";
   tim.show();

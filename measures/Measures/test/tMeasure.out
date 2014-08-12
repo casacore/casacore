@@ -321,6 +321,16 @@ Testing all MEpoch conversions forward/backward
 All forward/backward Epoch conversions: ok
 ------------------------------------
 Testing all MFrequency conversions forward/backward
+  including the "impossible" conversion to/from Undefined
+Transformations to/from frame "Undefined" are not possible.
+Transformations to/from frame "Undefined" are not possible.
+Transformations to/from frame "Undefined" are not possible.
+Transformations to/from frame "Undefined" are not possible.
+Transformations to/from frame "Undefined" are not possible.
+Transformations to/from frame "Undefined" are not possible.
+Transformations to/from frame "Undefined" are not possible.
+Transformations to/from frame "Undefined" are not possible.
+Transformations to/from frame "Undefined" are not possible.
 All forward/backward Frequency conversions: ok
 ------------------------------------
 Testing all MDoppler conversions forward/backward

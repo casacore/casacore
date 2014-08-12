@@ -113,8 +113,7 @@ void SDFieldHandler::fill(const Record &, const String &name, Int directionRefTy
     // don't bother unless there is something there
     if (msField_p) {
 	Bool found = False;
-	Bool checkDir, checkPhase, checkRef;
-	checkDir = True;
+	Bool checkPhase, checkRef;
 	checkPhase = checkRef = False;
 	Matrix<Double> dirPoly = directionPoly;
 	Matrix<Double> phasePoly = directionPoly;

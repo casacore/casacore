@@ -27,6 +27,7 @@
 
 //# Includes
 #include <casa/BasicSL/STLIO.h>
+#include <casa/IO/AipsIOCarray.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -45,6 +46,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       os << sep << *begin;
     }
     os << postfix;
+  }
+
+  template<typename T>
+  AipsIO& operator>> (AipsIO& ios, std::vector<T>& v)
+  {
+    ios.getstart ("Block");
+    uInt nr;
+    ios >> nr;
+    v.resize(nr);
+    getAipsIO(ios, nr, &(v[0]));
+    ios.getend();
+    return ios;
+  }
+  template<typename T>
+  AipsIO& operator<< (AipsIO& ios, const std::vector<T>& v)
+  {
+    ios.putstart ("Block", 1);
+    putAipsIO (ios, (uInt)v.size(), &(v[0]));
+    ios.putend();
+    return ios;
   }
 
 } //# NAMESPACE CASA - END

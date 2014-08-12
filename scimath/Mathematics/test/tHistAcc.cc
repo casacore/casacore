@@ -96,10 +96,9 @@ int main()
       cout << "  hmanf.getStatistics().getMean():    ";
       cout << hmanf.getStatistics().getMean() << endl;
 
-      uInt n;
       Block<uInt> binsi;
       Block<Float> valsf;
-      n = hmanf.getHistogram(binsi,valsf);
+      hmanf.getHistogram(binsi,valsf);
       cout << "  length of binsi=" << binsi.nelements() << endl; 
       cout << "  length of valsf=" << valsf.nelements() << endl; 
 

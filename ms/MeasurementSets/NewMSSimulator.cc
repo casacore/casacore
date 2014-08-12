@@ -1181,11 +1181,10 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   }
   MSPolarizationColumns& polc=msc.polarization();
   baseSpWID=existingSpWID;
-  Double startFreq, freqInc;
+  Double startFreq;
   Vector<Double> resolution;
   spwc.refFrequency().get(baseSpWID,startFreq);
   spwc.resolution().get(baseSpWID,resolution);
-  freqInc=resolution(0);
   Int nChan=resolution.nelements();
   Matrix<Int> corrProduct;
   polc.corrProduct().get(baseSpWID,corrProduct);

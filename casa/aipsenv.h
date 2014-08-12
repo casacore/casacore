@@ -33,7 +33,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // Set if compiler supports C++11.
-#if _cplusplus == 201103L
+#if __cplusplus == 201103L
 #define AIPS_CXX11
 #endif
 

@@ -32,11 +32,7 @@
 #include <casa/namespace.h>
 
 #include <casa/Quanta/Quantum.h>
-
-//# Forward Declaration.
-namespace std {
-	template <class T1, class T2> struct pair;
-}
+#include <utility>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

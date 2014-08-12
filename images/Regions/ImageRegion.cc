@@ -130,22 +130,8 @@ ImageRegion* ImageRegion::fromLatticeExpression(const String& latticeExpression)
   if (latticeExpression.empty()) {
     return 0;
   }
-  // Get LatticeExprNode (tree) from parser.  Substitute possible
-  // object-id's by a sequence number, while creating a
-  // LatticeExprNode for it.  Convert the Record containing
-  // regions to a PtrBlock<const ImageRegion*>.
-  Block<LatticeExprNode> tempLattices;
-  String expr = latticeExpression;
-  Int pos = expr.find_last_of("/", 10000);
-  String imageName = expr.after(pos);
-  // hmmm I can't make the ternary operator work for this
-  String directory = "";
-  if (pos > 0) {
-    directory = expr.before(pos);
-  }
-  PtrBlock<const ImageRegion*> tempRegs;
-  LatticeExprNode node = ImageExprParse::command(imageName, tempLattices,
-                                                 tempRegs, directory);
+  // Get LatticeExprNode (tree) from parser.
+  LatticeExprNode node = ImageExprParse::command(latticeExpression);
   WCLELMask region(node);
   return new ImageRegion(region);
 }

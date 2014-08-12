@@ -37,7 +37,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 PolynomialSpectralElement::PolynomialSpectralElement()
 : SpectralElement(SpectralElement::POLYNOMIAL, Vector<Double>(0)) {
 	_setFunction(
-		std::tr1::shared_ptr<Polynomial<Double> >(
+		CountedPtr<Polynomial<Double> >(
 			new Polynomial<Double>()
 		)
 	);
@@ -46,7 +46,7 @@ PolynomialSpectralElement::PolynomialSpectralElement()
 PolynomialSpectralElement::PolynomialSpectralElement(const uInt n)
   : SpectralElement(SpectralElement::POLYNOMIAL, Vector<Double>(n+1, 0.)) {
 	_setFunction(
-		std::tr1::shared_ptr<Polynomial<Double> >(
+		CountedPtr<Polynomial<Double> >(
 			new Polynomial<Double>(n)
 		)
 	);
@@ -55,7 +55,7 @@ PolynomialSpectralElement::PolynomialSpectralElement(const uInt n)
 PolynomialSpectralElement::PolynomialSpectralElement(const Vector<Double>& param)
 : SpectralElement(SpectralElement::POLYNOMIAL, param) {
 	_setFunction(
-		std::tr1::shared_ptr<Polynomial<Double> >(
+		CountedPtr<Polynomial<Double> >(
 			new Polynomial<Double>(param.size())
 		)
 	);

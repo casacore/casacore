@@ -672,8 +672,7 @@ void FITSQualityImage::setup()
 	fitserror_p = new FITSErrorImage(name_p, 0, whichErrorHDU_p, errType_p);
 
 	// do some checks on the input images
-	Bool ok;
-	ok = checkInput();
+	checkInput();
 
 	// create the pixel mask
 	pPixelMask_p = new FITSQualityMask(fitsdata_p, fitserror_p);
