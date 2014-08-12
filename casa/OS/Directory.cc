@@ -157,7 +157,12 @@ Bool Directory::isEmpty() const
 {
     DirectoryIterator iter(*this);
     while (! iter.pastEnd()) {
+      String nm (iter.name());
+      if (nm.size() < 5  ||  nm.before(4) != ".nfs") {
+        ///        cout <<"iter at "<<iter.name()<<endl;
 	return False;
+      }
+      iter++;
     }
     return True;
 }
