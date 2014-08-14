@@ -2557,7 +2557,6 @@ void FITSIDItoMS1::fillSpectralWindowTable()
   const FitsKeyword* kw;
   String kwname;
   Int nCorr = 1;
-  Int firstSTK = 0;
   Int nIF_p = 0;
   Int nChan = 0;
   Double zeroRefFreq = 0.0;
@@ -2568,9 +2567,6 @@ void FITSIDItoMS1::fillSpectralWindowTable()
       kwname = kw->name();
       if (kwname == "NO_STKD") {
         nCorr = kw->asInt();
-      }
-      if (kwname == "STK_1") {
-        firstSTK = kw->asInt();
       }
       if (kwname == "NO_BAND") {
         nIF_p = kw->asInt();

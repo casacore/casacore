@@ -841,7 +841,6 @@ void MSSummary::getScanSummary (Record& outRec) const
 		Int nddi(1);
 		Int nst(1);
 		Double btime(0.0), etime(0.0);
-		Double day(0.0);
 		Bool firsttime(True);
 		Int thisnrow(0);
 		Double meanIntTim(0.0);
@@ -932,9 +931,6 @@ void MSSummary::getScanSummary (Record& outRec) const
 						meanIntTim=0.0;
 					}
 
-					// this MJD
-					day=floor(MVTime(btime/C::day).day());
-
 					// Spws
 					spwids.resize(lastddids.nelements());
 					for (uInt iddi=0; iddi<spwids.nelements();++iddi)
@@ -1004,9 +1000,6 @@ void MSSummary::getScanSummary (Record& outRec) const
 			meanIntTim/=thisnrow;
 		else
 			meanIntTim=0.0;
-
-		// this MJD
-		day=floor(MVTime(btime/C::day).day());
 
 		// Spws
 		spwids.resize(lastddids.nelements());
