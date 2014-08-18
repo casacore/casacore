@@ -206,6 +206,23 @@ void ISMBase::showCacheStatistics (ostream& os) const
     }
 }
 
+void ISMBase::showIndexStatistics (ostream& os)
+{
+    if (index_p != 0) {
+        index_p->show (os);
+    }
+}
+
+void ISMBase::showBucketLayout (ostream& os)
+{
+  uInt cursor=0;
+  uInt bstrow=0;
+  uInt bnrow, bucketNr;
+  while (getIndex().nextBucketNr (cursor, bstrow, bnrow, bucketNr)) {
+    os << " bucket strow=" << bstrow << " bucketnr=" << bucketNr << endl;
+    ((ISMBucket*) (getCache().getBucket (bucketNr)))->show (os);
+  }
+}
 
 DataManagerColumn* ISMBase::makeScalarColumn (const String&,
 					      int dataType,

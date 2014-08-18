@@ -128,7 +128,7 @@ void ISMColumn::remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow,
 {
     uInt inx, stint, endint, offset;
     // Get the index where to remove the value.
-    // When the rownr is not the start of the interval, index is one further.
+    // If the rownr is not the start of the interval, index is one further.
     inx = bucket->getInterval (colnr_p, bucketRownr, bucketNrrow,
 			       stint, endint, offset);
 #ifdef AIPS_TRACE
@@ -148,15 +148,15 @@ void ISMColumn::remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow,
     // We have to change the bucket, so let the cache set the dirty flag
     // for this bucket.
     stmanPtr_p->setBucketDirty();
-    // When the row is single, remove the value by shifting left one value.
+    // If the row is single, remove the value by shifting left one value.
     if (stint == endint) {
 	handleRemove (bucketRownr, bucket->get (offset));
 	bucket->shiftLeft (inx, 1, rowIndex, offIndex, nused, fixedLength_p);
 	//# We can also test if previous and next value are equal and
 	//# shift left one more. However, that is not implemented.
     } else {
-	// When not single, start of this interval does not change.
-	// The index has to be incremented when row is at start of interval.
+	// If not single, start of this interval does not change.
+	// The index has to be incremented if row is at start of interval.
 	if (bucketRownr == stint) {
 	    inx++;
 	}
@@ -319,7 +319,7 @@ void ISMColumn::getScalarColumnuIntV (Vector<uInt>* dataPtr)
 void ISMColumn::getScalarColumnfloatV (Vector<float>* dataPtr)
 {
     //# Note: using getStorage/putStorage is about 3 times faster
-    //# when the vector is consecutive, but it is slower when not.
+    //# if the vector is consecutive, but it is slower if not.
     uInt nrrow = dataPtr->nelements();
     uInt rownr = 0;
     while (rownr < nrrow) {
@@ -812,7 +812,7 @@ void ISMColumn::putValue (uInt rownr, const void* value)
     // Test if the value equals the previous one if at the start of
     // the interval (or equals next value if at the end of the interval).
     // Take care if row is first (or last) row in bucket.
-    // The index of the next value is inx+1 when the row is the starting
+    // The index of the next value is inx+1 if the row is the starting
     // row of the interval.
     Bool equalPrev = False;
     Bool equalNext = False;
@@ -864,7 +864,7 @@ void ISMColumn::putValue (uInt rownr, const void* value)
         putFromRow (rownr, buffer, lenData);
 	return;
     }
-    // When the new value matches previous and next, we can contract the
+    // If the new value matches previous and next, we can contract the
     // values by removing 2 of them.
     if (equalPrev && equalNext) {
 
@@ -876,15 +876,15 @@ void ISMColumn::putValue (uInt rownr, const void* value)
 	return;
     }
     // Determine if the value is the only one in the interval.
-    // When the row to change is the first of the interval, increment
+    // If the row to change is the first of the interval, increment
     // the interval start.
     Bool single = (stint==endint);
 //#    if (!single  &&  bucketRownr == stint) {
 //#	rowIndex[inx]++;
 //#    }
-    // When matching the previous, combine with previous interval
+    // If matching the previous, combine with previous interval
     // (which is already done by incrementing the rowIndex above).
-    // When it was a single value, contract the intervals.
+    // If it was a single value, contract the intervals.
     if (equalPrev) {
 
 #ifdef AIPS_TRACE
@@ -909,7 +909,7 @@ void ISMColumn::putValue (uInt rownr, const void* value)
 
 	return;
     }
-    // When equal to next value, act similarly as above.
+    // If equal to next value, act similarly as above.
     if (equalNext) {
 
 #ifdef AIPS_TRACE
@@ -934,8 +934,8 @@ void ISMColumn::putValue (uInt rownr, const void* value)
 	return;
     }
     // We have to add or replace the new data value.
-    // When the value is single, simply replace it.
-    // This will also update the offset value when needed.
+    // If the value is single, simply replace it.
+    // This will also update the offset value if needed.
     if (single) {
 	lenData = writeFunc_p (buffer, value, nrcopy_p);
 	replaceData (bucket, bucketStartRow, bucketNrrow, bucketRownr,
@@ -943,7 +943,7 @@ void ISMColumn::putValue (uInt rownr, const void* value)
 	return;
     }
     // Add the data item.
-    // When the new value is in the middle of the interval, the
+    // If the new value is in the middle of the interval, the
     // original value has to be duplicated. Give a derived class
     // the opportunity to handle the copy.
     // Do this before inserting the new value. Otherwise the new
@@ -1006,9 +1006,9 @@ void ISMColumn::putData (ISMBucket* bucket, uInt bucketStartRow,
 			 Bool afterLastRow, Bool canSplit)
 {
     // Determine the index.
-    uInt inx, dum1, dum2, dum3;
-    inx = bucket->getInterval (colnr_p, bucketRownr, 0, dum1, dum2, dum3);
-    if (afterLastRow  &&  bucketRownr == 0) {
+    uInt inx, start, end, dum3;
+    inx = bucket->getInterval (colnr_p, bucketRownr, 0, start, end, dum3);
+    if ((afterLastRow  &&  bucketRownr == 0)  ||  start == end) {
 	Block<uInt>& offIndex = bucket->offIndex (colnr_p);
 	replaceData (bucket, bucketStartRow, bucketNrrow, bucketRownr,
 		     offIndex[inx], data, lenData, canSplit);
@@ -1025,7 +1025,7 @@ void ISMColumn::replaceData (ISMBucket* bucket, uInt bucketStartRow,
     // Replacing a value means removing the old value.
     // So give the opportunity to handle a removal before the
     // actual replace is done.
-    // When the new value fits in the bucket, it can simply be replaced.
+    // If the new value fits in the bucket, it can simply be replaced.
     uInt oldLeng = bucket->getLength (fixedLength_p, bucket->get (offset));
     if (bucket->canReplaceData (lenData, oldLeng)) {
 	handleRemove (bucketRownr, bucket->get (offset));
@@ -1066,7 +1066,7 @@ Bool ISMColumn::addData (ISMBucket* bucket, uInt bucketStartRow,
 			 const char* data, uInt lenData,
 			 Bool afterLastRow, Bool canSplit)
 {
-    // When the value fits in the bucket, it can simply be added.
+    // If the value fits in the bucket, it can simply be added.
     if (bucket->canAddData (lenData)) {
 	bucket->addData (colnr_p, bucketRownr, inx, data, lenData);
 	return False;
@@ -1131,7 +1131,7 @@ void ISMColumn::handleRemove (uInt, const char*)
 void ISMColumn::handleSplit (ISMBucket& bucket, const Block<Bool>& duplicated)
 {
     // Loop through all columns.
-    // When the split duplicated a value, handle the copied value.
+    // If the split duplicated a value, handle the copied value.
     uInt nrcol = stmanPtr_p->ncolumn();
     for (uInt i=0; i<nrcol; i++) {
 	if (duplicated[i]) {

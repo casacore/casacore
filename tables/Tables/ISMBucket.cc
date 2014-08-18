@@ -186,7 +186,7 @@ void ISMBucket::addData (uInt colnr, uInt rownr, uInt index,
     DebugAssert ((index == 0  ||  rowIndex[index-1] < rownr)  &&
 		 (index <= nrused)  &&
 		 (index == nrused  ||  rowIndex[index] >= rownr), AipsError);
-    // Extend blocks when needed.
+    // Extend blocks if needed.
     if (offIndex.nelements() <= nrused) {
 	rowIndex.resize (nrused + 32);
 	offIndex.resize (nrused + 32);
@@ -213,7 +213,7 @@ uInt ISMBucket::getLength (uInt fixedLength, const char* data) const
     if (fixedLength != 0) {
 	return fixedLength;
     }
-    // Get the data item length when it is variable.
+    // Get the data item length if it is variable.
     uInt leng;
     Conversion::ValueFunction* readuInt =
 	                  ISMColumn::getReaduInt (stmanPtr_p->asBigEndian());
@@ -244,14 +244,14 @@ void ISMBucket::shiftLeft (uInt index, uInt nr, Block<uInt>& rowIndex,
 
 void ISMBucket::removeData (uInt offset, uInt leng)
 {
-    // Get the data item length when it is variable.
+    // Get the data item length if it is variable.
     leng = getLength (leng, data_p + offset);
     // Remove the data and decrease the length.
     dataLeng_p -= leng;
 #ifdef AIPS_TRACE
     cout<<"    removed " <<leng<<" bytes at " << offset << endl;
 #endif
-    // The real remove is only necesarry when not at the end of the bucket.
+    // The real remove is only necesarry if not at the end of the bucket.
     if (dataLeng_p > offset) {
 	memmove (data_p + offset, data_p + offset + leng, dataLeng_p - offset);
 	// Decrement the offset of all other items following this one.
@@ -367,7 +367,7 @@ Bool ISMBucket::simpleSplit (ISMBucket* left, ISMBucket* right,
 	    lastRow = row;
 	}
     }
-    // Don't do a simple split when the row is not the last row in the bucket.
+    // Don't do a simple split if the row is not the last row in the bucket.
     if (rownr < lastRow) {
 	return False;
     }
@@ -412,7 +412,7 @@ uInt ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
     left  = new ISMBucket (stmanPtr_p, 0);
     right = new ISMBucket (stmanPtr_p, 0);
     uInt splitRownr;
-    // Try a simple split when the current bucket is the last one.
+    // Try a simple split if the current bucket is the last one.
     // (Then we usually add to the end of the file).
     if (bucketStartRow + bucketNrrow >= stmanPtr_p->nrow()) {
 	if (simpleSplit (left, right, duplicated, splitRownr, rownr)) {
@@ -436,7 +436,6 @@ uInt ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
 	}
     }
     // Sort it (uniquely) to get all row numbers with a value.
-    //# g++ cannot instantiate genSort(rows, Sort::NoDuplicates)
     uInt nruniq = GenSort<uInt>::sort (rows, rows.nelements(), 
 				       Sort::Ascending, Sort::NoDuplicates);
     // If the bucket contains values of only one row, a simple split
@@ -555,7 +554,7 @@ uInt ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
 uInt ISMBucket::getSplit (uInt totLeng, const Block<uInt>& rowLeng,
 			  const Block<uInt>& cumLeng)
 {
-    // When there are only 2 elements, we can only split in the middle.
+    // If there are only 2 elements, we can only split in the middle.
     uInt nr = rowLeng.nelements();
     if (nr <= 2) {
 	return 1;
@@ -563,10 +562,10 @@ uInt ISMBucket::getSplit (uInt totLeng, const Block<uInt>& rowLeng,
     // Determine the index where left and right have about the same size.
     // totLeng = length of all values. This includes the starting values.
     // rowLeng = length of all values in a row. This gives the length
-    //           of the starting values when the bucket starts at that row.
+    //           of the starting values if the bucket starts at that row.
     // cumLeng = length of all values till the row with index i.
     //           cumLeng[0] = length of the starting values in first row.
-    // When i is the index where the bucket is split, then:
+    // If i is the index where the bucket is split, then:
     //   length of left  bucket = cumLeng[i-1].
     //   length of right bucket = rowLeng[i] + totleng - cumLeng[i]
     // Loop until left size exceeds right size or until we get at the

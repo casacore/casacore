@@ -151,7 +151,13 @@ public:
     void clearCache();
 
     // Show the statistics of all caches used.
-    void showCacheStatistics (ostream& os) const;
+    virtual void showCacheStatistics (ostream& os) const;
+
+    // Show the index statistics.
+    void showIndexStatistics (ostream& os);
+
+    // Show the layout of the buckets
+    void showBucketLayout (ostream& os);
 
     // Get the bucket size (in bytes).
     uInt bucketSize() const;
