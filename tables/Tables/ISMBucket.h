@@ -104,7 +104,7 @@ class ISMBase;
 // Note that the row numbers in the bucket start at 0, thus are relative
 // to the beginning of the bucket. The main index kept in
 // <linkto class=ISMIndex>ISMIndex</linkto> knows the starting row of
-// each bucket. In this way bucket splitiing and especially row removal
+// each bucket. In this way bucket splitting and especially row removal
 // is much easier.
 // <p>
 // The bucket can be stored in canonical or local (i.e. native) data format.

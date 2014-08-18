@@ -124,6 +124,9 @@ public:
     Bool nextBucketNr (uInt& cursor, uInt& bucketStartRow, uInt& bucketNrrow,
 		       uInt& bucketNr) const;
 
+    // Show the index.
+    void show (std::ostream&) const;
+
 private:
     // Forbid copy constructor.
     ISMIndex (const ISMIndex&);

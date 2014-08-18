@@ -30,6 +30,7 @@
 #include <casa/Containers/BlockIO.h>
 #include <casa/Utilities/BinarySearch.h>
 #include <casa/IO/AipsIO.h>
+#include <casa/Containers/BlockIO.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 
@@ -155,6 +156,15 @@ Bool ISMIndex::nextBucketNr (uInt& cursor, uInt& bucketStartRow,
     bucketNrrow    = rows_p[cursor+1] - bucketStartRow;
     bucketNr       = bucketNr_p[cursor++];
     return True;
+}
+
+void ISMIndex::show (ostream& os) const
+{
+    os << "ISMIndex " << nused_p << " strow:bucket";
+    for (uInt i=0; i<nused_p; ++i) {
+      cout << ' ' << rows_p[i] << ':' << bucketNr_p[i];
+    }
+    cout << endl;
 }
 
 } //# NAMESPACE CASA - END

@@ -217,12 +217,12 @@ public:
   void clearCache();
 
   // Show the statistics of all caches used.
-  void showCacheStatistics (ostream& anOs) const;
+  virtual void showCacheStatistics (ostream& anOs) const;
 
-  // Show Statistics of all indices used.
+  // Show statistics of all indices used.
   void showIndexStatistics (ostream & anOs) const;
 
-  // Show Statistics of the Base offsets/index etc.
+  // Show statistics of the Base offsets/index etc.
   void showBaseStatistics (ostream & anOs) const;
 
   // Get the bucket size.

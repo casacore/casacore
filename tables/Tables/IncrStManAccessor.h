@@ -137,6 +137,12 @@ public:
     // resulting in a possibly large drop in memory used.
     void clearCache();
 
+    // Show the index used by this storage manager.
+    void showIndexStatistics (ostream& os) const;
+
+    // Show the layout of the buckets used by this storage manager.
+    void showBucketLayout (ostream& os) const;
+
 
 private:
     //# Declare the data members.
