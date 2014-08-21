@@ -1856,9 +1856,7 @@ std::pair<Double, Double> MSMetaData::getTimeRange() const {
 	_getTimesAndInvervals(scanToTimeRangeMap, scanSpwToAverageIntervalMap);
 	std::map<Int, std::pair<Double,Double> >::const_iterator iter = scanToTimeRangeMap.begin();
 	std::map<Int, std::pair<Double,Double> >::const_iterator end = scanToTimeRangeMap.end();
-	std::pair<Double, Double> timerange = std::make_pair<Double, Double>(
-		iter->second.first, iter->second.second
-	);
+	std::pair<Double, Double> timerange (iter->second.first, iter->second.second);
 	iter++;
 	while (iter != end) {
 		timerange.first = min(timerange.first, iter->second.first);
