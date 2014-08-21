@@ -527,6 +527,9 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
 
 Double TableExprFuncNode::getDouble (const TableExprId& id)
 {
+    if (dataType() == NTInt) {
+	return TableExprFuncNode::getInt (id);
+    }
     switch(funcType_p) {
     case piFUNC:
 	return C::pi;

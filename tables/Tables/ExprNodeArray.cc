@@ -90,6 +90,14 @@ const IPosition& TableExprNodeArray::getShape (const TableExprId& id)
     return varShape_p;
 }
 
+Array<Double> TableExprNodeArray::getArrayDouble (const TableExprId& id)
+{
+    Array<Int64> arr = getArrayInt (id);
+    Array<Double> result (arr.shape());
+    convertArray (result, arr);
+    return result;
+}
+
 Array<DComplex> TableExprNodeArray::getArrayDComplex (const TableExprId& id)
 {
     Array<Double> arr = getArrayDouble (id);

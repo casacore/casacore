@@ -78,6 +78,10 @@ public:
     // This default implementation evaluates the value and returns its shape.
     virtual const IPosition& getShape (const TableExprId& id);
 
+    // The default implementation of getArrayDouble does
+    // getArrayInt and converts the result.
+    virtual Array<Double> getArrayDouble (const TableExprId& id);
+
     // The default implementation of getArrayDComplex does
     // getArrayDouble and converts the result.
     virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
