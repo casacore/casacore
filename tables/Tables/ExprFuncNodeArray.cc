@@ -838,6 +838,9 @@ Array<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
 
 Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 {
+    if (dataType() == NTInt) {
+	return TableExprNodeArray::getArrayDouble (id);
+    }
     switch (funcType()) {
     case TableExprFuncNode::sinFUNC:
 	return sin      (operands()[0]->getArrayDouble(id));
@@ -1340,6 +1343,9 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 Array<DComplex> TableExprFuncNodeArray::getArrayDComplex
                                                      (const TableExprId& id)
 {
+    if (dataType() == NTDouble) {
+	return TableExprNodeArray::getArrayDComplex (id);
+    }
     switch (funcType()) {
     case TableExprFuncNode::sinFUNC:
 	return sin      (operands()[0]->getArrayDComplex(id));
