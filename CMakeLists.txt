@@ -53,6 +53,7 @@ option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
 # By default do not use HDF5, FFTW3, threads
 option (CXX11 "Compile as C++11 if possible" NO)
+option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
 option (USE_HDF5 "Build HDF5 " NO)
 option (USE_FFTW3 "Use FFTW instead of FFTPack" NO)
 option (USE_THREADS "Use Mutex thread synchronization" NO)
@@ -245,6 +246,11 @@ if(USE_THREADS)
     endif(CMAKE_COMPILER_IS_GNUCXX)
 endif(USE_THREADS)
 
+# Set compiler flag in no table locking.
+if (NOT ENABLE_TABLELOCKING)
+    add_definitions(-DAIPS_TABLE_NOLOCKING)
+endif (NOT ENABLE_TABLELOCKING)
+
 if(USE_STACKTRACE)
     add_definitions(-DUSE_STACKTRACE)
 endif(USE_STACKTRACE)
@@ -272,6 +278,7 @@ message (STATUS "CMAKE_BUILD_TYPE ...... = ${CMAKE_BUILD_TYPE}")
 message (STATUS "Modules to be built ... = ${_modules}")
 message (STATUS "BUILD_SHARED_LIBS ..... = ${BUILD_SHARED_LIBS}")
 message (STATUS "ENABLE_RPATH .......... = ${ENABLE_RPATH}")
+message (STATUS "ENABLE_TABLELOCKING ... = ${ENABLE_TABLELOCKING}")
 message (STATUS "USE_OPENMP ............ = ${USE_OPENMP}")
 message (STATUS "USE_STACKTRACE ........ = ${USE_STACKTRACE}")
 message (STATUS "CMAKE_CXX_COMPILER .... = ${CMAKE_CXX_COMPILER}")

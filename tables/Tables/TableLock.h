@@ -104,10 +104,13 @@ public:
 	// It is similar to UserLocking, but no locks are needed for
 	// reading.
 	UserNoReadLocking,
+        // Do not do any locking at all. This should be used with care
+        // because concurrent access might result in table corruption.
+        NoLocking,
 	// This is the default locking option.
 	// It means that AutoLocking will be used if the table is not
 	// opened yet. Otherwise the locking options of the PlainTable
-	// objec already in use will be used.
+	// object already in use will be used.
 	DefaultLocking
     };
 
@@ -152,6 +155,9 @@ public:
 
     // Get the maximum wait period in AutoLocking mode.
     uInt maxWait() const;
+
+    // Is table locking disabled (because AIPS_TABLE_NOLOCKING was set)?
+    static Bool lockingDisabled();
 
 
 private:

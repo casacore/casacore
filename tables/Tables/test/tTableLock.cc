@@ -33,68 +33,67 @@
 // Test program for the TableLock class.
 // </summary>
 
+#ifdef AIPS_TABLE_NOLOCKING
+void checkLockOption (const TableLock& lock, TableLock::LockOption,
+                      Bool, Bool)
+{
+    AlwaysAssertExit (lock.option() == TableLock::NoLocking);
+    AlwaysAssertExit (! lock.readLocking());
+    AlwaysAssertExit (! lock.isPermanent());
+}
+#else
+void checkLockOption (const TableLock& lock, TableLock::LockOption opt,
+                      Bool readLock, Bool permLock)
+{
+    AlwaysAssertExit (lock.option() == opt);
+    AlwaysAssertExit (lock.readLocking() == readLock);
+    AlwaysAssertExit (lock.isPermanent() == permLock);
+}
+#endif
 
 int main()
 {
   {
     TableLock lock;
-    AlwaysAssertExit (lock.option() == TableLock::AutoLocking);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (! lock.isPermanent());
+    checkLockOption (lock, TableLock::AutoLocking, True, False);
     AlwaysAssertExit (lock.interval() == 5);
     AlwaysAssertExit (lock.maxWait() == 0);
   }
   {
     TableLock lock(TableLock::AutoLocking);
-    AlwaysAssertExit (lock.option() == TableLock::AutoLocking);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (! lock.isPermanent());
+    checkLockOption (lock, TableLock::AutoLocking, True, False);
     AlwaysAssertExit (lock.interval() == 5);
     AlwaysAssertExit (lock.maxWait() == 0);
   }
   {
     TableLock lock(TableLock::AutoNoReadLocking, 10, 1);
-    AlwaysAssertExit (lock.option() == TableLock::AutoLocking);
-    AlwaysAssertExit (! lock.readLocking());
-    AlwaysAssertExit (! lock.isPermanent());
+    checkLockOption (lock, TableLock::AutoLocking, False, False);
     AlwaysAssertExit (lock.interval() == 10);
     AlwaysAssertExit (lock.maxWait() == 1);
   }
   {
     TableLock lock(TableLock::UserLocking);
-    AlwaysAssertExit (lock.option() == TableLock::UserLocking);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (! lock.isPermanent());
+    checkLockOption (lock, TableLock::UserLocking, True, False);
   }
   {
     TableLock lock(TableLock::UserNoReadLocking);
-    AlwaysAssertExit (lock.option() == TableLock::UserLocking);
-    AlwaysAssertExit (! lock.readLocking());
-    AlwaysAssertExit (! lock.isPermanent());
+    checkLockOption (lock, TableLock::UserLocking, False, False);
   }
   {
     TableLock lock(TableLock::PermanentLocking);
-    AlwaysAssertExit (lock.option() == TableLock::PermanentLocking);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (lock.isPermanent());
+    checkLockOption (lock, TableLock::PermanentLocking, True, True);
   }
   {
     TableLock lock(TableLock::PermanentLockingWait);
-    AlwaysAssertExit (lock.option() == TableLock::PermanentLockingWait);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (lock.isPermanent());
+    checkLockOption (lock, TableLock::PermanentLockingWait, True, True);
   }
   {
     TableLock lock1(TableLock::AutoNoReadLocking, 10, 1);
     TableLock lock2(TableLock::PermanentLockingWait);
     TableLock lock3(lock2);
-    AlwaysAssertExit (lock3.option() == TableLock::PermanentLockingWait);
-    AlwaysAssertExit (lock3.readLocking());
-    AlwaysAssertExit (lock3.isPermanent());
+    checkLockOption (lock3, TableLock::PermanentLockingWait, True, True);
     lock2 = lock1;
-    AlwaysAssertExit (lock2.option() == TableLock::AutoLocking);
-    AlwaysAssertExit (! lock2.readLocking());
-    AlwaysAssertExit (! lock2.isPermanent());
+    checkLockOption (lock2, TableLock::AutoLocking, False, False);
     AlwaysAssertExit (lock2.interval() == 10);
     AlwaysAssertExit (lock2.maxWait() == 1);
   }
@@ -103,49 +102,41 @@ int main()
   {
     TableLock lock;
     lock.merge (TableLock());
-    AlwaysAssertExit (lock.option() == TableLock::AutoLocking);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (! lock.isPermanent());
+    checkLockOption (lock, TableLock::AutoLocking, True, False);
     AlwaysAssertExit (lock.interval() == 5);
     AlwaysAssertExit (lock.maxWait() == 0);
     lock.merge (TableLock (TableLock::AutoNoReadLocking, 10, 1));
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (! lock.isPermanent());
+    checkLockOption (lock, TableLock::AutoLocking, True, False);
     AlwaysAssertExit (lock.interval() == 10);
     AlwaysAssertExit (lock.maxWait() == 1);
   }
   {
     TableLock lock (TableLock::PermanentLockingWait);
     lock.merge (TableLock());
-    AlwaysAssertExit (lock.option() == TableLock::PermanentLockingWait);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (lock.isPermanent());
+    checkLockOption (lock, TableLock::PermanentLockingWait, True, True);
     lock.merge (TableLock(TableLock::AutoNoReadLocking));
-    AlwaysAssertExit (lock.option() == TableLock::PermanentLockingWait);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (lock.isPermanent());
+    checkLockOption (lock, TableLock::PermanentLockingWait, True, True);
   }
   {
     TableLock lock (TableLock::UserLocking);
     lock.merge (TableLock());
-    AlwaysAssertExit (lock.option() == TableLock::UserLocking);
-    ////AlwaysAssertExit (lock.option() == TableLock::AutoLocking);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (! lock.isPermanent());
+    checkLockOption (lock, TableLock::UserLocking, True, False);
+    ////checkLockOption (lock, TableLock::AutoLocking, True, False);
     lock.merge (TableLock(TableLock::AutoLocking, 20, 2));
-    AlwaysAssertExit (lock.option() == TableLock::AutoLocking);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (! lock.isPermanent());
+    checkLockOption (lock, TableLock::AutoLocking, True, False);
     AlwaysAssertExit (lock.interval() == 20);
     AlwaysAssertExit (lock.maxWait() == 2);
     lock.merge (TableLock(TableLock::PermanentLockingWait));
-    AlwaysAssertExit (lock.option() == TableLock::PermanentLockingWait);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (lock.isPermanent());
+    checkLockOption (lock, TableLock::PermanentLockingWait, True, True);
     lock.merge (TableLock(TableLock::PermanentLocking));
-    AlwaysAssertExit (lock.option() == TableLock::PermanentLocking);
-    AlwaysAssertExit (lock.readLocking());
-    AlwaysAssertExit (lock.isPermanent());
+    checkLockOption (lock, TableLock::PermanentLocking, True, True);
+  }
+  {
+    TableLock lock (TableLock::NoLocking);
+    lock.merge (TableLock());
+    checkLockOption (lock, TableLock::NoLocking, False, False);
+    lock.merge (TableLock(TableLock::AutoLocking, 20, 2));
+    checkLockOption (lock, TableLock::AutoLocking, True, False);
   }
 
   return 0;                           // exit with success status

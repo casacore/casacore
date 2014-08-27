@@ -1412,6 +1412,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <dt> TableLock::UserNoReadLocking
 //  <dd> is similar to UserLocking. However, similarly to AutoNoReadLocking
 //       no lock is needed to read the table.
+//  <dt> TableLock::NoLocking
+//  <dd> does not use table locking. It is the responsibility of the
+//       user to ensure that no concurrent access is done on the same
+//       bucket or tile in a storage manager, otherwise a table might
+//       get corrupted.
+//       <br>This mode is always used if Casacore is built with
+//       -DAIPS_TABLE_NOLOCKING.
 // </dl>
 // Synchronization of the processes accessing the same table is done
 // by means of the lock file. When a lock is released, the storage

@@ -57,7 +57,8 @@ void TableLockData::makeLock (const String& name, Bool create,
     //# (to be able to read older tables).
     if (itsLock == 0) {
 	itsLock = new LockFile (name + "/table.lock", interval(), create,
-				True, False, locknr, isPermanent());
+				True, False, locknr, isPermanent(),
+                                option() == NoLocking);
     }
     //# Acquire a lock when permanent locking is in use.
     if (isPermanent()) {

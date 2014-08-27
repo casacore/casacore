@@ -33,7 +33,7 @@
 
 using namespace casa;
 
-// This test program was created due to a proble in BucketCache found
+// This test program was created due to a problem in BucketCache found
 // on 31-Aug-2012. When a bucket was added and removed before being flushed,
 // only the free list (4 bytes) was written instead of the entire bucket.
 // When opening the file again, it found that the nr of buckets in the file
@@ -53,8 +53,8 @@ void addRemove()
 
 int main()
 {
-  addRemove();
   try {
+    addRemove();
     Table tab ("tSSMAddRemove_tmp.tab");
     ScalarColumn<Int> idcol(tab, "SOURCE_ID");
     idcol(27);

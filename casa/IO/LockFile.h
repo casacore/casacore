@@ -192,10 +192,12 @@ public:
     // <br> The <src>permLocking</src> argument is used to indicate if
     // permanent locking will be used. If so, it'll indicate so. In that
     // way showLock() can find out if if table is permanently locked.
+    // <br> The <src>noLocking</src> argument is used to indicate that
+    // no locking is needed. It means that acquiring a lock always succeeds.
     explicit LockFile (const String& fileName, double inspectInterval = 0,
 		       Bool create = False, Bool addToRequestList = True,
 		       Bool mustExist = True, uInt seqnr = 0,
-		       Bool permLocking = False);
+		       Bool permLocking = False, Bool noLocking = False);
 
     // The destructor does not delete the file, because it is not known
     // when the last process using the lock file will stop.
@@ -357,7 +359,7 @@ inline Bool LockFile::canLock (FileLocker::LockType type)
 }
 inline Bool LockFile::hasLock (FileLocker::LockType type) const
 {
-    return (itsFileIO == 0  ?  False : itsLocker.hasLock (type));
+    return (itsFileIO == 0  ?  True : itsLocker.hasLock (type));
 }
 inline int LockFile::lastError() const
 {
