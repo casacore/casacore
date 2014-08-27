@@ -36,6 +36,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 LatticeBase::~LatticeBase()
 {}
 
+String LatticeBase::imageType() const
+{
+  return "Lattice";
+}
+
 Bool LatticeBase::isPersistent() const
 {
   return False;
@@ -54,6 +59,11 @@ Bool LatticeBase::canReferenceArray() const
 Bool LatticeBase::isWritable() const
 {
   return True;
+}
+
+void LatticeBase::save (const String&) const
+{
+  throw AipsError(imageType() + "::save is not implemented");
 }
 
 Bool LatticeBase::lock (FileLocker::LockType, uInt)

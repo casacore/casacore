@@ -38,6 +38,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class LatticeBase;
+class LatticeExprNode;
 
 // <summary>
 // Definition of image types and handlers
@@ -79,6 +80,10 @@ public:
     NEWSTAR,
     // HDF5
     HDF5,
+    // ImageConcat
+    IMAGECONCAT,
+    // ImageExpr
+    IMAGEEXPR,
     // Unknown
     UNKNOWN
    };
@@ -116,6 +121,19 @@ public:
   // Open an HDF5 paged image of any data type.
   static LatticeBase* openHDF5Image (const String& fileName,
 				     const MaskSpecifier& = MaskSpecifier());
+
+  // Open a persistent image concatenation of any type.
+  static LatticeBase* openImageConcat (const String& fileName);
+
+  // Open a persistent image expression of any type.
+  // It reads the file written by ImageExpr::save.
+  static LatticeBase* openImageExpr (const String& fileName);
+
+  // Parse an image expression and return the ImageExpr<T> object for it.
+  // The block of nodes represents optional $i arguments in the expression.
+  static LatticeBase* openExpr (const String& expr,
+                                const Block<LatticeExprNode>& nodes,
+                                const String& fileName = String());
 
 private:
   // The default openImage function for an unknown image type.

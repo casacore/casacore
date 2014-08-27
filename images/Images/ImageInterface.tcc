@@ -111,7 +111,6 @@ MaskedLattice<T>* ImageInterface<T>::cloneML() const
     return cloneII();
 }
 
-
 // reset coords
 template <class T> 
 Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)

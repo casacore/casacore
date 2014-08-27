@@ -86,6 +86,11 @@ public:
   // Make a copy of the derived object (reference semantics).
   virtual LatticeBase* clone() const = 0;
 
+  // Get the image type (returns name of derived class).
+  // The default implementation returns "Lattice".
+  // Note it is made pure virtual in ImageInterface.
+  virtual String imageType() const;
+
   // Get the data type of the lattice.
   virtual DataType dataType() const = 0;
 
@@ -108,6 +113,12 @@ public:
   // Is the lattice writable?
   // <br>The default implementation returns True.
   virtual Bool isWritable() const;
+
+  // Save the image in an AipsIO file with the given name.
+  // Its purpose is to make ImageConcat and ImageExpr objects
+  // persistent.
+  // <br>The default implementation throws an exception.
+  virtual void save (const String& fileName) const;
 
   // It is strongly recommended to use class
   // <linkto class=LatticeLocker>LatticeLocker</linkto> to

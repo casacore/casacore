@@ -41,6 +41,7 @@
 #include <images/Images/ImageConcat.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/TempImage.h>
+#include <images/Images/ImageOpener.h>
 
 #include <images/Images/SubImage.h>
 #include <images/Images/ImageInterface.h>
@@ -128,6 +129,17 @@ int main() {
 // Check values
 
          check (0, ml3, im1, im2);
+
+// Save the concatenated image and read it back.
+         AlwaysAssertExit (!lc.isPersistent());
+         lc.save ("tImageConcat_tmp.imgconc");
+         AlwaysAssertExit (lc.isPersistent());
+         LatticeBase* latt = ImageOpener::openImage ("tImageConcat_tmp.imgconc");
+         ImageConcat<Float>* lc3 = dynamic_cast<ImageConcat<Float>*>(latt);
+         AlwaysAssertExit (lc3 != 0);
+         AlwaysAssertExit (allEQ(lc3->get(), lc.get()));
+         AlwaysAssertExit (allEQ(lc3->getMask(), lc.getMask()));
+         delete lc3;
       }
 
 //
@@ -266,8 +278,10 @@ int main() {
          AlwaysAssert(lc2.lock(FileLocker::Write, 1), AipsError);
          AlwaysAssert(lc2.hasLock(FileLocker::Write), AipsError);
          lc2.unlock();
+#ifndef AIPS_TABLE_NOLOCKING
          AlwaysAssert(!lc2.hasLock(FileLocker::Read), AipsError);
          AlwaysAssert(!lc2.hasLock(FileLocker::Write), AipsError);
+#endif
      }
 
 

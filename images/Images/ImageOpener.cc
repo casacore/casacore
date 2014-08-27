@@ -31,6 +31,10 @@
 #include <tables/Tables/TableInfo.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/HDF5Image.h>
+#include <images/Images/ImageConcat.h>
+#include <images/Images/ImageExpr.h>
+#include <images/Images/ImageExprParse.h>
+#include <lattices/Lattices/LatticeExprNode.h>
 #include <casa/HDF5/HDF5File.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/OS/File.h>
@@ -95,6 +99,17 @@ ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
       String str(buf, 80);
       if (str.matches (Regex("^SIMPLE *= *T.*"))) {
 	return FITS;
+      }
+    }
+    // Check if a CompoundImage (ImageConcat or ImageExpr).
+    // Ignore AipsIO's object length, magicval, and string length.
+    String str1(buf+12, 14);
+    if (str1 == "CompoundImage-") {
+      String str2(buf+26, 4);
+      if (str2 == "Conc") {
+        return IMAGECONCAT;
+      } else if (str2 == "Expr") {
+        return IMAGEEXPR;
       }
     }
     if (HDF5File::isHDF5(name)) {
@@ -162,6 +177,75 @@ LatticeBase* ImageOpener::openHDF5Image (const String& fileName,
   }
 }
 
+LatticeBase* ImageOpener::openImageConcat (const String& fileName)
+{
+  AipsIO aio(fileName, ByteIO::Old);
+  AlwaysAssert (aio.getstart("CompoundImage-Conc") == 0, AipsError);
+  Int dtype;
+  aio >> dtype;
+  LatticeBase* img = 0;
+  switch (dtype) {
+  case TpFloat:
+    img = new ImageConcat<Float> (aio, fileName);
+    break;
+  case TpDouble:
+    img = new ImageConcat<Double> (aio, fileName);
+    break;
+  case TpComplex:
+    img = new ImageConcat<Complex> (aio, fileName);
+    break;
+  case TpDComplex:
+    img = new ImageConcat<DComplex> (aio, fileName);
+    break;
+  default:
+    break;
+  }
+  aio.getend();
+  return img;
+}
+
+LatticeBase* ImageOpener::openImageExpr (const String& fileName)
+{
+  AipsIO aio(fileName, ByteIO::Old);
+  AlwaysAssert (aio.getstart("CompoundImage-Expr") == 0, AipsError);
+  Int dtype;
+  aio >> dtype;
+  AlwaysAssert (aio.getstart("ImageExpr") == 1, AipsError);
+  String expr;
+  aio >> expr;
+  LatticeBase* img = openExpr (expr, Block<LatticeExprNode>(), fileName);
+  aio.getend();
+  aio.getend();
+  return img;
+}
+
+LatticeBase* ImageOpener::openExpr (const String& expr,
+                                    const Block<LatticeExprNode>& nodes,
+                                    const String& fileName)
+{
+  LatticeBase* lattice = 0;
+  PtrBlock<const ImageRegion*> regions;
+  LatticeExprNode node = ImageExprParse::command (expr, nodes, regions);
+  switch (node.dataType()) {
+  case TpFloat:
+    lattice = new ImageExpr<Float> (LatticeExpr<Float>(node), expr, fileName);
+    break;
+  case TpDouble:
+    lattice = new ImageExpr<Double> (LatticeExpr<Double>(node), expr, fileName);
+    break;
+  case TpComplex:
+    lattice = new ImageExpr<Complex> (LatticeExpr<Complex>(node), expr, fileName);
+    break;
+  case TpDComplex:
+    lattice = new ImageExpr<DComplex> (LatticeExpr<DComplex>(node), expr, fileName);
+    break;
+  default:
+    throw AipsError ("invalid data type of image expression " + expr);
+  }
+  return lattice;
+}
+
+
 LatticeBase* ImageOpener::openImage (const String& fileName,
 				     const MaskSpecifier& spec)
 {
@@ -174,6 +258,10 @@ LatticeBase* ImageOpener::openImage (const String& fileName,
      return openPagedImage (fileName, spec);
    } else if (type == HDF5) {
      return openHDF5Image (fileName, spec);
+   } else if (type == IMAGECONCAT) {
+     return openImageConcat (fileName);
+   } else if (type == IMAGEEXPR) {
+     return openImageExpr (fileName);
    }
    // Try to open a foreign image.
    return theirOpenFuncMap(type) (fileName, spec);
