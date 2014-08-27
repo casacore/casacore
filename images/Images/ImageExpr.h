@@ -113,10 +113,10 @@ public:
   ImageExpr();
 
   // Construct an ImageExpr from a LatticeExpr.
-  // The name given could be the original expression string.
-  // The prefix "Expression: " is added to the name if not empty.
-  // The function name() returns this name (including possible prefix).
-  ImageExpr(const LatticeExpr<T>& latticeExpr, const String& name);
+  // The expr given should be the original expression string.
+  // The fileName argument is meant for ImageOpener.
+  ImageExpr(const LatticeExpr<T>& latticeExpr, const String& expr,
+            const String& fileName = String());
 
   // Copy constructor (reference semantics)
   ImageExpr(const ImageExpr<T>& other);
@@ -129,6 +129,14 @@ public:
   
   // Make a copy of the object (reference semantics).
   virtual ImageInterface<T>* cloneII() const;
+
+  // Save the image in an AipsIO file with the given name.
+  // It can be opened by ImageOpener::openExpr.
+  virtual void save (const String& fileName) const;
+
+  // Set the file name.
+  void setFileName (const String& name)
+    { fileName_p = name; }
 
   // Get the image type (returns name of derived class).
   virtual String imageType() const;
@@ -159,8 +167,8 @@ public:
 			   const IPosition& where,
 			   const IPosition& stride);
 
-  // Return the name of the current ImageInterface object. 
-  // Returns the expression string given in the constructor.
+  // If the object is persistent, the file name is given.
+  // Otherwise it returns the expression string given in the constructor.
   virtual String name (Bool stripPath=False) const;
   
   // Check class invariants.
@@ -173,12 +181,15 @@ public:
 				 Bool useRef) const;
 
   // Returns False, as the ImageExpr is not writable.
-   virtual Bool isWritable() const;
+  virtual Bool isWritable() const;
+
+  // Is the lattice persistent and can it be loaded by other processes as well?
+  virtual Bool isPersistent() const;
 
   // Help the user pick a cursor for most efficient access if they only want
   // pixel values and don't care about the order or dimension of the
   // cursor. 
-   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
   // Handle the (un)locking and syncing.
   // <group>
@@ -198,12 +209,8 @@ public:
 private:  
   LatticeExpr<T> latticeExpr_p;
   Unit unit_p;
-
-// These are used to return null object by reference
-
-  Lattice<Bool>* pBool_p;  
-  Record rec_p;
-  String name_p;
+  String exprString_p;
+  mutable String fileName_p;
 };
 
 

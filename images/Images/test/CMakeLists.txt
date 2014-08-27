@@ -39,6 +39,7 @@ tImageAttrHandler
 tImageBeamSet
 tImageConcat
 tImageEmpty
+tImageExpr
 tImageExpr2Gram
 tImageExpr3Gram
 tImageExprGram

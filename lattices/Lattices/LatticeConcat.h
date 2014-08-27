@@ -148,7 +148,7 @@ public:
 // Assignment operator (reference semantics)
    LatticeConcat<T> &operator=(const LatticeConcat<T> &other);
 
-// Sets a new lattice into the list to be concatenated.  
+// Adds a clone of the lattice to the list to be concatenated.  
 // Exception thrown if lattices are incompatible
    void setLattice (MaskedLattice<T>& lattice);
 
@@ -160,6 +160,10 @@ public:
    uInt axis () const
      {return axis_p;}
 
+// Set the tempClose state.
+   void setTempClose (Bool tmpClose)
+     { tempClose_p = tmpClose; }
+
 // Returns the tempClose constructor state
    Bool isTempClose () const 
      {return tempClose_p;} 
@@ -168,7 +172,7 @@ public:
 // by one from output lattice).  Returns 0 if none yet set.
    uInt latticeDim() const;
 
-// Return pointer for specified lattice.  Do not delete this.
+// Return pointer for specified lattice.  Do not delete it.
    MaskedLattice<T>* lattice(uInt i) const
      { return lattices_p[i]; }
 

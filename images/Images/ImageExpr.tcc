@@ -36,6 +36,7 @@
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/Slicer.h>
 #include <casa/BasicSL/String.h>
+#include <casa/OS/Path.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Quanta/Unit.h>
 
@@ -50,12 +51,11 @@ ImageExpr<T>::ImageExpr()
  
 template <class T>
 ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
-			 const String& name)
-: latticeExpr_p(latticeExpr)
+			 const String& expr, const String& fileName)
+  : latticeExpr_p(latticeExpr),
+    fileName_p   (fileName)
 {
-  if (! name.empty()) {
-    name_p = "Expression: " + name;
-  }
+  exprString_p = expr;
   const LELCoordinates lelCoordinate = latticeExpr_p.lelCoordinates();
   const LELLattCoordBase* pLattCoord = &(lelCoordinate.coordinates());
   if (! pLattCoord->hasCoordinates()
@@ -77,9 +77,8 @@ ImageExpr<T>::ImageExpr (const ImageExpr<T>& other)
 : ImageInterface<T>(other),
   latticeExpr_p (other.latticeExpr_p),
   unit_p        (other.unit_p),
-  pBool_p       (other.pBool_p),
-  rec_p         (other.rec_p),
-  name_p        (other.name_p)
+  exprString_p  (other.exprString_p),
+  fileName_p    (other.fileName_p)
 {}
  
 template <class T>
@@ -89,9 +88,8 @@ ImageExpr<T>& ImageExpr<T>::operator=(const ImageExpr<T>& other)
     ImageInterface<T>::operator= (other);
     latticeExpr_p = other.latticeExpr_p;
     unit_p        = other.unit_p;
-    pBool_p       = other.pBool_p;
-    rec_p         = other.rec_p;
-    name_p        = other.name_p;
+    exprString_p  = other.exprString_p;
+    fileName_p    = other.fileName_p;
   }
   return *this;
 }
@@ -107,6 +105,27 @@ ImageInterface<T>* ImageExpr<T>::cloneII() const
   return new ImageExpr (*this);
 }
 
+template<class T>
+void ImageExpr<T>::save (const String& fileName) const
+{
+  // Check that the expression is given.
+  if (exprString_p.empty()) {
+    throw AipsError ("ImageExpr cannot be made persistent, because "
+                     "its expression string is empty");
+  }
+  // Create the AipsIO file.
+  AipsIO aio(fileName, ByteIO::New);
+  // Start with a general header (used by ImageOpener)
+  // and the data type of the image.
+  aio.putstart ("CompoundImage-Expr", 0);
+  aio << Int(this->dataType());
+  // Now save the expression string.
+  aio.putstart ("ImageExpr", 1);
+  aio << exprString_p;
+  aio.putend();
+  aio.putend();
+  fileName_p = fileName;
+}
 
 template<class T>
 String ImageExpr<T>::imageType() const
@@ -155,12 +174,27 @@ void ImageExpr<T>::doPutSlice (const Array<T>&, const IPosition&,
 }
 
 template <class T> 
-String ImageExpr<T>::name (Bool) const
+String ImageExpr<T>::name (Bool stripPath) const
 {
-  return name_p;
+  if (fileName_p.empty()) {
+    if (exprString_p.empty()) {
+      return exprString_p;
+    }
+    return "Expression: " + exprString_p;
+  }
+  Path path(fileName_p);
+  if (!stripPath) {
+    return path.absoluteName();
+  } 
+  return path.baseName();
 }
 
- 
+template <class T>
+Bool ImageExpr<T>::isPersistent() const
+{  
+  return ! fileName_p.empty();
+}
+
 template <class T>
 Bool ImageExpr<T>::isWritable() const
 {  

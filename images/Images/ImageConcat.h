@@ -129,6 +129,9 @@ public:
 // Constructor. Specify the pixel axis for concatenation
    explicit ImageConcat (uInt axis, Bool tempClose=True);
 
+// Construct the object from an AipsIO file with the given name.
+   ImageConcat (AipsIO& aio, const String& fileName);
+
 // Default constructor, Sets the concatenation axis to 0
    ImageConcat();
 
@@ -144,8 +147,15 @@ public:
 // Make a copy of the object (reference semantics).
    virtual ImageInterface<T>* cloneII() const;
 
+// Save the image in an AipsIO file with the given name.
+// It can be opened by the constructor taking a file name.
+   virtual void save (const String& fileName) const;
+
 // Get the image type (returns name of derived class).
    virtual String imageType() const;
+
+// Is the lattice persistent and can it be loaded by other processes as well?
+   virtual Bool isPersistent() const;
 
 // Sets a new image into the list to be concatenated.  
 // If relax is False, throws an exception if the images
@@ -155,7 +165,7 @@ public:
 // Otherwise, it just uses the coordinates of the image
    void setImage (ImageInterface<T>& image, Bool relax);
 
-// Sets a new lattice into the list to be concatenated.  
+// Add a clone of the lattice to the list to be concatenated.  
 // You can only concatenate a lattice with an image if
 // you have first used setImage to set an image (this
 // provides the CooridinateSystem information)
@@ -186,8 +196,8 @@ public:
 // </group>
 
 // Return the name of the current ImageInterface object.
-// Since many images may be concatenated, there is no
-// sensible name.  So returns the string "Concatenation :"
+// If the object is persistent, it returns its file name.
+// Otherwise it returns the string "Concatenation :"
    virtual String name (Bool stripPath=False) const;
 
 // Has the object really a mask?
@@ -254,6 +264,7 @@ private:
    Bool warnAxisNames_p, warnAxisUnits_p, warnImageUnits_p;
    Bool warnContig_p, warnRefPix_p, warnRefVal_p, warnInc_p, warnTab_p;
    Bool isContig_p;
+   mutable String fileName_p;     // Empty if not persistent
    Vector<Bool> isImage_p;
    Vector<Double> pixelValues_p;
    Vector<Double> worldValues_p;

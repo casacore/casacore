@@ -38,7 +38,6 @@
 #include <images/Images/ImageStatistics.h>
 #include <images/Images/ImageOpener.h>
 #include <images/Images/TempImage.h>
-#include <images/Images/ImageExprParse.h>
 #include <images/Images/ImageExpr.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/HDF5Image.h>
@@ -291,24 +290,7 @@ namespace casa { //# name space casa begins
   {
     LatticeBase* lattice = ImageOpener::openImage (str, spec);
     if (lattice == 0) {
-      PtrBlock<const ImageRegion*> regions;
-      LatticeExprNode expr = ImageExprParse::command (str, nodes, regions);
-      switch (expr.dataType()) {
-      case TpFloat:
-        lattice = new ImageExpr<Float> (LatticeExpr<Float>(expr), str);
-        break;
-      case TpDouble:
-        lattice = new ImageExpr<Double> (LatticeExpr<Double>(expr), str);
-        break;
-      case TpComplex:
-        lattice = new ImageExpr<Complex> (LatticeExpr<Complex>(expr), str);
-        break;
-      case TpDComplex:
-        lattice = new ImageExpr<DComplex> (LatticeExpr<DComplex>(expr), str);
-        break;
-      default:
-        throw AipsError ("invalid data type of image expression " + str);
-      }
+      lattice = ImageOpener::openExpr (str, nodes);
     }
     return lattice;
   }
