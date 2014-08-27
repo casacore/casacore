@@ -80,16 +80,21 @@ TableLock& TableLock::operator= (const TableLock& that)
 
 void TableLock::init()
 {
+#ifdef AIPS_TABLE_NOLOCKING
+  itsOption = NoLocking;
+#else
   if (itsOption == DefaultLocking) {
     itsOption           = AutoLocking;
-    //// defaultlocking does not work in all cases it seems;
-    ////  commented below till fixed
     itsIsDefaultLocking = True;
   } else if (itsOption == AutoNoReadLocking) {
     itsOption      = AutoLocking;
     itsReadLocking = False;
   } else if (itsOption == UserNoReadLocking) {
     itsOption      = UserLocking;
+    itsReadLocking = False;
+  }
+#endif
+  if (itsOption == NoLocking) {
     itsReadLocking = False;
   }
 }
@@ -114,6 +119,15 @@ void TableLock::merge (const TableLock& that)
       }
     }
   }
+}
+
+Bool TableLock::lockingDisabled()
+{
+#ifdef AIPS_TABLE_NOLOCKING
+  return True;
+#else
+  return False;
+#endif
 }
 
 } //# NAMESPACE CASA - END

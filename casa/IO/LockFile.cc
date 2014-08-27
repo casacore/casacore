@@ -71,7 +71,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 LockFile::LockFile (const String& fileName, double inspectInterval,
 		    Bool create, Bool setRequestFlag, Bool mustExist,
-		    uInt seqnr, Bool permLocking)
+		    uInt seqnr, Bool permLocking, Bool noLocking)
 : itsFileIO      (0),
   itsCanIO       (0),
   itsWritable    (True),
@@ -86,12 +86,13 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
     AlwaysAssert (SIZEINT == CanonicalConversion::canonicalSize (static_cast<Int*>(0)),
 		  AipsError);
     itsName = Path(fileName).absoluteName();
-    //# Create the file if it does not exist yet.
-    //# When the flag is set, it is allowed that the file does not
-    //# exist and cannot be created. In that case it is assumed that
-    //# later on each locking request is successful (without doing actual
-    //# locking).
-    if (! create) {
+    if (!noLocking) {
+      //# Create the file if it does not exist yet.
+      //# When the flag is set, it is allowed that the file does not
+      //# exist and cannot be created. In that case it is assumed that
+      //# later on each locking request is successful (without doing actual
+      //# locking).
+      if (! create) {
 	File f (itsName);
 	if (! f.exists()) {
 	    if (!f.canCreate()  &&  !mustExist) {
@@ -99,37 +100,38 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
 	    }
 	    create = True;
 	}
-    }
-    //# Open the lock file as read/write if it exists.
-    //# If it did not succeed, open as readonly.
-    int fd;
-    if (!create) {
+      }
+      //# Open the lock file as read/write if it exists.
+      //# If it did not succeed, open as readonly.
+      int fd;
+      if (!create) {
 	fd = FiledesIO::open (itsName.chars(), True, False);
 	if (fd == -1) {
 	    fd = FiledesIO::open (itsName.chars(), False);
 	    itsWritable  = False;
 	    itsAddToList = False;
 	}
-    }else{
+      }else{
 	//# Create a new file with world write access.
 	//# Initialize the values in it.
 	fd = FiledesIO::create (itsName.chars(), 0666);
 	putReqId (fd);
-    }
-    //# Create FileLocker objects for this lock file.
-    //# The first one is for read/write locks.
-    //# The second one is to set the file to "in use" and to tell if
-    //# permanent locking is used.
-    itsLocker = FileLocker (fd, 4*seqnr, 1);
-    if (permLocking) {
+      }
+      //# Create FileLocker objects for this lock file.
+      //# The first one is for read/write locks.
+      //# The second one is to set the file to "in use" and to tell if
+      //# permanent locking is used.
+      itsLocker = FileLocker (fd, 4*seqnr, 1);
+      if (permLocking) {
         itsUseLocker = FileLocker (fd, 4*seqnr+1, 2);
-    } else {
+      } else {
         itsUseLocker = FileLocker (fd, 4*seqnr+1, 1);
+      }
+      itsFileIO = new FiledesIO (fd, itsName);
+      itsCanIO  = new CanonicalIO (itsFileIO);
+      // Set the file to in use by acquiring a read lock.
+      itsUseLocker.acquire (FileLocker::Read, 1);
     }
-    itsFileIO = new FiledesIO (fd, itsName);
-    itsCanIO  = new CanonicalIO (itsFileIO);
-    // Set the file to in use by acquiring a read lock.
-    itsUseLocker.acquire (FileLocker::Read, 1);
 }
 
 LockFile::~LockFile()
@@ -237,6 +239,10 @@ Bool LockFile::inspect (Bool always)
 
 void LockFile::getInfo (MemoryIO& info)
 {
+    // Do nothing if no locking.
+    if (itsLocker.fd() < 0) {
+        return;
+    }
     // The lock file contains:
     // - the fixed length request list in the first bytes
     // - thereafter the length of the info (as a uInt)
@@ -277,7 +283,7 @@ void LockFile::getInfo (MemoryIO& info)
 void LockFile::putInfo (const MemoryIO& info) const
 {
     uInt infoLeng = ((MemoryIO&)info).length();
-    if (!itsWritable  ||  infoLeng == 0) {
+    if (itsLocker.fd() < 0  ||  !itsWritable  ||  infoLeng == 0) {
 	return;
     }
     uChar buffer[1024];
