@@ -41,8 +41,11 @@
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
 #include <casa/stdlib.h>
-#include "MSCorrGram.ycc"                  // flex output
-#include "MSCorrGram.lcc"                  // bison output
+//# Define register as empty string to avoid warnings in C++11 compilers
+//# because keyword register is not supported anymore.
+#define register
+#include "MSCorrGram.ycc"                  // bison output
+#include "MSCorrGram.lcc"                  // flex output
 
 // Define the yywrap function for flex.
 int MSCorrGramwrap()

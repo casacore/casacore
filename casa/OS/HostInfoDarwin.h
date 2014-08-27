@@ -105,7 +105,7 @@ friend class HostInfo;
 
 
 HostMachineInfo::HostMachineInfo( ) : valid(1) {
-    register int pagesize;
+    int pagesize;
 
     kern_return_t ret;
     struct host_basic_info basic_info;

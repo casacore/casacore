@@ -42,8 +42,11 @@
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
 #include <casa/stdlib.h>
-#include "MSAntennaGram.ycc"                  // flex output
-#include "MSAntennaGram.lcc"                  // bison output
+//# Define register as empty string to avoid warnings in C++11 compilers
+//# because keyword register is not supported anymore.
+#define register
+#include "MSAntennaGram.ycc"                  // bison output
+#include "MSAntennaGram.lcc"                  // flex output
 
 // Define the yywrap function for flex.
 int MSAntennaGramwrap()

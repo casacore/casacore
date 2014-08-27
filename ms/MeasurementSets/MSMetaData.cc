@@ -1719,7 +1719,7 @@ CountedPtr<Quantum<Vector<Double> > > MSMetaData::_getExposureTimes() {
 }
 
 CountedPtr<ArrayColumn<Bool> > MSMetaData::_getFlags() const {
-	if (_flagsColumn && ! _flagsColumn->nrow() > 0) {
+        if (_flagsColumn && ! (_flagsColumn->nrow() > 0)) {
 		return _flagsColumn;
 	}
 	String flagColName = MeasurementSet::columnName(MSMainEnums::FLAG);

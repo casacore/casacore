@@ -120,7 +120,7 @@ char *cregex_allocator::operator()(int nbytes)
 static void
 init_syntax_once ()
 {
-   register int c;
+   int c;
    static int done = 0;
 
    if (done)
@@ -390,10 +390,10 @@ const char*
 a2_re_compile_pattern (char *pattern, int size,
                        struct re_pattern_buffer *bufp)
 {
-  register char *b = bufp->buffer;
-  register char *p = pattern;
+  char *b = bufp->buffer;
+  char *p = pattern;
   char *pend = pattern + size;
-  register unsigned c, c1;
+  unsigned c, c1;
   char *p1;
   unsigned char *translate = (unsigned char *) bufp->translate;
 
@@ -1215,8 +1215,8 @@ store_jump (char *from, char opcode, char *to)
 static void
 insert_jump (char op, char *from, char *to, char *current_end)
 {
-  register char *pfrom = current_end;		/* Copy from here...  */
-  register char *pto = current_end + 3;		/* ...to here.  */
+  char *pfrom = current_end;		/* Copy from here...  */
+  char *pto = current_end + 3;		/* ...to here.  */
 
   while (pfrom != from)			       
     *--pto = *--pfrom;
@@ -1252,8 +1252,8 @@ store_jump_n (char *from, char opcode, char *to, unsigned n)
 static void
 insert_jump_n (char op, char *from, char *to, char *current_end, unsigned n)
 {
-  register char *pfrom = current_end;		/* Copy from here...  */
-  register char *pto = current_end + 5;		/* ...to here.  */
+  char *pfrom = current_end;		/* Copy from here...  */
+  char *pto = current_end + 5;		/* ...to here.  */
 
   while (pfrom != from)			       
     *--pto = *--pfrom;
@@ -1270,8 +1270,8 @@ insert_jump_n (char op, char *from, char *to, char *current_end, unsigned n)
 static void
 insert_op_2 (char op, char *there, char *current_end, int num_1, int num_2)
 {
-  register char *pfrom = current_end;		/* Copy from here...  */
-  register char *pto = current_end + 5;		/* ...to here.  */
+  char *pfrom = current_end;		/* Copy from here...  */
+  char *pto = current_end + 5;		/* ...to here.  */
 
   while (pfrom != there)			       
     *--pto = *--pfrom;
@@ -1297,10 +1297,10 @@ a2_re_compile_fastmap (struct re_pattern_buffer *bufp)
 {
   unsigned char *pattern = (unsigned char *) bufp->buffer;
   long size = bufp->used;
-  register char *fastmap = bufp->fastmap;
-  register unsigned char *p = pattern;
-  register unsigned char *pend = pattern + size;
-  register int j, k;
+  char *fastmap = bufp->fastmap;
+  unsigned char *p = pattern;
+  unsigned char *pend = pattern + size;
+  int j, k;
   unsigned char *translate = (unsigned char *) bufp->translate;
 
   unsigned char *stackb[NFAILURES];
@@ -1523,12 +1523,12 @@ a2_re_search_2 (struct re_pattern_buffer *pbufp,
 	     char *string1, int size1,
 	     char *string2, int size2,
 	     int startpos,
-	     register int range,
+	     int range,
 	     struct re_registers *regs,
 	     int mstop)
 {
-  register char *fastmap = pbufp->fastmap;
-  register unsigned char *translate = (unsigned char *) pbufp->translate;
+  char *fastmap = pbufp->fastmap;
+  unsigned char *translate = (unsigned char *) pbufp->translate;
   int total_size = size1 + size2;
   int endpos = startpos + range;
   int val;
@@ -1571,8 +1571,8 @@ a2_re_search_2 (struct re_pattern_buffer *pbufp,
 	{
 	  if (range > 0)	/* Searching forwards.  */
 	    {
-	      register int lim = 0;
-	      register unsigned char *p;
+	      int lim = 0;
+	      unsigned char *p;
 	      int irange = range;
 	      if (startpos < size1 && startpos + range >= size1)
 		lim = range - (size1 - startpos);
@@ -1588,7 +1588,7 @@ a2_re_search_2 (struct re_pattern_buffer *pbufp,
 	    }
 	  else				/* Searching backwards.  */
 	    {
-	      register unsigned char c;
+	      unsigned char c;
 
               if (string1 == 0 || startpos >= size1)
 		c = string2[startpos - size1];
@@ -1822,10 +1822,10 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
 	    struct re_registers *regs,
 	    int mstop, cregex_allocator &)
 {
-  register unsigned char *p = (unsigned char *) pbufp->buffer;
+  unsigned char *p = (unsigned char *) pbufp->buffer;
 
   /* Pointer to beyond end of buffer.  */
-  register unsigned char *pend = p + pbufp->used;
+  unsigned char *pend = p + pbufp->used;
 
   unsigned char *string1 = (unsigned char *) string1_arg;
   unsigned char *string2 = (unsigned char *) string2_arg;
@@ -1836,8 +1836,8 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
      each to consider matching.  */
   unsigned char *end_match_1, *end_match_2;
 
-  register unsigned char *d, *dend;
-  register int mcnt;			/* Multipurpose.  */
+  unsigned char *d, *dend;
+  int mcnt;			/* Multipurpose.  */
   unsigned char *translate = (unsigned char *) pbufp->translate;
   unsigned is_a_jump_n = 0;
 
@@ -2054,7 +2054,7 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
 	       || (enum regexpcode) p[-3] == start_memory)
 	      && (p + 1) != pend)              
             {
-	      register unsigned char *p2 = p + 1;
+	      unsigned char *p2 = p + 1;
               mcnt = 0;
               switch (*p2++)
                 {
@@ -2090,7 +2090,7 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
         case duplicate:
 	  {
 	    int regno = *p++;   /* Get which register to match against */
-	    register unsigned char *d2, *dend2;
+	    unsigned char *d2, *dend2;
 
 	    /* Where in input to try to start matching.  */
             d2 = regstart[regno];
@@ -2155,7 +2155,7 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
 	case charset_not:
 	  {
 	    int NOT = 0;	    /* Nonzero for charset_not.  */
-	    register int c;
+	    int c;
 	    if (*(p - 1) == (unsigned char) charset_not)
 	      NOT = 1;
 
@@ -2220,7 +2220,7 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
 	case maybe_finalize_jump:
           EXTRACT_NUMBER_AND_INCR (mcnt, p);
 	  {
-	    register unsigned char *p2 = p;
+	    unsigned char *p2 = p;
 	    /* Compare what follows with the beginning of the repeat.
 	       If we can establish that there is nothing that they would
 	       both match, we can change to finalize_jump.  */
@@ -2233,8 +2233,8 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
 	    else if (*p2 == (unsigned char) exactn
 		     || *p2 == (unsigned char) endline)
 	      {
-		register int c = *p2 == (unsigned char) endline ? '\n' : p2[2];
-		register unsigned char *p1 = p + mcnt;
+		int c = *p2 == (unsigned char) endline ? '\n' : p2[2];
+		unsigned char *p1 = p + mcnt;
 		/* p1[0] ... p1[2] are an on_failure_jump.
 		   Examine what follows that.  */
 		if (p1[3] == (unsigned char) exactn && p1[5] != c)
@@ -2330,7 +2330,7 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
         
 	case set_number_at:
 	  {
-  	    register unsigned char *p1;
+  	    unsigned char *p1;
 
             EXTRACT_NUMBER_AND_INCR (mcnt, p);
             p1 = p + mcnt;
@@ -2498,7 +2498,7 @@ bcmp_translate (char *s1, char *s2, int len, unsigned char *translate)
 {
   // Use signed char instead of char to avoid compiler warnings
   // about subscripting with a char.
-  register signed char *p1 = (signed char*)s1, *p2 = (signed char*)s2;
+  signed char *p1 = (signed char*)s1, *p2 = (signed char*)s2;
   while (len)
     {
       if (translate [*p1++] != translate [*p2++]) return 1;

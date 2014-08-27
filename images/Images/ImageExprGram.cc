@@ -40,8 +40,11 @@
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
 #include <casa/stdlib.h>
-#include "ImageExprGram.ycc"                  // flex output
-#include "ImageExprGram.lcc"                  // bison output
+//# Define register as empty string to avoid warnings in C++11 compilers
+//# because keyword register is not supported anymore.
+#define register
+#include "ImageExprGram.ycc"                  // bison output
+#include "ImageExprGram.lcc"                  // flex output
 
 
 
