@@ -46,8 +46,11 @@
 //# So undefine WHERE first.
 #undef WHERE
 #include <casa/stdlib.h>
-#include "TableGram.ycc"                  // flex output
-#include "TableGram.lcc"                  // bison output
+//# Define register as empty string to avoid warnings in C++11 compilers
+//# because keyword register is not supported anymore.
+#define register
+#include "TableGram.ycc"                  // bison output
+#include "TableGram.lcc"                  // flex output
 
 
 // Define the yywrap function for flex.

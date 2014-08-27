@@ -43,9 +43,12 @@
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
 #include <casa/stdlib.h>
-#include "MSTimeGram.ycc"                  // flex output
+//# Define register as empty string to avoid warnings in C++11 compilers
+//# because keyword register is not supported anymore.
+#define register
+#include "MSTimeGram.ycc"                  // bison output
 #define yy_scan_chars yy_scan_chars_MSTimeGram
-#include "MSTimeGram.lcc"                  // bison output
+#include "MSTimeGram.lcc"                  // flex output
 
 // Define the yywrap function for flex.
 int MSTimeGramwrap()
