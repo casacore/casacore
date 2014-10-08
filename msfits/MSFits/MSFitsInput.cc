@@ -1838,6 +1838,8 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         diameter = 6.1;
     if (array_p == "GMRT")
         diameter = 45.0;
+    if (array_p == "IRAM_PDB" || array_p == "IRAM PDB")
+        diameter = 15.0;
 
     //   Table anTab=bt.fullTable("",Table::Scratch);
     Table anTab = bt.fullTable();

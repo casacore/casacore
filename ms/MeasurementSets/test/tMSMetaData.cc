@@ -1,5 +1,5 @@
-//# tMSReader.cc: This program tests the MSReader class
-//# Copyright (C) 2000,2002
+//# tMSMetaData.cc: This program tests the MSMetaData class
+//# Copyright (C) 2013
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -228,11 +228,11 @@ void testIt(MSMetaData& md) {
 			exp.insert(myints, myints+9);
 		}
 		else if (
-				*intent == "CALIBRATE_ATMOSPHERE#OFF_SOURCE"
-						|| *intent == "CALIBRATE_ATMOSPHERE#ON_SOURCE"
-								|| *intent == "CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE"
-										|| *intent == "CALIBRATE_SIDEBAND_RATIO#ON_SOURCE"
-												|| *intent == "CALIBRATE_WVR#OFF_SOURCE"
+			*intent == "CALIBRATE_ATMOSPHERE#OFF_SOURCE"
+			|| *intent == "CALIBRATE_ATMOSPHERE#ON_SOURCE"
+			|| *intent == "CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE"
+			|| *intent == "CALIBRATE_SIDEBAND_RATIO#ON_SOURCE"
+			|| *intent == "CALIBRATE_WVR#OFF_SOURCE"
 		) {
 			uInt myints[] = {0, 9, 10, 11, 12, 13, 14, 15, 16};
 			exp.insert(myints, myints+9);
@@ -264,17 +264,17 @@ void testIt(MSMetaData& md) {
 		std::set<String> exp;
 		if (spw == 0) {
 			String mystr[] = {
-					"CALIBRATE_AMPLI#ON_SOURCE",
-					"CALIBRATE_ATMOSPHERE#OFF_SOURCE",
-					"CALIBRATE_ATMOSPHERE#ON_SOURCE",
-					"CALIBRATE_BANDPASS#ON_SOURCE",
-					"CALIBRATE_PHASE#ON_SOURCE",
-					"CALIBRATE_POINTING#ON_SOURCE",
-					"CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE",
-					"CALIBRATE_SIDEBAND_RATIO#ON_SOURCE",
-					"CALIBRATE_WVR#OFF_SOURCE",
-					"CALIBRATE_WVR#ON_SOURCE",
-					"OBSERVE_TARGET#ON_SOURCE"
+				"CALIBRATE_AMPLI#ON_SOURCE",
+				"CALIBRATE_ATMOSPHERE#OFF_SOURCE",
+				"CALIBRATE_ATMOSPHERE#ON_SOURCE",
+				"CALIBRATE_BANDPASS#ON_SOURCE",
+				"CALIBRATE_PHASE#ON_SOURCE",
+				"CALIBRATE_POINTING#ON_SOURCE",
+				"CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE",
+				"CALIBRATE_SIDEBAND_RATIO#ON_SOURCE",
+				"CALIBRATE_WVR#OFF_SOURCE",
+				"CALIBRATE_WVR#ON_SOURCE",
+				"OBSERVE_TARGET#ON_SOURCE"
 			};
 			exp.insert(mystr, mystr+11);
 		}
@@ -287,22 +287,22 @@ void testIt(MSMetaData& md) {
 		}
 		else if (spw < 17) {
 			String mystr[] = {
-					"CALIBRATE_ATMOSPHERE#OFF_SOURCE",
-					"CALIBRATE_ATMOSPHERE#ON_SOURCE",
-					"CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE",
-					"CALIBRATE_SIDEBAND_RATIO#ON_SOURCE",
-					"CALIBRATE_WVR#OFF_SOURCE",
-					"CALIBRATE_WVR#ON_SOURCE"
+				"CALIBRATE_ATMOSPHERE#OFF_SOURCE",
+				"CALIBRATE_ATMOSPHERE#ON_SOURCE",
+				"CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE",
+				"CALIBRATE_SIDEBAND_RATIO#ON_SOURCE",
+				"CALIBRATE_WVR#OFF_SOURCE",
+				"CALIBRATE_WVR#ON_SOURCE"
 			};
 			exp.insert(mystr, mystr+6);
 		}
 		else if (spw < 25) {
 			String mystr[] = {
-					"CALIBRATE_AMPLI#ON_SOURCE",
-					"CALIBRATE_BANDPASS#ON_SOURCE",
-					"CALIBRATE_PHASE#ON_SOURCE",
-					"CALIBRATE_WVR#ON_SOURCE",
-					"OBSERVE_TARGET#ON_SOURCE"
+				"CALIBRATE_AMPLI#ON_SOURCE",
+				"CALIBRATE_BANDPASS#ON_SOURCE",
+				"CALIBRATE_PHASE#ON_SOURCE",
+				"CALIBRATE_WVR#ON_SOURCE",
+				"OBSERVE_TARGET#ON_SOURCE"
 			};
 			exp.insert(mystr, mystr+5);
 		}
@@ -481,9 +481,9 @@ void testIt(MSMetaData& md) {
 			cout << "*** test getAntennaName()" << endl;
 			String name;
 			String expnames[] = {
-					"DA43", "DA44", "DV02", "DV03", "DV05",
-					"DV07", "DV08", "DV10", "DV12", "DV13",
-					"DV14", "DV15", "DV16", "DV17", "DV18"
+				"DA43", "DA44", "DV02", "DV03", "DV05",
+				"DV07", "DV08", "DV10", "DV12", "DV13",
+				"DV14", "DV15", "DV16", "DV17", "DV18"
 			};
 			for (uInt i=0; i<md.nAntennas(); i++) {
 				vector<uInt> ids(1);
@@ -561,43 +561,43 @@ void testIt(MSMetaData& md) {
 			cout << "*** test getTimesForScans()" << endl;
 			std::set<Double> expec;
 			Double myd[] = {
-					4842825928.7, 4842825929.5,
-					4842825930.0,
-					4842825930.6, 4842825941.4,
-					4842825942.2, 4842825942.5,
-					4842825942.7, 4842825943.2,
-					4842825954.0, 4842825954.9,
-					4842825955.2, 4842825955.4,
-					4842825955.9, 4842825003.6,
-					4842825004.0, 4842825004.5,
-					4842825004.8, 4842825005.0,
-					4842825016.3, 4842825016.6,
-					4842825017.1, 4842825017.5,
-					4842825017.6, 4842825029.0,
-					4842825029.3, 4842825029.8,
-					4842825030.1, 4842825030.3
+				4842825928.7, 4842825929.5,
+				4842825930.0,
+				4842825930.6, 4842825941.4,
+				4842825942.2, 4842825942.5,
+				4842825942.7, 4842825943.2,
+				4842825954.0, 4842825954.9,
+				4842825955.2, 4842825955.4,
+				4842825955.9, 4842825003.6,
+				4842825004.0, 4842825004.5,
+				4842825004.8, 4842825005.0,
+				4842825016.3, 4842825016.6,
+				4842825017.1, 4842825017.5,
+				4842825017.6, 4842825029.0,
+				4842825029.3, 4842825029.8,
+				4842825030.1, 4842825030.3
 			};
 			expec.insert(myd, myd+29);
 			std::set<Int> myscans;
 			myscans.insert(3);
 			myscans.insert(6);
 			AlwaysAssert(
-					allNearAbs(md.getTimesForScans(myscans), expec, 0.1),
-					AipsError
+				allNearAbs(md.getTimesForScans(myscans), expec, 0.1),
+				AipsError
 			);
 		}
 		{
 			cout << "*** test getTimesForScan()" << endl;
 			std::set<Double> expec;
 			Double myd[] = {
-					4842825003.6,
-					4842825004.0, 4842825004.5,
-					4842825004.8, 4842825005.0,
-					4842825016.3, 4842825016.6,
-					4842825017.1, 4842825017.5,
-					4842825017.6, 4842825029.0,
-					4842825029.3, 4842825029.8,
-					4842825030.1, 4842825030.3
+				4842825003.6,
+				4842825004.0, 4842825004.5,
+				4842825004.8, 4842825005.0,
+				4842825016.3, 4842825016.6,
+				4842825017.1, 4842825017.5,
+				4842825017.6, 4842825029.0,
+				4842825029.3, 4842825029.8,
+				4842825030.1, 4842825030.3
 			};
 			expec.insert(myd, myd+15);
 			std::set<Int> myscans;
@@ -669,7 +669,6 @@ void testIt(MSMetaData& md) {
 				AlwaysAssert(got == expec, AipsError);
 			}
 			cout << "*** cache size " << md.getCache() << endl;
-
 		}
 		{
 			cout << "*** test getScansForIntent()" << endl;
@@ -880,12 +879,12 @@ void testIt(MSMetaData& md) {
 					expec2.insert(2);
 				}
 				else if (
-						*curScan<=10 || *curScan==13
-						|| *curScan==14 || *curScan==17
-						|| *curScan==18 || *curScan==21
-						|| *curScan==24 || *curScan==25
-						|| *curScan==28 || *curScan==31
-						|| *curScan==32
+					*curScan<=10 || *curScan==13
+					|| *curScan==14 || *curScan==17
+					|| *curScan==18 || *curScan==21
+					|| *curScan==24 || *curScan==25
+					|| *curScan==28 || *curScan==31
+					|| *curScan==32
 				) {
 					expec.insert(3);
 					expec2.insert(3);
@@ -936,7 +935,7 @@ void testIt(MSMetaData& md) {
 				else if (
 					*intent=="CALIBRATE_ATMOSPHERE#OFF_SOURCE"
 						|| *intent=="CALIBRATE_ATMOSPHERE#ON_SOURCE"
-							|| *intent=="CALIBRATE_WVR#OFF_SOURCE"
+						|| *intent=="CALIBRATE_WVR#OFF_SOURCE"
 				) {
 					Int mine[] = {0, 2, 3, 4, 5};
 					expec.insert(mine, mine+5);
@@ -1379,7 +1378,52 @@ void testIt(MSMetaData& md) {
 			std::pair<Double, Double> timerange = md.getTimeRange();
 			AlwaysAssert(near(timerange.first, 4842824745.020, 1e-12), AipsError);
 			AlwaysAssert(near(timerange.second, 4842830012.448, 1e-12), AipsError);
-
+		}
+		{
+			cout << "*** test getTimesForIntent" << endl;
+			std::set<String> intents = md.getIntents();
+			std::set<String>::const_iterator intent = intents.begin();
+			std::set<String>::const_iterator end = intents.end();
+			while (intent != end) {
+				std::set<Double> times = md.getTimesForIntent(*intent);
+				uInt nTimes = times.size();
+				uInt exp = 0;
+				if (*intent == "CALIBRATE_AMPLI#ON_SOURCE") {
+					exp = 234;
+				}
+				else if (*intent == "CALIBRATE_ATMOSPHERE#OFF_SOURCE") {
+					exp = 46;
+				}
+				else if (*intent == "CALIBRATE_ATMOSPHERE#ON_SOURCE") {
+					exp = 93;
+				}
+				else if (*intent == "CALIBRATE_BANDPASS#ON_SOURCE") {
+					exp = 623;
+				}
+				else if (*intent == "CALIBRATE_PHASE#ON_SOURCE") {
+					exp = 1128;
+				}
+				else if (*intent == "CALIBRATE_POINTING#ON_SOURCE") {
+					exp = 244;
+				}
+				else if(
+					*intent == "CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE"
+					|| *intent == "CALIBRATE_SIDEBAND_RATIO#ON_SOURCE"
+				) {
+					exp = 49;
+				}
+				else if (*intent == "CALIBRATE_WVR#OFF_SOURCE") {
+					exp = 95;
+				}
+				else if (*intent == "CALIBRATE_WVR#ON_SOURCE") {
+					exp = 1514;
+				}
+				else if (*intent == "OBSERVE_TARGET#ON_SOURCE") {
+					exp = 1868;
+				}
+				AlwaysAssert(nTimes == exp, AipsError);
+				intent++;
+			}
 		}
 		{
 			cout << "*** cache size " << md.getCache() << endl;

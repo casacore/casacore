@@ -94,7 +94,7 @@ uInt MSMetaData::nStates() const {
 	return _nStates;
 }
 
-std::set<String> MSMetaData::getIntents() {
+std::set<String> MSMetaData::getIntents() const {
 	if (! _uniqueIntents.empty()) {
 		return _uniqueIntents;
 	}
@@ -111,12 +111,14 @@ void MSMetaData::_getStateToIntentsMap(
 	vector<std::set<String> >& stateToIntentsMap,
 	std::set<String>& uniqueIntents
 ) const {
-	if (! _uniqueIntents.empty() && ! _stateToIntentsMap.empty()) {
+	if (
+		! _uniqueIntents.empty() && ! _stateToIntentsMap.empty()
+	) {
 		uniqueIntents = _uniqueIntents;
 		stateToIntentsMap = _stateToIntentsMap;
 		return;
 	}
-
+	uniqueIntents.clear();
 	String intentsColName = MSState::columnName(MSStateEnums::OBS_MODE);
 	ROScalarColumn<String> intentsCol(_ms->state(), intentsColName);
 	Vector<String> intentSets = intentsCol.getColumn();
@@ -135,16 +137,12 @@ void MSMetaData::_getStateToIntentsMap(
 
 	std::set<String>::const_iterator lastIntent = uniqueIntents.end();
 	uInt mysize = 0;
-	for (
-		std::set<String>::const_iterator intent=uniqueIntents.begin();
-		intent!=lastIntent; intent++
-	) {
-		mysize += intent->size();
-	}
+
 	vector<std::set<String> >::const_iterator lastState = stateToIntentsMap.end();
+	uInt count = 0;
 	for (
 		vector<std::set<String> >::const_iterator iter=stateToIntentsMap.begin();
-		iter!=lastState; iter++
+		iter!=lastState; iter++, count++
 	) {
 		std::set<String>::const_iterator lastIntent=iter->end();
 		for (
@@ -153,6 +151,12 @@ void MSMetaData::_getStateToIntentsMap(
 		) {
 			mysize += intent->size();
 		}
+	}
+	for (
+		std::set<String>::const_iterator intent=uniqueIntents.begin();
+		intent!=lastIntent; intent++
+	) {
+		mysize += intent->size();
 	}
 	if (_cacheUpdated(mysize)) {
 		_uniqueIntents = uniqueIntents;
@@ -753,7 +757,6 @@ uInt MSMetaData::_sizeof(const vector<std::set<String> >& m) {
 	return size;
 }
 
-
 uInt MSMetaData::_sizeof(const vector<String>& m) {
 	vector<String>::const_iterator end = m.end();
 	uInt size = 0;
@@ -770,35 +773,18 @@ uInt MSMetaData::_sizeof(const Quantum<Vector<Double> >& m) {
 	return (sizeof(Double)+10)*m.getValue().size();
 }
 
-
-uInt MSMetaData::_sizeof(const std::map<String, std::set<Int> >& m) {
+template <class T> uInt MSMetaData::_sizeof(const std::map<String, std::set<T> >& m) {
 	uInt setssize = 0;
 	uInt size = 0;
-	std::map<String, std::set<Int> >::const_iterator end = m.end();
+	typename std::map<String, std::set<T> >::const_iterator end = m.end();
 	for (
-		std::map<String, std::set<Int> >::const_iterator iter=m.begin();
+		typename std::map<String, std::set<T> >::const_iterator iter=m.begin();
 		iter!=end; iter++
 	) {
 		size += iter->first.size();
 		setssize += iter->second.size();
 	}
-	size += sizeof(Int) * setssize;
-	return size;
-}
-
-
-uInt MSMetaData::_sizeof(const std::map<String, std::set<uInt> >& m) {
-	uInt setssize = 0;
-	uInt size = 0;
-	std::map<String, std::set<uInt> >::const_iterator end = m.end();
-	for (
-		std::map<String, std::set<uInt> >::const_iterator iter=m.begin();
-		iter!=end; iter++
-	) {
-		size += iter->first.size();
-		setssize += iter->second.size();
-	}
-	size += sizeof(uInt) * setssize;
+	size += sizeof(T) * setssize;
 	return size;
 }
 
@@ -1719,7 +1705,7 @@ CountedPtr<Quantum<Vector<Double> > > MSMetaData::_getExposureTimes() {
 }
 
 CountedPtr<ArrayColumn<Bool> > MSMetaData::_getFlags() const {
-        if (_flagsColumn && ! (_flagsColumn->nrow() > 0)) {
+	if (_flagsColumn && _flagsColumn->nrow() > 0) {
 		return _flagsColumn;
 	}
 	String flagColName = MeasurementSet::columnName(MSMainEnums::FLAG);
@@ -1735,7 +1721,6 @@ CountedPtr<ArrayColumn<Bool> > MSMetaData::_getFlags() const {
 	}
 	return flagsColumn;
 }
-
 
 std::set<Double> MSMetaData::getTimesForScans(
 	std::set<Int> scans
@@ -1784,15 +1769,6 @@ void MSMetaData::_getTimesAndInvervals(
 
 	CountedPtr<Vector<Int> > dataDescIDs = _getDataDescIDs();
 	Vector<Int>::const_iterator dIter = dataDescIDs->begin();
-
-	/*
-	String timeCentroidColName = MeasurementSet::columnName(
-		MSMainEnums::TIME_CENTROID
-	);
-	Vector<Double> timeCentroids = ScalarColumn<Double>(
-		*_ms, timeCentroidColName
-	).getColumn();
-	*/
 	Vector<Double> times = *_getTimes();
 
 	Vector<Double>::const_iterator  tIter = times.begin();
@@ -1856,7 +1832,10 @@ std::pair<Double, Double> MSMetaData::getTimeRange() const {
 	_getTimesAndInvervals(scanToTimeRangeMap, scanSpwToAverageIntervalMap);
 	std::map<Int, std::pair<Double,Double> >::const_iterator iter = scanToTimeRangeMap.begin();
 	std::map<Int, std::pair<Double,Double> >::const_iterator end = scanToTimeRangeMap.end();
-	std::pair<Double, Double> timerange (iter->second.first, iter->second.second);
+	std::pair<Double, Double> timerange(
+		iter->second.first, iter->second.second
+	);
+
 	iter++;
 	while (iter != end) {
 		timerange.first = min(timerange.first, iter->second.first);
@@ -2021,6 +2000,66 @@ std::set<Int> MSMetaData::getFieldsForIntent(const String& intent) {
 	return intentToFieldsMap[intent];
 }
 
+std::set<Double> MSMetaData::getTimesForIntent(const String& intent) const {
+	if (! _hasIntent(intent)) {
+		return std::set<Double>();
+	}
+	std::map<String, std::set<Double> > mymap = _getIntentsToTimesMap();
+	if (mymap.find(intent) == mymap.end()) {
+		return std::set<Double>();
+	}
+	else {
+		return mymap[intent];
+	}
+}
+
+std::map<String, std::set<Double> > MSMetaData::_getIntentsToTimesMap() const {
+	if (! _intentToTimesMap.empty()) {
+		return _intentToTimesMap;
+	}
+	vector<std::set<String> > stateToIntentsMap;
+	std::set<String> uniqueIntents;
+	_getStateToIntentsMap(
+		stateToIntentsMap, uniqueIntents
+	);
+	std::map<String, std::set<Double> > mymap;
+	if (uniqueIntents.empty()) {
+		return mymap;
+	}
+	CountedPtr<Vector<Int> > stateIDs = _getStateIDs();
+	CountedPtr<Vector<Double> > times = _getTimes();
+	Vector<Int>::const_iterator state = stateIDs->begin();
+	Vector<Double>::const_iterator time = times->begin();
+	Vector<Int>::const_iterator end = stateIDs->end();
+	vector<std::set<Double> > stateToTimes(nStates());
+	while(state != end) {
+		stateToTimes[*state].insert(*time);
+		state++;
+		time++;
+	}
+	vector<std::set<String> >::const_iterator intents = stateToIntentsMap.begin();
+	vector<std::set<String> >::const_iterator endState = stateToIntentsMap.end();
+	uInt count = 0;
+	while (intents != endState) {
+		std::set<String>::const_iterator intent = intents->begin();
+		std::set<String>::const_iterator eintent = intents->end();
+		while (intent != eintent) {
+			if (mymap.find(*intent) == mymap.end()) {
+				mymap[*intent] = std::set<Double>();
+			}
+			std::set<Double> times = stateToTimes[count];
+			mymap[*intent].insert(times.begin(), times.end());
+			intent++;
+		}
+		count++;
+		intents++;
+	}
+	if (_cacheUpdated(_sizeof(mymap))) {
+		_intentToTimesMap = mymap;
+	}
+	return mymap;
+}
+
 std::map<String, std::set<Int> > MSMetaData::getIntentToFieldsMap() {
 	vector<std::set<String> > fieldToIntentsMap;
 	std::map<String, std::set<Int> > intentToFieldsMap;
@@ -2051,7 +2090,7 @@ std::map<String, std::set<uInt> > MSMetaData::getIntentToSpwsMap() {
 }
 
 
-Bool MSMetaData::_hasIntent(const String& intent) {
+Bool MSMetaData::_hasIntent(const String& intent) const {
 	std::set<String> uniqueIntents = getIntents();
 	return uniqueIntents.find(intent) != uniqueIntents.end();
 }

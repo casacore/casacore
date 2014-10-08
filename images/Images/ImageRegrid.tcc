@@ -83,9 +83,9 @@ void ImageRegrid<T>::regrid(
 	const IPosition& outPixelAxesU,
 	const ImageInterface<T>& inImage,
 	Bool replicate, uInt decimate, Bool showProgress,
-	Bool forceRegrid
+	Bool forceRegrid, Bool verbose
 ) {
-	LogIO os(LogOrigin("ImageRegrid", __FUNCTION__, WHERE));
+	LogIO os(LogOrigin("ImageRegrid", __func__, WHERE));
 	Timer t0;
 	IPosition outShape = outImage.shape();
 	IPosition inShape = inImage.shape();
@@ -126,7 +126,7 @@ void ImageRegrid<T>::regrid(
 
 	// Check user pixel axes specifications
 
-	_checkAxes(outPixelAxes, inShape, outShape, pixelAxisMap1, outCoords);
+	_checkAxes(outPixelAxes, inShape, outShape, pixelAxisMap1, outCoords, verbose);
 
 	{
 		// warn if necessary, CAS-5110
@@ -171,7 +171,7 @@ void ImageRegrid<T>::regrid(
 				)
 			) {
 				LogIO log;
-				log << LogOrigin("ImageRegrid", __FUNCTION__) << LogIO::WARN
+				log << LogOrigin("ImageRegrid", __func__) << LogIO::WARN
 					<< "You are regridding an image whose beam is not well sampled by the "
 					<< "pixel size.  Total flux can be lost when regridding such "
 					<< "images, especially when the new pixel size is larger than "
@@ -234,12 +234,12 @@ void ImageRegrid<T>::regrid(
 			// belongs to a DirectionCoordinate or 2-axis LinearCoordinate,
 			// it will also regrid the other axis.  After the first pass,
 			// the output image is in the final order.
-			regridOneCoordinate (
+			_regridOneCoordinate (
 				os, outShape2, doneOutPixelAxes,
 				finalOutPtr, inPtr, outPtr, outCoords,
 				inCoords2, outPixelAxes[i], inImage,
 				outShape, replicate, decimate, outIsMasked,
-				showProgress, forceRegrid, method
+				showProgress, forceRegrid, method, verbose
 			);
 			// The input CS for the next pass is now the present output
 			// CS, except that we overwrite the coordinates not yet regridded
@@ -271,7 +271,7 @@ void ImageRegrid<T>::regrid(
 }
 
 template<class T>
-void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
+void ImageRegrid<T>::_regridOneCoordinate (LogIO& os, IPosition& outShape2,
 		Vector<Bool>& doneOutPixelAxes,
 		MaskedLattice<T>* &finalOutPtr,
 		MaskedLattice<T>* &inPtr,
@@ -284,7 +284,8 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 		Bool replicate, uInt decimate,
 		Bool outIsMasked, Bool showProgress,
 		Bool forceRegrid,
-		typename Interpolate2D::Method method)
+		typename Interpolate2D::Method method,
+		Bool verbose)
 		{
 	Timer t0;
 	Double s0 = 0.0;
@@ -361,9 +362,11 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 		Bool lastPass = allEQ(doneOutPixelAxes, True);
 		//
 		if (!regridIt) {
-			os << "Input and output shape/coordinate information for "
+			if (verbose) {
+				os << "Input and output shape/coordinate information for "
 					<< Coordinate::typeToString(cIn.type())
 					<< " axes equal - no regridding needed" << LogIO::POST;
+			}
 			if (lastPass) {
 
 				// Can't avoid this copy
@@ -436,9 +439,11 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 		Bool lastPass = allEQ(doneOutPixelAxes, True);
 		//
 		if (!regridIt) {
-			os << "Input and output shape/coordinate information for "
-				<< Coordinate::typeToString(inCoord.type()) << " axis "
-				"equal - no regridding needed" << LogIO::POST;
+			if (verbose) {
+				os << "Input and output shape/coordinate information for "
+					<< Coordinate::typeToString(inCoord.type())
+					<< " axis equal - no regridding needed" << LogIO::POST;
+			}
 			if (lastPass) {
 
 				// Can't avoid this copy
@@ -622,7 +627,7 @@ template<class T> CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(
 	Bool giveStokesWarning
 ) {
 	coordsToBeRegridded.clear();
-	os << LogOrigin("ImageRegrid<T>", __FUNCTION__, WHERE);
+	os << LogOrigin("ImageRegrid<T>", __func__, WHERE);
 	const uInt nCoordsFrom = cSysFrom.nCoordinates();
 	const uInt nPixelAxesFrom = cSysFrom.nPixelAxes();
 	ThrowIf(
@@ -1998,9 +2003,10 @@ void ImageRegrid<T>::_checkAxes(IPosition& outPixelAxes,
                                const IPosition& inShape,
                                const IPosition& outShape,
                                const Vector<Int>& pixelAxisMap1,
-                               const CoordinateSystem& outCoords)
+                               const CoordinateSystem& outCoords,
+                               Bool verbose)
 {
-   LogIO os(LogOrigin("ImageRegrid", "regrid(...)", WHERE));
+   LogIO os(LogOrigin("ImageRegrid", __func__, WHERE));
    ThrowIf(inShape.nelements()==0, "The input shape is illegal");
    ThrowIf(
 		   outShape.nelements()==0,
@@ -2053,8 +2059,11 @@ void ImageRegrid<T>::_checkAxes(IPosition& outPixelAxes,
 // Otherwise, regridding a one-pixel axis is useless.
 
             if (type!=Coordinate::DIRECTION) {
-              os << "Cannot regrid zero-based axis " << outPixelAxes(i) <<
-		" because it is of unit length - removing from list" << LogIO::POST;
+            	if (verbose) {
+            		os << "Cannot regrid zero-based axis " << outPixelAxes(i)
+            			<< " because it is of unit length - removing from list"
+            			<< LogIO::POST;
+            	}
               ok = False;
             }
          } 

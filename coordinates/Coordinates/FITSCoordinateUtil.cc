@@ -439,9 +439,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    latPole =  dCoord.longLatPoles()(3);
 //
 	    const DirectionCoordinate &dc = cSys.directionCoordinate(skyCoord);
+	    Double reflat = 0.;
+	    if(latAxis>=0){
+	      reflat = C::pi/180.0*crval(latAxis);
+	    }
 	    cctype = cTypeFromDirection (isNCP, dc.projection(), 
 					 DirectionCoordinate::axisNames(dc.directionType(),
-									True), C::pi/180.0*crval(latAxis), True);
+									True), reflat, True);
 	}
 //
 	ctype = cSys.worldAxisNames();
@@ -1411,13 +1415,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     //
     {
         if (wcs.specsys[0]=='\0') {
-          ///	    if (wcs.velref==0) { // velref was also not given
+            if (wcs.velref==0) { // velref was also not given
 	        os << LogIO::NORMAL << "Neither SPECSYS nor VELREF keyword given, spectral reference frame not defined ..." 
 		   << LogIO::POST;
 	        type = MFrequency::Undefined;
 	        return True;
 	    }
-        /*
 	    else { // velref was given
 	        Int vref = wcs.velref;
 	        os << LogIO::NORMAL << "No SPECSYS but found (deprecated) VELREF keyword with value " << vref << LogIO::POST;
@@ -1461,7 +1464,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		return True;
 	    }
 	}
-        */
 	String specSys(wcs.specsys);
 	specSys.upcase();
 

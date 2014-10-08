@@ -201,7 +201,6 @@ namespace casa { //# name space casa begins
 			      const String& absrel, const String& comment){
     setcoordsys(csys);    
     return wbox(blc, trc, pixelaxes, absrel, comment);
-
   }
 
   Record* RegionManager::wbox(const Vector<Quantity>& blc, 
@@ -209,19 +208,17 @@ namespace casa { //# name space casa begins
 			      const Vector<Int>& pixelaxes,  
 			      const String& absrel, const String& comment){
  
-
-    if(itsCSys==0)
-      throw(AipsError(String("CoordinateSystem has not been set"))); 
+    if(itsCSys==0) {
+      ThrowCc("CoordinateSystem has not been set");
+    }
     ImageRegion * leImReg=wbox(blc, trc, pixelaxes, *itsCSys, absrel);
     Record *leRecord= new Record();
     leRecord->assign(leImReg->toRecord(String("")));
     delete leImReg;
     leRecord->define("comment", comment);
     return leRecord;
-
-
-
   }
+
   void RegionManager::toQuantity(Quantity& out, const String& in){
     String leString=in;
     QuantumHolder qh;
@@ -245,7 +242,7 @@ namespace casa { //# name space casa begins
 			      const Vector<String>& trc, 
 			      const Vector<Int>& pixelaxes,  
 			      const String& absrel, const String& comment){
-
+    ThrowIf(! itsCSys, "Coordinate system has not been set");
     Vector<Quantity> losBlc(blc.nelements());
     Vector<Quantity> losTrc(trc.nelements());
     QuantumHolder qh;
