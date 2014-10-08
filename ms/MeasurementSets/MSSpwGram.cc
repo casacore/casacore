@@ -28,9 +28,7 @@
 // MSSpwGram; grammar for field command lines
 
 // This file includes the output files of bison and flex for parsing
-// command lines operating on lattices.  This is a preliminary
-// version; eventually it has to be incorporated in the AIPS++ command
-// language.
+// command lines operating on spectral window selection.
 
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprNodeSet.h>

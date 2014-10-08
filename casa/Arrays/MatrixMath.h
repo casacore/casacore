@@ -1,4 +1,4 @@
-//# MatrixMath.h: The AIPS++ linear algebra functions
+//# MatrixMath.h: The Casacore linear algebra functions
 //# Copyright (C) 1994,1995,1996,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#

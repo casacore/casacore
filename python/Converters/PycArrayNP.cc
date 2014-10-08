@@ -1,4 +1,4 @@
-//# PycArrayNP.cc: Convert an Array to a Python numpy array
+//# PycArrayNP.cc: Convert a Casacore Array to a Python numpy array
 //# Copyright (C) 2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -262,7 +262,7 @@ namespace casa { namespace python { namespace numpy {
   {
     // Load the API if needed.
     if (!PyArray_API) loadAPI();
-    // Swap axes, because AIPS++ has row minor and Python row major order.
+    // Swap axes, because Casacore has row minor and Python row major order.
     // A Python array needs at least 1 dimension, otherwise it's a scalar.
     int nd = arr.ndim();
     vector<npy_intp> newshp(1, 0);

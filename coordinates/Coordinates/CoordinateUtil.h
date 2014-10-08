@@ -61,7 +61,7 @@ class Unit;
 // </prerequisite>
 //
 // <etymology> 
-// CoordinateUtils follows the AIPS++ naming convention for static functions
+// CoordinateUtils follows the Casacore naming convention for static functions
 // that are associated with a class.
 // </etymology>
 //

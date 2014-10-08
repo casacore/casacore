@@ -32,7 +32,6 @@
 //# Includes
 #include <images/Images/ImageInterface.h>
 #include <casa/Arrays/AxesSpecifier.h>
-#include <memory>    // for auto_ptr
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

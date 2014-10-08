@@ -272,6 +272,14 @@ namespace casa {
 #else
 
   FFTW::FFTW()
+    : itsPlanR2Cf  (0),
+      itsPlanR2C   (0),
+      itsPlanC2Rf  (0),
+      itsPlanC2R   (0),
+      itsPlanC2CFf (0),
+      itsPlanC2CF  (0),
+      itsPlanC2CBf (0),
+      itsPlanC2CB  (0)
   {}
   FFTW::~FFTW()
   {}

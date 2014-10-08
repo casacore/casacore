@@ -37,7 +37,7 @@
   void loadAPI();
   // </group>
 
-  // Convert the python array to an AIPS++ array in the ValueHolder.
+  // Convert the python array to a Casacore array in the ValueHolder.
   // If copyData is True, the array data is always copied.
   // Otherwise only if needed.
   ValueHolder makeArray (PyObject* obj_ptr, Bool copyData);
@@ -81,7 +81,7 @@
   Array<String> ArrayCopyStr_toArray (const IPosition& shape,
 				      void* data, uInt slen);
 
-  // Convert an AIPS++ array to a Python array object.
+  // Convert a Casacore array to a Python array object.
   template <typename T>
   boost::python::object makePyArrayObject (casa::Array<T> const& arr);
 

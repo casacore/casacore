@@ -1,4 +1,4 @@
-//# MatrixMath.cc: The AIPS++ linear algebra functions
+//# MatrixMath.tcc: The Casacore linear algebra functions
 //# Copyright (C) 1994,1995,1996,1998,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#

@@ -284,7 +284,7 @@
       po = (PyArrayObject*)(obj.ptr());
       docopy = true;
     }
-    // Swap axes, because AIPS++ has row minor and Python row major order.
+    // Swap axes, because Casacore has row minor and Python row major order.
     // A scalar is treated as a vector with length 1.
     int nd = po->nd;
     IPosition shp(1, 1);

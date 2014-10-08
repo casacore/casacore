@@ -17,7 +17,7 @@
 //# along with this library; if not, write to the Free Software Foundation,
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
-//# Correspondence concerning AIPS++ should be adressed as follows:
+//# Correspondence concerning AIPS++ should be addressed as follows:
 //#        Internet email: aips2-request@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
