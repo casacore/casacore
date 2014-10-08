@@ -660,7 +660,7 @@ void CoordinateSystem::subImageInSitu(const Vector<Float> &originShift,
         	// tabular spectral coordinate
         	SpectralCoordinate spCoord = spectralCoordinate(coordinate);
         	SpectralCoordinate::SpecType nativeType = spCoord.nativeType();
-        	Vector<Double> newWorldValues(newShape[i]);
+                Vector<Double> newWorldValues(newShape.nelements() > 0 ? newShape[i] : spCoord.worldValues().size());
 		// switch off reference conversion if necessary
 		MFrequency::Types baseType = spCoord.frequencySystem(False);
 		MFrequency::Types convType = spCoord.frequencySystem(True);

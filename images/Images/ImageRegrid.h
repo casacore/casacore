@@ -150,7 +150,8 @@ public:
               const IPosition& whichOutPixelAxes,
 	      const ImageInterface<T>& inImage,
               Bool replicate=False, uInt decimate=0,
-              Bool showProgress=False, Bool forceRegrid=False);
+              Bool showProgress=False, Bool forceRegrid=False,
+              Bool verbose=False);
 
 // Get and set the 2-D coordinate grid.  After a call to function <src>regrid</src>
 // in which coupled 2D coordinate (presently only DirectionCoordinate) is
@@ -231,7 +232,8 @@ public:
                   const IPosition& inShape,
                   const IPosition& outShape,
                   const Vector<Int>& pixelAxisMap,
-                  const CoordinateSystem& outCoords);
+                  const CoordinateSystem& outCoords,
+                  Bool verbose);
 
   // Find maps between coordinate systems
   void findMaps (uInt nDim, 
@@ -248,20 +250,21 @@ public:
                           LogIO& os) const;
 
   // Regrid one Coordinate
-   void regridOneCoordinate (LogIO& os, IPosition& outShape2,
-                             Vector<Bool>& doneOutPixelAxes,
-                             MaskedLattice<T>* &finalOutPtr,  
-                             MaskedLattice<T>* &inPtr,   
-                             MaskedLattice<T>* &outPtr,  
-                             CoordinateSystem& outCoords,
-                             const CoordinateSystem& inCoords,
-                             Int outPixelAxis,
-                             const ImageInterface<T>& inImage,
-                             const IPosition& outShape,
-                             Bool replicate, uInt decimate,
-                             Bool outIsMasked, Bool showProgress,
-                             Bool forceRegrid, 
-                             typename Interpolate2D::Method method);
+   void _regridOneCoordinate (LogIO& os, IPosition& outShape2,
+                              Vector<Bool>& doneOutPixelAxes,
+                              MaskedLattice<T>* &finalOutPtr,  
+                              MaskedLattice<T>* &inPtr,   
+                              MaskedLattice<T>* &outPtr,  
+                              CoordinateSystem& outCoords,
+                              const CoordinateSystem& inCoords,
+                              Int outPixelAxis,
+                              const ImageInterface<T>& inImage,
+                              const IPosition& outShape,
+                              Bool replicate, uInt decimate,
+                              Bool outIsMasked, Bool showProgress,
+                              Bool forceRegrid, 
+                              typename Interpolate2D::Method method,
+                              Bool verbose);
 
   // Regrid  DirectionCoordinate or 2-axis LinearCoordinate
    void regridTwoAxisCoordinate  (LogIO& os, MaskedLattice<T>& outLattice,

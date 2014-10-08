@@ -83,7 +83,7 @@ public:
 	std::set<String> getIntentsForScan(const Int scan) const;
 
 	// get all intents, in no particular (nor guaranteed) order.
-	std::set<String> getIntents();
+	std::set<String> getIntents() const;
 
 	// get a set of spectral windows for which the specified <src>intent</src>
 	// applies.
@@ -245,6 +245,9 @@ public:
 
 	// get the times for which the specified field was observed
 	std::set<Double> getTimesForField(Int fieldID);
+
+	// get the time stamps associated with the specified intent
+	std::set<Double> getTimesForIntent(const String& intent) const;
 
 	// get telescope names in the order they are listed in the OBSERVATION table. These are
 	// the telescopes (observatories), not the antenna names.
@@ -411,6 +414,7 @@ private:
 	mutable CountedPtr<std::map<Int, std::set<Double> > > _scanToTimesMap;
 	mutable std::map<String, std::set<Int> > _intentToFieldIDMap, _intentToScansMap;
 	std::map<String, std::set<uInt> > _intentToSpwsMap;
+	mutable std::map<String, std::set<Double> > _intentToTimesMap;
 
 	CountedPtr<std::map<Int, std::set<Double> > > _fieldToTimesMap;
 	CountedPtr<std::map<Double, std::set<Int> > > _timeToFieldsMap;
@@ -452,7 +456,7 @@ private:
 
 	static void _checkScan(const Int scan, const std::set<Int> allScans);
 
-	Bool _hasIntent(const String& intent);
+	Bool _hasIntent(const String& intent) const;
 
 	Bool _hasFieldID(Int fieldID);
 
@@ -506,7 +510,7 @@ private:
 
 	static uInt _sizeof(const vector<std::set<Int> >& v);
 
-	static uInt _sizeof(const std::map<String, std::set<uInt> >& map);
+	template <class T> static uInt _sizeof(const std::map<String, std::set<T> >& map);
 
 	static uInt _sizeof(const vector<std::map<Int, Quantity> >& map);
 
@@ -534,14 +538,11 @@ private:
 
 	static uInt _sizeof(const std::map<Int, std::set<String> >& m);
 
-	static uInt _sizeof(const std::map<String, std::set<Int> >& m);
-
 	static uInt _sizeof(const vector<std::set<String> >& m);
 
 	static uInt _sizeof(const vector<String>& m);
 
 	static uInt _sizeof(const Quantum<Vector<Double> >& m);
-
 
 	static uInt _sizeof(const std::map<Int, std::set<Double> >& m);
 
@@ -579,6 +580,8 @@ private:
 	vector<String> _getFieldNames() const;
 
 	vector<String> _getStationNames();
+
+	std::map<String, std::set<Double> > _getIntentsToTimesMap() const;
 
 	CountedPtr<std::map<Int, std::set<Double> > > _getScanToTimesMap() const;
 
