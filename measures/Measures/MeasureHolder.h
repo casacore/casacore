@@ -211,18 +211,10 @@ public:
   // that are content with just letting the exception proceed up the call stack
   // so they do not have to check a return status. This is, among other things, what
   // exceptions are for after all.
-  // TODO. I'd rather return the RecordInterface, but since RecordInterface is abstract,
-  // that means returning a pointer that is created internally. That really should be
-  // done using a smart pointer, but other than our own PtrHolder (which I'd really rather
-  // not use), auto_ptr is really the only thing that can be used at this point. auto_ptr
-  // has its own issues and is frowned on by other casacore partners, so I don't want to
-  // litter casacore code with that. unique_ptr is a much better solution, but as of now
-  // that is still not available. When it becomes available this issue can be revisited.
   virtual void toRecord(RecordInterface& outRecord) const;
 
 
   // Create a default Measure or a record with only a type from a Measure
-
   // <group>
   Bool toType(String &error, RecordInterface &out) const;
   Bool fromType(String &error, const RecordInterface &in);

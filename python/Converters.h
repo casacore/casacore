@@ -40,7 +40,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <module>
 
 // <summary>
-// Convert casacore objects to/from Python (using Boost.Python)
+// Convert Casacore objects to/from Python (using Boost.Python)
 // </summary>
 
 // <use visibility=export>
@@ -54,9 +54,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </prerequisite>
 
 // <synopsis> 
-// Converters contains functions to convert the important AIPS++ objects
+// Converters contains functions to convert the important Casacore objects
 // to/from Python using the Boost.Python package.
-// Converters for the following AIPS++ classes exist:
+// Converters for the following Casacore classes exist:
 // <ul>
 //  <li> Scalars of basic data types like Bool, Int, Float, Complex.
 //  <li> casa::String and std::string.
@@ -76,7 +76,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //         or numpy) is determined by the package loaded (and supported).
 //         If both or none are loaded, a numpy array is returned. An empty
 //         array is returned as an empty Python array.
-//         <br>Because AIPS++ arrays are in Fortran order and Python
+//         <br>Because Casacore arrays are in Fortran order and Python
 //         arrays in C order, the axes are reversed during conversion.
 //         <br>A 1-dim <src>Array<String></src> object is converted to a list,
 //         while a higher dimensioned Array<String> object is converted to/from
@@ -92,7 +92,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       It is converted back to a Python list.
 //       An IPosition object represents an array shape or position, so its
 //       values are reversed because of the different ordening of
-//       AIPS++ and Python arrays.
+//       Casacore and Python arrays.
 //  <li> Exceptions, which are mapped to a Python <src>RuntimeError</src>
 //       exception. Only the <src>casa::IterError</src> exception is mapped
 //       to a Python <src>StopIteration</src> exception.

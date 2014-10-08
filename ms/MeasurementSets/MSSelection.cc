@@ -1287,19 +1287,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   Bool MSSelection::definedAndSet(const Record& inpRec, const String& fieldName)
   {
-    // Check if a record field is defined and not AIPS++ unset
+    // Check if a record field is defined and not unset
     // Input:
     //    inpRec          const Record&     Input Record
     //    fieldName       const String&     Field name
     // Ouput:
     //    definedAndSet   Bool              True if field defined and
-    //                                      not AIPS++ unset
+    //                                      not unset
     //
     Bool retval = False;
     // Check if record field is defined
     if (inpRec.isDefined(fieldName)) {
       retval = True;
-      // Now check if AIPS++ unset
+      // Now check if unset
       //    if (inpRec.dataType(fieldName) == TpRecord) {
       //      retval = !Unset::isUnset(inpRec.subRecord(fieldName));
       //    };
