@@ -41,26 +41,32 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+  void operator<< (ostream& ios, const MultiFileInfo& info)
+    { ios << info.name << ' ' << info.blockNrs << ' '
+          << info.curBlock << ' ' << info.dirty << endl; }
   void operator<< (AipsIO& ios, const MultiFileInfo& info)
     { ios << info.name << info.blockNrs; }
   void operator>> (AipsIO& ios, MultiFileInfo& info)
     { ios >> info.name >> info.blockNrs; }
 
 
-  MultiFile::MultiFile (const String& name, ByteIO::OpenOption option, Int blockSize)
-    : itsBlockSize (blockSize)
+  MultiFile::MultiFile (const String& name, ByteIO::OpenOption option,
+                        Int blockSize)
+    : itsBlockSize (blockSize),
+      itsAdded     (False)
   {
     itsFD = LargeRegularFileIO::openCreate (name, option);
     itsIO.attach (itsFD, name);
     if (option == ByteIO::New  ||  option == ByteIO::NewNoReplace) {
       // New file; first block is for administration.
       itsNrBlock = 1;
+      itsAdded   = True;
       // Use file system block size, but not less than given size.
-      if (blockSize <= 0) {
+      if (itsBlockSize <= 0) {
         struct fileSTAT sfs;
         fileFSTAT (itsFD, &sfs);
-        Int blksz = sfs.st_blksize;
-        blockSize = std::min (-blockSize, blksz);
+        Int64 blksz = sfs.st_blksize;
+        itsBlockSize = std::max (-itsBlockSize, blksz);
       }
     } else {
       readHeader();
@@ -81,7 +87,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   void MultiFile::flush()
   {
-    // Flush all buffers.
+    // Flush all buffers if needed.
     for (vector<MultiFileInfo>::iterator iter=itsInfo.begin();
          iter!=itsInfo.end(); ++iter) {
       if (iter->dirty) {
@@ -90,7 +96,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
         iter->dirty = False;
       }
     }
-    writeHeader();
+    // Header only needs to be written if blocks were added since last flush.
+    if (itsAdded) {
+      writeHeader();
+      itsAdded = False;
+    }
   }
 
   void MultiFile::writeHeader()
@@ -132,7 +142,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Read the first part of the header.
     vector<char> buf(3*sizeof(Int64));
     itsIO.seek (0);
-    itsIO.read (sizeof(buf), &(buf[0]));
+    itsIO.read (buf.size(), &(buf[0]));
     // Extract the required info.
     Int64 next, headerSize;
     CanonicalConversion::toLocal (next, &(buf[0]));
@@ -154,7 +164,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Int version = aio.getstart ("MultiFile");
     AlwaysAssert (version==1, AipsError);
     aio >> itsNrBlock >> itsInfo;
-    aio.putend();
+    aio.getend();
+    // Initialize remaining info fields.
+    for (vector<MultiFileInfo>::iterator iter=itsInfo.begin();
+         iter!=itsInfo.end(); ++iter) {
+      iter->curBlock = -1;
+      iter->dirty    = False;
+      iter->buffer.resize (itsBlockSize);
+    }
   }
 
   Int MultiFile::add (const String& fname)
@@ -163,7 +180,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     for (vector<MultiFileInfo>::iterator iter=itsInfo.begin();
          iter!=itsInfo.end(); ++iter) {
       if (fname == iter->name) {
-        throw AipsError ("MultiFile: file name " + fname + " already in use");
+        throw AipsError ("MultiFile::add - file name " + fname +
+                         " already in use");
       }
     }
     // Add a new file entry.
@@ -172,11 +190,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     itsInfo[inx].buffer.resize (itsBlockSize);
     itsInfo[inx].curBlock = -1;
     itsInfo[inx].name = fname;
+    itsAdded = True;
     return inx;
   }
 
-  Int64 MultiFile::read (Int fileId, char* buffer, Int64 size, Int64 offset)
+  Int MultiFile::fileId (const String& fname) const
   {
+    for (size_t i=0; i<itsInfo.size(); ++i) {
+      if (fname == itsInfo[i].name) {
+        return i;
+      }
+    }
+    throw AipsError ("MultiFile::fileId - file name " + fname +
+                     " is unknown");
+  }
+
+  Int64 MultiFile::read (Int fileId, void* buf, Int64 size, Int64 offset)
+  {
+    char* buffer = static_cast<char*>(buf);
     DebugAssert (fileId < itsInfo.size(), AipsError);
     MultiFileInfo& info = itsInfo[fileId];
     // Determine the logical block to read and the start offset in that block.
@@ -186,7 +217,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Int64 done  = 0;
     // Read until all done or EOF.
     while (done < size  &&  blknr < nrblk) {
-      Int64 todo  = std::min(size, itsBlockSize-start);
+      Int64 todo  = std::min(size-done, itsBlockSize-start);
       // If already in buffer, copy from there.
       if (blknr == info.curBlock) {
         memcpy (buffer, &(info.buffer[start]), todo);
@@ -196,6 +227,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
         // Read directly into buffer if it fits exactly.
         if (todo == itsBlockSize  &&  start == 0) {
           itsIO.read (itsBlockSize, buffer);
+          cout<<"direct read of "<<info.blockNrs[blknr]<<endl;
         } else {
           // Read into file buffer and copy correct part.
           itsIO.read (itsBlockSize, &(info.buffer[0]));
@@ -212,8 +244,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return done;
   }
 
-  Int64 MultiFile::write (Int fileId, const char* buffer, Int64 size, Int64 offset)
+  Int64 MultiFile::write (Int fileId, const void* buf, Int64 size, Int64 offset)
   {
+    const char* buffer = static_cast<const char*>(buf);
+    AlwaysAssert (itsIO.isWritable(), AipsError);
     DebugAssert (fileId < itsInfo.size(), AipsError);
     MultiFileInfo& info = itsInfo[fileId];
     // Determine the logical block to write and the start offset in that block.
@@ -224,52 +258,48 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Int64 lastblk = blknr + (start+size+itsBlockSize-1) / itsBlockSize;
     Int64 curnrb = info.blockNrs.size();
     if (lastblk >= curnrb) {
-      info.blockNrs.resize (lastblk - curnrb + 1);
-      for (size_t i=curnrb; i<=info.blockNrs.size(); ++i) {
-        itsNrBlock++;
+      info.blockNrs.resize (lastblk);
+      for (Int64 i=curnrb; i<lastblk; ++i) {
         info.blockNrs[i] = itsNrBlock;
+        itsNrBlock++;
       }
+      itsAdded = True;
     }
     // Write until all done.
     while (done < size) {
-      Int64 todo = std::min(size, itsBlockSize-start);
-      // If already in buffer, copy to there.
+      Int64 todo = std::min(size-done, itsBlockSize-start);
+      // Favor sequential writing, thus write current buffer first.
       if (blknr == info.curBlock) {
         memcpy (&(info.buffer[start]), buffer, todo);
         info.dirty = True;
-      } else {
-        // Favor sequential writes, thus write current buffer first.
-        if (blknr == info.curBlock) {
-          memcpy (&(info.buffer[start]), buffer, todo);
-          info.dirty = True;
-          if (done+todo >= size) {
-            itsIO.seek (info.curBlock * itsBlockSize);
-            itsIO.write (itsBlockSize, &(info.buffer[0]));
-            info.dirty = False;
-            info.curBlock = -1;
-          }
-        } else if (todo == itsBlockSize  &&  start == 0) {
-          // Write directly from buffer if it fits exactly.
-          itsIO.seek (info.blockNrs[blknr] * itsBlockSize);
-          itsIO.write (itsBlockSize, buffer);
-        } else {
-          // Write into temporary buffer and copy correct part.
-          // First write possibly dirty buffer.
-          if (info.dirty) {
-            itsIO.seek (info.curBlock * itsBlockSize);
-            itsIO.write (itsBlockSize, &(info.buffer[0]));
-          }
-          itsIO.seek (info.blockNrs[blknr] * itsBlockSize);
-          itsIO.read (itsBlockSize, &(info.buffer[0]));
-          info.curBlock = blknr;
-          memcpy (&(info.buffer[start]), buffer, todo);
-          info.dirty = True;
+        if (done+todo >= size) {
+          itsIO.seek (info.curBlock * itsBlockSize);
+          itsIO.write (itsBlockSize, &(info.buffer[0]));
+          info.dirty = False;
+          info.curBlock = -1;
         }
-        done += todo;
-        buffer += todo;
-        blknr++;
-        start = 0;
+      } else if (todo == itsBlockSize  &&  start == 0) {
+        // Write directly from buffer if it fits exactly.
+        itsIO.seek (info.blockNrs[blknr] * itsBlockSize);
+        itsIO.write (itsBlockSize, buffer);
+        cout<<"direct write of "<<info.blockNrs[blknr]<<endl;
+      } else {
+        // Write into temporary buffer and copy correct part.
+        // First write possibly dirty buffer.
+        if (info.dirty) {
+          itsIO.seek (info.curBlock * itsBlockSize);
+          itsIO.write (itsBlockSize, &(info.buffer[0]));
+          }
+        itsIO.seek (info.blockNrs[blknr] * itsBlockSize);
+        itsIO.read (itsBlockSize, &(info.buffer[0]));
+        info.curBlock = blknr;
+        memcpy (&(info.buffer[start]), buffer, todo);
+        info.dirty = True;
       }
+      done += todo;
+      buffer += todo;
+      blknr++;
+      start = 0;
     }
     return done;
   }

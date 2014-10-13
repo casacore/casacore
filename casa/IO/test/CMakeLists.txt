@@ -15,6 +15,7 @@ tLargeFileIO
 tLockFile
 tMappedIO
 tMMapIO
+tMultiFile
 tTapeIO
 tTypeIO
 )
