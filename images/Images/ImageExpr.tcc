@@ -69,7 +69,23 @@ ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
   AlwaysAssert (pImCoord != 0, AipsError);
   this->setCoordsMember (pImCoord->coordinates());
   this->setImageInfoMember (pImCoord->imageInfo());
-  unit_p = pImCoord->unit();
+  this->setMiscInfoMember (pImCoord->miscInfo());
+  this->setUnitMember (pImCoord->unit());
+}
+
+template <class T>
+ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
+			 const String& expr, const String& fileName,
+                         const LELImageCoord& imCoord)
+
+  : latticeExpr_p(latticeExpr),
+    fileName_p   (fileName)
+{
+  exprString_p = expr;
+  this->setCoordsMember (imCoord.coordinates());
+  this->setImageInfoMember (imCoord.imageInfo());
+  this->setMiscInfoMember (imCoord.miscInfo());
+  this->setUnitMember (imCoord.unit());
 }
 
 template <class T>
