@@ -32,6 +32,7 @@
 #include <casa/aips.h>
 #include <casa/IO/LargeFiledesIO.h>
 #include <casa/vector.h>
+#include <casa/ostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -50,6 +51,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     String        name;         // the logical file name
     Bool          dirty;        // has data in buffer been changed?
   };
+  void operator<< (ostream&, const MultiFileInfo&);
   void operator<< (AipsIO&, const MultiFileInfo&);
   void operator>> (AipsIO&, MultiFileInfo&);
 
@@ -103,14 +105,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     ~MultiFile();
 
     // Add a file to the MultiFile object. It returns the file id.
-    // The given name must be a basename or have the same directory as the MultiFile object.
+    // The given name must be a basename or have the same directory as the
+    // MultiFile object.
     Int add (const String& name);
 
+    // Return the file id of a file in the MultiFile object.
+    // An exception is thrown if the name is unknown.
+    Int fileId (const String& name) const;
+
     // Read a block at the given offset. It returns the actual size read.
-    Int64 read (Int fileId, char* buffer, Int64 size, Int64 offset);
+    Int64 read (Int fileId, void* buffer, Int64 size, Int64 offset);
 
     // Write a block at the given offset. It returns the actual size written.
-    Int64 write (Int fileId, const char* buffer, Int64 size, Int64 offset);
+    Int64 write (Int fileId, const void* buffer, Int64 size, Int64 offset);
 
     // Reopen the underlying file for read/write access.
     // Nothing will be done if the stream is writable already.
@@ -126,13 +133,25 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     String fileName() const
       { return itsIO.fileName(); }
 
+    // Is the file writable?
+    Bool isWritable() const
+      { return itsIO.isWritable(); }
+
     // Get the block size used.
     Int64 blockSize() const
       { return itsBlockSize; }
 
+    // Get the nr of internal files.
+    Int nfile() const
+      { return itsInfo.size(); }
+
     // Get the nr of blocks used.
     Int64 size() const
       { return itsNrBlock; }
+
+    // Get the info object (for test purposes).
+    const vector<MultiFileInfo>& info() const
+      { return itsInfo; }
 
   private:
     void close();
@@ -140,11 +159,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     void readHeader();
 
     //# Data members
-    Int   itsBlockSize;  // The blocksize used
+    Int64 itsBlockSize;  // The blocksize used
     Int64 itsNrBlock;    // The total nr of blocks actually used
     vector<MultiFileInfo> itsInfo;
     LargeFiledesIO        itsIO;
     int                   itsFD;
+    Bool                  itsAdded; // Has blocks been added since last flush?
   };
 
 
