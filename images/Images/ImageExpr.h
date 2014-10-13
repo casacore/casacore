@@ -115,8 +115,16 @@ public:
   // Construct an ImageExpr from a LatticeExpr.
   // The expr given should be the original expression string.
   // The fileName argument is meant for ImageOpener.
+  // The coordinates are taken from the expression, usually the first image.
+  // An exception is thrown if the expression has no coordinates.
   ImageExpr(const LatticeExpr<T>& latticeExpr, const String& expr,
             const String& fileName = String());
+
+  // Same as previous constructor, but the coordinates are taken from the
+  // given LELImageCoord object.
+  ImageExpr(const LatticeExpr<T>& latticeExpr,
+            const String& expr, const String& fileName,
+            const LELImageCoord& imCoord);
 
   // Copy constructor (reference semantics)
   ImageExpr(const ImageExpr<T>& other);
