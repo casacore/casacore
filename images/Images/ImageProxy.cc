@@ -781,10 +781,15 @@ namespace casa { //# name space casa begins
                                    const IPosition& trc, 
                                    const IPosition& inc,
                                    Bool dropDegenerate)
-                                   ///Bool dropDegenerate,
-                                   ///Bool preserveAxesOrder)
   {
-    Bool preserveAxesOrder=False; ///
+    return subImage2 (blc, trc, inc, dropDegenerate, False);
+  }
+  ImageProxy ImageProxy::subImage2 (const IPosition& blc,
+                                    const IPosition& trc, 
+                                    const IPosition& inc,
+                                    Bool dropDegenerate,
+                                    Bool preserveAxesOrder)
+  {
     AxesSpecifier axesSpec(!dropDegenerate);
     IPosition shp = shape();
     Slicer slicer(adjustBlc(blc, shp),

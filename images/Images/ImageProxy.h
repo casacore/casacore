@@ -241,12 +241,17 @@ namespace casa {
                   const Vector<String>& measInfo);
 
     // Form a new (virtual) image being a subset of the image.
+    // It uses preserveAxesOrder=False.
     ImageProxy subImage (const IPosition& blc,
                          const IPosition& trc, 
                          const IPosition& inc,
                          Bool dropDegenerate=True);
-                         ///Bool dropDegenerate=True,
-                         ///Bool preserveAxesOrder=False);
+    // Same with a new function name for backward compatibility with old pyrap.
+    ImageProxy subImage2 (const IPosition& blc,
+                          const IPosition& trc, 
+                          const IPosition& inc,
+                          Bool dropDegenerate,
+                          Bool preserveAxesOrder);
 
     // Get the brightness unit.
     String unit() const;
