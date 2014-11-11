@@ -77,6 +77,10 @@ void doOpens()
          ImageUtilities::openImage(im, name1);
       }
       {
+         CountedPtr<ImageInterface<Float> > im;
+         im = ImageUtilities::openImage<Float>(name1);
+      }
+      {
          PtrHolder<ImageInterface<Float> > im;
          //ImageUtilities::openImage(im, name2, os);
 	 os << "Skipping openImage() for fits.img because ImageOpener::openImage('fits.img') reports type is unknown.  Needs investigation." << LogIO::POST;

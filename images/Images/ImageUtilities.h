@@ -33,6 +33,7 @@
 #include <scimath/Mathematics/GaussianBeam.h>
 #include <lattices/Lattices/TiledShape.h>
 #include <casa/Utilities/PtrHolder.h>
+#include <casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -98,6 +99,9 @@ public:
   template<class T>
   static void openImage (ImageInterface<T>*& image,
                          const String& fileName);
+
+  template<class T>
+  static CountedPtr<ImageInterface<T> > openImage (const String& fileName);
 //  </group>
 
 // Copy MiscInfo, ImageInfo, brightness unit and logger (history) from in to out
