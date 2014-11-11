@@ -280,5 +280,14 @@ template <typename T> void ImageUtilities::openImage(
    image.set(p);
 }
 
+template <typename T>
+CountedPtr<ImageInterface<T> > ImageUtilities::openImage
+(const String& fileName)
+{
+   ImageInterface<T>* p = 0;
+   ImageUtilities::openImage(p, fileName);
+   return p;
+}
+
 } //# NAMESPACE CASA - END
 
