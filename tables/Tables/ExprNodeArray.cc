@@ -496,6 +496,9 @@ void TableExprNodeArrayColumn::applySelection (const Vector<uInt>& rownrs)
         selTable_p = selTable_p(rownrs);
         String name = tabCol_p.columnDesc().name();
         tabCol_p = TableColumn(selTable_p, name);
+        // Reset switch, because the column object can be used multiple times.
+        // when a select expression is used as e.g. sort key.
+        applySelection_p = False;
     }
 }
 
@@ -529,7 +532,7 @@ TableExprNodeArrayColumnBool::~TableExprNodeArrayColumnBool()
 
 void TableExprNodeArrayColumnBool::applySelection (const Vector<uInt>& rownrs)
 {
-    TableExprNodeArray::applySelection (rownrs);
+    TableExprNodeArrayColumn::applySelection (rownrs);
     col_p = ArrayColumn<Bool>(tabCol_p);
 }
 
@@ -565,7 +568,7 @@ TableExprNodeArrayColumnuChar::~TableExprNodeArrayColumnuChar()
 
 void TableExprNodeArrayColumnuChar::applySelection (const Vector<uInt>& rownrs)
 {
-    TableExprNodeArray::applySelection (rownrs);
+    TableExprNodeArrayColumn::applySelection (rownrs);
     col_p = ArrayColumn<uChar>(tabCol_p);
 }
 
@@ -609,7 +612,7 @@ TableExprNodeArrayColumnShort::~TableExprNodeArrayColumnShort()
 
 void TableExprNodeArrayColumnShort::applySelection (const Vector<uInt>& rownrs)
 {
-    TableExprNodeArray::applySelection (rownrs);
+    TableExprNodeArrayColumn::applySelection (rownrs);
     col_p = ArrayColumn<Short>(tabCol_p);
 }
 
@@ -653,7 +656,7 @@ TableExprNodeArrayColumnuShort::~TableExprNodeArrayColumnuShort()
 
 void TableExprNodeArrayColumnuShort::applySelection (const Vector<uInt>& rownrs)
 {
-    TableExprNodeArray::applySelection (rownrs);
+    TableExprNodeArrayColumn::applySelection (rownrs);
     col_p = ArrayColumn<uShort>(tabCol_p);
 }
 
@@ -697,7 +700,7 @@ TableExprNodeArrayColumnInt::~TableExprNodeArrayColumnInt()
 
 void TableExprNodeArrayColumnInt::applySelection (const Vector<uInt>& rownrs)
 {
-    TableExprNodeArray::applySelection (rownrs);
+    TableExprNodeArrayColumn::applySelection (rownrs);
     col_p = ArrayColumn<Int>(tabCol_p);
 }
 
@@ -741,7 +744,7 @@ TableExprNodeArrayColumnuInt::~TableExprNodeArrayColumnuInt()
 
 void TableExprNodeArrayColumnuInt::applySelection (const Vector<uInt>& rownrs)
 {
-    TableExprNodeArray::applySelection (rownrs);
+    TableExprNodeArrayColumn::applySelection (rownrs);
     col_p = ArrayColumn<uInt>(tabCol_p);
 }
 
@@ -785,7 +788,7 @@ TableExprNodeArrayColumnFloat::~TableExprNodeArrayColumnFloat()
 
 void TableExprNodeArrayColumnFloat::applySelection (const Vector<uInt>& rownrs)
 {
-    TableExprNodeArray::applySelection (rownrs);
+    TableExprNodeArrayColumn::applySelection (rownrs);
     col_p = ArrayColumn<Float>(tabCol_p);
 }
 
@@ -829,7 +832,7 @@ TableExprNodeArrayColumnDouble::~TableExprNodeArrayColumnDouble()
 
 void TableExprNodeArrayColumnDouble::applySelection (const Vector<uInt>& rownrs)
 {
-    TableExprNodeArray::applySelection (rownrs);
+    TableExprNodeArrayColumn::applySelection (rownrs);
     col_p = ArrayColumn<Double>(tabCol_p);
 }
 
@@ -867,7 +870,7 @@ TableExprNodeArrayColumnComplex::~TableExprNodeArrayColumnComplex()
 
 void TableExprNodeArrayColumnComplex::applySelection (const Vector<uInt>& rownrs)
 {
-    TableExprNodeArray::applySelection (rownrs);
+    TableExprNodeArrayColumn::applySelection (rownrs);
     col_p = ArrayColumn<Complex>(tabCol_p);
 }
 
@@ -912,7 +915,7 @@ TableExprNodeArrayColumnDComplex::~TableExprNodeArrayColumnDComplex()
 
 void TableExprNodeArrayColumnDComplex::applySelection (const Vector<uInt>& rownrs)
 {
-    TableExprNodeArray::applySelection (rownrs);
+    TableExprNodeArrayColumn::applySelection (rownrs);
     col_p = ArrayColumn<DComplex>(tabCol_p);
 }
 
@@ -951,7 +954,7 @@ TableExprNodeArrayColumnString::~TableExprNodeArrayColumnString()
 
 void TableExprNodeArrayColumnString::applySelection (const Vector<uInt>& rownrs)
 {
-    TableExprNodeArray::applySelection (rownrs);
+    TableExprNodeArrayColumn::applySelection (rownrs);
     col_p = ArrayColumn<String>(tabCol_p);
 }
 

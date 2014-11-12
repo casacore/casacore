@@ -30,6 +30,7 @@
 #include <tables/Tables/ExprNodeSet.h>
 #include <tables/Tables/ExprAggrNodeArray.h>
 #include <tables/Tables/ExprGroupAggrFunc.h>
+#include <tables/Tables/ExprGroupAggrFuncArray.h>
 #include <tables/Tables/RecordExpr.h>
 #include <tables/Tables/TableExprIdAggr.h>
 #include <casa/Arrays/Cube.h>
@@ -175,6 +176,29 @@ void checkLazy (const TableExprNode& expr,
 }
 
 
+void checkHist (const TableExprNode& expr,
+                const vector<Record>& recs,
+                const Array<Int64>& expVal)
+{
+  cout << "Test Double ghist " << endl;
+  // Get the aggregation node.
+  TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>
+    (dynamic_cast<const TableExprAggrNodeArray&>(*expr.getNodeRep()));
+  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  for (uInt i=0; i<recs.size(); ++i) {
+    TableExprId id(recs[i]);
+    func->apply (id);
+  }
+  func->finish();
+  Array<Int64> val = func->getArrayInt(vector<TableExprId>());
+  if (!allEQ (val, expVal)) {
+    foundError = True;
+    cout << "ghist: found value " << val << "; expected "
+         << expVal << endl;
+  }
+}
+
+
 void doBoolArr()
 {
   // Define an Array with values.
@@ -230,6 +254,26 @@ void doDoubleArr()
   TableExprNode expr = makeRecordExpr (recs[0], "fld");
   checkLazy (TableExprNode::newFunctionNode(TableExprFuncNode::gaggrFUNC, expr),
              recs, arr, "gaggr");
+  // Do a test of the histogram function (8 bins between 12 and 36).
+  Vector<Int64> hist(10, 0);
+  for (uInt i=0; i<arr.size(); ++i) {
+    Double v = arr.data()[i];
+    if (v < 12) {
+      hist[0]++;
+    } else if (v > 36) {
+      hist[9]++;
+    } else {
+      hist[1 + int((v-12)/3)]++;
+    }
+  }
+  TableExprNodeSet set;
+  set.add (TableExprNodeSetElem(expr));
+  set.add (TableExprNodeSetElem(8));
+  set.add (TableExprNodeSetElem(12.));
+  set.add (TableExprNodeSetElem(36.));
+  checkHist (TableExprNode::newFunctionNode(TableExprFuncNode::ghistFUNC,
+                                            set, Table()),
+             recs, hist);
 }
 
 void doDComplexArr()

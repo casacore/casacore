@@ -53,9 +53,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // There are few aggregate functions resulting in an array. An example
 // is <src>gaggr</src>, which aggregates the non-empty arrays in a group
 // into a single array. Other functions (like medians, runningmean, etc.)
-// can be applied to the its result making it quite versatile.
+// can be applied to its result making it quite versatile.
 //
-// Array aggregate functions are always lazy to avoid using too much memory.
+// Most array aggregate functions are lazy to avoid using too much memory.
 // </synopsis> 
 
   class TableExprAggrNodeArray: public TableExprFuncNodeArray
@@ -77,7 +77,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     // Create the correct aggregate function object.
     virtual CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
-    // The array aggregate function is always lazy.
+    // Is the array aggregate function lazy?
     virtual Bool isLazyAggregate() const;
 
     // Functions to get the result of an aggregate function.

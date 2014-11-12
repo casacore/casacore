@@ -72,6 +72,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       checkNumOfArg (1, 1, nodes);
       resVT = VTArray;
       return checkDT (dtypeOper, NTAny, NTAny, nodes);
+    case ghistFUNC:
+      checkNumOfArg (4, 4, nodes);
+      if (nodes[1]->dataType() != NTInt) {
+        throw TableInvExpr ("2nd argument of function GHIST "
+                            "has to be a constant integer scalar");
+      }
+      for (int i=1; i<4; ++i) {
+        if (nodes[i]->valueType() != VTScalar  ||
+            ! nodes[i]->isConstant()) {
+          throw TableInvExpr ("2nd, 3rd and 4th argument of function GHIST "
+                              "have to be constant scalars");
+        }
+      }
+      resVT = VTArray;
+      return checkDT (dtypeOper, NTReal, NTInt, nodes);
     case growidFUNC:
       checkNumOfArg (0, 0, nodes);
       resVT = VTArray;
@@ -216,6 +231,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
         case gfractileFUNC:
           return new TableExprGroupFractileDouble
             (this, operands()[1]->getDouble(0));
+        case ghistFUNC:
+          return new TableExprGroupHistDouble
+            (this, operands()[1]->getInt(0),
+             operands()[2]->getDouble(0),
+             operands()[3]->getDouble(0));
         default:
           throw TableInvExpr ("Aggregate function " +
                               String::toString(funcType()) +
