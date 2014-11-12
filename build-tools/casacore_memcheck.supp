@@ -24,14 +24,14 @@
    Memcheck:Param
    write(buf)
    fun:__write_nocancel
-   fun:_ZN4casa14LargeFilebufIO11writeBufferExPKci
+   fun:_ZN4casa9FiledesIO5writeExPKv
 }
 {
    Casacore-write-not-fully-initialized-buffer-FilebufIO
    Memcheck:Param
    write(buf)
    fun:__write_nocancel
-   fun:_ZN4casa9FilebufIO11writeBufferExPKci
+   fun:_ZN4casa9FilebufIO11writeBufferExPKcx
 }
 
 # The function strlen is optimized by testing multiple byte simultaneously.
