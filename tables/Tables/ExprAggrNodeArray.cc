@@ -61,23 +61,40 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
-  // Strictly speaking this function does not need to be implemented,
-  // because the default in TableExprNodeRep already returns True.
-  // Yet, for clarity it is done here as well.
   Bool TableExprAggrNodeArray::isLazyAggregate() const
   {
-    return True;
+    return (funcType() != TableExprFuncNode::ghistFUNC);
   }
 
   CountedPtr<TableExprGroupFuncBase> TableExprAggrNodeArray::makeGroupAggrFunc()
   {
-    if (funcType() == TableExprFuncNode::gexpridFUNC) {
+    switch (funcType()) {
+    case TableExprFuncNode::gexpridFUNC:
       itsFunc = new TableExprGroupExprId(this);
-    } else if (funcType() == TableExprFuncNode::gaggrFUNC) {
+      break;
+    case TableExprFuncNode::gaggrFUNC:
       itsFunc = new TableExprGroupAggr(this);
-    } else if (funcType() == TableExprFuncNode::growidFUNC) {
+      break;
+    case TableExprFuncNode::growidFUNC:
       itsFunc = new TableExprGroupRowid(this);
-    } else {
+      break;
+    case TableExprFuncNode::ghistFUNC:
+      {
+        Int64  nbin  = operands()[1]->getInt(0);
+        Double start = operands()[2]->getDouble(0);
+        Double end   = operands()[3]->getDouble(0);
+        if (operands()[0]->valueType() == VTScalar) {
+          itsFunc = new TableExprGroupHistScalar (this, nbin, start, end);
+        } else {
+          if (operands()[0]->dataType() == NTInt) {
+            itsFunc = new TableExprGroupHistInt (this, nbin, start, end);
+          } else {
+            itsFunc = new TableExprGroupHistDouble (this, nbin, start, end);
+          }
+        }
+      }
+      break;
+    default:
       throw TableInvExpr ("Array aggregate function " +
                           String::toString(funcType()) +
                           " is unknown");
@@ -88,32 +105,56 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   Array<Bool> TableExprAggrNodeArray::getArrayBool (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
-    return itsFunc->getArrayBool (aid.result().ids(id.rownr()));
+    if (itsFunc->isLazy()) {
+      return itsFunc->getArrayBool (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getArrayBool();
   }
   Array<Int64> TableExprAggrNodeArray::getArrayInt (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
-    return itsFunc->getArrayInt (aid.result().ids(id.rownr()));
+    if (itsFunc->isLazy()) {
+      return itsFunc->getArrayInt (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getArrayInt();
   }
   Array<Double> TableExprAggrNodeArray::getArrayDouble (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
-    return itsFunc->getArrayDouble (aid.result().ids(id.rownr()));
+    if (itsFunc->isLazy()) {
+      return itsFunc->getArrayDouble (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getArrayDouble();
   }
   Array<DComplex> TableExprAggrNodeArray::getArrayDComplex (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
-    return itsFunc->getArrayDComplex (aid.result().ids(id.rownr()));
+    if (itsFunc->isLazy()) {
+      return itsFunc->getArrayDComplex (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getArrayDComplex();
   }
   Array<String> TableExprAggrNodeArray::getArrayString (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
-    return itsFunc->getArrayString (aid.result().ids(id.rownr()));
+    if (itsFunc->isLazy()) {
+      return itsFunc->getArrayString (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getArrayString();
   }
   Array<MVTime> TableExprAggrNodeArray::getArrayDate (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
-    return itsFunc->getArrayDate (aid.result().ids(id.rownr()));
+    if (itsFunc->isLazy()) {
+      return itsFunc->getArrayDate (aid.result().ids(id.rownr()));
+    }
+    TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
+    return set.getFuncs()[itsFunc->seqnr()]->getArrayDate();
   }
 
 } //# NAMESPACE CASA - END

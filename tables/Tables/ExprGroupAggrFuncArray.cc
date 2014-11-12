@@ -397,4 +397,78 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 
+  TableExprGroupHistBase::TableExprGroupHistBase (TableExprNodeRep* node,
+                                                  Int64 nbin,
+                                                  Double start, Double end)
+    : TableExprGroupFuncBase (node),
+      itsHist  (nbin+2, 0),
+      itsStart (start)
+  {
+    AlwaysAssert (nbin > 0  &&  end > start, AipsError);
+    itsWidth = (end-start) / nbin;
+  }
+  TableExprGroupHistBase::~TableExprGroupHistBase()
+  {}
+  void TableExprGroupHistBase::add (Double val)
+  {
+    size_t bin = size_t(std::max(0., (val - itsStart) / itsWidth + 1.));
+    if (bin >= itsHist.size()) {
+      bin = itsHist.size() - 1;
+    }
+    itsHist[bin]++;
+  }
+  Array<Int64> TableExprGroupHistBase::getArrayInt (const vector<TableExprId>&)
+  {
+    return itsHist;
+  }
+
+  TableExprGroupHistScalar::TableExprGroupHistScalar (TableExprNodeRep* node,
+                                                      Int64 nbin,
+                                                      Double start, Double end)
+    : TableExprGroupHistBase (node, nbin, start, end)
+  {}
+  TableExprGroupHistScalar::~TableExprGroupHistScalar()
+  {}
+  void TableExprGroupHistScalar::apply (const TableExprId& id)
+  {
+    add (itsOperand->getDouble (id));
+  }
+
+  TableExprGroupHistInt::TableExprGroupHistInt (TableExprNodeRep* node,
+                                                Int64 nbin,
+                                                Double start, Double end)
+    : TableExprGroupHistBase (node, nbin, start, end)
+  {}
+  TableExprGroupHistInt::~TableExprGroupHistInt()
+  {}
+  void TableExprGroupHistInt::apply (const TableExprId& id)
+  {
+    Array<Int64> arr = itsOperand->getArrayInt (id);
+    // Array does not need to be contiguous, so use iterator.
+    Array<Int64>::const_iterator iterEnd = arr.end();
+    for (Array<Int64>::const_iterator iter = arr.begin();
+         iter!=iterEnd; ++iter) {
+      add (*iter);
+    }
+  }
+
+  TableExprGroupHistDouble::TableExprGroupHistDouble (TableExprNodeRep* node,
+                                                      Int64 nbin,
+                                                      Double start, Double end)
+    : TableExprGroupHistBase (node, nbin, start, end)
+  {}
+  TableExprGroupHistDouble::~TableExprGroupHistDouble()
+  {}
+  void TableExprGroupHistDouble::apply (const TableExprId& id)
+  {
+    Array<Double> arr = itsOperand->getArrayDouble (id);
+    // Array does not need to be contiguous, so use iterator.
+    Array<Double>::const_iterator iterEnd = arr.end();
+    for (Array<Double>::const_iterator iter = arr.begin();
+         iter!=iterEnd; ++iter) {
+      add (*iter);
+    }
+  }
+
+
 } //# NAMESPACE CASA - END

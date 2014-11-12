@@ -463,6 +463,85 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Int64 itsNr;
   };
 
+  // <summary>
+  // Base aggregate class determining the histogram of values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Base aggregate class determining the histogram of values in a group
+  // </synopsis>
+  class TableExprGroupHistBase: public TableExprGroupFuncBase
+  {
+  public:
+    explicit TableExprGroupHistBase (TableExprNodeRep* node,
+                                     Int64 nbin, Double start, Double end);
+    virtual ~TableExprGroupHistBase();
+    virtual Array<Int64> getArrayInt (const vector<TableExprId>&);
+  protected:
+    // Add the value to the histogram.
+    void add (Double value);
+  private:
+    Vector<Int64> itsHist;
+    Double itsStart;
+    Double itsWidth;
+  };
+
+  // <summary>
+  // Aggregate class determining the histogram of scalar values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the histogram of scalar values in a group
+  // </synopsis>
+  class TableExprGroupHistScalar: public TableExprGroupHistBase
+  {
+  public:
+    explicit TableExprGroupHistScalar (TableExprNodeRep* node,
+                                       Int64 nbin, Double start, Double end);
+    virtual ~TableExprGroupHistScalar();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining the histogram of integer array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the histogram of integer array values in a group
+  // </synopsis>
+  class TableExprGroupHistInt: public TableExprGroupHistBase
+  {
+  public:
+    explicit TableExprGroupHistInt (TableExprNodeRep* node,
+                                    Int64 nbin, Double start, Double end);
+    virtual ~TableExprGroupHistInt();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining the histogram of double array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the histogram of double array values in a group
+  // </synopsis>
+  class TableExprGroupHistDouble: public TableExprGroupHistBase
+  {
+  public:
+    explicit TableExprGroupHistDouble (TableExprNodeRep* node,
+                                       Int64 nbin, Double start, Double end);
+    virtual ~TableExprGroupHistDouble();
+    virtual void apply (const TableExprId& id);
+  };
+
 
 } //# NAMESPACE CASA - END
 

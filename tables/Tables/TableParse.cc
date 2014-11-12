@@ -815,6 +815,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::growidFUNC;
   } else if (funcName == "gaggr") {
     ftype = TableExprFuncNode::gaggrFUNC;
+  } else if (funcName == "ghist"  ||  funcName == "ghistogram") {
+    ftype = TableExprFuncNode::ghistFUNC;
   } else if (funcName == "gmin") {
     ftype = TableExprFuncNode::gminFUNC;
   } else if (funcName == "gmax") {
@@ -2278,7 +2280,6 @@ TableParseSelect::doGroupByAggrMultipleKeys
     } else {
       groupnr = iter->second;
     }
-    rowid.setRownr (rownrs_p[i]);
     funcSets[groupnr]->apply (rowid);
   }
   return funcSets;
@@ -2301,6 +2302,7 @@ CountedPtr<TableExprGroupResult> TableParseSelect::doGroupByAggr
   uInt nimmediate = immediateNodes.size();
   // For lazy nodes a vector of TableExprId-s needs to be filled per group.
   // So add a node collecting the ids.
+  // Note that this node must be alive after the if, so define outside if.
   TableExprAggrNode expridNode(TableExprFuncNode::gexpridFUNC,
                                TableExprNodeRep::NTInt,
                                TableExprNodeRep::VTArray,
@@ -3298,32 +3300,3 @@ TaQLResult tableCommand (const String& str,
 }
 
 } //# NAMESPACE CASA - END
-
-
-/*
-Plan:
-class TableExprTable
-{
-public:
-  TableExprTable (const Table& table)
-    : itsTable (table)
-  {}
-  void replace (const Table& table)
-    { itsTable = table; }
-  Table table() const
-    { return itsTable; }
-private:
-  Table itsTable;
-};
-
-- construct ExprColumn objects from ExprTable
-- have ExprNode(Rep)::remakeColumn which is called when rownrs are adapted
-- also change results of ExprId function to get rownr 0..n
-    - or keep the disableApplySelection function
-- check table sizes in FROM
-    problem: when using ExprNode directly with different tables, it should
-             also be checked
-
-or leave as it is now and remove CheckTableSizes.
-and check table sizes in FROM
-*/
