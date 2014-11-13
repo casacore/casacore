@@ -38,7 +38,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   class TableExprNodeSet;
 
   // <summary>
-  // Class representing a function in table select expression
+  // Class representing a scalar UDF in select expression
   // </summary>
 
   // <use visibility=local>
