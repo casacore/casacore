@@ -272,6 +272,7 @@ public:
         gallFUNC,
         gntrueFUNC,
         gnfalseFUNC,
+        ghistFUNC,
         //# Grouping requiring aggregation of rows when getting result
         gaggrFUNC,        //# 160
         growidFUNC,
