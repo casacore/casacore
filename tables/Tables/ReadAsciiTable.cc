@@ -71,13 +71,14 @@ Bool ReadAsciiTable::getLine (ifstream& file, Int& lineNumber,
     if (! file.getline (line, lineSize)) {
       return False;
     }
+    Int nch = file.gcount();
     lineNumber++;
     if (lineNumber >= firstLine) {
       if (lastLine <= 0  ||  lineNumber <= lastLine) {
 	if (! testComment) {
 	  return True;
 	}
-	if (commentMarker.find (line, lineSize, dummy) != 0) {
+	if (commentMarker.find (line, nch, dummy) != 0) {
 	  return True;
 	}
       }
