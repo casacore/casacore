@@ -338,6 +338,10 @@ public:
     // </group>
 
     // Get the table from the given field.
+    // By default the read/write option and lock options are inherited
+    // from the parent table.
+    // If openWritable=True, the table is still opened as readonly if the file
+    // permissions do not permit write access.
     // <group>
     Table asTable (const RecordFieldId&) const;
     Table asTable (const RecordFieldId&, const TableLock& lockOptions) const;
@@ -418,9 +422,17 @@ public:
     // Tables are not reopened if they are not writable.
     void reopenRW();
 
-    // Set the attributes of subtables to te ones in the other record.
+    // Recursively set the attributes of subtables to the ones in the other
+    // record for matching subtable field names. Otherwise set it to defaultAttr.
+    // The name attribute is not changed.
     // It is primarily a helper function for PlainTable::syncTable
     // and ColumnSet::syncColumns.
+    // <br>However, it can also be used to achieve that all subtables of a
+    // read/write table are opened as readonly. E.g.:
+    // <srcblock>
+    //   TableAttr newAttr(String(), False, mainTable.lockOptions());
+    //   mainTable.keywordSet().setTableAttr (TableRecord(), newAttr);
+    // </srcblock>
     void setTableAttr (const TableRecord& other, const TableAttr& defaultAttr);
 
     // Make a unique record representation
