@@ -104,8 +104,6 @@ public:
     void set (const Table& table);
 
     // Set the keyword to read/write access.
-    // If the table is already open, it will be reopened with read/write
-    // access if the table is writable.
     void setRW()
       { openWritable_p = True; }
 
