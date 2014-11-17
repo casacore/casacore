@@ -493,8 +493,9 @@ void TableExprNodeArrayColumn::applySelection (const Vector<uInt>& rownrs)
 {
     if (applySelection_p) {
         // Attach the column to the selection of the table.
-        selTable_p = selTable_p(rownrs);
+        // Get column name before doing selection!!!!
         String name = tabCol_p.columnDesc().name();
+        selTable_p = selTable_p(rownrs);
         tabCol_p = TableColumn(selTable_p, name);
         // Reset switch, because the column object can be used multiple times.
         // when a select expression is used as e.g. sort key.
