@@ -36,7 +36,7 @@
 using namespace casa;
 %}
 
-%pure_parser                /* make parser re-entrant */
+%pure-parser                /* make parser re-entrant */
 
 %token STYLE
 %token TIMING
