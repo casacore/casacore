@@ -168,7 +168,7 @@ public:
     // Get the bucket size (which is the length of a tile in external format).
     uInt bucketSize() const;
 
-    // Get the lenghth of a tile in local format.
+    // Get the length of a tile in local format.
     uInt localTileLength() const;
 
     // Set the hypercube shape.

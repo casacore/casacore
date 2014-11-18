@@ -174,7 +174,7 @@ public:
     String resolvedName() const;
 
     // Check if pathname is valid. This function checks for: double slashes, 
-    // non-printable characters, pathname length and filename lenghts, this 
+    // non-printable characters, pathname length and filename lengths, this 
     // function is more OS-specific.
     Bool isValid() const;
 
