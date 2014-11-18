@@ -155,11 +155,7 @@ private:
 
 inline Conversion::ByteFunction* Conversion::getmemcpy()
 {
-#if defined(__CLCC__)  ||  defined(AIPS_64B) || defined(HPUX11) || defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
     return mymemcpy;
-#else
-    return memcpy;
-#endif
 }
 
 
