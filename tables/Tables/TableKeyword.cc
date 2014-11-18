@@ -141,7 +141,7 @@ String TableKeyword::tableName (const String& parentName) const
     return Path::stripDirectory (attr_p.name(), parentName);
 }
 
-Table TableKeyword::table() const
+Table TableKeyword::table (const TableLock* lockOptions) const
 {
     // Return the table object if already open.
     if (! table_p->isNull()) {
@@ -155,7 +155,9 @@ Table TableKeyword::table() const
     // Note that the opened table is not kept to avoid possible leaks
     // if a table keyword refers to the table itself (like the SORTED_TABLE
     // in an MS).
-    return Table(attr_p.name(), attr_p.lockOptions(), option);
+    return Table(attr_p.name(),
+                 lockOptions  ?  *lockOptions : attr_p.lockOptions(),
+                 option);
 }
 
 void TableKeyword::close() const

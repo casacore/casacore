@@ -172,7 +172,9 @@ public:
 
     // Get the table.
     // It will be opened when necessary.
-    Table table() const;
+    // If given, the lockOptions will be used instead of the ones in
+    // the table attributes.
+    Table table (const TableLock* lockOptions = 0) const;
 
     // Get the table attributes.
     const TableAttr& tableAttributes() const
