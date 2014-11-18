@@ -69,7 +69,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     itsPastEnd  = (itsEnd==0);
     itsChunk[0] = 0;
-    itsChunk[1] = rows[0]-1;
+    itsChunk[1] = rows.ntable()>0 ? rows[0]-1 : 0;
     itsChunk[2] = 1;
   }
 

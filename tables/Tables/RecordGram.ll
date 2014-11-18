@@ -143,6 +143,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {PATTREX} {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
             lvalp->val->type = 'r';
             lvalp->val->str = String(RecordGramtext,yyleng);
 	    return REGEX;
@@ -200,6 +201,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {COMPLEX} {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 'c';
 	    sscanf (RecordGramtext, "%lf%*c", &(lvalp->val->dval[1]));
 	    lvalp->val->dval[0] = 0;
@@ -208,6 +210,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {FLOAT}   {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 'f';
 	    lvalp->val->dval[0] = atof(RecordGramtext);
 	    return LITERAL;
@@ -220,6 +223,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
                 throw TableInvExpr ("Integer number not fully parsed");
             }
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
             lvalp->val->type = 'i';
             lvalp->val->ival = v;
             return LITERAL;
@@ -232,6 +236,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
                 throw TableInvExpr ("Hex number not fully parsed");
             }
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
             lvalp->val->type = 'i';
             lvalp->val->ival = v;
             return LITERAL;
@@ -239,6 +244,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {TRUE}    {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 'b';
 	    lvalp->val->bval = True;
 	    return LITERAL;
@@ -246,6 +252,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {FALSE}   {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 'b';
 	    lvalp->val->bval = False;
 	    return LITERAL;
@@ -253,6 +260,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {STRING}  {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 's';
 	    lvalp->val->str = recordGramRemoveQuotes (RecordGramtext);
 	    return STRINGLITERAL;
@@ -260,6 +268,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {DATETIME} {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 'd';
 	    lvalp->val->str = RecordGramtext;
 	    return LITERAL;
@@ -267,6 +276,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {TIME}    {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 't';
 	    lvalp->val->str = RecordGramtext;
 	    return LITERAL;
@@ -277,6 +287,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             char unit[32];
 	    sscanf (RecordGramtext, "%lf%31s", &v, unit);
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 'f';
 	    lvalp->val->str = unit;
 	    return LITERAL;
@@ -286,6 +297,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {NAME}    {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 's';
 	    lvalp->val->str = recordGramRemoveEscapes (RecordGramtext);
 	    return NAME;
@@ -294,6 +306,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {NAMEFLD} {
             recordGramPosition() += yyleng;
             lvalp->val = new RecordGramVal();
+            RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 's';
 	    lvalp->val->str = recordGramRemoveEscapes (RecordGramtext);
 	    return FLDNAME;

@@ -483,6 +483,8 @@ private:
     String             vers_p;          //# version of table description
     String             dir_p;           //# directory
     String             comm_p;          //# comment
+    //# Note: the TableRecords are done as pointer, otherwise TableRecord.h
+    //# needs to be included leading to a mutual include.
     TableRecord*       key_p;           //# user set of keywords
     TableRecord*       privKey_p;       //# Private set of keywords
     ColumnDescSet      col_p;           //# set of column names + indices

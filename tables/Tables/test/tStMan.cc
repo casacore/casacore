@@ -101,6 +101,7 @@ void newtab (uInt nrrow, const DataManager& stman)
   Table tab(newtab, nrrow);
 
   Array<String> emptyArray(IPosition(2,2,3));
+  Array<Bool> boolArray(IPosition(2,2,3), False);
 
   ScalarColumn<String> str1 (tab, "str1");
   ScalarColumn<String> str2 (tab, "str2");
@@ -162,6 +163,10 @@ void newtab (uInt nrrow, const DataManager& stman)
     AlwaysAssertExit (  dca1.hasContent(i));
     AlwaysAssertExit (  dca2.hasContent(i));
     AlwaysAssertExit (! dca3.hasContent(i));
+    // Write Bool arrays to avoid valgrind errors in Conversion::boolToBit
+    ba1.put (i, boolArray);
+    ba2.put (i, boolArray);
+    b1.put (i, False);
   }
   fa3.put (nrrow-1, Array<Float>());
   dca3.put (nrrow-1, Array<DComplex>(IPosition(2,2,0)));

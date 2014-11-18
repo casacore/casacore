@@ -1274,14 +1274,22 @@ TableExprNode TableExprNode::newFunctionNode
     resDT = TableExprFuncNode::checkOperands (dtypeOper, resVT, vtypeOper,
 					      ftype, par);
     // Create new function node and fill it.
+    // Keep it temporarily in SPtrHolder for destruction on exception.
+    TableExprNode res;
     if (resVT == TableExprNodeRep::VTScalar) {
         TableExprFuncNode* fnode = new TableExprFuncNode (ftype, resDT,
 							  resVT, set);
-	return TableExprFuncNode::fillNode (fnode, par, dtypeOper);
+        SPtrHolder<TableExprFuncNode> fnodeHold(fnode);
+	res = TableExprFuncNode::fillNode (fnode, par, dtypeOper);
+        fnodeHold.release();
+    } else {
+        TableExprFuncNodeArray* fnode = new TableExprFuncNodeArray
+          (ftype, resDT, resVT, set, style);
+        SPtrHolder<TableExprFuncNodeArray> fnodeHold(fnode);
+        res = TableExprFuncNodeArray::fillNode (fnode, par, dtypeOper);
+        fnodeHold.release();
     }
-    TableExprFuncNodeArray* fnode = new TableExprFuncNodeArray
-      (ftype, resDT, resVT, set, style);
-    return TableExprFuncNodeArray::fillNode (fnode, par, dtypeOper);
+    return res;
 }
 
 TableExprNode TableExprNode::newUDFNode (const String& name,

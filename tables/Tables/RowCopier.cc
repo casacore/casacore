@@ -122,7 +122,6 @@ Bool ColumnHolder::copy(uInt toRow, uInt fromRow)
 }
 
 RowCopier::RowCopier(Table &out, const Table &in)
-: columns_p(0)
 {
     if (! out.isWritable()) {
 	throw(TableError("RowCopier: output table must be writable"));
@@ -142,7 +141,6 @@ RowCopier::RowCopier(Table &out, const Table &in)
 RowCopier::RowCopier(Table &out, const Table &in,
 		     const Vector<String>& outNames,
 		     const Vector<String>& inNames)
-: columns_p(0)
 {
     if (! out.isWritable()) {
 	throw(TableError("RowCopier: output table must be writable"));
@@ -164,12 +162,7 @@ Bool RowCopier::copy(uInt toRow, uInt fromRow)
 }
 
 RowCopier::~RowCopier()
-{
-    if (columns_p) {
-	delete columns_p;
-	columns_p = 0;
-    }
-}
+{}
 
 } //# NAMESPACE CASA - END
 
