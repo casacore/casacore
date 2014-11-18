@@ -65,12 +65,16 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-MeasurementSet::MeasurementSet():hasBeenDestroyed_p(True) { }
+MeasurementSet::MeasurementSet()
+: doNotLockSubtables_p (False),
+  hasBeenDestroyed_p(True) { }
+
 
 MeasurementSet::MeasurementSet(const String &tableName,
 			       TableOption option) 
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option), 
+      doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
@@ -99,12 +103,32 @@ void MeasurementSet::addCat()
   }
 }
 
+MeasurementSet::MeasurementSet (const String &tableName, const TableLock& lockOptions,
+                                bool doNotLockSubtables, TableOption option)
+: MSTable<PredefinedColumns,
+  PredefinedKeywords>(tableName, lockOptions, option),
+  doNotLockSubtables_p (doNotLockSubtables),
+  hasBeenDestroyed_p(False)
+{
+
+  mainLock_p=lockOptions;
+  // verify that the now opened table is valid
+  checkVersion();
+  addCat();
+  if (! validate(this->tableDesc()))
+    throw (AipsError("MS(String &, lockOptions, TableOption) - "
+		     "table is not a valid MS"));
+  initRefs();
+}
+
+
 
 MeasurementSet::MeasurementSet(const String &tableName,
 			       const TableLock& lockOptions,
 			       TableOption option) 
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, lockOptions, option), 
+      doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
 
@@ -122,6 +146,7 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
 			       TableOption option)
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName, option),
+      doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
   mainLock_p=TableLock(TableLock::AutoNoReadLocking);
@@ -138,6 +163,7 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
 			       const TableLock& lockOptions, TableOption option)
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName, lockOptions, option),
+      doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid 
@@ -154,6 +180,7 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab, uInt nrrow,
 			       Bool initialize)
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, nrrow, initialize), 
+      doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
   mainLock_p=TableLock(TableLock::AutoNoReadLocking);
@@ -169,6 +196,7 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab,
 			       Bool initialize)
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(newTab, lockOptions, nrrow, initialize), 
+      doNotLockSubtables_p (False),
       hasBeenDestroyed_p(False)
 {
   mainLock_p=lockOptions;
@@ -181,6 +209,7 @@ MeasurementSet::MeasurementSet(SetupNewTable &newTab,
 
 MeasurementSet::MeasurementSet(const Table &table, const MeasurementSet * otherMs)
 : MSTable<PredefinedColumns, PredefinedKeywords>(table),
+  doNotLockSubtables_p (False),
   hasBeenDestroyed_p(False)
 {
     mainLock_p=TableLock(TableLock::AutoNoReadLocking);
@@ -206,6 +235,7 @@ MeasurementSet::MeasurementSet(const MeasurementSet &other)
   PredefinedKeywords>(other),
   hasBeenDestroyed_p(False)
 {
+  doNotLockSubtables_p = other.doNotLockSubtables_p;
   copySubtables (other); // others will be handled by initRefs
 
   mainLock_p=TableLock(TableLock::AutoNoReadLocking);
@@ -268,6 +298,9 @@ MeasurementSet::operator=(const MeasurementSet &other)
 void
 MeasurementSet::copySubtables (const MeasurementSet & other)
 {
+  // Replace the current subtables with the ones in the other MS
+  // if they exist in the other MS; otherwise leave them unchanged.
+
   copySubtable (other.antenna_p, antenna_p);
   copySubtable (other.dataDesc_p, dataDesc_p);
   copySubtable (other.doppler_p, doppler_p);
@@ -769,7 +802,14 @@ MeasurementSet::openSubtable (Subtable & subtable, const String & subtableName, 
         // Only open a subtable if it does not already exist in this object and if
         // the subtable is defined in the on-disk MeasurementSet
 
-        if (useLock){
+        if (doNotLockSubtables_p){
+
+            // Do not lock the subtable based on main table
+
+            TableLock subtableLock (TableLock::UserNoReadLocking);
+            subtable = Subtable (this->keywordSet().asTable(subtableName, subtableLock));
+        }
+        else if (useLock){
             subtable = Subtable (this->keywordSet().asTable(subtableName, mainLock_p));
         }
         else{ // scratch tables don't use the lock

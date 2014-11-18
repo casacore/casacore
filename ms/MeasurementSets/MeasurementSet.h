@@ -259,7 +259,13 @@ public:
 
   MeasurementSet (const String &tableName, TableOption = Table::Old);
   MeasurementSet (const String &tableName, const TableLock& lockOptions,
-		  TableOption = Table::Old);
+		          TableOption = Table::Old);
+
+  MeasurementSet (const String &tableName, const TableLock& lockOptions,
+		          bool doNotLockSubtables, TableOption = Table::Old);
+      // Allows keeping subtables unlocked/read-locked independent of lock
+      // mode of main table.
+
   MeasurementSet (const String &tableName, const String &tableDescName,
 		  TableOption = Table::Old);
   MeasurementSet (const String &tableName, const String &tableDescName,
@@ -398,7 +404,7 @@ public:
 		      const String& baseline="", const String& time="", 
 		      const String& scan="", const String& uvrange="", 
 		      const String& observation="", const String& poln="",
-                      const String& taql="");
+		      const String& taql="");
 
 protected:
 
@@ -465,6 +471,7 @@ private:
   MSSysCal sysCal_p; //optional
   MSWeather weather_p; //optional
 
+  bool doNotLockSubtables_p; // used to prevent subtable locking to allow parallel interprocess sharing
   int mrsDebugLevel_p; // logging level currently enabled
   Bool hasBeenDestroyed_p; // required by the need to throw an exception in the destructor
   TableLock mainLock_p;
