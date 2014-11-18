@@ -84,7 +84,7 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 
 
 MSIter::MSIter():nMS_p(0),msc_p(0),allBeamOffsetsZero_p(True),
-  timeComp_p(NULL) {}
+  timeComp_p(0) {}
 
 MSIter::MSIter(const MeasurementSet& ms,
 	       const Block<Int>& sortColumns,
@@ -92,7 +92,7 @@ MSIter::MSIter(const MeasurementSet& ms,
 	       Bool addDefaultSortColumns)
 : msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval),
   allBeamOffsetsZero_p(True),
-  timeComp_p(NULL)
+  timeComp_p(0)
 {
   bms_p.resize(1); 
   bms_p[0]=ms;
@@ -104,7 +104,7 @@ MSIter::MSIter(const Block<MeasurementSet>& mss,
 	       Double timeInterval,
 	       Bool addDefaultSortColumns)
 : bms_p(mss),msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval),
-  timeComp_p(NULL)
+  timeComp_p(0)
 {
   construct(sortColumns,addDefaultSortColumns);
 }
@@ -216,13 +216,11 @@ void MSIter::construct(const Block<Int>& sortColumns,
   
   // now find the time column and set the compare function
   Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
-  timeComp_p = NULL;
+  timeComp_p = 0;
   for (uInt i=0; i<columns.nelements(); i++) {
     if (columns[i]==MS::columnName(MS::TIME)) {
-      objComp[i] = new MSInterval(interval_p);
-
-      // The &(*()) is needed because CountedPtr is not exactly a pointer.
-      timeComp_p = dynamic_cast<MSInterval *>(&(*(objComp[i])));
+      timeComp_p = new MSInterval(interval_p);
+      objComp[i] = timeComp_p;
     }
   }
   Block<Int> orders(columns.nelements(),TableIterator::Ascending);
@@ -347,6 +345,9 @@ const MS& MSIter::ms(const uInt id) const {
 void MSIter::setInterval(Double timeInterval)
 {
   interval_p=timeInterval;
+  if (timeComp_p) {
+    timeComp_p->setInterval(timeInterval);
+  }
 }
 
 void MSIter::origin()
@@ -440,7 +441,7 @@ void MSIter::setState()
   // either not resetting at all or resetting only
   // if(colTime_p(0) - 0.02 > timeComp_p->getOffset()).
   //
-  if(timeComp_p != NULL){
+  if(timeComp_p){
       timeComp_p->setOffset(0.0);
   }
 }
@@ -635,7 +636,7 @@ void MSIter::setFeedInfo()
     beamOffsets_p.resize(maxNumReceptors,maxAntId+1,maxFeedId+1);
     allBeamOffsetsZero_p=True; 
     Vector<Int> spwId=msc_p->feed().spectralWindowId().getColumn();
-    const ROArrayColumn<Double>& beamOffsetColumn=
+    const ArrayColumn<Double>& beamOffsetColumn=
 	               msc_p->feed().beamOffset();
     DebugAssert(beamOffsetColumn.nrow()==spwId.nelements(),AipsError);
     

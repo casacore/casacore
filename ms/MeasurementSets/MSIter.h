@@ -382,7 +382,7 @@ protected:
   Block<Int> preselectedChanStart_p,preselectednChan_p;
   
   // columns
-  ROScalarColumn<Int> colArray_p, colDataDesc_p, colField_p;
+  ScalarColumn<Int> colArray_p, colDataDesc_p, colField_p;
 
   //cache for access functions
   MDirection phaseCenter_p;
@@ -411,7 +411,7 @@ protected:
   MPosition telescopePosition_p;
 
   MSInterval *timeComp_p;          // Points to the time comparator.
-                                   // NULL if not using a time interval.
+                                   // 0 if not using a time interval.
 };
 
 inline Bool MSIter::more() const { return more_p;}
