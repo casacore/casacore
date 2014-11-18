@@ -34,12 +34,14 @@
 #include <tables/Tables/TaQLStyle.h>
 #include <tables/Tables/Table.h>
 #include <casa/OS/Mutex.h>
+#include <map>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class TableExprNode;
 class TableExprNodeSet;
+class TableExprNodeSetElem;
 class RecordInterface;
 class Table;
 
@@ -172,6 +174,9 @@ public:
 class RecordGram
 {
 public:
+    // Define the types of tokens in the grammar.
+    enum Token {Node, Val, Elem, Set};
+
     // Convert an expression string to an expression tree.
     // The expression will operate on a series of Record objects.
     // The given record is needed to know the type of the fields used in
@@ -210,10 +215,32 @@ public:
     // By default it is glish style.
     static TaQLStyle theirTaQLStyle;
 
+    // Add a token to the list of tokens to be deleted
+    // for the possible tokens in the RecordGram.yy union.
+    static void addToken (TableExprNode* ptr);
+    static void addToken (RecordGramVal* ptr);
+    static void addToken (TableExprNodeSet* ptr);
+    static void addToken (TableExprNodeSetElem* ptr);
+    // Delete a token and remove from the list.
+    static void deleteToken (TableExprNode* ptr);
+    static void deleteToken (RecordGramVal* ptr);
+    static void deleteToken (TableExprNodeSet* ptr);
+    static void deleteToken (TableExprNodeSetElem* ptr);
+    // Delete all tokens not deleted yet.
+    static void deleteTokenStorage();
+
 private:
     // Do the conversion of an expression string to an expression tree.
     static TableExprNode doParse (const String& expression);
 
+    // Add a token to the list of tokens to be deleted.
+    static void addToken (void* ptr, Token type)
+      { theirTokens[ptr] = type; }
+    // Remove a token from the list of tokens to be deleted.
+    static void removeToken (void* ptr)
+      { theirTokens.erase (ptr); }
+
+    static std::map<void*, Token> theirTokens;
     static const RecordInterface* theirRecPtr;
     static const Table*           theirTabPtr;
     static TableExprNode*         theirNodePtr;

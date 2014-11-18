@@ -130,9 +130,6 @@ void TableDesc::init (const TabPath& tdpath)
 {
     //# Initialize some variables.
     swwrite_p = False;                         // writing is not possible yet
-    //# Allocate the keyword sets.
-    key_p = new TableRecord();
-    privKey_p = new TableRecord();
     //# If non-scratch, check if name is not blank and look if the
     //# description already exists.
     if (option_p == Scratch) {
@@ -178,6 +175,10 @@ void TableDesc::init (const TabPath& tdpath)
 	throw (TableInvOpt ("TableDesc",
 	        "must be Old, New, NewNoReplace, Scratch, Update or Delete"));
     }
+
+    //# Allocate the keyword sets.
+    key_p = new TableRecord();
+    privKey_p = new TableRecord();
 
     //# If non-scratch, open the file. Read it for new, update and delete.
     //# It can be closed immediately when old (i.e readonly).

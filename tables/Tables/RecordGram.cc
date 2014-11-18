@@ -72,6 +72,45 @@ const Table* RecordGram::theirTabPtr = 0;
 TaQLStyle RecordGram::theirTaQLStyle;
 Mutex RecordGram::theirMutex;
 
+//# The list of nodes to delete (usually in case of exception).
+std::map<void*, RecordGram::Token> RecordGram::theirTokens;
+void RecordGram::addToken (TableExprNode* ptr)
+  { addToken (ptr, RecordGram::Node); }
+void RecordGram::addToken (RecordGramVal* ptr)
+  { addToken (ptr, RecordGram::Val); }
+void RecordGram::addToken (TableExprNodeSet* ptr)
+  { addToken (ptr, RecordGram::Set); }
+void RecordGram::addToken (TableExprNodeSetElem* ptr)
+  { addToken (ptr, RecordGram::Elem); }
+void RecordGram::deleteToken (TableExprNode* ptr)
+  { delete ptr; removeToken (ptr); }
+void RecordGram::deleteToken (RecordGramVal* ptr)
+  { delete ptr; removeToken (ptr); }
+void RecordGram::deleteToken (TableExprNodeSet* ptr)
+  { delete ptr; removeToken (ptr); }
+void RecordGram::deleteToken (TableExprNodeSetElem* ptr)
+  { delete ptr; removeToken (ptr); }
+void RecordGram::deleteTokenStorage()
+{
+  for (std::map<void*,RecordGram::Token>::const_iterator
+         iter=theirTokens.begin(); iter!=theirTokens.end(); ++iter) {
+    switch (iter->second) {
+    case RecordGram::Node:
+      delete static_cast<TableExprNode*>(iter->first);
+      break;
+    case RecordGram::Val:
+      delete static_cast<RecordGramVal*>(iter->first);
+      break;
+    case RecordGram::Elem:
+      delete static_cast<TableExprNodeSetElem*>(iter->first);
+      break;
+    case RecordGram::Set:
+      delete static_cast<TableExprNodeSet*>(iter->first);
+      break;
+    }
+  }
+  theirTokens.clear();
+}
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
@@ -130,28 +169,31 @@ TableExprNode RecordGram::parse (const Table& table,
 
 TableExprNode RecordGram::doParse (const String& expression)
 {
+    theirTokens.clear();
     String message;
     String command = expression + '\n';
     Bool error = False;
+    TableExprNode result;
     try {
 	// Parse and execute the command.
 	if (recordGramParseCommand(command) != 0) {
 	    throw (TableParseError(expression));   // throw exception if error
 	}
-    }catch (AipsError x) {
+        // Make this copy before deleteTokenStorage is done,
+        // otherwise it will be deleted.
+        result = *theirNodePtr;
+    } catch (const AipsError& x) {
 	message = x.getMesg();
 	error = True;
-    } 
-    //# If an exception was thrown; throw it again with the message.
-    //# Delete the table object if so.
-    if (error) {
-	throw (AipsError(message + '\n' + "Scanned so far: " +
-	                 command.before(recordGramPosition())));
     }
-    TableExprNode node (*theirNodePtr);
-    delete theirNodePtr;
-    theirNodePtr = 0;
-    return node;
+    // Delete possibly non-deleted tokens (usually in case of exception).
+    deleteTokenStorage();
+    //# If an exception was thrown; throw it again with the message.
+    if (error) {
+	throw AipsError(message + '\n' + "Scanned so far: " +
+	                 command.before(recordGramPosition()));
+    }
+    return result;
 }
 
 //# Convert a constant to a TableExprNode object.

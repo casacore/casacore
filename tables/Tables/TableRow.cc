@@ -72,16 +72,12 @@ ROTableRow::ROTableRow (const ROTableRow& that)
 
 void ROTableRow::init()
 {
-    itsLastRow = new Int;
-    *itsLastRow = -1;
-    itsReread  = new Bool;
-    *itsReread = True;
+    itsLastRow = -1;
+    itsReread = True;
 }
 
 ROTableRow::~ROTableRow()
 {
-    delete itsLastRow;
-    delete itsReread;
     deleteObjects();
 }
 
@@ -95,10 +91,10 @@ void ROTableRow::copy (const ROTableRow& that)
 {
     if (this != &that) {
 	deleteObjects();
-	itsTable    = that.itsTable;
-	itsNrused   = that.itsNrused;
-        *itsLastRow = *that.itsLastRow;
-        *itsReread  = *that.itsReread;
+	itsTable   = that.itsTable;
+	itsNrused  = that.itsNrused;
+        itsLastRow = that.itsLastRow;
+        itsReread  = that.itsReread;
 	if (that.itsRecord != 0) {
 	    makeObjects (that.itsRecord->description());
 	}
@@ -427,7 +423,7 @@ void ROTableRow::makeObjects (const RecordDesc& description)
 const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 {
     // Only read when needed.
-    if (Int(rownr) == *itsLastRow  &&  !itsReread  &&  !alwaysRead) {
+    if (Int64(rownr) == itsLastRow  &&  !itsReread  &&  !alwaysRead) {
 	return *itsRecord;
     }
     const RecordDesc& desc = itsRecord->description();
@@ -606,8 +602,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 	    throw (TableError ("TableRow: unknown data type"));
 	}
     }
-    *itsLastRow = rownr;
-    *itsReread  = False;
+    itsLastRow = rownr;
+    itsReread  = False;
     return *itsRecord;
 }
 
@@ -615,8 +611,8 @@ const TableRecord& ROTableRow::get (uInt rownr, Bool alwaysRead) const
 // internal record. Be sure to reread when the same row is asked for.
 void ROTableRow::setReread (uInt rownr)
 {
-    if (Int(rownr) == *itsLastRow) {
-	*itsReread = True;
+    if (Int64(rownr) == itsLastRow) {
+	itsReread = True;
     }
 }
 

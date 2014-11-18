@@ -57,8 +57,15 @@ TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& value)
     TableExprNode tmp(value);
     itsStart = getRep(tmp)->link();
     dtype_p = itsStart->dataType();
-    setUnit (itsStart->unit());
-    checkTable();
+    try {
+      setUnit (itsStart->unit());
+      checkTable();
+    } catch (const std::exception&) {
+      // Unlink, because destructor is not called if constructor
+      // throws an exception.
+      unlink (itsStart);
+      throw;
+    }
 }
 
 TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode* start,
@@ -97,15 +104,24 @@ TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode* start,
     }
     if (dts == NTInt  &&  (dte == NTDouble || dti == NTDouble)) dts = NTDouble;
     if (dte == NTInt  &&  (dts == NTDouble || dti == NTDouble)) dte = NTDouble;
-    if ((dts != NTInt  &&  dts != NTDouble  &&  dts != NTDate)
-    ||  dte != dts  ||  (dti != NTInt  &&  dti != NTDouble)) {
+    try {
+      if ((dts != NTInt  &&  dts != NTDouble  &&  dts != NTDate)
+       ||  dte != dts  ||  (dti != NTInt  &&  dti != NTDouble)) {
 	throw TableInvExpr("start:end should have equal data types (Int, Double"
 			     " or Date) and incr should have Int or Double");
+      }
+      // Find unit and adapt units if needed.
+      setUnit (TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr));
+      dtype_p = dts;
+      checkTable();
+    } catch (const std::exception&) {
+      // Unlink, because destructor is not called if constructor
+      // throws an exception.
+      unlink (itsStart);
+      unlink (itsEnd);
+      unlink (itsIncr);
+      throw;
     }
-    // Find unit and adapt units if needed.
-    setUnit (TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr));
-    dtype_p = dts;
-    checkTable();
 }
 
 TableExprNodeSetElem::TableExprNodeSetElem (Bool isLeftClosed,
@@ -176,7 +192,16 @@ TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNodeSetElem& that,
     if (itsIncr != 0) {
 	itsIncr->link();
     }
-    TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr);
+    try {
+      TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr);
+    } catch (const std::exception&) {
+      // Unlink, because destructor is not called if constructor
+      // throws an exception.
+      unlink (itsStart);
+      unlink (itsEnd);
+      unlink (itsIncr);
+      throw;
+    }
 }
 
 TableExprNodeSetElem::~TableExprNodeSetElem()
@@ -209,7 +234,8 @@ void TableExprNodeSetElem::setup (Bool isLeftClosed,
             dtype_p = NTDouble;
         }
     }
-    if (end != 0) {
+    try {
+      if (end != 0) {
 	TableExprNode tmp(*end);
 	itsEnd = getRep(tmp)->link();
         NodeDataType etype = itsEnd->dataType();
@@ -220,16 +246,24 @@ void TableExprNodeSetElem::setup (Bool isLeftClosed,
 	    throw (TableInvExpr ("start=:=end must have equal data types"));
 	}
 	dtype_p = etype;
-    }
-    NodeDataType dt = dataType();
-    if (dt != NTInt  &&  dt != NTDouble  &&  dt != NTString
-    &&  dt != NTDate) {
+      }
+      NodeDataType dt = dataType();
+      if (dt != NTInt  &&  dt != NTDouble  &&  dt != NTString
+      &&  dt != NTDate) {
 	throw (TableInvExpr ("start:=:end only valid for Int, Double,"
 			     " String or Date"));
+      }
+      // Find unit and adapt units if needed.
+      setUnit (TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr));
+      checkTable();
+    } catch (const std::exception&) {
+      // Unlink, because destructor is not called if constructor
+      // throws an exception.
+      unlink (itsStart);
+      unlink (itsEnd);
+      unlink (itsIncr);
+      throw;
     }
-    // Find unit and adapt units if needed.
-    setUnit (TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr));
-    checkTable();
 }
 
 void TableExprNodeSetElem::adaptSetUnits (const Unit& unit)

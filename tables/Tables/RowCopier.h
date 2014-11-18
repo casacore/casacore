@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -195,7 +196,7 @@ private:
 
     // The ColumnHolder class exists only in the .cc file, it is what
     // ultimately does the work.
-    ColumnHolder *columns_p;
+    CountedPtr<ColumnHolder> columns_p;
 };
 
 
