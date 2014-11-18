@@ -110,7 +110,7 @@ public:
     // Create a Vector from the given Block "other." Make it length "nr"
     // and copy over that many elements.
     Vector(const Block<T> &other, Int nr);
-    // Create a Vector of lenght other.nelements() and copy over its values.
+    // Create a Vector of length other.nelements() and copy over its values.
     explicit Vector(const Block<T> &other);
 
     // Create a reference to other.

@@ -432,7 +432,7 @@ C-------------------------------------------------------------------
 *
 *--------------------------------------------
 *
-* sc = scaling factor for the wavelenght dependent part of the wet refration
+* sc = scaling factor for the wavelength dependent part of the wet refraction
 * (normal conditions 300K, 1013mbar, 80% humidity -> partial pressure of
 *  water vapor 28.2mbar ):
 *

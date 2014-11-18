@@ -143,7 +143,7 @@ void MSFeed::init()
 		  "Feed id","","");
 	// FOCUS_LENGTH
 	colMapDef(FOCUS_LENGTH,"FOCUS_LENGTH",TpDouble,
-		  "Focus lenght","m","");
+		  "Focus length","m","");
 	// INTERVAL
 	colMapDef(INTERVAL,"INTERVAL",TpDouble,
 		  "Interval for which this set of parameters is accurate",

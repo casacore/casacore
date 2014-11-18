@@ -59,7 +59,7 @@ Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage,
     if (infile.rectype() != FITS::HDURecord ||
 	infile.hdutype() != FITS::PrimaryArrayHDU) {
 	ok = False;
-	ErrorMessage = "FITS file is not an image, or is misformed "
+	ErrorMessage = "FITS file is not an image, or is malformed "
 	    "(or something)";
 	return data;
     }
