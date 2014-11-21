@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <tables/Tables/ColumnsIndex.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableLocker.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Containers/RecordField.h>
-#include <casa/Utilities/Sort.h>
-#include <casa/Utilities/Copy.h>
-#include <casa/Utilities/Assert.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/Tables/ColumnsIndex.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableLocker.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/Utilities/Copy.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/tables/Tables/TableError.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

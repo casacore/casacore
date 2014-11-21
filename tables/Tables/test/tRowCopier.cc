@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <tables/Tables/RowCopier.h>
-#include <tables/Tables.h>
-#include <tables/Tables/TabVecLogic.h>
+#include <casacore/tables/Tables/RowCopier.h>
+#include <casacore/tables/Tables.h>
+#include <casacore/tables/Tables/TabVecLogic.h>
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
 
-#include <tables/Tables/TableError.h>
-#include <casa/iostream.h>
-#include <casa/stdio.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/stdio.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
 // first, create a short table with a few columns to use during testing

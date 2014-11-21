@@ -31,11 +31,11 @@
 #define TABLES_TABLERECORD_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/RecordInterface.h>
-#include <tables/Tables/TableRecordRep.h>
-#include <casa/Containers/RecordDesc.h>
-#include <casa/Utilities/COWPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/tables/Tables/TableRecordRep.h>
+#include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/casa/Utilities/COWPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

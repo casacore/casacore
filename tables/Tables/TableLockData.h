@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/TableLock.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TableLock.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

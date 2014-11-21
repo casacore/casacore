@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/BaseColumn.h>
-#include <tables/Tables/RefRows.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Utilities/ValTypeId.h>
-#include <casa/BasicSL/String.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/BaseColumn.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Utilities/ValTypeId.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/tables/Tables/TableError.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

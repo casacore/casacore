@@ -30,10 +30,11 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/Table.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/StorageOption.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -95,11 +96,11 @@ public:
     // Create a new table using the table description with the given name.
     // The description will be read from a file.
     SetupNewTableRep (const String& tableName, const String& tableDescName,
-		      Table::TableOption);
+		      Table::TableOption, const StorageOption&);
 
     // Create a new table using the given table description.
     SetupNewTableRep (const String& tableName, const TableDesc&,
-		      Table::TableOption);
+		      Table::TableOption, const StorageOption&);
 
     ~SetupNewTableRep();
 
@@ -114,6 +115,10 @@ public:
     // Get the table create option.
     int option() const
 	{ return option_p; }
+
+    // Get the storage option.
+    const StorageOption& storageOption() const
+        { return storageOpt_p; }
 
     // Test if the table is marked for delete.
     Bool isMarkedForDelete() const
@@ -191,15 +196,16 @@ public:
 
 private:
     // Reference count.
-    uInt        count_p;
+    uInt          count_p;
     // Table name.
-    String      tabName_p;
+    String        tabName_p;
     // Constructor options.
-    int         option_p;
+    int           option_p;
+    StorageOption storageOpt_p;
     // Marked for delete?
-    Bool        delete_p;
-    TableDesc*  tdescPtr_p;
-    ColumnSet*  colSetPtr_p;      //# 0 = object is already used by a Table
+    Bool          delete_p;
+    TableDesc*    tdescPtr_p;
+    ColumnSet*    colSetPtr_p;      //# 0 = object is already used by a Table
     SimpleOrderedMap<void*,void*> dataManMap_p;
 
     // Copy constructor is forbidden, because copying a table requires
@@ -346,11 +352,11 @@ public:
     // Create a new table using the table description with the given name.
     // The description will be read from a file.
     SetupNewTable (const String& tableName, const String& tableDescName,
-		   Table::TableOption);
+		   Table::TableOption, const StorageOption& = StorageOption());
 
     // Create a new table using the given table description.
     SetupNewTable (const String& tableName, const TableDesc&,
-		   Table::TableOption);
+		   Table::TableOption, const StorageOption& = StorageOption());
 
     // Copy constructor (reference semantics).
     SetupNewTable (const SetupNewTable&);
@@ -367,6 +373,10 @@ public:
     // Get the table create option.
     int option() const
 	{ return newTable_p->option(); }
+
+    // Get the storage option.
+    const StorageOption& storageOption() const
+        { return newTable_p->storageOption(); }
 
     // Test if the table is marked for delete.
     Bool isMarkedForDelete() const

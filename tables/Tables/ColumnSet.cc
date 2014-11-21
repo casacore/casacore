@@ -25,18 +25,20 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ColumnSet.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/PlainColumn.h>
-#include <tables/Tables/TableAttr.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/DataManager.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Record.h>
-#include <casa/IO/MemoryIO.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/tables/Tables/ColumnSet.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/PlainColumn.h>
+#include <casacore/tables/Tables/TableAttr.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/IO/MultiFile.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <limits>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -44,10 +46,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #define COLMAPVAL(I)       ((PlainColumn*)(colMap_p.getVal(I)))
 #define COLMAPNAME(NAME)   ((PlainColumn*)(colMap_p(NAME)))
 
-// Tweaked for SUN NTV compiler, used static_cast<void *> trick
 
-ColumnSet::ColumnSet (TableDesc* tdesc)
+ColumnSet::ColumnSet (TableDesc* tdesc, const StorageOption& opt)
 : tdescPtr_p      (tdesc),
+  storageOpt_p    (opt),
+  multiFile_p     (0),
   baseTablePtr_p  (0),
   lockPtr_p       (0),
   colMap_p        (static_cast<void *>(0), tdesc->ncolumn()),
@@ -72,6 +75,7 @@ ColumnSet::~ColumnSet()
     for (i=0; i<blockDataMan_p.nelements(); i++) {
 	delete BLOCKDATAMANVAL(i);
     }
+    delete multiFile_p;
 }
 
 
@@ -107,7 +111,8 @@ void ColumnSet::removeLastDataManager()
 }
 
 void ColumnSet::initDataManagers (uInt nrrow, Bool bigEndian,
-                                  const TSMOption& tsmOption, Table& tab)
+                                  const TSMOption& tsmOption,
+                                  Table& tab)
 {
     uInt i;
     for (i=0; i<blockDataMan_p.nelements(); i++) {
@@ -136,6 +141,7 @@ void ColumnSet::initDataManagers (uInt nrrow, Bool bigEndian,
 
 void ColumnSet::initSomeDataManagers (uInt from, Table& tab)
 {
+    openMultiFile (from, tab, ByteIO::New);
     uInt i;
     //# Link the data managers to the table.
     for (i=from; i<blockDataMan_p.nelements(); i++) {
@@ -165,6 +171,31 @@ void ColumnSet::prepareSomeDataManagers (uInt from)
     }
 }
 
+void ColumnSet::openMultiFile (uInt from, const Table& tab,
+                               ByteIO::OpenOption opt)
+{
+  // Exit if MultiFile should not be used.
+  if (storageOpt_p.option() != StorageOption::MultiFile) {
+    return;
+  }
+  // See if any data manager can use MultiFile. 
+  Bool useMultiFile = False;
+  for (uInt i=from; i<blockDataMan_p.nelements(); i++) {
+    useMultiFile = useMultiFile || BLOCKDATAMANVAL(i)->hasMultiFileSupport();
+  }
+  // If anyone does, use the MultiFile.
+  if (useMultiFile) {
+    // Create the object if not created yet.
+    if (! multiFile_p) {
+      multiFile_p = new MultiFile (tab.tableName() + "/table.mf",
+                                   opt, storageOpt_p.blockSize());
+    }
+    // Pass it to the data managers.
+    for (uInt i=from; i<blockDataMan_p.nelements(); i++) {
+      BLOCKDATAMANVAL(i)->setMultiFile (multiFile_p);
+    }
+  }
+}
 
 uInt ColumnSet::resync (uInt nrrow, Bool forceSync)
 {
@@ -284,7 +315,7 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	dmptr = BLOCKDATAMANVAL(i);
 	if (dmptr->isStorageManager()  &&  dmptr->canAddColumn()) {
-          doAddColumn (columnDesc, dmptr);
+            doAddColumn (columnDesc, dmptr);
 	    return;
 	}
     }
@@ -368,7 +399,7 @@ void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 	col->createDataManagerColumn();
 	dmcol = col->dataManagerColumn();
 	dataManPtr->addColumn (dmcol);
-    } catch (AipsError x) {
+    } catch (const AipsError& x) {
 	error = True;
 	msg = x.getMesg();
 	//# Get the column pointer (it may not have been filled yet).
@@ -437,7 +468,7 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
 	}
 	// Let the new data manager create space, etc. for its columns.
 	initSomeDataManagers (blockDataMan_p.nelements() - 1, tab);
-    } catch (AipsError x) {
+    } catch (const AipsError& x) {
 	error = True;
 	msg = x.getMesg();
 	for (uInt i=0; i<tableDesc.ncolumn(); i++) {
@@ -687,13 +718,15 @@ void ColumnSet::initialize (uInt startRow, uInt endRow)
 
 void ColumnSet::reopenRW()
 {
-    uInt i;
+    if (multiFile_p) {
+        multiFile_p->reopenRW();
+    }
     // Reopen all data managers.
-    for (i=0; i<blockDataMan_p.nelements(); i++) {
+    for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	BLOCKDATAMANVAL(i)->reopenRW();
     }
     // Reopen tables in all column keyword sets.
-    for (i=0; i<colMap_p.ndefined(); i++) {
+    for (uInt i=0; i<colMap_p.ndefined(); i++) {
 	getColumn(i)->keywordSet().reopenRW();
     }
 }
@@ -731,8 +764,17 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 	//# The first version of ColumnSet did not put a version.
 	//# Therefore a negative number is put as the version
 	//# (because nrrow_p is always positive).
-	ios << -2;          // version (must be negative !!!)
-	ios << nrrow_p;
+        // The storageOption fields are new for version 3. Only put them
+        // if actually used, so new files can usually be read by old versions.
+        if (storageOpt_p.option() == StorageOption::MultiFile  ||
+            nrrow_p > Int64(std::numeric_limits<uInt>::max())) {
+          ios << Int(-3);          // version (must be negative !!!)
+          ios << nrrow_p;
+          ios << Int(storageOpt_p.option()) << storageOpt_p.blockSize();
+        } else {
+          ios << Int(-2);
+          ios << uInt(nrrow_p);
+        }
 	ios << seqCount_p;
 	//# Start with writing the data manager types.
 	//# Only write with columns in them (thus count first).
@@ -775,7 +817,7 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 uInt ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow, Bool bigEndian,
                          const TSMOption& tsmOption)
 {
-    //# When the first value is negative, it is the version.
+    //# If the first value is negative, it is the version.
     //# Otherwise it is nrrow_p.
     Int version;
     uInt i, nr, seqnr, nrman;
@@ -783,13 +825,27 @@ uInt ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow, Bool bigEndian,
     ios >> version;
     if (version < 0) {
 	version = -version;
-	ios >> nrrow_p;
+        if (version <= 2) {
+          // In older versions nrrow was an unsigned 4-byte integer.
+          ios >> nr;
+          nrrow_p = nr;
+        } else {
+          ios >> nrrow_p;
+        }
     }else{
 	nrrow_p = version;
 	version = 1;
     }
     //# Use nrrow from caller, since that is most accurate.
     nrrow_p = nrrow;
+    // Read StorageOption for newer versions.
+    if (version >= 3) {
+      Int opt, bufsz;
+      ios >> opt >> bufsz;
+      storageOpt_p = StorageOption (StorageOption::Option(opt), bufsz);
+    } else {
+      storageOpt_p = StorageOption (StorageOption::SepFile);
+    }
     ios >> nrman;
     ios >> nr;
     //# Construct the various data managers.
@@ -805,6 +861,9 @@ uInt ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow, Bool bigEndian,
 	dmp->setEndian (bigEndian);
 	dmp->setTsmOption (tsmOption);
     }
+    // Open the MultiFile if used.
+    openMultiFile (0, tab,
+                   tab.isWritable()  ?  ByteIO::Update : ByteIO::Old);
     //# Now set seqCount_p (because that was changed by addDataManager).
     seqCount_p = nrman;
     //# Now read in the columns and create the data manager columns.

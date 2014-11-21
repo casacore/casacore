@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/HDF5/HDF5Object.h>
+#include <casacore/casa/HDF5/HDF5Object.h>
 
 using namespace casa;
 

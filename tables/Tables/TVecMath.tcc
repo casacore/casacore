@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TVecMath.h>
-#include <tables/Tables/TVec.h>
-#include <tables/Tables/TVecTemp.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/tables/Tables/TVecMath.h>
+#include <casacore/tables/Tables/TVec.h>
+#include <casacore/tables/Tables/TVecTemp.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

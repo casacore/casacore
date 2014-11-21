@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableColumn.h>
-#include <tables/Tables/TableVector.h>
-#include <tables/Tables/TVecScaCol.h>
-#include <tables/Tables/TVecTemp.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/tables/Tables/TableVector.h>
+#include <casacore/tables/Tables/TVecScaCol.h>
+#include <casacore/tables/Tables/TVecTemp.h>
+#include <casacore/tables/Tables/TableError.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

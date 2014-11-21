@@ -27,7 +27,7 @@
 
 
 //# Includes
-#include <tables/Tables/ColumnCache.h>
+#include <casacore/tables/Tables/ColumnCache.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

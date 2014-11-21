@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableParse.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableColumn.h>
-#include <casa/OS/Directory.h>
-#include <casa/Inputs/Input.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/TaQL/TableParse.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/Inputs/Input.h>
 #include <stdexcept>
 #include <iostream>
 #include <cstdlib>          // for mkstemp
-#include <casa/string.h>    // for strerror
+#include <casacore/casa/string.h>    // for strerror
 #include <errno.h>
 
 using namespace casa;

@@ -30,9 +30,9 @@
 #define TABLES_LOGGERHOLDER_H
 
 //# Includes
-#include <casa/Logging/LogIO.h>
-#include <casa/Containers/Block.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,9 +29,9 @@
 #define TABLES_TABLEKEYWORD_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/TableAttr.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TableAttr.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

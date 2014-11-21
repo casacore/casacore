@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/LockFile.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/LockFile.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -29,9 +29,9 @@
 #define TABLES_ARRCOLDATA_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/PlainColumn.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/PlainColumn.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -280,6 +280,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/ArrColData.tcc>
+#include <casacore/tables/Tables/ArrColData.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

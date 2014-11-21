@@ -29,12 +29,14 @@ namespace casa {
 
 // \defgroup tables tables package (libcasa_tables)
 //
-// The tables package contains the core modules for the AIPS++ Table System:
+// The tables package contains the core modules for the Casacore Table System:
 // <ul>
 //  <li> <a href="group__Tables__module.html">Tables</a>:
-//   data base like tables with an advanced query language (TaQL).
-//  <li> <a href="group__TablePlot__module.html">TablePlot</a>:
-//   plot table columns or expressions of them.
+//   data base like tables supporting N-dim arrays.
+//  <li> <a href="group__DataMan__module.html">DataMan</a>:
+//   data managers for storage or on-the -fly calculation of the logically organized table data.
+//  <li> <a href="group__TaQL__module.html">TaQL</a>:
+//   an advanced SQL-like query language (for the tables.
 //  <li> <a href="group__LogTables__module.html">LogTables</a>:
 //   store log messages in tables.
 // </ul>

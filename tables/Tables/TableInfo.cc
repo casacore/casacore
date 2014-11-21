@@ -27,11 +27,11 @@
 
 
 //# Includes
-#include <tables/Tables/TableInfo.h>
-#include <casa/BasicSL/String.h>
-#include <casa/OS/File.h>
-#include <casa/iostream.h>
-#include <casa/fstream.h>
+#include <casacore/tables/Tables/TableInfo.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/fstream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

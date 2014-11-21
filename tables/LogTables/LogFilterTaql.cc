@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <tables/LogTables/LogFilterTaql.h>
-#include <tables/LogTables/LogFilterExpr.h>
+#include <casacore/tables/LogTables/LogFilterTaql.h>
+#include <casacore/tables/LogTables/LogFilterExpr.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ConcatTable.h>
-#include <tables/Tables/ConcatColumn.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableLock.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/BlockIO.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/OS/Path.h>
-#include <casa/OS/Directory.h>
-#include <casa/BasicMath/Math.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/tables/Tables/ConcatTable.h>
+#include <casacore/tables/Tables/ConcatColumn.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableLock.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/BlockIO.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TableIndexProxy.h>
-#include <tables/Tables/TableProxy.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/tables/Tables/TableIndexProxy.h>
+#include <casacore/tables/Tables/TableProxy.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

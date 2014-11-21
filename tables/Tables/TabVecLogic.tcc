@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TabVecLogic.h>
+#include <casacore/tables/Tables/TabVecLogic.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

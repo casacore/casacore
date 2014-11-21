@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ScaRecordColDesc.h>
-#include <tables/Tables/ScaRecordColData.h>
-#include <casa/Utilities/ValTypeId.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/iostream.h>
+#include <casacore/tables/Tables/ScaRecordColDesc.h>
+#include <casacore/tables/Tables/ScaRecordColData.h>
+#include <casacore/casa/Utilities/ValTypeId.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

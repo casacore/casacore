@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <tables/Tables/TVecScaCol.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/TableError.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TVecScaCol.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

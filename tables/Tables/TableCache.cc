@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TableCache.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/tables/Tables/TableCache.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

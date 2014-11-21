@@ -30,8 +30,8 @@
 #ifndef TABLES_TABLERECORDREP_H
 #define TABLES_TABLERECORDREP_H
 
-#include <casa/aips.h>
-#include <casa/Containers/RecordRep.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/RecordRep.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -27,8 +27,8 @@
 
 
 //# Includes
-#include <tables/Tables/TableSyncData.h>
-#include <casa/Containers/BlockIO.h>
+#include <casacore/tables/Tables/TableSyncData.h>
+#include <casacore/casa/Containers/BlockIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

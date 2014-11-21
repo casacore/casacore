@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ConcatColumn.h>
-#include <tables/Tables/ConcatTable.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/GenSort.h>
+#include <casacore/tables/Tables/ConcatColumn.h>
+#include <casacore/tables/Tables/ConcatTable.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/GenSort.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

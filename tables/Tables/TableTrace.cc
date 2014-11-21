@@ -25,15 +25,15 @@
 //#
 //# $Id: BaseColumn.cc 21130 2011-10-18 07:39:05Z gervandiepen $
 
-#include <tables/Tables/TableTrace.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/RefRows.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicSL/STLIO.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/System/AipsrcValue.h>
-#include <casa/OS/Path.h>
+#include <casacore/tables/Tables/TableTrace.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/System/AipsrcValue.h>
+#include <casacore/casa/OS/Path.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

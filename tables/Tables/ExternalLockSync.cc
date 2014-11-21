@@ -27,7 +27,7 @@
 
 
 //# Includes
-#include <tables/Tables/ExternalLockSync.h>
+#include <casacore/tables/Tables/ExternalLockSync.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

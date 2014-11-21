@@ -30,8 +30,8 @@
 #define TABLES_ROWCOPIER_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

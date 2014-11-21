@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <tables/Tables.h>
+#include <casacore/tables/Tables.h>
 #include <stdexcept>
 #include <iostream>
 using namespace casa;
