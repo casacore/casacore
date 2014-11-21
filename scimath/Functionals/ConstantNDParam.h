@@ -30,9 +30,9 @@
 #define SCIMATH_CONSTANTNDPARAM_H
 
 
-#include <casa/aips.h>
-#include <scimath/Functionals/Function.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -158,6 +158,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/ConstantNDParam.tcc>
+#include <casacore/scimath/Functionals/ConstantNDParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

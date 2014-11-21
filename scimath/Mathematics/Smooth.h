@@ -31,8 +31,8 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -104,7 +104,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/Smooth.tcc>
+#include <casacore/scimath/Mathematics/Smooth.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif

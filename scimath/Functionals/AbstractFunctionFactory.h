@@ -29,8 +29,8 @@
 #ifndef SCIMATH_ABSTRACTFUNCTIONFACTORY_H
 #define SCIMATH_ABSTRACTFUNCTIONFACTORY_H
 
-#include <scimath/Functionals/Function.h>
-#include <scimath/Functionals/FunctionFactoryErrors.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/scimath/Functionals/FunctionFactoryErrors.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

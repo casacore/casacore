@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <scimath/Fitting/NonLinearFit.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
-#include <scimath/Functionals/Function.h>
+#include <casacore/scimath/Fitting/NonLinearFit.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/scimath/Functionals/Function.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

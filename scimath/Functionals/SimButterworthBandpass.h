@@ -29,9 +29,9 @@
 #define SCIMATH_SIMBUTTERWORTHBANDPASS_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
-#include <scimath/Functionals/Function1D.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/scimath/Functionals/Function1D.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -267,6 +267,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/SimButterworthBandpass.tcc>
+#include <casacore/scimath/Functionals/SimButterworthBandpass.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

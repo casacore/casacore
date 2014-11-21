@@ -29,8 +29,8 @@
 #define SCIMATH_NONLINEARFIT_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Fitting/GenericL2Fit.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Fitting/GenericL2Fit.h>
 namespace casa { //# begin namesapce casa
 //# Forward declarations
 
@@ -243,6 +243,6 @@ protected:
 
 } //# End namespace casa
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Fitting/NonLinearFit.tcc>
+#include <casacore/scimath/Fitting/NonLinearFit.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -26,8 +26,8 @@
 #ifndef SCIMATH_GAUSSIANBEAM_H
 #define SCIMATH_GAUSSIANBEAM_H
 
-#include <casa/aips.h>
-#include <casa/Quanta/Quantum.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Quanta/Quantum.h>
 
 namespace casa {
 

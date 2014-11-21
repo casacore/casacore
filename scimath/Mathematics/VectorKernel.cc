@@ -26,18 +26,18 @@
 //# $Id$
 //   
 
-#include <scimath/Mathematics/VectorKernel.h>
+#include <casacore/scimath/Mathematics/VectorKernel.h>
 
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Exceptions/Error.h>
-#include <scimath/Functionals/Gaussian1D.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicSL/String.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Regex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Functionals/Gaussian1D.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Regex.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

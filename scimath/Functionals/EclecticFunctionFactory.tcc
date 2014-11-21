@@ -25,9 +25,9 @@
 //#
 //#
 //# $Id$
-#include <scimath/Functionals/EclecticFunctionFactory.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Containers/Record.h>
+#include <casacore/scimath/Functionals/EclecticFunctionFactory.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Containers/Record.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

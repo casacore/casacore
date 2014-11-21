@@ -28,10 +28,10 @@
 #ifndef SCIMATH_GEOMETRY_H
 #define SCIMATH_GEOMETRY_H
 
-#include <casa/aips.h>
-#include <casa/namespace.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/namespace.h>
 
-#include <casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/Quantum.h>
 #include <utility>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

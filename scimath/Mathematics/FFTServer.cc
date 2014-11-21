@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/FFTServer.hcc>
+#include <casacore/scimath/Mathematics/FFTServer.hcc>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

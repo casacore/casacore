@@ -27,12 +27,12 @@
 #ifndef SCIMATH_FITTING_H
 #define SCIMATH_FITTING_H
 
-#include <casa/aips.h>
-#include <scimath/Fitting/LSQFit.h>
-#include <scimath/Fitting/LinearFit.h>
-#include <scimath/Fitting/LinearFitSVD.h>
-#include <scimath/Fitting/NonLinearFit.h>
-#include <scimath/Fitting/NonLinearFitLM.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Fitting/LSQFit.h>
+#include <casacore/scimath/Fitting/LinearFit.h>
+#include <casacore/scimath/Fitting/LinearFitSVD.h>
+#include <casacore/scimath/Fitting/NonLinearFit.h>
+#include <casacore/scimath/Fitting/NonLinearFitLM.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

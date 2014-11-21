@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Fitting/LSQaips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/scimath/Fitting/LSQaips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

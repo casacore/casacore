@@ -26,11 +26,11 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/ConvolveGridder.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Mathematics/ConvolveGridder.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

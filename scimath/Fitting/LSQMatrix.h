@@ -29,9 +29,9 @@
 #define SCIMATH_LSQMATRIX_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <algorithm>
-#include <casa/Utilities/RecordTransformable.h>
+#include <casacore/casa/Utilities/RecordTransformable.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

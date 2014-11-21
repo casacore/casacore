@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/FunctionOrder.h>
-#include <casa/Containers/Record.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Functionals/FunctionOrder.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

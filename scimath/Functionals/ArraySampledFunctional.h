@@ -29,10 +29,10 @@
 #ifndef SCIMATH_ARRAYSAMPLEDFUNCTIONAL_H
 #define SCIMATH_ARRAYSAMPLEDFUNCTIONAL_H
 
-#include <casa/aips.h>
-#include <scimath/Functionals/SampledFunctional.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/SampledFunctional.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -153,6 +153,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/ArraySampledFunctional.tcc>
+#include <casacore/scimath/Functionals/ArraySampledFunctional.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

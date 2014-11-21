@@ -29,13 +29,13 @@
 #define SCIMATH_FUNCTIONORDER_H
 
 //# Include files
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Block.h>
-#include <casa/Utilities/RecordTransformable.h>
-#include <scimath/Functionals/Function.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Utilities/RecordTransformable.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -166,7 +166,7 @@ inline ostream &operator<<(ostream &os, const FunctionOrder<T> &par) {
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/FunctionOrder.tcc>
+#include <casacore/scimath/Functionals/FunctionOrder.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

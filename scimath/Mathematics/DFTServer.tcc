@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/DFTServer.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Mathematics/DFTServer.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -29,11 +29,11 @@
 #ifndef SCIMATH_HISTACC_H
 #define SCIMATH_HISTACC_H
 
-#include <casa/aips.h>
-#include <casa/Utilities/Fallible.h>
-#include <scimath/Mathematics/StatAcc.h>
-#include <casa/Containers/Block.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/Fallible.h>
+#include <casacore/scimath/Mathematics/StatAcc.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -228,7 +228,7 @@ inline void HistAcc<T>::put(const T v) {
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/HistAcc.tcc>
+#include <casacore/scimath/Mathematics/HistAcc.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

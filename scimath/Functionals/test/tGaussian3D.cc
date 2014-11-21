@@ -1,16 +1,16 @@
-#include <scimath/Functionals/Gaussian3D.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <scimath/Mathematics/AutoDiffA.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
-#include <casa/Exceptions.h>
+#include <casacore/scimath/Functionals/Gaussian3D.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/scimath/Mathematics/AutoDiffA.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/casa/Exceptions.h>
 
-#include <casa/aips.h>
-#include <casa/iostream.h>
-#include <casa/stdlib.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/stdlib.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main()
 {

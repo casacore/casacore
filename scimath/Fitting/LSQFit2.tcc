@@ -30,7 +30,7 @@
 // non-templated member functions
 //
 //# Includes
-#include <scimath/Fitting/LSQFit.h>
+#include <casacore/scimath/Fitting/LSQFit.h>
 #include <algorithm>
 
 using namespace std;

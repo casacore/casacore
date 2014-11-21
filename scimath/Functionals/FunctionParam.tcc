@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/FunctionParam.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Functionals/FunctionParam.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,8 +29,8 @@
 #define SCIMATH_FUNCTION1D_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Function.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Function.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

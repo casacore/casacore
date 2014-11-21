@@ -28,7 +28,7 @@
 #define SCIMATH_LSQTRAITS_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <complex>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

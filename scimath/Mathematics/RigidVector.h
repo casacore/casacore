@@ -29,10 +29,10 @@
 #ifndef SCIMATH_RIGIDVECTOR_H
 #define SCIMATH_RIGIDVECTOR_H
   
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -295,6 +295,6 @@ inline RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/RigidVector.tcc>
+#include <casacore/scimath/Mathematics/RigidVector.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

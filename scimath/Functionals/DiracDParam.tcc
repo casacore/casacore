@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/DiracDParam.h>
+#include <casacore/scimath/Functionals/DiracDParam.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/ChebyshevParam.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Utilities/MUString.h>
+#include <casacore/scimath/Functionals/ChebyshevParam.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Utilities/MUString.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,10 +29,10 @@
 #ifndef SCIMATH_STATACC_H
 #define SCIMATH_STATACC_H
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Fallible.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Fallible.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -216,7 +216,7 @@ inline void StatAcc<T>::put(const T v, const Float w) {
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/StatAcc.tcc>
+#include <casacore/scimath/Mathematics/StatAcc.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

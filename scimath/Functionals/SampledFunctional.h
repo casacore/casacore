@@ -28,8 +28,8 @@
 #ifndef SCIMATH_SAMPLEDFUNCTIONAL_H
 #define SCIMATH_SAMPLEDFUNCTIONAL_H
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Functional.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Functional.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

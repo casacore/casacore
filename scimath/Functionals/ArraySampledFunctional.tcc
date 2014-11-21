@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/ArraySampledFunctional.h>
+#include <casacore/scimath/Functionals/ArraySampledFunctional.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/GaussianND.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Functionals/GaussianND.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main(){
   cout << "The example from the Header File" << endl;
   uInt ndim = 2;

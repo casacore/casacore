@@ -27,10 +27,10 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Fitting/LinearFit.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
-#include <scimath/Functionals/Function.h>
+#include <casacore/scimath/Fitting/LinearFit.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/scimath/Functionals/Function.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

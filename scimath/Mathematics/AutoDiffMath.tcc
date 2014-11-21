@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Mathematics/AutoDiffMath.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/BasicSL/Constants.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicSL/Constants.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

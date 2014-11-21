@@ -29,11 +29,11 @@
 #ifndef SCIMATH_ECLECTICFUNCTIONFACTORY_H
 #define SCIMATH_ECLECTICFUNCTIONFACTORY_H
 
-#include <scimath/Functionals/Function.h>
-#include <casa/Containers/OrderedMap.h>
-#include <casa/Containers/OrderedPair.h>
-#include <casa/Exceptions/Error.h>
-#include <scimath/Functionals/AbstractFunctionFactory.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/casa/Containers/OrderedMap.h>
+#include <casacore/casa/Containers/OrderedPair.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Functionals/AbstractFunctionFactory.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -152,7 +152,7 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/EclecticFunctionFactory.tcc>
+#include <casacore/scimath/Functionals/EclecticFunctionFactory.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

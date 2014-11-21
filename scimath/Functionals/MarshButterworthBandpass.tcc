@@ -26,8 +26,8 @@
 //#! ========================================================================
 //# $Id$
 
-#include <scimath/Functionals/MarshButterworthBandpass.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/scimath/Functionals/MarshButterworthBandpass.h>
+#include <casacore/casa/Arrays/Array.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

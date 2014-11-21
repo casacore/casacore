@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/SincParam.h>
+#include <casacore/scimath/Functionals/SincParam.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -27,10 +27,10 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Fitting/GenericL2Fit.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/VectorSTLIterator.h>
-#include <scimath/Functionals/HyperPlane.h>
+#include <casacore/scimath/Fitting/GenericL2Fit.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/VectorSTLIterator.h>
+#include <casacore/scimath/Functionals/HyperPlane.h>
 
 namespace casa {  //# Begin namespace casa
 //# Constants

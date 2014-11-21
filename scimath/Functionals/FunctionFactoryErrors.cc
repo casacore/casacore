@@ -25,7 +25,7 @@
 //#
 //#
 //# $Id$
-#include <scimath/Functionals/FunctionFactoryErrors.h>
+#include <casacore/scimath/Functionals/FunctionFactoryErrors.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

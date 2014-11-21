@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Fitting/LSQMatrix.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/scimath/Fitting/LSQMatrix.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

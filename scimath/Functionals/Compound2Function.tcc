@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/CompoundFunction.h>
+#include <casacore/scimath/Functionals/CompoundFunction.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/GNoiseParam.h>
+#include <casacore/scimath/Functionals/GNoiseParam.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

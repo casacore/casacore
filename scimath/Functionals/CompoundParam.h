@@ -29,10 +29,10 @@
 #ifndef SCIMATH_COMPOUNDPARAM_H
 #define SCIMATH_COMPOUNDPARAM_H
 
-#include <casa/aips.h>
-#include <scimath/Functionals/Function.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/Block.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -225,6 +225,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/CompoundParam.tcc>
+#include <casacore/scimath/Functionals/CompoundParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

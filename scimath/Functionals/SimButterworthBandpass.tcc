@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/SimButterworthBandpass.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Containers/RecordInterface.h>
+#include <casacore/scimath/Functionals/SimButterworthBandpass.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Containers/RecordInterface.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

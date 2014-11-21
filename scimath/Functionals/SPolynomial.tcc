@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/SPolynomial.h>
+#include <casacore/scimath/Functionals/SPolynomial.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

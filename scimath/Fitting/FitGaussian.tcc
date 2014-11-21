@@ -26,24 +26,24 @@
 //#
 //# $Id$
 
-#include <scimath/Fitting/FitGaussian.h>
+#include <casacore/scimath/Fitting/FitGaussian.h>
 
-#include <scimath/Fitting/NonLinearFitLM.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
-#include <scimath/Functionals/CompoundFunction.h>
-#include <scimath/Functionals/Gaussian1D.h>
-#include <scimath/Functionals/Gaussian2D.h>
-#include <scimath/Functionals/Gaussian3D.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicMath/Random.h>
-#include <casa/OS/Time.h>
-#include <casa/OS/Timer.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
+#include <casacore/scimath/Fitting/NonLinearFitLM.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/scimath/Functionals/CompoundFunction.h>
+#include <casacore/scimath/Functionals/Gaussian1D.h>
+#include <casacore/scimath/Functionals/Gaussian2D.h>
+#include <casacore/scimath/Functionals/Gaussian3D.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicMath/Random.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
 
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

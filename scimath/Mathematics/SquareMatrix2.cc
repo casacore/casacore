@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Mathematics/SquareMatrix.h>
+#include <casacore/scimath/Mathematics/SquareMatrix.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Mathematics/AutoDiffIO.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

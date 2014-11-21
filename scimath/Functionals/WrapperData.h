@@ -29,8 +29,8 @@
 #define SCIMATH_WRAPPERDATA_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/WrapperBase.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/WrapperBase.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

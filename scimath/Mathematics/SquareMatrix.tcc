@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Mathematics/SquareMatrix.h>
-#include <scimath/Mathematics/MatrixMathLA.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Mathematics/SquareMatrix.h>
+#include <casacore/scimath/Mathematics/MatrixMathLA.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

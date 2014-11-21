@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/HyperPlane.h>
+#include <casacore/scimath/Functionals/HyperPlane.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

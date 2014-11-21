@@ -29,8 +29,8 @@
 #ifndef SCIMATH_LINEARFITSVD_H
 #define SCIMATH_LINEARFITSVD_H
 
-#include <casa/aips.h>
-#include <scimath/Fitting/LinearFit.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Fitting/LinearFit.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -95,6 +95,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Fitting/LinearFitSVD.tcc>
+#include <casacore/scimath/Fitting/LinearFitSVD.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

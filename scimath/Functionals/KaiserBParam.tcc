@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/KaiserBParam.h>
+#include <casacore/scimath/Functionals/KaiserBParam.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

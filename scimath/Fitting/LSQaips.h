@@ -29,11 +29,11 @@
 #define SCIMATH_LSQAIPS_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/VectorSTLIterator.h>
-#include <scimath/Fitting/LSQFit.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/VectorSTLIterator.h>
+#include <casacore/scimath/Fitting/LSQFit.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -201,6 +201,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Fitting/LSQaips.tcc>
+#include <casacore/scimath/Fitting/LSQaips.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

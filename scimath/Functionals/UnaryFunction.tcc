@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/UnaryFunction.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/scimath/Functionals/UnaryFunction.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

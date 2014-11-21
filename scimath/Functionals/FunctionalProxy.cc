@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/FunctionalProxy.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/scimath/Functionals/FunctionalProxy.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // Constructors
 FunctionalProxy::FunctionalProxy(const Record& rec, Int type) : type_(type)
 {

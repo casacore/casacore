@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/Sinusoid1DParam.h>
+#include <casacore/scimath/Functionals/Sinusoid1DParam.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

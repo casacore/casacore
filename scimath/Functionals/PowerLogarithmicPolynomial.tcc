@@ -26,7 +26,7 @@
 //# $Id: Polynomial.tcc 20253 2008-02-23 15:15:00Z gervandiepen $
 
 //# Includes
-#include <scimath/Functionals/PowerLogarithmicPolynomial.h>
+#include <casacore/scimath/Functionals/PowerLogarithmicPolynomial.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

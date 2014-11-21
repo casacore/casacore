@@ -28,11 +28,11 @@
 #ifndef SCIMATH_GAUSSIAN3D_H
 #define SCIMATH_GAUSSIAN3D_H
 
-#include <casa/aips.h>
-#include <scimath/Functionals/Gaussian3DParam.h>
-#include <scimath/Functionals/Function.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Gaussian3DParam.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
   //# Forward Declarations.
@@ -300,8 +300,8 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/Gaussian3D.tcc>
-#include <scimath/Functionals/Gaussian3D2.tcc>
+#include <casacore/scimath/Functionals/Gaussian3D.tcc>
+#include <casacore/scimath/Functionals/Gaussian3D2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

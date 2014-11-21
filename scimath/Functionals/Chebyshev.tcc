@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/Chebyshev.h>
+#include <casacore/scimath/Functionals/Chebyshev.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

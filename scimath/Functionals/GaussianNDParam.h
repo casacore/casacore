@@ -29,11 +29,11 @@
 #define SCIMATH_GAUSSIANNDPARAM_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Function.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -288,6 +288,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/GaussianNDParam.tcc>
+#include <casacore/scimath/Functionals/GaussianNDParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

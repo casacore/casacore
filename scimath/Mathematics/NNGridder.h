@@ -29,7 +29,7 @@
 #ifndef SCIMATH_NNGRIDDER_H
 #define SCIMATH_NNGRIDDER_H
 
-#include <scimath/Mathematics/Gridder.h>
+#include <casacore/scimath/Mathematics/Gridder.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -70,6 +70,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/NNGridder.tcc>
+#include <casacore/scimath/Mathematics/NNGridder.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

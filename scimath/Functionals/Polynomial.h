@@ -29,11 +29,11 @@
 #define SCIMATH_POLYNOMIAL_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/PolynomialParam.h>
-#include <scimath/Functionals/Function1D.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/PolynomialParam.h>
+#include <casacore/scimath/Functionals/Function1D.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -212,7 +212,7 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/Polynomial.tcc>
-#include <scimath/Functionals/Polynomial2.tcc>
+#include <casacore/scimath/Functionals/Polynomial.tcc>
+#include <casacore/scimath/Functionals/Polynomial2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

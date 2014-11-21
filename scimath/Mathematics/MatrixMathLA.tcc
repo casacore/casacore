@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/MatrixMathLA.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/scimath/Mathematics/MatrixMathLA.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

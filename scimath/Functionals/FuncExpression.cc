@@ -27,13 +27,13 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/FuncExpression.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/MUString.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/BasicSL/String.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/scimath/Functionals/FuncExpression.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/MUString.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <scimath/Fitting/FitGaussian.h>
-#include <scimath/Functionals/Gaussian1D.h>
-#include <scimath/Functionals/Gaussian2D.h>
-#include <scimath/Functionals/Gaussian3D.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Fitting/FitGaussian.h>
+#include <casacore/scimath/Functionals/Gaussian1D.h>
+#include <casacore/scimath/Functionals/Gaussian2D.h>
+#include <casacore/scimath/Functionals/Gaussian3D.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 namespace casa {
    template <class T> class Matrix;

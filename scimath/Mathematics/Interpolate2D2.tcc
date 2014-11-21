@@ -25,10 +25,10 @@
 //#
 //# $Id$
  
-#include <scimath/Mathematics/Interpolate2D.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/Constants.h>
+#include <casacore/scimath/Mathematics/Interpolate2D.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/Constants.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

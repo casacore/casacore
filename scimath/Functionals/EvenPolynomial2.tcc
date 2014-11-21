@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/EvenPolynomial.h>
+#include <casacore/scimath/Functionals/EvenPolynomial.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

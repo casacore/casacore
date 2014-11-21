@@ -29,9 +29,9 @@
 #ifndef SCIMATH_MARSHALLABLECHEBYSHEV_H
 #define SCIMATH_MARSHALLABLECHEBYSHEV_H
 
-#include <casa/aips.h>
-#include <scimath/Functionals/Chebyshev.h>
-#include <scimath/Functionals/FunctionMarshallable.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Chebyshev.h>
+#include <casacore/scimath/Functionals/FunctionMarshallable.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -202,6 +202,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/MarshallableChebyshev.tcc>
+#include <casacore/scimath/Functionals/MarshallableChebyshev.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

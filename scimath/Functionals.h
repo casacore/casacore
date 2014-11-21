@@ -30,24 +30,24 @@
 #define SCIMATH_FUNCTIONALS_H
 
 //# Base classes
-#include <casa/BasicMath/Functional.h>
-#include <scimath/Functionals/FunctionTraits.h>
-#include <scimath/Functionals/FunctionParam.h>
-#include <scimath/Functionals/Function.h>
-#include <scimath/Functionals/Function1D.h>
+#include <casacore/casa/BasicMath/Functional.h>
+#include <casacore/scimath/Functionals/FunctionTraits.h>
+#include <casacore/scimath/Functionals/FunctionParam.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/scimath/Functionals/Function1D.h>
 
 //# Combination methods
-#include <scimath/Functionals/FunctionWrapper.h>
-#include <scimath/Functionals/CombiFunction.h>
-#include <scimath/Functionals/CompoundFunction.h>
+#include <casacore/scimath/Functionals/FunctionWrapper.h>
+#include <casacore/scimath/Functionals/CombiFunction.h>
+#include <casacore/scimath/Functionals/CompoundFunction.h>
 
 //# remainder will be removed
-#include <scimath/Functionals/SampledFunctional.h>
+#include <casacore/scimath/Functionals/SampledFunctional.h>
 
 //# 1-D Functions
-#include <scimath/Functionals/Interpolate1D.h>
-#include <scimath/Functionals/ArraySampledFunctional.h>
-#include <scimath/Functionals/ScalarSampledFunctional.h>
+#include <casacore/scimath/Functionals/Interpolate1D.h>
+#include <casacore/scimath/Functionals/ArraySampledFunctional.h>
+#include <casacore/scimath/Functionals/ScalarSampledFunctional.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

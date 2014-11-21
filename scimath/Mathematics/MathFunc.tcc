@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/BasicSL/Constants.h>
-#include <casa/Exceptions/Error.h>
-#include <scimath/Mathematics/MathFunc.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Mathematics/MathFunc.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

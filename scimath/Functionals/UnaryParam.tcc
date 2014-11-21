@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/UnaryParam.h>
+#include <casacore/scimath/Functionals/UnaryParam.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

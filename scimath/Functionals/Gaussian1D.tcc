@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/Gaussian1D.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/scimath/Functionals/Gaussian1D.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

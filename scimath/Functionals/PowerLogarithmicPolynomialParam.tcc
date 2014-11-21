@@ -26,8 +26,8 @@
 //# $Id: PolynomialParam.tcc 19879 2007-02-15 03:52:50Z Malte.Marquarding $
 
 //# Includes
-#include <scimath/Functionals/PowerLogarithmicPolynomialParam.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/scimath/Functionals/PowerLogarithmicPolynomialParam.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,11 +29,11 @@
 #define SCIMATH_VANVLECK_H
 
 //#! Includes go here
-#include <casa/aips.h>
-#include <casa/Arrays/Matrix.h>
-#include <scimath/Functionals/Interpolate1D.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/scimath/Functionals/Interpolate1D.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/OS/Mutex.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

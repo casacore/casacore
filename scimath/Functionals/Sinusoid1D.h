@@ -29,11 +29,11 @@
 #define SCIMATH_SINUSOID1D_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Sinusoid1DParam.h>
-#include <scimath/Functionals/Function1D.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Sinusoid1DParam.h>
+#include <casacore/scimath/Functionals/Function1D.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -254,7 +254,7 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/Sinusoid1D.tcc>
-#include <scimath/Functionals/Sinusoid1D2.tcc>
+#include <casacore/scimath/Functionals/Sinusoid1D.tcc>
+#include <casacore/scimath/Functionals/Sinusoid1D2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

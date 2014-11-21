@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/InterpolateArray1D.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/BinarySearch.h>
-#include <casa/Utilities/GenSort.h>
+#include <casacore/scimath/Mathematics/InterpolateArray1D.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/BinarySearch.h>
+#include <casacore/casa/Utilities/GenSort.h>
 #include <limits>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
