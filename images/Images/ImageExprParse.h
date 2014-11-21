@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <lattices/Lattices/LatticeExpr.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/stdvector.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/HDF5/HDF5File.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/stdvector.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/HDF5/HDF5File.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

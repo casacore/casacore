@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <images/Images/ImageAttrHandler.h>
-#include <images/Images/ImageAttrGroupCasa.h>
+#include <casacore/images/Images/ImageAttrHandler.h>
+#include <casacore/images/Images/ImageAttrGroupCasa.h>
 #include <map>
 
 namespace casa {

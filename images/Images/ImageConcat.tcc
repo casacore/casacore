@@ -26,33 +26,33 @@
 //# $Id$
 
 
-#include <images/Images/ImageConcat.h>
-#include <images/Images/ImageOpener.h>
+#include <casacore/images/Images/ImageConcat.h>
+#include <casacore/images/Images/ImageOpener.h>
 
-#include <casa/OS/Timer.h>
-#include <casa/OS/Path.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/OS/Path.h>
 
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/Record.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/TabularCoordinate.h>
-#include <coordinates/Coordinates/StokesCoordinate.h>
-#include <images/Images/ImageSummary.h>
-#include <images/Images/ImageInterface.h>
-#include <images/Images/ImageInfo.h>
-#include <images/Images/LELImageCoord.h>
-#include <lattices/Lattices/LatticeConcat.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <lattices/Lattices/LELCoordinates.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/TabularCoordinate.h>
+#include <casacore/coordinates/Coordinates/StokesCoordinate.h>
+#include <casacore/images/Images/ImageSummary.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/ImageInfo.h>
+#include <casacore/images/Images/LELImageCoord.h>
+#include <casacore/lattices/Lattices/LatticeConcat.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/lattices/Lattices/LELCoordinates.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

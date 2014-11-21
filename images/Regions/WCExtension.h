@@ -29,8 +29,8 @@
 #define IMAGES_WCEXTENSION_H
 
 //# Includes
-#include <images/Regions/WCCompound.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/images/Regions/WCCompound.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

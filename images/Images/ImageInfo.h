@@ -29,19 +29,19 @@
 #ifndef IMAGES_IMAGEINFO_H
 #define IMAGES_IMAGEINFO_H
 
-#include <casa/aips.h>
-#include <casa/Utilities/RecordTransformable.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/RecordTransformable.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 
-#include <images/Images/ImageBeamSet.h>
+#include <casacore/images/Images/ImageBeamSet.h>
 
 //# Forward declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class LoggerHolder;

@@ -29,7 +29,7 @@
 #define IMAGES_WCCOMPLEMENT_H
 
 //# Includes
-#include <images/Regions/WCCompound.h>
+#include <casacore/images/Regions/WCCompound.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

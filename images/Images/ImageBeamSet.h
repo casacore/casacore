@@ -26,10 +26,10 @@
 #ifndef IMAGES_IMAGEBEAMSET_H
 #define IMAGES_IMAGEBEAMSET_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Matrix.h>
-#include <scimath/Mathematics/GaussianBeam.h>
-//#include <measures/Measures/Stokes.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/scimath/Mathematics/GaussianBeam.h>
+//#include <casacore/measures/Measures/Stokes.h>
 //#include <map>
 
 namespace casa {

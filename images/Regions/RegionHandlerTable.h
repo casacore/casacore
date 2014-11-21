@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <images/Regions/RegionHandler.h>
+#include <casacore/images/Regions/RegionHandler.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

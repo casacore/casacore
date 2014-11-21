@@ -26,21 +26,21 @@
 //# $Id$
 //#--------------------------------------------------------------------------
 
-#include<casa/aips.h>
-#include <images/Images/PagedImage.h>
+#include<casacore/casa/aips.h>
+#include <casacore/images/Images/PagedImage.h>
 ///#include <trial/ImgCrdSys/ImageCoordinate.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/IPosition.h>
-#include <tables/Tables.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/tables/Tables.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <casa/stdlib.h>
-#include <casa/iostream.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main()
 {

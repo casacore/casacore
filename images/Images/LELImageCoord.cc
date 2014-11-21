@@ -26,18 +26,18 @@
 //# $Id$
 
 
-#include <images/Images/LELImageCoord.h>
-#include <images/Images/ImageExpr.h>
-#include <images/Images/SubImage.h>
-#include <images/Images/ExtendImage.h>
-#include <images/Images/RebinImage.h>
-#include <lattices/Lattices/LattRegionHolder.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Images/LELImageCoord.h>
+#include <casacore/images/Images/ImageExpr.h>
+#include <casacore/images/Images/SubImage.h>
+#include <casacore/images/Images/ExtendImage.h>
+#include <casacore/images/Images/RebinImage.h>
+#include <casacore/lattices/Lattices/LattRegionHolder.h>
+#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

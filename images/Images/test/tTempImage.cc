@@ -25,27 +25,27 @@
 //#
 //# $Id$
 
-#include <images/Images/TempImage.h>
-#include <images/Images/SubImage.h>
-#include <images/Images/ImageInfo.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Quanta/QLogical.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/IO/CanonicalIO.h>
-#include <casa/IO/MemoryIO.h>
-#include <casa/Utilities/COWPtr.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/images/Images/TempImage.h>
+#include <casacore/images/Images/SubImage.h>
+#include <casacore/images/Images/ImageInfo.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Quanta/QLogical.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/CanonicalIO.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/Utilities/COWPtr.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 // Write and check the image.
 void doIt (TempImage<Int>& scratch)

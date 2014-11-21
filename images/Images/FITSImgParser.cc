@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <images/Images/FITSImgParser.h>
-#include <fits/FITS/hdu.h>
-#include <fits/FITS/fitsio.h>
-#include <fits/FITS/FITSKeywordUtil.h>
-#include <casa/OS/File.h>
-#include <casa/Utilities/ValType.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Images/FITSImgParser.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/fits/FITS/FITSKeywordUtil.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

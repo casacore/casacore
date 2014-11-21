@@ -29,8 +29,8 @@
 #define IMAGES_IMAGEATTRGROUPCASA_H
 
 //# Includes
-#include <images/Images/ImageAttrGroup.h>
-#include <tables/Tables/TableProxy.h>
+#include <casacore/images/Images/ImageAttrGroup.h>
+#include <casacore/tables/Tables/TableProxy.h>
 
 namespace casa {
 

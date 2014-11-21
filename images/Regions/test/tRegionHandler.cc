@@ -25,27 +25,27 @@
 //#
 //# $Id$
 
-#include <images/Regions/RegionHandlerMemory.h>
-#include <images/Regions/RegionHandlerTable.h>
-#include <images/Regions/RegionHandlerHDF5.h>
+#include <casacore/images/Regions/RegionHandlerMemory.h>
+#include <casacore/images/Regions/RegionHandlerTable.h>
+#include <casacore/images/Regions/RegionHandlerHDF5.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/IPosition.h>
-#include <lattices/Lattices/PagedArray.h>
-#include <lattices/Lattices/LCSlicer.h>
-#include <images/Regions/ImageRegion.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/Table.h>
-#include <casa/HDF5/HDF5File.h>
-#include <casa/OS/File.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/LCSlicer.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/HDF5/HDF5File.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 Table theTable;
 Table& getTable (void*, Bool)
 {

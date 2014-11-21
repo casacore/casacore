@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/Arrays.h>
-#include <measures/Measures.h>
-#include <coordinates/Coordinates.h>
-#include <casa/Exceptions/Error.h>
-#include <images/Regions/WCBox.h>
-#include <lattices/Lattices/LCRegion.h>
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/RegionType.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/coordinates/Coordinates.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/images/Regions/WCBox.h>
+#include <casacore/lattices/Lattices/LCRegion.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void setValues (IPosition& blcI,
                 IPosition& trcI,
                 IPosition& shape,

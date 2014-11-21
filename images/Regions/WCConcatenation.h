@@ -29,8 +29,8 @@
 #define IMAGES_WCCONCATENATION_H
 
 //# Includes
-#include <images/Regions/WCCompound.h>
-#include <images/Regions/WCBox.h>
+#include <casacore/images/Regions/WCCompound.h>
+#include <casacore/images/Regions/WCBox.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

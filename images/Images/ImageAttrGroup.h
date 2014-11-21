@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa {
 

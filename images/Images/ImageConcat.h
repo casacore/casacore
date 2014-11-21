@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Block.h>
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/LatticeConcat.h>
-#include <images/Images/ImageInterface.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/LatticeConcat.h>
+#include <casacore/images/Images/ImageInterface.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -310,6 +310,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/ImageConcat.tcc>
+#include <casacore/images/Images/ImageConcat.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

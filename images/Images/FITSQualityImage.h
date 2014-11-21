@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <images/Images/FITSErrorImage.h>
-#include <images/Images/ImageInterface.h>
+#include <casacore/images/Images/FITSErrorImage.h>
+#include <casacore/images/Images/ImageInterface.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

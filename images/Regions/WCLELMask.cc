@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <images/Regions/WCLELMask.h>
-#include <images/Images/ImageExprParse.h>
-#include <images/Images/ImageExpr.h>
-#include <lattices/Lattices/LCLELMask.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/LELLattCoordBase.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Regions/WCLELMask.h>
+#include <casacore/images/Images/ImageExprParse.h>
+#include <casacore/images/Images/ImageExpr.h>
+#include <casacore/lattices/Lattices/LCLELMask.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/LELLattCoordBase.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

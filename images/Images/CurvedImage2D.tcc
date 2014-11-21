@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <images/Images/CurvedImage2D.h>
-#include <lattices/Lattices/CurvedLattice2D.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/LinearCoordinate.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Images/CurvedImage2D.h>
+#include <casacore/lattices/Lattices/CurvedLattice2D.h>
+#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/LinearCoordinate.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

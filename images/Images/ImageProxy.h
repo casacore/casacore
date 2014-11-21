@@ -30,12 +30,12 @@
 #define IMAGES_IMAGEPROXY_H
 
 //# Includes
-#include <images/Images/MaskSpecifier.h>
-#include <lattices/Lattices/LatticeBase.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Containers/Record.h>
+#include <casacore/images/Images/MaskSpecifier.h>
+#include <casacore/lattices/Lattices/LatticeBase.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Containers/Record.h>
 
 namespace casa {
 

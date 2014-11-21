@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <images/Images/ImageStatistics.h>
-#include <images/Images/FITSImage.h>
-#include <casa/namespace.h>
+#include <casacore/images/Images/ImageStatistics.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/casa/namespace.h>
 
 void writeTestString(const String& test) {
     cout << "\n" << "*** " << test << " ***" << endl;

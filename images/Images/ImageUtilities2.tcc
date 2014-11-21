@@ -26,24 +26,24 @@
 //# $Id$
 //
 
-#include <images/Images/ImageUtilities.h>
+#include <casacore/images/Images/ImageUtilities.h>
 
-#include <casa/Arrays/MaskedArray.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/LinearCoordinate.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <coordinates/Coordinates/TabularCoordinate.h>
-#include <casa/Exceptions/Error.h>
-#include <images/Images/ImageInterface.h>
-#include <images/Images/ImageOpener.h>
-#include <images/Images/PagedImage.h>
-#include <images/Images/SubImage.h>
-#include <images/Images/TempImage.h>
-#include <images/Images/RebinImage.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <casa/Utilities/Assert.h>
-#include <tables/LogTables/NewFile.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/LinearCoordinate.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/coordinates/Coordinates/TabularCoordinate.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/ImageOpener.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/SubImage.h>
+#include <casacore/images/Images/TempImage.h>
+#include <casacore/images/Images/RebinImage.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/tables/LogTables/NewFile.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

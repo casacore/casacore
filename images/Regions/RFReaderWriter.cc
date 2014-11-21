@@ -24,9 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <images/Regions/RFReaderWriter.h>
-#include <images/Regions/AipsIOReaderWriter.h>
-    //#include <images/Regions/DS9ReaderWriter.h>
+#include <casacore/images/Regions/RFReaderWriter.h>
+#include <casacore/images/Regions/AipsIOReaderWriter.h>
+    //#include <casacore/images/Regions/DS9ReaderWriter.h>
 
 namespace casa {
 

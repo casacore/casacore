@@ -27,7 +27,7 @@
 
 
 //# Includes
-#include <images/Images/MaskSpecifier.h>
+#include <casacore/images/Images/MaskSpecifier.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

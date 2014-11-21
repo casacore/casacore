@@ -29,7 +29,7 @@
 #define IMAGES_IMAGEREGION_H
 
 //# Includes
-#include <lattices/Lattices/LattRegionHolder.h>
+#include <casacore/lattices/Lattices/LattRegionHolder.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

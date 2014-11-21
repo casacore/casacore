@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <images/Regions/RegionManager.h>
+#include <casacore/images/Regions/RegionManager.h>
 
-#include <images/Images/FITSImage.h>
+#include <casacore/images/Images/FITSImage.h>
 
 #include <iostream>
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void writeTestString(const String& test) {
     cout << "\n" << "*** " << test << " ***" << endl;

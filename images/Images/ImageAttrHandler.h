@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <images/Images/ImageAttrGroup.h>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/images/Images/ImageAttrGroup.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa {
 

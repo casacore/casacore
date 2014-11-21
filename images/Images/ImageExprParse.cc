@@ -25,26 +25,26 @@
 //#
 //# $Id$
 
-#include <images/Images/ImageExprParse.h>
-#include <images/Images/ImageExprGram.h>
-#include <images/Images/PagedImage.h>
-#include <images/Images/ImageOpener.h>
-#include <images/Regions/ImageRegion.h>
-#include <images/Regions/RegionHandlerTable.h>
-#include <images/Images/HDF5Image.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <lattices/Lattices/PagedArray.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Images/ImageExprParse.h>
+#include <casacore/images/Images/ImageExprGram.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/ImageOpener.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/images/Regions/RegionHandlerTable.h>
+#include <casacore/images/Images/HDF5Image.h>
+#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

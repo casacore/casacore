@@ -25,31 +25,31 @@
 //#
 //# $Id$
 
-#include <images/Images/ImageExprParse.h>
-#include <images/Images/ImageExpr.h>
-#include <images/Regions/ImageRegion.h>
-#include <lattices/Lattices/PagedArray.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/LCPixelSet.h>
-#include <tables/Tables/Table.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/Record.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Inputs/Input.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/images/Images/ImageExprParse.h>
+#include <casacore/images/Images/ImageExpr.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/Lattices/LCPixelSet.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 //# This function simulates the same function in DOImage2.cc.
 String substituteOID (Block<LatticeExprNode>& nodes,
 		      String& exprName,

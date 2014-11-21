@@ -27,10 +27,10 @@
 #ifndef IMAGES_REGIONMANAGER_H
 #define IMAGES_REGIONMANAGER_H
 
-#include <casa/Quanta/Quantum.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <lattices/Lattices/RegionType.h>
-#include <tables/Tables/Table.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/tables/Tables/Table.h>
 
 
 namespace casa {

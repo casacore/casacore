@@ -29,9 +29,9 @@
 #define IMAGES_RFREADERWRITER_H
 
 //# Includes
-#include <casa/Logging/LogIO.h>
-#include <casa/Containers/Record.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 
 namespace casa {//# NAMESPACE CASA - BEGIN 
 

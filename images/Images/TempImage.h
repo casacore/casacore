@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <images/Images/ImageInterface.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <lattices/Lattices/TempLattice.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -313,6 +313,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/TempImage.tcc>
+#include <casacore/images/Images/TempImage.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

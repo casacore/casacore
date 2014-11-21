@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <images/Images/PagedImage.h>
-#include <images/Images/ImageInterface.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/iostream.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 Float sumPixels(const ImageInterface<Float>& image){
   uInt rowLength = image.shape()(0);
   IPosition rowShape(image.ndim());

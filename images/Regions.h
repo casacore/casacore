@@ -29,8 +29,8 @@
 #define IMAGES_REGIONS_H
 
 
-#include <images/Regions/ImageRegion.h>
-#include <images/Regions/WCRegion.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/images/Regions/WCRegion.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

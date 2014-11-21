@@ -30,8 +30,8 @@
 #define LATTICES_FITSQUALMASK_H
 
 //# Includes
-#include <casa/Arrays/Array.h>
-#include <lattices/Lattices/Lattice.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/lattices/Lattices/Lattice.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

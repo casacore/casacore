@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <images/Images/HDF5Image.h>
-#include <casa/HDF5/HDF5File.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Images/HDF5Image.h>
+#include <casacore/casa/HDF5/HDF5File.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,9 +29,9 @@
 #define IMAGES_REGIONHANDLERHDF5_H
 
 //# Includes
-#include <images/Regions/RegionHandler.h>
-#include <casa/HDF5/HDF5File.h>
-#include <tables/Tables/TableRecord.h>
+#include <casacore/images/Regions/RegionHandler.h>
+#include <casacore/casa/HDF5/HDF5File.h>
+#include <casacore/tables/Tables/TableRecord.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

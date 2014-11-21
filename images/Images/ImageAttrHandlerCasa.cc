@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <images/Images/ImageAttrHandlerCasa.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/images/Images/ImageAttrHandlerCasa.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 using namespace std;
 
