@@ -29,8 +29,8 @@
 #define CASA_STRINGDISTANCE_H
 
 //# Includes
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Matrix.h>
 
 namespace casa {
 

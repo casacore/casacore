@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/OS/Time.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/OS/HostInfo.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/OS/HostInfo.h>
 
 #if defined(AIPS_SOLARIS) || defined(_AIX) || defined(AIPS_IRIX)
 #include <sys/time.h>

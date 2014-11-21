@@ -28,7 +28,7 @@
 #ifndef CASA_MAPIO_H
 #define CASA_MAPIO_H
 
-#include <casa/Containers/Map.h>
+#include <casacore/casa/Containers/Map.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -63,6 +63,6 @@ template<class key, class value> ostream &operator<<(ostream &, const ConstMapIt
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/MapIO.tcc>
+#include <casacore/casa/Containers/MapIO.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <casa/HDF5/HDF5DataSet.h>
-#include <casa/HDF5/HDF5Error.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/BlockIO.h>
-#include <casa/BasicMath/Primes.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/HDF5/HDF5DataSet.h>
+#include <casacore/casa/HDF5/HDF5Error.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/BlockIO.h>
+#include <casacore/casa/BasicMath/Primes.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

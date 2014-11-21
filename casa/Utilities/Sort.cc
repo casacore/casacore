@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/Sort.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Utilities/ValType.h>
-#include <casa/Utilities/Copy.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/SortError.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Containers/BlockIO.h>
+#include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/Utilities/Copy.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/SortError.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Containers/BlockIO.h>
 
-#include <casa/stdlib.h>                 // for rand
+#include <casacore/casa/stdlib.h>                 // for rand
 #ifdef _OPENMP
 # include <omp.h>
 #endif

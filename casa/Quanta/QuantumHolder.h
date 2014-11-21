@@ -29,10 +29,10 @@
 #define CASA_QUANTUMHOLDER_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Utilities/PtrHolder.h>
-#include <casa/Utilities/RecordTransformable.h>
-#include <casa/BasicSL/Complexfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
+#include <casacore/casa/Utilities/RecordTransformable.h>
+#include <casacore/casa/BasicSL/Complexfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

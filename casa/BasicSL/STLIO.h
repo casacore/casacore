@@ -29,9 +29,9 @@
 #define CASA_STLIO_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/iostream.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <vector>
 #include <set>
 #include <list>
@@ -172,6 +172,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/BasicSL/STLIO.tcc>
+#include <casacore/casa/BasicSL/STLIO.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/IO/ByteIO.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/ByteIO.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -41,6 +41,21 @@ void ByteIO::reopenRW()
 	throw (AipsError ("ByteIO: reopenRW is not possible"));
     }
 }
+
+void ByteIO::flush()
+{}
+
+void ByteIO::fsync()
+{}
+
+void ByteIO::resync()
+{}
+
+String ByteIO::fileName() const
+{
+  return String();
+}
+
 
 } //# NAMESPACE CASA - END
 

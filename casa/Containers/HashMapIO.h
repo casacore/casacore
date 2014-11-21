@@ -29,7 +29,7 @@
 #define CASA_HASHMAPIO_H
 
 
-#include <casa/Containers/HashMapIter.h>
+#include <casacore/casa/Containers/HashMapIter.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -59,6 +59,6 @@ template<class key, class val> ostream& operator<<(ostream&, const HashMap<key,v
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/HashMapIO.tcc>
+#include <casacore/casa/Containers/HashMapIO.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

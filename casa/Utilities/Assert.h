@@ -28,8 +28,8 @@
 #ifndef CASA_ASSERT_H
 #define CASA_ASSERT_H
 
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -191,6 +191,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Utilities/Assert.tcc>
+#include <casacore/casa/Utilities/Assert.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

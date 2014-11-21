@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <casa/Containers/HashMapIter.h>
+#include <casacore/casa/Containers/HashMapIter.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

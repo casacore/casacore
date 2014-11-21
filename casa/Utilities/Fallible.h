@@ -28,7 +28,7 @@
 #ifndef CASA_FALLIBLE_H
 #define CASA_FALLIBLE_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

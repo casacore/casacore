@@ -28,9 +28,9 @@
 #ifndef CASA_SIMORDMAPIO_H
 #define CASA_SIMORDMAPIO_H
 
-#include <casa/aips.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -60,6 +60,6 @@ ostream& operator<<(ostream&, const SimpleOrderedMap<K,V>&);
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/SimOrdMapIO.tcc>
+#include <casacore/casa/Containers/SimOrdMapIO.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

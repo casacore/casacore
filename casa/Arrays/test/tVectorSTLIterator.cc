@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/VectorSTLIterator.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/VectorSTLIterator.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 using namespace casa;
 

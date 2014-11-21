@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

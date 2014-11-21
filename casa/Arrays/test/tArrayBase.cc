@@ -30,16 +30,16 @@
 #define AIPS_DEBUG
 #endif
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/ArrayError.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/ArrayError.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 // Check that an array is empty.
 void checkEmpty (const ArrayBase& arr)

@@ -26,7 +26,7 @@
 //# $Id$
 //#
 
-#include <casa/Utilities/PtrHolder.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

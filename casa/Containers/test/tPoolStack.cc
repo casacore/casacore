@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/PoolStack.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/PoolStack.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() {
 
   Bool ok(True);

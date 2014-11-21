@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/aips.h>
-#include <casa/Arrays/MaskArrIO.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/ArrayIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/MaskArrIO.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

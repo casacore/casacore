@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/IO/ByteSource.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/IO/TypeIO.h>
+#include <casacore/casa/IO/ByteSource.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/IO/TypeIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -142,72 +142,72 @@ ByteSource& ByteSource::operator>> (String& value)
 }
 
 
-void ByteSource::read (uInt nvalues, Bool* value)
+void ByteSource::read (size_t nvalues, Bool* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, Char* value)
+void ByteSource::read (size_t nvalues, Char* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, uChar* value)
+void ByteSource::read (size_t nvalues, uChar* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, Short* value)
+void ByteSource::read (size_t nvalues, Short* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, uShort* value)
+void ByteSource::read (size_t nvalues, uShort* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, Int* value)
+void ByteSource::read (size_t nvalues, Int* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, uInt* value)
+void ByteSource::read (size_t nvalues, uInt* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, Int64* value)
+void ByteSource::read (size_t nvalues, Int64* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, uInt64* value)
+void ByteSource::read (size_t nvalues, uInt64* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, Float* value)
+void ByteSource::read (size_t nvalues, Float* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, Double* value)
+void ByteSource::read (size_t nvalues, Double* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, Complex* value)
+void ByteSource::read (size_t nvalues, Complex* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, DComplex* value)
+void ByteSource::read (size_t nvalues, DComplex* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (uInt nvalues, String* value)
+void ByteSource::read (size_t nvalues, String* value)
 {
     itsTypeIO->read (nvalues, value);
 }

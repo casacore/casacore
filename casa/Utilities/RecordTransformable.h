@@ -29,7 +29,7 @@
 #ifndef CASA_RECORDTRANSFORMABLE_H
 #define CASA_RECORDTRANSFORMABLE_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

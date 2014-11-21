@@ -28,7 +28,7 @@
 #ifndef CASA_COUNTEDPTR_H
 #define CASA_COUNTEDPTR_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 #if defined AIPS_CXX11
 #include <memory>
@@ -264,7 +264,7 @@ inline Bool countedPtrShared()
 
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Utilities/CountedPtr.tcc>
+#include <casacore/casa/Utilities/CountedPtr.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif

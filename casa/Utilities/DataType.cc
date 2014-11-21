@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/DataType.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

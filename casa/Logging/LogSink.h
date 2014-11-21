@@ -29,13 +29,13 @@
 #ifndef CASA_LOGSINK_H
 #define CASA_LOGSINK_H
 
-#include <casa/aips.h>
-#include <casa/Logging/LogSinkInterface.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogSinkInterface.h>
 
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/OS/Mutex.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/OS/Mutex.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

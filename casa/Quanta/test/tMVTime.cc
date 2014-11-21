@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Quanta/MVTime.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Quanta/MVTime.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void showTime (MVTime time, uInt format, uInt prec)
 {

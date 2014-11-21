@@ -27,7 +27,7 @@
 //#
 //#      Author: jjacobs
 
-#include <casa/Exceptions/CasaErrorTools.h>
+#include <casacore/casa/Exceptions/CasaErrorTools.h>
 #include <map>
 
 

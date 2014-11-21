@@ -33,10 +33,10 @@
 #endif
 
 
-#include <casa/aips.h>
-#include <casa/Arrays/MaskLogiArrFwd.h>
-#include <casa/Arrays/LogiArray.h>
-#include <casa/Arrays/MaskedArray.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/MaskLogiArrFwd.h>
+#include <casacore/casa/Arrays/LogiArray.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

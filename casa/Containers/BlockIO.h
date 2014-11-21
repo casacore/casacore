@@ -28,10 +28,10 @@
 #ifndef CASA_BLOCKIO_H
 #define CASA_BLOCKIO_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 //# Forward declarations.
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -104,6 +104,7 @@ template<class T> void showBlock (std::ostream& ios, const Block<T>& blk)
 // reading a <src>Block</src> in from <src>AipsIO</src>.
 // <note> STL containers like vector and list are written in the same way as
 // a Block, so they can be written one way and read back the other.
+// </note>
 //
 // <group>
 template<class T> AipsIO& operator<< (AipsIO& ios, const Block<T>& blk)
@@ -142,6 +143,6 @@ inline void showBlock (AipsIO&, const Block<void*>&, Int)
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/BlockIO.tcc>
+#include <casacore/casa/Containers/BlockIO.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

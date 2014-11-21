@@ -28,29 +28,29 @@
 #ifndef CASA_CONTAINERS_H
 #define CASA_CONTAINERS_H
 
-#include <casa/Containers/Block.h>
-#include <casa/Containers/Link.h>
-#include <casa/Containers/List.h>
-#include <casa/Containers/ListMap.h>
-#include <casa/Containers/Map.h>
-#include <casa/Containers/OrderedPair.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/RecordField.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/Containers/OrderedMap.h>
-#include <casa/Containers/Queue.h>
-#include <casa/Containers/Stack.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/Link.h>
+#include <casacore/casa/Containers/List.h>
+#include <casacore/casa/Containers/ListMap.h>
+#include <casacore/casa/Containers/Map.h>
+#include <casacore/casa/Containers/OrderedPair.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Containers/OrderedMap.h>
+#include <casacore/casa/Containers/Queue.h>
+#include <casacore/casa/Containers/Stack.h>
 
-#include <casa/Containers/BlockIO.h>
-#include <casa/Containers/ListIO.h>
-#include <casa/Containers/ListMapIO.h>
-#include <casa/Containers/OrdPairIO.h>
-#include <casa/Containers/OrdMapIO.h>
-#include <casa/Containers/SimOrdMapIO.h>
-#include <casa/Containers/MapIO.h>
+#include <casacore/casa/Containers/BlockIO.h>
+#include <casacore/casa/Containers/ListIO.h>
+#include <casacore/casa/Containers/ListMapIO.h>
+#include <casacore/casa/Containers/OrdPairIO.h>
+#include <casacore/casa/Containers/OrdMapIO.h>
+#include <casacore/casa/Containers/SimOrdMapIO.h>
+#include <casacore/casa/Containers/MapIO.h>
 
-#include <casa/Containers/StackError.h>
-#include <casa/Containers/IterError.h>
+#include <casacore/casa/Containers/StackError.h>
+#include <casacore/casa/Containers/IterError.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

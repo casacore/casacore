@@ -26,18 +26,18 @@
 //# $Id$
 
 //# Includes
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayPartMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/OS/Timer.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayPartMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/iostream.h>
 
 // If an argument is given, some performance tests will also be done.
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 typedef Array<Double> PartFunc (const Array<Double>&, const IPosition& axes);
 typedef Double FullFunc (const Array<Double>&);
 

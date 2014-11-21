@@ -29,8 +29,8 @@
 #define CASA_HDF5OBJECT_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
 
 //# Define hid_t and hsize_t if not defined (thus if HDF5 disabled).
 //# They should be the same as used by HDF5.

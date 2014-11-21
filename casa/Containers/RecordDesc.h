@@ -32,10 +32,10 @@
 
 
 //# Includes
-#include <casa/Containers/RecordDescRep.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Utilities/COWPtr.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/Containers/RecordDescRep.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Utilities/COWPtr.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

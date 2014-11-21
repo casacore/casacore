@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#include <casa/Logging/NullLogSink.h>
-#include <casa/Logging/LogFilter.h>
+#include <casacore/casa/Logging/NullLogSink.h>
+#include <casacore/casa/Logging/LogFilter.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

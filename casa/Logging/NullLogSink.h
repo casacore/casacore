@@ -29,8 +29,8 @@
 #ifndef CASA_NULLLOGSINK_H
 #define CASA_NULLLOGSINK_H
 
-#include <casa/aips.h>
-#include <casa/Logging/LogSinkInterface.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogSinkInterface.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

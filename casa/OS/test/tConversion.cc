@@ -26,16 +26,16 @@
 //# $Id$
 
 
-#include <casa/aips.h>
-#include <casa/OS/Conversion.h>
-#include <casa/OS/Timer.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/OS/Conversion.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // This program tests the class Conversion.
+
 
 // Check optimized conversions.
 void checkAll()
@@ -67,21 +67,6 @@ void checkAll()
   Conversion::boolToBit (out, flags, 8*256);
   for (uInt i=0; i<256; ++i) {
     AlwaysAssertExit (out[i] == bits[i]);
-  }
-  // Time difference between old and optimized version.
-  {
-    Timer timer;
-    for (int i=0; i<100000; ++i) {
-      Conversion::bitToBool (flags+1, bits, 8*256);
-    }
-    timer.show("unaligned");
-  }
-  {
-    Timer timer;
-    for (int i=0; i<100000; ++i) {
-      Conversion::bitToBool (flags, bits, 8*256);
-    }
-    timer.show("aligned  ");
   }
 }
 

@@ -30,8 +30,8 @@
 #define CASA_APPINFO_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/System/AipsrcValue.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/System/AipsrcValue.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <casa/BasicSL/STLIO.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/sstream.h>
-#include <casa/stdmap.h>
+#include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/stdmap.h>
 
 using namespace casa;
 

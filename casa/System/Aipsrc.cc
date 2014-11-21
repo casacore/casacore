@@ -27,20 +27,20 @@
 
 //# Includes
 
-#include <casa/System/Aipsrc.h>
-#include <casa/Exceptions.h>
-#include <casa/OS/EnvVar.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/Time.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Utilities/MUString.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/iostream.h>
-#include <casa/fstream.h>
-#include <casa/sstream.h>
+#include <casacore/casa/System/Aipsrc.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/OS/EnvVar.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Utilities/MUString.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/fstream.h>
+#include <casacore/casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

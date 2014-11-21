@@ -28,10 +28,10 @@
 #ifndef CASA_MASKARRIO_H
 #define CASA_MASKARRIO_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 //# Forward declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class T> class MaskedArray;
@@ -100,6 +100,6 @@ template<class T> ostream & operator<< (ostream &, const MaskedArray<T> &);
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/MaskArrIO.tcc>
+#include <casacore/casa/Arrays/MaskArrIO.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

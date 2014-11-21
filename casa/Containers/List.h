@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <casa/Utilities/Register.h>
-#include <casa/Utilities/Notice.h>
-#include <casa/Containers/Link.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Containers/IterError.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/Utilities/Notice.h>
+#include <casacore/casa/Containers/Link.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Containers/IterError.h>
 
 namespace casa { //#Begin casa namespace
 
@@ -146,8 +146,8 @@ private:
 // <anchor name=simple_example>
 // <example>
 //     <srcblock>
-// #include <casa/Containers/List.h>
-// #include <casa/Containers/ListIO.h>
+// #include <casacore/casa/Containers/List.h>
+// #include <casacore/casa/Containers/ListIO.h>
 // 
 // main() {
 //                                              // List, conceptual
@@ -539,8 +539,8 @@ protected:
 // <anchor name=complete_example>
 // <example>
 // <srcblock>
-// #include <casa/Containers/List.h>
-// #include <casa/Containers/ListIO.h>
+// #include <casacore/casa/Containers/List.h>
+// #include <casacore/casa/Containers/ListIO.h>
 //
 // main() {
 //                                             // The conceptual cursors are:
@@ -750,6 +750,6 @@ enum {ConstListIterVersion = 1};
 
 } //#End casa namespace
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/List.tcc>
+#include <casacore/casa/Containers/List.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

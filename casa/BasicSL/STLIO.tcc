@@ -26,8 +26,8 @@
 //# $Id: STLIO.tcc 21315 2013-02-13 12:24:02Z gervandiepen $
 
 //# Includes
-#include <casa/BasicSL/STLIO.h>
-#include <casa/IO/AipsIOCarray.h>
+#include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/IO/AipsIOCarray.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

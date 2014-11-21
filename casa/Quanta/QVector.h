@@ -29,7 +29,7 @@
 #define CASA_QVECTOR_H
 
 //# Includes
-#include <casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/Quantum.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -93,7 +93,7 @@ template <class T> class QVector : public Quantum<Vector<T> > {
 }
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Quanta/QVector.tcc>
+#include <casacore/casa/Quanta/QVector.tcc>
 #endif
 
 #endif

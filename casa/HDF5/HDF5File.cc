@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <casa/HDF5/HDF5File.h>
-#include <casa/HDF5/HDF5HidMeta.h>
-#include <casa/HDF5/HDF5Error.h>
-#include <casa/OS/RegularFile.h>
+#include <casacore/casa/HDF5/HDF5File.h>
+#include <casacore/casa/HDF5/HDF5HidMeta.h>
+#include <casacore/casa/HDF5/HDF5Error.h>
+#include <casacore/casa/OS/RegularFile.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

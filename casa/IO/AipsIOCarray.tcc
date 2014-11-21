@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/IO/AipsIOCarray.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/AipsIOCarray.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

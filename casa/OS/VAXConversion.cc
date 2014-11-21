@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <casa/OS/VAXConversion.h>
+#include <casacore/casa/OS/VAXConversion.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -35,7 +35,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The VAX exponent is 2 higher.
 // The VAX byte order is b1b0b3b2 (Big-endian IEEE has b0b1b2b3).
 void VAXConversion::toLocal (float* to, const void* from,
-			     unsigned int nr)
+			     size_t nr)
 {
     assert (sizeof(unsigned int) == 4);
     assert (sizeof(float) == 4);
@@ -61,7 +61,7 @@ void VAXConversion::toLocal (float* to, const void* from,
 // The VAX exponent is 2 higher.
 // The VAX byte order is b1b0b3b2b5b4b7b6.
 void VAXConversion::toLocal (double* to, const void* from,
-			     unsigned int nr)
+			     size_t nr)
 {
     assert (sizeof(unsigned int) == 4);
     assert (sizeof(double) == 8);
@@ -95,7 +95,7 @@ void VAXConversion::toLocal (double* to, const void* from,
 
 
 void VAXConversion::fromLocal (void* to, const float* from,
-			       unsigned int nr)
+			       size_t nr)
 {
     assert (sizeof(unsigned int) == 4);
     assert (sizeof(float) == 4);
@@ -122,7 +122,7 @@ void VAXConversion::fromLocal (void* to, const float* from,
 }
 
 void VAXConversion::fromLocal (void* to, const double* from,
-			       unsigned int nr)
+			       size_t nr)
 {
     assert (sizeof(unsigned int) == 4);
     assert (sizeof(double) == 8);

@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <casa/Exceptions/Error.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Quanta/QBase.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Quanta/QBase.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

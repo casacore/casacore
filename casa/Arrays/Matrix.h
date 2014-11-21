@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Array.h>
 
 namespace casa { //#Begin casa namespace
 
@@ -325,6 +325,6 @@ private:
 
 } //#End casa namespace
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/Matrix.tcc>
+#include <casacore/casa/Arrays/Matrix.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

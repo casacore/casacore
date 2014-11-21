@@ -29,7 +29,7 @@
 #define CASA_IOSFWD_H
 
 //# Make sure any special macros are set
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <iosfwd>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

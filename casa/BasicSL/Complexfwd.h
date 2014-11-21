@@ -30,7 +30,7 @@
 
 //# Includes
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 // <summary> Forward declaration complex classes</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">

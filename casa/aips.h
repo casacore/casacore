@@ -29,16 +29,16 @@
 #define CASA_AIPS_H
 
 //# Define compiler specific flags
-#include <casa/aipsenv.h>
+#include <casacore/casa/aipsenv.h>
 
 //# Define the standard types used by Casacore.
-#include <casa/aipstype.h>
+#include <casacore/casa/aipstype.h>
 
 //# Define the extra non-standard types used by Casacore
-#include <casa/aipsxtype.h>
+#include <casacore/casa/aipsxtype.h>
 
 //# Define the special Casacore macros
-#include <casa/aipsdef.h>
+#include <casacore/casa/aipsdef.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

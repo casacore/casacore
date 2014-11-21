@@ -29,10 +29,10 @@
 #define CASA_TEMPLATE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -269,6 +269,6 @@ class Template {
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Utilities/Template.tcc>
+#include <casacore/casa/Utilities/Template.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

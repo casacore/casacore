@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <casa/IO/TapeIO.h>
-#include <casa/OS/Path.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/TapeIO.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <unistd.h>               // needed for ::close
 #include <fcntl.h>                // needed for ::open
 #include <errno.h>                // needed for errno
-#include <casa/string.h>          // needed for strerror
+#include <casacore/casa/string.h>          // needed for strerror
 
 #ifndef CASA_NOTAPE
 // No tape support on Cray XT3 and OS-X 10.6
@@ -109,7 +109,7 @@ void TapeIO::attach(const Path& device, Bool writable) {
   itsDeviceName = device.absoluteName();
 }
 
-void TapeIO::write (uInt size, const void* buf) {
+void TapeIO::write (Int64 size, const void* buf) {
   // Throw an exception if not writable.
   if (!itsWritable) {
     throw (AipsError ("TapeIO object is not writable"));
@@ -120,20 +120,20 @@ void TapeIO::write (uInt size, const void* buf) {
   }
 }
 
-Int TapeIO::read(uInt size, void* buf, Bool throwException) {
+Int64 TapeIO::read(Int64 size, void* buf, Bool throwException) {
   if (!itsReadable) {
     throw (AipsError ("TapeIO::read - tape is not readable"));
   }
-  Int bytesRead = ::read (itsDevice, buf, size);
+  Int64 bytesRead = ::read (itsDevice, buf, size);
   if (bytesRead < 0) {
     throw (AipsError (String("TapeIO::read - "
 			     " error returned by system call: ") + 
 		      strerror(errno)));
   }
-  if (bytesRead > static_cast<Int>(size)) { // Should never be executed
+  if (bytesRead > size) { // Should never be executed
     throw (AipsError ("TapeIO::read - read more bytes than requested"));
   }
-  if (bytesRead != static_cast<Int>(size) && throwException == True) {
+  if (bytesRead != size  &&  throwException) {
     throw (AipsError ("TapeIO::read - incorrect number of bytes read"));
   }
 #if defined(AIPS_SOLARIS)

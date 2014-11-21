@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/Register.h>
-#include <casa/Utilities/test/tRegister.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/Utilities/test/tRegister.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main()
 {

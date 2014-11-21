@@ -29,7 +29,7 @@
 #ifndef CASA_PGPLOTTERINTERFACE_H
 #define CASA_PGPLOTTERINTERFACE_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/MaskArrLogi.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/MaskArrLogi.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -26,18 +26,18 @@
 //# $Id$
 
 
-#include <casa/Exceptions.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/SymLink.h>
-#include <casa/IO/FiledesIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/OS/SymLink.h>
+#include <casacore/casa/IO/FiledesIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 #include <fcntl.h>                // needed for creat
 #include <unistd.h>               // needed for unlink, etc.
 #include <errno.h>                // needed for errno
-#include <casa/string.h>          // needed for strerror
-#include <casa/stdlib.h>          // needed for system
+#include <casacore/casa/string.h>          // needed for strerror
+#include <casacore/casa/stdlib.h>          // needed for system
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

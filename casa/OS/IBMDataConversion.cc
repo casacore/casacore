@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <casa/OS/IBMDataConversion.h>
-#include <casa/OS/IBMConversion.h>
+#include <casacore/casa/OS/IBMDataConversion.h>
+#include <casacore/casa/OS/IBMConversion.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -36,61 +36,61 @@ IBMDataConversion::~IBMDataConversion()
 {}
 
 
-unsigned int IBMDataConversion::toLocal (char&           to,
+size_t IBMDataConversion::toLocal (char&           to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_CHAR;
 }
-unsigned int IBMDataConversion::toLocal (unsigned char&  to,
+size_t IBMDataConversion::toLocal (unsigned char&  to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_UCHAR;
 }
-unsigned int IBMDataConversion::toLocal (short&          to,
+size_t IBMDataConversion::toLocal (short&          to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_SHORT;
 }
-unsigned int IBMDataConversion::toLocal (unsigned short& to,
+size_t IBMDataConversion::toLocal (unsigned short& to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_USHORT;
 }
-unsigned int IBMDataConversion::toLocal (int&            to,
+size_t IBMDataConversion::toLocal (int&            to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_INT;
 }
-unsigned int IBMDataConversion::toLocal (unsigned int&   to,
+size_t IBMDataConversion::toLocal (unsigned int&   to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_UINT;
 }
-unsigned int IBMDataConversion::toLocal (Int64&          to,
+size_t IBMDataConversion::toLocal (Int64&          to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_INT64;
 }
-unsigned int IBMDataConversion::toLocal (uInt64&         to,
+size_t IBMDataConversion::toLocal (uInt64&         to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_UINT64;
 }
-unsigned int IBMDataConversion::toLocal (float&          to,
+size_t IBMDataConversion::toLocal (float&          to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_FLOAT;
 }
-unsigned int IBMDataConversion::toLocal (double&         to,
+size_t IBMDataConversion::toLocal (double&         to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
@@ -98,175 +98,175 @@ unsigned int IBMDataConversion::toLocal (double&         to,
 }
 
 
-unsigned int IBMDataConversion::toLocal (char*           to, const void* from,
-					 unsigned int nr) const
+size_t IBMDataConversion::toLocal (char*           to, const void* from,
+					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_CHAR;
 }
-unsigned int IBMDataConversion::toLocal (unsigned char*  to, const void* from,
-					 unsigned int nr) const
+size_t IBMDataConversion::toLocal (unsigned char*  to, const void* from,
+					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_UCHAR;
 }
-unsigned int IBMDataConversion::toLocal (short*          to, const void* from,
-					 unsigned int nr) const
+size_t IBMDataConversion::toLocal (short*          to, const void* from,
+					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_SHORT;
 }
-unsigned int IBMDataConversion::toLocal (unsigned short* to, const void* from,
-					 unsigned int nr) const
+size_t IBMDataConversion::toLocal (unsigned short* to, const void* from,
+					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_USHORT;
 }
-unsigned int IBMDataConversion::toLocal (int*            to, const void* from,
-					 unsigned int nr) const
+size_t IBMDataConversion::toLocal (int*            to, const void* from,
+					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_INT;
 }
-unsigned int IBMDataConversion::toLocal (unsigned int*   to, const void* from,
-					 unsigned int nr) const
+size_t IBMDataConversion::toLocal (unsigned int*   to, const void* from,
+					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_UINT;
 }
-unsigned int IBMDataConversion::toLocal (Int64*          to, const void* from,
-					 unsigned int nr) const
+size_t IBMDataConversion::toLocal (Int64*          to, const void* from,
+					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_INT64;
 }
-unsigned int IBMDataConversion::toLocal (uInt64*         to, const void* from,
-					 unsigned int nr) const
+size_t IBMDataConversion::toLocal (uInt64*         to, const void* from,
+					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_UINT64;
 }
-unsigned int IBMDataConversion::toLocal (float*          to, const void* from,
-					 unsigned int nr) const
+size_t IBMDataConversion::toLocal (float*          to, const void* from,
+					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_FLOAT;
 }
-unsigned int IBMDataConversion::toLocal (double*         to, const void* from,
-					 unsigned int nr) const
+size_t IBMDataConversion::toLocal (double*         to, const void* from,
+					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_DOUBLE;
 }
 
-unsigned int IBMDataConversion::fromLocal (void* to, char           from) const
+size_t IBMDataConversion::fromLocal (void* to, char           from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_CHAR;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, unsigned char  from) const
+size_t IBMDataConversion::fromLocal (void* to, unsigned char  from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_UCHAR;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, short          from) const
+size_t IBMDataConversion::fromLocal (void* to, short          from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_SHORT;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, unsigned short from) const
+size_t IBMDataConversion::fromLocal (void* to, unsigned short from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_USHORT;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, int            from) const
+size_t IBMDataConversion::fromLocal (void* to, int            from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_INT;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, unsigned int   from) const
+size_t IBMDataConversion::fromLocal (void* to, unsigned int   from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_UINT;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, Int64          from) const
+size_t IBMDataConversion::fromLocal (void* to, Int64          from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_INT64;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, uInt64         from) const
+size_t IBMDataConversion::fromLocal (void* to, uInt64         from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_UINT64;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, float          from) const
+size_t IBMDataConversion::fromLocal (void* to, float          from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_FLOAT;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, double         from) const
+size_t IBMDataConversion::fromLocal (void* to, double         from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_DOUBLE;
 }
 
-unsigned int IBMDataConversion::fromLocal (void* to, const char* from,
-					   unsigned int nr) const
+size_t IBMDataConversion::fromLocal (void* to, const char* from,
+					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_CHAR;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, const unsigned char* from,
-					   unsigned int nr) const
+size_t IBMDataConversion::fromLocal (void* to, const unsigned char* from,
+					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_UCHAR;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, const short* from,
-					   unsigned int nr) const
+size_t IBMDataConversion::fromLocal (void* to, const short* from,
+					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_SHORT;
 }
-unsigned int IBMDataConversion::fromLocal (void* to,
+size_t IBMDataConversion::fromLocal (void* to,
 					   const unsigned short* from,
-					   unsigned int nr) const
+					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_USHORT;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, const int* from,
-					   unsigned int nr) const
+size_t IBMDataConversion::fromLocal (void* to, const int* from,
+					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_INT;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, const unsigned int* from,
-					   unsigned int nr) const
+size_t IBMDataConversion::fromLocal (void* to, const unsigned int* from,
+					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_UINT;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, const Int64* from,
-					   unsigned int nr) const
+size_t IBMDataConversion::fromLocal (void* to, const Int64* from,
+					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_INT64;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, const uInt64* from,
-					   unsigned int nr) const
+size_t IBMDataConversion::fromLocal (void* to, const uInt64* from,
+					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_UINT64;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, const float* from,
-					   unsigned int nr) const
+size_t IBMDataConversion::fromLocal (void* to, const float* from,
+					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_FLOAT;
 }
-unsigned int IBMDataConversion::fromLocal (void* to, const double* from,
-					   unsigned int nr) const
+size_t IBMDataConversion::fromLocal (void* to, const double* from,
+					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_DOUBLE;

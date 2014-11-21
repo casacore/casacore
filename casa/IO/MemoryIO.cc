@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Intgernet email: aips2-request@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <casa/IO/MemoryIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <cstring>                  //# for memcpy with gcc-4.3
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -97,7 +97,7 @@ MemoryIO::~MemoryIO()
   }
 }
 
-void MemoryIO::write (uInt size, const void* buf)
+void MemoryIO::write (Int64 size, const void* buf)
 {
   // Throw an exception if not writable.
   if (!itsWritable) {
@@ -118,15 +118,15 @@ void MemoryIO::write (uInt size, const void* buf)
   }
 }
 
-Int MemoryIO::read (uInt size, void* buf, Bool throwException)
+Int64 MemoryIO::read (Int64 size, void* buf, Bool throwException)
 {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw (AipsError ("MemoryIO::read - buffer is not readable"));
   }
   const Int64 bytesLeft = itsUsed - itsPosition;
-  Int bytesRead = 0;
-  if (Int(size) <= bytesLeft) {
+  Int64 bytesRead = 0;
+  if (size <= bytesLeft) {
     memcpy (buf, itsBuffer + itsPosition, size);
     itsPosition += size;
     bytesRead = size;

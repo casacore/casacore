@@ -25,12 +25,12 @@
 //#
 //# $Id: tMVAngle.cc 21335 2013-03-28 14:20:18Z gervandiepen $
 
-#include <casa/aips.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Quanta/MVAngle.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Quanta/MVAngle.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void showTime (MVAngle time, uInt format, uInt prec)
 {

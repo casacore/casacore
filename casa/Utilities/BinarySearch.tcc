@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/BinarySearch.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/BinarySearch.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

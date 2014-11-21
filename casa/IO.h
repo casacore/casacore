@@ -29,19 +29,20 @@
 #define CASA_IO_H
 
 //# Includes for object persistency.
-#include <casa/IO/AipsIO.h>
-#include <casa/IO/AipsIOCarray.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/AipsIOCarray.h>
 
 //# Includes for general IO.
-#include <casa/IO/ByteSinkSource.h>
+#include <casacore/casa/IO/ByteSinkSource.h>
 
 //# Includes for underlying IO classes.
-#include <casa/IO/CanonicalIO.h>
-#include <casa/IO/RawIO.h>
-#include <casa/IO/RegularFileIO.h>
-#include <casa/IO/FilebufIO.h>
-#include <casa/IO/FiledesIO.h>
-#include <casa/IO/MemoryIO.h>
+#include <casacore/casa/IO/CanonicalIO.h>
+#include <casacore/casa/IO/RawIO.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/IO/FilebufIO.h>
+#include <casacore/casa/IO/FiledesIO.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/IO/MFFileIO.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -70,7 +71,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </ol>
 //
 // Both use the underlying IO framework which define where and how
-// the data is written. The how-part is defined by classes derived from
+// the data are written. The how-part is defined by classes derived from
 // <linkto class=TypeIO:description>TypeIO</linkto> as shown
 // in the <a href=IO/IO_1.html>OMT diagram</a>.
 // There are three such classes:
@@ -98,35 +99,39 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <ol>
 // <li> <linkto class=RegularFileIO:description>RegularFileIO</linkto> uses a
 //      regular file to hold the data. Internally it uses FilebufIO (see below).
-// <li> <linkto class=LargeRegularFileIO:description>LargeRegularFileIO</linkto>
-//      is similar to RegularFileIO for 64-bit systems.
+//      It can handle files > 2 GB.
 // <li> <linkto class=FilebufIO:description>FilebufIO</linkto> does the IO
 //      in a buffered way similar to the <src>stdio</src> system. However, it
 //      does not use stdio because that gave problems when doing concurrent
 //      access from multiple processes.
-// <li> <linkto class=LargeFilebufIO:description>LargeFilebufIO</linkto> is
-//      similar to FilebufIO for 64-bit systems.
+//      It can handle files > 2 GB.
 // <li> <linkto class=FiledesIO:description>FiledesIO</linkto> uses the
 //      UNIX IO-functions like <src>open, read</src> to do IO directly.
 //      It does not use an internal buffer. Instead it always does
 //      physical IO. It is meant for IO operations where large chunks of
 //      a file are accessed and for IO on sockets, pipes, etc..
-// <li> <linkto class=LargeFiledesIO:description>LargeFiledesIO</linkto> is
-//      similar to FiledesIO for 64-bit systems.
+//      It can handle files > 2 GB.
+// <li> <linkto class=StreamIO:description>StreamIO</linkto> for IO
+//      on a socket.
+// <li> <linkto class=TapeIO:description>TapeIO</linkto> for IO on a tape
+//      device.
 // <li> <linkto class=MemoryIO:description>MemoryIO</linkto> uses a
 //      (possibly expandable) buffer in memory to hold the data.
-// <li> <linkto class=MMapIO>MMapIO:description</linkto> uses memory-mapped IO.
+// <li> <linkto class=MMapIO:description>MMapIO</linkto> uses memory-mapped IO.
 //      Be careful to use this on 32-bit machines, because its address space is
 //      too small to handle a file of a few GBytes.
+// <li> <linkto class=MFFileIO:description>MFFileIO</linkto> uses a virtual
+//      file in a <linkto class=MultiFile:description>MultiFile</linkto>
+//      container file. MultiFile is meant to combine multiple files in
+//      a single physical file to reduce the number of files used by
+//      the Casacore table system.
 // </ol>
 //
 // The IO framework is easily expandable. One can for instance think of a
 // class <src>AsciiIO</src> derived from <src>TypeIO</src>
 // to hold data in ASCII format.
-// <br> A class <src>TapeIO</src> could be derived from <src>ByteIO</src>
-// to access tape files. This class can also contain functions to skip to
-// a tape file, which the user can call directly.
-// Similarly a class <src>RemoteTapeIO</src> could be developed.
+// A class <src>RemoteTapeIO</src> could be developed for IO on a tape
+// device on another node.
 // </synopsis>
 
 // </module>

@@ -29,8 +29,8 @@
 #define CASA_BUCKETBUFFERED_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/BucketBase.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/BucketBase.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

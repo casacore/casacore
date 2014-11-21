@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/MatrixMath.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/iostream.h>
-#include <casa/math.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -30,8 +30,8 @@
 #define CASA_PATH_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

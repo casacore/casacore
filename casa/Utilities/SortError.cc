@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/SortError.h>
+#include <casacore/casa/Utilities/SortError.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

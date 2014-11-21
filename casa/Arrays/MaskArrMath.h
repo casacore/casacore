@@ -29,13 +29,13 @@
 #define CASA_MASKARRMATH_H
 
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/IPosition.h>
 //# Needed to get the proper Complex typedef's
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -550,6 +550,6 @@ Array<T> slidingArrayMath (const MaskedArray<T>& array,
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/MaskArrMath.tcc>
+#include <casacore/casa/Arrays/MaskArrMath.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

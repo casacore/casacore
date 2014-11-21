@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <casa/Containers/MapIO.h>
+#include <casacore/casa/Containers/MapIO.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

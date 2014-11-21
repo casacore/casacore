@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#include <casa/Containers/RecordField.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

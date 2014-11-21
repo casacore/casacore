@@ -29,12 +29,12 @@
 #define CASA_HDF5DATASET_H
 
 //# Includes
-#include <casa/HDF5/HDF5Object.h>
-#include <casa/HDF5/HDF5HidMeta.h>
-#include <casa/HDF5/HDF5DataType.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/casa/HDF5/HDF5Object.h>
+#include <casacore/casa/HDF5/HDF5HidMeta.h>
+#include <casacore/casa/HDF5/HDF5DataType.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/DataType.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

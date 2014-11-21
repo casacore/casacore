@@ -29,9 +29,9 @@
 #ifndef CASA_MEMORY_H
 #define CASA_MEMORY_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 //# The following is used to get size_t.
-#include <casa/stdlib.h>
+#include <casacore/casa/stdlib.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -28,12 +28,12 @@
 #ifndef CASA_BYTESOURCE_H
 #define CASA_BYTESOURCE_H
 
-#include <casa/aips.h>
-#include <casa/IO/BaseSinkSource.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/BaseSinkSource.h>
 //# The following should be a forward declaration. But our Complex & DComplex
 //# classes are a typedef hence this does not work. Replace the following with
 //# forward declarations when Complex and DComplex are no longer typedefs.
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -132,20 +132,20 @@ public:
     // These functions read multiple values of the given type.
     // If this function does not succeed, an exception will be thrown.
     // <group>
-    void read (uInt nvalues, Bool* value);
-    void read (uInt nvalues, Char* value);
-    void read (uInt nvalues, uChar* value);
-    void read (uInt nvalues, Short* value);
-    void read (uInt nvalues, uShort* value);
-    void read (uInt nvalues, Int* value);
-    void read (uInt nvalues, uInt* value);
-    void read (uInt nvalues, Int64* value);
-    void read (uInt nvalues, uInt64* value);
-    void read (uInt nvalues, Float* value);
-    void read (uInt nvalues, Double* value);
-    void read (uInt nvalues, Complex* value);
-    void read (uInt nvalues, DComplex* value);
-    void read (uInt nvalues, String* value);
+    void read (size_t nvalues, Bool* value);
+    void read (size_t nvalues, Char* value);
+    void read (size_t nvalues, uChar* value);
+    void read (size_t nvalues, Short* value);
+    void read (size_t nvalues, uShort* value);
+    void read (size_t nvalues, Int* value);
+    void read (size_t nvalues, uInt* value);
+    void read (size_t nvalues, Int64* value);
+    void read (size_t nvalues, uInt64* value);
+    void read (size_t nvalues, Float* value);
+    void read (size_t nvalues, Double* value);
+    void read (size_t nvalues, Complex* value);
+    void read (size_t nvalues, DComplex* value);
+    void read (size_t nvalues, String* value);
     // </group>
 
 protected:

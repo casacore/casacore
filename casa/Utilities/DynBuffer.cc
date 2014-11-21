@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/DynBuffer.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/DynBuffer.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

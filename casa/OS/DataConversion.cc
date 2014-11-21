@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <casa/OS/DataConversion.h>
+#include <casacore/casa/OS/DataConversion.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -31,7 +31,7 @@
 
 
 //# Includes
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/BasicSL/String.h>
 #include <iostream>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

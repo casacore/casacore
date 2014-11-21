@@ -23,11 +23,11 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#include <casa/Quanta/QVector.h>
+#include <casacore/casa/Quanta/QVector.h>
 
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main () {
 	try {
 		QVector<Double> x;

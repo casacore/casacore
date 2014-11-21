@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 } //# NAMESPACE CASA - END

@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 using namespace casa;
 

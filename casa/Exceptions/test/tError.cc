@@ -25,8 +25,8 @@
 //#
 //# $Id: tArray.cc 21335 2013-03-28 14:20:18Z gervandiepen $
 
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 using namespace casa;
 

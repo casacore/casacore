@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Quanta/UnitVal.h>
-#include <casa/Quanta/UnitName.h>
-#include <casa/Utilities/MUString.h>
-#include <casa/Quanta/UnitMap.h>
-#include <casa/Utilities/Regex.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Quanta/UnitVal.h>
+#include <casacore/casa/Quanta/UnitName.h>
+#include <casacore/casa/Utilities/MUString.h>
+#include <casacore/casa/Quanta/UnitMap.h>
+#include <casacore/casa/Utilities/Regex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

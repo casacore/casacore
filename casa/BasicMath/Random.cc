@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/BasicMath/Random.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/PtrHolder.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/BasicMath/Random.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/System/Casarc.h>
+#include <casacore/casa/System/Casarc.h>
 #include <iostream>
 
 int main()

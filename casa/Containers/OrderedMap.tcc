@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Containers/OrderedMap.h>
+#include <casacore/casa/Containers/OrderedMap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

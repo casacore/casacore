@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <casa/Quanta/MVTime.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/MVEpoch.h>
-#include <casa/Utilities/MUString.h>
-#include <casa/sstream.h>
-#include <casa/iomanip.h>
-#include <casa/OS/Time.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Quanta/MVEpoch.h>
+#include <casacore/casa/Utilities/MUString.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

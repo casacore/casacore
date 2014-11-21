@@ -27,10 +27,10 @@
 
 //# Includes
 
-#include <casa/iomanip.h>
-#include <casa/Utilities/Precision.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/Utilities/Precision.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void testit(
 		const Vector<Double>& x, const Vector<Double>& y,

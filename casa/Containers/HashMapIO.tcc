@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <casa/Containers/HashMapIO.h>
+#include <casacore/casa/Containers/HashMapIO.h>
 
 #if defined(AIPS_STUPID_SUN)
 #undef AIPS_STUPID_SUN

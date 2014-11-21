@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Quanta/UnitVal.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Quanta/UnitVal.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

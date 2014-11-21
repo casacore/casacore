@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Containers/HashMapIter.h>
-#include <casa/BasicSL/String.h>
-#include <casa/fstream.h>
-#include <casa/iostream.h>
-#include <casa/stdlib.h>
+#include <casacore/casa/Containers/HashMapIter.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/fstream.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/stdlib.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 #define DIAGNOSTICS 1
 #define OUTPUT 1
 #define COMPLETE 0

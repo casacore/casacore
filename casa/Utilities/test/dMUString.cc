@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
     try {

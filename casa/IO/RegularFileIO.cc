@@ -25,36 +25,45 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/IO/RegularFileIO.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/LargeIOFuncDef.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <fcntl.h>
-#include <errno.h>                     // needed for errno
-#include <casa/string.h>               // needed for strerror
+#include <errno.h>                    // needed for errno
+#include <casacore/casa/string.h>               // needed for strerror
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// This ifdef lets us instruments the IO system using PABLO
-// see www-pablo.cs.uiuc.edu for more about pablo, also peek in
-// FilebufIO.cc for the other bits of pablo used in the system.
-
-#ifdef PABLO_IO
-# include "IOTrace.h"
-#else
-# define trace2OPEN open
-# define trace3OPEN open
-#endif // PABLO_IO
-
-
 RegularFileIO::RegularFileIO (const RegularFile& regularFile,
-			      ByteIO::OpenOption option, uInt bufferSize)
+                              ByteIO::OpenOption option,
+                              uInt bufferSize)
 : itsOption      (option),
   itsRegularFile (regularFile)
 {
-    const String& name = itsRegularFile.path().expandedName();
+    int file = openCreate (regularFile, option);
+    attach (file, (bufferSize == 0 ? 16384 : bufferSize));
+    // If appending, set the stream offset to the file length.
+    if (option == ByteIO::Append) {
+        seek (length());
+    }
+}
+
+RegularFileIO::~RegularFileIO()
+{
+    detach (True);
+    if (itsOption == ByteIO::Scratch  ||  itsOption == ByteIO::Delete) {
+	itsRegularFile.remove();
+    }
+}
+
+int RegularFileIO::openCreate (const RegularFile& file,
+                               ByteIO::OpenOption option)
+{
+    const String& name = file.path().expandedName();
     Bool create = False;
     Int stropt;
     switch (option) {
@@ -62,7 +71,7 @@ RegularFileIO::RegularFileIO (const RegularFile& regularFile,
 	stropt = O_RDONLY;
 	break;
     case ByteIO::NewNoReplace:
-	if (regularFile.exists()) {
+	if (file.exists()) {
 	    throw (AipsError ("RegularFileIO: new file " + name +
 			      " already exists"));
 	}
@@ -82,31 +91,18 @@ RegularFileIO::RegularFileIO (const RegularFile& regularFile,
 	throw (AipsError ("RegularFileIO: unknown open option"));
     }
     // Open the file.
-    int file;
+    int fd;
     if (create) {
-      file = trace3OPEN ((char*)name.chars(), stropt, 0666);
+      fd = trace3OPEN ((char*)name.chars(), stropt, 0666);
     } else {
-      file = trace2OPEN ((char*)name.chars(), stropt);
+      fd = trace2OPEN ((char*)name.chars(), stropt);
     }
-    if (file < 0) {
+    if (fd < 0) {
 	throw (AipsError ("RegularFileIO: error in open or create of file " +
 			  name + ": " + strerror(errno)));
     }
-    attach (file, (bufferSize == 0 ? 16384 : bufferSize));
-    // If appending, set the stream offset to the file length.
-    if (option == ByteIO::Append) {
-        seek (length());
-    }
+    return fd;
 }
-
-RegularFileIO::~RegularFileIO()
-{
-    detach (True);
-    if (itsOption == ByteIO::Scratch  ||  itsOption == ByteIO::Delete) {
-	itsRegularFile.remove();
-    }
-}
-
 
 void RegularFileIO::reopenRW()
 {
@@ -117,12 +113,14 @@ void RegularFileIO::reopenRW()
     const String& name = itsRegularFile.path().expandedName();
     int file = trace2OPEN ((char *)name.chars(), O_RDWR);
     if (file < 0) {
-	throw (AipsError ("RegularFileIO: reopenRW not possible for file " +
+	throw (AipsError ("RegularFileIO::reopenRW "
+			  "not possible for file " +
 			  name + ": " + strerror(errno)));
     }
     uInt bufsize = bufferSize();
     detach (True);
     attach (file, bufsize);
+    // It can be reopened, so close and reopen.
     itsOption = ByteIO::Update;
 }
 

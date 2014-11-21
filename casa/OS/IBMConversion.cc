@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <casa/OS/IBMConversion.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/OS/IBMConversion.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <assert.h>
 
 
@@ -79,7 +79,7 @@ void IBMConversion::toLocal (char& to, const void* from)
 }
 
 void IBMConversion::toLocal (char* to, const void* from,
-			     unsigned int nr)
+			     size_t nr)
 {
     assert (sizeof(char) == 1);
     const unsigned char* data = (const unsigned char*)from;
@@ -100,7 +100,7 @@ void IBMConversion::fromLocal (void* to, char from)
 }
 
 void IBMConversion::fromLocal (void* to, const char* from,
-			       unsigned int nr)
+			       size_t nr)
 {
     assert (sizeof(char) == 1);
     signed char* data = (signed char*)to;
@@ -112,7 +112,7 @@ void IBMConversion::fromLocal (void* to, const char* from,
 
 
 void IBMConversion::toLocal (Int64* to, const void* from,
-			     unsigned int nr)
+			     size_t nr)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     if (sizeof(Int64) == SIZE_IBM_INT64) {
@@ -129,7 +129,7 @@ void IBMConversion::toLocal (Int64* to, const void* from,
 }
 
 void IBMConversion::toLocal (uInt64* to, const void* from,
-			     unsigned int nr)
+			     size_t nr)
 { 
 #if !defined(AIPS_LITTLE_ENDIAN)
     if (sizeof(uInt64) == SIZE_IBM_UINT64) {
@@ -146,7 +146,7 @@ void IBMConversion::toLocal (uInt64* to, const void* from,
 }
 
 void IBMConversion::fromLocal (void* to, const Int64* from,
-			       unsigned int nr)
+			       size_t nr)
 {
     char* data = (char*)to;
     const Int64* last = from + nr;
@@ -157,7 +157,7 @@ void IBMConversion::fromLocal (void* to, const Int64* from,
 }
 
 void IBMConversion::fromLocal (void* to, const uInt64* from,
-			       unsigned int nr)
+			       size_t nr)
 { 
     char* data = (char*)to;
     const uInt64* last = from + nr;
@@ -173,7 +173,7 @@ void IBMConversion::fromLocal (void* to, const uInt64* from,
 // IEEE has format SEEEEEEE EFFFFFFF ...
 // The exponent has base 2. Fraction has a hidden bit (i.e. a 1 before first F)
 void IBMConversion::toLocal (float* to, const void* from,
-			     unsigned int nr)
+			     size_t nr)
 {
     assert (sizeof(unsigned int) == 4);
     assert (sizeof(float) == 4);
@@ -219,7 +219,7 @@ void IBMConversion::toLocal (float* to, const void* from,
 }
 
 void IBMConversion::fromLocal (void* to, const float* from,
-			       unsigned int nr)
+			       size_t nr)
 {
     assert (sizeof(unsigned int) == 4);
     assert (sizeof(float) == 4);
@@ -261,7 +261,7 @@ void IBMConversion::fromLocal (void* to, const float* from,
 // IEEE has format SEEEEEEE EEEEFFFF ...
 // The exponent has base 2. Fraction has a hidden bit (i.e. a 1 before first F)
 void IBMConversion::toLocal (double* to, const void* from,
-			     unsigned int nr)
+			     size_t nr)
 {
     assert (sizeof(unsigned int) == 4);
     assert (sizeof(double) == 8);
@@ -315,7 +315,7 @@ void IBMConversion::toLocal (double* to, const void* from,
 }
 
 void IBMConversion::fromLocal (void* to, const double* from,
-			       unsigned int nr)
+			       size_t nr)
 {
     assert (sizeof(unsigned int) == 4);
     assert (sizeof(double) == 8);

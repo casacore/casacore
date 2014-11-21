@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/MaskArrMath.h>
-#include <casa/Arrays/ArrayError.h>
+#include <casacore/casa/Arrays/MaskArrMath.h>
+#include <casacore/casa/Arrays/ArrayError.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-//#include <casa/Arrays/VectorIter.h>
-//#include <casa/Arrays/Matrix.h>
-//#include <casa/BasicMath/Math.h>
+//#include <casacore/casa/Arrays/VectorIter.h>
+//#include <casacore/casa/Arrays/Matrix.h>
+//#include <casacore/casa/BasicMath/Math.h>
 
 MaskedArray<Complex> operator * (const MaskedArray<Complex> &left, 
 					 const Float &right) 

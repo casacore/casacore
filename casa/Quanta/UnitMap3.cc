@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <casa/Quanta/UnitMap.h>
+#include <casacore/casa/Quanta/UnitMap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -28,8 +28,8 @@
 #ifndef CASA_ORDPAIRIO_H
 #define CASA_ORDPAIRIO_H
 
-#include <casa/Containers/OrderedPair.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/Containers/OrderedPair.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -54,6 +54,6 @@ template<class key, class value> ostream& operator<<(ostream& ios, const Ordered
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/OrdPairIO.tcc>
+#include <casacore/casa/Containers/OrdPairIO.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

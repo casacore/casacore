@@ -28,13 +28,13 @@
 
 
 #include <time.h>
-#include <casa/fstream.h>
-#include <casa/System/ProgressMeter.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/Block.h>
-#include <casa/iostream.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/IO/RegularFileIO.h>
+#include <casacore/casa/fstream.h>
+#include <casacore/casa/System/ProgressMeter.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/RegularFileIO.h>
 #include <math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

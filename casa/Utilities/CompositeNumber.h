@@ -29,8 +29,8 @@
 #define CASA_COMPOSITENUMBER_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

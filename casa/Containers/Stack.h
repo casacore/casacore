@@ -28,8 +28,8 @@
 #ifndef CASA_STACK_H
 #define CASA_STACK_H
 
-#include <casa/aips.h>
-#include <casa/Containers/Link.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Link.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -175,6 +175,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/Stack.tcc>
+#include <casacore/casa/Containers/Stack.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

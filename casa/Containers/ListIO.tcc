@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Containers/ListIO.h>
+#include <casacore/casa/Containers/ListIO.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

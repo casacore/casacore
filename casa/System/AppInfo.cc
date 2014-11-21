@@ -26,20 +26,20 @@
 //#
 //# $Id$
 
-#include <casa/System/AppInfo.h>
+#include <casacore/casa/System/AppInfo.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/System/Aipsrc.h>
-#include <casa/System/AipsrcVector.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/OS/Time.h>
-#include <casa/OS/Memory.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/OS/Directory.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/System/Aipsrc.h>
+#include <casacore/casa/System/AipsrcVector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/OS/Memory.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

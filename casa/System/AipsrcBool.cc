@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <casa/System/AipsrcValue.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/sstream.h>
+#include <casacore/casa/System/AipsrcValue.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

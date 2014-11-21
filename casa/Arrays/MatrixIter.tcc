@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include<casa/Arrays/MatrixIter.h>
+#include<casacore/casa/Arrays/MatrixIter.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

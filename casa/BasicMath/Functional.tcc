@@ -27,7 +27,7 @@
 //# $Id$
 
 //# Includes
-#include <casa/BasicMath/Functional.h>
+#include <casacore/casa/BasicMath/Functional.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

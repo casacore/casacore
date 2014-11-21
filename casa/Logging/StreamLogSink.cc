@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <casa/Logging/StreamLogSink.h>
-#include <casa/Logging/LogFilter.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Logging/StreamLogSink.h>
+#include <casacore/casa/Logging/LogFilter.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

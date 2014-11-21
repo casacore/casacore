@@ -29,8 +29,8 @@
 #define CASA_LITTLEENDIANCONVERSION_H
 
 //# Includes
-#include <casa/aipsxtype.h>
-#include <casa/OS/CanonicalConversion.h>
+#include <casacore/casa/aipsxtype.h>
+#include <casacore/casa/OS/CanonicalConversion.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -86,25 +86,25 @@ public:
     // The from and to buffer should not overlap.
     // <group>
     static void toLocal (char*           to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (unsigned char*  to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (short*          to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (unsigned short* to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (int*            to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (unsigned int*   to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (Int64*          to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (uInt64*         to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (float*          to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (double*         to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     // </group>
 
     // Convert one value from local format to littleEndian format.
@@ -126,25 +126,25 @@ public:
     // The from and to buffer should not overlap.
     // <group>
     static void fromLocal (void* to, const char*           from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const unsigned char*  from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const short*          from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const unsigned short* from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const int*            from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const unsigned int*   from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const Int64*          from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const uInt64*         from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const float*          from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const double*         from,
-			   unsigned int nr);
+			   size_t nr);
     // </group>
     
 private:

@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/COWPtr.h>
+#include <casacore/casa/Utilities/COWPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -31,8 +31,8 @@
 #define CASA_VALUEHOLDER_H
 
 //# Includes
-#include <casa/Containers/ValueHolderRep.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/Containers/ValueHolderRep.h>
+#include <casacore/casa/Arrays/Array.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

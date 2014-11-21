@@ -29,8 +29,8 @@
 #ifndef CASA_STDLOGICAL_H
 #define CASA_STDLOGICAL_H
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Functors.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Functors.h>
 
 namespace casa {
 
@@ -59,7 +59,7 @@ namespace casa {
 
 
 //# #ifndef CASACORE_NO_AUTO_TEMPLATES
-//# #include <casa/BasicMath/StdLogical.tcc>
+//# #include <casacore/casa/BasicMath/StdLogical.tcc>
 //# #endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif

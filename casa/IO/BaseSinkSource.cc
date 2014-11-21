@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/IO/BaseSinkSource.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/BaseSinkSource.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

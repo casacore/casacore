@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <casa/Containers/RecordFieldWriter.h>
-#include <casa/Utilities/Copy.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Containers/RecordFieldWriter.h>
+#include <casacore/casa/Utilities/Copy.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

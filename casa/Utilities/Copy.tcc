@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/Copy.h>
+#include <casacore/casa/Utilities/Copy.h>
 
 //# Note that this is empty to make transition between explicit and
 //# implicit templates easy.

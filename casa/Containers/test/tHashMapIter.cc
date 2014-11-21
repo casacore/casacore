@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <casa/Containers/HashMapIter.h>
-#include <casa/Containers/HashMapIO.h>
-#include <casa/BasicSL/String.h>
-#include <casa/fstream.h>
-#include <casa/iostream.h>
-#include <casa/stdlib.h>
+#include <casacore/casa/Containers/HashMapIter.h>
+#include <casacore/casa/Containers/HashMapIO.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/fstream.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/stdlib.h>
 #include <cstring>              //# for strdup
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 //# for GNU compile in trial:
 //#
 //#	 gmake tHashMapIter 'EXTRA_PGMRLIBS=-llapack -lblas -L/opt/SUNWspro/SC3.0.1/lib -lF77 -lsunmath'

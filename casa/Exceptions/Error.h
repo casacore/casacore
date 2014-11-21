@@ -31,9 +31,9 @@
 
 
 #include <sys/types.h>
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/OS/Mutex.h>
 #include <exception>
 
 
@@ -511,6 +511,6 @@ public:
 #endif
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Exceptions/Error.tcc>
+#include <casacore/casa/Exceptions/Error.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

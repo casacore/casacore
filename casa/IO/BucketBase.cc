@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <casa/IO/BucketBase.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/BucketBase.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

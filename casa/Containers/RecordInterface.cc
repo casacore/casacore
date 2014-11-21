@@ -27,13 +27,13 @@
 //# $Id$
 
 
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Containers/RecordDesc.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/Register.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -28,14 +28,14 @@
 #ifndef CASA_ARRAYMATH_H
 #define CASA_ARRAYMATH_H
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicMath/Functors.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicMath/Functors.h>
+#include <casacore/casa/Arrays/Array.h>
 //# Needed to get the proper Complex typedef's
-#include <casa/BasicSL/Complex.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <numeric>
 #include <functional>
 
@@ -893,6 +893,6 @@ template<class T> Array<T> cube(const Array<T> &val);
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/ArrayMath.tcc>
+#include <casacore/casa/Arrays/ArrayMath.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

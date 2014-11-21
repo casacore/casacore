@@ -29,10 +29,10 @@
 #define CASA_MATRIXMATH_H
 
 
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -195,7 +195,7 @@ Matrix<Double> adjoint (const Matrix<Double> &A);
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/MatrixMath.tcc>
+#include <casacore/casa/Arrays/MatrixMath.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

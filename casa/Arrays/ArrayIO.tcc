@@ -26,21 +26,21 @@
 //# $Id$
 
 //# Includes
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayPosIter.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/IO/AipsIOCarray.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Utilities/Register.h>
-#include <casa/iostream.h>
-#include <casa/fstream.h>
-#include <casa/sstream.h>           // needed for internal IO
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayPosIter.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/AipsIOCarray.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/fstream.h>
+#include <casacore/casa/sstream.h>           // needed for internal IO
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

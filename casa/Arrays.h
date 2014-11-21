@@ -28,36 +28,36 @@
 #ifndef CASA_ARRAYS_H
 #define CASA_ARRAYS_H
 
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Slice.h>
 
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Cube.h>
 
-#include <casa/Arrays/ArrayIter.h>
-#include <casa/Arrays/MatrixIter.h>
-#include <casa/Arrays/VectorIter.h>
+#include <casacore/casa/Arrays/ArrayIter.h>
+#include <casacore/casa/Arrays/MatrixIter.h>
+#include <casacore/casa/Arrays/VectorIter.h>
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayPartMath.h>
-#include <casa/Arrays/MatrixMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/ArrayError.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayPartMath.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/ArrayError.h>
 
-#include <casa/Arrays/LogiArray.h>
-#include <casa/Arrays/LogiVector.h>
-#include <casa/Arrays/LogiMatrix.h>
-#include <casa/Arrays/LogiCube.h>
+#include <casacore/casa/Arrays/LogiArray.h>
+#include <casacore/casa/Arrays/LogiVector.h>
+#include <casacore/casa/Arrays/LogiMatrix.h>
+#include <casacore/casa/Arrays/LogiCube.h>
 
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/MaskArrMath.h>
-#include <casa/Arrays/MaskArrLogi.h>
-#include <casa/Arrays/MaskArrIO.h>
-#include <casa/Arrays/MaskLogiArr.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/MaskArrMath.h>
+#include <casacore/casa/Arrays/MaskArrLogi.h>
+#include <casacore/casa/Arrays/MaskArrIO.h>
+#include <casacore/casa/Arrays/MaskLogiArr.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

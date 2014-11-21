@@ -29,10 +29,10 @@
 #define CASA_REGULARFILE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/OS/Path.h>
-#include <casa/OS/File.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/BasicSL/String.h>
 	
 
 namespace casa { //# NAMESPACE CASA - BEGIN

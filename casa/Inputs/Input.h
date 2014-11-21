@@ -29,9 +29,9 @@
 #define CASA_INPUT_H
 
 
-#include <casa/aips.h>
-#include <casa/Inputs/Param.h>
-#include <casa/Containers/List.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Inputs/Param.h>
+#include <casacore/casa/Containers/List.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -146,7 +146,7 @@ template<class T> class Vector;
 //
 // <example>
 // <srcblock>
-// #include <casa/Inputs/Input.h>
+// #include <casacore/casa/Inputs/Input.h>
 // int main(int argc, const char* argv[]) 
 // {
 //  // instantiate an Input.  The integer argument of 1 to the ctor builds 

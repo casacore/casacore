@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <casa/Exceptions/Error.h>
-#include <casa/Quanta/QMath.h>
-#include <casa/Quanta/QLogical.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/sstream.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Quanta/QMath.h>
+#include <casacore/casa/Quanta/QLogical.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

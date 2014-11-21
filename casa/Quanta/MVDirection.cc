@@ -26,19 +26,19 @@
 //# $Id$
 
 //# Includes
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Quanta/Euler.h>
-#include <casa/Quanta/RotMatrix.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/Register.h>
-#include <casa/Quanta/MVDirection.h>
-#include <casa/Quanta/UnitVal.h>
-#include <casa/Quanta/QMath.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/MatrixMath.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Quanta/Euler.h>
+#include <casacore/casa/Quanta/RotMatrix.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/casa/Quanta/UnitVal.h>
+#include <casacore/casa/Quanta/QMath.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

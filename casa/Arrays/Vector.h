@@ -29,14 +29,14 @@
 #define CASA_VECTOR_H
 
 //# Includes
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Array.h>
 
 //# Forward declarations
 //template <class T, class U> class vector; 
 #if defined(WHATEVER_VECTOR_FORWARD_DEC)
 WHATEVER_VECTOR_FORWARD_DEC;
 #else
-#include <casa/stdvector.h>
+#include <casacore/casa/stdvector.h>
 #endif
 
 namespace casa { //#Begin namespace casa
@@ -321,7 +321,7 @@ private:
 } //#End namespace casa
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/Vector.tcc>
-#include <casa/Arrays/Vector2.tcc>
+#include <casacore/casa/Arrays/Vector.tcc>
+#include <casacore/casa/Arrays/Vector2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

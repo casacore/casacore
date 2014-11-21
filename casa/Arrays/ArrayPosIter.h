@@ -28,9 +28,9 @@
 #ifndef CASA_ARRAYPOSITER_H
 #define CASA_ARRAYPOSITER_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 //# Change the following to a forward declare?
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

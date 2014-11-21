@@ -1,5 +1,5 @@
 //# RegularFileIO.h: Class for IO on a regular file
-//# Copyright (C) 1996,1997,1999,2002
+//# Copyright (C) 1996,1997,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,9 +29,9 @@
 #define CASA_REGULARFILEIO_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/FilebufIO.h>
-#include <casa/OS/RegularFile.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/FilebufIO.h>
+#include <casacore/casa/OS/RegularFile.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -63,7 +63,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <example>
 // <srcblock>
 //    // Create a file (which should not exist yet).
-//    RegularFileIO regio (RegularFile("file.name"), ByeIO::NewNoReplace);
+//    RegularFileIO regio (RegularFile("file.name"), ByteIO::NewNoReplace);
 //    // Use that as the sink of AipsIO.
 //    AipsIO stream (&regio);
 //    // Write values.
@@ -89,8 +89,8 @@ public:
     // the internal buffer in the underlying <linkto class=FilebufIO>
     // FilebufIO</linkto> object. A zero length uses an appropriate default.
     explicit RegularFileIO (const RegularFile& regularFile,
-			    ByteIO::OpenOption = ByteIO::Old,
-			    uInt filebufSize=0);
+                            ByteIO::OpenOption = ByteIO::Old,
+                            uInt filebufSize=0);
 
     ~RegularFileIO();
     
@@ -102,6 +102,11 @@ public:
 
     // Get the file name of the file attached.
     virtual String fileName() const;
+
+    // Convenience function to open or create a file.
+    // Optionally it is checked if the file does not exist yet.
+    // It returns the file descriptor.
+    static int openCreate (const RegularFile& file, ByteIO::OpenOption);
 
 private:
     OpenOption  itsOption;

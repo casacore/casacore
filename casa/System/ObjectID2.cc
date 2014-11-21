@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <casa/System/ObjectID.h>
-#include <casa/Containers/Block.h>
-#include <casa/stdio.h>                  // needed for sprintf
+#include <casacore/casa/System/ObjectID.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/stdio.h>                  // needed for sprintf
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

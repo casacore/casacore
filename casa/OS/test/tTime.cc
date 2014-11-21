@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <casa/OS/Time.h>
-#include <casa/iostream.h>
-#include <casa/stdlib.h>
-#include <casa/math.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/math.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() {
 
   Time t;

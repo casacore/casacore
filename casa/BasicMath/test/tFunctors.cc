@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Functors.h>
-#include <casa/OS/Timer.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Functors.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <vector>
 #include <algorithm>
 

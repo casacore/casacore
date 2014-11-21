@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#include <casa/System/Choice.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/System/Choice.h>
+#include <casacore/casa/Arrays/Vector.h>
 #include <iostream>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

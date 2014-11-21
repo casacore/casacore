@@ -28,10 +28,10 @@
 #ifndef CASA_SIMORDMAP_H
 #define CASA_SIMORDMAP_H
 
-#include <casa/aips.h>
-#include <casa/Containers/OrderedPair.h>
-#include <casa/Containers/Block.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/OrderedPair.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -209,6 +209,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/SimOrdMap.tcc>
+#include <casacore/casa/Containers/SimOrdMap.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

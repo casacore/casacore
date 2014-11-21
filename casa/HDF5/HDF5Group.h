@@ -29,7 +29,7 @@
 #define CASA_HDF5GROUP_H
 
 //# Includes
-#include <casa/HDF5/HDF5Object.h>
+#include <casacore/casa/HDF5/HDF5Object.h>
 #include <vector>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

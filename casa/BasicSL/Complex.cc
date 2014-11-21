@@ -27,9 +27,9 @@
 
 
 //# Includes
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/Constants.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

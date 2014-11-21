@@ -25,24 +25,24 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/IO/CanonicalIO.h>
-#include <casa/IO/LECanonicalIO.h>
-#include <casa/IO/RawIO.h>
-#include <casa/IO/ConversionIO.h>
-#include <casa/OS/CanonicalDataConversion.h>
-#include <casa/OS/LECanonicalDataConversion.h>
-#include <casa/OS/IBMDataConversion.h>
-#include <casa/OS/VAXDataConversion.h>
-#include <casa/OS/RawDataConversion.h>
-#include <casa/IO/RegularFileIO.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/Path.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/CanonicalIO.h>
+#include <casacore/casa/IO/LECanonicalIO.h>
+#include <casacore/casa/IO/RawIO.h>
+#include <casacore/casa/IO/ConversionIO.h>
+#include <casacore/casa/OS/CanonicalDataConversion.h>
+#include <casacore/casa/OS/LECanonicalDataConversion.h>
+#include <casacore/casa/OS/IBMDataConversion.h>
+#include <casacore/casa/OS/VAXDataConversion.h>
+#include <casacore/casa/OS/RawDataConversion.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void doIt (TypeIO* io)
 {
     // Save current file position.

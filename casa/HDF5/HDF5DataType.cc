@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/HDF5/HDF5DataType.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/HDF5/HDF5DataType.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

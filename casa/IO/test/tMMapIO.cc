@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/IO/MMapIO.h>
-#include <casa/IO/RegularFileIO.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/IO/MMapIO.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 #include <unistd.h>
 
 using namespace casa;

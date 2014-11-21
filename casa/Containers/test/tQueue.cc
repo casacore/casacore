@@ -29,11 +29,11 @@
 #define AIPS_DEBUG
 #endif
 
-#include <casa/Containers/Queue.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Containers/Queue.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
     Queue<Int> qi;                // Queue::Queue()

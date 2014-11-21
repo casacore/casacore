@@ -25,33 +25,41 @@
 //#
 //# $Id$
 
-#include <casa/IO/BucketFile.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/iostream.h>
+#include <casacore/casa/IO/BucketFile.h>
+#include <casacore/casa/IO/MultiFile.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // <summary>
 // Test program for the BucketFile class
 // </summary>
 
-void a();
-void b();
-void c();
+void a(MultiFile*);
+void b(MultiFile*);
+void c(MultiFile*);
 
 int main (int argc, const char*[])
 {
     try {
-	a();
-	b();
+      for (int i=0; i<2; ++i) {
+        MultiFile* mfile=0;
+        if (i == 1) {
+          mfile = new MultiFile("tBucketFile_tmp.mf", ByteIO::New, 512);
+        }
+	a(mfile);
+	b(mfile);
 	// Do exceptional things only when needed.
 	if (argc < 2) {
 	    cout << ">>>" << endl;
-	    c();
+	    c(mfile);
 	    cout << "<<<" << endl;
 	}
-    } catch (AipsError x) {
+        delete mfile;
+      }
+    } catch (const AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 
@@ -62,10 +70,10 @@ int main (int argc, const char*[])
 
 
 // Build a file.
-void a()
+void a(MultiFile* mfile)
 {
     // Create the file.
-    BucketFile file ("tBucketFile_tmp.data");
+    BucketFile file ("tBucketFile_tmp.data", 0, False, mfile);
     AlwaysAssertExit (file.isWritable());
     AlwaysAssertExit (file.name() == "tBucketFile_tmp.data");
     Int ival=10;
@@ -81,10 +89,10 @@ void a()
     AlwaysAssertExit (fval2 == fval);
 }
 
-void b()
+void b(MultiFile* mfile)
 {
     // Open the file.
-    BucketFile file ("tBucketFile_tmp.data", False);
+    BucketFile file ("tBucketFile_tmp.data", False, 0, False, mfile);
     AlwaysAssertExit (! file.isWritable());
     AlwaysAssertExit (file.name() == "tBucketFile_tmp.data");
     file.open();
@@ -117,14 +125,14 @@ void b()
     AlwaysAssertExit (fval2 == fval);
 }
 
-void c()
+void c(MultiFile* mfile)
 {
     // Do some erronous calls.
     Bool flag = False;
-    BucketFile file1 ("tBucketFile_tmp.data1", False);
+    BucketFile file1 ("tBucketFile_tmp.data1", False, 0, False, mfile);
     try {
 	file1.open();
-    } catch (AipsError x) {
+    } catch (const AipsError& x) {
 	flag = True;
 	cout << x.getMesg() << endl;
     } 
@@ -138,7 +146,7 @@ void c()
     BucketFile file2 ("tBucketFile_tmp.data", True);
     try {
 	file2.open();
-    } catch (AipsError x) {
+    } catch (const AipsError& x) {
 	flag = True;
 	cout << x.getMesg() << endl;
     } 
@@ -149,7 +157,7 @@ void c()
     file3.setRW();
     try {
 	file3.open();
-    } catch (AipsError x) {
+    } catch (const AipsError& x) {
 	flag = True;
 	cout << x.getMesg() << endl;
     } 
@@ -160,7 +168,7 @@ void c()
     file4.open();
     try {
 	file4.setRW();
-    } catch (AipsError x) {
+    } catch (const AipsError& x) {
 	flag = True;
 	cout << x.getMesg() << endl;
     } 
