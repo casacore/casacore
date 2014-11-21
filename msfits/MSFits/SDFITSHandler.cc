@@ -26,29 +26,29 @@
 //# $Id$
 
 //# Includes
-#include <msfits/MSFits/SDFITSHandler.h>
+#include <casacore/msfits/MSFits/SDFITSHandler.h>
 
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/StandardStMan.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/StandardStMan.h>
-#include <casa/Containers/Record.h>
-#include <fits/FITS/CopyRecord.h>
-#include <casa/Logging/LogIO.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/TableMeasures/TableMeasDesc.h>
-#include <measures/TableMeasures/TableQuantumDesc.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/DataMan/StandardStMan.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/tables/DataMan/StandardStMan.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/fits/FITS/CopyRecord.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/TableMeasures/TableMeasDesc.h>
+#include <casacore/measures/TableMeasures/TableQuantumDesc.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

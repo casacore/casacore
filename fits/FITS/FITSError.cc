@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <fits/FITS/FITSError.h>
+#include <casacore/fits/FITS/FITSError.h>
 
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -28,11 +28,11 @@
 #ifndef FITS_FITS2_H
 #define FITS_FITS2_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 //# Would like to forward declare
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Map.h>
-#include <fits/FITS/hdu.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Map.h>
+#include <casacore/fits/FITS/hdu.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -64,6 +64,6 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <fits/FITS/FITS2.tcc>
+#include <casacore/fits/FITS/FITS2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

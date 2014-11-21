@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-# include <fits/FITS/fits.h>
-# include <fits/FITS/hdu.h>
-# include <fits/FITS/fitsio.h>
-# include <casa/string.h>
-# include <casa/stdio.h>
+# include <casacore/fits/FITS/fits.h>
+# include <casacore/fits/FITS/hdu.h>
+# include <casacore/fits/FITS/fitsio.h>
+# include <casacore/casa/string.h>
+# include <casacore/casa/stdio.h>
 # include <assert.h>
-# include <casa/sstream.h>
-//# include <casa/strsteam.h>
+# include <casacore/casa/sstream.h>
+//# include <casacore/casa/strsteam.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

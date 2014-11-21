@@ -29,8 +29,8 @@
 #ifndef MS_SDSYSCALHANDLER_H
 #define MS_SDSYSCALHANDLER_H
 
-#include <casa/aips.h>
-#include <casa/Containers/RecordField.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/RecordField.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

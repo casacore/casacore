@@ -26,21 +26,21 @@
 //#
 //# $Id$
 
-#include <fits/FITS/FITSHistoryUtil.h>
+#include <casacore/fits/FITS/FITSHistoryUtil.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <fits/FITS/fits.h>
-#include <fits/FITS/FITSDateUtil.h>
-#include <tables/LogTables/LoggerHolder.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/Logging/LogSink.h>
-#include <measures/Measures/MEpoch.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/fits/FITS/FITSDateUtil.h>
+#include <casacore/tables/LogTables/LoggerHolder.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/Logging/LogSink.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

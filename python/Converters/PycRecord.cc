@@ -27,7 +27,7 @@
 
 #include <python/Converters/PycRecord.h>
 #include <python/Converters/PycValueHolder.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <boost/python/object.hpp>
 
 namespace casa { namespace python {

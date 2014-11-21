@@ -29,8 +29,8 @@
 #define DERIVEDMSCAL_DERIVEDMSCAL_H
 
 //# Includes
-#include <derivedmscal/DerivedMC/MSCalEngine.h>
-#include <tables/Tables/VirtColEng.h>
+#include <casacore/derivedmscal/DerivedMC/MSCalEngine.h>
+#include <casacore/tables/DataMan/VirtColEng.h>
 
 namespace casa {
 

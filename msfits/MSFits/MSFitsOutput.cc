@@ -25,45 +25,45 @@
 //#
 //# $Id$
 
-#include <msfits/MSFits/MSFitsOutput.h>
-#include <msfits/MSFits/MSFitsOutputAstron.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <tables/Tables.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/RecordDesc.h>
-#include <casa/Containers/RecordField.h>
-#include <casa/OS/Time.h>
-#include <fits/FITS/hdu.h>
-#include <fits/FITS/fitsio.h>
-#include <fits/FITS/FITSTable.h>
-#include <fits/FITS/FITSDateUtil.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/MatrixMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/Euler.h>
-#include <measures/Measures/Stokes.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MeasConvert.h>
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/TableIter.h>
-#include <measures/TableMeasures/ScalarMeasColumn.h>
-#include <casa/System/ProgressMeter.h>
-#include <tables/LogTables/NewFile.h>
+#include <casacore/msfits/MSFits/MSFitsOutput.h>
+#include <casacore/msfits/MSFits/MSFitsOutputAstron.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/tables/Tables.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/fits/FITS/FITSTable.h>
+#include <casacore/fits/FITS/FITSDateUtil.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Quanta/Euler.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/tables/Tables/TableIter.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/casa/System/ProgressMeter.h>
+#include <casacore/tables/LogTables/NewFile.h>
 
-#include <casa/stdlib.h> // for atoi()
-#include <casa/sstream.h>
-#include <casa/iomanip.h>
+#include <casacore/casa/stdlib.h> // for atoi()
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iomanip.h>
 
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogIO.h>
 
 #include <set>
 

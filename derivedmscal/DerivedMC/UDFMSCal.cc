@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <derivedmscal/DerivedMC/UDFMSCal.h>
-#include <ms/MeasurementSets/MSAntennaGram.h>
-#include <ms/MeasurementSets/MSTimeGram.h>
-#include <ms/MeasurementSets/MSUvDistGram.h>
-#include <ms/MeasurementSets/MSSpwGram.h>
-#include <ms/MeasurementSets/MSFieldGram.h>
-#include <ms/MeasurementSets/MSArrayGram.h>
-#include <ms/MeasurementSets/MSStateGram.h>
-#include <ms/MeasurementSets/MSScanGram.h>
-#include <ms/MeasurementSets/MSSelectableMainColumn.h>
-#include <ms/MeasurementSets/MSObservationGram.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/ExprUnitNode.h>
-#include <casa/Arrays/ArrayIO.h>
+#include <casacore/derivedmscal/DerivedMC/UDFMSCal.h>
+#include <casacore/ms/MeasurementSets/MSAntennaGram.h>
+#include <casacore/ms/MeasurementSets/MSTimeGram.h>
+#include <casacore/ms/MeasurementSets/MSUvDistGram.h>
+#include <casacore/ms/MeasurementSets/MSSpwGram.h>
+#include <casacore/ms/MeasurementSets/MSFieldGram.h>
+#include <casacore/ms/MeasurementSets/MSArrayGram.h>
+#include <casacore/ms/MeasurementSets/MSStateGram.h>
+#include <casacore/ms/MeasurementSets/MSScanGram.h>
+#include <casacore/ms/MeasurementSets/MSSelectableMainColumn.h>
+#include <casacore/ms/MeasurementSets/MSObservationGram.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/TaQL/ExprUnitNode.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
 
 namespace casa {
 

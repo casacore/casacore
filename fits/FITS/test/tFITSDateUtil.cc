@@ -26,16 +26,16 @@
 //# $Id$
 
 //# Includes
-#include <fits/FITS/FITSDateUtil.h>
+#include <casacore/fits/FITS/FITSDateUtil.h>
 
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
     try {

@@ -33,7 +33,7 @@
 // include first to avoid _POSIX_C_SOURCE redefined warnings
 #include <boost/python.hpp>
 #include <boost/python/dict.hpp>
-#include <casa/Containers/Record.h>
+#include <casacore/casa/Containers/Record.h>
 
 namespace casa { namespace python {
 

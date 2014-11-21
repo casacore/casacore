@@ -29,20 +29,20 @@
 #ifndef MS_FITSIDITOMS_H
 #define MS_FITSIDITOMS_H
 
-#include <casa/aips.h>
-#include <fits/FITS/hdu.h>
-#include <tables/Tables/Table.h> //
-#include <tables/Tables/TableDesc.h> //
-#include <tables/Tables/TableRecord.h> //
-#include <tables/Tables/TableColumn.h> //
-#include <casa/Containers/SimOrdMap.h> //
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Containers/Block.h>
-#include <casa/Logging/LogIO.h>
-#include <measures/Measures/MFrequency.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <casa/BasicSL/String.h> 
+#include <casacore/casa/aips.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/tables/Tables/Table.h> //
+#include <casacore/tables/Tables/TableDesc.h> //
+#include <casacore/tables/Tables/TableRecord.h> //
+#include <casacore/tables/Tables/TableColumn.h> //
+#include <casacore/casa/Containers/SimOrdMap.h> //
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/casa/BasicSL/String.h> 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class MSColumns;

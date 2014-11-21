@@ -29,12 +29,12 @@
 #define MEAS_EPOCHENGINE_H
 
 //# Includes
-#include<meas/MeasUDF/PositionEngine.h>
-#include <tables/Tables/ExprNode.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/TableMeasures/ArrayMeasColumn.h>
+#include<casacore/meas/MeasUDF/PositionEngine.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
 
 namespace casa {
 

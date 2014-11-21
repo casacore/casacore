@@ -32,9 +32,9 @@
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
 #include <python/Converters/PycArray.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
 #include <vector>
 #include <map>
 

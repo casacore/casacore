@@ -28,7 +28,7 @@
 #ifndef PYRAP_PYCEXCP_H
 #define PYRAP_PYCEXCP_H
 
-#include <casa/Containers/IterError.h>
+#include <casacore/casa/Containers/IterError.h>
 
 namespace casa { namespace python {
 

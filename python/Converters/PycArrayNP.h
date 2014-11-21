@@ -32,8 +32,8 @@
 // include first to avoid _POSIX_C_SOURCE redefined warnings
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Arrays/Array.h>
 
 #include <numpy/arrayobject.h>
 

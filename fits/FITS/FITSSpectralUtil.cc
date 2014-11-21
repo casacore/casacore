@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#include <fits/FITS/FITSSpectralUtil.h>
+#include <casacore/fits/FITS/FITSSpectralUtil.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

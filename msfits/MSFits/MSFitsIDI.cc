@@ -26,22 +26,22 @@
 //# $Id: 
 //----------------------------------------------------------------------------
 
-#include <msfits/MSFits/MSFitsIDI.h>
-#include <msfits/MSFits/FitsIDItoMS.h>
-#include <fits/FITS/fitsio.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/OS/File.h>
-#include <casa/OS/Directory.h>
-#include <casa/IO/TapeIO.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MSTileLayout.h>
-#include <tables/Tables/IncrementalStMan.h>
-#include <tables/Tables/StandardStMan.h>
-#include <tables/Tables/TiledColumnStMan.h>
-#include <tables/Tables/TiledShapeStMan.h>
-#include <tables/Tables/SetupNewTab.h>
+#include <casacore/msfits/MSFits/MSFitsIDI.h>
+#include <casacore/msfits/MSFits/FitsIDItoMS.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/IO/TapeIO.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MSTileLayout.h>
+#include <casacore/tables/DataMan/IncrementalStMan.h>
+#include <casacore/tables/DataMan/StandardStMan.h>
+#include <casacore/tables/DataMan/TiledColumnStMan.h>
+#include <casacore/tables/DataMan/TiledShapeStMan.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <meas/MeasUDF/PositionUDF.h>
+#include <casacore/meas/MeasUDF/PositionUDF.h>
 
 namespace casa {
 

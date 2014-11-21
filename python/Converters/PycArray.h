@@ -33,10 +33,10 @@
 // include first to avoid _POSIX_C_SOURCE redefined warnings
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
-#include <casa/Arrays/Array.h>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <iostream>
 
 namespace casa { namespace python {

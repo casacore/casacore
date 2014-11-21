@@ -26,10 +26,10 @@
 //#
 //# $Id$
 
-#include <fits/FITS/FITSTimedTable.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/fits/FITS/FITSTimedTable.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

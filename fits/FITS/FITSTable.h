@@ -30,13 +30,13 @@
 #define FITS_FITSTABLE_H
 
 
-#include <casa/aips.h>
-#include <casa/Containers/Record.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Containers/Block.h>
-#include <fits/FITS/hdu.h>
-#include <fits/FITS/fitsio.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

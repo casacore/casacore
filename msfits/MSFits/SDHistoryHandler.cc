@@ -26,20 +26,20 @@
 //# $Id$
 
 //# Includes
-#include <msfits/MSFits/SDHistoryHandler.h>
+#include <casacore/msfits/MSFits/SDHistoryHandler.h>
 
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSHistoryColumns.h>
-#include <ms/MeasurementSets/MSHistory.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
-#include <fits/FITS/FITSDateUtil.h>
-#include <measures/Measures/MEpoch.h>
-#include <casa/Quanta/MVTime.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSHistoryColumns.h>
+#include <casacore/ms/MeasurementSets/MSHistory.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/fits/FITS/FITSDateUtil.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/casa/Quanta/MVTime.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

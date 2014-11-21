@@ -25,83 +25,83 @@
 //#
 //# $Id$
 
-#include <msfits/MSFits/FitsIDItoMS.h> 
-#include <casa/Arrays/ArrayIO.h> 
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Arrays/IPosition.h> 
-#include <casa/Arrays/Matrix.h> 
-#include <casa/Arrays/MatrixMath.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Slice.h> 
-#include <casa/Containers/Record.h>
-#include <casa/Exceptions/Error.h>
-#include <fits/FITS/fitsio.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/msfits/MSFits/FitsIDItoMS.h> 
+#include <casacore/casa/Arrays/ArrayIO.h> 
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Arrays/IPosition.h> 
+#include <casacore/casa/Arrays/Matrix.h> 
+#include <casacore/casa/Arrays/MatrixMath.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Slice.h> 
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
 
-#include <casa/OS/Directory.h>
+#include <casacore/casa/OS/Directory.h>
 
-#include <ms/MeasurementSets/MeasurementSet.h> 
-#include <ms/MeasurementSets/MSAntennaColumns.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MSDataDescColumns.h>
-#include <ms/MeasurementSets/MSFeedColumns.h>
-#include <ms/MeasurementSets/MSFieldColumns.h>
-#include <ms/MeasurementSets/MSHistoryColumns.h>
-#include <ms/MeasurementSets/MSObsColumns.h>
-#include <ms/MeasurementSets/MSPolColumns.h>
-#include <ms/MeasurementSets/MSSpWindowColumns.h>
-#include <ms/MeasurementSets/MSTileLayout.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h> 
+#include <casacore/ms/MeasurementSets/MSAntennaColumns.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MSDataDescColumns.h>
+#include <casacore/ms/MeasurementSets/MSFeedColumns.h>
+#include <casacore/ms/MeasurementSets/MSFieldColumns.h>
+#include <casacore/ms/MeasurementSets/MSHistoryColumns.h>
+#include <casacore/ms/MeasurementSets/MSObsColumns.h>
+#include <casacore/ms/MeasurementSets/MSPolColumns.h>
+#include <casacore/ms/MeasurementSets/MSSpWindowColumns.h>
+#include <casacore/ms/MeasurementSets/MSTileLayout.h>
 
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MeasData.h>
-#include <measures/Measures/Stokes.h>
-#include <measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MeasData.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/measures/Measures/MeasTable.h>
 
-#include <tables/Tables/Table.h> 
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/ArrColDesc.h>      
-#include <tables/Tables/ScaColDesc.h> 
+#include <casacore/tables/Tables/Table.h> 
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/ArrColDesc.h>      
+#include <casacore/tables/Tables/ScaColDesc.h> 
 
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/ArrayColumn.h>           
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ColumnDesc.h> 
-#include <tables/Tables/StManAipsIO.h> 
-#include <tables/Tables/StandardStMan.h>
-#include <tables/Tables/IncrementalStMan.h>
-#include <tables/Tables/TiledShapeStMan.h>
-#include <tables/Tables/RowCopier.h> 
-#include <tables/Tables/TiledColumnStMan.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/ArrayColumn.h>           
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/ColumnDesc.h> 
+#include <casacore/tables/DataMan/StManAipsIO.h> 
+#include <casacore/tables/DataMan/StandardStMan.h>
+#include <casacore/tables/DataMan/IncrementalStMan.h>
+#include <casacore/tables/DataMan/TiledShapeStMan.h>
+#include <casacore/tables/Tables/RowCopier.h> 
+#include <casacore/tables/DataMan/TiledColumnStMan.h>
 
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableInfo.h>
-#include <tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableInfo.h>
+#include <casacore/tables/Tables/TableLock.h>
 
-#include <casa/Utilities/Assert.h> 
-#include <casa/Utilities/Regex.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Utilities/Fallible.h>
-#include <fits/FITS/FITSKeywordUtil.h>
-#include <fits/FITS/FITSSpectralUtil.h>
-#include <fits/FITS/FITSDateUtil.h>
-#include <fits/FITS/BinTable.h>
-#include <tables/LogTables/NewFile.h>
-#include <casa/System/ProgressMeter.h>
-#include <casa/sstream.h>
-#include <casa/stdio.h>
+#include <casacore/casa/Utilities/Assert.h> 
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Utilities/Fallible.h>
+#include <casacore/fits/FITS/FITSKeywordUtil.h>
+#include <casacore/fits/FITS/FITSSpectralUtil.h>
+#include <casacore/fits/FITS/FITSDateUtil.h>
+#include <casacore/fits/FITS/BinTable.h>
+#include <casacore/tables/LogTables/NewFile.h>
+#include <casacore/casa/System/ProgressMeter.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/stdio.h>
 
-#include <casa/OS/File.h>
-#include <casa/Quanta/MVTime.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/Quanta/MVTime.h>
 
-#include <casa/iomanip.h>
+#include <casacore/casa/iomanip.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

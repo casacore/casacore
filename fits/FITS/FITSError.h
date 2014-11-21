@@ -30,7 +30,7 @@
 #define FITS_FITSERROR_H
 
 //#! Includes go here
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

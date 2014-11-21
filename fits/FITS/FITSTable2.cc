@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <fits/FITS/FITSTable.h>
-#include <fits/FITS/FITSFieldCopier.h>
-#include <casa/Containers/RecordField.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <fits/FITS/fits.h>
-#include <fits/FITS/fitsio.h>
-#include <fits/FITS/hdu.h>
-#include <casa/OS/Path.h>
+#include <casacore/fits/FITS/FITSTable.h>
+#include <casacore/fits/FITS/FITSFieldCopier.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/casa/OS/Path.h>
 
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Array.h>
 
-#include <casa/sstream.h>
+#include <casacore/casa/sstream.h>
 
-#include <casa/stdio.h>
+#include <casacore/casa/stdio.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <meas/MeasUDF/DirectionUDF.h>
+#include <casacore/meas/MeasUDF/DirectionUDF.h>
 
 namespace casa {
 

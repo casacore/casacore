@@ -28,10 +28,10 @@
 #ifndef FITS_BasicFITS_H
 #define FITS_BasicFITS_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 //# Would like to forward declare
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Map.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Map.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

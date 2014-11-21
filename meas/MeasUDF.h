@@ -28,7 +28,7 @@
 #ifndef MEAS_MEASUDF_H
 #define MEAS_MEASUDF_H
 
-#include <meas/MeasUDF/EpochUDF.h>
+#include <casacore/meas/MeasUDF/EpochUDF.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

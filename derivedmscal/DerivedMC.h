@@ -28,7 +28,7 @@
 #ifndef DERIVEDMSCAL_DERIVEDMC_H
 #define DERIVEDMSCAL_DERIVEDMC_H
 
-#include <derivedmscal/DerivedMC/DerivedMSCal.h>
+#include <casacore/derivedmscal/DerivedMC/DerivedMSCal.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

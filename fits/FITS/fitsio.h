@@ -28,11 +28,11 @@
 #ifndef FITS_FITSIO_H
 #define FITS_FITSIO_H
 
-# include <fits/FITS/fits.h>
-# include <fits/FITS/blockio.h>
-# include <fits/FITS/hdu.h>
-//# include <casa/stdvector.h>
-# include <casa/Arrays/Vector.h>
+# include <casacore/fits/FITS/fits.h>
+# include <casacore/fits/FITS/blockio.h>
+# include <casacore/fits/FITS/hdu.h>
+//# include <casacore/casa/stdvector.h>
+# include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

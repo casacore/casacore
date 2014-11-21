@@ -29,12 +29,12 @@
 #define MEAS_EPOCHUDF_H
 
 //# Includes
-#include <meas/MeasUDF/EpochEngine.h>
-#include <tables/Tables/UDFBase.h>
-#include <tables/Tables/ExprNode.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MeasConvert.h>
+#include <casacore/meas/MeasUDF/EpochEngine.h>
+#include <casacore/tables/TaQL/UDFBase.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MeasConvert.h>
 
 namespace casa {
 

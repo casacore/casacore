@@ -29,13 +29,13 @@
 #define MEAS_DIRECTIONENGINE_H
 
 //# Includes
-#include<meas/MeasUDF/EpochEngine.h>
-#include<meas/MeasUDF/PositionEngine.h>
-#include <tables/Tables/ExprNode.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/TableMeasures/ArrayMeasColumn.h>
+#include<casacore/meas/MeasUDF/EpochEngine.h>
+#include<casacore/meas/MeasUDF/PositionEngine.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
 
 namespace casa {
 

@@ -29,12 +29,12 @@
 #ifndef MS_MSFITSIDI_H
 #define MS_MSFITSIDI_H
 
-#include <casa/aips.h>
-#include <fits/FITS/fits.h>
-#include <casa/BasicSL/String.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <casa/OS/Path.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

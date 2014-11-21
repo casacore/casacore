@@ -30,7 +30,7 @@
 #include <python/Converters/PycValueHolder.h>
 #include <python/Converters/PycRecord.h>
 #include <python/Converters/PycArray.h>
-#include <casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
 
 #include <boost/python.hpp>
 

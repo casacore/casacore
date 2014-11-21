@@ -25,28 +25,28 @@
 //#
 //# $Id$
 
-#include <fits/FITS/FITSTable.h>
+#include <casacore/fits/FITS/FITSTable.h>
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/RecordField.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/Regex.h>
-#include <fits/FITS/fits.h>
-#include <fits/FITS/hdu.h>
-#include <casa/OS/Path.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/casa/OS/Path.h>
 
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/ArrColDesc.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
 
-#include <casa/Utilities/ValType.h>
+#include <casacore/casa/Utilities/ValType.h>
 
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Array.h>
 
-#include <casa/stdlib.h>
-#include <casa/sstream.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <derivedmscal/DerivedMC/Register.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/TableParse.h>
+#include <casacore/derivedmscal/DerivedMC/Register.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/TaQL/TableParse.h>
 #include <iostream>
 #include <sstream>
 

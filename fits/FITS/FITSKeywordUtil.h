@@ -30,7 +30,7 @@
 #ifndef FITS_FITSKEYWORDUTIL_H
 #define FITS_FITSKEYWORDUTIL_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

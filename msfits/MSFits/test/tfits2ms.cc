@@ -1,15 +1,15 @@
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iostream.h>
 
-#include <ms/MeasurementSets/MSConcat.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <msfits/MSFits/MSFitsInput.h>
-#include <tables/Tables/Table.h>
-#include <casa/Inputs.h>
+#include <casacore/ms/MeasurementSets/MSConcat.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/msfits/MSFits/MSFitsInput.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Inputs.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main(int argc, const char* argv[])
 {

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <fits/FITS/FITS2.h>
-#include <fits/FITS/fits.h>
-#include <fits/FITS/fitsio.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <fits/FITS/hdu.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/fits/FITS/FITS2.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

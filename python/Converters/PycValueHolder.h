@@ -33,8 +33,8 @@
 
 // include first to avoid _POSIX_C_SOURCE redefined warnings
 #include <boost/python.hpp>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Utilities/DataType.h>
 
 namespace casa { namespace python {
 

@@ -26,26 +26,26 @@
 //# $Id$
 
 //# Includes
-#include <msfits/MSFits/SDAntennaHandler.h>
+#include <casacore/msfits/MSFits/SDAntennaHandler.h>
 
-#include <tables/Tables/ColumnsIndex.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSAntennaColumns.h>
-#include <ms/MeasurementSets/MSAntenna.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <measures/TableMeasures/ScalarMeasColumn.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/Measures/MeasTable.h>
-#include <tables/Tables/TableDesc.h>
-#include <casa/Arrays/ArrayUtil.h>
+#include <casacore/tables/Tables/ColumnsIndex.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSAntennaColumns.h>
+#include <casacore/ms/MeasurementSets/MSAntenna.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
