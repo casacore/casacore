@@ -26,26 +26,26 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSRange.h>
-#include <ms/MeasurementSets/MSSelector.h>
+#include <casacore/ms/MeasurementSets/MSRange.h>
+#include <casacore/ms/MeasurementSets/MSSelector.h>
 
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/MaskArrMath.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Logging/LogIO.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <measures/Measures/Stokes.h>
-#include <measures/Measures/MDirection.h>
-#include <tables/Tables/RefRows.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/MaskArrMath.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

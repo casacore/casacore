@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSFreqOffIndex.h>
+#include <casacore/ms/MeasurementSets/MSFreqOffIndex.h>
 
-#include <casa/Arrays/ArrayUtil.h>
-#include <ms/MeasurementSets/MSFreqOffset.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/ms/MeasurementSets/MSFreqOffset.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

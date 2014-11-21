@@ -30,18 +30,18 @@
 
 
 //# Includes
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Quanta/Quantum.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MDirection.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MDirection.h>
 
-#include <tables/Tables/TiledDataStManAccessor.h>
+#include <casacore/tables/DataMan/TiledDataStManAccessor.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

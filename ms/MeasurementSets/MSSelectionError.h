@@ -29,8 +29,8 @@
 #define MS_MSSELECTIONERROR_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -26,11 +26,11 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSSelUtil2.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/ms/MeasurementSets/MSSelUtil2.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

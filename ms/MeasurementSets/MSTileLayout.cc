@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSTileLayout.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSTileLayout.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

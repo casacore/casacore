@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <casa/BasicSL/String.h>
-#include <ms/MeasurementSets/MSDataDescIndex.h>
-#include <ms/MeasurementSets/MSPolIndex.h>
-#include <casa/Containers/OrderedMap.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSDataDescIndex.h>
+#include <casacore/ms/MeasurementSets/MSPolIndex.h>
+#include <casacore/casa/Containers/OrderedMap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
   

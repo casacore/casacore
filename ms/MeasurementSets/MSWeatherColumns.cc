@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSWeatherColumns.h>
-#include <ms/MeasurementSets/MSWeather.h>
-#include <tables/Tables/ColDescSet.h>
-#include <tables/Tables/TableDesc.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSWeatherColumns.h>
+#include <casacore/ms/MeasurementSets/MSWeather.h>
+#include <casacore/tables/Tables/ColDescSet.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

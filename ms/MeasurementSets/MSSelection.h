@@ -29,20 +29,20 @@
 #ifndef MS_MSSELECTION_H
 #define MS_MSSELECTION_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Vector.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MRadialVelocity.h>
-#include <tables/Tables/ExprNode.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <ms/MeasurementSets/MSSelectionErrorHandler.h>
-#include <ms/MeasurementSets/MSSelectableTable.h>
-#include <casa/Containers/OrderedMap.h>
-#include <casa/Containers/MapIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/ms/MeasurementSets/MSSelectionErrorHandler.h>
+#include <casacore/ms/MeasurementSets/MSSelectableTable.h>
+#include <casacore/casa/Containers/OrderedMap.h>
+#include <casacore/casa/Containers/MapIO.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary> 

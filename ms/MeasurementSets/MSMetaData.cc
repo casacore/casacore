@@ -24,24 +24,24 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#include <ms/MeasurementSets/MSMetaData.h>
+#include <casacore/ms/MeasurementSets/MSMetaData.h>
 
-#include <casa/Arrays/MaskArrMath.h>
-#include <casa/OS/File.h>
-#include <measures/Measures/MeasTable.h>
-#include <ms/MeasurementSets/MSSpWindowColumns.h>
-#include <ms/MeasurementSets/MSPointingColumns.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/TableParse.h>
-#include <tables/Tables/TableProxy.h>
+#include <casacore/casa/Arrays/MaskArrMath.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/ms/MeasurementSets/MSSpWindowColumns.h>
+#include <casacore/ms/MeasurementSets/MSPointingColumns.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/TaQL/TableParse.h>
+#include <casacore/tables/Tables/TableProxy.h>
 // DEBUG ONLY
 
 /*
 #include <iomanip>
-#include <casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
 
-#include <casa/OS/PrecTimer.h>
+#include <casacore/casa/OS/PrecTimer.h>
 */
 
 #define _ORIGIN "MSMetaData::" + String(__FUNCTION__) + ": "

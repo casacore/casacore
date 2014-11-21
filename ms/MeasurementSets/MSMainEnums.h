@@ -29,7 +29,7 @@
 #ifndef MS_MSMAINENUMS_H
 #define MS_MSMAINENUMS_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

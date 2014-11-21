@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSHistoryHandler.h>
-#include <casa/Logging/LogIO.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MCEpoch.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <casa/ostream.h>
+#include <casacore/ms/MeasurementSets/MSHistoryHandler.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/casa/ostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -29,8 +29,8 @@
 #define MS_MSARRAYPARSE_H
 
 //# Includes
-#include <ms/MeasurementSets/MSParse.h>
-#include <measures/Measures/MEpoch.h>
+#include <casacore/ms/MeasurementSets/MSParse.h>
+#include <casacore/measures/Measures/MEpoch.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,7 +29,7 @@
 #ifndef MS_MSWEATHERENUMS_H
 #define MS_MSWEATHERENUMS_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

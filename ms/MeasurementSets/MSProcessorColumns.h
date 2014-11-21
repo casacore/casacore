@@ -28,9 +28,9 @@
 #ifndef MS_MSPROCESSORCOLUMNS_H
 #define MS_MSPROCESSORCOLUMNS_H
 
-#include <casa/aips.h>
-#include <ms/MeasurementSets/MSProcessor.h>
-#include <tables/Tables/ScalarColumn.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MSProcessor.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -26,21 +26,21 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-#include <ms/MeasurementSets/MSMetaData.h>
+#include <casacore/ms/MeasurementSets/MSMetaData.h>
 
-#include <casa/BasicMath/StdLogical.h>
-#include <casa/OS/Directory.h>
-#include <casa/OS/EnvVar.h>
-#include <casa/Quanta/QLogical.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <measures/Measures/MDirection.h>
+#include <casacore/casa/BasicMath/StdLogical.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/OS/EnvVar.h>
+#include <casacore/casa/Quanta/QLogical.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/measures/Measures/MDirection.h>
 
-#include <casa/BasicSL/STLIO.h>
+#include <casacore/casa/BasicSL/STLIO.h>
 #include <iomanip>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void _printSet(const std::set<uInt>& set) {
 	const std::set<uInt>::const_iterator end = set.end();

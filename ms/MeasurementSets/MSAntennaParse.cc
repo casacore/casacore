@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSAntennaParse.h>
-#include <ms/MeasurementSets/MSAntennaIndex.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <ms/MeasurementSets/MSAntennaColumns.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Logging/LogIO.h>
-#include <ms/MeasurementSets/MSSelectionTools.h>
-#include <ms/MeasurementSets/MSSelectionErrorHandler.h>
+#include <casacore/ms/MeasurementSets/MSAntennaParse.h>
+#include <casacore/ms/MeasurementSets/MSAntennaIndex.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/ms/MeasurementSets/MSAntennaColumns.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/ms/MeasurementSets/MSSelectionTools.h>
+#include <casacore/ms/MeasurementSets/MSSelectionErrorHandler.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
  // Global pointer to the parser object

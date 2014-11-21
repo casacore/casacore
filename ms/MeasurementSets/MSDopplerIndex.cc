@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSDopplerIndex.h>
+#include <casacore/ms/MeasurementSets/MSDopplerIndex.h>
 
-#include <casa/Arrays/ArrayUtil.h>
-#include <ms/MeasurementSets/MSDoppler.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/ms/MeasurementSets/MSDoppler.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

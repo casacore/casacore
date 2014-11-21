@@ -29,9 +29,9 @@
 #define MS_MSSTATEPARSE_H
 
 //# Includes
-#include <ms/MeasurementSets/MSParse.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <ms/MeasurementSets/MSSelectionErrorHandler.h>
+#include <casacore/ms/MeasurementSets/MSParse.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/ms/MeasurementSets/MSSelectionErrorHandler.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations

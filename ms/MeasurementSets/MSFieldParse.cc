@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSFieldParse.h>
-#include <ms/MeasurementSets/MSFieldIndex.h>
-#include <ms/MeasurementSets/MSSourceIndex.h>
-#include <ms/MeasurementSets/MSSelectionTools.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/ms/MeasurementSets/MSFieldParse.h>
+#include <casacore/ms/MeasurementSets/MSFieldIndex.h>
+#include <casacore/ms/MeasurementSets/MSSourceIndex.h>
+#include <casacore/ms/MeasurementSets/MSSelectionTools.h>
+#include <casacore/casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -99,11 +99,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 } //# NAMESPACE CASA - END
 
 // ---------------OLD CODE START (Feb. 2012)-----------------------
-// #include <ms/MeasurementSets/MSFieldParse.h>
-// #include <ms/MeasurementSets/MSFieldIndex.h>
-// #include <ms/MeasurementSets/MSSourceIndex.h>
-// #include <ms/MeasurementSets/MSSelectionTools.h>
-// #include <casa/Logging/LogIO.h>
+// #include <casacore/ms/MeasurementSets/MSFieldParse.h>
+// #include <casacore/ms/MeasurementSets/MSFieldIndex.h>
+// #include <casacore/ms/MeasurementSets/MSSourceIndex.h>
+// #include <casacore/ms/MeasurementSets/MSSelectionTools.h>
+// #include <casacore/casa/Logging/LogIO.h>
 
 // namespace casa { //# NAMESPACE CASA - BEGIN
   

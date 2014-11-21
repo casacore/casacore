@@ -27,10 +27,10 @@
 #ifndef MS_MSMETADATA_H
 #define MS_MSMETADATA_H
 
-#include <casa/Quanta/QVector.h>
-#include <measures/Measures/MPosition.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Quanta/QVector.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <map>
 
 namespace casa {

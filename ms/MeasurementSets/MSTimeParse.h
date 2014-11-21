@@ -29,12 +29,12 @@
 #define MS_MSTIMEPARSE_H
 
 //# Includes
-#include <ms/MeasurementSets/MSParse.h>
-#include <ms/MeasurementSets/MSSelectableMainColumn.h>
-#include <measures/Measures/MEpoch.h>
-#include <ms/MeasurementSets/MSTimeDefinitions.h>
-#include <casa/Containers/Block.h>
-#include <casa/Arrays/Matrix.h>
+#include <casacore/ms/MeasurementSets/MSParse.h>
+#include <casacore/ms/MeasurementSets/MSSelectableMainColumn.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/ms/MeasurementSets/MSTimeDefinitions.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Arrays/Matrix.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

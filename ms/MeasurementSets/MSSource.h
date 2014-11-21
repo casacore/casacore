@@ -29,9 +29,9 @@
 #ifndef MS_MSSOURCE_H
 #define MS_MSSOURCE_H
 
-#include <casa/aips.h>
-#include <ms/MeasurementSets/MSTable.h>
-#include <ms/MeasurementSets/MSSourceEnums.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MSTable.h>
+#include <casacore/ms/MeasurementSets/MSSourceEnums.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

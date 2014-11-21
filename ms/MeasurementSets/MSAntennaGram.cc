@@ -30,16 +30,16 @@
 // This file includes the output files of bison and flex for
 // parsing command lines operating on lattices.
 
-#include <tables/Tables/ExprNode.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSAntennaGram.h>
-#include <ms/MeasurementSets/MSAntennaParse.h> // routines used by bison actions
-#include <ms/MeasurementSets/MSAntennaIndex.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSAntennaGram.h>
+#include <casacore/ms/MeasurementSets/MSAntennaParse.h> // routines used by bison actions
+#include <casacore/ms/MeasurementSets/MSAntennaIndex.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
-#include <casa/stdlib.h>
+#include <casacore/casa/stdlib.h>
 //# Define register as empty string to avoid warnings in C++11 compilers
 //# because keyword register is not supported anymore.
 #define register

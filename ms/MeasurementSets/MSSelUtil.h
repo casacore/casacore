@@ -29,9 +29,9 @@
 #ifndef MS_MSSELUTIL_H
 #define MS_MSSELUTIL_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -65,6 +65,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <ms/MeasurementSets/MSSelUtil.tcc>
+#include <casacore/ms/MeasurementSets/MSSelUtil.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

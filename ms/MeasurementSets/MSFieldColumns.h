@@ -28,20 +28,20 @@
 #ifndef MS_MSFIELDCOLUMNS_H
 #define MS_MSFIELDCOLUMNS_H
 
-#include <casa/aips.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MRadialVelocity.h>
-#include <measures/Measures/MeasComet.h>
-#include <measures/TableMeasures/ArrayMeasColumn.h>
-#include <measures/TableMeasures/ScalarMeasColumn.h>
-#include <measures/TableMeasures/ScalarQuantColumn.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/SimOrdMap.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
+#include <casacore/measures/Measures/MeasComet.h>
+#include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

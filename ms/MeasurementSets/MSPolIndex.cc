@@ -26,14 +26,14 @@
 //# $Id$
 
 
-#include <ms/MeasurementSets/MSPolIndex.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/aips.h>
-#include <casa/stdlib.h>
+#include <casacore/ms/MeasurementSets/MSPolIndex.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/stdlib.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

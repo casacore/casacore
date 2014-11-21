@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSFeedIndex.h>
+#include <casacore/ms/MeasurementSets/MSFeedIndex.h>
 
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Slicer.h>
-#include <ms/MeasurementSets/MSFeed.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/QLogical.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/ms/MeasurementSets/MSFeed.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Quanta/QLogical.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

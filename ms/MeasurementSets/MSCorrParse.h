@@ -29,7 +29,7 @@
 #define MS_MSUVDISTPARSE_H
 
 //# Includes
-#include <ms/MeasurementSets/MSParse.h>
+#include <casacore/ms/MeasurementSets/MSParse.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

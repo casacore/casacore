@@ -1,38 +1,38 @@
 
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/RefRows.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/OS/File.h>
-#include <casa/Containers/Record.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/IO/ByteIO.h>
-#include <ms/MeasurementSets/MSSelection.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/ByteIO.h>
+#include <casacore/ms/MeasurementSets/MSSelection.h>
 
 
-#include <ms/MeasurementSets/MSAntennaGram.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableRecord.h>
+#include <casacore/ms/MeasurementSets/MSAntennaGram.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableRecord.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/Utilities/Assert.h>
-#include <casa/Inputs.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Inputs.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 
 int main(int argc, const char* argv[])

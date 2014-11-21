@@ -30,14 +30,14 @@
 #define MS_MSTABLEIMPL_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Utilities/DataType.h>
-#include <tables/Tables/Table.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/BasicSL/String.h>
-#include <tables/Tables/TableDesc.h>
-#include <casa/Utilities/Fallible.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/casa/Utilities/Fallible.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

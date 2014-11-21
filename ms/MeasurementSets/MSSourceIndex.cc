@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSSourceIndex.h>
+#include <casacore/ms/MeasurementSets/MSSourceIndex.h>
 
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <ms/MeasurementSets/MSSource.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/ms/MeasurementSets/MSSource.h>
+#include <casacore/tables/Tables/TableError.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

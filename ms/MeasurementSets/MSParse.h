@@ -29,13 +29,13 @@
 #define MS_MSPARSE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/ExprNodeSet.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/tables/TaQL/ExprNodeSet.h>
 
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSSelectableTable.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSSelectableTable.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

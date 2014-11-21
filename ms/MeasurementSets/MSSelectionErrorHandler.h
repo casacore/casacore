@@ -29,10 +29,10 @@
 #define MS_MSSELECTIONERRORHANDLER_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Exceptions/Error.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
 #include <vector>
 using namespace std;
 

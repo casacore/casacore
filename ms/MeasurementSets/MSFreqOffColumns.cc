@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSFreqOffColumns.h>
-#include <ms/MeasurementSets/MSFreqOffset.h>
+#include <casacore/ms/MeasurementSets/MSFreqOffColumns.h>
+#include <casacore/ms/MeasurementSets/MSFreqOffset.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

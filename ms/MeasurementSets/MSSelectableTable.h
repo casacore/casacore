@@ -30,18 +30,18 @@
 #ifndef MS_MSSELECTABLETABLE_H
 #define MS_MSSELECTABLETABLE_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Containers/OrderedMap.h>
-#include <casa/Containers/MapIO.h>
-#include <tables/Tables/ExprNode.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSMainEnums.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <ms/MeasurementSets/MSSelectableMainColumn.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Containers/OrderedMap.h>
+#include <casacore/casa/Containers/MapIO.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSMainEnums.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/ms/MeasurementSets/MSSelectableMainColumn.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary> 

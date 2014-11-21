@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSParse.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/ostream.h>
+#include <casacore/ms/MeasurementSets/MSParse.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/ostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
   

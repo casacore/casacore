@@ -28,16 +28,16 @@
 #ifndef MS_MSMAINCOLUMNS_H
 #define MS_MSMAINCOLUMNS_H
 
-#include <casa/aips.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/Muvw.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MCuvw.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <measures/TableMeasures/ScalarMeasColumn.h>
-#include <measures/TableMeasures/ScalarQuantColumn.h>
-#include <measures/TableMeasures/ArrayQuantColumn.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/Muvw.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MCuvw.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
+#include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

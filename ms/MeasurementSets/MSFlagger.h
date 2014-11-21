@@ -29,8 +29,8 @@
 #ifndef MS_MSFLAGGER_H
 #define MS_MSFLAGGER_H
 
-#include <casa/aips.h>
-#include <casa/Containers/Record.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Record.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

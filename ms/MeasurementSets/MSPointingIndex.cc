@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSPointingIndex.h>
+#include <casacore/ms/MeasurementSets/MSPointingIndex.h>
 
-#include <casa/Arrays/ArrayUtil.h>
-#include <ms/MeasurementSets/MSPointing.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/ms/MeasurementSets/MSPointing.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

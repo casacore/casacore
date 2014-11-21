@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Matrix.h>
-#include <ms/MeasurementSets/MSAntennaParse.h> // routines used by bison actions
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/ms/MeasurementSets/MSAntennaParse.h> // routines used by bison actions
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

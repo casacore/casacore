@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSSelectionErrorHandler.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/ms/MeasurementSets/MSSelectionErrorHandler.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/casa/Arrays/Vector.h>
 #include <vector>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -31,7 +31,7 @@
 using namespace casa;
 %}
 
-%pure_parser                /* make parser re-entrant */
+%pure-parser                /* make parser re-entrant */
 
 %union {
   const TableExprNode* node;
@@ -89,7 +89,7 @@ using namespace casa;
 %right POWER
 
 %{
-#include <ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
   //  extern MSTimeParse *thisMSTParser;
   Bool MSTimeEdgeInclusiveRange=False;
   int MSTimeGramlex (YYSTYPE*);

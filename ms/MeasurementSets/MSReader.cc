@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSReader.h>
+#include <casacore/ms/MeasurementSets/MSReader.h>
 
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Logging/LogIO.h>
-#include <measures/Measures/MEpoch.h>
-#include <casa/Quanta/Quantum.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

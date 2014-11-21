@@ -29,8 +29,8 @@
 #ifndef MS_MSVALIDIDS_H
 #define MS_MSVALIDIDS_H
 
-#include <casa/aips.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

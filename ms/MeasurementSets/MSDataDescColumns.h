@@ -28,8 +28,8 @@
 #ifndef MS_MSDATADESCCOLUMNS_H
 #define MS_MSDATADESCCOLUMNS_H
 
-#include <casa/aips.h>
-#include <tables/Tables/ScalarColumn.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <ms/MeasurementSets/MSValidIds.h>
+#include <casacore/ms/MeasurementSets/MSValidIds.h>
 
-#include <casa/Exceptions/Error.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

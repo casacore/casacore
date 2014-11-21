@@ -29,12 +29,12 @@
 #ifndef MS_MSTABLEINDEX_H
 #define MS_MSTABLEINDEX_H
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/RecordField.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ColumnsIndex.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/ColumnsIndex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

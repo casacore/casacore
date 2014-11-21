@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSSpwParse.h>
-#include <ms/MeasurementSets/MSSpwIndex.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/ms/MeasurementSets/MSSpwParse.h>
+#include <casacore/ms/MeasurementSets/MSSpwIndex.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
   

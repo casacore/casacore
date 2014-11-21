@@ -29,17 +29,17 @@
 
 //# Includes
 
-#include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <measures/Measures/MeasIERS.h>
-#include <casa/Exceptions/Error.h>
-#include <tables/Tables.h>
-#include <casa/iostream.h>
-#include <casa/OS/Directory.h>
-#include <casa/OS/Path.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/measures/Measures/MeasIERS.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/tables/Tables.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() {
   try {
     {    

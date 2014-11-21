@@ -29,9 +29,9 @@
 #ifndef MS_MSPOLARIZATION_H
 #define MS_MSPOLARIZATION_H
 
-#include <casa/aips.h>
-#include <ms/MeasurementSets/MSTable.h>
-#include <ms/MeasurementSets/MSPolEnums.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MSTable.h>
+#include <casacore/ms/MeasurementSets/MSPolEnums.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,16 +29,16 @@
 #ifndef MS_MSDERIVEDVALUES_H
 #define MS_MSDERIVEDVALUES_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <measures/Measures.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MCRadialVelocity.h>
-#include <measures/Measures/MPosition.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MCRadialVelocity.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations

@@ -29,10 +29,10 @@
 #ifndef MS_MSSOURCEINDEX_H
 #define MS_MSSOURCEINDEX_H
 
-#include <ms/MeasurementSets/MSTableIndex.h>
-#include <ms/MeasurementSets/MSSourceColumns.h>
+#include <casacore/ms/MeasurementSets/MSTableIndex.h>
+#include <casacore/ms/MeasurementSets/MSSourceColumns.h>
 
-#include <casa/Containers/RecordField.h>
+#include <casacore/casa/Containers/RecordField.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

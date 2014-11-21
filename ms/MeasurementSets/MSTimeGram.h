@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <casa/BasicSL/String.h>
-#include <ms/MeasurementSets/MSTimeDefinitions.h>
-#include <ms/MeasurementSets/MSTimeParse.h> // routines used by bison actions
-#include <ms/MeasurementSets/MSSelectableMainColumn.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSTimeDefinitions.h>
+#include <casacore/ms/MeasurementSets/MSTimeParse.h> // routines used by bison actions
+#include <casacore/ms/MeasurementSets/MSSelectableMainColumn.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
   
   //# Forward Declarations

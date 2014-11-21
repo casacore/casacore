@@ -25,39 +25,39 @@
 //#
 //# $Id$
 //#
-#include <casa/aips.h>
-#include <casa/Arrays.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Containers/Record.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Quanta/Unit.h>
-#include <measures/Measures/MDirection.h>
-#include <casa/Quanta.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/MVTime.h>
-#include <measures/Measures/Stokes.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/RefRows.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/BasicSL/STLIO.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableIter.h>
-#include <tables/Tables/TableVector.h>
-#include <ms/MeasurementSets.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MSMetaData.h>
-#include <ms/MeasurementSets/MSSummary.h>
-#include <ms/MeasurementSets/MSRange.h>
-#include <ms/MeasurementSets/MSSelector.h>
-#include <ms/MeasurementSets/MSSelection.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/casa/Quanta.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableIter.h>
+#include <casacore/tables/Tables/TableVector.h>
+#include <casacore/ms/MeasurementSets.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MSMetaData.h>
+#include <casacore/ms/MeasurementSets/MSSummary.h>
+#include <casacore/ms/MeasurementSets/MSRange.h>
+#include <casacore/ms/MeasurementSets/MSSelector.h>
+#include <casacore/ms/MeasurementSets/MSSelection.h>
 
-#include <casa/iomanip.h>
-#include <casa/iostream.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

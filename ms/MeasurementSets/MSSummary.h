@@ -28,10 +28,10 @@
 #ifndef MS_MSSUMMARY_H
 #define MS_MSSUMMARY_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/PtrHolder.h>
-#include <ms/MeasurementSets/MSColumns.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
 #include <memory>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

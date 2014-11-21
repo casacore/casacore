@@ -29,10 +29,10 @@
 #ifndef MS_MSCONCAT_H
 #define MS_MSCONCAT_H
 
-#include <casa/aips.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

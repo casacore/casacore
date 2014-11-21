@@ -29,13 +29,13 @@
 #define MS_MSLISTER_H
 
 
-#include <casa/aips.h>
-#include <casa/Logging/LogIO.h>
-//#include <casa/Logging/LogSink.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Record.h>
-#include <ms/MeasurementSets/MSSelector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogIO.h>
+//#include <casacore/casa/Logging/LogSink.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/ms/MeasurementSets/MSSelector.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class MeasurementSet;

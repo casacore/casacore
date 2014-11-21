@@ -38,7 +38,7 @@ $Id$
 #undef YY_DECL
 #define YY_DECL int MSStateGramlex (YYSTYPE* lvalp)
 static string                qstrState;
-#include <ms/MeasurementSets/MSSelectionTools.h>
+#include <casacore/ms/MeasurementSets/MSSelectionTools.h>
 %}
 
 WHITE     [ \t\n]*

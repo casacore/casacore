@@ -29,8 +29,8 @@
 #define MS_MSUVDISTPARSE_H
 
 //# Includes
-#include <ms/MeasurementSets/MSParse.h>
-#include <casa/Arrays/Matrix.h>
+#include <casacore/ms/MeasurementSets/MSParse.h>
+#include <casacore/casa/Arrays/Matrix.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
