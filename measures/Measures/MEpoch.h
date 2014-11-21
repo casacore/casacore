@@ -30,10 +30,10 @@
 #define MEASURES_MEPOCH_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/MeasBase.h>
-#include <measures/Measures/MeasRef.h>
-#include <casa/Quanta/MVEpoch.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MeasBase.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/casa/Quanta/MVEpoch.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -70,10 +70,10 @@ template <class M> class ScalarMeasColumn;
 // <example>
 // Convert (with all steps explicit) a UTC to an IAT time.
 // <srcblock>
-//	#include <measures/Measures.h>
-//	#include <measures/Measures/MEpoch.h>
-//	#include <measures/Measures/MCEpoch.h>
-//      #include <casa/logging/LogIO.h>
+//	#include <casacore/measures/Measures.h>
+//	#include <casacore/measures/Measures/MEpoch.h>
+//	#include <casacore/measures/Measures/MCEpoch.h>
+//      #include <casacore/casa/logging/LogIO.h>
 //      
 //	cout << "TAI for UTC = MJD(50237.29): " <<
 //		MEpoch::Convert(MEpoch(MVEpoch(Quantity(50237.29, "d")),

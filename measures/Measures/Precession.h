@@ -30,9 +30,9 @@
 #define MEASURES_PRECESSION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Quanta/Euler.h>
-#include <scimath/Functionals/Polynomial.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Quanta/Euler.h>
+#include <casacore/scimath/Functionals/Polynomial.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -105,7 +105,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <example>
 //  <srcblock>
-// #include <measures/Measures.h>
+// #include <casacore/measures/Measures.h>
 //	MVDirection pos(Quantity(10,"degree"),Quantity(-10.5,"degree"));
 //						// direction RA=10; DEC=-10.5
 //	Precession mine(Precession::IAU1976);	// define precession type

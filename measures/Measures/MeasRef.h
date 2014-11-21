@@ -30,10 +30,10 @@
 #define MEASURES_MEASREF_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/MRBase.h>
-#include <measures/Measures/MeasFrame.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MRBase.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -209,6 +209,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <measures/Measures/MeasRef.tcc>
+#include <casacore/measures/Measures/MeasRef.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

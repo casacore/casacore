@@ -27,12 +27,12 @@
 
 
 //# Includes
-#include <measures/TableMeasures/TableMeasColumn.h>
-#include <measures/TableMeasures/TableMeasDescBase.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableError.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/measures/TableMeasures/TableMeasColumn.h>
+#include <casacore/measures/TableMeasures/TableMeasDescBase.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/BasicSL/String.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <casa/BasicSL/Constants.h>
-#include <measures/Measures/MCRadialVelocity.h>
-#include <casa/Quanta/MVPosition.h>
-#include <casa/Quanta/MVDirection.h>
-#include <measures/Measures/Aberration.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/MDoppler.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/measures/Measures/MCRadialVelocity.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/measures/Measures/Aberration.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/MDoppler.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

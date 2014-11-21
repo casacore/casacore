@@ -29,8 +29,8 @@
 #define MEASURES_TABLEQUANTUMDESC_H
 
 //# Includes
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

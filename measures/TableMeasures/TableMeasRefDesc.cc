@@ -27,18 +27,18 @@
 
 
 //# Includes
-#include <measures/TableMeasures/TableMeasRefDesc.h>
-#include <measures/TableMeasures/TableMeasDescBase.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <measures/Measures/Measure.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Utilities/LinearSearch.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/measures/TableMeasures/TableMeasRefDesc.h>
+#include <casacore/measures/TableMeasures/TableMeasDescBase.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
+#include <casacore/measures/Measures/Measure.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Utilities/LinearSearch.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

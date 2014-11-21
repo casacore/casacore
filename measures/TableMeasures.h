@@ -28,15 +28,15 @@
 #ifndef MEASURES_TABLEMEASURES_H
 #define MEASURES_TABLEMEASURES_H
 
-#include <measures/TableMeasures/ArrayMeasColumn.h>
-#include <measures/TableMeasures/ArrayQuantColumn.h>
-#include <measures/TableMeasures/ScalarMeasColumn.h>
-#include <measures/TableMeasures/ScalarQuantColumn.h>
-#include <measures/TableMeasures/TableMeasDesc.h>
-#include <measures/TableMeasures/TableMeasOffsetDesc.h>
-#include <measures/TableMeasures/TableMeasRefDesc.h>
-#include <measures/TableMeasures/TableMeasValueDesc.h>
-#include <measures/TableMeasures/TableQuantumDesc.h>
+#include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
+#include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
+#include <casacore/measures/TableMeasures/TableMeasDesc.h>
+#include <casacore/measures/TableMeasures/TableMeasOffsetDesc.h>
+#include <casacore/measures/TableMeasures/TableMeasRefDesc.h>
+#include <casacore/measures/TableMeasures/TableMeasValueDesc.h>
+#include <casacore/measures/TableMeasures/TableQuantumDesc.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

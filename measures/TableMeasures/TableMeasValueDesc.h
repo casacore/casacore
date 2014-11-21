@@ -29,7 +29,7 @@
 #define MEASURES_TABLEMEASVALUEDESC_H
 
 //# Includes
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

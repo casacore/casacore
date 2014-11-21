@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/MeasureHolder.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

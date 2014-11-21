@@ -17,10 +17,10 @@
 //#
 //#
 
-#include <measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MFrequency.h>
 
-#include <casa/aips.h>
-#include <casa/namespace.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/namespace.h>
 
 int main() {
 	try {

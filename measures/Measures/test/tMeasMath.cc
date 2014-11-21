@@ -26,25 +26,25 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <measures/Measures.h>
-#include <casa/Quanta/MVDirection.h>
-#include <casa/Quanta/MVPosition.h>
-#include <casa/Quanta/RotMatrix.h>
-#include <casa/Quanta/Euler.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/Precession.h>
-#include <measures/Measures/Nutation.h>
-#include <measures/Measures/Aberration.h>
-#include <measures/Measures/SolarPos.h>
-#include <casa/Quanta/MVEpoch.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/casa/Quanta/RotMatrix.h>
+#include <casacore/casa/Quanta/Euler.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/Precession.h>
+#include <casacore/measures/Measures/Nutation.h>
+#include <casacore/measures/Measures/Aberration.h>
+#include <casacore/measures/Measures/SolarPos.h>
+#include <casacore/casa/Quanta/MVEpoch.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
     try {

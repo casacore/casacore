@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/MCDoppler.h>
+#include <casacore/measures/Measures/MCDoppler.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/Muvw.h>
-#include <casa/Exceptions.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Register.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/measures/Measures/Muvw.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

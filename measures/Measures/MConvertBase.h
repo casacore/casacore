@@ -30,8 +30,8 @@
 #define MEASURES_MCONVERTBASE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

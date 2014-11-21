@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <measures/TableMeasures/TableMeasDescBase.h>
+#include <casacore/measures/TableMeasures/TableMeasDescBase.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -295,6 +295,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <measures/TableMeasures/TableMeasDesc.tcc>
+#include <casacore/measures/TableMeasures/TableMeasDesc.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

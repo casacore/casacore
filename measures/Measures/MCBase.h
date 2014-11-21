@@ -30,7 +30,7 @@
 #define MEASURES_MCBASE_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -73,8 +73,8 @@ class String;
 // <example>
 // Convert (with all steps explicit) a UTC to an IAT time.
 // <srcblock>
-//      #include <measures/Measures.h>
-//      #include <measures/Measures/MCEpoch.h>
+//      #include <casacore/measures/Measures.h>
+//      #include <casacore/measures/Measures/MCEpoch.h>
 //	cout << "TAI for UTC = MJD(50237.29): " <<
 //		MEpoch::Convert(MEpoch(MVEpoch(Quantity(50237.29, "d")),
 //			               MEpoch::Ref(MEpoch::UTC)),

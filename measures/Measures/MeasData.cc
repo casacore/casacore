@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <casa/Quanta/RotMatrix.h>
-#include <casa/BasicSL/Constants.h>
-#include <measures/Measures/MeasData.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Quanta/RotMatrix.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/measures/Measures/MeasData.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

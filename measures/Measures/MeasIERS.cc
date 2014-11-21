@@ -26,19 +26,19 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/MeasIERS.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/OS/Time.h>
-#include <casa/OS/Path.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/System/Aipsrc.h>
-#include <casa/System/AipsrcValue.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/measures/Measures/MeasIERS.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/System/Aipsrc.h>
+#include <casacore/casa/System/AipsrcValue.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

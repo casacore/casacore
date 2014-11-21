@@ -26,20 +26,20 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <measures/Measures.h>
-#include <measures/Measures/EarthField.h>
-#include <measures/Measures/EarthMagneticMachine.h>
-#include <casa/Quanta/MVTime.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MEpoch.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/measures/Measures/EarthField.h>
+#include <casacore/measures/Measures/EarthMagneticMachine.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() {
 
   try {

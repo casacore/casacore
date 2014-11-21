@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Include files
-#include <measures/Measures/SofaTest.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/iostream.h>
+#include <casacore/measures/Measures/SofaTest.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/iostream.h>
 #include <limits.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
