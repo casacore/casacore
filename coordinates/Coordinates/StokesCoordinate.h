@@ -30,11 +30,11 @@
 #ifndef COORDINATES_STOKESCOORDINATE_H
 #define COORDINATES_STOKESCOORDINATE_H
 
-#include <casa/aips.h>
-#include <coordinates/Coordinates/Coordinate.h>
-#include <measures/Measures/Stokes.h>
-#include <casa/Containers/Block.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,9 +29,9 @@
 #define COORDINATES_GAUSSIANCONVERT_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

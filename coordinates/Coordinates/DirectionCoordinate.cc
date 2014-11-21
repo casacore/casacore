@@ -27,34 +27,34 @@
 //# $Id$
 
 
-#include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
 
-#include <coordinates/Coordinates/FITSCoordinateUtil.h>
-#include <coordinates/Coordinates/LinearCoordinate.h>
-#include <coordinates/Coordinates/LinearXform.h>
-#include <measures/Measures/MCDirection.h>
-#include <coordinates/Coordinates/Coordinate.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayAccessor.h>
-#include <casa/Containers/Record.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/BasicSL/Constants.h>
-#include <measures/Measures/MeasConvert.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Quanta/RotMatrix.h>
-#include <casa/Quanta/Euler.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/LinearSearch.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/coordinates/Coordinates/FITSCoordinateUtil.h>
+#include <casacore/coordinates/Coordinates/LinearCoordinate.h>
+#include <casacore/coordinates/Coordinates/LinearXform.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayAccessor.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Quanta/RotMatrix.h>
+#include <casacore/casa/Quanta/Euler.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/LinearSearch.h>
+#include <casacore/casa/BasicSL/String.h>
 
 #include <wcslib/wcsfix.h>
 
-#include <casa/iomanip.h>  
-#include <casa/sstream.h>
+#include <casacore/casa/iomanip.h>  
+#include <casacore/casa/sstream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -26,11 +26,11 @@
 //#
 //# $Id$
 
-#include <coordinates/Coordinates/Projection.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/coordinates/Coordinates/Projection.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/BasicSL/String.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

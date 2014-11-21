@@ -28,31 +28,31 @@
 
 
 
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <coordinates/Coordinates/TabularCoordinate.h>
-#include <coordinates/Coordinates/LinearXform.h>
-#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/coordinates/Coordinates/TabularCoordinate.h>
+#include <casacore/coordinates/Coordinates/LinearXform.h>
+#include <casacore/coordinates/Coordinates/LinearCoordinate.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Containers/Record.h>
-#include <fits/FITS/FITSSpectralUtil.h>
-#include <fits/FITS/FITSKeywordUtil.h>
-#include <scimath/Functionals/ScalarSampledFunctional.h>
-#include <casa/BasicMath/Math.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <measures/Measures/VelocityMachine.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/fits/FITS/FITSSpectralUtil.h>
+#include <casacore/fits/FITS/FITSKeywordUtil.h>
+#include <casacore/scimath/Functionals/ScalarSampledFunctional.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
+#include <casacore/measures/Measures/VelocityMachine.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
 
-#include <casa/sstream.h>
-#include <casa/iostream.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

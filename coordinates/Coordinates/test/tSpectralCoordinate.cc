@@ -27,29 +27,29 @@
 //#
 
  
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <fits/FITS/FITSSpectralUtil.h>
-#include <coordinates/Coordinates/ObsInfo.h>
-#include <casa/Containers/Record.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Logging/LogIO.h> 
-#include <casa/Logging/LogOrigin.h>
-#include <measures/Measures/MEpoch.h>
-#include <casa/Quanta/MVEpoch.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MeasTable.h>
-#include <casa/Quanta/MVFrequency.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/QC.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/fits/FITS/FITSSpectralUtil.h>
+#include <casacore/coordinates/Coordinates/ObsInfo.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Logging/LogIO.h> 
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/casa/Quanta/MVEpoch.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/casa/Quanta/MVFrequency.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/QC.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/iostream.h>
-#include <casa/namespace.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/namespace.h>
 
 SpectralCoordinate makeLinearCoordinate(MFrequency::Types type,
                                         Double& crval,

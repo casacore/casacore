@@ -25,16 +25,16 @@
 //# $Id$
 //#
 
-#include <coordinates/Coordinates/GaussianConvert.h>
+#include <casacore/coordinates/Coordinates/GaussianConvert.h>
  
-#include <casa/Arrays/Vector.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/Assert.h>
  
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

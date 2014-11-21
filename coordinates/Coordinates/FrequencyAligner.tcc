@@ -25,26 +25,26 @@
 //#
 //# $Id$
 
-#include <coordinates/Coordinates/FrequencyAligner.h>
+#include <casacore/coordinates/Coordinates/FrequencyAligner.h>
 
-#include <casa/Arrays/ArrayAccessor.h>
-#include <casa/Arrays/VectorIter.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/Quanta/Quantum.h>
+#include <casacore/casa/Arrays/ArrayAccessor.h>
+#include <casacore/casa/Arrays/VectorIter.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/Quanta/Quantum.h>
 
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
 
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MCFrequency.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MCFrequency.h>
 
-#include <scimath/Mathematics/InterpolateArray1D.h>
+#include <casacore/scimath/Mathematics/InterpolateArray1D.h>
 
 namespace casa {
 
