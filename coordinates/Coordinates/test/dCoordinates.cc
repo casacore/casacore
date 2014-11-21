@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <coordinates/Coordinates/Projection.h>
-#include <coordinates/Coordinates/StokesCoordinate.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/coordinates/Coordinates/Projection.h>
+#include <casacore/coordinates/Coordinates/StokesCoordinate.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/BasicSL/Constants.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 //# Enumerated lines are in the Coordinates.h module header. If you
 //# change them, change Coordinates.h to match.
 

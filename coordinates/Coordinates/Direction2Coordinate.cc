@@ -27,14 +27,14 @@
 //# $Id$
 
 
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/Constants.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MDirection.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/MVDirection.h>
-#include <casa/Quanta/Unit.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/casa/Quanta/Unit.h>
 
 #include <iomanip>
 

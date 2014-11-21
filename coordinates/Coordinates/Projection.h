@@ -29,8 +29,8 @@
 #ifndef COORDINATES_PROJECTION_H
 #define COORDINATES_PROJECTION_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

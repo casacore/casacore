@@ -26,13 +26,13 @@
 //#
 //# $Id$
 
-#include <coordinates/Coordinates/LinearXform.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Matrix.h>
-#include <scimath/Mathematics/MatrixMathLA.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/coordinates/Coordinates/LinearXform.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/scimath/Mathematics/MatrixMathLA.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

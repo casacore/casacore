@@ -29,7 +29,7 @@
 #ifndef COORDINATES_LINEARXFORM_H
 #define COORDINATES_LINEARXFORM_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <wcslib/lin.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

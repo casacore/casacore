@@ -30,13 +30,13 @@
 #ifndef COORDINATES_DIRECTIONCOORDINATE_H
 #define COORDINATES_DIRECTIONCOORDINATE_H
 
-#include <casa/aips.h>
-#include <coordinates/Coordinates/Coordinate.h>
-#include <coordinates/Coordinates/Projection.h>
-#include <casa/Arrays/Vector.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MeasConvert.h>
-#include <casa/Quanta/RotMatrix.h>
+#include <casacore/casa/aips.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
+#include <casacore/coordinates/Coordinates/Projection.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/casa/Quanta/RotMatrix.h>
 #include <wcslib/wcs.h>
 
 struct celprm;

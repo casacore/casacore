@@ -27,19 +27,19 @@
 //#
 
  
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/BasicMath/Math.h>
-#include <coordinates/Coordinates/QualityCoordinate.h>
-#include <casa/Exceptions/Error.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/coordinates/Coordinates/QualityCoordinate.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 
-#include <casa/iostream.h>
-#include <casa/namespace.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/namespace.h>
 
 QualityCoordinate makeCoordinate(Vector<Int>& whichQuality,
                                 Vector<String>& qualityStrings);

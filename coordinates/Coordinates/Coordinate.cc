@@ -27,26 +27,26 @@
 //# $Id$
 
 
-#include <coordinates/Coordinates/Coordinate.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
 
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayAccessor.h>
-#include <coordinates/Coordinates/Projection.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicMath/Math.h>
-#include <measures/Measures/MDirection.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/Regex.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayAccessor.h>
+#include <casacore/coordinates/Coordinates/Projection.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Regex.h>
 
-#include <casa/OS/Timer.h>
+#include <casacore/casa/OS/Timer.h>
 
-#include <casa/iomanip.h>  
-#include <casa/sstream.h>
+#include <casacore/casa/iomanip.h>  
+#include <casacore/casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

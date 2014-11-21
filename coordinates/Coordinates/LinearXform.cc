@@ -27,17 +27,17 @@
 //# $Id$
 //#---------------------------------------------------------------------------
 
-#include <coordinates/Coordinates/LinearXform.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/MatrixMath.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/LinearSearch.h>
-#include <casa/stdlib.h>
-#include <casa/sstream.h>
+#include <casacore/coordinates/Coordinates/LinearXform.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/LinearSearch.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/sstream.h>
 
 #include <wcslib/lin.h>
 

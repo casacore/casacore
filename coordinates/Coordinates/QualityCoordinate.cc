@@ -27,17 +27,17 @@
 //# $Id$
 
 
-#include <coordinates/Coordinates/QualityCoordinate.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/coordinates/Coordinates/QualityCoordinate.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 
-#include <casa/Containers/Record.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/LinearSearch.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/LinearSearch.h>
+#include <casacore/casa/BasicMath/Math.h>
 
-#include <casa/sstream.h>
+#include <casacore/casa/sstream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
