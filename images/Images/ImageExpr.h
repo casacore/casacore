@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <images/Images/ImageInterface.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <casa/Containers/Record.h>
-#include <casa/Quanta/Unit.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Quanta/Unit.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -227,6 +227,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/ImageExpr.tcc>
+#include <casacore/images/Images/ImageExpr.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

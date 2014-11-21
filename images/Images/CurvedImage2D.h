@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <images/Images/ImageInterface.h>
+#include <casacore/images/Images/ImageInterface.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -250,6 +250,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/CurvedImage2D.tcc>
+#include <casacore/images/Images/CurvedImage2D.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

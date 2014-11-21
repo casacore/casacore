@@ -25,21 +25,21 @@
 //#
 //# $Id$
 //
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Inputs/Input.h>
-#include <casa/Logging.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/BasicSL/String.h>
-#include <images/Images/ImageUtilities.h>
-#include <images/Images/ImageOpener.h>
-#include <images/Images/ImageSummary.h>
-#include <images/Images/PagedImage.h>
-#include <images/Images/FITSImage.h>
-#include <images/Images/MIRIADImage.h>
-#include <measures/Measures/MDoppler.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Logging.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/images/Images/ImageUtilities.h>
+#include <casacore/images/Images/ImageOpener.h>
+#include <casacore/images/Images/ImageSummary.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/images/Images/MIRIADImage.h>
+#include <casacore/measures/Measures/MDoppler.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main (int argc, const char* argv[])
 {

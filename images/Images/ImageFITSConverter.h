@@ -30,9 +30,9 @@
 #ifndef IMAGES_IMAGEFITSCONVERTER_H
 #define IMAGES_IMAGEFITSCONVERTER_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/DataType.h>
 
 #ifndef WCSLIB_GETWCSTAB
  #define WCSLIB_GETWCSTAB
@@ -379,7 +379,7 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/ImageFITSConverter.tcc>
+#include <casacore/images/Images/ImageFITSConverter.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif

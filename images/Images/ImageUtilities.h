@@ -29,11 +29,11 @@
 #define IMAGES_IMAGEUTILITIES_H
 
 
-#include <casa/aips.h>
-#include <scimath/Mathematics/GaussianBeam.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <casa/Utilities/PtrHolder.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/GaussianBeam.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -204,6 +204,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/ImageUtilities2.tcc>
+#include <casacore/images/Images/ImageUtilities2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

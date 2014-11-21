@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <images/Images/ImageAttrGroupHDF5.h>
-#include <casa/HDF5/HDF5Group.h>
-#include <casa/HDF5/HDF5Record.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Images/ImageAttrGroupHDF5.h>
+#include <casacore/casa/HDF5/HDF5Group.h>
+#include <casacore/casa/HDF5/HDF5Record.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <iomanip>
 
 namespace casa {

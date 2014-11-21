@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <images/Images/ImageExpr.h>
-#include <images/Images/LELImageCoord.h>
-#include <lattices/Lattices/LatticeNavigator.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeIterInterface.h>
+#include <casacore/images/Images/ImageExpr.h>
+#include <casacore/images/Images/LELImageCoord.h>
+#include <casacore/lattices/Lattices/LatticeNavigator.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeIterInterface.h>
 
-#include <casa/Arrays/Array.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/BasicSL/String.h>
-#include <casa/OS/Path.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Quanta/Unit.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Quanta/Unit.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -29,35 +29,35 @@
 #define IMAGES_IMAGES_H
 
 
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/Slicer.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-//#include <casa/Arrays/ArrayLattice.h>
-//#include <casa/Arrays/PagedArray.h>
-//#include <casa/Arrays/TempLattice.h>
-//#include <casa/Arrays/TiledShape.h>
-//#include <casa/Arrays/LatticeIterator.h>
-//#include <casa/Arrays/LatticeStepper.h>
-//#include <casa/Arrays/TileStepper.h>
-//#include <casa/Arrays/TiledLineStepper.h>
+//#include <casacore/casa/Arrays/ArrayLattice.h>
+//#include <casacore/casa/Arrays/PagedArray.h>
+//#include <casacore/casa/Arrays/TempLattice.h>
+//#include <casacore/casa/Arrays/TiledShape.h>
+//#include <casacore/casa/Arrays/LatticeIterator.h>
+//#include <casacore/casa/Arrays/LatticeStepper.h>
+//#include <casacore/casa/Arrays/TileStepper.h>
+//#include <casacore/casa/Arrays/TiledLineStepper.h>
 
-//#include <lattices/Lattices/SubLattice.h>
-//#include <lattices/Lattices/LatticeExpr.h>
+//#include <casacore/lattices/Lattices/SubLattice.h>
+//#include <casacore/lattices/Lattices/LatticeExpr.h>
 
-//#include <lattices/Lattices/LatticeRegion.h>
-//#include <lattices/Lattices/LCSlicer.h>
-//#include <lattices/Lattices/LCBox.h>
-//#include <lattices/Lattices/LCEllipsoid.h>
-//#include <lattices/Lattices/LCPolygon.h>
-//#include <lattices/Lattices/LCUnion.h>
-//#include <lattices/Lattices/LCIntersection.h>
-//#include <lattices/Lattices/LCDifference.h>
-//#include <lattices/Lattices/LCConcatenation.h>
-//#include <lattices/Lattices/LCComplement.h>
-//#include <lattices/Lattices/LCExtension.h>
+//#include <casacore/lattices/Lattices/LatticeRegion.h>
+//#include <casacore/lattices/Lattices/LCSlicer.h>
+//#include <casacore/lattices/Lattices/LCBox.h>
+//#include <casacore/lattices/Lattices/LCEllipsoid.h>
+//#include <casacore/lattices/Lattices/LCPolygon.h>
+//#include <casacore/lattices/Lattices/LCUnion.h>
+//#include <casacore/lattices/Lattices/LCIntersection.h>
+//#include <casacore/lattices/Lattices/LCDifference.h>
+//#include <casacore/lattices/Lattices/LCConcatenation.h>
+//#include <casacore/lattices/Lattices/LCComplement.h>
+//#include <casacore/lattices/Lattices/LCExtension.h>
 
 
 // <module>

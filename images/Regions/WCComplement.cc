@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <images/Regions/WCComplement.h>
-#include <images/Regions/ImageRegion.h>
-#include <lattices/Lattices/LCComplement.h>
-#include <tables/Tables/TableRecord.h>
+#include <casacore/images/Regions/WCComplement.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/lattices/Lattices/LCComplement.h>
+#include <casacore/tables/Tables/TableRecord.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -29,9 +29,9 @@
 #define IMAGES_WCREGION_H
 
 //# Includes
-#include <casa/Containers/Record.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <tables/Tables/TableRecord.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/tables/Tables/TableRecord.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

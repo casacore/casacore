@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/Logging/LogIO.h>
-#include <lattices/Lattices/LatticeStatistics.h>
-#include <scimath/Mathematics/NumericTraits.h>
-#include <casa/iosstrfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/lattices/Lattices/LatticeStatistics.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/iosstrfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -234,7 +234,7 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/ImageStatistics.tcc>
+#include <casacore/images/Images/ImageStatistics.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

@@ -31,13 +31,13 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MDoppler.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/ObsInfo.h>
-#include <images/Images/ImageInfo.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/ObsInfo.h>
+#include <casacore/images/Images/ImageInfo.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -225,6 +225,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/ImageSummary.tcc>
+#include <casacore/images/Images/ImageSummary.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

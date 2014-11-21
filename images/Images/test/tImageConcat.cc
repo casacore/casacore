@@ -26,34 +26,34 @@
 //# $Id$
 
 
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/IO/FileLocker.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/IO/FileLocker.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <images/Images/ImageConcat.h>
-#include <images/Images/PagedImage.h>
-#include <images/Images/TempImage.h>
-#include <images/Images/ImageOpener.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/images/Images/ImageConcat.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/TempImage.h>
+#include <casacore/images/Images/ImageOpener.h>
 
-#include <images/Images/SubImage.h>
-#include <images/Images/ImageInterface.h>
-#include <images/Regions/ImageRegion.h>
-#include <lattices/Lattices/LCPagedMask.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <casa/iostream.h>
+#include <casacore/images/Images/SubImage.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/lattices/Lattices/LCPagedMask.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/casa/iostream.h>
 
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void check (uInt axis, MaskedLattice<Float>& ml,
             MaskedLattice<Float>& ml1, 
             MaskedLattice<Float>& ml2);

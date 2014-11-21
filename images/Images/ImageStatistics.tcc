@@ -25,30 +25,30 @@
 //#
 //# $Id$
 
-#include <images/Images/ImageStatistics.h>
+#include <casacore/images/Images/ImageStatistics.h>
 
-#include <casa/Arrays/Matrix.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>  
-#include <casa/Exceptions/Error.h>
-#include <casa/Logging/LogIO.h>
-#include <images/Images/ImageUtilities.h>
-#include <images/Images/ImageInterface.h>
-#include <images/Images/ImageExprParse.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <lattices/Lattices/LatticeStatistics.h>
-#include <lattices/Lattices/LattStatsSpecialize.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/LinearSearch.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>  
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/images/Images/ImageUtilities.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/ImageExprParse.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/lattices/Lattices/LatticeStatistics.h>
+#include <casacore/lattices/Lattices/LattStatsSpecialize.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/LinearSearch.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/DataType.h>
 
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
-#include <casa/stdlib.h>
-#include <casa/sstream.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

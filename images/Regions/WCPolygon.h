@@ -30,12 +30,12 @@
 #define IMAGES_WCPOLYGON_H
 
 //# Includes
-#include <casa/aips.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <images/Regions/WCRegion.h>
-#include <lattices/Lattices/RegionType.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Quanta/Quantum.h>
+#include <casacore/casa/aips.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/images/Regions/WCRegion.h>
+#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Quanta/Quantum.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

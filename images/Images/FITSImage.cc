@@ -25,38 +25,38 @@
 //#
 //# $Id$
 
-#include <images/Images/FITSImage.h>
+#include <casacore/images/Images/FITSImage.h>
 
-#include <images/Images/FITSImgParser.h>
-#include <fits/FITS/hdu.h>
-#include <fits/FITS/fitsio.h>
-#include <fits/FITS/FITSKeywordUtil.h>
-#include <images/Images/ImageInfo.h>
-#include <images/Images/ImageFITSConverter.h>
-#include <images/Images/MaskSpecifier.h>
-#include <images/Images/ImageOpener.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <lattices/Lattices/FITSMask.h>
-#include <tables/Tables/TiledFileAccess.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Containers/Record.h>
-#include <tables/LogTables/LoggerHolder.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/OS/File.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Utilities/ValType.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Images/FITSImgParser.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/fits/FITS/FITSKeywordUtil.h>
+#include <casacore/images/Images/ImageInfo.h>
+#include <casacore/images/Images/ImageFITSConverter.h>
+#include <casacore/images/Images/MaskSpecifier.h>
+#include <casacore/images/Images/ImageOpener.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/lattices/Lattices/FITSMask.h>
+#include <casacore/tables/DataMan/TiledFileAccess.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/tables/LogTables/LoggerHolder.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
 

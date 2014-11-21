@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <images/Regions/ImageRegion.h>
-#include <tables/Tables/TableRecord.h>
-#include <images/Regions/AipsIOReaderWriter.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/images/Regions/AipsIOReaderWriter.h>
 
 namespace casa {
 // AIPSIOREADERWRITER DEFINITIONS //

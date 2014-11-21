@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <images/Regions/RegionHandlerMemory.h>
-#include <images/Regions/ImageRegion.h>
-#include <lattices/Lattices/LCMask.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Regions/RegionHandlerMemory.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/lattices/Lattices/LCMask.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

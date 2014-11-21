@@ -28,9 +28,9 @@
 #ifndef IMAGES_FITSImgParser_H
 #define IMAGES_FITSImgParser_H
 
-#include <fits/FITS/fits.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

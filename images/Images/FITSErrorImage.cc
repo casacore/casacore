@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <images/Images/FITSErrorImage.h>
-#include <images/Images/FITSImage.h>
-#include <lattices/Lattices/FITSMask.h>
+#include <casacore/images/Images/FITSErrorImage.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/lattices/Lattices/FITSMask.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
 

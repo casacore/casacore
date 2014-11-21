@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <images/Images/PagedImage.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

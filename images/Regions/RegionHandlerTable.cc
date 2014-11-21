@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <images/Regions/RegionHandlerTable.h>
-#include <images/Regions/ImageRegion.h>
-#include <lattices/Lattices/LCPagedMask.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Regions/RegionHandlerTable.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/lattices/Lattices/LCPagedMask.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

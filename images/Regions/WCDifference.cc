@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <images/Regions/WCDifference.h>
-#include <images/Regions/ImageRegion.h>
-#include <lattices/Lattices/LCDifference.h>
-#include <tables/Tables/TableRecord.h>
+#include <casacore/images/Regions/WCDifference.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/lattices/Lattices/LCDifference.h>
+#include <casacore/tables/Tables/TableRecord.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

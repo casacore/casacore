@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <images/Regions/RegionHandler.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/SimOrdMap.h>
+#include <casacore/images/Regions/RegionHandler.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

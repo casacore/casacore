@@ -26,22 +26,22 @@
 //#
 //# $Id$
 
-#include <images/Images/ImageInfo.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/QuantumHolder.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Containers/Record.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Regex.h>
-#include <tables/LogTables/LoggerHolder.h>
-#include <casa/sstream.h>
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/images/Images/ImageInfo.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/QuantumHolder.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/tables/LogTables/LoggerHolder.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
 
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

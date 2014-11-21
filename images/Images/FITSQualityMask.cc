@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <images/Images/FITSQualityMask.h>
-#include <images/Images/FITSImage.h>
-#include <images/Images/FITSErrorImage.h>
+#include <casacore/images/Images/FITSQualityMask.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/images/Images/FITSErrorImage.h>
 
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

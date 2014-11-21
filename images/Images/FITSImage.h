@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <images/Images/ImageInterface.h>
-#include <images/Images/MaskSpecifier.h>
-#include <tables/Tables/TiledFileAccess.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <fits/FITS/fits.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/MaskSpecifier.h>
+#include <casacore/tables/DataMan/TiledFileAccess.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/DataType.h>
 
 #ifndef WCSLIB_GETWCSTAB
  #define WCSLIB_GETWCSTAB
@@ -322,7 +322,7 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/FITS2Image.tcc>
+#include <casacore/images/Images/FITS2Image.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif

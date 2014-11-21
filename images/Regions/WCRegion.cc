@@ -26,18 +26,18 @@
 //# $Id$
 
 
-#include <images/Regions/WCRegion.h>
-#include <lattices/Lattices/RegionType.h>
-#include <lattices/Lattices/LCExtension.h>
-#include <lattices/Lattices/LCBox.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/Coordinate.h>
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Regions/WCRegion.h>
+#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/lattices/Lattices/LCExtension.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -26,15 +26,15 @@
 //# $Id$
 
 
-#include <images/Regions/WCExtension.h>
-#include <images/Regions/WCBox.h>
-#include <images/Regions/ImageRegion.h>
-#include <lattices/Lattices/LCExtension.h>
-#include <lattices/Lattices/LCStretch.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Regions/WCExtension.h>
+#include <casacore/images/Regions/WCBox.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/lattices/Lattices/LCExtension.h>
+#include <casacore/lattices/Lattices/LCStretch.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <images/Regions/RegionHandlerHDF5.h>
-#include <images/Regions/ImageRegion.h>
-#include <lattices/Lattices/LCHDF5Mask.h>
-#include <casa/HDF5/HDF5Record.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Regions/RegionHandlerHDF5.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/lattices/Lattices/LCHDF5Mask.h>
+#include <casacore/casa/HDF5/HDF5Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

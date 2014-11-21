@@ -25,31 +25,31 @@
 //#
 //# $Id:
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Inputs/Input.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
-#include <images/Images/PagedImage.h>
-#include <images/Images/ImageInterface.h>
-#include <images/Images/ImageOpener.h>
-#include <images/Images/FITSImage.h>
-#include <images/Images/MIRIADImage.h>
-#include <images/Images/HDF5Image.h>
-#include <images/Images/ImageUtilities.h>
-#include <images/Images/ImageRegrid.h>
-#include <images/Images/TempImage.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/ImageOpener.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/images/Images/MIRIADImage.h>
+#include <casacore/images/Images/HDF5Image.h>
+#include <casacore/images/Images/ImageUtilities.h>
+#include <casacore/images/Images/ImageRegrid.h>
+#include <casacore/images/Images/TempImage.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 
-//#include <casa/Logging/LogIO.h>
-#include <measures/Measures/MDirection.h>
-#include <casa/Quanta/Quantum.h>
-//#include <casa/Quanta/MVAngle.h>
+//#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/casa/Quanta/Quantum.h>
+//#include <casacore/casa/Quanta/MVAngle.h>
 
 
 using namespace casa;

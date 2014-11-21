@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <images/Images/ExtendImage.h>
-#include <lattices/Lattices/ExtendLattice.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Images/ExtendImage.h>
+#include <casacore/lattices/Lattices/ExtendLattice.h>
+#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

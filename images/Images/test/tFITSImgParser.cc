@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <images/Images/FITSImgParser.h>
+#include <casacore/images/Images/FITSImgParser.h>
 
-#include <casa/Inputs/Input.h>
-#include <casa/OS/Path.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main (int argc, const char* argv[])
 {
