@@ -27,9 +27,9 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/FunctionWrapper.h>
-#include <casa/Arrays/Vector.h>
-#include <scimath/Functionals/WrapperData.h>
+#include <casacore/scimath/Functionals/FunctionWrapper.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/scimath/Functionals/WrapperData.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

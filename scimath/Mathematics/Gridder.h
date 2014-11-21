@@ -29,9 +29,9 @@
 #ifndef SCIMATH_GRIDDER_H
 #define SCIMATH_GRIDDER_H
 
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -108,6 +108,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/Gridder.tcc>
+#include <casacore/scimath/Mathematics/Gridder.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

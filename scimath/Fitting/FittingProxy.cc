@@ -27,26 +27,26 @@
 
 //# Includes
 
-#include <scimath/Fitting/LSQaips.h>
-#include <scimath/Fitting/LinearFitSVD.h>
-#include <scimath/Fitting/NonLinearFitLM.h>
-#include <scimath/Fitting/GenericL2Fit.h>
-#include <scimath/Fitting/NonLinearFit.h>
-#include <scimath/Functionals/FunctionHolder.h>
-#include <scimath/Functionals/HyperPlane.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayAccessor.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/VectorIter.h>
-#include <casa/Arrays/VectorSTLIterator.h>
-#include <casa/Containers/RecordFieldId.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/scimath/Fitting/LSQaips.h>
+#include <casacore/scimath/Fitting/LinearFitSVD.h>
+#include <casacore/scimath/Fitting/NonLinearFitLM.h>
+#include <casacore/scimath/Fitting/GenericL2Fit.h>
+#include <casacore/scimath/Fitting/NonLinearFit.h>
+#include <casacore/scimath/Functionals/FunctionHolder.h>
+#include <casacore/scimath/Functionals/HyperPlane.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayAccessor.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/VectorIter.h>
+#include <casacore/casa/Arrays/VectorSTLIterator.h>
+#include <casacore/casa/Containers/RecordFieldId.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
-#include <scimath/Fitting/FittingProxy.h>
+#include <casacore/scimath/Fitting/FittingProxy.h>
 
 // FitType
 // Constructor

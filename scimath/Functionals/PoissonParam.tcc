@@ -24,7 +24,7 @@
 //#
 
 //# Includes
-#include <scimath/Functionals/PoissonParam.h>
+#include <casacore/scimath/Functionals/PoissonParam.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

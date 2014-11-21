@@ -29,9 +29,9 @@
 #ifndef SCIMATH_CHEBYSHEVPARAM_H
 #define SCIMATH_CHEBYSHEVPARAM_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <scimath/Functionals/Function1D.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/scimath/Functionals/Function1D.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -545,7 +545,7 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/ChebyshevParam.tcc>
+#include <casacore/scimath/Functionals/ChebyshevParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

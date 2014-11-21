@@ -27,10 +27,10 @@
 
 //# Includes
 
-#include <scimath/Fitting/NonLinearFitLM.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
-#include <scimath/Functionals/Function.h>
+#include <casacore/scimath/Fitting/NonLinearFitLM.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Functionals/Function.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

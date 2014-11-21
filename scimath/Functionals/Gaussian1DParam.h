@@ -29,9 +29,9 @@
 #define SCIMATH_GAUSSIAN1DPARAM_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <scimath/Functionals/Function1D.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/scimath/Functionals/Function1D.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -203,6 +203,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/Gaussian1DParam.tcc>
+#include <casacore/scimath/Functionals/Gaussian1DParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -26,19 +26,19 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <scimath/Fitting/LSQFit.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Containers/Record.h>
-#include <casa/OS/Timer.h>
-#include <casa/BasicMath/Random.h>
-#include <casa/IO/MemoryIO.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Fitting/LSQFit.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/BasicMath/Random.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 Double Y(const Double x, const Double y=3e-15) {
   return (abs(x) < y) ? 0 : x;
 }

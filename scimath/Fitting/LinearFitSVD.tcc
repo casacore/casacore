@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <scimath/Fitting/LinearFitSVD.h>
+#include <casacore/scimath/Fitting/LinearFitSVD.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

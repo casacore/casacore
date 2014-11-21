@@ -28,9 +28,9 @@
 #ifndef SCIMATH_FITGAUSSIAN_H
 #define SCIMATH_FITGAUSSIAN_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -222,7 +222,7 @@ class FitGaussian
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Fitting/FitGaussian.tcc>
+#include <casacore/scimath/Fitting/FitGaussian.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

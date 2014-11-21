@@ -24,8 +24,8 @@
 //#
 
 //# Includes
-#include <scimath/Functionals/PoissonFunction.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/scimath/Functionals/PoissonFunction.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

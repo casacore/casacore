@@ -29,9 +29,9 @@
 #ifndef SCIMATH_MARSHBUTTERWORTHBANDPASS_H
 #define SCIMATH_MARSHBUTTERWORTHBANDPASS_H
 
-#include <casa/aips.h>
-#include <scimath/Functionals/SimButterworthBandpass.h>
-#include <scimath/Functionals/FunctionMarshallable.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/SimButterworthBandpass.h>
+#include <casacore/scimath/Functionals/FunctionMarshallable.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -165,6 +165,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/MarshButterworthBandpass.tcc>
+#include <casacore/scimath/Functionals/MarshButterworthBandpass.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

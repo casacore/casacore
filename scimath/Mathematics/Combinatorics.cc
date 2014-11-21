@@ -26,7 +26,7 @@
 //# $Id$
 //   
 
-#include <scimath/Mathematics/Combinatorics.h>
+#include <casacore/scimath/Mathematics/Combinatorics.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

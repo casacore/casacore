@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Mathematics/AutoDiffRep.h>
+#include <casacore/scimath/Mathematics/AutoDiffRep.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,7 +29,7 @@
 #define SCIMATH_INTERPOLATE2D_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -260,7 +260,7 @@ class Interpolate2D {
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/Interpolate2D2.tcc>
+#include <casacore/scimath/Mathematics/Interpolate2D2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

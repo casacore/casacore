@@ -29,10 +29,10 @@
 #define SCIMATH_FFTSERVER_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Mathematics/FFTW.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Containers/Block.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/FFTW.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Containers/Block.h>
 #include <vector>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

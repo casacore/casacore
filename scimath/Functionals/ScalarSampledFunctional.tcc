@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/ScalarSampledFunctional.h>
-#include <casa/Containers/Block.h>
+#include <casacore/scimath/Functionals/ScalarSampledFunctional.h>
+#include <casacore/casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

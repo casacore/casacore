@@ -29,10 +29,10 @@
 #define SCIMATH_WRAPPERPARAM_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Function.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -115,6 +115,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/WrapperParam.tcc>
+#include <casacore/scimath/Functionals/WrapperParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

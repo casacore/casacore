@@ -29,9 +29,9 @@
 #define SCIMATH_UNARYFUNCTION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/UnaryParam.h>
-#include <scimath/Functionals/Function.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/UnaryParam.h>
+#include <casacore/scimath/Functionals/Function.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -146,6 +146,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/UnaryFunction.tcc>
+#include <casacore/scimath/Functionals/UnaryFunction.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

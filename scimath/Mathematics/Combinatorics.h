@@ -31,10 +31,10 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/namespace.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/namespace.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

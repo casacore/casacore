@@ -29,9 +29,9 @@
 #define SCIMATH_KAISERBFUNCTION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/KaiserBParam.h>
-#include <scimath/Functionals/Function.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/KaiserBParam.h>
+#include <casacore/scimath/Functionals/Function.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -140,6 +140,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/KaiserBFunction.tcc>
+#include <casacore/scimath/Functionals/KaiserBFunction.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

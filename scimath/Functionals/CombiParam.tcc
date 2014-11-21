@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/CombiParam.h>
+#include <casacore/scimath/Functionals/CombiParam.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

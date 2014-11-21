@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -67,6 +67,6 @@ ostream &operator << (ostream &os, const AutoDiff<T> &ad);
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/AutoDiffIO.tcc>
+#include <casacore/scimath/Mathematics/AutoDiffIO.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

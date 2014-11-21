@@ -31,9 +31,9 @@
 
 //# Includes
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Math.h>
-#include <scimath/Mathematics/SparseDiff.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/scimath/Mathematics/SparseDiff.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -227,6 +227,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/SparseDiffMath.tcc>
+#include <casacore/scimath/Mathematics/SparseDiffMath.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

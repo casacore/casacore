@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/SCSL.h>
-#include <casa/BasicSL/Complex.h>
-#include <scimath/Mathematics.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/scimath/Mathematics/SCSL.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/scimath/Mathematics.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

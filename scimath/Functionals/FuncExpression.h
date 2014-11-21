@@ -30,13 +30,13 @@
 #define SCIMATH_FUNCEXPRESSION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <scimath/Functionals/FuncExprData.h>
-#include <casa/stdvector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/scimath/Functionals/FuncExprData.h>
+#include <casacore/casa/stdvector.h>
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class MUString;

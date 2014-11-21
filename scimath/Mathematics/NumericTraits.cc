@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/NumericTraits.h>
-#include <casa/BasicSL/Constants.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/BasicSL/Constants.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

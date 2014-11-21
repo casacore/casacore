@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/OddPolynomialParam.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/scimath/Functionals/OddPolynomialParam.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

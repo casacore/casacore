@@ -23,11 +23,11 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#include <scimath/Mathematics/GaussianBeam.h>
-#include <casa/Containers/Record.h>
-#include <casa/Quanta/QC.h>
-#include <casa/Quanta/QuantumHolder.h>
-#include <casa/Quanta/QLogical.h>
+#include <casacore/scimath/Mathematics/GaussianBeam.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Quanta/QC.h>
+#include <casacore/casa/Quanta/QuantumHolder.h>
+#include <casacore/casa/Quanta/QLogical.h>
 
 namespace casa {
 

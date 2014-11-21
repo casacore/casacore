@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Fitting/LSQFit.h>
+#include <casacore/scimath/Fitting/LSQFit.h>
 #include <algorithm>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

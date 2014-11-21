@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/CompiledParam.h>
-#include <scimath/Functionals/FuncExpression.h>
+#include <casacore/scimath/Functionals/CompiledParam.h>
+#include <casacore/scimath/Functionals/FuncExpression.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

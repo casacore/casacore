@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/Lorentzian1DParam.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/scimath/Functionals/Lorentzian1DParam.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

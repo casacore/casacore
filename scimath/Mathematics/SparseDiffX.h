@@ -30,8 +30,8 @@
 #define SCIMATH_SPARSEDIFFX_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Mathematics/SparseDiff.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/SparseDiff.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

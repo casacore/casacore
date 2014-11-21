@@ -29,8 +29,8 @@
 #define SCIMATH_NNLSMATRIXSOLVER_H
 
 
-#include <casa/aips.h>
-#include <scimath/Mathematics/MatrixSolver.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/MatrixSolver.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

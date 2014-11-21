@@ -28,14 +28,14 @@
 #ifndef SCIMATH_MATHEMATICS_H
 #define SCIMATH_MATHEMATICS_H
 
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicSL/Constants.h>
-#include <scimath/Mathematics/Convolver.h>
-#include <scimath/Mathematics/FFTPack.h>
-#include <scimath/Mathematics/FFTServer.h>
-#include <casa/BasicMath/Math.h>
-#include <scimath/Mathematics/NumericTraits.h>
-#include <casa/BasicMath/Random.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/scimath/Mathematics/Convolver.h>
+#include <casacore/scimath/Mathematics/FFTPack.h>
+#include <casacore/scimath/Mathematics/FFTServer.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/BasicMath/Random.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

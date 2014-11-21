@@ -30,10 +30,10 @@
 #define SCIMATH_COMPILEDFUNCTION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/CompiledParam.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/CompiledParam.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -171,6 +171,6 @@ template <class T> class CompiledFunction : public CompiledParam<T> {
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/CompiledFunction.tcc>
+#include <casacore/scimath/Functionals/CompiledFunction.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

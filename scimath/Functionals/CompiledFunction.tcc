@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/CompiledFunction.h>
-#include <scimath/Functionals/FuncExpression.h>
-#include <scimath/Functionals/FunctionTraits.h>
-#include <casa/BasicSL/Constants.h>
-#include <scimath/Mathematics/NumericTraits.h>
-#include <casa/BasicSL/String.h>
-#include <casa/stdvector.h>
+#include <casacore/scimath/Functionals/CompiledFunction.h>
+#include <casacore/scimath/Functionals/FuncExpression.h>
+#include <casacore/scimath/Functionals/FunctionTraits.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/stdvector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

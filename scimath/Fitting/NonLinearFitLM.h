@@ -30,8 +30,8 @@
 #define SCIMATH_NONLINEARFITLM_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Fitting/NonLinearFit.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Fitting/NonLinearFit.h>
 namespace casa { //# begin namespace casa
 //# Forward declarations
 
@@ -141,6 +141,6 @@ protected:
 
 } //# End namespace casa
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Fitting/NonLinearFitLM.tcc>
+#include <casacore/scimath/Fitting/NonLinearFitLM.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

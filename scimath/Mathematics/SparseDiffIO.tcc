@@ -26,10 +26,10 @@
 //# $Id: SparseDiffIO.cc,v 1.1 2007/11/16 04:34:46 wbrouw Exp $
 
 //# Includes
-#include <scimath/Mathematics/SparseDiffIO.h>
-#include <scimath/Mathematics/SparseDiff.h>
-#include <casa/vector.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Mathematics/SparseDiffIO.h>
+#include <casacore/scimath/Mathematics/SparseDiff.h>
+#include <casacore/casa/vector.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

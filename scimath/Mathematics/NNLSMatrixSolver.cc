@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <scimath/Mathematics/NNLSMatrixSolver.h>
-#include <casa/Arrays/MatrixMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/NNLSMatrixSolver.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
 
-#include <casa/Logging/LogSink.h>
-#include <casa/Logging/LogMessage.h>
+#include <casacore/casa/Logging/LogSink.h>
+#include <casacore/casa/Logging/LogMessage.h>
 
-#include <casa/sstream.h>
+#include <casacore/casa/sstream.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 #if !defined(NEED_FORTRAN_UNDERSCORES)

@@ -30,10 +30,10 @@
 
 //# Includes
 
-#include <casa/aips.h>
-#include <casa/Containers/Record.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Record.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 //# Forward declarations
 namespace casa { //# NAMESPACE CASA - BEGIN
   class String;

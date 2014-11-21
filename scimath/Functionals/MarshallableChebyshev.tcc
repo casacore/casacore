@@ -26,8 +26,8 @@
 //#! ========================================================================
 //# $Id$
 
-#include <scimath/Functionals/MarshallableChebyshev.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/scimath/Functionals/MarshallableChebyshev.h>
+#include <casacore/casa/Arrays/Array.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

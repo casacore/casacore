@@ -30,10 +30,10 @@
 #define SCIMATH_SPARSEDIFF_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/SparseDiffRep.h>
-#include <casa/vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/SparseDiffRep.h>
+#include <casacore/casa/vector.h>
 #include <utility>
 
 // Using
@@ -391,6 +391,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/SparseDiff.tcc>
+#include <casacore/scimath/Mathematics/SparseDiff.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

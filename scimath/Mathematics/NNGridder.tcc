@@ -26,9 +26,9 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/NNGridder.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/scimath/Mathematics/NNGridder.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/WrapperParam.h>
+#include <casacore/scimath/Functionals/WrapperParam.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

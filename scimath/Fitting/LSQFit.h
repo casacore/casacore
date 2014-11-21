@@ -29,10 +29,10 @@
 #define SCIMATH_LSQFIT_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Utilities/RecordTransformable.h>
-#include <scimath/Fitting/LSQMatrix.h>
-#include <scimath/Fitting/LSQTraits.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/RecordTransformable.h>
+#include <casacore/scimath/Fitting/LSQMatrix.h>
+#include <casacore/scimath/Fitting/LSQTraits.h>
 #include <complex>
 #include <string>
 #include <utility>
@@ -224,8 +224,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // for a 3 unknown solution, and solve (note that the degenerate will be
 // set to 0. The last one will use SVD and one condition equation.r 
 // <srcblock>
-//   #include <casa/aips.h>
-//   #include <scimath/Fitting/LSQFit.h>
+//   #include <casacore/casa/aips.h>
+//   #include <casacore/scimath/Fitting/LSQFit.h>
 //   #include <iostream>
 //   
 //   int main() {
@@ -992,6 +992,6 @@ class LSQFit {
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Fitting/LSQFit2.tcc>
+#include <casacore/scimath/Fitting/LSQFit2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -27,9 +27,9 @@
 #define SCIMATH_POISSONPARAM_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Function.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -149,6 +149,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/PoissonParam.tcc>
+#include <casacore/scimath/Functionals/PoissonParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

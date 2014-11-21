@@ -29,11 +29,11 @@
 #ifndef SCIMATH_CHEBYSHEV_H
 #define SCIMATH_CHEBYSHEV_H
 
-#include <casa/aips.h>
-#include <scimath/Functionals/ChebyshevParam.h>
-#include <scimath/Functionals/Function1D.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/ChebyshevParam.h>
+#include <casacore/scimath/Functionals/Function1D.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -322,6 +322,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/Chebyshev.tcc>
+#include <casacore/scimath/Functionals/Chebyshev.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -29,12 +29,12 @@
 #ifndef SCIMATH_CONVOLVER_H
 #define SCIMATH_CONVOLVER_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/BasicSL/Complex.h>
-#include <scimath/Mathematics/FFTServer.h>
-#include <casa/Arrays/IPosition.h>
-#include <scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/scimath/Mathematics/FFTServer.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -327,6 +327,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/Convolver.tcc>
+#include <casacore/scimath/Mathematics/Convolver.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

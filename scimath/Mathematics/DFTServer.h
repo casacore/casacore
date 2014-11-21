@@ -29,15 +29,15 @@
 #define SCIMATH_DFTSERVER_H
 
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIter.h> 
-#include <casa/Arrays/ArrayIO.h> 
-#include <casa/BasicSL/Constants.h> 
-#include <casa/math.h> 
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIter.h> 
+#include <casacore/casa/Arrays/ArrayIO.h> 
+#include <casacore/casa/BasicSL/Constants.h> 
+#include <casacore/casa/math.h> 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -135,6 +135,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/DFTServer.tcc>
+#include <casacore/scimath/Mathematics/DFTServer.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif //DFT_SERVER

@@ -30,8 +30,8 @@
 #define SCIMATH_AUTODIFFREP_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -147,6 +147,6 @@ template <class T> class AutoDiffRep {
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/AutoDiffRep.tcc>
+#include <casacore/scimath/Mathematics/AutoDiffRep.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

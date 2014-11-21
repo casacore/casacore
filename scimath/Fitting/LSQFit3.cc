@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Fitting/LSQFit.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/RecordFieldId.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/IO/AipsIO.h>
+#include <casacore/scimath/Fitting/LSQFit.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/RecordFieldId.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/IO/AipsIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

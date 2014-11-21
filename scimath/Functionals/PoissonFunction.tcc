@@ -23,10 +23,10 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#include <scimath/Functionals/PoissonFunction.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
-#include <scimath/Mathematics/Combinatorics.h>
+#include <casacore/scimath/Functionals/PoissonFunction.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/scimath/Mathematics/Combinatorics.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,10 +29,10 @@
 #define SCIMATH_MATRIXMATHLA_H
 
 
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -220,6 +220,6 @@ inline void potri(const char *uplo, const int *n, DComplex *a,
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/MatrixMathLA.tcc>
+#include <casacore/scimath/Mathematics/MatrixMathLA.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

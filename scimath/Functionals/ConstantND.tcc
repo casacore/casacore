@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/ConstantND.h>
+#include <casacore/scimath/Functionals/ConstantND.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,10 +25,10 @@
 //#
 //#
 //# $Id$
-#include <scimath/Functionals/SerialHelper.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/scimath/Functionals/SerialHelper.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/DataType.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

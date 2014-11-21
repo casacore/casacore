@@ -29,7 +29,7 @@
 #ifndef SCIMATH_NUMERICTRAITS2_H
 #define SCIMATH_NUMERICTRAITS2_H
 
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

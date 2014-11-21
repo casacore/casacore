@@ -26,7 +26,7 @@
 //# $Id: SparseDiffRep.cc,v 1.1 2007/11/16 04:34:46 wbrouw Exp $
 
 //# Includes
-#include <scimath/Mathematics/SparseDiffRep.h>
+#include <casacore/scimath/Mathematics/SparseDiffRep.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

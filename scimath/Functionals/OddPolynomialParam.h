@@ -29,10 +29,10 @@
 #define SCIMATH_ODDPOLYNOMIALPARAM_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Function1D.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Function1D.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -163,6 +163,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/OddPolynomialParam.tcc>
+#include <casacore/scimath/Functionals/OddPolynomialParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

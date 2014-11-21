@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/Function.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

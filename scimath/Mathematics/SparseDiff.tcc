@@ -26,8 +26,8 @@
 //# $Id: SparseDiff.cc,v 1.3 2008/01/10 12:00:42 wbrouw Exp $
 
 //# Includes
-#include <scimath/Mathematics/SparseDiff.h>
-#include <casa/Containers/ObjectStack.h>
+#include <casacore/scimath/Mathematics/SparseDiff.h>
+#include <casacore/casa/Containers/ObjectStack.h>
 #include <algorithm>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

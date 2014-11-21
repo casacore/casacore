@@ -23,12 +23,12 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#include <scimath/Mathematics/Geometry.h>
+#include <casacore/scimath/Mathematics/Geometry.h>
 
-#include <casa/Quanta/Quantum.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main() {
     try {

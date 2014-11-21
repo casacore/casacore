@@ -27,12 +27,12 @@
 //# $Id$
 
 
-#include <scimath/Mathematics/HistAcc.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Arrays.h>
-// #include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
+#include <casacore/scimath/Mathematics/HistAcc.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Arrays.h>
+// #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

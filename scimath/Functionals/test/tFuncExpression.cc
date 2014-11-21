@@ -26,18 +26,18 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
-#include <scimath/Functionals/FuncExpression.h>
-#include <scimath/Functionals/FuncExprData.h>
-#include <scimath/Functionals/CompiledFunction.h>
-#include <casa/Exceptions/Error.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/scimath/Functionals/FuncExpression.h>
+#include <casacore/scimath/Functionals/FuncExprData.h>
+#include <casacore/scimath/Functionals/CompiledFunction.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() {
 
   try {

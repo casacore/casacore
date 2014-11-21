@@ -26,10 +26,10 @@
 //# $Id: SparseDiffMath.cc,v 1.1 2007/11/16 04:34:46 wbrouw Exp $
 
 //# Includes
-#include <scimath/Mathematics/SparseDiffMath.h>
-#include <scimath/Mathematics/SparseDiffRep.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/BasicSL/Constants.h>
+#include <casacore/scimath/Mathematics/SparseDiffMath.h>
+#include <casacore/scimath/Mathematics/SparseDiffRep.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicSL/Constants.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
