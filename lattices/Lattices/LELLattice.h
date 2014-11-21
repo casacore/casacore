@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <lattices/Lattices/LELInterface.h>
+#include <casacore/lattices/Lattices/LELInterface.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -141,6 +141,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LELLattice.tcc>
+#include <casacore/lattices/Lattices/LELLattice.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

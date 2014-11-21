@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/iosstrfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/iosstrfwd.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -165,6 +165,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LatticeSlice1D.tcc>
+#include <casacore/lattices/Lattices/LatticeSlice1D.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

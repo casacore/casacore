@@ -26,20 +26,20 @@
 //# $Id$
 //
 
-#include <lattices/Lattices/LatticeHistSpecialize.h>
-#include <lattices/Lattices/LatticeStatsBase.h>
-#include <lattices/Lattices/LattStatsSpecialize.h>
+#include <casacore/lattices/Lattices/LatticeHistSpecialize.h>
+#include <casacore/lattices/Lattices/LatticeStatsBase.h>
+#include <casacore/lattices/Lattices/LattStatsSpecialize.h>
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Logging/LogIO.h>
-#include <scimath/Functionals/Gaussian1D.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
-#include <lattices/Lattices/LatticeStatsBase.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/scimath/Functionals/Gaussian1D.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/lattices/Lattices/LatticeStatsBase.h>
 
-#include <casa/System/ProgressMeter.h>
-#include <casa/System/PGPlotter.h>
+#include <casacore/casa/System/ProgressMeter.h>
+#include <casacore/casa/System/PGPlotter.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -29,8 +29,8 @@
 #define LATTICES_LCHDF5MASK_H
 
 //# Includes
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/HDF5Lattice.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/Lattices/HDF5Lattice.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

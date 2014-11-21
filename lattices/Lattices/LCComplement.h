@@ -29,7 +29,7 @@
 #define LATTICES_LCCOMPLEMENT_H
 
 //# Includes
-#include <lattices/Lattices/LCRegionMulti.h>
+#include <casacore/lattices/Lattices/LCRegionMulti.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -26,30 +26,30 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/LELAttribute.h>
-#include <lattices/Lattices/LELArray.h>
-#include <lattices/Lattices/LELScalar.h>
-#include <lattices/Lattices/LELBinary.h>
-#include <lattices/Lattices/LELConvert.h>
-#include <lattices/Lattices/LELFunction.h>
-#include <lattices/Lattices/LELLattice.h>
-#include <lattices/Lattices/LELUnary.h>
-#include <lattices/Lattices/LELLattCoord.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Inputs/Input.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/LELAttribute.h>
+#include <casacore/lattices/Lattices/LELArray.h>
+#include <casacore/lattices/Lattices/LELScalar.h>
+#include <casacore/lattices/Lattices/LELBinary.h>
+#include <casacore/lattices/Lattices/LELConvert.h>
+#include <casacore/lattices/Lattices/LELFunction.h>
+#include <casacore/lattices/Lattices/LELLattice.h>
+#include <casacore/lattices/Lattices/LELUnary.h>
+#include <casacore/lattices/Lattices/LELLattCoord.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 Bool checkAttribute (const LELAttribute& attr,
 		     const Bool isMasked,
                      const Bool isScalar,

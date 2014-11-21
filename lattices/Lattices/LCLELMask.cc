@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LCLELMask.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LCLELMask.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

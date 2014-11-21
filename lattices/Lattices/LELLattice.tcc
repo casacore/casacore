@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LELLattice.h>
-#include <lattices/Lattices/LELScalar.h>
-#include <lattices/Lattices/LELArray.h>
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Exceptions/Error.h> 
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/LELLattice.h>
+#include <casacore/lattices/Lattices/LELScalar.h>
+#include <casacore/lattices/Lattices/LELArray.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Exceptions/Error.h> 
+#include <casacore/casa/iostream.h>
 
 
 

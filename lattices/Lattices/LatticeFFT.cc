@@ -27,22 +27,22 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeFFT.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Exceptions/Error.h>
-#include <scimath/Mathematics/FFTServer.h>
-#include <casa/Utilities/Assert.h>
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <lattices/Lattices/TiledLineStepper.h>
-#include <casa/OS/HostInfo.h>
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/LatticeFFT.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Mathematics/FFTServer.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/lattices/Lattices/TiledLineStepper.h>
+#include <casacore/casa/OS/HostInfo.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

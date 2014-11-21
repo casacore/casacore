@@ -29,10 +29,10 @@
 #define LATTICES_TILESTEPPER_H
 
 //# Includes
-#include <casa/aips.h>
-#include <lattices/Lattices/LatticeNavigator.h>
-#include <lattices/Lattices/LatticeIndexer.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/LatticeNavigator.h>
+#include <casacore/lattices/Lattices/LatticeIndexer.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -29,8 +29,8 @@
 #define LATTICES_LCPIXELSET_H
 
 //# Includes
-#include <lattices/Lattices/LCBox.h>
-#include <casa/Arrays/Slicer.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/casa/Arrays/Slicer.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

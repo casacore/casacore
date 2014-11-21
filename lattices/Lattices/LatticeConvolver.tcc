@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeConvolver.h>
-#include <lattices/Lattices/LatticeFFT.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/TileStepper.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/OS/HostInfo.h>
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/LatticeConvolver.h>
+#include <casacore/lattices/Lattices/LatticeFFT.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/TileStepper.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/OS/HostInfo.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <lattices/Lattices/LatticeBase.h>
-#include <casa/Arrays/Slicer.h>
+#include <casacore/lattices/Lattices/LatticeBase.h>
+#include <casacore/casa/Arrays/Slicer.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -438,6 +438,6 @@ void Lattice<Bool>::handleMathTo (Lattice<Bool>&, int) const
 //# Therefore LatticeIterator.h is included here, while LatticeIterator.h
 //# includes Lattice.tcc.
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

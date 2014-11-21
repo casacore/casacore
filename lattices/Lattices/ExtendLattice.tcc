@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/ExtendLattice.h>
-#include <lattices/Lattices/LatticeIterInterface.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/ExtendLattice.h>
+#include <casacore/lattices/Lattices/LatticeIterInterface.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

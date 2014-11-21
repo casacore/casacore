@@ -29,8 +29,8 @@
 #define LATTICES_LCREGIONFIXED_H
 
 //# Includes
-#include <lattices/Lattices/LCRegionSingle.h>
-#include <lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/LCRegionSingle.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <lattices/Lattices/LCLELMask.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/LCLELMask.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
 		       Bool alternates)
 {

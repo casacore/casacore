@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LCBox.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

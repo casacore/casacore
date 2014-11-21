@@ -25,29 +25,29 @@
 //#
 //#   $Id$
 
-#include <lattices/LatticeMath/Fit2D.h>
+#include <casacore/lattices/LatticeMath/Fit2D.h>
 
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/MaskArrMath.h>
-#include <casa/Exceptions/Error.h>
-#include <scimath/Functionals/Gaussian2D.h>
-#include <scimath/Functionals/ConstantND.h>
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Quanta/MVAngle.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
-#include <casa/Utilities/PtrHolder.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/MaskArrMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Functionals/Gaussian2D.h>
+#include <casacore/scimath/Functionals/ConstantND.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

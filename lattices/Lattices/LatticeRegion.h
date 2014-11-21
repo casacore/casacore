@@ -31,8 +31,8 @@
 
 
 //# Includes
-#include <lattices/Lattices/Lattice.h>
-#include <casa/Arrays/Slicer.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/casa/Arrays/Slicer.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,45 +25,45 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeStatistics.h>
-#include <lattices/Lattices/LattStatsSpecialize.h>
-#include <lattices/Lattices/LattStatsProgress.h>
+#include <casacore/lattices/Lattices/LatticeStatistics.h>
+#include <casacore/lattices/Lattices/LattStatsSpecialize.h>
+#include <casacore/lattices/Lattices/LattStatsProgress.h>
 
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/VectorIter.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Logging/LogIO.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/LatticeApply.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicMath/ConvertScalar.h>
-#include <casa/Quanta/QMath.h>
-#include <casa/OS/HostInfo.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Utilities/LinearSearch.h>
-#include <casa/Utilities/PtrHolder.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/VectorIter.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/LatticeApply.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicMath/ConvertScalar.h>
+#include <casacore/casa/Quanta/QMath.h>
+#include <casacore/casa/OS/HostInfo.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Utilities/LinearSearch.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
 
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/ValType.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/ValType.h>
 
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
-#include <casa/stdlib.h>
-#include <casa/sstream.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/sstream.h>
 
-#include <casa/OS/Timer.h>
+#include <casacore/casa/OS/Timer.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

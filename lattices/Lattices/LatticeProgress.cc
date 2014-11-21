@@ -27,7 +27,7 @@
 
 
 //# Includes
-#include <lattices/Lattices/LatticeProgress.h>
+#include <casacore/lattices/Lattices/LatticeProgress.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

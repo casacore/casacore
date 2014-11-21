@@ -26,11 +26,11 @@
 //# $Id$
 //
 
-#include <lattices/Lattices/LattStatsProgress.h>
+#include <casacore/lattices/Lattices/LattStatsProgress.h>
 
-#include <casa/BasicMath/Math.h>
-#include <casa/System/ProgressMeter.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/System/ProgressMeter.h>
+#include <casacore/casa/BasicSL/String.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

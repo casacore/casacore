@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LCRegion.h>
-#include <lattices/Lattices/RegionType.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LCRegion.h>
+#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

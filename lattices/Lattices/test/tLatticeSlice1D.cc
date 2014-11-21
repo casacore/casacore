@@ -27,24 +27,24 @@
 
 //# Includes
 
-#include <casa/Inputs/Input.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Containers/Block.h>
-#include <lattices/Lattices/PixelCurve1D.h> 
-#include <lattices/Lattices/MaskedLattice.h> 
-#include <lattices/Lattices/LatticeSlice1D.h> 
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/lattices/Lattices/PixelCurve1D.h> 
+#include <casacore/lattices/Lattices/MaskedLattice.h> 
+#include <casacore/lattices/Lattices/LatticeSlice1D.h> 
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void doit1 ();
 void doit2 ();
 void doit3 ();

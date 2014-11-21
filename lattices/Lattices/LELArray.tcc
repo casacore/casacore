@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LELArray.h>
+#include <casacore/lattices/Lattices/LELArray.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

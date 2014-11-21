@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LELFunction.h>
-#include <lattices/Lattices/LELFunctionEnums.h>
-#include <lattices/Lattices/LELArray.h>
-#include <lattices/Lattices/LELScalar.h>
-#include <lattices/Lattices/LatticeFractile.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/MaskedLatticeIterator.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h> 
+#include <casacore/lattices/Lattices/LELFunction.h>
+#include <casacore/lattices/Lattices/LELFunctionEnums.h>
+#include <casacore/lattices/Lattices/LELArray.h>
+#include <casacore/lattices/Lattices/LELScalar.h>
+#include <casacore/lattices/Lattices/LatticeFractile.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/MaskedLatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h> 
 
 
 

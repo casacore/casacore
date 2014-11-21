@@ -26,26 +26,26 @@
 //# $Id$
 
 
-#include <lattices/Lattices/PagedArray.h>
-#include <lattices/Lattices/PagedArrIter.h>
-#include <lattices/Lattices/LatticeNavigator.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/OS/File.h>
-#include <casa/OS/Path.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/TiledCellStMan.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/TableInfo.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/PagedArrIter.h>
+#include <casacore/lattices/Lattices/LatticeNavigator.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/DataMan/TiledCellStMan.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/tables/Tables/TableInfo.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

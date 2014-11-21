@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/LatticeIterInterface.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/LCRegion.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/LatticeIterInterface.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/LCRegion.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

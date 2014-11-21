@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeStatsBase.h>
+#include <casacore/lattices/Lattices/LatticeStatsBase.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Regex.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Regex.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

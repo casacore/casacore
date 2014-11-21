@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <lattices/Lattices/LELArrayBase.h>
+#include <casacore/lattices/Lattices/LELArrayBase.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -155,6 +155,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LELArray.tcc>
+#include <casacore/lattices/Lattices/LELArray.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

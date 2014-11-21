@@ -29,11 +29,11 @@
 #define LATTICES_FIT2D_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/CompoundFunction.h>
-#include <casa/BasicSL/Constants.h>
-#include <scimath/Fitting/NonLinearFitLM.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/CompoundFunction.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/scimath/Fitting/NonLinearFitLM.h>
+#include <casacore/casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

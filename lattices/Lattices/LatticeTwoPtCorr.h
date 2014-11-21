@@ -30,7 +30,7 @@
 #define LATTICES_LATTICETWOPTCORR_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -146,6 +146,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LatticeTwoPtCorr.tcc>
+#include <casacore/lattices/Lattices/LatticeTwoPtCorr.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

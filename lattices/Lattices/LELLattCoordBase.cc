@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LELLattCoordBase.h>
+#include <casacore/lattices/Lattices/LELLattCoordBase.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

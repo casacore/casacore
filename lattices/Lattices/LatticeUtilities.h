@@ -28,9 +28,9 @@
 #ifndef LATTICES_LATTICEUTILITIES_H
 #define LATTICES_LATTICEUTILITIES_H
 
-#include <lattices/Lattices/LatticeStatsBase.h>
+#include <casacore/lattices/Lattices/LatticeStatsBase.h>
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -183,7 +183,7 @@ class LatticeUtilities
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LatticeUtilities.tcc>
+#include <casacore/lattices/Lattices/LatticeUtilities.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

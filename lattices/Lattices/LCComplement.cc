@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LCComplement.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LCComplement.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

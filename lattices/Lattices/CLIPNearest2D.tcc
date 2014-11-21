@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <lattices/Lattices/CLIPNearest2D.h>
-#include <lattices/Lattices/PixelCurve1D.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <casa/Arrays/ArrayIter.h>
+#include <casacore/lattices/Lattices/CLIPNearest2D.h>
+#include <casacore/lattices/Lattices/PixelCurve1D.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/casa/Arrays/ArrayIter.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

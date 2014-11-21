@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LattRegionHolder.h>
-#include <lattices/Lattices/LCRegion.h>
-#include <lattices/Lattices/LCSlicer.h>
-#include <lattices/Lattices/LCExtension.h>
-#include <lattices/Lattices/LCUnion.h>
-#include <lattices/Lattices/LCIntersection.h>
-#include <lattices/Lattices/LCDifference.h>
-#include <lattices/Lattices/LCComplement.h>
-#include <lattices/Lattices/RegionType.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LattRegionHolder.h>
+#include <casacore/lattices/Lattices/LCRegion.h>
+#include <casacore/lattices/Lattices/LCSlicer.h>
+#include <casacore/lattices/Lattices/LCExtension.h>
+#include <casacore/lattices/Lattices/LCUnion.h>
+#include <casacore/lattices/Lattices/LCIntersection.h>
+#include <casacore/lattices/Lattices/LCDifference.h>
+#include <casacore/lattices/Lattices/LCComplement.h>
+#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

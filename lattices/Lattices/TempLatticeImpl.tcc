@@ -25,15 +25,15 @@
 //#
 //# $Id: TempLatticeImpl.tcc 20739 2009-09-29 01:15:15Z Malte.Marquarding $
 
-#include <lattices/Lattices/TempLatticeImpl.h>
-#include <lattices/Lattices/PagedArray.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/TableDesc.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/System/AppInfo.h>
-#include <casa/OS/HostInfo.h>
+#include <casacore/lattices/Lattices/TempLatticeImpl.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/System/AppInfo.h>
+#include <casacore/casa/OS/HostInfo.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

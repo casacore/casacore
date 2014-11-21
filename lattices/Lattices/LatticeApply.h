@@ -30,9 +30,9 @@
  
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
-#include <scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -254,6 +254,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LatticeApply.tcc>
+#include <casacore/lattices/Lattices/LatticeApply.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

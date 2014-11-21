@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -88,6 +88,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LELScalar.tcc>
+#include <casacore/lattices/Lattices/LELScalar.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

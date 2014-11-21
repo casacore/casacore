@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LCConcatenation.h>
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/LCEllipsoid.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/IPosition.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/LCConcatenation.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/Lattices/LCEllipsoid.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void doIt (const IPosition& latticeShape,
 	   const IPosition& start,
 	   const IPosition& end,

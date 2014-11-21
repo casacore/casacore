@@ -29,8 +29,8 @@
 #define LATTICES_LCSTRETCH_H
 
 //# Includes
-#include <lattices/Lattices/LCRegionMulti.h>
-#include <lattices/Lattices/LCBox.h>
+#include <casacore/lattices/Lattices/LCRegionMulti.h>
+#include <casacore/lattices/Lattices/LCBox.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

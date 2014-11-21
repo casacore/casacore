@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <lattices/Lattices/MaskedLattice.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <casa/Arrays/Slicer.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/casa/Arrays/Slicer.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -249,6 +249,6 @@ void LatticeExpr<Bool>::handleMathTo (Lattice<Bool>&, int) const
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LatticeExpr.tcc>
+#include <casacore/lattices/Lattices/LatticeExpr.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

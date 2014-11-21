@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LELCoordinates.h>
-#include <lattices/Lattices/LELLattCoordBase.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LELCoordinates.h>
+#include <casacore/lattices/Lattices/LELLattCoordBase.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

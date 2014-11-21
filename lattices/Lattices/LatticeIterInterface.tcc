@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeIterInterface.h>
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/LatticeNavigator.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Utilities/DefaultValue.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LatticeIterInterface.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/LatticeNavigator.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Utilities/DefaultValue.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

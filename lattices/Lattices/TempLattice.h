@@ -31,8 +31,8 @@
 
 
 //# Includes
-#include <lattices/Lattices/TempLatticeImpl.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/lattices/Lattices/TempLatticeImpl.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -277,6 +277,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/TempLattice.tcc>
+#include <casacore/lattices/Lattices/TempLattice.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

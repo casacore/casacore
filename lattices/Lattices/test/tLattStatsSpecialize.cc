@@ -25,11 +25,11 @@
 //#
 //# $Id$
 // 
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/namespace.h>
-#include <lattices/Lattices/LattStatsSpecialize.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/namespace.h>
+#include <casacore/lattices/Lattices/LattStatsSpecialize.h>
 
 int main() {
 	try {

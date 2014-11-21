@@ -26,16 +26,16 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LELSpectralIndex.h>
-#include <lattices/Lattices/LELLattCoord.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <lattices/Lattices/LELArray.h>
-#include <lattices/Lattices/LELScalar.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LELSpectralIndex.h>
+#include <casacore/lattices/Lattices/LELLattCoord.h>
+#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/Lattices/LELArray.h>
+#include <casacore/lattices/Lattices/LELScalar.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

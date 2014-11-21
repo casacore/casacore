@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <lattices/Lattices/LELAttribute.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/IO/FileLocker.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/LELAttribute.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/IO/FileLocker.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -221,6 +221,6 @@ private:
 //# Therefore LELUnary.h is included here, while LELUnary.h includes
 //# LELInterface.tcc.
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LELUnary.h>
+#include <casacore/lattices/Lattices/LELUnary.h>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

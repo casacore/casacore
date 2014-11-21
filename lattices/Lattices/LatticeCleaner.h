@@ -30,12 +30,12 @@
 #define LATTICES_LATTICECLEANER_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Quanta/Quantum.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Block.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -333,6 +333,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LatticeCleaner.tcc>
+#include <casacore/lattices/Lattices/LatticeCleaner.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

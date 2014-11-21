@@ -30,9 +30,9 @@
 #define LATTICES_LCLELMASK_H
 
 //# Includes
-#include <lattices/Lattices/LCRegionSingle.h>
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/LCRegionSingle.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

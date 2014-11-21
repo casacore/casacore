@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeFractile.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <lattices/Lattices/MaskedLatticeIterator.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Containers/Block.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Utilities/COWPtr.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LatticeFractile.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/lattices/Lattices/MaskedLatticeIterator.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Utilities/COWPtr.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

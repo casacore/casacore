@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <lattices/Lattices/TiledCollapser.h>
+#include <casacore/lattices/Lattices/TiledCollapser.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

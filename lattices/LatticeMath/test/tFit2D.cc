@@ -25,24 +25,24 @@
 //#
 //# $Id$
 
-#include <scimath/Fitting.h>
-#include <lattices/LatticeMath/Fit2D.h>
-#include <casa/System/PGPlotter.h>
-#include <scimath/Functionals/Gaussian2D.h>
-#include <casa/Inputs/Input.h>
-#include <casa/Logging.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/BasicMath/Random.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Fitting.h>
+#include <casacore/lattices/LatticeMath/Fit2D.h>
+#include <casacore/casa/System/PGPlotter.h>
+#include <casacore/scimath/Functionals/Gaussian2D.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Logging.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/BasicMath/Random.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 Gaussian2D<Double> addModel (Array<Float>& pixels, Double height, Double x, Double y, 
                                Double major,  Double minor, Double pa);
 

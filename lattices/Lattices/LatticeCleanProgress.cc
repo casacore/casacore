@@ -27,13 +27,13 @@
 
 
 //# Includes
-#include <lattices/Lattices/LatticeCleanProgress.h>
-#include <casa/System/PGPlotter.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/lattices/Lattices/LatticeCleanProgress.h>
+#include <casacore/casa/System/PGPlotter.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 
-#include <casa/sstream.h>
+#include <casacore/casa/sstream.h>
 
 
 

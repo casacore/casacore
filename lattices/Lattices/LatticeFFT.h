@@ -29,8 +29,8 @@
 #ifndef LATTICES_LATTICEFFT_H
 #define LATTICES_LATTICEFFT_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

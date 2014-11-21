@@ -26,17 +26,17 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LatticeSlice1D.h>
+#include <casacore/lattices/Lattices/LatticeSlice1D.h>
 
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <lattices/Lattices/PixelCurve1D.h>
-#include <casa/BasicMath/Math.h>
-#include <scimath/Mathematics/Interpolate2D.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/lattices/Lattices/PixelCurve1D.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/scimath/Mathematics/Interpolate2D.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

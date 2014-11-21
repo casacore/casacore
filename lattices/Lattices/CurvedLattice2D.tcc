@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/CurvedLattice2D.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h> 
+#include <casacore/lattices/Lattices/CurvedLattice2D.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h> 
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

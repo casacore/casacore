@@ -26,15 +26,15 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LCEllipsoid.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/lattices/Lattices/LCEllipsoid.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

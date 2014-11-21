@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <lattices/Lattices/LELInterface.h>
-#include <lattices/Lattices/LELScalar.h>
-#include <lattices/Lattices/LELUnaryEnums.h>
+#include <casacore/lattices/Lattices/LELInterface.h>
+#include <casacore/lattices/Lattices/LELScalar.h>
+#include <casacore/lattices/Lattices/LELUnaryEnums.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -322,7 +322,7 @@ private:
 
 //# See comments in LELInterface why LELInterface.tcc is included here.
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LELInterface.tcc>
-#include <lattices/Lattices/LELUnary.tcc>
+#include <casacore/lattices/Lattices/LELInterface.tcc>
+#include <casacore/lattices/Lattices/LELUnary.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/RebinLattice.h>
+#include <casacore/lattices/Lattices/RebinLattice.h>
 
-#include <casa/Arrays/ArrayMath.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h> 
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h> 
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

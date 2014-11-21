@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LCDifference.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LCDifference.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

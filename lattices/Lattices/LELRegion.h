@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <lattices/Lattices/LELInterface.h>
-#include <lattices/Lattices/LatticeRegion.h>
+#include <casacore/lattices/Lattices/LELInterface.h>
+#include <casacore/lattices/Lattices/LatticeRegion.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

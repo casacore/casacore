@@ -26,24 +26,24 @@
 //# $Id$
 
 
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/LineCollapser.h>
-#include <lattices/Lattices/TiledCollapser.h>
-#include <lattices/Lattices/LatticeProgress.h>
-#include <lattices/Lattices/TiledLineStepper.h>
-#include <lattices/Lattices/TileStepper.h>
-#include <lattices/Lattices/LatticeApply.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/ArrayPosIter.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/LineCollapser.h>
+#include <casacore/lattices/Lattices/TiledCollapser.h>
+#include <casacore/lattices/Lattices/LatticeProgress.h>
+#include <casacore/lattices/Lattices/TiledLineStepper.h>
+#include <casacore/lattices/Lattices/TileStepper.h>
+#include <casacore/lattices/Lattices/LatticeApply.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/ArrayPosIter.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -29,10 +29,10 @@
 #define LATTICES_LATTICEITERATOR_H
 
 //# Includes
-#include <casa/aips.h>
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/LatticeIterInterface.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/LatticeIterInterface.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -523,7 +523,7 @@ protected:
 
 //# See comments in Lattice.h why Lattice.tcc is included here.
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/Lattice.tcc>
-#include <lattices/Lattices/LatticeIterator.tcc>
+#include <casacore/lattices/Lattices/Lattice.tcc>
+#include <casacore/lattices/Lattices/LatticeIterator.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

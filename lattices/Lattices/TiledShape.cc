@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <lattices/Lattices/TiledShape.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Block.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

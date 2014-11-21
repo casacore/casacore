@@ -25,25 +25,25 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/IPosition.h>
-//#include <casa/Arrays/Slicer.h>
-#include <scimath/Mathematics/NumericTraits.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <lattices/Lattices/LatticeConvolver.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <lattices/Lattices/PagedArray.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/IPosition.h>
+//#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/LatticeConvolver.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void print(const Lattice<Float> & psf, const Lattice<Float> & model,
 	   const Lattice<Float> & result) {
   cout << "Psf: " << psf.get() << endl;

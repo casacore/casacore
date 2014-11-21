@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LCPagedMask.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableAttr.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/OS/Path.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LCPagedMask.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableAttr.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

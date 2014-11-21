@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/Lattice.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -325,6 +325,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/MaskedLattice.tcc>
+#include <casacore/lattices/Lattices/MaskedLattice.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

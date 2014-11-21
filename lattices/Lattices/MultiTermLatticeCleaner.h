@@ -29,10 +29,10 @@
 #ifndef LATTICES_MULTITERMLATTICECLEANER_H
 #define LATTICES_MULTITERMLATTICECLEANER_H
 
-#include <lattices/Lattices/LatticeCleaner.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/Lattices/LatticeCleaner.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/LatticeExprNode.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -207,7 +207,7 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/MultiTermLatticeCleaner.tcc>
+#include <casacore/lattices/Lattices/MultiTermLatticeCleaner.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 
