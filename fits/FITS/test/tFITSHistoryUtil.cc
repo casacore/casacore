@@ -26,16 +26,16 @@
 //# $Id$
 
 //# Includes
-#include <fits/FITS/FITSHistoryUtil.h>
+#include <casacore/fits/FITS/FITSHistoryUtil.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
-#include <fits/FITS/fits.h>
-#include <casa/Logging.h>
-#include <tables/LogTables/LoggerHolder.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/casa/Logging.h>
+#include <casacore/tables/LogTables/LoggerHolder.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
     try {	

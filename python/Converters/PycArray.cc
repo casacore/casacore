@@ -28,7 +28,7 @@
 #include <python/Converters/PycArray.tcc>
 #include <python/Converters/PycArrayNP.h>
 #include <python/Converters/PycBasicData.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 #include <boost/python/dict.hpp>
 #include <sysmodule.h>
 

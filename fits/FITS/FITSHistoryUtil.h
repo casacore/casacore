@@ -31,7 +31,7 @@
 #define FITS_FITSHISTORYUTIL_H
 
 #include <vector>
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 
 

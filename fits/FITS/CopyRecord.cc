@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <fits/FITS/CopyRecord.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Containers/RecordDesc.h>
-#include <tables/Tables.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/fits/FITS/CopyRecord.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/tables/Tables.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

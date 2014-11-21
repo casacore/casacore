@@ -29,8 +29,8 @@
 #ifndef MS_SDOBSERVATIONHANDLER_H
 #define MS_SDOBSERVATIONHANDLER_H
 
-#include <casa/Containers/RecordField.h>
-#include <tables/Tables/ScalarColumn.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

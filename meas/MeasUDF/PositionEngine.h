@@ -29,11 +29,11 @@
 #define MEAS_POSITIONENGINE_H
 
 //# Includes
-#include <tables/Tables/ExprNode.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MCPosition.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/TableMeasures/ArrayMeasColumn.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MCPosition.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
 
 namespace casa {
 

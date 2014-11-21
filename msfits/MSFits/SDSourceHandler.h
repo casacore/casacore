@@ -29,7 +29,7 @@
 #ifndef MS_SDSOURCEHANDLER_H
 #define MS_SDSOURCEHANDLER_H
 
-#include <casa/Containers/RecordField.h>
+#include <casacore/casa/Containers/RecordField.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

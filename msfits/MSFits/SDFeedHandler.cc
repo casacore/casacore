@@ -26,26 +26,26 @@
 //# $Id$
 
 //# Includes
-#include <msfits/MSFits/SDFeedHandler.h>
+#include <casacore/msfits/MSFits/SDFeedHandler.h>
 
-#include <tables/Tables/ColumnsIndex.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSFeedColumns.h>
-#include <ms/MeasurementSets/MSFeed.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Matrix.h>
-#include <measures/Measures/Stokes.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColumnsIndex.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSFeedColumns.h>
+#include <casacore/ms/MeasurementSets/MSFeed.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/tables/Tables/TableDesc.h>
 
-#include <casa/sstream.h>
+#include <casacore/casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

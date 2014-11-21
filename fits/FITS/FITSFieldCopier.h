@@ -29,12 +29,12 @@
 #ifndef FITS_FITSFIELDCOPIER_H
 #define FITS_FITSFIELDCOPIER_H
 
-#include <casa/aips.h>
-#include <fits/FITS/hdu.h>
-#include <casa/Containers/RecordField.h>
-#include <casa/Arrays/Array.h>
-#include <casa/BasicSL/String.h>
-#include <fits/FITS/FITSKeywordUtil.h>
+#include <casacore/casa/aips.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/fits/FITS/FITSKeywordUtil.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

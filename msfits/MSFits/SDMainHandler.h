@@ -29,8 +29,8 @@
 #ifndef MS_SDMAINHANDLER_H
 #define MS_SDMAINHANDLER_H
 
-#include <casa/aips.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/DataType.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

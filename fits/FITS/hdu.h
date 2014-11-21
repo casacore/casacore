@@ -28,11 +28,11 @@
 #ifndef FITS_HDU_H
 #define FITS_HDU_H
 
-# include <casa/aips.h>
-# include <fits/FITS/fits.h>
-# include <fits/FITS/blockio.h>
-# include <casa/BasicSL/String.h>
-# include <casa/Arrays/Vector.h>
+# include <casacore/casa/aips.h>
+# include <casacore/fits/FITS/fits.h>
+# include <casacore/fits/FITS/blockio.h>
+# include <casacore/casa/BasicSL/String.h>
+# include <casacore/casa/Arrays/Vector.h>
 
 //# # include <stdarg.h> // If we ever wan to put varargs support back
 
@@ -1197,6 +1197,6 @@ class AsciiTableExtension : public BinaryTableExtension {
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <fits/FITS/hdu.tcc>
+#include <casacore/fits/FITS/hdu.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 # endif

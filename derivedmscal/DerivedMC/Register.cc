@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <derivedmscal/DerivedMC/Register.h>
-#include <derivedmscal/DerivedMC/DerivedMSCal.h>
-#include <derivedmscal/DerivedMC/UDFMSCal.h>
+#include <casacore/derivedmscal/DerivedMC/Register.h>
+#include <casacore/derivedmscal/DerivedMC/DerivedMSCal.h>
+#include <casacore/derivedmscal/DerivedMC/UDFMSCal.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 using namespace casa;
 
 void register_derivedmscal()

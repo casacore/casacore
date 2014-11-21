@@ -27,16 +27,16 @@
 
 //# Includes
 
-#include <fits/FITS/BinTable.h>
-#include <fits/FITS/fitsio.h>
-#include <casa/Inputs/Input.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/OS/File.h>
+#include <casacore/fits/FITS/BinTable.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/OS/File.h>
 
-#include <casa/iostream.h>
-#include <casa/stdio.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/stdio.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main(int argc, const char* argv[])
 {
     try {

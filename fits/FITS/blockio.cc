@@ -25,9 +25,9 @@
 //#
 //# $Id$
 //
-# include <casa/sstream.h>
-# include <fits/FITS/blockio.h>
-# include <casa/string.h>
+# include <casacore/casa/sstream.h>
+# include <casacore/fits/FITS/blockio.h>
+# include <casacore/casa/string.h>
 #include <unistd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

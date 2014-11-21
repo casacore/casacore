@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# Exit with not-tested status if table not found.
-test -e "/data/nrao/VLA/standards/ScaifeHeald2012Coeffs"  ||  exit 3
-
-#echo "CASAPATH: \"$CASAPATH\""
-#$casa_checktool ./tFluxStandard4 n
-$casa_checktool ./tFluxStandard4 y

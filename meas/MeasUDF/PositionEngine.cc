@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <meas/MeasUDF/PositionEngine.h>
-#include <measures/Measures/MeasTable.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/ExprUnitNode.h>
-#include <tables/Tables/ExprNodeSet.h>
-#include <casa/Arrays/ArrayUtil.h>
+#include <casacore/meas/MeasUDF/PositionEngine.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/TaQL/ExprUnitNode.h>
+#include <casacore/tables/TaQL/ExprNodeSet.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
 
 namespace casa {
 

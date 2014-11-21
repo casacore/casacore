@@ -30,9 +30,9 @@
 #define FITS_COPYRECORD_H
 
 
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/RecordField.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/RecordField.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

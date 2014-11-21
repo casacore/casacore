@@ -1,30 +1,30 @@
 //#include <tasking/Glish.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/VectorIter.h>
-#include <casa/Arrays/VectorSTLIterator.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/VectorIter.h>
+#include <casacore/casa/Arrays/VectorSTLIterator.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <casa/Exceptions/Error.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
 
-#include <ms/MeasurementSets/MSSelection.h>
-#include <casa/iostream.h>
+#include <casacore/ms/MeasurementSets/MSSelection.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/Utilities/Assert.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/RecordDesc.h>
-#include <casa/Containers/RecordField.h>
-#include <tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/tables/Tables/TableRecord.h>
 
-#include <msfits/MSFits/MSFitsInput.h>
-#include <tables/Tables/Table.h>
-#include <casa/Inputs.h>
+#include <casacore/msfits/MSFits/MSFitsInput.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Inputs.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void convert(String fitsName, String msName)
 {

@@ -28,20 +28,20 @@
 #ifndef MS_MSFITSINPUT_H
 #define MS_MSFITSINPUT_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/Record.h>
-#include <fits/FITS/fits.h>
-#include <fits/FITS/hdu.h>
-#include <casa/Logging/LogIO.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MFrequency.h>
-#include <casa/BasicSL/String.h>
-#include <ms/MeasurementSets/MSTileLayout.h>
-#include <tables/Tables/BaseTable.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSTileLayout.h>
+#include <casacore/tables/Tables/BaseTable.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

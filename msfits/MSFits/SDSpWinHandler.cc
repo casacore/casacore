@@ -26,27 +26,27 @@
 //# $Id$
 
 //# Includes
-#include <msfits/MSFits/SDSpWinHandler.h>
+#include <casacore/msfits/MSFits/SDSpWinHandler.h>
 
-#include <tables/Tables/ColumnsIndex.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSSpWindowColumns.h>
-#include <ms/MeasurementSets/MSSpectralWindow.h>
-#include <casa/Containers/Record.h>
-#include <tables/Tables/Table.h>
-#include <casa/Arrays/Vector.h>
-#include <measures/Measures/MPosition.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Slice.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/TableLock.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casacore/tables/Tables/ColumnsIndex.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSSpWindowColumns.h>
+#include <casacore/ms/MeasurementSets/MSSpectralWindow.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/TableLock.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

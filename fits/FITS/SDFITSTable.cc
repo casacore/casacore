@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <fits/FITS/SDFITSTable.h>
-#include <fits/FITS/fits.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/fits/FITS/SDFITSTable.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,7 +29,7 @@
 #include <python/Converters/PycBasicData.h>
 #include <python/Converters/PycRecord.h>
 #include <python/Converters/PycArray.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <boost/python/object.hpp>
 
 namespace casa { namespace python {

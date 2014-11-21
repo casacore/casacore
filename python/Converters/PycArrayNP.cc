@@ -26,9 +26,9 @@
 //# $Id: PycArrayNP.cc,v 1.2 2006/11/07 00:17:23 gvandiep Exp $
 
 #include <python/Converters/PycArrayNP.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <numpy/arrayobject.h>
 #include <boost/python/dict.hpp>
 

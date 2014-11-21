@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <derivedmscal/DerivedMC/DerivedMSCal.h>
-#include <derivedmscal/DerivedMC/DerivedColumn.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/DataManError.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MCPosition.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MCBaseline.h>
-#include <measures/Measures/Muvw.h>
-#include <measures/TableMeasures/ScalarMeasColumn.h>
-#include <measures/TableMeasures/ArrayMeasColumn.h>
-#include <casa/Containers/Record.h>
-#include <casa/OS/Path.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/derivedmscal/DerivedMC/DerivedMSCal.h>
+#include <casacore/derivedmscal/DerivedMC/DerivedColumn.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/DataMan/DataManError.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MCPosition.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MCBaseline.h>
+#include <casacore/measures/Measures/Muvw.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 
 namespace casa {

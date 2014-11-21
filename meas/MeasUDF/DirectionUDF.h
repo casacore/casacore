@@ -29,14 +29,14 @@
 #define MEAS_DIRECTIONUDF_H
 
 //# Includes
-#include <meas/MeasUDF/DirectionEngine.h>
-#include <tables/Tables/UDFBase.h>
-#include <tables/Tables/ExprNode.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MeasConvert.h>
+#include <casacore/meas/MeasUDF/DirectionEngine.h>
+#include <casacore/tables/TaQL/UDFBase.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MeasConvert.h>
 
 namespace casa {
 
