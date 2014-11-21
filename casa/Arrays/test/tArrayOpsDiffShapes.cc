@@ -24,14 +24,14 @@
 //#                        Charlottesville, VA 22903-2475 USA
 
 //# Includes
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayOpsDiffShapes.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayOpsDiffShapes.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void test_reformedMask(Bool truthval, uInt ni = 3,
 		       uInt nj = 4, uInt nk = 5, uInt nl = 6)

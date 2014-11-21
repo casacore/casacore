@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Quanta/QBase.h>
-#include <casa/iosstrfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Quanta/QBase.h>
+#include <casacore/casa/iosstrfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -228,7 +228,7 @@ typedef Quantum<Double> Quantity;
 // output the wavelength and frequency of this photon (see the
 // <linkto class=QC">QC</linkto> class for quantity constants):
 // <srcblock>
-//	#include <casa/Quanta.h>
+//	#include <casacore/casa/Quanta.h>
 //	Double myval;			// keV photon energy
 //	Quantity quant(myval,"keV");	// make quantity
 //	cout << "A photon with energy " << quant << endl
@@ -432,6 +432,6 @@ Bool readQuantity(Quantity &res, const String &in);
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Quanta/Quantum.tcc>
+#include <casacore/casa/Quanta/Quantum.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

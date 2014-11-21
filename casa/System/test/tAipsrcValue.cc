@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/System/AipsrcValue.h>
-#include <casa/System/AipsrcVector.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/System/AipsrcValue.h>
+#include <casacore/casa/System/AipsrcVector.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main(){
   String aipsrcKeyword("my.double.test");
   String aipsrcKeyword1("mine.double.test");

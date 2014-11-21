@@ -63,13 +63,11 @@ IO/ByteSink.cc
 IO/TapeIO.cc
 IO/FilebufIO.cc
 IO/ConversionIO.cc
-IO/LargeFilebufIO.cc
 IO/AipsIO.cc
 IO/CanonicalIO.cc
 IO/RawIO.cc
 IO/TypeIO.cc
 IO/LockFile.cc
-IO/LargeFiledesIO.cc
 IO/FileLocker.cc
 IO/LECanonicalIO.cc
 IO/ByteIO.cc
@@ -77,8 +75,8 @@ IO/FiledesIO.cc
 IO/ByteSource.cc
 IO/RegularFileIO.cc
 IO/StreamIO.cc
-IO/LargeRegularFileIO.cc
 IO/MemoryIO.cc
+IO/MFFileIO.cc
 IO/MultiFile.cc
 IO/BucketCache.cc
 IO/BaseSinkSource.cc
@@ -413,6 +411,7 @@ IO/LargeRegularFileIO.h
 IO/LECanonicalIO.h
 IO/LockFile.h
 IO/MemoryIO.h
+IO/MFFileIO.h
 IO/MMapfdIO.h
 IO/MMapIO.h
 IO/MultiFile.h

@@ -33,7 +33,7 @@
 //# them (e.g. <cstring>)
 
 //# Make sure any special macros are set
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 //# gcc has no <ostream> yet. Change later
 #if defined(__GNUG__)
 #include <iostream>

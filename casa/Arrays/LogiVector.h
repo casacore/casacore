@@ -29,9 +29,9 @@
 #define CASA_LOGIVECTOR_H
 
 
-#include <casa/aips.h>
-#include <casa/Arrays/LogiArray.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/LogiArray.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

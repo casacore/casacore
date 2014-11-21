@@ -27,7 +27,7 @@
 
 // .SUMMARY General, Indexing, and Conformace errors thrown by Array classes.
 
-#include <casa/Arrays/ArrayError.h>
+#include <casacore/casa/Arrays/ArrayError.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

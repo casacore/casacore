@@ -27,13 +27,13 @@
 
 // Regex class implementation
 
-#include <casa/Utilities/cregex.h>
+#include <casacore/casa/Utilities/cregex.h>
 
-#include <casa/Utilities/Regex.h>
-#include <casa/BasicSL/String.h>
-#include <casa/stdexcept.h>
-#include <casa/iostream.h>
-#include <casa/vector.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/stdexcept.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/vector.h>
 #include <cstring>                  //# for memcpy with gcc-4.3
 #include <stdlib.h>
 

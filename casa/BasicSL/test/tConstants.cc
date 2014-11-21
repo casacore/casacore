@@ -27,10 +27,10 @@
 
 //# Includes
 
-#include <casa/iostream.h>
-#include <casa/BasicSL/Constants.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/BasicSL/Constants.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main()
 {

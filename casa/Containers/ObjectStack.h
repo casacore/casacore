@@ -29,9 +29,9 @@
 #define CASA_OBJECTSTACK_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/vector.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/vector.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -137,6 +137,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/ObjectStack.tcc>
+#include <casacore/casa/Containers/ObjectStack.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

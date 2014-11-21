@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/ValType.h>
-#include <casa/OS/CanonicalConversion.h>
-#include <casa/OS/LECanonicalConversion.h>
-#include <casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/OS/CanonicalConversion.h>
+#include <casacore/casa/OS/LECanonicalConversion.h>
+#include <casacore/casa/BasicSL/Constants.h>
 #include <limits.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

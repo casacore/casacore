@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/RegSequence.h>
+#include <casacore/casa/Utilities/RegSequence.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

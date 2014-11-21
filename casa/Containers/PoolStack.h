@@ -29,8 +29,8 @@
 #define CASA_POOLSTACK_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -157,6 +157,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/PoolStack.tcc>
+#include <casacore/casa/Containers/PoolStack.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

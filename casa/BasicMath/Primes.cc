@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <casa/BasicMath/Primes.h>
-#include <casa/BasicMath/Math.h>			// For sqrt only
+#include <casacore/casa/BasicMath/Primes.h>
+#include <casacore/casa/BasicMath/Math.h>			// For sqrt only
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

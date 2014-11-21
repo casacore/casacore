@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <casa/OS/LECanonicalDataConversion.h>
-#include <casa/OS/LECanonicalConversion.h>
+#include <casacore/casa/OS/LECanonicalDataConversion.h>
+#include <casacore/casa/OS/LECanonicalConversion.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -36,226 +36,226 @@ LECanonicalDataConversion::~LECanonicalDataConversion()
 {}
 
 
-unsigned int LECanonicalDataConversion::toLocal (char& to,
-					       const void* from) const
+size_t LECanonicalDataConversion::toLocal (char& to,
+                                           const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::toLocal (unsigned char& to,
-					       const void* from) const
+size_t LECanonicalDataConversion::toLocal (unsigned char& to,
+                                           const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::toLocal (short& to,
-					       const void* from) const
+size_t LECanonicalDataConversion::toLocal (short& to,
+                                           const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::toLocal (unsigned short& to,
-					       const void* from) const
+size_t LECanonicalDataConversion::toLocal (unsigned short& to,
+                                           const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::toLocal (int& to,
-					       const void* from) const
+size_t LECanonicalDataConversion::toLocal (int& to,
+                                           const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::toLocal (unsigned int& to,
-					       const void* from) const
+size_t LECanonicalDataConversion::toLocal (unsigned int& to,
+                                           const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::toLocal (Int64& to,
-					       const void* from) const
+size_t LECanonicalDataConversion::toLocal (Int64& to,
+                                           const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::toLocal (uInt64& to,
-					       const void* from) const
+size_t LECanonicalDataConversion::toLocal (uInt64& to,
+                                           const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::toLocal (float& to,
-					       const void* from) const
+size_t LECanonicalDataConversion::toLocal (float& to,
+                                           const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::toLocal (double& to,
-					       const void* from) const
+size_t LECanonicalDataConversion::toLocal (double& to,
+                                           const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
 }
 
-unsigned int LECanonicalDataConversion::toLocal (char* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t LECanonicalDataConversion::toLocal (char* to,
+                                           const void* from,
+                                           size_t nr) const
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::toLocal (unsigned char* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t LECanonicalDataConversion::toLocal (unsigned char* to,
+                                           const void* from,
+                                           size_t nr) const
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::toLocal (short* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t LECanonicalDataConversion::toLocal (short* to,
+                                           const void* from,
+                                           size_t nr) const
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::toLocal (unsigned short* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t LECanonicalDataConversion::toLocal (unsigned short* to,
+                                           const void* from,
+                                           size_t nr) const
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::toLocal (int* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t LECanonicalDataConversion::toLocal (int* to,
+                                           const void* from,
+                                           size_t nr) const
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::toLocal (unsigned int* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t LECanonicalDataConversion::toLocal (unsigned int* to,
+                                           const void* from,
+                                           size_t nr) const
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::toLocal (Int64* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t LECanonicalDataConversion::toLocal (Int64* to,
+                                           const void* from,
+                                           size_t nr) const
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::toLocal (uInt64* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t LECanonicalDataConversion::toLocal (uInt64* to,
+                                           const void* from,
+                                           size_t nr) const
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::toLocal (float* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t LECanonicalDataConversion::toLocal (float* to,
+                                           const void* from,
+                                           size_t nr) const
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::toLocal (double* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t LECanonicalDataConversion::toLocal (double* to,
+                                           const void* from,
+                                           size_t nr) const
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
 
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 char from) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             char from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 unsigned char from) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             unsigned char from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 short from) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             short from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 unsigned short from) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             unsigned short from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 int from) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             int from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 unsigned int from) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             unsigned int from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 Int64 from) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             Int64 from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 uInt64 from) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             uInt64 from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 float from) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             float from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 double from) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             double from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
 
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 const char* from,
-						 unsigned int nr) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             const char* from,
+                                             size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 const unsigned char* from,
-						 unsigned int nr) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             const unsigned char* from,
+                                             size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 const short* from,
-						 unsigned int nr) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             const short* from,
+                                             size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 const unsigned short* from,
-						 unsigned int nr) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             const unsigned short* from,
+                                             size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 const int* from,
-						 unsigned int nr) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             const int* from,
+                                             size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 const unsigned int* from,
-						 unsigned int nr) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             const unsigned int* from,
+                                             size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 const Int64* from,
-						 unsigned int nr) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             const Int64* from,
+                                             size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 const uInt64* from,
-						 unsigned int nr) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             const uInt64* from,
+                                             size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 const float* from,
-						 unsigned int nr) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             const float* from,
+                                             size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int LECanonicalDataConversion::fromLocal (void* to,
-						 const double* from,
-						 unsigned int nr) const
+size_t LECanonicalDataConversion::fromLocal (void* to,
+                                             const double* from,
+                                             size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
 }

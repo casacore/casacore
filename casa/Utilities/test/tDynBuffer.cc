@@ -27,10 +27,10 @@
 
 //# Includes
 
-#include <casa/Utilities/DynBuffer.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Utilities/DynBuffer.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // This program tests the DynBuffer class.
 // It allocates buffers, stores data in it and reads it back.
 // The results are written to stdout. A script executes this test program.

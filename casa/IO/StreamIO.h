@@ -28,8 +28,8 @@
 #ifndef CASA_STREAMIO_H
 #define CASA_STREAMIO_H
 
-#include <casa/aips.h>
-#include <casa/IO/ByteIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/ByteIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -74,25 +74,25 @@ public:
   virtual ~StreamIO();
     
   // Write the specified number of bytes.
-  virtual void write(uInt size, const void* buf);
+  virtual void write(Int64 size, const void* buf);
 
   // Read <src>size</src> bytes from the tape. Returns the number of bytes
   // actually read or a negative number if an error occured. Will throw an
   // exception (AipsError) if the requested number of bytes could not be read,
   // or an error occured, unless throwException is set to False. 
-  virtual Int read(uInt size, void* buf, Bool throwException=True);    
+  virtual Int64 read(Int64 size, void* buf, Bool throwException=True);    
 
   // Get the length of the stream.  Not a meaningful function for this
   // class and this function always returns -1.
   virtual Int64 length();
   
-  // Is the stream readabale? This function always returns True.
+  // Is the stream readable? This function always returns True.
   virtual Bool isReadable() const;
   
-  // Is the tape device writable?  This function always returns True.
+  // Is the stream writable? This function always returns True.
   virtual Bool isWritable() const;
   
-  // Is the tape device seekable?  This function always returns False.
+  // Is the stream seekable? This function always returns False.
   virtual Bool isSeekable() const;
   
 protected:

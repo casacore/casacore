@@ -26,12 +26,12 @@
 //#
 //# $Id$
 
-#include <casa/System/Choice.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/System/Choice.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <iostream>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
   Vector<String> choices(3);

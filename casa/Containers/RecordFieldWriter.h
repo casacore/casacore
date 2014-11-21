@@ -29,9 +29,9 @@
 #ifndef CASA_RECORDFIELDWRITER_H
 #define CASA_RECORDFIELDWRITER_H
 
-#include <casa/aips.h>
-#include <casa/Containers/RecordField.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/Arrays/Array.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -169,6 +169,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/RecordFieldWriter.tcc>
+#include <casacore/casa/Containers/RecordFieldWriter.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

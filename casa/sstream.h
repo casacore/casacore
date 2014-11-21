@@ -33,7 +33,7 @@
 //# them (e.g. <cstring>)
 
 //# Make sure any special macros are set
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 #include <sstream>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

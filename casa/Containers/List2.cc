@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/Containers/List.h>
-#include <casa/Containers/IterError.h>
+#include <casacore/casa/Containers/List.h>
+#include <casacore/casa/Containers/IterError.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

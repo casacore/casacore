@@ -1,4 +1,4 @@
-//# BucketFile.h: File object for Tiled hypercube Storage Manager
+//# BucketFile.h: File object for BucketCache
 //# Copyright (C) 1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -29,22 +29,22 @@
 #define CASA_BUCKETFILE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/MMapfdIO.h>
-#include <casa/IO/LargeFilebufIO.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/ByteIO.h>
+#include <casacore/casa/IO/MMapfdIO.h>
+#include <casacore/casa/IO/FilebufIO.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <unistd.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// Forward Declarations.
-class MMapfdIO;
-class LargeFilebufIO;
-
+//# Forward Declarations
+class MultiFile;
 
 // <summary>
-// File object for the bucket cache.
+// File object for BucketCache.
 // </summary>
 
 // <use visibility=local>
@@ -68,8 +68,18 @@ class LargeFilebufIO;
 // Creation of a BucketFile object does not open the file yet.
 // An explicit open call has to be given before the file can be used.
 // <p>
-// Underneath it uses a file descriptor to access the file.
-// It is straightforward to replace this by a mapped file or a filebuf.
+// The file can be opened as an ordinary file (with a file descriptor)
+// or as a file in a MultiFile object. An ordinary file can be accessed
+// in 3 ways:
+// <ul>
+//  <li> In an unbuffered way, where the parent BucketCache class accesses
+//       a bucket at a time (and possibly keeps it in a cache).
+//  <li> In a memory-mapped way, where the parent BucketMapped class does
+//       the access using the MMapfdIO member.
+//  <li> In a buffered way, where the parent BucketBuffered class does
+//       the access using the FilebufIO member.
+// </ul>
+// A MultiFile file can only be accessed in the unbuffered way.
 // </synopsis> 
 
 // <motivation>
@@ -98,71 +108,77 @@ class BucketFile
 {
 public:
     // Create a BucketFile object for a new file.
-    // The file with the given name will be created.
-    // It can be indicated if a MMapfdIO and/or LargeFilebufIO object must be
-    // created for the file.
+    // The file with the given name will be created as a normal file or
+    // as part of a MultiFile (if mfile != 0).
+    // It can be indicated if a MMapfdIO and/or FilebufIO object must be
+    // created for the file. If a MultiFile is used, memory-mapped IO
+    // cannot be used and mappedFile is ignored.
     explicit BucketFile (const String& fileName,
-                         uInt bufSizeFile=0, Bool mappedFile=False);
+                         uInt bufSizeFile=0, Bool mappedFile=False,
+                         MultiFile* mfile=0);
 
     // Create a BucketFile object for an existing file.
     // The file should be opened by the <src>open</src>.
     // Tell if the file must be opened writable.
-    // It can be indicated if a MMapfdIO and/or LargeFilebufIO object must be
-    // created for the file.
+    // It can be indicated if a MMapfdIO and/or FilebufIO object must be
+    // created for the file. If a MultiFile is used, memory-mapped IO
+    // cannot be used and mappedFile is ignored.
     BucketFile (const String& fileName, Bool writable,
-                uInt bufSizeFile=0, Bool mappedFile=False);
+                uInt bufSizeFile=0, Bool mappedFile=False,
+                MultiFile* mfile=0);
 
     // The destructor closes the file (if open).
-    ~BucketFile();
+    virtual ~BucketFile();
+
+    // Make a (temporary) buffered IO object for this file.
+    // That object should not close the file.
+    virtual CountedPtr<ByteIO> makeFilebufIO (uInt bufferSize);
 
     // Get the mapped file object.
     MMapfdIO* mappedFile()
       { return mappedFile_p; }
 
     // Get the buffered file object.
-    LargeFilebufIO* bufferedFile()
+    FilebufIO* bufferedFile()
       { return bufferedFile_p; }
 
     // Open the file if not open yet.
-    void open();
+    virtual void open();
 
     // Close the file (if open).
-    void close();
+    virtual void close();
 
     // Remove the file (and close it if needed).
-    void remove();
+    virtual void remove();
 
     // Fsync the file (i.e. force the data to be physically written).
-    void fsync();
+    virtual void fsync();
 
     // Set the file to read/write access. It is reopened if not writable.
     // It does nothing if the file is already writable.
-    void setRW();
+    virtual void setRW();
 
     // Get the file name.
-    const String& name() const;
+    virtual const String& name() const;
     
     // Has the file logically been indicated as writable?
     Bool isWritable() const;
 
     // Read bytes from the file.
-    uInt read (void* buffer, uInt length) const;
+    virtual uInt read (void* buffer, uInt length);
 
     // Write bytes into the file.
-    uInt write (const void* buffer, uInt length);
+    virtual uInt write (const void* buffer, uInt length);
 
     // Seek in the file.
     // <group>
-    void seek (Int64 offset) const;
-    void seek (Int offset) const;
+    virtual void seek (Int64 offset);
+    void seek (Int offset);
     // </group>
 
     // Get the (physical) size of the file.
     // This is doing a seek and sets the file pointer to end-of-file.
-    Int64 fileSize() const;
-
-    // Get the file descriptor of the internal file.
-    int fd();
+    virtual Int64 fileSize() const;
 
     // Is the file cached, mapped, or buffered?
     // <group>
@@ -178,12 +194,15 @@ private:
     Bool isWritable_p;
     Bool isMapped_p;
     uInt bufSize_p;
-    // The file descriptor.
-    int fd_p;
+    int  fd_p;    //  fd (if used) of unbuffered file
+    // The unbuffered file.
+    CountedPtr<ByteIO> file_p;
     // The optional mapped file.
     MMapfdIO* mappedFile_p;
     // The optional buffered file.
-    LargeFilebufIO* bufferedFile_p;
+    FilebufIO* bufferedFile_p;
+    // The possibly used MultiFile.
+    MultiFile* mfile_p;
 	    
 
     // Forbid copy constructor.
@@ -206,10 +225,7 @@ inline const String& BucketFile::name() const
 inline Bool BucketFile::isWritable() const
     { return isWritable_p; }
 
-inline int BucketFile::fd()
-    { return fd_p; }
-
-inline void BucketFile::seek (Int offset) const
+inline void BucketFile::seek (Int offset)
     { seek (Int64(offset)); }
 
 inline Bool BucketFile::isCached() const

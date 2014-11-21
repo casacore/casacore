@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <casa/Containers/ObjectPool.h>
+#include <casacore/casa/Containers/ObjectPool.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

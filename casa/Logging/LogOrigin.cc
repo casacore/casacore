@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/Logging/LogOrigin.h>
+#include <casacore/casa/Logging/LogOrigin.h>
 
-#include <casa/sstream.h>
+#include <casacore/casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

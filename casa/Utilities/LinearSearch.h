@@ -31,7 +31,7 @@
 #define CASA_LINEARSEARCH_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -142,6 +142,6 @@ Int linearSearchBrackets (Bool& found, const Container& container,
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Utilities/LinearSearch.tcc>
+#include <casacore/casa/Utilities/LinearSearch.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

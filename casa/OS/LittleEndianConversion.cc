@@ -26,28 +26,28 @@
 //# $Id$
 
 
-#include <casa/OS/LittleEndianConversion.h>
+#include <casacore/casa/OS/LittleEndianConversion.h>
 #include <assert.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 void LittleEndianConversion::toLocal (char* to, const void* from,
-				      unsigned int nr)
+				      size_t nr)
 {
     assert (sizeof(char) == 1);
     memcpy (to, from, nr);
 }
 
 void LittleEndianConversion::toLocal (unsigned char* to, const void* from,
-				      unsigned int nr)
+				      size_t nr)
 {
     assert (sizeof(unsigned char) == 1);
     memcpy (to, from, nr);
 }
 
 void LittleEndianConversion::toLocal (short* to, const void* from,
-				      unsigned int nr)
+				      size_t nr)
 {
     const char* data = (const char*)from;
     short* last = to + nr;
@@ -59,7 +59,7 @@ void LittleEndianConversion::toLocal (short* to, const void* from,
 
 
 void LittleEndianConversion::toLocal (unsigned short* to, const void* from,
-				      unsigned int nr)
+				      size_t nr)
 {
     const char* data = (const char*)from;
     unsigned short* last = to + nr;
@@ -70,7 +70,7 @@ void LittleEndianConversion::toLocal (unsigned short* to, const void* from,
 }
 
 void LittleEndianConversion::toLocal (int* to, const void* from,
-				      unsigned int nr)
+				      size_t nr)
 {
     const char* data = (const char*)from;
     int* last = to + nr;
@@ -81,7 +81,7 @@ void LittleEndianConversion::toLocal (int* to, const void* from,
 }
 
 void LittleEndianConversion::toLocal (unsigned int*  to, const void* from,
-				      unsigned int nr)
+				      size_t nr)
 {
     const char* data = (const char*)from;
     unsigned int* last = to + nr;
@@ -92,7 +92,7 @@ void LittleEndianConversion::toLocal (unsigned int*  to, const void* from,
 }
 
 void LittleEndianConversion::toLocal (Int64* to, const void* from,
-				      unsigned int nr)
+				      size_t nr)
 {
     const char* data = (const char*)from;
     Int64* last = to + nr;
@@ -103,7 +103,7 @@ void LittleEndianConversion::toLocal (Int64* to, const void* from,
 }
 
 void LittleEndianConversion::toLocal (uInt64* to, const void* from,
-				      unsigned int nr)
+				      size_t nr)
 {
     const char* data = (const char*)from;
     uInt64* last = to + nr;
@@ -114,7 +114,7 @@ void LittleEndianConversion::toLocal (uInt64* to, const void* from,
 }
 
 void LittleEndianConversion::toLocal (float* to, const void* from,
-				      unsigned int nr)
+				      size_t nr)
 {
     const char* data = (const char*)from;
     float* last = to + nr;
@@ -125,7 +125,7 @@ void LittleEndianConversion::toLocal (float* to, const void* from,
 }
 
 void LittleEndianConversion::toLocal (double* to, const void* from,
-				      unsigned int nr)
+				      size_t nr)
 {
     const char* data = (const char*)from;
     double* last = to + nr;
@@ -137,21 +137,21 @@ void LittleEndianConversion::toLocal (double* to, const void* from,
 
 
 void LittleEndianConversion::fromLocal (void* to, const char* from,
-					unsigned int nr)
+					size_t nr)
 {
     assert (sizeof(char) == 1);
     memcpy (to, from, nr);
 }
 
 void LittleEndianConversion::fromLocal (void* to, const unsigned char* from,
-					unsigned int nr)
+					size_t nr)
 {
     assert (sizeof(unsigned char) == 1);
     memcpy (to, from, nr);
 }
 
 void LittleEndianConversion::fromLocal (void* to, const short* from,
-					unsigned int nr)
+					size_t nr)
 {
     char* data = (char*)to;
     const short* last = from + nr;
@@ -162,7 +162,7 @@ void LittleEndianConversion::fromLocal (void* to, const short* from,
 }
 
 void LittleEndianConversion::fromLocal (void* to, const unsigned short* from,
-					unsigned int nr)
+					size_t nr)
 {
     char* data = (char*)to;
     const unsigned short* last = from + nr;
@@ -173,7 +173,7 @@ void LittleEndianConversion::fromLocal (void* to, const unsigned short* from,
 }
 
 void LittleEndianConversion::fromLocal (void* to, const int* from,
-					unsigned int nr)
+					size_t nr)
 {
     char* data = (char*)to;
     const int* last = from + nr;
@@ -184,7 +184,7 @@ void LittleEndianConversion::fromLocal (void* to, const int* from,
 }
 
 void LittleEndianConversion::fromLocal (void* to, const unsigned int* from,
-					unsigned int nr)
+					size_t nr)
 {
     char* data = (char*)to;
     const unsigned int* last = from + nr;
@@ -195,7 +195,7 @@ void LittleEndianConversion::fromLocal (void* to, const unsigned int* from,
 }
 
 void LittleEndianConversion::fromLocal (void* to, const Int64* from,
-					unsigned int nr)
+					size_t nr)
 {
     char* data = (char*)to;
     const Int64* last = from + nr;
@@ -206,7 +206,7 @@ void LittleEndianConversion::fromLocal (void* to, const Int64* from,
 }
 
 void LittleEndianConversion::fromLocal (void* to, const uInt64* from,
-					unsigned int nr)
+					size_t nr)
 {
     char* data = (char*)to;
     const uInt64* last = from + nr;
@@ -217,7 +217,7 @@ void LittleEndianConversion::fromLocal (void* to, const uInt64* from,
 }
 
 void LittleEndianConversion::fromLocal (void* to, const float* from,
-					unsigned int nr)
+					size_t nr)
 {
     char* data = (char*)to;
     const float* last = from + nr;
@@ -228,7 +228,7 @@ void LittleEndianConversion::fromLocal (void* to, const float* from,
 }
 
 void LittleEndianConversion::fromLocal (void* to, const double* from,
-					unsigned int nr)
+					size_t nr)
 {
     char* data = (char*)to;
     const double* last = from + nr;

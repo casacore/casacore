@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/Compare.h>
+#include <casacore/casa/Utilities/Compare.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

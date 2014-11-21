@@ -28,11 +28,11 @@
 #ifndef CASA_SLICE_H
 #define CASA_SLICE_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <unistd.h>         //# for ssize_t
 
 #if defined(AIPS_DEBUG)
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Assert.h>
 #endif
 
 namespace casa { //# NAMESPACE CASA - BEGIN

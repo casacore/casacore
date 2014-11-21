@@ -25,7 +25,7 @@
 //#
 //# $I$
 
-#include <casa/Logging/LogFilterInterface.h>
+#include <casacore/casa/Logging/LogFilterInterface.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

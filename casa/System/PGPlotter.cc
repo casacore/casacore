@@ -26,11 +26,11 @@
 //#
 //# $Id$
 
-#include <casa/System/PGPlotter.h>
-#include <casa/System/PGPlotterNull.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Record.h>
+#include <casacore/casa/System/PGPlotter.h>
+#include <casacore/casa/System/PGPlotterNull.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Record.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

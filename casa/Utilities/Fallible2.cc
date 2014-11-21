@@ -29,8 +29,8 @@
 //# and template instantiators normally do not like them in the same .cc file
 //# with templated functions.
 
-#include <casa/Utilities/Fallible.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Fallible.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/version.h>
+#include <casacore/casa/version.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

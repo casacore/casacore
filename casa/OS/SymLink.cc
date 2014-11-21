@@ -26,13 +26,13 @@
 //# $Id$
 
 
-#include <casa/OS/SymLink.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/Exceptions.h>
+#include <casacore/casa/OS/SymLink.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/Exceptions.h>
 
 #include <unistd.h>               // needed for unlink
 #include <errno.h>                // needed for errno
-#include <casa/string.h>          // needed for strerror
+#include <casacore/casa/string.h>          // needed for strerror
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

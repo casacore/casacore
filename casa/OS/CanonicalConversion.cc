@@ -26,23 +26,23 @@
 //# $Id$
 
 
-#include <casa/OS/CanonicalConversion.h>
+#include <casacore/casa/OS/CanonicalConversion.h>
 #include <assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-unsigned int CanonicalConversion::toLocalChar (void* to, const void* from,
-					       unsigned int nr)
+size_t CanonicalConversion::toLocalChar (void* to, const void* from,
+                                         size_t nr)
 {
     assert (sizeof(char) == SIZE_CAN_CHAR);
     memcpy (to, from, nr);
     return nr * SIZE_CAN_CHAR;
 }
 
-unsigned int CanonicalConversion::fromLocalChar (void* to, const void* from,
-						 unsigned int nr)
+size_t CanonicalConversion::fromLocalChar (void* to, const void* from,
+                                           size_t nr)
 {
     assert (sizeof(char) == SIZE_CAN_CHAR);
     memcpy (to, from, nr);
@@ -50,7 +50,7 @@ unsigned int CanonicalConversion::fromLocalChar (void* to, const void* from,
 }
 
 void* CanonicalConversion::byteToLocalChar (void* to, const void* from,
-					    unsigned int nrbytes)
+					    size_t nrbytes)
 {
     assert (sizeof(char) == SIZE_CAN_CHAR);
     memcpy (to, from, nrbytes);
@@ -58,7 +58,7 @@ void* CanonicalConversion::byteToLocalChar (void* to, const void* from,
 }
 
 void* CanonicalConversion::byteFromLocalChar (void* to, const void* from,
-					      unsigned int nrbytes)
+					      size_t nrbytes)
 {
     assert (sizeof(char) == SIZE_CAN_CHAR);
     memcpy (to, from, nrbytes);
@@ -79,16 +79,16 @@ Conversion::ByteFunction* CanonicalConversion::getByteFromLocal (const char*)
 }
 
 
-unsigned int CanonicalConversion::toLocalUChar (void* to, const void* from,
-						unsigned int nr)
+size_t CanonicalConversion::toLocalUChar (void* to, const void* from,
+                                          size_t nr)
 {
     assert (sizeof(unsigned char) == SIZE_CAN_UCHAR);
     memcpy (to, from, nr);
     return nr * SIZE_CAN_UCHAR;
 }
 
-unsigned int CanonicalConversion::fromLocalUChar (void* to, const void* from,
-						  unsigned int nr)
+size_t CanonicalConversion::fromLocalUChar (void* to, const void* from,
+                                            size_t nr)
 {
     assert (sizeof(unsigned char) == SIZE_CAN_UCHAR);
     memcpy (to, from, nr);
@@ -96,7 +96,7 @@ unsigned int CanonicalConversion::fromLocalUChar (void* to, const void* from,
 }
 
 void* CanonicalConversion::byteToLocalUChar (void* to, const void* from,
-					     unsigned int nrbytes)
+					     size_t nrbytes)
 {
     assert (sizeof(unsigned char) == SIZE_CAN_UCHAR);
     memcpy (to, from, nrbytes);
@@ -104,7 +104,7 @@ void* CanonicalConversion::byteToLocalUChar (void* to, const void* from,
 }
 
 void* CanonicalConversion::byteFromLocalUChar (void* to, const void* from,
-					       unsigned int nrbytes)
+					       size_t nrbytes)
 {
     assert (sizeof(unsigned char) == SIZE_CAN_UCHAR);
     memcpy (to, from, nrbytes);
@@ -128,8 +128,8 @@ Conversion::ByteFunction* CanonicalConversion::getByteFromLocal
 
 
 #define CANONICALCONVERSION_DO(CONVERT,SIZE,TOLOCAL,FROMLOCAL,BYTETO,BYTEFROM,T) \
-unsigned int CanonicalConversion::TOLOCAL (void* to, const void* from, \
-				           unsigned int nr) \
+size_t CanonicalConversion::TOLOCAL (void* to, const void* from, \
+				     size_t nr) \
 { \
     /* Use memcpy if no conversion is needed. */ \
     if (CONVERT == 0) { \
@@ -146,8 +146,8 @@ unsigned int CanonicalConversion::TOLOCAL (void* to, const void* from, \
     } \
     return nr*SIZE; \
 } \
-unsigned int CanonicalConversion::FROMLOCAL (void* to, const void* from, \
-				             unsigned int nr) \
+size_t CanonicalConversion::FROMLOCAL (void* to, const void* from, \
+				       size_t nr) \
 { \
     /* Use memcpy if no conversion is needed. */ \
     if (CONVERT == 0) { \
@@ -165,13 +165,13 @@ unsigned int CanonicalConversion::FROMLOCAL (void* to, const void* from, \
     return nr*SIZE; \
 } \
 void* CanonicalConversion::BYTETO (void* to, const void* from, \
-				   unsigned int nrbytes) \
+				   size_t nrbytes) \
 { \
     TOLOCAL (to, from, nrbytes / sizeof(T)); \
     return to; \
 } \
 void* CanonicalConversion::BYTEFROM (void* to, const void* from, \
-				     unsigned int nrbytes) \
+				     size_t nrbytes) \
 { \
     FROMLOCAL (to, from, nrbytes / sizeof(T)); \
     return to; \

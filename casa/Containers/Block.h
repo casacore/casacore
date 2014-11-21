@@ -28,13 +28,13 @@
 #ifndef CASA_BLOCK_H
 #define CASA_BLOCK_H
 
-#include <casa/aips.h>
-#include <casa/Utilities/Copy.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/Copy.h>
 #include <cstddef>                  // for ptrdiff_t
 
 //# For index checking
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Exceptions/Error.h>
 #endif
 
 namespace casa { //# NAMESPACE CASA - BEGIN

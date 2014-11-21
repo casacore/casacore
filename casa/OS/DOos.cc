@@ -28,16 +28,16 @@
 
 
 //# Includes
-#include <casa/OS/DOos.h>
-#include <casa/OS/Path.h>
-#include <casa/OS/File.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/Directory.h>
-#include <casa/OS/DirectoryIterator.h>
-#include <casa/OS/SymLink.h>
-#include <casa/IO/LockFile.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/OS/DOos.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/OS/DirectoryIterator.h>
+#include <casacore/casa/OS/SymLink.h>
+#include <casacore/casa/IO/LockFile.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

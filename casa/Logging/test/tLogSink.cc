@@ -1,5 +1,5 @@
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogSink.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogSink.h>
 
 using namespace casa;
 

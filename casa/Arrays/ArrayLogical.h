@@ -29,9 +29,9 @@
 #define CASA_ARRAYLOGICAL_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/LogiArray.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/LogiArray.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -450,6 +450,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/ArrayLogical.tcc>
+#include <casacore/casa/Arrays/ArrayLogical.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

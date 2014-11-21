@@ -29,7 +29,7 @@
 #define CASA_STD_COMPLEX_H
 
 // Make sure any special macros are set
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 #if defined(AIPS_SGI)
 #include <complex.h>

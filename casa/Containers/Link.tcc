@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Containers/Link.h>
+#include <casacore/casa/Containers/Link.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -28,7 +28,7 @@
 #ifndef CASA_NOTICE_H
 #define CASA_NOTICE_H
 
-#include <casa/Containers/Link.h>
+#include <casacore/casa/Containers/Link.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

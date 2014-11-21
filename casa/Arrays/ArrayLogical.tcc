@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/ArrayError.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/ArrayError.h>
 //# For scalar near() functions.
-#include <casa/BasicMath/Functors.h>
+#include <casacore/casa/BasicMath/Functors.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

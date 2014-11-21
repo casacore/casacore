@@ -26,7 +26,7 @@
 //# $Id: ObjectStack.cc,v 1.1 2007/11/16 04:08:17 wbrouw Exp $
 
 //# Includes
-#include <casa/Containers/ObjectStack.h>
+#include <casacore/casa/Containers/ObjectStack.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

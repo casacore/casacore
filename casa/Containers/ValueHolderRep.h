@@ -31,8 +31,8 @@
 #define CASA_VALUEHOLDERREP_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/DataType.h>
 #include <iosfwd>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

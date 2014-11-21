@@ -27,7 +27,7 @@
 //# $Id$
 
 //# Includes
-#include <casa/BasicSL/RegexBase.h>
+#include <casacore/casa/BasicSL/RegexBase.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

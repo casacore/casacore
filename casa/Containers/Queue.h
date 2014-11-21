@@ -28,8 +28,8 @@
 #ifndef CASA_QUEUE_H
 #define CASA_QUEUE_H
 
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -140,6 +140,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/Queue.tcc>
+#include <casacore/casa/Containers/Queue.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

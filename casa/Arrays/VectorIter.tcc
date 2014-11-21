@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include<casa/Arrays/VectorIter.h>
+#include<casacore/casa/Arrays/VectorIter.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

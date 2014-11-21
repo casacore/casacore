@@ -29,9 +29,9 @@
 #define CASA_VAXCONVERSION_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <assert.h>
-#include <casa/OS/LittleEndianConversion.h>
+#include <casacore/casa/OS/LittleEndianConversion.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -101,25 +101,25 @@ public:
     // The from and to buffer should not overlap.
     // <group>
     static void toLocal (char*           to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (unsigned char*  to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (short*          to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (unsigned short* to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (int*            to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (unsigned int*   to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (Int64*          to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (uInt64*         to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (float*          to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     static void toLocal (double*         to, const void* from,
-			 unsigned int nr);
+			 size_t nr);
     // </group>
 
     // Convert one value from local format to VAX format.
@@ -141,25 +141,25 @@ public:
     // The from and to buffer should not overlap.
     // <group>
     static void fromLocal (void* to, const char*           from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const unsigned char*  from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const short*          from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const unsigned short* from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const int*            from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const unsigned int*   from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const Int64*          from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const uInt64*         from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const float*          from,
-			   unsigned int nr);
+			   size_t nr);
     static void fromLocal (void* to, const double*         from,
-			   unsigned int nr);
+			   size_t nr);
     // </group>
     
     // Move a float value (by swapping bytes correctly).
@@ -224,49 +224,49 @@ inline void VAXConversion::toLocal (double& to, const void* from)
 }
 
 inline void VAXConversion::toLocal (char* to, const void* from,
-				    unsigned int nr)
+				    size_t nr)
 {
     LittleEndianConversion::toLocal (to, from, nr);
 }
 
 inline void VAXConversion::toLocal (unsigned char* to, const void* from,
-				    unsigned int nr)
+				    size_t nr)
 {
     LittleEndianConversion::toLocal (to, from, nr);
 }
 
 inline void VAXConversion::toLocal (short* to, const void* from,
-				    unsigned int nr)
+				    size_t nr)
 {
     LittleEndianConversion::toLocal (to, from, nr);
 }
 
 inline void VAXConversion::toLocal (unsigned short* to, const void* from,
-				    unsigned int nr)
+				    size_t nr)
 {
     LittleEndianConversion::toLocal (to, from, nr);
 }
 
 inline void VAXConversion::toLocal (int* to, const void* from,
-				    unsigned int nr)
+				    size_t nr)
 {
     LittleEndianConversion::toLocal (to, from, nr);
 }
 
 inline void VAXConversion::toLocal (unsigned int* to, const void* from,
-				    unsigned int nr)
+				    size_t nr)
 {
     LittleEndianConversion::toLocal (to, from, nr);
 }
 
 inline void VAXConversion::toLocal (Int64* to, const void* from,
-				    unsigned int nr)
+				    size_t nr)
 {
     LittleEndianConversion::toLocal (to, from, nr);
 }
 
 inline void VAXConversion::toLocal (uInt64* to, const void* from,
-				    unsigned int nr)
+				    size_t nr)
 {
     LittleEndianConversion::toLocal (to, from, nr);
 }
@@ -323,49 +323,49 @@ inline void VAXConversion::fromLocal (void* to, double from)
 }
 
 inline void VAXConversion::fromLocal (void* to, const char* from,
-				      unsigned int nr)
+				      size_t nr)
 { 
     LittleEndianConversion::fromLocal (to, from, nr);
 }
 
 inline void VAXConversion::fromLocal (void* to, const unsigned char* from,
-				      unsigned int nr)
+				      size_t nr)
 { 
     LittleEndianConversion::fromLocal (to, from, nr);
 }
 
 inline void VAXConversion::fromLocal (void* to, const short* from,
-				      unsigned int nr)
+				      size_t nr)
 { 
     LittleEndianConversion::fromLocal (to, from, nr);
 }
 
 inline void VAXConversion::fromLocal (void* to, const unsigned short* from,
-				      unsigned int nr)
+				      size_t nr)
 { 
     LittleEndianConversion::fromLocal (to, from, nr);
 }
 
 inline void VAXConversion::fromLocal (void* to, const int* from,
-				      unsigned int nr)
+				      size_t nr)
 { 
     LittleEndianConversion::fromLocal (to, from, nr);
 }
 
 inline void VAXConversion::fromLocal (void* to, const unsigned int* from,
-				      unsigned int nr)
+				      size_t nr)
 { 
     LittleEndianConversion::fromLocal (to, from, nr);
 }
 
 inline void VAXConversion::fromLocal (void* to, const Int64* from,
-				      unsigned int nr)
+				      size_t nr)
 { 
     LittleEndianConversion::fromLocal (to, from, nr);
 }
 
 inline void VAXConversion::fromLocal (void* to, const uInt64* from,
-				      unsigned int nr)
+				      size_t nr)
 { 
     LittleEndianConversion::fromLocal (to, from, nr);
 }

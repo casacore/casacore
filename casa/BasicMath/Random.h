@@ -28,8 +28,8 @@
 #ifndef CASA_RANDOM_H
 #define CASA_RANDOM_H
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Math.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class String;

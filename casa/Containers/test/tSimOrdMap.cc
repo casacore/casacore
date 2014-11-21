@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/Containers/SimOrdMapIO.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Containers/SimOrdMapIO.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 //# Forward Declarations
 
 void doit();

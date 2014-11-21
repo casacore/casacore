@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Containers/StackError.h>
+#include <casacore/casa/Containers/StackError.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -1,6 +1,7 @@
 set (tests
 tCanonicalConversion
 tConversion
+tConversionPerf
 tDataConversion
 tDirectory
 tDirectoryIterator

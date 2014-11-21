@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/OS/Mutex.h>
 #include <errno.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 //# Define a macro to cast the void* to pthread_mutex_t*.
 #define ITSMUTEX \

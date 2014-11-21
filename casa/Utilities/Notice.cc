@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/Notice.h>
+#include <casacore/casa/Utilities/Notice.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

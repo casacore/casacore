@@ -30,11 +30,11 @@
 #define CASA_SORT_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Utilities/ValType.h>
-#include <casa/Containers/Block.h>
-#include <casa/Utilities/Compare.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Utilities/Compare.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

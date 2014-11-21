@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <casa/Utilities/Sort.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/OS/Timer.h>
-#include <casa/sstream.h>
-#include <casa/stdlib.h>
+#include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/stdlib.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 //# Forward Declarations
 Bool sortarr (Int*, uInt nr, int);
 Bool sortall (Int*, uInt nr, uInt type);

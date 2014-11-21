@@ -29,8 +29,8 @@
 #ifndef GRAPHICS_PGPLOTTERNULL_H
 #define GRAPHICS_PGPLOTTERNULL_H
 
-#include <casa/aips.h>
-#include <casa/System/PGPlotter.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/System/PGPlotter.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

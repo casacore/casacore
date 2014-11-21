@@ -31,12 +31,12 @@
 #define CASA_RECORDDESCREP_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

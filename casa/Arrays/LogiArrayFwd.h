@@ -29,7 +29,7 @@
 #define CASA_LOGIARRAYFWD_H
 
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

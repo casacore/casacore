@@ -33,7 +33,7 @@
 //# them (e.g. <cstring>)
 
 //# Make sure any special macros are set
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 #if defined(__sgi) || defined(AIPS_SUN_NATIVE)
 #include <string.h>

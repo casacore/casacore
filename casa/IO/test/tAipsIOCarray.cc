@@ -27,14 +27,14 @@
 
 //# Includes
 
-#include <casa/IO/test/tAipsIOCarray.h>
-#include <casa/IO/AipsIOCarray.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/IO/test/tAipsIOCarray.h>
+#include <casacore/casa/IO/AipsIOCarray.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // This test program tests the AipsIOCarray functions.
 // It writes all kind of stuff, reads it back and writes it to stdout.
 // A script compares this output with a reference output file.

@@ -29,10 +29,10 @@
 #define CASA_HASHMAP_H
 
 //# Includes
-#include <casa/Containers/Block.h>
-#include <casa/Containers/List.h>
-#include <casa/Containers/OrderedPair.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/List.h>
+#include <casacore/casa/Containers/OrderedPair.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -223,9 +223,9 @@ public:
 //
 // <example>
 //    <srcblock>
-//    #include <casa/Containers/HashMap.h>
-//    #include <casa/BasicSL/String.h>
-//    #include <casa/iostream.h>
+//    #include <casacore/casa/Containers/HashMap.h>
+//    #include <casacore/casa/BasicSL/String.h>
+//    #include <casacore/casa/iostream.h>
 //   
 //    main() {
 //      HashMap<String,Int> hash;
@@ -521,6 +521,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/HashMap.tcc>
+#include <casacore/casa/Containers/HashMap.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

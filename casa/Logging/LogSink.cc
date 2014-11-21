@@ -26,17 +26,17 @@
 //#
 //# $Id$
 
-#include <casa/Logging/LogSink.h>
-#include <casa/Logging/LogMessage.h>
-#include <casa/Logging/LogFilter.h>
+#include <casacore/casa/Logging/LogSink.h>
+#include <casacore/casa/Logging/LogMessage.h>
+#include <casacore/casa/Logging/LogFilter.h>
 
-#include <casa/Logging/NullLogSink.h>
-#include <casa/Logging/MemoryLogSink.h>
-#include <casa/Logging/StreamLogSink.h>
+#include <casacore/casa/Logging/NullLogSink.h>
+#include <casacore/casa/Logging/MemoryLogSink.h>
+#include <casacore/casa/Logging/StreamLogSink.h>
 
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

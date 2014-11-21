@@ -28,9 +28,9 @@
 #ifndef CASA_TAPEIO_H
 #define CASA_TAPEIO_H
 
-#include <casa/aips.h>
-#include <casa/IO/ByteIO.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/ByteIO.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -117,7 +117,7 @@ public:
   void attach(const Path& device, Bool writable = False);
 
   // Write the specified number of bytes.
-  virtual void write(uInt size, const void* buf);
+  virtual void write(Int64 size, const void* buf);
 
   // Read <src>size</src> bytes from the tape. Returns the number of bytes
   // actually read or a negative number if an error occured. Will throw an
@@ -126,7 +126,7 @@ public:
   // throw an exception if the tape is not readable or the system call returns
   // an undocumented value. Returns zero if the tape is at the end of the
   // current file (and size is non-zero and throwException is False).
-  virtual Int read(uInt size, void* buf, Bool throwException=True);    
+  virtual Int64 read(Int64 size, void* buf, Bool throwException=True);    
 
   // Rewind the tape device to the beginning.
   virtual void rewind();

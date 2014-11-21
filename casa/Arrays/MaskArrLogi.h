@@ -29,10 +29,10 @@
 #define CASA_MASKARRLOGI_H
 
 
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/MaskLogiArr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/MaskLogiArr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -471,6 +471,6 @@ template<class T> Bool anyOR (const T &val, const MaskedArray<T> &array);
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/MaskArrLogi.tcc>
+#include <casacore/casa/Arrays/MaskArrLogi.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

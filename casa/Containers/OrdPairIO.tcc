@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/Containers/OrdPairIO.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Containers/OrdPairIO.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

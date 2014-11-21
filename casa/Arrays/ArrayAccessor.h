@@ -30,8 +30,8 @@
 #define CASA_ARRAYACCESSOR_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
 
 namespace casa { //#Begin casa namespace
 

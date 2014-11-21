@@ -29,11 +29,11 @@
 #ifndef CASA_BASICMATH_H
 #define CASA_BASICMATH_H
 
-#include <casa/BasicMath/ConvertScalar.h>
-#include <casa/BasicMath/Functional.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicMath/Random.h>
-#include <casa/BasicMath/Primes.h>
+#include <casacore/casa/BasicMath/ConvertScalar.h>
+#include <casacore/casa/BasicMath/Functional.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicMath/Random.h>
+#include <casacore/casa/BasicMath/Primes.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

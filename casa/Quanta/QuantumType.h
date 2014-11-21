@@ -29,8 +29,8 @@
 #define CASA_QUANTUMTYPE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

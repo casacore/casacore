@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <casa/Utilities/DataType.h>
-#include <casa/BasicSL/String.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Utilities/Compare.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/OS/Conversion.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Utilities/Compare.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/OS/Conversion.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

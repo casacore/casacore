@@ -29,7 +29,7 @@
 #define CASA_FUNCTIONAL_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -134,6 +134,6 @@ template<class Domain, class Range> class Functional {
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/BasicMath/Functional.tcc>
+#include <casacore/casa/BasicMath/Functional.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

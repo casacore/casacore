@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <casa/Utilities/BitVector.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Utilities/BitVector.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void doIt()
 {
     uInt maxbits=35;

@@ -29,13 +29,13 @@
 #define CASA_BUCKETCACHE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/BucketFile.h>
-#include <casa/Containers/Block.h>
-#include <casa/OS/CanonicalConversion.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/BucketFile.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/OS/CanonicalConversion.h>
 
 //# Forward clarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

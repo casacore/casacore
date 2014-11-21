@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/iostream.h>
-#include <casa/IO/ByteSink.h>
-#include <casa/IO/ByteSource.h>
-#include <casa/IO/RegularFileIO.h>
-#include <casa/IO/CanonicalIO.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/Path.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/IO/ByteSink.h>
+#include <casacore/casa/IO/ByteSource.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/IO/CanonicalIO.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/OS/Path.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 const Int nrOfTests = 1;
 
 int main ()

@@ -24,13 +24,13 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-//#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/IPosition.h>
-//#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/ArrayError.h>
-//#include <casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+//#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/IPosition.h>
+//#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+//#include <casacore/casa/BasicSL/String.h>
 
 namespace casa {
 

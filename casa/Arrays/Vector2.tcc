@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/Vector.h>
-#include <casa/stdvector.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/stdvector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

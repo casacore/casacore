@@ -29,10 +29,10 @@
 #ifndef CASA_LOGORIGIN_H
 #define CASA_LOGORIGIN_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/System/ObjectID.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/System/ObjectID.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

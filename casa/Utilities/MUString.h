@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/Block.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/Block.h>
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class Regex;

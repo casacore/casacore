@@ -29,22 +29,22 @@
 #define CASA_OS_H
 
 //# Includes
-#include <casa/OS/EnvVar.h>
-#include <casa/OS/Path.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/SymLink.h>
-#include <casa/OS/Directory.h>
-#include <casa/OS/DirectoryIterator.h>
+#include <casacore/casa/OS/EnvVar.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/OS/SymLink.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/OS/DirectoryIterator.h>
 
-#include <casa/OS/Time.h>
-#include <casa/OS/Timer.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/OS/Timer.h>
 
-#include <casa/OS/Conversion.h>
-#include <casa/OS/CanonicalConversion.h>
-#include <casa/OS/DataConversion.h>
-#include <casa/OS/CanonicalDataConversion.h>
+#include <casacore/casa/OS/Conversion.h>
+#include <casacore/casa/OS/CanonicalConversion.h>
+#include <casacore/casa/OS/DataConversion.h>
+#include <casacore/casa/OS/CanonicalDataConversion.h>
 
-#include <casa/OS/Memory.h>
+#include <casacore/casa/OS/Memory.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

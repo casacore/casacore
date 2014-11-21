@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <casa/Containers/HashMapIO.h>
-#include <casa/BasicSL/String.h>
-#include <casa/fstream.h>
-#include <casa/iostream.h>
-#include <casa/stdlib.h>
+#include <casacore/casa/Containers/HashMapIO.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/fstream.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/stdlib.h>
 
 //#if defined(AIPS_STUPID_SUN)
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 //#undef AIPS_STUPID_SUN
 //#endif
 

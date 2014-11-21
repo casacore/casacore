@@ -31,7 +31,7 @@
 #define CASA_BINARYSEARCH_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -154,6 +154,6 @@ template<class Container, class ElType>
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Utilities/BinarySearch.tcc>
+#include <casacore/casa/Utilities/BinarySearch.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

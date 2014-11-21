@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/StringDistance.h>
+#include <casacore/casa/Utilities/StringDistance.h>
 
 using namespace std;
 

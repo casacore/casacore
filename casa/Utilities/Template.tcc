@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <casa/Utilities/Template.h>
+#include <casacore/casa/Utilities/Template.h>
 
-#include <casa/ostream.h>
-#include <casa/fstream.h>
-#include <casa/typeinfo.h>
-#include <casa/stdlib.h>
-#include <casa/sstream.h>
+#include <casacore/casa/ostream.h>
+#include <casacore/casa/fstream.h>
+#include <casacore/casa/typeinfo.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/sstream.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Utilities/Sort.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Utilities/Sort.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
   

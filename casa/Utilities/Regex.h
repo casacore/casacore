@@ -29,9 +29,9 @@
 #define CASA_REGEX_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/RegexBase.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/RegexBase.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

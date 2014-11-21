@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <casa/Exceptions/Error.h>
-#include <casa/Exceptions/CasaErrorTools.h>
-#include <casa/stdlib.h>
-#include <casa/iostream.h>
-#include <casa/string.h>      //# needed for strerror_r
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Exceptions/CasaErrorTools.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/string.h>      //# needed for strerror_r
 
 //# Stacktracing requires some extra includes.
 #ifdef USE_STACKTRACE
-# include <casa/System/AipsrcValue.h>
+# include <casacore/casa/System/AipsrcValue.h>
 # include <execinfo.h>
 # define AddStackTrace() addStackTrace()
 #else

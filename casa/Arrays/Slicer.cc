@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/ArrayError.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/ArrayError.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

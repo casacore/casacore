@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/UnitMap.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/UnitMap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -67,7 +67,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <example>
 // To obtain the velocity of light in pc/a, use:
 // <srcblock>
-// #include <casa/Quanta.h>
+// #include <casacore/casa/Quanta.h>
 // Double vel_pcpy = (C::c).convert("pc/a").getValue();
 // </srcblock>
 // </example>

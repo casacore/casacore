@@ -29,7 +29,7 @@
 #define CASA_DYNLIB_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <string>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -30,9 +30,9 @@
 //# Because include-chain is:
 //#  Array.h, Array.tcc, MaskedArray.h, MaskedArray.tcc, ArrayLogical.h,
 //#  ArrayLogical.tcc, ArrayUtil.h
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Utilities/Regex.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Utilities/Regex.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

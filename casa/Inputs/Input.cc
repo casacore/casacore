@@ -27,13 +27,13 @@
 
 //  Class Input: the user interface
 
-#include <casa/Inputs/Input.h>
-#include <casa/OS/EnvVar.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/OS/EnvVar.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/iostream.h>
 
 #if defined(TESTBED)
 #define DEBUG 1

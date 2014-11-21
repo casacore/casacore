@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <casa/OS/ModcompConversion.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/OS/ModcompConversion.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-unsigned int ModcompConversion::toLocal (Int64* to, const void* from,
-					 unsigned int nr)
+size_t ModcompConversion::toLocal (Int64* to, const void* from,
+                                   size_t nr)
 {
     const char* data = (const char*)from;
     Int64* last = to + nr;
@@ -44,8 +44,8 @@ unsigned int ModcompConversion::toLocal (Int64* to, const void* from,
     return nr*SIZE_MODCOMP_INT64;
 }
 
-unsigned int ModcompConversion::toLocal (uInt64* to, const void* from,
-					 unsigned int nr)
+size_t ModcompConversion::toLocal (uInt64* to, const void* from,
+                                   size_t nr)
 { 
     const char* data = (const char*)from;
     uInt64* last = to + nr;
@@ -56,8 +56,8 @@ unsigned int ModcompConversion::toLocal (uInt64* to, const void* from,
     return nr*SIZE_MODCOMP_UINT64;
 }
 
-unsigned int ModcompConversion::fromLocal (void* to, const Int64* from,
-					   unsigned int nr)
+size_t ModcompConversion::fromLocal (void* to, const Int64* from,
+                                     size_t nr)
 {
     char* data = (char*)to;
     const Int64* last = from + nr;
@@ -68,8 +68,8 @@ unsigned int ModcompConversion::fromLocal (void* to, const Int64* from,
     return nr*SIZE_MODCOMP_INT64;
 }
 
-unsigned int ModcompConversion::fromLocal (void* to, const uInt64* from,
-					   unsigned int nr)
+size_t ModcompConversion::fromLocal (void* to, const uInt64* from,
+                                     size_t nr)
 { 
     char* data = (char*)to;
     const uInt64* last = from + nr;
@@ -84,10 +84,10 @@ unsigned int ModcompConversion::fromLocal (void* to, const uInt64* from,
 // Modcomp has one more bit in the exponent than IEEE and because it does not
 // have an implicit bit two less bits in the Mantissa. It does not have any
 // special numbers like NaN or Infinity. The Modcomp is big-endian (like Sun's)
-uInt ModcompConversion::toLocal (Float* to, const void* from, uInt nr) {
+size_t ModcompConversion::toLocal (Float* to, const void* from, size_t nr) {
   DebugAssert(sizeof(Short) >= 2, AipsError);
   uChar asByte[SIZE_MODCOMP_FLOAT];
-  uInt retval = 0;
+  size_t retval = 0;
 
   const uChar* data = (const uChar*) from;
   for (const Float* const last = to + nr; to < last; to++) {
@@ -250,10 +250,10 @@ uInt ModcompConversion::toLocal (Float* to, const void* from, uInt nr) {
 // Modcomp has one more bit in the exponent than IEEE and because it does not
 // have an implicit bit two less bits in the Mantissa. It does not have any
 // special numbers like NaN or Infinity. The Modcomp is big-endian (like Sun's)
-uInt ModcompConversion::toLocal (Double* to, const void* from, uInt nr) {
+size_t ModcompConversion::toLocal (Double* to, const void* from, size_t nr) {
   DebugAssert(sizeof(Short) >= 2, AipsError);
   uChar asByte[SIZE_MODCOMP_DOUBLE];
-  uInt retval = 0;
+  size_t retval = 0;
   const uChar* data = (const uChar*) from;
   for (const Double* const last = to + nr; to < last; to++) {
     // Copy the data to temporary buffer
@@ -355,7 +355,7 @@ uInt ModcompConversion::toLocal (Double* to, const void* from, uInt nr) {
   return retval;
 }
 
-uInt ModcompConversion::fromLocal(void* to, const Float* from, uInt nr) {
+size_t ModcompConversion::fromLocal(void* to, const Float* from, size_t nr) {
   // Dummy statements to suppress compiler warnings about unused variables
   if (nr == 0) {}
   if (from == 0) {}
@@ -365,7 +365,7 @@ uInt ModcompConversion::fromLocal(void* to, const Float* from, uInt nr) {
   return 0;
 }
 
-uInt ModcompConversion::fromLocal(void* to, const Double* from, uInt nr) {
+size_t ModcompConversion::fromLocal(void* to, const Double* from, size_t nr) {
   // Dummy statements to suppress compiler warnings about unused variables
   if (nr == 0) {}
   if (from == 0) {}
@@ -375,8 +375,8 @@ uInt ModcompConversion::fromLocal(void* to, const Double* from, uInt nr) {
   return 0;
 }
 
-// uInt ModcompConversion::fromLocal (void* to, const float* from,
-// 			       uInt nr)
+// size_t ModcompConversion::fromLocal (void* to, const float* from,
+// 			       size_t nr)
 // {
 //     assert (sizeof(uInt) == 4);
 //     assert (sizeof(float) == 4);
@@ -402,8 +402,8 @@ uInt ModcompConversion::fromLocal(void* to, const Double* from, uInt nr) {
 //     }
 // }
 
-// uInt ModcompConversion::fromLocal (void* to, const double* from,
-// 			       uInt nr)
+// size_t ModcompConversion::fromLocal (void* to, const double* from,
+// 			       size_t nr)
 // {
 //     assert (sizeof(uInt) == 4);
 //     assert (sizeof(double) == 8);

@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <casa/Containers/RecordRep.h>
-#include <casa/Containers/BlockIO.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Containers/RecordRep.h>
+#include <casacore/casa/Containers/BlockIO.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <cstring>                  //# for memmove with gcc-4.3
 
 namespace casa { //# NAMESPACE CASA - BEGIN

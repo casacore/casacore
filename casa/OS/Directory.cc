@@ -26,7 +26,7 @@
 //# $Id$
 
 // we NEED to include aips(env).h before using any AIPS_xyz defines
-#include <casa/OS/Directory.h>
+#include <casacore/casa/OS/Directory.h>
 
 #if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
 #  if defined(AIPS_OSF)
@@ -52,24 +52,24 @@
 #  endif
 #endif
 
-#include <casa/OS/DirectoryIterator.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/SymLink.h>
+#include <casacore/casa/OS/DirectoryIterator.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/OS/SymLink.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/stdexcept.h>
+#include <casacore/casa/stdexcept.h>
 #include <unistd.h>                 // needed for rmdir, unlink
 #include <sys/stat.h>               // needed for mkdir
 #include <errno.h>                  // needed for errno
-#include <casa/string.h>            // needed for strerror
+#include <casacore/casa/string.h>            // needed for strerror
 
 // Shouldn't be needed, but is needed to get rename under linux. The
 // man page claims it's in unistd.h.
-#include <casa/stdio.h>
+#include <casacore/casa/stdio.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

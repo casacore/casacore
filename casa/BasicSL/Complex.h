@@ -31,9 +31,9 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/Complexfwd.h>
-#include <casa/complex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/Complexfwd.h>
+#include <casacore/casa/complex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

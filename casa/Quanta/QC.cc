@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <casa/Quanta/QC.h>
-#include <casa/Quanta/UnitMap.h>
+#include <casacore/casa/Quanta/QC.h>
+#include <casacore/casa/Quanta/UnitMap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,7 +29,7 @@
 #define CASA_AIPSIOCARRAY_H
 
 //# Includes
-#include <casa/IO/AipsIO.h>
+#include <casacore/casa/IO/AipsIO.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -156,6 +156,6 @@ AIPSIO_FUNC_SPEC(String)
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/IO/AipsIOCarray.tcc>
+#include <casacore/casa/IO/AipsIOCarray.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

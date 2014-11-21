@@ -31,10 +31,10 @@
 #define CASA_RECORDREP_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/RecordDesc.h>
-#include <casa/Containers/RecordInterface.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/casa/Containers/RecordInterface.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

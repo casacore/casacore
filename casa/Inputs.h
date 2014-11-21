@@ -28,8 +28,8 @@
 #ifndef CASA_INPUTS_H
 #define CASA_INPUTS_H
 
-#include <casa/Inputs/Input.h>
-#include <casa/Inputs/Param.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Inputs/Param.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -136,7 +136,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <example>
 // <srcblock>
-// 01 #include <casa/Inputs/Input.h>      // need this if you want it to work
+// 01 #include <casacore/casa/Inputs/Input.h>      // need this if you want it to work
 // 02 #include <aips/Plot.h>
 // 03 int main(int argc, const char* argv[])
 // 04 {

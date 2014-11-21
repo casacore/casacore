@@ -1,5 +1,5 @@
-//# FiledesIO.cc: Class for IO on a file descriptor
-//# Copyright (C) 1997,1999,2001
+//# FiledesIO.cc: Class for IO on a  file descriptor
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,29 +25,16 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/IO/FiledesIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/LargeIOFuncDef.h>
+#include <casacore/casa/IO/FiledesIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>                     // needed for errno
-#include <casa/string.h>               // needed for strerror
+#include <casacore/casa/string.h>               // needed for strerror
 
-#ifdef PABLO_IO
-#include "IOTrace.h"
-#else
-#define traceFCLOSE fclose
-#define traceFSEEK fseek
-#define traceFREAD fread
-#define traceFWRITE fwrite
-#define traceREAD read
-#define traceWRITE write
-#define trace2OPEN open
-#define traceLSEEK lseek
-#define trace3OPEN open
-#define traceCLOSE close
-#endif // PABLO_IO
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -105,39 +92,39 @@ void FiledesIO::fillSeekable()
 }
 
 
-void FiledesIO::write (uInt size, const void* buf)
+void FiledesIO::write (Int64 size, const void* buf)
 {
     // Throw an exception if not writable.
     if (!itsWritable) {
 	throw AipsError ("FiledesIO " + itsFileName
                          + "is not writable");
     }
-    if (::traceWRITE(itsFile, (Char *)buf, size) != Int(size)) {
+    if (::traceWRITE(itsFile, (Char *)buf, size) != size) {
         int error = errno;
 	throw AipsError ("FiledesIO: write error in "
                          + itsFileName + ": " + strerror(error));
     }
 }
 
-Int FiledesIO::read (uInt size, void* buf, Bool throwException)
+Int64 FiledesIO::read (Int64 size, void* buf, Bool throwException)
 {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw AipsError ("FiledesIO::read " + itsFileName
                      + " - is not readable");
   }
-  Int bytesRead = ::traceREAD (itsFile, (Char *)buf, size);
+  Int64 bytesRead = ::traceREAD (itsFile, (Char *)buf, size);
   int error = errno;
-  if (bytesRead > Int(size)) { // Should never be executed
+  if (bytesRead > size) { // Should never be executed
     throw AipsError ("FiledesIO::read " + itsFileName
                      + " - read returned a bad value");
   }
-  if (bytesRead != Int(size) && throwException == True) {
+  if (bytesRead != size  &&  throwException == True) {
     if (bytesRead < 0) {
       throw AipsError ("FiledesIO::read " + itsFileName +
                        " - error returned by system call: " + 
                        strerror(error));
-    } else if (bytesRead < Int(size)) {
+    } else if (bytesRead < size) {
       throw AipsError ("FiledesIO::read - incorrect number of bytes ("
 		       + String::toString(bytesRead) + " out of "
                        + String::toString(size) + ") read for file "
@@ -192,6 +179,16 @@ Bool FiledesIO::isSeekable() const
 }
 
 
+String FiledesIO::fileName() const
+{
+    return itsFileName;
+}
+
+void FiledesIO::fsync()
+{
+    ::fsync (itsFile);
+}
+
 int FiledesIO::create (const Char* name, int mode)
 {
     int fd = ::trace3OPEN ((Char *)name, O_RDWR | O_CREAT | O_TRUNC, mode);
@@ -202,6 +199,7 @@ int FiledesIO::create (const Char* name, int mode)
     }
     return fd;
 }
+
 int FiledesIO::open (const Char* name, Bool writable, Bool throwExcp)
 {
     int fd;
@@ -217,13 +215,16 @@ int FiledesIO::open (const Char* name, Bool writable, Bool throwExcp)
     }
     return fd;
 }
+
 void FiledesIO::close (int fd)
 {
+  if (fd >= 0) {
     if (::traceCLOSE (fd)  == -1) {
       int error = errno;
-	throw AipsError (String("FiledesIO: file could not be closed: ")
-                         + strerror(error));
+      throw AipsError (String("FiledesIO: file could not be closed: ")
+                       + strerror(error));
     }
+  }
 }
 
 } //# NAMESPACE CASA - END

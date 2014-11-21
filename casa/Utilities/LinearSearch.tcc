@@ -28,7 +28,7 @@
 
 
 //# Includes
-#include <casa/Utilities/LinearSearch.h>
+#include <casacore/casa/Utilities/LinearSearch.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

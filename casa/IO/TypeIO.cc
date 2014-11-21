@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/IO/TypeIO.h>
-#include <casa/OS/Conversion.h>
-#include <casa/BasicSL/String.h>
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/IO/TypeIO.h>
+#include <casacore/casa/OS/Conversion.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -84,9 +84,9 @@ Bool TypeIO::isSeekable() const
 }
 
 
-uInt TypeIO::write (uInt nvalues, const Bool* value)
+size_t TypeIO::write (size_t nvalues, const Bool* value)
 {
-    uInt nb = (nvalues+7) / 8;
+    size_t nb = (nvalues+7) / 8;
     uChar* buf = new uChar[nb];
     Conversion::boolToBit (buf, value, nvalues);
     write (nb, buf);
@@ -94,13 +94,13 @@ uInt TypeIO::write (uInt nvalues, const Bool* value)
     return nb;
 }
 
-uInt TypeIO::write (uInt nvalues, const Complex* value)
+size_t TypeIO::write (size_t nvalues, const Complex* value)
 {
     if (sizeof(Complex) == 2*sizeof(float)) {
 	return write (2*nvalues, (const float*)value);
     }
-    uInt n = 0;
-    for (uInt i=0; i<nvalues; i++) {
+    size_t n = 0;
+    for (size_t i=0; i<nvalues; i++) {
 	float f1= value[i].real();
 	float f2= value[i].imag();
 	n += write (1, &f1);
@@ -109,13 +109,13 @@ uInt TypeIO::write (uInt nvalues, const Complex* value)
     return n;
 }
 
-uInt TypeIO::write (uInt nvalues, const DComplex* value)
+size_t TypeIO::write (size_t nvalues, const DComplex* value)
 {
     if (sizeof(DComplex) == 2*sizeof(double)) {
 	return write (2*nvalues, (const double*)value);
     }
-    uInt n = 0;
-    for (uInt i=0; i<nvalues; i++) {
+    size_t n = 0;
+    for (size_t i=0; i<nvalues; i++) {
 	double d1= value[i].real();
 	double d2= value[i].imag();
 	n += write (1, &d1);
@@ -124,10 +124,10 @@ uInt TypeIO::write (uInt nvalues, const DComplex* value)
     return n;
 }
 
-uInt TypeIO::write (uInt nvalues, const String* value)
+size_t TypeIO::write (size_t nvalues, const String* value)
 {
-    uInt n = 0;
-    for (uInt i=0; i<nvalues; i++) {
+    size_t n = 0;
+    for (size_t i=0; i<nvalues; i++) {
 	uInt len = value[i].length();
 	n += write (1, &len);
 	n += write (len, value[i].chars());
@@ -136,9 +136,9 @@ uInt TypeIO::write (uInt nvalues, const String* value)
 }
 
 
-uInt TypeIO::read (uInt nvalues, Bool* value)
+size_t TypeIO::read (size_t nvalues, Bool* value)
 {
-    uInt nb = (nvalues+7) / 8;
+    size_t nb = (nvalues+7) / 8;
     uChar* buf = new uChar[nb];
     read (nb, buf);
     Conversion::bitToBool (value, buf, nvalues);
@@ -146,13 +146,13 @@ uInt TypeIO::read (uInt nvalues, Bool* value)
     return nb;
 }
 
-uInt TypeIO::read (uInt nvalues, Complex* value)
+size_t TypeIO::read (size_t nvalues, Complex* value)
 {
     if (sizeof(Complex) == 2*sizeof(float)) {
 	return read (2*nvalues, (float*)value);
     }
-    uInt n=0;
-    for (uInt i=0; i<nvalues; i++) {
+    size_t n=0;
+    for (size_t i=0; i<nvalues; i++) {
 	float f1;
 	float f2;
 	n += read (1, &f1);
@@ -162,13 +162,13 @@ uInt TypeIO::read (uInt nvalues, Complex* value)
     return n;
 }
 
-uInt TypeIO::read (uInt nvalues, DComplex* value)
+size_t TypeIO::read (size_t nvalues, DComplex* value)
 {
     if (sizeof(DComplex) == 2*sizeof(double)) {
 	return read (2*nvalues, (double*)value);
     }
-    uInt n=0;
-    for (uInt i=0; i<nvalues; i++) {
+    size_t n=0;
+    for (size_t i=0; i<nvalues; i++) {
 	double d1;
 	double d2;
 	n += read (1, &d1);
@@ -178,9 +178,9 @@ uInt TypeIO::read (uInt nvalues, DComplex* value)
     return n;
 }
 
-uInt TypeIO::read (uInt nvalues, String* str) {
-    uInt n=0;
-    for (uInt i=0; i<nvalues; i++) {
+size_t TypeIO::read (size_t nvalues, String* str) {
+    size_t n=0;
+    for (size_t i=0; i<nvalues; i++) {
       uInt len;
       n += read (1, &len);
       str[i].resize (len);              // resize storage which adds trailing 0

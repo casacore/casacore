@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicSL/Constants.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

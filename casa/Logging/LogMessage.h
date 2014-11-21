@@ -29,10 +29,10 @@
 #ifndef CASA_LOGMESSAGE_H
 #define CASA_LOGMESSAGE_H
 
-#include <casa/aips.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/OS/Time.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

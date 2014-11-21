@@ -28,10 +28,10 @@
 #ifndef CASA_BASESINKSOURCE_H
 #define CASA_BASESINKSOURCE_H
 
-#include <casa/aips.h>
-#include <casa/IO/TypeIO.h>
-#include <casa/IO/ByteIO.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/TypeIO.h>
+#include <casacore/casa/IO/ByteIO.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

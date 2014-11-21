@@ -28,9 +28,9 @@
 #ifndef SCIMATH_PRIMES_H
 #define SCIMATH_PRIMES_H
 
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -69,8 +69,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <example>
 // <srcblock>
-// #include <scimath/Mathematics/Primes.h>
-// #include <casa/Utilities/Assert.h>
+// #include <casacore/scimath/Mathematics/Primes.h>
+// #include <casacore/casa/Utilities/Assert.h>
 // #include <iostream>
 //
 // // Refer also to tPrimes.cc

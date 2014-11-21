@@ -27,20 +27,21 @@
 
 
 //# Includes
-#include <casa/IO/LargeIOFuncDef.h>
-#include <casa/IO/BucketFile.h>
-#include <casa/IO/MMapfdIO.h>
-#include <casa/IO/LargeFilebufIO.h>
-#include <casa/OS/Path.h>
-#include <casa/OS/DOos.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/LargeIOFuncDef.h>
+#include <casacore/casa/IO/BucketFile.h>
+#include <casacore/casa/IO/MMapfdIO.h>
+#include <casacore/casa/IO/FilebufIO.h>
+#include <casacore/casa/IO/MFFileIO.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/DOos.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>                // needed for errno
-#include <casa/string.h>          // needed for strerror
+#include <casacore/casa/string.h>          // needed for strerror
 
 #if defined(AIPS_DARWIN) || defined(AIPS_BSD)
 #undef trace3OPEN
@@ -54,64 +55,85 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 BucketFile::BucketFile (const String& fileName,
-                        uInt bufSizeFile, Bool mappedFile)
+                        uInt bufSizeFile, Bool mappedFile,
+                        MultiFile* mfile)
 : name_p         (Path(fileName).expandedName()),
   isWritable_p   (True),
   isMapped_p     (mappedFile),
   bufSize_p      (bufSizeFile),
   fd_p           (-1),
+  file_p         (),
   mappedFile_p   (0),
-  bufferedFile_p (0)
+  bufferedFile_p (0),
+  mfile_p        (mfile)
 {
     // Create the file.
-    fd_p = ::trace3OPEN ((Char *)name_p.chars(), O_RDWR | O_CREAT | O_TRUNC, 0666);
-    if (fd_p < 0) {
-	throw (AipsError ("BucketFile: create error on file " + name_p +
-			  ": " + strerror(errno)));
+    if (mfile_p) {
+      file_p = new MFFileIO (*mfile_p, name_p, ByteIO::New);
+      isMapped_p = False;
+      bufSize_p  = 0;
+    } else {
+      fd_p   = FiledesIO::create (name_p.chars());
+      file_p = new FiledesIO (fd_p, name_p);
     }
     createMapBuf();
 }
 
 BucketFile::BucketFile (const String& fileName, Bool isWritable,
-                        uInt bufSizeFile, Bool mappedFile)
+                        uInt bufSizeFile, Bool mappedFile,
+                        MultiFile* mfile)
 : name_p         (Path(fileName).expandedName()),
   isWritable_p   (isWritable),
   isMapped_p     (mappedFile),
   bufSize_p      (bufSizeFile),
   fd_p           (-1),
+  file_p         (),
   mappedFile_p   (0),
-  bufferedFile_p (0)
-{}
+  bufferedFile_p (0),
+  mfile_p        (mfile)
+{
+  if (mfile_p) {
+    isMapped_p = False;
+    bufSize_p  = 0;
+  }
+}
 
 BucketFile::~BucketFile()
 {
     close();
 }
 
+CountedPtr<ByteIO> BucketFile::makeFilebufIO (uInt bufferSize)
+{
+  if (mfile_p) {
+    return file_p;
+  }
+  return new FilebufIO (fd_p, bufferSize);
+}
+
 
 void BucketFile::close()
 {
-    if (fd_p >= 0) {
+    if (file_p) {
         deleteMapBuf();
-	::traceCLOSE (fd_p);
-	fd_p = -1;
+	file_p = CountedPtr<ByteIO>();
+        FiledesIO::close (fd_p);
+	fd_p   = -1;
     }
 }
 
 
 void BucketFile::open()
 {
-    if (fd_p < 0) {
-	if (isWritable_p) {
-	    fd_p = ::trace2OPEN ((Char *)name_p.chars(), O_RDWR);
-	}else{
-	    fd_p = ::trace2OPEN ((Char *)name_p.chars(), O_RDONLY);
-	}
-	if (fd_p == -1) {
-	    throw (AipsError ("BucketFile: open error on file " + name_p +
-			      ": " + strerror(errno)));
-	}
-        createMapBuf();
+    if (! file_p) {
+      if (mfile_p) {
+        file_p = new MFFileIO (*mfile_p, name_p,
+                               isWritable_p ? ByteIO::Update : ByteIO::Old);
+      } else {
+        fd_p   = FiledesIO::open (name_p.chars(), isWritable_p);
+        file_p = new FiledesIO (fd_p, name_p);
+      }
+      createMapBuf();
     }
 }
 
@@ -119,10 +141,12 @@ void BucketFile::createMapBuf()
 {
     deleteMapBuf();
     if (isMapped_p) {
+        AlwaysAssert (fd_p >= 0, AipsError);
         mappedFile_p = new MMapfdIO (fd_p, name_p);
     }
     if (bufSize_p > 0) {
-        bufferedFile_p = new LargeFilebufIO (fd_p, bufSize_p);
+        AlwaysAssert (fd_p >= 0, AipsError);
+        bufferedFile_p = new FilebufIO (fd_p, bufSize_p);
     }
 }
 
@@ -137,15 +161,22 @@ void BucketFile::deleteMapBuf()
 void BucketFile::remove()
 {
     close();
-    DOos::remove (name_p, False, False);
+    if (mfile_p) {
+      // Remove the file from the MultiFile. Note it might not exist yet.
+      Int id = mfile_p->fileId (name_p, False);
+      if (id >= 0) {
+        mfile_p->deleteFile (id);
+      }
+    } else {
+      DOos::remove (name_p, False, False);
+    }
+    file_p = CountedPtr<ByteIO>();
 }
 
 
 void BucketFile::fsync()
 {
-    if (fd_p >= 0) {
-	::fsync (fd_p);
-    }
+    file_p->fsync();
 }
 
 
@@ -155,45 +186,35 @@ void BucketFile::setRW()
     if (isWritable_p) {
 	return;
     }
+    isWritable_p = True;
     // Try to reopen the file as read/write.
     // Throw an exception if it fails.
-    if (fd_p >= 0) {
-	int fd = ::trace2OPEN ((Char *)name_p.chars(), O_RDWR);
-	if (fd == -1) {
-	    throw (AipsError ("BucketFile: reopenRW error on file " + name_p +
-			      ": " + strerror(errno)));
-	}
-        deleteMapBuf();
-	::traceCLOSE (fd_p);
-	fd_p = fd;
-        createMapBuf();
+    if (file_p) {
+      if (mfile_p) {
+        file_p->reopenRW();
+      } else {
+        close();
+        open();
+      }
     }
-    isWritable_p = True;
 }
 
 
-uInt BucketFile::read (void* buffer, uInt length) const
+uInt BucketFile::read (void* buffer, uInt length)
 {
-    if (::traceREAD (fd_p, (Char *)buffer, length)  !=  Int(length)) {
-	throw (AipsError ("BucketFile: read error on file " + name_p +
-	                  ": " + strerror(errno)));
-    }
-    return length;
+  return file_p->read (length, buffer);
 }
 
 uInt BucketFile::write (const void* buffer, uInt length)
 {
-    if (::traceWRITE (fd_p, (Char *)buffer, length)  !=  Int(length)) {
-	throw (AipsError ("BucketFile: write error on file " + name_p +
-	                  ": " + strerror(errno)));
-    }
+  file_p->write (length, buffer);
     return length;
 }
 
-void BucketFile::seek (Int64 offset) const
+void BucketFile::seek (Int64 offset)
 {
     AlwaysAssert (bufferedFile_p == 0, AipsError);
-    ::traceLSEEK (fd_p, offset, SEEK_SET);
+    file_p->seek (offset, ByteIO::Begin);
 }
 
 Int64 BucketFile::fileSize () const
@@ -201,10 +222,10 @@ Int64 BucketFile::fileSize () const
     // If a buffered file is used, seek in there. Otherwise its internal
     // offset is wrong.
     Int64 size;
-    if (bufferedFile_p != 0) {
+    if (bufferedFile_p) {
         size = bufferedFile_p->seek (0, ByteIO::End);
     } else {
-        size = ::traceLSEEK (fd_p, 0, SEEK_END);
+      size = file_p->length();
     }
     if (size < 0){
         LogIO logIo (LogOrigin ("BucketFile", "fileSize"));

@@ -28,9 +28,9 @@
 #ifndef CASA_ARRAYITER_H
 #define CASA_ARRAYITER_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/ArrayPosIter.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayPosIter.h>
+#include <casacore/casa/Arrays/Array.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -229,6 +229,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/ArrayIter.tcc>
+#include <casacore/casa/Arrays/ArrayIter.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -33,8 +33,8 @@
 #endif
 
 
-#include <casa/aips.h>
-#include <casa/Arrays/LogiArrayFwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/LogiArrayFwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

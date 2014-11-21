@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <casa/Utilities/MUString.h>
-#include <casa/sstream.h>
-#include <casa/iostream.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Regex.h>
+#include <casacore/casa/Utilities/MUString.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Regex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

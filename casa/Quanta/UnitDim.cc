@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <casa/BasicSL/String.h>
-#include <casa/Quanta/UnitDim.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Quanta/UnitDim.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

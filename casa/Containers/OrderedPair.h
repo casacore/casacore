@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -97,6 +97,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/OrderedPair.tcc>
+#include <casacore/casa/Containers/OrderedPair.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

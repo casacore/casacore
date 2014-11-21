@@ -27,8 +27,8 @@
 
 //# Includes
 
-#include <casa/Quanta/UnitName.h>
-#include <casa/iomanip.h>
+#include <casacore/casa/Quanta/UnitName.h>
+#include <casacore/casa/iomanip.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

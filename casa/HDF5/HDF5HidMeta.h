@@ -29,7 +29,7 @@
 #define CASA_HDF5HIDMETA_H
 
 //# Includes
-#include <casa/HDF5/HDF5Object.h>
+#include <casacore/casa/HDF5/HDF5Object.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

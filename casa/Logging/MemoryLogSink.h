@@ -30,10 +30,10 @@
 #define CASA_MEMORYLOGSINK_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Logging/LogSinkInterface.h>
-#include <casa/Containers/Block.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogSinkInterface.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

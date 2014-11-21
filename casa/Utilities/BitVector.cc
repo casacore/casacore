@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/BitVector.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Utilities/BitVector.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

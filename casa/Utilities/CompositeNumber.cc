@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/CompositeNumber.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/CompositeNumber.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

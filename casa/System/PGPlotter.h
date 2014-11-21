@@ -29,9 +29,9 @@
 #ifndef CASA_PGPLOTTER_H
 #define CASA_PGPLOTTER_H
 
-#include <casa/aips.h>
-#include <casa/System/PGPlotterInterface.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/System/PGPlotterInterface.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

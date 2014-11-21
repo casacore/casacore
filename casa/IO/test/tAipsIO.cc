@@ -27,16 +27,17 @@
 
 //# Includes
 
-#include <casa/IO/AipsIO.h>
-#include <casa/IO/MemoryIO.h>
-#include <casa/IO/RawIO.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/IO/RawIO.h>
+#include <casacore/casa/IO/MultiFile.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // This test program tests the AipsIO class.
 // It writes all kind of stuff, reads it back and writes it to stdout.
 // A script compares this output with a reference output file.
@@ -68,6 +69,8 @@ int main (int argc, const char*[])
 
 void doit (Bool doExcp)
 {
+  {
+    cout << "Test using normal files ..." << endl;
     AipsIO io("tAipsIO_tmp.data", ByteIO::New);      // open output file
     doIO (doExcp, True, io);
     io.close();
@@ -78,23 +81,37 @@ void doit (Bool doExcp)
     if (doExcp) {
 	doTry (io);
     }
+  }
+  {
+    cout << endl << "Test using MultiFile files ..." << endl;
+    MultiFile mfile ("tAipsIO_tmp.mf", ByteIO::New);
+    AipsIO io("tAipsIO_tmp.data", ByteIO::New, 1024, &mfile); // open output file
+    doIO (doExcp, True, io);
+    io.close();
+    io.open("tAipsIO_tmp.data", ByteIO::Old, 1024, &mfile);
+    doIO (doExcp, False, io);
+    // Now do some open calls; some of them are erronous which are caught.
+    // Delete the file in case it exists.
+    if (doExcp) {
+	doTry (io);
+    }
+  }
 
-    cout << endl << ">>>" << endl;
-    MemoryIO membuf;
-    {
-	RawIO rawio(&membuf);
-	AipsIO io2(&rawio);
-	doIO (doExcp, True, io2);
-    }
-    const uChar* iobuf = membuf.getBuffer();
-    uInt bufleng = membuf.length();
-    MemoryIO membuf2(iobuf, bufleng);
-    {
-	RawIO rawio(&membuf2);
-	AipsIO io2(&rawio);
-	doIO (doExcp, False, io2);
-    }
-    cout << "<<<" << endl;
+  cout << endl << "Test using MemoryIO ..." << endl;
+  MemoryIO membuf;
+  {
+    RawIO rawio(&membuf);
+    AipsIO io2(&rawio);
+    doIO (doExcp, True, io2);
+  }
+  const uChar* iobuf = membuf.getBuffer();
+  uInt bufleng = membuf.length();
+  MemoryIO membuf2(iobuf, bufleng);
+  {
+    RawIO rawio(&membuf2);
+    AipsIO io2(&rawio);
+    doIO (doExcp, False, io2);
+  }
 }
 
 

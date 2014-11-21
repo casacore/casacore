@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <casa/IO/ConversionIO.h>
-#include <casa/OS/DataConversion.h>
-#include <casa/IO/ByteIO.h>
+#include <casacore/casa/IO/ConversionIO.h>
+#include <casacore/casa/OS/DataConversion.h>
+#include <casacore/casa/IO/ByteIO.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -98,51 +98,51 @@ void ConversionIO::init()
 }
 
 
-uInt ConversionIO::write (uInt nvalues, const Bool* value)
+size_t ConversionIO::write (size_t nvalues, const Bool* value)
 {
     return TypeIO::write (nvalues, value);
 }
 
-uInt ConversionIO::write (uInt nvalues, const Complex* value)
+size_t ConversionIO::write (size_t nvalues, const Complex* value)
 {
     return TypeIO::write (nvalues, value);
 }
 
-uInt ConversionIO::write (uInt nvalues, const DComplex* value)
+size_t ConversionIO::write (size_t nvalues, const DComplex* value)
 {
     return TypeIO::write (nvalues, value);
 }
 
-uInt ConversionIO::write (uInt nvalues, const String* value)
+size_t ConversionIO::write (size_t nvalues, const String* value)
 {
     return TypeIO::write (nvalues, value);
 }
 
-uInt ConversionIO::read (uInt nvalues, Bool* value)
+size_t ConversionIO::read (size_t nvalues, Bool* value)
 {
     return TypeIO::read (nvalues, value);
 }
 
-uInt ConversionIO::read (uInt nvalues, Complex* value)
+size_t ConversionIO::read (size_t nvalues, Complex* value)
 {
     return TypeIO::read (nvalues, value);
 }
 
-uInt ConversionIO::read (uInt nvalues, DComplex* value)
+size_t ConversionIO::read (size_t nvalues, DComplex* value)
 {
     return TypeIO::read (nvalues, value);
 }
 
-uInt ConversionIO::read (uInt nvalues, String* value)
+size_t ConversionIO::read (size_t nvalues, String* value)
 {
     return TypeIO::read (nvalues, value);
 }
 
 
 #define CONVERSIONIO_DOIT(T) \
-uInt ConversionIO::write (uInt nvalues, const T* value) \
+size_t ConversionIO::write (size_t nvalues, const T* value) \
 { \
-    uInt size = nvalues * aips_name2(itsSize,T); \
+    size_t size = nvalues * aips_name2(itsSize,T); \
     if (aips_name2(itsCopy,T)) { \
 	itsByteIO->write (size, value); \
     } else { \
@@ -158,9 +158,9 @@ uInt ConversionIO::write (uInt nvalues, const T* value) \
     } \
     return size; \
 } \
-uInt ConversionIO::read (uInt nvalues, T* value) \
+size_t ConversionIO::read (size_t nvalues, T* value) \
 { \
-    uInt size = nvalues * aips_name2(itsSize,T); \
+    size_t size = nvalues * aips_name2(itsSize,T); \
     if (aips_name2(itsCopy,T)) { \
 	itsByteIO->read (size, value); \
     } else { \

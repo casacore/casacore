@@ -30,8 +30,8 @@
 #define CASA_LOGFILTERINTERFACE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Logging/LogMessage.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogMessage.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

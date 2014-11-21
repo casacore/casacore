@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/OS/Mutex.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions.h>
-#include <casa/iostream.h>
+#include <casacore/casa/OS/Mutex.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/iostream.h>
 
 using namespace casa;
 

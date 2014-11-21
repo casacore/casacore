@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Arrays/LogiArrayFwd.h>
-#include <casa/Arrays/MaskLogiArrFwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Arrays/LogiArrayFwd.h>
+#include <casacore/casa/Arrays/MaskLogiArrFwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -735,6 +735,6 @@ template<class T, class U>
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/MaskedArray.tcc>
+#include <casacore/casa/Arrays/MaskedArray.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

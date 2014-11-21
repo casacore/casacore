@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <casa/Utilities/test/tCountedPtr.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Utilities/test/tCountedPtr.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // class myobj is defined in tCountedPtr.h
 
 String prt(CountedPtr<myobj> &obj) {

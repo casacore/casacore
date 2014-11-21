@@ -29,9 +29,9 @@
 #define CASA_IPOSITION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/iosfwd.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/iosfwd.h>
+#include <casacore/casa/BasicSL/String.h>
 #include <vector>
 #include <cstddef>                  // for ptrdiff_t
 #include <sys/types.h>

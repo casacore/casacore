@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/OS/PrecTimer.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iostream.h>
-#include <casa/fstream.h>
-#include <casa/iomanip.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/OS/PrecTimer.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/fstream.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <cstdlib>
 #include <cstring>
 

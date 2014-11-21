@@ -28,9 +28,9 @@
 #ifndef CASA_LOGIMATRIX_H
 #define CASA_LOGIMATRIX_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/LogiArray.h>
-#include <casa/Arrays/Matrix.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/LogiArray.h>
+#include <casacore/casa/Arrays/Matrix.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

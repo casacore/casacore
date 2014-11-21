@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/Containers/BlockIO.h>
-#include <casa/Containers/Block.h>
-#include <casa/IO/AipsIOCarray.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Containers/BlockIO.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/IO/AipsIOCarray.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

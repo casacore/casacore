@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/OS/EnvVar.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/stdlib.h>
+#include <casacore/casa/OS/EnvVar.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/stdlib.h>
 #include <cstring>                  //# for strcpy with gcc-4.3
 
 

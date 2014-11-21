@@ -29,7 +29,7 @@
 #ifndef CASA_HOSTINFO_H
 #define CASA_HOSTINFO_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <cstring>
 #include <cstddef>
 

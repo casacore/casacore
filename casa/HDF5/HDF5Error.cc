@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/HDF5/HDF5Error.h>
+#include <casacore/casa/HDF5/HDF5Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

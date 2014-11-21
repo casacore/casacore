@@ -29,15 +29,15 @@
 #define CASA_STRING_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 //# Includes
 #include <string>
 
 using std::string;
 
-#include <casa/iosstrfwd.h>
-#include <casa/sstream.h>
+#include <casacore/casa/iosstrfwd.h>
+#include <casacore/casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

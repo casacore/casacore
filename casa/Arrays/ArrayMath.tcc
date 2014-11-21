@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayIter.h>
-#include <casa/Arrays/VectorIter.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicMath/ConvertScalar.h>
-#include <casa/Utilities/GenSort.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayIter.h>
+#include <casacore/casa/Arrays/VectorIter.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicMath/ConvertScalar.h>
+#include <casacore/casa/Utilities/GenSort.h>
 #include <algorithm>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -26,9 +26,9 @@
 //# $Id: STLMath.h 21331 2013-03-26 15:08:06Z gervandiepen $
 
 //# Includes
-#include <casa/BasicSL/STLMath.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/BasicSL/STLMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

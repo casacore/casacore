@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/Precision.h>
+#include <casacore/casa/Utilities/Precision.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

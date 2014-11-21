@@ -31,12 +31,12 @@
 #endif
 
 //# Includes
-#include <casa/OS/DynLib.h>
-#include <casa/OS/EnvVar.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/OS/DynLib.h>
+#include <casacore/casa/OS/EnvVar.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #ifdef HAVE_DLOPEN
 #include <dlfcn.h>
 #endif

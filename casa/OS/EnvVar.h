@@ -28,8 +28,8 @@
 #ifndef CASA_ENVVAR_H
 #define CASA_ENVVAR_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

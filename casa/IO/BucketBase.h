@@ -29,8 +29,8 @@
 #define CASA_BUCKETBASE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/BucketFile.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/BucketFile.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

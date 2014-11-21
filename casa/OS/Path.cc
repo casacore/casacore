@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <casa/OS/Path.h>
-#include <casa/OS/EnvVar.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/EnvVar.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions.h>
 
 #include <pwd.h>                    // needed for getpwnam
 #include <unistd.h>                 // needed for pathconf
@@ -39,7 +39,7 @@
 #include <ctype.h>                  // needed for isprint
 #include <stdlib.h>                 // needed for realpath
 #include <errno.h>                  // needed for errno
-#include <casa/string.h>            // needed for strerror
+#include <casacore/casa/string.h>            // needed for strerror
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

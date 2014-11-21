@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayPartMath.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/OS/Timer.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayPartMath.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/OS/Timer.h>
 
 namespace casa {
 template<typename Func, typename T, typename Accum>

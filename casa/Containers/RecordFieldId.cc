@@ -27,7 +27,7 @@
 //# $Id$
 
 
-#include <casa/Containers/RecordFieldId.h>
+#include <casacore/casa/Containers/RecordFieldId.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

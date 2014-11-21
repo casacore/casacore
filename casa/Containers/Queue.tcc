@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/Containers/Queue.h>
-#include <casa/Utilities/Copy.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Containers/Queue.h>
+#include <casacore/casa/Utilities/Copy.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

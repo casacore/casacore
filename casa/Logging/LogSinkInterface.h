@@ -30,8 +30,8 @@
 #define CASA_LOGSINKINTERFACE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Logging/LogFilterInterface.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogFilterInterface.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

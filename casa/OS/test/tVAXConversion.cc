@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <casa/OS/VAXConversion.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/iostream.h>
+#include <casacore/casa/OS/VAXConversion.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // This program test the VAX conversion functions.
 
 

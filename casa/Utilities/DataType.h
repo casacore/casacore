@@ -28,11 +28,11 @@
 #ifndef CASA_DATATYPE_H
 #define CASA_DATATYPE_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class Table;

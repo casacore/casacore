@@ -30,11 +30,11 @@
 #define CASA_LOGIO_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Logging/LogMessage.h>
-#include <casa/Logging/LogSink.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/iosstrfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogMessage.h>
+#include <casacore/casa/Logging/LogSink.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/iosstrfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

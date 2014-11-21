@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/Assert.h>
-#include <casa/stdio.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/stdio.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
