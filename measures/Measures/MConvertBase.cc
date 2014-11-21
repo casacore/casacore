@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/MConvertBase.h>
-#include <casa/iostream.h>
+#include <casacore/measures/Measures/MConvertBase.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

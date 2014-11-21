@@ -29,8 +29,8 @@
 #define MEASURES_SOFATEST_H
 
 //# Include files
-#include <casa/aips.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

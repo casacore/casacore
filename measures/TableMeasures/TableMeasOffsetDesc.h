@@ -29,8 +29,8 @@
 #define MEASURES_TABLEMEASOFFSETDESC_H
 
 //# Includes
-#include <casa/BasicSL/String.h>
-#include <measures/Measures/MeasureHolder.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

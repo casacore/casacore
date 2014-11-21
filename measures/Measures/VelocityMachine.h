@@ -29,12 +29,12 @@
 #define MEASURES_VELOCITYMACHINE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Quanta/Quantum.h>
-#include <measures/Measures/MCFrequency.h>
-#include <measures/Measures/MCDoppler.h>
-#include <measures/Measures/MeasConvert.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/measures/Measures/MCFrequency.h>
+#include <casacore/measures/Measures/MCDoppler.h>
+#include <casacore/measures/Measures/MeasConvert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

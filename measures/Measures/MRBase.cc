@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
-#include <measures/Measures/MRBase.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/measures/Measures/MRBase.h>
+#include <casacore/casa/iostream.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

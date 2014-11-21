@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/UVWMachine.h>
-#include <casa/Quanta/Euler.h>
+#include <casacore/measures/Measures/UVWMachine.h>
+#include <casacore/casa/Quanta/Euler.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

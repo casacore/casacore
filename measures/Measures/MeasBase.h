@@ -30,9 +30,9 @@
 #define MEASURES_MEASBASE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/Measure.h>
-#include <casa/Quanta/Quantum.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/Measure.h>
+#include <casacore/casa/Quanta/Quantum.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -174,6 +174,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <measures/Measures/MeasBase.tcc>
+#include <casacore/measures/Measures/MeasBase.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

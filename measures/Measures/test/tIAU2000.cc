@@ -25,30 +25,30 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <measures/Measures/SofaTest.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/Constants.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/Measures/MeasData.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MeasFrame.h>
-#include <measures/Measures/MeasRef.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/Nutation.h>
-#include <measures/Measures/Precession.h>
-#include <casa/OS/Time.h>
-#include <casa/Quanta/RotMatrix.h>
-#include <casa/System/AipsrcValue.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/SofaTest.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/Measures/MeasData.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/Nutation.h>
+#include <casacore/measures/Measures/Precession.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/Quanta/RotMatrix.h>
+#include <casacore/casa/System/AipsrcValue.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // Print separation line of given (default 75) length
 void SEPAR(const uInt l=75) {
   cout << String(l, '-') << endl;

@@ -25,26 +25,26 @@
 //#
 //# $Id$
 
-#include <measures/Measures/MeasuresProxy.h>
-#include <measures/Measures.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MCPosition.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MCFrequency.h>
-#include <measures/Measures/MCDoppler.h>
-#include <measures/Measures/MCRadialVelocity.h>
-#include <measures/Measures/MCBaseline.h>
-#include <measures/Measures/MCuvw.h>
-#include <measures/Measures/MCEarthMagnetic.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/MeasComet.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/Constants.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <casa/Quanta/QuantumHolder.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/measures/Measures/MeasuresProxy.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MCPosition.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MCFrequency.h>
+#include <casacore/measures/Measures/MCDoppler.h>
+#include <casacore/measures/Measures/MCRadialVelocity.h>
+#include <casacore/measures/Measures/MCBaseline.h>
+#include <casacore/measures/Measures/MCuvw.h>
+#include <casacore/measures/Measures/MCEarthMagnetic.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/MeasComet.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
+#include <casacore/casa/Quanta/QuantumHolder.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 MeasuresProxy::MeasuresProxy() : pcomet_p(0) {;}
 

@@ -17,10 +17,10 @@
 //#
 //#
 
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <measures/Measures/MDirection.h>
-#include <casa/namespace.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/casa/namespace.h>
 
 Bool testShiftAngle() {
 	Double rav = 30;

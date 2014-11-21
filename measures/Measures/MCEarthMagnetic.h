@@ -30,14 +30,14 @@
 #define MEASURES_MCEARTHMAGNETIC_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/MEarthMagnetic.h>
-#include <measures/Measures/MeasBase.h>
-#include <measures/Measures/MeasRef.h>
-#include <measures/Measures/MCBase.h>
-#include <measures/Measures/MConvertBase.h>
-#include <measures/Measures/MeasMath.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MEarthMagnetic.h>
+#include <casacore/measures/Measures/MeasBase.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/measures/Measures/MCBase.h>
+#include <casacore/measures/Measures/MConvertBase.h>
+#include <casacore/measures/Measures/MeasMath.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

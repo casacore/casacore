@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/Precession.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/System/AipsrcValue.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/Precession.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/System/AipsrcValue.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

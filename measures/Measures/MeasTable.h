@@ -30,14 +30,14 @@
 #define MEASURES_MEASTABLE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/MeasTableMul.h>
-#include <measures/Measures/MeasData.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MFrequency.h>
-#include <scimath/Functionals/Polynomial.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MeasTableMul.h>
+#include <casacore/measures/Measures/MeasData.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/scimath/Functionals/Polynomial.h>
+#include <casacore/casa/OS/Mutex.h>
 #include <vector>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

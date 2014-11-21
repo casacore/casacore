@@ -30,15 +30,15 @@
 
 //# Includes
 
-#include <casa/aips.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Quanta/Quantum.h>
-#include <measures/Measures/Measure.h>
-#include <measures/Measures/MeasFrame.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/measures/Measures/Measure.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 //# Forward declarations
 namespace casa { //# NAMESPACE CASA - BEGIN
 class String;

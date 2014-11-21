@@ -26,28 +26,28 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/MeasureHolder.h>
-#include <casa/Quanta/QuantumHolder.h>
-#include <casa/Exceptions.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/MeasValue.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MRadialVelocity.h>
-#include <measures/Measures/MBaseline.h>
-#include <measures/Measures/Muvw.h>
-#include <measures/Measures/MEarthMagnetic.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Containers/RecordFieldId.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
+#include <casacore/casa/Quanta/QuantumHolder.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/MeasValue.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
+#include <casacore/measures/Measures/MBaseline.h>
+#include <casacore/measures/Measures/Muvw.h>
+#include <casacore/measures/Measures/MEarthMagnetic.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Containers/RecordFieldId.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,12 +29,12 @@
 #define MEASURES_MEASIERS_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableRow.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Containers/RecordField.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableRow.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

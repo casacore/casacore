@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <casa/BasicSL/Constants.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MeasFrame.h>
-#include <measures/Measures/Nutation.h>
-#include <measures/Measures/MeasTable.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/measures/Measures/Nutation.h>
+#include <casacore/measures/Measures/MeasTable.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

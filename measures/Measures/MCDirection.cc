@@ -26,16 +26,16 @@
 //# $Id$
 
 //# Includes
-#include <casa/Exceptions.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MeasFrame.h>
-#include <casa/Quanta/MVPosition.h>
-#include <measures/Measures/Nutation.h>
-#include <measures/Measures/MeasTable.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/measures/Measures/Nutation.h>
+#include <casacore/measures/Measures/MeasTable.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -27,17 +27,17 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/MeasComet.h>
-#include <measures/Measures/MeasIERS.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Quanta/MVRadialVelocity.h>
-#include <casa/Quanta/MVDirection.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/System/Aipsrc.h>
-#include <casa/BasicMath/Math.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/System/Aipsrc.h>
-#include <casa/OS/Path.h>
+#include <casacore/measures/Measures/MeasComet.h>
+#include <casacore/measures/Measures/MeasIERS.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Quanta/MVRadialVelocity.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/System/Aipsrc.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/System/Aipsrc.h>
+#include <casacore/casa/OS/Path.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

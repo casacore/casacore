@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <measures/Measures/Quality.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/Quality.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,8 +29,8 @@
 #define MEASURES_TABLEMEASCOLUMN_H
 
 //# Includes
-#include <tables/Tables/TableColumn.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

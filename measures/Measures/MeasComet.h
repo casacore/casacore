@@ -30,13 +30,13 @@
 #define MEASURES_MEASCOMET_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableRow.h>
-#include <casa/Containers/RecordField.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Quanta/MVPosition.h>
-#include <measures/Measures/MDirection.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableRow.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/measures/Measures/MDirection.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

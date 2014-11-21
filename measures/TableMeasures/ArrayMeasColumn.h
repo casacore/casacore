@@ -29,8 +29,8 @@
 #define MEASURES_ARRAYMEASCOLUMN_H
 
 //# Includes
-#include <measures/TableMeasures/TableMeasColumn.h>
-#include <measures/Measures/MeasRef.h>
+#include <casacore/measures/TableMeasures/TableMeasColumn.h>
+#include <casacore/measures/Measures/MeasRef.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -279,6 +279,6 @@ private:
 
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <measures/TableMeasures/ArrayMeasColumn.tcc>
+#include <casacore/measures/TableMeasures/ArrayMeasColumn.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

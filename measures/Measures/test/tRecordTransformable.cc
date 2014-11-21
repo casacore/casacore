@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/RecordTransformable.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Exceptions/Error.h>
-#include <measures/Measures/MDirection.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Utilities/RecordTransformable.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() {
   try {
     Record rec;

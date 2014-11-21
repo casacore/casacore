@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/MeasMath.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/System/AipsrcValue.h>
-#include <measures/Measures/Aberration.h>
-#include <measures/Measures/MeasData.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/MRBase.h>
-#include <measures/Measures/Nutation.h>
-#include <measures/Measures/Precession.h>
-#include <measures/Measures/SolarPos.h>
+#include <casacore/measures/Measures/MeasMath.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/System/AipsrcValue.h>
+#include <casacore/measures/Measures/Aberration.h>
+#include <casacore/measures/Measures/MeasData.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/MRBase.h>
+#include <casacore/measures/Measures/Nutation.h>
+#include <casacore/measures/Measures/Precession.h>
+#include <casacore/measures/Measures/SolarPos.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

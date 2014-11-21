@@ -26,20 +26,20 @@
 //# $Id$
 
 //# Includes
-#include <measures/TableMeasures/TableMeasDescBase.h>
-#include <measures/TableMeasures/TableQuantumDesc.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableColumn.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/TableRecord.h>
-#include <measures/Measures/Measure.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/measures/TableMeasures/TableMeasDescBase.h>
+#include <casacore/measures/TableMeasures/TableQuantumDesc.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/measures/Measures/Measure.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -27,22 +27,22 @@
 
 //# Includes
 
-#include <casa/aips.h>
-#include <casa/Exceptions.h>
-#include <casa/Quanta/Quantum.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MRadialVelocity.h>
-#include <casa/Quanta/QuantumHolder.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Record.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
+#include <casacore/casa/Quanta/QuantumHolder.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() {
 
   try {

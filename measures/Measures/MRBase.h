@@ -30,9 +30,9 @@
 #define MEASURES_MRBASE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/MeasFrame.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -30,12 +30,12 @@
 #define MEASURES_MEASMATH_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Quanta/Euler.h>
-#include <casa/Quanta/RotMatrix.h>
-#include <casa/Quanta/MVPosition.h>
-#include <casa/Quanta/MVDirection.h>
-#include <measures/Measures/MeasFrame.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Quanta/Euler.h>
+#include <casacore/casa/Quanta/RotMatrix.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/measures/Measures/MeasFrame.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

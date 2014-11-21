@@ -30,10 +30,10 @@
 #define MEASURES_MEASTABLEMUL_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Polynomial.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Polynomial.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/OS/Mutex.h>
 #include <vector>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

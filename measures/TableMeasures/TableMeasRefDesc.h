@@ -29,10 +29,10 @@
 #define MEASURES_TABLEMEASREFDESC_H
 
 //# Includes
-#include <measures/TableMeasures/TableMeasOffsetDesc.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/measures/TableMeasures/TableMeasOffsetDesc.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

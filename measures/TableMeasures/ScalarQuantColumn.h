@@ -29,7 +29,7 @@
 #define MEASURES_SCALARQUANTCOLUMN_H
 
 //# Includes
-#include <casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/Quantum.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -238,6 +238,6 @@ private:
 
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <measures/TableMeasures/ScalarQuantColumn.tcc>
+#include <casacore/measures/TableMeasures/ScalarQuantColumn.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
