@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <lattices/Lattices/LELInterface.h>
-#include <lattices/Lattices/LELAttribute.h>
-#include <lattices/Lattices/LELBinaryEnums.h>
-#include <lattices/Lattices/LELUnaryEnums.h>
-#include <lattices/Lattices/LELFunctionEnums.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/lattices/Lattices/LELInterface.h>
+#include <casacore/lattices/Lattices/LELAttribute.h>
+#include <casacore/lattices/Lattices/LELBinaryEnums.h>
+#include <casacore/lattices/Lattices/LELUnaryEnums.h>
+#include <casacore/lattices/Lattices/LELFunctionEnums.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/DataType.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

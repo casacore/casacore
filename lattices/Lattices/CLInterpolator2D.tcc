@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <lattices/Lattices/CLInterpolator2D.h>
+#include <casacore/lattices/Lattices/CLInterpolator2D.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

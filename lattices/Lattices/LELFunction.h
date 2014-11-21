@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <lattices/Lattices/LELInterface.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <lattices/Lattices/LELFunctionEnums.h>
-#include <casa/Containers/Block.h>
+#include <casacore/lattices/Lattices/LELInterface.h>
+#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/Lattices/LELFunctionEnums.h>
+#include <casacore/casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -866,6 +866,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LELFunction.tcc>
+#include <casacore/lattices/Lattices/LELFunction.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

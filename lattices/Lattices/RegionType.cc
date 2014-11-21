@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/RegionType.h>
+#include <casacore/lattices/Lattices/RegionType.h>
 
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa {
 

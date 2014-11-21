@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LELCondition.h>
-#include <lattices/Lattices/LELArray.h>
-#include <lattices/Lattices/LELScalar.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LELCondition.h>
+#include <casacore/lattices/Lattices/LELArray.h>
+#include <casacore/lattices/Lattices/LELScalar.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

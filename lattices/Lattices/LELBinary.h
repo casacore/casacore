@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <lattices/Lattices/LELInterface.h>
-#include <lattices/Lattices/LELBinaryEnums.h>
+#include <casacore/lattices/Lattices/LELInterface.h>
+#include <casacore/lattices/Lattices/LELBinaryEnums.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -353,6 +353,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LELBinary.tcc>
+#include <casacore/lattices/Lattices/LELBinary.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

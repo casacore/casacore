@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LatticeBase.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LatticeBase.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

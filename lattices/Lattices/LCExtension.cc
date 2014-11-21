@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LCExtension.h>
-#include <lattices/Lattices/LCBox.h>
-#include <casa/Arrays/Vector.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LCExtension.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

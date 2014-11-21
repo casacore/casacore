@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template <class T> class Block;
@@ -160,6 +160,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LatticeCache.tcc>
+#include <casacore/lattices/Lattices/LatticeCache.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

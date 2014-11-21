@@ -28,8 +28,8 @@
 #ifndef LATTICES_LATTICEMATH_H
 #define LATTICES_LATTICEMATH_H
 
-#include <lattices/LatticeMath/LatticeFit.h>
-#include <lattices/LatticeMath/Fit2D.h>
+#include <casacore/lattices/LatticeMath/LatticeFit.h>
+#include <casacore/lattices/LatticeMath/Fit2D.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

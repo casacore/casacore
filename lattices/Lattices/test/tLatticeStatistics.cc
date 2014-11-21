@@ -25,27 +25,27 @@
 //#
 //# $Id$
 // 
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Inputs/Input.h>
-#include <casa/Logging.h>
-#include <scimath/Mathematics/NumericTraits.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Regex.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <lattices/Lattices/LatticeStatistics.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/LatticeStatsBase.h>
-#include <lattices/Lattices/LatticeUtilities.h>
-#include <lattices/Lattices/LCSlicer.h>
-#include <casa/System/PGPlotter.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Logging.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/LatticeStatistics.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/LatticeStatsBase.h>
+#include <casacore/lattices/Lattices/LatticeUtilities.h>
+#include <casacore/lattices/Lattices/LCSlicer.h>
+#include <casacore/casa/System/PGPlotter.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void doitFloat(LogIO& os);
 void do1DFloat (const Vector<Float>& results,
                 const Vector<Bool>& hasResult, 

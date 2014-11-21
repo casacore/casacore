@@ -27,11 +27,11 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LatticeRegion.h>
-#include <lattices/Lattices/LCBox.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

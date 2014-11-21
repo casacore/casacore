@@ -25,36 +25,36 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/LELAttribute.h>
-#include <lattices/Lattices/LELBinary.h>
-#include <lattices/Lattices/LELConvert.h>
-#include <lattices/Lattices/LELFunction.h>
-#include <lattices/Lattices/LELLattice.h>
-#include <lattices/Lattices/LELUnary.h>
-#include <lattices/Lattices/LELArray.h>
-#include <lattices/Lattices/RebinLattice.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/LCPixelSet.h>
-#include <lattices/Lattices/LCBox.h>
-#include <casa/Arrays/Slicer.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/LELAttribute.h>
+#include <casacore/lattices/Lattices/LELBinary.h>
+#include <casacore/lattices/Lattices/LELConvert.h>
+#include <casacore/lattices/Lattices/LELFunction.h>
+#include <casacore/lattices/Lattices/LELLattice.h>
+#include <casacore/lattices/Lattices/LELUnary.h>
+#include <casacore/lattices/Lattices/LELArray.h>
+#include <casacore/lattices/Lattices/RebinLattice.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/LCPixelSet.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/casa/Arrays/Slicer.h>
 
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Inputs/Input.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Utilities/DataType.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 Bool checkInfo (const LatticeExprNode& expr,
 		const IPosition& shape,
 		const Bool shouldBeScalar,

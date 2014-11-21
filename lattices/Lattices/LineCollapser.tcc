@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LineCollapser.h>
+#include <casacore/lattices/Lattices/LineCollapser.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

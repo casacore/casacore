@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/TempLattice.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

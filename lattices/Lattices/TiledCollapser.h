@@ -30,8 +30,8 @@
  
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -162,6 +162,6 @@ public:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/TiledCollapser.tcc>
+#include <casacore/lattices/Lattices/TiledCollapser.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

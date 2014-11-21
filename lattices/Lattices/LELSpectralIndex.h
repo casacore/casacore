@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <lattices/Lattices/LELFunction.h>
-#include <casa/Containers/Block.h>
+#include <casacore/lattices/Lattices/LELFunction.h>
+#include <casacore/casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -116,6 +116,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LELSpectralIndex.tcc>
+#include <casacore/lattices/Lattices/LELSpectralIndex.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

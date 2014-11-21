@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

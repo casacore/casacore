@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <lattices/Lattices/LatticeBase.h>
-#include <tables/Tables/TableLock.h>
+#include <casacore/lattices/Lattices/LatticeBase.h>
+#include <casacore/tables/Tables/TableLock.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

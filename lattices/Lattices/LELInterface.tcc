@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LELInterface.h>
-#include <lattices/Lattices/LELUnary.h>
-#include <lattices/Lattices/LELArray.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LELInterface.h>
+#include <casacore/lattices/Lattices/LELUnary.h>
+#include <casacore/lattices/Lattices/LELArray.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

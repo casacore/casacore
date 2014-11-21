@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeAddNoise.h>
+#include <casacore/lattices/Lattices/LatticeAddNoise.h>
 
-#include <casa/Arrays/Array.h>
-#include <casa/Exceptions/Error.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicSL/Complex.h> 
-#include <casa/BasicMath/Random.h> 
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicSL/Complex.h> 
+#include <casacore/casa/BasicMath/Random.h> 
+#include <casacore/casa/BasicSL/String.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

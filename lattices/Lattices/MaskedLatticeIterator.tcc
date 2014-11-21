@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-#include <lattices/Lattices/MaskedLatticeIterator.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/Assert.h> 
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/MaskedLatticeIterator.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/Assert.h> 
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Array.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

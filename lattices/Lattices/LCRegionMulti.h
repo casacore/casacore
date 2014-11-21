@@ -29,9 +29,9 @@
 #define LATTICES_LCREGIONMULTI_H
 
 //# Includes
-#include <lattices/Lattices/LCRegion.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Containers/Block.h>
+#include <casacore/lattices/Lattices/LCRegion.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Containers/Block.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

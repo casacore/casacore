@@ -26,13 +26,13 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LELLattCoord.h>
-#include <lattices/Lattices/LattRegionHolder.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/RebinLattice.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LELLattCoord.h>
+#include <casacore/lattices/Lattices/LattRegionHolder.h>
+#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/RebinLattice.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -25,23 +25,23 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LCRegion.h>
-#include <lattices/Lattices/RegionType.h>
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/LCEllipsoid.h>
-#include <lattices/Lattices/LCPolygon.h>
-#include <lattices/Lattices/LCPixelSet.h>
-#include <lattices/Lattices/LCPagedMask.h>
-#include <lattices/Lattices/LCIntersection.h>
-#include <lattices/Lattices/LCUnion.h>
-#include <lattices/Lattices/LCConcatenation.h>
-#include <lattices/Lattices/LCComplement.h>
-#include <lattices/Lattices/LCDifference.h>
-#include <lattices/Lattices/LCExtension.h>
-#include <lattices/Lattices/LCStretch.h>
-#include <lattices/Lattices/LCHDF5Mask.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LCRegion.h>
+#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/Lattices/LCEllipsoid.h>
+#include <casacore/lattices/Lattices/LCPolygon.h>
+#include <casacore/lattices/Lattices/LCPixelSet.h>
+#include <casacore/lattices/Lattices/LCPagedMask.h>
+#include <casacore/lattices/Lattices/LCIntersection.h>
+#include <casacore/lattices/Lattices/LCUnion.h>
+#include <casacore/lattices/Lattices/LCConcatenation.h>
+#include <casacore/lattices/Lattices/LCComplement.h>
+#include <casacore/lattices/Lattices/LCDifference.h>
+#include <casacore/lattices/Lattices/LCExtension.h>
+#include <casacore/lattices/Lattices/LCStretch.h>
+#include <casacore/lattices/Lattices/LCHDF5Mask.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

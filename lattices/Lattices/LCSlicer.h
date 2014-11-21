@@ -29,9 +29,9 @@
 #define LATTICES_LCSLICER_H
 
 //# Includes
-#include <lattices/Lattices/RegionType.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

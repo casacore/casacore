@@ -29,8 +29,8 @@
 #define LATTICES_LCELLIPSOID_H
 
 //# Includes
-#include <lattices/Lattices/LCRegionFixed.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/lattices/Lattices/LCRegionFixed.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

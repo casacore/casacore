@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LELScalar.h>
-#include <casa/Utilities/ValType.h>
+#include <casacore/lattices/Lattices/LELScalar.h>
+#include <casacore/casa/Utilities/ValType.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

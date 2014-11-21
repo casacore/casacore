@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LCEllipsoid.h>
+#include <casacore/lattices/Lattices/LCEllipsoid.h>
 
-#include <casa/BasicSL/Constants.h>
-#include <casa/Utilities/Assert.h>
-#include <tables/Tables/TableRecord.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/tables/Tables/TableRecord.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void show(const LCEllipsoid& ellipse) {
 	Array<bool> mask = ellipse.get();

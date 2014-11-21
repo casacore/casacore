@@ -29,7 +29,7 @@
 #define LATTICES_TILEDSHAPE_H
 
 //# Includes
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

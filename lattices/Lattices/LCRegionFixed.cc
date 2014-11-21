@@ -26,7 +26,7 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LCRegionFixed.h>
+#include <casacore/lattices/Lattices/LCRegionFixed.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

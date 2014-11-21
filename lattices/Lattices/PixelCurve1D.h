@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <scimath/Functionals/Function1D.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/scimath/Functionals/Function1D.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

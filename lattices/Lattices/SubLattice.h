@@ -31,11 +31,11 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <casa/Arrays/AxesSpecifier.h>
-#include <casa/Arrays/AxesMapping.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/casa/Arrays/AxesSpecifier.h>
+#include <casacore/casa/Arrays/AxesMapping.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -325,6 +325,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/SubLattice.tcc>
+#include <casacore/lattices/Lattices/SubLattice.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

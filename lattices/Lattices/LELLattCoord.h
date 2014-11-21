@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <lattices/Lattices/LELLattCoordBase.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/lattices/Lattices/LELLattCoordBase.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

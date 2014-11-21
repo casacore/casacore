@@ -26,31 +26,31 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/LELLattice.h>
-#include <lattices/Lattices/LELConvert.h>
-#include <lattices/Lattices/LELBinary.h>
-#include <lattices/Lattices/LELUnary.h>
-#include <lattices/Lattices/LELCondition.h>
-#include <lattices/Lattices/LELFunction.h>
-#include <lattices/Lattices/LELSpectralIndex.h>
-#include <lattices/Lattices/LELArray.h>
-#include <lattices/Lattices/LELRegion.h>
-#include <lattices/Lattices/LCRegion.h>
-#include <lattices/Lattices/LCSlicer.h>
-#include <lattices/Lattices/LattRegionHolder.h>
-#include <lattices/Lattices/LELLattCoord.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Containers/Block.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h> 
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/LELLattice.h>
+#include <casacore/lattices/Lattices/LELConvert.h>
+#include <casacore/lattices/Lattices/LELBinary.h>
+#include <casacore/lattices/Lattices/LELUnary.h>
+#include <casacore/lattices/Lattices/LELCondition.h>
+#include <casacore/lattices/Lattices/LELFunction.h>
+#include <casacore/lattices/Lattices/LELSpectralIndex.h>
+#include <casacore/lattices/Lattices/LELArray.h>
+#include <casacore/lattices/Lattices/LELRegion.h>
+#include <casacore/lattices/Lattices/LCRegion.h>
+#include <casacore/lattices/Lattices/LCSlicer.h>
+#include <casacore/lattices/Lattices/LattRegionHolder.h>
+#include <casacore/lattices/Lattices/LELLattCoord.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h> 
+#include <casacore/casa/iostream.h>
 
 
 

@@ -25,34 +25,34 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeApply.h>
+#include <casacore/lattices/Lattices/LatticeApply.h>
 
-#include <lattices/Lattices/ArrayLattice.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/TiledShape.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
 //
-#include <lattices/Lattices/LineCollapser.h>
-#include <lattices/Lattices/TiledCollapser.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/LatticeProgress.h>
-#include <casa/System/ProgressMeter.h>
+#include <casacore/lattices/Lattices/LineCollapser.h>
+#include <casacore/lattices/Lattices/TiledCollapser.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/LatticeProgress.h>
+#include <casacore/casa/System/ProgressMeter.h>
 //
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Inputs/Input.h>
-#include <casa/OS/Timer.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 class MyLineCollapser : public LineCollapser<Float>
 {
 public:

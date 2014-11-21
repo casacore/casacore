@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Inputs/Input.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/COWPtr.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/COWPtr.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 Bool checkFloat(Lattice<Float>& expr, 
                 const Float result,
                 const IPosition shape,

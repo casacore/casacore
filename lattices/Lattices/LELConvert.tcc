@@ -26,13 +26,13 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LELConvert.h>
-#include <lattices/Lattices/LELArray.h>
-#include <lattices/Lattices/LELScalar.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/BasicMath/ConvertScalar.h>
+#include <casacore/lattices/Lattices/LELConvert.h>
+#include <casacore/lattices/Lattices/LELArray.h>
+#include <casacore/lattices/Lattices/LELScalar.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicMath/ConvertScalar.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

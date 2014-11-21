@@ -29,8 +29,8 @@
 #define LATTICES_HDF5LATTITER_H
 
 //# Includes
-#include <lattices/Lattices/LatticeIterInterface.h>
-#include <lattices/Lattices/HDF5Lattice.h>
+#include <casacore/lattices/Lattices/LatticeIterInterface.h>
+#include <casacore/lattices/Lattices/HDF5Lattice.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -134,6 +134,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/HDF5LattIter.tcc>
+#include <casacore/lattices/Lattices/HDF5LattIter.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

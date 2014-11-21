@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <lattices/Lattices/LatticeProgress.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/LatticeProgress.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class ProgressMeter;

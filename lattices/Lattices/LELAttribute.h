@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <casa/Arrays/IPosition.h>
-#include <lattices/Lattices/LELCoordinates.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/lattices/Lattices/LELCoordinates.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

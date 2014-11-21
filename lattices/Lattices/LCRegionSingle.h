@@ -29,7 +29,7 @@
 #define LATTICES_LCREGIONSINGLE_H
 
 //# Includes
-#include <lattices/Lattices/LCRegion.h>
+#include <casacore/lattices/Lattices/LCRegion.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

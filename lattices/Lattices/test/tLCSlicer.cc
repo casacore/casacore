@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LCSlicer.h>
-#include <casa/Arrays/Slicer.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/LCSlicer.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void doIt()
 {
     // Construct a simple LCSlicer.

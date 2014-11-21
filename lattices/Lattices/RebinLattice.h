@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Slicer.h>
-#include <lattices/Lattices/MaskedLattice.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -194,6 +194,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/RebinLattice.tcc>
+#include <casacore/lattices/Lattices/RebinLattice.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -30,19 +30,19 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Containers/Block.h>
-#include <casa/Arrays/Vector.h>
-#include <lattices/Lattices/LatticeStatsBase.h>
-#include <lattices/Lattices/TiledCollapser.h>
-#include <lattices/Lattices/TiledCollapser.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <scimath/Mathematics/NumericTraits.h>
-#include <casa/System/PGPlotter.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/lattices/Lattices/LatticeStatsBase.h>
+#include <casacore/lattices/Lattices/TiledCollapser.h>
+#include <casacore/lattices/Lattices/TiledCollapser.h>
+#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/System/PGPlotter.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <vector>
 #include <list>
 
@@ -52,7 +52,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 template <class T> class MaskedLattice;
 template <class T> class TempLattice;
 class IPosition;
-#include <casa/iosstrfwd.h>
+#include <casacore/casa/iosstrfwd.h>
 
 
 // <summary>
@@ -692,6 +692,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LatticeStatistics.tcc>
+#include <casacore/lattices/Lattices/LatticeStatistics.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

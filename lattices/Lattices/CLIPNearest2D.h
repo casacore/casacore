@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <lattices/Lattices/CLInterpolator2D.h>
-#include <casa/Arrays/AxesMapping.h>
+#include <casacore/lattices/Lattices/CLInterpolator2D.h>
+#include <casacore/casa/Arrays/AxesMapping.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -108,6 +108,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/CLIPNearest2D.tcc>
+#include <casacore/lattices/Lattices/CLIPNearest2D.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif 

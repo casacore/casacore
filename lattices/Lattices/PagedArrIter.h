@@ -29,8 +29,8 @@
 #define LATTICES_PAGEDARRITER_H
 
 //# Includes
-#include <lattices/Lattices/LatticeIterInterface.h>
-#include <lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/LatticeIterInterface.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -134,6 +134,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/PagedArrIter.tcc>
+#include <casacore/lattices/Lattices/PagedArrIter.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

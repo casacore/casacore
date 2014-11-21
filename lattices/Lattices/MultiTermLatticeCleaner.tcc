@@ -25,48 +25,48 @@
 //# $Id: MultiTermLatticeCleaner.cc 19909 2008-04-23 02:08:02Z UrvashiRau $
 
 
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 
-#include <casa/Logging/LogIO.h>
-#include <casa/OS/File.h>
-#include <casa/Containers/Record.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/Containers/Record.h>
 
-#include <lattices/Lattices/LatticeCleaner.h>
-#include <lattices/Lattices/MultiTermLatticeCleaner.h>
-#include <lattices/Lattices/LatticeCleanProgress.h>
-#include <lattices/Lattices/TiledLineStepper.h> 
-#include <lattices/Lattices/LatticeStepper.h> 
-#include <lattices/Lattices/LatticeNavigator.h> 
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <lattices/Lattices/LatticeFFT.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/LCBox.h>
-#include <casa/Arrays/Slicer.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/Lattices/LatticeCleaner.h>
+#include <casacore/lattices/Lattices/MultiTermLatticeCleaner.h>
+#include <casacore/lattices/Lattices/LatticeCleanProgress.h>
+#include <casacore/lattices/Lattices/TiledLineStepper.h> 
+#include <casacore/lattices/Lattices/LatticeStepper.h> 
+#include <casacore/lattices/Lattices/LatticeNavigator.h> 
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/lattices/Lattices/LatticeFFT.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/Lattices/LatticeExprNode.h>
 
-#include <casa/OS/HostInfo.h>
-#include <casa/System/PGPlotter.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/Arrays/ArrayIter.h>
-#include <casa/Arrays/VectorIter.h>
+#include <casacore/casa/OS/HostInfo.h>
+#include <casacore/casa/System/PGPlotter.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/Arrays/ArrayIter.h>
+#include <casacore/casa/Arrays/VectorIter.h>
 
-#include <casa/Utilities/GenSort.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/Fallible.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Fallible.h>
 
-#include <casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicSL/Constants.h>
 
-#include <casa/Logging/LogSink.h>
-#include <casa/Logging/LogMessage.h>
+#include <casacore/casa/Logging/LogSink.h>
+#include <casacore/casa/Logging/LogMessage.h>
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Matrix.h>
-#include <scimath/Mathematics/MatrixMathLA.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/scimath/Mathematics/MatrixMathLA.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
