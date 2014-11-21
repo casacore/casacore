@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSWeatherIndex.h>
+#include <casacore/ms/MeasurementSets/MSWeatherIndex.h>
 
-#include <casa/Arrays/ArrayUtil.h>
-#include <ms/MeasurementSets/MSWeather.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/ms/MeasurementSets/MSWeather.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

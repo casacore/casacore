@@ -29,11 +29,11 @@
 #ifndef MS_STOKESCONVERTER_H
 #define MS_STOKESCONVERTER_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/BasicSL/Complex.h>
-#include <measures/Measures/Stokes.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/measures/Measures/Stokes.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

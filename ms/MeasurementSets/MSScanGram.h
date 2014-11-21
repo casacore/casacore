@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <casa/BasicSL/String.h>
-#include <ms/MeasurementSets/MSScanParse.h> // routines used by bison actions
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSScanParse.h> // routines used by bison actions
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

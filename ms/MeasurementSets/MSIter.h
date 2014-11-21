@@ -28,18 +28,18 @@
 #ifndef MS_MSITER_H
 #define MS_MSITER_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MPosition.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <casa/Utilities/Compare.h>
-#include <casa/BasicSL/String.h>
-#include <scimath/Mathematics/SquareMatrix.h>
-#include <scimath/Mathematics/RigidVector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/casa/Utilities/Compare.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/scimath/Mathematics/SquareMatrix.h>
+#include <casacore/scimath/Mathematics/RigidVector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

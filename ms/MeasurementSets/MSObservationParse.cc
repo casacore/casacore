@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSObservationParse.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <ms/MeasurementSets/MSMainColumns.h>
-#include <ms/MeasurementSets/MSSelectionTools.h>
+#include <casacore/ms/MeasurementSets/MSObservationParse.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/ms/MeasurementSets/MSMainColumns.h>
+#include <casacore/ms/MeasurementSets/MSSelectionTools.h>
 #include <limits>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

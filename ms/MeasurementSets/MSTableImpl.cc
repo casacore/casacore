@@ -25,41 +25,41 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSTableImpl.h>
-#include <casa/BasicSL/String.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColDescSet.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/ScaRecordColDesc.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/StManAipsIO.h>
-#include <tables/Tables/ForwardCol.h>
-#include <tables/Tables/CompressFloat.h>
-#include <tables/Tables/CompressComplex.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSTableImpl.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColDescSet.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/ScaRecordColDesc.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/tables/DataMan/StManAipsIO.h>
+#include <casacore/tables/DataMan/ForwardCol.h>
+#include <casacore/tables/DataMan/CompressFloat.h>
+#include <casacore/tables/DataMan/CompressComplex.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
 
-#include <measures/TableMeasures/TableMeasRefDesc.h>
-#include <measures/TableMeasures/TableMeasValueDesc.h>
-#include <measures/TableMeasures/TableMeasDesc.h>
-#include <measures/TableMeasures/TableQuantumDesc.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MRadialVelocity.h>
-#include <measures/Measures/MBaseline.h>
-#include <measures/Measures/Muvw.h>
-#include <measures/Measures/MEarthMagnetic.h>
+#include <casacore/measures/TableMeasures/TableMeasRefDesc.h>
+#include <casacore/measures/TableMeasures/TableMeasValueDesc.h>
+#include <casacore/measures/TableMeasures/TableMeasDesc.h>
+#include <casacore/measures/TableMeasures/TableQuantumDesc.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
+#include <casacore/measures/Measures/MBaseline.h>
+#include <casacore/measures/Measures/Muvw.h>
+#include <casacore/measures/Measures/MEarthMagnetic.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

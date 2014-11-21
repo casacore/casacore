@@ -25,36 +25,36 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MS1ToMS2Converter.h>
+#include <casacore/ms/MeasurementSets/MS1ToMS2Converter.h>
 
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSTableImpl.h>
-#include <tables/Tables/IncrementalStMan.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <measures/TableMeasures/ArrayMeasColumn.h>
-#include <measures/TableMeasures/TableMeasDesc.h>
-#include <measures/TableMeasures/TableMeasValueDesc.h>
-#include <measures/TableMeasures/TableQuantumDesc.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MRadialVelocity.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSTableImpl.h>
+#include <casacore/tables/DataMan/IncrementalStMan.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
+#include <casacore/measures/TableMeasures/TableMeasDesc.h>
+#include <casacore/measures/TableMeasures/TableMeasValueDesc.h>
+#include <casacore/measures/TableMeasures/TableQuantumDesc.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
 

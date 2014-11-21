@@ -25,9 +25,9 @@
 //#
 //#
 //# $Id$
-#include <ms/MeasurementSets/MSSelectionKeywords.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSSelectionKeywords.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

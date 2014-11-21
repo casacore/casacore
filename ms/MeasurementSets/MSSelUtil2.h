@@ -1,9 +1,9 @@
 #ifndef MS_MSSELUTIL2_H
 #define MS_MSSELUTIL2_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 template <class T> class MSSelUtil2
@@ -31,6 +31,6 @@ template <class T> class MSSelUtil2
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <ms/MeasurementSets/MSSelUtil2.tcc>
+#include <casacore/ms/MeasurementSets/MSSelUtil2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

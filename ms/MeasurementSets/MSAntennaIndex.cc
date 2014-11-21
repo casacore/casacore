@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSAntennaIndex.h>
-#include <ms/MeasurementSets/MSSelectionTools.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Utilities/Regex.h>
+#include <casacore/ms/MeasurementSets/MSAntennaIndex.h>
+#include <casacore/ms/MeasurementSets/MSSelectionTools.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Utilities/Regex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

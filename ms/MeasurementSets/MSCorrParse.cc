@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSCorrParse.h>
-#include <ms/MeasurementSets/MSDataDescIndex.h>
-#include <ms/MeasurementSets/MSPolIndex.h>
-#include <ms/MeasurementSets/MSMainColumns.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <tables/Tables/RecordGram.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/BasicSL/String.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/ArrayColumn.h>
+#include <casacore/ms/MeasurementSets/MSCorrParse.h>
+#include <casacore/ms/MeasurementSets/MSDataDescIndex.h>
+#include <casacore/ms/MeasurementSets/MSPolIndex.h>
+#include <casacore/ms/MeasurementSets/MSMainColumns.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/tables/TaQL/RecordGram.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

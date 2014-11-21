@@ -29,7 +29,7 @@
 #ifndef MS_MSSPWINDOWENUMS_H
 #define MS_MSSPWINDOWENUMS_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

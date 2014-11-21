@@ -29,10 +29,10 @@
 #ifndef MS_MSFEEDINDEX_H
 #define MS_MSFEEDINDEX_H
 
-#include <ms/MeasurementSets/MSTableIndex.h>
+#include <casacore/ms/MeasurementSets/MSTableIndex.h>
 
-#include <ms/MeasurementSets/MSFeedColumns.h>
-#include <casa/Containers/RecordField.h>
+#include <casacore/ms/MeasurementSets/MSFeedColumns.h>
+#include <casacore/casa/Containers/RecordField.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

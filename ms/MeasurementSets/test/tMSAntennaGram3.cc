@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/iostream.h>
 
-#include <ms/MeasurementSets/MSAntennaGram.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSAntennaColumns.h>
-#include <ms/MeasurementSets/MSSelection.h>
-#include <tables/Tables/SetupNewTab.h>
+#include <casacore/ms/MeasurementSets/MSAntennaGram.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSAntennaColumns.h>
+#include <casacore/ms/MeasurementSets/MSSelection.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
 
 using namespace casa;
 

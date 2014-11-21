@@ -31,7 +31,7 @@
   using namespace casa;
 %}
 
-%pure_parser                /* make parser re-entrant */
+%pure-parser                /* make parser re-entrant */
 
 %union {
   const TableExprNode* node;
@@ -90,8 +90,8 @@
 // %destructor {delete ($$);} blength blengthlist
 
 %{
-#include <casa/Logging/LogIO.h>
-#include <ms/MeasurementSets/MSSelectionTools.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/ms/MeasurementSets/MSSelectionTools.h>
 
   int MSAntennaGramlex (YYSTYPE*);
   Bool MSAntennaGramNegate=False;

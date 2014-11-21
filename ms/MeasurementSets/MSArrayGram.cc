@@ -30,17 +30,17 @@
 // This file includes the output files of bison and flex for
 // parsing command lines.
 
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/ExprNodeSet.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSArrayGram.h>
-#include <ms/MeasurementSets/MSArrayParse.h> // routines used by bison actions
-#include <tables/Tables/TableParse.h>       // routines used by bison actions
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/tables/TaQL/ExprNodeSet.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSArrayGram.h>
+#include <casacore/ms/MeasurementSets/MSArrayParse.h> // routines used by bison actions
+#include <casacore/tables/TaQL/TableParse.h>       // routines used by bison actions
+#include <casacore/tables/Tables/TableError.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
-#include <casa/stdlib.h>
+#include <casacore/casa/stdlib.h>
 //# Define register as empty string to avoid warnings in C++11 compilers
 //# because keyword register is not supported anymore.
 #define register

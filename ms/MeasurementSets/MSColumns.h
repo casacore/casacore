@@ -28,27 +28,27 @@
 #ifndef MS_MSCOLUMNS_H
 #define MS_MSCOLUMNS_H
 
-#include <casa/aips.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MEpoch.h>
-#include <ms/MeasurementSets/MSAntennaColumns.h>
-#include <ms/MeasurementSets/MSDataDescColumns.h>
-#include <ms/MeasurementSets/MSDopplerColumns.h>
-#include <ms/MeasurementSets/MSFeedColumns.h>
-#include <ms/MeasurementSets/MSFieldColumns.h>
-#include <ms/MeasurementSets/MSFlagCmdColumns.h>
-#include <ms/MeasurementSets/MSFreqOffColumns.h>
-#include <ms/MeasurementSets/MSHistoryColumns.h>
-#include <ms/MeasurementSets/MSMainColumns.h>
-#include <ms/MeasurementSets/MSObsColumns.h>
-#include <ms/MeasurementSets/MSPointingColumns.h>
-#include <ms/MeasurementSets/MSPolColumns.h>
-#include <ms/MeasurementSets/MSProcessorColumns.h>
-#include <ms/MeasurementSets/MSSourceColumns.h>
-#include <ms/MeasurementSets/MSSpWindowColumns.h>
-#include <ms/MeasurementSets/MSStateColumns.h>
-#include <ms/MeasurementSets/MSSysCalColumns.h>
-#include <ms/MeasurementSets/MSWeatherColumns.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/ms/MeasurementSets/MSAntennaColumns.h>
+#include <casacore/ms/MeasurementSets/MSDataDescColumns.h>
+#include <casacore/ms/MeasurementSets/MSDopplerColumns.h>
+#include <casacore/ms/MeasurementSets/MSFeedColumns.h>
+#include <casacore/ms/MeasurementSets/MSFieldColumns.h>
+#include <casacore/ms/MeasurementSets/MSFlagCmdColumns.h>
+#include <casacore/ms/MeasurementSets/MSFreqOffColumns.h>
+#include <casacore/ms/MeasurementSets/MSHistoryColumns.h>
+#include <casacore/ms/MeasurementSets/MSMainColumns.h>
+#include <casacore/ms/MeasurementSets/MSObsColumns.h>
+#include <casacore/ms/MeasurementSets/MSPointingColumns.h>
+#include <casacore/ms/MeasurementSets/MSPolColumns.h>
+#include <casacore/ms/MeasurementSets/MSProcessorColumns.h>
+#include <casacore/ms/MeasurementSets/MSSourceColumns.h>
+#include <casacore/ms/MeasurementSets/MSSpWindowColumns.h>
+#include <casacore/ms/MeasurementSets/MSStateColumns.h>
+#include <casacore/ms/MeasurementSets/MSSysCalColumns.h>
+#include <casacore/ms/MeasurementSets/MSWeatherColumns.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -29,13 +29,13 @@
 #define MS_MSPOLNPARSE_H
 
 //# Includes
-#include <ms/MeasurementSets/MSParse.h>
-#include <casa/Containers/OrderedMap.h>
-#include <casa/Containers/MapIO.h>
-#include <ms/MeasurementSets/MSPolarization.h>
-#include <ms/MeasurementSets/MSPolColumns.h>
-#include <ms/MeasurementSets/MSPolIndex.h>
-#include <ms/MeasurementSets/MSDataDescIndex.h>
+#include <casacore/ms/MeasurementSets/MSParse.h>
+#include <casacore/casa/Containers/OrderedMap.h>
+#include <casacore/casa/Containers/MapIO.h>
+#include <casacore/ms/MeasurementSets/MSPolarization.h>
+#include <casacore/ms/MeasurementSets/MSPolColumns.h>
+#include <casacore/ms/MeasurementSets/MSPolIndex.h>
+#include <casacore/ms/MeasurementSets/MSDataDescIndex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

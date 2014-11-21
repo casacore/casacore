@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSDopplerColumns.h>
-#include <ms/MeasurementSets/MSDoppler.h>
+#include <casacore/ms/MeasurementSets/MSDopplerColumns.h>
+#include <casacore/ms/MeasurementSets/MSDoppler.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

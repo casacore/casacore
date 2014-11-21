@@ -38,7 +38,7 @@
 #undef YY_DECL
 #define YY_DECL int MSArrayGramlex (YYSTYPE* lvalp)
 static string                qstr;
-#include <ms/MeasurementSets/MSSelectionTools.h>
+#include <casacore/ms/MeasurementSets/MSSelectionTools.h>
 %}
 
 WHITE     [ \t\n]*

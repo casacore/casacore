@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/ExprNodeSet.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSPolnGram.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <ms/MeasurementSets/MSSelectionTools.h>
-#include <ms/MeasurementSets/MSPolarization.h>
-#include <ms/MeasurementSets/MSPolColumns.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/tables/TaQL/ExprNodeSet.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSPolnGram.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/ms/MeasurementSets/MSSelectionTools.h>
+#include <casacore/ms/MeasurementSets/MSPolarization.h>
+#include <casacore/ms/MeasurementSets/MSPolColumns.h>
 
-#include <tables/Tables/TableParse.h> 
-#include <tables/Tables/TableError.h>
-#include <ms/MeasurementSets/MSSpwGram.h>
-#include <ms/MeasurementSets/MSPolnParse.h>
-#include <measures/Measures/Stokes.h>
-#include <casa/Containers/MapIO.h>
+#include <casacore/tables/TaQL/TableParse.h> 
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/ms/MeasurementSets/MSSpwGram.h>
+#include <casacore/ms/MeasurementSets/MSPolnParse.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/casa/Containers/MapIO.h>
 
 // Define the yywrap function for flex.
 int MSPolnGramwrap()

@@ -28,7 +28,7 @@
 #ifndef MS_MSTILELAYOUT_H
 #define MS_MSTILELAYOUT_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

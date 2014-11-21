@@ -29,9 +29,9 @@
 #define MS_MSANTENNAPARSE_H
 
 //# Includes
-#include <ms/MeasurementSets/MSParse.h>
-#include <ms/MeasurementSets/MSSelectionErrorHandler.h>
-#include <casa/Arrays/Matrix.h>
+#include <casacore/ms/MeasurementSets/MSParse.h>
+#include <casacore/ms/MeasurementSets/MSSelectionErrorHandler.h>
+#include <casacore/casa/Arrays/Matrix.h>
 #include <bitset>
 namespace casa { //# NAMESPACE CASA - BEGIN
   

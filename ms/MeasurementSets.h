@@ -28,8 +28,8 @@
 #ifndef MS_MEASUREMENTSETS_H
 #define MS_MEASUREMENTSETS_H
 
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

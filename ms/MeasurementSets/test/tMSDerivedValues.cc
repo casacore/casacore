@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSDerivedValues.h>
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/Arrays/ArrayIO.h>
+#include <casacore/ms/MeasurementSets/MSDerivedValues.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
   try {

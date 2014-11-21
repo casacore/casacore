@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

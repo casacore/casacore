@@ -27,8 +27,8 @@
 
 
 #if defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ < 91)
-#include <ms/MeasurementSets/MSTable.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSTable.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
  
 namespace casa { //# NAMESPACE CASA - BEGIN
 

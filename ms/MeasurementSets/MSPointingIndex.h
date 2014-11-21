@@ -29,9 +29,9 @@
 #ifndef MS_MSPOINTINGINDEX_H
 #define MS_MSPOINTINGINDEX_H
 
-#include <ms/MeasurementSets/MSTableIndex.h>
+#include <casacore/ms/MeasurementSets/MSTableIndex.h>
 
-#include <casa/Containers/RecordField.h>
+#include <casacore/casa/Containers/RecordField.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,25 +25,25 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSIter.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Exceptions/Error.h>
-#include <tables/Tables/TableIter.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Arrays/Slicer.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MSSpwIndex.h>
-#include <measures/Measures.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/Stokes.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/iostream.h>
+#include <casacore/ms/MeasurementSets/MSIter.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/tables/Tables/TableIter.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MSSpwIndex.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

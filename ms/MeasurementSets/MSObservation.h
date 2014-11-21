@@ -29,9 +29,9 @@
 #ifndef MS_MSOBSERVATION_H
 #define MS_MSOBSERVATION_H
 
-#include <casa/aips.h>
-#include <ms/MeasurementSets/MSTable.h>
-#include <ms/MeasurementSets/MSObsEnums.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MSTable.h>
+#include <casacore/ms/MeasurementSets/MSObsEnums.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

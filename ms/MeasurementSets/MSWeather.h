@@ -29,9 +29,9 @@
 #ifndef MS_MSWEATHER_H
 #define MS_MSWEATHER_H
 
-#include <casa/aips.h>
-#include <ms/MeasurementSets/MSTable.h>
-#include <ms/MeasurementSets/MSWeatherEnums.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MSTable.h>
+#include <casacore/ms/MeasurementSets/MSWeatherEnums.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

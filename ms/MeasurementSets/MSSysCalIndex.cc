@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSSysCalIndex.h>
+#include <casacore/ms/MeasurementSets/MSSysCalIndex.h>
 
-#include <casa/Arrays/ArrayUtil.h>
-#include <ms/MeasurementSets/MSSysCal.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/ms/MeasurementSets/MSSysCal.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

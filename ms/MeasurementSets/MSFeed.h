@@ -29,9 +29,9 @@
 #ifndef MS_MSFEED_H
 #define MS_MSFEED_H
 
-#include <casa/aips.h>
-#include <ms/MeasurementSets/MSTable.h>
-#include <ms/MeasurementSets/MSFeedEnums.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MSTable.h>
+#include <casacore/ms/MeasurementSets/MSFeedEnums.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

@@ -25,10 +25,10 @@
 //#
 //# $Id$
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <ms/MeasurementSets/MSSelection.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/ms/MeasurementSets/MSSelection.h>
 #include <string.h>
 #include <iostream>
 namespace casa { //# NAMESPACE CASA - BEGIN

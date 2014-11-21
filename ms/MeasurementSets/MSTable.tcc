@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSTable.h>
-#include <ms/MeasurementSets/MSTableImpl.h>
-#include <tables/Tables/TableRecord.h>
+#include <casacore/ms/MeasurementSets/MSTable.h>
+#include <casacore/ms/MeasurementSets/MSTableImpl.h>
+#include <casacore/tables/Tables/TableRecord.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

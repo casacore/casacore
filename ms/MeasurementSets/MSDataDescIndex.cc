@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSDataDescIndex.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayUtil.h>
+#include <casacore/ms/MeasurementSets/MSDataDescIndex.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

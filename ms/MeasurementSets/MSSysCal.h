@@ -29,9 +29,9 @@
 #ifndef MS_MSSYSCAL_H
 #define MS_MSSYSCAL_H
 
-#include <casa/aips.h>
-#include <ms/MeasurementSets/MSTable.h>
-#include <ms/MeasurementSets/MSSysCalEnums.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MSTable.h>
+#include <casacore/ms/MeasurementSets/MSSysCalEnums.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

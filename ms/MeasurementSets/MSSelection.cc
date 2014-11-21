@@ -26,41 +26,41 @@
 //# $Id$ 
 //----------------------------------------------------------------------------
 
-#include <ms/MeasurementSets/MSSelection.h>
-#include <ms/MeasurementSets/MSAntennaGram.h>
-#include <ms/MeasurementSets/MSCorrGram.h>
-#include <ms/MeasurementSets/MSFieldGram.h>
-#include <ms/MeasurementSets/MSSpwGram.h>
-#include <ms/MeasurementSets/MSScanGram.h>
-#include <ms/MeasurementSets/MSArrayGram.h>
-#include <ms/MeasurementSets/MSTimeGram.h>
-#include <ms/MeasurementSets/MSUvDistGram.h>
-#include <ms/MeasurementSets/MSPolnGram.h>
-#include <ms/MeasurementSets/MSStateGram.h>
-#include <ms/MeasurementSets/MSObservationGram.h>
-#include <ms/MeasurementSets/MSRange.h>
-#include <tables/Tables/TableParse.h>
-#include <tables/Tables/RecordGram.h>
+#include <casacore/ms/MeasurementSets/MSSelection.h>
+#include <casacore/ms/MeasurementSets/MSAntennaGram.h>
+#include <casacore/ms/MeasurementSets/MSCorrGram.h>
+#include <casacore/ms/MeasurementSets/MSFieldGram.h>
+#include <casacore/ms/MeasurementSets/MSSpwGram.h>
+#include <casacore/ms/MeasurementSets/MSScanGram.h>
+#include <casacore/ms/MeasurementSets/MSArrayGram.h>
+#include <casacore/ms/MeasurementSets/MSTimeGram.h>
+#include <casacore/ms/MeasurementSets/MSUvDistGram.h>
+#include <casacore/ms/MeasurementSets/MSPolnGram.h>
+#include <casacore/ms/MeasurementSets/MSStateGram.h>
+#include <casacore/ms/MeasurementSets/MSObservationGram.h>
+#include <casacore/ms/MeasurementSets/MSRange.h>
+#include <casacore/tables/TaQL/TableParse.h>
+#include <casacore/tables/TaQL/RecordGram.h>
 
-#include <ms/MeasurementSets/MSMainColumns.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <measures/Measures/MEpoch.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/Quanta/QuantumHolder.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Containers/Record.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/iostream.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <ms/MeasurementSets/MSSelectionTools.h>
-#include <ms/MeasurementSets/MSSelectableTable.h>
-#include <ms/MeasurementSets/MSSelectableMainColumn.h>
-#include <ms/MeasurementSets/MSAntennaParse.h>
-#include <ms/MeasurementSets/MSStateParse.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/GenSort.h>
-#include <ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MSMainColumns.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/Quanta/QuantumHolder.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/ms/MeasurementSets/MSSelectionTools.h>
+#include <casacore/ms/MeasurementSets/MSSelectableTable.h>
+#include <casacore/ms/MeasurementSets/MSSelectableMainColumn.h>
+#include <casacore/ms/MeasurementSets/MSAntennaParse.h>
+#include <casacore/ms/MeasurementSets/MSStateParse.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
   
   //----------------------------------------------------------------------------

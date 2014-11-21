@@ -25,26 +25,26 @@
 //#
 //# $Id$
 //#
-#include <casa/Quanta/MVTime.h>
-#include <casa/Containers/RecordFieldId.h>
-#include <measures/Measures/Stokes.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSLister.h>
-#include <ms/MeasurementSets/MSSummary.h>
-#include <ms/MeasurementSets/MSRange.h>
-#include <ms/MeasurementSets/MSIter.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/MaskArrMath.h>
-#include <casa/iomanip.h>
-#include <casa/iostream.h>
-#include <casa/OS/File.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/Containers/RecordFieldId.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSLister.h>
+#include <casacore/ms/MeasurementSets/MSSummary.h>
+#include <casacore/ms/MeasurementSets/MSRange.h>
+#include <casacore/ms/MeasurementSets/MSIter.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/MaskArrMath.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/OS/File.h>
 
 #include <fstream>
 
-#include <ms/MeasurementSets/MSSelectionTools.h>
+#include <casacore/ms/MeasurementSets/MSSelectionTools.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

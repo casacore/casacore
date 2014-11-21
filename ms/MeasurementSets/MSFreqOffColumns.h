@@ -28,12 +28,12 @@
 #ifndef MS_MSFREQOFFCOLUMNS_H
 #define MS_MSFREQOFFCOLUMNS_H
 
-#include <casa/aips.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/TableMeasures/ScalarMeasColumn.h>
-#include <measures/TableMeasures/ScalarQuantColumn.h>
-#include <tables/Tables/ScalarColumn.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

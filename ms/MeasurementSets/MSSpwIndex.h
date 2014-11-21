@@ -30,11 +30,11 @@
 #define MS_MSSPWINDEX_H
 
 //# includes
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <casa/Arrays/Matrix.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/casa/Arrays/Matrix.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

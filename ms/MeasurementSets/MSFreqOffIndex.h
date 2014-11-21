@@ -29,9 +29,9 @@
 #ifndef MS_MSFREQOFFINDEX_H
 #define MS_MSFREQOFFINDEX_H
 
-#include <ms/MeasurementSets/MSTableIndex.h>
+#include <casacore/ms/MeasurementSets/MSTableIndex.h>
 
-#include <casa/Containers/RecordField.h>
+#include <casacore/casa/Containers/RecordField.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

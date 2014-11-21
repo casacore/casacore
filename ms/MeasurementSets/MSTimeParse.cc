@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSTimeParse.h>
-#include <ms/MeasurementSets/MSMainColumns.h>
-#include <casa/Quanta/MVTime.h>
-#include <measures/Measures.h>
-#include <measures/Measures/MEpoch.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <casa/BasicSL/String.h>
-#include <tables/Tables/ExprDerNode.h>
-#include <tables/Tables/RecordGram.h>
+#include <casacore/ms/MeasurementSets/MSTimeParse.h>
+#include <casacore/ms/MeasurementSets/MSMainColumns.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/tables/TaQL/ExprDerNode.h>
+#include <casacore/tables/TaQL/RecordGram.h>
 #include <limits>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

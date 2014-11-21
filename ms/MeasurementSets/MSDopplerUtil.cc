@@ -26,10 +26,10 @@
 //# $Id: 
 //----------------------------------------------------------------------------
 
-#include <ms/MeasurementSets/MSDopplerUtil.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MSSourceIndex.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/ms/MeasurementSets/MSDopplerUtil.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MSSourceIndex.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

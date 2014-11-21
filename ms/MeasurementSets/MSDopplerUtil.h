@@ -28,8 +28,8 @@
 #ifndef MS_MSDOPPLERUTIL_H
 #define MS_MSDOPPLERUTIL_H
 
-#include <casa/aips.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

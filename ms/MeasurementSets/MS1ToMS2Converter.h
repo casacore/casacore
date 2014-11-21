@@ -29,9 +29,9 @@
 #define MS_MS1TOMS2CONVERTER_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/Table.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

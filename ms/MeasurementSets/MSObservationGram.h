@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <ms/MeasurementSets/MSObservationParse.h> 
-#include <casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSObservationParse.h> 
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

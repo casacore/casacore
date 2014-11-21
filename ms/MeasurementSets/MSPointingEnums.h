@@ -29,7 +29,7 @@
 #ifndef MS_MSPOINTINGENUMS_H
 #define MS_MSPOINTINGENUMS_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

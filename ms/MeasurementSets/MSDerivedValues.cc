@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSDerivedValues.h>
-#include <ms/MeasurementSets/MSDopplerUtil.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <measures/Measures/VelocityMachine.h>
-#include <casa/Logging/LogMessage.h>
-#include <casa/Logging/LogSink.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/ms/MeasurementSets/MSDerivedValues.h>
+#include <casacore/ms/MeasurementSets/MSDopplerUtil.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/measures/Measures/VelocityMachine.h>
+#include <casacore/casa/Logging/LogMessage.h>
+#include <casacore/casa/Logging/LogSink.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

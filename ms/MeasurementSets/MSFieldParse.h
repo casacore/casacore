@@ -29,11 +29,11 @@
 #define MS_MSFIELDPARSE_H
 
 //# Includes
-#include <ms/MeasurementSets/MSField.h>
-#include <ms/MeasurementSets/MSFieldColumns.h>
-#include <ms/MeasurementSets/MSParse.h>
-#include <ms/MeasurementSets/MSSelectionError.h>
-#include <ms/MeasurementSets/MSSelectableTable.h>
+#include <casacore/ms/MeasurementSets/MSField.h>
+#include <casacore/ms/MeasurementSets/MSFieldColumns.h>
+#include <casacore/ms/MeasurementSets/MSParse.h>
+#include <casacore/ms/MeasurementSets/MSSelectionError.h>
+#include <casacore/ms/MeasurementSets/MSSelectableTable.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
@@ -119,9 +119,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // #define MS_MSFIELDPARSE_H
 
 // //# Includes
-// #include <ms/MeasurementSets/MSParse.h>
-// #include <ms/MeasurementSets/MSSelectionError.h>
-// #include <ms/MeasurementSets/MSSelectableTable.h>
+// #include <casacore/ms/MeasurementSets/MSParse.h>
+// #include <casacore/ms/MeasurementSets/MSSelectionError.h>
+// #include <casacore/ms/MeasurementSets/MSSelectableTable.h>
 // namespace casa { //# NAMESPACE CASA - BEGIN
   
 //   //# Forward Declarations
