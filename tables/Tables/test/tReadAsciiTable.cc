@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ReadAsciiTable.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
-#include <casa/fstream.h>
+#include <casacore/tables/Tables/ReadAsciiTable.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/fstream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // <summary> Test program for the ReadAsciiTable functions </summary>
 
 // This program tests the functions in ReadAsciiTable.h.

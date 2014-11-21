@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <tables/Tables/TableLocker.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/Tables/TableLocker.h>
+#include <casacore/tables/Tables/TableError.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

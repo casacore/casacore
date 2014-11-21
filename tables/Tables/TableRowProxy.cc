@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <tables/Tables/TableRowProxy.h>
-#include <tables/Tables/TableProxy.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Containers/Record.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/tables/Tables/TableRowProxy.h>
+#include <casacore/tables/Tables/TableProxy.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

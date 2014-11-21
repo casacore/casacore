@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/BaseColDesc.h>
-#include <casa/Containers/SimOrdMap.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/BaseColDesc.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -249,6 +249,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/ScaColDesc.tcc>
+#include <casacore/tables/Tables/ScaColDesc.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

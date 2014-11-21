@@ -29,8 +29,8 @@
 #define TABLES_TVECSCACOL_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/TVec.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TVec.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -122,6 +122,6 @@ protected:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/TVecScaCol.tcc>
+#include <casacore/tables/Tables/TVecScaCol.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

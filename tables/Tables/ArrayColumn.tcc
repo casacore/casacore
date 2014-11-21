@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/ArrayColumnFunc.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/RefRows.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayIter.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/ValTypeId.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/ArrayColumnFunc.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayIter.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/ValTypeId.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

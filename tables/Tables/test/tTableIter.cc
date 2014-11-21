@@ -25,21 +25,21 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/TableIter.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <casa/Containers/Block.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/TableIter.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
 
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // <summary> Test program for table iterators </summary>
 
 // This program tests the table iterators..

@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TVecLogic.h>
-#include <tables/Tables/TVec.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/Tables/TVecLogic.h>
+#include <casacore/tables/Tables/TVec.h>
+#include <casacore/tables/Tables/TableError.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

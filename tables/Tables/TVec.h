@@ -29,8 +29,8 @@
 #define TABLES_TVEC_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -214,6 +214,6 @@ inline TabVecTag TabVecRep<T>::getTag() const
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/TVec.tcc>
+#include <casacore/tables/Tables/TVec.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

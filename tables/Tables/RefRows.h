@@ -29,7 +29,7 @@
 #define TABLES_REFROWS_H
 
 //# Includes
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

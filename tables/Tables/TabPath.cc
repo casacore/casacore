@@ -26,8 +26,8 @@
 //# $Id$
 
 //# Includes
-#include <tables/Tables/TabPath.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/tables/Tables/TabPath.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <unistd.h>                    // for system call access
 
 namespace casa { //# NAMESPACE CASA - BEGIN

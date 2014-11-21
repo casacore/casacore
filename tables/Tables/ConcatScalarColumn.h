@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/ConcatColumn.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/ConcatColumn.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -125,6 +125,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/ConcatScalarColumn.tcc>
+#include <casacore/tables/Tables/ConcatScalarColumn.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

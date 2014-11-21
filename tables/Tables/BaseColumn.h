@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <casa/Utilities/Compare.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/casa/Utilities/Compare.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

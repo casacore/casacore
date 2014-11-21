@@ -29,9 +29,9 @@
 #define TABLES_TABLECACHE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

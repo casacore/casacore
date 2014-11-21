@@ -26,16 +26,16 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/OS/Directory.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/iostream.h>
 #include <unistd.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // This program tests some aspects of the table keywords, mainly
 // if writing them and reading them back works fine.
 // It was originally written by Mark Wieringa to track down a problem.

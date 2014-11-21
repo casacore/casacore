@@ -30,11 +30,12 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/TableLockData.h>
-#include <tables/Tables/BaseTable.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TableLockData.h>
+#include <casacore/tables/Tables/BaseTable.h>
+#include <casacore/tables/Tables/StorageOption.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -48,6 +49,7 @@ class TableAttr;
 class ColumnDesc;
 class PlainColumn;
 class DataManager;
+class MultiFile;
 class Record;
 class IPosition;
 class AipsIO;
@@ -94,7 +96,7 @@ public:
 
     // Construct from the table description.
     // This creates all underlying filled and virtual column objects.
-    ColumnSet (TableDesc*);
+    ColumnSet (TableDesc*, const StorageOption& = StorageOption());
 
     ~ColumnSet();
 
@@ -277,6 +279,10 @@ private:
     // Let the data managers (from the given index on) prepare themselves.
     void prepareSomeDataManagers (uInt from);
 
+    // Open or create the MultiFile if needed.
+    void openMultiFile (uInt from, const Table& tab,
+                        ByteIO::OpenOption);
+
     // Check if a data manager name has not already been used.
     // Start checking at the given index in the array.
     // It returns False if the name has already been used.
@@ -305,7 +311,9 @@ private:
 
     //# Declare the variables.
     TableDesc*                      tdescPtr_p;
-    uInt                            nrrow_p;        //# #rows
+    StorageOption                   storageOpt_p;
+    MultiFile*                      multiFile_p;
+    Int64                           nrrow_p;        //# #rows
     BaseTable*                      baseTablePtr_p;
     TableLockData*                  lockPtr_p;      //# lock object
     SimpleOrderedMap<String,void*>  colMap_p;       //# list of PlainColumns

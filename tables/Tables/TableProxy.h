@@ -30,13 +30,13 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/Table.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
 #include <vector>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 //# Forward Declarations
 namespace casa { //# NAMESPACE CASA - BEGIN

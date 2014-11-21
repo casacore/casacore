@@ -25,33 +25,37 @@
 //#
 //# $Id$
 
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColumnSet.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/PlainColumn.h>
-#include <tables/Tables/DataManager.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/OS/File.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColumnSet.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/PlainColumn.h>
+#include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/OS/File.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 SetupNewTable::SetupNewTable (const String& tableName,
 			      const String& tableDescName,
-			      Table::TableOption opt)
+			      Table::TableOption opt,
+                              const StorageOption& storageOpt)
 {
-    newTable_p = new SetupNewTableRep (tableName, tableDescName, opt);
+    newTable_p = new SetupNewTableRep (tableName, tableDescName,
+                                       opt, storageOpt);
 }
 
 SetupNewTable::SetupNewTable (const String& tableName,
 			      const TableDesc& tableDesc,
-			      Table::TableOption opt)
+			      Table::TableOption opt,
+                              const StorageOption& storageOpt)
 {
-    newTable_p = new SetupNewTableRep (tableName, tableDesc, opt);
+    newTable_p = new SetupNewTableRep (tableName, tableDesc,
+                                       opt, storageOpt);
 }
 
 SetupNewTable::SetupNewTable (const SetupNewTable& that)
@@ -83,13 +87,14 @@ SetupNewTable& SetupNewTable::operator= (const SetupNewTable& that)
     return *this;
 }
 
-
 SetupNewTableRep::SetupNewTableRep (const String& tableName,
 				    const String& tableDescName,
-				    Table::TableOption opt)
+				    Table::TableOption opt,
+                                    const StorageOption& storageOpt)
 : count_p     (1),
   tabName_p   (tableName),
   option_p    (opt),
+  storageOpt_p(storageOpt),
   delete_p    (False),
   tdescPtr_p  (0),
   colSetPtr_p (0),
@@ -103,10 +108,12 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
 
 SetupNewTableRep::SetupNewTableRep (const String& tableName,
 				    const TableDesc& tableDesc,
-				    Table::TableOption opt)
+				    Table::TableOption opt,
+                                    const StorageOption& storageOpt)
 : count_p     (1),
   tabName_p   (tableName),
   option_p    (opt),
+  storageOpt_p(storageOpt),
   delete_p    (False),
   tdescPtr_p  (0),
   colSetPtr_p (0),
@@ -154,10 +161,12 @@ void SetupNewTableRep::setup()
 			    "must be Table::New, NewNoReplace or Scratch"));
 	}
     }
+    // Complete the storage option.
+    storageOpt_p.fillOption();
     //# Check if all subtable descriptions exist.
     tdescPtr_p->checkSubTableDesc();
     //# Create a column set.
-    colSetPtr_p = new ColumnSet(tdescPtr_p);
+    colSetPtr_p = new ColumnSet(tdescPtr_p, storageOpt_p);
 }
 
 

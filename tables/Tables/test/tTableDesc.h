@@ -29,10 +29,10 @@
 #ifndef TABLES_TTABLEDESC_H
 #define TABLES_TTABLEDESC_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // <summary>
 // Example for a non-standard column in a table description
 // </summary>

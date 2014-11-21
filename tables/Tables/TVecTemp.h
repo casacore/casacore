@@ -29,8 +29,8 @@
 #define TABLES_TVECTEMP_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/TVec.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TVec.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -142,6 +142,6 @@ inline T& TabVecTemp<T>::operator() (uInt index)
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/TVecTemp.tcc>
+#include <casacore/tables/Tables/TVecTemp.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

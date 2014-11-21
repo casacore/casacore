@@ -29,8 +29,8 @@
 #define TABLES_SCACOLDATA_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/PlainColumn.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/PlainColumn.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -218,6 +218,6 @@ private:
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/ScaColData.tcc>
+#include <casacore/tables/Tables/ScaColData.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -27,17 +27,17 @@
 
 //# Includes
 
-#include <tables/Tables/ReadAsciiTable.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableColumn.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/tables/Tables/ReadAsciiTable.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // <summary>
 // program to load an ASCII file into a table
 // </summary>

@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <tables/Tables/TableLockData.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/tables/Tables/TableLockData.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <unistd.h>
 
 

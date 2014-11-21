@@ -29,8 +29,8 @@
 #define TABLES_CONCATROWS_H
 
 //# Includes
-#include <tables/Tables/RefRows.h>
-#include <casa/Containers/Block.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

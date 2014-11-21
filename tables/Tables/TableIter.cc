@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TableIter.h>
-#include <tables/Tables/BaseTabIter.h>
-#include <casa/Containers/Block.h>
-#include <casa/BasicSL/String.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/Tables/TableIter.h>
+#include <casacore/tables/Tables/BaseTabIter.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/tables/Tables/TableError.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

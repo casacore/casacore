@@ -26,44 +26,44 @@
 //# $Id$
 
 
-#include <tables/Tables/TableProxy.h>
-#include <tables/Tables/ReadAsciiTable.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/ScaRecordColDesc.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableCache.h>
-#include <tables/Tables/TableCopy.h>
-#include <tables/Tables/PlainTable.h>
-#include <tables/Tables/TableLock.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/TableParse.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableAttr.h>
-#include <tables/Tables/DataManAccessor.h>
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/TableError.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/RecordFieldId.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
-#include <casa/stdio.h>                  // needed for sprintf
+#include <casacore/tables/Tables/TableProxy.h>
+#include <casacore/tables/Tables/ReadAsciiTable.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/tables/Tables/ScaRecordColDesc.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableCache.h>
+#include <casacore/tables/Tables/TableCopy.h>
+#include <casacore/tables/Tables/PlainTable.h>
+#include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/TaQL/TableParse.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableAttr.h>
+#include <casacore/tables/DataMan/DataManAccessor.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/RecordFieldId.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/stdio.h>                  // needed for sprintf
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

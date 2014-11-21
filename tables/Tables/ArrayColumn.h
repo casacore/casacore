@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/TableColumn.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TableColumn.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -510,6 +510,6 @@ protected:
 
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/ArrayColumn.tcc>
+#include <casacore/tables/Tables/ArrayColumn.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

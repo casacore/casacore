@@ -29,7 +29,7 @@
 #define TABLES_TVECLOGIC_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -126,6 +126,6 @@ template<class T>
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/TVecLogic.tcc>
+#include <casacore/tables/Tables/TVecLogic.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

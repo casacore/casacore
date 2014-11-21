@@ -27,8 +27,8 @@
 
 
 //# Includes
-#include <tables/Tables/TableAttr.h>
-#include <tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableAttr.h>
+#include <casacore/tables/Tables/Table.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

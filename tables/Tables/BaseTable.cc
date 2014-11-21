@@ -25,33 +25,33 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <tables/Tables/BaseTable.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/PlainTable.h>
-#include <tables/Tables/RefTable.h>
-#include <tables/Tables/TableCopy.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/BaseColumn.h>
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/BaseTabIter.h>
-#include <tables/Tables/DataManager.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/BasicSL/STLIO.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Utilities/Sort.h>
-#include <casa/Utilities/PtrHolder.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/OS/File.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/Directory.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/BaseTable.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/PlainTable.h>
+#include <casacore/tables/Tables/RefTable.h>
+#include <casacore/tables/Tables/TableCopy.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/BaseColumn.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/tables/Tables/BaseTabIter.h>
+#include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ConcatRows.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/OS/Timer.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
-#include <casa/namespace.h>
+#include <casacore/tables/Tables/ConcatRows.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/namespace.h>
 
 // <summary>
 // Test program for class ConcatRows.

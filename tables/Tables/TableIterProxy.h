@@ -30,9 +30,9 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/TableIter.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TableIter.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

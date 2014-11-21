@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <tables/Tables/TableExprData.h>
+#include <casacore/tables/TaQL/TableExprData.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

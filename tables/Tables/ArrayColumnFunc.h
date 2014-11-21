@@ -29,9 +29,9 @@
 #define TABLES_ARRAYCOLUMNFUNC_H
 
 //# Includes
-#include <tables/Tables/ArrayColumn.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Array.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

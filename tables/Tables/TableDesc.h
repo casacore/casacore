@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/ColDescSet.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/ColDescSet.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/iosfwd.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

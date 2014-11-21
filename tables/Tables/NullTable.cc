@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <tables/Tables/NullTable.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/tables/Tables/NullTable.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

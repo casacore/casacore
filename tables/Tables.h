@@ -30,65 +30,42 @@
 
 //# Includes
 //#   table description
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/ScaRecordColDesc.h>
-
-//#   storage managers
-#include <tables/Tables/StManAipsIO.h>
-#include <tables/Tables/StandardStMan.h>
-#include <tables/Tables/StandardStManAccessor.h>
-#include <tables/Tables/IncrementalStMan.h>
-#include <tables/Tables/IncrStManAccessor.h>
-#include <tables/Tables/TiledDataStMan.h>
-#include <tables/Tables/TiledDataStManAccessor.h>
-#include <tables/Tables/TiledCellStMan.h>
-#include <tables/Tables/TiledColumnStMan.h>
-#include <tables/Tables/TiledShapeStMan.h>
-#include <tables/Tables/MemoryStMan.h>
-
-//#   virtual column engines
-#include <tables/Tables/RetypedArrayEngine.h>
-#include <tables/Tables/RetypedArraySetGet.h>
-#include <tables/Tables/ScaledArrayEngine.h>
-#include <tables/Tables/MappedArrayEngine.h>
-#include <tables/Tables/ForwardCol.h>
-#include <tables/Tables/ForwardColRow.h>
-#include <tables/Tables/CompressComplex.h>
-#include <tables/Tables/CompressFloat.h>
-#include <tables/Tables/VirtualTaQLColumn.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/tables/Tables/ScaRecordColDesc.h>
 
 //#   table access
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableLock.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/TableRow.h>
-#include <tables/Tables/TableCopy.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Slice.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/TableRow.h>
+#include <casacore/tables/Tables/TableCopy.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Slice.h>
 
 //#   keywords
-#include <tables/Tables/TableRecord.h>
-#include <casa/Containers/RecordField.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Containers/RecordField.h>
 
 //#   table lookup
-#include <tables/Tables/ColumnsIndex.h>
-#include <tables/Tables/ColumnsIndexArray.h>
-
-//#   table expressions (for selection of rows)
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/ExprNodeSet.h>
-#include <tables/Tables/TableParse.h>
+#include <casacore/tables/Tables/ColumnsIndex.h>
+#include <casacore/tables/Tables/ColumnsIndexArray.h>
 
 //#   table vectors
-#include <tables/Tables/TableVector.h>
-#include <tables/Tables/TabVecMath.h>
-#include <tables/Tables/TabVecLogic.h>
+#include <casacore/tables/Tables/TableVector.h>
+#include <casacore/tables/Tables/TabVecMath.h>
+#include <casacore/tables/Tables/TabVecLogic.h>
+
+//#   data managers
+#include <casacore/tables/DataMan.h>
+
+//#   table expressions (for selection of rows)
+#include <casacore/tables/TaQL.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -143,6 +120,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       considerations with some information on
 //       <A HREF="#Tables:iotracing">IO tracing</A>.
 // </UL>
+// A few <A HREF="Tables:applications">applications</A> exist to inspect
+// and manipulate a table.
 
 
 // <ANCHOR NAME="Tables:motivation">
@@ -307,12 +286,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <p>
 // A typical program could look like:
 // <srcblock>
-// #include <tables/Tables/Table.h>
-// #include <tables/Tables/ScalarColumn.h>
-// #include <tables/Tables/ArrayColumn.h>
-// #include <casa/Arrays/Vector.h>
-// #include <casa/Arrays/Slicer.h>
-// #include <casa/Arrays/ArrayMath.h>
+// #include <casacore/tables/Tables/Table.h>
+// #include <casacore/tables/Tables/ScalarColumn.h>
+// #include <casacore/tables/Tables/ArrayColumn.h>
+// #include <casacore/casa/Arrays/Vector.h>
+// #include <casacore/casa/Arrays/Slicer.h>
+// #include <casacore/casa/Arrays/ArrayMath.h>
 // #include <iostream>
 // 
 // main()
@@ -380,14 +359,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // in that section. Other sections discuss the access to the table.
 //
 // <srcblock>
-// #include <tables/Tables/TableDesc.h>
-// #include <tables/Tables/SetupNewTab.h>
-// #include <tables/Tables/Table.h>
-// #include <tables/Tables/ScaColDesc.h>
-// #include <tables/Tables/ScaRecordColDesc.h>
-// #include <tables/Tables/ArrColDesc.h>
-// #include <tables/Tables/StandardStMan.h>
-// #include <tables/Tables/IncrementalStMan.h>
+// #include <casacore/tables/Tables/TableDesc.h>
+// #include <casacore/tables/Tables/SetupNewTab.h>
+// #include <casacore/tables/Tables/Table.h>
+// #include <casacore/tables/Tables/ScaColDesc.h>
+// #include <casacore/tables/Tables/ScaRecordColDesc.h>
+// #include <casacore/tables/Tables/ArrColDesc.h>
+// #include <casacore/tables/Tables/StandardStMan.h>
+// #include <casacore/tables/Tables/IncrementalStMan.h>
 // 
 // main()
 // {
@@ -470,16 +449,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // A typical program could look like:
 // <srcblock>
-// #include <tables/Tables/TableDesc.h>
-// #include <tables/Tables/SetupNewTab.h>
-// #include <tables/Tables/Table.h>
-// #include <tables/Tables/ScaColDesc.h>
-// #include <tables/Tables/ArrColDesc.h>
-// #include <tables/Tables/ScalarColumn.h>
-// #include <tables/Tables/ArrayColumn.h>
-// #include <casa/Arrays/Vector.h>
-// #include <casa/Arrays/Slicer.h>
-// #include <casa/Arrays/ArrayMath.h>
+// #include <casacore/tables/Tables/TableDesc.h>
+// #include <casacore/tables/Tables/SetupNewTab.h>
+// #include <casacore/tables/Tables/Table.h>
+// #include <casacore/tables/Tables/ScaColDesc.h>
+// #include <casacore/tables/Tables/ArrColDesc.h>
+// #include <casacore/tables/Tables/ScalarColumn.h>
+// #include <casacore/tables/Tables/ArrayColumn.h>
+// #include <casacore/casa/Arrays/Vector.h>
+// #include <casacore/casa/Arrays/Slicer.h>
+// #include <casacore/casa/Arrays/ArrayMath.h>
 // #include <iostream>
 // 
 // main()
@@ -676,7 +655,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // otherwise an exception is thrown.
 // In the following example we select all rows with RA>10:
 // <srcblock>
-//    #include <tables/Tables/ExprNode.h>
+//    #include <casacore/tables/Tables/ExprNode.h>
 //    Table table ("Table.name");
 //    Table result = table (table.col("RA") > 10);
 // </srcblock>
@@ -946,13 +925,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // mentioned classes.
 //
 // <srcblock>
-// #include <tables/Tables/TableDesc.h>
-// #include <tables/Tables/ScaColDesc.h>
-// #include <tables/Tables/ArrColDesc.h>
+// #include <casacore/tables/Tables/TableDesc.h>
+// #include <casacore/tables/Tables/ScaColDesc.h>
+// #include <casacore/tables/Tables/ArrColDesc.h>
 // #include <aips/Tables/ScaRecordTabDesc.h>
-// #include <tables/Tables/TableRecord.h>
-// #include <casa/Arrays/IPosition.h>
-// #include <casa/Arrays/Vector.h>
+// #include <casacore/tables/Tables/TableRecord.h>
+// #include <casacore/casa/Arrays/IPosition.h>
+// #include <casacore/casa/Arrays/Vector.h>
 //
 // main()
 // {
@@ -1055,6 +1034,29 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <ANCHOR NAME="Tables:storage managers">
 // <h3>Storage Managers</h3></ANCHOR>
+//
+// Storage managers are used to store the data contained in the column cells.
+// At table construction time the binding of columns to storage managers is done.
+// <br>Each storage manager uses one or more files (usually called table.fi_xxx
+// where i is a sequence number and _xxx is some kind of extension).
+// Typically several file are used to store the data of the columns of a table.
+// <br>In order to reduce the number of files (and to support large block sizes),
+// it is possible to have a single container file (a MultiFile) containing all
+// data files used by the storage managers. Such a file is called table.mf.
+// Note that the program <em>lsmf</em> can be used to see which
+// files are contained in a MultiFile. The program <em>tomf</em> can
+// convert the files in a MultiFile to regular files.
+// <br>At table creation time it is decided if a MultiFile will be used. It
+// can be done by means of the StorageOption object given to the SetupNewTable
+// constructor and/or by the aipsrc variables:
+// <ul>
+//  <li> <src>table.storage.option</src> which can have the value
+//       'multifile', 'sepfile' (meaning separate files), or 'default'.
+//       Currently the default is to use separate files.
+//  <li> <src>table.storage.blocksize</src> defines the block size to be
+//       used by a MultiFile. If 0 is given, the file system's block size
+//       will be used.
+// </ul>
 //
 // Several storage managers are currently supported.
 // The default and preferred storage manager is <src>StandardStMan</src>.
@@ -1755,6 +1757,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       [n1,n2,...].
 // </ul>
 
+// <ANCHOR NAME="Tables:applications">
+// <h4>Applications to inspect/manipulate a table</h4></ANCHOR>
+// <ul>
+//  <li><em>showtable</em> shows the structure of a table. It can show:
+//   <ul>
+//    <li> the columns and their format (optionally sorted on name)
+//    <li> the data managers used to store the column data
+//    <li> the table and/or column keywords and their values
+//    <li> recursively the same info of the subtables
+//   <ul>
+//  <li><em>showtablelock</em> if a table is locked or opened and by
+//      which process.
+//  <li><em>lsmf</em> shows the virtual files contained in a MultiFile.
+//  <li><em>tomf</em> copies the given files to a MultiFile.
+//  <li><em>taql</em> can be used to query a table using the
+//       <a href="../notes/199.html">Table Query Language</a> (TaQL).
+// </ul>
+//
 // </synopsis>
 // </module>
 
