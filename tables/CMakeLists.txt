@@ -410,6 +410,39 @@ Tables.h
 DESTINATION include/casacore/tables
 )
 
+# Temporary install of stub header files.
+install (FILES
+Tables/BitFlagsEngine.h
+Tables/CompressComplex.h
+Tables/CompressFloat.h
+Tables/DataManAccessor.h
+Tables/DataManError.h
+Tables/DataManager.h
+Tables/ExprNode.h
+Tables/ExprNodeSet.h
+Tables/ForwardCol.h
+Tables/ForwardColRow.h
+Tables/IncrStManAccessor.h
+Tables/IncrementalStMan.h
+Tables/RecordGram.h
+Tables/ScaledArrayEngine.h
+Tables/ScaledComplexData.h
+Tables/StManAipsIO.h
+Tables/StandardStMan.h
+Tables/StandardStManAccessor.h
+Tables/TSMOption.h
+Tables/TableExprId.h
+Tables/TableParse.h
+Tables/TiledCellStMan.h
+Tables/TiledColumnStMan.h
+Tables/TiledDataStMan.h
+Tables/TiledDataStManAccessor.h
+Tables/TiledShapeStMan.h
+Tables/TiledStManAccessor.h
+Tables/UDFBase.h
+DESTINATION include/casacore/tables/Tables
+)
+
 if (BUILD_TESTING)
     add_subdirectory (Tables/test)
     add_subdirectory (LogTables/test)
