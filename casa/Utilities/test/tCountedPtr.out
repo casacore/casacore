@@ -16,10 +16,11 @@ myobj(v1) ctor
  myobj1(v1) ctor
 myobj(v2) ctor
  myobj1(v2) ctor
-v0 myobj1_v1 myobj1_v2 myobj1_v1 myobj1_v2
+v0 myobj1_v1 myobj1_v2 myobj1_v1 myobj1_v2 myobj1_v1
 myobj(v0) dtor
-myobj1_v1 myobj1_v1 myobj1_v2 myobj1_v1 myobj1_v2
-myobj1_v2 myobj1_v1 myobj1_v2 myobj1_v1 myobj1_v2
+myobj1_v1 myobj1_v1 myobj1_v2 myobj1_v1 myobj1_v2 myobj1_v1
+myobj1_v2 myobj1_v1 myobj1_v2 myobj1_v1 myobj1_v2 myobj1_v1
+myobj1_v2 myobj1_v1 myobj1_v1 myobj1_v1 myobj1_v2 myobj1_v1
  myobj1(v1) dtor
 myobj(v1) dtor
  myobj1(v2) dtor

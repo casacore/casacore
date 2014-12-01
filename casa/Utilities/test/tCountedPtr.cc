@@ -47,14 +47,18 @@ void testDerived()
     CountedPtr<myobj1> v2 (new myobj1("v2"));
     CountedPtr<myobj>  v3(v1);
     CountedPtr<myobj>  v4(v2);
+    CountedPtr<myobj1> v5(dynamic_pointer_cast<myobj1>(v1));
     cout << v0->name() << ' ' << v1->name() << ' ' << v2->name() << ' '
-         << v3->name() << ' ' << v4->name() << endl;
+         << v3->name() << ' ' << v4->name() << ' ' << v5->name() << endl;
     v0 = v1;
     cout << v0->name() << ' ' << v1->name() << ' ' << v2->name() << ' '
-         << v3->name() << ' ' << v4->name() << endl;
+         << v3->name() << ' ' << v4->name() << ' ' << v5->name() << endl;
     v0 = v2;
     cout << v0->name() << ' ' << v1->name() << ' ' << v2->name() << ' '
-         << v3->name() << ' ' << v4->name() << endl;
+         << v3->name() << ' ' << v4->name() << ' ' << v5->name() << endl;
+    v2 = v5;
+    cout << v0->name() << ' ' << v1->name() << ' ' << v2->name() << ' '
+         << v3->name() << ' ' << v4->name() << ' ' << v5->name() << endl;
   }
   cout << "end testDerived" << endl;
 }
