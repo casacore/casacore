@@ -34,11 +34,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 extern "C" {
   void cffti_(int*, float*);
+  void cfft2i_(const Int*, const Int*, Float*, const Int*, Int*);
   void dcffti_(int*, double*);
   void cfftf_(int*, float*, float*);
   void dcfftf_(int*, double*, double*);
   void cfftb_(int*, float*, float*);
   void dcfftb_(int*, double*, double*);
+  void cfft2f_(const Int*, const Int*, const Int*, Complex*, const Float*, const Int*, Float* , const Int*, Int*);
+  void cfft2b_(const Int*, const Int*, const Int*, Complex*, const Float*, const Int*, Float* , const Int*, Int*);
 }
 
 extern "C" {
@@ -115,6 +118,22 @@ void FFTPack::cfftb(Int n, DComplex* rdata, Double* work) {
   DebugAssert(sizeof(DComplex) == 2*sizeof(double), AipsError);
   dcfftb_((int*) &n, (double*) rdata, (double*) work);
 }
+
+
+  void FFTPack::cfft2i(const Int& n, const Int& m, Float *& wsave, const Int& lensav, Int& ier){
+    cfft2i_(&n, &m, wsave, &lensav, &ier);
+  }
+
+  void FFTPack::cfft2f (const Int& ldim, const Int& l, const Int& m, Complex*& c, Float*& wsave, const Int& lensav,
+			                     Float *& work, const Int& lenwrk, Int& ier){
+    cfft2f_(&ldim, &l, &m, c, wsave, &lensav, work, &lenwrk, &ier); 
+
+  }
+  void FFTPack::cfft2b (const Int& ldim, const Int& l, const Int& m, Complex* & c, Float *& wsave, const Int& lensav,
+			Float*& work, const Int& lenwrk, Int& ier){
+    cfft2b_(&ldim, &l, &m, c, wsave, &lensav, work, &lenwrk, &ier);
+
+  }
 
 void FFTPack::rffti(Int n, Float* work) {
   rffti_((int*) &n, (float*) work);
