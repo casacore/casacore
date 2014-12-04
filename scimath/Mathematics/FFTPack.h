@@ -34,9 +34,9 @@
   //# The SGI compiler with -LANG:std has some trouble including both Complexfwd.h
   //# and Complex.h so we bypass the problem by include Complex.h only.
 #if defined(AIPS_USE_NEW_SGI)
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/Complex.h>
 #else
-#include <casa/BasicSL/Complexfwd.h>
+#include <casacore/casa/BasicSL/Complexfwd.h>
 #endif
 
 namespace casa { //# NAMESPACE CASA - BEGIN
