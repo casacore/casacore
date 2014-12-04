@@ -34,9 +34,9 @@
   //# The SGI compiler with -LANG:std has some trouble including both Complexfwd.h
   //# and Complex.h so we bypass the problem by include Complex.h only.
 #if defined(AIPS_USE_NEW_SGI)
-#include <casacore/casa/BasicSL/Complex.h>
+#include <casa/BasicSL/Complex.h>
 #else
-#include <casacore/casa/BasicSL/Complexfwd.h>
+#include <casa/BasicSL/Complexfwd.h>
 #endif
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -90,9 +90,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 // <note role=warning> 
-// These functions assume that it is possible to convert between Casacore
-// numeric types and those used by Fortran. That it is possible to convert
-// between Float & float, Double & double and Int & int.
+// These functions assume that it is possible to convert between Casacore numeric
+// types and those used by Fortran. That it is possible to convert between
+// Float & float, Double & double and Int & int.
 // </note>
 
 // <note role=warning> 
@@ -139,6 +139,47 @@ public:
 // <group>
 static void cffti(Int n, Float* wsave);
 static void cffti(Int n, Double* wsave);
+//Here is the doc from FFTPack 5.1 
+//You can convert the linguo from fortran to C/C++
+/*  Input Arguments
+ 
+ L       Integer number of elements to be transformed in the first 
+         dimension.  The transform is most efficient when L is a 
+         product of small primes.
+
+
+ M       Integer number of elements to be transformed in the second 
+         dimension.  The transform is most efficient when M is a 
+         product of small primes.
+ 
+ LENSAV  Integer dimension of WSAVE array.  LENSAV must be at least 
+         2*(L+M) + INT(LOG(REAL(L))/LOG(2.)) + INT(LOG(REAL(M))/LOG(2.)) + 8.
+
+
+ Output Arguments
+ 
+ WSAVE   Real work array with dimension LENSAV, containing the
+         prime factors of L and M, and also containing certain 
+         trigonometric values which will be used in routines 
+         CFFT2B or CFFT2F.
+
+
+ WSAVE   Real work array with dimension LENSAV.  The WSAVE array 
+         must be initialized with a call to subroutine CFFT2I before 
+         the first call to CFFT2B or CFFT2F, and thereafter whenever
+         the values of L, M or the contents of array WSAVE change.  
+         Using different WSAVE arrays for different transform lengths
+         or types in the same program may reduce computation costs 
+         because the array contents can be re-used.
+
+
+ IER     Integer error return
+         =  0 successful exit
+         =  2 input parameter LENSAV not big enough
+         = 20 input error returned by lower level routine
+*/
+
+static void cfft2i(const Int& n, const Int& m, Float *& wsave, const Int& lensav, Int& ier);
 // </group>
 
 // cfftf computes the forward complex discrete Fourier
@@ -185,6 +226,52 @@ static void cffti(Int n, Double* wsave);
 // <group>
 static void cfftf(Int n, Complex* c, Float* wsave);
 static void cfftf(Int n, DComplex* c, Double* wsave);
+
+//Description from FFTPack 5.1
+/*
+Input Arguments
+
+
+ LDIM    Integer first dimension of two-dimensional complex array C.
+
+
+ L       Integer number of elements to be transformed in the first 
+         dimension of the two-dimensional complex array C.  The value 
+         of L must be less than or equal to that of LDIM.  The 
+         transform is most efficient when L is a product of small 
+         primes.
+
+
+ M       Integer number of elements to be transformed in the second 
+         dimension of the two-dimensional complex array C.  The 
+         transform is most efficient when M is a product of small 
+         primes.
+ 
+ C       Complex array of two dimensions containing the (L,M) subarray
+         to be transformed.  C's first dimension is LDIM, its second 
+         dimension must be at least M.
+
+ WSAVE   Real work array with dimension LENSAV.  WSAVE's contents 
+         must be initialized with a call to subroutine CFFT2I before 
+         the first call to routine CFFT2F or CFFT2B with transform 
+         lengths L and M.  WSAVE's contents may be re-used for 
+         subsequent calls to CFFT2F and CFFT2B having those same 
+         transform lengths.
+ 
+
+
+ LENSAV  Integer dimension of WSAVE array.  LENSAV must be at least 
+         2*(L+M) + INT(LOG(REAL(L))/LOG(2.)) + INT(LOG(REAL(M))/LOG(2.)) + 8.
+
+
+ WORK    Real work array.
+
+
+ LENWRK  Integer dimension of WORK array.  LENWRK must be at least
+         2*L*M.
+*/
+static void cfft2f (const Int& ldim, const Int& L, const Int& M, Complex*& C, Float*& WSAVE, const Int& LENSAV,
+		    Float *& WORK, const Int& LENWRK, Int& IER);
 // </group>
 
 // cfftb computes the backward complex discrete Fourier
@@ -230,6 +317,98 @@ static void cfftf(Int n, DComplex* c, Double* wsave);
 // <group>
 static void cfftb(Int n, Complex* c, Float* wsave);
 static void cfftb(Int n, DComplex* c, Double* wsave);
+
+
+//Documentation from FFTPack 5.1
+/*
+ Input Arguments
+ 
+ LDIM    Integer first dimension of two-dimensional complex array C.
+ 
+
+ L       Integer number of elements to be transformed in the first 
+         dimension of the two-dimensional complex array C.  The value 
+         of L must be less than or equal to that of LDIM.  The 
+         transform is most efficient when L is a product of small 
+         primes.
+
+
+ M       Integer number of elements to be transformed in the second 
+         dimension of the two-dimensional complex array C.  The 
+         transform is most efficient when M is a product of small 
+         primes.
+ 
+ C       Complex array of two dimensions containing the (L,M) subarray
+         to be transformed.  C's first dimension is LDIM, its second 
+         dimension must be at least M.
+
+
+ WSAVE   Real work array with dimension LENSAV.  WSAVE's contents 
+         must be initialized with a call to subroutine CFFT2I before 
+         the first call to routine CFFT2F or CFFT2B with transform 
+         lengths L and M.  WSAVE's contents may be re-used for 
+         subsequent calls to CFFT2F and CFFT2B with the same 
+         transform lengths L and M.
+
+ LENSAV  Integer dimension of WSAVE array.  LENSAV must be at least 
+         2*(L+M) + INT(LOG(REAL(L))/LOG(2.)) + INT(LOG(REAL(M))/LOG(2.)) + 8.
+
+ WORK    Real work array.
+ 
+ LENWRK  Integer dimension of WORK array.  LENWRK must be at least
+         2*L*M.
+ 
+ Output Arguments
+
+
+  C      Complex output array.  For purposes of exposition,
+         assume the index ranges of array C are defined by
+         C(0:L-1,0:M-1).
+ 
+         For I=0,...,L-1 and J=0,...,M-1, the C(I,J)'s are given
+          in the traditional aliased form by
+ 
+                   L-1  M-1
+          C(I,J) = SUM  SUM  C(L1,M1)*
+                   L1=0 M1=0
+ 
+                     EXP(SQRT(-1)*2*PI*(I*L1/L + J*M1/M))
+ 
+          And in unaliased form, the C(I,J)'s are given by
+ 
+                   LF    MF
+          C(I,J) = SUM   SUM   C(L1,M1,K1)*
+                   L1=LS M1=MS
+ 
+                     EXP(SQRT(-1)*2*PI*(I*L1/L + J*M1/M))
+ 
+          where
+ 
+             LS= -L/2    and LF=L/2-1   if L is even;
+             LS=-(L-1)/2 and LF=(L-1)/2 if L is odd;
+             MS= -M/2    and MF=M/2-1   if M is even;
+             MS=-(M-1)/2 and MF=(M-1)/2 if M is odd;
+ 
+          and
+ 
+             C(L1,M1) = C(L1+L,M1) if L1 is zero or negative;
+             C(L1,M1) = C(L1,M1+M) if M1 is zero or negative;
+ 
+          The two forms give different results when used to
+          interpolate between elements of the sequence.
+ 
+  IER     Integer error return
+          =  0 successful exit
+          =  2 input parameter LENSAV not big enough
+          =  3 input parameter LENWRK not big enough
+          =  5 input parameter L > LDIM
+          = 20 input error returned by lower level routine
+*/
+
+
+
+static void cfft2b (const Int& LDIM, const Int& L, const Int& M, Complex* & C, Float *& WSAVE, const Int& LENSAV,
+		    Float*& WORK, const Int& LENWRK, Int& IER);
 // </group>
 
 // rffti initializes the array wsave which is used in both <src>rfftf</src> and
