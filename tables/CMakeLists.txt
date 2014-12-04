@@ -405,8 +405,10 @@ DESTINATION include/casacore/tables/LogTables
 )
 
 install (FILES
+DataMan.h
 LogTables.h
 Tables.h
+TaQL.h
 DESTINATION include/casacore/tables
 )
 
