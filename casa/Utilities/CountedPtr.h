@@ -114,19 +114,6 @@ public:
     : pointerRep_p (val, Deleter<t> (delit))
     {}
 
-    // This constructor sets up a reference count for the
-    // <src>val</src> pointer.  Since <src>val</src> is a pointer to
-    // constant data, the data will not be deleted when the reference
-    // count reaches zero.
-    //
-    // <note role=tip> Since the constant data will NOT be cleaned up
-    // when the reference count reaches zero, the use of this class for
-    // pointers to constant data may not be desirable.
-    // </note>
-    CountedPtr(const t *val)
-    : pointerRep_p (val, Deleter<t> (False))
-    {}
-
     // This copy constructor allows <src>CountedPtr</src>s to be
     // initialized from other <src>CountedPtr</src>s for which the pointer TP*
     // is convertible to T*.
@@ -154,7 +141,7 @@ public:
     void reset (t *val, Bool delit=True)
       { pointerRep_p = PointerRep (val, Deleter<t>(delit)); }
     void reset()
-      { pointerRep_p->reset(); }
+      { pointerRep_p.reset(); }
     // </group>
 
     // The <src>CountedPtr</src> indirection operator simply
