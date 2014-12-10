@@ -39,7 +39,7 @@
 #include <casacore/casa/OS/LECanonicalConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SSMColumn::SSMColumn (SSMBase* aParent, int aDataType, uInt aColNr)
 : StManColumn    (aDataType),
@@ -752,5 +752,5 @@ void SSMColumn::resync (uInt)
     columnCache().invalidate();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

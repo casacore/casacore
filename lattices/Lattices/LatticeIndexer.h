@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A helper class for stepping through Lattices.
@@ -264,6 +264,6 @@ inline size_t LatticeIndexer::nelements() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -54,7 +54,7 @@
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 SpectralCoordinate::SpectralCoordinate()
@@ -1221,7 +1221,7 @@ Bool SpectralCoordinate::near(const Coordinate& other,
 
 // Rest freq
 
-   if (!casa::near(restFrequency(), sCoord.restFrequency(), tol)) {
+   if (!casacore::near(restFrequency(), sCoord.restFrequency(), tol)) {
       set_error("The SpectralCoordinates have differing active rest frequencies");
       return False;
    }
@@ -1236,7 +1236,7 @@ Bool SpectralCoordinate::near(const Coordinate& other,
    }
 //
    for (uInt i=0; i<restfreqs_p.nelements(); i++) {
-      if (!casa::near(restfreqs_p(i),rfs(i),tol)) {
+      if (!casacore::near(restfreqs_p(i),rfs(i),tol)) {
          set_error("The SpectralCoordinates have differing lists of rest frequencies");
          return False;
       }
@@ -1285,7 +1285,7 @@ Bool SpectralCoordinate::near(const Coordinate& other,
       const Vector<Double>& thisVal = referenceValue();   
       const Vector<Double>& thatVal = sCoord.referenceValue();
       if (!exclude) {
-         if (!casa::near(thisVal[0],thatVal[0])) {
+         if (!casacore::near(thisVal[0],thatVal[0])) {
             set_error(String("The SpectralCoordinates have differing reference values"));
             return False;
          }
@@ -2292,7 +2292,7 @@ String SpectralCoordinate::formatRestFrequencies () const
          oss << " [";
          uInt j = 0;
          for (uInt i=0; i<n; i++) {
-            if (!casa::near(rfs(i), rf)) {
+            if (!casacore::near(rfs(i), rf)) {
                if (j > 0) oss << ", ";
                oss << rfs(i);
                j++;
@@ -2525,5 +2525,5 @@ ostream &operator<<(ostream &os, const SpectralCoordinate& spcoord) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

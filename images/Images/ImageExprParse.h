@@ -38,7 +38,7 @@
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/HDF5/HDF5File.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class Block;
@@ -327,6 +327,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

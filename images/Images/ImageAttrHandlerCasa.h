@@ -34,7 +34,7 @@
 #include <casacore/images/Images/ImageAttrGroupCasa.h>
 #include <map>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Abstract base class for an image attributes handler.
@@ -125,6 +125,6 @@ private:
   std::map<String,ImageAttrGroupCasa> itsGroupMap;    //# attribute groups
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

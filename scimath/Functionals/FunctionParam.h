@@ -36,7 +36,7 @@
 //# Forward declarations
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>Container of function parameters with masking flags
 // </summary>
@@ -210,7 +210,7 @@ inline ostream &operator<<(ostream &os, const FunctionParam<T> &par) {
   return par.print(os); }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/FunctionParam.tcc>

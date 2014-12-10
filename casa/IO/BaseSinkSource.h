@@ -33,7 +33,7 @@
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>Shared base class for ByteSink and ByteSource.</summary>
 
@@ -131,6 +131,6 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

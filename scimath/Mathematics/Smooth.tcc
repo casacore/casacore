@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/scimath/Mathematics/Smooth.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 void Smooth<T>::hanning(Vector<T>& out, Vector<Bool>& outmask, 
@@ -150,5 +150,5 @@ void Smooth<T>::hanning(Array<T>& out, Array<Bool>& outmask,
 
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -46,7 +46,7 @@
 #   define LN_MINFLOAT (M_LN2 * (FMINEXP -1))
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>Mathematical and numerical constants.</summary>
 
@@ -591,6 +591,6 @@ namespace C {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

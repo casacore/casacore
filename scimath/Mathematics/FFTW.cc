@@ -41,7 +41,7 @@
 #include <iostream>
 
 
-namespace casa {
+namespace casacore {
 
   volatile Bool FFTW::is_initialized_fftw = False;
   Mutex FFTW::theirMutex;
@@ -314,4 +314,4 @@ namespace casa {
 
 #endif
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

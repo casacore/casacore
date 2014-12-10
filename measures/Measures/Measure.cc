@@ -30,7 +30,7 @@
 #include <casacore/casa/Utilities/MUString.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 
@@ -70,5 +70,5 @@ std::ostream &operator<<(std::ostream &os, const Measure &meas) {
   return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

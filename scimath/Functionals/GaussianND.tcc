@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {
@@ -53,5 +53,5 @@ T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {
   return param_p[HEIGHT] * exp(-exponent/T(2));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

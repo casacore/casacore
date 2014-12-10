@@ -33,7 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class RefRows;
@@ -502,7 +502,7 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 
 //# Make old name ROArrayColumn still available.

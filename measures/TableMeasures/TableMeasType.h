@@ -33,7 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures/MeasureHolder.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class String;
@@ -120,6 +120,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

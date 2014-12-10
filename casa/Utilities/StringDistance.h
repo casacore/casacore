@@ -32,7 +32,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Matrix.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Class to deal with Levensthein distance of strings.

@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 LELInterface<T>::~LELInterface()
@@ -108,5 +108,5 @@ void LELInterface<T>::resync()
 {}
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

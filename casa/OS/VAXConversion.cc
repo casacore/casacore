@@ -28,7 +28,7 @@
 
 #include <casacore/casa/OS/VAXConversion.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // VAX has almost identical format to IEEE (but no NaN)
 // which is SEEEEEEE EFFFFFFF ...
@@ -160,5 +160,5 @@ void VAXConversion::fromLocal (void* to, const double* from,
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

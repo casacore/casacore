@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <algorithm>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // Copy objects from one C-style array to another.
@@ -222,7 +222,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   // </group>
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Utilities/Copy.tcc>

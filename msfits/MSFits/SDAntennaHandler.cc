@@ -47,7 +47,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDAntennaHandler::SDAntennaHandler() 
     : index_p(0), msAnt_p(0), msAntCols_p(0), rownr_p(-1),
@@ -508,5 +508,5 @@ void SDAntennaHandler::addOrbitIdColumn()
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

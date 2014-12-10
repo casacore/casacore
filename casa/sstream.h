@@ -36,12 +36,12 @@
 #include <casacore/casa/iostream.h>
 #include <sstream>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 using std::ostringstream;
 using std::istringstream;
 using std::stringstream;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

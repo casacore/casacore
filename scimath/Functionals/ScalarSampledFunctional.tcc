@@ -28,7 +28,7 @@
 #include <casacore/scimath/Functionals/ScalarSampledFunctional.h>
 #include <casacore/casa/Containers/Block.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> ScalarSampledFunctional<T>::
 ScalarSampledFunctional(){
@@ -91,5 +91,5 @@ template<class T> ScalarSampledFunctional<T>::
 ~ScalarSampledFunctional(){
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

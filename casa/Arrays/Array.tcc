@@ -34,7 +34,7 @@
 #include <casacore/casa/BasicMath/Functional.h>
 #include <casacore/casa/Utilities/Copy.h>
 
-namespace casa {//#Begin casa namespace
+namespace casacore {//#Begin casa namespace
 
 
 template<class T> Array<T>::Array()

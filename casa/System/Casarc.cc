@@ -47,7 +47,7 @@ using std::list;
 using std::map;
 
 
-namespace casa {
+namespace casacore {
 
     bool Casarc::initialized = false;
 

@@ -29,7 +29,7 @@
 #include <casacore/tables/DataMan/IncrementalStMan.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 IncrementalStMan::IncrementalStMan (uInt bucketSize, Bool checkBucketSize,
 				    uInt cacheSize)
@@ -45,5 +45,5 @@ IncrementalStMan::IncrementalStMan (const String& dataManagerName,
 IncrementalStMan::~IncrementalStMan()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -34,7 +34,7 @@
 #include <casacore/casa/Containers/ValueHolderRep.h>
 #include <casacore/casa/Arrays/Array.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 // <summary>
@@ -278,6 +278,6 @@ inline const Record& ValueHolder::asRecord() const
   { return itsRep->asRecord(); }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -33,7 +33,7 @@
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/casa/Arrays/AxesSpecifier.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class IPosition;
@@ -280,7 +280,7 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/images/Images/SubImage.tcc>

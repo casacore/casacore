@@ -33,7 +33,7 @@
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSPointingColumns::
 ROMSPointingColumns(const MSPointing& msPointing):
@@ -420,5 +420,5 @@ void MSPointingColumns::setEncoderDirectionRef(MDirection::Types ref)
 // compile-command: "gmake MSPointingColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

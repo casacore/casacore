@@ -28,7 +28,7 @@
 #include <casacore/tables/Tables/StorageOption.h>
 #include <casacore/casa/System/AipsrcValue.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   StorageOption::StorageOption (StorageOption::Option option, Int blockSize)
     : itsOption    (option),
@@ -63,4 +63,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

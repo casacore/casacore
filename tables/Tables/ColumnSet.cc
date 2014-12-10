@@ -40,7 +40,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <limits>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define BLOCKDATAMANVAL(I) ((DataManager*)(blockDataMan_p[I]))
 #define COLMAPVAL(I)       ((PlainColumn*)(colMap_p.getVal(I)))
@@ -974,5 +974,5 @@ void ColumnSet::syncColumns (const ColumnSet& other,
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

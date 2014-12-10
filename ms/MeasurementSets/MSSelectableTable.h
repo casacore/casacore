@@ -42,7 +42,7 @@
 #include <casacore/ms/MeasurementSets/MSMainEnums.h>
 #include <casacore/ms/MeasurementSets/MSSelectionError.h>
 #include <casacore/ms/MeasurementSets/MSSelectableMainColumn.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 //
@@ -216,6 +216,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   private:
     MSMainColInterface *msMainCols_p;
   };
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

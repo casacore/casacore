@@ -36,7 +36,7 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Quanta/MeasValue.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Unit;
@@ -207,6 +207,6 @@ private:
 //# Global functions
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

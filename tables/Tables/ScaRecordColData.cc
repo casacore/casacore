@@ -41,7 +41,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ScalarRecordColumnData::ScalarRecordColumnData
                                    (const ScalarRecordColumnDesc* cd,
@@ -265,4 +265,4 @@ void ScalarRecordColumnData::getFileDerived (AipsIO& ios,
     createDataManagerColumn();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

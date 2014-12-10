@@ -41,7 +41,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   HDF5Lattice<T>::HDF5Lattice()
@@ -318,4 +318,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     itsFile->flush();
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

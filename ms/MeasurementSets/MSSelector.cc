@@ -55,7 +55,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSSelector::MSSelector():msIter_p(0),initSel_p(False),dataDescId_p(0),
 		lastDataDescId_p(1,-1),useSlicer_p(False),
@@ -1997,5 +1997,5 @@ Bool MSSelector::checkSelection() {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

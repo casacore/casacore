@@ -30,7 +30,7 @@
 
 #include <casacore/casa/Utilities/ValType.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // The id-string of a value type
@@ -85,7 +85,7 @@ inline String valDataTypeId (const TableRecord* obj)
 
 // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

@@ -40,7 +40,7 @@
 
 #include <casacore/casa/stdio.h>                     // for sprintf
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ISMIndColumn::ISMIndColumn (ISMBase* smptr, int dataType, uInt colnr)
 : ISMColumn     (smptr, dataType, colnr),
@@ -344,5 +344,5 @@ void ISMIndColumn::handleRemove (uInt, const char* value)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -27,7 +27,7 @@
 
 #include <casacore/casa/HDF5/HDF5Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HDF5Error::HDF5Error (Category c)
 : AipsError("HDF5 error", c)
@@ -38,4 +38,4 @@ HDF5Error::HDF5Error (const String& str, Category c)
 HDF5Error::~HDF5Error () throw()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

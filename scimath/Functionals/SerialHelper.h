@@ -31,7 +31,7 @@
 
 #include <casacore/scimath/Functionals/FunctionFactoryErrors.h>
 #include <casacore/casa/Containers/Record.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Array;
 
@@ -188,6 +188,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

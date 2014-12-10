@@ -28,7 +28,7 @@
 #include <casacore/casa/Arrays/ArrayPosIter.h>
 #include <casacore/casa/Arrays/ArrayError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ArrayPositionIterator::ArrayPositionIterator(const IPosition &shape, 
 					     const IPosition &origin,
@@ -216,4 +216,4 @@ ArrayBase& ArrayPositionIterator::getArray()
   throw ArrayIteratorError ("ArrayPositionIterator::getArray cannot be used");
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

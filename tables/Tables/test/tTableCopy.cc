@@ -28,7 +28,7 @@
 #include <casacore/tables/Tables.h>
 #include <stdexcept>
 #include <iostream>
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 // Remove the dirname from the table name in an error message.

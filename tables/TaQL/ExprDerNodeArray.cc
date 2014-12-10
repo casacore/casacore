@@ -32,7 +32,7 @@
 #include <casacore/casa/Quanta/MVTime.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNodeArrayConstBool::TableExprNodeArrayConstBool
                                                  (const Array<Bool>& val)
@@ -189,5 +189,5 @@ Array<Double> TableExprNodeArrayConstDate::getArrayDouble (const TableExprId&)
 Array<MVTime> TableExprNodeArrayConstDate::getArrayDate (const TableExprId&)
     { return value_p; }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

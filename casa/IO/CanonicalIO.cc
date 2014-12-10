@@ -29,7 +29,7 @@
 #include <casacore/casa/OS/CanonicalConversion.h>
 #include <casacore/casa/IO/ByteIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 CanonicalIO::CanonicalIO (ByteIO* byteIO, uInt bufferLength, Bool takeOver)
 : TypeIO          (byteIO, takeOver), 
@@ -463,5 +463,5 @@ size_t CanonicalIO::read (size_t nvalues, String* value)
     return TypeIO::read (nvalues, value);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

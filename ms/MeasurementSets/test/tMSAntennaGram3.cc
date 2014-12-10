@@ -38,7 +38,7 @@
 #include <casacore/ms/MeasurementSets/MSSelection.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
 
-using namespace casa;
+using namespace casacore;
 
 void makeMS()
 {

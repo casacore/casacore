@@ -40,7 +40,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 CompressComplex::CompressComplex (const String& virtualColumnName,
 				  const String& storedColumnName,
@@ -855,5 +855,5 @@ void CompressComplexSD::scaleOnPut (Float scale, Float offset,
   target.putStorage (out, deleteOut);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/scimath/Functionals/WrapperParam.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template<class T>
@@ -61,5 +61,5 @@ WrapperParam<T>::operator=(const WrapperParam<T> &other) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

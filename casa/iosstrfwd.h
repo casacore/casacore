@@ -34,7 +34,7 @@
 #include <casacore/casa/iosfwd.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Define the IO system forward declarations for strings (strstream) as well
 // After changeover to sstream, iosfwd takes care of it all.
@@ -44,6 +44,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 using std::istringstream;
 using std::ostringstream;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

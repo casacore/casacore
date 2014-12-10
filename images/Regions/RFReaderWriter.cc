@@ -28,7 +28,7 @@
 #include <casacore/images/Regions/AipsIOReaderWriter.h>
     //#include <casacore/images/Regions/DS9ReaderWriter.h>
 
-namespace casa {
+namespace casacore {
 
 // RFERROR DEFINITIONS //
 

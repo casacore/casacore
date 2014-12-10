@@ -40,7 +40,7 @@
 #include <casacore/casa/stdlib.h>          // needed for system
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RegularFile::RegularFile ()
 : File()
@@ -232,5 +232,5 @@ Int64 RegularFile::size() const
   return itsFile.size();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

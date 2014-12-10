@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class StorageType>
 void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
@@ -138,5 +138,5 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

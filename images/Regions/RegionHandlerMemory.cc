@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RegionHandlerMemory::RegionHandlerMemory()
 {
@@ -304,5 +304,5 @@ ImageRegion RegionHandlerMemory::makeMask (const LatticeBase& lattice,
   return ImageRegion(mask);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

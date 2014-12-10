@@ -40,7 +40,7 @@
 #include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class Qtype>
 Quantum<Qtype>::Quantum() :
@@ -355,5 +355,5 @@ uInt Quantum<Qtype>::myType() {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

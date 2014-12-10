@@ -42,7 +42,7 @@ extern "C"{
 
 #include <casacore/fits/FITS/FITSError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //----------------------------------------------------------------------------
 //<category lib=aips module=FITS sect="Blocked I/O">   
@@ -194,7 +194,7 @@ class BlockOutput : public BlockIO {
 	virtual int write(char *);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 # endif
 

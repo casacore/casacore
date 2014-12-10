@@ -39,7 +39,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LatticeSlice1D<T>::LatticeSlice1D()
@@ -322,5 +322,5 @@ typename LatticeSlice1D<T>::Method LatticeSlice1D<T>::stringToMethod (const Stri
    return method2;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -37,7 +37,7 @@
 #include <casacore/casa/Containers/RecordDesc.h>
 #include <casacore/casa/Utilities/COWPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class Array;
@@ -543,6 +543,6 @@ inline Bool TableRecord::areTablesMultiUsed() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

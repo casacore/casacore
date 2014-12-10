@@ -35,7 +35,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 ///template<class T>
@@ -256,5 +256,5 @@ void Gaussian2DParam<T>::setPA(const T &pa) {
   thePA  = param_p[PANGLE];
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

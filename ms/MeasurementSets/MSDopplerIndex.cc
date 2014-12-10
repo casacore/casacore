@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/ms/MeasurementSets/MSDoppler.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSDopplerIndex::MSDopplerIndex() 
     : MSTableIndex()
@@ -69,5 +69,5 @@ void MSDopplerIndex::attachIds()
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

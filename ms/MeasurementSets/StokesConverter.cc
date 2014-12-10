@@ -36,7 +36,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // make a portable float to float sqrt for use in Array<Float>::apply
 extern "C" {
@@ -455,5 +455,5 @@ void StokesConverter::invert(Array<Bool>& out, const Array<Bool>& in) const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

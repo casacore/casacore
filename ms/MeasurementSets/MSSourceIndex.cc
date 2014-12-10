@@ -34,7 +34,7 @@
 #include <casacore/ms/MeasurementSets/MSSource.h>
 #include <casacore/tables/Tables/TableError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSSourceIndex::MSSourceIndex() 
   : MSTableIndex(), msSourceCols_p(0)
@@ -180,5 +180,5 @@ Int MSSourceIndex::compare (const Block<void*>& fieldPtrs,
   return 0;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

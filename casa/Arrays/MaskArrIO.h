@@ -32,7 +32,7 @@
 
 //# Forward declarations
 #include <casacore/casa/iosfwd.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class MaskedArray;
 template<class T> class MaskedArray;
@@ -97,7 +97,7 @@ template<class T> ostream & operator<< (ostream &, const MaskedArray<T> &);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/MaskArrIO.tcc>

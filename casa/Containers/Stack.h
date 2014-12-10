@@ -31,7 +31,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Link.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 extern void throw_empty_Stack_error(const char *msg = 0);
 
@@ -172,7 +172,7 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/Stack.tcc>

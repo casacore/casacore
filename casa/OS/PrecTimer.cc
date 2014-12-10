@@ -40,7 +40,7 @@
 #include <sys/types.h>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 double PrecTimer::CPU_speed_in_MHz = PrecTimer::get_CPU_speed_in_MHz();
@@ -155,5 +155,5 @@ void PrecTimer::print_time (ostream& os, double time) const
   os << setprecision(3) << setw(5) << time << ' ' << units[i] << 's';
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

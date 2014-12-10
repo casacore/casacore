@@ -33,7 +33,7 @@
 #include <casacore/fits/FITS/fitsio.h>
 #include <string.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //============================================================================
 
@@ -1409,5 +1409,5 @@ inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2, int d3,
 }
 //=============================================================================
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -32,7 +32,7 @@
 #include <casacore/casa/Utilities/Sort.h>
 #include <casacore/tables/Tables/TableError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // BaseTableIterator is the base class for the table iterators.
 // It is a letter class of the envelope TableIterator.
@@ -161,5 +161,5 @@ BaseTable* BaseTableIterator::next()
     return itp;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

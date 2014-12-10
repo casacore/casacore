@@ -43,7 +43,7 @@
 #include <casacore/ms/MeasurementSets/MSSelectableTable.h>
 #include <casacore/casa/Containers/OrderedMap.h>
 #include <casacore/casa/Containers/MapIO.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // MSSelection: Class to represent a selection on an MS
@@ -510,7 +510,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Bool isMS_p,toTENCalled_p;
   };
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

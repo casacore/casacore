@@ -35,7 +35,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Array<Bool> RecordInterface::toArrayBool (const RecordFieldId& id) const
 {
@@ -392,5 +392,5 @@ Array<String> RecordInterface::toArrayString (const RecordFieldId& id) const
   return asArrayString(id).copy();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

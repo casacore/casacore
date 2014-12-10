@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/MVPosition.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward De
 
@@ -247,6 +247,6 @@ MVDirection operator*(const RotMatrix &left, const MVDirection&right);
 MVDirection  operator*(const MVDirection &left, const RotMatrix &right);
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

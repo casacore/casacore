@@ -30,7 +30,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 extern "C" {
   void cffti_(int*, float*);
@@ -258,5 +258,5 @@ void FFTPack::cosqb(Int n, Double* x, Double* wsave) {
 // compile-command: "gmake OPTLIB=1 FFTPack"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

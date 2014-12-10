@@ -37,7 +37,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,
 				const String& dataManType,
@@ -313,5 +313,5 @@ ConcatColumn* BaseColumnDesc::makeConcatColumn (ConcatTable* ctp) const
     return new ConcatColumn (this, ctp);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -50,7 +50,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TiledStMan::TiledStMan ()
 : DataManager       (),
@@ -1197,5 +1197,5 @@ TSMFile* TiledStMan::getFile (uInt sequenceNumber)
     return fileSet_p[sequenceNumber];
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

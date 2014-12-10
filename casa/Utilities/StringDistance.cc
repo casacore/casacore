@@ -29,7 +29,7 @@
 
 using namespace std;
 
-namespace casa {
+namespace casacore {
 
 StringDistance::StringDistance()
   : itsMaxDistance     (0),

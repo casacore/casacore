@@ -33,7 +33,7 @@
 
 
 %{
-using namespace casa;
+using namespace casacore;
 %}
 
 %pure-parser                /* make parser re-entrant */
@@ -106,8 +106,8 @@ TableExprNodeSet* settp;
 
 
 %{
-namespace casa { //# NAMESPACE CASA - BEGIN
-} //# NAMESPACE CASA - END
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
+} //# NAMESPACE CASACORE - END
 int RecordGramlex (YYSTYPE*);
 %}
 

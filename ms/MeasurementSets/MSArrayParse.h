@@ -32,7 +32,7 @@
 #include <casacore/ms/MeasurementSets/MSParse.h>
 #include <casacore/measures/Measures/MEpoch.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -125,6 +125,6 @@ private:
   Int maxArrays_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

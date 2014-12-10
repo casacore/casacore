@@ -35,7 +35,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class M>
 TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value)
@@ -113,5 +113,5 @@ TableMeasDesc<M>& TableMeasDesc<M>::operator= (const TableMeasDesc<M>& that)
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

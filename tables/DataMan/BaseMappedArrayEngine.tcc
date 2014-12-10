@@ -35,7 +35,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class VirtualType, class StoredType>
 BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine ()
@@ -379,4 +379,4 @@ void BaseMappedArrayEngine<VirtualType, StoredType>::mapOnPut
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

@@ -37,7 +37,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <sys/types.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class FiledesIO;
@@ -380,6 +380,6 @@ inline const Block<Int>& LockFile::reqIds() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

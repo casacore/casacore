@@ -38,7 +38,7 @@
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/casa/iosstrfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class ImageInterface;
@@ -231,7 +231,7 @@ public:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/images/Images/ImageStatistics.tcc>

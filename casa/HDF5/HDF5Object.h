@@ -43,7 +43,7 @@
 #endif
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Define 2 functions to check that hid_t and hsize_t are mapped correctly.
   // They are called by the constructor, so the compiler will scream if

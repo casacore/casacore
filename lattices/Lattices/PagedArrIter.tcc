@@ -37,7 +37,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 PagedArrIter<T>::PagedArrIter (const PagedArray<T>& data,
@@ -91,5 +91,5 @@ void PagedArrIter<T>::setupTileCache()
   itsData.setCacheSizeInTiles (cacheSize);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

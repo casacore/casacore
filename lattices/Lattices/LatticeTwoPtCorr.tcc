@@ -46,7 +46,7 @@
 #include <casacore/casa/iostream.h>
 */
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> 
 void LatticeTwoPtCorr<T>::autoCorrelation (MaskedLattice<T>& latOut, 
@@ -322,5 +322,5 @@ void LatticeTwoPtCorr<T>::check (LogIO& os, const MaskedLattice<T>& latOut,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

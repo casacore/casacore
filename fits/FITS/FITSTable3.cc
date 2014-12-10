@@ -43,7 +43,7 @@
 #include <casacore/casa/iomanip.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FITSGroupWriter::FITSGroupWriter(const String &fileName,
 				 const RecordDesc &description,
@@ -291,5 +291,5 @@ void FITSGroupWriter::check_error(const char *extra_info)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

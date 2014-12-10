@@ -34,7 +34,7 @@
 #include <casacore/tables/DataMan/MSMBase.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Memory-based table storage manager class
@@ -95,6 +95,6 @@ public:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

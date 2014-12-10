@@ -35,7 +35,7 @@
 #include <casacore/ms/MeasurementSets/MSPolIndex.h>
 #include <casacore/casa/Containers/OrderedMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //# Forward Declarations
   class MeasurementSet;
@@ -91,6 +91,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   // </group>
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -36,7 +36,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Logging/LogIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //
   //------------------------------------------------------------------
@@ -685,5 +685,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
   //-------------------------------------------------------------------------
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

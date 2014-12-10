@@ -42,7 +42,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ColumnDesc::ColumnDesc (const BaseColumnDesc& cold)
 : colPtr_p   (cold.clone()),
@@ -310,4 +310,4 @@ void ColumnDesc::doRegisterMainCtor (void*)
   unlockedRegisterCtor (std.className(), std.makeDesc);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

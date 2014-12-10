@@ -34,7 +34,7 @@
 
 using namespace std;
 
-namespace casa {
+namespace casacore {
 
   ImageAttrHandlerHDF5::ImageAttrHandlerHDF5()
     : itsCanWrite (False)
@@ -131,4 +131,4 @@ namespace casa {
     }
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

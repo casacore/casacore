@@ -32,7 +32,7 @@
 #include <casacore/tables/Tables/TableRecord.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 WCIntersection::WCIntersection (const ImageRegion& region1,
 				const ImageRegion& region2)
@@ -123,5 +123,5 @@ WCIntersection* WCIntersection::fromRecord (const TableRecord& rec,
     return new WCIntersection (True, regions);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

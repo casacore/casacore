@@ -86,7 +86,7 @@
 #include <casacore/ms/MeasurementSets/MSIter.h>
 //
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 const uInt nCat = 6; // Number of Flag categories
 
@@ -1896,5 +1896,5 @@ Bool NewMSSimulator::calcAntUVW(MEpoch& epoch, MDirection& refdir,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

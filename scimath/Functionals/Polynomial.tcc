@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/scimath/Functionals/Polynomial.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -55,5 +55,5 @@ Polynomial<T> Polynomial<T>::derivative() const {
 
 //# Member functions
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

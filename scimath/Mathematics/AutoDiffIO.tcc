@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ostream &operator<<(ostream &os, const AutoDiff<T> &ad) {
@@ -42,5 +42,5 @@ ostream &operator<<(ostream &os, const AutoDiff<T> &ad) {
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

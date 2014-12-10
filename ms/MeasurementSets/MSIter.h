@@ -41,7 +41,7 @@
 #include <casacore/scimath/Mathematics/SquareMatrix.h>
 #include <casacore/scimath/Mathematics/RigidVector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# forward decl
 class ROMSColumns;
@@ -455,6 +455,6 @@ inline const Cube<RigidVector<Double, 2> >& MSIter::getBeamOffsets() const
 inline Int MSIter::startChan() const {return startChan_p;}
 inline Bool MSIter::allBeamOffsetsZero() const {return allBeamOffsetsZero_p;}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

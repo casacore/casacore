@@ -33,7 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/TSMCube.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class BucketBuffered;
@@ -200,6 +200,6 @@ inline BucketBuffered* TSMCubeBuff::getCache()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

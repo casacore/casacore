@@ -36,7 +36,7 @@
 
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage,
 		      String *unitName,
@@ -299,5 +299,5 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array,
     return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

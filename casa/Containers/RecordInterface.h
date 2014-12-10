@@ -39,7 +39,7 @@
 #include <casacore/casa/Containers/RecordFieldId.h>
 #include <casacore/casa/Arrays/Array.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class RecordDesc;
@@ -653,6 +653,6 @@ inline Int RecordNotice::fieldNumber() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -34,7 +34,7 @@
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/ms/MeasurementSets/MSSelectionTools.h>
 #include <casacore/ms/MeasurementSets/MSSelectionErrorHandler.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
  // Global pointer to the parser object
   MSAntennaParse* MSAntennaParse::thisMSAParser = 0;
@@ -374,4 +374,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/ms/MeasurementSets/MSPointing.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSPointingIndex::MSPointingIndex() 
     : MSTableIndex()
@@ -68,5 +68,5 @@ void MSPointingIndex::attachIds()
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -29,7 +29,7 @@
 #include <casacore/casa/Quanta/QuantumHolder.h>
 #include <casacore/casa/Quanta/QLogical.h>
 
-namespace casa {
+namespace casacore {
 
 const GaussianBeam GaussianBeam::NULL_BEAM = GaussianBeam();
 
@@ -284,9 +284,9 @@ Bool near(
 			"GaussianBeam::near(): absPATol does not have angular units"
 		);
 	}
-	return casa::near(left.getMajor(), other.getMajor(), relWidthTol)
-		&& casa::near(left.getMinor(), other.getMinor(), relWidthTol)
-		&& casa::nearAbs(left.getPA(True), other.getPA(True), absPATol);
+	return casacore::near(left.getMajor(), other.getMajor(), relWidthTol)
+		&& casacore::near(left.getMinor(), other.getMinor(), relWidthTol)
+		&& casacore::nearAbs(left.getPA(True), other.getPA(True), absPATol);
 }
 
 }

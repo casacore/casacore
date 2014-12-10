@@ -34,7 +34,7 @@
 #include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
 #include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class CopyRecordToTable;
@@ -140,7 +140,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

@@ -38,7 +38,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/Conversion.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Slicer;
@@ -632,6 +632,6 @@ inline void TSMDataColumn::writeTile (void* to, const void* from,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

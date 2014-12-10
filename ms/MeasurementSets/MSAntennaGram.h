@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/ms/MeasurementSets/MSAntennaParse.h> // routines used by bison actions
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MeasurementSet;
@@ -121,6 +121,6 @@ class TableExprNode;
   
   // </group>
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

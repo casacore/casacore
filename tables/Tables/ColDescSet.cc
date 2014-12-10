@@ -33,7 +33,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 ColumnDescSet::ColumnDescSet()
@@ -287,5 +287,5 @@ void ColumnDescSet::show (ostream& os) const
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

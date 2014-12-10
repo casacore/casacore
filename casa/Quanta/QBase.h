@@ -33,7 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Unit.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -153,6 +153,6 @@ LogIO &operator<<(LogIO &os, const QBase &meas);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

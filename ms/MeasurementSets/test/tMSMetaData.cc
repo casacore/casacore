@@ -1437,7 +1437,7 @@ int main() {
     	String *parts = new String[2];
     	split(EnvironmentVariable::get("CASAPATH"), parts, 2, String(" "));
     	String datadir = parts[0] + "/data/";
-    	casa::MeasurementSet ms(datadir + "regression/unittest/MSMetaData/MSMetaData.ms");
+    	casacore::MeasurementSet ms(datadir + "regression/unittest/MSMetaData/MSMetaData.ms");
     	/*
     	cout << "*** test preload constructor" << endl;
     	MSMetaDataPreload md(ms);

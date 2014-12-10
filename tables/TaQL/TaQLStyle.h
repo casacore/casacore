@@ -32,7 +32,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/stdmap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class with static members defining the TaQL style.
@@ -124,6 +124,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

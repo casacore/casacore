@@ -34,7 +34,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 template<class T> Matrix<T>::Matrix()
 : Array<T>(IPosition(2, 0))

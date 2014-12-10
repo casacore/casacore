@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROStandardStManAccessor::ROStandardStManAccessor (const Table& table,
                                                   const String& name,
@@ -93,5 +93,5 @@ void ROStandardStManAccessor::showIndexStatistics (ostream& anOs) const
     itsSSMPtr->showIndexStatistics (anOs);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

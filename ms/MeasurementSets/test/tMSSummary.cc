@@ -35,7 +35,7 @@
 int main(int argc, const char* argv[])
 {
   using namespace std;
-  using namespace casa;
+  using namespace casacore;
 
   if (argc != 2) {
   	cout << "Usage: "<< argv[0] << " MS_filename" << endl;

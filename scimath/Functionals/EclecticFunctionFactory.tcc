@@ -29,7 +29,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Containers/Record.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 EclecticFunctionFactory<T>::EclecticFunctionFactory() :
@@ -81,5 +81,5 @@ void EclecticFunctionFactory<T>::addFactory(const String& type,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

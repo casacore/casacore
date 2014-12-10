@@ -39,7 +39,7 @@
 #include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ColumnsIndex::ColumnsIndex (const Table& table, const String& columnName,
 			    Compare* compareFunction, Bool noSort)
@@ -749,4 +749,4 @@ void ColumnsIndex::copyKey (Block<void*> fields, const Record& key)
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

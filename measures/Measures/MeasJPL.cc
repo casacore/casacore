@@ -37,7 +37,7 @@
 #include <casacore/casa/System/Aipsrc.h>
 #include <casacore/tables/Tables/TableDesc.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 
@@ -335,5 +335,5 @@ Double MeasJPL::emrat[MeasJPL::N_Files];
 Double MeasJPL::cn[MeasJPL::N_Files][MeasJPL::N_Codes];
 Mutex MeasJPL::theirMutex;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

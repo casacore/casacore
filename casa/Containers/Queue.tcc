@@ -29,7 +29,7 @@
 #include <casacore/casa/Utilities/Copy.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> Queue<T>::Queue() : first_p(0), next_p(0), data_p(1)
 {
@@ -119,5 +119,5 @@ template<class T> T Queue<T>::operator()()
     return value;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

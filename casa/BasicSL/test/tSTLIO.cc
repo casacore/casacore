@@ -33,7 +33,7 @@
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/stdmap.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main()
 {

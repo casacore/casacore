@@ -35,7 +35,7 @@
 #include <casacore/tables/Tables/TableSyncData.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // Class to hold table lock data.
@@ -143,6 +143,6 @@ inline uInt ExternalLockSync::nrow() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

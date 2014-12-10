@@ -29,7 +29,7 @@
 #include <casacore/lattices/Lattices/CLInterpolator2D.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 CLInterpolator2D<T>::~CLInterpolator2D()
@@ -75,5 +75,5 @@ template<class T>
 void CLInterpolator2D<T>::preset()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -54,7 +54,7 @@
 #include <casacore/casa/stdlib.h>
 #include <casacore/casa/iostream.h>
 
-using namespace casa;
+using namespace casacore;
 
 
 // Remove the dirname from the file name in an error message.

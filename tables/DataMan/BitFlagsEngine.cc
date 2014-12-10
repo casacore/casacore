@@ -35,7 +35,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   BFEngineMask::BFEngineMask (uInt mask)
     : itsMask (mask)

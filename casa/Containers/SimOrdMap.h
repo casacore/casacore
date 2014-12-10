@@ -33,7 +33,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Define a macro to cast kvblk[i] to OrderedPair<K,V>*.
 //# This is needed because the compiler outlines the inline functions pair.
@@ -206,7 +206,7 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/SimOrdMap.tcc>

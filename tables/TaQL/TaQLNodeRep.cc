@@ -29,7 +29,7 @@
 #include <casacore/tables/TaQL/TaQLNode.h>
 #include <casacore/tables/Tables/TableError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TaQLNodeRep::TaQLNodeRep (int nodeType)
 : itsCount    (0),
@@ -78,4 +78,4 @@ String TaQLNodeRep::checkDataType (const String& dtype)
   return dtstr;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

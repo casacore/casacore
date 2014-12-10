@@ -41,7 +41,7 @@
 #include <casacore/casa/stdlib.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void FITSDateUtil::toFITS(String &date, String &timesys, const MVTime &time,
 			  MEpoch::Types system, DateStyle style, uInt precision)
@@ -234,5 +234,5 @@ uInt FITSDateUtil::findPrecision(const String &fitsDate)
     return prec;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNodeUnit::TableExprNodeUnit (TableExprNodeRep& child,
 				      const Unit& unit)
@@ -170,4 +170,4 @@ Array<DComplex> TableExprNodeArrayUnit::getArrayDComplex(const TableExprId& id)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

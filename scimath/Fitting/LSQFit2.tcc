@@ -35,7 +35,7 @@
 
 using namespace std;
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Static values
 
@@ -1235,5 +1235,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

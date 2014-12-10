@@ -34,7 +34,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCExtension::LCExtension()
 {}
@@ -312,5 +312,5 @@ IPosition LCExtension::doNiceCursorShape (uInt maxPixels) const
     return Lattice<Bool>::doNiceCursorShape (maxPixels);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

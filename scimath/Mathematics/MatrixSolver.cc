@@ -35,7 +35,7 @@
 
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MatrixSolver::MatrixSolver():SolTolerance(0.0), MaxIterations(0), solved(False),
    gain(1.0){}
@@ -142,5 +142,5 @@ Bool MatrixSolver::accurateSolution() {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

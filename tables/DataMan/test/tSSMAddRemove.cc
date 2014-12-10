@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-using namespace casa;
+using namespace casacore;
 
 // This test program was created due to a problem in BucketCache found
 // on 31-Aug-2012. When a bucket was added and removed before being flushed,

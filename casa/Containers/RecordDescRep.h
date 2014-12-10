@@ -38,7 +38,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class RecordDesc;
@@ -347,6 +347,6 @@ inline const String& RecordDescRep::tableDescName (Int whichField) const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

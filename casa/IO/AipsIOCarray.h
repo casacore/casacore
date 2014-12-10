@@ -32,7 +32,7 @@
 #include <casacore/casa/IO/AipsIO.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // Templated functions to get/put a C-style array from/into AipsIO.
@@ -153,7 +153,7 @@ AIPSIO_FUNC_SPEC(String)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/IO/AipsIOCarray.tcc>

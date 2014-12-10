@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/ArrayError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ArrayError::ArrayError(Category c) : AipsError("ArrayError",c) {}
 
@@ -137,5 +137,5 @@ ArraySlicerError::ArraySlicerError(const String &m,Category c)
 
 ArraySlicerError::~ArraySlicerError() throw(){}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

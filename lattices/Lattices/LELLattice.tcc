@@ -38,7 +38,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LELLattice<T>::LELLattice(const Lattice<T>& lattice) 
@@ -161,5 +161,5 @@ void LELLattice<T>::resync()
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

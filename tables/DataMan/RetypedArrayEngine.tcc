@@ -41,7 +41,7 @@
 #include <casacore/casa/Utilities/Copy.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class S, class T>
 RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& virtualColumnName,
@@ -318,5 +318,5 @@ void RetypedArrayEngine<S,T>::mapOnPut (const Array<S>& array,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

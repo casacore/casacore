@@ -29,7 +29,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 uInt hashFunc(const String &s) {
     const char *ptr = s.chars();
@@ -100,5 +100,5 @@ void throw_hashmapiter_init_error() {
   throw(AipsError("Bad initialization of HashMap iterator"));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

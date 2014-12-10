@@ -29,7 +29,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 VirtualColumnEngine::~VirtualColumnEngine()
 {}
@@ -86,5 +86,5 @@ DataManagerColumn* VirtualColumnEngine::makeDirArrColumn
 						const String& dataTypeId)
     { return makeIndArrColumn (columnName, dataType, dataTypeId); }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

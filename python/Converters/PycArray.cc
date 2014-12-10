@@ -34,7 +34,7 @@
 
 using namespace boost::python;
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
   Bool PycArrayCheck (PyObject* obj_ptr)
   {
@@ -85,7 +85,7 @@ namespace casa { namespace python {
   }
 
   template <>
-  object makePyArrayObject (casa::Array<String> const& arr)
+  object makePyArrayObject (casacore::Array<String> const& arr)
   {
     object a = to_list< Array<String> >::makeobject (arr);
     if (arr.ndim() == 1) {
@@ -101,26 +101,26 @@ namespace casa { namespace python {
 
   // Instantiate the templates.
   template boost::python::object makePyArrayObject
-    (casa::Array<Bool> const& arr);
+    (casacore::Array<Bool> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<uChar> const& arr);
+    (casacore::Array<uChar> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Short> const& arr);
+    (casacore::Array<Short> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<uShort> const& arr);
+    (casacore::Array<uShort> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Int> const& arr);
+    (casacore::Array<Int> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<uInt> const& arr);
+    (casacore::Array<uInt> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Int64> const& arr);
+    (casacore::Array<Int64> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Float> const& arr);
+    (casacore::Array<Float> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Double> const& arr);
+    (casacore::Array<Double> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Complex> const& arr);
+    (casacore::Array<Complex> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<DComplex> const& arr);
+    (casacore::Array<DComplex> const& arr);
 
 }}

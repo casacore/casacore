@@ -41,7 +41,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define EXTBLSZ 32
 
@@ -916,5 +916,5 @@ void StManAipsIO::deleteManager()
     DOos::remove (fileName(), False, False);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

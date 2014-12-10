@@ -57,7 +57,7 @@
 #include <casacore/casa/sstream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 DirectionCoordinate::DirectionCoordinate()
@@ -765,7 +765,7 @@ Bool DirectionCoordinate::isNCP() const {
 			Quantity dec(referenceValue()[1], worldAxisUnits()[1]);
 			return (
 				dec.getValue() != 0
-				&& casa::near(pars[1], 1/tan(dec.getValue("rad")))
+				&& casacore::near(pars[1], 1/tan(dec.getValue("rad")))
 			);
 		}
 	}
@@ -1286,12 +1286,12 @@ Bool DirectionCoordinate::near(const Coordinate& other,
 
 // {lon,lat}poles
 
-    if (!casa::near(Double(wcs_p.lonpole), Double(dCoord.wcs_p.lonpole))) {
+    if (!casacore::near(Double(wcs_p.lonpole), Double(dCoord.wcs_p.lonpole))) {
        oss << "The DirectionCoordinates have differing lonpoles";
        set_error(String(oss));
        return False;      
     }
-    if (!casa::near(Double(wcs_p.latpole), Double(dCoord.wcs_p.latpole))) {
+    if (!casacore::near(Double(wcs_p.latpole), Double(dCoord.wcs_p.latpole))) {
        oss << "The DirectionCoordinates have differing latpoles";
        set_error(String(oss));
        return False;      
@@ -1309,7 +1309,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
       }
       for (uInt i=0; i<thisVal.nelements(); i++) {
          if (!exclude[i]) {
-            if (!casa::near(thisVal[i],thatVal[i])) {
+            if (!casacore::near(thisVal[i],thatVal[i])) {
                oss << "The DirectionCoordinates have differing reference values for axis "
                    << i;
                set_error(String(oss));
@@ -1530,7 +1530,7 @@ void DirectionCoordinate::setReferenceFrame(const MDirection::Types rf)
 Bool DirectionCoordinate::hasSquarePixels() const
 {
 	Vector<Double> inc = increment();
-	return casa::near(fabs(inc[0]), fabs(inc[1]));
+	return casacore::near(fabs(inc[0]), fabs(inc[1]));
 }
 
 void DirectionCoordinate::toCurrent(Vector<Double>& value) const
@@ -2246,5 +2246,5 @@ void DirectionCoordinate::copy(const DirectionCoordinate &other)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -34,7 +34,7 @@
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/scimath/Mathematics/AutoDiff.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Forward Declarations.
   template<class T> class Vector;
 
@@ -275,7 +275,7 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/Gaussian3DParam.tcc>

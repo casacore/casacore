@@ -35,7 +35,7 @@
 #include <limits>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Aggregation and GROUPBY/HAVING clause are handled as follows:
   // Possibly support ROLLUP (to generate subtotals); cannot be used with median
@@ -504,4 +504,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

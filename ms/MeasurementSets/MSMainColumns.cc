@@ -38,7 +38,7 @@
 #include <casacore/casa/Containers/RecordFieldId.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSMainColumns::ROMSMainColumns(const MeasurementSet& ms):
   antenna1_p(ms, MS::columnName(MS::ANTENNA1)),
@@ -477,5 +477,5 @@ void MSMainColumns::attachOptionalCols(MeasurementSet& ms)
 // compile-command: "gmake MSMainColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

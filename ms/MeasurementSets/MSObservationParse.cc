@@ -31,7 +31,7 @@
 #include <casacore/ms/MeasurementSets/MSSelectionTools.h>
 #include <limits>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MSObservationParse* MSObservationParse::thisMSObsParser = 0x0; // Global pointer to the parser object
   TableExprNode MSObservationParse::columnAsTEN_p;
@@ -214,4 +214,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return node_p;
   }
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

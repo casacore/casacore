@@ -30,6 +30,7 @@ Mathematics/RigidVector2.cc
 Mathematics/MedianSlider.cc
 Mathematics/VectorKernel.cc
 Mathematics/VanVleck.cc
+StefCal/StefCal.cc
 )
 
 if (FFTW3_FOUND)
@@ -293,5 +294,6 @@ if (BUILD_TESTING)
     add_subdirectory (Fitting/test)
     add_subdirectory (Functionals/test)
     add_subdirectory (Mathematics/test)
+    add_subdirectory (StefCal/test)
 endif (BUILD_TESTING)
 

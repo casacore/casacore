@@ -30,7 +30,7 @@
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Containers/RecordField.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main (int argc, char* argv[])
 {

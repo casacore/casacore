@@ -40,7 +40,7 @@
 #include <casacore/casa/Logging/LogSink.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 NewFile::NewFile(Bool deleteIfExists) : delete_p(deleteIfExists)
 {
@@ -148,5 +148,5 @@ Bool NewFile::valueOK(const String &value, String &error) const
     return retval;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

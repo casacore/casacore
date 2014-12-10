@@ -31,7 +31,7 @@
 
 #include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Forward declarations for LogicalArrays.
@@ -102,6 +102,6 @@ typedef Array<LogicalArrayElem> LogicalArray;
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

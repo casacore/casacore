@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/scimath/Mathematics/SparseDiffRep.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Constructors
   template <class T>
@@ -70,5 +70,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	 i!=grad_p.end(); ++i) i->second /= other;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

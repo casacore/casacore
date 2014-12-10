@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/casa/Arrays/AxesMapping.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class MaskedLattice;
@@ -142,7 +142,7 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/CLInterpolator2D.tcc>

@@ -36,7 +36,7 @@
 #include <casacore/casa/string.h>               // needed for strerror
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FiledesIO::FiledesIO()
 : itsSeekable (False),
@@ -227,4 +227,4 @@ void FiledesIO::close (int fd)
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

@@ -32,7 +32,7 @@
 #include <casacore/tables/Tables/TableRecord.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 WCComplement::WCComplement (const ImageRegion& region)
 : WCCompound (&region)
@@ -106,5 +106,5 @@ WCComplement* WCComplement::fromRecord (const TableRecord& rec,
     return new WCComplement (True, regions);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

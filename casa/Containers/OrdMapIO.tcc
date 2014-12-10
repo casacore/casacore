@@ -27,8 +27,8 @@
 
 #include <casacore/casa/Containers/OrdMapIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

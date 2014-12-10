@@ -33,7 +33,7 @@
 #include <casacore/casa/IO/BucketBase.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward Declarations.
   class FilebufIO;
@@ -122,6 +122,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

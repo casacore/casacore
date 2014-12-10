@@ -36,7 +36,7 @@
 # include <omp.h>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Do a quicksort in ascending order.
 // All speedups are from Sedgewick; Algorithms in C.
@@ -915,4 +915,4 @@ void GenSortIndirect<T>::heapAscSiftDown (uInt* inx, Int low, Int up,
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

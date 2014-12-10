@@ -28,6 +28,10 @@
 #ifndef CASA_AIPS_H
 #define CASA_AIPS_H
 
+// For temporary backward namespace compatibility, use casa as alias for casacore.
+//# Note: namespace casa = casacore; does not work for forward declarations.
+#define casacore casa
+
 //# Define compiler specific flags
 #include <casacore/casa/aipsenv.h>
 
@@ -40,8 +44,9 @@
 //# Define the special Casacore macros
 #include <casacore/casa/aipsdef.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Define the namespace used by Casacore
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
+} //# NAMESPACE CASACORE - END
 
-} //# NAMESPACE CASA - END
 
 #endif

@@ -29,7 +29,7 @@
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   IPosition Slice::checkSlices (Vector<Vector<Slice> >& slices, Slicer& first,
                                 const IPosition& shape)
@@ -74,4 +74,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return result;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

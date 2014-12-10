@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <vector>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MSSelectionErrorHandler::MSSelectionErrorHandler()
     :tokenList(), messageList()
@@ -78,5 +78,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     messageList.resize(0);
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

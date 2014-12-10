@@ -39,7 +39,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 CountedPtr<LogSink::LsiIntermediate> *LogSink::global_sink_p = 0;
 Mutex LogSink::theirMutex;
@@ -325,5 +325,5 @@ void LogSink::createGlobalSink()
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

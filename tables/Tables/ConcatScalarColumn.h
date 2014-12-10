@@ -33,7 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/ConcatColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // A typed column in a concatenated table
@@ -122,7 +122,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/Tables/ConcatScalarColumn.tcc>

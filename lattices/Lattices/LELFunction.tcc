@@ -41,7 +41,7 @@
 #include <casacore/casa/Exceptions/Error.h> 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // LELFunction1D
 template <class T>
@@ -1045,5 +1045,5 @@ void LELFunctionND<T>::resync()
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

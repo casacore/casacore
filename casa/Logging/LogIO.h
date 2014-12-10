@@ -36,7 +36,7 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/iosstrfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class LogSink;
@@ -309,6 +309,6 @@ inline const LogSinkInterface &LogIO::localSink() const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

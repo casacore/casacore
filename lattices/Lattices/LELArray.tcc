@@ -29,7 +29,7 @@
 #include <casacore/lattices/Lattices/LELArray.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LELArray<T>::LELArray (const IPosition& shape)
@@ -58,5 +58,5 @@ LELArray<T>& LELArray<T>::operator= (const LELArray<T>& other)
     return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

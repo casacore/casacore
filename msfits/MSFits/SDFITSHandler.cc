@@ -50,7 +50,7 @@
 #include <casacore/measures/TableMeasures/TableMeasDesc.h>
 #include <casacore/measures/TableMeasures/TableQuantumDesc.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDFITSHandler::SDFITSHandler() 
     : tab_p(0), copier_p(0)
@@ -278,5 +278,5 @@ TableDesc SDFITSHandler::requiredTableDesc(Vector<Bool> &handledCols, Vector<Str
     return td;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/Constants.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <typename T>
 Bool Interpolate2D::interpNearest(T &result, 
@@ -307,5 +307,5 @@ T Interpolate2D::L(const T x, const Int a) const {
     return 0;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

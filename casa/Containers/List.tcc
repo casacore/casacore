@@ -28,7 +28,7 @@
 #include <casacore/casa/Containers/List.h>
 #include <casacore/casa/Containers/IterError.h>
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 template<class t> uInt ListNotice<t>::type() const  {
   return Register(this);

@@ -33,7 +33,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSMBase::MSMBase()
 : DataManager   (),
@@ -279,5 +279,5 @@ void MSMBase::resync (uInt nrrow)
 void MSMBase::deleteManager()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

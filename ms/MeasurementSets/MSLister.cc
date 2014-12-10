@@ -46,7 +46,7 @@
 
 #include <casacore/ms/MeasurementSets/MSSelectionTools.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //
 // Null constructor merely sets private formatting string
@@ -1351,5 +1351,5 @@ void MSLister::clearFlags()
 
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

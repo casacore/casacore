@@ -37,7 +37,7 @@
 # include <casacore/casa/BasicSL/IComplex.h>
 # include <casacore/fits/FITS/FITSError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# All FITS code seems to assume longs are 4 bytes. To take care of machines 
 //# for which this isn't true use FitsLong instead of Long in the FITS code
@@ -1042,6 +1042,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 # endif

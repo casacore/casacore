@@ -37,7 +37,7 @@
 #include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSHistory;
 // <summary>
@@ -263,6 +263,6 @@ private:
   ScalarQuantColumn<Double> timeQuant_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

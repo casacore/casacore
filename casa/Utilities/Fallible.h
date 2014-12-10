@@ -30,7 +30,7 @@
 
 #include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# The following function is to be found in Fallible2.cc not Fallible.cc
 //# because it's a non-templated function and template instantiators normally
@@ -154,7 +154,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

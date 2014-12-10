@@ -35,7 +35,7 @@
 #include <casacore/casa/Exceptions/Error.h> 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LELBinary<T>::LELBinary(const LELBinaryEnums::Operation op,
@@ -444,5 +444,5 @@ void LELBinaryCmp<T>::resync()
     pRightExpr_p->resync();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -31,7 +31,7 @@
 #include <casacore/lattices/LatticeMath/LatticeFit.h>
 #include <casacore/lattices/LatticeMath/Fit2D.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 
@@ -55,6 +55,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // </module>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

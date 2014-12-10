@@ -33,7 +33,7 @@
 #include <casacore/ms/MeasurementSets/MSSelectionErrorHandler.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <bitset>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //# Forward Declarations
   
@@ -177,6 +177,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     static TableExprNode column1AsTEN_p,column2AsTEN_p;
   };
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

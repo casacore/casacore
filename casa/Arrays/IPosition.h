@@ -36,7 +36,7 @@
 #include <cstddef>                  // for ptrdiff_t
 #include <sys/types.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class AipsIO;
@@ -602,6 +602,6 @@ inline Bool IPosition::conform(const IPosition& other) const
     return  (size_p == other.size_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

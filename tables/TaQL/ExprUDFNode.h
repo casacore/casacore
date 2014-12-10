@@ -32,7 +32,7 @@
 #include <casacore/tables/TaQL/ExprNodeRep.h>
 #include <casacore/tables/TaQL/UDFBase.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward Declarations
   class TableExprNodeSet;
@@ -107,6 +107,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

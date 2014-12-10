@@ -27,7 +27,7 @@
 #ifndef LATTICES_LELBINARYENUMS_H
 #define LATTICES_LELBINARYENUMS_H
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Each LEL binary operation is described in this enum  </summary>
 //
@@ -102,6 +102,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

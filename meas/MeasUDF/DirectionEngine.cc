@@ -32,7 +32,7 @@
 //#include <casacore/measures/Measures/MCEpoch.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 
-namespace casa {
+namespace casacore {
 
   DirectionEngine::DirectionEngine()
     : itsNDim           (-1),

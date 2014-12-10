@@ -34,7 +34,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Class to hold the result of a TaQL command.

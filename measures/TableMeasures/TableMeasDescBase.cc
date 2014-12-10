@@ -42,7 +42,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableMeasDescBase::TableMeasDescBase()
 {}
@@ -219,5 +219,5 @@ Bool TableMeasDescBase::hasMeasures (const TableColumn& column)
   return column.keywordSet().isDefined ("MEASINFO");
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

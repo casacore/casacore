@@ -29,11 +29,11 @@
 //# Includes
 #include <casacore/casa/BasicMath/Functional.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template<class Domain,class Range>
 Functional<Domain,Range>::~Functional() {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

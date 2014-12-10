@@ -32,7 +32,7 @@
 #include <casacore/casa/Utilities/GenSort.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   ConcatColumn::ConcatColumn (const BaseColumnDesc* bcdp,
 			      ConcatTable* reftab)
@@ -389,4 +389,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     colCache_p.setIncrement (colCache.incr());
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

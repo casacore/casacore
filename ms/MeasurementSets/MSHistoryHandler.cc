@@ -33,7 +33,7 @@
 #include <casacore/casa/ostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSHistoryHandler::MSHistoryHandler(MeasurementSet& ms, String app){
   histTable_p = ms.history();
@@ -202,5 +202,5 @@ void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
  histTable_p.flush();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

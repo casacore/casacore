@@ -28,7 +28,7 @@
 #include <casacore/scimath/Mathematics/RigidVector.h>
 #include <casacore/scimath/Mathematics/SquareMatrix.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T, Int n>
 RigidVector<T,n>& 
@@ -104,5 +104,5 @@ RigidVector<T,n> sqrt(const RigidVector<T,n>& v) {
 // }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

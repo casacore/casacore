@@ -32,7 +32,7 @@
 #include <casacore/ms/MeasurementSets/MSSelectionErrorHandler.h>
 #include <casacore/casa/Logging/LogIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   MSStateParse* MSStateParse::thisMSSIParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSStateParse::node_p = 0x0;
@@ -79,4 +79,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
     return node_p;
   }
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

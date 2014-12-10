@@ -28,7 +28,7 @@
 #include <casacore/casa/Utilities/BinarySearch.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //#!!!!! If you change either of the following, make sure you change the other
 //#!!!!! similarly.
@@ -134,5 +134,5 @@ template<class Container, class ElType>
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

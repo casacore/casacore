@@ -40,7 +40,7 @@
 #include <casacore/casa/Quanta/MVTime.h>
 #include <casacore/casa/Containers/Record.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDMainHandler::SDMainHandler() 
     : ms_p(0), msCols_p(0),
@@ -248,5 +248,5 @@ void SDMainHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 	handledCols(row.fieldNumber("MAIN_PULSAR_BIN")) = True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

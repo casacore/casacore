@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/OS/Mutex.h>
 
-namespace casa {
+namespace casacore {
 
 //# Forward Declarations.
 class FFTWPlan;
@@ -99,6 +99,6 @@ private:
   static Mutex theirMutex;          // Initialization mutex
 };    
     
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

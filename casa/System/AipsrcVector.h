@@ -34,7 +34,7 @@
 #include <casacore/casa/System/Aipsrc.h>
 #include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 template<class T> class Vector;
@@ -226,7 +226,7 @@ private:
 #undef AipsrcVector_Bool
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/System/AipsrcVector.tcc>

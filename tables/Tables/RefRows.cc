@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RefRows::RefRows (const Vector<uInt>& rowNumbers, Bool isSliced,
 		  Bool collapse)
@@ -245,5 +245,5 @@ void RefRowsSliceIter::next()
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

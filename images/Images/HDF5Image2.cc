@@ -29,7 +29,7 @@
 #include <casacore/casa/HDF5/HDF5File.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   DataType hdf5imagePixelType (const String& fileName)
   {
@@ -63,4 +63,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return retval;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

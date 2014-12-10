@@ -30,7 +30,7 @@
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Quanta/QBase.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 QBase::QBase() 
 : qUnit() {}
@@ -77,5 +77,5 @@ LogIO &operator<<(LogIO& os, const QBase &meas) {
   return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -31,7 +31,7 @@
 //# For scalar near() functions.
 #include <casacore/casa/BasicMath/Functors.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<typename T, typename CompareOperator>
 bool arrayCompareAll (const Array<T>& left, const Array<T>& right,
@@ -566,7 +566,7 @@ template<class T>
 LogicalArray isNaN (const Array<T> &array)
 {
   LogicalArray result(array.shape());
-  arrayContTransform (array, result, casa::IsNaN<T>());
+  arrayContTransform (array, result, casacore::IsNaN<T>());
   return result;
 }
 
@@ -574,7 +574,7 @@ template<class T>
 LogicalArray isInf (const Array<T> &array)
 {
   LogicalArray result(array.shape());
-  arrayContTransform (array, result, casa::IsInf<T>());
+  arrayContTransform (array, result, casacore::IsInf<T>());
   return result;
 }
 
@@ -582,7 +582,7 @@ template<class T>
 LogicalArray isFinite (const Array<T> &array)
 {
   LogicalArray result(array.shape());
-  arrayContTransform (array, result, casa::IsFinite<T>());
+  arrayContTransform (array, result, casacore::IsFinite<T>());
   return result;
 }
 
@@ -591,7 +591,7 @@ LogicalArray near (const Array<T> &l, const Array<T>& r, Double tol)
 {
   checkArrayShapes (l, r, "near");
   LogicalArray result(l.shape());
-  arrayContTransform (l, r, result, casa::Near<T>(tol));
+  arrayContTransform (l, r, result, casacore::Near<T>(tol));
   return result;
 }
 
@@ -601,7 +601,7 @@ template<class T> LogicalArray nearAbs(const Array<T> &l, const Array<T> &r,
 {
   checkArrayShapes (l, r, "nearAbs");
   LogicalArray result(l.shape());
-  arrayContTransform (l, r, result, casa::NearAbs<T>(tol));
+  arrayContTransform (l, r, result, casacore::NearAbs<T>(tol));
   return result;
 }
 
@@ -609,7 +609,7 @@ template<class T> LogicalArray near (const Array<T> &array, const T &val,
 				     Double tol)
 {
   LogicalArray result(array.shape());
-  arrayContTransform (array, val, result, casa::Near<T>(tol));
+  arrayContTransform (array, val, result, casacore::Near<T>(tol));
   return result;
 }
 
@@ -617,7 +617,7 @@ template<class T> LogicalArray near (const T &val, const Array<T> &array,
 				      Double tol)
 {
   LogicalArray result(array.shape());
-  arrayContTransform (val, array, result, casa::Near<T>(tol));
+  arrayContTransform (val, array, result, casacore::Near<T>(tol));
   return result;
 }
 
@@ -625,7 +625,7 @@ template<class T> LogicalArray nearAbs (const Array<T> &array, const T &val,
 				     Double tol)
 {
   LogicalArray result(array.shape());
-  arrayContTransform (array, val, result, casa::NearAbs<T>(tol));
+  arrayContTransform (array, val, result, casacore::NearAbs<T>(tol));
   return result;
 }
 
@@ -633,7 +633,7 @@ template<class T> LogicalArray nearAbs (const T &val, const Array<T> &array,
 				      Double tol)
 {
   LogicalArray result(array.shape());
-  arrayContTransform (val, array, result, casa::NearAbs<T>(tol));
+  arrayContTransform (val, array, result, casacore::NearAbs<T>(tol));
   return result;
 }
 
@@ -641,70 +641,70 @@ template<class T> LogicalArray nearAbs (const T &val, const Array<T> &array,
 template<class T> Bool allNear (const Array<T> &l, const Array<T> &r,
 				Double tol)
 {
-  return arrayCompareAll (l, r, casa::Near<T>(tol));
+  return arrayCompareAll (l, r, casacore::Near<T>(tol));
 }
 
 template<class T> Bool allNear (const Array<T> &array, const T &val, Double tol)
 {
-  return arrayCompareAll (array, val, casa::Near<T>(tol));
+  return arrayCompareAll (array, val, casacore::Near<T>(tol));
 }
 
 template<class T> Bool allNear (const T &val, const Array<T> &array, Double tol)
 {
-  return arrayCompareAll (val, array, casa::Near<T>(tol));
+  return arrayCompareAll (val, array, casacore::Near<T>(tol));
 }
 
 template<class T> Bool allNearAbs (const Array<T> &l, const Array<T> &r,
 				   Double tol)
 {
-  return arrayCompareAll (l, r, casa::NearAbs<T>(tol));
+  return arrayCompareAll (l, r, casacore::NearAbs<T>(tol));
 }
 
 template<class T> Bool allNearAbs (const Array<T> &array, const T &val,
 				   Double tol)
 {
-  return arrayCompareAll (array, val, casa::NearAbs<T>(tol));
+  return arrayCompareAll (array, val, casacore::NearAbs<T>(tol));
 }
 
 template<class T> Bool allNearAbs (const T &val, const Array<T> &array,
 				   Double tol)
 {
-  return arrayCompareAll (val, array, casa::NearAbs<T>(tol));
+  return arrayCompareAll (val, array, casacore::NearAbs<T>(tol));
 }
 
 
 template<class T> Bool anyNear (const Array<T> &l, const Array<T> &r,
 				Double tol)
 {
-  return arrayCompareAny (l, r, casa::Near<T>(tol));
+  return arrayCompareAny (l, r, casacore::Near<T>(tol));
 }
 
 template<class T> Bool anyNear (const Array<T> &array, const T &val, Double tol)
 {
-  return arrayCompareAny (array, val, casa::Near<T>(tol));
+  return arrayCompareAny (array, val, casacore::Near<T>(tol));
 }
 
 template<class T> Bool anyNear (const T &val, const Array<T> &array, Double tol)
 {
-  return arrayCompareAny (val, array, casa::Near<T>(tol));
+  return arrayCompareAny (val, array, casacore::Near<T>(tol));
 }
 
 template<class T> Bool anyNearAbs (const Array<T> &l, const Array<T> &r,
 				   Double tol)
 {
-  return arrayCompareAny (l, r, casa::NearAbs<T>(tol));
+  return arrayCompareAny (l, r, casacore::NearAbs<T>(tol));
 }
 
 template<class T> Bool anyNearAbs (const Array<T> &array, const T &val,
 				   Double tol)
 {
-  return arrayCompareAny (array, val, casa::NearAbs<T>(tol));
+  return arrayCompareAny (array, val, casacore::NearAbs<T>(tol));
 }
 
 template<class T> Bool anyNearAbs (const T &val, const Array<T> &array,
 				   Double tol)
 {
-  return arrayCompareAny (val, array, casa::NearAbs<T>(tol));
+  return arrayCompareAny (val, array, casacore::NearAbs<T>(tol));
 }
 
 
@@ -800,5 +800,5 @@ template<class T> Array<uInt> partialNFalse (const Array<T>& array,
   return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

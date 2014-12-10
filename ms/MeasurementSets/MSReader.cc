@@ -37,7 +37,7 @@
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSReader::MSReader(const MeasurementSet &ms)
     : itsMS(ms), itsMSCols(ms), itsSecUnit("s"), itsIds(ms), itsTabId(-1),
@@ -539,5 +539,5 @@ const Table &MSReader::table(const String &name) const
     return itsTabRows[tabId].table();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

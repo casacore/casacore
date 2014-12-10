@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h> 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELAttribute::LELAttribute()
 : isScalar_p  (True),
@@ -222,5 +222,5 @@ Int LELAttribute::compareCoord (const LELAttribute& other) const
   return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

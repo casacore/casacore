@@ -31,7 +31,7 @@
 #include <casacore/casa/aips.h>
 #include <complex>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -162,6 +162,6 @@ template <> class LSQTraits_CF<std::complex<Float> > {
 #undef LSQTraits_CF
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

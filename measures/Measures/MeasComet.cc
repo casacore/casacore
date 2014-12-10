@@ -39,7 +39,7 @@
 #include <casacore/casa/System/Aipsrc.h>
 #include <casacore/casa/OS/Path.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 MeasComet::MeasComet() :
@@ -420,5 +420,5 @@ Bool MeasComet::fillMeas(Double utf) const {
   return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -29,7 +29,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class t>
 indexError<t>::indexError( t oI, const Char *str, Category c )
@@ -65,5 +65,5 @@ duplError<t>::~duplError() throw()
 {}
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

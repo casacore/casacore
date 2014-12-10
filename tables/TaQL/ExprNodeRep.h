@@ -41,7 +41,7 @@
 #include <casacore/casa/Utilities/StringDistance.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TableExprNode;
@@ -749,6 +749,6 @@ inline TableExprNodeRep* TableExprNodeRep::link()
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

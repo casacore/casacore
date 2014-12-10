@@ -34,7 +34,7 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/iomanip.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Constructor: Fully automatic bin definition
 
@@ -546,5 +546,5 @@ void HistAcc<T>::printHistogram (ostream& os, const String& caption)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

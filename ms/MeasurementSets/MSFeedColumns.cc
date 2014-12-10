@@ -31,7 +31,7 @@
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/Tables/ColDescSet.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSFeedColumns::ROMSFeedColumns(const MSFeed& msFeed):
   antennaId_p(msFeed, MSFeed::columnName(MSFeed::ANTENNA_ID)),
@@ -362,5 +362,5 @@ void MSFeedColumns::attachOptionalCols(MSFeed& msFeed)
 // compile-command: "gmake MSFeedColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

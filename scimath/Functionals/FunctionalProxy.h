@@ -36,7 +36,7 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/scimath/Functionals/FunctionHolder.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class FunctionalProxy {
 public:

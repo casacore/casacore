@@ -38,7 +38,7 @@
 //
 #define AIPS_STUPID_SUN 1
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 //# Forward Declarations
 class AipsIO;

@@ -40,7 +40,7 @@
 
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 String ObsInfo::defaultTelescope()
 {
@@ -585,5 +585,5 @@ ostream &operator<<(ostream &os, const ObsInfo &info)
     return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

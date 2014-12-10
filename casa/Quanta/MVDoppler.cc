@@ -32,7 +32,7 @@
 #include <casacore/casa/Quanta/MVDoppler.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // MVDoppler class
 
@@ -116,11 +116,11 @@ Bool MVDoppler::operator!=(const MVDoppler &other) const {
 }
 
 Bool MVDoppler::near(const MVDoppler &other, Double tol) const {
-  return ::casa::near(val, other.val, tol);
+  return ::casacore::near(val, other.val, tol);
 }
 
 Bool MVDoppler::nearAbs(const MVDoppler &other, Double tol) const {
-  return ::casa::nearAbs(val, other.val, tol);
+  return ::casacore::nearAbs(val, other.val, tol);
 }
 
 // Member functions
@@ -219,5 +219,5 @@ Double MVDoppler::makeD(Double v, const Unit &dt, Bool rev) const{
   return (v*x);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

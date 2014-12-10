@@ -27,7 +27,7 @@
 
 #include <casacore/casa/Utilities/RegSequence.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 uInt RegSequence::num = 0;
 Mutex RegSequence::theirMutex;
@@ -37,5 +37,5 @@ uInt RegSequence::getNext() {
   return ++num;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

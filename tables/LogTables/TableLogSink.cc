@@ -38,7 +38,7 @@
 #include <casacore/casa/BasicSL/Constants.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 String TableLogSink::localId( ) {
     return String("TableLogSink");
@@ -306,5 +306,5 @@ LogSink TableLogSink::makeSink (const LogFilterInterface &filter,
   return LogSink (filter, CountedPtr<LogSinkInterface>(sink));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

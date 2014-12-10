@@ -34,7 +34,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LogFilterExpr::LogFilterExpr (const String& expr)
 : itsExpr (0)
@@ -130,5 +130,5 @@ DataType LogFilterExpr::dataType (const Block<Int>& fieldNrs) const
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -68,7 +68,7 @@
 #include <casacore/casa/Containers/BlockIO.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 //# Default constructor.
@@ -3299,4 +3299,4 @@ TaQLResult tableCommand (const String& str,
   } 
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

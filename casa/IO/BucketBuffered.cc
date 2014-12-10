@@ -34,7 +34,7 @@
 #include <cstring>   //# for memset
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   BucketBuffered::BucketBuffered (BucketFile* file, Int64 startOffset,
@@ -121,4 +121,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

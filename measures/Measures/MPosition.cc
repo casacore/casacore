@@ -33,7 +33,7 @@
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 MPosition::MPosition() :
@@ -261,5 +261,5 @@ Measure *MPosition::clone() const {
   return (new MPosition(*this));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

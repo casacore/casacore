@@ -30,7 +30,7 @@
 # include <casacore/casa/string.h>
 #include <unistd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //======================================================================================
     void BlockIO::errmsg(IOErrs e, const char *s) { 
@@ -347,5 +347,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			     FITSErrorHandler errhandler) :
 	BlockIO(f,r,n,errhandler) { }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

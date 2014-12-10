@@ -51,7 +51,7 @@
 
 #include <mach/mach.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // HostInfo for Darwin machines.
@@ -191,7 +191,7 @@ void HostMachineInfo::update_info( ) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 # endif
 #endif

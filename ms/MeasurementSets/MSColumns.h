@@ -50,7 +50,7 @@
 #include <casacore/ms/MeasurementSets/MSSysCalColumns.h>
 #include <casacore/ms/MeasurementSets/MSWeatherColumns.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MeasurementSet;
 
@@ -311,7 +311,7 @@ private:
   MSWeatherColumns weather_p; //optional
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

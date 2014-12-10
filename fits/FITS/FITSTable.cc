@@ -48,7 +48,7 @@
 #include <casacore/casa/stdlib.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Just returns the scalar type.
 static DataType fitsDataType(FITS::ValueType fitsType)
@@ -1927,5 +1927,5 @@ void FITSTable::reopenAtFirstHDU(const String &name) {
     io_p->skip_hdu();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

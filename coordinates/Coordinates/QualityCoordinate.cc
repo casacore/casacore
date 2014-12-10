@@ -40,7 +40,7 @@
 #include <casacore/casa/sstream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 QualityCoordinate::QualityCoordinate(const Vector<Int> &whichQuality)
@@ -580,7 +580,7 @@ Bool QualityCoordinate::toPixel(Double& pixel,  const Double world) const
     Bool found = False;
     Int index;
     for (index=0; index<nValues_p; index++) {
-    	found = casa::near(world, Double(values_p[index]));
+    	found = casacore::near(world, Double(values_p[index]));
     	if (found) break;
     }
     if (!found) {
@@ -613,5 +613,5 @@ void QualityCoordinate::setDefaultWorldMixRanges ()
 	toWorld(worldMax_p, pixel);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

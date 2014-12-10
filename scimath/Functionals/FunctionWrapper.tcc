@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/scimath/Functionals/WrapperData.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class T>
@@ -124,5 +124,5 @@ uInt FunctionWrapper<T>::ndim() const {
   return (doit_p ? doit_p->ndim() : 0);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

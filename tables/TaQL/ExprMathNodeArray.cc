@@ -33,7 +33,7 @@
 #include <casacore/casa/Quanta/MVTime.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Implement the arithmetic operators for each data type.
 
@@ -584,5 +584,5 @@ Array<Int64> TableExprNodeArrayBitNegate::getArrayInt (const TableExprId& id)
     { return ~(lnode_p->getArrayInt(id)); }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

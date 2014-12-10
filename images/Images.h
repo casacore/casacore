@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Arrays/Slicer.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //#include <casacore/casa/Arrays/ArrayLattice.h>
 //#include <casacore/casa/Arrays/PagedArray.h>
@@ -91,6 +91,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

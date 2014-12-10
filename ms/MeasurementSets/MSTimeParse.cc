@@ -36,7 +36,7 @@
 #include <casacore/tables/TaQL/RecordGram.h>
 #include <limits>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   MSTimeParse*     MSTimeParse::thisMSTParser = 0x0; // Global pointer to the parser object
   TableExprNode*   MSTimeParse::node_p      = 0x0;
@@ -433,4 +433,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     timeList(0,n0) = t0;//-4.68193e+09;
     timeList(1,n0) = t1;//-4.68193e+09;
   }
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

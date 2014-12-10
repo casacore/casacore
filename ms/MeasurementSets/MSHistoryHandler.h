@@ -33,7 +33,7 @@
 #include <casacore/ms/MeasurementSets/MSHistory.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSHistoryColumns;
 class LogIO;
@@ -96,6 +96,6 @@ class MSHistoryHandler
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

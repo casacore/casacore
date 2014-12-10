@@ -34,7 +34,7 @@
 #include <errno.h>                // needed for errno
 #include <casacore/casa/string.h>          // needed for strerror
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SymLink::SymLink()
 : File()
@@ -191,5 +191,5 @@ Path SymLink::followSymLink() const
     return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

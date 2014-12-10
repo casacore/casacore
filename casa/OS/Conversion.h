@@ -32,7 +32,7 @@
 #include <casacore/casa/string.h>                       // needed for memcpy
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A class with general conversion definitions
@@ -155,6 +155,6 @@ inline Conversion::ByteFunction* Conversion::getmemcpy()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

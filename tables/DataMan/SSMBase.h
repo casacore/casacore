@@ -34,7 +34,7 @@
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/casa/Containers/Block.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class BucketCache;
@@ -507,6 +507,6 @@ inline SSMStringHandler* SSMBase::getStringHandler()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

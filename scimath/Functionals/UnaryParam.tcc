@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/scimath/Functionals/UnaryParam.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 UnaryParam<T>::UnaryParam() :
@@ -77,5 +77,5 @@ UnaryParam<T> &UnaryParam<T>::operator=(const UnaryParam<T> &other) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

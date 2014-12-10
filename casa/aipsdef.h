@@ -38,7 +38,7 @@
 #define aips_name2(a,b) a/**/b
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // If AIPS_DEBUG is not defined, then the symbol expands to (0) which in an
 // if should be removed by the dead code eliminator of any optimizer; thus
@@ -49,7 +49,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 extern Bool aips_debug_on;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #if !defined(AIPS_DEBUG)
 #define aips_debug (0)

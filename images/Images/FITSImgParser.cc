@@ -36,7 +36,7 @@
 
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //const char *FITSImgParser::storeKwords_p[] = {"HDUTYPE", "SCIDATA", "ERRDATA", "QUALDATA",
 //			"ERRTYPE", "QUALTYPE", "QUALMASK"};
@@ -894,5 +894,5 @@ void FITSExtInfo::add_kwlist(FitsKeywordList &kwlist){
 	}
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

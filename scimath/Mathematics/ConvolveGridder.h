@@ -32,7 +32,7 @@
 #include <casacore/scimath/Mathematics/Gridder.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Does convolutional gridding
@@ -92,7 +92,7 @@ protected:
   using Gridder<Domain,Range>::fillCorrectionVectors;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Mathematics/ConvolveGridder.tcc>

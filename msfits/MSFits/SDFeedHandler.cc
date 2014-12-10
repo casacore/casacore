@@ -47,7 +47,7 @@
 
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDFeedHandler::SDFeedHandler() 
     : index_p(0), msFeed_p(0), msFeedCols_p(0), feedId_p(-1), nextFeedId_p(0), nrecpt_p(0)
@@ -493,5 +493,5 @@ void SDFeedHandler::stokesToPolType(const Vector<Int> &stokes, Vector<String> &p
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

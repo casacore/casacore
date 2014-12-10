@@ -35,7 +35,7 @@
 #include <numeric>
 #include <functional>
 
-using namespace casa;
+using namespace casacore;
 
 
 

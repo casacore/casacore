@@ -29,7 +29,7 @@
 #include <casacore/scimath/Functionals/PolynomialParam.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 PolynomialParam<T>::PolynomialParam() :
@@ -63,5 +63,5 @@ void PolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
   param_p.setParameters(coefficients);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

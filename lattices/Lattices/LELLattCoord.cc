@@ -35,7 +35,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELLattCoord::LELLattCoord()
 {}
@@ -121,5 +121,5 @@ uInt LELLattCoord::getSpectralInfo (Vector<Double>&, const IPosition&) const
   return 0;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

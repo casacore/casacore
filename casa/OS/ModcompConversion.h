@@ -32,7 +32,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/OS/CanonicalConversion.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Define the canonical sizes of the built-in data types.
 // These are the same for all machine architectures.
@@ -320,6 +320,6 @@ inline size_t ModcompConversion::fromLocal(void* to, const uInt* from, size_t nr
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

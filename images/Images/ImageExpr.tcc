@@ -43,7 +43,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 ImageExpr<T>::ImageExpr()
@@ -278,5 +278,5 @@ void ImageExpr<T>::reopen()
   latticeExpr_p.reopen();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -38,7 +38,7 @@
 #include <tr1/memory>
 #endif
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 
 // <summary> act on dereference error </summary>

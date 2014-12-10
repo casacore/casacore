@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSPolarizationColumns::
 ROMSPolarizationColumns(const MSPolarization& msPolarization):
@@ -160,5 +160,5 @@ attach(MSPolarization& msPolarization)
 // compile-command: "gmake MSPolColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

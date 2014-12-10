@@ -34,7 +34,7 @@
 #include <casacore/casa/IO/MultiFile.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary> 
   // Class for IO on a virtual file in a MultiFile
@@ -139,6 +139,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

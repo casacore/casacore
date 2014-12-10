@@ -31,7 +31,7 @@
 #include <casacore/casa/Containers/OrderedPair.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class AipsIO;
 
@@ -51,7 +51,7 @@ template<class key, class value> ostream& operator<<(ostream& ios, const Ordered
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/OrdPairIO.tcc>

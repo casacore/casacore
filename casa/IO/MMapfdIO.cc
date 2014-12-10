@@ -35,7 +35,7 @@
 #include <errno.h>
 #include <cstring>
 
-namespace casa
+namespace casacore
 {
   
   MMapfdIO::MMapfdIO()

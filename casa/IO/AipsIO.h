@@ -37,7 +37,7 @@
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TypeIO;
@@ -493,6 +493,6 @@ inline void AipsIO::testgetLength()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

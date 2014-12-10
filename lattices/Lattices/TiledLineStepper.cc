@@ -33,7 +33,7 @@
 #include <casacore/casa/sstream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TiledLineStepper::TiledLineStepper (const IPosition& latticeShape, 
 				    const IPosition& tileShape,
@@ -574,5 +574,5 @@ Bool TiledLineStepper::ok() const
   return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

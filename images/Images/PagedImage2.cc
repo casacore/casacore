@@ -31,7 +31,7 @@
 #include <casacore/tables/Tables/ColumnDesc.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 DataType imagePixelType(const String &fileName)
 {
@@ -49,4 +49,4 @@ DataType imagePixelType(const String &fileName)
     return retval;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

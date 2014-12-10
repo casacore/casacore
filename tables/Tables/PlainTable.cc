@@ -44,7 +44,7 @@
 #include <casacore/casa/System/AipsrcValue.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Initialize the static TableCache object.
 TableCache PlainTable::theirTableCache;
@@ -776,4 +776,4 @@ void PlainTable::checkWritable (const char* func) const
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

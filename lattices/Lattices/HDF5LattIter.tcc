@@ -37,7 +37,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 HDF5LattIter<T>::HDF5LattIter (const HDF5Lattice<T>& data,
@@ -90,5 +90,5 @@ void HDF5LattIter<T>::setupTileCache()
   itsData.setCacheSizeInTiles (cacheSize);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

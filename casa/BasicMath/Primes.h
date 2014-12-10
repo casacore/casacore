@@ -32,7 +32,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Creates a reference table of prime numbers, and some functions </summary>
 //
@@ -175,6 +175,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

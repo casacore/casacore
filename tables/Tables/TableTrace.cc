@@ -35,7 +35,7 @@
 #include <casacore/casa/System/AipsrcValue.h>
 #include <casacore/casa/OS/Path.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Define the statics.
   std::ofstream TableTrace::theirTraceFile;

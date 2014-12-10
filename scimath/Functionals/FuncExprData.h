@@ -37,7 +37,7 @@
 //# Forward Declarations
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Data and enumerations for functional expressions
 // </summary>
@@ -262,7 +262,7 @@ ostream &operator<<(ostream &os, const FuncExprData &ed);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

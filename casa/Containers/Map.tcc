@@ -36,7 +36,7 @@
 //#     return define(ky,DefaultVal);
 //# }
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 template<class key, class value>
 Map<key,value>::~Map() {

@@ -38,7 +38,7 @@
 #include <casacore/fits/FITS/fitsio.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;
 class FITSFieldCopier;
@@ -484,6 +484,6 @@ private:
     void check_error(const char *extra_info = 0);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>Abstract base class for IO on a byte stream.</summary>
 
@@ -182,6 +182,6 @@ inline Int64 ByteIO::seek (Int offset, ByteIO::SeekOption option)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

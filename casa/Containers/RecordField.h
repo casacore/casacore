@@ -35,7 +35,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Utilities/Notice.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TableRecord;
@@ -306,7 +306,7 @@ inline void* attachRecordFieldPtr (RecordInterface* parent, Int fieldNumber,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/RecordField.tcc>

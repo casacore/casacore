@@ -38,7 +38,7 @@
 #include <casacore/casa/Logging/LogSink.h>
 #include <casacore/casa/Logging/LogMessage.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 typedef Float FType;  // floating type (Float, Double)
 
@@ -212,6 +212,6 @@ inline FType MatrixSolver::getNorm()
 {return RNorm;}
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

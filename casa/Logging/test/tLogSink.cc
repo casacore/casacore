@@ -1,7 +1,7 @@
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Logging/LogSink.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main()
 {

@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/MaskedArray.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ostream & operator<< (ostream &s, const MaskedArray<T> &a)
@@ -49,5 +49,5 @@ ostream & operator<< (ostream &s, const MaskedArray<T> &a)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

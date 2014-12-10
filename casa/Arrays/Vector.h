@@ -39,7 +39,7 @@ WHATEVER_VECTOR_FORWARD_DEC;
 #include <casacore/casa/stdvector.h>
 #endif
 
-namespace casa { //#Begin namespace casa
+namespace casacore { //#Begin namespace casa
 
 // <summary> A 1-D Specialization of the Array class </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -318,7 +318,7 @@ private:
     void initVector(const Block<T> &, Int nr);      // copy semantics
 };
 
-} //#End namespace casa
+} //#End namespace casacore
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/Vector.tcc>

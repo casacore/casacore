@@ -28,7 +28,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/scimath/Mathematics/Combinatorics.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -43,5 +43,5 @@ T PoissonFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
 //# Member functions
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

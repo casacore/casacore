@@ -30,7 +30,7 @@
 #include <casacore/casa/IO/RegularFileIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa
+namespace casacore
 {
   
 MMapIO::MMapIO (const RegularFile& regularFile, ByteIO::OpenOption option)

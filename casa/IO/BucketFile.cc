@@ -52,7 +52,7 @@
 #define traceLSEEK lseek
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BucketFile::BucketFile (const String& fileName,
                         uInt bufSizeFile, Bool mappedFile,
@@ -237,5 +237,5 @@ Int64 BucketFile::fileSize () const
     return size;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -33,7 +33,7 @@
 #include <casacore/tables/DataMan/ISMBase.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // The Incremental Storage Manager
@@ -220,6 +220,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

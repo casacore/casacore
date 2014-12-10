@@ -50,7 +50,7 @@
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> 
 ImageInterface<T>::ImageInterface()
@@ -368,4 +368,4 @@ ImageAttrHandler& ImageInterface<T>::attrHandler (Bool)
   return itsBaseAttrHandler;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

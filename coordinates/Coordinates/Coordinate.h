@@ -35,7 +35,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <wcslib/wcs.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 template<class T> class Quantum;
@@ -574,6 +574,6 @@ inline const String& Coordinate::errorMessage() const
     return error_p;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

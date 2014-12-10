@@ -32,7 +32,7 @@
 #include <casacore/casa/Utilities/Register.h>
 #include <casacore/measures/Measures/MDirection.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 MDirection::MDirection() :
@@ -459,5 +459,5 @@ Measure *MDirection::clone() const {
     return (new MDirection(*this));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

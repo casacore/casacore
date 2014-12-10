@@ -35,7 +35,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/scimath/Functionals/AbstractFunctionFactory.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -149,7 +149,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/EclecticFunctionFactory.tcc>

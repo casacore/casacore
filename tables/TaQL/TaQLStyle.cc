@@ -30,7 +30,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TaQLStyle::TaQLStyle (uInt origin)
   : itsOrigin    (origin),
@@ -110,4 +110,4 @@ String TaQLStyle::findSynonym (const String& synonym) const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

@@ -30,7 +30,7 @@
 
 #include <stdexcept>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 using std::exception;
 using std::logic_error;
@@ -43,6 +43,6 @@ using std::range_error;
 using std::overflow_error;
 using std::underflow_error;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

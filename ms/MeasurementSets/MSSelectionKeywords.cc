@@ -29,7 +29,7 @@
 #include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSSelectionKeywords::Field MSSelectionKeywords::field(const String& itemName)
 {
@@ -139,5 +139,5 @@ void MSSelectionKeywords::initMap(SimpleOrderedMap<String,Int>*& fieldMap,
   reverseMap=&revMap;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

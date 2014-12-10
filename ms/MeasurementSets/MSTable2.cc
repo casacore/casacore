@@ -30,7 +30,7 @@
 #include <casacore/ms/MeasurementSets/MSTable.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
  
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define MSTableStatics(ColEnum,KeyEnum) \
 SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::columnMap_p(""); \
@@ -64,6 +64,6 @@ MSTableStatics(MSWeather::PredefinedColumns,MSWeather::PredefinedKeywords)
 MSTableStatics(MSDoppler::PredefinedColumns,MSDoppler::PredefinedKeywords)
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

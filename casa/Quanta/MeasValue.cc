@@ -30,7 +30,7 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 
@@ -66,5 +66,5 @@ ostream &operator<<(ostream &os, const MeasValue &meas) {
   return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -35,7 +35,7 @@
 #include <casacore/casa/Utilities/DataType.h>
 #include <iosfwd>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class AipsIO;
@@ -181,6 +181,6 @@ inline DataType ValueHolderRep::dataType() const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

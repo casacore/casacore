@@ -32,7 +32,7 @@
 #include <casacore/lattices/Lattices/LCRegionFixed.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class Matrix;
@@ -199,6 +199,6 @@ inline const Vector<Float>& LCPolygon::y() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -39,11 +39,11 @@
 #include <math.h>
 #include <ostream>
 #include <cmath>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
     using std::isnan;
     using std::isinf;
     using std::isfinite;
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 #endif
 
 #if defined(AIPS_SGI) || defined(AIPS_SUN_NATIVE) 
@@ -51,16 +51,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #else
 # include <cmath>
 # if !defined(AIPS_INTELCC)
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
     using std::abs;
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 # endif
 # if !(defined(AIPS_KAICC) || defined(AIPS_GCC3) || defined(AIPS_GCC4) || defined(AIPS_INTELCC) || defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI))
 #  define NEEDS_POWFLOATFLOAT
 # endif
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 using std::abs;
 using std::fabs;
@@ -98,6 +98,6 @@ using ::erfc;
 #endif
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

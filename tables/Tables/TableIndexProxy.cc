@@ -29,7 +29,7 @@
 #include <casacore/tables/Tables/TableProxy.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableIndexProxy::TableIndexProxy (const TableProxy& tablep,
 				  const Vector<String>& columnNames,
@@ -149,4 +149,4 @@ Vector<Int> TableIndexProxy::getRowNumbersRange (const Record& lower,
   return rownrs;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

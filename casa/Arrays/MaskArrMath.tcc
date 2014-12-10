@@ -36,7 +36,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 #define MARRM_IOP_MA(IOP,STRIOP) \
@@ -1772,5 +1772,5 @@ Array<T> slidingArrayMath (const MaskedArray<T>& array,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -29,7 +29,7 @@
 #include <casacore/casa/Containers/RecordFieldWriter.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RecordFieldWriter::~RecordFieldWriter()
 {
@@ -60,5 +60,5 @@ MultiRecordFieldWriter::~MultiRecordFieldWriter()
     writers_p.resize(0);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

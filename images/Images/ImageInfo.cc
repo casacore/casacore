@@ -44,7 +44,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ImageInfo::ImageInfo()
 : _beams(ImageBeamSet()),
@@ -869,5 +869,5 @@ Double ImageInfo::getBeamAreaInPixels(
 	return beam.getArea(pixelArea.getUnit())/pixelArea.getValue();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

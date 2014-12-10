@@ -55,7 +55,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSSpWindowColumns::
 ROMSSpWindowColumns(const MSSpectralWindow& msSpWindow):
@@ -734,5 +734,5 @@ attachOptionalCols(MSSpectralWindow& msSpWindow)
 // End: 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

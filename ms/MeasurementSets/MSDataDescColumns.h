@@ -31,7 +31,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSDataDescription;
 // <summary>
@@ -227,6 +227,6 @@ private:
   ScalarColumn<Int> lagId_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -36,7 +36,7 @@
 #include <casacore/casa/stdio.h>                            //# for sprintf
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Define a macro which gets the pointer for the given row
 //# and casts it to the block.
@@ -318,5 +318,5 @@ void StManColumnIndArrayAipsIO::getData (void* dp, uInt inx, uInt nrval,
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

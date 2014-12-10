@@ -37,7 +37,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SSMIndex::SSMIndex (SSMBase* aSSMPtr, uInt rowsPerBucket) 
 : itsSSMPtr           (aSSMPtr),
@@ -315,5 +315,5 @@ void SSMIndex::find (uInt aRowNumber, uInt& aBucketNr,
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/WrapperBase.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -470,6 +470,6 @@ protected:
 
 #undef WrapperData_FF
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

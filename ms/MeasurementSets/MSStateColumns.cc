@@ -28,7 +28,7 @@
 #include <casacore/ms/MeasurementSets/MSStateColumns.h>
 #include <casacore/ms/MeasurementSets/MSState.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSStateColumns::ROMSStateColumns(const MSState& msState):
   cal_p(msState, MSState::columnName(MSState::CAL)),
@@ -169,5 +169,5 @@ void MSStateColumns::attach(MSState& msState)
 // compile-command: "gmake MSStateColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

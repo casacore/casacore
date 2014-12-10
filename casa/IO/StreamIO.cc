@@ -41,7 +41,7 @@
 #include <unistd.h>               // needed for ::close
 #include <cstring>                //# for memcpy with gcc-4.3
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StreamIO::StreamIO(const String& hostname, uShort portNumber) 
   :ByteIO(),
@@ -150,4 +150,4 @@ Bool StreamIO::isSeekable() const {
   return False;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

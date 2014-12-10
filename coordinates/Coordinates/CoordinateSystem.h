@@ -38,7 +38,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/measures/Measures/MDoppler.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Matrix;
 class DirectionCoordinate;
@@ -985,7 +985,7 @@ private:
 
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

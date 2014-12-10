@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/tables/Tables/TableError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Construct from a vector.
 template<class T>
@@ -74,5 +74,5 @@ template<class T>
 void TabVecTemp<T>::set (const T& val)
     { vecPtr_p->set (val); }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

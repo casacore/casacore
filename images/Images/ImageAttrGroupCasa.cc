@@ -34,7 +34,7 @@
 #include <casacore/tables/Tables/ScaColDesc.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa {
+namespace casacore {
 
   ImageAttrGroupCasa::ImageAttrGroupCasa (const Table& image,
                                           const String& attrName)
@@ -229,4 +229,4 @@ namespace casa {
     return True;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

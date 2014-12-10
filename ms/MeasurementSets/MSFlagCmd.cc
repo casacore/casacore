@@ -37,7 +37,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSFlagCmd::MSFlagCmd():hasBeenDestroyed_p(True) { }
 
@@ -184,5 +184,5 @@ MSFlagCmd MSFlagCmd::referenceCopy(const String& newTableName,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -40,7 +40,7 @@
 #include <casacore/casa/Utilities/Regex.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width, 
                                   uInt shape, Bool useShapeExactly, Bool peakIsUnity)
@@ -204,5 +204,5 @@ String VectorKernel::fromKernelType (KernelTypes kernelType)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

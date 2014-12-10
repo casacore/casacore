@@ -39,7 +39,7 @@
 #include <casacore/casa/Arrays/MaskedArray.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Masked LogicalArrays.
@@ -79,6 +79,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

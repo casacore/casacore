@@ -34,7 +34,7 @@
 #include <casacore/measures/Measures/Measure.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MVEpoch;
@@ -330,6 +330,6 @@ ostream &operator<<(ostream &os, MeasFrame &mf);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

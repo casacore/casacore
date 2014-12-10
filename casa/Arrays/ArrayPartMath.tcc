@@ -32,7 +32,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 template<class T> Array<T> partialSums (const Array<T>& array,
@@ -964,4 +964,4 @@ Array<T> slidingArrayMath (const Array<T>& array, const IPosition& halfBoxSize,
   return fullResult;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

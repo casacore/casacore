@@ -32,10 +32,10 @@
 #include <python/Converters/PycArrayNP.h>
 #include <boost/python/object.hpp>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
   
   template <typename T>
-  boost::python::object makePyArrayObject (casa::Array<T> const& arr)
+  boost::python::object makePyArrayObject (casacore::Array<T> const& arr)
   {
     return numpy::makePyArrayObject (arr);
   }

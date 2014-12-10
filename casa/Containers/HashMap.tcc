@@ -30,7 +30,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class key> HashClass<key>::HashClass() { }
 template<class key> HashClass<key>::~HashClass() { }
@@ -221,5 +221,5 @@ template<class t> const t &defaultHashValue(const t *) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -63,7 +63,7 @@
 #include <casacore/casa/namespace.h>
 
 
-namespace casa { //# name space casa begins
+namespace casacore { //# name space casa begins
 
 
   RegionManager::RegionManager()
@@ -714,7 +714,7 @@ namespace casa { //# name space casa begins
       TableRecord tblRec;
       for( uInt i=0; i < (regions.nfields()); i++ )
       {
-	  tblRec.assign(regions.asRecord(casa::RecordFieldId(0)));
+	  tblRec.assign(regions.asRecord(casacore::RecordFieldId(0)));
 	  reg=ImageRegion::fromRecord(tblRec, "");
 	  imageRegions[i]=reg;
       }       

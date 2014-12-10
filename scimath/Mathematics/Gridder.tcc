@@ -39,7 +39,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class Domain, class Range>
 Gridder<Domain, Range>::Gridder() {}
@@ -191,5 +191,5 @@ void Gridder<Domain, Range>::fillCorrectionVectors()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

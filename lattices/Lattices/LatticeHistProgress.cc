@@ -34,7 +34,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LatticeHistProgress::~LatticeHistProgress()
 {
@@ -74,5 +74,5 @@ void LatticeHistProgress::done()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

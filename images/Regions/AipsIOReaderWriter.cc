@@ -29,7 +29,7 @@
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/images/Regions/AipsIOReaderWriter.h>
 
-namespace casa {
+namespace casacore {
 // AIPSIOREADERWRITER DEFINITIONS //
 
 //  Static Definitions //
@@ -147,4 +147,4 @@ void AipsIOReaderWriter::setOptions(const Record*)
 }
 	
  
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

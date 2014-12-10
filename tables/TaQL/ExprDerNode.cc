@@ -42,7 +42,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Implement the constants for each data type.
 
@@ -352,5 +352,5 @@ Double TableExprNodeRandom::getDouble (const TableExprId&)
     return random_p();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

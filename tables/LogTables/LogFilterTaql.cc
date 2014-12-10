@@ -29,7 +29,7 @@
 #include <casacore/tables/LogTables/LogFilterExpr.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LogFilterTaql::LogFilterTaql (const String& expr)
 : expr_p  (0)
@@ -73,5 +73,5 @@ Bool LogFilterTaql::pass (const LogMessage& message) const
   return expr_p->matches (message);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -28,7 +28,7 @@
 #include <casacore/ms/MeasurementSets/MSFlagCmdColumns.h>
 #include <casacore/ms/MeasurementSets/MSFlagCmd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSFlagCmdColumns::ROMSFlagCmdColumns(const MSFlagCmd& msFlagCmd):
   applied_p(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::APPLIED)),
@@ -137,5 +137,5 @@ void MSFlagCmdColumns::attach(MSFlagCmd& msFlagCmd)
 // compile-command: "gmake MSFlagCmdColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

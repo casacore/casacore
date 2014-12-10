@@ -37,7 +37,7 @@
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Containers/SimOrdMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // BinaryTable is used to translate a FITS binary table to a Casacore Table.
@@ -180,6 +180,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

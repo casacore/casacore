@@ -38,7 +38,7 @@
 #include <casacore/casa/OS/HostInfo.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 : BaseTable   (newtab.name(), newtab.option(), 0),
@@ -319,5 +319,5 @@ DataManager* MemoryTable::findDataManager (const String& name,
   return colSetPtr_p->findDataManager (name, byColumn);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

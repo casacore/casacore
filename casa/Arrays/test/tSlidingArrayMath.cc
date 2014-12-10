@@ -38,7 +38,7 @@
 #ifdef AIPS_NO_TEMPLATE_SRC
 #include <casacore/casa/Arrays/ArrayMath.tcc>
 #include <casacore/casa/Arrays/MaskArrMath.tcc>
-namespace casa {
+namespace casacore {
   template Array<Float> slidingArrayMath (const Array<Float>&,
 					  const IPosition&,
 					  Float (*) (const Array<Float>&),
@@ -51,7 +51,7 @@ namespace casa {
 #endif //# AIPS_NO_TEMPLATE_SRC
 
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 Float smartMedian (const Array<Float>& arr)

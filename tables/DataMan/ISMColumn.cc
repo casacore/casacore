@@ -39,7 +39,7 @@
 #include <casacore/casa/OS/LECanonicalConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ISMColumn::ISMColumn (ISMBase* parent, int dataType, uInt colnr)
 : StManColumn   (dataType),
@@ -1387,5 +1387,5 @@ size_t ISMColumn::readStringLE (void* out, const void* in, size_t n)
     return toString (out, in, n, LECanonicalConversion::toLocalUInt);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

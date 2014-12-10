@@ -32,7 +32,7 @@
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 
-namespace casa {
+namespace casacore {
 
   PositionEngine::PositionEngine()
     : itsNDim      (-1),

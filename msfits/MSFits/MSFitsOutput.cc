@@ -67,7 +67,7 @@
 
 #include <set>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 static String toFITSDate(const MVTime &time) {
     String date, timesys;
@@ -469,7 +469,8 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
                 return 0;
             }
             if (numchan(s) != numchan0) {
-                os << LogIO::SEVERE << "Number of channels varies in the MS"
+                os << LogIO::SEVERE << "Number of channels varies in the MS, i.e. the is more than one SPW shape!"
+		   << endl << "Please split out SPWs of identical shape and export them separately."
                         << LogIO::POST;
                 return 0;
             }
@@ -2014,14 +2015,32 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
 
     MDirection dir;
 
+    Vector<String> fnames(nrow);
+    for(uInt fieldnum = 0; fieldnum < nrow; fieldnum++) {
+      ostringstream oss;
+      oss.fill(' ');
+      oss.flags(std::ios::left);
+      oss.width(20);
+      oss << inname(fieldnum);
+      fnames(fieldnum) = oss.str();
+    }
+
     // Only take those fields which are part of the fieldidMap
     // (which represents the fields written in the main table).
     for (uInt fieldnum = 0; fieldnum < nrow; fieldnum++) {
         if (fieldnum < fieldidMap.nelements() && fieldidMap[fieldnum] >= 0) {
             *idno = 1 + fieldidMap[fieldnum];
             dir = msfc.phaseDirMeas(fieldnum);
-            //*source = inname(fieldnum) + "                ";
-            *source = inname(fieldnum) + String::toString(fieldnum) + "    ";
+
+            *source = fnames(fieldnum);
+	    // check if name is unique
+	    *qual = 0;
+	    for(uInt ifld=0; ifld<nrow; ifld++){
+	      if(ifld!=fieldnum && *source==fnames(ifld)){
+		*qual = fieldnum; // not unique, set qual such that name+qual is unique
+		break;
+	      }
+	    }
 
             if (dir.type() == MDirection::B1950) {
                 *epoch = 1950.;
@@ -2038,10 +2057,6 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
                 Vector<uInt> rownrs = srcInx->getRowNumbers();
                 if (rownrs.nelements() > 0) {
                     uInt rownr = rownrs(0);
-                    // Name in SOURCE table overides name in FIELD table
-                    // *source = sourceColumns->name()(rownr) + "                ";
-                    //cout << "sysvel is Null: "
-                    //     << sourceColumns->sysvel().isNull() << endl;
                     if (!sourceColumns->sysvel().isNull()
                             && sourceColumns->sysvel().isDefined(rownr)) {
                         Vector<Double> sv(sourceColumns->sysvel()(rownr));
@@ -2062,7 +2077,6 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
                         *pmra = pm(0);
                         *pmdec = pm(1);
                     }
-                    *qual = sourceColumns->calibrationGroup()(rownr);
                     *calcode = sourceColumns->code()(rownr) + "    ";
 
                     // Directions have to be converted from radians to degrees.
@@ -2786,5 +2800,5 @@ void MSFitsOutput::handleAntNumbers(const MeasurementSet& ms,
 // compile-command: "gmake MSFitsOutput"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

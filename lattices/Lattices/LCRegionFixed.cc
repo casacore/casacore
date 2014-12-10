@@ -29,7 +29,7 @@
 #include <casacore/lattices/Lattices/LCRegionFixed.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCRegionFixed::LCRegionFixed()
 {}
@@ -69,5 +69,5 @@ void LCRegionFixed::setMask (const Array<Bool>& mask)
     setMaskPtr (itsMask);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

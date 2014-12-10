@@ -39,7 +39,7 @@
 #include <casacore/casa/BasicSL/Constants.h> 
 #include <casacore/casa/math.h> 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Matrix;
 
@@ -132,7 +132,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Mathematics/DFTServer.tcc>

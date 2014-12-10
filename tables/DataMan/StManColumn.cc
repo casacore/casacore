@@ -38,7 +38,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StManColumn::StManColumn (int dataType)
 : dtype_p (dataType)
@@ -1072,5 +1072,5 @@ Timer timer; \
 timer.show("a"); \
 */
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

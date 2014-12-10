@@ -35,7 +35,7 @@
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/Utilities/Regex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //-------------------------------------------------------------------------
 
@@ -305,5 +305,5 @@ Vector<Int> MSAntennaIndex::matchAntennaNameAndStation(const String& name,
 //-------------------------------------------------------------------------
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

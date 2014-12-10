@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <iomanip>
 
-namespace casa {
+namespace casacore {
 
   ImageAttrGroupHDF5::ImageAttrGroupHDF5 (const HDF5Group& image,
                                           const String& attrName,
@@ -184,4 +184,4 @@ namespace casa {
     }
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

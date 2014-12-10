@@ -29,7 +29,7 @@
 #include <casacore/casa/Quanta/QC.h>
 #include <casacore/casa/Quanta/UnitMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Quantum<Double> QC::c(C::c,"m/s");
 Quantum<Double> QC::G(6.67259e-11,"N.m2/kg2");
@@ -71,5 +71,5 @@ QC_init::~QC_init() {
 void QC::init() {
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ArrayLattice<T>::ArrayLattice()
@@ -202,5 +202,5 @@ Bool ArrayLattice<T>::ok() const
   return itsData.ok();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

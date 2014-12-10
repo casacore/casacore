@@ -33,7 +33,7 @@
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/OS/File.h>
    
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Vector;
 class Regex;
@@ -255,6 +255,6 @@ inline uInt Directory::freeSpaceInMB() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

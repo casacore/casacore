@@ -34,7 +34,7 @@
 #include <casacore/casa/string.h>               // needed for strerror
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 DirectoryIterator::DirectoryIterator()
 : itsDirectoryDescriptor (0),
@@ -201,5 +201,5 @@ Bool DirectoryIterator::pastEnd() const
     return  (itsEnd == True);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

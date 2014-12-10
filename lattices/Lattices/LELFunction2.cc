@@ -41,7 +41,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // LELFunctionFloat
 LELFunctionFloat::LELFunctionFloat(const LELFunctionEnums::Function function,
@@ -2071,5 +2071,5 @@ void LELFunctionBool::resync()
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

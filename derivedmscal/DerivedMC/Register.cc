@@ -30,7 +30,7 @@
 #include <casacore/derivedmscal/DerivedMC/UDFMSCal.h>
 
 #include <casacore/casa/iostream.h>
-using namespace casa;
+using namespace casacore;
 
 void register_derivedmscal()
 {

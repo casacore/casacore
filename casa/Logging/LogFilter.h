@@ -33,7 +33,7 @@
 #include <casacore/casa/Logging/LogFilterInterface.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Filter LogMessages on message priority.
@@ -119,6 +119,6 @@ inline LogMessage::Priority LogFilter::lowestPriority() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -27,7 +27,7 @@
 
 #include <casacore/casa/Containers/Link.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class t> Link<t> *Link<t>::unlink(Link<t> *) {
   Link<t> *nxt = Next;
@@ -43,5 +43,5 @@ template<class t> Link<t>::~Link() {
   if (Next != 0) delete Next;}
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

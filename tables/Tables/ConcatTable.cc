@@ -40,7 +40,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   ConcatTable::ConcatTable (AipsIO& ios, const String& name, uInt nrrow,
 			    int option, const TableLock& lockOptions,
@@ -604,4 +604,4 @@ void ConcatTable::addColumn (const TableDesc& tableDesc,
     }
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

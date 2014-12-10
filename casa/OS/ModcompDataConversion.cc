@@ -28,7 +28,7 @@
 #include <casacore/casa/OS/ModcompDataConversion.h>
 #include <casacore/casa/OS/ModcompConversion.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ModcompDataConversion::~ModcompDataConversion(){
 }
@@ -296,5 +296,5 @@ uInt ModcompDataConversion::externalSize (const Double*) const {
 // compile-command: "gmake OPTLIB=1 ModcompDataConversion"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

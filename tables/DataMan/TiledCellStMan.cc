@@ -42,7 +42,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TiledCellStMan::TiledCellStMan ()
 : TiledStMan ()
@@ -225,5 +225,5 @@ TSMCube* TiledCellStMan::getHypercube (uInt rownr, IPosition& position)
     return hypercube;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

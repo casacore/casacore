@@ -39,7 +39,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <iostream>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
 
   // <summary>
@@ -85,9 +85,9 @@ namespace casa { namespace python {
   // Specialize for strings.
   // <group>
   template <typename T>
-  boost::python::object makePyArrayObject (casa::Array<T> const& arr);
+  boost::python::object makePyArrayObject (casacore::Array<T> const& arr);
   template <>
-  boost::python::object makePyArrayObject (casa::Array<String> const& arr);
+  boost::python::object makePyArrayObject (casacore::Array<String> const& arr);
   // </group>
 
   // Convert Array to Python.

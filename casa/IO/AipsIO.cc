@@ -35,7 +35,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <cstring>                  //# for strcmp with gcc-4.3
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // This is the implementation of the AipsIO class.
 // Operator << and >> for the built-in data types are inline functions
@@ -1001,5 +1001,5 @@ void AipsIO::testgeterr()
 void AipsIO::testgeterrLength()
     { throw (AipsError ("AipsIO: read beyond end of object")); }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

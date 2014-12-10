@@ -31,7 +31,7 @@
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   LCHDF5Mask::LCHDF5Mask()
   {}
@@ -189,4 +189,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return itsMask.isWritable();
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

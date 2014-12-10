@@ -28,7 +28,7 @@
 #include <casacore/casa/Containers/IterError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // The normal constructor when throwing the exception.
 IterError::IterError (const char *msg,Category c) : 
@@ -59,5 +59,5 @@ InvalidIterError::InvalidIterError (const char *msg,Category c) :
 InvalidIterError::~InvalidIterError () throw()
 { ; }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

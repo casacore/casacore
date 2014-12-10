@@ -31,7 +31,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprRange::TableExprRange()
 : tabColPtr_p(0)
@@ -171,5 +171,5 @@ void TableExprRange::mixOr (const TableExprRange& that)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Map.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;        // Forward declarations
 
@@ -143,6 +143,6 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array,
 	       Float minPix = 1.0, Float maxPix = -1.0);
 //</group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

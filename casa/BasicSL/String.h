@@ -39,7 +39,7 @@ using std::string;
 #include <casacore/casa/iosstrfwd.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class String;
@@ -1032,6 +1032,6 @@ inline ostream &operator<<(ostream &s, const String &x) {
   s << x.c_str(); return s; }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -31,7 +31,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <cstring>                  //# for memcpy with gcc-4.3
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MemoryIO::MemoryIO (uInt64 initialSize, uInt64 expandSize)
 : itsBuffer     (0),
@@ -267,5 +267,5 @@ uChar* MemoryIO::setBuffer (uInt64 length)
   return itsBuffer;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/TiledStManAccessor.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TiledDataStMan;
@@ -155,6 +155,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

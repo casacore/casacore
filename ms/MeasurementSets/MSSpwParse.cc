@@ -32,7 +32,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Logging/LogIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   MSSpwParse* MSSpwParse::thisMSSParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSSpwParse::node_p = 0x0;
@@ -316,4 +316,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return tten;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

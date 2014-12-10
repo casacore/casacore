@@ -42,7 +42,7 @@
 //# should not be used for automatic template instantiation (that knowledge
 //# about using FFTW3 or FFTPack is only needed when building casacore).
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T, class S> FFTServer<T,S>::
 FFTServer()
@@ -991,4 +991,4 @@ fftshift(Array<T> & outValues, Array<Bool> & outFlags,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

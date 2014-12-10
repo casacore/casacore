@@ -30,7 +30,7 @@
 
 #include <casacore/casa/Utilities/RegSequence.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 //    Primitive Run Time Type Information (<em>RTTI</em>)
@@ -129,7 +129,7 @@ template<class t> uInt Register(const t *);
 // }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Utilities/Register.tcc>

@@ -46,7 +46,7 @@
 
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 TabularCoordinate::TabularCoordinate()
@@ -519,19 +519,19 @@ Bool TabularCoordinate::near(const Coordinate& other,
 // than working through the table so check them anyway.
 
    const TabularCoordinate& tCoord = dynamic_cast<const TabularCoordinate&>(other);
-   if (!casa::near(crval_p,tCoord.crval_p,tol)) {
+   if (!casacore::near(crval_p,tCoord.crval_p,tol)) {
       set_error("The TabularCoordinates have differing average reference values");
       return False;
    }
-   if (!casa::near(crpix_p,tCoord.crpix_p,tol)) {
+   if (!casacore::near(crpix_p,tCoord.crpix_p,tol)) {
       set_error("The TabularCoordinates have differing average reference pixels");
       return False;
    }
-   if (!casa::near(cdelt_p,tCoord.cdelt_p,tol)) {
+   if (!casacore::near(cdelt_p,tCoord.cdelt_p,tol)) {
       set_error("The TabularCoordinates have differing average increments");
       return False;
    }
-   if (!casa::near(matrix_p,tCoord.matrix_p,tol)) {
+   if (!casacore::near(matrix_p,tCoord.matrix_p,tol)) {
 
 // It's really just one component of the matrix
 
@@ -551,7 +551,7 @@ Bool TabularCoordinate::near(const Coordinate& other,
    }
    uInt i;
    for (i=0; i<data1.nelements(); i++) {
-      if (!casa::near(data1(i),data2(i),tol)) {
+      if (!casacore::near(data1(i),data2(i),tol)) {
          set_error("The TabularCoordinates have differing pixel value tables");
          return False;
       }
@@ -564,7 +564,7 @@ Bool TabularCoordinate::near(const Coordinate& other,
       return False;
    }
    for (i=0; i<data1.nelements(); i++) {
-      if (!casa::near(data1(i),data2(i),tol)) {
+      if (!casacore::near(data1(i),data2(i),tol)) {
          set_error("The TabularCoordinates have differing world value tables");
          return False;
       }
@@ -826,5 +826,5 @@ void TabularCoordinate::makeNonLinearTabularCoordinate(const Vector<Double> &pix
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

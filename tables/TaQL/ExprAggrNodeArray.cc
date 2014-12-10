@@ -33,7 +33,7 @@
 #include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   TableExprAggrNodeArray::TableExprAggrNodeArray
@@ -157,4 +157,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return set.getFuncs()[itsFunc->seqnr()]->getArrayDate();
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

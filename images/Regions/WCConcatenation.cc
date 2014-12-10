@@ -36,7 +36,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 WCConcatenation::WCConcatenation (const PtrBlock<const ImageRegion*>& regions,
 				  const WCBox& extendBox)
@@ -188,5 +188,5 @@ WCConcatenation* WCConcatenation::fromRecord (const TableRecord& rec,
     return new WCConcatenation (True, regions, *(const WCBox*)boxptr);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

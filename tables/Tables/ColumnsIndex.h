@@ -35,7 +35,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Record.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class String;
@@ -436,6 +436,6 @@ inline Record& ColumnsIndex::accessUpperKey()
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

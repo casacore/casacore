@@ -38,7 +38,7 @@
 #include <casacore/tables/Tables/TVecMath.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Basic math for table vectors.
@@ -420,6 +420,6 @@ TableVector<T> crossProduct (const TableVector<T>& l,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -52,7 +52,7 @@
 
 #include <casacore/images/Images/ImageSummary.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)
@@ -483,5 +483,5 @@ String ImageSummary<T>::makeRegionsString() const
    return String(oss);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

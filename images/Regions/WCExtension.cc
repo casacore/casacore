@@ -37,7 +37,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 WCExtension::WCExtension (const ImageRegion& region,
 			  const WCBox& extendBox)
@@ -247,5 +247,5 @@ WCExtension* WCExtension::fromRecord (const TableRecord& rec,
     return new WCExtension (True, regions);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

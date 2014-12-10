@@ -32,7 +32,7 @@
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/casa/System/AipsrcValue.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 const Double SolarPos::INTV = 0.04;
@@ -337,5 +337,5 @@ void SolarPos::calcSun(Double t) {
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

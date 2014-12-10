@@ -33,7 +33,7 @@
 #include <casacore/tables/Tables/TVecTemp.h>
 #include <casacore/tables/Tables/TableError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Construct an empty table vector.
 template<class T>
@@ -126,5 +126,5 @@ Vector<T> TableVector<T>::makeVector() const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

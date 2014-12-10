@@ -38,7 +38,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDDataDescHandler::SDDataDescHandler() 
     : index_p(0), msDataDesc_p(0), msDataDescCols_p(0), rownr_p(-1)
@@ -139,5 +139,5 @@ void SDDataDescHandler::initAll(MeasurementSet &ms)
     // nothing depends directly on the row, no columns are handled here
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

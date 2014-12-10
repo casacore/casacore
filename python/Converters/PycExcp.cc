@@ -33,9 +33,9 @@
 #endif
 #include <boost/python/exception_translator.hpp>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
-  void translate_iterexcp (const casa::IterError& e)
+  void translate_iterexcp (const casacore::IterError& e)
   {
     // Use the Python 'C' API to set up an exception object
     PyErr_SetString(PyExc_StopIteration, e.what());
@@ -53,7 +53,7 @@ namespace casa { namespace python {
   {
     boost::python::register_exception_translator<std::exception>
       (&translate_stdexcp);
-    boost::python::register_exception_translator<casa::IterError>
+    boost::python::register_exception_translator<casacore::IterError>
       (&translate_iterexcp);
   }
 

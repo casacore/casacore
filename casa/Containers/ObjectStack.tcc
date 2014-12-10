@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/casa/Containers/ObjectStack.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template <class T>
   ObjectStack<T> &ObjectStack<T>::stack() {
@@ -60,5 +60,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     vector<T*>(stack_p).swap(stack_p);
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -34,7 +34,7 @@
 #include <casacore/casa/Quanta/Euler.h>
 #include <casacore/scimath/Functionals/Polynomial.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -210,6 +210,6 @@ class Precession {
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

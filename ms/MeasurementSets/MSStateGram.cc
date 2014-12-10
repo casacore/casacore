@@ -57,7 +57,7 @@ int MSStateGramwrap()
     return 1;
 }
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*           strpMSStateGram = 0;
@@ -149,4 +149,4 @@ void MSStateGramerror (const char*)
 		      String(MSStateGramtext) + "'"));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

@@ -41,7 +41,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Allocate an empty record to avoid reconstructing it over and over
 //# again when addRow is called many times.
@@ -510,4 +510,4 @@ TSMCube* TiledShapeStMan::getHypercube (uInt rownr, IPosition& position)
     return hypercube;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

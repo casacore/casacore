@@ -39,7 +39,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprFuncNodeArray::TableExprFuncNodeArray
                              (TableExprFuncNode::FunctionType ftype,
@@ -865,7 +865,7 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	Array<Double> res = sqrt (operands()[0]->getArrayDouble(id));
         if (node_p.getScale() != 1.) {
           arrayTransformInPlace (res, node_p.getScale(),
-                                 casa::Multiplies<Double,Double>());
+                                 casacore::Multiplies<Double,Double>());
         }
         return res;
       }
@@ -1370,7 +1370,7 @@ Array<DComplex> TableExprFuncNodeArray::getArrayDComplex
 	Array<DComplex> res = sqrt (operands()[0]->getArrayDComplex(id));
         if (node_p.getScale() != 1.) {
           arrayTransformInPlace (res, node_p.getScale(),
-                                 casa::Multiplies<DComplex,Double>());
+                                 casacore::Multiplies<DComplex,Double>());
         }
         return res;
       }
@@ -2122,4 +2122,4 @@ Array<MVTime> TableExprFuncNodeArray::getArrayDate (const TableExprId& id)
     return Array<MVTime>();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

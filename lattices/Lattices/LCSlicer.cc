@@ -36,7 +36,7 @@
 #include <casacore/casa/sstream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCSlicer::LCSlicer()
 : itsIsFractional  (False),
@@ -582,5 +582,5 @@ LCSlicer* LCSlicer::fromRecord (const TableRecord& rec,
     return regPtr;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

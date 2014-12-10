@@ -44,7 +44,7 @@
 #include <casacore/measures/Measures/MeasConvert.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDPointingHandler::SDPointingHandler() 
     : msPointing_p(0), msPointingCols_p(0), time_p(0.0), antId_p(-1), directionRate_p(2),
@@ -284,5 +284,5 @@ void SDPointingHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

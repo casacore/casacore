@@ -27,7 +27,7 @@
 
 #include <casacore/meas/MeasUDF/DirectionUDF.h>
 
-namespace casa {
+namespace casacore {
 
   DirectionUDF::DirectionUDF (FuncType type, Bool riseSet)
     : itsType    (type),

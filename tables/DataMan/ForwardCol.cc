@@ -38,7 +38,7 @@
 #include <casacore/casa/OS/Path.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ForwardColumnEngine::ForwardColumnEngine (const String& dataManagerName,
 					  const Record& spec)
@@ -477,5 +477,5 @@ FORWARDCOLUMN_GETPUT(DComplex,DComplexV)
 FORWARDCOLUMN_GETPUT(String,StringV)
 FORWARDCOLUMN_GETPUT(void,OtherV)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

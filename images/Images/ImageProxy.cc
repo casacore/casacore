@@ -59,7 +59,7 @@
 
 using namespace std;
 
-namespace casa { //# name space casa begins
+namespace casacore { //# name space casa begins
 
   ImageProxy::ImageProxy()
     : itsImageFloat    (0),

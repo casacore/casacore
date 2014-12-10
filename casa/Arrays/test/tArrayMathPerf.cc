@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <iostream>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 

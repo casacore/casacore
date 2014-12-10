@@ -41,7 +41,7 @@
 #include <time.h>                   // needed for asctime/localtime on linux
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 uInt File::uniqueSeqnr_p = 0;      // Initialization
 Mutex File::theirMutex;
@@ -446,5 +446,5 @@ String File::getFSType() const
 	return rstat;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

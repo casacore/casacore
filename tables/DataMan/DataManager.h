@@ -40,7 +40,7 @@
 #include <casacore/casa/OS/Mutex.h>
 #include<iosfwd>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class DataManager;
@@ -1057,6 +1057,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -40,7 +40,7 @@
 #include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROTableRow::ROTableRow()
 : itsRecord (0)
@@ -928,4 +928,4 @@ Bool TableRow::namesConform (const TableRecord& that) const
     return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

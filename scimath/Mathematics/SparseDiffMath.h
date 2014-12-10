@@ -35,7 +35,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/scimath/Mathematics/SparseDiff.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // Implements all mathematical operators and functions for SparseDiff.
@@ -224,7 +224,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Mathematics/SparseDiffMath.tcc>

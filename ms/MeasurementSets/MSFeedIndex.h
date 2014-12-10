@@ -34,7 +34,7 @@
 #include <casacore/ms/MeasurementSets/MSFeedColumns.h>
 #include <casacore/casa/Containers/RecordField.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# forward declarations
 class MSFeed;
@@ -127,7 +127,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
     

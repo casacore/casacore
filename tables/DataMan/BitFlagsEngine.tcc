@@ -40,7 +40,7 @@
 #include <casacore/casa/Utilities/ValTypeId.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   BitFlagsEngine<T>::BitFlagsEngine (const String& virtualColumnName,
@@ -310,4 +310,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     arrayTransformInPlace (stored, array, BoolToFlags(itsWriteMask));
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

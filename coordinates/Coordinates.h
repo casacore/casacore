@@ -40,7 +40,7 @@
 #include <casacore/coordinates/Coordinates/TabularCoordinate.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -274,6 +274,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

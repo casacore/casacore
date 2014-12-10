@@ -40,7 +40,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 LatticeConcat<T>::LatticeConcat()
@@ -877,5 +877,5 @@ Bool LatticeConcat<T>::getMaskSlice2 (Array<Bool>& buffer,
    return False;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

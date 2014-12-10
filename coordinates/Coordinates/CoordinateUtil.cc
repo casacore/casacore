@@ -65,7 +65,7 @@
 
 #include <casacore/casa/sstream.h>
 
-namespace casa { // begin namespace casa
+namespace casacore { // begin namespace casa
 
 
 void CoordinateUtil::addDirAxes(CoordinateSystem & coords){
@@ -1967,4 +1967,4 @@ String CoordinateUtil::axisLabel (const Coordinate& coord, uInt axis,
   return base;
 }
 
-} // end namespace casa
+} // end namespace casacore

@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/ArrayIO.h>
 
 using namespace std;
-using namespace casa;
+using namespace casacore;
 
 int main(int argc, char* argv[2])
 {

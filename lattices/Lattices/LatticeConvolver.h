@@ -35,7 +35,7 @@
 #include <casacore/lattices/Lattices/TempLattice.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 //template <class T> class LatticeConvolver;
@@ -237,7 +237,7 @@ private:
   Bool doFast_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/LatticeConvolver.tcc>

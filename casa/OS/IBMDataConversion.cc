@@ -30,7 +30,7 @@
 #include <casacore/casa/OS/IBMConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 IBMDataConversion::~IBMDataConversion()
 {}
@@ -398,5 +398,5 @@ unsigned int IBMDataConversion::externalSize (const double*) const
     return SIZE_IBM_DOUBLE;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

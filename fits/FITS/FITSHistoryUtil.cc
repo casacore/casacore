@@ -42,7 +42,7 @@
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings, 
 				      String &groupType,
@@ -340,5 +340,5 @@ uInt FITSHistoryUtil::toHISTORY(vector<String>& history, Bool& aipsppFormat,
     return firstLine;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

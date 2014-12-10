@@ -28,7 +28,7 @@
 #include <casacore/tables/DataMan/TSMOption.h>
 #include <casacore/casa/System/AipsrcValue.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TSMOption::TSMOption (TSMOption::Option option, Int bufferSize,
                         Int maxCacheSizeMB)
@@ -79,4 +79,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

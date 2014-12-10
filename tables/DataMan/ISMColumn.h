@@ -38,7 +38,7 @@
 #include <casacore/casa/Utilities/Compare.h>
 #include <casacore/casa/OS/Conversion.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class ISMBucket;
@@ -425,6 +425,6 @@ inline uInt ISMColumn::nelements() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

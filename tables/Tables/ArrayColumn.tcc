@@ -39,7 +39,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ArrayColumn<T>::ArrayColumn()
@@ -1078,4 +1078,4 @@ void ArrayColumn<T>::putColumn (const ArrayColumn<T>& that)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

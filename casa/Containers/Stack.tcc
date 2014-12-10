@@ -29,7 +29,7 @@
 #include <casacore/casa/Containers/StackError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class elem> Stack<elem>::~Stack() {
     if ( topOfStack )
@@ -64,5 +64,5 @@ template<class elem> Stack<elem> &Stack<elem>::operator=(const Stack<elem> &othe
     return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

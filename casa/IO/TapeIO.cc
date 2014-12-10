@@ -58,7 +58,7 @@
 #  endif
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TapeIO::TapeIO()
   :ByteIO(),
@@ -364,4 +364,4 @@ void TapeIO::fillSeekable() {
   itsSeekable = (seek (0, ByteIO::Current)  >= 0);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

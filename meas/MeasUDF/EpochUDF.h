@@ -36,7 +36,7 @@
 #include <casacore/measures/Measures/MCEpoch.h>
 #include <casacore/measures/Measures/MeasConvert.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // TaQL UDFs for Epoch conversions.

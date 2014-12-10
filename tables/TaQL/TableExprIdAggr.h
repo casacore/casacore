@@ -38,7 +38,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/stdvector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // The Table Expression Selection id used with aggregation
@@ -115,6 +115,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

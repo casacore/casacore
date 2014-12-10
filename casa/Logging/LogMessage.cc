@@ -31,7 +31,7 @@
 
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LogMessage::LogMessage(Priority prio)
   : priority_p(prio)
@@ -219,5 +219,5 @@ ostream &operator<<(ostream &os, const LogMessage &message)
     return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -30,7 +30,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa {
+namespace casacore {
 
 TaQLResult::TaQLResult (const Table& table)
 : itsTable (table)
@@ -55,4 +55,4 @@ TableExprNode TaQLResult::node() const
   return itsNode;
 }
  
-} //#NAMESPACE CASA - END
+} //#NAMESPACE CASACORE - END

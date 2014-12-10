@@ -34,7 +34,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 SubLattice<T>::SubLattice()
@@ -635,5 +635,5 @@ LatticeIterInterface<T>* SubLattice<T>::makeIter (const LatticeNavigator& nav,
 ///  return iterPtr;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

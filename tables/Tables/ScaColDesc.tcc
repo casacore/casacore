@@ -34,7 +34,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
@@ -192,5 +192,5 @@ ConcatColumn* ScalarColumnDesc<T>::makeConcatColumn (ConcatTable* ct) const
     return new ConcatScalarColumn<T> (this, ct);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

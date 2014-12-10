@@ -32,7 +32,7 @@
 #include <casacore/casa/BasicMath/Primes.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape,

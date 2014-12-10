@@ -27,7 +27,7 @@
 
 #include <casacore/tables/DataMan/DataManError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Implementation of DataManager error classes.
 
@@ -91,5 +91,5 @@ TSMError::TSMError (const String& s)
 TSMError::~TSMError () throw()
 { ; }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

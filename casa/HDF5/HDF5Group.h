@@ -32,7 +32,7 @@
 #include <casacore/casa/HDF5/HDF5Object.h>
 #include <vector>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // A class representing an HDF5 group.

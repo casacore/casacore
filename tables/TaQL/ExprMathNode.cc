@@ -31,7 +31,7 @@
 #include <casacore/casa/Quanta/MVTime.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Implement the arithmetic operators for each data type.
 
@@ -362,4 +362,4 @@ DComplex TableExprNodeBitNegate::getDComplex (const TableExprId& id)
     { return double(~(lnode_p->getInt(id))); }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

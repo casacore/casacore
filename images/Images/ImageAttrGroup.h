@@ -33,7 +33,7 @@
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Abstract base class for an image attributes group.
@@ -159,6 +159,6 @@ public:
                         const Vector<String>& measInfo = Vector<String>()) = 0;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

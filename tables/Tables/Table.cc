@@ -52,7 +52,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Table::ScratchCallback* Table::scratchCallback_p = 0;
 
@@ -1050,4 +1050,4 @@ ostream& operator<< (ostream& ios, const Table& tab)
     return ios;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

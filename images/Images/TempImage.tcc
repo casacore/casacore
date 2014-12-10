@@ -38,7 +38,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 TempImage<T>::TempImage()
@@ -429,5 +429,5 @@ LatticeIterInterface<T>* TempImage<T>::makeIter
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

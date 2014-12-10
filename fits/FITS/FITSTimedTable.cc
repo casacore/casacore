@@ -31,7 +31,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FITSTimedTable::FITSTimedTable()
     : atStart_p(True), hasChanged_p(False), changePending_p(False), 
@@ -344,5 +344,5 @@ void FITSTimedTable::initNextRecord(const RecordDesc& desc)
     time_next_p.attachToRecord(*row_next_p, timeColumn_p);
 }    
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

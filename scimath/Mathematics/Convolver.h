@@ -36,7 +36,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Forward Declarations
 template <class FType> class Convolver;
@@ -324,7 +324,7 @@ private:
   void validate();
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Mathematics/Convolver.tcc>

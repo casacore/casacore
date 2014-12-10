@@ -7,7 +7,7 @@
 
 #include <casacore/casa/IO/FiledesIO.h>
 
-namespace casa {
+namespace casacore {
   typedef FiledesIO LargeFiledesIO;
 }
 

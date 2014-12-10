@@ -42,7 +42,7 @@
 #include <casacore/casa/fstream.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // This is the function that does most of the work. It is pretty slow for
 // large maps, but no real problem.
@@ -642,5 +642,5 @@ Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
   Block<uInt> Aipsrc::codlst(0);
   Block<String> Aipsrc::ncodlst(0);
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/ms/MeasurementSets/MSSelectionTools.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //-------------------------------------------------------------------------
   
@@ -250,5 +250,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
   //-------------------------------------------------------------------------
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

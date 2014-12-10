@@ -32,7 +32,7 @@
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/tables/Tables/TableError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 // Initialize the static getting the result from the parser.
@@ -278,4 +278,4 @@ void TaQLQueryNode::setFromExecute()
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

@@ -76,7 +76,7 @@
 //     versions of the iterator are useful.
 // </motivation>
 //
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 template<class key, class val> class ConstHashMapIter {
 public:

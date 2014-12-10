@@ -30,7 +30,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 DFTServer<T>& DFTServer<T>::operator=(const DFTServer<T> &other)
@@ -409,5 +409,5 @@ void DFTServer<T>::showReal(Array<T> &data)
 
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -34,7 +34,7 @@
 #include <casacore/lattices/Lattices/LatticeExpr.h>
 #include <casacore/lattices/Lattices/LatticeExprNode.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class MultiTermLatticeCleaner : public LatticeCleaner<T>
 {
@@ -204,7 +204,7 @@ private:
   Bool adbg;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/MultiTermLatticeCleaner.tcc>

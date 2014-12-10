@@ -34,7 +34,7 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <utility>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Geometry related methods.
@@ -80,7 +80,7 @@ public:
 	);
 
 };
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

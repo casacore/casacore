@@ -29,7 +29,7 @@
 #include <casacore/scimath/Mathematics/Geometry.h>
 #include <casacore/casa/Arrays/MatrixMath.h>
 
-namespace casa {
+namespace casacore {
 
 	std::pair<Double, Double> Geometry::rotate2D(
 		Double x, Double y, const Quantity& theta
@@ -82,5 +82,5 @@ namespace casa {
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

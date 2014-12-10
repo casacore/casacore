@@ -48,7 +48,7 @@
 #endif
 #endif
 
-namespace casa  { //#Begin namespace casa
+namespace casacore  { //#Begin namespace casa
 
 size_t Memory::allocatedMemoryInBytes()
 {
@@ -149,4 +149,4 @@ int Memory::setMemoryOption(int cmd, int value) {
 #endif
 }
 
-} //#End namespace casa
+} //#End namespace casacore

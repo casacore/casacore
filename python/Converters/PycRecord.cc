@@ -30,7 +30,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <boost/python/object.hpp>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
   boost::python::dict casa_record_to_python::makeobject
   (Record const& rec)

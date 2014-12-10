@@ -34,7 +34,7 @@
 #include <limits.h>                     // for DBL_MAX
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Implement the comparison operators for each data type.
 
@@ -521,5 +521,5 @@ void TableExprNodeAND::ranges (Block<TableExprRange>& blrange)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

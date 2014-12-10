@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define NEED_UNDERSCORES
 #if defined(NEED_UNDERSCORES)
@@ -443,5 +443,5 @@ Int& ConvolveGridder<Domain, Range>::cSampling() {
   return sampling;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

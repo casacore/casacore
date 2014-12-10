@@ -32,7 +32,7 @@
 #include <casacore/casa/Containers/IterError.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableIterProxy::TableIterProxy()
 : firstTime_p (True)
@@ -228,4 +228,4 @@ void TableIterProxy::reset()
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

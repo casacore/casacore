@@ -36,7 +36,7 @@
 #include <casacore/casa/Utilities/ValTypeId.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class S, class T>
 MappedArrayEngine<S,T>::MappedArrayEngine (const String& virtualColumnName,
@@ -126,5 +126,5 @@ void MappedArrayEngine<S,T>::mapOnPut (const Array<S>& array, Array<T>& target)
   convertArray (target, array);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

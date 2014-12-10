@@ -35,7 +35,7 @@
 #include <casacore/measures/Measures/MConvertBase.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/measures/Measures/Measure.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MCBase;
@@ -279,7 +279,7 @@ private:
 //# Global functions
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/measures/Measures/MeasConvert.tcc>

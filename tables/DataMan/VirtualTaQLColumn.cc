@@ -37,7 +37,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 VirtualTaQLColumn::VirtualTaQLColumn (const String& expr)
 : itsDataType     (TpOther),
@@ -450,5 +450,5 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

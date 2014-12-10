@@ -52,7 +52,7 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 WCBox::WCBox()
 //
@@ -755,5 +755,5 @@ void WCBox::convertPixel(Double& pixel,
    }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

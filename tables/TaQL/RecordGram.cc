@@ -58,7 +58,7 @@ int RecordGramwrap()
     return 1;
 }
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*  strpRecordGram = 0;
@@ -313,4 +313,4 @@ TableExprNode RecordGram::handleRegex (const TableExprNode& left,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

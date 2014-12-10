@@ -66,7 +66,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FITSQualityImage::FITSQualityImage(const String& name)
 : ImageInterface<Float>(),
@@ -745,5 +745,5 @@ void FITSQualityImage::reopenDataIfNeeded()
 	  isDataClosed_p = False;
   	  }
   }
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

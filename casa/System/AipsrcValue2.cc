@@ -32,7 +32,7 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <> 
 Bool AipsrcValue<String>::find(String &value,
@@ -44,5 +44,5 @@ Bool AipsrcValue<String>::find(String &value,
   return x;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

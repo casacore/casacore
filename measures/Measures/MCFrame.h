@@ -34,7 +34,7 @@
 #include <casacore/measures/Measures/Measure.h>
 #include <casacore/measures/Measures/MeasFrame.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MVDirection;
@@ -240,6 +240,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

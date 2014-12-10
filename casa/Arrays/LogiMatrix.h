@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Logical valued Matrices.
@@ -80,6 +80,6 @@ typedef Matrix<LogicalArrayElem> LogicalMatrix;
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

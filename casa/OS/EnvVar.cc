@@ -32,7 +32,7 @@
 #include <cstring>                  //# for strcpy with gcc-4.3
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Bool EnvironmentVariable::isDefined (const String& name)
 {
@@ -58,5 +58,5 @@ void EnvironmentVariable::set (const String& name, const String& value)
   AlwaysAssert (putenv(str) == 0, AipsError);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

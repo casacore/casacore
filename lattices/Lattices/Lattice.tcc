@@ -39,7 +39,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // destructor
 template <class T>
@@ -361,5 +361,5 @@ uInt Lattice<T>::advisedMaxPixels() const
   return (uInt) pow (2.0, ceil(log(4.0*1024.0*1024.0/sizeof(T))/log(2.0)));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

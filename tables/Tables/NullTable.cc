@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 NullTable::NullTable()
 : BaseTable ("Null table object", Table::Old, 0)
@@ -288,5 +288,5 @@ void NullTable::throwError (const String& name) const
   throw TableError ("NullTable::" + name + " - Table object is empty");
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

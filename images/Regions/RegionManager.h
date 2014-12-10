@@ -33,7 +33,7 @@
 #include <casacore/tables/Tables/Table.h>
 
 
-namespace casa {
+namespace casacore {
 
 /**
  * image component class 

@@ -28,7 +28,7 @@
 #include <casacore/ms/MeasurementSets/MSHistoryColumns.h>
 #include <casacore/ms/MeasurementSets/MSHistory.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSHistoryColumns::ROMSHistoryColumns(const MSHistory& msHistory):
   application_p(msHistory, MSHistory::
@@ -146,5 +146,5 @@ void MSHistoryColumns::attach(MSHistory& msHistory)
 // compile-command: "gmake MSHistoryColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

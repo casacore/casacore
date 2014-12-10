@@ -33,7 +33,7 @@
 #include <casacore/lattices/Lattices/PagedArray.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A read/write Lattice iterator for PagedArrays.
@@ -131,7 +131,7 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/PagedArrIter.tcc>

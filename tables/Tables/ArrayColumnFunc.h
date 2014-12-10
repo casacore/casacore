@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Arrays/Array.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary> Abstract baseclass for slices functors </summary>
   // <synopsis>
@@ -108,6 +108,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     ArrayColumn<T>& itsCol;
   };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

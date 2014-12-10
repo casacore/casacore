@@ -29,7 +29,7 @@
 #include <casacore/scimath/Functionals/PowerLogarithmicPolynomialParam.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 PowerLogarithmicPolynomialParam<T>::PowerLogarithmicPolynomialParam() :
@@ -86,5 +86,5 @@ void PowerLogarithmicPolynomialParam<T>::setCoefficients(const Vector<T> &coeffi
   param_p.setParameters(coefficients);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

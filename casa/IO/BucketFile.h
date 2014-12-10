@@ -38,7 +38,7 @@
 #include <unistd.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MultiFile;
@@ -236,6 +236,6 @@ inline Bool BucketFile::isBuffered() const
     { return bufSize_p>0; }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

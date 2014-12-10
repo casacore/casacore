@@ -35,7 +35,7 @@
 #include <casacore/tables/Tables/ColumnCache.h>
 #include <casacore/tables/Tables/TableRecord.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward Declarations
   class ConcatTable;
@@ -291,6 +291,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     TableRecord         keywordSet_p;
   };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -33,7 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManager.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MSMColumn;
@@ -191,6 +191,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

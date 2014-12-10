@@ -30,7 +30,7 @@
 #include <casacore/tables/Tables/ColumnCache.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ColumnCache::ColumnCache()
 : itsIncr (1)
@@ -46,5 +46,5 @@ void ColumnCache::set (uInt startRow, uInt endRow, const void* dataPtr)
     itsData  = dataPtr;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

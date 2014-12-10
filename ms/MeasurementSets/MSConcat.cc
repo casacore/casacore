@@ -64,7 +64,7 @@
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/OS/Directory.h>
 
-namespace casa {
+namespace casacore {
 
 MSConcat::MSConcat(MeasurementSet& ms):
   MSColumns(ms),

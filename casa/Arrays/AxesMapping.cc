@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 AxesMapping::AxesMapping()
 : itsRemoved   (False),
@@ -155,5 +155,5 @@ Slicer AxesMapping::slicerToOld (const Slicer& slicer) const
 		 shapeToOld (slicer.stride()));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

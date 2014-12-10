@@ -31,7 +31,7 @@
 #include <casacore/casa/Utilities/Register.h>
 #include <casacore/measures/Measures/MEpoch.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 MEpoch::MEpoch() : 
@@ -268,5 +268,5 @@ Measure *MEpoch::clone() const {
   return (new MEpoch(*this));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

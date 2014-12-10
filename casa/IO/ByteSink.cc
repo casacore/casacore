@@ -30,7 +30,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ByteSink::ByteSink()
 {}
@@ -219,5 +219,5 @@ void ByteSink::write (size_t nvalues, const String* value)
     itsTypeIO->write (nvalues, value);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

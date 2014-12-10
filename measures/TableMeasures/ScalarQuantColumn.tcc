@@ -38,7 +38,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ScalarQuantColumn<T>::ScalarQuantColumn()
@@ -231,5 +231,5 @@ void ScalarQuantColumn<T>::put (uInt rownr, const Quantum<T>& q)
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

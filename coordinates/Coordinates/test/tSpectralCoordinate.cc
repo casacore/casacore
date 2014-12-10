@@ -498,12 +498,12 @@ int main()
                makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
             Vector<Double> pixelValues = lc2.pixelValues();
             Vector<Double> worldValues = lc2.worldValues();
-            if (!casa::allNear(worldValues, freqs, 1e-6)) {
+            if (!casacore::allNear(worldValues, freqs, 1e-6)) {
                throw(AipsError("Failed non-linear worldValues function test"));
             }
             Vector<Double> pixels2(freqs.nelements());
             for (uInt i=0; i<pixels2.nelements(); i++) pixels2(i) = Double(i);
-            if (!casa::allNear(pixelValues, pixels2, 1e-6)) {
+            if (!casacore::allNear(pixelValues, pixels2, 1e-6)) {
                throw(AipsError("Failed non-linear pixelValues function test"));
             }
          }
@@ -536,7 +536,7 @@ int main()
             if (names2(0)!=String("Time")) {
                throw(AipsError("makeFourierCoordinate (1) failed names test"));
             }
-            if (!casa::allNear(crval2,0.0,1e-13)) {
+            if (!casacore::allNear(crval2,0.0,1e-13)) {
                throw(AipsError("makeFourierCoordinate (1) failed crval test"));
             }
             for (uInt i=0; i<pC->nPixelAxes(); i++) {
@@ -585,7 +585,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!casa::allNear(pixel2, pixel, 1e-6)) {
+         if (!casacore::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
          Double pix, wrld;
@@ -598,7 +598,7 @@ int main()
          if (!lc.toPixel(pix2, wrld)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!casa::allNear(pix2, pix, 1e-6)) {
+         if (!casacore::allNear(pix2, pix, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
      }
@@ -615,7 +615,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!casa::allNear(pixel2, pixel, 1e-6)) {
+         if (!casacore::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
@@ -633,7 +633,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!casa::allNear(pixel2, pixel, 1e-6)) {
+         if (!casacore::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
          Double pix, wrld;
@@ -646,7 +646,7 @@ int main()
          if (!lc.toPixel(pix2, wrld)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!casa::allNear(pix2, pix, 1e-6)) {
+         if (!casacore::allNear(pix2, pix, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
@@ -671,7 +671,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!casa::allNear(pixel2, pixel, 1e-6)) {
+         if (!casacore::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
@@ -696,7 +696,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!casa::allNear(pixel2, pixel, 1e-6)) {
+         if (!casacore::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
@@ -1132,7 +1132,7 @@ void refConv ()
       throw(AipsError(String("toPixel + reference conversion (1) failed because ") + lc.errorMessage()));
     }
     //
-    if (!casa::allNear(pixel2, pixel, 1e-6)) {
+    if (!casacore::allNear(pixel2, pixel, 1e-6)) {
       throw(AipsError("Coordinate + reference conversion reflection 1 failed"));
     }                                       
     //
@@ -1144,15 +1144,15 @@ void refConv ()
     //
     AlwaysAssert(type2==MFrequency::BARY, AipsError);
     AlwaysAssert(near(epoch.getValue().get(), epoch2.getValue().get()), AipsError);
-    AlwaysAssert(casa::allNear(pos.getValue().get(), pos2.getValue().get(), 1e-6), AipsError);
-    AlwaysAssert(casa::allNear(dir.getValue().get(), dir2.getValue().get(), 1e-6), AipsError);
+    AlwaysAssert(casacore::allNear(pos.getValue().get(), pos2.getValue().get(), 1e-6), AipsError);
+    AlwaysAssert(casacore::allNear(dir.getValue().get(), dir2.getValue().get(), 1e-6), AipsError);
     
     Vector<Double> baryFreq;
     lc.toWorld(baryFreq, pixel);
     
     AlwaysAssert(lc.transformFrequencySystem(MFrequency::BARY, epoch, pos, dir), AipsError);
     
-    AlwaysAssert(casa::allNear(baryFreq, lc.referenceValue(), 1e-6), AipsError);
+    AlwaysAssert(casacore::allNear(baryFreq, lc.referenceValue(), 1e-6), AipsError);
     
   }
   { // on a non-linear coordinate
@@ -1204,8 +1204,8 @@ void refConv ()
    //
    AlwaysAssert(type2==MFrequency::CMB, AipsError);
    AlwaysAssert(near(epoch.getValue().get(), epoch2.getValue().get()), AipsError);
-   AlwaysAssert(casa::allNear(pos.getValue().get(), pos2.getValue().get(), 1e-6), AipsError);
-   AlwaysAssert(casa::allNear(dir.getValue().get(), dir2.getValue().get(), 1e-6), AipsError);
+   AlwaysAssert(casacore::allNear(pos.getValue().get(), pos2.getValue().get(), 1e-6), AipsError);
+   AlwaysAssert(casacore::allNear(dir.getValue().get(), dir2.getValue().get(), 1e-6), AipsError);
 
    Vector<Double> cmbFreq;
    lc.toWorld(cmbFreq, pixel);
@@ -1215,7 +1215,7 @@ void refConv ()
    Vector<Double> cmbFreq2;
    lc.toWorld(cmbFreq2, pixel);
 
-   AlwaysAssert(casa::allNear(cmbFreq, lc.referenceValue(), 1e-6), AipsError);
+   AlwaysAssert(casacore::allNear(cmbFreq, lc.referenceValue(), 1e-6), AipsError);
 
   }
 }

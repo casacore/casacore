@@ -33,7 +33,7 @@
 #include <casacore/tables/DataMan/VirtScaCol.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Base virtual column for a scalar column with any type
@@ -345,7 +345,7 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/DataMan/VSCEngine.tcc>

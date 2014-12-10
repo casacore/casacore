@@ -33,7 +33,7 @@
 #include <casacore/casa/sstream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LatticeStepper::LatticeStepper (const IPosition& latticeShape,
 				const IPosition& cursorShape,
@@ -562,5 +562,5 @@ Bool LatticeStepper::ok() const
   return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

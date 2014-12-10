@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <iosfwd>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Define the IO system forward declarations. Note that if fully standard
 // suppliant, the iosfwd will also forward declare the stringstream classes.
@@ -51,6 +51,6 @@ using std::fstream;
 using std::fpos;
 using std::streampos;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

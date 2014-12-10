@@ -33,7 +33,7 @@
 #define ITSMUTEX \
   (static_cast<pthread_mutex_t*>(itsMutex))
 
-namespace casa {
+namespace casacore {
 
 #ifdef USE_THREADS
 
@@ -149,4 +149,4 @@ namespace casa {
   }
 
 
-} // namespace casa
+} // namespace casacore

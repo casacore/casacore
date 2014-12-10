@@ -36,7 +36,7 @@
 #include <casacore/casa/namespace.h>
 //# Forward Declarations
 class DummyVirtualEngine;
-namespace casa {
+namespace casacore {
 template<class T> class ScalarColumn;
 template<class T> class ArrayColumn;
 }

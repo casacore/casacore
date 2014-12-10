@@ -30,7 +30,7 @@
 #include <casacore/ms/MeasurementSets/MSSelectionError.h>
 #include <casacore/tables/TaQL/RecordGram.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MSUvDistParse* MSUvDistParse::thisMSUParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSUvDistParse::node_p = 0x0;
@@ -250,4 +250,4 @@ void MSUvDistParse::accumulateUVList(const Double r0, const Double r1,
   meterUnits_p(n0)=True;
   if (wavelengthUnit) meterUnits_p(n0)=False;
 }
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

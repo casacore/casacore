@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/tables/DataMan/BaseMappedArrayEngine.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class ScalarColumn;
@@ -403,7 +403,7 @@ public:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/DataMan/ScaledComplexData.tcc>

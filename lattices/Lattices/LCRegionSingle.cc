@@ -34,7 +34,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCRegionSingle::LCRegionSingle()
 {}
@@ -191,5 +191,5 @@ void LCRegionSingle::copyData (const Lattice<Bool>& from)
     itsMaskPtr->copyData (from);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

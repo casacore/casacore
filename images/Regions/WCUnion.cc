@@ -32,7 +32,7 @@
 #include <casacore/tables/Tables/TableRecord.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 WCUnion::WCUnion (const ImageRegion& region1,
                   const ImageRegion& region2)
@@ -122,5 +122,5 @@ WCUnion* WCUnion::fromRecord (const TableRecord& rec,
     return new WCUnion (True, regions);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -139,7 +139,7 @@ void VSCExampleVSCEngine::registerClass()
 #include <casacore/casa/Utilities/CountedPtr.tcc>
 #include <casacore/casa/Utilities/ValTypeId.h>
 
-namespace casa {
+namespace casacore {
 
 template class Array<VSCExample>;
 template class MaskedArray<VSCExample>;

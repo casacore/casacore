@@ -28,7 +28,7 @@
 #include <casacore/lattices/Lattices/TempLattice.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 TempLattice<T>::~TempLattice()
@@ -199,4 +199,4 @@ LatticeIterInterface<T>* TempLattice<T>::makeIter (const LatticeNavigator& nav,
   return itsImpl->makeIter (nav, useRef);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

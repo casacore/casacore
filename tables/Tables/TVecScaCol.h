@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TVec.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TableColumn;
@@ -119,7 +119,7 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/Tables/TVecScaCol.tcc>

@@ -30,7 +30,7 @@
 #include <casacore/casa/IO/AipsIOCarray.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> void putBlock (AipsIO& ios, const Block<T>& blk, Int nr)
 {
@@ -73,5 +73,5 @@ template<class T> void showBlock (ostream& ios, const Block<T>& blk, Int nr)
     ios << "]";
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

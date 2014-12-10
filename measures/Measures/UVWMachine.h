@@ -34,7 +34,7 @@
 #include <casacore/casa/Quanta/MVPosition.h>
 #include <casacore/casa/Quanta/RotMatrix.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MeasFrame;
@@ -285,7 +285,7 @@ class UVWMachine {
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

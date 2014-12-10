@@ -36,7 +36,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TSMIdColumn::TSMIdColumn (const TSMColumn& column)
 : TSMColumn (column)
@@ -86,5 +86,5 @@ TSMIDCOLUMN_GETPUT(Complex,ComplexV)
 TSMIDCOLUMN_GETPUT(DComplex,DComplexV)
 TSMIDCOLUMN_GETPUT(String,StringV)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

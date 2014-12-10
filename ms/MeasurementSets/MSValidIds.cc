@@ -35,7 +35,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSValidIds::MSValidIds()
     : romsCols_p(0), hasDoppler_p(False), hasSource_p(False)
@@ -182,5 +182,5 @@ void MSValidIds::clear()
     hasDoppler_p = hasSource_p = False;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

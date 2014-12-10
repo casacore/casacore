@@ -39,7 +39,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SSMIndColumn::SSMIndColumn (SSMBase* aParent, int aDataType, uInt aColNr)
 : SSMColumn    (aParent, aDataType, aColNr),
@@ -250,5 +250,5 @@ void SSMIndColumn::init()
   itsExternalSizeBits = 8*itsExternalSizeBytes;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

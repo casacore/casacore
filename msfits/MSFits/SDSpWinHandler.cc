@@ -48,7 +48,7 @@
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDSpWindowHandler::SDSpWindowHandler()
     : fNCachePtr_p(0), f0CachePtr_p(0), bwCachePtr_p(0), index_p(0), theCache_p(0),
@@ -438,5 +438,5 @@ void SDSpWindowHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     rownr_p = -1;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

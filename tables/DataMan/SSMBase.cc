@@ -52,7 +52,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
 : DataManager          (),
@@ -1168,4 +1168,4 @@ uInt SSMBase::setBucketSize()
   return rowsPerBucket;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

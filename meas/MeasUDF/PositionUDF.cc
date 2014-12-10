@@ -27,7 +27,7 @@
 
 #include <casacore/meas/MeasUDF/PositionUDF.h>
 
-namespace casa {
+namespace casacore {
 
   PositionUDF::PositionUDF (FuncType type)
     : itsType  (type)

@@ -38,7 +38,7 @@
 #include <casacore/measures/Measures/MCDirection.h>
 #include <casacore/measures/Measures/MeasConvert.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // TaQL UDFs for Direction conversions.

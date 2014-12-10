@@ -32,7 +32,7 @@
 #include <casacore/ms/MeasurementSets/MSProcessor.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSProcessor;
 
@@ -224,6 +224,6 @@ private:
   ScalarColumn<Int> passId_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/ArrayIter.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 CLIPNearest2D<T>::CLIPNearest2D()
@@ -157,5 +157,5 @@ void CLIPNearest2D<T>::getMask (Array<Bool>& buffer,
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

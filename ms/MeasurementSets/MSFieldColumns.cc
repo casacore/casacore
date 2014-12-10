@@ -43,7 +43,7 @@
 #include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/iomanip.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSFieldColumns::ROMSFieldColumns(const MSField& msField):
   measCometsPath_p(),
@@ -611,5 +611,5 @@ void MSFieldColumns::setDirectionRef(MDirection::Types ref) {
 // compile-command: "gmake MSFieldColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

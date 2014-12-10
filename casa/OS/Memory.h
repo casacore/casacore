@@ -33,7 +33,7 @@
 //# The following is used to get size_t.
 #include <casacore/casa/stdlib.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>Memory related information and utilities.</summary>
 
@@ -137,7 +137,7 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

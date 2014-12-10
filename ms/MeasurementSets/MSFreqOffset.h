@@ -33,7 +33,7 @@
 #include <casacore/ms/MeasurementSets/MSTable.h>
 #include <casacore/ms/MeasurementSets/MSFreqOffEnums.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // A Table intended to hold a MeasurementSet FREQ_OFFSET table.
@@ -134,7 +134,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

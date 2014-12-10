@@ -37,7 +37,7 @@
 #include <casacore/casa/Utilities/COWPtr.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class AipsIO;
@@ -515,6 +515,6 @@ inline AipsIO& operator>> (AipsIO& os, RecordDesc& desc)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -32,7 +32,7 @@
 #include <casacore/tables/TaQL/TaQLNode.h>
 #include <casacore/tables/TaQL/TaQLNodeDer.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class to visit the nodes in the raw TaQL parse tree.
@@ -113,6 +113,6 @@ protected:
     { return node.visit (*this); }
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

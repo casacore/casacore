@@ -31,7 +31,7 @@
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/measures/Measures/MeasBase.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class Mv, class Mr>
@@ -170,5 +170,5 @@ void MeasBase<Mv,Mr>::print(std::ostream &os) const {
   os << tellMe() << ": " << data;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

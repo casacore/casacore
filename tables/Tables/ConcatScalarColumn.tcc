@@ -32,7 +32,7 @@
 #include <casacore/casa/Utilities/GenSort.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   ConcatScalarColumn<T>::ConcatScalarColumn (const BaseColumnDesc* bcdp,
@@ -187,4 +187,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     dataSave = 0;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

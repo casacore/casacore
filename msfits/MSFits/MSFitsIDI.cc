@@ -44,7 +44,7 @@
 #include <casacore/tables/Tables/SetupNewTab.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //----------------------------------------------------------------------------
 
@@ -387,5 +387,5 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 }
   
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

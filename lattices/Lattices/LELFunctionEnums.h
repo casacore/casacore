@@ -27,7 +27,7 @@
 #ifndef LATTICES_LELFUNCTIONENUMS_H
 #define LATTICES_LELFUNCTIONENUMS_H
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Each LEL function is described in this enum </summary>
 //
@@ -218,6 +218,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/scimath/Functionals/SincParam.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 SincParam<T>::SincParam() :
@@ -77,5 +77,5 @@ SincParam<T> &SincParam<T>::operator=(const SincParam<T> &other) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

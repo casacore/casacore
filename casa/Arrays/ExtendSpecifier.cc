@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ExtendSpecifier::ExtendSpecifier()
 {}
@@ -181,5 +181,5 @@ IPosition ExtendSpecifier::convertNew (const IPosition& shape) const
   return newShape;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

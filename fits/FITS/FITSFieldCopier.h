@@ -36,7 +36,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/fits/FITS/FITSKeywordUtil.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Virtual base class for copying RORecordFields to FitsFields
@@ -330,6 +330,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

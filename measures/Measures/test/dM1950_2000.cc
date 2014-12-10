@@ -43,7 +43,7 @@
 
 #include <casacore/casa/namespace.h>
 
-namespace casa {
+namespace casacore {
   void fk45(Double R1950, Double D1950, Double BEPOCH, Double &R2000,
 	    Double &D2000, Double X2000[], Vector<Double> V2000[]);
 
@@ -190,7 +190,7 @@ namespace casa {
     cout << "----------------------------------------------------" << endl;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 int main()
 {

@@ -37,7 +37,7 @@
 #include <exception>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Throw the given exception with a string composed of various arguments.
 // E.g.
@@ -56,10 +56,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #ifdef NDEBUG
 #define AssertCc(c) {assert (c); }
 #else
-#define AssertCc(c) { if (! (c)) {casa::AipsError::throwIf (True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
+#define AssertCc(c) { if (! (c)) {casacore::AipsError::throwIf (True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
 #endif
 
-#define AssertAlways(c) { if (! (c)) {casa::AipsError::throwIf (True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
+#define AssertAlways(c) { if (! (c)) {casacore::AipsError::throwIf (True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
 
 #define WarnCc(m)\
 {\
@@ -88,14 +88,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #endif
 
 // Throw an AipsError exception if the condition is true.
-#define ThrowIf(c,m) {if (c) {casa::AipsError::throwIf (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
+#define ThrowIf(c,m) {if (c) {casacore::AipsError::throwIf (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
 
 // Throw an AipsError exception if the system error code is not 0.
 // It adds the message for that error code to the exception text.
-#define ThrowIfError(c,m) {if (c) {casa::AipsError::throwIfError (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
+#define ThrowIfError(c,m) {if (c) {casacore::AipsError::throwIfError (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
 
 // Repackage and rethrow an AipsError exception.
-#define Rethrow(e,m) {throw casa::AipsError::repackageAipsError ((e),(m),__FILE__,__LINE__, __PRETTY_FUNCTION__);}
+#define Rethrow(e,m) {throw casacore::AipsError::repackageAipsError ((e),(m),__FILE__,__LINE__, __PRETTY_FUNCTION__);}
 
 
 // <summary>Base class for all Casacore library errors</summary>
@@ -496,7 +496,7 @@ public:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifdef AIPS_NEEDS_RETHROW
 #ifndef CASACORE_NEEDS_RETHROW

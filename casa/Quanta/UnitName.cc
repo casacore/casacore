@@ -30,7 +30,7 @@
 #include <casacore/casa/Quanta/UnitName.h>
 #include <casacore/casa/iomanip.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 UnitName::UnitName() :
     basicKind(),
@@ -89,5 +89,5 @@ ostream& operator<< (ostream &os, const UnitName &name) {
     return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

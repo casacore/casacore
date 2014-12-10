@@ -36,7 +36,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/LogiArrayFwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Forward declarations for MaskedLogicalArrays.
@@ -99,6 +99,6 @@ typedef MaskedArray<LogicalArrayElem> MaskedLogicalArray;
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

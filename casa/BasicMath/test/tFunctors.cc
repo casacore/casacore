@@ -34,7 +34,7 @@
 #include <algorithm>
 
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 #define TESTFUNCTOR1(NAME, FUNC) \

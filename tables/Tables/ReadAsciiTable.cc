@@ -53,7 +53,7 @@
 #include <casacore/casa/sstream.h>           // needed for internal IO
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 const Int lineSize = 32768;
 
@@ -1597,5 +1597,5 @@ Table readAsciiTable (String& formatString, Table::TableType tableType,
 			       firstLine, lastLine);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

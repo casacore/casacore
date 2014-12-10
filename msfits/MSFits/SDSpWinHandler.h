@@ -33,7 +33,7 @@
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/tables/Tables/TableColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class ColumnsIndex;
@@ -165,7 +165,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

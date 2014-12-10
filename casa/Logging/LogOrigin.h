@@ -34,7 +34,7 @@
 #include <casacore/casa/System/ObjectID.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 struct SourceLocation;
 
@@ -202,11 +202,11 @@ struct SourceLocation
     static const SourceLocation *canonicalize(const char *file, Int line);
 };
 
-#define WHERE casa::SourceLocation::canonicalize(__FILE__, __LINE__)
+#define WHERE casacore::SourceLocation::canonicalize(__FILE__, __LINE__)
 
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

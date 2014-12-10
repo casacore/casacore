@@ -27,7 +27,7 @@
 
 #include <casacore/casa/HDF5/HDF5Object.h>
 
-using namespace casa;
+using namespace casacore;
 
 // Test if casacore is built with support for HDF5.
 // It reurns 0 if so, otherwise 1.

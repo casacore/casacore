@@ -38,7 +38,7 @@
 #include <casacore/measures/Measures/MFrequency.h>
 #include <casacore/measures/Measures/MeasConvert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class CoordinateSystem;
 class DirectionCoordinate;
@@ -542,6 +542,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

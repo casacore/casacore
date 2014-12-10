@@ -35,7 +35,7 @@
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/scimath/Functionals/FuncExpression.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Parameters for a compiled string function object.
@@ -165,7 +165,7 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/CompiledParam.tcc>

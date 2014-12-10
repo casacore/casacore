@@ -29,7 +29,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/scimath/Mathematics/MathFunc.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //
 // This file implements an abstract base class of MathFunc objects
@@ -779,5 +779,5 @@ MathFunc<T> * ExpSincConv<T>::clone() const
 { return new ExpSincConv<T>(*this);}  // use ExpSincConv copy ctor
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

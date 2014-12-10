@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Fitting/NonLinearFit.h>
-namespace casa { //# begin namespace casa
+namespace casacore { //# begin namespace casa
 //# Forward declarations
 
 //
@@ -139,7 +139,7 @@ protected:
   using NonLinearFit<T>::isReady;
 };
 
-} //# End namespace casa
+} //# End namespace casacore
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Fitting/NonLinearFitLM.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES

@@ -30,7 +30,7 @@
 #include <casacore/ms/MeasurementSets/MSMainColumns.h>
 #include <limits>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MSScanParse* MSScanParse::thisMSSParser = 0x0; // Global pointer to the parser object
   TableExprNode MSScanParse::columnAsTEN_p;
@@ -213,4 +213,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return node_p;
   }
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

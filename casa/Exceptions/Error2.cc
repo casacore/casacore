@@ -40,7 +40,7 @@
 # define AddStackTrace()
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 AipsError::AipsError (Category c)
 : message(), category(c)
@@ -252,5 +252,5 @@ AbortError::AbortError(const String &str,Category c)
 AbortError::~AbortError() throw()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

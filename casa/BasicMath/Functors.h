@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <functional>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   // Define a function to do a binary transform in place.
@@ -613,28 +613,28 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Accum itsBase;    // store as Accum, so subtracttion results in Accum
   };
 
-  // Functor to downcase a std::string. The result is a casa::String.
+  // Functor to downcase a std::string. The result is a casacore::String.
   struct Downcase : public std::unary_function<std::string,String>
   {
     String operator() (const std::string& value) const
       { return downcase(value); }
   };
 
-  // Functor to upcase a std::string. The result is a casa::String.
+  // Functor to upcase a std::string. The result is a casacore::String.
   struct Upcase : public std::unary_function<std::string,String>
   {
     String operator() (const std::string& value) const
       { return upcase(value); }
   };
 
-  // Functor to capitalize a std::string. The result is a casa::String.
+  // Functor to capitalize a std::string. The result is a casacore::String.
   struct Capitalize : public std::unary_function<std::string,String>
   {
     String operator() (const std::string& value) const
       { return capitalize(value); }
   };
 
-  // Functor to trim a std::string. The result is a casa::String.
+  // Functor to trim a std::string. The result is a casacore::String.
   // Leading and trailing whitespace is removed.
   struct Trim : public std::unary_function<std::string,String>
   {
@@ -643,6 +643,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

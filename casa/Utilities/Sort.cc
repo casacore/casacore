@@ -41,7 +41,7 @@
 #endif
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SortKey::SortKey (const void* dat, const CountedPtr<BaseCompare>& cmpobj,
                   uInt inc, int opt)
@@ -622,5 +622,5 @@ int Sort::compare (uInt i1, uInt i2) const
     return -1;                                // equal keys; out-of-order
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

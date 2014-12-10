@@ -42,7 +42,7 @@
 
 //# Forward declarations
 #include <casacore/casa/iosfwd.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class LoggerHolder;
 
@@ -366,6 +366,6 @@ ostream &operator<<(ostream &os, const ImageInfo &info);
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

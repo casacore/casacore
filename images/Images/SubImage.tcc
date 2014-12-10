@@ -38,7 +38,7 @@
 #include <casacore/casa/Arrays.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 SubImage<T>::SubImage()
@@ -449,5 +449,5 @@ void SubImage<T>::convertIPosition(Vector<Float>& x, const IPosition& pos) const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

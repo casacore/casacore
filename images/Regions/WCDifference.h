@@ -32,7 +32,7 @@
 #include <casacore/images/Regions/WCCompound.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Make the difference of 2 image regions.
@@ -133,6 +133,6 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -34,7 +34,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Define a macro which gets the pointer for the given row
 //# and casts it to the block.
@@ -321,5 +321,5 @@ void MSMIndColumn::Data::clear (int dtype)
   data_p = 0;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

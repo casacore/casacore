@@ -30,7 +30,7 @@
 #include <casacore/casa/OS/CanonicalConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 CanonicalDataConversion::~CanonicalDataConversion()
 {}
@@ -344,5 +344,5 @@ unsigned int CanonicalDataConversion::externalSize (const double*) const
     return SIZE_CAN_DOUBLE;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <iostream>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Default is no choice function, thus return first choice.
 Choice::ChoiceFunc* Choice::theirChoiceFunc = 0;
@@ -84,5 +84,5 @@ String Choice::ostreamChoice (std::ostream& os,
   return "";
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

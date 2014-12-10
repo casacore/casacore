@@ -46,7 +46,7 @@
 
 #define _ORIGIN "MSMetaData::" + String(__FUNCTION__) + ": "
 
-namespace casa {
+namespace casacore {
 
 MSMetaData::MSMetaData(const MeasurementSet *const &ms, const Float maxCacheSizeMB)
 	: _ms(ms), _cacheMB(0), _maxCacheMB(maxCacheSizeMB), _nStates(0),
@@ -130,7 +130,7 @@ void MSMetaData::_getStateToIntentsMap(
 		Vector<String>::const_iterator curIntentSet=intentSets.begin();
 		curIntentSet!=end; curIntentSet++, sIter++
 	) {
-		Vector<String> intents = casa::stringToVector(*curIntentSet, ',');
+		Vector<String> intents = casacore::stringToVector(*curIntentSet, ',');
 		*sIter = std::set <String>(intents.begin(), intents.end());
 		uniqueIntents.insert(intents.begin(), intents.end());
 	}

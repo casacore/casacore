@@ -31,7 +31,7 @@
 //# Includes
 #include <casacore/ms/MeasurementSets/MSParse.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -104,6 +104,6 @@ private:
     static TableExprNode *node_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

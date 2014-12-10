@@ -32,7 +32,7 @@
 #include <casacore/images/Regions/WCCompound.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Make the union of 2 or more image regions.
@@ -146,6 +146,6 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

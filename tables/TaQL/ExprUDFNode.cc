@@ -30,7 +30,7 @@
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/ExprGroup.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   TableExprUDFNode::TableExprUDFNode (UDFBase* udf, const Table& tab,
                                       const TableExprNodeSet& source)
@@ -95,4 +95,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   MVTime    TableExprUDFNode::getDate     (const TableExprId& id)
     { return itsUDF->getDate (id); }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

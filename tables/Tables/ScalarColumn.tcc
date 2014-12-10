@@ -36,7 +36,7 @@
 #include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ScalarColumn<T>::ScalarColumn()
@@ -297,4 +297,4 @@ void ScalarColumn<T>::putColumn (const ScalarColumn<T>& that)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

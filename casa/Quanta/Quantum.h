@@ -34,7 +34,7 @@
 #include <casacore/casa/Quanta/QBase.h>
 #include <casacore/casa/iosstrfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class Quantum;
@@ -429,7 +429,7 @@ Bool readQuantity(Quantity &res, const String &in);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Quanta/Quantum.tcc>

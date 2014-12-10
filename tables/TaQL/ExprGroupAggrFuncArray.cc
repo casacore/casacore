@@ -36,7 +36,7 @@
 #include <limits>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   TableExprGroupArrayAny::TableExprGroupArrayAny(TableExprNodeRep* node)
@@ -471,4 +471,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

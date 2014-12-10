@@ -52,7 +52,7 @@
 # include <readline/history.h>
 #endif
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 // <summary>

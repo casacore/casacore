@@ -31,7 +31,7 @@
 #include <casacore/casa/Utilities/Copy.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Copy the entire target array to the source array.
 // It will check if the shapes and sizes match.
@@ -112,5 +112,5 @@ void retypedArrayEngineGet (Array<TargetType>& out,
     out.putStorage (dataOut, deleteOut);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

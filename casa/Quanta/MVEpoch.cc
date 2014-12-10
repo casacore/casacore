@@ -36,7 +36,7 @@
 #include <casacore/casa/Quanta/UnitVal.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 const Double MVEpoch::secInDay(3600*24);
@@ -140,11 +140,11 @@ Bool MVEpoch::operator!=(const MVEpoch &other) const {
 }
 
 Bool MVEpoch::near(const MVEpoch &other, Double tol) const {
-  return ::casa::near(get(), other.get(), tol);
+  return ::casacore::near(get(), other.get(), tol);
 }
 
 Bool MVEpoch::nearAbs(const MVEpoch &other, Double tol) const {
-  return ::casa::nearAbs(get(), other.get(), tol);
+  return ::casacore::nearAbs(get(), other.get(), tol);
 }
 
 //# Member functions
@@ -258,5 +258,5 @@ void MVEpoch::addTime(Double in) {
   frday += (in-t);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

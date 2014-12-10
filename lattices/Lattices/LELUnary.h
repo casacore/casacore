@@ -34,7 +34,7 @@
 #include <casacore/lattices/Lattices/LELScalar.h>
 #include <casacore/lattices/Lattices/LELUnaryEnums.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -318,7 +318,7 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 //# See comments in LELInterface why LELInterface.tcc is included here.
 #ifndef CASACORE_NO_AUTO_TEMPLATES

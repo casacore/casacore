@@ -65,7 +65,7 @@
 #include <wcslib/fitshdr.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     Bool FITSCoordinateUtil::toFITSHeader(RecordInterface &header, 
 					  IPosition &shape,
@@ -308,7 +308,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	if (skyCoord >=0 && pvi_ma.nelements() > 0) {
 	    if (!writeWCS) {
 		for (uInt k=0; k<pvi_ma.nelements(); k++) {
-		    if (!casa::nearAbs(pvi_ma(k), 0.0)) {
+		    if (!casacore::nearAbs(pvi_ma(k), 0.0)) {
 			os << LogIO::WARN << 
 			    "Projection parameters not all zero.Information lost in FITS"
 			    " conversion. Try WCS?." <<
@@ -1260,9 +1260,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	Bool eqIs1950VLA(False);
 	Bool eqIs2000(False);
 	if (eqIsDefined) {
-	    eqIs1950 = casa::near(equinox, 1950.0);
-	    eqIs1950VLA = casa::near(equinox, 1979.9);
-	    eqIs2000 = casa::near(equinox, 2000.0);
+	    eqIs1950 = casacore::near(equinox, 1950.0);
+	    eqIs1950VLA = casacore::near(equinox, 1979.9);
+	    eqIs2000 = casacore::near(equinox, 2000.0);
 	}
 
 // Extract RADESYS keyword
@@ -1386,7 +1386,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 		    if (equinox>=1984.0) {                     // Paper II
 			type = MDirection::J2000;               // FK5
 			return True;
-		    } else if (casa::near(equinox,1979.9)) {
+		    } else if (casacore::near(equinox,1979.9)) {
 			type = MDirection::B1950_VLA;
 			return True;
 		    } else {
@@ -1865,7 +1865,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // We can only handle one non-zero angle
 
 	    for (uInt i=0; i<crota.nelements(); i++) {
-		if (!casa::near(crota(i), 0.0)) {
+		if (!casacore::near(crota(i), 0.0)) {
 		    if (rotationAxis >= 0) {
 			os << LogIO::SEVERE << "Can only convert one non-zero"
 			    " angle from " << sprefix << 
@@ -2031,7 +2031,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	String sType = c.showType();
 //
 	for (uInt i=0; i<n; i++) {
-	    if (casa::near(cdelt(i),0.0)) {
+	    if (casacore::near(cdelt(i),0.0)) {
 		if (type==Coordinate::DIRECTION) {
 		    cdelt[i] = C::pi/180.0;        // 1 deg
 		    os << LogIO::WARN << "Zero increment in coordinate of type " << sType << " setting  to 1 deg" << LogIO::POST;
@@ -2045,5 +2045,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	c.setIncrement(cdelt);
     }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

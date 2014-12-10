@@ -53,7 +53,7 @@
 #endif
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Define some global variables; before they were externs in the .h file.
 
@@ -2547,5 +2547,5 @@ re_exec (char *s)
 			 static_cast<struct re_registers *>(0));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -29,7 +29,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 FunctionOrder<T>::FunctionOrder()
@@ -236,5 +236,5 @@ const String &FunctionOrder<T>::ident() const {
   return myid;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

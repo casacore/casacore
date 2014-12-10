@@ -35,7 +35,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 PGPlotterNull::PGPlotterNull(const String &)
     : beenWarned(True)
@@ -602,5 +602,5 @@ void PGPlotterNull::noplotter()
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

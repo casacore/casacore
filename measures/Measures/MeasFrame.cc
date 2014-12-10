@@ -39,7 +39,7 @@
 #include <casacore/measures/Measures/MeasComet.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Representation class
 class FrameRep {
@@ -595,5 +595,5 @@ ostream &operator<<(ostream &os, MeasFrame &mf) {
   return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

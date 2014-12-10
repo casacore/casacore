@@ -30,7 +30,7 @@
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 RecordFieldPtr<T>::RecordFieldPtr()
@@ -166,5 +166,5 @@ void RecordFieldPtr<T>::notify (const Notice& notice)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

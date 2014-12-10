@@ -30,7 +30,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCLELMask::LCLELMask()
 {}
@@ -138,5 +138,5 @@ TableRecord LCLELMask::toRecord (const String&) const
   return TableRecord();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -38,7 +38,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 IPosition::IPosition (const Array<Int> &other)
   : size_p (0),
@@ -148,4 +148,4 @@ AipsIO& operator>> (AipsIO& aio, IPosition& ip)
   return aio;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

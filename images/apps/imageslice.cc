@@ -38,7 +38,7 @@
 #include <casacore/images/Images/ImageUtilities.h>
 #include <casacore/images/Images/HDF5Image.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main(int argc, const char* argv[]) {
 

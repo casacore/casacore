@@ -39,7 +39,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ArrayColumnData<T>::ArrayColumnData (const ArrayColumnDesc<T>* cd,
@@ -418,4 +418,4 @@ void ArrayColumnData<T>::getFileDerived (AipsIO& ios,
     createDataManagerColumn();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

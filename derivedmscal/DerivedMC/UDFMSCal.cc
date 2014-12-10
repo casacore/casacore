@@ -40,7 +40,7 @@
 #include <casacore/tables/TaQL/ExprUnitNode.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 
-namespace casa {
+namespace casacore {
 
   UDFMSCal::UDFMSCal (ColType type, Int arg)
     : itsType (type),

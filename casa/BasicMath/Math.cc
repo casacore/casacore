@@ -36,7 +36,7 @@
 #include <ieeefp.h>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Bool near(uInt val1, uInt val2, Double tol) {
   if (tol <= 0) {
@@ -307,5 +307,5 @@ Double roundDouble(Double val, Double ndigit) {
   return sign*round(temp)*pow(10.0, i);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

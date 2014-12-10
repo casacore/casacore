@@ -31,7 +31,7 @@
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/casa/BasicSL/String.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main()
 {

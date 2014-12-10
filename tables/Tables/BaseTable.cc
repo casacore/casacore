@@ -54,7 +54,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // The constructor of the derived class should call unmarkForDelete
 // when the construction ended succesfully.
@@ -1174,5 +1174,5 @@ String BaseTable::makeAbsoluteName (const String& name) const
     return Path(name).absoluteName();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -37,7 +37,7 @@
 #include <list>
 #include <map>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward Declarations
   class AipsIO;
@@ -169,7 +169,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   AipsIO& operator<< (AipsIO& ios, const std::vector<T>&);
   // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/BasicSL/STLIO.tcc>

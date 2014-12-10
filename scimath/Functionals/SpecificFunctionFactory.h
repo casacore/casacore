@@ -32,7 +32,7 @@
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/scimath/Functionals/AbstractFunctionFactory.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Record;
@@ -113,7 +113,7 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

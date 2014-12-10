@@ -29,10 +29,10 @@
 #include <casacore/lattices/Lattices/LELLattCoordBase.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELLattCoordBase::~LELLattCoordBase()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

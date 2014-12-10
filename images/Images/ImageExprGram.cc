@@ -55,7 +55,7 @@ int ImageExprGramwrap()
     return 1;
 }
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*  strpImageExprGram = 0;
@@ -131,5 +131,5 @@ String imageExprGramRemoveQuotes (const String& in)
     return out;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

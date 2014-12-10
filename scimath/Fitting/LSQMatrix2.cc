@@ -35,7 +35,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Constants
   const String LSQMatrix::tmatsiz = String("tmatsiz");
@@ -202,5 +202,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

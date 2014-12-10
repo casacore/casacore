@@ -43,7 +43,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDObservationHandler::SDObservationHandler() 
     : index_p(0), msObs_p(0), msObsCols_p(0), rownr_p(-1)
@@ -343,5 +343,5 @@ void SDObservationHandler::updateTimeRange(const Vector<Double> &timeRange)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

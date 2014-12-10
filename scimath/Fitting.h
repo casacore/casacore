@@ -34,7 +34,7 @@
 #include <casacore/scimath/Fitting/NonLinearFit.h>
 #include <casacore/scimath/Fitting/NonLinearFitLM.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -200,7 +200,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 //
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

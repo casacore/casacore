@@ -34,14 +34,14 @@
 #include <casacore/images/Images/ImageExpr.h>
 #include <casacore/images/Images/ImageExprParse.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main(int argc, const char* argv[]) 
 {
   try {
     // Register the FITS and Miriad image types.
-    casa::FITSImage::registerOpenFunction();
-    casa::MIRIADImage::registerOpenFunction();
+    casacore::FITSImage::registerOpenFunction();
+    casacore::MIRIADImage::registerOpenFunction();
 
     // Read the input parameters.
     Input inputs(1);

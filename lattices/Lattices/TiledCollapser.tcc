@@ -29,7 +29,7 @@
 #include <casacore/lattices/Lattices/TiledCollapser.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T, class U>
 TiledCollapser<T,U>::~TiledCollapser()
@@ -41,5 +41,5 @@ Bool TiledCollapser<T,U>::canHandleNullMask() const
     return False;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

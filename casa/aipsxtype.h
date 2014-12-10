@@ -28,7 +28,7 @@
 #ifndef CASA_AIPSXTYPE_H
 #define CASA_AIPSXTYPE_H
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Define the extra non-standard types used by Casacore
 // (like proposed uSize, Size)
@@ -47,6 +47,6 @@ typedef unsigned long long uInt64;
     typedef long FitsLong;
 #endif 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

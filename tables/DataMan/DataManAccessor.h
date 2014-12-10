@@ -33,7 +33,7 @@
 #include <casacore/tables/DataMan/DataManager.h>
 #include <iosfwd>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Base class for the Data Manager Accessor classes.
@@ -123,6 +123,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

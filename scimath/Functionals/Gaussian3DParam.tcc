@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/scimath/Functionals/Function.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class Type> 
 Gaussian3DParam<Type>::Gaussian3DParam() 
@@ -324,5 +324,5 @@ void Gaussian3DParam<Type>::settrigvals() const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

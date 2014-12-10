@@ -35,7 +35,7 @@
 #include <casacore/casa/Quanta/UnitMap.h>
 #include <casacore/casa/Utilities/Regex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 int UnitVal_static_initializer::initialized = 0;
 
@@ -249,5 +249,5 @@ Bool UnitVal::field(MUString &str, UnitVal &res) {
   return False;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

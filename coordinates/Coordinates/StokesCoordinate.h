@@ -36,7 +36,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 
@@ -292,7 +292,7 @@ private:
     StokesCoordinate();
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 
 #endif

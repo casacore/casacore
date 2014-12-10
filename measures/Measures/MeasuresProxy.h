@@ -40,11 +40,11 @@
 
 #include <casacore/casa/namespace.h>
 //# Forward declarations
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class String;
 class MeasureHolder;
 class MeasComet;
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 class MeasuresProxy
 {

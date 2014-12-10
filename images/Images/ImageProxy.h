@@ -37,7 +37,7 @@
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Containers/Record.h>
 
-namespace casa {
+namespace casacore {
 
   //# Forward Declarations.
   template<typename T> class ImageInterface;
@@ -467,6 +467,6 @@ namespace casa {
     ImageAttrHandler*         itsAttrHandler;
   };
 
-} // end namespace casa
+} // end namespace casacore
 
 #endif

@@ -46,7 +46,7 @@
 
 #include <casacore/scimath/Mathematics/InterpolateArray1D.h>
 
-namespace casa {
+namespace casacore {
 
 template<class T>
 FrequencyAligner<T>::FrequencyAligner()
@@ -181,7 +181,7 @@ Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
    } else {
       for (uInt i=0; i<nPixels; i++) {
          itsFreqX[i] = itsMachine(xIn[i]).getValue().getValue();
-         maxDiff = casa::max(casa::abs(itsFreqX[i]-itsRefFreqX[i]),maxDiff);
+         maxDiff = casacore::max(casacore::abs(itsFreqX[i]-itsRefFreqX[i]),maxDiff);
       }
    }
    maxDiff /= abs(itsRefFreqX[1]-itsRefFreqX[0]);      // Max diff as a fraction of a channel
@@ -340,7 +340,7 @@ Double FrequencyAligner<T>::makeAbcissa (Vector<Double>& freq, Bool doDiff)
          itsSpecCoord.toWorld(world,i); 
          freq[i] = itsMachine(world).getValue().getValue();
 //
-         maxDiff = casa::max(casa::abs(freq[i]-itsRefFreqX[i]),maxDiff);
+         maxDiff = casacore::max(casacore::abs(freq[i]-itsRefFreqX[i]),maxDiff);
       }
    } else {
       for (uInt i=0; i<n; i++) {
@@ -420,7 +420,7 @@ SpectralCoordinate FrequencyAligner<T>::alignedSpectralCoordinate (Bool doLinear
    return sC;
 }
 
-} //# End namespace casa
+} //# End namespace casacore
 
 
 

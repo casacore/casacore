@@ -29,7 +29,7 @@
 #include <casacore/casa/Containers/MapIO.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class key, class value> ostream &operator<<(ostream &ios, const Map<key,value> &map) {
 #if !defined(AIPS_STUPID_SUN)
@@ -61,5 +61,5 @@ template<class key, class value> ostream &operator<<(ostream &ios, const ConstMa
 
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -29,7 +29,7 @@
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Arrays/ArrayError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Slicer::Slicer()
 : asEnd_p (endIsLength),
@@ -298,5 +298,5 @@ ostream  &operator << (ostream &stream, const Slicer &slicer)
   return stream;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

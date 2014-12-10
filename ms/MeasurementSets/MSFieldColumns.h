@@ -43,7 +43,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Containers/SimOrdMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MVDirection;
 class MSField;
@@ -415,6 +415,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

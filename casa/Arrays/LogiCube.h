@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Cube.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Logical valued Cubes.
@@ -81,6 +81,6 @@ typedef Cube<LogicalArrayElem> LogicalCube;
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

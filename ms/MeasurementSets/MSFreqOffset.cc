@@ -37,7 +37,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSFreqOffset::MSFreqOffset():hasBeenDestroyed_p(True) { }
 
@@ -180,5 +180,5 @@ MSFreqOffset MSFreqOffset::referenceCopy(const String& newTableName,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

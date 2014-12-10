@@ -40,7 +40,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 const Double MVPosition::loLimit = 743.568;
@@ -555,5 +555,5 @@ Double operator*(const MVPosition &left, const Vector<Double> &right) {
   return (tmp * left);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

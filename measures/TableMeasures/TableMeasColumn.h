@@ -32,7 +32,7 @@
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class String;
@@ -177,6 +177,6 @@ private:
 
 #define ROTableMeasColumn TableMeasColumn
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

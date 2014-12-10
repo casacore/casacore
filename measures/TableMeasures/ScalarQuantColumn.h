@@ -31,7 +31,7 @@
 //# Includes
 #include <casacore/casa/Quanta/Quantum.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Table;
@@ -230,7 +230,7 @@ private:
   void getData (uInt rownr, Quantum<T>& q) const;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 
 //# Make old name ROScalarMeasColumn still available.

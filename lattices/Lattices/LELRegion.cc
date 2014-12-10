@@ -34,7 +34,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELRegion::LELRegion (const LattRegionHolder& region)
 : region_p (region.clone())
@@ -185,5 +185,5 @@ String LELRegionAsBool::className() const
     return "LELRegionAsBool";
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -50,7 +50,7 @@ extern "C" { int gettimeofday(struct timeval *tp, void*); };
 extern "C" { int getclock(int clock_type, struct timespec* tp); };
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 String HostInfo::hostName()
 {
@@ -203,58 +203,58 @@ ptrdiff_t HostInfo::swapFree( )					\
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #define HOSTINFO_DO_IMPLEMENT
 #if defined(AIPS_LINUX)
 #include <casacore/casa/OS/HostInfoLinux.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(AIPS_SOLARIS)
 #include <casacore/casa/OS/HostInfoSolaris.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(AIPS_IRIX)
 #include <casacore/casa/OS/HostInfoIrix.h>
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(AIPS_OSF)
 #include <casacore/casa/OS/HostInfoOsf1.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(AIPS_HPUX)
 #include <casacore/casa/OS/HostInfoHpux.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(__APPLE__)
 #include <casacore/casa/OS/HostInfoDarwin.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(AIPS_BSD)
 #include <casacore/casa/OS/HostInfoBsd.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #else
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Int HostInfo::numCPUs( ) { return 0; }
 ptrdiff_t HostInfo::memoryTotal( ) { return -1; }
@@ -264,12 +264,12 @@ ptrdiff_t HostInfo::swapTotal( )   { return -1; }
 ptrdiff_t HostInfo::swapUsed( )    { return -1; }
 ptrdiff_t HostInfo::swapFree( )    { return -1; }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HostMachineInfo *HostInfo::info = 0;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

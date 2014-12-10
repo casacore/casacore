@@ -37,7 +37,7 @@
 #include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 PlainColumn::PlainColumn (const BaseColumnDesc* cdp, ColumnSet* csp)
 : BaseColumn    (cdp),
@@ -157,5 +157,5 @@ void PlainColumn::checkValueLength (const Array<String>* value) const
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

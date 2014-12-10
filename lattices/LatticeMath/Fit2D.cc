@@ -50,7 +50,7 @@
 #include <casacore/casa/sstream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Fit2D::Fit2D(LogIO& logger)
 : itsLogger(logger),
@@ -1122,5 +1122,5 @@ void Fit2D::piRange (Double& pa) const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

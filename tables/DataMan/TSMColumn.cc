@@ -34,7 +34,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TSMColumn::TSMColumn (TiledStMan* stman, int dataType,
 		      const String& columnName)
@@ -96,5 +96,5 @@ TSMColumn* TSMColumn::unlink()
     return ptr;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

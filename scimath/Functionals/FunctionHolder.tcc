@@ -51,7 +51,7 @@
 #include <casacore/scimath/Mathematics/AutoDiffMath.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class T>
@@ -520,5 +520,5 @@ void FunctionHolder<T>::setParameters(Function<AutoDiff<T> > *&fn,
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

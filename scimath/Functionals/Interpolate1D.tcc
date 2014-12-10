@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class Domain, class Range> Interpolate1D<Domain, Range>::
 Interpolate1D() {
@@ -323,5 +323,5 @@ eval(typename Function1D<Domain, Range>::FunctionArg x) const {
   return y1;       // to make compiler happy
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

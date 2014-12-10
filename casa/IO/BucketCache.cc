@@ -32,7 +32,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BucketCache::BucketCache (BucketFile* file, Int64 startOffset,
 			  uInt bucketSize, uInt nrOfBuckets,
@@ -420,5 +420,5 @@ void BucketCache::initStatistics()
     nwrite_p  = 0;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -40,7 +40,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& value)
 : TableExprNodeRep (NTDouble, VTSetElem, OtUndef, Table()),
@@ -1637,5 +1637,5 @@ Array<Bool> TableExprNodeSet::hasArrayDate (const TableExprId& id,
     return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

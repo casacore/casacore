@@ -35,7 +35,7 @@
 #include <casacore/casa/Exceptions.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableMeasOffsetDesc::TableMeasOffsetDesc (const TableMeasDescBase& column,
 					  Bool asArray)
@@ -169,5 +169,5 @@ void TableMeasOffsetDesc::resetOffset (const Measure& offset)
   itsMeasure = MeasureHolder(offset);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

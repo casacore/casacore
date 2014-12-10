@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Utilities/DataType.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 const String SerialHelper::FUNCTYPE("functype");
 const String SerialHelper::gtype[] = {
@@ -466,5 +466,5 @@ void getArray(Array<V> &val, Int gtype, const Record& gr,
 }
 */
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

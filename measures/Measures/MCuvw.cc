@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 uInt MCuvw::ToRef_p[N_Routes][3] = {
@@ -682,5 +682,5 @@ void MCuvw::fromPole(MVPosition &in) {
 		       -MVDIR1.getLong(), 3u)) * in;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

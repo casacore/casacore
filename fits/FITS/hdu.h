@@ -36,7 +36,7 @@
 
 //# # include <stdarg.h> // If we ever wan to put varargs support back
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class FitsInput;
 class FitsOutput;
@@ -1194,7 +1194,7 @@ class AsciiTableExtension : public BinaryTableExtension {
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/fits/FITS/hdu.tcc>
