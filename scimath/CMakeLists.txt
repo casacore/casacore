@@ -294,6 +294,6 @@ if (BUILD_TESTING)
     add_subdirectory (Fitting/test)
     add_subdirectory (Functionals/test)
     add_subdirectory (Mathematics/test)
-    add_subdirectory (StefCal/test)
+#    add_subdirectory (StefCal/test)
 endif (BUILD_TESTING)
 
