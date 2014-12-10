@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Utilities/ValType.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SSMDirColumn::SSMDirColumn (SSMBase* aParent, int aDataType, uInt aColNr)
 : SSMColumn   (aParent,aDataType,aColNr)
@@ -303,5 +303,5 @@ void SSMDirColumn::putArrayStringV (uInt aRowNr,
 
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

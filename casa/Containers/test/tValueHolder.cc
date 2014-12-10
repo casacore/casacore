@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 
-using namespace casa;
+using namespace casacore;
 
 void doBool (Bool v)
 {

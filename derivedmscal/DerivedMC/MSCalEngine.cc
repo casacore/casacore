@@ -41,7 +41,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa {
+namespace casacore {
 
 MSCalEngine::MSCalEngine()
   : itsLastCalInx   (-1),

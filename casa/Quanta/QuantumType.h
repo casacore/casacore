@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class Quantum;
@@ -104,6 +104,6 @@ template <class T> class Array;
 
 // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

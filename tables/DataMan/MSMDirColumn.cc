@@ -37,7 +37,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSMDirColumn::MSMDirColumn (MSMBase* smptr, int dataType)
 : MSMColumn (smptr, dataType, True),
@@ -281,5 +281,5 @@ void MSMDirColumn::deleteArray (uInt rownr)
   deleteData (datap, False);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

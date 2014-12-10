@@ -33,7 +33,7 @@
 
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LogIO::LogIO()
     : sink_p(), text_p(0)
@@ -260,5 +260,5 @@ LogIO &operator<<(LogIO &os, Bool item)
     return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

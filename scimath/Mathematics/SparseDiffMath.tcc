@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/BasicSL/Constants.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Unary arithmetic operators.
   template<class T> SparseDiff<T> operator+(const SparseDiff<T> &other) { 
@@ -577,5 +577,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return tmp;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

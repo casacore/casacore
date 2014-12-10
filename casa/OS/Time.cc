@@ -48,7 +48,7 @@ extern time_t altzone;	// Not declared in all <time.h> files.
 #endif
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 inline double daysFrom1970()
 {
@@ -625,5 +625,5 @@ String Time::timeZoneName () {
   return isDST () ? tzname[1] : tzname[0];
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -29,7 +29,7 @@
 #include <casacore/tables/DataMan/StandardStMan.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StandardStMan::StandardStMan (Int bucketSize,
 			      uInt cacheSize)
@@ -45,5 +45,5 @@ StandardStMan::StandardStMan (const String& dataManagerName,
 StandardStMan::~StandardStMan()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

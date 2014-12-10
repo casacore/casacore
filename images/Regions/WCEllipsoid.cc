@@ -30,7 +30,7 @@
 #include <casacore/casa/Quanta/QuantumHolder.h>
 #include <casacore/lattices/Lattices/LCEllipsoid.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 WCEllipsoid::WCEllipsoid() {}
@@ -612,5 +612,5 @@ void WCEllipsoid::_checkUnits() const {
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

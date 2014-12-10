@@ -34,7 +34,7 @@
 #include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -161,7 +161,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/ObjectPool.tcc>

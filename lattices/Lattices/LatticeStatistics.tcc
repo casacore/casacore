@@ -65,7 +65,7 @@
 
 #include <casacore/casa/OS/Timer.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
@@ -3419,5 +3419,5 @@ void StatsTiledCollapser<T,U>::minMaxPos(IPosition& minPos, IPosition& maxPos)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

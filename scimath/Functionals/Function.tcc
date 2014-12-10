@@ -31,7 +31,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T, class U>
 U Function<T,U>::operator()(const Vector<ArgType> &x) const {
@@ -89,5 +89,5 @@ Function<T,U>::cloneNonAD() const {
 		  "' has no cloneNonAD() method"));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

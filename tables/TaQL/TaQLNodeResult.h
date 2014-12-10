@@ -31,7 +31,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Abstract base class to hold the result of a visit to the node tree.
@@ -162,6 +162,6 @@ public:
     { return itsRep; }
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

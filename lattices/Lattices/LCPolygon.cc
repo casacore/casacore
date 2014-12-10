@@ -35,7 +35,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCPolygon::LCPolygon()
 {}
@@ -399,5 +399,5 @@ void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

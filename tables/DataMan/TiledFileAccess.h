@@ -34,7 +34,7 @@
 #include <casacore/tables/DataMan/TSMOption.h>
 #include <casacore/casa/Utilities/DataType.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TiledFileHelper;
@@ -254,6 +254,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -31,7 +31,7 @@
 //# Includes
 #include <casacore/casa/Quanta/Quantum.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> class QVector;
 

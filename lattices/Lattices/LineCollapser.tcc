@@ -29,7 +29,7 @@
 #include <casacore/lattices/Lattices/LineCollapser.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T, class U>
 LineCollapser<T,U>::~LineCollapser()
@@ -41,5 +41,5 @@ Bool LineCollapser<T,U>::canHandleNullMask() const
     return False;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

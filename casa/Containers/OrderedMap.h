@@ -37,7 +37,7 @@
 #include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Utilities/Notice.h>
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 template<class t, class v> class OrderedMap;
 template<class t, class v> class OrderedMapRep;

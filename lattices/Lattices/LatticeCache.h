@@ -36,7 +36,7 @@
 
 //# Forward Declarations
 #include <casacore/casa/iosfwd.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> class Block;
 template <class T> class Lattice;
@@ -157,7 +157,7 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/LatticeCache.tcc>

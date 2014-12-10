@@ -34,7 +34,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   RODataManAccessor::RODataManAccessor (const Table& table,
                                         const String& name,
@@ -66,5 +66,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                         "RODataManAccessor object");
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

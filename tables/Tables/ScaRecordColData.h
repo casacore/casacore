@@ -33,7 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/PlainColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class ColumnSet;
@@ -208,6 +208,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

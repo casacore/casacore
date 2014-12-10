@@ -47,7 +47,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 Bool SpectralCoordinate::toWorld(MFrequency& world, 
@@ -376,5 +376,5 @@ void SpectralCoordinate::convertFrom (Vector<Double>& world) const
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -37,7 +37,7 @@
 
 #include <numpy/arrayobject.h>
 
-namespace casa { namespace python { namespace numpy {
+namespace casacore { namespace python { namespace numpy {
 
 #define PYC_USE_PYARRAY "numpy"
 #include <python/Converters/PycArrayComH.h>

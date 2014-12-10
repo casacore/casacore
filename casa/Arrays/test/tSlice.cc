@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main()
 {

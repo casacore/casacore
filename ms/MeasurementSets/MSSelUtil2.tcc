@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // reorder from 3d to 4d (adding ifr axis)
 template <class T>
@@ -154,5 +154,5 @@ void MSSelUtil2<T>::timeAverage(Array<Bool>& dataFlag, Array<T>& data,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

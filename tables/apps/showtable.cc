@@ -37,7 +37,7 @@
 #include <casacore/casa/string.h>    // for strerror
 #include <errno.h>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 

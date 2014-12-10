@@ -29,11 +29,11 @@
 #define CASA_LITTLEENDIANCONVERSION_H
 
 //# Includes
-#include <casacore/casa/aipsxtype.h>
+#include <casacore/casa/aips.h>
 #include <casacore/casa/OS/CanonicalConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A class with static functions to convert littleEndian format
@@ -342,6 +342,6 @@ inline void LittleEndianConversion::fromLocal (void* to, double from)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

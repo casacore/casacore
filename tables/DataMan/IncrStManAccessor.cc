@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROIncrementalStManAccessor::ROIncrementalStManAccessor (const Table& table,
                                                         const String& name,
@@ -93,5 +93,5 @@ void ROIncrementalStManAccessor::showBucketLayout (ostream& os) const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

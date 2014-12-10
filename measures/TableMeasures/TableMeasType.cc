@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableMeasType::TableMeasType()
 : itsNtypes(0),
@@ -117,5 +117,5 @@ void TableMeasType::toRecord (RecordInterface& rec)
   itsMeasHolder.toType (error, rec);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

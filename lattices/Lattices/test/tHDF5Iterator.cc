@@ -44,7 +44,7 @@
 #include <casacore/casa/Inputs/Input.h>
 #include <casacore/casa/iostream.h>
 
-using namespace casa;
+using namespace casacore;
 
 
 void testVectorROIter (const Lattice<Int>& lattice, Bool useRef)

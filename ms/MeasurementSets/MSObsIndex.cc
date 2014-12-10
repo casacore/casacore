@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //-------------------------------------------------------------------------
 
@@ -77,5 +77,5 @@ Vector<Int> MSObservationIndex::matchProjectCode(const String& projectCode)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

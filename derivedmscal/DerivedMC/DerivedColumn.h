@@ -34,7 +34,7 @@
 #include <casacore/tables/DataMan/VirtScaCol.h>
 #include <casacore/tables/DataMan/VirtArrCol.h>
 
-namespace casa {
+namespace casacore {
 
 
   // <summary>Hourangle derived from TIME, etc.</summary>

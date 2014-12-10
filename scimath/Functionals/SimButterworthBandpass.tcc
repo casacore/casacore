@@ -32,7 +32,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Containers/RecordInterface.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class T>
@@ -155,5 +155,5 @@ void SimButterworthBandpass<T>::getMode(RecordInterface& out) const {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -28,7 +28,7 @@
 #include <casacore/ms/MeasurementSets/MSColumns.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSColumns::ROMSColumns(const MeasurementSet& ms):
   ROMSMainColumns(ms),
@@ -115,5 +115,5 @@ void MSColumns::setDirectionRef(MDirection::Types ref)
 // compile-command: "gmake MSColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

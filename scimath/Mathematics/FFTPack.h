@@ -39,7 +39,7 @@
 #include <casacore/casa/BasicSL/Complexfwd.h>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>C++ interface to the Fortran FFTPACK library</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -913,6 +913,6 @@ static void cosqb(Int n, Double* x, Double* wsave);
 // </group>
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

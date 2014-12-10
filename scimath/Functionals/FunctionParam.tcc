@@ -28,7 +28,7 @@
 #include <casacore/scimath/Functionals/FunctionParam.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 FunctionParam<T>::FunctionParam()
@@ -167,5 +167,5 @@ ostream &FunctionParam<T>::print(ostream &os) const {
   return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

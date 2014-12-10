@@ -38,7 +38,7 @@
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class MaskedLattice;
@@ -498,7 +498,7 @@ private:
  
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/LatticeHistograms.tcc>

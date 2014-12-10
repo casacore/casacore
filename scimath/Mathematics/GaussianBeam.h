@@ -29,7 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Quantum.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Represents a Gaussian restoring beam associated with an image.

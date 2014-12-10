@@ -45,7 +45,7 @@
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
  
 int MSInterval::comp(const void * obj1, const void * obj2) const
@@ -781,5 +781,5 @@ void  MSIter::getSpwInFreqRange(Block<Vector<Int> >& spw,
 
   }
 }
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

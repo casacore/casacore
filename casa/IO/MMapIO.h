@@ -33,7 +33,7 @@
 #include <casacore/casa/IO/MMapfdIO.h>
 #include <casacore/casa/OS/RegularFile.h>
 
-namespace casa
+namespace casacore
 {
 
 // <summary>

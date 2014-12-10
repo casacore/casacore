@@ -35,7 +35,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <vector>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class Array;
@@ -401,7 +401,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 //# Do NOT include the .tcc file here like done for other templated classes.
 //# The instantiations are done explicitly.

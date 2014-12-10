@@ -38,7 +38,7 @@
 #include <casacore/casa/iosfwd.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Define the type of the static read and write function.
@@ -412,6 +412,6 @@ inline uInt BucketCache::nFreeBucket() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

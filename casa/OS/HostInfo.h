@@ -33,7 +33,7 @@
 #include <cstring>
 #include <cstddef>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;
 class HostMachineInfo;
@@ -151,6 +151,6 @@ inline Bool HostInfo::bigEndian()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

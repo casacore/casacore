@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCIntersection::LCIntersection()
 {}
@@ -204,5 +204,5 @@ void LCIntersection::multiGetSlice (Array<Bool>& buffer,
     buffer.putStorage (buf, deleteBuf);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -40,7 +40,7 @@
 #include <casacore/casa/vector.h>
 #include <casacore/casa/stdmap.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Engine to calculate derived MS values

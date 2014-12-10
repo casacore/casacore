@@ -31,7 +31,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 size_t CanonicalConversion::toLocalChar (void* to, const void* from,
                                          size_t nr)
@@ -219,5 +219,5 @@ CANONICALCONVERSION_DO (CONVERT_CAN_DOUBLE, SIZE_CAN_DOUBLE,
 			toLocalDouble, fromLocalDouble,
 			byteToLocalDouble, byteFromLocalDouble, double)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

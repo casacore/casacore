@@ -36,7 +36,7 @@
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/casa/Quanta/MVuvw.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Muvw;
@@ -278,6 +278,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

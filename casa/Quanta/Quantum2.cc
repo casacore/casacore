@@ -32,7 +32,7 @@
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 istream &operator>> (istream &is, Quantity &ku)
 {
@@ -94,5 +94,5 @@ Bool readQuantity(Quantity &res, const String &in)
   return readQuantity(res, tmp);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

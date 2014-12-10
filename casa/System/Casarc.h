@@ -31,8 +31,9 @@
 #include <string>
 #include <list>
 #include <map>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     class Casarc {
 
@@ -149,6 +150,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    static unsigned int creation_count;
     } local_cleanup_object;
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -52,7 +52,7 @@
 #include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNode::TableExprNode() : node_p(0)
 {}
@@ -1439,5 +1439,5 @@ DataType TableExprNode::dataType() const
     return TpOther;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

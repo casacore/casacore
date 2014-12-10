@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
@@ -161,5 +161,5 @@ Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

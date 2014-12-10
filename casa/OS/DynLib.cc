@@ -43,7 +43,7 @@
 
 using namespace std;
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   DynLib::DynLib (const std::string& library,
                   const std::string& prefix,
@@ -167,4 +167,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return std::string();
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

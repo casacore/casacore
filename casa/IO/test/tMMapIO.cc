@@ -32,7 +32,7 @@
 #include <casacore/casa/iostream.h>
 #include <unistd.h>
 
-using namespace casa;
+using namespace casacore;
 
 
 void check (const String& fileName, int bufSize, const char* buf)

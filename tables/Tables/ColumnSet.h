@@ -37,7 +37,7 @@
 #include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class SetupNewTable;
@@ -372,6 +372,6 @@ inline Block<Bool>& ColumnSet::dataManChanged()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

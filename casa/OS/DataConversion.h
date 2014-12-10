@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/OS/Conversion.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Abstract base class with functions to convert any format
@@ -229,6 +229,6 @@ inline DataConversion::DataConversion()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

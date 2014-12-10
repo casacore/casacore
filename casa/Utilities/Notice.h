@@ -30,7 +30,7 @@
 
 #include <casacore/casa/Containers/Link.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declaration
 class NoticeTarget;
@@ -235,7 +235,7 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

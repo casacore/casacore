@@ -34,7 +34,7 @@
 #include <casacore/tables/TaQL/UDFBase.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // TaQL UDFs to calculate derived MS values.

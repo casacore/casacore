@@ -34,7 +34,7 @@
 #include <casacore/casa/Exceptions/Error.h> 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELBinaryBool::LELBinaryBool(const LELBinaryEnums::Operation op,
 			     const CountedPtr<LELInterface<Bool> >& pLeftExpr,
@@ -284,5 +284,5 @@ void LELBinaryBool::resync()
     pRightExpr_p->resync();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

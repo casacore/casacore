@@ -34,7 +34,7 @@
 #include <vector>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // Class representing a key in the groupby clause.
@@ -799,6 +799,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     TableExprId itsId;      //# row containing the non-aggregate variables
   };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

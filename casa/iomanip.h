@@ -36,7 +36,7 @@
 #include <casacore/casa/aips.h>
 #include <iomanip>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 using std::setw;
 using std::setfill;
@@ -45,6 +45,6 @@ using std::setbase;
 using std::resetiosflags;
 using std::setiosflags;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

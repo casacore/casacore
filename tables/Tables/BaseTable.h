@@ -38,7 +38,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/IO/FileLocker.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class RefTable;
@@ -574,6 +574,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

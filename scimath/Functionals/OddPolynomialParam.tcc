@@ -29,7 +29,7 @@
 #include <casacore/scimath/Functionals/OddPolynomialParam.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 OddPolynomialParam<T>::OddPolynomialParam() :
@@ -63,5 +63,5 @@ void OddPolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
   param_p.setParameters(coefficients);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

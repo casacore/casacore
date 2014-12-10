@@ -33,7 +33,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprConeNode::TableExprConeNode (FunctionType ftype, NodeDataType dtype,
 				      const TableExprNodeSet& source,
@@ -652,4 +652,4 @@ Array<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

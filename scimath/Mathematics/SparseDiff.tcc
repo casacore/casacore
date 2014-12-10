@@ -30,7 +30,7 @@
 #include <casacore/casa/Containers/ObjectStack.h>
 #include <algorithm>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Constructors
 
@@ -305,5 +305,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     rep_p = tmp;
   }
  
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -39,7 +39,7 @@
 #include <casacore/measures/Measures/MCRadialVelocity.h>
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class ROMSAntennaColumns;
@@ -234,6 +234,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

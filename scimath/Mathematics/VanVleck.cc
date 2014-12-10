@@ -35,7 +35,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // initial values for the static data members
 
@@ -574,5 +574,5 @@ Bool VanVleck::dcoff3(Double &dcoffset, Double &threshold,
     return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

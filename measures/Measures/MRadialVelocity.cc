@@ -35,7 +35,7 @@
 #include <casacore/measures/Measures/MCDoppler.h>
 #include <casacore/measures/Measures/MeasConvert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 MRadialVelocity::MRadialVelocity() :
@@ -282,5 +282,5 @@ Measure *MRadialVelocity::clone() const {
     return (new MRadialVelocity(*this));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

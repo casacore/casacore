@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/scimath/Mathematics/AutoDiffRep.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class T>
@@ -98,5 +98,5 @@ AutoDiffRep<T> &AutoDiffRep<T>::operator=(const AutoDiffRep<T> &other) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

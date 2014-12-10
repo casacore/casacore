@@ -30,7 +30,7 @@
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/OS/DynLib.h>
 
-namespace casa {
+namespace casacore {
 
   // Define the static objects.
   // Use a recursive mutex, because loading from a shared library can cause

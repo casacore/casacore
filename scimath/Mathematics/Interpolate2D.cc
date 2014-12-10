@@ -33,7 +33,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Interpolate2D::Interpolate2D(Interpolate2D::Method method) {
 
@@ -299,5 +299,5 @@ Bool Interpolate2D::anyBadMaskPixels (const Matrix<Bool>* &maskPtr,
   return False;
 }  
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

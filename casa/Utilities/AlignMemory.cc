@@ -29,7 +29,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <stdlib.h>
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
   void* AlignMemory::alloc (size_t size) const
   {

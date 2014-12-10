@@ -37,7 +37,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Vector<Int> LatticeStatsBase::toStatisticTypes (const String& statsU, 
                                                 const Regex& delimiter)
@@ -206,5 +206,5 @@ void LatticeStatsBase::stretchMinMax (Float& dMin,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

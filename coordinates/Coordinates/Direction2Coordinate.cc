@@ -41,7 +41,7 @@
 // A different file so that apps which don't need measures don't link them all
 // in (measures bring in tables and lots of other stuff)
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 Bool DirectionCoordinate::toWorld(MDirection &world, 
@@ -126,5 +126,5 @@ Vector<Double> DirectionCoordinate::toPixel(const MDirection &world) const {
 	);
 	return x;
 }
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

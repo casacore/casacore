@@ -31,7 +31,7 @@
 #include <casacore/casa/Inputs/Input.h>
 #include <casacore/casa/Inputs/Param.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module> 
 //
@@ -258,7 +258,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

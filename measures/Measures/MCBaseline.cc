@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 uInt MCBaseline::ToRef_p[N_Routes][3] = {
@@ -458,5 +458,5 @@ void MCBaseline::doFillState (void*) {
   MCBase::makeState(FromTo_p[0], MBaseline::N_Types, N_Routes, ToRef_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

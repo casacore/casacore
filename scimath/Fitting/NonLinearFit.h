@@ -31,7 +31,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Fitting/GenericL2Fit.h>
-namespace casa { //# begin namesapce casa
+namespace casacore { //# begin namesapce casa
 //# Forward declarations
 
 //
@@ -241,7 +241,7 @@ protected:
   using GenericL2Fit<T>::isReady;
 };
 
-} //# End namespace casa
+} //# End namespace casacore
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Fitting/NonLinearFit.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES

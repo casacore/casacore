@@ -27,7 +27,7 @@
 
 #include <casacore/casa/Containers/Map.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void throw_mapiter_init_error(){
   throw(AipsError("Map Initialization Error"));
@@ -45,5 +45,5 @@ void throw_map_constop_error(){
   throw(AipsError("Invalid Operation on a Const Map"));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

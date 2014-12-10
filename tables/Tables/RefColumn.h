@@ -34,7 +34,7 @@
 #include <casacore/tables/Tables/BaseColumn.h>
 #include <casacore/tables/Tables/ColumnCache.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class RefTable;
@@ -274,6 +274,6 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

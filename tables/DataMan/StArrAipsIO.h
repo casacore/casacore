@@ -33,7 +33,7 @@
 #include <casacore/tables/DataMan/StManAipsIO.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class AipsIO;
@@ -275,6 +275,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

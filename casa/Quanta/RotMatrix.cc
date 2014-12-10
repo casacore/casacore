@@ -32,7 +32,7 @@
 #include <casacore/casa/Quanta/Euler.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // RotMatrix class
 
@@ -169,5 +169,5 @@ applySingle(Double angle, Int which) {
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

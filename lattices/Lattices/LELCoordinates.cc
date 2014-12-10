@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Default constructor
 LELCoordinates::LELCoordinates()
@@ -88,5 +88,5 @@ Int LELCoordinates::compare (const LELCoordinates& that) const
     return coords_p->compare (*(that.coords_p));
 } 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

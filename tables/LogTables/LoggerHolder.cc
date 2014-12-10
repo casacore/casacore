@@ -33,7 +33,7 @@
 #include <casacore/casa/Logging/LogFilter.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LoggerHolder::LoggerHolder (Bool nullSink)
 : itsRep (new LoggerHolderRep (nullSink))
@@ -353,5 +353,5 @@ LoggerHolderIterator& LoggerHolderIterator::operator=
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

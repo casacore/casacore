@@ -40,7 +40,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ISMBucket::ISMBucket (ISMBase* parent, const char* bucketStorage)
 : stmanPtr_p (parent),
@@ -613,5 +613,5 @@ void ISMBucket::show (ostream& os) const
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

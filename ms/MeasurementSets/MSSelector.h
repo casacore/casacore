@@ -38,7 +38,7 @@
 #include <casacore/ms/MeasurementSets/MSDerivedValues.h>
 #include <casacore/ms/MeasurementSets/MSSelectionKeywords.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> class ArrayColumn;
 class Record;
@@ -326,7 +326,7 @@ inline Table MSSelector::selectedTable() const {return selms_p;}
 inline Bool MSSelector::selected() const {return initSel_p;}
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

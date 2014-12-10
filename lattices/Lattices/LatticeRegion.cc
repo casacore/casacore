@@ -34,7 +34,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LatticeRegion::LatticeRegion()
 : itsRegion (0),
@@ -297,5 +297,5 @@ IPosition LatticeRegion::convert (const IPosition& position) const
     return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

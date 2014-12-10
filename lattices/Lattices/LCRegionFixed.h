@@ -33,7 +33,7 @@
 #include <casacore/lattices/Lattices/ArrayLattice.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Abstract base class to define a fixed region.
@@ -109,6 +109,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

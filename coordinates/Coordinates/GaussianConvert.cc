@@ -36,7 +36,7 @@
  
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 GaussianConvert::GaussianConvert()
 : itsValid(False)
@@ -411,5 +411,5 @@ void GaussianConvert::checkCoordinateSystem()
    }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

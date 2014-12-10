@@ -41,7 +41,7 @@
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Bool AppInfo::need_init_p = True;
 uInt AppInfo::tz_r = 0;
@@ -137,5 +137,5 @@ void AppInfo::init() {
   AlwaysAssert(tz >= -0.625 && tz <= 0.625, AipsError);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

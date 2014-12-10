@@ -32,7 +32,7 @@
 #include <casacore/tables/TaQL/ExprFuncNode.h>
 #include <casacore/tables/TaQL/ExprFuncNodeArray.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 // <summary>
@@ -158,6 +158,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

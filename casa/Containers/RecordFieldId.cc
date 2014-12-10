@@ -29,9 +29,9 @@
 
 #include <casacore/casa/Containers/RecordFieldId.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Everything is inlined
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

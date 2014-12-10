@@ -44,7 +44,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Table TableCopy::makeEmptyTable (const String& newName,
 				 const Record& dataManagerInfo,
@@ -195,5 +195,5 @@ void TableCopy::copySubTables (TableRecord& outKeys,
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -36,7 +36,7 @@
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class BaseColumnDesc;
@@ -343,6 +343,6 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

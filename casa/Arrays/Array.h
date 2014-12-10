@@ -42,7 +42,7 @@ WHATEVER_VECTOR_FORWARD_DEC;
 #include <casacore/casa/stdvector.h>
 #endif
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 //# Forward Declarations
 class AipsIO;
 class Slice;

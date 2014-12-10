@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/ms/MeasurementSets/MSSelection.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   Vector<Int> set_intersection(const Vector<Int>& v1, const Vector<Int>& v2);
   Vector<Int> set_union(const Vector<Int>& v1, const Vector<Int>& v2);

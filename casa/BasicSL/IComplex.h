@@ -34,7 +34,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Integer complex numbers.
@@ -74,6 +74,6 @@ ostream &operator<< (ostream &os, const IComplex&);
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

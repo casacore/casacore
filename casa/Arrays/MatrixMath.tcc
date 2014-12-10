@@ -32,7 +32,7 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
                                       // the vector dot/scalar/inner product
 template<class T> T innerProduct (const Vector<T> &A, const Vector<T> &B) {
@@ -166,5 +166,5 @@ Matrix<T> directProduct(const  Matrix<T> &A, const Matrix<T> &B) {
     return dpAB;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

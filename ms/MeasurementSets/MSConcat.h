@@ -34,7 +34,7 @@
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class TableDesc;
 class ROMSMainColumns;
@@ -196,7 +196,7 @@ Bool areEQ(const ROArrayColumn<T>& col, uInt row_i, uInt row_j)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

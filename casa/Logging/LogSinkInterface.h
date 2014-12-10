@@ -34,7 +34,7 @@
 #include <casacore/casa/Logging/LogFilterInterface.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //Accepts LogMessages and posts them to some destination
@@ -163,6 +163,6 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

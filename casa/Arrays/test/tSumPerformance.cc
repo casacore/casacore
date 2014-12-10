@@ -31,7 +31,7 @@
 #include <numeric>
 #include <functional>
 
-using namespace casa;
+using namespace casacore;
 
 // Inlining this function makes it almost 3 times slower.
 template<typename Result, typename Iter>

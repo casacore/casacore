@@ -34,7 +34,7 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Quanta/Quantum.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class Array;
@@ -245,7 +245,7 @@ Array<Int> operator /(const Array<Int> &in, Double f);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Quanta/QMath.tcc>

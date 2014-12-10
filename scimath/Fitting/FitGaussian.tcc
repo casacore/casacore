@@ -46,7 +46,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // The parameter chisqcriteria has been replaced with maximumRMS, which is
 // the square root of the average error-squared per pixel.
@@ -663,5 +663,5 @@ uInt FitGaussian<T>::countFreeParameters()
   return nfreepars;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

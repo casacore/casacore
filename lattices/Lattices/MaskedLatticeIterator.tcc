@@ -34,7 +34,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator()
@@ -150,5 +150,5 @@ Bool RO_MaskedLatticeIterator<T>::getMask (Array<Bool>& arr,
 				       removeDegenerateAxes);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

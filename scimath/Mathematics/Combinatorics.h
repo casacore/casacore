@@ -36,7 +36,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Combinatorics related functions.
@@ -88,7 +88,7 @@ class Combinatorics {
   static volatile uInt _factorialCacheSize; //# volatile for double checked lock
   static Mutex theirMutex;
 };
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

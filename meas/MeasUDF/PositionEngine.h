@@ -35,7 +35,7 @@
 #include <casacore/measures/Measures/MeasConvert.h>
 #include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Engine for TaQL UDF Position conversions

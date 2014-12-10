@@ -33,7 +33,7 @@
 #include <casacore/tables/Tables/TableProxy.h>
 #include <casacore/casa/HDF5/HDF5Group.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Attribute group for a HDF5 image.
@@ -124,6 +124,6 @@ private:
   Bool   itsCanWrite;   //# Can attributes be written?
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

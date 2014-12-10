@@ -39,7 +39,7 @@
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/DataType.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class LatticeExpr;
@@ -850,6 +850,6 @@ inline LatticeExprNode convertType(const LatticeExprNode& expr, const DComplex*)
 inline LatticeExprNode convertType(const LatticeExprNode& expr, const Bool*)
   { return toBool (expr); }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

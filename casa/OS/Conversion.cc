@@ -33,7 +33,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 size_t Conversion::boolToBit (void* to, const void* from,
                               size_t nvalues)
@@ -503,5 +503,5 @@ size_t Conversion::valueCopy (void* to, const void* from,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Utilities/Register.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 MDoppler::MDoppler() :
@@ -253,5 +253,5 @@ MDoppler::shiftFrequency(const Quantum<Vector<Double> > &freq) const {
   return Quantum<Vector<Double> >(tmp, freq.getFullUnit());
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

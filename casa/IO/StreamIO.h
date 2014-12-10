@@ -31,7 +31,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/ByteIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;
 
@@ -110,6 +110,6 @@ private:
   int itsSockDesc;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

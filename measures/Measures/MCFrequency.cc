@@ -33,7 +33,7 @@
 #include <casacore/measures/Measures/Aberration.h>
 #include <casacore/measures/Measures/MeasTable.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 uInt MCFrequency::ToRef_p[N_Routes][3] = {
@@ -364,5 +364,5 @@ void MCFrequency::doFillState (void*) {
   MCBase::makeState(FromTo_p[0], MFrequency::N_Types, N_Routes, ToRef_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -32,7 +32,7 @@
 #include <casacore/lattices/Lattices/LCBox.h>
 #include <casacore/lattices/Lattices/HDF5Lattice.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // Class to define a rectangular mask as a region
@@ -139,6 +139,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

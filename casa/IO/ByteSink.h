@@ -35,7 +35,7 @@
 //# forward declarations when Complex and DComplex are no longer typedefs.
 #include <casacore/casa/BasicSL/Complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class TypeIO;
 class String;
@@ -156,6 +156,6 @@ public:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

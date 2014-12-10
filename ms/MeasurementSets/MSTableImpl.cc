@@ -61,7 +61,7 @@
 
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void MSTableImpl::addMeasColumn(TableDesc& td, const String& column, 
 				const String& measure, const String& refCol) {
@@ -594,5 +594,5 @@ void MSTableImpl::init()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -48,7 +48,7 @@
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/stdio.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Bool isSDFitsColumn(FITS::ReservedName name) {
     if (name == FITS::AUTHOR || name == FITS::CDELT || name == FITS::CROTA ||
@@ -1042,5 +1042,5 @@ const Table &BinaryTable::nextRow()
     return (*currRowTab);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

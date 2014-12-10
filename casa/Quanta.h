@@ -37,7 +37,7 @@
 #include <casacore/casa/Quanta/QMath.h>
 #include <casacore/casa/Quanta/QLogical.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 // 
@@ -600,7 +600,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# class Quanta {};
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

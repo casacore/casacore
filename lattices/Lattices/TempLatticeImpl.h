@@ -36,7 +36,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Table;
@@ -240,7 +240,7 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/TempLatticeImpl.tcc>

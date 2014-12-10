@@ -40,7 +40,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDSysCalHandler::SDSysCalHandler() 
     : msSysCal_p(0), msSysCalCols_p(0), rownr_p(-1), nrecpt_p(0),
@@ -380,5 +380,5 @@ void SDSysCalHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 	handledCols(row.fieldNumber("SYSCAL_NUM_RECEPTORS")) = True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

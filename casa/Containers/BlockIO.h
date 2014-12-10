@@ -33,7 +33,7 @@
 //# Forward declarations.
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Block;
 class AipsIO;
@@ -140,7 +140,7 @@ inline void showBlock (AipsIO&, const Block<void*>&, Int)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/BlockIO.tcc>

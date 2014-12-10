@@ -31,7 +31,7 @@
 //# Includes
 #include <casacore/lattices/Lattices/LattRegionHolder.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class CoordinateSystem;
@@ -211,6 +211,6 @@ inline const WCRegion& ImageRegion::asWCRegion() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

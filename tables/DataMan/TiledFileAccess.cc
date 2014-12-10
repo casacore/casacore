@@ -37,7 +37,7 @@
 #include <casacore/casa/OS/HostInfo.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TiledFileAccess::TiledFileAccess (const String& fileName,
 				  Int64 fileOffset,
@@ -528,5 +528,5 @@ IPosition TiledFileAccess::makeTileShape (const IPosition& arrayShape,
   return tileShape;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

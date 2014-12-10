@@ -31,7 +31,7 @@
 #include <casacore/casa/Containers/List.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Input/output operators for Lists.
@@ -61,7 +61,7 @@ template<class t> ostream &operator<<(ostream &, const ConstListIter<t> &);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/ListIO.tcc>

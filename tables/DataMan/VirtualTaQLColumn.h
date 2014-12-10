@@ -33,7 +33,7 @@
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casa {
+namespace casacore {
 //# Forward Declarations
 class TableExprNode;
 
@@ -210,6 +210,6 @@ private:
 };
 
 
-} //end namespace casa
+} //end namespace casacore
 
 #endif

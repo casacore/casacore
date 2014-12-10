@@ -34,7 +34,7 @@
 #include <casacore/lattices/Lattices/LatticeIterInterface.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class IPosition;
@@ -519,7 +519,7 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 //# See comments in Lattice.h why Lattice.tcc is included here.
 #ifndef CASACORE_NO_AUTO_TEMPLATES

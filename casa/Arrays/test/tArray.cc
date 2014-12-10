@@ -293,7 +293,7 @@ void oldArrayTest()
 	Vector<Int> vi2(5), vi3;
 	vi2 = 0;
 	vi2(3) = -3;
-	vi3 = casa::min(vi1, vi2);
+	vi3 = casacore::min(vi1, vi2);
 	AlwaysAssertExit(vi3(0) == 0 && vi3(1) == 0 && vi3(2) == 0 && vi3(3) == -3 &&
 		vi3(4) == 0);
 	vi2(3) = 9;

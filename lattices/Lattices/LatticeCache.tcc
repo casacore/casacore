@@ -50,7 +50,7 @@
 #include <casacore/lattices/Lattices/LatticeCache.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LatticeCache<T>::LatticeCache(const LatticeCache<T> & other)
@@ -325,5 +325,5 @@ Int LatticeCache<T>::getFreeTile(Bool readonly) {
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -46,7 +46,7 @@
 #include <casacore/tables/LogTables/NewFile.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <typename T> void ImageUtilities::addDegenerateAxes(
 	LogIO& os, PtrHolder<ImageInterface<T> >& outImage,
@@ -289,5 +289,5 @@ CountedPtr<ImageInterface<T> > ImageUtilities::openImage
    return p;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

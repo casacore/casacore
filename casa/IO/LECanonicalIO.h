@@ -32,7 +32,7 @@
 #include <casacore/casa/IO/TypeIO.h>
 #include <casacore/casa/BasicSL/Complexfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class ByteIO;
 class String;
@@ -139,6 +139,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

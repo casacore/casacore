@@ -34,7 +34,7 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Data
 template <class T>
@@ -149,5 +149,5 @@ void AipsrcVector<T>::save(uInt keyword) {
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

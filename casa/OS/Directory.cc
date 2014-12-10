@@ -72,7 +72,7 @@
 #include <casacore/casa/stdio.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Directory::Directory()
 : File()                         // sets to working directory
@@ -513,5 +513,5 @@ Bool Directory::isNFSMounted() const
 
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

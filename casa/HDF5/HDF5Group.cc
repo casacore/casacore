@@ -29,7 +29,7 @@
 #include <casacore/casa/HDF5/HDF5Group.h>
 #include <casacore/casa/HDF5/HDF5Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifdef HAVE_HDF5
 

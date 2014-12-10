@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprData::~TableExprData()
 {}
@@ -101,4 +101,4 @@ Array<String>   TableExprData::getArrayString   (const Block<Int>&) const
   throw (AipsError ("TableExprData::getArrayString not implemented"));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

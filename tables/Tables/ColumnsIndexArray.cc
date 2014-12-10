@@ -41,7 +41,7 @@
 #include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ColumnsIndexArray::ColumnsIndexArray (const Table& table,
 				      const String& columnName)
@@ -654,5 +654,5 @@ void ColumnsIndexArray::fillRownrs (uInt npts, const Block<uInt>& nrel)
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

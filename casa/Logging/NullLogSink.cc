@@ -29,7 +29,7 @@
 #include <casacore/casa/Logging/NullLogSink.h>
 #include <casacore/casa/Logging/LogFilter.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 String NullLogSink::localId( ) {
     return String("NullLogSink");
@@ -82,5 +82,5 @@ Bool NullLogSink::postLocally(const LogMessage &message)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

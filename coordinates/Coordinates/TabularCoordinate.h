@@ -35,7 +35,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/coordinates/Coordinates/Coordinate.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class Domain, class Range> class Interpolate1D;
 template<class T> class Quantum;
@@ -309,7 +309,7 @@ private:
                                         const Vector<Double> &worldValues);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 
 #endif

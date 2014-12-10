@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/scimath/Functionals/ConstantNDParam.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ConstantNDParam<T>::ConstantNDParam(uInt m) :
@@ -51,5 +51,5 @@ ConstantNDParam<T>::operator=(const ConstantNDParam<T> &other) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

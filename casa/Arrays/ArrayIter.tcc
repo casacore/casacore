@@ -28,7 +28,7 @@
 #include <casacore/casa/Arrays/ArrayIter.h>
 #include <casacore/casa/Arrays/ArrayError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> ArrayIterator<T>::ArrayIterator(const Array<T> &a, uInt byDim)
 : ArrayPositionIterator(a.shape(), byDim),
@@ -148,4 +148,4 @@ template<class T> ArrayBase& ArrayIterator<T>::getArray()
     return array();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

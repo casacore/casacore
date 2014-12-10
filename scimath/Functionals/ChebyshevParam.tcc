@@ -35,7 +35,7 @@
 #include <casacore/casa/Containers/RecordInterface.h>
 #include <casacore/casa/Utilities/MUString.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class T>
@@ -397,5 +397,5 @@ void ChebyshevParamModeImpl<AutoDiffA<T> >::getMode(RecordInterface& out) const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

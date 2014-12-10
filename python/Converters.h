@@ -35,7 +35,7 @@
 #include <python/Converters/PycExcp.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 
@@ -59,8 +59,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Converters for the following Casacore classes exist:
 // <ul>
 //  <li> Scalars of basic data types like Bool, Int, Float, Complex.
-//  <li> casa::String and std::string.
-//  <li> casa::Vector and std::vector of any type which can be converted
+//  <li> casacore::String and std::string.
+//  <li> casacore::Vector and std::vector of any type which can be converted
 //       from a Python scalar, list, tuple, or 1-dim array. They are converted
 //       back to a Python list.
 //  <li> Record which is converted to/from a Python dict.
@@ -69,7 +69,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   <ul>
 //    <li> Scalar of any basic data type.
 //    <li> Record.
-//    <li> N-dim Array of any basic data type. A casa::Array can be
+//    <li> N-dim Array of any basic data type. A casacore::Array can be
 //         constructed from Python types like tuple, list, and array
 //         (numarray or numpy). A Py_None object results in an empty array.
 //         The conversion back is done to a Python array. The type (numarray
@@ -87,14 +87,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       to get or put data in a column of any type.
 //       It can be used by any Python binding to convert arrays. Class
 //       ValueHolder has functions to get or set the array.
-//  <li> casa::IPosition which can be converted
+//  <li> casacore::IPosition which can be converted
 //       from a Python scalar, list, tuple, or 1-dim array.
 //       It is converted back to a Python list.
 //       An IPosition object represents an array shape or position, so its
 //       values are reversed because of the different ordening of
 //       Casacore and Python arrays.
 //  <li> Exceptions, which are mapped to a Python <src>RuntimeError</src>
-//       exception. Only the <src>casa::IterError</src> exception is mapped
+//       exception. Only the <src>casacore::IterError</src> exception is mapped
 //       to a Python <src>StopIteration</src> exception.
 // </ul>
 // Elements in a numpy array are called array scalars. They do not have a python
@@ -109,6 +109,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // </module>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

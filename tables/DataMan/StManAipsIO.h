@@ -39,7 +39,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/IO/ByteIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward clarations
 class AipsIO;
@@ -499,6 +499,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

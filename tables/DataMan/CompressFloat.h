@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Array.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Virtual column engine to scale a table float array
@@ -367,6 +367,6 @@ inline Float CompressFloat::getOffset (uInt rownr)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

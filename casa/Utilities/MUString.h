@@ -36,7 +36,7 @@
 
 //# Forward Declarations
 #include <casacore/casa/iosfwd.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class Regex;
 template <class T> class Vector; 
@@ -418,6 +418,6 @@ ostream &operator<<(ostream &os, const MUString &in);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

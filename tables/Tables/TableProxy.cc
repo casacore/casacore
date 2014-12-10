@@ -65,7 +65,7 @@
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/stdio.h>                  // needed for sprintf
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 TableProxy::TableProxy()
@@ -3116,4 +3116,4 @@ IPosition TableProxy::fillAxes (const IPosition& ipos, Bool cOrder)
   return s;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

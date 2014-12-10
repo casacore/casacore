@@ -27,7 +27,7 @@
 
 #include<casacore/casa/Arrays/VectorIter.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> VectorIterator<T>::VectorIterator(Array<T> &a, uInt axis)
   : ArrayIterator<T>(a, IPosition(1,axis), True)
@@ -38,4 +38,4 @@ template<class T> VectorIterator<T>::VectorIterator(Array<T> &a, uInt axis)
     this->ap_p = vp;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

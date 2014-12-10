@@ -34,7 +34,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/DataType.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // A class representing an HDF5 data type.

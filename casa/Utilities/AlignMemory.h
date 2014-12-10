@@ -32,7 +32,7 @@
 #include <stddef.h>
 
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 // <summary>Referenced counted pointer for constant data</summary>
 // <use visibility=export>

@@ -34,7 +34,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class LoggerHolderRep;
@@ -578,6 +578,6 @@ inline LoggerHolder::const_iterator LoggerHolder::end() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

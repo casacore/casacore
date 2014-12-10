@@ -40,7 +40,7 @@
 #include <casacore/scimath/Functionals/FunctionTraits.h>
 #include <casacore/scimath/Mathematics/AutoDiff.h>
 
-namespace casa { // begin namespace casa
+namespace casacore { // begin namespace casa
 
 //# Forward declarations
 template <class T> class Array;
@@ -568,7 +568,7 @@ template<class T> class GenericL2Fit : public LSQaips {
 		       const typename FunctionTraits<T>::BaseType y);
 };
 
-} //# End namespace casa
+} //# End namespace casacore
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Fitting/GenericL2Fit.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES

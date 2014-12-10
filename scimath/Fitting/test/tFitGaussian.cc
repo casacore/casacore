@@ -33,30 +33,30 @@
 
 #include <casacore/casa/namespace.h>
 
-namespace casa {
+namespace casacore {
    template <class T> class Matrix;
    template <class T> class Vector;
 }
 
 void printfparameters(Function<Double> &f);
 void printparameters(Matrix<Double> &m);
-void createdata(casa::Matrix<casa::Double> &pos, casa::Vector<casa::Double> &f, Float range, uInt n,
-                casa::Matrix<casa::Double> &components);
+void createdata(casacore::Matrix<casacore::Double> &pos, casacore::Vector<casacore::Double> &f, Float range, uInt n,
+                casacore::Matrix<casacore::Double> &components);
 Int ipow(Int base, uInt power);
 
 
 int main()
 {
   Bool fail = 0;
-  casa::Matrix<casa::Double> pos;
-  casa::Vector<casa::Double> f;
+  casacore::Matrix<casacore::Double> pos;
+  casacore::Vector<casacore::Double> f;
 
-  casa::Matrix<casa::Double> components;
-  casa::Matrix<casa::Double> estimate;
-  casa::Matrix<casa::Double> retryfactors;
-  casa::Matrix<casa::Double> solution;
+  casacore::Matrix<casacore::Double> components;
+  casacore::Matrix<casacore::Double> estimate;
+  casacore::Matrix<casacore::Double> retryfactors;
+  casacore::Matrix<casacore::Double> solution;
 
-  FitGaussian<casa::Double> fitgauss;
+  FitGaussian<casacore::Double> fitgauss;
 
 
  
@@ -237,8 +237,8 @@ int main()
 }
 
 
-void createdata(casa::Matrix<casa::Double> &pos, casa::Vector<casa::Double> &f, Float range, uInt n,
-                casa::Matrix<casa::Double> &components)
+void createdata(casacore::Matrix<casacore::Double> &pos, casacore::Vector<casacore::Double> &f, Float range, uInt n,
+                casacore::Matrix<casacore::Double> &components)
 {
   uInt i = 0;
   uInt dim = components.ncolumn() / 3;
@@ -260,7 +260,7 @@ void createdata(casa::Matrix<casa::Double> &pos, casa::Vector<casa::Double> &f, 
     }
 
   //create the data
-  casa::Vector<casa::Double> curpos(dim);
+  casacore::Vector<casacore::Double> curpos(dim);
   curpos = -range;
   Float inc = 2.0 * range / (n-1);
   while(i < imax)

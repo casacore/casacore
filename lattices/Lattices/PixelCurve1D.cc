@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 PixelCurve1D::PixelCurve1D (double x1, double y1, double x2, double y2,
 			    uInt npoints)
@@ -188,5 +188,5 @@ void PixelCurve1D::getPixelCoord (Vector<float>& x, Vector<float>& y,
   }
 }  
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

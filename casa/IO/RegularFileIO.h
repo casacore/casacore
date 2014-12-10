@@ -34,7 +34,7 @@
 #include <casacore/casa/OS/RegularFile.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // Class for IO on a regular file.
@@ -121,6 +121,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

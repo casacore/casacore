@@ -30,7 +30,7 @@
 
 #include <set>
 
-using namespace casa;
+using namespace casacore;
 
 int main()
 {

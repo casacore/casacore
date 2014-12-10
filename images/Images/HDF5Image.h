@@ -36,7 +36,7 @@
 //# Forward Declarations
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // Read, store, and manipulate astronomical images in HDF5 format.
@@ -333,7 +333,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/images/Images/HDF5Image.tcc>

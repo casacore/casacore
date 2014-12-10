@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Utilities/Regex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Constructors
 MUString::MUString() :
@@ -516,5 +516,5 @@ ostream &operator<<(ostream &os, const MUString &in) {
   return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

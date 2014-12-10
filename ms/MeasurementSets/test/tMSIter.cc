@@ -43,7 +43,7 @@
 #include <iostream>
 #include <sstream>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 void createMS (int nant, int ntime, double msinterval)

@@ -63,7 +63,7 @@
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 const String CoordinateSystem::_class = "CoordinateSystem";
 
@@ -4837,4 +4837,4 @@ Bool CoordinateSystem::setRestFrequency (
 	return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

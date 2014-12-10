@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Options for the Tiled Storage Manager Access
@@ -158,6 +158,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Int    itsMaxCacheSize;
   };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

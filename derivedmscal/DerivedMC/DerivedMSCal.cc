@@ -43,7 +43,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa {
+namespace casacore {
 
 DerivedMSCal::DerivedMSCal()
 {}

@@ -36,7 +36,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Containers/IterError.h>
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 // The function which throws an exception for advancing the internal
 // cursor past the end of a list

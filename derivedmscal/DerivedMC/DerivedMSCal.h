@@ -32,7 +32,7 @@
 #include <casacore/derivedmscal/DerivedMC/MSCalEngine.h>
 #include <casacore/tables/DataMan/VirtColEng.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Virtual column engine to return derived MS values

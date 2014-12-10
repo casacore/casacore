@@ -33,7 +33,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCConcatenation::LCConcatenation()
 {}
@@ -301,5 +301,5 @@ IPosition LCConcatenation::doNiceCursorShape (uInt maxPixels) const
     return Lattice<Bool>::doNiceCursorShape (maxPixels);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

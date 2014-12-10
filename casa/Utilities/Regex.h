@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/RegexBase.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations.
 struct re_pattern_buffer;
@@ -342,6 +342,6 @@ extern const Regex RXalphanum;       //# = "[0-9A-Za-z]+"
 extern const Regex RXidentifier;     //# = "[A-Za-z_][A-Za-z0-9_]*"
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

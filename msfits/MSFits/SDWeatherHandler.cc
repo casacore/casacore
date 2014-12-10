@@ -39,7 +39,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDWeatherHandler::SDWeatherHandler() 
     : msWeather_p(0), msWeatherCols_p(0), rownr_p(-1), humidityId_p(-1),
@@ -414,5 +414,5 @@ void SDWeatherHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     rownr_p = -1;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

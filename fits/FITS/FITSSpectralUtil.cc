@@ -36,7 +36,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Bool FITSSpectralUtil::fromFITSHeader(Int &spectralAxis,
 				      Double &referenceChannel,
@@ -767,5 +767,5 @@ Double FITSSpectralUtil::refractiveIndex(const Double& lambda_um){
      return nOfLambda;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

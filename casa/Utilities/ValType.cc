@@ -31,7 +31,7 @@
 #include <casacore/casa/BasicSL/Constants.h>
 #include <limits.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# This is the implementation of the ValType class.
 //# Most functions are inlined in the header file.
@@ -506,5 +506,5 @@ CountedPtr<BaseCompare> ValType::getCmpObj (DataType dt)
     return CountedPtr<BaseCompare>();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

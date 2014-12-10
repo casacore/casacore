@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/scimath/Functionals/GNoiseParam.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 GNoiseParam<T>::GNoiseParam() :
@@ -57,5 +57,5 @@ GNoiseParam<T> &GNoiseParam<T>::operator=(const GNoiseParam<T> &other) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

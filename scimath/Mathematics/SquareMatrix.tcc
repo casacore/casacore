@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T, Int n> 
 SquareMatrix<T,n>& 
@@ -461,5 +461,5 @@ T& SquareMatrix<T,n>::throwInvAccess() {
     return a_p[0][0];
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

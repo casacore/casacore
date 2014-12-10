@@ -31,7 +31,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSWeatherColumns::ROMSWeatherColumns(const MSWeather& msWeather):
   isNull_p(True),
@@ -383,5 +383,5 @@ void MSWeatherColumns::attach(MSWeather& msWeather)
 // compile-command: "gmake MSWeatherColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

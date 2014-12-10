@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Logical valued Vectors.
@@ -81,6 +81,6 @@ typedef Vector<LogicalArrayElem> LogicalVector;
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

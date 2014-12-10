@@ -33,7 +33,7 @@
 #include <casacore/casa/Inputs/Param.h>
 #include <casacore/casa/Containers/List.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Vector;
 
@@ -357,7 +357,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

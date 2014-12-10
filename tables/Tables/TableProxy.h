@@ -39,7 +39,7 @@
 #include <casacore/casa/namespace.h>
 
 //# Forward Declarations
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class ValueHolder;
   class RecordFieldId;
   class Table;
@@ -743,6 +743,6 @@ private:
   Record calcResult_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

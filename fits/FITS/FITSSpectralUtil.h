@@ -34,7 +34,7 @@
 #include <casacore/measures/Measures/MDoppler.h>
 #include <casacore/measures/Measures/MFrequency.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class RecordInterface;
 class String;
@@ -223,6 +223,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

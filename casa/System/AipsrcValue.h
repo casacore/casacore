@@ -33,7 +33,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/System/Aipsrc.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class Unit;
@@ -274,7 +274,7 @@ private:
 #undef AipsrcValue_Bool
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/System/AipsrcValue.tcc>

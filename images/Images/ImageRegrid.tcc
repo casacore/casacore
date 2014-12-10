@@ -44,7 +44,7 @@
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/fstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ImageRegrid<T>::ImageRegrid()
@@ -2264,5 +2264,5 @@ void ImageRegrid<T>::set2DCoordinateGrid (const Cube<Double> &grid,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

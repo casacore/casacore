@@ -32,7 +32,7 @@
 #include <casacore/lattices/Lattices/LCRegionMulti.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Make the difference of 2 regions.
@@ -125,6 +125,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

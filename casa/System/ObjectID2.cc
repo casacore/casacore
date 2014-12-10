@@ -31,7 +31,7 @@
 #include <casacore/casa/stdio.h>                  // needed for sprintf
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 uInt hashFunc(const ObjectID &key)
 {
@@ -84,5 +84,5 @@ String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
     return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

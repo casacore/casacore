@@ -33,7 +33,7 @@
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SubTableDesc::SubTableDesc (const String& name, const String& comment,
 			    const String& descname, int opt)
@@ -216,5 +216,5 @@ void SubTableDesc::show (ostream& os) const
 PlainColumn* SubTableDesc::makeColumn (ColumnSet*) const
     { return 0; }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

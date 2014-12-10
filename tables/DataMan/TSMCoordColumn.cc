@@ -37,7 +37,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TSMCoordColumn::TSMCoordColumn (const TSMColumn& column, uInt axisNr)
 : TSMColumn (column),
@@ -229,5 +229,5 @@ TSMCOORDCOLUMN_GETPUT(double,doubleV)
 TSMCOORDCOLUMN_GETPUT(Complex,ComplexV)
 TSMCOORDCOLUMN_GETPUT(DComplex,DComplexV)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

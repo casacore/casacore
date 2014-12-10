@@ -36,7 +36,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define EXTBLSZ 32
 
@@ -517,5 +517,5 @@ void MSMColumn::putArrayPtr (uInt rownr, void* ptr)
   ((void**)(data_p[extnr])) [rownr-ncum_p[extnr-1]] = ptr;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

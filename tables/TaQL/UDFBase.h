@@ -37,7 +37,7 @@
 #include <casacore/casa/stdmap.h>
 
 
-namespace casa {
+namespace casacore {
 
   // <summary>
   // Abstract base class for a user-defined TaQL function

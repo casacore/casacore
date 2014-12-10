@@ -35,7 +35,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // traverse a tiled Lattice optimally with a tile cursor
@@ -285,6 +285,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

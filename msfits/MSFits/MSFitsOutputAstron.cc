@@ -63,7 +63,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 static String toFITSDate(const MVTime &time)
 {
@@ -2063,5 +2063,5 @@ Int MSFitsOutputAstron::makeIdMap (Block<Int>& map, Vector<Int>& selids,
   return nrid;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

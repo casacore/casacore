@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Enumeration of possible table vectors
@@ -211,7 +211,7 @@ inline TabVecTag TabVecRep<T>::getTag() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/Tables/TVec.tcc>

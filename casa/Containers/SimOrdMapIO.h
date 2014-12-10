@@ -32,7 +32,7 @@
 #include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Class declarations.
 class AipsIO;
@@ -57,7 +57,7 @@ ostream& operator<<(ostream&, const SimpleOrderedMap<K,V>&);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/SimOrdMapIO.tcc>

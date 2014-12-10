@@ -36,7 +36,7 @@
 //# forward declarations when Complex and DComplex are no longer typedefs.
 #include <casacore/casa/BasicSL/Complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class DataConversion;
 class ByteIO;
@@ -171,6 +171,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -32,7 +32,7 @@
 #include <casacore/scimath/Functionals/GaussianNDParam.h>
 #include <casacore/scimath/Functionals/Function.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -237,7 +237,7 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/GaussianND.tcc>

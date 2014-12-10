@@ -37,7 +37,7 @@
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/IO/FileLocker.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class LELScalar;
@@ -212,7 +212,7 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 //# There is a problem in including LELInterface.tcc, because it needs
 //# LELUnary.h which in its turn includes LELInterface.h again.

@@ -33,7 +33,7 @@
 #include <iostream>
 #include <sstream>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 void createTable()

@@ -34,7 +34,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 template<class T> Cube<T>::Cube()
 : Array<T>(IPosition(3, 0))

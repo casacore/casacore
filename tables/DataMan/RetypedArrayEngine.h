@@ -32,7 +32,7 @@
 #include <casacore/tables/DataMan/BaseMappedArrayEngine.h>
 #include <casacore/tables/Tables/TableRecord.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -593,7 +593,7 @@ public:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/DataMan/RetypedArrayEngine.tcc>

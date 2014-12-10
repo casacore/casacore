@@ -31,7 +31,7 @@
 #include <casacore/casa/Exceptions.h>
 #include <casacore/casa/iostream.h>
 
-using namespace casa;
+using namespace casacore;
 
 // <summary>
 // Test program for class Mutex.

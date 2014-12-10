@@ -1,4 +1,4 @@
-//# complex.h: import std complex functions into namespace casa
+//# complex.h: import std complex functions into namespace casacore
 //# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -40,7 +40,7 @@
 #endif
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 using std::real;
 using std::imag;
@@ -60,6 +60,6 @@ using std::sqrt;
 using std::polar;
 using std::pow;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Copy-On-Write-Pointer class - allows control of copy based on constness.
@@ -343,7 +343,7 @@ template <class T> inline Bool COWPtr<T>::isUnique() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Utilities/COWPtr.tcc>

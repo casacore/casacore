@@ -36,7 +36,7 @@
 #include <vector>
 using namespace std;
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# This header file defines the error handler class for the
   //# MSSelection module
@@ -99,7 +99,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       }
     }
   };
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 
 #endif

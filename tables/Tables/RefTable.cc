@@ -42,7 +42,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
 		    const TableLock& lockOptions, const TSMOption& tsmOption)
@@ -993,4 +993,4 @@ void RefTable::refNot (uInt nr, const uInt* inx, uInt nrtot)
     changed_p = True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

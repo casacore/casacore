@@ -28,7 +28,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/stdvector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 template<class U>
@@ -57,5 +57,5 @@ void Array<T>::tovector(vector<T, U> &out) const {
   this->freeStorage(stor, deleteIt);
 }  
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

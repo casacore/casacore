@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LatticeProgress.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class ProgressMeter;
 
@@ -93,7 +93,7 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

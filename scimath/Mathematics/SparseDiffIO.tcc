@@ -31,7 +31,7 @@
 #include <casacore/casa/vector.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<class T>
   ostream &operator<<(ostream &os, const SparseDiff<T> &ad) {
@@ -46,5 +46,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

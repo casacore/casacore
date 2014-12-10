@@ -32,7 +32,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ScalarRecordColumnDesc::ScalarRecordColumnDesc (const String& name)
 : BaseColumnDesc (name, "", "", "",
@@ -127,5 +127,5 @@ PlainColumn* ScalarRecordColumnDesc::makeColumn (ColumnSet* csp) const
     return new ScalarRecordColumnData (this, csp);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

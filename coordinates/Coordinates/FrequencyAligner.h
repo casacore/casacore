@@ -36,7 +36,7 @@
 #include <casacore/measures/Measures/MeasConvert.h>
 #include <casacore/scimath/Mathematics/InterpolateArray1D.h>
 
-namespace casa {
+namespace casacore {
 
 //# Forward Declarations
 class MEpoch;
@@ -201,7 +201,7 @@ private:
 };
 
 
-} //# End namespace casa
+} //# End namespace casacore
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/coordinates/Coordinates/FrequencyAligner.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES

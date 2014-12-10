@@ -35,7 +35,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ExtendImage<T>::ExtendImage()
@@ -264,5 +264,5 @@ void ExtendImage<T>::reopen()
   itsImagePtr->reopen();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

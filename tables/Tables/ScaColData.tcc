@@ -39,7 +39,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ScalarColumnData<T>::ScalarColumnData (const ScalarColumnDesc<T>* cd,
@@ -322,4 +322,4 @@ void ScalarColumnData<T>::getFileDerived (AipsIO& ios,
     createDataManagerColumn();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

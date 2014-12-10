@@ -38,7 +38,7 @@
 #include <casacore/measures/Measures/Precession.h>
 #include <casacore/measures/Measures/SolarPos.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Static data
 // Note: this static is not mutexed, because it does not harm if accidently
@@ -776,5 +776,5 @@ void MeasMath::getB1950(MVPosition &out) {
   out = infomvd_p[B1950DIR-N_FrameDInfo];
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

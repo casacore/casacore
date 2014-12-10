@@ -34,10 +34,10 @@ int main()
 {
   const size_t specsize=50;
   const int width=1;
-  casa::IPosition box(1,width);
-  casa::Vector<float> input(specsize);
+  casacore::IPosition box(1,width);
+  casacore::Vector<float> input(specsize);
   for(size_t i=0;i<specsize;i++) input[i]=i%5+(i/5)*0.01;
-  casa::Vector<float> medians = slidingArrayMath(input, box, casa::MedianFunc<float>(false,true,false));
+  casacore::Vector<float> medians = slidingArrayMath(input, box, casacore::MedianFunc<float>(false,true,false));
   std::cout << "Input = ";
   for(size_t i=0;i<specsize;i++) std::cout << input[i]<<" ";
   std::cout << "\nMedians = ";

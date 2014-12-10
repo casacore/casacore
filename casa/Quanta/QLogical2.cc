@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Bool QMakeBool(Int val) {
     return ((val));
@@ -41,5 +41,5 @@ Bool QMakeBool(const LogicalArray &val) {
     return (allAND(val, True));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

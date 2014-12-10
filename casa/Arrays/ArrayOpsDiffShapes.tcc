@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/ArrayError.h>
 //#include <casacore/casa/BasicSL/String.h>
 
-namespace casa {
+namespace casacore {
 
 template<typename T>
 LogicalArray reformedMask(const Array<T>& data, const T truthvalue,

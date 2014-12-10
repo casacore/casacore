@@ -32,7 +32,7 @@
 #include <unistd.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableLockData::TableLockData (const TableLock& lockOptions,
 			      TableLockData::ReleaseCallBack* releaseCallBack,
@@ -138,5 +138,5 @@ void TableLockData::release (Bool always)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

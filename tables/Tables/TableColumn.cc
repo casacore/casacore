@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/Array.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableColumn::TableColumn ()
 : baseTabPtr_p     (0),
@@ -381,5 +381,5 @@ Bool TableColumn::hasContent (uInt rownr) const
   return retval;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

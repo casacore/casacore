@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TiledFileHelper::TiledFileHelper (const String& fileName,
 				  const IPosition& shape,
@@ -134,5 +134,5 @@ void TiledFileHelper::readHeader (uInt, Bool)
   throw AipsError ("TileFileHelper::readHeader - not implemented");
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

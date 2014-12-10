@@ -34,7 +34,7 @@
 #include <casacore/casa/IO/LockFile.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // Class to hold table lock options.
@@ -203,6 +203,6 @@ inline uInt TableLock::maxWait() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

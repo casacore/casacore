@@ -30,7 +30,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TypeIO::TypeIO (ByteIO* byteIO, Bool takeOver)
 : itsByteIO(byteIO, takeOver) 
@@ -193,5 +193,5 @@ size_t TypeIO::read (size_t nvalues, String* str) {
     return n;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

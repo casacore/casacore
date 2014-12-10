@@ -34,7 +34,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa {
+namespace casacore {
 
   class CasaErrorTools
   {
@@ -47,6 +47,6 @@ namespace casa {
 
   };
 
-} //# end namespace casa
+} //# end namespace casacore
 
 #endif

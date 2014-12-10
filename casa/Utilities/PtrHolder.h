@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Hold and delete pointers not deleted by object destructors
@@ -255,7 +255,7 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Utilities/PtrHolder.tcc>

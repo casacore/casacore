@@ -36,7 +36,7 @@
 #include <casacore/casa/Containers/RecordDesc.h>
 #include <casacore/casa/Containers/RecordInterface.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class AipsIO;
@@ -327,6 +327,6 @@ inline void RecordRep::renameField (const String& newName, Int whichField)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

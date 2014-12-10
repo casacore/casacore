@@ -60,7 +60,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FITSImage::FITSImage (const String& name, uInt whichRep, uInt whichHDU)
 : ImageInterface<Float>(),
@@ -840,5 +840,5 @@ void FITSImage::setMaskZero(Bool filterZero)
 	filterZeroMask_p = filterZero;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

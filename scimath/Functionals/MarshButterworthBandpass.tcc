@@ -29,7 +29,7 @@
 #include <casacore/scimath/Functionals/MarshButterworthBandpass.h>
 #include <casacore/casa/Arrays/Array.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 const String MarshButterworthBandpass<T>::FUNCTYPE("butterworthbp");
@@ -90,5 +90,5 @@ MarshButterworthBandpass<T>::MarshButterworthBandpass(const Record& gr)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

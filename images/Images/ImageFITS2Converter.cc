@@ -72,7 +72,7 @@
 #include <casacore/casa/iomanip.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 const String ImageFITSConverter::CASAMBM = "casambm";
 
@@ -964,8 +964,8 @@ Bool ImageFITSConverter::ImageToFITSOut(
 		}
 		// Make sure bscale does not come out to be zero
 
-		if (::casa::near(minPix, maxPix)) {
-			if (::casa::near(Float(0.0), maxPix)) {
+		if (::casacore::near(minPix, maxPix)) {
+			if (::casacore::near(Float(0.0), maxPix)) {
 				maxPix = 1.0;
 			} else {
 				maxPix = maxPix + 0.01*maxPix;
@@ -1678,5 +1678,5 @@ Bool ImageFITSConverter::openFitsOutput(String &error, FitsOutput *(&fitsOut),
 	}
 	return True;
 }
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

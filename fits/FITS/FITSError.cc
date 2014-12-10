@@ -31,7 +31,7 @@
 
 #include <casacore/casa/Logging/LogIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void FITSError::defaultHandler(const char *errMessage, 
 				      ErrorLevel severity)
@@ -48,5 +48,5 @@ void FITSError::defaultHandler(const char *errMessage,
     os << LogIO::POST;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

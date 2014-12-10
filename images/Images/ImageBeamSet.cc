@@ -34,7 +34,7 @@
 
 #include <iomanip>
 
-namespace casa {
+namespace casacore {
 
 const String ImageBeamSet::_DEFAULT_AREA_UNIT = "arcsec2";
 

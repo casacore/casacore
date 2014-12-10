@@ -32,7 +32,7 @@
 # include <casacore/casa/string.h>
 # include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // using cfitsio of NASA
 // can't use "" to replace <>.
@@ -1375,5 +1375,5 @@ FitsInput::FitsInput(FITSErrorHandler errhandler) :
             errhandler))) {
     init();
 }
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -33,7 +33,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 
-namespace casa {//# NAMESPACE CASA - BEGIN 
+namespace casacore {//# NAMESPACE CASACORE - BEGIN 
 
 //# Forward declarations
 class RFReader;

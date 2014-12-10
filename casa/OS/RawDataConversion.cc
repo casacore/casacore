@@ -29,7 +29,7 @@
 #include <casacore/casa/OS/RawDataConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RawDataConversion::~RawDataConversion()
 {}
@@ -80,5 +80,5 @@ RAWDATACONVERSION_DOIT(uInt64)
 RAWDATACONVERSION_DOIT(float)
 RAWDATACONVERSION_DOIT(double)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

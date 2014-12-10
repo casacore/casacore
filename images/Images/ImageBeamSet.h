@@ -32,7 +32,7 @@
 //#include <casacore/measures/Measures/Stokes.h>
 //#include <map>
 
-namespace casa {
+namespace casacore {
 
 class SpectralCoordinate;
 

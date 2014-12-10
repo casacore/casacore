@@ -38,7 +38,7 @@
 #include <casacore/casa/Quanta/MVPosition.h>
 #include <casacore/measures/Measures/MDirection.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MVRadialVelocity;
@@ -259,6 +259,6 @@ class MeasComet {
 //# Inline Implementations
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

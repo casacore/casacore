@@ -34,7 +34,7 @@
 #include <casacore/measures/Measures/MeasIERS.h>
 #include <casacore/measures/Measures/MeasTable.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 const Double Nutation::INTV = 0.04;
@@ -508,5 +508,5 @@ void Nutation::calcNut(Double time, Bool calcDer) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

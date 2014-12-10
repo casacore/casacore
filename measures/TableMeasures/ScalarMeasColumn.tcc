@@ -40,7 +40,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class M>
 ScalarMeasColumn<M>::ScalarMeasColumn()
@@ -379,4 +379,4 @@ Bool ScalarMeasColumn<M>::equalRefs (const MRBase& r1, const MRBase& r2) const
   return ((r1.getType() == r2.getType()) && (r1.offset() == r2.offset()));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

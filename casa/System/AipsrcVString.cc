@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Data
 AipsrcVector<String> AipsrcVector<String>::myp_p;
@@ -104,5 +104,5 @@ void AipsrcVector<String>::save(uInt keyword) {
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

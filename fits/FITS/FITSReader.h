@@ -37,7 +37,7 @@
 # include <casacore/casa/namespace.h>
 # include <casacore/casa/Arrays/Vector.h>
 
-namespace casa {
+namespace casacore {
 
 class FITSReader {
 

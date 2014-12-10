@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/RecordTransformable.h>
 #include <casacore/casa/BasicSL/Complexfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class QBase;
@@ -244,6 +244,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

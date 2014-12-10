@@ -29,7 +29,7 @@
 #include <casacore/scimath/Mathematics/AutoDiffIO.h>
 #include <casacore/scimath/Functionals/Function.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 // Default convergence criterium
@@ -85,5 +85,5 @@ void NonLinearFit<T>::setMaxIter(uInt maxIter) {
   curiter_p = (curiter_p > maxiter_p ? maxiter_p : curiter_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

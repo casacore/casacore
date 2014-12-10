@@ -40,7 +40,7 @@
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNode* MSCorrParse::node_p = 0x0;
 
@@ -136,4 +136,4 @@ const TableExprNode* MSCorrParse::node()
     return node_p;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

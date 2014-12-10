@@ -32,7 +32,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Quanta/MVTime.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -100,6 +100,6 @@ Double tableGramParseTime (const String& in);
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -42,7 +42,7 @@
 #include <vector>
 #include <limits>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TableExprNodeSet;
@@ -828,6 +828,6 @@ inline Sort::Order TableParseSelect::getOrder (const TableParseSort& key) const
   { return (key.orderGiven()  ?  key.order() : order_p); }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

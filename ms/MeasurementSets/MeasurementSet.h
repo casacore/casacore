@@ -52,7 +52,7 @@
 #include <set>
 
  
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MrsEligibility { // Memory Resident Subtable (Mrs) Eligibility (no pun intended)
 
@@ -481,6 +481,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

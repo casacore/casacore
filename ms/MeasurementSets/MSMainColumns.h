@@ -39,7 +39,7 @@
 #include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
 #include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MeasurementSet;
 class String;
@@ -609,7 +609,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

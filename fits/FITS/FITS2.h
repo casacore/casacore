@@ -34,7 +34,7 @@
 #include <casacore/casa/Containers/Map.h>
 #include <casacore/fits/FITS/hdu.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;        // Forward declaration
 
@@ -61,7 +61,7 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
               String *objectName);
 //</group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/fits/FITS/FITS2.tcc>

@@ -38,7 +38,7 @@
 #include <utility>
 #include <vector>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
  
@@ -989,7 +989,7 @@ class LSQFit {
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Fitting/LSQFit2.tcc>

@@ -40,7 +40,7 @@
 #include <casacore/casa/Utilities/ValTypeId.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class S, class T>
 ScaledArrayEngine<S,T>::ScaledArrayEngine (const String& virtualColumnName,
@@ -434,5 +434,5 @@ void ScaledArrayEngine<S,T>::putColumnSlice (const Slicer& slicer,
     column().putColumn (slicer, target);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

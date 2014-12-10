@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicMath/Functors.h>
 
-namespace casa {
+namespace casacore {
 
   // Arbitrary compare operation on two STL-style containers.
   // It returns True if containers have equal size and
@@ -55,7 +55,7 @@ namespace casa {
     { return compareAll (l, r, NearAbs<U>(tolerance)); }
 
 
-} //# end namespace casa
+} //# end namespace casacore
 
 
 //# #ifndef CASACORE_NO_AUTO_TEMPLATES

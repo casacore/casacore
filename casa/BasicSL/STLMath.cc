@@ -30,7 +30,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void throwContainerSizes (const char* name, size_t l1, size_t l2)
   {
@@ -40,4 +40,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
                      String::toString(l2) + ')');
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

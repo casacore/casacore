@@ -31,7 +31,7 @@
 #include <casacore/scimath/Functionals/Function1D.h>
 #include <casacore/casa/Containers/Block.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class Range> class SampledFunctional;
 
@@ -221,7 +221,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/Interpolate1D.tcc>

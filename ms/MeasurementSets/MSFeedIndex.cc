@@ -38,7 +38,7 @@
 #include <casacore/casa/Quanta/QLogical.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSFeedIndex::MSFeedIndex() 
     : MSTableIndex(), msFeedCols_p(0)
@@ -180,5 +180,5 @@ Vector<Int> MSFeedIndex::matchAntennaId (const Int& antennaId,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

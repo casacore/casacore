@@ -40,7 +40,7 @@
 #include <casacore/casa/Arrays/MatrixMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // MVDirection class
 
@@ -398,5 +398,5 @@ MVDirection operator*(const MVDirection &left, const RotMatrix &right) {
   return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

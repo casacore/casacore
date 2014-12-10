@@ -42,7 +42,7 @@
 #include <casacore/casa/OS/Timer.h>
 #include <iostream>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 void check (MSDerivedValues& mdv,

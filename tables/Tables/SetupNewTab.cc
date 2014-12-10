@@ -38,7 +38,7 @@
 #include <casacore/casa/OS/File.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SetupNewTable::SetupNewTable (const String& tableName,
 			      const String& tableDescName,
@@ -345,5 +345,5 @@ void SetupNewTableRep::setShapeColumn (const String& columnName,
     col->setShapeColumn (shape);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

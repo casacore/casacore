@@ -35,7 +35,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Traverse a Lattice by cursor shape
@@ -476,6 +476,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

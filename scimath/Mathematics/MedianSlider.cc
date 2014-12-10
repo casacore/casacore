@@ -3,7 +3,7 @@
 #include <stdlib.h>    
 #include <cstring>                  //# for memcpy with gcc-4.3
     
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MedianSlider::MedianSlider () 
   : buf(0),index(0),valid(0)
@@ -193,5 +193,5 @@ Bool MedianSlider::assure ()
   return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

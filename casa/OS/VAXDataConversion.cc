@@ -30,7 +30,7 @@
 #include <casacore/casa/OS/VAXConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 VAXDataConversion::~VAXDataConversion()
 {}
@@ -400,5 +400,5 @@ unsigned int VAXDataConversion::externalSize (const double*) const
     return SIZE_VAX_DOUBLE;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

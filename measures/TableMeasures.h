@@ -38,7 +38,7 @@
 #include <casacore/measures/TableMeasures/TableMeasValueDesc.h>
 #include <casacore/measures/TableMeasures/TableQuantumDesc.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module> 
 
@@ -140,6 +140,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

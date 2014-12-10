@@ -37,7 +37,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <vector>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TaQLNodeHRValue;
@@ -309,6 +309,6 @@ inline const TaQLNodeHRValue& TaQLNodeHandler::getHR (const TaQLNodeResult& res)
 
   
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

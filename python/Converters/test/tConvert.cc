@@ -36,7 +36,7 @@
 
 using namespace boost::python;
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
   template<typename T>
   std::ostream& operator<< (std::ostream& os, const std::vector<T>& vec)
@@ -126,13 +126,13 @@ namespace casa { namespace python {
 BOOST_PYTHON_MODULE(_tConvert)
 {
   // Register the required converters.
-  casa::python::register_convert_excp();
-  casa::python::register_convert_basicdata();
-  casa::python::register_convert_casa_valueholder();
-  casa::python::register_convert_casa_record();
-  casa::python::register_convert_std_vector<casa::uInt>();
-  casa::python::register_convert_std_vector<std::vector<casa::uInt> >();
+  casacore::python::register_convert_excp();
+  casacore::python::register_convert_basicdata();
+  casacore::python::register_convert_casa_valueholder();
+  casacore::python::register_convert_casa_record();
+  casacore::python::register_convert_std_vector<casacore::uInt>();
+  casacore::python::register_convert_std_vector<std::vector<casacore::uInt> >();
 
   // Execute the test.
-  casa::python::testConvert();
+  casacore::python::testConvert();
 }

@@ -35,7 +35,7 @@
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# This is the implementation of the class TableDesc.
 //#
@@ -697,5 +697,5 @@ void TableDesc::renameHypercolumn (const String& newHypercolumnName,
     
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

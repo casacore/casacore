@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 MBaseline::MBaseline() :
@@ -311,5 +311,5 @@ Measure *MBaseline::clone() const {
     return (new MBaseline(*this));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

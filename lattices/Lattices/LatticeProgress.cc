@@ -30,7 +30,7 @@
 #include <casacore/lattices/Lattices/LatticeProgress.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LatticeProgress::~LatticeProgress()
 {}
@@ -50,5 +50,5 @@ void LatticeProgress::nstepsDone (uInt)
 void LatticeProgress::done()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

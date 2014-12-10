@@ -42,7 +42,7 @@
 #include <casacore/casa/fstream.h>
 #include <casacore/casa/sstream.h>           // needed for internal IO
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Take care that a uChar is printed numerically, not as a letter.
 inline void ArrayIO_printValue (ostream& s, const uChar& v)
@@ -704,5 +704,5 @@ Bool readArrayBlock(istream &s, Bool &trans,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

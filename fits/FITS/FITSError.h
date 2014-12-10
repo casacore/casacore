@@ -32,7 +32,7 @@
 //#! Includes go here
 #include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // default FITS error handling function, typdef, and enumeration
@@ -113,7 +113,7 @@ typedef void (*FITSErrorHandler) (const char* errMessage,
 
  
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

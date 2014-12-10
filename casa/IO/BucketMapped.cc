@@ -31,7 +31,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <cstring>   //# for memset
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   BucketMapped::BucketMapped (BucketFile* file, Int64 startOffset,
@@ -91,4 +91,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

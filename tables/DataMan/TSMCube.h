@@ -37,7 +37,7 @@
 #include <casacore/casa/OS/Conversion.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class TiledStMan;
@@ -471,6 +471,6 @@ inline void TSMCube::setLastColSlice (const IPosition& slice)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

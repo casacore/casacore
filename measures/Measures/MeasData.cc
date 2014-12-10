@@ -32,7 +32,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 const Double MeasData::MJD2000 =   51544.5;
@@ -228,5 +228,5 @@ Double MeasData::eps0J2000() {
   return data;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

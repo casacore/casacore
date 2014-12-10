@@ -34,7 +34,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Param::Param()			// default constructor; doesn't do anything
 {}
@@ -306,5 +306,5 @@ AipsIO & operator>> (AipsIO &os, Param& p) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

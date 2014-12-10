@@ -28,7 +28,7 @@
 #ifndef MS_MSTIMEDEFINITIONS_H
 #define MS_MSTIMEDEFINITIONS_H
 
-namespace casa{
+namespace casacore{
 
   typedef struct TimeFields{
     Int year,month,day,hour,minute,sec,fsec;

@@ -39,7 +39,7 @@
 #include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/Utilities/Regex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSField::MSField():hasBeenDestroyed_p(True) { }
 
@@ -259,5 +259,5 @@ Bool MSField::removeEphemeris(const uInt id){
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

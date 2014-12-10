@@ -39,7 +39,7 @@
 #include <casacore/casa/Quanta/MVDirection.h>
 #include <casacore/casa/Quanta/QMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 MEarthMagnetic::MEarthMagnetic() :
@@ -321,5 +321,5 @@ Measure *MEarthMagnetic::clone() const {
     return (new MEarthMagnetic(*this));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

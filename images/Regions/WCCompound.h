@@ -33,7 +33,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class ImageRegion;
@@ -159,6 +159,6 @@ inline const PtrBlock<const WCRegion*>& WCCompound::regions() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

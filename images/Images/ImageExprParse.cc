@@ -46,7 +46,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Define pointer blocks holding temporary lattices and regions.
 static const Block<LatticeExprNode>* theTempLattices;
@@ -870,5 +870,5 @@ LatticeExprNode ImageExprParse::makeRegionNode() const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

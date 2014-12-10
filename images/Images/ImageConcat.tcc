@@ -55,7 +55,7 @@
 #include <casacore/lattices/Lattices/LELCoordinates.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ImageConcat<T>::ImageConcat()
@@ -865,5 +865,5 @@ IPosition ImageConcat<T>::shape() const
   return latticeConcat_p.shape();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

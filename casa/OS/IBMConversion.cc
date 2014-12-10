@@ -31,7 +31,7 @@
 #include <assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 static char fromEBCDIC[256] = {
     0  ,1  ,2  ,3  ,0  ,9  ,0  ,127,0  ,0  ,0  ,11,12,13,14,15,
@@ -377,5 +377,5 @@ void IBMConversion::fromLocal (void* to, const double* from,
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

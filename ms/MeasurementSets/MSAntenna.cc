@@ -38,7 +38,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSAntenna::MSAntenna():hasBeenDestroyed_p(True) { }
 
@@ -199,5 +199,5 @@ MSAntenna MSAntenna::referenceCopy(const String& newTableName,
 		     referenceCopy(newTableName,writableColumns));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

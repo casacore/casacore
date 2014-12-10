@@ -33,7 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward declarations
   template <class T> class SparseDiff;
@@ -64,7 +64,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Mathematics/SparseDiffIO.tcc>

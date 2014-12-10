@@ -33,7 +33,7 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 IPosition::IPosition (uInt length)
 : size_p (length),
@@ -1162,5 +1162,5 @@ void IPosition::throwIndexError() const
     throw(AipsError("IPosition::operator() - index error"));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

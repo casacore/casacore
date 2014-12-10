@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 ValueHolder::ValueHolder (Bool value)
@@ -132,4 +132,4 @@ ValueHolder& ValueHolder::operator= (const ValueHolder& that)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

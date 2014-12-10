@@ -59,7 +59,7 @@
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //
 // Constructor assigns pointer.  If MS goes out of scope you
@@ -2081,5 +2081,5 @@ void MSSummary::clearFlags(LogIO& os) const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

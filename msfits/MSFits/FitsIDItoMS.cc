@@ -103,7 +103,7 @@
 
 #include <casacore/casa/iomanip.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //local debug switch 
 int mydebug = 0;
@@ -3045,5 +3045,5 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -36,7 +36,7 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCEllipsoid::LCEllipsoid()
 {}
@@ -475,5 +475,5 @@ void LCEllipsoid::_defineMask2D() {
 	setMask (mask);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

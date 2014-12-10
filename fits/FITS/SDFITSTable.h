@@ -34,7 +34,7 @@
 #include <casacore/fits/FITS/FITSTable.h>
 #include <casacore/casa/Containers/Block.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // SDFITSTable is a FITSTable which follows the Single Dish FITS Convention.
@@ -133,7 +133,7 @@ private:
     SDFITSTable &operator=(const SDFITSTable &);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

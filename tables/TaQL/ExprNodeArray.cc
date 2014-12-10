@@ -37,7 +37,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNodeArray::TableExprNodeArray (NodeDataType dtype, OperType otype)
 : TableExprNodeBinary (dtype, VTArray, otype, Table())
@@ -1406,5 +1406,5 @@ Array<String>   TableExprNodeArrayPart::getColumnString (const Vector<uInt>& row
     return colNode_p->getElemColumnString (rownrs, indexNode_p->getSlicer(0));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

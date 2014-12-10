@@ -34,7 +34,7 @@
 #include <casacore/casa/fstream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableInfo::TableInfo()
 : writeIt_p (True)
@@ -200,5 +200,5 @@ String TableInfo::subType(Type tableType)
     };
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -33,7 +33,7 @@
 #include <casacore/images/Regions/WCBox.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Combine multiple ImageRegion's into a new dimension.
@@ -165,6 +165,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

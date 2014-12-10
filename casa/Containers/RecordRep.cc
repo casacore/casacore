@@ -38,7 +38,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <cstring>                  //# for memmove with gcc-4.3
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Tweaked for SUN NTV compiler.  Added the const_cast<void*> to give a hint to the Solaris compiler.
 
@@ -1409,5 +1409,5 @@ void RecordRep::getArrayKeys (AipsIO& os)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -35,7 +35,7 @@
 #include <casacore/tables/Tables/ColumnSet.h>
 #include <casacore/tables/Tables/TableRecord.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TableAttr;
@@ -199,6 +199,6 @@ inline void PlainColumn::autoReleaseLock() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

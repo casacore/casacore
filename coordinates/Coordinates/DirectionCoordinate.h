@@ -43,7 +43,7 @@ struct celprm;
 struct prjprm;
 struct wcsprm;
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MVDirection;
 class MVAngle;
@@ -722,7 +722,7 @@ private:
                                        const Quantity& longitudePixelIncrement);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 
 #endif

@@ -33,7 +33,7 @@
 #include <casacore/scimath/Functionals/SimButterworthBandpass.h>
 #include <casacore/scimath/Functionals/FunctionMarshallable.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -162,7 +162,7 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/MarshButterworthBandpass.tcc>

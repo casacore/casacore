@@ -35,7 +35,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableMeasColumn::TableMeasColumn()
 : itsNvals      (0),
@@ -114,4 +114,4 @@ Bool TableMeasColumn::isScalar() const
   return False;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

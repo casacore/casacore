@@ -47,7 +47,7 @@ extern "C" {
 
 #include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 /* Maximum number of duplicates an interval can allow. */
 /* Has been changed to copy from the limits.h file
@@ -302,6 +302,6 @@ extern int re_exec ();
 #endif
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif /* !__REGEXP_LIBRARY */

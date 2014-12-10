@@ -68,7 +68,7 @@
 #include <casacore/tables/TaQL.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 
@@ -1780,6 +1780,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

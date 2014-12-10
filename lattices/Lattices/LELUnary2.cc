@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h> 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELUnaryBool::LELUnaryBool(const LELUnaryEnums::Operation op,
 			   const CountedPtr<LELInterface<Bool> >& pExpr)
@@ -124,5 +124,5 @@ void LELUnaryBool::resync()
     pExpr_p->resync();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/lattices/Lattices/Lattice.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TiledFileAccess;
@@ -174,6 +174,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

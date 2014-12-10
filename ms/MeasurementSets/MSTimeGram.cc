@@ -56,7 +56,7 @@ int MSTimeGramwrap()
   return 1;
 }
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //# Declare a file global pointer to a char* for the input string.
   static const char*           strpMSTimeGram = 0;
@@ -266,4 +266,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     tf.fsec = fsec;
   }
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

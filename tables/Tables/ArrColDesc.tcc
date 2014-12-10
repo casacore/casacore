@@ -35,7 +35,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
@@ -247,5 +247,5 @@ PlainColumn* ArrayColumnDesc<T>::makeColumn (ColumnSet* csp) const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

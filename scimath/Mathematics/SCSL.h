@@ -32,7 +32,7 @@
 #include <casacore/casa/BasicSL/Complex.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>C++ Interface to the Sgi/Cray Scientific Library (SCSL)</summary>
 // <synopsis>
@@ -2217,6 +2217,6 @@ static void zdfft3d(Int isign, Int n1, Int n2, Int n3, Double scale,
 // </group>
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

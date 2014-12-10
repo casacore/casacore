@@ -37,7 +37,7 @@
 #include <dirent.h>                          // needed for DIR
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>  
 // Traverse the contents of a directory
@@ -178,6 +178,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

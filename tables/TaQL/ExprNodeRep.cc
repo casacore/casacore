@@ -42,7 +42,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // The constructor to be used by the derived classes.
 TableExprNodeRep::TableExprNodeRep (NodeDataType dtype, ValueType vtype,
@@ -1256,4 +1256,4 @@ String TableExprNodeRep::typeString (ValueType type)
   throw AipsError("TableExprNodeRep::typeString ValueType");
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

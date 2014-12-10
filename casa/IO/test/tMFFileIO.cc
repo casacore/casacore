@@ -36,7 +36,7 @@
 #include <iostream>
 #include <stdexcept>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 void showMultiFile (MultiFile& mfile)

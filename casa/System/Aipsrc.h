@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 template <class T> class AipsrcValue;
@@ -433,7 +433,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

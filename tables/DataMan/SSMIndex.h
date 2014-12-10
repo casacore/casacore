@@ -33,7 +33,7 @@
 #include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class SSMBase;
@@ -180,6 +180,6 @@ inline uInt SSMIndex::getRowsPerBucket() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -36,7 +36,7 @@
 #include <casacore/measures/Measures/EarthField.h>
 #include <casacore/casa/Quanta/MVEarthMagnetic.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MeasFrame;
@@ -265,6 +265,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 template <class T>
@@ -258,5 +258,5 @@ template <class T> void AutoDiff<T>::derivatives(Vector<T> &res) const {
   res = rep_p->grad_p;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

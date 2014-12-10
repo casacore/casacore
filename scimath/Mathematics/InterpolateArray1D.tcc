@@ -36,7 +36,7 @@
 #include <casacore/casa/Utilities/GenSort.h>
 #include <limits>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout, 
@@ -858,5 +858,5 @@ void InterpolateArray1D<Domain,Range>::polynomialInterpolation
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

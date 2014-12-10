@@ -34,7 +34,7 @@
 #include <casacore/scimath/Fitting/LinearFit.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // Fit every line of pixels parallel to any axis in a Lattice.
@@ -121,6 +121,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

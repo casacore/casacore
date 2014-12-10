@@ -25,7 +25,7 @@
 #include <unistd.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // HostInfo for BSD (FreeBSD) machines.
@@ -116,7 +116,7 @@ void HostMachineInfo::update_info( ) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 # endif
 #endif

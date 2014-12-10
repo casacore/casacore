@@ -34,7 +34,7 @@
 #include <casacore/tables/Tables/BaseTable.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class indicating a null Table object
@@ -153,6 +153,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

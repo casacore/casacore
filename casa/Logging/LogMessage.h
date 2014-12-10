@@ -34,7 +34,7 @@
 #include <casacore/casa/OS/Time.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Informational log messages with with time, priority, and origin.
@@ -226,6 +226,6 @@ ostream &operator<<(ostream &os, const LogMessage &message);
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

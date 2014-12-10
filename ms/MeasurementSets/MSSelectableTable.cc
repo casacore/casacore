@@ -31,7 +31,7 @@
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/ostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MSInterface::MSInterface(const Table& table)
     :MSSelectableTable(table), msMainCols_p(NULL)
@@ -41,5 +41,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //   :MSSelectableTable(ms) 
   // {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

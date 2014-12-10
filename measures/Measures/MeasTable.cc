@@ -53,7 +53,7 @@
 #include <casacore/casa/System/AipsrcValue.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifndef CASADATA
 #define CASADATA "/usr/local"
@@ -4496,5 +4496,5 @@ Double MeasTable::dUT1(Double utc) {
   return res;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -37,7 +37,7 @@
 #include <casacore/casa/Containers/Record.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ForwardColumnIndexedRowEngine::ForwardColumnIndexedRowEngine
                                            (const String& dataManagerName,
@@ -259,5 +259,5 @@ FORWARDCOLUMNINDEXEDROW_GETPUT(DComplex,DComplexV)
 FORWARDCOLUMNINDEXEDROW_GETPUT(String,StringV)
 FORWARDCOLUMNINDEXEDROW_GETPUT(void,OtherV)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

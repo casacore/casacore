@@ -29,7 +29,7 @@
 
 #include <casacore/casa/Quanta/UnitMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# constants
 
@@ -120,5 +120,5 @@ void UnitMap::initUMSI2() {
 						 "century")));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

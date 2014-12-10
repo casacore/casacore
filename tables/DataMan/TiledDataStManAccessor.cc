@@ -34,7 +34,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TiledDataStManAccessor::TiledDataStManAccessor (const Table& table,
 						const String& dataManagerName)
@@ -90,5 +90,5 @@ void TiledDataStManAccessor::extendHypercube (uInt incrInLastDim,
     tiledDataManPtr_p->extendHypercube (incrInLastDim, values);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

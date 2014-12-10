@@ -37,7 +37,7 @@
 
 // If an argument is given, some performance tests will also be done.
 
-using namespace casa;
+using namespace casacore;
 
 void testSub (Array<Int>& arr1, const IPosition& blc,
 	      const IPosition& trc, const IPosition& inc)

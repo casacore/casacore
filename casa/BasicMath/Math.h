@@ -38,7 +38,7 @@
 #include <ieeefp.h>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 // <summary>
@@ -338,6 +338,6 @@ void setInf(Double& val);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

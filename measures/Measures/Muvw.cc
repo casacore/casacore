@@ -33,7 +33,7 @@
 #include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 Muvw::Muvw() :
@@ -311,5 +311,5 @@ Measure *Muvw::clone() const {
     return (new Muvw(*this));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

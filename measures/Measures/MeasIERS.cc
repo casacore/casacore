@@ -40,7 +40,7 @@
 #include <casacore/casa/System/AipsrcValue.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifndef CASADATA
 #define CASADATA "/usr/local"
@@ -508,4 +508,4 @@ Bool MeasIERS::handle_keywords(Double &dt, String &vs, const TableRecord& ks,
 }
 
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

@@ -36,7 +36,7 @@
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/casa/Quanta/MVBaseline.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MBaseline;
@@ -248,6 +248,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

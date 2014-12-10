@@ -33,7 +33,7 @@
 #include <casacore/lattices/Lattices/LELInterface.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class to make a mask from a condition.
@@ -129,7 +129,7 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/LELCondition.tcc>

@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // Helper class for MSFlagger with templated static function
@@ -62,7 +62,7 @@ public:
 			       Bool doMedian=False);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/ms/MeasurementSets/MSSelUtil.tcc>

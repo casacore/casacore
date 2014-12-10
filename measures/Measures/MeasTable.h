@@ -40,7 +40,7 @@
 #include <casacore/casa/OS/Mutex.h>
 #include <vector>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class RotMatrix;
@@ -509,6 +509,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

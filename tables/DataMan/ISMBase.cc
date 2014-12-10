@@ -47,7 +47,7 @@
 #include <casacore/casa/ostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ISMBase::ISMBase (uInt bucketSize, Bool checkBucketSize, uInt cacheSize)
 : DataManager       (),
@@ -736,5 +736,5 @@ void ISMBase::init()
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

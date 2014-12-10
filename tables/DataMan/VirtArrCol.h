@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/DataManager.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class Array;
@@ -331,7 +331,7 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/DataMan/VirtArrCol.tcc>

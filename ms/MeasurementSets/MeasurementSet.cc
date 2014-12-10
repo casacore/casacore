@@ -63,7 +63,7 @@
           }\
         }
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MeasurementSet::MeasurementSet()
 : doNotLockSubtables_p (False),
@@ -1244,5 +1244,5 @@ operator+ (const MrsEligibility & a, const MrsEligibility & b)
     return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -33,7 +33,7 @@
 #include <casacore/casa/HDF5/HDF5DataType.h>
 #include <casacore/casa/Containers/Record.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // A class to write/read a record into HDF5.

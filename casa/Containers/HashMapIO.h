@@ -32,7 +32,7 @@
 #include <casacore/casa/Containers/HashMapIter.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //     HashMap/HashMapIter IO functions
@@ -56,7 +56,7 @@ template<class key, class val> ostream& operator<<(ostream&, const HashMap<key,v
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/HashMapIO.tcc>

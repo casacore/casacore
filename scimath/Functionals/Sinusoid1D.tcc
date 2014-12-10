@@ -29,7 +29,7 @@
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -42,5 +42,5 @@ T Sinusoid1D<T>::eval(typename Function1D<T>::FunctionArg x) const {
 
 //# Member functions
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

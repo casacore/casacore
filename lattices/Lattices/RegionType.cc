@@ -29,7 +29,7 @@
 
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa {
+namespace casacore {
 
 RegionType::AbsRelType RegionType::absRelTypeFromString(const String& absrel) {
 

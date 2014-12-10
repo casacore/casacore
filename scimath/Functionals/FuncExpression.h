@@ -37,7 +37,7 @@
 
 //# Forward Declarations
 #include <casacore/casa/iosfwd.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MUString;
 template <class T> class Vector;
@@ -172,6 +172,6 @@ T FuncExecute(const Vector<T> &x, const Vector<T> &par);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

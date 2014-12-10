@@ -42,7 +42,7 @@
 #include <casacore/casa/string.h>            // needed for strerror
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // The maximum number of bytes in a pathname is 255 (_POSIX_PATH_MAX)
 // Definition for POSIX systems
@@ -569,5 +569,5 @@ String Path::addDirectory (const String& name, const String& otherName)
     return tName;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

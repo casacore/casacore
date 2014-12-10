@@ -44,7 +44,7 @@
 #include <casacore/casa/OS/HostInfo.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();
@@ -450,5 +450,5 @@ void LatticeFFT::crfft(Lattice<Float>& out, const Lattice<Complex>& in,
 // compile-command: "gmake OPTLIB=1 LatticeFFT"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

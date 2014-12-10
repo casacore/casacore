@@ -283,7 +283,7 @@ Record FittingProxy::functional(Int id, const Record& fnc,
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
   Double *conit = constr.data();
-  casa::Vector<Double> ctmp(returnval.nelements());
+  casacore::Vector<Double> ctmp(returnval.nelements());
   Double *ctit = ctmp.data();
   for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
@@ -368,7 +368,7 @@ Record FittingProxy::linear(Int id, const Record& fnc,
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
   Double *conit = constr.data();
-  casa::Vector<Double> ctmp(returnval.nelements());
+  casacore::Vector<Double> ctmp(returnval.nelements());
   for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
     Double *ctit = ctmp.data();
@@ -456,7 +456,7 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc,
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
   Double *conit = constr.data();
-  casa::Vector<Double> ctmp(returnval.nelements());
+  casacore::Vector<Double> ctmp(returnval.nelements());
   Double *ctit = ctmp.data();
   for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
@@ -543,7 +543,7 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
   Double *conit = constr.data();
-  casa::Vector<Double> ctmp(returnval.nelements());
+  casacore::Vector<Double> ctmp(returnval.nelements());
   for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
     Double *ctit = ctmp.data();

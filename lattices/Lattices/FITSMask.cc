@@ -39,7 +39,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FITSMask::FITSMask (TiledFileAccess* tiledFile)
 : itsTiledFilePtr(tiledFile),
@@ -222,5 +222,5 @@ void FITSMask::doPutSlice (const Array<Bool>&,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

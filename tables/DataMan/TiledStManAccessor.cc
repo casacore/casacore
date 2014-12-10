@@ -34,7 +34,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROTiledStManAccessor::ROTiledStManAccessor (const Table& table,
 					    const String& name,
@@ -192,5 +192,5 @@ void ROTiledStManAccessor::clearCaches()
     dataManPtr_p->emptyCaches();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

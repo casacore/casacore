@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/ArrayError.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 MaskedArray<T>::MaskedArray ()
@@ -915,5 +915,5 @@ template<class T, class U>
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -38,7 +38,7 @@
 # include <stdio.h>
 #include <assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //	Discussion of Reserved FitsKeyword Table
 //
@@ -2588,5 +2588,5 @@ void FitsFPUtil::setNaN(float &val)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

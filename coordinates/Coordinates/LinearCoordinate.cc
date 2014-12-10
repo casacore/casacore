@@ -45,7 +45,7 @@
 
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 LinearCoordinate::LinearCoordinate(uInt naxis)
@@ -513,19 +513,19 @@ Bool LinearCoordinate::near(const Coordinate& other,
    }
    for (i=0; i<crval1.nelements(); i++) {
       if (!exclude(i)) {
-         if (!casa::near(crval1[i],crval2[i],tol)) {
+         if (!casacore::near(crval1[i],crval2[i],tol)) {
             oss << "The LinearCoordinates have differing reference values for axis "
                 << i << ", " << crval1[i] << " vs. " << crval2[i];
             set_error(String(oss));
             return False;
          }
-         if (!casa::near(cdelt1[i],cdelt2[i],tol)) {
+         if (!casacore::near(cdelt1[i],cdelt2[i],tol)) {
             oss << "The LinearCoordinates have differing increments for axis "
                 << i << ", " << cdelt1[i] << " vs. " << cdelt2[i];
             set_error(String(oss));
             return False;
          }
-         if (!casa::near(crpix1[i],crpix2[i],tol)) {
+         if (!casacore::near(crpix1[i],crpix2[i],tol)) {
             oss << "The LinearCoordinates have differing reference values for axis "
                 << i << ", " << crpix1[i] << " vs. " << crpix2[i];
             set_error(String(oss));
@@ -557,7 +557,7 @@ Bool LinearCoordinate::near(const Coordinate& other,
         if (!exclude(j)) {
             for (uInt i=0; i<row1.nelements(); i++) {
                 if (!exclude(i)) {
-                    if (!casa::near(row1(i),row2(i),tol)) {
+                    if (!casacore::near(row1(i),row2(i),tol)) {
                        set_error(String("The LinearCoordinates have different PC matrices"));
                        return False;
                     }
@@ -778,5 +778,5 @@ void LinearCoordinate::copy(const LinearCoordinate &other)
    set_wcs(wcs_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

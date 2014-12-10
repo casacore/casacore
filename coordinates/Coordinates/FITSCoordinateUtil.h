@@ -37,7 +37,7 @@
 
 struct wcsprm;
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class Coordinate;
 class CoordinateSystem;
@@ -223,7 +223,7 @@ private:
     void fixCoordinate(Coordinate& c, LogIO& os) const;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

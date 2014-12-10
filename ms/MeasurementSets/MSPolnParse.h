@@ -37,7 +37,7 @@
 #include <casacore/ms/MeasurementSets/MSPolIndex.h>
 #include <casacore/ms/MeasurementSets/MSDataDescIndex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -135,6 +135,6 @@ private:
   void setIDLists(const Int key, const Int ndx, Vector<Int>& val);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

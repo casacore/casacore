@@ -33,7 +33,7 @@
 #include <casacore/measures/Measures/MeasFrame.h>
 #include <casacore/measures/Measures/MeasConvert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -274,5 +274,5 @@ void VelocityMachine::copy(const VelocityMachine &other) {
   vun_p = other.vun_p;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

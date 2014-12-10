@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LattStatsProgress::~LattStatsProgress()
 {
@@ -73,5 +73,5 @@ void LattStatsProgress::done()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -29,7 +29,7 @@
 #include <casacore/casa/Arrays/ArrayError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TSMShape::TSMShape()
 : data_p (),
@@ -151,5 +151,5 @@ IPosition TSMShape::offsetIncrement (const IPosition& subShape,
     return incr;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

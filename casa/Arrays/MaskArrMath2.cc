@@ -27,7 +27,7 @@
 
 #include <casacore/casa/Arrays/MaskArrMath.h>
 #include <casacore/casa/Arrays/ArrayError.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //#include <casacore/casa/Arrays/VectorIter.h>
 //#include <casacore/casa/Arrays/Matrix.h>
@@ -65,5 +65,5 @@ MaskedArray<Complex> operator*(const Float& left,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

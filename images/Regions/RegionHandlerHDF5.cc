@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RegionHandlerHDF5::RegionHandlerHDF5 (GetCallback* callback,
 				      void* objectPtr)
@@ -334,4 +334,4 @@ void RegionHandlerHDF5::restore()
   itsRecord = HDF5Record::readRecord (*file(), "maskinfo");
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

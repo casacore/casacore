@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/VectorSTLIterator.h>
 #include <casacore/scimath/Functionals/HyperPlane.h>
 
-namespace casa {  //# Begin namespace casa
+namespace casacore {  //# Begin namespace casa
 //# Constants
 // Default svd collinearity
 

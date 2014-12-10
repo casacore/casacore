@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Index into an array using the longest axis </summary>
 
@@ -150,7 +150,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/ArraySampledFunctional.tcc>

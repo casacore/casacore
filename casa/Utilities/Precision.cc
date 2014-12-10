@@ -27,7 +27,7 @@
 
 #include <casacore/casa/Utilities/Precision.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 uInt precisionForValueErrorPairs (const Vector<Double>& pair1,
                                   const Vector<Double>& pair2)
@@ -85,5 +85,5 @@ uInt precisionForValueErrorPairs (const Vector<Double>& pair1,
   return after;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

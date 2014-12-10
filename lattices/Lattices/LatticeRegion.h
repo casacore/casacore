@@ -34,7 +34,7 @@
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/casa/Arrays/Slicer.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class LCRegion;
@@ -247,6 +247,6 @@ inline const Slicer& LatticeRegion::slicer() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

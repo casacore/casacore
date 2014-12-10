@@ -37,7 +37,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 CurvedImage2D<T>::CurvedImage2D()
@@ -272,5 +272,5 @@ void CurvedImage2D<T>::reopen()
   itsImagePtr->reopen();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

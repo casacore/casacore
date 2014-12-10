@@ -44,7 +44,7 @@
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSFeed;
 
@@ -409,6 +409,6 @@ private:
   ScalarQuantColumn<Double> focusLengthQuant_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

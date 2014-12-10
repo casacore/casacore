@@ -31,7 +31,7 @@
 #include <casacore/ms/MeasurementSets/MSSelection.h>
 #include <string.h>
 #include <iostream>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //----------------------------------------------------------------------------
   //

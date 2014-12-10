@@ -37,7 +37,7 @@
 #include <casacore/tables/TaQL/TableExprIdAggr.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-using namespace casa;
+using namespace casacore;
 
 class TestUDF: public UDFBase
 {

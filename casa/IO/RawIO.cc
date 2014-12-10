@@ -28,7 +28,7 @@
 #include <casacore/casa/IO/RawIO.h>
 #include <casacore/casa/IO/ByteIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RawIO::RawIO (ByteIO* byteIO, Bool takeOver)
 : TypeIO (byteIO, takeOver)
@@ -211,5 +211,5 @@ size_t RawIO::read (size_t nvalues, String* value)
     return TypeIO::read (nvalues, value);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

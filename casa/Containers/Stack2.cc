@@ -28,7 +28,7 @@
 #include <casacore/casa/Containers/Stack.h>
 #include <casacore/casa/Containers/StackError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Throw an error indicating operation error occured on an empty
 // stack. This function must be out-of-line because of the dependence
@@ -37,5 +37,5 @@ void throw_empty_Stack_error(const char *msg) {
   throw(EmptyStackError(msg));   //# will enventually be more informative
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

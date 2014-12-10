@@ -30,7 +30,7 @@
 
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ostream &operator<<(ostream &os, DataType type)
 {
@@ -138,5 +138,5 @@ DataType asArray(DataType type)
     return tmp;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

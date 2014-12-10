@@ -29,7 +29,7 @@
 #include <casacore/casa/Arrays/ArrayError.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 Matrix<T> invert(const Matrix<T> &in){
@@ -229,5 +229,5 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

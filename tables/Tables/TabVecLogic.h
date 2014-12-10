@@ -34,7 +34,7 @@
 #include <casacore/tables/Tables/TVecLogic.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Comparison between two table vectors
@@ -245,7 +245,7 @@ Bool anyNE (const T &val, const TableVector<T>& tv)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/Tables/TabVecLogic.tcc>

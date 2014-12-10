@@ -46,7 +46,7 @@
 #include <casacore/ms/MeasurementSets/MSSysCalEnums.h>
 #include <casacore/ms/MeasurementSets/MSWeatherEnums.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template class MSTable<MSAntennaEnums::PredefinedColumns,
                          MSAntennaEnums::PredefinedKeywords> ;
@@ -85,5 +85,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   template class MSTable<MSWeatherEnums::PredefinedColumns,
                          MSWeatherEnums::PredefinedKeywords> ;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

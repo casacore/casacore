@@ -29,7 +29,7 @@
 #include <casacore/scimath/Fitting/LSQMatrix.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 LSQMatrix::LSQMatrix() 
@@ -144,5 +144,5 @@ void LSQMatrix::mulDiagonal(uInt n, Double fac) {
     return x;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

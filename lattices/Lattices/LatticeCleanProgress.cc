@@ -37,7 +37,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LatticeCleanProgress::LatticeCleanProgress(PGPlotter* pgplotter)
   : itsPgplotter(pgplotter),
@@ -404,5 +404,5 @@ void LatticeCleanProgress::initialize(const uInt nScales,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

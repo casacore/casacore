@@ -42,7 +42,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/tables/Tables/ColumnsIndex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDFieldHandler::SDFieldHandler() 
     : msField_p(0), msFieldCols_p(0), rownr_p(-1), index_p(0)
@@ -374,5 +374,5 @@ void SDFieldHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

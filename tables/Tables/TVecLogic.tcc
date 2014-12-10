@@ -29,7 +29,7 @@
 #include <casacore/tables/Tables/TVec.h>
 #include <casacore/tables/Tables/TableError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define TVECLOGICOPER(NAME,OP) \
 template<class T> \
@@ -80,5 +80,5 @@ TVECLOGICOPER(GT,>)
 TVECLOGICOPER(EQ,==)
 TVECLOGICOPER(NE,!=)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

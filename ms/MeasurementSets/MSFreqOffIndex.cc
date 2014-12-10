@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/ms/MeasurementSets/MSFreqOffset.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSFreqOffIndex::MSFreqOffIndex() 
     : MSTableIndex()
@@ -71,5 +71,5 @@ void MSFreqOffIndex::attachIds()
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

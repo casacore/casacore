@@ -36,7 +36,7 @@
 #include <casacore/casa/System/AppInfo.h>
 //
 #include <casacore/casa/Logging/LogIO.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // MVAngle class
 //# Static members
@@ -496,5 +496,5 @@ ostream &operator<<(ostream &os, const MVAngle::Format &form) {
     return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

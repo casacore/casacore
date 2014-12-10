@@ -40,7 +40,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSTableIndex::MSTableIndex()
     : timeVals_p(0), intervalVals_p(0), key_p(0), time_p(0.0), interval_p(0.0),
@@ -390,5 +390,5 @@ Bool MSTableIndex::keysChanged()
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

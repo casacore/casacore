@@ -33,7 +33,7 @@
 #include <casacore/measures/Measures/MCEpoch.h>
 #include <casacore/measures/Measures/MeasConvert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 EarthMagneticMachine::EarthMagneticMachine() :
@@ -373,5 +373,5 @@ void EarthMagneticMachine::calculate() {
   clx_p = True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

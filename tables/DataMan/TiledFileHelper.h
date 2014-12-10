@@ -34,7 +34,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Helper class for tiled access to an array in a file.
@@ -112,6 +112,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -28,7 +28,7 @@
 #include <casacore/casa/Utilities/Copy.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void objthrowmv1(const void *to, const void *from, const size_t n) {
     if (n > 0 && (!from || !to)) 
@@ -122,4 +122,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
  
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

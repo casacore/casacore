@@ -30,7 +30,7 @@
 #include <casacore/casa/Utilities/ValType.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LELScalar<T>::LELScalar()
@@ -39,5 +39,5 @@ LELScalar<T>::LELScalar()
     ValType::getUndef (&itsValue);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

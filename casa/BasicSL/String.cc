@@ -36,7 +36,7 @@
 #include <stdio.h>		// for vsnprintf( )
 #include <cstdarg>              // for va_start/end
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Special constructors
 String::String(ostringstream &os) {
@@ -604,6 +604,6 @@ SubString &SubString::operator=(const Char c) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 

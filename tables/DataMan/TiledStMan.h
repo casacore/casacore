@@ -37,7 +37,7 @@
 #include <casacore/casa/OS/Conversion.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TSMColumn;
@@ -556,6 +556,6 @@ inline void TiledStMan::setPersMaxCacheSize (uInt nbytes)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

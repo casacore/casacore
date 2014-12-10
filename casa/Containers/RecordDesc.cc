@@ -30,7 +30,7 @@
 #include <casacore/casa/IO/AipsIO.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ostream& RecordDesc::put (ostream &os) const
 {
@@ -139,5 +139,5 @@ AipsIO& RecordDesc::get (AipsIO& os)
     return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

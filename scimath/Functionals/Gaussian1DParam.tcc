@@ -30,7 +30,7 @@
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 ///template<class T>
@@ -104,5 +104,5 @@ void Gaussian1DParam<T>::setFlux(const T &flux) {
   param_p[HEIGHT] = flux*T(C::_1_sqrtpi)/abs(param_p[WIDTH])/fwhm2int;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

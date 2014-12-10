@@ -35,7 +35,7 @@
 #include <casacore/casa/Utilities/Regex.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Vector<String> stringToVector (const String& string, char delim)
 {
@@ -171,5 +171,5 @@ uInt reorderArrayHelper (IPosition& newShape, IPosition& incr,
   return contAxes;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

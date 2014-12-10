@@ -29,7 +29,7 @@
 //#include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Arrays/IPosition.h>
 
-namespace casa {
+namespace casacore {
 
 Bool rightExpandableToLeft(const IPosition& leftShape, const IPosition& rightShape)
 {

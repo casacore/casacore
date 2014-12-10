@@ -31,7 +31,7 @@
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Construct a table column vector.
 template<class T>
@@ -76,5 +76,5 @@ void TabVecScaCol<T>::set (const T& val)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

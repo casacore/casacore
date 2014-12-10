@@ -35,7 +35,7 @@
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/casa/Quanta/MVDoppler.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MDoppler;
@@ -277,6 +277,6 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

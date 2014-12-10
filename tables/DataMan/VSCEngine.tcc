@@ -30,7 +30,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 VSCEngine<T>::VSCEngine ()
@@ -78,5 +78,5 @@ DataManagerColumn* VSCEngine<T>::makeScalarColumn (const String& columnName,
     return this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

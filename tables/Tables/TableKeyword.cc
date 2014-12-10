@@ -35,7 +35,7 @@
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/OS/Path.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableKeyword::TableKeyword (const String& tableDescName)
 : table_p         (new Table),
@@ -198,5 +198,5 @@ Bool TableKeyword::conform (const Table& that) const
     return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

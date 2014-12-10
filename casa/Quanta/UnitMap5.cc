@@ -29,7 +29,7 @@
 
 #include <casacore/casa/Quanta/UnitMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Initialise the maps
 void UnitMap::initUMCust1() {
@@ -107,5 +107,5 @@ void UnitMap::initUMCust1() {
 						 "WSRT flux unit")));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

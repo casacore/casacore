@@ -34,7 +34,7 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCBox::LCBox()
 {}
@@ -333,5 +333,5 @@ Bool LCBox::verify (IPosition& blc, IPosition& trc,
              
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

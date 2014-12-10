@@ -35,7 +35,7 @@
 //# Forward declarations
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class AipsIO;
 class LogIO;
@@ -348,7 +348,7 @@ void writeAsciiVector (const Vector<T>& vec, const Char* fileName);
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/ArrayIO.tcc>

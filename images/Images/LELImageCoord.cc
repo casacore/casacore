@@ -40,7 +40,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELImageCoord::LELImageCoord()
 {}
@@ -180,5 +180,5 @@ LatticeExprNode LELImageCoord::makeRebinLattice
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

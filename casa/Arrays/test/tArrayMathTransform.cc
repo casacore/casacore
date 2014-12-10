@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/iostream.h>
 
-using namespace casa;
+using namespace casacore;
 
 void doIt()
 {

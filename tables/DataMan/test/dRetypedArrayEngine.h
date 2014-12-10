@@ -37,7 +37,7 @@
 
 #include <casacore/casa/namespace.h>
 //# Forward Declarations
-namespace casa {
+namespace casacore {
 class TableRecord;
 template<class T> class Array;
 template<class T> class Vector;
@@ -84,11 +84,11 @@ public:
     // Therefore we have to declare it as a void*.
 //#    static void set (void* copyInfo, Array<RetypedArrayEx1>& out,
     static void set (void* copyInfo, void* out,
-		     const casa::Array<casa::Float>& in,
-		     const casa::IPosition& shape);
-    static void get (void* copyInfo, casa::Array<casa::Float>& out,
+		     const casacore::Array<casacore::Float>& in,
+		     const casacore::IPosition& shape);
+    static void get (void* copyInfo, casacore::Array<casacore::Float>& out,
 		     const void* in,
-		     const casa::IPosition& shape);
+		     const casacore::IPosition& shape);
 
     float x() const
 	{ return x_p; }

@@ -31,7 +31,7 @@
 
 #include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class K, class V> class SimpleOrderedMap;
 template <class T> class Block;
@@ -253,6 +253,6 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

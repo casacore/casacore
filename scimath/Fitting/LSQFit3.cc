@@ -34,7 +34,7 @@
 #include <casacore/casa/Containers/RecordInterface.h>
 #include <casacore/casa/IO/AipsIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Constants
   const String LSQFit::recid     = String("recid");
@@ -255,5 +255,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     in.getend();
   }
  
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

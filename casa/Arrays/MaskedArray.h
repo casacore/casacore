@@ -36,7 +36,7 @@
 #include <casacore/casa/Arrays/LogiArrayFwd.h>
 #include <casacore/casa/Arrays/MaskLogiArrFwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 //# <note role=warning>
@@ -732,7 +732,7 @@ template<class T, class U>
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/MaskedArray.tcc>

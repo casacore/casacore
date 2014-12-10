@@ -34,7 +34,7 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Quanta/Euler.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -236,7 +236,7 @@ class Nutation {
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

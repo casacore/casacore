@@ -46,7 +46,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 TSMCubeBuff::TSMCubeBuff (TiledStMan* stman, TSMFile* file,
@@ -504,4 +504,4 @@ void TSMCubeBuff::accessStrided (const IPosition& start, const IPosition& end,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

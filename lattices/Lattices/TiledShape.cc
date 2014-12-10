@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TiledShape::TiledShape()
 : itsTileDefined (True)
@@ -282,5 +282,5 @@ IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
     return bestShape;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

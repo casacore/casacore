@@ -36,7 +36,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Quanta/Quantum.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 // <summary>
@@ -161,6 +161,6 @@ private:
 
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

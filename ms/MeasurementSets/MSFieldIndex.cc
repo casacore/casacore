@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/ms/MeasurementSets/MSSelectionTools.h>
 //#include <casacore/casa/Logging/LogIO.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //-------------------------------------------------------------------------
   
@@ -373,5 +373,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return modifiedIds;
   }
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class BitVectorHelper;
@@ -341,7 +341,7 @@ inline const BitVectorHelper& BitVectorHelper::operator=
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

@@ -41,13 +41,13 @@
 #include <ostream>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 using std::ostream;
 using std::endl;
 using std::ends;
 using std::flush;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

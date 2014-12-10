@@ -34,7 +34,7 @@
 #include <casacore/casa/Logging/LogMessage.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Abstract base class for filtering LogMessages.
@@ -110,6 +110,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

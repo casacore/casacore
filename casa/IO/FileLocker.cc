@@ -39,7 +39,7 @@
 #endif
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FileLocker::FileLocker()
 : itsFD          (-1),
@@ -242,5 +242,5 @@ String FileLocker::lastMessage() const
     return strerror(itsError);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

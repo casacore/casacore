@@ -35,7 +35,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations.
 class Slicer;
@@ -192,6 +192,6 @@ inline size_t Slice::end() const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

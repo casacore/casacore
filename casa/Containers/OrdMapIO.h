@@ -53,8 +53,8 @@
 #include <casacore/casa/Containers/MapIO.h>
 #include <casacore/casa/Containers/OrderedMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
-} //# NAMESPACE CASA - END
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Containers/OrdMapIO.tcc>

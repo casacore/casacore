@@ -37,7 +37,7 @@
 #include <casacore/casa/OS/HostInfo.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 const Int maxLatSize = HostInfo::memoryTotal()/1024/8;
 
@@ -468,5 +468,5 @@ setFastConvolve(){
 // compile-command: "cd test; gmake OPTLIB=1 inst tLatticeConvolver"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

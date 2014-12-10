@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/measures/TableMeasures/TableMeasDescBase.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class String;
@@ -292,7 +292,7 @@ public:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/measures/TableMeasures/TableMeasDesc.tcc>

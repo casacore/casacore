@@ -32,7 +32,7 @@
 #include <casacore/images/Images/ImageAttrGroup.h>
 #include <casacore/tables/Tables/TableProxy.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Attribute group for a CASA image.
@@ -122,6 +122,6 @@ private:
   TableProxy itsTable;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

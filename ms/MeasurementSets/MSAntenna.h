@@ -33,7 +33,7 @@
 #include <casacore/ms/MeasurementSets/MSTable.h>
 #include <casacore/ms/MeasurementSets/MSAntennaEnums.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // A Table intended to hold a MeasurementSet ANTENNA table.
@@ -135,6 +135,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/ms/MeasurementSets/MSWeather.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSWeatherIndex::MSWeatherIndex() 
     : MSTableIndex()
@@ -68,5 +68,5 @@ void MSWeatherIndex::attachIds()
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

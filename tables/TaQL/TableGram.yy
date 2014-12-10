@@ -33,7 +33,7 @@
 
 
 %{
-using namespace casa;
+using namespace casacore;
 %}
 
 %pure-parser                /* make parser re-entrant */
@@ -196,9 +196,9 @@ TaQLColNodeRep* nodecolrep;
 }
 
 %{
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 Bool theFromQueryDone;           /* for flex for knowing how to handle a , */
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 int TableGramlex (YYSTYPE*);
 %}
 

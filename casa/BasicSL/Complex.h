@@ -35,7 +35,7 @@
 #include <casacore/casa/BasicSL/Complexfwd.h>
 #include <casacore/casa/complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Single and double precision complex numbers
@@ -336,7 +336,7 @@ Complex erfc(const Complex &in);
 
 // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 // Define real & complex conjugation for non-complex types
 // and put comparisons into std namespace.
@@ -350,10 +350,10 @@ namespace std {
   inline float  imag(float   ) { return 0; }
   inline double imag(double  ) { return 0; }
 #endif  
-  using casa::operator>;
-  using casa::operator>=;
-  using casa::operator<;
-  using casa::operator<=;
+  using casacore::operator>;
+  using casacore::operator>=;
+  using casacore::operator<;
+  using casacore::operator<=;
 }
 
 #endif

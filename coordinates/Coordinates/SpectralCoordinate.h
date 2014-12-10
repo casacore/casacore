@@ -45,7 +45,7 @@
 #include <wcslib/wcs.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 class TabularCoordinate;
@@ -695,7 +695,7 @@ private:
 
 ostream &operator<<(ostream &os, const SpectralCoordinate& spcoord);
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 
 #endif

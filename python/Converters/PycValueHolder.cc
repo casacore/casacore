@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <boost/python/object.hpp>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
   boost::python::object casa_value_to_python::makeobject
   (ValueHolder const& vh)

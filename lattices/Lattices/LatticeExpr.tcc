@@ -35,7 +35,7 @@
 #include <casacore/casa/Exceptions/Error.h> 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LatticeExpr<T>::LatticeExpr()
@@ -300,5 +300,5 @@ void LatticeExpr<T>::handleMathTo (Lattice<T>& to, int oper) const
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

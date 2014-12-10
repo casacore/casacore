@@ -36,7 +36,7 @@
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Utilities/DataType.h>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
 
   // <summary>

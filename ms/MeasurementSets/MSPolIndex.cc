@@ -35,7 +35,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/stdlib.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //-------------------------------------------------------------------------
 
@@ -145,5 +145,5 @@ Vector<Int> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<Int>&
 
 //-------------------------------------------------------------------------
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

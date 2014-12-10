@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class IPosition;
@@ -362,6 +362,6 @@ inline Bool LatticeNavigator::operator--()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -36,7 +36,7 @@
 #include <casacore/casa/string.h>               // needed for strerror
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FilebufIO::FilebufIO()
 : itsSeekable   (False),
@@ -415,5 +415,5 @@ Bool FilebufIO::isSeekable() const
   return itsSeekable;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

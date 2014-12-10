@@ -43,8 +43,8 @@ int main (int argc, const char* argv[])
 {
   try {
     // Register the FITS and Miriad image types.
-    casa::FITSImage::registerOpenFunction();
-    casa::MIRIADImage::registerOpenFunction();
+    casacore::FITSImage::registerOpenFunction();
+    casacore::MIRIADImage::registerOpenFunction();
 
     // enable input in no-prompt mode
     Input inputs(1);

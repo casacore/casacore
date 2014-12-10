@@ -37,7 +37,7 @@
 #include <casacore/casa/IO/RegularFileIO.h>
 #include <math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // First implement a simple stderr based progress meter that just prints out
 // 0%....10....20....30....40....50....60....70....80....90....100%
@@ -290,5 +290,5 @@ Double ProgressMeter::max() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

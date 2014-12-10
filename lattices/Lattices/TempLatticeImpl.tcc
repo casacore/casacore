@@ -36,7 +36,7 @@
 #include <casacore/casa/OS/HostInfo.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 TempLatticeImpl<T>::TempLatticeImpl() 
@@ -121,5 +121,5 @@ void TempLatticeImpl<T>::tempReopen() const
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

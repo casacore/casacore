@@ -7,7 +7,7 @@
 
 #include <casacore/casa/IO/RegularFileIO.h>
 
-namespace casa {
+namespace casacore {
   typedef RegularFileIO LargeRegularFileIO;
 }
 

@@ -34,7 +34,7 @@
 
 #include <casacore/casa/iostream.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main()
 {

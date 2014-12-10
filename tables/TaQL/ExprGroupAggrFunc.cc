@@ -36,7 +36,7 @@
 #include <limits>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   TableExprGroupCountAll::TableExprGroupCountAll (TableExprNodeRep* node)
@@ -378,4 +378,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

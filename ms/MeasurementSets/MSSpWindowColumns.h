@@ -42,7 +42,7 @@
 #include <casacore/ms/MeasurementSets/MSDopplerColumns.h>
 #include <casacore/ms/MeasurementSets/MSSourceColumns.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSSpectralWindow;
 
@@ -443,6 +443,6 @@ private:
   ScalarQuantColumn<Double> totalBandwidthQuant_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

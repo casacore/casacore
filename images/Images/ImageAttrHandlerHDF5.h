@@ -36,7 +36,7 @@
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <map>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Abstract base class for an image attributes handler.
@@ -137,6 +137,6 @@ private:
   std::map<String,ImageAttrGroupHDF5> itsGroupMap;    //# attribute groups
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -34,7 +34,7 @@
 #include <casacore/images/Images/MaskSpecifier.h>
 #include <casacore/casa/Containers/SimOrdMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class LatticeBase;
@@ -146,6 +146,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

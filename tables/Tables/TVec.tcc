@@ -31,7 +31,7 @@
 #include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Construct
 template<class T>
@@ -79,5 +79,5 @@ void TabVecRep<T>::assign (const TabVecRep<T>& that)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -32,7 +32,7 @@
 #include <casacore/lattices/Lattices/LCRegion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Abstract base class to define a single region.
@@ -143,6 +143,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

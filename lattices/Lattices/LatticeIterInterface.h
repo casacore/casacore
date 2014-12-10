@@ -35,7 +35,7 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/lattices/Lattices/LatticeNavigator.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class Vector;
@@ -327,7 +327,7 @@ inline IPosition LatticeIterInterface<T>::cursorShape() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/Lattices/LatticeIterInterface.tcc>

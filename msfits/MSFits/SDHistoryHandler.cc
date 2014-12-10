@@ -41,7 +41,7 @@
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/casa/Quanta/MVTime.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDHistoryHandler::SDHistoryHandler() 
     : msHis_p(0), msHisCols_p(0)
@@ -147,5 +147,5 @@ void SDHistoryHandler::initRow(const Vector<Bool> &, const Record &row)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

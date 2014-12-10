@@ -32,7 +32,7 @@
 #include <casacore/tables/TaQL/ExprNodeRep.h>
 #include <casacore/casa/Quanta/MVAngle.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TableExprNodeSet;
@@ -416,6 +416,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

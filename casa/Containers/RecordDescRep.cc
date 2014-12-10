@@ -34,7 +34,7 @@
 #include <casacore/casa/stdio.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RecordDescRep::RecordDescRep()
 : n_p(0),
@@ -560,5 +560,5 @@ void RecordDescRep::increment_length()
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

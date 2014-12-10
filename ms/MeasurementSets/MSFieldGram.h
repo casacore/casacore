@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/ms/MeasurementSets/MSFieldParse.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MeasurementSet;
@@ -101,6 +101,6 @@ int msFieldGramInput (char* buf, int max_size);
 
 // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

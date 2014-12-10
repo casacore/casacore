@@ -31,7 +31,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSSysCalColumns::ROMSSysCalColumns(const MSSysCal& msSysCal):
   isNull_p(True),
@@ -438,5 +438,5 @@ void MSSysCalColumns::attach(MSSysCal& msSysCal)
 // compile-command: "gmake MSSysCalColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

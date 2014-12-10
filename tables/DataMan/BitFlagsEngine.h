@@ -31,7 +31,7 @@
 //# Includes
 #include <casacore/tables/DataMan/BaseMappedArrayEngine.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   // <summary> Non-templated Helper class to handle the mask. </summary>
@@ -371,7 +371,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/DataMan/BitFlagsEngine.tcc>

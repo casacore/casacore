@@ -53,7 +53,7 @@ int MSScanGramwrap()
   return 1;
 }
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //# Declare a file global pointer to a char* for the input string.
   static const char*           strpMSScanGram = 0;
@@ -197,4 +197,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //     return out;
   // }
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Options defining how table files are organized
@@ -102,6 +102,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Int    itsBlockSize;
   };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

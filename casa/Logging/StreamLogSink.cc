@@ -30,7 +30,7 @@
 #include <casacore/casa/Logging/LogFilter.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 String StreamLogSink::localId( ) {
     return String("StreamLogSink");
@@ -107,5 +107,5 @@ void StreamLogSink::flush(Bool)
     if(stream_p) stream_p->flush();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

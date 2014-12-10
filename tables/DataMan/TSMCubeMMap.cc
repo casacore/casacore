@@ -46,7 +46,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 TSMCubeMMap::TSMCubeMMap (TiledStMan* stman, TSMFile* file,
@@ -448,4 +448,4 @@ void TSMCubeMMap::accessStrided (const IPosition& start, const IPosition& end,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

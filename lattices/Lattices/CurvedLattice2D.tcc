@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h> 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 CurvedLattice2D<T>::CurvedLattice2D()
@@ -280,5 +280,5 @@ Bool CurvedLattice2D<T>::ok() const
   return itsLatticePtr->ok();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -39,7 +39,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ArrayQuantColumn<T>::ArrayQuantColumn()
@@ -434,5 +434,5 @@ void ArrayQuantColumn<T>::put (uInt rownr, const Array<Quantum<T> >& q)
   q.freeStorage(q_p, deleteQuant);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

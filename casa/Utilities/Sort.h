@@ -36,7 +36,7 @@
 #include <casacore/casa/Utilities/Compare.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class Vector;
@@ -413,6 +413,6 @@ inline void Sort::swap (Int i, Int j, uInt* inx) const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

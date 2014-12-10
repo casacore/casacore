@@ -43,7 +43,7 @@
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/iostream.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main()
 {

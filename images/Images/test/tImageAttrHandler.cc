@@ -36,7 +36,7 @@
 #include <iostream>
 #include <casacore/casa/Exceptions/Error.h>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 void testCreate (ImageInterface<Float>& image)

@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Unit::Unit() 
 : uName(), uVal() {}
@@ -232,5 +232,5 @@ void Unit::check()
   free(b2);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

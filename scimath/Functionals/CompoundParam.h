@@ -34,7 +34,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Containers/Block.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Parameters for sum of parameterized Functions
 // </summary>
@@ -222,7 +222,7 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/CompoundParam.tcc>

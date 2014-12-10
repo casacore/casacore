@@ -38,7 +38,7 @@
 #include <casacore/casa/BasicSL/Complex.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Mathematical operations for MaskedArrays (and with Arrays) </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMaskArrMath0 tMaskArrMath1 tMaskArrMath2 tMaskArrExcp">
@@ -547,7 +547,7 @@ Array<T> slidingArrayMath (const MaskedArray<T>& array,
 			   Bool fillEdge=True);
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/MaskArrMath.tcc>

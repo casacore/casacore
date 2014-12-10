@@ -40,7 +40,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Vector<Bool> DOos::isValidPathName (const Vector<String>& pathName)
 {
@@ -389,5 +389,5 @@ Vector<Int> DOos::lockInfo (const String& tableName)
   return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

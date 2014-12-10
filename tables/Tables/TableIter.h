@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/Sort.h>
 #include <casacore/casa/Utilities/Compare.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class BaseTableIterator;
@@ -230,6 +230,6 @@ inline void TableIterator::operator++(int)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

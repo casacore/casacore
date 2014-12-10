@@ -39,7 +39,7 @@
 #include <numeric>
 #include <functional>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Matrix;
 
@@ -890,7 +890,7 @@ template<class T> Array<T> cube(const Array<T> &val);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/ArrayMath.tcc>

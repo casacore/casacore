@@ -35,7 +35,7 @@
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/casa/Arrays/Slicer.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TableExprNodeSet;
@@ -863,7 +863,7 @@ TableExprNodeArrayPart::getColumnNode() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

@@ -34,7 +34,7 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# forward
 template <class T, Int n> class SquareMatrix;
@@ -292,7 +292,7 @@ inline RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
 }
 // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Mathematics/RigidVector.tcc>

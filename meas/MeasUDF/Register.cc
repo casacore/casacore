@@ -30,7 +30,7 @@
 #include <casacore/meas/MeasUDF/EpochUDF.h>
 #include <casacore/meas/MeasUDF/DirectionUDF.h>
 
-using namespace casa;
+using namespace casacore;
 
 void register_meas()
 {

@@ -33,7 +33,7 @@
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <map>
 
-namespace casa {
+namespace casacore {
 
 template <class T> class ArrayColumn;
 

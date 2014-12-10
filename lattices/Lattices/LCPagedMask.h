@@ -34,7 +34,7 @@
 #include <casacore/lattices/Lattices/PagedArray.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class to define a rectangular mask as a region
@@ -200,6 +200,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

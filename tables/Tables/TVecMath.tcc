@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/ArrayError.h>
 #include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Add, subtract, multiply, divide table vector.
 //# Define it for a vector and scalar, 2 vectors, 2 vectors with assign.
@@ -292,5 +292,5 @@ TabVecRep<T>& tabVecRepcrossproduct (const TabVecRep<T>& tvl,
     return vec;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -37,7 +37,7 @@
 #include <casacore/scimath/Mathematics/Interpolate2D.h>
 #include <set>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class MaskedLattice;
 template<class T> class ImageInterface;
@@ -381,7 +381,7 @@ public:
 
  
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/images/Images/ImageRegrid.tcc>

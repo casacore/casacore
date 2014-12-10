@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/casa/Arrays/Array.h>
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 //# Forward Declarations
 template<class T> class Vector;

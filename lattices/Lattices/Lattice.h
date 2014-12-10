@@ -33,7 +33,7 @@
 #include <casacore/lattices/Lattices/LatticeBase.h>
 #include <casacore/casa/Arrays/Slicer.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class IPosition;
@@ -429,7 +429,7 @@ void Lattice<Bool>::handleMathTo (Lattice<Bool>&, int) const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 //# There is a problem in including Lattice.tcc, because it needs
 //# LatticeIterator.h which in its turn includes Lattice.h again.

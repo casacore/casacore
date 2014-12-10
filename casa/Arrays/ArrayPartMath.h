@@ -30,7 +30,7 @@
 
 #include <casacore/casa/Arrays/ArrayMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Mathematical and logical operations for Array parts.
@@ -330,7 +330,7 @@ Array<T> slidingArrayMath (const Array<T>& array,
 
 // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/ArrayPartMath.tcc>

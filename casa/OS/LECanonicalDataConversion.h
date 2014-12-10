@@ -32,7 +32,7 @@
 #include <casacore/casa/OS/DataConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A class with virtual functions to convert little endian canonical format.
@@ -190,6 +190,6 @@ inline LECanonicalDataConversion::LECanonicalDataConversion()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

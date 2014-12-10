@@ -38,7 +38,7 @@
 #include <casacore/casa/Quanta/UnitVal.h>
 #include <casacore/casa/Quanta/UnitName.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -353,6 +353,6 @@ public:
 //# Inline Implementations
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

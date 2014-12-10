@@ -34,7 +34,7 @@
 
 using namespace std;
 
-namespace casa {
+namespace casacore {
 
   ImageAttrHandlerCasa::ImageAttrHandlerCasa()
     : itsCanAdd (False)
@@ -140,4 +140,4 @@ namespace casa {
     }
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

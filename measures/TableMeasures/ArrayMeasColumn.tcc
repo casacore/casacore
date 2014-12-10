@@ -43,7 +43,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class M>
 ArrayMeasColumn<M>::ArrayMeasColumn()
@@ -558,5 +558,5 @@ void ArrayMeasColumn<M>::put (uInt rownr, const Array<M>& meas)
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

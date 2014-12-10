@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     
     Projection::Projection(Projection::Type which) 
@@ -280,7 +280,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	if (parameters_p.nelements() != other.parameters_p.nelements()) return False;
 	
 	for (uInt i=0; i<parameters_p.nelements(); i++) {
-	    if (!casa::near(parameters_p(i),other.parameters_p(i),tol)) return False;
+	    if (!casacore::near(parameters_p(i),other.parameters_p(i),tol)) return False;
 	}
 	
 	return True;
@@ -398,5 +398,5 @@ Projection::Type Projection::type (String& ctypeLong,
    return type(proj1);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

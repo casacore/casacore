@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/scimath/Functionals/CompoundFunction.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -113,5 +113,5 @@ void CompoundFunction<AutoDiff<T> >::toParam_p() {
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

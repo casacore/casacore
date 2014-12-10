@@ -30,7 +30,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/IO/TypeIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ByteSource::ByteSource()
 {}
@@ -212,5 +212,5 @@ void ByteSource::read (size_t nvalues, String* value)
     itsTypeIO->read (nvalues, value);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

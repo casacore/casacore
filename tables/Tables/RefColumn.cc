@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RefColumn::RefColumn (const BaseColumnDesc* bcdp,
 		      RefTable* reftab, BaseColumn* bcp)
@@ -217,5 +217,5 @@ void RefColumn::allocIterBuf (void*& lastVal, void*& curVal,
 void RefColumn::freeIterBuf (void*& lastVal, void*& curVal)
     { colPtr_p->freeIterBuf (lastVal, curVal); }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

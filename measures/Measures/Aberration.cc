@@ -32,7 +32,7 @@
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/casa/System/AipsrcValue.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 const Double Aberration::INTV = 0.04;
@@ -294,5 +294,5 @@ void Aberration::calcAber(Double t) {
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

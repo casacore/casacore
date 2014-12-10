@@ -56,7 +56,7 @@
 
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // At least the Coordinate and header related things could be factored out
 // into template independent code.
@@ -338,5 +338,5 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

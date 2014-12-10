@@ -34,7 +34,7 @@
 #include <casacore/casa/Quanta/MVPosition.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Solar position class and calculations </summary>
 
@@ -194,6 +194,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

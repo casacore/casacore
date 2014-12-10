@@ -33,7 +33,7 @@
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/casa/Arrays/Array.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -829,6 +829,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

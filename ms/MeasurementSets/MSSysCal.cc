@@ -37,7 +37,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // set hasBeenDestroyed to True to avoid validity check in destructor.
 MSSysCal::MSSysCal():hasBeenDestroyed_p(True) { }
@@ -237,5 +237,5 @@ MSSysCal MSSysCal::referenceCopy(const String& newTableName,
 		    (newTableName,writableColumns));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

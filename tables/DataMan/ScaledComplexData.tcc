@@ -43,7 +43,7 @@
 #include <casacore/casa/Utilities/ValTypeId.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class S, class T>
 ScaledComplexData<S,T>::ScaledComplexData (const String& virtualColumnName,
@@ -590,5 +590,5 @@ Slicer ScaledComplexData<S,T>::storedSlicer (const Slicer& virtualSlicer) const
 		   Slicer::endIsLast);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

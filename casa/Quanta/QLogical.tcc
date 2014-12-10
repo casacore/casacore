@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class Qtype>
 Bool operator==(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
@@ -249,5 +249,5 @@ Bool operator>=(const Qtype &left, const Quantum<Qtype> &other) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

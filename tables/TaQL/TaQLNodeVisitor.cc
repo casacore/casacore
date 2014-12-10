@@ -27,9 +27,9 @@
 
 #include <casacore/tables/TaQL/TaQLNodeVisitor.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeVisitor::~TaQLNodeVisitor()
   {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

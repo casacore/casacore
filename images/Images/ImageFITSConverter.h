@@ -38,7 +38,7 @@
  #define WCSLIB_GETWCSTAB
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class PagedImage;
 template<class T> class ImageInterface;
@@ -376,7 +376,7 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/images/Images/ImageFITSConverter.tcc>

@@ -38,7 +38,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // MVEarthMagnetic class
 
@@ -473,5 +473,5 @@ Double operator*(const MVEarthMagnetic &left, const MVPosition &right) {
   return (tmp * left);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

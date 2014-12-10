@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/Tables/TableLock.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Table;
@@ -128,6 +128,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

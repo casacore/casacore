@@ -34,7 +34,7 @@
 #include <casacore/ms/MeasurementSets/MSColumns.h>
 #include <memory>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MeasurementSet;
 class LogIO;
@@ -190,6 +190,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

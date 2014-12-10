@@ -37,7 +37,7 @@
 
 // Don't forget a .tcc file is included at the end!
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Operations for 2 Arrays with possibly different shapes.

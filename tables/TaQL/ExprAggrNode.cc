@@ -33,7 +33,7 @@
 #include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   TableExprAggrNode::TableExprAggrNode (FunctionType ftype,
@@ -407,4 +407,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return set.getFuncs()[itsFunc->seqnr()]->getDate();
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

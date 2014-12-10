@@ -30,7 +30,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/BasicSL/Constants.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Unary arithmetic operators.
 template<class T> AutoDiff<T> operator+(const AutoDiff<T> &other) { 
@@ -583,5 +583,5 @@ AutoDiff<T> max(const AutoDiff<T> &left,
   return tmp.ref();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

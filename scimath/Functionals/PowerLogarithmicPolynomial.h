@@ -35,7 +35,7 @@
 #include <casacore/scimath/Mathematics/AutoDiff.h>
 #include <casacore/scimath/Mathematics/AutoDiffMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -196,7 +196,7 @@ public:
 #undef PowerLogarithmicPolynomial_PS
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/PowerLogarithmicPolynomial.tcc>

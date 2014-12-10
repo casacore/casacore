@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Block<String> SDFITSTable::kwNames;
 
@@ -143,5 +143,5 @@ void SDFITSTable::sdfits_shuffle()
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

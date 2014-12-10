@@ -40,7 +40,7 @@
 #include <casacore/casa/string.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TSMDataColumn::TSMDataColumn (const TSMColumn& column)
 : TSMColumn (column)
@@ -846,5 +846,5 @@ TSMDATACOLUMN_GETPUT(double,doubleV)
 TSMDATACOLUMN_GETPUT(Complex,ComplexV)
 TSMDATACOLUMN_GETPUT(DComplex,DComplexV)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

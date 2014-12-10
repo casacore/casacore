@@ -37,7 +37,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 uInt LatticeFractile<T>::findBin (uInt& fractileInx,
@@ -984,5 +984,5 @@ Vector<T> LatticeFractile<T>::smallMaskedFractiles
   return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

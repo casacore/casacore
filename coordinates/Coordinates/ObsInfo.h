@@ -40,7 +40,7 @@
 //# Forward declarations
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Store miscellaneous information related to an observation.
@@ -228,6 +228,6 @@ ostream &operator<<(ostream &os, const ObsInfo &info);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

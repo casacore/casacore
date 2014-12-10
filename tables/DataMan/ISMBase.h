@@ -35,7 +35,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class BucketCache;
@@ -428,6 +428,6 @@ inline ISMColumn& ISMBase::getColumn (uInt colnr)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

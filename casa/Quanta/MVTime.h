@@ -34,7 +34,7 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class String;
@@ -458,6 +458,6 @@ inline Bool operator==(const MVTime &lh, const MVTime &rh)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

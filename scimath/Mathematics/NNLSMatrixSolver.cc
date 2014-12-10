@@ -33,7 +33,7 @@
 #include <casacore/casa/Logging/LogMessage.h>
 
 #include <casacore/casa/sstream.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #if !defined(NEED_FORTRAN_UNDERSCORES)
 #define NEED_FORTRAN_UNDERSCORES 1
@@ -117,5 +117,5 @@ Bool NNLSMatrixSolver::solve() // Solve AX=B for X
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

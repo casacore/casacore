@@ -35,7 +35,7 @@
 #include <casacore/casa/Containers/MapIO.h>
 #include <casacore/casa/Containers/OrderedMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //  MSPolnParse* MSPolnParse::thisMSSParser = 0x0; // Global pointer to the parser object
   // TableExprNode* MSPolnParse::node_p = 0x0;
@@ -498,4 +498,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //------------------------------------------------------------------------------
   //
   const TableExprNode MSPolnParse::node() { return node_p; }
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

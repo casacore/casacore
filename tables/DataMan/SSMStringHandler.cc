@@ -34,7 +34,7 @@
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SSMStringHandler::SSMStringHandler (SSMBase* aBase):
   itsSSMPtr          (aBase),
@@ -593,5 +593,5 @@ void SSMStringHandler::resync()
   itsCurrentBucket = -1;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

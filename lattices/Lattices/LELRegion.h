@@ -33,7 +33,7 @@
 #include <casacore/lattices/Lattices/LELInterface.h>
 #include <casacore/lattices/Lattices/LatticeRegion.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class LattRegionHolder;
@@ -208,6 +208,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

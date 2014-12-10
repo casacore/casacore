@@ -27,7 +27,7 @@
 
 #include <casacore/casa/Utilities/Compare.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 CompareNoCase::~CompareNoCase()
@@ -41,5 +41,5 @@ int CompareNoCase::comp(const void * obj1, const void * obj2) const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

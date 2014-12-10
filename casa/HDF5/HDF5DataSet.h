@@ -36,7 +36,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/DataType.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward Declarations
   template<typename T> class Block;

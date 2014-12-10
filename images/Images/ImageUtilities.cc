@@ -57,7 +57,7 @@
 #include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 Bool ImageUtilities::pixToWorld (
@@ -272,4 +272,4 @@ void ImageUtilities::copyAttributes (ImageAttrHandler& out,
 }
  
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

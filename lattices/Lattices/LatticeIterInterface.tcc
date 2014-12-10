@@ -36,7 +36,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LatticeIterInterface<T>::LatticeIterInterface()
@@ -440,5 +440,5 @@ Bool LatticeIterInterface<T>::ok() const
   return flag;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

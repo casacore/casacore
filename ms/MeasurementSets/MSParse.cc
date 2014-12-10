@@ -30,7 +30,7 @@
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/ostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   MeasurementSet *MSParse::ms_p = 0;
   MSSelectableTable *MSParse::msInterface_p = 0;
@@ -113,5 +113,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return ios;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

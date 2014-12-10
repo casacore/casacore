@@ -43,7 +43,7 @@
 #include <casacore/measures/Measures/MFrequency.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/casa/BasicSL/String.h> 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSColumns;
 class FitsInput;
@@ -294,7 +294,7 @@ protected:
 };
  
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# forward declarations
 template <class T, Int n> class RigidVector;
@@ -315,7 +315,7 @@ ostream& operator<<(ostream& os, const SquareMatrix<Float,4>& m);
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Mathematics/SquareMatrix.tcc>

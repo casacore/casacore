@@ -43,7 +43,7 @@
 #include <casacore/ms/MeasurementSets/MSSelectionError.h>
 #include <casacore/ms/MeasurementSets/MSSelectableTable.h>
 #include <casacore/ms/MeasurementSets/MSMainColumns.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   class MSSelectableMainColumn
   {
@@ -89,6 +89,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

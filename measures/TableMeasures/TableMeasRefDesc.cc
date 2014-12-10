@@ -41,7 +41,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Set the default type getting function.
 TableMeasRefDesc::TypesFunc* TableMeasRefDesc::theirTypesFunc =
@@ -327,5 +327,5 @@ void TableMeasRefDesc::resetOffset (const Measure& offset)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

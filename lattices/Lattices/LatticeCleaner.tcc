@@ -67,7 +67,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 Bool LatticeCleaner<T>::validatePsf(const Lattice<T> & psf)
@@ -1220,5 +1220,5 @@ void LatticeCleaner<T>::makeBoxesSameSize(IPosition& blc1, IPosition& trc1,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

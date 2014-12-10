@@ -27,7 +27,7 @@
 
 #include <casacore/casa/Containers/OrderedPair.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class K, class V> 
 OrderedPair<K,V>::OrderedPair()
@@ -55,5 +55,5 @@ OrderedPair<K,V>::operator= (const OrderedPair<K,V>& that)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -5,7 +5,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template <class T> class MSSelUtil2
 {
   public:
@@ -28,7 +28,7 @@ template <class T> class MSSelUtil2
                           const Array<Bool>& flag, const Array<Float>& weight);
 
 };
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/ms/MeasurementSets/MSSelUtil2.tcc>

@@ -36,7 +36,7 @@
 #include <casacore/casa/string.h>               // needed for strerror
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RegularFileIO::RegularFileIO (const RegularFile& regularFile,
                               ByteIO::OpenOption option,
@@ -130,5 +130,5 @@ String RegularFileIO::fileName() const
     return itsRegularFile.path().expandedName();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

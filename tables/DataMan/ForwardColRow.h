@@ -32,7 +32,7 @@
 #include <casacore/tables/DataMan/ForwardCol.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class ForwardColumnIndexedRowEngine;
@@ -408,6 +408,6 @@ inline uInt ForwardColumnIndexedRow::convertRownr (uInt rownr)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

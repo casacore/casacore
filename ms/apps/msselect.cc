@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <iostream>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 void select (const String& msin, const String& out, const String& baseline,

@@ -44,7 +44,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <iomanip>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
 				      ValueType vtype,
@@ -490,7 +490,7 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
 	    Array<Int64> arr = operands_p[0]->getArrayInt (id);
             AlwaysAssert (arr.contiguousStorage(), AipsError);
             return std::accumulate(arr.cbegin(), arr.cend(), Int64(0),
-                                   casa::SumSqr<Int64>());
+                                   casacore::SumSqr<Int64>());
 	} else {
 	    Int64 val = operands_p[0]->getInt(id);
 	    return val * val;
@@ -673,7 +673,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
 	    Array<Double> arr = operands_p[0]->getArrayDouble (id);
             AlwaysAssert (arr.contiguousStorage(), AipsError);
             return std::accumulate(arr.cbegin(), arr.cend(), Double(0),
-                                   casa::SumSqr<Double>());
+                                   casacore::SumSqr<Double>());
 	} else {
 	    Double val = operands_p[0]->getDouble(id);
 	    return val * val;
@@ -1679,4 +1679,4 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     return NTNumeric;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

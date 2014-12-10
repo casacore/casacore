@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/ArrayIter.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // 
 // <summary> Iterate an Vector cursor through another Array. </summary>
@@ -130,7 +130,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/VectorIter.tcc>

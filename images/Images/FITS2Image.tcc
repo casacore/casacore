@@ -43,7 +43,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <typename T>
 void FITSImage::crackHeader (CoordinateSystem& cSys,
@@ -381,5 +381,5 @@ template void FITSImage::crackHeader<Int> (CoordinateSystem &, IPosition &, Imag
 template void FITSImage::crackHeader<Short> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt);
 */
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

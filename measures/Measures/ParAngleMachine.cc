@@ -37,7 +37,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Quanta/Unit.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 ParAngleMachine::ParAngleMachine() :
@@ -232,5 +232,5 @@ Double ParAngleMachine::calcAngle(const Double ep) const {
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

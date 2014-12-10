@@ -30,7 +30,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 size_t ModcompConversion::toLocal (Int64* to, const void* from,
                                    size_t nr)
@@ -444,5 +444,5 @@ size_t ModcompConversion::fromLocal(void* to, const Double* from, size_t nr) {
 // compile-command: "gmake OPTLIB=1 ModcompConversion; cd test; gmake tModcompConversion"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

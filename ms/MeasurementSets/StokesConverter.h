@@ -35,7 +35,7 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/measures/Measures/Stokes.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // StokesConverter converts any set of polarizations into any other one
@@ -181,6 +181,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

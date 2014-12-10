@@ -29,7 +29,7 @@
 #include <casacore/measures/Measures/MConvertBase.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -46,5 +46,5 @@ ostream &operator<<(ostream &os, const MConvertBase &mc) {
   return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

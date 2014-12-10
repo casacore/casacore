@@ -26,7 +26,7 @@
 //# Includes
 #include <casacore/scimath/Functionals/PoissonParam.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 PoissonParam<T>::PoissonParam() :
@@ -65,5 +65,5 @@ PoissonParam<T> &PoissonParam<T>::operator=(const PoissonParam<T> &other) {
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

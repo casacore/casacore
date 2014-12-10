@@ -36,7 +36,7 @@
 #include <casacore/casa/Utilities/ValTypeId.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 VirtualArrayColumn<T>::~VirtualArrayColumn()
@@ -329,5 +329,5 @@ IPosition VirtualArrayColumn<T>::shape (uInt)
     return IPosition(0);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

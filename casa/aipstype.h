@@ -28,7 +28,7 @@
 #ifndef CASA_AIPSTYPE_H
 #define CASA_AIPSTYPE_H
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Define the standard types used by Casacore
 
@@ -48,6 +48,6 @@ typedef float Float;
 typedef double Double;
 typedef long double lDouble;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

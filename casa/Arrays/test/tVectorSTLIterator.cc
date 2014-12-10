@@ -29,7 +29,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-using namespace casa;
+using namespace casacore;
 
 void test1()
 {

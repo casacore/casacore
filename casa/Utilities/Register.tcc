@@ -27,7 +27,7 @@
 
 #include <casacore/casa/Utilities/Register.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class t> uInt Register(const t *) {
   static uInt type = 0;
@@ -35,5 +35,5 @@ template<class t> uInt Register(const t *) {
   return type;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

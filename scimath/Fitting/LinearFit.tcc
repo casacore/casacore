@@ -32,7 +32,7 @@
 #include <casacore/scimath/Mathematics/AutoDiffIO.h>
 #include <casacore/scimath/Functionals/Function.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 
@@ -88,5 +88,5 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   return solved_p;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

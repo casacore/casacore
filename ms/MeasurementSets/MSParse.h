@@ -37,7 +37,7 @@
 #include <casacore/ms/MeasurementSets/MSSelectableTable.h>
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class AipsIO;
@@ -140,6 +140,6 @@ private:
   MSSelectableTable *tempMSInterface_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

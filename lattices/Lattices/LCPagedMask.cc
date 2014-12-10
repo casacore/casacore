@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCPagedMask::LCPagedMask()
 {}
@@ -281,5 +281,5 @@ Bool LCPagedMask::isWritable() const
     return itsMask.isWritable();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

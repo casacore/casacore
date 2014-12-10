@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Array.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Logical valued Arrays.
@@ -84,6 +84,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

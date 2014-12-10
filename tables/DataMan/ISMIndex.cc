@@ -35,7 +35,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ISMIndex::ISMIndex (ISMBase* parent)
 : stmanPtr_p (parent),
@@ -167,5 +167,5 @@ void ISMIndex::show (ostream& os) const
     cout << endl;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

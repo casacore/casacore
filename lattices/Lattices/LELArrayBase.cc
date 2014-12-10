@@ -29,7 +29,7 @@
 #include <casacore/lattices/Lattices/LELArrayBase.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELArrayBase::LELArrayBase (const LELArrayBase& other)
 : itsMaskPtr (0)
@@ -206,5 +206,5 @@ void LELArrayBase::combineOrAnd (Bool desiredValue, Array<Bool>& value,
    tempMask.freeStorage (tm, deleteTempMask);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

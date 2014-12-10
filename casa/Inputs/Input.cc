@@ -39,7 +39,7 @@
 #define DEBUG 1
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //
 // The constructor does nothing more but read the users environment
@@ -608,5 +608,5 @@ Vector<Bool> Input::makeMaskFromRanges(const String& ranges, uInt length,
   return mask;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

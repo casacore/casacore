@@ -36,7 +36,7 @@
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class LatticeExprNode;
@@ -167,6 +167,6 @@ inline const TableRecord& LELImageCoord::miscInfo() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

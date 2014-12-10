@@ -38,7 +38,7 @@
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Table;
@@ -2036,6 +2036,6 @@ inline TableExprNodeRep* TableExprNode::getRep()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

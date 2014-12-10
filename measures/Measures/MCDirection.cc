@@ -37,7 +37,7 @@
 #include <casacore/measures/Measures/Nutation.h>
 #include <casacore/measures/Measures/MeasTable.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 uInt MCDirection::ToRef_p[N_Routes][3] = {
@@ -599,5 +599,5 @@ void MCDirection::doFillState (void*) {
   MCBase::makeState(FromTo_p[0],  MDirection::N_Types, N_Routes, ToRef_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

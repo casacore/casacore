@@ -33,7 +33,7 @@
 #include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RNG::~RNG() {
 }
@@ -1031,5 +1031,5 @@ void Weibull::setState() {
 // compile-command: "gmake XLIBLIST=0 Random"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

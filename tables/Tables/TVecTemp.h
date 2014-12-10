@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TVec.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class Vector;
@@ -139,7 +139,7 @@ inline T& TabVecTemp<T>::operator() (uInt index)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/Tables/TVecTemp.tcc>

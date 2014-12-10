@@ -40,7 +40,7 @@
 #include <unistd.h>
 #include <sys/stat.h>               // needed for stat or stat64
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void operator<< (ostream& ios, const MultiFileInfo& info)
     { ios << info.name << ' ' << info.blockNrs << ' ' << info.size << ' '
@@ -420,4 +420,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

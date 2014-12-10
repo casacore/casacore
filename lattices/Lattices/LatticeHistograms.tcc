@@ -62,7 +62,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Public functions
 
@@ -1340,5 +1340,5 @@ void HistTiledCollapser<T>::endAccumulator(Array<T>& result,
     delete pHist_p;
 }      
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

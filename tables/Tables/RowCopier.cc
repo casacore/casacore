@@ -36,7 +36,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // this class is used internally by RowCopier and is what really does the work.
 
@@ -164,5 +164,5 @@ Bool RowCopier::copy(uInt toRow, uInt fromRow)
 RowCopier::~RowCopier()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

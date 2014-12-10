@@ -34,7 +34,7 @@
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Arrays/Vector.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Abstract base class for an image attributes handler.
@@ -121,6 +121,6 @@ public:
   virtual void closeGroup (const String& groupName);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

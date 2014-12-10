@@ -32,7 +32,7 @@
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/images/Regions/WCRegion.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 
@@ -62,6 +62,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

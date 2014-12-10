@@ -50,7 +50,7 @@
 #include <casacore/casa/stdlib.h>
 #include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Public functions
 
@@ -573,7 +573,7 @@ void ImageStatistics<T>::displayStats(
 	}
 }
 
-template <class T> Quantum<typename casa::NumericTraits<T>::PrecisionType> ImageStatistics<T>::_flux(
+template <class T> Quantum<typename casacore::NumericTraits<T>::PrecisionType> ImageStatistics<T>::_flux(
 	AccumType sum, Double beamAreaInPixels
 ) const {
 	ThrowIf(
@@ -697,5 +697,5 @@ void ImageStatistics<T>::listMinMax(ostringstream& osMin,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

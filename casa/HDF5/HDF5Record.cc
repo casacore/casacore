@@ -33,7 +33,7 @@
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifdef HAVE_HDF5
 

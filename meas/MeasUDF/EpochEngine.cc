@@ -32,7 +32,7 @@
 //#include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 
-namespace casa {
+namespace casacore {
 
   EpochEngine::EpochEngine()
     : itsNDim           (-1),

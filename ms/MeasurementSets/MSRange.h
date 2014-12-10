@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MeasurementSets/MSSelectionKeywords.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> class ArrayColumn;
 template <class T> class ScalarColumn;
@@ -215,7 +215,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

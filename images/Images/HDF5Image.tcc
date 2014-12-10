@@ -58,7 +58,7 @@
 #include <casacore/casa/sstream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> 
 HDF5Image<T>::HDF5Image (const TiledShape& shape, 
@@ -542,4 +542,4 @@ ImageAttrHandler& HDF5Image<T>::attrHandler (Bool createHandler)
                                    map_p.isWritable());
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

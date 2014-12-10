@@ -35,7 +35,7 @@
 #include <casacore/measures/Measures/MeasRef.h>
 #include <casacore/casa/Quanta/MVRadialVelocity.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MRadialVelocity;
@@ -291,6 +291,6 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

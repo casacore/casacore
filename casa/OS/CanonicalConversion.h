@@ -29,11 +29,11 @@
 #define CASA_CANONICALCONVERSION_H
 
 //# Includes
-#include <casacore/casa/aipsxtype.h>
+#include <casacore/casa/aips.h>
 #include <casacore/casa/OS/Conversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Define the canonical sizes of the built-in data types.
 // These are the same for all machine architectures.
@@ -971,6 +971,6 @@ inline unsigned int CanonicalConversion::canonicalSize (const double*)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

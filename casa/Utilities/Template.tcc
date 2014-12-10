@@ -38,7 +38,7 @@
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Utilities/Sort.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //# Static constants
   // Patterns to analyse an input line
@@ -873,5 +873,5 @@ void Template::setOutput(const String &txt) {
   output_p[count_p++] = txt;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

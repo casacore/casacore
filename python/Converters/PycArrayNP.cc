@@ -34,7 +34,7 @@
 
 
 #define PYC_USE_PYARRAY "numpy"
-namespace casa { namespace python { namespace numpy {
+namespace casacore { namespace python { namespace numpy {
 
   Bool importArray()
   {
@@ -258,7 +258,7 @@ namespace casa { namespace python { namespace numpy {
 #include <python/Converters/PycArrayComCC.h>
 
   template <typename T>
-  boost::python::object makePyArrayObject (casa::Array<T> const& arr)
+  boost::python::object makePyArrayObject (casacore::Array<T> const& arr)
   {
     // Load the API if needed.
     if (!PyArray_API) loadAPI();
@@ -283,7 +283,7 @@ namespace casa { namespace python { namespace numpy {
     }
     // Copy the data to numarray.
     if (arr.size() > 0) {
-      casa::Bool deleteIt;
+      casacore::Bool deleteIt;
       const T* src = arr.getStorage(deleteIt);
       ArrayCopy<T>::toPy (po->data, src, arr.size());
       arr.freeStorage(src, deleteIt);

@@ -34,7 +34,7 @@
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Quantum;
 
@@ -152,6 +152,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

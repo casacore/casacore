@@ -32,7 +32,7 @@
 #include <casacore/measures/Measures/Nutation.h>
 #include <casacore/measures/Measures/MeasTable.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 uInt MCEpoch::ToRef_p[N_Routes][3] = {
@@ -315,5 +315,5 @@ void MCEpoch::doFillState (void*) {
   MCBase::makeState(FromTo_p[0], MEpoch::N_Types, N_Routes, ToRef_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

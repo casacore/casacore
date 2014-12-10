@@ -34,7 +34,7 @@
 #include <casacore/ms/MeasurementSets/MSParse.h>
 #include <casacore/ms/MeasurementSets/MSSelectionError.h>
 #include <casacore/ms/MeasurementSets/MSSelectableTable.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -109,7 +109,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     static TableExprNode columnAsTEN_p;
   };
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 
@@ -122,7 +122,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // #include <casacore/ms/MeasurementSets/MSParse.h>
 // #include <casacore/ms/MeasurementSets/MSSelectionError.h>
 // #include <casacore/ms/MeasurementSets/MSSelectableTable.h>
-// namespace casa { //# NAMESPACE CASA - BEGIN
+// namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
 //   //# Forward Declarations
   
@@ -202,7 +202,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
 //   };
   
-// } //# NAMESPACE CASA - END
+// } //# NAMESPACE CASACORE - END
 
 // #endif
 //---------------------OLD CODE END (Feb. 2012)-------------------

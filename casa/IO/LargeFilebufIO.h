@@ -7,7 +7,7 @@
 
 #include <casacore/casa/IO/FilebufIO.h>
 
-namespace casa {
+namespace casacore {
   typedef FilebufIO LargeFilebufIO;
 }
 

@@ -32,7 +32,7 @@
 #include <casacore/ms/MeasurementSets/MSParse.h>
 #include <casacore/ms/MeasurementSets/MSSelectionError.h>
 #include <casacore/ms/MeasurementSets/MSSelectionErrorHandler.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -107,6 +107,6 @@ private:
   static  Vector<Int> idList;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

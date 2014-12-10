@@ -33,7 +33,7 @@
 #include <casacore/measures/Measures/MCBase.h>
 #include <casacore/measures/Measures/MRBase.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template<class M>
@@ -474,5 +474,5 @@ void MeasConvert<M>::print(ostream &os) const {
   if (!outref.empty()) os << " Output reference" << outref;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

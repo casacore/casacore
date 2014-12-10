@@ -29,7 +29,7 @@
 
 %{
 #include <errno.h>
-  using namespace casa;
+  using namespace casacore;
 %}
 
 %pure-parser                /* make parser re-entrant */

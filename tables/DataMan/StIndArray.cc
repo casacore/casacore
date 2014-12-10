@@ -37,7 +37,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StIndArray::StIndArray (Int64 fileOffset)
 : fileOffset_p (fileOffset),
@@ -447,5 +447,5 @@ STINDARRAY_GETPUT(Complex,ComplexV)
 STINDARRAY_GETPUT(DComplex,DComplexV)
 STINDARRAY_GETPUT(String,StringV)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

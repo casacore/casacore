@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# This header file defines the error classes thrown by the
   //# MSSelection and related classes.
@@ -296,6 +296,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //-------------------------------------------------------------------
   //  
   String constructMessage(const Int pos, const String& command);
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

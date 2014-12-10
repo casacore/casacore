@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/scimath/Functionals/CompoundParam.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 CompoundParam<T>::CompoundParam() : 
@@ -120,5 +120,5 @@ uInt CompoundParam<T>::addFunction(const Function<T> &newFunction) {
   return i;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

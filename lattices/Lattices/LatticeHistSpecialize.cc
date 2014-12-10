@@ -42,7 +42,7 @@
 #include <casacore/casa/System/PGPlotter.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 uInt LatticeHistSpecialize::bin(Float datum, Float dmin, Float width, uInt nBins)
 {
@@ -400,5 +400,5 @@ Complex LatticeHistSpecialize::setBinWidth (Complex dmin, Complex dmax, uInt nBi
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

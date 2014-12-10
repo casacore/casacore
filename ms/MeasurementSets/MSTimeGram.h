@@ -34,7 +34,7 @@
 #include <casacore/ms/MeasurementSets/MSTimeDefinitions.h>
 #include <casacore/ms/MeasurementSets/MSTimeParse.h> // routines used by bison actions
 #include <casacore/ms/MeasurementSets/MSSelectableMainColumn.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //# Forward Declarations
   class MeasurementSet;
@@ -106,6 +106,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 				Int hour, Int minute, Int sec, Int fsec);
   // </group>
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

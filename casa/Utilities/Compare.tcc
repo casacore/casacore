@@ -27,7 +27,7 @@
 
 #include <casacore/casa/Utilities/Compare.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ObjCompare<T>::~ObjCompare()
@@ -100,5 +100,5 @@ int CompareIntervalReal<T>::comp(const void * obj1, const void * obj2) const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

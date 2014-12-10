@@ -52,7 +52,7 @@
 //#include <casacore/casa/Quanta/MVAngle.h>
 
 
-using namespace casa;
+using namespace casacore;
 
 int main(int argc, const char* argv[]) {
 

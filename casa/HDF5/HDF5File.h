@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/IO/ByteIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // A class representing an HDF5 file.

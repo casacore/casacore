@@ -34,7 +34,7 @@
 #include <casacore/scimath/Mathematics/AutoDiffA.h>
 #include <casacore/scimath/Mathematics/AutoDiffX.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //
 // <summary> Function data types for parameters and arguments
@@ -248,6 +248,6 @@ public:
 #undef FunctionTraits_PX
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

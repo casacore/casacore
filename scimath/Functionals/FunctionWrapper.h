@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/WrapperParam.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 template <class T> class Vector;
@@ -147,7 +147,7 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Functionals/FunctionWrapper.tcc>

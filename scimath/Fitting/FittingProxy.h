@@ -35,11 +35,11 @@
 
 #include <casacore/casa/namespace.h>
 //# Forward declarations
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class String;
   template<class T> class GenericL2Fit;
   template<class T> class Vector;
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 // <summary> This class gives Proxy to Fitting connection</summary>
 
@@ -157,8 +157,8 @@ private:
     //# Data
     // Pointer to a Fitting Machine: real or complex
     // <group>
-    casa::GenericL2Fit<Double> *fitter_p;
-    casa::GenericL2Fit<DComplex> *fitterCX_p;
+    casacore::GenericL2Fit<Double> *fitter_p;
+    casacore::GenericL2Fit<DComplex> *fitterCX_p;
     // </group>
     // Number of unknowns
     Int n_p;

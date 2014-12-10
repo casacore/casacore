@@ -34,7 +34,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class to define a rectangular box of interest.
@@ -164,6 +164,6 @@ inline Vector<Float> LCBox::trc() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

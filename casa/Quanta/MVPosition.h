@@ -37,7 +37,7 @@
 #include <casacore/casa/Quanta/MeasValue.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class RotMatrix;
@@ -294,6 +294,6 @@ Double operator*(const MVPosition &left, const Vector<Double> &right);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

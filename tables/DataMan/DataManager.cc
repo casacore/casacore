@@ -53,7 +53,7 @@
 #include <casacore/casa/stdio.h>                     // for sprintf
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 DataManager::DataManager()
 : nrcol_p       (0),
@@ -590,5 +590,5 @@ void DataManager::doRegisterMainCtor (void*)
                         BitFlagsEngine<Int>::makeObject);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

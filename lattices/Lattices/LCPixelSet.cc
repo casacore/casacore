@@ -31,7 +31,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LCPixelSet::LCPixelSet()
 {}
@@ -122,5 +122,5 @@ LCPixelSet* LCPixelSet::fromRecord (const TableRecord& rec,
     return regPtr;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -28,7 +28,7 @@
 //# Includes
 #include <casacore/scimath/Functionals/PowerLogarithmicPolynomial.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -50,5 +50,5 @@ T PowerLogarithmicPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) con
 	return param_p[0]*pow(x[0], accum);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -28,7 +28,7 @@
 */
 
 %{
-  using namespace casa;
+  using namespace casacore;
 %}
 
 %pure-parser                /* make parser re-entrant */

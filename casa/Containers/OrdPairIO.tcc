@@ -28,7 +28,7 @@
 #include <casacore/casa/Containers/OrdPairIO.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class key, class value> AipsIO& operator<< (AipsIO& ios, const OrderedPair<key,value>& op) {
     ios << op.x() << op.y();
@@ -44,5 +44,5 @@ template<class key, class value> ostream& operator<< (ostream& ios, const Ordere
   return ios;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

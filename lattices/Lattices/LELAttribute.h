@@ -34,7 +34,7 @@
 #include <casacore/lattices/Lattices/LELCoordinates.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Ancillary information for the LEL letter classes.
@@ -148,6 +148,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

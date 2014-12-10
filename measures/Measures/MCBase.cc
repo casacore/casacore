@@ -31,7 +31,7 @@
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/iomanip.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -153,5 +153,5 @@ String MCBase::showState(uInt *state,
   return String(oss);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

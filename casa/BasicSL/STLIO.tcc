@@ -29,7 +29,7 @@
 #include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/IO/AipsIOCarray.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<class ITER>
   void showDataIter (ostream& os, ITER begin, const ITER& end, const char* sep,
@@ -68,4 +68,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return ios;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

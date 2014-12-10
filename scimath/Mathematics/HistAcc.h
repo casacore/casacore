@@ -35,7 +35,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // forward declarations:
 template <class T> class Array;
@@ -225,7 +225,7 @@ inline void HistAcc<T>::put(const T v) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/Mathematics/HistAcc.tcc>

@@ -34,7 +34,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/RecordField.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 
@@ -245,7 +245,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

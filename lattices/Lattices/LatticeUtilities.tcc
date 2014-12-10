@@ -48,7 +48,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
 
-namespace casa {  //# namespace casa begin
+namespace casacore {  //# namespace casa begin
 
 template <class T> 
 void minMax(T & globalMin, T & globalMax, 
@@ -299,4 +299,4 @@ void LatticeUtilities::bin (MaskedArray<T>& out, const MaskedArray<T>& in,
    out = tmp;
 }
 
-} //# End namespace casa
+} //# End namespace casacore

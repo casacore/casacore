@@ -27,7 +27,7 @@
 
 #include <casacore/casa/Utilities/Sequence.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 /*
    // Inlined this in Sequence.h so this is now
@@ -38,5 +38,5 @@ template<class T> Sequence<T>::~Sequence()
 }
 */
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

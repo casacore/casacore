@@ -28,7 +28,7 @@
 #include <casacore/ms/MeasurementSets/MSObsColumns.h>
 #include <casacore/ms/MeasurementSets/MSObservation.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSObservationColumns::
 ROMSObservationColumns(const MSObservation& msObservation):
@@ -197,5 +197,5 @@ void MSObservationColumns::attach(MSObservation& msObservation)
 // compile-command: "gmake MSObsColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

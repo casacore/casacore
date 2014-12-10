@@ -35,7 +35,7 @@
 #include <casacore/casa/OS/File.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>  
 // Get information about, and manipulate symbolic links
@@ -200,6 +200,6 @@ inline void SymLink::move (const String& target, Bool overwrite)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

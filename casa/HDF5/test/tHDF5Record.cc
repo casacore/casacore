@@ -35,7 +35,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-using namespace casa;
+using namespace casacore;
 
 Array<Bool> arrb()
 {

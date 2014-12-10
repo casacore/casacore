@@ -33,7 +33,7 @@
 #include <casacore/casa/OS/DataConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A class with virtual functions to convert IBM format.
@@ -206,6 +206,6 @@ inline IBMDataConversion::IBMDataConversion()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

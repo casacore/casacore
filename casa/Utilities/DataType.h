@@ -33,7 +33,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 #include <casacore/casa/iosfwd.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class Table;
 template<class T> class Array;
@@ -234,6 +234,6 @@ Bool isNumeric(DataType type);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

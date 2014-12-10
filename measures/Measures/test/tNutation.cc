@@ -29,7 +29,7 @@
 #include <casacore/measures/Measures/Nutation.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-using namespace casa;
+using namespace casacore;
 
 void doIt (int nthr, int n)
 {

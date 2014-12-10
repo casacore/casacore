@@ -33,7 +33,7 @@
 #include <casacore/tables/DataMan/SSMBase.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // The Standard Storage Manager
@@ -188,6 +188,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

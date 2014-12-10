@@ -39,7 +39,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 CompressFloat::CompressFloat (const String& virtualColumnName,
 			      const String& storedColumnName,
@@ -574,5 +574,5 @@ void CompressFloat::putColumnSliceCells (const RefRows& rownrs,
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

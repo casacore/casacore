@@ -34,7 +34,7 @@
 #include <casacore/measures/Measures/MCPosition.h>
 #include <casacore/measures/Measures/MeasTable.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 uInt MCPosition::ToRef_p[N_Routes][3] = {
@@ -189,5 +189,5 @@ void MCPosition::doFillState (void*) {
   MCBase::makeState(FromTo_p[0], MPosition::N_Types, N_Routes, ToRef_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

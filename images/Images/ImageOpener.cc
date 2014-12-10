@@ -43,7 +43,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Regex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Initialize registry with the unknown as the default open function.
 SimpleOrderedMap<ImageOpener::ImageTypes,ImageOpener::OpenImageFunction*>
@@ -268,4 +268,4 @@ LatticeBase* ImageOpener::openImage (const String& fileName,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

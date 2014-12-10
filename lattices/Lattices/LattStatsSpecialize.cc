@@ -48,7 +48,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void LattStatsSpecialize::accumulate (
 		Double& nPts, Double& sum,
@@ -550,5 +550,5 @@ Bool LattStatsSpecialize::minMax(Complex& dataMin, Complex& dataMax, const Maske
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

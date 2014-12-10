@@ -31,7 +31,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //-------------------------------------------------------------------------
 
@@ -158,4 +158,4 @@ Vector<Int> MSSpWindowIndex::matchFreq(const Vector<MFrequency>& chanFreq,
 
 //-------------------------------------------------------------------------
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

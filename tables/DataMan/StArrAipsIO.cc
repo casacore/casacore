@@ -36,7 +36,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StManColumnArrayAipsIO::StManColumnArrayAipsIO (StManAipsIO* smptr,
 						int dataType)
@@ -420,5 +420,5 @@ void StManColumnArrayAipsIO::getData (void* dp, uInt inx, uInt nrval,
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

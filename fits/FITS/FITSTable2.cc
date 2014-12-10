@@ -41,7 +41,7 @@
 
 #include <casacore/casa/stdio.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 uInt sizeofStringField(const RecordDesc &description, const Record &sizes,
 		       uInt whichField)
@@ -635,5 +635,5 @@ FitsOutput *FITSTableWriter::makeWriter(const String &fileName)
     return file;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -58,7 +58,7 @@
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MS1ToMS2Converter::MS1ToMS2Converter(const String& ms2,
 				     const String& ms1,
@@ -941,5 +941,5 @@ Bool MS1ToMS2Converter::convert()
   return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

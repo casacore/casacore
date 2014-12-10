@@ -68,7 +68,7 @@
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/scimath/Mathematics/MatrixMathLA.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define MIN(a,b) ((a)<=(b) ? (a) : (b))
 #define MAX(a,b) ((a)>=(b) ? (a) : (b))
@@ -1227,4 +1227,4 @@ Bool MultiTermLatticeCleaner<T>::findMaxAbsLattice(const TempLattice<Float>& mas
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

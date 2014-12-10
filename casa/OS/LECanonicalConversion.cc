@@ -31,7 +31,7 @@
 #include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 size_t LECanonicalConversion::toLocalChar (void* to, const void* from,
                                            size_t nr)
@@ -220,5 +220,5 @@ LECANONICALCONVERSION_DO (CONVERT_LECAN_DOUBLE, SIZE_LECAN_DOUBLE,
 			  toLocalDouble, fromLocalDouble,
 			  byteToLocalDouble, byteFromLocalDouble, double)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

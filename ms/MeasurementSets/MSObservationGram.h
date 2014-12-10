@@ -33,7 +33,7 @@
 #include <casacore/ms/MeasurementSets/MSObservationParse.h> 
 #include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MeasurementSet;
@@ -104,6 +104,6 @@ class TableExprNode;
   
   // </group>
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

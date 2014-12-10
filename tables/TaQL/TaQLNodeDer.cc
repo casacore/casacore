@@ -34,7 +34,7 @@
 #include <iomanip>
 #include <sstream>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 TaQLConstNodeRep::~TaQLConstNodeRep()
@@ -1345,4 +1345,4 @@ TaQLUnitNodeRep* TaQLUnitNodeRep::restore (AipsIO& aio)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

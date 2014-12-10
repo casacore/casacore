@@ -33,7 +33,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Logging/LogIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class String;
@@ -108,6 +108,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

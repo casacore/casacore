@@ -27,7 +27,7 @@
 
 #include <casacore/ms/MeasurementSets/MSSelectionError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 MSSelectionError::MSSelectionError (Category c)
@@ -241,5 +241,5 @@ MSSelectionObservationParseError::MSSelectionObservationParseError (const String
 MSSelectionObservationParseError::~MSSelectionObservationParseError () throw()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

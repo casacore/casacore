@@ -36,7 +36,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/stdio.h>		// for sprintf
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 TSMFile::TSMFile (const TiledStMan* stman, uInt fileSequenceNr,
                   const TSMOption& tsmOpt, MultiFile* mfile)
 : fileSeqnr_p (fileSequenceNr),
@@ -123,5 +123,5 @@ void TSMFile::getObject (AipsIO& ios)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

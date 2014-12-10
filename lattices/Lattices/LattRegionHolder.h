@@ -31,7 +31,7 @@
 //# Includes
 #include <casacore/lattices/Lattices/LatticeRegion.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class CoordinateSystem;
@@ -185,6 +185,6 @@ inline uInt LattRegionHolder::ndim() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

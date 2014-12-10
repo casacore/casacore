@@ -35,7 +35,7 @@
 #include <casacore/casa/IO/AipsIO.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // Class to hold table synchronization data.
@@ -141,6 +141,6 @@ inline uInt TableSyncData::getModifyCounter() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

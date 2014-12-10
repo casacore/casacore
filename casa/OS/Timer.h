@@ -60,7 +60,7 @@ extern "C" int ftime(struct timeb*);
 #include <sys/resource.h>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Class declaration.
 class String;
@@ -205,6 +205,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

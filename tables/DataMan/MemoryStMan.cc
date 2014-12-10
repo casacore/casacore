@@ -29,7 +29,7 @@
 #include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MemoryStMan::MemoryStMan()
 : MSMBase()
@@ -43,5 +43,5 @@ MemoryStMan::MemoryStMan (const String& storageManagerName)
 MemoryStMan::~MemoryStMan()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

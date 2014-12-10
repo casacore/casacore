@@ -33,7 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class String;
@@ -460,6 +460,6 @@ std::ostream &operator<<(std::ostream &os, const Measure &meas);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

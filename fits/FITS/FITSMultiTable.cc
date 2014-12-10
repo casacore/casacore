@@ -42,7 +42,7 @@
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Utilities/GenSort.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Used for debug print statements
 // #include <casacore/casa/Arrays/ArrayIO.h
@@ -275,5 +275,5 @@ Time FITSMultiTable::timeFromFile(const String &fileName)
     return Time(year, month, day, hour, minutes, seconds*1.0);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -35,7 +35,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableMeasValueDesc::TableMeasValueDesc()
 {}
@@ -95,5 +95,5 @@ void TableMeasValueDesc::checkColumn (const TableDesc& td) const
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
