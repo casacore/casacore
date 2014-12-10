@@ -30,7 +30,7 @@ Mathematics/RigidVector2.cc
 Mathematics/MedianSlider.cc
 Mathematics/VectorKernel.cc
 Mathematics/VanVleck.cc
-StefCal/StefCal.cc
+#StefCal/StefCal.cc
 )
 
 if (FFTW3_FOUND)
