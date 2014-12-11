@@ -277,9 +277,17 @@ namespace casacore { //# name space casa begins
     for (uInt i=0; i<images.size(); ++i) {
       tempNodes[i] = images[i].makeNode();
     }
-    LatticeBase* lattice = openImageOrExpr (name, maskSp, tempNodes);
+    String msg;
+    LatticeBase* lattice = 0;
+    try {
+      lattice = openImageOrExpr (name, maskSp, tempNodes);
+    } catch (const std::exception& x) {
+      msg = x.what();
+      lattice = 0;
+    }
     if (lattice == 0) {
-      throw AipsError ("Image " + name + " cannot be opened");
+      throw AipsError (name + " cannot be opened as image (expression): "
+                       + msg);
     }
     setup (lattice);
   }
