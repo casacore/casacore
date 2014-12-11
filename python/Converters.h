@@ -29,10 +29,10 @@
 #define PYRAP_CONVERTERS_H
 
 //# Includes
-#include <python/Converters/PycBasicData.h>
-#include <python/Converters/PycRecord.h>
-#include <python/Converters/PycValueHolder.h>
-#include <python/Converters/PycExcp.h>
+#include <casacore/python/Converters/PycBasicData.h>
+#include <casacore/python/Converters/PycRecord.h>
+#include <casacore/python/Converters/PycValueHolder.h>
+#include <casacore/python/Converters/PycExcp.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

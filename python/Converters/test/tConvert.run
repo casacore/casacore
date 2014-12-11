@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Use .run file for 2 reasons:
+#  1. tConvert.py is not executable
+#  2. Do not use valgrind on it
+
+python tConvert.py

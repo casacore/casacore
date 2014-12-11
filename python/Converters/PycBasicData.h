@@ -31,10 +31,12 @@
 // include python first to avoid _POSIX_C_SOURCE redefined warnings
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
-#include <python/Converters/PycArray.h>
+#include <casacore/python/Converters/PycArray.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <vector>
 #include <map>
 
@@ -152,7 +154,7 @@ namespace casacore { namespace python {
     template <typename ContainerType, typename ValueType>
     static void set_value(ContainerType& a, std::size_t i, ValueType const& v)
     {
-      assert(a.size() == i);
+      AlwaysAssert(a.size() == i, AipsError);
       a.push_back(v);
     }
   };
