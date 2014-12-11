@@ -25,7 +25,7 @@
 //#
 //# $Id: PycArrayNP.cc,v 1.2 2006/11/07 00:17:23 gvandiep Exp $
 
-#include <python/Converters/PycArrayNP.h>
+#include <casacore/python/Converters/PycArrayNP.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -255,7 +255,7 @@ namespace casacore { namespace python { namespace numpy {
   }
 
 
-#include <python/Converters/PycArrayComCC.h>
+#include <casacore/python/Converters/PycArrayComCC.h>
 
   template <typename T>
   boost::python::object makePyArrayObject (casacore::Array<T> const& arr)
@@ -276,8 +276,8 @@ namespace casacore { namespace python { namespace numpy {
       }
     }
     // Create the array from the shape.
-    PyArrayObject* po = (PyArrayObject*)PyArray_SimpleNew
-      (nd, &(newshp[0]), TypeConvTraits<T>::pyType());
+    PyArrayObject* po = (PyArrayObject*)
+      (PyArray_SimpleNew(nd, &(newshp[0]), TypeConvTraits<T>::pyType()));
     if (po == 0) {
       throw AipsError ("PycArray: failed to allocate python array-object");
     }

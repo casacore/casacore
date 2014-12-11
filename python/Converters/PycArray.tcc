@@ -28,8 +28,8 @@
 #ifndef PYRAP_PYCARRAY_TCC
 #define PYRAP_PYCARRAY_TCC
 
-#include <python/Converters/PycArray.h>
-#include <python/Converters/PycArrayNP.h>
+#include <casacore/python/Converters/PycArray.h>
+#include <casacore/python/Converters/PycArrayNP.h>
 #include <boost/python/object.hpp>
 
 namespace casacore { namespace python {

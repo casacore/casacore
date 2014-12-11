@@ -25,11 +25,11 @@
 //#
 //# $Id: tConvert.cc,v 1.4 2006/11/06 00:14:44 gvandiep Exp $
 
-#include <python/Converters/PycExcp.h>
-#include <python/Converters/PycBasicData.h>
-#include <python/Converters/PycValueHolder.h>
-#include <python/Converters/PycRecord.h>
-#include <python/Converters/PycArray.h>
+#include <casacore/python/Converters/PycExcp.h>
+#include <casacore/python/Converters/PycBasicData.h>
+#include <casacore/python/Converters/PycValueHolder.h>
+#include <casacore/python/Converters/PycRecord.h>
+#include <casacore/python/Converters/PycArray.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 
 #include <boost/python.hpp>
@@ -88,10 +88,6 @@ namespace casacore { namespace python {
       {cout << "vecvecuInt " << in << endl; return in;}
     IPosition testipos (const IPosition& in)
       {cout << "IPos " << in << endl; return in;}
-    Bool canusenumpy()
-      {return PycCanUseNumpy();}
-    Bool canusenumarray()
-      {return PycCanUseNumarray();}
   };
 
 
@@ -115,8 +111,6 @@ namespace casacore { namespace python {
       .def ("teststdvecuint", &TConvert::teststdvecuint)
       .def ("teststdvecvecuint", &TConvert::teststdvecvecuint)
       .def ("testipos",       &TConvert::testipos)
-      .def ("canusenumpy",    &TConvert::canusenumpy)
-      .def ("canusenumarray", &TConvert::canusenumarray)
       ;
   }
 

@@ -25,7 +25,7 @@
 //#
 //# $Id: PycExcp.cc,v 1.1 2006/10/17 03:33:50 gvandiep Exp $
 
-#include <python/Converters/PycExcp.h>
+#include <casacore/python/Converters/PycExcp.h>
 #include <casacore/casa/Containers/IterError.h>
 //# The following include is necessary to work around a Boost-Python problem.
 #ifndef PYRAP_NO_BOOSTPYTHON_FIX

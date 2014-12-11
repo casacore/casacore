@@ -25,8 +25,8 @@
 //#
 //# $Id: PycBasicData.cc,v 1.4 2007/01/29 04:23:01 mmarquar Exp $
 
-#include <python/Converters/PycBasicData.h>
-#include <python/Converters/PycArrayNP.h>
+#include <casacore/python/Converters/PycBasicData.h>
+#include <casacore/python/Converters/PycArrayNP.h>
 
 using namespace boost::python;
 

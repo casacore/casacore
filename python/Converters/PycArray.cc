@@ -25,9 +25,9 @@
 //#
 //# $Id: PycArray.cc,v 1.4 2006/11/06 00:14:44 gvandiep Exp $
 
-#include <python/Converters/PycArray.tcc>
-#include <python/Converters/PycArrayNP.h>
-#include <python/Converters/PycBasicData.h>
+#include <casacore/python/Converters/PycArray.tcc>
+#include <casacore/python/Converters/PycArrayNP.h>
+#include <casacore/python/Converters/PycBasicData.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <boost/python/dict.hpp>
 #include <sysmodule.h>
