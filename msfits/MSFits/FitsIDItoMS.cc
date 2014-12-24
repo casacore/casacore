@@ -951,13 +951,11 @@ void FITSIDItoMS1::describeColumns()
 	//
 	// Get a shorthand Bool for array versus scalar.  
 	//
-	Bool isString = False;
 	Bool isSHAPEd = False;
 	String SHAPEstr = "()";
 //	cout << colname << " is";
 	if (field(icol).fieldtype() == FITS::CHAR
 	    || field(icol).fieldtype() == FITS::STRING) {
-	    isString = True;
 //	    cout << " a String-type column";
 	    //
 	    // See whether MSK SHAPE is defined. If so: array.
@@ -1309,7 +1307,7 @@ void FITSIDItoMS1::getAxisInfo()
     Int nAxis = 0;
     uInt imaxis = 0;
     uInt idx = 0;
-    Bool setMAXIS = False;
+    //    Bool setMAXIS = False;
     const FitsKeyword* kw;
     String kwname;
     kwl.first();
@@ -1324,7 +1322,7 @@ void FITSIDItoMS1::getAxisInfo()
       if(kwname == "MAXIS"){
 	nAxis = kw->asInt();
 	//cout << "nAxis=" << nAxis << endl;;
-	setMAXIS = True;
+        //	setMAXIS = True;
       }
     }
     if (nAxis < 1) {
@@ -1836,12 +1834,11 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 
   Vector<Double> uvw(3); // Move this temporary out of the loop
   Vector<Float> _uvw(3); 
-  Int lastAnt1, lastAnt2, lastArray, lastSpW, lastSourceId;
-  lastAnt1=-1; lastAnt2=-1; lastArray=-1; lastSpW=-1; lastSourceId=-1;
+  Int lastSpW;
+  lastSpW=-1;
   Int putrow = -1;
   //  Double lastTime=0;
   //  Bool lastRowFlag=False;
-  Float lastWeight=0.0;
   Int nScan = 0;
 
   if (firstMain) {
@@ -2068,7 +2065,6 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       Vector<Float> tmp(nCorr); tmp=1.0;
       msc.sigma().put(putrow,tmp);
       msc.weight().put(putrow,tmp);
-      lastWeight=1.0;
 
       msc.interval().put(putrow,interval);
       msc.exposure().put(putrow,interval);
@@ -2415,17 +2411,15 @@ void FITSIDItoMS1::fillFeedTable() {
   const FitsKeyword* fkw;
   String kwname;
   kwl.first();
-  Int noSTKD = 1;
-  Int firstSTK = 0;
   Int nIF = 1;
   while ((fkw = kwl.next())){
     kwname = fkw->name();
     if (kwname == "NO_STKD") {
-      noSTKD = fkw->asInt();
+      //noSTKD = fkw->asInt();
       //cout << kwname << "=" << noSTKD << endl;
     }
     if (kwname == "STK_1") {
-      firstSTK = fkw->asInt();
+      //firstSTK = fkw->asInt();
       //cout << kwname << "=" << firstSTK << endl;
     }
     if (kwname == "NO_BAND") {
@@ -2583,7 +2577,6 @@ void FITSIDItoMS1::fillSpectralWindowTable()
   const FitsKeyword* kw;
   String kwname;
   Int nCorr = 1;
-  Int firstSTK = 0;
   Int nIF_p = 0;
   Int nChan = 0;
   Double zeroRefFreq = 0.0;
@@ -2594,9 +2587,6 @@ void FITSIDItoMS1::fillSpectralWindowTable()
       kwname = kw->name();
       if (kwname == "NO_STKD") {
         nCorr = kw->asInt();
-      }
-      if (kwname == "STK_1") {
-        firstSTK = kw->asInt();
       }
       if (kwname == "NO_BAND") {
         nIF_p = kw->asInt();
@@ -2742,7 +2732,6 @@ void FITSIDItoMS1::fillFieldTable()
   ROScalarColumn<Int> fqid(suTab,"FREQID");
 
   // if the values are the same for all bands, the flux, alpha, freqoff, sysvel, and restfreq columns can be scalar
-  Bool IFLUXisScalar = False;
   ROArrayColumn<Float> iflux;
   ROArrayColumn<Float> qflux;
   ROArrayColumn<Float> uflux;
@@ -2750,7 +2739,6 @@ void FITSIDItoMS1::fillFieldTable()
   ROArrayColumn<Float> alpha;
   ROArrayColumn<Float> foffset;  
   ROArrayColumn<Double> foffsetD;  
-  Bool foffsetIsDouble = False;
   ROArrayColumn<Double> sysvel;
   ROArrayColumn<Double> restfreq;
 
@@ -2775,7 +2763,6 @@ void FITSIDItoMS1::fillFieldTable()
     catch(AipsError x){
       foffsetD.attach(suTab,"FREQOFF"); // fq. offset  
       *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
-      foffsetIsDouble = True;
     }
     sysvel.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreq.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
@@ -2789,7 +2776,6 @@ void FITSIDItoMS1::fillFieldTable()
     foffsetS.attach(suTab,"FREQOFF"); // fq. offset  
     sysvelS.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreqS.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
-    IFLUXisScalar = True;
     *itsLog << LogIO::WARN << "Treating ?FLUX, ALPHA, FREQOFF, SYSVEL, and RESTFREQ columns in input SOURCE table as scalar,"
 	    << endl << " i.e. using same value for all bands." << LogIO::POST;
   }      
@@ -2945,7 +2931,7 @@ Bool FITSIDItoMS1::fillSysCalTable()
 {
 
   *itsLog << LogOrigin("FitsIDItoMS()", "fillSysCalTable");
-  MSSysCalColumns& msSysCal(msc_p->sysCal());
+  //MSSysCalColumns& msSysCal(msc_p->sysCal());
   *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
   return False;
 
@@ -2955,7 +2941,7 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
 {
 
   *itsLog << LogOrigin("FitsIDItoMS()", "fillFlagCmdTable");
-  MSFlagCmdColumns& msFlagCmd(msc_p->flagCmd());
+  //MSFlagCmdColumns& msFlagCmd(msc_p->flagCmd());
   *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
   return False;
 
@@ -2966,7 +2952,7 @@ Bool FITSIDItoMS1::fillWeatherTable()
 {
 
   *itsLog << LogOrigin("FitsIDItoMS()", "fillWeatherTable");
-  MSWeatherColumns& msWeather(msc_p->weather());
+  //MSWeatherColumns& msWeather(msc_p->weather());
   *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
   return False;
 
