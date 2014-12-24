@@ -1039,9 +1039,9 @@ void testIt(MSMetaData& md) {
 			cout << "*** test getObservatoryPosition()" << endl;
 			MPosition tPos = md.getObservatoryPosition(0);
 			Vector<Double> angles = tPos.getAngle("deg").getValue();
-            cout << angles << endl;
-			AlwaysAssert(near(angles[0], -67.7547, 1e-6), AipsError);
-			AlwaysAssert(near(angles[1], -23.0292, 1e-6), AipsError);
+                        cout << angles << endl;
+			AlwaysAssert(near(angles[0], -67.7549, 1e-6), AipsError);
+			AlwaysAssert(near(angles[1], -23.0229, 1e-6), AipsError);
 			cout << "*** cache size " << md.getCache() << endl;
 
 		}

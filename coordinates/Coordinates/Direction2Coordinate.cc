@@ -86,11 +86,7 @@ Bool DirectionCoordinate::toPixel(
 		return toPixel(pixel, world.getValue());
 	}
 	else {
-		cout << std::setprecision(10) << "*** got long lat " << world.getValue().getLong("deg")
-			<< " " << world.getValue().getLat() << endl;
 		MDirection converted = MDirection::Convert(world, type_p)();
-		cout << "converted long lat " << std::setprecision(10) << converted.getValue().getLong("deg")
-			<< " " << converted.getValue().getLat() << endl;
 		return toPixel(pixel, converted.getValue());
 	}
 }

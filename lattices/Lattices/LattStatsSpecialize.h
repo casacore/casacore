@@ -69,10 +69,15 @@ class IPosition;
 class LattStatsSpecialize
 {
 public:
+	// !!! WARNING !!!
+	// BOTH accumulate() METHODS ARE DEPRECATED AND NO LONGER USED BY CASACORE NOR
+	// CASA. THESE METHODS WILL BE REMOVED IN THE NEAR FUTURE. PLEASE MODIFY EXISTING
+	// CODE WHICH USES THEM. CURRENT STATISTIC CLASSES MAY BE FOUND IN scimath/Mathematics.
 
    // in this version we maintain a running mean and variance to avoid catastrophic round-off
    // issues that can happen in some cases, CAS-2226. Removing old versions in which these
 	// quantities were not accumulated - dmehring 2011mar01
+
    static void accumulate (
 		Double& nPts, Double& sum,
    		Double& mean, Double& nvariance, Double& variance,
