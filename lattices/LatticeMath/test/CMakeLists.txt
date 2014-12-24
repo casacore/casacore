@@ -1,6 +1,7 @@
 set (tests
 tFit2D
 tLatticeFit
+tLatticeStatsDataProvider
 )
 
 foreach (test ${tests})

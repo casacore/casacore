@@ -198,7 +198,7 @@ private:
            AccumType medAbsDevMed, AccumType quartile,
            AccumType sumSq, AccumType mean, AccumType var,
            AccumType rms, AccumType sigma, AccumType dMin,
-           AccumType dMax
+           AccumType dMax, AccumType q1, AccumType q3
    );
 
 

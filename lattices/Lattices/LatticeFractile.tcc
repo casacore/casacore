@@ -135,9 +135,9 @@ void LatticeFractile<T>::unmaskedHistogram (T& stv, T& endv, T& minv, T& maxv,
       } else if (bin >= Int(nbins)) {
 	hist[nbins-1]++;
       } else {
-	if (dataPtr[i] < boundaries[bin]  &&  bin > 0) {
+	if (dataPtr[i] < boundaries[bin] &&  bin > 0) {
 	  bin--;
-	} else if (dataPtr[i] >= boundaries[bin+1]  &&  bin < Int(nbins)-1) {
+	} else if (dataPtr[i] >= boundaries[bin+1]) {
 	  bin++;
 	}
 	hist[bin]++;
@@ -203,9 +203,9 @@ uInt LatticeFractile<T>::maskedHistogram (T& stv, T& endv, T& minv, T& maxv,
 	} else if (bin >= Int(nbins)) {
 	  hist[nbins-1]++;
 	} else {
-	  if (dataPtr[i] < boundaries[bin]  &&  bin > 0) {
+	  if (dataPtr[i] < boundaries[bin] &&  bin > 0 ) {
 	    bin--;
-	  } else if (dataPtr[i] >= boundaries[bin+1]  &&  bin < Int(nbins)-1) {
+	  } else if (dataPtr[i] >= boundaries[bin+1] &&  bin < Int(nbins)-1) {
 	    bin++;
 	  }
 	  hist[bin]++;
@@ -224,131 +224,131 @@ template <class T>
 Vector<T> LatticeFractile<T>::unmaskedFractile (const Lattice<T>& lattice,
 						Float fraction,
 						uInt smallSize)
-{
-  AlwaysAssert (fraction >= 0  &&  fraction <= 1, AipsError);
-  // Determine the number of elements in the lattice.
-  // If empty, return empty vector.
-  // If small enough, we read them all and do it in memory.
-  uInt ntodo = lattice.shape().product();
-  if (ntodo == 0) {
-    return Vector<T>();
-  }
-  Vector<T> result(1);
-  if (ntodo <= smallSize) {
-    if (fraction == 0.5) {
-      result(0) = median (lattice.get());
-    } else {
-      result(0) = fractile (lattice.get(), fraction);
-    }
-    return result;
-  }
-  // Bad luck. We have to do some more work.
-  // Do a first binning while determining min/max at the same time.
-  // Hopefully the start and end values make some sense.
-  // Make the block 1 element larger, because possible roundoff errors
-  // could result in a binnr just beyond the end.
-  const uInt nbins = 10000;
-  Block<uInt> hist(nbins+1, 0u);
-  Block<T> boundaries(nbins+1);
-  T stv, endv, minv, maxv;
-  unmaskedHistogram (stv, endv, minv, maxv, hist, boundaries, lattice);
-  // The index of the fractile in the lattice is the middle one.
-  // In case of an even nr of elements, it is the first one of the
-  // two middle ones.
-  uInt fractileInx = uInt(fraction * (ntodo-1));
-  // Iterate until the bin containing the fractile does not
-  // contain too many values anymore.
-  RO_LatticeIterator<T> iter(lattice);
-  while (True) {
-    // Determine which bin contains the fractile and update the various values.
-    // On return fractileInx,stv,endv form the basis of the new histogram.
-    ntodo = findBin (fractileInx, stv, endv, minv, maxv, hist, boundaries);
-    // If only a 'few' more points to do, stop making histograms.
-    // Exit if nothing left to do.
-    if (ntodo <= smallSize) {
-      if (ntodo == 0) {
-	result(0) = endv;
+						{
+	AlwaysAssert (fraction >= 0  &&  fraction <= 1, AipsError);
+	// Determine the number of elements in the lattice.
+	// If empty, return empty vector.
+	// If small enough, we read them all and do it in memory.
+	uInt ntodo = lattice.shape().product();
+	if (ntodo == 0) {
+		return Vector<T>();
+	}
+	Vector<T> result(1);
+	if (ntodo <= smallSize) {
+		if (fraction == 0.5) {
+			result(0) = median (lattice.get());
+		} else {
+			result(0) = fractile (lattice.get(), fraction);
+		}
+		return result;
+	}
+	// Bad luck. We have to do some more work.
+	// Do a first binning while determining min/max at the same time.
+	// Hopefully the start and end values make some sense.
+	// Make the block 1 element larger, because possible roundoff errors
+	// could result in a binnr just beyond the end.
+	const uInt nbins = 10000;
+	Block<uInt> hist(nbins+1, 0u);
+	Block<T> boundaries(nbins+1);
+	T stv, endv, minv, maxv;
+	unmaskedHistogram (stv, endv, minv, maxv, hist, boundaries, lattice);
+	// The index of the fractile in the lattice is the middle one.
+	// In case of an even nr of elements, it is the first one of the
+	// two middle ones.
+	uInt fractileInx = uInt(fraction * (ntodo-1));
+	// Iterate until the bin containing the fractile does not
+	// contain too many values anymore.
+	RO_LatticeIterator<T> iter(lattice);
+	while (True) {
+		// Determine which bin contains the fractile and update the various values.
+		// On return fractileInx,stv,endv form the basis of the new histogram.
+		ntodo = findBin (fractileInx, stv, endv, minv, maxv, hist, boundaries);
+		// If only a 'few' more points to do, stop making histograms.
+		// Exit if nothing left to do.
+		if (ntodo <= smallSize) {
+			if (ntodo == 0) {
+				result(0) = endv;
+				return result;
+			}
+			break;
+		}
+		// Histogram the fractile bin with a much smaller bin size.
+		// Determine the min and max of the remaining values.
+		minv = endv;
+		maxv = stv;
+		hist = 0;
+		T step = (endv - stv) / nbins;
+		for (uInt i=0; i<=nbins; i++) {
+			boundaries[i] = stv + i*step;
+		}
+		uInt ndone = 0;
+		iter.reset();
+		while (! iter.atEnd()  &&  ndone<ntodo) {
+			const Array<T>& array = iter.cursor();
+			Bool delData;
+			const T* dataPtr = array.getStorage (delData);
+			uInt n = array.nelements();
+			for (uInt i=0; i<n; i++) {
+				if (dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
+					Int bin = Int((dataPtr[i] - stv) / step);
+					// Due to rounding the bin number might get one too low or high.
+					if (dataPtr[i] < boundaries[bin]) {
+						bin--;
+					} else if (dataPtr[i] >= boundaries[bin+1]) {
+						bin++;
+					}
+					hist[bin]++;
+					if (dataPtr[i] < minv) {
+						minv = dataPtr[i];
+					}
+					if (dataPtr[i] > maxv) {
+						maxv = dataPtr[i];
+					}
+					ndone++;
+				}
+			}
+			array.freeStorage (dataPtr, delData);
+			iter++;
+		}
+		// In principle the last bin should be empty, but roundoff errors
+		// might have put a few in there. So add them to previous one.
+		hist[nbins-1] += hist[nbins];
+	}
+	// There are only a 'few' points left.
+	// So read them all in and determine the fractileInx'th-largest.
+	// Again, due to rounding we might find a few elements more or less.
+	// So take care that the receiving block is not exceeded and that
+	// the number of elements found are used in kthLargest.
+	// Note it also makes sense to stop the iteration when we found all
+	// elements. It may save a few reads from the lattice.
+	Block<T> tmp(ntodo);
+	T* tmpPtr = tmp.storage();
+	uInt ndone = 0;
+	iter.reset();
+	while (! iter.atEnd()  &&  ndone<ntodo) {
+		const Array<T>& array = iter.cursor();
+		Bool delData;
+		const T* dataPtr = array.getStorage (delData);
+		uInt n = array.nelements();
+		for (uInt i=0; i<n; i++) {
+			if (dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
+				tmpPtr[ndone++] = dataPtr[i];
+				if (ndone == ntodo) {
+					break;
+				}
+			}
+		}
+		array.freeStorage (dataPtr, delData);
+		iter++;
+	}
+	// By rounding it is possible that not enough elements were found.
+	// In that case return the middle of the (very small) interval.
+	if (fractileInx >= ndone) {
+		result(0) = (stv+endv)/2;
+	} else {
+		result(0) = GenSort<T>::kthLargest (tmp.storage(), ndone, fractileInx);
+	}
 	return result;
-      }
-      break;
-    }
-    // Histogram the fractile bin with a much smaller bin size.
-    // Determine the min and max of the remaining values.
-    minv = endv;
-    maxv = stv;
-    hist = 0;
-    T step = (endv - stv) / nbins;
-    for (uInt i=0; i<=nbins; i++) {
-      boundaries[i] = stv + i*step;
-    }
-    uInt ndone = 0;
-    iter.reset();
-    while (! iter.atEnd()  &&  ndone<ntodo) {
-      const Array<T>& array = iter.cursor();
-      Bool delData;
-      const T* dataPtr = array.getStorage (delData);
-      uInt n = array.nelements();
-      for (uInt i=0; i<n; i++) {
-	if (dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
-	  Int bin = Int((dataPtr[i] - stv) / step);
-	  // Due to rounding the bin number might get one too low or high.
-	  if (dataPtr[i] < boundaries[bin]) {
-	    bin--;
-	  } else if (dataPtr[i] >= boundaries[bin+1]) {
-	    bin++;
-	  }
-	  hist[bin]++;
-	  if (dataPtr[i] < minv) {
-	    minv = dataPtr[i];
-	  }
- 	  if (dataPtr[i] > maxv) {
-	    maxv = dataPtr[i];
-	  }
-	  ndone++;
-	}
-      }
-      array.freeStorage (dataPtr, delData);
-      iter++;
-    }
-    // In principle the last bin should be empty, but roundoff errors
-    // might have put a few in there. So add them to previous one.
-    hist[nbins-1] += hist[nbins];
-  }
-  // There are only a 'few' points left.
-  // So read them all in and determine the fractileInx'th-largest.
-  // Again, due to rounding we might find a few elements more or less.
-  // So take care that the receiving block is not exceeded and that
-  // the number of elements found are used in kthLargest.
-  // Note it also makes sense to stop the iteration when we found all
-  // elements. It may save a few reads from the lattice.
-  Block<T> tmp(ntodo);
-  T* tmpPtr = tmp.storage();
-  uInt ndone = 0;
-  iter.reset();
-  while (! iter.atEnd()  &&  ndone<ntodo) {
-    const Array<T>& array = iter.cursor();
-    Bool delData;
-    const T* dataPtr = array.getStorage (delData);
-    uInt n = array.nelements();
-    for (uInt i=0; i<n; i++) {
-      if (dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
-	tmpPtr[ndone++] = dataPtr[i];
-	if (ndone == ntodo) {
-	  break;
-	}
-      }
-    }
-    array.freeStorage (dataPtr, delData);
-    iter++;
-  }
-  // By rounding it is possible that not enough elements were found.
-  // In that case return the middle of the (very small) interval.
-  if (fractileInx >= ndone) {
-    result(0) = (stv+endv)/2;
-  } else {
-    result(0) = GenSort<T>::kthLargest (tmp.storage(), ndone, fractileInx);
-  }
-  return result;
 }
 
 

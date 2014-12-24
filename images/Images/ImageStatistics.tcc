@@ -429,7 +429,7 @@ void ImageStatistics<T>::displayStats(
 		AccumType nPts, AccumType sum, AccumType median,
 		AccumType medAbsDevMed, AccumType quartile, AccumType sumSq,
 		AccumType mean, AccumType var, AccumType rms, AccumType sigma,
-		AccumType dMin, AccumType dMax
+		AccumType dMin, AccumType dMax, AccumType, AccumType
 ) {
 	if ( ! doList_p ) {
 		// Nothing to display, listing data is turned off.

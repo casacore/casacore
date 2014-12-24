@@ -66,8 +66,112 @@ int main()
    try {
       LogOrigin lor("tLatticeStatistics", "main()", WHERE);
       LogIO os(lor);
-//
       doitFloat(os);
+      {
+    	  Vector<Float> data(1000);
+    	  Vector<Float>::iterator iter = data.begin();
+    	  Vector<Float>::iterator end = data.end();
+    	  uInt count = 0;
+    	  while(iter != end) {
+    		  *iter = count % 2 == 0 ? (Float)count : -(Float)(count*count);
+    		  ++iter;
+    		  ++count;
+    	  }
+    	  ArrayLattice<Float> latt(data);
+    	  SubLattice<Float> subLatt(latt);
+    	  LatticeStatistics<Float> stats(subLatt);
+    	  Array<Double> median, iqr, medabsdevmed, npts, q1, q3;
+    	  stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+    	  AlwaysAssert(*median.begin() == -0.5, AipsError);
+    	  stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+    	  AlwaysAssert(*q1.begin() == -251001, AipsError);
+    	  stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+    	  AlwaysAssert(*q3.begin() == 498, AipsError);
+    	  Vector<Float> range(2, 0.1);
+    	  range[1] = 1001;
+    	  stats.setInExCludeRange(range, Vector<Float>(), False);
+    	  stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+    	  AlwaysAssert(*median.begin() == 500, AipsError);
+    	  stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
+    	  AlwaysAssert(*iqr.begin() == 500, AipsError);
+    	  stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
+    	  AlwaysAssert(*medabsdevmed.begin() == 250, AipsError);
+    	  stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+    	  AlwaysAssert(*q1.begin() == 250, AipsError);
+    	  stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+    	  AlwaysAssert(*q3.begin() == 750, AipsError);
+
+    	  // exclude range
+    	  stats.setInExCludeRange(Vector<Float>(), range, False);
+    	  stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+    	  AlwaysAssert(*median.begin() == -249001, AipsError);
+    	  stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
+    	  AlwaysAssert(*iqr.begin() == 499000, AipsError);
+    	  stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
+    	  AlwaysAssert(*medabsdevmed.begin() == 216240, AipsError);
+    	  stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+    	  AlwaysAssert(*q1.begin() == -561001, AipsError);
+    	  stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+    	  AlwaysAssert(*q3.begin() == -62001, AipsError);
+
+    	  // mask
+    	  Vector<Bool> mask(1000);
+    	  Vector<Bool>::iterator miter = mask.begin();
+    	  Vector<Bool>::iterator mend = mask.end();
+    	  count = 0;
+    	  while (miter != mend) {
+    		  *miter = count % 3 == 0;
+    		  ++miter;
+    		  ++count;
+    	  }
+    	  subLatt.setPixelMask(ArrayLattice<Bool>(mask), True);
+    	  stats = LatticeStatistics<Float>(subLatt);
+    	  stats.getStatistic(npts, LatticeStatsBase::NPTS, False);
+    	  AlwaysAssert(*npts.begin() == 334, AipsError);
+    	  stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+    	  AlwaysAssert(*median.begin() == -4.5, AipsError);
+    	  stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+    	  AlwaysAssert(*q1.begin() == -251001, AipsError);
+    	  stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+    	  AlwaysAssert(*q3.begin() == 498, AipsError);
+
+
+    	  // include range
+    	  stats.setInExCludeRange(range, Vector<Float>(), False);
+    	  stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+    	  AlwaysAssert(*median.begin() == 501, AipsError);
+    	  stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
+    	  AlwaysAssert(*iqr.begin() == 498, AipsError);
+    	  stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
+    	  AlwaysAssert(*medabsdevmed.begin() == 249, AipsError);
+    	  stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+    	  AlwaysAssert(*q1.begin() == 252, AipsError);
+    	  stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+    	  AlwaysAssert(*q3.begin() == 750, AipsError);
+
+    	  // exclude range
+    	  stats.setInExCludeRange(Vector<Float>(), range, False);
+    	  stats.getStatistic(npts, LatticeStatsBase::NPTS, False);
+    	  AlwaysAssert(*npts.begin() == 168, AipsError);
+    	  stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+    	  AlwaysAssert(*median.begin() == -248013, AipsError);
+    	  stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
+    	  AlwaysAssert(*iqr.begin() == 505008, AipsError);
+    	  stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
+    	  AlwaysAssert(*medabsdevmed.begin() == 216216, AipsError);
+    	  stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+    	  AlwaysAssert(*q1.begin() == -567009, AipsError);
+    	  stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+    	  AlwaysAssert(*q3.begin() == -62001, AipsError);
+
+    	  // corner case when lattice is completely masked
+    	  mask.set(False);
+    	  subLatt.setPixelMask(ArrayLattice<Bool>(mask), True);
+    	  stats = LatticeStatistics<Float>(subLatt);
+    	  stats.getStatistic(npts, LatticeStatsBase::NPTS, False);
+    	  AlwaysAssert(npts.size() == 0, AipsError);
+      }
+
    } catch (AipsError x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
      return 1;
@@ -100,6 +204,8 @@ void doitFloat (LogIO& os)
    Float t1 = fractile(inArr, 0.25);
    Float t2 = fractile(inArr, 0.75);
    results(LatticeStatsBase::QUARTILE) = (t2-t1);
+   results(LatticeStatsBase::Q1) = t1;
+   results(LatticeStatsBase::Q3) = t2;
    results(LatticeStatsBase::MIN) = min(inArr);
    results(LatticeStatsBase::MAX) = max(inArr);
    results(LatticeStatsBase::MEAN) = mean(inArr);

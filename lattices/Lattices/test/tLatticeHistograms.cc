@@ -62,7 +62,29 @@ int main()
       LogIO os(lor);
 //
       doitFloat(os);
-   } catch (AipsError x) {
+      {
+    	  Array<Float> arr(IPosition(2, 5, 10, 0));
+    	  arr.set(0);
+    	  for (uInt i=0; i<10; i++ ) {
+    		  arr(IPosition(2, 4, i)) = 100*(i+1);
+    		  arr(IPosition(2, 0, i)) = -arr(IPosition(2, 4, i));
+    	  }
+    	  ArrayLattice<Float> latt(arr);
+    	  SubLattice<Float> subLatt(latt);
+    	  LatticeHistograms<Float> lh(subLatt);
+    	  lh.setNBins(25);
+    	  Array<Float> values, counts;
+    	  Vector<Float> range(2);
+    	  range[0] = -5;
+    	  range[1] = 5;
+    	  lh.setIncludeRange(range);
+    	  lh.getHistograms(values, counts);
+    	  AlwaysAssert(counts(IPosition(1, 12)) == 30, AipsError);
+    	  //cout << "values " << values << endl;
+    	  //cout << "counts " << counts << endl;
+
+      }
+   } catch (const AipsError& x) {
      cerr << "aipserror: error " << x.getMesg() << endl;
      return 1;
   } 

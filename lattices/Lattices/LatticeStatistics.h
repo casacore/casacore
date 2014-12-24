@@ -46,6 +46,9 @@
 #include <vector>
 #include <list>
 
+#include <casacore/scimath/Mathematics/ClassicalStatistics.h>
+
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
@@ -258,7 +261,7 @@ public:
 // a <src>LogIO</src> object, you won't see any listings, but no error
 // conditions will be generated.  The default state of the class is to 
 // not list the output when making a plot. 
-   Bool setList(Bool doList);
+   Bool setList(const Bool& doList);
 
 // This functions enable you to specify which statistics you would like to
 // plot, sets the name of the PGPLOT plotting device and the number of
@@ -331,7 +334,7 @@ public:
 // indicates that the  internal state of the class is bad.
    Bool getStats (Vector<AccumType>&,
                   const IPosition& pos,
-                  Bool posInLattice=False);
+                  const Bool posInLattice=False);
 
 // Reset argument error condition.  If you specify invalid arguments to
 // one of the above <src>set</src> functions, an internal flag will be set which will
@@ -386,8 +389,12 @@ protected:
    // more time than I have atm. A return value of False means that the object in
    // question cannot compute flux density values. The default implementation returns False.
    virtual Bool _canDoFlux() const { return False; }
-   virtual Quantum<AccumType> _flux(AccumType, Double) const {
-     throw AipsError ("Logic Error: LatticeStatistics base class cannot compute flux density");
+   virtual Quantum<AccumType> _flux(
+		    AccumType sum, Double beamAreaInPixels
+	) const {
+	   ThrowCc("Logic Error: This object cannot compute flux density");
+	   // kill compiler warnings
+	   sum = 0; beamAreaInPixels = 0;
    }
 
    virtual void listMinMax (ostringstream& osMin,
@@ -453,7 +460,8 @@ private:
 	   virtual void displayStats(
 		   AccumType nPts, AccumType sum, AccumType median,
 		   AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean,
-		   AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax
+		   AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax,
+		   AccumType q1, AccumType q3
 	   );
 
 // Calculate statistic from storage lattice and return in an array
@@ -466,10 +474,10 @@ private:
 
 // Find the next good or bad point in an array
    Bool findNextDatum     (uInt& iFound,
-                           uInt n,
+                           const uInt& n,
                            const Vector<AccumType>& mask,
-                           uInt iStart,
-                           Bool findGood) const;
+                           const uInt& iStart,
+                           const Bool& findGood) const;
 
 // Find the next label in a list of comma delimitered labels
    Bool findNextLabel     (String& subLabel,
@@ -499,7 +507,7 @@ private:
                            PGPlotter& plotter,
                            const String& LRLoc,
                            const Vector<uInt>& colours,
-                           Int nLabs) const;
+                           const Int& nLabs) const;
 
 // Plot an array which may have some blanked points.
 // Thus we plot it in segments         
@@ -516,7 +524,10 @@ private:
 // Find the next nice PGPLOT colour index 
    Int niceColour         (Bool& initColours) const; 
 
+   // FIXME AFAIK, CASA no longer uses plotStats since we no longer use pgplot. Can we
+   // remove this method?
 // Plot the statistics
+
    Bool plotStats         (const IPosition& dPos,
                            const Matrix<AccumType>& ord,
                            PGPlotter& plotter);
@@ -524,13 +535,13 @@ private:
 // Retrieve a statistic from the storage lattice and return in an array
    Bool retrieveStorageStatistic (Array<AccumType>& slice, 
                                   const LatticeStatsBase::StatisticsTypes type,
-                                  Bool dropDeg);
+                                  const Bool dropDeg);
 
 // Retrieve a statistic from the storage lattice at the specified
 // location and return in an array
    Bool retrieveStorageStatistic (Vector<AccumType>& slice, 
                                   const IPosition& pos,
-                                  Bool posInLattice);
+                                  const Bool posInLattice);
 
 // Find the shape of slice from the statistics lattice at one
 // spatial pixel
@@ -554,9 +565,6 @@ private:
 		 IPosition& storagePos, const IPosition& latticePos
    );
 };
-
-
-
 
 // <summary> Generate statistics, tile by tile, from a masked lattice </summary>
 //
@@ -666,27 +674,16 @@ public:
 
 
 private:
-    Vector<T> range_p;
+   // Vector<T> range_p;
     Bool noInclude_p, noExclude_p, fixedMinMax_p;
     IPosition minPos_p, maxPos_p;
 
-// Accumulators for sum, sum squared, number of points
-// minimum, and maximum
-
-    Block<U> *pSum_p;
-    Block<U> *pSumSq_p;
-    Block<U>* pNPts_p;
-    Block<U>* pMean_p;
-
-    Block<U>* pVariance_p;
-    Block<U>* pNVariance_p;
-
-    Block<T>* pMin_p;
-    Block<T>* pMax_p;
-    Block<Bool>* pInitMinMax_p;
-//
     uInt n1_p;
     uInt n3_p;
+    vector<ClassicalStatistics<U, const T*, const Bool*> > _cs;
+    vector<std::pair<U, U> > _ranges;
+    DataType _type;
+    vector<Bool> _first;
 };
 
 } //# NAMESPACE CASACORE - END

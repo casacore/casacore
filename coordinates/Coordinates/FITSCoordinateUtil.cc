@@ -1070,6 +1070,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		
 		String waveUnit = String(wcsDest.cunit[0]);
 		Double restFrequency = wcs.restfrq;
+		if (restFrequency==0.){
+		    if(wcs.restwav != 0.){
+			restFrequency = C::c/wcs.restwav;
+		    }
+		}
 
 		for(uInt i=0; i<nc; i++){
 		  wavelengths(i) = cRval + cDelt * cPc * (Double(i + 1) - cRpix); // +1 because FITS works 1-based
@@ -1415,13 +1420,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     {
         if (wcs.specsys[0]=='\0') {
-          ///            if (wcs.velref==0) { // velref was also not given
+            if (wcs.velref==0) { // velref was also not given
 	        os << LogIO::NORMAL << "Neither SPECSYS nor VELREF keyword given, spectral reference frame not defined ..." 
 		   << LogIO::POST;
 	        type = MFrequency::Undefined;
 	        return True;
 	    }
-        /*
 	    else { // velref was given
 	        Int vref = wcs.velref;
 	        os << LogIO::NORMAL << "No SPECSYS but found (deprecated) VELREF keyword with value " << vref << LogIO::POST;
@@ -1465,7 +1469,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		return True;
 	    }
 	}
-        */
 	String specSys(wcs.specsys);
 	specSys.upcase();
 

@@ -416,8 +416,8 @@ private:
   Bool newNameStyle;
   Vector<Double> obsTime;
 
-  Vector<Double> restFreq_p; // used for UVFITS
-  Vector<Double> sysVel_p;
+  Matrix<Double> restFreq_p; // used for UVFITS
+  Matrix<Double> sysVel_p;
 
 };
 
