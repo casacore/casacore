@@ -390,11 +390,9 @@ protected:
    // question cannot compute flux density values. The default implementation returns False.
    virtual Bool _canDoFlux() const { return False; }
    virtual Quantum<AccumType> _flux(
-		    AccumType sum, Double beamAreaInPixels
+		    AccumType, Double
 	) const {
 	   ThrowCc("Logic Error: This object cannot compute flux density");
-	   // kill compiler warnings
-	   sum = 0; beamAreaInPixels = 0;
    }
 
    virtual void listMinMax (ostringstream& osMin,

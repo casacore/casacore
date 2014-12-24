@@ -95,6 +95,8 @@ public:
     // </group>
 
     // Get the function node.
+    const TableExprFuncNode* getChild() const
+      { return &node_p; }
     TableExprFuncNode* getChild()
       { return &node_p; }
 

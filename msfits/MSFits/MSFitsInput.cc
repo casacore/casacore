@@ -3537,7 +3537,6 @@ void MSFitsInput::fillSourceTable() {
         Int nrow = ms_p.nrow();
         Int lastFieldId = -1;
         Int lastDDId = -1;
-        Double lastTime = 0;
         Vector<Int> fieldId = msc_p->fieldId().getColumn();
         Vector<Int> ddId = msc_p->dataDescId().getColumn();
 
@@ -3547,8 +3546,6 @@ void MSFitsInput::fillSourceTable() {
         for (Int i = 0; i < nrow; i++) {
             if (fieldId(i) != lastFieldId || (ddId(i) != lastDDId)) {
                 lastFieldId = fieldId(i);
-                if (i > 0)
-                    lastTime = msc_p->time()(i - 1);
                 Array<Double> pointingDir = msc_p->field().phaseDir()(
                         lastFieldId);
                 String name = msc_p->field().name()(lastFieldId);
