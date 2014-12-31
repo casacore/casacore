@@ -113,7 +113,7 @@ public:
     CountedPtr(t *val, Bool delit = True)
     : pointerRep_p (val, Deleter<t> (delit))
     {}
-
+    
     // This copy constructor allows <src>CountedPtr</src>s to be
     // initialized from other <src>CountedPtr</src>s for which the pointer TP*
     // is convertible to T*.
@@ -179,13 +179,21 @@ public:
     // Equality operator which checks to see if two
     // <src>CountedPtr</src>s are pointing at the same thing.
     Bool operator==(const CountedPtr<t> &other) const {
-	return (get() == other.get() ? True : False);
+	return (get() == other.get());
+    }
+    //# Note: use of const void* gives ambiguius overload error.
+    Bool operator==(int ptr) const {
+        return (ptr == 0  &&  get() == 0);
     }
 
     // Non-equality operator which checks to see if two
     // <src>CountedPtr</src>s are not pointing at the same thing.
     Bool operator!=(const CountedPtr<t> &other) const {
 	return (get() != other.get()  ? True : False);
+    }
+    //# Note: use of const void* gives ambiguius overload error.
+    Bool operator!=(int ptr) const {
+        return (ptr != 0  ||  get() != 0);
     }
 
     // This assignment operator allows the object to which the current
