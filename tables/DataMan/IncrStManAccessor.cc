@@ -92,6 +92,26 @@ void ROIncrementalStManAccessor::showBucketLayout (ostream& os) const
     dataManPtr_p->showBucketLayout (os);
 }
 
+Bool ROIncrementalStManAccessor::checkBucketLayout (uInt &offendingCursor,
+                                                    uInt &offendingBucketStartRow,
+                                                    uInt &offendingBucketNrow,
+                                                    uInt &offendingBucketNr,
+                                                    uInt &offendingCol,
+                                                    uInt &offendingIndex,
+                                                    uInt &offendingRow,
+                                                    uInt &offendingPrevRow) const
+{
+  Bool ok;
+  ok = dataManPtr_p->checkBucketLayout (offendingCursor,
+                                        offendingBucketStartRow,
+                                        offendingBucketNrow,
+                                        offendingBucketNr,
+                                        offendingCol,
+                                        offendingIndex,
+                                        offendingRow,
+                                        offendingPrevRow);
+  return ok;
+}
 
 } //# NAMESPACE CASACORE - END
 

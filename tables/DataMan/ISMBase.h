@@ -226,6 +226,15 @@ public:
     // Return a pointer to the object.
     StManArrayFile* openArrayFile (ByteIO::OpenOption opt);
 
+    // Check that there are no repeated rowIds in the buckets comprising this ISM.
+    Bool checkBucketLayout (uInt &offendingCursor,
+                            uInt &offendingBucketStartRow,
+                            uInt &offendingBucketNrow,
+                            uInt &offendingBucketNr,
+                            uInt &offendingCol,
+                            uInt &offendingIndex,
+                            uInt &offendingRow,
+                            uInt &offendingPrevRow);
 
 private:
     // Copy constructor (only meant for clone function).

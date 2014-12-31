@@ -736,5 +736,35 @@ void ISMBase::init()
     }
 }
 
+Bool ISMBase::checkBucketLayout (uInt &offendingCursor,
+                                 uInt &offendingBucketStartRow,
+                                 uInt &offendingBucketNrow,
+                                 uInt &offendingBucketNr,
+                                 uInt &offendingCol,
+                                 uInt &offendingIndex,
+                                 uInt &offendingRow,
+                                 uInt &offendingPrevRow)
+{
+  Bool ok = False;
+  uInt cursor = 0;
+  uInt bucketStartRow = 0;
+  uInt bucketNrow = 0;
+  uInt bucketNr = 0;
+  while (getIndex().nextBucketNr(cursor, bucketStartRow, bucketNrow, bucketNr)) {
+    ok = ((ISMBucket*) (getCache().getBucket(bucketNr)))->check(offendingCol,
+                                                                offendingIndex,
+                                                                offendingRow,
+                                                                offendingPrevRow);
+    if (not ok) {
+      offendingCursor = cursor;
+      offendingBucketStartRow = bucketStartRow;
+      offendingBucketNrow = bucketNrow;
+      offendingBucketNr = bucketNr;
+      return False;
+    }
+  }
+  return True;
+}
+
 } //# NAMESPACE CASACORE - END
 
