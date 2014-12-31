@@ -143,6 +143,15 @@ public:
     // Show the layout of the buckets used by this storage manager.
     void showBucketLayout (ostream& os) const;
 
+    // Check that there are no repeated rowIds in the buckets comprising this ISM
+    Bool checkBucketLayout (uInt &offendingCursor,
+                            uInt &offendingBucketStartRow,
+                            uInt &offendingBucketNrow,
+                            uInt &offendingBucketNr,
+                            uInt &offendingCol,
+                            uInt &offendingIndex,
+                            uInt &offendingRow,
+                            uInt &offendingPrevRow) const;
 
 private:
     //# Declare the data members.

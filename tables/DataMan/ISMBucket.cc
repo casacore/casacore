@@ -613,5 +613,23 @@ void ISMBucket::show (ostream& os) const
     }
 }
 
+Bool ISMBucket::check (uInt &offendingCol, uInt &offendingIndex,
+                       uInt &offendingRow, uInt &offendingPrevRow) const
+{
+  uInt ncols = stmanPtr_p->ncolumn();
+  for (uInt col_i=0; col_i<ncols; ++col_i) {
+    for (uInt it=1; it<indexUsed_p[col_i]; ++it) {
+      if ( (*(rowIndex_p[col_i]))[it] <= (*(rowIndex_p[col_i]))[it-1] ) {
+        offendingCol = col_i;
+        offendingIndex = it;
+        offendingRow = (*(rowIndex_p[col_i]))[it];
+        offendingPrevRow = (*(rowIndex_p[col_i]))[it-1];
+        return False;
+      }
+    }
+  }
+  return True;
+}
+
 } //# NAMESPACE CASACORE - END
 

@@ -258,6 +258,10 @@ public:
     // Show the layout of the bucket.
     void show (ostream& os) const;
 
+    // Check that there are no repeated rowIds in the bucket
+    Bool check (uInt &offendingCol, uInt &offendingIndex,
+                uInt &offendingRow, uInt &offendingPrevRow) const;
+
 private:
     // Forbid copy constructor.
     ISMBucket (const ISMBucket&);
