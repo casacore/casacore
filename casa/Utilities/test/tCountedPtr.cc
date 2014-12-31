@@ -29,6 +29,7 @@
 
 #include <casacore/casa/Utilities/test/tCountedPtr.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
@@ -77,6 +78,7 @@ int main() {
   CountedPtr<myobj> var2 = var;
   CountedPtr<myobj> var3 = var;
   CountedPtr<myobj> var4 (var);
+  AlwaysAssertExit (var != 0);
 
   cout << (*var).name() << ".." <<
     (*var2).name() << ".." <<
