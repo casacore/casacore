@@ -51,6 +51,22 @@ int main() {
 		}
  		PagedImage<Float> im(imageName);
 		RO_LatticeIterator<Float> imIter(im);
+		{
+			CountedPtr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
+				= new LatticeStatsDataProvider<Double, Float>(im);
+			ClassicalStatistics<Double, const Float*> cs;
+			cs.setDataProvider(dataProvider);
+			std::set<Double> quartiles;
+			quartiles.insert(0.25);
+			quartiles.insert(0.75);
+			std::map<Double, Double> quantileToValue;
+			Double median = cs.getMedianAndQuantiles(
+				quantileToValue, quartiles
+			);
+			cout << "median " << median << endl;
+			return 0;
+		}
+
 		/*
 		{
 			cout << "This should produce the desired results" << endl;

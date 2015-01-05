@@ -33,6 +33,8 @@
 
 namespace casacore {
 
+class LatticeProgress;
+
 // Abstract base class of data providers which allows stats framework to iterate through a lattice.
 
 template <class AccumType, class T, class InputIterator=const T*> class LatticeStatsDataProviderBase
@@ -40,6 +42,8 @@ template <class AccumType, class T, class InputIterator=const T*> class LatticeS
 public:
 
 	virtual ~LatticeStatsDataProviderBase();
+
+	virtual void finalize();
 
 	// Get the stride for the current mask (only called if hasMask() returns True).
 	uInt getMaskStride();
@@ -63,21 +67,30 @@ public:
 	// exclude (return False) ranges?
 	Bool isInclude() const;
 
+	// get the positions of the min and max
+	void minMaxPos(IPosition& minpos, IPosition& maxpos) const;
+
+	void setProgressMeter(LatticeProgress * const &pm);
+
 	// set the data ranges
 	void setRanges(const DataRanges& ranges, Bool isInclude);
 
 protected:
 	LatticeStatsDataProviderBase();
 
+	virtual uInt _nsteps() const = 0;
+
+	void _updateMaxPos(const IPosition& maxPos) { _maxPos = maxPos; }
+
+	void _updateMinPos(const IPosition& minPos) { _minPos = minPos; }
+
+	void _updateProgress(uInt currentStep);
+
 private:
-	//RO_LatticeIterator<T> _iter;
-	//Array<T> _currentSlice;
-	//const T* _currentPtr;
-	//Bool _delData,
 	Bool _hasRanges, _isInclude;
 	DataRanges _ranges;
-
-	//void _freeStorage();
+	LatticeProgress* _progressMeter;
+	IPosition _minPos, _maxPos;
 };
 
 }

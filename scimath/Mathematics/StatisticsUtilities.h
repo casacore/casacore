@@ -136,19 +136,19 @@ private:
 // are used solely to permit compilation. In general, these versions should
 // never actually be called
 template<>
-inline Int StatisticsUtilities<casa::Complex>::getInt(const casa::Complex&) {
+inline Int StatisticsUtilities<Complex>::getInt(const Complex&) {
 	ThrowCc("This version for complex data types should never be called");
 }
 
 template<>
-inline Int StatisticsUtilities<casa::DComplex>::getInt(const casa::DComplex&) {
+inline Int StatisticsUtilities<DComplex>::getInt(const DComplex&) {
 	ThrowCc("Logic Error: This version for complex data types should never be called");
 }
 
 /*
 template<>
 template <class T>
-inline casa::DComplex StatisticsUtilities<T>::convert<casa::DComplex>(const T&) {
+inline DComplex StatisticsUtilities<T>::convert<DComplex>(const T&) {
 	ThrowCc("Logic Error: This version for complex data types should never be called");
 }
 */

@@ -276,6 +276,17 @@ public:
   const AxesMapping& getAxesMap() const
     { return itsAxesMap; }
 
+  // Convert the specified position in the sublattice to the corresponding
+  // position in the parent lattice.
+  IPosition positionInParent(const IPosition& subLatticePosition) const
+  {
+    if (itsAxesMap.isRemoved()) {
+      return itsRegion.convert (itsAxesMap.posToOld(subLatticePosition));
+    } else {
+      return itsRegion.convert (subLatticePosition);
+    }
+  }
+    
 protected:
   // Set the various pointer needed to construct the object.
   // One of the pointers should be zero.

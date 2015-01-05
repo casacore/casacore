@@ -70,6 +70,13 @@ public:
 	// reset the provider to point to the first data set it manages.
 	void reset();
 
+	// <group>
+	// see base class documentation.
+	void updateMaxPos(const std::pair<uInt, Int64>& maxpos);
+
+	void updateMinPos(const std::pair<uInt, Int64>& minpos);
+	// </group>
+
 private:
 	RO_MaskedLatticeIterator<T> _iter;
 	Array<T> _currentSlice;
@@ -79,6 +86,8 @@ private:
 	Bool _delData, _delMask;
 
 	void _freeStorage();
+
+	uInt _nsteps() const;
 };
 
 }

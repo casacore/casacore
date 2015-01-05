@@ -25,11 +25,14 @@
 
 #include <casacore/lattices/LatticeMath/LatticeStatsDataProviderBase.h>
 
+#include <casacore/lattices/Lattices/LatticeProgress.h>
+
 namespace casacore {
 
 template <class AccumType, class T, class InputIterator>
 LatticeStatsDataProviderBase<AccumType, T, InputIterator>::LatticeStatsDataProviderBase()
-: _hasRanges(False), _isInclude(True), _ranges() {}
+: _hasRanges(False), _isInclude(True), _ranges(),
+  _progressMeter(NULL), _minPos(), _maxPos() {}
 
 template <class AccumType, class T, class InputIterator>
 LatticeStatsDataProviderBase<AccumType, T, InputIterator>::~LatticeStatsDataProviderBase() {}
@@ -37,6 +40,13 @@ LatticeStatsDataProviderBase<AccumType, T, InputIterator>::~LatticeStatsDataProv
 template <class AccumType, class T, class InputIterator>
 uInt LatticeStatsDataProviderBase<AccumType, T, InputIterator>::getMaskStride() {
 	return 1;
+}
+
+template <class AccumType, class T, class InputIterator>
+void LatticeStatsDataProviderBase<AccumType, T, InputIterator>::finalize() {
+	if (_progressMeter) {
+		_progressMeter->done();
+	}
 }
 
 template <class AccumType, class T, class InputIterator>
@@ -70,12 +80,36 @@ Bool LatticeStatsDataProviderBase<AccumType, T, InputIterator>::isInclude() cons
 }
 
 template <class AccumType, class T, class InputIterator>
+void LatticeStatsDataProviderBase<AccumType, T, InputIterator>::minMaxPos(
+	IPosition& minPos, IPosition& maxPos) const {
+	minPos = _minPos;
+	maxPos = _maxPos;
+}
+
+template <class AccumType, class T, class InputIterator>
+void LatticeStatsDataProviderBase<AccumType, T, InputIterator>::setProgressMeter(
+	LatticeProgress * const &pm
+) {
+	_progressMeter = pm;
+	_progressMeter->init(_nsteps());
+}
+
+template <class AccumType, class T, class InputIterator>
 void LatticeStatsDataProviderBase<AccumType, T, InputIterator>::setRanges(
 	const DataRanges& ranges, Bool isInclude
 ) {
 	_hasRanges = ranges.size() > 0;
 	_ranges = ranges;
 	_isInclude = isInclude;
+}
+
+template <class AccumType, class T, class InputIterator>
+void LatticeStatsDataProviderBase<AccumType, T, InputIterator>::_updateProgress(
+	uInt currentStep
+) {
+	if (_progressMeter) {
+		_progressMeter->nstepsDone (currentStep);
+	}
 }
 
 }

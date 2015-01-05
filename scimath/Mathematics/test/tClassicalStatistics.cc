@@ -1,5 +1,5 @@
 //# tStatAcc.cc: Test program for class StatAcc
-//# Copyright (C) 2014
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -276,7 +276,7 @@ int main() {
     	{
     		// two datasets, stride = 2,1
     		ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
-    		cs.setData(v0.begin(), 3, 2);
+    		cs.setData(v0.begin(), v0.size(), 2);
     		cs.addData(v1.begin(), v1.size());
     		Record r = cs.getStatistics();
     		Double variance = (201.5 - 29.0*29.0/6.0)/5.0;
@@ -288,7 +288,7 @@ int main() {
     		AlwaysAssert(r.asDouble("mean") == 29.0/6.0, AipsError);
     		AlwaysAssert(r.asDouble("min") == 1.5, AipsError);
     		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
+    		AlwaysAssert(r.asInt64("minIndex") == 2, AipsError);
     		AlwaysAssert(r.asDouble("npts") == 6, AipsError);
     		AlwaysAssert(r.asDouble("rms") == sqrt(201.5/6.0), AipsError);
     		AlwaysAssert(near(r.asDouble("stddev"), sqrt(variance)), AipsError);
@@ -814,7 +814,7 @@ int main() {
     		// getQuantile(): two datasets, stride = 2,1
     		// 1.5, 2, 2.5 5, 8, 10
     		ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
-    		cs.setData(v0.begin(), 3, 2);
+    		cs.setData(v0.begin(), v0.size(), 2);
     		cs.addData(v1.begin(), v1.size());
     		Double q = cs.getQuantile(0.1);
     		AlwaysAssert(q == 1.5, AipsError);

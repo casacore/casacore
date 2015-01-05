@@ -1,4 +1,4 @@
-//# Copyright (C) 2014
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,9 +26,9 @@
 #ifndef SCIMATH_STATSDATAPROVIDER_H
 #define SCIMATH_STATSDATAPROVIDER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/scimath/Mathematics/StatisticsTypes.h>
 
-#include <casacore/casa/aips.h>
 
 namespace casacore {
 
@@ -88,6 +88,19 @@ public:
 
 	// reset the provider to point to the first data set it manages.
 	virtual void reset() = 0;
+
+	// <group>
+	// In general, unless you are writing statistics algorithm code, you shouldn't need
+	// to call these methods.
+	// The statistics framework calls these methods when the min and max posiitons are
+	// updated. It passes in the relevant index of the current sub dataset it is processing.
+	// Data providers can use this information to transform into something more useful, eg
+	// an IPosition for lattice data providers, so that they may be retreived easily after
+	// statistics have been calculated. The default implementations do nothing.
+	virtual void updateMaxPos(const std::pair<uInt, Int64>&) {}
+
+	virtual void updateMinPos(const std::pair<uInt, Int64>&) {}
+	// </group>
 
 protected:
 
