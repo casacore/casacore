@@ -1,5 +1,4 @@
-//# ClassicalStatistics.h: Class to calculate statistics in a "classical" sense 
-//# Copyright (C) 2014
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -143,8 +142,6 @@ public:
 	);
 
 	// </group>
-
-
 
 	// scan the dataset(s) that have been added, and find the min and max.
 	// This method may be called even if setStatsToCaclulate has been called and
@@ -632,31 +629,6 @@ private:
 
 	void _doNpts();
 
-	/*
-	inline void _findBinCode(
-		vector<uInt64>& binCounts, CountedPtr<AccumType>& sameVal, Bool& allSame,
-		const InputIterator& datum, const BinDesc& binDesc, const AccumType& maxLimit
-	) const {
-		AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - *_median) : *datum;
-		if (myDatum >= binDesc.minLimit && myDatum < maxLimit) {
-			AccumType idx = (myDatum - binDesc.minLimit)/binDesc.binWidth;
-			++binCounts[StatisticsUtilities<AccumType>::getInt(idx)];
-			if (allSame) {
-				if (sameVal.null()) {
-					sameVal = new AccumType(myDatum);
-				}
-				else {
-					allSame = myDatum == *sameVal;
-					if (! allSame) {
-						sameVal = NULL;
-					}
-				}
-			}
-		}
-	}
-	*/
-
-
 	// get the values for the specified indices in the sorted array of all good data
 	std::map<uInt64, AccumType> _indicesToValues(
 		CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
@@ -696,7 +668,7 @@ private:
 
 
 	// update min and max if necessary
-    void _updateMaxMin(AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos);
+    void _updateMaxMin(AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride);
 	
 	// get values from sorted array if the array is small enough to be held in
 	// memory. Note that this is the array containing all good data, not data in
@@ -708,8 +680,6 @@ private:
 		const std::set<uInt64>& indices, uInt maxArraySize,
 		Bool persistSortedArray
 	);
-
-
 };
 
 }

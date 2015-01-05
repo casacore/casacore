@@ -390,9 +390,11 @@ protected:
    // question cannot compute flux density values. The default implementation returns False.
    virtual Bool _canDoFlux() const { return False; }
    virtual Quantum<AccumType> _flux(
-		    AccumType, Double
+		    AccumType sum, Double beamAreaInPixels
 	) const {
 	   ThrowCc("Logic Error: This object cannot compute flux density");
+	   // kill compiler warnings
+	   sum = 0; beamAreaInPixels = 0;
    }
 
    virtual void listMinMax (ostringstream& osMin,
@@ -451,6 +453,8 @@ private:
 //
    T minFull_p, maxFull_p;
    Bool doneFullMinMax_p;
+
+   vector<ClassicalStatistics<AccumType, const T*, const Bool*> > _cs;
 
 // Summarize the statistics found over the entire lattice
    virtual void summStats();

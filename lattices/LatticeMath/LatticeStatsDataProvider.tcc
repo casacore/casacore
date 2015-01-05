@@ -41,6 +41,7 @@ template <class AccumType, class T, class InputIterator>
 void LatticeStatsDataProvider<AccumType, T, InputIterator>::operator++() {
 	_freeStorage();
 	++_iter;
+	this->_updateProgress(_iter.nsteps());
 }
 
 template <class AccumType, class T, class InputIterator>
@@ -51,6 +52,7 @@ Bool LatticeStatsDataProvider<AccumType, T, InputIterator>::atEnd() const {
 template <class AccumType, class T, class InputIterator>
 void LatticeStatsDataProvider<AccumType, T, InputIterator>::finalize() {
 	_freeStorage();
+	LatticeStatsDataProviderBase<AccumType, T, InputIterator>::finalize();
 }
 
 template <class AccumType, class T, class InputIterator>
@@ -81,10 +83,42 @@ void LatticeStatsDataProvider<AccumType, T, InputIterator>::reset() {
 }
 
 template <class AccumType, class T, class InputIterator>
+void LatticeStatsDataProvider<AccumType, T, InputIterator>::updateMaxPos(
+	const std::pair<uInt, Int64>& maxpos
+) {
+	this->_updateMaxPos(
+		_iter.position() + toIPositionInArray(maxpos.second, _currentSlice.shape())
+	);
+}
+
+template <class AccumType, class T, class InputIterator>
+void LatticeStatsDataProvider<AccumType, T, InputIterator>::updateMinPos(
+	const std::pair<uInt, Int64>& minpos
+) {
+	this->_updateMinPos(
+		_iter.position() + toIPositionInArray(minpos.second, _currentSlice.shape())
+	);
+}
+
+template <class AccumType, class T, class InputIterator>
 void LatticeStatsDataProvider<AccumType, T, InputIterator>::_freeStorage() {
 	_currentSlice.freeStorage (_currentPtr, _delData);
 	_delData = False;
 }
+
+template <class AccumType, class T, class InputIterator>
+uInt LatticeStatsDataProvider<AccumType, T, InputIterator>::_nsteps() const {
+	const IPosition trc = _iter.latticeShape() - 1;
+	uInt ndim = trc.size();
+	const IPosition blc(ndim, 0);
+	const IPosition tileShape = _iter.lattice().niceCursorShape();
+	uInt nsteps = 1;
+	for (uInt j=0; j<ndim; j++) {
+		nsteps *= 1 + trc(j)/tileShape(j) - blc(j)/tileShape(j);
+	}
+	return nsteps;
+}
+
 
 }
 

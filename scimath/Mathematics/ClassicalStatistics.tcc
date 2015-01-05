@@ -1,5 +1,4 @@
-//# ClassicalStatistics.tcc: Class to calculate statistics in a "classical" sense 
-//# Copyright (C) 2014
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -436,6 +435,7 @@ Record ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_getStatisti
 	if (! _currentStats.empty()) {
 		return _currentStats;
 	}
+	//cout << __func__ << endl;
 	_initIterators();
 	Bool isMasked = False;
 	Bool isWeighted = False;
@@ -518,7 +518,7 @@ Record ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_getStatisti
 			_sumofweights += ngood;
 		}
 		if (_doMaxMin) {
-			_updateMaxMin(mymin, mymax, minpos, maxpos);
+			_updateMaxMin(mymin, mymax, minpos, maxpos, _myStride);
 		}
 		++_idataset;
 		if (! dataProvider.null()) {
@@ -820,6 +820,7 @@ template <class AccumType, class InputIterator, class MaskIterator>
 vector<uInt64> ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_binCounts(
 	CountedPtr<AccumType>& sameVal, const BinDesc& binDesc
 ) {
+	//cout << __func__ << endl;
     sameVal = NULL;
     Bool allSame = True;
     vector<uInt64> bins(binDesc.nBins, 0);
@@ -919,6 +920,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_createDataArr
 	vector<AccumType>& ary, const std::pair<AccumType, AccumType> *const &includeLimits,
 	uInt maxCount
 ) {
+	//cout << __func__ << endl;
 	_initIterators();
 	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
 		= this->_getDataProvider();
@@ -1016,14 +1018,6 @@ std::map<uInt64, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIt
 	// dataIndices are relative to minimum bin minimum border
     CountedPtr<AccumType> sameVal;
     vector<uInt64> binCounts = _binCounts(sameVal, binDesc);
-    /*
-    ThrowIf(
-		sum(Vector<uInt64>(binCounts)) < *dataIndices.rend(),
-		"Logic Error: total counts " + String::toString(sum(Vector<uInt64>(binCounts)))
-		+ " max index " + String::toString(*dataIndices.rend())
-		+ " Please send us a defect report"
-	);
-	*/
 	std::set<uInt64>::const_iterator initer = dataIndices.begin();
 	std::set<uInt64>::const_iterator inend = dataIndices.end();
 	std::map<uInt64, AccumType> ret;
@@ -1141,6 +1135,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_convertToAbsD
 
 template <class AccumType, class InputIterator, class MaskIterator>
 void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doMinMax() {
+	//cout << __func__ << endl;
     _initIterators();
 	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
 		= this->_getDataProvider();
@@ -1227,18 +1222,11 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doMinMax() {
 	);
 	_max = mymax;
 	_min = mymin;
-	/*
-	_currentStats.define(
-		StatisticsData::toString(StatisticsData::MAX), *_max
-	);
-	_currentStats.define(
-		StatisticsData::toString(StatisticsData::MIN), *_min
-	);
-	*/
 }
 
 template <class AccumType, class InputIterator, class MaskIterator>
 void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doNpts() {
+	//cout << __func__ << endl;
 	_initIterators();
 	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
 		= this->_getDataProvider();
@@ -1329,31 +1317,6 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doNpts() {
 	*/
 }
 
-/*
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBinCode(
-	vector<uInt64>& binCounts, CountedPtr<AccumType>& sameVal, Bool& allSame,
-	const InputIterator& datum, const BinDesc& binDesc, const AccumType& maxLimit
-) const {
-	AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - *_median) : *datum;
-	if (myDatum >= binDesc.minLimit && myDatum < maxLimit) {
-		AccumType idx = (myDatum - binDesc.minLimit)/binDesc.binWidth;
-		++binCounts[StatisticsUtilities<AccumType>::getInt(idx)];
-		if (allSame) {
-			if (sameVal.null()) {
-				sameVal = new AccumType(myDatum);
-			}
-			else {
-				allSame = myDatum == *sameVal;
-				if (! allSame) {
-					sameVal = NULL;
-				}
-			}
-		}
-	}
-}
-*/
-
 // Tried making this into an inline method, but performance decreased by 20 - 25% when
 // finding the median and quartiles on a 200 Mpix image. So the #define seems to be
 // the better choice from a performance standpoint.
@@ -1388,7 +1351,6 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 
 	while (count < nr) {
 		 _findBinCode
-		//_findBinCode(binCounts, sameVal, allSame, datum, binDesc, maxLimit);
 		StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
 			datum, count, unityStride, dataStride
 		);
@@ -1415,7 +1377,6 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 			)
 		) {
 			_findBinCode
-			//_findBinCode(binCounts, sameVal, allSame, datum, binDesc, maxLimit);
 		}
 		StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
 			datum, count, unityStride, dataStride
@@ -1438,7 +1399,6 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 	while (count < nr) {
 		if (*mask) {
 			_findBinCode
-			//_findBinCode(binCounts, sameVal, allSame, datum, binDesc, maxLimit);
 		}
 		StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
 			datum, count, mask, unityStride, dataStride, maskStride
@@ -1468,7 +1428,6 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 			)
 		) {
 			_findBinCode
-			//_findBinCode(binCounts, sameVal, allSame, datum, binDesc, maxLimit);
 		}
 		StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
 			datum, count, mask, unityStride, dataStride, maskStride
@@ -1491,8 +1450,6 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 	while (count < nr) {
 		if (*weight > 0) {
 			_findBinCode
-			//_findBinCode(binCounts, sameVal, allSame, datum, binDesc, maxLimit);
-
 		}
 		StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
 			datum, count, weight, unityStride, dataStride
@@ -1522,7 +1479,6 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 			)
 		) {
 			_findBinCode
-			//_findBinCode(binCounts, sameVal, allSame, datum, binDesc, maxLimit);
 		}
 		StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
 			datum, count, weight, unityStride, dataStride
@@ -1554,8 +1510,6 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 			)
 		) {
 			_findBinCode
-			//_findBinCode(binCounts, sameVal, allSame, datum, binDesc, maxLimit);
-
 		}
 		StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
@@ -1579,7 +1533,6 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 	while (count < nr) {
 		if (*mask && *weight > 0) {
 			_findBinCode
-			//_findBinCode(binCounts, sameVal, allSame, datum, binDesc, maxLimit);
 		}
 		StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
@@ -1711,6 +1664,7 @@ template <class AccumType, class InputIterator, class MaskIterator>
 Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_isNptsSmallerThan(
 	vector<AccumType>& unsortedAry, uInt maxArraySize
 ) {
+	//cout << __func__ << endl;
 	_initIterators();
 	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
 		= this->_getDataProvider();
@@ -2439,16 +2393,24 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestA
 
 template <class AccumType, class InputIterator, class MaskIterator>
 void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
-	AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos
+	AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride
 ) {
+	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+		= this->_getDataProvider();
 	if (maxpos >= 0) {
 		_maxpos.first = _idataset;
-		_maxpos.second = maxpos;
+		_maxpos.second = maxpos * dataStride;
+		if (! dataProvider.null()) {
+			dataProvider->updateMaxPos(_maxpos);
+		}
         _max = new AccumType(mymax);
 	}
 	if (minpos >= 0) {
 		_minpos.first = _idataset;
-		_minpos.second = minpos;
+		_minpos.second = minpos * dataStride;
+		if (! dataProvider.null()) {
+			dataProvider->updateMinPos(_minpos);
+		}
         _min = new AccumType(mymin);
 	}
 }
@@ -2584,7 +2546,7 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_valuesFromSor
 		: knownNpts.null()
 		  ? 0 : *knownNpts;
 	if (myArray.empty()) {
-		if (/*! _currentStats.empty() && */ myNpts > 0) {
+		if (myNpts > 0) {
 			// we have already computed npts
 			if (myNpts <= maxArraySize) {
 				// npts is smaller than the max array size, so create the array and sort

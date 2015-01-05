@@ -438,7 +438,23 @@ int main (int argc, const char* argv[])
 	AlwaysAssert (allEQ(latArr1.get(), 9*arr), AipsError);
       }
     }
-  } catch (AipsError x) {
+    {
+      // test position in parent
+      ArrayLattice<Int> parent((IPosition(3, 20, 20, 20)));
+      Slicer slice(IPosition(3, 1, 1, 1), IPosition(3, 16, 17, 18),
+                   IPosition(3, 1, 1, 2), Slicer::endIsLast);
+      SubLattice<Int> sub(parent, slice);
+      AlwaysAssert(sub.positionInParent(IPosition(3, 4, 5, 6)) ==
+                   IPosition(3, 5, 6, 13),
+                   AipsError);
+      Slicer slice2(IPosition(3, 1, 1, 1), IPosition(3, 16, 17, 18),
+                    IPosition(3, 16, 1, 2), Slicer::endIsLast);
+      SubLattice<Int> sub2(parent, slice2, AxesSpecifier(False));
+      AlwaysAssert(sub2.positionInParent(IPosition(2, 4, 5)) ==
+                   IPosition(3, 1, 5, 11),
+                   AipsError);
+    }
+  } catch (const AipsError& x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;

@@ -41,12 +41,12 @@
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>
 #include <casacore/lattices/Lattices/LatticeApply.h>
-#include <casacore/lattices/LatticeMath/LatticeStatsDataProvider.h>
-#include <casacore/lattices/LatticeMath/MaskedLatticeStatsDataProvider.h>
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/lattices/Lattices/TempLattice.h>
 #include <casacore/lattices/Lattices/LatticeExpr.h>
 #include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/LatticeMath/LatticeStatsDataProvider.h>
+#include <casacore/lattices/LatticeMath/MaskedLatticeStatsDataProvider.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/BasicMath/ConvertScalar.h>
 #include <casacore/casa/Quanta/QMath.h>
@@ -93,7 +93,8 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   someGoodPointsValue_p(False),
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
-  doneFullMinMax_p(False)
+  doneFullMinMax_p(False),
+  _cs()
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);   
@@ -136,7 +137,8 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   someGoodPointsValue_p(False),
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
-  doneFullMinMax_p(False)
+  doneFullMinMax_p(False),
+  _cs()
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);
@@ -160,7 +162,8 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
 template <class T>
 LatticeStatistics<T>::LatticeStatistics(const LatticeStatistics<T> &other) 
 : pInLattice_p(0),
-  pStoreLattice_p(0)
+  pStoreLattice_p(0),
+  _cs()
 //
 // Copy constructor.  Storage lattice is not copied.
 //
@@ -226,6 +229,7 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       doneFullMinMax_p= other.doneFullMinMax_p;
       minFull_p = other.minFull_p;
       maxFull_p = other.maxFull_p;
+      _cs.resize(0);
    }
    return *this;
 }
@@ -520,7 +524,8 @@ template <class T> Bool LatticeStatistics<T>::getStatistic(
 ) {
    if (!goodParameterStatus_p) {
      return False;
-   }	   
+   }
+
    if (needStorageLattice_p) generateStorageLattice();
    if (type==LatticeStatsBase::NPTS) {
       return retrieveStorageStatistic(stats, NPTS, dropDeg);
@@ -817,36 +822,166 @@ Bool LatticeStatistics<T>::generateStorageLattice()
        os_p << LogIO::NORMAL1
             << "Creating new statistics storage lattice of shape " << storeLatticeShape << endl << LogIO::POST;
     }
-    if (pStoreLattice_p != 0) delete pStoreLattice_p;
+    // ensure all elements are destroyed first, then resize to correct size
+    _cs.resize(0);
+    _cs.resize(storeLatticeShape.product()/storeLatticeShape.last());
+    delete pStoreLattice_p;
     pStoreLattice_p = new TempLattice<AccumType>(TiledShape(storeLatticeShape,
                                                  tileShape), useMemory);
 // Set up min/max location variables
 
     minPos_p.resize(pInLattice_p->shape().nelements());
     maxPos_p.resize(pInLattice_p->shape().nelements());
-// Iterate through lattice and accumulate statistical sums
 
-    StatsTiledCollapser<T,AccumType> collapser(range_p, noInclude_p, noExclude_p,
-                                               fixedMinMax_p);
     LattStatsProgress* pProgressMeter = 0;
     if (showProgress_p) pProgressMeter = new LattStatsProgress();
-
-// This is the first output axis (there is only one in IS) getting 
-// collapsed values.
-// Output has to be a MaskedLattice, so make a writable SubLattice.
-    Int newOutAxis = pStoreLattice_p->ndim()-1;
-    SubLattice<AccumType> outLatt (*pStoreLattice_p, True);
-    LatticeApply<T,AccumType>::tiledApply(outLatt, *pInLattice_p, 
-                                          collapser, IPosition(cursorAxes_p),
-                                          newOutAxis, pProgressMeter);
 
     if (pProgressMeter) {
        delete pProgressMeter;
        pProgressMeter = 0;
     }
-    collapser.minMaxPos(minPos_p, maxPos_p);
+    //collapser.minMaxPos(minPos_p, maxPos_p);
 
-// Do robust statistics separately as required.
+
+    const uInt nCursorAxes = cursorAxes_p.nelements();
+    const IPosition latticeShape(pInLattice_p->shape());
+    IPosition cursorShape(pInLattice_p->ndim(),1);
+    for (uInt i=0; i<nCursorAxes; i++) {
+    	cursorShape(cursorAxes_p(i)) = latticeShape(cursorAxes_p(i));
+    }
+
+    IPosition axisPath = cursorAxes_p;
+    axisPath.append(displayAxes_p);
+    LatticeStepper stepper(latticeShape, cursorShape, axisPath);
+
+    DataRanges range;
+    if (! noInclude_p || ! noExclude_p) {
+    	range.push_back(std::pair<T, T>(range_p[0], range_p[1]));
+    }
+
+    T currentMax = 0;
+    T currentMin = 0;
+    T overallMax = 0;
+    T overallMin = 0;
+    Bool isReal = whatType(&currentMax);
+    typename vector<ClassicalStatistics<AccumType, const T*, const Bool*> >::iterator curCS = _cs.begin();
+    for (stepper.reset(); ! stepper.atEnd(); stepper++) {
+    	IPosition curPos = stepper.position();
+    	IPosition posMax = locInStorageLattice(curPos, LatticeStatsBase::MAX);
+    	IPosition posMean = locInStorageLattice(curPos, LatticeStatsBase::MEAN);
+    	IPosition posMin = locInStorageLattice(curPos, LatticeStatsBase::MIN);
+    	IPosition posNpts= locInStorageLattice(curPos, LatticeStatsBase::NPTS);
+    	IPosition posSum = locInStorageLattice(curPos, LatticeStatsBase::SUM);
+    	IPosition posSumsq = locInStorageLattice(curPos, LatticeStatsBase::SUMSQ);
+    	IPosition posVariance = locInStorageLattice(curPos, LatticeStatsBase::VARIANCE);
+
+    	// Create SubLattice from chunk
+    	Slicer slicer(curPos, stepper.endPosition(), Slicer::endIsLast);
+    	SubLattice<T> subLat(*pInLattice_p, slicer);
+
+    	// we use T rather than AccumType for the first templated variable because
+    	// we lose no accuracy and if AccumType=complex<double> and T=complex<float>,
+    	// this code will not compile
+
+
+    	LatticeStatsDataProviderBase<AccumType, T> *dataProvider = NULL;
+
+    	if (subLat.isMasked()) {
+    		dataProvider = new MaskedLatticeStatsDataProvider<AccumType, T>(subLat);
+    	}
+    	else {
+    		dataProvider = new LatticeStatsDataProvider<AccumType, T>(subLat);
+    	}
+    	// FIXME having Bool variables that are true when a fundamental property is negated
+    	// is incredibly confusing and certainly not best practice. Rename and adjust
+    	// the meaning of noInclude_p and noExclude_p
+    	if (! noInclude_p || ! noExclude_p) {
+    		dataProvider->setRanges(range, ! noInclude_p);
+    	}
+
+    	// its annoying that valid implicit casting of CountedPtr's won't compile, so
+    	// we have to do this the hard way. The ThrowIf statement can be removed once
+    	// this has been thoroughly exercised.
+    	CountedPtr<StatsDataProvider<AccumType, const T*, const Bool*> > mydp
+    		= dynamic_cast<StatsDataProvider<AccumType, const T*, const Bool*> *>(dataProvider);
+    	ThrowIf (mydp.null(), "Logic Error: dynamic cast failed");
+    	curCS->setDataProvider(mydp);
+    	Record stats = curCS->getStatistics();
+    	AccumType u;
+    	stats.get(
+    		StatisticsData::toString(StatisticsData::MEAN), u
+    	);
+    	pStoreLattice_p->putAt(u, posMean);
+    	stats.get(
+    		StatisticsData::toString(StatisticsData::NPTS), u
+    	);
+    	pStoreLattice_p->putAt(u, posNpts);
+    	stats.get(
+    		StatisticsData::toString(StatisticsData::SUM), u
+    	);
+    	pStoreLattice_p->putAt(u, posSum);
+    	stats.get(
+    		StatisticsData::toString(StatisticsData::SUMSQ), u
+    	);
+    	pStoreLattice_p->putAt(u, posSumsq);
+    	stats.get(
+    		StatisticsData::toString(StatisticsData::VARIANCE), u
+    	);
+    	pStoreLattice_p->putAt(u, posVariance);
+    	if (fixedMinMax_p && ! noInclude_p) {
+    		currentMax = range[0].second;
+    	}
+    	else if (stats.isDefined(StatisticsData::toString(StatisticsData::MAX))) {
+    		stats.get(
+    			StatisticsData::toString(StatisticsData::MAX), currentMax
+    		);
+    	}
+    	pStoreLattice_p->putAt(currentMax, posMax);
+    	if (fixedMinMax_p && ! noInclude_p) {
+    		currentMin = range[0].first;
+    	}
+    	else if (stats.isDefined(StatisticsData::toString(StatisticsData::MIN))) {
+    		stats.get(
+    			StatisticsData::toString(StatisticsData::MIN), currentMin
+    		);
+    	}
+    	pStoreLattice_p->putAt(currentMin, posMin);
+
+    	if (isReal) {
+    		// CAUTION The way this has worked in the past apparently for
+    		// lattices is that the max and min positions are representative
+    		// of the *entire* lattice, and were not stored on a sublattice
+    		// by sublattice basis. This is easy to fix now,
+    		// but for backward compatibility, I'm leaving this functionality as
+    		// it has been.
+    		if (! fixedMinMax_p || noInclude_p) {
+    			if (stepper.atStart()) {
+    				IPosition myMaxPos, myMinPos;
+    				dataProvider->minMaxPos(myMinPos, myMaxPos);
+    				minPos_p = subLat.positionInParent(myMinPos);
+    				maxPos_p = subLat.positionInParent(myMaxPos);
+    				overallMax = currentMax;
+    				overallMin = currentMin;
+    			}
+    			else if (
+    				currentMax > overallMax || currentMin < overallMin
+    			) {
+    				IPosition myMaxPos, myMinPos;
+    				dataProvider->minMaxPos(myMinPos, myMaxPos);
+    				if (currentMin < overallMin) {
+    					minPos_p = subLat.positionInParent(myMinPos);
+    					overallMin = currentMin;
+    				}
+    				if (currentMax > overallMax) {
+    					maxPos_p = subLat.positionInParent(myMaxPos);
+    					overallMax = currentMax;
+    				}
+    			}
+    		}
+    	}
+    	++curCS;
+    }
+    // Do robust statistics separately as required.
     generateRobust();
     needStorageLattice_p = False;     
     doneSomeGoodPoints_p = False;
@@ -868,79 +1003,20 @@ void LatticeStatistics<T>::generateRobust () {
 	IPosition axisPath = cursorAxes_p;
 	axisPath.append(displayAxes_p);
 	LatticeStepper stepper(latticeShape, cursorShape, axisPath);
-
+	std::set<Double> quartiles;
+	if (doRobust_p) {
+		quartiles.insert(0.25);
+		quartiles.insert(0.75);
+	}
+	std::map<Double, AccumType> quantileToValue;
+    typename vector<ClassicalStatistics<AccumType, const T*, const Bool*> >::iterator curCS = _cs.begin();
 	for (stepper.reset(); !stepper.atEnd(); stepper++) {
 		IPosition pos = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDIAN);
 		IPosition pos2 = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDABSDEVMED);
 		IPosition pos3 = locInStorageLattice(stepper.position(), LatticeStatsBase::QUARTILE);
 		IPosition posQ1 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q1);
 		IPosition posQ3 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q3);
-		if (doRobust_p) {
-			// Create SubLattice from chunk
-			Slicer slicer(stepper.position(), stepper.endPosition(), Slicer::endIsLast);
-			SubLattice<T> subLat(*pInLattice_p, slicer);
-
-			// we use T rather than AccumType for the first templated variable because
-			// we lose no accuracy and if AccumType=complex<double> and T=complex<float>,
-			// this code will not compile
-
-			IPosition maxloc = locInStorageLattice(stepper.position(), LatticeStatsBase::MAX);
-			IPosition minloc = locInStorageLattice(stepper.position(), LatticeStatsBase::MIN);
-			IPosition nptsloc = locInStorageLattice(stepper.position(), LatticeStatsBase::NPTS);
-			// The abs allows compilation if AccumType is a complex valued type
-			CountedPtr<uInt64> mynpts = new uInt64((uInt64)abs(pStoreLattice_p->getAt(nptsloc)));
-			CountedPtr<AccumType> mymin = new AccumType(pStoreLattice_p->getAt(minloc));
-			CountedPtr<AccumType> mymax = new AccumType(pStoreLattice_p->getAt(maxloc));
-
-			ClassicalStatistics<AccumType, const T*, const Bool*> cs;
-			LatticeStatsDataProviderBase<AccumType, T> *dataProvider = 0;
-
-			if (subLat.isMasked()) {
-				dataProvider = new MaskedLatticeStatsDataProvider<AccumType, T>(subLat);
-			}
-			else {
-				dataProvider = new LatticeStatsDataProvider<AccumType, T>(subLat);
-			}
-			// FIXME having Bool variables that are true when a fundamental property is negated
-			// is incredibly confusing and certainly not best practice. Rename and adjust
-			// the meaning of noInclude_p and noExclude_p
-			if (! noInclude_p || ! noExclude_p) {
-				DataRanges range;
-				range.push_back(std::pair<T, T>(range_p[0], range_p[1]));
-				dataProvider->setRanges(range, ! noInclude_p);
-			}
-
-			// its annoying that valid implicit casting of CountedPtr's won't compile, so
-			// we have to do this the hard way. The ThrowIf statement can be removed once
-			// this has been thoroughly exercised.
-			CountedPtr<StatsDataProvider<AccumType, const T*, const Bool*> > mydp
-				= dynamic_cast<StatsDataProvider<AccumType, const T*, const Bool*> *>(dataProvider);
-			ThrowIf (mydp.null(), "Logic Error: dynamic cast failed");
-			cs.setDataProvider(mydp);
-			std::set<Double> quartiles;
-			quartiles.insert(0.25);
-			quartiles.insert(0.75);
-			std::map<Double, AccumType> quantileToValue;
-			// computing the median and the quartiles simultaneously minimizes
-			// the number of necessary data scans, as opposed to first calling
-			// getMedian() and getQuartiles() separately
-			AccumType median = cs.getMedianAndQuantiles(
-				quantileToValue, quartiles, mynpts, mymin, mymax
-			);
-			AccumType q1 = quantileToValue[0.25];
-			AccumType q3 = quantileToValue[0.75];
-			AccumType iqr = q3 - q1;
-			AccumType medabsdevmed = cs.getMedianAbsDevMed(
-				mynpts, mymin, mymax
-			);
-			// Whack results into storage lattice
-			pStoreLattice_p->putAt(median, pos);
-			pStoreLattice_p->putAt(medabsdevmed, pos2);
-			pStoreLattice_p->putAt(iqr, pos3);
-			pStoreLattice_p->putAt(q1, posQ1);
-			pStoreLattice_p->putAt(q3, posQ3);
-		}
-		else {
+		if (! doRobust_p) {
 			// Stick zero in storage lattice (it's not initialized)
 			AccumType val(0);
 			pStoreLattice_p->putAt(val, pos);
@@ -948,7 +1024,24 @@ void LatticeStatistics<T>::generateRobust () {
 			pStoreLattice_p->putAt(val, pos3);
 			pStoreLattice_p->putAt(val, posQ1);
 			pStoreLattice_p->putAt(val, posQ3);
+			continue;
 		}
+		quantileToValue.clear();
+		// computing the median and the quartiles simultaneously minimizes
+		// the number of necessary data scans, as opposed to first calling
+		// getMedian() and getQuartiles() separately
+		AccumType median = curCS->getMedianAndQuantiles(quantileToValue, quartiles);
+		AccumType q1 = quantileToValue[0.25];
+		AccumType q3 = quantileToValue[0.75];
+		AccumType iqr = q3 - q1;
+		AccumType medabsdevmed = curCS->getMedianAbsDevMed();
+		// Whack results into storage lattice
+		pStoreLattice_p->putAt(median, pos);
+		pStoreLattice_p->putAt(medabsdevmed, pos2);
+		pStoreLattice_p->putAt(iqr, pos3);
+		pStoreLattice_p->putAt(q1, posQ1);
+		pStoreLattice_p->putAt(q3, posQ3);
+		++curCS;
 	}
 }
 
@@ -1455,36 +1548,34 @@ Bool LatticeStatistics<T>::getLayerStats(
     uInt zAx = -1;
     uInt hAx = -1;
     for (uInt j=0; j<displayAxes_p.nelements(); j++) {
-        if (zAxis == displayAxes_p(j)) {
+	if (zAxis == displayAxes_p(j))
 	    zAx = j;
-        }
-	if (hAxis == displayAxes_p(j)) {
+	if (hAxis == displayAxes_p(j))
 	    hAx = j;
-        }
     }
 
     Int layer = 0;
     for ( pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++ ) {
 	IPosition dPos = pixelIterator.position();
 	if (displayAxes_p.nelements() == 2) {
-            if (zAx == 1) {
-                if (dPos[1] != zLayer) {
-		    continue;
-		} else {
-		    layer = hLayer;
-                }
+          if (zAx == 1) {
+            if (dPos[1] != zLayer) {
+              continue;
+            } else {
+              layer = hLayer;
             }
-	    if (hAx == 1) {
-                if (dPos[1] != hLayer) {
-		    continue;
-		} else {
-		    layer = zLayer;
-                }
+          }
+          if (hAx == 1) {
+            if (dPos[1] != hLayer) {
+              continue;
+            } else {
+              layer = zLayer;
             }
+          }
 	}
-	if (displayAxes_p.nelements() == 1) {
+	if (displayAxes_p.nelements() == 1)
 	    layer = zLayer;
-        }
+
 	Matrix<AccumType>  matrix(pixelIterator.matrixCursor());
 	for (uInt i=0; i<n1; i++) {
 	    const AccumType& nPts = matrix(i,NPTS);

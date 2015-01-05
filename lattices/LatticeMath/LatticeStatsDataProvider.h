@@ -63,13 +63,18 @@ public:
 	// Get the associated mask of the current dataset. Only called if hasMask() returns True;
 	const Bool* getMask();
 
-
-
 	// Does the current data set have an associated mask?
 	Bool hasMask() const;
 
 	// reset the provider to point to the first data set it manages.
 	void reset();
+
+	// <group>
+	// see base class documentation.
+	void updateMaxPos(const std::pair<uInt, Int64>& maxpos);
+
+	void updateMinPos(const std::pair<uInt, Int64>& minpos);
+	// </group>
 
 private:
 	RO_LatticeIterator<T> _iter;
@@ -78,6 +83,9 @@ private:
 	Bool _delData;
 
 	void _freeStorage();
+
+	uInt _nsteps() const;
+
 };
 
 }

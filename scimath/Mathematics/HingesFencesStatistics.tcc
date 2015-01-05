@@ -1,4 +1,4 @@
-//# Copyright (C) 2014
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -70,10 +70,15 @@ AccumType HingesFencesStatistics<AccumType, InputIterator, MaskIterator>::getMed
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
 	Bool persistSortedArray
 ) {
-	_setRange();
-	return ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian(
-		knownNpts, knownMin, knownMax, binningThreshholdSizeBytes, persistSortedArray
-	);
+	if (_median.null()) {
+		_setRange();
+		_median = new AccumType(
+			ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian(
+				knownNpts, knownMin, knownMax, binningThreshholdSizeBytes, persistSortedArray
+			)
+		);
+	}
+	return *_median;
 }
 
 template <class AccumType, class InputIterator, class MaskIterator>
@@ -96,10 +101,11 @@ AccumType HingesFencesStatistics<AccumType, InputIterator, MaskIterator>::getMed
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes, Bool persistSortedArray
 ) {
 	_setRange();
-	_doMedAbsDevMed = True;
 	if (_median.null()) {
-		_median = new AccumType(this->getMedian());
+		// sets _median, we can discard the return value
+		this->getMedian();
 	}
+	_doMedAbsDevMed = True;
 	AccumType medabsdevmed = ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedianAbsDevMed(
 		knownNpts, knownMin, knownMax, binningThreshholdSizeBytes, persistSortedArray
 	);
@@ -1553,6 +1559,8 @@ void HingesFencesStatistics<AccumType, InputIterator, MaskIterator>::_setRange()
 	_hasRange = True;
 }
 
+// use a define to ensure code is compiled inline
+
 #define _unweightedStatsCodeHF \
 	if (_isInRange(*datum)) { \
 		this->_accumulate (mymin, mymax, minpos, maxpos, *datum, count); \
@@ -1564,7 +1572,6 @@ void HingesFencesStatistics<AccumType, InputIterator, MaskIterator>::_unweighted
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const InputIterator& dataBegin, Int64 nr, uInt dataStride
-
 ) {
 	if (_hasRange) {
 		InputIterator datum = dataBegin;
@@ -1683,12 +1690,12 @@ void HingesFencesStatistics<AccumType, InputIterator, MaskIterator>::_unweighted
 	}
 }
 
+// use #define to ensure code is compiled inline
 
 #define _weightedStatsCodeHF \
 	if (_isInRange(*datum)) { \
-		this->_accumulate (mymin, mymax, minpos, maxpos, *datum, count); \
+		this->_accumulate (mymin, mymax, minpos, maxpos, *datum, *weight, count); \
 	}
-
 
 template <class AccumType, class InputIterator, class MaskIterator>
 void HingesFencesStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats(

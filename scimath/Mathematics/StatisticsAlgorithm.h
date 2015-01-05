@@ -1,5 +1,4 @@
-//# StatisticsAlgorithms.h: Base class of statistics algorithm class hierarchy
-//# Copyright (C) 2014
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +36,7 @@
 #include <vector>
 #include <map>
 #include <set>
+
 
 namespace casacore {
 
@@ -105,52 +105,65 @@ public:
 
 	// <group>
 	// Add a dataset to an existing set of datasets on which statistics are
-	// to be calculated. nr is the number of points to be considered, so if stride
-	// is greater than 1, this must be accounted for correctly. eg, if the dataset
-	// contains 6 points, but stride = 2 so only the points at indices 0, 2, and 4 are
-	// to be used for calculating statistics, nr should be set to 3, not 6.
+	// to be calculated. nr is the number of points to be considered.
+	// If <src>dataStride</src> is greater than 1, when <src>nrAccountsForStride</src>=True indicates
+	// that the stride has been taken into account in the value of <src>nr</src>. Otherwise, it has
+	// not so that the actual number of points to include is nr/dataStride if nr % dataStride == 0 or
+	// (int)(nr/dataStride) + 1 otherwise.
 	// If one calls this method after a data provider has been set, an exception will be
 	// thrown. In this case, one should call setData(), rather than addData(), to indicate
 	// that the underlying data provider should be removed.
-	virtual void addData(const InputIterator& first, uInt nr, uInt dataStride=1);
+	// <src>dataRanges</src> provide the ranges of data to include if <src>isInclude</src> is True,
+	// or ranges of data to exclude if <src>isInclude</src> is False. If a datum equals the end point
+	// of a data range, it is considered good (included) if <src>isInclude</src> is True, and it is
+	// considered bad (excluded) if <src>isInclude</src> is False.
+
+	virtual void addData(
+		const InputIterator& first, uInt nr, uInt dataStride=1,
+		Bool nrAccountsForStride=False
+	);
 
 	virtual void addData(
 		const InputIterator& first, uInt nr,
-		const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1
+		const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
+		Bool nrAccountsForStride=False
 	);
 
 	virtual void addData(
 		const InputIterator& first, const MaskIterator& maskFirst,
-		uInt nr, uInt dataStride=1, uInt maskStride=1
+		uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False, uInt maskStride=1
 	);
 
 	virtual void addData(
 		const InputIterator& first, const MaskIterator& maskFirst,
 		uInt nr, const DataRanges& dataRanges,
-		Bool isInclude=True, uInt dataStride=1, uInt maskStride=1
+		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
+		uInt maskStride=1
 	);
 
 	virtual void addData(
 		const InputIterator& first, const InputIterator& weightFirst,
-		uInt nr, uInt dataStride=1
+		uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False
 	);
 
 	virtual void addData(
 		const InputIterator& first, const InputIterator& weightFirst,
 		uInt nr, const DataRanges& dataRanges,
-		Bool isInclude=True, uInt dataStride=1
+		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False
 	);
 
 	virtual void addData(
 		const InputIterator& first, const InputIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
+		Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void addData(
 		const InputIterator& first, const InputIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-		Bool isInclude=True, uInt dataStride=1, uInt maskStride=1
+		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
+		uInt maskStride=1
 	);
 	// </group>
 
@@ -182,54 +195,63 @@ public:
 	// certain statistics such as max and min have locations in the dataset
 	// associated with them. This method gets those locations. The first value
 	// in the returned pair is the zero-based dataset number that was set or
-	// added. The second value is the zero-based index in that dataset.
+	// added. The second value is the zero-based index in that dataset. A data stride
+	// of greater than one is not accounted for, so the index represents the actual
+	// location in the data set, independent of the dataStride value.
 	virtual std::pair<uInt, uInt> getStatisticIndex(StatisticsData::STATS stat) = 0;
 
 	virtual Record getStatistics();
 
 	// <group>
 	// setdata() clears any current datasets or data provider and then adds the specified data set as
-	// the first dataset in the (possibly new) set of data sets for which statistcs are
-	// to be calculated.
-	virtual void setData(const InputIterator& first, uInt nr, uInt dataStride=1);
+	// the first dataset in the (possibly new) set of data sets for which statistics are
+	// to be calculated. See addData() for parameter meanings.
+	virtual void setData(const InputIterator& first, uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False);
 
 	virtual void setData(
 		const InputIterator& first, uInt nr,
-		const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1
+		const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
+		Bool nrAccountsForStride=False
 	);
 
 	virtual void setData(
 		const InputIterator& first, const MaskIterator& maskFirst,
-		uInt nr, uInt dataStride=1, uInt maskStride=1
+		uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False,
+		uInt maskStride=1
 	);
 
 	virtual void setData(
 		const InputIterator& first, const MaskIterator& maskFirst,
 		uInt nr, const DataRanges& dataRanges,
-		Bool isInclude=True, uInt dataStride=1, uInt maskStride=1
+		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
+		uInt maskStride=1
 	);
 
 	virtual void setData(
 		const InputIterator& first, const InputIterator& weightFirst,
-		uInt nr, uInt dataStride=1
+		uInt nr, uInt dataStride=1,
+		Bool nrAccountsForStride=False
 	);
 
 	virtual void setData(
 		const InputIterator& first, const InputIterator& weightFirst,
 		uInt nr, const DataRanges& dataRanges,
-		Bool isInclude=True, uInt dataStride=1
+		Bool isInclude=True, uInt dataStride=1,
+		Bool nrAccountsForStride=False
 	);
 
 	virtual void setData(
 		const InputIterator& first, const InputIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
+		Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void setData(
 		const InputIterator& first, const InputIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-		Bool isInclude=True, uInt dataStride=1, uInt maskStride=1
+		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
+		uInt maskStride=1
 	);
 	// </group>
 
