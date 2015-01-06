@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-namespace casa {
+namespace casacore {
 
 // \defgroup tables tables package (libcasa_tables)
 //
