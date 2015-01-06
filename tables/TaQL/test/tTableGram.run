@@ -10,13 +10,13 @@
 
 # Set default testsrcdir if undefined.
 if test "$testsrcdir" = ""; then
-  testsrcdir=../../../../../casacore/tables/Tables/test
+  testsrcdir=../../../../../casacore/tables/TaQL/test
 fi
 
 # Use table tTable_2.data_v0 as the input by copying it (twice).
 rm -rf tTableGram_tmp.tab*
 mkdir tTableGram_tmp.tab
-cp -r $testsrcdir/tTable_2.data_v0/table.* tTableGram_tmp.tab
+cp -r $testsrcdir/../../Tables/test/tTable_2.data_v0/table.* tTableGram_tmp.tab
 chmod 644 tTableGram_tmp.tab/*
 cp -r tTableGram_tmp.tab tTableGram_tmp.tabc
 
@@ -249,7 +249,7 @@ echo "Testing multiple tables ..."
 # Use table tTable_2.data_v0 again.
 rm -rf tTableGram_tmp.tab*
 mkdir tTableGram_tmp.tab
-cp -r $testsrcdir/tTable_2.data_v0/table.* tTableGram_tmp.tab
+cp -r $testsrcdir/../../Tables/test/tTable_2.data_v0/table.* tTableGram_tmp.tab
 chmod 644 tTableGram_tmp.tab/*
 # Make a deep copy in reversed order.
 $casa_checktool ./tTableGram 'select from tTableGram_tmp.tab orderby ab desc giving tTableGram_tmp.rev as plain'

@@ -764,8 +764,7 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 	//# The first version of ColumnSet did not put a version.
 	//# Therefore a negative number is put as the version
 	//# (because nrrow_p is always positive).
-        // The storageOption fields are new for version 3. Only put them
-        // if actually used, so new files can usually be read by old versions.
+        // Still use version 2 if MultiFile is not used and #rows fit in a uInt.
         if (storageOpt_p.option() == StorageOption::MultiFile  ||
             nrrow_p > Int64(std::numeric_limits<uInt>::max())) {
           ios << Int(-3);          // version (must be negative !!!)
