@@ -45,7 +45,7 @@
 
 void doIt (const String& str)
 {
-  String name = "$testsrcdir/tTable_2.data_v0";
+  String name = "$testsrcdir/../../Tables/test/tTable_2.data_v0";
   Table tab(name);
   TableExprNode expr = RecordGram::parse (tab, str);
   cout << str << ": ";

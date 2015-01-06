@@ -1057,8 +1057,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       used by a MultiFile. If 0 is given, the file system's block size
 //       will be used.
 // </ul>
+// About all standard storage managers support the MultiFile.
+// The exception is StManAipsIO, because it is hardly ever used.
 //
-// Several storage managers are currently supported.
+// Several storage managers exist, each with its own storage characteristics.
 // The default and preferred storage manager is <src>StandardStMan</src>.
 // Other storage managers should only be used if they pay off in
 // file space (like <src>IncrementalStMan</src> for slowly varying data)

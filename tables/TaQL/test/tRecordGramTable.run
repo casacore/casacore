@@ -3,6 +3,11 @@
 # Script to test the RecordGram class for a table
 #=============================================================================
 
+# Set default testsrcdir if undefined. It is used in tRecordGramTable.cc.
+if test "$testsrcdir" = ""; then
+  testsrcdir=../../../../../casacore/tables/TaQL/test
+fi
+
 $casa_checktool ./tRecordGramTable "ab"
 $casa_checktool ./tRecordGramTable "ac"
 $casa_checktool ./tRecordGramTable "ad"

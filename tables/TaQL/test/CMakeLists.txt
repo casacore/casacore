@@ -1,21 +1,17 @@
+# Define the table files used in tests.
 set (datafiles
-tTable_2.data_v0/table.dat
-tTable_2.data_v0/table.f0
-tTable_2.data_v0/table.f0i0
-tTable_2.data_v0/table.f1
-tTable_2.data_v0/table.f2
-tTable_2.data_v0/table.info
-tTable_2.data_v1/table.dat
-tTable_2.data_v1/table.f0
-tTable_2.data_v1/table.f0i0
-tTable_2.data_v1/table.f1
-tTable_2.data_v1/table.f2
-tTable_2.data_v1/table.info
+../../Tables/test/tTable_2.data_v0/table.dat
+../../Tables/test/tTable_2.data_v0/table.f0
+../../Tables/test/tTable_2.data_v0/table.f0i0
+../../Tables/test/tTable_2.data_v0/table.f1
+../../Tables/test/tTable_2.data_v0/table.f2
+../../Tables/test/tTable_2.data_v0/table.info
 )
 
-foreach (file ${datafiles})
-    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${file} ${CMAKE_CURRENT_BINARY_DIR}/${file} COPYONLY)
-endforeach (file)
+# Copying is not needed, thus outcommented.
+#foreach (file ${datafiles})
+#    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${file} ${CMAKE_CURRENT_BINARY_DIR}/${file} COPYONLY)
+#endforeach (file)
 
 
 set (tests
