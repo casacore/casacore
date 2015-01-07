@@ -28,6 +28,7 @@
 #ifndef LATTICES_REGIONTYPE_H
 #define LATTICES_REGIONTYPE_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

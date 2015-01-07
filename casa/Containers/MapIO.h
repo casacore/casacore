@@ -28,6 +28,7 @@
 #ifndef CASA_MAPIO_H
 #define CASA_MAPIO_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Map.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

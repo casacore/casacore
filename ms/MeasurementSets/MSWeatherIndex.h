@@ -29,6 +29,7 @@
 #ifndef MS_MSWEATHERINDEX_H
 #define MS_MSWEATHERINDEX_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSTableIndex.h>
 
 #include <casacore/casa/Containers/RecordField.h>

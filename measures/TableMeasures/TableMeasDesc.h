@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/measures/TableMeasures/TableMeasDescBase.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

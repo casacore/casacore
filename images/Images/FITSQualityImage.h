@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Images/FITSErrorImage.h>
 #include <casacore/images/Images/ImageInterface.h>
 

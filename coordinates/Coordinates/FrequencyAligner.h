@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
 #include <casacore/measures/Measures/MFrequency.h>
 #include <casacore/measures/Measures/MeasRef.h>

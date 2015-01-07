@@ -29,6 +29,7 @@
 #ifndef SCIMATH_FUNCTIONMARSHALLABLE_H
 #define SCIMATH_FUNCTIONMARSHALLABLE_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/scimath/Functionals/FunctionFactoryErrors.h>
 #include <casacore/scimath/Functionals/SerialHelper.h>

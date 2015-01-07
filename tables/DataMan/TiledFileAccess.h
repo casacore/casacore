@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/TSMCube.h>
 #include <casacore/tables/DataMan/TSMOption.h>
 #include <casacore/casa/Utilities/DataType.h>

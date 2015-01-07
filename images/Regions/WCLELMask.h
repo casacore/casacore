@@ -30,6 +30,7 @@
 #define IMAGES_WCLELMASK_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Regions/WCRegion.h>
 #include <casacore/lattices/Lattices/RegionType.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>

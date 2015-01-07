@@ -28,6 +28,7 @@
 #ifndef MS_MEASUREMENTSETS_H
 #define MS_MEASUREMENTSETS_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MeasurementSets/MSColumns.h>
 

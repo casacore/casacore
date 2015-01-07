@@ -29,6 +29,7 @@
 #define TABLES_TAQLNODEHANDLER_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/TaQLNodeVisitor.h>
 #include <casacore/tables/TaQL/TaQLNodeDer.h>
 #include <casacore/tables/TaQL/TableParse.h>

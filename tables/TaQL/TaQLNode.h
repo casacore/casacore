@@ -29,6 +29,7 @@
 #define TABLES_TAQLNODE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/TaQLNodeRep.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
 #include <casacore/casa/OS/Mutex.h>

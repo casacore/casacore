@@ -29,6 +29,7 @@
 #ifndef SCIMATH_ECLECTICFUNCTIONFACTORY_H
 #define SCIMATH_ECLECTICFUNCTIONFACTORY_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/casa/Containers/OrderedMap.h>
 #include <casacore/casa/Containers/OrderedPair.h>

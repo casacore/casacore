@@ -29,6 +29,7 @@
 #define TABLES_RETYPEDARRAYSETGET_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

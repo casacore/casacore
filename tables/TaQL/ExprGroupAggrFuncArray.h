@@ -29,6 +29,7 @@
 #define TABLES_EXPRGROUPAGGRFUNCARRAY_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprGroup.h>
 #include <vector>
 

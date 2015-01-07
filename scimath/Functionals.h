@@ -30,6 +30,7 @@
 #define SCIMATH_FUNCTIONALS_H
 
 //# Base classes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicMath/Functional.h>
 #include <casacore/scimath/Functionals/FunctionTraits.h>
 #include <casacore/scimath/Functionals/FunctionParam.h>

@@ -29,6 +29,8 @@
 #define CASA_HDF5_H
 
 //# Includes
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/HDF5/HDF5File.h>
 #include <casacore/casa/HDF5/HDF5Group.h>
 #include <casacore/casa/HDF5/HDF5DataSet.h>

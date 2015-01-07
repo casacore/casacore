@@ -27,6 +27,8 @@
 #ifndef LATTICES_LELBINARYENUMS_H
 #define LATTICES_LELBINARYENUMS_H
 
+#include <casacore/casa/aips.h>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Each LEL binary operation is described in this enum  </summary>

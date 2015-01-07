@@ -29,12 +29,11 @@
 #define CASA_ERROR_H
 
 
-
-#include <sys/types.h>
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/Mutex.h>
 #include <exception>
+#include <sys/types.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

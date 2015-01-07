@@ -29,6 +29,7 @@
 #ifndef MS_MSDOPPLERINDEX_H
 #define MS_MSDOPPLERINDEX_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSTableIndex.h>
 
 #include <casacore/casa/Containers/RecordField.h>

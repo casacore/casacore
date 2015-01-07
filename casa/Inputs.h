@@ -28,6 +28,8 @@
 #ifndef CASA_INPUTS_H
 #define CASA_INPUTS_H
 
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/Inputs/Input.h>
 #include <casacore/casa/Inputs/Param.h>
 

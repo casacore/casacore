@@ -29,6 +29,7 @@
 #define CASA_HDF5GROUP_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/HDF5/HDF5Object.h>
 #include <vector>
 

@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Images/FITSImage.h>
 #include <casacore/casa/BasicSL/String.h>
 

@@ -29,6 +29,7 @@
 #define CASA_VECTOR_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
 
 //# Forward declarations

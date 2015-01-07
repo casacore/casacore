@@ -29,6 +29,7 @@
 #define TABLES_RECORDGRAM_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/TaQL/TableGram.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>

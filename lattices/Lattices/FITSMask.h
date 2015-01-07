@@ -30,6 +30,7 @@
 #define LATTICES_FITSMASK_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/lattices/Lattices/Lattice.h>
 

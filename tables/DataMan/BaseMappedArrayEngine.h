@@ -29,6 +29,7 @@
 #define TABLES_BASEMAPPEDARRAYENGINE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/VirtColEng.h>
 #include <casacore/tables/DataMan/VirtArrCol.h>
 #include <casacore/casa/Arrays/IPosition.h>

@@ -29,6 +29,7 @@
 #ifndef _CASA_TASK_H
 #define _CASA_TASK_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/RecordField.h>
 

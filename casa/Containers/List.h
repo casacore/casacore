@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/Register.h>
 #include <casacore/casa/Utilities/Notice.h>
 #include <casacore/casa/Containers/Link.h>

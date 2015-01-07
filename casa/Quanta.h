@@ -29,6 +29,8 @@
 #define CASA_QUANTA_H
 
 //# Includes
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/Quanta/Unit.h>
 //# Next one at this place
 #include <casacore/casa/Quanta/QC.h>

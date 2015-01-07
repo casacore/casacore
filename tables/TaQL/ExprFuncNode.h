@@ -29,6 +29,7 @@
 #define TABLES_EXPRFUNCNODE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprNodeRep.h>
 #include <casacore/casa/Quanta/MVAngle.h>
 

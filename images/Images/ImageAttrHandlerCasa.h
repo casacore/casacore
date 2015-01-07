@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageAttrHandler.h>
 #include <casacore/images/Images/ImageAttrGroupCasa.h>
 #include <map>

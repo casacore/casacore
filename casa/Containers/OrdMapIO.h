@@ -50,6 +50,7 @@
 // <group name="OrderedMap IO">
 // </group>
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/MapIO.h>
 #include <casacore/casa/Containers/OrderedMap.h>
 

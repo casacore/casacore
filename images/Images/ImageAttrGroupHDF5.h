@@ -29,6 +29,7 @@
 #define IMAGES_IMAGEATTRGROUPHDF5_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageAttrGroup.h>
 #include <casacore/tables/Tables/TableProxy.h>
 #include <casacore/casa/HDF5/HDF5Group.h>

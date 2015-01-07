@@ -28,6 +28,7 @@
 #define CASA_HASHMAPITER_H
 
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/HashMap.h>
 
 // <summary>

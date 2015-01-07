@@ -29,6 +29,8 @@
 #if !defined (AIPS_MODULE_LOGTABLES_H)
 #define AIPS_MODULE_LOGTABLES_H
 
+#include <casacore/casa/aips.h>
+
 // <module>
 //
 // <summary>

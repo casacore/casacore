@@ -29,6 +29,7 @@
 #define CASA_RAWDATACONVERSION_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/OS/DataConversion.h>
 
 

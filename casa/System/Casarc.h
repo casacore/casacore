@@ -26,12 +26,13 @@
 
 #ifndef CASA_CASARC_H
 #define CASA_CASARC_H
+
+#include <casacore/casa/aips.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string>
 #include <list>
 #include <map>
-#include <casacore/casa/aips.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

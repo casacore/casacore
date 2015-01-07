@@ -29,6 +29,7 @@
 #define TABLES_VSCENGINE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/VirtColEng.h>
 #include <casacore/tables/DataMan/VirtScaCol.h>
 

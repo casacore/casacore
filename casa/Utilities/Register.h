@@ -28,6 +28,7 @@
 #ifndef CASA_REGISTER_H
 #define CASA_REGISTER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/RegSequence.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

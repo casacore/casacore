@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Block.h>

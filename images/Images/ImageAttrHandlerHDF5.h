@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageAttrHandler.h>
 #include <casacore/images/Images/ImageAttrGroupHDF5.h>
 #include <casacore/casa/HDF5/HDF5Group.h>

@@ -29,6 +29,7 @@
 #define MS_MSOBSERVATIONPARSE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSParse.h>
 #include <casacore/measures/Measures/MEpoch.h>
 

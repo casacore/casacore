@@ -29,6 +29,7 @@
 #define LATTICES_LCSLICER_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/RegionType.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>

@@ -28,6 +28,7 @@
 #ifndef SCIMATH_FFTW_H
 #define SCIMATH_FFTW_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/VectorIter.h>

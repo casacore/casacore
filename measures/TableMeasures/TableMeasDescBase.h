@@ -29,6 +29,7 @@
 #define MEASURES_TABLEMEASDESCBASE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/measures/TableMeasures/TableMeasValueDesc.h>
 #include <casacore/measures/TableMeasures/TableMeasRefDesc.h>
 #include <casacore/measures/TableMeasures/TableMeasType.h>

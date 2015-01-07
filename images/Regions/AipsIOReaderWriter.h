@@ -29,6 +29,7 @@
 #define IMAGES_AIPSIOREADERWRITER_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Regions/RFReaderWriter.h>
 #include <casacore/images/Regions/ImageRegion.h>
 

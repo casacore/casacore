@@ -28,6 +28,7 @@
 #ifndef MEAS_MEASUDF_H
 #define MEAS_MEASUDF_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/meas/MeasUDF/EpochUDF.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

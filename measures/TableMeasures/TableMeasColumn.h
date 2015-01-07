@@ -29,6 +29,7 @@
 #define MEASURES_TABLEMEASCOLUMN_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 

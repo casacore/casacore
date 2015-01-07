@@ -29,6 +29,8 @@
 #ifndef CASA_BASICSL_H
 #define CASA_BASICSL_H
 
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/BasicSL/Complexfwd.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicSL/Constants.h>

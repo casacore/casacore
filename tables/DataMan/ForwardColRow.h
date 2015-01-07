@@ -29,6 +29,7 @@
 #define TABLES_FORWARDCOLROW_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/ForwardCol.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 

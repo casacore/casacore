@@ -29,6 +29,7 @@
 #define LATTICES_HDF5LATTICE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 #include <casacore/casa/HDF5/HDF5File.h>

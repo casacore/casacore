@@ -29,6 +29,7 @@
 #define CASA_HDF5RECORD_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/HDF5/HDF5Object.h>
 #include <casacore/casa/HDF5/HDF5DataType.h>
 #include <casacore/casa/Containers/Record.h>

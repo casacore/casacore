@@ -29,6 +29,7 @@
 #ifndef SCIMATH_CONVOLVEGRIDDER_H
 #define SCIMATH_CONVOLVEGRIDDER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/scimath/Mathematics/Gridder.h>
 #include <casacore/casa/BasicSL/String.h>
 

@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/CLInterpolator2D.h>
 #include <casacore/casa/Arrays/AxesMapping.h>
 

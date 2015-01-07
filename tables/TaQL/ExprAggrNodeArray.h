@@ -29,6 +29,7 @@
 #define TABLES_EXPRAGGRNODEARRAY_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprFuncNodeArray.h>
 
 

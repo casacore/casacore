@@ -29,6 +29,8 @@
 #define CASA_OS_H
 
 //# Includes
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/OS/RegularFile.h>

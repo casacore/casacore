@@ -29,6 +29,8 @@
 #ifndef MS_MSOBSENUMS_H
 #define MS_MSOBSENUMS_H
 
+#include <casacore/casa/aips.h>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <use visibility=export>

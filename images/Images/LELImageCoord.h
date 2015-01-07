@@ -29,6 +29,7 @@
 #define IMAGES_LELIMAGECOORD_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LELLattCoord.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/images/Images/ImageInfo.h>

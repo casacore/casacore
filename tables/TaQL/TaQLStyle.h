@@ -29,6 +29,7 @@
 #define TABLES_TAQLSTYLE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/stdmap.h>
 

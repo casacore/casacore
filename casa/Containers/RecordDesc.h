@@ -32,6 +32,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/RecordDescRep.h>
 #include <casacore/casa/Containers/RecordInterface.h>
 #include <casacore/casa/Utilities/COWPtr.h>

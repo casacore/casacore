@@ -29,6 +29,7 @@
 #ifndef MS_MSFREQOFFINDEX_H
 #define MS_MSFREQOFFINDEX_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSTableIndex.h>
 
 #include <casacore/casa/Containers/RecordField.h>

@@ -29,6 +29,8 @@
 #define CASA_EXCEPTIONS_H
 
 
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/Exceptions/Error.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

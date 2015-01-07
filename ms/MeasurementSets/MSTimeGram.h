@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/ms/MeasurementSets/MSTimeDefinitions.h>
 #include <casacore/ms/MeasurementSets/MSTimeParse.h> // routines used by bison actions

@@ -29,6 +29,7 @@
 #ifndef MS_SDOBSERVATIONHANDLER_H
 #define MS_SDOBSERVATIONHANDLER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 

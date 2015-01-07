@@ -29,6 +29,7 @@
 #define CASA_HASHMAPIO_H
 
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/HashMapIter.h>
 
 

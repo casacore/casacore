@@ -28,6 +28,8 @@
 #ifndef CASA_LOGGING_H
 #define CASA_LOGGING_H
 
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/Logging/LogMessage.h>
 #include <casacore/casa/Logging/LogOrigin.h>
 #include <casacore/casa/Logging/LogSink.h>

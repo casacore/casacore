@@ -28,6 +28,7 @@
 #ifndef DERIVEDMSCAL_DERIVEDMC_H
 #define DERIVEDMSCAL_DERIVEDMC_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/derivedmscal/DerivedMC/DerivedMSCal.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

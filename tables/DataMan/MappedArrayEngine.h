@@ -29,6 +29,7 @@
 #define TABLES_MAPPEDARRAYENGINE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/BaseMappedArrayEngine.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

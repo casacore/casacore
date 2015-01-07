@@ -29,6 +29,7 @@
 #define IMAGES_WCCOMPOUND_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Regions/WCRegion.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Arrays/IPosition.h>

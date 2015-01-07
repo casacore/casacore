@@ -29,6 +29,7 @@
 #ifndef SCIMATH_NNGRIDDER_H
 #define SCIMATH_NNGRIDDER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/scimath/Mathematics/Gridder.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

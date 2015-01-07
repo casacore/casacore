@@ -28,6 +28,7 @@
 #ifndef IMAGES_FITSImgParser_H
 #define IMAGES_FITSImgParser_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/fits/FITS/fits.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>

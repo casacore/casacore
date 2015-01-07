@@ -28,6 +28,8 @@
 #ifndef CASA_ARRAYS_H
 #define CASA_ARRAYS_H
 
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Arrays/Slice.h>

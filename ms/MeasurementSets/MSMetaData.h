@@ -27,6 +27,7 @@
 #ifndef MS_MSMETADATA_H
 #define MS_MSMETADATA_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/QVector.h>
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>

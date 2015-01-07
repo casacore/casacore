@@ -29,6 +29,7 @@
 #define TABLES_RECORDEXPR_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/casa/Containers/RecordInterface.h>
 #include <casacore/casa/Containers/RecordDesc.h>

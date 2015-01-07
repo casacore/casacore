@@ -28,9 +28,8 @@
 #ifndef LATTICES_LATTICEUTILITIES_H
 #define LATTICES_LATTICEUTILITIES_H
 
-#include <casacore/lattices/Lattices/LatticeStatsBase.h>
-
 #include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/LatticeStatsBase.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

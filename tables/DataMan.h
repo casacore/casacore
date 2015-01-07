@@ -30,6 +30,7 @@
 
 //# Includes
 //#   storage managers
+#include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/StManAipsIO.h>
 #include <casacore/tables/DataMan/StandardStMan.h>
 #include <casacore/tables/DataMan/StandardStManAccessor.h>

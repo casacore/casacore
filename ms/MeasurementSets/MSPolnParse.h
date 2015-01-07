@@ -29,6 +29,7 @@
 #define MS_MSPOLNPARSE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSParse.h>
 #include <casacore/casa/Containers/OrderedMap.h>
 #include <casacore/casa/Containers/MapIO.h>

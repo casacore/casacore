@@ -28,6 +28,7 @@
 #ifndef SCIMATH_MATHEMATICS_H
 #define SCIMATH_MATHEMATICS_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/scimath/Mathematics/Convolver.h>

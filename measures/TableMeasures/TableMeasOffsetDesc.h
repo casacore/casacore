@@ -29,6 +29,7 @@
 #define MEASURES_TABLEMEASOFFSETDESC_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/measures/Measures/MeasureHolder.h>
 

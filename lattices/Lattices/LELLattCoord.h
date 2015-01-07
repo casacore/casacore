@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LELLattCoordBase.h>
 #include <casacore/casa/BasicSL/String.h>
 

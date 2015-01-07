@@ -29,6 +29,7 @@
 #define CASA_QVECTOR_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Quantum.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

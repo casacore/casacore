@@ -29,6 +29,7 @@
 #define CASA_HASHMAP_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/List.h>
 #include <casacore/casa/Containers/OrderedPair.h>

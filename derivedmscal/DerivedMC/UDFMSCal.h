@@ -29,6 +29,7 @@
 #define DERIVEDMSCAL_UDFMSCAL_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/derivedmscal/DerivedMC/MSCalEngine.h>
 #include <casacore/ms/MeasurementSets/StokesConverter.h>
 #include <casacore/tables/TaQL/UDFBase.h>

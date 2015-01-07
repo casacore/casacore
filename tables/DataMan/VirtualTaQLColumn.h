@@ -29,6 +29,7 @@
 #define TABLES_VIRTUALTAQLCOLUMN_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/VirtColEng.h>
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/casa/Arrays/IPosition.h>

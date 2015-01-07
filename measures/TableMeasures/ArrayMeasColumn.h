@@ -29,6 +29,7 @@
 #define MEASURES_ARRAYMEASCOLUMN_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/measures/TableMeasures/TableMeasColumn.h>
 #include <casacore/measures/Measures/MeasRef.h>
 

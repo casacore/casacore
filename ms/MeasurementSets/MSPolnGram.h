@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/ms/MeasurementSets/MSDataDescIndex.h>
 #include <casacore/ms/MeasurementSets/MSPolIndex.h>

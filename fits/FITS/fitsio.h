@@ -28,6 +28,7 @@
 #ifndef FITS_FITSIO_H
 #define FITS_FITSIO_H
 
+#include <casacore/casa/aips.h>
 # include <casacore/fits/FITS/fits.h>
 # include <casacore/fits/FITS/blockio.h>
 # include <casacore/fits/FITS/hdu.h>

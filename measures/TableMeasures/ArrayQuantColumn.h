@@ -29,6 +29,7 @@
 #define MEASURES_ARRAYQUANTCOLUMN_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Quanta/Quantum.h>
 

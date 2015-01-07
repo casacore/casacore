@@ -29,6 +29,7 @@
 #ifndef SCIMATH_SPECIFICFUNCTIONFACTORY_H
 #define SCIMATH_SPECIFICFUNCTIONFACTORY_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/scimath/Functionals/AbstractFunctionFactory.h>
 

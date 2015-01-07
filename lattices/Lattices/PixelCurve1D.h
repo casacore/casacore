@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/Function1D.h>
 #include <casacore/casa/Arrays/Vector.h>
 

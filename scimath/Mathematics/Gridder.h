@@ -29,6 +29,7 @@
 #ifndef SCIMATH_GRIDDER_H
 #define SCIMATH_GRIDDER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Matrix.h>

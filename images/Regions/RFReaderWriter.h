@@ -29,6 +29,7 @@
 #define IMAGES_RFREADERWRITER_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>

@@ -28,6 +28,7 @@
 #ifndef CASA_NOTICE_H
 #define CASA_NOTICE_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Link.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

@@ -29,6 +29,7 @@
 #define TABLES_ARRAYCOLUMNFUNC_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Arrays/Array.h>

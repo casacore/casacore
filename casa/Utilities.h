@@ -29,6 +29,8 @@
 #ifndef CASA_UTILITIES_H
 #define CASA_UTILITIES_H
 
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Utilities/BinarySearch.h>
 #include <casacore/casa/Utilities/BitVector.h>

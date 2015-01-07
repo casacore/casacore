@@ -29,6 +29,7 @@
 #define MEAS_POSITIONENGINE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/measures/Measures/MCPosition.h>

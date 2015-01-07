@@ -29,6 +29,7 @@
 #ifndef MS_SDSPWINHANDLER_H
 #define MS_SDSPWINHANDLER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/tables/Tables/TableColumn.h>

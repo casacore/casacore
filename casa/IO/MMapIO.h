@@ -30,6 +30,7 @@
 #define CASA_MMAPIO_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/IO/MMapfdIO.h>
 #include <casacore/casa/OS/RegularFile.h>
 

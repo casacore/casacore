@@ -29,6 +29,7 @@
 #define IMAGES_WCREGION_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/tables/Tables/TableRecord.h>

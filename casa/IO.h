@@ -28,6 +28,8 @@
 #ifndef CASA_IO_H
 #define CASA_IO_H
 
+#include <casacore/casa/aips.h>
+
 //# Includes for object persistency.
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/IO/AipsIOCarray.h>

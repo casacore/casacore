@@ -28,6 +28,7 @@
 #ifndef CASA_ORDPAIRIO_H
 #define CASA_ORDPAIRIO_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/OrderedPair.h>
 #include <casacore/casa/iosfwd.h>
 

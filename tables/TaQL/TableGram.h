@@ -29,6 +29,7 @@
 #define TABLES_TABLEGRAM_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Quanta/MVTime.h>
 

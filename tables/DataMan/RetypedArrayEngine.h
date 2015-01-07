@@ -29,6 +29,7 @@
 #define TABLES_RETYPEDARRAYENGINE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/BaseMappedArrayEngine.h>
 #include <casacore/tables/Tables/TableRecord.h>
 

@@ -30,6 +30,7 @@
 #define IMAGES_IMAGEPROXY_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Images/MaskSpecifier.h>
 #include <casacore/lattices/Lattices/LatticeBase.h>
 #include <casacore/lattices/Lattices/TiledShape.h>

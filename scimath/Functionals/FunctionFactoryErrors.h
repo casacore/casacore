@@ -29,6 +29,7 @@
 #ifndef SCIMATH_FUNCTIONFACTORYERRORS_H
 #define SCIMATH_FUNCTIONFACTORYERRORS_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

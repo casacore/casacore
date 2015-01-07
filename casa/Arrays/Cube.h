@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
 
 namespace casacore { //#Begin casa namespace

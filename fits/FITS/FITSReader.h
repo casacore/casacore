@@ -28,6 +28,7 @@
 #ifndef FITS_Reader_H
 #define FITS_Reader_H
 
+#include <casacore/casa/aips.h>
 # include <casacore/fits/FITS/fits.h>
 # include <casacore/fits/FITS/hdu.h>
 # include <casacore/fits/FITS/fitsio.h>
