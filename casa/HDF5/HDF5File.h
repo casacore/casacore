@@ -29,6 +29,7 @@
 #define CASA_HDF5FILE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/HDF5/HDF5Object.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/IO/ByteIO.h>

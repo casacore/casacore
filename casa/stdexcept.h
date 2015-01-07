@@ -28,6 +28,7 @@
 #ifndef CASA_STDEXCEPT_H
 #define CASA_STDEXCEPT_H
 
+#include <casacore/casa/aips.h>
 #include <stdexcept>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

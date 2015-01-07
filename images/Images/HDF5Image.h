@@ -29,6 +29,7 @@
 #define IMAGES_HDF5IMAGE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/images/Images/ImageAttrHandlerHDF5.h>
 #include <casacore/lattices/Lattices/HDF5Lattice.h>

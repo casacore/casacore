@@ -29,6 +29,7 @@
 #define MS_MSFIELDPARSE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSField.h>
 #include <casacore/ms/MeasurementSets/MSFieldColumns.h>
 #include <casacore/ms/MeasurementSets/MSParse.h>

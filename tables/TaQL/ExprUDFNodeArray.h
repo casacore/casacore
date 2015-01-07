@@ -29,6 +29,7 @@
 #define TABLES_EXPRUDFNODEARRAY_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/tables/TaQL/UDFBase.h>
 

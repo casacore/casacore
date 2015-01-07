@@ -28,6 +28,7 @@
 #ifndef CASA_LISTIO_H
 #define CASA_LISTIO_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/List.h>
 
 

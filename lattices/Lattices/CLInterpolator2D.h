@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/AxesMapping.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

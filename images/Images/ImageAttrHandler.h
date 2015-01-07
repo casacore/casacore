@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageAttrGroup.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Arrays/Vector.h>

@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSObservationParse.h> 
 #include <casacore/casa/BasicSL/String.h>
 

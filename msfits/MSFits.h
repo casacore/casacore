@@ -28,6 +28,7 @@
 #ifndef MSFITS_MSFITS_H
 #define MSFITS_MSFITS_H
 
+#include <casacore/casa/aips.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

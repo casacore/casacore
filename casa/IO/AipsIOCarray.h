@@ -29,6 +29,7 @@
 #define CASA_AIPSIOCARRAY_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/IO/AipsIO.h>
 
 

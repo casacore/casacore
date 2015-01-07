@@ -29,6 +29,7 @@
 #define MS_MSUVDISTPARSE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSParse.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

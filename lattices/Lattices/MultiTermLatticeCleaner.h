@@ -29,6 +29,7 @@
 #ifndef LATTICES_MULTITERMLATTICECLEANER_H
 #define LATTICES_MULTITERMLATTICECLEANER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LatticeCleaner.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/lattices/Lattices/LatticeExpr.h>

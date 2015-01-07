@@ -29,6 +29,7 @@
 #define IMAGES_REGIONS_H
 
 
+#include <casacore/casa/aips.h>
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/images/Regions/WCRegion.h>
 

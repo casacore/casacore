@@ -29,6 +29,7 @@
 #ifndef MS_MSHISTORYHANDLER_H
 #define MS_MSHISTORYHANDLER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MeasurementSets/MSHistory.h>
 

@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LELInterface.h>
 #include <casacore/lattices/Lattices/LELScalar.h>
 #include <casacore/lattices/Lattices/LELUnaryEnums.h>

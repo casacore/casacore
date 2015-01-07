@@ -29,6 +29,7 @@
 #ifndef MS_SDPOINTINGHANDLER_H
 #define MS_SDPOINTINGHANDLER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/casa/Arrays/Matrix.h>

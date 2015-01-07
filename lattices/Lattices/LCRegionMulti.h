@@ -29,6 +29,7 @@
 #define LATTICES_LCREGIONMULTI_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LCRegion.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Containers/Block.h>

@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/images/Images/ImageAttrHandlerCasa.h>
 #include <casacore/lattices/Lattices/PagedArray.h>

@@ -29,6 +29,7 @@
 #define LATTICES_LCPOLYGON_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LCRegionFixed.h>
 #include <casacore/casa/Arrays/Vector.h>
 

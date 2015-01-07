@@ -29,6 +29,8 @@
 #ifndef CASA_SYSTEM_H
 #define CASA_SYSTEM_H
 
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/System/Aipsrc.h>
 #include <casacore/casa/System/AipsrcValue.h>
 #include <casacore/casa/System/AipsrcVector.h>

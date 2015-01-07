@@ -29,6 +29,7 @@
 #define LATTICES_LCPIXELSET_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LCBox.h>
 #include <casacore/casa/Arrays/Slicer.h>
 

@@ -29,6 +29,7 @@
 #define LATTICES_LATTREGIONHOLDER_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LatticeRegion.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

@@ -28,6 +28,8 @@
 #ifndef CASA_CONTAINERS_H
 #define CASA_CONTAINERS_H
 
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Link.h>
 #include <casacore/casa/Containers/List.h>

@@ -31,6 +31,7 @@
 #define TABLES_TABLEEXPRIDAGGR_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/TableExprId.h>
 #include <casacore/tables/TaQL/ExprGroup.h>
 #include <casacore/casa/Utilities/CountedPtr.h>

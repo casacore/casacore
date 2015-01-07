@@ -29,6 +29,7 @@
 #define CASA_CONVERTSCALAR_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

@@ -28,6 +28,7 @@
 #ifndef LATTICES_LATTICEMATH_H
 #define LATTICES_LATTICEMATH_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/LatticeMath/LatticeFit.h>
 #include <casacore/lattices/LatticeMath/Fit2D.h>
 

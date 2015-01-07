@@ -29,6 +29,7 @@
 #define TABLES_EXPRCONENODE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprFuncNode.h>
 #include <casacore/tables/TaQL/ExprFuncNodeArray.h>
 

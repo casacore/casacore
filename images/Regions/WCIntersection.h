@@ -29,6 +29,7 @@
 #define IMAGES_WCINTERSECTION_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Regions/WCCompound.h>
 
 

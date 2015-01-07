@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/ms/MeasurementSets/MSAntennaParse.h> // routines used by bison actions

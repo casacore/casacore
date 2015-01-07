@@ -28,6 +28,7 @@
 #ifndef CASA_REGSEQUENCE_H
 #define CASA_REGSEQUENCE_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/Sequence.h>
 #include <casacore/casa/OS/Mutex.h>
 

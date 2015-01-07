@@ -29,6 +29,7 @@
 
 //#! Includes go here
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

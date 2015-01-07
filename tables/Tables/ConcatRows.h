@@ -29,6 +29,7 @@
 #define TABLES_CONCATROWS_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/RefRows.h>
 #include <casacore/casa/Containers/Block.h>
 

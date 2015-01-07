@@ -29,6 +29,7 @@
 #define TABLES_EXPRGROUP_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/TaQL/ExprAggrNode.h>
 #include <vector>

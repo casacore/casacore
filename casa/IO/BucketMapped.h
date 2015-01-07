@@ -29,6 +29,7 @@
 #define CASA_BUCKETMAPPED_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/IO/BucketBase.h>
 #include <casacore/casa/IO/MMapfdIO.h>
 

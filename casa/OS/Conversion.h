@@ -29,6 +29,7 @@
 #define CASA_CONVERSION_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/string.h>                       // needed for memcpy
 
 

@@ -29,6 +29,7 @@
 #define COORDINATES_COORDINATES_H
 
 //# Module includes
+#include <casacore/casa/aips.h>
 #include <casacore/coordinates/Coordinates/Coordinate.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/coordinates/Coordinates/DirectionCoordinate.h>

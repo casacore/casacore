@@ -29,6 +29,7 @@
 #define MEAS_EPOCHENGINE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include<casacore/meas/MeasUDF/PositionEngine.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/measures/Measures/MEpoch.h>

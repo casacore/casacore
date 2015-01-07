@@ -29,6 +29,7 @@
 #define TABLES_TAQLNODEVISITOR_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/TaQLNode.h>
 #include <casacore/tables/TaQL/TaQLNodeDer.h>
 

@@ -30,6 +30,7 @@
 #define TABLES_LOGGERHOLDER_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Utilities/CountedPtr.h>

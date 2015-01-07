@@ -28,6 +28,7 @@
 #ifndef CASA_ARRAYPARTMATH_H
 #define CASA_ARRAYPARTMATH_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

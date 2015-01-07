@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/TableExprData.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

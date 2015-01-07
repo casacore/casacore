@@ -29,6 +29,7 @@
 #define DERIVEDMSCAL_DERIVEDMSCAL_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/derivedmscal/DerivedMC/MSCalEngine.h>
 #include <casacore/tables/DataMan/VirtColEng.h>
 

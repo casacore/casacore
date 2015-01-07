@@ -29,6 +29,7 @@
 #define LATTICES_LATTICES_H
 
 
+#include <casacore/casa/aips.h>
 //#include <casacore/casa/Arrays/ArrayLattice.h>
 //#include <casacore/casa/Arrays/PagedArray.h>
 //#include <casacore/casa/Arrays/TempLattice.h>

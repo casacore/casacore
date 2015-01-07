@@ -29,6 +29,7 @@
 #define IMAGES_IMAGES_H
 
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Arrays/Slicer.h>

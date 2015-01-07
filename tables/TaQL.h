@@ -30,6 +30,7 @@
 
 //# Includes
 //#   table expressions (for selection of rows)
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/TableParse.h>

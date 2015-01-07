@@ -29,6 +29,7 @@
 #define LATTICES_LCCONCATENATION_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LCRegionMulti.h>
 #include <casacore/lattices/Lattices/LCBox.h>
 

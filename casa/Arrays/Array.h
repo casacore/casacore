@@ -29,6 +29,7 @@
 #define CASA_ARRAY_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayBase.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Utilities/CountedPtr.h>

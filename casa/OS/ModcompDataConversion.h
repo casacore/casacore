@@ -28,6 +28,7 @@
 #ifndef CASA_MODCOMPDATACONVERSION_H
 #define CASA_MODCOMPDATACONVERSION_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/OS/DataConversion.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

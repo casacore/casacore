@@ -29,6 +29,7 @@
 #define LATTICES_PAGEDARRAY_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 #include <casacore/tables/Tables/ArrayColumn.h>

@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h>
 #include <casacore/lattices/Lattices/LatticeExprNode.h>
 #include <casacore/lattices/Lattices/LatticeRegion.h>

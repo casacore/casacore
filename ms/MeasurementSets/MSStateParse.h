@@ -29,6 +29,7 @@
 #define MS_MSSTATEPARSE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSParse.h>
 #include <casacore/ms/MeasurementSets/MSSelectionError.h>
 #include <casacore/ms/MeasurementSets/MSSelectionErrorHandler.h>

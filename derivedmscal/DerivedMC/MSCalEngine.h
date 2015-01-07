@@ -29,6 +29,7 @@
 #define DERIVEDMSCAL_MSCALENGINE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/measures/Measures/MDirection.h>

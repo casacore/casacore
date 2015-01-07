@@ -29,6 +29,7 @@
 #define MEAS_DIRECTIONUDF_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/meas/MeasUDF/DirectionEngine.h>
 #include <casacore/tables/TaQL/UDFBase.h>
 #include <casacore/tables/TaQL/ExprNode.h>

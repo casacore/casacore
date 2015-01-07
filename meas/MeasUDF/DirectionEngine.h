@@ -29,6 +29,7 @@
 #define MEAS_DIRECTIONENGINE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include<casacore/meas/MeasUDF/EpochEngine.h>
 #include<casacore/meas/MeasUDF/PositionEngine.h>
 #include <casacore/tables/TaQL/ExprNode.h>

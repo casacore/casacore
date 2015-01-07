@@ -29,6 +29,7 @@
 #define TABLES_UDFBASE_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprNodeRep.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>

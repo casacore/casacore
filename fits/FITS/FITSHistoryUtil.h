@@ -30,8 +30,8 @@
 #ifndef FITS_FITSHISTORYUTIL_H
 #define FITS_FITSHISTORYUTIL_H
 
-#include <vector>
 #include <casacore/casa/aips.h>
+#include <vector>
 
 
 

@@ -29,6 +29,7 @@
 #define MEASURES_TABLEMEASREFDESC_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/measures/TableMeasures/TableMeasOffsetDesc.h>
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/casa/Arrays/Vector.h>

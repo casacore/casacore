@@ -27,6 +27,8 @@
 #ifndef LATTICES_LELUNARYENUMS_H
 #define LATTICES_LELUNARYENUMS_H
 
+#include <casacore/casa/aips.h>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Each LEL unary operation is described in this enum  </summary>

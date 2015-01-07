@@ -29,6 +29,7 @@
 #ifndef SCIMATH_NUMERICTRAITS2_H
 #define SCIMATH_NUMERICTRAITS2_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

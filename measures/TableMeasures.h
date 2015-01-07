@@ -28,6 +28,7 @@
 #ifndef MEASURES_TABLEMEASURES_H
 #define MEASURES_TABLEMEASURES_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
 #include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
 #include <casacore/measures/TableMeasures/ScalarMeasColumn.h>

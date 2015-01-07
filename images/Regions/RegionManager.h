@@ -27,6 +27,7 @@
 #ifndef IMAGES_REGIONMANAGER_H
 #define IMAGES_REGIONMANAGER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/lattices/Lattices/RegionType.h>

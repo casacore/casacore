@@ -27,6 +27,7 @@
 #ifndef FITS_FITS_H
 #define FITS_FITS_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/fits/FITS/BasicFITS.h>        
 #include <casacore/fits/FITS/BinTable.h> 
 #include <casacore/fits/FITS/blockio.h>         

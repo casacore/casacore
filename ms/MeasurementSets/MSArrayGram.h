@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

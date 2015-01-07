@@ -29,6 +29,7 @@
 #define MEASURES_MEASURES_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta.h>
 #include <casacore/measures/Measures/Measure.h>
 #include <casacore/measures/Measures/MeasBase.h>

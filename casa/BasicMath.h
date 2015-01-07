@@ -29,6 +29,8 @@
 #ifndef CASA_BASICMATH_H
 #define CASA_BASICMATH_H
 
+#include <casacore/casa/aips.h>
+
 #include <casacore/casa/BasicMath/ConvertScalar.h>
 #include <casacore/casa/BasicMath/Functional.h>
 #include <casacore/casa/BasicMath/Math.h>

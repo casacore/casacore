@@ -29,8 +29,10 @@
 #ifndef SCIMATH_SERIALHELPER_H
 #define SCIMATH_SERIALHELPER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/FunctionFactoryErrors.h>
 #include <casacore/casa/Containers/Record.h>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Array;

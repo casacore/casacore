@@ -28,6 +28,7 @@
 #ifndef CASA_VALTYPEID_H
 #define CASA_VALTYPEID_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/ValType.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

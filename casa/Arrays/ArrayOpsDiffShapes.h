@@ -28,6 +28,7 @@
 #ifndef CASA_ARRAYOPSDIFFSHAPES_H
 #define CASA_ARRAYOPSDIFFSHAPES_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 //#include <casacore/casa/Arrays/ArrayUtil.h>

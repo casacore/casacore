@@ -29,6 +29,7 @@
 #ifndef MS_SDSOURCEHANDLER_H
 #define MS_SDSOURCEHANDLER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/RecordField.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

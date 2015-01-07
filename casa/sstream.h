@@ -33,6 +33,7 @@
 //# them (e.g. <cstring>)
 
 //# Make sure any special macros are set
+#include <casacore/casa/aips.h>
 #include <casacore/casa/iostream.h>
 #include <sstream>
 

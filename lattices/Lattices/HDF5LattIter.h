@@ -29,6 +29,7 @@
 #define LATTICES_HDF5LATTITER_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LatticeIterInterface.h>
 #include <casacore/lattices/Lattices/HDF5Lattice.h>
 

@@ -29,6 +29,7 @@
 #define CASA_FILEDESIO_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/IO/ByteIO.h>
 #include <casacore/casa/BasicSL/String.h>
 

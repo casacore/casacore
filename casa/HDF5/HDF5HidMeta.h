@@ -29,6 +29,7 @@
 #define CASA_HDF5HIDMETA_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/HDF5/HDF5Object.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

@@ -28,6 +28,8 @@
 #ifndef MS_MSTIMEDEFINITIONS_H
 #define MS_MSTIMEDEFINITIONS_H
 
+#include <casacore/casa/aips.h>
+
 namespace casacore{
 
   typedef struct TimeFields{

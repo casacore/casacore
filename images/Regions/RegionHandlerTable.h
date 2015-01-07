@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/images/Regions/RegionHandler.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

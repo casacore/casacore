@@ -30,6 +30,7 @@
 
 //# Includes
 //#   table description
+#include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
 #include <casacore/tables/Tables/ScaColDesc.h>

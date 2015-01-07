@@ -29,6 +29,7 @@
 #ifndef MS_MSTABLEINDEX_H
 #define MS_MSTABLEINDEX_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/RecordField.h>

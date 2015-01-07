@@ -29,6 +29,7 @@
 #ifndef MS_MSFEEDINDEX_H
 #define MS_MSFEEDINDEX_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/ms/MeasurementSets/MSTableIndex.h>
 
 #include <casacore/ms/MeasurementSets/MSFeedColumns.h>

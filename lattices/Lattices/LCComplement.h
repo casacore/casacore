@@ -29,6 +29,7 @@
 #define LATTICES_LCCOMPLEMENT_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LCRegionMulti.h>
 
 

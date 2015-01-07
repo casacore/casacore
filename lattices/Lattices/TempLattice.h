@@ -31,6 +31,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/TempLatticeImpl.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 

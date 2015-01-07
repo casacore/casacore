@@ -29,6 +29,7 @@
 #define LATTICES_LCREGIONFIXED_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LCRegionSingle.h>
 #include <casacore/lattices/Lattices/ArrayLattice.h>
 

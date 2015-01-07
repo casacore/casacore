@@ -29,6 +29,7 @@
 #ifndef MS_SDANTENNAHANDLER_H
 #define MS_SDANTENNAHANDLER_H
 
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/measures/Measures/MPosition.h>

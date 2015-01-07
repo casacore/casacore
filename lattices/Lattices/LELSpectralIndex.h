@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LELFunction.h>
 #include <casacore/casa/Containers/Block.h>
 

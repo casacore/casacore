@@ -29,6 +29,7 @@
 #define IMAGES_IMAGEREGION_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LattRegionHolder.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

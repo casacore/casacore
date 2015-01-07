@@ -27,6 +27,8 @@
 #ifndef LATTICES_LELFUNCTIONENUMS_H
 #define LATTICES_LELFUNCTIONENUMS_H
 
+#include <casacore/casa/aips.h>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Each LEL function is described in this enum </summary>

@@ -30,6 +30,7 @@
 #define TABLES_LOGFILTERTAQL_H
 
 //# Includes
+#include <casacore/casa/aips.h>
 #include <casacore/casa/Logging/LogFilterInterface.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
