@@ -20,6 +20,8 @@ getbig.f
 grd2d.f
 grd2dwts.f
 grdde2d.f
+grdgauss.f
+grdjinc1.f
 grdsf.f
 hclean.f
 lawson.f
