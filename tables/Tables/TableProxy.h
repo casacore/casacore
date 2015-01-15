@@ -36,7 +36,6 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <vector>
 
-#include <casacore/casa/namespace.h>
 
 //# Forward Declarations
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

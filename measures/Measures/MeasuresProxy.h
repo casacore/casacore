@@ -38,13 +38,11 @@
 #include <casacore/measures/Measures/MeasFrame.h>
 #include <casacore/casa/BasicSL/String.h>
 
-#include <casacore/casa/namespace.h>
 //# Forward declarations
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class String;
 class MeasureHolder;
 class MeasComet;
-} //# NAMESPACE CASACORE - END
 
 class MeasuresProxy
 {
@@ -96,5 +94,7 @@ private:
   MeasComet *pcomet_p;
   
 };
+
+} //# NAMESPACE CASACORE - END
 
 #endif
