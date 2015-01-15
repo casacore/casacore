@@ -33,7 +33,6 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Record.h>
 
-#include <casacore/casa/namespace.h>
 //# Forward declarations
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class String;

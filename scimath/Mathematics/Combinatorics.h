@@ -32,7 +32,6 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/namespace.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/OS/Mutex.h>
 

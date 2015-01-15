@@ -35,7 +35,6 @@
 # include <casacore/casa/BasicSL/String.h>
 # include <casacore/casa/iostream.h>
 # include <casacore/casa/stdlib.h>
-# include <casacore/casa/namespace.h>
 # include <casacore/casa/Arrays/Vector.h>
 
 namespace casacore {

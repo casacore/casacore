@@ -29,8 +29,6 @@
 #define SCIMATH_GEOMETRY_H
 
 #include <casacore/casa/aips.h>
-#include <casacore/casa/namespace.h>
-
 #include <casacore/casa/Quanta/Quantum.h>
 #include <utility>
 
