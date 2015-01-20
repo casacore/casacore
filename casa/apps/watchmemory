@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+
+import time
+import string
+import sys
+import commands
+
+def get_cpumem(pid):
+# http://unix.stackexchange.com/questions/58539/top-and-ps-not-showing-the-same-cpu-result
+    if pid.isdigit():
+      cmd="ps -p "+str(pid)+" -o pid,%cpu,%mem,etime,cputime"
+    else:
+      cmd="ps -C "+pid+" -o pid,%cpu,%mem,etime,cputime"
+    psoutput=commands.getoutput(cmd).split("\n")
+    if len(psoutput)<2:
+      return None
+    elif len(psoutput)>2:
+      sys.stderr.write("warning: multiple processes called "+str(pid)+", picking first\n")
+    d = psoutput[1].split()
+
+    etime=parsetime(d[3])
+    cputime=parsetime(d[4])
+
+    return (float(d[1]), float(d[2]), etime,cputime)
+
+def parsetime(timestr):
+    ''' convert [[hh:]:mm:]ss into seconds '''
+    timelst=timestr.split(':')
+    secs=int(timelst[-1])      # seconds
+    if len(timelst)>1:
+      secs+=int(timelst[-2])*60   # minutes
+      if len(timelst)>2:
+        secs+=int(timelst[-3])*3600 #hours
+    return float(secs)
+
+if __name__ == '__main__':
+    if not len(sys.argv) == 2:
+        sys.stderr.write("usage: %s PID / process name (e.g. NDPPP)\n" % sys.argv[0])
+        sys.stderr.write("\n")
+        sys.stderr.write("This script collects %memory and %CPU used by a program.\n")
+        sys.stderr.write("Standard out should be piped to a file to be plotted with plotmemory.\n")
+        exit(2)
+    print("%CPU\tMEM")
+    prevetime,prevcputime=None,None
+    nummisses=0
+
+    try:
+        while True and nummisses<60:
+            x = get_cpumem(sys.argv[1])
+            if not x:
+                sys.stderr.write("no such process: "+sys.argv[1]+"\n")
+                nummisses+=1
+            else:
+                nummisses=0
+                if prevetime==None or prevetime==x[2]:
+                    cpuperc=x[0]
+                    sys.stderr.write("guessing cpu perc\n")
+                else:
+                    # Update x[0] to be instantaneous CPU %
+                    cpuperc=(x[3]-prevcputime*1.0)/(x[2]-prevetime*1.0)*100.
+                prevetime=x[2]
+                prevcputime=x[3]
+
+                print("%.2f\t%.2f" % (cpuperc, x[1]))
+                sys.stdout.flush()
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print
+        exit(0)
