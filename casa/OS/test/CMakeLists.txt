@@ -11,6 +11,7 @@ tHostInfo
 tIBMConversion
 tLECanonicalConversion
 tMemory
+tMemoryTrace
 tModcompConversion
 tMutex
 tPath

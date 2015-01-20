@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Give the output file a name that it is deleted automatically.
+CASACORE_MEMORYTRACE=tMemoryTrace_tmp.log
+export CASACORE_MEMORYTRACE
+
+# valgrind is not needed, so do not use $casacore_check
+./tMemoryTrace
