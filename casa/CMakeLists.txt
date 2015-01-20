@@ -28,6 +28,7 @@ BasicSL/Complex.cc
 BasicSL/String.cc
 BasicSL/IComplex.cc
 BasicSL/STLMath.cc
+Containers/Block.cc
 Containers/RecordInterface.cc
 Containers/Record.cc
 Containers/IterError.cc
@@ -106,6 +107,7 @@ OS/DynLib.cc
 OS/CanonicalDataConversion.cc
 OS/Path.cc
 OS/Memory.cc
+OS/MemoryTrace.cc
 OS/LECanonicalConversion.cc
 OS/File.cc
 OS/Directory.cc
@@ -208,6 +210,8 @@ ${de_libraries}
 ${libm}
 dl
 )
+
+add_subdirectory (apps)
 
 install (
 TARGETS casa_casa
@@ -463,6 +467,7 @@ OS/LECanonicalDataConversion.h
 OS/LittleEndianConversion.h
 OS/malloc.h
 OS/Memory.h
+OS/MemoryTrace.h
 OS/ModcompConversion.h
 OS/ModcompDataConversion.h
 OS/Mutex.h
