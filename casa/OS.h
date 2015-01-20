@@ -47,6 +47,7 @@
 #include <casacore/casa/OS/CanonicalDataConversion.h>
 
 #include <casacore/casa/OS/Memory.h>
+#include <casacore/casa/OS/MemoryTrace.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -102,6 +103,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       The structure of the framework is shown in the 
 //       <a href="OS/OS_1.html">OMT diagram</a>.
 //  <li> A class to encapsulate <linkto class=Memory>Memory</linkto> usage.
+//       Class MemoryTrace makes it possible to trace all memory (de)allocations
+//       through malloc and free (new and delete).
+//       It only works on Linux systems though.
 // </ul>
 
 // </synopsis>

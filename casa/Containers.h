@@ -80,6 +80,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    array). These operators typically allow the container (and the objects it
 //    contains) to be written out to both <linkto class=AipsIO>AipsIO</linkto> and
 //    the standard <em>ostream</em>.
+//
+//    The class Block has the option to trace (de)allocations for Blocks with
+//    a size above a given threshold. It uses class MemoryTrace to log the
+//    trace messages. Unlike MemoryTrace, it also works on non-Linux systems.
+//    Since class Array uses Block underneath, it makes it possible to trace
+//    Array usage.
 // </synopsis>
 //
 // </module>
