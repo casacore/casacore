@@ -450,7 +450,7 @@ public:
     // <note>This function should not be used in tight loops as it is (much)
     // slower than iterating using begin() and end(), ArrayIter, or
     // ArrayAccessor.</note>
-    Array<T> operator[] (uInt i) const;
+    Array<T> operator[] (size_t i) const;
 
 
     // The array is masked by the input LogicalArray.

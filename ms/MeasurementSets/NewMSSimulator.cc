@@ -1038,8 +1038,7 @@ bool NewMSSimulator::getFeedMode(String& mode)
     Vector<String> feedPol(2);
     feedc.polarizationType().get(0,feedPol,True);
     // we only support setting perfect feeds in Simulator.
-    Int nF(0);
-    feedPol.shape(nF);
+    Int nF = feedPol.shape()[0];
     if (nF<2) 
       mode=feedPol[0];
     else

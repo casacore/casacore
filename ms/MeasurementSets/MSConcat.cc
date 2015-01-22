@@ -1260,8 +1260,12 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   
   // MAIN
   
-  Bool doWeightScale = (itsWeightScale!=1.);
-  
+  Bool doWeightScale = (itsWeightScale!=1. && itsWeightScale>0.);
+  Float sScale = 1.; // scale for SIGMA
+  if (doWeightScale){
+    sScale = 1/sqrt(itsWeightScale);
+  }
+
   for (uInt r = 0; r < newRows; r++, curRow++) {
     
     Int newA1 = newAntIndices[otherAnt1(r)];
@@ -1423,10 +1427,12 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     if(doWeightScale){
       thisWeight.put(curRow, otherWeight(r)*itsWeightScale);
       if (copyWtSp) thisWeightSp.put(curRow, otherWeightSp(r)*itsWeightScale);
+      thisSigma.put(curRow, otherSigma(r) * sScale);
     }
     else{
       thisWeight.put(curRow, otherWeight, r);
       if (copyWtSp) thisWeightSp.put(curRow, otherWeightSp, r);
+      thisSigma.put(curRow, otherSigma, r);
     }
     
     thisFeed1.put(curRow, otherFeed2, r);
@@ -1436,7 +1442,6 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     thisExposure.put(curRow, otherExposure, r);
     thisTimeCen.put(curRow, otherTimeCen, r);
     thisArrayId.put(curRow, otherArrayId, r);
-    thisSigma.put(curRow, otherSigma, r);
     thisFlag.put(curRow, otherFlag, r);
     if (copyFlagCat) thisFlagCat.put(curRow, otherFlagCat, r);
     thisFlagRow.put(curRow, otherFlagRow, r);
@@ -2620,7 +2625,7 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
     DebugAssert(otherDDCols.spectralWindowId()(d) >= 0 &&
 		otherDDCols.spectralWindowId()(d) < static_cast<Int>(otherSpw.nrow()), 
 		AipsError);
-    const Int otherSpwId = static_cast<uInt>(otherDDCols.spectralWindowId()(d));
+    const Int otherSpwId = otherDDCols.spectralWindowId()(d);
     DebugAssert(otherSpwCols.numChan()(otherSpwId) > 0, AipsError);    
 
     foundInDD(otherSpwId) = True;

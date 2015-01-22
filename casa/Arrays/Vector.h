@@ -289,6 +289,8 @@ public:
     // The length of the Vector.
     const IPosition &shape() const
       { return this->length_p; }
+    void shape(Int &Shape) const
+      { Shape = this->length_p(0); }
 
     // Replace the data values with those in the pointer <src>storage</src>.
     // The results are undefined is storage does not point at nelements() or
