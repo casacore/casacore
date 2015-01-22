@@ -57,14 +57,14 @@ template<class T> Matrix<T>::Matrix(const IPosition &len, const T &initialValue)
     AlwaysAssert(len.nelements() == 2, ArrayError);
 }
 
-template<class T> Matrix<T>::Matrix(uInt l1, uInt l2)
+template<class T> Matrix<T>::Matrix(size_t l1, size_t l2)
 : Array<T>(IPosition(2, l1, l2))
 {
     makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
 }
 
-template<class T> Matrix<T>::Matrix(uInt l1, uInt l2, const T &initialValue)
+template<class T> Matrix<T>::Matrix(size_t l1, size_t l2, const T &initialValue)
 : Array<T>(IPosition(2, l1, l2), initialValue)
 {
     makeIndexingConstants();
@@ -110,7 +110,7 @@ template<class T> void Matrix<T>::resize(const IPosition &l, Bool copyValues)
     makeIndexingConstants();
 }
 
-template<class T> void Matrix<T>::resize(uInt nx, uInt ny, Bool copyValues)
+template<class T> void Matrix<T>::resize(size_t nx, size_t ny, Bool copyValues)
 {
     DebugAssert(ok(), ArrayError);
     IPosition l(2);
@@ -183,7 +183,7 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
 						  const Slice &sliceY)
 {
     DebugAssert(ok(), ArrayError);
-    Int b1, l1, s1, b2, l2, s2;       // begin length step
+    Int64 b1, l1, s1, b2, l2, s2;       // begin length step
     if (sliceX.all()) {
 	b1 = 0;
 	l1 = this->length_p(0);
@@ -233,10 +233,10 @@ template<class T> const Matrix<T> Matrix<T>::operator()
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<class T> Vector<T> Matrix<T>::row(uInt n)
+template<class T> Vector<T> Matrix<T>::row(size_t n)
 {
     DebugAssert(ok(), ArrayError);
-    if (Int(n) >= this->length_p(0)) {
+    if (Int64(n) >= this->length_p(0)) {
 	throw(ArrayConformanceError("Matrix<T>::row - row < 0 or > end"));
     }
     Matrix<T> tmp((*this)(n, Slice())); // A reference
@@ -258,10 +258,10 @@ template<class T> Vector<T> Matrix<T>::row(uInt n)
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<class T> Vector<T> Matrix<T>::column(uInt n)
+template<class T> Vector<T> Matrix<T>::column(size_t n)
 {
     DebugAssert(ok(), ArrayError);
-    if (Int(n) >= this->length_p(1)) {
+    if (Int64(n) >= this->length_p(1)) {
 	throw(ArrayConformanceError("Matrix<T>::column - column < 0 or > end"));
     }
     Matrix<T> tmp((*this)(Slice(), n)); // A reference
@@ -279,10 +279,10 @@ template<class T> Vector<T> Matrix<T>::column(uInt n)
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<class T> Vector<T> Matrix<T>::diagonal(Int n)
+template<class T> Vector<T> Matrix<T>::diagonal(Int64 n)
 {
     DebugAssert(ok(), ArrayError);
-    Int absn;
+    Int64 absn;
     if (n < 0) absn = -n; else absn = n;
 
     if (this->length_p(0) != this->length_p(1))
@@ -293,7 +293,7 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
 	throw(ArrayConformanceError("Matrix<T>::diagonal() - "
 				    "diagonal out of range"));
 
-    Int r, c;
+    Int64 r, c;
     if ( n < 0 ) {
 	r = absn;
 	c = 0;
@@ -301,7 +301,7 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
 	r = 0;
 	c = absn;
     }
-    Int len = this->length_p(0) - absn;
+    Int64 len = this->length_p(0) - absn;
     Matrix<T> tmp((*this)(Slice(r,len), Slice(c)));
     tmp.ndimen_p = 1;
     tmp.length_p.resize (1);
@@ -317,7 +317,7 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
     return tmp;  // should match Vector<T>(const Array<T> &)
 }
 
-template<class T> const Vector<T> Matrix<T>::row(uInt n) const
+template<class T> const Vector<T> Matrix<T>::row(size_t n) const
 {
     DebugAssert(ok(), ArrayError);
     // Cast away constness of this so we do not have to duplicate code.
@@ -327,7 +327,7 @@ template<class T> const Vector<T> Matrix<T>::row(uInt n) const
     return This->row(n);
 }
 
-template<class T> const Vector<T> Matrix<T>::column(uInt n) const
+template<class T> const Vector<T> Matrix<T>::column(size_t n) const
 {
     DebugAssert(ok(), ArrayError);
     // Cast away constness of this so we do not have to duplicate code.
@@ -338,7 +338,7 @@ template<class T> const Vector<T> Matrix<T>::column(uInt n) const
 }
 
 // If the matrix isn't square, this will throw an exception.
-template<class T> const Vector<T> Matrix<T>::diagonal(Int n) const
+template<class T> const Vector<T> Matrix<T>::diagonal(Int64 n) const
 {
     DebugAssert(ok(), ArrayError);
     // Cast away constness of this so we do not have to duplicate code.
@@ -357,11 +357,11 @@ template<class T> void Matrix<T>::makeIndexingConstants()
     yinc_p = this->inc_p(1)*this->originalLength_p(0);
 }
 
-template<class T> Matrix<T> Matrix<T>::identity(uInt n)
+template<class T> Matrix<T> Matrix<T>::identity(size_t n)
 {
     Matrix<T> m(n, n, T(0));
     T* ptr = m.data();
-    for (uInt i=0; i<n; i++) {
+    for (size_t i=0; i<n; i++) {
         *ptr = T(1);
         ptr += n+1;
     }

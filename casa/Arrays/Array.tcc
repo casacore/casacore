@@ -153,11 +153,11 @@ template<class T> Array<T> Array<T>::copy() const
     } else if (contiguousStorage()) {
 	objcopy (vp.begin_p, begin_p, nels_p);
     } else if (ndim() == 1) {
-	objcopy (vp.begin_p, begin_p, uInt(length_p(0)), 1U, uInt(inc_p(0)));
+	objcopy (vp.begin_p, begin_p, length_p(0), 1U, inc_p(0));
     } else if (length_p(0) == 1  &&  ndim() == 2) {
         // Special case which can be quite common (e.g. row in a matrix).
-	objcopy (vp.begin_p, begin_p, uInt(length_p(1)), 1U,
-		 uInt(originalLength_p(0)*inc_p(1)));
+	objcopy (vp.begin_p, begin_p, length_p(1), 1U,
+		 originalLength_p(0)*inc_p(1));
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
         T* ptr = vp.begin_p;
@@ -177,7 +177,7 @@ template<class T> Array<T> Array<T>::copy() const
 	    offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
 				      inc_p.storage(), index);
 	    objcopy (vp.begin_p + count*length_p(0), begin_p+offset,
-		     uInt(length_p(0)), 1U, uInt(inc_p(0)));
+		     length_p(0), 1U, inc_p(0));
 	    ai.next(); count++;
 	}
     }
@@ -204,13 +204,13 @@ template<class T> Array<T> &Array<T>::operator=(const Array<T> &other)
 	} else if (contiguousStorage() && other.contiguousStorage()) {
 	    objcopy (begin_p, other.begin_p, nels_p);
 	} else if (ndim() == 1) {
-	    objcopy (begin_p, other.begin_p, uInt(length_p(0)), uInt(inc_p(0)),
-		     uInt(other.inc_p(0)));
+	    objcopy (begin_p, other.begin_p, length_p(0), inc_p(0),
+		     other.inc_p(0));
 	} else if (length_p(0) == 1  &&  ndim() == 2) {
             // Special case which can be quite common (e.g. row in a matrix).
-	    objcopy (begin_p, other.begin_p, uInt(length_p(1)),
-		     uInt(originalLength_p(0)*inc_p(1)),
-		     uInt(other.originalLength_p(0)*other.inc_p(1)));
+	    objcopy (begin_p, other.begin_p, length_p(1),
+		     originalLength_p(0)*inc_p(1),
+		     other.originalLength_p(0)*other.inc_p(1));
 	} else if (length_p(0) <= 25) {
 	    // If not many elements on a line, it's better to use this loop.
 	    const_iterator from(other.begin());
@@ -230,8 +230,8 @@ template<class T> Array<T> &Array<T>::operator=(const Array<T> &other)
 					   other.originalLength_p.storage(),
 					   other.inc_p.storage(), index);
 		objcopy (begin_p+offset, other.begin_p+offset2,
-			 uInt(length_p(0)), uInt(inc_p(0)),
-			 uInt(other.inc_p(0)));
+			 length_p(0), inc_p(0),
+			 other.inc_p(0));
 		ai.next();
 	    }
 	}
@@ -305,11 +305,11 @@ template<class T> void Array<T>::set(const T &Value)
     } else if (contiguousStorage()) {
 	objset (begin_p, Value, nels_p);
     } else if (ndim() == 1) {
-	objset (begin_p, Value, uInt(length_p(0)), uInt(inc_p(0)));
+	objset (begin_p, Value, length_p(0), inc_p(0));
     } else if (length_p(0) == 1  &&  ndim() == 2) {
         // Special case which can be quite common (e.g. row in a matrix).
-        objset (begin_p, Value, uInt(length_p(1)),
-		uInt(originalLength_p(0)*inc_p(1)));
+        objset (begin_p, Value, length_p(1),
+		originalLength_p(0)*inc_p(1));
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
         iterator iterend=end();
@@ -324,7 +324,7 @@ template<class T> void Array<T>::set(const T &Value)
 	    index = ai.pos();
 	    offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
 				      inc_p.storage(), index);
-	    objset(begin_p+offset, Value, uInt(length_p(0)), uInt(inc_p(0)));
+	    objset(begin_p+offset, Value, length_p(0), inc_p(0));
 	    ai.next();
 	}
     }
@@ -347,15 +347,15 @@ template<class T> void Array<T>::apply(T (*function)(T))
 	ArrayPositionIterator ai(shape(), 1);
 	IPosition index(ndim());
 
-	uInt len  = length_p(0);
-	uInt incr = inc_p(0);
+	size_t len  = length_p(0);
+	size_t incr = inc_p(0);
 	size_t offset;
 
 	while (! ai.pastEnd()) {
 	    index = ai.pos();
 	    offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
 				      inc_p.storage(), index);
-	    for (uInt i=0; i < len; i++) {
+	    for (size_t i=0; i < len; i++) {
 		begin_p[offset + i*incr] = function(begin_p[offset + i*incr]);
 	    }
 	    ai.next();
@@ -380,15 +380,15 @@ template<class T> void Array<T>::apply(T (*function)(const T &))
 	ArrayPositionIterator ai(shape(), 1);
 	IPosition index(ndim());
 
-	uInt len  = length_p(0);
-	uInt incr = inc_p(0);
+	size_t len  = length_p(0);
+	size_t incr = inc_p(0);
 	size_t offset;
 
 	while (! ai.pastEnd()) {
 	    index = ai.pos();
 	    offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
 				      inc_p.storage(), index);
-	    for (uInt i=0; i < len; i++) {
+	    for (size_t i=0; i < len; i++) {
 		begin_p[offset+i*incr] = function(begin_p[offset+i*incr]);
 	    }
 	    ai.next();
@@ -413,15 +413,15 @@ template<class T> void Array<T>::apply(const Functional<T,T> &function)
 	ArrayPositionIterator ai(shape(), 1);
 	IPosition index(ndim());
 
-	uInt len  = length_p(0);
-	uInt incr = inc_p(0);
+	size_t len  = length_p(0);
+	size_t incr = inc_p(0);
 	size_t offset;
 
 	while (! ai.pastEnd()) {
 	    index = ai.pos();
 	    offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
 				      inc_p.storage(), index);
-	    for (uInt i=0; i < len; i++) {
+	    for (size_t i=0; i < len; i++) {
 		begin_p[offset+i*incr] = function(begin_p[offset+i*incr]);
 	    }
 	    ai.next();
@@ -609,8 +609,6 @@ template<class T> T &Array<T>::operator()(const IPosition &index)
     if (aips_debug) {
 	validateIndex(index);
     }
-    ///uInt offs = ArrayIndexOffset(ndim(), originalLength_p.storage(),
-    ///                        inc_p.storage(), index);
     size_t offs=0;
     for (uInt i=0; i<ndimen_p; i++) {
         offs += index(i) * steps_p(i);
@@ -683,7 +681,7 @@ CountedPtr<ArrayBase> Array<T>::getSection(const Slicer& slicer) const
     return new Array<T>(operator()(slicer));
 }
 
-template<class T> Array<T> Array<T>::operator[](uInt i) const
+template<class T> Array<T> Array<T>::operator[](size_t i) const
 {
     DebugAssert(ok(), ArrayError);
     uInt nd = ndim();
@@ -778,11 +776,11 @@ template<class T> T *Array<T>::getStorage(Bool &deleteIt)
     }
     // ok - copy it
     if (ndim() == 1) {
-	objcopy(storage, begin_p, uInt(length_p(0)), 1U, uInt(inc_p(0)));
+	objcopy(storage, begin_p, length_p(0), 1U, inc_p(0));
     } else if (length_p(0) == 1  &&  ndim() == 2) {
         // Special case which can be quite common (e.g. row in a matrix).
-	objcopy(storage, begin_p, uInt(length_p(1)), 1U,
-		uInt(originalLength_p(0)*inc_p(1)));
+	objcopy(storage, begin_p, length_p(1), 1U,
+		originalLength_p(0)*inc_p(1));
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
         T* ptr = storage;
@@ -794,13 +792,13 @@ template<class T> T *Array<T>::getStorage(Bool &deleteIt)
 	ArrayPositionIterator ai(this->shape(), 1);
 	size_t offset;
 	IPosition index(ndim());
-	uInt count=0;
+	size_t count=0;
 	while (! ai.pastEnd()) {
 	    index = ai.pos();
 	    offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
 				      inc_p.storage(), index);
 	    objcopy(storage + count*length_p(0), begin_p+offset,
-		    uInt(length_p(0)), 1U, uInt(inc_p(0)));
+		    length_p(0), 1U, inc_p(0));
 	    ai.next(); count++;
 	}
     }
@@ -817,11 +815,11 @@ template<class T> void Array<T>::putStorage(T *&storage, Bool deleteAndCopy)
     }
 
     if (ndim() == 1) {
-	objcopy(begin_p, storage, uInt(length_p(0)), uInt(inc_p(0)), 1U);
+	objcopy(begin_p, storage, length_p(0), inc_p(0), 1U);
     } else if (length_p(0) == 1  &&  ndim() == 2) {
         // Special case which can be quite common (e.g. row in a matrix).
-	objcopy(begin_p, storage, uInt(length_p(1)),
-		uInt(originalLength_p(0)*inc_p(1)), 1U);
+	objcopy(begin_p, storage, length_p(1),
+		originalLength_p(0)*inc_p(1), 1U);
     } else if (length_p(0) <= 25) {
         // If not many elements on a line, it's better to use this loop.
         const T* ptr = storage;
@@ -839,7 +837,7 @@ template<class T> void Array<T>::putStorage(T *&storage, Bool deleteAndCopy)
 	    offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
 				      inc_p.storage(), index);
 	    objcopy(begin_p+offset, storage+count*length_p(0),
-		    uInt(length_p(0)), uInt(inc_p(0)), 1U);
+		    length_p(0), inc_p(0), 1U);
 	    ai.next(); count++;
 	}
     }

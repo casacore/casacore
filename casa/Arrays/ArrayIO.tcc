@@ -73,8 +73,8 @@ ostream &operator<<(ostream &s, const Array<T> &a)
 	// Vector
 	IPosition ipos(1);
 	s << "[";
-	Int iend = a.shape()(0) - 1;
-	for (Int i=0; i < iend; i++) {
+	Int64 iend = a.shape()(0) - 1;
+	for (Int64 i=0; i < iend; i++) {
 	    ipos(0) = i;
 	    ArrayIO_printValue (s, a(ipos));
 	    s << ", ";
@@ -86,16 +86,16 @@ ostream &operator<<(ostream &s, const Array<T> &a)
 	// Matrix
 	s << " (NB: Matrix in Row/Column order)" << endl;
 	IPosition index(2);
-	Int row_end = a.shape()(0) - 1;
-	Int col_end = a.shape()(1) - 1;
-	for (Int i=0; i <= row_end; i++) {
+	Int64 row_end = a.shape()(0) - 1;
+	Int64 col_end = a.shape()(1) - 1;
+	for (Int64 i=0; i <= row_end; i++) {
 	    index(0) = i;
 	    if (i == 0) {
 		s << "[";
 	    } else {
 		s << " ";
 	    }
-	    for (Int j=0; j <= col_end; j++) {
+	    for (Int64 j=0; j <= col_end; j++) {
 		index(1) = j;
 		ArrayIO_printValue (s, a(index));
 		if (j != col_end) {
@@ -234,7 +234,7 @@ AipsIO &operator>>(AipsIO &ios, Array<T> &a)
 template <class T>
 void write_array (const Array<T>& the_array, const String& fileName)
 {
-    uInt bytes = the_array.nelements() * sizeof(T);
+    size_t nbytes = the_array.nelements() * sizeof(T);
     ofstream outfile(fileName.chars(), ios::out);
     if(!outfile) {
 	throw (ArrayError
@@ -242,7 +242,7 @@ void write_array (const Array<T>& the_array, const String& fileName)
     }
     Bool delete_storage;
     const T *storage = the_array.getStorage (delete_storage);
-    outfile.write ((char*)storage, bytes);
+    outfile.write ((char*)storage, nbytes);
     outfile.close();
     the_array.freeStorage (storage, delete_storage);
 }
@@ -251,7 +251,7 @@ void write_array (const Array<T>& the_array, const String& fileName)
 template <class T>
 void read_array(Array<T>& the_array, const String& fileName)
 {
-    uInt bytes = the_array.nelements() * sizeof(T);
+    size_t nbytes = the_array.nelements() * sizeof(T);
     ifstream infile(fileName.chars(), ios::in);
     if(!infile) {
 	throw (ArrayError
@@ -259,7 +259,7 @@ void read_array(Array<T>& the_array, const String& fileName)
     }
     Bool delete_storage;
     T *storage = the_array.getStorage (delete_storage);
-    infile.read ((char*)storage, bytes);
+    infile.read ((char*)storage, nbytes);
     infile.close();
     the_array.putStorage (storage, delete_storage);
 }
@@ -280,7 +280,7 @@ void readAsciiMatrix (Matrix<T>& mat, const Char* filein)
 	throw (ArrayError ("readAsciiFile: cannot open " + String(filein)));
     }
 
-    Int rows = 0, cols = 0, saveCols = 0;
+    size_t rows = 0, cols = 0, saveCols = 0;
     uInt havePoint = 0;
 
     while (iFile.getline(buf, bufSize)) {
@@ -338,9 +338,9 @@ void readAsciiMatrix (Matrix<T>& mat, const Char* filein)
     iFile.close();
 
     mat.resize(rows, cols);
-    Int k3 = 0;
-    for (Int i3=0;i3<rows;i3++)
-	for (Int j3=0;j3<cols;j3++)
+    size_t k3 = 0;
+    for (size_t i3=0;i3<rows;i3++)
+	for (size_t j3=0;j3<cols;j3++)
 	    mat(i3,j3) = temp[k3++];
 
 }
@@ -349,17 +349,14 @@ void readAsciiMatrix (Matrix<T>& mat, const Char* filein)
 template <class T>
 void writeAsciiMatrix (const Matrix<T>& mat, const Char* fileout)
 {
-    Int rows, cols;
-
-    mat.shape(rows,cols);
     ofstream oFile;
     oFile.precision(12);
     oFile.open (fileout, ios::out);
     if (! oFile) {
 	throw (ArrayError ("writeAsciiFile: cannot open " + String(fileout)));
     }
-    for (Int i1=0;i1<rows;i1++) {
-	for (Int j1=0;j1<cols;j1++) {
+    for (size_t i1=0;i1<mat.nrow();i1++) {
+      for (size_t j1=0;j1<mat.ncolumn();j1++) {
 	    oFile << mat(i1,j1) << "  ";
 	}
 	oFile << endl; 
@@ -381,7 +378,7 @@ void readAsciiVector (Vector<T>& vect, const Char* filein)
 	throw (ArrayError ("readAsciiFile: cannot open " + String(filein)));
     }
 
-    uInt havePoint = 0;
+    size_t havePoint = 0;
 
     while (iFile.getline(buf, bufSize)) {
 	Int blankLine = 1;
@@ -426,8 +423,8 @@ void readAsciiVector (Vector<T>& vect, const Char* filein)
     iFile.close();
 
     vect.resize(havePoint);
-    Int k3 = 0;
-    for (uInt i3=0;i3<havePoint;i3++)
+    size_t k3 = 0;
+    for (size_t i3=0;i3<havePoint;i3++)
 	vect(i3) = temp[k3++];
 
 }
@@ -472,7 +469,7 @@ Bool read(istream &s, Array<T> &x,
     x.resize(p);
     uInt iptr = p.nelements() - 1;
     IPosition iter(p); iter = Int(0);
-    for (uInt i=0; i < x.nelements(); i++) {
+    for (size_t i=0; i < x.nelements(); i++) {
       x(iter) = tmp[i];
       if (!tr) {
 	for (Int j=iptr; j >=0; j--) {
@@ -518,7 +515,7 @@ Bool read(istream &s, Array<T> &x,
       iter = Int(0);
       Bool deleteIt;
       const T *tmp = tx.getStorage(deleteIt);
-      for (uInt i=0; i < tx.nelements(); i++) {
+      for (size_t i=0; i < tx.nelements(); i++) {
 	x(iter) = tmp[i];
 	for (uInt j=0; j<=iptr; j++) {
 	  iter(j) += 1;
@@ -544,7 +541,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
   Bool how = True;
   T r;
   Char ch;
-  uInt cnt = 0;
+  size_t cnt = 0;
   p.resize(0);
   if (ip == 0) {
     p = IPosition(0);
@@ -691,7 +688,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
   if (how) {
     if (p.nelements() == 0) {
       p = IPosition(1, cnt);
-    } else if (Int(cnt) != p.product()) {
+    } else if (Int64(cnt) != p.product()) {
       how = False;
     }
   }

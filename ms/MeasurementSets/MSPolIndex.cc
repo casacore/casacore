@@ -77,7 +77,7 @@ Vector<Int> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<Int>&
 
   // Match the polarization correlation types and receptor cross-products 
   // by row and correlation index
-  uInt numCorr = min(corrType.nelements(), corrProduct.ncolumn());
+  uInt numCorr = std::min(corrType.nelements(), corrProduct.ncolumn());
   uInt nrows = msPolarizationCols_p.nrow();
   Vector<Bool> corrMatch(nrows, False);
   for (uInt row=0; row<nrows; row++) {

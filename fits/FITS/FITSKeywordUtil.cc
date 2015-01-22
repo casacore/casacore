@@ -636,7 +636,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Bool> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asBool();
 		      out.define(base, vec);
@@ -670,7 +670,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    } else {
 			Vector<String> vec;
 			out.get(base, vec);
-			vec.shape(nelm);
+			nelm = vec.size();
 			if(offset<nelm){
 			  vec(offset) = tmp;
 			  out.define(base, vec);
@@ -698,7 +698,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Double> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asFloat();
 		      out.define(base, vec);
@@ -725,7 +725,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Double> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asDouble();
 		      out.define(base, vec);
@@ -752,7 +752,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Int> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asInt();
 		      out.define(base, vec);
@@ -779,7 +779,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Complex> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asComplex();
 		      out.define(base, vec);
@@ -806,7 +806,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<DComplex> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asDComplex();
 		      out.define(base, vec);

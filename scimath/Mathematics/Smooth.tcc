@@ -136,14 +136,15 @@ void Smooth<T>::hanning(Array<T>& out, Array<Bool>& outmask,
 		        Array<T>& in, Array<Bool>& mask, 
 			Bool TrueIsGood, Bool relaxed) {
   
-  Int nChan, nCorr;
-  Matrix<T>(in).shape(nCorr,nChan);
-
-  for(uInt i=0; i<(uInt)nCorr; i++){
-    Vector<T> vout(Matrix<T>(out).row(i));
-    Vector<Bool> voutMask(Matrix<Bool>(outmask).row(i));
-    Vector<T> vin(Matrix<T>(in).row(i));
-    Vector<Bool> vinMask(Matrix<Bool>(mask).row(i));
+  Matrix<T> min(in);
+  Matrix<T> mout(out);
+  Matrix<Bool> mmask(mask);
+  Matrix<Bool> moutmask(outmask);
+  for(uInt i=0; i<in.shape()[0]; i++){
+    Vector<T> vout(mout.row(i));
+    Vector<Bool> voutMask(moutmask.row(i));
+    Vector<T> vin(min.row(i));
+    Vector<Bool> vinMask(mmask.row(i));
     Smooth<T>::hanning(vout, voutMask, vin, vinMask, 
 		       TrueIsGood, relaxed);
   }

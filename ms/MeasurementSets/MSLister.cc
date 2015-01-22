@@ -683,8 +683,7 @@ void MSLister::listData(const int pageRows,
       }
 
       // Convert antenna ID Vectors to antenna name Vectors
-      Int ant1Length;
-      ant1.shape(ant1Length); // Get length of ant1
+      Int ant1Length = ant1.size(); // Get length of ant1
       Vector<String> antennaNames; // Hold name for each antenna
       Vector<String> antNames1(ant1Length); // Antenna names for the ID's held in ant1
       Vector<String> antNames2(ant1Length); // Antenna names for the ID's held in ant2
@@ -1199,8 +1198,7 @@ Int MSLister::columnWidth(const Vector<String> antNames) {
 
   logStream_p << LogIO::DEBUG1 << "Begin: MSLister::columnWidth" << LogIO::POST;
 
-  Int antNamesShape;
-  antNames.shape(antNamesShape);
+  Int antNamesShape = antNames.size();
   uInt maxWidth=0;
   for (Int i = 0; i < antNamesShape; i++) {
     if (maxWidth < antNames(i).length()) maxWidth = antNames(i).length();
@@ -1274,7 +1272,7 @@ void MSLister::polarizationParse(String correlation) {
 		logStream_p << LogIO::DEBUG2 << correlation << LogIO::POST;
 		// Acquire 1 polarization selection
 		while(correlation.contains(cRegex)) {
-			parseCorrs.shape(nParseCorrs); // get size of parseCorrs
+                        nParseCorrs = parseCorrs.size(); // get size of parseCorrs
 			parseCorrs.resize(++nParseCorrs,True); // append one element to parseCorrs
 			// Store polarization in parseCorrs
 			parseCorrs(nParseCorrs - 1) = correlation.through(cRegex);

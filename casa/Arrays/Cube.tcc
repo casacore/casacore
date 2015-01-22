@@ -43,14 +43,14 @@ template<class T> Cube<T>::Cube()
     DebugAssert(ok(), ArrayError);
 }
 
-template<class T> Cube<T>::Cube(uInt l1, uInt l2, uInt l3)
+template<class T> Cube<T>::Cube(size_t l1, size_t l2, size_t l3)
 : Array<T>(IPosition(3, l1, l2, l3))
 {
     makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
 }
 
-template<class T> Cube<T>::Cube(uInt l1, uInt l2, uInt l3,
+template<class T> Cube<T>::Cube(size_t l1, size_t l2, size_t l3,
 				const T &initialValue)
 : Array<T>(IPosition(3, l1, l2, l3), initialValue)
 {
@@ -108,7 +108,7 @@ template<class T> void Cube<T>::resize(const IPosition &len, Bool copyValues)
     makeIndexingConstants();
 }
 
-template<class T> void Cube<T>::resize(uInt nx, uInt ny, uInt nz,
+template<class T> void Cube<T>::resize(size_t nx, size_t ny, size_t nz,
 				       Bool copyValues)
 {
     DebugAssert(ok(), ArrayError);
@@ -178,11 +178,11 @@ template<class T> Array<T> &Cube<T>::operator=(const Array<T> &a)
 //    <item> ArrayError
 // </thrown>
 template<class T> Cube<T> Cube<T>::operator()(const Slice &sliceX,
-						const Slice &sliceY,
-						const Slice &sliceZ)
+                                              const Slice &sliceY,
+                                              const Slice &sliceZ)
 {
     DebugAssert(ok(), ArrayError);
-    Int b1, l1, s1, b2, l2, s2, b3,s3,l3;       // begin length step
+    Int64 b1, l1, s1, b2, l2, s2, b3,s3,l3;       // begin length step
     if (sliceX.all()) {
 	b1 = 0;
 	l1 = this->length_p(0);
@@ -268,10 +268,10 @@ void Cube<T>::doNonDegenerate (const Array<T> &other,
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<class T> Matrix<T> Cube<T>::xyPlane(uInt which)
+template<class T> Matrix<T> Cube<T>::xyPlane(size_t which)
 {
     DebugAssert(ok(), ArrayError);
-    if (Int(which) >= this->length_p(2)) {
+    if (Int64(which) >= this->length_p(2)) {
 	throw(ArrayConformanceError("Cube<T>::xyPlane - plane > end"));
     }
     Cube<T> tmp((*this)(Slice(), Slice(), which));
@@ -284,7 +284,7 @@ template<class T> Matrix<T> Cube<T>::xyPlane(uInt which)
 }
 
 
-template<class T> const Matrix<T> Cube<T>::xyPlane(uInt which) const
+template<class T> const Matrix<T> Cube<T>::xyPlane(size_t which) const
 {
     Cube<T> *This = const_cast<Cube<T>*>(this);
     // Cast away constness, but the return type is a const Matrix<T>, so
@@ -292,10 +292,10 @@ template<class T> const Matrix<T> Cube<T>::xyPlane(uInt which) const
     return This->xyPlane(which);
 }
 
-template<class T> Matrix<T> Cube<T>::xzPlane(uInt which)
+template<class T> Matrix<T> Cube<T>::xzPlane(size_t which)
 {
     DebugAssert(ok(), ArrayError);
-    if (Int(which) >= this->length_p(1)) {
+    if (Int64(which) >= this->length_p(1)) {
 	throw(ArrayConformanceError("Cube<T>::xzPlane - plane > end"));
     }
     Cube<T> tmp((*this)(Slice(), which, Slice()));
@@ -303,7 +303,7 @@ template<class T> Matrix<T> Cube<T>::xzPlane(uInt which)
     return tmp.nonDegenerate(IPosition(2,0,2));
 }
 
-template<class T> const Matrix<T> Cube<T>::xzPlane(uInt which) const
+template<class T> const Matrix<T> Cube<T>::xzPlane(size_t which) const
 {
     Cube<T> *This = const_cast<Cube<T>*>(this);
     // Cast away constness, but the return type is a const Matrix<T>, so
@@ -312,10 +312,10 @@ template<class T> const Matrix<T> Cube<T>::xzPlane(uInt which) const
     return This->xzPlane(which);
 }
 
-template<class T> Matrix<T> Cube<T>::yzPlane(uInt which)
+template<class T> Matrix<T> Cube<T>::yzPlane(size_t which)
 {
     DebugAssert(ok(), ArrayError);
-    if (Int(which) >= this->length_p(0)) {
+    if (Int64(which) >= this->length_p(0)) {
 	throw(ArrayConformanceError("Cube<T>::yzPlane - plane > end"));
     }
     Cube<T> tmp((*this)(which, Slice(), Slice()));
@@ -324,7 +324,7 @@ template<class T> Matrix<T> Cube<T>::yzPlane(uInt which)
 }
 
 
-template<class T> const Matrix<T> Cube<T>::yzPlane(uInt which) const
+template<class T> const Matrix<T> Cube<T>::yzPlane(size_t which) const
 {
     Cube<T> *This = const_cast<Cube<T>*>(this);
     // Cast away constness, but the return type is a const Matrix<T>, so
