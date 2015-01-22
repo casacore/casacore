@@ -437,17 +437,16 @@ void readAsciiVector (Vector<T>& vect, const Char* filein)
 template <class T>
 void writeAsciiVector (const Vector<T>& vect, const Char* fileout)
 {
-    Int rows;
-
-    vect.shape(rows);
+    size_t rows = vect.size();
     ofstream oFile;
     oFile.precision(12);
     oFile.open (fileout, ios::out);
     if (! oFile) {
 	throw (ArrayError ("writeAsciiFile: cannot open " + String(fileout)));
     }
-    for (Int i1=0;i1<rows;i1++)
+    for (size_t i1=0;i1<rows;i1++) {
 	oFile << vect(i1) << "  ";
+    }
     oFile << endl; 
 }
 

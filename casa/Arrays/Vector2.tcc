@@ -31,14 +31,16 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
-template<class U>
-Vector<T>::Vector(const vector<T, U> &other)
-  : Array<T>(IPosition(1, other.size())) {
-  uInt i=0;
-  for (typename vector<T, U>::const_iterator pos=other.begin();
-       pos != other.end(); pos++) (*this)[i++] = *pos;
+template <class U, class V>
+Vector<T>::Vector(const vector<U, V> &other)
+  : Array<T>(IPosition(1, other.size()))
+{
+  size_t i=0;
+  for (typename vector<U, V>::const_iterator pos=other.begin();
+       pos != other.end(); ++pos) {
+    (*this)[i++] = (T)*pos;
+  }
 }
-
 template<class T>
 template<class Iterator>
 Vector<T>::Vector(Iterator first, size_t size, int)

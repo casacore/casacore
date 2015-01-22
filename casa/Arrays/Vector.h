@@ -97,20 +97,20 @@ public:
 
     // A Vector with a defined length and origin of zero.
     // <group>
-    explicit Vector(uInt Length);
+    explicit Vector(size_t Length);
     explicit Vector(const IPosition& Length);
     // </group>
 
     // A Vector with a defined length and origin of zero.
     // Fill it with the initial value.
     // <group>
-    Vector(uInt Length, const T &initialValue);
+    Vector(size_t Length, const T &initialValue);
     Vector(const IPosition& Length, const T &initialValue);
     // </group>
 
     // Create a Vector from the given Block "other." Make it length "nr"
     // and copy over that many elements.
-    Vector(const Block<T> &other, Int nr);
+    Vector(const Block<T> &other, Int64 nr);
     // Create a Vector of length other.nelements() and copy over its values.
     explicit Vector(const Block<T> &other);
 
@@ -133,8 +133,9 @@ public:
     // <linkto class=Array>Array</linkto>  for the reverse operation).
     // <note role=tip> Both this constructor and the tovector() are
     // defined in <src>Vector2.cc</src>. </note>
-    template <class U>
-    Vector(const vector<T, U> &other);
+    // It does implicit promotion/demotion of the type U if different from T.
+    template <class U, class V>
+        Vector(const vector<U, V> &other);
 
     // Create a Vector from a container iterator and its length.
     // <note> The length is used instead of last, because the distance
@@ -162,7 +163,7 @@ public:
     //# be hidden).
     // Resize without argument is equal to resize(0, False).
     // <group>
-    void resize(uInt len, Bool copyValues=False)
+    void resize(size_t len, Bool copyValues=False)
       { if (len != this->nelements()) resize (IPosition(1,len), copyValues); }
     virtual void resize(const IPosition &len, Bool copyValues=False);
     virtual void resize();
@@ -196,15 +197,15 @@ public:
     // Single-pixel addressing. If AIPS_ARRAY_INDEX_CHECK is defined,
     // bounds checking is performed (not for [])..
     // <group>
-    T &operator[](uInt index)
+    T &operator[](size_t index)
       { return (this->contiguous_p  ?  this->begin_p[index] : this->begin_p[index*this->inc_p(0)]); }
-    const T &operator[](uInt index) const
+    const T &operator[](size_t index) const
       { return (this->contiguous_p  ?  this->begin_p[index] : this->begin_p[index*this->inc_p(0)]); }
     T &operator()(const IPosition &i)
       { return Array<T>::operator()(i); }
     const T &operator()(const IPosition &i) const 
       { return Array<T>::operator()(i); }
-    T &operator()(uInt index)
+    T &operator()(size_t index)
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	this->validateIndex(index);   //# Throws an exception on failure
@@ -212,7 +213,7 @@ public:
         return *(this->begin_p + index*this->inc_p(0));
       }
 
-    const T &operator()(uInt index) const
+    const T &operator()(size_t index) const
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	this->validateIndex(index);   //# Throws an exception on failure
@@ -286,12 +287,8 @@ public:
 
 
     // The length of the Vector.
-    // <group>
-    void shape(Int &Shape) const
-      { Shape = this->length_p(0); }
     const IPosition &shape() const
       { return this->length_p; }
-    // </group>
 
     // Replace the data values with those in the pointer <src>storage</src>.
     // The results are undefined is storage does not point at nelements() or
@@ -316,7 +313,7 @@ protected:
 
 private:
     // Helper functions for constructors.
-    void initVector(const Block<T> &, Int nr);      // copy semantics
+    void initVector(const Block<T> &, Int64 nr);      // copy semantics
 };
 
 } //#End namespace casacore
