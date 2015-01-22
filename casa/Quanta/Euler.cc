@@ -139,7 +139,7 @@ Euler::Euler(const Quantum<Vector<Double> > &in) :
 euler(3), axes(3) {
     Int i;
     Vector<Double> tmp = Euler::makeRad(in);
-    Int j; tmp.shape(j); j=min(j,3);
+    Int j=tmp.size(); j=min(j,3);
     for (i=0; i<j; i++) {
 	euler(i) = tmp(i);
     }
@@ -152,7 +152,7 @@ euler(3), axes(3) {
 Euler::Euler(const Quantum<Vector<Double> > &in, const Vector<uInt> &ax) :
 euler(3), axes(3) {
     Vector<Double> tmp = Euler::makeRad(in);
-    Int j; tmp.shape(j); j=min(j,3); Int i; ax.shape(i); j=min(j,i);
+    Int j=tmp.size(); j=min(j,3); Int i=ax.size(); j=min(j,i);
     for (i=0; i<j; i++) {
 	DebugAssert(ax(i) <= 3, AipsError);
 	euler(i) = tmp(i);
