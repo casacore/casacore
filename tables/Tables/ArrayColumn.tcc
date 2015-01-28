@@ -315,8 +315,8 @@ ArrayColumn<T>::getColumnCells (const RefRows & rows,
     // Thus we have two different ways of walking through the selected rows.
 
     Bool useSlicing = rows.isSliced();
-    int row;
-    int increment;
+    int row=0;
+    int increment=1;
 
     if (useSlicing){
 
@@ -773,8 +773,8 @@ void ArrayColumn<T>::putColumnCells (const RefRows & rows,
     // row numbers.  When sliced, rowNumbers is a triple: (start, nRows, increment).
     // Thus we have two different ways of walking through the selected rows.
 
-    int row;
-    int increment;
+    int row=0;
+    int increment=1;
     Bool useSlices = rows.isSliced();
 
     if (useSlices){

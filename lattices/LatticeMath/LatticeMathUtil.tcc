@@ -24,7 +24,7 @@
 //#
 //# $Id: LatticeUtilities.tcc 21531 2014-12-24 11:46:02Z gervandiepen $
 
-#include <casacore/lattices/Lattices/LatticeMathUtil.h>
+#include <casacore/lattices/LatticeMath/LatticeMathUtil.h>
 
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
