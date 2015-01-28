@@ -1,7 +1,18 @@
 set (tests
 tFit2D
+tLatticeAddNoise
+tLatticeApply
+tLatticeApply2
+tLatticeConvolver
+tLatticeFFT
 tLatticeFit
+tLatticeFractile
+tLatticeHistograms
+tLatticeSlice1D
+tLatticeStatistics
 tLatticeStatsDataProvider
+tLatticeTwoPtCorr
+tLattStatsSpecialize
 )
 
 foreach (test ${tests})

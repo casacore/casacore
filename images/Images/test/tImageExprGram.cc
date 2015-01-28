@@ -30,8 +30,8 @@
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/lattices/Lattices/PagedArray.h>
 #include <casacore/lattices/Lattices/ArrayLattice.h>
-#include <casacore/lattices/Lattices/LCBox.h>
-#include <casacore/lattices/Lattices/LCPixelSet.h>
+#include <casacore/lattices/LRegions/LCBox.h>
+#include <casacore/lattices/LRegions/LCPixelSet.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Matrix.h>

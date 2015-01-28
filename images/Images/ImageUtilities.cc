@@ -43,7 +43,7 @@
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/images/Images/SubImage.h>
 #include <casacore/images/Images/TempImage.h>
-#include <casacore/lattices/Lattices/LCRegion.h>
+#include <casacore/lattices/LRegions/LCRegion.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/casa/Logging/LogIO.h>

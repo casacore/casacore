@@ -33,10 +33,10 @@
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>
-#include <casacore/lattices/Lattices/LCBox.h>
-#include <casacore/lattices/Lattices/LCLELMask.h>
-#include <casacore/lattices/Lattices/LCPixelSet.h>
-#include <casacore/lattices/Lattices/LCPagedMask.h>
+#include <casacore/lattices/LRegions/LCBox.h>
+#include <casacore/lattices/LRegions/LCLELMask.h>
+#include <casacore/lattices/LRegions/LCPixelSet.h>
+#include <casacore/lattices/LRegions/LCPagedMask.h>
 #include <casacore/casa/Arrays/AxesSpecifier.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>

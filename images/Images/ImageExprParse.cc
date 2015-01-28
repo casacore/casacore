@@ -32,7 +32,7 @@
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/images/Regions/RegionHandlerTable.h>
 #include <casacore/images/Images/HDF5Image.h>
-#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
 #include <casacore/lattices/Lattices/PagedArray.h>
 #include <casacore/lattices/Lattices/ArrayLattice.h>
 #include <casacore/tables/Tables/Table.h>

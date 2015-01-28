@@ -30,7 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/lattices/Lattices/LELLattCoord.h>
+#include <casacore/lattices/LEL/LELLattCoord.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/images/Images/ImageInfo.h>
 #include <casacore/tables/Tables/TableRecord.h>

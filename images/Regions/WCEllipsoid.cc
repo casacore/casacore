@@ -28,7 +28,7 @@
 #include <casacore/images/Regions/WCEllipsoid.h>
 
 #include <casacore/casa/Quanta/QuantumHolder.h>
-#include <casacore/lattices/Lattices/LCEllipsoid.h>
+#include <casacore/lattices/LRegions/LCEllipsoid.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

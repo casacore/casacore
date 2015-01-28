@@ -27,9 +27,9 @@
 
 #include <casacore/images/Images/SubImage.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
-#include <casacore/lattices/Lattices/LattRegionHolder.h>
+#include <casacore/lattices/LRegions/LattRegionHolder.h>
 #include <casacore/lattices/Lattices/SubLattice.h>
-#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/lattices/LRegions/LatticeRegion.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Utilities/Assert.h>

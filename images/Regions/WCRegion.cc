@@ -27,9 +27,9 @@
 
 
 #include <casacore/images/Regions/WCRegion.h>
-#include <casacore/lattices/Lattices/RegionType.h>
-#include <casacore/lattices/Lattices/LCExtension.h>
-#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/LRegions/RegionType.h>
+#include <casacore/lattices/LRegions/LCExtension.h>
+#include <casacore/lattices/LRegions/LCBox.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/coordinates/Coordinates/Coordinate.h>
 #include <casacore/coordinates/Coordinates/DirectionCoordinate.h>

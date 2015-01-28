@@ -109,9 +109,9 @@
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Images/SubImage.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LatticeStatsBase.h>
-#include <casacore/lattices/Lattices/LCSlicer.h>
-#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/LatticeMath/LatticeStatsBase.h>
+#include <casacore/lattices/LRegions/LCSlicer.h>
+#include <casacore/lattices/LRegions/LCBox.h>
 #include <casacore/casa/System/PGPlotter.h>
 
 #include <casacore/casa/iostream.h>

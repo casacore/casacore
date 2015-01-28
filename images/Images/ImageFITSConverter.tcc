@@ -37,9 +37,9 @@
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>
 #include <casacore/lattices/Lattices/TempLattice.h>
-#include <casacore/lattices/Lattices/LCPagedMask.h>
-#include <casacore/lattices/Lattices/LCMask.h>
-#include <casacore/lattices/Lattices/LCRegionSingle.h>
+#include <casacore/lattices/LRegions/LCPagedMask.h>
+#include <casacore/lattices/LRegions/LCMask.h>
+#include <casacore/lattices/LRegions/LCRegionSingle.h>
 #include <casacore/fits/FITS/hdu.h>
 #include <casacore/fits/FITS/fitsio.h>
 #include <casacore/fits/FITS/FITSKeywordUtil.h>

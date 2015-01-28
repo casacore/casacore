@@ -31,8 +31,8 @@
 #include <casacore/images/Images/ImageExprParse.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
-#include <casacore/lattices/Lattices/LCLELMask.h>
-#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/LRegions/LCLELMask.h>
+#include <casacore/lattices/LEL/LatticeExpr.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/tables/Tables/TableRecord.h>

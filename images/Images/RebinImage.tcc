@@ -27,7 +27,7 @@
 
 #include <casacore/images/Images/RebinImage.h>
 #include <casacore/lattices/Lattices/RebinLattice.h>
-#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/lattices/LRegions/LatticeRegion.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Utilities/Assert.h>

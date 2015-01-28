@@ -46,7 +46,7 @@
 #include <casacore/images/Images/SubImage.h>
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LCPagedMask.h>
+#include <casacore/lattices/LRegions/LCPagedMask.h>
 #include <casacore/lattices/Lattices/ArrayLattice.h>
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/casa/iostream.h>

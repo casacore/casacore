@@ -29,7 +29,7 @@
 #include <casacore/images/Regions/RegionHandlerMemory.h>
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/lattices/Lattices/TempLattice.h>
-#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/lattices/LRegions/LatticeRegion.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Slicer.h>

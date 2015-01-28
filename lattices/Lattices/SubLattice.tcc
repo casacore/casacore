@@ -27,8 +27,8 @@
 
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/lattices/Lattices/LatticeIterInterface.h>
-#include <casacore/lattices/Lattices/LatticeExpr.h>
-#include <casacore/lattices/Lattices/LCRegion.h>
+#include <casacore/lattices/LEL/LatticeExpr.h>
+#include <casacore/lattices/LRegions/LCRegion.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>

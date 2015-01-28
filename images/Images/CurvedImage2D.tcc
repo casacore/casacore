@@ -27,7 +27,7 @@
 
 #include <casacore/images/Images/CurvedImage2D.h>
 #include <casacore/lattices/Lattices/CurvedLattice2D.h>
-#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/lattices/LRegions/LatticeRegion.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/coordinates/Coordinates/LinearCoordinate.h>

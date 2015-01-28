@@ -27,7 +27,7 @@
 
 #include <casacore/images/Regions/RegionHandlerTable.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LCPagedMask.h>
+#include <casacore/lattices/LRegions/LCPagedMask.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Arrays/Vector.h>

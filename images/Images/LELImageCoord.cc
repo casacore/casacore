@@ -31,9 +31,9 @@
 #include <casacore/images/Images/SubImage.h>
 #include <casacore/images/Images/ExtendImage.h>
 #include <casacore/images/Images/RebinImage.h>
-#include <casacore/lattices/Lattices/LattRegionHolder.h>
-#include <casacore/lattices/Lattices/LatticeRegion.h>
-#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/LRegions/LattRegionHolder.h>
+#include <casacore/lattices/LRegions/LatticeRegion.h>
+#include <casacore/lattices/LEL/LatticeExpr.h>
 #include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 #include <casacore/casa/Utilities/Assert.h>

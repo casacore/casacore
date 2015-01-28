@@ -31,7 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/lattices/Lattices/LELCoordinates.h>
+#include <casacore/lattices/LEL/LELCoordinates.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/IO/FileLocker.h>

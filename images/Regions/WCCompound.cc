@@ -28,7 +28,7 @@
 
 #include <casacore/images/Regions/WCCompound.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/lattices/LRegions/RegionType.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Utilities/Assert.h>

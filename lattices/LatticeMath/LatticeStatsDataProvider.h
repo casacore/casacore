@@ -26,17 +26,17 @@
 #ifndef LATTICES_LATTICESTATSDATAPROVIDER_H
 #define LATTICES_LATTICESTATSDATAPROVIDER_H
 
-#include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/lattices/LatticeMath/LatticeStatsDataProviderBase.h>
 
+#include <casacore/casa/aips.h>
 
 namespace casacore {
 
 // Data provider which allows stats framework to iterate through an unmasked lattice.
 
-template <class AccumType, class T, class InputIterator=const T*> class LatticeStatsDataProvider
-	: public  LatticeStatsDataProviderBase<AccumType, T, InputIterator> {
+template <class T> class LatticeStatsDataProvider
+	: public  LatticeStatsDataProviderBase<T> {
 public:
 
 	LatticeStatsDataProvider(Lattice<T>& lattice);
@@ -44,6 +44,9 @@ public:
 	~LatticeStatsDataProvider();
 
 	void operator++();
+
+	// estimated number of steps to iterate through the the lattice
+	uInt estimatedSteps() const;
 
 	// Are there any data sets left to provide?
 	Bool atEnd() const;
@@ -58,7 +61,7 @@ public:
 	uInt64 getCount();
 
 	// get the current data set
-	InputIterator getData();
+	const T* getData();
 
 	// Get the associated mask of the current dataset. Only called if hasMask() returns True;
 	const Bool* getMask();
@@ -84,7 +87,7 @@ private:
 
 	void _freeStorage();
 
-	uInt _nsteps() const;
+	//uInt _nsteps() const;
 
 };
 

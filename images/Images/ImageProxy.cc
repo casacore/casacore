@@ -44,7 +44,7 @@
 #include <casacore/images/Images/FITSImage.h>
 #include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/images/Images/ImageUtilities.h>
-#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 #include <casacore/casa/Containers/Record.h>

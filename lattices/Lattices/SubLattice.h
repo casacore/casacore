@@ -33,7 +33,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h>
-#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/lattices/LRegions/LatticeRegion.h>
 #include <casacore/casa/Arrays/AxesSpecifier.h>
 #include <casacore/casa/Arrays/AxesMapping.h>
 
