@@ -27,7 +27,7 @@
 
 #include <casacore/images/Regions/RegionHandlerMemory.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LCMask.h>
+#include <casacore/lattices/LRegions/LCMask.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Exceptions/Error.h>
 

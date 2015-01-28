@@ -30,9 +30,9 @@
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/images/Regions/WCBox.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
-#include <casacore/lattices/Lattices/LCBox.h>
-#include <casacore/lattices/Lattices/LCPagedMask.h>
-#include <casacore/lattices/Lattices/LELArray.h>
+#include <casacore/lattices/LRegions/LCBox.h>
+#include <casacore/lattices/LRegions/LCPagedMask.h>
+#include <casacore/lattices/LEL/LELArray.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>

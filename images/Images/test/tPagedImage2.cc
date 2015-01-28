@@ -34,9 +34,9 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/lattices/Lattices/LCSlicer.h>
-#include <casacore/lattices/Lattices/LCPagedMask.h>
-#include <casacore/lattices/Lattices/LatticeExpr.h>
+#include <casacore/lattices/LRegions/LCSlicer.h>
+#include <casacore/lattices/LRegions/LCPagedMask.h>
+#include <casacore/lattices/LEL/LatticeExpr.h>
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/images/Regions/RegionHandler.h>
 #include <casacore/tables/Tables/TableDesc.h>

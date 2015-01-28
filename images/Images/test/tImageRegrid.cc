@@ -41,7 +41,7 @@
 #include <casacore/images/Images/ImageRegrid.h>
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h> 
-#include <casacore/lattices/Lattices/LCPagedMask.h> 
+#include <casacore/lattices/LRegions/LCPagedMask.h> 
 #include <casacore/lattices/Lattices/TempLattice.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 #include <casacore/scimath/Mathematics/Interpolate2D.h>

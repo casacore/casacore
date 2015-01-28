@@ -37,8 +37,8 @@
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/images/Images/ImageExprParse.h>
 #include <casacore/lattices/Lattices/TempLattice.h>
-#include <casacore/lattices/Lattices/LatticeStatistics.h>
-#include <casacore/lattices/Lattices/LattStatsSpecialize.h>
+#include <casacore/lattices/LatticeMath/LatticeStatistics.h>
+#include <casacore/lattices/LatticeMath/LattStatsSpecialize.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Utilities/LinearSearch.h>

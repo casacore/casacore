@@ -33,7 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h>
 #include <casacore/lattices/Lattices/PixelCurve1D.h>
-#include <casacore/lattices/Lattices/CLInterpolator2D.h>
+#include <casacore/lattices/LatticeMath/CLInterpolator2D.h>
 #include <casacore/casa/Arrays/AxesMapping.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

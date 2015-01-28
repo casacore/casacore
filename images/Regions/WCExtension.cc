@@ -29,8 +29,8 @@
 #include <casacore/images/Regions/WCExtension.h>
 #include <casacore/images/Regions/WCBox.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LCExtension.h>
-#include <casacore/lattices/Lattices/LCStretch.h>
+#include <casacore/lattices/LRegions/LCExtension.h>
+#include <casacore/lattices/LRegions/LCStretch.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/Utilities/Assert.h>

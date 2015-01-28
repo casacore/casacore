@@ -37,7 +37,7 @@
 #include <casacore/images/Images/ImageOpener.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 #include <casacore/lattices/Lattices/TempLattice.h>
-#include <casacore/lattices/Lattices/FITSMask.h>
+#include <casacore/lattices/LRegions/FITSMask.h>
 #include <casacore/tables/DataMan/TiledFileAccess.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>

@@ -52,7 +52,7 @@
 #include <casacore/images/Images/LELImageCoord.h>
 #include <casacore/lattices/Lattices/LatticeConcat.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h>
-#include <casacore/lattices/Lattices/LELCoordinates.h>
+#include <casacore/lattices/LEL/LELCoordinates.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

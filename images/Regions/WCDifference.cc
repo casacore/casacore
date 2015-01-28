@@ -28,7 +28,7 @@
 
 #include <casacore/images/Regions/WCDifference.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LCDifference.h>
+#include <casacore/lattices/LRegions/LCDifference.h>
 #include <casacore/tables/Tables/TableRecord.h>
 
 

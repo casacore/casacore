@@ -25,90 +25,84 @@
 
 #include <casacore/lattices/LatticeMath/LatticeStatsDataProviderBase.h>
 
-#include <casacore/lattices/Lattices/LatticeProgress.h>
+#include <casacore/lattices/LatticeMath/LatticeProgress.h>
 
 namespace casacore {
 
-template <class AccumType, class T, class InputIterator>
-LatticeStatsDataProviderBase<AccumType, T, InputIterator>::LatticeStatsDataProviderBase()
+template <class T>
+LatticeStatsDataProviderBase<T>::LatticeStatsDataProviderBase()
 : _hasRanges(False), _isInclude(True), _ranges(),
   _progressMeter(NULL), _minPos(), _maxPos() {}
 
-template <class AccumType, class T, class InputIterator>
-LatticeStatsDataProviderBase<AccumType, T, InputIterator>::~LatticeStatsDataProviderBase() {}
+template <class T>
+LatticeStatsDataProviderBase<T>::~LatticeStatsDataProviderBase() {}
 
-template <class AccumType, class T, class InputIterator>
-uInt LatticeStatsDataProviderBase<AccumType, T, InputIterator>::getMaskStride() {
+template <class T>
+uInt LatticeStatsDataProviderBase<T>::getMaskStride() {
 	return 1;
 }
 
-template <class AccumType, class T, class InputIterator>
-void LatticeStatsDataProviderBase<AccumType, T, InputIterator>::finalize() {
-	if (_progressMeter) {
-		_progressMeter->done();
-	}
-}
+template <class T>
+void LatticeStatsDataProviderBase<T>::finalize() {}
 
-template <class AccumType, class T, class InputIterator>
-DataRanges LatticeStatsDataProviderBase<AccumType, T, InputIterator>::getRanges() {
+template <class T>
+std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> > LatticeStatsDataProviderBase<T>::getRanges() {
 	return _ranges;
 }
 
-template <class AccumType, class T, class InputIterator>
-uInt LatticeStatsDataProviderBase<AccumType, T, InputIterator>::getStride() {
+template <class T>
+uInt LatticeStatsDataProviderBase<T>::getStride() {
 	return 1;
 }
 
-template <class AccumType, class T, class InputIterator>
-InputIterator LatticeStatsDataProviderBase<AccumType, T, InputIterator>::getWeights() {
+template <class T>
+const T* LatticeStatsDataProviderBase<T>::getWeights() {
 	return NULL;
 }
 
-template <class AccumType, class T, class InputIterator>
-Bool LatticeStatsDataProviderBase<AccumType, T, InputIterator>::hasRanges() const {
+template <class T>
+Bool LatticeStatsDataProviderBase<T>::hasRanges() const {
 	return _hasRanges;
 }
 
-template <class AccumType, class T, class InputIterator>
-Bool LatticeStatsDataProviderBase<AccumType, T, InputIterator>::hasWeights() const {
+template <class T>
+Bool LatticeStatsDataProviderBase<T>::hasWeights() const {
 	return False;
 }
 
-template <class AccumType, class T, class InputIterator>
-Bool LatticeStatsDataProviderBase<AccumType, T, InputIterator>::isInclude() const {
+template <class T>
+Bool LatticeStatsDataProviderBase<T>::isInclude() const {
 	return _isInclude;
 }
 
-template <class AccumType, class T, class InputIterator>
-void LatticeStatsDataProviderBase<AccumType, T, InputIterator>::minMaxPos(
+template <class T>
+void LatticeStatsDataProviderBase<T>::minMaxPos(
 	IPosition& minPos, IPosition& maxPos) const {
 	minPos = _minPos;
 	maxPos = _maxPos;
 }
 
-template <class AccumType, class T, class InputIterator>
-void LatticeStatsDataProviderBase<AccumType, T, InputIterator>::setProgressMeter(
-	LatticeProgress * const &pm
+template <class T>
+void LatticeStatsDataProviderBase<T>::setProgressMeter(
+	CountedPtr<LattStatsProgress> pm
 ) {
 	_progressMeter = pm;
-	_progressMeter->init(_nsteps());
 }
 
-template <class AccumType, class T, class InputIterator>
-void LatticeStatsDataProviderBase<AccumType, T, InputIterator>::setRanges(
-	const DataRanges& ranges, Bool isInclude
+template <class T>
+void LatticeStatsDataProviderBase<T>::setRanges(
+	const std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> >& ranges,
+	Bool isInclude
 ) {
-	_hasRanges = ranges.size() > 0;
+	_hasRanges = ! ranges.empty();
 	_ranges = ranges;
 	_isInclude = isInclude;
 }
 
-template <class AccumType, class T, class InputIterator>
-void LatticeStatsDataProviderBase<AccumType, T, InputIterator>::_updateProgress(
-	uInt currentStep
-) {
-	if (_progressMeter) {
-		_progressMeter->nstepsDone (currentStep);
+template <class T>
+void LatticeStatsDataProviderBase<T>::_updateProgress() {
+	if (! _progressMeter.null()) {
+		(*_progressMeter)++;
 	}
 }
 

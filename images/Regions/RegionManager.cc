@@ -41,9 +41,9 @@
 #include <casacore/casa/Quanta/QuantumHolder.h>
 #include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
 #include <casacore/coordinates/Coordinates/StokesCoordinate.h>
-#include <casacore/lattices/Lattices/LCBox.h>
-#include <casacore/lattices/Lattices/LCSlicer.h>
-#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/lattices/LRegions/LCBox.h>
+#include <casacore/lattices/LRegions/LCSlicer.h>
+#include <casacore/lattices/LRegions/RegionType.h>
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/images/Regions/RegionHandlerTable.h>
 #include <casacore/images/Regions/WCBox.h>

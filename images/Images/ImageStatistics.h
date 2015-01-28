@@ -34,7 +34,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Logging/LogIO.h>
-#include <casacore/lattices/Lattices/LatticeStatistics.h>
+#include <casacore/lattices/LatticeMath/LatticeStatistics.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/casa/iosstrfwd.h>
 

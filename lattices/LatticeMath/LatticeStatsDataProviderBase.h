@@ -26,10 +26,13 @@
 #ifndef LATTICES_LATTICESTATSDATAPROVIDERBASE_H
 #define LATTICES_LATTICESTATSDATAPROVIDERBASE_H
 
-#include <casacore/casa/aips.h>
-#include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/scimath/Mathematics/StatsDataProvider.h>
 
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/LatticeMath/LattStatsProgress.h>
+
+#include <casacore/casa/aips.h>
 
 namespace casacore {
 
@@ -37,11 +40,17 @@ class LatticeProgress;
 
 // Abstract base class of data providers which allows stats framework to iterate through a lattice.
 
-template <class AccumType, class T, class InputIterator=const T*> class LatticeStatsDataProviderBase
-	: public StatsDataProvider<AccumType, InputIterator, const Bool*> {
+template <class T> class LatticeStatsDataProviderBase
+	: public StatsDataProvider<typename NumericTraits<T>::PrecisionType, const T*, const Bool*> {
+
 public:
 
+	//typedef typename NumericTraits<T>::PrecisionType AccumType;
+
 	virtual ~LatticeStatsDataProviderBase();
+
+	// estimated number of steps to iterate through the the lattice
+	virtual uInt estimatedSteps() const = 0;
 
 	virtual void finalize();
 
@@ -49,13 +58,13 @@ public:
 	uInt getMaskStride();
 
 	// Get the associated range(s) of the current dataset. Only called if hasRanges() returns True;
-	DataRanges getRanges();
+	std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> > getRanges();
 
 	// Get the stride for the current data set.
 	uInt getStride();
 
 	// Returns NULL; lattices do not have associated weights.
-	InputIterator getWeights();
+	const T* getWeights();
 
 	// Does the current data set have associated range(s)?
 	Bool hasRanges() const;
@@ -70,26 +79,29 @@ public:
 	// get the positions of the min and max
 	void minMaxPos(IPosition& minpos, IPosition& maxpos) const;
 
-	void setProgressMeter(LatticeProgress * const &pm);
+	void setProgressMeter(CountedPtr<LattStatsProgress> pm);
 
 	// set the data ranges
-	void setRanges(const DataRanges& ranges, Bool isInclude);
+	void setRanges(
+		const std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> >& ranges,
+		Bool isInclude
+	);
 
 protected:
 	LatticeStatsDataProviderBase();
 
-	virtual uInt _nsteps() const = 0;
+	//virtual uInt _nsteps() const = 0;
 
 	void _updateMaxPos(const IPosition& maxPos) { _maxPos = maxPos; }
 
 	void _updateMinPos(const IPosition& minPos) { _minPos = minPos; }
 
-	void _updateProgress(uInt currentStep);
+	void _updateProgress();
 
 private:
 	Bool _hasRanges, _isInclude;
-	DataRanges _ranges;
-	LatticeProgress* _progressMeter;
+	std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> > _ranges;
+	CountedPtr<LattStatsProgress> _progressMeter;
 	IPosition _minPos, _maxPos;
 };
 

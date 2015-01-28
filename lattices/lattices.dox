@@ -32,14 +32,21 @@ namespace casacore {
 // The lattices package is a generalization of n-dimensional 
 // <a href="group__Arrays__module.html">arrays</a>.
 // It can hold arrays in memory, on disk (as a Table or in HDF5),
-// or as a virtual lattice using
-// expressions, subsets, regions, masking, etc.
+// or as a virtual lattice using expressions, subsets, regions, masking, etc.
 // <p>
-// A lot of math functionality (statistics, FFT, convolution, clean, fitting)
-// is available on <a href="group__Lattices">lattices</a>.
-// Module <a href="group__LatticeMath__module.html">LatticeMath</a>
-// offers the fitting of functionals to lattice data.
-// <p>
+// The package is divided into a few modules.
+// <ul>
+//   <li> <a href="group__Lattices__module.html">Lattices</a> contains
+//        the basic lattice functionality like access, subsetting, and masking.
+//   <li> <a href="group__LatticeMath__module.html">LatticeMath</a> contains
+//        mathematical operations on lattice data like statistics, FFT, and fitting.
+//   <li> <a href="group__LEL__module.html">LEL</a> contains
+//        classes to form expressions of lattices.
+//   <li> <a href="group__LRegions__module.html">LRegions</a> contains
+//        classes to define various regions in pixel coordinates (box,
+//        sphere, polygon) and to define combinations of regions (union,
+//        intersection, complement, etc.). 
+// </ul>
 // The <a href="group__Images__module.html">images</a> module is built on top of
 // lattices.
 

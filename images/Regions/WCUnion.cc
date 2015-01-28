@@ -28,7 +28,7 @@
 
 #include <casacore/images/Regions/WCUnion.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LCUnion.h>
+#include <casacore/lattices/LRegions/LCUnion.h>
 #include <casacore/tables/Tables/TableRecord.h>
 
 

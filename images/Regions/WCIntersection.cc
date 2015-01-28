@@ -28,7 +28,7 @@
 
 #include <casacore/images/Regions/WCIntersection.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LCIntersection.h>
+#include <casacore/lattices/LRegions/LCIntersection.h>
 #include <casacore/tables/Tables/TableRecord.h>
 
 

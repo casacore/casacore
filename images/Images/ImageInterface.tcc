@@ -35,8 +35,8 @@
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/images/Images/LELImageCoord.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LCRegion.h>
-#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/LRegions/LCRegion.h>
+#include <casacore/lattices/LRegions/LCBox.h>
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 
@@ -46,7 +46,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/Containers/Record.h>
-#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/LRegions/LCBox.h>
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 

@@ -28,9 +28,9 @@
 #include <casacore/images/Regions/WCLELMask.h>
 #include <casacore/images/Images/ImageExprParse.h>
 #include <casacore/images/Images/ImageExpr.h>
-#include <casacore/lattices/Lattices/LCLELMask.h>
-#include <casacore/lattices/Lattices/LatticeExpr.h>
-#include <casacore/lattices/Lattices/LELLattCoordBase.h>
+#include <casacore/lattices/LRegions/LCLELMask.h>
+#include <casacore/lattices/LEL/LatticeExpr.h>
+#include <casacore/lattices/LEL/LELLattCoordBase.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/Utilities/Assert.h>

@@ -36,7 +36,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/lattices/Lattices/ArrayLattice.h>
-#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/LRegions/LCBox.h>
 #include <casacore/lattices/Lattices/LatticeConcat.h>
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/casa/iostream.h>

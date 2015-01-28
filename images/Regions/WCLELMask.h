@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/images/Regions/WCRegion.h>
-#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/lattices/LRegions/RegionType.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Quanta/Quantum.h>

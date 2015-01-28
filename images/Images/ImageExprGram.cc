@@ -30,7 +30,7 @@
 // This file includes the output files of bison and flex for
 // parsing command lines operating on lattices.
 
-#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
 #include <casacore/casa/Arrays/Slice.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/images/Images/ImageExprGram.h>

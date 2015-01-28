@@ -46,19 +46,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //#include <casacore/casa/Arrays/TiledLineStepper.h>
 
 //#include <casacore/lattices/Lattices/SubLattice.h>
-//#include <casacore/lattices/Lattices/LatticeExpr.h>
+//#include <casacore/lattices/LEL/LatticeExpr.h>
 
-//#include <casacore/lattices/Lattices/LatticeRegion.h>
-//#include <casacore/lattices/Lattices/LCSlicer.h>
-//#include <casacore/lattices/Lattices/LCBox.h>
-//#include <casacore/lattices/Lattices/LCEllipsoid.h>
-//#include <casacore/lattices/Lattices/LCPolygon.h>
-//#include <casacore/lattices/Lattices/LCUnion.h>
-//#include <casacore/lattices/Lattices/LCIntersection.h>
-//#include <casacore/lattices/Lattices/LCDifference.h>
-//#include <casacore/lattices/Lattices/LCConcatenation.h>
-//#include <casacore/lattices/Lattices/LCComplement.h>
-//#include <casacore/lattices/Lattices/LCExtension.h>
+//#include <casacore/lattices/LRegions/LatticeRegion.h>
+//#include <casacore/lattices/LRegions/LCSlicer.h>
+//#include <casacore/lattices/LRegions/LCBox.h>
+//#include <casacore/lattices/LRegions/LCEllipsoid.h>
+//#include <casacore/lattices/LRegions/LCPolygon.h>
+//#include <casacore/lattices/LRegions/LCUnion.h>
+//#include <casacore/lattices/LRegions/LCIntersection.h>
+//#include <casacore/lattices/LRegions/LCDifference.h>
+//#include <casacore/lattices/LRegions/LCConcatenation.h>
+//#include <casacore/lattices/LRegions/LCComplement.h>
+//#include <casacore/lattices/LRegions/LCExtension.h>
 
 
 // <module>

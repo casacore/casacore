@@ -27,7 +27,7 @@
 
 #include <casacore/images/Images/FITSErrorImage.h>
 #include <casacore/images/Images/FITSImage.h>
-#include <casacore/lattices/Lattices/FITSMask.h>
+#include <casacore/lattices/LRegions/FITSMask.h>
 
 #include <casacore/casa/iostream.h>
 

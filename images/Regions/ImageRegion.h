@@ -30,7 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/lattices/Lattices/LattRegionHolder.h>
+#include <casacore/lattices/LRegions/LattRegionHolder.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

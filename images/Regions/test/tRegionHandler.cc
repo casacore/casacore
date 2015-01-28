@@ -32,7 +32,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/lattices/Lattices/PagedArray.h>
-#include <casacore/lattices/Lattices/LCSlicer.h>
+#include <casacore/lattices/LRegions/LCSlicer.h>
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/SetupNewTab.h>

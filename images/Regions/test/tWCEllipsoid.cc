@@ -30,7 +30,7 @@
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
-#include <casacore/lattices/Lattices/LCEllipsoid.h>
+#include <casacore/lattices/LRegions/LCEllipsoid.h>
 #include <casacore/tables/Tables/TableRecord.h>
 
 #include <casacore/casa/iostream.h>

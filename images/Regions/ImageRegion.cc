@@ -33,10 +33,10 @@
 #include <casacore/images/Regions/WCDifference.h>
 #include <casacore/images/Regions/WCComplement.h>
 #include <casacore/images/Images/ImageExprParse.h>
-#include <casacore/lattices/Lattices/LCRegion.h>
-#include <casacore/lattices/Lattices/LatticeExprNode.h>
-#include <casacore/lattices/Lattices/LCSlicer.h>
-#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/lattices/LRegions/LCRegion.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
+#include <casacore/lattices/LRegions/LCSlicer.h>
+#include <casacore/lattices/LRegions/RegionType.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 #include <casacore/tables/Tables/TableRecord.h>

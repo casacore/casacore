@@ -34,7 +34,7 @@
 #include <casacore/images/Images/ImageConcat.h>
 #include <casacore/images/Images/ImageExpr.h>
 #include <casacore/images/Images/ImageExprParse.h>
-#include <casacore/lattices/Lattices/LatticeExprNode.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
 #include <casacore/casa/HDF5/HDF5File.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/OS/File.h>

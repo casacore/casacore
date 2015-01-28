@@ -30,7 +30,7 @@
 #include <casacore/images/Regions/WCPolygon.h>
 
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LCRegion.h>
+#include <casacore/lattices/LRegions/LCRegion.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/IPosition.h>

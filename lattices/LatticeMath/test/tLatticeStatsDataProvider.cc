@@ -34,7 +34,7 @@ int main() {
 	try {
 		Array<Float> array1(IPosition(3,1024, 1024, 1024));
 		ArrayLattice<Float> lat(array1);
-		LatticeStatsDataProvider<Double, Float> dataProvider(lat);
+		LatticeStatsDataProvider<Float> dataProvider(lat);
 		dataProvider.reset();
 		while (! dataProvider.atEnd()) {
 			++dataProvider;

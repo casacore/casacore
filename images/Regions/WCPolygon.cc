@@ -33,7 +33,7 @@
 #include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/lattices/Lattices/LCPolygon.h>
+#include <casacore/lattices/LRegions/LCPolygon.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/casa/Quanta/Quantum.h>

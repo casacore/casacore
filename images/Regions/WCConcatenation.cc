@@ -29,7 +29,7 @@
 #include <casacore/images/Regions/WCConcatenation.h>
 #include <casacore/images/Regions/WCBox.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LCConcatenation.h>
+#include <casacore/lattices/LRegions/LCConcatenation.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/Utilities/Assert.h>

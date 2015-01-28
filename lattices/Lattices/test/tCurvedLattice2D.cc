@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <casacore/lattices/Lattices/CurvedLattice2D.h>
-#include <casacore/lattices/Lattices/CLIPNearest2D.h>
+#include <casacore/lattices/LatticeMath/CLIPNearest2D.h>
 #include <casacore/lattices/Lattices/PixelCurve1D.h>
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/lattices/Lattices/ArrayLattice.h>

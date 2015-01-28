@@ -34,9 +34,9 @@
 #include <casacore/lattices/Lattices/LatticeNavigator.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
-#include <casacore/lattices/Lattices/LatticeExprNode.h>
-#include <casacore/lattices/Lattices/LatticeExpr.h>
-#include <casacore/lattices/Lattices/LatticeRegion.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
+#include <casacore/lattices/LEL/LatticeExpr.h>
+#include <casacore/lattices/LRegions/LatticeRegion.h>
 #include <casacore/casa/HDF5/HDF5Record.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Logging/LogMessage.h>

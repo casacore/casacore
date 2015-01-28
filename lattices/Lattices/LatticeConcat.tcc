@@ -28,7 +28,7 @@
 
 #include <casacore/lattices/Lattices/LatticeConcat.h>
 
-#include <casacore/lattices/Lattices/LCBox.h>
+#include <casacore/lattices/LRegions/LCBox.h>
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>

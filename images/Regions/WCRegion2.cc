@@ -36,7 +36,7 @@
 #include <casacore/images/Regions/WCComplement.h>
 #include <casacore/images/Regions/WCExtension.h>
 #include <casacore/images/Regions/WCConcatenation.h>
-#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/lattices/LRegions/RegionType.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Exceptions/Error.h>
 

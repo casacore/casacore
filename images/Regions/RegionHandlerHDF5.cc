@@ -27,7 +27,7 @@
 
 #include <casacore/images/Regions/RegionHandlerHDF5.h>
 #include <casacore/images/Regions/ImageRegion.h>
-#include <casacore/lattices/Lattices/LCHDF5Mask.h>
+#include <casacore/lattices/LRegions/LCHDF5Mask.h>
 #include <casacore/casa/HDF5/HDF5Record.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>

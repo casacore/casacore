@@ -30,7 +30,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
-#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/lattices/LRegions/RegionType.h>
 #include <casacore/tables/Tables/Table.h>
 
 

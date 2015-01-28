@@ -29,11 +29,12 @@
 #include <casacore/casa/OS/EnvVar.h>
 
 #include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/SubImage.h>
 
 #include <casacore/scimath/Mathematics/ClassicalStatistics.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/lattices/LatticeMath/LatticeStatsDataProvider.h>
-#include <casacore/lattices/Lattices/LatticeStatistics.h>
+#include <casacore/lattices/LatticeMath/LatticeStatistics.h>
 
 #include <iomanip>
 
@@ -49,8 +50,9 @@ int main() {
 			cout << "Cannot find image so tests cannot be run" << endl;
 			return 0;
 		}
- 		PagedImage<Float> im(imageName);
+ 		casacore::PagedImage<Float> im(imageName);
 		RO_LatticeIterator<Float> imIter(im);
+		/*
 		{
 			CountedPtr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
 				= new LatticeStatsDataProvider<Double, Float>(im);
@@ -63,10 +65,8 @@ int main() {
 			Double median = cs.getMedianAndQuantiles(
 				quantileToValue, quartiles
 			);
-			cout << "median " << median << endl;
-			return 0;
 		}
-
+		*/
 		/*
 		{
 			cout << "This should produce the desired results" << endl;
@@ -319,15 +319,17 @@ int main() {
 			cout << std::setprecision(15)  << median << endl;
         }
         */
-
         {
             LatticeStatistics<Float> lattStats(im);
+            Array<Double> d;
+            lattStats.getStatistic(d, LatticeStatsBase::SUM);
+            cout << d << endl;
+            /*
             Array<Double> res;
             lattStats.getStatistic(res, LatticeStatsBase::MEDIAN);
             AlwaysAssert(near(*res.begin(), -0.00010517791088204831), AipsError);
-
+            */
         }
-
 		/*
         {
 			cout << endl << "This should produce the desired results" << endl;
@@ -366,23 +368,35 @@ int main() {
 			cout << "medabsdevmed " << std::setprecision(15)  << medabsdevmed << endl;
 		}
 		*/
-
+        /*
         {
         	String imageName2 = datadir + "regression/unittest/stats/ngc4826.tutorial.16apr98.src.clean.model";
         	if (! File(imageName2).exists()) {
         		cout << "Cannot find image " << imageName2 << " so some tests cannot be run" << endl;
         		return 0;
         	}
-        	PagedImage<Float> im2(imageName2);
+        	casacore::PagedImage<Float> im2(imageName2);
         	LatticeStatistics<Float> lattStats(im2);
         	Array<Double> res;
         	lattStats.getStatistic(res, LatticeStatsBase::MEDIAN);
         	AlwaysAssert(*res.begin() == 0, AipsError);
         }
-
-
-
-
+		*/
+        /*
+		{
+			String imageName2 = datadir + "regression/unittest/stats/stats2G.im";
+			if (! File(imageName2).exists()) {
+				cout << "Cannot find image " << imageName2 << " so some tests cannot be run" << endl;
+				return 0;
+			}
+			casacore::PagedImage<Float> im2(imageName2);
+			Slicer slice(IPosition(im2.ndim(), 0), IPosition(im2.ndim(), 800));
+			SubImage<Float> x(im2, slice);
+			LatticeStatistics<Float> lattStats(x);
+			Array<Double> res;
+			lattStats.getStatistic(res, LatticeStatsBase::MEAN);
+		}
+        */
 
     }
     catch (const AipsError& x) {

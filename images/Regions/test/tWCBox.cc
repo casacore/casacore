@@ -31,9 +31,9 @@
 #include <casacore/coordinates/Coordinates.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/images/Regions/WCBox.h>
-#include <casacore/lattices/Lattices/LCRegion.h>
-#include <casacore/lattices/Lattices/LCBox.h>
-#include <casacore/lattices/Lattices/RegionType.h>
+#include <casacore/lattices/LRegions/LCRegion.h>
+#include <casacore/lattices/LRegions/LCBox.h>
+#include <casacore/lattices/LRegions/RegionType.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Assert.h>
