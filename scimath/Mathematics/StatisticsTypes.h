@@ -1,4 +1,4 @@
-//# Copyright (C) 2014
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,29 +29,50 @@
 #include <casacore/casa/aips.h>
 
 #include <utility>
+#include <vector>
 
 namespace casacore {
 
+class Record;
+template <class T> class CountedPtr;
+
 // Commonly used types in statistics framework.
 
-#define DataRanges vector<std::pair<AccumType, AccumType> >
+#define DataRanges std::vector<std::pair<AccumType, AccumType> >
 
-template <class T> struct StatsData {
+template <class AccumType> struct StatsData {
 	Bool masked;
-	T max;
-	uInt maxpos;
-	T mean;
-	T min;
-	uInt minpos;
-	T npts;
-	T rms;
-	T stddev;
-	T sum;
-	T sumsq;
-	T variance;
+	CountedPtr<AccumType> max;
+	std::pair<Int64, Int64> maxpos;
+	AccumType mean;
+	CountedPtr<AccumType> median;
+	CountedPtr<AccumType> medAbsDevMed;
+	CountedPtr<AccumType> min;
+	std::pair<Int64, Int64> minpos;
+	Double npts;
+	AccumType nvariance;
+	AccumType rms;
+	AccumType stddev;
+	AccumType sum;
+	AccumType sumsq;
+	AccumType sumweights;
+	AccumType variance;
 	Bool weighted;
 };
 
+template <class AccumType>
+StatsData<AccumType> initializeStatsData();
+
+template <class AccumType>
+StatsData<AccumType> copy(const StatsData<AccumType>& stats);
+
+template <class AccumType>
+Record toRecord(const StatsData<AccumType>& stats);
+
 }
+
+#ifndef CASACORE_NO_AUTO_TEMPLATES
+#include <casacore/scimath/Mathematics/StatisticsTypes.tcc>
+#endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif

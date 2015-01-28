@@ -37,7 +37,6 @@
 #include <map>
 #include <set>
 
-
 namespace casacore {
 
 // Base class of statistics algorithm class hierarchy.
@@ -167,8 +166,33 @@ public:
 	);
 	// </group>
 
+	// get the algorithm that this object uses for computing stats
+	virtual StatisticsData::ALGORITHM algorithm() const = 0;
+
 	// delete any (partially) sorted array
 	void deleteSortedArray();
+
+	virtual AccumType getMedian(
+		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
+		CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
+		Bool persistSortedArray=False
+	) = 0;
+
+	// The return value is the median; the quantiles are returned in the <src>quantileToValue</src> map.
+	virtual AccumType getMedianAndQuantiles(
+		std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
+		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
+		CountedPtr<AccumType> knownMax=NULL,
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+	) = 0;
+
+	// get the median of the absolute deviation about the median of the data.
+	virtual AccumType getMedianAbsDevMed(
+		CountedPtr<uInt64> knownNpts=NULL,
+		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+	) = 0;
+
 
 	// get a quantile value. quantile takes values of 0 to 1 exclusive.
 	// If the dataset is greater than binningThreshholdSizeBytes bytes in size,
@@ -198,9 +222,9 @@ public:
 	// added. The second value is the zero-based index in that dataset. A data stride
 	// of greater than one is not accounted for, so the index represents the actual
 	// location in the data set, independent of the dataStride value.
-	virtual std::pair<uInt, uInt> getStatisticIndex(StatisticsData::STATS stat) = 0;
+	virtual std::pair<Int64, Int64> getStatisticIndex(StatisticsData::STATS stat) = 0;
 
-	virtual Record getStatistics();
+	virtual StatsData<AccumType> getStatistics();
 
 	// <group>
 	// setdata() clears any current datasets or data provider and then adds the specified data set as
@@ -301,7 +325,7 @@ protected:
 
 	virtual AccumType _getStatistic(StatisticsData::STATS stat) = 0;
 
-	virtual Record _getStatistics() = 0;
+	virtual StatsData<AccumType> _getStatistics() = 0;
 
 	const std::set<StatisticsData::STATS> _getStatsToCalculate() const {
 		return _statsToCalculate;
@@ -316,31 +340,6 @@ protected:
 	const std::map<uInt, InputIterator>& _getWeights() const {
 		return _weights;
 	}
-
-	static Bool _includeDatum(
-		const AccumType& datum, typename DataRanges::const_iterator beginRange,
-		typename DataRanges::const_iterator endRange, Bool isInclude
-	);
-
-	inline static void _increment(
-		InputIterator& datum, Int64& loopCount, Bool unityStride, uInt dataStride
-	);
-
-	inline static void _increment(
-		InputIterator& datum, Int64& loopCount, InputIterator& weight,
-		Bool unityStride, uInt dataStride
-	);
-
-	inline static void _increment(
-		InputIterator& datum, Int64& loopCount, MaskIterator& mask,
-		Bool unityStride, uInt dataStride, uInt maskStride
-	);
-
-	inline static void _increment(
-		InputIterator& datum, Int64& loopCount,
-		InputIterator& weight, MaskIterator& mask,
-		Bool unityStride, uInt dataStride, uInt maskStride
-	);
 
 	// get the zero-based indices of the specified quantiles in sorted dataset with npts
 	// number of good points. The returned map maps quantiles to indices.

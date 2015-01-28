@@ -31,7 +31,6 @@ Mathematics/SquareMatrix2.cc
 Mathematics/StatisticsData.cc
 Mathematics/VectorKernel.cc
 Mathematics/VanVleck.cc
-#StefCal/StefCal.cc
 )
 
 if (FFTW3_FOUND)
@@ -232,6 +231,8 @@ Mathematics/AutoDiffX.h
 Mathematics/ClassicalStatistics.h
 Mathematics/ClassicalStatistics.tcc
 Mathematics/Combinatorics.h
+Mathematics/ConstrainedRangeStatistics.h
+Mathematics/ConstrainedRangeStatistics.tcc
 Mathematics/ConvolveGridder.h
 Mathematics/ConvolveGridder.tcc
 Mathematics/Convolver.h
@@ -288,7 +289,10 @@ Mathematics/StatsDataProvider.tcc
 Mathematics/StatisticsAlgorithm.h
 Mathematics/StatisticsAlgorithm.tcc
 Mathematics/StatisticsData.h
+Mathematics/StatisticsIncrementer.h
+Mathematics/StatisticsIncrementer.tcc
 Mathematics/StatisticsTypes.h
+Mathematics/StatisticsTypes.tcc
 Mathematics/StatisticsUtilities.h
 Mathematics/StatisticsUtilities.tcc
 Mathematics/VanVleck.h
@@ -307,6 +311,5 @@ if (BUILD_TESTING)
     add_subdirectory (Fitting/test)
     add_subdirectory (Functionals/test)
     add_subdirectory (Mathematics/test)
-#    add_subdirectory (StefCal/test)
 endif (BUILD_TESTING)
 

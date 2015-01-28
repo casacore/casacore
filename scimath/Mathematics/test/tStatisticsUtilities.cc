@@ -1,5 +1,5 @@
 //# tStatAcc.cc: Test program for class StatAcc
-//# Copyright (C) 2014
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -151,6 +151,89 @@ int main() {
     	AlwaysAssert(near(wmean, 17.0/9.0), AipsError);
     	AlwaysAssert(wsumsq == 37, AipsError);
     	AlwaysAssert(near(wnvariance, wsumsq - sumweights*wmean*wmean) , AipsError);
+    	vector<Double>::const_iterator vbegin = v.begin();
+    	vector<Double>::const_iterator viter = vbegin;
+    	vector<Double>::const_iterator vend = v.end();
+    	npts = 0;
+    	nvariance = 0;
+    	sumsq = 0;
+    	Double center = 3;
+    	while (viter != vend) {
+    		StatisticsUtilities<Double>::accumulateSym(
+    			npts, nvariance, sumsq, *viter, center
+    		);
+    		++viter;
+    	}
+    	AlwaysAssert(npts == 10, AipsError);
+    	AlwaysAssert(sumsq == 105, AipsError);
+    	AlwaysAssert(nvariance == 15, AipsError);
+
+    	npts = 0;
+    	nvariance = 0;
+    	sumsq = 0;
+    	sumweights = 0;
+    	center = 3;
+    	vector<Double>::const_iterator wbegin = w.begin();
+    	vector<Double>::const_iterator witer = wbegin;
+    	vector<Double>::const_iterator wend = w.end();
+    	viter = vbegin;
+    	while (viter != vend) {
+    		StatisticsUtilities<Double>::waccumulateSym(
+    			npts, sumweights, nvariance, sumsq, *viter, *witer, center
+    		);
+    		++viter;
+    		++witer;
+    	}
+    	AlwaysAssert(npts == 10, AipsError);
+    	AlwaysAssert(sumweights == 18, AipsError);
+    	AlwaysAssert(nvariance == 32, AipsError);
+    	AlwaysAssert(sumsq == 194, AipsError);
+
+    	npts = 0;
+    	nvariance = 0;
+    	sumsq = 0;
+    	center = 3;
+    	uInt count = 0;
+    	viter = vbegin;
+    	while (viter != vend) {
+    		StatisticsUtilities<Double>::accumulateSym(
+    			npts, nvariance, sumsq, datamin, datamax,
+    			minpos, maxpos, *viter, count, center
+    		);
+    		++viter;
+    		++count;
+    	}
+    	AlwaysAssert(npts == 10, AipsError);
+    	AlwaysAssert(sumsq == 105, AipsError);
+    	AlwaysAssert(nvariance == 15, AipsError);
+    	AlwaysAssert(datamin == 1, AipsError);
+    	AlwaysAssert(datamax == 3, AipsError);
+    	AlwaysAssert(minpos == 1, AipsError);
+    	AlwaysAssert(maxpos == 3, AipsError);
+
+    	npts = 0;
+    	nvariance = 0;
+    	sumsq = 0;
+    	sumweights = 0;
+    	center = 3;
+    	viter = vbegin;
+    	witer = wbegin;
+    	while (viter != vend) {
+    		StatisticsUtilities<Double>::waccumulateSym(
+    			npts, sumweights, nvariance, sumsq, datamin,
+    			datamax, minpos, maxpos, *viter, *witer, count, center
+    		);
+    		++viter;
+    		++witer;
+    	}
+    	AlwaysAssert(npts == 10, AipsError);
+    	AlwaysAssert(sumweights == 18, AipsError);
+    	AlwaysAssert(nvariance == 32, AipsError);
+    	AlwaysAssert(sumsq == 194, AipsError);
+    	AlwaysAssert(datamin == 1, AipsError);
+    	AlwaysAssert(datamax == 3, AipsError);
+    	AlwaysAssert(minpos == 1, AipsError);
+    	AlwaysAssert(maxpos == 3, AipsError);
     }
     catch (const AipsError& x) {
         cout << x.getMesg() << endl;

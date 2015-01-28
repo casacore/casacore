@@ -55,30 +55,30 @@ int main() {
     	{
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		cs.setData(v0.begin(), v0.size());
-    		Record r = cs.getStatistics();
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 3, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 3, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == 2, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 1, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 5, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(22.5/5.0), AipsError);
-    		AlwaysAssert(r.asDouble("stddev") == sqrt(0.625), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 10, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 22.5, AipsError);
-    		AlwaysAssert(r.asDouble("variance") == 0.625, AipsError);
+    		StatsData<Double> sd = cs.getStatistics();
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 3, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 0, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 3, AipsError);
+    		AlwaysAssert(sd.mean == 2, AipsError);
+    		AlwaysAssert(*sd.min == 1, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == 5, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(22.5/5.0), AipsError);
+    		AlwaysAssert(sd.stddev == sqrt(0.625), AipsError);
+    		AlwaysAssert(sd.sum == 10, AipsError);
+    		AlwaysAssert(sd.sumsq == 22.5, AipsError);
+    		AlwaysAssert(sd.variance == 0.625, AipsError);
     		AlwaysAssert(
     			cs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(0, 3),
+    			== std::pair<Int64 COMMA Int64>(0, 3),
     			AipsError
     		);
     		AlwaysAssert(
     			cs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 1),
+    			== std::pair<Int64 COMMA Int64>(0, 1),
     			AipsError
     		);
     		AlwaysAssert(cs.getStatistic(
@@ -92,30 +92,30 @@ int main() {
     		// just another way of specifying the data
     		HingesFencesStatistics<Double, Double*, Bool*> cs1;
     		cs1.setData(k, 5);
-    		Record r = cs1.getStatistics();
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 3, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 3, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == 2, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 1, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 5, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(22.5/5.0), AipsError);
-    		AlwaysAssert(r.asDouble("stddev") == sqrt(0.625), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 10, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 22.5, AipsError);
-    		AlwaysAssert(r.asDouble("variance") == 0.625, AipsError);
+    		StatsData<Double> sd = cs1.getStatistics();
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 3, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 0, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 3, AipsError);
+    		AlwaysAssert(sd.mean == 2, AipsError);
+    		AlwaysAssert(*sd.min == 1, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == 5, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(22.5/5.0), AipsError);
+    		AlwaysAssert(sd.stddev == sqrt(0.625), AipsError);
+    		AlwaysAssert(sd.sum == 10, AipsError);
+    		AlwaysAssert(sd.sumsq == 22.5, AipsError);
+    		AlwaysAssert(sd.variance == 0.625, AipsError);
     		AlwaysAssert(
     			cs1.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(0, 3),
+    			== std::pair<Int64 COMMA Int64>(0, 3),
     			AipsError
     		);
     		AlwaysAssert(
     			cs1.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 1),
+    			== std::pair<Int64 COMMA Int64>(0, 1),
     			AipsError
     		);
     		AlwaysAssert(cs1.getStatistic(
@@ -130,31 +130,31 @@ int main() {
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		cs.setData(v0.begin(), v0.size());
     		cs.addData(v1.begin(), v1.size());
-    		Record r = cs.getStatistics();
+    		StatsData<Double> sd = cs.getStatistics();
     		Double variance = (211.5 - 33.0*33.0/8.0)/7.0;
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 10, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 2, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == 33.0/8.0, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 1, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 8, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(211.5/8.0), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(variance)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 33, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 211.5, AipsError);
-    		AlwaysAssert(r.asDouble("variance") == variance, AipsError);
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 10, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 2, AipsError);
+    		AlwaysAssert(sd.mean == 33.0/8.0, AipsError);
+    		AlwaysAssert(*sd.min == 1, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == 8, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(211.5/8.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 33, AipsError);
+    		AlwaysAssert(sd.sumsq == 211.5, AipsError);
+    		AlwaysAssert(sd.variance == variance, AipsError);
     		AlwaysAssert(
     			cs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(1, 2),
+    			== std::pair<Int64 COMMA Int64>(1, 2),
     			AipsError
     		);
     		AlwaysAssert(
     			cs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 1),
+    			== std::pair<Int64 COMMA Int64>(0, 1),
     			AipsError
     		);
     		AlwaysAssert(cs.getStatistic(
@@ -167,30 +167,30 @@ int main() {
     		// should be the same except for min and max dataset locations
     		cs.setData(v1.begin(), v1.size());
     		cs.addData(v0.begin(), v0.size());
-            r = cs.getStatistics();
-            AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 10, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 2, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == 33.0/8.0, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 1, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 8, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(211.5/8.0), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(variance)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 33, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 211.5, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), variance), AipsError);
+            sd = cs.getStatistics();
+            AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 10, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 0, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 2, AipsError);
+    		AlwaysAssert(sd.mean == 33.0/8.0, AipsError);
+    		AlwaysAssert(*sd.min == 1, AipsError);
+    		AlwaysAssert(sd.minpos.first == 1, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == 8, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(211.5/8.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 33, AipsError);
+    		AlwaysAssert(sd.sumsq == 211.5, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
     		AlwaysAssert(
     			cs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(0, 2),
+    			== std::pair<Int64 COMMA Int64>(0, 2),
     			AipsError
     		);
     		AlwaysAssert(
     			cs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(1, 1),
+    			== std::pair<Int64 COMMA Int64>(1, 1),
     			AipsError
     		);
     		AlwaysAssert(cs.getStatistic(
@@ -218,22 +218,22 @@ int main() {
     		std::fill(t0.begin(), t0.begin()+t0.size(), 0);
     		cs.addData(t1.begin(), t1.size());
     		std::fill(t1.begin(), t1.begin()+t1.size(), 0);
-    		Record r = cs.getStatistics();
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 0, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 0, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == 0, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 0, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 0, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 8, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == 0, AipsError);
-    		AlwaysAssert(r.asDouble("stddev") == 0, AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 0, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 0, AipsError);
-    		AlwaysAssert(r.asDouble("variance") == 0, AipsError);
+    		StatsData<Double> sd = cs.getStatistics();
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 0, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 0, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 0, AipsError);
+    		AlwaysAssert(sd.mean == 0, AipsError);
+    		AlwaysAssert(*sd.min == 0, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 0, AipsError);
+    		AlwaysAssert(sd.npts == 8, AipsError);
+    		AlwaysAssert(sd.rms == 0, AipsError);
+    		AlwaysAssert(sd.stddev == 0, AipsError);
+    		AlwaysAssert(sd.sum == 0, AipsError);
+    		AlwaysAssert(sd.sumsq == 0, AipsError);
+    		AlwaysAssert(sd.variance == 0, AipsError);
 
     		t0[0] = 1.5;
     		t0[1] = 1;
@@ -258,23 +258,23 @@ int main() {
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> hfs;
     		hfs.setData(v0.begin(), v0.size(), 2);
     		hfs.addData(v1.begin(), v1.size());
-    		Record r = hfs.getStatistics();
+    		StatsData<Double> sd = hfs.getStatistics();
     		Double variance = (201.5 - 29.0*29.0/6.0)/5.0;
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 10, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 2, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == 29.0/6.0, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 1.5, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 2, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 6, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(201.5/6.0), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(variance)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 29, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 201.5, AipsError);
-    		AlwaysAssert(r.asDouble("variance") == variance, AipsError);
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 10, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 2, AipsError);
+    		AlwaysAssert(sd.mean == 29.0/6.0, AipsError);
+    		AlwaysAssert(*sd.min == 1.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 2, AipsError);
+    		AlwaysAssert(sd.npts == 6, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(201.5/6.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 29, AipsError);
+    		AlwaysAssert(sd.sumsq == 201.5, AipsError);
+    		AlwaysAssert(sd.variance == variance, AipsError);
     	}
     	{
     		// data ranges
@@ -299,23 +299,23 @@ int main() {
     		r1[1].second = 7;
     		cs.setData(v0.begin(), v0.size(), r0);
     		cs.addData(v1.begin(), v1.size(), r1, False);
-    		Record r = cs.getStatistics();
+    		StatsData<Double> sd = cs.getStatistics();
     		Double variance = (79.25 - 13.5*13.5/3.0)/2.0;
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 8, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == 13.5/3.0, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 2.5, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 4, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 3, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(79.25/3.0), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(variance)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 13.5, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 79.25, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), variance), AipsError);
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(sd.mean == 13.5/3.0, AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(79.25/3.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 13.5, AipsError);
+    		AlwaysAssert(sd.sumsq == 79.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
     	}
     	{
     		// mask
@@ -332,23 +332,23 @@ int main() {
     		m1[2] = False;
     		cs.setData(v0.begin(), m0.begin(), v0.size());
     		cs.addData(v1.begin(), m1.begin(), v1.size());
-    		Record r = cs.getStatistics();
+    		StatsData<Double> sd = cs.getStatistics();
     		Double variance = (79.25 - 13.5*13.5/3.0)/2.0;
-    		AlwaysAssert(r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 8, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == 13.5/3.0, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 2.5, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 4, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 3, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(79.25/3.0), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(variance)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 13.5, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 79.25, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), variance), AipsError);
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(sd.mean == 13.5/3.0, AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(79.25/3.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 13.5, AipsError);
+    		AlwaysAssert(sd.sumsq == 79.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
     	}
     	{
     		// mask and ranges
@@ -371,23 +371,23 @@ int main() {
     		r1[0].second = 9;
     		cs.setData(v0.begin(), m0.begin(), v0.size(), r0, False);
     		cs.addData(v1.begin(), m1.begin(), v1.size(), r1, True);
-    		Record r = cs.getStatistics();
+    		StatsData<Double> sd = cs.getStatistics();
     		Double variance = (79.25 - 13.5*13.5/3.0)/2.0;
-    		AlwaysAssert(r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 8, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == 13.5/3.0, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 2.5, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 4, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 3, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(79.25/3.0), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(variance)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 13.5, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 79.25, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), variance), AipsError);
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(sd.mean == 13.5/3.0, AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(79.25/3.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 13.5, AipsError);
+    		AlwaysAssert(sd.sumsq == 79.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
     	}
     	{
     		// weights
@@ -404,24 +404,24 @@ int main() {
     		w1[2] = 3;
     		cs.setData(v0.begin(), w0.begin(), w0.size());
     		cs.addData(v1.begin(), w1.begin(), w1.size());
-    		Record r = cs.getStatistics();
+    		StatsData<Double> sd = cs.getStatistics();
     		Double variance = (529.0 - 82.0*82.0/20.0)/19.0;
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 10, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 2, AipsError);
-    		AlwaysAssert(near(r.asDouble("mean"), 4.1), AipsError);
-    		AlwaysAssert(r.asDouble("min") == 1, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 7, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(529.0/20.0), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(variance)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 82.0, AipsError);
-    		AlwaysAssert(r.asDouble("sumOfWeights") == 20.0, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 529.0, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), variance), AipsError);
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 10, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 2, AipsError);
+    		AlwaysAssert(near(sd.mean, 4.1), AipsError);
+    		AlwaysAssert(*sd.min == 1, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == 7, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(529.0/20.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 82.0, AipsError);
+    		AlwaysAssert(sd.sumweights == 20.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 529.0, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
     	}
     	{
     		// weights and ranges
@@ -444,24 +444,24 @@ int main() {
     		r1[0].second = 9;
     		cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
     		cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
-    		Record r = cs.getStatistics();
+    		StatsData<Double> sd = cs.getStatistics();
     		Double variance = (195.25 - 40.5*40.5/11.0)/10.0;
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 8, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(near(r.asDouble("mean"), 40.5/11.0), AipsError);
-    		AlwaysAssert(r.asDouble("min") == 2.5, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 4, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 3, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(195.25/11.0), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(variance)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 40.5, AipsError);
-    		AlwaysAssert(r.asDouble("sumOfWeights") == 11.0, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 195.25, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), variance), AipsError);
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, 40.5/11.0), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(195.25/11.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 40.5, AipsError);
+    		AlwaysAssert(sd.sumweights == 11.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 195.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
     	}
     	{
     		// weights, ranges, and masks
@@ -494,32 +494,32 @@ int main() {
     		r1[0].second = 12;
     		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
     		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
-    		Record r = cs.getStatistics();
+    		StatsData<Double> sd = cs.getStatistics();
     		Double variance = (195.25 - 40.5*40.5/11.0)/10.0;
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 8, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(near(r.asDouble("mean"), 40.5/11.0), AipsError);
-    		AlwaysAssert(r.asDouble("min") == 2.5, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 4, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 3, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(195.25/11.0), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(variance)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 40.5, AipsError);
-    		AlwaysAssert(r.asDouble("sumOfWeights") == 11.0, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 195.25, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), variance), AipsError);
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, 40.5/11.0), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(195.25/11.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 40.5, AipsError);
+    		AlwaysAssert(sd.sumweights == 11.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 195.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
     		AlwaysAssert(
     			cs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(1, 1),
+    			== std::pair<Int64 COMMA Int64>(1, 1),
     			AipsError
     		);
     		AlwaysAssert(
     			cs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 4),
+    			== std::pair<Int64 COMMA Int64>(0, 4),
     			AipsError
     		);
     		AlwaysAssert(cs.getStatistic(
@@ -554,24 +554,24 @@ int main() {
     		m1[2] = False;
     		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
     		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
-    		Record r = cs.getStatistics();
+    		StatsData<Double> sd = cs.getStatistics();
     		Double variance = (195.25 - 40.5*40.5/11.0)/10.0;
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 8, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(near(r.asDouble("mean"), 40.5/11.0), AipsError);
-    		AlwaysAssert(r.asDouble("min") == 2.5, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 4, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == 3, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(195.25/11.0), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(variance)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == 40.5, AipsError);
-    		AlwaysAssert(r.asDouble("sumOfWeights") == 11.0, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == 195.25, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), variance), AipsError);
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, 40.5/11.0), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(195.25/11.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 40.5, AipsError);
+    		AlwaysAssert(sd.sumweights == 11.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 195.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
     	}
 
     	{
@@ -1273,7 +1273,6 @@ int main() {
     		AlwaysAssert(quantileToValue[0.75] == 0, AipsError);
 
     	}
-
     	// now begin testing the specialized behavior of HingesFencesStatistics
     	v0.resize(12);
     	v0[0] = 5;
@@ -1293,35 +1292,34 @@ int main() {
     	{
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> hfs(0);
     		hfs.setData(v0.begin(), v0.size());
-    		Record r = hfs.getStatistics();
+    		StatsData<Double> sd = hfs.getStatistics();
     		Double eSum = 47;
     		Double eNpts = 7;
     		Double eSumSq = 371;
     		Double eVar = 9.238095238095239;
-
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 11, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 7, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == eSum/eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 2, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eNpts), AipsError);
-    		AlwaysAssert(r.asDouble("stddev") == sqrt(eVar), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    		AlwaysAssert(r.asDouble("variance") == eVar, AipsError);
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 0, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 7, AipsError);
+    		AlwaysAssert(sd.mean == eSum/eNpts, AipsError);
+    		AlwaysAssert(*sd.min == 2, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
+    		AlwaysAssert(sd.stddev == sqrt(eVar), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(sd.variance == eVar, AipsError);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MAX)
-    				== std::pair<uInt COMMA uInt>(0, 7),
+    				== std::pair<Int64 COMMA Int64>(0, 7),
     			AipsError
     		);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MIN)
-    				== std::pair<uInt COMMA uInt>(0, 1),
+    				== std::pair<Int64 COMMA Int64>(0, 1),
     			AipsError
     		);
     		AlwaysAssert(hfs.getStatistic(
@@ -1340,30 +1338,30 @@ int main() {
     		Double eNpts = 7;
     		Double eSumSq = 371;
     		Double eVar = 9.238095238095239;
-    		Record r = hfs.getStatistics();
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 11, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 7, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == eSum/eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 2, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eNpts), AipsError);
-    		AlwaysAssert(r.asDouble("stddev") == sqrt(eVar), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    		AlwaysAssert(r.asDouble("variance") == eVar, AipsError);
+    		StatsData<Double> sd = hfs.getStatistics();
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 0, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 7, AipsError);
+    		AlwaysAssert(sd.mean == eSum/eNpts, AipsError);
+    		AlwaysAssert(*sd.min == 2, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
+    		AlwaysAssert(sd.stddev == sqrt(eVar), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(sd.variance == eVar, AipsError);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(0, 7),
+    			== std::pair<Int64 COMMA Int64>(0, 7),
     			AipsError
     		);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 1),
+    			== std::pair<Int64 COMMA Int64>(0, 1),
     			AipsError
     		);
     		AlwaysAssert(hfs.getStatistic(
@@ -1382,30 +1380,30 @@ int main() {
     		Double eNpts = 7;
     		Double eSumSq = 371;
     		Double eVar = 9.238095238095239;
-    		Record r = hfs.getStatistics();
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 11, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == eSum/eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 2, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eNpts), AipsError);
-    		AlwaysAssert(r.asDouble("stddev") == sqrt(eVar), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    		AlwaysAssert(r.asDouble("variance") == eVar, AipsError);
+    		StatsData<Double> sd = hfs.getStatistics();
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(sd.mean == eSum/eNpts, AipsError);
+    		AlwaysAssert(*sd.min == 2, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
+    		AlwaysAssert(sd.stddev == sqrt(eVar), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(sd.variance == eVar, AipsError);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(1, 1),
+    			== std::pair<Int64 COMMA Int64>(1, 1),
     			AipsError
     		);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 1),
+    			== std::pair<Int64 COMMA Int64>(0, 1),
     			AipsError
     		);
     		AlwaysAssert(hfs.getStatistic(
@@ -1418,30 +1416,30 @@ int main() {
     		// should be the same except for min and max dataset locations
     		hfs.setData(v0.begin() + v0.size()/2, v0.size() - v0.size()/2);
     		hfs.addData(v0.begin(), v0.size()/2);
-    		r = hfs.getStatistics();
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 11, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == eSum/eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 2, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eNpts), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(eVar)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), eVar), AipsError);
+    		sd = hfs.getStatistics();
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 0, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(sd.mean == eSum/eNpts, AipsError);
+    		AlwaysAssert(*sd.min == 2, AipsError);
+    		AlwaysAssert(sd.minpos.first == 1, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(near(sd.variance, eVar), AipsError);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(0, 1),
+    			== std::pair<Int64 COMMA Int64>(0, 1),
     			AipsError
     		);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(1, 1),
+    			== std::pair<Int64 COMMA Int64>(1, 1),
     			AipsError
     		);
     		AlwaysAssert(hfs.getStatistic(
@@ -1473,30 +1471,30 @@ int main() {
     		Double eNpts = 5;
     		Double eSumSq = 438;
     		Double eVar = 12.7;
-    		Record r = hfs.getStatistics();
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 14, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 5, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == eSum/eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 6, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 2, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eNpts), AipsError);
-    		AlwaysAssert(r.asDouble("stddev") == sqrt(eVar), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    		AlwaysAssert(r.asDouble("variance") == eVar, AipsError);
+    		StatsData<Double> sd = hfs.getStatistics();
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 14, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 5, AipsError);
+    		AlwaysAssert(sd.mean == eSum/eNpts, AipsError);
+    		AlwaysAssert(*sd.min == 6, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 2, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
+    		AlwaysAssert(sd.stddev == sqrt(eVar), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(sd.variance == eVar, AipsError);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(1, 5),
+    			== std::pair<Int64 COMMA Int64>(1, 5),
     			AipsError
     		);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 2),
+    			== std::pair<Int64 COMMA Int64>(0, 2),
     			AipsError
     		);
     		AlwaysAssert(hfs.getStatistic(
@@ -1534,34 +1532,34 @@ int main() {
     		r1[1].second = 7;
     		hfs.setData(v0.begin(), v0.size()/2, r0);
     		hfs.addData(v0.begin() + v0.size()/2, v0.size() - v0.size()/2, r1, False);
-    		Record r = hfs.getStatistics();
+    		StatsData<Double> sd = hfs.getStatistics();
     		Double eSum = 40;
     		Double eNpts = 4;
     		Double eSumSq = 482;
     		Double eVar = (eSumSq - eSum*eSum/eNpts)/(eNpts - 1);
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 15, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 0, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == eSum/eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 5, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 0, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eNpts), AipsError);
-    		AlwaysAssert(r.asDouble("stddev") == sqrt(eVar), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    		AlwaysAssert(r.asDouble("variance") == eVar, AipsError);
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 15, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 0, AipsError);
+    		AlwaysAssert(sd.mean == eSum/eNpts, AipsError);
+    		AlwaysAssert(*sd.min == 5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 0, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
+    		AlwaysAssert(sd.stddev == sqrt(eVar), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(sd.variance == eVar, AipsError);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(1, 0),
+    			== std::pair<Int64 COMMA Int64>(1, 0),
     			AipsError
     		);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 0),
+    			== std::pair<Int64 COMMA Int64>(0, 0),
     			AipsError
     		);
     		AlwaysAssert(hfs.getStatistic(
@@ -1593,34 +1591,34 @@ int main() {
     		m0[11] = True;
     		hfs.setData(v0.begin(), m0.begin(), v0.size()/2);
     		hfs.addData(v0.begin() + v0.size()/2, m0.begin() + m0.size()/2, v0.size() - v0.size()/2);
-    		Record r = hfs.getStatistics();
+    		StatsData<Double> sd = hfs.getStatistics();
     		Double eSum = 35;
     		Double eNpts = 3;
     		Double eSumSq = 417;
     		Double eVar = (eSumSq - eSum*eSum/eNpts)/(eNpts - 1);
-    		AlwaysAssert(r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 14, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 5, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == eSum/eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 10, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 3, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eNpts), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(eVar)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), eVar), AipsError);
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(! sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 14, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 5, AipsError);
+    		AlwaysAssert(sd.mean == eSum/eNpts, AipsError);
+    		AlwaysAssert(*sd.min == 10, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 3, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(near(sd.variance, eVar), AipsError);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(1, 5),
+    			== std::pair<Int64 COMMA Int64>(1, 5),
     			AipsError
     		);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 3),
+    			== std::pair<Int64 COMMA Int64>(0, 3),
     			AipsError
     		);
     		AlwaysAssert(hfs.getStatistic(
@@ -1661,34 +1659,34 @@ int main() {
     	    r1[0].second = 21;
     	    hfs.setData(v0.begin(), m0.begin(), v0.size()/2, r0, False);
     	    hfs.addData(v0.begin() + v0.size()/2, m0.begin() + m0.size()/2, v0.size() - v0.size()/2, r1, True);
-    	    Record r = hfs.getStatistics();
+    	    StatsData<Double> sd = hfs.getStatistics();
     	    Double eSum = 35;
     	    Double eNpts = 5;
     	    Double eSumSq = 297;
     	    Double eVar = (eSumSq - eSum*eSum/eNpts)/(eNpts - 1);
-    	    AlwaysAssert(r.asBool("isMasked"), AipsError);
-    	    AlwaysAssert(! r.asBool("isWeighted"), AipsError);
-    	    AlwaysAssert(r.asDouble("max") == 11, AipsError);
-    	    AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    	    AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    	    AlwaysAssert(r.asDouble("mean") == eSum/eNpts, AipsError);
-    	    AlwaysAssert(r.asDouble("min") == 2, AipsError);
-    	    AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    	    AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
-    	    AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    	    AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eNpts), AipsError);
-    	    AlwaysAssert(near(r.asDouble("stddev"), sqrt(eVar)), AipsError);
-    	    AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    	    AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    	    AlwaysAssert(near(r.asDouble("variance"), eVar), AipsError);
+    	    AlwaysAssert(sd.masked, AipsError);
+    	    AlwaysAssert(! sd.weighted, AipsError);
+    	    AlwaysAssert(*sd.max == 11, AipsError);
+    	    AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    	    AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    	    AlwaysAssert(sd.mean == eSum/eNpts, AipsError);
+    	    AlwaysAssert(*sd.min == 2, AipsError);
+    	    AlwaysAssert(sd.minpos.first == 0, AipsError);
+    	    AlwaysAssert(sd.minpos.second == 1, AipsError);
+    	    AlwaysAssert(sd.npts == eNpts, AipsError);
+    	    AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
+    	    AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
+    	    AlwaysAssert(sd.sum == eSum, AipsError);
+    	    AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    	    AlwaysAssert(near(sd.variance, eVar), AipsError);
     	    AlwaysAssert(
     	    	hfs.getStatisticIndex(StatisticsData::MAX)
-    	    	== std::pair<uInt COMMA uInt>(1, 1),
+    	    	== std::pair<Int64 COMMA Int64>(1, 1),
     	    	AipsError
     	    );
     	    AlwaysAssert(
     	    	hfs.getStatisticIndex(StatisticsData::MIN)
-    	    	== std::pair<uInt COMMA uInt>(0, 1),
+    	    	== std::pair<Int64 COMMA Int64>(0, 1),
     	    	AipsError
     	    );
     	    AlwaysAssert(hfs.getStatistic(
@@ -1726,35 +1724,35 @@ int main() {
     		w0[11] = 2;
     		hfs.setData(v0.begin(), w0.begin(), v0.size()/2);
     		hfs.addData(v0.begin() + v0.size()/2, w0.begin() + w0.size()/2, v0.size() - v0.size()/2);
-    		Record r = hfs.getStatistics();
+    		StatsData<Double> sd = hfs.getStatistics();
     		Double eSum = 137;
     		Double eSumWeights = 19;
     		Double eNpts = 6;
     		Double eSumSq = 1111;
     		Double eVar = (eSumSq - eSum*eSum/eSumWeights)/(eSumWeights - 1);
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 11, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == eSum/eSumWeights, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 2, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eSumWeights), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(eVar)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), eVar), AipsError);
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(sd.mean == eSum/eSumWeights, AipsError);
+    		AlwaysAssert(*sd.min == 2, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eSumWeights), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(near(sd.variance, eVar), AipsError);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(1, 1),
+    			== std::pair<Int64 COMMA Int64>(1, 1),
     			AipsError
     		);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 1),
+    			== std::pair<Int64 COMMA Int64>(0, 1),
     			AipsError
     		);
     		AlwaysAssert(hfs.getStatistic(
@@ -1803,35 +1801,35 @@ int main() {
     			v0.begin() + v0.size()/2, w0.begin() + w0.size()/2,
     			v0.size() - v0.size()/2, r1, True
     		);
-    		Record r = hfs.getStatistics();
+    		StatsData<Double> sd = hfs.getStatistics();
     		Double eSum = 133;
     		Double eSumWeights = 17;
     		Double eNpts = 5;
     		Double eSumSq = 1103;
     		Double eVar = (eSumSq - eSum*eSum/eSumWeights)/(eSumWeights - 1);
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 11, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(r.asDouble("mean") == eSum/eSumWeights, AipsError);
-    		AlwaysAssert(r.asDouble("min") == 6, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 2, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eSumWeights), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(eVar)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), eVar), AipsError);
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(sd.mean == eSum/eSumWeights, AipsError);
+    		AlwaysAssert(*sd.min == 6, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 2, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eSumWeights), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(near(sd.variance, eVar), AipsError);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(1, 1),
+    			== std::pair<Int64 COMMA Int64>(1, 1),
     			AipsError
     		);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 2),
+    			== std::pair<Int64 COMMA Int64>(0, 2),
     			AipsError
     		);
     		AlwaysAssert(
@@ -1889,35 +1887,35 @@ int main() {
     			m0.begin() + m0.size()/2,
     			v0.size() - v0.size()/2, r1, True
     		);
-    		Record r = hfs.getStatistics();
+    		StatsData<Double> sd = hfs.getStatistics();
     		Double eSum = 80;
     		Double eSumWeights = 9;
     		Double eNpts = 3;
     		Double eSumSq = 750;
     		Double eVar = (eSumSq - eSum*eSum/eSumWeights)/(eSumWeights - 1);
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 11, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(near(r.asDouble("mean"), eSum/eSumWeights), AipsError);
-    		AlwaysAssert(r.asDouble("min") == 6, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 2, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eSumWeights), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(eVar)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), eVar), AipsError);
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, eSum/eSumWeights), AipsError);
+    		AlwaysAssert(*sd.min == 6, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 2, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eSumWeights), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(near(sd.variance, eVar), AipsError);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(1, 1),
+    			== std::pair<Int64 COMMA Int64>(1, 1),
     			AipsError
     		);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 2),
+    			== std::pair<Int64 COMMA Int64>(0, 2),
     			AipsError
     		);
     		AlwaysAssert(
@@ -1964,35 +1962,35 @@ int main() {
     			m0.begin() + m0.size()/2,
     			v0.size() - v0.size()/2
     		);
-    		Record r = hfs.getStatistics();
+    		StatsData<Double> sd = hfs.getStatistics();
     		Double eSum = 83;
     		Double eSumWeights = 12;
     		Double eNpts = 5;
     		Double eSumSq = 759;
     		Double eVar = (eSumSq - eSum*eSum/eSumWeights)/(eSumWeights - 1);
-    		AlwaysAssert(! r.asBool("isMasked"), AipsError);
-    		AlwaysAssert(r.asBool("isWeighted"), AipsError);
-    		AlwaysAssert(r.asDouble("max") == 11, AipsError);
-    		AlwaysAssert(r.asuInt("maxDatasetIndex") == 1, AipsError);
-    		AlwaysAssert(r.asInt64("maxIndex") == 1, AipsError);
-    		AlwaysAssert(near(r.asDouble("mean"), eSum/eSumWeights), AipsError);
-    		AlwaysAssert(r.asDouble("min") == -1, AipsError);
-    		AlwaysAssert(r.asuInt("minDatasetIndex") == 0, AipsError);
-    		AlwaysAssert(r.asInt64("minIndex") == 5, AipsError);
-    		AlwaysAssert(r.asDouble("npts") == eNpts, AipsError);
-    		AlwaysAssert(r.asDouble("rms") == sqrt(eSumSq/eSumWeights), AipsError);
-    		AlwaysAssert(near(r.asDouble("stddev"), sqrt(eVar)), AipsError);
-    		AlwaysAssert(r.asDouble("sum") == eSum, AipsError);
-    		AlwaysAssert(r.asDouble("sumsq") == eSumSq, AipsError);
-    		AlwaysAssert(near(r.asDouble("variance"), eVar), AipsError);
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, eSum/eSumWeights), AipsError);
+    		AlwaysAssert(*sd.min == -1, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 5, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eSumWeights), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(near(sd.variance, eVar), AipsError);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MAX)
-    			== std::pair<uInt COMMA uInt>(1, 1),
+    			== std::pair<Int64 COMMA Int64>(1, 1),
     			AipsError
     		);
     		AlwaysAssert(
     			hfs.getStatisticIndex(StatisticsData::MIN)
-    			== std::pair<uInt COMMA uInt>(0, 5),
+    			== std::pair<Int64 COMMA Int64>(0, 5),
     			AipsError
     		);
     		AlwaysAssert(
