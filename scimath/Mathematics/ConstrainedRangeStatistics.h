@@ -23,15 +23,12 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#ifndef SCIMATH_CLASSICALSTATS_H
-#define SCIMATH_CLASSICALSTATS_H
+#ifndef SCIMATH_CONSTRAINEDRANGESTATISTICS_H
+#define SCIMATH_CONSTRAINEDRANGESTATISTICS_H
 
 #include <casacore/casa/aips.h>
 
-#include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
-
-#include <casacore/scimath/Mathematics/StatisticsTypes.h>
-#include <casacore/scimath/Mathematics/StatisticsUtilities.h>
+#include <casacore/scimath/Mathematics/ClassicalStatistics.h>
 
 #include <set>
 #include <vector>
@@ -39,40 +36,19 @@
 
 namespace casacore {
 
-// Class to calculate statistics in a "classical" sense, ie using accumulators with no
-// special filtering beyond optional range filtering etc.
-//
-// setCalculateAsAdded() allows one to specify if statistics should be calculated and updated
-// on upon each call to set/addData(). If False, statistics will be calculated only when
-// getStatistic(), getStatistics(), or similar methods are called. Setting this value to True
-// allows the caller to not have to keep all the data accessible at once. Note however, that all
-// data must be simultaneously accessible if quantile (eg median) calculations are desired.
+// Abstract base class for statistics algorithms which are characterized by
+// a range of good values. The range is usually calculated dynamically based on the entire distribution.
 
-// I attempted to write this class using the Composite design pattern, with eg the
-// _unweightedStats() and _weightedStats() methods in their own class, but for reasons I
-// don't understand, that impacted performance significantly. So I'm using the current
-// architecture, which I know is a bit a maintenance nightmare.
-
-template <class AccumType, class InputIterator, class MaskIterator=const Bool*> class ClassicalStatistics
-	: public StatisticsAlgorithm<AccumType, InputIterator, MaskIterator> {
+template <class AccumType, class InputIterator, class MaskIterator=const Bool*> class ConstrainedRangeStatistics
+	: public ClassicalStatistics<AccumType, InputIterator, MaskIterator> {
 public:
 
-	ClassicalStatistics();
+	virtual ~ConstrainedRangeStatistics();
 
 	// copy semantics
-	ClassicalStatistics(const ClassicalStatistics<AccumType, InputIterator, MaskIterator>& cs);
-
-	virtual ~ClassicalStatistics();
-
-	// copy semantics
-	ClassicalStatistics<AccumType, InputIterator, MaskIterator>& operator=(
-		const ClassicalStatistics<AccumType, InputIterator, MaskIterator>& other
+	ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>& operator=(
+		const ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>& other
 	);
-
-	// get the algorithm that this object uses for computing stats
-	virtual StatisticsData::ALGORITHM algorithm() const {
-		return StatisticsData::CLASSICAL;
-	};
 
 	// <group>
 	// In the following group of methods, if the size of the composite dataset
@@ -114,44 +90,40 @@ public:
 	// at index int(N/2) in the equivalent sorted dataset, where N is the number of points.
 	// For a dataset with an even number of points, the median is the mean of the values at
 	// indices int(N/2)-1 and int(N/2) in the sorted dataset.
-	virtual AccumType getMedian(
+	AccumType getMedian(
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
 		Bool persistSortedArray=False
 	);
 
+	// get the median of the absolute deviation about the median of the data.
+	AccumType getMedianAbsDevMed(
+		CountedPtr<uInt64> knownNpts=NULL,
+		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+	);
+
 	// If one needs to compute both the median and quantile values, it is better to call
-	// getMedianAndQuantiles() rather than getMedian() and getQuantiles() separately, as the
-	// first will scan large data sets fewer times than calling the separate methods.
+	// getMedianAndQuantiles() rather than getMedian() and getQuantiles() seperately, as the
+	// first will scan large data sets fewer times than calling the seperate methods.
 	// The return value is the median; the quantiles are returned in the <src>quantileToValue</src> map.
-	virtual AccumType getMedianAndQuantiles(
+	AccumType getMedianAndQuantiles(
 		std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL,
 		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
 	);
 
-	// get the median of the absolute deviation about the median of the data.
-	virtual AccumType getMedianAbsDevMed(
-		CountedPtr<uInt64> knownNpts=NULL,
-		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
-	);
-
 	// Get the specified quantiles. <src>quantiles</src> must be between 0 and 1,
 	// noninclusive.
-	virtual std::map<Double, AccumType> getQuantiles(
+	std::map<Double, AccumType> getQuantiles(
 		const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
 		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
 	);
-
 	// </group>
 
-	// scan the dataset(s) that have been added, and find the min and max.
-	// This method may be called even if setStatsToCaclulate has been called and
-	// MAX and MIN has been excluded. If setCalculateAsAdded(True) has previously been
-	// called after this object has been (re)initialized, an exception will be thrown.
+	// get the min and max of the data set
 	virtual void getMinMax(AccumType& mymin, AccumType& mymax);
 
 	// scan the dataset(s) that have been added, and find the number of good points.
@@ -161,103 +133,71 @@ public:
 	virtual uInt64 getNPts();
 
 	// see base class description
-	virtual std::pair<Int64, Int64> getStatisticIndex(StatisticsData::STATS stat);
+	std::pair<Int64, Int64> getStatisticIndex(StatisticsData::STATS stat);
 
 	// reset object to initial state. Clears all private fields including data,
-	// accumulators, etc.
+	// accumulators, global range. It does not affect the fence factor (_f), which was
+	// set at object construction.
 	virtual void reset();
 
-	// Should statistics be updated with calls to addData or should they only be calculated
-	// upon calls to getStatistics etc? Beware that calling this will automatically reinitialize
-	// the object, so that it will contain no references to data et al. after this method has
-	// been called.
-	virtual void setCalculateAsAdded(Bool c);
-
-	// An exception will be thrown if setCalculateAsAdded(True) has been called.
-	void setDataProvider(CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider);
-
-	void setStatsToCalculate(std::set<StatisticsData::STATS>& stats);
-
 protected:
+	ConstrainedRangeStatistics();
 
 	// <group>
 	// scan through the data set to determine the number of good (unmasked, weight > 0,
 	// within range) points. The first with no mask, no
 	// ranges, and no weights is trivial with npts = nr in this class, but is implemented here
 	// so that derived classes may override it.
-	inline virtual void _accumNpts(
+	inline void _accumNpts(
 		uInt64& npts,
-		const InputIterator& dataBegin, Int64 nr, uInt dataStride
+		const InputIterator& dataStart, Int64 nr, uInt dataStride
 	) const;
 
-	virtual void _accumNpts(
+	void _accumNpts(
 		uInt64& npts,
-		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+		const InputIterator& dataStart, Int64 nr, uInt dataStride,
 		const DataRanges& ranges, Bool isInclude
 	) const;
 
-	virtual void _accumNpts(
+	void _accumNpts(
 		uInt64& npts,
 		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
 		const MaskIterator& maskBegin, uInt maskStride
 	) const;
 
-	virtual void _accumNpts(
+	void _accumNpts(
 		uInt64& npts,
 		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
 		const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
 		Bool isInclude
 	) const;
 
-	virtual void _accumNpts(
+	void _accumNpts(
 		uInt64& npts,
 		const InputIterator& dataBegin, const InputIterator& weightsBegin,
 		Int64 nr, uInt dataStride
 	) const;
 
-	virtual void _accumNpts(
+	void _accumNpts(
 		uInt64& npts,
 		const InputIterator& dataBegin, const InputIterator& weightsBegin,
 		Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 	) const;
 
-	virtual void _accumNpts(
+	void _accumNpts(
 		uInt64& npts,
 		const InputIterator& dataBegin, const InputIterator& weightsBegin,
 		Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 		const DataRanges& ranges, Bool isInclude
 	) const;
 
-	virtual void _accumNpts(
-			uInt64& npts,
+	void _accumNpts(
+		uInt64& npts,
 		const InputIterator& dataBegin, const InputIterator& weightBegin,
 		Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 	) const;
 	// </group>
 
-	// <group>
-	inline void _accumulate(
-		AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos,
-		const AccumType& datum , Int64 count
-	);
-
-	inline void _accumulate(
-		AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos, const AccumType& datum,
-		const AccumType& weight, Int64 count
-	);
-	// </group>
-
-	void _addData();
-
-	void _clearData();
-
-	void _clearStats();
-
-	// <group>
-	// Get the counts of data within the specified histogram bins. The number of
-	// arrays within binCounts will be equal to the number of histograms in <src>binDesc</src>.
-	// Each array within <src>binCounts</src> will have the same number of elements as the
-	// number of bins in its corresponding histogram in <src>binDesc</src>.
 	virtual void _findBins(
 		vector<vector<uInt64> >& binCounts,
 		vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
@@ -329,11 +269,7 @@ protected:
 
 	StatsData<AccumType> _getStatistics();
 
-	// retreive stats structure. Allows derived classes to maintain their own
-	// StatsData structs.
-	inline virtual StatsData<AccumType>& _getStatsData() { return _statsData; }
-
-	inline virtual const StatsData<AccumType>& _getStatsData() const { return _statsData; }
+	inline Bool _isInRange(const AccumType& datum) const;
 
 	// <group>
 	virtual void _minMax(
@@ -387,64 +323,63 @@ protected:
 	// </group>
 
 	//<group>
-	// populate an unsorted array with valid data.
+	// populate an unsorted array with valid data. If <src>includeLimits</src> is defined,
+	// then restrict values that are entered in the array to those limits (inclusive of the
+	// minimum, exclusive of the maximum). <src>maxCount</src> and <src>currentCount</src> are
+	// used only if <src>includeLimits</src> is defined. In this case, the method will return
+	// when currentCount == maxCount, thus avoiding scanning remaining data unnecessarily.
+
 	// no weights, no mask, no ranges
-	virtual void _populateArray(
+	void _populateArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin, Int64 nr, uInt dataStride
 	) const;
 
 	// ranges
-	virtual void _populateArray(
+	void _populateArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin, Int64 nr,
 		uInt dataStride, const DataRanges& ranges, Bool isInclude
 	) const;
 
-	virtual void _populateArray(
+	void _populateArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin,
 		Int64 nr, uInt dataStride, const MaskIterator& maskBegin,
 		uInt maskStride
 	) const;
 
 	// mask and ranges
-	virtual void _populateArray(
+	void _populateArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin, Int64 nr,
 		uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 		const DataRanges& ranges, Bool isInclude
 	) const;
 
 	// weights
-	virtual void _populateArray(
+	void _populateArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin,
 		const InputIterator& weightsBegin, Int64 nr, uInt dataStride
 	) const;
 
 	// weights and ranges
-	virtual void _populateArray(
+	void _populateArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin,
 		const InputIterator& weightsBegin, Int64 nr, uInt dataStride,
 		const DataRanges& ranges, Bool isInclude
 	) const;
 
 	// weights and mask
-	virtual void _populateArray(
+	void _populateArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin,
 		const InputIterator& weightBegin, Int64 nr, uInt dataStride,
 		const MaskIterator& maskBegin, uInt maskStride
 	) const;
 
 	// weights, mask, ranges
-	virtual void _populateArray(
+	void _populateArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin, const InputIterator& weightBegin,
 		Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 		const DataRanges& ranges, Bool isInclude
 	) const;
-	// </group>
 
-	// <group>
-	// Create a vector of unsorted arrays, one array for each bin defined by <src>includeLimits</src>.
-	// <src>includeLimits</src> should be non-overlapping and should be given in ascending order (the
-	// algorithm used assumes this). Once the sum of the lengths of all arrays equals </src>maxCount</src>
-	// the method will return with no further processing.
 	// no weights, no mask, no ranges
 	virtual void _populateArrays(
 		vector<vector<AccumType> >& arys, uInt& currentCount, const InputIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -507,48 +442,48 @@ protected:
 
 	// <group>
 	// no weights, no mask, no ranges
-	virtual Bool _populateTestArray(
+	Bool _populateTestArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin,
 		Int64 nr, uInt dataStride, uInt maxElements
 	) const;
 
 	// ranges
-	virtual Bool _populateTestArray(
+	Bool _populateTestArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin, Int64 nr,
 		uInt dataStride, const DataRanges& ranges, Bool isInclude,
 		uInt maxElements
 	) const;
 
 	// mask
-	virtual Bool _populateTestArray(
+	Bool _populateTestArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin,
 		Int64 nr, uInt dataStride, const MaskIterator& maskBegin,
 		uInt maskStride, uInt maxElements
 	) const;
 
 	// mask and ranges
-	virtual Bool _populateTestArray(
+	Bool _populateTestArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin, Int64 nr,
 		uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 		const DataRanges& ranges, Bool isInclude, uInt maxElements
 	) const;
 
 	// weights
-	virtual Bool _populateTestArray(
+	Bool _populateTestArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin,
 		const InputIterator& weightBegin, Int64 nr, uInt dataStride,
 		uInt maxElements
 	) const;
 
 	// weights and ranges
-	virtual Bool _populateTestArray(
+	Bool _populateTestArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin,
 		const InputIterator& weightsBegin, Int64 nr, uInt dataStride,
 		const DataRanges& ranges, Bool isInclude, uInt maxElements
 	) const;
 
 	// weights and mask
-	virtual Bool _populateTestArray(
+	Bool _populateTestArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin,
 		const InputIterator& weightBegin, Int64 nr,
 		uInt dataStride, const MaskIterator& maskBegin,
@@ -556,7 +491,7 @@ protected:
 	) const;
 
 	// weights, mask, ranges
-	virtual Bool _populateTestArray(
+	Bool _populateTestArray(
 		vector<AccumType>& ary, const InputIterator& dataBegin, const InputIterator& weightBegin,
 		Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 		const DataRanges& ranges, Bool isInclude,
@@ -564,32 +499,35 @@ protected:
 	) const;
 	// </group>
 
+	inline void _setRange(CountedPtr<std::pair<AccumType, AccumType> > r) { _range = r; }
+
+	// derived classes need to implement how to set their respective range
+	virtual void _setRange() = 0;
+
 	// <group>
 	// no weights, no mask, no ranges
-	virtual void _unweightedStats(
+	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
 		const InputIterator& dataBegin, Int64 nr, uInt dataStride
 	);
 
 	// no weights, no mask
-	virtual void _unweightedStats(
+	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
 		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
 		const DataRanges& ranges, Bool isInclude
-
 	);
 
-	virtual void _unweightedStats(
+	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
 		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
 		const MaskIterator& maskBegin, uInt maskStride
-
 	);
 
-	virtual void _unweightedStats(
+	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
 		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -600,28 +538,28 @@ protected:
 
 	// <group>
 	// has weights, but no mask, no ranges
-	virtual void _weightedStats(
+	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
 		const InputIterator& dataBegin, const InputIterator& weightsBegin,
 		Int64 nr, uInt dataStride
 	);
 
-	virtual void _weightedStats(
+	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
 		const InputIterator& dataBegin, const InputIterator& weightsBegin,
 		Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 	);
 
-	virtual void _weightedStats(
+	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
 		const InputIterator& dataBegin, const InputIterator& weightBegin,
 		Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 	);
 
-	virtual void _weightedStats(
+	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
 		const InputIterator& dataBegin, const InputIterator& weightBegin,
@@ -630,138 +568,17 @@ protected:
 	);
 	// </group>
 
-
 private:
-	StatsData<AccumType> _statsData;
-	//Double _npts;
-	uInt _idataset;
-	//AccumType /*_mean,*/ /*_nvariance, */ /* _sum, _sumsq, _sumofweights*/;
-    //CountedPtr<AccumType> _max, _min;
-	// first element of pair is zero-based dataset number, second element
-	// is zero-based index of location in that dataset
-	//std::pair<uInt, Int64> _minpos, _maxpos;
-	Bool _calculateAsAdded, _doMaxMin, _doMedAbsDevMed, _mustAccumulate;
-	//Record _currentStats;
-	// CountedPtr<AccumType> _median, _medAbsDevMed;
+	CountedPtr<std::pair<AccumType, AccumType> > _range;
+	Bool _doMedAbsDevMed;
+	CountedPtr<AccumType> _median;
 
-	// mutables, used to mitigate repeated code
-	mutable typename vector<InputIterator>::const_iterator _dend, _diter;
-	mutable vector<Int64>::const_iterator _citer;
-	mutable vector<uInt>::const_iterator _dsiter;
-	mutable std::map<uInt, MaskIterator> _masks;
-	mutable uInt _maskStride;
-	mutable std::map<uInt, InputIterator> _weights;
-	mutable std::map<uInt, DataRanges> _ranges;
-	mutable std::map<uInt, Bool> _isIncludeRanges;
-	mutable Bool _hasMask, _hasRanges, _hasWeights, _myIsInclude;
-	mutable DataRanges _myRanges;
-	mutable MaskIterator _myMask;
-	mutable InputIterator _myData, _myWeights;
-	mutable uInt _dataCount, _myStride;
-	mutable uInt64 _myCount;
-
-	// tally the number of data points that fall into each bin provided by <src>binDesc</src>
-	// Any points that are less than binDesc.minLimit or greater than
-	// binDesc.minLimit + binDesc.nBins*binDesc.binWidth are not included in the counts. A data
-	// point that falls exactly on a bin boundary is considered to be in the higher index bin.
-    // <src>sameVal</src> will be non-null if all the good values in the histogram range are the
-	// same. In that case, the value held will be the value of each of those data points.
-	vector<vector<uInt64> > _binCounts(
-		vector<CountedPtr<AccumType> >& sameVal,
-		const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
-	);
-
-	// convert in place by taking the absolute value of the difference of the vector and the median
-	static void _convertToAbsDevMedArray(vector<AccumType>& myArray, AccumType median);
-
-	// Create an unsorted array of the complete data set. If <src>includeLimits</src> is specified,
-	// only points within those limits (including min but excluding max, as per definition of bins),
-	// are included.
-	void _createDataArray(
-		vector<AccumType>& array
-	);
-
-	void _createDataArrays(
-		vector<vector<AccumType> >& arrays,
-		const vector<std::pair<AccumType, AccumType> > &includeLimits,
-		uInt maxCount
-	);
-	// extract data from multiple histograms given by <src>binDesc</src>.
-	// <src>dataIndices</src> represent the indices of the sorted arrays of values to
-	// extract. There should be exactly one set of data indices to extract for each
-	// supplied histogram. The data indices are relative to the minimum value of the minimum
-	// bin in their repsective histograms. The ordering of the maps in the returned vector represent
-	// the ordering of histograms in <src>binDesc</src>. <src>binDesc</src> should contain
-	// non-overlapping histograms and the histograms should be specified in ascending order.
-	vector<std::map<uInt64, AccumType> > _dataFromMultipleBins(
-		const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt maxArraySize,
-		const vector<std::set<uInt64> >& dataIndices
-	);
-
-	vector<std::map<uInt64, AccumType> > _dataFromSingleBins(
-		const vector<uInt64>& binNpts, uInt maxArraySize,
-		const vector<std::pair<AccumType, AccumType> >& binLimits,
-		const vector<std::set<uInt64> >& dataIndices
-	);
-
-	void _doMinMax();
-
-	Int64 _doNpts();
-
-	// get the values for the specified indices in the sorted array of all good data
-	std::map<uInt64, AccumType> _indicesToValues(
-		CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-		CountedPtr<AccumType> knownMax, uInt maxArraySize,
-		const std::set<uInt64>& dataIndices, Bool persistSortedArray
-	);
-
-	void _initIterators();
-
-	void _initLoopVars();
-
-	// Determine by scanning the dataset if the number of good points is smaller than
-	// <src>maxArraySize</src>. If so, <src>arrayToSort</src> will contain the unsorted
-	// data values. If not, this vector will be empty.
-	Bool _isNptsSmallerThan(vector<AccumType>& arrayToSort, uInt maxArraySize);
-
-	// If <src>allowPad</src> is True, then pad the lower side of the lowest bin and the
-	// higher side of the highest bin so that minData and maxData do not fall on the edge
-	// of their respective bins. If false, no padding so that minData and maxData are also
-	// exactly the histogram abscissa limits.
-	static void _makeBins(
-		typename StatisticsUtilities<AccumType>::BinDesc& bins, AccumType minData, AccumType maxData, uInt maxBins,
-		Bool allowPad
-	);
-
-	// If input set has one value, that is the median, if it has two, the median is the average
-	// of those.
-	// static AccumType _medianFromSet(const std::map<uInt64, AccumType>& values);
-
-	// get the index (for odd npts) or indices (for even npts) of the median of the sorted array.
-	// If knownNpts is not null, it will be used and must be correct. If it is null, the value of
-	// _npts will be used if it has been previously calculated. If not, the data sets will
-	// be scanned to determine npts.
-	std::set<uInt64> _medianIndices(CountedPtr<uInt64> knownNpts);
-
-	// update min and max if necessary
-    void _updateMaxMin(AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride);
-	
-	// get values from sorted array if the array is small enough to be held in
-	// memory. Note that this is the array containing all good data, not data in
-	// just a single bin representing a subset of good data.
-	// Returns True if the data were successfully retrieved.
-	// If True is returned, the values map will contain a map of index to value.
-	Bool _valuesFromSortedArray(
-		std::map<uInt64, AccumType>& values, CountedPtr<uInt64> knownNpts,
-		const std::set<uInt64>& indices, uInt maxArraySize,
-		Bool persistSortedArray
-	);
 };
 
 }
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/scimath/Mathematics/ClassicalStatistics.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#include <casacore/scimath/Mathematics/ConstrainedRangeStatistics.tcc>
+#endif
 
 #endif

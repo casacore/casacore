@@ -1,9 +1,7 @@
 
 #include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
 
-#include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/BasicSL/STLIO.h>
-//#include <casacore/casa/Utilities/Sort.h>
 
 namespace casacore {
 
@@ -195,7 +193,7 @@ AccumType StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::getStatis
 }
 
 template <class AccumType, class InputIterator, class MaskIterator>
-Record StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::getStatistics() {
+StatsData<AccumType> StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::getStatistics() {
 	return this->_getStatistics();
 }
 
@@ -310,130 +308,6 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_clearData() {
 	_maskStrides.clear();
 	_sortedArray.clear();
 	_dataProvider = NULL;
-}
-
-template <class AccumType, class InputIterator, class MaskIterator>
-Bool StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_includeDatum(
-	const AccumType& datum, typename DataRanges::const_iterator beginRange,
-	typename DataRanges::const_iterator endRange, Bool isInclude
-) {
-	typename DataRanges::const_iterator riter = beginRange;
-	while (riter != endRange) {
-		if (
-			datum >= (*riter).first
-			&& datum <= (*riter).second
-		) {
-			return isInclude;
-		}
-		++riter;
-	}
-	return ! isInclude;
-}
-
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
-	InputIterator& datum, Int64& loopCount, Bool unityStride, uInt dataStride
-) {
-	if (unityStride) {
-		++datum;
-	}
-	else {
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++c;
-		}
-	}
-	++loopCount;
-}
-
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
-	InputIterator& datum, Int64& loopCount, InputIterator& weight,
-	Bool unityStride, uInt dataStride
-) {
-	if (unityStride) {
-		++datum;
-		++weight;
-	}
-	else {
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++weight;
-			++c;
-		}
-	}
-	++loopCount;
-}
-
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
-	InputIterator& datum, Int64& loopCount, InputIterator& weight,
-	MaskIterator& mask, Bool unityStride, uInt dataStride, uInt maskStride
-) {
-	if (unityStride) {
-		++datum;
-		++weight;
-		++mask;
-	}
-	else if (dataStride == maskStride) {
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++weight;
-			++mask;
-			++c;
-		}
-	}
-	else {
-		// dataStride != maskStride
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++weight;
-			++c;
-		}
-		c = 0;
-		while (c < maskStride) {
-			++mask;
-			++c;
-		}
-	}
-	++loopCount;
-}
-
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_increment(
-	InputIterator& datum, Int64& loopCount, MaskIterator& mask,
-	Bool unityStride, uInt dataStride, uInt maskStride
-) {
-	if (unityStride) {
-		++datum;
-		++mask;
-	}
-	else if (dataStride == maskStride) {
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++mask;
-			++c;
-		}
-	}
-	else {
-		// dataStride != maskStride
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++c;
-		}
-		c = 0;
-		while (c < maskStride) {
-			++mask;
-			++c;
-		}
-	}
-	++loopCount;
 }
 
 template <class AccumType, class InputIterator, class MaskIterator>

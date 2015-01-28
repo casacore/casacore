@@ -1,4 +1,4 @@
-//# Copyright (C) 2014
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,8 +29,8 @@
 
 namespace casacore {
 
-// For performance reasons, we prefer repeating code rather than
-// calling other functions which do the same thing. The performance
+// For performance reasons, we ensure code is inlined rather than
+// calling other functions. The performance
 // benefits become important for very large datasets
 
 #define _NLINEAR \
@@ -46,13 +46,13 @@ namespace casacore {
 
 #define _NQUAD \
 	sumsq += datum*datum; \
-	T prevMean = mean; \
+	AccumType prevMean = mean; \
 	_NLINEAR \
 	nvariance += (datum - prevMean)*(datum - mean);
 
 #define _WQUAD \
 	wsumsq += weight*datum*datum; \
-	T prevMean = wmean; \
+	AccumType prevMean = wmean; \
 	_WLINEAR \
 	wnvariance += weight*(datum - prevMean)*(datum - wmean);
 
@@ -72,60 +72,60 @@ namespace casacore {
 		minpos = location; \
 	}
 
-template <class T> void StatisticsUtilities<T>::accumulate (
-	Double& npts, T& sum, T& mean, const T& datum
+template <class AccumType> void StatisticsUtilities<AccumType>::accumulate (
+	Double& npts, AccumType& sum, AccumType& mean, const AccumType& datum
 ) {
 	_NLINEAR
 }
 
-template <class T> void StatisticsUtilities<T>::waccumulate (
-	Double& npts, T& sumweights, T& wsum, T& wmean,
-	const T& datum, const T& weight
+template <class AccumType> void StatisticsUtilities<AccumType>::waccumulate (
+	Double& npts, AccumType& sumweights, AccumType& wsum, AccumType& wmean,
+	const AccumType& datum, const AccumType& weight
 ) {
 	_WLINEAR
 }
 
-template <class T> void StatisticsUtilities<T>::accumulate (
-	Double& npts, T& sum, T& mean, T& nvariance,
-	T& sumsq, const T& datum
+template <class AccumType> void StatisticsUtilities<AccumType>::accumulate (
+	Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
+	AccumType& sumsq, const AccumType& datum
 ) {
 	_NQUAD
 }
 
-template <class T> void StatisticsUtilities<T>::waccumulate (
-	Double& npts, T& sumweights, T& wsum,
-	T& wmean, T& wnvariance, T& wsumsq,
-	const T& datum, const T& weight
+template <class AccumType> void StatisticsUtilities<AccumType>::waccumulate (
+	Double& npts, AccumType& sumweights, AccumType& wsum,
+	AccumType& wmean, AccumType& wnvariance, AccumType& wsumsq,
+	const AccumType& datum, const AccumType& weight
 ) {
 	_WQUAD
 }
 
-template <class T> template <class LocationType>
-void StatisticsUtilities<T>::accumulate (
-	Double& npts, T& sum, T& mean, T& nvariance,
-	T& sumsq, T& datamin,
-	T& datamax, LocationType& minpos, LocationType& maxpos,
-	const T& datum, const LocationType& location
+template <class AccumType> template <class LocationType>
+void StatisticsUtilities<AccumType>::accumulate (
+	Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
+	AccumType& sumsq, AccumType& datamin,
+	AccumType& datamax, LocationType& minpos, LocationType& maxpos,
+	const AccumType& datum, const LocationType& location
 ) {
 	_NQUAD
 	_MAXMIN
 }
 
-template <class T> template <class LocationType>
-void StatisticsUtilities<T>::waccumulate (
-	Double& npts, T& sumweights, T& wsum, T& wmean, T& wnvariance,
-	T& wsumsq, T& datamin, T& datamax,
+template <class AccumType> template <class LocationType>
+void StatisticsUtilities<AccumType>::waccumulate (
+	Double& npts, AccumType& sumweights, AccumType& wsum, AccumType& wmean, AccumType& wnvariance,
+	AccumType& wsumsq, AccumType& datamin, AccumType& datamax,
 	LocationType& minpos, LocationType& maxpos,
-	const T& datum, const T& weight, const LocationType& location
+	const AccumType& datum, const AccumType& weight, const LocationType& location
 ) {
 	_WQUAD
 	_MAXMIN
 }
 
-template <class T> template <class LocationType>
-Bool StatisticsUtilities<T>::doMax(
-	T& datamax, LocationType& maxpos, Bool isFirst,
-	const T& datum, const LocationType& location
+template <class AccumType> template <class LocationType>
+Bool StatisticsUtilities<AccumType>::doMax(
+	AccumType& datamax, LocationType& maxpos, Bool isFirst,
+	const AccumType& datum, const LocationType& location
 ) {
 	if (isFirst || datum > datamax) {
 		datamax = datum;
@@ -135,10 +135,10 @@ Bool StatisticsUtilities<T>::doMax(
 	return False;
 }
 
-template <class T> template <class LocationType>
-Bool StatisticsUtilities<T>::doMin(
-	T& datamin, LocationType& minpos, Bool isFirst,
-	const T& datum, const LocationType& location
+template <class AccumType> template <class LocationType>
+Bool StatisticsUtilities<AccumType>::doMin(
+	AccumType& datamin, LocationType& minpos, Bool isFirst,
+	const AccumType& datum, const LocationType& location
 ) {
 	if (isFirst || datum < datamin) {
 		datamin = datum;
@@ -146,6 +146,84 @@ Bool StatisticsUtilities<T>::doMin(
 		return True;
 	}
 	return False;
+}
+
+/*
+#define _NLINEARSYM \
+	npts += 2; \
+	sum += 2*center; \
+
+#define _WLINEARSYM \
+	npts += 2; \
+	sumweights += 2*weight; \
+	wsum += 2*weight*center; \
+*/
+
+#define _NQUADSYM \
+	npts += 2; \
+	AccumType reflect = 2*center - datum; \
+	sumsq += datum*datum + reflect*reflect; \
+	AccumType diff = datum - center; \
+	nvariance += 2*diff*diff;
+
+#define _WQUADSYM \
+	npts += 2; \
+	sumweights += 2*weight; \
+	AccumType reflect = 2*center - datum; \
+	wsumsq += weight*(datum*datum + reflect*reflect); \
+	AccumType diff = datum - center; \
+	wnvariance += 2*weight*diff*diff;
+
+template <class AccumType> void StatisticsUtilities<AccumType>::accumulateSym (
+	Double& npts, AccumType& nvariance,
+	AccumType& sumsq, const AccumType& datum, const AccumType& center
+) {
+	_NQUADSYM
+}
+
+template <class AccumType> void StatisticsUtilities<AccumType>::waccumulateSym (
+	Double& npts, AccumType& sumweights, AccumType& wnvariance, AccumType& wsumsq,
+	const AccumType& datum, const AccumType& weight, const AccumType& center
+) {
+	_WQUADSYM
+}
+
+template <class AccumType> template <class LocationType>
+void StatisticsUtilities<AccumType>::accumulateSym (
+	Double& npts, AccumType& nvariance,
+	AccumType& sumsq, AccumType& datamin,
+	AccumType& datamax, LocationType& minpos, LocationType& maxpos,
+	const AccumType& datum, const LocationType& location, const AccumType& center
+) {
+	_NQUADSYM
+	_MAXMIN
+}
+
+template <class AccumType> template <class LocationType>
+void StatisticsUtilities<AccumType>::waccumulateSym (
+	Double& npts, AccumType& sumweights, AccumType& wnvariance,
+	AccumType& wsumsq, AccumType& datamin, AccumType& datamax,
+	LocationType& minpos, LocationType& maxpos,
+	const AccumType& datum, const AccumType& weight, const LocationType& location,
+	const AccumType& center
+) {
+	_WQUADSYM
+	_MAXMIN
+}
+
+template <class AccumType>
+Bool StatisticsUtilities<AccumType>::includeDatum(
+    const AccumType& datum, typename DataRanges::const_iterator beginRange,
+    typename DataRanges::const_iterator endRange, Bool isInclude
+) {
+    typename DataRanges::const_iterator riter = beginRange;
+    while (riter != endRange) {
+        if (datum >= (*riter).first && datum <= (*riter).second) {
+            return isInclude;
+        }
+        ++riter;
+    }
+    return ! isInclude;
 }
 
 }
