@@ -34,10 +34,10 @@
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>
+#include <casacore/lattices/LatticeMath/LatticeMathUtil.h>
 #include <casacore/lattices/Lattices/TempLattice.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
-#include <casacore/lattices/Lattices/LatticeMathUtil.h>
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/lattices/LEL/LatticeExprNode.h>
 #include <casacore/lattices/LEL/LatticeExpr.h>

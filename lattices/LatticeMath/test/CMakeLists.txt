@@ -8,6 +8,7 @@ tLatticeFFT
 tLatticeFit
 tLatticeFractile
 tLatticeHistograms
+tLatticeMathUtil
 tLatticeSlice1D
 tLatticeStatistics
 tLatticeStatsDataProvider

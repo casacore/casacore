@@ -146,6 +146,8 @@ LatticeMath/LatticeHistProgress.h
 LatticeMath/LatticeHistSpecialize.h
 LatticeMath/LatticeHistograms.h
 LatticeMath/LatticeHistograms.tcc
+LatticeMath/LatticeMathUtil.h
+LatticeMath/LatticeMathUtil.tcc
 LatticeMath/LatticeProgress.h
 LatticeMath/LatticeSlice1D.h
 LatticeMath/LatticeSlice1D.tcc
