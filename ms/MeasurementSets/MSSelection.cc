@@ -724,11 +724,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //----------------------------------------------------------------------------
   void MSSelection::runErrorHandler()
   {
-    MSSelectionAntennaParseError msAntException(String(""));
-    MSAntennaParse::thisMSAErrorHandler->handleError(msAntException);
-
-    MSSelectionStateParseError msStateException(String(""));
-    MSStateParse::thisMSSErrorHandler->handleError(msStateException);
+    if (MSAntennaParse::thisMSAErrorHandler->nMessages() > 0)
+      {
+	MSSelectionAntennaParseError msAntException(String(""));
+	MSAntennaParse::thisMSAErrorHandler->handleError(msAntException);
+      }
+ 
+    if (MSStateParse::thisMSSErrorHandler->nMessages() > 0)
+      {
+	MSSelectionStateParseError msStateException(String(""));
+	MSStateParse::thisMSSErrorHandler->handleError(msStateException);
+      }
   }
 
   //----------------------------------------------------------------------------

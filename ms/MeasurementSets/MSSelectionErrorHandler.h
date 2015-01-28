@@ -72,6 +72,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     virtual void reset();
     virtual void handleError(MSSelectionError&);
+
+    const vector<String>& getMessages() const
+      { return messageList; }
+    Int nMessages() const
+      { return messageList.size(); }
+
   protected:
     vector<String> tokenList, messageList;
   };
