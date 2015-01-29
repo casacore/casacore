@@ -253,6 +253,9 @@ protected:
 
 	void _clearStats();
 
+	// scan dataset(s) to find min and max
+	void _doMinMax(AccumType& vmin, AccumType& vmax);
+
 	// <group>
 	// Get the counts of data within the specified histogram bins. The number of
 	// arrays within binCounts will be equal to the number of histograms in <src>binDesc</src>.
@@ -443,7 +446,7 @@ protected:
 	// <group>
 	// Create a vector of unsorted arrays, one array for each bin defined by <src>includeLimits</src>.
 	// <src>includeLimits</src> should be non-overlapping and should be given in ascending order (the
-	// algorithm used assumes this). Once the sum of the lengths of all arrays equals <src>maxCount</src>
+	// algorithm used assumes this). Once the sum of the lengths of all arrays equals </src>maxCount</src>
 	// the method will return with no further processing.
 	// no weights, no mask, no ranges
 	virtual void _populateArrays(
@@ -633,16 +636,8 @@ protected:
 
 private:
 	StatsData<AccumType> _statsData;
-	//Double _npts;
-	uInt _idataset;
-	//AccumType /*_mean,*/ /*_nvariance, */ /* _sum, _sumsq, _sumofweights*/;
-    //CountedPtr<AccumType> _max, _min;
-	// first element of pair is zero-based dataset number, second element
-	// is zero-based index of location in that dataset
-	//std::pair<uInt, Int64> _minpos, _maxpos;
+	Int64 _idataset;
 	Bool _calculateAsAdded, _doMaxMin, _doMedAbsDevMed, _mustAccumulate;
-	//Record _currentStats;
-	// CountedPtr<AccumType> _median, _medAbsDevMed;
 
 	// mutables, used to mitigate repeated code
 	mutable typename vector<InputIterator>::const_iterator _dend, _diter;
@@ -704,8 +699,6 @@ private:
 		const vector<std::set<uInt64> >& dataIndices
 	);
 
-	void _doMinMax();
-
 	Int64 _doNpts();
 
 	// get the values for the specified indices in the sorted array of all good data
@@ -744,7 +737,10 @@ private:
 	std::set<uInt64> _medianIndices(CountedPtr<uInt64> knownNpts);
 
 	// update min and max if necessary
-    void _updateMaxMin(AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride);
+    virtual void _updateMaxMin(
+    	AccumType mymin, AccumType mymax, Int64 minpos,
+    	Int64 maxpos, uInt dataStride, const Int64& currentDataset
+    );
 	
 	// get values from sorted array if the array is small enough to be held in
 	// memory. Note that this is the array containing all good data, not data in

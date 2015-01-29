@@ -58,19 +58,20 @@ StatsData<AccumType> initializeStatsData() {
 
 template <class AccumType>
 StatsData<AccumType> copy(const StatsData<AccumType>& stats) {
-	StatsData<AccumType> copy = stats;
-	if (! copy.max.null()) {
-		copy.max = new AccumType(*copy.max);
+	StatsData<AccumType> mycopy = stats;
+	if (! mycopy.max.null()) {
+		mycopy.max = new AccumType(*mycopy.max);
 	}
-	if (! copy.median.null()) {
-		copy.median = new AccumType(*copy.median);
+	if (! mycopy.median.null()) {
+		mycopy.median = new AccumType(*mycopy.median);
 	}
-	if (! copy.medAbsDevMed.null()) {
-		copy.medAbsDevMed = new AccumType(*copy.medAbsDevMed);
+	if (! mycopy.medAbsDevMed.null()) {
+		mycopy.medAbsDevMed = new AccumType(*mycopy.medAbsDevMed);
 	}
-	if (! copy.min.null()) {
-		copy.min = new AccumType(*copy.min);
+	if (! mycopy.min.null()) {
+		mycopy.min = new AccumType(*mycopy.min);
 	}
+	return mycopy;
 }
 
 template <class AccumType>

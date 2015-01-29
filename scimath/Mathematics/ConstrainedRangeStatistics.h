@@ -571,7 +571,7 @@ protected:
 private:
 	CountedPtr<std::pair<AccumType, AccumType> > _range;
 	Bool _doMedAbsDevMed;
-	CountedPtr<AccumType> _median;
+	//CountedPtr<AccumType> _median;
 
 };
 

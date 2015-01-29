@@ -1,4 +1,4 @@
-//# Copyright (C) 2014
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 #include <casacore/scimath/Mathematics/StatisticsData.h>
 
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
 
 namespace casacore {
 
@@ -60,4 +61,25 @@ namespace casacore {
 			);
 		}
 	}
+
+
+std::map<Double, uInt64> StatisticsData::indicesFromQuantiles(
+	uInt64 npts, const std::set<Double>& quantiles
+) {
+	std::map<Double, uInt64> quantileToIndexMap;
+	std::set<Double>::const_iterator qiter = quantiles.begin();
+	std::set<Double>::const_iterator qend = quantiles.end();
+	while (qiter != qend) {
+		Double idxWRT1 = *qiter * npts;
+		Double myfloor = floor(idxWRT1);
+		if (near(idxWRT1, myfloor)) {
+			// prevent rounding due to finite machine precision
+			idxWRT1 = myfloor;
+		}
+		quantileToIndexMap[*qiter] = ((uInt64)ceil(idxWRT1) - 1);
+		++qiter;
+	}
+	return quantileToIndexMap;
+}
+
 }

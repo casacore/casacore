@@ -23,55 +23,36 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#ifndef SCIMATH_STATSISTICSDATA_H
-#define SCIMATH_STATSISTICSDATA_H
+#ifndef SCIMATH_FITTOHALFSTATISTICSDATA_H
+#define SCIMATH_FITTOHALFSTATISTICSDATA_H
 
 #include <casacore/casa/aips.h>
 
-#include <map>
-#include <set>
-
 namespace casacore {
 
-class String;
+// Various data for FitToHalfStatistics
 
-/*
- * This class simply defines the enum of supported statistics types
- * in the statistics framework.
- */
-
-class StatisticsData {
+class FitToHalfStatisticsData {
 public:
 
-	// implemented algorithms
-	enum ALGORITHM {
-		CLASSICAL,
-		FITTOHALF,
-		HINGESFENCES
+	static const Int64 VIRTUAL_LOCATION;
+
+	 // choice of center point based on the corresponding statistics from the
+	// entire distribution of data, or simply an arbitrary value
+	enum CENTER {
+		CMEAN,
+		CMEDIAN,
+		CVALUE
 	};
 
-	enum STATS {
-		MAX,
-		MEAN,
-		MIN,
-		NPTS,
-		RMS,
-		STDDEV,
-		SUM,
-		SUMSQ,
-		// sum of weights
-		SUMWEIGHTS,
-		VARIANCE
+	// which section of data to use, greater than or less than the center value
+	enum USE_DATA {
+		LE_CENTER,
+		GE_CENTER
 	};
-
-	// get the zero-based indices of the specified quantiles in sorted dataset with npts
-	// number of good points. The returned map maps quantiles to indices.
-	static std::map<Double, uInt64> indicesFromQuantiles(
-		uInt64 npts, const std::set<Double>& quantiles
-	);
-
-	static String toString(STATS stat);
 };
+
+const Int64 FitToHalfStatisticsData::VIRTUAL_LOCATION = -1;
 
 }
 

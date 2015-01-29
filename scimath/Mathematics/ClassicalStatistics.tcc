@@ -165,11 +165,9 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	if (_getStatsData().median.null()) {
 		medianIndices = _medianIndices(mynpts);
 	}
-	std::map<Double, uInt64> quantileToIndex = StatisticsAlgorithm<
-			AccumType, InputIterator, MaskIterator
-		>::_indicesFromQuantiles(
-			*mynpts, quantiles
-		);
+	std::map<Double, uInt64> quantileToIndex = StatisticsData::indicesFromQuantiles(
+		*mynpts, quantiles
+	);
 	std::set<uInt64> indices = medianIndices;
 	std::map<Double, uInt64>::const_iterator qToIIter = quantileToIndex.begin();
 	std::map<Double, uInt64>::const_iterator qToIEnd = quantileToIndex.end();
@@ -212,7 +210,10 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMinMax(
 			"simultaneously. To ensure that will be the case, call "
 			"setCalculateAsAdded(False) on this object"
 		);
-		_doMinMax();
+		_doMinMax(mymin, mymax);
+		_getStatsData().min = new AccumType(mymin);
+		_getStatsData().max = new AccumType(mymax);
+		return;
 	}
 	mymin = *_getStatsData().min;
 	mymax = *_getStatsData().max;
@@ -252,11 +253,9 @@ std::map<Double, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIt
 		"Value of all quantiles must be between 0 and 1 (noninclusive)"
 	);
 	uInt64 mynpts = knownNpts.null() ? getNPts() : *knownNpts;
-	std::map<Double, uInt64> quantileToIndexMap = StatisticsAlgorithm<
-			AccumType, InputIterator, MaskIterator
-		>::_indicesFromQuantiles(
-			mynpts, quantiles
-		);
+	std::map<Double, uInt64> quantileToIndexMap = StatisticsData::indicesFromQuantiles(
+		mynpts, quantiles
+	);
 	// This seemingly convoluted way of doing things with maps is necessary because
 	// multiple quantiles can map to the same sorted array index, and multiple array
 	// indices can map the same value if the values in the array are not unique.
@@ -352,7 +351,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_clearData() {
 
 template <class AccumType, class InputIterator, class MaskIterator>
 void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_clearStats() {
-	_getStatsData() = initializeStatsData<AccumType>();
+	_statsData = initializeStatsData<AccumType>();
     _idataset = 0;
 	_doMedAbsDevMed = False;
 	_mustAccumulate = True;
@@ -506,7 +505,7 @@ StatsData<AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIterator>
 			_getStatsData().sumweights += ngood;
 		}
 		if (_doMaxMin) {
-			_updateMaxMin(mymin, mymax, minpos, maxpos, _myStride);
+			_updateMaxMin(mymin, mymax, minpos, maxpos, _myStride, _idataset);
 		}
 		++_idataset;
 		if (! dataProvider.null()) {
@@ -532,7 +531,7 @@ StatsData<AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIterator>
 		? _getStatsData().nvariance/(_getStatsData().sumweights - one) : 0;
 	_getStatsData().rms = sqrt(_getStatsData().sumsq/_getStatsData().sumweights);
 	_getStatsData().stddev = sqrt(_getStatsData().variance);
-	return _getStatsData();
+	return copy(_getStatsData());
 }
 
 template <class AccumType, class InputIterator, class MaskIterator>
@@ -1093,6 +1092,11 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterato
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt maxArraySize,
 	const vector<std::set<uInt64> >& dataIndices
 ) {
+	/*
+	cout << __func__ << " called with binDesc " << binDesc
+		<< " maxArraySize " << maxArraySize << " dataIndices "
+		<< dataIndices << endl;
+	*/
 	// dataIndices are relative to minimum bin minimum border
     vector<CountedPtr<AccumType> > sameVal(binDesc.size(), NULL);
     vector<vector<uInt64> > binCounts = _binCounts(sameVal, binDesc);
@@ -1101,10 +1105,10 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterato
     vector<std::set<uInt64> >::const_iterator eIdxSet = dataIndices.end();
     typename vector<CountedPtr<AccumType> >::const_iterator bSameVal = sameVal.begin();
     typename vector<CountedPtr<AccumType> >::const_iterator iSameVal = bSameVal;
-    ///typename vector<CountedPtr<AccumType> >::const_iterator eSameVal = sameVal.end();
+    // typename vector<CountedPtr<AccumType> >::const_iterator eSameVal = sameVal.end();
     vector<vector<uInt64> >::const_iterator bCountSet = binCounts.begin();
     vector<vector<uInt64> >::const_iterator iCountSet = bCountSet;
-    ///vector<vector<uInt64> >::const_iterator eCountSet = binCounts.end();
+    // vector<vector<uInt64> >::const_iterator eCountSet = binCounts.end();
     typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bDesc = binDesc.begin();
     typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iDesc = bDesc;
     typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eDesc = binDesc.end();
@@ -1213,6 +1217,11 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterato
 	const vector<uInt64>& binNpts, uInt maxArraySize, const vector<std::pair<AccumType, AccumType> >& binLimits,
 	const vector<std::set<uInt64> >& dataIndices
 ) {
+	/*
+	cout << __func__ << " called with binNpts " << binNpts << " maxArraySize "
+		<< maxArraySize << " binLimits " << binLimits << " dataIndices "
+		<< dataIndices << endl;
+		*/
 	uInt64 totalPts = 0;
 	vector<uInt64>::const_iterator bNpts = binNpts.begin();
 	vector<uInt64>::const_iterator iNpts = bNpts;
@@ -1249,7 +1258,7 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterato
 		vector<std::map<uInt64, AccumType> > ret(binLimits.size());
 		typename vector<std::map<uInt64, AccumType> >::iterator bRet = ret.begin();
 		typename vector<std::map<uInt64, AccumType> >::iterator iRet = bRet;
-		///typename vector<std::map<uInt64, AccumType> >::iterator eRet = ret.end();
+		// typename vector<std::map<uInt64, AccumType> >::iterator eRet = ret.end();
 		iArrays = bArrays;
 		while(iIdxSet != eIdxSet) {
 			std::set<uInt64>::const_iterator initer = iIdxSet->begin();
@@ -1307,7 +1316,9 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_convertToAbsD
 }
 
 template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doMinMax() {
+void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doMinMax(
+	AccumType& datamin, AccumType& datamax
+) {
 	//cout << __func__ << endl;
     _initIterators();
 	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
@@ -1393,8 +1404,8 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doMinMax() {
 		mymax.null() || mymin.null(),
 		"No valid data found"
 	);
-	_getStatsData().min = mymin;
-	_getStatsData().max = mymax;
+	datamin = *mymin;
+	datamax = *mymax;
 }
 
 template <class AccumType, class InputIterator, class MaskIterator>
@@ -1833,7 +1844,10 @@ std::map<uInt64, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIt
 		mymax = *knownMax;
 	}
 	if (_doMedAbsDevMed) {
-		mymax -= *_getStatsData().median;
+		mymax = max(
+			abs(mymax - *_getStatsData().median),
+			abs(mymin - *_getStatsData().median)
+		);
 		mymin = AccumType(0);
 	}
 	if (mymax == mymin) {
@@ -2902,12 +2916,13 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestA
 
 template <class AccumType, class InputIterator, class MaskIterator>
 void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
-	AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride
+	AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride,
+	const Int64& currentDataset
 ) {
 	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
 		= this->_getDataProvider();
 	if (maxpos >= 0) {
-		_getStatsData().maxpos.first = _idataset;
+		_getStatsData().maxpos.first = currentDataset;
 		_getStatsData().maxpos.second = maxpos * dataStride;
 		if (! dataProvider.null()) {
 			dataProvider->updateMaxPos(_getStatsData().maxpos);
@@ -2915,7 +2930,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
         _getStatsData().max = new AccumType(mymax);
 	}
 	if (minpos >= 0) {
-		_getStatsData().minpos.first = _idataset;
+		_getStatsData().minpos.first = currentDataset;
 		_getStatsData().minpos.second = minpos * dataStride;
 		if (! dataProvider.null()) {
 			dataProvider->updateMinPos(_getStatsData().minpos);

@@ -7,6 +7,7 @@ tCombinatorics
 tConvolver
 tFFTServer
 tFFTServer2
+tFitToHalfStatistics
 tGaussianBeam
 tGeometry
 tHingesFencesStatistics

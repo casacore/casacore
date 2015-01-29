@@ -174,6 +174,22 @@ Bool StatisticsUtilities<AccumType>::doMin(
 	AccumType diff = datum - center; \
 	wnvariance += 2*weight*diff*diff;
 
+#define _MAXMINSYM \
+	if (npts == 2) { \
+		datamax = datum; \
+		maxpos = location; \
+		datamin = datum; \
+		minpos = location; \
+	} \
+	else if (datum > datamax) { \
+		datamax = datum; \
+		maxpos = location; \
+	} \
+	else if (datum < datamin) { \
+		datamin = datum; \
+		minpos = location; \
+	}
+
 template <class AccumType> void StatisticsUtilities<AccumType>::accumulateSym (
 	Double& npts, AccumType& nvariance,
 	AccumType& sumsq, const AccumType& datum, const AccumType& center
@@ -196,7 +212,7 @@ void StatisticsUtilities<AccumType>::accumulateSym (
 	const AccumType& datum, const LocationType& location, const AccumType& center
 ) {
 	_NQUADSYM
-	_MAXMIN
+	_MAXMINSYM
 }
 
 template <class AccumType> template <class LocationType>
@@ -208,7 +224,7 @@ void StatisticsUtilities<AccumType>::waccumulateSym (
 	const AccumType& center
 ) {
 	_WQUADSYM
-	_MAXMIN
+	_MAXMINSYM
 }
 
 template <class AccumType>

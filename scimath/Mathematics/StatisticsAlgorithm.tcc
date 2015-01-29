@@ -1,7 +1,7 @@
 
 #include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
 
-#include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/Containers/ContainerIO.h>
 
 namespace casacore {
 
@@ -341,6 +341,7 @@ std::map<uInt64, AccumType> StatisticsAlgorithm<AccumType, InputIterator, MaskIt
 	return indexToValuesMap;
 }
 
+/*
 template <class AccumType, class InputIterator, class MaskIterator>
 std::map<Double, uInt64> StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_indicesFromQuantiles(
 	uInt64 npts, const std::set<Double>& quantiles
@@ -354,6 +355,7 @@ std::map<Double, uInt64> StatisticsAlgorithm<AccumType, InputIterator, MaskItera
 	}
 	return quantileToIndexMap;
 }
+*/
 
 template <class AccumType, class InputIterator, class MaskIterator>
 void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_throwIfDataProviderDefined() const {
