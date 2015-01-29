@@ -38,7 +38,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class String;
   template<class T> class GenericL2Fit;
   template<class T> class Vector;
-} //# NAMESPACE CASACORE - END
 
 // <summary> This class gives Proxy to Fitting connection</summary>
 
@@ -184,5 +183,6 @@ private:
   FitType **list_p;
 };
 
+} //# NAMESPACE CASACORE - END
 
 #endif

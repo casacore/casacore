@@ -44,9 +44,9 @@
 #include <casacore/casa/Containers/RecordFieldId.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-#include <casacore/casa/namespace.h>
-
 #include <casacore/scimath/Fitting/FittingProxy.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // FitType
 // Constructor
@@ -566,3 +566,5 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
   out.define("sol", returnval);
   return out;
 }
+
+} //# NAMESPACE CASACORE - END
