@@ -76,7 +76,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> <linkto class=LCConcatenation>concatenation</linkto>
 //  <li> <linkto class=LCComplement>complement</linkto>
 //  <li> <linkto class=LCExtension>extension</linkto>
-// <ul>
+// </ul>
 // Apart from these region classes, class
 // <linkto class=LCSlicer>LCSlicer</linkto> can be used to define
 // a box with optional strides. It also offers the opportunity to

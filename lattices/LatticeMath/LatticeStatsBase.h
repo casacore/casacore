@@ -84,7 +84,7 @@ class LatticeStatsBase
 public:
 
 // This <src>enum StatisticTypes</src> is provided for use with the
-// <src>LatticeStatistics<T>::setPlotting</src> function.  It gives the allowed 
+// <src>LatticeStatistics<T>\::setPlotting</src> function.  It gives the allowed 
 // statistics types that you can ask for.
    
 enum StatisticsTypes {

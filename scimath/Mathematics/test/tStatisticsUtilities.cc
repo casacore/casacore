@@ -175,7 +175,6 @@ int main() {
     	center = 3;
     	vector<Double>::const_iterator wbegin = w.begin();
     	vector<Double>::const_iterator witer = wbegin;
-    	vector<Double>::const_iterator wend = w.end();
     	viter = vbegin;
     	while (viter != vend) {
     		StatisticsUtilities<Double>::waccumulateSym(

@@ -26,3 +26,10 @@
 //# $Id$
 
 // \defgroup ms ms package (libcasa_ms)
+//
+// The ms package contains definition of and access to MeasurementSets
+
+// <ul>
+//  <li> <a href="group__MeasurementSets__module.html">MeasurementSets</a>:
+//    Handling of visibility data in MeasurementSets (structured tables).
+// </ul>

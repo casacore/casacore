@@ -1769,7 +1769,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    <li> the data managers used to store the column data
 //    <li> the table and/or column keywords and their values
 //    <li> recursively the same info of the subtables
-//   <ul>
+//   </ul>
 //  <li><em>showtablelock</em> if a table is locked or opened and by
 //      which process.
 //  <li><em>lsmf</em> shows the virtual files contained in a MultiFile.
