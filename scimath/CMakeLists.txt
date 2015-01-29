@@ -242,6 +242,9 @@ Mathematics/DFTServer.tcc
 Mathematics/FFTPack.h
 Mathematics/FFTServer.h
 Mathematics/FFTW.h
+Mathematics/FitToHalfStatistics.h
+Mathematics/FitToHalfStatistics.tcc
+Mathematics/FitToHalfStatisticsData.h
 Mathematics/GaussianBeam.h
 Mathematics/Geometry.h
 Mathematics/Gridder.h
