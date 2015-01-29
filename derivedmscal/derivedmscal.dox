@@ -26,3 +26,10 @@
 //# $Id: derivedmscal.dox 20088 2007-06-05 03:57:23Z Malte.Marquarding $
 
 // \defgroup derivedmscal derivedmscal package (libcasa_derivedmscal)
+//
+// The derivedmscal package handles derived (virtual) MS columns and TaQL functions
+
+// <ul>
+//  <li> <a href="group__DerivedMC__module.html">DerivedMC</a>:
+//    special columns and TaQL functions for an MS
+// </ul>

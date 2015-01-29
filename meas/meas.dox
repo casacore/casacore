@@ -26,3 +26,10 @@
 //# $Id: meas.dox 20088 2007-06-05 03:57:23Z Malte.Marquarding $
 
 // \defgroup meas meas package (libcasa_meas)
+//
+// The meas package contains TaQL functions for measures
+
+// <ul>
+//  <li> <a href="group__MeasUDF__module.html">MeasUDF</a>:
+//    special TaQL functions dealing with measures
+// </ul>

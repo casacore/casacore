@@ -470,9 +470,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Parsing will be done later with a call to toTableExprNode().
     //
     // This version, here for backward compatibility reasons,
-    // internally constructs a <li> <linkto
-    // class="MSSelectableTable">MSSelectableTable</linkto> object and
-    // calls the reset() method below that works with
+    // internally constructs a
+    // <linkto class="MSSelectableTable">MSSelectableTable</linkto>
+    // object and calls the reset() method below that works with
     // MSSelectableTable.
     void reset(const MeasurementSet& ms,
 	       const MSSMode& mode           = PARSE_NOW,

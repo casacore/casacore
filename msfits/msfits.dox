@@ -26,3 +26,10 @@
 //# $Id$
 
 // \defgroup msfits msfits package (libcasa_msfits)
+//
+// The msfits package handles conversion of MeasurementSets to/from FITS
+
+// <ul>
+//  <li> <a href="group__MSFits__module.html">MSFits</a>:
+//    MeasurementSet to/from UVFITS or FITSIDI
+// </ul>

@@ -40,14 +40,19 @@ namespace casacore {
 ///   The system consists of a set of layered libraries (packages) which can 
 ///   be seen best on the <a href="modules.html">Modules page</a>.
 ///   <br>
-///   A <a href="http://www.python.org">Python</a> binding to the
-///   libraries has been made which is called
-///   <a href="http://pyrap.googlecode.com">pyrap</a>. The documentation
-///   of the pyrap packages can be found
+///   Included is a library (using Boost-Python) to convert the basic casacore types
+///   (e.g., Array, Record) to and from python. Build of this library is optional.
+///   <br>
+///   This library is used in the package 
+///   <a href="http://pyrap.googlecode.com">pyrap</a> that offers a
+///   high level <a href="http://www.python.org">Python</a> binding to
+///   the casacore functionality.
+///   The documentation of the pyrap packages can be found
 ///   <a href="../../../pyrap/docs/index.html">here</a>.
 ///   
 ///   The main features of AIPS++/CASA are:
 ///   <ul>
+///   <li>\ref casa : Core functionality and data types like Array and Record.
 ///   <li>\ref scimath : N-dim functions with auto-differentiation and linear or non-linear
 ///   fitting.
 ///   <li>\ref tables : Table data system supporting N-dim arrays with advanced querying.
@@ -154,11 +159,18 @@ namespace casacore {
 ///   coordinates, and history.
 ///   </td>
 ///   </tr>
+///   <tr>
+///   <td><a href="group__python.html">python</a></td>
+///   <td>
+///   N-dim <a href="group__Converters__module.html">python
+///   converters</a> for basic casacore data types.
+///   </td>
+///   </tr>
 ///   </table>
 ///
 ///   Detailed build instructions are given on the 
 ///   <a href="http://code.google.com/p/casacore/wiki/BuildInstructions">
-///   casacore</a> pages.
+///   casacore</a> pages. It makes it possible to build selective parts of casacore.
 ///   <br>When using a specific casacore package, it is useful to know
 ///   the package dependencies when linking a program. They are as follows:
 ///   <table border=1>
@@ -211,11 +223,18 @@ namespace casacore {
 ///   <td>coordinates fits measures tables scimath casa
 ///      mirlib wcslib cfitsio</td>
 ///   </tr>
+///   <tr>
+///   <td><a href="group__python.html">python</a></td>
+///   <td>casa boost-python</td>
+///   </tr>
 ///   </table>
 ///   <a href="http://www.atnf.csiro.au/computing/software/miriad">mirlib</a>
 ///   is distributed and built as part of casacore.
 ///   <a href="http://www.atnf.csiro.au/~mcalabre/WCS">wcslib</a> and
 ///   <a href="http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html">cfitsio</a>
-///   are external packages that have to be installed before building casacore.
+///   are external packages that have to be installed before building all of casacore.
+///   <a href="http://www.boost.org/doc/libs/1_57_0/libs/python/doc">Boost-Python</a>
+///   is required when building libcasa_python.
+   
 
 }

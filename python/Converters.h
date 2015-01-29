@@ -70,14 +70,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    <li> Scalar of any basic data type.
 //    <li> Record.
 //    <li> N-dim Array of any basic data type. A casacore::Array can be
-//         constructed from Python types like tuple, list, and array
-//         (numarray or numpy). A Py_None object results in an empty array.
-//         The conversion back is done to a Python array. The type (numarray
-//         or numpy) is determined by the package loaded (and supported).
-//         If both or none are loaded, a numpy array is returned. An empty
-//         array is returned as an empty Python array.
-//         <br>Because Casacore arrays are in Fortran order and Python
-//         arrays in C order, the axes are reversed during conversion.
+//         constructed from Python types like tuple, list, and numpy array
+//         A Py_None object results in an empty array.
+//         The conversion back is done to a numpy array.
+//         An empty array is returned as an empty numpy array.
+//         <br>Because Casacore arrays are in Fortran order and numpy arrays
+//         (preferably) in C order, the axes are reversed during conversion.
 //         <br>A 1-dim <src>Array<String></src> object is converted to a list,
 //         while a higher dimensioned Array<String> object is converted to/from
 //         a dict containing the shape and the values as a list.
@@ -104,7 +102,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // A numpy or numarray scalar array (e.g. <src>array(1.0)</src> is a somewhat
 // peculiar object that cannot be indexed. It is handled correctly by the
-// converters and handled as a 1-dim array containing one element.
+// converters and handled as a scalar value.
 // </synopsis>
 
 // </module>
