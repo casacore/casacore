@@ -35,7 +35,7 @@ namespace casacore {
 template <class AccumType, class InputIterator, class MaskIterator>
 ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::ConstrainedRangeStatistics()
 	: ClassicalStatistics<AccumType, InputIterator, MaskIterator>(),
-	 _range(), _doMedAbsDevMed(False), _median() /*, _npts(0),
+	 _range(), _doMedAbsDevMed(False) /*, _median()*/ /*, _npts(0),
 	  _max(), _min(), _maxpos(-1, -1), _minpos(-1, -1) */ {
 	reset();
 }
@@ -54,7 +54,7 @@ ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::operator=(
     ClassicalStatistics<AccumType, InputIterator, MaskIterator>::operator=(other);
     _range = other._range;
     _doMedAbsDevMed = other._doMedAbsDevMed;
-    _median = other._median.null() ? NULL : new AccumType(*other._median);
+    //_median = other._median.null() ? NULL : new AccumType(*other._median);
     return *this;
 }
 
@@ -64,15 +64,15 @@ AccumType ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::ge
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
 	Bool persistSortedArray
 ) {
-	if (_median.null()) {
+	if (this->_getStatsData().median.null()) {
 		_setRange();
-		_median = new AccumType(
+		this->_getStatsData().median = new AccumType(
 			ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian(
 				knownNpts, knownMin, knownMax, binningThreshholdSizeBytes, persistSortedArray
 			)
 		);
 	}
-	return *_median;
+	return *this->_getStatsData().median;
 }
 
 template <class AccumType, class InputIterator, class MaskIterator>
@@ -81,7 +81,7 @@ AccumType ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::ge
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes, Bool persistSortedArray
 ) {
 	_setRange();
-	if (_median.null()) {
+	if (this->_getStatsData().median.null()) {
 		// sets _median, we can discard the return value
 		this->getMedian();
 	}
@@ -148,7 +148,7 @@ template <class AccumType, class InputIterator, class MaskIterator>
 void ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::reset() {
 	_range = NULL;
 	_doMedAbsDevMed = False;
-	_median = NULL;
+	//_median = NULL;
 	ClassicalStatistics<AccumType, InputIterator, MaskIterator>::reset();
 }
 template <class AccumType, class InputIterator, class MaskIterator>
@@ -349,7 +349,7 @@ Bool ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::_isInRa
 
 #define _findBinCodeCR \
 	if (_isInRange(*datum)) { \
-		AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - *_median) : *datum; \
+		AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - *this->_getStatsData().median) : *datum; \
 		if (myDatum >= bBinDesc->minLimit && myDatum < *maxLimit.rbegin()) { \
 			iCounts = bCounts; \
 			iSameVal = bSameVal; \
@@ -897,7 +897,7 @@ void ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::_minMax
 // define rather than make a method to ensure this is called inline to maximize performance
 #define _populateArrayCodeCR1 \
 	if (_isInRange(*datum)) { \
-		AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - *_median) : *datum; \
+		AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - *this->_getStatsData().median) : *datum; \
 		ary.push_back(myDatum); \
 	}
 
@@ -1083,7 +1083,7 @@ void ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::_popula
 // define rather than make a method to ensure this is called inline to maximize performance
 #define _populateArraysCodeCR \
 	if (_isInRange(*datum)) { \
-		AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - *_median) : *datum; \
+		AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - *this->_getStatsData().median) : *datum; \
 		if (myDatum >= includeLimits.begin()->first && myDatum < includeLimits.rbegin()->second) { \
 			iIncludeLimits = bIncludeLimits; \
 			iArys = bArys; \
@@ -1332,7 +1332,7 @@ void ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::_popula
 // define rather than make a method to ensure this is called inline to maximize performance
 #define _PopulateTestArrayCodeCR \
 	if (_isInRange(*datum)) { \
-		ary.push_back(_doMedAbsDevMed ? abs((AccumType)*datum - *_median) : *datum); \
+		ary.push_back(_doMedAbsDevMed ? abs((AccumType)*datum - *this->_getStatsData().median) : *datum); \
 		++npts; \
 		if (npts > maxElements) { \
 			return True; \

@@ -31,6 +31,9 @@
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/aips.h>
 
+#include <iostream>
+#include <casacore/casa/iosfwd.h>
+
 namespace casacore {
 
 // Various statistics related methods for the statistics framework.
@@ -203,6 +206,24 @@ template<>
 inline Int StatisticsUtilities<casacore::DComplex>::getInt(const casacore::DComplex&) {
 	ThrowCc("Logic Error: This version for complex data types should never be called");
 }
+
+/*
+ * there are errors linking these in casacode which I don't understand, but they are
+ * useful for debugging casacore, so leaving them in but commented out
+
+ostream &operator<<(ostream &os, const StatisticsUtilities<Double>::BinDesc &desc) {
+	os << "min limit " << desc.minLimit << " bin width " << desc.binWidth
+		<< " nbins " << desc.nBins;
+	return os;
+}
+
+ostream &operator<<(ostream &os, const StatisticsUtilities<Complex>::BinDesc &desc) {
+	os << "min limit " << desc.minLimit << " bin width " << desc.binWidth
+		<< " nbins " << desc.nBins;
+	return os;
+}
+*/
+
 
 }
 

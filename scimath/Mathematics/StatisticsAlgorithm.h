@@ -33,9 +33,9 @@
 #include <casacore/scimath/Mathematics/StatisticsData.h>
 #include <casacore/scimath/Mathematics/StatisticsTypes.h>
 
-#include <vector>
 #include <map>
 #include <set>
+#include <vector>
 
 namespace casacore {
 
@@ -341,9 +341,13 @@ protected:
 		return _weights;
 	}
 
+	/*
 	// get the zero-based indices of the specified quantiles in sorted dataset with npts
 	// number of good points. The returned map maps quantiles to indices.
-	static std::map<Double, uInt64> _indicesFromQuantiles(uInt64 npts, const std::set<Double>& quantiles);
+	static std::map<Double, uInt64> _indicesFromQuantiles(
+		uInt64 npts, const std::set<Double>& quantiles
+	);
+	*/
 
 	// The array can be changed by paritally sorting it up to the largest index. Return
 	// a map of index to value in the sorted array.
