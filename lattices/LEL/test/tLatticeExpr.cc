@@ -136,6 +136,7 @@ int main (int argc, const char* argv[])
        Lattice<Float>* pExpr;
        pExpr = expr.clone();
        if (!checkFloat(*pExpr, aFVal, shape, supress)) ok = False;
+       delete pExpr;
      }
 
 //
@@ -157,6 +158,7 @@ int main (int argc, const char* argv[])
        Lattice<Double>* pExpr;
        pExpr = expr.clone();
        if (!checkDouble(*pExpr, aDVal, shape, supress)) ok = False;
+       delete pExpr;
      }
 
 //
@@ -178,6 +180,7 @@ int main (int argc, const char* argv[])
        Lattice<Complex>* pExpr;
        pExpr = expr.clone();
        if (!checkComplex(*pExpr, aCVal, shape, supress)) ok = False;
+       delete pExpr;
      }
 
 //
@@ -199,6 +202,7 @@ int main (int argc, const char* argv[])
        Lattice<DComplex>* pExpr;
        pExpr = expr.clone();
        if (!checkDComplex(*pExpr, aDCVal, shape, supress)) ok = False;
+       delete pExpr;
      }
 
 //
@@ -220,7 +224,7 @@ int main (int argc, const char* argv[])
        Lattice<Bool>* pExpr;
        pExpr = expr.clone();
        if (!checkBool(*pExpr, aBVal, shape, supress)) ok = False;
-
+       delete pExpr;
      }
 
 

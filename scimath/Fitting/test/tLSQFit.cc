@@ -1317,7 +1317,8 @@ int main() {
 	y[i] = 20*exp(-(((x[i]-25)/4)*((x[i]-25)/4)));
       }
       Double sol[3] = {10, 20, 2};
-      Double *un = new Double[3];
+      Double una[3];
+      Double* un = una;
       
       Double kn[1];
       const Int Niter = 30;

@@ -205,7 +205,8 @@ ProgressMeter::ProgressMeter(Double min, Double max,
 
 ProgressMeter::~ProgressMeter()
 {
-    update_count_p++;
+  // Do not update if still 0, otherwise no initialization done in update.
+  if (update_count_p > 0) update_count_p++;
     update(max_p, True);
 }
 

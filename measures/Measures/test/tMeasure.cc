@@ -716,15 +716,27 @@ int main()
 	MFrequency::Ref r(i, mf);
 	MFrequency::Ref rundef(MFrequency::Undefined, mf);
 	try{
-	  MFrequency::Convert forw(r, rundef);
+	  MFrequency::Convert forw;
+          MFrequency mfreq(MFrequency::MVType(), r);
+          forw.setModel(mfreq);
+          forw.setOut (rundef);
 	  cout << MFrequency::showType(i) << " to " <<
 	    MFrequency::showType(MFrequency::Undefined) << " should not be possible." << endl;
 	  isok = False;
-	  MFrequency::Convert backw(rundef, r);
+	}
+	catch(const AipsError& x){
+	  // expected error
+	  cout << x.getMesg() << endl;
+	}
+        try {
+	  MFrequency::Convert backw;
+          MFrequency mfreq(MFrequency::MVType(), rundef);
+          backw.setModel(mfreq);
+          backw.setOut (r);
 	  cout << MFrequency::showType(MFrequency::Undefined) << " to " <<
 	    MFrequency::showType(i) << " should not be possible." << endl;
 	}
-	catch(AipsError x){
+	catch(const AipsError& x){
 	  // expected error
 	  cout << x.getMesg() << endl;
 	}
