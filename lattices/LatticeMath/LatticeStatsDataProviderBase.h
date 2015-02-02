@@ -79,6 +79,8 @@ public:
 	// get the positions of the min and max
 	void minMaxPos(IPosition& minpos, IPosition& maxpos) const;
 
+	virtual void reset();
+
 	void setProgressMeter(CountedPtr<LattStatsProgress> pm);
 
 	// set the data ranges

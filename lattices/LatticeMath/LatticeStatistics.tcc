@@ -68,6 +68,7 @@
 #include <casacore/casa/OS/Timer.h>
 
 #include <casacore/scimath/Mathematics/ClassicalStatistics.h>
+#include <casacore/scimath/Mathematics/FitToHalfStatistics.h>
 #include <casacore/scimath/Mathematics/HingesFencesStatistics.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -519,7 +520,6 @@ template <class T> Bool LatticeStatistics<T>::getStatistic(
    if (!goodParameterStatus_p) {
      return False;
    }
-
    if (needStorageLattice_p) generateStorageLattice();
    if (type==LatticeStatsBase::NPTS) {
       return retrieveStorageStatistic(stats, NPTS, dropDeg);
@@ -785,7 +785,10 @@ void LatticeStatistics<T>::setAlgorithm(
 ) {
 	if (_algorithm != algorithm) {
 		_algorithm = algorithm;
-		_algConf = Record();
+		_algConf.hf = -1;
+		_algConf.ct = FitToHalfStatisticsData::CMEAN;
+		_algConf.ud = FitToHalfStatisticsData::LE_CENTER;
+		_algConf.cv = 0;
 		needStorageLattice_p = True;
 	}
 }
@@ -796,8 +799,33 @@ void LatticeStatistics<T>::configureHingesFences(Double f) {
 		_algorithm != StatisticsData::HINGESFENCES,
 		"Logic Error: _algorithm is not set to HingesFences"
 	);
-	if (! _algConf.isDefined("hf") || ! near(_algConf.asDouble("hf"), f)) {
-		_algConf.define("hf", f);
+	if (! near(f, _algConf.hf)) {
+		_algConf.hf = f;
+		needStorageLattice_p = True;
+	}
+}
+
+template <class T>
+void LatticeStatistics<T>::configureFitToHalf(
+	FitToHalfStatisticsData::CENTER centerType,
+	FitToHalfStatisticsData::USE_DATA useData,
+	AccumType centerValue
+) {
+	ThrowIf(
+		_algorithm != StatisticsData::FITTOHALF,
+		"Logic Error: _algorithm is not set to FITTOHALF"
+	);
+	if (
+		centerType != _algConf.ct
+		|| useData != _algConf.ud
+		|| (
+			centerType == FitToHalfStatisticsData::CVALUE
+			&& ! near(centerValue, _algConf.cv)
+		)
+	) {
+		_algConf.ct = centerType;
+		_algConf.ud = useData;
+		_algConf.cv = centerValue;
 		needStorageLattice_p = True;
 	}
 }
@@ -842,8 +870,11 @@ Bool LatticeStatistics<T>::generateStorageLattice()
                                                  tileShape), useMemory);
 // Set up min/max location variables
 
-    minPos_p.resize(pInLattice_p->shape().nelements());
-    maxPos_p.resize(pInLattice_p->shape().nelements());
+    //minPos_p.resize(pInLattice_p->shape().nelements());
+    //maxPos_p.resize(pInLattice_p->shape().nelements());
+    maxPos_p.resize(0);
+    minPos_p.resize(0);
+
 
     CountedPtr<LattStatsProgress> pProgressMeter;
     if (showProgress_p) {
@@ -903,9 +934,11 @@ Bool LatticeStatistics<T>::generateStorageLattice()
     		dataProvider = new LatticeStatsDataProvider<T>(subLat);
     	}
 
+    	/*
     	if (! pProgressMeter.null()) {
     		dataProvider->setProgressMeter(pProgressMeter);
     	}
+    	*/
     	// FIXME having Bool variables that are true when a fundamental property is negated
     	// is incredibly confusing and certainly not best practice. Rename and adjust
     	// the meaning of noInclude_p and noExclude_p
@@ -924,9 +957,13 @@ Bool LatticeStatistics<T>::generateStorageLattice()
     		*curSA = new ClassicalStatistics<AccumType, const T*, const Bool*>();
     		break;
     	case StatisticsData::HINGESFENCES: {
-    		*curSA = _algConf.isDefined("hf")
-    			? new HingesFencesStatistics<AccumType, const T*, const Bool*>(_algConf.asDouble("hf"))
-    			: new HingesFencesStatistics<AccumType, const T*, const Bool*>();
+    		*curSA = new HingesFencesStatistics<AccumType, const T*, const Bool*>(_algConf.hf);
+    		break;
+    	}
+    	case StatisticsData::FITTOHALF: {
+    		*curSA = new FitToHalfStatistics<AccumType, const T*, const Bool*>(
+    			_algConf.ct, _algConf.ud, _algConf.cv
+    		);
     		break;
     	}
     	default:
@@ -937,7 +974,6 @@ Bool LatticeStatistics<T>::generateStorageLattice()
     	if (! pProgressMeter.null()) {
     		dataProvider->setProgressMeter(CountedPtr<LattStatsProgress>(NULL));
     	}
-    	// Record stats = (*curSA)->getStatistics();
     	StatsData<AccumType> stats = (*curSA)->getStatistics();
     	pStoreLattice_p->putAt(stats.mean, posMean);
     	pStoreLattice_p->putAt(stats.npts, posNpts);
@@ -969,10 +1005,14 @@ Bool LatticeStatistics<T>::generateStorageLattice()
     			if (stepper.atStart()) {
     				IPosition myMaxPos, myMinPos;
     				dataProvider->minMaxPos(myMinPos, myMaxPos);
-    				minPos_p = subLat.positionInParent(myMinPos);
-    				maxPos_p = subLat.positionInParent(myMaxPos);
-    				overallMax = currentMax;
+    				if (myMinPos.size() > 0) {
+    					minPos_p = subLat.positionInParent(myMinPos);
+    				}
+    				if (myMaxPos.size() > 0) {
+    					maxPos_p = subLat.positionInParent(myMaxPos);
+    				}
     				overallMin = currentMin;
+    				overallMax = currentMax;
     			}
     			else if (
     				currentMax > overallMax || currentMin < overallMin
@@ -980,11 +1020,15 @@ Bool LatticeStatistics<T>::generateStorageLattice()
     				IPosition myMaxPos, myMinPos;
     				dataProvider->minMaxPos(myMinPos, myMaxPos);
     				if (currentMin < overallMin) {
-    					minPos_p = subLat.positionInParent(myMinPos);
+    					if (myMinPos.size() > 0) {
+    						minPos_p = subLat.positionInParent(myMinPos);
+    					}
     					overallMin = currentMin;
     				}
     				if (currentMax > overallMax) {
-    					maxPos_p = subLat.positionInParent(myMaxPos);
+    					if (myMaxPos.size() > 0) {
+    						maxPos_p = subLat.positionInParent(myMaxPos);
+    					}
     					overallMax = currentMax;
     				}
     			}
@@ -1010,7 +1054,6 @@ void LatticeStatistics<T>::generateRobust () {
 	for (uInt i=0; i<nCursorAxes; i++) {
 		cursorShape(cursorAxes_p(i)) = latticeShape(cursorAxes_p(i));
 	}
-
 	IPosition axisPath = cursorAxes_p;
 	axisPath.append(displayAxes_p);
 	LatticeStepper stepper(latticeShape, cursorShape, axisPath);
@@ -1020,7 +1063,7 @@ void LatticeStatistics<T>::generateRobust () {
 		quartiles.insert(0.75);
 	}
 	std::map<Double, AccumType> quantileToValue;
-    typename vector<CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > >::iterator curCS = _sa.begin();
+    typename vector<CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > >::iterator curSA = _sa.begin();
 	for (stepper.reset(); ! stepper.atEnd(); stepper++) {
 		IPosition pos = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDIAN);
 		IPosition pos2 = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDABSDEVMED);
@@ -1041,18 +1084,18 @@ void LatticeStatistics<T>::generateRobust () {
 		// computing the median and the quartiles simultaneously minimizes
 		// the number of necessary data scans, as opposed to first calling
 		// getMedian() and getQuartiles() separately
-		AccumType median = (*curCS)->getMedianAndQuantiles(quantileToValue, quartiles);
+		AccumType median = (*curSA)->getMedianAndQuantiles(quantileToValue, quartiles);
 		AccumType q1 = quantileToValue[0.25];
 		AccumType q3 = quantileToValue[0.75];
 		AccumType iqr = q3 - q1;
-		AccumType medabsdevmed = (*curCS)->getMedianAbsDevMed();
+		AccumType medabsdevmed = (*curSA)->getMedianAbsDevMed();
 		// Whack results into storage lattice
 		pStoreLattice_p->putAt(median, pos);
 		pStoreLattice_p->putAt(medabsdevmed, pos2);
 		pStoreLattice_p->putAt(iqr, pos3);
 		pStoreLattice_p->putAt(q1, posQ1);
 		pStoreLattice_p->putAt(q3, posQ3);
-		++curCS;
+		++curSA;
 	}
 }
 
@@ -1067,13 +1110,13 @@ void LatticeStatistics<T>::listMinMax(ostringstream& osMin,
    if (!fixedMinMax_p) {
        os_p << LogIO::NORMAL << "Minimum value ";
       os_p.output() << setw(oWidth) << String(osMin);
-      if (type==TpFloat) {
+      if (type==TpFloat && minPos_p.size() > 0) {
          os_p <<  " at " << blcParent_p + minPos_p+1;
       }
       os_p.post();
       os_p << "Maximum value ";
       os_p.output() << setw(oWidth) << String(osMax);
-      if (type==TpFloat) {
+      if (type==TpFloat && maxPos_p.size() > 0) {
          os_p <<  " at " << blcParent_p + maxPos_p+1 << endl;
       }
       os_p << endl;
@@ -1568,24 +1611,24 @@ Bool LatticeStatistics<T>::getLayerStats(
     Int layer = 0;
     for ( pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++ ) {
 	IPosition dPos = pixelIterator.position();
-	if (displayAxes_p.nelements() == 2) {
+        if (displayAxes_p.nelements() == 2) {
             if (zAx == 1) {
                 if (dPos[1] != zLayer) {
-		    continue;
+                    continue;
                 } else {
                     layer = hLayer;
                 }
             }
-	    if (hAx == 1) {
+            if (hAx == 1) {
                 if (dPos[1] != hLayer) {
-		    continue;
+                    continue;
                 } else {
-		    layer = zLayer;
+                    layer = zLayer;
                 }
             }
-	}
-	if (displayAxes_p.nelements() == 1) {
-	    layer = zLayer;
+        }
+        if (displayAxes_p.nelements() == 1) {
+            layer = zLayer;
         }
 	Matrix<AccumType>  matrix(pixelIterator.matrixCursor());
 	for (uInt i=0; i<n1; i++) {
@@ -1882,8 +1925,6 @@ Bool LatticeStatistics<T>::display()
       os_p << LogIO::NORMAL1 << "There is nothing to plot or list" << LogIO::POST;
      return True;
    }
-
-
 // Set up some plotting things
 
    if (plotter_p.isAttached()) {
@@ -1893,7 +1934,6 @@ Bool LatticeStatistics<T>::display()
        plotter_p.svp(0.1,0.9,0.1,0.9);
    }
 
-
 // Generate storage lattice if required
 
    if (needStorageLattice_p) {
@@ -1902,7 +1942,6 @@ Bool LatticeStatistics<T>::display()
 // If we don't have any display axes just summarise the lattice statistics
    if (displayAxes_p.nelements() == 0) {
      summStats ();
-     
      return True;
    }
 
@@ -1928,7 +1967,6 @@ Bool LatticeStatistics<T>::display()
    IPosition matrixAxes(2);
    matrixAxes(0) = 0; 
    matrixAxes(1) = pStoreLattice_p->ndim()-1;
-
    LatticeStepper stepper(pStoreLattice_p->shape(), cursorShape,
                           matrixAxes, IPosition::makeAxisPath(pStoreLattice_p->ndim()));
    RO_LatticeIterator<AccumType> pixelIterator(*pStoreLattice_p, stepper);
@@ -3053,7 +3091,6 @@ void LatticeStatistics<T>::summStats ()
    AccumType nPts = stats(pos);
    pos(0) = SUM;
    AccumType  sum = stats(pos);
-
    pos(0) = MEDIAN;
    AccumType  median = stats(pos);
 
@@ -3071,7 +3108,6 @@ void LatticeStatistics<T>::summStats ()
 //
    pos(0) = SUMSQ;
    AccumType  sumSq = stats(pos);
-
    pos(0) = MEAN;
    AccumType  mean = stats(pos);
 
@@ -3095,7 +3131,6 @@ void LatticeStatistics<T>::summStats ()
     	   mean, var, rms, sigma, dMin, dMax, q1, q3
        );
    }
-   
 }
    
 template <class T>

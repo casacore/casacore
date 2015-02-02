@@ -35,9 +35,7 @@ namespace casacore {
 class FitToHalfStatisticsData {
 public:
 
-	static const Int64 VIRTUAL_LOCATION;
-
-	 // choice of center point based on the corresponding statistics from the
+	// choice of center point based on the corresponding statistics from the
 	// entire distribution of data, or simply an arbitrary value
 	enum CENTER {
 		CMEAN,
@@ -51,8 +49,6 @@ public:
 		GE_CENTER
 	};
 };
-
-const Int64 FitToHalfStatisticsData::VIRTUAL_LOCATION = -1;
 
 }
 

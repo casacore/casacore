@@ -446,7 +446,7 @@ protected:
 	// <group>
 	// Create a vector of unsorted arrays, one array for each bin defined by <src>includeLimits</src>.
 	// <src>includeLimits</src> should be non-overlapping and should be given in ascending order (the
-	// algorithm used assumes this). Once the sum of the lengths of all arrays equals </src>maxCount</src>
+	// algorithm used assumes this). Once the sum of the lengths of all arrays equals <src>maxCount</src>
 	// the method will return with no further processing.
 	// no weights, no mask, no ranges
 	virtual void _populateArrays(

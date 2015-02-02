@@ -29,6 +29,9 @@
 
 namespace casacore {
 
+template <class AccumType>
+const AccumType StatisticsUtilities<AccumType>::TWO = AccumType(2);
+
 // For performance reasons, we ensure code is inlined rather than
 // calling other functions. The performance
 // benefits become important for very large datasets
@@ -161,18 +164,18 @@ Bool StatisticsUtilities<AccumType>::doMin(
 
 #define _NQUADSYM \
 	npts += 2; \
-	AccumType reflect = 2*center - datum; \
+	AccumType reflect = TWO*center - datum; \
 	sumsq += datum*datum + reflect*reflect; \
 	AccumType diff = datum - center; \
-	nvariance += 2*diff*diff;
+	nvariance += TWO*diff*diff;
 
 #define _WQUADSYM \
 	npts += 2; \
-	sumweights += 2*weight; \
-	AccumType reflect = 2*center - datum; \
+	sumweights += TWO*weight; \
+	AccumType reflect = TWO*center - datum; \
 	wsumsq += weight*(datum*datum + reflect*reflect); \
 	AccumType diff = datum - center; \
-	wnvariance += 2*weight*diff*diff;
+	wnvariance += TWO*weight*diff*diff;
 
 #define _MAXMINSYM \
 	if (npts == 2) { \

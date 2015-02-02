@@ -452,6 +452,12 @@ void ImageStatistics<T>::displayStats(
 	// the setw manipulator fails, so I go to a lot of trouble
 	// with ostringstreams (which are useable only once).
 	const Int oPrec = 6;
+	Int oWidth = 14;
+	T* dummy = 0;
+	DataType type = whatType(dummy);
+	if (type==TpComplex) {
+		oWidth = 32;
+	}
 	setStream(os_p.output(), oPrec);
 
 	Unit bunit = pInImage_p->units();
@@ -681,14 +687,14 @@ void ImageStatistics<T>::listMinMax(ostringstream& osMin,
 //
       os_p << "Minimum value "; 
       os_p.output() << setw(oWidth) << osMin.str();
-      if (type==TpFloat) {
-         os_p <<  " at " << blcParent_p + minPos_p+1 << " (" << minPosString << ")" << endl;
+      if (type==TpFloat && minPos_p.size() > 0) {
+          os_p <<  " at " << blcParent_p + minPos_p+1 << " (" << minPosString << ")" << endl;
       }
       os_p.post();
 //
       os_p << "Maximum value ";
       os_p.output() << setw(oWidth) << osMax.str();
-      if (type==TpFloat) {
+      if (type==TpFloat && maxPos_p.size() > 0) {
          os_p <<  " at " << blcParent_p + maxPos_p+1 << " (" << maxPosString << ")" << endl;
       }
       os_p << endl;
