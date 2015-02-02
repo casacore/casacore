@@ -118,6 +118,7 @@ int main()
     		LCEllipsoid *copy = dynamic_cast<LCEllipsoid *>(LCEllipsoid::fromRecord(ellipse.toRecord(""), ""));
     		AlwaysAssert(ellipse == *copy, AipsError);
     		near(ellipse.theta(), copy->theta());
+                delete copy;
 
     		Float theta2 = theta + C::pi;
     		LCEllipsoid ellipse2(
@@ -154,9 +155,9 @@ int main()
     		show(ellipse2);
     		LCEllipsoid *copy = dynamic_cast<LCEllipsoid *>(LCEllipsoid::fromRecord(ellipse2.toRecord(""), ""));
     		AlwaysAssert(ellipse == ellipse2, AipsError);
-
     		AlwaysAssert(ellipse == *copy, AipsError);
     		near(ellipse.theta(), ellipse2.theta());
+                delete copy;
 
     		Float theta2 = C::pi/2;
     		LCEllipsoid ellipse3(

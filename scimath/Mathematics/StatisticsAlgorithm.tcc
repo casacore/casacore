@@ -1,7 +1,7 @@
 
 #include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
 
-#include <casacore/casa/Containers/ContainerIO.h>
+#include <casacore/casa/BasicSL/STLIO.h>
 
 namespace casacore {
 

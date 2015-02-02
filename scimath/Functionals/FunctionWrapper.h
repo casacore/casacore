@@ -31,6 +31,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/WrapperParam.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -110,11 +111,11 @@ public:
   // Construct an n-dimensional  function with parameters.
   FunctionWrapper(T(*f)(const Vector<T>&, const Vector<T>&),
 		    const Vector<T> &par, const uInt dim=1);
-  // Copy constructor (deep copy)
+  // Copy constructor (reference semantics)
   // <group>
   FunctionWrapper(const FunctionWrapper<T> &other);
   // </group>
-  // Copy assignment (deep copy)
+  // Copy assignment (reference semantics)
   FunctionWrapper<T> &operator=(const FunctionWrapper<T> &other);
 
   // Destructor
@@ -139,7 +140,7 @@ public:
 protected:
   //# Data
   // The function aid object
-  WrapperBase<T> *doit_p;
+  CountedPtr<WrapperBase<T> > doit_p;
 
   //# Make members of parent classes known.
 protected:
