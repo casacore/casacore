@@ -46,6 +46,8 @@ template <class AccumType, class InputIterator, class MaskIterator=const Bool*> 
 	: public ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator> {
 public:
 
+	const static AccumType TWO;
+
 	// <src>value</src> is only used if <src>center</src>=CVALUE
 	FitToHalfStatistics(
 		FitToHalfStatisticsData::CENTER center=FitToHalfStatisticsData::CMEAN,

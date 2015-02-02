@@ -26,9 +26,9 @@
 #ifndef SCIMATH_STATSDATAPROVIDER_H
 #define SCIMATH_STATSDATAPROVIDER_H
 
-#include <casacore/casa/aips.h>
 #include <casacore/scimath/Mathematics/StatisticsTypes.h>
 
+#include <casacore/casa/aips.h>
 
 namespace casacore {
 
@@ -97,9 +97,9 @@ public:
 	// Data providers can use this information to transform into something more useful, eg
 	// an IPosition for lattice data providers, so that they may be retreived easily after
 	// statistics have been calculated. The default implementations do nothing.
-	virtual void updateMaxPos(const std::pair<uInt, Int64>&) {}
+	virtual void updateMaxPos(const std::pair<Int64, Int64>&) {}
 
-	virtual void updateMinPos(const std::pair<uInt, Int64>&) {}
+	virtual void updateMinPos(const std::pair<Int64, Int64>&) {}
 	// </group>
 
 protected:

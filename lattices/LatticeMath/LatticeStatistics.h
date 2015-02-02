@@ -42,6 +42,7 @@
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Logging/LogIO.h>
+#include <casacore/scimath/Mathematics/FitToHalfStatisticsData.h>
 #include <casacore/scimath/Mathematics/StatisticsData.h>
 #include <vector>
 #include <list>
@@ -198,7 +199,19 @@ template <class T> class LatticeStatistics : public LatticeStatsBase
 
 public:
 
+
 	typedef typename NumericTraits<T>::PrecisionType AccumType;
+
+	struct AlgConf {
+		// hinges-fences f factor
+		Double hf;
+		// fit to have center type
+		FitToHalfStatisticsData::CENTER ct;
+		// fit to half data portion to use
+		FitToHalfStatisticsData::USE_DATA ud;
+		// fit to half center value
+		AccumType cv;
+	};
 
 // Constructor takes the lattice and a <src>LogIO</src> object for logging.
 // You can specify whether you want to see progress meters or not.
@@ -366,6 +379,14 @@ public:
 		   StatisticsData::ALGORITHM algorithm
    );
 
+   // throws exception if the algorithm has not been set to fit to half.
+   // <src>centerValue</src> is only used if <src>centerType</src>=CVALUE
+      void configureFitToHalf(
+    		  FitToHalfStatisticsData::CENTER centerType=FitToHalfStatisticsData::CMEAN,
+    		  FitToHalfStatisticsData::USE_DATA useData=FitToHalfStatisticsData::LE_CENTER,
+    		  AccumType centerValue=0
+      );
+
    // throws exception if the algorithm has not been set to hinges-fences
    void configureHingesFences(Double f);
 
@@ -449,6 +470,7 @@ protected:
    inline IPosition _storageLatticeShape() const { return pStoreLattice_p->shape(); }
 
 private:
+
    const MaskedLattice<T>* pInLattice_p;
    TempLattice<AccumType>* pStoreLattice_p;
    Vector<Int> nxy_p, statsToPlot_p;
@@ -465,7 +487,7 @@ private:
    vector<CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > > _sa;
 
    StatisticsData::ALGORITHM _algorithm;
-   Record _algConf;
+   AlgConf _algConf;
 
 // Summarize the statistics found over the entire lattice
    virtual void summStats();
@@ -686,6 +708,7 @@ public:
    void minMaxPos(IPosition& minPos, IPosition& maxPos);
 
 private:
+
     Bool noInclude_p, noExclude_p, fixedMinMax_p;
     IPosition minPos_p, maxPos_p;
 

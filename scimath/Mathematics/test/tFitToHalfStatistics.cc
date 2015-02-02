@@ -1470,6 +1470,49 @@ int main() {
     		AlwaysAssert(quantileToValue[0.25] == 30, AipsError);
     		AlwaysAssert(quantileToValue[0.75] == 30, AipsError);
     	}
+    	{
+    		// a large array so we test binning
+    		Array<Double> big(IPosition(1, 100000));
+    		Array<Double>::iterator biter = big.begin();
+    		Array<Double>::iterator bend = big.end();
+    		uInt count = 0;
+    		while (biter != bend) {
+    			*biter = count % 2 == 0 ? (Float)count : -(Float)count - 0.5;
+    			++biter;
+    			++count;
+    		}
+    		FitToHalfStatistics<Double, Array<Double>::const_iterator, Array<Bool>::const_iterator> fh(
+    			FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
+    		);
+    		fh.addData(big.begin(), big.size());
+    		std::set<Double> quantiles;
+    		quantiles.insert(0.25);
+    		quantiles.insert(0.75);
+    		std::map<Double, Double> quantileToValue;
+    		CountedPtr<uInt64> npts;
+    		CountedPtr<Double> mymin, mymax;
+    		Double median = fh.getMedianAndQuantiles(
+    			quantileToValue, quantiles, npts, mymin, mymax, 100
+    		);
+    		AlwaysAssert(near(median, -0.75), AipsError);
+    		AlwaysAssert(near(quantileToValue[0.25],-50001.5), AipsError);
+    		AlwaysAssert(near(quantileToValue[0.75], 49998.0), AipsError);
+
+    		fh = FitToHalfStatistics<Double, Array<Double>::const_iterator, Array<Bool>::const_iterator>(
+    			FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::GE_CENTER, 4
+    		);
+    		fh.addData(big.begin(), big.size());
+    		quantileToValue.clear();
+    		npts = NULL;
+    		mymin = NULL;
+    		mymax = NULL;
+    		median = fh.getMedianAndQuantiles(
+    			quantileToValue, quantiles, npts, mymin, mymax, 100
+    		);
+    		AlwaysAssert(near(median, 4.0), AipsError);
+    		AlwaysAssert(near(quantileToValue[0.25], -49994.0), AipsError);
+    		AlwaysAssert(near(quantileToValue[0.75], 50000.0), AipsError);
+    	}
     }
     catch (const AipsError& x) {
         cout << x.getMesg() << endl;

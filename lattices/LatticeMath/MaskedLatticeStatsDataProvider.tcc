@@ -97,12 +97,13 @@ Bool MaskedLatticeStatsDataProvider<T>::hasMask() const {
 
 template <class T>
 void MaskedLatticeStatsDataProvider<T>::reset() {
+	LatticeStatsDataProviderBase<T>::reset();
 	_iter.reset();
 }
 
 template <class T>
 void MaskedLatticeStatsDataProvider<T>::updateMaxPos(
-	const std::pair<uInt, Int64>& maxpos
+	const std::pair<Int64, Int64>& maxpos
 ) {
 	this->_updateMaxPos(
 		_iter.position() + toIPositionInArray(maxpos.second, _currentSlice.shape())
@@ -111,7 +112,7 @@ void MaskedLatticeStatsDataProvider<T>::updateMaxPos(
 
 template <class T>
 void MaskedLatticeStatsDataProvider<T>::updateMinPos(
-	const std::pair<uInt, Int64>& minpos
+	const std::pair<Int64, Int64>& minpos
 ) {
 	this->_updateMinPos(
 		_iter.position() + toIPositionInArray(minpos.second, _currentSlice.shape())

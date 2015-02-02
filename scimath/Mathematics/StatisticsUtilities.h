@@ -190,6 +190,9 @@ public:
 	);
 
 private:
+
+	const static AccumType TWO;
+
 	StatisticsUtilities() {}
 
 };

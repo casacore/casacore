@@ -74,9 +74,9 @@ public:
 
 	// <group>
 	// see base class documentation.
-	void updateMaxPos(const std::pair<uInt, Int64>& maxpos);
+	void updateMaxPos(const std::pair<Int64, Int64>& maxpos);
 
-	void updateMinPos(const std::pair<uInt, Int64>& minpos);
+	void updateMinPos(const std::pair<Int64, Int64>& minpos);
 	// </group>
 
 private:
@@ -86,8 +86,6 @@ private:
 	Bool _delData;
 
 	void _freeStorage();
-
-	//uInt _nsteps() const;
 
 };
 

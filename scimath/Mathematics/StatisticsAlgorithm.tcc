@@ -30,6 +30,7 @@ StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::operator= (
 	 _sortedArray = other._sortedArray;
 	 _statsToCalculate = other._statsToCalculate;
 	 _unsupportedStats = other._unsupportedStats;
+	 // WARN reference sementics
 	 _dataProvider = other._dataProvider;
 	 return *this;
 }
