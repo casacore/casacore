@@ -176,6 +176,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    }
 
 	    fits_clear_Fptr( fptr->Fptr, status);  // clear Fptr address 
+            free((fptr->Fptr)->iobuffer);          // free memory for I/O buffers
 	    free((fptr->Fptr)->headstart);         // free memory for headstart array 
 	    free((fptr->Fptr)->filename);          // free memory for the filename
 	    (fptr->Fptr)->filename = 0;

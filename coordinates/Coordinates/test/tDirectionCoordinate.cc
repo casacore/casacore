@@ -197,6 +197,7 @@ int main()
          if (!dc5.near(dc3)) {
             throw(AipsError(String("wcs interface constructor failed consistency test 2")));
          }
+         wcsfree(&wcs);
       }  
 
 
@@ -314,6 +315,7 @@ int main()
     	  Vector<Double> p2World = exp.copy();
 
     	  AlwaysAssert(allTrue(got == exp), AipsError);
+          delete c;
 
     	  // non-zero rotation
     	  c = dc.rotate(Quantity(30, "deg"));
@@ -323,6 +325,7 @@ int main()
     	  exp[0] = 72.05771366;
     	  exp[1] = -11.60254038;
     	  AlwaysAssert(allNear(got, exp, 1e-8), AipsError);
+          delete c;
       }
       {
     	  cout << "*** Test convert()" << endl;

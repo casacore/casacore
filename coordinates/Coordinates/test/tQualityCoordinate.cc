@@ -570,16 +570,17 @@ void doit6(QualityCoordinate& lc, Bool verbose)
 		else
 			if (verbose)
 				cout << "Succeeded to find doNear values!" << endl;
+                delete lc2;
 
 		Vector<Int> newQuality(1);
 		newQuality.resize(1);
 		newQuality(0) = Quality::ERROR;
 		Coordinate *lc3 = new QualityCoordinate(newQuality);
-		if (lc.doNearPixel(*lc3, b1, b2))
+		if (lc.doNearPixel(*lc3, b1, b2)) 
 			throw(AipsError("Unexpectedly succeeded to find doNear values!"));
 		else
 			if (verbose)
 				cout << "Failed as expected to find doNear values!" << endl;
-
+                delete lc3;
 	}
 }

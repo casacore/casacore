@@ -128,7 +128,7 @@ public:
   DataType dataType() const;
     
   // Get the value.
-  // If possible, it converts the the data as needed.
+  // If possible, it converts the data as needed.
   // <group>
   Bool                  asBool    () const;
   uChar                 asuChar   () const;
