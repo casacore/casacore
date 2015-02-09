@@ -250,7 +250,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 	String timeref=msmc.time().keywordSet().subRecord("MEASINFO").asString("Ref");
 
 	// Output info
-	os << "Data records: " << nrow() << "       Total integration time = "
+	os << "Data records: " << nrow() << "       Total elapsed time = "
 			<< exposTime << " seconds" << endl
 			<< "   Observed from   " << MVTime(startTime/C::day).string(MVTime::DMY,7)  //startMVT.string()
 			<< "   to   " << MVTime(stopTime/C::day).string(MVTime::DMY,7)  // stopMVT.string()
@@ -1829,9 +1829,9 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 		os.output().width(widthFrame);      os << "  Frame";
 		os.output().width(widthFreq);
                 if (oneBased) {
-                  os << "Ch1(MHz)";
+                  os << "   Ch1(MHz)";
                 } else {
-                  os << "Ch0(MHz)";
+                  os << "   Ch0(MHz)";
                 }
 		os.output().width(widthFreq);	os << " ChanWid(kHz) ";
 		os.output().width(widthFreq);	os << " TotBW(kHz)";
