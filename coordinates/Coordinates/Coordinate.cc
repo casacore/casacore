@@ -971,8 +971,7 @@ Bool Coordinate::toWorldWCS (Vector<Double>& world, const Vector<Double>& pixel,
 //
     Block<double> imgCrd(nAxes);
     double phi;
-    double theta;
-
+    double theta=0;   // initialize, because wcslib not always sets theta
 // Convert from pixel to world with wcs units
 
     int stat;

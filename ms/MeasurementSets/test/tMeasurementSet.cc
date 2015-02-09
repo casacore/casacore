@@ -266,6 +266,9 @@ uInt tNonStatic(const String& sdmsName)
     //    String parentName = ms.tableName();
     //    String subName = ms.keywordSet().asTable("ANTENNA").tableName();
     //    cout << "Parent: "<<parentName<<", sub:"<<subName<<endl;
+    // Write the bool column, otherwise valgrind gives 'uninitialized error'.
+    ScalarColumn<Bool> flagCol(ms, "FLAG_ROW");
+    flagCol.fillColumn (False);
     ms.flush();
 
     // ok, use operator to convert ms to sms

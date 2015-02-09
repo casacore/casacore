@@ -271,6 +271,9 @@ SpectralCoordinate::SpectralCoordinate(
 		nativeType_p = SpectralCoordinate::VRAD;
 	}
 
+        // Now remake Velocity Machine to be consistent with state
+
+	deleteVelocityMachine();
 	makeVelocityMachine (
 		velUnit_p, velType_p, unit_p,
 		type_p, restfreqs_p(restfreqIdx_p)
@@ -317,9 +320,9 @@ SpectralCoordinate::SpectralCoordinate(
 
 	_setTabulatedFrequencies(frequencies);
 
-	// Now remake Velocity Machine to be consistent with state
+        // Now remake Velocity Machine to be consistent with state
 
-	delete pVelocityMachine_p;
+	deleteVelocityMachine();
 	makeVelocityMachine (
 		velUnit_p, velType_p, unit_p,
         type_p, restfreqs_p(restfreqIdx_p)
