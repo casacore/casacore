@@ -1754,7 +1754,7 @@ void MSSummary::listPolarization (LogIO& os, Bool verbose) const
 }
 
 void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
-                                        Bool oneBased) const
+                                        Bool /*oneBased*/) const
 {
 	// Create a MS-spwin-columns object
 	ROMSSpWindowColumns msSWC(pMS->spectralWindow());
@@ -1826,13 +1826,8 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 		os.output().setf(ios::right, ios::adjustfield);
 		os.output().width(widthNumChan);	os << " #Chans" << " ";
 		os.output().setf(ios::left, ios::adjustfield);
-		os.output().width(widthFrame);      os << "  Frame";
-		os.output().width(widthFreq);
-                if (oneBased) {
-                  os << "   Ch1(MHz)";
-                } else {
-                  os << "   Ch0(MHz)";
-                }
+		os.output().width(widthFrame);  os << "  Frame";
+		os.output().width(widthFreq);   os << "   Ch0(MHz)";
 		os.output().width(widthFreq);	os << " ChanWid(kHz) ";
 		os.output().width(widthFreq);	os << " TotBW(kHz)";
 		os.output().width(widthFreq);	os << "CtrFreq(MHz) ";
