@@ -90,10 +90,10 @@ public:
 	// non-unity strides, are not included in any specified ranges, are masked,
 	// or have associated weights of zero are not considered as dataset members
 	// for quantile computations.
-	// If one has a priori information regarding
-	// the number of points (npts) and/or the minimum and maximum values of the data
-	// set, these can be supplied to improve performance. Note however, that if these
-	// values are not correct, the resulting median
+	// If one has a priori information regarding the number of points (npts) and/or
+	// the minimum and maximum values of the data set, these can be supplied to
+	// improve performance. Note however, that if these values are not correct, the
+	// resulting median
 	// and/or quantile values will also not be correct (although see the following notes regarding
 	// max/min). Note that if this object has already had getStatistics()
 	// called, and the min and max were calculated, there is no need to pass these values in
@@ -123,9 +123,11 @@ public:
 	// If one needs to compute both the median and quantile values, it is better to call
 	// getMedianAndQuantiles() rather than getMedian() and getQuantiles() separately, as the
 	// first will scan large data sets fewer times than calling the separate methods.
-	// The return value is the median; the quantiles are returned in the <src>quantileToValue</src> map.
+	// The return value is the median; the quantiles are returned in the <src>quantiles</src> map.
+	// Values in the <src>fractions</src> set represent the locations in the CDF and should be
+	// between 0 and 1, exclusive.
 	virtual AccumType getMedianAndQuantiles(
-		std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
+		std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL,
 		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
@@ -138,10 +140,10 @@ public:
 		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
 	);
 
-	// Get the specified quantiles. <src>quantiles</src> must be between 0 and 1,
+	// Get the specified quantiles. <src>fractions</src> must be between 0 and 1,
 	// noninclusive.
 	virtual std::map<Double, AccumType> getQuantiles(
-		const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts=NULL,
+		const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
 		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
 	);

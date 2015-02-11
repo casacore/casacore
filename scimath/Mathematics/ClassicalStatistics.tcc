@@ -154,19 +154,19 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 
 template <class AccumType, class InputIterator, class MaskIterator>
 AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedianAndQuantiles(
-	std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
+	std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
 	Bool persistSortedArray
 ) {
 	std::set<uInt64> medianIndices;
-	quantileToValue.clear();
+	quantiles.clear();
 	CountedPtr<uInt64> mynpts = knownNpts.null() ? new uInt64(getNPts()) : knownNpts;
 	if (_getStatsData().median.null()) {
 		medianIndices = _medianIndices(mynpts);
 	}
-	std::map<Double, uInt64> quantileToIndex = StatisticsData::indicesFromQuantiles(
-		*mynpts, quantiles
+	std::map<Double, uInt64> quantileToIndex = StatisticsData::indicesFromFractions(
+		*mynpts, fractions
 	);
 	std::set<uInt64> indices = medianIndices;
 	std::map<Double, uInt64>::const_iterator qToIIter = quantileToIndex.begin();
@@ -190,11 +190,11 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 			)
 			: new AccumType(indexToValue[*medianIndices.begin()]);
 	}
-	std::set<Double>::const_iterator qIter = quantiles.begin();
-	std::set<Double>::const_iterator qEnd = quantiles.end();
-	while (qIter != qEnd) {
-		quantileToValue[*qIter] = indexToValue[quantileToIndex[*qIter]];
-		++qIter;
+	std::set<Double>::const_iterator fIter = fractions.begin();
+	std::set<Double>::const_iterator fEnd = fractions.end();
+	while (fIter != fEnd) {
+		quantiles[*fIter] = indexToValue[quantileToIndex[*fIter]];
+		++fIter;
 	}
 	return *_getStatsData().median;
 }
@@ -235,11 +235,11 @@ uInt64 ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getNPts() {
 
 template <class AccumType, class InputIterator, class MaskIterator>
 std::map<Double, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getQuantiles(
-	const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
+	const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
 	Bool persistSortedArray
 ) {
-	if (quantiles.empty()) {
+	if (fractions.empty()) {
 		return std::map<Double, AccumType>();
 	}
 	ThrowIf(
@@ -249,12 +249,12 @@ std::map<Double, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIt
 		"setCalculateAsAdded(False) on this object"
 	);
 	ThrowIf(
-		*quantiles.begin() <= 0 || *quantiles.rbegin() >= 1,
+		*fractions.begin() <= 0 || *fractions.rbegin() >= 1,
 		"Value of all quantiles must be between 0 and 1 (noninclusive)"
 	);
 	uInt64 mynpts = knownNpts.null() ? getNPts() : *knownNpts;
-	std::map<Double, uInt64> quantileToIndexMap = StatisticsData::indicesFromQuantiles(
-		mynpts, quantiles
+	std::map<Double, uInt64> quantileToIndexMap = StatisticsData::indicesFromFractions(
+		mynpts, fractions
 	);
 	// This seemingly convoluted way of doing things with maps is necessary because
 	// multiple quantiles can map to the same sorted array index, and multiple array

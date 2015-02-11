@@ -172,52 +172,49 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getMinMax(
 
 template <class AccumType, class InputIterator, class MaskIterator>
 std::map<Double, AccumType> FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getQuantiles(
-	const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts,
+	const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts,
 	CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
 	uInt binningThreshholdSizeBytes, Bool persistSortedArray
 ) {
 	ThrowIf(
-		*quantiles.begin() <= 0 || *quantiles.rbegin() >= 1,
+		*fractions.begin() <= 0 || *fractions.rbegin() >= 1,
 		"Value of all quantiles must be between 0 and 1 (noninclusive)"
 	);
 	ThrowIf (
 		! knownNpts.null() && *knownNpts % 2 != 0,
 		"knownNpts must be even for this class"
 	);
-	// The quantiles in the real part of the dataset are twice the quantiles in the
-	// full (real + virtual) dataset since the full dataset is exactly twice the size
-	// of the real part of the dataset.
-	// quantiles that exist in the virtual part of the dataset are determined from the
-	// real quantiles reflected about the center point.
-	std::set<Double> realPortionQuantiles;
-	std::set<Double>::const_iterator qiter = quantiles.begin();
-	std::set<Double>::const_iterator qend = quantiles.end();
-	// map the actual (full dataset) quantiles to the real portion quantiles
+	// fractions that exist in the virtual part of the dataset are determined from the
+	// real fractions reflected about the center point.
+	std::set<Double> realPortionFractions;
+	std::set<Double>::const_iterator fiter = fractions.begin();
+	std::set<Double>::const_iterator fend = fractions.end();
+	// map the actual (full dataset) fractions to the real portion fractions
 	std::map<Double, Double> actualToReal;
-	Double qreal = 0;
+	Double freal = 0;
 	std::map<Double, AccumType> actual;
-	for ( ; qiter != qend; ++qiter) {
-		if (near(*qiter, 0.5)) {
+	for ( ; fiter != fend; ++fiter) {
+		if (near(*fiter, 0.5)) {
 			if (_realMin.null() || _realMax.null()) {
 				AccumType mymin, mymax;
 				getMinMax(mymin, mymax);
 			}
-			actual[*qiter] = _useLower
+			actual[*fiter] = _useLower
 				? *_realMax
 				: TWO*_centerValue - *_realMin;
 			continue;
 		}
-		Bool isVirtualQ = (_useLower && *qiter > 0.5)
-			|| (! _useLower && *qiter < 0.5);
+		Bool isVirtualQ = (_useLower && *fiter > 0.5)
+			|| (! _useLower && *fiter < 0.5);
 		if (isVirtualQ) {
-			std::set<Double> actualQ;
-			actualQ.insert(*qiter);
+			std::set<Double> actualF;
+			actualF.insert(*fiter);
 			uInt64 allNPts = knownNpts.null()
 				? getNPts() : *knownNpts;
-			std::map<Double, uInt64> actualQToI = StatisticsData::indicesFromQuantiles(
-				allNPts, actualQ
+			std::map<Double, uInt64> actualFToI = StatisticsData::indicesFromFractions(
+				allNPts, actualF
 			);
-			uInt64 actualIdx = actualQToI[*qiter];
+			uInt64 actualIdx = actualFToI[*fiter];
 			uInt64 realIdx = 0;
 			if (_useLower) {
 				realIdx = allNPts - (actualIdx + 1);
@@ -232,7 +229,7 @@ std::map<Double, AccumType> FitToHalfStatistics<AccumType, InputIterator, MaskIt
 					AccumType mymin, mymax;
 					getMinMax(mymin, mymax);
 				}
-				actual[*qiter] = TWO*_centerValue - *_realMax;
+				actual[*fiter] = TWO*_centerValue - *_realMax;
 				continue;
 			}
 			else if (! _useLower && realIdx == 0) {
@@ -242,29 +239,29 @@ std::map<Double, AccumType> FitToHalfStatistics<AccumType, InputIterator, MaskIt
 					AccumType mymin, mymax;
 					getMinMax(mymin, mymax);
 				}
-				actual[*qiter] = TWO*_centerValue - *_realMin;
+				actual[*fiter] = TWO*_centerValue - *_realMin;
 				continue;
 			}
 			else {
-				qreal = Double(realIdx + 1)/Double(allNPts/2);
-				if (qreal == 1) {
+				freal = Double(realIdx + 1)/Double(allNPts/2);
+				if (freal == 1) {
 					if (_realMin.null() || _realMax.null()) {
 						AccumType mymin, mymax;
 						getMinMax(mymin, mymax);
 					}
-					actual[*qiter] = *_getStatsData().min;
+					actual[*fiter] = *_getStatsData().min;
 					continue;
 				}
 			}
 		}
 		else {
 			// quantile is in the real part of the dataset
-			qreal = _useLower ? 2*(*qiter) : 2*(*qiter - 0.5);
+			freal = _useLower ? 2*(*fiter) : 2*(*fiter - 0.5);
 		}
-		realPortionQuantiles.insert(qreal);
-		actualToReal[*qiter] = qreal;
+		realPortionFractions.insert(freal);
+		actualToReal[*fiter] = freal;
 	}
-	if (realPortionQuantiles.empty()) {
+	if (realPortionFractions.empty()) {
 		return actual;
 	}
 	// if given, knownNpts should be the number of points in the full dataset, or twice
@@ -277,25 +274,25 @@ std::map<Double, AccumType> FitToHalfStatistics<AccumType, InputIterator, MaskIt
 	CountedPtr<AccumType> realMin, realMax;
 	_getRealMinMax(realMin, realMax, knownMin, knownMax);
 	std::map<Double, AccumType> realPart = ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::getQuantiles(
-		realPortionQuantiles, realNPts, realMin, realMax, binningThreshholdSizeBytes,
+		realPortionFractions, realNPts, realMin, realMax, binningThreshholdSizeBytes,
 		persistSortedArray
 	);
-	qiter = quantiles.begin();
-	while (qiter != qend) {
-		if (actual.find(*qiter) == actual.end()) {
-			Double realQ = actualToReal[*qiter];
-			AccumType actualValue = realPart[realQ];
+	fiter = fractions.begin();
+	while (fiter != fend) {
+		if (actual.find(*fiter) == actual.end()) {
+			Double realF = actualToReal[*fiter];
+			AccumType actualValue = realPart[realF];
 			if (
-				(_useLower && *qiter > 0.5)
-				|| (! _useLower && *qiter < 0.5)
+				(_useLower && *fiter > 0.5)
+				|| (! _useLower && *fiter < 0.5)
 			) {
 				// quantile in virtual part of the data set, reflect corresponding
 				// real value to get actual value
 				actualValue = TWO*_centerValue - actualValue;
 			}
-			actual[*qiter] = actualValue;
+			actual[*fiter] = actualValue;
 		}
-		++qiter;
+		++fiter;
 	}
 	return actual;
 }

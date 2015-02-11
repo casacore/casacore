@@ -499,7 +499,7 @@ protected:
 	) const;
 	// </group>
 
-	inline void _setRange(CountedPtr<std::pair<AccumType, AccumType> > r) { _range = r; }
+	inline void _setRange(CountedPtr<std::pair<AccumType, AccumType> > r) { this->_clearStats(); _range = r; }
 
 	// derived classes need to implement how to set their respective range
 	virtual void _setRange() = 0;
@@ -571,7 +571,6 @@ protected:
 private:
 	CountedPtr<std::pair<AccumType, AccumType> > _range;
 	Bool _doMedAbsDevMed;
-	//CountedPtr<AccumType> _median;
 
 };
 

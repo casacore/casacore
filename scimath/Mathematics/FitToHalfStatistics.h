@@ -102,19 +102,9 @@ public:
 	// not masked and have weights > 0, should be exactly correct. <src>min</src> can be less than
 	// the true minimum, and <src>max</src> can be greater than the True maximum, but for best
 	// performance, these should be as close to the actual min and max as possible.
-	// In order for quantile computations to occur over multiple datasets, all datasets
-	// must be available. This means that if setCalculateAsAdded()
-	// was previously called by passing in a value of True, these methods will throw
-	// an exception as the previous call indicates that there is no guarantee that
-	// all datasets will be available. If one uses a data provider (by having called
-	// setDataProvider()), then this should not be an issue.
 
-	// If one needs to compute both the median and quantile values, it is better to call
-	// getMedianAndQuantiles() rather than getMedian() and getQuantiles() seperately, as the
-	// first will scan large data sets fewer times than calling the seperate methods.
-	// The return value is the median; the quantiles are returned in the <src>quantileToValue</src> map.
 	AccumType getMedianAndQuantiles(
-		std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
+		std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL,
 		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
@@ -127,10 +117,10 @@ public:
 		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
 	);
 
-	// Get the specified quantiles. <src>quantiles</src> must be between 0 and 1,
+	// Get the specified quantiles. <src>fractions</src> must be between 0 and 1,
 	// noninclusive.
 	std::map<Double, AccumType> getQuantiles(
-		const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts=NULL,
+		const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
 		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
 	);

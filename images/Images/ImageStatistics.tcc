@@ -64,7 +64,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 //
 : LatticeStatistics<T>(image, os, showProgress, forceDisk),
   pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)),
-  precision_(-1), _showRobust(False), _recordMessages(False), _messages()
+  precision_(-1), _showRobust(False), _recordMessages(False), _listStats(True),  _messages()
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
@@ -80,7 +80,7 @@ ImageStatistics<T>::ImageStatistics (const ImageInterface<T>& image,
 //
 : LatticeStatistics<T>(image, showProgress, forceDisk),
   pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)),
-  precision_(-1), _showRobust(False), _recordMessages(False), _messages()
+  precision_(-1), _showRobust(False), _recordMessages(False), _listStats(True), _messages()
 {
    if (!setNewImage(image)) {
       os_p << error_p << LogIO::EXCEPTION;
@@ -278,7 +278,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 //   Bool    Indicates coordinate transformations failed
 //
 {
-   if (!haveLogger_p) {
+   if (!haveLogger_p || ! _listStats) {
 
 // We will consider this situation as successful
 
@@ -429,7 +429,7 @@ void ImageStatistics<T>::displayStats(
 		AccumType nPts, AccumType sum, AccumType median,
 		AccumType medAbsDevMed, AccumType quartile, AccumType sumSq,
 		AccumType mean, AccumType var, AccumType rms, AccumType sigma,
-		AccumType dMin, AccumType dMax, AccumType, AccumType
+		AccumType dMin, AccumType dMax, AccumType q1, AccumType q3
 ) {
 	if ( ! doList_p ) {
 		// Nothing to display, listing data is turned off.
@@ -440,26 +440,17 @@ void ImageStatistics<T>::displayStats(
 	// Find world coordinates of min and max. We list pixel coordinates
 	// of min/max relative to the start of the parent lattice
 	//if (!fixedMinMax_p) {
-
 	CoordinateSystem cSys(pInImage_p->coordinates());
 	String minPosString = CoordinateUtil::formatCoordinate (minPos_p, cSys, precision_);
 	String maxPosString = CoordinateUtil::formatCoordinate (maxPos_p, cSys, precision_);
 	//}
-
 
 	// Have to convert LogIO object to ostream before can apply
 	// the manipulators.  Also formatting Complex numbers with
 	// the setw manipulator fails, so I go to a lot of trouble
 	// with ostringstreams (which are useable only once).
 	const Int oPrec = 6;
-	Int oWidth = 14;
-	T* dummy = 0;
-	DataType type = whatType(dummy);
-	if (type==TpComplex) {
-		oWidth = 32;
-	}
 	setStream(os_p.output(), oPrec);
-
 	Unit bunit = pInImage_p->units();
 	String sbunit = bunit.getName();
 	Quantity uSquared(1, bunit);
@@ -486,11 +477,6 @@ void ImageStatistics<T>::displayStats(
 		oss.str("");
 	}
 
-	IPosition myMaxPos = maxPos_p;
-	IPosition myMinPos = minPos_p;
-	myMaxPos += blc_;
-	myMinPos += blc_;
-
 	if (LattStatsSpecialize::hasSomePoints(nPts)) {
 		oss << "         -- number of points [npts]:                " << nPts;
 		messages.push_back(oss.str());
@@ -501,18 +487,28 @@ void ImageStatistics<T>::displayStats(
 		oss << "         -- minimum value [min]:                    " << dMin << " " << sbunit;
 		messages.push_back(oss.str());
 		oss.str("");
-		oss << "         -- position of max value (pixel) [maxpos]: " << myMaxPos;
-		messages.push_back(oss.str());
-		oss.str("");
-		oss << "         -- position of min value (pixel) [minpos]: " << myMinPos;
-		messages.push_back(oss.str());
-		oss.str("");
-		oss << "         -- position of max value (world) [maxposf]: " << maxPosString;
-		messages.push_back(oss.str());
-		oss.str("");
-		oss << "         -- position of min value (world) [minposf]: " << minPosString;
-		messages.push_back(oss.str());
-		oss.str("");
+		if (maxPos_p.size() > 0) {
+			IPosition myMaxPos = maxPos_p + blc_;
+			oss << "         -- position of max value (pixel) [maxpos]: " << myMaxPos;
+			messages.push_back(oss.str());
+			oss.str("");
+		}
+		if (minPos_p.size() > 0) {
+			IPosition myMinPos = minPos_p + blc_;
+			oss << "         -- position of min value (pixel) [minpos]: " << myMinPos;
+			messages.push_back(oss.str());
+			oss.str("");
+		}
+		if (maxPos_p.size() > 0) {
+			oss << "         -- position of max value (world) [maxposf]: " << maxPosString;
+			messages.push_back(oss.str());
+			oss.str("");
+		}
+		if (minPos_p.size() > 0) {
+			oss << "         -- position of min value (world) [minposf]: " << minPosString;
+			messages.push_back(oss.str());
+			oss.str("");
+		}
 		oss << "         -- Sum of pixel values [sum]:               " << sum << " " << sbunit;
 		messages.push_back(oss.str());
 		oss.str("");
@@ -553,8 +549,14 @@ void ImageStatistics<T>::displayStats(
 				<< " " << sbunit;
 			messages.push_back(oss.str());
 			oss.str("");
-			oss << "        -- Quartile [quartile]:                     " << quartile << " " <<
+			oss << "        -- IQR [quartile]:                          " << quartile << " " <<
 				sbunit;
+			messages.push_back(oss.str());
+			oss.str("");
+			oss << "        -- First quartile [q1]:                     " << q1 << " " << sbunit;
+			messages.push_back(oss.str());
+			oss.str("");
+			oss << "        -- Third quartile [q3]:                     " << q3 << " " << sbunit;
 			messages.push_back(oss.str());
 			oss.str("");
 		}

@@ -220,7 +220,7 @@ namespace casacore {
 ///   </tr>
 ///   <tr>
 ///   <td><a href="group__images.html">images</a></td>
-///   <td>coordinates fits measures tables scimath casa
+///   <td>lattices coordinates fits measures tables scimath casa
 ///      mirlib wcslib cfitsio</td>
 ///   </tr>
 ///   <tr>

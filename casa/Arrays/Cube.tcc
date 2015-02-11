@@ -73,9 +73,11 @@ template<class T> Cube<T>::Cube(const IPosition &len, const T &initialValue)
 }
 
 template<class T> Cube<T>::Cube(const Cube<T> &other)
-: Array<T>(other)
+  : Array<T>(other),
+    xinc_p (other.xinc_p),
+    yinc_p (other.yinc_p),
+    zinc_p (other.zinc_p)
 {
-    makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
 }
 
