@@ -317,7 +317,7 @@ protected:
 
 private:
     // Cached constants to improve indexing.
-    Int64 xinc_p, yinc_p, zinc_p;
+    size_t xinc_p, yinc_p, zinc_p;
     // Helper fn to calculate the indexing constants.
     void makeIndexingConstants();
 };

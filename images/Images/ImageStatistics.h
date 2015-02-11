@@ -151,7 +151,7 @@ public:
 
    inline void clearMessages() { _messages.resize(0); }
 
-
+    void setListStats(Bool b) { _listStats = b; }
 protected:
 
    typedef typename NumericTraits<T>::PrecisionType AccumType;
@@ -169,7 +169,7 @@ private:
    const ImageInterface<T>* pInImage_p;
    IPosition blc_;
    Int precision_;
-   Bool _showRobust, _recordMessages;
+   Bool _showRobust, _recordMessages, _listStats;
    mutable vector<String> _messages;
 
 // Virtual functions.  See LatticeStatistics for more information

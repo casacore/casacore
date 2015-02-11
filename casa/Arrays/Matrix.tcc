@@ -72,9 +72,10 @@ template<class T> Matrix<T>::Matrix(size_t l1, size_t l2, const T &initialValue)
 }
 
 template<class T> Matrix<T>::Matrix(const Matrix<T> &other)
-: Array<T>(other)
+  : Array<T>(other),
+    xinc_p (other.xinc_p),
+    yinc_p (other.yinc_p)
 {
-    makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
 }
 

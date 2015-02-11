@@ -2,6 +2,7 @@ set (tests
 dAutoDiff
 dSparseDiff
 tAutoDiff
+tChauvenetCriterionStatistics
 tClassicalStatistics
 tCombinatorics
 tConvolver
@@ -22,6 +23,7 @@ tStatAcc
 tStatisticsUtilities
 tVanVleck
 tVectorKernel
+tZScoreCalculator
 )
 
 foreach (test ${tests})

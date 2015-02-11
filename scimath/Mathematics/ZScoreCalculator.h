@@ -23,8 +23,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#ifndef SCIMATH_STATSISTICSDATA_H
-#define SCIMATH_STATSISTICSDATA_H
+#ifndef SCIMATH_ZSCORECALCULATOR_H
+#define SCIMATH_ZSCORECALCULATOR_H
 
 #include <casacore/casa/aips.h>
 
@@ -34,45 +34,27 @@
 
 namespace casacore {
 
-class String;
-
 /*
- * This class simply defines the enum of supported statistics types
- * in the statistics framework.
+ * This class contains static methods related to z-scores. A z-score is the number of
+ * standard deviations from the mean in a normal distribution.
  */
 
-class StatisticsData {
+class ZScoreCalculator {
 public:
 
-	// implemented algorithms
-	enum ALGORITHM {
-		CHAUVENETCRITERION,
-		CLASSICAL,
-		FITTOHALF,
-		HINGESFENCES
-	};
+	// compute the maximum expected zscore given the number of points
+	// in a sample.
+	static Double getMaxZScore(uInt64 npts);
 
-	enum STATS {
-		MAX,
-		MEAN,
-		MIN,
-		NPTS,
-		RMS,
-		STDDEV,
-		SUM,
-		SUMSQ,
-		// sum of weights
-		SUMWEIGHTS,
-		VARIANCE
-	};
+	// Get the minimum number of points in a Gaussian distribution, such that the
+	// probability that the maximum of the distribution having the specified zscore
+	// is 0.5. <src>zscore</src> should be non-negative.
+	static inline uInt64 zscoreToNpts(Double zscore) {
+		return (uInt64)(0.5/erfc(zscore/sqrt(2)));
+	}
 
-	// get the zero-based indices of the specified fractions in a CDF with npts
-	// number of good points. The returned map maps fractions to indices.
-	static std::map<Double, uInt64> indicesFromFractions(
-		uInt64 npts, const std::set<Double>& fractions
-	);
-
-	static String toString(STATS stat);
+private:
+	static std::map<uInt64, Double> _nptsToMaxZScore;
 
 };
 

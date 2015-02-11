@@ -28,6 +28,8 @@
 #ifndef CASA_AIPSDEF_H
 #define CASA_AIPSDEF_H
 
+#include <casacore/casa/aipstype.h>   //# needed for Bool
+
 //# Define the Casacore global macros
 
 //# Defined the "aips_name2" macro which is used to join two tokens.
