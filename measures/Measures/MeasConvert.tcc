@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef MEASURES_MEASCONVERT_TCC
+#define MEASURES_MEASCONVERT_TCC
+
 //# Includes
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/measures/Measures/MeasBase.h>
@@ -476,3 +479,5 @@ void MeasConvert<M>::print(ostream &os) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

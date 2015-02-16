@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_TVEC_TCC
+#define TABLES_TVEC_TCC
+
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TVec.h>
 #include <casacore/tables/Tables/TVecTemp.h>
@@ -81,3 +84,5 @@ void TabVecRep<T>::assign (const TabVecRep<T>& that)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_TVECSCACOL_TCC
+#define TABLES_TVECSCACOL_TCC
+
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TVecScaCol.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
@@ -78,3 +81,5 @@ void TabVecScaCol<T>::set (const T& val)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

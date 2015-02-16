@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_SCALEDCOMPLEXDATA_TCC
+#define TABLES_SCALEDCOMPLEXDATA_TCC
+
 //# Includes
 #include <casacore/tables/DataMan/ScaledComplexData.h>
 #include <casacore/tables/Tables/Table.h>
@@ -592,3 +595,5 @@ Slicer ScaledComplexData<S,T>::storedSlicer (const Slicer& virtualSlicer) const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

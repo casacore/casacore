@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_VSCENGINE_TCC
+#define TABLES_VSCENGINE_TCC
+
 //# Includes
 #include <casacore/tables/DataMan/VSCEngine.h>
 #include <casacore/tables/DataMan/DataManError.h>
@@ -80,3 +83,5 @@ DataManagerColumn* VSCEngine<T>::makeScalarColumn (const String& columnName,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

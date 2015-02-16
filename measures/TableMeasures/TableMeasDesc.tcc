@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef MEASURES_TABLEMEASDESC_TCC
+#define MEASURES_TABLEMEASDESC_TCC
+
 //# Includes
 #include <casacore/measures/TableMeasures/TableMeasDesc.h>
 #include <casacore/measures/Measures/MeasRef.h>
@@ -115,3 +118,5 @@ TableMeasDesc<M>& TableMeasDesc<M>::operator= (const TableMeasDesc<M>& that)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

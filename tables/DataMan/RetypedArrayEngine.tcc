@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_RETYPEDARRAYENGINE_TCC
+#define TABLES_RETYPEDARRAYENGINE_TCC
+
 //# Includes
 #include <casacore/tables/DataMan/RetypedArrayEngine.h>
 #include <casacore/tables/Tables/Table.h>
@@ -320,3 +323,5 @@ void RetypedArrayEngine<S,T>::mapOnPut (const Array<S>& array,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef MS_MSSELUTIL2_TCC
+#define MS_MSSELUTIL2_TCC
+
 #include <casacore/ms/MeasurementSets/MSSelUtil2.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -156,3 +159,5 @@ void MSSelUtil2<T>::timeAverage(Array<Bool>& dataFlag, Array<T>& data,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

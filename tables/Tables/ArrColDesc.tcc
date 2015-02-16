@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_ARRCOLDESC_TCC
+#define TABLES_ARRCOLDESC_TCC
+
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ArrColData.h>
 #include <casacore/casa/Arrays/IPosition.h>
@@ -249,3 +252,5 @@ PlainColumn* ArrayColumnDesc<T>::makeColumn (ColumnSet* csp) const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

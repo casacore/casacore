@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_TVECTEMP_TCC
+#define TABLES_TVECTEMP_TCC
+
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TVecTemp.h>
 #include <casacore/casa/Arrays/IPosition.h>
@@ -76,3 +79,5 @@ void TabVecTemp<T>::set (const T& val)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

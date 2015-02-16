@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef MEASURES_MEASREF_TCC
+#define MEASURES_MEASREF_TCC
+
 //# Includes
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicSL/String.h>
@@ -262,3 +265,5 @@ void MeasRef<Ms>::print(ostream &os) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

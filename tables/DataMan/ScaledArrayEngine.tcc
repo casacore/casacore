@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_SCALEDARRAYENGINE_TCC
+#define TABLES_SCALEDARRAYENGINE_TCC
+
 //# Includes
 #include <casacore/tables/DataMan/ScaledArrayEngine.h>
 #include <casacore/tables/Tables/Table.h>
@@ -436,3 +439,5 @@ void ScaledArrayEngine<S,T>::putColumnSlice (const Slicer& slicer,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

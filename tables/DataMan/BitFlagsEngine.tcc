@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_BITFLAGSENGINE_TCC
+#define TABLES_BITFLAGSENGINE_TCC
+
 //# Includes
 #include <casacore/tables/DataMan/BitFlagsEngine.h>
 #include <casacore/tables/Tables/Table.h>
@@ -311,3 +314,5 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

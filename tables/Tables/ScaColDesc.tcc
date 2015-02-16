@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_SCACOLDESC_TCC
+#define TABLES_SCACOLDESC_TCC
+
 #include <casacore/tables/Tables/ScaColDesc.h>
 #include <casacore/tables/Tables/ScaColData.h>
 #include <casacore/tables/Tables/ConcatScalarColumn.h>
@@ -194,3 +197,5 @@ ConcatColumn* ScalarColumnDesc<T>::makeConcatColumn (ConcatTable* ct) const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

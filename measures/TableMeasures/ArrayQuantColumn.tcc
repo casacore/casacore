@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef MEASURES_ARRAYQUANTCOLUMN_TCC
+#define MEASURES_ARRAYQUANTCOLUMN_TCC
+
 //# Includes
 #include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
 #include <casacore/measures/TableMeasures/TableQuantumDesc.h>
@@ -436,3 +439,5 @@ void ArrayQuantColumn<T>::put (uInt rownr, const Array<Quantum<T> >& q)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

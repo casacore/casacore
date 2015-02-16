@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_TABLEVECTOR_TCC
+#define TABLES_TABLEVECTOR_TCC
+
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableColumn.h>
@@ -128,3 +131,5 @@ Vector<T> TableVector<T>::makeVector() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

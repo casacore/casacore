@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_VIRTSCACOL_TCC
+#define TABLES_VIRTSCACOL_TCC
+
 //# Includes
 #include <casacore/tables/DataMan/VirtScaCol.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -162,3 +165,5 @@ void VirtualScalarColumn<T>::putBlock (uInt rownr, uInt nrmax, const T* dataPtr)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

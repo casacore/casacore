@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef MS_MSTABLE_TCC
+#define MS_MSTABLE_TCC
+
 #include <casacore/ms/MeasurementSets/MSTable.h>
 #include <casacore/ms/MeasurementSets/MSTableImpl.h>
 #include <casacore/tables/Tables/TableRecord.h>
@@ -282,3 +285,5 @@ Table MSTable<ColEnum,KeyEnum>::referenceCopy(const String& newTableName,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif
