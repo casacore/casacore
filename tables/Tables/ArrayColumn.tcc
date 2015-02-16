@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_ARRAYCOLUMN_TCC
+#define TABLES_ARRAYCOLUMN_TCC
+
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/ArrayColumnFunc.h>
 #include <casacore/tables/Tables/Table.h>
@@ -1079,3 +1082,5 @@ void ArrayColumn<T>::putColumn (const ArrayColumn<T>& that)
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

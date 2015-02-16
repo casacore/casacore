@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_CONCATSCALARCOLUMN_TCC
+#define TABLES_CONCATSCALARCOLUMN_TCC
+
 #include <casacore/tables/Tables/ConcatScalarColumn.h>
 #include <casacore/tables/Tables/ConcatTable.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
@@ -188,3 +191,5 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

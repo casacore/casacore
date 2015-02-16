@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_VIRTARRCOL_TCC
+#define TABLES_VIRTARRCOL_TCC
+
 //# Includes
 #include <casacore/tables/DataMan/VirtArrCol.h>
 #include <casacore/tables/Tables/RefRows.h>
@@ -331,3 +334,5 @@ IPosition VirtualArrayColumn<T>::shape (uInt)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

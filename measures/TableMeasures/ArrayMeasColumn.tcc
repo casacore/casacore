@@ -24,6 +24,9 @@
 //#
 //# $Id$
 
+#ifndef MEASURES_ARRAYMEASCOLUMN_TCC
+#define MEASURES_ARRAYMEASCOLUMN_TCC
+
 //# Includes
 #include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
 #include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
@@ -560,3 +563,5 @@ void ArrayMeasColumn<M>::put (uInt rownr, const Array<M>& meas)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

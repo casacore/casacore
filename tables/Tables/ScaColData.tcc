@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_SCACOLDATA_TCC
+#define TABLES_SCACOLDATA_TCC
+
 #include <casacore/tables/Tables/ScaColData.h>
 #include <casacore/tables/Tables/ScaColDesc.h>
 #include <casacore/tables/Tables/ColumnSet.h>
@@ -323,3 +326,5 @@ void ScalarColumnData<T>::getFileDerived (AipsIO& ios,
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

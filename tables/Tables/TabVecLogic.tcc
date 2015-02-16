@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_TABVECLOGIC_TCC
+#define TABLES_TABVECLOGIC_TCC
+
 #include <casacore/tables/Tables/TabVecLogic.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -33,3 +36,5 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

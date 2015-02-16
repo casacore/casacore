@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_BASEMAPPEDARRAYENGINE_TCC
+#define TABLES_BASEMAPPEDARRAYENGINE_TCC
+
 //# Includes
 #include <casacore/tables/DataMan/BaseMappedArrayEngine.h>
 #include <casacore/tables/Tables/Table.h>
@@ -380,3 +383,5 @@ void BaseMappedArrayEngine<VirtualType, StoredType>::mapOnPut
 
 
 } //# NAMESPACE CASACORE - END
+
+#endif

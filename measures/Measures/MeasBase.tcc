@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef MEASURES_MEASBASE_TCC
+#define MEASURES_MEASBASE_TCC
+
 //# Includes
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -172,3 +175,5 @@ void MeasBase<Mv,Mr>::print(std::ostream &os) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

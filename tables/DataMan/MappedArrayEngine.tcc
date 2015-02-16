@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_MAPPEDARRAYENGINE_TCC
+#define TABLES_MAPPEDARRAYENGINE_TCC
+
 //# Includes
 #include <casacore/tables/DataMan/MappedArrayEngine.h>
 #include <casacore/tables/Tables/TableRecord.h>
@@ -128,3 +131,5 @@ void MappedArrayEngine<S,T>::mapOnPut (const Array<S>& array, Array<T>& target)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

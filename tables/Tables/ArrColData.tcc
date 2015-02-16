@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_ARRCOLDATA_TCC
+#define TABLES_ARRCOLDATA_TCC
+
 #include <casacore/tables/Tables/ArrColData.h>
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ColumnSet.h>
@@ -419,3 +422,5 @@ void ArrayColumnData<T>::getFileDerived (AipsIO& ios,
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

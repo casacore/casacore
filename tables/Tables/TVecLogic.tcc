@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_TVECLOGIC_TCC
+#define TABLES_TVECLOGIC_TCC
+
 #include <casacore/tables/Tables/TVecLogic.h>
 #include <casacore/tables/Tables/TVec.h>
 #include <casacore/tables/Tables/TableError.h>
@@ -82,3 +85,5 @@ TVECLOGICOPER(NE,!=)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

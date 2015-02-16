@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_RETYPEDARRAYSETGET_TCC
+#define TABLES_RETYPEDARRAYSETGET_TCC
+
 //# Includes
 #include <casacore/tables/DataMan/RetypedArraySetGet.h>
 #include <casacore/casa/Arrays/Array.h>
@@ -114,3 +117,5 @@ void retypedArrayEngineGet (Array<TargetType>& out,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

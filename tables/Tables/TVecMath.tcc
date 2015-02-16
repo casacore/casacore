@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_TVECMATH_TCC
+#define TABLES_TVECMATH_TCC
+
 #include <casacore/tables/Tables/TVecMath.h>
 #include <casacore/tables/Tables/TVec.h>
 #include <casacore/tables/Tables/TVecTemp.h>
@@ -294,3 +297,5 @@ TabVecRep<T>& tabVecRepcrossproduct (const TabVecRep<T>& tvl,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

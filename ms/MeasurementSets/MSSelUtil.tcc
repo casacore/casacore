@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef MS_MSSELUTIL_TCC
+#define MS_MSSELUTIL_TCC
+
 #include <casacore/ms/MeasurementSets/MSSelUtil.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -163,3 +166,5 @@ Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

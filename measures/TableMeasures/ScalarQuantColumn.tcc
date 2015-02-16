@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef MEASURES_SCALARQUANTCOLUMN_TCC
+#define MEASURES_SCALARQUANTCOLUMN_TCC
+
 //# Includes
 #include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
 #include <casacore/measures/TableMeasures/TableQuantumDesc.h>
@@ -233,3 +236,5 @@ void ScalarQuantColumn<T>::put (uInt rownr, const Quantum<T>& q)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -24,6 +24,9 @@
 //#
 //# $Id$
 
+#ifndef MEASURES_SCALARMEASCOLUMN_TCC
+#define MEASURES_SCALARMEASCOLUMN_TCC
+
 //# Includes
 #include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
 #include <casacore/measures/TableMeasures/TableMeasDescBase.h>
@@ -380,3 +383,5 @@ Bool ScalarMeasColumn<M>::equalRefs (const MRBase& r1, const MRBase& r2) const
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef TABLES_SCALARCOLUMN_TCC
+#define TABLES_SCALARCOLUMN_TCC
+
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/BaseColumn.h>
@@ -298,3 +301,5 @@ void ScalarColumn<T>::putColumn (const ScalarColumn<T>& that)
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif
