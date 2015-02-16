@@ -35,9 +35,8 @@
 **                        William LeFebvre  <lefebvre@dis.anl.gov>
 **                        Rainer Orth       <ro@techfak.uni-bielefeld.de>
 **
-** $Id$
-**
 */
+//# $Id$
 
 #ifndef CASA_HOSTINFODARWIN_H
 #define CASA_HOSTINFODARWIN_H

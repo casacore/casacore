@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ARRAYIO_TCC
+#define CASA_ARRAYIO_TCC
+
 //# Includes
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/Arrays/Array.h>
@@ -702,3 +705,5 @@ Bool readArrayBlock(istream &s, Bool &trans,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

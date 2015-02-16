@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_RECORDFIELDWRITER_TCC
+#define CASA_RECORDFIELDWRITER_TCC
+
 #include <casacore/casa/Containers/RecordFieldWriter.h>
 #include <casacore/casa/Utilities/Copy.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -73,3 +76,5 @@ void UnequalShapeCopier<T>::writeField()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

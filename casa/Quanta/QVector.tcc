@@ -22,6 +22,10 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
+
+#ifndef CASA_QVECTOR_TCC
+#define CASA_QVECTOR_TCC
 
 #include <casacore/casa/Quanta/QVector.h>
 
@@ -75,3 +79,5 @@ template <class T> Quantum<T> QVector<T>::max() const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

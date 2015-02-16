@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_CUBE_TCC
+#define CASA_CUBE_TCC
+
 #include <casacore/casa/Arrays/Cube.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/Slice.h>
@@ -376,3 +379,5 @@ void Cube<T>::takeStorage(const IPosition &shape, const T *storage)
 }
 
 } //#End casa namespace
+
+#endif

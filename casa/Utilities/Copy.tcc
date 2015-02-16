@@ -25,8 +25,13 @@
 //#
 //# $Id$
 
+#ifndef CASA_COPY_TCC
+#define CASA_COPY_TCC
+
 #include <casacore/casa/Utilities/Copy.h>
 
 //# Note that this is empty to make transition between explicit and
 //# implicit templates easy.
 
+
+#endif

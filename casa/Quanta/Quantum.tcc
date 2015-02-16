@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_QUANTUM_TCC
+#define CASA_QUANTUM_TCC
+
 //# Includes
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Quanta/QuantumType.h>
@@ -357,3 +360,5 @@ uInt Quantum<Qtype>::myType() {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

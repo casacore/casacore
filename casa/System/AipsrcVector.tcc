@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_AIPSRCVECTOR_TCC
+#define CASA_AIPSRCVECTOR_TCC
+
 //# Includes
 
 #include <casacore/casa/System/AipsrcVector.h>
@@ -151,3 +154,5 @@ void AipsrcVector<T>::save(uInt keyword) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

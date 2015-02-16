@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_BLOCKIO_TCC
+#define CASA_BLOCKIO_TCC
+
 #include <casacore/casa/Containers/BlockIO.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/IO/AipsIOCarray.h>
@@ -75,3 +78,5 @@ template<class T> void showBlock (ostream& ios, const Block<T>& blk, Int nr)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

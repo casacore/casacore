@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ARRAYPARTMATH_TCC
+#define CASA_ARRAYPARTMATH_TCC
+
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/Arrays/ArrayPartMath.h>
@@ -965,3 +968,5 @@ Array<T> slidingArrayMath (const Array<T>& array, const IPosition& halfBoxSize,
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

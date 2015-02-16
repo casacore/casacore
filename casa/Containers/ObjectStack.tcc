@@ -25,6 +25,9 @@
 //#
 //# $Id: ObjectStack.cc,v 1.1 2007/11/16 04:08:17 wbrouw Exp $
 
+#ifndef CASA_OBJECTSTACK_TCC
+#define CASA_OBJECTSTACK_TCC
+
 //# Includes
 #include <casacore/casa/Containers/ObjectStack.h>
 
@@ -62,3 +65,5 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

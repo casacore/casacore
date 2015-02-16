@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ORDPAIRIO_TCC
+#define CASA_ORDPAIRIO_TCC
+
 #include <casacore/casa/Containers/OrdPairIO.h>
 #include <casacore/casa/iostream.h>
 
@@ -46,3 +49,5 @@ template<class key, class value> ostream& operator<< (ostream& ios, const Ordere
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

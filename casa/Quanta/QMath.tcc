@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_QMATH_TCC
+#define CASA_QMATH_TCC
+
 //# Includes
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Quanta/QMath.h>
@@ -332,3 +335,5 @@ Quantum<Qtype> max(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

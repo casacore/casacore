@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_SIMORDMAPIO_TCC
+#define CASA_SIMORDMAPIO_TCC
+
 #include <casacore/casa/Containers/SimOrdMapIO.h>
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/iostream.h>
@@ -94,3 +97,5 @@ ostream& operator<< (ostream& ios, const SimpleOrderedMap<K,V>& map)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

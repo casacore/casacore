@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_MAPIO_TCC
+#define CASA_MAPIO_TCC
+
 
 #include <casacore/casa/Containers/MapIO.h>
 
@@ -63,3 +66,5 @@ template<class key, class value> ostream &operator<<(ostream &ios, const ConstMa
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

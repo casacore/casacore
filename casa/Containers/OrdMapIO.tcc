@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ORDMAPIO_TCC
+#define CASA_ORDMAPIO_TCC
+
 #include <casacore/casa/Containers/OrdMapIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -32,3 +35,5 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

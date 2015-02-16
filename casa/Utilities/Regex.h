@@ -257,7 +257,7 @@ public:
 
     // Get the regular expression string.
     const String &regexp() const
-      { return *str; }
+      { return str; }
     
     // Get the translation table (can be a zero pointer).
     const Char *transtable() const
@@ -310,7 +310,7 @@ public:
     friend ostream &operator<<(ostream &ios, const Regex &exp);
     
 protected:
-    String*            str;                 // the reg. exp. string
+    String             str;                 // the reg. exp. string
     Int                fastval;             // fast flag
     Int                bufsz;               // buffer size given
     Char*              trans;               // possible translation table

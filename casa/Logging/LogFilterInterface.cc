@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $I$
+//# $Id$
 
 #include <casacore/casa/Logging/LogFilterInterface.h>
 

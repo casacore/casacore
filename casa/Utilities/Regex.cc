@@ -45,7 +45,7 @@ Regex::Regex() {
 
 void Regex::create(const String& exp, Int fast, Int bufsize, 
 		    const Char* transtable) {
-  str     = new String(exp);
+  str     = exp;
   fastval = fast;
   bufsz   = bufsize;
   trans   = 0;
@@ -88,8 +88,6 @@ void Regex::dealloc() {
   }
   delete reg;
   reg=0;
-  delete str;
-  str=0;
   delete [] trans;
   trans=0;
 }
@@ -110,7 +108,7 @@ Bool Regex::OK() const {
 }
 
 ostream &operator<<(ostream &ios, const Regex &exp) {
-  return ios << *exp.str;
+  return ios << exp.str;
 }
 
 String::size_type Regex::find(const Char *s, String::size_type len,
@@ -166,12 +164,12 @@ Regex::~Regex() {
 }
 
 Regex::Regex(const Regex &that) : RegexBase() {
-  create(*that.str, that.fastval, that.bufsz, that.trans);
+  create(that.str, that.fastval, that.bufsz, that.trans);
 }
 
 Regex &Regex::operator=(const Regex &that) {
   dealloc();
-  create(*that.str, that.fastval, that.bufsz, that.trans);
+  create(that.str, that.fastval, that.bufsz, that.trans);
   return *this;
 }
 

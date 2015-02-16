@@ -25,6 +25,9 @@
 //#
 //# $Id: STLIO.tcc 21315 2013-02-13 12:24:02Z gervandiepen $
 
+#ifndef CASA_STLIO_TCC
+#define CASA_STLIO_TCC
+
 //# Includes
 #include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/IO/AipsIOCarray.h>
@@ -69,3 +72,5 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

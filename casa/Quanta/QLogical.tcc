@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_QLOGICAL_TCC
+#define CASA_QLOGICAL_TCC
+
 //# Includes
 #include <casacore/casa/Quanta/QLogical.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -251,3 +254,5 @@ Bool operator>=(const Qtype &left, const Quantum<Qtype> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

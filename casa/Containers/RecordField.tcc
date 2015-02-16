@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_RECORDFIELD_TCC
+#define CASA_RECORDFIELD_TCC
+
 
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -168,3 +171,5 @@ void RecordFieldPtr<T>::notify (const Notice& notice)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

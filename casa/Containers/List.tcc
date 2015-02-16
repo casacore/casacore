@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_LIST_TCC
+#define CASA_LIST_TCC
+
 #include <casacore/casa/Containers/List.h>
 #include <casacore/casa/Containers/IterError.h>
 
@@ -414,3 +417,5 @@ ConstListIter<t> &ListIter<t>::operator=(const ConstListIter<t> *) {
   return *this;}
 
 } //#End casa namespace
+
+#endif

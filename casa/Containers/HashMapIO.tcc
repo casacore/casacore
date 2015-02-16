@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_HASHMAPIO_TCC
+#define CASA_HASHMAPIO_TCC
+
 
 #include <casacore/casa/Containers/HashMapIO.h>
 
@@ -67,3 +70,5 @@ template<class key, class val> ostream &operator<<(ostream &ios, const ConstHash
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -24,6 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
+#ifndef CASA_PTRHOLDER_TCC
+#define CASA_PTRHOLDER_TCC
 //#
 
 #include <casacore/casa/Utilities/PtrHolder.h>
@@ -77,3 +80,5 @@ template<class T> PtrHolder<T>::~PtrHolder()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

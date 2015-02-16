@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_VECTOR_TCC
+#define CASA_VECTOR_TCC
+
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayError.h>
 #include <casacore/casa/Arrays/Slice.h>
@@ -308,3 +311,5 @@ template<class T> Bool Vector<T>::ok() const
 }
 
 } //#End casa namespace
+
+#endif

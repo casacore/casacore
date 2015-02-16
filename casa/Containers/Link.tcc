@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_LINK_TCC
+#define CASA_LINK_TCC
+
 #include <casacore/casa/Containers/Link.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -45,3 +48,5 @@ template<class t> Link<t>::~Link() {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_VECTOR2_TCC
+#define CASA_VECTOR2_TCC
+
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/stdvector.h>
 
@@ -61,3 +64,5 @@ void Array<T>::tovector(vector<T, U> &out) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

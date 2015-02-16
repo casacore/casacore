@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_MAP_TCC
+#define CASA_MAP_TCC
+
 #include <casacore/casa/Containers/Map.h>
 
 
@@ -447,3 +450,5 @@ template<class key, class value> Map<key,value>::Map(MapRep<key,value> *nRep)
 }
 
 } //#End casa namespace
+
+#endif

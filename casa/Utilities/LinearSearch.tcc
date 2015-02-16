@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_LINEARSEARCH_TCC
+#define CASA_LINEARSEARCH_TCC
+
 
 //# Includes
 #include <casacore/casa/Utilities/LinearSearch.h>
@@ -95,3 +98,5 @@ Int linearSearchBrackets1 (const Container& container, const ElType& value,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

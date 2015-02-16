@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_FUNCTIONAL_TCC
+#define CASA_FUNCTIONAL_TCC
+
 //# Includes
 #include <casacore/casa/BasicMath/Functional.h>
 
@@ -37,3 +40,5 @@ Functional<Domain,Range>::~Functional() {}
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

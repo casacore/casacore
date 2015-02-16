@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_GENSORT_TCC
+#define CASA_GENSORT_TCC
+
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -916,3 +919,5 @@ void GenSortIndirect<T>::heapAscSiftDown (uInt* inx, Int low, Int up,
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

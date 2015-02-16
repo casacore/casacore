@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_MASKARRMATH_TCC
+#define CASA_MASKARRMATH_TCC
+
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/MaskArrMath.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -1774,3 +1777,5 @@ Array<T> slidingArrayMath (const MaskedArray<T>& array,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_COMPARE_TCC
+#define CASA_COMPARE_TCC
+
 #include <casacore/casa/Utilities/Compare.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -102,3 +105,5 @@ int CompareIntervalReal<T>::comp(const void * obj1, const void * obj2) const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

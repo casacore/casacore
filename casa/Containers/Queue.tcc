@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_QUEUE_TCC
+#define CASA_QUEUE_TCC
+
 #include <casacore/casa/Containers/Queue.h>
 #include <casacore/casa/Utilities/Copy.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -121,3 +124,5 @@ template<class T> T Queue<T>::operator()()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

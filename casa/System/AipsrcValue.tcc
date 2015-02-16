@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_AIPSRCVALUE_TCC
+#define CASA_AIPSRCVALUE_TCC
+
 //# Includes
 
 #include <casacore/casa/System/AipsrcValue.h>
@@ -139,3 +142,5 @@ void AipsrcValue<T>::save(uInt keyword) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif
