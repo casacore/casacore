@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_CONSTANTNDPARAM_TCC
+#define SCIMATH_CONSTANTNDPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/ConstantNDParam.h>
 
@@ -53,3 +56,5 @@ ConstantNDParam<T>::operator=(const ConstantNDParam<T> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

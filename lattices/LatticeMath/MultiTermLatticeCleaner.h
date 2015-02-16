@@ -24,7 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# Urvashi Rau <rurvashi@aoc.nrao.edu>
-//# $Id$
+//#
+//# $Id: HostInfoDarwin.h 21521 2014-12-10 08:06:42Z gervandiepen $
 
 #ifndef LATTICES_MULTITERMLATTICECLEANER_H
 #define LATTICES_MULTITERMLATTICECLEANER_H

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_EXTENDIMAGE_TCC
+#define IMAGES_EXTENDIMAGE_TCC
+
 #include <casacore/images/Images/ExtendImage.h>
 #include <casacore/lattices/Lattices/ExtendLattice.h>
 #include <casacore/lattices/LRegions/LatticeRegion.h>
@@ -266,3 +269,5 @@ void ExtendImage<T>::reopen()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

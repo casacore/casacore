@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICESTATISTICS_TCC
+#define LATTICES_LATTICESTATISTICS_TCC
+
 #include <casacore/lattices/LatticeMath/LatticeStatistics.h>
 #include <casacore/lattices/LatticeMath/LattStatsSpecialize.h>
 #include <casacore/lattices/LatticeMath/LattStatsProgress.h>
@@ -3530,3 +3533,5 @@ void StatsTiledCollapser<T,U>::minMaxPos(IPosition& minPos, IPosition& maxPos)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

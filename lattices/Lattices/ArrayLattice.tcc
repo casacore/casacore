@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_ARRAYLATTICE_TCC
+#define LATTICES_ARRAYLATTICE_TCC
+
 #include <casacore/lattices/Lattices/ArrayLattice.h>
 //#include <casacore/casa/Lattices/ArrLatticeIter.h>
 #include <casacore/lattices/Lattices/LatticeIterInterface.h>
@@ -204,3 +207,5 @@ Bool ArrayLattice<T>::ok() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

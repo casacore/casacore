@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_FITGAUSSIAN_TCC
+#define SCIMATH_FITGAUSSIAN_TCC
+
 #include <casacore/scimath/Fitting/FitGaussian.h>
 
 #include <casacore/scimath/Fitting/NonLinearFitLM.h>
@@ -665,3 +668,5 @@ uInt FitGaussian<T>::countFreeParameters()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

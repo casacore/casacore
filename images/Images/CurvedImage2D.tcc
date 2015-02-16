@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_CURVEDIMAGE2D_TCC
+#define IMAGES_CURVEDIMAGE2D_TCC
+
 #include <casacore/images/Images/CurvedImage2D.h>
 #include <casacore/lattices/Lattices/CurvedLattice2D.h>
 #include <casacore/lattices/LRegions/LatticeRegion.h>
@@ -274,3 +277,5 @@ void CurvedImage2D<T>::reopen()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

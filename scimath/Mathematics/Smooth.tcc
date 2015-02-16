@@ -25,6 +25,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
+#ifndef SCIMATH_SMOOTH_TCC
+#define SCIMATH_SMOOTH_TCC
 //   
 
 #include <casacore/casa/aips.h>
@@ -153,3 +156,5 @@ void Smooth<T>::hanning(Array<T>& out, Array<Bool>& outmask,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

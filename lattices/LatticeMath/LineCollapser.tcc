@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LINECOLLAPSER_TCC
+#define LATTICES_LINECOLLAPSER_TCC
+
 
 #include <casacore/lattices/LatticeMath/LineCollapser.h>
 
@@ -43,3 +46,5 @@ Bool LineCollapser<T,U>::canHandleNullMask() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

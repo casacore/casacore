@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_AUTODIFFREP_TCC
+#define SCIMATH_AUTODIFFREP_TCC
+
 //# Includes
 #include <casacore/scimath/Mathematics/AutoDiffRep.h>
 
@@ -100,3 +103,5 @@ AutoDiffRep<T> &AutoDiffRep<T>::operator=(const AutoDiffRep<T> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

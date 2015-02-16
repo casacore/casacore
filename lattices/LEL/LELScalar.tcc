@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LELSCALAR_TCC
+#define LATTICES_LELSCALAR_TCC
+
 
 #include <casacore/lattices/LEL/LELScalar.h>
 #include <casacore/casa/Utilities/ValType.h>
@@ -41,3 +44,5 @@ LELScalar<T>::LELScalar()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_SIMBUTTERWORTHBANDPASS_TCC
+#define SCIMATH_SIMBUTTERWORTHBANDPASS_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/SimButterworthBandpass.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -157,3 +160,5 @@ void SimButterworthBandpass<T>::getMode(RecordInterface& out) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_FUNCTIONHOLDER_TCC
+#define SCIMATH_FUNCTIONHOLDER_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/FunctionHolder.h>
 #include <casacore/casa/Exceptions.h>
@@ -522,3 +525,5 @@ void FunctionHolder<T>::setParameters(Function<AutoDiff<T> > *&fn,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

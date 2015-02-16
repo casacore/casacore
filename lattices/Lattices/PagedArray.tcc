@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_PAGEDARRAY_TCC
+#define LATTICES_PAGEDARRAY_TCC
+
 
 #include <casacore/lattices/Lattices/PagedArray.h>
 #include <casacore/lattices/Lattices/PagedArrIter.h>
@@ -600,3 +603,5 @@ void PagedArray<T>::tempReopen() const
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

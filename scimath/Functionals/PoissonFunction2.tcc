@@ -22,6 +22,10 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
+
+#ifndef SCIMATH_POISSONFUNCTION2_TCC
+#define SCIMATH_POISSONFUNCTION2_TCC
 
 //# Includes
 #include <casacore/scimath/Functionals/PoissonFunction.h>
@@ -73,3 +77,5 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

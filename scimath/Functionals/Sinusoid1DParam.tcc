@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_SINUSOID1DPARAM_TCC
+#define SCIMATH_SINUSOID1DPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Sinusoid1DParam.h>
 
@@ -80,3 +83,5 @@ Sinusoid1DParam<T>::operator=(const Sinusoid1DParam<T> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

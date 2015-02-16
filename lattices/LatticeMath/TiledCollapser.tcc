@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_TILEDCOLLAPSER_TCC
+#define LATTICES_TILEDCOLLAPSER_TCC
+
 
 #include <casacore/lattices/LatticeMath/TiledCollapser.h>
 
@@ -43,3 +46,5 @@ Bool TiledCollapser<T,U>::canHandleNullMask() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

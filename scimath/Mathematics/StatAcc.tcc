@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_STATACC_TCC
+#define SCIMATH_STATACC_TCC
+
 
 #include <casacore/scimath/Mathematics/StatAcc.h>
 #include <casacore/casa/Arrays.h>
@@ -353,3 +356,5 @@ void StatAcc<T>::printSummaryList (ostream& os, const String& caption) const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

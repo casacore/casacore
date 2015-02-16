@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_REBINIMAGE_TCC
+#define IMAGES_REBINIMAGE_TCC
+
 #include <casacore/images/Images/RebinImage.h>
 #include <casacore/lattices/Lattices/RebinLattice.h>
 #include <casacore/lattices/LRegions/LatticeRegion.h>
@@ -269,3 +272,5 @@ void RebinImage<T>::reopen()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

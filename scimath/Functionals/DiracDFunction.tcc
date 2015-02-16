@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_DIRACDFUNCTION_TCC
+#define SCIMATH_DIRACDFUNCTION_TCC
+
 #include <casacore/scimath/Functionals/DiracDFunction.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -45,3 +48,5 @@ T DiracDFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

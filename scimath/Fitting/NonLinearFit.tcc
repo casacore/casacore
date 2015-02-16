@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_NONLINEARFIT_TCC
+#define SCIMATH_NONLINEARFIT_TCC
+
 #include <casacore/scimath/Fitting/NonLinearFit.h>
 #include <casacore/scimath/Mathematics/AutoDiffIO.h>
 #include <casacore/scimath/Functionals/Function.h>
@@ -87,3 +90,5 @@ void NonLinearFit<T>::setMaxIter(uInt maxIter) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

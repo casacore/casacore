@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_ODDPOLYNOMIAL_TCC
+#define SCIMATH_ODDPOLYNOMIAL_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/OddPolynomial.h>
 
@@ -49,3 +52,5 @@ T OddPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

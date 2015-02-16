@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GAUSSIAN2DPARAM_TCC
+#define SCIMATH_GAUSSIAN2DPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Gaussian2DParam.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -258,3 +261,5 @@ void Gaussian2DParam<T>::setPA(const T &pa) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

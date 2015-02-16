@@ -26,6 +26,9 @@
 //#! ========================================================================
 //# $Id$
 
+#ifndef SCIMATH_MARSHALLABLECHEBYSHEV_TCC
+#define SCIMATH_MARSHALLABLECHEBYSHEV_TCC
+
 #include <casacore/scimath/Functionals/MarshallableChebyshev.h>
 #include <casacore/casa/Arrays/Array.h>
 
@@ -97,3 +100,5 @@ MarshallableChebyshev<T>::MarshallableChebyshev(const Record& gr)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_IMAGEINTERFACE_TCC
+#define IMAGES_IMAGEINTERFACE_TCC
+
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h> // Put these early to work around g++ bug
@@ -369,3 +372,5 @@ ImageAttrHandler& ImageInterface<T>::attrHandler (Bool)
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

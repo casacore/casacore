@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_SPOLYNOMIALPARAM_TCC
+#define SCIMATH_SPOLYNOMIALPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/SPolynomialParam.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -75,3 +78,5 @@ void SPolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

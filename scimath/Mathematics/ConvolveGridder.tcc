@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_CONVOLVEGRIDDER_TCC
+#define SCIMATH_CONVOLVEGRIDDER_TCC
+
 #include <casacore/scimath/Mathematics/ConvolveGridder.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -445,3 +448,5 @@ Int& ConvolveGridder<Domain, Range>::cSampling() {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

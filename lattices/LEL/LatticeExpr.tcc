@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICEEXPR_TCC
+#define LATTICES_LATTICEEXPR_TCC
+
 #include <casacore/lattices/LEL/LatticeExpr.h>
 #include <casacore/lattices/LEL/LELArray.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
@@ -302,3 +305,5 @@ void LatticeExpr<T>::handleMathTo (Lattice<T>& to, int oper) const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

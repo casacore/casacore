@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GNOISEFUNCTION_TCC
+#define SCIMATH_GNOISEFUNCTION_TCC
+
 #include <casacore/scimath/Functionals/GNoiseFunction.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -43,3 +46,5 @@ T GNoiseFunction<T>::eval(typename Function<T>::FunctionArg ) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

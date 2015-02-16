@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_COMPOUNDPARAM_TCC
+#define SCIMATH_COMPOUNDPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/CompoundParam.h>
 
@@ -122,3 +125,5 @@ uInt CompoundParam<T>::addFunction(const Function<T> &newFunction) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_TEMPLATTICE_TCC
+#define LATTICES_TEMPLATTICE_TCC
+
 #include <casacore/lattices/Lattices/TempLattice.h>
 
 
@@ -200,3 +203,5 @@ LatticeIterInterface<T>* TempLattice<T>::makeIter (const LatticeNavigator& nav,
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

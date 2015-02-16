@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_FUNCTIONPARAM_TCC
+#define SCIMATH_FUNCTIONPARAM_TCC
+
 #include <casacore/scimath/Functionals/FunctionParam.h>
 #include <casacore/casa/iostream.h>
 
@@ -169,3 +172,5 @@ ostream &FunctionParam<T>::print(ostream &os) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

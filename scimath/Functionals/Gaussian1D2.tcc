@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GAUSSIAN1D2_TCC
+#define SCIMATH_GAUSSIAN1D2_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Gaussian1D.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -67,3 +70,5 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id: TempLatticeImpl.tcc 20739 2009-09-29 01:15:15Z Malte.Marquarding $
 
+#ifndef LATTICES_TEMPLATTICEIMPL_TCC
+#define LATTICES_TEMPLATTICEIMPL_TCC
+
 #include <casacore/lattices/Lattices/TempLatticeImpl.h>
 #include <casacore/lattices/Lattices/PagedArray.h>
 #include <casacore/lattices/Lattices/ArrayLattice.h>
@@ -123,3 +126,5 @@ void TempLatticeImpl<T>::tempReopen() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

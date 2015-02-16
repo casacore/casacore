@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_REBINLATTICE_TCC
+#define LATTICES_REBINLATTICE_TCC
+
 #include <casacore/lattices/Lattices/RebinLattice.h>
 
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -435,3 +438,5 @@ Slicer RebinLattice<T>::findOriginalSlicer (const Slicer& section) const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

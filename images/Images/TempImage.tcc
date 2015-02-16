@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_TEMPIMAGE_TCC
+#define IMAGES_TEMPIMAGE_TCC
+
 #include <casacore/images/Images/TempImage.h>
 #include <casacore/images/Regions/RegionHandlerMemory.h>
 #include <casacore/images/Regions/ImageRegion.h>
@@ -431,3 +434,5 @@ LatticeIterInterface<T>* TempImage<T>::makeIter
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

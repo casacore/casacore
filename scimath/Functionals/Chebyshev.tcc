@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_CHEBYSHEV_TCC
+#define SCIMATH_CHEBYSHEV_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Chebyshev.h>
 
@@ -99,3 +102,5 @@ Chebyshev<T> Chebyshev<T>::derivative() const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

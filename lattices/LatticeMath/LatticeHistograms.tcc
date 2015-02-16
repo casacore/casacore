@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICEHISTOGRAMS_TCC
+#define LATTICES_LATTICEHISTOGRAMS_TCC
+
 #include <casacore/lattices/LatticeMath/LatticeHistograms.h>
 #include <casacore/lattices/LatticeMath/LatticeHistSpecialize.h>
 #include <casacore/lattices/LatticeMath/LatticeHistProgress.h>
@@ -1342,3 +1345,5 @@ void HistTiledCollapser<T>::endAccumulator(Array<T>& result,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_POLYNOMIALPARAM_TCC
+#define SCIMATH_POLYNOMIALPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/PolynomialParam.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -65,3 +68,5 @@ void PolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

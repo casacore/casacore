@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_LINEARFITSVD_TCC
+#define SCIMATH_LINEARFITSVD_TCC
+
 #include <casacore/scimath/Fitting/LinearFitSVD.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -51,3 +54,5 @@ LinearFitSVD<T>::~LinearFitSVD() {}
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

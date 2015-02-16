@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_IMAGESTATISTICS_TCC
+#define IMAGES_IMAGESTATISTICS_TCC
+
 #include <casacore/images/Images/ImageStatistics.h>
 
 #include <casacore/casa/Arrays/Matrix.h>
@@ -707,3 +710,5 @@ void ImageStatistics<T>::listMinMax(ostringstream& osMin,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

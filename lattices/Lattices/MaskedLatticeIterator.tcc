@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_MASKEDLATTICEITERATOR_TCC
+#define LATTICES_MASKEDLATTICEITERATOR_TCC
+
 #include <casacore/casa/aips.h>
 
 #include <casacore/lattices/Lattices/MaskedLatticeIterator.h>
@@ -152,3 +155,5 @@ Bool RO_MaskedLatticeIterator<T>::getMask (Array<Bool>& arr,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

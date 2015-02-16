@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_PAGEDIMAGE_TCC
+#define IMAGES_PAGEDIMAGE_TCC
+
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Regions/ImageRegion.h>
 #include <casacore/images/Regions/RegionHandlerTable.h>
@@ -865,3 +868,5 @@ ImageAttrHandler& PagedImage<T>::attrHandler (Bool createHandler)
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

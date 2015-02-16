@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_DIRACDPARAM_TCC
+#define SCIMATH_DIRACDPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/DiracDParam.h>
 
@@ -67,3 +70,5 @@ DiracDParam<T> &DiracDParam<T>::operator=(const DiracDParam<T> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id: SparseDiffIO.cc,v 1.1 2007/11/16 04:34:46 wbrouw Exp $
 
+#ifndef SCIMATH_SPARSEDIFFIO_TCC
+#define SCIMATH_SPARSEDIFFIO_TCC
+
 //# Includes
 #include <casacore/scimath/Mathematics/SparseDiffIO.h>
 #include <casacore/scimath/Mathematics/SparseDiff.h>
@@ -48,3 +51,5 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

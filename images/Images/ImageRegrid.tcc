@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_IMAGEREGRID_TCC
+#define IMAGES_IMAGEREGRID_TCC
+
 #include <casacore/images/Images/ImageRegrid.h>
 
 #include <casacore/casa/Arrays/ArrayAccessor.h>
@@ -2266,3 +2269,5 @@ void ImageRegrid<T>::set2DCoordinateGrid (const Cube<Double> &grid,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

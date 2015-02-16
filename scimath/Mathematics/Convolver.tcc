@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_CONVOLVER_TCC
+#define SCIMATH_CONVOLVER_TCC
+
 #include <casacore/scimath/Mathematics/Convolver.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -349,3 +352,5 @@ setFastConvolve(){
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

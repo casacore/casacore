@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LELCONDITION_TCC
+#define LATTICES_LELCONDITION_TCC
+
 
 #include <casacore/lattices/LEL/LELCondition.h>
 #include <casacore/lattices/LEL/LELArray.h>
@@ -148,3 +151,5 @@ void LELCondition<T>::resync()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

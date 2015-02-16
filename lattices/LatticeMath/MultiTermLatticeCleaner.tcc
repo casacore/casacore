@@ -24,6 +24,9 @@
 //#
 //# $Id: MultiTermLatticeCleaner.cc 19909 2008-04-23 02:08:02Z UrvashiRau $
 
+#ifndef LATTICES_MULTITERMLATTICECLEANER_TCC
+#define LATTICES_MULTITERMLATTICECLEANER_TCC
+
 
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -1228,3 +1231,5 @@ Bool MultiTermLatticeCleaner<T>::findMaxAbsLattice(const TempLattice<Float>& mas
 
 
 } //# NAMESPACE CASACORE - END
+
+#endif

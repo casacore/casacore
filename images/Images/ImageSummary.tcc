@@ -24,6 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
+#ifndef IMAGES_IMAGESUMMARY_TCC
+#define IMAGES_IMAGESUMMARY_TCC
 //
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -485,3 +488,5 @@ String ImageSummary<T>::makeRegionsString() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICEITERATOR_TCC
+#define LATTICES_LATTICEITERATOR_TCC
+
 #include <casacore/casa/aips.h>
 
 #include <casacore/lattices/Lattices/LatticeIterator.h>
@@ -338,3 +341,5 @@ Array<T>& LatticeIterator<T>::woCursor()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

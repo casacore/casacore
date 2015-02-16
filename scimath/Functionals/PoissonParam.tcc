@@ -22,6 +22,10 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
+
+#ifndef SCIMATH_POISSONPARAM_TCC
+#define SCIMATH_POISSONPARAM_TCC
 
 //# Includes
 #include <casacore/scimath/Functionals/PoissonParam.h>
@@ -67,3 +71,5 @@ PoissonParam<T> &PoissonParam<T>::operator=(const PoissonParam<T> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

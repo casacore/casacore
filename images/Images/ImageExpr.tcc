@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_IMAGEEXPR_TCC
+#define IMAGES_IMAGEEXPR_TCC
+
 #include <casacore/images/Images/ImageExpr.h>
 #include <casacore/images/Images/LELImageCoord.h>
 #include <casacore/lattices/Lattices/LatticeNavigator.h>
@@ -280,3 +283,5 @@ void ImageExpr<T>::reopen()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef FITS_HDU_TCC
+#define FITS_HDU_TCC
+
 //# Partial implementation of little endian code by Kris Huber
 //# (kris@helios.ece.usu.edu)
 
@@ -1411,3 +1414,5 @@ inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2, int d3,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

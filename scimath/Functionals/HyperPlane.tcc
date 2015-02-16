@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_HYPERPLANE_TCC
+#define SCIMATH_HYPERPLANE_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/HyperPlane.h>
 
@@ -45,3 +48,5 @@ T HyperPlane<T>::eval(typename Function<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_AUTODIFF_TCC
+#define SCIMATH_AUTODIFF_TCC
+
 //# Includes
 #include <casacore/scimath/Mathematics/AutoDiff.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -260,3 +263,5 @@ template <class T> void AutoDiff<T>::derivatives(Vector<T> &res) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

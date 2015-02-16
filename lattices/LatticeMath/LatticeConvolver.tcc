@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICECONVOLVER_TCC
+#define LATTICES_LATTICECONVOLVER_TCC
+
 #include <casacore/lattices/LatticeMath/LatticeConvolver.h>
 #include <casacore/lattices/LatticeMath/LatticeFFT.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
@@ -470,3 +473,5 @@ setFastConvolve(){
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id: Polynomial.tcc 20253 2008-02-23 15:15:00Z gervandiepen $
 
+#ifndef SCIMATH_POWERLOGARITHMICPOLYNOMIAL_TCC
+#define SCIMATH_POWERLOGARITHMICPOLYNOMIAL_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/PowerLogarithmicPolynomial.h>
 
@@ -52,3 +55,5 @@ T PowerLogarithmicPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) con
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

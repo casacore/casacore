@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_CHEBYSHEVPARAM_TCC
+#define SCIMATH_CHEBYSHEVPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/ChebyshevParam.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -399,3 +402,5 @@ void ChebyshevParamModeImpl<AutoDiffA<T> >::getMode(RecordInterface& out) const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

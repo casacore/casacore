@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_SINUSOID1D2_TCC
+#define SCIMATH_SINUSOID1D2_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Sinusoid1D.h>
 #include <casacore/casa/BasicSL/Constants.h>
@@ -71,3 +74,5 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

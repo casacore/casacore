@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_DFTSERVER_TCC
+#define SCIMATH_DFTSERVER_TCC
+
 #include <casacore/scimath/Mathematics/DFTServer.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/iostream.h>
@@ -411,3 +414,5 @@ void DFTServer<T>::showReal(Array<T> &data)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

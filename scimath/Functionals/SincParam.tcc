@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_SINCPARAM_TCC
+#define SCIMATH_SINCPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/SincParam.h>
 
@@ -79,3 +82,5 @@ SincParam<T> &SincParam<T>::operator=(const SincParam<T> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

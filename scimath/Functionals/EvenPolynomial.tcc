@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_EVENPOLYNOMIAL_TCC
+#define SCIMATH_EVENPOLYNOMIAL_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/EvenPolynomial.h>
 
@@ -49,3 +52,5 @@ T EvenPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

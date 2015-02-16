@@ -24,6 +24,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICECLEANER_TCC
+#define LATTICES_LATTICECLEANER_TCC
+
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 
@@ -1222,3 +1225,5 @@ void LatticeCleaner<T>::makeBoxesSameSize(IPosition& blc1, IPosition& trc1,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

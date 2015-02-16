@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_MASKEDLATTICE_TCC
+#define LATTICES_MASKEDLATTICE_TCC
+
 
 #include <casacore/lattices/Lattices/MaskedLattice.h>
 #include <casacore/lattices/LRegions/LatticeRegion.h>
@@ -287,3 +290,5 @@ Bool MaskedLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

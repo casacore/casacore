@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GAUSSIAN3DPARAM_TCC
+#define SCIMATH_GAUSSIAN3DPARAM_TCC
+
 #include <casacore/scimath/Functionals/Gaussian3DParam.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -326,3 +329,5 @@ void Gaussian3DParam<Type>::settrigvals() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

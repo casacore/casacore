@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_UNARYFUNCTION_TCC
+#define SCIMATH_UNARYFUNCTION_TCC
+
 #include <casacore/scimath/Functionals/UnaryFunction.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -46,3 +49,5 @@ T UnaryFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

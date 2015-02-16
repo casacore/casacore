@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_EVENPOLYNOMIAL2_TCC
+#define SCIMATH_EVENPOLYNOMIAL2_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/EvenPolynomial.h>
 
@@ -68,3 +71,5 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

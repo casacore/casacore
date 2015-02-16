@@ -22,6 +22,10 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
+
+#ifndef LATTICES_LATTICESTATSDATAPROVIDERBASE_TCC
+#define LATTICES_LATTICESTATSDATAPROVIDERBASE_TCC
 
 #include <casacore/lattices/LatticeMath/LatticeStatsDataProviderBase.h>
 
@@ -117,3 +121,5 @@ void LatticeStatsDataProviderBase<T>::_updateProgress() {
 
 }
 
+
+#endif

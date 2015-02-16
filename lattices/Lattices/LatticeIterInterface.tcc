@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICEITERINTERFACE_TCC
+#define LATTICES_LATTICEITERINTERFACE_TCC
+
 #include <casacore/lattices/Lattices/LatticeIterInterface.h>
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/lattices/Lattices/LatticeNavigator.h>
@@ -442,3 +445,5 @@ Bool LatticeIterInterface<T>::ok() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

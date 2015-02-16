@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_HDF5LATTITER_TCC
+#define LATTICES_HDF5LATTITER_TCC
+
 #include <casacore/lattices/Lattices/HDF5LattIter.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -92,3 +95,5 @@ void HDF5LattIter<T>::setupTileCache()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

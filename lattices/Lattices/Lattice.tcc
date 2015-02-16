@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICE_TCC
+#define LATTICES_LATTICE_TCC
+
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>
@@ -363,3 +366,5 @@ uInt Lattice<T>::advisedMaxPixels() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

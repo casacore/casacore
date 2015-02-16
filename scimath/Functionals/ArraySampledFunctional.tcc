@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_ARRAYSAMPLEDFUNCTIONAL_TCC
+#define SCIMATH_ARRAYSAMPLEDFUNCTIONAL_TCC
+
 #include <casacore/scimath/Functionals/ArraySampledFunctional.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -110,3 +113,5 @@ template<class T> ArraySampledFunctional<T>::
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

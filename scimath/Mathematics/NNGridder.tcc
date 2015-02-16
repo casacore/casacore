@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_NNGRIDDER_TCC
+#define SCIMATH_NNGRIDDER_TCC
+
 #include <casacore/scimath/Mathematics/NNGridder.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -96,3 +99,5 @@ Range NNGridder<Domain, Range>::correctionFactor1D(Int loc, Int len)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

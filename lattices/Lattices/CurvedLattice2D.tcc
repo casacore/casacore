@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_CURVEDLATTICE2D_TCC
+#define LATTICES_CURVEDLATTICE2D_TCC
+
 #include <casacore/lattices/Lattices/CurvedLattice2D.h>
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/casa/Arrays/Array.h>
@@ -282,3 +285,5 @@ Bool CurvedLattice2D<T>::ok() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

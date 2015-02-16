@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LELINTERFACE_TCC
+#define LATTICES_LELINTERFACE_TCC
+
 #include <casacore/lattices/LEL/LELInterface.h>
 #include <casacore/lattices/LEL/LELUnary.h>
 #include <casacore/lattices/LEL/LELArray.h>
@@ -110,3 +113,5 @@ void LELInterface<T>::resync()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

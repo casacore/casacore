@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICEAPPLY_TCC
+#define LATTICES_LATTICEAPPLY_TCC
+
 
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>
@@ -671,3 +674,5 @@ IPosition LatticeApply<T,U>::prepare (const IPosition& inShape,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

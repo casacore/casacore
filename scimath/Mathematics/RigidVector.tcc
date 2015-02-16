@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_RIGIDVECTOR_TCC
+#define SCIMATH_RIGIDVECTOR_TCC
+
 #include <casacore/scimath/Mathematics/RigidVector.h>
 #include <casacore/scimath/Mathematics/SquareMatrix.h>
 
@@ -106,3 +109,5 @@ RigidVector<T,n> sqrt(const RigidVector<T,n>& v) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_INTERPOLATE1D_TCC
+#define SCIMATH_INTERPOLATE1D_TCC
+
 #include <casacore/scimath/Functionals/Interpolate1D.h>
 #include <casacore/scimath/Functionals/SampledFunctional.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -325,3 +328,5 @@ eval(typename Function1D<Domain, Range>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

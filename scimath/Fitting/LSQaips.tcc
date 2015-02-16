@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_LSQAIPS_TCC
+#define SCIMATH_LSQAIPS_TCC
+
 //# Includes
 #include <casacore/scimath/Fitting/LSQaips.h>
 #include <casacore/casa/Arrays/Array.h>
@@ -66,3 +69,5 @@ Bool LSQaips::solveLoop(uInt &nRank,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

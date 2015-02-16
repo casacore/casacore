@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_HISTACC_TCC
+#define SCIMATH_HISTACC_TCC
+
 
 #include <casacore/scimath/Mathematics/HistAcc.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -548,3 +551,5 @@ void HistAcc<T>::printHistogram (ostream& os, const String& caption)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif
