@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_WRAPPERPARAM_TCC
+#define SCIMATH_WRAPPERPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/WrapperParam.h>
 
@@ -63,3 +66,5 @@ WrapperParam<T>::operator=(const WrapperParam<T> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

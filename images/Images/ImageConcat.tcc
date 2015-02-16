@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_IMAGECONCAT_TCC
+#define IMAGES_IMAGECONCAT_TCC
+
 
 #include <casacore/images/Images/ImageConcat.h>
 #include <casacore/images/Images/ImageOpener.h>
@@ -867,3 +870,5 @@ IPosition ImageConcat<T>::shape() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_KAISERBPARAM_TCC
+#define SCIMATH_KAISERBPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/KaiserBParam.h>
 
@@ -64,3 +67,5 @@ KaiserBParam<T> &KaiserBParam<T>::operator=(const KaiserBParam<T> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

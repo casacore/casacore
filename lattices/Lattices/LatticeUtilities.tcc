@@ -24,6 +24,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICEUTILITIES_TCC
+#define LATTICES_LATTICEUTILITIES_TCC
+
 #include <casacore/lattices/Lattices/LatticeUtilities.h>
 
 #include <casacore/casa/Arrays/Array.h>
@@ -184,3 +187,5 @@ void LatticeUtilities::bin (MaskedArray<T>& out, const MaskedArray<T>& in,
 }
 
 } //# End namespace casacore
+
+#endif

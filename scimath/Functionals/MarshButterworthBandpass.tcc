@@ -26,6 +26,9 @@
 //#! ========================================================================
 //# $Id$
 
+#ifndef SCIMATH_MARSHBUTTERWORTHBANDPASS_TCC
+#define SCIMATH_MARSHBUTTERWORTHBANDPASS_TCC
+
 #include <casacore/scimath/Functionals/MarshButterworthBandpass.h>
 #include <casacore/casa/Arrays/Array.h>
 
@@ -92,3 +95,5 @@ MarshButterworthBandpass<T>::MarshButterworthBandpass(const Record& gr)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

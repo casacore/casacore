@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_HDF5LATTICE_TCC
+#define LATTICES_HDF5LATTICE_TCC
+
 #include <casacore/lattices/Lattices/HDF5Lattice.h>
 #include <casacore/lattices/Lattices/HDF5LattIter.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
@@ -319,3 +322,5 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

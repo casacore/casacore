@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_SQUAREMATRIX_TCC
+#define SCIMATH_SQUAREMATRIX_TCC
+
 //# Includes
 #include <casacore/scimath/Mathematics/SquareMatrix.h>
 #include <casacore/scimath/Mathematics/MatrixMathLA.h>
@@ -463,3 +466,5 @@ T& SquareMatrix<T,n>::throwInvAccess() {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

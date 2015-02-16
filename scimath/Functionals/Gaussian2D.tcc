@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GAUSSIAN2D_TCC
+#define SCIMATH_GAUSSIAN2D_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Gaussian2D.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -57,3 +60,5 @@ T Gaussian2D<T>::eval(typename Function<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_EXTENDLATTICE_TCC
+#define LATTICES_EXTENDLATTICE_TCC
+
 #include <casacore/lattices/Lattices/ExtendLattice.h>
 #include <casacore/lattices/Lattices/LatticeIterInterface.h>
 #include <casacore/casa/Arrays/IPosition.h>
@@ -357,3 +360,5 @@ Bool ExtendLattice<T>::ok() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

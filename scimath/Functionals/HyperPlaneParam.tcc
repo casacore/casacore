@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_HYPERPLANEPARAM_TCC
+#define SCIMATH_HYPERPLANEPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/HyperPlaneParam.h>
 
@@ -50,3 +53,5 @@ HyperPlaneParam<T>::operator=(const HyperPlaneParam<T> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

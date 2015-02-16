@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LELFUNCTION_TCC
+#define LATTICES_LELFUNCTION_TCC
+
 #include <casacore/lattices/LEL/LatticeExpr.h>
 #include <casacore/lattices/LEL/LELFunction.h> 
 #include <casacore/lattices/LEL/LELFunctionEnums.h>
@@ -1047,3 +1050,5 @@ void LELFunctionND<T>::resync()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

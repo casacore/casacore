@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GAUSSIANND_TCC
+#define SCIMATH_GAUSSIANND_TCC
+
 #include <casacore/scimath/Functionals/GaussianND.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/MatrixMath.h>
@@ -55,3 +58,5 @@ T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

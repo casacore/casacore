@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_COMBIPARAM_TCC
+#define SCIMATH_COMBIPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/CombiParam.h>
 
@@ -85,3 +88,5 @@ uInt CombiParam<T>::addFunction(const Function<T> &newFunction) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

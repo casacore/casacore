@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GRIDDER_TCC
+#define SCIMATH_GRIDDER_TCC
+
 #include <casacore/scimath/Mathematics/Gridder.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
@@ -193,3 +196,5 @@ void Gridder<Domain, Range>::fillCorrectionVectors()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

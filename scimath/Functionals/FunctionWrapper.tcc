@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_FUNCTIONWRAPPER_TCC
+#define SCIMATH_FUNCTIONWRAPPER_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/FunctionWrapper.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -126,3 +129,5 @@ uInt FunctionWrapper<T>::ndim() const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef COORDINATES_FREQUENCYALIGNER_TCC
+#define COORDINATES_FREQUENCYALIGNER_TCC
+
 #include <casacore/coordinates/Coordinates/FrequencyAligner.h>
 
 #include <casacore/casa/Arrays/ArrayAccessor.h>
@@ -425,3 +428,5 @@ SpectralCoordinate FrequencyAligner<T>::alignedSpectralCoordinate (Bool doLinear
 
 
    
+
+#endif

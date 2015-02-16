@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_COMPILEDFUNCTION_TCC
+#define SCIMATH_COMPILEDFUNCTION_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/CompiledFunction.h>
 #include <casacore/scimath/Functionals/FuncExpression.h>
@@ -254,3 +257,5 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_MATHFUNC_TCC
+#define SCIMATH_MATHFUNC_TCC
+
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/scimath/Mathematics/MathFunc.h>
@@ -781,3 +784,5 @@ MathFunc<T> * ExpSincConv<T>::clone() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

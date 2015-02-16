@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_CLINTERPOLATOR2D_TCC
+#define LATTICES_CLINTERPOLATOR2D_TCC
+
 
 #include <casacore/lattices/LatticeMath/CLInterpolator2D.h>
 
@@ -77,3 +80,5 @@ void CLInterpolator2D<T>::preset()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

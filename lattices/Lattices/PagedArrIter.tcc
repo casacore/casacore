@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_PAGEDARRITER_TCC
+#define LATTICES_PAGEDARRITER_TCC
+
 #include <casacore/lattices/Lattices/PagedArrIter.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -93,3 +96,5 @@ void PagedArrIter<T>::setupTileCache()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

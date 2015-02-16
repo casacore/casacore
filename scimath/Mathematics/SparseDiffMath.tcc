@@ -25,6 +25,9 @@
 //#
 //# $Id: SparseDiffMath.cc,v 1.1 2007/11/16 04:34:46 wbrouw Exp $
 
+#ifndef SCIMATH_SPARSEDIFFMATH_TCC
+#define SCIMATH_SPARSEDIFFMATH_TCC
+
 //# Includes
 #include <casacore/scimath/Mathematics/SparseDiffMath.h>
 #include <casacore/scimath/Mathematics/SparseDiffRep.h>
@@ -579,3 +582,5 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

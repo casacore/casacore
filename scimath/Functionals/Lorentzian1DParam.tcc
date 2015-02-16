@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_LORENTZIAN1DPARAM_TCC
+#define SCIMATH_LORENTZIAN1DPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Lorentzian1DParam.h>
 #include <casacore/casa/BasicSL/Constants.h>
@@ -106,3 +109,5 @@ void Lorentzian1DParam<T>::setFlux(const T &flux) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //#
 //# $Id$
+
+#ifndef SCIMATH_ECLECTICFUNCTIONFACTORY_TCC
+#define SCIMATH_ECLECTICFUNCTIONFACTORY_TCC
 #include <casacore/scimath/Functionals/EclecticFunctionFactory.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Containers/Record.h>
@@ -83,3 +86,5 @@ void EclecticFunctionFactory<T>::addFactory(const String& type,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

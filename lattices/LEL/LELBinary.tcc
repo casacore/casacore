@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LELBINARY_TCC
+#define LATTICES_LELBINARY_TCC
+
 #include <casacore/lattices/LEL/LELBinary.h>
 #include <casacore/lattices/LEL/LELScalar.h>
 #include <casacore/lattices/LEL/LELArray.h>
@@ -446,3 +449,5 @@ void LELBinaryCmp<T>::resync()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

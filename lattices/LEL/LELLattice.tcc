@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LELLATTICE_TCC
+#define LATTICES_LELLATTICE_TCC
+
 #include <casacore/lattices/LEL/LELLattice.h>
 #include <casacore/lattices/LEL/LELScalar.h>
 #include <casacore/lattices/LEL/LELArray.h>
@@ -163,3 +166,5 @@ void LELLattice<T>::resync()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

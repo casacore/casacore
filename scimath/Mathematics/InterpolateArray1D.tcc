@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_INTERPOLATEARRAY1D_TCC
+#define SCIMATH_INTERPOLATEARRAY1D_TCC
+
 #include <casacore/scimath/Mathematics/InterpolateArray1D.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Cube.h>
@@ -860,3 +863,5 @@ void InterpolateArray1D<Domain,Range>::polynomialInterpolation
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

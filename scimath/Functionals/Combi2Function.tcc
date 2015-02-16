@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_COMBI2FUNCTION_TCC
+#define SCIMATH_COMBI2FUNCTION_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/CombiFunction.h>
 
@@ -59,3 +62,5 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

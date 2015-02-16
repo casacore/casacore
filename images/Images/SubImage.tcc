@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_SUBIMAGE_TCC
+#define IMAGES_SUBIMAGE_TCC
+
 #include <casacore/images/Images/SubImage.h>
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
 #include <casacore/lattices/LRegions/LattRegionHolder.h>
@@ -451,3 +454,5 @@ void SubImage<T>::convertIPosition(Vector<Float>& x, const IPosition& pos) const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

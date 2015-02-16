@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_CONSTANTND_TCC
+#define SCIMATH_CONSTANTND_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/ConstantND.h>
 
@@ -50,3 +53,5 @@ eval(typename Function<AutoDiff<T> >::FunctionArg) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

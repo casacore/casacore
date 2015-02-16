@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_IMAGEFITSCONVERTER_TCC
+#define IMAGES_IMAGEFITSCONVERTER_TCC
+
 #include <casacore/images/Images/ImageFITSConverter.h>
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Images/TempImage.h>
@@ -340,3 +343,5 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

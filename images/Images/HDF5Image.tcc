@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_HDF5IMAGE_TCC
+#define IMAGES_HDF5IMAGE_TCC
+
 
 #include <casacore/images/Images/HDF5Image.h>
 #include <casacore/images/Regions/ImageRegion.h>
@@ -543,3 +546,5 @@ ImageAttrHandler& HDF5Image<T>::attrHandler (Bool createHandler)
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

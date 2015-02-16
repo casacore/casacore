@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LELCONVERT_TCC
+#define LATTICES_LELCONVERT_TCC
+
 
 #include <casacore/lattices/LEL/LELConvert.h>
 #include <casacore/lattices/LEL/LELArray.h>
@@ -131,3 +134,5 @@ void LELConvert<T,F>::resync()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

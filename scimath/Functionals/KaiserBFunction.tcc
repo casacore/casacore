@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_KAISERBFUNCTION_TCC
+#define SCIMATH_KAISERBFUNCTION_TCC
+
 #include <casacore/scimath/Functionals/KaiserBFunction.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -55,3 +58,5 @@ T KaiserBFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_MATRIXMATHLA_TCC
+#define SCIMATH_MATRIXMATHLA_TCC
+
 #include <casacore/scimath/Mathematics/MatrixMathLA.h>
 #include <casacore/casa/Arrays/ArrayError.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -231,3 +234,5 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

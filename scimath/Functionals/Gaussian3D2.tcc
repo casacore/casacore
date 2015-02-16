@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GAUSSIAN3D2_TCC
+#define SCIMATH_GAUSSIAN3D2_TCC
+
 #include <casacore/scimath/Functionals/Gaussian3D.h>
 
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -224,3 +227,5 @@ T Gaussian3D<AutoDiff<T> >::sq(T v) const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_UNARYPARAM_TCC
+#define SCIMATH_UNARYPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/UnaryParam.h>
 
@@ -79,3 +82,5 @@ UnaryParam<T> &UnaryParam<T>::operator=(const UnaryParam<T> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

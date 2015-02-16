@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_FUNCTION_TCC
+#define SCIMATH_FUNCTION_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/casa/Containers/RecordInterface.h>
@@ -91,3 +94,5 @@ Function<T,U>::cloneNonAD() const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

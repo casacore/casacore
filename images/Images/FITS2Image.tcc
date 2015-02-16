@@ -25,6 +25,9 @@
 //#
 //# $Id: 
 
+#ifndef IMAGES_FITS2IMAGE_TCC
+#define IMAGES_FITS2IMAGE_TCC
+
 
 #include <casacore/images/Images/FITSImage.h>
 
@@ -383,3 +386,5 @@ template void FITSImage::crackHeader<Short> (CoordinateSystem &, IPosition &, Im
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

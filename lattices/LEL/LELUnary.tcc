@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LELUNARY_TCC
+#define LATTICES_LELUNARY_TCC
+
 #include <casacore/lattices/LEL/LELUnary.h>
 #include <casacore/lattices/LEL/LELScalar.h>
 #include <casacore/lattices/LEL/LELArray.h>
@@ -194,3 +197,5 @@ void LELUnary<T>::resync()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

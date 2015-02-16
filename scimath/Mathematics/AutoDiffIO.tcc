@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_AUTODIFFIO_TCC
+#define SCIMATH_AUTODIFFIO_TCC
+
 //# Includes
 #include <casacore/scimath/Mathematics/AutoDiffIO.h>
 #include <casacore/scimath/Mathematics/AutoDiff.h>
@@ -44,3 +47,5 @@ ostream &operator<<(ostream &os, const AutoDiff<T> &ad) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

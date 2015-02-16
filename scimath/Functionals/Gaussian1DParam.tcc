@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GAUSSIAN1DPARAM_TCC
+#define SCIMATH_GAUSSIAN1DPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Gaussian1DParam.h>
 #include <casacore/casa/BasicSL/Constants.h>
@@ -106,3 +109,5 @@ void Gaussian1DParam<T>::setFlux(const T &flux) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

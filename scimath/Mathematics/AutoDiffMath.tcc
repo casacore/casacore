@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_AUTODIFFMATH_TCC
+#define SCIMATH_AUTODIFFMATH_TCC
+
 //# Includes
 #include <casacore/scimath/Mathematics/AutoDiffMath.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -585,3 +588,5 @@ AutoDiff<T> max(const AutoDiff<T> &left,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

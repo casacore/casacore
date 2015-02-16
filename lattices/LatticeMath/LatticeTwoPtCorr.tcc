@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICETWOPTCORR_TCC
+#define LATTICES_LATTICETWOPTCORR_TCC
+
 #include <casacore/lattices/LatticeMath/LatticeTwoPtCorr.h>
 
 #include <casacore/casa/Arrays/Array.h>
@@ -324,3 +327,5 @@ void LatticeTwoPtCorr<T>::check (LogIO& os, const MaskedLattice<T>& latOut,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

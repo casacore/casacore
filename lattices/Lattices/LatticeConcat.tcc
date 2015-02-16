@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICECONCAT_TCC
+#define LATTICES_LATTICECONCAT_TCC
+
 
 #include <casacore/lattices/Lattices/LatticeConcat.h>
 
@@ -879,3 +882,5 @@ Bool LatticeConcat<T>::getMaskSlice2 (Array<Bool>& buffer,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

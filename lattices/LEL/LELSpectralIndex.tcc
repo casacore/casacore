@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LELSPECTRALINDEX_TCC
+#define LATTICES_LELSPECTRALINDEX_TCC
+
 
 #include <casacore/lattices/LEL/LELSpectralIndex.h>
 #include <casacore/lattices/LEL/LELLattCoord.h>
@@ -240,3 +243,5 @@ Bool LELSpectralIndex<T>::prepareScalarExpr()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LELARRAY_TCC
+#define LATTICES_LELARRAY_TCC
+
 
 #include <casacore/lattices/LEL/LELArray.h>
 
@@ -60,3 +63,5 @@ LELArray<T>& LELArray<T>::operator= (const LELArray<T>& other)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

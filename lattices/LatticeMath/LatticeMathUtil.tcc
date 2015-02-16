@@ -24,6 +24,9 @@
 //#
 //# $Id: LatticeUtilities.tcc 21531 2014-12-24 11:46:02Z gervandiepen $
 
+#ifndef LATTICES_LATTICEMATHUTIL_TCC
+#define LATTICES_LATTICEMATHUTIL_TCC
+
 #include <casacore/lattices/LatticeMath/LatticeMathUtil.h>
 
 #include <casacore/casa/Arrays/Array.h>
@@ -158,3 +161,5 @@ void LatticeMathUtil::collapse(
 
 
 } //# End namespace casacore
+
+#endif

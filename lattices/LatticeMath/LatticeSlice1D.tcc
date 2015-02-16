@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICESLICE1D_TCC
+#define LATTICES_LATTICESLICE1D_TCC
+
 
 #include <casacore/lattices/LatticeMath/LatticeSlice1D.h>
 
@@ -324,3 +327,5 @@ typename LatticeSlice1D<T>::Method LatticeSlice1D<T>::stringToMethod (const Stri
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

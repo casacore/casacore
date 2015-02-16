@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_SINCFUNCTION_TCC
+#define SCIMATH_SINCFUNCTION_TCC
+
 #include <casacore/scimath/Functionals/SincFunction.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -45,3 +48,5 @@ T SincFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

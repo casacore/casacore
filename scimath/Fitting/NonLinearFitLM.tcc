@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_NONLINEARFITLM_TCC
+#define SCIMATH_NONLINEARFITLM_TCC
+
 //# Includes
 
 #include <casacore/scimath/Fitting/NonLinearFitLM.h>
@@ -108,3 +111,5 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

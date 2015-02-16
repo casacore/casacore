@@ -24,6 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
+#ifndef SCIMATH_INTERPOLATE2D2_TCC
+#define SCIMATH_INTERPOLATE2D2_TCC
  
 #include <casacore/scimath/Mathematics/Interpolate2D.h>
 #include <casacore/casa/Arrays/Matrix.h>
@@ -309,3 +312,5 @@ T Interpolate2D::L(const T x, const Int a) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

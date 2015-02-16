@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_LORENTZIAN1D_TCC
+#define SCIMATH_LORENTZIAN1D_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Lorentzian1D.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -44,3 +47,5 @@ T Lorentzian1D<T>::eval(typename Function1D<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

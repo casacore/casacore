@@ -24,6 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
+#ifndef IMAGES_IMAGEUTILITIES2_TCC
+#define IMAGES_IMAGEUTILITIES2_TCC
 //
 
 #include <casacore/images/Images/ImageUtilities.h>
@@ -291,3 +294,5 @@ CountedPtr<ImageInterface<T> > ImageUtilities::openImage
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

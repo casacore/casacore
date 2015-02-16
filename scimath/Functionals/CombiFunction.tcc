@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_COMBIFUNCTION_TCC
+#define SCIMATH_COMBIFUNCTION_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/CombiFunction.h>
 
@@ -46,3 +49,5 @@ T CombiFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

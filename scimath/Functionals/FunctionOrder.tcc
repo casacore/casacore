@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_FUNCTIONORDER_TCC
+#define SCIMATH_FUNCTIONORDER_TCC
+
 #include <casacore/scimath/Functionals/FunctionOrder.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/iostream.h>
@@ -238,3 +241,5 @@ const String &FunctionOrder<T>::ident() const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

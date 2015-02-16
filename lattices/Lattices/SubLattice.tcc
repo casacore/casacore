@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_SUBLATTICE_TCC
+#define LATTICES_SUBLATTICE_TCC
+
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/lattices/Lattices/LatticeIterInterface.h>
 #include <casacore/lattices/LEL/LatticeExpr.h>
@@ -629,3 +632,5 @@ LatticeIterInterface<T>* SubLattice<T>::makeIter (const LatticeNavigator& nav,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

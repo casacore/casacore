@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_SPOLYNOMIAL_TCC
+#define SCIMATH_SPOLYNOMIAL_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/SPolynomial.h>
 
@@ -48,3 +51,5 @@ T SPolynomial<T>::eval(typename Function<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

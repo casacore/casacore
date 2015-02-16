@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_LINEARFIT_TCC
+#define SCIMATH_LINEARFIT_TCC
+
 //# Includes
 #include <casacore/scimath/Fitting/LinearFit.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -90,3 +93,5 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

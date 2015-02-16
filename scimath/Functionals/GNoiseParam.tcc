@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GNOISEPARAM_TCC
+#define SCIMATH_GNOISEPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/GNoiseParam.h>
 
@@ -59,3 +62,5 @@ GNoiseParam<T> &GNoiseParam<T>::operator=(const GNoiseParam<T> &other) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

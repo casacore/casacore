@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICEFRACTILE_TCC
+#define LATTICES_LATTICEFRACTILE_TCC
+
 #include <casacore/lattices/LatticeMath/LatticeFractile.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h>
 #include <casacore/lattices/Lattices/MaskedLatticeIterator.h>
@@ -986,3 +989,5 @@ Vector<T> LatticeFractile<T>::smallMaskedFractiles
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

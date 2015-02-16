@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GENERICL2FIT_TCC
+#define SCIMATH_GENERICL2FIT_TCC
+
 //# Includes
 #include <casacore/scimath/Fitting/GenericL2Fit.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -652,3 +655,5 @@ buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
 }
 
 } //#End namesapce casa
+
+#endif

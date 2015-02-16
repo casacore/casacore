@@ -22,6 +22,10 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
+
+#ifndef SCIMATH_POISSONFUNCTION_TCC
+#define SCIMATH_POISSONFUNCTION_TCC
 
 #include <casacore/scimath/Functionals/PoissonFunction.h>
 #include <casacore/casa/BasicSL/Constants.h>
@@ -45,3 +49,5 @@ T PoissonFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

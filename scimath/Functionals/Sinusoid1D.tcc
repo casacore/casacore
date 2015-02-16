@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_SINUSOID1D_TCC
+#define SCIMATH_SINUSOID1D_TCC
+
 #include <casacore/scimath/Functionals/Sinusoid1D.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicMath/Math.h>
@@ -44,3 +47,5 @@ T Sinusoid1D<T>::eval(typename Function1D<T>::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

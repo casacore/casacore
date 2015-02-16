@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_LATTICECACHE_TCC
+#define LATTICES_LATTICECACHE_TCC
+
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/lattices/Lattices/Lattice.h>
@@ -327,3 +330,5 @@ Int LatticeCache<T>::getFreeTile(Bool readonly) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

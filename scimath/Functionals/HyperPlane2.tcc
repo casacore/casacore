@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_HYPERPLANE2_TCC
+#define SCIMATH_HYPERPLANE2_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/HyperPlane.h>
 
@@ -61,3 +64,5 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

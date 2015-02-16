@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef FITS_FITS2_TCC
+#define FITS_FITS2_TCC
+
 #include <casacore/fits/FITS/FITS2.h>
 #include <casacore/fits/FITS/fits.h>
 #include <casacore/fits/FITS/fitsio.h>
@@ -140,3 +143,5 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

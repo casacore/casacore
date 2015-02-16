@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_COMPILEDPARAM_TCC
+#define SCIMATH_COMPILEDPARAM_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/CompiledParam.h>
 #include <casacore/scimath/Functionals/FuncExpression.h>
@@ -87,3 +90,5 @@ Bool CompiledParam<T>::setFunction(const String &newFunction) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

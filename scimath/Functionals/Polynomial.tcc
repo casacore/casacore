@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_POLYNOMIAL_TCC
+#define SCIMATH_POLYNOMIAL_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Polynomial.h>
 
@@ -57,3 +60,5 @@ Polynomial<T> Polynomial<T>::derivative() const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

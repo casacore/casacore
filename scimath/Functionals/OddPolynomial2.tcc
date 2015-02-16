@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_ODDPOLYNOMIAL2_TCC
+#define SCIMATH_ODDPOLYNOMIAL2_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/OddPolynomial.h>
 
@@ -68,3 +71,5 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

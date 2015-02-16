@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_SCALARSAMPLEDFUNCTIONAL_TCC
+#define SCIMATH_SCALARSAMPLEDFUNCTIONAL_TCC
+
 #include <casacore/scimath/Functionals/ScalarSampledFunctional.h>
 #include <casacore/casa/Containers/Block.h>
 
@@ -93,3 +96,5 @@ template<class T> ScalarSampledFunctional<T>::
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

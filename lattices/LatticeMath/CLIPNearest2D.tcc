@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef LATTICES_CLIPNEAREST2D_TCC
+#define LATTICES_CLIPNEAREST2D_TCC
+
 
 #include <casacore/lattices/LatticeMath/CLIPNearest2D.h>
 #include <casacore/lattices/Lattices/PixelCurve1D.h>
@@ -159,3 +162,5 @@ void CLIPNearest2D<T>::getMask (Array<Bool>& buffer,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

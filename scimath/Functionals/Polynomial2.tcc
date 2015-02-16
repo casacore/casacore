@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_POLYNOMIAL2_TCC
+#define SCIMATH_POLYNOMIAL2_TCC
+
 //# Includes
 #include <casacore/scimath/Functionals/Polynomial.h>
 
@@ -66,3 +69,5 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

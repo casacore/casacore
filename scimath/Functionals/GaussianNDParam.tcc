@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_GAUSSIANNDPARAM_TCC
+#define SCIMATH_GAUSSIANNDPARAM_TCC
+
 #include <casacore/scimath/Functionals/GaussianNDParam.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/scimath/Mathematics/MatrixMathLA.h>
@@ -268,3 +271,5 @@ void GaussianNDParam<T>::repack(Matrix<T> &covar) const {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif
