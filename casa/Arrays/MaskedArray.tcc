@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_MASKEDARRAY_TCC
+#define CASA_MASKEDARRAY_TCC
+
 #include <casacore/casa/Arrays/MaskedArray.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
@@ -917,3 +920,5 @@ template<class T, class U>
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

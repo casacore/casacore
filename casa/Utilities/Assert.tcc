@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ASSERT_TCC
+#define CASA_ASSERT_TCC
+
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/stdio.h>
 
@@ -48,3 +51,5 @@ template<class t> assert_<t>::assert_(const void *ptr, const char *msg, const ch
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ARRAYITER_TCC
+#define CASA_ARRAYITER_TCC
+
 #include <casacore/casa/Arrays/ArrayIter.h>
 #include <casacore/casa/Arrays/ArrayError.h>
 
@@ -149,3 +152,5 @@ template<class T> ArrayBase& ArrayIterator<T>::getArray()
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

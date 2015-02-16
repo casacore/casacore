@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ARRAY_TCC
+#define CASA_ARRAY_TCC
+
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/MaskedArray.h>
 #include <casacore/casa/Arrays/Slicer.h>
@@ -1001,3 +1004,5 @@ vector<T> Array<T>::tovector() const {
 
 
 } //#End casa namespace
+
+#endif

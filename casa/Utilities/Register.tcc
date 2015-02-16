@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_REGISTER_TCC
+#define CASA_REGISTER_TCC
+
 #include <casacore/casa/Utilities/Register.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -37,3 +40,5 @@ template<class t> uInt Register(const t *) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -26,6 +26,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_COWPTR_TCC
+#define CASA_COWPTR_TCC
+
 #include <casacore/casa/Utilities/COWPtr.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -63,3 +66,5 @@ template <class T> Bool COWPtr<T>::makeUnique()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

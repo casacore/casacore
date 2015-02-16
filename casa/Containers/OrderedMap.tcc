@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ORDEREDMAP_TCC
+#define CASA_ORDEREDMAP_TCC
+
 #include <casacore/casa/Containers/OrderedMap.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -366,3 +369,5 @@ void OrderedMapIterRep<key,value>::notify(const Notice &note) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

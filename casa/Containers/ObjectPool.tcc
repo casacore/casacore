@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_OBJECTPOOL_TCC
+#define CASA_OBJECTPOOL_TCC
+
 //# Includes
 #include <casacore/casa/Containers/ObjectPool.h>
 
@@ -104,3 +107,5 @@ void ObjectPool<T, Key>::clear() {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

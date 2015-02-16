@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ERROR_TCC
+#define CASA_ERROR_TCC
+
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 
@@ -67,3 +70,5 @@ duplError<t>::~duplError() throw()
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

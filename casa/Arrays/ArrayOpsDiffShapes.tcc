@@ -24,6 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
+#ifndef CASA_ARRAYOPSDIFFSHAPES_TCC
+#define CASA_ARRAYOPSDIFFSHAPES_TCC
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 //#include <casacore/casa/Arrays/ArrayUtil.h>
@@ -176,3 +179,5 @@ void binOpExpandInPlace(Array<L>& leftarr, const Array<R>& rightarr, BinaryOpera
 }
 
 } //#End casa namespace
+
+#endif

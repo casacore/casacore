@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_LISTIO_TCC
+#define CASA_LISTIO_TCC
+
 #include <casacore/casa/Containers/ListIO.h>
 
 
@@ -62,3 +65,5 @@ template<class t> ostream &operator<<(ostream &ios, const ConstListIter<t> &list
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_MATRIXMATH_TCC
+#define CASA_MATRIXMATH_TCC
+
 #include <casacore/casa/Arrays/MatrixMath.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Matrix.h>
@@ -168,3 +171,5 @@ Matrix<T> directProduct(const  Matrix<T> &A, const Matrix<T> &B) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

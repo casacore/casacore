@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ARRAYMATH_TCC
+#define CASA_ARRAYMATH_TCC
+
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -1370,3 +1373,5 @@ template<class T, class U> void convertArray(Array<T> &to,
 }
 
 } //# NAMESPACE CASACORE - END
+
+#endif

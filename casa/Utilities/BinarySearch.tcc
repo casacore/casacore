@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_BINARYSEARCH_TCC
+#define CASA_BINARYSEARCH_TCC
+
 #include <casacore/casa/Utilities/BinarySearch.h>
 #include <casacore/casa/Exceptions/Error.h>
 
@@ -136,3 +139,5 @@ template<class Container, class ElType>
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

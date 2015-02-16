@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_HASHMAP_TCC
+#define CASA_HASHMAP_TCC
+
 #include <casacore/casa/Containers/HashMap.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -223,3 +226,5 @@ template<class t> const t &defaultHashValue(const t *) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

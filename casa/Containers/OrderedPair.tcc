@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ORDEREDPAIR_TCC
+#define CASA_ORDEREDPAIR_TCC
+
 #include <casacore/casa/Containers/OrderedPair.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -57,3 +60,5 @@ OrderedPair<K,V>::operator= (const OrderedPair<K,V>& that)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_AIPSIOCARRAY_TCC
+#define CASA_AIPSIOCARRAY_TCC
+
 #include <casacore/casa/IO/AipsIOCarray.h>
 #include <casacore/casa/Exceptions/Error.h>
 
@@ -61,3 +64,5 @@ void getnewAipsIO (AipsIO& ios, uInt& n, T** data)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_MATRIX_TCC
+#define CASA_MATRIX_TCC
+
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Slice.h>
@@ -425,3 +428,5 @@ void Matrix<T>::takeStorage(const IPosition &shape, const T *storage)
 }
 
 } //#End casa namespace
+
+#endif

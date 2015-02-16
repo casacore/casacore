@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_ARRAYLOGICAL_TCC
+#define CASA_ARRAYLOGICAL_TCC
+
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Arrays/ArrayError.h>
@@ -802,3 +805,5 @@ template<class T> Array<uInt> partialNFalse (const Array<T>& array,
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

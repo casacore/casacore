@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_POOLSTACK_TCC
+#define CASA_POOLSTACK_TCC
+
 //# Includes
 #include <casacore/casa/Containers/PoolStack.h>
 
@@ -74,3 +77,5 @@ void PoolStack<T, Key>::clear() {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

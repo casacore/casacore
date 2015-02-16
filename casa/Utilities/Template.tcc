@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_TEMPLATE_TCC
+#define CASA_TEMPLATE_TCC
+
 //# Includes
 #include <casacore/casa/Utilities/Template.h>
 
@@ -875,3 +878,5 @@ void Template::setOutput(const String &txt) {
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

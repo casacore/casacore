@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_SIMORDMAP_TCC
+#define CASA_SIMORDMAP_TCC
+
 #include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/Exceptions/Error.h>
 
@@ -253,3 +256,5 @@ Bool SimpleOrderedMap<K,V>::ok() const
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif

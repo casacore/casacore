@@ -25,6 +25,9 @@
 //#
 //# $Id$
 
+#ifndef CASA_MASKARRIO_TCC
+#define CASA_MASKARRIO_TCC
+
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/aips.h>
@@ -51,3 +54,5 @@ ostream & operator<< (ostream &s, const MaskedArray<T> &a)
 
 } //# NAMESPACE CASACORE - END
 
+
+#endif
