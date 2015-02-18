@@ -75,22 +75,15 @@ namespace casa { namespace python { namespace numpy {
       if (!isImported()) return False;
       loadAPI();
     }
+    // No scalar if array scalar nor 0-dim array.
+    if (! PyArray_CheckScalar(obj_ptr)) {
+      return False;
+    }
+    // See if the object is a 0-dim array.
+    Bool is0dim = PyArray_Check(obj_ptr);
     const int ntypes = 13;
     // Define them in order of expected usage.
      int types[ntypes] = {
-// 			 NPY_INT,
-// 			 NPY_LONG,
-// 			 NPY_DOUBLE,
-// 			 NPY_FLOAT,
-// 			 NPY_CDOUBLE,
-// 			 NPY_CFLOAT,
-// 			 NPY_BOOL,
-// 			 NPY_UINT,
-// 			 NPY_ULONG,
-// 			 NPY_SHORT,
-// 			 NPY_USHORT,
-// 			 NPY_BYTE,
-// 			 NPY_UBYTE};
 			 NPY_INT32,
 			 NPY_INT64,
 			 NPY_FLOAT32,
@@ -105,9 +98,16 @@ namespace casa { namespace python { namespace numpy {
 			 NPY_INT8,
 			 NPY_UINT8};
     for (int i=0; i<ntypes; ++i) {
-      if (obj_ptr->ob_type == (PyTypeObject*)PyArray_TypeObjectFromType(types[i])) {
-	type = types[i];
-	return True;
+      if (is0dim) {
+        if (types[i] == PyArray_TYPE(obj_ptr)) {
+          type = types[i];
+          return True;
+        }
+      } else {
+        if (obj_ptr->ob_type == (PyTypeObject*)PyArray_TypeObjectFromType(types[i])) {
+          type = types[i];
+          return True;
+        }
       }
     }
     return False;
@@ -119,28 +119,6 @@ namespace casa { namespace python { namespace numpy {
     if (! PycArrayScalarCheck(obj_ptr, type)) {
       return TpOther;
     }
-//     switch (type) {
-//     case NPY_BOOL:
-//       return TpBool;
-//     case NPY_SHORT:
-//     case NPY_USHORT:
-//     case NPY_INT:
-//     case NPY_UINT:
-//       return TpInt;
-//     case NPY_FLOAT:
-//     case NPY_DOUBLE:
-//       return TpDouble;
-//     case NPY_CFLOAT:
-//     case NPY_CDOUBLE:
-//       return TpDComplex;
-//     default:
-//       // NPY_LONG can be the same as NPY_INT, so cannot part of the switch.
-//       if (type==NPY_LONG || type==NPY_ULONG
-// 	  || type==NPY_BYTE || type==NPY_UBYTE) {
-// 	return TpInt;
-//       }
-//       return TpOther;
-//     }
     switch (type) {
     case NPY_BOOL:
       return TpBool;
@@ -167,70 +145,74 @@ namespace casa { namespace python { namespace numpy {
 
   ValueHolder makeScalar (PyObject* obj_ptr, int type)
   {
-    char buffer[32];
-    PyArray_ScalarAsCtype(obj_ptr, buffer);  
-//     switch (type) {
-//     case NPY_BOOL:
-//       return ValueHolder(*(::npy_bool*)buffer != 0);
-//     case NPY_SHORT:
-//       return ValueHolder(int(*(::npy_int16*)buffer));
-//     case NPY_USHORT:
-//       return ValueHolder(uint(*(::npy_uint16*)buffer));
-//     case NPY_INT:
-//       return ValueHolder(int(*(::npy_int32*)buffer));
-//     case NPY_UINT:
-//       return ValueHolder(uint(*(::npy_uint32*)buffer));
-//     case NPY_FLOAT:
-//       return ValueHolder(float(*(::npy_float32*)buffer));
-//     case NPY_DOUBLE:
-//       return ValueHolder(double(*(::npy_float64*)buffer));
-//     case NPY_CFLOAT:
-//       return ValueHolder(*(Complex*)buffer);
-//     case NPY_CDOUBLE:
-//       return ValueHolder(*(DComplex*)buffer);
-//     default:
-//       if (type == NPY_LONG) {
-// 	return ValueHolder(double(*(::npy_int64*)buffer));
-//       } else if (type == NPY_ULONG) {
-// 	return ValueHolder(double(*(::npy_uint64*)buffer));
-//       } else if (type == NPY_BYTE) {
-// 	return ValueHolder(double(*(::npy_int8*)buffer));
-//       } else if (type == NPY_UBYTE) {
-// 	return ValueHolder(double(*(::npy_uint8*)buffer));
-//       }
-//       throw AipsError("invalid data type");
-//     }
-    switch (type) {
-    case NPY_BOOL:
-      return ValueHolder(*(::npy_bool*)buffer != 0);
-    case NPY_INT8:
-      return ValueHolder(int(*(::npy_int8*)buffer));
-    case NPY_UINT8:
-      return ValueHolder(uint(*(::npy_uint8*)buffer));
-    case NPY_INT16:
-      return ValueHolder(int(*(::npy_int16*)buffer));
-    case NPY_UINT16:
-      return ValueHolder(uint(*(::npy_uint16*)buffer));
-    case NPY_INT32:
-      return ValueHolder(int(*(::npy_int32*)buffer));
-    case NPY_UINT32:
-      return ValueHolder(uint(*(::npy_uint32*)buffer));
-    case NPY_INT64:
-      return ValueHolder(Int64(*(::npy_int64*)buffer));
-    case NPY_UINT64:
-      return ValueHolder(Int64(*(::npy_uint64*)buffer));
-    case NPY_FLOAT32:
-      return ValueHolder(float(*(::npy_float32*)buffer));
-    case NPY_FLOAT64:
-      return ValueHolder(double(*(::npy_float64*)buffer));
-    case NPY_COMPLEX64:
-      return ValueHolder(*(Complex*)buffer);
-    case NPY_COMPLEX128:
-      return ValueHolder(*(DComplex*)buffer);
-    default:
-      throw AipsError("invalid data type");
+    if (PyArray_Check(obj_ptr)) {
+      PyArrayObject* obj = (PyArrayObject*)obj_ptr;
+      switch (type) {
+      case NPY_BOOL:
+        return ValueHolder(*(::npy_bool*)(obj->data) != 0);
+      case NPY_INT8:
+        return ValueHolder(int(*(::npy_int8*)(obj->data)));
+      case NPY_UINT8:
+        return ValueHolder(uint(*(::npy_uint8*)(obj->data)));
+      case NPY_INT16:
+        return ValueHolder(int(*(::npy_int16*)(obj->data)));
+      case NPY_UINT16:
+        return ValueHolder(uint(*(::npy_uint16*)(obj->data)));
+      case NPY_INT32:
+        return ValueHolder(int(*(::npy_int32*)(obj->data)));
+      case NPY_UINT32:
+        return ValueHolder(uint(*(::npy_uint32*)(obj->data)));
+      case NPY_INT64:
+        return ValueHolder(Int64(*(::npy_int64*)(obj->data)));
+      case NPY_UINT64:
+        return ValueHolder(Int64(*(::npy_uint64*)(obj->data)));
+      case NPY_FLOAT32:
+        return ValueHolder(float(*(::npy_float32*)(obj->data)));
+      case NPY_FLOAT64:
+        return ValueHolder(double(*(::npy_float64*)(obj->data)));
+      case NPY_COMPLEX64:
+        return ValueHolder(*(Complex*)(obj->data));
+      case NPY_COMPLEX128:
+        return ValueHolder(*(DComplex*)(obj->data));
+      default:
+        break;
+      }
+    } else {
+      char buffer[32];
+      PyArray_ScalarAsCtype(obj_ptr, buffer);  
+      switch (type) {
+      case NPY_BOOL:
+        return ValueHolder(*(::npy_bool*)buffer != 0);
+      case NPY_INT8:
+        return ValueHolder(int(*(::npy_int8*)buffer));
+      case NPY_UINT8:
+        return ValueHolder(uint(*(::npy_uint8*)buffer));
+      case NPY_INT16:
+        return ValueHolder(int(*(::npy_int16*)buffer));
+      case NPY_UINT16:
+        return ValueHolder(uint(*(::npy_uint16*)buffer));
+      case NPY_INT32:
+        return ValueHolder(int(*(::npy_int32*)buffer));
+      case NPY_UINT32:
+        return ValueHolder(uint(*(::npy_uint32*)buffer));
+      case NPY_INT64:
+        return ValueHolder(Int64(*(::npy_int64*)buffer));
+      case NPY_UINT64:
+        return ValueHolder(Int64(*(::npy_uint64*)buffer));
+      case NPY_FLOAT32:
+        return ValueHolder(float(*(::npy_float32*)buffer));
+      case NPY_FLOAT64:
+        return ValueHolder(double(*(::npy_float64*)buffer));
+      case NPY_COMPLEX64:
+        return ValueHolder(*(Complex*)buffer);
+      case NPY_COMPLEX128:
+        return ValueHolder(*(DComplex*)buffer);
+      default:
+        break;
+      }
     }
-}
+    throw AipsError("invalid data type");
+  }
 
 
   void register_convert_arrayscalars()
@@ -276,8 +258,8 @@ namespace casa { namespace python { namespace numpy {
       }
     }
     // Create the array from the shape.
-    PyArrayObject* po = (PyArrayObject*)PyArray_SimpleNew
-      (nd, &(newshp[0]), TypeConvTraits<T>::pyType());
+    PyArrayObject* po = (PyArrayObject*)
+      (PyArray_SimpleNew(nd, &(newshp[0]), TypeConvTraits<T>::pyType()));
     if (po == 0) {
       throw AipsError ("PycArray: failed to allocate python array-object");
     }

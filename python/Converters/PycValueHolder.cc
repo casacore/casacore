@@ -43,12 +43,13 @@ namespace casa { namespace python {
     switch (vh.dataType()) {
     case TpBool:
       return boost::python::object(vh.asBool());
-    case TpUChar:
     case TpShort:
-    case TpUShort:
     case TpInt:
-    case TpUInt:
       return boost::python::object(vh.asInt());
+    case TpUChar:
+    case TpUShort:
+    case TpUInt:
+      return boost::python::object(vh.asuInt());
     case TpInt64:
       return boost::python::object(vh.asInt64());
     case TpFloat:
@@ -176,6 +177,8 @@ namespace casa { namespace python {
       return ValueHolder(from_python_sequence< Vector<Bool>, casa_variable_capacity_policy >::make_container (obj_ptr)); 
     case TpInt:
       return ValueHolder(from_python_sequence< Vector<Int>, casa_variable_capacity_policy >::make_container (obj_ptr)); 
+    case TpUInt:
+      return ValueHolder(from_python_sequence< Vector<uInt>, casa_variable_capacity_policy >::make_container (obj_ptr)); 
     case TpInt64:
       return ValueHolder(from_python_sequence< Vector<Int64>, casa_variable_capacity_policy >::make_container (obj_ptr)); 
     case TpDouble:

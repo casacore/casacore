@@ -35,6 +35,8 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/Arrays/Vector.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 #include <vector>
 #include <map>
 
@@ -152,7 +154,7 @@ namespace casa { namespace python {
     template <typename ContainerType, typename ValueType>
     static void set_value(ContainerType& a, std::size_t i, ValueType const& v)
     {
-      assert(a.size() == i);
+      AlwaysAssert(a.size() == i, AipsError);
       a.push_back(v);
     }
   };
