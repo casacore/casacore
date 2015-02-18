@@ -102,12 +102,12 @@ namespace casacore {
   //          unit and will set its result unit to it. It can be done like:
   //          <src>setUnit (TableExprFuncNode::makeEqualUnits
   //                        (operands(), 0, operands().size()));</src>
-  //         <li>Optionally define if the result is a constant value using
-  //          <src>setConstant</src>. It means that the function is not
-  //          dependent on the row number in the table being queried.
-  //          This is usually the case if all UDF arguments are constant.
   //        </ul>
   //        See class TableExprFuncNode for more info about these functions.
+  //    <li>Optionally define if the result is a constant value using
+  //        <src>setConstant</src>. It means that the function is not
+  //        dependent on the row number in the table being queried.
+  //        This is usually the case if all UDF arguments are constant.
   //   </ul>
   //  </td>
   // </tr>

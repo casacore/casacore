@@ -428,7 +428,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (node.itsLimit.isValid()) {
       TaQLNodeResult result = visitNode (node.itsLimit);
       const TaQLNodeHRValue& res = getHR(result);
-      topStack()->handleLimit (res.getExpr());
+      // If start:end:incr is given, the result is a set element.
+      // Otherwise the result is an expression (for a single limit value).
+      if (res.getElem()) {
+        topStack()->handleLimit (*res.getElem());
+      } else {
+        topStack()->handleLimit (res.getExpr());
+      }
     }
     if (node.itsOffset.isValid()) {
       TaQLNodeResult result = visitNode (node.itsOffset);
