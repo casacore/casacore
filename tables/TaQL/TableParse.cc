@@ -165,7 +165,9 @@ TableParseSelect::TableParseSelect (CommandType commandType)
     resultSet_p     (0),
     groupbyRollup_p (False),
     limit_p         (0),
+    endrow_p        (0),
     offset_p        (0),
+    stride_p        (1),
     insSel_p        (0),
     noDupl_p        (False),
     order_p         (Sort::Ascending)
@@ -1614,6 +1616,24 @@ TableExprNode TableParseSelect::makeSubSet() const
   return set.setOrArray();
 }
 
+void TableParseSelect::handleLimit (const TableExprNodeSetElem& expr)
+{
+  if (expr.start()) {
+    offset_p = evalIntScaExpr (TableExprNode(expr.start()));
+  }
+  if (expr.increment()) {
+    stride_p = evalIntScaExpr (TableExprNode(expr.increment()));
+    if (stride_p <= 0) {
+      throw TableInvExpr ("in the LIMIT clause stride " +
+                          String::toString(stride_p) +
+                          " must be positive");
+    }
+  }
+  if (expr.end()) {
+    endrow_p = evalIntScaExpr (TableExprNode(expr.end()));
+  }
+}
+
 void TableParseSelect::handleLimit (const TableExprNode& expr)
 {
   limit_p = evalIntScaExpr (expr);
@@ -2589,16 +2609,24 @@ void TableParseSelect::doLimOff (Bool showTimings)
   Vector<uInt> newRownrs;
   // Negative values mean from the end (a la Python indexing).
   Int64 nrow = rownrs_p.size();
-  if (limit_p  < 0) limit_p  = nrow+limit_p;
-  if (offset_p < 0) offset_p = nrow+offset_p;
-  if (limit_p  < 0) limit_p  = 0;
-  if (offset_p < 0) offset_p = 0;
-  if (offset_p < nrow) {
-    uInt nrleft = nrow - offset_p;
-    if (limit_p > 0  &&  limit_p < nrleft) {
-      nrleft = limit_p;
-    }
-    newRownrs.reference (rownrs_p(Slice(offset_p, nrleft)).copy());
+  if (offset_p < 0) {
+    offset_p += nrow;
+    if (offset_p < 0) offset_p = 0;
+  }
+  // A limit (i.e. nr of rows) or an endrow can be given (not both).
+  // Convert a limit to endrow.
+  if (limit_p != 0) {
+    if (limit_p  < 0) limit_p  += nrow;
+    endrow_p = offset_p + limit_p*stride_p;
+  } else if (endrow_p != 0) {
+    if (endrow_p < 0) endrow_p += nrow;
+  } else {
+    endrow_p = nrow;
+  }
+  if (endrow_p > nrow) endrow_p = nrow;
+  if (offset_p < endrow_p) {
+    Int64 nr = 1 + (endrow_p - offset_p - 1) / stride_p;
+    newRownrs.reference (rownrs_p(Slice(offset_p, nr, stride_p)).copy());
   }
   rownrs_p.reference (newRownrs);
   if (showTimings) {
@@ -2930,9 +2958,9 @@ void TableParseSelect::handleGiving (const String& name, Int type)
 {
   resultName_p = name;
   resultType_p = type;
-  if (resultType_p == 0  &&  !resultName_p.empty()) {
-    resultType_p = 3;     // default type is PLAIN if a name is given
-  }
+  ////  if (resultType_p == 0  &&  !resultName_p.empty()) {
+  ////    resultType_p = 3;     // default type is PLAIN if a name is given
+  ////  }
 }
 //# Keep the resulting set expression.
 void TableParseSelect::handleGiving (const TableExprNodeSet& set)
@@ -2992,7 +3020,7 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   if (mustSelect  &&  commandType_p == PSELECT
   &&  node_p.isNull()  &&  sort_p.size() == 0
   &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0
-  &&  limit_p == 0  &&  offset_p == 0) {
+  &&  limit_p == 0  &&  endrow_p == 0  &&  offset_p == 0) {
     throw (TableError
 	   ("TableParse error: no projection, selection, sorting, "
 	    "limit, offset, or giving-set given in SELECT command"));
@@ -3032,13 +3060,17 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   }
   //# The first table in the list is the source table.
   Table table = fromTables_p[0].table();
+  //# Set endrow_p if positive limit and positive or no offset.
+  if (offset_p >= 0  &&  limit_p > 0) {
+    endrow_p = offset_p + limit_p * stride_p;
+  }
   //# Determine if we can pre-empt the selection loop.
   //# That is possible if a positive limit and offset are given
   //# without sorting, select distinct, groupby, or aggregation.
   uInt nrmax=0;
-  if (sort_p.size() == 0  &&  limit_p > 0  &&  offset_p >= 0  &&
-      !distinct_p  &&  groupAggrUsed == 0) {
-    nrmax = limit_p + offset_p;
+  if (endrow_p > 0  &&  sort_p.size() == 0  &&  !distinct_p  &&
+      groupAggrUsed == 0) {
+    nrmax = endrow_p;
     if (doTracing) {
       cerr << "pre-empt WHERE at " << nrmax << " rows" << endl;
     }
@@ -3107,7 +3139,8 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   }
   // If select distinct is given, limit/offset can only be done thereafter
   // because duplicate rows will be removed.
-  if (!distinct_p  &&  (offset_p != 0  ||  limit_p != 0)) {
+  if (!distinct_p  &&  (offset_p != 0  ||  limit_p != 0  ||
+                        endrow_p != 0  || stride_p != 1)) {
     doLimOff (showTimings);
     if (doTracing) {
       cerr << "LIMIT/OFFSET resulted in " << rownrs_p.size() << " rows" << endl;
@@ -3143,7 +3176,8 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
       }
     }
     // If select distinct is given, limit/offset must be done at the end.
-    if (distinct_p  &&  (offset_p != 0  ||  limit_p != 0)) {
+    if (distinct_p  &&  (offset_p != 0  ||  limit_p != 0  ||
+                         endrow_p != 0  || stride_p != 1)) {
       resultTable = doLimOff (showTimings, resultTable);
       if (doTracing) {
         cerr << "LIMIT/OFFSET resulted in " << resultTable.nrow()

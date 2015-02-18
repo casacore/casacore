@@ -552,6 +552,11 @@ limitoff:  {         /* no limit,offset */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
+         | LIMIT colonrangeinterval {
+	       $$ = new TaQLNode(
+	            new TaQLLimitOffNodeRep (*$2, 0));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
          | LIMIT orexpr {
 	       $$ = new TaQLNode(
 	            new TaQLLimitOffNodeRep (*$2, 0));

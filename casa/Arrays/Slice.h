@@ -153,10 +153,14 @@ Slice::Slice(size_t Start, size_t Length, size_t Inc)
 
 inline
 Slice::Slice(size_t Start, size_t End, size_t Inc, Bool endIsLength)
-  : startp(Start), incp(Inc), lengthp(endIsLength ? End : End+1-Start)
+  : startp(Start), incp(Inc), lengthp(endIsLength ? End : 1+(End-Start)/Inc)
 {
 #if defined(AIPS_DEBUG)
-    DebugAssert(End >= Start, AipsError);
+    if (endIsLength) {
+        DebugAssert(lengthp >= 0, AipsError);
+    } else {
+        DebugAssert(End >= Start, AipsError);
+    }
     DebugAssert(incp > 0, AipsError);
 #endif
 }
@@ -188,7 +192,7 @@ inline size_t Slice::inc() const
 inline size_t Slice::end() const
 {
     // return -1 if all()
-    return startp + lengthp - 1;
+    return startp + (lengthp-1)*incp;
 }
 
 

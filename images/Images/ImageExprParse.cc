@@ -527,7 +527,7 @@ Slice* ImageExprParse::makeSlice (const ImageExprParse& start,
   if (start.itsIval > end.itsIval) {
     throw AipsError("ImageExprParse: in s:e:i s must be <= e");
   }
-  return new Slice(start.itsIval, end.itsIval-start.itsIval+1, incr.itsIval);
+  return new Slice(start.itsIval, end.itsIval, incr.itsIval, False);
 }
 
 LatticeExprNode ImageExprParse::makeIndexinNode (const LatticeExprNode& axis,
