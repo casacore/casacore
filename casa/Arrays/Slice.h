@@ -156,9 +156,7 @@ Slice::Slice(size_t Start, size_t End, size_t Inc, Bool endIsLength)
   : startp(Start), incp(Inc), lengthp(endIsLength ? End : 1+(End-Start)/Inc)
 {
 #if defined(AIPS_DEBUG)
-    if (endIsLength) {
-        DebugAssert(lengthp >= 0, AipsError);
-    } else {
+    if (! endIsLength) {
         DebugAssert(End >= Start, AipsError);
     }
     DebugAssert(incp > 0, AipsError);
