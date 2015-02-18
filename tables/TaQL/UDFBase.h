@@ -309,7 +309,7 @@ namespace casacore {
     void setAggregate (Bool isAggregate);
 
   public:
-    // Register a the name and construction function of a UDF (thread-safe).
+    // Register the name and construction function of a UDF (thread-safe).
     // An exception is thrown if this name already exists with a different
     // construction function.
     static void registerUDF (const String& name, MakeUDFObject* func);
@@ -340,6 +340,8 @@ namespace casacore {
       { return itsIsAggregate; }
 
     // Create a UDF object (thread-safe).
+    // It looks in the map with fixed function names. If unknown,
+    // it looks if a wildcarded function name is supported (for PyTaQL).
     static UDFBase* createUDF (const String& name, const TaQLStyle& style);
 
   private:
@@ -351,6 +353,11 @@ namespace casacore {
     String                         itsUnit;
     Bool                           itsIsConstant;
     Bool                           itsIsAggregate;
+    //# The registry is used for two purposes:
+    //# 1. It is a map of known function names (lib.func) to funcptr.
+    //#    Function name * means that the library can contain any function,
+    //#    which is intended for python functions (through PyTaQL).
+    //# 2. The loaded libraries are kept in the map (with 0 funcptr).
     static map<String, MakeUDFObject*> theirRegistry;
     static Mutex                       theirMutex;
   };

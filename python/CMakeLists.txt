@@ -8,6 +8,7 @@ Converters/PycArray.cc
 Converters/PycArrayNP.cc
 Converters/PycBasicData.cc
 Converters/PycExcp.cc
+Converters/PycImport.cc
 Converters/PycRecord.cc
 Converters/PycValueHolder.cc
 )
