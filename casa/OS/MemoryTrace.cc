@@ -25,11 +25,14 @@
 //#
 //# $Id: Block.h 21120 2011-09-01 13:51:56Z gervandiepen $
 
+//# Comment out for time being because __malloc_hook is deprecated.
+//# Do so by #ifdef on AIPS_LINUX_DEPR instead of AIPS_LINUX.
+
 #include <casacore/casa/OS/MemoryTrace.h>
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Exceptions/Error.h>
-#ifdef AIPS_LINUX
+#ifdef AIPS_LINUX_DEPR
 # include <malloc.h>
 #endif
 
@@ -62,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       open();
     }
     if (!theirDoTrace) {
-#ifdef AIPS_LINUX
+#ifdef AIPS_LINUX_DEPR
       theirOldMallocHook = __malloc_hook;
       theirOldFreeHook   = __free_hook;
       __malloc_hook      = &mallocHook;
@@ -75,7 +78,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MemoryTrace::stop()
   {
     if (theirDoTrace) {
-#ifdef AIPS_LINUX
+#ifdef AIPS_LINUX_DEPR
       __malloc_hook = theirOldMallocHook;
       __free_hook   = theirOldFreeHook;
 #endif
@@ -105,7 +108,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-#ifdef AIPS_LINUX
+#ifdef AIPS_LINUX_DEPR
   void* MemoryTrace::mallocHook (size_t size, const void* caller)
   {
     if (size == 0) {
@@ -134,7 +137,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 #endif
 
-#ifdef AIPS_LINUX
+#ifdef AIPS_LINUX_DEPR
   void MemoryTrace::freeHook (void* ptr, const void* caller)
   {
     if (ptr != NULL) {
@@ -162,7 +165,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MemoryTrace::writeBlock (const char* msg, const std::string& name)
   {
     if (isOpen()) {
-#ifdef AIPS_LINUX
+#ifdef AIPS_LINUX_DEPR
       if (theirDoTrace) {
         // Restore the old hooks.
         __malloc_hook = theirOldMallocHook;
@@ -171,7 +174,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #endif
       theirFile << Int64(1000 * theirTimer.real()) << msg
                 << name << std::endl;
-#ifdef AIPS_LINUX
+#ifdef AIPS_LINUX_DEPR
       if (theirDoTrace) {
         // Restore our own hooks.
         __malloc_hook = &mallocHook;
@@ -184,7 +187,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MemoryTrace::writeBlock (const char* msg, const char* name)
   {
     if (isOpen()) {
-#ifdef AIPS_LINUX
+#ifdef AIPS_LINUX_DEPR
       if (theirDoTrace) {
         // Restore the old hooks.
         __malloc_hook = theirOldMallocHook;
@@ -193,7 +196,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #endif
       theirFile << Int64(1000 * theirTimer.real()) << msg
                 << name << std::endl;
-#ifdef AIPS_LINUX
+#ifdef AIPS_LINUX_DEPR
       if (theirDoTrace) {
         // Restore our own hooks.
         __malloc_hook = &mallocHook;
@@ -205,7 +208,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   std::string MemoryTrace::makeString (const char* name)
   {
-#ifdef AIPS_LINUX
+#ifdef AIPS_LINUX_DEPR
     if (theirDoTrace) {
       // Restore the old hooks to avoid trace messages when making the string.
       __malloc_hook = theirOldMallocHook;
@@ -213,7 +216,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 #endif
     std::string str(name);
-#ifdef AIPS_LINUX
+#ifdef AIPS_LINUX_DEPR
     if (theirDoTrace) {
       // Restore our own hooks.
       __malloc_hook = &mallocHook;
@@ -307,4 +310,47 @@ void free(void* addr) throw()
   }
   (ptrCast.funcPtr)(addr);
 }
+*/
+
+/*
+See http://stackoverflow.com/questions/17803456/an-alternative-for-the-deprecated-malloc-hook-functionality-of-glibc
+See also http://elinux.org/images/b/b5/Elc2013_Kobayashi.pdf
+
+My complete hooking function now looks like this:
+
+extern void *__libc_malloc(size_t size);
+
+int malloc_hook_active = 0;
+
+void*
+malloc (size_t size)
+{
+  void *caller = __builtin_return_address(0);
+  if (malloc_hook_active)
+    return my_malloc_hook(size, caller);
+  return __libc_malloc(size);
+}
+
+where my_malloc_hook looks like this:
+
+void*
+my_malloc_hook (size_t size, void *caller)
+{
+  void *result;
+
+  // deactivate hooks for logging
+  malloc_hook_active = 0;
+
+  result = malloc(size);
+
+  // do logging
+  [ ... ]
+
+  // reactivate hooks
+  malloc_hook_active = 1;
+
+  return result;
+}
+
+Of course, the hooks for calloc, realloc and free work similarly.
 */
