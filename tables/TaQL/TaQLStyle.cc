@@ -41,6 +41,7 @@ TaQLStyle::TaQLStyle (uInt origin)
 {
   // Define mscal as a synonym for derivedmscal.
   defineSynonym ("mscal", "derivedmscal");
+  defineSynonym ("py", "pytaql");
 }
 
 void TaQLStyle::set (const String& value)

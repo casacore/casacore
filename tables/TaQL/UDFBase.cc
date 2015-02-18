@@ -179,14 +179,9 @@ namespace casacore {
       libname = style.findSynonym (libname);
       fname   = libname + fname.substr(j);
       ScopedMutexLock lock(theirMutex);
-      map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
-      if (iter != theirRegistry.end()) {
-        return iter->second (fname);
-      }
-      // Not found. See if library is already loaded.
-      // If so, it is an unknown function in the UDF library.
-      map<String,MakeUDFObject*>::iterator sit = theirRegistry.find (libname);
-      if (sit == theirRegistry.end()) {
+      // See if the library is already loaded.
+      map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (libname);
+      if (iter == theirRegistry.end()) {
         // Try to load the dynamic library.
         DynLib dl(libname, string("libcasa_"), "register_"+libname, False);
         if (dl.getHandle()) {
@@ -194,12 +189,17 @@ namespace casacore {
           // Note that a libname is different from a function name because
           // it does not contain dots.
           theirRegistry[libname] = 0;
-          // See if function is registered now.
-          map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
-          if (iter != theirRegistry.end()) {
-            return iter->second (fname);
-          }
         }
+      }
+      // Try to find the function.
+      iter = theirRegistry.find (fname);
+      if (iter != theirRegistry.end()) {
+        return iter->second (fname);
+      }
+      // Look up 'libname.*' to see if the UDF supports any function.
+      iter = theirRegistry.find (libname + ".*");
+      if (iter != theirRegistry.end()) {
+        return iter->second (fname);
       }
     }
     throw TableInvExpr ("TaQL function " + name + " (=" + fname +
