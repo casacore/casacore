@@ -88,10 +88,6 @@ namespace casa { namespace python {
       {cout << "vecvecuInt " << in << endl; return in;}
     IPosition testipos (const IPosition& in)
       {cout << "IPos " << in << endl; return in;}
-    Bool canusenumpy()
-      {return PycCanUseNumpy();}
-    Bool canusenumarray()
-      {return PycCanUseNumarray();}
   };
 
 
@@ -115,8 +111,6 @@ namespace casa { namespace python {
       .def ("teststdvecuint", &TConvert::teststdvecuint)
       .def ("teststdvecvecuint", &TConvert::teststdvecvecuint)
       .def ("testipos",       &TConvert::testipos)
-      .def ("canusenumpy",    &TConvert::canusenumpy)
-      .def ("canusenumarray", &TConvert::canusenumarray)
       ;
   }
 

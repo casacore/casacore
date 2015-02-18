@@ -77,6 +77,7 @@ def dotest(t):
     print t.testvh (a);
 
     print t.testvh(NUM.array([20.+10j]));
+    print t.testvh(NUM.array([21.]));
     print t.testvh(NUM.array(21.));
 
     print '>>>';
@@ -156,8 +157,9 @@ def testnp():
 
 if __name__ == "__main__":
 
-    t = tConvert();
-
-    print "Doing numpy/array test ..."
     import numpy as NUM;
+    t = tConvert();
+    print "Doing numpy/array test ..."
     testnp();
+    # Do other tests.
+    dotest(t)
