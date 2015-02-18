@@ -2930,9 +2930,9 @@ void TableParseSelect::handleGiving (const String& name, Int type)
 {
   resultName_p = name;
   resultType_p = type;
-  if (resultType_p == 0  &&  !resultName_p.empty()) {
-    resultType_p = 3;     // default type is PLAIN if a name is given
-  }
+  ///if (resultType_p == 0  &&  !resultName_p.empty()) {
+  ///  resultType_p = 3;     // default type is PLAIN if a name is given
+  ///}
 }
 //# Keep the resulting set expression.
 void TableParseSelect::handleGiving (const TableExprNodeSet& set)
