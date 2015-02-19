@@ -182,7 +182,7 @@ void TSMDataColumn::accessCell (uInt rownr, const void* dataPtr,
     if (hypercube->getLastColAccess() != TSMCube::CellAccess) {
 	if (! stmanPtr_p->userSetCache (rownr)) {
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
-				     IPosition(), IPosition(), False, False);
+				     IPosition(), IPosition(), True, False);
 	    hypercube->setLastColAccess (TSMCube::CellAccess);
 	}
     }
@@ -224,7 +224,7 @@ void TSMDataColumn::accessCellSlice (uInt rownr, const Slicer& ns,
 	    }
 	    axisPath.resize (naxis);
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
-				     IPosition(), axisPath, False, False);
+				     IPosition(), axisPath, True, False);
 	    hypercube->setLastColAccess (TSMCube::SliceAccess);
 	    hypercube->setLastColSlice (slice);
 	}
@@ -244,7 +244,7 @@ void TSMDataColumn::accessColumn (const void* dataPtr, Bool writeFlag)
     // Size the cache if the user has not done it.
     if (! stmanPtr_p->userSetCache (0)) {
 	hypercube->setCacheSize (end + 1, IPosition(),
-				 IPosition(), IPosition(), False, False);
+				 IPosition(), IPosition(), True, False);
 	hypercube->setLastColAccess (TSMCube::ColumnAccess);
     }
     hypercube->accessSection (start, end, (char*)dataPtr, colnr_p,
@@ -293,7 +293,7 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
 	    }
 	    axisPath.resize (naxis);
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
-				     IPosition(), axisPath, False, False);
+				     IPosition(), axisPath, True, False);
 	    hypercube->setLastColAccess (TSMCube::ColumnSliceAccess);
 	    hypercube->setLastColSlice (slice);
 	}
@@ -470,7 +470,7 @@ void TSMDataColumn::accessFullCells (TSMCube* hypercube,
   if (! stmanPtr_p->userSetCache (0)) {
     if (hypercube->getLastColAccess() != TSMCube::ColumnAccess) {
       hypercube->setCacheSize (hypercube->cubeShape(), IPosition(),
-			       IPosition(), IPosition(), False, False);
+			       IPosition(), IPosition(), True, False);
       hypercube->setLastColAccess (TSMCube::ColumnAccess);
     }
   }
@@ -507,7 +507,7 @@ void TSMDataColumn::accessSlicedCells (TSMCube* hypercube,
       }
       axisPath.resize (naxis);
       hypercube->setCacheSize (sliceShp, IPosition(),
-			       IPosition(), axisPath, False, False);
+			       IPosition(), axisPath, True, False);
       hypercube->setLastColAccess (TSMCube::ColumnSliceAccess);
       hypercube->setLastColSlice (sliceShp);
     }
