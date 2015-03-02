@@ -252,6 +252,8 @@ IPos [2]
 [2]
 IPos [3]
 [3]
+VecBool [1, 0, 0, 1]
+[True, False, False, True]
 VecInt [1, 2, 3, 4]
 [1, 2, 3, 4]
 VecInt []
@@ -272,21 +274,23 @@ VecStr []
 []
 VecStr [sc1]
 ['sc1']
-vecuInt [vecuInt 1, vecuInt 2, vecuInt 4]
+vecbool [0,1]
+[False, True]
+vecuInt [1,2,4]
 [1, 2, 4]
 vecuInt []
 []
-vecuInt [vecuInt 10]
+vecuInt [10]
 [10]
-vecvecuInt [vecuInt [vecuInt 1, vecuInt 2, vecuInt 4]]
+vecvecuInt [[1,2,4]]
 [[1, 2, 4]]
 vecvecuInt []
 []
 vecvecuInt []
 []
-vecvecuInt [vecuInt [vecuInt 1], vecuInt [vecuInt 2], vecuInt [vecuInt 4]]
+vecvecuInt [[1],[2],[4]]
 [[1], [2], [4]]
-vecvecuInt [vecuInt [vecuInt 20]]
+vecvecuInt [[20]]
 [[20]]
 VH Bool
 True
@@ -347,6 +351,8 @@ VH Array<double>
 VH Array<double>
 <<<
 (1, 0)
+vecvh 3
+[2, 1.3, array([ True, False], dtype=bool)]
 Record int: Int 1
 int64: Int64 123456789012
 str: String "bc"
