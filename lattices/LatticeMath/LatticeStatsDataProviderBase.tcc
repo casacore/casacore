@@ -90,9 +90,12 @@ template <class T>
 void LatticeStatsDataProviderBase<T>::reset() {
 	_minPos.resize(0);
 	_maxPos.resize(0);
-	if (! _progressMeter.null()) {
-		_progressMeter->init(_progressMeter->expectedNsteps());
+    /*
+    if (! _progressMeter.null()) {
+        cout << "reset progress" << endl;
+        _progressMeter->init(_progressMeter->expectedNsteps());
 	}
+    */
 }
 
 template <class T>

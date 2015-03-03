@@ -34,6 +34,7 @@
 #include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/Quanta/QLogical.h>
+#include <casacore/ms/MeasurementSets/MSKeys.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/measures/Measures/MDirection.h>
 
@@ -71,13 +72,16 @@ void _printSet(const std::set<String>& set) {
 }
 
 void testIt(MSMetaData& md) {
+	ArrayKey arrayKey;
+	arrayKey.obsID = 0;
+	arrayKey.arrayID = 0;
 	cout << "*** test nStates()" << endl;
 	AlwaysAssert(md.nStates() == 43, AipsError);
 	cout << "*** cache size " << md.getCache() << endl;
 
 	cout << "*** test getScansForState()" << endl;
 	for (uInt stateID=0; stateID<md.nStates(); stateID++) {
-		std::set<Int> scans = md.getScansForState(stateID);
+		std::set<Int> scans = md.getScansForState(stateID, 0, 0);
 		std::set<Int> expec;
 		if (stateID < 5) {
 			uInt myints[]= {1, 5, 8};
@@ -120,7 +124,7 @@ void testIt(MSMetaData& md) {
 	cout << "*** cache size " << md.getCache() << endl;
 
 	cout << "*** test getScanNumbers()" << endl;
-	std::set<Int> scans = md.getScanNumbers();
+	std::set<Int> scans = md.getScanNumbers(0, 0);
 	uInt myints[] = {
 			1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17,
 			18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -133,12 +137,15 @@ void testIt(MSMetaData& md) {
 	}
 	std::set<String> uniqueIntents;
 	cout << "*** test getIntentsForScan()" << endl;
-
+	ScanKey scanKey;
+	scanKey.obsID = 0;
+	scanKey.arrayID = 0;
 	for (
 			std::set<Int>::const_iterator scanNum = scans.begin();
 			scanNum!=scans.end(); scanNum++
 	) {
-		std::set<String> intents = md.getIntentsForScan(*scanNum);
+		scanKey.scan = *scanNum;
+		std::set<String> intents = md.getIntentsForScan(scanKey);
 		std::set<String> exp;
 
 		if (*scanNum == 1 || *scanNum == 5 || *scanNum == 8) {
@@ -387,9 +394,13 @@ void testIt(MSMetaData& md) {
 	}
 	{
 		cout << "*** test nScans()" << endl;
+		cout << "nscans " << md.nScans() << endl;
 		AlwaysAssert(md.nScans() == 32, AipsError);
-		std::set<Int> scanNumbers = md.getScanNumbers();
+		std::set<Int> scanNumbers = md.getScanNumbers(0, 0);
 		cout << "*** test getSpwsForScan() and getPolarizationIDs()" << endl;
+		ScanKey scanKey;
+		scanKey.obsID = 0;
+		scanKey.arrayID = 0;
 		for (
 				std::set<Int>::const_iterator scan=scanNumbers.begin();
 				scan!=scanNumbers.end(); scan++
@@ -423,13 +434,14 @@ void testIt(MSMetaData& md) {
 				};
 				exp.insert(myints, myints+9);
 			}
-			AlwaysAssert(md.getSpwsForScan(*scan) == exp, AipsError);
+			scanKey.scan = *scan;
+			AlwaysAssert(md.getSpwsForScan(scanKey) == exp, AipsError);
 			for (
 				std::set<uInt>::const_iterator spw=exp.begin();
 				spw!=exp.end(); spw++
 			) {
 				std::set<uInt> exppols;
-				std::set<uInt> pols = md.getPolarizationIDs(*scan, *spw);
+				std::set<uInt> pols = md.getPolarizationIDs(0, 0, *scan, *spw);
 				if (*spw == 0) {
 					exppols.insert(1);
 				}
@@ -472,8 +484,7 @@ void testIt(MSMetaData& md) {
 			else {
 				// empty set
 			}
-
-			AlwaysAssert(md.getScansForSpw(i) == exp, AipsError);
+			AlwaysAssert(md.getScansForSpw(i, 0, 0) == exp, AipsError);
 		}
 		{
 			cout << "*** test nAntennas()" << endl;
@@ -544,18 +555,17 @@ void testIt(MSMetaData& md) {
 			std::set<Int> exp;
 			exp.insert(27);
 			AlwaysAssert(
-					md.getScansForTimes(4.84282937e+09,20) == exp,
-					AipsError
+				md.getScansForTimes(4.84282937e+09, 20, 0, 0) == exp,
+				AipsError
 			);
 			exp.insert(24);
 			exp.insert(25);
 			exp.insert(26);
 			exp.insert(28);
 			AlwaysAssert(
-					md.getScansForTimes(4.84282937e+09,200) == exp,
-					AipsError
+				md.getScansForTimes(4.84282937e+09, 200, 0, 0) == exp,
+				AipsError
 			);
-
 		}
 		{
 			cout << "*** test getTimesForScans()" << endl;
@@ -582,7 +592,7 @@ void testIt(MSMetaData& md) {
 			myscans.insert(3);
 			myscans.insert(6);
 			AlwaysAssert(
-				allNearAbs(md.getTimesForScans(myscans), expec, 0.1),
+				allNearAbs(md.getTimesForScans(scanKeys(myscans, arrayKey)), expec, 0.1),
 				AipsError
 			);
 		}
@@ -603,14 +613,17 @@ void testIt(MSMetaData& md) {
 			std::set<Int> myscans;
 			myscans.insert(3);
 			AlwaysAssert(
-					allNearAbs(md.getTimesForScans(myscans), expec, 0.1),
+					allNearAbs(
+						md.getTimesForScans(scanKeys(myscans, arrayKey)),
+						expec, 0.1
+					),
 					AipsError
 			);
 		}
 		{
 			cout << "*** test getStatesForScan()" << endl;
 			std::set<Int> expec;
-			std::set<Int> scanNumbers = md.getScanNumbers();
+			std::set<Int> scanNumbers = md.getScanNumbers(0, 0);
 			for (
 					std::set<Int>::const_iterator curScan=scanNumbers.begin();
 					curScan!=scanNumbers.end(); curScan++
@@ -665,7 +678,7 @@ void testIt(MSMetaData& md) {
 					Int mine[] = {33, 34, 35, 36};
 					expec.insert(mine, mine+4);
 				}
-				std::set<Int> got = md.getStatesForScan(*curScan);
+				std::set<Int> got = md.getStatesForScan(0, 0, *curScan);
 				AlwaysAssert(got == expec, AipsError);
 			}
 			cout << "*** cache size " << md.getCache() << endl;
@@ -731,9 +744,11 @@ void testIt(MSMetaData& md) {
 					Int mine[] = {12, 16, 20, 23, 27, 30};
 					expec.insert(mine, mine+6);
 				}
-				std::set<Int> got = md.getScansForIntent(*intent);
-				AlwaysAssert(md.getScansForIntent(*intent) == expec, AipsError);
-				AlwaysAssert(md.getIntentToScansMap()[*intent] == expec, AipsError);
+				AlwaysAssert(md.getScansForIntent(*intent, 0, 0) == expec, AipsError);
+				AlwaysAssert(
+					casa::scanNumbers(md.getIntentToScansMap()[*intent]) == expec,
+					AipsError
+				);
 			}
 		}
 		{
@@ -780,7 +795,7 @@ void testIt(MSMetaData& md) {
 				default:
 					throw AipsError("bad fieldID");
 				}
-				AlwaysAssert(md.getScansForFieldID(i) == expec, AipsError);
+				AlwaysAssert(md.getScansForFieldID(i, 0, 0) == expec, AipsError);
 			}
 		}
 		{
@@ -850,14 +865,13 @@ void testIt(MSMetaData& md) {
 				default:
 					throw AipsError("bad fieldID");
 				}
-				AlwaysAssert(md.getScansForField(name) == expec, AipsError);
+				AlwaysAssert(md.getScansForField(name, 0, 0) == expec, AipsError);
 			}
 			cout << "*** cache size " << md.getCache() << endl;
-
 		}
 		{
 			cout << "*** test getFieldsForScan() and getFieldsForScans()" << endl;
-			std::set<Int> scans = md.getScanNumbers();
+			std::set<Int> scans = md.getScanNumbers(0, 0);
 			std::set<Int> expec2;
 			std::set<Int> curScanSet;
 			for (
@@ -901,12 +915,16 @@ void testIt(MSMetaData& md) {
 					expec.insert(5);
 					expec2.insert(5);
 				}
+				ScanKey scanKey;
+				scanKey.obsID = 0;
+				scanKey.arrayID = 0;
+				scanKey.scan = *curScan;
 				AlwaysAssert(
-						md.getFieldsForScan(*curScan) == expec,
+						md.getFieldsForScan(scanKey) == expec,
 						AipsError
 				);
 				AlwaysAssert(
-						md.getFieldsForScans(curScanSet) == expec2,
+						md.getFieldsForScans(curScanSet, 0, 0) == expec2,
 						AipsError
 				);
 			}
@@ -1423,6 +1441,10 @@ void testIt(MSMetaData& md) {
 				}
 				AlwaysAssert(nTimes == exp, AipsError);
 				intent++;
+			}
+			{
+				cout << "*** test getSummary()" << endl;
+				//cout << md.getSummary() << endl;
 			}
 		}
 		{

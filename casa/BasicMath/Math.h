@@ -297,7 +297,7 @@ inline Bool isNaN (const Float& val)
 }
 inline Bool isNaN(Double val)
 {
-  return ( isnan(val) );
+  return ( std::isnan(val) );
 }
 // </group>
 

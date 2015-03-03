@@ -94,6 +94,7 @@ struct SourceLocation;
 class LogOrigin 
 {
 public:
+
     // The default constructor sets a null class name, function name, object id,
     // source file name, and sets the line number to zero.
     LogOrigin();
@@ -155,8 +156,8 @@ public:
     // <src>where</src> will be defined with the <src>WHERE</src> macro.
     LogOrigin &sourceLocation(const SourceLocation *where);
 
-    // Returns <src>class\::function</src> for a member function, or
-    // <src>\::function</src> for a global function.
+    // Returns <src>class::function</src> for a member function, or
+    // <src>::function</src> for a global function.
     String fullName() const;
 
     // Turn the entire origin into a String.
@@ -168,6 +169,7 @@ public:
 
     // Return true if the line number and file name are not set.
     Bool isUnset() const;
+
 private:
     String task_p;
     String function_p;
@@ -175,6 +177,10 @@ private:
     ObjectID id_p;
     uInt line_p;
     String file_p;
+    String node_p;
+
+    // Return a String with the MPI rank
+    String getNode();
 
     // Provide common implementation for copy constructor and
     // assignment operator.

@@ -42,6 +42,7 @@ MeasurementSets/MSObservationGram.cc
 MeasurementSets/MSScanGram.cc
 MeasurementSets/MSState.cc
 MeasurementSets/MSReader.cc
+MeasurementSets/MSKeys.cc
 MeasurementSets/MSTable2.cc
 MeasurementSets/MSWeatherColumns.cc
 MeasurementSets/MSArrayParse.cc
@@ -208,6 +209,7 @@ MeasurementSets/MSHistoryColumns.h
 MeasurementSets/MSHistoryEnums.h
 MeasurementSets/MSHistoryHandler.h
 MeasurementSets/MSIter.h
+MeasurementSets/MSKeys.h
 MeasurementSets/MSLister.h
 MeasurementSets/MSMainColumns.h
 MeasurementSets/MSMainEnums.h

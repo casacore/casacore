@@ -177,7 +177,7 @@ public:
 	virtual void setCalculateAsAdded(Bool c);
 
 	// An exception will be thrown if setCalculateAsAdded(True) has been called.
-	void setDataProvider(CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider);
+	void setDataProvider(StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider);
 
 	void setStatsToCalculate(std::set<StatisticsData::STATS>& stats);
 

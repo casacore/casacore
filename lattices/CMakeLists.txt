@@ -125,6 +125,8 @@ DESTINATION include/casacore/lattices/Lattices
 )
 
 install (FILES
+LatticeMath/StatsTiledCollapser.h
+LatticeMath/StatsTiledCollapser.tcc
 LatticeMath/CLIPNearest2D.h
 LatticeMath/CLIPNearest2D.tcc
 LatticeMath/CLInterpolator2D.h

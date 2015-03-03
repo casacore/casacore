@@ -474,7 +474,7 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
 	AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride,
 	const Int64& currentDataset
 ) {
-	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
 		= this->_getDataProvider();
 	if (maxpos >= 0) {
 		_realMax = new AccumType(mymax);
@@ -483,7 +483,7 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
 			_getStatsData().maxpos.second = maxpos * dataStride;
 			_getStatsData().minpos.first = -1;
 			_getStatsData().minpos.second = -1;
-			if (! dataProvider.null()) {
+			if (dataProvider) {
 				dataProvider->updateMaxPos(_getStatsData().maxpos);
 			}
 			_getStatsData().max = new AccumType(mymax);
@@ -497,7 +497,7 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
 			_getStatsData().minpos.second = minpos * dataStride;
 			_getStatsData().maxpos.first = -1;
 			_getStatsData().maxpos.second = -1;
-			if (! dataProvider.null()) {
+			if (dataProvider) {
 				dataProvider->updateMinPos(_getStatsData().minpos);
 			}
 			_getStatsData().min = new AccumType(mymin);

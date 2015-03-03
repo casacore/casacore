@@ -343,3 +343,32 @@ if (BUILD_PYTHON)
     message (STATUS "Boost includes? ....... = ${Boost_INCLUDE_DIRS}")
 endif (BUILD_PYTHON)
 
+
+# List of build variables and defaults.
+#  BUILD_PYTHON                  NO
+#  ENABLE_SHARED                 YES
+#  ENABLE_RPATH                  YES
+#  CXX11                         NO
+#  ENABLE_TABLELOCKING           YES
+#  USE_HDF5                      NO
+#  USE_FFTW                      NO
+#  USE_THREADS                   NO
+#  USE_OPENMP                    NO
+#  USE_STACKTRACE                NO
+#  DATA_DIR                      ""
+# 
+# List of possibly used external packages and where
+#  CFITSIO      fits
+#  WCSLIB       coordinates
+#  DL           casa (optional)
+#  READLINE     casa (optional)
+#  HDF5         casa (optional)
+#  BISON        tables,images
+#  FLEX         tables,images
+#  LAPACK       scimath
+#  BLAS         scimath
+#  FFTW         scimath (optional)
+#  BOOST        python (Boost-Python only)
+#  PYTHON       python
+#  NUMPY        python
+

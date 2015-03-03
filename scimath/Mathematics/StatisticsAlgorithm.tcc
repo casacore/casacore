@@ -26,9 +26,9 @@
 
 #ifndef SCIMATH_STATISTICSALGORITHM_TCC
 #define SCIMATH_STATISTICSALGORITHM_TCC
-
+ 
 #include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
-
+ 
 #include <casacore/casa/BasicSL/STLIO.h>
 
 namespace casacore {
@@ -37,7 +37,7 @@ template <class AccumType, class InputIterator, class MaskIterator>
 StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::StatisticsAlgorithm()
 : _data(), _weights(), _masks(), _counts(), _dataStrides(), _maskStrides(),
   _isIncludeRanges(), _dataRanges(), _sortedArray(), _statsToCalculate(),
-  _unsupportedStats(), _dataProvider() {}
+  _unsupportedStats(), _dataProvider(NULL) {}
 
 template <class AccumType, class InputIterator, class MaskIterator>
 StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>&
@@ -370,32 +370,15 @@ std::map<uInt64, AccumType> StatisticsAlgorithm<AccumType, InputIterator, MaskIt
 	return indexToValuesMap;
 }
 
-/*
-template <class AccumType, class InputIterator, class MaskIterator>
-std::map<Double, uInt64> StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_indicesFromQuantiles(
-	uInt64 npts, const std::set<Double>& quantiles
-) {
-	std::map<Double, uInt64> quantileToIndexMap;
-	std::set<Double>::const_iterator qiter = quantiles.begin();
-	std::set<Double>::const_iterator qend = quantiles.end();
-	while (qiter != qend) {
-		quantileToIndexMap[*qiter] = ((uInt64)ceil(*qiter * (Double)npts) - 1);
-		++qiter;
-	}
-	return quantileToIndexMap;
-}
-*/
-
 template <class AccumType, class InputIterator, class MaskIterator>
 void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_throwIfDataProviderDefined() const {
 	ThrowIf(
-		! _dataProvider.null(),
+		_dataProvider,
 		"Logic Error: Cannot add data after a data provider has been set. Call setData() to clear "
 		"the existing data provider and to add this new data set"
 	);
 }
 
 }
-
 
 #endif

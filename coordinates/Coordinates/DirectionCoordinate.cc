@@ -1309,7 +1309,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
       }
       for (uInt i=0; i<thisVal.nelements(); i++) {
          if (!exclude[i]) {
-            if (!casacore::near(thisVal[i],thatVal[i])) {
+            if (!casacore::near(thisVal[i],thatVal[i], tol)) {
                oss << "The DirectionCoordinates have differing reference values for axis "
                    << i;
                set_error(String(oss));

@@ -225,7 +225,7 @@ namespace casacore {
 ///   </tr>
 ///   <tr>
 ///   <td><a href="group__python.html">python</a></td>
-///   <td>casa boost-python</td>
+///   <td>casa boost-python python numpy</td>
 ///   </tr>
 ///   </table>
 ///   <a href="http://www.atnf.csiro.au/computing/software/miriad">mirlib</a>
