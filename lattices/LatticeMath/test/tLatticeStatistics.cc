@@ -170,6 +170,7 @@ int main()
 			stats.getStatistic(npts, LatticeStatsBase::NPTS, False);
 			AlwaysAssert(npts.size() == 0, AipsError);
 		}
+#if 0
 		{
 			// using setAlgorithm()
 			ArrayLattice<Float> latt(data);
@@ -383,6 +384,7 @@ int main()
 			AlwaysAssert(maxPos.size() == 0, AipsError);
 
 		}
+#endif
 	}
 	catch (const AipsError& x) {
 		cerr << "aipserror: error " << x.getMesg() << endl;

@@ -287,23 +287,30 @@ public:
     }
   }
     
-protected:
-  // Set the various pointer needed to construct the object.
-  // One of the pointers should be zero.
-  // It takes over the pointer and deletes the object in the destructor.
-  void setPtr (Lattice<T>* latticePtr,
-	       MaskedLattice<T>* maskLatPtr,
-	       Bool writableIfPossible);
+  // Set the region object using a slicer.
+  // Allows the region to be changed while keeping
+  // the same lattice, so that new SubLattice objects do not have to be
+  // created when one only wants to change the region of interest. Should
+  // only be called when performance is an issue; otherwise, just create
+  // a new SubLattice<T> object.
+  void setRegion (const Slicer& slicer);
 
+protected:
   // Set the region object.
   // It also fills in the parent pointer when the SubLattice is taken
   // from a MaskedLattice.
   // The default region is the entire lattice.
   // <group>
   void setRegion (const LatticeRegion& region);
-  void setRegion (const Slicer& slicer);
   void setRegion();
   // </group>
+
+  // Set the various pointers needed to construct the object.
+  // One of the pointers should be zero.
+  // It takes over the pointer and deletes the object in the destructor.
+  void setPtr (Lattice<T>* latticePtr,
+	       MaskedLattice<T>* maskLatPtr,
+	       Bool writableIfPossible);
 
   // Set the axes mapping from the specification.
   void setAxesMap (const AxesSpecifier&);

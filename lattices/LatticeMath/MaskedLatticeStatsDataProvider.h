@@ -42,7 +42,25 @@ template <class T> class MaskedLatticeStatsDataProvider
 	: public LatticeStatsDataProviderBase<T> {
 public:
 
-	MaskedLatticeStatsDataProvider(MaskedLattice<T>& lattice);
+	// default constructor. Must set lattice after construction but before
+	// using the object
+
+	MaskedLatticeStatsDataProvider();
+
+	// <src>iteratorLimitBytes</src> is related to the size of the lattice.
+	// If the lattice is greater than this size, then a lattice iterator will
+	// be used to step through the lattice. If less, then all the data in the
+	// values in the lattice are retrieved in a single chunk. The advantage of
+	// the iterator is that less memory is used. The disadvantage is there is
+	// a significant performace cost, so if the lattice is small, it is better to
+	// get all its values in a single chunk and forgo the iterator. This is particularly
+	// true when looping for a large number of iterations and creating a
+	// MaskedLatticeStatsDataProvider each loop (in that case, you probably will want
+	// to create a single object before the loop and use setLattice() to update
+	// its lattice).
+	MaskedLatticeStatsDataProvider(
+		MaskedLattice<T>& lattice, uInt iteratorLimitBytes=4096*4096
+	);
 
 	~MaskedLatticeStatsDataProvider();
 
@@ -74,6 +92,20 @@ public:
 	// reset the provider to point to the first data set it manages.
 	void reset();
 
+	// set the lattice. Automatically resets the lattice iterator.
+	// <src>iteratorLimitBytes</src> is related to the size of the lattice.
+	// If the lattice is greater than this size, then a lattice iterator will
+	// be used to step through the lattice. If less, then all the data in the
+	// values in the lattice are retrieved in a single chunk. The advantage of
+	// the iterator is that less memory is used. The disadvantage is there is
+	// a significant performace cost, so if the lattice is small, it is better to
+	// get all its values in a single chunk and forgo the iterator. This is particularly
+	// true when looping for a large number of iterations and creating a
+	// MaskedLatticeStatsDataProvider each loop (in that case, you probably will want
+	// to create a single object before the loop and use setLattice() to update
+	// its lattice).
+	void setLattice(const MaskedLattice<T>& lattice, uInt iteratorLimitBytes=4096*4096);
+
 	// <group>
 	// see base class documentation.
 	void updateMaxPos(const std::pair<Int64, Int64>& maxpos);
@@ -82,16 +114,16 @@ public:
 	// </group>
 
 private:
-	RO_MaskedLatticeIterator<T> _iter;
+
+	CountedPtr<RO_MaskedLatticeIterator<T> > _iter;
 	Array<T> _currentSlice;
 	Array<Bool> _currentMaskSlice;
 	const T* _currentPtr;
 	const Bool* _currentMaskPtr;
-	Bool _delData, _delMask;
+	Bool _delData, _delMask, _atEnd;
 
 	void _freeStorage();
 
-	uInt _nsteps() const;
 };
 
 }

@@ -25,6 +25,7 @@
 //#
 //# $Id$
 //#
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -50,6 +51,7 @@
 #include <casacore/ms/MeasurementSets.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MSKeys.h>
 #include <casacore/ms/MeasurementSets/MSMetaData.h>
 #include <casacore/ms/MeasurementSets/MSSummary.h>
 #include <casacore/ms/MeasurementSets/MSRange.h>
@@ -237,8 +239,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 		os << "The MAIN table is empty: there are no data!!!" << endl << LogIO::POST;
 		return;
 	}
-
-	// Make objects
 	std::pair<Double, Double> timerange = _msmd->getTimeRange();
 	Double startTime = timerange.first;
 	Double stopTime = timerange.second;
@@ -351,7 +351,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
                         }
                         os << "SpwIds   Average Interval(s)    ScanIntent" << endl;
 		}
-
 		/* CAS-2751. Sort the table by scan then field (not timestamp)
 		 * so that scans are not listed for every different DDID
 		 */
@@ -379,13 +378,12 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 		Int thisnrow(0);
 		Double meanIntTim(0.0);
 
-
 		os.output().precision(3);
 		Int subsetscan=0;
 		// Iterate over scans/fields:
 		std::set<uInt> spw;
+		ScanKey lastScanKey;
 		while (!stiter.pastEnd()) {
-
 			// ms table at this scan
 			Table t(stiter.table());
 			Int nrow=t.nrow();
@@ -398,6 +396,10 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			ROTableVector<Int> ddicol(t,"DATA_DESC_ID");
 			ROTableVector<Int> stidcol(t,"STATE_ID");
 
+			lastScanKey.obsID = obsid;
+			lastScanKey.arrayID = arrid;
+			lastScanKey.scan = lastscan;
+
 			// this timestamp
 			//Double thistime(timecol(0));
 
@@ -408,7 +410,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			fldids.resize(1,False);
 			fldids(0)=fldcol(0);
 			nfld=1;
-
 			ddids.resize(1,False);
 			ddids(0)=ddicol(0);
 			nddi=1;
@@ -416,7 +417,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			stids.resize(1, False);
 			stids(0) = stidcol(0);
 			nst=1;
-
 			nVisPerField_(fldids(0))+=nrow;
 
 			// fill field and ddi lists for this scan
@@ -442,11 +442,12 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			}
 
 			// If not first timestamp, check if scan changed, etc.
+			ScanKey thisScanKey = lastScanKey;
+			thisScanKey.scan = thisscan;
 			if (!firsttime) {
 				// Has state changed?
 				Bool samefld;
 				samefld=fldids.conform(lastfldids) && !anyNE(fldids,lastfldids);
-
 				Bool sameddi;
 				sameddi=ddids.conform(lastddids) && !anyNE(ddids,lastddids);
 
@@ -473,13 +474,10 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 					else {
 						meanIntTim=0.0;
 					}
-
 					// this MJD
 					day=floor(MVTime(btime/C::day).day());
-
-					spw = _msmd->getSpwsForScan(lastscan);
+					spw = _msmd->getSpwsForScan(lastScanKey);
 					String name=fieldnames(lastfldids(0));
-
 					if (verbose) {
 						// Print out last scan's times, fields, ddis
 						os.output().setf(ios::right, ios::adjustfield);
@@ -502,7 +500,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 						os.output().setf(ios::left, ios::adjustfield);
 						if (name.length()>20) name.replace(19,1,'*');
 						os.output().width(widthField); os << name.at(0,20);
-
 						//os.output().width(widthnrow); os << thisnrow;
 						os.output().width(widthnrow);
 						os.output().setf(ios::right, ios::adjustfield);
@@ -516,7 +513,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
                                                   os.output().width(widthNUnflaggedRow);
                                                   os << xx.str();
                                                 }
-
 						//os.output().width(widthInttim); os << meanIntTim;
 						os.output().width(widthLead); os << "  ";
 
@@ -528,7 +524,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 						*/
 						os.output().width(widthLead); os << "  ";
 
-						std::map<uInt, Double> intToScanMap = _msmd->getAverageIntervalsForScan(lastscan);
+						std::map<uInt, Double> intToScanMap = _msmd->getAverageIntervalsForScan(lastScanKey);
 						os << "[";
 						for (
 							std::set<uInt>::const_iterator iter=spw.begin();
@@ -548,7 +544,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 						//os << obsMode;
 
 						//os << endl;
-						std::set<String> intents = _msmd->getIntentsForScan(lastscan);
+						std::set<String> intents = _msmd->getIntentsForScan(lastScanKey);
 						if (intents.size() > 0) {
 							os << intents;
 						}
@@ -583,9 +579,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 							subsetscan=0;
 						}
 					}
-
-					// new btime:
-					btime = _msmd->getTimeRangeForScan(thisscan).first;
+					btime = _msmd->getTimeRangeForScan(thisScanKey).first;
 					// next last day is this day
 					lastday=day;
 
@@ -593,12 +587,12 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 					meanIntTim=0.;
 					++recLength;
 				}
-
 				//						etime=thistime;
 				//etime=timecol(nrow-1);   //CAS-2751
-				etime = _msmd->getTimeRangeForScan(thisscan).second;
-			} else {
-                                std::pair<Double, Double> timeRange = _msmd->getTimeRangeForScan(thisscan);
+				etime = _msmd->getTimeRangeForScan(thisScanKey).second;
+			}
+			else {
+                std::pair<Double, Double> timeRange = _msmd->getTimeRangeForScan(thisScanKey);
 				// initialize btime and etime
 				//btime=thistime;
 				btime = timeRange.first;
@@ -623,21 +617,19 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			stiter.next();
 		} // end of time iteration
 
-		if (thisnrow>0)
+		meanIntTim = thisnrow > 0 ? meanIntTim/thisnrow : 0;
+		/*
+		if
 			meanIntTim/=thisnrow;
 		else
 			meanIntTim=0.0;
-
+			*/
 		// this MJD
 		day=floor(MVTime(btime/C::day).day());
-
-		// Spws
-		//spwids.resize(lastddids.nelements());
-		/*
-		for (uInt iddi=0; iddi<spwids.nelements();++iddi)
-			spwids(iddi)=specwindids(lastddids(iddi));
-	*/
-		spw = _msmd->getSpwsForScan(lastscan);
+		lastScanKey.obsID = obsid;
+		lastScanKey.arrayID = arrid;
+		lastScanKey.scan = lastscan;
+		spw = _msmd->getSpwsForScan(lastScanKey);
 		String name=fieldnames(lastfldids(0));
 		if (verbose) {
 			// Print out final scan's times, fields, ddis
@@ -674,14 +666,9 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 //			os.output().width(widthInttim); os << meanIntTim;
 			os.output().width(widthLead);  os << "  ";
                         showContainer (os.output(), spw, ", ", "[", "]");
-			/*
-			if (spw.size() <= 9) {
-				os.output().width(28 - (3*spw.size())); os << " ";
-			}
-			*/
 			os.output().width(widthLead); os << "  ";
 
-			std::map<uInt, Double> intToScanMap = _msmd->getAverageIntervalsForScan(lastscan);
+			std::map<uInt, Double> intToScanMap = _msmd->getAverageIntervalsForScan(lastScanKey);
 			os << "[";
 			for (
 				std::set<uInt>::const_iterator iter=spw.begin();
@@ -700,7 +687,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			//}
 			//os << obsMode;
 			//os << endl;
-			set<String> intents = _msmd->getIntentsForScan(lastscan);
+			set<String> intents = _msmd->getIntentsForScan(lastScanKey);
 			if (intents.size() > 0) {
 				os << intents;
 			}
@@ -951,6 +938,7 @@ void MSSummary::getScanSummary (Record& outRec) const
 					subScanRecord.define("nRow", thisnrow);
 					subScanRecord.define("IntegrationTime", meanIntTim);
 					subScanRecord.define("SpwIds", spwids);
+					subScanRecord.define("DDIds", lastddids);
 					scanRecord.defineRecord(String::toString(subsetscan), subScanRecord);
 					if(!outRec.isDefined(scanrecid)){
 						outRec.defineRecord(scanrecid, scanRecord);
@@ -1022,6 +1010,7 @@ void MSSummary::getScanSummary (Record& outRec) const
 		subScanRecord.define("nRow", thisnrow);
 		subScanRecord.define("IntegrationTime", meanIntTim);
 		subScanRecord.define("SpwIds", spwids);
+		subScanRecord.define("DDIds", lastddids);
 		scanRecord.defineRecord(String::toString(subsetscan), subScanRecord);
 		if(!outRec.isDefined(scanrecid)){
 			outRec.defineRecord(scanrecid, scanRecord);
@@ -1672,6 +1661,8 @@ void MSSummary::getSpectralWindowInfo(Record& outRec) const
 	ROMSSpWindowColumns msSWC(pMS->spectralWindow());
 	// Create a MS-data_desc-columns object
 	ROMSDataDescColumns msDDC(pMS->dataDescription());
+	// Create a MS-polin-columns object
+	ROMSPolarizationColumns msPOLC(pMS->polarization());
 
 	if (msDDC.nrow()<=0 or msSWC.nrow()<=0) {
 		//The DATA_DESCRIPTION or SPECTRAL_WINDOW table is empty
@@ -1687,6 +1678,7 @@ void MSSummary::getSpectralWindowInfo(Record& outRec) const
 	for (uInt i=0; i<ddId.nelements(); i++) uddId(i)=ddId(i);
 	// now get the corresponding spectral windows and pol setups
 	Vector<Int> spwIds = msDDC.spectralWindowId().getColumnCells(uddId);
+	Vector<Int> polIds = msDDC.polarizationId().getColumnCells(uddId);
 	//const Int option=Sort::HeapSort | Sort::NoDuplicates;
 	//const Sort::Order order=Sort::Ascending;
 	//Int nSpw=GenSort<Int>::sort (spwIds, order, option);
@@ -1695,6 +1687,7 @@ void MSSummary::getSpectralWindowInfo(Record& outRec) const
 		// For each row of the DataDesc subtable, write the info
 		for (uInt i=0; i<ddId.nelements(); i++) {
 			Int dd=ddId(i);
+			Int pol=polIds(i);
 			Int spw = msDDC.spectralWindowId()(dd);
 
 			Record ddRec;
@@ -1705,6 +1698,8 @@ void MSSummary::getSpectralWindowInfo(Record& outRec) const
 			ddRec.define("ChanWidth", msSWC.chanWidth()(spw)(IPosition(1,0)));
 			ddRec.define("TotalWidth", msSWC.totalBandwidth()(spw));
 			ddRec.define("RefFreq", msSWC.refFrequency()(spw));
+			ddRec.define("PolId", polIds(i));
+			ddRec.define("NumCorr", msPOLC.numCorr()(pol));
 
 			outRec.defineRecord(String::toString(dd), ddRec);
 		}

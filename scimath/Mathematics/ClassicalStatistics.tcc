@@ -166,7 +166,11 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	std::set<uInt64> medianIndices;
 	quantiles.clear();
 	CountedPtr<uInt64> mynpts = knownNpts.null() ? new uInt64(getNPts()) : knownNpts;
-	if (_getStatsData().median.null()) {
+    ThrowIf(
+        *mynpts == 0,
+        "No valid data found"
+    );
+    if (_getStatsData().median.null()) {
 		medianIndices = _medianIndices(mynpts);
 	}
 	std::map<Double, uInt64> quantileToIndex = StatisticsData::indicesFromFractions(
@@ -257,7 +261,8 @@ std::map<Double, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIt
 		"Value of all quantiles must be between 0 and 1 (noninclusive)"
 	);
 	uInt64 mynpts = knownNpts.null() ? getNPts() : *knownNpts;
-	std::map<Double, uInt64> quantileToIndexMap = StatisticsData::indicesFromFractions(
+    ThrowIf(mynpts == 0, "No valid data found");
+    std::map<Double, uInt64> quantileToIndexMap = StatisticsData::indicesFromFractions(
 		mynpts, fractions
 	);
 	// This seemingly convoluted way of doing things with maps is necessary because
@@ -296,7 +301,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::setCalculateAs
 	Bool c
 ) {
 	ThrowIf (
-		! this->_getDataProvider().null() && c,
+		this->_getDataProvider() && c,
 		"Logic Error: It is nonsensical to call " + String(__func__) + " method "
 		"with a True value if one is using a data provider"
 	);
@@ -310,7 +315,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::setCalculateAs
 
 template <class AccumType, class InputIterator, class MaskIterator>
 void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::setDataProvider(
-	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
 ) {
 	ThrowIf(
 		_calculateAsAdded,
@@ -429,7 +434,7 @@ StatsData<AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIterator>
 	_initIterators();
 	_getStatsData().masked = False;
 	_getStatsData().weighted = False;
-	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -512,7 +517,7 @@ StatsData<AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIterator>
 			_updateMaxMin(mymin, mymax, minpos, maxpos, _myStride, _idataset);
 		}
 		++_idataset;
-		if (! dataProvider.null()) {
+		if (dataProvider) {
 			++(*dataProvider);
 			if (dataProvider->atEnd()) {
 				dataProvider->finalize();
@@ -798,7 +803,7 @@ vector<vector<uInt64> > ClassicalStatistics<AccumType, InputIterator, MaskIterat
 		++iDesc;
 	}
 	_initIterators();
-    CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+    StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -867,7 +872,7 @@ vector<vector<uInt64> > ClassicalStatistics<AccumType, InputIterator, MaskIterat
 				binDesc, maxLimit
 			);
 		}
-		if (! dataProvider.null()) {
+		if (dataProvider) {
 			++(*dataProvider);
 			if (dataProvider->atEnd()) {
 				dataProvider->finalize();
@@ -893,7 +898,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_createDataArr
 ) {
 	//cout << __func__ << endl;
 	_initIterators();
-	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -954,7 +959,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_createDataArr
 				ary, _myData, _myCount, _myStride
 			);
 		}
-		if (! dataProvider.null()) {
+		if (dataProvider) {
 			++(*dataProvider);
 			if (dataProvider->atEnd()) {
 				dataProvider->finalize();
@@ -1003,7 +1008,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_createDataArr
 		++iLimits;
 	}
 	_initIterators();
-	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
 		= this->_getDataProvider();
 	uInt currentCount = 0;
 	while (True) {
@@ -1072,7 +1077,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_createDataArr
 				includeLimits, maxCount
 			);
 		}
-		if (! dataProvider.null()) {
+		if (dataProvider) {
 			++(*dataProvider);
 			if (dataProvider->atEnd()) {
 				dataProvider->finalize();
@@ -1325,7 +1330,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doMinMax(
 ) {
 	//cout << __func__ << endl;
     _initIterators();
-	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
 		= this->_getDataProvider();
 	CountedPtr<AccumType> mymax;
 	CountedPtr<AccumType> mymin;
@@ -1387,7 +1392,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doMinMax(
 			// with it. No filtering of the data is necessary.
 			_minMax(mymin, mymax, _myData, _myCount, _myStride);
 		}
-		if (! dataProvider.null()) {
+		if (dataProvider) {
 			++(*dataProvider);
 			if (dataProvider->atEnd()) {
 				dataProvider->finalize();
@@ -1416,7 +1421,7 @@ template <class AccumType, class InputIterator, class MaskIterator>
 Int64 ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doNpts() {
 	//cout << __func__ << endl;
 	_initIterators();
-	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
 		= this->_getDataProvider();
 	uInt64 npts = 0;
 	while (True) {
@@ -1479,7 +1484,7 @@ Int64 ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doNpts() {
 				npts, _myData, _myCount, _myStride
 			);
 		}
-		if (! dataProvider.null()) {
+		if (dataProvider) {
 			++(*dataProvider);
 			if (dataProvider->atEnd()) {
 				dataProvider->finalize();
@@ -1832,7 +1837,7 @@ std::map<uInt64, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIt
 	const std::set<uInt64>& indices, Bool persistSortedArray
 ) {
 	std::map<uInt64, AccumType> indexToValue;
-	if (
+    if (
 		_valuesFromSortedArray(
 			indexToValue, knownNpts, indices, maxArraySize, persistSortedArray
 		)
@@ -1878,10 +1883,10 @@ std::map<uInt64, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIt
 template <class AccumType, class InputIterator, class MaskIterator>
 void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_initIterators() {
 	ThrowIf(
-		this->_getData().size() == 0 && this->_getDataProvider().null(),
+		this->_getData().size() == 0 && ! this->_getDataProvider(),
 		"No data sets have been added"
 	);
-	if (! this->_getDataProvider().null()) {
+	if (this->_getDataProvider()) {
 		this->_getDataProvider()->reset();
 	}
 	else {
@@ -1907,9 +1912,9 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_initIterators
 
 template <class AccumType, class InputIterator, class MaskIterator>
 void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_initLoopVars() {
-	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
 		= this->_getDataProvider();
-	if (! dataProvider.null()) {
+	if (dataProvider) {
 		_myData = dataProvider->getData();
 		_myCount = dataProvider->getCount();
 		_myStride = dataProvider->getStride();
@@ -1957,7 +1962,7 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_isNptsSmaller
 ) {
 	//cout << __func__ << endl;
 	_initIterators();
-	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
 		= this->_getDataProvider();
 	Bool limitReached = False;
 	while (True) {
@@ -2029,7 +2034,7 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_isNptsSmaller
 			unsortedAry.clear();
 			return False;
 		}
-		if (! dataProvider.null()) {
+		if (dataProvider) {
 			++(*dataProvider);
 			if (dataProvider->atEnd()) {
 				dataProvider->finalize();
@@ -2923,12 +2928,12 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
 	AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride,
 	const Int64& currentDataset
 ) {
-	CountedPtr<StatsDataProvider<AccumType, InputIterator, MaskIterator> > dataProvider
+	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
 		= this->_getDataProvider();
 	if (maxpos >= 0) {
 		_getStatsData().maxpos.first = currentDataset;
 		_getStatsData().maxpos.second = maxpos * dataStride;
-		if (! dataProvider.null()) {
+		if (dataProvider) {
 			dataProvider->updateMaxPos(_getStatsData().maxpos);
 		}
         _getStatsData().max = new AccumType(mymax);
@@ -2936,7 +2941,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
 	if (minpos >= 0) {
 		_getStatsData().minpos.first = currentDataset;
 		_getStatsData().minpos.second = minpos * dataStride;
-		if (! dataProvider.null()) {
+		if (dataProvider) {
 			dataProvider->updateMinPos(_getStatsData().minpos);
 		}
         _getStatsData().min = new AccumType(mymin);
@@ -3074,6 +3079,7 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_valuesFromSor
 		? (uInt64)_getStatsData().npts
 		: knownNpts.null()
 		  ? 0 : *knownNpts;
+    ThrowIf(myNpts == 0, "No valid data found");
 	if (myArray.empty()) {
 		if (myNpts > 0) {
 			// we have already computed npts
@@ -3089,7 +3095,7 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_valuesFromSor
 		}
 		else {
 			// we have to calculate the number of good points
-			if (this->_getDataProvider().null()) {
+			if (! this->_getDataProvider()) {
 				// we first get an upper limit by adding up the counts
 				uInt nr = 0;
 				const vector<Int64>& counts = this->_getCounts();
@@ -3238,6 +3244,5 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats
 }
 
 }
-
 
 #endif

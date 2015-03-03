@@ -79,6 +79,14 @@ void throw_Null_CountedPtr_dereference_error();
 template<class t>
 class CountedPtr
 {
+#ifdef AIPS_CXX11
+    typedef std::shared_ptr<t> PointerRep;
+  ///#elif HAVE_BOOST
+  ///    typedef boost::shared_ptr<t> PointerRep;
+#else
+    typedef std::tr1::shared_ptr<t> PointerRep;
+#endif
+
 
 protected:
     // Helper class to make deletion of object optional.
@@ -114,12 +122,17 @@ public:
     : pointerRep_p (val, Deleter<t> (delit))
     {}
     
+    // Create from a shared_ptr.
+    CountedPtr (const PointerRep& rep)
+      : pointerRep_p (rep)
+    {}
+
     // This copy constructor allows <src>CountedPtr</src>s to be
     // initialized from other <src>CountedPtr</src>s for which the pointer TP*
     // is convertible to T*.
     template<typename TP>
     CountedPtr(const CountedPtr<TP>& that)
-      : pointerRep_p(that.pointerRep_p)
+      : pointerRep_p (that.pointerRep_p)
     {}
 
     // This destructor only deletes the really stored data when it was
@@ -248,19 +261,6 @@ public:
 private:
     // Make all types of CountedPtr a friend for the templated operator=.
     template<typename TP> friend class CountedPtr;
-
-#ifdef AIPS_CXX11
-    typedef std::shared_ptr<t> PointerRep;
-  ///#elif HAVE_BOOST
-  ///    typedef boost::shared_ptr<t> PointerRep;
-#else
-    typedef std::tr1::shared_ptr<t> PointerRep;
-#endif
-
-    // Create from a shared_ptr.
-    CountedPtr (const PointerRep& rep)
-      : pointerRep_p (rep)
-    {}
 
 
     PointerRep pointerRep_p;

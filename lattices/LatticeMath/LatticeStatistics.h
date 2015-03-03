@@ -37,6 +37,8 @@
 #include <casacore/lattices/LatticeMath/TiledCollapser.h>
 #include <casacore/lattices/LatticeMath/TiledCollapser.h>
 #include <casacore/lattices/LEL/LatticeExprNode.h>
+#include <casacore/lattices/LatticeMath/LatticeStatsDataProvider.h>
+#include <casacore/lattices/LatticeMath/MaskedLatticeStatsDataProvider.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/casa/System/PGPlotter.h>
 #include <casacore/casa/Utilities/DataType.h>
@@ -203,6 +205,7 @@ public:
 	typedef typename NumericTraits<T>::PrecisionType AccumType;
 
 	struct AlgConf {
+		StatisticsData::ALGORITHM algorithm;
 		// hinges-fences f factor
 		Double hf;
 		// fit to have center type
@@ -211,6 +214,10 @@ public:
 		FitToHalfStatisticsData::USE_DATA ud;
 		// fit to half center value
 		AccumType cv;
+		// Chauvenet zscore
+		Double zs;
+		// Chauvenet max iterations
+		Int mi;
 	};
 
 // Constructor takes the lattice and a <src>LogIO</src> object for logging.
@@ -371,24 +378,47 @@ public:
 // Did we construct with a logger ?
    Bool hasLogger () const {return haveLogger_p;};
 
-   // set the statistics algorithm to use. This will reset any previous algorithm
-   // configuration data, so if you want the algorithm to have a different configuration
-   // beyond its default, you will need to call the appropriate configuration methods
-   // after you have called this method.
-   void setAlgorithm(
-		   StatisticsData::ALGORITHM algorithm
+   // configure object to use Classical Statistics
+   // The time, t_x, it takes to compute classical statistics using algorithm x, can
+   // be modeled by
+   // t_x = n_sets*(a_x + b_x*n_el)
+   // where n_sets is the number of independent sets of data to compute stats on,
+   // each containing n_el number of elements. a_x is the time it takes to compute
+   // stats a a single set of data, and b_x is the time it takes to accumulate
+   // a single point.
+   // The old algorithm was developed in the early history of the project, I'm guessing
+   // by Neil Kileen, while the new algorithm was developed in 2015 by Dave Mehringer
+   // as part of the stats framework project. The old algorithm is faster in the regime
+   // of large n_sets and small n_el, while the new algorithm is faster in the
+   // regime of small n_sets and large n_el.
+   // If one always wants to use one of these algorithms, that algorithm's coefficients
+   // should be set to 0, while setting the other algorithm's coefficients to positive
+   // values. Note that it's the relative, not the absolute, values of these
+   // coeffecients that is important
+   // The version that takes no parameters uses the default values of the coefficients;
+   // <group>
+   void configureClassical();
+
+   void configureClassical(Double aOld, Double bOld, Double aNew, Double bNew);
+   // </group>
+
+   // configure to use fit to half algorithm.
+   void configureFitToHalf(
+		   FitToHalfStatisticsData::CENTER centerType=FitToHalfStatisticsData::CMEAN,
+		   FitToHalfStatisticsData::USE_DATA useData=FitToHalfStatisticsData::LE_CENTER,
+		   AccumType centerValue=0
    );
 
-   // throws exception if the algorithm has not been set to fit to half.
-   // <src>centerValue</src> is only used if <src>centerType</src>=CVALUE
-      void configureFitToHalf(
-    		  FitToHalfStatisticsData::CENTER centerType=FitToHalfStatisticsData::CMEAN,
-    		  FitToHalfStatisticsData::USE_DATA useData=FitToHalfStatisticsData::LE_CENTER,
-    		  AccumType centerValue=0
-      );
-
-   // throws exception if the algorithm has not been set to hinges-fences
+   // configure to use hinges-fences algorithm
    void configureHingesFences(Double f);
+
+   // configure to use Chauvenet's criterion
+   void configureChauvenet(
+		   Double zscore=-1, Int maxIterations=-1
+   );
+
+   // get number of iterations associated with Chauvenet criterion algorithm
+   std::map<String, uInt> getChauvenetNiter() const { return _chauvIters; }
 
 protected:
 
@@ -472,7 +502,7 @@ protected:
 private:
 
    const MaskedLattice<T>* pInLattice_p;
-   TempLattice<AccumType>* pStoreLattice_p;
+   CountedPtr<TempLattice<AccumType> > pStoreLattice_p;
    Vector<Int> nxy_p, statsToPlot_p;
    Vector<T> range_p;
    PGPlotter plotter_p;
@@ -484,10 +514,20 @@ private:
    T minFull_p, maxFull_p;
    Bool doneFullMinMax_p;
 
-   vector<CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > > _sa;
-
-   StatisticsData::ALGORITHM _algorithm;
    AlgConf _algConf;
+   std::map<String, uInt> _chauvIters;
+
+   Double _aOld, _bOld, _aNew, _bNew;
+
+   void _setDefaultCoeffs() {
+	   // coefficients from timings run on PagedImages on
+	   // etacarinae.cv.nrao.edu (dmehring's development
+	   // machine)
+       _aOld = 4.7e-7;
+       _bOld = 2.3e-8;
+       _aNew = 1.6e-5;
+       _bNew = 1.5e-8;
+   }
 
 // Summarize the statistics found over the entire lattice
    virtual void summStats();
@@ -599,6 +639,15 @@ private:
    void _latticePosToStoragePos(
 		 IPosition& storagePos, const IPosition& latticePos
    );
+
+   CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > _createStatsAlgorithm() const;
+
+   void _configureDataProviders(
+		   LatticeStatsDataProvider<T>& lattDP,
+		   MaskedLatticeStatsDataProvider<T>& maskedLattDP
+	) const;
+
+   void _doStatsLoop(uInt nsets, CountedPtr<LattStatsProgress> progressMeter);
 };
 
 // <summary> Generate statistics, tile by tile, from a masked lattice </summary>
@@ -669,6 +718,7 @@ private:
 //   <li> 
 // </todo>
 
+/*
 template <class T, class U=T>
 class StatsTiledCollapser : public TiledCollapser<T,U>
 {
@@ -719,6 +769,7 @@ private:
     DataType _type;
     vector<Bool> _first;
 };
+*/
 
 } //# NAMESPACE CASACORE - END
 

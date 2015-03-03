@@ -388,6 +388,10 @@ public:
     virtual Measure *clone() const;
 // </group>
 
+    // Convert to a String in astronomer-friendly format based on
+    // reference frame
+    String toString() const;
+
 private:
 
 //# Data

@@ -176,7 +176,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    }
 
 	    fits_clear_Fptr( fptr->Fptr, status);  // clear Fptr address 
-            free((fptr->Fptr)->iobuffer);          // free memory for I/O buffers
+		// iobuffer was added with version 3.181... cfitsio 3.03-3.14 do not have this...
+		// cfitsio 3.03 defines CFITSIO_VERSION to be 3.03 (which is greek to CPP)...
+		// sometime after 3.181, a translator came along and added CFITSIO_MINOR as a separate #define
+#ifdef CFITSIO_MINOR
+        free((fptr->Fptr)->iobuffer);          // free memory for I/O buffers
+#endif
 	    free((fptr->Fptr)->headstart);         // free memory for headstart array 
 	    free((fptr->Fptr)->filename);          // free memory for the filename
 	    (fptr->Fptr)->filename = 0;
