@@ -68,6 +68,27 @@ static Table theLastTable;
 //# Hold a pointer to the last HDF5 file to lookup unqualified region names.
 static CountedPtr<HDF5File> theLastHDF5;
 
+#define SAVE_GLOBALS \
+ const Block<LatticeExprNode>* savTempLattices=theTempLattices; \
+ const PtrBlock<const ImageRegion*>* savTempRegions=theTempRegions; \
+ String savDirName=theDirName; \
+ Block<void*> savNodes=theNodes; \
+ Block<Bool>  savNodesType=theNodesType; \
+ uInt savNrNodes=theNrNodes; \
+ Table savLastTable=theLastTable; \
+ CountedPtr<HDF5File> savLastHDF5=theLastHDF5;
+
+#define RESTORE_GLOBALS \
+ theTempLattices=savTempLattices; \
+ theTempRegions=savTempRegions; \
+ theDirName=savDirName; \
+ theNodes=savNodes; \
+ theNodesType=savNodesType; \
+ theNrNodes=savNrNodes; \
+ theLastTable=savLastTable; \
+ theLastHDF5=savLastHDF5;
+
+
 // Clear the global info.
 void imageExprParse_clear()
 {
@@ -181,6 +202,8 @@ LatticeExprNode ImageExprParse::command
 			    const PtrBlock<const ImageRegion*>& tempRegions,
 			    const String& dirName)
 {
+    // Save the global variables to make it re-entrant.
+    SAVE_GLOBALS;
     theTempLattices = &tempLattices;
     theTempRegions  = &tempRegions;
     theDirName      = dirName;
@@ -209,6 +232,8 @@ LatticeExprNode ImageExprParse::command
 	throw (AipsError(message + '\n' + "Scanned so far: " +
 	                 command.before(imageExprGramPosition())));
     }
+    // Restore the global variables to make it re-entrant.
+    RESTORE_GLOBALS;
     return node;
 }
 
