@@ -72,9 +72,16 @@ int tableGramParseCommand (const String& command)
 {
     TableGramrestart (TableGramin);
     yy_start = 1;
+    // Save global state for re-entrancy.
+    const char* savStrpTableGram = strpTableGram;
+    Int savPosTableGram= posTableGram;
     strpTableGram = command.chars();     // get pointer to command string
     posTableGram  = 0;                   // initialize string position
-    return TableGramparse();             // parse command string
+    int sts = TableGramparse();          // parse command string
+    // Restore global state.
+    strpTableGram = savStrpTableGram;
+    posTableGram= savPosTableGram;
+    return sts;
 }
 
 //# Give the string position.

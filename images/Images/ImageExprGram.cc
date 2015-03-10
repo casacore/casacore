@@ -67,9 +67,16 @@ int imageExprGramParseCommand (const String& command)
 {
     ImageExprGramrestart (ImageExprGramin);
     yy_start = 1;
+    // Save global state for re-entrancy.
+    const char* savStrpImageExprGram = strpImageExprGram;
+    Int savPosImageExprGram= posImageExprGram;
     strpImageExprGram = command.chars();     // get pointer to command string
     posImageExprGram  = 0;                   // initialize string position
-    return ImageExprGramparse();             // parse command string
+    int sts = ImageExprGramparse();          // parse command string
+    // Restore global state.
+    strpImageExprGram = savStrpImageExprGram;
+    posImageExprGram= savPosImageExprGram;
+    return sts;
 }
 
 //# Give the string position.
