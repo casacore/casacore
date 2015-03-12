@@ -176,17 +176,6 @@ std::set<Int> MSMetaData::getScanNumbers(Int obsID, Int arrayID) const {
 	arrayKey.obsID = obsID;
 	arrayKey.arrayID = arrayID;
 	return _getScanNumbers(arrayKey);
-	/*
-	if (_uniqueScanNumbers.size() > 0) {
-		return _uniqueScanNumbers;
-	}
-	CountedPtr<Vector<Int> > allScans = _getScans();
-	std::set<Int> myUniqueScans(allScans->begin(), allScans->end());
-	if (_cacheUpdated(sizeof(Int)*myUniqueScans.size())) {
-		_uniqueScanNumbers = myUniqueScans;
-	}
-	return myUniqueScans;
-	*/
 }
 
 uInt MSMetaData::nScans() {
@@ -196,7 +185,7 @@ uInt MSMetaData::nScans() {
 	return _nScans;
 }
 
-uInt MSMetaData::nObservations() {
+uInt MSMetaData::nObservations() const {
 	if (_nObservations == 0) {
 		_nObservations = _ms->observation().nrow();
 	}
@@ -365,157 +354,6 @@ Double MSMetaData::nUnflaggedRows(CorrelationType cType, Int fieldID) const {
 		return (*fieldToNACRowsMap)[fieldID] + (*fieldToNXCRowsMap)[fieldID];
 	}
 }
-
-/*
-void MSMetaData::_getRowStats(
-	uInt& nACRows, uInt& nXCRows,
-	CountedPtr<AOSFMapI>& scanToNACRowsMap,
-	CountedPtr<AOSFMapI>& scanToNXCRowsMap,
-	CountedPtr<std::map<Int, uInt> >& fieldToNACRowsMap,
-	CountedPtr<std::map<Int, uInt> >& fieldToNXCRowsMap
-) const {
-	// this method is responsible for setting _nACRows, _nXCRows, _scanToNACRowsMap,
-	// _scanToNXCRowsMap, _fieldToNACRowsMap, _fieldToNXCRowsMap
-	if (
-		_nACRows > 0 || _nXCRows > 0
-	) {
-		nACRows = _nACRows;
-		nXCRows = _nXCRows;
-		scanToNACRowsMap = _scanToNACRowsMap;
-		scanToNXCRowsMap = _scanToNXCRowsMap;
-		fieldToNACRowsMap = _fieldToNACRowsMap;
-		fieldToNXCRowsMap = _fieldToNXCRowsMap;
-		return;
-	}
-
-	AOSFMapI *myScanToNACRowsMap, *myScanToNXCRowsMap;
-	std::map<Int, uInt> *myFieldToNACRowsMap, *myFieldToNXCRowsMap;
-	_getRowStats(
-		nACRows, nXCRows, myScanToNACRowsMap,
-		myScanToNXCRowsMap, myFieldToNACRowsMap,
-		myFieldToNXCRowsMap
-	);
-	scanToNACRowsMap = myScanToNACRowsMap;
-	scanToNXCRowsMap = myScanToNXCRowsMap;
-	fieldToNACRowsMap = myFieldToNACRowsMap;
-	fieldToNXCRowsMap = myFieldToNXCRowsMap;
-
-	Float newSize = _cacheMB + sizeof(Int)*(
-		2 + 2*scanToNACRowsMap->size()
-		+ 2*scanToNXCRowsMap->size()
-		+ 2*fieldToNACRowsMap->size()
-		+ fieldToNACRowsMap->size()
-		+ fieldToNXCRowsMap->size()
-	);
-
-	if (_cacheUpdated(newSize)) {
-		_nACRows = nACRows;
-		_nXCRows = nXCRows;
-		_scanToNACRowsMap = scanToNACRowsMap;
-		_scanToNXCRowsMap = scanToNXCRowsMap;
-		_fieldToNACRowsMap = fieldToNACRowsMap;
-		_fieldToNXCRowsMap = fieldToNXCRowsMap;
-	}
-}
-*/
-
-/*
-
-void MSMetaData::_getRowStats(
-	uInt& nACRows, uInt& nXCRows,
-	AOSFMapI*& scanToNACRowsMap,
-	AOSFMapI*& scanToNXCRowsMap,
-	std::map<Int, uInt>*& fieldToNACRowsMap,
-	std::map<Int, uInt>*& fieldToNXCRowsMap
-) const {
-	nACRows = 0;
-	nXCRows = 0;
-	std::set<Int> scanNumbers = getScanNumbers();
-	std::set<Int>::const_iterator lastScan = scanNumbers.end();
-	std::set<Int> uniqueFieldIDs, uniqueArrIDs, uniqueObsIDs;
-	CountedPtr<Vector<Int> > fieldIDs = _getFieldIDs();
-	CountedPtr<Vector<Int> > obsIDs = _getObservationIDs();
-	CountedPtr<Vector<Int> > arrIDs = _getArrayIDs();
-	uniqueFieldIDs.insert(fieldIDs->begin(), fieldIDs->end());
-	uniqueArrIDs.insert(arrIDs->begin(), arrIDs->end());
-	uniqueObsIDs.insert(obsIDs->begin(), obsIDs->end());
-	std::set<Int>::const_iterator lastUniqueFieldID = uniqueFieldIDs.end();
-	std::set<Int>::const_iterator lastUniqueObsID = uniqueObsIDs.end();
-	std::set<Int>::const_iterator lastUniqueArrID = uniqueArrIDs.end();
-
-	scanToNACRowsMap = new AOSFMapI();
-	scanToNXCRowsMap = new AOSFMapI();
-	fieldToNACRowsMap = new std::map<Int, uInt>();
-	fieldToNXCRowsMap = new std::map<Int, uInt>();
-
-	fieldToNACRowsMap->clear();
-	fieldToNXCRowsMap->clear();
-	scanToNACRowsMap->clear();
-	scanToNXCRowsMap->clear();
-	for (
-		std::set<Int>::const_iterator arrNum=uniqueArrIDs.begin();
-		arrNum!=lastUniqueArrID; ++arrNum
-	) {
-		for (
-			std::set<Int>::const_iterator obsNum=uniqueObsIDs.begin();
-			obsNum!=lastUniqueObsID; ++obsNum
-		) {
-			for (
-				std::set<Int>::const_iterator scanNum=scanNumbers.begin();
-					scanNum!=lastScan; ++scanNum
-			) {
-				for (
-					std::set<Int>::const_iterator fieldNum=uniqueFieldIDs.begin();
-					fieldNum!=lastUniqueFieldID; ++fieldNum
-				) {
-					(*scanToNACRowsMap)[*arrNum][*obsNum][*scanNum][*fieldNum] = 0;
-					(*scanToNXCRowsMap)[*arrNum][*obsNum][*scanNum][*fieldNum] = 0;
-				}
-			}
-		}
-	}
-	for (
-		std::set<Int>::const_iterator fieldNum=uniqueFieldIDs.begin();
-		fieldNum!=lastUniqueFieldID; ++fieldNum
-	) {
-		(*fieldToNACRowsMap)[*fieldNum] = 0;
-		(*fieldToNXCRowsMap)[*fieldNum] = 0;
-	}
-	CountedPtr<Vector<Int> > ant1, ant2;
-	_getAntennas(ant1, ant2);
-	CountedPtr<Vector<Int> > scans = _getScans();
-
-	Vector<Int>::const_iterator aEnd = ant1->end();
-	Vector<Int>::const_iterator a1Iter = ant1->begin();
-	Vector<Int>::const_iterator a2Iter = ant2->begin();
-	Vector<Int>::const_iterator sIter = scans->begin();
-	Vector<Int>::const_iterator fIter = fieldIDs->begin();
-	Vector<Int>::const_iterator oIter = obsIDs->begin();
-	Vector<Int>::const_iterator arIter = arrIDs->begin();
-
-	while (a1Iter!=aEnd) {
-		if (scanToNACRowsMap->find(*arIter) == scanToNACRowsMap->end()) {
-
-		}
-		if (*a1Iter == *a2Iter) {
-			++nACRows;
-			++(*scanToNACRowsMap)[*arIter][*oIter][*sIter][*fIter];
-			++(*fieldToNACRowsMap)[*fIter];
-		}
-		else {
-			++nXCRows;
-			++(*scanToNXCRowsMap)[*arIter][*oIter][*sIter][*fIter];
-			++(*fieldToNXCRowsMap)[*fIter];
-		}
-		++a1Iter;
-		++a2Iter;
-		++sIter;
-		++fIter;
-		++arIter;
-		++oIter;
-	}
-}
-*/
 
 void MSMetaData::_getRowStats(
 	uInt& nACRows, uInt& nXCRows,
@@ -688,23 +526,6 @@ CountedPtr<Vector<Int> > MSMetaData::_getArrayIDs() const {
 	return arrIDs;
 }
 
-/*
-CountedPtr<Vector<Int> > MSMetaData::_getDataDescIDs() const {
-	if (! _dataDescIDs.null() && ! _dataDescIDs->empty()) {
-		return _dataDescIDs;
-	}
-	static const String ddColName = MeasurementSet::columnName(MSMainEnums::DATA_DESC_ID);
-	ROScalarColumn<Int> ddCol(*_ms, ddColName);
-	CountedPtr<Vector<Int> > dataDescIDs(
-		new Vector<Int>(ddCol.getColumn())
-	);
-	if (_cacheUpdated(sizeof(Int)*dataDescIDs->size())) {
-		_dataDescIDs = dataDescIDs;
-	}
-	return dataDescIDs;
-}
-*/
-
 CountedPtr<Vector<Int> > MSMetaData::_getFieldIDs() const {
 	if (_fieldIDs && ! _fieldIDs->empty()) {
 		return _fieldIDs;
@@ -718,78 +539,6 @@ CountedPtr<Vector<Int> > MSMetaData::_getFieldIDs() const {
 	}
 	return fields;
 }
-
-/*
-CountedPtr<Vector<Int> > MSMetaData::_getObservationIDs() const {
-	if (! _observationIDs.null() && _observationIDs->size() > 0) {
-		return _observationIDs;
-	}
-	static const String obsColName = MeasurementSet::columnName(MSMainEnums::OBSERVATION_ID);
-	CountedPtr<Vector<Int> > obsIDs(
-		new Vector<Int>(ROScalarColumn<Int>(*_ms, obsColName).getColumn())
-	);
-	if (_cacheUpdated(sizeof(Int)*obsIDs->size())) {
-		_observationIDs = obsIDs;
-	}
-	return obsIDs;
-}
-*/
-
-/*
-std::map<Int, std::set<Int> > MSMetaData::_getScanToAntennasMap() const {
-	// responsible for setting _scanToAntennasMap
-	if (! _scanToAntennasMap.empty()) {
-		return _scanToAntennasMap;
-	}
-	Vector<Int> scans = *_getScans();
-	CountedPtr<Vector<Int> > ant1, ant2;
-	_getAntennas(ant1, ant2);
-	Vector<Int>::const_iterator sIter = scans.begin();
-	Vector<Int>::const_iterator sEnd = scans.end();
-	Vector<Int>::const_iterator a1Iter = ant1->begin();
-	Vector<Int>::const_iterator a2Iter = ant2->begin();
-	std::map<Int, std::set<Int> > mymap;
-	while (sIter != sEnd) {
-		mymap[*sIter].insert(*a1Iter);
-		mymap[*sIter].insert(*a2Iter);
-		++sIter;
-		++a1Iter;
-		++a2Iter;
-	}
-	if (_cacheUpdated(_sizeof(mymap))) {
-		_scanToAntennasMap = mymap;
-	}
-	return mymap;
-}
-*/
-
-/*
-std::map<Int, uInt> MSMetaData::_getScansToNRowsMap() const {
-	// this method is responsible for setting _scanToNRowsMap
-	if (! _scanToNRowsMap.empty()) {
-		return _scanToNRowsMap;
-	}
-	std::map<Int, uInt> mymap;
-	std::set<Int> scanNumbers = getScanNumbers();
-	std::set<Int>::const_iterator nIter = scanNumbers.begin();
-	std::set<Int>::const_iterator nEnd = scanNumbers.end();
-	while (nIter != nEnd) {
-		mymap[*nIter] = 0;
-		++nIter;
-	}
-	Vector<Int> scans = *_getScans();
-	Vector<Int>::const_iterator sIter = scans.begin();
-	Vector<Int>::const_iterator sEnd = scans.end();
-	while (sIter != sEnd) {
-		++mymap[*sIter];
-		++sIter;
-	}
-	if (_cacheUpdated(2*sizeof(Int)*(mymap.size()))) {
-		_scanToNRowsMap = mymap;
-	}
-	return mymap;
-}
-*/
 
 CountedPtr<Vector<Int> > MSMetaData::_getStateIDs() const {
 	if (_stateIDs && _stateIDs->size() > 0) {
@@ -850,23 +599,6 @@ std::set<Int> MSMetaData::getScansForState(
 		}
 		++iter;
 	}
-
-
-
-	// uniqueScans.insert(scans->begin(), scans->end());
-	/*
-	std::set<Int>::const_iterator lastScan = uniqueScans.end();
-	std::set<Int> scansForState;
-	for (
-		std::set<Int>::const_iterator scanNum=uniqueScans.begin();
-		scanNum!=lastScan; ++scanNum
-	) {
-		std::set<Int> statesSet = myScanToStatesMap.find(*scanNum)->second;
-		if (statesSet.find(stateID) != statesSet.end()) {
-			scansForState.insert(*scanNum);
-		}
-	}
-	*/
 	return scansForState;
 }
 
@@ -906,29 +638,6 @@ std::map<ScanKey, std::set<Int> > MSMetaData::_getScanToStatesMap() const {
 			myScanToStatesMap[scanKey(subKey)].insert(subProps.stateIDs.begin(), subProps.stateIDs.end());
 			++iter;
 		}
-
-		/*
-		const Vector<Int> obs = *_getObservationIDs();
-		const Vector<Int> array = *_getArrayIDs();
-		const Vector<Int> scans = *(_getScans());
-		const Vector<Int> states = *(_getStateIDs());
-		Vector<Int>::const_iterator curScan = scans.begin();
-		Vector<Int>::const_iterator lastScan = scans.end();
-		Vector<Int>::const_iterator curArray = array.begin();
-		Vector<Int>::const_iterator curObs = obs.begin();
-		Vector<Int>::const_iterator curStateID = states.begin();
-		while (curScan != lastScan) {
-			ScanKey key;
-			key.obsID = *curObs;
-			key.arrayID = *curArray;
-			key.scan = *curScan;
-			myScanToStatesMap[key].insert(*curStateID);
-			++curScan;
-			++curStateID;
-			++curArray;
-			++curObs;
-		}
-		*/
 	}
 	std::map<ScanKey, std::set<Int> >::const_iterator end = myScanToStatesMap.end();
 	uInt mySize = sizeof(ScanKey)*myScanToStatesMap.size();
@@ -1008,43 +717,6 @@ uInt MSMetaData::_sizeof(const std::map<T, std::set<String> >& m) {
 	}
 	return size;
 }
-
-/*
-uInt MSMetaData::_sizeof(const std::map<Int, std::set<String> >& m) {
-	uInt size = sizeof(Int) * m.size();
-	std::map<Int, std::set<String> >::const_iterator end = m.end();
-	for (
-		std::map<Int, std::set<String> >::const_iterator iter=m.begin();
-		iter!=end; ++iter
-	) {
-		std::set<String>::const_iterator end2 = iter->second.end();
-		for (
-			std::set<String>::const_iterator iter2=iter->second.begin();
-			iter2!=end2; ++iter2
-		) {
-			size += iter2->size();
-		}
-	}
-	return size;
-}
-
-uInt MSMetaData::_sizeof(const std::map<ScanKey, std::set<String> >& m) {
-	uInt size = sizeof(ScanKey)*m.size();
-	std::map<ScanKey, std::set<String> >::const_iterator iter = m.begin();
-	std::map<ScanKey, std::set<String> >::const_iterator end = m.end();
-	while (iter != end) {
-		std::set<String> strings = iter->second;
-		std::set<String>::const_iterator sIter = strings.begin();
-		std::set<String>::const_iterator sEnd = strings.end();
-		while (sIter != sEnd) {
-			size += sIter->size();
-			++sIter;
-		}
-		++iter;
-	}
-	return size;
-}
-*/
 
 template <class T, class U>
 uInt MSMetaData::_sizeof(const std::map<T, std::set<U> >& m) {
@@ -1132,35 +804,6 @@ uInt MSMetaData::_sizeof(const vector<std::map<Int, Quantity> >& m) {
 	}
 	return size;
 }
-/*
-uInt MSMetaData::_sizeof(const std::map<Double, std::set<Int> >& m) {
-	uInt setssize = 0;
-	uInt size = sizeof(Double) * m.size();
-	std::map<Double, std::set<Int> >::const_iterator end = m.end();
-	for (
-		std::map<Double, std::set<Int> >::const_iterator iter=m.begin();
-		iter!=end; ++iter
-	) {
-		setssize += iter->second.size();
-	}
-	size += sizeof(Int) * setssize;
-	return size;
-}
-
-uInt MSMetaData::_sizeof(const std::map<Int, std::set<Double> >& m) {
-	uInt setssize = 0;
-	uInt size = sizeof(Int) * m.size();
-	std::map<Int, std::set<Double> >::const_iterator end = m.end();
-	for (
-		std::map<Int, std::set<Double> >::const_iterator iter=m.begin();
-		iter!=end; ++iter
-	) {
-		setssize += iter->second.size();
-	}
-	size += sizeof(Double) * setssize;
-	return size;
-}
-*/
 
 std::set<String> MSMetaData::getIntentsForScan(const ScanKey& scan) const {
 	_checkScan(scan);
@@ -1486,19 +1129,6 @@ void MSMetaData::_getScansAndDDIDMaps(
 		}
 		++iter;
 	}
-	/*
-	CountedPtr<Vector<Int> > allDDIDs = _getDataDescIDs();
-	CountedPtr<Vector<Int> > allScans = _getScans();
-	Vector<Int>::const_iterator end = allDDIDs->end();
-	Vector<Int>::const_iterator myscan = allScans->begin();
-	for (
-		Vector<Int>::const_iterator ddID=allDDIDs->begin();
-		ddID!=end; ++ddID, ++myscan
-	) {
-		scanToDDIDMap[*myscan].insert(*ddID);
-		ddIDToScanMap[*ddID].insert(*myscan);
-	}
-	*/
 	if (_cacheUpdated(_sizeof(scanToDDIDMap)) + _sizeof(ddIDToScanMap)) {
 		_scanToDDIDsMap = scanToDDIDMap;
 		_ddidToScansMap = ddIDToScanMap;
@@ -1539,54 +1169,11 @@ void MSMetaData::_getScansAndSpwMaps(
 		}
 		++iter;
 	}
-	/*
-	uInt i = 0;
-	vector<std::set<ScanKey> >::const_iterator vIter = ddIDToScanMap.begin();
-	vector<std::set<ScanKey> >::const_iterator vEnd = ddIDToScanMap.end();
-
-
-	for(
-		vector<std::set<Int> >::const_iterator iter=
-		iter!=ddIDToScanMap.end(); ++iter, ++i
-	) {
-		spwToScanMap[ddToSpw[i]].insert(iter->begin(), iter->end());
-	}
-	*/
 	if (_cacheUpdated(_sizeof(scanToSpwMap)) + _sizeof(spwToScanMap)) {
 		_scanToSpwsMap = scanToSpwMap;
 		_spwToScansMap = spwToScanMap;
 	}
 }
-
-/*
-uInt MSMetaData::_sizeof(const std::map<Int, std::set<uInt> >& map) {
-	uInt size = 0;
-	std::map<Int, std::set<uInt> >::const_iterator end = map.end();
-	for (
-		std::map<Int, std::set<uInt> >::const_iterator iter=map.begin();
-		iter!=end; ++iter
-	) {
-		size += iter->second.size();
-	}
-	size *= sizeof(uInt);
-	size += map.size()*sizeof(Int);
-	return size;
-}
-
-uInt MSMetaData::_sizeof(const std::map<Int, std::set<Int> >& map) {
-	uInt size = 0;
-	std::map<Int, std::set<Int> >::const_iterator end = map.end();
-	for (
-		std::map<Int, std::set<Int> >::const_iterator iter=map.begin();
-		iter!=end; ++iter
-	) {
-		size += iter->second.size();
-	}
-	size *= sizeof(Int);
-	size += map.size()*sizeof(Int);
-	return size;
-}
-*/
 
 template <class T>
 uInt MSMetaData::_sizeof(const vector<std::set<T> >& v) {
@@ -1847,15 +1434,6 @@ std::set<SubScanKey> MSMetaData::_getSubScanKeys() const {
 		++oIter;
 		++aIter;
 	}
-	/*
-	std::map<SubScanKey, SubScanProperties> props = _getSubScanProperties();
-	std::map<SubScanKey, SubScanProperties>::const_iterator pIter = props.begin();
-	std::map<SubScanKey, SubScanProperties>::const_iterator pEnd = props.end();
-	while (pIter != pEnd) {
-		mysubscans.insert(pIter->first);
-		++pIter;
-	}
-	*/
 	if (_cacheUpdated(mysubscans.size()*sizeof(SubScanKey))) {
 		_subscans = mysubscans;
 	}
@@ -2207,19 +1785,6 @@ CountedPtr<std::map<ScanKey, std::set<Double> > > MSMetaData::_getScanToTimesMap
 		++curObs;
 		++curArray;
 	}
-	/*
-	uInt mysize = 0;
-	std::map<Int, std::set<Double> >::const_iterator end = scanToTimesMap->end();
-	for (
-		std::map<Int, std::set<Double> >::const_iterator iter=scanToTimesMap->begin();
-		iter!=end; ++iter
-	) {
-		mysize += iter->second.size();
-	}
-	mysize *= sizeof(Double);
-	mysize += sizeof(Int)*scanToTimesMap->size();
-	if (_cacheUpdated(mysize)) {
-	*/
 	if (_cacheUpdated(_sizeof(*scanToTimesMap))) {
 		_scanToTimesMap = scanToTimesMap;
 	}
@@ -2397,24 +1962,6 @@ void MSMetaData::_getTimesAndInvervals(
 		++mIter;
 	}
 	mysize *= sizeof(ScanKey);
-	/*
-	//std::set<Int> uniqueScans = getScanNumbers();
-	std::set<ScanKey> uniqueScans = _getScanKeys();
-	std::set<ScanKey>::const_iterator scanIter = uniqueScans.begin();
-	std::set<ScanKey>::const_iterator scanEnd = uniqueScans.begin();
-
-	while (scanIter != scanEnd) {
-		std::map<uInt, uInt>::const_iterator cIter = counts[*scanIter].begin();
-		std::map<uInt, uInt>::const_iterator end = counts[*scanIter].end();
-		std::map<uInt, Double>::iterator aIter = scanSpwToAverageIntervalMap[*scanIter].begin();
-		while (cIter != end) {
-			aIter->second /= counts[*scanIter][aIter->first];
-			++cIter;
-			++aIter;
-		}
-		++scanIter;
-	}
-	*/
 	mysize += scanToTimeRangeMap.size()*(sizeof(ScanKey)+2*sizeof(Double));
 	//mysize += scanSpwToAverageIntervalMap.size()*sizeof(ScanKey) * nSpw(True) * sizeof(Double);
 	if (_cacheUpdated(mysize)) {
@@ -2427,23 +1974,6 @@ std::pair<Double, Double> MSMetaData::getTimeRangeForScan(
 	const ScanKey& scanKey
 ) const {
 	_checkScan(scanKey);
-	/*
-	std::map<SubScanKey, SubScanProperties> subScanProps = _getSubScanProperties();
-	std::set<SubScanKey> subScans = _getScanToSubScansMap()[scanKey];
-	std::set<SubScanKey>::const_iterator iter = subScans.begin();
-	std::set<SubScanKey>::const_iterator end = subScans.end();
-	SubScanProperties props = subScanProps.find(*iter)->second;
-	Double minTime = props.beginTime;
-	Double maxTime = props.endTime;
-	++iter;
-	while (iter != end) {
-		props = subScanProps.find(*iter)->second;
-		minTime = min(minTime, props.beginTime);
-		maxTime = max(maxTime, props.endTime);
-		++iter;
-	}
-	return std::pair<Double, Double>(minTime, maxTime);
-	*/
 
 	// use this (orignal) method, rather than the subscans method because
 	// this method takes into account finite intervals (eg +/- half intervals
@@ -2453,7 +1983,6 @@ std::pair<Double, Double> MSMetaData::getTimeRangeForScan(
 	std::map<ScanKey, std::map<uInt, Double> > scanSpwToAverageIntervalMap;
 	_getTimesAndInvervals(scanToTimeRangeMap, scanSpwToAverageIntervalMap);
 	return scanToTimeRangeMap.find(scanKey)->second;
-
 }
 
 std::pair<Double, Double> MSMetaData::getTimeRange() const {
@@ -2673,118 +2202,91 @@ std::set<Int> MSMetaData::getStatesForScan(
 }
 
 Record MSMetaData::getSummary() const {
-	/*
-	std::map<Int, std::set<Int> > obsToArraysMap = _getObservationIDToArrayIDsMap();
-	//std::map<Int, std::set<Int> > arrayToScansMap = _getArrayIDToScansMap();
+	Record spectralTable;
+	spectralTable.define("names", Vector<String>(getSpwNames()));
+	Record polTable;
+	polTable.define("n correlations", Vector<Int>(_getNumCorrs()));
+	Record dataDescTable;
+	std::map<Int, uInt> ddToSpw = _getDataDescIDToSpwMap();
+	std::map<Int, uInt> ddToPolID = _getDataDescIDToPolIDMap();
+	std::map<Int, uInt>::const_iterator siter = ddToSpw.begin();
+	std::map<Int, uInt>::const_iterator send = ddToSpw.end();
+	std::map<Int, uInt>::const_iterator piter = ddToPolID.begin();
+	vector<Int> spws(ddToSpw.size());
+	vector<Int> polids(ddToPolID.size());
+	while (siter != send) {
+		spws[siter->first] = siter->second;
+		polids[piter->first] = piter->second;
+		++siter;
+		++piter;
+	}
+	dataDescTable.define("spectral windows", Vector<Int>(spws));
+	dataDescTable.define("polarization ids", Vector<Int>(polids));
 	Record summary;
-	std::map<Int, std::set<Int> >::const_iterator oIter = obsToArraysMap.begin();
-	std::map<Int, std::set<Int> >::const_iterator oEnd = obsToArraysMap.end();
-	std::map<SubScanKey, MSMetaData::SubScanProperties> subScanProps;
-	std::map<ScanKey, MSMetaData::ScanProperties> scanProps;
-	std::map<ArrayKey, MSMetaData::ArrayProperties> arrayProps;
-	_getSubScanProperties(subScanProps, scanProps, arrayProps);
-	//std::map<Int, uInt> scanToNRows = _getScansToNRowsMap();
-	//std::map<SubScanKey, SubScanProperties> subScanProps = _getSubScanProperties();
-	std::map<Int, uInt> ddIDToSpwMap = _getDataDescIDToSpwMap();
-	std::map<Int, uInt> ddIDToPolIDMap = _getDataDescIDToPolIDMap();
-	vector<String> fieldNames = _getFieldNames();
-	vector<String> spwNames = getSpwNames();
-	vector<Int> numCorrs = _getNumCorrs();
-	//std::map<Int, std::set<Int> > scanToAntennasMap = _getScanToAntennasMap();
+	summary.defineRecord("spectral windows", spectralTable);
+	summary.defineRecord("polarizations", polTable);
+	summary.defineRecord("data descriptions", dataDescTable);
+	summary.define("fields", Vector<String>(_getFieldNames()));
+	vector<std::set<Int> > obsToArraysMap = _getObservationIDToArrayIDsMap();
+	vector<std::set<Int> >::const_iterator oIter = obsToArraysMap.begin();
+	vector<std::set<Int> >::const_iterator oEnd = obsToArraysMap.end();
+	std::map<SubScanKey, SubScanProperties> subScanProps = _getSubScanProperties();
+	uInt oCount = 0;
 	while (oIter != oEnd) {
-		std::set<Int>::const_iterator aIter = oIter->second.begin();
-		std::set<Int>::const_iterator aEnd = oIter->second.end();
+		std::set<Int>::const_iterator aIter = oIter->begin();
+		std::set<Int>::const_iterator aEnd = oIter->end();
 		Record aRec;
 		while (aIter != aEnd) {
 			Record scanRec;
 			ArrayKey aKey;
-			aKey.obsID = oIter->first;
+			aKey.obsID = oCount;
 			aKey.arrayID = *aIter;
-			std::set<Int>::const_iterator scanIter = arrayProps[aKey].scans.begin();
-			std::set<Int>::const_iterator scanEnd = arrayProps[aKey].scans.end();
+			std::set<ScanKey> scanKeys = _getScanKeys(aKey);
+			std::set<ScanKey>::const_iterator scanIter = scanKeys.begin();
+			std::set<ScanKey>::const_iterator scanEnd = scanKeys.end();
 			while(scanIter != scanEnd) {
-				ScanKey scanKey;
-				scanKey.obsID = oIter->first;
-				scanKey.arrayID = *aIter;
-				scanKey.scan = *scanIter;
+				ScanKey scanKey = *scanIter;
+				std::set<Int> antennasForScan;
+				uInt scanNRows = 0;
 				Record scanSubRec;
-				scanSubRec.define("nrows", scanProps[scanKey].nrows);
-				scanSubRec.define("antennas", Vector<Int>(scanProps[scanKey].antennas));
-                //BigKey key;
-                //key.obsID = oIter->first;
-                //key.arrayID = *aIter;
-                //key.scan = *scanIter;
-				//vector<SubScanProperties> subscans = scanToSubScansMap[key];
-				std::set<Int>::const_iterator fIter = scanProps[scanKey].fieldIDs.begin();
-				std::set<Int>::const_iterator fEnd = scanProps[scanKey].fieldIDs.end();
+				std::set<SubScanKey> subScans = _getSubScanKeys(scanKey);
 				uInt subScanCount = 0;
-				while (fIter != fEnd) {
-					Record subScanRec;
-					SubScanKey subKey;
-					subKey.obsID = oIter->first;
-					subKey.arrayID = *aIter;
-					subKey.scan = *scanIter;
-					subKey.fieldID = *fIter;
-					std::set<Int>::const_iterator dIter = subScanProps[subKey].ddIDs.begin();
-					std::set<Int>::const_iterator dEnd = subScanProps[subKey].ddIDs.end();
-					while (dIter != dEnd) {
-						Record ddIDRec;
-						ddIDRec.define(
-							"spectral window=" + String::toString(ddIDToSpwMap[*dIter]),
-							spwNames[ddIDToSpwMap[*dIter]]
-						);
-						uInt polID = ddIDToPolIDMap[*dIter];
-						ddIDRec.define("polarization ID ", polID);
-						ddIDRec.define("n correlations", numCorrs[polID]);
-						subScanRec.defineRecord(
-							"data description ID=" + String::toString(*dIter),
-							ddIDRec
-						);
-						++dIter;
-					}
-					subScanRec.define("nrows", subScanProps[subKey].nrows);
-					subScanRec.define("begin time", subScanProps[subKey].beginTime);
-					subScanRec.define("end time", subScanProps[subKey].endTime);
-					subScanRec.define("field ID=" + String::toString(*fIter), fieldNames[*fIter]);
-					subScanRec.define("state IDs", Vector<Int>(subScanProps[subKey].stateIDs));
-					scanSubRec.defineRecord(String::toString(subScanCount), subScanRec);
-					++fIter;
-					++subScanCount;
+				std::set<SubScanKey>::const_iterator subScanIter = subScans.begin();
+				std::set<SubScanKey>::const_iterator subScanEnd = subScans.end();
+				Record subScanRec;
+				while (subScanIter != subScanEnd) {
+					SubScanProperties props = subScanProps[*subScanIter];
+					subScanRec.define("data description IDs", Vector<Int>(props.ddIDs.begin(), props.ddIDs.size(), 0));
+					subScanRec.define("nrows", props.nrows);
+					scanNRows += props.nrows;
+					subScanRec.define("antennas", Vector<Int>(props.antennas.begin(), props.antennas.size(), 0));
+					antennasForScan.insert(props.antennas.begin(), props.antennas.end());
+					subScanRec.define("begin time", props.beginTime);
+					subScanRec.define("end time", props.endTime);
+					subScanRec.define("state IDs", Vector<Int>(props.stateIDs.begin(), props.stateIDs.size(), 0));
+					subScanRec.define("field ID", subScanIter->fieldID);
+                    scanSubRec.defineRecord(String::toString(subScanCount), subScanRec);
+                    ++subScanCount;
+					++subScanIter;
 				}
-				scanRec.defineRecord("scan=" + String::toString(*scanIter), scanSubRec);
+				scanSubRec.define("nrows", scanNRows);
+				scanSubRec.define("antennas", Vector<Int>(antennasForScan.begin(), antennasForScan.size(), 0));
+				scanRec.defineRecord("scan=" + String::toString(scanKey.scan), scanSubRec);
 				++scanIter;
 			}
 			aRec.defineRecord("arrayID=" + String::toString(*aIter), scanRec);
 			++aIter;
 		}
-		summary.defineRecord("observationID=" + String::toString(oIter->first), aRec);
+		summary.defineRecord("observationID=" + String::toString(oCount), aRec);
 		++oIter;
+		++oCount;
 	}
-	summary.define("nrows", this->nRows());
+	summary.define("nrows", nRows());
 	Vector<Double> times = *_getTimes();
 	summary.define("begin time", min(times));
 	summary.define("end time", max(times));
 	return summary;
-	*/
-	return Record();
 }
-
-/*
-std::set<Int> MSMetaData::_getScans(
-	Int obsID, Int arrayID, std::set<ScanKey>& scanKeys
-) {
-	std::set<ScanKey>::const_iterator kIter = scanKeys.begin();
-	std::set<ScanKey>::const_iterator kEnd = scanKeys.end();
-	std::set<Int> myscans;
-	while (kIter != kEnd) {
-		if (kIter->obsID == obsID && kIter->arrayID == arrayID) {
-			myscans.insert(kIter->scan);
-		}
-		++kIter;
-	}
-	return myscans;
-}
-*/
 
 
 std::set<Double> MSMetaData::getTimesForIntent(const String& intent) const {
@@ -2804,33 +2306,6 @@ std::set<Double> MSMetaData::getTimesForIntent(const String& intent) const {
 Bool MSMetaData::hasBBCNo() const {
 	return _ms->spectralWindow().isColumn(MSSpectralWindowEnums::BBC_NO);
 }
-
-/*
-std::map<Int, std::set<Int> > MSMetaData::_getArrayIDToScansMap() const {
-	// this method is responsible for setting _arrayToScansMap
-	if (! _arrayToScansMap.empty()) {
-		return _arrayToScansMap;
-	}
-	std::map<Int, std::set<Int> > mymap;
-	Vector<Int> arrayIDs = *_getArrayIDs();
-	Vector<Int> scans = *_getScans();
-	Vector<Int>::const_iterator aIter = arrayIDs.begin();
-	Vector<Int>::const_iterator aEnd = arrayIDs.end();
-	Vector<Int>::const_iterator sIter = scans.begin();
-	while (aIter != aEnd) {
-		if (mymap.find(*aIter) == mymap.end()) {
-			mymap[*aIter] = std::set<Int>();
-		}
-		mymap[*aIter].insert(*sIter);
-		++aIter;
-		++sIter;
-	}
-	if (_cacheUpdated(_sizeof(mymap))) {
-		_arrayToScansMap = mymap;
-	}
-	return mymap;
-}
-*/
 
 std::map<String, std::set<Double> > MSMetaData::_getIntentsToTimesMap() const {
 	if (! _intentToTimesMap.empty()) {
@@ -2910,20 +2385,6 @@ void MSMetaData::_getFieldsAndScansMaps(
 		}
 		++iter;
 	}
-	/*
-	std::set<Int> scans;
-	CountedPtr<Vector<Int> > fieldIds = _getFieldIDs();
-	Vector<Int>::const_iterator curFieldID = fieldIds->begin();
-	Vector<Int>::const_iterator end = fieldIds->end();
-	CountedPtr<Vector<Int> > allScans = _getScans();
-	Vector<Int>::const_iterator curScan = allScans->begin();
-	while (curFieldID != end) {
-		fieldToScansMap[*curFieldID].insert(*curScan);
-		scanToFieldsMap[*curScan].insert(*curFieldID);
-		++curFieldID;
-		++curScan;
-	}
-	*/
 	if (_cacheUpdated(_sizeof(fieldToScansMap) + _sizeof(scanToFieldsMap))) {
 		_fieldToScansMap = fieldToScansMap;
 		_scanToFieldsMap = scanToFieldsMap;
@@ -2954,7 +2415,7 @@ vector<std::set<Int> > MSMetaData::_getObservationIDToArrayIDsMap() const {
 	Vector<Int>::const_iterator oIter = obsIDs.begin();
 	Vector<Int>::const_iterator oEnd = obsIDs.end();
 	Vector<Int>::const_iterator aIter = arrayIDs.begin();
-	vector<std::set<Int> > mymap;
+	vector<std::set<Int> > mymap(nObservations());
 	while (oIter != oEnd) {
 		mymap[*oIter].insert(*aIter);
 		++oIter;
@@ -3293,22 +2754,7 @@ Quantum<Vector<Double> > MSMetaData::getAntennaOffset(
 	names[0] = name;
 	return getAntennaOffset(getAntennaIDs(names)[0]);
 }
-/*
-Quantity MSMetaData::getEffectiveTotalExposureTime() {
-	// This method has the responsibility of setting _exposureTime.
-	if (_exposureTime.getValue() > 0) {
-		return _exposureTime;
-	}
 
-	Quantity eTime = _getTotalExposureTime(
-		timeToBWMap, spwInfo, dataDescIDToSpwMap
-	);
-	if (_cacheUpdated(10)) {
-		_exposureTime = eTime;
-	}
-	return eTime;
-}
-*/
 Quantity MSMetaData::getEffectiveTotalExposureTime() {
 	// This method has the responsibility of setting _exposureTime.
 	if (_exposureTime.getValue() > 0) {
@@ -3356,21 +2802,12 @@ Quantity MSMetaData::getEffectiveTotalExposureTime() {
 }
 
 std::map<SubScanKey, MSMetaData::SubScanProperties> MSMetaData::_getSubScanProperties(
-		/*
-	std::map<SubScanKey, MSMetaData::SubScanProperties>& subScanProps ,
-	std::map<ScanKey, MSMetaData::ScanProperties>& scanProps,
-	std::map<ArrayKey, MSMetaData::ArrayProperties>& arrayProps
-	*/
 ) const {
 	// responsible for setting _subScanProperties, _scanProperties,
 	// and _arrayProperties
 	// a sub scan is defined by a unique combination of scan number and field ID
-	if (
-		! _subScanProperties.empty() /* && ! _scanProperties.empty()
-		&& ! _arrayProperties.empty() */
-	) {
+	if (! _subScanProperties.empty()) {
 		return _subScanProperties;
-		//scanProps = _scanProperties;
 	}
 	Vector<Int> scans = *_getScans();
 	Vector<Int> fields = *_getFieldIDs();
@@ -3432,7 +2869,7 @@ std::map<SubScanKey, MSMetaData::SubScanProperties> MSMetaData::_getSubScanPrope
     std::map<SubScanKey, SubScanProperties>::const_iterator mEnd = mysubscans.end();
     uInt mapSize = mysubscans.size() * (structSize + keySize);
     while (mIter != mEnd) {
-        mapSize += sizeof(Int)*(mIter->second.ddIDs.size() + mIter->second.stateIDs.size()); 
+        mapSize += sizeof(Int)*(mIter->second.ddIDs.size() + mIter->second.stateIDs.size());
         ++mIter;
     }
     if (_cacheUpdated(mapSize)) {
@@ -3641,216 +3078,7 @@ void MSMetaData::_getUnflaggedRowStats(
 		++fxIter;
 	}
 }
-/*
-void MSMetaData::_getUnflaggedRowStats(
-	Double& nACRows, Double& nXCRows,
-	CountedPtr<AOSFMapD>& scanNACRows,
-	CountedPtr<AOSFMapD>& scanNXCRows,
-	CountedPtr<std::map<Int, Double> >& fieldNACRows,
-	CountedPtr<std::map<Int, Double> >& fieldNXCRows
-) const {
-	// This method is responsible for setting _nUnflaggedACRows, _nUnflaggedXCRows,
-	// _unflaggedFieldNACRows, _unflaggedFieldNXCRows, _unflaggedScanNACRows,
-	// _unflaggedScanNXCRows
-	if (! _unflaggedFieldNACRows.null() && ! _unflaggedFieldNACRows->empty()) {
-		nACRows = _nUnflaggedACRows;
-		nXCRows = _nUnflaggedXCRows;
-		fieldNACRows = _unflaggedFieldNACRows;
-		fieldNXCRows = _unflaggedFieldNXCRows;
-		scanNACRows = _unflaggedScanNACRows;
-		scanNXCRows = _unflaggedScanNXCRows;
-		return;
-	}
-	AOSFMapD *myScanNACRows, *myScanNXCRows;
-	std::map<Int, Double> *myFieldNACRows, *myFieldNXCRows;
-	_getUnflaggedRowStats(
-		nACRows, nXCRows, myFieldNACRows,
-		myFieldNXCRows, myScanNACRows, myScanNXCRows
-	);
 
-	fieldNACRows = myFieldNACRows;
-	fieldNXCRows = myFieldNXCRows;
-	scanNACRows = myScanNACRows;
-	scanNXCRows = myScanNXCRows;
-
-	uInt mysize = fieldNACRows->size() + fieldNXCRows->size()
-		+ scanNACRows->size() + scanNXCRows->size();
-	mysize *= sizeof(Double);
-	if (_cacheUpdated(mysize)) {
-		_nUnflaggedACRows = nACRows;
-		_nUnflaggedXCRows = nXCRows;
-		_unflaggedFieldNACRows = fieldNACRows;
-		_unflaggedFieldNXCRows = fieldNXCRows;
-		_unflaggedScanNACRows = scanNACRows;
-		_unflaggedScanNXCRows = scanNXCRows;
-	}
-}
-
-void MSMetaData::_getUnflaggedRowStats(
-	Double& nACRows, Double& nXCRows,
-	std::map<Int, Double>*& fieldNACRows, std::map<Int, Double>*& fieldNXCRows,
-	AOSFMapD*& scanNACRows,
-	AOSFMapD*& scanNXCRows
-) const {
-	nACRows = 0;
-	nXCRows = 0;
-	std::set<Int> uniqueFieldIDs, uniqueArrIDs, uniqueObsIDs;
-	CountedPtr<Vector<Int> > fieldIDs = _getFieldIDs();
-	CountedPtr<Vector<Int> > obsIDs = _getObservationIDs();
-	CountedPtr<Vector<Int> > arrIDs = _getArrayIDs();
-
-	uniqueFieldIDs.insert(fieldIDs->begin(), fieldIDs->end());
-	uniqueArrIDs.insert(arrIDs->begin(), arrIDs->end());
-	uniqueObsIDs.insert(obsIDs->begin(), obsIDs->end());
-	std::set<Int>::const_iterator lastUniqueFieldID = uniqueFieldIDs.end();
-	std::set<Int>::const_iterator lastUniqueObsID = uniqueObsIDs.end();
-	std::set<Int>::const_iterator lastUniqueArrID = uniqueArrIDs.end();
-
-	fieldNACRows = new std::map<Int, Double>();
-	fieldNXCRows = new std::map<Int, Double>();
-	scanNACRows = new AOSFMapD();
-	scanNXCRows = new AOSFMapD();
-
-	fieldNACRows->clear();
-	fieldNXCRows->clear();
-	scanNACRows->clear();
-	scanNXCRows->clear();
-	std::set<Int> scanNumbers = getScanNumbers();
-	std::set<Int>::const_iterator lastScan = scanNumbers.end();
-	for (
-		std::set<Int>::const_iterator arrNum=uniqueArrIDs.begin();
-		arrNum!=lastUniqueArrID; ++arrNum
-	) {
-		for (
-			std::set<Int>::const_iterator obsNum=uniqueObsIDs.begin();
-			obsNum!=lastUniqueObsID; ++obsNum
-		) {
-			for (
-				std::set<Int>::const_iterator scanNum=scanNumbers.begin();
-				scanNum!=lastScan; ++scanNum
-			) {
-				for (
-					std::set<Int>::const_iterator fieldNum=uniqueFieldIDs.begin();
-						fieldNum!=lastUniqueFieldID; ++fieldNum
-				) {
-					(*scanNACRows)[*arrNum][*obsNum][*scanNum][*fieldNum] = 0;
-					(*scanNXCRows)[*arrNum][*obsNum][*scanNum][*fieldNum] = 0;
-				}
-			}
-		}
-	}
-	for (
-		std::set<Int>::const_iterator fieldNum=uniqueFieldIDs.begin();
-		fieldNum!=lastUniqueFieldID; ++fieldNum
-	) {
-		(*fieldNACRows)[*fieldNum] = 0;
-		(*fieldNXCRows)[*fieldNum] = 0;
-	}
-	CountedPtr<Vector<Int> > ant1, ant2;
-	_getAntennas(ant1, ant2);
-	CountedPtr<Vector<Int> > dataDescIDs = _getDataDescIDs();
-	CountedPtr<Vector<Int> > scans = _getScans();
-
-	Vector<Int>::const_iterator aEnd = ant1->end();
-	Vector<Int>::const_iterator a1Iter = ant1->begin();
-	Vector<Int>::const_iterator a2Iter = ant2->begin();
-	Vector<Int>::const_iterator sIter = scans->begin();
-	Vector<Int>::const_iterator fIter = fieldIDs->begin();
-	Vector<Int>::const_iterator oIter = obsIDs->begin();
-	Vector<Int>::const_iterator arIter = arrIDs->begin();
-	Vector<Int>::const_iterator dIter = dataDescIDs->begin();
-	uInt i = 0;
-    uInt64 count = 0;
-    // a flag value of True means the datum is bad (flagged), so False => unflagged
-    std::map<Int, uInt> dataDescIDToSpwMap = _getDataDescIDToSpwMap();
-	std::set<uInt> a, b, c, d, e;
-	vector<SpwProperties> spwInfo = _getSpwInfo(a, b, c, d, e);
-	CountedPtr<ArrayColumn<Bool> > flags = _getFlags();
-
-	while (a1Iter!=aEnd) {
-		//if (! *flagIter) {
-			SpwProperties spwProp = spwInfo[dataDescIDToSpwMap.find(*dIter)->second];
-			Vector<Double> channelWidths(
-				Vector<Double>(spwProp.chanwidths.getValue("Hz"))
-			);
-			const Matrix<Bool>& flagsMatrix(flags->get(i));
-            count += flagsMatrix.size();
-            Double x = 0;
-            if (! anyTrue(flagsMatrix)) {
-                // all channels are unflagged
-                x = 1;
-            }
-            else if (allTrue(flagsMatrix)) {
-                // do nothing. All channels are flagged for this row
-            	// do not put a continue though, because counters still must
-            	// incremented below
-            }
-            else {
-                // some channels are flagged, some aren't
-			    uInt nCorrelations = flagsMatrix.nrow();
-			    Double denom = spwProp.bandwidth*nCorrelations;
-			    Double bwSum = 0;
-
-			    for (uInt corr=0; corr<nCorrelations; ++corr) {
-			    	// invert the meaning here, so that a True value
-			    	// in corrRow means the datum is good (unflagged)
-			    	// it will make the masked sum below more obvious
-                    Vector<Bool> corrRow = ! flagsMatrix.row(corr);
-                    if (allTrue(corrRow)) {
-                        // all channels for this correlation are unflagged
-                        bwSum += spwProp.bandwidth;
-                    }
-                    else if (! anyTrue(corrRow)) {
-                        // do nothing, all channels for this correlation
-                        // have been flagged
-                        // but allow fall through to iterator increments
-                    }
-                    else {
-                        // some channels are flagged for this correlation, some aren't
-                        MaskedArray<Double> unFlaggedChannelWidths(
-	    				    channelWidths, corrRow, True
-		    		    );
-                        bwSum += sum(unFlaggedChannelWidths);
-                    }
-			    }
-			    x = bwSum/denom;
-            }
-			if (*a1Iter == *a2Iter) {
-				(*fieldNACRows)[*fIter] += x;
-				(*scanNACRows)[*arIter][*oIter][*sIter][*fIter] += x;
-			}
-			else {
-				(*fieldNXCRows)[*fIter]+= x;
-				(*scanNXCRows)[*arIter][*oIter][*sIter][*fIter] += x;
-			}
-		//}
-		++a1Iter;
-		++a2Iter;
-		++sIter;
-		++fIter;
-		++arIter;
-		++oIter;
-		++dIter;
-		++i;
-	}
-	nACRows = 0;
-	std::map<Int, Double>::const_iterator end = fieldNACRows->end();
-	for (
-		std::map<Int, Double>::const_iterator x=fieldNACRows->begin();
-		x!=end; ++x
-	) {
-		nACRows += x->second;
-	}
-	nXCRows = 0;
-	end = fieldNXCRows->end();
-	for (
-		std::map<Int, Double>::const_iterator x=fieldNXCRows->begin();
-		x!=end; ++x
-	) {
-		nXCRows += x->second;
-	}
-}
-*/
 void MSMetaData::_getSpwsAndIntentsMaps(
 	vector<std::set<String> >& spwToIntentsMap,
 	std::map<String, std::set<uInt> >& intentToSpwsMap
@@ -4095,12 +3323,6 @@ std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(
 	antenna2 = (*ant2)[row];
 	time = (*_getTimes())[row];
 	ROMSPointingColumns pCols(_ms->pointing());
-	/*
-	return std::make_pair<MDirection, MDirection>(
-		pCols.directionMeas(pCols.pointingIndex(antenna1, time)),
-		pCols.directionMeas(pCols.pointingIndex(antenna2, time))
-	);
-	*/
 	Int pidx1, pidx2;
 	pidx1 = pCols.pointingIndex(antenna1, time, initialguess);
 	pidx2 = pCols.pointingIndex(antenna2, time, initialguess);
@@ -4291,16 +3513,6 @@ void MSMetaData::_checkField(uInt fieldID) const {
 	);
 }
 
-
-/*
-void MSMetaData::_checkScan(const Int scan, const std::set<Int> uniqueScans) {
-	ThrowIf(
-		uniqueScans.find(scan) == uniqueScans.end(),
-		_ORIGIN + "Unknown scan number " + String::toString(scan)
-	);
-}
-*/
-
 void MSMetaData::_checkScan(const ScanKey& key) const {
 	std::set<ScanKey> allKeys = _getScanKeys();
 	ThrowIf(
@@ -4329,8 +3541,6 @@ void MSMetaData::_checkSubScan(const SubScanKey& key) const {
 		"Unknown subscan " + toString(key)
 	);
 }
-
-
 
 Bool MSMetaData::_hasFieldID(const Int fieldID) const {
 	ThrowIf (
@@ -4368,7 +3578,6 @@ Bool MSMetaData::_hasStateID(const Int stateID) {
 		_uniqueStateIDs.insert(allStateIDs->begin(), allStateIDs->end());
 	}
 	return _uniqueStateIDs.find(stateID) != _uniqueStateIDs.end();
-
 }
 
 void MSMetaData::_hasAntennaID(Int antennaID) {

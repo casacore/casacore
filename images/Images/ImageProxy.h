@@ -136,6 +136,12 @@ namespace casacore {
 
      ~ImageProxy();
 
+    // Open the image (which can also be an expression).
+    // It throws an exception if not succeeded.
+    static LatticeBase* openImage (const String& name,
+                                   const String& mask = String(),
+                                   const vector<ImageProxy>& images = vector<ImageProxy>());
+
     // Open an image in the file/table with the given name.
     // The specified mask will be applied (default is default mask).
     // A null pointer is returned for an unknown image type.
@@ -373,11 +379,6 @@ namespace casacore {
 
     // Throw an exception if the object is null.
     void checkNull() const;
-
-    // Open the image (which can also be an expression.
-    // Throw an exception if not succeeded.
-    void openImage (const String& name, const String& mask,
-                    const vector<ImageProxy>& images);
 
     // Make an image from an array or shape.
     template<typename T>

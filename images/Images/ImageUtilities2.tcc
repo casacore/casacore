@@ -284,12 +284,12 @@ template <typename T> void ImageUtilities::openImage(
 }
 
 template <typename T>
-CountedPtr<ImageInterface<T> > ImageUtilities::openImage
+SHARED_PTR<ImageInterface<T> > ImageUtilities::openImage
 (const String& fileName)
 {
    ImageInterface<T>* p = 0;
    ImageUtilities::openImage(p, fileName);
-   return p;
+   return SHARED_PTR<ImageInterface<T> > (p);
 }
 
 } //# NAMESPACE CASACORE - END

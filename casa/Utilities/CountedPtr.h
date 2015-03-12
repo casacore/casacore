@@ -31,11 +31,11 @@
 #include <casacore/casa/aips.h>
 
 #if defined AIPS_CXX11
-#include <memory>
-///#elif defined HAVE_BOOST
-///#include <boost/shared_ptr.hpp>
+# include <memory>
+# define SHARED_PTR std::shared_ptr
 #else
-#include <tr1/memory>
+# include <tr1/memory>
+# define SHARED_PTR std::tr1::shared_ptr
 #endif
 
 namespace casacore { //#Begin casa namespace
@@ -81,8 +81,6 @@ class CountedPtr
 {
 #ifdef AIPS_CXX11
     typedef std::shared_ptr<t> PointerRep;
-  ///#elif HAVE_BOOST
-  ///    typedef boost::shared_ptr<t> PointerRep;
 #else
     typedef std::tr1::shared_ptr<t> PointerRep;
 #endif
