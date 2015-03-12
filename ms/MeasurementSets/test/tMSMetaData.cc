@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-//# Includes
 #include <casacore/casa/aips.h>
 
 #include <casacore/ms/MeasurementSets/MSMetaData.h>
 
 #include <casacore/casa/BasicMath/StdLogical.h>
+#include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/Quanta/QLogical.h>
@@ -1444,7 +1444,7 @@ void testIt(MSMetaData& md) {
 			}
 			{
 				cout << "*** test getSummary()" << endl;
-				//cout << md.getSummary() << endl;
+				cout << "summary " << md.getSummary() << endl;
 			}
 		}
 		{

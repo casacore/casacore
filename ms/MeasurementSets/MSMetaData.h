@@ -23,6 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 
 #ifndef MS_MSMETADATA_H
 #define MS_MSMETADATA_H
@@ -38,9 +39,9 @@
 namespace casacore {
 
 template <class T> class ArrayColumn;
-class ArrayKey;
-class ScanKey;
-class SubScanKey;
+struct ArrayKey;
+struct ScanKey;
+struct SubScanKey;
 
 // <summary>
 // Class to interrogate  an MS for metadata. Interrogation happens on demand
@@ -161,7 +162,7 @@ public:
 	uInt nScans();
 
 	// get the number of observations (from the OBSERVATIONS table) in the dataset
-	uInt nObservations();
+	uInt nObservations() const;
 
 	// get the number of arrays (from the ARRAY table) in the dataset
 	uInt nArrays();
@@ -248,8 +249,6 @@ public:
 	std::map<uInt, std::set<uInt> > getBBCNosToSpwMap(SQLDSwitch sqldSwitch);
 
 	vector<vector<Double> > getEdgeChans();
-
-
 
 	// get the field IDs for the specified field name. Case insensitive.
 	std::set<Int> getFieldIDsForField(const String& field) const;
@@ -356,7 +355,6 @@ public:
 
 	vector<uInt> nChans() const;
 
-
 	uInt nPol();
 
 	// get a map of data desc ID, scan number pair to exposure time for the first time
@@ -400,22 +398,6 @@ private:
 		String name;
 	};
 
-	/*
-	struct ArrayProperties {
-		uInt nrows;
-		std::set<Int> scans;
-	};
-
-	struct ScanProperties {
-		Double beginTime;
-		std::set<Int> ddIDs;
-		Double endTime;
-		std::set<Int> fieldIDs;
-		uInt nrows;
-		std::set<Int> stateIDs;
-	};
-	*/
-
 	struct SubScanProperties {
 		std::set<Int> antennas;
 		Double beginTime;
@@ -424,14 +406,6 @@ private:
 		uInt nrows;
 		std::set<Int> stateIDs;
 	};
-
-	// (array_id, observation_id, scan_number, field_id) -> stuff mappings
-	//typedef std::map<Int, std::map<Int, std::map<Int, std::map<Int, uInt> > > > AOSFMapI;
-	//typedef std::map<Int, std::map<Int, std::map<Int, std::map<Int, Double> > > > AOSFMapD;
-    //typedef std::map<Int, std::map<Int, std::map<Int, std::map<Int, SubScanProperties> > > > AOSFMapSSP;
-
-    //typedef std::map<std::pair<Int, Int>, std::pair<Int, Int> > BigKey;
-
 
 	// The general pattern is that a mutable gets set only once, on demand, when its
 	// setter is called for the first time. If this pattern is broken, defective behavior
@@ -630,25 +604,6 @@ private:
 
 	vector<MPosition> _getObservatoryPositions();
 
-	/*
-	void _getRowStats(
-		uInt& nACRows, uInt& nXCRows,
-		CountedPtr<AOSFMapI>& scanToNACRowsMap,
-		CountedPtr<AOSFMapI>& scanToNXCRowsMap,
-		CountedPtr<std::map<Int, uInt> >& fieldToNACRowsMap,
-		CountedPtr<std::map<Int, uInt> >& fieldToNXCRowsMap
-	) const;
-	*/
-	/*
-	void _getRowStats(
-		uInt& nACRows, uInt& nXCRows,
-		AOSFMapI*& scanToNACRowsMap,
-		AOSFMapI*& scanToNXCRowsMap,
-		std::map<Int, uInt>*& fieldToNACRowsMap,
-		std::map<Int, uInt>*& fieldToNXCRowsMap
-	) const ;
-	*/
-
 	void _getRowStats(
 		uInt& nACRows, uInt& nXCRows,
 		std::map<SubScanKey, uInt>*& subScanToNACRowsMap,
@@ -665,12 +620,6 @@ private:
 		CountedPtr<vector<uInt> >& fieldToNXCRowsMap
 	) const;
 
-	/*
-	static std::set<Int> _getScans(
-		Int obsID, Int arrayID, std::set<ScanKey>& scanKeys
-	);
-	*/
-
 	// get all ScanKeys in the dataset
 	std::set<ScanKey> _getScanKeys() const;
 
@@ -682,7 +631,6 @@ private:
 		const std::set<ScanKey>& scanKeys, const ArrayKey& arrayKey
 	) const;
 
-
 	// get all valid scan numbers associated with the specified arrayKey
 	std::set<Int> _getScanNumbers(const ArrayKey& arrayKey) const;
 
@@ -690,7 +638,6 @@ private:
 	// scanKeys do not have to have the same ArrayKey, and no warning is
 	// given if they are not.
 	std::set<Int> _getScanNumbers(const std::set<ScanKey>& scanKeys) const;
-
 
 	void _getScansAndDDIDMaps(
 		std::map<ScanKey, std::set<uInt> >& scanToDDIDMap,
@@ -707,23 +654,18 @@ private:
 		vector<std::set<ScanKey> >& spwToScanMap
 	) const;
 
-	// std::map<Int, std::set<Int> > _getScanToAntennasMap() const;
-
-	// std::map<Int, uInt> _getScansToNRowsMap() const;
-
 	std::map<ScanKey, std::set<Int> > _getScanToStatesMap() const;
 
 	std::map<ScanKey, std::set<SubScanKey> > _getScanToSubScansMap() const;
 
-
 	CountedPtr<std::map<ScanKey, std::set<Double> > > _getScanToTimesMap() const;
-
 
 	vector<SpwProperties> _getSpwInfo(
 		std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw,
 		std::set<uInt>& fdmSpw, std::set<uInt>& wvrSpw,
 		std::set<uInt>& sqldSpw
 	) const;
+
 	void _getSpwsAndIntentsMaps(
 		vector<std::set<String> >& spwToIntentsMap,
 		std::map<String, std::set<uInt> >& intentToSpwsMap
@@ -768,30 +710,9 @@ private:
 		std::map<SubScanKey, Double>*& scanNACRows,
 		std::map<SubScanKey, Double>*& scanNXCRows
 	) const;
-	/*
-	void _getUnflaggedRowStats(
-		Double& nACRows, Double& nXCRows,
-		CountedPtr<AOSFMapD>& scanToNACRowsMap,
-		CountedPtr<AOSFMapD>& scanToNXCRowsMap,
-		CountedPtr<std::map<Int, Double> >& fieldToNACRowsMap,
-		CountedPtr<std::map<Int, Double> >& fieldToNXCRowsMap
-	) const;
 
-	void _getUnflaggedRowStats(
-		Double& nACRows, Double& nXCRows,
-		std::map<Int, Double>*& fieldNACRows, std::map<Int, Double>*& fieldNXCRows,
-		AOSFMapD*& scanNACRows,
-		AOSFMapD*& scanNXCRows
-	) const;
-	*/
 	template <class T>
 	static uInt _sizeof(const std::map<T, std::set<String> >& m);
-
-	/*
-	static uInt _sizeof(const std::map<Int, std::set<String> >& m);
-
-	static uInt _sizeof(const std::map<ScanKey, std::set<String> >& m);
-	*/
 
 	template <class T, class U>
 	static uInt _sizeof(const std::map<T, std::set<U> >& m);
@@ -807,16 +728,6 @@ private:
 	static uInt _sizeof(const vector<T>& v);
 
 	static uInt _sizeof(const Quantum<Vector<Double> >& m);
-
-	/*
-	static uInt _sizeof(const std::map<Int, std::set<Double> >& m);
-
-	static uInt _sizeof(const std::map<Double, std::set<Int> >& m);
-
-	static uInt _sizeof(const std::map<Int, std::set<uInt> >& map);
-
-	static uInt _sizeof(const std::map<Int, std::set<Int> >& map);
-	*/
 
 	template <class T>
 	static uInt _sizeof(const vector<std::set<T> >& v);

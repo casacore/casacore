@@ -93,7 +93,8 @@ namespace casacore { //# name space casa begins
     // Register the functions to create a FITSImage or MIRIADImage object.
     FITSImage::registerOpenFunction();
     MIRIADImage::registerOpenFunction();
-    openImage (name, mask, images);
+    LatticeBase* lattice = openImage (name, mask, images);
+    setup (lattice);
   }
 
   ImageProxy::ImageProxy (const ValueHolder& values, const ValueHolder& mask,
@@ -262,8 +263,8 @@ namespace casacore { //# name space casa begins
   ImageProxy::~ImageProxy()
   {}
 
-  void ImageProxy::openImage (const String& name, const String& mask,
-                              const vector<ImageProxy>& images)
+  LatticeBase* ImageProxy::openImage (const String& name, const String& mask,
+                                      const vector<ImageProxy>& images)
   {
     MaskSpecifier maskSp;
     if (!mask.empty()) {
@@ -289,7 +290,7 @@ namespace casacore { //# name space casa begins
       throw AipsError (name + " cannot be opened as image (expression): "
                        + msg);
     }
-    setup (lattice);
+    return lattice;
   }
 
   LatticeBase* ImageProxy::openImageOrExpr (const String& str,

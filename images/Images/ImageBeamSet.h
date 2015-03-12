@@ -264,6 +264,9 @@ public:
     // If verbose, log all beams, if not just summarize beam stats.
     void summarize(LogIO& log, Bool verbose, const CoordinateSystem& csys) const;
 
+    // Modify the beam set by rotating all beams counterclockwise through the specified angle.
+    void rotate(const Quantity& angle);
+
 private:
 
 	static const String _DEFAULT_AREA_UNIT;

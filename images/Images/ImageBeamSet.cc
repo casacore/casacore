@@ -512,6 +512,19 @@ Record ImageBeamSet::toRecord() const {
 	return perPlaneBeams;
 }
 
+void ImageBeamSet::rotate(const Quantity& angle) {
+	ThrowIf(
+		! angle.isConform("rad"),
+		"Quantity is not an angle"
+	);
+	Matrix<GaussianBeam>::iterator iter = _beams.begin();
+	Matrix<GaussianBeam>::iterator end = _beams.end();
+	while(iter != end) {
+		iter->setPA(iter->getPA(True) + angle);
+		++iter;
+	}
+}
+
 void ImageBeamSet::summarize(
 	LogIO& log, Bool verbose, const CoordinateSystem& csys
 ) const {
