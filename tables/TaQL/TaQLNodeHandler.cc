@@ -202,7 +202,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case TaQLBinaryNodeRep::B_LE:
       return new TaQLNodeHRValue (left <= right);
     case TaQLBinaryNodeRep::B_IN:
-      return new TaQLNodeHRValue (left.in (right));
+      return new TaQLNodeHRValue (left.in (right, node.style()));
     case TaQLBinaryNodeRep::B_INDEX:
       break;
     case TaQLBinaryNodeRep::B_EQREGEX:

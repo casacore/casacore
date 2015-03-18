@@ -114,7 +114,7 @@ namespace casacore {
   // <tr>
   //  <td><src>getXXX</src></td>
   //  <td>these are virtual get functions for each possible data type. The
-  //      get functions matching the data types that set by the setup
+  //      get functions matching the data types set by the setup
   //      function need to be implemented.
   //      The <src>get</src> functions have an argument TableExprId
   //      defining the table row (or record) for which the function has

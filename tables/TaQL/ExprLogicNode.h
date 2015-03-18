@@ -797,9 +797,17 @@ public:
 class TableExprNodeINInt : public TableExprNodeBinary
 {
 public:
-    TableExprNodeINInt (const TableExprNodeRep&);
-    ~TableExprNodeINInt();
-    Bool getBool (const TableExprId& id);
+    TableExprNodeINInt (const TableExprNodeRep&, Bool doTracing=False);
+    virtual ~TableExprNodeINInt();
+    virtual void convertConstChild();
+    virtual Bool getBool (const TableExprId& id);
+private:
+    Bool        itsDoTracing;
+    //# If the right node is constant and its range is sufficiently small,
+    //# it is turned into a Bool index for linear lookup time.
+    Block<Bool> itsIndex;
+    Int64       itsMin;
+    Int64       itsMax;
 };
 
 

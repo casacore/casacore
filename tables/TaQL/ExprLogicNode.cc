@@ -282,14 +282,44 @@ Bool TableExprNodeGEDate::getBool (const TableExprId& id)
 }
 
 
-TableExprNodeINInt::TableExprNodeINInt (const TableExprNodeRep& node)
-: TableExprNodeBinary (NTBool, node, OtIN)
+TableExprNodeINInt::TableExprNodeINInt (const TableExprNodeRep& node,
+                                        Bool doTracing)
+: TableExprNodeBinary (NTBool, node, OtIN),
+  itsDoTracing (doTracing)
 {}
+void TableExprNodeINInt::convertConstChild()
+{
+  if (rnode_p->isConstant()  &&  rnode_p->valueType() == VTArray) {
+    // Convert set/array to a Bool array (for direct lookup) if the range
+    // is sufficiently small.
+    Array<Int64> arr = rnode_p->getArrayInt(0);
+    minMax (itsMin, itsMax, arr);
+    Int64 sz = itsMax - itsMin + 1;
+    if (sz <= 1024*1024) {
+      itsIndex.resize (sz);
+      itsIndex = False;
+      Array<Int64>::const_iterator arrend = arr.end();
+      for (Array<Int64>::const_iterator iter=arr.begin();
+           iter!=arrend; ++iter) {
+        itsIndex[*iter - itsMin] = True;
+      }
+      if (itsDoTracing) {
+        cout << "  created IN index of size " << sz
+             <<" offset=" << itsMin << endl;
+      }
+    }
+  }
+}
 TableExprNodeINInt::~TableExprNodeINInt()
 {}
 Bool TableExprNodeINInt::getBool (const TableExprId& id)
 {
-    return rnode_p->hasInt (id, lnode_p->getInt (id));
+    Int64 val = lnode_p->getInt (id);
+    if (itsIndex.size() > 0) {
+      if (val < itsMin  ||  val > itsMax) return False;
+      return itsIndex[val - itsMin];
+    }
+    return rnode_p->hasInt (id, val);
 }
 
 TableExprNodeINDouble::TableExprNodeINDouble (const TableExprNodeRep& node)

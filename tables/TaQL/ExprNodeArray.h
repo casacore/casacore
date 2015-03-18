@@ -75,6 +75,11 @@ public:
 
     ~TableExprNodeArray();
 
+    // Turn a constant array with one element into a scalar.
+    // It returns a zero pointer if not possible.
+    // The default implementation returns 0.
+    virtual TableExprNodeRep* makeConstantScalar();
+
     // Get the shape of the array in the given row.
     // This default implementation evaluates the value and returns its shape.
     virtual const IPosition& getShape (const TableExprId& id);

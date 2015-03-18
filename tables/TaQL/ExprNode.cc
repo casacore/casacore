@@ -241,7 +241,8 @@ TableExprNode operator|| (const TableExprNode& left,
     return left.newOR (right.node_p);
 }
 
-TableExprNode TableExprNode::in (const TableExprNodeSet& set) const
+TableExprNode TableExprNode::in (const TableExprNodeSet& set,
+                                 const TaQLStyle& style) const
 {
     // An empty set never matches.
     // Note it makes it possible to use an empty set that has
@@ -251,7 +252,7 @@ TableExprNode TableExprNode::in (const TableExprNodeSet& set) const
     }
     set.checkEqualDataTypes();
     TableExprNodeSet setcp = set;
-    return newIN (setcp.setOrArray());
+    return newIN (setcp.setOrArray(), style);
 }
 
 TableExprNode TableExprNode::useUnit (const Unit& unit) const
@@ -814,14 +815,33 @@ TableExprNodeRep* TableExprNode::newGE (TableExprNodeRep* right) const
 }
 
 
-TableExprNodeRep* TableExprNode::newIN (TableExprNodeRep* right) const
+TableExprNodeRep* TableExprNode::newIN (TableExprNodeRep* right,
+                                        const TaQLStyle& style) const
 {
+    // Use EQ if a single value is used (scalar or single set element).
     TableExprNodeRep::ValueType vtRight = right->valueType();
-    if (vtRight != TableExprNodeRep::VTArray
-    &&  vtRight != TableExprNodeRep::VTSet
-    &&  vtRight != TableExprNodeRep::VTScalar) {
-	throw (TableInvExpr
-                  ("Right operand of IN has to be a scalar, array or set"));
+    if (vtRight == TableExprNodeRep::VTScalar) {
+      return newEQ (right);
+    } else if (vtRight == TableExprNodeRep::VTArray) {
+      TableExprNodeSet* set = dynamic_cast<TableExprNodeSet*>(right);
+      if (set) {
+        if (set->isSingle()  &&  set->nelements() == 1  &&
+            ! set->hasArrays()) {
+          TableExprNodeRep* snode = (*set)[0].start();
+          return newEQ (snode);
+        }
+      } else {
+        TableExprNodeArray* arr = dynamic_cast<TableExprNodeArray*>(right);
+        if (arr) {
+          TableExprNodeRep* sca = arr->makeConstantScalar();
+          if (sca) {
+            return newEQ (sca);
+          }
+        }
+      }
+    } else if (vtRight != TableExprNodeRep::VTSet) {
+      throw (TableInvExpr
+             ("Right operand of IN has to be a scalar, array or set"));
     }
     TableExprNodeRep::NodeDataType dtype = node_p->dataType();
     TableExprNodeRep::NodeDataType rdtype = right->dataType();
@@ -848,7 +868,7 @@ TableExprNodeRep* TableExprNode::newIN (TableExprNodeRep* right) const
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr = new TableExprNodeINInt (node);
+            tsnptr = new TableExprNodeINInt (node, style.doTracing());
 	    break;
 	case TableExprNodeRep::NTDouble:
 	    tsnptr = new TableExprNodeINDouble (node);
@@ -886,7 +906,7 @@ TableExprNodeRep* TableExprNode::newIN (TableExprNodeRep* right) const
 	    throwInvDT("in array IN-operator");
 	}
     }
-    return TableExprNodeBinary::fillNode (tsnptr, node_p, right, False);
+    return TableExprNodeBinary::fillNode (tsnptr, node_p, right, True);
 }
 
 TableExprNodeRep* TableExprNode::newOR (TableExprNodeRep* right) const
