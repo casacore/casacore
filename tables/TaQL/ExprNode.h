@@ -827,8 +827,10 @@ public:
     // The IN operator to test if a value is contained in an array or set.
     // The array can also be a scalar.
     // <group>
-    TableExprNode in (const TableExprNode& array) const;
-    TableExprNode in (const TableExprNodeSet& set) const;
+    TableExprNode in (const TableExprNode& array,
+                      const TaQLStyle& = TaQLStyle(0)) const;
+    TableExprNode in (const TableExprNodeSet& set,
+                      const TaQLStyle& = TaQLStyle(0)) const;
     // </group>
 
     // Use a unit for the given TableExprNode.
@@ -1110,7 +1112,8 @@ private:
     TableExprNodeRep* newNE     (TableExprNodeRep* right) const;
     TableExprNodeRep* newGE     (TableExprNodeRep* right) const;
     TableExprNodeRep* newGT     (TableExprNodeRep* right) const;
-    TableExprNodeRep* newIN     (TableExprNodeRep* right) const;
+    TableExprNodeRep* newIN     (TableExprNodeRep* right,
+                                 const TaQLStyle&) const;
     TableExprNodeRep* newOR     (TableExprNodeRep* right) const;
     TableExprNodeRep* newAND    (TableExprNodeRep* right) const;
     // </group>
@@ -1286,9 +1289,10 @@ inline TableExprNode operator< (const TableExprNode& left,
 {
     return right.newGT (left.node_p);
 }
-inline TableExprNode TableExprNode::in (const TableExprNode& right) const
+inline TableExprNode TableExprNode::in (const TableExprNode& right,
+                                        const TaQLStyle& style) const
 {
-    return newIN (right.node_p);
+    return newIN (right.node_p, style);
 }
 inline TableExprNode TableExprNode::operator() (const TableExprNodeSet& indices)
 {
