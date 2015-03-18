@@ -124,7 +124,7 @@ namespace casacore {
   //      objects in an aggregation group can be retrieved.
   //      <srcblock>
   //        const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
-  //        const vector<TableExprId>& ids = aid.result().ids(id.groupnr());
+  //        const vector<TableExprId>& ids = aid.result().ids(id.rownr());
   //      </srcblock>
   //  </td>
   // </tr>

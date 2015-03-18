@@ -83,13 +83,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Destructor
     virtual ~TableExprUDFNode();
 
+    // Is the UDF an aggregate function?
+    Bool isAggregate() const
+      { return itsUDF->isAggregate(); }
+
     // Get the nodes representing an aggregate function.
     virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
 
     // Get the nodes representing a table column.
     virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
   
-    // UDFs do not need a TableExprGroupFuncBase, so null is returned.
+    // UDFs do not need a TableExprGroupFuncBase,
+    // so TableExprGroupNull is returned.
     CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
     // Functions to get the desired result of a function
