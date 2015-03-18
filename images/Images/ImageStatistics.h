@@ -162,6 +162,16 @@ protected:
 	AccumType sum, Double beamAreaInPixels
    ) const;
 
+   virtual Bool _computeFlux(
+		  Array<AccumType>& flux, const Array<AccumType>& npts,
+		  const Array<AccumType>& sum
+   );
+
+   virtual Bool _computeFlux(
+		   AccumType& flux, AccumType sum, const IPosition& pos,
+   		   Bool posInLattice
+   );
+
 private:
 // Data
 
@@ -181,7 +191,7 @@ private:
     // Get beam area in pixels if possible. Return False if the beam area could not be
     // calculated.
     virtual Bool _getBeamArea(
-    	Array<Double>& beamArea
+    	Array<Double>& beamArea, String& msg
     ) const;
 
 // List min and max with world coordinates
@@ -200,6 +210,7 @@ private:
            AccumType rms, AccumType sigma, AccumType dMin,
            AccumType dMax, AccumType q1, AccumType q3
    );
+
 
 
   //# Make members of parent class known.

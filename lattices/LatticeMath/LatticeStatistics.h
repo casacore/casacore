@@ -40,7 +40,6 @@
 #include <casacore/lattices/LatticeMath/LatticeStatsDataProvider.h>
 #include <casacore/lattices/LatticeMath/MaskedLatticeStatsDataProvider.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
-#include <casacore/casa/System/PGPlotter.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Logging/LogIO.h>
@@ -284,21 +283,6 @@ public:
 // not list the output when making a plot. 
    Bool setList(const Bool& doList);
 
-// This functions enable you to specify which statistics you would like to
-// plot, sets the name of the PGPLOT plotting device and the number of
-// subplots in x and y per page.   If you set <src>device</src> 
-// but offer a zero length array for <src>nxy</src> then <src>nxy</src> is 
-// set to [1,1].  Similarly, the default for <src>statsToPlot</src> is
-// to plot the mean and standard deviation. Use the helper function
-// <src>LatticeStatsBase::toStatisticTypes(String& stats)</src> to convert 
-// a <src>String</src> to the desired <src>Vector<Int> statsToPlot</src>.  
-// A return value of <src>False</src> indicates invalid plotting arguments
-// or that the internal state of the class is bad.  If you don't call this function,
-// the default state of the class is to not make plots.
-   Bool setPlotting(PGPlotter& plotter,
-                    const Vector<Int>& statsToPlot,
-                    const Vector<Int>& nxy);
-
 // Display the statistics by listing and/or plotting them.  If you don't call
 // this function then you won't see anything !  A return value of <src>False</src>
 // indicates an invalid plotting device, or that the internal state of the class is bad.
@@ -313,10 +297,6 @@ public:
    Bool getLayerStats( stat_list &stats, Double area, 
                       Int zAxis=-1, Int zLayer=-1, 
                       Int hAxis=-1, Int hLayer=-1); 
-
-// CLose plotter
-   void closePlotting();
-
 
 // Return the display axes.  The returned vector will be valid only if <src>setAxes</src>
 // has been called, or if one of the active "display" or "get*" methods has been called. 
@@ -436,15 +416,6 @@ protected:
    String error_p;
 //
 // Virtual Functions.  See implementation to figure it all out !
-//
-// Get beam volume if possible.  Your lattice needs to be
-// an ImageInterface for you to be able to do this.
-// See for example, class ImageStatistics.  When you provide
-// the beam, then the Flux statistic, if requested, can be
-// computed.  Returns False if beam not available, else True.
-// The implementation here returns False.
-
-   virtual Bool _getBeamArea (Array<Double>& beamArea) const;
 
    // FIXME The indirect dependence of this class on ImageInterface related
    // issues (eg flux density) breaks encapsulation. All the ImageInterface related code should be
@@ -499,13 +470,32 @@ protected:
    // get the storage lattice shape
    inline IPosition _storageLatticeShape() const { return pStoreLattice_p->shape(); }
 
+   virtual Bool _computeFlux(
+		Array<AccumType>& flux, const Array<AccumType>& npts, const Array<AccumType>& sum
+   );
+
+   virtual Bool _computeFlux(
+		   AccumType& flux, AccumType sum, const IPosition& pos,
+		   Bool posInLattice
+   );
+
+   // convert a position in the input lattice to the corresponding
+   // position in the stats storage lattice. The number of elements
+   // in storagePos will not be changed and only the first N elements
+   // will be modified where N = the number of elements in latticePos.
+   // <src>storagePos</src> must therefore have at least as many elements
+   // as <src>latticePos</src>. Returns False if
+   //<src>latticePos</src> is inconsistent with the input lattice.
+   void _latticePosToStoragePos(
+		   IPosition& storagePos, const IPosition& latticePos
+   );
+
 private:
 
    const MaskedLattice<T>* pInLattice_p;
    CountedPtr<TempLattice<AccumType> > pStoreLattice_p;
    Vector<Int> nxy_p, statsToPlot_p;
    Vector<T> range_p;
-   PGPlotter plotter_p;
    Bool noInclude_p, noExclude_p;
        
    Bool needStorageLattice_p, doneSomeGoodPoints_p, someGoodPointsValue_p;
@@ -544,71 +534,24 @@ private:
                             LatticeStatsBase::StatisticsTypes type,
                             Bool dropDeg);
 
-// Convert a AccumType to a Float for plotting.
-   static Float convertATtoF (AccumType value) {return Float(std::real(value));};
-
-// Find the next good or bad point in an array
-   Bool findNextDatum     (uInt& iFound,
-                           const uInt& n,
-                           const Vector<AccumType>& mask,
-                           const uInt& iStart,
-                           const Bool& findGood) const;
-
-// Find the next label in a list of comma delimitered labels
-   Bool findNextLabel     (String& subLabel,
-                           Int& iLab,
-                           String& label) const;
-
 // Find the median per cursorAxes chunk
    void generateRobust (); 
 
 // Create a new storage lattice
    Bool generateStorageLattice (); 
 
-// Examine an array and determine how many segments of good points it consists 
-// of.    A good point occurs if the array value is greater than zero.
-   void lineSegments (uInt& nSeg,
-                      Vector<uInt>& start,
-                      Vector<uInt>& nPts,
-                      const Vector<AccumType>& mask) const;
-
 // Given a location in the lattice and a statistic type, work
 // out where to put it in the storage lattice
    IPosition locInStorageLattice(const IPosition& latticePosition,
                                  LatticeStatsBase::StatisticsTypes type) const;
-
-// Draw each Y-axis sublabel in a string with a different colour
-   void multiColourYLabel (String& label,
-                           PGPlotter& plotter,
-                           const String& LRLoc,
-                           const Vector<uInt>& colours,
-                           const Int& nLabs) const;
-
-// Plot an array which may have some blanked points.
-// Thus we plot it in segments         
-   void multiPlot        (PGPlotter& plotter,
-                          const Vector<AccumType>& x,
-                          const Vector<AccumType>& y,
-                          const Vector<AccumType>& n) const;
 
 // Find min and max of good data in arrays specified by pointers
    void minMax            (Bool& none, AccumType& dMin, AccumType& dMax,
                            const Vector<AccumType>& d,
                            const Vector<AccumType>& n) const;
 
-// Find the next nice PGPLOT colour index 
-   Int niceColour         (Bool& initColours) const; 
-
-   // FIXME AFAIK, CASA no longer uses plotStats since we no longer use pgplot. Can we
-   // remove this method?
-// Plot the statistics
-
-   Bool plotStats         (const IPosition& dPos,
-                           const Matrix<AccumType>& ord,
-                           PGPlotter& plotter);
-
 // Retrieve a statistic from the storage lattice and return in an array
-   Bool retrieveStorageStatistic (Array<AccumType>& slice, 
+   Bool retrieveStorageStatistic (Array<AccumType>& slice,
                                   const LatticeStatsBase::StatisticsTypes type,
                                   const Bool dropDeg);
 
@@ -625,20 +568,8 @@ private:
 // See if there were some valid points found in the storage lattice
    Bool someGoodPoints ();  
 
-
 // Stretch min and max by 5%
    void stretchMinMax (AccumType& dMin, AccumType& dMax) const;
-
-   // convert a position in the input lattice to the corresponding
-   // position in the stats storage lattice. The number of elements
-   // in storagePos will not be changed and only the first N elements
-   // will be modified where N = the number of elements in latticePos.
-   // <src>storagePos</src> must therefore have at least as many elements
-   // as <src>latticePos</src>. Returns False if
-   //<src>latticePos</src> is inconsistent with the input lattice.
-   void _latticePosToStoragePos(
-		 IPosition& storagePos, const IPosition& latticePos
-   );
 
    CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > _createStatsAlgorithm() const;
 
@@ -650,128 +581,7 @@ private:
    void _doStatsLoop(uInt nsets, CountedPtr<LattStatsProgress> progressMeter);
 };
 
-// <summary> Generate statistics, tile by tile, from a masked lattice </summary>
-//
-// <use visibility=export>
-//
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
-// </reviewed>
-//
-// <prerequisite>
-//   <li> <linkto class=LatticeApply>LatticeApply</linkto>
-//   <li> <linkto class=TiledCollapser>TiledCollapser</linkto>
-// </prerequisite>
-//
-// <etymology>
-// This class is used by <src>LatticeStatistics</src> to generate
-// statistical sum from an input <src>MaskedLattice</src>.
-// The input lattice is iterated through in tile-sized chunks
-// and fed to an object of this class.
-// </etymology>
-//
-// <synopsis>
-// <src>StatsTiledCollapser</src> is derived from <src>TiledCollapser</src> which
-// is a base class used to define methods.  Objects of this base class are
-// used by <src>LatticeApply</src> functions.  In this particular case,
-// we are interested in <src>LatticeApply::tiledApply</src>.  This  function iterates
-// through a <src>MaskedLattice</src> and allows you to collapse one or more
-// axes, computing some values from it, and placing those values into
-// an output <src>MaskedLattice</src>.  It iterates through the input
-// lattice in optimal tile-sized chunks.    <src>LatticeStatistics</src> 
-// uses a <src>StatsTiledCollapser</src> object which it gives to 
-// <src>LatticeApply::tiledApply</src> for digestion.  After it has
-// done its work, <src>LatticeStatistics</src> then accesses the output
-// <src>Lattice</src> that it made.
-// </synopsis>
-//
-// <example>
-// <srcblock>
-//// Create collapser. Control information is passed in via the constructor
-//
-//   StatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,   
-//                                    fixedMinMax_p, blcParent_p);
-// 
-//// This is the first output axis getting  collapsed values. In LatticeStatistics
-//// this is the last axis of the output lattice
-// 
-//   Int newOutAxis = outLattice.ndim()-1;
-//
-//// tiledApply does the work by passing the collapser data in chunks
-//// and by writing the results into the output lattice 
-//
-//   LatticeApply<T>::tiledApply(outLattice, inLattice,
-//                               collapser, collapseAxes,
-//                               newOutAxis);
-//
-// </srcblock>
-// In this example, a collapser is made and passed to LatticeApply.
-// Afterwards, the output Lattice is available for use.
-// The Lattices must all be the correct shapes on input to tiledApply
-// </example>
-//
-// <motivation>
-// The LatticeApply classes enable the ugly details of optimal
-// Lattice iteration to be hidden from the user.
-// </motivation>
-//
-// <todo asof="1998/05/10">   
-//   <li> 
-// </todo>
-
-/*
-template <class T, class U=T>
-class StatsTiledCollapser : public TiledCollapser<T,U>
-{
-public:
-// Constructor provides pixel selection range and whether that
-// range is an inclusion or exclusion range.  If <src>fixedMinMax=True</src>
-// and an inclusion range is given, the min and max is set to
-// that inclusion range.  
-    StatsTiledCollapser(const Vector<T>& pixelRange, Bool noInclude, 
-                        Bool noExclude, Bool fixedMinMax);
-
-// Initialize process, making some checks
-    virtual void init (uInt nOutPixelsPerCollapse);
-
-// Initialiaze the accumulator
-    virtual void initAccumulator (uInt n1, uInt n3);
-
-// Process the data in the current chunk. 
-    virtual void process (
-    	uInt accumIndex1, uInt accumIndex3,
-    	const T* inData, const Bool* inMask,
-    	uInt dataIncr, uInt maskIncr,
-    	uInt nrval,	const IPosition& startPos,
-    	const IPosition& shape
-    );
-
-// End the accumulation process and return the result arrays
-    virtual void endAccumulator(Array<U>& result,
-                                Array<Bool>& resultMask,
-                                const IPosition& shape);
-
-// Can handle null mask
-   virtual Bool canHandleNullMask() const {return True;};
-
-// Find the location of the minimum and maximum data values
-// in the input lattice.
-   void minMaxPos(IPosition& minPos, IPosition& maxPos);
-
-private:
-
-    Bool noInclude_p, noExclude_p, fixedMinMax_p;
-    IPosition minPos_p, maxPos_p;
-
-    uInt n1_p;
-    uInt n3_p;
-    vector<ClassicalStatistics<U, const T*, const Bool*> > _cs;
-    vector<std::pair<U, U> > _ranges;
-    DataType _type;
-    vector<Bool> _first;
-};
-*/
-
-} //# NAMESPACE CASACORE - END
+} //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/lattices/LatticeMath/LatticeStatistics.tcc>

@@ -30,12 +30,18 @@
 
 #include <casacore/casa/aips.h>
 
-#if defined AIPS_CXX11
-# include <memory>
-# define SHARED_PTR std::shared_ptr
+#if (defined(AIPS_CXX11) || (defined(__APPLE_CC__) && __APPLE_CC__ > 5621))
+#include <memory>
+#define SHARED_PTR std::shared_ptr
+#define DYNAMIC_POINTER_CAST std::dynamic_pointer_cast
+#define CONST_POINTER_CAST std::const_pointer_cast
+#define STATIC_POINTER_CAST std::static_pointer_cast
 #else
-# include <tr1/memory>
-# define SHARED_PTR std::tr1::shared_ptr
+#include <tr1/memory>
+#define SHARED_PTR std::tr1::shared_ptr
+#define DYNAMIC_POINTER_CAST std::tr1::dynamic_pointer_cast
+#define CONST_POINTER_CAST std::tr1::const_pointer_cast
+#define STATIC_POINTER_CAST std::tr1::static_pointer_cast
 #endif
 
 namespace casacore { //#Begin casa namespace
@@ -79,12 +85,6 @@ void throw_Null_CountedPtr_dereference_error();
 template<class t>
 class CountedPtr
 {
-#ifdef AIPS_CXX11
-    typedef std::shared_ptr<t> PointerRep;
-#else
-    typedef std::tr1::shared_ptr<t> PointerRep;
-#endif
-
 
 protected:
     // Helper class to make deletion of object optional.
@@ -99,6 +99,9 @@ protected:
 
 
 public:
+
+
+
     // This constructor allows for the creation of a null
     // <src>CountedPtr</src>. The assignment operator can be used
     // to assign a null <src>CountedPtr</src> from another
@@ -120,17 +123,17 @@ public:
     : pointerRep_p (val, Deleter<t> (delit))
     {}
     
-    // Create from a shared_ptr.
-    CountedPtr (const PointerRep& rep)
-      : pointerRep_p (rep)
-    {}
-
     // This copy constructor allows <src>CountedPtr</src>s to be
     // initialized from other <src>CountedPtr</src>s for which the pointer TP*
     // is convertible to T*.
     template<typename TP>
     CountedPtr(const CountedPtr<TP>& that)
-      : pointerRep_p (that.pointerRep_p)
+      : pointerRep_p(that.pointerRep_p)
+    {}
+
+    // Create from a shared_ptr.
+    CountedPtr (const SHARED_PTR<t>& rep)
+      : pointerRep_p (rep)
     {}
 
     // This destructor only deletes the really stored data when it was
@@ -220,25 +223,13 @@ public:
     // <group>
     template<typename U>
     CountedPtr<U> static_ptr_cast() const
-#ifdef AIPS_CXX11
-      { return CountedPtr<U> (std::static_pointer_cast<U> (pointerRep_p)); }
-#else
-      { return CountedPtr<U> (std::tr1::static_pointer_cast<U> (pointerRep_p)); }
-#endif
+      { return CountedPtr<U> (STATIC_POINTER_CAST<U> (pointerRep_p)); }
     template<typename U>
     CountedPtr<U> const_ptr_cast() const
-#ifdef AIPS_CXX11
-      { return CountedPtr<U> (std::const_pointer_cast<U> (pointerRep_p)); }
-#else
-      { return CountedPtr<U> (std::tr1::const_pointer_cast<U> (pointerRep_p)); }
-#endif
+      { return CountedPtr<U> (CONST_POINTER_CAST<U> (pointerRep_p)); }
     template<typename U>
     CountedPtr<U> dynamic_ptr_cast() const
-#ifdef AIPS_CXX11
-      { return CountedPtr<U> (std::dynamic_pointer_cast<U> (pointerRep_p)); }
-#else
-      { return CountedPtr<U> (std::tr1::dynamic_pointer_cast<U> (pointerRep_p)); }
-#endif
+      { return CountedPtr<U> (DYNAMIC_POINTER_CAST<U> (pointerRep_p)); }
     // </group>
 
     // Sometimes it is useful to know if there is more than one
@@ -260,6 +251,7 @@ private:
     // Make all types of CountedPtr a friend for the templated operator=.
     template<typename TP> friend class CountedPtr;
 
+    typedef SHARED_PTR<t> PointerRep;
 
     PointerRep pointerRep_p;
 };

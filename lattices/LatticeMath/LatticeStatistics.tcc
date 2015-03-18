@@ -215,7 +215,6 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       statsToPlot_p = other.statsToPlot_p; 
 	   range_p.resize(other.range_p.size());
       range_p = other.range_p;
-      plotter_p = other.plotter_p; 
       doList_p = other.doList_p;
       noInclude_p = other.noInclude_p; 
       noExclude_p = other.noExclude_p;
@@ -252,8 +251,6 @@ template <class T>
 LatticeStatistics<T>::~LatticeStatistics() {
    delete pInLattice_p;
    pInLattice_p = 0;
-   //delete pStoreLattice_p;
-  // pStoreLattice_p = 0;
 }
 
 template <class T>
@@ -384,97 +381,6 @@ Bool LatticeStatistics<T>::setList (const Bool& doList)
 } 
 
 template <class T>
-Bool LatticeStatistics<T>::setPlotting(PGPlotter& plotter,
-                                       const Vector<Int>& statsToPlot,
-                                       const Vector<Int>& nxy)
-//
-// Assign the desired PGPLOT device name and number
-// of subplots
-//
-{     
-   if (!goodParameterStatus_p) {
-      return False;
-   }
-
-// Is new plotter attached ?
-     
-   if (!plotter.isAttached()) {
-      if (haveLogger_p) {
-         error_p = "Input plotter is not attached";
-      }
-      goodParameterStatus_p = False;
-      return False;
-   }
-
-// Don't reattach to the same plotter.  The assignment will
-// close the previous device
-
-   if (plotter_p.isAttached()) {
-      if (plotter_p.qid() != plotter.qid()) plotter_p = plotter;
-   } else {
-      plotter_p = plotter;
-   }
-
-
-// Make sure requested statistics are valid
-// Set need robust statistics flag here as well
-
-   statsToPlot_p.resize(0);
-   statsToPlot_p = statsToPlot;
-   for (uInt i=0; i<statsToPlot_p.nelements(); i++) {
-      if (statsToPlot_p(i) < 0 || statsToPlot_p(i) > NSTATS-1) {
-         error_p = "Invalid statistic requested for display";
-         goodParameterStatus_p = False;
-         return False;
-      } 
-
-// If the user wants robust stats, signal this and if they
-// did not previously ask for them, signify we need to
-// regenerate the storage lattice as well - the robust
-// stats are just written directly into the storage lattice
-
-      if (
-    		  statsToPlot_p(i)==Int(LatticeStatsBase::MEDIAN)
-    		  || statsToPlot_p(i)==Int(LatticeStatsBase::MEDABSDEVMED)
-    		  || statsToPlot_p(i)==Int(LatticeStatsBase::QUARTILE)
-    		  || statsToPlot_p(i)==Int(LatticeStatsBase::Q1)
-    		  || statsToPlot_p(i)==Int(LatticeStatsBase::Q3)
-      ) {
-         if (!doRobust_p) {
-            needStorageLattice_p = True;
-         }
-         doRobust_p = True;
-      }
-   }   
-   
-
-// Plotting device and subplots.  nxy_p is set to [1,1] if zero length
- 
-   nxy_p.resize(0);
-   nxy_p = nxy;
-   ostringstream os;
-   if (!LatticeStatsBase::setNxy(nxy_p, os)) {
-      error_p = "Invalid number of subplots";
-      goodParameterStatus_p = False;
-      return False;
-   }
-
-
-// Set mean and sigma if no statistics requested
-
-   if (statsToPlot_p.nelements()==0) {
-      error_p = "No plot statistics requested, setting mean and std dev";
-      statsToPlot_p.resize(2);
-      statsToPlot_p(0) = MEAN;
-      statsToPlot_p(1) = SIGMA;
-   }
-
-   return True;
-}
-
-
-
-template <class T>
 Bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice)
 { 
    if (!goodParameterStatus_p) {
@@ -506,7 +412,6 @@ Bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice)
    needStorageLattice_p = True;
    return True;
 }
-
 
 template <class T>
 Bool LatticeStatistics<T>::getConvertedStatistic (Array<T>& stats, 
@@ -573,7 +478,6 @@ template <class T> Bool LatticeStatistics<T>::getStatistic(
    return True;
 }
 
-
 template <class T>
 Bool LatticeStatistics<T>::getStats(
 	Vector<AccumType>& stats, const IPosition& pos,
@@ -604,22 +508,12 @@ Bool LatticeStatistics<T>::getStats(
 		stats.resize(0);
 		return  True;
 	}
-	//stats(MEAN) = LattStatsSpecialize::getMean(stats(SUM), n);
-	//stats(VARIANCE) = LattStatsSpecialize::getVariance(stats(SUM),                                               stats(SUMSQ), n);
 	stats(SIGMA) = LattStatsSpecialize::getSigma(stats(VARIANCE));
 	stats(RMS) =  LattStatsSpecialize::getRms(stats(SUMSQ), n);
 	stats(FLUX) = 0;
 	if (_canDoFlux()) {
-		Array<Double> beamArea;
-		if (_getBeamArea(beamArea)) {
-			IPosition beamPos = pos;
-			if (posInLattice) {
-				this->_latticePosToStoragePos(beamPos, pos);
-			}
-			stats(FLUX) = _flux(stats(SUM), beamArea(beamPos)).getValue();
-		}
-		else {
-			stats(FLUX) = _flux(stats(SUM), 0).getValue();
+		if (! _computeFlux(stats(FLUX), stats(SUM), pos, posInLattice)) {
+			return False;
 		}
 	}
 	return True;
@@ -667,10 +561,22 @@ Bool LatticeStatistics<T>::getFullMinMax(T& dataMin, T& dataMax)
    return (maxFull_p > minFull_p);
 }
 
-
-
 // Private functions
 
+template <class T>
+Bool LatticeStatistics<T>::_computeFlux(
+	Array<AccumType>&, const Array<AccumType>&, const Array<AccumType>&
+) {
+	ThrowCc("This object does not support computing fluxes");
+}
+
+template <class T>
+Bool LatticeStatistics<T>::_computeFlux(
+	AccumType&, AccumType, const IPosition&,
+	Bool
+) {
+	ThrowCc("This object does not support computing fluxes");
+}
 
 template <class T>
 Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice, 
@@ -723,34 +629,15 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
        }
    }
    else if (type==FLUX) {
-	   if (! _canDoFlux()) {
+	   if (_canDoFlux()) {
+		   retrieveStorageStatistic (sum, SUM, dropDeg);
+		   return _computeFlux(slice, nPts, sum);
+	   }
+	   else {
 		   slice.resize(IPosition(0,0));
 		   return False;
 	   }
-       Array<Double> beamArea;
-       Bool gotBeamArea = _getBeamArea(beamArea);
-       retrieveStorageStatistic (sum, SUM, dropDeg);
-       ReadOnlyVectorIterator<AccumType> sumIt(sum);
-       PtrHolder<ReadOnlyVectorIterator<Double> > beamAreaIter(
-    		   gotBeamArea ? new ReadOnlyVectorIterator<Double>(beamArea) : 0
-       );
-       while (!nPtsIt.pastEnd()) {
-          for (uInt i=0; i<n1; i++) {
-             if (LattStatsSpecialize::hasSomePoints(nPtsIt.vector()(i))) {
-                //sliceIt.vector()(i) = sumIt.vector()(i) / beamAreaIter.vector()(i);
-            	sliceIt.vector()(i) = _flux(
-            		sumIt.vector()(i), gotBeamArea ? beamAreaIter->vector()(i) : 0
-            	).getValue();
-             }
-          }
-          nPtsIt.next();
-          sumIt.next();
-          sliceIt.next();
-          if (gotBeamArea) {
-        	  beamAreaIter->next();
-          }
-       }
-    }
+   }
    else if (type==SIGMA) {
        Array<AccumType> variance;
        retrieveStorageStatistic (variance, VARIANCE, dropDeg);
@@ -920,7 +807,6 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     	_algConf.algorithm == StatisticsData::CLASSICAL
     	&& timeOld < timeNew 
     ) {
-    	//cout << "using old method" << endl;
     	// use older method for higher performance in the large loop count
     	// regime
         //timer.mark();
@@ -941,12 +827,9 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     	collapser.minMaxPos(minPos_p, maxPos_p);
     }
     else {
-    	//cout << "using new method" << endl;
-        //timer.mark();
         _doStatsLoop(nsets, pProgressMeter);
     }
     pProgressMeter = NULL;
-    //cout << "time " << timer.real() << endl;
 
     // Do robust statistics separately as required.
     generateRobust();
@@ -1020,11 +903,6 @@ void LatticeStatistics<T>::_doStatsLoop(
 			uInt nSublatticeSteps = nelem > 4096*4096
 				? nelem/subLat.advisedMaxPixels()
 				: 1;
-			/*
-			cout << "nelem " << nelem << endl;
-			cout << "nice cursor shape " << subLat.niceCursorShape() << endl;
-			cout << "nsteps " << nsets*nSublatticeSteps << endl;
-			*/
 			progressMeter->init(nsets*nSublatticeSteps);
 		}
 		if(subLat.isMasked()) {
@@ -1536,23 +1414,6 @@ Bool LatticeStatistics<T>::getLayerStats(
        setStream(os, oPrec);
        os << setw(oDWidth)
           << dMax;
-
-      /*
-      if (!fixedMinMax_p) {
-         os << "Minimum value ";
-         os << setw(oWidth) << String(os6);
-         if (type==TpFloat) {
-            os <<  " at " << blcParent_p + minPos_p+1;
-         }
-
-         os << "Maximum value ";
-         os << setw(oWidth) << String(os7);
-         if (type==TpFloat) {
-            os <<  " at " << blcParent_p + maxPos_p+1 << endl;
-         }
-      }
-      */
-
       stats += os.str();
       stats += '\n';
       return True;
@@ -1620,10 +1481,6 @@ Bool LatticeStatistics<T>::getLayerStats(
             if (_canDoFlux()) {
             	ord(i,FLUX) = _flux(matrix(i,SUM), area).getValue();
             }
-            /*
-            ord(i,VARIANCE) = LattStatsSpecialize::getVariance(
-                              matrix(i,SUM), matrix(i,SUMSQ), nPts);
-                              */
             ord(i,SIGMA) = LattStatsSpecialize::getSigma(
                               matrix(i,VARIANCE));
             ord(i,RMS) =  LattStatsSpecialize::getRms(
@@ -1767,24 +1624,6 @@ Bool LatticeStatistics<T>::getLayerStats(
     Int layer = 0;
     for ( pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++ ) {
 	IPosition dPos = pixelIterator.position();
-	/*
-	if (displayAxes_p.nelements() == 2) {
-	    if (zAx == 1) {
-		if (dPos[1] != zLayer)
-		    continue;
-		else
-		    layer = hLayer;
-	    }
-	    if (hAx == 1) {
-		if (dPos[1] != hLayer)
-		    continue;
-		else
-		    layer = zLayer;
-	    }
-	}
-	if (displayAxes_p.nelements() == 1)
-	    layer = zLayer;
-	*/
 	if (displayAxes_p.nelements() == 2) {
 		if (zAx == 1) {
 			if (dPos[1] != zLayer) {
@@ -1913,27 +1752,6 @@ Bool LatticeStatistics<T>::listLayerStats (
    pixels(0) = 1.0;
    IPosition blc(pInLattice_p->ndim(),0);
    IPosition trc(pInLattice_p->shape()-1);
-
-   /* 
-   Int len0;
-   if (nStatsAxes == 1) {
-      len0 = 8;
-      os << setw(len0) << "Profile ";
-   }
-   else if (nStatsAxes == 2) {
-      len0 = 6;
-      os << setw(len0) << "Plane ";
-   }
-   else if (nStatsAxes == 3) {
-      len0 = 5;
-      os << setw(len0) << "Cube ";
-   }
-   else {
-      len0 = 11;
-      os << setw(len0) << "Hyper-cube ";
-   }
-   */
-   
 
    os << setw(10) << "Npts";
    os << setw(oDWidth) << "Sum";
@@ -2099,18 +1917,11 @@ Bool LatticeStatistics<T>::display()
 
 // Do we have anything to do
 
-   if (!doList_p && !plotter_p.isAttached() && haveLogger_p) {
+   if (!doList_p && haveLogger_p) {
       os_p << LogIO::NORMAL1 << "There is nothing to plot or list" << LogIO::POST;
      return True;
    }
-// Set up some plotting things
 
-   if (plotter_p.isAttached()) {
-       plotter_p.subp(nxy_p(0), nxy_p(1));
-       plotter_p.ask(True);
-       plotter_p.sch (1.2);
-       plotter_p.svp(0.1,0.9,0.1,0.9);
-   }
 // Generate storage lattice if required
 
    if (needStorageLattice_p) {
@@ -2159,12 +1970,6 @@ Bool LatticeStatistics<T>::display()
          const AccumType& nPts = matrix(i,NPTS);
          if (LattStatsSpecialize::hasSomePoints(nPts)) {
             ord(i,MEAN) = LattStatsSpecialize::getMean(matrix(i,SUM), nPts);
-            /*
-             * see 2012may23 comment above
-            if (hasBeam) {
-            	ord(i,FLUX) = matrix(i,SUM) / beamArea;
-            }
-            */
             ord(i,SIGMA) = LattStatsSpecialize::getSigma(ord(i,VARIANCE));
             ord(i,RMS) =  LattStatsSpecialize::getRms(matrix(i,SUMSQ), nPts);  
           }
@@ -2179,817 +1984,16 @@ Bool LatticeStatistics<T>::display()
          }
       }
 
-// Plot statistics
-
-      if (plotter_p.isAttached()) {
-        if (!plotStats (pixelIterator.position(), ord, plotter_p)) return False;
-      }
-
-
 // List statistics
 
       if (doList_p) {
          if (!listStats(hasBeam, pixelIterator.position(), ord)) return False;
       }
    }
-
-
-
-
-// Finish up
-
-   if (plotter_p.isAttached()) {
-       plotter_p.updt();
-   }
    return True;
 }
-
-   
-
-template <class T>
-void LatticeStatistics<T>::lineSegments (uInt& nSeg,
-                                       Vector<uInt>& start,
-                                       Vector<uInt>& nPts,
-                                       const Vector<AccumType>& mask) const
-//
-// Examine an array and determine how many segments
-// of good points it consists of.    A good point
-// occurs if the array value is greater than zero.
-//
-// Inputs:
-//   mask  The array.  Note that even if <T> is complex, only
-//         the real part of this array contains the information.
-// Outputs:
-//   nSeg  Number of segments
-//   start Indices of start of each segment
-//   nPts  Number of points in segment
-//
-{
-   Bool finish = False;
-   nSeg = 0;
-   uInt iGood, iBad;
-   const uInt n = mask.nelements();
-   start.resize(n);
-   nPts.resize(n);
-
-   for (uInt i=0; !finish;) {
-      if (!findNextDatum (iGood, n, mask, i, True)) {
-         finish = True;
-      } else {
-         nSeg++;
-         start(nSeg-1) = iGood;
-
-         if (!findNextDatum (iBad, n, mask, iGood, False)) {
-            nPts(nSeg-1) = n - start(nSeg-1);
-            finish = True;
-         } else { 
-            nPts(nSeg-1) = iBad - start(nSeg-1);
-            i = iBad + 1;
-         }
-      }
-   }
-   start.resize(nSeg,True);
-   nPts.resize(nSeg,True);
-}
-
-
-template <class T>
-void LatticeStatistics<T>::multiColourYLabel (String& label,      
-                                            PGPlotter& plotter,
-                                            const String& LRLoc, 
-                                            const Vector<uInt>& colours,
-                                            const Int& nLabs) const
-
-//
-// Draw each Y-axis sublabel in a string with a different colour
-//
-{
-// Get attributes
-
-
-   Vector<Float> result= plotter.qwin();
-   Float y1 = result(2);
-   Float y2 = result(3);
-   Int sci = plotter.qci();
-
-
-// Find y-location of start of string as fraction of window
-
-   result.resize(0);
-   result = plotter.qtxt(0.0, 0.0, 90.0, 0.0, label);
-   Vector<Float> xb = result(Slice(0,4));
-   Vector<Float> yb = result(Slice(4,4));
-   Float dy = yb(2)-yb(0);
-   Float yLoc = abs(0.5*(y2-y1-dy)/(y2-y1));
-
-
-// Loop over number of sub-labels and write them in colour
-
-   String subLabel;
-   Float just = 0.0;
-   Float disp = 2.5;
-   if (LRLoc == "R") disp = 3.0;
-   for (Int iLab=0; iLab<nLabs; iLab++) {
-
-// Fish out next sub label
-
-      if (!findNextLabel (subLabel, iLab, label)) {
-         plotter.sci (sci);
-         return;
-      } 
-      
-       
-// Write it
-
-      if (iLab < nLabs-1) subLabel = subLabel + ",";
-      if (iLab > 0) subLabel.prepend(" ");
-      plotter.sci (colours(iLab));
-      plotter.mtxt (LRLoc, disp, yLoc, just, subLabel);
-
-
-// Increment y location.  pgqtxt won't count a leading blank so
-// replace it with a character for length counting purposes. These
-// stupid string classes make this very hard work.
-
-      String s2;
-      if (iLab > 0) {
-         String s(subLabel(1,subLabel.length()-1));
-         s2 = "x" + s;
-      } else
-         s2 = subLabel;
-      result.resize(0);
-      result = plotter.qtxt (0.0, 0.0, 90.0, 0.0, s2.chars());
-      xb = result(Slice(0,4));
-      yb = result(Slice(4,4));
-      dy = abs((yb(2)-yb(0))/(y2-y1));
-      yLoc += dy;
-   }                       
-
-// Set colour back to what it was
-
-   plotter.sci (sci);
-   return;
-}
-
-
-
-
-template <class T>
-void LatticeStatistics<T>::multiPlot (PGPlotter& plotter,
-                                      const Vector<AccumType>& x,
-                                      const Vector<AccumType>& y,
-                                      const Vector<AccumType>& mask) const
-//
-// Plot an array which may have some blanked points.
-// Thus we plot it in segments
-//
-// Currently, only the real part of the <AccumType>  data is
-// plotted
-//
-// Inputs:
-//  x,y,mask   Abcissa, ordinate, and "masking" array
-//           (if > 0 plot it)
-{
-
-// Find number of segments in this array
-
-   uInt nSeg = 0;
-   Vector<uInt> start;
-   Vector<uInt> nPts;
-   lineSegments (nSeg, start, nPts, mask);
-
-// Loop over segments and plot them
-
-   Vector<Float> xF, yF;
-   for (uInt i=0; i<nSeg; i++) {
-      const uInt ip = start(i);
-      if (nPts(i) == 1) {
-	  xF.resize(1); 
-          yF.resize(1); 
-          xF(0) = convertATtoF(x(ip));
-          yF(0) = convertATtoF(y(ip));
-	  plotter.pt (xF, yF, 1);
-      } else {
-	  xF.resize(nPts(i)); 
-          yF.resize(nPts(i));
-          for (uInt j=0; j<nPts(i); j++) {
-             xF(j) = convertATtoF(x(start(i)+j));
-             yF(j) = convertATtoF(y(start(i)+j));
-          }
-	  plotter.line (xF, yF);
-      }
-   }
-}
-
-template <class T>
-Int LatticeStatistics<T>::niceColour (Bool& initColours) const
-{
-   static Int colourIndex = 1;
-   if (initColours) {
-      colourIndex = 1;
-      initColours = False;
-   }
-      
-   colourIndex++;
-   if (colourIndex == 4 || colourIndex == 14) colourIndex++;
-   return colourIndex;
-}
-
-
-template <class T>
-Bool LatticeStatistics<T>::plotStats (
-                                      const IPosition& dPos,
-                                      const Matrix<AccumType>& stats,
-                                      PGPlotter& plotter) 
-//
-// Plot the desired statistics.    
-//
-// Inputs:
-//   dPos    The location of the start of the cursor in the 
-//           storage lattice for this line 
-//   stats   Statistics matrix
-//
-{
-// The plotting for Complex just take the real part which is
-// not very useful.  Until I do someting better, stub it out
-
-   T* dummy = 0;
-   DataType type = whatType(dummy);
-   if (type!=TpFloat) {
-      os_p << LogIO::WARN << "Plotting not yet available for complex images " << LogIO::POST;
-      return True;
-   }
-
-// Work out what we are plotting
-
-   const uInt n = statsToPlot_p.nelements();
-   Bool doMean, doSigma, doVar, doRms, doSum, doSumSq;
-   Bool doMin, doMax, doNPts, doFlux, doMedian;
-   Bool doMedAbsDevMed, doQuartile;
-   linearSearch(doMean, statsToPlot_p, Int(MEAN), n);
-   linearSearch(doMedian, statsToPlot_p, Int(MEDIAN), n);
-   linearSearch(doMedAbsDevMed, statsToPlot_p, Int(MEDABSDEVMED), n);
-   linearSearch(doQuartile, statsToPlot_p, Int(QUARTILE), n);
-   linearSearch(doSigma, statsToPlot_p, Int(SIGMA), n);
-   linearSearch(doVar, statsToPlot_p, Int(VARIANCE), n);
-   linearSearch(doRms, statsToPlot_p, Int(RMS), n);
-   linearSearch(doSum, statsToPlot_p, Int(SUM), n);
-   linearSearch(doSumSq, statsToPlot_p, Int(SUMSQ), n);
-   linearSearch(doMin, statsToPlot_p, Int(MIN), n);
-   linearSearch(doMax, statsToPlot_p, Int(MAX), n);
-   linearSearch(doNPts, statsToPlot_p, Int(NPTS), n);
-   linearSearch(doFlux, statsToPlot_p, Int(FLUX), n);
-   if (! _canDoFlux() ) {
-	   doFlux = False;
-   }
-//
-   Bool none;
-   Bool first = True;
-   Int nL = 0;
-   Int nR = 0;
-
-// Generate abcissa. Note that T(n) where T is COmplex results in (n+0i)
-
-   const Int n1 = stats.shape()(0);
-   Vector<AccumType> abc(n1);
-   for (Int j=0; j<n1; j++) abc(j) = AccumType(j+1);
-
-// Find extrema.  Return if there were no valid points to plot
-
-   AccumType yMin, yMax, xMin, xMax, yLMin, yLMax, yRMin, yRMax;
-   // avoid compiler warning by initializing yMin, yMax
-   yMin = 0;
-   yMax = 0;
-   minMax(none, xMin, xMax, abc, stats.column(NPTS));
-   if (none) return True;
-
-// Left hand y axis
-
-   if (doMean) {
-      minMax(none, yLMin, yLMax, stats.column(MEAN), stats.column(NPTS));
-      first = False;
-      nL++;
-   }
-   if (doMedian) {
-      minMax(none, yMin, yMax, stats.column(MEDIAN), stats.column(NPTS));
-      if (first) {
-         yLMin = yMin;
-         yLMax = yMax;
-      } else {
-         yLMin = min(yLMin,yMin);
-         yLMax = max(yLMax,yMax);
-      }
-      first = False;
-      nL++;
-   }
-   if (doFlux) {
-      minMax(none, yMin, yMax, stats.column(FLUX), stats.column(NPTS));
-      if (first) {
-         yLMin = yMin;
-         yLMax = yMax;
-      } else {
-         yLMin = min(yLMin,yMin);
-         yLMax = max(yLMax,yMax);
-      }
-      first = False;
-      nL++;
-   }
-   if (doSum) {
-      minMax(none, yMin, yMax, stats.column(SUM), stats.column(NPTS));
-      if (first) {
-         yLMin = yMin;
-         yLMax = yMax;
-      } else {
-         yLMin = min(yLMin,yMin);
-         yLMax = max(yLMax,yMax);
-      }
-      first = False;
-      nL++;
-   }
-   if (doSumSq) {
-      minMax(none, yMin, yMax, stats.column(SUMSQ), stats.column(NPTS));
-      if (first) {
-         yLMin = yMin;
-         yLMax = yMax;
-      } else {
-         yLMin = min(yLMin,yMin);
-         yLMax = max(yLMax,yMax);
-      }
-      first = False;
-      nL++;
-   }
-   if (doMin) {
-      minMax(none, yMin, yMax, stats.column(MIN), stats.column(NPTS));
-      if (first) {
-         yLMin = yMin;
-         yLMax = yMax;
-      } else {
-         yLMin = min(yLMin,yMin);
-         yLMax = max(yLMax,yMax);
-      }
-      first = False;
-      nL++;
-   }
-   if (doMax) {
-      minMax(none, yMin, yMax, stats.column(MAX), stats.column(NPTS));
-      if (first) {
-         yLMin = yMin;
-         yLMax = yMax;
-      } else {
-         yLMin = min(yLMin,yMin);
-         yLMax = max(yLMax,yMax);
-      }
-      first = False;
-      nL++;
-   }
-   if (doNPts) {
-      minMax(none, yMin, yMax, stats.column(NPTS), stats.column(NPTS));
-      if (first) {
-         yLMin = yMin;
-         yLMax = yMax;
-      } else {
-         yLMin = min(yLMin,yMin);
-         yLMax = max(yLMax,yMax);
-      }
-      first = False;
-      nL++;
-   }
-
-
-// Right hand y axis
-
-   first = True;
-   if (doSigma) {
-      minMax(none, yRMin, yRMax, stats.column(SIGMA), stats.column(NPTS));
-      first = False;
-      nR++;
-   }
-   if (doVar) {
-      minMax(none, yMin, yMax, stats.column(VARIANCE), stats.column(NPTS));
-      if (first) {
-         yRMin = yMin;
-         yRMax = yMax;
-      } else {
-         yRMin = min(yRMin,yMin);
-         yRMax = max(yRMax,yMax);
-      }
-      first = False;
-      nR++;
-   }
-   if (doRms) {
-      minMax(none, yMin, yMax, stats.column(RMS), stats.column(NPTS));
-      if (first) {
-         yRMin = yMin;
-         yRMax = yMax;
-      } else {
-         yRMin = min(yRMin,yMin);
-         yRMax = max(yRMax,yMax);
-      }
-      nR++;
-   }
-   if (doMedAbsDevMed) {
-      minMax(none, yMin, yMax, stats.column(MEDABSDEVMED), stats.column(NPTS));
-      if (first) {
-         yRMin = yMin;
-         yRMax = yMax;
-      } else {
-         yRMin = min(yRMin,yMin);
-         yRMax = max(yRMax,yMax);
-      }
-      nR++;
-   }
-   if (doQuartile) {
-      minMax(none, yMin, yMax, stats.column(QUARTILE), stats.column(NPTS));
-      if (first) {
-         yRMin = yMin;
-         yRMax = yMax;
-      } else {
-         yRMin = min(yRMin,yMin);
-         yRMax = max(yRMax,yMax);
-      }
-      nR++;
-   }
-//
-   stretchMinMax(xMin, xMax); 
-   if (nL>0) stretchMinMax(yLMin, yLMax);
-   if (nR>0) stretchMinMax(yRMin, yRMax);
-
-// Set labels.
-
-   String hLabel, xLabel;
-   getLabels(hLabel, xLabel, dPos);
-//
-   String yLLabel = "";
-   String yRLabel = "";
-
-   Int nLLabs = 0;
-   if (nL>0) {
-      if (doMean) {
-         yLLabel += "Mean,";
-         nLLabs++;
-      }
-      if (doMedian) {
-         yLLabel += "Median,";
-         nLLabs++;
-      }
-      if (doFlux) {
-         yLLabel += "Flux,";
-         nLLabs++;
-      }
-      if (doSum) {
-         yLLabel += "Sum,";
-         nLLabs++;
-      }
-      if (doSumSq) {
-         yLLabel += "Sum Squared,";
-         nLLabs++;
-      }
-      if (doMin) {
-         yLLabel += "Min,";
-         nLLabs++;
-      }
-      if (doMax) {
-         yLLabel += "Max,";
-         nLLabs++;
-      }
-      if (doNPts) {
-         yLLabel += "nPts,";
-         nLLabs++;
-      }
-      yLLabel.del(Int(yLLabel.length()-1),1);
-   }
-
-   Int nRLabs = 0;
-   if (nR>0) {
-      if (doSigma) {
-         yRLabel += "Std dev,";
-         nRLabs++;
-      }
-      if (doVar) {
-         yRLabel += "Variance,";
-         nRLabs++;
-      }
-      if (doRms) {
-         yRLabel += "Rms,";
-         nRLabs++;
-      }
-      if (doMedAbsDevMed) {
-         yRLabel += "MedAbsDevMed,";
-         nRLabs++;
-      }
-      if (doQuartile) {
-         yRLabel += "Quartile,";
-         nRLabs++;
-      }
-      yRLabel.del(Int(yRLabel.length()-1),1);
-   }
-   
-// Do plots.  Here we convert to real  for now.  To properly
-// make this deal with Complex I will have to be cleverer
-
-   Vector<uInt> lCols(nL);
-   Vector<uInt> rCols(nR);
-   Int ls = 0;
-   Int i = -1;
-   Bool initColours = True;
-   plotter.page();
-
-   if (nL>0) {
-      plotter.swin(real(xMin), real(xMax), real(yLMin), real(yLMax));
-      if (nR>0) {
-         plotter.box("BCNST", 0.0, 0, "BNST", 0.0, 0);
-      } else {
-         plotter.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
-      }
-      plotter.lab(xLabel, "", "");
-
-      if (doMean) {
-         if (++ls > 5) ls = 1;
-         plotter.sls (ls);
-
-         lCols(++i) = niceColour (initColours);
-         plotter.sci (lCols(i));
-
-         multiPlot(plotter, abc, stats.column(MEAN), stats.column(NPTS));
-      }
-      if (doMedian) {
-         if (++ls > 5) ls = 1;
-         plotter.sls (ls);
-
-         lCols(++i) = niceColour (initColours);
-         plotter.sci (lCols(i));
-
-         multiPlot(plotter, abc, stats.column(MEDIAN), stats.column(NPTS));
-      }
-      if (doFlux) {
-         if (++ls > 5) ls = 1;
-         plotter.sls (ls);
-
-         lCols(++i) = niceColour (initColours);
-         plotter.sci (lCols(i));
-
-         multiPlot(plotter, abc, stats.column(FLUX), stats.column(NPTS));
-      }
-      if (doSum) {
-         if (++ls > 5) ls = 1;
-         plotter.sls (ls);
-
-         lCols(++i) = niceColour (initColours);
-         plotter.sci (lCols(i));
-
-         multiPlot(plotter, abc, stats.column(SUM), stats.column(NPTS));
-      }
-      if (doSumSq) {
-         if (++ls > 5) ls = 1;
-         plotter.sls (ls);
-
-         lCols(++i) = niceColour (initColours);
-         plotter.sci (lCols(i));
-
-         multiPlot(plotter, abc, stats.column(SUMSQ), stats.column(NPTS));
-      }
-      if (doMin) {
-         if (++ls > 5) ls = 1;
-         plotter.sls (ls);
-
-         lCols(++i) = niceColour (initColours);
-         plotter.sci (lCols(i));
-
-         multiPlot(plotter, abc, stats.column(MIN), stats.column(NPTS));
-      }
-      if (doMax) {
-         if (++ls > 5) ls = 1;
-         plotter.sls (ls);
-
-         lCols(++i) = niceColour (initColours);
-         plotter.sci (lCols(i));
-
-         multiPlot(plotter, abc, stats.column(MAX), stats.column(NPTS));
-      }
-      if (doNPts) {
-         if (++ls > 5) ls = 1;
-         plotter.sls (ls);
-
-         lCols(++i) = niceColour (initColours);
-         plotter.sci (lCols(i));
-
-         multiPlot(plotter, abc, stats.column(NPTS), stats.column(NPTS));
-      }
-
-// Y label
-
-      multiColourYLabel (yLLabel, plotter_p, "L", lCols, nLLabs);
-
-   }
-   plotter.sls (1);
-   plotter.sci (1);
-
-
-   i = -1;
-   if (nR>0) {
-      plotter.swin(real(xMin), real(xMax), real(yRMin), real(yRMax));
-      plotter.sci (1); 
-      if (nL>0) 
-         plotter.box("", 0.0, 0, "CMST", 0.0, 0);
-      else {
-         plotter.box("BCNST", 0.0, 0, "BCMST", 0.0, 0);
-         plotter.lab(xLabel, "", "");
-      }
-
-      if (doSigma) {
-         if (++ls > 5) ls = 1;
-         plotter.sls(ls);
-
-         rCols(++i) = niceColour (initColours);
-         plotter.sci (rCols(i));
-
-         multiPlot(plotter, abc, stats.column(SIGMA), stats.column(NPTS));
-      }
-      if (doVar) {
-         if (++ls > 5) ls = 1;
-         plotter.sls(ls);
-
-         rCols(++i) = niceColour (initColours);
-         plotter.sci (rCols(i));
-
-         multiPlot(plotter, abc, stats.column(VARIANCE), stats.column(NPTS));
-      }
-      if (doRms) {
-         if (++ls > 5) ls = 1;
-         plotter.sls(ls);
-
-         rCols(++i) = niceColour (initColours);
-         plotter.sci (rCols(i));
-
-         multiPlot(plotter, abc, stats.column(RMS), stats.column(NPTS));
-      }
-      if (doMedAbsDevMed) {
-         if (++ls > 5) ls = 1;
-         plotter.sls(ls);
-
-         rCols(++i) = niceColour (initColours);
-         plotter.sci (rCols(i));
-
-         multiPlot(plotter, abc, stats.column(MEDABSDEVMED), stats.column(NPTS));
-      }
-      if (doQuartile) {
-         if (++ls > 5) ls = 1;
-         plotter.sls(ls);
-
-         rCols(++i) = niceColour (initColours);
-         plotter.sci (rCols(i));
-
-         multiPlot(plotter, abc, stats.column(QUARTILE), stats.column(NPTS));
-      }
-
-// Y label
-
-      multiColourYLabel (yRLabel, plotter, "R", rCols, nRLabs);
-   }
-   plotter.sls(1);
-   plotter.sci (1);
-
-
-// Write values of other display axes on plot
-
-   if (displayAxes_p.nelements()>1) {
-
-// Write on plot
-      
-      Vector<Float> result(8);
-      result = plotter.qtxt (0.0, 0.0, 0.0, 0.0, "X");
-      Vector<Float> xb = result(Slice(0,4));
-      Vector<Float> yb = result(Slice(4,4));
-      Float dx = xb(3) - xb(0);
-      result = plotter.qtxt (0.0, 0.0, 0.0, 0.0, hLabel.chars());
-      xb = result(Slice(0,4));
-      yb = result(Slice(4,4));
-      Float dy = yb(1) - yb(0);
-
-      Float mx = real(xMin) + dx;
-      Float my;
-      if (nR > 0) {
-         my = real(yRMax) + 0.5*dy;
-      } else {
-         my = real(yLMax) + 0.5*dy;
-      }
-
-      Int tbg;
-      tbg = plotter.qtbg();
-      plotter.stbg(0);
-      plotter.ptxt (mx, my, 0.0, 0.0, hLabel.chars());
-      plotter.stbg(tbg);
-   }
-   return True;
-}
-
-
-template <class T>
-void LatticeStatistics<T>::closePlotting()
-{
-   if (plotter_p.isAttached()) plotter_p.detach();
-}
-
-
-
 
 // virtual functions
-
-template <class T>
-Bool LatticeStatistics<T>::_getBeamArea(
-	Array<Double>& beamArea
-) const {
-	if (pStoreLattice_p->ndim() == 1) {
-		beamArea.resize(IPosition(1, 0));
-	}
-	else {
-		IPosition shape(pStoreLattice_p->ndim() - 1);
-		for (uInt i=0; i<shape.nelements(); i++) {
-			shape[i] = pStoreLattice_p->shape()[i];
-		}
-		beamArea.resize(shape);
-	}
-	beamArea.set(-1.0);
-	return False;
-}
-
-
-template <class T>
-Bool LatticeStatistics<T>::findNextDatum (uInt& iFound, 
-                                          const uInt& n,
-                                          const Vector<AccumType>& mask,
-                                          const uInt& iStart,
-                                          const Bool& findGood) const
-//
-// Find the next good (or bad) point in an array.
-// A good point in the array has a non-zero value.
-//
-// Inputs:
-//  n        Number of points in array
-//  mask     Vector containing counts.  If <T> complex,
-//           the information is only in the real part
-//  iStart   The index of the first point to consider
-//  findGood If True look for next good point.  
-//           If False look for next bad point
-// Outputs:
-//  iFound   Index of found point
-//  Bool     False if didn't find another valid datum
-{
-   for (uInt i=iStart; i<n; i++) {
-      if ( (findGood && real(mask(i))>0.5) ||
-           (!findGood && real(mask(i))<0.5) ) {
-        iFound = i;
-        return True;
-      }
-   }
-   return False;
-}
-
-
-template <class T>
-Bool LatticeStatistics<T>::findNextLabel (String& subLabel,
-                                        Int& iLab,
-                                        String& label) const
-//
-// Find the next comma delimitered sublabel in a string
-//
-// Inputs:
-//  label    The label
-//  iLab     The number of the current sublabel (starts at 0)
-// Output 
-//  subLabel The next sublabel
-//  Bool     False if there were no more sublabels
-//
-{
-   static Int iStart=0;
-   if (iLab==0) iStart = 0;
-   Int iLen = label.length();
-
-   if (iStart >= iLen) {
-      subLabel = "";
-      return False;
-   }
-
-   for (Int i=iStart; i<iLen; i++) {
-      String c(label.elem(i));
-      if (c == ",") {
-         Int n = i - iStart;
-         subLabel = String(label(iStart,n));
-         iStart = i + 1;        
-         return True;
-
-      }
-   }
-
-
-// substring extends to end of string
-
-   Int n = iLen - iStart;
-   subLabel = String(label(iStart,n));
-   iStart = iLen;
-   return True;
-}
-
 
 template <class T>
 void LatticeStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPosition& dPos) const
@@ -3014,7 +2018,6 @@ void LatticeStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPosi
       hLabel = String(oss);
    }
 }
-
 
 template <class T>
 Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice, 
@@ -3060,8 +2063,6 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice,
    }
    return True;
 }
-
-
 
 template <class T>
 Bool LatticeStatistics<T>::retrieveStorageStatistic(
@@ -3133,24 +2134,18 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(
 template <class T> void LatticeStatistics<T>::_latticePosToStoragePos(
 	IPosition& storagePos, const IPosition& latticePos
 ) {
-    if (latticePos.nelements() != pInLattice_p->ndim()) {
-    	ostringstream oss;
-    	oss << "LatticeStatistics::" << __FUNCTION__
-    		<< "Incorrectly sized position given";
-    	storagePos.resize(0);
-    	throw AipsError(oss.str());
-    }
-
-    if (storagePos.size() < displayAxes_p.size()) {
-    	ostringstream oss;
-    	oss << "LatticeStatistics::" << __FUNCTION__
-    		<< "storage position does not have enough elements";
-    }
-    if (latticePos.size() < displayAxes_p.size()) {
-    	ostringstream oss;
-    	oss << "LatticeStatistics::" << __FUNCTION__
-    		<< "lattice position does not have enough elements";
-    }
+    ThrowIf(
+    	latticePos.nelements() != pInLattice_p->ndim(),
+    	"Incorrectly sized position given"
+    );
+    ThrowIf(
+    	storagePos.size() < displayAxes_p.size(),
+    	"storage position does not have enough elements"
+    );;
+    ThrowIf(
+    	latticePos.size() < displayAxes_p.size(),
+    	"lattice position does not have enough elements"
+    );
     // do NOT resize storagePos. It can have more elements than
     // latticePos as defined by the caller.
     for (uInt i=0; i<displayAxes_p.nelements(); i++) {
@@ -3297,10 +2292,6 @@ void LatticeStatistics<T>::displayStats (
     AccumType dMin, AccumType dMax,
     AccumType q1, AccumType q3
 ) {
-// Get beam
-
-   //Array<Double> beamArea;
-   //Bool hasBeam = _getBeamArea(beamArea);
 
 // Have to convert LogIO object to ostream before can apply
 // the manipulators.  Also formatting Complex numbers with
@@ -3344,15 +2335,6 @@ void LatticeStatistics<T>::displayStats (
       os_p.output() << setw(oWidth) << String(os00) << "       Sum      = ";
       os_p.output() << setw(oWidth) << String(os1) << endl;
       os_p.post();
-      /*
-      if (hasBeam) {
-    	  // beamArea guaranteed to only have one value in this method.
-         os_p << "Flux density  = ";
-         os0 << sum/(*(beamArea.begin()));
-         os_p.output() << setw(oWidth) << String(os0) << " Jy" << endl;
-         os_p.post();
-      }
-      */
       os_p << "Mean          = ";
       os_p.output() << setw(oWidth) << String(os2);
       if (doRobust_p) {
@@ -3433,241 +2415,6 @@ void LatticeStatistics<T>::setStream (ostream& os, Int oPrec)
    os.setf(ios::scientific, ios::floatfield);
    os.setf(ios::left, ios::adjustfield);
 }
-
-/*
-// StatsTiledCollapser
-
-template <class T, class U>
-StatsTiledCollapser<T,U>::StatsTiledCollapser(const Vector<T>& pixelRange, 
-                                              Bool noInclude, Bool noExclude,
-                                              Bool fixedMinMax)
-:
-  noInclude_p(noInclude),
-  noExclude_p(noExclude),
-  fixedMinMax_p(fixedMinMax),
-  minPos_p(0),
-  maxPos_p(0), _cs(), _ranges() ,_first()
-{
-	if (! noInclude || ! noExclude) {
-		_ranges.resize(1);
-		_ranges[0] = std::pair<U, U>(pixelRange[0], pixelRange[1]);
-	}
-	T dummy = 0;
-	_type = whatType(&dummy);
-}
-
-
-template <class T, class U>
-void StatsTiledCollapser<T,U>::init (uInt nOutPixelsPerCollapse)
-{
-    AlwaysAssert (nOutPixelsPerCollapse == LatticeStatsBase::NACCUM, AipsError);
-}
-
-template <class T, class U>
-void StatsTiledCollapser<T,U>::initAccumulator (uInt n1, uInt n3)
-{
-	PrecTimer timer;
-	timer.start();
-   n1_p = n1;
-   n3_p = n3;
-   _first = vector<Bool>(n1*n3, True);
-   _cs = vector<ClassicalStatistics<U, const T*, const Bool*> >(n1*n3);
-   typename vector<ClassicalStatistics<U, const T*, const Bool*> >::iterator iter = _cs.begin();
-   typename vector<ClassicalStatistics<U, const T*, const Bool*> >::iterator end = _cs.end();
-   while (iter != end) {
-	   iter->setCalculateAsAdded(True);
-	   ++iter;
-   }
-   timer.stop();
-   cout << timer.getReal() << endl;
-}
-
-template <class T, class U>
-void StatsTiledCollapser<T,U>::process (
-	uInt index1, uInt index3,
-	const T* pInData, const Bool* pInMask,
-	uInt dataIncr, uInt maskIncr,
-	uInt nrval, const IPosition& startPos,
-	const IPosition& shape
-) {
-	uInt index = index1 + index3*n1_p;
-	//Record oldStats;
-	StatsData<U> oldStats;
-	Int64 oldMaxDataset = -1;
-	Int64 oldMinDataset = -1;
-	if (_type == TpFloat && ! _first[index]) {
-		oldStats = _cs[index].getStatistics();
-		oldMaxDataset = oldStats.maxpos.first;
-		oldMinDataset = oldStats.minpos.first;
-	}
-	if (pInMask) {
-		// mask
-		if (noInclude_p && noExclude_p) {
-			// no range
-			_cs[index].addData(
-				pInData, pInMask,
-				nrval, dataIncr, maskIncr
-			);
-		}
-		else {
-			// range
-			_cs[index].addData(
-				pInData, pInMask, nrval,
-				_ranges, noExclude_p, dataIncr, maskIncr
-			);
-		}
-	}
-	else {
-		// no mask
-		if (noInclude_p && noExclude_p) {
-			// no range
-			_cs[index].addData(
-				pInData, nrval, dataIncr
-			);
-		}
-		else {
-			// range
-			_cs[index].addData(
-				pInData, nrval, _ranges,
-				noExclude_p, dataIncr
-			);
-		}
-	}
-	StatsData<U> updatedStats = _cs[index].getStatistics();
-	if (_type == TpFloat) {
-		if (
-			updatedStats.maxpos.first >= 0
-			&& updatedStats.maxpos.first != oldMaxDataset
-		) {
-			maxPos_p = startPos + toIPositionInArray(
-				updatedStats.maxpos.second, shape
-			);
-		}
-		if (
-			updatedStats.minpos.first >= 0
-			&& updatedStats.minpos.first != oldMinDataset
-		) {
-			minPos_p = startPos + toIPositionInArray(
-				updatedStats.minpos.second, shape
-			);
-		}
-		_first[index] = False; 
-	}
-}
-
-template <class T, class U>
-void StatsTiledCollapser<T,U>::endAccumulator(Array<U>& result,
-                                              Array<Bool>& resultMask,
-                                              const IPosition& shape)
-{ 
-
-// Reshape arrays.  The mask is always true.  Any locations
-// in the storage lattice for which there were no valid points 
-// will have the NPTS field set to zero.  That is what
-// we use to effectively mask it.
-
-    result.resize(shape);
-    resultMask.resize(shape);
-    resultMask.set(True);
-    Bool deleteRes;
-    U* res = result.getStorage (deleteRes);
-    U* resptr = res;
-
-    uInt size = _cs.size();
-    vector<U> means(size), npts(size), sums(size), sumsqs(size), variances(size);
-    vector<T> maxes(size), mins(size);
-    typename vector<ClassicalStatistics<U, const T*, const Bool*> >::iterator csIter = _cs.begin();
-    typename vector<ClassicalStatistics<U, const T*, const Bool*> >::iterator csEnd = _cs.end();
-    StatsData<U> stats;
-    T t;
-    // U u;
-    uInt i = 0;
-    while (csIter != csEnd) {
-    	stats = csIter->getStatistics();
-    	means[i] = stats.mean;
-    	npts[i] = stats.npts;
-    	sums[i] = stats.sum;
-    	sumsqs[i] = stats.sumsq;
-    	variances[i] = stats.variance;
-    	if (fixedMinMax_p && ! noInclude_p) {
-    		t = _ranges[0].second;
-    	}
-    	else if (! stats.max.null()) {
-    		t = *stats.max;
-    	}
-    	else {
-    		t = T(0);
-    	}
-    	maxes[i] = t;
-    	if (fixedMinMax_p && ! noInclude_p) {
-    		t = _ranges[0].first;
-    	}
-    	else if (! stats.min.null()) {
-    		t = *stats.min;
-    	}
-    	else {
-    		t = 0;
-    	}
-    	// mins.push_back(t);
-    	mins[i] = t;
-    	++csIter;
-    	++i;
-    }
-    U* meanPtr = &(means[0]);
-    U* nPtsPtr = &(npts[0]);
-    U* sumPtr = &(sums[0]);
-    U* sumSqPtr = &(sumsqs[0]);
-    U* variancePtr = &(variances[0]);
-    const T* minPtr = &(mins[0]);
-    const T* maxPtr = &(maxes[0]);
-
-    uInt j;
-    U* resptr_root = resptr;
-    for (i=0; i<n3_p; ++i) {
-       resptr = resptr_root + (Int(LatticeStatsBase::NPTS) * n1_p);
-       objcopy (resptr, nPtsPtr, n1_p);
-       nPtsPtr += n1_p;
-
-       resptr = resptr_root + (Int(LatticeStatsBase::SUM) * n1_p);
-       objcopy (resptr, sumPtr, n1_p);
-       sumPtr += n1_p;
-
-       resptr = resptr_root + (Int(LatticeStatsBase::SUMSQ) * n1_p);
-       objcopy (resptr, sumSqPtr, n1_p);
-       sumSqPtr += n1_p;
-
-       resptr = resptr_root + (Int(LatticeStatsBase::MEAN) * n1_p);
-       objcopy (resptr, meanPtr, n1_p);
-       meanPtr += n1_p;
-
-       resptr = resptr_root + (Int(LatticeStatsBase::VARIANCE) * n1_p);
-       objcopy (resptr, variancePtr, n1_p);
-       variancePtr += n1_p;
-
-       resptr = resptr_root + (Int(LatticeStatsBase::MIN) * n1_p);
-       for (j=0; j<n1_p; ++j) {
-          convertScalar (*resptr++, *minPtr++);
-       }
-
-       resptr = resptr_root + (Int(LatticeStatsBase::MAX) * n1_p);
-       for (j=0; j<n1_p; ++j) {
-          convertScalar (*resptr++, *maxPtr++);
-       }
-
-       resptr_root += n1_p * Int(LatticeStatsBase::NACCUM);
-    }
-    result.putStorage (res, deleteRes);
-}
-
-template <class T, class U>
-void StatsTiledCollapser<T,U>::minMaxPos(IPosition& minPos, IPosition& maxPos)
-{
-   minPos.resize(minPos_p.nelements());
-   minPos = minPos_p;
-   maxPos.resize(maxPos_p.nelements());
-   maxPos = maxPos_p;
-}
-*/
 
 } //# NAMESPACE CASACORE - END
 

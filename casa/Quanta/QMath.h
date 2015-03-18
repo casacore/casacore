@@ -229,8 +229,10 @@ Quantum<Qtype> max(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 // <group name="foreign">
 Int ceil(const Int &val);
 Int floor(const Int &val);
+#if !(defined(AIPS_CXX11) || (defined(__APPLE_CC__) && __APPLE_CC__ > 5621))
 Float real(const Float &val);
-Double real(const Double&val);
+Double real(const Double &val);
+#endif
 Array<Complex> operator *(const Array<Complex> &in, Double f);
 Array<Complex> operator /(const Array<Complex> &in, Double f);
 Array<DComplex> operator *(const Array<DComplex> &in, Double f);

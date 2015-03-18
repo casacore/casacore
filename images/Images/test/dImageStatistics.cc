@@ -316,10 +316,12 @@ try {
       }
       if (validInputs(PLOTTING)) {
          PGPlotter plotter(device);
+            /*
          if (!stats.setPlotting(plotter, statisticTypes, nxy)) {
             os << stats.errorMessage() << LogIO::POST;
             return 1;
          }
+         */
       }
 
 // Recover things
@@ -430,6 +432,7 @@ try {
          os << stats.errorMessage() << LogIO::POST;
          return 1;
       }
+      /*
       if (validInputs(PLOTTING)) {
          PGPlotter plotter(device);
          if (!stats.setPlotting(plotter, statisticTypes, nxy)) {
@@ -437,6 +440,7 @@ try {
             return 1;
          }
       }
+      */
 
 // Display statistics
 
