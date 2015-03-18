@@ -13,9 +13,11 @@ do
     sed -f $pgmpath/latticemath.sed "$FILE.n2" > "$FILE.n3"
     sed -f $pgmpath/lel.sed "$FILE.n3" > "$FILE.n4"
     sed -f $pgmpath/regions.sed "$FILE.n4" > "$FILE.n5"
-    if ! diff "$FILE.n5" "$FILE" >& /dev/null; then
-      mv "$FILE.n5" "$FILE"
+    sed -f $pgmpath/mssel.sed "$FILE.n5" > "$FILE.n6"
+    sed -f $pgmpath/msoper.sed "$FILE.n6" > "$FILE.n7"
+    if ! diff "$FILE.n7" "$FILE" >& /dev/null; then
+      mv "$FILE.n7" "$FILE"
 #      echo "  changed #includes in $FILE"
     fi
-    rm -f "$FILE".n[12345]
+    rm -f "$FILE".n[1234567]
 done

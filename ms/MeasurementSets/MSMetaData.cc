@@ -841,6 +841,19 @@ std::set<uInt> MSMetaData::getSpwsForIntent(const String& intent) {
 	return spws;
 }
 
+std::vector<std::set<uInt> > MSMetaData::getSpwToDataDescriptionIDMap() const {
+	// TODO perhaps cache the result, but atm doesn't seem worth doing
+	std::map<std::pair<uInt, uInt>, uInt> spwPolToDDID = getSpwIDPolIDToDataDescIDMap();
+	std::vector<std::set<uInt> > mymap(nSpw(True));
+	std::map<std::pair<uInt, uInt>, uInt>::const_iterator iter = spwPolToDDID.begin();
+	std::map<std::pair<uInt, uInt>, uInt>::const_iterator end = spwPolToDDID.end();
+	while (iter != end) {
+		mymap[iter->first.first].insert(iter->second);
+		++iter;
+	}
+	return mymap;
+}
+
 uInt MSMetaData::nSpw(Bool includewvr) const {
 	if (_nSpw > 0) {
 		return includewvr ? _nSpw : _nSpw - getWVRSpw().size();
@@ -904,7 +917,7 @@ void MSMetaData::_getFieldsAndSpwMaps(
 	Vector<Int>::const_iterator curField = allFieldIDs->begin();
 	fieldToSpwMap.clear();
 	spwToFieldMap.resize(nSpw(True));
-	std::map<Int, uInt> ddidToSpwMap = _getDataDescIDToSpwMap();
+	vector<uInt> ddidToSpwMap = _getDataDescIDToSpwMap();
 	for (
 		Vector<Int>::const_iterator curDDID=allDDIDs->begin();
 		curDDID!=endDDID; ++curDDID, ++curField
@@ -1151,7 +1164,7 @@ void MSMetaData::_getScansAndSpwMaps(
 	std::map<ScanKey, std::set<uInt> > scanToDDIDMap;
 	vector<std::set<ScanKey> > ddIDToScanMap;
 	_getScansAndDDIDMaps(scanToDDIDMap, ddIDToScanMap);
-	std::map<Int, uInt> ddToSpw = _getDataDescIDToSpwMap();
+	vector<uInt> ddToSpw = _getDataDescIDToSpwMap();
 	std::map<ScanKey, std::set<uInt> >::const_iterator iter = scanToDDIDMap.begin();
 	std::map<ScanKey, std::set<uInt> >::const_iterator end = scanToDDIDMap.end();
 	std::set<uInt>::const_iterator dIter;
@@ -1902,7 +1915,7 @@ void MSMetaData::_getTimesAndInvervals(
 	Vector<Double>::const_iterator  iIter = intervals.begin();
 	scanSpwToAverageIntervalMap.clear();
 	std::map<ScanKey, std::map<uInt, uInt> > counts;
-	std::map<Int, uInt> dataDesIDToSpwMap = _getDataDescIDToSpwMap();
+	vector<uInt> dataDesIDToSpwMap = _getDataDescIDToSpwMap();
 	ScanKey scanKey;
 	//std::pair<ScanKey, uInt> scanSpwToAverageIntervalKey;
 	uInt mysize = 0;
@@ -1918,7 +1931,7 @@ void MSMetaData::_getTimesAndInvervals(
 			scanToTimeRangeMap[scanKey].first = min(scanToTimeRangeMap[scanKey].first, *tIter-half);
 			scanToTimeRangeMap[scanKey].second = max(scanToTimeRangeMap[scanKey].second, *tIter+half);
 		}
-		uInt spw = dataDesIDToSpwMap.find(*dIter)->second;
+		uInt spw = dataDesIDToSpwMap[*dIter];
 		if (
 			(
 				scanSpwToAverageIntervalMap.find(scanKey)
@@ -2207,18 +2220,20 @@ Record MSMetaData::getSummary() const {
 	Record polTable;
 	polTable.define("n correlations", Vector<Int>(_getNumCorrs()));
 	Record dataDescTable;
-	std::map<Int, uInt> ddToSpw = _getDataDescIDToSpwMap();
-	std::map<Int, uInt> ddToPolID = _getDataDescIDToPolIDMap();
-	std::map<Int, uInt>::const_iterator siter = ddToSpw.begin();
-	std::map<Int, uInt>::const_iterator send = ddToSpw.end();
-	std::map<Int, uInt>::const_iterator piter = ddToPolID.begin();
+	vector<uInt> ddToSpw = _getDataDescIDToSpwMap();
+	vector<uInt> ddToPolID = getDataDescIDToPolIDMap();
+	vector<uInt>::const_iterator siter = ddToSpw.begin();
+	vector<uInt>::const_iterator send = ddToSpw.end();
+	vector<uInt>::const_iterator piter = ddToPolID.begin();
 	vector<Int> spws(ddToSpw.size());
 	vector<Int> polids(ddToPolID.size());
+	uInt ddid = 0;
 	while (siter != send) {
-		spws[siter->first] = siter->second;
-		polids[piter->first] = piter->second;
+		spws[ddid] = *siter;
+		polids[ddid] = *piter;
 		++siter;
 		++piter;
+		++ddid;
 	}
 	dataDescTable.define("spectral windows", Vector<Int>(spws));
 	dataDescTable.define("polarization ids", Vector<Int>(polids));
@@ -2771,14 +2786,16 @@ Quantity MSMetaData::getEffectiveTotalExposureTime() {
 	Vector<Double> times = ScalarColumn<Double>(result, "TIME").getColumn();
 	// each row represents a unique baseline, data description ID, and time combination
 	uInt nrows = result.nrow();
-	std::map<Int, uInt> dataDescToSpwIdMap = _getDataDescIDToSpwMap();
+	vector<uInt> dataDescToSpwIdMap = _getDataDescIDToSpwMap();
 	std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
 	vector<SpwProperties> spwInfo = _getSpwInfo(avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw);
 	std::map<Double, Double> timeToBWMap = _getTimeToTotalBWMap(
 		times, ddIDs
 	);
 	for (uInt i=0; i<nrows; ++i) {
-		Quantum<Vector<Double> > channelWidths = spwInfo[dataDescToSpwIdMap.find(ddIDs[i])->second].chanwidths;
+		uInt ddID = ddIDs[i];
+		uInt spw = dataDescToSpwIdMap[ddID];
+		Quantum<Vector<Double> > channelWidths = spwInfo[spw].chanwidths;
 		Matrix<Bool> flagsMatrix(ArrayColumn<Bool>(result, "FLAG").get(i));
 		uInt nCorrelations = flagsMatrix.nrow();
 		Double denom = (timeToBWMap.find(times[i])->second)*maxNBaselines*nCorrelations;
@@ -2892,7 +2909,7 @@ std::map<Double, Double> MSMetaData::_getTimeToTotalBWMap(
 		++dIter;
 	}
 	std::map<Double, std::set<uInt> >::const_iterator end1 = timeToDDIDMap.end();
-	std::map<Int, uInt> dataDescIDToSpwMap = _getDataDescIDToSpwMap();
+	vector<uInt> dataDescIDToSpwMap = _getDataDescIDToSpwMap();
 	std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
 	vector<SpwProperties> spwInfo = _getSpwInfo(avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw);
 	for (
@@ -2906,7 +2923,8 @@ std::map<Double, Double> MSMetaData::_getTimeToTotalBWMap(
 			std::set<uInt>::const_iterator dIter=ddIDs.begin();
 			dIter!=end2; ++dIter
 		) {
-			timeToBWMap[iter->first] += spwInfo[dataDescIDToSpwMap.find(*dIter)->second].bandwidth;
+			uInt spw = dataDescIDToSpwMap[*dIter];
+			timeToBWMap[iter->first] += spwInfo[spw].bandwidth;
 		}
 	}
 	return timeToBWMap;
@@ -2995,12 +3013,13 @@ void MSMetaData::_getUnflaggedRowStats(
 	uInt i = 0;
     //uInt64 count = 0;
     // a flag value of True means the datum is bad (flagged), so False => unflagged
-    std::map<Int, uInt> dataDescIDToSpwMap = _getDataDescIDToSpwMap();
+    vector<uInt> dataDescIDToSpwMap = _getDataDescIDToSpwMap();
 	std::set<uInt> a, b, c, d, e;
 	vector<SpwProperties> spwInfo = _getSpwInfo(a, b, c, d, e);
 	CountedPtr<ArrayColumn<Bool> > flags = _getFlags();
 	while (a1Iter != aEnd) {
-		SpwProperties spwProp = spwInfo[dataDescIDToSpwMap.find(*dIter)->second];
+		uInt spw = dataDescIDToSpwMap[*dIter];
+		SpwProperties spwProp = spwInfo[spw];
 		Vector<Double> channelWidths(
 			Vector<Double>(spwProp.chanwidths.getValue("Hz"))
 		);
@@ -3114,7 +3133,7 @@ void MSMetaData::_getSpwsAndIntentsMaps(
 	Vector<Int>::const_iterator endDDID = dataDescIDs->end();
 	CountedPtr<Vector<Int> > states = _getStateIDs();
 	Vector<Int>::const_iterator curState = states->begin();
-	std::map<Int, uInt> dataDescToSpwMap = _getDataDescIDToSpwMap();
+	vector<uInt> dataDescToSpwMap = _getDataDescIDToSpwMap();
 	while (curDDID!=endDDID) {
 		uInt spw = dataDescToSpwMap[*curDDID];
 		std::set<String> intents = stateToIntentsMap[*curState];
@@ -3285,21 +3304,22 @@ void MSMetaData::_getFieldsAndIntentsMaps(
 	}
 }
 
-std::map<std::pair<uInt, uInt>, Int> MSMetaData::getSpwIDPolIDToDataDescIDMap() {
+std::map<std::pair<uInt, uInt>, uInt> MSMetaData::getSpwIDPolIDToDataDescIDMap() const {
 	if (! _spwPolIDToDataDescIDMap.empty()) {
 		return _spwPolIDToDataDescIDMap;
 	}
-	std::map<Int, uInt> dataDescIDToSpwMap = _getDataDescIDToSpwMap();
-	std::map<Int, uInt>::const_iterator i1 = dataDescIDToSpwMap.begin();
-	std::map<Int, uInt>::const_iterator end = dataDescIDToSpwMap.end();
-	std::map<std::pair<uInt, uInt>, Int> spwPolIDToDataDescIDMap;
-	std::map<Int, uInt> dataDescIDToPolIDMap = _getDataDescIDToPolIDMap();
+	vector<uInt> dataDescIDToSpwMap = _getDataDescIDToSpwMap();
+	vector<uInt>::const_iterator i1 = dataDescIDToSpwMap.begin();
+	vector<uInt>::const_iterator end = dataDescIDToSpwMap.end();
+	std::map<std::pair<uInt, uInt>, uInt> spwPolIDToDataDescIDMap;
+	vector<uInt> dataDescIDToPolIDMap = getDataDescIDToPolIDMap();
+	uInt dataDesc = 0;
 	while (i1 != end) {
-		Int dataDesc = i1->first;
-		uInt spw = i1->second;
-		uInt polID = dataDescIDToPolIDMap.at(dataDesc);
+		uInt spw = *i1;
+		uInt polID = dataDescIDToPolIDMap[dataDesc];
 		spwPolIDToDataDescIDMap[std::make_pair(spw, polID)] = dataDesc;
 		++i1;
+		++dataDesc;
 	}
 	uInt mysize = 2*sizeof(Int)*spwPolIDToDataDescIDMap.size();
 	if (_cacheUpdated(mysize)) {
@@ -3341,7 +3361,7 @@ std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(
 	else {
 		dir2 = _getInterpolatedDirection(pCols, pidx2, time);
 	}
-	return std::make_pair<MDirection, MDirection>(dir1, dir2);
+	return std::make_pair(dir1, dir2);
 }
 
 MDirection MSMetaData::_getInterpolatedDirection(
@@ -3388,13 +3408,14 @@ MDirection MSMetaData::_getInterpolatedDirection(
 	return MDirection(qlon, qlat, rf);
 }
 
-std::map<Int, uInt> MSMetaData::_getDataDescIDToSpwMap() const {
+vector<uInt> MSMetaData::_getDataDescIDToSpwMap() const {
 	if (! _dataDescIDToSpwMap.empty()) {
 		return _dataDescIDToSpwMap;
 	}
 	String spwColName = MSDataDescription::columnName(MSDataDescriptionEnums::SPECTRAL_WINDOW_ID);
 	ROScalarColumn<Int> spwCol(_ms->dataDescription(), spwColName);
-	std::map<Int, uInt> dataDescToSpwMap = _toUIntMap(spwCol.getColumn());
+	Vector<Int> spws = spwCol.getColumn();
+	vector<uInt> dataDescToSpwMap(spws.begin(), spws.end());
 	uInt mysize = sizeof(Int) * dataDescToSpwMap.size();
 	if (_cacheUpdated(mysize)) {
 		_dataDescIDToSpwMap = dataDescToSpwMap;
@@ -3413,8 +3434,8 @@ std::set<uInt> MSMetaData::getPolarizationIDs(
 	if (! _scanSpwToPolIDMap.empty()) {
 		return _scanSpwToPolIDMap.find(std::pair<ScanKey, uInt>(scanKey, spwid))->second;
 	}
-	std::map<Int, uInt> ddToPolMap = _getDataDescIDToPolIDMap();
-	std::map<Int, uInt> ddToSpwMap = _getDataDescIDToSpwMap();
+	vector<uInt> ddToPolMap = getDataDescIDToPolIDMap();
+	vector<uInt> ddToSpwMap = _getDataDescIDToSpwMap();
 	std::map<ScanKey, std::set<uInt> > scanToDDIDMap;
 	vector<std::set<ScanKey> > ddIDToScanMap;
 	_getScansAndDDIDMaps(scanToDDIDMap, ddIDToScanMap);
@@ -3451,13 +3472,14 @@ uInt MSMetaData::_sizeof(const std::map<std::pair<Int, uInt>, std::set<uInt> >& 
 	return size;
 }
 
-std::map<Int, uInt> MSMetaData::_getDataDescIDToPolIDMap() const {
+vector<uInt> MSMetaData::getDataDescIDToPolIDMap() const {
 	if (! _dataDescIDToPolIDMap.empty()) {
 		return _dataDescIDToPolIDMap;
 	}
-	String spwColName = MSDataDescription::columnName(MSDataDescriptionEnums::POLARIZATION_ID);
-	ROScalarColumn<Int> spwCol(_ms->dataDescription(), spwColName);
-	std::map<Int, uInt> dataDescToPolIDMap = _toUIntMap(spwCol.getColumn());
+	String polColName = MSDataDescription::columnName(MSDataDescriptionEnums::POLARIZATION_ID);
+	ROScalarColumn<Int> polCol(_ms->dataDescription(), polColName);
+	Vector<Int> pols = polCol.getColumn();
+	vector<uInt> dataDescToPolIDMap(pols.begin(), pols.end());
 	uInt mysize = sizeof(Int) * dataDescToPolIDMap.size();
 	if (_cacheUpdated(mysize)) {
 		_dataDescIDToPolIDMap = dataDescToPolIDMap;

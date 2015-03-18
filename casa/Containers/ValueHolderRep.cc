@@ -1047,6 +1047,9 @@ void ValueHolderRep::toRecord (Record& rec, const RecordFieldId& id) const
   case TpArrayInt:
     rec.define (id, *static_cast<Array<Int>*>(itsPtr));
     break;
+  case TpArrayUInt:
+    rec.define (id, *static_cast<Array<uInt>*>(itsPtr));
+    break;
   case TpArrayInt64:
     rec.define (id, *static_cast<Array<Int64>*>(itsPtr));
     break;

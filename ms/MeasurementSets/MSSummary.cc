@@ -1591,23 +1591,14 @@ void MSSummary::listSpectralWindow (LogIO& os, Bool verbose) const
 		// Line is (V1): RefFreq RestFreq Molecule Trans'n Resol BW Numch Correls
 		// V2 subtable:		SOURCE		 SOURCE		      POLARIZ'N
 
-		// Define the column widths
 		Int widthLead	=  2;
 		Int widthFreq	= 12;
 		Int widthFrqNum	=  7;
-		//Int widthMol	= 10;
-		//Int widthTrans	= 12;
 		Int widthNumChan	=  8;
-		//    Int widthCorrTypes	= msPolC.corrType()(0).nelements()*4;
-		//    Int widthCorrType	=  4;
 
-		// Write the column headers
 		os.output().setf(ios::left, ios::adjustfield);
 		os.output().width(widthLead);	os << "  ";
 		os.output().width(widthFreq);	os << "Ref.Freq";
-		//os.output().width(widthFreq);	os << "RestFreq";
-		//os.output().width(widthMol);	os << "Molecule";
-		//os.output().width(widthTrans);	os << "Transition";
 		os.output().width(widthNumChan);	os << "#Chans";
 		os.output().width(widthFreq);	os << "Resolution";
 		os.output().width(widthFreq);	os << "TotalBW";
@@ -1774,7 +1765,6 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 
 	// determine the data_desc_ids present in the main table
 	MSRange msr(*pMS);
-	//ant2 = msr.range(MSS::ANTENNA2).asArrayInt(RecordFieldId(0));
 	Vector<Int> ddId = msr.range(MSS::DATA_DESC_ID).asArrayInt(RecordFieldId(0));
 	Vector<uInt> uddId(ddId.nelements());
 	for (uInt i=0; i<ddId.nelements(); i++) uddId(i)=ddId(i);
@@ -1783,8 +1773,8 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 	Vector<Int> polIds = msDDC.polarizationId().getColumnCells(uddId);
 	const Int option=Sort::HeapSort | Sort::NoDuplicates;
 	const Sort::Order order=Sort::Ascending;
-	Int nSpw=GenSort<Int>::sort (spwIds, order, option);
-	Int nPol=GenSort<Int>::sort (polIds, order, option);
+	uInt nSpw = GenSort<Int>::sort (spwIds, order, option);
+	Int nPol = GenSort<Int>::sort (polIds, order, option);
 
 	if (ddId.nelements()>0) {
 		os << "Spectral Windows: ";
@@ -1810,8 +1800,6 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 		Int widthCorrTypes	= msPolC.corrType()(0).nelements()*4;
 		Int widthCorrType	=  4;
 		uInt widthBBCNo = 8;
-
-
 
 		// Write the column headers
 		os.output().setf(ios::left, ios::adjustfield);
@@ -1843,56 +1831,73 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
 		vector<uInt> bbcNo = hasBBCNo ? _msmd->getBBCNos() : vector<uInt>();
 
 		os.output().precision(9);
-		// For each row of the DataDesc subtable, write the info
-		for (uInt i=0; i<ddId.nelements(); i++) {
-			Int dd=ddId(i);
-			Int spw = msDDC.spectralWindowId()(dd);
-			Int pol = msDDC.polarizationId()(dd);
-			os.output().setf(ios::left, ios::adjustfield);
-			os.output().width(widthLead);		os << "  ";
-			// 1th column: Spectral Window Id
-			os.output().width(widthSpwId); os << (spw);
-			// 2nd column: SPW name
-			os.output().width(widthName);
-			os << names[spw] << " ";
+		// order by spwid, not ddid, CAS-7376
+		Vector<Int>::const_iterator iter = spwIds.begin();
+		Vector<Int>::const_iterator end = spwIds.end();
+		std::vector<std::set<uInt> > spwToDDID = _msmd->getSpwToDataDescriptionIDMap();
+		std::set<uInt> uDDIDSet(uddId.begin(), uddId.end());
+		vector<uInt> ddToPolID = _msmd->getDataDescIDToPolIDMap();
+		while (iter != end) {
+		// for (uInt i=0; i<ddId.nelements(); i++) {
+			Int spw = *iter;
+			std::set<uInt> ddids = spwToDDID[spw];
+			std::set<uInt>::const_iterator diter = ddids.begin();
+			std::set<uInt>::const_iterator dend = ddids.end();
+			while (diter != dend) {
+				uInt dd = *diter;
+				if (uDDIDSet.find(dd) == uDDIDSet.end()) {
+					// data description ID not in main table, so not reported here
+					continue;
+				}
+				Int pol = ddToPolID[dd];
+				os.output().setf(ios::left, ios::adjustfield);
+				os.output().width(widthLead);		os << "  ";
+				// 1th column: Spectral Window Id
+				os.output().width(widthSpwId); os << (spw);
+				// 2nd column: SPW name
+				os.output().width(widthName);
+				os << names[spw] << " ";
 
-			// 3rd column: number of channels in the spectral window
-			os.output().setf(ios::right, ios::adjustfield);
-			os.output().width(widthNumChan);
-			os << nChans[spw] << " ";
-			// 4th column: Reference Frame info
-			// os.output().setf(ios::left, ios::adjustfield);
-			os.output().width(widthFrame);
-			os<< msSWC.refFrequencyMeas()(spw).getRefString();
-			// 5th column: Chan 1 freq (may be at high freq end of band!)
-			os.output().setf(ios::fixed);
-			os.output().precision(3);
-			os.output().width(widthFrqNum);
-			os<< chanFreqs[spw].getValue("MHz")[0];
-			// 6th column: channel resolution
-			os.output().width(widthFrqNum+2);
-			os << chanWidths[spw].getValue("kHz")[0];
-			// 7th column: total bandwidth of the spectral window
-			os.output().width(widthFrqNum);
-			os.output().precision(1);
-			os<< bandwidths[spw]/1000;
-			os.output().width(widthFrqNum);
-			os.output().precision(4);
-			os << centerFreqs[spw].getValue("MHz") << " ";
-			if (hasBBCNo) {
-				os.output().width(widthBBCNo);
-				os<< bbcNo[spw];
-			}
-			// 8th column: reference frequency
-			//			os.output().width(widthFrqNum);
-			//			os<< msSWC.refFrequency()(spw)/1.0e6;
-			// 9th column: the correlation type(s)
-			for (uInt j=0; j<msPolC.corrType()(pol).nelements(); j++) {
-				os.output().width(widthCorrType);
-				Int index = msPolC.corrType()(pol)(IPosition(1,j));
-				os << Stokes::name(Stokes::type(index));
+				// 3rd column: number of channels in the spectral window
+				os.output().setf(ios::right, ios::adjustfield);
+				os.output().width(widthNumChan);
+				os << nChans[spw] << " ";
+				// 4th column: Reference Frame info
+				// os.output().setf(ios::left, ios::adjustfield);
+				os.output().width(widthFrame);
+				os<< msSWC.refFrequencyMeas()(spw).getRefString();
+				// 5th column: Chan 1 freq (may be at high freq end of band!)
+				os.output().setf(ios::fixed);
+				os.output().precision(3);
+				os.output().width(widthFrqNum);
+				os<< chanFreqs[spw].getValue("MHz")[0];
+				// 6th column: channel resolution
+				os.output().width(widthFrqNum+2);
+				os << chanWidths[spw].getValue("kHz")[0];
+				// 7th column: total bandwidth of the spectral window
+				os.output().width(widthFrqNum);
+				os.output().precision(1);
+				os<< bandwidths[spw]/1000;
+				os.output().width(widthFrqNum);
+				os.output().precision(4);
+				os << centerFreqs[spw].getValue("MHz") << " ";
+				if (hasBBCNo) {
+					os.output().width(widthBBCNo);
+					os<< bbcNo[spw];
+				}
+				// 8th column: reference frequency
+				//			os.output().width(widthFrqNum);
+				//			os<< msSWC.refFrequency()(spw)/1.0e6;
+				// 9th column: the correlation type(s)
+				for (uInt j=0; j<msPolC.corrType()(pol).nelements(); j++) {
+					os.output().width(widthCorrType);
+					Int index = msPolC.corrType()(pol)(IPosition(1,j));
+					os << Stokes::name(Stokes::type(index));
+				}
+				++diter;
 			}
 			os << endl;
+			++iter;
 		}
 	}
 	os << LogIO::POST;

@@ -155,7 +155,7 @@ Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
 }
 
 template <class T> Bool ImageStatistics<T>::_getBeamArea(
-    Array<Double>& beamArea
+    Array<Double>& beamArea, String& msg
 ) const {
 	ImageInfo ii = pInImage_p->imageInfo();
 	Bool hasMultiBeams = ii.hasMultipleBeams();
@@ -164,19 +164,19 @@ template <class T> Bool ImageStatistics<T>::_getBeamArea(
 
 	// use contains() not == so moment maps are dealt with nicely
 	if (! hasMultiBeams && ! hasSingleBeam ) {
-		_messages.push_back(String("Image has no beam, cannot compute flux"));
+		msg = "Image has no beam";
 		return False;
 	}
 	else if (! cSys.hasDirectionCoordinate()) {
-		_messages.push_back(String("Image does not have a direction coordinate, cannot computer flux"));
+		msg = "Image does not have a direction coordinate";
 		return False;
 	}
 	else {
 		String imageUnits = pInImage_p->units().getName();
 		imageUnits.upcase();
 		if (! imageUnits.contains("JY/BEAM")) {
-		_messages.push_back(String("Image brightness units not conformant with Jy/beam, cannot compute flux"));
-		return False;
+			msg = "Image brightness units not conformant with Jy/beam";
+			return False;
 		}
 	}
 	DirectionCoordinate dCoord = cSys.directionCoordinate();
@@ -199,14 +199,20 @@ template <class T> Bool ImageStatistics<T>::_getBeamArea(
 		);
 		return True;
 	}
+
 	// per plane beams
-	// ensure both the spectral and polarization axes are display axes
-	Bool foundSpec = !cSys.hasSpectralAxis() || False;
-	Bool foundPol = !cSys.hasPolarizationCoordinate() || False;
+	// ensure both the spectral and polarization axes are display axes,
+	// a degenerate axis is considered not to be a cursor axis for
+	// this purpose since no aggregation along that axis actually occurs
+	IPosition shape = pInImage_p->shape();
+
+	Bool foundSpec = ! cSys.hasSpectralAxis()
+		|| shape[cSys.spectralAxisNumber(False)] == 1;
+	Bool foundPol = ! cSys.hasPolarizationCoordinate()
+		|| shape[cSys.polarizationAxisNumber(False)] == 1;
 	Int specAxis = foundSpec ? -1 : cSys.spectralAxisNumber();
 	Int polAxis = foundPol ? -1 : cSys.polarizationAxisNumber();
 	Bool found = False;
-	const ImageBeamSet& beams = ii.getBeamSet();
 	Int storageSpecAxis = -1;
 	Int storagePolAxis = -1;
 
@@ -227,24 +233,29 @@ template <class T> Bool ImageStatistics<T>::_getBeamArea(
 	if (! found) {
 		// if per-plane beams, either the spectral axis and/or the
 		// polarization axis is not a display axis
-		// or else the image has no beam
+		msg = "One or both of the spectral or polarization axes is "
+			"not a display axis, not degenerate, and the image has multiple beams";
 		return False;
 	}
-
+	const ImageBeamSet& beams = ii.getBeamSet();
 	IPosition beamsShape = beams.shape();
+	/*
 	if (cSys.hasSpectralAxis()) {
 		AlwaysAssert(
 			beamsShape[0] == beamAreaShape[storageSpecAxis],
 			AipsError
 		);
 	}
+	*/
 	Int beamPolAxis = -1;
 	if (cSys.hasPolarizationCoordinate()) {
 		beamPolAxis = specAxis < 0 ? 0 : 1;
+		/*
 		AlwaysAssert(
 			beamsShape[beamPolAxis] == beamAreaShape[storagePolAxis],
 			AipsError
 		);
+		*/
 	}
 	IPosition curPos(beamAreaShape.nelements(), 0);
 	GaussianBeam curBeam;
@@ -468,16 +479,24 @@ void ImageStatistics<T>::displayStats(
 	ostringstream oss;
 	if (_canDoFlux()) {
 		Array<Double> beamArea;
-		Bool hasBeam = _getBeamArea(beamArea);
-		Quantum<AccumType> qFlux = _flux(
-			sum, hasBeam ? *(beamArea.begin()) : 0
-		);
-		AccumType val = qFlux.getValue();
-		String unit = qFlux.getFullUnit().getName();
-		oss << "         -- flux density [flux]:                    "
+		String msg;
+		Bool hasBeam = _getBeamArea(beamArea, msg);
+		String unit;
+		if (! hasBeam) {
+			unit = pInImage_p->units().getName();
+			unit.downcase();
+		}
+		if (hasBeam || ! unit.contains("/beam")) {
+			Quantum<AccumType> qFlux = _flux(
+					sum, hasBeam ? *(beamArea.begin()) : 0
+			);
+			AccumType val = qFlux.getValue();
+			String unit = qFlux.getFullUnit().getName();
+			oss << "         -- flux density [flux]:                    "
 			<< val << " " << unit;
-		messages.push_back(oss.str());
-		oss.str("");
+			messages.push_back(oss.str());
+			oss.str("");
+		}
 	}
 
 	if (LattStatsSpecialize::hasSomePoints(nPts)) {
@@ -608,6 +627,70 @@ template <class T> Quantum<typename casacore::NumericTraits<T>::PrecisionType> I
 		}
 	}
 	return Quantum<AccumType>(flux, fUnit);
+}
+
+template <class T> Bool ImageStatistics<T>::_computeFlux(
+	Array<AccumType>& flux,const Array<AccumType>& npts, const Array<AccumType>& sum
+) {
+	Array<Double> beamArea;
+	String msg;
+	Bool gotBeamArea = _getBeamArea(beamArea, msg);
+	if (! gotBeamArea) {
+		String unit = pInImage_p->units().getName();
+		unit.downcase();
+		if (unit.contains("/beam")) {
+			os_p << LogIO::WARN << "Unable to compute flux density: "
+				<< msg << LogIO::POST;
+			return False;
+		}
+	}
+	ReadOnlyVectorIterator<AccumType> sumIt(sum);
+	ReadOnlyVectorIterator<AccumType> nPtsIt(npts);
+	VectorIterator<AccumType> fluxIt(flux);
+	PtrHolder<ReadOnlyVectorIterator<Double> > beamAreaIter(
+		gotBeamArea ? new ReadOnlyVectorIterator<Double>(beamArea) : 0
+	);
+	uInt n1 = nPtsIt.vector().nelements();
+	while (!nPtsIt.pastEnd()) {
+		for (uInt i=0; i<n1; ++i) {
+			if (nPtsIt.vector()(i) > 0.5) {
+				fluxIt.vector()(i) = _flux(
+					sumIt.vector()(i), gotBeamArea ? beamAreaIter->vector()(i) : 0
+	            ).getValue();
+			}
+		}
+		nPtsIt.next();
+		sumIt.next();
+		fluxIt.next();
+		if (gotBeamArea) {
+			beamAreaIter->next();
+		}
+	}
+	return True;
+}
+
+template <class T>  Bool ImageStatistics<T>::_computeFlux(
+	AccumType& flux, AccumType sum, const IPosition& pos,
+	Bool posInLattice
+) {
+	Array<Double> beamArea;
+	String msg;
+	if (_getBeamArea(beamArea, msg)) {
+		IPosition beamPos = pos;
+		if (posInLattice) {
+			this->_latticePosToStoragePos(beamPos, pos);
+		}
+		flux = _flux(sum, beamArea(beamPos)).getValue();
+	}
+	else {
+		String unit = pInImage_p->units().getName();
+		unit.downcase();
+		if (unit.contains("/beam")) {
+			return False;
+		}
+		flux = _flux(sum, 0).getValue();
+	}
+	return True;
 }
 
 template <class T> Bool ImageStatistics<T>::_canDoFlux() const {

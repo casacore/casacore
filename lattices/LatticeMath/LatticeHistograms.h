@@ -35,6 +35,7 @@
 #include <casacore/lattices/LatticeMath/LatticeStatistics.h>
 #include <casacore/lattices/LatticeMath/LatticeProgress.h>
 #include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/System/PGPlotter.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/casa/iosfwd.h>
 

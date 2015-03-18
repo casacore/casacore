@@ -97,6 +97,8 @@ public:
 	// get the antenna stations for the specified antenna names
 	vector<String> getAntennaStations(const vector<String>& antennaNames);
 
+	vector<uInt> getDataDescIDToPolIDMap() const;
+
 	std::map<String, std::set<Int> > getIntentToFieldsMap();
 
 	std::map<String, std::set<ScanKey> > getIntentToScansMap();
@@ -146,6 +148,9 @@ public:
 	// get the number of fields.
 	uInt nFields() const;
 
+	// get a mapping of spectral window ID to data descrption IDs
+	std::vector<std::set<uInt> > getSpwToDataDescriptionIDMap() const;
+
 	// get a set of spectral windows corresponding to the specified fieldID
 	std::set<uInt> getSpwsForField(const Int fieldID);
 
@@ -158,17 +163,6 @@ public:
 	// get the set of field names corresponding to the specified spectral window.
 	std::set<String> getFieldNamesForSpw(const uInt spw);
 
-	// get the number of scans in the dataset
-	uInt nScans();
-
-	// get the number of observations (from the OBSERVATIONS table) in the dataset
-	uInt nObservations() const;
-
-	// get the number of arrays (from the ARRAY table) in the dataset
-	uInt nArrays();
-
-	// get the number of data description IDs (from the DATA_DESCRIPTION table)
-	uInt nDataDescriptions() const;
 
 	// get the set of spectral windows for the specified scan number.
 	std::set<uInt> getSpwsForScan(const ScanKey& scan) const;
@@ -178,8 +172,6 @@ public:
 
 	// get the number of antennas in the ANTENNA table
 	uInt nAntennas() const;
-
-
 
 	// ALMA-specific. get set of spectral windows used for TDM. These are windows that have
 	// 64, 128, or 256 channels
@@ -297,7 +289,7 @@ public:
 	std::set<Int> getScansForField(const String& field, Int obsID, Int arrayID) const;
 
 	// The first value of the pair is spw, the second is polarization ID.
-	std::map<std::pair<uInt, uInt>, Int> getSpwIDPolIDToDataDescIDMap();
+	std::map<std::pair<uInt, uInt>, uInt> getSpwIDPolIDToDataDescIDMap() const;
 
 	vector<String> getSpwNames() const;
 
@@ -326,6 +318,18 @@ public:
 
 	// get the effective total exposure time. This is the effective time spent collecting unflagged data.
 	Quantity getEffectiveTotalExposureTime();
+
+	// get the number of scans in the dataset
+	uInt nScans();
+
+	// get the number of observations (from the OBSERVATIONS table) in the dataset
+	uInt nObservations() const;
+
+	// get the number of arrays (from the ARRAY table) in the dataset
+	uInt nArrays();
+
+	// get the number of data description IDs (from the DATA_DESCRIPTION table)
+	uInt nDataDescriptions() const;
 
 	// get the number of unflagged rows
 	Double nUnflaggedRows() const;
@@ -417,12 +421,12 @@ private:
 	mutable uInt _nStates, _nACRows, _nXCRows, _nSpw, _nFields, _nAntennas,
 		_nObservations, _nScans, _nArrays, _nrows, _nPol, _nDataDescIDs;
 	mutable std::map<ScanKey, std::set<uInt> > _scanToSpwsMap, _scanToDDIDsMap;
-	mutable std::map<Int, uInt> _dataDescIDToSpwMap, _dataDescIDToPolIDMap /*, _scanToNRowsMap */;
+	mutable vector<uInt> _dataDescIDToSpwMap, _dataDescIDToPolIDMap /*, _scanToNRowsMap */;
 	std::map<Int, std::set<uInt> > _fieldToSpwMap;
 	mutable std::map<ScanKey, std::set<Int> > _scanToStatesMap, _scanToFieldsMap;
 	mutable std::map<Int, std::set<Int> >	_fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap /*,
 		_arrayToScansMap, _scanToAntennasMap */;
-	std::map<std::pair<uInt, uInt>, Int> _spwPolIDToDataDescIDMap;
+	mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
 	std::map<String, uInt> _antennaNameToIDMap;
 	//mutable std::map<ArrayKey, ArrayProperties> _arrayProperties;
 	//mutable std::map<ScanKey, ScanProperties> _scanProperties;
@@ -550,9 +554,7 @@ private:
 
 	//std::map<Int, std::set<Int> > _getArrayIDToScansMap() const;
 
-	std::map<Int, uInt> _getDataDescIDToSpwMap() const;
-
-	std::map<Int, uInt> _getDataDescIDToPolIDMap() const;
+	vector<uInt> _getDataDescIDToSpwMap() const;
 
 	void _getFieldsAndIntentsMaps(
 		vector<std::set<String> >& fieldToIntentsMap,

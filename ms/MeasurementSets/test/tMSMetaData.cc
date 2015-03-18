@@ -47,7 +47,7 @@ void _printSet(const std::set<uInt>& set) {
 	const std::set<uInt>::const_iterator end = set.end();
 	for (
 		std::set<uInt>::const_iterator iter = set.begin();
-		iter!=end; iter++
+		iter!=end; ++iter
 	) {
 		if (iter!=set.begin()) {
 			cout << ", ";
@@ -61,7 +61,7 @@ void _printSet(const std::set<String>& set) {
 	const std::set<String>::const_iterator end = set.end();
 	for (
 		std::set<String>::const_iterator iter = set.begin();
-		iter!=end; iter++
+		iter!=end; ++iter
 	) {
 		if (iter!=set.begin()) {
 			cout << ", ";
@@ -80,7 +80,7 @@ void testIt(MSMetaData& md) {
 	cout << "*** cache size " << md.getCache() << endl;
 
 	cout << "*** test getScansForState()" << endl;
-	for (uInt stateID=0; stateID<md.nStates(); stateID++) {
+	for (uInt stateID=0; stateID<md.nStates(); ++stateID) {
 		std::set<Int> scans = md.getScansForState(stateID, 0, 0);
 		std::set<Int> expec;
 		if (stateID < 5) {
@@ -142,7 +142,7 @@ void testIt(MSMetaData& md) {
 	scanKey.arrayID = 0;
 	for (
 			std::set<Int>::const_iterator scanNum = scans.begin();
-			scanNum!=scans.end(); scanNum++
+			scanNum!=scans.end(); ++scanNum
 	) {
 		scanKey.scan = *scanNum;
 		std::set<String> intents = md.getIntentsForScan(scanKey);
@@ -222,14 +222,14 @@ void testIt(MSMetaData& md) {
 	cout << "*** test getSpwsForIntent()" << endl;
 	for (
 			std::set<String>::const_iterator intent=uniqueIntents.begin();
-			intent!=uniqueIntents.end(); intent++
+			intent!=uniqueIntents.end(); ++intent
 	) {
 		std::set<uInt> exp;
 		if (
-				*intent == "CALIBRATE_AMPLI#ON_SOURCE"
-						|| *intent == "CALIBRATE_BANDPASS#ON_SOURCE"
-								|| *intent == "CALIBRATE_PHASE#ON_SOURCE"
-										|| *intent == "OBSERVE_TARGET#ON_SOURCE"
+			*intent == "CALIBRATE_AMPLI#ON_SOURCE"
+			|| *intent == "CALIBRATE_BANDPASS#ON_SOURCE"
+			|| *intent == "CALIBRATE_PHASE#ON_SOURCE"
+			|| *intent == "OBSERVE_TARGET#ON_SOURCE"
 		) {
 			uInt myints[] = {0, 17, 18, 19, 20, 21, 22, 23, 24};
 			exp.insert(myints, myints+9);
@@ -267,7 +267,7 @@ void testIt(MSMetaData& md) {
 	AlwaysAssert(nSpw == 40, AipsError);
 	AlwaysAssert(md.nSpw(False) == 24, AipsError);
 	cout << "*** test getIntentsForSpw()" << endl;
-	for (uInt spw=0; spw<nSpw; spw++) {
+	for (uInt spw=0; spw<nSpw; ++spw) {
 		std::set<String> exp;
 		if (spw == 0) {
 			String mystr[] = {
@@ -324,7 +324,7 @@ void testIt(MSMetaData& md) {
 				"3C279", "J1337-129", "Titan",
 				"J1625-254", "V866 Sco", "RNO 90"
 		};
-		for (uInt i=0; i<nFields; i++) {
+		for (uInt i=0; i<nFields; ++i) {
 			std::set<uInt> exp;
 			if (i==0 || i==3) {
 				uInt myints[] = {
@@ -354,7 +354,7 @@ void testIt(MSMetaData& md) {
 
 		}
 		cout << "*** test getFieldIDsForSpw()" << endl;
-		for (uInt i=0; i<md.nSpw(True); i++) {
+		for (uInt i=0; i<md.nSpw(True); ++i) {
 			std::set<Int> exp;
 			std::set<String> expNames;
 			if (i==0) {
@@ -403,7 +403,7 @@ void testIt(MSMetaData& md) {
 		scanKey.arrayID = 0;
 		for (
 				std::set<Int>::const_iterator scan=scanNumbers.begin();
-				scan!=scanNumbers.end(); scan++
+				scan!=scanNumbers.end(); ++scan
 		) {
 			std::set<uInt> exp;
 			if (*scan == 1 || *scan==5 || *scan==8) {
@@ -438,7 +438,7 @@ void testIt(MSMetaData& md) {
 			AlwaysAssert(md.getSpwsForScan(scanKey) == exp, AipsError);
 			for (
 				std::set<uInt>::const_iterator spw=exp.begin();
-				spw!=exp.end(); spw++
+				spw!=exp.end(); ++spw
 			) {
 				std::set<uInt> exppols;
 				std::set<uInt> pols = md.getPolarizationIDs(0, 0, *scan, *spw);
@@ -452,7 +452,7 @@ void testIt(MSMetaData& md) {
 			}
 		}
 		cout << "*** test getScansForSpw()" << endl;
-		for (uInt i=0; i<md.nSpw(True); i++) {
+		for (uInt i=0; i<md.nSpw(True); ++i) {
 			std::set<Int> exp;
 			if (i==0) {
 				Int myints[] = {
@@ -496,7 +496,7 @@ void testIt(MSMetaData& md) {
 				"DV07", "DV08", "DV10", "DV12", "DV13",
 				"DV14", "DV15", "DV16", "DV17", "DV18"
 			};
-			for (uInt i=0; i<md.nAntennas(); i++) {
+			for (uInt i=0; i<md.nAntennas(); ++i) {
 				vector<uInt> ids(1);
 				ids[0] = i;
 				std::map<String, uInt> mymap;
@@ -507,7 +507,7 @@ void testIt(MSMetaData& md) {
 			}
 			cout << "*** test getAntennaID()" << endl;
 			std::map<String, uInt> mymap;
-			for (uInt i=0; i<md.nAntennas(); i++) {
+			for (uInt i=0; i<md.nAntennas(); ++i) {
 				vector<uInt> ids(1);
 				ids[0] = i;
 				AlwaysAssert(
@@ -626,7 +626,7 @@ void testIt(MSMetaData& md) {
 			std::set<Int> scanNumbers = md.getScanNumbers(0, 0);
 			for (
 					std::set<Int>::const_iterator curScan=scanNumbers.begin();
-					curScan!=scanNumbers.end(); curScan++
+					curScan!=scanNumbers.end(); ++curScan
 			) {
 				expec.clear();
 				if (*curScan == 1 || *curScan == 5 || *curScan == 8) {
@@ -688,7 +688,7 @@ void testIt(MSMetaData& md) {
 			std::set<String> intents = md.getIntents();
 			for (
 					std::set<String>::const_iterator intent=intents.begin();
-					intent!=intents.end(); intent++
+					intent!=intents.end(); ++intent
 			) {
 				std::set<Int> expec;
 				if (
@@ -754,7 +754,7 @@ void testIt(MSMetaData& md) {
 		{
 			cout << "*** test getScansForFieldID()" << endl;
 			std::set<Int> expec;
-			for (uInt i=0; i<6; i++) {
+			for (uInt i=0; i<6; ++i) {
 				expec.clear();
 				switch(i) {
 				case 0:
@@ -800,7 +800,7 @@ void testIt(MSMetaData& md) {
 		}
 		{
 			cout << "*** test getFieldIDsForField()" << endl;
-			for (uInt i=0; i<6; i++) {
+			for (uInt i=0; i<6; ++i) {
 				std::set<Int> expec;
 				expec.insert(i);
 				String name = i == 0 ? "3C279"
@@ -817,7 +817,7 @@ void testIt(MSMetaData& md) {
 		}
 		{
 			cout << "*** test getScansForField()" << endl;
-			for (uInt i=0; i<6; i++) {
+			for (uInt i=0; i<6; ++i) {
 				std::set<Int> expec;
 				String name;
 				switch(i) {
@@ -876,7 +876,7 @@ void testIt(MSMetaData& md) {
 			std::set<Int> curScanSet;
 			for (
 					std::set<Int>::const_iterator curScan=scans.begin();
-					curScan!=scans.end(); curScan++
+					curScan!=scans.end(); ++curScan
 			) {
 				std::set<Int> expec;
 				curScanSet.insert(*curScan);
@@ -935,7 +935,7 @@ void testIt(MSMetaData& md) {
 			std::set<String> intents = md.getIntents();
 			for (
 				std::set<String>::const_iterator intent=intents.begin();
-				intent!=intents.end(); intent++
+				intent!=intents.end(); ++intent
 			) {
 				std::set<Int> expec;
 				if (
@@ -987,7 +987,7 @@ void testIt(MSMetaData& md) {
 		}
 		{
 			cout << "*** test getFieldNamesForFieldIDs()" << endl;
-			for (uInt i=0; i<md.nFields(); i++) {
+			for (uInt i=0; i<md.nFields(); ++i) {
 				String name;
 				switch(i) {
 				case 0:
@@ -1035,15 +1035,15 @@ void testIt(MSMetaData& md) {
 		{
 			cout << "*** test getTimesForField()" << endl;
 			uInt nfields = md.nFields();
-			for (uInt i=0; i< nfields; i++) {
+			for (uInt i=0; i< nfields; ++i) {
 				std::set<Double> times = md.getTimesForField(i);
 				uInt expec = i == 0 ? 818
-						: i == 1 ? 81
-								: i == 2 ? 248
-										: i == 3 ? 402
-												: i == 4 ? 963
-														: i == 5 ? 965
-																: 0;
+					: i == 1 ? 81
+						: i == 2 ? 248
+							: i == 3 ? 402
+								: i == 4 ? 963
+									: i == 5 ? 965
+										: 0;
 				AlwaysAssert(md.getTimesForField(i).size() == expec, AipsError);
 			}
 		}
@@ -1110,7 +1110,7 @@ void testIt(MSMetaData& md) {
 
 			for (
 				std::map<Double, Double>::const_iterator iter=exposuresForTimes.begin();
-				iter!=exposuresForTimes.end(); iter++
+				iter!=exposuresForTimes.end(); ++iter
 			) {
 				cout << std::setprecision(11) << iter->first << ", " << iter->second << endl;
 			}
@@ -1120,7 +1120,7 @@ void testIt(MSMetaData& md) {
 		{
 			cout << "*** Test getIntentsForField()" << endl;
 			uInt nFields = md.nFields();
-			for (uInt i=0; i<nFields; i++) {
+			for (uInt i=0; i<nFields; ++i) {
 				std::set<String> expec;
 				switch (i) {
 				case 0: {
@@ -1197,14 +1197,14 @@ void testIt(MSMetaData& md) {
 		}
 		{
 			cout << "*** test BBCNosToSpwMap()" << endl;
-			for (uInt i=0; i<3; i++) {
+			for (uInt i=0; i<3; ++i) {
 				MSMetaData::SQLDSwitch sqldSwitch = i == 0 ? MSMetaData::SQLD_INCLUDE
 					: i == 1 ? MSMetaData::SQLD_EXCLUDE : MSMetaData::SQLD_ONLY;
 				std::map<uInt, std::set<uInt> > got = md.getBBCNosToSpwMap(sqldSwitch);
 				std::map<uInt, std::set<uInt> >::const_iterator end = got.end();
 				for (
 					std::map<uInt, std::set<uInt> >::const_iterator iter=got.begin();
-						iter!=end; iter++
+						iter!=end; ++iter
 				) {
 					std::set<uInt> expec;
 					switch(iter->first) {
@@ -1275,12 +1275,12 @@ void testIt(MSMetaData& md) {
 			}
 			{
 				cout << "*** test getSpwIDPolIDToDataDescIDMap()" << endl;
-				std::map<std::pair<uInt, uInt>, Int> dataDescToPolID = md.getSpwIDPolIDToDataDescIDMap();
-				std::map<std::pair<uInt, uInt>, Int>::const_iterator iter;
-				std::map<std::pair<uInt, uInt>, Int>::const_iterator begin = dataDescToPolID.begin();
-				std::map<std::pair<uInt, uInt>, Int>::const_iterator end = dataDescToPolID.end();
+				std::map<std::pair<uInt, uInt>, uInt> dataDescToPolID = md.getSpwIDPolIDToDataDescIDMap();
+				std::map<std::pair<uInt, uInt>, uInt>::const_iterator iter;
+				std::map<std::pair<uInt, uInt>, uInt>::const_iterator begin = dataDescToPolID.begin();
+				std::map<std::pair<uInt, uInt>, uInt>::const_iterator end = dataDescToPolID.end();
 				for(
-					iter=begin; iter!=end; iter++
+					iter=begin; iter!=end; ++iter
 				) {
 					std::pair<uInt, uInt> mypair = iter->first;
 					uInt spw = mypair.first;
@@ -1311,7 +1311,7 @@ void testIt(MSMetaData& md) {
 		{
 			cout << "*** test getUniqueFiedIDs()" << endl;
 			std::set<Int> expec;
-			for (Int i=0; i<6; i++) {
+			for (Int i=0; i<6; ++i) {
 				expec.insert(i);
 			}
 			AlwaysAssert(md.getUniqueFiedIDs() == expec, AipsError);
@@ -1343,7 +1343,7 @@ void testIt(MSMetaData& md) {
 				187550000000.0,	187550000000.0
 			};
 			vector<Double> expec(mine, mine + 39);
-			for (uInt i=0; i<40; i++) {
+			for (uInt i=0; i<40; ++i) {
 				AlwaysAssert(abs(centers[i].getValue("Hz")/mine[i] - 1) < 1e-8, AipsError);
 			}
 		}
@@ -1357,7 +1357,7 @@ void testIt(MSMetaData& md) {
 			};
 			AlwaysAssert(res.size() == 6, AipsError);
 			AlwaysAssert(res2.size() == 6, AipsError);
-			for (Int i=0; i<6; i++) {
+			for (Int i=0; i<6; ++i) {
 				AlwaysAssert(res[i].size() == 1 && *(res[i].begin()) == i, AipsError);
 				AlwaysAssert(
 					res2[i].size() == 1 && *(res2[i].begin()) == names[i], AipsError
@@ -1440,7 +1440,7 @@ void testIt(MSMetaData& md) {
 					exp = 1868;
 				}
 				AlwaysAssert(nTimes == exp, AipsError);
-				intent++;
+				++intent;
 			}
 			{
 				cout << "*** test getSummary()" << endl;

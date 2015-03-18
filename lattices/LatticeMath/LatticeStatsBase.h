@@ -62,18 +62,10 @@ class Regex;
 // </synopsis>
 //
 // <example>
-// <srcBlock>
+// <srcblock>
 //    Vector<Int> statsToPlot = LatticeStatsBase::toStatisticTypes("mean,rms,sigma");
-// </srcBlock>
+// </srcblock>
 // </example>
-//
-// <motivation>
-// My sensibilities were offended at having to say
-//
-//    <src>Vector<Int> statsToPlot = LatticeStatistics<Float>::toStatisticTypes("mean,rms,sigma");</src>
-//
-// when the <src><Float></src> was meaningless.
-// </motivation>
 //
 // <todo asof="yyyy/mm/dd">
 // </todo>
