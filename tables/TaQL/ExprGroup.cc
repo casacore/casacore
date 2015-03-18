@@ -30,6 +30,7 @@
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/ExprAggrNode.h>
 #include <casacore/tables/TaQL/ExprAggrNodeArray.h>
+#include <casacore/tables/TaQL/ExprUDFNode.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Utilities/Sort.h>
 #include <limits>
@@ -162,8 +163,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   TableExprGroupFuncBase::TableExprGroupFuncBase (TableExprNodeRep* node)
-    : itsNode  (node),
-      itsSeqnr (0)
+    : itsNode    (node),
+      itsOperand (0),
+      itsSeqnr   (0)
   {
     if (node) {
       TableExprAggrNode* snode = dynamic_cast<TableExprAggrNode*>(node);
@@ -171,8 +173,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         itsOperand = snode->operand();
       } else {
         TableExprAggrNodeArray* anode = dynamic_cast<TableExprAggrNodeArray*>(node);
-        AlwaysAssert (anode, AipsError);
-        itsOperand = anode->operand();
+        if (anode) {
+          itsOperand = anode->operand();
+        } else {
+          TableExprUDFNode* unode = dynamic_cast<TableExprUDFNode*>(node);
+          AlwaysAssert (unode  &&  unode->isAggregate(), AipsError);
+        }
       }
     }
   }
