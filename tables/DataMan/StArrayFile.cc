@@ -46,7 +46,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
 				uInt version, Bool bigEndian,
-				uInt bufferSize, MultiFile* mfile)
+				uInt bufferSize, MultiFileBase* mfile)
 : leng_p    (16),
   version_p (version),
   hasPut_p  (False)

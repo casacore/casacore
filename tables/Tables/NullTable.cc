@@ -66,6 +66,12 @@ Bool NullTable::isMultiUsed (Bool) const
   return False;
 }
 
+const StorageOption& NullTable::storageOption() const
+{
+  throwError ("storageOption");
+  return storageOption();          // to satisfy compiler
+}
+
 const TableLock& NullTable::lockOptions() const
 {
   throwError ("lockOptions");

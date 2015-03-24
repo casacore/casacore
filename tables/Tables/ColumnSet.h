@@ -106,6 +106,10 @@ public:
     // Rename the necessary subtables in the column keywords.
     void renameTables (const String& newName, const String& oldName);
 
+    // Get the storage option.
+    const StorageOption& storageOption() const
+      { return storageOpt_p; }
+
     // Are subtables used in other processes.
     Bool areTablesMultiUsed() const;
 
@@ -312,7 +316,7 @@ private:
     //# Declare the variables.
     TableDesc*                      tdescPtr_p;
     StorageOption                   storageOpt_p;
-    MultiFile*                      multiFile_p;
+    MultiFileBase*                  multiFile_p;
     Int64                           nrrow_p;        //# #rows
     BaseTable*                      baseTablePtr_p;
     TableLockData*                  lockPtr_p;      //# lock object

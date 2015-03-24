@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableInfo.h>
 #include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/StorageOption.h>
 #include <casacore/casa/Utilities/Compare.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/String.h>
@@ -120,6 +121,9 @@ public:
 
     // Is the table stored in big or little endian format?
     virtual Bool asBigEndian() const = 0;
+
+    // Get the storage option used for the table.
+    virtual const StorageOption& storageOption() const = 0;
 
     // Is the table in use (i.e. open) in another process?
     // If <src>checkSubTables</src> is set, it is also checked if

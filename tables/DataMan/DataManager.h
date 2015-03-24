@@ -47,7 +47,7 @@ class DataManager;
 class DataManagerColumn;
 class SetupNewTable;
 class Table;
-class MultiFile;
+class MultiFileBase;
 class Record;
 class IPosition;
 class Slicer;
@@ -296,7 +296,7 @@ public:
       { return tsmOption_p; }
 
     // Get the MultiFile pointer (can be 0).
-    MultiFile* multiFile()
+    MultiFileBase* multiFile()
       { return multiFile_p; }
 
     // Compose a keyword name from the given keyword appended with the
@@ -388,7 +388,7 @@ protected:
     // Tell the data manager that MultiFile can be used.
     // Because MultiFile cannot be used with mmapped files, it sets
     // the TSMOption accordingly.
-    void setMultiFile (MultiFile* mfile);
+    void setMultiFile (MultiFileBase* mfile);
 
     // Does the data manager support use of MultiFile?
     // A derived class has to return True if it can use the MultiFile.
@@ -406,7 +406,7 @@ private:
     uInt         seqnr_p;            //# Unique nr of this st.man. in a Table
     Bool         asBigEndian_p;      //# store data in big or little endian
     TSMOption    tsmOption_p;
-    MultiFile*   multiFile_p;        //# MultiFile to use; 0=no MultiFile
+    MultiFileBase* multiFile_p;      //# MultiFile to use; 0=no MultiFile
     Table*       table_p;            //# Table this data manager belongs to
     mutable DataManager* clone_p;    //# Pointer to clone (used by SetupNewTab)
 

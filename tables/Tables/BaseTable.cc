@@ -1016,6 +1016,12 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
   os << endl;
   os << nrow() << " rows, " << tdesc.ncolumn() << " columns (using "
      << dminfo.nfields() << " data managers)" <<endl;
+  const StorageOption& stopt = storageOption();
+  if (stopt.option() == StorageOption::MultiFile) {
+    os << "  Stored as MultiFile with blocksize " << stopt.blockSize() << endl;
+  } else if (stopt.option() == StorageOption::MultiHDF5) {
+    os << "  Stored as MultiHDF5 with blocksize " << stopt.blockSize() << endl;
+  }
   showStructureExtra (os);
   uInt maxl = 0;
   for (uInt i=0; i<tdesc.ncolumn(); ++i) {

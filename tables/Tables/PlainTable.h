@@ -121,6 +121,9 @@ public:
     // Is the table stored in big or little endian format?
     virtual Bool asBigEndian() const;
 
+    // Get the storage option used for the table.
+    virtual const StorageOption& storageOption() const;
+
     // Is the table in use (i.e. open) in another process?
     // If <src>checkSubTables</src> is set, it is also checked if
     // a subtable is used in another process.

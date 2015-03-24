@@ -38,7 +38,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 TSMFile::TSMFile (const TiledStMan* stman, uInt fileSequenceNr,
-                  const TSMOption& tsmOpt, MultiFile* mfile)
+                  const TSMOption& tsmOpt, MultiFileBase* mfile)
 : fileSeqnr_p (fileSequenceNr),
   file_p      (0),
   length_p    (0)
@@ -56,7 +56,7 @@ TSMFile::TSMFile (const TiledStMan* stman, uInt fileSequenceNr,
 }
 
 TSMFile::TSMFile (const String& fileName, Bool writable,
-                  const TSMOption& tsmOpt, MultiFile* mfile)
+                  const TSMOption& tsmOpt, MultiFileBase* mfile)
 : fileSeqnr_p (0),
   file_p      (0),
   length_p    (0)
@@ -71,7 +71,7 @@ TSMFile::TSMFile (const String& fileName, Bool writable,
 }
 
 TSMFile::TSMFile (const TiledStMan* stman, AipsIO& ios, uInt seqnr,
-                  const TSMOption& tsmOpt, MultiFile* mfile)
+                  const TSMOption& tsmOpt, MultiFileBase* mfile)
 : file_p (0)
 {
     getObject (ios);
