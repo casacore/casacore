@@ -33,6 +33,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/OS/File.h>     // for fileFSTAT
 #include <sys/stat.h>                  // needed for stat or stat64
+#include <string.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -45,26 +46,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     { ios >> info.name >> info.blockNrs >> info.fsize; }
 
 
-  MultiFileBase::MultiFileBase (const String& name, ByteIO::OpenOption option,
-                                Int blockSize)
+  MultiFileBase::MultiFileBase (const String& name, Int blockSize)
     : itsBlockSize  (blockSize),
       itsNrBlock    (0),
       itsHdrCounter (0),
       itsChanged    (False)
   {
     itsName = Path(name).expandedName();
-    if (option == ByteIO::New  ||  option == ByteIO::NewNoReplace) {
-      // New file.
-      itsChanged = True;
-      // Use file system block size, but not less than given size.
-      if (itsBlockSize <= 0) {
-        struct fileSTAT sfs;
-        fileFSTAT (itsFD, &sfs);
-        Int64 blksz = sfs.st_blksize;
-        itsBlockSize = std::max (-itsBlockSize, blksz);
-      }
-      AlwaysAssert (itsBlockSize > 0, AipsError);
+  }
+
+  void MultiFileBase::setNewFile()
+  {
+    // New file.
+    itsChanged = True;
+    // Use file system block size, but not less than given size.
+    if (itsBlockSize <= 0) {
+      struct fileSTAT sfs;
+      fileSTAT (itsName.c_str(), &sfs);
+      Int64 blksz = sfs.st_blksize;
+      itsBlockSize = std::max (-itsBlockSize, blksz);
     }
+    AlwaysAssert (itsBlockSize > 0, AipsError);
   }
 
   MultiFileBase::~MultiFileBase()

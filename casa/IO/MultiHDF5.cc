@@ -36,10 +36,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MultiHDF5::MultiHDF5 (const String& name, ByteIO::OpenOption option,
                         Int blockSize)
-    : MultiFileBase (name, option, blockSize),
+    : MultiFileBase (name, blockSize),
       itsFile       (itsName, option)
   {
-    if (option != ByteIO::New  &&  option != ByteIO::NewNoReplace) {
+    if (option == ByteIO::New  ||  option == ByteIO::NewNoReplace) {
+      setNewFile();
+    } else {
       readHeader();
     }
     itsWritable = itsFile.isWritable();
