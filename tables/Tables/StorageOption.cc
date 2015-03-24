@@ -44,6 +44,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       opt.downcase();
       if (opt == "multifile") {
         itsOption = StorageOption::MultiFile;
+      } else if (opt == "multihdf5") {
+        itsOption = StorageOption::MultiHDF5;
       } else if (opt == "sepfile") {
         itsOption = StorageOption::SepFile;
       } else {

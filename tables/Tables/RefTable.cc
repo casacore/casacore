@@ -212,6 +212,11 @@ Bool RefTable::asBigEndian() const
     return baseTabPtr_p->asBigEndian();
 }
 
+const StorageOption& RefTable::storageOption() const
+{
+    return baseTabPtr_p->storageOption();
+}
+
 Bool RefTable::isMultiUsed (Bool) const
 {
     return False;

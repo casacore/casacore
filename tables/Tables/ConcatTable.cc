@@ -171,6 +171,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return baseTabPtr_p[0]->asBigEndian();
   }
 
+  const StorageOption& ConcatTable::storageOption() const
+  {
+    return baseTabPtr_p[0]->storageOption();
+  }
+
   Bool ConcatTable::isMultiUsed (Bool) const
   {
     return False;

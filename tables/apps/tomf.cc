@@ -26,6 +26,8 @@
 //# $Id: showtable.cc 21480 2014-08-27 08:01:36Z gervandiepen $
 
 #include <casacore/casa/IO/MFFileIO.h>
+#include <casacore/casa/IO/MultiFile.h>
+#include <casacore/casa/IO/MultiHDF5.h>
 #include <casacore/casa/IO/RegularFileIO.h>
 #include <casacore/casa/IO/FiledesIO.h>
 #include <casacore/casa/Containers/Block.h>
@@ -43,12 +45,15 @@ int main (int argc, char* argv[])
     vector<String> fname;
     String outName;
     Int64 blockSize = 1048576;
+    Bool useHDF5 = False;
     for (int argnr=1; argnr<argc; ++argnr) {
       if (String(argv[argnr]) == "-b") {
         argnr++;
         if (argnr < argc) {
           blockSize = atoi (argv[argnr]);
         }
+      } else if (String(argv[argnr]) == "-h") {
+        useHDF5 = True;
       } else if (argnr == argc-1) {
         outName = argv[argnr];
       } else {
@@ -56,12 +61,18 @@ int main (int argc, char* argv[])
       }
     }
     if (fname.empty()  ||  outName.empty()) {
-      cerr << "Run as:    tomf [-b blocksize] filename1 ... outname" << endl;
+      cerr << "Run as:    tomf [-h] [-b blocksize] filename1 ... outname" << endl;
+      cerr << "      -h   create MultiFile as HDF5 instead of regular file" << endl;
       cerr << "      -b   blocksize in bytes; default 1048576" << endl;
       return 0;
     }
     // Open each file and copy to the MultiFile.
-    MultiFile mfile (outName, ByteIO::New, blockSize);
+    CountedPtr<MultiFileBase> mfile;
+    if (useHDF5) {
+      mfile = new MultiHDF5 (outName, ByteIO::New, blockSize);
+    } else {
+      mfile = new MultiFile (outName, ByteIO::New, blockSize);
+    }
     Block<char> buffer (blockSize);
     for (vector<String>::const_iterator iter=fname.begin();
          iter!=fname.end(); ++iter) {
@@ -73,7 +84,7 @@ int main (int argc, char* argv[])
         Int64 todo = file.length();
         cout << "  copying " << todo << " bytes of " << *iter
              << " ..." << endl;
-        MFFileIO outfile (mfile, *iter, ByteIO::New);
+        MFFileIO outfile (*mfile, *iter, ByteIO::New);
         while (todo > 0) {
           Int64 sz = file.read (std::min(todo, blockSize), buffer.storage());
           outfile.write (sz, buffer.storage());

@@ -169,6 +169,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // It returns the endianness of the first underlying table.
     virtual Bool asBigEndian() const;
 
+    // Get the storage option used for the table.
+    // It returns the storage option of the first underlying table.
+    virtual const StorageOption& storageOption() const;
+
     // Is the table in use (i.e. open) in another process?
     // It always returns False.
     virtual Bool isMultiUsed (Bool checkSubTable) const;

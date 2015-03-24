@@ -53,14 +53,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       for new file systems (like Lustre) requiring large block sizes.
 //       <br>The block size to be used in a MultiFile can be defined in
 //           this class. Default is 4 MByte.
+//  <li> Using MultiHDF5 which behaves similar to MultiFile but uses an
+//       HDF5 file instead of a regular file.
 // </ol>
-// It is possible to specify the storage type and buffer size using aipsrc.
+// It is possible to specify the storage type and block size using aipsrc.
 // The aipsrc variables are:
 // <ul>
 //  <li> <src>tables.storage.type</src>. The (case-insensitive) value can be
-//       'multifile'. Another value means the old way (separate files).
-//  <li> <src>tables.storage.buffersize</src> gives the default buffer size to be
-//       used for the multifile option.
+//       'multifile' or 'multihdf5'.
+//       Another value means the old way (separate files).
+//  <li> <src>tables.storage.blocksize</src> gives the default blocksize to be
+//       used for the multifile and multihdf5 option.
 // </ul>
 // </synopsis>
 
@@ -70,8 +73,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Define the possible options how table files are organized.
     enum Option {
-      // Let storage managers use a combined multifile.
+      // Let storage managers use a combined MultiFile.
       MultiFile,
+      // Let storage managers use a combined MultiHDF5.
+      MultiHDF5,
       // Let storage managers use separate files.
       SepFile,
       // Use default (currently MultiFile).

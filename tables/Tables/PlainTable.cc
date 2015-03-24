@@ -344,6 +344,11 @@ Bool PlainTable::asBigEndian() const
     return bigEndian_p;
 }
 
+const StorageOption& PlainTable::storageOption() const
+{
+    return colSetPtr_p->storageOption();
+}
+
 Bool PlainTable::isMultiUsed (Bool checkSubTables) const
 {
     if (lockPtr_p->isMultiUsed()) {

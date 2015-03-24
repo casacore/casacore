@@ -79,6 +79,7 @@ public:
   // <group>
   virtual void reopenRW();
   virtual Bool asBigEndian() const;
+  virtual const StorageOption& storageOption() const;
   virtual Bool isMultiUsed (Bool checkSubTable) const;
   virtual const TableLock& lockOptions() const;
   virtual void mergeLock (const TableLock& lockOptions);

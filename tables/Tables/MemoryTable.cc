@@ -105,6 +105,11 @@ Bool MemoryTable::asBigEndian() const
   return HostInfo::bigEndian();
 }
 
+const StorageOption& MemoryTable::storageOption() const
+{
+  return colSetPtr_p->storageOption();
+}
+
 Bool MemoryTable::isMultiUsed (Bool) const
 {
   return False;

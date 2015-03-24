@@ -36,6 +36,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/IO/MultiFile.h>
+#include <casacore/casa/IO/MultiHDF5.h>
 #include <casacore/casa/IO/MemoryIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <limits>
@@ -174,11 +175,12 @@ void ColumnSet::prepareSomeDataManagers (uInt from)
 void ColumnSet::openMultiFile (uInt from, const Table& tab,
                                ByteIO::OpenOption opt)
 {
-  // Exit if MultiFile should not be used.
-  if (storageOpt_p.option() != StorageOption::MultiFile) {
+  // Exit if MultiFile/HDF5 should not be used.
+  if (storageOpt_p.option() != StorageOption::MultiFile  &&
+      storageOpt_p.option() != StorageOption::MultiHDF5) {
     return;
   }
-  // See if any data manager can use MultiFile. 
+  // See if any data manager can use MultiFile/HDF5. 
   Bool useMultiFile = False;
   for (uInt i=from; i<blockDataMan_p.nelements(); i++) {
     useMultiFile = useMultiFile || BLOCKDATAMANVAL(i)->hasMultiFileSupport();
@@ -187,8 +189,13 @@ void ColumnSet::openMultiFile (uInt from, const Table& tab,
   if (useMultiFile) {
     // Create the object if not created yet.
     if (! multiFile_p) {
-      multiFile_p = new MultiFile (tab.tableName() + "/table.mf",
-                                   opt, storageOpt_p.blockSize());
+      if (storageOpt_p.option() == StorageOption::MultiFile) {
+        multiFile_p = new MultiFile (tab.tableName() + "/table.mf",
+                                     opt, storageOpt_p.blockSize());
+      } else {
+        multiFile_p = new MultiHDF5 (tab.tableName() + "/table.mfh5",
+                                     opt, storageOpt_p.blockSize());
+      }
     }
     // Pass it to the data managers.
     for (uInt i=from; i<blockDataMan_p.nelements(); i++) {
@@ -765,7 +772,7 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 	//# Therefore a negative number is put as the version
 	//# (because nrrow_p is always positive).
         // Still use version 2 if MultiFile is not used and #rows fit in a uInt.
-        if (storageOpt_p.option() == StorageOption::MultiFile  ||
+        if (storageOpt_p.option() != StorageOption::SepFile  ||
             nrrow_p > Int64(std::numeric_limits<uInt>::max())) {
           ios << Int(-3);          // version (must be negative !!!)
           ios << nrrow_p;
