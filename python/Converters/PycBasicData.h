@@ -227,6 +227,7 @@ namespace casacore { namespace python {
       return boost::python::incref(makeobject(c).ptr());
     }
   };
+  //# Make specialisations for various types.
   template <>
   struct to_list <casacore::IPosition >
   {
@@ -237,6 +238,32 @@ namespace casacore { namespace python {
       boost::python::list result;
       for (int i=c.size()-1; i>=0; --i) {
 	result.append(c[i]);
+      }
+      return result;
+    }
+    static PyObject* convert (ContainerType const& c)
+    {
+      return boost::python::incref(makeobject(c).ptr());
+    }
+  };
+  //# This specialisation is needed because on OS-X 10.9 clang-3.5 with
+  //# Boost-Python 1.57 gives a compile error
+  //# /opt/casa/01/include/boost/python/converter/arg_to_python.hpp:209:9:
+  //#   error: no matching constructor for initialization of
+  //#     'boost::python::converter::detail::arg_to_python_base'
+  //#       : arg_to_python_base(&x, registered<T>::converters)
+  template <>
+  struct to_list <std::vector <bool> >
+  {
+    typedef std::vector <bool> ContainerType;
+    static boost::python::list makeobject (ContainerType const& c)
+    {
+      boost::python::list result;
+      ContainerType::const_iterator i = c.begin();
+      ContainerType::const_iterator iEnd = c.end();
+      for( ; i != iEnd; ++i) {
+        bool b = *i;
+	result.append(b);
       }
       return result;
     }
