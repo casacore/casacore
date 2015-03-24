@@ -42,12 +42,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MultiFile::MultiFile (const String& name, ByteIO::OpenOption option,
                         Int blockSize)
-    : MultiFileBase (name, option, blockSize)
+    : MultiFileBase (name, blockSize)
   {
     itsFD = RegularFileIO::openCreate (itsName, option);
     itsIO.attach (itsFD, itsName);
     if (option == ByteIO::New  ||  option == ByteIO::NewNoReplace) {
       // New file; first block is for administration.
+      setNewFile();
       itsNrBlock = 1;
     } else {
       readHeader();

@@ -137,7 +137,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Open or create a MultiFileBase with the given name.
     // Upon creation the block size can be given. If 0, it uses the block size
     // of the file system the file is on.
-    MultiFileBase (const String& name, ByteIO::OpenOption, Int blockSize=0);
+    MultiFileBase (const String& name, Int blockSize=0);
 
     // The destructor flushes and closes the file.
     virtual ~MultiFileBase();
@@ -232,13 +232,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                             void* buffer) = 0;
 
   protected:
+    // Set the flags and blockSize for a new MultiFile/HDF5.
+    void setNewFile();
+
     //# Data members
     String itsName;
     Int64  itsBlockSize;  // The blocksize used
     Int64  itsNrBlock;    // The total nr of blocks actually used
     Int64  itsHdrCounter; // Counter of header changes
     vector<MultiFileInfo> itsInfo;
-    int                   itsFD;
     Bool                  itsWritable; // Is the file writable?
     Bool                  itsChanged; // Has header info changed since last flush?
     vector<Int64>         itsFreeBlocks;

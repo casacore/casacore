@@ -145,9 +145,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void readBlock (MultiFileInfo& info, Int64 blknr,
                             void* buffer);
 
-  protected:
+  private:
     //# Data members
-    FiledesIO             itsIO;
+    FiledesIO itsIO;
+    int       itsFD;
   };
 
 
