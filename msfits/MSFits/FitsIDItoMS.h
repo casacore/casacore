@@ -270,7 +270,7 @@ protected:
   Vector<Bool>   itsgotMSK;
   
   
-  FitsInput &infile_p;
+  ///FitsInput &infile_p;
   String msFile_p;
   Vector<Int> nPixel_p,corrType_p;
   Block<Int> corrIndex_p;
@@ -286,7 +286,7 @@ protected:
   MFrequency::Types freqsys_p;
   Double restfreq_p;
   LogIO* itsLog;
-  Int nIF_p;
+  ///Int nIF_p;
   Double startTime_p;
   Double lastTime_p;
   Int itsObsType;
