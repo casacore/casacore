@@ -49,7 +49,7 @@
   {
     if (!PyArray_API) {
       if (!importArray()  ||  !PyArray_API) {
-	throw AipsError ("PycArray: failed to load the "PYC_USE_PYARRAY
+	throw AipsError ("PycArray: failed to load the " PYC_USE_PYARRAY
 			 " API");
       }
     }
