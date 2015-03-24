@@ -43,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class TypeIO;
 class ByteIO;
 class RegularFileIO;
-class MultiFile;
+class MultiFileBase;
 
 
 // <summary> 
@@ -174,13 +174,13 @@ public:
     // Construct and open/create a file with the given name.
     // The actual IO is done via a CanonicalIO object on a regular file
     // using buffered IO with a buffer of the given size.
-    // <br>If the MultiFile pointer is not null, a virtual file in the
-    // MultiFile will be used instead of a regular file.
+    // <br>If the MultiFileBase pointer is not null, a virtual file in the
+    // MultiFileBase will be used instead of a regular file.
     explicit AipsIO (const String& fileName,
 		     ByteIO::OpenOption = ByteIO::Old,
 		     uInt filebufSize=65536,
 ////		     uInt filebufSize=1048576,
-                     MultiFile* mfile=0);
+                     MultiFileBase* mfile=0);
 
     // Construct and open/create a file with the given name.
     // This can for instance by used to use AipsIO on a file descriptor
@@ -197,10 +197,10 @@ public:
     // Close if not done yet
     ~AipsIO();
 
-    // Open/create file (either a regular file or a MultiFile virtual file).
+    // Open/create file (either a regular file or a MultiFileBase virtual file).
     // An exception is thrown if the object contains an already open file.
     void open (const String& fileName, ByteIO::OpenOption = ByteIO::Old,
-	       uInt filebufSize=65536, MultiFile* mfile=0);
+	       uInt filebufSize=65536, MultiFileBase* mfile=0);
 
     // Open by connecting to the given byte stream.
     // This can for instance by used to use AipsIO on a file descriptor

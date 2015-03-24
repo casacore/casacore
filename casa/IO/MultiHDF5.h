@@ -1,5 +1,5 @@
-//# MultiFile.h: Class to combine multiple files in a single one
-//# Copyright (C) 2014
+//# MultiHDF5.h: Class to combine multiple files in a single HDF5 file
+//# Copyright (C) 2015
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,24 +25,24 @@
 //#
 //# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
-#ifndef CASA_MULTIFILE_H
-#define CASA_MULTIFILE_H
+#ifndef CASA_MULTIHDF5_H
+#define CASA_MULTIHDF5_H
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/IO/MultiFileBase.h>
-#include <casacore/casa/IO/FiledesIO.h>
+#include <casacore/casa/IO/MultiFile.h>
+#include <casacore/casa/HDF5/HDF5File.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary> 
-  // Class to combine multiple files in a single one.
+  // Class to combine multiple files in a single HDF5 file.
   // </summary>
 
   // <use visibility=export>
 
-  // <reviewed reviewer="" date="" tests="tMultiFile" demos="">
+  // <reviewed reviewer="" date="" tests="tMultiHDF5" demos="">
   // </reviewed>
 
   // <synopsis> 
@@ -61,9 +61,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // MultiFile. A data block is never shared by multiple files.
   // For each virtual file MultiFile keeps a MultiFileInfo object telling
   // the file size and the blocks numbers used for the file. When flushing
-  // the MultiFile, this meta info is written into the header block. If it
-  // does not fit in the header block, the rest is written in a separate "-ext"
-  // file.
+  // the MultiFile, this meta info is written into a header block and,
   // if needed, continuation blocks. On open and resync, it is read back.
   // <br>
   //
@@ -104,16 +102,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // </todo>
 
 
-  class MultiFile: public MultiFileBase
+  class MultiHDF5 : public MultiFileBase
   {
   public:
-    // Open or create a MultiFile with the given name.
+    // Open or create a MultiHDF5 with the given name.
     // Upon creation the block size can be given. If 0, it uses the block size
     // of the file system the file is on.
-    MultiFile (const String& name, ByteIO::OpenOption, Int blockSize=0);
+    MultiHDF5 (const String& name, ByteIO::OpenOption, Int blockSize=0);
 
     // The destructor flushes and closes the file.
-    virtual ~MultiFile();
+    virtual ~MultiHDF5();
 
     // Reopen the underlying file for read/write access.
     // Nothing will be done if the file is writable already.
@@ -138,16 +136,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void readHeader (Bool always=True);
     // Extend the virtual file to fit lastblk.
     virtual void extend (MultiFileInfo& info, Int64 lastblk);
-    // Write a data block.
-    virtual void writeBlock (MultiFileInfo& info, Int64 blknr,
-                             const void* buffer);
     // Read a data block.
     virtual void readBlock (MultiFileInfo& info, Int64 blknr,
                             void* buffer);
+    // Write a data block.
+    virtual void writeBlock (MultiFileInfo& info, Int64 blknr,
+                             const void* buffer);
 
-  protected:
     //# Data members
-    FiledesIO             itsIO;
+    HDF5File itsFile;
   };
 
 

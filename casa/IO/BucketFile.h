@@ -41,7 +41,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-class MultiFile;
+class MultiFileBase;
 
 // <summary>
 // File object for BucketCache.
@@ -69,7 +69,7 @@ class MultiFile;
 // An explicit open call has to be given before the file can be used.
 // <p>
 // The file can be opened as an ordinary file (with a file descriptor)
-// or as a file in a MultiFile object. An ordinary file can be accessed
+// or as a file in a MultiFileBase object. An ordinary file can be accessed
 // in 3 ways:
 // <ul>
 //  <li> In an unbuffered way, where the parent BucketCache class accesses
@@ -79,7 +79,7 @@ class MultiFile;
 //  <li> In a buffered way, where the parent BucketBuffered class does
 //       the access using the FilebufIO member.
 // </ul>
-// A MultiFile file can only be accessed in the unbuffered way.
+// A MultiFileBase file can only be accessed in the unbuffered way.
 // </synopsis> 
 
 // <motivation>
@@ -109,23 +109,23 @@ class BucketFile
 public:
     // Create a BucketFile object for a new file.
     // The file with the given name will be created as a normal file or
-    // as part of a MultiFile (if mfile != 0).
+    // as part of a MultiFileBase (if mfile != 0).
     // It can be indicated if a MMapfdIO and/or FilebufIO object must be
-    // created for the file. If a MultiFile is used, memory-mapped IO
+    // created for the file. If a MultiFileBase is used, memory-mapped IO
     // cannot be used and mappedFile is ignored.
     explicit BucketFile (const String& fileName,
                          uInt bufSizeFile=0, Bool mappedFile=False,
-                         MultiFile* mfile=0);
+                         MultiFileBase* mfile=0);
 
     // Create a BucketFile object for an existing file.
     // The file should be opened by the <src>open</src>.
     // Tell if the file must be opened writable.
     // It can be indicated if a MMapfdIO and/or FilebufIO object must be
-    // created for the file. If a MultiFile is used, memory-mapped IO
+    // created for the file. If a MultiFileBase is used, memory-mapped IO
     // cannot be used and mappedFile is ignored.
     BucketFile (const String& fileName, Bool writable,
                 uInt bufSizeFile=0, Bool mappedFile=False,
-                MultiFile* mfile=0);
+                MultiFileBase* mfile=0);
 
     // The destructor closes the file (if open).
     virtual ~BucketFile();
@@ -201,8 +201,8 @@ private:
     MMapfdIO* mappedFile_p;
     // The optional buffered file.
     FilebufIO* bufferedFile_p;
-    // The possibly used MultiFile.
-    MultiFile* mfile_p;
+    // The possibly used MultiFileBase.
+    MultiFileBase* mfile_p;
 	    
 
     // Forbid copy constructor.

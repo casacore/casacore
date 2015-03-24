@@ -44,6 +44,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape,
+			    const uChar* type)
+    : itsDataType (type)
+  {
+    create (parentHid, name, shape, tileShape);
+  }
+
+  HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
+			    const IPosition& shape, const IPosition& tileShape,
 			    const Int* type)
     : itsDataType (type)
   {
@@ -92,6 +100,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const Bool* type)
+    : itsDataType (type)
+  {
+    open (parentHid, name);
+  }
+
+  HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
+			    const uChar* type)
     : itsDataType (type)
   {
     open (parentHid, name);
@@ -157,7 +172,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsTileShape = IPosition(shape.nelements(), 1);
     // Trailing elements already have value 1; set the first elements.
     for (uInt i=0; i<tileShape.nelements(); ++i) {
-      itsTileShape[i] = std::min (tileShape[i], shape[i]);
+      itsTileShape[i] = std::max(ssize_t(1), std::min(tileShape[i], shape[i]));
     }
     // Create access property for later setting of cache size.
     itsDaplid = H5Pcreate (H5P_DATASET_ACCESS);
@@ -165,7 +180,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Create the data space for the array.
     int rank = itsShape.nelements();
     Block<hsize_t> ls = fromShape (itsShape);
-    itsDSid = H5Screate_simple(rank, ls.storage(), NULL);
+    Block<hsize_t> maxls(ls);
+    for (uInt i=0; i<maxls.size(); ++i) {
+      if (maxls[i] == 0) {
+        maxls[i] = H5S_UNLIMITED;
+      }
+    }
+    itsDSid = H5Screate_simple(rank, ls.storage(), maxls.storage());
     AlwaysAssert (itsDSid.getHid() >= 0, AipsError);
     // Create the properties to hold the tile shape.
     itsPLid = H5Pcreate (H5P_DATASET_CREATE);
@@ -326,10 +347,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			     NULL, count.storage(), NULL) < 0) {
       throw HDF5Error("setting slab of memory buffer");
     }
-    // Read the data.
+    // Write the data.
     if (H5Dwrite (getHid(), itsDataType.getHidMem(), memspace, itsDSid,
 		  H5P_DEFAULT, buf) < 0) {
       throw HDF5Error("writing slab into data set array");
+    }
+  }
+
+  void HDF5DataSet::extend (const IPosition& shape)
+  {
+    AlwaysAssert (shape.size() == itsShape.size(), AipsError);
+    // Extend the data set if one of the axes is larger than the current shape.
+    IPosition newShape(itsShape);
+    Bool ext = False;
+    for (uInt i=0; i<shape.size(); ++i) {
+      if (shape[i] > newShape[i]) {
+        newShape[i] = shape[i];
+        ext = True;
+      }
+    }
+    if (ext) {
+      Block<hsize_t> ls = fromShape (newShape);
+      if (H5Dset_extent (getHid(), ls.storage()) < 0) {
+        throw HDF5Error("Could not extend data set");
+      }
+      itsShape = newShape;
+      // The DataSpace has to be refreshed.
+      itsDSid.close();
+      itsDSid = H5Dget_space(getHid());
     }
   }
 
@@ -374,6 +419,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
 
   void HDF5DataSet::put (const Slicer&, const void*)
+  {}
+
+  void HDF5DataSet::extend (const IPosition&)
   {}
 
   Block<hsize_t> HDF5DataSet::fromShape (const IPosition&)

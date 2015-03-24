@@ -57,7 +57,7 @@ AipsIO::AipsIO()
 {}
 
 AipsIO::AipsIO (const String& fileName, ByteIO::OpenOption fop,
-		uInt filebufSize, MultiFile* mfile)
+		uInt filebufSize, MultiFileBase* mfile)
 : opened_p (0),
   maxlev_p (10),
   objlen_p (10),
@@ -98,7 +98,7 @@ AipsIO::~AipsIO()
 
 
 void AipsIO::open (const String& fileName, ByteIO::OpenOption fop,
-		   uInt filebufSize, MultiFile* mfile)
+		   uInt filebufSize, MultiFileBase* mfile)
 {
     // Initialize everything for the open.
     openInit (fop);
