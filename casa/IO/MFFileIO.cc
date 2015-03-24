@@ -1,4 +1,4 @@
-//# MFFileIO.cc: A single file in a MultiFile
+//# MFFileIO.cc: A single file in a MultiFileBase
 //# Copyright (C) 2014
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,7 +32,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  MFFileIO::MFFileIO (MultiFile& file, const String& name,
+  MFFileIO::MFFileIO (MultiFileBase& file, const String& name,
                       ByteIO::OpenOption opt)
     : itsFile     (file),
       itsPosition (0),
@@ -71,7 +71,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       throw AipsError ("MFFileIO::read - incorrect number of bytes ("
 		       + String::toString(n) + " out of "
                        + String::toString(size) + ") read for file "
-                       + itsName + " in MultiFile " + itsFile.fileName());
+                       + itsName + " in MultiFileBase " + itsFile.fileName());
     }
     return n;
   }
@@ -105,7 +105,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   Int64 MFFileIO::length()
   {
-    return itsFile.info()[itsId].size;
+    return itsFile.info()[itsId].fsize;
   }
        
   Bool MFFileIO::isReadable() const

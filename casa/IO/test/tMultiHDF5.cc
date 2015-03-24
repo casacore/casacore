@@ -1,4 +1,4 @@
-//# tMultiFile.cc: Test program for class MultiFile
+//# tMultiHDF5.cc: Test program for class MultiHDF5
 //# Copyright (C) 2014
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,8 +26,9 @@
 //# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 //# Includes
-#include <casacore/casa/IO/MultiFile.h>
 #include <casacore/casa/IO/MultiHDF5.h>
+#include <casacore/casa/IO/MultiHDF5.h>
+#include <casacore/casa/HDF5/HDF5Object.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -41,7 +42,7 @@
 using namespace casacore;
 using namespace std;
 
-void showMultiFile (MultiFile& mfile)
+void showMultiFile (MultiFileBase& mfile)
 {
   cout << mfile.fileName() << ' ' << mfile.blockSize() << ' '
        << mfile.nfile() << ' ' << mfile.size() << ' '
@@ -50,14 +51,14 @@ void showMultiFile (MultiFile& mfile)
 
 void makeFile (Int64 blockSize)
 {
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, blockSize);
+  MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::New, blockSize);
   AlwaysAssertExit (mfile.isWritable());
   showMultiFile(mfile);
 }
 
 void readFile()
 {
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Old);
+  MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Old);
   AlwaysAssertExit (! mfile.isWritable());
   showMultiFile(mfile);
   for (uInt i=0; i<mfile.info().size(); ++i) {
@@ -68,7 +69,7 @@ void readFile()
 
 void addFiles()
 {
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
+  MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Update);
   AlwaysAssertExit (mfile.isWritable());
   Int fid0 = mfile.addFile ("file0");
   Int fid1 = mfile.addFile ("file1");
@@ -79,7 +80,7 @@ void addFiles()
 
 void writeFiles1()
 {
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
+  MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Update);
   Vector<Int64> buf(128);
   indgen(buf);
   mfile.write (0, buf.data(), 1024, 0);
@@ -98,7 +99,7 @@ void writeFiles1()
 
 void checkFiles1 (Bool do1=True)
 {
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Old);
+  MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Old);
   Vector<Int64> buf1(128), buf(128),buff(3*128);
   indgen(buf1);
   mfile.read (0, buf.data(), 1024, 0);
@@ -140,7 +141,7 @@ void deleteFile()
 {
   cout <<"test deleteFile"<<endl;
   {
-    MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
+    MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Update);
     mfile.deleteFile (1);
     cout << mfile.info() << endl;
   }
@@ -149,7 +150,7 @@ void deleteFile()
 
 void writeFiles2()
 {
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
+  MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Update);
   Vector<Int64> buf(128), buf1(128);
   indgen(buf);
   mfile.write (0, buf.data(), 1016, 8);
@@ -163,7 +164,7 @@ void writeFiles2()
 void checkFiles2()
 {
   checkFiles1(False);
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Old);
+  MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::Old);
   Vector<Int64> buf1(2), buf(2);
   indgen(buf1);
   mfile.read (2, buf.data(), 16, 2048);
@@ -172,7 +173,7 @@ void checkFiles2()
 
 void timeExact()
 {
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 32768);
+  MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::New, 32768);
   Int id = mfile.addFile ("file0");
   Vector<Int64> buf(32768/8, 0);
   for (Int j=0; j<2; ++j) {
@@ -187,7 +188,7 @@ void timeExact()
 
 void timeDouble()
 {
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 16384);
+  MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::New, 16384);
   Int id = mfile.addFile ("file0");
   Vector<Int64> buf(32768/8, 0);
   for (Int j=0; j<2; ++j) {
@@ -202,7 +203,7 @@ void timeDouble()
 
 void timePartly()
 {
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 32768);
+  MultiHDF5 mfile("tMultiHDF5_tmp.dat", ByteIO::New, 32768);
   Int id = mfile.addFile ("file0");
   Vector<Int64> buf(16384/8, 0);
   for (Int j=0; j<2; ++j) {
@@ -256,7 +257,7 @@ void timeMove3()
 
 void doTest (Int64 blockSize)
 {
-  cout << "MultiFile test with blockSize=" << blockSize << endl;
+  cout << "MultiHDF5 test with blockSize=" << blockSize << endl;
   makeFile (blockSize);
   readFile();
   addFiles();
@@ -273,6 +274,11 @@ void doTest (Int64 blockSize)
 
 int main()
 {
+  if (! HDF5Object::hasHDF5Support()) {
+    cout << "tMultiHDF5 not run; HDF5 is not supported in casacore build"
+         << endl;
+    return 3;
+  }
   try {
     doTest (128);     // requires extra header file
     doTest (1024);    // no extra header file

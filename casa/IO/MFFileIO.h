@@ -1,4 +1,4 @@
-//# MFFileIO.h: Class for IO on a virtual file in a MultiFile
+//# MFFileIO.h: Class for IO on a virtual file in a MultiFileBase
 //# Copyright (C) 2014
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -31,13 +31,13 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/ByteIO.h>
-#include <casacore/casa/IO/MultiFile.h>
+#include <casacore/casa/IO/MultiFileBase.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary> 
-  // Class for IO on a virtual file in a MultiFile
+  // Class for IO on a virtual file in a MultiFileBase
   // </summary>
 
   // <use visibility=export>
@@ -48,7 +48,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <synopsis> 
   // This class is a specialization of class
   // <linkto class=ByteIO>ByteIO</linkto>. It uses a
-  // <linkto class=MultiFile>MultiFile</linkto> as the data store.
+  // <linkto class=MultiFileBase>MultiFileBase</linkto> as the data store.
   // <p>
   // Similar to a regular file it is possible to read and write data and to
   // seek in the file. The object keeps track of the current file offset.
@@ -79,8 +79,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Open or create a virtual file with the given name. Note that only the
     // basename of the file name is actually used.
-    // It is created in the given MultiFile.
-    MFFileIO (MultiFile&, const String& name,
+    // It is created in the given MultiFileBase.
+    MFFileIO (MultiFileBase&, const String& name,
               ByteIO::OpenOption = ByteIO::Old);
 
     // The destructor flushes and closes the file.
@@ -95,13 +95,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Write a block at the given offset.
     virtual void write (Int64 size, const void* buffer);
 
-    // Reopen the file (and possibly underlying MultiFile) for read/write access.
+    // Reopen the file (and possibly underlying MultiFileBase) for read/write access.
     // Nothing will be done if the stream is writable already.
     // An exception will be thrown if it is not possible to reopen it for
     // read/write access.
     virtual void reopenRW();
 
-    // Remove the file from the MultiFile object.
+    // Remove the file from the MultiFileBase object.
     // It makes the object invalid by setting the fileId to -1.
     void remove();
 
@@ -132,10 +132,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     //# Data members
-    MultiFile& itsFile;
-    Int64      itsPosition;
-    String     itsName;
-    Int        itsId;
+    MultiFileBase& itsFile;
+    Int64          itsPosition;
+    String         itsName;
+    Int            itsId;
   };
 
 

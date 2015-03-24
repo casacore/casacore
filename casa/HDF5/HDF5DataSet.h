@@ -91,6 +91,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
 		 const IPosition& tileShape, const Bool*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
+		 const IPosition& tileShape, const uChar*);
+    HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
 		 const IPosition& tileShape, const Int*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
 		 const IPosition& tileShape, const Int64*);
@@ -108,6 +110,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // It checks if the internal type matches the given type.
     // <group>
     HDF5DataSet (const HDF5Object&, const String&, const Bool*);
+    HDF5DataSet (const HDF5Object&, const String&, const uChar*);
     HDF5DataSet (const HDF5Object&, const String&, const Int*);
     HDF5DataSet (const HDF5Object&, const String&, const Int64*);
     HDF5DataSet (const HDF5Object&, const String&, const Float*);
@@ -143,6 +146,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Put a section of data.
     void put (const Slicer&, const void* buf);
+
+    // Extend the dataset if an axis in the new shape is larger.
+    void extend (const IPosition& shape);
 
     // Helper functions to convert shapes.
     // It reverses the axes, because HDF5 uses C-order.

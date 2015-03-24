@@ -27,19 +27,22 @@
 
 //# Includes
 #include <casacore/casa/IO/MFFileIO.h>
-#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/IO/MultiFile.h>
+#include <casacore/casa/IO/MultiHDF5.h>
+#include <casacore/casa/HDF5/HDF5Object.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <iostream>
 #include <stdexcept>
 
 using namespace casacore;
 using namespace std;
 
-void showMultiFile (MultiFile& mfile)
+void showMultiFile (MultiFileBase& mfile)
 {
   cout << mfile.fileName() << ' ' << mfile.blockSize() << ' '
        << mfile.nfile() << ' ' << mfile.size() << ' '
@@ -53,14 +56,14 @@ void showMFFile (MFFileIO& mfile)
   
 }
 
-void makeFile (MultiFile& mfile)
+void makeFile (MultiFileBase& mfile)
 {
   MFFileIO mff(mfile, "mff1", ByteIO::New);
   showMultiFile(mfile);
   showMFFile (mff);
 }
 
-void writeFiles1 (MultiFile& mfile)
+void writeFiles1 (MultiFileBase& mfile)
 {
   MFFileIO mff(mfile, "mff1", ByteIO::Update);
   Vector<Int64> buf(120);
@@ -74,7 +77,7 @@ void writeFiles1 (MultiFile& mfile)
   cout << mfile.info() << endl;
 }
 
-void checkFiles1 (MultiFile& mfile)
+void checkFiles1 (MultiFileBase& mfile)
 {
   MFFileIO mff(mfile, "mff1", ByteIO::Update);
   Vector<Int64> buf1(250), buf(250);
@@ -87,10 +90,18 @@ void checkFiles1 (MultiFile& mfile)
 int main()
 {
   try {
-    MultiFile mfile("tMFFileIO_tmp.dat", ByteIO::New, 512);
-    makeFile(mfile);
-    writeFiles1(mfile);
-    checkFiles1(mfile);
+    {
+      MultiFile mfile("tMFFileIO_tmp.dat1", ByteIO::New, 512);
+      makeFile(mfile);
+      writeFiles1(mfile);
+      checkFiles1(mfile);
+    }
+    if (HDF5Object::hasHDF5Support()) {
+      MultiHDF5 mfile("tMFFileIO_tmp.dat2", ByteIO::New, 512);
+      makeFile(mfile);
+      writeFiles1(mfile);
+      checkFiles1(mfile);
+    }
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;

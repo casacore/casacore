@@ -81,6 +81,8 @@ IO/MFFileIO.cc
 IO/MMapfdIO.cc
 IO/MMapIO.cc
 IO/MultiFile.cc
+IO/MultiFileBase.cc
+IO/MultiHDF5.cc
 IO/RawIO.cc
 IO/RegularFileIO.cc
 IO/StreamIO.cc
@@ -420,6 +422,8 @@ IO/MFFileIO.h
 IO/MMapfdIO.h
 IO/MMapIO.h
 IO/MultiFile.h
+IO/MultiFileBase.h
+IO/MultiHDF5.h
 IO/RawIO.h
 IO/RegularFileIO.h
 IO/StreamIO.h

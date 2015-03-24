@@ -56,7 +56,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BucketFile::BucketFile (const String& fileName,
                         uInt bufSizeFile, Bool mappedFile,
-                        MultiFile* mfile)
+                        MultiFileBase* mfile)
 : name_p         (Path(fileName).expandedName()),
   isWritable_p   (True),
   isMapped_p     (mappedFile),
@@ -81,7 +81,7 @@ BucketFile::BucketFile (const String& fileName,
 
 BucketFile::BucketFile (const String& fileName, Bool isWritable,
                         uInt bufSizeFile, Bool mappedFile,
-                        MultiFile* mfile)
+                        MultiFileBase* mfile)
 : name_p         (Path(fileName).expandedName()),
   isWritable_p   (isWritable),
   isMapped_p     (mappedFile),
@@ -162,7 +162,7 @@ void BucketFile::remove()
 {
     close();
     if (mfile_p) {
-      // Remove the file from the MultiFile. Note it might not exist yet.
+      // Remove the file from the MultiFileBase. Note it might not exist yet.
       Int id = mfile_p->fileId (name_p, False);
       if (id >= 0) {
         mfile_p->deleteFile (id);

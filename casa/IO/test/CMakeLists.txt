@@ -16,6 +16,7 @@ tMFFileIO
 tMappedIO
 tMMapIO
 tMultiFile
+tMultiHDF5
 tTapeIO
 tTypeIO
 )
