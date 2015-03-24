@@ -2521,7 +2521,7 @@ void MSFitsInput::fillExtraTables() {
                 Int spwId = msc_p->dataDescription().spectralWindowId()(lastDDId);
                 // now check if we've seen this field for this spectral window
                 // Use indexed access to the SOURCE sub-table
-		pair<Int, Int> myfldspw = make_pair<Int, Int>(lastFieldId, spwId);
+		pair<Int, Int> myfldspw = make_pair(lastFieldId, spwId);
 		if(!sourceFieldIndex.isDefined(myfldspw)){
 
 		    sourceFieldIndex.define(myfldspw, 1); 

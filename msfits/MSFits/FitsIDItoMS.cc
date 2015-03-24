@@ -157,14 +157,14 @@ SimpleOrderedMap<Int,Int> FITSIDItoMS1::antIdFromNo(-1); // initialize the class
 //	
 // Constructor
 //	
-FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const Int& obsType, const Bool& initFirstMain)
+  FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const Int& obsType, const Bool& initFirstMain)
   : BinaryTableExtension(fitsin),
     itsNrMSKs(10),
     itsMSKC(itsNrMSKs," "),
     itsMSKN(itsNrMSKs," "),
     itsMSKV(itsNrMSKs," "),
     itsgotMSK(itsNrMSKs,False),
-    infile_p(fitsin),
+    ///infile_p(fitsin),
     itsObsType(obsType),
     msc_p(0)
 {
