@@ -61,6 +61,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     close();
   }
 
+  void MultiFile::flushFile()
+  {
+    itsIO.flush();
+  }
+
   void MultiFile::close()
   {
     flush();

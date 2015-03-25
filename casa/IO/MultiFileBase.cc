@@ -100,6 +100,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       writeHeader();
       itsChanged = False;
     }
+    flushFile();
   }
 
   Int64 MultiFileBase::read (Int fileId, void* buf,
