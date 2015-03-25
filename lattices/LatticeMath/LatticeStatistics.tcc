@@ -512,9 +512,11 @@ Bool LatticeStatistics<T>::getStats(
 	stats(RMS) =  LattStatsSpecialize::getRms(stats(SUMSQ), n);
 	stats(FLUX) = 0;
 	if (_canDoFlux()) {
-		if (! _computeFlux(stats(FLUX), stats(SUM), pos, posInLattice)) {
+		Quantum<AccumType> q;
+		if (! _computeFlux(q, stats(SUM), pos, posInLattice)) {
 			return False;
 		}
+		stats(FLUX) = q.getValue();
 	}
 	return True;
 }
@@ -541,7 +543,6 @@ Bool LatticeStatistics<T>::getMinMaxPos(IPosition& minPos, IPosition& maxPos)
    }
    return True;
 }
-
 
 template <class T>
 Bool LatticeStatistics<T>::getFullMinMax(T& dataMin, T& dataMax)
@@ -572,7 +573,7 @@ Bool LatticeStatistics<T>::_computeFlux(
 
 template <class T>
 Bool LatticeStatistics<T>::_computeFlux(
-	AccumType&, AccumType, const IPosition&,
+	Quantum<AccumType>&, AccumType, const IPosition&,
 	Bool
 ) {
 	ThrowCc("This object does not support computing fluxes");
@@ -1390,9 +1391,10 @@ Bool LatticeStatistics<T>::getLayerStats(
       os << setw(oDWidth)
          << sum;
       if (_canDoFlux()) {
+    	  Bool unused;
             setStream(os, oPrec);
             os << setw(oDWidth)
-               << _flux(sum, area);
+               << _flux(unused, sum, area);
        }
        setStream(os, oPrec);
        os << setw(oDWidth)
@@ -1472,14 +1474,16 @@ Bool LatticeStatistics<T>::getLayerStats(
          layer = zLayer;
       }
 
-      Matrix<AccumType>  matrix(pixelIterator.matrixCursor());  
+      Matrix<AccumType>  matrix(pixelIterator.matrixCursor());
+      Bool canDoFlux = _canDoFlux();
+      Bool unused;
       for (uInt i=0; i<n1; i++) {
          const AccumType& nPts = matrix(i,NPTS);
          if (LattStatsSpecialize::hasSomePoints(nPts)) {
             ord(i,MEAN) = 
                LattStatsSpecialize::getMean(matrix(i,SUM), nPts);
-            if (_canDoFlux()) {
-            	ord(i,FLUX) = _flux(matrix(i,SUM), area).getValue();
+            if (canDoFlux) {
+            	ord(i,FLUX) = _flux(unused, matrix(i,SUM), area).getValue();
             }
             ord(i,SIGMA) = LattStatsSpecialize::getSigma(
                               matrix(i,VARIANCE));
@@ -1569,9 +1573,9 @@ Bool LatticeStatistics<T>::getLayerStats(
 	sprintf( buffer, "%e", sum );
 	stats.push_back(stat_element("Sum",buffer));
 
-
 	if ( _canDoFlux()) {
-	    sprintf( buffer, "%e", _flux(sum, area ).getValue());
+		Bool unused;
+	    sprintf( buffer, "%e", _flux(unused, sum, area ).getValue());
 	    stats.push_back(stat_element("FluxDensity",buffer));
 	}
 
@@ -1648,12 +1652,13 @@ Bool LatticeStatistics<T>::getLayerStats(
 
 
 	Matrix<AccumType>  matrix(pixelIterator.matrixCursor());
+	Bool unused;
 	for (uInt i=0; i<n1; i++) {
 	    const AccumType& nPts = matrix(i,NPTS);
 	    if (LattStatsSpecialize::hasSomePoints(nPts)) {
 		ord(i,MEAN) = LattStatsSpecialize::getMean(matrix(i,SUM), nPts);
 		if (_canDoFlux()) {
-			ord(i,FLUX) = _flux(matrix(i,SUM), area).getValue();
+			ord(i,FLUX) = _flux(unused, matrix(i,SUM), area).getValue();
 		}
 		//ord(i,VARIANCE) = LattStatsSpecialize::getVariance( matrix(i,SUM), matrix(i,SUMSQ), nPts);
 		ord(i,SIGMA) = LattStatsSpecialize::getSigma(matrix(i,VARIANCE));
@@ -1727,7 +1732,6 @@ Bool LatticeStatistics<T>::getLayerStats(
     }
     return True;
 }
-
 
 template <class T>
 Bool LatticeStatistics<T>::listLayerStats (
@@ -1994,7 +1998,7 @@ Bool LatticeStatistics<T>::display()
 }
 
 // virtual functions
-
+/*
 template <class T>
 void LatticeStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPosition& dPos) const
 //
@@ -2018,7 +2022,7 @@ void LatticeStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPosi
       hLabel = String(oss);
    }
 }
-
+*/
 template <class T>
 Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice, 
                                                     const LatticeStatsBase::StatisticsTypes type,
