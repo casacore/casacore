@@ -32,7 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
-#include <casacore/ms/MeasurementSets/MSSelectionKeywords.h>
+#include <casacore/ms/MSSel/MSSelectionKeywords.h>
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> class ArrayColumn;

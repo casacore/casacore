@@ -29,7 +29,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/iostream.h>
 
-#include <casacore/ms/MeasurementSets/MSConcat.h>
+#include <casacore/ms/MSOper/MSConcat.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/msfits/MSFits/MSFitsInput.h>
 #include <casacore/tables/Tables/Table.h>

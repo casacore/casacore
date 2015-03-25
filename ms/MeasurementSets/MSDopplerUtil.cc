@@ -28,7 +28,7 @@
 
 #include <casacore/ms/MeasurementSets/MSDopplerUtil.h>
 #include <casacore/ms/MeasurementSets/MSColumns.h>
-#include <casacore/ms/MeasurementSets/MSSourceIndex.h>
+#include <casacore/ms/MSSel/MSSourceIndex.h>
 #include <casacore/casa/Exceptions/Error.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

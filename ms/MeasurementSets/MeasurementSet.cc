@@ -35,8 +35,8 @@
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/measures/Measures/MFrequency.h>
-#include <casacore/ms/MeasurementSets/MSSelection.h>
-#include <casacore/ms/MeasurementSets/MSSelectionTools.h>
+#include <casacore/ms/MSSel/MSSelection.h>
+#include <casacore/ms/MSSel/MSSelectionTools.h>
 #include <casacore/tables/Tables/TableInfo.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
