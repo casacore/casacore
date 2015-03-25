@@ -52,15 +52,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     close();
   }
 
+  void MultiHDF5::flushFile()
+  {
+    itsFile.flush();
+  }
+
   void MultiHDF5::close()
   {
     flush();
+    // Close all datasets and groups.
+    itsInfo.clear();
     itsFile.close();
   }
 
   void MultiHDF5::reopenRW()
   {
+    // Close all datasets and groups.
+    itsInfo.clear();
     itsFile.reopenRW();
+    readHeader (True);
     itsWritable = True;
   }
 

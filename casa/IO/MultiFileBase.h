@@ -215,6 +215,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void doAddFile (MultiFileInfo&) = 0;
     // Do the class-specific actions on deleting a file.
     virtual void doDeleteFile (MultiFileInfo&) = 0;
+    // Flush the file itself.
+    virtual void flushFile() = 0;
     // Flush and close the file.
     virtual void close() = 0;
     // Write the header info.

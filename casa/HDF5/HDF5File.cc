@@ -75,6 +75,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void HDF5File::close()
   {
     if (isValid()) {
+      // Do not check for errors.
+      // If the same file is opened twice, HDF5 will close the file on
+      // the first occasion and gives an error for the second close.
+      H5Fflush (getHid(), H5F_SCOPE_LOCAL);
       H5Fclose (getHid());
       clearHid();
     }

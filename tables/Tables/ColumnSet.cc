@@ -816,6 +816,9 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 	}
 	memio.clear();
     }
+    if (multiFile_p) {
+      multiFile_p->flush();
+    }
     return written;
 }
 
