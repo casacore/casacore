@@ -288,6 +288,7 @@ public:
 // indicates an invalid plotting device, or that the internal state of the class is bad.
 
    Bool display();
+
    Bool getLayerStats(String& stats, Double area, 
                       Int zAxis=-1, Int zLayer=-1, 
                       Int hAxis=-1, Int hLayer=-1); 
@@ -423,7 +424,8 @@ protected:
    // more time than I have atm. A return value of False means that the object in
    // question cannot compute flux density values. The default implementation returns False.
    virtual Bool _canDoFlux() const { return False; }
-   virtual Quantum<AccumType> _flux(AccumType, Double) const {
+
+   virtual Quantum<AccumType> _flux(Bool&, AccumType, Double) const {
 	   ThrowCc("Logic Error: This object cannot compute flux density");
    }
 
@@ -449,13 +451,13 @@ protected:
    virtual Bool listLayerStats (
              const Matrix<AccumType>& ord,
              ostringstream& rslt, Int zLayer); 
-
+/*
 // Gets labels for higher order axes and x axis.
 // dPos is the location of the start of the cursor in the
 // storage image for this row. 
    virtual void getLabels(String& higherOrderLabel, String& xAxisLabel,
                           const IPosition& dPos) const;
-
+*/
 // Given a location in the storage lattice, convert those locations on the   
 // non-statistics axis (the last one) and optionally account for the 
 // lattice subsectioning
@@ -475,7 +477,7 @@ protected:
    );
 
    virtual Bool _computeFlux(
-		   AccumType& flux, AccumType sum, const IPosition& pos,
+		   Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
 		   Bool posInLattice
    );
 

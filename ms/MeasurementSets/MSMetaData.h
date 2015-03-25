@@ -402,6 +402,11 @@ private:
 		String name;
 	};
 
+	struct TimeStampProperties {
+		std::set<Int> ddIDs;
+		uInt nrows;
+	};
+
 	struct SubScanProperties {
 		std::set<Int> antennas;
 		Double beginTime;
@@ -409,6 +414,7 @@ private:
 		Double endTime;
 		uInt nrows;
 		std::set<Int> stateIDs;
+		std::map<Double, TimeStampProperties> timeProps;
 	};
 
 	// The general pattern is that a mutable gets set only once, on demand, when its
@@ -485,6 +491,8 @@ private:
 	mutable std::set<SubScanKey> _subscans;
 	mutable std::map<ScanKey, std::set<SubScanKey> > _scanToSubScans;
 
+	//mutable CountedPtr<std::map<Double, TimeStampProperties> > _timeStampPropsMap;
+
 	// disallow copy constructor and = operator
 	MSMetaData(const MSMetaData&);
 	MSMetaData operator =(const MSMetaData&);
@@ -503,6 +511,8 @@ private:
 	// set metadata from OBSERVATION table
 	void _setObservation(const MeasurementSet& ms);
 
+	Bool _cacheUpdated(const Float incrementInBytes) const;
+
 	void _checkField(uInt fieldID) const;
 
 	//static void _checkScan(const Int scan, const std::set<Int> allScans);
@@ -513,48 +523,40 @@ private:
 
 	void _checkSubScan(const SubScanKey& key) const;
 
-	Bool _hasIntent(const String& intent) const;
+	static void _checkTolerance(const Double tol);
 
-	Bool _hasFieldID(Int fieldID) const;
+	void _createScanRecords(
+		Record& parent, const ArrayKey& arrayKey,
+		const std::map<SubScanKey, SubScanProperties>& subScanProps
+	) const;
 
-	Bool _hasStateID(Int stateID);
+	void _createSubScanRecords(
+		Record& parent, uInt& scanNRows, std::set<Int>& antennasForScan,
+		const ScanKey& scanKey, const std::map<SubScanKey, SubScanProperties>& subScanProps
+	) const;
 
-	void _hasAntennaID(Int antennaID);
+	static void _createTimeStampRecords(
+		Record& parent,
+		const SubScanProperties& subScanProps
+	);
 
-	vector<std::set<String> > _getSpwToIntentsMap();
+	vector<String> _getAntennaNames(
+		std::map<String, uInt>& namesToIDsMap
+	);
+
+	vector<MPosition> _getAntennaPositions() const;
 
 	void _getAntennas(
 		CountedPtr<Vector<Int> >& ant1,
 		CountedPtr<Vector<Int> >& ant2
 	) const;
-
-	CountedPtr<Vector<Int> > _getScans() const;
-
-	CountedPtr<Vector<Int> > _getObservationIDs() const;
-
 	CountedPtr<Vector<Int> > _getArrayIDs() const;
-
-	CountedPtr<Vector<Int> > _getFieldIDs() const;
-
-	CountedPtr<Vector<Int> > _getStateIDs() const;
 
 	CountedPtr<Vector<Int> > _getDataDescIDs() const;
 
-	CountedPtr<Vector<Double> > _getTimes() const;
+	vector<uInt> _getDataDescIDToSpwMap() const;
 
 	CountedPtr<Quantum<Vector<Double> > > _getExposureTimes();
-
-	CountedPtr<ArrayColumn<Bool> > _getFlags() const;
-
-	//std::map<Int, std::set<Int> > _getScanToStatesMap() const;
-
-	Bool _cacheUpdated(const Float incrementInBytes) const;
-
-	static void _checkTolerance(const Double tol);
-
-	//std::map<Int, std::set<Int> > _getArrayIDToScansMap() const;
-
-	vector<uInt> _getDataDescIDToSpwMap() const;
 
 	void _getFieldsAndIntentsMaps(
 		vector<std::set<String> >& fieldToIntentsMap,
@@ -580,15 +582,34 @@ private:
 		CountedPtr<std::map<Int, std::set<Double> > >& fieldToTimesMap,
 		CountedPtr<std::map<Double, std::set<Int> > >& timesToFieldMap
 	);
+
+	CountedPtr<Vector<Int> > _getFieldIDs() const;
+
 	vector<String> _getFieldNames() const;
+
+	CountedPtr<ArrayColumn<Bool> > _getFlags() const;
 
 	std::map<String, std::set<Double> > _getIntentsToTimesMap() const;
 
-	vector<String> _getAntennaNames(
-		std::map<String, uInt>& namesToIDsMap
-	);
+	CountedPtr<Vector<Int> > _getObservationIDs() const;
 
-	vector<MPosition> _getAntennaPositions() const;
+	CountedPtr<Vector<Int> > _getScans() const;
+
+	vector<std::set<String> > _getSpwToIntentsMap();
+
+	CountedPtr<Vector<Int> > _getStateIDs() const;
+
+	CountedPtr<Vector<Double> > _getTimes() const;
+
+	//CountedPtr<std::map<Double, TimeStampProperties> > _getTimeStampProperties() const;
+
+	Bool _hasIntent(const String& intent) const;
+
+	Bool _hasFieldID(Int fieldID) const;
+
+	Bool _hasStateID(Int stateID);
+
+	void _hasAntennaID(Int antennaID);
 
 	std::map<Double, Double> _getTimeToTotalBWMap(
 		const Vector<Double>& times, const Vector<Int>& ddIDs
@@ -712,6 +733,8 @@ private:
 		std::map<SubScanKey, Double>*& scanNACRows,
 		std::map<SubScanKey, Double>*& scanNXCRows
 	) const;
+
+	static uInt _sizeof(const std::map<Double, MSMetaData::TimeStampProperties> & m);
 
 	template <class T>
 	static uInt _sizeof(const std::map<T, std::set<String> >& m);

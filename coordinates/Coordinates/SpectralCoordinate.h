@@ -586,6 +586,9 @@ public:
 
     ostream& print(ostream& os) const;
 
+    // is this a tabular coordinate?
+    Bool isTabular() const;
+
 private:
 
     SPtrHolder<TabularCoordinate> _tabular;            // Tabular coordinate OR

@@ -158,19 +158,7 @@ protected:
 
    virtual Bool _canDoFlux() const;
 
-   virtual Quantum<AccumType> _flux(
-	AccumType sum, Double beamAreaInPixels
-   ) const;
 
-   virtual Bool _computeFlux(
-		  Array<AccumType>& flux, const Array<AccumType>& npts,
-		  const Array<AccumType>& sum
-   );
-
-   virtual Bool _computeFlux(
-		   AccumType& flux, AccumType sum, const IPosition& pos,
-   		   Bool posInLattice
-   );
 
 private:
 // Data
@@ -212,7 +200,21 @@ private:
    );
 
 
+   // If <src>isFluxDensity</src> is False, then the computed value is
+   // a flux (ie flux density integrated over a spectral extent)
+   Quantum<AccumType> _flux(
+		   Bool& isFluxDensity, AccumType sum, Double beamAreaInPixels
+   ) const;
 
+   Bool _computeFlux(
+		   Array<AccumType>& flux, const Array<AccumType>& npts,
+		   const Array<AccumType>& sum
+   );
+
+   Bool _computeFlux(
+		   Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
+   		   Bool posInLattice
+   );
   //# Make members of parent class known.
 protected:
   using LatticeStatistics<T>::locInLattice;

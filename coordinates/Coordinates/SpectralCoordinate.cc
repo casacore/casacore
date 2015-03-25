@@ -467,9 +467,6 @@ Bool SpectralCoordinate::toWorld (Vector<Double> &world,
     return ok;
 }
 
-
-
-
 Bool SpectralCoordinate::toWorld(Double& world, const Double& pixel) const
 {
     static Vector<Double> pixel_tmp1(1);
@@ -1320,8 +1317,6 @@ Bool SpectralCoordinate::near(const Coordinate& other,
 
    return True;
 }
-
-
 
 Bool SpectralCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const
@@ -2513,6 +2508,7 @@ ostream& SpectralCoordinate::print(ostream& os) const {
     os << "waveUnit_p " << waveUnit_p << endl;
     os << "nativeType_p " << nativeType_p << endl;
     os << "unit_p " << unit_p.getName() << endl;
+    os << "increment " << increment() << endl;
     os << "axisName_p " << axisName_p << endl;
     os << "formatUnit_p " << formatUnit_p << endl;
     os << "direction_p " <<  direction_p << endl;
@@ -2522,6 +2518,9 @@ ostream& SpectralCoordinate::print(ostream& os) const {
 
 }
 
+Bool SpectralCoordinate::isTabular() const {
+	return _tabular.ptr();
+}
 
 ostream &operator<<(ostream &os, const SpectralCoordinate& spcoord) {
 	return spcoord.print(os);
