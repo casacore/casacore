@@ -1,37 +1,24 @@
-foreach (files
-antenna.params
-feed.params
-field.params
-obs.params
-range-obs.params
-selector-obs.params
-spw.params
-)
-    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${files} ${CMAKE_CURRENT_BINARY_DIR}/${files} COPYONLY)
-endforeach (files)
+#foreach (files
+#antenna.params
+#feed.params
+#field.params
+#obs.params
+#range-obs.params
+#selector-obs.params
+#spw.params
+#)
+#    configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${files} ${CMAKE_CURRENT_BINARY_DIR}#/${files} COPYONLY)
+#endforeach (files)
 
 set (tests
 tMeasurementSet
-tMSAntennaGram
-tMSAntennaGram2
-tMSAntennaGram3
 tMSColumns
-tMSCorrGram
 tMSDataDescBuffer
-tMSDerivedValues
 tMSFieldBuffer
 tMSFieldEphem
-tMSFieldGram
 tMSIter
 tMSMainBuffer
-tMSMetaData
 tMSPolBuffer
-tMSReader
-tMSScanGram
-tMSSpwGram
-tMSSummary
-tMSTimeGram
-tMSUvDistGram
 tStokesConverter
 )
 

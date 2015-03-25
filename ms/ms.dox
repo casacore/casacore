@@ -27,9 +27,14 @@
 
 // \defgroup ms ms package (libcasa_ms)
 //
-// The ms package contains definition of and access to MeasurementSets
+// The ms package contains definition of and access to MeasurementSets.
+// Furthermore, it has functionality to do selection on MeasurementSets.
 
 // <ul>
 //  <li> <a href="group__MeasurementSets__module.html">MeasurementSets</a>:
 //    Handling of visibility data in MeasurementSets (structured tables).
+//  <li> <a href="group__MSSel__module.html">MSSel</a>:
+//    Handling of MeasurementSet selection.
+//  <li> <a href="group__MSOper__module.html">MSOper</a>:
+//    Miscellaneous MeasurementSet operations.
 // </ul>

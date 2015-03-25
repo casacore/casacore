@@ -35,7 +35,7 @@
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/ms/MeasurementSets/MSColumns.h>
-#include <casacore/ms/MeasurementSets/MSSpwIndex.h>
+#include <casacore/ms/MSSel/MSSpwIndex.h>
 #include <casacore/measures/Measures.h>
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/measures/Measures/MPosition.h>

@@ -32,7 +32,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 
-#include <casacore/ms/MeasurementSets/MSSelection.h>
+#include <casacore/ms/MSSel/MSSelection.h>
 #include <casacore/casa/iostream.h>
 
 

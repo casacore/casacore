@@ -282,7 +282,3 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 } //# NAMESPACE CASACORE - END
 
 #endif
-
-
-
-

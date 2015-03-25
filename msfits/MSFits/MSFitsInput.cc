@@ -91,8 +91,8 @@
 #include <casacore/tables/LogTables/NewFile.h>
 #include <casacore/casa/System/ProgressMeter.h>
 #include <casacore/ms/MeasurementSets/MSTileLayout.h>
-#include <casacore/ms/MeasurementSets/MSSourceIndex.h>
-#include <casacore/ms/MeasurementSets/MSSummary.h>
+#include <casacore/ms/MSSel/MSSourceIndex.h>
+#include <casacore/ms/MSOper/MSSummary.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/OS/Directory.h>

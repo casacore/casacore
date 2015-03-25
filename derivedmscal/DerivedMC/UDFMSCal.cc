@@ -26,16 +26,16 @@
 //# $Id$
 
 #include <casacore/derivedmscal/DerivedMC/UDFMSCal.h>
-#include <casacore/ms/MeasurementSets/MSAntennaGram.h>
-#include <casacore/ms/MeasurementSets/MSTimeGram.h>
-#include <casacore/ms/MeasurementSets/MSUvDistGram.h>
-#include <casacore/ms/MeasurementSets/MSSpwGram.h>
-#include <casacore/ms/MeasurementSets/MSFieldGram.h>
-#include <casacore/ms/MeasurementSets/MSArrayGram.h>
-#include <casacore/ms/MeasurementSets/MSStateGram.h>
-#include <casacore/ms/MeasurementSets/MSScanGram.h>
-#include <casacore/ms/MeasurementSets/MSSelectableMainColumn.h>
-#include <casacore/ms/MeasurementSets/MSObservationGram.h>
+#include <casacore/ms/MSSel/MSAntennaGram.h>
+#include <casacore/ms/MSSel/MSTimeGram.h>
+#include <casacore/ms/MSSel/MSUvDistGram.h>
+#include <casacore/ms/MSSel/MSSpwGram.h>
+#include <casacore/ms/MSSel/MSFieldGram.h>
+#include <casacore/ms/MSSel/MSArrayGram.h>
+#include <casacore/ms/MSSel/MSStateGram.h>
+#include <casacore/ms/MSSel/MSScanGram.h>
+#include <casacore/ms/MSSel/MSSelectableMainColumn.h>
+#include <casacore/ms/MSSel/MSObservationGram.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/TaQL/ExprUnitNode.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
