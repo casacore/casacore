@@ -182,31 +182,70 @@ namespace casacore { namespace python { namespace numpy {
       PyArray_ScalarAsCtype(obj_ptr, buffer);  
       switch (type) {
       case NPY_BOOL:
-        return ValueHolder(*(::npy_bool*)buffer != 0);
+        {
+          ::npy_bool* ptr = (::npy_bool* )buffer;
+          return ValueHolder(*ptr != 0);
+        }
       case NPY_INT8:
-        return ValueHolder(int(*(::npy_int8*)buffer));
+        {
+          ::npy_int8* ptr = (::npy_int8*)buffer;
+          return ValueHolder(Short(*ptr));
+        }
       case NPY_UINT8:
-        return ValueHolder(uint(*(::npy_uint8*)buffer));
+        {
+          ::npy_uint8* ptr = (::npy_uint8*)buffer;
+          return ValueHolder(uShort(*ptr));
+        }
       case NPY_INT16:
-        return ValueHolder(int(*(::npy_int16*)buffer));
+        {
+          ::npy_int16* ptr = (::npy_int16*)buffer;
+          return ValueHolder(Short(*ptr));
+        }
       case NPY_UINT16:
-        return ValueHolder(uint(*(::npy_uint16*)buffer));
+        {
+          ::npy_uint16* ptr = (::npy_uint16*)buffer;
+          return ValueHolder(uShort(*ptr));
+        }
       case NPY_INT32:
-        return ValueHolder(int(*(::npy_int32*)buffer));
+        {
+          ::npy_int32* ptr = (::npy_int32*)buffer;
+          return ValueHolder(Int(*ptr));
+        }
       case NPY_UINT32:
-        return ValueHolder(uint(*(::npy_uint32*)buffer));
+        {
+          ::npy_uint32* ptr = (::npy_uint32*)buffer;
+          return ValueHolder(uInt(*ptr));
+        }
       case NPY_INT64:
-        return ValueHolder(Int64(*(::npy_int64*)buffer));
+        {
+          ::npy_int64* ptr = (::npy_int64*)buffer;
+          return ValueHolder(Int64(*ptr));
+        }
       case NPY_UINT64:
-        return ValueHolder(Int64(*(::npy_uint64*)buffer));
+        {
+          ::npy_uint64* ptr = (::npy_uint64*)buffer;
+          return ValueHolder(Int64(*ptr));
+        }
       case NPY_FLOAT32:
-        return ValueHolder(float(*(::npy_float32*)buffer));
+        {
+          ::npy_float32* ptr = (::npy_float32*)buffer;
+          return ValueHolder(float(*ptr));
+        }
       case NPY_FLOAT64:
-        return ValueHolder(double(*(::npy_float64*)buffer));
+        {
+          ::npy_float64* ptr = (::npy_float64*)buffer;
+          return ValueHolder(double(*ptr));
+        }
       case NPY_COMPLEX64:
-        return ValueHolder(*(Complex*)buffer);
+        {
+          Complex* ptr = (Complex*)buffer;
+          return ValueHolder(*ptr);
+        }
       case NPY_COMPLEX128:
-        return ValueHolder(*(DComplex*)buffer);
+        {
+          DComplex* ptr = (DComplex*)buffer;
+          return ValueHolder(*ptr);
+        }
       default:
         break;
       }
@@ -258,11 +297,12 @@ namespace casacore { namespace python { namespace numpy {
       }
     }
     // Create the array from the shape.
+    // This gives a warning because a function pointer is converted
+    // to a data pointer.
+    // A union could be used as in e.g. DynLib.cc, but numpy
+    // declarations are too complicated for it.
     PyArrayObject* po = (PyArrayObject*)
       (PyArray_SimpleNew(nd, &(newshp[0]), TypeConvTraits<T>::pyType()));
-    if (po == 0) {
-      throw AipsError ("PycArray: failed to allocate python array-object");
-    }
     // Copy the data to numarray.
     if (arr.size() > 0) {
       casacore::Bool deleteIt;

@@ -345,7 +345,9 @@
 	// Copy using Char, because uChar is mapped to Short in the Traits.
 	Array<Char> arr = ArrayCopy<Char>::toArray(shp, po->data, False);
 	Array<Short> res(arr.shape());
-	convertArray (res, (const Array<uChar>&)arr);
+        void* varr = &arr;
+        Array<uChar>* uarr = static_cast<Array<uChar>*>(varr);
+	convertArray (res, *uarr);
 	return ValueHolder(res);
       } else if (po->descr->type_num == NPY_STRING) {
 	int slen = 0;
