@@ -23,7 +23,7 @@ True
     testarrvh
 VH Array<Short>
 [-6 -7]
-VH Int
+VH Short
 -6
 VH Array<Int>
 [-6]
@@ -42,7 +42,7 @@ Complex (-6,0)
     testarrvh
 VH Array<Short>
 [5 6]
-VH uInt
+VH uShort
 5
 VH Array<Int>
 [5]
@@ -61,7 +61,7 @@ Complex (5,0)
     testarrvh
 VH Array<Short>
 [-16 -17]
-VH Int
+VH Short
 -16
 VH Array<Int>
 [-16]
@@ -80,7 +80,7 @@ Complex (-16,0)
     testarrvh
 VH Array<Int>
 [15 16]
-VH uInt
+VH uShort
 15
 VH Array<Int>
 [15]
