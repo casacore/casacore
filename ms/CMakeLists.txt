@@ -195,7 +195,6 @@ MeasurementSets/MSMainColumns.h
 MeasurementSets/MSMainEnums.h
 MeasurementSets/MSObsColumns.h
 MeasurementSets/MSObsEnums.h
-MeasurementSets/MSObsIndex.h
 MeasurementSets/MSObservation.h
 MeasurementSets/MSPointing.h
 MeasurementSets/MSPointingColumns.h
@@ -223,11 +222,9 @@ MeasurementSets/MSTable.h
 MeasurementSets/MSTable.tcc
 MeasurementSets/MSTableImpl.h
 MeasurementSets/MSTileLayout.h
-MeasurementSets/MSTimeDefinitions.h
 MeasurementSets/MSWeather.h
 MeasurementSets/MSWeatherColumns.h
 MeasurementSets/MSWeatherEnums.h
-MeasurementSets/MSWeatherIndex.h
 MeasurementSets/MeasurementSet.h
 MeasurementSets/StokesConverter.h
 DESTINATION include/casacore/ms/MeasurementSets
@@ -306,6 +303,8 @@ DESTINATION include/casacore/ms/MSOper
 
 install (FILES
 MeasurementSets.h
+MSSel.h
+MSOper.h
 DESTINATION include/casacore/ms
 )
 
