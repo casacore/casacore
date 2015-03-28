@@ -205,7 +205,7 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
 {
   Int nxout=xout.nelements();
   IPosition yinShape=yin.shape();
-  DebugAssert(xin.nelements()==yinShape(ndim-1),AipsError);
+  DebugAssert(xin.nelements()==yinShape(2),AipsError);
   DebugAssert((yinFlags.shape() == yinShape), AipsError);
 
   Bool deleteYin, deleteYout, deleteYinFlags, deleteYoutFlags;
