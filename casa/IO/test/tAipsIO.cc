@@ -31,7 +31,6 @@
 #include <casacore/casa/IO/MemoryIO.h>
 #include <casacore/casa/IO/RawIO.h>
 #include <casacore/casa/IO/MultiFile.h>
-#include <casacore/casa/IO/MultiHDF5.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Exceptions/Error.h>
