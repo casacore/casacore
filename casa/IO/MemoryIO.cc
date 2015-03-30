@@ -29,6 +29,8 @@
 #include <casacore/casa/IO/MemoryIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <iostream>
+#include <sstream>
 #include <cstring>                  //# for memcpy with gcc-4.3
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -136,16 +138,20 @@ Int64 MemoryIO::read (Int64 size, void* buf, Bool throwException)
       memcpy (buf, itsBuffer + itsPosition, bytesRead);
       itsPosition += bytesLeft;
       if (throwException) {
-        String m = String::format ("MemoryIO::read - incorrect number of bytes read:\n"
-                                   "  size=%u, used=%lld, pos=%lld, left=%lld",
-                                   size, itsUsed, itsPosition, bytesLeft);
-	throw (AipsError (m));
+        std::ostringstream oss;
+        oss << "MemoryIO::read - incorrect number of bytes read:  "
+            << std::endl
+            << "  size=" << size << ", used=" << itsUsed
+            << ", pos=" << itsPosition << ", left=" << bytesLeft;
+	throw AipsError (oss.str());
       }
     } else {
-      String m = String::format ("MemoryIO::read - buffer position is invalid:\n"
-                                 "  size=%u, used=%lld, pos=%lld, left=%lld",
-                                 size, itsUsed, itsPosition, bytesLeft);
-      throw (AipsError (m));
+      std::ostringstream oss;
+      oss << "MemoryIO::read - buffer position is invalid:"
+          << std::endl
+          << "  size=" << size << ", used=" << itsUsed
+          << ", pos=" << itsPosition << ", left=" << bytesLeft;
+      throw AipsError (oss.str());
     }
   }
   return bytesRead;
