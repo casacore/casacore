@@ -48,8 +48,8 @@ Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
 		_nptsToMaxZScore[872138] = 5;
 		_nptsToMaxZScore[13165126] = 5.5;
 		_nptsToMaxZScore[253398672] = 6;
-		_nptsToMaxZScore[6225098696] = 6.5;
-		_nptsToMaxZScore[195341107722] = 7;
+		_nptsToMaxZScore[6225098696ULL] = 6.5;
+		_nptsToMaxZScore[195341107722ULL] = 7;
 	}
 	if (_nptsToMaxZScore.find(npts) != _nptsToMaxZScore.end()) {
 		return _nptsToMaxZScore[npts];
