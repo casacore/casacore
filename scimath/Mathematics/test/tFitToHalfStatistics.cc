@@ -1439,7 +1439,7 @@ int main() {
     		fh.setData(bigData.begin(), bigData.size());
     		// enforce a small internal array size so binning algorithm is used
     		Double medabsdevmed = fh.getMedianAbsDevMed(NULL, NULL, NULL, 100);
-    		AlwaysAssert(medabsdevmed == 249799040801, AipsError);
+    		AlwaysAssert(medabsdevmed == 249799040801ULL, AipsError);
 
     		fh = FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>(
     			FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::GE_CENTER, 250
