@@ -1,4 +1,0 @@
-DirectoryIterator::name past end on tDirectoryIterator_tmp
-DirectoryIterator++ past end on tDirectoryIterator_tmp
-DirectoryIterator: error on directory tDirectoryIterator_tmp/sub: No such file or directory
-OK

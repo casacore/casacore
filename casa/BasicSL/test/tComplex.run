@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# Change Infinity, infinity or inf to Inf and remove all leading/trailing whitespace 
-$casa_checktool ./tComplex | sed -e 's/nfinity/nf/g;s/inf/Inf/g;s/ *Inf */Inf/g'

@@ -1,3 +1,0 @@
-Expected exception: WCLELMask::toLCRegion - axes lengths of mask expression and image mismatch
-Expected exception: WCLELMask::toLCRegion - shapes of mask (lattice) expression and image mismatch
-OK

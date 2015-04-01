@@ -1,7 +1,0 @@
-#!/bin/sh
-#
-# $Id$
-
-# The table gets changed, so use a copy.
-cp -r $testsrcdir/tTable_2.data_v0 tConcatTable_tmp.tab
-$casa_checktool ./tConcatTable tConcatTable_tmp.tab

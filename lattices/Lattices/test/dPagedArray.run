@@ -1,3 +1,0 @@
-#!/bin/sh
-
-$casa_checktool ./dPagedArray n1=16 n2=16 n3=2 n4=2

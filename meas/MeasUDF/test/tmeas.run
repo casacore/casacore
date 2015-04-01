@@ -1,7 +1,0 @@
-#!/bin/sh
-
-export LD_LIBRARY_PATH=../..:${LD_LIBRARY_PATH}
-export DYLD_LIBRARY_PATH=../..:${DYLD_LIBRARY_PATH}
-
-$casa_checktool ../../../tables/apps/taql 'meas.wgs("WSRT")'
-$casa_checktool ../../../tables/apps/taql 'meas.riseset("SUN", 10Aug2010/13:12:11, "WSRT")'

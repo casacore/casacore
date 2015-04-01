@@ -1,9 +1,0 @@
-int_in =  1 --> type: 1 --> name: DATA --> int_out:  1
-int_in =  2 --> type: 2 --> name: ERROR --> int_out:  2
-int_in =  3 --> type: 0 --> name: ?? --> int_out:  0
-int_in =  -1 --> type: 0 --> name: ?? --> int_out:  0
-name: =  DATA --> type: 1 --> name: DATA
-name: =  ERROR --> type: 2 --> name: ERROR
-name: =  whatever else --> type: 0 --> name: ??
-All names: ?? DATA ERROR 
-ok

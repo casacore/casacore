@@ -1,2 +1,0 @@
-1000 casa/System/AipsrcVector.cc casa/Arrays/Vector.h 
-     template class AipsrcVector<Double> 

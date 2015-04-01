@@ -1,3 +1,0 @@
-#!/bin/sh
-echo "UNTESTED: dPagedImage requires retired ImageCoordinate class"
-exit 3
