@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['w',['W',['../classcasacore_1_1MSSelectionKeywords.html#a868a06fbf556ee44554150f4367b1889a1fa6ba08b045492653726e4ec4721fec',1,'casacore::MSSelectionKeywords']]],
+  ['warn',['WARN',['../classcasacore_1_1LogIO.html#a3f637084f2b7120bb3822cf345e19dd5af5e464e1cceae1954c670a5d5342b430',1,'casacore::LogIO::WARN()'],['../classcasacore_1_1LogMessage.html#a9390a9080539b47c70f284640dd401f4a1d4b85dad06d1df73cadfce520e536f7',1,'casacore::LogMessage::WARN()'],['../classcasacore_1_1FITSError.html#aee99e4d84059a83d7cff6e822e998670a6d434b71d2c53c2de4baa1eb4012bc23',1,'casacore::FITSError::WARN()']]],
+  ['wave',['WAVE',['../classcasacore_1_1SpectralCoordinate.html#a42c58ae2f50518f31cd04886dc16c017a1b4339fb1b891de71dbca781a0f4fc34',1,'casacore::SpectralCoordinate']]],
+  ['wc',['WC',['../classcasacore_1_1RegionType.html#af29b1c965d2971430e38084ddeafac1fa68da387f65776b31ae5952294e77dbd8',1,'casacore::RegionType']]],
+  ['weather',['WEATHER',['../classcasacore_1_1MSMainEnums.html#adef677a313298d264c98f31bef0efa7daa7ebecaf824d4756ad08e7857afe1885',1,'casacore::MSMainEnums::WEATHER()'],['../classcasacore_1_1TableInfo.html#a768041ca99818e4beb47e117f2434c22ad95ae69950ee9fc53fd8cb9020d6cf78',1,'casacore::TableInfo::WEATHER()']]],
+  ['weekdayfunc',['weekdayFUNC',['../classcasacore_1_1TableExprFuncNode.html#a524ddc22719623b2a66a3bd63fbc929ca4c6eaecb6fa8bf9b4f5a7c1ce4320ab7',1,'casacore::TableExprFuncNode']]],
+  ['weekfunc',['weekFUNC',['../classcasacore_1_1TableExprFuncNode.html#a524ddc22719623b2a66a3bd63fbc929cae3d88f027852492679cff8756eba5eba',1,'casacore::TableExprFuncNode']]],
+  ['weibull',['WEIBULL',['../classcasacore_1_1Random.html#a0f05cda3ea06093acc46b4e01d81b940a3779e96c4f85eb99002c914ae0afd508',1,'casacore::Random']]],
+  ['weight',['WEIGHT',['../classcasacore_1_1MSMainEnums.html#a612b887846f70716850e235c411e48a9a5d01b23b2ee16415d184f1cf85726cf3',1,'casacore::MSMainEnums::WEIGHT()'],['../classcasacore_1_1MSSelectionKeywords.html#a868a06fbf556ee44554150f4367b1889a5d5f9016930b39f187fc8dfcac0d9fcb',1,'casacore::MSSelectionKeywords::WEIGHT()']]],
+  ['weight_5fspectrum',['WEIGHT_SPECTRUM',['../classcasacore_1_1MSMainEnums.html#a612b887846f70716850e235c411e48a9a573dc14fc6e7a4cc361aaf9d280f024b',1,'casacore::MSMainEnums']]],
+  ['wgs84',['WGS84',['../classcasacore_1_1MPosition.html#a27a281e66a485ef884d5739fed06fc37adc996ebfdc2f5d3a9879a39c9714f843',1,'casacore::MPosition']]],
+  ['wgs84_5fitrf',['WGS84_ITRF',['../classcasacore_1_1MCPosition.html#a74810d45b965b40df31ef07aa7250e16ab1013b75f63c08884ac308ddce746323',1,'casacore::MCPosition']]],
+  ['wgsh',['WGSH',['../classcasacore_1_1PositionUDF.html#a88aa3c59ebcfdb4036b462f41370c320a678b56339c0a93d7081b6e21552530b5',1,'casacore::PositionUDF']]],
+  ['wgsll',['WGSLL',['../classcasacore_1_1PositionUDF.html#a88aa3c59ebcfdb4036b462f41370c320ad160374da4f7137ba0badc755c8a78dc',1,'casacore::PositionUDF']]],
+  ['wgsxyz',['WGSXYZ',['../classcasacore_1_1PositionUDF.html#a88aa3c59ebcfdb4036b462f41370c320ae32658f7608b81f2485c09cc8f468c94',1,'casacore::PositionUDF']]],
+  ['width',['WIDTH',['../classcasacore_1_1Gaussian1DParam.html#ad81c1c6f8e77b4d2d5c6e40efafae6f8a5b9adcf8cb28f04e89626b7f8d4dd144',1,'casacore::Gaussian1DParam::WIDTH()'],['../classcasacore_1_1KaiserBParam.html#ac1bff46ecceb642b6074fa0fe770dd05ad409cb29deb22584cbea39b74a4388c0',1,'casacore::KaiserBParam::WIDTH()'],['../classcasacore_1_1Lorentzian1DParam.html#a7636f694c36e5fce181a1f6e21d4172faa2da04ec17f981501dd97d53c1c0f4b2',1,'casacore::Lorentzian1DParam::WIDTH()'],['../classcasacore_1_1SincParam.html#a7cbf8712e90fe0d068fe6c4d954bff0ca80d08f9602fb9a43ff00b81a959c8fe7',1,'casacore::SincParam::WIDTH()'],['../classcasacore_1_1UnaryParam.html#a0c9abe0fe3065d1f6fbed7921041cd8ea81966cbb39d358533e9f1244821ccda4',1,'casacore::UnaryParam::WIDTH()']]],
+  ['wind_5fdirection',['WIND_DIRECTION',['../classcasacore_1_1MSWeatherEnums.html#a1c7b6285d1d890b4e41af24ab796bccfa9f563e2bd7cc877bd340829a1f113cf4',1,'casacore::MSWeatherEnums']]],
+  ['wind_5fdirection_5fflag',['WIND_DIRECTION_FLAG',['../classcasacore_1_1MSWeatherEnums.html#a1c7b6285d1d890b4e41af24ab796bccfac3121a89da470e7212515a36c0663303',1,'casacore::MSWeatherEnums']]],
+  ['wind_5fspeed',['WIND_SPEED',['../classcasacore_1_1MSWeatherEnums.html#a1c7b6285d1d890b4e41af24ab796bccfa3fb070479dfe8d9c2a5d3c0fe3f08c18',1,'casacore::MSWeatherEnums']]],
+  ['wind_5fspeed_5fflag',['WIND_SPEED_FLAG',['../classcasacore_1_1MSWeatherEnums.html#a1c7b6285d1d890b4e41af24ab796bccfa04f37b9558745fd9368eadbe6b5cfe60',1,'casacore::MSWeatherEnums']]],
+  ['write',['Write',['../classcasacore_1_1FileLocker.html#a88e00f7a9d5ca67f0aa9c55d0da57601ac3d6c1b5bfa673e8b3ea66751a95922b',1,'casacore::FileLocker::Write()'],['../classcasacore_1_1Casarc.html#abf7b4ab4fbd697103902584bd2cf29afa3811baeb2c3e756d3310ca11c9b1b194',1,'casacore::Casarc::WRITE()'],['../classcasacore_1_1TableTrace.html#ab6bc911d265eca5d56b8bb9272ba4983a1f9a5aaaba1f5855599dbcecda17cd08',1,'casacore::TableTrace::WRITE()']]],
+  ['writeerr',['WRITEERR',['../classcasacore_1_1BlockIO.html#a1f226002733b5d2725ecf585bf4b9399abaf8e5cf29d9789104dadc8b9d53b794',1,'casacore::BlockIO']]]
+];
