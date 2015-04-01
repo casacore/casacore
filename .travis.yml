@@ -1,0 +1,32 @@
+language: cpp
+
+compiler:
+  - clang
+  - gcc
+
+before_install:
+  - sudo apt-get update -q
+
+install:
+  - sudo apt-get install -qy cmake flex bison libblas-dev liblapack-dev
+      libcfitsio3-dev wcslib-dev libfftw3-dev gfortran libncurses5-dev
+      libreadline6-dev libhdf5-serial-dev python-all-dev
+
+
+before_script:
+  - mkdir build
+  - cd build
+  - wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar
+  - tar zxvf WSRT_Measures.ztar
+  - cmake ..
+      -DUSE_FFTW3=ON
+      -DBUILD_TESTING=ON
+      -DUSE_OPENMP=OFF
+      -DUSE_HDF5=ON
+      -DBUILD_PYTHON=ON
+      -DDATA_DIR=.
+
+script:
+  - make
+  - make test
+  - sudo make install
