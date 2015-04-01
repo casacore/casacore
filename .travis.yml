@@ -10,7 +10,8 @@ before_install:
 install:
   - sudo apt-get install -qy cmake flex bison libblas-dev liblapack-dev
       libcfitsio3-dev wcslib-dev libfftw3-dev gfortran libncurses5-dev
-      libreadline6-dev libhdf5-serial-dev python-all-dev
+      libreadline6-dev libhdf5-serial-dev python-all-dev libboost-dev
+      libboost-python-dev
 
 
 before_script:
