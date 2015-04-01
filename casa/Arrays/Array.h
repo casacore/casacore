@@ -29,20 +29,21 @@
 #define CASA_ARRAY_H
 
 //# Includes
-#include <casa/Arrays/ArrayBase.h>
-#include <casa/Containers/Block.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Arrays/MaskLogiArrFwd.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/ostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayBase.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Arrays/MaskLogiArrFwd.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/ostream.h>
 #include <iterator>
 #if defined(WHATEVER_VECTOR_FORWARD_DEC)
 WHATEVER_VECTOR_FORWARD_DEC;
 #else
-#include <casa/stdvector.h>
+#include <casacore/casa/stdvector.h>
 #endif
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 //# Forward Declarations
 class AipsIO;
 class Slice;
@@ -191,7 +192,7 @@ public:
     // Frees up storage only if this array was the last reference to it.
     virtual ~Array();
 
-    // Make an mepty array of the same template type.
+    // Make an empty array of the same template type.
     virtual CountedPtr<ArrayBase> makeArray() const;
 
     // Assign the other array to this array.
@@ -449,7 +450,7 @@ public:
     // <note>This function should not be used in tight loops as it is (much)
     // slower than iterating using begin() and end(), ArrayIter, or
     // ArrayAccessor.</note>
-    Array<T> operator[] (uInt i) const;
+    Array<T> operator[] (size_t i) const;
 
 
     // The array is masked by the input LogicalArray.
@@ -789,6 +790,6 @@ protected:
 
 }//#End casa namespace
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/Array.tcc>
+#include <casacore/casa/Arrays/Array.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

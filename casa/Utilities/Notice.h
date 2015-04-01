@@ -28,9 +28,10 @@
 #ifndef CASA_NOTICE_H
 #define CASA_NOTICE_H
 
-#include <casa/Containers/Link.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Link.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declaration
 class NoticeTarget;
@@ -235,7 +236,7 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

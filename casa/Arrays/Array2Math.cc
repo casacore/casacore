@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 void throwArrayShapes (const char* name)
@@ -46,12 +46,12 @@ void throwArrayShapes (const char* name)
 
 Array<Complex> conj(const Array<Complex> &carray)
 {
-  return arrayTransformResult (carray, casa::Conj<Complex>());
+  return arrayTransformResult (carray, casacore::Conj<Complex>());
 }
   
 Array<DComplex> conj(const Array<DComplex> &carray)
 {
-  return arrayTransformResult (carray, casa::Conj<DComplex>());
+  return arrayTransformResult (carray, casacore::Conj<DComplex>());
 }
 
 Matrix<Complex> conj(const Matrix<Complex> &carray)
@@ -67,61 +67,61 @@ Matrix<DComplex> conj(const Matrix<DComplex> &carray)
 void conj(Array<Complex> &rarray, const Array<Complex> &carray)
 {
   checkArrayShapes (carray, rarray, "conj");
-  arrayTransform (carray, rarray, casa::Conj<Complex>());
+  arrayTransform (carray, rarray, casacore::Conj<Complex>());
 }
 
 void conj(Array<DComplex> &rarray, const Array<DComplex> &carray)
 {
   checkArrayShapes (carray, rarray, "conj");
-  arrayTransform (carray, rarray, casa::Conj<DComplex>());
+  arrayTransform (carray, rarray, casacore::Conj<DComplex>());
 }
 
 void real(Array<Float> &rarray, const Array<Complex> &carray)
 {
   checkArrayShapes (carray, rarray, "real");
-  arrayTransform (carray, rarray, casa::Real<Complex,Float>());
+  arrayTransform (carray, rarray, casacore::Real<Complex,Float>());
 }
 
 void real(Array<Double> &rarray, const Array<DComplex> &carray)
 {
   checkArrayShapes (carray, rarray, "real");
-  arrayTransform (carray, rarray, casa::Real<DComplex,Double>());
+  arrayTransform (carray, rarray, casacore::Real<DComplex,Double>());
 }
 
 void imag(Array<Float> &rarray, const Array<Complex> &carray)
 {
   checkArrayShapes (carray, rarray, "imag");
-  arrayTransform (carray, rarray, casa::Imag<Complex,Float>());
+  arrayTransform (carray, rarray, casacore::Imag<Complex,Float>());
 }
 
 void imag(Array<Double> &rarray, const Array<DComplex> &carray)
 {
   checkArrayShapes (carray, rarray, "imag");
-  arrayTransform (carray, rarray, casa::Imag<DComplex,Double>());
+  arrayTransform (carray, rarray, casacore::Imag<DComplex,Double>());
 }
 
 void amplitude(Array<Float> &rarray, const Array<Complex> &carray)
 {
   checkArrayShapes (carray, rarray, "amplitude");
-  arrayTransform (carray, rarray, casa::CAbs<Complex,Float>());
+  arrayTransform (carray, rarray, casacore::CAbs<Complex,Float>());
 }
 
 void amplitude(Array<Double> &rarray, const Array<DComplex> &carray)
 {
   checkArrayShapes (carray, rarray, "amplitude");
-  arrayTransform (carray, rarray, casa::CAbs<DComplex,Double>());
+  arrayTransform (carray, rarray, casacore::CAbs<DComplex,Double>());
 }
 
 void phase(Array<Float> &rarray, const Array<Complex> &carray)
 {
   checkArrayShapes (carray, rarray, "pahse");
-  arrayTransform (carray, rarray, casa::CArg<Complex,Float>());
+  arrayTransform (carray, rarray, casacore::CArg<Complex,Float>());
 }
 
 void phase(Array<Double> &rarray, const Array<DComplex> &carray)
 {
   checkArrayShapes (carray, rarray, "phase");
-  arrayTransform (carray, rarray, casa::CArg<DComplex,Double>());
+  arrayTransform (carray, rarray, casacore::CArg<DComplex,Double>());
 }
 
 Array<Float> real(const Array<Complex> &carray)
@@ -330,5 +330,5 @@ Array<DComplex> RealToComplex(const Array<Double> &rarray)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

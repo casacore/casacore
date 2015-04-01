@@ -29,12 +29,12 @@
 //          users typically do not use this class, it is merely
 //          a helper class for Input.
 
-#include <casa/Inputs/Param.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Inputs/Param.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Param::Param()			// default constructor; doesn't do anything
 {}
@@ -306,5 +306,5 @@ AipsIO & operator>> (AipsIO &os, Param& p) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -26,13 +26,16 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/ConvolveGridder.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/iostream.h>
+#ifndef SCIMATH_CONVOLVEGRIDDER_TCC
+#define SCIMATH_CONVOLVEGRIDDER_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Mathematics/ConvolveGridder.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/iostream.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define NEED_UNDERSCORES
 #if defined(NEED_UNDERSCORES)
@@ -443,5 +446,7 @@ Int& ConvolveGridder<Domain, Range>::cSampling() {
   return sampling;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

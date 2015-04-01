@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <images/Images/ImageExprParse.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
-#include <casa/namespace.h>
+#include <casacore/images/Images/ImageExprParse.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/namespace.h>
 
 int main()
 {

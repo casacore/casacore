@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/Sinusoid1DParam.h>
+#ifndef SCIMATH_SINUSOID1DPARAM_TCC
+#define SCIMATH_SINUSOID1DPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/Sinusoid1DParam.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 Sinusoid1DParam<T>::Sinusoid1DParam() :
@@ -78,5 +81,7 @@ Sinusoid1DParam<T>::operator=(const Sinusoid1DParam<T> &other) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -28,15 +28,15 @@
 #ifndef CASA_TYPEIO_H
 #define CASA_TYPEIO_H
 
-#include <casa/aips.h>
-#include <casa/IO/ByteIO.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/ByteIO.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 //# The following should be a forward declaration. But our Complex & DComplex
 //# classes are a typedef hence this does not work. Replace the following with
 //# forward declarations when Complex and DComplex are no longer typedefs.
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;
 
@@ -97,20 +97,20 @@ public:
     // DComplex as 2 doubles and String as a length (uInt) and chars.
     // If it does not succeed an exception will be thrown.
     // <group>
-    virtual uInt write (uInt nvalues, const Bool* value);
-    virtual uInt write (uInt nvalues, const Char* value) = 0;
-    virtual uInt write (uInt nvalues, const uChar* value) = 0;
-    virtual uInt write (uInt nvalues, const Short* value) = 0;
-    virtual uInt write (uInt nvalues, const uShort* value) = 0;
-    virtual uInt write (uInt nvalues, const Int* value) = 0;
-    virtual uInt write (uInt nvalues, const uInt* value) = 0;
-    virtual uInt write (uInt nvalues, const Int64* value) = 0;
-    virtual uInt write (uInt nvalues, const uInt64* value) = 0;
-    virtual uInt write (uInt nvalues, const Float* value) = 0;
-    virtual uInt write (uInt nvalues, const Double* value) = 0;
-    virtual uInt write (uInt nvalues, const Complex* value);
-    virtual uInt write (uInt nvalues, const DComplex* value);
-    virtual uInt write (uInt nvalues, const String* value);
+    virtual size_t write (size_t nvalues, const Bool* value);
+    virtual size_t write (size_t nvalues, const Char* value) = 0;
+    virtual size_t write (size_t nvalues, const uChar* value) = 0;
+    virtual size_t write (size_t nvalues, const Short* value) = 0;
+    virtual size_t write (size_t nvalues, const uShort* value) = 0;
+    virtual size_t write (size_t nvalues, const Int* value) = 0;
+    virtual size_t write (size_t nvalues, const uInt* value) = 0;
+    virtual size_t write (size_t nvalues, const Int64* value) = 0;
+    virtual size_t write (size_t nvalues, const uInt64* value) = 0;
+    virtual size_t write (size_t nvalues, const Float* value) = 0;
+    virtual size_t write (size_t nvalues, const Double* value) = 0;
+    virtual size_t write (size_t nvalues, const Complex* value);
+    virtual size_t write (size_t nvalues, const DComplex* value);
+    virtual size_t write (size_t nvalues, const String* value);
     // </group>
    
     // Read the values from the ByteIO object and convert them.
@@ -118,20 +118,20 @@ public:
     // DComplex as 2 doubles and String as a length (uInt) and chars.
     // If it does not succeed an exception will be thrown.
     // <group>
-    virtual uInt read (uInt nvalues, Bool* value);
-    virtual uInt read (uInt nvalues, Char* value) = 0;
-    virtual uInt read (uInt nvalues, uChar* value) = 0;
-    virtual uInt read (uInt nvalues, Short* value) = 0;
-    virtual uInt read (uInt nvalues, uShort* value) = 0;
-    virtual uInt read (uInt nvalues, Int* value) = 0;
-    virtual uInt read (uInt nvalues, uInt* value) = 0;
-    virtual uInt read (uInt nvalues, Int64* value) = 0;
-    virtual uInt read (uInt nvalues, uInt64* value) = 0;
-    virtual uInt read (uInt nvalues, Float* value) = 0;
-    virtual uInt read (uInt nvalues, Double* value) = 0;
-    virtual uInt read (uInt nvalues, Complex* value);
-    virtual uInt read (uInt nvalues, DComplex* value);
-    virtual uInt read (uInt nvalues, String* value);
+    virtual size_t read (size_t nvalues, Bool* value);
+    virtual size_t read (size_t nvalues, Char* value) = 0;
+    virtual size_t read (size_t nvalues, uChar* value) = 0;
+    virtual size_t read (size_t nvalues, Short* value) = 0;
+    virtual size_t read (size_t nvalues, uShort* value) = 0;
+    virtual size_t read (size_t nvalues, Int* value) = 0;
+    virtual size_t read (size_t nvalues, uInt* value) = 0;
+    virtual size_t read (size_t nvalues, Int64* value) = 0;
+    virtual size_t read (size_t nvalues, uInt64* value) = 0;
+    virtual size_t read (size_t nvalues, Float* value) = 0;
+    virtual size_t read (size_t nvalues, Double* value) = 0;
+    virtual size_t read (size_t nvalues, Complex* value);
+    virtual size_t read (size_t nvalues, DComplex* value);
+    virtual size_t read (size_t nvalues, String* value);
     // </group>
 
     // This function sets the position on the given offset.
@@ -152,19 +152,19 @@ public:
     Bool isSeekable() const;
 
 protected:    
-    // This varable keeps a pointer to a ByteIO.
+    // This variable keeps a pointer to a ByteIO.
     CountedPtr<ByteIO> itsByteIO;
 
-    // The copy constructor uses reference semantics
+    // The copy constructor uses reference semantics.
     TypeIO (const TypeIO& TypeIO);
 
-    // The assignment operator uses reference semantics
+    // The assignment operator uses reference semantics.
     TypeIO& operator= (const TypeIO& typeIO);
 };
 
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

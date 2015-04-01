@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSTileLayout.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSTileLayout.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 IPosition MSTileLayout::tileShape(const IPosition& dataShape,
 				  Int observationType, Int nIfr, Int nInt)
@@ -100,5 +100,5 @@ IPosition MSTileLayout::tileShape(const IPosition& dataShape,
   return tileShape(dataShape,observationType,nIfr);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

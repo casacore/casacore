@@ -30,15 +30,15 @@
 #ifndef COORDINATES_COORDINATESYSTEM_H
 #define COORDINATES_COORDINATESYSTEM_H
 
-#include <casa/aips.h>
-#include <coordinates/Coordinates/Coordinate.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MFrequency.h>
-#include <coordinates/Coordinates/ObsInfo.h>
-#include <casa/Containers/Block.h>
-#include <measures/Measures/MDoppler.h>
+#include <casacore/casa/aips.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/coordinates/Coordinates/ObsInfo.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/measures/Measures/MDoppler.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Matrix;
 class DirectionCoordinate;
@@ -985,7 +985,7 @@ private:
 
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

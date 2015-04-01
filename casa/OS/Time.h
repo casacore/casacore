@@ -29,11 +29,11 @@
 #ifndef CASA_TIME_H
 #define CASA_TIME_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <Summary> date and time enquiry functions, with some operations.
 // </summary>
@@ -204,7 +204,7 @@ class Time {
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 //# roel's original comments -- these may be useful in creating demo

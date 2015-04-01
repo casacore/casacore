@@ -25,27 +25,27 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <lattices/Lattices/PagedArray.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/TiledLineStepper.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
-#include <scimath/Functionals/Gaussian1D.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/OS/Timer.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <casa/Utilities/COWPtr.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Inputs/Input.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/TiledLineStepper.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Functionals/Gaussian1D.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/casa/Utilities/COWPtr.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main(int argc, const char* argv[])
 {
   try {

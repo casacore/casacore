@@ -25,12 +25,15 @@
 //#
 //# $Id$
 
-#include <casa/Containers/HashMap.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
+#ifndef CASA_HASHMAP_TCC
+#define CASA_HASHMAP_TCC
+
+#include <casacore/casa/Containers/HashMap.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class key> HashClass<key>::HashClass() { }
 template<class key> HashClass<key>::~HashClass() { }
@@ -221,5 +224,7 @@ template<class t> const t &defaultHashValue(const t *) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

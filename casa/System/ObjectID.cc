@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <casa/System/ObjectID.h>
-#include <casa/OS/HostInfo.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/System/ObjectID.h>
+#include <casacore/casa/OS/HostInfo.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/sstream.h>
-#include <casa/iostream.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ObjectID::ObjectID(Bool makeNull)
   : sequence_number_p(0), process_id_p(0), creation_time_p(0), hostname_p("")
@@ -218,5 +218,5 @@ ostream &operator<<(ostream &os, const ObjectID &id)
     return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

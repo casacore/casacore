@@ -25,9 +25,9 @@
 //#
 //#
 //# $Id$
-#include <scimath/Functionals/FunctionFactoryErrors.h>
+#include <casacore/scimath/Functionals/FunctionFactoryErrors.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 const String InvalidSerializationError::preamble("Invalid function description in record: ");
 
@@ -36,5 +36,5 @@ UnrecognizedFunctionError::~UnrecognizedFunctionError( ) throw() { }
 InvalidSerializationError::~InvalidSerializationError() throw() { }
 FieldNotFoundError::~FieldNotFoundError() throw() { }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -29,14 +29,15 @@
 #define IMAGES_HDF5IMAGE_H
 
 //# Includes
-#include <images/Images/ImageInterface.h>
-#include <images/Images/ImageAttrHandlerHDF5.h>
-#include <lattices/Lattices/HDF5Lattice.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/ImageAttrHandlerHDF5.h>
+#include <casacore/lattices/Lattices/HDF5Lattice.h>
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // Read, store, and manipulate astronomical images in HDF5 format.
@@ -333,9 +334,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/HDF5Image.tcc>
+#include <casacore/images/Images/HDF5Image.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

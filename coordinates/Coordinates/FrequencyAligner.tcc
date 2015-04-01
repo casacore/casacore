@@ -25,28 +25,31 @@
 //#
 //# $Id$
 
-#include <coordinates/Coordinates/FrequencyAligner.h>
+#ifndef COORDINATES_FREQUENCYALIGNER_TCC
+#define COORDINATES_FREQUENCYALIGNER_TCC
 
-#include <casa/Arrays/ArrayAccessor.h>
-#include <casa/Arrays/VectorIter.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/Quanta/Quantum.h>
+#include <casacore/coordinates/Coordinates/FrequencyAligner.h>
 
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/casa/Arrays/ArrayAccessor.h>
+#include <casacore/casa/Arrays/VectorIter.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/Quanta/Quantum.h>
 
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MCFrequency.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
 
-#include <scimath/Mathematics/InterpolateArray1D.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MCFrequency.h>
 
-namespace casa {
+#include <casacore/scimath/Mathematics/InterpolateArray1D.h>
+
+namespace casacore {
 
 template<class T>
 FrequencyAligner<T>::FrequencyAligner()
@@ -181,7 +184,7 @@ Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
    } else {
       for (uInt i=0; i<nPixels; i++) {
          itsFreqX[i] = itsMachine(xIn[i]).getValue().getValue();
-         maxDiff = casa::max(casa::abs(itsFreqX[i]-itsRefFreqX[i]),maxDiff);
+         maxDiff = casacore::max(casacore::abs(itsFreqX[i]-itsRefFreqX[i]),maxDiff);
       }
    }
    maxDiff /= abs(itsRefFreqX[1]-itsRefFreqX[0]);      // Max diff as a fraction of a channel
@@ -340,7 +343,7 @@ Double FrequencyAligner<T>::makeAbcissa (Vector<Double>& freq, Bool doDiff)
          itsSpecCoord.toWorld(world,i); 
          freq[i] = itsMachine(world).getValue().getValue();
 //
-         maxDiff = casa::max(casa::abs(freq[i]-itsRefFreqX[i]),maxDiff);
+         maxDiff = casacore::max(casacore::abs(freq[i]-itsRefFreqX[i]),maxDiff);
       }
    } else {
       for (uInt i=0; i<n; i++) {
@@ -420,8 +423,10 @@ SpectralCoordinate FrequencyAligner<T>::alignedSpectralCoordinate (Bool doLinear
    return sC;
 }
 
-} //# End namespace casa
+} //# End namespace casacore
 
 
 
    
+
+#endif

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <casa/Containers/Record.h>
-#include <casa/Containers/RecordDesc.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Record::Record()
 : RecordInterface (),
@@ -302,5 +302,5 @@ void Record::getRecord (AipsIO& os)
     recordType() = (RecordInterface::RecordType)type;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

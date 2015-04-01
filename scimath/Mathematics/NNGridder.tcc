@@ -26,11 +26,14 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/NNGridder.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Arrays/ArrayMath.h>
+#ifndef SCIMATH_NNGRIDDER_TCC
+#define SCIMATH_NNGRIDDER_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Mathematics/NNGridder.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Constructor
 template <class Domain, class Range>
@@ -94,5 +97,7 @@ Range NNGridder<Domain, Range>::correctionFactor1D(Int loc, Int len)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

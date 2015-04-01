@@ -25,12 +25,12 @@
 //#
 //# $Id: PycRecord.cc,v 1.2 2006/10/17 03:33:50 gvandiep Exp $
 
-#include <python/Converters/PycRecord.h>
-#include <python/Converters/PycValueHolder.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/python/Converters/PycRecord.h>
+#include <casacore/python/Converters/PycValueHolder.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <boost/python/object.hpp>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
   boost::python::dict casa_record_to_python::makeobject
   (Record const& rec)

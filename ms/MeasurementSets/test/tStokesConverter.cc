@@ -26,13 +26,13 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/MaskArrLogi.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Exceptions/Error.h>
-#include <ms/MeasurementSets/StokesConverter.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/MaskArrLogi.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/ms/MeasurementSets/StokesConverter.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() 
 {
   Int err=0;

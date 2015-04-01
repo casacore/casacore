@@ -25,7 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/Containers/Map.h>
+#ifndef CASA_MAP_TCC
+#define CASA_MAP_TCC
+
+#include <casacore/casa/Containers/Map.h>
 
 
 //# template<class key, class value> value &Map<key,value>::operator()(const key &ky) {
@@ -36,7 +39,7 @@
 //#     return define(ky,DefaultVal);
 //# }
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 template<class key, class value>
 Map<key,value>::~Map() {
@@ -447,3 +450,5 @@ template<class key, class value> Map<key,value>::Map(MapRep<key,value> *nRep)
 }
 
 } //#End casa namespace
+
+#endif

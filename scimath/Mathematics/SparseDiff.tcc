@@ -25,12 +25,15 @@
 //#
 //# $Id: SparseDiff.cc,v 1.3 2008/01/10 12:00:42 wbrouw Exp $
 
+#ifndef SCIMATH_SPARSEDIFF_TCC
+#define SCIMATH_SPARSEDIFF_TCC
+
 //# Includes
-#include <scimath/Mathematics/SparseDiff.h>
-#include <casa/Containers/ObjectStack.h>
+#include <casacore/scimath/Mathematics/SparseDiff.h>
+#include <casacore/casa/Containers/ObjectStack.h>
 #include <algorithm>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Constructors
 
@@ -305,5 +308,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     rep_p = tmp;
   }
  
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

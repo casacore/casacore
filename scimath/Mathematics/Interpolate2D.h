@@ -29,9 +29,9 @@
 #define SCIMATH_INTERPOLATE2D_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 template <typename T> class Vector;
@@ -257,10 +257,10 @@ class Interpolate2D {
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/Interpolate2D2.tcc>
+#include <casacore/scimath/Mathematics/Interpolate2D2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

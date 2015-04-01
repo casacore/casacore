@@ -25,13 +25,16 @@
 //#
 //# $Id: SparseDiffIO.cc,v 1.1 2007/11/16 04:34:46 wbrouw Exp $
 
-//# Includes
-#include <scimath/Mathematics/SparseDiffIO.h>
-#include <scimath/Mathematics/SparseDiff.h>
-#include <casa/vector.h>
-#include <casa/iostream.h>
+#ifndef SCIMATH_SPARSEDIFFIO_TCC
+#define SCIMATH_SPARSEDIFFIO_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Mathematics/SparseDiffIO.h>
+#include <casacore/scimath/Mathematics/SparseDiff.h>
+#include <casacore/casa/vector.h>
+#include <casacore/casa/iostream.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<class T>
   ostream &operator<<(ostream &os, const SparseDiff<T> &ad) {
@@ -46,5 +49,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

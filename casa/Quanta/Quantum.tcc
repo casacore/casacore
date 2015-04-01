@@ -25,22 +25,25 @@
 //#
 //# $Id$
 
-//# Includes
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/QuantumType.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/MUString.h>
-#include <casa/Utilities/Register.h>
-#include <casa/sstream.h>
+#ifndef CASA_QUANTUM_TCC
+#define CASA_QUANTUM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/QuantumType.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/MUString.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/sstream.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class Qtype>
 Quantum<Qtype>::Quantum() :
@@ -355,5 +358,7 @@ uInt Quantum<Qtype>::myType() {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

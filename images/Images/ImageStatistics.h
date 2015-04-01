@@ -30,15 +30,15 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/Logging/LogIO.h>
-#include <lattices/Lattices/LatticeStatistics.h>
-#include <scimath/Mathematics/NumericTraits.h>
-#include <casa/iosstrfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/lattices/LatticeMath/LatticeStatistics.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/iosstrfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class ImageInterface;
@@ -151,16 +151,14 @@ public:
 
    inline void clearMessages() { _messages.resize(0); }
 
-
+    void setListStats(Bool b) { _listStats = b; }
 protected:
 
    typedef typename NumericTraits<T>::PrecisionType AccumType;
 
    virtual Bool _canDoFlux() const;
 
-   virtual Quantum<AccumType> _flux(
-	AccumType sum, Double beamAreaInPixels
-   ) const;
+
 
 private:
 // Data
@@ -169,7 +167,7 @@ private:
    const ImageInterface<T>* pInImage_p;
    IPosition blc_;
    Int precision_;
-   Bool _showRobust, _recordMessages;
+   Bool _showRobust, _recordMessages, _listStats;
    mutable vector<String> _messages;
 
 // Virtual functions.  See LatticeStatistics for more information
@@ -181,7 +179,7 @@ private:
     // Get beam area in pixels if possible. Return False if the beam area could not be
     // calculated.
     virtual Bool _getBeamArea(
-    	Array<Double>& beamArea
+    	Array<Double>& beamArea, String& msg
     ) const;
 
 // List min and max with world coordinates
@@ -198,10 +196,25 @@ private:
            AccumType medAbsDevMed, AccumType quartile,
            AccumType sumSq, AccumType mean, AccumType var,
            AccumType rms, AccumType sigma, AccumType dMin,
-           AccumType dMax
+           AccumType dMax, AccumType q1, AccumType q3
    );
 
 
+   // If <src>isFluxDensity</src> is False, then the computed value is
+   // a flux (ie flux density integrated over a spectral extent)
+   Quantum<AccumType> _flux(
+		   Bool& isFluxDensity, AccumType sum, Double beamAreaInPixels
+   ) const;
+
+   Bool _computeFlux(
+		   Array<AccumType>& flux, const Array<AccumType>& npts,
+		   const Array<AccumType>& sum
+   );
+
+   Bool _computeFlux(
+		   Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
+   		   Bool posInLattice
+   );
   //# Make members of parent class known.
 protected:
   using LatticeStatistics<T>::locInLattice;
@@ -231,10 +244,10 @@ public:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/ImageStatistics.tcc>
+#include <casacore/images/Images/ImageStatistics.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

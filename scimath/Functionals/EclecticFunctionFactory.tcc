@@ -25,11 +25,14 @@
 //#
 //#
 //# $Id$
-#include <scimath/Functionals/EclecticFunctionFactory.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Containers/Record.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#ifndef SCIMATH_ECLECTICFUNCTIONFACTORY_TCC
+#define SCIMATH_ECLECTICFUNCTIONFACTORY_TCC
+#include <casacore/scimath/Functionals/EclecticFunctionFactory.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Containers/Record.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 EclecticFunctionFactory<T>::EclecticFunctionFactory() :
@@ -81,5 +84,7 @@ void EclecticFunctionFactory<T>::addFactory(const String& type,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

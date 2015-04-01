@@ -25,28 +25,28 @@
 //#
 //# $Id$
 
-#include <images/Images/PagedImage.h>
-#include <images/Images/ImageExprParse.h>
-#include <images/Regions/ImageRegion.h>
-#include <images/Regions/WCBox.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/LCPagedMask.h>
-#include <lattices/Lattices/LELArray.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Containers/Block.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Inputs/Input.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/ImageExprParse.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/images/Regions/WCBox.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/lattices/LRegions/LCBox.h>
+#include <casacore/lattices/LRegions/LCPagedMask.h>
+#include <casacore/lattices/LEL/LELArray.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main (int argc, const char* argv[])
 {
   Bool foundError = False;

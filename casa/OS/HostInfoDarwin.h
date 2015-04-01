@@ -35,9 +35,8 @@
 **                        William LeFebvre  <lefebvre@dis.anl.gov>
 **                        Rainer Orth       <ro@techfak.uni-bielefeld.de>
 **
-** $Id$
-**
 */
+//# $Id$
 
 #ifndef CASA_HOSTINFODARWIN_H
 #define CASA_HOSTINFODARWIN_H
@@ -51,7 +50,7 @@
 
 #include <mach/mach.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // HostInfo for Darwin machines.
@@ -191,7 +190,7 @@ void HostMachineInfo::update_info( ) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 # endif
 #endif

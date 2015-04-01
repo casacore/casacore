@@ -29,15 +29,15 @@
 # define AIPS_FITS
 
 //# Note that aips.h has to come first for the correct definition of off_t.
-# include <casa/aips.h>
+# include <casacore/casa/aips.h>
 # include <stdlib.h>
 # include <ctype.h>
-# include <casa/iostream.h>
-# include <casa/BasicSL/Complex.h>
-# include <casa/BasicSL/IComplex.h>
-# include <fits/FITS/FITSError.h>
+# include <casacore/casa/iostream.h>
+# include <casacore/casa/BasicSL/Complex.h>
+# include <casacore/casa/BasicSL/IComplex.h>
+# include <casacore/fits/FITS/FITSError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# All FITS code seems to assume longs are 4 bytes. To take care of machines 
 //# for which this isn't true use FitsLong instead of Long in the FITS code
@@ -1042,6 +1042,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 # endif

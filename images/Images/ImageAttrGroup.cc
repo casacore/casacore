@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <images/Images/ImageAttrGroup.h>
+#include <casacore/images/Images/ImageAttrGroup.h>
 
-namespace casa {
+namespace casacore {
 
   ImageAttrGroup::~ImageAttrGroup()
   {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

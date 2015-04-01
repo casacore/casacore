@@ -29,13 +29,13 @@
 #define CASA_ARRAYIO_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
 
 //# Forward declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class AipsIO;
 class LogIO;
@@ -348,9 +348,9 @@ void writeAsciiVector (const Vector<T>& vec, const Char* fileName);
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/ArrayIO.tcc>
+#include <casacore/casa/Arrays/ArrayIO.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

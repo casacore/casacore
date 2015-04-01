@@ -29,11 +29,11 @@
 #define CASA_PRECISION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary> Various precision-related functions </summary>
   // <use visibility=export>
@@ -47,6 +47,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   uInt precisionForValueErrorPairs (const Vector<Double>& pair1,
                                     const Vector<Double>& pair2);
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

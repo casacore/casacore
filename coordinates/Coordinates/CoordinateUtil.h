@@ -29,16 +29,16 @@
 #define COORDINATES_COORDINATEUTIL_H
 
 
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <measures/Measures/Stokes.h>
-#include <coordinates/Coordinates/Coordinate.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
 
-#include <measures/Measures/MDirection.h>        //# For enums
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MeasConvert.h>
+#include <casacore/measures/Measures/MDirection.h>        //# For enums
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MeasConvert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class CoordinateSystem;
 class DirectionCoordinate;
@@ -542,6 +542,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

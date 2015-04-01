@@ -29,12 +29,12 @@
 #define CASA_STLMATH_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicMath/Functors.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Functors.h>
 #include <vector>
 #include <algorithm>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   //    Math operations on STL-like containers
@@ -93,6 +93,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

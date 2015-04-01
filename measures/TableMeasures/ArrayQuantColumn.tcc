@@ -25,21 +25,24 @@
 //#
 //# $Id$
 
+#ifndef MEASURES_ARRAYQUANTCOLUMN_TCC
+#define MEASURES_ARRAYQUANTCOLUMN_TCC
+
 //# Includes
-#include <measures/TableMeasures/ArrayQuantColumn.h>
-#include <measures/TableMeasures/TableQuantumDesc.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/Unit.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/TableError.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
+#include <casacore/measures/TableMeasures/TableQuantumDesc.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ArrayQuantColumn<T>::ArrayQuantColumn()
@@ -434,5 +437,7 @@ void ArrayQuantColumn<T>::put (uInt rownr, const Array<Quantum<T> >& q)
   q.freeStorage(q_p, deleteQuant);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

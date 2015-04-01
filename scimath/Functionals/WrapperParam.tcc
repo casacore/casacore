@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/WrapperParam.h>
+#ifndef SCIMATH_WRAPPERPARAM_TCC
+#define SCIMATH_WRAPPERPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/WrapperParam.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template<class T>
@@ -61,5 +64,7 @@ WrapperParam<T>::operator=(const WrapperParam<T> &other) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

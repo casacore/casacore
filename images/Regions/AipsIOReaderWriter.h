@@ -29,10 +29,11 @@
 #define IMAGES_AIPSIOREADERWRITER_H
 
 //# Includes
-#include <images/Regions/RFReaderWriter.h>
-#include <images/Regions/ImageRegion.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Regions/RFReaderWriter.h>
+#include <casacore/images/Regions/ImageRegion.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Implementation of CASA region AipsIO file reader and writer

@@ -26,22 +26,22 @@
 //# $Id$
 
 
-#include <casa/OS/Path.h>
-#include <casa/OS/File.h>
-#include <casa/OS/SymLink.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/SymLink.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <unistd.h>                 // needed for access, etc.
 #include <sys/stat.h>               // needed for lstat or lstat64
 #include <utime.h>                  // needed for utimbuf
 #include <errno.h>                  // needed for errno
-#include <casa/string.h>                 // needed for strerror
-#include <casa/stdio.h>                  // needed for sprintf
+#include <casacore/casa/string.h>                 // needed for strerror
+#include <casacore/casa/stdio.h>                  // needed for sprintf
 #include <time.h>                   // needed for asctime/localtime on linux
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 uInt File::uniqueSeqnr_p = 0;      // Initialization
 Mutex File::theirMutex;
@@ -446,5 +446,5 @@ String File::getFSType() const
 	return rstat;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

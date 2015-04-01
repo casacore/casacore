@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void throw_Null_CountedPtr_dereference_error() {
   throw (AipsError("CountedPtr: null dereference error"));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

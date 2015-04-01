@@ -27,15 +27,15 @@
 //# $Id$
 
 
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Containers/RecordDesc.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Array<Bool> RecordInterface::toArrayBool (const RecordFieldId& id) const
 {
@@ -392,5 +392,5 @@ Array<String> RecordInterface::toArrayString (const RecordFieldId& id) const
   return asArrayString(id).copy();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -25,13 +25,13 @@
 //#
 //# $Id: tArrayUtil.cc 21285 2012-11-14 15:36:59Z gervandiepen $
 
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/OS/Timer.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 // Test performance of some functions in ArrayUtil.h.
 

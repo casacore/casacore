@@ -28,7 +28,8 @@
 #define CASA_HASHMAPITER_H
 
 
-#include <casa/Containers/HashMap.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/HashMap.h>
 
 // <summary>
 //     Step through a const HashMap
@@ -45,9 +46,9 @@
 //
 // <example>
 //    <srcblock>
-//    #include <casa/Containers/HashMap.h>
-//    #include <casa/BasicSL/String.h>
-//    #include <casa/iostream.h>
+//    #include <casacore/casa/Containers/HashMap.h>
+//    #include <casacore/casa/BasicSL/String.h>
+//    #include <casacore/casa/iostream.h>
 //   
 //    main() {
 //      HashMap<String,Int> hash;
@@ -76,7 +77,7 @@
 //     versions of the iterator are useful.
 // </motivation>
 //
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 template<class key, class val> class ConstHashMapIter {
 public:
@@ -225,7 +226,7 @@ protected:
 // <example>
 //    <srcblock>
 //    #include <aips/Containers/HashMap.h>
-//    #include <casa/BasicSL/String.h>
+//    #include <casacore/casa/BasicSL/String.h>
 // #include <iostream>
 //   
 //    main() {
@@ -403,6 +404,6 @@ protected:
 } //#End casa namespace
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/HashMapIter.tcc>
+#include <casacore/casa/Containers/HashMapIter.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

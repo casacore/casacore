@@ -26,13 +26,16 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Fitting/LinearFit.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
-#include <scimath/Functionals/Function.h>
+#ifndef SCIMATH_LINEARFIT_TCC
+#define SCIMATH_LINEARFIT_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Fitting/LinearFit.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/scimath/Functionals/Function.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 
@@ -88,5 +91,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   return solved_p;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

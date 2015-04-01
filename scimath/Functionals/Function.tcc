@@ -25,13 +25,16 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/Function.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
+#ifndef SCIMATH_FUNCTION_TCC
+#define SCIMATH_FUNCTION_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T, class U>
 U Function<T,U>::operator()(const Vector<ArgType> &x) const {
@@ -89,5 +92,7 @@ Function<T,U>::cloneNonAD() const {
 		  "' has no cloneNonAD() method"));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

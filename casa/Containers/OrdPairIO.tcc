@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Containers/OrdPairIO.h>
-#include <casa/iostream.h>
+#ifndef CASA_ORDPAIRIO_TCC
+#define CASA_ORDPAIRIO_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Containers/OrdPairIO.h>
+#include <casacore/casa/iostream.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class key, class value> AipsIO& operator<< (AipsIO& ios, const OrderedPair<key,value>& op) {
     ios << op.x() << op.y();
@@ -44,5 +47,7 @@ template<class key, class value> ostream& operator<< (ostream& ios, const Ordere
   return ios;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -29,9 +29,10 @@
 #define CASA_CONVERTSCALAR_H
 
 //# Includes
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Templated functions to convert scalars from one type to another.
@@ -56,6 +57,6 @@ inline void convertScalar (Complex& out, DComplex in)
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

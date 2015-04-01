@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/FileLocker.h>
-#include <casa/OS/Time.h>
-#include <casa/Containers/Block.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/FileLocker.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/BasicSL/String.h>
 #include <sys/types.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class FiledesIO;
@@ -380,6 +380,6 @@ inline const Block<Int>& LockFile::reqIds() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

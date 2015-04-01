@@ -25,21 +25,24 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ScaColData.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/ColumnSet.h>
-#include <tables/Tables/TableTrace.h>
-#include <tables/Tables/RefRows.h>
-#include <casa/Arrays/Vector.h>
-#include <tables/Tables/DataManager.h>
-#include <casa/Utilities/ValType.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Utilities/Sort.h>
-#include <casa/IO/AipsIO.h>
+#ifndef TABLES_SCACOLDATA_TCC
+#define TABLES_SCACOLDATA_TCC
+
+#include <casacore/tables/Tables/ScaColData.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/ColumnSet.h>
+#include <casacore/tables/Tables/TableTrace.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/IO/AipsIO.h>
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ScalarColumnData<T>::ScalarColumnData (const ScalarColumnDesc<T>* cd,
@@ -322,4 +325,6 @@ void ScalarColumnData<T>::getFileDerived (AipsIO& ios,
     createDataManagerColumn();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

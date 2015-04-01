@@ -26,10 +26,10 @@
 //# $Id: Combinatorics.cc 21100 2011-06-28 12:49:00Z gervandiepen $
 //   
 
-#include <scimath/Mathematics/Geometry.h>
-#include <casa/Arrays/MatrixMath.h>
+#include <casacore/scimath/Mathematics/Geometry.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
 
-namespace casa {
+namespace casacore {
 
 	std::pair<Double, Double> Geometry::rotate2D(
 		Double x, Double y, const Quantity& theta
@@ -82,5 +82,5 @@ namespace casa {
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

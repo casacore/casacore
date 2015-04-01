@@ -22,12 +22,13 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id: HostInfoDarwin.h 21521 2014-12-10 08:06:42Z gervandiepen $
 
-#include <casa/Quanta/QVector.h>
+#include <casacore/casa/Quanta/QVector.h>
 
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main () {
 	try {
 		QVector<Double> x;

@@ -27,19 +27,19 @@
 //#
 
  
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/BasicMath/Math.h>
-#include <coordinates/Coordinates/QualityCoordinate.h>
-#include <casa/Exceptions/Error.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/coordinates/Coordinates/QualityCoordinate.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 
-#include <casa/iostream.h>
-#include <casa/namespace.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/namespace.h>
 
 QualityCoordinate makeCoordinate(Vector<Int>& whichQuality,
                                 Vector<String>& qualityStrings);
@@ -570,16 +570,17 @@ void doit6(QualityCoordinate& lc, Bool verbose)
 		else
 			if (verbose)
 				cout << "Succeeded to find doNear values!" << endl;
+                delete lc2;
 
 		Vector<Int> newQuality(1);
 		newQuality.resize(1);
 		newQuality(0) = Quality::ERROR;
 		Coordinate *lc3 = new QualityCoordinate(newQuality);
-		if (lc.doNearPixel(*lc3, b1, b2))
+		if (lc.doNearPixel(*lc3, b1, b2)) 
 			throw(AipsError("Unexpectedly succeeded to find doNear values!"));
 		else
 			if (verbose)
 				cout << "Failed as expected to find doNear values!" << endl;
-
+                delete lc3;
 	}
 }

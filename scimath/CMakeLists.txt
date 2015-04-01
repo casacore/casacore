@@ -3,10 +3,10 @@
 #
 
 add_library (casa_scimath
+Fitting/FittingProxy.cc
 Fitting/LSQFit.cc
 Fitting/LSQFit3.cc
 Fitting/LSQMatrix2.cc
-Fitting/FittingProxy.cc
 Fitting/LSQMatrix.cc
 Functionals/FuncExpression.cc
 Functionals/FuncExprData.cc
@@ -14,22 +14,24 @@ Functionals/FunctionFactoryErrors.cc
 Functionals/FunctionalProxy.cc
 Functionals/SerialHelper.cc
 Mathematics/Combinatorics.cc
-Mathematics/MathFunc2.cc
-Mathematics/Interpolate2D.cc
 Mathematics/FFTPack.cc
-Mathematics/FFTW.cc
 Mathematics/FFTServer.cc
+Mathematics/FFTW.cc
 Mathematics/GaussianBeam.cc
 Mathematics/Geometry.cc
-Mathematics/NNLSMatrixSolver.cc
+Mathematics/Interpolate2D.cc
+Mathematics/MathFunc2.cc
 Mathematics/MatrixSolver.cc
-Mathematics/SquareMatrix2.cc
-Mathematics/SCSL.cc
+Mathematics/MedianSlider.cc
+Mathematics/NNLSMatrixSolver.cc
 Mathematics/NumericTraits.cc
 Mathematics/RigidVector2.cc
-Mathematics/MedianSlider.cc
+Mathematics/SCSL.cc
+Mathematics/SquareMatrix2.cc
+Mathematics/StatisticsData.cc
 Mathematics/VectorKernel.cc
 Mathematics/VanVleck.cc
+Mathematics/ZScoreCalculator.cc
 )
 
 if (FFTW3_FOUND)
@@ -227,7 +229,13 @@ Mathematics/AutoDiffMath.tcc
 Mathematics/AutoDiffRep.h
 Mathematics/AutoDiffRep.tcc
 Mathematics/AutoDiffX.h
+Mathematics/ChauvenetCriterionStatistics.h
+Mathematics/ChauvenetCriterionStatistics.tcc
+Mathematics/ClassicalStatistics.h
+Mathematics/ClassicalStatistics.tcc
 Mathematics/Combinatorics.h
+Mathematics/ConstrainedRangeStatistics.h
+Mathematics/ConstrainedRangeStatistics.tcc
 Mathematics/ConvolveGridder.h
 Mathematics/ConvolveGridder.tcc
 Mathematics/Convolver.h
@@ -237,10 +245,15 @@ Mathematics/DFTServer.tcc
 Mathematics/FFTPack.h
 Mathematics/FFTServer.h
 Mathematics/FFTW.h
+Mathematics/FitToHalfStatistics.h
+Mathematics/FitToHalfStatistics.tcc
+Mathematics/FitToHalfStatisticsData.h
 Mathematics/GaussianBeam.h
 Mathematics/Geometry.h
 Mathematics/Gridder.h
 Mathematics/Gridder.tcc
+Mathematics/HingesFencesStatistics.h
+Mathematics/HingesFencesStatistics.tcc
 Mathematics/HistAcc.h
 Mathematics/HistAcc.tcc
 Mathematics/Interpolate2D.h
@@ -277,8 +290,20 @@ Mathematics/SquareMatrix.h
 Mathematics/SquareMatrix.tcc
 Mathematics/StatAcc.h
 Mathematics/StatAcc.tcc
+Mathematics/StatsDataProvider.h
+Mathematics/StatsDataProvider.tcc
+Mathematics/StatisticsAlgorithm.h
+Mathematics/StatisticsAlgorithm.tcc
+Mathematics/StatisticsData.h
+Mathematics/StatisticsIncrementer.h
+Mathematics/StatisticsIncrementer.tcc
+Mathematics/StatisticsTypes.h
+Mathematics/StatisticsTypes.tcc
+Mathematics/StatisticsUtilities.h
+Mathematics/StatisticsUtilities.tcc
 Mathematics/VanVleck.h
 Mathematics/VectorKernel.h
+Mathematics/ZScoreCalculator.h
 DESTINATION include/casacore/scimath/Mathematics
 )
 

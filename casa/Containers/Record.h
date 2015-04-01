@@ -31,13 +31,13 @@
 #define CASA_RECORD_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Containers/RecordRep.h>
-#include <casa/Containers/RecordDesc.h>
-#include <casa/Utilities/COWPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Containers/RecordRep.h>
+#include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/casa/Utilities/COWPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class Array;
@@ -475,6 +475,6 @@ inline void Record::getData (AipsIO& os, uInt version)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <casa/IO/ByteSink.h>
-#include <casa/IO/TypeIO.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/ByteSink.h>
+#include <casacore/casa/IO/TypeIO.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ByteSink::ByteSink()
 {}
@@ -149,75 +149,75 @@ ByteSink& ByteSink::operator<< (const Char* value)
 }
 
 
-void ByteSink::write (uInt nvalues, const Bool* value)
+void ByteSink::write (size_t nvalues, const Bool* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const Char* value)
+void ByteSink::write (size_t nvalues, const Char* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const uChar* value)
+void ByteSink::write (size_t nvalues, const uChar* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const Short* value)
+void ByteSink::write (size_t nvalues, const Short* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const uShort* value)
+void ByteSink::write (size_t nvalues, const uShort* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const Int* value)
+void ByteSink::write (size_t nvalues, const Int* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const uInt* value)
+void ByteSink::write (size_t nvalues, const uInt* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const Int64* value)
+void ByteSink::write (size_t nvalues, const Int64* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const uInt64* value)
+void ByteSink::write (size_t nvalues, const uInt64* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const Float* value)
+void ByteSink::write (size_t nvalues, const Float* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const Double* value)
+void ByteSink::write (size_t nvalues, const Double* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const Complex* value)
+void ByteSink::write (size_t nvalues, const Complex* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const DComplex* value)
+void ByteSink::write (size_t nvalues, const DComplex* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (uInt nvalues, const String* value)
+void ByteSink::write (size_t nvalues, const String* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

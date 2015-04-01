@@ -30,11 +30,12 @@
 
 
 //# Includes
-#include <lattices/Lattices/LatticeBase.h>
-#include <tables/Tables/TableLock.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/LatticeBase.h>
+#include <casacore/tables/Tables/TableLock.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class to hold a (user) lock on a lattice.
@@ -160,6 +161,6 @@ inline Bool LatticeLocker::hasLock (FileLocker::LockType type) const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

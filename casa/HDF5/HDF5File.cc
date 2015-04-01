@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Includes
-#include <casa/HDF5/HDF5File.h>
-#include <casa/HDF5/HDF5HidMeta.h>
-#include <casa/HDF5/HDF5Error.h>
-#include <casa/OS/RegularFile.h>
+#include <casacore/casa/HDF5/HDF5File.h>
+#include <casacore/casa/HDF5/HDF5HidMeta.h>
+#include <casacore/casa/HDF5/HDF5Error.h>
+#include <casacore/casa/OS/RegularFile.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifdef HAVE_HDF5
 
@@ -75,6 +75,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   void HDF5File::close()
   {
     if (isValid()) {
+      // Do not check for errors.
+      // If the same file is opened twice, HDF5 will close the file on
+      // the first occasion and gives an error for the second close.
+      H5Fflush (getHid(), H5F_SCOPE_LOCAL);
       H5Fclose (getHid());
       clearHid();
     }

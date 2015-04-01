@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <casa/Containers/Map.h>
-#include <casa/Containers/OrdMapIO.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Containers/Map.h>
+#include <casacore/casa/Containers/OrdMapIO.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // This test program creates an OrderedMap, which is written to
 // disk and read back. It outputs to stdout. A script executing
 // this test program makes a diff of the output and a reference output.

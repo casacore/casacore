@@ -24,13 +24,16 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
- 
-#include <scimath/Mathematics/Interpolate2D.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/Constants.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#ifndef SCIMATH_INTERPOLATE2D2_TCC
+#define SCIMATH_INTERPOLATE2D2_TCC
+ 
+#include <casacore/scimath/Mathematics/Interpolate2D.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/Constants.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <typename T>
 Bool Interpolate2D::interpNearest(T &result, 
@@ -307,5 +310,7 @@ T Interpolate2D::L(const T x, const Int a) const {
     return 0;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

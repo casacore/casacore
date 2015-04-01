@@ -29,17 +29,17 @@
 #define CASA_STRING_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 //# Includes
 #include <string>
 
 using std::string;
 
-#include <casa/iosstrfwd.h>
-#include <casa/sstream.h>
+#include <casacore/casa/iosstrfwd.h>
+#include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class String;
@@ -1032,6 +1032,6 @@ inline ostream &operator<<(ostream &s, const String &x) {
   s << x.c_str(); return s; }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

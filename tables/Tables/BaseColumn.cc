@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <tables/Tables/BaseColumn.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/ValType.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/Tables/BaseColumn.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/tables/Tables/TableError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BaseColumn::BaseColumn (const BaseColumnDesc* cdp)
 : colDescPtr_p(cdp),
@@ -957,5 +957,5 @@ void BaseColumn::throwPutType (const String& type) const
                        + ValType::getTypeStr(colDesc_p.dataType())));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

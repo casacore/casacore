@@ -30,12 +30,12 @@
 #define MEASURES_MDIRECTION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/MeasBase.h>
-#include <measures/Measures/MeasRef.h>
-#include <casa/Quanta/MVDirection.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MeasBase.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/casa/Quanta/MVDirection.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MDirection;
@@ -388,6 +388,10 @@ public:
     virtual Measure *clone() const;
 // </group>
 
+    // Convert to a String in astronomer-friendly format based on
+    // reference frame
+    String toString() const;
+
 private:
 
 //# Data
@@ -397,7 +401,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

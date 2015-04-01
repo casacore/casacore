@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Containers/List.h>
-#include <casa/Containers/IterError.h>
+#ifndef CASA_LIST_TCC
+#define CASA_LIST_TCC
 
-namespace casa { //#Begin casa namespace
+#include <casacore/casa/Containers/List.h>
+#include <casacore/casa/Containers/IterError.h>
+
+namespace casacore { //#Begin casa namespace
 
 template<class t> uInt ListNotice<t>::type() const  {
   return Register(this);
@@ -414,3 +417,5 @@ ConstListIter<t> &ListIter<t>::operator=(const ConstListIter<t> *) {
   return *this;}
 
 } //#End casa namespace
+
+#endif

@@ -26,16 +26,16 @@
 //#
 //#  $Id$
 
-#include <casa/IO/MMapIO.h>
-#include <casa/IO/LargeRegularFileIO.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/MMapIO.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-namespace casa
+namespace casacore
 {
   
 MMapIO::MMapIO (const RegularFile& regularFile, ByteIO::OpenOption option)
 {
-  int fdes = LargeRegularFileIO::openCreate (regularFile, option);
+  int fdes = RegularFileIO::openCreate (regularFile, option);
   map (fdes, regularFile.path().originalName());
   if (option == ByteIO::Append) {
     seek (0, ByteIO::End);

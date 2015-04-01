@@ -26,18 +26,18 @@
 //# $Id$
 
 //# Includes
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h>
-#include <measures/Measures/MeasJPL.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/MVEpoch.h>
-#include <measures/Measures/MeasIERS.h>
-#include <casa/OS/Time.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/System/Aipsrc.h>
-#include <tables/Tables/TableDesc.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/measures/Measures/MeasJPL.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/MVEpoch.h>
+#include <casacore/measures/Measures/MeasIERS.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/System/Aipsrc.h>
+#include <casacore/tables/Tables/TableDesc.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 
@@ -335,5 +335,5 @@ Double MeasJPL::emrat[MeasJPL::N_Files];
 Double MeasJPL::cn[MeasJPL::N_Files][MeasJPL::N_Codes];
 Mutex MeasJPL::theirMutex;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

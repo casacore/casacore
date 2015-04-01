@@ -30,9 +30,10 @@
 #define TABLES_LOGFILTERTAQL_H
 
 //# Includes
-#include <casa/Logging/LogFilterInterface.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogFilterInterface.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class LogFilterExpr;
@@ -113,6 +114,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

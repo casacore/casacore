@@ -32,13 +32,13 @@
 //# the table vectors. Furthermore vector functions like norm are defined.
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicMath/Math.h>
-#include <tables/Tables/TableVector.h>
-#include <tables/Tables/TVecMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/tables/Tables/TableVector.h>
+#include <casacore/tables/Tables/TVecMath.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Basic math for table vectors.
@@ -420,6 +420,6 @@ TableVector<T> crossProduct (const TableVector<T>& l,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

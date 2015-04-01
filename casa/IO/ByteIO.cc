@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/IO/ByteIO.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/ByteIO.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ByteIO::~ByteIO()
 {}
@@ -42,5 +42,20 @@ void ByteIO::reopenRW()
     }
 }
 
-} //# NAMESPACE CASA - END
+void ByteIO::flush()
+{}
+
+void ByteIO::fsync()
+{}
+
+void ByteIO::resync()
+{}
+
+String ByteIO::fileName() const
+{
+  return String();
+}
+
+
+} //# NAMESPACE CASACORE - END
 

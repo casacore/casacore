@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/IO/BucketCache.h>
-#include <casa/IO/BucketFile.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/OS/Timer.h>
-#include <casa/iostream.h>
+#include <casacore/casa/IO/BucketCache.h>
+#include <casacore/casa/IO/BucketFile.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // <summary>
 // Test program for the BucketCache class
 // </summary>

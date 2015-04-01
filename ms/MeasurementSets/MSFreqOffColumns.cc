@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSFreqOffColumns.h>
-#include <ms/MeasurementSets/MSFreqOffset.h>
+#include <casacore/ms/MeasurementSets/MSFreqOffColumns.h>
+#include <casacore/ms/MeasurementSets/MSFreqOffset.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSFreqOffsetColumns::
 ROMSFreqOffsetColumns(const MSFreqOffset& msFreqOffset):
@@ -169,5 +169,5 @@ void MSFreqOffsetColumns::attach(MSFreqOffset& msFreqOffset)
 // compile-command: "gmake MSFreqOffColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

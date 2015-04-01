@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ConcatColumn.h>
-#include <tables/Tables/ConcatTable.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/GenSort.h>
+#include <casacore/tables/Tables/ConcatColumn.h>
+#include <casacore/tables/Tables/ConcatTable.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/GenSort.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   ConcatColumn::ConcatColumn (const BaseColumnDesc* bcdp,
 			      ConcatTable* reftab)
@@ -389,4 +389,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     colCache_p.setIncrement (colCache.incr());
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

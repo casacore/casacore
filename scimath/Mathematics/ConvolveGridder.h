@@ -29,10 +29,11 @@
 #ifndef SCIMATH_CONVOLVEGRIDDER_H
 #define SCIMATH_CONVOLVEGRIDDER_H
 
-#include <scimath/Mathematics/Gridder.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/Gridder.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Does convolutional gridding
@@ -92,9 +93,9 @@ protected:
   using Gridder<Domain,Range>::fillCorrectionVectors;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/ConvolveGridder.tcc>
+#include <casacore/scimath/Mathematics/ConvolveGridder.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -25,14 +25,17 @@
 //#
 //# $Id$
 
-#include <casa/iostream.h>
+#ifndef CASA_MASKARRIO_TCC
+#define CASA_MASKARRIO_TCC
 
-#include <casa/aips.h>
-#include <casa/Arrays/MaskArrIO.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/ArrayIO.h>
+#include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/MaskArrIO.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ostream & operator<< (ostream &s, const MaskedArray<T> &a)
@@ -49,5 +52,7 @@ ostream & operator<< (ostream &s, const MaskedArray<T> &a)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

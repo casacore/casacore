@@ -25,23 +25,26 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/HDF5Lattice.h>
-#include <lattices/Lattices/HDF5LattIter.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeNavigator.h>
-#include <tables/Tables/TSMCube.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/HDF5/HDF5Error.h>
-#include <casa/OS/File.h>
-#include <casa/OS/Path.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#ifndef LATTICES_HDF5LATTICE_TCC
+#define LATTICES_HDF5LATTICE_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/lattices/Lattices/HDF5Lattice.h>
+#include <casacore/lattices/Lattices/HDF5LattIter.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeNavigator.h>
+#include <casacore/tables/DataMan/TSMCube.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/HDF5/HDF5Error.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   HDF5Lattice<T>::HDF5Lattice()
@@ -318,4 +321,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     itsFile->flush();
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

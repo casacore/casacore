@@ -25,13 +25,16 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Mathematics/AutoDiff.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/BasicMath/Math.h>
+#ifndef SCIMATH_AUTODIFF_TCC
+#define SCIMATH_AUTODIFF_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicMath/Math.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 template <class T>
@@ -258,5 +261,7 @@ template <class T> void AutoDiff<T>::derivatives(Vector<T> &res) const {
   res = rep_p->grad_p;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

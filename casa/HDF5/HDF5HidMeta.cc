@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/HDF5/HDF5HidMeta.h>
+#include <casacore/casa/HDF5/HDF5HidMeta.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifdef HAVE_HDF5
 

@@ -26,3 +26,10 @@
 //# $Id$
 
 // \defgroup fits fits package (libcasa_fits)
+//
+// The fits package contains high level interfaces to CFitsIO
+
+// <ul>
+//  <li> <a href="group__FITS__module.html">FITS</a>:
+//    Interface to CFitsIO
+// </ul>

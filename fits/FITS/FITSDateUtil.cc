@@ -26,22 +26,22 @@
 //#
 //# $Id$
 
-#include <fits/FITS/FITSDateUtil.h>
+#include <casacore/fits/FITS/FITSDateUtil.h>
 
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/OS/Time.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <casa/sstream.h>
-#include <casa/iomanip.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iomanip.h>
 #include <ctype.h>
-#include <casa/stdlib.h>
+#include <casacore/casa/stdlib.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void FITSDateUtil::toFITS(String &date, String &timesys, const MVTime &time,
 			  MEpoch::Types system, DateStyle style, uInt precision)
@@ -234,5 +234,5 @@ uInt FITSDateUtil::findPrecision(const String &fitsDate)
     return prec;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

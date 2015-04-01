@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/CompoundFunction.h>
+#ifndef SCIMATH_COMPOUND2FUNCTION_TCC
+#define SCIMATH_COMPOUND2FUNCTION_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/CompoundFunction.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -113,5 +116,7 @@ void CompoundFunction<AutoDiff<T> >::toParam_p() {
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

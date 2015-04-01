@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/IO/BaseSinkSource.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/BaseSinkSource.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BaseSinkSource::BaseSinkSource()
 : itsTypeIO ()
@@ -94,5 +94,5 @@ Bool BaseSinkSource::isNull() const
     return itsTypeIO.null();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/UnaryParam.h>
+#ifndef SCIMATH_UNARYPARAM_TCC
+#define SCIMATH_UNARYPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/UnaryParam.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 UnaryParam<T>::UnaryParam() :
@@ -77,5 +80,7 @@ UnaryParam<T> &UnaryParam<T>::operator=(const UnaryParam<T> &other) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

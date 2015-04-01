@@ -29,11 +29,11 @@
 #define SCIMATH_SINUSOID1DPARAM_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Function1D.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Function1D.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -172,9 +172,9 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/Sinusoid1DParam.tcc>
+#include <casacore/scimath/Functionals/Sinusoid1DParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

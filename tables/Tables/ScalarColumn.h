@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/TableColumn.h>
-#include <tables/Tables/ColumnCache.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/tables/Tables/ColumnCache.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class BaseColumn;
@@ -267,9 +267,9 @@ protected:
 #define ROScalarColumn ScalarColumn
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/ScalarColumn.tcc>
+#include <casacore/tables/Tables/ScalarColumn.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

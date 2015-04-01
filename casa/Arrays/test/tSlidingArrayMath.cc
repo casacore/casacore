@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/MaskArrMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayPartMath.h>
-#include <casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/MaskArrMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayPartMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
 
-#include <casa/Utilities/GenSort.h>
-#include <casa/OS/Timer.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/OS/Timer.h>
 #include <iostream>
 
 
 #ifdef AIPS_NO_TEMPLATE_SRC
-#include <casa/Arrays/ArrayMath.tcc>
-#include <casa/Arrays/MaskArrMath.tcc>
-namespace casa {
+#include <casacore/casa/Arrays/ArrayMath.tcc>
+#include <casacore/casa/Arrays/MaskArrMath.tcc>
+namespace casacore {
   template Array<Float> slidingArrayMath (const Array<Float>&,
 					  const IPosition&,
 					  Float (*) (const Array<Float>&),
@@ -51,7 +51,7 @@ namespace casa {
 #endif //# AIPS_NO_TEMPLATE_SRC
 
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 Float smartMedian (const Array<Float>& arr)

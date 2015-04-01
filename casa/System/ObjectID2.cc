@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <casa/System/ObjectID.h>
-#include <casa/Containers/Block.h>
-#include <casa/stdio.h>                  // needed for sprintf
+#include <casacore/casa/System/ObjectID.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/stdio.h>                  // needed for sprintf
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 uInt hashFunc(const ObjectID &key)
 {
@@ -84,5 +84,5 @@ String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
     return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Update the include paths for the moved files in Casacore release 2.0.
+
+# Find the path used to start the script.
+pgmpath=`dirname $0`
+pgmpath=`cd $pgmpath > /dev/null 2>&1  &&  pwd`
+
+for FILE in $*
+do
+    sed -f $pgmpath/taql.sed "$FILE" > "$FILE.n1"
+    sed -f $pgmpath/dataman.sed "$FILE.n1" > "$FILE.n2"
+    sed -f $pgmpath/latticemath.sed "$FILE.n2" > "$FILE.n3"
+    sed -f $pgmpath/lel.sed "$FILE.n3" > "$FILE.n4"
+    sed -f $pgmpath/regions.sed "$FILE.n4" > "$FILE.n5"
+    sed -f $pgmpath/mssel.sed "$FILE.n5" > "$FILE.n6"
+    sed -f $pgmpath/msoper.sed "$FILE.n6" > "$FILE.n7"
+    if ! diff "$FILE.n7" "$FILE" >& /dev/null; then
+      mv "$FILE.n7" "$FILE"
+#      echo "  changed #includes in $FILE"
+    fi
+    rm -f "$FILE".n[1234567]
+done

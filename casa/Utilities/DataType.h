@@ -28,12 +28,12 @@
 #ifndef CASA_DATATYPE_H
 #define CASA_DATATYPE_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <casa/iosfwd.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/iosfwd.h>
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class Table;
 template<class T> class Array;
@@ -234,6 +234,6 @@ Bool isNumeric(DataType type);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

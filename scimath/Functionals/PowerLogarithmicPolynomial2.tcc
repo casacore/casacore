@@ -25,10 +25,13 @@
 //#
 //# $Id: Polynomial2.tcc 20253 2008-02-23 15:15:00Z gervandiepen $
 
-//# Includes
-#include <scimath/Functionals/PowerLogarithmicPolynomial.h>
+#ifndef SCIMATH_POWERLOGARITHMICPOLYNOMIAL2_TCC
+#define SCIMATH_POWERLOGARITHMICPOLYNOMIAL2_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/PowerLogarithmicPolynomial.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -77,5 +80,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 //# Member functions
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

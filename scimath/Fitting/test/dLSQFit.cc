@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Fitting/LSQFit.h>
-#include <casa/iostream.h>
-#include <casa/namespace.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Fitting/LSQFit.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/namespace.h>
 
 void showdt(const LSQFit &lsq, Int n) {
   uInt nun, np, ncon, ner, rk, *piv;

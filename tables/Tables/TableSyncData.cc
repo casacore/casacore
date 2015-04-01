@@ -27,10 +27,10 @@
 
 
 //# Includes
-#include <tables/Tables/TableSyncData.h>
-#include <casa/Containers/BlockIO.h>
+#include <casacore/tables/Tables/TableSyncData.h>
+#include <casacore/casa/Containers/BlockIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableSyncData::TableSyncData()
 : itsNrrow              (0),
@@ -164,5 +164,5 @@ Bool TableSyncData::read (uInt& nrrow, uInt& nrcolumn, Bool& tableChanged,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

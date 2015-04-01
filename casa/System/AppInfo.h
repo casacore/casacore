@@ -30,10 +30,10 @@
 #define CASA_APPINFO_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/System/AipsrcValue.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/System/AipsrcValue.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class String;
@@ -144,6 +144,6 @@ inline Double AppInfo::timeZone() {if (need_init_p) init();
 	                  return AipsrcValue<Double>::get(tz_r);}
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

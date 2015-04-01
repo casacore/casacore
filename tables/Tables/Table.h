@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/BaseTable.h>
-#include <tables/Tables/TableLock.h>
-#include <tables/Tables/TSMOption.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/Utilities/Sort.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/BaseTable.h>
+#include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/DataMan/TSMOption.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Utilities/Sort.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class SetupNewTable;
@@ -415,6 +415,9 @@ public:
 
     // Get the endian format in which the table is stored.
     Table::EndianFormat endianFormat() const;
+
+    // Get the storage option used for the table.
+    const StorageOption& storageOption() const;
 
     // Is the table used (i.e. open) in this process.
     static Bool isOpened (const String& tableName);
@@ -1087,6 +1090,8 @@ inline void Table::flush (Bool fsync, Bool recursive)
 inline void Table::resync()
     { baseTabPtr_p->resync(); }
 
+inline const StorageOption& Table::storageOption() const
+    { return baseTabPtr_p->storageOption(); }
 inline Bool Table::isMultiUsed(Bool checkSubTables) const
     { return baseTabPtr_p->isMultiUsed(checkSubTables); }
 inline const TableLock& Table::lockOptions() const
@@ -1216,6 +1221,6 @@ inline void Table::showStructure (std::ostream& os,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

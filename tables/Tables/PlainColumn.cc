@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <tables/Tables/PlainColumn.h>
-#include <tables/Tables/ColumnSet.h>
-#include <tables/Tables/TableTrace.h>
-#include <tables/Tables/BaseColDesc.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/DataManager.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIter.h>
-#include <casa/IO/AipsIO.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/Tables/PlainColumn.h>
+#include <casacore/tables/Tables/ColumnSet.h>
+#include <casacore/tables/Tables/TableTrace.h>
+#include <casacore/tables/Tables/BaseColDesc.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIter.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 PlainColumn::PlainColumn (const BaseColumnDesc* cdp, ColumnSet* csp)
 : BaseColumn    (cdp),
@@ -157,5 +157,5 @@ void PlainColumn::checkValueLength (const Array<String>* value) const
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

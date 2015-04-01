@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <casa/Utilities/Sort.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/stdlib.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // This program test the class Sort.
 // It sorts some data in ascending and/or descending order.
 // The results are written to stdout. A script executing this program,

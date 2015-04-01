@@ -26,13 +26,13 @@
 //# $Id$
 
 
-#include <casa/OS/DataConversion.h>
+#include <casacore/casa/OS/DataConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 DataConversion::~DataConversion()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

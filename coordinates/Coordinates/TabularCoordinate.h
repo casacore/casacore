@@ -30,12 +30,12 @@
 #ifndef COORDINATES_TABULARCOORDINATE_H
 #define COORDINATES_TABULARCOORDINATE_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Vector.h>
-#include <coordinates/Coordinates/Coordinate.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class Domain, class Range> class Interpolate1D;
 template<class T> class Quantum;
@@ -309,7 +309,7 @@ private:
                                         const Vector<Double> &worldValues);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 
 #endif

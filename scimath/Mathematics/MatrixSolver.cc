@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/Exceptions.h>
-#include <scimath/Mathematics/MatrixSolver.h>
-#include <casa/Arrays/MatrixMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/scimath/Mathematics/MatrixSolver.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
 
-#include <casa/Logging/LogSink.h>
-#include <casa/Logging/LogMessage.h>
+#include <casacore/casa/Logging/LogSink.h>
+#include <casacore/casa/Logging/LogMessage.h>
 
-#include <casa/sstream.h>
+#include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MatrixSolver::MatrixSolver():SolTolerance(0.0), MaxIterations(0), solved(False),
    gain(1.0){}
@@ -142,5 +142,5 @@ Bool MatrixSolver::accurateSolution() {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

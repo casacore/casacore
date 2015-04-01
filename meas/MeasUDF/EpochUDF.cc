@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <meas/MeasUDF/EpochUDF.h>
+#include <casacore/meas/MeasUDF/EpochUDF.h>
 
-namespace casa {
+namespace casacore {
 
   EpochUDF::EpochUDF (FuncType type)
     : itsType  (type)

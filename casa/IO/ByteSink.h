@@ -28,14 +28,14 @@
 #ifndef CASA_BYTESINK_H
 #define CASA_BYTESINK_H
 
-#include <casa/aips.h>
-#include <casa/IO/BaseSinkSource.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/BaseSinkSource.h>
 //# The following should be a forward declaration. But our Complex & DComplex
 //# classes are a typedef hence this does not work. Replace the following with
 //# forward declarations when Complex and DComplex are no longer typedefs.
-#include <casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class TypeIO;
 class String;
@@ -137,25 +137,25 @@ public:
     // These functions write multiple values of the given type.
     // If this function does not succeed, an exception will be thrown.
     // <group>
-    void write (uInt nvalues, const Bool* value);
-    void write (uInt nvalues, const Char* value);
-    void write (uInt nvalues, const uChar* value);
-    void write (uInt nvalues, const Short* value);
-    void write (uInt nvalues, const uShort* value);
-    void write (uInt nvalues, const Int* value);
-    void write (uInt nvalues, const uInt* value);
-    void write (uInt nvalues, const Int64* value);
-    void write (uInt nvalues, const uInt64* value);
-    void write (uInt nvalues, const Float* value);
-    void write (uInt nvalues, const Double* value);
-    void write (uInt nvalues, const Complex* value);
-    void write (uInt nvalues, const DComplex* value);
-    void write (uInt nvalues, const String* value);
+    void write (size_t nvalues, const Bool* value);
+    void write (size_t nvalues, const Char* value);
+    void write (size_t nvalues, const uChar* value);
+    void write (size_t nvalues, const Short* value);
+    void write (size_t nvalues, const uShort* value);
+    void write (size_t nvalues, const Int* value);
+    void write (size_t nvalues, const uInt* value);
+    void write (size_t nvalues, const Int64* value);
+    void write (size_t nvalues, const uInt64* value);
+    void write (size_t nvalues, const Float* value);
+    void write (size_t nvalues, const Double* value);
+    void write (size_t nvalues, const Complex* value);
+    void write (size_t nvalues, const DComplex* value);
+    void write (size_t nvalues, const String* value);
      // </group>
 };
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

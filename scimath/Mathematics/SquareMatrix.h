@@ -29,12 +29,12 @@
 #ifndef SCIMATH_SQUAREMATRIX_H
 #define SCIMATH_SQUAREMATRIX_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# forward declarations
 template <class T, Int n> class RigidVector;
@@ -315,9 +315,9 @@ ostream& operator<<(ostream& os, const SquareMatrix<Float,4>& m);
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/SquareMatrix.tcc>
+#include <casacore/scimath/Mathematics/SquareMatrix.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

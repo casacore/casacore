@@ -27,12 +27,12 @@
 
 
 //# Includes
-#include <images/Images/MaskSpecifier.h>
+#include <casacore/images/Images/MaskSpecifier.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# All functions are inlined.
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

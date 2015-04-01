@@ -30,17 +30,17 @@
 #define MEASURES_MCUVW_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/Muvw.h>
-#include <measures/Measures/MeasBase.h>
-#include <measures/Measures/MeasRef.h>
-#include <measures/Measures/MCBase.h>
-#include <measures/Measures/MConvertBase.h>
-#include <measures/Measures/MeasMath.h>
-#include <casa/Quanta/MVDirection.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/Muvw.h>
+#include <casacore/measures/Measures/MeasBase.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/measures/Measures/MCBase.h>
+#include <casacore/measures/Measures/MConvertBase.h>
+#include <casacore/measures/Measures/MeasMath.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MCuvw;
@@ -232,7 +232,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

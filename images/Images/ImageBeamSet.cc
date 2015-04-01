@@ -22,19 +22,20 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 
-#include <images/Images/ImageBeamSet.h>
+#include <casacore/images/Images/ImageBeamSet.h>
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Containers/Record.h>
-#include <casa/Quanta/QLogical.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Quanta/QLogical.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/coordinates/Coordinates/StokesCoordinate.h>
 
 #include <iomanip>
 
-namespace casa {
+namespace casacore {
 
 const String ImageBeamSet::_DEFAULT_AREA_UNIT = "arcsec2";
 
@@ -509,6 +510,19 @@ Record ImageBeamSet::toRecord() const {
 		perPlaneBeams.defineRecord("*" + String::toString(count), rec);
 	}
 	return perPlaneBeams;
+}
+
+void ImageBeamSet::rotate(const Quantity& angle) {
+	ThrowIf(
+		! angle.isConform("rad"),
+		"Quantity is not an angle"
+	);
+	Matrix<GaussianBeam>::iterator iter = _beams.begin();
+	Matrix<GaussianBeam>::iterator end = _beams.end();
+	while(iter != end) {
+		iter->setPA(iter->getPA(True) + angle);
+		++iter;
+	}
 }
 
 void ImageBeamSet::summarize(

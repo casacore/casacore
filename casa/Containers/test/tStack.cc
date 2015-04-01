@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <casa/Containers/Stack.h>
-#include <casa/Containers/StackError.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Containers/Stack.h>
+#include <casacore/casa/Containers/StackError.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() {
 
   Stack<int> one;

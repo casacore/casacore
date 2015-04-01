@@ -25,11 +25,14 @@
 //#
 //# $Id: PolynomialParam.tcc 19879 2007-02-15 03:52:50Z Malte.Marquarding $
 
-//# Includes
-#include <scimath/Functionals/PowerLogarithmicPolynomialParam.h>
-#include <casa/Arrays/Vector.h>
+#ifndef SCIMATH_POWERLOGARITHMICPOLYNOMIALPARAM_TCC
+#define SCIMATH_POWERLOGARITHMICPOLYNOMIALPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/PowerLogarithmicPolynomialParam.h>
+#include <casacore/casa/Arrays/Vector.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 PowerLogarithmicPolynomialParam<T>::PowerLogarithmicPolynomialParam() :
@@ -86,5 +89,7 @@ void PowerLogarithmicPolynomialParam<T>::setCoefficients(const Vector<T> &coeffi
   param_p.setParameters(coefficients);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

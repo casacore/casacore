@@ -32,14 +32,14 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Notice.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/Containers/RecordFieldId.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Notice.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Containers/RecordFieldId.h>
+#include <casacore/casa/Arrays/Array.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class RecordDesc;
@@ -653,6 +653,6 @@ inline Int RecordNotice::fieldNumber() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

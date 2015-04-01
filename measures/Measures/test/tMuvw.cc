@@ -26,25 +26,25 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <measures/Measures.h>
-#include <measures/Measures/Aberration.h>
-#include <casa/Quanta/RotMatrix.h>
-#include <casa/Quanta/Euler.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MDirection.h>
-#include <casa/Quanta/MVDirection.h>
-#include <casa/Quanta/MVBaseline.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MCuvw.h>
-#include <measures/Measures/Muvw.h>
-#include <casa/Quanta/MVuvw.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/measures/Measures/Aberration.h>
+#include <casacore/casa/Quanta/RotMatrix.h>
+#include <casacore/casa/Quanta/Euler.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/casa/Quanta/MVBaseline.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MCuvw.h>
+#include <casacore/measures/Measures/Muvw.h>
+#include <casacore/casa/Quanta/MVuvw.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
     try {

@@ -28,12 +28,12 @@
 #ifndef MS_MSSTATECOLUMNS_H
 #define MS_MSSTATECOLUMNS_H
 
-#include <casa/aips.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <measures/TableMeasures/ScalarQuantColumn.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSState;
 
@@ -225,6 +225,6 @@ private:
   ScalarQuantColumn<Double> loadQuant_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

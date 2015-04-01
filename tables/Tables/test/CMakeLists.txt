@@ -20,91 +20,38 @@ endforeach (file)
 
 set (tests
 ascii2Table
-dRetypedArrayEngine
-dVSCEngine
-dVirtColEng
-nISMBucket
 tArrayColumnSlices
-tBitFlagsEngine
-tColumnsIndexArray
 tColumnsIndex
-tCompressComplex
-tCompressFloat
+tColumnsIndexArray
 tConcatRows
 tConcatTable
 tConcatTable2
 tConcatTable3
-tExprGroup
-tExprGroupArray
-tExprNode
-tExprNodeSet
-tExprUnitNode
-tExprNodeUDF
-tForwardCol
-tForwardColRow
-tIncrementalStMan
-tIncrementalStMan2
-tMappedArrayEngine
-tMemoryStMan
 tMemoryTable
-tReadAsciiTable2
 tReadAsciiTable
-tRecordExpr
-tRecordGram
-tRecordGramTable
+tReadAsciiTable2
 tRefRows
 tRefTable
 tRowCopier
 tScalarRecordColumn
-tScaledArrayEngine
-tScaledComplexData
-tSSMAddRemove
-tSSMStringHandler
-tStandardStMan
-tStArrayFile
-tStMan1
-tStMan
-tTable_1
-tTable_2
-tTable_3
-tTable_4
 tTable
 tTableAccess
 tTableCopy
 tTableDesc
 tTableDescHyper
-tTableExprData
-tTableGram
 tTableInfo
 tTableIter
 tTableKeywords
 tTableLock
-tTableLockSync_2
 tTableLockSync
+tTableLockSync_2
 tTableRecord
 tTableRow
 tTableVector
-tTaQLNode
-tTiledBool
-tTiledCellStM_1
-tTiledCellStMan
-tTiledColumnStMan
-tTiledDataStM_1
-tTiledDataStMan
-tTiledEmpty
-tTiledFileAccess
-tTiledShapeStM_1
-tTiledShapeStMan
-tTiledStMan
-tTSMShape
-tVirtColEng
-tVirtualTaQLColumn
-tVSCEngine
-)
-
-# Only test scripts, no test programs.
-set (testscripts
-tTableGramGroupAggr
+tTable_1
+tTable_2
+tTable_3
+tTable_4
 )
 
 # Some test sources include a test .h file.
@@ -113,9 +60,5 @@ include_directories ( . )
 foreach (test ${tests})
     add_executable (${test} ${test}.cc)
     target_link_libraries (${test} casa_tables)
-    add_test (${test} ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
-endforeach (test)
-
-foreach (test ${testscripts})
     add_test (${test} ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
 endforeach (test)

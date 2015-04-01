@@ -26,236 +26,236 @@
 //# $Id$
 
 
-#include <casa/OS/CanonicalDataConversion.h>
-#include <casa/OS/CanonicalConversion.h>
+#include <casacore/casa/OS/CanonicalDataConversion.h>
+#include <casacore/casa/OS/CanonicalConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 CanonicalDataConversion::~CanonicalDataConversion()
 {}
 
 
-unsigned int CanonicalDataConversion::toLocal (char& to,
-					       const void* from) const
+size_t CanonicalDataConversion::toLocal (char& to,
+                                         const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
 }
-unsigned int CanonicalDataConversion::toLocal (unsigned char& to,
-					       const void* from) const
+size_t CanonicalDataConversion::toLocal (unsigned char& to,
+                                         const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
 }
-unsigned int CanonicalDataConversion::toLocal (short& to,
-					       const void* from) const
+size_t CanonicalDataConversion::toLocal (short& to,
+                                         const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
 }
-unsigned int CanonicalDataConversion::toLocal (unsigned short& to,
-					       const void* from) const
+size_t CanonicalDataConversion::toLocal (unsigned short& to,
+                                         const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
 }
-unsigned int CanonicalDataConversion::toLocal (int& to,
-					       const void* from) const
+size_t CanonicalDataConversion::toLocal (int& to,
+                                         const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
 }
-unsigned int CanonicalDataConversion::toLocal (unsigned int& to,
-					       const void* from) const
+size_t CanonicalDataConversion::toLocal (unsigned int& to,
+                                         const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
 }
-unsigned int CanonicalDataConversion::toLocal (Int64& to,
-					       const void* from) const
+size_t CanonicalDataConversion::toLocal (Int64& to,
+                                         const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
 }
-unsigned int CanonicalDataConversion::toLocal (uInt64& to,
-					       const void* from) const
+size_t CanonicalDataConversion::toLocal (uInt64& to,
+                                         const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
 }
-unsigned int CanonicalDataConversion::toLocal (float& to,
-					       const void* from) const
+size_t CanonicalDataConversion::toLocal (float& to,
+                                         const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
 }
-unsigned int CanonicalDataConversion::toLocal (double& to,
-					       const void* from) const
+size_t CanonicalDataConversion::toLocal (double& to,
+                                         const void* from) const
 {
     return CanonicalConversion::toLocal (to, from);
 }
 
-unsigned int CanonicalDataConversion::toLocal (char* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t CanonicalDataConversion::toLocal (char* to,
+                                         const void* from,
+                                         size_t nr) const
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::toLocal (unsigned char* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t CanonicalDataConversion::toLocal (unsigned char* to,
+                                         const void* from,
+                                         size_t nr) const
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::toLocal (short* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t CanonicalDataConversion::toLocal (short* to,
+                                         const void* from,
+                                         size_t nr) const
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::toLocal (unsigned short* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t CanonicalDataConversion::toLocal (unsigned short* to,
+                                         const void* from,
+                                         size_t nr) const
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::toLocal (int* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t CanonicalDataConversion::toLocal (int* to,
+                                         const void* from,
+                                         size_t nr) const
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::toLocal (unsigned int* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t CanonicalDataConversion::toLocal (unsigned int* to,
+                                         const void* from,
+                                         size_t nr) const
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::toLocal (Int64* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t CanonicalDataConversion::toLocal (Int64* to,
+                                         const void* from,
+                                         size_t nr) const
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::toLocal (uInt64* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t CanonicalDataConversion::toLocal (uInt64* to,
+                                         const void* from,
+                                         size_t nr) const
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::toLocal (float* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t CanonicalDataConversion::toLocal (float* to,
+                                         const void* from,
+                                         size_t nr) const
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::toLocal (double* to,
-					       const void* from,
-					       unsigned int nr) const
+size_t CanonicalDataConversion::toLocal (double* to,
+                                         const void* from,
+                                         size_t nr) const
 {
     return CanonicalConversion::toLocal (to, from, nr);
 }
 
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 char from) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           char from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 unsigned char from) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           unsigned char from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 short from) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           short from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 unsigned short from) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           unsigned short from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 int from) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           int from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 unsigned int from) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           unsigned int from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 Int64 from) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           Int64 from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 uInt64 from) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           uInt64 from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 float from) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           float from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 double from) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           double from) const
 {
     return CanonicalConversion::fromLocal (to, from);
 }
 
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const char* from,
-						 unsigned int nr) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           const char* from,
+                                           size_t nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const unsigned char* from,
-						 unsigned int nr) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           const unsigned char* from,
+                                           size_t nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const short* from,
-						 unsigned int nr) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           const short* from,
+                                           size_t nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const unsigned short* from,
-						 unsigned int nr) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           const unsigned short* from,
+                                           size_t nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const int* from,
-						 unsigned int nr) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           const int* from,
+                                           size_t nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const unsigned int* from,
-						 unsigned int nr) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           const unsigned int* from,
+                                           size_t nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const Int64* from,
-						 unsigned int nr) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           const Int64* from,
+                                           size_t nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const uInt64* from,
-						 unsigned int nr) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           const uInt64* from,
+                                           size_t nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const float* from,
-						 unsigned int nr) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           const float* from,
+                                           size_t nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
 }
-unsigned int CanonicalDataConversion::fromLocal (void* to,
-						 const double* from,
-						 unsigned int nr) const
+size_t CanonicalDataConversion::fromLocal (void* to,
+                                           const double* from,
+                                           size_t nr) const
 {
     return CanonicalConversion::fromLocal (to, from, nr);
 }
@@ -344,5 +344,5 @@ unsigned int CanonicalDataConversion::externalSize (const double*) const
     return SIZE_CAN_DOUBLE;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

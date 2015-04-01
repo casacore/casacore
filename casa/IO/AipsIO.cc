@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <casa/IO/AipsIO.h>
-#include <casa/IO/TypeIO.h>
-#include <casa/IO/CanonicalIO.h>
-#include <casa/IO/ByteIO.h>
-#include <casa/IO/RegularFileIO.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/TypeIO.h>
+#include <casacore/casa/IO/CanonicalIO.h>
+#include <casacore/casa/IO/ByteIO.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/IO/MFFileIO.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <cstring>                  //# for strcmp with gcc-4.3
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // This is the implementation of the AipsIO class.
 // Operator << and >> for the built-in data types are inline functions
@@ -57,7 +57,7 @@ AipsIO::AipsIO()
 {}
 
 AipsIO::AipsIO (const String& fileName, ByteIO::OpenOption fop,
-		uInt filebufSize)
+		uInt filebufSize, MultiFileBase* mfile)
 : opened_p (0),
   maxlev_p (10),
   objlen_p (10),
@@ -65,7 +65,7 @@ AipsIO::AipsIO (const String& fileName, ByteIO::OpenOption fop,
   objptr_p (10)
 {
     // Open the file.
-    open (fileName, fop, filebufSize);
+  open (fileName, fop, filebufSize, mfile);
 }
 
 AipsIO::AipsIO (ByteIO* file)
@@ -98,14 +98,16 @@ AipsIO::~AipsIO()
 
 
 void AipsIO::open (const String& fileName, ByteIO::OpenOption fop,
-		   uInt filebufSize)
+		   uInt filebufSize, MultiFileBase* mfile)
 {
     // Initialize everything for the open.
     openInit (fop);
-    file_p = new RegularFileIO (fileName, fopt_p, filebufSize);
-    AlwaysAssert (file_p != 0, AipsError);
-    io_p   = new CanonicalIO (file_p);
-    AlwaysAssert (io_p != 0, AipsError);
+    if (mfile) {
+      file_p = new MFFileIO (*mfile, fileName, fopt_p);
+    } else {
+      file_p = new RegularFileIO (fileName, fopt_p, filebufSize);
+    }
+    io_p = new CanonicalIO (file_p);
     seekable_p = True;
     opened_p   = 1;
 }
@@ -151,7 +153,6 @@ void AipsIO::openInit (ByteIO::OpenOption fop)
 	throw (AipsError ("AipsIO: already open"));
     }
     hasCachedType_p = False;
-    // Make sure ~, etc. get expanded.
     fopt_p  = fop;
     swget_p = 0;
     swput_p = 0;
@@ -1000,5 +1001,5 @@ void AipsIO::testgeterr()
 void AipsIO::testgeterrLength()
     { throw (AipsError ("AipsIO: read beyond end of object")); }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

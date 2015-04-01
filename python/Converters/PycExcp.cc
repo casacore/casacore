@@ -25,17 +25,17 @@
 //#
 //# $Id: PycExcp.cc,v 1.1 2006/10/17 03:33:50 gvandiep Exp $
 
-#include <python/Converters/PycExcp.h>
-#include <casa/Containers/IterError.h>
+#include <casacore/python/Converters/PycExcp.h>
+#include <casacore/casa/Containers/IterError.h>
 //# The following include is necessary to work around a Boost-Python problem.
 #ifndef PYRAP_NO_BOOSTPYTHON_FIX
 # include <boost/type_traits/add_reference.hpp>
 #endif
 #include <boost/python/exception_translator.hpp>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
-  void translate_iterexcp (const casa::IterError& e)
+  void translate_iterexcp (const casacore::IterError& e)
   {
     // Use the Python 'C' API to set up an exception object
     PyErr_SetString(PyExc_StopIteration, e.what());
@@ -53,7 +53,7 @@ namespace casa { namespace python {
   {
     boost::python::register_exception_translator<std::exception>
       (&translate_stdexcp);
-    boost::python::register_exception_translator<casa::IterError>
+    boost::python::register_exception_translator<casacore::IterError>
       (&translate_iterexcp);
   }
 

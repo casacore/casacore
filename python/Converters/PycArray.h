@@ -33,13 +33,13 @@
 // include first to avoid _POSIX_C_SOURCE redefined warnings
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
-#include <casa/Arrays/Array.h>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <iostream>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
 
   // <summary>
@@ -85,9 +85,9 @@ namespace casa { namespace python {
   // Specialize for strings.
   // <group>
   template <typename T>
-  boost::python::object makePyArrayObject (casa::Array<T> const& arr);
+  boost::python::object makePyArrayObject (casacore::Array<T> const& arr);
   template <>
-  boost::python::object makePyArrayObject (casa::Array<String> const& arr);
+  boost::python::object makePyArrayObject (casacore::Array<String> const& arr);
   // </group>
 
   // Convert Array to Python.

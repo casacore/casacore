@@ -22,12 +22,16 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
-#include <casa/Quanta/QVector.h>
+#ifndef CASA_QVECTOR_TCC
+#define CASA_QVECTOR_TCC
 
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Quanta/QVector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Arrays/ArrayMath.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> QVector<T>::QVector() : Quantum<Vector<T> >() {}
 
@@ -66,12 +70,14 @@ template <class T> QVector<T> QVector<T>::operator/(const T d) const {
 }
 
 template <class T> Quantum<T> QVector<T>::min() const {
-	return Quantum<T>(casa::min(this->getValue()), this->getFullUnit());
+	return Quantum<T>(casacore::min(this->getValue()), this->getFullUnit());
 }
 
 template <class T> Quantum<T> QVector<T>::max() const {
-	return Quantum<T>(casa::max(this->getValue()), this->getFullUnit());
+	return Quantum<T>(casacore::max(this->getValue()), this->getFullUnit());
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

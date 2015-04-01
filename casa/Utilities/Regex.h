@@ -29,11 +29,11 @@
 #define CASA_REGEX_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/RegexBase.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/RegexBase.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations.
 struct re_pattern_buffer;
@@ -257,7 +257,7 @@ public:
 
     // Get the regular expression string.
     const String &regexp() const
-      { return *str; }
+      { return str; }
     
     // Get the translation table (can be a zero pointer).
     const Char *transtable() const
@@ -310,7 +310,7 @@ public:
     friend ostream &operator<<(ostream &ios, const Regex &exp);
     
 protected:
-    String*            str;                 // the reg. exp. string
+    String             str;                 // the reg. exp. string
     Int                fastval;             // fast flag
     Int                bufsz;               // buffer size given
     Char*              trans;               // possible translation table
@@ -342,6 +342,6 @@ extern const Regex RXalphanum;       //# = "[0-9A-Za-z]+"
 extern const Regex RXidentifier;     //# = "[A-Za-z_][A-Za-z0-9_]*"
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

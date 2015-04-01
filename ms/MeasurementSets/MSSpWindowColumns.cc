@@ -25,37 +25,37 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSSpWindowColumns.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicMath/Math.h>
-#include <ms/MeasurementSets/MSSpectralWindow.h>
-#include <measures/Measures/MeasRef.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MRadialVelocity.h>
+#include <casacore/ms/MeasurementSets/MSSpWindowColumns.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/ms/MeasurementSets/MSSpectralWindow.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
 
-//#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MeasRef.h>
-//#include <measures/Measures/MeasTable.h>
-#include <casa/Quanta/MVFrequency.h>
-#include <casa/Quanta/MVDirection.h>
-//#include <casa/Quanta/MVDoppler.h>
-#include <casa/Quanta/MVEpoch.h>
-#include <casa/Quanta/MVFrequency.h>
-#include <casa/Quanta/MVPosition.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/UnitVal.h>
-#include <tables/Tables/ColDescSet.h>
-#include <tables/Tables/TableDesc.h>
-#include <casa/Utilities/Assert.h>
+//#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MeasRef.h>
+//#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/casa/Quanta/MVFrequency.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+//#include <casacore/casa/Quanta/MVDoppler.h>
+#include <casacore/casa/Quanta/MVEpoch.h>
+#include <casacore/casa/Quanta/MVFrequency.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/UnitVal.h>
+#include <casacore/tables/Tables/ColDescSet.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSSpWindowColumns::
 ROMSSpWindowColumns(const MSSpectralWindow& msSpWindow):
@@ -734,5 +734,5 @@ attachOptionalCols(MSSpectralWindow& msSpWindow)
 // End: 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

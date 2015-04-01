@@ -27,30 +27,30 @@
 //#
 
  
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Containers/Record.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/BasicMath/Math.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MDoppler.h>
-#include <casa/Quanta/Unit.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <coordinates/Coordinates/LinearCoordinate.h>
-#include <coordinates/Coordinates/StokesCoordinate.h>
-#include <coordinates/Coordinates/QualityCoordinate.h>
-#include <coordinates/Coordinates/TabularCoordinate.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/coordinates/Coordinates/LinearCoordinate.h>
+#include <casacore/coordinates/Coordinates/StokesCoordinate.h>
+#include <casacore/coordinates/Coordinates/QualityCoordinate.h>
+#include <casacore/coordinates/Coordinates/TabularCoordinate.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/iostream.h>
-#include <casa/namespace.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/namespace.h>
 
 
 DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees=True,
@@ -392,8 +392,6 @@ int main()
 
     	  Int pixelAxis, worldAxis, coordinate;
     	  CoordinateUtil::findSpectralAxis(pixelAxis, worldAxis, coordinate, csys);
-    	  const SpectralCoordinate &sCoo = csys.spectralCoordinate(coordinate);
-
     	  // make sure negative rest frequency is refused
     	  Quantity freq(-100, "GHz");
     	  ok = csys.setRestFrequency (errorMsg, freq);
@@ -428,21 +426,24 @@ int main()
     	  ok = csys.setRestFrequency (errorMsg, freq);
     	  AlwaysAssertExit (ok);
     	  cerr << "Frequency set to: " << freq << endl;
-    	  AlwaysAssertExit(near(1.0e+11, sCoo.restFrequency(), 1.0e-8));
+    	  const SpectralCoordinate &sCoo1 = csys.spectralCoordinate(coordinate);
+
+    	  AlwaysAssertExit(near(1.0e+11, sCoo1.restFrequency(), 1.0e-8));
 
     	  freq.setValue(90);
     	  ok = csys.setRestFrequency (errorMsg, freq);
     	  AlwaysAssertExit (ok);
     	  cerr << "Frequency set to: " << freq << endl;
-    	  AlwaysAssertExit(near(0.9e+11, sCoo.restFrequency(), 1.0e-8));
+    	  const SpectralCoordinate &sCoo2 = csys.spectralCoordinate(coordinate);
+    	  AlwaysAssertExit(near(0.9e+11, sCoo2.restFrequency(), 1.0e-8));
     	  cerr << "The input was verified" << endl;
 
     	  wavelength = Quantity(1, "mm");
     	  ok = csys.setRestFrequency (errorMsg, wavelength);
     	  AlwaysAssertExit (ok);
     	  cerr << "Frequency set to: " << wavelength << endl;
-
-    	  AlwaysAssertExit(near(QC::c.getValue()/1.0e-03, sCoo.restFrequency(), 1.0e-8));
+    	  const SpectralCoordinate &sCoo3 = csys.spectralCoordinate(coordinate);
+    	  AlwaysAssertExit(near(QC::c.getValue()/1.0e-03, sCoo3.restFrequency(), 1.0e-8));
     	  cerr << "The input was verified" << endl;
 
       }

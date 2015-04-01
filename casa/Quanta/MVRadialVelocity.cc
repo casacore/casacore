@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <casa/Quanta/MVRadialVelocity.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Quanta/MVFrequency.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/Register.h>
+#include <casacore/casa/Quanta/MVRadialVelocity.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Quanta/MVFrequency.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Register.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // MVRadialVelocity class
 
@@ -120,11 +120,11 @@ Bool MVRadialVelocity::operator!=(const MVRadialVelocity &other) const {
 }
 
 Bool MVRadialVelocity::near(const MVRadialVelocity &other, Double tol) const {
-  return ::casa::near(val, other.val, tol);
+  return ::casacore::near(val, other.val, tol);
 }
 
 Bool MVRadialVelocity::nearAbs(const MVRadialVelocity &other, Double tol) const {
-  return ::casa::nearAbs(val, other.val, tol);
+  return ::casacore::nearAbs(val, other.val, tol);
 }
 
 // Member functions
@@ -238,5 +238,5 @@ Double MVRadialVelocity::makeF(const Unit &dt) const{
   return (dt.getValue().getFac());
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

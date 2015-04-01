@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSSourceColumns.h>
-#include <ms/MeasurementSets/MSSource.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColDescSet.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MRadialVelocity.h>
+#include <casacore/ms/MeasurementSets/MSSourceColumns.h>
+#include <casacore/ms/MeasurementSets/MSSource.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColDescSet.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSSourceColumns::ROMSSourceColumns(const MSSource& msSource):
   isNull_p(True),
@@ -335,5 +335,5 @@ void MSSourceColumns::setRadialVelocityRef(MRadialVelocity::Types ref)
 // compile-command: "gmake MSSourceColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

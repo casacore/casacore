@@ -32,15 +32,15 @@
 #define AIPS_ARRAY_INDEX_CHECK
 #endif
 
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/BlockIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/BlockIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 #include <vector>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void doit()
 {

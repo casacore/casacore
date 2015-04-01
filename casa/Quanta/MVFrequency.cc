@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/Register.h>
-#include <casa/Quanta/MVFrequency.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/Quanta/MVFrequency.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // MVFrequency class
 
@@ -118,11 +118,11 @@ Bool MVFrequency::operator!=(const MVFrequency &other) const {
 }
 
 Bool MVFrequency::near(const MVFrequency &other, Double tol) const {
-  return ::casa::near(val, other.val, tol);
+  return ::casacore::near(val, other.val, tol);
 }
 
 Bool MVFrequency::nearAbs(const MVFrequency &other, Double tol) const {
-  return ::casa::nearAbs(val, other.val, tol);
+  return ::casacore::nearAbs(val, other.val, tol);
 }
 
 // Member functions
@@ -256,5 +256,5 @@ Double MVFrequency::makeF(Double v, const Unit &dt, Bool rev) const{
   return (v*x);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

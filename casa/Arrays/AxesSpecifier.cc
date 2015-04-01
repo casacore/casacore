@@ -26,12 +26,12 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/AxesSpecifier.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/AxesSpecifier.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 AxesSpecifier::AxesSpecifier()
 : itsKeep (True)
@@ -121,5 +121,5 @@ AxesMapping AxesSpecifier::apply (const IPosition& shape) const
   return AxesMapping(axisToNew);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

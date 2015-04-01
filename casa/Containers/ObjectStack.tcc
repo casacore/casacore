@@ -25,10 +25,13 @@
 //#
 //# $Id: ObjectStack.cc,v 1.1 2007/11/16 04:08:17 wbrouw Exp $
 
-//# Includes
-#include <casa/Containers/ObjectStack.h>
+#ifndef CASA_OBJECTSTACK_TCC
+#define CASA_OBJECTSTACK_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/casa/Containers/ObjectStack.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template <class T>
   ObjectStack<T> &ObjectStack<T>::stack() {
@@ -60,5 +63,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     vector<T*>(stack_p).swap(stack_p);
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

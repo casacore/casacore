@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSSelection.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Inputs/Input.h>
-#include <casa/OS/DirectoryIterator.h>
-#include <casa/OS/File.h>
-#include <casa/OS/SymLink.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/ms/MSSel/MSSelection.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/OS/DirectoryIterator.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/SymLink.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 #include <iostream>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 void select (const String& msin, const String& out, const String& baseline,

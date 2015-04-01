@@ -25,26 +25,26 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <tables/Tables/PlainTable.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableAttr.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableLockData.h>
-#include <tables/Tables/ColumnSet.h>
-#include <tables/Tables/TableTrace.h>
-#include <tables/Tables/PlainColumn.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/Record.h>
-#include <casa/BasicSL/String.h>
-#include <casa/OS/HostInfo.h>
-#include <casa/OS/File.h>
-#include <casa/System/AipsrcValue.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/PlainTable.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableAttr.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableLockData.h>
+#include <casacore/tables/Tables/ColumnSet.h>
+#include <casacore/tables/Tables/TableTrace.h>
+#include <casacore/tables/Tables/PlainColumn.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/OS/HostInfo.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/System/AipsrcValue.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Initialize the static TableCache object.
 TableCache PlainTable::theirTableCache;
@@ -342,6 +342,11 @@ void PlainTable::renameSubTables (const String& newName,
 Bool PlainTable::asBigEndian() const
 {
     return bigEndian_p;
+}
+
+const StorageOption& PlainTable::storageOption() const
+{
+    return colSetPtr_p->storageOption();
 }
 
 Bool PlainTable::isMultiUsed (Bool checkSubTables) const
@@ -776,4 +781,4 @@ void PlainTable::checkWritable (const char* func) const
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

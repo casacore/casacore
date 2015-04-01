@@ -29,11 +29,12 @@
 #ifndef MS_SDPOINTINGHANDLER_H
 #define MS_SDPOINTINGHANDLER_H
 
-#include <casa/Containers/RecordField.h>
-#include <measures/Measures/MDirection.h>
-#include <casa/Arrays/Matrix.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/casa/Arrays/Matrix.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MeasurementSet;
@@ -164,7 +165,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

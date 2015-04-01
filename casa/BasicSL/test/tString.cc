@@ -27,15 +27,15 @@
 
 //# Includes
 
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Utilities/Assert.h>
 // Next one for atoi and atof
-#include <casa/stdlib.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // Generally used variables
 String X = "Hello";
 String Y = "world";

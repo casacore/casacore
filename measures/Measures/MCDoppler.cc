@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/MCDoppler.h>
+#include <casacore/measures/Measures/MCDoppler.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 uInt MCDoppler::ToRef_p[N_Routes][3] = {
@@ -159,5 +159,5 @@ String MCDoppler::showState() {
   MCBase::makeState(FromTo_p[0],  MDoppler::N_Types, N_Routes, ToRef_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

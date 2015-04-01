@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/RigidVector.h>
-#include <scimath/Mathematics/SquareMatrix.h>
+#include <casacore/scimath/Mathematics/RigidVector.h>
+#include <casacore/scimath/Mathematics/SquareMatrix.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
 				 const RigidVector<Float,4>& v) {
@@ -63,5 +63,5 @@ RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <lattices/Lattices/LatticeIndexer.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/LatticeIndexer.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main ()
 {
   try {

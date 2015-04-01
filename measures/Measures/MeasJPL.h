@@ -29,15 +29,15 @@
 #define MEASURES_MEASJPL_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableRow.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <casa/Containers/RecordField.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableRow.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class String;
@@ -92,10 +92,10 @@ class MVEpoch;
 //
 // <example>
 // <srcblock>
-//	#include <casa/aips.h>
-//	#include <casa/Quanta/MVEpoch.h>
-//     	#include <measures/Measures/MeasJPL.h>
-//	#include <casa/Arrays/Vector.h>
+//	#include <casacore/casa/aips.h>
+//	#include <casacore/casa/Quanta/MVEpoch.h>
+//     	#include <casacore/measures/Measures/MeasJPL.h>
+//	#include <casacore/casa/Arrays/Vector.h>
 //    	const MVEpoch dat = 51116; // a date (1998/10/30) in TDB
 //	Vector<Double> val(6), valE(6);		// results
 //	// Get position and velocity of Venus (barycentric)
@@ -255,6 +255,6 @@ private:
 //# Inline Implementations
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

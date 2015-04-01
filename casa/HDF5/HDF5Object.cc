@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <casa/HDF5/HDF5Object.h>
-#include <casa/HDF5/HDF5Error.h>
+#include <casacore/casa/HDF5/HDF5Object.h>
+#include <casacore/casa/HDF5/HDF5Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGI
+namespace casacore { //# NAMESPACE CASACORE - BEGI
 
   HDF5Object::~HDF5Object()
   {}

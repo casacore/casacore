@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <casa/System/AipsrcValue.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/sstream.h>
+#include <casacore/casa/System/AipsrcValue.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Data
 AipsrcValue<Bool> AipsrcValue<Bool>::myp_p;
@@ -90,5 +90,5 @@ void AipsrcValue<Bool>::save(uInt keyword) {
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

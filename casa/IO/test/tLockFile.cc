@@ -26,20 +26,20 @@
 //# $Id$
 
 
-#include <casa/IO/LockFile.h>
-#include <casa/IO/MemoryIO.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/IO/RegularFileIO.h>
-#include <casa/OS/Path.h>
-#include <casa/OS/Timer.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/casa/IO/LockFile.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void doIt (const String& name, double interval)
 {
     cout << "Choose between 2 locknrs (i.e. parts of file to lock)." << endl;

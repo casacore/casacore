@@ -26,16 +26,16 @@
 //# $Id$
 
 
-#include <images/Regions/WCCompound.h>
-#include <images/Regions/ImageRegion.h>
-#include <lattices/Lattices/RegionType.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Regions/WCCompound.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/lattices/LRegions/RegionType.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 WCCompound::WCCompound (const ImageRegion& region1,
 			const ImageRegion& region2)
@@ -262,5 +262,5 @@ void WCCompound::unmakeRecord (PtrBlock<const WCRegion*>& regions,
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

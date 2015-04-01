@@ -28,7 +28,7 @@
 #define FITS_BLOCKIO_H
 
 //# Include this file first, because it may set LFS variables used by cfitsio.
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 //# Make sure that cfitsio does not declare the wcs headers.
 extern "C"{
@@ -40,9 +40,9 @@ extern "C"{
 #include <unistd.h>
 #include <fcntl.h>
 
-#include <fits/FITS/FITSError.h>
+#include <casacore/fits/FITS/FITSError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //----------------------------------------------------------------------------
 //<category lib=aips module=FITS sect="Blocked I/O">   
@@ -194,7 +194,7 @@ class BlockOutput : public BlockIO {
 	virtual int write(char *);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 # endif
 

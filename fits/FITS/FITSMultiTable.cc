@@ -26,26 +26,26 @@
 //#
 //# $Id$
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <fits/FITS/FITSMultiTable.h>
+#include <casacore/fits/FITS/FITSMultiTable.h>
 
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/BasicMath/Math.h>
-#include <casa/OS/Path.h>
-#include <casa/OS/File.h>
-#include <casa/OS/Directory.h>
-#include <casa/OS/DirectoryIterator.h>
-#include <casa/OS/Timer.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Utilities/GenSort.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/OS/DirectoryIterator.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Utilities/GenSort.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Used for debug print statements
-// #include <casa/Arrays/ArrayIO.h
+// #include <casacore/casa/Arrays/ArrayIO.h
 
 FITSMultiTable::FITSMultiTable(const Vector<String> &fileNames,
 			       FITSTabular* (*tabMaker)(const String&))
@@ -275,5 +275,5 @@ Time FITSMultiTable::timeFromFile(const String &fileName)
     return Time(year, month, day, hour, minutes, seconds*1.0);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

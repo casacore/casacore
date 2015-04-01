@@ -24,18 +24,21 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
+#ifndef SCIMATH_LSQFIT2_TCC
+#define SCIMATH_LSQFIT2_TCC
 //#
 // This separation of definitions necessary to get pre-compilation of
 // templates done without having duplicate entries problems for
 // non-templated member functions
 //
 //# Includes
-#include <scimath/Fitting/LSQFit.h>
+#include <casacore/scimath/Fitting/LSQFit.h>
 #include <algorithm>
 
 using namespace std;
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Static values
 
@@ -1235,5 +1238,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

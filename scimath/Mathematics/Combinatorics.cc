@@ -26,9 +26,9 @@
 //# $Id$
 //   
 
-#include <scimath/Mathematics/Combinatorics.h>
+#include <casacore/scimath/Mathematics/Combinatorics.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Initialize factorial with first 2 values (0! and 1! are both 1).
     Vector<uInt> Combinatorics::_factorialCache(2,1);
@@ -62,5 +62,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
         }
         return factorial(n)/(factorial(k)*factorial(n-k));
     }
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -28,10 +28,11 @@
 #ifndef CASA_REGSEQUENCE_H
 #define CASA_REGSEQUENCE_H
 
-#include <casa/Utilities/Sequence.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/Sequence.h>
+#include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Sequence for the Register() template functions </summary>
 // <use visibility=export>
@@ -65,7 +66,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

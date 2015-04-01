@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LatticeBase.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LatticeBase.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LatticeBase::~LatticeBase()
 {}
@@ -158,5 +158,5 @@ void LatticeBase::throwBoolMath() const
   throw AipsError ("Operator +=, etc. cannot be used for a Boolean lattice");
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

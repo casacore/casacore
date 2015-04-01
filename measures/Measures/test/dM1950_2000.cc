@@ -26,24 +26,24 @@
 //# $Id: dM1950_2000.cc,v 1.2 2007/08/30 22:56:31 wyoung Exp $
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/MVPosition.h>
-#include <measures/Measures.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MeasData.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MeasData.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
-namespace casa {
+namespace casacore {
   void fk45(Double R1950, Double D1950, Double BEPOCH, Double &R2000,
 	    Double &D2000, Double X2000[], Vector<Double> V2000[]);
 
@@ -190,7 +190,7 @@ namespace casa {
     cout << "----------------------------------------------------" << endl;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 int main()
 {

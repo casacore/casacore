@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/IO/StreamIO.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Utilities/Copy.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/StreamIO.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Utilities/Copy.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 //# No socket support on Cray XT3 Catamount (yet)
 #ifndef AIPS_CRAY_PGI
@@ -41,7 +41,7 @@
 #include <unistd.h>               // needed for ::close
 #include <cstring>                //# for memcpy with gcc-4.3
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StreamIO::StreamIO(const String& hostname, uShort portNumber) 
   :ByteIO(),
@@ -87,11 +87,11 @@ StreamIO::~StreamIO() {
   }
 }
 
-void StreamIO::write(uInt size, const void* buf) {
-  uInt bytesToWrite = size;
+void StreamIO::write(Int64 size, const void* buf) {
+  Int64 bytesToWrite = size;
   const Char* bytePtr = static_cast<const Char*>(buf);
   while (bytesToWrite > 0) {
-    const uInt bytesWritten = ::write(itsSockDesc, bytePtr, bytesToWrite);
+    const Int64 bytesWritten = ::write(itsSockDesc, bytePtr, bytesToWrite);
     if (bytesWritten <= 0) {
       const String fString = "StreamIO::write - cannot write ";
       if (bytesToWrite == size) {
@@ -105,16 +105,16 @@ void StreamIO::write(uInt size, const void* buf) {
   }    
 }
 
-Int StreamIO::read(uInt size, void* buf, Bool throwException) {
-  uInt bytesToRead = size;
+Int64 StreamIO::read(Int64 size, void* buf, Bool throwException) {
+  Int64 bytesToRead = size;
   Char* bytePtr = static_cast<Char*>(buf);
   while (bytesToRead > 0) {
-    const Int bytesRead = ::read(itsSockDesc, bytePtr, bytesToRead);
+    const Int64 bytesRead = ::read(itsSockDesc, bytePtr, bytesToRead);
     if (bytesRead < 0) {
       throw (AipsError(String("StreamIO::read - ") +
 		       String("Error returned by system call")));
     }
-    if (bytesRead > static_cast<Int>(bytesToRead)) {
+    if (bytesRead > bytesToRead) {
       throw (AipsError ("StreamIO::read - read more bytes than requested"));
     }
     if (bytesRead == 0) {
@@ -123,7 +123,7 @@ Int StreamIO::read(uInt size, void* buf, Bool throwException) {
     bytesToRead -= bytesRead;
     bytePtr += bytesRead;
   }
-  if (bytesToRead != 0 && throwException == True) {
+  if (bytesToRead != 0  &&  throwException) {
     throw (AipsError ("StreamIO::read - incorrect number of bytes read"));
   }
   return size - bytesToRead;
@@ -150,4 +150,4 @@ Bool StreamIO::isSeekable() const {
   return False;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

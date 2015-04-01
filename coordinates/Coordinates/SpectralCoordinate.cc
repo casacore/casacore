@@ -28,33 +28,33 @@
 
 
 
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <coordinates/Coordinates/TabularCoordinate.h>
-#include <coordinates/Coordinates/LinearXform.h>
-#include <coordinates/Coordinates/LinearCoordinate.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/coordinates/Coordinates/TabularCoordinate.h>
+#include <casacore/coordinates/Coordinates/LinearXform.h>
+#include <casacore/coordinates/Coordinates/LinearCoordinate.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Containers/Record.h>
-#include <fits/FITS/FITSSpectralUtil.h>
-#include <fits/FITS/FITSKeywordUtil.h>
-#include <scimath/Functionals/ScalarSampledFunctional.h>
-#include <casa/BasicMath/Math.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <measures/Measures/VelocityMachine.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/fits/FITS/FITSSpectralUtil.h>
+#include <casacore/fits/FITS/FITSKeywordUtil.h>
+#include <casacore/scimath/Functionals/ScalarSampledFunctional.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
+#include <casacore/measures/Measures/VelocityMachine.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
 
-#include <casa/sstream.h>
-#include <casa/iostream.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 SpectralCoordinate::SpectralCoordinate()
@@ -271,6 +271,9 @@ SpectralCoordinate::SpectralCoordinate(
 		nativeType_p = SpectralCoordinate::VRAD;
 	}
 
+        // Now remake Velocity Machine to be consistent with state
+
+	deleteVelocityMachine();
 	makeVelocityMachine (
 		velUnit_p, velType_p, unit_p,
 		type_p, restfreqs_p(restfreqIdx_p)
@@ -317,9 +320,9 @@ SpectralCoordinate::SpectralCoordinate(
 
 	_setTabulatedFrequencies(frequencies);
 
-	// Now remake Velocity Machine to be consistent with state
+        // Now remake Velocity Machine to be consistent with state
 
-	delete pVelocityMachine_p;
+	deleteVelocityMachine();
 	makeVelocityMachine (
 		velUnit_p, velType_p, unit_p,
         type_p, restfreqs_p(restfreqIdx_p)
@@ -463,9 +466,6 @@ Bool SpectralCoordinate::toWorld (Vector<Double> &world,
 //
     return ok;
 }
-
-
-
 
 Bool SpectralCoordinate::toWorld(Double& world, const Double& pixel) const
 {
@@ -1221,7 +1221,7 @@ Bool SpectralCoordinate::near(const Coordinate& other,
 
 // Rest freq
 
-   if (!casa::near(restFrequency(), sCoord.restFrequency(), tol)) {
+   if (!casacore::near(restFrequency(), sCoord.restFrequency(), tol)) {
       set_error("The SpectralCoordinates have differing active rest frequencies");
       return False;
    }
@@ -1236,7 +1236,7 @@ Bool SpectralCoordinate::near(const Coordinate& other,
    }
 //
    for (uInt i=0; i<restfreqs_p.nelements(); i++) {
-      if (!casa::near(restfreqs_p(i),rfs(i),tol)) {
+      if (!casacore::near(restfreqs_p(i),rfs(i),tol)) {
          set_error("The SpectralCoordinates have differing lists of rest frequencies");
          return False;
       }
@@ -1285,7 +1285,7 @@ Bool SpectralCoordinate::near(const Coordinate& other,
       const Vector<Double>& thisVal = referenceValue();   
       const Vector<Double>& thatVal = sCoord.referenceValue();
       if (!exclude) {
-         if (!casa::near(thisVal[0],thatVal[0])) {
+         if (!casacore::near(thisVal[0],thatVal[0])) {
             set_error(String("The SpectralCoordinates have differing reference values"));
             return False;
          }
@@ -1317,8 +1317,6 @@ Bool SpectralCoordinate::near(const Coordinate& other,
 
    return True;
 }
-
-
 
 Bool SpectralCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const
@@ -2292,7 +2290,7 @@ String SpectralCoordinate::formatRestFrequencies () const
          oss << " [";
          uInt j = 0;
          for (uInt i=0; i<n; i++) {
-            if (!casa::near(rfs(i), rf)) {
+            if (!casacore::near(rfs(i), rf)) {
                if (j > 0) oss << ", ";
                oss << rfs(i);
                j++;
@@ -2510,6 +2508,7 @@ ostream& SpectralCoordinate::print(ostream& os) const {
     os << "waveUnit_p " << waveUnit_p << endl;
     os << "nativeType_p " << nativeType_p << endl;
     os << "unit_p " << unit_p.getName() << endl;
+    os << "increment " << increment() << endl;
     os << "axisName_p " << axisName_p << endl;
     os << "formatUnit_p " << formatUnit_p << endl;
     os << "direction_p " <<  direction_p << endl;
@@ -2519,11 +2518,14 @@ ostream& SpectralCoordinate::print(ostream& os) const {
 
 }
 
+Bool SpectralCoordinate::isTabular() const {
+	return _tabular.ptr();
+}
 
 ostream &operator<<(ostream &os, const SpectralCoordinate& spcoord) {
 	return spcoord.print(os);
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -29,11 +29,12 @@
 #define LATTICES_PAGEDARRITER_H
 
 //# Includes
-#include <lattices/Lattices/LatticeIterInterface.h>
-#include <lattices/Lattices/PagedArray.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/LatticeIterInterface.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A read/write Lattice iterator for PagedArrays.
@@ -131,9 +132,9 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/PagedArrIter.tcc>
+#include <casacore/lattices/Lattices/PagedArrIter.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

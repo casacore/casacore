@@ -25,15 +25,18 @@
 //#
 //# $Id$
 
-//# Includes
-#include <casa/Exceptions/Error.h>
-#include <measures/Measures/MeasBase.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/Measures/MeasFrame.h>
-#include <measures/Measures/MCBase.h>
-#include <measures/Measures/MRBase.h>
+#ifndef MEASURES_MEASCONVERT_TCC
+#define MEASURES_MEASCONVERT_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/measures/Measures/MeasBase.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/measures/Measures/MCBase.h>
+#include <casacore/measures/Measures/MRBase.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template<class M>
@@ -474,5 +477,7 @@ void MeasConvert<M>::print(ostream &os) const {
   if (!outref.empty()) os << " Output reference" << outref;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

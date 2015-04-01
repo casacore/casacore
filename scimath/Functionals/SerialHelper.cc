@@ -25,12 +25,12 @@
 //#
 //#
 //# $Id$
-#include <scimath/Functionals/SerialHelper.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/scimath/Functionals/SerialHelper.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/DataType.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 const String SerialHelper::FUNCTYPE("functype");
 const String SerialHelper::gtype[] = {
@@ -466,5 +466,5 @@ void getArray(Array<V> &val, Int gtype, const Record& gr,
 }
 */
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

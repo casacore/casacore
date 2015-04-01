@@ -29,25 +29,28 @@
 #define CASA_OS_H
 
 //# Includes
-#include <casa/OS/EnvVar.h>
-#include <casa/OS/Path.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/SymLink.h>
-#include <casa/OS/Directory.h>
-#include <casa/OS/DirectoryIterator.h>
+#include <casacore/casa/aips.h>
 
-#include <casa/OS/Time.h>
-#include <casa/OS/Timer.h>
+#include <casacore/casa/OS/EnvVar.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/OS/SymLink.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/OS/DirectoryIterator.h>
 
-#include <casa/OS/Conversion.h>
-#include <casa/OS/CanonicalConversion.h>
-#include <casa/OS/DataConversion.h>
-#include <casa/OS/CanonicalDataConversion.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/OS/Timer.h>
 
-#include <casa/OS/Memory.h>
+#include <casacore/casa/OS/Conversion.h>
+#include <casacore/casa/OS/CanonicalConversion.h>
+#include <casacore/casa/OS/DataConversion.h>
+#include <casacore/casa/OS/CanonicalDataConversion.h>
+
+#include <casacore/casa/OS/Memory.h>
+#include <casacore/casa/OS/MemoryTrace.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -100,6 +103,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       The structure of the framework is shown in the 
 //       <a href="OS/OS_1.html">OMT diagram</a>.
 //  <li> A class to encapsulate <linkto class=Memory>Memory</linkto> usage.
+//       Class MemoryTrace makes it possible to trace all memory (de)allocations
+//       through malloc and free (new and delete).
+//       It only works on Linux systems though.
 // </ul>
 
 // </synopsis>
@@ -138,6 +144,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

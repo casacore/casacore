@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/CompiledParam.h>
-#include <scimath/Functionals/FuncExpression.h>
+#ifndef SCIMATH_COMPILEDPARAM_TCC
+#define SCIMATH_COMPILEDPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/CompiledParam.h>
+#include <casacore/scimath/Functionals/FuncExpression.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 CompiledParam<T>::CompiledParam() : 
@@ -85,5 +88,7 @@ Bool CompiledParam<T>::setFunction(const String &newFunction) {
   return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

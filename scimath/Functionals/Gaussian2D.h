@@ -29,13 +29,13 @@
 #define SCIMATH_GAUSSIAN2D_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Gaussian2DParam.h>
-#include <scimath/Functionals/Function.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Gaussian2DParam.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 template<class T> class Vector;
@@ -335,10 +335,10 @@ public:
 #undef Gaussian2D_PS
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/Gaussian2D.tcc>
-#include <scimath/Functionals/Gaussian2D2.tcc>
+#include <casacore/scimath/Functionals/Gaussian2D.tcc>
+#include <casacore/scimath/Functionals/Gaussian2D2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

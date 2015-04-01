@@ -29,10 +29,10 @@
 #define CASA_DYNLIB_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <string>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary> 
   // Class to handle loading of dynamic libraries
@@ -159,6 +159,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     Bool  itsDoClose;
   };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -29,9 +29,10 @@
 #ifndef SCIMATH_FUNCTIONFACTORYERRORS_H
 #define SCIMATH_FUNCTIONFACTORYERRORS_H
 
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class FunctionFactoryError : public AipsError {
 public:
@@ -86,6 +87,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -29,13 +29,13 @@
 #define TABLES_COLDESCSET_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Set of table column descriptions
@@ -199,6 +199,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

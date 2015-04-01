@@ -29,15 +29,17 @@
 #define CASA_QUANTA_H
 
 //# Includes
-#include <casa/Quanta/Unit.h>
-//# Next one at this place
-#include <casa/Quanta/QC.h>
-#include <casa/Quanta/UnitMap.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/QMath.h>
-#include <casa/Quanta/QLogical.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Quanta/Unit.h>
+//# Next one at this place
+#include <casacore/casa/Quanta/QC.h>
+#include <casacore/casa/Quanta/UnitMap.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/QMath.h>
+#include <casacore/casa/Quanta/QLogical.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 // 
@@ -600,7 +602,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# class Quanta {};
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

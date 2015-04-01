@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/ValType.h>
-#include <casa/OS/CanonicalConversion.h>
-#include <casa/OS/LECanonicalConversion.h>
-#include <casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/OS/CanonicalConversion.h>
+#include <casacore/casa/OS/LECanonicalConversion.h>
+#include <casacore/casa/BasicSL/Constants.h>
 #include <limits.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# This is the implementation of the ValType class.
 //# Most functions are inlined in the header file.
@@ -506,5 +506,5 @@ CountedPtr<BaseCompare> ValType::getCmpObj (DataType dt)
     return CountedPtr<BaseCompare>();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

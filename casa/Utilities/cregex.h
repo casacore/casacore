@@ -24,8 +24,8 @@
                            520 Edgemont Road
                            Charlottesville, VA 22903-2475 USA
 
-    $Id$
 */
+//# $Id$
 
 #ifndef CASA_CREGEX_H
 #define CASA_CREGEX_H
@@ -45,9 +45,9 @@ extern "C" {
 #define BYTEWIDTH 8
 
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 /* Maximum number of duplicates an interval can allow. */
 /* Has been changed to copy from the limits.h file
@@ -302,6 +302,6 @@ extern int re_exec ();
 #endif
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif /* !__REGEXP_LIBRARY */

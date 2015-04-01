@@ -30,13 +30,13 @@
 #define SCIMATH_COMPOUNDFUNCTION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/CompoundParam.h>
-#include <scimath/Functionals/Function.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/CompoundParam.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -279,10 +279,10 @@ public:
 #undef CompoundFunction_PS
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/CompoundFunction.tcc>
-#include <scimath/Functionals/Compound2Function.tcc>
+#include <casacore/scimath/Functionals/CompoundFunction.tcc>
+#include <casacore/scimath/Functionals/Compound2Function.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

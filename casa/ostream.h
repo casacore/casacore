@@ -33,7 +33,7 @@
 //# them (e.g. <cstring>)
 
 //# Make sure any special macros are set
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 //# gcc has no <ostream> yet. Change later
 #if defined(__GNUG__)
 #include <iostream>
@@ -41,13 +41,13 @@
 #include <ostream>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 using std::ostream;
 using std::endl;
 using std::ends;
 using std::flush;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

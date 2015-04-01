@@ -29,13 +29,13 @@
 #define LATTICES_MASKEDLATTICEITERATOR_H
 
 //# Includes
-#include <casa/aips.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A readonly iterator for masked Lattices.
@@ -208,9 +208,9 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/MaskedLatticeIterator.tcc>
+#include <casacore/lattices/Lattices/MaskedLatticeIterator.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

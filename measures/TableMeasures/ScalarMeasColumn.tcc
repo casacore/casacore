@@ -24,23 +24,26 @@
 //#
 //# $Id$
 
-//# Includes
-#include <measures/TableMeasures/ScalarMeasColumn.h>
-#include <measures/TableMeasures/TableMeasDescBase.h>
-#include <measures/TableMeasures/TableMeasOffsetDesc.h>
-#include <measures/TableMeasures/TableMeasRefDesc.h>
-#include <measures/Measures/MeasConvert.h>
-#include <casa/Quanta/MeasValue.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/String.h>
+#ifndef MEASURES_SCALARMEASCOLUMN_TCC
+#define MEASURES_SCALARMEASCOLUMN_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/measures/TableMeasures/TableMeasDescBase.h>
+#include <casacore/measures/TableMeasures/TableMeasOffsetDesc.h>
+#include <casacore/measures/TableMeasures/TableMeasRefDesc.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/casa/Quanta/MeasValue.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class M>
 ScalarMeasColumn<M>::ScalarMeasColumn()
@@ -379,4 +382,6 @@ Bool ScalarMeasColumn<M>::equalRefs (const MRBase& r1, const MRBase& r2) const
   return ((r1.getType() == r2.getType()) && (r1.offset() == r2.offset()));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

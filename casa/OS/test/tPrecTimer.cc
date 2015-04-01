@@ -27,11 +27,11 @@
 
 #include <cmath>
 #include <iostream>
-#include <casa/OS/PrecTimer.h>
-#include <casa/OS/Timer.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/OS/PrecTimer.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/BasicSL/String.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main()
 {

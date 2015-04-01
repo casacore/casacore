@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <casa/Containers/OrderedMap.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/OrdPairIO.h>
-#include <casa/Containers/MapIO.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Containers/OrderedMap.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/OrdPairIO.h>
+#include <casacore/casa/Containers/MapIO.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 //template<class key,class value> void print(const OrderedMap<key,value> &);
 
 int main() {

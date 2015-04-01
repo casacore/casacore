@@ -29,9 +29,10 @@
 #define IMAGES_IMAGEREGION_H
 
 //# Includes
-#include <lattices/Lattices/LattRegionHolder.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/LRegions/LattRegionHolder.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class CoordinateSystem;
@@ -211,6 +212,6 @@ inline const WCRegion& ImageRegion::asWCRegion() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

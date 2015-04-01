@@ -25,18 +25,21 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/GenSort.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Containers/Block.h>
-#include <casa/Exceptions/Error.h>
+#ifndef CASA_GENSORT_TCC
+#define CASA_GENSORT_TCC
+
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Exceptions/Error.h>
 #ifdef _OPENMP
 # include <omp.h>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Do a quicksort in ascending order.
 // All speedups are from Sedgewick; Algorithms in C.
@@ -915,4 +918,6 @@ void GenSortIndirect<T>::heapAscSiftDown (uInt* inx, Int low, Int up,
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

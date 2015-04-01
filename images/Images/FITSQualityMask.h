@@ -30,10 +30,11 @@
 #define LATTICES_FITSQUALMASK_H
 
 //# Includes
-#include <casa/Arrays/Array.h>
-#include <lattices/Lattices/Lattice.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/lattices/Lattices/Lattice.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class FITSImage;
@@ -150,6 +151,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

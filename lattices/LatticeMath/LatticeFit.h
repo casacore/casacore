@@ -28,13 +28,13 @@
 #ifndef LATTICES_LATTICEFIT_H
 #define LATTICES_LATTICEFIT_H
 
-#include <casa/aips.h>
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <scimath/Fitting/LinearFit.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/scimath/Fitting/LinearFit.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // Fit every line of pixels parallel to any axis in a Lattice.
@@ -121,6 +121,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

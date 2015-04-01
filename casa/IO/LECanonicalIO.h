@@ -28,11 +28,11 @@
 #ifndef CASA_LECANONICALIO_H
 #define CASA_LECANONICALIO_H
 
-#include <casa/aips.h>
-#include <casa/IO/TypeIO.h>
-#include <casa/BasicSL/Complexfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/TypeIO.h>
+#include <casacore/casa/BasicSL/Complexfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class ByteIO;
 class String;
@@ -96,39 +96,39 @@ public:
     // Convert the values and write them to the ByteIO object.
     // Bool, complex and String values are handled by the base class.
     // <group>
-    virtual uInt write (uInt nvalues, const Bool* value);
-    virtual uInt write (uInt nvalues, const Char* data);
-    virtual uInt write (uInt nvalues, const uChar* data);
-    virtual uInt write (uInt nvalues, const Short* data);
-    virtual uInt write (uInt nvalues, const uShort* data);
-    virtual uInt write (uInt nvalues, const Int* data);
-    virtual uInt write (uInt nvalues, const uInt* data);
-    virtual uInt write (uInt nvalues, const Int64* data);
-    virtual uInt write (uInt nvalues, const uInt64* data);
-    virtual uInt write (uInt nvalues, const Float* data);
-    virtual uInt write (uInt nvalues, const Double* data);
-    virtual uInt write (uInt nvalues, const Complex* value);
-    virtual uInt write (uInt nvalues, const DComplex* value);
-    virtual uInt write (uInt nvalues, const String* value);
+    virtual size_t write (size_t nvalues, const Bool* value);
+    virtual size_t write (size_t nvalues, const Char* data);
+    virtual size_t write (size_t nvalues, const uChar* data);
+    virtual size_t write (size_t nvalues, const Short* data);
+    virtual size_t write (size_t nvalues, const uShort* data);
+    virtual size_t write (size_t nvalues, const Int* data);
+    virtual size_t write (size_t nvalues, const uInt* data);
+    virtual size_t write (size_t nvalues, const Int64* data);
+    virtual size_t write (size_t nvalues, const uInt64* data);
+    virtual size_t write (size_t nvalues, const Float* data);
+    virtual size_t write (size_t nvalues, const Double* data);
+    virtual size_t write (size_t nvalues, const Complex* value);
+    virtual size_t write (size_t nvalues, const DComplex* value);
+    virtual size_t write (size_t nvalues, const String* value);
     // </group>
 
     // Read the values from the ByteIO object and convert them.
     // Bool, complex and String values are handled by the base class.
     // <group>
-    virtual uInt read (uInt nvalues, Bool* value);
-    virtual uInt read (uInt nvalues, Char* data);
-    virtual uInt read (uInt nvalues, uChar* data);
-    virtual uInt read (uInt nvalues, Short* data);
-    virtual uInt read (uInt nvalues, uShort* data);
-    virtual uInt read (uInt nvalues, Int* data);
-    virtual uInt read (uInt nvalues, uInt* data);
-    virtual uInt read (uInt nvalues, Int64* data);
-    virtual uInt read (uInt nvalues, uInt64* data);
-    virtual uInt read (uInt nvalues, Float* data);
-    virtual uInt read (uInt nvalues, Double* data);
-    virtual uInt read (uInt nvalues, Complex* value);
-    virtual uInt read (uInt nvalues, DComplex* value);
-    virtual uInt read (uInt nvalues, String* value);
+    virtual size_t read (size_t nvalues, Bool* value);
+    virtual size_t read (size_t nvalues, Char* data);
+    virtual size_t read (size_t nvalues, uChar* data);
+    virtual size_t read (size_t nvalues, Short* data);
+    virtual size_t read (size_t nvalues, uShort* data);
+    virtual size_t read (size_t nvalues, Int* data);
+    virtual size_t read (size_t nvalues, uInt* data);
+    virtual size_t read (size_t nvalues, Int64* data);
+    virtual size_t read (size_t nvalues, uInt64* data);
+    virtual size_t read (size_t nvalues, Float* data);
+    virtual size_t read (size_t nvalues, Double* data);
+    virtual size_t read (size_t nvalues, Complex* value);
+    virtual size_t read (size_t nvalues, DComplex* value);
+    virtual size_t read (size_t nvalues, String* value);
     // </group>
 
 private:
@@ -139,6 +139,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

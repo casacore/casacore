@@ -25,34 +25,34 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TableParse.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableProxy.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableColumn.h>
-#include <tables/Tables/ExprNodeArray.h>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Quanta/MVPosition.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/OS/EnvVar.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/tables/TaQL/TableParse.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableProxy.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/tables/TaQL/ExprNodeArray.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/OS/EnvVar.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <map>
 #include <vector>
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
 
 #ifdef HAVE_READLINE
 # include <readline/readline.h>
 # include <readline/history.h>
 #endif
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 // <summary>

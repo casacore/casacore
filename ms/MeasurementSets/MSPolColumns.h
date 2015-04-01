@@ -28,12 +28,12 @@
 #ifndef MS_MSPOLCOLUMNS_H
 #define MS_MSPOLCOLUMNS_H
 
-#include <casa/aips.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <measures/Measures/Stokes.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/measures/Measures/Stokes.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSPolarization;
 template <class T> class Vector;
@@ -210,6 +210,6 @@ private:
   ScalarColumn<Int> numCorr_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

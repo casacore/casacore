@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <images/Images/PagedImage.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-using namespace casa;
+using namespace casacore;
 
 // This test program was created because of a problem detected in the
 // CASA Imager::clone function. It created an image without writing/flushing

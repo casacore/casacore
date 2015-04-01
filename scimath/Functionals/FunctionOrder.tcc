@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/FunctionOrder.h>
-#include <casa/Containers/Record.h>
-#include <casa/iostream.h>
+#ifndef SCIMATH_FUNCTIONORDER_TCC
+#define SCIMATH_FUNCTIONORDER_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Functionals/FunctionOrder.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/iostream.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 FunctionOrder<T>::FunctionOrder()
@@ -236,5 +239,7 @@ const String &FunctionOrder<T>::ident() const {
   return myid;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

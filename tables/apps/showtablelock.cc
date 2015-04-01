@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <tables/Tables/Table.h>
-#include <casa/IO/LockFile.h>
-#include <casa/OS/Path.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/IO/LockFile.h>
+#include <casacore/casa/OS/Path.h>
 #include <stdexcept>
 #include <iostream>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 int main (int argc, char* argv[])

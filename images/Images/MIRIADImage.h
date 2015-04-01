@@ -30,16 +30,17 @@
 
 
 //# Includes
-#include <images/Images/ImageInterface.h>
-#include <images/Images/MaskSpecifier.h>
-#include <tables/Tables/TiledFileAccess.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <casa/Containers/Record.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/MaskSpecifier.h>
+#include <casacore/tables/DataMan/TiledFileAccess.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/DataType.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class Array;
@@ -297,6 +298,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

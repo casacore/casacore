@@ -25,30 +25,19 @@
 //#
 //# $Id: tConvert.cc,v 1.4 2006/11/06 00:14:44 gvandiep Exp $
 
-#include <python/Converters/PycExcp.h>
-#include <python/Converters/PycBasicData.h>
-#include <python/Converters/PycValueHolder.h>
-#include <python/Converters/PycRecord.h>
-#include <python/Converters/PycArray.h>
-#include <casa/Arrays/ArrayIO.h>
+#include <casacore/python/Converters/PycExcp.h>
+#include <casacore/python/Converters/PycBasicData.h>
+#include <casacore/python/Converters/PycValueHolder.h>
+#include <casacore/python/Converters/PycRecord.h>
+#include <casacore/python/Converters/PycArray.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/BasicSL/STLIO.h>
 
 #include <boost/python.hpp>
 
 using namespace boost::python;
 
-namespace casa { namespace python {
-
-  template<typename T>
-  std::ostream& operator<< (std::ostream& os, const std::vector<T>& vec)
-  {
-    os << '[';
-    for (uInt i=0; i<vec.size(); ++i) {
-      if (i > 0) os << ", ";
-      os << "vecuInt " << vec[i];
-    }
-    os << ']';
-    return os;
-  }
+namespace casacore { namespace python {
 
   struct TConvert
   {
@@ -75,17 +64,23 @@ namespace casa { namespace python {
       {cout << "Record "; in.print(cout); cout << endl; return in;}
     ValueHolder testvh (const ValueHolder& in)
       {cout << "VH " << in.dataType() << endl; return in;}
+    Vector<Bool> testvecbool (const Vector<Bool>& in)
+      {cout << "VecBool " << in << endl; return in;}
     Vector<Int> testvecint (const Vector<int>& in)
       {cout << "VecInt " << in << endl; return in;}
     Vector<DComplex> testveccomplex (const Vector<DComplex>& in)
       {cout << "VecComplex " << in << endl; return in;}
     Vector<String> testvecstr (const Vector<String>& in)
       {cout << "VecStr " << in << endl; return in;}
+    std::vector<bool> teststdvecbool (const std::vector<bool>& in)
+      {cout << "vecbool " << in << endl; return in;}
     std::vector<uInt> teststdvecuint (const std::vector<uInt>& in)
       {cout << "vecuInt " << in << endl; return in;}
     std::vector<std::vector<uInt> > teststdvecvecuint
     (const std::vector<std::vector<uInt> >& in)
       {cout << "vecvecuInt " << in << endl; return in;}
+    std::vector<ValueHolder> teststdvecvh (const std::vector<ValueHolder>& in)
+      {cout << "vecvh " << in.size() << endl; return in;}
     IPosition testipos (const IPosition& in)
       {cout << "IPos " << in << endl; return in;}
   };
@@ -105,11 +100,14 @@ namespace casa { namespace python {
       .def ("teststring",     &TConvert::teststring)
       .def ("testrecord",     &TConvert::testrecord)
       .def ("testvh",         &TConvert::testvh)
+      .def ("testvecbool",    &TConvert::testvecbool)
       .def ("testvecint",     &TConvert::testvecint)
       .def ("testveccomplex", &TConvert::testveccomplex)
       .def ("testvecstr",     &TConvert::testvecstr)
+      .def ("teststdvecbool", &TConvert::teststdvecbool)
       .def ("teststdvecuint", &TConvert::teststdvecuint)
       .def ("teststdvecvecuint", &TConvert::teststdvecvecuint)
+      .def ("teststdvecvh"  , &TConvert::teststdvecvh)
       .def ("testipos",       &TConvert::testipos)
       ;
   }
@@ -120,13 +118,15 @@ namespace casa { namespace python {
 BOOST_PYTHON_MODULE(_tConvert)
 {
   // Register the required converters.
-  casa::python::register_convert_excp();
-  casa::python::register_convert_basicdata();
-  casa::python::register_convert_casa_valueholder();
-  casa::python::register_convert_casa_record();
-  casa::python::register_convert_std_vector<casa::uInt>();
-  casa::python::register_convert_std_vector<std::vector<casa::uInt> >();
+  casacore::python::register_convert_excp();
+  casacore::python::register_convert_basicdata();
+  casacore::python::register_convert_casa_valueholder();
+  casacore::python::register_convert_casa_record();
+  casacore::python::register_convert_std_vector<bool>();
+  casacore::python::register_convert_std_vector<casacore::uInt>();
+  casacore::python::register_convert_std_vector<std::vector<casacore::uInt> >();
+  casacore::python::register_convert_std_vector<casacore::ValueHolder>();
 
   // Execute the test.
-  casa::python::testConvert();
+  casacore::python::testConvert();
 }

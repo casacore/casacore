@@ -31,10 +31,10 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 // <summary>
@@ -101,10 +101,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   };
   
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/Smooth.tcc>
+#include <casacore/scimath/Mathematics/Smooth.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif

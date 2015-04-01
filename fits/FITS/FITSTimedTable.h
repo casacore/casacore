@@ -29,12 +29,12 @@
 #ifndef FITS_FITSTIMEDTABLE_H
 #define FITS_FITSTIMEDTABLE_H
 
-#include <casa/aips.h>
-#include <fits/FITS/FITSTable.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/RecordField.h>
+#include <casacore/casa/aips.h>
+#include <casacore/fits/FITS/FITSTable.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/RecordField.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // </summary>
@@ -141,6 +141,6 @@ private:
     void initNextRecord(const RecordDesc& desc);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

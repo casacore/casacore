@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/Gaussian1D.h>
+#include <casacore/scimath/Functionals/Gaussian1D.h>
 
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffA.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffA.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() {
   Gaussian1D<Double> null;
   AlwaysAssertExit(null.height() == 1.0 && 
@@ -192,10 +192,12 @@ int main() {
   Function<AutoDiff<Double> > *gauss4b = gauss1.cloneAD();
   cout << "f.cloneAD(1):            " << (*gauss4b)(1.0) << endl;
   AlwaysAssertExit(near(gauss1(1.0), (*gauss4b)(1.0).value()))
-  Function<AutoDiff<Double> > *gauss4c = gauss1.cloneAD()->cloneAD();
+  Function<AutoDiff<Double> > *gauss4ca = gauss1.cloneAD();
+  Function<AutoDiff<Double> > *gauss4c = gauss4ca->cloneAD();
   cout << "f.cloneAD.cloneAD(1):    " << (*gauss4c)(1.0) << endl;
   AlwaysAssertExit(near(gauss1(1.0), (*gauss4c)(1.0).value()))
-  Function<Double> *gauss4d = gauss1.cloneAD()->cloneNonAD();
+    Function<AutoDiff<Double> > *gauss4da = gauss1.cloneAD();
+  Function<Double> *gauss4d = gauss4da->cloneNonAD();
   cout << "f.cloneAD.cloneNonAD(1): " << (*gauss4d)(1.0) << endl;
   AlwaysAssertExit(near(gauss1(1.0), (*gauss4d)(1.0)))
   AlwaysAssertExit(allEQ(gauss4ptr->parameters().getParameters(), 11.0));
@@ -203,6 +205,8 @@ int main() {
   delete gauss4a;
   delete gauss4b;
   delete gauss4c;
+  delete gauss4ca;
+  delete gauss4da;
   delete gauss4d;
 
   cout << "OK" << endl;

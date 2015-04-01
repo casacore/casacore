@@ -29,11 +29,11 @@
 #define CASA_BUCKETBUFFERED_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/BucketBase.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/BucketBase.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward Declarations.
   class FilebufIO;
@@ -122,6 +122,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

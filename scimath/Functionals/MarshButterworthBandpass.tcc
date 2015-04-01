@@ -26,10 +26,13 @@
 //#! ========================================================================
 //# $Id$
 
-#include <scimath/Functionals/MarshButterworthBandpass.h>
-#include <casa/Arrays/Array.h>
+#ifndef SCIMATH_MARSHBUTTERWORTHBANDPASS_TCC
+#define SCIMATH_MARSHBUTTERWORTHBANDPASS_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Functionals/MarshButterworthBandpass.h>
+#include <casacore/casa/Arrays/Array.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 const String MarshButterworthBandpass<T>::FUNCTYPE("butterworthbp");
@@ -90,5 +93,7 @@ MarshButterworthBandpass<T>::MarshButterworthBandpass(const Record& gr)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

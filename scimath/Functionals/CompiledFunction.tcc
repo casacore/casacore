@@ -25,16 +25,19 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/CompiledFunction.h>
-#include <scimath/Functionals/FuncExpression.h>
-#include <scimath/Functionals/FunctionTraits.h>
-#include <casa/BasicSL/Constants.h>
-#include <scimath/Mathematics/NumericTraits.h>
-#include <casa/BasicSL/String.h>
-#include <casa/stdvector.h>
+#ifndef SCIMATH_COMPILEDFUNCTION_TCC
+#define SCIMATH_COMPILEDFUNCTION_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/CompiledFunction.h>
+#include <casacore/scimath/Functionals/FuncExpression.h>
+#include <casacore/scimath/Functionals/FunctionTraits.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/stdvector.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -252,5 +255,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   return res;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

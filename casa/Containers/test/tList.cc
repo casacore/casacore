@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <casa/Containers/List.h>
-#include <casa/Containers/ListIO.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Containers/List.h>
+#include <casacore/casa/Containers/ListIO.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 static void show(const ConstListIter<int> &);
 static void dump(const ConstListIter<int> *);
 int main() {

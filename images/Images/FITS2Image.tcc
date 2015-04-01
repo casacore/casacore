@@ -25,25 +25,28 @@
 //#
 //# $Id: 
 
-
-#include <images/Images/FITSImage.h>
-
-#include <casa/Arrays/IPosition.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <casa/Containers/Record.h>
-#include <casa/Exceptions/Error.h>
-#include <fits/FITS/hdu.h>
-#include <fits/FITS/FITSKeywordUtil.h>
-#include <images/Images/ImageInfo.h>
-#include <images/Images/ImageFITSConverter.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/BasicSL/String.h>
+#ifndef IMAGES_FITS2IMAGE_TCC
+#define IMAGES_FITS2IMAGE_TCC
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/images/Images/FITSImage.h>
+
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/fits/FITS/FITSKeywordUtil.h>
+#include <casacore/images/Images/ImageInfo.h>
+#include <casacore/images/Images/ImageFITSConverter.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/BasicSL/String.h>
+
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <typename T>
 void FITSImage::crackHeader (CoordinateSystem& cSys,
@@ -381,5 +384,7 @@ template void FITSImage::crackHeader<Int> (CoordinateSystem &, IPosition &, Imag
 template void FITSImage::crackHeader<Short> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt);
 */
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

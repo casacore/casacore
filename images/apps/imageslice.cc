@@ -25,20 +25,20 @@
 //#
 //# $Id:
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Inputs/Input.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
-#include <images/Images/ImageOpener.h>
-#include <images/Images/FITSImage.h>
-#include <images/Images/MIRIADImage.h>
-#include <images/Images/SubImage.h>
-#include <images/Images/ImageFITSConverter.h>
-#include <images/Images/ImageUtilities.h>
-#include <images/Images/HDF5Image.h>
+#include <casacore/images/Images/ImageOpener.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/images/Images/MIRIADImage.h>
+#include <casacore/images/Images/SubImage.h>
+#include <casacore/images/Images/ImageFITSConverter.h>
+#include <casacore/images/Images/ImageUtilities.h>
+#include <casacore/images/Images/HDF5Image.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main(int argc, const char* argv[]) {
 

@@ -29,10 +29,11 @@
 #define CASA_LECANONICALDATACONVERSION_H
 
 //# Includes
-#include <casa/OS/DataConversion.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/OS/DataConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A class with virtual functions to convert little endian canonical format.
@@ -77,81 +78,81 @@ public:
     // Convert one value from canonical format to local format.
     // The from and to buffer should not overlap.
     // <group>
-    virtual unsigned int toLocal (char&           to, const void* from) const;
-    virtual unsigned int toLocal (unsigned char&  to, const void* from) const;
-    virtual unsigned int toLocal (short&          to, const void* from) const;
-    virtual unsigned int toLocal (unsigned short& to, const void* from) const;
-    virtual unsigned int toLocal (int&            to, const void* from) const;
-    virtual unsigned int toLocal (unsigned int&   to, const void* from) const;
-    virtual unsigned int toLocal (Int64&          to, const void* from) const;
-    virtual unsigned int toLocal (uInt64&         to, const void* from) const;
-    virtual unsigned int toLocal (float&          to, const void* from) const;
-    virtual unsigned int toLocal (double&         to, const void* from) const;
+    virtual size_t toLocal (char&           to, const void* from) const;
+    virtual size_t toLocal (unsigned char&  to, const void* from) const;
+    virtual size_t toLocal (short&          to, const void* from) const;
+    virtual size_t toLocal (unsigned short& to, const void* from) const;
+    virtual size_t toLocal (int&            to, const void* from) const;
+    virtual size_t toLocal (unsigned int&   to, const void* from) const;
+    virtual size_t toLocal (Int64&          to, const void* from) const;
+    virtual size_t toLocal (uInt64&         to, const void* from) const;
+    virtual size_t toLocal (float&          to, const void* from) const;
+    virtual size_t toLocal (double&         to, const void* from) const;
     // </group>
     
     // Convert nr values from canonical format to local format.
     // The from and to buffer should not overlap.
     // <group>
-    virtual unsigned int toLocal (char*           to, const void* from,
-				  unsigned int nr) const;
-    virtual unsigned int toLocal (unsigned char*  to, const void* from,
-				  unsigned int nr) const;
-    virtual unsigned int toLocal (short*          to, const void* from,
-				  unsigned int nr) const;
-    virtual unsigned int toLocal (unsigned short* to, const void* from,
-				  unsigned int nr) const;
-    virtual unsigned int toLocal (int*            to, const void* from,
-				  unsigned int nr) const;
-    virtual unsigned int toLocal (unsigned int*   to, const void* from,
-				  unsigned int nr) const;
-    virtual unsigned int toLocal (Int64*          to, const void* from,
-				  unsigned int nr) const;
-    virtual unsigned int toLocal (uInt64*         to, const void* from,
-				  unsigned int nr) const;
-    virtual unsigned int toLocal (float*          to, const void* from,
-				  unsigned int nr) const;
-    virtual unsigned int toLocal (double*         to, const void* from,
-				  unsigned int nr) const;
+    virtual size_t toLocal (char*           to, const void* from,
+                            size_t nr) const;
+    virtual size_t toLocal (unsigned char*  to, const void* from,
+                            size_t nr) const;
+    virtual size_t toLocal (short*          to, const void* from,
+                            size_t nr) const;
+    virtual size_t toLocal (unsigned short* to, const void* from,
+                            size_t nr) const;
+    virtual size_t toLocal (int*            to, const void* from,
+                            size_t nr) const;
+    virtual size_t toLocal (unsigned int*   to, const void* from,
+                            size_t nr) const;
+    virtual size_t toLocal (Int64*          to, const void* from,
+                            size_t nr) const;
+    virtual size_t toLocal (uInt64*         to, const void* from,
+                            size_t nr) const;
+    virtual size_t toLocal (float*          to, const void* from,
+                            size_t nr) const;
+    virtual size_t toLocal (double*         to, const void* from,
+                            size_t nr) const;
     // </group>
 
     // Convert one value from local format to canonical format.
     // The from and to buffer should not overlap.
     // <group>
-    virtual unsigned int fromLocal (void* to, char           from) const;
-    virtual unsigned int fromLocal (void* to, unsigned char  from) const;
-    virtual unsigned int fromLocal (void* to, short          from) const;
-    virtual unsigned int fromLocal (void* to, unsigned short from) const;
-    virtual unsigned int fromLocal (void* to, int            from) const;
-    virtual unsigned int fromLocal (void* to, unsigned int   from) const;
-    virtual unsigned int fromLocal (void* to, Int64          from) const;
-    virtual unsigned int fromLocal (void* to, uInt64         from) const;
-    virtual unsigned int fromLocal (void* to, float          from) const;
-    virtual unsigned int fromLocal (void* to, double         from) const;
+    virtual size_t fromLocal (void* to, char           from) const;
+    virtual size_t fromLocal (void* to, unsigned char  from) const;
+    virtual size_t fromLocal (void* to, short          from) const;
+    virtual size_t fromLocal (void* to, unsigned short from) const;
+    virtual size_t fromLocal (void* to, int            from) const;
+    virtual size_t fromLocal (void* to, unsigned int   from) const;
+    virtual size_t fromLocal (void* to, Int64          from) const;
+    virtual size_t fromLocal (void* to, uInt64         from) const;
+    virtual size_t fromLocal (void* to, float          from) const;
+    virtual size_t fromLocal (void* to, double         from) const;
     // </group>
     
     // Convert nr values from local format to canonical format.
     // The from and to buffer should not overlap.
     // <group>
-    virtual unsigned int fromLocal (void* to, const char*           from,
-				    unsigned int nr) const;
-    virtual unsigned int fromLocal (void* to, const unsigned char*  from,
-				    unsigned int nr) const;
-    virtual unsigned int fromLocal (void* to, const short*          from,
-				    unsigned int nr) const;
-    virtual unsigned int fromLocal (void* to, const unsigned short* from,
-				    unsigned int nr) const;
-    virtual unsigned int fromLocal (void* to, const int*            from,
-				    unsigned int nr) const;
-    virtual unsigned int fromLocal (void* to, const unsigned int*   from,
-				    unsigned int nr) const;
-    virtual unsigned int fromLocal (void* to, const Int64*          from,
-				    unsigned int nr) const;
-    virtual unsigned int fromLocal (void* to, const uInt64*         from,
-				    unsigned int nr) const;
-    virtual unsigned int fromLocal (void* to, const float*          from,
-				    unsigned int nr) const;
-    virtual unsigned int fromLocal (void* to, const double*         from,
-				    unsigned int nr) const;
+    virtual size_t fromLocal (void* to, const char*           from,
+                              size_t nr) const;
+    virtual size_t fromLocal (void* to, const unsigned char*  from,
+                              size_t nr) const;
+    virtual size_t fromLocal (void* to, const short*          from,
+                              size_t nr) const;
+    virtual size_t fromLocal (void* to, const unsigned short* from,
+                              size_t nr) const;
+    virtual size_t fromLocal (void* to, const int*            from,
+                              size_t nr) const;
+    virtual size_t fromLocal (void* to, const unsigned int*   from,
+                              size_t nr) const;
+    virtual size_t fromLocal (void* to, const Int64*          from,
+                              size_t nr) const;
+    virtual size_t fromLocal (void* to, const uInt64*         from,
+                              size_t nr) const;
+    virtual size_t fromLocal (void* to, const float*          from,
+                              size_t nr) const;
+    virtual size_t fromLocal (void* to, const double*         from,
+                              size_t nr) const;
     // </group>
 
     // Determine if the data for a data type can be simply copied, thus
@@ -190,6 +191,6 @@ inline LECanonicalDataConversion::LECanonicalDataConversion()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

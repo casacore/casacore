@@ -29,13 +29,13 @@
 #define TABLES_TABLESYNCDATA_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
-#include <casa/IO/MemoryIO.h>
-#include <casa/IO/AipsIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/IO/AipsIO.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // Class to hold table synchronization data.
@@ -141,6 +141,6 @@ inline uInt TableSyncData::getModifyCounter() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

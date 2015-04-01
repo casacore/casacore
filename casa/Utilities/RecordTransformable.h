@@ -29,9 +29,9 @@
 #ifndef CASA_RECORDTRANSFORMABLE_H
 #define CASA_RECORDTRANSFORMABLE_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;
 class RecordInterface;
@@ -140,6 +140,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

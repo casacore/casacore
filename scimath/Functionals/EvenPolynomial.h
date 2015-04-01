@@ -29,13 +29,13 @@
 #define SCIMATH_EVENPOLYNOMIAL_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/EvenPolynomialParam.h>
-#include <scimath/Functionals/Function1D.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/EvenPolynomialParam.h>
+#include <casacore/scimath/Functionals/Function1D.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -199,10 +199,10 @@ public:
 #undef EvenPolynomial_PS
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/EvenPolynomial.tcc>
-#include <scimath/Functionals/EvenPolynomial2.tcc>
+#include <casacore/scimath/Functionals/EvenPolynomial.tcc>
+#include <casacore/scimath/Functionals/EvenPolynomial2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

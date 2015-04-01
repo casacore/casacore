@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/MBaseline.h>
-#include <measures/Measures/MDirection.h>
-#include <casa/Exceptions.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Register.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/measures/Measures/MBaseline.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 MBaseline::MBaseline() :
@@ -311,5 +311,5 @@ Measure *MBaseline::clone() const {
     return (new MBaseline(*this));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

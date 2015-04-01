@@ -29,7 +29,9 @@
 #ifndef MS_MSHISTORYENUMS_H
 #define MS_MSHISTORYENUMS_H
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/aips.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <use visibility=export>
 
@@ -108,6 +110,6 @@ public:
     };
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

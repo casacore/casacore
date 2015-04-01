@@ -26,51 +26,34 @@
 //# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 //# Includes
-#include <casa/IO/MultiFile.h>
-#include <casa/IO/LargeRegularFileIO.h>
-#include <casa/IO/MemoryIO.h>
-#include <casa/IO/CanonicalIO.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/BasicSL/STLIO.h>
-#include <casa/OS/CanonicalConversion.h>
-#include <casa/OS/File.h>           // for fileFSTAT
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/MultiFile.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/IO/CanonicalIO.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/OS/CanonicalConversion.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <unistd.h>
-#include <sys/stat.h>               // needed for stat or stat64
 
-namespace casa { //# NAMESPACE CASA - BEGIN
-
-  void operator<< (ostream& ios, const MultiFileInfo& info)
-    { ios << info.name << ' ' << info.blockNrs << ' '
-          << info.curBlock << ' ' << info.dirty << endl; }
-  void operator<< (AipsIO& ios, const MultiFileInfo& info)
-    { ios << info.name << info.blockNrs; }
-  void operator>> (AipsIO& ios, MultiFileInfo& info)
-    { ios >> info.name >> info.blockNrs; }
-
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MultiFile::MultiFile (const String& name, ByteIO::OpenOption option,
                         Int blockSize)
-    : itsBlockSize (blockSize),
-      itsAdded     (False)
+    : MultiFileBase (name, blockSize)
   {
-    itsFD = LargeRegularFileIO::openCreate (name, option);
-    itsIO.attach (itsFD, name);
+    itsFD = RegularFileIO::openCreate (itsName, option);
+    itsIO.attach (itsFD, itsName);
     if (option == ByteIO::New  ||  option == ByteIO::NewNoReplace) {
       // New file; first block is for administration.
+      setNewFile();
       itsNrBlock = 1;
-      itsAdded   = True;
-      // Use file system block size, but not less than given size.
-      if (itsBlockSize <= 0) {
-        struct fileSTAT sfs;
-        fileFSTAT (itsFD, &sfs);
-        Int64 blksz = sfs.st_blksize;
-        itsBlockSize = std::max (-itsBlockSize, blksz);
-      }
     } else {
       readHeader();
     }
+    itsWritable = itsIO.isWritable();
   }
 
   MultiFile::~MultiFile()
@@ -78,29 +61,36 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     close();
   }
 
+  void MultiFile::flushFile()
+  {
+    itsIO.flush();
+  }
+
   void MultiFile::close()
   {
     flush();
-    itsInfo.clear();
-    LargeFiledesIO::close (itsFD);
+    FiledesIO::close (itsFD);
   }
 
-  void MultiFile::flush()
+  void MultiFile::reopenRW()
   {
-    // Flush all buffers if needed.
-    for (vector<MultiFileInfo>::iterator iter=itsInfo.begin();
-         iter!=itsInfo.end(); ++iter) {
-      if (iter->dirty) {
-        itsIO.seek (iter->curBlock * itsBlockSize);
-        itsIO.write (itsBlockSize, &(iter->buffer[0]));
-        iter->dirty = False;
-      }
+    if (isWritable()) {
+      return;
     }
-    // Header only needs to be written if blocks were added since last flush.
-    if (itsAdded) {
-      writeHeader();
-      itsAdded = False;
-    }
+    // First try if the file can be opened as read/write.
+    int fd = RegularFileIO::openCreate (itsName, ByteIO::Update);
+    // Now close the readonly file and reset fd.
+    FiledesIO::close (itsFD);
+    itsIO.detach();
+    itsFD = fd;
+    itsIO.attach (itsFD, itsName);
+    itsIO.setWritable();
+    itsWritable = True;
+  }
+
+  void MultiFile::fsync()
+  {
+    itsIO.fsync();
   }
 
   void MultiFile::writeHeader()
@@ -111,59 +101,67 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     MemoryIO mio(itsBlockSize, itsBlockSize);
     CanonicalIO cio(&mio);
     AipsIO aio(&cio);
-    Int64 next=0;
-    cio.write (1, &next);         // possible link to subsequent header block
-    cio.write (1, &next);         // reserve space for header size
+    itsHdrCounter++;
+    cio.write (1, &itsBlockSize);         // reserve space for header size
     cio.write (1, &itsBlockSize);
+    cio.write (1, &itsHdrCounter);
     aio.putstart ("MultiFile", 1);
-    aio << itsNrBlock << itsInfo;
+    aio << itsNrBlock << itsInfo << itsFreeBlocks;
     aio.putend();
     Int64 todo = mio.length();
     uChar* buf = const_cast<uChar*>(mio.getBuffer());
-    CanonicalConversion::fromLocal (buf + sizeof(next), todo);    // header size
-    // If the buffer does not fit in a single block, next has to be filled.
-    if (todo > itsBlockSize) {
-      next = itsNrBlock;
-      CanonicalConversion::fromLocal (buf, next);
-    }
+    CanonicalConversion::fromLocal (buf, todo);       // header size
     // Write the first part of the buffer at the beginning of the file.
     itsIO.seek (0);
     itsIO.write (itsBlockSize, buf);
     todo -= itsBlockSize;
     if (todo > 0) {
-      // The rest is written at the end of the file.
-      itsIO.seek (itsNrBlock*itsBlockSize);
-      itsIO.write (todo, buf+itsBlockSize);
+      // The rest is written in another file. If the header info was written
+      // at the end of the file, it would be overwritten when extending with
+      // possible file corruption if the program or system crashes.
+      // By using a separate file, corruption chances are much lower.
+      // Even better would be using another name and doing a rename at the end.
+      int fd = RegularFileIO::openCreate (itsName + "_hdrext", ByteIO::New);
+      FiledesIO iohdr (fd, itsName + "_hdrext");
+      iohdr.write (todo, buf+itsBlockSize);
+      FiledesIO::close (fd);
     }
   }
 
-  void MultiFile::readHeader()
+  void MultiFile::readHeader (Bool always)
   {
     // Read the first part of the header.
     vector<char> buf(3*sizeof(Int64));
     itsIO.seek (0);
     itsIO.read (buf.size(), &(buf[0]));
     // Extract the required info.
-    Int64 next, headerSize;
-    CanonicalConversion::toLocal (next, &(buf[0]));
-    CanonicalConversion::toLocal (headerSize, &(buf[sizeof(next)]));
-    CanonicalConversion::toLocal (itsBlockSize, &(buf[2*sizeof(next)]));
-    // Now read the rest of the header.
+    Int64 headerSize, hdrCounter;
+    CanonicalConversion::toLocal (headerSize, &(buf[0]));
+    CanonicalConversion::toLocal (itsBlockSize, &(buf[1*sizeof(Int64)]));
+    CanonicalConversion::toLocal (hdrCounter, &(buf[2*sizeof(Int64)]));
+    // Only if needed, read the rest of the header.
+    if (hdrCounter == itsHdrCounter  &&  !always) {
+      return;
+    }
+    itsHdrCounter = hdrCounter;
+    Int64 leadSize = 3*sizeof(Int64);
     buf.resize (headerSize);
     if (headerSize > itsBlockSize) {
-      itsIO.read (itsBlockSize - 3*sizeof(Int64), &(buf[3*sizeof(Int64)]));
-      itsIO.seek (next*itsBlockSize);
-      itsIO.read (headerSize - itsBlockSize, &(buf[itsBlockSize]));
+      itsIO.read (itsBlockSize - leadSize, &(buf[leadSize]));
+      int fd = RegularFileIO::openCreate (itsName + "_hdrext", ByteIO::Old);
+      FiledesIO iohdr (fd, itsName + "_hdrext");
+      iohdr.read (headerSize - itsBlockSize, &(buf[itsBlockSize]));
+      FiledesIO::close (fd);
     } else {
-      itsIO.read (headerSize - 3*sizeof(Int64), &(buf[3*sizeof(Int64)]));
+      itsIO.read (headerSize - leadSize, &(buf[leadSize]));
     }
     // Read all header info from the memory buffer.
-    MemoryIO mio(&(buf[3*sizeof(Int64)]), headerSize - 3*sizeof(Int64));
+    MemoryIO mio(&(buf[leadSize]), headerSize - leadSize);
     CanonicalIO cio(&mio);
     AipsIO aio(&cio);
     Int version = aio.getstart ("MultiFile");
     AlwaysAssert (version==1, AipsError);
-    aio >> itsNrBlock >> itsInfo;
+    aio >> itsNrBlock >> itsInfo >> itsFreeBlocks;
     aio.getend();
     // Initialize remaining info fields.
     for (vector<MultiFileInfo>::iterator iter=itsInfo.begin();
@@ -174,134 +172,50 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     }
   }
 
-  Int MultiFile::add (const String& fname)
+  void MultiFile::doAddFile (MultiFileInfo&)
+  {}
+
+  void MultiFile::doDeleteFile (MultiFileInfo& info)
   {
-    // Check that file name is not used yet.
-    for (vector<MultiFileInfo>::iterator iter=itsInfo.begin();
-         iter!=itsInfo.end(); ++iter) {
-      if (fname == iter->name) {
-        throw AipsError ("MultiFile::add - file name " + fname +
-                         " already in use");
-      }
+    // Add the blocknrs to the free list.
+    // Later we can merge them in order and leave out blocks past last block used.
+    itsFreeBlocks.reserve (itsFreeBlocks.size() + info.blockNrs.size());
+    for (size_t i=0; i<info.blockNrs.size(); ++i) {
+      itsFreeBlocks.push_back (info.blockNrs[i]);
     }
-    // Add a new file entry.
-    Int inx = itsInfo.size();
-    itsInfo.push_back (MultiFileInfo());
-    itsInfo[inx].buffer.resize (itsBlockSize);
-    itsInfo[inx].curBlock = -1;
-    itsInfo[inx].name = fname;
-    itsAdded = True;
-    return inx;
+    // Sort them in descending order, so free blocks can be taken from the tail.
+    genSort (&(itsFreeBlocks[0]), itsFreeBlocks.size(),
+             Sort::Descending, Sort::QuickSort);
   }
 
-  Int MultiFile::fileId (const String& fname) const
+  void MultiFile::extend (MultiFileInfo& info, Int64 lastblk)
   {
-    for (size_t i=0; i<itsInfo.size(); ++i) {
-      if (fname == itsInfo[i].name) {
-        return i;
-      }
-    }
-    throw AipsError ("MultiFile::fileId - file name " + fname +
-                     " is unknown");
-  }
-
-  Int64 MultiFile::read (Int fileId, void* buf, Int64 size, Int64 offset)
-  {
-    char* buffer = static_cast<char*>(buf);
-    DebugAssert (fileId < itsInfo.size(), AipsError);
-    MultiFileInfo& info = itsInfo[fileId];
-    // Determine the logical block to read and the start offset in that block.
-    Int64 nrblk = info.blockNrs.size();
-    Int64 blknr = offset/itsBlockSize;
-    Int64 start = offset - blknr*itsBlockSize;
-    Int64 done  = 0;
-    // Read until all done or EOF.
-    while (done < size  &&  blknr < nrblk) {
-      Int64 todo  = std::min(size-done, itsBlockSize-start);
-      // If already in buffer, copy from there.
-      if (blknr == info.curBlock) {
-        memcpy (buffer, &(info.buffer[start]), todo);
-      } else {
-        // Seek to the correct physical offset.
-        itsIO.seek (info.blockNrs[blknr] * itsBlockSize);
-        // Read directly into buffer if it fits exactly.
-        if (todo == itsBlockSize  &&  start == 0) {
-          itsIO.read (itsBlockSize, buffer);
-          cout<<"direct read of "<<info.blockNrs[blknr]<<endl;
-        } else {
-          // Read into file buffer and copy correct part.
-          itsIO.read (itsBlockSize, &(info.buffer[0]));
-          info.curBlock = blknr;
-          memcpy (buffer, &(info.buffer[start]), todo);
-        }
-        // Increment counters.
-        done += todo;
-        buffer += todo;
-        blknr++;
-        start = 0;
-      }
-    }
-    return done;
-  }
-
-  Int64 MultiFile::write (Int fileId, const void* buf, Int64 size, Int64 offset)
-  {
-    const char* buffer = static_cast<const char*>(buf);
-    AlwaysAssert (itsIO.isWritable(), AipsError);
-    DebugAssert (fileId < itsInfo.size(), AipsError);
-    MultiFileInfo& info = itsInfo[fileId];
-    // Determine the logical block to write and the start offset in that block.
-    Int64 blknr = offset/itsBlockSize;
-    Int64 start = offset - blknr*itsBlockSize;
-    Int64 done  = 0;
-    // If beyond EOF, add blocks as needed.
-    Int64 lastblk = blknr + (start+size+itsBlockSize-1) / itsBlockSize;
     Int64 curnrb = info.blockNrs.size();
-    if (lastblk >= curnrb) {
-      info.blockNrs.resize (lastblk);
-      for (Int64 i=curnrb; i<lastblk; ++i) {
+    info.blockNrs.resize (lastblk);
+    for (Int64 i=curnrb; i<lastblk; ++i) {
+      if (itsFreeBlocks.empty()) {
         info.blockNrs[i] = itsNrBlock;
         itsNrBlock++;
-      }
-      itsAdded = True;
-    }
-    // Write until all done.
-    while (done < size) {
-      Int64 todo = std::min(size-done, itsBlockSize-start);
-      // Favor sequential writing, thus write current buffer first.
-      if (blknr == info.curBlock) {
-        memcpy (&(info.buffer[start]), buffer, todo);
-        info.dirty = True;
-        if (done+todo >= size) {
-          itsIO.seek (info.curBlock * itsBlockSize);
-          itsIO.write (itsBlockSize, &(info.buffer[0]));
-          info.dirty = False;
-          info.curBlock = -1;
-        }
-      } else if (todo == itsBlockSize  &&  start == 0) {
-        // Write directly from buffer if it fits exactly.
-        itsIO.seek (info.blockNrs[blknr] * itsBlockSize);
-        itsIO.write (itsBlockSize, buffer);
-        cout<<"direct write of "<<info.blockNrs[blknr]<<endl;
       } else {
-        // Write into temporary buffer and copy correct part.
-        // First write possibly dirty buffer.
-        if (info.dirty) {
-          itsIO.seek (info.curBlock * itsBlockSize);
-          itsIO.write (itsBlockSize, &(info.buffer[0]));
-          }
-        itsIO.seek (info.blockNrs[blknr] * itsBlockSize);
-        itsIO.read (itsBlockSize, &(info.buffer[0]));
-        info.curBlock = blknr;
-        memcpy (&(info.buffer[start]), buffer, todo);
-        info.dirty = True;
+        info.blockNrs[i] = itsFreeBlocks[itsFreeBlocks.size() - 1];
+        itsFreeBlocks.resize (itsFreeBlocks.size() - 1);
       }
-      done += todo;
-      buffer += todo;
-      blknr++;
-      start = 0;
     }
-    return done;
   }
 
-} //# NAMESPACE CASA - END
+  void MultiFile::readBlock (MultiFileInfo& info, Int64 blknr,
+                             void* buffer)
+  {
+    itsIO.seek (info.blockNrs[blknr] * itsBlockSize);
+    itsIO.read (itsBlockSize, buffer);
+  }
+
+  void MultiFile::writeBlock (MultiFileInfo& info, Int64 blknr,
+                              const void* buffer)
+  {
+    itsIO.seek  (info.blockNrs[blknr] * itsBlockSize);
+    itsIO.write (itsBlockSize, buffer);
+  }
+
+
+} //# NAMESPACE CASACORE - END

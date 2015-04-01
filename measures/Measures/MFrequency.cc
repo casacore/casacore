@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <casa/Utilities/Assert.h>
-#include <measures/Measures/MFrequency.h>
-#include <casa/Utilities/Register.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MCDoppler.h>
-#include <measures/Measures/MeasConvert.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MCDoppler.h>
+#include <casacore/measures/Measures/MeasConvert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 MFrequency::MFrequency() :
@@ -326,5 +326,5 @@ Measure *MFrequency::clone() const {
   return (new MFrequency(*this));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

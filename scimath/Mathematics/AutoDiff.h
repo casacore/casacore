@@ -30,12 +30,12 @@
 #define SCIMATH_AUTODIFF_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Mathematics/AutoDiffRep.h>
-#include <casa/Containers/ObjectPool.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/AutoDiffRep.h>
+#include <casacore/casa/Containers/ObjectPool.h>
+#include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 template <class T> class Vector;
@@ -377,9 +377,9 @@ template <class T> class AutoDiff {
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/AutoDiff.tcc>
+#include <casacore/scimath/Mathematics/AutoDiff.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

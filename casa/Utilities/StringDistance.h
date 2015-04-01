@@ -29,10 +29,11 @@
 #define CASA_STRINGDISTANCE_H
 
 //# Includes
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Matrix.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Matrix.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Class to deal with Levensthein distance of strings.

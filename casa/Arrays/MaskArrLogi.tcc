@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/MaskArrLogi.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/Arrays/ArrayLogical.h>
+#ifndef CASA_MASKARRLOGI_TCC
+#define CASA_MASKARRLOGI_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Arrays/MaskArrLogi.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define MARRLOGI_B_ALLFUNC_MA(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
@@ -1474,5 +1477,7 @@ MaskedLogicalArray operator || (const T &val,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

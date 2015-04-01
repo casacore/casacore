@@ -29,12 +29,12 @@
 #define TABLES_TABVECLOGIC_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/TableVector.h>
-#include <tables/Tables/TVecLogic.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TableVector.h>
+#include <casacore/tables/Tables/TVecLogic.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Comparison between two table vectors
@@ -245,9 +245,9 @@ Bool anyNE (const T &val, const TableVector<T>& tv)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/TabVecLogic.tcc>
+#include <casacore/tables/Tables/TabVecLogic.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

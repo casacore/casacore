@@ -30,10 +30,10 @@
 #define MEASURES_MEASURE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class String;
@@ -178,8 +178,8 @@ template <class T> class Vector;
 //
 // <example>
 // <srcblock>
-// #include <measures/Measures.h>
-// #include <casa/Measure/MEpoch.h>
+// #include <casacore/measures/Measures.h>
+// #include <casacore/casa/Measure/MEpoch.h>
 // // Example is only to show what can be done, not the easiest way
 // // Set up a simple reference (no offset or secondary Measures). It
 // // indicates that times are given in MJD TAI.
@@ -460,6 +460,6 @@ std::ostream &operator<<(std::ostream &os, const Measure &meas);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

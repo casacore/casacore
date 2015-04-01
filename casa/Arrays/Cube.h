@@ -30,9 +30,10 @@
 
 
 //# Includes
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 //# Forward Declarations
 template<class T> class Matrix;
@@ -84,11 +85,11 @@ public:
     Cube();
 
     // A l1xl2xl3 sized cube.
-    Cube(uInt l1, uInt l2, uInt l3);
+    Cube(size_t l1, size_t l2, size_t l3);
 
     // A l1xl2xl3 sized cube.
     // Fill it with the initial value.
-    Cube(uInt l1, uInt l2, uInt l3, const T &initialValue);
+    Cube(size_t l1, size_t l2, size_t l3, const T &initialValue);
 
     // A Cube where the shape ("len") is defined with IPositions.
     Cube(const IPosition &len);
@@ -125,7 +126,7 @@ public:
     // Resize to the given shape.
     // Resize without argument is equal to resize(0,0,0).
     // <group>
-    void resize(uInt nx, uInt ny, uInt nz, Bool copyValues=False);
+    void resize(size_t nx, size_t ny, size_t nz, Bool copyValues=False);
     virtual void resize();
     virtual void resize(const IPosition &newShape, Bool copyValues=False);
     // </group>
@@ -159,7 +160,7 @@ public:
     const T &operator()(const IPosition &i) const 
       { return Array<T>::operator()(i); }
 
-    T &operator()(uInt i1, uInt i2, uInt i3)
+    T &operator()(size_t i1, size_t i2, size_t i3)
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         this->validateIndex(i1, i2, i3);   // Throws an exception on failure
@@ -167,7 +168,7 @@ public:
 	return this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
       }
 
-    const T &operator()(uInt i1, uInt i2, uInt i3) const
+    const T &operator()(size_t i1, size_t i2, size_t i3) const
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         this->validateIndex(i1, i2, i3);   // Throws an exception on failure
@@ -177,7 +178,7 @@ public:
 
   //# Have function at (temporarily) to check if test on contiguous is
   //# indeed slower than always using multiplication in operator()
-    T &at(uInt i1, uInt i2, uInt i3)
+    T &at(size_t i1, size_t i2, size_t i3)
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         this->validateIndex(i1, i2, i3);   // Throws an exception on failure
@@ -186,7 +187,7 @@ public:
                               this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
       }
 
-    const T &at(uInt i1, uInt i2, uInt i3) const
+    const T &at(size_t i1, size_t i2, size_t i3) const
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         this->validateIndex(i1, i2, i3);   // Throws an exception on failure
@@ -267,32 +268,30 @@ public:
     // Of course you could also use a Matrix
     // iterator on the cube.
     // <group>
-    Matrix<T> xyPlane(uInt zplane); 
-    const  Matrix<T> xyPlane(uInt zplane) const; 
-    Matrix<T> xzPlane(uInt yplane); 
-    const  Matrix<T> xzPlane(uInt yplane) const; 
-    Matrix<T> yzPlane(uInt xplane); 
-    const  Matrix<T> yzPlane(uInt xplane) const; 
+    Matrix<T> xyPlane(size_t zplane); 
+    const  Matrix<T> xyPlane(size_t zplane) const; 
+    Matrix<T> xzPlane(size_t yplane); 
+    const  Matrix<T> xzPlane(size_t yplane) const; 
+    Matrix<T> yzPlane(size_t xplane); 
+    const  Matrix<T> yzPlane(size_t xplane) const; 
     // </group>
 
     // The length of each axis of the cube.
-    // <group>
-    void shape(Int &s1, Int &s2, Int &s3) const
-      { s1 = this->length_p(0); s2=this->length_p(1); s3=this->length_p(2); }
     const IPosition &shape() const
       { return this->length_p; }
-    // </group>
+    void shape(Int &s1, Int &s2, Int &s3) const
+      { s1 = this->length_p(0); s2=this->length_p(1); s3=this->length_p(2); }
 
     // The number of rows in the Cube, i.e. the length of the first axis.
-    uInt nrow() const
+    size_t nrow() const
       { return this->length_p(0); }
 
     // The number of columns in the Cube, i.e. the length of the 2nd axis.
-    uInt ncolumn() const
+    size_t ncolumn() const
       { return this->length_p(1); }
 
     // The number of planes in the Cube, i.e. the length of the 3rd axis.
-    uInt nplane() const
+    size_t nplane() const
       { return this->length_p(2); }
 
     // Replace the data values with those in the pointer <src>storage</src>.
@@ -318,13 +317,13 @@ protected:
 
 private:
     // Cached constants to improve indexing.
-    Int xinc_p, yinc_p, zinc_p;
+    size_t xinc_p, yinc_p, zinc_p;
     // Helper fn to calculate the indexing constants.
     void makeIndexingConstants();
 };
 
 } //#End casa namespace
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/Cube.tcc>
+#include <casacore/casa/Arrays/Cube.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

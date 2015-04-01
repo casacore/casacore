@@ -29,14 +29,14 @@
 #define SCIMATH_FUNCTIONPARAM_H
 
 //# Include files
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <scimath/Functionals/FunctionTraits.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/scimath/Functionals/FunctionTraits.h>
 
 //# Forward declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>Container of function parameters with masking flags
 // </summary>
@@ -210,10 +210,10 @@ inline ostream &operator<<(ostream &os, const FunctionParam<T> &par) {
   return par.print(os); }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/FunctionParam.tcc>
+#include <casacore/scimath/Functionals/FunctionParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

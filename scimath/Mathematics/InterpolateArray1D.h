@@ -29,9 +29,9 @@
 #define SCIMATH_INTERPOLATEARRAY1D_H
 
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> class PtrBlock;
 template <class T> class Block;
@@ -293,9 +293,9 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/InterpolateArray1D.tcc>
+#include <casacore/scimath/Mathematics/InterpolateArray1D.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

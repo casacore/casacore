@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TVecLogic.h>
-#include <tables/Tables/TVec.h>
-#include <tables/Tables/TableError.h>
+#ifndef TABLES_TVECLOGIC_TCC
+#define TABLES_TVECLOGIC_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/tables/Tables/TVecLogic.h>
+#include <casacore/tables/Tables/TVec.h>
+#include <casacore/tables/Tables/TableError.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define TVECLOGICOPER(NAME,OP) \
 template<class T> \
@@ -80,5 +83,7 @@ TVECLOGICOPER(GT,>)
 TVECLOGICOPER(EQ,==)
 TVECLOGICOPER(NE,!=)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

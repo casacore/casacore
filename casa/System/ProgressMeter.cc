@@ -28,16 +28,16 @@
 
 
 #include <time.h>
-#include <casa/fstream.h>
-#include <casa/System/ProgressMeter.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/Block.h>
-#include <casa/iostream.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/IO/RegularFileIO.h>
+#include <casacore/casa/fstream.h>
+#include <casacore/casa/System/ProgressMeter.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/RegularFileIO.h>
 #include <math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // First implement a simple stderr based progress meter that just prints out
 // 0%....10....20....30....40....50....60....70....80....90....100%
@@ -205,7 +205,8 @@ ProgressMeter::ProgressMeter(Double min, Double max,
 
 ProgressMeter::~ProgressMeter()
 {
-    update_count_p++;
+  // Do not update if still 0, otherwise no initialization done in update.
+  if (update_count_p > 0) update_count_p++;
     update(max_p, True);
 }
 
@@ -290,5 +291,5 @@ Double ProgressMeter::max() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

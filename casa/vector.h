@@ -32,7 +32,7 @@
 //# This is an interim solution to cater for the SGI non-existence of
 //# them (e.g. <cstring>)
 //# Make sure any special macros are set
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 #if !defined(AIPS_SGI)
 #include <vector>

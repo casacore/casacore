@@ -28,14 +28,14 @@
 #ifndef MS_MSDOPPLERCOLUMNS_H
 #define MS_MSDOPPLERCOLUMNS_H
 
-#include <casa/aips.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MCDoppler.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <measures/TableMeasures/ScalarMeasColumn.h>
-#include <measures/TableMeasures/ScalarQuantColumn.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MCDoppler.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSDoppler;
 
@@ -227,6 +227,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

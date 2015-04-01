@@ -26,12 +26,12 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/ExtendSpecifier.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/ExtendSpecifier.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void doIt()
 {
   {

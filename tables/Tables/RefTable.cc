@@ -25,24 +25,24 @@
 //#
 //# $Id$
 
-#include <tables/Tables/RefTable.h>
-#include <tables/Tables/RefColumn.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableLock.h>
-#include <tables/Tables/TableTrace.h>
-#include <casa/Containers/SimOrdMapIO.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Utilities/Copy.h>
-#include <casa/OS/Path.h>
-#include <casa/BasicMath/Math.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/tables/Tables/RefTable.h>
+#include <casacore/tables/Tables/RefColumn.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/TableTrace.h>
+#include <casacore/casa/Containers/SimOrdMapIO.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Utilities/Copy.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
 		    const TableLock& lockOptions, const TSMOption& tsmOption)
@@ -212,6 +212,11 @@ Bool RefTable::asBigEndian() const
     return baseTabPtr_p->asBigEndian();
 }
 
+const StorageOption& RefTable::storageOption() const
+{
+    return baseTabPtr_p->storageOption();
+}
+
 Bool RefTable::isMultiUsed (Bool) const
 {
     return False;
@@ -304,7 +309,14 @@ void RefTable::writeRefTable (Bool)
 	ios << names;
 	ios << baseTabPtr_p->nrow();
 	ios << rowOrd_p;
-	ios.put (nrrow_p, rows_p);
+        ios << nrrow_p;
+        // Do not write more than 2**20 rownrs at once (CAS-7020).
+        uInt done = 0;
+        while (done < nrrow_p) {
+          uInt todo = std::min(nrrow_p-done, 1048576u);
+          ios.put (todo, rows_p+done, False);
+          done += todo;
+        }
 	ios.putend();
 	writeEnd (ios);
 	changed_p = False;
@@ -335,7 +347,13 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     //# Resize the block of rownrs and read them in.
     rowStorage_p.resize (nrrow);
     rows_p = getStorage (rowStorage_p);
-    ios.get (nrrow, rows_p);
+    // Do not read more than 2**20 rows at once (CAS-7020).
+    uInt done = 0;
+    while (done < nrrow) {
+      uInt todo = std::min(nrrow_p-done, 1048576u);
+      ios.get (todo, rows_p+done);
+      done += todo;
+    }
     ios.getend();
     //# Now read in the root table referenced to.
     //# Check if #rows has not decreased, which is about the only thing
@@ -980,4 +998,4 @@ void RefTable::refNot (uInt nr, const uInt* inx, uInt nrtot)
     changed_p = True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

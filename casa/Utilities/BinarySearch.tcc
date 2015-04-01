@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/BinarySearch.h>
-#include <casa/Exceptions/Error.h>
+#ifndef CASA_BINARYSEARCH_TCC
+#define CASA_BINARYSEARCH_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Utilities/BinarySearch.h>
+#include <casacore/casa/Exceptions/Error.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //#!!!!! If you change either of the following, make sure you change the other
 //#!!!!! similarly.
@@ -134,5 +137,7 @@ template<class Container, class ElType>
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

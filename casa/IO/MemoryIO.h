@@ -29,10 +29,10 @@
 #define CASA_MEMORYIO_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/ByteIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/ByteIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>Class for IO to a memory buffer.</summary>
 
@@ -164,14 +164,14 @@ public:
     // When needed it expands the buffer.
     // An exception is thrown when the buffer is not writable or
     // when buffer expansion fails or is not possible.
-    virtual void write (uInt size, const void* buf);
+    virtual void write (Int64 size, const void* buf);
 
     // Read <src>size</src> bytes from the memory buffer. Returns the number of
     // bytes actually read. Will throw an Exception (AipsError) if the
     // requested number of bytes could not be read unless throwException is set
     // to False. Will always throw an exception if the buffer is not readable
     // or the buffer pointer is at an invalid position.
-    virtual Int read (uInt size, void* buf, Bool throwException=True);    
+    virtual Int64 read (Int64 size, void* buf, Bool throwException=True);    
 
     // Clear the buffer; i.e. set the data length and seek pointer to zero.
     void clear();
@@ -271,6 +271,6 @@ inline uInt64 MemoryIO::expandSize() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

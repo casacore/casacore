@@ -29,10 +29,11 @@
 #define CASA_CONVERSION_H
 
 //# Includes
-#include <casa/string.h>                       // needed for memcpy
+#include <casacore/casa/aips.h>
+#include <casacore/casa/string.h>                       // needed for memcpy
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A class with general conversion definitions
@@ -96,8 +97,8 @@ public:
     // (For example the ToLocal/FromLocal functions in class
     // <linkto class=CanonicalConversion>CanonicalConversion</linkto>
     // return the number of bytes in canonical format).
-    typedef unsigned int ValueFunction (void* to, const void* from,
-					unsigned int nvalues);
+    typedef size_t ValueFunction (void* to, const void* from,
+                                  size_t nvalues);
 
     // Define the signature of a function converting from one
     // format to another providing the number of bytes.
@@ -105,28 +106,28 @@ public:
     // (For example the byteTo/FromLocalXXX functions in class
     // <linkto class=CanonicalConversion>CanonicalConversion</linkto>.
     typedef void* ByteFunction (void* to, const void* from,
-				unsigned int nbytes);
+				size_t nbytes);
 
     // Convert a stream of Bools to output format (as bits).
     // The variable <src>startBit</src> (0-relative) indicates
     // where to start in the <src>to</src> buffer.
     // <group>
-    static unsigned int boolToBit (void* to, const void* from,
-				   unsigned int nvalues);
+    static size_t boolToBit (void* to, const void* from,
+                             size_t nvalues);
     static void boolToBit (void* to, const void* from,
-			   unsigned int startBit,
-			   unsigned int nvalues);
+			   size_t startBit,
+			   size_t nvalues);
     // </group>
 
     // Convert a stream of Bools to output format (as bits).
     // The variable <src>startBit</src> (0-relative) indicates
     // where to start in the <src>from</src> buffer.
     // <group>
-    static unsigned int bitToBool (void* to, const void* from,
-				   unsigned int nvalues);
+    static size_t bitToBool (void* to, const void* from,
+                             size_t nvalues);
     static void bitToBool (void* to, const void* from,
-			   unsigned int startBit,
-			   unsigned int nvalues);
+			   size_t startBit,
+			   size_t nvalues);
     // </group>
 
     // Copy a value using memcpy.
@@ -134,32 +135,27 @@ public:
     // <note> This version has the <src>ValueFunction</src> signature,
     // but it expects as input the number of bytes.
     // </note>
-    static unsigned int valueCopy (void* to, const void* from,
-				   unsigned int nbytes);
+    static size_t valueCopy (void* to, const void* from,
+                             size_t nbytes);
 
     // Get a pointer to the memcpy function.
     static ByteFunction* getmemcpy();
 
-    // A placeholder for the ObjectCenter or DEC-alpha memcpy or 64bit SGI
-    // Also added this for HPUX11 (2b provided in the makedefs)
-    // (because they do not use an unsigned int for nbytes).
-    static void* mymemcpy (void* to, const void* from, unsigned int nbytes);
-
 private:
     // Copy bits to Bool in an unoptimized way needed when 'to' is not
     // aligned properly.
-    static unsigned int bitToBool_ (void* to, const void* from,
-                                    unsigned int nvalues);
+    static size_t bitToBool_ (void* to, const void* from,
+                              size_t nvalues);
 };
 
 
 inline Conversion::ByteFunction* Conversion::getmemcpy()
 {
-    return mymemcpy;
+    return memcpy;
 }
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

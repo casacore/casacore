@@ -24,12 +24,12 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <casa/Arrays/ArrayOpsDiffShapes.h>
-#include <casa/Arrays/ArrayMath.h>
-//#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/ArrayOpsDiffShapes.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+//#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
-namespace casa {
+namespace casacore {
 
 Bool rightExpandableToLeft(const IPosition& leftShape, const IPosition& rightShape)
 {

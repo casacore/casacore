@@ -30,12 +30,12 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Array.h>
-#include <lattices/Lattices/LatticeNavigator.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/lattices/Lattices/LatticeNavigator.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class Vector;
@@ -327,9 +327,9 @@ inline IPosition LatticeIterInterface<T>::cursorShape() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/LatticeIterInterface.tcc>
+#include <casacore/lattices/Lattices/LatticeIterInterface.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

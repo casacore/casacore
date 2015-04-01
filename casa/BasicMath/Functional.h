@@ -29,9 +29,9 @@
 #define CASA_FUNCTIONAL_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declaration
 template<class T> class Lattice;
@@ -131,9 +131,9 @@ template<class Domain, class Range> class Functional {
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/BasicMath/Functional.tcc>
+#include <casacore/casa/BasicMath/Functional.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

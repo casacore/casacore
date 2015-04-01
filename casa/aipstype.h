@@ -28,7 +28,11 @@
 #ifndef CASA_AIPSTYPE_H
 #define CASA_AIPSTYPE_H
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+// For temporary backward namespace compatibility, use casa as alias for casacore.
+//# Note: namespace casa = casacore; does not work for forward declarations.
+#define casacore casa
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Define the standard types used by Casacore
 
@@ -48,6 +52,6 @@ typedef float Float;
 typedef double Double;
 typedef long double lDouble;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

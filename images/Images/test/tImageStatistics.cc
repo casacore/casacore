@@ -26,9 +26,9 @@
 //# $Id$
 
 
-#include <images/Images/ImageStatistics.h>
-#include <images/Images/FITSImage.h>
-#include <casa/namespace.h>
+#include <casacore/images/Images/ImageStatistics.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/casa/namespace.h>
 
 void writeTestString(const String& test) {
     cout << "\n" << "*** " << test << " ***" << endl;
@@ -141,15 +141,115 @@ int main() {
 					else {
 						AlwaysAssert(allTrue(myStats == exp), AipsError);
 					}
-
-
 				}
 			}
     	}
+    	{
+    		writeTestString(
+    			"test getConvertedStatistic(FLUX) and getStats() for FLUX"
+    		);
+    		CoordinateSystem csys = CoordinateUtil::defaultCoords3D();
+    		IPosition shape(3, 10, 15, 20);
+    		TempImage<Float> tim(TiledShape(shape), csys);
+    		Array<Float> arr(shape);
+    		indgen(arr);
+    		tim.put(arr);
+    		tim.setUnits("Jy/beam");
+    		GaussianBeam beam (
+    			Quantity(3, "arcmin"),
+    			Quantity(2.5, "arcmin"),
+    			Quantity(30, "deg")
+    		);
+    		ImageInfo info = tim.imageInfo();
+    		info.setRestoringBeam(beam);
+    		tim.setImageInfo(info);
+			ImageStatistics<Float> stats(tim);
+			Array<Float> flux;
+			AlwaysAssert(
+				stats.getConvertedStatistic (flux, LatticeStatsBase::FLUX), AipsError
+			);
+			AlwaysAssert(near(*flux.begin(), 111724.9893), AipsError);
+			Vector<Int> axes(2, 0);
+			axes[1] = 1;
+			stats.setAxes(axes);
+			AlwaysAssert(
+				stats.getConvertedStatistic (flux, LatticeStatsBase::FLUX), AipsError
+			);
+			AlwaysAssert(flux.shape() == IPosition(1, 20), AipsError);
+			Vector<Double> statVals;
+			Double area = beam.getArea("arcmin2");
+			for (uInt i=0; i<20; ++i) {
+				Float expFlux = sum(arr(IPosition(3,0,0,i), IPosition(3, 9, 14, i)))/area;
+				AlwaysAssert(near(flux(IPosition(1,i)), expFlux), AipsError);
+				AlwaysAssert(
+					stats.getStats(
+						statVals, IPosition(1, i), False
+					), AipsError
+				);
+				AlwaysAssert(near(statVals[LatticeStatsBase::FLUX], expFlux), AipsError);
+			}
+			tim.setUnits("K");
+			stats = ImageStatistics<Float>(tim);
+			AlwaysAssert(
+				stats.getConvertedStatistic (flux, LatticeStatsBase::FLUX), AipsError
+			);
+			AlwaysAssert(near(*flux.begin(), 3.4180507464507e9), AipsError);
+			axes = Vector<Int>(2, 0);
+			axes[1] = 1;
+			stats.setAxes(axes);
+			AlwaysAssert(
+				stats.getConvertedStatistic (flux, LatticeStatsBase::FLUX), AipsError
+			);
+			AlwaysAssert(flux.shape() == IPosition(1, 20), AipsError);
+			for (uInt i=0; i<20; ++i) {
+				Float expFlux = sum(arr(IPosition(3,0,0,i), IPosition(3, 9, 14, i)))*3600;
+				AlwaysAssert(near(flux(IPosition(1,i)), expFlux), AipsError);
+				AlwaysAssert(
+					stats.getStats(
+						statVals, IPosition(1, i), False
+					), AipsError
+				);
+				AlwaysAssert(near(statVals[LatticeStatsBase::FLUX], expFlux), AipsError);
+			}
+			Vector<GaussianBeam> beams(20);
+			Vector<GaussianBeam>::iterator bIter = beams.begin();
+			Vector<GaussianBeam>::iterator bEnd = beams.end();
+			uInt count = 0;
+			while (bIter != bEnd) {
+				*bIter = GaussianBeam(
+					Quantity(3 + count, "arcmin"),
+					Quantity(2.5, "arcmin"),
+					Quantity(30, "deg")
+		    	);
+				++count;
+				++bIter;
+			}
+			ImageBeamSet beamSet(beams);
+			ImageInfo ii = tim.imageInfo();
+			ii.setBeams(beamSet);
+    		tim.setUnits("Jy/beam");
+			tim.setImageInfo(ii);
+			stats = ImageStatistics<Float> (tim);
+			stats.setAxes(indgen(2, 0, 1));
+			Array<Float> fluxDensities;
+			AlwaysAssert(
+				stats.getConvertedStatistic (
+					fluxDensities, LatticeStatsBase::FLUX
+				), AipsError
+			);
+			cout << "flux densities " << fluxDensities << endl;
+			// 0.2110611 is channel width in km/s
+			Double expected = sum(fluxDensities) * 0.2110611;
+			stats.setAxes(Vector<Int>());
+			AlwaysAssert(
+				stats.getConvertedStatistic(flux, LatticeStatsBase::FLUX),
+				AipsError
+			);
+			AlwaysAssert(near(*flux.begin(), expected), AipsError);
+    	}
         cout << "ok" << endl;
     }
-    catch (AipsError x) {
-
+    catch (const AipsError& x) {
         cerr << "Exception caught: " << x.getMesg() << endl;
         return 1;
     } 

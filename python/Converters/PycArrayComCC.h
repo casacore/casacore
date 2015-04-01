@@ -49,7 +49,7 @@
   {
     if (!PyArray_API) {
       if (!importArray()  ||  !PyArray_API) {
-	throw AipsError ("PycArray: failed to load the "PYC_USE_PYARRAY
+	throw AipsError ("PycArray: failed to load the " PYC_USE_PYARRAY
 			 " API");
       }
     }
@@ -62,75 +62,75 @@
     static PyArray_TYPES pyType()
       { throw AipsError ("PycArray: unknown casa type"); }
   };
-  template <> struct TypeConvTraits<casa::Bool> {
-    typedef casa::Bool   casa_type;
+  template <> struct TypeConvTraits<casacore::Bool> {
+    typedef casacore::Bool   casa_type;
     typedef npy_bool     python_type;
     static PyArray_TYPES pyType() { return NPY_BOOL; }
   };
-  template <> struct TypeConvTraits<casa::uChar> {
-    typedef casa::uChar  casa_type;
+  template <> struct TypeConvTraits<casacore::uChar> {
+    typedef casacore::uChar  casa_type;
     typedef npy_uint16   python_type;    // Note: numarray uInt8 is Bool
     static PyArray_TYPES pyType() { return NPY_UINT16; }
   };
-  template <> struct TypeConvTraits<casa::Short> {
-    typedef casa::Short  casa_type;
+  template <> struct TypeConvTraits<casacore::Short> {
+    typedef casacore::Short  casa_type;
     typedef npy_int16    python_type;
     static PyArray_TYPES pyType() { return NPY_INT16; }
   };
-  template <> struct TypeConvTraits<casa::uShort> {
-    typedef casa::uShort casa_type;
+  template <> struct TypeConvTraits<casacore::uShort> {
+    typedef casacore::uShort casa_type;
     typedef npy_uint16   python_type;
     static PyArray_TYPES pyType() { return NPY_UINT16; }
   };
-  template <> struct TypeConvTraits<casa::Int> {
-    typedef casa::Int    casa_type;
+  template <> struct TypeConvTraits<casacore::Int> {
+    typedef casacore::Int    casa_type;
     typedef npy_int32    python_type;
     static PyArray_TYPES pyType() { return NPY_INT32; }
   };
-  template <> struct TypeConvTraits<casa::uInt> {
-    typedef casa::uInt   casa_type;
+  template <> struct TypeConvTraits<casacore::uInt> {
+    typedef casacore::uInt   casa_type;
     typedef npy_uint32   python_type;
     static PyArray_TYPES pyType() { return NPY_UINT32; }
   };
-  template <> struct TypeConvTraits<casa::Int64> {
-    typedef casa::Int64  casa_type;
+  template <> struct TypeConvTraits<casacore::Int64> {
+    typedef casacore::Int64  casa_type;
     typedef npy_int64    python_type;
     static PyArray_TYPES pyType() { return NPY_INT64; }
   };
-  template <> struct TypeConvTraits<casa::uInt64> {
-    typedef casa::uInt64 casa_type;
+  template <> struct TypeConvTraits<casacore::uInt64> {
+    typedef casacore::uInt64 casa_type;
     typedef npy_uint64   python_type;
     static PyArray_TYPES pyType() { return NPY_UINT64; }
   };
-  template <> struct TypeConvTraits<casa::Float> {
-    typedef casa::Float  casa_type;
+  template <> struct TypeConvTraits<casacore::Float> {
+    typedef casacore::Float  casa_type;
     typedef npy_float32  python_type;
     static PyArray_TYPES pyType() { return NPY_FLOAT32; }
   };
-  template <> struct TypeConvTraits<casa::Double> {
-    typedef casa::Double casa_type;
+  template <> struct TypeConvTraits<casacore::Double> {
+    typedef casacore::Double casa_type;
     typedef npy_float64  python_type;
     static PyArray_TYPES pyType() { return NPY_FLOAT64; }
   };
-  template <> struct TypeConvTraits<casa::Complex> {
-    typedef casa::Complex casa_type;
+  template <> struct TypeConvTraits<casacore::Complex> {
+    typedef casacore::Complex casa_type;
     typedef npy_complex64 python_type;
     static PyArray_TYPES pyType() { return NPY_COMPLEX64; }
   };
-  template <> struct TypeConvTraits<casa::DComplex> {
-    typedef casa::DComplex casa_type;
+  template <> struct TypeConvTraits<casacore::DComplex> {
+    typedef casacore::DComplex casa_type;
     typedef npy_complex128 python_type;
     static PyArray_TYPES pyType() { return NPY_COMPLEX128; }
   };
-  template <> struct TypeConvTraits<casa::String> {
-    typedef casa::String casa_type;
+  template <> struct TypeConvTraits<casacore::String> {
+    typedef casacore::String casa_type;
     typedef ::PyObject*  python_type;
     static PyArray_TYPES pyType() { return NPY_OBJECT; }
   };
   // This one is only used to convert numpy BYTE and SBYTE to casa short.
   // There is no back conversion, so an exception is thrown.
-  template <> struct TypeConvTraits<casa::Char> {
-    typedef casa::Char   casa_type;
+  template <> struct TypeConvTraits<casacore::Char> {
+    typedef casacore::Char   casa_type;
     typedef npy_int8     python_type;
     static PyArray_TYPES pyType()
       { throw AipsError ("PycArray: unknown casa type"); }
@@ -345,7 +345,9 @@
 	// Copy using Char, because uChar is mapped to Short in the Traits.
 	Array<Char> arr = ArrayCopy<Char>::toArray(shp, po->data, False);
 	Array<Short> res(arr.shape());
-	convertArray (res, (const Array<uChar>&)arr);
+        void* varr = &arr;
+        Array<uChar>* uarr = static_cast<Array<uChar>*>(varr);
+	convertArray (res, *uarr);
 	return ValueHolder(res);
       } else if (po->descr->type_num == NPY_STRING) {
 	int slen = 0;
@@ -374,24 +376,24 @@
   template struct ArrayCopy<Double>;
 
   template boost::python::object makePyArrayObject
-    (casa::Array<Bool> const& arr);
+    (casacore::Array<Bool> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<uChar> const& arr);
+    (casacore::Array<uChar> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Short> const& arr);
+    (casacore::Array<Short> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<uShort> const& arr);
+    (casacore::Array<uShort> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Int> const& arr);
+    (casacore::Array<Int> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<uInt> const& arr);
+    (casacore::Array<uInt> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Int64> const& arr);
+    (casacore::Array<Int64> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Float> const& arr);
+    (casacore::Array<Float> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Double> const& arr);
+    (casacore::Array<Double> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<Complex> const& arr);
+    (casacore::Array<Complex> const& arr);
   template boost::python::object makePyArrayObject
-    (casa::Array<DComplex> const& arr);
+    (casacore::Array<DComplex> const& arr);

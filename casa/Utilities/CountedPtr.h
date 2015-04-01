@@ -28,17 +28,23 @@
 #ifndef CASA_COUNTEDPTR_H
 #define CASA_COUNTEDPTR_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-#if defined AIPS_CXX11
+#if (defined(AIPS_CXX11) || (defined(__APPLE_CC__) && __APPLE_CC__ > 5621))
 #include <memory>
-///#elif defined HAVE_BOOST
-///#include <boost/shared_ptr.hpp>
+#define SHARED_PTR std::shared_ptr
+#define DYNAMIC_POINTER_CAST std::dynamic_pointer_cast
+#define CONST_POINTER_CAST std::const_pointer_cast
+#define STATIC_POINTER_CAST std::static_pointer_cast
 #else
 #include <tr1/memory>
+#define SHARED_PTR std::tr1::shared_ptr
+#define DYNAMIC_POINTER_CAST std::tr1::dynamic_pointer_cast
+#define CONST_POINTER_CAST std::tr1::const_pointer_cast
+#define STATIC_POINTER_CAST std::tr1::static_pointer_cast
 #endif
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 
 // <summary> act on dereference error </summary>
@@ -93,6 +99,9 @@ protected:
 
 
 public:
+
+
+
     // This constructor allows for the creation of a null
     // <src>CountedPtr</src>. The assignment operator can be used
     // to assign a null <src>CountedPtr</src> from another
@@ -110,43 +119,30 @@ public:
     // the value should no longer be manipulated by the raw pointer of
     // type <src>t*</src>.
     // </note>
-    //
     CountedPtr(t *val, Bool delit = True)
     : pointerRep_p (val, Deleter<t> (delit))
     {}
-
-    // This constructor sets up a reference count for the
-    // <src>val</src> pointer.  Since <src>val</src> is a pointer to
-    // constant data, the data will not be deleted when the reference
-    // count reaches zero.
-    //
-    // <note role=tip> Since the constant data will NOT be cleaned up
-    // when the reference count reaches zero, the use of this class for
-    // pointers to constant data may not be desirable.
-    // </note>
-    //
-    CountedPtr(const t *val)
-    : pointerRep_p (val, Deleter<t> (False))
-    {}
-
+    
     // This copy constructor allows <src>CountedPtr</src>s to be
     // initialized from other <src>CountedPtr</src>s for which the pointer TP*
     // is convertible to T*.
-    //
     template<typename TP>
     CountedPtr(const CountedPtr<TP>& that)
       : pointerRep_p(that.pointerRep_p)
     {}
 
+    // Create from a shared_ptr.
+    CountedPtr (const SHARED_PTR<t>& rep)
+      : pointerRep_p (rep)
+    {}
+
     // This destructor only deletes the really stored data when it was
     // initialized as deletable and the reference count is zero.
-    // 
     ~CountedPtr() {}
 
     // This assignment operator allows <src>CountedPtr</src>s to be
     // copied from other <src>CountedPtr</src>s for which the pointer TP*
     // is convertible to t*.
-    //
     template<typename TP>
     CountedPtr<t>& operator=(const CountedPtr<TP>& that)
     {
@@ -155,8 +151,12 @@ public:
     }
 
     // Reset the pointer.
+    // <group>
     void reset (t *val, Bool delit=True)
       { pointerRep_p = PointerRep (val, Deleter<t>(delit)); }
+    void reset()
+      { pointerRep_p.reset(); }
+    // </group>
 
     // The <src>CountedPtr</src> indirection operator simply
     // returns a reference to the value being protected. If the pointer
@@ -164,15 +164,9 @@ public:
     // function
     // <linkto class="CountedPtr:null()const">null</linkto>()
     // can be used to catch such a condition in time.
-    //
-    // <thrown>
-    // <li> ExcpError
-    // </thrown>
-    //
     // <note role=tip> The address of the reference returned should
     // not be stored for later use.
     // </note>
-    //
     t &operator*() const {
 	if (null()){
 	    throw_Null_CountedPtr_dereference_error();
@@ -187,39 +181,37 @@ public:
     // function
     // <linkto class="CountedPtr:null()const">null</linkto>()
     // can be used to catch such a condition in time.
-    //
-    // <thrown>
-    // <li> ExcpError
-    // </thrown>
-    //
     t *operator->() const {
 	return get ();
     }
 
     // Get the underlying pointer.
-    t *
-    get () const
-    {
+    t* get () const {
         return pointerRep_p.get();
     }
 
     // Equality operator which checks to see if two
     // <src>CountedPtr</src>s are pointing at the same thing.
-    //
     Bool operator==(const CountedPtr<t> &other) const {
-	return (get() == other.get() ? True : False);
+	return (get() == other.get());
+    }
+    //# Note: use of const void* gives ambiguius overload error.
+    Bool operator==(int ptr) const {
+        return (ptr == 0  &&  get() == 0);
     }
 
     // Non-equality operator which checks to see if two
     // <src>CountedPtr</src>s are not pointing at the same thing.
-    //
     Bool operator!=(const CountedPtr<t> &other) const {
 	return (get() != other.get()  ? True : False);
+    }
+    //# Note: use of const void* gives ambiguius overload error.
+    Bool operator!=(int ptr) const {
+        return (ptr != 0  ||  get() != 0);
     }
 
     // This assignment operator allows the object to which the current
     // <src>CountedPtr</src> points to be changed.
-    //
     CountedPtr<t> &
     operator=(t *v)
     {
@@ -227,31 +219,39 @@ public:
         return * this;
     }
 
+    // Cast functions.
+    // <group>
+    template<typename U>
+    CountedPtr<U> static_ptr_cast() const
+      { return CountedPtr<U> (STATIC_POINTER_CAST<U> (pointerRep_p)); }
+    template<typename U>
+    CountedPtr<U> const_ptr_cast() const
+      { return CountedPtr<U> (CONST_POINTER_CAST<U> (pointerRep_p)); }
+    template<typename U>
+    CountedPtr<U> dynamic_ptr_cast() const
+      { return CountedPtr<U> (DYNAMIC_POINTER_CAST<U> (pointerRep_p)); }
+    // </group>
+
     // Sometimes it is useful to know if there is more than one
     // reference made. This is a way of getting that. Of course the point
     // of these classes is that this information is normally not required.
-    //
-    uInt nrefs() const {return pointerRep_p.use_count();}
+    uInt nrefs() const
+      { return pointerRep_p.use_count(); }
 
     // Check to see if this <src>CountedPtr</src> is
     // un-initialized, null.
-    //
-    Bool null() const { return get() == 0;}
+    Bool null() const
+      { return get() == 0; }
 
     // Test if it contains a valid pointer.
-    operator bool() const { return get() != 0; }
+    operator bool() const
+      { return get() != 0; }
 
 private:
-  // Make all types of CountedPtr a friend for the templated operator=.
-  template<typename TP> friend class CountedPtr;
+    // Make all types of CountedPtr a friend for the templated operator=.
+    template<typename TP> friend class CountedPtr;
 
-#ifdef AIPS_CXX11
-    typedef std::shared_ptr<t> PointerRep;
-  ///#elif HAVE_BOOST
-  ///    typedef boost::shared_ptr<t> PointerRep;
-#else
-    typedef std::tr1::shared_ptr<t> PointerRep;
-#endif
+    typedef SHARED_PTR<t> PointerRep;
 
     PointerRep pointerRep_p;
 };
@@ -260,11 +260,23 @@ private:
 inline Bool countedPtrShared()
   { return True; }
 
+// Cast the CountedPtr from one pointer type to another.
+template<typename T, typename U>
+CountedPtr<T> static_pointer_cast (const CountedPtr<U>& that)
+  { return that.template static_ptr_cast<T>(); }
+template<typename T, typename U>
+CountedPtr<T> const_pointer_cast (const CountedPtr<U>& that)
+  { return that.template const_ptr_cast<T>(); }
+template<typename T, typename U>
+CountedPtr<T> dynamic_pointer_cast (const CountedPtr<U>& that)
+  { return that.template dynamic_ptr_cast<T>(); }
+
+
 } //#End casa namespace
 
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Utilities/CountedPtr.tcc>
+#include <casacore/casa/Utilities/CountedPtr.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif

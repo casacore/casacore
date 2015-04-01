@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/PagedArray.h>
-#include <lattices/Lattices/LatticeLocker.h>
-#include <casa/Arrays/Array.h>
-#include <tables/Tables/Table.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/LatticeLocker.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // This program tests concurrent access to lattices.
 
 

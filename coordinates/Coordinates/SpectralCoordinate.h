@@ -30,22 +30,22 @@
 #ifndef COORDINATES_SPECTRALCOORDINATE_H
 #define COORDINATES_SPECTRALCOORDINATE_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <coordinates/Coordinates/Coordinate.h>
-#include <coordinates/Coordinates/ObsInfo.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MEpoch.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Utilities/PtrHolder.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
+#include <casacore/coordinates/Coordinates/ObsInfo.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
 
 #include <wcslib/wcs.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 class TabularCoordinate;
@@ -586,6 +586,9 @@ public:
 
     ostream& print(ostream& os) const;
 
+    // is this a tabular coordinate?
+    Bool isTabular() const;
+
 private:
 
     SPtrHolder<TabularCoordinate> _tabular;            // Tabular coordinate OR
@@ -695,7 +698,7 @@ private:
 
 ostream &operator<<(ostream &os, const SpectralCoordinate& spcoord);
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 
 #endif

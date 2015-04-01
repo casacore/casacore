@@ -29,11 +29,11 @@
 #define TABLES_TVEC_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Enumeration of possible table vectors
@@ -211,9 +211,9 @@ inline TabVecTag TabVecRep<T>::getTag() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/TVec.tcc>
+#include <casacore/tables/Tables/TVec.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

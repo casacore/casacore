@@ -29,10 +29,10 @@
 #ifndef COORDINATES_LINEARXFORM_H
 #define COORDINATES_LINEARXFORM_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <wcslib/lin.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Vector;
 template<class T> class Matrix;
@@ -194,6 +194,6 @@ private:
     void set_linprm();
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

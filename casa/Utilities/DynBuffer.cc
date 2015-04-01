@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/DynBuffer.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/DynBuffer.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // This is the implementation of the DynBuffer class.
 
@@ -138,5 +138,5 @@ Bool DynBuffer::next (uInt& len, Char*& ptr)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

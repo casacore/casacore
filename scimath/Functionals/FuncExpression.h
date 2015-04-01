@@ -30,14 +30,14 @@
 #define SCIMATH_FUNCEXPRESSION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <scimath/Functionals/FuncExprData.h>
-#include <casa/stdvector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/scimath/Functionals/FuncExprData.h>
+#include <casacore/casa/stdvector.h>
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/iosfwd.h>
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MUString;
 template <class T> class Vector;
@@ -172,6 +172,6 @@ T FuncExecute(const Vector<T> &x, const Vector<T> &par);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

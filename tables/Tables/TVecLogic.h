@@ -29,9 +29,9 @@
 #define TABLES_TVECLOGIC_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class TabVecRep;
@@ -123,9 +123,9 @@ template<class T>
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/TVecLogic.tcc>
+#include <casacore/tables/Tables/TVecLogic.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

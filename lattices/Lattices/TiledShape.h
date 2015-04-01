@@ -29,9 +29,10 @@
 #define LATTICES_TILEDSHAPE_H
 
 //# Includes
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class Vector;
@@ -177,6 +178,6 @@ inline IPosition TiledShape::tileShape (uInt nrPixelsPerTile,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

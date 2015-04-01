@@ -23,30 +23,32 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 
 #ifndef FITS_FITS_H
 #define FITS_FITS_H
 
-#include <fits/FITS/BasicFITS.h>        
-#include <fits/FITS/BinTable.h> 
-#include <fits/FITS/blockio.h>         
-#include <fits/FITS/CopyRecord.h>        
-#include <fits/FITS/FITS2.h>             
-#include <fits/FITS/FITSDateUtil.h>    
-#include <fits/FITS/FITSError.h>        
-#include <fits/FITS/FITSFieldCopier.h>
-#include <fits/FITS/FITSHistoryUtil.h>  
-#include <fits/FITS/FITSKeywordUtil.h>  
-#include <fits/FITS/FITSMultiTable.h>   
-#include <fits/FITS/FITSSpectralUtil.h>
-#include <fits/FITS/FITSTable.h>       
-#include <fits/FITS/FITSTimedTable.h>             
-#include <fits/FITS/fits.h>
-#include <fits/FITS/fitsio.h>
-#include <fits/FITS/hdu.h>
-#include <fits/FITS/SDFITSTable.h>
+#include <casacore/casa/aips.h>
+#include <casacore/fits/FITS/BasicFITS.h>        
+#include <casacore/fits/FITS/BinTable.h> 
+#include <casacore/fits/FITS/blockio.h>         
+#include <casacore/fits/FITS/CopyRecord.h>        
+#include <casacore/fits/FITS/FITS2.h>             
+#include <casacore/fits/FITS/FITSDateUtil.h>    
+#include <casacore/fits/FITS/FITSError.h>        
+#include <casacore/fits/FITS/FITSFieldCopier.h>
+#include <casacore/fits/FITS/FITSHistoryUtil.h>  
+#include <casacore/fits/FITS/FITSKeywordUtil.h>  
+#include <casacore/fits/FITS/FITSMultiTable.h>   
+#include <casacore/fits/FITS/FITSSpectralUtil.h>
+#include <casacore/fits/FITS/FITSTable.h>       
+#include <casacore/fits/FITS/FITSTimedTable.h>             
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/fits/FITS/SDFITSTable.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -437,7 +439,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

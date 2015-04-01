@@ -26,25 +26,25 @@
 //# $Id$
 
 //# Includes
-#include <msfits/MSFits/SDPointingHandler.h>
+#include <casacore/msfits/MSFits/SDPointingHandler.h>
 
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSPointingColumns.h>
-#include <ms/MeasurementSets/MSPointing.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
-#include <measures/Measures/Stokes.h>
-#include <casa/BasicMath/Math.h>
-#include <measures/Measures/MeasRef.h>
-#include <measures/Measures/MeasFrame.h>
-#include <measures/Measures/MeasConvert.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSPointingColumns.h>
+#include <casacore/ms/MeasurementSets/MSPointing.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDPointingHandler::SDPointingHandler() 
     : msPointing_p(0), msPointingCols_p(0), time_p(0.0), antId_p(-1), directionRate_p(2),
@@ -284,5 +284,5 @@ void SDPointingHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

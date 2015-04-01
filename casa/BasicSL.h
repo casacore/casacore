@@ -29,16 +29,18 @@
 #ifndef CASA_BASICSL_H
 #define CASA_BASICSL_H
 
-#include <casa/BasicSL/Complexfwd.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicSL/IComplex.h>
-#include <casa/BasicSL/RegexBase.h>
-#include <casa/BasicSL/String.h>
-#include <casa/BasicSL/STLIO.h>
-#include <casa/BasicSL/STLMath.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/BasicSL/Complexfwd.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicSL/IComplex.h>
+#include <casacore/casa/BasicSL/RegexBase.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/BasicSL/STLMath.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -92,7 +94,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

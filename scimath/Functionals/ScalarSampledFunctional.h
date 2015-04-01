@@ -29,11 +29,11 @@
 #ifndef SCIMATH_SCALARSAMPLEDFUNCTIONAL_H
 #define SCIMATH_SCALARSAMPLEDFUNCTIONAL_H
 
-#include <casa/aips.h>
-#include <scimath/Functionals/SampledFunctional.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/SampledFunctional.h>
+#include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Block;
 
@@ -151,10 +151,10 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/ScalarSampledFunctional.tcc>
+#include <casacore/scimath/Functionals/ScalarSampledFunctional.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

@@ -28,6 +28,8 @@
 #ifndef MEAS_REGISTER_H
 #define MEAS_REGISTER_H
 
+#include <casacore/casa/aips.h>
+
 // <group name=MeasUDF>
 // This function registers the TaQL user defined functions handling
 // Measure conversions.

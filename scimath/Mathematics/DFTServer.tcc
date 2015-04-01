@@ -25,12 +25,15 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/DFTServer.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/iostream.h>
+#ifndef SCIMATH_DFTSERVER_TCC
+#define SCIMATH_DFTSERVER_TCC
+
+#include <casacore/scimath/Mathematics/DFTServer.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 DFTServer<T>& DFTServer<T>::operator=(const DFTServer<T> &other)
@@ -409,5 +412,7 @@ void DFTServer<T>::showReal(Array<T> &data)
 
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

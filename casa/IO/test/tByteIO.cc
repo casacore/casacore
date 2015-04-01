@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/IO/FiledesIO.h>
-#include <casa/IO/RegularFileIO.h>
-#include <casa/IO/MemoryIO.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/FiledesIO.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 #include <unistd.h>
 #include <fcntl.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void checkLength (ByteIO& fio, uInt& curLength, uInt addLength)
 {
     curLength += addLength;

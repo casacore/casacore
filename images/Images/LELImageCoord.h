@@ -29,14 +29,15 @@
 #define IMAGES_LELIMAGECOORD_H
 
 //# Includes
-#include <lattices/Lattices/LELLattCoord.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <images/Images/ImageInfo.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/LEL/LELLattCoord.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/images/Images/ImageInfo.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class LatticeExprNode;
@@ -167,6 +168,6 @@ inline const TableRecord& LELImageCoord::miscInfo() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

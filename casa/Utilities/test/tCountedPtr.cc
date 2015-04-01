@@ -27,11 +27,12 @@
 
 //# Includes
 
-#include <casa/Utilities/test/tCountedPtr.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Utilities/test/tCountedPtr.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // class myobj is defined in tCountedPtr.h
 
 String prt(CountedPtr<myobj> &obj) {
@@ -47,14 +48,18 @@ void testDerived()
     CountedPtr<myobj1> v2 (new myobj1("v2"));
     CountedPtr<myobj>  v3(v1);
     CountedPtr<myobj>  v4(v2);
+    CountedPtr<myobj1> v5(dynamic_pointer_cast<myobj1>(v1));
     cout << v0->name() << ' ' << v1->name() << ' ' << v2->name() << ' '
-         << v3->name() << ' ' << v4->name() << endl;
+         << v3->name() << ' ' << v4->name() << ' ' << v5->name() << endl;
     v0 = v1;
     cout << v0->name() << ' ' << v1->name() << ' ' << v2->name() << ' '
-         << v3->name() << ' ' << v4->name() << endl;
+         << v3->name() << ' ' << v4->name() << ' ' << v5->name() << endl;
     v0 = v2;
     cout << v0->name() << ' ' << v1->name() << ' ' << v2->name() << ' '
-         << v3->name() << ' ' << v4->name() << endl;
+         << v3->name() << ' ' << v4->name() << ' ' << v5->name() << endl;
+    v2 = v5;
+    cout << v0->name() << ' ' << v1->name() << ' ' << v2->name() << ' '
+         << v3->name() << ' ' << v4->name() << ' ' << v5->name() << endl;
   }
   cout << "end testDerived" << endl;
 }
@@ -73,6 +78,7 @@ int main() {
   CountedPtr<myobj> var2 = var;
   CountedPtr<myobj> var3 = var;
   CountedPtr<myobj> var4 (var);
+  AlwaysAssertExit (var != 0);
 
   cout << (*var).name() << ".." <<
     (*var2).name() << ".." <<

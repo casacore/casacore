@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/StringDistance.h>
+#include <casacore/casa/Utilities/StringDistance.h>
 #include <iostream>
 #include <stdexcept>
-#include <casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
 
 using namespace std;
-using namespace casa;
+using namespace casacore;
 
 int main(int argc, char* argv[2])
 {

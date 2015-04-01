@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <images/Regions/WCEllipsoid.h>
+#include <casacore/images/Regions/WCEllipsoid.h>
 
-#include <casa/BasicSL/Constants.h>
-#include <casa/Utilities/Assert.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <lattices/Lattices/LCEllipsoid.h>
-#include <tables/Tables/TableRecord.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/lattices/LRegions/LCEllipsoid.h>
+#include <casacore/tables/Tables/TableRecord.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 /*
 void show(const LCEllipsoid& ellipse) {

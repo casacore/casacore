@@ -26,3 +26,10 @@
 //# $Id$
 
 // \defgroup coordinates coordinates package (libcasa_coordinates)
+//
+// The coordinates package handles world coordinates for images
+
+// <ul>
+//  <li> <a href="group__Coordinates__module.html">Coordinates</a>:
+//    world coordinate handling.
+// </ul>

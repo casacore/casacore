@@ -30,18 +30,18 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <images/Regions/RegionHandler.h>
-#include <images/Images/MaskSpecifier.h>
-#include <images/Images/ImageInfo.h>
-#include <images/Images/ImageAttrHandler.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <tables/LogTables/LoggerHolder.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Quanta/Unit.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Regions/RegionHandler.h>
+#include <casacore/images/Images/MaskSpecifier.h>
+#include <casacore/images/Images/ImageInfo.h>
+#include <casacore/images/Images/ImageAttrHandler.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/tables/LogTables/LoggerHolder.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Quanta/Unit.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class LatticeIterInterface;
@@ -397,9 +397,9 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/ImageInterface.tcc>
+#include <casacore/images/Images/ImageInterface.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

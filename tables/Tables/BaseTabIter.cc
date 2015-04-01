@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <tables/Tables/BaseTabIter.h>
-#include <tables/Tables/TableIter.h>
-#include <tables/Tables/RefTable.h>
-#include <tables/Tables/TableColumn.h>
-#include <casa/Utilities/Sort.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/Tables/BaseTabIter.h>
+#include <casacore/tables/Tables/TableIter.h>
+#include <casacore/tables/Tables/RefTable.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/casa/Utilities/Sort.h>
+#include <casacore/tables/Tables/TableError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // BaseTableIterator is the base class for the table iterators.
 // It is a letter class of the envelope TableIterator.
@@ -161,5 +161,5 @@ BaseTable* BaseTableIterator::next()
     return itp;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

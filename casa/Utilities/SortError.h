@@ -28,11 +28,11 @@
 #ifndef CASA_SORTERROR_H
 #define CASA_SORTERROR_H
 
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Generic Sort exception </summary>
 // <use visibility=export>
@@ -115,6 +115,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -28,10 +28,10 @@
 */
 
 %{
-using namespace casa;
+using namespace casacore;
 %}
 
-%pure_parser                /* make parser re-entrant */
+%pure-parser                /* make parser re-entrant */
 
 %union {
 LatticeExprNode* node;

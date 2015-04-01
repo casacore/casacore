@@ -28,9 +28,10 @@
 #ifndef CASA_ARRAYPARTMATH_H
 #define CASA_ARRAYPARTMATH_H
 
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Mathematical and logical operations for Array parts.
@@ -330,9 +331,9 @@ Array<T> slidingArrayMath (const Array<T>& array,
 
 // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/ArrayPartMath.tcc>
+#include <casacore/casa/Arrays/ArrayPartMath.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

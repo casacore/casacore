@@ -29,18 +29,18 @@
 #ifndef COORDINATES_OBSINFO_H
 #define COORDINATES_OBSINFO_H
 
-#include <casa/aips.h>
-#include <casa/Utilities/RecordTransformable.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/RecordTransformable.h>
 
-#include <casa/BasicSL/String.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MPosition.h>
-#include <casa/Quanta/MVDirection.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/casa/Quanta/MVDirection.h>
 
 //# Forward declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Store miscellaneous information related to an observation.
@@ -228,6 +228,6 @@ ostream &operator<<(ostream &os, const ObsInfo &info);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/Array.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/OS/Timer.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/OS/Timer.h>
 #include <numeric>
 #include <functional>
 
-using namespace casa;
+using namespace casacore;
 
 // Inlining this function makes it almost 3 times slower.
 template<typename Result, typename Iter>

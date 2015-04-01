@@ -22,14 +22,15 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id: HostInfoDarwin.h 21521 2014-12-10 08:06:42Z gervandiepen $
 
 #ifndef SCIMATH_GAUSSIANBEAM_H
 #define SCIMATH_GAUSSIANBEAM_H
 
-#include <casa/aips.h>
-#include <casa/Quanta/Quantum.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Quanta/Quantum.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Represents a Gaussian restoring beam associated with an image.

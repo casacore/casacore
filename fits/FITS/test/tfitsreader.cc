@@ -26,9 +26,9 @@
 //# $Id$
 
 
-# include <fits/FITS/FITSReader.h>
+# include <casacore/fits/FITS/FITSReader.h>
 
-# include <casa/namespace.h>
+# include <casacore/casa/namespace.h>
 
 int main(int argc, const char* argv[])
 {

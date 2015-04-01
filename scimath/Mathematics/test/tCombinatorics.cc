@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <scimath/Mathematics/Combinatorics.h>
+#include <casacore/scimath/Mathematics/Combinatorics.h>
 
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main() {
     try {

@@ -31,11 +31,11 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/Complexfwd.h>
-#include <casa/complex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/Complexfwd.h>
+#include <casacore/casa/complex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Single and double precision complex numbers
@@ -336,7 +336,7 @@ Complex erfc(const Complex &in);
 
 // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 // Define real & complex conjugation for non-complex types
 // and put comparisons into std namespace.
@@ -344,16 +344,16 @@ Complex erfc(const Complex &in);
 namespace std { 
   inline float  conj(float  x) { return x; }
   inline double conj(double x) { return x; }
-#ifndef AIPS_CXX11
+#if !(defined(AIPS_CXX11) || (defined(__APPLE_CC__) && __APPLE_CC__ > 5621))
   inline float  real(float  x) { return x; }
   inline double real(double x) { return x; }
   inline float  imag(float   ) { return 0; }
   inline double imag(double  ) { return 0; }
 #endif  
-  using casa::operator>;
-  using casa::operator>=;
-  using casa::operator<;
-  using casa::operator<=;
+  using casacore::operator>;
+  using casacore::operator>=;
+  using casacore::operator<;
+  using casacore::operator<=;
 }
 
 #endif

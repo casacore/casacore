@@ -27,30 +27,30 @@
 //#
 
  
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Containers/Record.h>
-#include <measures/Measures/MCDirection.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/measures/Measures/MCDirection.h>
 
-#include <measures/Measures/MDirection.h>
-#include <casa/OS/Timer.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/MVDirection.h>
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <coordinates/Coordinates/Projection.h>
-#include <casa/Exceptions/Error.h>
-#include <tables/Tables/TableRecord.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/coordinates/Coordinates/Projection.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/casa/Logging/LogIO.h>
 
 #include <wcslib/wcs.h>
-#include <casa/iostream.h>
-#include <casa/namespace.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/namespace.h>
 #include <iomanip>
 
 DirectionCoordinate makeCoordinate(MDirection::Types type,
@@ -197,6 +197,7 @@ int main()
          if (!dc5.near(dc3)) {
             throw(AipsError(String("wcs interface constructor failed consistency test 2")));
          }
+         wcsfree(&wcs);
       }  
 
 
@@ -314,6 +315,7 @@ int main()
     	  Vector<Double> p2World = exp.copy();
 
     	  AlwaysAssert(allTrue(got == exp), AipsError);
+          delete c;
 
     	  // non-zero rotation
     	  c = dc.rotate(Quantity(30, "deg"));
@@ -323,6 +325,7 @@ int main()
     	  exp[0] = 72.05771366;
     	  exp[1] = -11.60254038;
     	  AlwaysAssert(allNear(got, exp, 1e-8), AipsError);
+          delete c;
       }
       {
     	  cout << "*** Test convert()" << endl;

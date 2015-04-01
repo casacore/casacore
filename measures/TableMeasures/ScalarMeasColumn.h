@@ -29,10 +29,11 @@
 #define MEASURES_SCALARMEASCOLUMN_H
 
 //# Includes
-#include <measures/TableMeasures/TableMeasColumn.h>
-#include <measures/Measures/MeasRef.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/TableMeasures/TableMeasColumn.h>
+#include <casacore/measures/Measures/MeasRef.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class ArrayColumn;
@@ -249,7 +250,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 
 //# Make old name ROScalarMeasColumn still available.
@@ -257,6 +258,6 @@ private:
 
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <measures/TableMeasures/ScalarMeasColumn.tcc>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -25,32 +25,35 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/Lattice.h>
+#ifndef LATTICES_LATTICECACHE_TCC
+#define LATTICES_LATTICECACHE_TCC
 
-#include <casa/Containers/Block.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/Lattice.h>
 
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
 
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Slicer.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Slicer.h>
 
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <lattices/Lattices/LatticeCache.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
+
+#include <casacore/lattices/Lattices/LatticeCache.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LatticeCache<T>::LatticeCache(const LatticeCache<T> & other)
@@ -325,5 +328,7 @@ Int LatticeCache<T>::getFreeTile(Bool readonly) {
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

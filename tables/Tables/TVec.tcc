@@ -25,13 +25,16 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <tables/Tables/TVec.h>
-#include <tables/Tables/TVecTemp.h>
-#include <tables/Tables/TableError.h>
+#ifndef TABLES_TVEC_TCC
+#define TABLES_TVEC_TCC
+
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TVec.h>
+#include <casacore/tables/Tables/TVecTemp.h>
+#include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Construct
 template<class T>
@@ -79,5 +82,7 @@ void TabVecRep<T>::assign (const TabVecRep<T>& that)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

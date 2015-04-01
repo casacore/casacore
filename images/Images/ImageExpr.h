@@ -30,12 +30,13 @@
 
 
 //# Includes
-#include <images/Images/ImageInterface.h>
-#include <lattices/Lattices/LatticeExpr.h>
-#include <casa/Containers/Record.h>
-#include <casa/Quanta/Unit.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/lattices/LEL/LatticeExpr.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Quanta/Unit.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class IPosition;
@@ -224,9 +225,9 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/ImageExpr.tcc>
+#include <casacore/images/Images/ImageExpr.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

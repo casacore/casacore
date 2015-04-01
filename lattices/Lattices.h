@@ -29,34 +29,25 @@
 #define LATTICES_LATTICES_H
 
 
-//#include <casa/Arrays/ArrayLattice.h>
-//#include <casa/Arrays/PagedArray.h>
-//#include <casa/Arrays/TempLattice.h>
-//#include <casa/Arrays/LatticeLocker.h>
-//#include <casa/Arrays/TiledShape.h>
+//#include <casacore/casa/Arrays/ArrayLattice.h>
+//#include <casacore/casa/Arrays/PagedArray.h>
+//#include <casacore/casa/Arrays/TempLattice.h>
+//#include <casacore/casa/Arrays/LatticeLocker.h>
+//#include <casacore/casa/Arrays/TiledShape.h>
 
-//#include <casa/Arrays/LatticeApply.h>
-//#include <casa/Arrays/LatticeIterator.h>
-//#include <casa/Arrays/LatticeStepper.h>
-//#include <casa/Arrays/TileStepper.h>
-//#include <casa/Arrays/TiledLineStepper.h>
+//#include <casacore/casa/Arrays/LatticeApply.h>
+//#include <casacore/casa/Arrays/LatticeIterator.h>
+//#include <casacore/casa/Arrays/LatticeStepper.h>
+//#include <casacore/casa/Arrays/TileStepper.h>
+//#include <casacore/casa/Arrays/TiledLineStepper.h>
 
-//#include <lattices/Lattices/SubLattice.h>
-//#include <lattices/Lattices/LatticeExpr.h>
+//#include <casacore/lattices/Lattices/SubLattice.h>
 
-//#include <lattices/Lattices/LatticeRegion.h>
-//#include <lattices/Lattices/LCSlicer.h>
-//#include <lattices/Lattices/LCBox.h>
-//#include <lattices/Lattices/LCEllipsoid.h>
-//#include <lattices/Lattices/LCPolygon.h>
-//#include <lattices/Lattices/LCUnion.h>
-//#include <lattices/Lattices/LCIntersection.h>
-//#include <lattices/Lattices/LCDifference.h>
-//#include <lattices/Lattices/LCConcatenation.h>
-//#include <lattices/Lattices/LCComplement.h>
-//#include <lattices/Lattices/LCExtension.h>
+//#include <casacore/lattices/LRegions.h>
+//#include <casacore/lattices/LEL.h>
+//#include <casacore/lattices/LatticeMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 
@@ -345,49 +336,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <p>
 //  There is a rich variety of <linkto class=LCRegion>region</linkto>
 //  classes which can be used to define a LatticeRegion in pixel coordinates.
-//  The elementary ones are <linkto class=LCBox>box</linkto>,
-//  <linkto class=LCEllipsoid>ellipsoid</linkto>,
-//  <linkto class=LCPolygon>polygon</linkto>,
-//  <linkto class=LCPixelSet>pixelset</linkto>, and
-//  <linkto class=LCPagedMask>good/bad mask</linkto>.
-//  Compound region classes can be used to make a
-//  <linkto class=LCUnion>union</linkto>,
-//  <linkto class=LCIntersection>intersection</linkto>,
-//  <linkto class=LCDifference>difference</linkto>,
-//  <linkto class=LCConcatenation>concatenation</linkto>,
-//  <linkto class=LCComplement>complement</linkto>, or
-//  <linkto class=LCExtension>extension</linkto>
-//  from one or more regions.
-//  <br>Apart from these region classes, class
-//  <linkto class=LCSlicer>LCSlicer</linkto> can be used to define
-//  a box with optional strides. It also offers the opportunity to
-//  define the box in fractions or to define it relative to the
-//  center of the lattice or relative to a reference pixel.
-//  <br>The final, and most general way, to define regions is by
-//  means of the world coordinates region classes in the
-//  <linkto module=Images>Images</linkto> module, in particular
-//  the <linkto class=WCRegion>WCRegion</linkto> class.
-//  However, world coordinate regions can only be used with images.
+//  They are described in module
+//  <a href="group__LRegions__module.html">LRegions</a>.
 //  
-//  <li>A <linkto class=LatticeExpr>LatticeExpr</linkto> represents
-//  a mathematical expression of lattices. All standard operators, regions,
+//  <li> Module <a href="group__LEL__module.html">LEL</a> contains classes to
+//  form a mathematical expression of lattices. All standard operators, regions,
 //  and many, many <linkto class=LatticeExprNode>functions</linkto>
 //  can be used in an expression.
-//  <br> An expression is calculated on-the-fly. Thus only when
-//  the user gets a part of the lattice, is the expression calculated
-//  for that part. Subexpressions resulting in a scalar are calculated
-//  only once, on a get of the first part of the lattice expression.
-//  <br> Note that a lattice expression is not writable, thus using
-//  the put function on such a lattice results in an exception.
-//  <br> <a href="../notes/223.html">Note 223</a>
-//  gives a more detailed
-//  explanation of the capabilities of LEL (Lattice Expression Language).
-//  <p>
-//  When the expression consists of images, the result can also be
-//  treated as an image using class <linkto class=ImageExpr>ImageExpr</linkto>.
-//  With the <src>command</src> function in
-//  <linkto class=ImageExprParse>ImageExprParse</linkto> it is possible
-//  to parse and execute a LEL expression given as as a string.
 //  </ul>
 //
 // <li> <linkto class=LatticeLocker>LatticeLocker</linkto> 
@@ -453,16 +408,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </motivation>
 
 // <todo asof="1998/10/10">
-//  <li> Make Lattice expressions mask aware.
-//  <li> Set cache size correctly in expressions and sublattices.
 //  <li> Make MaskedIterator class?
 // </todo>
 
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
-
-

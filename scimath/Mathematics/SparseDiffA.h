@@ -30,10 +30,10 @@
 #define SCIMATH_SPARSEDIFFA_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Mathematics/SparseDiff.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/SparseDiff.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward declarations
   template <class T> class Vector;
@@ -173,6 +173,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

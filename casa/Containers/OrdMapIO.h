@@ -50,14 +50,15 @@
 // <group name="OrderedMap IO">
 // </group>
 
-#include <casa/Containers/MapIO.h>
-#include <casa/Containers/OrderedMap.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/MapIO.h>
+#include <casacore/casa/Containers/OrderedMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
-} //# NAMESPACE CASA - END
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/OrdMapIO.tcc>
+#include <casacore/casa/Containers/OrdMapIO.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

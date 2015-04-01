@@ -29,17 +29,17 @@
 #define CASA_PARAM_H
 
 
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
-#include <casa/BasicSL/String.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/stdlib.h>
-#include <casa/string.h>             // need things like strlen() and such
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/string.h>             // need things like strlen() and such
 
 //# Forward declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 // A simple keyword/value pair with internal help Strings.
@@ -243,7 +243,7 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

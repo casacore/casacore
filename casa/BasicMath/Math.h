@@ -28,17 +28,17 @@
 #ifndef CASA_MATH_H
 #define CASA_MATH_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 //# The following is to get abs(int) and (is)finite.
-#include <casa/math.h>
-#include <casa/stdlib.h>
+#include <casacore/casa/math.h>
+#include <casacore/casa/stdlib.h>
 
 // On some systems the following is needed to get the finite function
 #if defined (AIPS_SOLARIS) || defined(AIPS_IRIX)
 #include <ieeefp.h>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 // <summary>
@@ -297,7 +297,7 @@ inline Bool isNaN (const Float& val)
 }
 inline Bool isNaN(Double val)
 {
-  return ( isnan(val) );
+  return ( std::isnan(val) );
 }
 // </group>
 
@@ -338,6 +338,6 @@ void setInf(Double& val);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

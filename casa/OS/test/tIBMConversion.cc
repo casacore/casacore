@@ -26,12 +26,12 @@
 //# $Id$
 
 
-#include <casa/OS/IBMConversion.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/iostream.h>
+#include <casacore/casa/OS/IBMConversion.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void showFloat (float f)
 {
     uChar* c = (uChar*)(&f);

@@ -28,13 +28,13 @@
 #define MEASURES_UVWMACHINE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures.h>
-#include <measures/Measures/MCDirection.h>
-#include <casa/Quanta/MVPosition.h>
-#include <casa/Quanta/RotMatrix.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/casa/Quanta/RotMatrix.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MeasFrame;
@@ -285,7 +285,7 @@ class UVWMachine {
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-#include <casa/BasicSL/Constants.h>
-#include <casa/Exceptions/Error.h>
-#include <scimath/Mathematics/MathFunc.h>
+#ifndef SCIMATH_MATHFUNC_TCC
+#define SCIMATH_MATHFUNC_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Mathematics/MathFunc.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //
 // This file implements an abstract base class of MathFunc objects
@@ -779,5 +782,7 @@ MathFunc<T> * ExpSincConv<T>::clone() const
 { return new ExpSincConv<T>(*this);}  // use ExpSincConv copy ctor
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

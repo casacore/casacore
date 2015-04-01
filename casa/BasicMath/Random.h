@@ -28,9 +28,9 @@
 #ifndef CASA_RANDOM_H
 #define CASA_RANDOM_H
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Math.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Math.h>
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;
 template<class T> class Vector;
@@ -1391,6 +1391,6 @@ inline Double Weibull::beta() const {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

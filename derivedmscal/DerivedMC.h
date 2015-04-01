@@ -28,9 +28,10 @@
 #ifndef DERIVEDMSCAL_DERIVEDMC_H
 #define DERIVEDMSCAL_DERIVEDMC_H
 
-#include <derivedmscal/DerivedMC/DerivedMSCal.h>
+#include <casacore/casa/aips.h>
+#include <casacore/derivedmscal/DerivedMC/DerivedMSCal.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -103,6 +104,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

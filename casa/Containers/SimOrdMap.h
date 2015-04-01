@@ -28,12 +28,12 @@
 #ifndef CASA_SIMORDMAP_H
 #define CASA_SIMORDMAP_H
 
-#include <casa/aips.h>
-#include <casa/Containers/OrderedPair.h>
-#include <casa/Containers/Block.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/OrderedPair.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Define a macro to cast kvblk[i] to OrderedPair<K,V>*.
 //# This is needed because the compiler outlines the inline functions pair.
@@ -206,9 +206,9 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/SimOrdMap.tcc>
+#include <casacore/casa/Containers/SimOrdMap.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

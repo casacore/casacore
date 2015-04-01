@@ -25,12 +25,15 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/Lorentzian1DParam.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
+#ifndef SCIMATH_LORENTZIAN1DPARAM_TCC
+#define SCIMATH_LORENTZIAN1DPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/Lorentzian1DParam.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 ///template<class T>
@@ -104,5 +107,7 @@ void Lorentzian1DParam<T>::setFlux(const T &flux) {
   param_p[HEIGHT] = flux*T(C::_1_pi)/abs(param_p[WIDTH])/fwhm2int;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

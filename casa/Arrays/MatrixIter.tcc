@@ -25,9 +25,12 @@
 //#
 //# $Id$
 
-#include<casa/Arrays/MatrixIter.h>
+#ifndef CASA_MATRIXITER_TCC
+#define CASA_MATRIXITER_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include<casacore/casa/Arrays/MatrixIter.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a)
 : ArrayIterator<T>(a, 2)
@@ -49,4 +52,6 @@ template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a,
     this->ap_p = mp;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

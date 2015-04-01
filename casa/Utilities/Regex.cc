@@ -27,17 +27,17 @@
 
 // Regex class implementation
 
-#include <casa/Utilities/cregex.h>
+#include <casacore/casa/Utilities/cregex.h>
 
-#include <casa/Utilities/Regex.h>
-#include <casa/BasicSL/String.h>
-#include <casa/stdexcept.h>
-#include <casa/iostream.h>
-#include <casa/vector.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/stdexcept.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/vector.h>
 #include <cstring>                  //# for memcpy with gcc-4.3
 #include <stdlib.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Regex::Regex() {
   create("",0,0,0);
@@ -45,7 +45,7 @@ Regex::Regex() {
 
 void Regex::create(const String& exp, Int fast, Int bufsize, 
 		    const Char* transtable) {
-  str     = new String(exp);
+  str     = exp;
   fastval = fast;
   bufsz   = bufsize;
   trans   = 0;
@@ -88,8 +88,6 @@ void Regex::dealloc() {
   }
   delete reg;
   reg=0;
-  delete str;
-  str=0;
   delete [] trans;
   trans=0;
 }
@@ -110,7 +108,7 @@ Bool Regex::OK() const {
 }
 
 ostream &operator<<(ostream &ios, const Regex &exp) {
-  return ios << *exp.str;
+  return ios << exp.str;
 }
 
 String::size_type Regex::find(const Char *s, String::size_type len,
@@ -166,12 +164,12 @@ Regex::~Regex() {
 }
 
 Regex::Regex(const Regex &that) : RegexBase() {
-  create(*that.str, that.fastval, that.bufsz, that.trans);
+  create(that.str, that.fastval, that.bufsz, that.trans);
 }
 
 Regex &Regex::operator=(const Regex &that) {
   dealloc();
-  create(*that.str, that.fastval, that.bufsz, that.trans);
+  create(that.str, that.fastval, that.bufsz, that.trans);
   return *this;
 }
 
@@ -499,5 +497,5 @@ const Regex RXuppercase("[A-Z]+", 1);
 const Regex RXalphanum("[0-9A-Za-z]+", 1);
 const Regex RXidentifier("[A-Za-z_][A-Za-z0-9_]*", 1);
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

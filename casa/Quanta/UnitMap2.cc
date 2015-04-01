@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <casa/Quanta/UnitMap.h>
+#include <casacore/casa/Quanta/UnitMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Initialise the maps
 void UnitMap::initUMPrefix() {
@@ -75,5 +75,5 @@ void UnitMap::initUMPrefix() {
 			   ("y", UnitName("y", C::yocto, "yocto")));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

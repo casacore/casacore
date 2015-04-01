@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <tables/Tables/TabPath.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/tables/Tables/TabPath.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <unistd.h>                    // for system call access
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# This is the implementation of the class TabPath.
 
@@ -80,5 +80,5 @@ const String& TabPath::dir (uInt dirnr) const
     return tabDir_p[dirnr];
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

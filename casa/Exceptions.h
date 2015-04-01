@@ -29,9 +29,11 @@
 #define CASA_EXCEPTIONS_H
 
 
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Exceptions/Error.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -60,7 +62,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <em>This example shows how a more specific exception can be caught as
 // a more general exception:</em>
 // <srcblock>
-//     #include <casa/Exceptions.h>
+//     #include <casacore/casa/Exceptions.h>
 //     #include <iostream>
 //     main() {
 //         try {
@@ -74,6 +76,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

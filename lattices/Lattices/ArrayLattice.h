@@ -30,11 +30,12 @@
 #define LATTICES_ARRAYLATTICE_H
 
 //# Includes
-#include <lattices/Lattices/Lattice.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/casa/Arrays/Array.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A memory resident Lattice
@@ -232,9 +233,9 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/ArrayLattice.tcc>
+#include <casacore/lattices/Lattices/ArrayLattice.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

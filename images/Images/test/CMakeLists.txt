@@ -47,6 +47,7 @@ tImageExprParse_addDir
 tImageInfo
 tImageRegrid
 tImageStatistics
+tImageStatistics2
 tImageUtilities
 tLELSpectralIndex
 tMIRIADImage

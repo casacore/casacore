@@ -1,4 +1,4 @@
-//# LatticeMath.h: Mathematical operations (fitting) on lattices
+//# LatticeMath.h: Mathematical operations on lattices
 //# Copyright (C) 2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,33 +28,39 @@
 #ifndef LATTICES_LATTICEMATH_H
 #define LATTICES_LATTICEMATH_H
 
-#include <lattices/LatticeMath/LatticeFit.h>
-#include <lattices/LatticeMath/Fit2D.h>
+#include <casacore/lattices/LatticeMath/LatticeFit.h>
+#include <casacore/lattices/LatticeMath/Fit2D.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 
 // <summary>
-// Mathematical operations (fitting) on lattices.
+// Mathematical operations on lattices.
 // </summary>
 
 // <prerequisite>
 //   <li> module <linkto module=Lattices>Lattices</linkto>
-//   <li> module <linkto module=Fitting>Fitting</linkto>
-//   <li> module <linkto module=Functionals>Functionals</linkto>
 // </prerequisite>
 
 // <reviewed reviewer="Peter Barnes" date="1999/10/30" demos="">
 // </reviewed>
 
 // <synopsis>
-// LatticeMath contains a few classes to do fitting of a 1-dim or 2-dim
-// functional to the data in a lattice.
+// LatticeMath contains a various groups of classes to do mathematics
+// on a lattice.
+// <ul>
+//  <li> Statistics.
+//  <li> Least squares fitting.
+//  <li> FFT.
+//  <li> Interpolation.
+//  <li> Histogram.
+//  <li> Clean.
+// </ul>
 // </synopsis>
 
 // </module>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

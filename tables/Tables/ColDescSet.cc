@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ColDescSet.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/DataManager.h>
-#include <casa/Containers/SimOrdMapIO.h>
-#include <tables/Tables/TableError.h>
-#include <casa/iostream.h>
+#include <casacore/tables/Tables/ColDescSet.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/casa/Containers/SimOrdMapIO.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 ColumnDescSet::ColumnDescSet()
@@ -287,5 +287,5 @@ void ColumnDescSet::show (ostream& os) const
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Slice;
@@ -394,6 +394,24 @@ public:
     // Are all values fixed (i.e., no MimicSource given)?
     Bool isFixed() const;
 
+    // Set the start and end positions. No explicit checking is done that
+    // the input parameters make sense, so you must be certain if you
+    // call these. These are useful if you have a loop with many iterations
+    // and you do not wish the overhead of creating a new Slicer object
+    // for each iteration if the only thing you are doing is adjusting
+    // the start and end positions. Other than for performance reasons,
+    // these methods should not be called and you should prefer the
+    // error checking provided by constructing a new Slicer object.
+    // Note that the length is not updated, so in principle care should
+    // be taken that the length does not change.
+    // <group>
+    void setStart (const IPosition& start)
+      { start_p = start; }
+    void setEnd (const IPosition& end)
+      { end_p = end; }
+    // </group>
+
+
 private:
     LengthOrLast asEnd_p;
     IPosition    start_p;
@@ -410,7 +428,7 @@ private:
 
     // Check the given start, end/length and stride.
     // Fill in the length or end.
-    // It also call <src>fillFixed</src> to fill the fixed flag.
+    // It also calls <src>fillFixed</src> to fill the fixed flag.
     void fillEndLen();
 
     // Fill in start, len and stride from a Slice.
@@ -450,7 +468,7 @@ inline Bool Slicer::isFixed() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

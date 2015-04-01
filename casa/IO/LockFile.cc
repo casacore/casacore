@@ -26,19 +26,19 @@
 //# $Id$
 
 
-#include <casa/IO/LockFile.h>
-#include <casa/IO/FiledesIO.h>
-#include <casa/IO/MemoryIO.h>
-#include <casa/IO/CanonicalIO.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/Path.h>
-#include <casa/OS/CanonicalConversion.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/LockFile.h>
+#include <casacore/casa/IO/FiledesIO.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/IO/CanonicalIO.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/CanonicalConversion.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 
 // PABLO_IO is used to profile the IO performance of the Casacore (in
 // particular to help us locate bottlenecks associated with parallel
@@ -67,7 +67,7 @@
 #define NRREQID 32u
 #define SIZEREQID ((1 + 2*NRREQID) * SIZEINT)
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LockFile::LockFile (const String& fileName, double inspectInterval,
 		    Bool create, Bool setRequestFlag, Bool mustExist,
@@ -437,4 +437,4 @@ uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
     return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

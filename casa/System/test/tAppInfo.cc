@@ -26,17 +26,17 @@
 //#
 //# $Id$
 
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/System/AppInfo.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/BasicSL/String.h>
-#include <casa/System/AipsrcVector.h>
-#include <casa/Utilities/Regex.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/System/AppInfo.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/System/AipsrcVector.h>
+#include <casacore/casa/Utilities/Regex.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
     Double tz   = AppInfo::timeZone();

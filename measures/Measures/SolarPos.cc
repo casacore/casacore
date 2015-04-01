@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/SolarPos.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <measures/Measures/MeasTable.h>
-#include <casa/System/AipsrcValue.h>
+#include <casacore/measures/Measures/SolarPos.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/casa/System/AipsrcValue.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 const Double SolarPos::INTV = 0.04;
@@ -337,5 +337,5 @@ void SolarPos::calcSun(Double t) {
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

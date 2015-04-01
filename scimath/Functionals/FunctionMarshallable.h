@@ -29,11 +29,12 @@
 #ifndef SCIMATH_FUNCTIONMARSHALLABLE_H
 #define SCIMATH_FUNCTIONMARSHALLABLE_H
 
-#include <scimath/Functionals/Function.h>
-#include <scimath/Functionals/FunctionFactoryErrors.h>
-#include <scimath/Functionals/SerialHelper.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/scimath/Functionals/FunctionFactoryErrors.h>
+#include <casacore/scimath/Functionals/SerialHelper.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // a class for serializing/reconstituting Function objects to/from Records
@@ -121,7 +122,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

@@ -29,14 +29,14 @@
 #define MEASURES_EARTHMAGNETICMACHINE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures.h>
-#include <measures/Measures/MCDirection.h>
-#include <casa/Quanta/MVPosition.h>
-#include <measures/Measures/EarthField.h>
-#include <casa/Quanta/MVEarthMagnetic.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/measures/Measures/EarthField.h>
+#include <casacore/casa/Quanta/MVEarthMagnetic.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MeasFrame;
@@ -265,6 +265,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

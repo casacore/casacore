@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSDataDescColumns.h>
-#include <ms/MeasurementSets/MSDataDescription.h>
-#include <casa/Exceptions/Error.h>
-#include <tables/Tables/ColDescSet.h>
-#include <tables/Tables/TableDesc.h>
+#include <casacore/ms/MeasurementSets/MSDataDescColumns.h>
+#include <casacore/ms/MeasurementSets/MSDataDescription.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/tables/Tables/ColDescSet.h>
+#include <casacore/tables/Tables/TableDesc.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSDataDescColumns::ROMSDataDescColumns()
   :flagRow_p(),
@@ -158,5 +158,5 @@ attachOptionalCols(MSDataDescription& msDataDesc)
 // compile-command: "gmake MSDataDescColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

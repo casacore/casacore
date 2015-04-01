@@ -25,14 +25,17 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TVecMath.h>
-#include <tables/Tables/TVec.h>
-#include <tables/Tables/TVecTemp.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/BasicMath/Math.h>
+#ifndef TABLES_TVECMATH_TCC
+#define TABLES_TVECMATH_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/tables/Tables/TVecMath.h>
+#include <casacore/tables/Tables/TVec.h>
+#include <casacore/tables/Tables/TVecTemp.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/BasicMath/Math.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Add, subtract, multiply, divide table vector.
 //# Define it for a vector and scalar, 2 vectors, 2 vectors with assign.
@@ -292,5 +295,7 @@ TabVecRep<T>& tabVecRepcrossproduct (const TabVecRep<T>& tvl,
     return vec;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

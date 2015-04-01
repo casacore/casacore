@@ -26,26 +26,26 @@
 //# $Id$
 
 
-#include <casa/Logging/LogFilter.h>
-#include <tables/LogTables/LogFilterTaql.h>
-#include <casa/Logging/LogMessage.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/Logging/LogSink.h>
-#include <casa/Logging/NullLogSink.h>
-#include <casa/Logging/MemoryLogSink.h>
-#include <casa/Logging/StreamLogSink.h>
-#include <tables/LogTables/TableLogSink.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogFilter.h>
+#include <casacore/tables/LogTables/LogFilterTaql.h>
+#include <casacore/casa/Logging/LogMessage.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/Logging/LogSink.h>
+#include <casacore/casa/Logging/NullLogSink.h>
+#include <casacore/casa/Logging/MemoryLogSink.h>
+#include <casacore/casa/Logging/StreamLogSink.h>
+#include <casacore/tables/LogTables/TableLogSink.h>
+#include <casacore/casa/Logging/LogIO.h>
 
-#include <tables/Tables.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/OS/Directory.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/tables/Tables.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/sstream.h>
-#include <casa/iostream.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void testLogFilter()
 {
     // LogFilter(LogMessage::Priority lowest=LogMessage::DEBUGGING);

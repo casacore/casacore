@@ -26,25 +26,25 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Inputs.h>
-#include <images/Images/ImageOpener.h>
-#include <images/Images/ImageExpr.h>
-#include <images/Images/ImageExprParse.h>
-#include <images/Images/ImageFITSConverter.h>
-#include <images/Images/FITSImage.h>
-#include <images/Images/MIRIADImage.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Inputs.h>
+#include <casacore/images/Images/ImageOpener.h>
+#include <casacore/images/Images/ImageExpr.h>
+#include <casacore/images/Images/ImageExprParse.h>
+#include <casacore/images/Images/ImageFITSConverter.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/images/Images/MIRIADImage.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main (int argc, const char* argv[])
 {
   try {
     // Register the FITS and Miriad image types.
-    casa::FITSImage::registerOpenFunction();
-    casa::MIRIADImage::registerOpenFunction();
+    casacore::FITSImage::registerOpenFunction();
+    casacore::MIRIADImage::registerOpenFunction();
 
     // enable input in no-prompt mode
     Input inputs(1);

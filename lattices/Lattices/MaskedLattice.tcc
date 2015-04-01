@@ -25,17 +25,20 @@
 //#
 //# $Id$
 
-
-#include <lattices/Lattices/MaskedLattice.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <lattices/Lattices/LCBox.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Utilities/COWPtr.h>
-#include <casa/Exceptions/Error.h>
+#ifndef LATTICES_MASKEDLATTICE_TCC
+#define LATTICES_MASKEDLATTICE_TCC
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/lattices/LRegions/LatticeRegion.h>
+#include <casacore/lattices/LRegions/LCBox.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Utilities/COWPtr.h>
+#include <casacore/casa/Exceptions/Error.h>
+
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 MaskedLattice<T>::MaskedLattice (const MaskedLattice<T>& that)
@@ -285,5 +288,7 @@ Bool MaskedLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
   return const_cast<LatticeRegion*>(ptr)->doGetSlice (buffer, section);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

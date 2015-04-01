@@ -26,21 +26,21 @@
 //#
 //# $Id$
 
-#include <coordinates/Coordinates/ObsInfo.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/Measures/MCPosition.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/Quanta/MVDirection.h>
-#include <casa/Containers/Record.h>
-#include <fits/FITS/FITSDateUtil.h>
-#include <casa/BasicSL/Constants.h>
+#include <casacore/coordinates/Coordinates/ObsInfo.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/Measures/MCPosition.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/fits/FITS/FITSDateUtil.h>
+#include <casacore/casa/BasicSL/Constants.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 String ObsInfo::defaultTelescope()
 {
@@ -585,5 +585,5 @@ ostream &operator<<(ostream &os, const ObsInfo &info)
     return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

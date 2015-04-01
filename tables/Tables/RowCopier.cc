@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <tables/Tables/RowCopier.h>
-#include <tables/Tables/TableColumn.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableError.h>
-#include <tables/Tables/Table.h>
+#include <casacore/tables/Tables/RowCopier.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/tables/Tables/Table.h>
 
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // this class is used internally by RowCopier and is what really does the work.
 
@@ -164,5 +164,5 @@ Bool RowCopier::copy(uInt toRow, uInt fromRow)
 RowCopier::~RowCopier()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -26,30 +26,30 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <measures/Measures.h>
-#include <measures/Measures/Aberration.h>
-#include <measures/Measures/MeasData.h>
-#include <measures/Measures/MeasFrame.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MCPosition.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MCRadialVelocity.h>
-#include <measures/Measures/MRadialVelocity.h>
-#include <measures/Measures/MCFrequency.h>
-#include <measures/Measures/MCDoppler.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/measures/Measures/Aberration.h>
+#include <casacore/measures/Measures/MeasData.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MCPosition.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MCRadialVelocity.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
+#include <casacore/measures/Measures/MCFrequency.h>
+#include <casacore/measures/Measures/MCDoppler.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
     try {
@@ -716,15 +716,27 @@ int main()
 	MFrequency::Ref r(i, mf);
 	MFrequency::Ref rundef(MFrequency::Undefined, mf);
 	try{
-	  MFrequency::Convert forw(r, rundef);
+	  MFrequency::Convert forw;
+          MFrequency mfreq(MFrequency::MVType(), r);
+          forw.setModel(mfreq);
+          forw.setOut (rundef);
 	  cout << MFrequency::showType(i) << " to " <<
 	    MFrequency::showType(MFrequency::Undefined) << " should not be possible." << endl;
 	  isok = False;
-	  MFrequency::Convert backw(rundef, r);
+	}
+	catch(const AipsError& x){
+	  // expected error
+	  cout << x.getMesg() << endl;
+	}
+        try {
+	  MFrequency::Convert backw;
+          MFrequency mfreq(MFrequency::MVType(), rundef);
+          backw.setModel(mfreq);
+          backw.setOut (r);
 	  cout << MFrequency::showType(MFrequency::Undefined) << " to " <<
 	    MFrequency::showType(i) << " should not be possible." << endl;
 	}
-	catch(AipsError x){
+	catch(const AipsError& x){
 	  // expected error
 	  cout << x.getMesg() << endl;
 	}

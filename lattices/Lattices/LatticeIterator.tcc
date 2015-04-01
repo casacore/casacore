@@ -25,22 +25,25 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
+#ifndef LATTICES_LATTICEITERATOR_TCC
+#define LATTICES_LATTICEITERATOR_TCC
 
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeNavigator.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/TileStepper.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/Assert.h> 
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/aips.h>
+
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeNavigator.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/TileStepper.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/Assert.h> 
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 RO_LatticeIterator<T>::RO_LatticeIterator()
@@ -336,5 +339,7 @@ Array<T>& LatticeIterator<T>::woCursor()
   return itsIterPtr->cursor (False, True);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

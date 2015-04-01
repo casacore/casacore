@@ -25,14 +25,14 @@
 //#
 //# $Id: PycValueHolder.cc,v 1.4 2006/11/20 23:56:04 gvandiep Exp $
 
-#include <python/Converters/PycValueHolder.h>
-#include <python/Converters/PycBasicData.h>
-#include <python/Converters/PycRecord.h>
-#include <python/Converters/PycArray.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/python/Converters/PycValueHolder.h>
+#include <casacore/python/Converters/PycBasicData.h>
+#include <casacore/python/Converters/PycRecord.h>
+#include <casacore/python/Converters/PycArray.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <boost/python/object.hpp>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
   boost::python::object casa_value_to_python::makeobject
   (ValueHolder const& vh)

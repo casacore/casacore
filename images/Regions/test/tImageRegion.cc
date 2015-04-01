@@ -22,14 +22,15 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id: HostInfoDarwin.h 21521 2014-12-10 08:06:42Z gervandiepen $
 
-#include <images/Regions/ImageRegion.h>
+#include <casacore/images/Regions/ImageRegion.h>
 
-#include <casa/OS/Directory.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <images/Images/PagedImage.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/images/Images/PagedImage.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main () {
 	String myname = "tmp.im";

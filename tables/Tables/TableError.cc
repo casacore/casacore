@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/Tables/TableError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableError::TableError (Category c)
 : AipsError("Table error",c)
@@ -197,5 +197,5 @@ TableParseError::TableParseError (const String& s,Category c)
 TableParseError::~TableParseError () throw()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

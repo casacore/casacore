@@ -28,11 +28,12 @@
 #ifndef IMAGES_FITSImgParser_H
 #define IMAGES_FITSImgParser_H
 
-#include <fits/FITS/fits.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class FITSExtInfo;
@@ -264,7 +265,7 @@ private:
 	FitsKeywordList kwlist_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

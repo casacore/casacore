@@ -28,11 +28,11 @@
 #ifndef CASA_BYTESINKSOURCE_H
 #define CASA_BYTESINKSOURCE_H
 
-#include <casa/aips.h>
-#include <casa/IO/ByteSink.h>
-#include <casa/IO/ByteSource.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/ByteSink.h>
+#include <casacore/casa/IO/ByteSource.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class TypeIO;
 
@@ -113,6 +113,6 @@ public:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

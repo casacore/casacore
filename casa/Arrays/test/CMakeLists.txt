@@ -40,6 +40,7 @@ tSlicer
 tSlidingArrayMath
 tStringArray
 tSumPerformance
+tVector
 tVectorSTLIterator
 )
 

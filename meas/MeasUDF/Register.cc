@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <meas/MeasUDF/Register.h>
-#include <meas/MeasUDF/PositionUDF.h>
-#include <meas/MeasUDF/EpochUDF.h>
-#include <meas/MeasUDF/DirectionUDF.h>
+#include <casacore/meas/MeasUDF/Register.h>
+#include <casacore/meas/MeasUDF/PositionUDF.h>
+#include <casacore/meas/MeasUDF/EpochUDF.h>
+#include <casacore/meas/MeasUDF/DirectionUDF.h>
 
-using namespace casa;
+using namespace casacore;
 
 void register_meas()
 {

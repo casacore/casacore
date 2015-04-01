@@ -134,7 +134,7 @@ sub handleLinkto
   my $endlink = "";
   if ($linkstr =~ m|<linkto\s+class\s*=\s*([^:#]*?)\s*>|i) {
     # A link to a class.
-    $linkstr =~ s|<linkto\s+class\s*=\s*['"]?(.*?)['"]?\s*>| \\link casa::$1 |i;
+    $linkstr =~ s|<linkto\s+class\s*=\s*['"]?(.*?)['"]?\s*>| \\link casacore::$1 |i;
     $endlink = " \\endlink";
   } elsif ($linkstr =~ m%<linkto\s+module\s*=\s*([^:#]*?)\s*>%i) {
     # A link to a module.

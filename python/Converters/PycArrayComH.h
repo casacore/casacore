@@ -83,6 +83,6 @@
 
   // Convert a Casacore array to a Python array object.
   template <typename T>
-  boost::python::object makePyArrayObject (casa::Array<T> const& arr);
+  boost::python::object makePyArrayObject (casacore::Array<T> const& arr);
 
 

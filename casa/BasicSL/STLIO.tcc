@@ -25,11 +25,14 @@
 //#
 //# $Id: STLIO.tcc 21315 2013-02-13 12:24:02Z gervandiepen $
 
-//# Includes
-#include <casa/BasicSL/STLIO.h>
-#include <casa/IO/AipsIOCarray.h>
+#ifndef CASA_STLIO_TCC
+#define CASA_STLIO_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/IO/AipsIOCarray.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<class ITER>
   void showDataIter (ostream& os, ITER begin, const ITER& end, const char* sep,
@@ -68,4 +71,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return ios;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

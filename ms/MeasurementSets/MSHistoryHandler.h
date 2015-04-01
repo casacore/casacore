@@ -29,11 +29,12 @@
 #ifndef MS_MSHISTORYHANDLER_H
 #define MS_MSHISTORYHANDLER_H
 
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSHistory.h>
+#include <casacore/casa/aips.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSHistory.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class MSHistoryColumns;
 class LogIO;
@@ -96,6 +97,6 @@ class MSHistoryHandler
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

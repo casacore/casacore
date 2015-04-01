@@ -26,9 +26,12 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/COWPtr.h>
+#ifndef CASA_COWPTR_TCC
+#define CASA_COWPTR_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Utilities/COWPtr.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> COWPtr<T>::COWPtr(T *obj, Bool deleteIt, Bool readOnly)
 : obj_p(obj, deleteIt), const_p(readOnly)
@@ -61,5 +64,7 @@ template <class T> Bool COWPtr<T>::makeUnique()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

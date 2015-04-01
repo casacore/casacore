@@ -24,147 +24,34 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeUtilities.h>
+#ifndef LATTICES_LATTICEUTILITIES_TCC
+#define LATTICES_LATTICEUTILITIES_TCC
 
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/IPosition.h>
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <lattices/Lattices/ExtendLattice.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/MaskedLatticeIterator.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/MaskedLattice.h>
-#include <lattices/Lattices/LatticeStatistics.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <lattices/Lattices/RebinLattice.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/LatticeUtilities.h>
 
-namespace casa {  //# namespace casa begin
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/ExtendLattice.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/MaskedLatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/MaskedLattice.h>
+#include <casacore/lattices/LatticeMath/LatticeStatistics.h>
+#include <casacore/lattices/Lattices/RebinLattice.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-template <class T> 
-void minMax(T & globalMin, T & globalMax, 
-	    IPosition & globalMinPos, IPosition & globalMaxPos, 
-	    const Lattice<T> & lat) 
-{
-  //check if IPositions are conformant
-  IPosition zeroPos = IPosition( lat.shape().nelements(), 0); 
-  DebugAssert((zeroPos.nelements() == globalMinPos.nelements()), AipsError);
-  DebugAssert((zeroPos.nelements() == globalMaxPos.nelements()), AipsError);
-  
-  IPosition cursorShape(lat.niceCursorShape());
-  RO_LatticeIterator<T> latIter(lat, cursorShape);
-  
-  globalMin = lat.getAt( zeroPos );
-  globalMinPos = zeroPos;
-  globalMax = lat.getAt( zeroPos );
-  globalMaxPos = zeroPos;
-  
-  for(latIter.reset(); !latIter.atEnd(); latIter++) {
-
-    T localMin;
-    IPosition localMinPos( latIter.cursor().ndim() );
-    T localMax;
-    IPosition localMaxPos( latIter.cursor().ndim() );
-
-    Array<T>  arr = latIter.cursor();
-
-    minMax(localMin, localMax, localMinPos, localMaxPos, arr);
-
-    IPosition loc (latIter.position());
-    
-    if (localMin < globalMin) {
-      globalMin = localMin;
-      globalMinPos = loc + localMinPos;
-    }
-    if (localMax > globalMax) {
-      globalMax = localMax;
-      globalMaxPos = loc + localMaxPos;
-    }
-  }
-}
-
+namespace casacore {  //# namespace casacore begin
 
 // LatticeUtilities
-
-template <class T>
-void LatticeUtilities::collapse (Array<T>& out, const IPosition& axes,
-                                 const MaskedLattice<T>& in,
-                                 Bool dropDegenerateAxes) 
-{ 
-   out.resize();
-   if (axes.nelements()==0) {
-      out = in.get(dropDegenerateAxes);
-   } else {
-      LatticeStatistics<T> stats(in, False, False);
-      AlwaysAssert(stats.setAxes(axes.asVector()), AipsError);
-      stats.getConvertedStatistic(out, LatticeStatsBase::MEAN, dropDegenerateAxes);
-   }
-}
-
-template <class T>
-void LatticeUtilities::collapse(
-	Array<T>& data, Array<Bool>& mask,
-    const IPosition& axes,
-    const MaskedLattice<T>& in,
-    Bool dropDegenerateAxes,
-    Bool getPixels, Bool getMask,
-    const LatticeStatsBase::StatisticsTypes stat
-)
-{ 
-   data.resize();
-   mask.resize();
-   if (axes.nelements()==0) {
-      if (getPixels) data = in.get(dropDegenerateAxes);
-      if (getMask) mask = in.getMask(dropDegenerateAxes);
-      return;
-   }
-
-// These lattice are all references so should be reasonably
-// fast.  I can't do it the otherway around, i.e. drop degenerate
-// axes first with an axes specifier because then the 'axes'
-// argument won't match one to one with the lattice axes and
-// that would be confusing.  Pity.
-                      
-   LatticeStatistics<T> stats(in, False, False);
-   stats.setAxes(axes.asVector());
-//
-   if (getPixels) {
-      stats.getConvertedStatistic(data, stat, dropDegenerateAxes);
-   } else {
-      data.resize(IPosition(0,0));
-   }
-
-// CLumsy way to get mask.  I should add it to LS
-
-   if (getMask) {
-      Array<T> n;
-      stats.getConvertedStatistic(n, LatticeStatsBase::NPTS, dropDegenerateAxes);
-      mask.resize(n.shape());
-//
-      T lim = (
-    	stat == LatticeStatsBase::SIGMA
-    	|| stat == LatticeStatsBase::VARIANCE
-      ) ? 1.5 : 0.5;
-      typename Array<T>::const_iterator itend = n.end();
-      typename Array<T>::const_iterator it;
-      typename Array<Bool>::iterator mIt;
-      for (it=n.begin(),mIt=mask.begin(); it!=itend; ++it,++mIt) {
-         *mIt = *it >= lim;
-      }
-   } else {
-      mask.resize();
-   }
- }
-
 
 template <class T>
 void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
@@ -299,4 +186,6 @@ void LatticeUtilities::bin (MaskedArray<T>& out, const MaskedArray<T>& in,
    out = tmp;
 }
 
-} //# End namespace casa
+} //# End namespace casacore
+
+#endif

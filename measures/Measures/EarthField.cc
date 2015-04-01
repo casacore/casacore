@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/EarthField.h>
-#include <measures/Measures/MeasTable.h>
-#include <casa/Quanta/MVPosition.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/System/AipsrcValue.h>
+#include <casacore/measures/Measures/EarthField.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/System/AipsrcValue.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 const Double EarthField::INTV = 50000;
@@ -278,5 +278,5 @@ void EarthField::calcField(const MVPosition &pos) {
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

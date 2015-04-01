@@ -25,9 +25,12 @@
 //#
 //# $Id$
 
-#include <casa/Containers/Link.h>
+#ifndef CASA_LINK_TCC
+#define CASA_LINK_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Containers/Link.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class t> Link<t> *Link<t>::unlink(Link<t> *) {
   Link<t> *nxt = Next;
@@ -43,5 +46,7 @@ template<class t> Link<t>::~Link() {
   if (Next != 0) delete Next;}
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

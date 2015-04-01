@@ -30,10 +30,10 @@
 
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>Ordered pair class</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -94,9 +94,9 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/OrderedPair.tcc>
+#include <casacore/casa/Containers/OrderedPair.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

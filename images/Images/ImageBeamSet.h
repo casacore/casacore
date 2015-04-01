@@ -22,17 +22,18 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 
 #ifndef IMAGES_IMAGEBEAMSET_H
 #define IMAGES_IMAGEBEAMSET_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Matrix.h>
-#include <scimath/Mathematics/GaussianBeam.h>
-//#include <measures/Measures/Stokes.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/scimath/Mathematics/GaussianBeam.h>
+//#include <casacore/measures/Measures/Stokes.h>
 //#include <map>
 
-namespace casa {
+namespace casacore {
 
 class SpectralCoordinate;
 
@@ -262,6 +263,9 @@ public:
 
     // If verbose, log all beams, if not just summarize beam stats.
     void summarize(LogIO& log, Bool verbose, const CoordinateSystem& csys) const;
+
+    // Modify the beam set by rotating all beams counterclockwise through the specified angle.
+    void rotate(const Quantity& angle);
 
 private:
 

@@ -25,14 +25,14 @@
 //# $Id$
 
 
-#include <scimath/Mathematics/FFTW.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/VectorIter.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/OS/HostInfo.h>
+#include <casacore/scimath/Mathematics/FFTW.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/VectorIter.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/OS/HostInfo.h>
 
 #ifdef HAVE_FFTW3
 # include <fftw3.h>
@@ -41,7 +41,7 @@
 #include <iostream>
 
 
-namespace casa {
+namespace casacore {
 
   volatile Bool FFTW::is_initialized_fftw = False;
   Mutex FFTW::theirMutex;
@@ -314,4 +314,4 @@ namespace casa {
 
 #endif
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

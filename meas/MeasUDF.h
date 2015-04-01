@@ -28,9 +28,10 @@
 #ifndef MEAS_MEASUDF_H
 #define MEAS_MEASUDF_H
 
-#include <meas/MeasUDF/EpochUDF.h>
+#include <casacore/casa/aips.h>
+#include <casacore/meas/MeasUDF/EpochUDF.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -92,6 +93,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

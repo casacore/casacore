@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/SPolynomialParam.h>
-#include <casa/Arrays/Vector.h>
+#ifndef SCIMATH_SPOLYNOMIALPARAM_TCC
+#define SCIMATH_SPOLYNOMIALPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/SPolynomialParam.h>
+#include <casacore/casa/Arrays/Vector.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 SPolynomialParam<T>::SPolynomialParam() :
@@ -73,5 +76,7 @@ void SPolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
   for (uInt i=3; i<nparameters(); ++i) param_p[i] = coefficients[i-3];
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

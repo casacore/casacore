@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <images/Images/ImageAttrHandler.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/images/Images/ImageAttrHandler.h>
+#include <casacore/casa/Arrays/Vector.h>
 
-namespace casa {
+namespace casacore {
 
   ImageAttrHandler::~ImageAttrHandler()
   {
@@ -64,4 +64,4 @@ namespace casa {
   void ImageAttrHandler::closeGroup (const String&)
   {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

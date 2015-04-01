@@ -28,15 +28,15 @@
 
 //# Includes
 
-# include <fits/FITS/fits.h>
-# include <fits/FITS/hdu.h>
-# include <fits/FITS/fitsio.h>
-# include <casa/iostream.h>
-# include <casa/stdlib.h>
-# include <casa/namespace.h>
+# include <casacore/fits/FITS/fits.h>
+# include <casacore/fits/FITS/hdu.h>
+# include <casacore/fits/FITS/fitsio.h>
+# include <casacore/casa/iostream.h>
+# include <casacore/casa/stdlib.h>
+# include <casacore/casa/namespace.h>
 
 
-# include <casa/Arrays/Vector.h>
+# include <casacore/casa/Arrays/Vector.h>
 
 int main()
 {

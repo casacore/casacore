@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <derivedmscal/DerivedMC/UDFMSCal.h>
-#include <ms/MeasurementSets/MSAntennaGram.h>
-#include <ms/MeasurementSets/MSTimeGram.h>
-#include <ms/MeasurementSets/MSUvDistGram.h>
-#include <ms/MeasurementSets/MSSpwGram.h>
-#include <ms/MeasurementSets/MSFieldGram.h>
-#include <ms/MeasurementSets/MSArrayGram.h>
-#include <ms/MeasurementSets/MSStateGram.h>
-#include <ms/MeasurementSets/MSScanGram.h>
-#include <ms/MeasurementSets/MSSelectableMainColumn.h>
-#include <ms/MeasurementSets/MSObservationGram.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/ExprUnitNode.h>
-#include <casa/Arrays/ArrayIO.h>
+#include <casacore/derivedmscal/DerivedMC/UDFMSCal.h>
+#include <casacore/ms/MSSel/MSAntennaGram.h>
+#include <casacore/ms/MSSel/MSTimeGram.h>
+#include <casacore/ms/MSSel/MSUvDistGram.h>
+#include <casacore/ms/MSSel/MSSpwGram.h>
+#include <casacore/ms/MSSel/MSFieldGram.h>
+#include <casacore/ms/MSSel/MSArrayGram.h>
+#include <casacore/ms/MSSel/MSStateGram.h>
+#include <casacore/ms/MSSel/MSScanGram.h>
+#include <casacore/ms/MSSel/MSSelectableMainColumn.h>
+#include <casacore/ms/MSSel/MSObservationGram.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/TaQL/ExprUnitNode.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
 
-namespace casa {
+namespace casacore {
 
   UDFMSCal::UDFMSCal (ColType type, Int arg)
     : itsType (type),

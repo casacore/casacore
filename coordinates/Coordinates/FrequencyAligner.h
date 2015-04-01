@@ -30,13 +30,14 @@
 
 
 //# Includes
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MeasRef.h>
-#include <measures/Measures/MeasConvert.h>
-#include <scimath/Mathematics/InterpolateArray1D.h>
+#include <casacore/casa/aips.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/scimath/Mathematics/InterpolateArray1D.h>
 
-namespace casa {
+namespace casacore {
 
 //# Forward Declarations
 class MEpoch;
@@ -201,8 +202,8 @@ private:
 };
 
 
-} //# End namespace casa
+} //# End namespace casacore
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <coordinates/Coordinates/FrequencyAligner.tcc>
+#include <casacore/coordinates/Coordinates/FrequencyAligner.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

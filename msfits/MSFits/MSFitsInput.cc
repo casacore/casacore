@@ -26,78 +26,80 @@
 //# $Id$
 //
 
-#include <msfits/MSFits/MSFitsInput.h>
+#include <casacore/msfits/MSFits/MSFitsInput.h>
 
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Arrays/MatrixMath.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Containers/Record.h>
-#include <casa/Exceptions/Error.h>
-#include <fits/FITS/fitsio.h>
-#include <fits/FITS/FITSReader.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
-#include <ms/MeasurementSets/MSAntennaColumns.h>
-#include <ms/MeasurementSets/MSColumns.h>
-#include <ms/MeasurementSets/MSDataDescColumns.h>
-#include <ms/MeasurementSets/MSFeedColumns.h>
-#include <ms/MeasurementSets/MSFieldColumns.h>
-#include <ms/MeasurementSets/MSHistoryColumns.h>
-#include <ms/MeasurementSets/MSObsColumns.h>
-#include <ms/MeasurementSets/MSPolColumns.h>
-#include <ms/MeasurementSets/MSSpWindowColumns.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MeasData.h>
-#include <measures/Measures/Stokes.h>
-#include <measures/Measures/MeasTable.h>
-#include <casa/OS/File.h>
-#include <casa/OS/HostInfo.h>
-#include <casa/Quanta/MVTime.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/IncrementalStMan.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/StandardStMan.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableInfo.h>
-#include <tables/Tables/TableLock.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TiledColumnStMan.h>
-#include <tables/Tables/TiledShapeStMan.h>
-#include <tables/Tables/TiledDataStMan.h>
-#include <tables/Tables/TiledStManAccessor.h>
-#include <tables/Tables/ExprNode.h>
-#include <casa/Utilities/Fallible.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/fits/FITS/FITSReader.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/ms/MeasurementSets/MSAntennaColumns.h>
+#include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MeasurementSets/MSDataDescColumns.h>
+#include <casacore/ms/MeasurementSets/MSFeedColumns.h>
+#include <casacore/ms/MeasurementSets/MSFieldColumns.h>
+#include <casacore/ms/MeasurementSets/MSHistoryColumns.h>
+#include <casacore/ms/MeasurementSets/MSObsColumns.h>
+#include <casacore/ms/MeasurementSets/MSPolColumns.h>
+#include <casacore/ms/MeasurementSets/MSSpWindowColumns.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MeasData.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/HostInfo.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/DataMan/IncrementalStMan.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/DataMan/StandardStMan.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableInfo.h>
+#include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/DataMan/TiledColumnStMan.h>
+#include <casacore/tables/DataMan/TiledShapeStMan.h>
+#include <casacore/tables/DataMan/TiledDataStMan.h>
+#include <casacore/tables/DataMan/TiledStManAccessor.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/casa/Utilities/Fallible.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <fits/FITS/FITSDateUtil.h>
-#include <fits/FITS/FITSKeywordUtil.h>
-#include <fits/FITS/FITSSpectralUtil.h>
-#include <fits/FITS/BinTable.h>
-#include <fits/FITS/fits.h>
-#include <tables/LogTables/NewFile.h>
-#include <casa/System/ProgressMeter.h>
-#include <ms/MeasurementSets/MSTileLayout.h>
-#include <ms/MeasurementSets/MSSourceIndex.h>
-#include <ms/MeasurementSets/MSSummary.h>
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
-#include <casa/OS/Directory.h>
+#include <casacore/fits/FITS/FITSDateUtil.h>
+#include <casacore/fits/FITS/FITSKeywordUtil.h>
+#include <casacore/fits/FITS/FITSSpectralUtil.h>
+#include <casacore/fits/FITS/BinTable.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/tables/LogTables/NewFile.h>
+#include <casacore/casa/System/ProgressMeter.h>
+#include <casacore/ms/MeasurementSets/MSTileLayout.h>
+#include <casacore/ms/MSSel/MSSourceIndex.h>
+#include <casacore/ms/MSOper/MSSummary.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/OS/Directory.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+using std::make_pair;
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 extern void showBinaryTable(BinaryTableExtension &x);
 
@@ -599,7 +601,7 @@ void MSFitsInput::readFitsFile(Int obsType) {
         }
         catch(AipsError ex) {
            itsLog << LogOrigin("MSFitsInput", "readFitsFile")
-                  << "" //<< ex.getMesg() 
+                  << ex.getMesg() 
                   << LogIO::EXCEPTION;
         }
     } else if (infile_p->hdutype() == FITS::PrimaryTableHDU) {
@@ -980,6 +982,7 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     MSSource::addColumnToDesc(sourceTD, MSSource::REST_FREQUENCY);
     MSSource::addColumnToDesc(sourceTD, MSSource::SYSVEL);
     MSSource::addColumnToDesc(sourceTD, MSSource::TRANSITION);
+    MSSource::addColumnToDesc(sourceTD, MSSource::SOURCE_MODEL);
     SetupNewTable sourceSetup(ms.sourceTableName(), sourceTD, option);
     ms.rwKeywordSet().defineTable(MS::keywordName(MS::SOURCE), Table(
             sourceSetup, 0));
@@ -2198,6 +2201,13 @@ MDirection::Types MSFitsInput::getDirectionFrame(Double epoch) {
 
 void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
     MSFieldColumns& msField(msc_p->field());
+
+    TableRecord btKeywords = bt.getKeywords();
+    if (!btKeywords.isDefined("NO_IF")) {
+        throw(AipsError("MSFitsInput: Illegal SU file: no number of IFs"));
+    }
+    uInt noif = bt.getKeywords().asuInt("NO_IF");
+
     // Table suTab=bt.fullTable("",Table::Scratch);
     Table suTab = bt.fullTable();
     ROScalarColumn<Int> id(suTab, "ID. NO.");
@@ -2225,11 +2235,32 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
     }
     Int outRow = -1;
 
-    //  ROScalarColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
-    //  ROScalarColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
-    //  cout << "restfreq = " << restfreq.getColumn() << endl;
-    //  cout << "sysvel   = " << sysvel.getColumn() << endl;
-
+    // RESTFREQ and LSRVEL are 2D columns according to the AIPS Memo 117
+    restFreq_p.resize(noif, suTab.nrow());
+    sysVel_p.resize(noif, suTab.nrow());
+    try{
+      ROArrayColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
+      ROArrayColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
+      restfreq.getColumn(restFreq_p);
+      sysvel.getColumn(sysVel_p);
+    }
+    catch (std::exception x) {
+      if(noif>1){
+	itsLog << LogOrigin("MSFitsInput", "fillFieldTable") << LogIO::WARN
+	       << x.what() << ": " << "Inconsistent setup of RESTFREQ and LSRVEL columns." << endl
+	       << "With NO_IF>1, they should be arrays not scalars." << LogIO::POST;
+      }
+      ROScalarColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
+      ROScalarColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
+      Vector<Double> tmprf(suTab.nrow());
+      Vector<Double> tmpsv(suTab.nrow());
+      restfreq.getColumn(tmprf);
+      sysvel.getColumn(tmpsv);
+      for(uInt ii=0; ii<suTab.nrow(); ii++){
+	restFreq_p(0,ii) = tmprf(ii);
+	sysVel_p(0,ii) = tmpsv(ii);
+      }
+    }      
 
     // set the DIRECTION MEASURE REFERENCE for appropriate columns
 
@@ -2422,7 +2453,7 @@ void MSFitsInput::fillExtraTables() {
     // table entries for each field/spw combination
 
     if (addSourceTable_p)
-        itsLog << LogOrigin("MSFitsInput", "fillExtraable")
+        itsLog << LogOrigin("MSFitsInput", "fillExtraTables")
                << LogIO::NORMAL << "Filling SOURCE table." << LogIO::POST;
 
     Int nrow = ms_p.nrow();
@@ -2432,8 +2463,11 @@ void MSFitsInput::fillExtraTables() {
     Double lastTime = 0;
     Vector<Int> fieldId = msc_p->fieldId().getColumn();
     Vector<Int> ddId;
-    if (addSourceTable_p)
-        ddId = msc_p->dataDescId().getColumn();
+    if (addSourceTable_p){
+      ddId = msc_p->dataDescId().getColumn();
+    }
+
+    SimpleOrderedMap <pair<Int,Int>, Int> sourceFieldIndex(-1); // for the case we need to write the source table
 
     ProgressMeter meter(0.0, nrow * 1.0, "UVFITS Filler", "rows copied",
                 "", "", True, nrow / 100);
@@ -2461,7 +2495,7 @@ void MSFitsInput::fillExtraTables() {
                     msc_p->pointing().interval().put(np - j - 1, interval);
                 }
             }
-            /* Damn this is not right for concatenating later for mosaicing
+            /* This is not right for concatenating later for mosaicing
              As it is a useless piece of info copy from Field...field table will
              do
 
@@ -2482,16 +2516,16 @@ void MSFitsInput::fillExtraTables() {
              }
              */
             if (addSourceTable_p) {
+
                 lastDDId = ddId(i);
-                Int spwId = msc_p->dataDescription().spectralWindowId()(
-                        lastDDId);
+                Int spwId = msc_p->dataDescription().spectralWindowId()(lastDDId);
                 // now check if we've seen this field for this spectral window
                 // Use indexed access to the SOURCE sub-table
-                MSSourceIndex sourceIndex(ms_p.source());
-                sourceIndex.sourceId() = lastFieldId;
-                sourceIndex.spectralWindowId() = spwId;
-                Vector<uInt> rows = sourceIndex.getRowNumbers();
-                if (rows.nelements() == 0) {
+		pair<Int, Int> myfldspw = make_pair(lastFieldId, spwId);
+		if(!sourceFieldIndex.isDefined(myfldspw)){
+
+		    sourceFieldIndex.define(myfldspw, 1); 
+
                     ms_p.source().addRow();
                     Int j = ms_p.source().nrow() - 1;
                     MSSourceColumns & mss = msc_p->source();
@@ -2511,21 +2545,35 @@ void MSFitsInput::fillExtraTables() {
                     mss.interval().put(j, DBL_MAX);
                     mss.spectralWindowId().put(j, spwId);
                     Vector<Double> sysVel(1);
-                    sysVel(0) = 0.;
+		    // sysVel was extracted from LSRVEL in SU table
+		    if(0<=lastFieldId && (uInt)lastFieldId<sysVel_p.ncolumn()){
+		      sysVel(0) = sysVel_p(0, lastFieldId);
+		    }
+		    else{
+		      itsLog << LogOrigin("MSFitsInput", "fillExtraTable")
+			     << LogIO::WARN << "No systemic velocity for field " << lastFieldId << LogIO::POST;
+		      sysVel(0) = 0.;
+		    }		      
+
                     mss.sysvel().put(j, sysVel);
                     mss.numLines().put(j, 1);
                     Vector<String> transition(1);
                     transition(0) = "";
                     mss.transition().put(j, transition);
                     Vector<Double> restFreqs(1);
-                    restFreqs(0) = restfreq_p;
-                    if (restFreqs(0) <= 0.0) {
-                        // put in the reference freq as default for the rest frequency
-                        restFreqs(0) = msc_p->spectralWindow().refFrequency()(
-                                spwId);
-                    }
+
+		    if(0<=lastFieldId && (uInt)lastFieldId<restFreq_p.ncolumn()){
+		      restFreqs(0) = restFreq_p(0, lastFieldId);
+		    }
+		    else{
+		      itsLog << LogOrigin("MSFitsInput", "fillExtraTable")
+			     << LogIO::WARN << "No rest frequency for field " << lastFieldId << LogIO::POST;
+		      restFreqs(0) = 0.;
+		    }		      
+
                     mss.restFrequency().put(j, restFreqs);
                     mss.calibrationGroup().put(j, -1);
+		    // sourceModel is left as is (we have no model information to fill in)
                 }
             }
         }
@@ -3560,6 +3608,13 @@ void MSFitsInput::fillSourceTable() {
 
 void MSFitsInput::fillFieldTable(BinaryTable& bt) {
     Int nField = bt.nrows();
+
+    TableRecord btKeywords = bt.getKeywords();
+    if (!btKeywords.isDefined("NO_IF")) {
+        throw(AipsError("MSFitsInput: Illegal SU file: no number of IFs"));
+    }
+    uInt noif = bt.getKeywords().asuInt("NO_IF");
+
     MSFieldColumns& msField(msc_p->field());
     // Table suTab=bt.fullTable("",Table::Scratch);
     Table suTab = bt.fullTable();
@@ -3588,10 +3643,32 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
     }
     Int outRow = -1;
 
-    //  ROScalarColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
-    //  ROScalarColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
-    //  cout << "restfreq = " << restfreq.getColumn() << endl;
-    //  cout << "sysvel   = " << sysvel.getColumn() << endl;
+    // RESTFREQ and LSRVEL are 2D columns according to the AIPS Memo 117
+    restFreq_p.resize(noif, suTab.nrow());
+    sysVel_p.resize(noif, suTab.nrow());
+    try{
+      ROArrayColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
+      ROArrayColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
+      restfreq.getColumn(restFreq_p);
+      sysvel.getColumn(sysVel_p);
+    }
+    catch (std::exception x) {
+      if(noif>1){
+	itsLog << LogOrigin("MSFitsInput", "fillFieldTable") << LogIO::WARN
+	       << x.what() << ": " << "Inconsistent setup of RESTFREQ and LSRVEL columns." << endl
+	       << "With NO_IF>1, they should be arrays not scalars." << LogIO::POST;
+      }
+      ROScalarColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
+      ROScalarColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
+      Vector<Double> tmprf(suTab.nrow());
+      Vector<Double> tmpsv(suTab.nrow());
+      restfreq.getColumn(tmprf);
+      sysvel.getColumn(tmpsv);
+      for(uInt ii=0; ii<suTab.nrow(); ii++){
+	restFreq_p(0,ii) = tmprf(ii);
+	sysVel_p(0,ii) = tmpsv(ii);
+      }
+    }      
 
     // set the DIRECTION MEASURE REFERENCE for appropriate columns
     MDirection::Types epochRefZero = getDirectionFrame(epoch(0));
@@ -3711,5 +3788,5 @@ void MSFitsInput::fillFieldTable(double ra, double dec, String source) {
 
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

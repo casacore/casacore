@@ -26,13 +26,13 @@
 //# $Id$
 
 
-#include <casa/OS/LECanonicalConversion.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
+#include <casacore/casa/OS/LECanonicalConversion.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // Check if all conversion definitions are set correctly.
 // It write error messages to cout and exits (with status 1)
 // when errors are found.

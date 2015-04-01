@@ -26,24 +26,24 @@
 //# $Id$
 
 //# Includes
-#include <msfits/MSFits/SDPolarizationHandler.h>
+#include <casacore/msfits/MSFits/SDPolarizationHandler.h>
 
-#include <tables/Tables/ColumnsIndex.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSPolColumns.h>
-#include <ms/MeasurementSets/MSPolarization.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Matrix.h>
-#include <measures/Measures/Stokes.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/Arrays/ArrayLogical.h>
+#include <casacore/tables/Tables/ColumnsIndex.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MSPolColumns.h>
+#include <casacore/ms/MeasurementSets/MSPolarization.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SDPolarizationHandler::SDPolarizationHandler() 
     : index_p(0), msPol_p(0), msPolCols_p(0), rownr_p(-1)
@@ -303,5 +303,5 @@ void SDPolarizationHandler::stokesKeys(Int stokesValue, Int &key1, Int &key2)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

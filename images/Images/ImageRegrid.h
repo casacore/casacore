@@ -29,15 +29,15 @@
 #ifndef IMAGES_IMAGEREGRID_H
 #define IMAGES_IMAGEREGRID_H
 
-#include <casa/aips.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Cube.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MFrequency.h>
-#include <scimath/Mathematics/Interpolate2D.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/scimath/Mathematics/Interpolate2D.h>
 #include <set>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class MaskedLattice;
 template<class T> class ImageInterface;
@@ -381,10 +381,10 @@ public:
 
  
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/ImageRegrid.tcc>
+#include <casacore/images/Images/ImageRegrid.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

@@ -26,13 +26,13 @@
 //# $Id: tMeasJPL.cc 21401 2013-11-28 11:39:17Z gervandiepen $
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/MeasIERS.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MeasIERS.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void getX (double date)
 {

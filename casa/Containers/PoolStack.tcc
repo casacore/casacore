@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <casa/Containers/PoolStack.h>
+#ifndef CASA_POOLSTACK_TCC
+#define CASA_POOLSTACK_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/casa/Containers/PoolStack.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class T, class Key>
@@ -72,5 +75,7 @@ void PoolStack<T, Key>::clear() {
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

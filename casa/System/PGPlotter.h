@@ -29,11 +29,11 @@
 #ifndef CASA_PGPLOTTER_H
 #define CASA_PGPLOTTER_H
 
-#include <casa/aips.h>
-#include <casa/System/PGPlotterInterface.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/System/PGPlotterInterface.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;
 template<class T> class Vector;
@@ -298,6 +298,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

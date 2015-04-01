@@ -30,13 +30,14 @@
 
 
 //# Includes
-#include <lattices/Lattices/LELCoordinates.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/IO/FileLocker.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/LEL/LELCoordinates.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/IO/FileLocker.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class LogIO;
@@ -270,6 +271,6 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

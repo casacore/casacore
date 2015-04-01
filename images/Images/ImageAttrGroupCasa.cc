@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <images/Images/ImageAttrGroupCasa.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableRow.h>
-#include <tables/Tables/TableColumn.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Images/ImageAttrGroupCasa.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableRow.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-namespace casa {
+namespace casacore {
 
   ImageAttrGroupCasa::ImageAttrGroupCasa (const Table& image,
                                           const String& attrName)
@@ -229,4 +229,4 @@ namespace casa {
     return True;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

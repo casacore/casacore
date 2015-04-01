@@ -25,20 +25,23 @@
 //#
 //# $Id$
 
-#include <images/Images/TempImage.h>
-#include <images/Regions/RegionHandlerMemory.h>
-#include <images/Regions/ImageRegion.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#ifndef IMAGES_TEMPIMAGE_TCC
+#define IMAGES_TEMPIMAGE_TCC
+
+#include <casacore/images/Images/TempImage.h>
+#include <casacore/images/Regions/RegionHandlerMemory.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/lattices/LRegions/LatticeRegion.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 TempImage<T>::TempImage()
@@ -429,5 +432,7 @@ LatticeIterInterface<T>* TempImage<T>::makeIter
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

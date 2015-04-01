@@ -25,20 +25,20 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/Vector.h>
-#include <tables/LogTables/TableLogSink.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/StandardStMan.h>
-#include <tables/Tables/StManAipsIO.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/Constants.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/tables/LogTables/TableLogSink.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/DataMan/StandardStMan.h>
+#include <casacore/tables/DataMan/StManAipsIO.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/Constants.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 String TableLogSink::localId( ) {
     return String("TableLogSink");
@@ -306,5 +306,5 @@ LogSink TableLogSink::makeSink (const LogFilterInterface &filter,
   return LogSink (filter, CountedPtr<LogSinkInterface>(sink));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
