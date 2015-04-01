@@ -25,25 +25,25 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/FunctionHolder.h>
+#include <casacore/scimath/Functionals/FunctionHolder.h>
 
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffA.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
-#include <casa/BasicMath/Math.h>
-#include <scimath/Functionals/UnaryFunction.h>
-#include <scimath/Functionals/DiracDFunction.h>
-#include <scimath/Functionals/GNoiseFunction.h>
-#include <scimath/Functionals/KaiserBFunction.h>
-#include <scimath/Functionals/SincFunction.h>
-#include <scimath/Functionals/FunctionHolder.h>
-#include <scimath/Functionals/Gaussian1D.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffA.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/scimath/Functionals/UnaryFunction.h>
+#include <casacore/scimath/Functionals/DiracDFunction.h>
+#include <casacore/scimath/Functionals/GNoiseFunction.h>
+#include <casacore/scimath/Functionals/KaiserBFunction.h>
+#include <casacore/scimath/Functionals/SincFunction.h>
+#include <casacore/scimath/Functionals/FunctionHolder.h>
+#include <casacore/scimath/Functionals/Gaussian1D.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // Make near zero zero
 Double Y(const Double in) {
   return (abs(in)<1e-15 ? Double(0.0) : in);

@@ -26,13 +26,13 @@
 //# $Id$
 
 
-#include <tables/Tables/RefRows.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RefRows::RefRows (const Vector<uInt>& rowNumbers, Bool isSliced,
 		  Bool collapse)
@@ -245,5 +245,5 @@ void RefRowsSliceIter::next()
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

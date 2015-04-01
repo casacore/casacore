@@ -25,12 +25,15 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/Utilities/Copy.h>
+#ifndef CASA_ARRAYUTIL_TCC
+#define CASA_ARRAYUTIL_TCC
+
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/Utilities/Copy.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 Array<T> concatenateArray (const Array<T>& left, const Array<T>& right)
@@ -198,4 +201,6 @@ Array<T> reverseArray (const Array<T>& array, const IPosition& reversedAxes,
   return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

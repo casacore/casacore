@@ -28,9 +28,9 @@
 #ifndef CASA_LINK_H
 #define CASA_LINK_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>doubly linked list primitive</summary>
 // <use visibility=export>
@@ -58,7 +58,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //     This example makes <src>Link</src> behave like a stack:
 //     <srcblock>
 // #include <iostream>
-//     #include <casa/Containers/Link.h>
+//     #include <casacore/casa/Containers/Link.h>
 //
 //     main() {
 //         Link<int> *hed = new Link<int>(23);
@@ -89,7 +89,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //     instead of a stack:
 //     <srcblock>
 // #include <iostream>
-//     #include <casa/Containers/Link.h>
+//     #include <casacore/casa/Containers/Link.h>
 //
 //     main() {
 //         Link<int> *hed = new Link<int>(23);
@@ -202,9 +202,9 @@ public:
 typedef Link<int> Link_int;
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/Link.tcc>
+#include <casacore/casa/Containers/Link.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

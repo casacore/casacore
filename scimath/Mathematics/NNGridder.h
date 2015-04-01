@@ -29,9 +29,10 @@
 #ifndef SCIMATH_NNGRIDDER_H
 #define SCIMATH_NNGRIDDER_H
 
-#include <scimath/Mathematics/Gridder.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/Gridder.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A non-negative gridding class
@@ -67,9 +68,9 @@ protected:
   using Gridder<Domain,Range>::onGrid;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/NNGridder.tcc>
+#include <casacore/scimath/Mathematics/NNGridder.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

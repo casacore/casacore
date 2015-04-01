@@ -29,10 +29,10 @@
 #ifndef CASA_NULLLOGSINK_H
 #define CASA_NULLLOGSINK_H
 
-#include <casa/aips.h>
-#include <casa/Logging/LogSinkInterface.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogSinkInterface.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Throw away all messages.
@@ -94,7 +94,7 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

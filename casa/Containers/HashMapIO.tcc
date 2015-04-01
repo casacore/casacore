@@ -25,14 +25,17 @@
 //#
 //# $Id$
 
+#ifndef CASA_HASHMAPIO_TCC
+#define CASA_HASHMAPIO_TCC
 
-#include <casa/Containers/HashMapIO.h>
+
+#include <casacore/casa/Containers/HashMapIO.h>
 
 #if defined(AIPS_STUPID_SUN)
 #undef AIPS_STUPID_SUN
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 template<class key, class val> ostream &operator<<(ostream &ios, const HashMap<key,val> &map) {
@@ -65,5 +68,7 @@ template<class key, class val> ostream &operator<<(ostream &ios, const ConstHash
 
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

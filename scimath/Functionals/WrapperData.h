@@ -29,10 +29,10 @@
 #define SCIMATH_WRAPPERDATA_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/WrapperBase.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/WrapperBase.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -470,6 +470,6 @@ protected:
 
 #undef WrapperData_FF
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

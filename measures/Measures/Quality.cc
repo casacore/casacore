@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <measures/Measures/Quality.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/Quality.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Quality::QualityTypes Quality::type(Int qualityNumber)
 {
@@ -73,5 +73,5 @@ Vector<String> Quality::allNames(Bool includeUndefined) {
 	}
 	return names;
 }
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

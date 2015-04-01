@@ -29,10 +29,10 @@
 #ifndef CASA_STDLOGICAL_H
 #define CASA_STDLOGICAL_H
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Functors.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Functors.h>
 
-namespace casa {
+namespace casacore {
 
   // Arbitrary compare operation on two STL-style containers.
   // It returns True if containers have equal size and
@@ -55,11 +55,11 @@ namespace casa {
     { return compareAll (l, r, NearAbs<U>(tolerance)); }
 
 
-} //# end namespace casa
+} //# end namespace casacore
 
 
 //# #ifndef CASACORE_NO_AUTO_TEMPLATES
-//# #include <casa/BasicMath/StdLogical.tcc>
+//# #include <casacore/casa/BasicMath/StdLogical.tcc>
 //# #endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif

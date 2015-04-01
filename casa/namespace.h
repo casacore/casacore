@@ -1,4 +1,5 @@
-#ifndef NAMESPACE_H
-#define NAMESPACE_H 
-using namespace casa;
+#ifndef CASACORE_NAMESPACE_H
+#define CASACORE_NAMESPACE_H 
+#include <casacore/casa/aips.h>
+using namespace casacore;
 #endif

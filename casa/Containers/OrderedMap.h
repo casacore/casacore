@@ -28,16 +28,16 @@
 #ifndef CASA_ORDEREDMAP_H
 #define CASA_ORDEREDMAP_H
 
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Containers/Block.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/Map.h>
-#include <casa/Containers/OrderedPair.h>
-#include <casa/Utilities/Register.h>
-#include <casa/Utilities/Notice.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/Map.h>
+#include <casacore/casa/Containers/OrderedPair.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/Utilities/Notice.h>
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 template<class t, class v> class OrderedMap;
 template<class t, class v> class OrderedMapRep;
@@ -421,6 +421,6 @@ public:
 
 } //#End casa namespace
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Containers/OrderedMap.tcc>
+#include <casacore/casa/Containers/OrderedMap.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

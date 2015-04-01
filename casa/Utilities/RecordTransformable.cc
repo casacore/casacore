@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/RecordTransformable.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/RecordTransformable.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RecordTransformable::~RecordTransformable() {
   // Nothing
@@ -49,5 +49,5 @@ const String &RecordTransformable::ident() const {
 // compile-command: "gmake OPTLIB=1 RecordTransformable"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

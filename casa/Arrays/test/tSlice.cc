@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main()
 {
@@ -69,5 +69,26 @@ int main()
     AlwaysAssertExit (first.start() == IPosition(3,20,22,0));
     AlwaysAssertExit (first.length() == IPosition(3,10,12,shape[2]));
     AlwaysAssertExit (first.stride() == IPosition(3,1,2,1));
+  }
+  {
+    Slice slice(3,10,5);
+    AlwaysAssertExit (slice.start() == 3);
+    AlwaysAssertExit (slice.length() == 10);
+    AlwaysAssertExit (slice.end() == 48);
+    AlwaysAssertExit (slice.inc() == 5);
+  }
+  {
+    Slice slice(3,48,5, False);
+    AlwaysAssertExit (slice.start() == 3);
+    AlwaysAssertExit (slice.length() == 10);
+    AlwaysAssertExit (slice.end() == 48);
+    AlwaysAssertExit (slice.inc() == 5);
+  }
+  {
+    Slice slice(2,10,5, False);
+    AlwaysAssertExit (slice.start() == 2);
+    AlwaysAssertExit (slice.length() == 2);
+    AlwaysAssertExit (slice.end() == 7);
+    AlwaysAssertExit (slice.inc() == 5);
   }
 }

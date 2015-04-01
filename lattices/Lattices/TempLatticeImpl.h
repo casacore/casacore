@@ -31,12 +31,13 @@
 
 
 //# Includes
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <tables/Tables/Table.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Table;
@@ -240,9 +241,9 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/TempLatticeImpl.tcc>
+#include <casacore/lattices/Lattices/TempLatticeImpl.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

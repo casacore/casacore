@@ -27,13 +27,13 @@
 //#
 //#      Author: jjacobs
 
-#include <casa/Exceptions/CasaErrorTools.h>
+#include <casacore/casa/Exceptions/CasaErrorTools.h>
 #include <map>
 
 
 #if !defined(USE_STACKTRACE)
 
-namespace casa {
+namespace casacore {
   // Stub out the related functions if functionality not enabled.
   void CasaErrorTools::generateSharedObjectMap()
   {}
@@ -49,7 +49,7 @@ namespace casa {
       stackTrace;
   }
 
-} // end namespace casa
+} // end namespace casacore
 
 
 #else
@@ -60,7 +60,7 @@ namespace casa {
 
 namespace {
 
-  std::map<casa::String, casa::uInt64> sharedObjectMap;
+  std::map<casacore::String, casacore::uInt64> sharedObjectMap;
 
   extern "C"
   int callback (struct dl_phdr_info *info, size_t, void *)
@@ -72,7 +72,7 @@ namespace {
 } // end namespace UNNAMED
 
 
-namespace casa {
+namespace casacore {
 
   void CasaErrorTools::generateSharedObjectMap ()
   {
@@ -189,6 +189,6 @@ namespace casa {
 
   }
 
-} // end namespace casa
+} // end namespace casacore
 
 #endif

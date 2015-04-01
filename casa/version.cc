@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/version.h>
+#include <casacore/casa/version.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Get the casacore version.
   const std::string getVersion()
@@ -42,4 +42,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return CASACORE_VERSION;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <measures/Measures/MeasIERS.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Containers/RecordField.h>
+#include <casacore/measures/Measures/MeasIERS.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Containers/RecordField.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main (int argc, char* argv[])
 {

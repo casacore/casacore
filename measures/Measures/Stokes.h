@@ -28,12 +28,12 @@
 #ifndef MEASURES_STOKES_H
 #define MEASURES_STOKES_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Fallible.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Fallible.h>
+#include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Stokes parameter definitions for interface to table data.
@@ -168,7 +168,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

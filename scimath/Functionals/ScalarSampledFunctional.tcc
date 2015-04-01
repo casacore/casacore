@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/ScalarSampledFunctional.h>
-#include <casa/Containers/Block.h>
+#ifndef SCIMATH_SCALARSAMPLEDFUNCTIONAL_TCC
+#define SCIMATH_SCALARSAMPLEDFUNCTIONAL_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Functionals/ScalarSampledFunctional.h>
+#include <casacore/casa/Containers/Block.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> ScalarSampledFunctional<T>::
 ScalarSampledFunctional(){
@@ -91,5 +94,7 @@ template<class T> ScalarSampledFunctional<T>::
 ~ScalarSampledFunctional(){
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

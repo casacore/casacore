@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <tables/Tables/NullTable.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/tables/Tables/NullTable.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 NullTable::NullTable()
 : BaseTable ("Null table object", Table::Old, 0)
@@ -64,6 +64,12 @@ Bool NullTable::isMultiUsed (Bool) const
 {
   throwError ("isMultiUsed");
   return False;
+}
+
+const StorageOption& NullTable::storageOption() const
+{
+  throwError ("storageOption");
+  return storageOption();          // to satisfy compiler
 }
 
 const TableLock& NullTable::lockOptions() const
@@ -288,5 +294,5 @@ void NullTable::throwError (const String& name) const
   throw TableError ("NullTable::" + name + " - Table object is empty");
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

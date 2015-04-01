@@ -29,13 +29,13 @@
 #define LATTICES_TILEDLINESTEPPER_H
 
 //# Includes
-#include <casa/aips.h>
-#include <lattices/Lattices/LatticeNavigator.h>
-#include <lattices/Lattices/LatticeIndexer.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/LatticeNavigator.h>
+#include <casacore/lattices/Lattices/LatticeIndexer.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Step a Vector cursor optimally through a tiled Lattice.
@@ -349,6 +349,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

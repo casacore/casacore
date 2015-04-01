@@ -30,9 +30,10 @@
 
 
 //# Includes
-#include <tables/Tables/TableExprData.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/TaQL/TableExprData.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TableExprNode;
@@ -83,6 +84,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

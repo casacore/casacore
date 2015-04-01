@@ -30,9 +30,9 @@
 #ifndef FITS_FITSKEYWORDUTIL_H
 #define FITS_FITSKEYWORDUTIL_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class ConstFitsKeywordList;
 class FitsKeywordList;
@@ -208,6 +208,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

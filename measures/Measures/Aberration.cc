@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/Aberration.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <measures/Measures/MeasTable.h>
-#include <casa/System/AipsrcValue.h>
+#include <casacore/measures/Measures/Aberration.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/casa/System/AipsrcValue.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 const Double Aberration::INTV = 0.04;
@@ -294,5 +294,5 @@ void Aberration::calcAber(Double t) {
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

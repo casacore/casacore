@@ -28,16 +28,17 @@
 #ifndef CASA_BLOCK_H
 #define CASA_BLOCK_H
 
-#include <casa/aips.h>
-#include <casa/Utilities/Copy.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/Copy.h>
+#include <casacore/casa/Utilities/DataType.h>
 #include <cstddef>                  // for ptrdiff_t
 
 //# For index checking
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Exceptions/Error.h>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>simple 1-D array</summary>
 // <use visibility=export>
@@ -97,7 +98,84 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </srcblock> 
 // </example>
 //
-template<class T> class Block {
+class BlockTrace
+{
+public:
+  // Set the trace size. The (de)allocation of Blocks with >= sz elements
+  // will be traced using the MemoryTrace class.
+  // A value 0 means no tracing.
+  static void setTraceSize (size_t sz);
+protected:
+  // Write alloc and free trace messages.
+  static void doTraceAlloc (const void* addr, size_t nelem,
+                            DataType type, size_t sz);
+  static void doTraceFree (const void* addr, size_t nelem,
+                           DataType type, size_t sz);
+protected:
+  static size_t itsTraceSize;
+};
+
+
+// <summary>simple 1-D array</summary>
+// <use visibility=export>
+//
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
+//
+// <etymology>
+//     This should be viewed as a <em>block</em> of memory without sophisticated
+//     manipulation functions. Thus it is called <src>Block</src>.
+// </etymology>
+//
+// <synopsis>
+// <src>Block<T></src> is a simple templated 1-D array class. Indices are always
+// 0-based. For efficiency reasons, no index checking is done unless the
+// preprocessor symbol <src>AIPS_ARRAY_INDEX_CHECK</src> is defined. 
+// <src>Block<T></src>'s may be assigned to and constructed from other
+// <src>Block<T></src>'s.
+// As no reference counting is done this can be an expensive operation, however.
+//
+// The net effect of this class is meant to be unsurprising to users who think
+// of arrays as first class objects. The name "Block" is  intended to convey
+// the concept of a solid "chunk" of things without any intervening "fancy"
+// memory management, etc. This class was written to be
+// used in the implementations of more functional Vector, Matrix, etc. classes,
+// although it is expected <src>Block<T></src> will be useful on its own.
+//
+// The Block class should be efficient. You should normally use <src>Block</src>.
+//
+// <note role=warning> If you use the assignment operator on an element of this
+// class, you may leave dangling references to pointers released from
+// <src>storage()</src>.
+// Resizing the array will also have this effect if the underlying storage
+// is actually affected.
+// </note>
+//
+// If index checking is turned on, an out-of-bounds index will
+// generate an <src>indexError<uInt></src> exception.
+// </synopsis>
+//
+// <example> 
+// <srcblock>
+// Block<Int> a(100,0);  // 100 ints initialized to 0
+// Block<Int> b;         // 0-length Block
+// // ...
+// b = a;                // resize b and copy a into it
+// for (size_t i=0; i < a.nelements(); i++) {
+//     a[i] = i;    // Generate a sequence
+//                  // with Vectors, could simply say "indgen(myVector);"
+// }
+// b.set(-1);       // All positions in b have the value -1
+// b.resize(b.nelements()*2); // Make b twice as long, by default the old
+//                            // elements are copied over, although this can
+//                            // be defeated.
+// some_c_function(b.storage());  // Use a fn that takes an
+//                                // <src>Int *</src> pointer
+// </srcblock> 
+// </example>
+//
+template<class T> class Block: public BlockTrace
+{
 public:
   // Create a zero-length Block. Note that any index into this Block
   // is an error.
@@ -105,11 +183,13 @@ public:
   // Create a Block with the given number of points. The values in Block
   // are uninitialized. Note that indices range between 0 and n-1.
   explicit Block(size_t n) : npts(n), array(n>0 ? new T[n] : 0), destroyPointer(True)
-    {}
+    { traceAlloc (array, npts); }
   // Create a Block of the given length, and initialize (via operator= for 
   // objects of type T) with the provided value.
   Block(size_t n, T val) : npts(n), array(n > 0 ? new T[n] : 0), destroyPointer(True)
-    { objset(array, val, n); }
+    { traceAlloc (array, npts);
+      objset(array, val, npts);
+    }
 
   // Create a <src>Block</src> from a C-array (i.e. pointer). If 
   // <src>takeOverStorage</src> is <src>True</src>, The Block assumes that
@@ -123,7 +203,9 @@ public:
   // Copy the other block into this one. Uses copy, not reference, semantics.
   Block(const Block<T> &other)
     : npts(other.npts), array(npts > 0 ? new T[npts] : 0), destroyPointer(True)
-    { objcopy(array, other.array, npts); }
+    { traceAlloc (array, npts);
+      objcopy(array, other.array, npts);
+    }
   
   // Assign other to this. this resizes itself to the size of other, so after
   // the assignment, this->nelements() == other.elements() always.
@@ -131,11 +213,16 @@ public:
     if (&other != this) {
       this->resize(other.npts, True, False);
       objcopy(array, other.array, npts);
-    };
+    }
     return *this; }
   
   // Frees up the storage pointed contained in the Block.
-  ~Block() { if (array && destroyPointer) { delete [] array; array = 0;} }
+  ~Block()
+    { if (array && destroyPointer) {
+        traceFree (array, npts);
+        delete [] array; array = 0;
+      }
+    } 
 
   // Resizes the Block. If <src>n == nelements()</src> resize just returns. If
   // a larger size is requested (<src>n > nelements()</src>) the Block always
@@ -161,11 +248,13 @@ public:
   void resize(size_t n, Bool forceSmaller=False, Bool copyElements=True) {
     if (!(n == npts || (n < npts && forceSmaller == False))) {
       T *tp = n > 0 ? new T[n] : 0;
+      traceAlloc (tp, n);
       if (copyElements) {
 	size_t nmin = npts < n ? npts : n;  // Don't copy too much!
 	objcopy(tp, array, nmin);
       };
       if (array && destroyPointer) { // delete...
+        traceFree (array, npts);
 	delete [] array;
 	array = 0;
       };
@@ -191,12 +280,14 @@ public:
 #else
       return;
 #endif
-    };
+    }
     if (forceSmaller == True) {
       T *tp = new T[npts - 1];
+      traceAlloc (array, npts-1);
       objcopy(tp, array, whichOne);
       objcopy(tp+whichOne, array + whichOne + 1, npts - whichOne - 1);
       if (array && destroyPointer) {
+        traceFree (array, npts);
 	delete [] array;
 	array = 0;
       };
@@ -214,6 +305,7 @@ public:
   // If true, storagePointer is set to <src>NULL</src>.
   void replaceStorage(size_t n, T *&storagePointer, Bool takeOverStorage=True) {
     if (array && destroyPointer) {
+      traceFree (array, npts);
       delete [] array;
       array = 0;
     };
@@ -322,6 +414,19 @@ public:
   // </group>
   // </group>
 
+  inline void traceAlloc (const void* addr, size_t sz) const
+  {
+    if (itsTraceSize>0 && sz>=itsTraceSize) {
+      doTraceAlloc (addr, sz, whatType(static_cast<T*>(0)), sizeof(T));
+    }
+  }
+  inline void traceFree (const void* addr, size_t sz) const
+  {
+    if (itsTraceSize>0 && sz>=itsTraceSize) {
+      doTraceFree (addr, sz, whatType(static_cast<T*>(0)), sizeof(T));
+    }
+  }
+
  private:
   // The number of points in the vector
   size_t npts;
@@ -388,6 +493,6 @@ public:
  };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

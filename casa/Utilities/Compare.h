@@ -29,10 +29,10 @@
 #define CASA_COMPARE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/DataType.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> signature of comparison functions </summary>
 // <use visibility=export>
@@ -198,9 +198,9 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Utilities/Compare.tcc>
+#include <casacore/casa/Utilities/Compare.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/FFTServer.hcc>
+#include <casacore/scimath/Mathematics/FFTServer.hcc>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Instantiate the templates.
   template class FFTServer<Float, Complex>;
   template class FFTServer<Double, DComplex>;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

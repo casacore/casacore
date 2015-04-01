@@ -26,16 +26,16 @@
 //# $Id: tSparseDiff.cc,v 1.1 2007/11/16 04:44:13 wbrouw Exp $
 
 //# Includes
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <scimath/Mathematics/SparseDiff.h>
-#include <scimath/Mathematics/SparseDiffMath.h>
-#include <scimath/Mathematics/SparseDiffIO.h>
+#include <casacore/scimath/Mathematics/SparseDiff.h>
+#include <casacore/scimath/Mathematics/SparseDiffMath.h>
+#include <casacore/scimath/Mathematics/SparseDiffIO.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 Bool testDer(const SparseDiff<Float> y, const SparseDiff<Float> &x, Float f) {
   return !(x.nDerivatives() != y.nDerivatives() ||

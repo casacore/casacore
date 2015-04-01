@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/Lorentzian1D.h>
-#include <casa/BasicMath/Math.h>
+#ifndef SCIMATH_LORENTZIAN1D2_TCC
+#define SCIMATH_LORENTZIAN1D2_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/Lorentzian1D.h>
+#include <casacore/casa/BasicMath/Math.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -64,5 +67,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 //# Member functions
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

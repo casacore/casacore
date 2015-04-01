@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/Polynomial.h>
+#ifndef SCIMATH_POLYNOMIAL_TCC
+#define SCIMATH_POLYNOMIAL_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/Polynomial.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -55,5 +58,7 @@ Polynomial<T> Polynomial<T>::derivative() const {
 
 //# Member functions
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

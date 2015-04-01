@@ -30,10 +30,10 @@
 #define SCIMATH_LINEARFIT_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Fitting/GenericL2Fit.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Fitting/GenericL2Fit.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -256,10 +256,10 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Fitting/LinearFit.tcc>
+#include <casacore/scimath/Fitting/LinearFit.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif
 

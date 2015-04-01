@@ -25,11 +25,16 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TabVecMath.h>
+#ifndef TABLES_TABVECMATH_TCC
+#define TABLES_TABVECMATH_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/tables/Tables/TabVecMath.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# All functions are inlined, so there is no actual code.
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,18 +25,21 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/InterpolateArray1D.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/BinarySearch.h>
-#include <casa/Utilities/GenSort.h>
+#ifndef SCIMATH_INTERPOLATEARRAY1D_TCC
+#define SCIMATH_INTERPOLATEARRAY1D_TCC
+
+#include <casacore/scimath/Mathematics/InterpolateArray1D.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/BinarySearch.h>
+#include <casacore/casa/Utilities/GenSort.h>
 #include <limits>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout, 
@@ -159,11 +162,10 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
                                                    const Cube<Range>& yin,
                                                    Int method)
 {
-  DebugAssert(ndim==3,AipsError);
   Int nxout=xout.nelements();
   IPosition yinShape=yin.shape();
   //check the number of elements in y
-  DebugAssert(nxin==yinShape(2),AipsError);
+  DebugAssert(xin.nelements()==yinShape(2),AipsError);
 
   Bool deleteYin, deleteYout;
   const Range* pyin=yin.getStorage(deleteYin);
@@ -203,7 +205,7 @@ void InterpolateArray1D<Domain,Range>::interpolatey(Cube<Range>& yout,
 {
   Int nxout=xout.nelements();
   IPosition yinShape=yin.shape();
-  DebugAssert(nxin==yinShape(ndim-1),AipsError);
+  DebugAssert(xin.nelements()==yinShape(2),AipsError);
   DebugAssert((yinFlags.shape() == yinShape), AipsError);
 
   Bool deleteYin, deleteYout, deleteYinFlags, deleteYoutFlags;
@@ -858,5 +860,7 @@ void InterpolateArray1D<Domain,Range>::polynomialInterpolation
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

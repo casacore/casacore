@@ -27,11 +27,11 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/FuncExprData.h>
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
+#include <casacore/scimath/Functionals/FuncExprData.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 FuncExprData::FuncExprData() :
@@ -173,5 +173,5 @@ ostream &operator<<(ostream &os, const FuncExprData &ed) {
   return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

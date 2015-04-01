@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <fits/FITS/FITSError.h>
+#include <casacore/fits/FITS/FITSError.h>
 
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void FITSError::defaultHandler(const char *errMessage, 
 				      ErrorLevel severity)
@@ -48,5 +48,5 @@ void FITSError::defaultHandler(const char *errMessage,
     os << LogIO::POST;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

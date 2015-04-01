@@ -26,14 +26,19 @@
 //#
 //# $Id$
 
-//# Includes
-#include <casa/BasicMath/Functional.h>
+#ifndef CASA_FUNCTIONAL_TCC
+#define CASA_FUNCTIONAL_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/casa/BasicMath/Functional.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template<class Domain,class Range>
 Functional<Domain,Range>::~Functional() {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

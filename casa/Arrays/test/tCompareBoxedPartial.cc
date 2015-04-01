@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayPartMath.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/OS/Timer.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayPartMath.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/OS/Timer.h>
 
-namespace casa {
+namespace casacore {
 template<typename Func, typename T, typename Accum>
 void partialWorker (Array<Accum>& result,
 		    const Array<T>& array,
@@ -124,7 +124,7 @@ template<class T> Array<T> new1PartialVariances (const Array<T>& array,
 } // end namespace
 
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 

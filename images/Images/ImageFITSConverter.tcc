@@ -26,37 +26,40 @@
 //#
 //# $Id$
 
-#include <images/Images/ImageFITSConverter.h>
-#include <images/Images/PagedImage.h>
-#include <images/Images/TempImage.h>
-#include <images/Regions/RegionHandler.h>
-#include <images/Regions/ImageRegion.h>
-#include <images/Images/ImageInfo.h>
-#include <coordinates/Coordinates/LinearCoordinate.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <lattices/Lattices/LCPagedMask.h>
-#include <lattices/Lattices/LCMask.h>
-#include <lattices/Lattices/LCRegionSingle.h>
-#include <fits/FITS/hdu.h>
-#include <fits/FITS/fitsio.h>
-#include <fits/FITS/FITSKeywordUtil.h>
+#ifndef IMAGES_IMAGEFITSCONVERTER_TCC
+#define IMAGES_IMAGEFITSCONVERTER_TCC
 
-#include <casa/Quanta/UnitMap.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Containers/Record.h>
-#include <casa/System/ProgressMeter.h>
+#include <casacore/images/Images/ImageFITSConverter.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/TempImage.h>
+#include <casacore/images/Regions/RegionHandler.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/images/Images/ImageInfo.h>
+#include <casacore/coordinates/Coordinates/LinearCoordinate.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/lattices/LRegions/LCPagedMask.h>
+#include <casacore/lattices/LRegions/LCMask.h>
+#include <casacore/lattices/LRegions/LCRegionSingle.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/fits/FITS/FITSKeywordUtil.h>
 
-#include <casa/sstream.h>
+#include <casacore/casa/Quanta/UnitMap.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/System/ProgressMeter.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/sstream.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // At least the Coordinate and header related things could be factored out
 // into template independent code.
@@ -338,5 +341,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

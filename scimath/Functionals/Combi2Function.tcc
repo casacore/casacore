@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/CombiFunction.h>
+#ifndef SCIMATH_COMBI2FUNCTION_TCC
+#define SCIMATH_COMBI2FUNCTION_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/CombiFunction.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -57,5 +60,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 //# Member functions
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

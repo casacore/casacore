@@ -25,21 +25,24 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ArrColData.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/ColumnSet.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/TableTrace.h>
-#include <tables/Tables/DataManager.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIter.h>
-#include <casa/Utilities/ValType.h>
-#include <tables/Tables/TableError.h>
-#include <casa/IO/AipsIO.h>
+#ifndef TABLES_ARRCOLDATA_TCC
+#define TABLES_ARRCOLDATA_TCC
+
+#include <casacore/tables/Tables/ArrColData.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/tables/Tables/ColumnSet.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/TableTrace.h>
+#include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIter.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/IO/AipsIO.h>
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ArrayColumnData<T>::ArrayColumnData (const ArrayColumnDesc<T>* cd,
@@ -418,4 +421,6 @@ void ArrayColumnData<T>::getFileDerived (AipsIO& ios,
     createDataManagerColumn();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

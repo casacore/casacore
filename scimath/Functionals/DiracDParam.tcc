@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/DiracDParam.h>
+#ifndef SCIMATH_DIRACDPARAM_TCC
+#define SCIMATH_DIRACDPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/DiracDParam.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 DiracDParam<T>::DiracDParam() :
@@ -65,5 +68,7 @@ DiracDParam<T> &DiracDParam<T>::operator=(const DiracDParam<T> &other) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

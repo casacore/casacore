@@ -25,15 +25,18 @@
 //#
 //# $Id$
 
+#ifndef FITS_HDU_TCC
+#define FITS_HDU_TCC
+
 //# Partial implementation of little endian code by Kris Huber
 //# (kris@helios.ece.usu.edu)
 
-#include <fits/FITS/fits.h>
-#include <fits/FITS/hdu.h>
-#include <fits/FITS/fitsio.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/fits/FITS/fitsio.h>
 #include <string.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //============================================================================
 
@@ -1409,5 +1412,7 @@ inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2, int d3,
 }
 //=============================================================================
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/CompoundFunction.h>
+#ifndef SCIMATH_COMPOUNDFUNCTION_TCC
+#define SCIMATH_COMPOUNDFUNCTION_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/CompoundFunction.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -61,5 +64,7 @@ void CompoundFunction<T>::toParam_p() {
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

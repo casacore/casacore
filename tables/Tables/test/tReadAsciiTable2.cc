@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ReadAsciiTable.h>
+#include <casacore/tables/Tables/ReadAsciiTable.h>
 #include <iostream>
 
-using namespace casa;
+using namespace casacore;
 
 int main()
 {

@@ -29,12 +29,12 @@
 #ifndef CASA_LOGORIGIN_H
 #define CASA_LOGORIGIN_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/System/ObjectID.h>
-#include <casa/iosfwd.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/System/ObjectID.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 struct SourceLocation;
 
@@ -94,6 +94,7 @@ struct SourceLocation;
 class LogOrigin 
 {
 public:
+
     // The default constructor sets a null class name, function name, object id,
     // source file name, and sets the line number to zero.
     LogOrigin();
@@ -168,6 +169,7 @@ public:
 
     // Return true if the line number and file name are not set.
     Bool isUnset() const;
+
 private:
     String task_p;
     String function_p;
@@ -175,6 +177,10 @@ private:
     ObjectID id_p;
     uInt line_p;
     String file_p;
+    String node_p;
+
+    // Return a String with the MPI rank
+    String getNode();
 
     // Provide common implementation for copy constructor and
     // assignment operator.
@@ -202,11 +208,11 @@ struct SourceLocation
     static const SourceLocation *canonicalize(const char *file, Int line);
 };
 
-#define WHERE casa::SourceLocation::canonicalize(__FILE__, __LINE__)
+#define WHERE casacore::SourceLocation::canonicalize(__FILE__, __LINE__)
 
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

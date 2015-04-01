@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include<lattices/LatticeMath/LatticeFit.h>
+#include<casacore/lattices/LatticeMath/LatticeFit.h>
 
-#include<casa/Arrays.h>
-#include<scimath/Fitting/LinearFitSVD.h>
-#include <scimath/Functionals/Polynomial.h>
-#include<lattices/Lattices/ArrayLattice.h>
-#include<lattices/Lattices/SubLattice.h>
-#include<lattices/Lattices/MaskedLattice.h>
-#include<casa/Utilities/Assert.h>
+#include<casacore/casa/Arrays.h>
+#include<casacore/scimath/Fitting/LinearFitSVD.h>
+#include <casacore/scimath/Functionals/Polynomial.h>
+#include<casacore/lattices/Lattices/ArrayLattice.h>
+#include<casacore/lattices/Lattices/SubLattice.h>
+#include<casacore/lattices/Lattices/MaskedLattice.h>
+#include<casacore/casa/Utilities/Assert.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() {
 
     uInt nx = 10, ny = 20, nz = 30;

@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/EvenPolynomialParam.h>
-#include <casa/Arrays/Vector.h>
+#ifndef SCIMATH_EVENPOLYNOMIALPARAM_TCC
+#define SCIMATH_EVENPOLYNOMIALPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/EvenPolynomialParam.h>
+#include <casacore/casa/Arrays/Vector.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 EvenPolynomialParam<T>::EvenPolynomialParam() :
@@ -63,5 +66,7 @@ void EvenPolynomialParam<T>::setCoefficients(const Vector<T> &coefficients) {
   param_p.setParameters(coefficients);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

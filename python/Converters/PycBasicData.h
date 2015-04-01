@@ -31,19 +31,19 @@
 // include python first to avoid _POSIX_C_SOURCE redefined warnings
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
-#include <python/Converters/PycArray.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/python/Converters/PycArray.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <vector>
 #include <map>
 
 // Define classes and functions to convert the basic data types and
 // containers to and from Python.
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
   // Prevent a converter from being registered multiple times.
   class pyregistry
@@ -227,8 +227,9 @@ namespace casa { namespace python {
       return boost::python::incref(makeobject(c).ptr());
     }
   };
+  //# Make specialisations for various types.
   template <>
-  struct to_list <casa::IPosition >
+  struct to_list <casacore::IPosition >
   {
     typedef IPosition ContainerType;
     static boost::python::list makeobject (ContainerType const& c)
@@ -245,10 +246,36 @@ namespace casa { namespace python {
       return boost::python::incref(makeobject(c).ptr());
     }
   };
+  //# This specialisation is needed because on OS-X 10.9 clang-3.5 with
+  //# Boost-Python 1.57 gives a compile error
+  //# /opt/casa/01/include/boost/python/converter/arg_to_python.hpp:209:9:
+  //#   error: no matching constructor for initialization of
+  //#     'boost::python::converter::detail::arg_to_python_base'
+  //#       : arg_to_python_base(&x, registered<T>::converters)
   template <>
-  struct to_list <std::vector <casa::String> >
+  struct to_list <std::vector <bool> >
   {
-    typedef std::vector <casa::String> ContainerType;
+    typedef std::vector <bool> ContainerType;
+    static boost::python::list makeobject (ContainerType const& c)
+    {
+      boost::python::list result;
+      ContainerType::const_iterator i = c.begin();
+      ContainerType::const_iterator iEnd = c.end();
+      for( ; i != iEnd; ++i) {
+        bool b = *i;
+	result.append(b);
+      }
+      return result;
+    }
+    static PyObject* convert (ContainerType const& c)
+    {
+      return boost::python::incref(makeobject(c).ptr());
+    }
+  };
+  template <>
+  struct to_list <std::vector <casacore::String> >
+  {
+    typedef std::vector <casacore::String> ContainerType;
     static boost::python::list makeobject (ContainerType const& c)
     {
       boost::python::list result;
@@ -265,9 +292,9 @@ namespace casa { namespace python {
     }
   };
   template <>
-  struct to_list <casa::Array <casa::String> >
+  struct to_list <casacore::Array <casacore::String> >
   {
-    typedef casa::Array <casa::String> ContainerType;
+    typedef casacore::Array <casacore::String> ContainerType;
     static boost::python::object makeobject (ContainerType const& c)
     {
       boost::python::list result;
@@ -284,9 +311,9 @@ namespace casa { namespace python {
     }
   };
   template <>
-  struct to_list <casa::Vector <casa::String> >
+  struct to_list <casacore::Vector <casacore::String> >
   {
-    typedef casa::Vector <casa::String> ContainerType;
+    typedef casacore::Vector <casacore::String> ContainerType;
     static boost::python::object makeobject (ContainerType const& c)
     {
       boost::python::list result;
@@ -325,8 +352,8 @@ namespace casa { namespace python {
   {
     casa_array_to_list ()
     {
-      boost::python::to_python_converter < casa::Array < T >, 
-	                         to_list < casa::Array < T > >  > ();
+      boost::python::to_python_converter < casacore::Array < T >, 
+	                         to_list < casacore::Array < T > >  > ();
     }
   };
   template < typename T >
@@ -334,16 +361,16 @@ namespace casa { namespace python {
   {
     casa_vector_to_list ()
     {
-      boost::python::to_python_converter < casa::Vector < T >, 
-	                         to_list < casa::Vector < T > >  > ();
+      boost::python::to_python_converter < casacore::Vector < T >, 
+	                         to_list < casacore::Vector < T > >  > ();
     }
   };
   struct casa_iposition_to_list 
   {
     casa_iposition_to_list ()
     {
-      boost::python::to_python_converter < casa::IPosition, 
-	                         to_list < casa::IPosition >  > ();
+      boost::python::to_python_converter < casacore::IPosition, 
+	                         to_list < casacore::IPosition >  > ();
     }
   };
 
@@ -553,18 +580,18 @@ namespace casa { namespace python {
   inline void register_convert_std_vector()
     { convert_std_vector<T>::reg(); }
 
-  // Register the casa::Vector conversions.
+  // Register the casacore::Vector conversions.
   template < typename T >
   struct convert_casa_vector
   {
     static void reg()
     {
-      std::string tname(typeid(casa::Vector<T>).name());
+      std::string tname(typeid(casacore::Vector<T>).name());
       if (! pyregistry::get (tname)) {
 	pyregistry::set (tname);
 	casa_array_to_list < T > ();
 	casa_vector_to_list < T > ();
-	from_python_sequence < casa::Vector < T >,
+	from_python_sequence < casacore::Vector < T >,
 	                       casa_variable_capacity_policy > ();
       }
     }

@@ -26,14 +26,14 @@
 //# $Id: dSparseDiff.cc,v 1.1 2007/11/16 04:44:13 wbrouw Exp $
 
 //# Includes
-#include <scimath/Mathematics/SparseDiff.h>
-#include <scimath/Mathematics/SparseDiffA.h>
-#include <scimath/Mathematics/SparseDiffMath.h>
-#include <scimath/Mathematics/SparseDiffIO.h>
+#include <casacore/scimath/Mathematics/SparseDiff.h>
+#include <casacore/scimath/Mathematics/SparseDiffA.h>
+#include <casacore/scimath/Mathematics/SparseDiffMath.h>
+#include <casacore/scimath/Mathematics/SparseDiffIO.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // Define a simple function a^3*b^3*x
 
 template <class T> class f {

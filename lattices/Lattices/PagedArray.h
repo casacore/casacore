@@ -29,15 +29,16 @@
 #define LATTICES_PAGEDARRAY_H
 
 //# Includes
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TiledStManAccessor.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/DataMan/TiledStManAccessor.h>
+#include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // A Lattice that is read from or written to disk.
@@ -668,9 +669,9 @@ void PagedArray<T>::doReopen() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/PagedArray.tcc>
+#include <casacore/lattices/Lattices/PagedArray.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

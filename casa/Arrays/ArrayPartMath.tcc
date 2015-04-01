@@ -25,14 +25,17 @@
 //#
 //# $Id$
 
-#include <casa/iostream.h>
+#ifndef CASA_ARRAYPARTMATH_TCC
+#define CASA_ARRAYPARTMATH_TCC
 
-#include <casa/Arrays/ArrayPartMath.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Arrays/ArrayPartMath.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 template<class T> Array<T> partialSums (const Array<T>& array,
@@ -964,4 +967,6 @@ Array<T> slidingArrayMath (const Array<T>& array, const IPosition& halfBoxSize,
   return fullResult;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

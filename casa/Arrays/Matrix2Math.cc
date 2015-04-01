@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <casa/BasicSL/Complex.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/MatrixMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/iostream.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Matrix<Double> Rot3D(Int axis, Double angle) 
 {
@@ -354,5 +354,5 @@ Matrix<Float> adjoint (const Matrix<Float> &A){
 Matrix<Double> adjoint (const Matrix<Double> &A){
   return transpose(A);}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -26,15 +26,15 @@
 //# $Id$
 
 
-#include <casa/OS/DirectoryIterator.h>
-#include <casa/OS/Path.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/OS/DirectoryIterator.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 #include <errno.h>                // needed for errno
-#include <casa/string.h>               // needed for strerror
+#include <casacore/casa/string.h>               // needed for strerror
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 DirectoryIterator::DirectoryIterator()
 : itsDirectoryDescriptor (0),
@@ -201,5 +201,5 @@ Bool DirectoryIterator::pastEnd() const
     return  (itsEnd == True);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

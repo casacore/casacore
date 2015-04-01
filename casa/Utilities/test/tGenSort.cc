@@ -27,16 +27,16 @@
 
 //# Includes
 
-#include <casa/Utilities/GenSort.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/sstream.h>
-#include <casa/OS/Timer.h>
-#include <casa/stdlib.h>
-#include <casa/iomanip.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/iomanip.h>
 #include <algorithm>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void sortall (Int*, uInt, int, Sort::Order, Bool);
 

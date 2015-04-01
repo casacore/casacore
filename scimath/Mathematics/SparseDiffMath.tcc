@@ -25,13 +25,16 @@
 //#
 //# $Id: SparseDiffMath.cc,v 1.1 2007/11/16 04:34:46 wbrouw Exp $
 
-//# Includes
-#include <scimath/Mathematics/SparseDiffMath.h>
-#include <scimath/Mathematics/SparseDiffRep.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/BasicSL/Constants.h>
+#ifndef SCIMATH_SPARSEDIFFMATH_TCC
+#define SCIMATH_SPARSEDIFFMATH_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Mathematics/SparseDiffMath.h>
+#include <casacore/scimath/Mathematics/SparseDiffRep.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicSL/Constants.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Unary arithmetic operators.
   template<class T> SparseDiff<T> operator+(const SparseDiff<T> &other) { 
@@ -577,5 +580,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return tmp;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,14 +25,17 @@
 //#
 //# $Id$
 
+#ifndef MEASURES_MEASREF_TCC
+#define MEASURES_MEASREF_TCC
+
 //# Includes
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
-#include <measures/Measures/MeasRef.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -260,5 +263,7 @@ void MeasRef<Ms>::print(ostream &os) const {
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -26,3 +26,10 @@
 //# $Id$
 
 // \defgroup measures measures package (libcasa_measures)
+//
+// The measures package handles conversions of all types of coordinates
+
+// <ul>
+//  <li> <a href="group__Measures__module.html">Measures</a>:
+//    Coordinate conversions
+// </ul>

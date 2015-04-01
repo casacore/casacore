@@ -29,11 +29,11 @@
 #define SCIMATH_DIRACDFUNCTION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/DiracDParam.h>
-#include <scimath/Functionals/Function.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/DiracDParam.h>
+#include <casacore/scimath/Functionals/Function.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -140,9 +140,9 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/DiracDFunction.tcc>
+#include <casacore/scimath/Functionals/DiracDFunction.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

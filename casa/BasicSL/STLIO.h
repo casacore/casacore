@@ -29,15 +29,15 @@
 #define CASA_STLIO_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/iostream.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <vector>
 #include <set>
 #include <list>
 #include <map>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward Declarations
   class AipsIO;
@@ -169,9 +169,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   AipsIO& operator<< (AipsIO& ios, const std::vector<T>&);
   // </group>
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/BasicSL/STLIO.tcc>
+#include <casacore/casa/BasicSL/STLIO.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

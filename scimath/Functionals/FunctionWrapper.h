@@ -29,10 +29,11 @@
 #define SCIMATH_FUNCTIONWRAPPER_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/WrapperParam.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/WrapperParam.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 template <class T> class Vector;
@@ -110,11 +111,11 @@ public:
   // Construct an n-dimensional  function with parameters.
   FunctionWrapper(T(*f)(const Vector<T>&, const Vector<T>&),
 		    const Vector<T> &par, const uInt dim=1);
-  // Copy constructor (deep copy)
+  // Copy constructor (reference semantics)
   // <group>
   FunctionWrapper(const FunctionWrapper<T> &other);
   // </group>
-  // Copy assignment (deep copy)
+  // Copy assignment (reference semantics)
   FunctionWrapper<T> &operator=(const FunctionWrapper<T> &other);
 
   // Destructor
@@ -139,7 +140,7 @@ public:
 protected:
   //# Data
   // The function aid object
-  WrapperBase<T> *doit_p;
+  CountedPtr<WrapperBase<T> > doit_p;
 
   //# Make members of parent classes known.
 protected:
@@ -147,9 +148,9 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/FunctionWrapper.tcc>
+#include <casacore/scimath/Functionals/FunctionWrapper.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

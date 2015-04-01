@@ -25,14 +25,17 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/MatrixMath.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/iostream.h>
-#include <casa/math.h>
+#ifndef CASA_MATRIXMATH_TCC
+#define CASA_MATRIXMATH_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Arrays/MatrixMath.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/math.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
                                       // the vector dot/scalar/inner product
 template<class T> T innerProduct (const Vector<T> &A, const Vector<T> &B) {
@@ -166,5 +169,7 @@ Matrix<T> directProduct(const  Matrix<T> &A, const Matrix<T> &B) {
     return dpAB;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

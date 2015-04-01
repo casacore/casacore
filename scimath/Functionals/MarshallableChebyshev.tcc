@@ -26,10 +26,13 @@
 //#! ========================================================================
 //# $Id$
 
-#include <scimath/Functionals/MarshallableChebyshev.h>
-#include <casa/Arrays/Array.h>
+#ifndef SCIMATH_MARSHALLABLECHEBYSHEV_TCC
+#define SCIMATH_MARSHALLABLECHEBYSHEV_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Functionals/MarshallableChebyshev.h>
+#include <casacore/casa/Arrays/Array.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 const String MarshallableChebyshev<T>::modenames[] = 
@@ -95,5 +98,7 @@ MarshallableChebyshev<T>::MarshallableChebyshev(const Record& gr)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

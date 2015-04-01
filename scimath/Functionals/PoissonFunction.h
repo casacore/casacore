@@ -22,16 +22,17 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_POISSONFUNCTION_H
 #define SCIMATH_POISSONFUNCTION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/PoissonParam.h>
-#include <scimath/Functionals/Function.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/PoissonParam.h>
+#include <casacore/scimath/Functionals/Function.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -212,10 +213,10 @@ public:
 #undef PoissonFunction_PS
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/PoissonFunction.tcc>
-#include <scimath/Functionals/PoissonFunction2.tcc>
+#include <casacore/scimath/Functionals/PoissonFunction.tcc>
+#include <casacore/scimath/Functionals/PoissonFunction2.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

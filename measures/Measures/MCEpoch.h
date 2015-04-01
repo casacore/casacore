@@ -30,15 +30,15 @@
 #define MEASURES_MCEPOCH_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/MeasBase.h>
-#include <measures/Measures/MeasRef.h>
-#include <measures/Measures/MCBase.h>
-#include <measures/Measures/MConvertBase.h>
-#include <measures/Measures/MEpoch.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MeasBase.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/measures/Measures/MCBase.h>
+#include <casacore/measures/Measures/MConvertBase.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MCEpoch;
@@ -71,9 +71,9 @@ class String;
 // <example>
 // Convert (with all steps explicit) a UTC to an IAT time.
 // <srcblock>
-//	#include <measures/Measures.h>
-//	#include <measures/Measures/MEpoch.h>
-//	#include <measures/Measures/MCEpoch.h>
+//	#include <casacore/measures/Measures.h>
+//	#include <casacore/measures/Measures/MEpoch.h>
+//	#include <casacore/measures/Measures/MCEpoch.h>
 //	cout << "TAI for UTC = MJD(50237.29): " <<
 //		MEpoch::Convert(MEpoch(MVEpoch(Quantity(50237.29, "d")),
 //			               MEpoch::Ref(MEpoch::UTC)),
@@ -201,6 +201,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

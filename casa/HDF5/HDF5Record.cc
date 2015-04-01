@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <casa/HDF5/HDF5Record.h>
-#include <casa/HDF5/HDF5DataSet.h>
-#include <casa/HDF5/HDF5Group.h>
-#include <casa/HDF5/HDF5HidMeta.h>
-#include <casa/HDF5/HDF5Error.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/HDF5/HDF5Record.h>
+#include <casacore/casa/HDF5/HDF5DataSet.h>
+#include <casacore/casa/HDF5/HDF5Group.h>
+#include <casacore/casa/HDF5/HDF5HidMeta.h>
+#include <casacore/casa/HDF5/HDF5Error.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifdef HAVE_HDF5
 

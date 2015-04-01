@@ -31,11 +31,11 @@
 #define CASA_VALUEHOLDERREP_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Utilities/DataType.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/DataType.h>
 #include <iosfwd>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class AipsIO;
@@ -105,7 +105,7 @@ public:
   DataType dataType() const;
     
   // Get the value.
-  // If possible, it converts the the data as needed.
+  // If possible, it converts the data as needed.
   // <group>
   Bool                  asBool    () const;
   uChar                 asuChar   () const;
@@ -181,6 +181,6 @@ inline DataType ValueHolderRep::dataType() const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

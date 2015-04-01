@@ -29,17 +29,17 @@
 #define SCIMATH_FUNCTION_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicMath/Functional.h>
-#include <casa/Utilities/Assert.h>
-#include <scimath/Functionals/FunctionParam.h>
-#include <scimath/Functionals/FunctionTraits.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicMath/Functional.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/scimath/Functionals/FunctionParam.h>
+#include <casacore/scimath/Functionals/FunctionTraits.h>
 
 //# Forward declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class String;
@@ -100,10 +100,10 @@ class RecordInterface;
 // time(<em>x</em>) could be:
 // <srcblock>
 //   //# Sinusoid.h
-//   #include <casa/aips.h>
-//   #include <scimath/Functionals/Function.h>
-//   #include <casa/BasicSL/Constants.h>
-//   #include <casa/BasicMath/Math.h>
+//   #include <casacore/casa/aips.h>
+//   #include <casacore/scimath/Functionals/Function.h>
+//   #include <casacore/casa/BasicSL/Constants.h>
+//   #include <casacore/casa/BasicMath/Math.h>
 //   // The sinusoid class
 //   template<class T> class Sinusoid : public Function<T> {
 //    public:
@@ -147,10 +147,10 @@ class RecordInterface;
 // could be:
 // <srcblock>
 //   //# Sinusoid.h
-//   #include <casa/aips.h>
-//   #include <scimath/Functionals/Function.h>
-//   #include <casa/BasicSL/Constants.h>
-//   #include <casa/BasicMath/Math.h>
+//   #include <casacore/casa/aips.h>
+//   #include <casacore/scimath/Functionals/Function.h>
+//   #include <casacore/casa/BasicSL/Constants.h>
+//   #include <casacore/casa/BasicMath/Math.h>
 //   template<class T> class Sinusoid : public Function<T> {
 //    public:
 //     enum { AMPL=0, FREQ };
@@ -359,9 +359,9 @@ template<class T, class U>
 inline ostream &operator<<(ostream &os, const Function<T,U> &fun) {
   return fun.print(os); }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/Function.tcc>
+#include <casacore/scimath/Functionals/Function.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -29,12 +29,12 @@
 #define CASA_LOGIARRAY_H
 
 
-#include <casa/aips.h>
-#include <casa/Arrays/LogiArrayFwd.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/LogiArrayFwd.h>
+#include <casacore/casa/Arrays/Array.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Logical valued Arrays.
@@ -84,6 +84,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

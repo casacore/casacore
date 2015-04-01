@@ -29,10 +29,11 @@
 #define MEASURES_TABLEMEASOFFSETDESC_H
 
 //# Includes
-#include <casa/BasicSL/String.h>
-#include <measures/Measures/MeasureHolder.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TableMeasDescBase;
@@ -212,6 +213,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

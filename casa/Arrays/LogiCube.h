@@ -29,12 +29,12 @@
 #define CASA_LOGICUBE_H
 
 
-#include <casa/aips.h>
-#include <casa/Arrays/LogiArray.h>
-#include <casa/Arrays/Cube.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/LogiArray.h>
+#include <casacore/casa/Arrays/Cube.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Logical valued Cubes.
@@ -81,6 +81,6 @@ typedef Cube<LogicalArrayElem> LogicalCube;
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

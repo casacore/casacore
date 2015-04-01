@@ -28,14 +28,14 @@
 #ifndef PYRAP_PYCEXCP_H
 #define PYRAP_PYCEXCP_H
 
-#include <casa/Containers/IterError.h>
+#include <casacore/casa/Containers/IterError.h>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
-  void translate_iterexcp (const casa::IterError& e);
+  void translate_iterexcp (const casacore::IterError& e);
   void translate_stdexcp (const std::exception& e);
 
-  // Register exception translators for std::exception and casa::IterError.
+  // Register exception translators for std::exception and casacore::IterError.
   void register_convert_excp();
 
 }}

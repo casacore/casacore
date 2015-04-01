@@ -28,14 +28,16 @@
 #ifndef CASA_LOGGING_H
 #define CASA_LOGGING_H
 
-#include <casa/Logging/LogMessage.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/Logging/LogSink.h>
-#include <casa/Logging/LogFilter.h>
-//#include <aips/LogTables/TableLogSink.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Logging/LogMessage.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/Logging/LogSink.h>
+#include <casacore/casa/Logging/LogFilter.h>
+//#include <aips/LogTables/TableLogSink.h>
+#include <casacore/casa/Logging/LogIO.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module> 
 //
@@ -118,7 +120,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Schematically, application programmers would use the logging system as
 // follows:
 // <srcBlock>
-// #include <casa/Logging.h>
+// #include <casacore/casa/Logging.h>
 // ...
 // void MyClass:myFunction(LogIO &os)
 // {
@@ -421,6 +423,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

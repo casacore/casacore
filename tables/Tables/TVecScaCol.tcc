@@ -25,13 +25,16 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <tables/Tables/TVecScaCol.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/TableError.h>
-#include <casa/BasicSL/String.h>
+#ifndef TABLES_TVECSCACOL_TCC
+#define TABLES_TVECSCACOL_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TVecScaCol.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/BasicSL/String.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Construct a table column vector.
 template<class T>
@@ -76,5 +79,7 @@ void TabVecScaCol<T>::set (const T& val)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

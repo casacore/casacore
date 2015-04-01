@@ -29,12 +29,12 @@
 #define SCIMATH_POWERLOGARITHMICPOLYNOMIALPARAM_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <scimath/Functionals/Function1D.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/scimath/Functionals/Function1D.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 template<class T> class Vector;
@@ -147,9 +147,9 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/PowerLogarithmicPolynomialParam.tcc>
+#include <casacore/scimath/Functionals/PowerLogarithmicPolynomialParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

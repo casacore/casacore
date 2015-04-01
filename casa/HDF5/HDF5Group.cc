@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <casa/HDF5/HDF5Group.h>
-#include <casa/HDF5/HDF5Error.h>
+#include <casacore/casa/HDF5/HDF5Group.h>
+#include <casacore/casa/HDF5/HDF5Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifdef HAVE_HDF5
 
@@ -43,7 +43,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			 H5P_DEFAULT, H5P_DEFAULT));
     } else {
       type = "open";
-      setHid (H5Gopen2(parentHid, name.c_str(), H5P_DEFAULT));
+      // Note that testing if the link exists does not work for /.
+      if (name == "/"  ||
+          H5Lexists (parentHid, name.c_str(), H5P_LINK_ACCESS_DEFAULT) == 1) {
+        setHid (H5Gopen2(parentHid, name.c_str(), H5P_DEFAULT));
+      }
       if (!isValid()  &&  !mustExist) {
 	type = "open or create";
 	setHid (H5Gcreate2(parentHid, name.c_str(), H5P_DEFAULT,
@@ -97,8 +101,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   void HDF5Group::remove (const HDF5Object& parentHid, const String& name)
   {
-    // The delete fails if the group does not exist, but that is no problem.
-    H5Ldelete (parentHid, name.c_str(), H5P_LINK_ACCESS_DEFAULT);
+    if (exists (parentHid, name)) {
+      H5Ldelete (parentHid, name.c_str(), H5P_LINK_ACCESS_DEFAULT);
+    }
   }
 
 #else

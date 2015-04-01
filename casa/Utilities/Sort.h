@@ -30,13 +30,13 @@
 #define CASA_SORT_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Utilities/ValType.h>
-#include <casa/Containers/Block.h>
-#include <casa/Utilities/Compare.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Utilities/Compare.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class Vector;
@@ -413,6 +413,6 @@ inline void Sort::swap (Int i, Int j, uInt* inx) const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

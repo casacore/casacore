@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/Assert.h>
-#include <casa/stdio.h>
+#ifndef CASA_ASSERT_TCC
+#define CASA_ASSERT_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/stdio.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class t> assert_<t>::assert_(int expr, const char *msg, const char* file, Int line) {
   static char message[256];
@@ -46,5 +49,7 @@ template<class t> assert_<t>::assert_(const void *ptr, const char *msg, const ch
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

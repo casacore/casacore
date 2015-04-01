@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/String.h>
-#include <casa/OS/Path.h>
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
-#include <casa/OS/Timer.h>
-#include <casa/BasicMath/Random.h>
-#include <casa/Inputs.h>
-#include <casa/IO/TapeIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/BasicMath/Random.h>
+#include <casacore/casa/Inputs.h>
+#include <casacore/casa/IO/TapeIO.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main(int argc, const char* argv[])
 {
   try {

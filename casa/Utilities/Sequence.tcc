@@ -25,9 +25,12 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/Sequence.h>
+#ifndef CASA_SEQUENCE_TCC
+#define CASA_SEQUENCE_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Utilities/Sequence.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 /*
    // Inlined this in Sequence.h so this is now
@@ -38,5 +41,7 @@ template<class T> Sequence<T>::~Sequence()
 }
 */
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

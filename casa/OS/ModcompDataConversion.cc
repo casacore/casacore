@@ -25,191 +25,191 @@
 //#
 //# $Id$
 
-#include <casa/OS/ModcompDataConversion.h>
-#include <casa/OS/ModcompConversion.h>
+#include <casacore/casa/OS/ModcompDataConversion.h>
+#include <casacore/casa/OS/ModcompConversion.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ModcompDataConversion::~ModcompDataConversion(){
 }
 
-uInt ModcompDataConversion::toLocal (Char& to, const void* from) const {
+size_t ModcompDataConversion::toLocal (Char& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (uChar& to, const void* from) const {
+size_t ModcompDataConversion::toLocal (uChar& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (Short& to, const void* from) const {
+size_t ModcompDataConversion::toLocal (Short& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (uShort& to, const void* from) const {
+size_t ModcompDataConversion::toLocal (uShort& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (Int& to, const void* from) const {
+size_t ModcompDataConversion::toLocal (Int& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (uInt& to, const void* from) const {
+size_t ModcompDataConversion::toLocal (uInt& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (Int64& to, const void* from) const {
+size_t ModcompDataConversion::toLocal (Int64& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (uInt64& to, const void* from) const {
+size_t ModcompDataConversion::toLocal (uInt64& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (Float& to, const void* from) const {
+size_t ModcompDataConversion::toLocal (Float& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (Double& to, const void* from) const {
+size_t ModcompDataConversion::toLocal (Double& to, const void* from) const {
   return ModcompConversion::toLocal (to, from);
 }
 
-uInt ModcompDataConversion::toLocal (Char* to, const void* from,
-				     uInt nr) const {
+size_t ModcompDataConversion::toLocal (Char* to, const void* from,
+                                       size_t nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::toLocal (uChar* to, const void* from,
-				     uInt nr) const {
+size_t ModcompDataConversion::toLocal (uChar* to, const void* from,
+                                       size_t nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::toLocal (Short* to, const void* from,
-				     uInt nr) const {
+size_t ModcompDataConversion::toLocal (Short* to, const void* from,
+                                       size_t nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::toLocal (uShort* to, const void* from,
-				     uInt nr) const {
+size_t ModcompDataConversion::toLocal (uShort* to, const void* from,
+                                       size_t nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::toLocal (Int* to, const void* from,
-				     uInt nr) const {
+size_t ModcompDataConversion::toLocal (Int* to, const void* from,
+                                       size_t nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::toLocal (uInt* to, const void* from,
-				     uInt nr) const {
+size_t ModcompDataConversion::toLocal (uInt* to, const void* from,
+                                       size_t nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::toLocal (Int64* to, const void* from,
-				     uInt nr) const {
+size_t ModcompDataConversion::toLocal (Int64* to, const void* from,
+                                       size_t nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::toLocal (uInt64* to, const void* from,
-				     uInt nr) const {
+size_t ModcompDataConversion::toLocal (uInt64* to, const void* from,
+                                       size_t nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::toLocal (Float* to, const void* from,
-				     uInt nr) const {
+size_t ModcompDataConversion::toLocal (Float* to, const void* from,
+                                       size_t nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::toLocal (Double* to, const void* from, 
-				     uInt nr) const {
+size_t ModcompDataConversion::toLocal (Double* to, const void* from, 
+                                       size_t nr) const {
   return ModcompConversion::toLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, Char from) const {
+size_t ModcompDataConversion::fromLocal (void* to, Char from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, uChar from) const {
+size_t ModcompDataConversion::fromLocal (void* to, uChar from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, Short from) const {
+size_t ModcompDataConversion::fromLocal (void* to, Short from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, uShort from) const {
+size_t ModcompDataConversion::fromLocal (void* to, uShort from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, Int from) const {
+size_t ModcompDataConversion::fromLocal (void* to, Int from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, uInt from) const {
+size_t ModcompDataConversion::fromLocal (void* to, uInt from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, Int64 from) const {
+size_t ModcompDataConversion::fromLocal (void* to, Int64 from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, uInt64 from) const {
+size_t ModcompDataConversion::fromLocal (void* to, uInt64 from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, Float from) const {
+size_t ModcompDataConversion::fromLocal (void* to, Float from) const {
     return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, Double from) const {
+size_t ModcompDataConversion::fromLocal (void* to, Double from) const {
   return ModcompConversion::fromLocal (to, from);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const Char* from,
-				       uInt nr) const {
+size_t ModcompDataConversion::fromLocal (void* to, const Char* from,
+                                         size_t nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const uChar* from,
-				       uInt nr) const {
+size_t ModcompDataConversion::fromLocal (void* to, const uChar* from,
+                                         size_t nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const Short* from,
-				       uInt nr) const {
+size_t ModcompDataConversion::fromLocal (void* to, const Short* from,
+                                         size_t nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const uShort* from,
-				       uInt nr) const {
+size_t ModcompDataConversion::fromLocal (void* to, const uShort* from,
+                                         size_t nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const Int* from,
-				       uInt nr) const {
+size_t ModcompDataConversion::fromLocal (void* to, const Int* from,
+                                         size_t nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const uInt* from,
-				       uInt nr) const {
+size_t ModcompDataConversion::fromLocal (void* to, const uInt* from,
+                                         size_t nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const Int64* from,
-				       uInt nr) const {
+size_t ModcompDataConversion::fromLocal (void* to, const Int64* from,
+                                         size_t nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const uInt64* from,
-				       uInt nr) const {
+size_t ModcompDataConversion::fromLocal (void* to, const uInt64* from,
+                                         size_t nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const Float* from,
-				       uInt nr) const {
+size_t ModcompDataConversion::fromLocal (void* to, const Float* from,
+                                         size_t nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
-uInt ModcompDataConversion::fromLocal (void* to, const Double* from,
-				       uInt nr) const {
+size_t ModcompDataConversion::fromLocal (void* to, const Double* from,
+                                         size_t nr) const {
   return ModcompConversion::fromLocal (to, from, nr);
 }
 
@@ -296,5 +296,5 @@ uInt ModcompDataConversion::externalSize (const Double*) const {
 // compile-command: "gmake OPTLIB=1 ModcompDataConversion"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

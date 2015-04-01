@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/ArrayIter.h>
-#include <casa/Arrays/ArrayError.h>
+#ifndef CASA_ARRAYITER_TCC
+#define CASA_ARRAYITER_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Arrays/ArrayIter.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> ArrayIterator<T>::ArrayIterator(const Array<T> &a, uInt byDim)
 : ArrayPositionIterator(a.shape(), byDim),
@@ -148,4 +151,6 @@ template<class T> ArrayBase& ArrayIterator<T>::getArray()
     return array();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

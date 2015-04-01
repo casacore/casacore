@@ -29,11 +29,11 @@
 #define CASA_LECANONICALCONVERSION_H
 
 //# Includes
-#include <casa/aipsxtype.h>
-#include <casa/OS/Conversion.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/OS/Conversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Define the little endian canonical sizes of the built-in data types.
 // These are the same for all machine architectures.
@@ -162,131 +162,131 @@ public:
     // Convert one value from canonical format to local format.
     // The from and to buffer should not overlap.
     // <group>
-    static unsigned int toLocal (char&           to, const void* from);
-    static unsigned int toLocal (unsigned char&  to, const void* from);
-    static unsigned int toLocal (short&          to, const void* from);
-    static unsigned int toLocal (unsigned short& to, const void* from);
-    static unsigned int toLocal (int&            to, const void* from);
-    static unsigned int toLocal (unsigned int&   to, const void* from);
-    static unsigned int toLocal (Int64&          to, const void* from);
-    static unsigned int toLocal (uInt64&         to, const void* from);
-    static unsigned int toLocal (float&          to, const void* from);
-    static unsigned int toLocal (double&         to, const void* from);
+    static size_t toLocal (char&           to, const void* from);
+    static size_t toLocal (unsigned char&  to, const void* from);
+    static size_t toLocal (short&          to, const void* from);
+    static size_t toLocal (unsigned short& to, const void* from);
+    static size_t toLocal (int&            to, const void* from);
+    static size_t toLocal (unsigned int&   to, const void* from);
+    static size_t toLocal (Int64&          to, const void* from);
+    static size_t toLocal (uInt64&         to, const void* from);
+    static size_t toLocal (float&          to, const void* from);
+    static size_t toLocal (double&         to, const void* from);
     // </group>
     
     // Convert one value from local format to canonical format.
     // The from and to buffer should not overlap.
     // <group>
-    static unsigned int fromLocal (void* to, const char&           from);
-    static unsigned int fromLocal (void* to, const unsigned char&  from);
-    static unsigned int fromLocal (void* to, const short&          from);
-    static unsigned int fromLocal (void* to, const unsigned short& from);
-    static unsigned int fromLocal (void* to, const int&            from);
-    static unsigned int fromLocal (void* to, const unsigned int&   from);
-    static unsigned int fromLocal (void* to, const Int64&          from);
-    static unsigned int fromLocal (void* to, const uInt64&         from);
-    static unsigned int fromLocal (void* to, const float&          from);
-    static unsigned int fromLocal (void* to, const double&         from);
+    static size_t fromLocal (void* to, const char&           from);
+    static size_t fromLocal (void* to, const unsigned char&  from);
+    static size_t fromLocal (void* to, const short&          from);
+    static size_t fromLocal (void* to, const unsigned short& from);
+    static size_t fromLocal (void* to, const int&            from);
+    static size_t fromLocal (void* to, const unsigned int&   from);
+    static size_t fromLocal (void* to, const Int64&          from);
+    static size_t fromLocal (void* to, const uInt64&         from);
+    static size_t fromLocal (void* to, const float&          from);
+    static size_t fromLocal (void* to, const double&         from);
     // </group>
     
     // Convert nr values from canonical format to local format.
     // The from and to buffer should not overlap.
     // <group>
-    static unsigned int toLocal (char*           to, const void* from,
-				 unsigned int nr);
-    static unsigned int toLocal (unsigned char*  to, const void* from,
-				 unsigned int nr);
-    static unsigned int toLocal (short*          to, const void* from,
-				 unsigned int nr);
-    static unsigned int toLocal (unsigned short* to, const void* from,
-				 unsigned int nr);
-    static unsigned int toLocal (int*            to, const void* from,
-				 unsigned int nr);
-    static unsigned int toLocal (unsigned int*   to, const void* from,
-				 unsigned int nr);
-    static unsigned int toLocal (Int64*          to, const void* from,
-				 unsigned int nr);
-    static unsigned int toLocal (uInt64*         to, const void* from,
-				 unsigned int nr);
-    static unsigned int toLocal (float*          to, const void* from,
-				 unsigned int nr);
-    static unsigned int toLocal (double*         to, const void* from,
-				 unsigned int nr);
+    static size_t toLocal (char*           to, const void* from,
+                           size_t nr);
+    static size_t toLocal (unsigned char*  to, const void* from,
+                           size_t nr);
+    static size_t toLocal (short*          to, const void* from,
+                           size_t nr);
+    static size_t toLocal (unsigned short* to, const void* from,
+                           size_t nr);
+    static size_t toLocal (int*            to, const void* from,
+                           size_t nr);
+    static size_t toLocal (unsigned int*   to, const void* from,
+                           size_t nr);
+    static size_t toLocal (Int64*          to, const void* from,
+                           size_t nr);
+    static size_t toLocal (uInt64*         to, const void* from,
+                           size_t nr);
+    static size_t toLocal (float*          to, const void* from,
+                           size_t nr);
+    static size_t toLocal (double*         to, const void* from,
+                           size_t nr);
     // </group>
 
     // Convert nr values from local format to canonical format.
     // The from and to buffer should not overlap.
     // <group>
-    static unsigned int fromLocal (void* to, const char*           from,
-				   unsigned int nr);
-    static unsigned int fromLocal (void* to, const unsigned char*  from,
-				   unsigned int nr);
-    static unsigned int fromLocal (void* to, const short*          from,
-				   unsigned int nr);
-    static unsigned int fromLocal (void* to, const unsigned short* from,
-				   unsigned int nr);
-    static unsigned int fromLocal (void* to, const int*            from,
-				   unsigned int nr);
-    static unsigned int fromLocal (void* to, const unsigned int*   from,
-				   unsigned int nr);
-    static unsigned int fromLocal (void* to, const Int64*          from,
-				   unsigned int nr);
-    static unsigned int fromLocal (void* to, const uInt64*         from,
-				   unsigned int nr);
-    static unsigned int fromLocal (void* to, const float*          from,
-				   unsigned int nr);
-    static unsigned int fromLocal (void* to, const double*         from,
-				   unsigned int nr);
+    static size_t fromLocal (void* to, const char*           from,
+                             size_t nr);
+    static size_t fromLocal (void* to, const unsigned char*  from,
+                             size_t nr);
+    static size_t fromLocal (void* to, const short*          from,
+                             size_t nr);
+    static size_t fromLocal (void* to, const unsigned short* from,
+                             size_t nr);
+    static size_t fromLocal (void* to, const int*            from,
+                             size_t nr);
+    static size_t fromLocal (void* to, const unsigned int*   from,
+                             size_t nr);
+    static size_t fromLocal (void* to, const Int64*          from,
+                             size_t nr);
+    static size_t fromLocal (void* to, const uInt64*         from,
+                             size_t nr);
+    static size_t fromLocal (void* to, const float*          from,
+                             size_t nr);
+    static size_t fromLocal (void* to, const double*         from,
+                             size_t nr);
     // </group>
 
     // Convert nr values from canonical format to local format.
     // The from and to buffer should not overlap.
     // <group>
-    static unsigned int toLocalChar     (void* to, const void* from,
-					 unsigned int nr);
-    static unsigned int toLocalUChar    (void* to, const void* from,
-					 unsigned int nr);
-    static unsigned int toLocalShort    (void* to, const void* from,
-					 unsigned int nr);
-    static unsigned int toLocalUShort   (void* to, const void* from,
-					 unsigned int nr);
-    static unsigned int toLocalInt      (void* to, const void* from,
-					 unsigned int nr);
-    static unsigned int toLocalUInt     (void* to, const void* from,
-					 unsigned int nr);
-    static unsigned int toLocalInt64    (void* to, const void* from,
-					 unsigned int nr);
-    static unsigned int toLocalUInt64   (void* to, const void* from,
-					 unsigned int nr);
-    static unsigned int toLocalFloat    (void* to, const void* from,
-					 unsigned int nr);
-    static unsigned int toLocalDouble   (void* to, const void* from,
-					 unsigned int nr);
+    static size_t toLocalChar     (void* to, const void* from,
+                                   size_t nr);
+    static size_t toLocalUChar    (void* to, const void* from,
+                                   size_t nr);
+    static size_t toLocalShort    (void* to, const void* from,
+                                   size_t nr);
+    static size_t toLocalUShort   (void* to, const void* from,
+                                   size_t nr);
+    static size_t toLocalInt      (void* to, const void* from,
+                                   size_t nr);
+    static size_t toLocalUInt     (void* to, const void* from,
+                                   size_t nr);
+    static size_t toLocalInt64    (void* to, const void* from,
+                                   size_t nr);
+    static size_t toLocalUInt64   (void* to, const void* from,
+                                   size_t nr);
+    static size_t toLocalFloat    (void* to, const void* from,
+                                   size_t nr);
+    static size_t toLocalDouble   (void* to, const void* from,
+                                   size_t nr);
     // </group>
-    
+
     // Convert nr values from local format to canonical format.
     // The from and to buffer should not overlap.
     // <group>
-    static unsigned int fromLocalChar     (void* to, const void* from,
-					   unsigned int nr);
-    static unsigned int fromLocalUChar    (void* to, const void* from,
-					   unsigned int nr);
-    static unsigned int fromLocalShort    (void* to, const void* from,
-					   unsigned int nr);
-    static unsigned int fromLocalUShort   (void* to, const void* from,
-					   unsigned int nr);
-    static unsigned int fromLocalInt      (void* to, const void* from,
-					   unsigned int nr);
-    static unsigned int fromLocalUInt     (void* to, const void* from,
-					   unsigned int nr);
-    static unsigned int fromLocalInt64    (void* to, const void* from,
-					   unsigned int nr);
-    static unsigned int fromLocalUInt64   (void* to, const void* from,
-					   unsigned int nr);
-    static unsigned int fromLocalFloat    (void* to, const void* from,
-					   unsigned int nr);
-    static unsigned int fromLocalDouble   (void* to, const void* from,
-					   unsigned int nr);
+    static size_t fromLocalChar     (void* to, const void* from,
+                                     size_t nr);
+    static size_t fromLocalUChar    (void* to, const void* from,
+                                     size_t nr);
+    static size_t fromLocalShort    (void* to, const void* from,
+                                     size_t nr);
+    static size_t fromLocalUShort   (void* to, const void* from,
+                                     size_t nr);
+    static size_t fromLocalInt      (void* to, const void* from,
+                                     size_t nr);
+    static size_t fromLocalUInt     (void* to, const void* from,
+                                     size_t nr);
+    static size_t fromLocalInt64    (void* to, const void* from,
+                                     size_t nr);
+    static size_t fromLocalUInt64   (void* to, const void* from,
+                                     size_t nr);
+    static size_t fromLocalFloat    (void* to, const void* from,
+                                     size_t nr);
+    static size_t fromLocalDouble   (void* to, const void* from,
+                                     size_t nr);
     // </group>
     
     // Convert values from canonical format to local format.
@@ -297,25 +297,25 @@ public:
     // that memcpy can directly be used if no conversion is needed.
     // <group>
     static void* byteToLocalChar     (void* to, const void* from,
-				      unsigned int nrbytes);
+				      size_t nrbytes);
     static void* byteToLocalUChar    (void* to, const void* from,
-				      unsigned int nrbytes);
+				      size_t nrbytes);
     static void* byteToLocalShort    (void* to, const void* from,
-				      unsigned int nrbytes);
+				      size_t nrbytes);
     static void* byteToLocalUShort   (void* to, const void* from,
-				      unsigned int nrbytes);
+				      size_t nrbytes);
     static void* byteToLocalInt      (void* to, const void* from,
-				      unsigned int nrbytes);
+				      size_t nrbytes);
     static void* byteToLocalUInt     (void* to, const void* from,
-				      unsigned int nrbytes);
+				      size_t nrbytes);
     static void* byteToLocalInt64    (void* to, const void* from,
-				      unsigned int nrbytes);
+				      size_t nrbytes);
     static void* byteToLocalUInt64   (void* to, const void* from,
-				      unsigned int nrbytes);
+				      size_t nrbytes);
     static void* byteToLocalFloat    (void* to, const void* from,
-				      unsigned int nrbytes);
+				      size_t nrbytes);
     static void* byteToLocalDouble   (void* to, const void* from,
-				      unsigned int nrbytes);
+				      size_t nrbytes);
     // </group>
     
     // Convert values from local format to canonical format.
@@ -326,25 +326,25 @@ public:
     // that memcpy can directly be used if no conversion is needed.
     // <group>
     static void* byteFromLocalChar     (void* to, const void* from,
-					unsigned int nrbytes);
+					size_t nrbytes);
     static void* byteFromLocalUChar    (void* to, const void* from,
-					unsigned int nrbytes);
+					size_t nrbytes);
     static void* byteFromLocalShort    (void* to, const void* from,
-					unsigned int nrbytes);
+					size_t nrbytes);
     static void* byteFromLocalUShort   (void* to, const void* from,
-					unsigned int nrbytes);
+					size_t nrbytes);
     static void* byteFromLocalInt      (void* to, const void* from,
-					unsigned int nrbytes);
+					size_t nrbytes);
     static void* byteFromLocalUInt     (void* to, const void* from,
-					unsigned int nrbytes);
+					size_t nrbytes);
     static void* byteFromLocalInt64    (void* to, const void* from,
-					unsigned int nrbytes);
+					size_t nrbytes);
     static void* byteFromLocalUInt64   (void* to, const void* from,
-					unsigned int nrbytes);
+					size_t nrbytes);
     static void* byteFromLocalFloat    (void* to, const void* from,
-					unsigned int nrbytes);
+					size_t nrbytes);
     static void* byteFromLocalDouble   (void* to, const void* from,
-					unsigned int nrbytes);
+					size_t nrbytes);
     // </group>
     
     // Get the value conversion function for the given type.
@@ -488,22 +488,22 @@ inline void LECanonicalConversion::move8 (void* to, const void* from)
 
 
 
-inline unsigned int LECanonicalConversion::toLocal (char& to,
-						    const void* from)
+inline size_t LECanonicalConversion::toLocal (char& to,
+                                              const void* from)
 {
     to = *(char*)from;
     return SIZE_LECAN_CHAR;
 }
 
-inline unsigned int LECanonicalConversion::toLocal (unsigned char& to,
-						    const void* from)
+inline size_t LECanonicalConversion::toLocal (unsigned char& to,
+                                              const void* from)
 {
     to = *(unsigned char*)from;
     return SIZE_LECAN_UCHAR;
 }
 
-inline unsigned int LECanonicalConversion::toLocal (short& to,
-						    const void* from)
+inline size_t LECanonicalConversion::toLocal (short& to,
+                                              const void* from)
 {
     if (sizeof(short) != 2) {
 	if (((signed char*)from)[0] < 0) {
@@ -520,8 +520,8 @@ inline unsigned int LECanonicalConversion::toLocal (short& to,
     return SIZE_LECAN_SHORT;
 }
 
-inline unsigned int LECanonicalConversion::toLocal (unsigned short& to,
-						    const void* from)
+inline size_t LECanonicalConversion::toLocal (unsigned short& to,
+                                              const void* from)
 {
     if (sizeof(unsigned short) != 2) {
 	to = 0;
@@ -534,8 +534,8 @@ inline unsigned int LECanonicalConversion::toLocal (unsigned short& to,
     return SIZE_LECAN_USHORT;
 }
 
-inline unsigned int LECanonicalConversion::toLocal (int& to,
-						    const void* from)
+inline size_t LECanonicalConversion::toLocal (int& to,
+                                              const void* from)
 {
     if (sizeof(int) != 4) {
 	if (((signed char*)from)[0] < 0) {
@@ -552,8 +552,8 @@ inline unsigned int LECanonicalConversion::toLocal (int& to,
     return SIZE_LECAN_INT;
 }
 
-inline unsigned int LECanonicalConversion::toLocal (unsigned int& to,
-						    const void* from)
+inline size_t LECanonicalConversion::toLocal (unsigned int& to,
+                                              const void* from)
 {
     if (sizeof(unsigned int) != 4) {
 	to = 0;
@@ -566,8 +566,8 @@ inline unsigned int LECanonicalConversion::toLocal (unsigned int& to,
     return SIZE_LECAN_UINT;
 }
 
-inline unsigned int LECanonicalConversion::toLocal (Int64& to,
-						    const void* from)
+inline size_t LECanonicalConversion::toLocal (Int64& to,
+                                              const void* from)
 {
     if (sizeof(Int64) != 8) {
 	if (((signed char*)from)[0] < 0) {
@@ -584,8 +584,8 @@ inline unsigned int LECanonicalConversion::toLocal (Int64& to,
     return SIZE_LECAN_INT64;
 }
 
-inline unsigned int LECanonicalConversion::toLocal (uInt64& to,
-						    const void* from)
+inline size_t LECanonicalConversion::toLocal (uInt64& to,
+                                              const void* from)
 {
     if (sizeof(uInt64) != 8) {
 	to = 0;
@@ -598,8 +598,8 @@ inline unsigned int LECanonicalConversion::toLocal (uInt64& to,
     return SIZE_LECAN_UINT64;
 }
 
-inline unsigned int LECanonicalConversion::toLocal (float& to,
-						    const void* from)
+inline size_t LECanonicalConversion::toLocal (float& to,
+                                              const void* from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     reverse4 (((char*)&to)+sizeof(float)-4, from);
@@ -609,8 +609,8 @@ inline unsigned int LECanonicalConversion::toLocal (float& to,
     return SIZE_LECAN_FLOAT;
 }
 
-inline unsigned int LECanonicalConversion::toLocal (double& to,
-						    const void* from)
+inline size_t LECanonicalConversion::toLocal (double& to,
+                                              const void* from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     reverse8 (((char*)&to)+sizeof(double)-8, from);
@@ -621,21 +621,21 @@ inline unsigned int LECanonicalConversion::toLocal (double& to,
 }
 
 
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						      const char& from)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const char& from)
 {
     *(char*)to = from;
     return SIZE_LECAN_CHAR;
 }
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						     const unsigned char& from)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const unsigned char& from)
 {
     *(unsigned char*)to = from;
     return SIZE_LECAN_UCHAR;
 }
 
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						      const short& from)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const short& from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     reverse2 (to, &from);
@@ -645,8 +645,8 @@ inline unsigned int LECanonicalConversion::fromLocal (void* to,
     return SIZE_LECAN_SHORT;
 }
 
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						    const unsigned short& from)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const unsigned short& from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     reverse2 (to, &from);
@@ -656,8 +656,8 @@ inline unsigned int LECanonicalConversion::fromLocal (void* to,
     return SIZE_LECAN_USHORT;
 }
 
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						      const int& from)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const int& from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     reverse4 (to, &from);
@@ -667,8 +667,8 @@ inline unsigned int LECanonicalConversion::fromLocal (void* to,
     return SIZE_LECAN_INT;
 }
 
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						      const unsigned int& from)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const unsigned int& from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     reverse4 (to, &from);
@@ -678,8 +678,8 @@ inline unsigned int LECanonicalConversion::fromLocal (void* to,
     return SIZE_LECAN_UINT;
 }
 
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						      const Int64& from)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const Int64& from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     reverse8 (to, &from);
@@ -689,8 +689,8 @@ inline unsigned int LECanonicalConversion::fromLocal (void* to,
     return SIZE_LECAN_INT64;
 }
 
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						      const uInt64& from)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const uInt64& from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     reverse8 (to, &from);
@@ -700,8 +700,8 @@ inline unsigned int LECanonicalConversion::fromLocal (void* to,
     return SIZE_LECAN_UINT64;
 }
 
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						      const float& from)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const float& from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     reverse4 (to, &from);
@@ -711,8 +711,8 @@ inline unsigned int LECanonicalConversion::fromLocal (void* to,
     return SIZE_LECAN_FLOAT;
 }
 
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						      const double& from)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const double& from)
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     reverse8 (to, &from);
@@ -723,124 +723,124 @@ inline unsigned int LECanonicalConversion::fromLocal (void* to,
 }
 
 
-inline unsigned int LECanonicalConversion::toLocal (char*           to,
-						    const void* from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::toLocal (char*           to,
+                                              const void* from,
+                                              size_t nr)
 {
     return toLocalChar (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::toLocal (unsigned char*  to,
-						    const void* from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::toLocal (unsigned char*  to,
+                                              const void* from,
+                                              size_t nr)
 {
     return toLocalUChar (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::toLocal (short*          to,
-						    const void* from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::toLocal (short*          to,
+                                              const void* from,
+                                              size_t nr)
 {
     return toLocalShort (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::toLocal (unsigned short* to,
-						    const void* from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::toLocal (unsigned short* to,
+                                              const void* from,
+                                              size_t nr)
 {
     return toLocalUShort (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::toLocal (int*            to,
-						    const void* from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::toLocal (int*            to,
+                                              const void* from,
+                                              size_t nr)
 {
     return toLocalInt (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::toLocal (unsigned int*   to,
-						    const void* from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::toLocal (unsigned int*   to,
+                                              const void* from,
+                                              size_t nr)
 {
     return toLocalUInt (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::toLocal (Int64*          to,
-						    const void* from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::toLocal (Int64*          to,
+                                              const void* from,
+                                              size_t nr)
 {
     return toLocalInt64 (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::toLocal (uInt64*         to,
-						    const void* from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::toLocal (uInt64*         to,
+                                              const void* from,
+                                              size_t nr)
 {
     return toLocalUInt64 (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::toLocal (float*          to,
-						    const void* from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::toLocal (float*          to,
+                                              const void* from,
+                                              size_t nr)
 {
     return toLocalFloat (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::toLocal (double*         to,
-						    const void* from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::toLocal (double*         to,
+                                              const void* from,
+                                              size_t nr)
 {
     return toLocalDouble (to, from, nr);
 }
 
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						    const char*           from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const char*           from,
+                                                size_t nr)
 {
     return fromLocalChar (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						    const unsigned char*  from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const unsigned char*  from,
+                                                size_t nr)
 {
     return fromLocalUChar (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						    const short*          from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const short*          from,
+                                                size_t nr)
 {
     return fromLocalShort (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						    const unsigned short* from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const unsigned short* from,
+                                                size_t nr)
 {
     return fromLocalUShort (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						    const int*            from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const int*            from,
+                                                size_t nr)
 {
     return fromLocalInt (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						    const unsigned int*   from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const unsigned int*   from,
+                                                size_t nr)
 {
     return fromLocalUInt (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						    const Int64*          from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const Int64*          from,
+                                                size_t nr)
 {
     return fromLocalInt64 (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						    const uInt64*         from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const uInt64*         from,
+                                                size_t nr)
 {
     return fromLocalUInt64 (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						    const float*          from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const float*          from,
+                                                size_t nr)
 {
     return fromLocalFloat (to, from, nr);
 }
-inline unsigned int LECanonicalConversion::fromLocal (void* to,
-						    const double*         from,
-						    unsigned int nr)
+inline size_t LECanonicalConversion::fromLocal (void* to,
+                                                const double*         from,
+                                                size_t nr)
 {
     return fromLocalDouble (to, from, nr);
 }
@@ -975,6 +975,6 @@ inline unsigned int LECanonicalConversion::canonicalSize (const double*)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

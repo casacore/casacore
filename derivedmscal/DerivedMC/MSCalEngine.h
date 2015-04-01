@@ -29,18 +29,19 @@
 #define DERIVEDMSCAL_MSCALENGINE_H
 
 //# Includes
-#include <tables/Tables/Table.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MBaseline.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/TableMeasures/ScalarMeasColumn.h>
-#include <casa/vector.h>
-#include <casa/stdmap.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MBaseline.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/casa/vector.h>
+#include <casacore/casa/stdmap.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Engine to calculate derived MS values

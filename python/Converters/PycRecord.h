@@ -33,9 +33,9 @@
 // include first to avoid _POSIX_C_SOURCE redefined warnings
 #include <boost/python.hpp>
 #include <boost/python/dict.hpp>
-#include <casa/Containers/Record.h>
+#include <casacore/casa/Containers/Record.h>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
   // <summary>
   // A class to convert a (Table)Record to/from Python objects.
@@ -48,7 +48,7 @@ namespace casa { namespace python {
   // <synopsis>
   // </synopsis>
 
-  // convert casa::Record to PyDict
+  // convert casacore::Record to PyDict
   struct casa_record_to_python
   {
     static boost::python::dict makeobject (Record const& rec);

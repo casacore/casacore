@@ -28,14 +28,14 @@
 #ifndef PYRAP_PYCARRAY_TCC
 #define PYRAP_PYCARRAY_TCC
 
-#include <python/Converters/PycArray.h>
-#include <python/Converters/PycArrayNP.h>
+#include <casacore/python/Converters/PycArray.h>
+#include <casacore/python/Converters/PycArrayNP.h>
 #include <boost/python/object.hpp>
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
   
   template <typename T>
-  boost::python::object makePyArrayObject (casa::Array<T> const& arr)
+  boost::python::object makePyArrayObject (casacore::Array<T> const& arr)
   {
     return numpy::makePyArrayObject (arr);
   }

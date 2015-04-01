@@ -29,9 +29,9 @@
 #ifndef CASA_PGPLOTTERINTERFACE_H
 #define CASA_PGPLOTTERINTERFACE_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class Record;
 class String;
@@ -269,6 +269,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

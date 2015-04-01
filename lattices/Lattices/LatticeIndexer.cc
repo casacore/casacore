@@ -26,14 +26,14 @@
 //# $Id$
 //
 
-#include <lattices/Lattices/LatticeIndexer.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/lattices/Lattices/LatticeIndexer.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LatticeIndexer::LatticeIndexer()
 : itsFullShape (IPosition(1,1)), 
@@ -416,5 +416,5 @@ Bool LatticeIndexer::ok() const
   return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

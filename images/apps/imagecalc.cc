@@ -25,23 +25,23 @@
 //#
 //# $Id:
 
-#include <casa/Inputs/Input.h>
-#include <images/Images/PagedImage.h>
-#include <images/Images/HDF5Image.h>
-#include <images/Images/FITSImage.h>
-#include <images/Images/MIRIADImage.h>
-#include <images/Images/ImageProxy.h>
-#include <images/Images/ImageExpr.h>
-#include <images/Images/ImageExprParse.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/HDF5Image.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/images/Images/MIRIADImage.h>
+#include <casacore/images/Images/ImageProxy.h>
+#include <casacore/images/Images/ImageExpr.h>
+#include <casacore/images/Images/ImageExprParse.h>
 
-using namespace casa;
+using namespace casacore;
 
 int main(int argc, const char* argv[]) 
 {
   try {
     // Register the FITS and Miriad image types.
-    casa::FITSImage::registerOpenFunction();
-    casa::MIRIADImage::registerOpenFunction();
+    casacore::FITSImage::registerOpenFunction();
+    casacore::MIRIADImage::registerOpenFunction();
 
     // Read the input parameters.
     Input inputs(1);

@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <casa/Containers/StackError.h>
+#include <casacore/casa/Containers/StackError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // The normal constructor when throwing the exception.
 EmptyStackError::EmptyStackError (const char *msg,Category c) : 
@@ -37,5 +37,5 @@ EmptyStackError::EmptyStackError (const char *msg,Category c) :
 EmptyStackError::~EmptyStackError () throw()
 { ; }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

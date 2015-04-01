@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Change namespace casa to casacore for Casacore release 2.0.
+
+for FILE in $*
+do
+  perl -p -i -e s'%namespace +casa([ };])%namespace casacore\1%' "$FILE"
+  perl -p -i -e s'%NAMESPACE CASA %NAMESPACE CASACORE %' "$FILE"
+  perl -p -i -e s'%casa::%casacore::%'g "$FILE"
+done

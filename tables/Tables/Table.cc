@@ -25,34 +25,34 @@
 //#
 //# $Id$
 
-#include <tables/Tables/Table.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/PlainTable.h>
-#include <tables/Tables/MemoryTable.h>
-#include <tables/Tables/RefTable.h>
-#include <tables/Tables/ConcatTable.h>
-#include <tables/Tables/NullTable.h>
-#include <tables/Tables/TableCopy.h>
-#include <tables/Tables/ExprDerNode.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableLock.h>
-#include <tables/Tables/TableError.h>
-#include <tables/Tables/StManColumn.h>
-#include <tables/Tables/ExprNode.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/Record.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/OS/File.h>
-#include <casa/OS/Directory.h>
-#include <casa/OS/DirectoryIterator.h>
-#include <casa/iostream.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/PlainTable.h>
+#include <casacore/tables/Tables/MemoryTable.h>
+#include <casacore/tables/Tables/RefTable.h>
+#include <casacore/tables/Tables/ConcatTable.h>
+#include <casacore/tables/Tables/NullTable.h>
+#include <casacore/tables/Tables/TableCopy.h>
+#include <casacore/tables/TaQL/ExprDerNode.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/OS/DirectoryIterator.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Table::ScratchCallback* Table::scratchCallback_p = 0;
 
@@ -1050,4 +1050,4 @@ ostream& operator<< (ostream& ios, const Table& tab)
     return ios;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

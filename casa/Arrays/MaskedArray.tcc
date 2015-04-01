@@ -25,14 +25,17 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/MaskedArray.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/Utilities/Assert.h>
+#ifndef CASA_MASKEDARRAY_TCC
+#define CASA_MASKEDARRAY_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Arrays/MaskedArray.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/Utilities/Assert.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 MaskedArray<T>::MaskedArray ()
@@ -915,5 +918,7 @@ template<class T, class U>
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

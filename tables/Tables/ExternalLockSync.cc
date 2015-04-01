@@ -27,10 +27,10 @@
 
 
 //# Includes
-#include <tables/Tables/ExternalLockSync.h>
+#include <casacore/tables/Tables/ExternalLockSync.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ExternalLockSync::ExternalLockSync (const TableLock& lockOptions)
 : itsLock  (lockOptions, releaseCallBack, this),
@@ -63,5 +63,5 @@ MemoryIO* ExternalLockSync::releaseCallBack (void* lockSyncObject, Bool always)
     return (*(ExternalLockSync*)lockSyncObject).doReleaseCallBack (always);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

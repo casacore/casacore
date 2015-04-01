@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/IO/AipsIOCarray.h>
-#include <casa/Exceptions/Error.h>
+#ifndef CASA_AIPSIOCARRAY_TCC
+#define CASA_AIPSIOCARRAY_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/IO/AipsIOCarray.h>
+#include <casacore/casa/Exceptions/Error.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Put a C-array of n elements.
 template<class T>
@@ -59,5 +62,7 @@ void getnewAipsIO (AipsIO& ios, uInt& n, T** data)
     getAipsIO (ios, n, *data);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

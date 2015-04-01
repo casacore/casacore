@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/EarthMagneticMachine.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicMath/Math.h>
-#include <measures/Measures/MCPosition.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MeasConvert.h>
+#include <casacore/measures/Measures/EarthMagneticMachine.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/measures/Measures/MCPosition.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MeasConvert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 EarthMagneticMachine::EarthMagneticMachine() :
@@ -373,5 +373,5 @@ void EarthMagneticMachine::calculate() {
   clx_p = True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

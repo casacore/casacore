@@ -25,8 +25,13 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/CountedPtr.h>
+#ifndef CASA_COUNTEDPTR_TCC
+#define CASA_COUNTEDPTR_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
-} //# NAMESPACE CASA - END
+#include <casacore/casa/Utilities/CountedPtr.h>
 
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
+} //# NAMESPACE CASACORE - END
+
+
+#endif

@@ -26,15 +26,15 @@
 //# $Id$
 
 
-#include <casa/OS/RegularFile.h>
-#include <casa/OS/File.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions.h>
-#include <casa/iostream.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // <summary>
 // Test program for class RegularFile.
 // </summary>

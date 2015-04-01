@@ -29,11 +29,11 @@
 #define CASA_BUCKETBASE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/BucketFile.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/BucketFile.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // Abstract base class for Bucket classes.
@@ -132,6 +132,6 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

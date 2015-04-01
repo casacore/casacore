@@ -25,35 +25,35 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ReadAsciiTable.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableColumn.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Containers/Block.h>
-#include <casa/OS/Path.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/tables/Tables/ReadAsciiTable.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/OS/Path.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
 
-#include <casa/stdio.h>
-#include <casa/string.h>
-#include <casa/iostream.h>
-#include <casa/fstream.h>             // needed for file IO
-#include <casa/sstream.h>           // needed for internal IO
+#include <casacore/casa/stdio.h>
+#include <casacore/casa/string.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/fstream.h>             // needed for file IO
+#include <casacore/casa/sstream.h>           // needed for internal IO
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 const Int lineSize = 32768;
 
@@ -1597,5 +1597,5 @@ Table readAsciiTable (String& formatString, Table::TableType tableType,
 			       firstLine, lastLine);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

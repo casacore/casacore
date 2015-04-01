@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-#include <casa/Containers/SimOrdMapIO.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/iostream.h>
+#ifndef CASA_SIMORDMAPIO_TCC
+#define CASA_SIMORDMAPIO_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Containers/SimOrdMapIO.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/iostream.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Write an OrderedMap into an AipsIO styream.
 template<class K, class V>
@@ -92,5 +95,7 @@ ostream& operator<< (ostream& ios, const SimpleOrderedMap<K,V>& map)
     return ios;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

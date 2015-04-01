@@ -30,14 +30,14 @@
 #define SCIMATH_FUNCEXPRDATA_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/stdmap.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/stdmap.h>
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> Data and enumerations for functional expressions
 // </summary>
@@ -262,7 +262,7 @@ ostream &operator<<(ostream &os, const FuncExprData &ed);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

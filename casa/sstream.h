@@ -33,15 +33,16 @@
 //# them (e.g. <cstring>)
 
 //# Make sure any special macros are set
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/iostream.h>
 #include <sstream>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 using std::ostringstream;
 using std::istringstream;
 using std::stringstream;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

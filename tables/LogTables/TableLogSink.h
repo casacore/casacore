@@ -30,16 +30,16 @@
 #define TABLES_TABLELOGSINK_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Logging/LogSink.h>
-#include <casa/Logging/LogFilter.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Logging/LogSink.h>
+#include <casacore/casa/Logging/LogFilter.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class TableDesc;
@@ -264,6 +264,6 @@ inline LogSink TableLogSink::makeSink (LogMessage::Priority filter,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

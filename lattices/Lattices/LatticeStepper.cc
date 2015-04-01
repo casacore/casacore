@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/LatticeStepper.h>
-#include <tables/Tables/TSMCube.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/tables/DataMan/TSMCube.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LatticeStepper::LatticeStepper (const IPosition& latticeShape,
 				const IPosition& cursorShape,
@@ -562,5 +562,5 @@ Bool LatticeStepper::ok() const
   return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

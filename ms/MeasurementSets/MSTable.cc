@@ -25,28 +25,28 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSTable.h>
-#include <ms/MeasurementSets/MSTable.tcc>
-#include <ms/MeasurementSets/MSAntennaEnums.h>
-#include <ms/MeasurementSets/MSDataDescEnums.h>
-#include <ms/MeasurementSets/MSDopplerEnums.h>
-#include <ms/MeasurementSets/MSFeedEnums.h>
-#include <ms/MeasurementSets/MSFieldEnums.h>
-#include <ms/MeasurementSets/MSFlagCmdEnums.h>
-#include <ms/MeasurementSets/MSFreqOffEnums.h>
-#include <ms/MeasurementSets/MSHistoryEnums.h>
-#include <ms/MeasurementSets/MSMainEnums.h>
-#include <ms/MeasurementSets/MSObsEnums.h>
-#include <ms/MeasurementSets/MSPointingEnums.h>
-#include <ms/MeasurementSets/MSPolEnums.h>
-#include <ms/MeasurementSets/MSProcessorEnums.h>
-#include <ms/MeasurementSets/MSSourceEnums.h>
-#include <ms/MeasurementSets/MSSpWindowEnums.h>
-#include <ms/MeasurementSets/MSStateEnums.h>
-#include <ms/MeasurementSets/MSSysCalEnums.h>
-#include <ms/MeasurementSets/MSWeatherEnums.h>
+#include <casacore/ms/MeasurementSets/MSTable.h>
+#include <casacore/ms/MeasurementSets/MSTable.tcc>
+#include <casacore/ms/MeasurementSets/MSAntennaEnums.h>
+#include <casacore/ms/MeasurementSets/MSDataDescEnums.h>
+#include <casacore/ms/MeasurementSets/MSDopplerEnums.h>
+#include <casacore/ms/MeasurementSets/MSFeedEnums.h>
+#include <casacore/ms/MeasurementSets/MSFieldEnums.h>
+#include <casacore/ms/MeasurementSets/MSFlagCmdEnums.h>
+#include <casacore/ms/MeasurementSets/MSFreqOffEnums.h>
+#include <casacore/ms/MeasurementSets/MSHistoryEnums.h>
+#include <casacore/ms/MeasurementSets/MSMainEnums.h>
+#include <casacore/ms/MeasurementSets/MSObsEnums.h>
+#include <casacore/ms/MeasurementSets/MSPointingEnums.h>
+#include <casacore/ms/MeasurementSets/MSPolEnums.h>
+#include <casacore/ms/MeasurementSets/MSProcessorEnums.h>
+#include <casacore/ms/MeasurementSets/MSSourceEnums.h>
+#include <casacore/ms/MeasurementSets/MSSpWindowEnums.h>
+#include <casacore/ms/MeasurementSets/MSStateEnums.h>
+#include <casacore/ms/MeasurementSets/MSSysCalEnums.h>
+#include <casacore/ms/MeasurementSets/MSWeatherEnums.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template class MSTable<MSAntennaEnums::PredefinedColumns,
                          MSAntennaEnums::PredefinedKeywords> ;
@@ -85,5 +85,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   template class MSTable<MSWeatherEnums::PredefinedColumns,
                          MSWeatherEnums::PredefinedKeywords> ;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

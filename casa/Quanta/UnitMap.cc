@@ -27,12 +27,12 @@
 
 //# Includes
 
-#include <casa/Quanta/UnitMap.h>
-#include <casa/Utilities/MUString.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Quanta/UnitMap.h>
+#include <casacore/casa/Utilities/MUString.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void UnitMap::initUM() {
   static Bool needInit = True;
@@ -420,5 +420,5 @@ map<String, UnitName> *UnitMap::mapUser;
 map<String, UnitVal> *UnitMap::mapCache;
 Bool UnitMap::doneFITS;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

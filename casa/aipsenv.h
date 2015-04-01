@@ -30,7 +30,7 @@
 #ifndef CASA_AIPSENV_H
 #define CASA_AIPSENV_H
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Set if compiler supports C++11.
 #if __cplusplus == 201103L
@@ -220,5 +220,5 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #endif
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 #endif

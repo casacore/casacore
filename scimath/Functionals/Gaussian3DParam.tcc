@@ -25,15 +25,18 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/Gaussian3DParam.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
-#include <scimath/Functionals/Function.h>
+#ifndef SCIMATH_GAUSSIAN3DPARAM_TCC
+#define SCIMATH_GAUSSIAN3DPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Functionals/Gaussian3DParam.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/scimath/Functionals/Function.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class Type> 
 Gaussian3DParam<Type>::Gaussian3DParam() 
@@ -324,5 +327,7 @@ void Gaussian3DParam<Type>::settrigvals() const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

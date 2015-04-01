@@ -25,27 +25,27 @@
 //#
 //# $Id$
 
-#include <images/Regions/ImageRegion.h>
-#include <images/Regions/WCRegion.h>
-#include <images/Regions/WCLELMask.h>
-#include <images/Regions/WCUnion.h>
-#include <images/Regions/WCIntersection.h>
-#include <images/Regions/WCDifference.h>
-#include <images/Regions/WCComplement.h>
-#include <images/Images/ImageExprParse.h>
-#include <lattices/Lattices/LCRegion.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <lattices/Lattices/LCSlicer.h>
-#include <lattices/Lattices/RegionType.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/images/Regions/WCRegion.h>
+#include <casacore/images/Regions/WCLELMask.h>
+#include <casacore/images/Regions/WCUnion.h>
+#include <casacore/images/Regions/WCIntersection.h>
+#include <casacore/images/Regions/WCDifference.h>
+#include <casacore/images/Regions/WCComplement.h>
+#include <casacore/images/Images/ImageExprParse.h>
+#include <casacore/lattices/LRegions/LCRegion.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
+#include <casacore/lattices/LRegions/LCSlicer.h>
+#include <casacore/lattices/LRegions/RegionType.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ImageRegion::ImageRegion()
 : LattRegionHolder (uInt(0)),
@@ -299,5 +299,5 @@ LattRegionHolder* ImageRegion::makeComplement() const
     return LattRegionHolder::makeComplement();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

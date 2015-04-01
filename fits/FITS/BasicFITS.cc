@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <fits/FITS/BasicFITS.h>
-#include <fits/FITS/FITS2.h>
-#include <fits/FITS/fitsio.h>
-#include <fits/FITS/hdu.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/IPosition.h>
+#include <casacore/fits/FITS/BasicFITS.h>
+#include <casacore/fits/FITS/FITS2.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/IPosition.h>
 
-#include <casa/sstream.h>
+#include <casacore/casa/sstream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage,
 		      String *unitName,
@@ -299,5 +299,5 @@ Bool WriteFITS(const char *FileName, const Array<Float> &array,
     return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

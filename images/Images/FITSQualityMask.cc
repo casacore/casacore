@@ -26,14 +26,14 @@
 //# $Id$
 
 
-#include <images/Images/FITSQualityMask.h>
-#include <images/Images/FITSImage.h>
-#include <images/Images/FITSErrorImage.h>
+#include <casacore/images/Images/FITSQualityMask.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/images/Images/FITSErrorImage.h>
 
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FITSQualityMask::FITSQualityMask(FITSImage *fitsData, FITSErrorImage *fitsError)
 : itsFitsData(fitsData),
@@ -280,5 +280,5 @@ Bool FITSQualityMask::filterZeroNaN(Bool *pMask, const Float *pData, const uInt 
 	return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

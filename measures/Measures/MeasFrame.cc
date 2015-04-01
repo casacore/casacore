@@ -26,20 +26,20 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/MeasFrame.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Register.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <measures/Measures/MCFrame.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MRadialVelocity.h>
-#include <measures/Measures/MeasComet.h>
-#include <casa/iostream.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/measures/Measures/MCFrame.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
+#include <casacore/measures/Measures/MeasComet.h>
+#include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Representation class
 class FrameRep {
@@ -595,5 +595,5 @@ ostream &operator<<(ostream &os, MeasFrame &mf) {
   return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <casa/BasicSL/RegexBase.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/BasicSL/RegexBase.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 #include <algorithm>
-#include <casa/string.h>
-#include <casa/sstream.h>
+#include <casacore/casa/string.h>
+#include <casacore/casa/sstream.h>
 #include <stdio.h>		// for vsnprintf( )
 #include <cstdarg>              // for va_start/end
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Special constructors
 String::String(ostringstream &os) {
@@ -604,6 +604,6 @@ SubString &SubString::operator=(const Char c) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 

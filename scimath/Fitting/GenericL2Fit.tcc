@@ -26,13 +26,16 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Fitting/GenericL2Fit.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/VectorSTLIterator.h>
-#include <scimath/Functionals/HyperPlane.h>
+#ifndef SCIMATH_GENERICL2FIT_TCC
+#define SCIMATH_GENERICL2FIT_TCC
 
-namespace casa {  //# Begin namespace casa
+//# Includes
+#include <casacore/scimath/Fitting/GenericL2Fit.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/VectorSTLIterator.h>
+#include <casacore/scimath/Functionals/HyperPlane.h>
+
+namespace casacore {  //# Begin namespace casa
 //# Constants
 // Default svd collinearity
 
@@ -652,3 +655,5 @@ buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
 }
 
 } //#End namesapce casa
+
+#endif

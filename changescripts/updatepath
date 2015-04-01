@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Add casacore/ to the #include path for Casacore release 2.0.
+
+for FILE in $*
+do
+  perl -p -i -e s'%(#\s*include\s*<\s*)(casa|tables|scimath|measures|lattices|images|ms|msfits|meas|derivedmscal|coordinates|mirlib|fits|python/Converters)/%\1casacore/\2/%' "$FILE"
+done

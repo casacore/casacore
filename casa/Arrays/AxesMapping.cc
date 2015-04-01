@@ -27,13 +27,13 @@
 //# $Id$
 
 
-#include <casa/Arrays/AxesMapping.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/AxesMapping.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 AxesMapping::AxesMapping()
 : itsRemoved   (False),
@@ -155,5 +155,5 @@ Slicer AxesMapping::slicerToOld (const Slicer& slicer) const
 		 shapeToOld (slicer.stride()));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

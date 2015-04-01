@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <meas/MeasUDF/DirectionEngine.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/ExprUnitNode.h>
-#include <tables/Tables/ExprNodeSet.h>
-//#include <measures/Measures/MCEpoch.h>
-#include <casa/Arrays/ArrayUtil.h>
+#include <casacore/meas/MeasUDF/DirectionEngine.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/TaQL/ExprUnitNode.h>
+#include <casacore/tables/TaQL/ExprNodeSet.h>
+//#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
 
-namespace casa {
+namespace casacore {
 
   DirectionEngine::DirectionEngine()
     : itsNDim           (-1),

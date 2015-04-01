@@ -29,12 +29,13 @@
 #define DERIVEDMSCAL_UDFMSCAL_H
 
 //# Includes
-#include <derivedmscal/DerivedMC/MSCalEngine.h>
-#include <ms/MeasurementSets/StokesConverter.h>
-#include <tables/Tables/UDFBase.h>
-#include <tables/Tables/ExprNode.h>
+#include <casacore/casa/aips.h>
+#include <casacore/derivedmscal/DerivedMC/MSCalEngine.h>
+#include <casacore/ms/MeasurementSets/StokesConverter.h>
+#include <casacore/tables/TaQL/UDFBase.h>
+#include <casacore/tables/TaQL/ExprNode.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // TaQL UDFs to calculate derived MS values.

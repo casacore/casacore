@@ -26,29 +26,29 @@
 //# $Id$
 
 //# Includes
-#include <fits/FITS/BinTable.h>
-#include <fits/FITS/fits.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/IncrementalStMan.h>
-#include <tables/Tables/MemoryStMan.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/ScaColDesc.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableColumn.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/RowCopier.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/sstream.h>
-#include <casa/stdio.h>
+#include <casacore/fits/FITS/BinTable.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/DataMan/IncrementalStMan.h>
+#include <casacore/tables/DataMan/MemoryStMan.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/RowCopier.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/stdio.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Bool isSDFitsColumn(FITS::ReservedName name) {
     if (name == FITS::AUTHOR || name == FITS::CDELT || name == FITS::CROTA ||
@@ -1042,5 +1042,5 @@ const Table &BinaryTable::nextRow()
     return (*currRowTab);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

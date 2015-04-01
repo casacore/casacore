@@ -28,9 +28,10 @@
 #ifndef CASA_REGISTER_H
 #define CASA_REGISTER_H
 
-#include <casa/Utilities/RegSequence.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/RegSequence.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> 
 //    Primitive Run Time Type Information (<em>RTTI</em>)
@@ -69,7 +70,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //    To be useful, however, this mechanism must be used as part of the
 //    implementation of a <em>virtual</em> member function. For example:
 //    <srcblock>
-//    #include <casa/Utilities/Register.h>
+//    #include <casacore/casa/Utilities/Register.h>
 // #include <iostream>
 //    
 //    class foo { public: virtual uInt type() { return Register(this);}};
@@ -129,9 +130,9 @@ template<class t> uInt Register(const t *);
 // }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Utilities/Register.tcc>
+#include <casacore/casa/Utilities/Register.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

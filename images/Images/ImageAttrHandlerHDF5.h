@@ -30,13 +30,14 @@
 
 
 //# Includes
-#include <images/Images/ImageAttrHandler.h>
-#include <images/Images/ImageAttrGroupHDF5.h>
-#include <casa/HDF5/HDF5Group.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Images/ImageAttrHandler.h>
+#include <casacore/images/Images/ImageAttrGroupHDF5.h>
+#include <casacore/casa/HDF5/HDF5Group.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <map>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Abstract base class for an image attributes handler.
@@ -137,6 +138,6 @@ private:
   std::map<String,ImageAttrGroupHDF5> itsGroupMap;    //# attribute groups
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

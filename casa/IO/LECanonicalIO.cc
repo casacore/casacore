@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/IO/LECanonicalIO.h>
-#include <casa/OS/LECanonicalConversion.h>
-#include <casa/IO/ByteIO.h>
+#include <casacore/casa/IO/LECanonicalIO.h>
+#include <casacore/casa/OS/LECanonicalConversion.h>
+#include <casacore/casa/IO/ByteIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LECanonicalIO::LECanonicalIO (ByteIO* byteIO, uInt bufferLength, Bool takeOver)
 : TypeIO          (byteIO, takeOver), 
@@ -62,12 +62,12 @@ LECanonicalIO::~LECanonicalIO()
 }
 
 
-uInt LECanonicalIO::write (uInt nvalues, const Bool* value)
+size_t LECanonicalIO::write (size_t nvalues, const Bool* value)
 {
     return TypeIO::write (nvalues, value);
 }
 
-uInt LECanonicalIO::write (uInt nvalues, const Char* value)
+size_t LECanonicalIO::write (size_t nvalues, const Char* value)
 {
     if (CONVERT_LECAN_CHAR) {
 	if (nvalues * SIZE_LECAN_CHAR <= itsBufferLength) {
@@ -85,7 +85,7 @@ uInt LECanonicalIO::write (uInt nvalues, const Char* value)
     return nvalues * SIZE_LECAN_CHAR;
 }
 
-uInt LECanonicalIO::write (uInt nvalues, const uChar* value)
+size_t LECanonicalIO::write (size_t nvalues, const uChar* value)
 {
     if (CONVERT_LECAN_UCHAR) {
 	if (nvalues * SIZE_LECAN_UCHAR <= itsBufferLength) {
@@ -103,7 +103,7 @@ uInt LECanonicalIO::write (uInt nvalues, const uChar* value)
     return nvalues * SIZE_LECAN_UCHAR;
 }
 
-uInt LECanonicalIO::write (uInt nvalues, const Short* value)
+size_t LECanonicalIO::write (size_t nvalues, const Short* value)
 {
     if (CONVERT_LECAN_SHORT) {
 	if (nvalues * SIZE_LECAN_SHORT <= itsBufferLength) {
@@ -121,7 +121,7 @@ uInt LECanonicalIO::write (uInt nvalues, const Short* value)
     return nvalues * SIZE_LECAN_SHORT;
 }
 
-uInt LECanonicalIO::write (uInt nvalues, const uShort* value)
+size_t LECanonicalIO::write (size_t nvalues, const uShort* value)
 {
     if (CONVERT_LECAN_USHORT) {
 	if (nvalues * SIZE_LECAN_USHORT <= itsBufferLength) {
@@ -139,7 +139,7 @@ uInt LECanonicalIO::write (uInt nvalues, const uShort* value)
     return nvalues * SIZE_LECAN_USHORT;
 }
 
-uInt LECanonicalIO::write(uInt nvalues, const Int* value)
+size_t LECanonicalIO::write(size_t nvalues, const Int* value)
 {
     if (CONVERT_LECAN_INT) {
 	if (nvalues * SIZE_LECAN_INT <= itsBufferLength) {
@@ -157,7 +157,7 @@ uInt LECanonicalIO::write(uInt nvalues, const Int* value)
     return nvalues * SIZE_LECAN_INT;
 }
 
-uInt LECanonicalIO::write(uInt nvalues, const uInt* value)
+size_t LECanonicalIO::write(size_t nvalues, const uInt* value)
 {
     if (CONVERT_LECAN_UINT) {
 	if (nvalues * SIZE_LECAN_UINT <= itsBufferLength) {
@@ -175,7 +175,7 @@ uInt LECanonicalIO::write(uInt nvalues, const uInt* value)
     return nvalues * SIZE_LECAN_UINT;
 }
 
-uInt LECanonicalIO::write(uInt nvalues, const Int64* value)
+size_t LECanonicalIO::write(size_t nvalues, const Int64* value)
 {
     if (CONVERT_LECAN_INT64) {
 	if (nvalues * SIZE_LECAN_INT64 <= itsBufferLength) {
@@ -193,7 +193,7 @@ uInt LECanonicalIO::write(uInt nvalues, const Int64* value)
     return nvalues * SIZE_LECAN_INT64;
 }
 
-uInt LECanonicalIO::write(uInt nvalues, const uInt64* value)
+size_t LECanonicalIO::write(size_t nvalues, const uInt64* value)
 {
     if (CONVERT_LECAN_UINT64) {
 	if (nvalues * SIZE_LECAN_UINT64 <= itsBufferLength) {
@@ -211,7 +211,7 @@ uInt LECanonicalIO::write(uInt nvalues, const uInt64* value)
     return nvalues * SIZE_LECAN_UINT64;
 }
 
-uInt LECanonicalIO::write(uInt nvalues, const float* value)
+size_t LECanonicalIO::write(size_t nvalues, const float* value)
 {
     if (CONVERT_LECAN_FLOAT) {
 	if (nvalues * SIZE_LECAN_FLOAT <= itsBufferLength) {
@@ -229,7 +229,7 @@ uInt LECanonicalIO::write(uInt nvalues, const float* value)
     return nvalues * SIZE_LECAN_FLOAT;
 }
 
-uInt LECanonicalIO::write(uInt nvalues, const double* value)
+size_t LECanonicalIO::write(size_t nvalues, const double* value)
 {
     if (CONVERT_LECAN_DOUBLE) {
 	if (nvalues * SIZE_LECAN_DOUBLE <= itsBufferLength) {
@@ -247,28 +247,28 @@ uInt LECanonicalIO::write(uInt nvalues, const double* value)
     return nvalues * SIZE_LECAN_DOUBLE;
 }
 
-uInt LECanonicalIO::write (uInt nvalues, const Complex* value)
+size_t LECanonicalIO::write (size_t nvalues, const Complex* value)
 {
     return TypeIO::write (nvalues, value);
 }
 
-uInt LECanonicalIO::write (uInt nvalues, const DComplex* value)
+size_t LECanonicalIO::write (size_t nvalues, const DComplex* value)
 {
     return TypeIO::write (nvalues, value);
 }
 
-uInt LECanonicalIO::write (uInt nvalues, const String* value)
+size_t LECanonicalIO::write (size_t nvalues, const String* value)
 {
     return TypeIO::write (nvalues, value);
 }
 
 
-uInt LECanonicalIO::read (uInt nvalues, Bool* value)
+size_t LECanonicalIO::read (size_t nvalues, Bool* value)
 {
     return TypeIO::read (nvalues, value);
 }
 
-uInt LECanonicalIO::read (uInt nvalues, Char* value)
+size_t LECanonicalIO::read (size_t nvalues, Char* value)
 {
     if (CONVERT_LECAN_CHAR) {
 	if (nvalues * SIZE_LECAN_CHAR <= itsBufferLength) {
@@ -286,7 +286,7 @@ uInt LECanonicalIO::read (uInt nvalues, Char* value)
     return nvalues * SIZE_LECAN_CHAR;
 }
 
-uInt LECanonicalIO::read (uInt nvalues, uChar* value)
+size_t LECanonicalIO::read (size_t nvalues, uChar* value)
 {
     if (CONVERT_LECAN_UCHAR) {
 	if (nvalues * SIZE_LECAN_UCHAR <= itsBufferLength) {
@@ -304,7 +304,7 @@ uInt LECanonicalIO::read (uInt nvalues, uChar* value)
     return nvalues * SIZE_LECAN_UCHAR;
 }
 
-uInt LECanonicalIO::read (uInt nvalues, Short* value)
+size_t LECanonicalIO::read (size_t nvalues, Short* value)
 {
     if (CONVERT_LECAN_SHORT) {
 	if (nvalues * SIZE_LECAN_SHORT <= itsBufferLength) {
@@ -322,7 +322,7 @@ uInt LECanonicalIO::read (uInt nvalues, Short* value)
     return nvalues * SIZE_LECAN_SHORT;
 }
 
-uInt LECanonicalIO::read (uInt nvalues, uShort* value)
+size_t LECanonicalIO::read (size_t nvalues, uShort* value)
 {
     if (CONVERT_LECAN_USHORT) {
 	if (nvalues * SIZE_LECAN_USHORT <= itsBufferLength) {
@@ -340,7 +340,7 @@ uInt LECanonicalIO::read (uInt nvalues, uShort* value)
     return nvalues * SIZE_LECAN_USHORT;
 }
 
-uInt LECanonicalIO::read (uInt nvalues, Int* value)
+size_t LECanonicalIO::read (size_t nvalues, Int* value)
 {
     if (CONVERT_LECAN_INT) {
 	if (nvalues * SIZE_LECAN_INT <= itsBufferLength) {
@@ -358,7 +358,7 @@ uInt LECanonicalIO::read (uInt nvalues, Int* value)
     return nvalues * SIZE_LECAN_INT;
 }
 
-uInt LECanonicalIO::read (uInt nvalues, uInt* value)
+size_t LECanonicalIO::read (size_t nvalues, uInt* value)
 {
     if (CONVERT_LECAN_UINT) {
 	if (nvalues * SIZE_LECAN_UINT <= itsBufferLength) {
@@ -376,7 +376,7 @@ uInt LECanonicalIO::read (uInt nvalues, uInt* value)
     return nvalues * SIZE_LECAN_UINT;
 }
 
-uInt LECanonicalIO::read (uInt nvalues, Int64* value)
+size_t LECanonicalIO::read (size_t nvalues, Int64* value)
 {
     if (CONVERT_LECAN_INT64) {
 	if (nvalues * SIZE_LECAN_INT64 <= itsBufferLength) {
@@ -394,7 +394,7 @@ uInt LECanonicalIO::read (uInt nvalues, Int64* value)
     return nvalues * SIZE_LECAN_INT64;
 }
 
-uInt LECanonicalIO::read (uInt nvalues, uInt64* value)
+size_t LECanonicalIO::read (size_t nvalues, uInt64* value)
 {
     if (CONVERT_LECAN_UINT64) {
 	if (nvalues * SIZE_LECAN_UINT64 <= itsBufferLength) {
@@ -412,7 +412,7 @@ uInt LECanonicalIO::read (uInt nvalues, uInt64* value)
     return nvalues * SIZE_LECAN_UINT64;
 }
 
-uInt LECanonicalIO::read (uInt nvalues, float* value)
+size_t LECanonicalIO::read (size_t nvalues, float* value)
 {
     if (CONVERT_LECAN_FLOAT) {
 	if (nvalues * SIZE_LECAN_FLOAT <= itsBufferLength) {
@@ -430,7 +430,7 @@ uInt LECanonicalIO::read (uInt nvalues, float* value)
     return nvalues * SIZE_LECAN_FLOAT;
 }
 
-uInt LECanonicalIO::read (uInt nvalues, double* value)
+size_t LECanonicalIO::read (size_t nvalues, double* value)
 {
     if (CONVERT_LECAN_DOUBLE) {
 	if (nvalues * SIZE_LECAN_DOUBLE <= itsBufferLength) {
@@ -448,20 +448,20 @@ uInt LECanonicalIO::read (uInt nvalues, double* value)
     return nvalues * SIZE_LECAN_DOUBLE;
 }
 
-uInt LECanonicalIO::read (uInt nvalues, Complex* value)
+size_t LECanonicalIO::read (size_t nvalues, Complex* value)
 {
     return TypeIO::read (nvalues, value);
 }
 
-uInt LECanonicalIO::read (uInt nvalues, DComplex* value)
+size_t LECanonicalIO::read (size_t nvalues, DComplex* value)
 {
     return TypeIO::read (nvalues, value);
 }
 
-uInt LECanonicalIO::read (uInt nvalues, String* value)
+size_t LECanonicalIO::read (size_t nvalues, String* value)
 {
     return TypeIO::read (nvalues, value);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

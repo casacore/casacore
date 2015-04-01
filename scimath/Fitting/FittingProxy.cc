@@ -27,26 +27,26 @@
 
 //# Includes
 
-#include <scimath/Fitting/LSQaips.h>
-#include <scimath/Fitting/LinearFitSVD.h>
-#include <scimath/Fitting/NonLinearFitLM.h>
-#include <scimath/Fitting/GenericL2Fit.h>
-#include <scimath/Fitting/NonLinearFit.h>
-#include <scimath/Functionals/FunctionHolder.h>
-#include <scimath/Functionals/HyperPlane.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayAccessor.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/VectorIter.h>
-#include <casa/Arrays/VectorSTLIterator.h>
-#include <casa/Containers/RecordFieldId.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/scimath/Fitting/LSQaips.h>
+#include <casacore/scimath/Fitting/LinearFitSVD.h>
+#include <casacore/scimath/Fitting/NonLinearFitLM.h>
+#include <casacore/scimath/Fitting/GenericL2Fit.h>
+#include <casacore/scimath/Fitting/NonLinearFit.h>
+#include <casacore/scimath/Functionals/FunctionHolder.h>
+#include <casacore/scimath/Functionals/HyperPlane.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayAccessor.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/VectorIter.h>
+#include <casacore/casa/Arrays/VectorSTLIterator.h>
+#include <casacore/casa/Containers/RecordFieldId.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/namespace.h>
+#include <casacore/scimath/Fitting/FittingProxy.h>
 
-#include <scimath/Fitting/FittingProxy.h>
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // FitType
 // Constructor
@@ -283,7 +283,7 @@ Record FittingProxy::functional(Int id, const Record& fnc,
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
   Double *conit = constr.data();
-  casa::Vector<Double> ctmp(returnval.nelements());
+  casacore::Vector<Double> ctmp(returnval.nelements());
   Double *ctit = ctmp.data();
   for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
@@ -368,7 +368,7 @@ Record FittingProxy::linear(Int id, const Record& fnc,
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
   Double *conit = constr.data();
-  casa::Vector<Double> ctmp(returnval.nelements());
+  casacore::Vector<Double> ctmp(returnval.nelements());
   for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
     Double *ctit = ctmp.data();
@@ -456,7 +456,7 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc,
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
   Double *conit = constr.data();
-  casa::Vector<Double> ctmp(returnval.nelements());
+  casacore::Vector<Double> ctmp(returnval.nelements());
   Double *ctit = ctmp.data();
   for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
@@ -543,7 +543,7 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
   Double *conit = constr.data();
-  casa::Vector<Double> ctmp(returnval.nelements());
+  casacore::Vector<Double> ctmp(returnval.nelements());
   for (uInt i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
     Double *ctit = ctmp.data();
@@ -566,3 +566,5 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
   out.define("sol", returnval);
   return out;
 }
+
+} //# NAMESPACE CASACORE - END

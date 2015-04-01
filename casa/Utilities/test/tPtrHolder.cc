@@ -27,12 +27,12 @@
 
 //# Includes
 
-#include <casa/Utilities/PtrHolder.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // This program should not have any memory leaks.
 
 void do_nothing(Int *dummy)

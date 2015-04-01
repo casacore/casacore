@@ -25,12 +25,15 @@
 //#
 //# $Id$
 
-#include <casa/Containers/BlockIO.h>
-#include <casa/Containers/Block.h>
-#include <casa/IO/AipsIOCarray.h>
-#include <casa/iostream.h>
+#ifndef CASA_BLOCKIO_TCC
+#define CASA_BLOCKIO_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Containers/BlockIO.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/IO/AipsIOCarray.h>
+#include <casacore/casa/iostream.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> void putBlock (AipsIO& ios, const Block<T>& blk, Int nr)
 {
@@ -73,5 +76,7 @@ template<class T> void showBlock (ostream& ios, const Block<T>& blk, Int nr)
     ios << "]";
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,33 +25,33 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/LatticeCache.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <casa/OS/Timer.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Slicer.h>
-#include <lattices/Lattices/PagedArray.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/Table.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/COWPtr.h>
-#include <casa/BasicSL/String.h>
-#include <casa/BasicMath/Random.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/LatticeCache.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/COWPtr.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/BasicMath/Random.h>
 
-#include <casa/stdlib.h>
-#include <casa/iostream.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void a() {
     Int arraySize=2048;
     cout<<"Array Size?   "; cin>>arraySize; 

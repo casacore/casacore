@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/OddPolynomial.h>
+#ifndef SCIMATH_ODDPOLYNOMIAL_TCC
+#define SCIMATH_ODDPOLYNOMIAL_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/OddPolynomial.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -47,5 +50,7 @@ T OddPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
 
 //# Member functions
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

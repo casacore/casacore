@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <casa/Quanta/Quantum.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Utilities/Assert.h>
-#include <measures/Measures/MCPosition.h>
-#include <measures/Measures/MeasTable.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/measures/Measures/MCPosition.h>
+#include <casacore/measures/Measures/MeasTable.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 uInt MCPosition::ToRef_p[N_Routes][3] = {
@@ -189,5 +189,5 @@ void MCPosition::doFillState (void*) {
   MCBase::makeState(FromTo_p[0], MPosition::N_Types, N_Routes, ToRef_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

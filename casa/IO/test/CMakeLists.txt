@@ -10,12 +10,13 @@ tByteSink
 tByteSinkSource
 tFilebufIO
 tFileIO
-tLargeFilebufIO
 tLargeFileIO
 tLockFile
+tMFFileIO
 tMappedIO
 tMMapIO
 tMultiFile
+tMultiHDF5
 tTapeIO
 tTypeIO
 )

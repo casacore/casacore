@@ -23,16 +23,19 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 
 #ifndef CASA_CASARC_H
 #define CASA_CASARC_H
+
+#include <casacore/casa/aips.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string>
 #include <list>
 #include <map>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     class Casarc {
 
@@ -149,6 +152,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	    static unsigned int creation_count;
     } local_cleanup_object;
   
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

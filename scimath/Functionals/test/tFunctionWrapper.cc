@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/FunctionWrapper.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <scimath/Functionals/CombiFunction.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/scimath/Functionals/FunctionWrapper.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/scimath/Functionals/CombiFunction.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Utilities/Assert.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // Some C++ functions
 static Double func0(const Vector<Double> &) {return 1;}            // 1
 static Double func1(const Vector<Double> &x) {return x(0);}         // x

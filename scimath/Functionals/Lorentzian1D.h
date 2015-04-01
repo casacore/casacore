@@ -29,13 +29,13 @@
 #define SCIMATH_LORENTZIAN1D_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Lorentzian1DParam.h>
-#include <scimath/Functionals/Function1D.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Lorentzian1DParam.h>
+#include <casacore/scimath/Functionals/Function1D.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -272,7 +272,7 @@ public:
 #undef Lorentzian1D_PS
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include "Lorentzian1D.tcc"

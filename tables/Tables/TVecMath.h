@@ -29,9 +29,9 @@
 #define TABLES_TVECMATH_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template<class T> class TabVecRep;
@@ -262,9 +262,9 @@ template<class T> TabVecRep<T>& tabVecRepcrossproduct (const TabVecRep<T>&,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <tables/Tables/TVecMath.tcc>
+#include <casacore/tables/Tables/TVecMath.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

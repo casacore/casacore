@@ -25,28 +25,28 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/BasicSL/Complex.h>
-#include <scimath/Mathematics/FFTServer.h>
-#include <casa/BasicMath/Math.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableDesc.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/COWPtr.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <lattices/Lattices/PagedArray.h>
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/scimath/Mathematics/FFTServer.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/COWPtr.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 Complex latMean(const Lattice<Complex> & lat) {
   Complex currentSum = 0.0f;
   uInt nPixels = 0u;

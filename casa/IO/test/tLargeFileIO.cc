@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <casa/IO/LargeFiledesIO.h>
-#include <casa/OS/Timer.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/casa/IO/FiledesIO.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 #include <unistd.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main (int argc, const char* argv[])
 {
   try {
@@ -76,8 +76,8 @@ int main (int argc, const char* argv[])
 
     if (mode >= 0) {
       Timer timer;
-      int fd = LargeFiledesIO::create("tLargeFileIO_tmp.dat2");
-      LargeFiledesIO file2 (fd, "");
+      int fd = FiledesIO::create("tLargeFileIO_tmp.dat2");
+      FiledesIO file2 (fd, "");
       timer.mark();
       for (i=0; i<nr; i++) {
 	buf[0] = i;
@@ -88,12 +88,12 @@ int main (int argc, const char* argv[])
       }
       ::fsync(fd);
       timer.show ("LargeFiledesIO     write");
-      LargeFiledesIO::close (fd);
+      FiledesIO::close (fd);
     }
     if (mode <= 0) {
       Timer timer;
-      int fd2 = LargeFiledesIO::open ("tLargeFileIO_tmp.dat2");
-      LargeFiledesIO file2 (fd2, "");
+      int fd2 = FiledesIO::open ("tLargeFileIO_tmp.dat2");
+      FiledesIO file2 (fd2, "");
       timer.mark();
       for (i=0; i<nr; i++) {
 	file2.read (tleng, buf);
@@ -105,7 +105,7 @@ int main (int argc, const char* argv[])
 	}
       }
       timer.show ("LargeFiledesIO     read ");
-      LargeFiledesIO::close (fd2);
+      FiledesIO::close (fd2);
     }
 
     delete [] buf;

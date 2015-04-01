@@ -26,14 +26,14 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/ExtendSpecifier.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Containers/Block.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/ExtendSpecifier.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ExtendSpecifier::ExtendSpecifier()
 {}
@@ -181,5 +181,5 @@ IPosition ExtendSpecifier::convertNew (const IPosition& shape) const
   return newShape;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

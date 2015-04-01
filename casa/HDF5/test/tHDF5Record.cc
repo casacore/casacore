@@ -25,17 +25,17 @@
 //#
 //# $Id$
 
-#include <casa/HDF5/HDF5Record.h>
-#include <casa/HDF5/HDF5Group.h>
-#include <casa/HDF5/HDF5File.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/HDF5/HDF5Record.h>
+#include <casacore/casa/HDF5/HDF5Group.h>
+#include <casacore/casa/HDF5/HDF5File.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-using namespace casa;
+using namespace casacore;
 
 Array<Bool> arrb()
 {

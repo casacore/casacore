@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <lattices/Lattices/LatticeLocker.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/Lattices/LatticeLocker.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LatticeLocker::LatticeLocker (LatticeBase& lattice,
 			      FileLocker::LockType type,
@@ -65,5 +65,5 @@ LatticeLocker::~LatticeLocker()
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

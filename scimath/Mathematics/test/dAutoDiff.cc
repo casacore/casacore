@@ -26,14 +26,14 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffA.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffA.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // Define a simple function a^3*b^3*x
 
 template <class T> class f {

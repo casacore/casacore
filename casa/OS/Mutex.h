@@ -28,11 +28,11 @@
 #ifndef CASA_MUTEX_H
 #define CASA_MUTEX_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 //# Mostly copied from the LOFAR software.
 
-namespace casa {
+namespace casacore {
 
   // <summary>Wrapper around a pthreads mutex</summary>
   // <use visibility=export>
@@ -192,6 +192,6 @@ namespace casa {
   };
 
 
-} // namespace casa
+} // namespace casacore
 
 #endif

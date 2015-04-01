@@ -29,11 +29,11 @@
 #define CASA_DYNBUFFER_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/Block.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/Block.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Store data in dynamically allocated buffers
@@ -187,6 +187,6 @@ inline uInt DynBuffer::alloc (uInt nrOfValues, uInt valueSize, Char*& ptr)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

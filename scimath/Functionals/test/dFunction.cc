@@ -27,20 +27,20 @@
 //
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
-#include <scimath/Mathematics/AutoDiffIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/scimath/Mathematics/AutoDiffIO.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <scimath/Functionals/Gaussian1D.h>
-#include <casa/Inputs/Input.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/OS/Timer.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/scimath/Functionals/Gaussian1D.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // 3 flavours of calculating a Gaussian
 // The inputs are the parameters and the x value
 

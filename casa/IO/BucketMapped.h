@@ -29,11 +29,12 @@
 #define CASA_BUCKETMAPPED_H
 
 //# Includes
-#include <casa/IO/BucketBase.h>
-#include <casa/IO/MMapfdIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/BucketBase.h>
+#include <casacore/casa/IO/MMapfdIO.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // Use file mapping for buckets in a part of a file
@@ -119,6 +120,6 @@ private:
   };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

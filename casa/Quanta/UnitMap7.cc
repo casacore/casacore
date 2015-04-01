@@ -27,9 +27,9 @@
 
 //# Includes
 
-#include <casa/Quanta/UnitMap.h>
+#include <casacore/casa/Quanta/UnitMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Initialise the maps
 void UnitMap::initUMCust3() {
@@ -163,5 +163,5 @@ void UnitMap::initUMCust3() {
 						 "lambda")));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

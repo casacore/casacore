@@ -30,12 +30,12 @@
 #define SCIMATH_COMPILEDPARAM_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <scimath/Functionals/Function.h>
-#include <scimath/Functionals/FuncExpression.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/scimath/Functionals/FuncExpression.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Parameters for a compiled string function object.
@@ -165,9 +165,9 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/CompiledParam.tcc>
+#include <casacore/scimath/Functionals/CompiledParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

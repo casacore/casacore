@@ -27,24 +27,24 @@
 
 //# Includes
 
-#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Exceptions/Error.h>
-#include <tables/Tables.h>
-#include <tables/Tables/RowCopier.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Fallible.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MFrequency.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/tables/Tables.h>
+#include <casacore/tables/Tables/RowCopier.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Fallible.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 // test functions, all return the number of errors unless otherwise stated
 // test PredefinedColumns static functions in MeasurementSet
@@ -266,6 +266,9 @@ uInt tNonStatic(const String& sdmsName)
     //    String parentName = ms.tableName();
     //    String subName = ms.keywordSet().asTable("ANTENNA").tableName();
     //    cout << "Parent: "<<parentName<<", sub:"<<subName<<endl;
+    // Write the bool column, otherwise valgrind gives 'uninitialized error'.
+    ScalarColumn<Bool> flagCol(ms, "FLAG_ROW");
+    flagCol.fillColumn (False);
     ms.flush();
 
     // ok, use operator to convert ms to sms

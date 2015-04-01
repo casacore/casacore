@@ -26,18 +26,18 @@
 //# $Id$
 
 //# Includes
-#include <casa/Exceptions.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MeasFrame.h>
-#include <casa/Quanta/MVPosition.h>
-#include <measures/Measures/Nutation.h>
-#include <measures/Measures/MeasTable.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/measures/Measures/Nutation.h>
+#include <casacore/measures/Measures/MeasTable.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 uInt MCDirection::ToRef_p[N_Routes][3] = {
@@ -599,5 +599,5 @@ void MCDirection::doFillState (void*) {
   MCBase::makeState(FromTo_p[0],  MDirection::N_Types, N_Routes, ToRef_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

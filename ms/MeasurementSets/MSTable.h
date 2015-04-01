@@ -29,15 +29,15 @@
 #ifndef MS_MSTABLE_H
 #define MS_MSTABLE_H
 
-#include <casa/aips.h>
-#include <casa/Utilities/DataType.h>
-#include <tables/Tables/Table.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/BasicSL/String.h>
-#include <tables/Tables/ColumnDesc.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations, more could be if they weren't part of the
 //# static classes 
@@ -288,9 +288,9 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 //# #ifndef CASACORE_NO_AUTO_TEMPLATES
-//# #include <ms/MeasurementSets/MSTable.tcc>
+//# #include <casacore/ms/MeasurementSets/MSTable.tcc>
 //# #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

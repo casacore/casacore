@@ -27,13 +27,13 @@
 
 //# Includes
 
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // <summary> Test the Slicer class </summary>
 
 //# Forward Declarations

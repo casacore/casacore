@@ -27,15 +27,15 @@
 //# $Id$
 
 
-#include <casa/Containers/ValueHolderRep.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Containers/ValueHolderRep.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 ValueHolderRep::ValueHolderRep (Bool value)
@@ -1047,6 +1047,9 @@ void ValueHolderRep::toRecord (Record& rec, const RecordFieldId& id) const
   case TpArrayInt:
     rec.define (id, *static_cast<Array<Int>*>(itsPtr));
     break;
+  case TpArrayUInt:
+    rec.define (id, *static_cast<Array<uInt>*>(itsPtr));
+    break;
   case TpArrayInt64:
     rec.define (id, *static_cast<Array<Int64>*>(itsPtr));
     break;
@@ -1214,4 +1217,4 @@ bool ValueHolderRep::operator< (const ValueHolderRep& right) const
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

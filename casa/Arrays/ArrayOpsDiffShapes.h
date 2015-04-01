@@ -28,16 +28,17 @@
 #ifndef CASA_ARRAYOPSDIFFSHAPES_H
 #define CASA_ARRAYOPSDIFFSHAPES_H
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-//#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/IPosition.h>
-//#include <casa/Arrays/Slice.h>
-//#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+//#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/IPosition.h>
+//#include <casacore/casa/Arrays/Slice.h>
+//#include <casacore/casa/BasicSL/String.h>
 
 // Don't forget a .tcc file is included at the end!
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 //    Operations for 2 Arrays with possibly different shapes.
@@ -115,6 +116,6 @@ void binOpExpandInPlace(Array<L>& left, const Array<R>& right, BinaryOperator op
 } //#End casa namespace
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/ArrayOpsDiffShapes.tcc>
+#include <casacore/casa/Arrays/ArrayOpsDiffShapes.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

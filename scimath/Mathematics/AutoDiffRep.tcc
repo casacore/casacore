@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Mathematics/AutoDiffRep.h>
+#ifndef SCIMATH_AUTODIFFREP_TCC
+#define SCIMATH_AUTODIFFREP_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Mathematics/AutoDiffRep.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class T>
@@ -98,5 +101,7 @@ AutoDiffRep<T> &AutoDiffRep<T>::operator=(const AutoDiffRep<T> &other) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

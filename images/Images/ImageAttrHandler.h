@@ -30,11 +30,12 @@
 
 
 //# Includes
-#include <images/Images/ImageAttrGroup.h>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Images/ImageAttrGroup.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Arrays/Vector.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Abstract base class for an image attributes handler.
@@ -121,6 +122,6 @@ public:
   virtual void closeGroup (const String& groupName);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

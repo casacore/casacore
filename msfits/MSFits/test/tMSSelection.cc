@@ -1,30 +1,55 @@
-//#include <tasking/Glish.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/VectorIter.h>
-#include <casa/Arrays/VectorSTLIterator.h>
-#include <casa/BasicSL/String.h>
+//# Copyright (C) 1995,1996,1997,1999,2001,2002,2005
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This program is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU General Public License as published by the Free
+//# Software Foundation; either version 2 of the License, or (at your option)
+//# any later version.
+//#
+//# This program is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+//# more details.
+//#
+//# You should have received a copy of the GNU General Public License along
+//# with this program; if not, write to the Free Software Foundation, Inc.,
+//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
 
-#include <casa/Exceptions/Error.h>
-#include <ms/MeasurementSets/MeasurementSet.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/VectorIter.h>
+#include <casacore/casa/Arrays/VectorSTLIterator.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <ms/MeasurementSets/MSSelection.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+
+#include <casacore/ms/MSSel/MSSelection.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/Utilities/Assert.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Cube.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/RecordDesc.h>
-#include <casa/Containers/RecordField.h>
-#include <tables/Tables/TableRecord.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Cube.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/tables/Tables/TableRecord.h>
 
-#include <msfits/MSFits/MSFitsInput.h>
-#include <tables/Tables/Table.h>
-#include <casa/Inputs.h>
+#include <casacore/msfits/MSFits/MSFitsInput.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Inputs.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 void convert(String fitsName, String msName)
 {

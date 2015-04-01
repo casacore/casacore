@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/BitVector.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Utilities/BitVector.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BitVector::BitVector()
 : size_p (0),
@@ -275,5 +275,5 @@ ostream& operator<< (ostream& os, const BitVector& vector)
     return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

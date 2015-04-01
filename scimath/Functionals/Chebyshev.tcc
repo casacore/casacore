@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/Chebyshev.h>
+#ifndef SCIMATH_CHEBYSHEV_TCC
+#define SCIMATH_CHEBYSHEV_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/Chebyshev.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -97,5 +100,7 @@ Chebyshev<T> Chebyshev<T>::derivative() const {
 
 //# Member functions
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

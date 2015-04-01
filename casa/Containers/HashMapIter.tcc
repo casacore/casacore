@@ -24,9 +24,12 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <casa/Containers/HashMapIter.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#ifndef CASA_HASHMAPITER_TCC
+#define CASA_HASHMAPITER_TCC
+#include <casacore/casa/Containers/HashMapIter.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class key, class val> void ConstHashMapIter<key,val>::toStart() {
     if (!isValid())
@@ -178,5 +181,7 @@ HashMapIter<key,val> &HashMapIter<key,val>::operator=(const HashMapIter<key,val>
 
 template<class key, class val> HashMapIter<key,val>::~HashMapIter() {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

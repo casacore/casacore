@@ -25,10 +25,13 @@
 //#
 //# $Id: SparseDiffRep.cc,v 1.1 2007/11/16 04:34:46 wbrouw Exp $
 
-//# Includes
-#include <scimath/Mathematics/SparseDiffRep.h>
+#ifndef SCIMATH_SPARSEDIFFREP_TCC
+#define SCIMATH_SPARSEDIFFREP_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Mathematics/SparseDiffRep.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Constructors
   template <class T>
@@ -70,5 +73,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	 i!=grad_p.end(); ++i) i->second /= other;
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

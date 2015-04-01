@@ -27,14 +27,14 @@
 
 //# Includes
 
-#include <casa/Utilities/Sort.h>
-#include <casa/Utilities/Compare.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/stdlib.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/Utilities/Compare.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 // This program tests the Compare classes.
 // It sorts some data in ascending and/or descending order.

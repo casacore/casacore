@@ -31,13 +31,13 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include <casa/OS/HostInfo.h>
-#include <casa/System/Aipsrc.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/OS/HostInfo.h>
+#include <casacore/casa/System/Aipsrc.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main()
 {

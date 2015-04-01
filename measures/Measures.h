@@ -29,14 +29,15 @@
 #define MEASURES_MEASURES_H
 
 //# Includes
-#include <casa/Quanta.h>
-#include <measures/Measures/Measure.h>
-#include <measures/Measures/MeasBase.h>
-#include <casa/Quanta/MeasValue.h>
-#include <measures/Measures/MeasRef.h>
-#include <measures/Measures/MeasConvert.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Quanta.h>
+#include <casacore/measures/Measures/Measure.h>
+#include <casacore/measures/Measures/MeasBase.h>
+#include <casacore/casa/Quanta/MeasValue.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/measures/Measures/MeasConvert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 // 
@@ -70,8 +71,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // appropiate include files should be added. E.g. to be able to handle
 // Directions, the following includes could be given:
 // <srcblock>
-//	#include <measures/Measures.h>
-//	#include <measures/Measures/MDirection.h>
+//	#include <casacore/measures/Measures.h>
+//	#include <casacore/measures/Measures/MDirection.h>
 // </srcblock>
 // An inclusion of the appropiate measure file, will also take care of the
 // connected measure value (in this case <src>MVDirection</src>). However,
@@ -806,6 +807,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# class Measures {};
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

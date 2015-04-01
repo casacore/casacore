@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/MatrixMathLA.h>
-#include <casa/Arrays/ArrayError.h>
-#include <casa/Utilities/Assert.h>
+#ifndef SCIMATH_MATRIXMATHLA_TCC
+#define SCIMATH_MATRIXMATHLA_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Mathematics/MatrixMathLA.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+#include <casacore/casa/Utilities/Assert.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 Matrix<T> invert(const Matrix<T> &in){
@@ -229,5 +232,7 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

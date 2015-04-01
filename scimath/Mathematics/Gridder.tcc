@@ -26,20 +26,23 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/Gridder.h>
-#include <casa/Containers/Block.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/sstream.h>
+#ifndef SCIMATH_GRIDDER_TCC
+#define SCIMATH_GRIDDER_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Mathematics/Gridder.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/sstream.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class Domain, class Range>
 Gridder<Domain, Range>::Gridder() {}
@@ -191,5 +194,7 @@ void Gridder<Domain, Range>::fillCorrectionVectors()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

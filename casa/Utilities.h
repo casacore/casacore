@@ -29,29 +29,31 @@
 #ifndef CASA_UTILITIES_H
 #define CASA_UTILITIES_H
 
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/BinarySearch.h>
-#include <casa/Utilities/BitVector.h>
-#include <casa/Utilities/Compare.h>
-#include <casa/Utilities/Copy.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Utilities/DataType.h>
-#include <casa/Utilities/DynBuffer.h>
-#include <casa/Utilities/Fallible.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Utilities/Notice.h>
-#include <casa/Utilities/PtrHolder.h>
-#include <casa/Utilities/RegSequence.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/Utilities/Register.h>
-#include <casa/Utilities/Sequence.h>
-#include <casa/Utilities/Sort.h>
-#include <casa/Utilities/SortError.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/ValType.h>
-#include <casa/Utilities/cregex.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/BinarySearch.h>
+#include <casacore/casa/Utilities/BitVector.h>
+#include <casacore/casa/Utilities/Compare.h>
+#include <casacore/casa/Utilities/Copy.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Utilities/DynBuffer.h>
+#include <casacore/casa/Utilities/Fallible.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Utilities/Notice.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
+#include <casacore/casa/Utilities/RegSequence.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/Utilities/Sequence.h>
+#include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/Utilities/SortError.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/Utilities/cregex.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -147,7 +149,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

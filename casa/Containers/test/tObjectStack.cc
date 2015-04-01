@@ -26,18 +26,18 @@
 //# $Id: tObjectStack.cc,v 1.1 2007/11/16 04:23:21 wbrouw Exp $
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/ObjectStack.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/vector.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/ObjectStack.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/vector.h>
+#include <casacore/casa/iostream.h>
 
 #include <utility>
 
 // Using
 using std::pair;
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main() {
 
   Bool ok(True);

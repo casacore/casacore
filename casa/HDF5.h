@@ -29,14 +29,16 @@
 #define CASA_HDF5_H
 
 //# Includes
-#include <casa/HDF5/HDF5File.h>
-#include <casa/HDF5/HDF5Group.h>
-#include <casa/HDF5/HDF5DataSet.h>
-#include <casa/HDF5/HDF5Record.h>
-#include <casa/HDF5/HDF5Error.h>
+#include <casacore/casa/aips.h>
+
+#include <casacore/casa/HDF5/HDF5File.h>
+#include <casacore/casa/HDF5/HDF5Group.h>
+#include <casacore/casa/HDF5/HDF5DataSet.h>
+#include <casacore/casa/HDF5/HDF5Record.h>
+#include <casacore/casa/HDF5/HDF5Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <module>
 //
@@ -141,6 +143,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </module>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

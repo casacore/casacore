@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/UnaryFunction.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/BasicMath/Math.h>
+#ifndef SCIMATH_UNARYFUNCTION_TCC
+#define SCIMATH_UNARYFUNCTION_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Functionals/UnaryFunction.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicMath/Math.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -44,5 +47,7 @@ T UnaryFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 
 //# Member functions
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

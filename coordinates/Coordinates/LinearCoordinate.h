@@ -30,12 +30,12 @@
 #ifndef COORDINATES_LINEARCOORDINATE_H
 #define COORDINATES_LINEARCOORDINATE_H
 
-#include <casa/aips.h>
-#include <coordinates/Coordinates/Coordinate.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
+#include <casacore/casa/Arrays/Vector.h>
 #include <wcslib/wcs.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Quantum;
 
@@ -265,7 +265,7 @@ private:
                  const Vector<String>& names);
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 
 #endif

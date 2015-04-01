@@ -30,17 +30,18 @@
 
 
 //# Includes
-#include <images/Images/ImageInterface.h>
-#include <images/Images/ImageAttrHandlerCasa.h>
-#include <lattices/Lattices/PagedArray.h>
-#include <tables/Tables/Table.h>
-#include <casa/Utilities/DataType.h>
-#include <tables/Tables/TableRecord.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/ImageAttrHandlerCasa.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/tables/Tables/TableRecord.h>
 
 //# Forward Declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Read, store, and manipulate astronomical images.
@@ -463,9 +464,9 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/PagedImage.tcc>
+#include <casacore/images/Images/PagedImage.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

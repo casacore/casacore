@@ -29,10 +29,10 @@
 #define CASA_TAIPSIOCARRAY_H
 
 //# Includes
-#include <casa/IO/AipsIOCarray.h>
+#include <casacore/casa/IO/AipsIOCarray.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // <summary>
 // Example class for use in AipsIOCarray functions
 // </summary>

@@ -29,11 +29,11 @@
 #define CASA_TIMER_H
 
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <sys/types.h>
 
 //# Forward declarations
-#include <casa/iosfwd.h>
+#include <casacore/casa/iosfwd.h>
 
 #if defined(DOS) || defined(MSDOS)
 #include <sys/timeb.h>
@@ -60,7 +60,7 @@ extern "C" int ftime(struct timeb*);
 #include <sys/resource.h>
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Class declaration.
 class String;
@@ -205,6 +205,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

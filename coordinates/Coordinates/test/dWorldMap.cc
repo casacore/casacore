@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/Arrays.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
-#include <coordinates/Coordinates.h>
-#include <casa/iostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/coordinates/Coordinates.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void list (Bool ok, Bool ok2, Vector<Int>& wmap, Vector<Int>& wtranspose,
            Vector<Int>& pmap, Vector<Int>& ptranspose,
            CoordinateSystem& cSys1,

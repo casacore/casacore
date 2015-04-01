@@ -26,12 +26,15 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/FunctionWrapper.h>
-#include <casa/Arrays/Vector.h>
-#include <scimath/Functionals/WrapperData.h>
+#ifndef SCIMATH_FUNCTIONWRAPPER_TCC
+#define SCIMATH_FUNCTIONWRAPPER_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/FunctionWrapper.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/scimath/Functionals/WrapperData.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class T>
@@ -124,5 +127,7 @@ uInt FunctionWrapper<T>::ndim() const {
   return (doit_p ? doit_p->ndim() : 0);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

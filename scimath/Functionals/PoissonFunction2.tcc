@@ -22,12 +22,16 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
+
+#ifndef SCIMATH_POISSONFUNCTION2_TCC
+#define SCIMATH_POISSONFUNCTION2_TCC
 
 //# Includes
-#include <scimath/Functionals/PoissonFunction.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/scimath/Functionals/PoissonFunction.h>
+#include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 
@@ -71,5 +75,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 
 //# Member functions
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

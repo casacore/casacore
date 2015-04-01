@@ -29,12 +29,12 @@
 #define SCIMATH_GNOISEPARAM_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Function.h>
-#include <casa/BasicMath/Random.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/casa/BasicMath/Random.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -122,9 +122,9 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/GNoiseParam.tcc>
+#include <casacore/scimath/Functionals/GNoiseParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

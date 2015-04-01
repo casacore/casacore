@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Mathematics/SquareMatrix.h>
+#include <casacore/scimath/Mathematics/SquareMatrix.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SquareMatrix<Complex,4>& 
 directProduct(SquareMatrix<Complex,4>& result,
@@ -135,5 +135,5 @@ SquareMatrix<Complex,2> conj(const SquareMatrix<Complex,2>& m) {
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -28,6 +28,8 @@
 #ifndef DERIVEDMSCAL_REGISTER_H
 #define DERIVEDMSCAL_REGISTER_H
 
+#include <casacore/casa/aips.h>
+
 // <group name=DerivedMSCal>
 // This function registers the DerivedMSCal virtual column engine and
 // the UDFMSCal UDFs.

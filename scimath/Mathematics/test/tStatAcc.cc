@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <casa/iostream.h>
-#include <casa/Arrays.h>
-#include <scimath/Mathematics/StatAcc.h>
-// #include <casa/Utilities/Assert.h>
-// #include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/Arrays.h>
+#include <casacore/scimath/Mathematics/StatAcc.h>
+// #include <casacore/casa/Utilities/Assert.h>
+// #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 
 int main()
 {

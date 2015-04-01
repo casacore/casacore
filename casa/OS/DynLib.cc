@@ -31,19 +31,19 @@
 #endif
 
 //# Includes
-#include <casa/OS/DynLib.h>
-#include <casa/OS/EnvVar.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/OS/DynLib.h>
+#include <casacore/casa/OS/EnvVar.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #ifdef HAVE_DLOPEN
 #include <dlfcn.h>
 #endif
 
 using namespace std;
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   DynLib::DynLib (const std::string& library,
                   const std::string& prefix,
@@ -167,4 +167,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return std::string();
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

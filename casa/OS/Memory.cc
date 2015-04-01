@@ -27,14 +27,14 @@
 //# $Id$
 
 //# MH 97/11/24 Stop attempt to use mallinfo from stdlib.h for HPUX
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 #if defined(__hpux__) && !defined(AIPS_NO_LEA_MALLOC)
 #define _STRUCT_MALLINFO
 #endif
 
-#include <casa/OS/Memory.h>
-#include <casa/OS/malloc.h>
+#include <casacore/casa/OS/Memory.h>
+#include <casacore/casa/OS/malloc.h>
 
 #if defined(AIPS_NO_LEA_MALLOC)
 #if defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
@@ -48,7 +48,7 @@
 #endif
 #endif
 
-namespace casa  { //#Begin namespace casa
+namespace casacore  { //#Begin namespace casa
 
 size_t Memory::allocatedMemoryInBytes()
 {
@@ -149,4 +149,4 @@ int Memory::setMemoryOption(int cmd, int value) {
 #endif
 }
 
-} //#End namespace casa
+} //#End namespace casacore

@@ -25,19 +25,19 @@
 //#
 //# $Id$
 
-#include <tables/Tables/BaseColDesc.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/RefColumn.h>
-#include <tables/Tables/ConcatColumn.h>
-#include <tables/Tables/DataManager.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableError.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/iostream.h>
+#include <casacore/tables/Tables/BaseColDesc.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/RefColumn.h>
+#include <casacore/tables/Tables/ConcatColumn.h>
+#include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,
 				const String& dataManType,
@@ -313,5 +313,5 @@ ConcatColumn* BaseColumnDesc::makeConcatColumn (ConcatTable* ctp) const
     return new ConcatColumn (this, ctp);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

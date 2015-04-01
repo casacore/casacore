@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <casa/BasicSL/IComplex.h>
-#include <casa/iostream.h>
+#include <casacore/casa/BasicSL/IComplex.h>
+#include <casacore/casa/iostream.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ostream& operator<< (ostream& os, const IComplex& val)
 {
@@ -37,5 +37,5 @@ ostream& operator<< (ostream& os, const IComplex& val)
   return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

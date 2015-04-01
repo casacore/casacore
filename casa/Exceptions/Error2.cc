@@ -25,22 +25,22 @@
 //#
 //# $Id$
 
-#include <casa/Exceptions/Error.h>
-#include <casa/Exceptions/CasaErrorTools.h>
-#include <casa/stdlib.h>
-#include <casa/iostream.h>
-#include <casa/string.h>      //# needed for strerror_r
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Exceptions/CasaErrorTools.h>
+#include <casacore/casa/stdlib.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/string.h>      //# needed for strerror_r
 
 //# Stacktracing requires some extra includes.
 #ifdef USE_STACKTRACE
-# include <casa/System/AipsrcValue.h>
+# include <casacore/casa/System/AipsrcValue.h>
 # include <execinfo.h>
 # define AddStackTrace() addStackTrace()
 #else
 # define AddStackTrace()
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 AipsError::AipsError (Category c)
 : message(), category(c)
@@ -252,5 +252,5 @@ AbortError::AbortError(const String &str,Category c)
 AbortError::~AbortError() throw()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

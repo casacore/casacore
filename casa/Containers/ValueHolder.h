@@ -31,10 +31,11 @@
 #define CASA_VALUEHOLDER_H
 
 //# Includes
-#include <casa/Containers/ValueHolderRep.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/ValueHolderRep.h>
+#include <casacore/casa/Arrays/Array.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 // <summary>
@@ -127,7 +128,7 @@ public:
   DataType dataType() const;
     
   // Get the value.
-  // If possible, it converts the the data as needed.
+  // If possible, it converts the data as needed.
   // <group>
   Bool                  asBool    () const;
   uChar                 asuChar   () const;
@@ -278,6 +279,6 @@ inline const Record& ValueHolder::asRecord() const
   { return itsRep->asRecord(); }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -25,17 +25,20 @@
 //#
 //# $Id$
 
+#ifndef MEASURES_TABLEMEASDESC_TCC
+#define MEASURES_TABLEMEASDESC_TCC
+
 //# Includes
-#include <measures/TableMeasures/TableMeasDesc.h>
-#include <measures/Measures/MeasRef.h>
-#include <measures/Measures/MeasureHolder.h>
-#include <casa/Quanta/Unit.h>
-#include <tables/Tables/TableDesc.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/measures/TableMeasures/TableMeasDesc.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/measures/Measures/MeasureHolder.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class M>
 TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value)
@@ -113,5 +116,7 @@ TableMeasDesc<M>& TableMeasDesc<M>::operator= (const TableMeasDesc<M>& that)
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

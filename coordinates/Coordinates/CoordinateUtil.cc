@@ -25,47 +25,47 @@
 //#
 //# $Id$
 
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <coordinates/Coordinates/LinearCoordinate.h>
-#include <coordinates/Coordinates/Projection.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <coordinates/Coordinates/StokesCoordinate.h>
-#include <coordinates/Coordinates/TabularCoordinate.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicMath/Math.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MEpoch.h>
-#include <measures/Measures/MPosition.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MCDoppler.h>
-#include <measures/Measures/MCFrequency.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MCPosition.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/MeasConvert.h>
-#include <casa/Quanta/MVEpoch.h>
-#include <casa/Quanta/MVDirection.h>
-#include <casa/Quanta/MVPosition.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/OS/Time.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Quanta/QC.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/Quanta/MVEpoch.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/coordinates/Coordinates/LinearCoordinate.h>
+#include <casacore/coordinates/Coordinates/Projection.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/coordinates/Coordinates/StokesCoordinate.h>
+#include <casacore/coordinates/Coordinates/TabularCoordinate.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MCDoppler.h>
+#include <casacore/measures/Measures/MCFrequency.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MCPosition.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/casa/Quanta/MVEpoch.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/casa/Quanta/MVPosition.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Quanta/QC.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/Quanta/MVEpoch.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <casa/sstream.h>
+#include <casacore/casa/sstream.h>
 
-namespace casa { // begin namespace casa
+namespace casacore { // begin namespace casa
 
 
 void CoordinateUtil::addDirAxes(CoordinateSystem & coords){
@@ -1967,4 +1967,4 @@ String CoordinateUtil::axisLabel (const Coordinate& coord, uInt axis,
   return base;
 }
 
-} // end namespace casa
+} // end namespace casacore

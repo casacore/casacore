@@ -26,15 +26,15 @@
 //#
 //# $Id$
 
-#include <coordinates/Coordinates/LinearXform.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/Matrix.h>
-#include <scimath/Mathematics/MatrixMathLA.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/coordinates/Coordinates/LinearXform.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/scimath/Mathematics/MatrixMathLA.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LinearXform* LinearXform::fourierInvert (String& errMsg, const Vector<Bool>& axes, 
                                          const Vector<Double>& crpix, 
@@ -85,5 +85,5 @@ LinearXform* LinearXform::fourierInvert (String& errMsg, const Vector<Bool>& axe
    return new LinearXform(crpix0, cdelt0, pc0);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

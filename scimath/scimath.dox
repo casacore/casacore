@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-namespace casa {
+namespace casacore {
 
 // \defgroup scimath scimath package (libcasa_scimath)
 //
-// The scimath package contains the basic mathematical modules of AIPS++.
+// The scimath package contains the basic mathematical modules
 // <ul>
 //  <li> <a href="group__Functionals__module.html">Functionals</a>:
 //    n-dimensional functions with automatic differentation.

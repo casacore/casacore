@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/OS/Time.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/OS/HostInfo.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/OS/HostInfo.h>
 
 #if defined(AIPS_SOLARIS) || defined(_AIX) || defined(AIPS_IRIX)
 #include <sys/time.h>
@@ -48,7 +48,7 @@ extern time_t altzone;	// Not declared in all <time.h> files.
 #endif
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 inline double daysFrom1970()
 {
@@ -625,5 +625,5 @@ String Time::timeZoneName () {
   return isDST () ? tzname[1] : tzname[0];
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

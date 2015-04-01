@@ -29,10 +29,11 @@
 #define TABLES_CONCATROWS_H
 
 //# Includes
-#include <tables/Tables/RefRows.h>
-#include <casa/Containers/Block.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/casa/Containers/Block.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // Class holding the row numbers in a ConcatTable
@@ -232,6 +233,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

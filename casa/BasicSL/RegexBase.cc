@@ -27,9 +27,9 @@
 //# $Id$
 
 //# Includes
-#include <casa/BasicSL/RegexBase.h>
+#include <casacore/casa/BasicSL/RegexBase.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Destructor
 RegexBase::~RegexBase() {}
@@ -63,5 +63,5 @@ String::size_type RegexBase::match(const Char *s,
   return String::npos;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

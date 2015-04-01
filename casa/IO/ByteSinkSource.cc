@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/aips.h>
-#include <casa/IO/ByteSinkSource.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/ByteSinkSource.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ByteSinkSource::ByteSinkSource ()
 {}
@@ -53,5 +53,5 @@ ByteSinkSource& ByteSinkSource::operator= (const ByteSinkSource& sinkSource)
 ByteSinkSource::~ByteSinkSource()
 {}
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

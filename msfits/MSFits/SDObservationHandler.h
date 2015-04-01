@@ -29,10 +29,11 @@
 #ifndef MS_SDOBSERVATIONHANDLER_H
 #define MS_SDOBSERVATIONHANDLER_H
 
-#include <casa/Containers/RecordField.h>
-#include <tables/Tables/ScalarColumn.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class ColumnsIndex;
@@ -154,7 +155,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

@@ -26,14 +26,17 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_STATACC_TCC
+#define SCIMATH_STATACC_TCC
 
-#include <scimath/Mathematics/StatAcc.h>
-#include <casa/Arrays.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Mathematics/StatAcc.h>
+#include <casacore/casa/Arrays.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Constructors:
 
@@ -351,5 +354,7 @@ void StatAcc<T>::printSummaryList (ostream& os, const String& caption) const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

@@ -25,14 +25,14 @@
 //#
 //# $Id$
 
-#include <tables/Tables/TableIterProxy.h>
-#include <tables/Tables/TableProxy.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Containers/IterError.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/tables/Tables/TableIterProxy.h>
+#include <casacore/tables/Tables/TableProxy.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Containers/IterError.h>
+#include <casacore/casa/Arrays/Vector.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableIterProxy::TableIterProxy()
 : firstTime_p (True)
@@ -228,4 +228,4 @@ void TableIterProxy::reset()
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

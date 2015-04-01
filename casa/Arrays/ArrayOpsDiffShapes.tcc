@@ -24,15 +24,18 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-//#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/IPosition.h>
-//#include <casa/Arrays/Slice.h>
-#include <casa/Arrays/ArrayError.h>
-//#include <casa/BasicSL/String.h>
 
-namespace casa {
+#ifndef CASA_ARRAYOPSDIFFSHAPES_TCC
+#define CASA_ARRAYOPSDIFFSHAPES_TCC
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+//#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/IPosition.h>
+//#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Arrays/ArrayError.h>
+//#include <casacore/casa/BasicSL/String.h>
+
+namespace casacore {
 
 template<typename T>
 LogicalArray reformedMask(const Array<T>& data, const T truthvalue,
@@ -176,3 +179,5 @@ void binOpExpandInPlace(Array<L>& leftarr, const Array<R>& rightarr, BinaryOpera
 }
 
 } //#End casa namespace
+
+#endif

@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <tables/Tables/TableLocker.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/Tables/TableLocker.h>
+#include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableLocker::TableLocker (Table& table,
 			  FileLocker::LockType type,
@@ -63,4 +63,4 @@ TableLocker::~TableLocker()
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

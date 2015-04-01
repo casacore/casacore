@@ -29,15 +29,15 @@
 #ifndef COORDINATES_FITSCOORDINATEUTIL_H
 #define COORDINATES_FITSCOORDINATEUTIL_H
 
-#include <casa/aips.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MFrequency.h>
-#include <coordinates/Coordinates/ObsInfo.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/coordinates/Coordinates/ObsInfo.h>
 
 
 struct wcsprm;
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class Coordinate;
 class CoordinateSystem;
@@ -223,7 +223,7 @@ private:
     void fixCoordinate(Coordinate& c, LogIO& os) const;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

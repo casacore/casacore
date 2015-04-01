@@ -30,14 +30,14 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/BaseColDesc.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/BaseColDesc.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Envelope class for the description of a table column
@@ -441,6 +441,6 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

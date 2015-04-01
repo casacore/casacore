@@ -26,10 +26,10 @@
 //#
 //# $Id: MeasTable.h 21420 2014-03-19 09:18:51Z gervandiepen $
 
-#include <measures/Measures/MeasTableMul.h>
-#include <casa/Quanta/UnitVal.h>
+#include <casacore/measures/Measures/MeasTableMul.h>
+#include <casacore/casa/Quanta/UnitVal.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MeasTableMul::MeasTableMul()
     : itsLastUsed (0)

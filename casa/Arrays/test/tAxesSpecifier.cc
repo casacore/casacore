@@ -26,13 +26,13 @@
 //#
 //# $Id$
 
-#include <casa/Arrays/AxesSpecifier.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Arrays/AxesSpecifier.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void doIt()
 {
   AxesMapping map;

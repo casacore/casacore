@@ -30,14 +30,15 @@
 #define IMAGES_IMAGEPROXY_H
 
 //# Includes
-#include <images/Images/MaskSpecifier.h>
-#include <lattices/Lattices/LatticeBase.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Containers/Record.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Images/MaskSpecifier.h>
+#include <casacore/lattices/Lattices/LatticeBase.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Containers/Record.h>
 
-namespace casa {
+namespace casacore {
 
   //# Forward Declarations.
   template<typename T> class ImageInterface;
@@ -134,6 +135,12 @@ namespace casa {
     ImageProxy& operator= (const ImageProxy&);
 
      ~ImageProxy();
+
+    // Open the image (which can also be an expression).
+    // It throws an exception if not succeeded.
+    static LatticeBase* openImage (const String& name,
+                                   const String& mask = String(),
+                                   const vector<ImageProxy>& images = vector<ImageProxy>());
 
     // Open an image in the file/table with the given name.
     // The specified mask will be applied (default is default mask).
@@ -373,11 +380,6 @@ namespace casa {
     // Throw an exception if the object is null.
     void checkNull() const;
 
-    // Open the image (which can also be an expression.
-    // Throw an exception if not succeeded.
-    void openImage (const String& name, const String& mask,
-                    const vector<ImageProxy>& images);
-
     // Make an image from an array or shape.
     template<typename T>
     void makeImage (const Array<T>& array, const Array<Bool>& mask,
@@ -467,6 +469,6 @@ namespace casa {
     ImageAttrHandler*         itsAttrHandler;
   };
 
-} // end namespace casa
+} // end namespace casacore
 
 #endif

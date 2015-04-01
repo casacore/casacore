@@ -25,15 +25,15 @@
 //#
 //# $Id$
 
-#include <images/Images/FITSErrorImage.h>
-#include <images/Images/FITSImage.h>
-#include <lattices/Lattices/FITSMask.h>
+#include <casacore/images/Images/FITSErrorImage.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/lattices/LRegions/FITSMask.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FITSErrorImage::FITSErrorImage (const String& name, uInt whichRep, uInt whichHDU, FITSErrorImage::ErrorType errtype)
 : FITSImage(name, whichRep, whichHDU),
@@ -195,5 +195,5 @@ void FITSErrorImage::setupMask()
 		throw (AipsError ("FITSErrorImage::setupMask - "
 				"error type UNKNOWN is not accepted!"));
 	}
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

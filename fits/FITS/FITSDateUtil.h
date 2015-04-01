@@ -30,10 +30,10 @@
 #ifndef FITS_FITSDATEUTIL_H
 #define FITS_FITSDATEUTIL_H
 
-#include <casa/aips.h>
-#include <measures/Measures/MEpoch.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MEpoch.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;
 class MVTime;
@@ -122,6 +122,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

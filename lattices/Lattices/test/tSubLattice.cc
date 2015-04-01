@@ -25,27 +25,27 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/ArrayLattice.h>
-#include <lattices/Lattices/PagedArray.h>
-#include <lattices/Lattices/LatticeIterator.h>
-#include <lattices/Lattices/LatticeStepper.h>
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/LCPixelSet.h>
-#include <lattices/Lattices/LCPagedMask.h>
-#include <casa/Arrays/AxesSpecifier.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Inputs/Input.h>
-#include <casa/OS/Timer.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/ArrayLattice.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
+#include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/LRegions/LCBox.h>
+#include <casacore/lattices/LRegions/LCPixelSet.h>
+#include <casacore/lattices/LRegions/LCPagedMask.h>
+#include <casacore/casa/Arrays/AxesSpecifier.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 void testVectorROIter (const Lattice<Int>& sublat,
 		       const Lattice<Int>& lattice,
 		       const Slicer& slicer)
@@ -438,7 +438,23 @@ int main (int argc, const char* argv[])
 	AlwaysAssert (allEQ(latArr1.get(), 9*arr), AipsError);
       }
     }
-  } catch (AipsError x) {
+    {
+      // test position in parent
+      ArrayLattice<Int> parent((IPosition(3, 20, 20, 20)));
+      Slicer slice(IPosition(3, 1, 1, 1), IPosition(3, 16, 17, 18),
+                   IPosition(3, 1, 1, 2), Slicer::endIsLast);
+      SubLattice<Int> sub(parent, slice);
+      AlwaysAssert(sub.positionInParent(IPosition(3, 4, 5, 6)) ==
+                   IPosition(3, 5, 6, 13),
+                   AipsError);
+      Slicer slice2(IPosition(3, 1, 1, 1), IPosition(3, 16, 17, 18),
+                    IPosition(3, 16, 1, 2), Slicer::endIsLast);
+      SubLattice<Int> sub2(parent, slice2, AxesSpecifier(False));
+      AlwaysAssert(sub2.positionInParent(IPosition(2, 4, 5)) ==
+                   IPosition(3, 1, 5, 11),
+                   AipsError);
+    }
+  } catch (const AipsError& x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;

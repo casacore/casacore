@@ -27,14 +27,14 @@
 
 //# Includes
 
-#include <casa/Exceptions/Error.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/OS/malloc.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/OS/malloc.h>
 #include <stdlib.h>
 #include <string.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Unit::Unit() 
 : uName(), uVal() {}
@@ -232,5 +232,5 @@ void Unit::check()
   free(b2);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

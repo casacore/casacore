@@ -25,17 +25,15 @@
 //#
 //# $Id$
 
-#include <casa/IO/RegularFileIO.h>
-#include <casa/IO/FiledesIO.h>
-#include <casa/IO/LargeRegularFileIO.h>
-#include <casa/IO/LargeFiledesIO.h>
-#include <casa/OS/Timer.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/IO/FiledesIO.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main (int argc, const char* argv[])
 {
     int nr = 100;
@@ -117,7 +115,7 @@ int main (int argc, const char* argv[])
         FiledesIO::close (fd2);
     }
     {
-	LargeRegularFileIO file1(RegularFile("tFileIO_tmp.dat2"),
+	RegularFileIO file1(RegularFile("tFileIO_tmp.dat2"),
 				 ByteIO::New, size);
 	Timer timer;
 	for (i=0; i<nr; i++) {
@@ -127,8 +125,8 @@ int main (int argc, const char* argv[])
 	    file1.write (leng, buf);
 	}
 	timer.show ("LargeRegularFileIO write");
-	int fd2 = LargeFiledesIO::create ("tFileIO_tmp.dat2");
-	LargeFiledesIO file2 (fd2, "");
+	int fd2 = FiledesIO::create ("tFileIO_tmp.dat2");
+	FiledesIO file2 (fd2, "");
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {
@@ -139,10 +137,10 @@ int main (int argc, const char* argv[])
 	timer.show ("LargeFiledesIO     write");
 	fsync(fd2);
 	timer.show ("LargeFiledesIO     +sync");
-        LargeFiledesIO::close (fd2);
+        FiledesIO::close (fd2);
     }
     {
-	LargeRegularFileIO file1(RegularFile("tFileIO_tmp.dat2"),
+	RegularFileIO file1(RegularFile("tFileIO_tmp.dat2"),
 				 ByteIO::Old, size);
 	Timer timer;
 	for (i=0; i<nr; i++) {
@@ -152,8 +150,8 @@ int main (int argc, const char* argv[])
 	    file1.read (leng, buf);
 	}
 	timer.show ("LargeRegularFileIO read ");
-	int fd2 = LargeFiledesIO::open ("tFileIO_tmp.dat2");
-	LargeFiledesIO file2 (fd2, "");
+	int fd2 = FiledesIO::open ("tFileIO_tmp.dat2");
+	FiledesIO file2 (fd2, "");
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {
@@ -162,7 +160,7 @@ int main (int argc, const char* argv[])
 	    file2.read (leng, buf);
 	}
 	timer.show ("LargeFiledesIO     read ");
-	LargeFiledesIO::close (fd2);
+	FiledesIO::close (fd2);
     }
 
     {
@@ -189,8 +187,8 @@ int main (int argc, const char* argv[])
         FiledesIO::close (fd2);
     }
     {
-	LargeRegularFileIO file1(RegularFile("tFileIO_tmp.dat1"),
-				 ByteIO::Old, size);
+	RegularFileIO file1(RegularFile("tFileIO_tmp.dat1"),
+                            ByteIO::Old, size);
 	Timer timer;
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {
@@ -199,8 +197,8 @@ int main (int argc, const char* argv[])
 	    file1.read (leng, buf);
 	}
 	timer.show ("LargeRegularFileIO small");
-	int fd2 = LargeFiledesIO::open ("tFileIO_tmp.dat1");
-	LargeFiledesIO file2 (fd2, "");
+	int fd2 = FiledesIO::open ("tFileIO_tmp.dat1");
+	FiledesIO file2 (fd2, "");
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    if (seek  &&  i%3 == 0) {
@@ -209,7 +207,7 @@ int main (int argc, const char* argv[])
 	    file2.read (leng, buf);
 	}
 	timer.show ("LargeFiledesIO     small");
-        LargeFiledesIO::close (fd2);
+        FiledesIO::close (fd2);
     }
 
     delete [] buf;

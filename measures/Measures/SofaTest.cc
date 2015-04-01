@@ -26,12 +26,12 @@
 //# $Id$
 
 //# Include files
-#include <measures/Measures/SofaTest.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/iostream.h>
+#include <casacore/measures/Measures/SofaTest.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/iostream.h>
 #include <limits.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 // Constructors 
@@ -148,5 +148,5 @@ void SofaTest::copy(const SofaTest &other) {
   for (uInt i=0; i<hwidth_p; i++) histo_p[i] = other.histo_p[i];
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

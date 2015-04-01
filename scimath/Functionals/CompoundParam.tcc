@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/CompoundParam.h>
+#ifndef SCIMATH_COMPOUNDPARAM_TCC
+#define SCIMATH_COMPOUNDPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/CompoundParam.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 CompoundParam<T>::CompoundParam() : 
@@ -120,5 +123,7 @@ uInt CompoundParam<T>::addFunction(const Function<T> &newFunction) {
   return i;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

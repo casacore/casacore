@@ -25,10 +25,15 @@
 //#
 //# $Id$
 
-#include <casa/Containers/OrdMapIO.h>
+#ifndef CASA_ORDMAPIO_TCC
+#define CASA_ORDMAPIO_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Containers/OrdMapIO.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

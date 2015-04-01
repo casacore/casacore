@@ -25,9 +25,12 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/ArraySampledFunctional.h>
+#ifndef SCIMATH_ARRAYSAMPLEDFUNCTIONAL_TCC
+#define SCIMATH_ARRAYSAMPLEDFUNCTIONAL_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Functionals/ArraySampledFunctional.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> ArraySampledFunctional<T>::
 ArraySampledFunctional()
@@ -108,5 +111,7 @@ template<class T> ArraySampledFunctional<T>::
 // compile-command: "gmake OPTLIB=1 ArraySampledFunctional"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

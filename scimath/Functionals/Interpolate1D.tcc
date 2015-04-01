@@ -25,16 +25,19 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/Interpolate1D.h>
-#include <scimath/Functionals/SampledFunctional.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/BinarySearch.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/BasicMath/Math.h>
+#ifndef SCIMATH_INTERPOLATE1D_TCC
+#define SCIMATH_INTERPOLATE1D_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Functionals/Interpolate1D.h>
+#include <casacore/scimath/Functionals/SampledFunctional.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/BinarySearch.h>
+#include <casacore/casa/Utilities/GenSort.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicMath/Math.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class Domain, class Range> Interpolate1D<Domain, Range>::
 Interpolate1D() {
@@ -323,5 +326,7 @@ eval(typename Function1D<Domain, Range>::FunctionArg x) const {
   return y1;       // to make compiler happy
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

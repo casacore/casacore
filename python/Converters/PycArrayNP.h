@@ -32,15 +32,15 @@
 // include first to avoid _POSIX_C_SOURCE redefined warnings
 #include <boost/python.hpp>
 #include <boost/python/object.hpp>
-#include <casa/Containers/ValueHolder.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Arrays/Array.h>
 
 #include <numpy/arrayobject.h>
 
-namespace casa { namespace python { namespace numpy {
+namespace casacore { namespace python { namespace numpy {
 
 #define PYC_USE_PYARRAY "numpy"
-#include <python/Converters/PycArrayComH.h>
+#include <casacore/python/Converters/PycArrayComH.h>
 #undef PYC_USE_PYARRAY
 
 

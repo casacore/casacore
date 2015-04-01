@@ -25,16 +25,19 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
+#ifndef SCIMATH_SMOOTH_TCC
+#define SCIMATH_SMOOTH_TCC
 //   
 
-#include <casa/aips.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayIter.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <scimath/Mathematics/Smooth.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayIter.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/scimath/Mathematics/Smooth.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 void Smooth<T>::hanning(Vector<T>& out, Vector<Bool>& outmask, 
@@ -136,19 +139,22 @@ void Smooth<T>::hanning(Array<T>& out, Array<Bool>& outmask,
 		        Array<T>& in, Array<Bool>& mask, 
 			Bool TrueIsGood, Bool relaxed) {
   
-  Int nChan, nCorr;
-  Matrix<T>(in).shape(nCorr,nChan);
-
-  for(uInt i=0; i<(uInt)nCorr; i++){
-    Vector<T> vout(Matrix<T>(out).row(i));
-    Vector<Bool> voutMask(Matrix<Bool>(outmask).row(i));
-    Vector<T> vin(Matrix<T>(in).row(i));
-    Vector<Bool> vinMask(Matrix<Bool>(mask).row(i));
+  Matrix<T> min(in);
+  Matrix<T> mout(out);
+  Matrix<Bool> mmask(mask);
+  Matrix<Bool> moutmask(outmask);
+  for(uInt i=0; i<in.shape()[0]; i++){
+    Vector<T> vout(mout.row(i));
+    Vector<Bool> voutMask(moutmask.row(i));
+    Vector<T> vin(min.row(i));
+    Vector<Bool> vinMask(mmask.row(i));
     Smooth<T>::hanning(vout, voutMask, vin, vinMask, 
 		       TrueIsGood, relaxed);
   }
 
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

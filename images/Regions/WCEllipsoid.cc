@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <images/Regions/WCEllipsoid.h>
+#include <casacore/images/Regions/WCEllipsoid.h>
 
-#include <casa/Quanta/QuantumHolder.h>
-#include <lattices/Lattices/LCEllipsoid.h>
+#include <casacore/casa/Quanta/QuantumHolder.h>
+#include <casacore/lattices/LRegions/LCEllipsoid.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 WCEllipsoid::WCEllipsoid() {}
@@ -612,5 +612,5 @@ void WCEllipsoid::_checkUnits() const {
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

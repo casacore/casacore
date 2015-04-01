@@ -29,9 +29,10 @@
 #define CASA_HDF5HIDMETA_H
 
 //# Includes
-#include <casa/HDF5/HDF5Object.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/HDF5/HDF5Object.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // A class representing an HDF5 property hid.

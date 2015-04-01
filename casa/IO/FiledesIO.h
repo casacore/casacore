@@ -1,5 +1,5 @@
-//# FiledesIO.h: Class for IO on a file descriptor
-//# Copyright (C) 1996,1997,1999,2001,2002
+//# FiledesIO.h: Class for unbuffered IO on a file
+//# Copyright (C) 1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,13 +29,15 @@
 #define CASA_FILEDESIO_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/ByteIO.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/ByteIO.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// <summary>Class for IO on a file descriptor.</summary>
+// <summary>
+// Class for unbuffered IO on a file.
+// </summary>
 
 // <use visibility=export>
 
@@ -99,19 +101,22 @@ public:
     // The file name is only used in error messages.
     void attach (int fd, const String& fileName);
 
-    // The destructor does not close the file.
-    ~FiledesIO();
-    
+    // Detach from the file descriptor. The file is not closed.
+    void detach();
+
+    // The destructor detaches, but does not close the file.
+    virtual ~FiledesIO();
+
     // Write the number of bytes.
-    virtual void write (uInt size, const void* buf);
+    virtual void write (Int64 size, const void* buf);
 
     // Read <src>size</src> bytes from the descriptor. Returns the number of
-    // bytes actually read or a negative number if an error occured. Will throw
+    // bytes actually read or a negative number if an error occurred. Will throw
     // an Exception (AipsError) if the requested number of bytes could not be
     // read, or an error occured, unless throwException is set to False. Will
     // always throw an exception if the descriptor is not readable or the
     // system call returned an undocumented value.
-    virtual Int read (uInt size, void* buf, Bool throwException=True);    
+    virtual Int64 read (Int64 size, void* buf, Bool throwException=True);    
 
     // Get the length of the byte stream.
     virtual Int64 length();
@@ -125,11 +130,18 @@ public:
     // Is the IO stream seekable?
     virtual Bool isSeekable() const;
 
+    // Set that the IO stream is writable.
+    void setWritable()
+      { itsWritable = True; }
+
     // Get the file name of the file attached.
-    const String& fileName() const
-      { return itsFileName; }
+    virtual String fileName() const;
+
+    // Fsync the file (i.e. force the data to be physically written).
+    virtual void fsync();
 
     // Some static convenience functions for file create/open/close.
+    // Close is only done if the fd is non-negative.
     // <group>
     static int create (const Char* name, int mode = 0666);
     static int open   (const Char* name, Bool writable = False,
@@ -142,9 +154,6 @@ protected:
     // Get the file descriptor.
     int fd() const
       { return itsFile; }
-
-    // Detach from the file descriptor. It is not closed.
-    void detach();
 
     // Determine if the file descriptor is readable and/or writable.
     void fillRWFlags (int fd);
@@ -171,8 +180,6 @@ private:
 };
 
 
-
-
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

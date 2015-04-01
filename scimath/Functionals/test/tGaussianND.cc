@@ -26,16 +26,16 @@
 //# $Id$
 
 //# Includes
-#include <scimath/Functionals/GaussianND.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <scimath/Mathematics/MatrixMathLA.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Functionals/GaussianND.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/scimath/Mathematics/MatrixMathLA.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main(){
   try {
     Bool anyFailures = False;

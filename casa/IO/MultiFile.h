@@ -29,58 +29,65 @@
 #define CASA_MULTIFILE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/IO/LargeFiledesIO.h>
-#include <casa/vector.h>
-#include <casa/ostream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/MultiFileBase.h>
+#include <casacore/casa/IO/FiledesIO.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
-
-  //# Forward declaration.
-  class AipsIO;
-
-  // <summary>
-  // Helper class for MultiFile containing info per internal file
-  // </summary>
-  // <use visibility=local>
-  struct MultiFileInfo {
-    vector<Int64> blockNrs;     // physical blocknrs for this logical file
-    vector<char>  buffer;
-    Int64         curBlock;     // the logical block held in buffer
-    String        name;         // the logical file name
-    Bool          dirty;        // has data in buffer been changed?
-  };
-  void operator<< (ostream&, const MultiFileInfo&);
-  void operator<< (AipsIO&, const MultiFileInfo&);
-  void operator>> (AipsIO&, MultiFileInfo&);
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary> 
-  // Class for IO on a regular file.
+  // Class to combine multiple files in a single one.
   // </summary>
 
   // <use visibility=export>
 
-  // <reviewed reviewer="Friso Olnon" date="1996/11/06" tests="tByteIO" demos="">
+  // <reviewed reviewer="" date="" tests="tMultiFile" demos="">
   // </reviewed>
 
   // <synopsis> 
-  // This class is a specialization of class
-  // <linkto class=ByteIO>ByteIO</linkto>. It uses a
-  // <linkto class=RegularFile>regular file</linkto> as the data store.
-  // <p>
-  // The class is derived from <linkto class=FilebufIO>FilebufIO</linkto>,
-  // which contains all functions to access the file. The description of
-  // this class explains the use of the <src>filebufSize</src> argument
-  // in the constructor.
+  // This class is a container file holding multiple virtual files. It is
+  // primarily meant as a container file for the storage manager files of a
+  // table to reduce the number of files used (especially for Lustre) and to
+  // reduce the number of open files (especially when concatenating tables).
+  // <br>A secondary goal is offering the ability to use an IO buffer size
+  // that matches the file system well (large buffer size for e.g. ZFS).
+  //
+  // The SetupNewTable constructor has a StorageOption argument to define
+  // if a MultiFile has to be used and if so, the buffer size to use.
+  // It is also possible to specify that through aipsrc variables.
+  //
+
+  // A virtual file is spread over multiple (fixed size) data blocks in the
+  // MultiFile. A data block is never shared by multiple files.
+  // For each virtual file MultiFile keeps a MultiFileInfo object telling
+  // the file size and the blocks numbers used for the file. When flushing
+  // the MultiFile, this meta info is written into the header block. If it
+  // does not fit in the header block, the rest is written in a separate "-ext"
+  // file.
+  // if needed, continuation blocks. On open and resync, it is read back.
+  // <br>
+  //
+  // A virtual file is represented by an MFFileIO object, which is derived
+  // from ByteIO and as such part of the casacore IO framework. It makes it
+  // possible for applications to access a virtual file in the same way as
+  // a regular file.
+  //
+  // It is possible to delete a virtual file. Its blocks will be added to
+  // the free block list (which is also stored in the meta info).
   // </synopsis>
 
   // <example>
+  // In principle it is possible to use the MultiFile functions directly.
+  // However, in general it is much easier to use an MFFileIO object
+  // per virtual file as shown below.
   // <srcblock>
-  //    // Create a file (which should not exist yet).
-  //    RegularFileIO regio (RegularFile("file.name"), ByeIO::NewNoReplace);
-  //    // Use that as the sink of AipsIO.
-  //    AipsIO stream (&regio);
+  //    // Create a new MultiFile using a block size of 1 MB.
+  //    MultiFile mfile("file.mf', ByteIO::New, 1048576);
+  //    // Create a virtual file in it.
+  //    MFFileIO mf1(mfile, "mf1", ByteIO::New);
+  //    // Use it (for example) as the sink of AipsIO.
+  //    AipsIO stream (&mf1);
   //    // Write values.
   //    stream << (Int)10;
   //    stream << True;
@@ -92,8 +99,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // </srcblock>
   // </example>
 
+  // <todo>
+  //  <li> write headers at alternating file positions (for robustness)
+  //  <li> possibly write headers entirely at the end if larger than blocksize
+  // </todo>
 
-  class MultiFile
+
+  class MultiFile: public MultiFileBase
   {
   public:
     // Open or create a MultiFile with the given name.
@@ -102,72 +114,47 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     MultiFile (const String& name, ByteIO::OpenOption, Int blockSize=0);
 
     // The destructor flushes and closes the file.
-    ~MultiFile();
-
-    // Add a file to the MultiFile object. It returns the file id.
-    // The given name must be a basename or have the same directory as the
-    // MultiFile object.
-    Int add (const String& name);
-
-    // Return the file id of a file in the MultiFile object.
-    // An exception is thrown if the name is unknown.
-    Int fileId (const String& name) const;
-
-    // Read a block at the given offset. It returns the actual size read.
-    Int64 read (Int fileId, void* buffer, Int64 size, Int64 offset);
-
-    // Write a block at the given offset. It returns the actual size written.
-    Int64 write (Int fileId, const void* buffer, Int64 size, Int64 offset);
+    virtual ~MultiFile();
 
     // Reopen the underlying file for read/write access.
-    // Nothing will be done if the stream is writable already.
+    // Nothing will be done if the file is writable already.
     // Otherwise it will be reopened and an exception will be thrown
     // if it is not possible to reopen it for read/write access.
-    void reopenRW()
-      { itsIO.reopenRW(); }
+    virtual void reopenRW();
 
-    // Flush the file by writing all dirty data and all header info.
-    void flush();
-
-    // Get the file name of the file attached.
-    String fileName() const
-      { return itsIO.fileName(); }
-
-    // Is the file writable?
-    Bool isWritable() const
-      { return itsIO.isWritable(); }
-
-    // Get the block size used.
-    Int64 blockSize() const
-      { return itsBlockSize; }
-
-    // Get the nr of internal files.
-    Int nfile() const
-      { return itsInfo.size(); }
-
-    // Get the nr of blocks used.
-    Int64 size() const
-      { return itsNrBlock; }
-
-    // Get the info object (for test purposes).
-    const vector<MultiFileInfo>& info() const
-      { return itsInfo; }
+    // Fsync the file (i.e., force the data to be physically written).
+    virtual void fsync();
 
   private:
-    void close();
-    void writeHeader();
-    void readHeader();
+    // Do the class-specific actions on adding a file.
+    virtual void doAddFile (MultiFileInfo&);
+    // Do the class-specific actions on deleting a file.
+    virtual void doDeleteFile (MultiFileInfo&);
+    // Flush the file itself.
+    virtual void flushFile();
+    // Flush and close the file.
+    virtual void close();
+    // Write the header info.
+    virtual void writeHeader();
+    // Read the header info. If always==False, the info is only read if the
+    // header counter has changed.
+    virtual void readHeader (Bool always=True);
+    // Extend the virtual file to fit lastblk.
+    virtual void extend (MultiFileInfo& info, Int64 lastblk);
+    // Write a data block.
+    virtual void writeBlock (MultiFileInfo& info, Int64 blknr,
+                             const void* buffer);
+    // Read a data block.
+    virtual void readBlock (MultiFileInfo& info, Int64 blknr,
+                            void* buffer);
 
+  private:
     //# Data members
-    Int64 itsBlockSize;  // The blocksize used
-    Int64 itsNrBlock;    // The total nr of blocks actually used
-    vector<MultiFileInfo> itsInfo;
-    LargeFiledesIO        itsIO;
-    int                   itsFD;
-    Bool                  itsAdded; // Has blocks been added since last flush?
+    FiledesIO itsIO;
+    int       itsFD;
   };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

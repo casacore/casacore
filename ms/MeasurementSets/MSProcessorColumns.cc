@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSProcessorColumns.h>
-#include <ms/MeasurementSets/MSProcessor.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColDescSet.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSProcessorColumns.h>
+#include <casacore/ms/MeasurementSets/MSProcessor.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/ColDescSet.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSProcessorColumns::
 ROMSProcessorColumns(const MSProcessor& msProcessor):
@@ -132,5 +132,5 @@ void MSProcessorColumns::attachOptionalCols(MSProcessor& msProcessor)
 // compile-command: "gmake MSProcessorColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

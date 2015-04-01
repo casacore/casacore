@@ -29,11 +29,12 @@
 #define CASA_HDF5FILE_H
 
 //# Includes
-#include <casa/HDF5/HDF5Object.h>
-#include <casa/BasicSL/String.h>
-#include <casa/IO/ByteIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/HDF5/HDF5Object.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/IO/ByteIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // A class representing an HDF5 file.

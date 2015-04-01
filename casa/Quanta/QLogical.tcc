@@ -25,14 +25,17 @@
 //#
 //# $Id$
 
-//# Includes
-#include <casa/Quanta/QLogical.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Exceptions/Error.h>
+#ifndef CASA_QLOGICAL_TCC
+#define CASA_QLOGICAL_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/casa/Quanta/QLogical.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Exceptions/Error.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class Qtype>
 Bool operator==(const Quantum<Qtype> &left, const Quantum<Qtype> &other) {
@@ -249,5 +252,7 @@ Bool operator>=(const Qtype &left, const Quantum<Qtype> &other) {
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

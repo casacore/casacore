@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSWeatherColumns.h>
-#include <ms/MeasurementSets/MSWeather.h>
-#include <tables/Tables/ColDescSet.h>
-#include <tables/Tables/TableDesc.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSWeatherColumns.h>
+#include <casacore/ms/MeasurementSets/MSWeather.h>
+#include <casacore/tables/Tables/ColDescSet.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSWeatherColumns::ROMSWeatherColumns(const MSWeather& msWeather):
   isNull_p(True),
@@ -383,5 +383,5 @@ void MSWeatherColumns::attach(MSWeather& msWeather)
 // compile-command: "gmake MSWeatherColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

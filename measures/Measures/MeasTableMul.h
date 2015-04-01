@@ -30,13 +30,13 @@
 #define MEASURES_MEASTABLEMUL_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Polynomial.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Polynomial.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/OS/Mutex.h>
 #include <vector>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward Declarations
   class RotMatrix;
@@ -68,7 +68,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // removed from the cache, while another thread is still using that Matrix.
   // This assumes that CountedPtr is compiled thread-safe.
   //
-  // The class provides two virtual function.
+  // The class provides two virtual functions.
   // <ul>
   //  <li> <src>init</src> is called on the first access and makes it possible
   //       for the derived class to precompute some variables. In particular,
@@ -90,6 +90,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   {
   public:
     MeasTableMul();
+    virtual ~MeasTableMul() {}
     void clear();
     CountedPtr<Matrix<Double> > getArray (Double time, Double epsilon);
     virtual void init() = 0;

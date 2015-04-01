@@ -26,24 +26,24 @@
 //# $Id$
 //
 
-#include <images/Images/ImageOpener.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableInfo.h>
-#include <images/Images/PagedImage.h>
-#include <images/Images/HDF5Image.h>
-#include <images/Images/ImageConcat.h>
-#include <images/Images/ImageExpr.h>
-#include <images/Images/ImageExprParse.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <casa/HDF5/HDF5File.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/OS/File.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/IO/RegularFileIO.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Regex.h>
+#include <casacore/images/Images/ImageOpener.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableInfo.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/HDF5Image.h>
+#include <casacore/images/Images/ImageConcat.h>
+#include <casacore/images/Images/ImageExpr.h>
+#include <casacore/images/Images/ImageExprParse.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
+#include <casacore/casa/HDF5/HDF5File.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/RegularFile.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Regex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Initialize registry with the unknown as the default open function.
 SimpleOrderedMap<ImageOpener::ImageTypes,ImageOpener::OpenImageFunction*>
@@ -268,4 +268,4 @@ LatticeBase* ImageOpener::openImage (const String& fileName,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

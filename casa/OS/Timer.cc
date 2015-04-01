@@ -32,12 +32,12 @@
 //  Real time:
 //    what you get from a stop watch timer.
 
-#include <casa/OS/Timer.h>
-#include <casa/BasicSL/String.h>
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
+#include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void Timer::mark()
   {
@@ -342,4 +342,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     show(os);
   }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

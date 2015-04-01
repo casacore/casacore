@@ -28,17 +28,17 @@
 //# Partial implementation of little endian code by Kris Huber
 //# (kris@helios.ece.usu.edu)
 
-# include <fits/FITS/fits.h>
+# include <casacore/fits/FITS/fits.h>
 # include <string.h>
 # include <stdlib.h>
-# include <casa/sstream.h>
-# include <casa/BasicSL/Constants.h>
+# include <casacore/casa/sstream.h>
+# include <casacore/casa/BasicSL/Constants.h>
 
 
 # include <stdio.h>
 #include <assert.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //	Discussion of Reserved FitsKeyword Table
 //
@@ -2588,5 +2588,5 @@ void FitsFPUtil::setNaN(float &val)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

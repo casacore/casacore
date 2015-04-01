@@ -24,35 +24,38 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
+
+#ifndef IMAGES_IMAGESUMMARY_TCC
+#define IMAGES_IMAGESUMMARY_TCC
 //
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/ArrayPosIter.h>
-#include <coordinates/Coordinates.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <images/Images/ImageInterface.h>
-#include <images/Images/ImageInfo.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Quanta/Unit.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MEpoch.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/Quanta/Quantum.h>
-#include <measures/Measures/Stokes.h>
-#include <casa/Utilities/ValType.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/ArrayPosIter.h>
+#include <casacore/coordinates/Coordinates.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/ImageInfo.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/measures/Measures/Stokes.h>
+#include <casacore/casa/Utilities/ValType.h>
 
-#include <casa/iomanip.h>
-#include <casa/iostream.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/iostream.h>
 
-#include <images/Images/ImageSummary.h>
+#include <casacore/images/Images/ImageSummary.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)
@@ -483,5 +486,7 @@ String ImageSummary<T>::makeRegionsString() const
    return String(oss);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

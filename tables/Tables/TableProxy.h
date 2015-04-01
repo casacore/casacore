@@ -30,16 +30,15 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/Table.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
 #include <vector>
 
-#include <casa/namespace.h>
 
 //# Forward Declarations
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class ValueHolder;
   class RecordFieldId;
   class Table;
@@ -318,6 +317,11 @@ public:
 			 Int row,
 			 Int nrow,
 			 Int incr);
+  void getColumnVH (const String& columnName,
+                    Int row,
+                    Int nrow,
+                    Int incr,
+                    const ValueHolder& vh);
   Record getVarColumn (const String& columnName,
 		       Int row,
 		       Int nrow,
@@ -341,6 +345,22 @@ public:
 				Int row,
 				Int nrow,
 				Int incr);
+  void getColumnSliceVH (const String& columnName,
+                         Int row,
+                         Int nrow,
+                         Int incr,
+                         const Vector<Int>& blc,
+                         const Vector<Int>& trc,
+                         const Vector<Int>& inc,
+                         const ValueHolder& vh);
+  void getColumnSliceVHIP (const String& columnName,
+                           const IPosition& blc,
+                           const IPosition& trc,
+                           const IPosition& inc,
+                           Int row,
+                           Int nrow,
+                           Int incr,
+                           const ValueHolder& vh);
   // </group>
 
   // Put some or all values into a column in the table.
@@ -388,6 +408,8 @@ public:
   // Get a value from a column in the table.
   ValueHolder getCell (const String& columnName,
 		       Int row);
+  void getCellVH (const String& columnName,
+                  Int row, const ValueHolder& vh);
 
   // Get a value slice from a column in the table.
   // If the inc vector is empty, it defaults to all 1.
@@ -402,6 +424,18 @@ public:
 			      const IPosition& blc,
 			      const IPosition& trc,
 			      const IPosition& inc);
+  void getCellSliceVH (const String& columnName,
+                       Int row,
+                       const Vector<Int>& blc,
+                       const Vector<Int>& trc,
+                       const Vector<Int>& inc,
+                       const ValueHolder& vh);
+  void getCellSliceVHIP (const String& columnName,
+                         Int row,
+                         const IPosition& blc,
+                         const IPosition& trc,
+                         const IPosition& inc,
+                         const ValueHolder& vh);
   // </group>
 
   // Put a value into a column in the table.
@@ -607,18 +641,38 @@ private:
     {os << '"' << v << '"';}
   // </group>
 
+  // Sync table to get correct nr of rows and check the row number.
+  // It returns the nr of table rows.
+  Int64 getRowsCheck (const String& columnName,
+                      Int64 row, Int64 nrow, Int64 incr,
+                      const String& caller);
+
+  // Sync table to get correct nr of rows and check the row number.
+  // Fill the slicer with the possibly expanded blc,trc,inc.
+  // It returns the nr of table rows.
+  Int64 getRowsSliceCheck (Slicer& slicer,
+                           const String& columnName,
+                           Int64 row, Int64 nrow, Int64 incr,
+                           const IPosition& blc,
+                           const IPosition& trc,
+                           const IPosition& inc,
+                           const String& caller);
+
   // Check if the column name and row numbers are valid.
   // Return the recalculated nrow so that it does not exceed #rows.
   Int checkRowColumn (Table& table,
 		      const String& colName,
-		      Int rownr, Int nrow, Int incr,
-		      const Char* caller);
+		      Int64 rownr, Int64 nrow, Int64 incr,
+		      const String& caller);
 
   // Get values from the column.
   // Nrow<0 means till the end of the column.
   ValueHolder getValueFromTable (const String& colName, 
 				 Int rownr, Int nrow, Int incr,
 				 Bool isCell);
+  void getValueFromTable (const String& colName,
+                          Int rownr, Int nrow, Int incr,
+                          Bool isCell, const ValueHolder& vh);
 
   // Get value slices from the column.
   // Nrow<0 means till the end of the column.
@@ -626,6 +680,10 @@ private:
 				     const Slicer& slicer,
 				     Int rownr, Int nrow, Int incr,
 				     Bool isCell);
+  void getValueSliceFromTable(const String& colName, 
+                              const Slicer& slicer,
+                              Int rownr, Int nrow, Int incr,
+                              Bool isCell, const ValueHolder& vh);
 
   // Put values into the column.
   // Nrow<0 means till the end of the column.
@@ -743,6 +801,6 @@ private:
   Record calcResult_p;
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

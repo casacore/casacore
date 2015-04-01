@@ -28,38 +28,38 @@
 //# Do not use automatic template instantiation.
 #define CACACORE_NO_AUTO_TEMPLATES
 
-#include <casa/aips.h>
-#include <images/Images/ImageProxy.h>
-#include <images/Images/ImageInterface.h>
-#include <images/Images/ImageConcat.h>
-#include <images/Images/ImageFITSConverter.h>
-#include <images/Images/ImageRegrid.h>
-#include <images/Images/ImageSummary.h>
-#include <images/Images/ImageStatistics.h>
-#include <images/Images/ImageOpener.h>
-#include <images/Images/TempImage.h>
-#include <images/Images/ImageExpr.h>
-#include <images/Images/PagedImage.h>
-#include <images/Images/HDF5Image.h>
-#include <images/Images/FITSImage.h>
-#include <images/Images/MIRIADImage.h>
-#include <images/Images/ImageUtilities.h>
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Images/ImageProxy.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/ImageConcat.h>
+#include <casacore/images/Images/ImageFITSConverter.h>
+#include <casacore/images/Images/ImageRegrid.h>
+#include <casacore/images/Images/ImageSummary.h>
+#include <casacore/images/Images/ImageStatistics.h>
+#include <casacore/images/Images/ImageOpener.h>
+#include <casacore/images/Images/TempImage.h>
+#include <casacore/images/Images/ImageExpr.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/HDF5Image.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/images/Images/MIRIADImage.h>
+#include <casacore/images/Images/ImageUtilities.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
 #include <vector>
 #include <list>
 
 using namespace std;
 
-namespace casa { //# name space casa begins
+namespace casacore { //# name space casa begins
 
   ImageProxy::ImageProxy()
     : itsImageFloat    (0),
@@ -93,7 +93,8 @@ namespace casa { //# name space casa begins
     // Register the functions to create a FITSImage or MIRIADImage object.
     FITSImage::registerOpenFunction();
     MIRIADImage::registerOpenFunction();
-    openImage (name, mask, images);
+    LatticeBase* lattice = openImage (name, mask, images);
+    setup (lattice);
   }
 
   ImageProxy::ImageProxy (const ValueHolder& values, const ValueHolder& mask,
@@ -262,8 +263,8 @@ namespace casa { //# name space casa begins
   ImageProxy::~ImageProxy()
   {}
 
-  void ImageProxy::openImage (const String& name, const String& mask,
-                              const vector<ImageProxy>& images)
+  LatticeBase* ImageProxy::openImage (const String& name, const String& mask,
+                                      const vector<ImageProxy>& images)
   {
     MaskSpecifier maskSp;
     if (!mask.empty()) {
@@ -277,11 +278,19 @@ namespace casa { //# name space casa begins
     for (uInt i=0; i<images.size(); ++i) {
       tempNodes[i] = images[i].makeNode();
     }
-    LatticeBase* lattice = openImageOrExpr (name, maskSp, tempNodes);
-    if (lattice == 0) {
-      throw AipsError ("Image " + name + " cannot be opened");
+    String msg;
+    LatticeBase* lattice = 0;
+    try {
+      lattice = openImageOrExpr (name, maskSp, tempNodes);
+    } catch (const std::exception& x) {
+      msg = x.what();
+      lattice = 0;
     }
-    setup (lattice);
+    if (lattice == 0) {
+      throw AipsError (name + " cannot be opened as image (expression): "
+                       + msg);
+    }
+    return lattice;
   }
 
   LatticeBase* ImageProxy::openImageOrExpr (const String& str,

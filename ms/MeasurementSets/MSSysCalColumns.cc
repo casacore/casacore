@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSSysCalColumns.h>
-#include <ms/MeasurementSets/MSSysCal.h>
-#include <tables/Tables/ColDescSet.h>
-#include <tables/Tables/TableDesc.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MSSysCalColumns.h>
+#include <casacore/ms/MeasurementSets/MSSysCal.h>
+#include <casacore/tables/Tables/ColDescSet.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSSysCalColumns::ROMSSysCalColumns(const MSSysCal& msSysCal):
   isNull_p(True),
@@ -438,5 +438,5 @@ void MSSysCalColumns::attach(MSSysCal& msSysCal)
 // compile-command: "gmake MSSysCalColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

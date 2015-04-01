@@ -30,10 +30,11 @@
 #define CASA_MMAPFDIO_H
 
 //# Includes
-#include <casa/IO/LargeFiledesIO.h>
-#include <casa/OS/RegularFile.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/IO/FiledesIO.h>
+#include <casacore/casa/OS/RegularFile.h>
 
-namespace casa
+namespace casacore
 {
 
 // <summary>
@@ -59,7 +60,7 @@ namespace casa
 // contents.
 // </synopsis>
 
-class MMapfdIO: public LargeFiledesIO
+class MMapfdIO: public FiledesIO
 {
 public:
   // Default constructor.
@@ -93,14 +94,14 @@ public:
   // The file will be extended and remapped if writing beyond end-of-file.
   // In that case possible pointers obtained using <src>getXXPointer</src>
   // are not valid anymore.
-  virtual void write (uInt size, const void* buf);
+  virtual void write (Int64 size, const void* buf);
 
   // Read <src>size</src> bytes from the File. Returns the number of bytes
   // actually read. Will throw an exception (AipsError) if the requested
   // number of bytes could not be read unless throwException is set to
   // False. Will always throw an exception if the file is not readable or
   // the system call returns an undocumented value.
-  virtual Int read (uInt size, void* buf, Bool throwException=True);
+  virtual Int64 read (Int64 size, void* buf, Bool throwException=True);
 
   // Get a read or write pointer to the given position in the mapped file.
   // An exception is thrown if beyond end-of-file or it not writable.

@@ -25,10 +25,10 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSDopplerColumns.h>
-#include <ms/MeasurementSets/MSDoppler.h>
+#include <casacore/ms/MeasurementSets/MSDopplerColumns.h>
+#include <casacore/ms/MeasurementSets/MSDoppler.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROMSDopplerColumns::ROMSDopplerColumns(const MSDoppler& msDoppler):
   isNull_p(True),
@@ -125,5 +125,5 @@ void MSDopplerColumns::setVelDefRef(MDoppler::Types ref)
 // compile-command: "gmake MSDopplerColumns"
 // End: 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

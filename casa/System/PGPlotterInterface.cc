@@ -26,10 +26,10 @@
 //#
 //# $Id$
 
-#include <casa/System/PGPlotterInterface.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/System/PGPlotterInterface.h>
+#include <casacore/casa/Logging/LogIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 PGPlotterInterface::~PGPlotterInterface()
 {
@@ -50,5 +50,5 @@ Bool PGPlotterInterface::isAttached() const
     return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

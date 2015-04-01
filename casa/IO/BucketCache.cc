@@ -27,12 +27,12 @@
 
 
 //# Includes
-#include <casa/IO/BucketCache.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#include <casacore/casa/IO/BucketCache.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BucketCache::BucketCache (BucketFile* file, Int64 startOffset,
 			  uInt bucketSize, uInt nrOfBuckets,
@@ -420,5 +420,5 @@ void BucketCache::initStatistics()
     nwrite_p  = 0;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

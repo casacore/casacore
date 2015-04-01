@@ -26,13 +26,13 @@
 //#
 //# $Id$
 
-#include <casa/System/PGPlotter.h>
-#include <casa/System/PGPlotterNull.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/Record.h>
+#include <casacore/casa/System/PGPlotter.h>
+#include <casacore/casa/System/PGPlotterNull.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/Record.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Default is no create function, thus use createLocal.
 PGPlotter::CreateFunction* PGPlotter::creator_p = 0;
@@ -806,5 +806,5 @@ void PGPlotter::wedg(const String &side, Float disp, Float width,
     if (!worker_p->isAttached()) worker_p = 0;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

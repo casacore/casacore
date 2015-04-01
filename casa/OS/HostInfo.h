@@ -29,11 +29,11 @@
 #ifndef CASA_HOSTINFO_H
 #define CASA_HOSTINFO_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 #include <cstring>
 #include <cstddef>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class String;
 class HostMachineInfo;
@@ -151,6 +151,6 @@ inline Bool HostInfo::bigEndian()
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

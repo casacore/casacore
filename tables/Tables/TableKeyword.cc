@@ -27,15 +27,15 @@
 
 
 //# Includes
-#include <tables/Tables/TableKeyword.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/PlainTable.h>
-#include <tables/Tables/TableAttr.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/TableError.h>
-#include <casa/OS/Path.h>
+#include <casacore/tables/Tables/TableKeyword.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/PlainTable.h>
+#include <casacore/tables/Tables/TableAttr.h>
+#include <casacore/tables/Tables/TableDesc.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/OS/Path.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableKeyword::TableKeyword (const String& tableDescName)
 : table_p         (new Table),
@@ -198,5 +198,5 @@ Bool TableKeyword::conform (const Table& that) const
     return True;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

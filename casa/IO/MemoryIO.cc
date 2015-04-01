@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Intgernet email: aips2-request@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -26,12 +26,14 @@
 //# $Id$
 
 
-#include <casa/IO/MemoryIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <iostream>
+#include <sstream>
 #include <cstring>                  //# for memcpy with gcc-4.3
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MemoryIO::MemoryIO (uInt64 initialSize, uInt64 expandSize)
 : itsBuffer     (0),
@@ -97,7 +99,7 @@ MemoryIO::~MemoryIO()
   }
 }
 
-void MemoryIO::write (uInt size, const void* buf)
+void MemoryIO::write (Int64 size, const void* buf)
 {
   // Throw an exception if not writable.
   if (!itsWritable) {
@@ -118,15 +120,15 @@ void MemoryIO::write (uInt size, const void* buf)
   }
 }
 
-Int MemoryIO::read (uInt size, void* buf, Bool throwException)
+Int64 MemoryIO::read (Int64 size, void* buf, Bool throwException)
 {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw (AipsError ("MemoryIO::read - buffer is not readable"));
   }
   const Int64 bytesLeft = itsUsed - itsPosition;
-  Int bytesRead = 0;
-  if (Int(size) <= bytesLeft) {
+  Int64 bytesRead = 0;
+  if (size <= bytesLeft) {
     memcpy (buf, itsBuffer + itsPosition, size);
     itsPosition += size;
     bytesRead = size;
@@ -136,16 +138,20 @@ Int MemoryIO::read (uInt size, void* buf, Bool throwException)
       memcpy (buf, itsBuffer + itsPosition, bytesRead);
       itsPosition += bytesLeft;
       if (throwException) {
-        String m = String::format ("MemoryIO::read - incorrect number of bytes read:\n"
-                                   "  size=%u, used=%lld, pos=%lld, left=%lld",
-                                   size, itsUsed, itsPosition, bytesLeft);
-	throw (AipsError (m));
+        std::ostringstream oss;
+        oss << "MemoryIO::read - incorrect number of bytes read:  "
+            << std::endl
+            << "  size=" << size << ", used=" << itsUsed
+            << ", pos=" << itsPosition << ", left=" << bytesLeft;
+	throw AipsError (oss.str());
       }
     } else {
-      String m = String::format ("MemoryIO::read - buffer position is invalid:\n"
-                                 "  size=%u, used=%lld, pos=%lld, left=%lld",
-                                 size, itsUsed, itsPosition, bytesLeft);
-      throw (AipsError (m));
+      std::ostringstream oss;
+      oss << "MemoryIO::read - buffer position is invalid:"
+          << std::endl
+          << "  size=" << size << ", used=" << itsUsed
+          << ", pos=" << itsPosition << ", left=" << bytesLeft;
+      throw AipsError (oss.str());
     }
   }
   return bytesRead;
@@ -267,5 +273,5 @@ uChar* MemoryIO::setBuffer (uInt64 length)
   return itsBuffer;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

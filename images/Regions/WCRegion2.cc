@@ -25,23 +25,23 @@
 //#
 //# $Id$
 
-#include <images/Regions/WCRegion.h>
-#include <images/Regions/WCBox.h>
-#include <images/Regions/WCEllipsoid.h>
-#include <images/Regions/WCPolygon.h>
-#include <images/Regions/WCLELMask.h>
-#include <images/Regions/WCUnion.h>
-#include <images/Regions/WCIntersection.h>
-#include <images/Regions/WCDifference.h>
-#include <images/Regions/WCComplement.h>
-#include <images/Regions/WCExtension.h>
-#include <images/Regions/WCConcatenation.h>
-#include <lattices/Lattices/RegionType.h>
-#include <tables/Tables/TableRecord.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/images/Regions/WCRegion.h>
+#include <casacore/images/Regions/WCBox.h>
+#include <casacore/images/Regions/WCEllipsoid.h>
+#include <casacore/images/Regions/WCPolygon.h>
+#include <casacore/images/Regions/WCLELMask.h>
+#include <casacore/images/Regions/WCUnion.h>
+#include <casacore/images/Regions/WCIntersection.h>
+#include <casacore/images/Regions/WCDifference.h>
+#include <casacore/images/Regions/WCComplement.h>
+#include <casacore/images/Regions/WCExtension.h>
+#include <casacore/images/Regions/WCConcatenation.h>
+#include <casacore/lattices/LRegions/RegionType.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 WCRegion* WCRegion::fromRecord (const TableRecord& rec,
                                 const String& tableName)
@@ -87,5 +87,5 @@ WCRegion* WCRegion::fromRecord (const TableRecord& rec,
     return regPtr;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

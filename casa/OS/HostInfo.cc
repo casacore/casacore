@@ -26,10 +26,10 @@
 //#
 //# $Id$
 
-#include <casa/BasicSL/String.h>
-#include <casa/OS/HostInfo.h>
-#include <casa/System/Aipsrc.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/OS/HostInfo.h>
+#include <casacore/casa/System/Aipsrc.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 #include <unistd.h>
 #include <sys/utsname.h>
@@ -50,7 +50,7 @@ extern "C" { int gettimeofday(struct timeval *tp, void*); };
 extern "C" { int getclock(int clock_type, struct timespec* tp); };
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 String HostInfo::hostName()
 {
@@ -203,58 +203,58 @@ ptrdiff_t HostInfo::swapFree( )					\
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #define HOSTINFO_DO_IMPLEMENT
 #if defined(AIPS_LINUX)
-#include <casa/OS/HostInfoLinux.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/OS/HostInfoLinux.h>
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(AIPS_SOLARIS)
-#include <casa/OS/HostInfoSolaris.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/OS/HostInfoSolaris.h>
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(AIPS_IRIX)
-#include <casa/OS/HostInfoIrix.h>
+#include <casacore/casa/OS/HostInfoIrix.h>
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(AIPS_OSF)
-#include <casa/OS/HostInfoOsf1.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/OS/HostInfoOsf1.h>
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(AIPS_HPUX)
-#include <casa/OS/HostInfoHpux.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/OS/HostInfoHpux.h>
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(__APPLE__)
-#include <casa/OS/HostInfoDarwin.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/OS/HostInfoDarwin.h>
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #elif defined(AIPS_BSD)
-#include <casa/OS/HostInfoBsd.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/OS/HostInfoBsd.h>
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #else
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Int HostInfo::numCPUs( ) { return 0; }
 ptrdiff_t HostInfo::memoryTotal( ) { return -1; }
@@ -264,12 +264,12 @@ ptrdiff_t HostInfo::swapTotal( )   { return -1; }
 ptrdiff_t HostInfo::swapUsed( )    { return -1; }
 ptrdiff_t HostInfo::swapFree( )    { return -1; }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HostMachineInfo *HostInfo::info = 0;
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

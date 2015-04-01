@@ -25,14 +25,17 @@
 //#
 //# $Id$
 
-#include <scimath/Functionals/GaussianND.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/MatrixMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/BasicMath/Math.h>
+#ifndef SCIMATH_GAUSSIANND_TCC
+#define SCIMATH_GAUSSIANND_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Functionals/GaussianND.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/BasicMath/Math.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
 T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {
@@ -53,5 +56,7 @@ T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {
   return param_p[HEIGHT] * exp(-exponent/T(2));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

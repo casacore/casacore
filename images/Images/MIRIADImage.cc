@@ -25,49 +25,49 @@
 //#
 //# $Id$
 
-#include <images/Images/MIRIADImage.h>
+#include <casacore/images/Images/MIRIADImage.h>
 
-#include <images/Images/ImageInfo.h>
-#include <images/Images/MaskSpecifier.h>
-#include <images/Images/ImageOpener.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <lattices/Lattices/TempLattice.h>
-#include <tables/Tables/TiledFileAccess.h>
-#include <coordinates/Coordinates/CoordinateSystem.h>
+#include <casacore/images/Images/ImageInfo.h>
+#include <casacore/images/Images/MaskSpecifier.h>
+#include <casacore/images/Images/ImageOpener.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/lattices/Lattices/TempLattice.h>
+#include <casacore/tables/DataMan/TiledFileAccess.h>
+#include <casacore/coordinates/Coordinates/CoordinateSystem.h>
 
-#include <coordinates/Coordinates/Coordinate.h>
-#include <coordinates/Coordinates/LinearCoordinate.h>
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <coordinates/Coordinates/SpectralCoordinate.h>
-#include <coordinates/Coordinates/TabularCoordinate.h>
-#include <coordinates/Coordinates/StokesCoordinate.h>
-#include <coordinates/Coordinates/Projection.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
+#include <casacore/coordinates/Coordinates/LinearCoordinate.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/coordinates/Coordinates/TabularCoordinate.h>
+#include <casacore/coordinates/Coordinates/StokesCoordinate.h>
+#include <casacore/coordinates/Coordinates/Projection.h>
 
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Containers/Record.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/OS/File.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Quanta/UnitMap.h>
-#include <casa/Utilities/CountedPtr.h>
-#include <casa/Utilities/ValType.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
-#include <fits/FITS/FITSSpectralUtil.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Quanta/UnitMap.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/fits/FITS/FITSSpectralUtil.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
-#include <mirlib/maxdimc.h>
-#include <mirlib/miriad.h>
+#include <casacore/mirlib/maxdimc.h>
+#include <casacore/mirlib/miriad.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //   set this to 1 or 0 to benchmark tiled access vs. xyio(native miriad) access
 #define USE_TILE  1
@@ -692,9 +692,9 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     } else {
       Double epoch;
       rdhdd_c(tno_p,"epoch", &epoch, 2000.0);
-      if (::casa::near(epoch, 1950.0)) {
+      if (::casacore::near(epoch, 1950.0)) {
 	radecsys = MDirection::B1950;
-      } else if (::casa::near(epoch, 2000.0)) {
+      } else if (::casacore::near(epoch, 2000.0)) {
 	radecsys = MDirection::J2000;
       }
     }	
@@ -719,13 +719,13 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     // multiplied by cdelt before its used and in this case, that
     // doesn't matter since other pixels on that axis are never used.
     
-    if (::casa::near(cdelt(latAxis), 0.0) && 
-	::casa::near(crpix(latAxis)+offset, 1.0) && rotationAxis < 0) {
+    if (::casacore::near(cdelt(latAxis), 0.0) && 
+	::casacore::near(crpix(latAxis)+offset, 1.0) && rotationAxis < 0) {
       cdelt(latAxis) = 1.0;            // degrees
     }
     //
-    if (::casa::near(cdelt(longAxis), 0.0) && 
-	::casa::near(crpix(longAxis)+offset, 1.0) && rotationAxis < 0) {
+    if (::casacore::near(cdelt(longAxis), 0.0) && 
+	::casacore::near(crpix(longAxis)+offset, 1.0) && rotationAxis < 0) {
       cdelt(longAxis) = 1.0;          // degrees
     }
 
@@ -1121,5 +1121,5 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

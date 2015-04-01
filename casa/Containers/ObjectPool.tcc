@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <casa/Containers/ObjectPool.h>
+#ifndef CASA_OBJECTPOOL_TCC
+#define CASA_OBJECTPOOL_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/casa/Containers/ObjectPool.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class T, class Key>
@@ -102,5 +105,7 @@ void ObjectPool<T, Key>::clear() {
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

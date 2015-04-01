@@ -29,11 +29,12 @@
 #define CASA_HDF5RECORD_H
 
 //# Includes
-#include <casa/HDF5/HDF5Object.h>
-#include <casa/HDF5/HDF5DataType.h>
-#include <casa/Containers/Record.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/HDF5/HDF5Object.h>
+#include <casacore/casa/HDF5/HDF5DataType.h>
+#include <casacore/casa/Containers/Record.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // A class to write/read a record into HDF5.

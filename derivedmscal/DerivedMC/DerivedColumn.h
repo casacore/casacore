@@ -30,11 +30,12 @@
 
 
 //# Includes
-#include <derivedmscal/DerivedMC/MSCalEngine.h>
-#include <tables/Tables/VirtScaCol.h>
-#include <tables/Tables/VirtArrCol.h>
+#include <casacore/casa/aips.h>
+#include <casacore/derivedmscal/DerivedMC/MSCalEngine.h>
+#include <casacore/tables/DataMan/VirtScaCol.h>
+#include <casacore/tables/DataMan/VirtArrCol.h>
 
-namespace casa {
+namespace casacore {
 
 
   // <summary>Hourangle derived from TIME, etc.</summary>

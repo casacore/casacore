@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/BasicSL/Complex.h>
-#include <casa/Quanta/Quantum.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/Quanta/Quantum.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class Array;
@@ -229,8 +229,10 @@ Quantum<Qtype> max(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 // <group name="foreign">
 Int ceil(const Int &val);
 Int floor(const Int &val);
+#if !(defined(AIPS_CXX11) || (defined(__APPLE_CC__) && __APPLE_CC__ > 5621))
 Float real(const Float &val);
-Double real(const Double&val);
+Double real(const Double &val);
+#endif
 Array<Complex> operator *(const Array<Complex> &in, Double f);
 Array<Complex> operator /(const Array<Complex> &in, Double f);
 Array<DComplex> operator *(const Array<DComplex> &in, Double f);
@@ -245,9 +247,9 @@ Array<Int> operator /(const Array<Int> &in, Double f);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Quanta/QMath.tcc>
+#include <casacore/casa/Quanta/QMath.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

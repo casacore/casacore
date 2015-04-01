@@ -27,11 +27,11 @@
 
 //# Includes
 
-#include <casa/BasicMath/Primes.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/iostream.h>
+#include <casacore/casa/BasicMath/Primes.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 // Test the non-cache functions.
 
 void primesNoncacheTests (uInt number, Bool shouldBePrime, uInt numberOfFactors)

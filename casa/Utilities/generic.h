@@ -21,7 +21,7 @@
 #ifndef CASA_GENERIC_H
 #define CASA_GENERIC_H
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 /*
  *	See the CPP manual, argument prescan section for explanation
@@ -62,6 +62,6 @@ typedef int (*GPT)(int,char*);
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -25,15 +25,18 @@
 //#
 //# $Id$
 
-#include <lattices/Lattices/CurvedLattice2D.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h> 
+#ifndef LATTICES_CURVEDLATTICE2D_TCC
+#define LATTICES_CURVEDLATTICE2D_TCC
+
+#include <casacore/lattices/Lattices/CurvedLattice2D.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h> 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 CurvedLattice2D<T>::CurvedLattice2D()
@@ -280,5 +283,7 @@ Bool CurvedLattice2D<T>::ok() const
   return itsLatticePtr->ok();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

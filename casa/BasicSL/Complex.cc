@@ -27,11 +27,11 @@
 
 
 //# Includes
-#include <casa/BasicSL/Complex.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/Constants.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Math functions
 /// Should be in stl
@@ -222,4 +222,4 @@ Complex erfc(const Complex &in) {
   return ::erfc(in.real());
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

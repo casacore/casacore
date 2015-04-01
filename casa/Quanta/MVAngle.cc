@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <casa/Quanta/MVAngle.h>
-#include <casa/sstream.h>
-#include <casa/iomanip.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/Constants.h>
-#include <casa/Quanta/QMath.h>
-#include <casa/Utilities/MUString.h>
-#include <casa/System/AppInfo.h>
+#include <casacore/casa/Quanta/MVAngle.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/Quanta/QMath.h>
+#include <casacore/casa/Utilities/MUString.h>
+#include <casacore/casa/System/AppInfo.h>
 //
-#include <casa/Logging/LogIO.h>
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Logging/LogIO.h>
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // MVAngle class
 //# Static members
@@ -496,5 +496,5 @@ ostream &operator<<(ostream &os, const MVAngle::Format &form) {
     return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

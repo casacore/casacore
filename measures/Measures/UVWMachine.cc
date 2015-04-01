@@ -26,10 +26,10 @@
 //# $Id$
 
 //# Includes
-#include <measures/Measures/UVWMachine.h>
-#include <casa/Quanta/Euler.h>
+#include <casacore/measures/Measures/UVWMachine.h>
+#include <casacore/casa/Quanta/Euler.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
@@ -323,5 +323,5 @@ void UVWMachine::copy(const UVWMachine &other) {
   rot4_p = other.rot4_p;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

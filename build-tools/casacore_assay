@@ -53,13 +53,6 @@
 #    3:  untested (usually returned from a .run)
 #  130:  interrupt
 #
-# Notes:
-#    1) It is assumed that the test executable exists in the current PATH.
-#       If an environment variable called ASSAYBIN exists then ".:$ASSAYBIN"
-#       is added to the start of PATH.  The AIPS++ system bintest directory is
-#       always appended to PATH.
-#       If an environment variable ASSAYPY exists, it is added to PYTHONPATH.
-#
 # Original: 1995/11/01 by Mark Calabretta, ATNF
 # $Id: assay,v 19.11 2006/10/17 03:41:50 gvandiep Exp $
 #=============================================================================

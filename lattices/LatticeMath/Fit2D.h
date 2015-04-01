@@ -29,13 +29,13 @@
 #define LATTICES_FIT2D_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/CompoundFunction.h>
-#include <casa/BasicSL/Constants.h>
-#include <scimath/Fitting/NonLinearFitLM.h>
-#include <casa/Logging/LogIO.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/CompoundFunction.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/scimath/Fitting/NonLinearFitLM.h>
+#include <casacore/casa/Logging/LogIO.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> class Array;
 template<class T> class Matrix;
@@ -329,7 +329,7 @@ inline Bool Fit2D::includeIt (Float value, const Vector<Float>& range,
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 

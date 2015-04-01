@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/SortError.h>
+#include <casacore/casa/Utilities/SortError.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Implementation of Sort error classes.
 
@@ -63,5 +63,5 @@ SortInvOpt::SortInvOpt (Category c) : SortError ("Invalid sort option given",c)
 SortInvOpt::~SortInvOpt () throw()
 { ; }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

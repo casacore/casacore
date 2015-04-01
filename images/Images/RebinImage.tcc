@@ -25,15 +25,18 @@
 //#
 //# $Id$
 
-#include <images/Images/RebinImage.h>
-#include <lattices/Lattices/RebinLattice.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#ifndef IMAGES_REBINIMAGE_TCC
+#define IMAGES_REBINIMAGE_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/images/Images/RebinImage.h>
+#include <casacore/lattices/Lattices/RebinLattice.h>
+#include <casacore/lattices/LRegions/LatticeRegion.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 RebinImage<T>::RebinImage ()
@@ -267,5 +270,7 @@ void RebinImage<T>::reopen()
   itsImagePtr->reopen();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

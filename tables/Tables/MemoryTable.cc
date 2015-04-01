@@ -26,19 +26,19 @@
 //# $Id$
 
 
-#include <tables/Tables/MemoryTable.h>
-#include <tables/Tables/SetupNewTab.h>
-#include <tables/Tables/TableLockData.h>
-#include <tables/Tables/ColumnSet.h>
-#include <tables/Tables/PlainColumn.h>
-#include <tables/Tables/MemoryStMan.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Containers/Record.h>
-#include <casa/BasicSL/String.h>
-#include <casa/OS/HostInfo.h>
+#include <casacore/tables/Tables/MemoryTable.h>
+#include <casacore/tables/Tables/SetupNewTab.h>
+#include <casacore/tables/Tables/TableLockData.h>
+#include <casacore/tables/Tables/ColumnSet.h>
+#include <casacore/tables/Tables/PlainColumn.h>
+#include <casacore/tables/DataMan/MemoryStMan.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/OS/HostInfo.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 : BaseTable   (newtab.name(), newtab.option(), 0),
@@ -103,6 +103,11 @@ void MemoryTable::reopenRW()
 Bool MemoryTable::asBigEndian() const
 {
   return HostInfo::bigEndian();
+}
+
+const StorageOption& MemoryTable::storageOption() const
+{
+  return colSetPtr_p->storageOption();
 }
 
 Bool MemoryTable::isMultiUsed (Bool) const
@@ -319,5 +324,5 @@ DataManager* MemoryTable::findDataManager (const String& name,
   return colSetPtr_p->findDataManager (name, byColumn);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

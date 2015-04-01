@@ -23,47 +23,49 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
 
-#include <images/Regions/RegionManager.h>
+#include <casacore/images/Regions/RegionManager.h>
 
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/Block.h>
-#include <casa/Containers/HashMap.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogFilter.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/OS/File.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Containers/HashMap.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogFilter.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/OS/File.h>
 
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/QuantumHolder.h>
-#include <coordinates/Coordinates/DirectionCoordinate.h>
-#include <coordinates/Coordinates/StokesCoordinate.h>
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/LCSlicer.h>
-#include <lattices/Lattices/RegionType.h>
-#include <images/Regions/ImageRegion.h>
-#include <images/Regions/RegionHandlerTable.h>
-#include <images/Regions/WCBox.h>
-#include <images/Regions/WCComplement.h>
-#include <images/Regions/WCConcatenation.h>
-#include <images/Regions/WCDifference.h>
-#include <images/Regions/WCEllipsoid.h>
-#include <images/Regions/WCExtension.h>
-#include <images/Regions/WCIntersection.h>
-#include <images/Regions/WCLELMask.h>
-#include <images/Regions/WCPolygon.h>
-#include <images/Regions/WCUnion.h>
-#include <images/Images/PagedImage.h>
-#include <images/Images/SubImage.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/Table.h>
-#include <casa/namespace.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/QuantumHolder.h>
+#include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
+#include <casacore/coordinates/Coordinates/StokesCoordinate.h>
+#include <casacore/lattices/LRegions/LCBox.h>
+#include <casacore/lattices/LRegions/LCSlicer.h>
+#include <casacore/lattices/LRegions/RegionType.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/images/Regions/RegionHandlerTable.h>
+#include <casacore/images/Regions/WCBox.h>
+#include <casacore/images/Regions/WCComplement.h>
+#include <casacore/images/Regions/WCConcatenation.h>
+#include <casacore/images/Regions/WCDifference.h>
+#include <casacore/images/Regions/WCEllipsoid.h>
+#include <casacore/images/Regions/WCExtension.h>
+#include <casacore/images/Regions/WCIntersection.h>
+#include <casacore/images/Regions/WCLELMask.h>
+#include <casacore/images/Regions/WCPolygon.h>
+#include <casacore/images/Regions/WCUnion.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/SubImage.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/namespace.h>
 
 
-namespace casa { //# name space casa begins
+namespace casacore { //# name space casa begins
 
 
   RegionManager::RegionManager()
@@ -714,7 +716,7 @@ namespace casa { //# name space casa begins
       TableRecord tblRec;
       for( uInt i=0; i < (regions.nfields()); i++ )
       {
-	  tblRec.assign(regions.asRecord(casa::RecordFieldId(0)));
+	  tblRec.assign(regions.asRecord(casacore::RecordFieldId(0)));
 	  reg=ImageRegion::fromRecord(tblRec, "");
 	  imageRegions[i]=reg;
       }       

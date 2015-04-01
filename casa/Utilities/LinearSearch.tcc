@@ -26,12 +26,15 @@
 //#
 //# $Id$
 
+#ifndef CASA_LINEARSEARCH_TCC
+#define CASA_LINEARSEARCH_TCC
+
 
 //# Includes
-#include <casa/Utilities/LinearSearch.h>
+#include <casacore/casa/Utilities/LinearSearch.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class Container, class ElType>
 Int linearSearch (Bool& found, const Container& container, 
@@ -93,5 +96,7 @@ Int linearSearchBrackets1 (const Container& container, const ElType& value,
     return -1;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

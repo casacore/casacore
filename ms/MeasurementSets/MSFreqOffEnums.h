@@ -29,9 +29,9 @@
 #ifndef MS_MSFREQOFFENUMS_H
 #define MS_MSFREQOFFENUMS_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <use visibility=export>
 
@@ -102,6 +102,6 @@ public:
     };
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

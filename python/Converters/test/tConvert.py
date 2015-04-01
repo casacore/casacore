@@ -22,6 +22,7 @@ def dotest(t):
     print t.testipos (NUM.array([2]));
     print t.testipos (NUM.array(3));
 
+    print t.testvecbool ([True,False,False,True])
     print t.testvecint ([1,2,3,4]);
     print t.testvecint ([]);
     print t.testvecint ((-1,-2,-3,-4));
@@ -32,6 +33,7 @@ def dotest(t):
     print t.testvecstr (["a1","a2","b1","b2"])
     print t.testvecstr (())
     print t.testvecstr ("sc1")
+    print t.teststdvecbool ([False,True])
     print t.teststdvecuint ([1,2,4])
     print t.teststdvecuint (())
     print t.teststdvecuint (10)
@@ -88,6 +90,9 @@ def dotest(t):
     res = t.testvh (NUM.array([[]]));
     print '<<<';
     print res.shape;
+
+    # Test a sequence of ValueHolders
+    print t.teststdvecvh([2, 1.3, [True,False]]);
 
     # On 64-bit machines the output also contains 'dtype=int32'
     # So leave it out.

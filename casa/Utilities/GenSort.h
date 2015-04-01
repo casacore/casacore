@@ -28,10 +28,10 @@
 #ifndef CASA_GENSORT_H
 #define CASA_GENSORT_H
 
-#include <casa/aips.h>
-#include <casa/Utilities/Sort.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/Sort.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations.
 template<class T> class Array;
@@ -405,9 +405,9 @@ inline int GenSortIndirect<T>::isAscending (const T* data, Int i, Int j)
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Utilities/GenSort.tcc>
+#include <casacore/casa/Utilities/GenSort.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

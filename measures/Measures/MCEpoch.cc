@@ -26,13 +26,13 @@
 //# $Id$
 
 //# Includes
-#include <casa/BasicSL/Constants.h>
-#include <measures/Measures/MCEpoch.h>
-#include <measures/Measures/MeasFrame.h>
-#include <measures/Measures/Nutation.h>
-#include <measures/Measures/MeasTable.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/measures/Measures/Nutation.h>
+#include <casacore/measures/Measures/MeasTable.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 uInt MCEpoch::ToRef_p[N_Routes][3] = {
@@ -315,5 +315,5 @@ void MCEpoch::doFillState (void*) {
   MCBase::makeState(FromTo_p[0], MEpoch::N_Types, N_Routes, ToRef_p);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

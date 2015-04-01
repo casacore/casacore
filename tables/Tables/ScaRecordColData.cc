@@ -25,23 +25,23 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ScaRecordColData.h>
-#include <tables/Tables/ScaRecordColDesc.h>
-#include <tables/Tables/ColumnSet.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/RefRows.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableAttr.h>
-#include <casa/Arrays/Vector.h>
-#include <tables/Tables/DataManager.h>
-#include <tables/Tables/TableError.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/IO/MemoryIO.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/tables/Tables/ScaRecordColData.h>
+#include <casacore/tables/Tables/ScaRecordColDesc.h>
+#include <casacore/tables/Tables/ColumnSet.h>
+#include <casacore/tables/Tables/ColumnDesc.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableAttr.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/IO/MemoryIO.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ScalarRecordColumnData::ScalarRecordColumnData
                                    (const ScalarRecordColumnDesc* cd,
@@ -265,4 +265,4 @@ void ScalarRecordColumnData::getFileDerived (AipsIO& ios,
     createDataManagerColumn();
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

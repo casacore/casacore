@@ -29,11 +29,12 @@
 #define IMAGES_IMAGEATTRGROUPHDF5_H
 
 //# Includes
-#include <images/Images/ImageAttrGroup.h>
-#include <tables/Tables/TableProxy.h>
-#include <casa/HDF5/HDF5Group.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Images/ImageAttrGroup.h>
+#include <casacore/tables/Tables/TableProxy.h>
+#include <casacore/casa/HDF5/HDF5Group.h>
 
-namespace casa {
+namespace casacore {
 
 // <summary>
 // Attribute group for a HDF5 image.
@@ -124,6 +125,6 @@ private:
   Bool   itsCanWrite;   //# Can attributes be written?
 };
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

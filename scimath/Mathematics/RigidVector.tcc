@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-#include <scimath/Mathematics/RigidVector.h>
-#include <scimath/Mathematics/SquareMatrix.h>
+#ifndef SCIMATH_RIGIDVECTOR_TCC
+#define SCIMATH_RIGIDVECTOR_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/scimath/Mathematics/RigidVector.h>
+#include <casacore/scimath/Mathematics/SquareMatrix.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T, Int n>
 RigidVector<T,n>& 
@@ -104,5 +107,7 @@ RigidVector<T,n> sqrt(const RigidVector<T,n>& v) {
 // }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

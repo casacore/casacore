@@ -30,9 +30,10 @@
 
 
 //# Includes
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Array.h>
 
-namespace casa { //#Begin casa namespace
+namespace casacore { //#Begin casa namespace
 
 //# Forward Declarations
 template<class T> class Vector;
@@ -97,11 +98,11 @@ public:
     Matrix();
 
     // A Matrix with "l1" rows and "l2" columns.
-    Matrix(uInt l1, uInt l2);
+    Matrix(size_t l1, size_t l2);
 
     // A Matrix with "l1" rows and "l2" columns.
     // Fill it with the initial value.
-    Matrix(uInt l1, uInt l2, const T &initialValue);
+    Matrix(size_t l1, size_t l2, const T &initialValue);
 
     // A matrix of shape with shape "len".
     Matrix(const IPosition &len);
@@ -128,7 +129,7 @@ public:
 
     // Create an identity matrix of side length n. (Could not do this as a constructor
     // because of ambiguities with other constructors).
-    static Matrix<T> identity (uInt n);
+    static Matrix<T> identity (size_t n);
 
     // Assign the other array (which must be dimension 2) to this matrix.
     // If the shapes mismatch, this array is resized.
@@ -141,7 +142,7 @@ public:
     // Resize to the given shape (must be 2-dimensional).
     // Resize without argument is equal to resize(0,0).
     // <group>
-    void resize(uInt nx, uInt ny, Bool copyValues=False);
+    void resize(size_t nx, size_t ny, Bool copyValues=False);
     virtual void resize();
     virtual void resize(const IPosition &newShape, Bool copyValues=False);
     // </group>
@@ -174,7 +175,7 @@ public:
       { return Array<T>::operator()(i); }
     const T &operator()(const IPosition &i) const 
       { return Array<T>::operator()(i); }
-    T &operator()(uInt i1, uInt i2)
+    T &operator()(size_t i1, size_t i2)
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         this->validateIndex(i1, i2);   // Throws an exception on failure
@@ -183,7 +184,7 @@ public:
 	                            this->begin_p[i1*xinc_p + i2*yinc_p];
       }
 
-    const T &operator()(uInt i1, uInt i2) const
+    const T &operator()(size_t i1, size_t i2) const
       {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         this->validateIndex(i1, i2);   // Throws an exception on failure
@@ -228,22 +229,22 @@ public:
 
     // Returns a reference to the i'th row.
     // <group>
-    Vector<T> row(uInt i);
-    const Vector<T> row(uInt i) const;
+    Vector<T> row(size_t i);
+    const Vector<T> row(size_t i) const;
     // </group>
 
     // Returns a reference to the j'th column
     // <group>
-    Vector<T> column(uInt j);
-    const Vector<T> column(uInt j) const;
+    Vector<T> column(size_t j);
+    const Vector<T> column(size_t j) const;
     // </group>
 
     // Returns a diagonal from the Matrix. The Matrix must be square.
     // n==0 is the main diagonal. n>0 is above the main diagonal, n<0
     // is below it.
     // <group>
-    Vector<T> diagonal(Int n=0);
-    const Vector<T> diagonal(Int n=0) const;
+    Vector<T> diagonal(Int64 n=0);
+    const Vector<T> diagonal(Int64 n=0) const;
     // </group>
 
     // Take a slice of this matrix. Slices are always indexed starting
@@ -279,19 +280,17 @@ public:
     // </group>
 
     // The length of each axis of the Matrix.
-    // <group>
-    void shape(Int &s1, Int &s2) const
-      { s1 = this->length_p(0); s2=this->length_p(1); }
     const IPosition &shape() const
       { return this->length_p; }
-    // </group>
+    void shape(Int &s1, Int &s2) const
+      { s1 = this->length_p(0); s2=this->length_p(1); }
 
     // The number of rows in the Matrix, i.e. the length of the first axis.
-    uInt nrow() const
+    size_t nrow() const
       { return this->length_p(0); }
 
     // The number of columns in the Matrix, i.e. the length of the 2nd axis.
-    uInt ncolumn() const
+    size_t ncolumn() const
       { return this->length_p(1); }
 
     // Replace the data values with those in the pointer <src>storage</src>.
@@ -317,7 +316,7 @@ protected:
 
 private:
     // Cached constants to improve indexing.
-    Int xinc_p, yinc_p;
+    size_t xinc_p, yinc_p;
 
     // Helper fn to calculate the indexing constants.
     void makeIndexingConstants();
@@ -325,6 +324,6 @@ private:
 
 } //#End casa namespace
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Arrays/Matrix.tcc>
+#include <casacore/casa/Arrays/Matrix.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

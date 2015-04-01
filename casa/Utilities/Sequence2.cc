@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/Sequence.h>
+#include <casacore/casa/Utilities/Sequence.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 uInt uIntSequence::num = 0;
 Mutex uIntSequence::theirMutex;
@@ -38,5 +38,5 @@ uInt uIntSequence::SgetNext()
   return ++num;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

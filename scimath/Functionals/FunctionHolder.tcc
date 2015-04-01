@@ -25,33 +25,36 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/FunctionHolder.h>
-#include <casa/Exceptions.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Containers/RecordFieldId.h>
-#include <casa/Containers/Record.h>
-#include <casa/Arrays/Vector.h>
-#include <scimath/Functionals/Gaussian1D.h>
-#include <scimath/Functionals/Gaussian2D.h>
-#include <scimath/Functionals/Gaussian3D.h>
-#include <scimath/Functionals/GaussianND.h>
-#include <scimath/Functionals/Polynomial.h>
-#include <scimath/Functionals/EvenPolynomial.h>
-#include <scimath/Functionals/OddPolynomial.h>
-#include <scimath/Functionals/HyperPlane.h>
-#include <scimath/Functionals/Sinusoid1D.h>
-#include <scimath/Functionals/Chebyshev.h>
-#include <scimath/Functionals/SimButterworthBandpass.h>
-#include <scimath/Functionals/CombiFunction.h>
-#include <scimath/Functionals/CompoundFunction.h>
-#include <scimath/Functionals/CompiledFunction.h>
-#include <casa/Utilities/MUString.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffMath.h>
-#include <casa/sstream.h>
+#ifndef SCIMATH_FUNCTIONHOLDER_TCC
+#define SCIMATH_FUNCTIONHOLDER_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/FunctionHolder.h>
+#include <casacore/casa/Exceptions.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Containers/RecordFieldId.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/scimath/Functionals/Gaussian1D.h>
+#include <casacore/scimath/Functionals/Gaussian2D.h>
+#include <casacore/scimath/Functionals/Gaussian3D.h>
+#include <casacore/scimath/Functionals/GaussianND.h>
+#include <casacore/scimath/Functionals/Polynomial.h>
+#include <casacore/scimath/Functionals/EvenPolynomial.h>
+#include <casacore/scimath/Functionals/OddPolynomial.h>
+#include <casacore/scimath/Functionals/HyperPlane.h>
+#include <casacore/scimath/Functionals/Sinusoid1D.h>
+#include <casacore/scimath/Functionals/Chebyshev.h>
+#include <casacore/scimath/Functionals/SimButterworthBandpass.h>
+#include <casacore/scimath/Functionals/CombiFunction.h>
+#include <casacore/scimath/Functionals/CompoundFunction.h>
+#include <casacore/scimath/Functionals/CompiledFunction.h>
+#include <casacore/casa/Utilities/MUString.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffMath.h>
+#include <casacore/casa/sstream.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class T>
@@ -520,5 +523,7 @@ void FunctionHolder<T>::setParameters(Function<AutoDiff<T> > *&fn,
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

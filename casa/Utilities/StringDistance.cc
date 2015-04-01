@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#include <casa/Utilities/StringDistance.h>
+#include <casacore/casa/Utilities/StringDistance.h>
 
 using namespace std;
 
-namespace casa {
+namespace casacore {
 
 StringDistance::StringDistance()
   : itsMaxDistance     (0),

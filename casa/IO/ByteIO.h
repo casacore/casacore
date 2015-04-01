@@ -29,10 +29,11 @@
 #define CASA_BYTEIO_H
 
 //# Includes
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>Abstract base class for IO on a byte stream.</summary>
 
@@ -94,13 +95,13 @@ public:
     virtual ~ByteIO();
 
     // Write <src>size</src> bytes to the byte stream.
-    virtual void write (uInt size, const void* buf) = 0;
+    virtual void write (Int64 size, const void* buf) = 0;
 
     // Read <src>size</src> bytes from the byte stream. Returns the number of
-    // bytes actually read, or a negative number if an error occured. Will also
+    // bytes actually read, or a negative number if an error occurred. Will also
     // throw an Exception (AipsError) if the requested number of bytes could
     // not be read unless throwException is set to False.
-    virtual Int read (uInt size, void* buf, Bool throwException=True) = 0;    
+    virtual Int64 read (Int64 size, void* buf, Bool throwException=True) = 0;    
 
     // Reopen the underlying IO stream for read/write access.
     // Nothing will be done if the stream is writable already.
@@ -117,6 +118,22 @@ public:
     Int64 seek (Int offset, ByteIO::SeekOption = ByteIO::Begin);
     Int64 seek (Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
     // </group>
+
+    // Flush the data to the file.
+    // The default implementation does nothing.
+    virtual void flush();
+
+    // Fsync the file (i.e. force the data to be physically written).
+    // The default implementation does nothing.
+    virtual void fsync();
+
+    // Resync the file (i.e. empty the current buffer).
+    // The default implementation does nothing.
+    virtual void resync();
+  
+    // Get the file name of the file attached.
+    // The default implementation returns an empty string.
+    virtual String fileName() const;
 
     // Get the length of the byte stream.
     virtual Int64 length() = 0;
@@ -165,6 +182,6 @@ inline Int64 ByteIO::seek (Int offset, ByteIO::SeekOption option)
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

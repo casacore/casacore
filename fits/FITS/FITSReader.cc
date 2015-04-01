@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
-#include <fits/FITS/FITSReader.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/fits/FITS/FITSReader.h>
 
-namespace casa {
+namespace casacore {
 
 // Display basic info and the keyword list
 void showHDU(HeaderDataUnit *h) {

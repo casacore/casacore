@@ -26,28 +26,31 @@
 //# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 //# Includes
-#include <casa/IO/MultiFile.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/BasicSL/STLIO.h>
+#include <casacore/casa/IO/MultiFile.h>
+#include <casacore/casa/IO/MultiHDF5.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/OS/Timer.h>
 #include <iostream>
 #include <stdexcept>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 void showMultiFile (MultiFile& mfile)
 {
   cout << mfile.fileName() << ' ' << mfile.blockSize() << ' '
-       << mfile.nfile() << ' ' << mfile.size() << endl;
+       << mfile.nfile() << ' ' << mfile.size() << ' '
+       << mfile.freeBlocks() << endl;
 }
 
-void makeFile()
+void makeFile (Int64 blockSize)
 {
-  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 1024);
+  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, blockSize);
   AlwaysAssertExit (mfile.isWritable());
   showMultiFile(mfile);
 }
@@ -57,9 +60,9 @@ void readFile()
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Old);
   AlwaysAssertExit (! mfile.isWritable());
   showMultiFile(mfile);
-  for (Int i=0; i<mfile.nfile(); ++i) {
+  for (uInt i=0; i<mfile.info().size(); ++i) {
     String nm = "file" + String::toString(i);
-    cout << nm << ' ' << mfile.fileId(nm) << endl;
+    cout << nm << ' ' << mfile.fileId(nm, False) << endl;
   }
 }
 
@@ -67,9 +70,9 @@ void addFiles()
 {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
   AlwaysAssertExit (mfile.isWritable());
-  Int fid0 = mfile.add ("file0");
-  Int fid1 = mfile.add ("file1");
-  Int fid2 = mfile.add ("file2");
+  Int fid0 = mfile.addFile ("file0");
+  Int fid1 = mfile.addFile ("file1");
+  Int fid2 = mfile.addFile ("file2");
   AlwaysAssertExit (mfile.nfile()==3 && fid0==0 && fid1==1 && fid2==2);
   showMultiFile(mfile);
 }
@@ -93,7 +96,7 @@ void writeFiles1()
   cout << mfile.info() << endl;
 }
 
-void checkFiles1()
+void checkFiles1 (Bool do1=True)
 {
   MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Old);
   Vector<Int64> buf1(128), buf(128),buff(3*128);
@@ -102,6 +105,9 @@ void checkFiles1()
   AlwaysAssertExit (allEQ(buf, buf1));
   buf1 += Int64(128);
   mfile.read (2, buf.data(), 1024, 0);
+  if (!allEQ(buf, buf1)) {
+    cout << buf << endl;
+  }
   AlwaysAssertExit (allEQ(buf, buf1));
   buf1 += Int64(128);
   mfile.read (0, buf.data(), 1024, 1024);
@@ -110,8 +116,10 @@ void checkFiles1()
   mfile.read (0, buf.data(), 1024, 2048);
   AlwaysAssertExit (allEQ(buf, buf1));
   buf1 += Int64(128);
-  mfile.read (1, buf.data(), 1024, 1024);
-  AlwaysAssertExit (allEQ(buf, buf1));
+  if (do1) {
+    mfile.read (1, buf.data(), 1024, 1024);
+    AlwaysAssertExit (allEQ(buf, buf1));
+  }
   buf1 += Int64(128);
   mfile.read (2, buf.data(), 1024, 1024);
   AlwaysAssertExit (allEQ(buf, buf1));
@@ -128,19 +136,157 @@ void checkFiles1()
   AlwaysAssertExit (buff[380]==509 && buff[381]==509);   // check not overwritten
 }
 
+void deleteFile()
+{
+  cout <<"test deleteFile"<<endl;
+  {
+    MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
+    mfile.deleteFile (1);
+    cout << mfile.info() << endl;
+  }
+  readFile();
+}
+
+void writeFiles2()
+{
+  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Update);
+  Vector<Int64> buf(128), buf1(128);
+  indgen(buf);
+  mfile.write (0, buf.data(), 1016, 8);
+  mfile.read (0, buf1.data(), 1024, 0);
+  AlwaysAssertExit(buf[0]==buf1[0] && allEQ(buf1(Slice(1,127)), buf(Slice(0,127))));
+  mfile.write (0, buf.data(), 1024, 0);
+  mfile.write (2, buf.data(), 16, 2048);
+  cout << mfile.info() << endl;
+}
+
+void checkFiles2()
+{
+  checkFiles1(False);
+  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::Old);
+  Vector<Int64> buf1(2), buf(2);
+  indgen(buf1);
+  mfile.read (2, buf.data(), 16, 2048);
+  AlwaysAssertExit (allEQ(buf, buf1));
+}
+
+void timeExact()
+{
+  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 32768);
+  Int id = mfile.addFile ("file0");
+  Vector<Int64> buf(32768/8, 0);
+  for (Int j=0; j<2; ++j) {
+    Timer timer;
+    for (uInt i=0; i<1000; ++i) {
+      mfile.write (id, buf.data(), 32768, i*32768);
+    }
+    mfile.fsync();
+    timer.show ("exact ");
+  }
+}
+
+void timeDouble()
+{
+  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 16384);
+  Int id = mfile.addFile ("file0");
+  Vector<Int64> buf(32768/8, 0);
+  for (Int j=0; j<2; ++j) {
+    Timer timer;
+    for (uInt i=0; i<1000; ++i) {
+      mfile.write (id, buf.data(), 32768, i*32768);
+    }
+    mfile.fsync();
+    timer.show ("double");
+  }
+}
+
+void timePartly()
+{
+  MultiFile mfile("tMultiFile_tmp.dat", ByteIO::New, 32768);
+  Int id = mfile.addFile ("file0");
+  Vector<Int64> buf(16384/8, 0);
+  for (Int j=0; j<2; ++j) {
+    Timer timer;
+    for (uInt i=0; i<2000; ++i) {
+      mfile.write (id, buf.data(), 16384, i*16384);
+    }
+    mfile.fsync();
+    timer.show ("partly");
+  }
+}
+
+void timeMove1()
+{
+  Vector<Int64> buf1(4, 3);
+  Vector<Int64> buf2(4, 0);
+  Timer timer;
+  for (uInt i=0; i<5000000; ++i) {
+    memcpy (buf2.data(), buf1.data(), 8*4);
+  }
+  timer.show ("move1 ");
+}
+
+typedef void* moveFunc(void*, const void*, size_t);
+void* mymemcpy (void* to, const void* from, size_t n)
+  { return memcpy (to, from, n); }
+
+void timeMove2 (moveFunc func)
+{
+  Vector<Int64> buf1(4, 3);
+  Vector<Int64> buf2(4, 0);
+  Timer timer;
+  for (uInt i=0; i<5000000; ++i) {
+    func (buf2.data(), buf1.data(), 8*4);
+  }
+  timer.show ("move2 ");
+}
+
+void timeMove3()
+{
+  Vector<Int64> buf1(4, 3);
+  Vector<Int64> buf2(4, 0);
+  Timer timer;
+  for (uInt i=0; i<5000000; ++i) {
+    for (uInt j=0;j<4; ++j) {
+      buf2.data()[j] = buf1.data()[j];
+    }
+  }
+  timer.show ("move3 ");
+}
+
+void doTest (Int64 blockSize)
+{
+  cout << "MultiFile test with blockSize=" << blockSize << endl;
+  makeFile (blockSize);
+  readFile();
+  addFiles();
+  readFile();
+  writeFiles1();
+  readFile();
+  checkFiles1();
+  deleteFile();
+  writeFiles2();
+  readFile();
+  checkFiles2();
+  cout << endl;
+}
+
 int main()
 {
   try {
-    makeFile();
-    readFile();
-    addFiles();
-    readFile();
-    writeFiles1();
-    readFile();
-    checkFiles1();
+    doTest (128);     // requires extra header file
+    doTest (1024);    // no extra header file
+    timeExact();
+    timeDouble();
+    timePartly();
+    //timeMove1();
+    //timeMove2(memcpy);
+    //timeMove2(mymemcpy);
+    //timeMove3();
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;
   }
+  cout << "OK" << endl;
   return 0;
 }

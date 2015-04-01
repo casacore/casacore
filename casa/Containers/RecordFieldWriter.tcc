@@ -26,11 +26,14 @@
 //#
 //# $Id$
 
-#include <casa/Containers/RecordFieldWriter.h>
-#include <casa/Utilities/Copy.h>
-#include <casa/Utilities/Assert.h>
+#ifndef CASA_RECORDFIELDWRITER_TCC
+#define CASA_RECORDFIELDWRITER_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Containers/RecordFieldWriter.h>
+#include <casacore/casa/Utilities/Copy.h>
+#include <casacore/casa/Utilities/Assert.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class outType, class inType>
 RecordFieldCopier<outType,inType>::RecordFieldCopier(RecordInterface &outRecord, 
@@ -71,5 +74,7 @@ void UnequalShapeCopier<T>::writeField()
     (*in_p).freeStorage(in, deleteIn);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

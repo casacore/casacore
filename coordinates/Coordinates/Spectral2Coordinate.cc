@@ -27,27 +27,27 @@
 //# $Id$
 
 
-#include <coordinates/Coordinates/SpectralCoordinate.h>
+#include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayAccessor.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <fits/FITS/FITSSpectralUtil.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/BasicMath/Math.h>
-#include <measures/Measures/VelocityMachine.h>
-#include <measures/Measures/MeasConvert.h>
-#include <measures/Measures/MFrequency.h>
-#include <measures/Measures/MDoppler.h>
-#include <casa/Quanta/MVFrequency.h>
-#include <casa/Quanta/Quantum.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayAccessor.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/fits/FITS/FITSSpectralUtil.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/measures/Measures/VelocityMachine.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/Measures/MFrequency.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/casa/Quanta/MVFrequency.h>
+#include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/BasicSL/String.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 Bool SpectralCoordinate::toWorld(MFrequency& world, 
@@ -376,5 +376,5 @@ void SpectralCoordinate::convertFrom (Vector<Double>& world) const
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

@@ -26,25 +26,25 @@
 //# $Id$
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/iomanip.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <measures/Measures.h>
-#include <measures/Measures/MeasJPL.h>
-#include <casa/Quanta/MVEpoch.h>
-#include <casa/Quanta/MVDirection.h>
-#include <measures/Measures/MCDirection.h>
-#include <measures/Measures/MeasIERS.h>
-#include <measures/Measures/MeasTable.h>
-#include <measures/Measures/MDirection.h>
-#include <measures/Measures/MEpoch.h>
-#include <tables/Tables/PlainTable.h>
-#include <casa/iostream.h>
-#include <casa/sstream.h>
-#include <casa/fstream.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/measures/Measures.h>
+#include <casacore/measures/Measures/MeasJPL.h>
+#include <casacore/casa/Quanta/MVEpoch.h>
+#include <casacore/casa/Quanta/MVDirection.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MeasIERS.h>
+#include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/tables/Tables/PlainTable.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/fstream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
   try {

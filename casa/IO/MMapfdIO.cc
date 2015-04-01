@@ -26,16 +26,16 @@
 //#
 //#  $Id$
 
-#include <casa/IO/MMapfdIO.h>
-#include <casa/IO/LargeRegularFileIO.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/MMapfdIO.h>
+#include <casacore/casa/IO/RegularFileIO.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
 #include <cstring>
 
-namespace casa
+namespace casacore
 {
   
   MMapfdIO::MMapfdIO()
@@ -112,7 +112,7 @@ namespace casa
     }
   }
 
-  void MMapfdIO::write (uInt size, const void* buf)
+  void MMapfdIO::write (Int64 size, const void* buf)
   {
     if (!itsIsWritable) {
       throw AipsError ("MMapfdIO file " + fileName() + " is not writable");
@@ -123,9 +123,9 @@ namespace casa
       if (itsPosition + size > itsFileSize) {
         unmapFile();
         itsFileSize = itsPosition + size;
-        LargeFiledesIO::doSeek (itsFileSize-1, ByteIO::Begin);
+        FiledesIO::doSeek (itsFileSize-1, ByteIO::Begin);
         char b=0;
-        LargeFiledesIO::write (1, &b);
+        FiledesIO::write (1, &b);
         mapFile();
       }
       memcpy (itsPtr+itsPosition, buf, size);
@@ -133,9 +133,9 @@ namespace casa
     }
   }
 
-  Int MMapfdIO::read (uInt size, void* buf, Bool throwException)
+  Int64 MMapfdIO::read (Int64 size, void* buf, Bool throwException)
   {
-    Int szrd = size;
+    Int64 szrd = size;
     if (itsPosition >= itsFileSize) {
       szrd = 0;
     } else if (itsPosition+size > itsFileSize) {
@@ -154,7 +154,7 @@ namespace casa
 
   Int64 MMapfdIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
   {
-    itsPosition = LargeFiledesIO::doSeek (offset, dir);
+    itsPosition = FiledesIO::doSeek (offset, dir);
     return itsPosition;
   }
 

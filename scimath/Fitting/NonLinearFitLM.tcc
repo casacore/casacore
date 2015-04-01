@@ -25,14 +25,17 @@
 //#
 //# $Id$
 
+#ifndef SCIMATH_NONLINEARFITLM_TCC
+#define SCIMATH_NONLINEARFITLM_TCC
+
 //# Includes
 
-#include <scimath/Fitting/NonLinearFitLM.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Exceptions/Error.h>
-#include <scimath/Functionals/Function.h>
+#include <casacore/scimath/Fitting/NonLinearFitLM.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Functionals/Function.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 NonLinearFitLM<T>::NonLinearFitLM(Bool svd) :
@@ -106,5 +109,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   return converge_p;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

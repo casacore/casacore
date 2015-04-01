@@ -31,11 +31,11 @@
 
 //# Includes
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Math.h>
-#include <scimath/Mathematics/AutoDiff.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Implements all mathematical operators and functions for AutoDiff.
@@ -224,9 +224,9 @@ template<class T> AutoDiff<T> max(const AutoDiff<T> &left,
 // </group>
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Mathematics/AutoDiffMath.tcc>
+#include <casacore/scimath/Mathematics/AutoDiffMath.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -26,11 +26,11 @@
 //# $Id$
 
 
-#include <tables/Tables/TableLock.h>
-#include <tables/Tables/TableError.h>
+#include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/TableError.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableLock::TableLock (LockOption option)
 : itsOption            (option),
@@ -130,5 +130,5 @@ Bool TableLock::lockingDisabled()
 #endif
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

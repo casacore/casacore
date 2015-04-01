@@ -30,16 +30,16 @@
 // This file includes the output files of bison and flex for
 // parsing command lines operating on lattices.
 
-#include <lattices/Lattices/LatticeExprNode.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Containers/Block.h>
-#include <images/Images/ImageExprGram.h>
-#include <images/Images/ImageExprParse.h>    // routines used by bison actions
-#include <casa/Exceptions/Error.h>
+#include <casacore/lattices/LEL/LatticeExprNode.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/images/Images/ImageExprGram.h>
+#include <casacore/images/Images/ImageExprParse.h>    // routines used by bison actions
+#include <casacore/casa/Exceptions/Error.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
-#include <casa/stdlib.h>
+#include <casacore/casa/stdlib.h>
 //# Define register as empty string to avoid warnings in C++11 compilers
 //# because keyword register is not supported anymore.
 #define register
@@ -55,7 +55,7 @@ int ImageExprGramwrap()
     return 1;
 }
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*  strpImageExprGram = 0;
@@ -138,5 +138,5 @@ String imageExprGramRemoveQuotes (const String& in)
     return out;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

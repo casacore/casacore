@@ -29,14 +29,15 @@
 #define LATTICES_HDF5LATTICE_H
 
 //# Includes
-#include <lattices/Lattices/Lattice.h>
-#include <lattices/Lattices/TiledShape.h>
-#include <casa/HDF5/HDF5File.h>
-#include <casa/HDF5/HDF5Group.h>
-#include <casa/HDF5/HDF5DataSet.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+#include <casacore/casa/HDF5/HDF5File.h>
+#include <casacore/casa/HDF5/HDF5Group.h>
+#include <casacore/casa/HDF5/HDF5DataSet.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <summary>
   // A Lattice that is read from or written to an HDF5 dataset.
@@ -264,10 +265,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/HDF5Lattice.tcc>
+#include <casacore/lattices/Lattices/HDF5Lattice.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif

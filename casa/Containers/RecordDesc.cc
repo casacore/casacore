@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <casa/Containers/RecordDesc.h>
-#include <casa/iostream.h>
-#include <casa/IO/AipsIO.h>
+#include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/IO/AipsIO.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ostream& RecordDesc::put (ostream &os) const
 {
@@ -139,5 +139,5 @@ AipsIO& RecordDesc::get (AipsIO& os)
     return os;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

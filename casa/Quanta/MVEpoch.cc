@@ -26,17 +26,17 @@
 //# $Id$
 
 //# Includes
-#include <casa/iostream.h>
-#include <casa/iomanip.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Quanta/Unit.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/Register.h>
-#include <casa/Quanta/MVEpoch.h>
-#include <casa/Quanta/UnitVal.h>
-#include <casa/BasicMath/Math.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/iomanip.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/Quanta/MVEpoch.h>
+#include <casacore/casa/Quanta/UnitVal.h>
+#include <casacore/casa/BasicMath/Math.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 const Double MVEpoch::secInDay(3600*24);
@@ -140,11 +140,11 @@ Bool MVEpoch::operator!=(const MVEpoch &other) const {
 }
 
 Bool MVEpoch::near(const MVEpoch &other, Double tol) const {
-  return ::casa::near(get(), other.get(), tol);
+  return ::casacore::near(get(), other.get(), tol);
 }
 
 Bool MVEpoch::nearAbs(const MVEpoch &other, Double tol) const {
-  return ::casa::nearAbs(get(), other.get(), tol);
+  return ::casacore::nearAbs(get(), other.get(), tol);
 }
 
 //# Member functions
@@ -258,5 +258,5 @@ void MVEpoch::addTime(Double in) {
   frday += (in-t);
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

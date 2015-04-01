@@ -25,20 +25,23 @@
 //#
 //# $Id$
 
-#include <images/Images/SubImage.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <lattices/Lattices/LattRegionHolder.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/LatticeRegion.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#ifndef IMAGES_SUBIMAGE_TCC
+#define IMAGES_SUBIMAGE_TCC
 
-#include <casa/Arrays.h>
+#include <casacore/images/Images/SubImage.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/lattices/LRegions/LattRegionHolder.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/LRegions/LatticeRegion.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
+
+#include <casacore/casa/Arrays.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 SubImage<T>::SubImage()
@@ -449,5 +452,7 @@ void SubImage<T>::convertIPosition(Vector<Float>& x, const IPosition& pos) const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

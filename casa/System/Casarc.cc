@@ -23,10 +23,11 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 
-#include <casa/System/Casarc.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/System/Casarc.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -47,7 +48,7 @@ using std::list;
 using std::map;
 
 
-namespace casa {
+namespace casacore {
 
     bool Casarc::initialized = false;
 

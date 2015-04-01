@@ -25,32 +25,35 @@
 //#
 //# $Id$
 
+#ifndef IMAGES_IMAGEINTERFACE_TCC
+#define IMAGES_IMAGEINTERFACE_TCC
 
-#include <casa/aips.h>
-#include <casa/Arrays/Vector.h> // Put these early to work around g++ bug
-#include <casa/Arrays/Matrix.h>
 
-#include <coordinates/Coordinates/StokesCoordinate.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h> // Put these early to work around g++ bug
+#include <casacore/casa/Arrays/Matrix.h>
 
-#include <images/Images/ImageInterface.h>
-#include <images/Images/LELImageCoord.h>
-#include <images/Regions/ImageRegion.h>
-#include <lattices/Lattices/LCRegion.h>
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/LatticeIterator.h>
+#include <casacore/coordinates/Coordinates/StokesCoordinate.h>
 
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/sstream.h>
-#include <casa/Containers/Record.h>
-#include <lattices/Lattices/LCBox.h>
-#include <lattices/Lattices/SubLattice.h>
-#include <lattices/Lattices/TiledShape.h>
+#include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/LELImageCoord.h>
+#include <casacore/images/Regions/ImageRegion.h>
+#include <casacore/lattices/LRegions/LCRegion.h>
+#include <casacore/lattices/LRegions/LCBox.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/LatticeIterator.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/lattices/LRegions/LCBox.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
+#include <casacore/lattices/Lattices/TiledShape.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> 
 ImageInterface<T>::ImageInterface()
@@ -368,4 +371,6 @@ ImageAttrHandler& ImageInterface<T>::attrHandler (Bool)
   return itsBaseAttrHandler;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

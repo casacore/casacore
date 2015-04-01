@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/CombiParam.h>
+#ifndef SCIMATH_COMBIPARAM_TCC
+#define SCIMATH_COMBIPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/CombiParam.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 CombiParam<T>::CombiParam() : 
@@ -83,5 +86,7 @@ uInt CombiParam<T>::addFunction(const Function<T> &newFunction) {
   return i;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

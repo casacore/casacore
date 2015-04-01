@@ -25,16 +25,16 @@
 //#
 //# $Id: FFTServer.tcc 20253 2008-02-23 15:15:00Z gervandiepen $
 
-#include <scimath/Mathematics/FFTServer.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/VectorIter.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/BasicSL/Constants.h>
-#include <scimath/Mathematics/NumericTraits.h>
-#include <scimath/Mathematics/FFTPack.h>
-#include <casa/Utilities/Assert.h>
+#include <casacore/scimath/Mathematics/FFTServer.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/VectorIter.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/scimath/Mathematics/FFTPack.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 //# This file contains the templated functions dependent on using FFTW3
 //# or FFTPack.
@@ -42,7 +42,7 @@
 //# should not be used for automatic template instantiation (that knowledge
 //# about using FFTW3 or FFTPack is only needed when building casacore).
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T, class S> FFTServer<T,S>::
 FFTServer()
@@ -991,4 +991,4 @@ fftshift(Array<T> & outValues, Array<Bool> & outFlags,
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

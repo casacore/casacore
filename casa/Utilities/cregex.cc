@@ -23,17 +23,16 @@
                            National Radio Astronomy Observatory
                            520 Edgemont Road
                            Charlottesville, VA 22903-2475 USA
-
-    $Id$
 */
+//# $Id$
 
 
 /* Get the interface, including the syntax bits.  */
-#include <casa/Utilities/cregex.h>
-#include <casa/string.h>
-#include <casa/stdlib.h>
+#include <casacore/casa/Utilities/cregex.h>
+#include <casacore/casa/string.h>
+#include <casacore/casa/stdlib.h>
 /* We write fatal error messages on standard error.  */
-#include <casa/stdio.h>
+#include <casacore/casa/stdio.h>
 /* isalpha(3) etc. are used for the character classes.  */
 /* The CB_CTYPE_MACROS causes incompatible ctype definitions on */
 /* HPUX 10.2 systems, so we undefine it  AxC 23-1-2003 */
@@ -53,7 +52,7 @@
 #endif
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Define some global variables; before they were externs in the .h file.
 
@@ -2547,5 +2546,5 @@ re_exec (char *s)
 			 static_cast<struct re_registers *>(0));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

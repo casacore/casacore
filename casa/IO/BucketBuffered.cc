@@ -26,15 +26,15 @@
 //# $Id$
 
 //# Includes
-#include <casa/IO/BucketBuffered.h>
-#include <casa/IO/BucketFile.h>
-#include <casa/IO/FilebufIO.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/BucketBuffered.h>
+#include <casacore/casa/IO/BucketFile.h>
+#include <casacore/casa/IO/FilebufIO.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 #include <cstring>   //# for memset
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   BucketBuffered::BucketBuffered (BucketFile* file, Int64 startOffset,
@@ -121,4 +121,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

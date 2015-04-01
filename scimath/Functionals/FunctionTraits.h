@@ -29,12 +29,12 @@
 #define SCIMATH_FUNCTIONTRAITS_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Mathematics/AutoDiff.h>
-#include <scimath/Mathematics/AutoDiffA.h>
-#include <scimath/Mathematics/AutoDiffX.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Mathematics/AutoDiff.h>
+#include <casacore/scimath/Mathematics/AutoDiffA.h>
+#include <casacore/scimath/Mathematics/AutoDiffX.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //
 // <summary> Function data types for parameters and arguments
@@ -248,6 +248,6 @@ public:
 #undef FunctionTraits_PX
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

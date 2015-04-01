@@ -26,10 +26,10 @@
 //# $Id: Nutation.cc 21420 2014-03-19 09:18:51Z gervandiepen $
 
 //# Includes
-#include <measures/Measures/Nutation.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/measures/Measures/Nutation.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-using namespace casa;
+using namespace casacore;
 
 void doIt (int nthr, int n)
 {

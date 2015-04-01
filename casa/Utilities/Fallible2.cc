@@ -29,10 +29,10 @@
 //# and template instantiators normally do not like them in the same .cc file
 //# with templated functions.
 
-#include <casa/Utilities/Fallible.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Fallible.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void AccessInvalidFallibleObject()
 {
@@ -40,5 +40,5 @@ void AccessInvalidFallibleObject()
 		    " from where"));
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

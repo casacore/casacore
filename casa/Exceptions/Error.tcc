@@ -25,11 +25,14 @@
 //#
 //# $Id$
 
-#include <casa/Exceptions/Error.h>
-#include <casa/iostream.h>
+#ifndef CASA_ERROR_TCC
+#define CASA_ERROR_TCC
+
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class t>
 indexError<t>::indexError( t oI, const Char *str, Category c )
@@ -65,5 +68,7 @@ duplError<t>::~duplError() throw()
 {}
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

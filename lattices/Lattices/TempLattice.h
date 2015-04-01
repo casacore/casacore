@@ -31,10 +31,11 @@
 
 
 //# Includes
-#include <lattices/Lattices/TempLatticeImpl.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/lattices/Lattices/TempLatticeImpl.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 // <summary>
@@ -274,9 +275,9 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <lattices/Lattices/TempLattice.tcc>
+#include <casacore/lattices/Lattices/TempLattice.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

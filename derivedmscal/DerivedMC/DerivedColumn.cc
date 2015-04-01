@@ -26,9 +26,9 @@
 //# $Id$
 
 //# Includes
-#include <derivedmscal/DerivedMC/DerivedColumn.h>
+#include <casacore/derivedmscal/DerivedMC/DerivedColumn.h>
 
-namespace casa {
+namespace casacore {
 
   HourangleColumn::~HourangleColumn()
   {}

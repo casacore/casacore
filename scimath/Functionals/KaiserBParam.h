@@ -29,11 +29,11 @@
 #define SCIMATH_KAISERBPARAM_H
 
 //# Includes
-#include <casa/aips.h>
-#include <scimath/Functionals/Function.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/scimath/Functionals/Function.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 
@@ -121,9 +121,9 @@ protected:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <scimath/Functionals/KaiserBParam.tcc>
+#include <casacore/scimath/Functionals/KaiserBParam.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

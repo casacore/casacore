@@ -30,11 +30,11 @@
 #ifndef FITS_FITSSPECTRALUTIL_H
 #define FITS_FITSSPECTRALUTIL_H
 
-#include <casa/aips.h>
-#include <measures/Measures/MDoppler.h>
-#include <measures/Measures/MFrequency.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MDoppler.h>
+#include <casacore/measures/Measures/MFrequency.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class RecordInterface;
 class String;
@@ -223,6 +223,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -25,17 +25,20 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/ArrColData.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Utilities/ValTypeId.h>
-#include <tables/Tables/TableError.h>
-#include <casa/IO/AipsIO.h>
-#include <casa/iostream.h>
+#ifndef TABLES_ARRCOLDESC_TCC
+#define TABLES_ARRCOLDESC_TCC
+
+#include <casacore/tables/Tables/ArrColDesc.h>
+#include <casacore/tables/Tables/ArrColData.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Utilities/ValTypeId.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
@@ -247,5 +250,7 @@ PlainColumn* ArrayColumnDesc<T>::makeColumn (ColumnSet* csp) const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

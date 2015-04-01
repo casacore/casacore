@@ -27,15 +27,15 @@
 
 //# Includes
 
-#include <scimath/Mathematics/VanVleck.h>
+#include <casacore/scimath/Mathematics/VanVleck.h>
 
-#include <scimath/Functionals/ScalarSampledFunctional.h>
-#include <casa/BasicMath/Math.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/iostream.h>
+#include <casacore/scimath/Functionals/ScalarSampledFunctional.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/iostream.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // initial values for the static data members
 
@@ -574,5 +574,5 @@ Bool VanVleck::dcoff3(Double &dcoffset, Double &threshold,
     return result;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

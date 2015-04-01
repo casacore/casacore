@@ -25,13 +25,16 @@
 //#
 //# $Id$
 
-//# Includes
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/BasicSL/Constants.h>
-#include <measures/Measures/MeasBase.h>
+#ifndef MEASURES_MEASBASE_TCC
+#define MEASURES_MEASBASE_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/measures/Measures/MeasBase.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template <class Mv, class Mr>
@@ -170,5 +173,7 @@ void MeasBase<Mv,Mr>::print(std::ostream &os) const {
   os << tellMe() << ": " << data;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

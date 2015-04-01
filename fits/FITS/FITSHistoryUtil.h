@@ -30,12 +30,12 @@
 #ifndef FITS_FITSHISTORYUTIL_H
 #define FITS_FITSHISTORYUTIL_H
 
+#include <casacore/casa/aips.h>
 #include <vector>
-#include <casa/aips.h>
 
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class ConstFitsKeywordList;
 class FitsKeywordList;
@@ -178,6 +178,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

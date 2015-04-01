@@ -30,15 +30,15 @@
 #define MEASURES_MCRADIALVELOCITY_H
 
 //# Includes
-#include <casa/aips.h>
-#include <measures/Measures/MeasBase.h>
-#include <measures/Measures/MeasRef.h>
-#include <measures/Measures/MCBase.h>
-#include <measures/Measures/MConvertBase.h>
-#include <measures/Measures/MRadialVelocity.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MeasBase.h>
+#include <casacore/measures/Measures/MeasRef.h>
+#include <casacore/measures/Measures/MCBase.h>
+#include <casacore/measures/Measures/MConvertBase.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
+#include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MCRadialVelocity;
@@ -73,9 +73,9 @@ class String;
 // <example>
 // Get the Doppler shift for an oberved HI RadialVelocity of 100 km/s
 // <srcblock>
-//	#include <measures/Measures.h>
-//	#include <measures/Measures/MRadialVelocity.h>
-//	#include <measures/Measures/MDoppler.h>
+//	#include <casacore/measures/Measures.h>
+//	#include <casacore/measures/Measures/MRadialVelocity.h>
+//	#include <casacore/measures/Measures/MDoppler.h>
 //	cout << "Redshift for 100 km/s: " <<
 //		MDoppler::Convert( MRadialVelocity( Quantity(100., "km/s"),
 //				      MRadialVelocity::TOPO).toDoppler(QC::HI),
@@ -192,6 +192,6 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

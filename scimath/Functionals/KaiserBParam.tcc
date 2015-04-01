@@ -25,10 +25,13 @@
 //#
 //# $Id$
 
-//# Includes
-#include <scimath/Functionals/KaiserBParam.h>
+#ifndef SCIMATH_KAISERBPARAM_TCC
+#define SCIMATH_KAISERBPARAM_TCC
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+//# Includes
+#include <casacore/scimath/Functionals/KaiserBParam.h>
+
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 KaiserBParam<T>::KaiserBParam() :
@@ -62,5 +65,7 @@ KaiserBParam<T> &KaiserBParam<T>::operator=(const KaiserBParam<T> &other) {
   return *this;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
+
+#endif

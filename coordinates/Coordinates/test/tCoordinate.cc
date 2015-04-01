@@ -27,14 +27,14 @@
 //#
 
  
-#include <coordinates/Coordinates/Coordinate.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/coordinates/Coordinates/Coordinate.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/iostream.h>
 
 
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 int main()
 {
   try {

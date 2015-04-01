@@ -28,10 +28,10 @@
 #ifndef CASA_SEQUENCE_H
 #define CASA_SEQUENCE_H
 
-#include <casa/aips.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> virtual templated base class for sequences </summary>
 // <use visibility=export>
@@ -79,9 +79,9 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Utilities/Sequence.tcc>
+#include <casacore/casa/Utilities/Sequence.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

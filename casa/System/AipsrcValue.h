@@ -28,12 +28,12 @@
 #ifndef CASA_AIPSRCVALUE_H
 #define CASA_AIPSRCVALUE_H
 
-#include <casa/aips.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Containers/Block.h>
-#include <casa/System/Aipsrc.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/System/Aipsrc.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward declarations
 class Unit;
@@ -274,9 +274,9 @@ private:
 #undef AipsrcValue_Bool
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/System/AipsrcValue.tcc>
+#include <casacore/casa/System/AipsrcValue.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

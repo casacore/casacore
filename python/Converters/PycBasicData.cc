@@ -25,13 +25,13 @@
 //#
 //# $Id: PycBasicData.cc,v 1.4 2007/01/29 04:23:01 mmarquar Exp $
 
-#include <python/Converters/PycBasicData.h>
-#include <python/Converters/PycArrayNP.h>
+#include <casacore/python/Converters/PycBasicData.h>
+#include <casacore/python/Converters/PycArrayNP.h>
 
 using namespace boost::python;
 
 
-namespace casa { namespace python {
+namespace casacore { namespace python {
 
   std::map<std::string,bool> pyregistry::_registry;
   bool pyregistry::get (const std::string& name)
@@ -46,7 +46,7 @@ namespace casa { namespace python {
 
   void convert_casa_string::reg()
   {
-    std::string tname(typeid(casa::String).name());
+    std::string tname(typeid(casacore::String).name());
     if (! pyregistry::get (tname)) {
       pyregistry::set (tname);
       boost::python::to_python_converter<String, casa_string_to_python_str>();
@@ -56,11 +56,11 @@ namespace casa { namespace python {
 
   void convert_casa_iposition::reg()
   {
-    std::string tname(typeid(casa::IPosition).name());
+    std::string tname(typeid(casacore::IPosition).name());
     if (! pyregistry::get (tname)) {
       pyregistry::set (tname);
       casa_iposition_to_list();
-      from_python_sequence < casa::IPosition,
+      from_python_sequence < casacore::IPosition,
                              casa_reversed_variable_capacity_policy > ();
     }
   }
@@ -68,15 +68,15 @@ namespace casa { namespace python {
 
   void register_convert_basicdata()
   {
-    casa::python::numpy::register_convert_arrayscalars();
-    casa::python::register_convert_casa_string();
-    casa::python::register_convert_casa_iposition();
-    casa::python::register_convert_casa_vector<casa::Bool>();
-    casa::python::register_convert_casa_vector<casa::Int>();
-    casa::python::register_convert_casa_vector<casa::Double>();
-    casa::python::register_convert_casa_vector<casa::Float>();
-    casa::python::register_convert_casa_vector<casa::DComplex>();
-    casa::python::register_convert_casa_vector<casa::String>();
+    casacore::python::numpy::register_convert_arrayscalars();
+    casacore::python::register_convert_casa_string();
+    casacore::python::register_convert_casa_iposition();
+    casacore::python::register_convert_casa_vector<casacore::Bool>();
+    casacore::python::register_convert_casa_vector<casacore::Int>();
+    casacore::python::register_convert_casa_vector<casacore::Double>();
+    casacore::python::register_convert_casa_vector<casacore::Float>();
+    casacore::python::register_convert_casa_vector<casacore::DComplex>();
+    casacore::python::register_convert_casa_vector<casacore::String>();
   }
 
 

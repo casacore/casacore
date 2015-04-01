@@ -25,16 +25,16 @@
 //#
 //# $Id$
 
-#include <tables/LogTables/LogFilterExpr.h>
-#include <casa/Logging/LogMessage.h>
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/RecordGram.h>
-#include <casa/Containers/Record.h>
-#include <casa/Containers/Block.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/tables/LogTables/LogFilterExpr.h>
+#include <casacore/casa/Logging/LogMessage.h>
+#include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/tables/TaQL/RecordGram.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LogFilterExpr::LogFilterExpr (const String& expr)
 : itsExpr (0)
@@ -130,5 +130,5 @@ DataType LogFilterExpr::dataType (const Block<Int>& fieldNrs) const
   }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

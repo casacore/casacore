@@ -30,9 +30,10 @@
 
 
 //# Includes
-#include <images/Images/ImageInterface.h>
+#include <casacore/casa/aips.h>
+#include <casacore/images/Images/ImageInterface.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class RebinLattice;
@@ -203,9 +204,9 @@ protected:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <images/Images/RebinImage.tcc>
+#include <casacore/images/Images/RebinImage.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

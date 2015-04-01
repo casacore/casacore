@@ -25,25 +25,25 @@
 //#
 //# $Id$
 
-#include <fits/FITS/FITSTable.h>
-#include <fits/FITS/FITSFieldCopier.h>
-#include <casa/Containers/RecordField.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Assert.h>
-#include <fits/FITS/fits.h>
-#include <fits/FITS/fitsio.h>
-#include <fits/FITS/hdu.h>
-#include <fits/FITS/FITSKeywordUtil.h>
-#include <casa/OS/Path.h>
+#include <casacore/fits/FITS/FITSTable.h>
+#include <casacore/fits/FITS/FITSFieldCopier.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/fits/FITS/fitsio.h>
+#include <casacore/fits/FITS/hdu.h>
+#include <casacore/fits/FITS/FITSKeywordUtil.h>
+#include <casacore/casa/OS/Path.h>
 
-#include <casa/Logging/LogIO.h>
-#include <casa/Arrays/Array.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Arrays/Array.h>
 
-#include <casa/sstream.h>
-#include <casa/iomanip.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iomanip.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FITSGroupWriter::FITSGroupWriter(const String &fileName,
 				 const RecordDesc &description,
@@ -291,5 +291,5 @@ void FITSGroupWriter::check_error(const char *extra_info)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

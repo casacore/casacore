@@ -29,15 +29,15 @@
 #define CASA_DIRECTORYITERATOR_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/OS/File.h>
-#include <casa/OS/Directory.h>
-#include <casa/Utilities/Regex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/Utilities/Regex.h>
 
 #include <dirent.h>                          // needed for DIR
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>  
 // Traverse the contents of a directory
@@ -178,6 +178,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

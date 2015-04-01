@@ -27,19 +27,19 @@
 
 //  Class Input: the user interface
 
-#include <casa/Inputs/Input.h>
-#include <casa/OS/EnvVar.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Slice.h>
-#include <casa/Exceptions/Error.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/iostream.h>
+#include <casacore/casa/Inputs/Input.h>
+#include <casacore/casa/OS/EnvVar.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Slice.h>
+#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/iostream.h>
 
 #if defined(TESTBED)
 #define DEBUG 1
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //
 // The constructor does nothing more but read the users environment
@@ -608,5 +608,5 @@ Vector<Bool> Input::makeMaskFromRanges(const String& ranges, uInt length,
   return mask;
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

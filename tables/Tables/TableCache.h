@@ -29,11 +29,11 @@
 #define TABLES_TABLECACHE_H
 
 //# Includes
-#include <casa/aips.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <casa/OS/Mutex.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/casa/OS/Mutex.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class PlainTable;
@@ -136,6 +136,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

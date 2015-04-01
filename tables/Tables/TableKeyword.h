@@ -29,11 +29,11 @@
 #define TABLES_TABLEKEYWORD_H
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/TableAttr.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/TableAttr.h>
+#include <casacore/casa/BasicSL/String.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class Table;
@@ -225,6 +225,6 @@ inline Bool TableKeyword::isFixed() const
 }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

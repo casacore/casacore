@@ -26,11 +26,11 @@
 //# $Id$
 
 //# Includes
-#include <casa/IO/BucketBase.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/IO/BucketBase.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   BucketBase::BucketBase (BucketFile* file, Int64 startOffset,
@@ -95,4 +95,4 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   }
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END

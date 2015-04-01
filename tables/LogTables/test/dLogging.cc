@@ -33,14 +33,14 @@
 
 //##### This file is documented in casa/Logging.h.
 
-#include <casa/Logging.h>
-#include <tables/LogTables/TableLogSink.h>
-#include <casa/Arrays.h>
+#include <casacore/casa/Logging.h>
+#include <casacore/tables/LogTables/TableLogSink.h>
+#include <casacore/casa/Arrays.h>
 
-#include <casa/sstream.h>
-#include <casa/iostream.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iostream.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/namespace.h>
 class DataClass
 {
 public:

@@ -26,30 +26,30 @@
 //#
 //# $Id$
 
-#include <fits/FITS/FITSKeywordUtil.h>
+#include <casacore/fits/FITS/FITSKeywordUtil.h>
 
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/RecordInterface.h>
-#include <casa/Containers/SimOrdMap.h>
-#include <fits/FITS/fits.h>
-#include <casa/Logging/LogIO.h>
-#include <casa/Logging/LogOrigin.h>
-#include <casa/BasicMath/Random.h>
-#include <casa/OS/Time.h>
-#include <casa/Utilities/Assert.h>
-#include <casa/Utilities/Regex.h>
-#include <casa/BasicSL/String.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/RecordInterface.h>
+#include <casacore/casa/Containers/SimOrdMap.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/casa/Logging/LogIO.h>
+#include <casacore/casa/Logging/LogOrigin.h>
+#include <casacore/casa/BasicMath/Random.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/BasicSL/String.h>
 
-#include <casa/sstream.h>
-#include <casa/iomanip.h>
+#include <casacore/casa/sstream.h>
+#include <casacore/casa/iomanip.h>
 #include <ctype.h>
-#include <casa/stdlib.h>
+#include <casacore/casa/stdlib.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Do a reverse lookup since the FITS classes need it.
 static Bool findReservedName(FITS::ReservedName &name, const String &basename)
@@ -636,7 +636,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Bool> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asBool();
 		      out.define(base, vec);
@@ -670,7 +670,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    } else {
 			Vector<String> vec;
 			out.get(base, vec);
-			vec.shape(nelm);
+			nelm = vec.size();
 			if(offset<nelm){
 			  vec(offset) = tmp;
 			  out.define(base, vec);
@@ -698,7 +698,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Double> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asFloat();
 		      out.define(base, vec);
@@ -725,7 +725,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Double> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asDouble();
 		      out.define(base, vec);
@@ -752,7 +752,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Int> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asInt();
 		      out.define(base, vec);
@@ -779,7 +779,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<Complex> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asComplex();
 		      out.define(base, vec);
@@ -806,7 +806,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		} else {
 		    Vector<DComplex> vec;
 		    out.get(base, vec);
-		    vec.shape(nelm);
+		    nelm = vec.size();
 		    if(offset<nelm){
 		      vec(offset) = key->asDComplex();
 		      out.define(base, vec);
@@ -1150,5 +1150,5 @@ void FITSKeywordUtil::addHistory(RecordInterface &header, const String &comment)
     addText(header, comment, "history");
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

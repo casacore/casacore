@@ -30,11 +30,11 @@
 
 
 //# Includes
-#include <casa/aips.h>
-#include <tables/Tables/BaseTable.h>
+#include <casacore/casa/aips.h>
+#include <casacore/tables/Tables/BaseTable.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Class indicating a null Table object
@@ -79,6 +79,7 @@ public:
   // <group>
   virtual void reopenRW();
   virtual Bool asBigEndian() const;
+  virtual const StorageOption& storageOption() const;
   virtual Bool isMultiUsed (Bool checkSubTable) const;
   virtual const TableLock& lockOptions() const;
   virtual void mergeLock (const TableLock& lockOptions);
@@ -153,6 +154,6 @@ private:
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

@@ -23,17 +23,20 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
-#include <images/Images/ImageBeamSet.h>
+#include <casacore/images/Images/ImageBeamSet.h>
 
-#include <casa/Containers/Record.h>
+#include <casacore/casa/Containers/Record.h>
 
-#include <casa/iostream.h>
+#include <casacore/casa/Quanta/QLogical.h>
 
-#include <casa/namespace.h>
+#include <casacore/casa/iostream.h>
+
+#include <casacore/casa/namespace.h>
 
 int main() {
 	try {
@@ -601,7 +604,34 @@ int main() {
         	beams3(8, 0) = GaussianBeam(radius, radius, Quantity(0, "deg"));
         	ImageBeamSet bs3(beams3);
         	AlwaysAssert(bs3.getMedianAreaBeam() == beams3(8,0), AipsError);
-
+        }
+        {
+        	cout << "*** test rotate()" << endl;
+        	GaussianBeam beam(
+        		Quantity(4, "arcsec"), Quantity(3, "arcsec"),
+        		Quantity(40, "deg")
+        	);
+        	ImageBeamSet beamSet(beam);
+        	beamSet.rotate(Quantity(30, "deg"));
+        	AlwaysAssert(
+        		beamSet.getBeam().getPA(True) == Quantity(70, "deg"), AipsError
+        	);
+        	Matrix<GaussianBeam> beams(2,2, beam);
+        	beams(1, 1).setPA(Quantity(90, "deg"));
+        	beamSet = ImageBeamSet(beams);
+        	beamSet.rotate(Quantity(50, "deg"));
+        	AlwaysAssert(
+        		beamSet(0, 0).getPA(True) == Quantity(90, "deg"), AipsError
+        	);
+        	AlwaysAssert(
+        		beamSet(0, 1).getPA(True) == Quantity(90, "deg"), AipsError
+        	);
+        	AlwaysAssert(
+        		beamSet(1, 0).getPA(True) == Quantity(90, "deg"), AipsError
+        	);
+        	AlwaysAssert(
+        		beamSet(1, 1).getPA(True) == Quantity(-40, "deg"), AipsError
+        	);
         }
 	}
 	catch (const AipsError& x) {

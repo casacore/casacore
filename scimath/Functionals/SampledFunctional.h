@@ -28,10 +28,10 @@
 #ifndef SCIMATH_SAMPLEDFUNCTIONAL_H
 #define SCIMATH_SAMPLEDFUNCTIONAL_H
 
-#include <casa/aips.h>
-#include <casa/BasicMath/Functional.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/BasicMath/Functional.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary> A base class for indexing into arbitrary data types </summary>
 
@@ -111,6 +111,6 @@ public:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif

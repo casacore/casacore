@@ -25,21 +25,24 @@
 //#
 //# $Id$
 
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/ArrayColumnFunc.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/RefRows.h>
-#include <casa/Arrays/Array.h>
-#include <casa/Arrays/ArrayIter.h>
-#include <casa/Arrays/IPosition.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/ValTypeId.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Utilities/Assert.h>
+#ifndef TABLES_ARRAYCOLUMN_TCC
+#define TABLES_ARRAYCOLUMN_TCC
+
+#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/ArrayColumnFunc.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/RefRows.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayIter.h>
+#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/ValTypeId.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Utilities/Assert.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ArrayColumn<T>::ArrayColumn()
@@ -315,8 +318,8 @@ ArrayColumn<T>::getColumnCells (const RefRows & rows,
     // Thus we have two different ways of walking through the selected rows.
 
     Bool useSlicing = rows.isSliced();
-    int row;
-    int increment;
+    int row=0;
+    int increment=1;
 
     if (useSlicing){
 
@@ -773,8 +776,8 @@ void ArrayColumn<T>::putColumnCells (const RefRows & rows,
     // row numbers.  When sliced, rowNumbers is a triple: (start, nRows, increment).
     // Thus we have two different ways of walking through the selected rows.
 
-    int row;
-    int increment;
+    int row=0;
+    int increment=1;
     Bool useSlices = rows.isSliced();
 
     if (useSlices){
@@ -1078,4 +1081,6 @@ void ArrayColumn<T>::putColumn (const ArrayColumn<T>& that)
     }
 }
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
+
+#endif

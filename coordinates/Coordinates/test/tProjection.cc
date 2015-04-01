@@ -26,13 +26,13 @@
 //#
 //# $Id$
  
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <coordinates/Coordinates/Projection.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/coordinates/Coordinates/Projection.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/iostream.h>
-#include <casa/namespace.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/namespace.h>
 
 int main()
 {

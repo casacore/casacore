@@ -26,17 +26,17 @@
 //# $Id$
 //#
  
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/Matrix.h>
-#include <casa/Arrays/ArrayLogical.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <scimath/Mathematics/MatrixMathLA.h>
-#include <casa/BasicMath/Math.h>
-#include <coordinates/Coordinates/LinearXform.h>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/scimath/Mathematics/MatrixMathLA.h>
+#include <casacore/casa/BasicMath/Math.h>
+#include <casacore/coordinates/Coordinates/LinearXform.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-#include <casa/iostream.h>
-#include <casa/namespace.h>
+#include <casacore/casa/iostream.h>
+#include <casacore/casa/namespace.h>
 
 
 int main()
@@ -173,13 +173,13 @@ int main()
 //
          {
             LinearXform* lxf2 = lxf.fourierInvert(errMsg, axes, crpix2, scale);
-            if (!casa::allNear(crpix2, lxf2->crpix(),1e-13)) {
+            if (!casacore::allNear(crpix2, lxf2->crpix(),1e-13)) {
                throw(AipsError("fourierInvert (1) crpix test failed"));         
             }
             Vector<Double> tmp(2);
             tmp(0) = 1.0 / cdelt(0) * scale(0);
             tmp(1) = 1.0 / cdelt(1) * scale(1);
-            if (!casa::allNear(tmp, lxf2->cdelt(),1e-13)) {
+            if (!casacore::allNear(tmp, lxf2->cdelt(),1e-13)) {
                throw(AipsError("fourierInvert (1) cdelt test failed"));         
             }
             if (!near(1.0/diag(0),lxf2->pc()(0,0)) || !near(1.0/diag(1),lxf2->pc()(1,1)) ||
@@ -219,16 +219,16 @@ int main()
             pc(0,1) = 2.0;
             lxf.pc(pc);
             LinearXform* lxf2 = lxf.fourierInvert(errMsg, axes, crpix2, scale);
-            if (!casa::allNear(crpix2, lxf2->crpix(),1e-13)) {
+            if (!casacore::allNear(crpix2, lxf2->crpix(),1e-13)) {
                throw(AipsError("fourierInvert (3) crpix test failed"));         
             }
             Vector<Double> tmp(2);
             tmp(0) = 1.0 / cdelt(0) * scale(0);
             tmp(1) = 1.0 / cdelt(1) * scale(1);
-            if (!casa::allNear(tmp, lxf2->cdelt(),1e-13)) {
+            if (!casacore::allNear(tmp, lxf2->cdelt(),1e-13)) {
                throw(AipsError("fourierInvert (3) cdelt test failed"));         
             }
-            if (!casa::allNear(invert(pc), lxf2->pc(), 1e-13)) {
+            if (!casacore::allNear(invert(pc), lxf2->pc(), 1e-13)) {
                throw(AipsError("fourierInvert (3) pc test failed"));         
             }
             delete lxf2;
@@ -284,7 +284,7 @@ int main()
          }
          Vector<Double> world2;
          ok = lxf.reverse(world2, pixel, error);
-         if (!casa::allNear(world, world2, 1e-6)) {
+         if (!casacore::allNear(world, world2, 1e-6)) {
             throw(AipsError("Conversion reflection failed"));
          }
       }

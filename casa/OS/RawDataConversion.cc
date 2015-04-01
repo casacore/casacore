@@ -26,35 +26,35 @@
 //# $Id$
 
 
-#include <casa/OS/RawDataConversion.h>
+#include <casacore/casa/OS/RawDataConversion.h>
 
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RawDataConversion::~RawDataConversion()
 {}
 
 
 #define RAWDATACONVERSION_DOIT(T) \
-unsigned int RawDataConversion::toLocal (T& to, \
+size_t RawDataConversion::toLocal (T& to, \
 					 const void* from) const \
 { \
     memcpy (&to, from, sizeof(T)); \
     return sizeof(T); \
 } \
-unsigned int RawDataConversion::toLocal (T* to, const void* from, \
-					 unsigned int nr) const \
+size_t RawDataConversion::toLocal (T* to, const void* from, \
+				   size_t nr) const \
 { \
     memcpy (to, from, nr * sizeof(T)); \
     return nr * sizeof(T); \
 } \
-unsigned int RawDataConversion::fromLocal (void* to, T from) const \
+size_t RawDataConversion::fromLocal (void* to, T from) const \
 { \
     memcpy (to, &from, sizeof(T)); \
     return sizeof(T); \
 } \
-unsigned int RawDataConversion::fromLocal (void* to, const T* from, \
-					   unsigned int nr) const \
+size_t RawDataConversion::fromLocal (void* to, const T* from, \
+				     size_t nr) const \
 { \
     memcpy (to, from, nr * sizeof(T)); \
     return nr * sizeof(T); \
@@ -80,5 +80,5 @@ RAWDATACONVERSION_DOIT(uInt64)
 RAWDATACONVERSION_DOIT(float)
 RAWDATACONVERSION_DOIT(double)
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 

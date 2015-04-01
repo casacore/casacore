@@ -29,10 +29,10 @@
 #ifndef CASA_COWPTR_H
 #define CASA_COWPTR_H
 
-#include <casa/aips.h>
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <summary>
 // Copy-On-Write-Pointer class - allows control of copy based on constness.
@@ -149,7 +149,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The caller of the function will get their piece of a const array without
 // making a copy until the last possible moment (maybe never.)
 // <srcblock>
-// #include <casa/Utilities/COWPtr.h>
+// #include <casacore/casa/Utilities/COWPtr.h>
 // main(){
 //   // create a null filled COWPtr
 //   COWPtr<Array<Float> > COW;
@@ -343,9 +343,9 @@ template <class T> inline Bool COWPtr<T>::isUnique() const
 
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casa/Utilities/COWPtr.tcc>
+#include <casacore/casa/Utilities/COWPtr.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

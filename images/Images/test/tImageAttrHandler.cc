@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#include <images/Images/PagedImage.h>
-#include <images/Images/HDF5Image.h>
-#include <images/Images/ImageOpener.h>
-#include <images/Images/ImageUtilities.h>
-#include <images/Images/SubImage.h>
-#include <coordinates/Coordinates/CoordinateUtil.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Arrays/ArrayMath.h>
+#include <casacore/images/Images/PagedImage.h>
+#include <casacore/images/Images/HDF5Image.h>
+#include <casacore/images/Images/ImageOpener.h>
+#include <casacore/images/Images/ImageUtilities.h>
+#include <casacore/images/Images/SubImage.h>
+#include <casacore/coordinates/Coordinates/CoordinateUtil.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 #include <iostream>
-#include <casa/Exceptions/Error.h>
+#include <casacore/casa/Exceptions/Error.h>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 void testCreate (ImageInterface<Float>& image)

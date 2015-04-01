@@ -29,11 +29,12 @@
 #ifndef MS_SDSPWINHANDLER_H
 #define MS_SDSPWINHANDLER_H
 
-#include <casa/Arrays/Vector.h>
-#include <casa/Containers/RecordField.h>
-#include <tables/Tables/TableColumn.h>
+#include <casacore/casa/aips.h>
+#include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Containers/RecordField.h>
+#include <casacore/tables/Tables/TableColumn.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class ColumnsIndex;
@@ -165,7 +166,7 @@ private:
 };
 
 
-} //# NAMESPACE CASA - END
+} //# NAMESPACE CASACORE - END
 
 #endif
 
