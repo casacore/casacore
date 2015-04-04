@@ -25,8 +25,8 @@ before_script:
       -DUSE_OPENMP=OFF
       -DUSE_HDF5=ON
       -DBUILD_PYTHON=ON
-      -DDATA_DIR=.
+      -DDATA_DIR=$PWD
 
 script:
-  - make -j4 install
   - make -j4 test
+  - make -j4 install
