@@ -28,5 +28,6 @@ before_script:
       -DDATA_DIR=$PWD
 
 script:
+  - make -j4 
   - make -j4 test
-  - sudo make -j4 install
+  - sudo make install
