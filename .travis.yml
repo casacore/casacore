@@ -29,4 +29,4 @@ before_script:
 
 script:
   - make -j4 test
-  - make -j4 install
+  - sudo make -j4 install
