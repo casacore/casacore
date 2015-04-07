@@ -11,7 +11,7 @@ install:
   - sudo apt-get install -qy cmake flex bison libblas-dev liblapack-dev
       libcfitsio3-dev wcslib-dev libfftw3-dev gfortran libncurses5-dev
       libreadline6-dev libhdf5-serial-dev python-all-dev libboost-dev
-      libboost-python-dev python-numpy
+      libboost-python-dev python-numpy valgrind
 
 
 before_script:
@@ -29,5 +29,4 @@ before_script:
 
 script:
   - make -j4 
-  - make test
-  - sudo make install
+  - export CASACORE_CHECK=1; ctest; find . -name "*.valgrind | xargs cat"
