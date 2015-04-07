@@ -102,14 +102,16 @@ ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
       }
     }
     // Check if a CompoundImage (ImageConcat or ImageExpr).
-    // Ignore AipsIO's object length, magicval, and string length.
-    String str1(buf+12, 14);
-    if (str1 == "CompoundImage-") {
-      String str2(buf+26, 4);
-      if (str2 == "Conc") {
-        return IMAGECONCAT;
-      } else if (str2 == "Expr") {
-        return IMAGEEXPR;
+    // Skip AipsIO's object length, magicval, and string length.
+    if (nread >= 30) {
+      String str1(buf+12, 14);
+      if (str1 == "CompoundImage-") {
+        String str2(buf+26, 4);
+        if (str2 == "Conc") {
+          return IMAGECONCAT;
+        } else if (str2 == "Expr") {
+          return IMAGEEXPR;
+        }
       }
     }
     if (HDF5File::isHDF5(name)) {

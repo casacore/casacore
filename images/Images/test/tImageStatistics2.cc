@@ -45,6 +45,7 @@ int main() {
 		String *parts = new String[2];
 		split(EnvironmentVariable::get("CASAPATH"), parts, 2, String(" "));
 		String datadir = parts[0] + "/data/";
+                delete [] parts;
 		String imageName = datadir + "regression/unittest/stats/stats200M.im";
 		if (! File(imageName).exists()) {
 			cout << "Cannot find image so tests cannot be run" << endl;

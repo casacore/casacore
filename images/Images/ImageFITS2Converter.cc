@@ -1673,6 +1673,7 @@ Bool ImageFITSConverter::openFitsOutput(String &error, FitsOutput *(&fitsOut),
 		error = String("Cannot open file for writing: ") + fitsName;
 		if (fitsOut != 0) {
 			delete fitsOut;
+                        fitsOut = 0;
 		}
 		return False;
 	}

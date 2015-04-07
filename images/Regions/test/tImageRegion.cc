@@ -32,48 +32,48 @@
 
 #include <casacore/casa/namespace.h>
 
-int main () {
-	String myname = "tmp.im";
-	int ret = 0;
-	try {
-		PagedImage<Float> im(
-			TiledShape(IPosition(4, 1)),
-			CoordinateUtil::defaultCoords4D(), myname
-		);
-		im.flush();
-		vector<String> names;
-		names.push_back("tmp.im");
-		names.push_back("'tmp.im'");
-		names.push_back("'./tmp.im'");
-		names.push_back("'$PWD/tmp.im'");
-		names.push_back("./tmp.im");
-		names.push_back("$PWD/tmp.im");
-		// various escaping tests for fromLatticeExpession
-		uInt lastGood = 3;
-		for (uInt i=0; i<names.size(); i++) {
-			for (uInt j=0; j<names.size(); j++) {
-				String expr = names[i] + " == " + names[j];
-				try {
-					ImageRegion *z = ImageRegion::fromLatticeExpression(
-						expr
-					);
-					AlwaysAssert(z && i <=lastGood && j <= lastGood, AipsError);
-				}
-				catch (AipsError& x) {
-					AlwaysAssert(i > lastGood || j > lastGood, AipsError);
-				}
-			}
-		}
-		cout << "OK" << endl;
-	}
-	catch (const AipsError& x) {
-		cerr << "Caught exception: " << x.getMesg() << endl;
-		cout << "FAIL" << endl;
-		ret = 1;
-	}
-	Directory d(myname);
-	if (d.exists()) {
-		d.removeRecursive(False);
-	}
-	return ret;
+int main ()
+{
+  String myname = "tmp.im";
+  int ret = 0;
+  try {
+    PagedImage<Float> im(
+                         TiledShape(IPosition(4, 1)),
+                         CoordinateUtil::defaultCoords4D(), myname
+                         );
+    im.flush();
+    vector<String> names;
+    names.push_back("tmp.im");
+    names.push_back("'tmp.im'");
+    names.push_back("'./tmp.im'");
+    names.push_back("'$PWD/tmp.im'");
+    names.push_back("./tmp.im");
+    names.push_back("$PWD/tmp.im");
+    // various escaping tests for fromLatticeExpession
+    uInt lastGood = 3;
+    for (uInt i=0; i<names.size(); i++) {
+      for (uInt j=0; j<names.size(); j++) {
+        String expr = names[i] + " == " + names[j];
+        try {
+          ImageRegion *z = ImageRegion::fromLatticeExpression(expr);
+          AlwaysAssert(z && i <=lastGood && j <= lastGood, AipsError);
+          delete z;
+        }
+        catch (AipsError& x) {
+          AlwaysAssert(i > lastGood || j > lastGood, AipsError);
+        }
+      }
+    }
+    cout << "OK" << endl;
+  }
+  catch (const AipsError& x) {
+    cerr << "Caught exception: " << x.getMesg() << endl;
+    cout << "FAIL" << endl;
+    ret = 1;
+  }
+  Directory d(myname);
+  if (d.exists()) {
+    d.removeRecursive(False);
+  }
+  return ret;
 }
