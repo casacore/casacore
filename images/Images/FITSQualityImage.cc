@@ -74,6 +74,7 @@ FITSQualityImage::FITSQualityImage(const String& name)
   fullname_p      (name),
   fitsdata_p      (0),
   fitserror_p     (0),
+  pPixelMask_p    (0),
   whichDataHDU_p  (0),
   whichErrorHDU_p (0),
   whichMaskHDU_p  (0),
@@ -163,14 +164,12 @@ FITSQualityImage& FITSQualityImage::operator=(const FITSQualityImage& other)
 
 FITSQualityImage::~FITSQualityImage()
 {
-	if (fitsdata_p) {
-		delete fitsdata_p;
-		fitsdata_p=0;
-	}
-	if (fitserror_p){
-		delete fitserror_p;
-		fitserror_p=0;
-	}
+   delete fitsdata_p;
+   fitsdata_p=0;
+   delete fitserror_p;
+   fitserror_p=0;
+   delete pPixelMask_p;
+   pPixelMask_p = 0;
 }
 
 

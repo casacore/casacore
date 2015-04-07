@@ -591,7 +591,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    } else {
 		all = all.append(header(i));
 	    }
-	    delete tmp;
+	    delete [] tmp;
 	}
 	char* pChar2 = const_cast<char *>(all.chars());
     
