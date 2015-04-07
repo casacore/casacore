@@ -71,7 +71,7 @@ make install
 there are various flags available to cmake to enable and disable options:
 ```
 $ cmake -DUSE_FFTW3=ON -DDATA_DIR=/usr/share/casacore/data -DUSE_OPENMP=ON \
-    -DUSE_HDF5=ON -DBUILD_PYTHON=ON
+    -DUSE_HDF5=ON -DBUILD_PYTHON=ON -DUSE_THREADS=ON
 ```
 
 The `DATA_DIR` should point to the location where you extracted the measures
