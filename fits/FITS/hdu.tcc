@@ -766,7 +766,7 @@ ImageExtension<TYPE>::~ImageExtension() {
 	if (xtension_x != &char_null)
 	    delete [] xtension_x;
 	if (extname_x != &char_null)
-	    delete extname_x;
+	    delete [] extname_x;
 }
 //====================================================================================
 template <class TYPE>
