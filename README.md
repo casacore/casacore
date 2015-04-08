@@ -89,7 +89,7 @@ installation commands:
 sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:radio-astro/main
 sudo apt-get update
-sudo apt-get install casacore casacore-data
+sudo apt-get install casacore2 casacore-data
 ```
 
 
