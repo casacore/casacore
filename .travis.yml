@@ -29,4 +29,6 @@ before_script:
 
 script:
   - make -j4 
-  - export CASACORE_CHECK=1; ctest; find . -name "*.valgrind | xargs cat"
+  - export CASACORE_CHECK=1
+  - ctest -R tMemory
+  - find . -name "*.valgrind | xargs cat"
