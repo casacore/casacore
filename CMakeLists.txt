@@ -228,7 +228,7 @@ if (_usewcs STREQUAL YES)
 endif (_usewcs STREQUAL YES)
  
 # Set the include directories and HAVE compiler variables
-include_directories (${CMAKE_SOURCE_DIR}/.. ${CMAKE_BINARY_DIR})
+include_directories (${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 if (WCSLIB_FOUND)
     include_directories (${WCSLIB_INCLUDE_DIRS})
 endif (WCSLIB_FOUND)
