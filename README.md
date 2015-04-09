@@ -27,7 +27,7 @@ To compile casacore you need to meet the following requirements:
 * bison
 * blas
 * lapack
-* cfitsio
+* cfitsio (3.181 or later)
 * wcslib (4.20 or later)
 * fftw3 (optional)
 * hdf5 (optional)
