@@ -1,4 +1,14 @@
+# 2.0.1
+
+changes since 2.0.0
+
+## Bug fixes
+- Does not build if checkout root folder is not named casacore (#79)
+
+
 # 2.0.0
+
+changes since 1.7.0
 
 ## General
 - Fixed all build problems for GCC and clang on various platforms

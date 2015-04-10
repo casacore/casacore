@@ -7,7 +7,7 @@ cmake_minimum_required (VERSION 2.6.0)
 
 set(PROJECT_VERSION_MAJOR 2)
 set(PROJECT_VERSION_MINOR 0)
-set(PROJECT_VERSION_PATCH 0)
+set(PROJECT_VERSION_PATCH 1)
 set(PROJECT_VERSION_REVISION 1)
 set(PROJECT_VERSION 
   "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
@@ -221,10 +221,10 @@ if (_uselapack STREQUAL YES)
     endif (USE_FFTW3)
 endif (_uselapack STREQUAL YES)
 if (_usefits STREQUAL YES)
-    find_package (CFITSIO REQUIRED)
+    find_package (CFITSIO 3.181 REQUIRED)
 endif (_usefits STREQUAL YES)
 if (_usewcs STREQUAL YES)
-    find_package (WCSLIB REQUIRED)
+    find_package (WCSLIB 4.20 REQUIRED)
 endif (_usewcs STREQUAL YES)
  
 # Set the include directories and HAVE compiler variables
