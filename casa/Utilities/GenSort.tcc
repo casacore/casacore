@@ -244,7 +244,6 @@ uInt GenSort<T>::parSort (T* data, uInt nr, Sort::Order ord, int opt,
     nthr = nthread;
     // Do not use more threads than there are values.
     if (uInt(nthr) > nr) nthr = nr;
-    omp_set_num_threads (nthr);
   } else {
     nthr = omp_get_max_threads();
     if (uInt(nthr) > nr) nthr = nr;
@@ -262,7 +261,7 @@ uInt GenSort<T>::parSort (T* data, uInt nr, Sort::Order ord, int opt,
   tinx[nthr] = nr;
   // Use ifdef to avoid compiler warning.
 #ifdef _OPENMP
-#pragma omp parallel for
+#pragma omp parallel for num_threads(nthr)
 #endif
   for (int i=0; i<nthr; ++i) {
     int nparts = 1;
@@ -583,7 +582,6 @@ uInt GenSortIndirect<T>::parSort (uInt* inx, const T* data, uInt nr,
     nthr = nthread;
     // Do not use more threads than there are values.
     if (uInt(nthr) > nr) nthr = nr;
-    omp_set_num_threads (nthr);
   } else {
     nthr = omp_get_max_threads();
     if (uInt(nthr) > nr) nthr = nr;
@@ -601,7 +599,7 @@ uInt GenSortIndirect<T>::parSort (uInt* inx, const T* data, uInt nr,
   tinx[nthr] = nr;
   // Use ifdef to avoid compiler warning.
 #ifdef _OPENMP
-#pragma omp parallel for
+#pragma omp parallel for num_threads(nthr)
 #endif
   for (int i=0; i<nthr; ++i) {
     int nparts = 1;
