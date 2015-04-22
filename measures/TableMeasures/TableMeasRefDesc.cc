@@ -34,6 +34,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Utilities/LinearSearch.h>
@@ -141,7 +142,7 @@ TableMeasRefDesc::TableMeasRefDesc (const TableRecord& measInfo,
       fnr = measInfo.fieldNumber("TabRefTypes");
       if (fnr >= 0) {
 	itsTabRefTypes = measInfo.asArrayString ("TabRefTypes");
-	itsTabRefCodes = measInfo.asArrayuInt ("TabRefCodes");
+	itsTabRefCodes = measInfo.toArrayuInt ("TabRefCodes");
 	fillTabRefMap (measHolder);
       } else {
 	itsHasRefTab = False;
@@ -228,16 +229,20 @@ uInt TableMeasRefDesc::fillMap (Block<Int>& f2t,
       f2t[codesf[i]] = codest[inx];
     } else {
       if (maxnr < 0) {
-	throw AipsError ("TableMeasRefDesc error: old refcode " + typesf[i] +
-			 " does not exist anymore");
+        LogIO os;
+        os << LogIO::WARN
+           << "TableMeasRefDesc warning: refcode " << typesf[i]
+           << " does not exist in this Casacore version" << LogIO::POST;
+        f2t[codesf[i]] = -1;
+      } else {
+        codest.resize (nt+1, True);
+        typest.resize (nt+1, True);
+        maxnr++;
+        codest[nt] = maxnr;
+        typest[nt] = typesf[i];
+        f2t[codesf[i]] = codest[nt];
+        nt++;
       }
-      codest.resize (nt+1, True);
-      typest.resize (nt+1, True);
-      maxnr++;
-      codest[nt] = maxnr;
-      typest[nt] = typesf[i];
-      f2t[codesf[i]] = codest[nt];
-      nt++;
     }
   }
   return maxnr;

@@ -278,7 +278,7 @@ public:
   // </group>
 
   // Set the function used to get all reference codes for a MeasureHolder.
-  // This is not reaaly needed for normal practice, but makes it possible
+  // This is not really needed for normal practice, but makes it possible
   // to add extra codes when testing.
   // <br> The default function simply calls MeasureHolder.asMeasure.allTypes.
   // <group>
