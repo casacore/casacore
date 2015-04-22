@@ -220,7 +220,8 @@ def printCount(file, type, cnt, ccperc):
             perc[i] = 100. * cnt[i+2] / t
         file.write ('%9s %6d %8d %8d %5.1f%% %8d %5.1f%% %8d %8d %8d\n' % (type, cnt[0], cnt[1], cnt[2], perc[0], cnt[3], perc[1], cnt[4], cnt[5], cnt[1]-cnt[2]-cnt[3]-cnt[4]-cnt[5]))
     else:
-        file.write ('%9s %6d\n' % (type, cnt[0]))
+        if cnt[0] > 0:
+            file.write ('%9s %6d\n' % (type, cnt[0]))
 
 # Count another file.
 # If present, use the shebang to derive the file type.
@@ -282,6 +283,7 @@ def countfiles(dirname, test, basic, ccperc, verbose, printlevel, level, usecode
             elif stat.S_ISREG(mode):
                 if not is_textfile(ffile):
                     type = 'binary'
+                    ctyp = 0
                     cnt = (1,0,0,0,0,0)
                 else:
                     fnd = False
@@ -353,7 +355,7 @@ if __name__ == '__main__':
         print 'Testing the script ...'
         testit()
         print ''
-        print 'cnt.py counts per known source file type the number of source lines in the'
+        print 'countcode counts per known source file type the number of source lines in the'
         print ' files in the given directory and recursively in its subdirectories.'
         print 'It supports many file types. The type is recognized from the file name extension'
         print ' or the shebang script type. Use -s to see all supported types.'
