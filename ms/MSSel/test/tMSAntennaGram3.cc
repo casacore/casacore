@@ -114,6 +114,9 @@ void selMS()
   doSel (ms, "1~5");
   doSel (ms, "1m~5m", True);
   doSel (ms, "1.~5.", True);
+  doSel (ms, "/(.*)R1&\\1R2/", True);
+  doSel (ms, "/(.*).R1&\\1.R2/, /(.:)4&\\15/", True);
+  doSel (ms, "^/(.*).R1&\\1.R2/", True);
 }
 
 int main()
