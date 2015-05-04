@@ -77,11 +77,14 @@ void GenSort<T>::quickSortAsc (T* data, Int nr, Bool multiThread)
     swap (*sf, data[nr-1]);
     i = sf-data;
     if (multiThread) {
-        /* TODO only uses 2 threads of the group, should use tasks
+        /* limit threads to what the code can do to not span unnecessary
+         * workers */
+#ifdef _OPENMP
+        int nthreads = std::min(2, omp_get_max_threads());
+        /* TODO parallel for only uses 2 threads of the group, should use tasks
          * only parallelize when work time ~ barrier spin time (3ms)
          * otherwise oversubscription kills performance */
-#ifdef _OPENMP
-#pragma omp parallel for if (nr > 50000)
+#pragma omp parallel for num_threads(nthreads) if (nr > 500000)
 #endif
       for (int thr=0; thr<2; ++thr) {
         if (thr==0) quickSortAsc (data, i);             // sort left part
@@ -756,11 +759,14 @@ void GenSortIndirect<T>::quickSortAsc (uInt* inx, const T* data, Int nr,
     swapInx (*sf, inx[nr-1]);
     Int n = sf-inx;
     if (multiThread) {
-        /* TODO only uses 2 threads of the group, should use tasks
+        /* limit threads to what the code can do to not span unnecessary
+         * workers */
+#ifdef _OPENMP
+        int nthreads = std::min(2, omp_get_max_threads());
+        /* TODO parallel for only uses 2 threads of the group, should use tasks
          * only parallelize when work time ~ barrier spin time (3ms)
          * otherwise oversubscription kills performance */
-#ifdef _OPENMP
-#pragma omp parallel for if (nr > 50000)
+#pragma omp parallel for num_threads(nthreads) if (nr > 500000)
 #endif
       for (int thr=0; thr<2; ++thr) {
         if (thr==0) quickSortAsc (inx, data, n);
