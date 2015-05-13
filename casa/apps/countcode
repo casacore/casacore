@@ -352,8 +352,8 @@ if __name__ == '__main__':
     parser.add_argument('directory', nargs='?', default='.', help='name of top directory to count source files (default is .)')
     # If nothing given, do test and show options.
     if len(sys.argv) == 1:
-        print 'Testing the script ...'
-        testit()
+        #print 'Testing the script ...'
+        #testit()
         print ''
         print 'countcode counts per known source file type the number of source lines in the'
         print ' files in the given directory and recursively in its subdirectories.'
