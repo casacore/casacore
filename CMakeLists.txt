@@ -333,6 +333,7 @@ message (STATUS "Readline library? ..... = ${READLINE_LIBRARIES}")
 message (STATUS "BLAS library? ......... = ${BLAS_LIBRARIES}")
 message (STATUS "LAPACK library? ....... = ${LAPACK_LIBRARIES}")
 message (STATUS "WCS library? .......... = ${WCSLIB_LIBRARIES}")
+message (STATUS "SOFA library? ......... = ${SOFA_LIBRARIES}")
 message (STATUS "CFitsio library? ...... = ${CFITSIO_LIBRARIES}")
 message (STATUS "HDF5 library? ......... = ${HDF5_hdf5_LIBRARY}")
 message (STATUS "FFTW3 library? ........ = ${FFTW3_LIBRARIES}")
@@ -361,6 +362,7 @@ endif (BUILD_PYTHON)
 # List of possibly used external packages and where
 #  CFITSIO      fits
 #  WCSLIB       coordinates
+#  SOFA         measures (optional, only for testing)
 #  DL           casa (optional)
 #  READLINE     casa (optional)
 #  HDF5         casa (optional)
