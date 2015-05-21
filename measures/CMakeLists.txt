@@ -50,7 +50,6 @@ Measures/Nutation.cc
 Measures/ParAngleMachine.cc
 Measures/Precession.cc
 Measures/Quality.cc
-Measures/SofaTest.cc
 Measures/SolarPos.cc
 Measures/Stokes.cc
 Measures/UVWMachine.cc
@@ -123,7 +122,6 @@ Measures/Nutation.h
 Measures/ParAngleMachine.h
 Measures/Precession.h
 Measures/Quality.h
-Measures/SofaTest.h
 Measures/SolarPos.h
 Measures/Stokes.h
 Measures/UVWMachine.h
@@ -159,7 +157,6 @@ DESTINATION include/casacore/measures
 )
 
 if (BUILD_TESTING)
-    add_subdirectory (fortran/sofa)
     add_subdirectory (Measures/test)
     add_subdirectory (TableMeasures/test)
 endif (BUILD_TESTING)
