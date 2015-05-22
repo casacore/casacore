@@ -9,6 +9,7 @@
 #  WCSLIB_LIBRARY      - the WCSLIB library (cached)
 #  WCSLIB_LIBRARIES    - the WCSLIB libraries
 #                        (identical to WCSLIB_LIBRARY)
+#  WCSLIB_VERSION_STRING the found version of WCSLIB
 
 # Copyright (C) 2009
 # ASTRON (Netherlands Institute for Radio Astronomy)
@@ -32,16 +33,29 @@
 
 if(NOT WCSLIB_FOUND)
 
-  find_path(WCSLIB_INCLUDE_DIR wcslib/wcs.h
+  find_path(WCSLIB_INCLUDE_DIR wcslib/wcsconfig.h
     HINTS ${WCSLIB_ROOT_DIR} PATH_SUFFIXES include)
+
+  if(WCSLIB_INCLUDE_DIR)
+    FILE(READ "${WCSLIB_INCLUDE_DIR}/wcslib/wcsconfig.h" WCSLIB_H)
+    set(WCSLIB_VERSION_REGEX ".*#define WCSLIB_VERSION[^0-9]*([0-9]+)\\.([0-9]+).*")
+    if ("${WCSLIB_H}" MATCHES ${WCSLIB_VERSION_REGEX})
+      STRING(REGEX REPLACE ${WCSLIB_VERSION_REGEX}
+                           "\\1.\\2" WCSLIB_VERSION_STRING "${WCSLIB_H}")
+    else ()
+      set(WCSLIB_VERSION_STRING "Unknown")
+    endif ()
+  endif(WCSLIB_INCLUDE_DIR)
+
   find_library(WCSLIB_LIBRARY wcs
     HINTS ${WCSLIB_ROOT_DIR} PATH_SUFFIXES lib)
   find_library(M_LIBRARY m)
   mark_as_advanced(WCSLIB_INCLUDE_DIR WCSLIB_LIBRARY M_LIBRARY)
 
   include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(WCSLIB DEFAULT_MSG
-    WCSLIB_LIBRARY M_LIBRARY WCSLIB_INCLUDE_DIR)
+  find_package_handle_standard_args(WCSLIB
+    REQUIRED_VARS WCSLIB_LIBRARY M_LIBRARY WCSLIB_INCLUDE_DIR
+    VERSION_VAR WCSLIB_VERSION_STRING)
 
   set(WCSLIB_INCLUDE_DIRS ${WCSLIB_INCLUDE_DIR})
   set(WCSLIB_LIBRARIES ${WCSLIB_LIBRARY} ${M_LIBRARY})
