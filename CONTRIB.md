@@ -1,3 +1,5 @@
+# Casacore contribution policy
+
 casacore is an open source project and everybody is encouraged to help improve
 the quality of the code. You can help by reporting issues or even better
 fix issues yourself. We use github as a central communication and development
@@ -5,7 +7,7 @@ platform. Issues can be reported there. If you have a patch for casacore
 we use the github pull request system. Also to keep the casacore code
 quality high we have written down a procedure for contribution, see below.
 
-General considerations:
+## General considerations
 
  * if you have problems or questions with/about git or github, first check [1]
  * If you modify any code, make sure the test suit still runs. If it fails,
@@ -19,7 +21,7 @@ General considerations:
  
  
 
-To propose a change to the casacore code base:
+## contribution procedure
 
  1. Create a github account, setup SSH keys
  2. Fork the casacore repository on github [3]
@@ -34,7 +36,7 @@ To propose a change to the casacore code base:
  8. If there is a problem with the commit you need to fix it. you can commit
     to the same branch, the PR will be updated automatically.
 
-General notes about Pull requests:
+## General notes about Pull requests
 
  * please create descriptive commits containing atomic changes.
  * You can rewrite the history of the commits in your branch using rebase,
@@ -44,8 +46,9 @@ General notes about Pull requests:
  * We like to keep the history clean, and prevent a lot of 'merge branch x' or
    'update README' commit messages.
  
+## links
  
- * [1] http://help.github.com 
+ * [1] http://help.github.com
  * [2] https://google-styleguide.googlecode.com/svn/trunk/cppguide.html
  * [3] https://help.github.com/articles/fork-a-repo/
  * [4] https://help.github.com/articles/creating-a-pull-request/
