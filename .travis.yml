@@ -6,6 +6,9 @@ compiler:
 
 before_install:
   - sudo apt-get update -q
+  - sudo apt-get install -qy python-software-properties
+  - sudo add-apt-repository -y ppa:radio-astro/main
+  - sudo apt-get update -q
 
 install:
   - sudo apt-get install -qy cmake flex bison libblas-dev liblapack-dev
