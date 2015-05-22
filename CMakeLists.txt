@@ -221,10 +221,10 @@ if (_uselapack STREQUAL YES)
     endif (USE_FFTW3)
 endif (_uselapack STREQUAL YES)
 if (_usefits STREQUAL YES)
-    find_package (CFITSIO REQUIRED)
+    find_package (CFITSIO 3.181 REQUIRED)
 endif (_usefits STREQUAL YES)
 if (_usewcs STREQUAL YES)
-    find_package (WCSLIB REQUIRED)
+    find_package (WCSLIB 4.20 REQUIRED)
 endif (_usewcs STREQUAL YES)
  
 # Set the include directories and HAVE compiler variables
