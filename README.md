@@ -105,4 +105,6 @@ http://casacore.github.io/casacore
 If you have any issues compiling or using casacore, please open an issue on
 the issue tracker on github. If you have patches please open a pull request.
 
+# travis
 
+[![Build Status](https://travis-ci.org/casacore/casacore.svg?branch=master)](https://travis-ci.org/casacore/casacore)
