@@ -59,7 +59,7 @@ int main()
     // Add a big allocation
     base = Memory::allocatedMemoryInBytes();
     char *cp = new char[10*1024*1024];
-#ifndef AIPS_DARWIN
+#ifndef __clang__
     AlwaysAssertExit(Memory::allocatedMemoryInBytes()-base > 10*1024*1024);
     assigned = Memory::assignedMemoryInBytes(); 
     AlwaysAssertExit( assigned >= Memory::allocatedMemoryInBytes());
