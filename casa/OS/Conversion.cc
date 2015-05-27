@@ -31,6 +31,9 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/OS/Conversion.h>
 #include <casacore/casa/iostream.h>
+#ifdef __SSE2__
+#include <emmintrin.h>
+#endif
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -40,11 +43,28 @@ size_t Conversion::boolToBit (void* to, const void* from,
 {
     const Bool* data = (const Bool*)from;
     unsigned char* bits = (unsigned char*)to;
+    size_t i = 0;
+
+#ifdef __SSE2__
+    __m128i zero = _mm_setzero_si128();
+    for (i = 0; i < nvalues - (nvalues & 0xF); i+=16) {
+        __m128i v = _mm_loadu_si128((const __m128i*)&data[i]);
+        /* compare to zero to convert false -> 0xFF and true -> 0x00 */
+        v = _mm_cmpeq_epi8(v, zero);
+        /* extract most significant bit of each byte
+         * not result to revert compare against zero */
+        unsigned int r = ~(unsigned int)_mm_movemask_epi8(v);
+        /* store the 16 bits */
+        memcpy(&bits[i / 8], &r, 2);
+    }
+    data = &data[i];
+#endif
+
     //# Fill as many full bytes as possible.
     //# Note: the compiler can optimize much better for j<8 than j<nbits.
     // Therefore use a separate loop for the full bytes.
     size_t nfbytes = nvalues / 8;
-    for (size_t i=0; i<nfbytes; ++i) {
+    for (i = i / 8; i<nfbytes; ++i) {
         unsigned char& ch = bits[i];
 	ch = 0;
 	for (size_t j=0; j<8; ++j) {
