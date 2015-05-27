@@ -94,7 +94,6 @@ sudo apt-get install casacore2 casacore-data
 ```
 
 
-
 # Documentation
 
 http://casacore.github.io/casacore
@@ -103,7 +102,13 @@ http://casacore.github.io/casacore
 # Problems & bugs
 
 If you have any issues compiling or using casacore, please open an issue on
-the issue tracker on github. If you have patches please open a pull request.
+the issue tracker on github.
+
+If you have patches please open a pull request. Your contributions are more
+than welcome! But to maintain a high code quality we have written a [contribution
+manual](https://github.com/casacore/casacore/blob/master/CONTRIB.md), please read
+that first.
+
 
 # travis
 
