@@ -22,7 +22,6 @@ To compile casacore you need to meet the following requirements:
 
 * cmake
 * gfortran
-* ncurses
 * flex 
 * bison
 * blas
@@ -33,6 +32,7 @@ To compile casacore you need to meet the following requirements:
 * hdf5 (optional)
 * numpy (optional)
 * boost-python (optional)
+* ncursus (optional)
 
 On Debian / Ubuntu you can install these with:
  ``` 
