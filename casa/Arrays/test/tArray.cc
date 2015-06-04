@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: tArray.cc 21521 2014-12-10 08:06:42Z gervandiepen $
 
 //# If AIPS_DEBUG is not set, the Assert's won't be called.
 #if !defined(AIPS_DEBUG)
@@ -640,6 +640,105 @@ void oldArrayTest()
  
 }
 
+void
+testReformOrResize ()
+{
+    cout << "*** Testing reformOrResize method" << endl;
+
+    IPosition shape (2, 3, 4);
+    Array<Int> a0 (shape);
+    const Int * data0 = a0.data();
+
+    for (Int r = 0; r < 3; r++){
+        for (Int c = 0; c < 4; c++){
+            a0 (IPosition (2, r, c)) = r * 10 + c;
+        }
+    }
+
+    // "Transpose" the array and see if the contents are where expected.
+
+    Array<Int> a1 = a0.copy();
+    Int * data1 = a1.data();
+    a1.reformOrResize (IPosition (2, 4, 3), False);
+
+    AlwaysAssertExit (a1.shape() == IPosition (2, 4, 3));
+
+    // Check to see if the contents are as expected based on
+    // row-major memory layout.
+
+    const Int * pData0 = data0;
+    for (Int c = 0; c < 3; c++){
+        for (Int r = 0; r < 4; r++){
+            AlwaysAssertExit (a1 (IPosition (2, r, c)) == * pData0 ++);
+        }
+    }
+
+    // Check that the capacity is as expected and the storage is still
+    // where it was.
+
+    AlwaysAssertExit (a1.capacity() == 12);
+    AlwaysAssertExit (data1 == a1.data());
+
+    // Now see what happens if we increase the last dimension by one
+
+    Array<Int> a2 = a0.copy();
+
+    a2.reformOrResize (IPosition (2, 3, 5), True, True);
+
+    AlwaysAssertExit (a2.shape() == IPosition (2, 3, 5));
+
+    // Check to see if the contents are as expected.
+
+    for (Int c = 0; c < 4; c++){
+        for (Int r = 0; r < 3; r++){
+            AlwaysAssertExit (a2 (IPosition (2, r, c)) == r * 10 + c);
+        }
+    }
+
+    AlwaysAssertExit (a2.capacity () == 15);
+
+    // Shrink portion of array in use by one in the last dimension.
+    // By default there is no padding.
+
+    a2.reformOrResize (IPosition (2, 3, 4), True);
+
+    AlwaysAssertExit (a2.capacity () == 15);
+        // Should not have released any storage
+
+    // Check to see if the contents are as expected.
+
+    for (Int c = 0; c < 4; c++){
+        for (Int r = 0; r < 3; r++){
+            AlwaysAssertExit (a2 (IPosition (2, r, c)) == r * 10 + c);
+        }
+    }
+
+    // Increase the array size and request 100% padding.
+
+    Array<Int> a3 = a0.copy();
+    a3.reformOrResize (IPosition (2, 3, 10), True, True, 100);
+        // Increase the size and add 100% padding
+    AlwaysAssertExit (a3.shape() == IPosition (2, 3, 10));
+
+    AlwaysAssertExit (a3.capacity() == 60);
+
+    Array<Int> a4 = a0.copy();
+
+    try {
+        // Ask array to assume a shape that is beyond its storage
+        // but forbid it to reallocate.
+
+        a4.reformOrResize (IPosition (2, 3, 5), False);
+        AlwaysAssertExit (False); // should have thrown
+
+    } catch (ArrayConformanceError & e){
+        // Expect to catch an exception
+    }
+
+    cout << "... passed testing of reformOrResize method" << endl;
+
+}
+
 void testVector()
 {
   // Test the Vector copy ctor for arrays with !1 dimension.
@@ -1102,6 +1201,9 @@ int main()
             }
           }
         }
+
+        testReformOrResize();
+
     } catch (const AipsError& x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
 	return 1;

@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: Array.tcc 21561 2015-02-16 06:57:35Z gervandiepen $
 
 #ifndef CASA_ARRAY_TCC
 #define CASA_ARRAY_TCC
@@ -448,15 +448,101 @@ template<class T> void Array<T>::unique()
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<class T> Array<T> Array<T>::reform(const IPosition &len) const
+template<class T>
+Array<T>
+Array<T>::reform(const IPosition &len) const
 {
     DebugAssert(ok(), ArrayError);
     // Check if reform is possible and needed.
     // If not needed, simply return a copy.
+
+    if (len.product () > (Int64) (data_p->nelements())){
+        String message =
+            String::format ("Array<T>::reform() - insufficient storage for nonStrict reform: "
+                            "nElementInAllocation=%d, nElementsRequested=%d",
+                            data_p->nelements(), len.product());
+        throw ArrayConformanceError(message);
+    }
+
     Array<T> tmp(*this);
-    baseReform (tmp, len);
+    baseReform (tmp, len, False);
     tmp.setEndIter();
     return tmp;
+}
+
+template<class T>
+void
+Array<T>::reformOrResize (const IPosition & newShape,
+                          Bool resizeIfNeeded,
+                          Bool copyDataIfNeeded,
+                          uInt resizePercentage)
+{
+    DebugAssert(ok(), ArrayError);
+
+    if (newShape == shape()){
+        return; // No op
+    }
+
+    if (!contiguous_p){
+        String message = "Array<T>::reformOrResize() - array must be contiguous";
+        throw ArrayConformanceError(message);
+    }
+
+    // Check if reform is possible and needed.
+    // If not needed, simply return a copy.
+
+    Bool resizeNeeded = (newShape.product() > (Int64) (data_p->nelements()));
+
+    if (resizeNeeded){
+
+        // Insufficient storage so resize required
+
+        if (resizeNeeded && ! resizeIfNeeded){
+
+            // Resize not permitted so throw ArrayConformanceError
+
+            String message =
+                String::format ("Array<T>::reformOrResize() - insufficient storage for reform: "
+                                "nElementInAllocation=%d, nElementsRequested=%d",
+                                 data_p->nelements(), newShape.product());
+            throw ArrayConformanceError(message);
+        }
+
+        // Resize the array either exactly or with padding.
+
+        if (resizePercentage <= 0){
+
+            // Perform an exact resize
+
+            resize (newShape, copyDataIfNeeded);
+
+        } else {
+
+            // Padding was requested so resize to match the padded shape
+            // and then reform it to use the desired shape.
+
+            IPosition paddedShape;
+            paddedShape = newShape;
+            paddedShape.last() = (paddedShape.last() * (100 + resizePercentage)) / 100;
+            resize (paddedShape, copyDataIfNeeded);
+
+            // Reform it
+
+            baseReform (* this, newShape, False);
+            setEndIter();
+        }
+    } else {
+
+        baseReform (* this, newShape, False);
+        setEndIter();
+    }
+}
+
+template<class T>
+size_t
+Array<T>::capacity () const
+{
+    return data_p->nelements(); // returns the number of elements allocated.
 }
 
 template<class T>

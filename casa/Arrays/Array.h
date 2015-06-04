@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef CASA_ARRAY_H
 #define CASA_ARRAY_H
@@ -167,6 +167,8 @@ template<class Domain, class Range> class Functional;
 template<class T> class Array : public ArrayBase
 {
 public:
+
+    typedef T ElementType;
 
     // Result has dimensionality of zero, and  nelements is zero.
     Array();
@@ -343,7 +345,35 @@ public:
     // // "square"'s storage may now be accessed through Vector "line"
     // </srcblock>
     Array<T> reform(const IPosition &shape) const;
-    
+
+    // Having an array that can be reused without requiring reallocation can
+    // be useful for large arrays.  The method reformOrResize permits this
+    // usage.
+    //
+    // The reformOrResize method first attempts to reform the matrix so that
+    // it reuses the existing storage for an array with a new shape.  If the
+    // existing storage will not hold the new shape, then the method will
+    // resize the array when resizeIfNeeded is true; if a resize is needed and
+    // resizeIfNeeded is false, then an ArrayConformanceError is thrown.  The
+    // copyDataIfNeeded parameter is passed to resize if resizing is performed.
+    // resizePercentage is the percent of additional storage to be addeed when
+    // a resize is performed; this allows the allocations to be amortized when
+    // the caller expects to be callin this method again in the future.  The
+    // parameter is used to define an allocation shape which differs from the
+    // newShape by increasing the last dimension by resizePercentage percent
+    // (i.e., lastDim = *lastDim * (100 + resizePercentage)) / 100).  If
+    // resizePercentage <= 0 then resizing uses newShape as is.
+    //
+    // To truncate the array so that it no longer holds additional storage,
+    // use the resize method.
+
+    void reformOrResize (const IPosition & newShape,
+                         Bool resizeIfNeeded,
+                         Bool copyDataIfNeeded = True,
+                         uInt resizePercentage = 0);
+
+    size_t capacity () const; // returns the number of elements allocated.
+
     // These member functions remove degenerate (ie. length==1) axes from
     // Arrays.  Only axes greater than startingAxis are considered (normally
     // one wants to remove trailing axes). The first two of these functions
