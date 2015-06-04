@@ -30,7 +30,7 @@ namespace casacore {
 ///
 ///   \mainpage casacore
 ///   
-///   The <a href="http://casacore.googlecode.com">casacore</a> package
+///   The <a href="http://github.com/casacore/casacore">casacore</a> package
 ///   contains the core libraries of the old
 ///   <a href="http://aips2.nrao.edu">AIPS++/CASA</a> package. This split
 ///   was made to get
@@ -44,11 +44,12 @@ namespace casacore {
 ///   (e.g., Array, Record) to and from python. Build of this library is optional.
 ///   <br>
 ///   This library is used in the package 
-///   <a href="http://pyrap.googlecode.com">pyrap</a> that offers a
+///   <a href="https://github.com/casacore/python-casacore">python-casacore</a> 
+///   (previously pyrap) that offers a
 ///   high level <a href="http://www.python.org">Python</a> binding to
 ///   the casacore functionality.
-///   The documentation of the pyrap packages can be found
-///   <a href="../../../pyrap/docs/index.html">here</a>.
+///   The documentation of the python-casacore packages can be found
+///   <a href="http://python-casacore.readthedocs.org/">here</a>.
 ///   
 ///   The main features of AIPS++/CASA are:
 ///   <ul>
