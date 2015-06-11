@@ -28,6 +28,7 @@ To compile casacore you need to meet the following requirements:
 * lapack
 * cfitsio (3.181 or later)
 * wcslib (4.20 or later)
+* sofa (optional, only for testing casacore measures)
 * fftw3 (optional)
 * hdf5 (optional)
 * numpy (optional)

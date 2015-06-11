@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Include files
-#include <casacore/measures/Measures/SofaTest.h>
+#include "SofaTest.h"
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/iostream.h>
 #include <limits.h>
