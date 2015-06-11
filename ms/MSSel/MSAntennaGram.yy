@@ -39,6 +39,7 @@
   double dval;
   Vector<Int>* iv;
   std::vector<double>* dv;
+  std::vector<String>* ds;
   Vector<String>* is;
 }
 
@@ -61,6 +62,7 @@
 %token <str> UNIT
 %token <str> QSTRING
 %token <str> REGEX
+%token <str> BLREGEX
 %token <str> IDENTIFIER
 
 %type <node> antennastatement
@@ -84,6 +86,7 @@
 %type <iv> stationcomp
 %type <dv> blength
 %type <dv> blengthlist
+%type <ds> blregexlist
 
 // %destructor {free ($$);} INT FLOAT UNIT QSTRING REGEX IDENTIFIER identstr
 // %destructor {delete ($$);} antlist antidrange antids antid stationid stationlist antatstation antcomp stationcomp
@@ -227,6 +230,12 @@ baseline: antlist AMPERSAND antlist  // Two non-identical lists for the '&' oper
 	       (a1,MSAntennaParse::AutoCorrOnly, MSAntennaGramNegate); 
 	     delete $1;
 	   }
+        | blregexlist  // baseline regex list
+           {
+	     $$ = MSAntennaParse::thisMSAParser->selectBLRegex
+	       (*$1, MSAntennaGramNegate);
+	     delete $1;
+           }
         | blengthlist  // baseline length list
            {
 	     $$ = MSAntennaParse::thisMSAParser->selectLength
@@ -439,6 +448,19 @@ antatstation: antcomp AT stationcomp
 		 if ((*($$)).nelements() == 0) reportError((char *)token.str().c_str(),"Station Expression");
 	    	 delete $2;
 	       }
+
+blregexlist: BLREGEX
+              {
+                $$ = new std::vector<String>();
+                $$->push_back (String($1));
+                free ($1);
+	      }
+           | blregexlist COMMA BLREGEX
+              {
+		$$ = $1;
+		$$->push_back (String($3));
+		free ($3);
+	      }
 
 blengthlist: blength
               {

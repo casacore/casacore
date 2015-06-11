@@ -129,6 +129,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
  					     BaselineListType baselineType=CrossOnly,
                                              Bool negate=False);
     
+    // Selection on baseline regex
+    const TableExprNode* selectBLRegex(const std::vector<String>& lengths,
+                                       Bool negate=False);
+
     // Selection on baseline length
     const TableExprNode* selectLength(const std::vector<double>& lengths,
                                       Bool negate=False);
@@ -151,6 +155,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     std::bitset<HIGHESTLEVEL> getComplexity() {return complexity;}
     MSAntenna& subTable() {return msSubTable_p;}
   private:
+    const TableExprNode* makeBLNode (const Matrix<Bool>& match,
+                                     Bool negate);
     const TableExprNode* setTEN(TableExprNode& condition, 
                                 BaselineListType baselineType=CrossOnly,
                                 Bool negate=False);

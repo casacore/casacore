@@ -82,6 +82,9 @@ PATTERN   {PATT1}|{PATT2}
              strncpy(lvalp->str, MSAntennaGramtext+1, lenstr);
              if (MSAntennaGramtext[0] == '^') lvalp->str[0] = '^';
              lvalp->str[lenstr] = '\0';
+             if (strchr (lvalp->str, '&')) {
+               return BLREGEX;
+             }
              return REGEX;
           }
 
