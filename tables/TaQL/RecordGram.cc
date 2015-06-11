@@ -264,11 +264,11 @@ TableExprNode RecordGram::handleFunc (const String& name,
   // The ROWNR function can only be used with tables.
   if (theirTabPtr == 0) {
     Vector<Int> ignoreFuncs (1, TableExprFuncNode::rownrFUNC);
-    return TableParseSelect::makeFuncNode (name, arguments,
+    return TableParseSelect::makeFuncNode (0, name, arguments,
 					   ignoreFuncs, Table(),
 					   theirTaQLStyle);
   }
-  return TableParseSelect::makeFuncNode (name, arguments,
+  return TableParseSelect::makeFuncNode (0, name, arguments,
 					 Vector<Int>(), *theirTabPtr,
 					 theirTaQLStyle);
 }

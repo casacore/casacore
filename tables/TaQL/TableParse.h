@@ -478,7 +478,8 @@ public:
 
   // Make a function object node for the given function name and arguments.
   // The ignoreFuncs vector contains invalid function codes.
-  static TableExprNode makeFuncNode (const String& name,
+  static TableExprNode makeFuncNode (TableParseSelect*,
+                                     const String& name,
 				     const TableExprNodeSet& arguments,
 				     const Vector<int>& ignoreFuncs,
 				     const Table& table,
@@ -515,6 +516,13 @@ private:
 
   // Get the aggregate functions used in SELECT and HAVING.
   vector<TableExprNodeRep*> getAggrNodes() const;
+
+  // Try to make a UDF function node for the given function name and arguments.
+  static TableExprNode makeUDFNode (TableParseSelect*,
+                                    const String& name,
+                                    const TableExprNodeSet& arguments,
+                                    const Table& table,
+                                    const TaQLStyle&);
 
   // Find the function code belonging to a function name.
   // Functions to be ignored can be given (as function type values).
