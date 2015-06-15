@@ -26,7 +26,6 @@
 //# $Id$
 
 #include <casacore/casa/aips.h>
-#include <casacore/measures/Measures/SofaTest.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -47,6 +46,8 @@
 #include <casacore/casa/System/AipsrcValue.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/iostream.h>
+
+#include "SofaTest.h"
 
 #include <casacore/casa/namespace.h>
 // Print separation line of given (default 75) length

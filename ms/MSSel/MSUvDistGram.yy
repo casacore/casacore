@@ -24,7 +24,7 @@
                            520 Edgemont Road
                            Charlottesville, VA 22903-2475 USA
 
-    $Id$
+    $Id: MSUvDistGram.yy 21521 2014-12-10 08:06:42Z gervandiepen $
 */
 
 %{
@@ -36,7 +36,7 @@ using namespace casacore;
 %union {
   const TableExprNode* node;
   char * str;
-  Double dval;
+  Double dval, uvrange[2];
 }
 
 %token <str> UNIT
@@ -48,7 +48,8 @@ using namespace casacore;
 %type <dval> fnumwithunits
 %type <node> uvwdiststatement
 %type <node> uvwdistexprlist
-%type <node> uvwdistexpr
+//%type <node> uvwdistexpr
+%type <uvrange> uvwdistexpr
 %left UNIT
 %right PERCENT
 %nonassoc EQ EQASS GT GE LT LE NE DASH COLON 
@@ -70,11 +71,13 @@ uvwdiststatement:uvwdistexprlist
 
 uvwdistexprlist: uvwdistexpr 
                  {
-		   $$ = $1;
+		   //$$ = $1;
+		   $$ = MSUvDistParse::thisMSUParser->selectUVRange($1[0],$1[1],MSUvDistGramlexGlobalUnits);
 		 }
                | uvwdistexprlist COMMA uvwdistexpr 
                  {
-		   $$ = $3;
+		   //$$ = $3;
+		   $$ = MSUvDistParse::thisMSUParser->selectUVRange($3[0],$3[1],MSUvDistGramlexGlobalUnits);
 		 }
                ;
 
@@ -92,32 +95,34 @@ fnumwithunits:   FNUMBER
 
 uvwdistexpr:     fnumwithunits
                  {
-		   //		   $$ = MSUvDistParse().selectUVRange($1, $1, MSUvDistGramlexGlobalUnits);
-		   $$ = MSUvDistParse::thisMSUParser->selectUVRange($1, $1, MSUvDistGramlexGlobalUnits);
+		   //$$ = MSUvDistParse::thisMSUParser->selectUVRange($1, $1, MSUvDistGramlexGlobalUnits);
+		   $$[0] = $1;
 		 }
                | FNUMBER DASH fnumwithunits
                  {
-		   $$ = MSUvDistParse::thisMSUParser->selectUVRange($1, $3, MSUvDistGramlexGlobalUnits);
+		   //$$ = MSUvDistParse::thisMSUParser->selectUVRange($1, $3, MSUvDistGramlexGlobalUnits);
+		   $$[0] = $1; 
+		   $$[1] = $3;
 		 }
                | LT fnumwithunits
                  {
-		   //		   $$ = MSUvDistParse().selectUVRange(0, $2, MSUvDistGramlexGlobalUnits);
-		   $$ = MSUvDistParse::thisMSUParser->selectUVRange(0, $2, MSUvDistGramlexGlobalUnits);
+		   //$$ = MSUvDistParse::thisMSUParser->selectUVRange(0, $2, MSUvDistGramlexGlobalUnits);
+		   $$[0]=0.0;
+		   $$[1]=$2;
 		 }
                | GT fnumwithunits
                  {
-/* 		   $$ = MSUvDistParse().selectUVRange($2+EPS, std::numeric_limits<Float>::max(),  */
-/* 						      MSUvDistGramlexGlobalUnits); */
-		   $$ = MSUvDistParse::thisMSUParser->selectUVRange($2+EPS, std::numeric_limits<Float>::max(), 
-								    MSUvDistGramlexGlobalUnits);
+		   // $$ = MSUvDistParse::thisMSUParser->selectUVRange($2+EPS, std::numeric_limits<Float>::max(), 
+		   // 						    MSUvDistGramlexGlobalUnits);
+		   $$[0]=$2+EPS;
+		   $$[1]=std::numeric_limits<Float>::max();
 		 }
-               | fnumwithunits COLON FNUMBER PERCENT 
+               | uvwdistexpr COLON FNUMBER PERCENT
                  {
-/*                    $$ = MSUvDistParse().selectUVRange($1*(1-$3*0.01), $1*(1+$3*0.01),  */
-/* 						      MSUvDistGramlexGlobalUnits); */
-                   $$ = MSUvDistParse::thisMSUParser->selectUVRange($1*(1-$3*0.01), $1*(1+$3*0.01), 
-								    MSUvDistGramlexGlobalUnits);
+                   // $$ = MSUvDistParse::thisMSUParser->selectUVRange($1*(1-$3*0.01), $1*(1+$3*0.01), 
+		   // 						    MSUvDistGramlexGlobalUnits);
+		   $$[0]=$1[0]*(1-$3*0.01);
+		   $$[1]=$1[1]*(1+$3*0.01);
                  }
-               ;
-
+;
 %%

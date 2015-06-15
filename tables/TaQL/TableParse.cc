@@ -877,9 +877,9 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
     if (commandType_p != PCALC) {
       throw TableInvExpr("No table given");
     }
-    return makeFuncNode (name, arguments, ignoreFuncs, Table(), style);
+    return makeFuncNode (this, name, arguments, ignoreFuncs, Table(), style);
   }
-  TableExprNode node = makeFuncNode (name, arguments, ignoreFuncs,
+  TableExprNode node = makeFuncNode (this, name, arguments, ignoreFuncs,
                                      fromTables_p[0].table(), style);
   // A rowid function node needs to be added to applySelNodes_p.
   const TableExprNodeRep* rep = node.getNodeRep();
@@ -889,9 +889,31 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
   return node;
 }
 
+TableExprNode TableParseSelect::makeUDFNode (TableParseSelect* sel,
+                                             const String& name,
+                                             const TableExprNodeSet& arguments,
+                                             const Table& table,
+                                             const TaQLStyle& style)
+{
+  if (sel) {
+    Vector<String> parts = stringToVector (name, '.');
+    if (parts.size() > 2) {
+      // At least 3 parts; see if the first part is a table shorthand.
+      Table tab = sel->findTable (parts[0]);
+      if (! tab.isNull()) {
+        return TableExprNode::newUDFNode (name.substr(parts[0].size() + 1),
+                                          arguments, tab, style);
+      }
+    }
+  }
+  // Use the full name and given (i.e. first) table.
+  return TableExprNode::newUDFNode (name, arguments, table, style);
+}
+
 //# Parse the name of a function.
 TableExprNode TableParseSelect::makeFuncNode
-                                         (const String& name,
+                                         (TableParseSelect* sel,
+                                          const String& name,
 					  const TableExprNodeSet& arguments,
 					  const Vector<int>& ignoreFuncs,
 					  const Table& table,
@@ -903,7 +925,7 @@ TableExprNode TableParseSelect::makeFuncNode
 						    ignoreFuncs);
   if (ftype == TableExprFuncNode::NRFUNC) {
     // The function can be a user defined one (or unknown).
-    return TableExprNode::newUDFNode (name, arguments, table, style);
+    return makeUDFNode (sel, name, arguments, table, style);
   }
   // The axes of reduction functions like SUMS can be given as a set or as
   // individual values. Turn it into an Array object.
@@ -3020,7 +3042,7 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   if (mustSelect  &&  commandType_p == PSELECT
   &&  node_p.isNull()  &&  sort_p.size() == 0
   &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0
-  &&  limit_p == 0  &&  endrow_p == 0  &&  offset_p == 0) {
+  &&  limit_p == 0  &&  endrow_p == 0  &&  stride_p == 1  &&  offset_p == 0) {
     throw (TableError
 	   ("TableParse error: no projection, selection, sorting, "
 	    "limit, offset, or giving-set given in SELECT command"));
