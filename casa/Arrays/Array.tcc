@@ -448,24 +448,13 @@ template<class T> void Array<T>::unique()
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<class T>
-Array<T>
-Array<T>::reform(const IPosition &len) const
+template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 {
     DebugAssert(ok(), ArrayError);
     // Check if reform is possible and needed.
     // If not needed, simply return a copy.
-
-    if (len.product () > (Int64) (data_p->nelements())){
-        String message =
-            String::format ("Array<T>::reform() - insufficient storage for nonStrict reform: "
-                            "nElementInAllocation=%d, nElementsRequested=%d",
-                            data_p->nelements(), len.product());
-        throw ArrayConformanceError(message);
-    }
-
     Array<T> tmp(*this);
-    baseReform (tmp, len, False);
+    baseReform (tmp, len);
     tmp.setEndIter();
     return tmp;
 }
@@ -479,36 +468,56 @@ Array<T>::reformOrResize (const IPosition & newShape,
 {
     DebugAssert(ok(), ArrayError);
 
-    if (newShape == shape()){
+    if (newShape.isEqual (shape())){
         return; // No op
     }
 
-    if (!contiguous_p){
-        String message = "Array<T>::reformOrResize() - array must be contiguous";
+    // Check to see if the operation is legal in this context
+    // ======================================================
+
+    // The operation must not change the dimensionality as this could cause a base class
+    // such as a vector to become a Matrix, etc.
+
+    if (newShape.size() != shape().size()){
+        String message = "ArrayBase::reformOrResize() - Cannot change number of dimensions.";
+	throw ArrayConformanceError (message);
+    }
+
+    // This operation only makes sense if the storage is contiguous.
+
+    if (! contiguousStorage()){
+        String message = "ArrayBase::reformOrResize() - array must be contiguous";
         throw ArrayConformanceError(message);
     }
 
-    // Check if reform is possible and needed.
-    // If not needed, simply return a copy.
+    // If the array is sharing storage, then the other array could become dangerously invalid
+    // as the result of this operation, so prohibit sharing while this operation is being
+    // performed.  
+
+    if (data_p.nrefs() != 1){
+        String message = "ArrayBase::reformOrResize() - array must not be shared during this call";
+        throw ArrayConformanceError(message);
+    }
 
     Bool resizeNeeded = (newShape.product() > (Int64) (data_p->nelements()));
 
+    if (resizeNeeded && ! resizeIfNeeded){
+
+	// User did not permit resizing but it is required so throw and exception.
+
+	String message =
+	    String::format ("Array<T>::reformOrResize() - insufficient storage for reform: "
+			    "nElementInAllocation=%d, nElementsRequested=%d",
+			    data_p->nelements(), newShape.product());
+	throw ArrayConformanceError(message);
+    }
+
+    // The operation is legal, so perform it
+    // =====================================
+
     if (resizeNeeded){
 
-        // Insufficient storage so resize required
-
-        if (resizeNeeded && ! resizeIfNeeded){
-
-            // Resize not permitted so throw ArrayConformanceError
-
-            String message =
-                String::format ("Array<T>::reformOrResize() - insufficient storage for reform: "
-                                "nElementInAllocation=%d, nElementsRequested=%d",
-                                 data_p->nelements(), newShape.product());
-            throw ArrayConformanceError(message);
-        }
-
-        // Resize the array either exactly or with padding.
+        // Insufficient storage so resize required, with or without padding
 
         if (resizePercentage <= 0){
 
@@ -539,7 +548,7 @@ Array<T>::reformOrResize (const IPosition & newShape,
 }
 
 template<class T>
-size_t
+inline size_t
 Array<T>::capacity () const
 {
     return data_p->nelements(); // returns the number of elements allocated.

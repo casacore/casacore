@@ -168,8 +168,6 @@ template<class T> class Array : public ArrayBase
 {
 public:
 
-    typedef T ElementType;
-
     // Result has dimensionality of zero, and  nelements is zero.
     Array();
 
@@ -358,11 +356,14 @@ public:
     // copyDataIfNeeded parameter is passed to resize if resizing is performed.
     // resizePercentage is the percent of additional storage to be addeed when
     // a resize is performed; this allows the allocations to be amortized when
-    // the caller expects to be callin this method again in the future.  The
-    // parameter is used to define an allocation shape which differs from the
-    // newShape by increasing the last dimension by resizePercentage percent
-    // (i.e., lastDim = *lastDim * (100 + resizePercentage)) / 100).  If
-    // resizePercentage <= 0 then resizing uses newShape as is.
+    // the caller expects to be calling this method again in the future.  The
+    // parameter is used to define an allocation shape which is larger than
+    // the newShape by increasing the last dimension by resizePercentage percent
+    // (i.e., lastDim = (lastDim * (100 + resizePercentage)) / 100).  If
+    // resizePercentage <= 0 then resizing uses newShape as-is.
+    //
+    // If the array is not resized, then the copyDataIfNeeded parameter is
+    // ignored (i.e., the data is left in the same physical location).
     //
     // To truncate the array so that it no longer holds additional storage,
     // use the resize method.
@@ -372,7 +373,9 @@ public:
                          Bool copyDataIfNeeded = True,
                          uInt resizePercentage = 0);
 
-    size_t capacity () const; // returns the number of elements allocated.
+    // returns the number of elements allocated.
+
+    size_t capacity () const; 
 
     // These member functions remove degenerate (ie. length==1) axes from
     // Arrays.  Only axes greater than startingAxis are considered (normally
