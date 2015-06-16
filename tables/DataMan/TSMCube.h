@@ -351,7 +351,6 @@ protected:
     //# Declare member variables.
 
     char * cachedTile_p; // optimization to hold one tile chunk
-    uInt cachedTileLength_p;
 
     // Pointer to the parent storage manager.
     TiledStMan*     stmanPtr_p;

@@ -107,7 +107,6 @@ TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
                   Int64 fileOffset,
                   Bool useDerived)
 : cachedTile_p (0),
-  cachedTileLength_p (0),
   stmanPtr_p     (stman),
   useDerived_p   (useDerived),
   values_p       (values),
@@ -141,7 +140,6 @@ TSMCube::TSMCube (TiledStMan* stman, TSMFile* file,
 TSMCube::TSMCube (TiledStMan* stman, AipsIO& ios,
                   Bool useDerived)
 : cachedTile_p (0),
-  cachedTileLength_p (0),
   stmanPtr_p     (stman),
   useDerived_p   (useDerived),
   filePtr_p      (0),
@@ -694,7 +692,7 @@ char* TSMCube::readTile (const char* external)
 {
     char* local = 0;
 
-    if (cachedTile_p != 0 && cachedTileLength_p == localTileLength_p){
+    if (cachedTile_p != 0){
         local = cachedTile_p;
         cachedTile_p = 0;
     } else {
@@ -719,7 +717,6 @@ void TSMCube::deleteCallBack (void* owner, char* buffer)
     TSMCube * tsmCube = ((TSMCube*)owner);
     if (tsmCube->cachedTile_p == 0){
         tsmCube->cachedTile_p = buffer;
-        tsmCube->cachedTileLength_p = tsmCube->localTileLength_p;
     } else {
         delete [] buffer;
     }
