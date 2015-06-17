@@ -468,83 +468,90 @@ Array<T>::reformOrResize (const IPosition & newShape,
 {
     DebugAssert(ok(), ArrayError);
 
-    if (newShape.isEqual (shape())){
-        return; // No op
+    Bool resetEnd = ArrayBase::reformOrResize (newShape, resizeIfNeeded, data_p.nrefs(), data_p->nelements(),
+					       copyDataIfNeeded, resizePercentage);
+
+    if (resetEnd){
+	setEndIter();
     }
 
-    // Check to see if the operation is legal in this context
-    // ======================================================
+    // if (newShape.isEqual (shape())){
+    //     return; // No op
+    // }
 
-    // The operation must not change the dimensionality as this could cause a base class
-    // such as a vector to become a Matrix, etc.
+    // // Check to see if the operation is legal in this context
+    // // ======================================================
 
-    if (newShape.size() != shape().size()){
-        String message = "ArrayBase::reformOrResize() - Cannot change number of dimensions.";
-	throw ArrayConformanceError (message);
-    }
+    // // The operation must not change the dimensionality as this could cause a base class
+    // // such as a vector to become a Matrix, etc.
 
-    // This operation only makes sense if the storage is contiguous.
+    // if (newShape.size() != shape().size()){
+    //     String message = "ArrayBase::reformOrResize() - Cannot change number of dimensions.";
+    // 	throw ArrayConformanceError (message);
+    // }
 
-    if (! contiguousStorage()){
-        String message = "ArrayBase::reformOrResize() - array must be contiguous";
-        throw ArrayConformanceError(message);
-    }
+    // // This operation only makes sense if the storage is contiguous.
 
-    // If the array is sharing storage, then the other array could become dangerously invalid
-    // as the result of this operation, so prohibit sharing while this operation is being
-    // performed.  
+    // if (! contiguousStorage()){
+    //     String message = "ArrayBase::reformOrResize() - array must be contiguous";
+    //     throw ArrayConformanceError(message);
+    // }
 
-    if (data_p.nrefs() != 1){
-        String message = "ArrayBase::reformOrResize() - array must not be shared during this call";
-        throw ArrayConformanceError(message);
-    }
+    // // If the array is sharing storage, then the other array could become dangerously invalid
+    // // as the result of this operation, so prohibit sharing while this operation is being
+    // // performed.  
 
-    Bool resizeNeeded = (newShape.product() > (Int64) (data_p->nelements()));
+    // if (data_p.nrefs() != 1){
+    //     String message = "ArrayBase::reformOrResize() - array must not be shared during this call";
+    //     throw ArrayConformanceError(message);
+    // }
 
-    if (resizeNeeded && ! resizeIfNeeded){
+    // Bool resizeNeeded = (newShape.product() > (Int64) (data_p->nelements()));
 
-	// User did not permit resizing but it is required so throw and exception.
+    // if (resizeNeeded && ! resizeIfNeeded){
 
-	String message =
-	    String::format ("Array<T>::reformOrResize() - insufficient storage for reform: "
-			    "nElementInAllocation=%d, nElementsRequested=%d",
-			    data_p->nelements(), newShape.product());
-	throw ArrayConformanceError(message);
-    }
+    // 	// User did not permit resizing but it is required so throw and exception.
 
-    // The operation is legal, so perform it
-    // =====================================
+    // 	String message =
+    // 	    String::format ("Array<T>::reformOrResize() - insufficient storage for reform: "
+    // 			    "nElementInAllocation=%d, nElementsRequested=%d",
+    // 			    data_p->nelements(), newShape.product());
+    // 	throw ArrayConformanceError(message);
+    // }
 
-    if (resizeNeeded){
+    // // The operation is legal, so perform it
+    // // =====================================
 
-        // Insufficient storage so resize required, with or without padding
+    // if (resizeNeeded){
 
-        if (resizePercentage <= 0){
+    //     // Insufficient storage so resize required, with or without padding
 
-            // Perform an exact resize
+    //     if (resizePercentage <= 0){
 
-            resize (newShape, copyDataIfNeeded);
+    //         // Perform an exact resize
 
-        } else {
+    //         resize (newShape, copyDataIfNeeded);
 
-            // Padding was requested so resize to match the padded shape
-            // and then reform it to use the desired shape.
+    //     } else {
 
-            IPosition paddedShape;
-            paddedShape = newShape;
-            paddedShape.last() = (paddedShape.last() * (100 + resizePercentage)) / 100;
-            resize (paddedShape, copyDataIfNeeded);
+    //         // Padding was requested so resize to match the padded shape
+    //         // and then reform it to use the desired shape.
 
-            // Reform it
+    //         IPosition paddedShape;
+    //         paddedShape = newShape;
+    //         paddedShape.last() = (paddedShape.last() * (100 + resizePercentage)) / 100;
+    //         resize (paddedShape, copyDataIfNeeded);
 
-            baseReform (* this, newShape, False);
-            setEndIter();
-        }
-    } else {
+    //         // Reform it
 
-        baseReform (* this, newShape, False);
-        setEndIter();
-    }
+    //         baseReform (* this, newShape, False);
+    //         setEndIter();
+    //     }
+    // } else {
+
+    //     baseReform (* this, newShape, False);
+    //     setEndIter();
+    // }
 }
 
 template<class T>

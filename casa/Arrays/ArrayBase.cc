@@ -274,6 +274,98 @@ void ArrayBase::baseAddDegenerate (ArrayBase& tmp, uInt numAxes)
   tmp.baseMakeSteps();
 }
 
+Bool
+ArrayBase::reformOrResize (const IPosition & newShape,
+                           Bool resizeIfNeeded,
+			   uInt nReferences,
+			   Int64 nElementsAllocated,
+                           Bool copyDataIfNeeded,
+                           uInt resizePercentage)
+{
+    DebugAssert(ok(), ArrayError);
+
+    if (newShape.isEqual (shape())){
+        return False; // No op
+    }
+
+    // Check to see if the operation is legal in this context
+    // ======================================================
+
+    // The operation must not change the dimensionality as this could cause a base class
+    // such as a vector to become a Matrix, etc.
+
+    if (newShape.size() != shape().size()){
+        String message = "ArrayBase::reformOrResize() - Cannot change number of dimensions.";
+	throw ArrayConformanceError (message);
+    }
+
+    // This operation only makes sense if the storage is contiguous.
+
+    if (! contiguousStorage()){
+        String message = "ArrayBase::reformOrResize() - array must be contiguous";
+        throw ArrayConformanceError(message);
+    }
+
+    // If the array is sharing storage, then the other array could become dangerously invalid
+    // as the result of this operation, so prohibit sharing while this operation is being
+    // performed.  
+
+    if (nReferences != 1){
+        String message = "ArrayBase::reformOrResize() - array must not be shared during this call";
+        throw ArrayConformanceError(message);
+    }
+
+    Bool resizeNeeded = (newShape.product() > nElementsAllocated);
+
+    if (resizeNeeded && ! resizeIfNeeded){
+
+	// User did not permit resizing but it is required so throw and exception.
+
+	String message =
+	    String::format ("ArrayBase::reformOrResize() - insufficient storage for reform: "
+			    "nElementInAllocation=%d, nElementsRequested=%d",
+			    nElementsAllocated, newShape.product());
+	throw ArrayConformanceError(message);
+    }
+
+    // The operation is legal, so perform it
+    // =====================================
+
+    Bool resetEnd = True; // Caller will need to reset the end iterator
+
+    if (resizeNeeded){
+
+        // Insufficient storage so resize required, with or without padding
+
+        if (resizePercentage <= 0){
+
+            // Perform an exact resize
+
+            resize (newShape, copyDataIfNeeded);
+	    resetEnd = False;
+
+        } else {
+
+            // Padding was requested so resize to match the padded shape
+            // and then reform it to use the desired shape.
+
+            IPosition paddedShape;
+            paddedShape = newShape;
+            paddedShape.last() = (paddedShape.last() * (100 + resizePercentage)) / 100;
+            resize (paddedShape, copyDataIfNeeded);
+
+            // Reform it
+
+            baseReform (* this, newShape, False);
+        }
+    } else {
+
+        baseReform (* this, newShape, False);
+    }
+
+    return resetEnd;
+}
+
 
 // <thrown>
 //     <item> ArrayError

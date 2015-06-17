@@ -177,6 +177,16 @@ protected:
   void baseCopy (const ArrayBase& that)
     { operator= (that); }
 
+  // Either reforms the array if size permits or resizes it to the new shape.
+  // Implementation of Array<T>::reformOrResize (slightly different signature).
+
+  Bool reformOrResize (const IPosition & newShape,
+                       Bool resizeIfNeeded,
+		       uInt nReferences,
+		       Int64 nElementsAllocated,
+                       Bool copyDataIfNeeded,
+		       uInt resizePercentage);
+
   // Determine if the storage of a subset is contiguous.
   Bool isStorageContiguous() const;
 
