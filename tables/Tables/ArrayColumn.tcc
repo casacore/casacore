@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ArrayColumn.tcc 21562 2015-02-16 07:03:44Z gervandiepen $
 
 #ifndef TABLES_ARRAYCOLUMN_TCC
 #define TABLES_ARRAYCOLUMN_TCC
@@ -194,17 +194,17 @@ Array<T> ArrayColumn<T>::getSlice (uInt rownr,
 template<class T>
 void ArrayColumn<T>::getSlice (uInt rownr, const Slicer& arraySection,
                                Array<T>& arr, Bool resize) const
-{
+                               {
     TABLECOLUMNCHECKROW(rownr);
     // Check array conformance and resize if needed and possible.
     IPosition arrayShape (shape(rownr));
     IPosition blc,trc,inc;
     IPosition shp = arraySection.inferShapeFromSource (arrayShape,
-						       blc, trc, inc);
+                                                       blc, trc, inc);
     checkShape (shp, arr, resize, "ArrayColumn::getSlice");
     //# Ask if we can access the slice (if that is not known yet).
     if (reaskAccessSlice_p) {
-	canAccessSlice_p = baseColPtr_p->canAccessSlice (reaskAccessSlice_p);
+        canAccessSlice_p = baseColPtr_p->canAccessSlice (reaskAccessSlice_p);
     }
     //# Access the slice if possible.
     //# Otherwise get the entire array and slice it.
@@ -212,21 +212,21 @@ void ArrayColumn<T>::getSlice (uInt rownr, const Slicer& arraySection,
         //# Creating a Slicer is somewhat expensive, so use the slicer
         //# itself if it contains no undefined values.
         if (arraySection.isFixed()) {
-	    baseColPtr_p->getSlice (rownr,
-				    arraySection,
-				    &arr);
-	} else {
-	    baseColPtr_p->getSlice (rownr,
-				    Slicer(blc, trc, inc,
-					   Slicer::endIsLast),
-				    &arr);
-	}
+            baseColPtr_p->getSlice (rownr,
+                                    arraySection,
+                                    &arr);
+        } else {
+            baseColPtr_p->getSlice (rownr,
+                                    Slicer(blc, trc, inc,
+                                           Slicer::endIsLast),
+                                           &arr);
+        }
     }else{
-	Array<T> array(arrayShape);
-	baseColPtr_p->get (rownr, &array);
-	arr = array(blc, trc, inc);
+        Array<T> array(arrayShape);
+        baseColPtr_p->get (rownr, &array);
+        arr = array(blc, trc, inc);
     }
-}
+                               }
 
 
 template<class T>
@@ -260,92 +260,101 @@ void ArrayColumn<T>::getSlice (uInt rownr,
 template<class T>
 void
 ArrayColumn<T>::getColumnCells (const RefRows & rows,
-                                const Vector<Vector<Slice> > & arraySlices,
+                                const ColumnSlicer & columnSlicer,
                                 Array<T>& destination,
                                 Bool resize) const
 {
-    // Check to see if the data request makes sense.
+   // Calculate the shape of the destination data.  This will be
+   // [s1, s2, ..., nR] where sI are the sum of the slice elements for
+   // that axis as contained in arraySlices [i].  nR is the number of rows
+   // in the RefRows object rows.  Resize the destination array to match.
 
-    IPosition columnShape = shape(rows.firstRow());
+   const Vector<Slicer *> dataSlicers = columnSlicer.getDataSlicers();
+   const Vector<Slicer *> destinationSlicers = columnSlicer.getDestinationSlicers();
 
-    uInt nExpectedDims = arraySlices.nelements();
+   IPosition destinationShape (columnSlicer.shape());
+   destinationShape.append (IPosition (1, rows.nrows()));
 
-    if (columnShape.nelements() != nExpectedDims){
+   static const String tag ("ArrayColumn::getColumnCells (rows, slicers, ...)");
+   checkShape (destinationShape, destination, resize, tag);
 
-        String message = String::format ("Column has wrong number of dimensions; expected %d "
-                                         " had %d",
-                                         nExpectedDims,
-                                         columnShape.nelements());
-        throw (TableArrayConformanceError (message));
-    }
+   // Fill the destination array one row at a time.
+   // If rows is not sliced then rowNumbers is simply a vector of the relevant
+   // row numbers.  When sliced, rowNumbers is a triple: (start, nRows, increment).
+   // Thus we have two different ways of walking through the selected rows.
 
-    // Calculate the shape of the destination data.  This will be
-    // [s1, s2, ..., nR] where sI are the sum of the slice elements for
-    // that axis as contained in arraySlices [i].  nR is the number of rows
-    // in the RefRows object rows.  Resize the destination array to match.
+   const Vector<uInt> & rowNumbers = rows.rowVector();
+   Bool useRowSlicing = rows.isSliced();
+   int row = 0;
+   int increment = 1;
 
-    IPosition destinationShape (columnShape.nelements() + 1);
-    destinationShape (destinationShape.nelements() - 1) = rows.nrows();
+   if (useRowSlicing){
 
-    for (uInt i = 0; i < arraySlices.nelements(); i++){
+       AlwaysAssert (rowNumbers.nelements() == 3, AipsError);
 
-        Int n = 0;
-        if (arraySlices [i].nelements () == 0){
-            n = columnShape (i); // all elements
-        }
-        else{
+       increment = rowNumbers [2];
+       row = rowNumbers [0] ;
+   }
 
-            // Count up the number of elements in each slice of this axis.
+   uInt nSlicers = dataSlicers.size();
+   uInt nRows = rows.nrows();
 
-            for (uInt j = 0; j < arraySlices [i].nelements(); j++){
-                n += arraySlices (i)(j).length();
-            }
-        }
+   for (uInt i = 0; i < nRows; i++){
 
-        destinationShape (i) = n; // Install the size of this dimension
+       // Create a section of the destination array that will hold the
+       // data for this row ([s1, ...,sN, nR] --> [s1,...,sN].
 
-    }
+      Array<T> destinationRow = destination [i];
 
-    checkShape (destinationShape, destination, resize,
-                "ArrayColumn::getSliceForRows");
+       for (uInt j = 0; j < nSlicers; j++){
 
-    // Fill the destination array one row at a time.
+           Array<T> destinationRowSection = destinationRow (* destinationSlicers[j]);
+           baseColPtr_p->getSlice (row, * dataSlicers[j], & destinationRowSection);
+       }
 
-    const Vector<uInt> & rowNumbers = rows.rowVector();
-
-    // If rows is not sliced then rowNumbers is simply a vector of the relevant
-    // row numbers.  When sliced, rowNumbers is a triple: (start, nRows, increment).
-    // Thus we have two different ways of walking through the selected rows.
-
-    Bool useSlicing = rows.isSliced();
-    int row=0;
-    int increment=1;
-
-    if (useSlicing){
-
-        AlwaysAssert (rowNumbers.nelements() == 3, AipsError);
-
-        increment = rowNumbers [2];
-        row = rowNumbers [0] - increment; // allows preincrement before first use
-    }
-
-    for (uInt i = 0; i < rows.nrows(); i++){
-
-        // Create a section of the destination array that will hold the
-        // data for this row ([s1, ...,sN, nR] --> [s1,...,sN].
-
-        Array<T> destinationSection = destination [i];
-
-        if (rows.isSliced()){
-            row += increment;
-        }
-        else{
-            row = rowNumbers (i);
-        }
-
-        getSlice (row, arraySlices, destinationSection, False);
-    }
+       row = useRowSlicing ? row + increment
+                           : rowNumbers (i);
+   }
 }
+
+
+//template<class T>
+//void
+//ArrayColumn<T>::getColumnCellsSlicers (const Vector<Vector<Slice> > & arraySlices,
+//                                       uInt axis,
+//                                       Vector<uInt> selections,
+//                                       vector<Slicer *> result) const
+//{
+//    if (axis == arraySlices.size()){
+//
+//        IPosition start (axis), increment (axis), length (axis);
+//
+//        for (uInt i = 0; i < axis; i++){
+//
+//            const Slice & slice = arraySlices [i] [selections [i]];
+//            start [i] = slice.start();
+//            increment [i] = slice.inc();
+//            length [i] = slice.length();
+//
+//            result.push_back = new Slicer (start, length, increment);
+//
+//        }
+//
+//        return;
+//    }
+//
+//    const Vector<Slice> & thisAxis = arraySlices [axis];
+//
+//    for (uInt i = 0; i < thisAxis.size(); i++){
+//
+//        selections [axis] = i;
+//        getColumnCellsSlicers (arraySlices, axis + 1, selections, result);
+//    }
+//
+//}
+
+
+
 
 template<class T>
 void ArrayColumn<T>::handleSlices (const Vector<Vector<Slice> >& slices,
