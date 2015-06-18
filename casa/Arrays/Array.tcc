@@ -459,99 +459,58 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len) const
     return tmp;
 }
 
-template<class T>
-void
-Array<T>::reformOrResize (const IPosition & newShape,
-                          Bool resizeIfNeeded,
-                          Bool copyDataIfNeeded,
-                          uInt resizePercentage)
+template <typename T>
+bool
+Array<T>::extend (const IPosition & newShape,
+		  uInt resizePercentage, 
+		  bool resizeIfNeeded)
 {
     DebugAssert(ok(), ArrayError);
+    
+    IPosition currentShape = shape();
+    if (newShape.size() == currentShape.size()){ // Let base method handle attempt dimensionality changes
+	for (uInt i = 0; i < newShape.size() - 1; i++){
+	    if (currentShape (i) != newShape (i)){
+		String message =
+		    String::format ("Array<T>::extend - New shape can only change last dimension:"
+                                    " current=%s, new=%s",
+		 		    currentShape.toString().c_str(), newShape.toString().c_str());
+		throw ArrayConformanceError (message);
+	    }
+	}
+    }
+        
+    Int64 originalElements = data_p->nelements();
 
     Bool resetEnd = ArrayBase::reformOrResize (newShape, resizeIfNeeded, data_p.nrefs(), data_p->nelements(),
-					       copyDataIfNeeded, resizePercentage);
+					       true, resizePercentage);
 
     if (resetEnd){
 	setEndIter();
     }
 
-    // if (newShape.isEqual (shape())){
-    //     return; // No op
-    // }
+    return originalElements != (Int64) data_p->nelements();
+}
 
-    // // Check to see if the operation is legal in this context
-    // // ======================================================
 
-    // // The operation must not change the dimensionality as this could cause a base class
-    // // such as a vector to become a Matrix, etc.
+template<class T>
+bool
+Array<T>::reformOrResize (const IPosition & newShape,
+                          uInt resizePercentage,
+                          Bool resizeIfNeeded)
+{
+    DebugAssert(ok(), ArrayError);
 
-    // if (newShape.size() != shape().size()){
-    //     String message = "ArrayBase::reformOrResize() - Cannot change number of dimensions.";
-    // 	throw ArrayConformanceError (message);
-    // }
+    Int64 originalElements = data_p->nelements();
 
-    // // This operation only makes sense if the storage is contiguous.
+    Bool resetEnd = ArrayBase::reformOrResize (newShape, resizeIfNeeded, data_p.nrefs(), data_p->nelements(),
+					       false, resizePercentage);
 
-    // if (! contiguousStorage()){
-    //     String message = "ArrayBase::reformOrResize() - array must be contiguous";
-    //     throw ArrayConformanceError(message);
-    // }
+    if (resetEnd){
+	setEndIter();
+    }
 
-    // // If the array is sharing storage, then the other array could become dangerously invalid
-    // // as the result of this operation, so prohibit sharing while this operation is being
-    // // performed.  
-
-    // if (data_p.nrefs() != 1){
-    //     String message = "ArrayBase::reformOrResize() - array must not be shared during this call";
-    //     throw ArrayConformanceError(message);
-    // }
-
-    // Bool resizeNeeded = (newShape.product() > (Int64) (data_p->nelements()));
-
-    // if (resizeNeeded && ! resizeIfNeeded){
-
-    // 	// User did not permit resizing but it is required so throw and exception.
-
-    // 	String message =
-    // 	    String::format ("Array<T>::reformOrResize() - insufficient storage for reform: "
-    // 			    "nElementInAllocation=%d, nElementsRequested=%d",
-    // 			    data_p->nelements(), newShape.product());
-    // 	throw ArrayConformanceError(message);
-    // }
-
-    // // The operation is legal, so perform it
-    // // =====================================
-
-    // if (resizeNeeded){
-
-    //     // Insufficient storage so resize required, with or without padding
-
-    //     if (resizePercentage <= 0){
-
-    //         // Perform an exact resize
-
-    //         resize (newShape, copyDataIfNeeded);
-
-    //     } else {
-
-    //         // Padding was requested so resize to match the padded shape
-    //         // and then reform it to use the desired shape.
-
-    //         IPosition paddedShape;
-    //         paddedShape = newShape;
-    //         paddedShape.last() = (paddedShape.last() * (100 + resizePercentage)) / 100;
-    //         resize (paddedShape, copyDataIfNeeded);
-
-    //         // Reform it
-
-    //         baseReform (* this, newShape, False);
-    //         setEndIter();
-    //     }
-    // } else {
-
-    //     baseReform (* this, newShape, False);
-    //     setEndIter();
-    // }
+    return originalElements != (Int64) data_p->nelements();
 }
 
 template<class T>

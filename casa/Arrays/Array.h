@@ -360,20 +360,36 @@ public:
     // parameter is used to define an allocation shape which is larger than
     // the newShape by increasing the last dimension by resizePercentage percent
     // (i.e., lastDim = (lastDim * (100 + resizePercentage)) / 100).  If
-    // resizePercentage <= 0 then resizing uses newShape as-is.
-    //
-    // If the array is not resized, then the copyDataIfNeeded parameter is
-    // ignored (i.e., the data is left in the same physical location).
+    // resizePercentage <= 0 then resizing uses newShape as-is.  Returns true
+    // if resizing (allocation) was performed.
     //
     // To truncate the array so that it no longer holds additional storage,
     // use the resize method.
+    //
+    // Array may not be shared with another Array object during this call.
+    // Exception thrown if it is shared.
 
-    void reformOrResize (const IPosition & newShape,
-                         Bool resizeIfNeeded,
-                         Bool copyDataIfNeeded = True,
-                         uInt resizePercentage = 0);
+    bool reformOrResize (const IPosition & newShape,
+                         uInt resizePercentage = 0,
+                         Bool resizeIfNeeded = True);
 
-    // returns the number of elements allocated.
+    // Use this method to extend or reduce the last dimension of an array.  If
+    // sufficient excess capacity exists then the bookkeeping is adjusted to 
+    // support the new shape.  If insufficient storage exists then a new array
+    // is allocated (unless resizeIfNeeded is false; then an exception is thrown).
+    // If resizing is not required then the data remains untouched; if resizing
+    // is required then the data is copied into the new storage.  The resizePercentage
+    // works the same as for reformOrResize (see above).  This method never releases
+    // extra storage; use "resize" to do this.  Array may not be sharing storage
+    // with another array at call time; an exception will be thrown if the array is shared.
+    // Returns true if the array was extension required a Array<T>::resize operation.
+
+    bool extend (const IPosition & newShape,
+		 uInt resizePercentage = 0, 
+                 bool resizeIfNeeded = True);
+
+    // Returns the number of elements allocated.  This value is >= to the value returned
+    // by size().
 
     size_t capacity () const; 
 
