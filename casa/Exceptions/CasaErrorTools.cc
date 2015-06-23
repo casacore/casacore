@@ -57,6 +57,7 @@ namespace casacore {
 #include <link.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <execinfo.h>
 
 namespace {
 

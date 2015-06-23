@@ -106,7 +106,7 @@ AipsError::~AipsError() throw()
   }
   String AipsError::getLastMessage ()
     { return lastMessage; }
-  String AipsError::getLastStackTrace ();
+  String AipsError::getLastStackTrace ()
     { return CasaErrorTools::replaceStackAddresses (lastStackTrace); }
   void AipsError::clearLastInfo ()
   {
