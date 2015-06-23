@@ -42,4 +42,19 @@
    fun:__GI_strlen
    fun:_ZNSsC1EPKcRKSaIcE
 }
+{
+   Optimized-strlen-uses-multiple-bytes-2
+   Memcheck:Cond
+   fun:strlen
+   fun:_ZNSsC1EPKcRKSaIcE
+}
+
+# On lhd002 the nss functions (called by getpwnam) leak
+{
+   getpwnam-nss-leak
+   Memcheck:Leak
+   fun:malloc
+   fun:nss_parse_service-list
+   fun:__nss_database_lookup
+}
 
