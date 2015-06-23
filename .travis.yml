@@ -1,20 +1,15 @@
+os:
+  - linux
+  - osx
+
 language: cpp
 
 compiler:
   - clang
   - gcc
 
-before_install:
-  - sudo apt-get update -q
-  - sudo apt-get install -qy python-software-properties
-  - sudo add-apt-repository -y ppa:radio-astro/main
-  - sudo apt-get update -q
-
 install:
-  - sudo apt-get install -qy cmake flex bison libblas-dev liblapack-dev
-      libcfitsio3-dev wcslib-dev libfftw3-dev gfortran libncurses5-dev
-      libreadline6-dev libhdf5-serial-dev python-all-dev libboost-dev
-      libboost-python-dev python-numpy
+  - ./travis-deps.sh
 
 
 before_script:
