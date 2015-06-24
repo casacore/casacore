@@ -11,5 +11,5 @@ DESTINATION bin
 
 install (FILES
   casacore_memcheck.supp
-DESTINATION share
+DESTINATION share/casacore
 )
