@@ -56,6 +56,8 @@
 #define traceFREAD fread
 #define traceFWRITE fwrite
 #define traceWRITE write
+#define tracePWRITE pwrite
+#define tracePREAD pread
 #define trace2OPEN open
 #define trace3OPEN open
 #define traceLSEEK lseek
@@ -288,16 +290,16 @@ void LockFile::putInfo (const MemoryIO& info) const
     }
     uChar buffer[1024];
     uInt leng = CanonicalConversion::fromLocal (buffer, infoLeng);
-    traceLSEEK (itsLocker.fd(), SIZEREQID, SEEK_SET);
     if (infoLeng > 1024 - leng) {
+      traceLSEEK (itsLocker.fd(), SIZEREQID, SEEK_SET);
       AlwaysAssert (traceWRITE (itsLocker.fd(), (Char *)buffer, leng) ==
                     Int(leng), AipsError);
       AlwaysAssert (traceWRITE (itsLocker.fd(), (Char *)info.getBuffer(),
                                 infoLeng) == Int(infoLeng), AipsError);
     }else{
       memcpy (buffer+leng, info.getBuffer(), infoLeng);
-      AlwaysAssert (traceWRITE (itsLocker.fd(), (Char *)buffer, leng+infoLeng)
-                    == Int(leng+infoLeng), AipsError);
+      AlwaysAssert (tracePWRITE (itsLocker.fd(), (Char *)buffer, leng+infoLeng,
+                                 SIZEREQID) == Int(leng+infoLeng), AipsError);
     }
     fsync (itsLocker.fd());
 }
@@ -305,8 +307,7 @@ void LockFile::putInfo (const MemoryIO& info) const
 Int LockFile::getNrReqId() const
 {
     uChar buffer[8];
-    traceLSEEK (itsLocker.fd(), 0, SEEK_SET);
-    uInt leng = read (itsLocker.fd(), buffer, SIZEINT);
+    uInt leng = tracePREAD (itsLocker.fd(), buffer, SIZEINT, 0);
     return getInt (buffer, leng, 0);
 }
 
@@ -371,9 +372,8 @@ void LockFile::putReqId (int fd) const
 	uInt leng = CanonicalConversion::fromLocal (buffer,
 						    itsReqId.storage(),
 						    itsReqId.nelements());
-	traceLSEEK (fd, 0, SEEK_SET);
-	AlwaysAssert (traceWRITE (fd, (Char *)buffer, leng) == Int(leng),
-                      AipsError);
+        AlwaysAssert(tracePWRITE(fd, (Char *)buffer, leng, 0) == Int(leng),
+                     AipsError);
 	fsync (fd);
     }
 }
@@ -382,8 +382,7 @@ void LockFile::getReqId()
 {
     int fd = itsLocker.fd();
     uChar buffer[SIZEREQID];
-    traceLSEEK (fd, 0, SEEK_SET);
-    if (read (fd, buffer, SIZEREQID) > 0) {
+    if (tracePREAD(fd, buffer, SIZEREQID, 0) > 0) {
 	CanonicalConversion::fromLocal (buffer,
 					itsReqId.storage(),
 					itsReqId.nelements());
