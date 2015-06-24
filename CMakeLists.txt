@@ -225,7 +225,8 @@ if (_usefits STREQUAL YES)
     find_package (CFITSIO 3.181 REQUIRED) # Should pad to three decimal digits
 endif (_usefits STREQUAL YES)
 if (_usewcs STREQUAL YES)
-    find_package (WCSLIB 4.20 REQUIRED)
+#    find_package (WCSLIB 4.20 REQUIRED)
+    find_package (WCSLIB 4.7 REQUIRED)     # needed for CASA
 endif (_usewcs STREQUAL YES)
  
 # Set the include directories and HAVE compiler variables
