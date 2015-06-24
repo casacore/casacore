@@ -28,6 +28,7 @@ BasicSL/IComplex.cc
 BasicSL/RegexBase.cc
 BasicSL/STLMath.cc
 BasicSL/String.cc
+Containers/Allocator.cc
 Containers/Block.cc
 Containers/HashMap2.cc
 Containers/IterError.cc
