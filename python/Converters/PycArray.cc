@@ -25,6 +25,8 @@
 //#
 //# $Id: PycArray.cc,v 1.4 2006/11/06 00:14:44 gvandiep Exp $
 
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+
 #include <casacore/python/Converters/PycArray.tcc>
 #include <casacore/python/Converters/PycArrayNP.h>
 #include <casacore/python/Converters/PycBasicData.h>
