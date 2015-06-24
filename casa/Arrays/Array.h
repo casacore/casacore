@@ -384,9 +384,9 @@ public:
     // with another array at call time; an exception will be thrown if the array is shared.
     // Returns true if the array was extension required a Array<T>::resize operation.
 
-    bool extend (const IPosition & newShape,
-		 uInt resizePercentage = 0, 
-                 bool resizeIfNeeded = True);
+    bool adjustLastAxis (const IPosition & newShape,
+		         uInt resizePercentage = 0, 
+                         bool resizeIfNeeded = True);
 
     // Returns the number of elements allocated.  This value is >= to the value returned
     // by size().

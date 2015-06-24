@@ -461,9 +461,9 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 
 template <typename T>
 bool
-Array<T>::extend (const IPosition & newShape,
-		  uInt resizePercentage, 
-		  bool resizeIfNeeded)
+Array<T>::adjustLastAxis (const IPosition & newShape,
+		          uInt resizePercentage, 
+		          bool resizeIfNeeded)
 {
     DebugAssert(ok(), ArrayError);
     
