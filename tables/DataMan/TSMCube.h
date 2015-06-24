@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: TSMCube.h 21521 2014-12-10 08:06:42Z gervandiepen $
 
 #ifndef TABLES_TSMCUBE_H
 #define TABLES_TSMCUBE_H
@@ -349,6 +349,9 @@ private:
 
 protected:
     //# Declare member variables.
+
+    char * cachedTile_p; // optimization to hold one tile chunk
+
     // Pointer to the parent storage manager.
     TiledStMan*     stmanPtr_p;
     // Is the class used directly or only by a derived class only?
