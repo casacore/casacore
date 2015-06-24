@@ -110,6 +110,10 @@ public:
     // Write the number of bytes.
     virtual void write (Int64 size, const void* buf);
 
+    // Write the number of bytes at offset from start of the file.
+    // The file offset is not changed
+    virtual void pwrite (Int64 size, Int64 offset, const void* buf);
+
     // Read <src>size</src> bytes from the descriptor. Returns the number of
     // bytes actually read or a negative number if an error occurred. Will throw
     // an Exception (AipsError) if the requested number of bytes could not be
@@ -117,6 +121,10 @@ public:
     // always throw an exception if the descriptor is not readable or the
     // system call returned an undocumented value.
     virtual Int64 read (Int64 size, void* buf, Bool throwException=True);    
+
+    // Like read except reads from offset of the start of the file.
+    // The file offset is not changed
+    virtual Int64 pread (Int64 size, Int64 offset, void* buf, Bool throwException=True);
 
     // Get the length of the byte stream.
     virtual Int64 length();

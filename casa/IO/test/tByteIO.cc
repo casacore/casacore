@@ -135,6 +135,26 @@ void doIt (ByteIO& fio)
     AlwaysAssertExit (fio.length() == length);
     
     checkValues (fio, incr);
+
+    AlwaysAssertExit (fio.length() == length);
+    Int64 offset = sizeof(Bool);
+    incr = 100;
+    vals1 = vals - incr;
+    fio.pwrite (sizeof(Short), offset, &vals1);
+    AlwaysAssertExit (fio.pread(sizeof(Short), offset, &ress) == sizeof(Short));
+    AlwaysAssertExit (ress == vals1);
+    fio.seek (offset);
+    AlwaysAssertExit (fio.read(sizeof(Short), &ress) == sizeof(Short));
+    AlwaysAssertExit (ress == vals1);
+    offset += sizeof(Short);
+    valus1 = valus + incr;
+    fio.pwrite (sizeof(uShort), offset, &valus1);
+    AlwaysAssertExit (fio.pread(sizeof(uShort), offset, &resus) == sizeof(uShort));
+    AlwaysAssertExit (resus == valus1);
+    AlwaysAssertExit (fio.read(sizeof(uShort), &ress) == sizeof(uShort));
+    AlwaysAssertExit (resus == valus1);
+
+    checkValues (fio, incr);
 }
 
 void checkReopen()

@@ -42,6 +42,37 @@ void ByteIO::reopenRW()
     }
 }
 
+void ByteIO::pwrite (Int64 size, Int64 offset, const void* buf)
+{
+    Int64 cur = doSeek(0, ByteIO::Current);
+    doSeek(offset, ByteIO::Begin);
+    try {
+        write(size, buf);
+    }
+    catch (...) {
+        doSeek(cur, ByteIO::Begin);
+        throw;
+    }
+    doSeek(cur, ByteIO::Begin);
+}
+
+Int64 ByteIO::pread (Int64 size, Int64 offset, void* buf,
+                     Bool throwException)
+{
+    Int64 r = -1;
+    Int64 cur = doSeek(0, ByteIO::Current);
+    doSeek(offset, ByteIO::Begin);
+    try {
+        r = read(size, buf, throwException);
+    }
+    catch (...) {
+        doSeek(cur, ByteIO::Begin);
+        throw;
+    }
+    doSeek(cur, ByteIO::Begin);
+    return r;
+}
+
 void ByteIO::flush()
 {}
 

@@ -206,15 +206,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MultiFile::readBlock (MultiFileInfo& info, Int64 blknr,
                              void* buffer)
   {
-    itsIO.seek (info.blockNrs[blknr] * itsBlockSize);
-    itsIO.read (itsBlockSize, buffer);
+    itsIO.pread (itsBlockSize, info.blockNrs[blknr] *
+                 itsBlockSize, buffer);
   }
 
   void MultiFile::writeBlock (MultiFileInfo& info, Int64 blknr,
                               const void* buffer)
   {
-    itsIO.seek  (info.blockNrs[blknr] * itsBlockSize);
-    itsIO.write (itsBlockSize, buffer);
+    itsIO.pwrite (itsBlockSize, info.blockNrs[blknr] * itsBlockSize, buffer);
   }
 
 
