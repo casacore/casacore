@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: tArray.cc 21521 2014-12-10 08:06:42Z gervandiepen $
 
 //# If AIPS_DEBUG is not set, the Assert's won't be called.
 #if !defined(AIPS_DEBUG)
@@ -640,6 +640,180 @@ void oldArrayTest()
  
 }
 
+void
+testReformOrResize ()
+{
+    cout << "*** Testing reformOrResize and extend methods" << endl;
+
+    IPosition shape (2, 3, 4);
+    Array<Int> a0 (shape);
+
+    for (Int r = 0; r < 3; r++){
+        for (Int c = 0; c < 4; c++){
+            a0 (IPosition (2, r, c)) = r * 10 + c;
+        }
+    }
+
+
+    {
+	// Test a no-op for extend.
+
+	Array<Int> a1 = a0.copy();
+	a1.reformOrResize (IPosition (2, 3, 4));
+
+	AlwaysAssertExit (a1.shape() == a0.shape());
+    }
+
+    {
+        // Do a simple reform which shouldn't involve resizing.
+
+	Array<Int> a1 = a0.copy();
+
+	IPosition newShape (2, 4, 3);
+	bool resized = a1.reformOrResize (newShape);
+
+	AlwaysAssertExit (a1.shape () == newShape);
+	AlwaysAssertExit ((Int64) a1.capacity () == newShape.product());
+	AlwaysAssertExit (! resized);
+
+    }
+
+    {
+        // Do a simple reform which should involve resizing.
+
+	Array<Int> a1 = a0.copy();
+
+	IPosition newShape (2, 3, 10);
+	bool resized = a1.reformOrResize (newShape);
+
+	AlwaysAssertExit (a1.shape () == newShape);
+	AlwaysAssertExit ((Int64) a1.capacity () == newShape.product());
+	AlwaysAssertExit (resized);
+
+    }
+
+    {
+        // Do a simple reform to make it smaller
+
+	Array<Int> a1 = a0.copy();
+
+	IPosition newShape (2, 3, 3);
+	bool resized = a1.reformOrResize (newShape);
+
+	AlwaysAssertExit (a1.shape () == newShape);
+	AlwaysAssertExit (a1.capacity () == a0.capacity()); // same allocation size
+	AlwaysAssertExit (! resized);
+
+    }
+
+    {
+	// See that when resizing is required but forbidden that exception thrown.
+
+	Array<Int> a1 = a0.copy();
+
+	try {
+	    a1.reformOrResize (IPosition (2, 3, 10), 0, false); // forbid resize
+	    AlwaysAssertExit (false); // shouldn't get here
+	} catch (ArrayConformanceError & e){
+	    // Everything's fine if we get here.
+	}
+    }
+
+    {
+	// Attempt to change dimensionality should throw exception.
+
+	Array<Int> a1 = a0.copy();
+
+	try {
+	    a1.reformOrResize (IPosition (1, 12)); // attempt to change dimensionality
+	    AlwaysAssertExit (false); // shouldn't get here
+	} catch (ArrayConformanceError & e){
+	    // Everything's fine if we get here.
+	}
+    }
+
+    {
+	Array<Int> a1 = a0.copy();
+	// Arrays that share storage must cause exception if method is called.
+
+	Array<Int> a2 = a1; // copy construction --> sharing
+
+	try {
+	    a1.reformOrResize (IPosition (2, 3, 3)); // would work except for sharing
+	    AlwaysAssertExit (false); // shouldn't get here
+	} catch (ArrayConformanceError & e){
+	    // Everything's fine if we get here.
+	}
+    }
+
+    {
+	Array<Int> a1 = a0.copy();
+
+	// See if padding functionality works.  Capacity ought to be 50% larger
+        // than actually used.
+
+	IPosition newShape (IPosition (2, 3, 6));
+	bool resized = a1.reformOrResize (newShape, 50);
+
+	AlwaysAssertExit (a1.shape() == newShape);
+	AlwaysAssertExit (resized);
+	AlwaysAssertExit ((Int64) a1.capacity() == newShape.product() * 3 / 2);
+    }
+
+
+    {
+	Array<Int> a1 = a0.copy();
+
+	// Extend the last dimension by minus one and check that the data is preserved.
+
+	IPosition newShape (IPosition (2, 3, 3));
+	bool resized = a1.extend (newShape);
+
+	AlwaysAssertExit (a1.shape() == newShape);
+	AlwaysAssertExit (! resized); // should just reform
+
+	for (int i = 0; i < 3; i++){
+	    for (int j = 0; j < 3; j++){
+		AlwaysAssertExit (a1 (IPosition (2, i, j)) == a0 (IPosition (2, i, j)));
+	    }
+	}
+    }
+
+    {
+	Array<Int> a1 = a0.copy();
+
+	// Extend the last dimension by one and check that the data is preserved.
+
+	IPosition newShape (IPosition (2, 3, 5));
+	bool resized = a1.extend (newShape);
+
+	AlwaysAssertExit (a1.shape() == newShape);
+	AlwaysAssertExit (resized); // should have been resized
+
+	for (int i = 0; i < 3; i++){
+	    for (int j = 0; j < 4; j++){
+		AlwaysAssertExit (a1 (IPosition (2, i, j)) == a0 (IPosition (2, i, j)));
+	    }
+	}
+    }
+
+    {
+	Array<Int> a1 = a0.copy();
+
+	// See that when resizing is required but forbidden that exception thrown.
+
+	try {
+	    a1.extend (IPosition (2, 3, 10), 0, false); // forbid resize
+	    AlwaysAssertExit (false); // shouldn't get here
+	} catch (ArrayConformanceError & e){
+	    // Everything's fine if we get here.
+	}
+    }
+
+    cout << "... passed testing of reformOrResize and extend methods" << endl;
+
+}
+
 void testVector()
 {
   // Test the Vector copy ctor for arrays with !1 dimension.
@@ -1102,6 +1276,9 @@ int main()
             }
           }
         }
+
+        testReformOrResize();
+
     } catch (const AipsError& x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
 	return 1;

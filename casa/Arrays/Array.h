@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef CASA_ARRAY_H
 #define CASA_ARRAY_H
@@ -343,7 +343,56 @@ public:
     // // "square"'s storage may now be accessed through Vector "line"
     // </srcblock>
     Array<T> reform(const IPosition &shape) const;
-    
+
+    // Having an array that can be reused without requiring reallocation can
+    // be useful for large arrays.  The method reformOrResize permits this
+    // usage.
+    //
+    // The reformOrResize method first attempts to reform the matrix so that
+    // it reuses the existing storage for an array with a new shape.  If the
+    // existing storage will not hold the new shape, then the method will
+    // resize the array when resizeIfNeeded is true; if a resize is needed and
+    // resizeIfNeeded is false, then an ArrayConformanceError is thrown.  The
+    // copyDataIfNeeded parameter is passed to resize if resizing is performed.
+    // resizePercentage is the percent of additional storage to be addeed when
+    // a resize is performed; this allows the allocations to be amortized when
+    // the caller expects to be calling this method again in the future.  The
+    // parameter is used to define an allocation shape which is larger than
+    // the newShape by increasing the last dimension by resizePercentage percent
+    // (i.e., lastDim = (lastDim * (100 + resizePercentage)) / 100).  If
+    // resizePercentage <= 0 then resizing uses newShape as-is.  Returns true
+    // if resizing (allocation) was performed.
+    //
+    // To truncate the array so that it no longer holds additional storage,
+    // use the resize method.
+    //
+    // Array may not be shared with another Array object during this call.
+    // Exception thrown if it is shared.
+
+    bool reformOrResize (const IPosition & newShape,
+                         uInt resizePercentage = 0,
+                         Bool resizeIfNeeded = True);
+
+    // Use this method to extend or reduce the last dimension of an array.  If
+    // sufficient excess capacity exists then the bookkeeping is adjusted to 
+    // support the new shape.  If insufficient storage exists then a new array
+    // is allocated (unless resizeIfNeeded is false; then an exception is thrown).
+    // If resizing is not required then the data remains untouched; if resizing
+    // is required then the data is copied into the new storage.  The resizePercentage
+    // works the same as for reformOrResize (see above).  This method never releases
+    // extra storage; use "resize" to do this.  Array may not be sharing storage
+    // with another array at call time; an exception will be thrown if the array is shared.
+    // Returns true if the array was extension required a Array<T>::resize operation.
+
+    bool adjustLastAxis (const IPosition & newShape,
+		         uInt resizePercentage = 0, 
+                         bool resizeIfNeeded = True);
+
+    // Returns the number of elements allocated.  This value is >= to the value returned
+    // by size().
+
+    size_t capacity () const; 
+
     // These member functions remove degenerate (ie. length==1) axes from
     // Arrays.  Only axes greater than startingAxis are considered (normally
     // one wants to remove trailing axes). The first two of these functions

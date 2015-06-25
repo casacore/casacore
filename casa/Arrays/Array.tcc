@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: Array.tcc 21561 2015-02-16 06:57:35Z gervandiepen $
 
 #ifndef CASA_ARRAY_TCC
 #define CASA_ARRAY_TCC
@@ -457,6 +457,67 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len) const
     baseReform (tmp, len);
     tmp.setEndIter();
     return tmp;
+}
+
+template <typename T>
+bool
+Array<T>::adjustLastAxis (const IPosition & newShape,
+		          uInt resizePercentage, 
+		          bool resizeIfNeeded)
+{
+    DebugAssert(ok(), ArrayError);
+    
+    IPosition currentShape = shape();
+    if (newShape.size() == currentShape.size()){ // Let base method handle attempt dimensionality changes
+	for (uInt i = 0; i < newShape.size() - 1; i++){
+	    if (currentShape (i) != newShape (i)){
+		String message =
+		    String::format ("Array<T>::extend - New shape can only change last dimension:"
+                                    " current=%s, new=%s",
+		 		    currentShape.toString().c_str(), newShape.toString().c_str());
+		throw ArrayConformanceError (message);
+	    }
+	}
+    }
+        
+    Int64 originalElements = data_p->nelements();
+
+    Bool resetEnd = ArrayBase::reformOrResize (newShape, resizeIfNeeded, data_p.nrefs(), data_p->nelements(),
+					       true, resizePercentage);
+
+    if (resetEnd){
+	setEndIter();
+    }
+
+    return originalElements != (Int64) data_p->nelements();
+}
+
+
+template<class T>
+bool
+Array<T>::reformOrResize (const IPosition & newShape,
+                          uInt resizePercentage,
+                          Bool resizeIfNeeded)
+{
+    DebugAssert(ok(), ArrayError);
+
+    Int64 originalElements = data_p->nelements();
+
+    Bool resetEnd = ArrayBase::reformOrResize (newShape, resizeIfNeeded, data_p.nrefs(), data_p->nelements(),
+					       false, resizePercentage);
+
+    if (resetEnd){
+	setEndIter();
+    }
+
+    return originalElements != (Int64) data_p->nelements();
+}
+
+template<class T>
+inline size_t
+Array<T>::capacity () const
+{
+    return data_p->nelements(); // returns the number of elements allocated.
 }
 
 template<class T>
