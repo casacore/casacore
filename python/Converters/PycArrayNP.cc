@@ -25,6 +25,8 @@
 //#
 //# $Id: PycArrayNP.cc,v 1.2 2006/11/07 00:17:23 gvandiep Exp $
 
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+
 #include <casacore/python/Converters/PycArrayNP.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -99,7 +101,7 @@ namespace casacore { namespace python { namespace numpy {
 			 NPY_UINT8};
     for (int i=0; i<ntypes; ++i) {
       if (is0dim) {
-        if (types[i] == PyArray_TYPE(obj_ptr)) {
+        if (types[i] == PyArray_TYPE((const PyArrayObject *)obj_ptr)) {
           type = types[i];
           return True;
         }
@@ -149,31 +151,31 @@ namespace casacore { namespace python { namespace numpy {
       PyArrayObject* obj = (PyArrayObject*)obj_ptr;
       switch (type) {
       case NPY_BOOL:
-        return ValueHolder(*(::npy_bool*)(obj->data) != 0);
+        return ValueHolder(*(::npy_bool*)(PyArray_DATA(obj)) != 0);
       case NPY_INT8:
-        return ValueHolder(int(*(::npy_int8*)(obj->data)));
+        return ValueHolder(int(*(::npy_int8*)(PyArray_DATA(obj))));
       case NPY_UINT8:
-        return ValueHolder(uint(*(::npy_uint8*)(obj->data)));
+        return ValueHolder(uint(*(::npy_uint8*)(PyArray_DATA(obj))));
       case NPY_INT16:
-        return ValueHolder(int(*(::npy_int16*)(obj->data)));
+        return ValueHolder(int(*(::npy_int16*)(PyArray_DATA(obj))));
       case NPY_UINT16:
-        return ValueHolder(uint(*(::npy_uint16*)(obj->data)));
+        return ValueHolder(uint(*(::npy_uint16*)(PyArray_DATA(obj))));
       case NPY_INT32:
-        return ValueHolder(int(*(::npy_int32*)(obj->data)));
+        return ValueHolder(int(*(::npy_int32*)(PyArray_DATA(obj))));
       case NPY_UINT32:
-        return ValueHolder(uint(*(::npy_uint32*)(obj->data)));
+        return ValueHolder(uint(*(::npy_uint32*)(PyArray_DATA(obj))));
       case NPY_INT64:
-        return ValueHolder(Int64(*(::npy_int64*)(obj->data)));
+        return ValueHolder(Int64(*(::npy_int64*)(PyArray_DATA(obj))));
       case NPY_UINT64:
-        return ValueHolder(Int64(*(::npy_uint64*)(obj->data)));
+        return ValueHolder(Int64(*(::npy_uint64*)(PyArray_DATA(obj))));
       case NPY_FLOAT32:
-        return ValueHolder(float(*(::npy_float32*)(obj->data)));
+        return ValueHolder(float(*(::npy_float32*)(PyArray_DATA(obj))));
       case NPY_FLOAT64:
-        return ValueHolder(double(*(::npy_float64*)(obj->data)));
+        return ValueHolder(double(*(::npy_float64*)(PyArray_DATA(obj))));
       case NPY_COMPLEX64:
-        return ValueHolder(*(Complex*)(obj->data));
+        return ValueHolder(*(Complex*)(PyArray_DATA(obj)));
       case NPY_COMPLEX128:
-        return ValueHolder(*(DComplex*)(obj->data));
+        return ValueHolder(*(DComplex*)(PyArray_DATA(obj)));
       default:
         break;
       }
@@ -307,7 +309,7 @@ namespace casacore { namespace python { namespace numpy {
     if (arr.size() > 0) {
       casacore::Bool deleteIt;
       const T* src = arr.getStorage(deleteIt);
-      ArrayCopy<T>::toPy (po->data, src, arr.size());
+      ArrayCopy<T>::toPy (PyArray_DATA(po), src, arr.size());
       arr.freeStorage(src, deleteIt);
     }
     // Return the python array.

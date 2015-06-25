@@ -25,6 +25,8 @@
 //#
 //# $Id: PycBasicData.cc,v 1.4 2007/01/29 04:23:01 mmarquar Exp $
 
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+
 #include <casacore/python/Converters/PycBasicData.h>
 #include <casacore/python/Converters/PycArrayNP.h>
 
