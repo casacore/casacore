@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSMetaData.cc 21590 2015-03-26 19:30:16Z gervandiepen $
 
 #include <casacore/ms/MSOper/MSMetaData.h>
 
@@ -31,6 +31,7 @@
 #include <casacore/casa/OS/File.h>
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/ms/MSOper/MSKeys.h>
+#include <casacore/ms/MeasurementSets/MSFieldColumns.h>
 #include <casacore/ms/MeasurementSets/MSSpWindowColumns.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
@@ -176,6 +177,33 @@ void MSMetaData::_getStateToIntentsMap(
 		_stateToIntentsMap = stateToIntentsMap;
 	}
 }
+
+vector<std::pair<Quantity, Quantity> > MSMetaData::getProperMotions() const {
+	// this method is repsonsible for setting _properMotions
+	if (! _properMotions.empty()) {
+		return _properMotions;
+	}
+	String colName = MSSource::columnName(MSSource::PROPER_MOTION);
+	ROArrayColumn<Double> col(_ms->source(), colName);
+	const TableRecord& keywords = col.keywordSet();
+	vector<String> u = keywords.asArrayString("QuantumUnits").tovector();
+	std::pair<String, String> units = u.size() == 1
+		? std::pair<String, String>(u[0], u[0])
+		: std::pair<String, String>(u[0], u[1]);
+	uInt nrow = col.nrow();
+	cout << "nrow " << nrow << endl;
+	vector<std::pair<Quantity, Quantity> > myvec(nrow);
+	for (uInt i=0; i<nrow; ++i) {
+		Vector<Double> fs = col.get(i);
+		myvec[i].first = Quantity(fs[0], units.first);
+		myvec[i].second = Quantity(fs[1], units.second);
+	}
+	if (_cacheUpdated(sizeof(myvec))) {
+		_properMotions = myvec;
+	}
+	return myvec;
+}
+
 
 std::set<Int> MSMetaData::getScanNumbers(Int obsID, Int arrayID) const {
 	ArrayKey arrayKey;
@@ -608,6 +636,35 @@ std::set<Int> MSMetaData::getScansForState(
 	return scansForState;
 }
 
+std::map<ScanKey, std::set<Int> > MSMetaData::_getScanToAntennasMap() const {
+	// this method is responsible for setting _scanToAntennasMap
+	if (! _scanToAntennasMap.empty()) {
+		return _scanToAntennasMap;
+	}
+	std::map<ScanKey, std::set<Int> > myScanToAntsMap;
+	map<SubScanKey, SubScanProperties> subScanProps = _getSubScanProperties();
+	map<SubScanKey, SubScanProperties>::const_iterator iter = subScanProps.begin();
+	map<SubScanKey, SubScanProperties>::const_iterator end = subScanProps.end();
+	while (iter != end) {
+		SubScanKey subKey = iter->first;
+		SubScanProperties subProps = iter->second;
+		myScanToAntsMap[scanKey(subKey)].insert(subProps.antennas.begin(), subProps.antennas.end());
+		++iter;
+	}
+	std::map<ScanKey, std::set<Int> >::const_iterator end1 = myScanToAntsMap.end();
+	uInt mySize = sizeof(ScanKey)*myScanToAntsMap.size();
+	for (
+		std::map<ScanKey, std::set<Int> >::const_iterator iter=myScanToAntsMap.begin();
+		iter!=end1; ++iter
+	) {
+		mySize += sizeof(Int)*iter->second.size();
+	}
+	if (_cacheUpdated(mySize)) {
+		_scanToAntennasMap = myScanToAntsMap;
+	}
+	return myScanToAntsMap;
+}
+
 std::map<ScanKey, std::set<Int> > MSMetaData::_getScanToStatesMap() const {
 	if (! _scanToStatesMap.empty()) {
 		return _scanToStatesMap;
@@ -793,7 +850,18 @@ uInt MSMetaData::_sizeof(const vector<T>& v) {
 	return v.size()*sizeof(T);
 }
 
-uInt MSMetaData::_sizeof(const Quantum<Vector<Double> >& m) {
+uInt MSMetaData::_sizeof(const vector<vector<String> >& v) {
+	vector<vector<String> >::const_iterator iter = v.begin();
+	vector<vector<String> >::const_iterator end = v.end();
+	uInt size = 0;
+	while (iter != end) {
+		size += _sizeof(*iter);
+		++iter;
+	}
+	return size;
+}
+
+uInt MSMetaData::_sizeof(const QVD& m) {
 	return (sizeof(Double)+10)*m.getValue().size();
 }
 
@@ -922,6 +990,18 @@ uInt MSMetaData::nFields() const {
 	return nFields;
 }
 
+MDirection MSMetaData::phaseDirFromFieldIDAndTime(const uInt fieldID,  const MEpoch& ep) const {
+	_hasFieldID(fieldID);
+	ROMSFieldColumns msfc(_ms->field());
+	if(! msfc.needInterTime(fieldID)) {
+		return msfc.phaseDirMeas(fieldID, 0.0);
+	}
+	MEpoch::Types msType = MEpoch::castType(msfc.timeMeas()(fieldID).getRef().getType());
+	Unit sec("s");
+	Double inSeconds= MEpoch::Convert(ep, msType)().get(sec).getValue();
+	return msfc.phaseDirMeas(fieldID, inSeconds);
+} 
+
 void MSMetaData::_getFieldsAndSpwMaps(
 	std::map<Int, std::set<uInt> >& fieldToSpwMap,
 	vector<std::set<Int> >& spwToFieldMap
@@ -932,13 +1012,13 @@ void MSMetaData::_getFieldsAndSpwMaps(
 		spwToFieldMap = _spwToFieldIDsMap;
 		return;
 	}
-	CountedPtr<Vector<Int> >  allDDIDs = _getDataDescIDs();
-	CountedPtr<Vector<Int> >  allFieldIDs = _getFieldIDs();
+	CountedPtr<Vector<Int> > allDDIDs = _getDataDescIDs();
+	CountedPtr<Vector<Int> > allFieldIDs = _getFieldIDs();
 	Vector<Int>::const_iterator endDDID = allDDIDs->end();
 	Vector<Int>::const_iterator curField = allFieldIDs->begin();
 	fieldToSpwMap.clear();
 	spwToFieldMap.resize(nSpw(True));
-	vector<uInt> ddidToSpwMap = _getDataDescIDToSpwMap();
+	vector<uInt> ddidToSpwMap = getDataDescIDToSpwMap();
 	for (
 		Vector<Int>::const_iterator curDDID=allDDIDs->begin();
 		curDDID!=endDDID; ++curDDID, ++curField
@@ -1185,7 +1265,7 @@ void MSMetaData::_getScansAndSpwMaps(
 	std::map<ScanKey, std::set<uInt> > scanToDDIDMap;
 	vector<std::set<ScanKey> > ddIDToScanMap;
 	_getScansAndDDIDMaps(scanToDDIDMap, ddIDToScanMap);
-	vector<uInt> ddToSpw = _getDataDescIDToSpwMap();
+	vector<uInt> ddToSpw = getDataDescIDToSpwMap();
 	std::map<ScanKey, std::set<uInt> >::const_iterator iter = scanToDDIDMap.begin();
 	std::map<ScanKey, std::set<uInt> >::const_iterator end = scanToDDIDMap.end();
 	std::set<uInt>::const_iterator dIter;
@@ -1220,6 +1300,11 @@ uInt MSMetaData::_sizeof(const vector<std::set<T> >& v) {
 	}
 	size *= sizeof(T);
 	return size;
+}
+
+std::set<Int> MSMetaData::getAntennasForScan(const ScanKey& scan) const {
+    _checkScan(scan);
+    return _getScanToAntennasMap()[scan];
 }
 
 std::set<uInt> MSMetaData::getSpwsForScan(const ScanKey& scan) const {
@@ -1281,7 +1366,7 @@ uInt MSMetaData::nDataDescriptions() const {
 
 vector<String> MSMetaData::_getAntennaNames(
 	std::map<String, uInt>& namesToIDsMap
-) {
+) const {
 	if (! _antennaNames.empty()) {
 		namesToIDsMap = _antennaNameToIDMap;
 		return _antennaNames;
@@ -1317,7 +1402,7 @@ vector<String> MSMetaData::_getAntennaNames(
 vector<String> MSMetaData::getAntennaNames(
 	std::map<String, uInt>& namesToIDsMap,
 	const vector<uInt>& antennaIDs
-) {
+) const {
 	uInt nAnts = nAntennas();
 	std::map<String, uInt> allMap;
 	vector<String> allNames = _getAntennaNames(allMap);
@@ -1344,9 +1429,15 @@ vector<String> MSMetaData::getAntennaNames(
 	return names;
 }
 
+uInt MSMetaData::getAntennaID(
+	const String& antennaName
+) const {
+	return getAntennaIDs(vector<String>(1, antennaName))[0];
+}
+
 vector<uInt> MSMetaData::getAntennaIDs(
 	const vector<String>& antennaNames
-) {
+) const {
 	std::map<String, uInt> namesToIDsMap;
 	vector<String> names = getAntennaNames(namesToIDsMap);
 	vector<String>::const_iterator end = antennaNames.end();
@@ -1375,7 +1466,7 @@ vector<std::map<Int, Quantity> > MSMetaData::getFirstExposureTimeMap() {
 	CountedPtr<Vector<Int> > scans = _getScans();
 	CountedPtr<Vector<Int> > dataDescIDs = _getDataDescIDs();
 	CountedPtr<Vector<Double> > times = _getTimes();
-	CountedPtr<Quantum<Vector<Double> > > exposureTimes = _getExposureTimes();
+	CountedPtr<QVD > exposureTimes = _getExposureTimes();
 	vector<std::map<Int, Quantity> > firstExposureTimeMap(nDataDescIDs);
 	vector<std::map<Int, Double> > tmap(nDataDescIDs);
 	Vector<Int>::const_iterator siter = scans->begin();
@@ -1502,7 +1593,7 @@ std::map<ScanKey, std::set<SubScanKey> > MSMetaData::_getScanToSubScansMap() con
 	return mymap;
 }
 
-Quantum<Vector<Double> > MSMetaData::getAntennaDiameters() {
+QVD MSMetaData::getAntennaDiameters() const {
 	if (! _antennaDiameters.getValue().empty()) {
 		return _antennaDiameters;
 	}
@@ -1510,7 +1601,7 @@ Quantum<Vector<Double> > MSMetaData::getAntennaDiameters() {
 	ROScalarColumn<Double> diamCol(_ms->antenna(), antDiamColName);
 	Vector<Double> diams = diamCol.getColumn();
 	String unit = *diamCol.keywordSet().asArrayString("QuantumUnits").begin();
-	Quantum<Vector<Double> > antennaDiameters = Quantum<Vector<Double> >(diams, unit);
+	QVD antennaDiameters = QVD(diams, unit);
 	if (_cacheUpdated(_sizeof(antennaDiameters))) {
 		_antennaDiameters = antennaDiameters;
 	}
@@ -1618,6 +1709,22 @@ vector<Quantity> MSMetaData::getCenterFreqs() const {
 		iter!=end; ++iter
 	) {
 		out.push_back(iter->centerfreq);
+	}
+	return out;
+}
+
+vector<MFrequency> MSMetaData::getRefFreqs() const {
+	std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
+	vector<MSMetaData::SpwProperties> props = _getSpwInfo(
+		avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw
+	);
+	vector<MSMetaData::SpwProperties>::const_iterator end = props.end();
+	vector<MFrequency> out;
+	for (
+		vector<MSMetaData::SpwProperties>::const_iterator iter=props.begin();
+		iter!=end; ++iter
+	) {
+		out.push_back(iter->reffreq);
 	}
 	return out;
 }
@@ -1871,15 +1978,15 @@ CountedPtr<std::map<Double, MSMetaData::TimeStampProperties> > MSMetaData::_getT
 */
 
 
-CountedPtr<Quantum<Vector<Double> > > MSMetaData::_getExposureTimes() {
+CountedPtr<QVD > MSMetaData::_getExposureTimes() {
 	if (_exposures && ! _exposures->getValue().empty()) {
 		return _exposures;
 	}
 	String colName = MeasurementSet::columnName(MSMainEnums::EXPOSURE);
 	ScalarColumn<Double> exposure (*_ms, colName);
 	String unit = *exposure.keywordSet().asArrayString("QuantumUnits").begin();
-	CountedPtr<Quantum<Vector<Double> > > ex(
-		new Quantum<Vector<Double> >(exposure.getColumn(), unit)
+	CountedPtr<QVD > ex(
+		new QVD(exposure.getColumn(), unit)
 	);
 	if (_cacheUpdated((20 + sizeof(Double))*ex->getValue().size())) {
 		_exposures = ex;
@@ -1937,19 +2044,48 @@ std::set<Double> MSMetaData::getTimesForScan(const ScanKey& scan) const {
 	return getTimesForScans(scans);
 }
 
+std::map<uInt, std::set<Double> > MSMetaData::getSpwToTimesForScan(
+	const ScanKey& scan
+) const {
+	_checkScan(scan);
+	std::map<ScanKey, std::pair<Double, Double> > scanToTimeRangeMap;
+	std::map<std::pair<ScanKey, uInt>, Double> scanSpwToAverageIntervalMap;
+	std::map<std::pair<ScanKey, uInt>, std::set<Double> > scanSpwToTimesMap;
+	_getTimesAndInvervals(
+		scanToTimeRangeMap, scanSpwToAverageIntervalMap,
+		scanSpwToTimesMap
+	);
+	std::map<uInt, std::set<Double> > ret;
+	std::map<std::pair<ScanKey, uInt>, std::set<Double> >::const_iterator iter = scanSpwToTimesMap.begin();
+	std::map<std::pair<ScanKey, uInt>, std::set<Double> >::const_iterator end = scanSpwToTimesMap.end();
+	while (iter != end) {
+		if (iter->first.first == scan) {
+			ret[iter->first.second] = iter->second;
+		}
+		++iter;
+	}
+	return ret;
+}
+
+
 void MSMetaData::_getTimesAndInvervals(
 	std::map<ScanKey, std::pair<Double, Double> >& scanToTimeRangeMap,
-	std::map<ScanKey, std::map<uInt, Double> >& scanSpwToAverageIntervalMap
+	std::map<std::pair<ScanKey, uInt>, Double>& scanSpwToAverageIntervalMap,
+	std::map<std::pair<ScanKey, uInt>, std::set<Double> >& scanSpwToTimesMap
 ) const {
 	if (
 		! _scanToTimeRangeMap.empty()
 		&& ! _scanSpwToIntervalMap.empty()
+		&& ! _scanSpwToTimesMap.empty()
 	) {
 		scanToTimeRangeMap = _scanToTimeRangeMap;
 		scanSpwToAverageIntervalMap = _scanSpwToIntervalMap;
+		scanSpwToTimesMap = _scanSpwToTimesMap;
 		return;
 	}
 	scanToTimeRangeMap.clear();
+	scanSpwToAverageIntervalMap.clear();
+	scanSpwToTimesMap.clear();
 	CountedPtr<Vector<Int> > obsIDs = _getObservationIDs();
 	Vector<Int>::const_iterator oIter = obsIDs->begin();
 	CountedPtr<Vector<Int> > arrayIDs = _getArrayIDs();
@@ -1966,12 +2102,11 @@ void MSMetaData::_getTimesAndInvervals(
 	String intervalColName = MeasurementSet::columnName(MSMainEnums::INTERVAL);
 	Vector<Double> intervals = ScalarColumn<Double>(*_ms, intervalColName).getColumn();
 	Vector<Double>::const_iterator  iIter = intervals.begin();
-	scanSpwToAverageIntervalMap.clear();
-	std::map<ScanKey, std::map<uInt, uInt> > counts;
-	vector<uInt> dataDesIDToSpwMap = _getDataDescIDToSpwMap();
+	//scanSpwToAverageIntervalMap.clear();
+	std::map<std::pair<ScanKey, uInt>, uInt> counts;
+	vector<uInt> dataDesIDToSpwMap = getDataDescIDToSpwMap();
 	ScanKey scanKey;
-	//std::pair<ScanKey, uInt> scanSpwToAverageIntervalKey;
-	uInt mysize = 0;
+	std::pair<ScanKey, uInt> key;
 	while (sIter != sEnd) {
 		scanKey.obsID = *oIter;
 		scanKey.arrayID = *aIter;
@@ -1985,25 +2120,21 @@ void MSMetaData::_getTimesAndInvervals(
 			scanToTimeRangeMap[scanKey].second = max(scanToTimeRangeMap[scanKey].second, *tIter+half);
 		}
 		uInt spw = dataDesIDToSpwMap[*dIter];
+		key.first = scanKey;
+		key.second = spw;
 		if (
-			(
-				scanSpwToAverageIntervalMap.find(scanKey)
-				== scanSpwToAverageIntervalMap.end()
-			)
-			|| (
-				scanSpwToAverageIntervalMap.find(scanKey)->second.find(spw)
-				== scanSpwToAverageIntervalMap.find(scanKey)->second.end()
-			)
+			scanSpwToAverageIntervalMap.find(key)
+			== scanSpwToAverageIntervalMap.end()
 		) {
-			// map does not yet have key scanKey or second map does not yet
-			// have key spw
-			scanSpwToAverageIntervalMap[scanKey][spw] = *iIter;
-			counts[scanKey][spw] = 1;
+			scanSpwToAverageIntervalMap[key] = *iIter;
+			counts[key] = 1;
+			scanSpwToTimesMap[key] = std::set<Double>();
 		}
 		else {
-			scanSpwToAverageIntervalMap[scanKey][spw] += *iIter;
-			++counts[scanKey][spw];
+			scanSpwToAverageIntervalMap[key] += *iIter;
+			++counts[key];
 		}
+		scanSpwToTimesMap[key].insert(*tIter);
 		++sIter;
 		++tIter;
 		++iIter;
@@ -2011,28 +2142,24 @@ void MSMetaData::_getTimesAndInvervals(
 		++oIter;
 		++aIter;
 	}
-	std::map<ScanKey, std::map<uInt, Double> >::iterator mIter = scanSpwToAverageIntervalMap.begin();
-	std::map<ScanKey, std::map<uInt, Double> >::iterator mEnd = scanSpwToAverageIntervalMap.end();
+	std::map<std::pair<ScanKey, uInt>, Double>::iterator mIter = scanSpwToAverageIntervalMap.begin();
+	std::map<std::pair<ScanKey, uInt>, Double>::iterator mEnd = scanSpwToAverageIntervalMap.end();
 	std::map<uInt, Double>::iterator pIter, pEnd;
-	uInt spw;
+	uInt setsize = 0;
 	while (mIter != mEnd) {
-		scanKey = mIter->first;
-		pIter = mIter->second.begin();
-		pEnd = mIter->second.end();
-		while (pIter != pEnd) {
-			spw = pIter->first;
-			pIter->second /= counts[scanKey][spw];
-			++pIter;
-		}
-		mysize += mIter->second.size()*(sizeof(uInt) + sizeof(Double));
+		mIter->second /= counts[mIter->first];
+		setsize += scanSpwToTimesMap[mIter->first].size();
 		++mIter;
 	}
-	mysize *= sizeof(ScanKey);
+	uInt mysize = scanSpwToAverageIntervalMap.size() * (
+		sizeof(ScanKey) + sizeof(uInt) + sizeof(Double)
+	);
 	mysize += scanToTimeRangeMap.size()*(sizeof(ScanKey)+2*sizeof(Double));
-	//mysize += scanSpwToAverageIntervalMap.size()*sizeof(ScanKey) * nSpw(True) * sizeof(Double);
+	mysize += scanSpwToTimesMap.size()*sizeof(ScanKey) + sizeof(Double)*setsize;
 	if (_cacheUpdated(mysize)) {
 		_scanToTimeRangeMap = scanToTimeRangeMap;
 		_scanSpwToIntervalMap = scanSpwToAverageIntervalMap;
+		_scanSpwToTimesMap = scanSpwToTimesMap;
 	}
 }
 
@@ -2046,21 +2173,33 @@ std::pair<Double, Double> MSMetaData::getTimeRangeForScan(
 	// and the min and max timestamps.
 
 	std::map<ScanKey, std::pair<Double,Double> > scanToTimeRangeMap;
-	std::map<ScanKey, std::map<uInt, Double> > scanSpwToAverageIntervalMap;
-	_getTimesAndInvervals(scanToTimeRangeMap, scanSpwToAverageIntervalMap);
+	std::map<ScanKey, Double> scanToIntervalMap;
+	std::map<std::pair<ScanKey, uInt>, Double> scanSpwToAverageIntervalMap;
+	std::map<std::pair<ScanKey, uInt>, std::set<Double> > scanSpwToTimesMap;
+	_getTimesAndInvervals(
+		scanToTimeRangeMap,
+		scanSpwToAverageIntervalMap,
+		scanSpwToTimesMap
+	);
 	return scanToTimeRangeMap.find(scanKey)->second;
 }
 
 std::pair<Double, Double> MSMetaData::getTimeRange() const {
+	// can't just use TIME column because that does not take into account
+	// the interval
 	std::map<ScanKey, std::pair<Double,Double> > scanToTimeRangeMap;
-	std::map<ScanKey, std::map<uInt, Double> > scanSpwToAverageIntervalMap;
-	_getTimesAndInvervals(scanToTimeRangeMap, scanSpwToAverageIntervalMap);
+	std::map<ScanKey, Double> scanToIntervalMap;
+	std::map<std::pair<ScanKey, uInt>, Double> scanSpwToAverageIntervalMap;
+	std::map<std::pair<ScanKey, uInt>, std::set<Double> > scanSpwToTimesMap;
+	_getTimesAndInvervals(
+		scanToTimeRangeMap, scanSpwToAverageIntervalMap,
+		scanSpwToTimesMap
+	);
 	std::map<ScanKey, std::pair<Double,Double> >::const_iterator iter = scanToTimeRangeMap.begin();
 	std::map<ScanKey, std::pair<Double,Double> >::const_iterator end = scanToTimeRangeMap.end();
 	std::pair<Double, Double> timerange(
 		iter->second.first, iter->second.second
 	);
-
 	++iter;
 	while (iter != end) {
 		timerange.first = min(timerange.first, iter->second.first);
@@ -2074,17 +2213,22 @@ std::map<uInt, Double> MSMetaData::getAverageIntervalsForScan(
 	const ScanKey& scan
 ) const {
 	_checkScan(scan);
-	if (! _scanSpwToIntervalMap.empty()) {
-		return _scanSpwToIntervalMap[scan];
-	}
-	std::map<ScanKey, std::pair<Double, Double> > scanToTimeRangeMap;
-	std::map<ScanKey, std::map<uInt, Double> > scanSpwToIntervalMap;
+	std::map<ScanKey, std::pair<Double,Double> > scanToTimeRangeMap;
+	std::map<std::pair<ScanKey, uInt>, Double> scanSpwToAverageIntervalMap;
+	std::map<std::pair<ScanKey, uInt>, std::set<Double> > scanSpwToTimesMap;
 	_getTimesAndInvervals(
-		scanToTimeRangeMap,
-		scanSpwToIntervalMap
+		scanToTimeRangeMap, scanSpwToAverageIntervalMap,
+		scanSpwToTimesMap
 	);
-	return scanSpwToIntervalMap[scan];
-
+	std::map<uInt, Double> ret;
+	std::map<std::pair<ScanKey, uInt>, Double>::const_iterator iter = scanSpwToAverageIntervalMap.begin();
+	std::map<std::pair<ScanKey, uInt>, Double>::const_iterator end = scanSpwToAverageIntervalMap.end();
+	while (iter != end) {
+		if (iter->first.first == scan) {
+			ret[iter->first.second] = iter->second;
+		}
+	}
+	return ret;
 }
 
 std::map<String, std::set<Int> > MSMetaData::getIntentToFieldsMap() {
@@ -2271,9 +2415,9 @@ Record MSMetaData::getSummary() const {
 	Record spectralTable;
 	spectralTable.define("names", Vector<String>(getSpwNames()));
 	Record polTable;
-	polTable.define("n correlations", Vector<Int>(_getNumCorrs()));
+	polTable.define("n correlations", Vector<Int>(getNumCorrs()));
 	Record dataDescTable;
-	vector<uInt> ddToSpw = _getDataDescIDToSpwMap();
+	vector<uInt> ddToSpw = getDataDescIDToSpwMap();
 	vector<uInt> ddToPolID = getDataDescIDToPolIDMap();
 	vector<uInt>::const_iterator siter = ddToSpw.begin();
 	vector<uInt>::const_iterator send = ddToSpw.end();
@@ -2497,7 +2641,43 @@ void MSMetaData::_getFieldsAndScansMaps(
 	}
 }
 
-vector<Int> MSMetaData::_getNumCorrs() const {
+vector<Array<Int> > MSMetaData::getCorrProducts() const {
+	// responsible for setting _corrProds
+	if (! _corrProds.empty()) {
+		return _corrProds;
+	}
+	String colName = MSPolarization::columnName(MSPolarizationEnums::CORR_PRODUCT);
+	ROArrayColumn<Int> col(_ms->polarization(), colName);
+	uInt colSize = col.nrow();
+	vector<Array<Int> > contents(colSize);
+	for (uInt i=0; i<colSize; ++i) {
+		contents[i] = col.get(i);
+	}
+	if (_cacheUpdated(_sizeof(contents))) {
+		_corrProds = contents;
+	}
+	return contents;
+}
+
+vector<vector<Int> > MSMetaData::getCorrTypes() const {
+	// responsible for setting _corrTypes
+	if (! _corrTypes.empty()) {
+		return _corrTypes;
+	}
+	String colName = MSPolarization::columnName(MSPolarizationEnums::CORR_TYPE);
+	ROArrayColumn<Int> col(_ms->polarization(), colName);
+	uInt colSize = col.nrow();
+	vector<vector<Int> > contents(colSize);
+	for (uInt i=0; i<colSize; ++i) {
+		contents[i] = col.get(i).tovector();
+	}
+	if (_cacheUpdated(_sizeof(contents))) {
+		_corrTypes = contents;
+	}
+	return contents;
+}
+
+vector<Int> MSMetaData::getNumCorrs() const {
 	// responsible for setting _numCorrs
 	if (! _numCorrs.empty()) {
 		return _numCorrs;
@@ -2531,6 +2711,83 @@ vector<std::set<Int> > MSMetaData::_getObservationIDToArrayIDsMap() const {
 		_obsToArraysMap = mymap;
 	}
 	return mymap;
+}
+
+vector<int> MSMetaData::getFieldTableSourceIDs() const {
+	// this method is responsible for setting _field_sourceIDs
+	if (! _field_sourceIDs.empty()) {
+		return _field_sourceIDs;
+	}
+	String colName = MSField::columnName(MSField::SOURCE_ID);
+	ROScalarColumn<Int> col(_ms->field(), colName);
+	vector<Int> myvec = col.getColumn().tovector();
+	if (_cacheUpdated(sizeof(myvec))) {
+		_field_sourceIDs = myvec;
+	}
+	return myvec;
+}
+
+vector<MDirection> MSMetaData::getSourceDirections() const {
+	// this method is responsible for setting _sourceDirs
+	if (! _sourceDirs.empty()) {
+		return _sourceDirs;
+	}
+	String colName = MSSource::columnName(MSSource::DIRECTION);
+	ROArrayColumn<Double> col(_ms->source(), colName);
+	const TableRecord& keywords = col.keywordSet();
+	vector<String> u = keywords.asArrayString("QuantumUnits").tovector();
+	std::pair<String, String> units(u[0], u[1]);
+	MDirection::Types frame;
+	String frameString = keywords.asRecord("MEASINFO").asString("Ref");
+	ThrowIf(
+		! MDirection::getType(
+			frame,  frameString
+		), "Unknown direction reference frame " + frameString
+	);
+	vector<MDirection> myvec = _getDirections(
+		col, units,
+		vector<MDirection::Types>(col.nrow(), frame)
+	);
+	if (_cacheUpdated(sizeof(myvec))) {
+		_sourceDirs = myvec;
+	}
+	return myvec;
+}
+
+vector<String> MSMetaData::getSourceNames() const {
+	// this method is responsible for setting _sourceNames
+	if (! _sourceNames.empty()) {
+		return _sourceNames;
+	}
+	String colName = MSSource::columnName(MSSource::NAME);
+	ROScalarColumn<String> col(_ms->source(), colName);
+	vector<String> myvec = col.getColumn().tovector();
+	if (_cacheUpdated(sizeof(myvec))) {
+		_sourceNames = myvec;
+	}
+	return myvec;
+}
+
+vector<int> MSMetaData::getSourceTableSourceIDs() const {
+	// this method is responsible for setting _source_sourceIDs
+	if (! _source_sourceIDs.empty()) {
+		return _source_sourceIDs;
+	}
+	String colName = MSSource::columnName(MSSource::SOURCE_ID);
+	ROScalarColumn<Int> col(_ms->source(), colName);
+	vector<Int> myvec = col.getColumn().tovector();
+	if (_cacheUpdated(sizeof(myvec))) {
+		_source_sourceIDs = myvec;
+	}
+	return myvec;
+}
+
+uInt MSMetaData::nUniqueSourceIDsFromSourceTable() const {
+	String colName = MSSource::columnName(MSSource::SOURCE_ID);
+	ROScalarColumn<Int> col(_ms->source(), colName);
+	Vector<Int> myvec = col.getColumn();
+	std::set<Int> myset(myvec.begin(), myvec.end());
+	return myset.size();
 }
 
 Bool MSMetaData::_hasIntent(const String& intent) const {
@@ -2651,6 +2908,19 @@ std::set<Double> MSMetaData::getTimesForField(const Int fieldID) {
 	return (*fieldToTimesMap)[fieldID];
 }
 
+vector<String> MSMetaData::getObservers() const {
+	if (! _observers.empty()) {
+		return _observers;
+	}
+	String colName = MSObservation::columnName(MSObservationEnums::OBSERVER);
+	ROScalarColumn<String> col(_ms->observation(), colName);
+	vector<String> contents = col.getColumn().tovector();
+	if (_cacheUpdated(_sizeof(contents))) {
+		_observers = contents;
+	}
+	return contents;
+}
+
 vector<String> MSMetaData::getObservatoryNames() {
 	if (! _observatoryNames.empty()) {
 		return _observatoryNames;
@@ -2658,18 +2928,65 @@ vector<String> MSMetaData::getObservatoryNames() {
 	String tnameColName = MSObservation::columnName(MSObservationEnums::TELESCOPE_NAME);
 	ROScalarColumn<String> telescopeNameCol(_ms->observation(), tnameColName);
 	vector<String> names = telescopeNameCol.getColumn().tovector();
-	uInt mysize = 0;
-	vector<String>::const_iterator end = names.end();
-	for (
-		vector<String>::const_iterator iter=names.begin();
-		iter!=end; ++iter
-	) {
-		mysize += iter->size();
-	}
-	if (_cacheUpdated(mysize)) {
+	if (_cacheUpdated(_sizeof(names))) {
 		_observatoryNames = names;
 	}
 	return names;
+}
+
+vector<String> MSMetaData::getProjects() const {
+	if (! _projects.empty()) {
+		return _projects;
+	}
+	String colName = MSObservation::columnName(MSObservationEnums::PROJECT);
+	ROScalarColumn<String> col(_ms->observation(), colName);
+	vector<String> projects = col.getColumn().tovector();
+	if (_cacheUpdated(_sizeof(projects))) {
+		_projects = projects;
+	}
+	return projects;
+}
+
+vector<vector<String> > MSMetaData::getSchedules() const {
+	// responsible for setting _schedules
+	if (! _schedules.empty()) {
+		return _schedules;
+	}
+	String colName = MSObservation::columnName(MSObservationEnums::SCHEDULE);
+	ROArrayColumn<String> col(_ms->observation(), colName);
+	uInt colSize = col.nrow();
+	vector<vector<String> > contents(colSize);
+	for (uInt i=0; i<colSize; ++i) {
+		contents[i] = col.get(i).tovector();
+	}
+	if (_cacheUpdated(_sizeof(contents))) {
+		_schedules = contents;
+	}
+	return contents;
+}
+
+vector<std::pair<MEpoch, MEpoch> > MSMetaData::getTimeRangesOfObservations() const {
+	if (! _timeRangesForObs.empty()) {
+		return _timeRangesForObs;
+	}
+	String colName = MSObservation::columnName(MSObservationEnums::TIME_RANGE);
+	ROArrayColumn<Double> col(_ms->observation(), colName);
+	TableRecord kv = col.keywordSet();
+	String unit = kv.asArrayString("QuantumUnits").tovector()[0];
+	MEpoch::Types myRF;
+	MEpoch::getType(myRF, kv.asRecord("MEASINFO").asString("Ref"));
+	uInt n = col.nrow();
+	vector<std::pair<MEpoch, MEpoch> > contents(n);
+	for (uInt i=0; i<n; ++i) {
+		Vector<Double> row = col.get(i);
+		Quantity begin(row[0], unit);
+		Quantity end(row[1], unit);
+		contents[i] = std::pair<MEpoch, MEpoch>(MEpoch(begin, myRF), MEpoch(end, myRF));
+	}
+	if (_cacheUpdated(_sizeof(contents))) {
+		_timeRangesForObs = contents;
+	}
+	return contents;
 }
 
 MPosition MSMetaData::getObservatoryPosition(uInt which) const {
@@ -2697,6 +3014,72 @@ MPosition MSMetaData::getObservatoryPosition(uInt which) const {
 		_observatoryPositions = observatoryPositions;
 	}
 	return observatoryPositions[which];
+}
+
+vector<MDirection> MSMetaData::getPhaseDirs() const {
+	// this method is responsible for setting _phaseDirs
+	if (! _phaseDirs.empty()) {
+		return _phaseDirs;
+	}
+	String name = MSField::columnName(MSFieldEnums::PHASE_DIR);
+	ROArrayColumn<Double> phaseDirCol(_ms->field(),  name);
+	const TableRecord& keywords = phaseDirCol.keywordSet();
+	Record measInfo = keywords.asRecord("MEASINFO");
+	map<uInt, MDirection::Types> myTypes;
+	{
+		vector<uInt> tabRefCodes = measInfo.asArrayuInt("TabRefCodes").tovector();
+		vector<String> tabRefTypes = measInfo.asArrayString("TabRefTypes").tovector();
+		uInt n = tabRefCodes.size();
+		MDirection::Types tp;
+		for (uInt i=0; i<n; ++i) {
+			ThrowIf(
+				! MDirection::getType(tp, tabRefTypes[i]),
+				"Unknown direction frame " + tabRefTypes[i]
+		    );
+			myTypes[tabRefCodes[i]] = tp;
+		}
+	}
+	uInt n = phaseDirCol.nrow();
+	vector<MDirection::Types> refFrames(n);
+	{
+		vector<Int> phaseDirRefs = ROScalarColumn<Int>(_ms->field(),"PhaseDir_Ref" ).getColumn().tovector();
+		for (uInt i=0; i<n; ++i) {
+			refFrames[i] = myTypes[phaseDirRefs[i]];
+		}
+	}
+	vector<String> u = keywords.asArrayString("QuantumUnits").tovector();
+	std::pair<String, String> units(u[0], u[1]);
+	vector<MDirection> myDirs = _getDirections(phaseDirCol, units, refFrames);
+	cout << "mydirs size " << myDirs.size() << endl;
+	/*
+	vector<MDirection> myDirs(n);
+	for (uInt i=0; i<n; ++i) {
+		vector<Double> longlat = phaseDirCol.get(i).tovector();
+		Quantity longitude(longlat[0], units[0]);
+		Quantity latitude(longlat[1], units[1]);
+		myDirs[i] = MDirection(longitude, latitude, refFrames[i]);
+	}
+	*/
+	if (_cacheUpdated(_sizeof(myDirs))) {
+		_phaseDirs = myDirs;
+	}
+	return myDirs;
+}
+
+vector<MDirection> MSMetaData::_getDirections(
+	const ROArrayColumn<Double>& col,
+	const pair<String, String>& units,
+	const vector<MDirection::Types>& refFrames
+) {
+	uInt n = col.nrow();
+	vector<MDirection> myDirs(n);
+	for (uInt i=0; i<n; ++i) {
+		vector<Double> longlat = col.get(i).tovector();
+		Quantity longitude(longlat[0], units.first);
+		Quantity latitude(longlat[1], units.second);
+		myDirs[i] = MDirection(longitude, latitude, refFrames[i]);
+	}
+	return myDirs;
 }
 
 vector<MPosition> MSMetaData::_getAntennaPositions() const {
@@ -2766,14 +3149,14 @@ vector<MPosition> MSMetaData::getAntennaPositions(
 	return getAntennaPositions(getAntennaIDs(names));
 }
 
-Quantum<Vector<Double> > MSMetaData::getAntennaOffset(uInt which) {
+QVD MSMetaData::getAntennaOffset(uInt which) {
 	if (which >= nAntennas()) {
 		throw AipsError(_ORIGIN + "Out of range exception.");
 	}
 	return getAntennaOffsets()[which];
 }
 
-vector<Quantum<Vector<Double> > > MSMetaData::getAntennaOffsets() const {
+vector<QVD > MSMetaData::getAntennaOffsets() const {
 	// This method is responsble for setting _antennaOffsets
 	if (! _antennaOffsets.empty()) {
 		return _antennaOffsets;
@@ -2793,7 +3176,7 @@ vector<Quantum<Vector<Double> > > MSMetaData::getAntennaOffsets() const {
 	Double latObs = obsLongLat[1];
 	vector<MPosition> antennaPositions = _getAntennaPositions();
 	vector<MPosition>::const_iterator end = antennaPositions.end();
-	vector<Quantum<Vector<Double> > > antennaOffsets;
+	vector<QVD > antennaOffsets;
 	for (
 		vector<MPosition>::const_iterator iter=antennaPositions.begin();
 		iter!=end; ++iter
@@ -2810,7 +3193,7 @@ vector<Quantum<Vector<Double> > > MSMetaData::getAntennaOffsets() const {
 		offset[0] = (longAnt - longObs)*rObs*cos(latObs);
 		offset[1] = (latAnt - latObs)*rObs;
 		offset[2] = rAnt - rObs;
-		Quantum<Vector<Double> > qoffset(offset, "m");
+		QVD qoffset(offset, "m");
 		antennaOffsets.push_back(qoffset);
 	}
 	if (_cacheUpdated(30*antennaOffsets.size())) {
@@ -2853,7 +3236,7 @@ Matrix<Bool> MSMetaData::getUniqueBaselines() {
 	return baselines;
 }
 
-Quantum<Vector<Double> > MSMetaData::getAntennaOffset(
+QVD MSMetaData::getAntennaOffset(
 	const String& name
 ) {
 	vector<String> names(1);
@@ -2877,7 +3260,7 @@ Quantity MSMetaData::getEffectiveTotalExposureTime() {
 	Vector<Double> times = ScalarColumn<Double>(result, "TIME").getColumn();
 	// each row represents a unique baseline, data description ID, and time combination
 	uInt nrows = result.nrow();
-	vector<uInt> dataDescToSpwIdMap = _getDataDescIDToSpwMap();
+	vector<uInt> dataDescToSpwIdMap = getDataDescIDToSpwMap();
 	std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
 	vector<SpwProperties> spwInfo = _getSpwInfo(avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw);
 	std::map<Double, Double> timeToBWMap = _getTimeToTotalBWMap(
@@ -2886,7 +3269,7 @@ Quantity MSMetaData::getEffectiveTotalExposureTime() {
 	for (uInt i=0; i<nrows; ++i) {
 		uInt ddID = ddIDs[i];
 		uInt spw = dataDescToSpwIdMap[ddID];
-		Quantum<Vector<Double> > channelWidths = spwInfo[spw].chanwidths;
+		QVD channelWidths = spwInfo[spw].chanwidths;
 		Matrix<Bool> flagsMatrix(ArrayColumn<Bool>(result, "FLAG").get(i));
 		uInt nCorrelations = flagsMatrix.nrow();
 		Double denom = (timeToBWMap.find(times[i])->second)*maxNBaselines*nCorrelations;
@@ -3008,7 +3391,7 @@ std::map<Double, Double> MSMetaData::_getTimeToTotalBWMap(
 		++dIter;
 	}
 	std::map<Double, std::set<uInt> >::const_iterator end1 = timeToDDIDMap.end();
-	vector<uInt> dataDescIDToSpwMap = _getDataDescIDToSpwMap();
+	vector<uInt> dataDescIDToSpwMap = getDataDescIDToSpwMap();
 	std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
 	vector<SpwProperties> spwInfo = _getSpwInfo(avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw);
 	for (
@@ -3112,7 +3495,7 @@ void MSMetaData::_getUnflaggedRowStats(
 	uInt i = 0;
     //uInt64 count = 0;
     // a flag value of True means the datum is bad (flagged), so False => unflagged
-    vector<uInt> dataDescIDToSpwMap = _getDataDescIDToSpwMap();
+    vector<uInt> dataDescIDToSpwMap = getDataDescIDToSpwMap();
 	std::set<uInt> a, b, c, d, e;
 	vector<SpwProperties> spwInfo = _getSpwInfo(a, b, c, d, e);
 	CountedPtr<ArrayColumn<Bool> > flags = _getFlags();
@@ -3232,7 +3615,7 @@ void MSMetaData::_getSpwsAndIntentsMaps(
 	Vector<Int>::const_iterator endDDID = dataDescIDs->end();
 	CountedPtr<Vector<Int> > states = _getStateIDs();
 	Vector<Int>::const_iterator curState = states->begin();
-	vector<uInt> dataDescToSpwMap = _getDataDescIDToSpwMap();
+	vector<uInt> dataDescToSpwMap = getDataDescIDToSpwMap();
 	while (curDDID!=endDDID) {
 		uInt spw = dataDescToSpwMap[*curDDID];
 		std::set<String> intents = stateToIntentsMap[*curState];
@@ -3407,7 +3790,7 @@ std::map<std::pair<uInt, uInt>, uInt> MSMetaData::getSpwIDPolIDToDataDescIDMap()
 	if (! _spwPolIDToDataDescIDMap.empty()) {
 		return _spwPolIDToDataDescIDMap;
 	}
-	vector<uInt> dataDescIDToSpwMap = _getDataDescIDToSpwMap();
+	vector<uInt> dataDescIDToSpwMap = getDataDescIDToSpwMap();
 	vector<uInt>::const_iterator i1 = dataDescIDToSpwMap.begin();
 	vector<uInt>::const_iterator end = dataDescIDToSpwMap.end();
 	std::map<std::pair<uInt, uInt>, uInt> spwPolIDToDataDescIDMap;
@@ -3507,7 +3890,7 @@ MDirection MSMetaData::_getInterpolatedDirection(
 	return MDirection(qlon, qlat, rf);
 }
 
-vector<uInt> MSMetaData::_getDataDescIDToSpwMap() const {
+vector<uInt> MSMetaData::getDataDescIDToSpwMap() const {
 	if (! _dataDescIDToSpwMap.empty()) {
 		return _dataDescIDToSpwMap;
 	}
@@ -3534,7 +3917,7 @@ std::set<uInt> MSMetaData::getPolarizationIDs(
 		return _scanSpwToPolIDMap.find(std::pair<ScanKey, uInt>(scanKey, spwid))->second;
 	}
 	vector<uInt> ddToPolMap = getDataDescIDToPolIDMap();
-	vector<uInt> ddToSpwMap = _getDataDescIDToSpwMap();
+	vector<uInt> ddToSpwMap = getDataDescIDToSpwMap();
 	std::map<ScanKey, std::set<uInt> > scanToDDIDMap;
 	vector<std::set<ScanKey> > ddIDToScanMap;
 	_getScansAndDDIDMaps(scanToDDIDMap, ddIDToScanMap);
@@ -3725,6 +4108,25 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
 	ArrayColumn<Double> cwCol = spwCols.chanWidth();
 	Array<String> cwUnits;
 	cwCol.keywordSet().get("QuantumUnits", cwUnits);
+	ScalarColumn<Double> rfCol = spwCols.refFrequency();
+	Vector<Double> rfs = rfCol.getColumn();
+	Array<String> rfUnits;
+	rfCol.keywordSet().get("QuantumUnits", rfUnits);
+	std::map<uInt, String> codeToType;
+	{
+		Record info = rfCol.keywordSet().asRecord("MEASINFO");
+		Array<uInt> codes = info.asArrayuInt("TabRefCodes");
+		Array<String> types = info.asArrayString("TabRefTypes");
+		Array<uInt>::const_iterator iter = codes.begin();
+		Array<uInt>::const_iterator end = codes.end();
+		Array<String>::const_iterator titer = types.begin();
+		while (iter != end) {
+			codeToType[*iter] = *titer;
+			++iter;
+			++titer;
+		}
+	}
+	ScalarColumn<Int> mrfCol = spwCols.measFreqRef();
 
 	Vector<Int> nss  = spwCols.netSideband().getColumn();
 	Vector<String> name = spwCols.name().getColumn();
@@ -3760,6 +4162,9 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
 		    	sqldSpw.insert(i);
 		    }
 		}
+		MFrequency::Types rfType;
+		MFrequency::getType(rfType, codeToType[mrfCol.get(i)]);
+		spwInfo[i].reffreq = MFrequency(Quantity(rfs[i], *rfUnits.begin()), rfType);
 		// algorithm from thunter, CAS-5794
 		if (
 			nchan >= 15

@@ -76,6 +76,8 @@ String toString(const ScanKey& scanKey);
 // define operator<() so it can be used as a key in std::map
 Bool operator<(const ScanKey& lhs, const ScanKey& rhs);
 
+Bool operator==(const ScanKey& lhs, const ScanKey& rhs);
+
 // extract all the unique scan numbers from the specified scans
 std::set<Int> scanNumbers(const std::set<ScanKey>& scanKeys);
 
