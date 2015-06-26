@@ -21,6 +21,7 @@ endforeach (file)
 set (tests
 ascii2Table
 tArrayColumnSlices
+tArrayColumnCellSlices
 tColumnsIndex
 tColumnsIndexArray
 tConcatRows

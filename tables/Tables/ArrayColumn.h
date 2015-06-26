@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/tables/Tables/TableColumn.h>
+#include <casacore/tables/Tables/TableError.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -336,11 +337,6 @@ public:
                          Array<T>& destination,
                          Bool resize = False) const;
 
-//    void getSliceForRows (const RefRows& rows,
-//                          const Vector<Vector<Slice> >& arraySlices,
-//                          Array<T>& destination) const
-//      { getColumnCells (rows, arraySlices, destination, True); }
- 
     // The get() function like above which does not check shapes, etc.
     // It is faster and can be used for performance reasons if one
     // knows for sure that the arguments are correct.
@@ -508,28 +504,56 @@ class ColumnSlicer {
 
 public:
 
+    // Create a ColumnSlicer for use in one of the overloads of ArrayColumn::getColumnCells.  That method
+    // takes a potentially complex select of data out of a column cell (e.g., multiple slices along each
+    // axis) and then puts them into a selection of a destination array.  This is most easily represnted
+    // as a set of source,destination slicers where one is applied to the cell and the other to the 
+    // destination array.  
+    // 
+    // The shape paramter is the shape of the destination excluding the row axis.  
+    // 
+    // 
+    //
+    // The Slicer objects provided (by pointer) will be owned by the ColumnSlicer object which will
+    // delete them in its destructor.
+
+
     ColumnSlicer (const IPosition & shape, Vector<Slicer *> dataSlicers, Vector<Slicer *> destinationSlicers)
     : dataSlicers_p (dataSlicers),
       destinationSlicers_p (destinationSlicers),
       shape_p (shape)
-    {}
+    {
+	String message = validateParameters ();
+	if (! message.empty()){
+
+	  freeSlicers(); // Call gave them to us; set them free.
+
+	  throw  AipsError (String ("ColumnSlicer (ctor):: ") + message);
+	}
+    }
+
+    // Kill off the Slicer objects.
 
     ~ColumnSlicer (){
-        for (uInt i = 0; i < dataSlicers_p.size(); i++){
-            delete dataSlicers_p [i];
-            delete destinationSlicers_p [i];
-        }
+
+        freeSlicers();
     }
+
+    // Accessor that returns the dataSlicers.
 
     const Vector <Slicer *> & getDataSlicers () const
     {
         return dataSlicers_p;
     }
 
+    // Accessor that returns the desintation slicers
+
     const Vector <Slicer *> & getDestinationSlicers () const
     {
         return destinationSlicers_p;
     }
+
+    // Accessor that returns the shape.
 
     const IPosition & shape () const
     {
@@ -537,6 +561,49 @@ public:
     }
 
 private:
+
+    void freeSlicers ()
+    {
+        // The two Vectors contain pointers to objects so they need to be freed.
+        // They should have the same length normally, but during validation it's
+        // possible that they have different lengths.
+
+        for (uInt i = 0; i < dataSlicers_p.size(); i++){
+            delete dataSlicers_p [i];
+	}
+
+        for (uInt i = 0; i < destinationSlicers_p.size(); i++){
+            delete destinationSlicers_p [i];
+        }
+    }
+
+    String validateParameters ()
+    {
+        // Validate the contruction parameters to see if they are consistent.
+
+	if (dataSlicers_p.size() != destinationSlicers_p.size()){
+	    return String::format ("Number of data slicers (%d) and destination slicers (%d) "
+                                   "must match", dataSlicers_p.size(), destinationSlicers_p.size());
+	}
+
+	if (dataSlicers_p.size() == 0){
+	  return String::format ("At least one slicer required.",
+                                 dataSlicers_p.size(), destinationSlicers_p.size());
+	}
+
+	for (uInt i = 0; i < dataSlicers_p.size(); i++){
+
+	    if (dataSlicers_p[i]->length() != destinationSlicers_p[i]->length()){
+
+		return String::format ("Length of data slicer[%d] (%s) and "
+                                       "destination slicer [%d] (%s) must be equal", 
+                                       i, dataSlicers_p[i]->length().toString().c_str(),
+				       i, destinationSlicers_p[i]->length().toString().c_str());
+	    }
+	}
+
+	return String();
+    }
 
     Vector<Slicer *> dataSlicers_p;
     Vector<Slicer *> destinationSlicers_p;
