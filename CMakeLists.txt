@@ -65,6 +65,7 @@ if (ENABLE_SHARED)
     option (BUILD_SHARED_LIBS "" YES)
     if (ENABLE_RPATH)
         # Set RPATH to use for installed targets; append linker search path
+        set(CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib" )
         set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
         set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
     endif (ENABLE_RPATH)
