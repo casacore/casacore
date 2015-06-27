@@ -78,9 +78,50 @@ struct IsArrayInitPolicy<ArrayInitPolicy> {
   typedef ArrayInitPolicy type;
 };
 
-template<typename T, size_t ALIGNMENT = CASA_DEFAULT_ALIGNMENT>
-struct casacore_allocator: public std::allocator<T> {
+#if __cplusplus < 201103L
+template<typename T>
+struct std11_allocator: public std::allocator<T> {
   typedef std::allocator<T> Super;
+  typedef typename Super::size_type size_type;
+  typedef typename Super::difference_type difference_type;
+  typedef typename Super::pointer pointer;
+  typedef typename Super::const_pointer const_pointer;
+  typedef typename Super::reference reference;
+  typedef typename Super::const_reference const_reference;
+  typedef typename Super::value_type value_type;
+
+  template<typename TOther>
+  struct rebind {
+    typedef std11_allocator<TOther> other;
+  };
+  void construct(pointer ptr) {
+    ::new(static_cast<void *>(ptr)) T();
+  }
+  void construct(pointer ptr, const_reference val) {
+    Super::construct(ptr, val);
+  }
+};
+
+template<typename T>
+inline bool operator==(const std11_allocator<T>&,
+    const std11_allocator<T>&) {
+  return true;
+}
+
+template<typename T>
+inline bool operator!=(const std11_allocator<T>&,
+    const std11_allocator<T>&) {
+  return false;
+}
+
+#else
+template<typename T>
+using std11_allocator = std::allocator<T>;
+#endif
+
+template<typename T, size_t ALIGNMENT = CASA_DEFAULT_ALIGNMENT>
+struct casacore_allocator: public std11_allocator<T> {
+  typedef std11_allocator<T> Super;
   typedef typename Super::size_type size_type;
   typedef typename Super::difference_type difference_type;
   typedef typename Super::pointer pointer;
@@ -138,8 +179,8 @@ inline bool operator!=(const casacore_allocator<T, ALIGNMENT>&,
 }
 
 template<typename T>
-struct new_del_allocator: public std::allocator<T> {
-  typedef std::allocator<T> Super;
+struct new_del_allocator: public std11_allocator<T> {
+  typedef std11_allocator<T> Super;
   typedef typename Super::size_type size_type;
   typedef typename Super::difference_type difference_type;
   typedef typename Super::pointer pointer;
@@ -178,6 +219,7 @@ struct new_del_allocator: public std::allocator<T> {
   }
 #if __cplusplus < 201103L
     void construct(pointer , const_reference) {} // do nothing because new T[] does
+    void construct(pointer) {} // do nothing because new T[] does
 #else
   template<typename U, typename... Args>
   void construct(U *, Args&&... ) {} // do nothing because new T[] does
@@ -207,7 +249,7 @@ struct BaseAllocator {
 
 template<typename T>
 struct DefaultAllocator: public BaseAllocator<T, DefaultAllocator<T> > {
-  typedef std::allocator<T> type;
+  typedef std11_allocator<T> type;
   static DefaultAllocator<T> const value;
 };
 template<typename T>

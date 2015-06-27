@@ -651,15 +651,8 @@ public:
       }
     }
     virtual void construct(pointer ptr, size_type n) {
-#if __cplusplus < 201103L
-        value_type const init_value = value_type();
-#endif
       for (size_type i = 0; i < n; ++i) {
-#if __cplusplus < 201103L
-        allocator.construct(&ptr[i], init_value);
-#else
         allocator.construct(&ptr[i]);
-#endif
       }
     }
     virtual void destroy(pointer ptr, size_type n) {
