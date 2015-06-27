@@ -32,7 +32,8 @@
 
 int main() {
 	try {
-		Array<Float> array1(IPosition(3,1024, 1024, 1024));
+    // Array<Float> array1(IPosition(3,1024, 1024, 1024));
+		Array<Float> array1(IPosition(3,512, 512, 512));
 		ArrayLattice<Float> lat(array1);
 		LatticeStatsDataProvider<Float> dataProvider(lat);
 		dataProvider.reset();
