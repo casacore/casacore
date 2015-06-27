@@ -710,6 +710,10 @@ public:
   Bool keep_allocator_p;
 };
 
+template<typename T>
+template<typename Allocator>
+Allocator Block<T>::BulkAllocatorImpl<Allocator>::allocator;
+
 
 // <summary>
 // A drop-in replacement for <src>Block<T*></src>.
