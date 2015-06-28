@@ -256,7 +256,7 @@ public:
 
   // Create a <src>Block</src> from a C-array (i.e. pointer). If 
   // <src>takeOverStorage</src> is <src>True</src>, The Block assumes that
-  // it owns the pointer, i.e. that it is safe to release via <src>allocator</src> it when
+  // it owns the pointer, i.e. that it is safe to release it via <src>allocator</src> when
   // the Block is destructed, otherwise the actual storage is not destroyed.
   // If true, <src>storagePointer</src> is set to <src>0</src>.
   // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
@@ -273,7 +273,7 @@ public:
   }
   // Create a <src>Block</src> from a C-array (i.e. pointer). If
   // <src>takeOverStorage</src> is <src>True</src>, The Block assumes that
-  // it owns the pointer, i.e. that it is safe to release via <src>allocator</src> it when
+  // it owns the pointer, i.e. that it is safe to release it via <src>allocator</src> when
   // the Block is destructed, otherwise the actual storage is not destroyed.
   // If true, <src>storagePointer</src> is set to <src>0</src>.
   template<typename Allocator>
@@ -437,7 +437,7 @@ public:
 
   // Replace the internal storage with a C-array (i.e. pointer).
   // If <src>takeOverStorage</src> is True, The Block assumes that it
-  // owns the pointer, i.e. that it is safe to release via <src>allocator</src> it when the
+  // owns the pointer, i.e. that it is safe to release it via <src>allocator</src> when the
   // <src>Block</src>is destructed, otherwise the actual storage is not destroyed.
   // If true, storagePointer is set to <src>NULL</src>.
   // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
@@ -445,7 +445,7 @@ public:
   // to let <src>Block</src> to know how to release the <src>storagePointer</src>.
   // The default parameter of allocator will be changed from <src>AllocSpec<NewDelAllocator<T> >::value</src>
   // to <src>AllocSpec<DefaultAllocator<T> >::value</src> in future.
-  // AipsError is thrown if allocator is incompatible with the allocator of the instance and changing allocator is prohibited,
+  // AipsError is thrown if allocator is incompatible with the current allocator of the instance and changing allocator is prohibited,
   // even if takeOverStorage == False.
   // <group>
   void replaceStorage(size_t n, T *&storagePointer, Bool takeOverStorage=True) {
@@ -519,7 +519,7 @@ public:
   // <h3> Examples of misuse </h3> <srcblock>
   // Block<Int> *bp = new Block<Int>(100);
   // Int *ip = bp->storage();
-  // delete bp;      // Oops, ip is now dangling
+  // DefaultAllocator<Int>::value.deallocate(bp, bp->capacity());   // Oops, ip is now dangling
   // Block<Int> a(100),b(100);
   // Int *ip = a.storage();
   // a = b;          // Likewise
@@ -726,7 +726,7 @@ Allocator Block<T>::BulkAllocatorImpl<Allocator>::allocator;
 // <todo asof="1996/05/01">
 //   <li> Partial template specialization is another implementation choice that 
 //        will be possible eventually.
-//   <li> It might be useful to have functions that know the templte parameter
+//   <li> It might be useful to have functions that know the template parameter
 //        is a pointer, e.g. that delete all the non-null pointers.
 // </todo>
  
