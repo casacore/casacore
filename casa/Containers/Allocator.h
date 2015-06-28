@@ -250,27 +250,27 @@ struct BaseAllocator {
 template<typename T>
 struct DefaultAllocator: public BaseAllocator<T, DefaultAllocator<T> > {
   typedef std11_allocator<T> type;
-  static DefaultAllocator<T> const value;
+  static DefaultAllocator<T> value;
 };
 template<typename T>
-DefaultAllocator<T> const DefaultAllocator<T>::value = DefaultAllocator<T>();
+DefaultAllocator<T> DefaultAllocator<T>::value;
 
 template<typename T>
 struct NewDelAllocator: BaseAllocator<T, NewDelAllocator<T> > {
   typedef new_del_allocator<T> type;
-  static NewDelAllocator<T> const value;
+  static NewDelAllocator<T> value;
 };
 template<typename T>
-NewDelAllocator<T> const NewDelAllocator<T>::value = NewDelAllocator<T>();
+NewDelAllocator<T> NewDelAllocator<T>::value;
 
 
 template<typename T, size_t ALIGNMENT = CASA_DEFAULT_ALIGNMENT>
 struct AlignedAllocator: BaseAllocator<T, AlignedAllocator<T, ALIGNMENT> > {
   typedef casacore_allocator<T, ALIGNMENT> type;
-  static AlignedAllocator<T, ALIGNMENT> const value;
+  static AlignedAllocator<T, ALIGNMENT> value;
 };
 template<typename T, size_t ALIGNMENT>
-AlignedAllocator<T, ALIGNMENT> const AlignedAllocator<T, ALIGNMENT>::value = AlignedAllocator<T, ALIGNMENT>();
+AlignedAllocator<T, ALIGNMENT> AlignedAllocator<T, ALIGNMENT>::value;
 
 // <summary>Allocator specifier</summary>
 // <synopsis>
