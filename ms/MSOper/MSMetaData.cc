@@ -95,6 +95,10 @@ MSMetaData::~MSMetaData() {}
 uInt MSMetaData::nStates() const {
 	if (_nStates == 0) {
 		_nStates = _ms->state().nrow();
+                // Allow an empty STATE table.
+                if (_nStates == 0) {
+                       _nStates = 1;
+                }
 	}
 	return _nStates;
 }
@@ -127,6 +131,10 @@ void MSMetaData::_getStateToIntentsMap(
 	String intentsColName = MSState::columnName(MSStateEnums::OBS_MODE);
 	ROScalarColumn<String> intentsCol(_ms->state(), intentsColName);
 	Vector<String> intentSets = intentsCol.getColumn();
+        // Allow an empty STATE table.
+        if (intentSets.empty()) {
+                intentSets.reference (Vector<String>(1, String()));
+        }
 	stateToIntentsMap.resize(nStates());
 
 	Vector<String>::const_iterator end = intentSets.end();
