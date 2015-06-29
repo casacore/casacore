@@ -37,6 +37,11 @@
 #include <casacore/casa/Containers/Allocator.h>
 #include <cstddef>                  // for ptrdiff_t
 #include <algorithm> // for std:min/max
+#if __cplusplus < 201103L
+#include <cwchar>
+#else
+#include <type_traits>
+#endif
 
 //# For index checking
 #if defined(AIPS_ARRAY_INDEX_CHECK)
@@ -119,6 +124,65 @@ protected:
 protected:
   static size_t itsTraceSize;
 };
+
+template<typename T> class Block;
+
+#if __cplusplus < 201103L
+
+template<typename T>
+class Block_internal_IsFundamental {
+  template<typename U> friend class Block;
+  enum {value = 0};
+};
+
+template<typename T>
+class Block_internal_IsPointer {
+  template<typename U> friend class Block;
+  enum {value = 0};
+};
+
+#define CASA_TMP_939727(x) template<> class Block_internal_IsFundamental<x> { template<typename U> friend class Block; enum { value = 1 }; }
+CASA_TMP_939727(void);
+/*
+CASA_TMP_939727(char16_t);
+CASA_TMP_939727(char32_t);
+*/
+CASA_TMP_939727(bool);
+CASA_TMP_939727(wchar_t);
+CASA_TMP_939727(signed char);
+CASA_TMP_939727(unsigned char);
+CASA_TMP_939727(float);
+CASA_TMP_939727(double);
+CASA_TMP_939727(long double);
+#define CASA_TMP_939727_int(x) CASA_TMP_939727(x); CASA_TMP_939727(unsigned x)
+CASA_TMP_939727_int(int);
+CASA_TMP_939727_int(long int);
+CASA_TMP_939727_int(long long int);
+#undef CASA_TMP_939727_int
+#undef CASA_TMP_939727
+
+template<typename T>
+class Block_internal_IsPointer<T *> {
+  template<typename U> friend class Block;
+  enum { value = 1 };
+};
+
+#else // __cplusplus < 201103L
+
+template<typename T>
+class Block_internal_IsFundamental {
+  template<typename U> friend class Block;
+  static constexpr int value = static_cast<int>(std::is_fundamental<T>::value);
+};
+
+template<typename T>
+class Block_internal_IsPointer {
+  template<typename U> friend class Block;
+  static constexpr int value = static_cast<int>(std::is_pointer<T>::value);
+};
+
+#endif // __cplusplus < 201103L
+
 
 
 // <summary>simple 1-D array</summary>
@@ -203,7 +267,7 @@ public:
   explicit Block(size_t n) :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), used_p(
           n), destroyPointer(True), keep_allocator_p(False) {
-    init(ArrayInitPolicy::INIT);
+    init(init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
   }
 
   // Create a Block with the given number of points. The values in Block
@@ -212,7 +276,7 @@ public:
   explicit Block(size_t n, AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
           True), keep_allocator_p(False) {
-    init(ArrayInitPolicy::INIT);
+    init(init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
   }
 
   // Create a Block with the given number of points. The values in Block
@@ -338,9 +402,16 @@ public:
   //
   // This is written as three functions because default parameters do
   // not always work properly with templates.
+  //
+  // <src>initPolicy</src> makes sense to determine whether extended elements
+  // should be initialized or not when you enlarge Block.
   // <group>
-  void resize(size_t n, Bool forceSmaller = False, Bool copyElements = True,
-      ArrayInitPolicy initPolicy = ArrayInitPolicy::INIT) {
+  void resize(size_t n, Bool forceSmaller = False, Bool copyElements = True) {
+    resize(n, forceSmaller, copyElements,
+        init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
+  }
+  void resize(size_t n, Bool forceSmaller, Bool copyElements,
+      ArrayInitPolicy initPolicy) {
     if (n == get_size()) {
       return;
     }
@@ -382,11 +453,18 @@ public:
   // Remove a single element from the Block. If forceSmaller is True this
   // will resize the Block and hence involve new memory allocations. This is
   // relatively expensive so setting forceSmaller to False is preferred. When
-  // forcesmaller is False the Block is not resized but the elements with an
+  // forceSmaller is False the Block is not resized but the elements with an
   // index above the removed element are shuffled down by one. For backward
   // compatibility forceSmaller is True by default.
+  //
+  // <src>initPolicy</src> makes sense to determine whether new storage
+  // should be initialized or not before copying when <src>forceSmaller</src> is True.
   // <group>
-  void remove(size_t whichOne, Bool forceSmaller=True, ArrayInitPolicy initPolicy = ArrayInitPolicy::INIT) {
+  void remove(size_t whichOne, Bool forceSmaller = True) {
+    remove(whichOne, forceSmaller,
+        init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
+  }
+  void remove(size_t whichOne, Bool forceSmaller, ArrayInitPolicy initPolicy) {
     if (whichOne >= get_size()) {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
       throw(indexError<uInt>(whichOne, "Block::remove() - "
@@ -590,6 +668,11 @@ public:
   }
 
  private:
+  static bool init_anyway() {
+     return !(Block_internal_IsFundamental<T>::value
+         || Block_internal_IsPointer<T>::value);
+   }
+
   void init(ArrayInitPolicy initPolicy) {
     set_capacity(get_size());
     if (get_capacity() > 0) {
@@ -702,7 +785,6 @@ public:
   // Can we change allocator or not?
   Bool keep_allocator_p;
 };
-
 template<typename T>
 template<typename Allocator>
 Allocator Block<T>::BulkAllocatorImpl<Allocator>::allocator;
