@@ -39,7 +39,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 #include <vector>
-
+#include <stdint.h>
 #include <casacore/casa/namespace.h>
 
 namespace {
