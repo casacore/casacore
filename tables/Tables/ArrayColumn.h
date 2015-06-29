@@ -587,8 +587,7 @@ private:
 	}
 
 	if (dataSlicers_p.size() == 0){
-	  return String::format ("At least one slicer required.",
-                                 dataSlicers_p.size(), destinationSlicers_p.size());
+	  return String::format ("At least one destination and one data slicer required.");
 	}
 
 	for (uInt i = 0; i < dataSlicers_p.size(); i++){
