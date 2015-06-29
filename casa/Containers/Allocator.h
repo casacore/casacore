@@ -44,7 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #endif
 
 #ifndef CASA_DEFAULT_ALIGNMENT
-# define CASA_DEFAULT_ALIGNMENT (16UL) // same alignment as malloc
+# define CASA_DEFAULT_ALIGNMENT (32UL) // AVX/AVX2 alignment
 #endif
 
 // <summary>

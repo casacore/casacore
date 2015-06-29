@@ -60,6 +60,9 @@ option (USE_THREADS "Use Mutex thread synchronization" NO)
 option (USE_OPENMP "Use OpenMP threading" NO)
 option (USE_STACKTRACE "Show stacktrace in case of exception" NO)
 
+set(CASA_DEFAULT_ALIGNMENT "32" CACHE STRING "Default alignment of casa::AlignedAllocator")
+add_definitions("-DCASA_DEFAULT_ALIGNMENT=${CASA_DEFAULT_ALIGNMENT}")
+
 # Test if shared libraries have to be built.
 if (ENABLE_SHARED)
     option (BUILD_SHARED_LIBS "" YES)
