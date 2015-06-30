@@ -5,6 +5,11 @@ project(casacore)
 
 cmake_minimum_required (VERSION 2.6.0)
 
+# fixes warnings on cmake 3.x+ For now we want the old behavior to be backwards compatible
+if (POLICY CMP0048)
+    cmake_policy (SET CMP0048 OLD)
+endif()
+
 set(PROJECT_VERSION_MAJOR 2)
 set(PROJECT_VERSION_MINOR 0)
 set(PROJECT_VERSION_PATCH 1)
@@ -92,18 +97,18 @@ endif (NOT CMAKE_CXX_FLAGS)
 if (NOT CMAKE_BUILD_TYPE)
     # Use debug mode if building in dbg or debug directory.
     get_filename_component(_cmpvar ${CMAKE_BINARY_DIR} NAME)
-    if("_cmpvar" STREQUAL "dbg" OR "_cmpvar" STREQUAL "debug")
+    if(_cmpvar STREQUAL "dbg" OR _cmpvar STREQUAL "debug")
         set (CMAKE_BUILD_TYPE Debug)
     else()
-        if("_cmpvar" STREQUAL "cov")
+        if(_cmpvar STREQUAL "cov")
             set (CMAKE_BUILD_TYPE Debug)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
             set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} --coverage")
         else()
             set (CMAKE_BUILD_TYPE Release)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNDEBUG")
-        endif("_cmpvar" STREQUAL "cov")
-    endif("_cmpvar" STREQUAL "dbg" OR "_cmpvar" STREQUAL "debug")
+        endif(_cmpvar STREQUAL "cov")
+    endif(_cmpvar STREQUAL "dbg" OR _cmpvar STREQUAL "debug")
 endif (NOT CMAKE_BUILD_TYPE)
 
 # Detect if the compiler supports C++11 if we want to use it.
