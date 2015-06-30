@@ -1,7 +1,7 @@
 
 # Casacore
 
-A Suite of c++ libraries for radio astronomy data processing.
+A suite of c++ libraries for radio astronomy data processing.
 
 
 # Installation
@@ -22,6 +22,7 @@ To compile casacore you need to meet the following requirements:
 
 * cmake
 * gfortran
+* g++
 * flex 
 * bison
 * blas
@@ -33,12 +34,13 @@ To compile casacore you need to meet the following requirements:
 * hdf5 (optional)
 * numpy (optional)
 * boost-python (optional)
-* ncursus (optional)
+* ncurses (optional)
 
 On Debian / Ubuntu you can install these with:
  ``` 
-$ sudo apt-get install cmake gfortran libncurses5-dev libreadline-dev flex \
-    bison libblas-dev liblapacke-dev libcfitsio3-dev wcslib-dev
+$ sudo apt-get install build-essential cmake gfortran g++ libncurses5-dev \
+    libreadline-dev flex bison libblas-dev liblapacke-dev libcfitsio3-dev \
+    wcslib-dev
 ```
 
 and the optional libraries:
