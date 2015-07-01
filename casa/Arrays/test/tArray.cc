@@ -643,7 +643,7 @@ void oldArrayTest()
 void
 testReformOrResize ()
 {
-    cout << "*** Testing reformOrResize and extend methods" << endl;
+    cout << "*** Testing reformOrResize and adjustLastAxis methods" << endl;
 
     IPosition shape (2, 3, 4);
     Array<Int> a0 (shape);
@@ -656,7 +656,7 @@ testReformOrResize ()
 
 
     {
-	// Test a no-op for extend.
+	// Test a no-op for adjustLastAxis.
 
 	Array<Int> a1 = a0.copy();
 	a1.reformOrResize (IPosition (2, 3, 4));
@@ -764,10 +764,10 @@ testReformOrResize ()
     {
 	Array<Int> a1 = a0.copy();
 
-	// Extend the last dimension by minus one and check that the data is preserved.
+	// AdjustLastAxis the last dimension by minus one and check that the data is preserved.
 
 	IPosition newShape (IPosition (2, 3, 3));
-	bool resized = a1.extend (newShape);
+	bool resized = a1.adjustLastAxis (newShape);
 
 	AlwaysAssertExit (a1.shape() == newShape);
 	AlwaysAssertExit (! resized); // should just reform
@@ -782,10 +782,10 @@ testReformOrResize ()
     {
 	Array<Int> a1 = a0.copy();
 
-	// Extend the last dimension by one and check that the data is preserved.
+	// AdjustLastAxis the last dimension by one and check that the data is preserved.
 
 	IPosition newShape (IPosition (2, 3, 5));
-	bool resized = a1.extend (newShape);
+	bool resized = a1.adjustLastAxis (newShape);
 
 	AlwaysAssertExit (a1.shape() == newShape);
 	AlwaysAssertExit (resized); // should have been resized
@@ -803,14 +803,14 @@ testReformOrResize ()
 	// See that when resizing is required but forbidden that exception thrown.
 
 	try {
-	    a1.extend (IPosition (2, 3, 10), 0, false); // forbid resize
+	    a1.adjustLastAxis (IPosition (2, 3, 10), 0, false); // forbid resize
 	    AlwaysAssertExit (false); // shouldn't get here
 	} catch (ArrayConformanceError & e){
 	    // Everything's fine if we get here.
 	}
     }
 
-    cout << "... passed testing of reformOrResize and extend methods" << endl;
+    cout << "... passed testing of reformOrResize and adjustLastAxis methods" << endl;
 
 }
 
