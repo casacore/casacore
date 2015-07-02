@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Define the path to the library to be loaded dynamically
+LD_LIBRARY_PATH=../..
+export LD_LIBRARY_PATH
+DYLD_LIBRARY_PATH=../..
+export DYLD_LIBRARY_PATH
+
+# Execute the test (possibly with a checking tool)
+$casa_checktool ./tUDFMSCal 
