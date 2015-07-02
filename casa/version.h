@@ -31,7 +31,7 @@
 #include <string>
 #include <casacore/casa/aips.h>
 
-#define CASACORE_VERSION "2.0.0"
+#define CASACORE_VERSION "2.0.3"
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

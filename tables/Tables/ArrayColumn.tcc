@@ -813,6 +813,69 @@ void ArrayColumn<T>::putColumnCells (const RefRows & rows,
     }
 }
 
+template <typename T>
+void
+ArrayColumn<T>::putColumnCells (const RefRows& rows,
+                                const ColumnSlicer & columnSlicer,
+                                const Array<T>& source)
+{
+    checkWritable();
+
+   // Calculate the shape of the source data.  This will be
+   // [s1, s2, ..., nR] where sI are the sum of the slice elements for
+   // that axis as contained in arraySlices [i].  nR is the number of rows
+   // in the RefRows object rows.  Resize the source array to match.
+
+   const Vector<Slicer *> bufferSlicers = columnSlicer.getDataSlicers();
+   const Vector<Slicer *> arraySlicers = columnSlicer.getDestinationSlicers();
+
+   IPosition sourceShape (columnSlicer.shape());
+   sourceShape.append (IPosition (1, rows.nrows()));
+
+   ThrowIf (sourceShape != source.shape(),
+            String::format ("putColumnCells: Expected array with shape %d but got %d",
+                            sourceShape.toString().c_str(), source.shape().toString().c_str()));
+
+   // Fill the source array one row at a time.
+   // If rows is not sliced then rowNumbers is simply a vector of the relevant
+   // row numbers.  When sliced, rowNumbers is a triple: (start, nRows, increment).
+   // Thus we have two different ways of walking through the selected rows.
+
+   const Vector<uInt> & rowNumbers = rows.rowVector();
+   Bool useRowSlicing = rows.isSliced();
+   int row = 0;
+   int increment = 1;
+
+   if (useRowSlicing){
+
+       AlwaysAssert (rowNumbers.nelements() == 3, AipsError);
+
+       increment = rowNumbers [2];
+       row = rowNumbers [0] ;
+   }
+
+   uInt nSlicers = bufferSlicers.size();
+   uInt nRows = rows.nrows();
+
+   for (uInt i = 0; i < nRows; i++){
+
+       // Create a section of the source array that will hold the
+       // data for this row ([s1, ...,sN, nR] --> [s1,...,sN].
+
+      Array<T> sourceRow = source [i];
+
+       for (uInt j = 0; j < nSlicers; j++){
+
+           Array<T> sourceRowSection = sourceRow (* arraySlicers[j]);
+           baseColPtr_p->putSlice (row, * bufferSlicers[j], & sourceRowSection);
+       }
+
+       row = useRowSlicing ? row + increment
+                           : rowNumbers (i);
+   }
+}
+
+
 template<class T>
 void ArrayColumn<T>::put (uInt thisRownr, const TableColumn& that,
 			  uInt thatRownr)

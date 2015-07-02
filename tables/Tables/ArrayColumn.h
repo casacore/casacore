@@ -448,6 +448,9 @@ public:
                            const Vector<Vector<Slice> >& arraySlices,
                            const Array<T>& source)
       { putColumnCells (rows, arraySlices, source); }
+    void putColumnCells (const RefRows& rows,
+                         const ColumnSlicer & columnSlicer,
+                         const Array<T>& source);
     // </group>
 
     // Put the same value in all cells of the column.
