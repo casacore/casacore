@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSSummary.cc 21578 2015-03-18 15:01:43Z gervandiepen $
 //#
 
 #include <casacore/casa/aips.h>
@@ -1111,7 +1111,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 
 		vector<MPosition> antPos = _msmd->getAntennaPositions();
 		Bool posIsITRF = antPos[0].type() != MPosition::ITRF;
-		vector<Quantum<Vector<Double> > > offsets = _msmd->getAntennaOffsets();
+		vector<QVD> offsets = _msmd->getAntennaOffsets();
 
 		// For each ant
 		for (Int i=0; i<nAnt; i++) {

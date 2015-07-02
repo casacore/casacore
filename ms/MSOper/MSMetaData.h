@@ -23,13 +23,14 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSMetaData.h 21586 2015-03-25 13:46:25Z gervandiepen $
 
 #ifndef MS_MSMETADATA_H
 #define MS_MSMETADATA_H
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/QVector.h>
+#include <casacore/measures/Measures/MFrequency.h>
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MeasurementSets/MSPointingColumns.h>
@@ -80,16 +81,18 @@ public:
 	virtual ~MSMetaData();
 
 	// get the antenna diameters
-	Quantum<Vector<Double> > getAntennaDiameters();
+	QVD getAntennaDiameters() const;
 
 	// get the antenna ID for the antenna with the specified name.
-	vector<uInt> getAntennaIDs(	const vector<String>& antennaNames);
+	uInt getAntennaID(const String& antennaName) const;
+
+	vector<uInt> getAntennaIDs(const vector<String>& antennaNames) const;
 
 	// get the name of the antenna for the specified antenna ID
 	vector<String> getAntennaNames(
 		std::map<String, uInt>& namesToIDsMap,
 		const vector<uInt>& antennaIDs=vector<uInt>(0)
-	);
+	) const;
 
 	// get the antenna stations for the specified antenna IDs
 	vector<String> getAntennaStations(const vector<uInt>& antennaIDs);
@@ -97,7 +100,21 @@ public:
 	// get the antenna stations for the specified antenna names
 	vector<String> getAntennaStations(const vector<String>& antennaNames);
 
+	// get the set of antenna IDs for the specified scan.
+	std::set<Int> getAntennasForScan(const ScanKey& scan) const;
+
+	// POLARIZATION.CORR_PRODUCT
+	vector<Array<Int> > getCorrProducts() const;
+
+	// POLARIZATION.CORR_TYPE
+	vector<vector<Int> > getCorrTypes() const;
+
+	vector<uInt> getDataDescIDToSpwMap() const;
+
 	vector<uInt> getDataDescIDToPolIDMap() const;
+
+	// Get the FIELD.SOURCE_ID column.
+	vector<Int> getFieldTableSourceIDs() const;
 
 	std::map<String, std::set<Int> > getIntentToFieldsMap();
 
@@ -115,13 +132,31 @@ public:
 
 	// get a set of intents corresponding to the specified spectral window
 	std::set<String> getIntentsForSpw(const uInt spw);
-	// get unique scan numbers
 
+	// number of correlations from the polarization table.
+	vector<Int> getNumCorrs() const;
+
+	//SOURCE.PROPER_MOTION, first value in pair is longitudinal proper motion,
+	// second is latiduninal
+	vector<std::pair<Quantity, Quantity> > getProperMotions() const;
+
+	// get unique scan numbers
 	std::set<Int> getScanNumbers(Int obsID, Int arrayID) const;
 
 	std::set<Int> getScansForState(
 		Int stateID, Int obsID, Int arrayID
 	);
+
+	// SOURCE.DIRECTION
+	vector<MDirection> getSourceDirections() const;
+
+	// SOURCE.NAME
+	vector<String> getSourceNames() const;
+
+	// Get the SOURCE.SOURCE_ID column. This is a very unfortunate column name,
+	// because generally an "ID" column of the table with the same name refers to
+	// the row number in that table. But not in this case.
+	vector<Int> getSourceTableSourceIDs() const;
 
 	// get a set of spectral windows for which the specified <src>intent</src>
 	// applies.
@@ -164,7 +199,7 @@ public:
 	std::set<String> getFieldNamesForSpw(const uInt spw);
 
 
-	// get the set of spectral windows for the specified scan number.
+	// get the set of spectral windows for the specified scan.
 	std::set<uInt> getSpwsForScan(const ScanKey& scan) const;
 
 	// get the set of scan numbers for the specified spectral window.
@@ -192,8 +227,7 @@ public:
 
 	// Get the scans which fail into the specified time range (center-tol to center+tol)
 	std::set<Int> getScansForTimes(
-		Double center, Double tol,
-		Int obsID, Int arrayID
+		Double center, Double tol, Int obsID, Int arrayID
 	) const;
 
 	// Get the times for the specified scans
@@ -202,6 +236,8 @@ public:
 	// get the times for the specified scan.
 	// The return values come from the TIME column.
 	std::set<Double> getTimesForScan(const ScanKey& scan) const;
+
+	std::map<uInt, std::set<Double> > getSpwToTimesForScan(const ScanKey& scan) const;
 
 	// get the time range for the specified scan. The pair will contain
 	// the start and stop time of the scan, determined from min(TIME(x)-0.5*INTERVAL(x)) and
@@ -219,11 +255,11 @@ public:
 	// offsets (elements 0, 1, and 2 respectively). The longitude and latitude offsets are
 	// measured along the surface of a sphere centered at the earth's center and whose surface
 	// intersects the position of the observatory.
-	Quantum<Vector<Double> > getAntennaOffset(uInt which);
+	QVD getAntennaOffset(uInt which);
 
-	Quantum<Vector<Double> > getAntennaOffset(const String& name);
+	QVD getAntennaOffset(const String& name);
 
-	vector<Quantum<Vector<Double> > > getAntennaOffsets() const;
+	vector<QVD > getAntennaOffsets() const;
 	// get the positions of the specified antennas. If <src>which</src> is empty, return
 	// all antenna positions.
 
@@ -241,7 +277,12 @@ public:
 	std::map<uInt, std::set<uInt> > getBBCNosToSpwMap(SQLDSwitch sqldSwitch);
 
 	vector<vector<Double> > getEdgeChans();
-
+	//Get the phase direction for a given field id and epoch
+	//interpolate polynomial if it is the field id  is such or use ephemerides table 
+	//if that is attached to that field id
+	MDirection phaseDirFromFieldIDAndTime(const uInt fieldID,  
+					      const MEpoch& ep=MEpoch(Quantity(0.0, Unit("s")))) const ;
+	
 	// get the field IDs for the specified field name. Case insensitive.
 	std::set<Int> getFieldIDsForField(const String& field) const;
 
@@ -276,6 +317,9 @@ public:
 
 	// get the position of the specified telescope (observatory).
 	MPosition getObservatoryPosition(uInt which) const;
+
+	// get the phase directions from the FIELD subtable
+	vector<MDirection> getPhaseDirs() const;
 
 	// get the scans associated with the specified intent
 	std::set<Int> getScansForIntent(
@@ -325,6 +369,19 @@ public:
 	// get the number of observations (from the OBSERVATIONS table) in the dataset
 	uInt nObservations() const;
 
+	// get the contents of the OBSERVER column from the OBSERVATIONS table
+	vector<String> getObservers() const;
+
+	// get the contents of the PROJECT column from the OBSERVATIONS table
+	vector<String> getProjects() const;
+
+	// get the contents of the SCHEDULE column from the OBSERVATIONS table
+	// Note that the embedded vectors may have different lengths
+	vector<vector<String> > getSchedules() const;
+
+	// get the time ranges from the OBSERVATION table
+	vector<std::pair<MEpoch, MEpoch> > getTimeRangesOfObservations() const;
+
 	// get the number of arrays (from the ARRAY table) in the dataset
 	uInt nArrays();
 
@@ -347,15 +404,17 @@ public:
 
 	vector<Double> getBandWidths() const;
 
-	vector<QVD> getChanFreqs() const;
+	vector<QVD > getChanFreqs() const;
 
-	vector<QVD> getChanWidths() const;
+	vector<QVD > getChanWidths() const;
 
 	vector<Int> getNetSidebands();
 
 	vector<Quantity> getMeanFreqs();
 
 	vector<Quantity> getCenterFreqs() const;
+
+	vector<MFrequency> getRefFreqs() const;
 
 	vector<uInt> nChans() const;
 
@@ -382,6 +441,9 @@ public:
 	// max(TIME(x) + 0.5*INTERVAL(x))
 	std::pair<Double, Double> getTimeRange() const;
 
+	// Number of unique values from SOURCE.SOURCE_ID
+	uInt nUniqueSourceIDsFromSourceTable() const;
+
 private:
 
 	struct SpwProperties {
@@ -399,6 +461,8 @@ private:
 		// The center frequencies of the two channels at the edges of the window
 		vector<Double> edgechans;
 		uInt bbcno;
+		// from the REF_FREQUENCY column
+		MFrequency reffreq;
 		String name;
 	};
 
@@ -427,13 +491,13 @@ private:
 	mutable uInt _nStates, _nACRows, _nXCRows, _nSpw, _nFields, _nAntennas,
 		_nObservations, _nScans, _nArrays, _nrows, _nPol, _nDataDescIDs;
 	mutable std::map<ScanKey, std::set<uInt> > _scanToSpwsMap, _scanToDDIDsMap;
-	mutable vector<uInt> _dataDescIDToSpwMap, _dataDescIDToPolIDMap /*, _scanToNRowsMap */;
+	mutable vector<uInt> _dataDescIDToSpwMap, _dataDescIDToPolIDMap;
 	std::map<Int, std::set<uInt> > _fieldToSpwMap;
-	mutable std::map<ScanKey, std::set<Int> > _scanToStatesMap, _scanToFieldsMap;
+	mutable std::map<ScanKey, std::set<Int> > _scanToStatesMap, _scanToFieldsMap, _scanToAntennasMap;
 	mutable std::map<Int, std::set<Int> >	_fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap /*,
 		_arrayToScansMap, _scanToAntennasMap */;
 	mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
-	std::map<String, uInt> _antennaNameToIDMap;
+	mutable std::map<String, uInt> _antennaNameToIDMap;
 	//mutable std::map<ArrayKey, ArrayProperties> _arrayProperties;
 	//mutable std::map<ScanKey, ScanProperties> _scanProperties;
 	mutable std::map<SubScanKey, SubScanProperties> _subScanProperties;
@@ -441,14 +505,15 @@ private:
 	mutable std::map<String, std::set<Int> > _intentToFieldIDMap;
 	mutable std::map<String, std::set<ScanKey> > _intentToScansMap;
 	mutable std::map<ScanKey, std::pair<Double, Double> > _scanToTimeRangeMap;
-	mutable std::map<ScanKey, std::map<uInt, Double> > _scanSpwToIntervalMap;
+	mutable std::map<std::pair<ScanKey, uInt>, Double> _scanSpwToIntervalMap;
+	mutable std::map<std::pair<ScanKey, uInt>, std::set<Double> > _scanSpwToTimesMap;
+	//mutable std::map<ScanKey, Double> _scanToIntervalMap;
 	mutable std::map<std::pair<ScanKey, uInt>, std::set<uInt> > _scanSpwToPolIDMap;
 	mutable std::set<String> _uniqueIntents;
-	mutable std::set<Int> /*_uniqueScanNumbers, */ _uniqueFieldIDs, _uniqueStateIDs;
+	mutable std::set<Int>  _uniqueFieldIDs, _uniqueStateIDs;
 	mutable std::set<uInt> _avgSpw, _tdmSpw, _fdmSpw, _wvrSpw, _sqldSpw;
 	mutable CountedPtr<Vector<Int> > _antenna1, _antenna2, _scans, _fieldIDs,
 		_stateIDs, _dataDescIDs, _observationIDs, _arrayIDs;
-	//mutable CountedPtr<AOSFMapI> _scanToNACRowsMap, _scanToNXCRowsMap;
 	mutable CountedPtr<std::map<SubScanKey, uInt> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
 	//mutable CountedPtr<std::map<Int, uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
 
@@ -459,9 +524,14 @@ private:
 	mutable vector<std::set<Int> > _spwToFieldIDsMap, _obsToArraysMap;
 	mutable vector<std::set<ScanKey> > _spwToScansMap, _ddidToScansMap, _fieldToScansMap;
 
-	mutable vector<String> _fieldNames, _antennaNames, _observatoryNames, _stationNames;
+	mutable vector<String> _fieldNames, _antennaNames, _observatoryNames,
+		_stationNames, _observers, _projects, _sourceNames;
+	mutable vector<vector<String> > _schedules;
+	mutable vector<vector<Int> > _corrTypes;
+	mutable vector<Array<Int> >_corrProds;
+
 	mutable CountedPtr<Vector<Double> > _times;
-	CountedPtr<Quantum<Vector<Double> > > _exposures;
+	CountedPtr<QVD > _exposures;
 	mutable CountedPtr<std::map<ScanKey, std::set<Double> > > _scanToTimesMap;
 	std::map<String, std::set<uInt> > _intentToSpwsMap;
 	mutable std::map<String, std::set<Double> > _intentToTimesMap;
@@ -470,8 +540,8 @@ private:
 	CountedPtr<std::map<Double, std::set<Int> > > _timeToFieldsMap;
 
 	mutable vector<MPosition> _observatoryPositions, _antennaPositions;
-	mutable vector<Quantum<Vector<Double> > > _antennaOffsets;
-	Quantum<Vector<Double> > _antennaDiameters;
+	mutable vector<QVD > _antennaOffsets;
+	mutable QVD _antennaDiameters;
 	Matrix<Bool> _uniqueBaselines;
 	Quantity _exposureTime;
 	mutable Double _nUnflaggedACRows, _nUnflaggedXCRows;
@@ -484,12 +554,18 @@ private:
 
 	mutable Bool _spwInfoStored;
 	vector<std::map<Int, Quantity> > _firstExposureTimeMap;
-	mutable vector<Int> _numCorrs;
+	mutable vector<Int> _numCorrs, _source_sourceIDs, _field_sourceIDs;
 
 	mutable std::set<ArrayKey> _arrayKeys;
 	mutable std::set<ScanKey> _scanKeys;
 	mutable std::set<SubScanKey> _subscans;
 	mutable std::map<ScanKey, std::set<SubScanKey> > _scanToSubScans;
+
+	mutable vector<std::pair<MEpoch, MEpoch> > _timeRangesForObs;
+
+	mutable vector<MDirection> _phaseDirs, _sourceDirs;
+
+	mutable vector<std::pair<Quantity, Quantity> > _properMotions;
 
 	//mutable CountedPtr<std::map<Double, TimeStampProperties> > _timeStampPropsMap;
 
@@ -542,7 +618,7 @@ private:
 
 	vector<String> _getAntennaNames(
 		std::map<String, uInt>& namesToIDsMap
-	);
+	) const;
 
 	vector<MPosition> _getAntennaPositions() const;
 
@@ -554,9 +630,13 @@ private:
 
 	CountedPtr<Vector<Int> > _getDataDescIDs() const;
 
-	vector<uInt> _getDataDescIDToSpwMap() const;
+	static vector<MDirection> _getDirections(
+		const ROArrayColumn<Double>& col,
+		const pair<String, String>& units,
+		const vector<MDirection::Types>& refFrames
+	);
 
-	CountedPtr<Quantum<Vector<Double> > > _getExposureTimes();
+	CountedPtr<QVD > _getExposureTimes();
 
 	void _getFieldsAndIntentsMaps(
 		vector<std::set<String> >& fieldToIntentsMap,
@@ -620,9 +700,6 @@ private:
 		const Double& time
 	) const;
 
-	// number of correlations from the polarzation table.
-	vector<Int> _getNumCorrs() const;
-
 	vector<std::set<Int> > _getObservationIDToArrayIDsMap() const;
 
 	vector<MPosition> _getObservatoryPositions();
@@ -677,6 +754,8 @@ private:
 		vector<std::set<ScanKey> >& spwToScanMap
 	) const;
 
+	std::map<ScanKey, std::set<Int> > _getScanToAntennasMap() const;
+
 	std::map<ScanKey, std::set<Int> > _getScanToStatesMap() const;
 
 	std::map<ScanKey, std::set<SubScanKey> > _getScanToSubScansMap() const;
@@ -716,7 +795,8 @@ private:
 	//In scanSpwToIntervalMap, the key is a scan, spw pair.
 	void _getTimesAndInvervals(
 		std::map<ScanKey, std::pair<Double, Double> >& scanToTimeRangeMap,
-		std::map<ScanKey, std::map<uInt, Double> >& scanSpwToIntervalMap
+		std::map<std::pair<ScanKey, uInt>, Double>& scanSpwToIntervalMap,
+		std::map<std::pair<ScanKey, uInt>, std::set<Double> >& scanSpwToTimesMap
 	) const;
 
 	void _getUnflaggedRowStats(
@@ -749,10 +829,12 @@ private:
 
 	static uInt _sizeof(const vector<String>& m);
 
+	static uInt _sizeof(const vector<vector<String> >& m);
+
 	template <class T>
 	static uInt _sizeof(const vector<T>& v);
 
-	static uInt _sizeof(const Quantum<Vector<Double> >& m);
+	static uInt _sizeof(const QVD& m);
 
 	template <class T>
 	static uInt _sizeof(const vector<std::set<T> >& v);

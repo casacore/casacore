@@ -86,6 +86,11 @@ Bool operator<(const ScanKey& lhs, const ScanKey& rhs) {
     return False;
 }
 
+Bool operator==(const ScanKey& lhs, const ScanKey& rhs) {
+	return lhs.obsID == rhs.obsID && lhs.arrayID == rhs.arrayID
+		&& lhs.scan == rhs.scan;
+}
+
 std::set<Int> scanNumbers(const std::set<ScanKey>& scanKeys) {
 	std::set<Int> scanNumbers;
 	std::set<ScanKey>::const_iterator iter = scanKeys.begin();
