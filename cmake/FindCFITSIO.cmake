@@ -55,10 +55,15 @@ if(NOT CFITSIO_FOUND)
   find_library(M_LIBRARY m)
   mark_as_advanced(CFITSIO_INCLUDE_DIR CFITSIO_LIBRARY M_LIBRARY)
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(CFITSIO
-    REQUIRED_VARS CFITSIO_LIBRARY M_LIBRARY CFITSIO_INCLUDE_DIR
-    VERSION_VAR CFITSIO_VERSION_STRING)
+  if(CMAKE_VERSION VERSION_LESS "2.8.3")
+    find_package_handle_standard_args(CFITSIO DEFAULT_MSG
+      CFITSIO_LIBRARY M_LIBRARY CFITSIO_INCLUDE_DIR)
+  else ()
+    include(FindPackageHandleStandardArgs)
+    find_package_handle_standard_args(CFITSIO
+      REQUIRED_VARS CFITSIO_LIBRARY M_LIBRARY CFITSIO_INCLUDE_DIR
+      VERSION_VAR CFITSIO_VERSION_STRING)
+  endif ()
 
   set(CFITSIO_INCLUDE_DIRS ${CFITSIO_INCLUDE_DIR})
   set(CFITSIO_LIBRARIES ${CFITSIO_LIBRARY} ${M_LIBRARY})
