@@ -1,9 +1,0 @@
-1000 casa/Utilities/CountedPtr.cc coordinates/Coordinates/CoordinateSystem.h 
-     template class CountedConstPtr<CoordinateSystem> 
-     template class CountedPtr<CoordinateSystem> 
-     template class PtrRep<CoordinateSystem> 
-     template class SimpleCountedConstPtr<CoordinateSystem> 
-     template class SimpleCountedPtr<CoordinateSystem> 
-1000 casa/Utilities/PtrHolder.cc 
-     = coordinates/Coordinates/CoordinateSystem.h 
-     template class PtrHolder<CoordinateSystem> 
