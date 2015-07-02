@@ -621,7 +621,7 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     std::ofstream ofs;
     ofs.open (obsidAndScanTableName.c_str(), ofstream::out);
     if (!ofs) {
-      log << LogIO::WARN << "Error opening file " << obsidAndScanTableName 
+      log << LogIO::WARN << "ERROR opening file " << obsidAndScanTableName 
 	  << "will continue but the next virtual concat will lack this information:" << LogIO::POST;
       log << "distinctObsIdSet " << Vector<Int>(distinctObsIdSet) << endl;
       log << "minScan " << Vector<Int>(minScan) << endl;
