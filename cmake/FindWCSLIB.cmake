@@ -52,10 +52,15 @@ if(NOT WCSLIB_FOUND)
   find_library(M_LIBRARY m)
   mark_as_advanced(WCSLIB_INCLUDE_DIR WCSLIB_LIBRARY M_LIBRARY)
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(WCSLIB
-    REQUIRED_VARS WCSLIB_LIBRARY M_LIBRARY WCSLIB_INCLUDE_DIR
-    VERSION_VAR WCSLIB_VERSION_STRING)
+  if(CMAKE_VERSION VERSION_LESS "2.8.3")
+    find_package_handle_standard_args(WCSLIB DEFAULT_MSG
+      WCSLIB_LIBRARY M_LIBRARY WCSLIB_INCLUDE_DIR)
+  else ()
+    include(FindPackageHandleStandardArgs)
+    find_package_handle_standard_args(WCSLIB
+      REQUIRED_VARS WCSLIB_LIBRARY M_LIBRARY WCSLIB_INCLUDE_DIR
+      VERSION_VAR WCSLIB_VERSION_STRING)
+  endif ()
 
   set(WCSLIB_INCLUDE_DIRS ${WCSLIB_INCLUDE_DIR})
   set(WCSLIB_LIBRARIES ${WCSLIB_LIBRARY} ${M_LIBRARY})
