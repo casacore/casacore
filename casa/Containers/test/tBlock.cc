@@ -39,8 +39,38 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 #include <vector>
-
+#include <stdint.h>
 #include <casacore/casa/namespace.h>
+
+namespace {
+
+struct LifecycleChecker {
+  LifecycleChecker() {
+    ++ctor_count;
+  }
+  LifecycleChecker(LifecycleChecker const &) {
+    ++ctor_count;
+  }
+  ~LifecycleChecker() {
+    ++dtor_count;
+  }
+  LifecycleChecker & operator =(LifecycleChecker const&) {
+    ++assign_count;
+    return *this;
+  }
+  static void clear() {
+    assign_count = ctor_count = dtor_count = 0;
+  }
+  static size_t assign_count;
+  static size_t ctor_count;
+  static size_t dtor_count;
+};
+
+size_t LifecycleChecker::assign_count = 0;
+size_t LifecycleChecker::ctor_count = 0;
+size_t LifecycleChecker::dtor_count = 0;
+
+}
 
 void doit()
 {
@@ -53,10 +83,118 @@ void doit()
     AlwaysAssertExit(bi1.nelements() == 0);// Block::nelements()
     AlwaysAssertExit(bi1.size() == 0);
     AlwaysAssertExit(bi1.empty());
+    for (i = 0; i < 200; i++) {
+      Block<Int> bi(AllocSpec<AlignedAllocator<Int, 32> >::value);
+      AlwaysAssertExit(0 == bi.storage());
+      bi.resize(3);
+      AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
+    }
     Block<Int> bi2(100);                   // Block::Block(uInt)
     AlwaysAssertExit(bi2.nelements() == 100);
     AlwaysAssertExit(bi2.size() == 100);
     AlwaysAssertExit(!bi2.empty());
+    for (i = 0; i < 200; i++) {
+      Block<Int> bi(100UL, AllocSpec<AlignedAllocator<Int, 32> >::value);
+      AlwaysAssertExit(bi.nelements() == 100);
+      AlwaysAssertExit(bi.size() == 100);
+      AlwaysAssertExit(bi.capacity() == 100);
+      AlwaysAssertExit(!bi.empty());
+      AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
+      Int *p = bi.storage();
+      bi.resize(100UL);
+      AlwaysAssertExit(p == bi.storage());
+      AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
+      bi.resize(95UL, True);
+      AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
+      bi[44] = 9876;
+      bi.resize(91UL, True, True);
+      AlwaysAssertExit(9876 == bi[44]);
+      AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
+      bi.resize(89UL, True, False, ArrayInitPolicy::INIT);
+      AlwaysAssertExit(0 == bi[0] && 0 == bi[30]);
+      AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
+      p = bi.storage();
+      bi.resize(87UL, False, True, ArrayInitPolicy::NO_INIT);
+      AlwaysAssertExit(p == bi.storage());
+      AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
+      bi.resize(105UL);
+      AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
+    }
+    {
+      LifecycleChecker::clear();
+      {
+        Block<LifecycleChecker> b(200);
+      }
+      AlwaysAssertExit(200 <= LifecycleChecker::ctor_count);
+      AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
+    }
+    {
+      LifecycleChecker::clear();
+      {
+        Block<LifecycleChecker> b(200, ArrayInitPolicy::NO_INIT, AllocSpec<NewDelAllocator<LifecycleChecker> >::value);
+      }
+      AlwaysAssertExit(200 <= LifecycleChecker::ctor_count);
+      AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
+    }
+    {
+      LifecycleChecker::clear();
+      {
+        Block<LifecycleChecker> b(200, ArrayInitPolicy::NO_INIT, AllocSpec<AlignedAllocator<LifecycleChecker, 32> >::value);
+      }
+      AlwaysAssertExit(0 == LifecycleChecker::ctor_count);
+      AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
+    }
+    {
+      LifecycleChecker::clear();
+      {
+        Block<LifecycleChecker> b(200, ArrayInitPolicy::INIT);
+      }
+      AlwaysAssertExit(200 <= LifecycleChecker::ctor_count);
+      AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
+    }
+    {
+      LifecycleChecker::clear();
+      {
+        Block<LifecycleChecker> bi(200);
+      }
+      AlwaysAssertExit(200 <= LifecycleChecker::ctor_count);
+      AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
+    }
+    {
+      Block<Int> ba(10);
+      ba = 10;
+      Block<Int> bb(ba);
+      AlwaysAssertExit(10 == bb[0] && 10 == bb[9]);
+
+      Int *p = new Int[20];
+      ba.prohibitChangingAllocator();
+      try {
+        ba.replaceStorage(20, p, True);
+        AlwaysAssertExit(False);
+      } catch (AipsError const &) {
+      }
+      try {
+        ba.replaceStorage(20, p, False);
+        AlwaysAssertExit(False);
+      } catch (AipsError const &) {
+      }
+      ba.permitChangingAllocator();
+      try {
+        ba.replaceStorage(20, p, True);
+      } catch (AipsError const &) {
+        AlwaysAssertExit(False);
+      }
+      AlwaysAssertExit(0 == p);
+
+      bb.prohibitChangingAllocator();
+      p = DefaultAllocator<Int>::type().allocate(20);
+      try {
+        ba.replaceStorage(20, p, True, AllocSpec<DefaultAllocator<Int> >::value);
+      } catch (AipsError const &) {
+        AlwaysAssertExit(False);
+      }
+      AlwaysAssertExit(0 == p);
+    }
     Block<Int> bi7(0);
     AlwaysAssertExit(bi7.nelements() == 0);
     Block<Int> bi3(200,5);                 // Block::Block(uInt, T)
