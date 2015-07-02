@@ -309,6 +309,7 @@ DESTINATION include/casacore/casa/BasicSL
 )
 
 install (FILES
+Containers/Allocator.h
 Containers/Block.h
 Containers/BlockIO.h
 Containers/BlockIO.tcc
