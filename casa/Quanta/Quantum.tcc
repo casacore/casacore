@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: Quantum.tcc 20993 2010-11-08 13:36:32Z gervandiepen $
 
 #ifndef CASA_QUANTUM_TCC
 #define CASA_QUANTUM_TCC
@@ -224,15 +224,44 @@ Qtype & Quantum<Qtype>::getValue() {
 }
 
 template <class Qtype>
-Qtype Quantum<Qtype>::getValue(const Unit &other) const {
-    Double d1 = other.getValue().getFac() /
-	qUnit.getValue().getFac();	// SUN native overloading problems
-    if (qUnit.getValue() == UnitVal::ANGLE) {
-      if (other.getValue() == UnitVal::TIME)
-	d1 *= C::circle/C::day;
-    } else if (qUnit.getValue() == UnitVal::TIME) {
-      if (other.getValue() == UnitVal::ANGLE)
-	d1 *= C::day/C::circle;
+Qtype Quantum<Qtype>::getValue(const Unit &other, Bool requireConform) const {
+    UnitVal myType = qUnit.getValue();
+    UnitVal otherType = other.getValue();
+	Double myFac = myType.getFac();
+	Double otherFac = otherType.getFac();
+	Double d1 = otherFac/myFac;
+    if (myType == otherType) {
+    	return (Qtype)(qVal/d1);
+    }
+    if (
+    	myType == UnitVal::ANGLE
+    	&& otherType == UnitVal::TIME
+    ) {
+    	d1 *= C::circle/C::day;
+    }
+    else if (
+    	myType == UnitVal::TIME
+    	&& otherType == UnitVal::ANGLE
+    ) {
+    	d1 *= C::day/C::circle;
+    }
+    else if(
+    	myType == 1/UnitVal::TIME
+    	&& otherType == UnitVal::LENGTH
+    ) {
+    	return (Qtype)(C::c/qVal/myFac/otherFac);
+    }
+    else if(
+    	myType == UnitVal::LENGTH
+    	&& otherType == 1/UnitVal::TIME
+    ) {
+    	return (Qtype)(C::c/qVal/myFac/otherFac);
+    }
+    else if (requireConform) {
+    	ThrowCc(
+    		"From/to units not consistent. Cannot convert "
+    		+ qUnit.getName() + " to " + other.getName()
+    	);
     }
     return (Qtype)(qVal/d1);
 }
@@ -357,8 +386,6 @@ uInt Quantum<Qtype>::myType() {
   return quantumType (static_cast<Quantum<Qtype> *>(0));
 }
 
-
 } //# NAMESPACE CASACORE - END
-
 
 #endif
