@@ -273,7 +273,7 @@ public:
   // Create a Block with the given number of points. The values in Block
   // are initialized. Note that indices range between 0 and n-1.
   template<typename Allocator>
-  explicit Block(size_t n, AllocSpec<Allocator> const &) :
+  Block(size_t n, AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
           True), keep_allocator_p(False) {
     init(init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
@@ -282,7 +282,7 @@ public:
   // Create a Block with the given number of points. The values in Block
   // are uninitialized. Note that indices range between 0 and n-1.
   // DefaultAllocator<T> is used as an allocator.
-  explicit Block(size_t n, ArrayInitPolicy initPolicy) :
+  Block(size_t n, ArrayInitPolicy initPolicy) :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), used_p(
           n), destroyPointer(True), keep_allocator_p(False) {
     init(initPolicy);
@@ -291,7 +291,7 @@ public:
   // Create a Block with the given number of points.
   // Note that indices range between 0 and n-1.
   template<typename Allocator>
-  explicit Block(size_t n, ArrayInitPolicy initPolicy,
+  Block(size_t n, ArrayInitPolicy initPolicy,
       AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
           True), keep_allocator_p(False) {
@@ -305,7 +305,12 @@ public:
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), used_p(
           n), destroyPointer(True), keep_allocator_p(False) {
     init(ArrayInitPolicy::NO_INIT);
-    allocator_p->construct(array, get_size(), val);
+    try {
+      allocator_p->construct(array, get_size(), val);
+    } catch (...) {
+      dealloc();
+      throw;
+    }
   }
 
   // Create a Block of the given length, and initialize (via copy constructor for
@@ -315,7 +320,12 @@ public:
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
           True), keep_allocator_p(False) {
     init(ArrayInitPolicy::NO_INIT);
-    allocator_p->construct(array, get_size(), val);
+    try {
+      allocator_p->construct(array, get_size(), val);
+    } catch (...) {
+      dealloc();
+      throw;
+    }
   }
 
   // Create a <src>Block</src> from a C-array (i.e. pointer). If 
@@ -356,9 +366,14 @@ public:
           True), keep_allocator_p(False) {
     init(ArrayInitPolicy::NO_INIT);
 
-    //objcopy(array, other.array, get_size());
-    objthrowcp1(array, other.array, get_size());
-    allocator_p->construct(array, get_size(), other.array);
+    try {
+      //objcopy(array, other.array, get_size());
+      objthrowcp1(array, other.array, get_size());
+      allocator_p->construct(array, get_size(), other.array);
+    } catch (...) {
+      dealloc();
+      throw;
+    }
   }
   
   // Assign other to this. this resizes itself to the size of other, so after
@@ -434,12 +449,25 @@ public:
       if (copyElements) {
         size_t nmin = std::min(get_size(), n);  // Don't copy too much!
         if (nmin > 0) {
-          allocator_p->construct(tp, nmin, array);
+          try {
+            allocator_p->construct(tp, nmin, array);
+          } catch (...) {
+            traceFree(tp, n);
+            allocator_p->deallocate(tp, n);
+            throw;
+          }
         }
         start = nmin;
       }
       if (initPolicy == ArrayInitPolicy::INIT) {
-        allocator_p->construct(&tp[start], n - start);
+        try {
+          allocator_p->construct(&tp[start], n - start);
+        } catch (...) {
+          allocator_p->destroy(tp, start);
+          traceFree(tp, n);
+          allocator_p->deallocate(tp, n);
+          throw;
+        }
       }
     }
     deinit();
@@ -477,11 +505,30 @@ public:
     if (forceSmaller == True) {
       T *tp = n > 0 ? allocator_p->allocate(n) : 0;
       traceAlloc(array, n);
-      if (initPolicy == ArrayInitPolicy::INIT) {
-        allocator_p->construct(tp, n);
+      if (initPolicy == ArrayInitPolicy::INIT && n > 0) {
+        try {
+          allocator_p->construct(tp, n);
+        } catch (...) {
+          traceFree(tp, n);
+          allocator_p->deallocate(tp, n);
+          throw;
+        }
       }
-      objcopy(tp, array, whichOne);
-      objcopy(tp + whichOne, array + whichOne + 1, get_size() - whichOne - 1);
+      try {
+        objcopy(tp, array, whichOne);
+      } catch (...) {
+        traceFree(tp, n);
+        allocator_p->deallocate(tp, n);
+        throw;
+      }
+      try {
+        objcopy(tp + whichOne, array + whichOne + 1, get_size() - whichOne - 1);
+      } catch (...) {
+        allocator_p->destroy(tp, whichOne);
+        traceFree(tp, n);
+        allocator_p->deallocate(tp, n);
+        throw;
+      }
       if (array && destroyPointer) {
         traceFree(array, get_capacity());
         allocator_p->destroy(array, get_size());
@@ -531,8 +578,7 @@ public:
 	}
   template<typename Allocator>
   void replaceStorage(size_t n, T *&storagePointer, Bool takeOverStorage, AllocSpec<Allocator> const &) {
-    BulkAllocator<typename Allocator::type::value_type> *new_allocator = get_allocator<typename Allocator::type>();
-    if (keep_allocator_p && new_allocator != allocator_p) {
+    if (keep_allocator_p && ! isCompatibleAllocator<Allocator>()) {
       throw AipsError("Block::replaceStorage - Attemption to change allocator of Block");
     }
 
@@ -668,6 +714,57 @@ public:
   }
 
  private:
+  friend class Array<T>; // to allow access to following constructors.
+
+  Block(size_t n, ArrayInitPolicy initPolicy,
+          AbstractAllocator<T> const &allocator) :
+      allocator_p(allocator.getAllocator()), used_p(n), destroyPointer(
+          True), keep_allocator_p(False) {
+    init(initPolicy);
+  }
+  Block(size_t n, AbstractAllocator<T> const &allocator) :
+      allocator_p(allocator.getAllocator()), used_p(n), destroyPointer(
+          True), keep_allocator_p(False) {
+    init(init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
+  }
+  Block(size_t n, T const &val, AbstractAllocator<T> const &allocator) :
+      allocator_p(allocator.getAllocator()), used_p(n), destroyPointer(
+          True), keep_allocator_p(False) {
+    init(ArrayInitPolicy::NO_INIT);
+    try {
+      allocator_p->construct(array, get_size(), val);
+    } catch (...) {
+      dealloc();
+      throw;
+    }
+  }
+  Block(size_t n, T *&storagePointer, Bool takeOverStorage,
+          AbstractAllocator<T> const &allocator) :
+      allocator_p(allocator.getAllocator()), capacity_p(n), used_p(
+          n), array(storagePointer), destroyPointer(takeOverStorage), keep_allocator_p(
+          False) {
+    if (destroyPointer)
+      storagePointer = 0;
+  }
+  void construct(size_t pos, size_t n, T const *src) {
+    allocator_p->construct(&array[pos], n, src);
+  }
+  void construct(size_t pos, size_t n,
+      T const &initial_value) {
+    allocator_p->construct(&array[pos], n, initial_value);
+  }
+  void construct(size_t pos, size_type n) {
+    allocator_p->construct(&array[pos], n);
+  }
+  void destroy(size_t pos, size_type n) {
+    allocator_p->destroy(&array[pos], n);
+  }
+  Allocator_private::BulkAllocator<T> *get_allocator(){
+      return allocator_p;
+  }
+
+  // end of friend
+
   static bool init_anyway() {
      return !(Block_internal_IsFundamental<T>::value
          || Block_internal_IsPointer<T>::value);
@@ -679,7 +776,12 @@ public:
       array = allocator_p->allocate(get_capacity());
       traceAlloc(array, get_capacity());
       if (initPolicy == ArrayInitPolicy::INIT) {
-        allocator_p->construct(array, get_size());
+        try {
+          allocator_p->construct(array, get_size());
+        } catch (...) {
+          dealloc();
+          throw;
+        }
       }
     } else {
       array = 0;
@@ -688,73 +790,31 @@ public:
 
   void deinit() {
     if (array && destroyPointer) {
-      traceFree(array, get_capacity());
       allocator_p->destroy(array, get_size());
+      dealloc();
+    }
+  }
+  void dealloc() {
+    if (array && destroyPointer) {
+      traceFree(array, get_capacity());
       allocator_p->deallocate(array, get_capacity());
       array = 0;
     }
   }
 
-  template<typename T2>
-  struct BulkAllocator {
-    typedef typename std::allocator<T2>::size_type size_type;
-    typedef typename std::allocator<T2>::pointer pointer;
-    typedef typename std::allocator<T2>::value_type value_type;
-
-    virtual pointer allocate(size_type elements, const void*ptr = 0) = 0;
-    virtual void deallocate(pointer ptr, size_type size) = 0;
-
-    virtual void construct(pointer ptr, size_type n, pointer src) = 0;
-    virtual void construct(pointer ptr, size_type n, value_type const &initial_value) = 0;
-    virtual void construct(pointer ptr, size_type n) = 0;
-    virtual void destroy(pointer ptr, size_type n) = 0;
-    virtual std::type_info const &allocator_typeid() const = 0;
-  };
+  template<typename Allocator>
+  static typename Allocator_private::BulkAllocator<
+      typename Allocator::value_type> *get_allocator() {
+    return Allocator_private::get_allocator<
+        Allocator>();
+  }
 
   template<typename Allocator>
-  struct BulkAllocatorImpl: public BulkAllocator<typename Allocator::value_type> {
-    typedef typename Allocator::size_type size_type;
-    typedef typename Allocator::pointer pointer;
-    typedef typename Allocator::value_type value_type;
-    virtual pointer allocate(size_type elements, const void *ptr = 0) {
-      return allocator.allocate(elements, ptr);
-    }
-    virtual void deallocate(pointer ptr, size_type size) {
-      allocator.deallocate(ptr, size);
-    }
-
-    virtual void construct(pointer ptr, size_type n, pointer src) {
-      for (size_type i = 0; i < n; ++i) {
-        allocator.construct(&ptr[i], src[i]);
-      }
-    }
-    virtual void construct(pointer ptr, size_type n, value_type const &initial_value) {
-      for (size_type i = 0; i < n; ++i) {
-        allocator.construct(&ptr[i], initial_value);
-      }
-    }
-    virtual void construct(pointer ptr, size_type n) {
-      for (size_type i = 0; i < n; ++i) {
-        allocator.construct(&ptr[i]);
-      }
-    }
-    virtual void destroy(pointer ptr, size_type n) {
-      for (size_type i = 0; i < n; ++i) {
-        allocator.destroy(&ptr[i]);
-      }
-    }
-    virtual std::type_info const &allocator_typeid() const {
-      return typeid(Allocator);
-    }
-
-  private:
-    static Allocator allocator;
-  };
-
-  template<typename Allocator>
-  static BulkAllocator<typename Allocator::value_type> *get_allocator() {
-    static BulkAllocatorImpl<Allocator> alloc_obj;
-    return &alloc_obj;
+  Bool isCompatibleAllocator() {
+    typename Allocator_private::BulkAllocator<
+        typename Allocator::type::value_type> *other_allocator =
+                Allocator_private::get_allocator<typename Allocator::type>();
+    return other_allocator == allocator_p;
   }
 
   // The number of used elements in the vector
@@ -773,7 +833,7 @@ public:
   }
 
   // The allocator
-  BulkAllocator<T> *allocator_p;
+  typename Allocator_private::BulkAllocator<T> *allocator_p;
   // The capacity of the vector
   size_t capacity_p;
   // The number of used elements in the vector
@@ -785,9 +845,6 @@ public:
   // Can we change allocator or not?
   Bool keep_allocator_p;
 };
-template<typename T>
-template<typename Allocator>
-Allocator Block<T>::BulkAllocatorImpl<Allocator>::allocator;
 
 
 // <summary>
