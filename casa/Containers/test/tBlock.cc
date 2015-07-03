@@ -39,6 +39,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 #include <vector>
+#include <limits>
 #include <stdint.h>
 #include <casacore/casa/namespace.h>
 
@@ -46,29 +47,43 @@ namespace {
 
 struct LifecycleChecker {
   LifecycleChecker() {
+    if (ctor_count >= ctor_error_trigger) {
+      throw 0;
+    }
     ++ctor_count;
   }
   LifecycleChecker(LifecycleChecker const &) {
+    if (ctor_count >= ctor_error_trigger) {
+      throw 0;
+    }
     ++ctor_count;
   }
   ~LifecycleChecker() {
     ++dtor_count;
   }
   LifecycleChecker & operator =(LifecycleChecker const&) {
+    if (assign_count >= assign_error_trigger) {
+      throw 0;
+    }
     ++assign_count;
     return *this;
   }
   static void clear() {
     assign_count = ctor_count = dtor_count = 0;
+    assign_error_trigger = ctor_error_trigger = std::numeric_limits<size_t>::max();
   }
   static size_t assign_count;
   static size_t ctor_count;
   static size_t dtor_count;
+  static size_t ctor_error_trigger;
+  static size_t assign_error_trigger;
 };
 
 size_t LifecycleChecker::assign_count = 0;
 size_t LifecycleChecker::ctor_count = 0;
 size_t LifecycleChecker::dtor_count = 0;
+size_t LifecycleChecker::ctor_error_trigger = std::numeric_limits<size_t>::max();
+size_t LifecycleChecker::assign_error_trigger = std::numeric_limits<size_t>::max();
 
 }
 
@@ -123,10 +138,75 @@ void doit()
     {
       LifecycleChecker::clear();
       {
-        Block<LifecycleChecker> b(200);
+        Block<LifecycleChecker> b(200, ArrayInitPolicy::INIT);
       }
       AlwaysAssertExit(200 <= LifecycleChecker::ctor_count);
       AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
+    }
+    {
+      LifecycleChecker::clear();
+      LifecycleChecker::ctor_error_trigger = 10;
+      try {
+        Block<LifecycleChecker> b(20, ArrayInitPolicy::INIT);
+        AlwaysAssertExit(False);
+      } catch (...) {
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+      }
+    }
+    {
+      LifecycleChecker::clear();
+      LifecycleChecker::ctor_error_trigger = 20 + 5;
+      try {
+        Block<LifecycleChecker> b(20, ArrayInitPolicy::INIT);
+        b.resize(15, True, True, ArrayInitPolicy::NO_INIT);
+        AlwaysAssertExit(False);
+      } catch (...) {
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+      }
+    }
+    {
+      LifecycleChecker::clear();
+      LifecycleChecker::ctor_error_trigger = 20 + 5;
+      try {
+        Block<LifecycleChecker> b(20, ArrayInitPolicy::INIT);
+        b.resize(15, True, True, ArrayInitPolicy::INIT);
+        AlwaysAssertExit(False);
+      } catch (...) {
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+      }
+    }
+    {
+      LifecycleChecker::clear();
+      LifecycleChecker::ctor_error_trigger = 10 + 5;
+      try {
+        Block<LifecycleChecker> b(10, ArrayInitPolicy::INIT);
+        b.resize(15, True, True, ArrayInitPolicy::NO_INIT);
+        AlwaysAssertExit(False);
+      } catch (...) {
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+      }
+    }
+    {
+      LifecycleChecker::clear();
+      LifecycleChecker::ctor_error_trigger = 10 + 10 + 3;
+      try {
+        Block<LifecycleChecker> b(10, ArrayInitPolicy::INIT);
+        b.resize(15, True, True, ArrayInitPolicy::NO_INIT);
+      } catch (...) {
+        AlwaysAssertExit(False);
+      }
+      AlwaysAssertExit(LifecycleChecker::ctor_count + 5 == LifecycleChecker::dtor_count);
+    }
+    {
+      LifecycleChecker::clear();
+      LifecycleChecker::ctor_error_trigger = 10 + 10 + 3;
+      try {
+        Block<LifecycleChecker> b(10, ArrayInitPolicy::INIT);
+        b.resize(15, True, True, ArrayInitPolicy::INIT);
+        AlwaysAssertExit(False);
+      } catch (...) {
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+      }
     }
     {
       LifecycleChecker::clear();
@@ -135,6 +215,7 @@ void doit()
       }
       AlwaysAssertExit(200 <= LifecycleChecker::ctor_count);
       AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
+      AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
     }
     {
       LifecycleChecker::clear();
@@ -151,6 +232,7 @@ void doit()
       }
       AlwaysAssertExit(200 <= LifecycleChecker::ctor_count);
       AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
+      AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
     }
     {
       LifecycleChecker::clear();
@@ -159,6 +241,7 @@ void doit()
       }
       AlwaysAssertExit(200 <= LifecycleChecker::ctor_count);
       AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
+      AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
     }
     {
       Block<Int> ba(10);
