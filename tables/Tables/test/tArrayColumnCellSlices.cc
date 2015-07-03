@@ -45,29 +45,57 @@ uInt nCorrelations=3;
 Array<Int> referenceArray (IPosition (3, nCorrelations, nChannels, nRows));
 
 // Create the table.
-void createTab()
+void createTable (
+	       const Array<Int> array)
 {
+    IPosition shape = array.shape();
+    int nCorrelations = shape(0);
+    int nChannels = shape (1);
+    int nRows = shape(2);
+
     // Build the table description.
+
     TableDesc td("", "1", TableDesc::Scratch);
-    td.addColumn (ArrayColumnDesc<Int>("arr1",IPosition(2, nCorrelations, nChannels),
+    td.addColumn (ArrayColumnDesc<Int>("testArrayColumn",IPosition(2, nCorrelations, nChannels),
                                        ColumnDesc::FixedShape));
+
     // Now create a new table from the description.
+
     SetupNewTable newtab("tArrayColumnSlices_tmp.data", td, Table::New);
     Table tab(newtab, nRows, False, Table::LocalEndian);
-    ArrayColumn<Int> arr1(tab, "arr1");
-    Array<Int> arrf(IPosition(2,nCorrelations, nChannels));
-    indgen (arrf);
-    for (uInt i=0; i<nRows; i++) {
-	for (uInt j=0; j < nCorrelations; j++){
-	    for (uInt k=0; k < nChannels; k++){
-		arrf (IPosition (2, j, k)) = i * 100 + k * 10 + j;
-		referenceArray (IPosition (3, j, k, i)) = arrf (IPosition (2, j, k));
+    ArrayColumn<Int> arrayColumn (tab, "testArrayColumn");
+
+    //indgen (arrf);
+
+    RefRows rows (0, nRows-1); // all rows
+    arrayColumn.putColumnCells (rows, referenceArray);
+
+}
+
+void
+clearValues (ArrayColumn<Int> & arrayColumn, Int value = 0)
+{
+    int nRows = referenceArray.shape().last();
+
+    Array<Int> array (referenceArray.shape(), value);
+
+    RefRows rows (0, nRows-1); // all rows
+
+    arrayColumn.putColumnCells (rows, array);
+}
+
+void
+createReferenceArray (int nCorrelations, int nChannels, int nRows)
+{
+   for (Int i=0; i<nRows; i++) {
+	for (Int j=0; j < nCorrelations; j++){
+	    for (Int k=0; k < nChannels; k++){
+		referenceArray (IPosition (3, j, k, i)) = i * 100 + k * 10 + j;;
 	    }
-	    arr1.put(i, arrf);
 	}
     }
 }
-
+    
 void 
 compareToReferenceArray (const Array<Int> other)
 {
@@ -83,10 +111,20 @@ compareToReferenceArray (const Array<Int> other)
     }   
 }
 
+void
+readAndCompareArray (ArrayColumn<Int> & arrayColumn)
+{
+    Array<Int> array (referenceArray.shape(), -2);
+    RefRows rows (0, referenceArray.shape().last()-1);
+    arrayColumn.getColumnCells (rows, array);
+
+    compareToReferenceArray (array);
+}
+
 void readCellSlices()
 {
   Table tab("tArrayColumnSlices_tmp.data");
-  ArrayColumn<Int> arr1(tab, "arr1");
+  ArrayColumn<Int> arrayColumn(tab, "testArrayColumn");
   {
       // Check ColumnSlicer validation logic
       //
@@ -162,7 +200,7 @@ void readCellSlices()
       RefRows refRows (0, nRows - 1);
       Array<Int> destination (IPosition (3, nCorrelations, nChannels, nRows));
 
-      arr1.getColumnCells (refRows, columnSlicer, destination);
+      arrayColumn.getColumnCells (refRows, columnSlicer, destination);
 
       compareToReferenceArray (destination);
 
@@ -190,7 +228,7 @@ void readCellSlices()
       RefRows refRows (0, nRows - 1);
       Array<Int> destination (IPosition (3, nCorrelations, nChannels, nRows));
 
-      arr1.getColumnCells (refRows, columnSlicer, destination);
+      arrayColumn.getColumnCells (refRows, columnSlicer, destination);
 
       compareToReferenceArray (destination);
 
@@ -218,7 +256,7 @@ void readCellSlices()
       RefRows refRows (0, nRows - 1);
       Array<Int> destination (IPosition (3, nCorrelations, nChannels, nRows));
 
-      arr1.getColumnCells (refRows, columnSlicer, destination);
+      arrayColumn.getColumnCells (refRows, columnSlicer, destination);
 
       compareToReferenceArray (destination);
 
@@ -249,7 +287,7 @@ void readCellSlices()
 
       Array<Int> destination (IPosition (3, nCorrelations, nChannels, nRows));
 
-      arr1.getColumnCells (refRows, columnSlicer, destination);
+      arrayColumn.getColumnCells (refRows, columnSlicer, destination);
 
       compareToReferenceArray (destination);
 
@@ -278,9 +316,154 @@ void readCellSlices()
 
       Array<Int> destination (IPosition (3, nCorrelations, nChannels, nRows));
 
-      arr1.getColumnCells (refRows, columnSlicer, destination);
+      arrayColumn.getColumnCells (refRows, columnSlicer, destination);
 
       compareToReferenceArray (destination);
+
+  }
+
+}
+
+void writeCellSlices()
+{
+    Table tab("tArrayColumnSlices_tmp.data", Table::Update);
+    ArrayColumn<Int> arrayColumn(tab, "testArrayColumn");
+  
+  {
+      // Check the actual I/O now
+      //
+      // Read the whole thing at once.
+
+      Vector <Slicer *> dataSlicer (1, 0);
+      Vector <Slicer *> sourceSlicer (1, 0);
+      IPosition shape (2, nCorrelations, nChannels);
+
+      dataSlicer (0) = new Slicer (IPosition (2, 0, 0), IPosition (2, nCorrelations, nChannels), IPosition (2, 1));
+      sourceSlicer (0) = new Slicer (IPosition (2, 0), IPosition (2, nCorrelations, nChannels), IPosition (2, 1));
+
+      ColumnSlicer columnSlicer (shape, dataSlicer, sourceSlicer);
+      RefRows refRows (0, nRows - 1);
+      Array<Int> source = referenceArray.copy();
+
+      arrayColumn.putColumnCells (refRows, columnSlicer, source);
+
+      readAndCompareArray (arrayColumn);
+
+  }
+
+  {
+      // Check the actual I/O now
+      //
+      // Do read in two halves
+
+      Vector <Slicer *> dataSlicer (2, 0);
+      Vector <Slicer *> sourceSlicer (2, 0);
+      IPosition shape (2, nCorrelations, nChannels);
+
+      uInt n1 = nChannels / 2;
+      uInt n2 = nChannels / 2 + nChannels % 2;
+
+      dataSlicer (0) = new Slicer (IPosition (2, 0, 0), IPosition (2, nCorrelations, n1), IPosition (2, 1, 1));
+      sourceSlicer (0) = new Slicer (IPosition (2, 0, 0), IPosition (2, nCorrelations, n1), IPosition (2, 1, 1));
+
+      dataSlicer (1) = new Slicer (IPosition (2, 0, n1), IPosition (2, nCorrelations, n2), IPosition (2, 1, 1));
+      sourceSlicer (1) = new Slicer (IPosition (2, 0, n1), IPosition (2, nCorrelations, n2), IPosition (2, 1, 1));
+
+      ColumnSlicer columnSlicer (shape, dataSlicer, sourceSlicer);
+      RefRows refRows (0, nRows - 1);
+      Array<Int> source = referenceArray.copy();
+
+      arrayColumn.putColumnCells (refRows, columnSlicer, source);
+
+      readAndCompareArray (arrayColumn);
+
+  }
+
+  {
+      // Check the actual I/O now
+      //
+      // Do read in two halves the other way.
+
+      Vector <Slicer *> dataSlicer (2, 0);
+      Vector <Slicer *> sourceSlicer (2, 0);
+      IPosition shape (2, nCorrelations, nChannels);
+
+      uInt n1 = nCorrelations / 2;
+      uInt n2 = nCorrelations / 2 + nCorrelations % 2;
+
+      dataSlicer (0) = new Slicer (IPosition (2, 0, 0), IPosition (2, n1, nChannels), IPosition (2, 1, 1));
+      sourceSlicer (0) = new Slicer (IPosition (2, 0, 0), IPosition (2, n1, nChannels), IPosition (2, 1, 1));
+
+      dataSlicer (1) = new Slicer (IPosition (2, n1, 0), IPosition (2, n2, nChannels), IPosition (2, 1, 1));
+      sourceSlicer (1) = new Slicer (IPosition (2, n1, 0), IPosition (2, n2, nChannels), IPosition (2, 1, 1));
+
+      ColumnSlicer columnSlicer (shape, dataSlicer, sourceSlicer);
+      RefRows refRows (0, nRows - 1);
+      Array<Int> source = referenceArray.copy();
+
+      arrayColumn.putColumnCells (refRows, columnSlicer, source);
+
+      readAndCompareArray (arrayColumn);
+
+  }
+
+
+
+  {
+      // Check the actual I/O now
+      //
+      // Do it with two interleaving slices.
+
+      Vector <Slicer *> dataSlicer (2, 0);
+      Vector <Slicer *> sourceSlicer (2, 0);
+      IPosition shape (2, nCorrelations, nChannels);
+
+      uInt nChannels1 = nChannels / 2;
+      uInt nChannels2 = nChannels / 2 + nChannels % 2;
+
+      dataSlicer (0) = new Slicer (IPosition (2, 0, 0), IPosition (2, nCorrelations, nChannels2), IPosition (2, 1, 2));
+      sourceSlicer (0) = new Slicer (IPosition (2, 0, 0), IPosition (2, nCorrelations, nChannels2), IPosition (2, 1, 2));
+
+      dataSlicer (1) = new Slicer (IPosition (2, 0, 1), IPosition (2, nCorrelations, nChannels1), IPosition (2, 1, 2));
+      sourceSlicer (1) = new Slicer (IPosition (2, 0, 1), IPosition (2, nCorrelations, nChannels1), IPosition (2, 1, 2));
+
+      ColumnSlicer columnSlicer (shape, dataSlicer, sourceSlicer);
+      RefRows refRows (0, nRows - 1);
+
+      Array<Int> source = referenceArray.copy();
+
+      arrayColumn.putColumnCells (refRows, columnSlicer, source);
+
+      readAndCompareArray (arrayColumn);
+
+  }
+
+  {
+      // Check the actual I/O now
+      //
+      // Do it with two interleaving slices doing it the other way
+
+      Vector <Slicer *> dataSlicer (2, 0);
+      Vector <Slicer *> sourceSlicer (2, 0);
+      IPosition shape (2, nCorrelations, nChannels);
+
+      uInt nCorrelations1 = nCorrelations / 2;
+      uInt nCorrelations2 = nCorrelations / 2 + nCorrelations % 2;
+
+      dataSlicer (0) = new Slicer (IPosition (2, 0, 0), IPosition (2, nCorrelations2, nChannels), IPosition (2, 2, 1));
+      sourceSlicer (0) = new Slicer (IPosition (2, 0, 0), IPosition (2, nCorrelations2, nChannels), IPosition (2, 2, 1));
+
+      dataSlicer (1) = new Slicer (IPosition (2, 1, 0), IPosition (2, nCorrelations1, nChannels), IPosition (2, 2, 1));
+      sourceSlicer (1) = new Slicer (IPosition (2, 1, 0), IPosition (2, nCorrelations1, nChannels), IPosition (2, 2, 1));
+
+      ColumnSlicer columnSlicer (shape, dataSlicer, sourceSlicer);
+      RefRows refRows (0, nRows - 1);
+
+      Array<Int> source = referenceArray.copy();
+
+      arrayColumn.putColumnCells (refRows, columnSlicer, source);
+
+      readAndCompareArray (arrayColumn);
 
   }
 
@@ -290,11 +473,14 @@ void readCellSlices()
 int main()
 {
   try {
-    createTab();
-    readCellSlices();
-  } catch (AipsError& x) {
+      createReferenceArray (nCorrelations, nChannels, nRows);
+      createTable (referenceArray);
+      readCellSlices();
+      writeCellSlices();
+ } catch (AipsError& x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;
   } 
   return 0;                           // exit with success status
 }
+
