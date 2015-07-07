@@ -191,7 +191,6 @@ vector<std::pair<Quantity, Quantity> > MSMetaData::getProperMotions() const {
 		? std::pair<String, String>(u[0], u[0])
 		: std::pair<String, String>(u[0], u[1]);
 	uInt nrow = col.nrow();
-	cout << "nrow " << nrow << endl;
 	vector<std::pair<Quantity, Quantity> > myvec(nrow);
 	for (uInt i=0; i<nrow; ++i) {
 		Vector<Double> fs = col.get(i);
@@ -746,6 +745,9 @@ void MSMetaData::_getScansAndIntentsMaps(
 			std::set<Int>::const_iterator myState=states.begin();
 			myState!=endState; ++myState
 		) {
+	    if (*myState < 0) {
+	        continue;
+	    }
             intents = stateToIntentsMap[*myState];
             scanToIntentsMap[scan].insert(intents.begin(), intents.end());
 			std::set<String>::const_iterator endIntent = intents.end();
@@ -2227,6 +2229,7 @@ std::map<uInt, Double> MSMetaData::getAverageIntervalsForScan(
 		if (iter->first.first == scan) {
 			ret[iter->first.second] = iter->second;
 		}
+		iter++;
 	}
 	return ret;
 }
