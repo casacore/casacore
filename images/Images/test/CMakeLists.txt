@@ -15,6 +15,17 @@ test_image.im/logtable/table.dat
 test_image.im/logtable/table.f0
 test_image.im/logtable/table.info
 test_image.im/logtable/table.lock
+
+decon_test.im/logtable/table.info
+decon_test.im/logtable/table.lock
+decon_test.im/logtable/table.dat
+decon_test.im/logtable/table.f0
+decon_test.im/table.info
+decon_test.im/table.lock
+decon_test.im/table.dat
+decon_test.im/table.f0_TSM0
+decon_test.im/table.f0
+
 )
 
 foreach (file ${datafiles})

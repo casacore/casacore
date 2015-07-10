@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSFitsInput.cc 21580 2015-03-24 08:37:00Z gervandiepen $
 //
 
 #include <casacore/msfits/MSFits/MSFitsInput.h>
@@ -237,8 +237,8 @@ void MSPrimaryTableHolder::detach() {
 //------------------------------------------------------------
 MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
         const Bool useNewStyle) :
-    infile_p(0), msc_p(0), addSourceTable_p(False), itsLog(LogOrigin(
-            "MSFitsInput", "MSFitsInput")), newNameStyle(useNewStyle) {
+    infile_p(0), msc_p(0), restfreq_p(0), addSourceTable_p(False), itsLog(LogOrigin(
+            "MSFitsInput", "MSFitsInput")), newNameStyle(useNewStyle), _msCreated(False) {
     // First, lets verify that fitsfile exists and that it appears to be a
     // FITS file.
     File f(fitsFile);
@@ -271,8 +271,6 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
 
     // Open the FITS file for reading
     infile_p = new FitsInput(fitsFile.chars(), FITS::Disk);
-    //cout << "++infile_p->hdutype()=" << infile_p->hdutype() << endl;
-
     obsTime.resize(2);
     MVTime timeVal;
     MEpoch::Types epochRef;
@@ -293,11 +291,9 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
             if (checkInput(*infile_p)) {
                 if (infile_p->hdutype() == FITS::PrimaryGroupHDU) {
                     priGroup_p.attach(*infile_p);
-                    //cout << "==infile_p->hdutype()=" << infile_p->hdutype() << endl;
                 }
                 if (infile_p->hdutype() == FITS::PrimaryTableHDU) {
                     priTable_p.attach(*infile_p);
-                    //cout << "--infile_p->hdutype()=" << infile_p->hdutype() << endl;
                 }
             }
         }
@@ -308,7 +304,7 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
 }
 
 void MSFitsInput::readRandomGroupUVFits(Int obsType) {
-        itsLog << LogOrigin("MSFitsInput", "readRandomGroupUVFits")
+        itsLog << LogOrigin("MSFitsInput", __func__)
                << LogIO::POST;
         Int nField = 0, nSpW = 0;
 
@@ -329,21 +325,16 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
         Int estMem = priGroup_p.gcount() * max(1, nIF_p) / 1024 * nPixel_p(
                 getIndex(coordType_p, "STOKES")) * nPixel_p(getIndex(
                 coordType_p, "FREQ")) * 8 * 2;
-        
         Int ns = max(1, nIF_p);
         Int nc = nPixel_p( getIndex(coordType_p, "STOKES"));
         Int nf = nPixel_p( getIndex(coordType_p, "FREQ"));
-        //cout << "priGroup_p.gcount()=" << priGroup_p.gcount()
-        //     << " ns=" << ns << " nc=" << nc << " nf=" << nf << endl;
         long estStor = priGroup_p.gcount() * ns / 1024 * 
              (7 * 8 + 11 * 4 + (2 * nc + 3 * nc * nf) * 4 + nc * nf + 1);
         float needS = estStor / 1024. ;
-        //cout << "=========msFile_p=" << msFile_p 
-        //     << " estStor=" << estStor << endl;
         Directory curD(msFile_p);
         float freeS = curD.freeSpaceInMB();
  
-        itsLog << LogOrigin("MSFitsInput", "readRandomGroupUVFits")
+        itsLog << LogOrigin("MSFitsInput", __func__)
                << ((needS > freeS) ? LogIO::WARN : LogIO::DEBUG1) 
                << "Estimate of Needed Storage Space in MB: " 
                << 0.9 * needS << "~" << 1.6 * needS 
@@ -361,8 +352,8 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
             try {
                 fillMSMainTableColWise(nField, nSpW);
             }
-            catch(AipsError ex) {
-                itsLog << LogOrigin("MSFitsInput", "readRandomGroupUVFits")
+            catch(const AipsError& ex) {
+                itsLog << LogOrigin("MSFitsInput", __func__)
                    << ex.getMesg() 
                    << LogIO::EXCEPTION;
             }
@@ -371,18 +362,17 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
             try {
                 fillMSMainTable(nField, nSpW);
             }
-            catch(AipsError ex) {
-                itsLog << LogOrigin("MSFitsInput", "readRandomGroupUVFits")
+            catch(const AipsError& ex) {
+                itsLog << LogOrigin("MSFitsInput", __func__)
                    << ex.getMesg() 
                    << LogIO::EXCEPTION;
             }
         }
         // now handle the BinaryTable extensions for the subtables
         Bool haveAn = False, haveField = False, haveSpW = False;
-
         while (infile_p->rectype() != FITS::EndOfFile && !infile_p->err()) {
             if (infile_p->hdutype() != FITS::BinaryTableHDU) {
-                itsLog << LogOrigin("MSFitsInput", "readRandomGroupUVFits")
+                itsLog << LogOrigin("MSFitsInput", __func__)
                        << LogIO::NORMAL << "Skipping unhandled extension"
                        << LogIO::POST;
                 infile_p->skip_hdu();
@@ -390,17 +380,15 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
                 BinaryTable binTab(*infile_p);
                 // see if we can recognize the type
                 String type = binTab.extname();
-                itsLog << LogOrigin("MSFitsInput", "readRandomGroupUVFits")
+                itsLog << LogOrigin("MSFitsInput", __func__)
                        << LogIO::DEBUG1 << "Found binary table of type "
                        << type << " following data" << LogIO::POST;
-
-                itsLog << LogOrigin("MSFitsInput", "readRandomGroupUVFits")
+                itsLog << LogOrigin("MSFitsInput", __func__)
                        << LogIO::NORMAL
                        << "extname=" << type << " nrows=" << binTab.nrows()
                        << " ncols=" << binTab.ncols() << " rowsize=" << binTab.rowsize() 
                        << " pcount=" << binTab.pcount() << " gcount=" << binTab.gcount()
                        << LogIO::POST;
-                
                 if (type.contains("AN") && !haveAn) {
                     haveAn = True;
                     fillAntennaTable(binTab);
@@ -417,7 +405,7 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
                         updateSpectralWindowTable();
                     }
                 } else {
-                    itsLog << LogOrigin("MSFitsInput", "readRandomGroupUVFits")
+                    itsLog << LogOrigin("MSFitsInput", __func__)
                            << LogIO::NORMAL
                            << "Skipping table, duplicate or unrecognized type: "
                            << type << LogIO::POST;
@@ -443,11 +431,10 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
         //fillPointingTable();
         //fillSourceTable();
 
-
         fixEpochReferences();
 
         if (!haveAn) {
-            itsLog << LogOrigin("MSFitsInput", "readRandomGroupUVFits")
+            itsLog << LogOrigin("MSFitsInput", __func__)
                    << "Cannot find an AN Table. This is required."
                    << LogIO::EXCEPTION;
         }
@@ -455,7 +442,7 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
 }
 
 void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
-    itsLog << LogOrigin("MSFitsInput", "readPrimaryTableUVFits") 
+    itsLog << LogOrigin("MSFitsInput", __func__)
            << "msFile_p=" << msFile_p
            << "obsType=" << obsType
            << LogIO::POST;
@@ -466,8 +453,6 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
 
     epochRef_p = getDirectionFrame(2000.0);
     setupMeasurementSet(msFile_p, useTSM, obsType);
-    //cout << "now processing the tables....." << endl;
-
     ConstFitsKeywordList kwlist = priTable_p.kwlist();
 
     const FitsKeyword* kw;
@@ -482,9 +467,6 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
     FITSDateUtil::fromFITS(timeVal, epochRef, date, "UTC");
     obsTime(0) = timeVal.second();
     obsTime(1) = timeVal.second();
-    //cout << "timeVal=" << timeVal << endl;
-    //cout << "obstime=" << obsTime(0) << " " << obsTime(1) << endl;
-
     fillHistoryTable(kwlist);
     Bool moreToDo = true;
     while (moreToDo &&
@@ -494,14 +476,9 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
             itsLog << LogOrigin("MSFitsInput", "readPrimaryTableUVFits")
                    << LogIO::NORMAL << "Skipping unhandled extension"
                    << LogIO::POST;
-            //cout << "infile_p->err()=" << infile_p->err() << endl;
             infile_p->skip_hdu();
-            //cout << "infile_p->err()=" << infile_p->err() << endl; 
         } 
         else {
-            //cout << "rectype=" << infile_p->rectype() << endl;
-            //cout << "rectype FITS::HDURecord=" << FITS::HDURecord << endl;
-            //cout << "Data type is " << infile_p->datatype() << endl;
             itsLog << LogOrigin("MSFitsInput", "readPrimaryTableUVFits")
                    << LogIO::DEBUG1 << "Binary Table HDU ------>>>" << LogIO::POST;
 
@@ -548,8 +525,6 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
                     ConstFitsKeywordList kwl = bt->kwlist();
 
                     //FitsKeywordList pkw = kwl;
-                    //cout << "UV table keywords:\n" << pkw << endl;
-
                     fillObservationTable(kwl);
                     fillHistoryTable(kwl);
 
@@ -591,37 +566,34 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
 }
 
 void MSFitsInput::readFitsFile(Int obsType) {
-    itsLog << LogOrigin("MSFitsInput", "readFitsFile")
+    itsLog << LogOrigin("MSFitsInput", __func__)
            << LogIO::DEBUG2
            << "hdutype=" << infile_p->hdutype()
            << LogIO::POST;
-    if (infile_p->hdutype() == FITS::PrimaryGroupHDU) {
-        try {
+    try {
+    	if (infile_p->hdutype() == FITS::PrimaryGroupHDU) {
             readRandomGroupUVFits(obsType);
         }
-        catch(AipsError ex) {
-           itsLog << LogOrigin("MSFitsInput", "readFitsFile")
-                  << ex.getMesg() 
-                  << LogIO::EXCEPTION;
-        }
-    } else if (infile_p->hdutype() == FITS::PrimaryTableHDU) {
-        //itsLog << LogOrigin("MSFitsInput", "readFitsFile")
-        //   << LogIO::SEVERE
-        //  << "Primary Table uvfits not yet handled!"
-        //   << LogIO::EXCEPTION;
-        try {
+    	else if (infile_p->hdutype() == FITS::PrimaryTableHDU) {
             readPrimaryTableUVFits(obsType);
-        }
-        catch(AipsError ex) {
-           itsLog << LogOrigin("MSFitsInput", "readFitsFile")
-                  << ex.getMesg() 
-                  << LogIO::EXCEPTION;
-        }
-    } 
-    else {
-        itsLog << LogOrigin("MSFitsInput", "readFitsFile")
-           << LogIO::SEVERE << "unhandled extension type! "
-           << LogIO::EXCEPTION;
+    	}
+    	else {
+    		ThrowCc("Unhandled extension type");
+    	}
+    }
+    catch(const AipsError& ex) {
+
+    	if (_msCreated) {
+    		String name = ms_p.tableName();
+    		itsLog << LogIO::NORMAL << "Exception while processing UVFITS file. Deleting incomplete MS '"
+    			<< name << "'" << LogIO::POST;
+    		ms_p.closeSubTables();
+    		ms_p.relinquishAutoLocks(True);
+    		// detach to close
+    		ms_p = MeasurementSet();
+    		Table::deleteTable(name, True);
+    	}
+    	ThrowCc(ex.getMesg());
     }
 }
 
@@ -651,11 +623,6 @@ Bool MSFitsInput::checkInput(FitsInput& infile) {
                << LogIO::EXCEPTION;
     }
     FITS::ValueType dataType = infile.datatype();
-    //cout << "dataType=" << dataType
-    //     << " FITS::FLOAT=" << FITS::FLOAT
-    //     << " FITS::SHORT=" << FITS::SHORT
-    //     << " FITS::LONG=" << FITS::LONG
-    //     << " FITS::BYTE=" << FITS::BYTE << endl;
     if (dataType != FITS::FLOAT &&
          dataType != FITS::SHORT &&
          dataType != FITS::LONG &&
@@ -849,16 +816,11 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
         ok = FITSSpectralUtil::fromFITSHeader(spectralAxis, referenceChannel,
                 referenceFrequency, deltaFrequency, frequencies, freqsys_p,
                 velPref, restfreq_p, itsLog, header);
-
-        //    cout << "Discerned type: " << MFrequency::showType(freqsys_p) << endl;
-        //    cout << "Discerned restfreq: " << restfreq_p << endl;
-
         // Override freqsys_p from FITSSpectralUtil, if SPECSYS keyword present
         if (header.isDefined(String("specsys"))) {
             String fframe;
             header.get("specsys", fframe);
             MFrequency::getType(freqsys_p, fframe);
-            //      cout << "SPECSYS Override: " << MFrequency::showType(freqsys_p) << endl;
         }
 
         // Be strict about use of ALTREF-derived frequencies:
@@ -870,8 +832,6 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
         useAltrval = (!header.isDefined(String("specsys")) && header.isDefined(
                 String("altrval")) && header.isDefined(String("restfreq"))
                 && freqsys_p != MFrequency::TOPO);
-        //    cout << "useAltrval = " << boolalpha << useAltrval << endl;
-
         refFreq_p = referenceFrequency;
         chanFreq_p = frequencies;
     }
@@ -910,7 +870,6 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
                 MS::SIGMA)));
     }
     SetupNewTable newtab(MSFileName, td, Table::New);
-    //cout << "setup New Table" << endl;
     // Set the default Storage Manager to be the Incr one
     IncrementalStMan incrStMan("ISMData");
     newtab.bindAll(incrStMan, True);
@@ -938,7 +897,7 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
         IPosition dataShape(2, nCorr, nChan);
         IPosition tileShape = MSTileLayout::tileShape(dataShape, obsType,
                 array_p);
-        itsLog << LogOrigin("MSFitsInput", "setupMeasurementSet");
+        itsLog << LogOrigin("MSFitsInput", __func__);
         itsLog << LogIO::NORMAL << "Using tile shape " << tileShape << " for "
                 << array_p << " with obstype=" << obsType << LogIO::POST;
         TiledShapeStMan tiledStMan1("TiledData", tileShape);
@@ -969,7 +928,7 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     // avoid lock overheads by locking the table permanently
     TableLock lock(TableLock::AutoLocking);
     MeasurementSet ms(newtab, lock);
-    //cout << "ms created" << endl;
+    _msCreated = True;
 
     // Set up the subtables for the UVFITS MS
     // we make new tables with 0 rows
@@ -1094,10 +1053,8 @@ void MSFitsInput::fillHistoryTable(ConstFitsKeywordList &kwl) {
     kwl.first();
     while ((kw = kwl.next())) {
         String nm = kw->name();
-        //cout << "nm=" << nm << endl;
         if (nm == "HISTORY" || nm == "COMMENT" || nm == "") {
             history = kw->comm();
-            //cout << "history=" << history << endl;
             history = history.before(trailing);
             ms_p.history().addRow();
             row++;
@@ -1741,15 +1698,8 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
     // Extract and print data manager cache statistics
     // for flag and weight spectrum
     // ROTiledStManAccessor dmFlag(ms_p, "TiledFlag");
-    //  cout << "TiledFlag statistics" << endl;
-    //  dmFlag.showCacheStatistics(cout);
-    //  cout << "---------------------------------------------------" << endl;
 
-    //  cout << endl;
-    //  cout << "TiledWgtSpectrum statistics" << endl;
     //  ROTiledStManAccessor dmWeight(ms_p, "TiledWgtSpectrum");
-    //  dmWeight.showCacheStatistics(cout);
-    //  cout << "---------------------------------------------------" << endl;
 }
 
 void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
@@ -1768,7 +1718,6 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     }
 
     nAnt = bt.nrows();
-    //cout << "nAnt=" << nAnt << endl;
     if (nAnt - 1 > nAntMax)
         nAntMax = nAnt - 1;
 
@@ -1954,7 +1903,6 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
             mount = "ALT-AZ";
         ant.flagRow().put(row, False);
         ant.mount().put(row, mount);
-        //cout << "array_p=" << array_p << endl;
         if (array_p == "CARMA" && newNameStyle) {
             ostringstream oss;
             oss << "CA" << id(i);
@@ -2011,9 +1959,6 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
 
 void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
 {
-
-  //cout << "fSWT type: " << MFrequency::showType(freqsys_p) << endl;
-
   MSSpWindowColumns& msSpW(msc_p->spectralWindow());
   MSDataDescColumns& msDD(msc_p->dataDescription());
   MSPolarizationColumns& msPol(msc_p->polarization());
@@ -2039,7 +1984,6 @@ void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
   Matrix<Float> chWidth(nIF_p,nRow);
   Matrix<Float> totalBandwidth(nIF_p,nRow);
   // The type of the column changes according to the number of entries
-  //cout << "nIF_p=" << nIF_p << endl;
   if (nIF_p==1) {
     ROScalarColumn<Double> colIFFreq(fqTab,"IF FREQ");
     ROScalarColumn<Float> colChWidth(fqTab,"CH WIDTH");
@@ -2201,13 +2145,11 @@ MDirection::Types MSFitsInput::getDirectionFrame(Double epoch) {
 
 void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
     MSFieldColumns& msField(msc_p->field());
-
     TableRecord btKeywords = bt.getKeywords();
     if (!btKeywords.isDefined("NO_IF")) {
         throw(AipsError("MSFitsInput: Illegal SU file: no number of IFs"));
     }
     uInt noif = bt.getKeywords().asuInt("NO_IF");
-
     // Table suTab=bt.fullTable("",Table::Scratch);
     Table suTab = bt.fullTable();
     ROScalarColumn<Int> id(suTab, "ID. NO.");
@@ -2228,28 +2170,40 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
     ROScalarColumn<Double> pmra(suTab, "PMRA"); //deg/day
     ROScalarColumn<Double> pmdec(suTab, "PMDEC"); //deg/day
     if (Int(suTab.nrow()) < nField) {
-        itsLog << LogOrigin("MSFitsInput", "fillFieldTable")
+        itsLog << LogOrigin("MSFitsInput", __func__)
                << LogIO::NORMAL
                 << "Input Source id's not sequential, adding empty rows in output"
                 << LogIO::POST;
     }
     Int outRow = -1;
-
     // RESTFREQ and LSRVEL are 2D columns according to the AIPS Memo 117
-    restFreq_p.resize(noif, suTab.nrow());
+    //restFreq_p.resize(noif, suTab.nrow());
     sysVel_p.resize(noif, suTab.nrow());
-    try{
-      ROArrayColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
-      ROArrayColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
-      restfreq.getColumn(restFreq_p);
-      sysvel.getColumn(sysVel_p);
+    Bool throwImmediately = False;
+    try {
+    	ROArrayColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
+    	ROArrayColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
+    	restfreq.getColumn(restFreq_p);
+        // purposeful assignment of throwImmediately
+        // because it appears that the sense of rows and columns are reversed here
+        Int nrestfreqs = restFreq_p.nrow();
+        throwImmediately = nrestfreqs != (Int) noif;
+        ThrowIf(
+    			throwImmediately,
+    			"Inconsistent SU table, number of elements in rest frequency column is "
+    			+ String::toString(nrestfreqs) + " but number of IFs is "
+    			+ String::toString(noif)
+    	);
+    	sysvel.getColumn(sysVel_p);
     }
-    catch (std::exception x) {
-      if(noif>1){
-	itsLog << LogOrigin("MSFitsInput", "fillFieldTable") << LogIO::WARN
-	       << x.what() << ": " << "Inconsistent setup of RESTFREQ and LSRVEL columns." << endl
-	       << "With NO_IF>1, they should be arrays not scalars." << LogIO::POST;
-      }
+    catch (const AipsError& x) {
+    	ThrowIf(throwImmediately, x.getMesg());
+    	if(noif>1){
+    		itsLog << LogOrigin("MSFitsInput", __func__) << LogIO::WARN
+    				<< x.what() << ": " << "Inconsistent setup of RESTFREQ and LSRVEL columns." << endl
+    				<< "With NO_IF>1, they should be arrays not scalars." << LogIO::POST;
+    	}
+      restFreq_p.resize(noif, suTab.nrow());
       ROScalarColumn<Double> restfreq(suTab,"RESTFREQ");  // Hz
       ROScalarColumn<Double> sysvel(suTab,"LSRVEL"); // m/s
       Vector<Double> tmprf(suTab.nrow());
@@ -2261,7 +2215,6 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
 	sysVel_p(0,ii) = tmpsv(ii);
       }
     }      
-
     // set the DIRECTION MEASURE REFERENCE for appropriate columns
 
     //   IF UVFITS CAME FROM AIPS, AND THE FIRST ROW OF SU TABLE
@@ -2271,14 +2224,13 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
 
     MDirection::Types epochRefZero = getDirectionFrame(epoch(0));
     if (epochRefZero != epochRef_p)
-        itsLog << LogOrigin("MSFitsInput", "fillFieldTable")
+        itsLog << LogOrigin("MSFitsInput", __func__)
                << LogIO::WARN << "The direction measure reference code, "
                 << epochRefZero << "\n"
                 << "for the first field does not match the one from the FITS header, "
                 << epochRef_p
                 << ".\nThis might cause a problem for the reference frame"
                 << " of the output's UVW column." << LogIO::POST;
-
     for (Int inRow = 0; inRow < (Int) suTab.nrow(); inRow++) {
         Int fld = id(inRow) - 1;
         // add empty rows until the row number in the output matches the source id
@@ -2315,7 +2267,6 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
         // In all cases the time will be the date of the start of the observation.
         MDirection::Types epochRef = MDirection::APP;
         MVDirection refDir;
-
         if (numPoly == 0) {
             if (near(epoch(inRow), 2000.0, 0.01)) {
                 epochRef = MDirection::J2000;
@@ -2326,11 +2277,11 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
                     epochRef = MDirection::B1950;
             } else if (epoch(inRow) == -1.0) {
                 epochRef = epochRefZero;
-                itsLog << LogOrigin("MSFitsInput", "fillFieldTable")
+                itsLog << LogOrigin("MSFitsInput", __func__)
                        << " Assuming standard epoch " << " for " << name(inRow)
                         << ".  Be aware that this may not be correct." << endl;
             } else {
-                itsLog << LogOrigin("MSFitsInput", "fillFieldTable")
+                itsLog << LogOrigin("MSFitsInput", __func__)
                        << " Cannot handle epoch in SU table: " << epoch(inRow)
                         << LogIO::EXCEPTION;
             }
@@ -2695,13 +2646,10 @@ void MSFitsInput::getAxisInfo(ConstFitsKeywordList& kwl) {
     }
 
     String tdim = kwl("TDIM")->asString();
-    //cout << "tdim=" << tdim << endl;
     IPosition ipos;
     FITSKeywordUtil::fromTDIM(ipos, tdim);
 
     uInt shp =ipos.nelements();
-    //cout << "ipos=" << shp << endl;
-
     nPixel_p.resize(shp);
     refVal_p.resize(shp);
     refPix_p.resize(shp);
@@ -2949,7 +2897,6 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
 
     ConstFitsKeywordList kwl = bt.kwlist();
     //FitsKeywordList pkw = kwl;
-    //cout << "-----\n" << pkw << endl;
     const FitsKeyword* kw;
     kwl.first();
 
@@ -2988,7 +2935,6 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
         (7 * 8 + 11 * 4 + (2 * nCorr + 3 * nCorr * nChan) * 4 + 
          nCorr * nChan + 1);
     float needS = estStor / 1024.;
-    //cout << " --------msFile_p=" << msFile_p << endl;
     Directory curD(msFile_p);
     float freeS = curD.freeSpaceInMB();
  
@@ -3072,8 +3018,6 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
 
         //const TableDesc td = tb.tableDesc();
         //td.show();
-        //cout << "nr=" << tb.nrow() << " nc=" << tb.isNull() << endl;
-
         try {
             ROScalarColumn<Float> colDate(tb, TType(iTime0));
             ROScalarColumn<Float> colUU(tb, TType(iU));
@@ -3088,15 +3032,9 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
             Vector<Float> visib(visL);
 
             visib = colVis.getColumn();
-            //cout << "visib=" << visib << endl;
-
             Double time = (colDate.asdouble(0) - 2400000.5) * C::day ;
             //Double time = colDate.asdouble(0);
             //Time tm(time);
-            //cout << "time=" << time
-            //        << " tf=" << time - (TZero(iTime0))
-            //        <<  " tm="  << tm << endl;
-
 
             // Extract fqid
             Int freqId = 1;
@@ -3301,22 +3239,12 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
     // set the Measure References
 
     if (iSource < 0) {
-        //cout << "fill field---------" 
-        //       << "\ncoordType=" << coordType_p
-        //       << "\nrefVal=" << refVal_p
-        //       << "\nrefPix=" << refPix_p
-        //       << "\ndelta=" << delta_p
-        //       << "\nnPixel_p=" << nPixel_p
-        //       << endl;
         double ra=0.;
         double dec=0.;
         ra = refVal_p(getIndex(coordType_p, "RA"));
         dec = refVal_p(getIndex(coordType_p, "DEC"));
         fillFieldTable(ra, dec, object);
-
     }
-
-
 }
 
 void MSFitsInput::fillObservationTable(ConstFitsKeywordList& kwl) {
@@ -3450,19 +3378,13 @@ void MSFitsInput::fillSourceTable() {
     Int numRow = 1;
     if (numRow > 0) {
         String tName = ms_p.tableName();
-        //cout << "ms name=" << tName << endl;
         MSSummary mss(&ms_p, tName);
 
         Record mainRec;
         mss.listMain(itsLog, mainRec);
-        //cout << "mainRec=\n" << mainRec << endl;
-        //cout << "num of scans=" << mainRec.nfields() << endl;
 
         //Record fieldRec;
         //mss.listField(itsLog, fieldRec, True);
-        //cout << "fieldRec=\n" << fieldRec << endl;
-        //cout << "num of fields=" << fieldRec.nfields() << endl;
-
         ProgressMeter meter(0.0, mainRec.nfields() * 1.0, "UVFITS Filler",
                 "rows copied", "", "", True, mainRec.nfields() * 300 / 100);
 
@@ -3470,8 +3392,6 @@ void MSFitsInput::fillSourceTable() {
             Int fnum = mainRec.fieldNumber(String("scan_").append(
                     String::toString(i + 1)));
             Record rec = mainRec.subRecord(fnum).subRecord(String('0'));
-            //cout << "subRecord=\n" << rec << endl;
-
             Double time1 = rec.asDouble("BeginTime");
             Double time2 = rec.asDouble("IntegrationTime");
             Int fid = rec.asInt("FieldId");
@@ -3479,9 +3399,6 @@ void MSFitsInput::fillSourceTable() {
 
             //Int numPoly = ;
             Vector<Int> spwIds = rec.asArrayInt("SpwIds");
-
-            //cout << "time=" << time << " fid=" << fid << " name=" << name
-            //        << " spwIds=" << spwIds << endl;
             for (uInt spwId = 0; spwId < spwIds.nelements(); spwId++) {
                 MSSourceIndex sourceIndex(ms_p.source());
                 sourceIndex.sourceId() = fid;
@@ -3636,7 +3553,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
     ROScalarColumn<Double> pmra(suTab, "PMRA"); //deg/day
     ROScalarColumn<Double> pmdec(suTab, "PMDEC"); //deg/day
     if (Int(suTab.nrow()) < nField) {
-        itsLog << LogOrigin("MSFitsInput", "fillFieldTable")
+        itsLog << LogOrigin("MSFitsInput", __func__)
                << LogIO::NORMAL
                 << "Input Source id's not sequential, adding empty rows in output"
                 << LogIO::POST;
@@ -3654,7 +3571,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
     }
     catch (std::exception x) {
       if(noif>1){
-	itsLog << LogOrigin("MSFitsInput", "fillFieldTable") << LogIO::WARN
+	itsLog << LogOrigin("MSFitsInput", __func__) << LogIO::WARN
 	       << x.what() << ": " << "Inconsistent setup of RESTFREQ and LSRVEL columns." << endl
 	       << "With NO_IF>1, they should be arrays not scalars." << LogIO::POST;
       }
@@ -3673,7 +3590,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
     // set the DIRECTION MEASURE REFERENCE for appropriate columns
     MDirection::Types epochRefZero = getDirectionFrame(epoch(0));
     if (epochRefZero != epochRef_p)
-        itsLog << LogOrigin("MSFitsInput", "fillFieldTable")
+        itsLog << LogOrigin("MSFitsInput", __func__)
                << LogIO::WARN << "The direction measure reference code, "
                 << epochRefZero << "\n"
                 << "for the first field does not match the one from the FITS header, "
@@ -3728,11 +3645,11 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt) {
                     epochRef = MDirection::B1950;
             } else if (epoch(inRow) == -1.0) {
                 epochRef = epochRefZero;
-                itsLog << LogOrigin("MSFitsInput", "fillFieldTable")
+                itsLog << LogOrigin("MSFitsInput", __func__)
                        << " Assuming standard epoch " << " for " << name(inRow)
                         << ".  Be aware that this may not be correct." << endl;
             } else {
-                itsLog << LogOrigin("MSFitsInput", "fillFieldTable")
+                itsLog << LogOrigin("MSFitsInput", __func__)
                        << " Cannot handle epoch in SU table: " << epoch(inRow)
                         << LogIO::EXCEPTION;
             }
