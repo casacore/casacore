@@ -177,7 +177,7 @@ int main()
 			LatticeStatistics<Float> stats(subLatt);
 			stats.configureClassical();
 			Array<Double> mean;
-			Float expec = casa::mean(data);
+			Float expec = casacore::mean(data);
 			stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
 			AlwaysAssert(near(*mean.begin(), expec), AipsError);
 			stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
@@ -193,7 +193,7 @@ int main()
 			Array<Double> v;
 			stats.getStatistic(v, LatticeStatsBase::MEAN, False);
 			Double m = *v.begin();
-			AlwaysAssert(near(m, casa::mean(data)), AipsError);
+			AlwaysAssert(near(m, casacore::mean(data)), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MEDIAN, False);
 			AlwaysAssert(near(*v.begin(), m), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::NPTS, False);
@@ -205,9 +205,9 @@ int main()
 			stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
 			AlwaysAssert(near(*v.begin(), 127119111260752.0), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MIN, False);
-			AlwaysAssert(near(*v.begin(), casa::min(data)), AipsError);
+			AlwaysAssert(near(*v.begin(), casacore::min(data)), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(), 2*m - casa::min(data)), AipsError);
+			AlwaysAssert(near(*v.begin(), 2*m - casacore::min(data)), AipsError);
 			IPosition minPos, maxPos;
 			stats.getMinMaxPos(minPos, maxPos);
 			AlwaysAssert(minPos.size() == 1 && minPos[0] == 999, AipsError);
@@ -223,7 +223,7 @@ int main()
 			);
 			stats.getStatistic(v, LatticeStatsBase::MEAN, False);
 			m = *v.begin();
-			AlwaysAssert(near(m, casa::mean(data)), AipsError);
+			AlwaysAssert(near(m, casacore::mean(data)), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MEDIAN, False);
 			AlwaysAssert(near(*v.begin(), m), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::NPTS, False);
@@ -235,9 +235,9 @@ int main()
 			stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
 			AlwaysAssert(near(*v.begin(), 72880554407048.0), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MIN, False);
-			AlwaysAssert(near(*v.begin(), 2*m - casa::max(data)), AipsError);
+			AlwaysAssert(near(*v.begin(), 2*m - casacore::max(data)), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(), casa::max(data)), AipsError);
+			AlwaysAssert(near(*v.begin(), casacore::max(data)), AipsError);
 			stats.getMinMaxPos(minPos, maxPos);
 			AlwaysAssert(minPos.size() == 0, AipsError);
 			AlwaysAssert(maxPos.size() == 1 && maxPos == 998, AipsError);
@@ -258,9 +258,9 @@ int main()
 			stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
 			AlwaysAssert(near(*v.begin(), 199999000001300.0), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MIN, False);
-			AlwaysAssert(near(*v.begin(), casa::min(data)), AipsError);
+			AlwaysAssert(near(*v.begin(), casacore::min(data)), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(),2*m - casa::min(data)), AipsError);
+			AlwaysAssert(near(*v.begin(),2*m - casacore::min(data)), AipsError);
 			stats.getMinMaxPos(minPos, maxPos);
 			AlwaysAssert(minPos.size() == 1 && minPos[0] == 999, AipsError);
 			AlwaysAssert(maxPos.size() == 0, AipsError);
@@ -281,9 +281,9 @@ int main()
 			stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
 			AlwaysAssert(near(*v.begin(), 332833500.0), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MIN, False);
-			AlwaysAssert(near(*v.begin(), 2*m - casa::max(data)), AipsError);
+			AlwaysAssert(near(*v.begin(), 2*m - casacore::max(data)), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(), casa::max(data)), AipsError);
+			AlwaysAssert(near(*v.begin(), casacore::max(data)), AipsError);
 			stats.getMinMaxPos(minPos, maxPos);
 			AlwaysAssert(minPos.size() == 0, AipsError);
 			AlwaysAssert(maxPos.size() == 1 && maxPos[0] == 998, AipsError);
@@ -307,7 +307,7 @@ int main()
 			stats.getStatistic(v, LatticeStatsBase::MIN, False);
 			AlwaysAssert(near(*v.begin(), min(data)), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(), 2*m - casa::min(data)), AipsError);
+			AlwaysAssert(near(*v.begin(), 2*m - casacore::min(data)), AipsError);
 			stats.getMinMaxPos(minPos, maxPos);
 			AlwaysAssert(minPos.size() == 1 && minPos[0] == 999, AipsError);
 			AlwaysAssert(maxPos.size() == 0, AipsError);
@@ -331,7 +331,7 @@ int main()
 			stats.getStatistic(v, LatticeStatsBase::MIN, False);
 			AlwaysAssert(near(*v.begin(), 2*m - max(data)), AipsError);
 			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(), casa::max(data)), AipsError);
+			AlwaysAssert(near(*v.begin(), casacore::max(data)), AipsError);
 			stats.getMinMaxPos(minPos, maxPos);
 			AlwaysAssert(minPos.size() == 0, AipsError);
 			AlwaysAssert(maxPos.size() == 1 && maxPos[0] == 998, AipsError);
