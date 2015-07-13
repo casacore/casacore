@@ -23,8 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
-
+//# $Id: tQuantum.cc 21090 2011-06-01 10:01:28Z gervandiepen $
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -273,6 +272,40 @@ try {
     		Quantity(0.5, "mm")
     	), AipsError
     );
+    {
+    	// getValue()
+    	Bool thrown = False;
+    	try {
+    		// doesn't throw by default
+    		Quantum<Double> q(1, "Hz");
+    		q.getValue("K");
+    	}
+    	catch (const AipsError& x) {
+    		thrown = True;
+    	}
+    	AlwaysAssert(! thrown, AipsError);
+
+    	try {
+    		Quantum<Double> q(1, "Hz");
+    		q.getValue("K", True);
+    	}
+    	catch (const AipsError& x) {
+    		thrown = True;
+    	}
+    	AlwaysAssert(thrown, AipsError);
+
+    	Quantum<Double> q(1, "m");
+    	AlwaysAssert(q.getValue("km") == 0.001, AipsError);
+    	q = Quantum<Double>(1, "h");
+    	AlwaysAssert(q.getValue("deg") == 15, AipsError);
+    	q = Quantum<Double>(30, "deg");
+    	AlwaysAssert(near(q.getValue("min"), 120.0), AipsError);
+    	q = Quantum<Double>(1.5, "GHz");
+    	AlwaysAssert(near(q.getValue("cm"), 19.9862, 1e-5), AipsError);
+    	q = Quantum<Double>(3, "mm");
+    	AlwaysAssert(near(q.getValue("MHz"), 99930.8, 1e-5), AipsError);
+
+    }
     cout << endl << "--------------------------" << endl;
     return 0;
 }

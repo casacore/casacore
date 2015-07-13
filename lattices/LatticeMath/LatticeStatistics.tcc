@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: LatticeStatistics.tcc 21586 2015-03-25 13:46:25Z gervandiepen $
 
 #ifndef LATTICES_LATTICESTATISTICS_TCC
 #define LATTICES_LATTICESTATISTICS_TCC
@@ -285,7 +285,9 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
 //
       for (uInt i=0; i<cursorAxes_p.nelements(); i++) {
          if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(pInLattice_p->ndim()-1)) {
-            error_p = "Invalid cursor axes";
+            ostringstream oss;
+            oss << "Invalid cursor axes: " << axes;
+             error_p = oss.str();
             return False;
          }
       }

@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: SubLattice.tcc 21563 2015-02-16 07:05:15Z gervandiepen $
 
 #ifndef LATTICES_SUBLATTICE_TCC
 #define LATTICES_SUBLATTICE_TCC
@@ -255,10 +255,11 @@ void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
 template<class T>
 void SubLattice<T>::setRegion (const LatticeRegion& region)
 {
-  if (!(itsLatticePtr->shape().isEqual(region.region().latticeShape()))) {
-    throw (AipsError ("SubLattice::SubLattice - "
-		      "shape of lattice mismatches lattice shape in region"));
-  }
+    ThrowIf(
+        ! (itsLatticePtr->shape().isEqual(region.region().latticeShape())),
+        "shape of lattice " + itsLatticePtr->shape().toString()
+        + " mismatches lattice shape in region " + region.region().latticeShape().toString()
+    );
   itsRegion = region;
 }
 template<class T>
@@ -502,20 +503,31 @@ IPosition SubLattice<T>::doNiceCursorShape (uInt maxPixels) const
   }
   return itsAxesMap.shapeToNew (cursorShape);
 }
-
 template<class T>
 T SubLattice<T>::getAt (const IPosition& where) const
 {
-  return itsLatticePtr->getAt (positionInParent(where));
+	return itsLatticePtr->getAt (positionInParent(where));
+	/*
+  if (! itsAxesMap.isRemoved()) {
+    return itsLatticePtr->getAt (itsRegion.convert (where));
+  }
+  return itsLatticePtr->getAt (itsRegion.convert(itsAxesMap.posToOld (where)));
+  */
 }
 
 template<class T>
 void SubLattice<T>::putAt (const T& value, const IPosition& where)
 {
-  if (!itsWritable) {
-      throw (AipsError ("SubLattice::putAt - non-writable lattice"));
+	ThrowIf(! itsWritable, "SubLattice::putAt - non-writable lattice");
+	itsLatticePtr->putAt (value, positionInParent(where));
+  /*
+  if (! itsAxesMap.isRemoved()) {
+    itsLatticePtr->putAt (value, itsRegion.convert (where));
+  } else {
+    itsLatticePtr->putAt (value, itsRegion.convert (itsAxesMap.posToOld
+						                 (where)));
   }
-  itsLatticePtr->putAt (value, positionInParent(where));
+  */
 }
 
 template<class T>
