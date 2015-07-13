@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExtendImage.tcc 21563 2015-02-16 07:05:15Z gervandiepen $
 
 #ifndef IMAGES_EXTENDIMAGE_TCC
 #define IMAGES_EXTENDIMAGE_TCC
@@ -59,7 +59,7 @@ ExtendImage<T>::ExtendImage (const ImageInterface<T>& image,
     throw AipsError ("ExtendImage - "
 		     "new csys or shape incompatible with old ones");
   }
-  itsExtLatPtr = new ExtendLattice<T> (image, newShape, newAxes, stretchAxes);
+  itsExtLatPtr.set(new ExtendLattice<T> (image, newShape, newAxes, stretchAxes));
   setCoordsMember (newCsys);
   this->setImageInfoMember (itsImagePtr->imageInfo());
   this->setMiscInfoMember (itsImagePtr->miscInfo());
@@ -70,27 +70,19 @@ ExtendImage<T>::ExtendImage (const ImageInterface<T>& image,
 template<class T>
 ExtendImage<T>::ExtendImage (const ExtendImage<T>& other)
 : ImageInterface<T> (other),
-  itsImagePtr (other.itsImagePtr->cloneII())
-{
-  itsExtLatPtr = new ExtendLattice<T> (*other.itsExtLatPtr);
-}
+  itsImagePtr (other.itsImagePtr->cloneII()),
+  itsExtLatPtr(new ExtendLattice<T> (*other.itsExtLatPtr)) {}
 
 template<class T>
-ExtendImage<T>::~ExtendImage()
-{
-  delete itsImagePtr;
-  delete itsExtLatPtr;
-}
+ExtendImage<T>::~ExtendImage() {}
 
 template<class T>
 ExtendImage<T>& ExtendImage<T>::operator= (const ExtendImage<T>& other)
 {
   if (this != &other) {
     ImageInterface<T>::operator= (other);
-    delete itsImagePtr;
-    itsImagePtr = other.itsImagePtr->cloneII();
-    delete itsExtLatPtr;
-    itsExtLatPtr = new ExtendLattice<T> (*other.itsExtLatPtr);
+    itsImagePtr.set(other.itsImagePtr->cloneII());
+    itsExtLatPtr.set(new ExtendLattice<T> (*other.itsExtLatPtr));
   }
   return *this;
 }

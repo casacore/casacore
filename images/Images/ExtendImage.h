@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExtendImage.h 21538 2015-01-07 09:08:57Z gervandiepen $
 
 #ifndef IMAGES_EXTENDIMAGE_H
 #define IMAGES_EXTENDIMAGE_H
@@ -32,12 +32,12 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageInterface.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class ExtendLattice;
-
 
 // <summary>
 // An extension of an ImageInterface object.
@@ -187,8 +187,8 @@ public:
 
 private:
   //# itsImagePtr points to the parent image.
-  ImageInterface<T>* itsImagePtr;
-  ExtendLattice<T>*  itsExtLatPtr;
+  PtrHolder<ImageInterface<T> > itsImagePtr;
+  PtrHolder<ExtendLattice<T> >  itsExtLatPtr;
 
   //# Make members of parent class known.
 public:
