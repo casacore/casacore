@@ -46,7 +46,7 @@ $ sudo apt-get install build-essential cmake gfortran g++ libncurses5-dev \
 and the optional libraries:
 ```
 $ sudo apt-get install libhdf5-serial-dev libfftw3-dev python-numpy \
-    libboost-python-dev
+    libboost-python-dev libopenmpi-dev
 ```
 
 
