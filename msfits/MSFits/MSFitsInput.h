@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSFitsInput.h 21531 2014-12-24 11:46:02Z gervandiepen $
 
 #ifndef MS_MSFITSINPUT_H
 #define MS_MSFITSINPUT_H
@@ -418,6 +418,7 @@ private:
 
   Matrix<Double> restFreq_p; // used for UVFITS
   Matrix<Double> sysVel_p;
+  Bool _msCreated;
 
 };
 

@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id$
+//# $Id: CoordinateSystem.cc 21521 2014-12-10 08:06:42Z gervandiepen $
 
 
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
@@ -3461,6 +3461,12 @@ void CoordinateSystem::listHeader (LogIO& os,  Coordinate* pc, uInt& widthAxis, 
 // Axis name
 
    string = pc->worldAxisNames()(axisInCoordinate);
+   if (pc->type() == Coordinate::SPECTRAL) {
+      SpectralCoordinate* sc = dynamic_cast<SpectralCoordinate*>(pc);
+      if (sc->isTabular()) {
+	 string += " (tab)";
+      }
+   }
    if (findWidths) {
       widthName = max(widthName, string.length());
    } else {
