@@ -166,8 +166,6 @@ ImageConcat<T>::ImageConcat (AipsIO& aio, const String& fileName)
   Bool tmpClose;
   String name;
   aio >> axis >> tmpClose >> nlatt;
-  cerr << "AXIS " << axis << " tmpClose " << tmpClose << endl;
-  //latticeConcat_p.setTempClose (tmpClose);
   latticeConcat_p=LatticeConcat<T>(axis, tmpClose);
   for (uInt i=0; i<nlatt; ++i) {
     aio >> name;
