@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ImageConcat.tcc 21563 2015-02-16 07:05:15Z gervandiepen $
 
 #ifndef IMAGES_IMAGECONCAT_TCC
 #define IMAGES_IMAGECONCAT_TCC
@@ -166,7 +166,9 @@ ImageConcat<T>::ImageConcat (AipsIO& aio, const String& fileName)
   Bool tmpClose;
   String name;
   aio >> axis >> tmpClose >> nlatt;
-  latticeConcat_p.setTempClose (tmpClose);
+  cerr << "AXIS " << axis << " tmpClose " << tmpClose << endl;
+  //latticeConcat_p.setTempClose (tmpClose);
+  latticeConcat_p=LatticeConcat<T>(axis, tmpClose);
   for (uInt i=0; i<nlatt; ++i) {
     aio >> name;
     LatticeBase* latt = ImageOpener::openImage (name);
