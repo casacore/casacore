@@ -4,10 +4,6 @@ set -e
 set -x
 
 if [ "$TRAVIS_OS_NAME" = linux ]; then
-
-    sudo apt-get update -q
-    sudo apt-get install -qy python-software-properties
-    sudo add-apt-repository -y ppa:radio-astro/main
     sudo apt-get update -q
     sudo apt-get install -qy cmake flex bison libblas-dev liblapack-dev \
             libcfitsio3-dev wcslib-dev libfftw3-dev gfortran libncurses5-dev \
