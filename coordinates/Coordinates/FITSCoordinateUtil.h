@@ -221,6 +221,11 @@ private:
     // Fix up Coordinate for zero increments and the like
     // Possibly the wcs FITS parser could do this
     void fixCoordinate(Coordinate& c, LogIO& os) const;
+
+    // Initialize the wcsprm struct.
+    // It sets the flag to -1, but furthermore it clears the err pointers
+    // because wcslib-4.8 (shipped with Ubuntu) sometimes fails to do so.
+    static void wcsInit (::wcsprm& wcsDest);
 };
 
 } //# NAMESPACE CASACORE - END

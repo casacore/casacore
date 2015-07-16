@@ -63,6 +63,7 @@
 #include <wcslib/wcsfix.h>
 #include <wcslib/wcsmath.h>
 #include <wcslib/fitshdr.h>
+#include <wcslib/wcsconfig.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -825,7 +826,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	axes[1] = WCSSUB_LATITUDE;
 //
 	::wcsprm wcsDest;
-	wcsDest.flag = -1;
+        wcsInit (wcsDest);
 	int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
 //
 	Bool ok = True;
@@ -893,7 +894,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	axes[0] = -(WCSSUB_LONGITUDE | WCSSUB_LATITUDE | WCSSUB_SPECTRAL | WCSSUB_STOKES);
 //
 	::wcsprm wcsDest;
-	wcsDest.flag = -1;
+        wcsInit (wcsDest);
 	int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
 //
 	Bool ok = True;
@@ -941,6 +942,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 
 
+    void FITSCoordinateUtil::wcsInit (::wcsprm& wcsDest)
+    { 
+        wcsDest.flag = -1;
+        // wcslib-4.8 introduced the following members.
+        // Unfortunately it does not always initialize them.
+        // In version 5 it is fixed; for older versions it is unclear.
+#if WCSLIB_VERSION_MAJOR == 4 && WCSLIB_VERSION_MINOR >= 8
+        wcsDest.err = 0;
+        wcsDest.lin.err = 0;
+        wcsDest.spc.err = 0;
+        wcsDest.cel.err = 0;
+        wcsDest.cel.prj.err = 0;
+#endif
+    }
+
     Bool FITSCoordinateUtil::addStokesCoordinate (CoordinateSystem& cSys, 
 						  Int& stokesAxis,  Int& stokesFITSValue,
 						  const ::wcsprm& wcs, const IPosition& shape,
@@ -954,7 +970,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	axes[0] = WCSSUB_STOKES;
 //
 	::wcsprm wcsDest;
-	wcsDest.flag = -1;
+        wcsInit (wcsDest);
 	int alloc = 1;
 	int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
 //
@@ -1017,7 +1033,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	axes[0] = WCSSUB_SPECTRAL;
 
 	::wcsprm wcsDest;
-	wcsDest.flag = -1;
+        wcsInit (wcsDest);
 	int alloc = 1;
 	int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
 
