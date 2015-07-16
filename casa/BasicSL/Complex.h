@@ -344,7 +344,7 @@ Complex erfc(const Complex &in);
 namespace std { 
   inline float  conj(float  x) { return x; }
   inline double conj(double x) { return x; }
-#if !(defined(AIPS_CXX11) || (defined(__APPLE_CC__) && __APPLE_CC__ > 5621))
+#if !(defined(AIPS_CXX11) || (defined(__APPLE_CC__) && __APPLE_CC__ >= 5621))
   inline float  real(float  x) { return x; }
   inline double real(double x) { return x; }
   inline float  imag(float   ) { return 0; }
