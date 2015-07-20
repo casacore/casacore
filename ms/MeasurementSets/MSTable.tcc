@@ -35,7 +35,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# These statics cannot be compiled with egcs 1.0.3a.
-#if !defined(__GNUG__) || (defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ >= 91)) || defined(AIPS_GCC3) || defined(AIPS_GCC4)
+#if !defined(__GNUG__) || (defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ >= 91)) || defined(AIPS_GCC)
 template <class ColEnum, class KeyEnum> 
 SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::columnMap_p("");
 template <class ColEnum, class KeyEnum> 

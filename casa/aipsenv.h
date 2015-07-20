@@ -45,6 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define AIPS_GCC
 #endif
 
+/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
 #if defined(AIPS_GCC2)
 #undef AIPS_GCC2
 #endif
@@ -52,6 +53,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define AIPS_GCC2
 #endif
 
+/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
 #if defined(AIPS_GCC295)
 #undef AIPS_GCC295
 #endif
@@ -59,6 +61,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define AIPS_GCC295
 #endif
 
+/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
 #if defined(AIPS_GCC3)
 #undef AIPS_GCC3
 #endif
@@ -66,6 +69,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define AIPS_GCC3
 #endif
 
+/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
 #if defined(AIPS_GCC4)
 #undef AIPS_GCC4
 #endif

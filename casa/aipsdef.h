@@ -93,14 +93,14 @@ namespace std {};
 #else
 #define WHATEVER_SUN_TYPEDEF(X)
 #define WHATEVER_TYPENAME typename
-#if defined(AIPS_CRAY_PGI) || defined(AIPS_GCC4)
+#if defined(AIPS_CRAY_PGI) || defined(AIPS_GCC)
 #define WHATEVER_SUN_EXCEPTSPEC(X) throw(X)
 #else
 #define WHATEVER_SUN_EXCEPTSPEC(X)
 #endif
 #endif
 
-#if defined(AIPS_USE_NEW_SGI) || defined(AIPS_GCC3) || defined(AIPS_GCC4) || defined(AIPS_CRAY_PGI)
+#if defined(AIPS_USE_NEW_SGI) || defined(AIPS_GCC) || defined(AIPS_CRAY_PGI)
 #if defined(WHATEVER_VECTOR_FORWARD_DEC)
 #undef WHATEVER_VECTOR_FORWARD_DEC
 #endif
