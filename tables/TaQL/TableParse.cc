@@ -450,7 +450,8 @@ TableExprNode TableParseSelect::handleKeyCol (const String& name, Bool tryProj)
           projectExprSubset_p.resize (nc+1);
           projectExprSubset_p[nc] = inx;
           return projectExprTable_p.col (columnName);
-        } else if (! columnOldNames_p[inx].empty()) {
+        } else if (!columnOldNames_p.empty()  &&
+                   !columnOldNames_p[inx].empty()) {
           // Possibly the column is renamed, so use the old name.
           columnName = columnOldNames_p[inx];
         }

@@ -33,6 +33,7 @@
 #include <casacore/ms/MSSel/MSFieldGram.h>
 #include <casacore/ms/MSSel/MSArrayGram.h>
 #include <casacore/ms/MSSel/MSStateGram.h>
+#include <casacore/ms/MSSel/MSStateParse.h>
 #include <casacore/ms/MSSel/MSScanGram.h>
 #include <casacore/ms/MSSel/MSSelectableMainColumn.h>
 #include <casacore/ms/MSSel/MSObservationGram.h>
@@ -41,6 +42,7 @@
 #include <casacore/casa/Arrays/ArrayIO.h>
 
 namespace casacore {
+
 
   UDFMSCal::UDFMSCal (ColType type, Int arg)
     : itsType (type),
@@ -301,9 +303,18 @@ namespace casacore {
         Vector<Int> selectedAnts1;
         Vector<Int> selectedAnts2;
         Matrix<Int> selectedBaselines;
-        itsDataNode = msAntennaGramParseCommand (anttab, a1, a2, selStr, 
-                                                 selectedAnts1, selectedAnts2,
-                                                 selectedBaselines);
+        MSSelectionErrorHandler* curHandler = MSAntennaParse::thisMSAErrorHandler;
+        UDFMSCalErrorHandler errorHandler;
+        MSAntennaParse::thisMSAErrorHandler = &errorHandler;
+        try {
+          itsDataNode = msAntennaGramParseCommand (anttab, a1, a2, selStr, 
+                                                   selectedAnts1, selectedAnts2,
+                                                   selectedBaselines);
+        } catch (const std::exception&) {
+          MSAntennaParse::thisMSAErrorHandler = curHandler;
+          throw;
+        }          
+        MSAntennaParse::thisMSAErrorHandler = curHandler;
       }
       break;
     case TIME:
@@ -375,10 +386,19 @@ namespace casacore {
       {
         MeasurementSet ms(table);
         Vector<Int> stateid;
-        if (msStateGramParseCommand(&ms, selStr, stateid) == 0) {
-          itsDataNode = *(msStateGramParseNode());
-        }
-        msStateGramParseDeleteNode();
+        MSSelectionErrorHandler* curHandler = MSStateParse::thisMSSErrorHandler;
+        UDFMSCalErrorHandler errorHandler;
+        MSStateParse::thisMSSErrorHandler = &errorHandler;
+        try {
+          if (msStateGramParseCommand(&ms, selStr, stateid) == 0) {
+            itsDataNode = *(msStateGramParseNode());
+          }
+        } catch (const std::exception&) {
+          msStateGramParseDeleteNode();
+          MSStateParse::thisMSSErrorHandler = curHandler;
+          throw;
+        }          
+        MSStateParse::thisMSSErrorHandler = curHandler;
       }
       break;
     case OBS:
