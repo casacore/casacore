@@ -1066,7 +1066,7 @@ std::set<uInt> MSMetaData::getSpwsForField(Int fieldID) {
 
 std::set<uInt> MSMetaData::getSpwsForField(const String& fieldName) {
 	uInt myNFields = nFields();
-	vector<String> fieldNames = _getFieldNames();
+	vector<String> fieldNames = getFieldNames();
 	std::set<uInt> spws;
 	for (uInt i=0; i<myNFields; ++i) {
 		if (fieldNames[i] == fieldName) {
@@ -1081,7 +1081,7 @@ std::set<uInt> MSMetaData::getSpwsForField(const String& fieldName) {
 	return spws;
 }
 
-vector<String> MSMetaData::_getFieldNames() const {
+vector<String> MSMetaData::getFieldNames() const {
 	if (! _fieldNames.empty()) {
 		return _fieldNames;
 	}
@@ -1117,7 +1117,7 @@ std::set<Int> MSMetaData::getFieldIDsForSpw(const uInt spw) {
 std::set<String> MSMetaData::getFieldNamesForSpw(const uInt spw) {
 	std::set<Int> fieldIDs = getFieldIDsForSpw(spw);
 	std::set<String> fieldNames;
-	vector<String> allFieldNames = _getFieldNames();
+	vector<String> allFieldNames = getFieldNames();
 	for (
 		std::set<Int>::const_iterator fieldID = fieldIDs.begin();
 		fieldID!=fieldIDs.end(); ++fieldID
@@ -2354,7 +2354,7 @@ std::set<Int> MSMetaData::getFieldIDsForField(
 ) const {
 	std::set<Int> fieldIDs;
 	String name = field;
-	vector<String> fieldNames = _getFieldNames();
+	vector<String> fieldNames = getFieldNames();
 	uInt nNames = fieldNames.size();
 	name.upcase();
 	for (uInt i=0; i<nNames; ++i) {
@@ -2441,7 +2441,7 @@ Record MSMetaData::getSummary() const {
 	summary.defineRecord("spectral windows", spectralTable);
 	summary.defineRecord("polarizations", polTable);
 	summary.defineRecord("data descriptions", dataDescTable);
-	summary.define("fields", Vector<String>(_getFieldNames()));
+	summary.define("fields", Vector<String>(getFieldNames()));
 	vector<std::set<Int> > obsToArraysMap = _getObservationIDToArrayIDsMap();
 	vector<std::set<Int> >::const_iterator oIter = obsToArraysMap.begin();
 	vector<std::set<Int> >::const_iterator oEnd = obsToArraysMap.end();
@@ -2802,7 +2802,7 @@ vector<String> MSMetaData::getFieldNamesForFieldIDs(
 	const vector<uInt>& fieldIDs
 ) {
 	if (fieldIDs.size() == 0) {
-		return _getFieldNames();
+		return getFieldNames();
 	}
 	// Do not use _checkFieldIDs since fieldIDs that may not be in the
 	// main table can be valid. CAS-5168
@@ -2815,7 +2815,7 @@ vector<String> MSMetaData::getFieldNamesForFieldIDs(
 			<< " does not exist";
 		throw AipsError(os.str());
 	}
-	vector<String> allNames = _getFieldNames();
+	vector<String> allNames = getFieldNames();
 	vector<String> names;
 	vector<uInt>::const_iterator end = fieldIDs.end();
 	for (
@@ -3687,7 +3687,7 @@ map<Int, std::set<String> > MSMetaData::getFieldNamesForSourceMap() const {
 	map<Int, std::set<Int> >::const_iterator iter = idsToSource.begin();
 	map<Int, std::set<Int> >::const_iterator end = idsToSource.end();
 	map<Int, std::set<String> > namesMap;
-	vector<String> names = _getFieldNames();
+	vector<String> names = getFieldNames();
 	while (iter != end) {
 		Int sourceID = iter->first;
 		namesMap[sourceID] = std::set<String>();

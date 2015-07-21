@@ -1964,7 +1964,21 @@ void testIt(MSMetaData& md) {
 			uInt n = md.nUniqueSourceIDsFromSourceTable();
 			AlwaysAssert(n == 6, AipsError);
 		}
-		{
+        {
+            cout << "*** test getFieldNames()" << endl;
+            vector<String> fnames = md.getFieldNames();
+            String z[] = {"3C279", "J1337-129", "Titan", "J1625-254", "V866 Sco", "RNO 90"};
+            vector<String> expec(z, z+6);
+            vector<String>::const_iterator iter = fnames.begin();
+            vector<String>::const_iterator end = fnames.end();
+            vector<String>::const_iterator eIter = expec.begin();
+            while (iter != end) {
+                AlwaysAssert(*iter == *eIter, AipsError);
+                ++iter;
+                ++eIter;
+            }
+        }
+        {
 			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}

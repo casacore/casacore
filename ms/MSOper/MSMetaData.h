@@ -285,6 +285,9 @@ public:
 	
 	// get the field IDs for the specified field name. Case insensitive.
 	std::set<Int> getFieldIDsForField(const String& field) const;
+	
+    // get a list of the field names in the order in which they appear in the FIELD table.
+    vector<String> getFieldNames() const;
 
 	// get field IDs associated with the specified scan number.
 	std::set<Int> getFieldsForScan(const ScanKey& scan) const;
@@ -664,8 +667,6 @@ private:
 	);
 
 	CountedPtr<Vector<Int> > _getFieldIDs() const;
-
-	vector<String> _getFieldNames() const;
 
 	CountedPtr<ArrayColumn<Bool> > _getFlags() const;
 
