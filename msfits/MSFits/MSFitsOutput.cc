@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSFitsOutput.cc 21521 2014-12-10 08:06:42Z gervandiepen $
 
 #include <casacore/msfits/MSFits/MSFitsOutput.h>
 #include <casacore/msfits/MSFits/MSFitsOutputAstron.h>
@@ -84,21 +84,22 @@ void MSFitsOutput::timeToDay(Int &day, Double &dayFraction, Double time) {
     dayFraction = time - floor(time);
 }
 
-Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
-        const MeasurementSet& ms, const String& column, Int startchan,
-        Int nchan, Int stepchan, Bool writeSysCal, Bool asMultiSource,
-        Bool combineSpw, Bool writeStation, Double sensitivity,
-        const Bool padWithFlags, Int avgchan) {
+Bool MSFitsOutput::writeFitsFile(
+	const String& fitsfile,
+	const MeasurementSet& ms, const String& column, Int startchan,
+	Int nchan, Int stepchan, Bool writeSysCal, Bool asMultiSource,
+	Bool combineSpw, Bool writeStation, Double sensitivity,
+	const Bool padWithFlags, Int avgchan, uInt fieldNumber
+) {
     ROMSObservationColumns obsCols(ms.observation());
     
     if (obsCols.nrow() > 0 && (obsCols.telescopeName()(0) == "WSRT"
             || obsCols.telescopeName()(0) == "LOFAR")) {
-        return MSFitsOutputAstron::writeFitsFile(fitsfile, ms, column,
+         return MSFitsOutputAstron::writeFitsFile(fitsfile, ms, column,
                 startchan, nchan, stepchan, writeSysCal, asMultiSource,
                 combineSpw, writeStation, sensitivity);
     }
-    
-    LogIO os(LogOrigin("MSFitsOutput", "writeFitsFile"));
+    LogIO os(LogOrigin("MSFitsOutput", __func__));
     os << LogIO::NORMAL << " nchan=" << nchan << " startchan=" << startchan 
          << " stepchan=" << stepchan << " avgchan=" << avgchan << LogIO::POST; 
     const uInt nrow = ms.nrow();
@@ -198,9 +199,12 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
     // Write main table. Get freq and channel-width back.
     Int refPixelFreq;
     Double refFreq, chanbw;
-    FitsOutput* fitsOutput = writeMain(refPixelFreq, refFreq, chanbw, outfile,
-            ms, column, spwidMap, nrspw, startchan, nchan, stepchan,
-            fieldidMap, asMultiSource, combineSpw, padWithFlags, avgchan);
+    FitsOutput* fitsOutput = writeMain(
+    	refPixelFreq, refFreq, chanbw, outfile,
+    	ms, column, spwidMap, nrspw, startchan, nchan, stepchan,
+    	fieldidMap, asMultiSource, combineSpw, padWithFlags, avgchan,
+    	fieldNumber
+    );
 
     Bool ok = (fitsOutput != 0);
     if (!ok) {
@@ -220,8 +224,6 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
         os << LogIO::SEVERE << "Could not write AN table\n" << LogIO::POST;
     }
 
-    // Write the SOURCE table.
-    //  if (ok && !ms.source().isNull()) 
     if (ok && asMultiSource) {
         os << LogIO::NORMAL << "Writing AIPS SU table" << LogIO::POST;
         bool bk = writeSU(fitsOutput, ms, fieldidMap, nrfield, spwidMap, nrspw);
@@ -239,11 +241,13 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
             os << LogIO::WARN << "MS has no or empty SYSCAL subtable, "
                     << "could not write AIPS TY table and AIPS GC table"
                     << LogIO::POST;
-        } else if (ms.sysCal().nrow() == 0) {
+        }
+        else if (ms.sysCal().nrow() == 0) {
             os << LogIO::WARN << "MS has empty SYSCAL subtable, "
                     << "could not write AIPS TY table and AIPS GC table"
                     << LogIO::POST;
-        } else {
+        }
+        else {
             Table syscal = handleSysCal(ms, spwids, isSubset);
 
             os << LogIO::NORMAL << "writing AIPS TY table" << LogIO::POST;
@@ -308,11 +312,12 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
         Double& chanbw, const String &outFITSFile, const MeasurementSet &rawms,
         const String &column, const Block<Int>& spwidMap, Int nrspw,
         Int chanstart, Int nchan, Int chanstep, const Block<Int>& fieldidMap,
-        Bool asMultiSource, const Bool combineSpw, Bool padWithFlags, Int avgchan) {
+        Bool asMultiSource, const Bool combineSpw, Bool padWithFlags, Int avgchan,
+        uInt fieldNumber) {
     if (avgchan < 0)
        avgchan = 1;
     FitsOutput *outfile = 0;
-    LogIO os(LogOrigin("MSFitsOutput", "writeMain"));
+    LogIO os(LogOrigin("MSFitsOutput", __func__));
     const uInt nrow = rawms.nrow();
     if (nrow == 0) {
         os << LogIO::SEVERE << "Empty measurement set!" << LogIO::POST;
@@ -328,24 +333,43 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
             doWsrt = inarrayname(0) == "WSRT";
         }
     }
-
+    Record ek; // ek == extra keys
     Vector<Double> radec;
-    String objectname("");
-    MSField fieldTable(rawms.field());
-    ROMSFieldColumns msfc(fieldTable);
-    if (asMultiSource)
-        // UVFITS expects zeros for multi-source
-        radec = Vector<Double> (2, 0.0);
-    else {
-        // Use the actual RA/Decl
-        radec = msfc.phaseDirMeas(0).getAngle().getValue();
-        radec *= 180.0 / C::pi; // convert to degrees for FITS
-        if (radec(0) < 0) {
-            radec(0) += 360.0;
-        }
-        objectname = msfc.name()(0);
+    String objectname;
+    {
+    	// field table info
+    	MSField fieldTable(rawms.field());
+    	ROMSFieldColumns msfc(fieldTable);
+    	if (asMultiSource) {
+    		// UVFITS expects zeros for multi-source
+    		radec = Vector<Double> (2, 0.0);
+    	}
+    	else {
+    		// Use the actual RA/Decl
+    		radec = msfc.phaseDirMeas(fieldNumber).getAngle().getValue();
+    		radec *= 180.0 / C::pi; // convert to degrees for FITS
+    		if (radec(0) < 0) {
+    			radec(0) += 360.0;
+    		}
+    		objectname = msfc.name()(fieldNumber);
+    	}
+    	uInt myfield = asMultiSource ? 0 : fieldNumber;
+    	Bool foundEpoch = False;
+    	String dirtype = msfc.phaseDirMeas(myfield).getRefString();
+    	if (dirtype.contains("2000")) {
+    		ek.define("epoch", 2000.0);
+    		foundEpoch = True;
+    	}
+    	else if (dirtype.contains("1950")) {
+    		ek.define("epoch", 1950.0);
+    		foundEpoch = True;
+    	}
+    	if (!foundEpoch) {
+    		os << LogIO::SEVERE << "Cannot deduce MS epoch. Assuming J2000"
+    			<< LogIO::POST;
+    		ek.define("epoch", 2000.0);
+    	}
     }
-
     // First scan the SPECTRAL_WINDOW table to make sure that the data
     // shape is constant, the correlation type is constant, and that the
     // frequencies can be represented as f = f0 + i*inc
@@ -358,8 +382,8 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
         srcTable = rawms.source();
         nsrc = srcTable.nrow();
     }
-    catch (AipsError x) {
-        os << LogOrigin("MSFitsOutput", "writeMain")
+    catch (const AipsError& x) {
+        os << LogOrigin("MSFitsOutput", __func__)
            << LogIO::WARN << "No source table in MS. " 
            << x.getMesg() << LogIO::POST;
     }
@@ -529,19 +553,6 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     }
     refPixelFreq = f0RefPix;
 
-     /* 
-     cout << "Channel stuff: "
-     << nchan << " "
-     << chanstep << " "
-     << chanstart << " "
-     << f0RefPix << " "
-     << f0 << " " 
-     << bw0 << " " 
-     << refFreq << endl;
-     << refPixelFreq << endl;
-     */
-     
-
     // OK, turn the stokes into FITS values.
     for (Int j = 0; j < numcorr0; j++) {
         stokes(j) = Stokes::FITSValue(Stokes::StokesTypes(stokes(j)));
@@ -638,7 +649,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     }
 
     // "Optional" keywords
-    Record ek; // ek == extra keys
+
     // BSCALE BZERO BUNIT
     ek.define("bscale", 1.0);
     ek.define("bzero", 0.0);
@@ -755,6 +766,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
         ek.define("date-obs", toFITSDate(intm(0) / C::day)); // First time entry
     }
 
+    /*
     // EPOCH
     Bool foundEpoch = False;
     String dirtype = msfc.phaseDirMeas(0).getRefString();
@@ -770,6 +782,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
                 << LogIO::POST;
         ek.define("epoch", 2000.0);
     }
+    */
 
     // TELESCOP INSTRUME
     ROMSObservationColumns obsC(rawms.observation());
@@ -2028,19 +2041,19 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
     // Only take those fields which are part of the fieldidMap
     // (which represents the fields written in the main table).
     for (uInt fieldnum = 0; fieldnum < nrow; fieldnum++) {
-        if (fieldnum < fieldidMap.nelements() && fieldidMap[fieldnum] >= 0) {
-            *idno = 1 + fieldidMap[fieldnum];
-            dir = msfc.phaseDirMeas(fieldnum);
+    	if (fieldnum < fieldidMap.nelements() && fieldidMap[fieldnum] >= 0) {
+    		*idno = 1 + fieldidMap[fieldnum];
+    		dir = msfc.phaseDirMeas(fieldnum);
 
-            *source = fnames(fieldnum);
-	    // check if name is unique
-	    *qual = 0;
-	    for(uInt ifld=0; ifld<nrow; ifld++){
-	      if(ifld!=fieldnum && *source==fnames(ifld)){
-		*qual = fieldnum; // not unique, set qual such that name+qual is unique
-		break;
-	      }
-	    }
+    		*source = fnames(fieldnum);
+    		// check if name is unique
+    		*qual = 0;
+    		for(uInt ifld=0; ifld<nrow; ifld++){
+    			if(ifld!=fieldnum && *source==fnames(ifld)) {
+    				*qual = fieldnum; // not unique, set qual such that name+qual is unique
+    				break;
+    			}
+    		}
 
             if (dir.type() == MDirection::B1950) {
                 *epoch = 1950.;

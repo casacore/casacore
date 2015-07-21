@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSFitsOutput.h 21521 2014-12-10 08:06:42Z gervandiepen $
 
 #ifndef MS_MSFITSOUTPUT_H
 #define MS_MSFITSOUTPUT_H
@@ -69,13 +69,16 @@ public:
   //                       as needed to fit the IF structure.  Does not yet
   //                       support spws with different shapes.
   //  @param avgchan       average every N channels
-  static Bool writeFitsFile(const String& fitsfile, const MeasurementSet& ms,
-			    const String& column, Int startchan=0, 
-			    Int nchan=1, Int stepchan=1, 
-			    Bool writeSysCal = False,
-			    Bool asMultiSource = False, Bool combineSpw=False,
-			    Bool writeStation=False, Double sensitivity = 1.0,
-                            const Bool padWithFlags=false, Int avgchan = 1);
+  static Bool writeFitsFile(
+		  const String& fitsfile, const MeasurementSet& ms,
+		  const String& column, Int startchan=0,
+		  Int nchan=1, Int stepchan=1,
+		  Bool writeSysCal = False,
+		  Bool asMultiSource = False, Bool combineSpw=False,
+		  Bool writeStation=False, Double sensitivity = 1.0,
+		  const Bool padWithFlags=false, Int avgchan = 1,
+		  uInt fieldNumber=0
+  );
 
 private:
   // Write the main table.
@@ -98,7 +101,8 @@ private:
   //    @param padWithFlags   If true && combineSpw==true, pad the spws with
   //                          flags as necessary to fit the IF structure.
   //    @param avgchan        average every N channels
-  static FitsOutput *writeMain(Int& refPixelFreq, Double& refFreq,
+  static FitsOutput *writeMain(
+	Int& refPixelFreq, Double& refFreq,
 			       Double& chanbw,
 			       const String& outFITSFile,
 			       const MeasurementSet& rawms,
@@ -109,8 +113,9 @@ private:
 			       const Block<Int>& fieldidMap,
 			       Bool asMultiSource,
 			       const Bool combineSpw,
-                               const Bool padWithFlags=true,
-                               Int avgchan=1);
+			       const Bool padWithFlags,
+			       Int avgchan, uInt fieldNumber
+);
 
   // Write the FQ table.
   // If combineSpw is True, all spectral-windows are written in one
