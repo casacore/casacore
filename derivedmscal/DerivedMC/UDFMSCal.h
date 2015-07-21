@@ -32,6 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/derivedmscal/DerivedMC/MSCalEngine.h>
 #include <casacore/ms/MeasurementSets/StokesConverter.h>
+#include <casacore/ms/MSSel/MSSelectionErrorHandler.h>
 #include <casacore/tables/TaQL/UDFBase.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 
@@ -177,6 +178,25 @@ namespace casacore {
     //# Makes it thread-unsafe though.
     Vector<Double>  itsTmpVector;
   };
+
+
+  // <summary>
+  // Error handler class for MSSel selection
+  // </summary>
+  // <synopsis>
+  // This error handler ignores the errors rising from the MSSel parsers.
+  // </synopsis>
+  class UDFMSCalErrorHandler : public MSSelectionErrorHandler
+  {
+  public:
+    virtual ~UDFMSCalErrorHandler()
+    {}
+    virtual void handleError (MSSelectionError&)
+    {}
+    virtual void reportError (const char*, const String)
+    {}
+  };
+
 
 } //end namespace
 
