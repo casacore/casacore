@@ -4,6 +4,8 @@
 project(casacore)
 
 cmake_minimum_required (VERSION 2.6.0)
+include(CheckCXXCompilerFlag)
+include(CheckCCompilerFlag)
 
 # fixes warnings on cmake 3.x+ For now we want the old behavior to be backwards compatible
 if (POLICY CMP0048)
@@ -134,19 +136,21 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 # Detect if the compiler supports C++11 if we want to use it.
-if (CXX11)
-    if ((CMAKE_COMPILER_IS_GNUCXX AND NOT ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 4.6) OR
-       (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 4.3))
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+if (CXX11 OR CASA_BUILD)
+    check_cxx_compiler_flag(-std=c++11 HAS_CXX11)
+    if (HAS_CXX11)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+      set(CXX11 ON)
     else()
-        option(CXX11 "" NO)
+      if (CASA_BUILD)
+        message(FATAL_ERROR "CASA_BUILD requires a c++11 compatible compiler")
+      endif()
+      option(CXX11 "" NO)
     endif()
 endif()
 
 # use faster fortran rules for complex operations, removes restoring complex
 # infinities if naive computation results in NAN + NAN * I
-include(CheckCXXCompilerFlag)
-include(CheckCCompilerFlag)
 #Handling complex multiplication and division with correct treating of complex
 #infinities (one element Inf regardless of the other) according to the C is
 #complicated.
