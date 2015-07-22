@@ -29,6 +29,7 @@
 #ifndef CASA_CONTAINERS_ALLOCATOR_H_
 #define CASA_CONTAINERS_ALLOCATOR_H_
 
+#include <casacore/casa/config.h>
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
 
@@ -68,14 +69,6 @@ public:
 private:
   Bool init;
   explicit ArrayInitPolicy(bool v): init(v) {}
-};
-
-template<typename T>
-struct IsArrayInitPolicy;
-
-template<>
-struct IsArrayInitPolicy<ArrayInitPolicy> {
-  typedef ArrayInitPolicy type;
 };
 
 #if __cplusplus < 201103L
@@ -129,7 +122,11 @@ struct casacore_allocator: public std11_allocator<T> {
   typedef typename Super::reference reference;
   typedef typename Super::const_reference const_reference;
   typedef typename Super::value_type value_type;
+#if __cplusplus < 201103L
   enum {alignment = ALIGNMENT};
+#else
+  static constexpr size_t alignment = ALIGNMENT;
+#endif
 
   template<typename TOther>
   struct rebind {
@@ -193,7 +190,7 @@ struct new_del_allocator: public std11_allocator<T> {
   struct rebind {
     typedef new_del_allocator<TOther> other;
   };
-  new_del_allocator() throw () {
+  new_del_allocator() noexcept {
   }
 
   new_del_allocator(const new_del_allocator&other) noexcept
@@ -240,7 +237,7 @@ struct new_del_allocator: public std11_allocator<T> {
 #endif
 
   template<typename U>
-  void destroy(U *) {} // do nothing because delete[] does
+  void destroy(U *) {} // do nothing because delete[] will do.
 };
 
 template<typename T>
@@ -268,12 +265,13 @@ class Allocator_private {
   struct BulkAllocator {
     typedef typename std::allocator<T2>::size_type size_type;
     typedef typename std::allocator<T2>::pointer pointer;
+    typedef typename std::allocator<T2>::const_pointer const_pointer;
     typedef typename std::allocator<T2>::value_type value_type;
 
     virtual pointer allocate(size_type elements, const void*ptr = 0) = 0;
     virtual void deallocate(pointer ptr, size_type size) = 0;
 
-    virtual void construct(pointer ptr, size_type n, pointer src) = 0;
+    virtual void construct(pointer ptr, size_type n, const_pointer src) = 0;
     virtual void construct(pointer ptr, size_type n, value_type const &initial_value) = 0;
     virtual void construct(pointer ptr, size_type n) = 0;
     virtual void destroy(pointer ptr, size_type n) = 0;
@@ -285,6 +283,7 @@ class Allocator_private {
   struct BulkAllocatorImpl: public BulkAllocator<typename Allocator::value_type> {
     typedef typename Allocator::size_type size_type;
     typedef typename Allocator::pointer pointer;
+    typedef typename Allocator::const_pointer const_pointer;
     typedef typename Allocator::value_type value_type;
     virtual pointer allocate(size_type elements, const void *ptr = 0) {
       return allocator.allocate(elements, ptr);
@@ -293,7 +292,7 @@ class Allocator_private {
       allocator.deallocate(ptr, size);
     }
 
-    virtual void construct(pointer ptr, size_type n, pointer src) {
+    virtual void construct(pointer ptr, size_type n, const_pointer src) {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
@@ -328,7 +327,8 @@ class Allocator_private {
       }
     }
     virtual void destroy(pointer ptr, size_type n) {
-      for (size_type i = 0; i < n; ++i) {
+      for (size_type i = n; i > 0;) {
+        --i;
         try {
           allocator.destroy(&ptr[i]);
         } catch (...) {
@@ -372,6 +372,16 @@ class Allocator_private {
     }
     return ptr;
   }
+
+  // <summary>Allocator specifier</summary>
+  // <synopsis>
+  // This class is just used to avoid ambiguity between overloaded functions.
+  // </synopsis>
+  template<typename T>
+  struct AllocSpec {
+      BulkAllocator<T> *allocator;
+      explicit AllocSpec(BulkAllocator<T> *alloc) : allocator(alloc) {}
+  };
 };
 
 template<typename Allocator>

@@ -717,30 +717,19 @@ public:
   friend class Array<T>; // to allow access to following constructors.
 
   Block(size_t n, ArrayInitPolicy initPolicy,
-          AbstractAllocator<T> const &allocator) :
-      allocator_p(allocator.getAllocator()), used_p(n), destroyPointer(
+          Allocator_private::BulkAllocator<T> *allocator) :
+      allocator_p(allocator), used_p(n), destroyPointer(
           True), keep_allocator_p(False) {
     init(initPolicy);
   }
-  Block(size_t n, AbstractAllocator<T> const &allocator) :
-      allocator_p(allocator.getAllocator()), used_p(n), destroyPointer(
+  Block(size_t n, Allocator_private::AllocSpec<T> allocator) :
+      allocator_p(allocator.allocator), used_p(n), destroyPointer(
           True), keep_allocator_p(False) {
     init(init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
   }
-  Block(size_t n, T const &val, AbstractAllocator<T> const &allocator) :
-      allocator_p(allocator.getAllocator()), used_p(n), destroyPointer(
-          True), keep_allocator_p(False) {
-    init(ArrayInitPolicy::NO_INIT);
-    try {
-      allocator_p->construct(array, get_size(), val);
-    } catch (...) {
-      dealloc();
-      throw;
-    }
-  }
   Block(size_t n, T *&storagePointer, Bool takeOverStorage,
-          AbstractAllocator<T> const &allocator) :
-      allocator_p(allocator.getAllocator()), capacity_p(n), used_p(
+          Allocator_private::BulkAllocator<T> *allocator) :
+      allocator_p(allocator), capacity_p(n), used_p(
           n), array(storagePointer), destroyPointer(takeOverStorage), keep_allocator_p(
           False) {
     if (destroyPointer)

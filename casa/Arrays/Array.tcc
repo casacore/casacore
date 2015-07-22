@@ -1,6 +1,8 @@
 //# Array.cc: A templated N-D Array class with zero origin
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2015
 //# Associated Universities, Inc. Washington DC, USA.
+//# National Astronomical Observatory of Japan
+//# 2-21-1, Osawa, Mitaka, Tokyo, 181-8588, Japan.
 //#
 //# This library is free software; you can redistribute it and/or modify it
 //# under the terms of the GNU Library General Public License as published by
@@ -48,6 +50,14 @@ template<class T> Array<T>::Array()
     DebugAssert(ok(), ArrayError);
 }
 
+template<class T> Array<T>::Array(Allocator_private::AllocSpec<T> allocator)
+: data_p   (new Block<T>(0, allocator)),
+  end_p    (0)
+{
+    begin_p = data_p->storage();
+    DebugAssert(ok(), ArrayError);
+}
+
 // <thrown>
 //   <item> ArrayShapeError
 // </thrown>
@@ -64,14 +74,40 @@ template<class T> Array<T>::Array(const IPosition &Shape)
 //   <item> ArrayShapeError
 // </thrown>
 template<class T> Array<T>::Array(const IPosition &Shape,
-				  const T &initialValue)
-: ArrayBase (Shape)
+    ArrayInitPolicy initPolicy)
+: ArrayBase(Shape)
 {
-    data_p = new Block<T>(nelements());
+    data_p = new Block<T>(nelements(), initPolicy);
     begin_p = data_p->storage();
     setEndIter();
     DebugAssert(ok(), ArrayError);
-    objset (begin_p, initialValue, nels_p);
+}
+
+// <thrown>
+//   <item> ArrayShapeError
+// </thrown>
+template<class T>
+Array<T>::Array(const IPosition &Shape, ArrayInitPolicy initPolicy,
+        Allocator_private::BulkAllocator<T> *allocator)
+: ArrayBase(Shape)
+{
+    data_p = new Block<T>(nelements(), initPolicy, allocator);
+    begin_p = data_p->storage();
+    setEndIter();
+    DebugAssert(ok(), ArrayError);
+}
+
+// <thrown>
+//   <item> ArrayShapeError
+// </thrown>
+template<class T> Array<T>::Array(const IPosition &Shape,
+				  const T &initialValue)
+: ArrayBase (Shape)
+{
+    data_p = new Block<T>(nelements(), initialValue);
+    begin_p = data_p->storage();
+    setEndIter();
+    DebugAssert(ok(), ArrayError);
 }
 
 
@@ -87,20 +123,37 @@ template<class T> Array<T>::Array(const Array<T> &other)
 template<class T>
 Array<T>::Array(const IPosition &shape, T *storage, 
 		StorageInitPolicy policy)
-: ArrayBase (shape)
+: ArrayBase (shape),
+  data_p    (0),
+  begin_p   (0),
+  end_p     (0)
 {
     takeStorage(shape, storage, policy);
     DebugAssert(ok(), ArrayError);
 }
 
 template<class T>
+Array<T>::Array(const IPosition &shape, T *storage,
+                StorageInitPolicy policy, AbstractAllocator<T> const &allocator)
+: ArrayBase (shape),
+  data_p    (0),
+  begin_p   (0),
+  end_p     (0)
+{
+    takeStorage(shape, storage, policy, allocator);
+    DebugAssert(ok(), ArrayError);
+}
+
+template<class T>
 Array<T>::Array (const IPosition &shape, const T *storage)
-: ArrayBase (shape)
+: ArrayBase (shape),
+  data_p    (0),
+  begin_p   (0),
+  end_p     (0)
 {
     takeStorage(shape, storage);
     DebugAssert(ok(), ArrayError);
 }
-
 
 
 template<class T> Array<T>::~Array()
@@ -109,7 +162,7 @@ template<class T> Array<T>::~Array()
 
 template<class T> CountedPtr<ArrayBase> Array<T>::makeArray() const
 {
-  return new Array<T>();
+  return new Array<T>(Allocator_private::AllocSpec<T>(nonNewDelAllocator()));
 }
 
 template<class T> void Array<T>::assign (const Array<T>& other)
@@ -146,43 +199,119 @@ template<class T> void Array<T>::reference(const Array<T> &other)
     baseCopy (other);
 }
 
-template<class T> Array<T> Array<T>::copy() const
+template<class T> Allocator_private::BulkAllocator<T> *Array<T>::nonNewDelAllocator() const
+{
+    Allocator_private::BulkAllocator<T> *allocator = data_p->get_allocator();
+    if (allocator == Allocator_private::get_allocator<typename NewDelAllocator<T>::type>()) {
+        allocator = Allocator_private::get_allocator<typename DefaultAllocator<T>::type>();
+    }
+    return allocator;
+}
+
+template<class T> Array<T> Array<T>::copy(ArrayInitPolicy policy) const
+{
+    return copy(policy, nonNewDelAllocator());
+}
+
+template<class T> void Array<T>::copyToContiguousStorage(T *storage, Array<T> const & src, ArrayInitPolicy policy)
+{
+    if (src.contiguousStorage()) {
+        if (policy == ArrayInitPolicy::NO_INIT) {
+            objcopyctor(storage, src.begin_p, src.nels_p);
+        } else {
+            objcopy(storage, src.begin_p, src.nels_p);
+        }
+    } else if (src.ndim() == 1) {
+        if (policy == ArrayInitPolicy::NO_INIT) {
+            objcopyctor(storage, src.begin_p, src.length_p(0), 1U, src.inc_p(0));
+        } else {
+            objcopy(storage, src.begin_p, src.length_p(0), 1U, src.inc_p(0));
+        }
+    } else if (src.length_p(0) == 1  &&  src.ndim() == 2) {
+        // Special case which can be quite common (e.g. row in a matrix).
+        if (policy == ArrayInitPolicy::NO_INIT) {
+            objcopyctor(storage, src.begin_p, src.length_p(1), 1U,
+                    src.originalLength_p(0) * src.inc_p(1));
+        } else {
+            objcopy(storage, src.begin_p, src.length_p(1), 1U,
+                    src.originalLength_p(0) * src.inc_p(1));
+        }
+    } else if (src.length_p(0) <= 25) {
+        // If not many elements on a line, it's better to use this loop.
+        T* ptr = storage;
+        const_iterator iterend = src.end();
+        if (policy == ArrayInitPolicy::NO_INIT) {
+            try {
+                for (const_iterator iter = src.begin(); iter != iterend;
+                        ++iter) {
+                    ::new (ptr) T(*iter);
+                    ++ptr;
+                }
+            } catch (...) {
+                while (ptr > storage) {
+                    --ptr;
+                    ptr->~T();
+                }
+                throw;
+            }
+        } else {
+            for (const_iterator iter = src.begin(); iter != iterend; ++iter) {
+                *ptr++ = *iter;
+            }
+        }
+    } else {
+        // Step through Vector by Vector
+        // The output is guaranteed to have all incs set to 1
+        ArrayPositionIterator ai(src.shape(), 1);
+        IPosition index(src.ndim());
+        size_t count = 0;
+        size_t const size = src.length_p(0);
+        if (policy == ArrayInitPolicy::NO_INIT) {
+            try {
+                while (!ai.pastEnd()) {
+                    index = ai.pos();
+                    size_t offset = ArrayIndexOffset(src.ndim(),
+                            src.originalLength_p.storage(), src.inc_p.storage(),
+                            index);
+                    objcopyctor(storage + count * size, src.begin_p + offset,
+                            size, 1U, src.inc_p(0));
+                    ai.next();
+                    count++;
+                }
+            } catch (...) {
+                T * const end = storage + count * size;
+                for (T *ptr = storage; ptr < end; ++ptr) {
+                    ptr->~T();
+                }
+                throw;
+            }
+        } else {
+            while (!ai.pastEnd()) {
+                index = ai.pos();
+                size_t offset = ArrayIndexOffset(src.ndim(),
+                        src.originalLength_p.storage(), src.inc_p.storage(),
+                        index);
+                objcopy(storage + count * size, src.begin_p + offset, size, 1U,
+                        src.inc_p(0));
+                ai.next();
+                count++;
+            }
+        }
+    }
+}
+
+template<class T> Array<T> Array<T>::copy(ArrayInitPolicy policy, Allocator_private::BulkAllocator<T> *allocator) const
 {
     DebugAssert(ok(), ArrayError);
+    DebugAssert(policy == ArrayInitPolicy::INIT
+            || allocator != Allocator_private::get_allocator<typename NewDelAllocator<T>::type>(),
+            ArrayError);
 
-    Array<T> vp(shape());
+    Array<T> vp(shape(), policy, allocator);
     if (ndim() == 0) {
         return vp;
-    } else if (contiguousStorage()) {
-	objcopy (vp.begin_p, begin_p, nels_p);
-    } else if (ndim() == 1) {
-	objcopy (vp.begin_p, begin_p, length_p(0), 1U, inc_p(0));
-    } else if (length_p(0) == 1  &&  ndim() == 2) {
-        // Special case which can be quite common (e.g. row in a matrix).
-	objcopy (vp.begin_p, begin_p, length_p(1), 1U,
-		 originalLength_p(0)*inc_p(1));
-    } else if (length_p(0) <= 25) {
-        // If not many elements on a line, it's better to use this loop.
-        T* ptr = vp.begin_p;
-        const_iterator iterend=end();
-        for (const_iterator iter=begin(); iter!=iterend; ++iter) {
-	    *ptr++ = *iter;
-	}
     } else {
-	// Step through Vector by Vector
-	// The output is guaranteed to have all incs set to 1
-	ArrayPositionIterator ai(shape(), 1);
-	IPosition index(ndim());
-        size_t offset;
-        size_t count=0;
-	while (! ai.pastEnd()) {
-	    index = ai.pos();
-	    offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
-				      inc_p.storage(), index);
-	    objcopy (vp.begin_p + count*length_p(0), begin_p+offset,
-		     length_p(0), 1U, inc_p(0));
-	    ai.next(); count++;
-	}
+        copyToContiguousStorage(vp.begin_p, *this, policy);
     }
     return vp;
 }
@@ -240,7 +369,7 @@ template<class T> Array<T> &Array<T>::operator=(const Array<T> &other)
 	}
     } else {
 	// Array was empty; make a new copy and reference it.
-	Array<T> tmp (other.copy());
+	Array<T> tmp (other.copy(ArrayInitPolicy::NO_INIT, nonNewDelAllocator()));
 	reference (tmp);
     }
     return *this;
@@ -441,7 +570,7 @@ template<class T> void Array<T>::unique()
 	return;
     }
     // OK, we know we are going to need to copy.
-    Array<T> tmp (copy());
+    Array<T> tmp (copy(ArrayInitPolicy::NO_INIT, nonNewDelAllocator()));
     reference (tmp);
 }
 
@@ -619,7 +748,7 @@ template<class T> void Array<T>::resize()
 {
     resize (IPosition());
 }
-template<class T> void Array<T>::resize(const IPosition &len, Bool copyValues)
+template<class T> void Array<T>::resize(const IPosition &len, Bool copyValues, ArrayInitPolicy policy)
 {
     DebugAssert(ok(), ArrayError);
     // Maybe we don't need to resize; let's see if we can short circuit
@@ -627,7 +756,7 @@ template<class T> void Array<T>::resize(const IPosition &len, Bool copyValues)
       return;
     }
     // OK we differ, so we really have to resize ourselves.
-    Array<T> tmp(len);
+    Array<T> tmp(len, policy, nonNewDelAllocator());
     // Copy the contents if needed.
     if (copyValues) {
       tmp.copyMatchingPart (*this);
@@ -823,49 +952,29 @@ template<class T> Bool Array<T>::ok() const
 template<class T> T *Array<T>::getStorage(Bool &deleteIt)
 {
     DebugAssert(ok(), ArrayError);
-    deleteIt = (!contiguousStorage());
+    deleteIt = False;
 
     if (ndim() == 0) {
 	return 0;
     }
 
-    if (deleteIt == False) {
+    if (contiguousStorage()) {
 	return begin_p;
     }
 
     // OK, we are unlucky so we need to do a copy
-    T *storage = new T[nelements()];
+    T *storage = nonNewDelAllocator()->allocate(nelements());
     if (storage == 0) {
 	throw(ArrayError("Array<T>::getStorage - new of copy buffer fails"));
     }
     // ok - copy it
-    if (ndim() == 1) {
-	objcopy(storage, begin_p, length_p(0), 1U, inc_p(0));
-    } else if (length_p(0) == 1  &&  ndim() == 2) {
-        // Special case which can be quite common (e.g. row in a matrix).
-	objcopy(storage, begin_p, length_p(1), 1U,
-		originalLength_p(0)*inc_p(1));
-    } else if (length_p(0) <= 25) {
-        // If not many elements on a line, it's better to use this loop.
-        T* ptr = storage;
-	iterator iterend=end();
-        for (iterator iter=begin(); iter!=iterend; ++iter) {
-	    *ptr++ = *iter;
-	}
-    } else {
-	ArrayPositionIterator ai(this->shape(), 1);
-	size_t offset;
-	IPosition index(ndim());
-	size_t count=0;
-	while (! ai.pastEnd()) {
-	    index = ai.pos();
-	    offset = ArrayIndexOffset(ndim(), originalLength_p.storage(),
-				      inc_p.storage(), index);
-	    objcopy(storage + count*length_p(0), begin_p+offset,
-		    length_p(0), 1U, inc_p(0));
-	    ai.next(); count++;
-	}
+    try {
+        copyToContiguousStorage(storage, *this, ArrayInitPolicy::NO_INIT);
+    } catch (...) {
+        nonNewDelAllocator()->deallocate(storage, nelements());
+        throw;
     }
+    deleteIt = True;
     return storage;
 }
 
@@ -905,8 +1014,8 @@ template<class T> void Array<T>::putStorage(T *&storage, Bool deleteAndCopy)
 	    ai.next(); count++;
 	}
     }
-    delete [] storage;
-    storage = 0;
+    T const * &fakeStorage = const_cast<T const *&>(storage);
+    freeStorage(fakeStorage, deleteAndCopy);
 }
 
 template<class T>
@@ -915,9 +1024,12 @@ void Array<T>::freeStorage(const T*&storage, Bool deleteIt) const
     DebugAssert(ok(), ArrayError);
 
     if (deleteIt) {
-	// The cast is required since you can't delete a const array; however
-	// if deleteIt is set the array came from new.
-	delete [] const_cast<T*>(storage);
+        // The cast is required since you can't delete a const array; however
+        // if deleteIt is set the array came from new.
+        T * ptr = const_cast<T*>(storage);
+        Allocator_private::BulkAllocator<T> * allocator = nonNewDelAllocator();
+        allocator->destroy(ptr, nelements());
+        allocator->deallocate(ptr, nelements());
     }
     storage = 0;
 }
@@ -935,16 +1047,14 @@ const void *Array<T>::getVStorage(Bool &deleteIt) const
 template<class T>
 void Array<T>::putVStorage(void *&storage, Bool deleteAndCopy)
 {
-  T* ptr = static_cast<T*>(storage);
+  T* &ptr = reinterpret_cast<T*&>(storage);
   putStorage (ptr, deleteAndCopy);
-  storage = 0;
 }
 template<class T>
 void Array<T>::freeVStorage(const void *&storage, Bool deleteAndCopy) const
 {
-  const T* ptr = static_cast<const T*>(storage);
+  const T* &ptr = reinterpret_cast<const T*&>(storage);
   freeStorage (ptr, deleteAndCopy);
-  storage = 0;
 }
 
 
@@ -952,32 +1062,48 @@ template<class T>
 void Array<T>::takeStorage(const IPosition &shape, T *storage,
 			   StorageInitPolicy policy)
 {
-    baseCopy (ArrayBase(shape));
+    AbstractAllocator<T> const *allocator = &DefaultAllocator<T>::value;
+    if (policy == TAKE_OVER) {
+        allocator = &NewDelAllocator<T>::value;
+    }
+    takeStorage(shape, storage, policy, *allocator);
+}
+
+template<class T>
+void Array<T>::takeStorage(const IPosition &shape, T *storage,
+                           StorageInitPolicy policy, AbstractAllocator<T> const &allocator)
+{
+    preTakeStorage(shape);
+
     size_t new_nels = shape.product();
 
     switch(policy) {
     case COPY:
-	if (data_p.null()  ||  data_p.nrefs() > 1
-        ||  data_p->nelements() != new_nels) {
-	    data_p = new Block<T>(new_nels);
-	}
-	objcopy(data_p->storage(), storage, new_nels);
-	break;
+        if (data_p.null() || data_p.nrefs() > 1
+                || data_p->nelements() != new_nels) {
+            data_p = new Block<T>(new_nels, ArrayInitPolicy::NO_INIT,
+                    allocator.getAllocator());
+            data_p->construct(0, new_nels, storage);
+        } else {
+            objcopy(data_p->storage(), storage, new_nels);
+        }
+        baseCopy (ArrayBase(shape));
+        break;
     case TAKE_OVER:
     case SHARE:
-	if (data_p.null() || data_p.nrefs() > 1) {
-	    data_p = new Block<T>(0);
-	}
-	data_p->replaceStorage(new_nels, storage, (policy == TAKE_OVER));
-	break;
+        data_p = new Block<T>(new_nels, storage, (policy == TAKE_OVER), allocator.getAllocator());
+        baseCopy (ArrayBase(shape));
+        break;
     default:
-	throw(AipsError("Array<T>::takeStorage - unknown policy"));
+        throw(AipsError("Array<T>::takeStorage - unknown policy"));
     }
     begin_p = data_p->storage();
     setEndIter();
     // Call OK at the end rather than the beginning since this might
     // be called from a constructor.
     DebugAssert(ok(), ArrayError);
+
+    postTakeStorage();
 }
 
 template<class T>
@@ -985,7 +1111,16 @@ void Array<T>::takeStorage(const IPosition &shape, const T *storage)
 {
     // This cast is safe since a copy will be made
     T *storagefake = const_cast<T*>(storage);
-    takeStorage(shape, storagefake, COPY);
+    takeStorage(shape, storagefake, COPY, DefaultAllocator<T>::value);
+}
+
+template<class T>
+void Array<T>::takeStorage(const IPosition &shape, const T *storage,
+        AbstractAllocator<T> const &allocator)
+{
+    // This cast is safe since a copy will be made
+    T *storagefake = const_cast<T*>(storage);
+    takeStorage(shape, storagefake, COPY, allocator);
 }
 
 
