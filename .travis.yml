@@ -8,6 +8,10 @@ compiler:
   - clang
   - gcc
 
+env:
+  - BUILD_TYPE=Release CASACORE_CHECK=no
+  - BUILD_TYPE=Debug CASACORE_CHECK=yes
+
 install:
   - ./travis-deps.sh
 
@@ -28,9 +32,11 @@ before_script:
       -DBUILD_PYTHON=ON
       -DDATA_DIR=$PWD
       -DSOFA_ROOT_DIR=$HOME
+      -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
 script:
-  - make -j4 
+  - make -j4
+  - if [ $BUILD_TYPE == "Debug" ]; then export CASACORE_CHECK=yes; fi
   - make test
   - sudo make install
 
