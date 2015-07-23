@@ -8,9 +8,29 @@ compiler:
   - clang
   - gcc
 
+sudo: false
+
 install:
   - ./travis-deps.sh
 
+addons:
+  apt:
+    packages:
+    - cmake
+    - flex
+    - bison
+    - libblas-dev
+    - liblapack-dev
+    - libcfitsio3-dev
+    - wcslib-dev
+    - libfftw3-dev
+    - gfortran
+    - libncurses5-dev
+    - libreadline6-dev
+    - libhdf5-serial-dev
+    - libboost-dev
+    - libboost-python-dev
+    - python-numpy
 
 before_script:
   - wget http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz -O /tmp/sofa.tgz
@@ -28,11 +48,12 @@ before_script:
       -DBUILD_PYTHON=ON
       -DDATA_DIR=$PWD
       -DSOFA_ROOT_DIR=$HOME
+      -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/installed
 
 script:
   - make -j4 
   - make test
-  - sudo make install
+  - make install
 
 notifications:
   webhooks:
