@@ -1293,8 +1293,10 @@ void TableParseSelect::makeProjectExprTable()
   Table::TableType    ttype = Table::Plain;
   Table::TableOption  topt  = Table::New;
   Table::EndianFormat tendf = Table::AipsrcEndian;
-  // Use default Memory if nothing or 'memory' has been given.
-  if (resultType_p == 0  ||  resultType_p == 1) {
+  // Use default Memory if no name or 'memory' has been given.
+  if (resultName_p.empty()) {
+    ttype = Table::Memory;
+  } else if (resultType_p == 1) {
     ttype = Table::Memory;
   } else if (resultType_p == 2) {
     topt  = Table::Scratch;
@@ -1304,8 +1306,6 @@ void TableParseSelect::makeProjectExprTable()
     tendf = Table::LittleEndian;
   } else if (resultType_p == 6) {
     tendf = Table::LocalEndian;
-  } else if (resultName_p.empty()) {
-    ttype = Table::Memory;
   }
   SetupNewTable newtab(resultName_p, td, topt);
   projectExprTable_p = Table(newtab, ttype, 0, False, tendf);
