@@ -1,6 +1,7 @@
 set (tests
 tfits2ms
 tMSConcat
+tMSFITSInput
 tMSSelection
 )
 
