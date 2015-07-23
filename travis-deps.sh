@@ -11,6 +11,7 @@ if [ "$TRAVIS_OS_NAME" = linux ]; then
             libboost-python-dev python-numpy
 
 elif [ "$TRAVIS_OS_NAME" = osx ]; then
+    brew update
     brew tap homebrew/science
     brew install cmake cfitsio wcslib fftw hdf5 boost-python readline 
 fi
