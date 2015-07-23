@@ -1,3 +1,29 @@
+# 2.0.3
+
+## General
+- Merge of CASA work into casacore, CASA should compile with casacore now
+- Under-the-hood optimizations, like using allocator features (#132)
+- Building with gcc 5 is now possible (#166)
+- Compatibility with more versions of wcslib and cfitsio
+- SOFA is now an external dependency (#105)
+
+## Tables
+- Arrays can now sometimes be reshaped while keeping allocated memory (#113)
+
+## MS
+- Selection of baselines with a regexp between stations is now possible (#99)
+- Several new methods to MSMetaData (#138)
+
+## Bug fixes
+- Fix a bug which caused an error with LOFAR measurement sets with 
+  the LOFAR tool msoverview (#140)
+- Fix a bug where TaQL would not write output when an expression was 
+  used (#184)
+
+# 2.0.2
+
+This version was not released
+
 # 2.0.1
 
 changes since 2.0.0
