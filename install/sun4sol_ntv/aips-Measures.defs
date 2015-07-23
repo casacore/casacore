@@ -1,8 +1,0 @@
-# Switch off optimization for UnitMap.
- 
-LVL  := $(C++OPTLVL)
-LVL0 := -O0
- 
-UnitMap := 0
- 
-C++OPTLVL = $(LVL$($*))
