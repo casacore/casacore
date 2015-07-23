@@ -163,20 +163,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     TableExprNode condition;
 
-    if (antennaIds2.size()) 
-      {
-	condition =
+    condition =
 	  // (ms()->col(colName1).in(antennaIds1)  && ms()->col(colName2).in(antennaIds2)) ||
 	  // (ms()->col(colName1).in(antennaIds2)  && ms()->col(colName2).in(antennaIds1));
-	  (column1AsTEN_p.in(antennaIds1)  && column2AsTEN_p.in(antennaIds2)) ||
-	  (column1AsTEN_p.in(antennaIds2)  && column2AsTEN_p.in(antennaIds1));
-      } 
-    else 
-      {
-	condition =
-	  //	  (ms()->col(colName1).in(antennaIds1) && ms()->col(colName2).in(antennaIds1));
-	  (column1AsTEN_p.in(antennaIds1) && column2AsTEN_p.in(antennaIds1));
-      }    
+      (column1AsTEN_p.in(antennaIds1)  && column2AsTEN_p.in(antennaIds2)) ||
+      (column1AsTEN_p.in(antennaIds2)  && column2AsTEN_p.in(antennaIds1));
     makeAntennaList(ant1List, antennaIds1,negate);
     makeAntennaList(ant2List, antennaIds2,negate);
 

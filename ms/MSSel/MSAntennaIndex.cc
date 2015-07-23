@@ -28,6 +28,7 @@
 #include <casacore/ms/MSSel/MSAntennaIndex.h>
 #include <casacore/ms/MSSel/MSSelectionTools.h>
 #include <casacore/ms/MSSel/MSSelectionError.h>
+#include <casacore/ms/MSSel/MSAntennaParse.h>
 #include <casacore/casa/Arrays/MaskedArray.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
@@ -66,9 +67,14 @@ MSAntennaIndex::MSAntennaIndex(const MSAntenna& antenna)
     IDs = set_intersection(sourceId,antennaIds_p);
     if (IDs.nelements() == 0)
       {
-	ostringstream mesg;
-	mesg << "No match found for the antenna specificion [ID(s): " << sourceId << "]";
-	throw (MSSelectionAntennaParseError(mesg));
+    	ostringstream mesg;
+        mesg << "No match found for the antenna specificion [ID(s): " << sourceId << "]";
+        // Use the error handler if defined, otherwise throw.
+        if (MSAntennaParse::thisMSAErrorHandler) {
+          MSAntennaParse::thisMSAErrorHandler->reportError ("", mesg.str());
+        } else {
+          throw (MSSelectionAntennaParseError(mesg));
+        }
       }
     return IDs;
   } 
