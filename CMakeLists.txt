@@ -398,11 +398,18 @@ endif (BUILD_PYTHON)
 #  CXX11                         NO
 #  ENABLE_TABLELOCKING           YES
 #  USE_HDF5                      NO
-#  USE_FFTW                      NO
+#  USE_FFTW3                     NO
 #  USE_THREADS                   NO
 #  USE_OPENMP                    NO
 #  USE_STACKTRACE                NO
 #  DATA_DIR                      ""
+#  MODULE                        all
+#                                Values for MODULE (incremental list):
+#                                - casa
+#                                - tables
+#                                - measures
+#                                - ms OR images
+#                                - all
 # 
 # List of possibly used external packages and where
 #  CFITSIO      fits
