@@ -39,14 +39,39 @@
 #include <casacore/ms/MSSel/MSObservationGram.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/TaQL/ExprUnitNode.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 
 namespace casacore {
 
-
   UDFMSCal::UDFMSCal (ColType type, Int arg)
     : itsType (type),
       itsArg  (arg)
+  {}
+
+  UDFMSCal::UDFMSCal (const String& funcName)
+    : itsType       (GETVALUE),
+      itsArg        (0),
+      itsFuncName   (funcName)
+  {}
+
+  UDFMSCal::UDFMSCal (const String& funcName, const String& subtabName,
+                      const String& idcolName, Int arg)
+    : itsType       (GETVALUE),
+      itsArg        (arg),
+      itsFuncName   (funcName),
+      itsSubTabName (subtabName),
+      itsIdColName  (idcolName)
+  {}
+
+  UDFMSCal::UDFMSCal (const String& funcName, const String& subtabName,
+                      const String& idcolName, const String& subcolName)
+    : itsType       (GETVALUE),
+      itsArg        (0),
+      itsFuncName   (funcName),
+      itsSubTabName (subtabName),
+      itsIdColName  (idcolName),
+      itsSubColName (subcolName)
   {}
 
   UDFBase* UDFMSCal::makeHA (const String&)
@@ -76,7 +101,15 @@ namespace casacore {
   UDFBase* UDFMSCal::makeAZEL2 (const String&)
     { return new UDFMSCal (AZEL, 1); }
   UDFBase* UDFMSCal::makeUVW (const String&)
-    { return new UDFMSCal (UVW, -1); }
+    { return new UDFMSCal (NEWUVW, -1); }
+  UDFBase* UDFMSCal::makeWvl (const String&)
+    { return new UDFMSCal (UVWWVL, -1); }
+  UDFBase* UDFMSCal::makeWvls (const String&)
+    { return new UDFMSCal (UVWWVLS, -1); }
+  UDFBase* UDFMSCal::makeUvwWvl (const String&)
+    { return new UDFMSCal (NEWUVWWVL, -1); }
+  UDFBase* UDFMSCal::makeUvwWvls (const String&)
+    { return new UDFMSCal (NEWUVWWVLS, -1); }
   UDFBase* UDFMSCal::makeStokes (const String&)
     { return new UDFMSCal (STOKES, -1); }
   UDFBase* UDFMSCal::makeBaseline (const String&)
@@ -97,17 +130,41 @@ namespace casacore {
     { return new UDFMSCal (SELECTION, STATE); }
   UDFBase* UDFMSCal::makeObs (const String&)
     { return new UDFMSCal (SELECTION, OBS); }
+  UDFBase* UDFMSCal::makeAnt1Name (const String& funcName)
+    { return new UDFMSCal (funcName, "ANTENNA", "ANTENNA1", "NAME"); }
+  UDFBase* UDFMSCal::makeAnt2Name (const String& funcName)
+    { return new UDFMSCal (funcName, "ANTENNA", "ANTENNA2", "NAME"); }
+  UDFBase* UDFMSCal::makeAnt1Col (const String& funcName)
+    { return new UDFMSCal (funcName, "ANTENNA", "ANTENNA1"); }
+  UDFBase* UDFMSCal::makeAnt2Col (const String& funcName)
+    { return new UDFMSCal (funcName, "ANTENNA", "ANTENNA2"); }
+  UDFBase* UDFMSCal::makeStateCol (const String& funcName)
+    { return new UDFMSCal (funcName, "STATE", "STATE_ID", -1); }
+  UDFBase* UDFMSCal::makeObsCol (const String& funcName)
+    { return new UDFMSCal (funcName," OBSERVATION", "OBSERVATION_ID"); }
+  UDFBase* UDFMSCal::makeSpwCol (const String& funcName)
+    { return new UDFMSCal (funcName, "SPECTRAL_WINDOW", "SPECTRAL_WINDOW_ID", 1); }
+  UDFBase* UDFMSCal::makePolCol (const String& funcName)
+    { return new UDFMSCal (funcName, "POLARIZATION", "POLARIZATION_ID", 1); }
+  UDFBase* UDFMSCal::makeFieldCol (const String& funcName)
+    { return new UDFMSCal (funcName, "FIELD", "FIELD_ID"); }
+  UDFBase* UDFMSCal::makeProcCol (const String& funcName)
+    { return new UDFMSCal (funcName, "PROCESSOR", "PROCESSOR_ID", -1); }
+  UDFBase* UDFMSCal::makeSubCol (const String& funcName)
+    { return new UDFMSCal (funcName); }
+
 
   void UDFMSCal::setup (const Table& table, const TaQLStyle&)
   {
     if (table.isNull()) {
-      throw AipsError ("UDFMSCal can only be used on a table");
+      throw AipsError ("MSCAL can only be used on a table");
     }
-    // Function Stokes is handled by this class, all others by the engine.
-    if (itsType != STOKES  &&  itsType != SELECTION) {
+    // Most functions are handled by the engine.
+    if (itsType != STOKES  &&  itsType != SELECTION  &&  itsType != GETVALUE  &&
+        itsType != UVWWVL  &&  itsType != UVWWVLS) {
       itsEngine.setTable (table);
       if (operands().size() > 1) {
-        throw AipsError("More than 1 argument given to DERIVEDMSCAL function");
+        throw AipsError("More than 1 argument given to MSCAL function");
       }
       // Setup the direction if an argument is given.
       if (operands().size() == 1) {
@@ -128,10 +185,30 @@ namespace casacore {
       itsTmpVector.resize (2);
       setUnit ("rad");
       break;
-    case UVW:
+    case NEWUVW:
+      setUnit ("m");
       setShape (IPosition(1,3));
       itsTmpVector.resize (3);
-      setUnit ("m");
+      break;
+    case UVWWVL:
+      setupWvls (table, operands(), 0);
+      setShape (IPosition(1,3));
+      itsTmpVector.resize (3);
+      break;
+    case NEWUVWWVL:
+      setupWvls (table, operands(), 1);
+      setShape (IPosition(1,3));
+      itsTmpVector.resize (3);
+      break;
+    case UVWWVLS:
+      setupWvls (table, operands(), 0);
+      itsTmpVector.resize (3);
+      setNDim(2);  // The shape can vary (each band can be different)
+      break;
+    case NEWUVWWVLS:
+      setupWvls (table, operands(), 1);
+      itsTmpVector.resize (3);
+      setNDim(2);  // The shape can vary (each band can be different)
       break;
     case STOKES:
       setupStokes (table, operands());
@@ -141,6 +218,13 @@ namespace casacore {
       setupSelection (table, operands());
       setNDim (0);
       setDataType (TableExprNodeRep::NTBool);
+      break;
+    case GETVALUE:
+      setupGetValue (table, operands());
+      setNDim (0);
+      setDataType (itsDataNode.getNodeRep()->dataType());
+      setUnit (itsDataNode.getNodeRep()->unit().getName());
+      break;
     }
   }
 
@@ -149,7 +233,7 @@ namespace casacore {
     // Make sure the operand is a constant double array
     // or a single string (e.g. MOON).
     if (! operand->isConstant()) {
-      throw AipsError("Only a constant value can be given as a DERIVEDMSCAL "
+      throw AipsError("Only a constant value can be given as a MSCAL "
                       "function argument");
     }
     // In principle type NTInt could also be allowed, but that makes no sense
@@ -157,7 +241,7 @@ namespace casacore {
     if (operand->dataType() == TableExprNodeRep::NTDouble) {
       // Get direction (given in J2000).
       if (operand->valueType() != TableExprNodeRep::VTArray) { 
-        throw AipsError ("Argument to DERIVEDMSCAL function is not an array "
+        throw AipsError ("Argument to MSCAL function is not an array "
                          "of 2 values");
       }
       // Make sure the unit is rad.
@@ -165,7 +249,7 @@ namespace casacore {
       TableExprNodeUnit::adaptUnit (operand, "rad");
       Array<Double> dirs(operand->getArrayDouble(0));
       if (dirs.size() != 2) {
-        throw AipsError ("Argument to DERIVEDMSCAL function is not an array "
+        throw AipsError ("Argument to MSCAL function is not an array "
                          "of 2 values");
       }
       Vector<Double> dirVec(dirs.reform(IPosition(1,dirs.size())));
@@ -189,14 +273,50 @@ namespace casacore {
           str = str.from(1);
         }
         if (str.empty()) {
-          throw AipsError ("An empty string given to a DERIVEDMSCAL function");
+          throw AipsError ("An empty string given to a MSCAL function");
         }
         itsEngine.setDirColName (str);
       }
     } else {
-      throw AipsError ("Argument to DERIVEDMSCAL function must be double or "
+      throw AipsError ("Argument to MSCAL function must be double or "
                        "string");
     }
+  }
+
+  void UDFMSCal::setupWvls (const Table& table,
+                            PtrBlock<TableExprNodeRep*>& operands,
+                            uInt nargMax)
+  {
+    // There must be at least 1 argument (data).
+    if (operands.size() > nargMax) {
+      throw AipsError ("No arguments should be given to MSCAL.UVWWVL");
+    }
+    // Read the reference and channel frequencies.
+    // Divide by lightspeed for conversion to wavelengths.
+    // Determine the maximum nr of frequencies in a band.
+    Table spwTab(table.keywordSet().asTable("SPECTRAL_WINDOW"));
+    ScalarColumn<Double> refCol(spwTab, "REF_FREQUENCY");
+    ArrayColumn<Double> freqCol(spwTab, "CHAN_FREQ");
+    itsWavel.reserve (spwTab.nrow());
+    itsWavels.reserve (spwTab.nrow());
+    uInt nfreq = 0;
+    for (uInt i=0; i<spwTab.nrow(); ++i) {
+      itsWavel.push_back (refCol(i) / C::c);
+      itsWavels.push_back (freqCol(i) / C::c);
+      if (itsWavels[i].size() > nfreq) {
+        nfreq = itsWavels[i].size();
+      }      
+    }
+    itsTmpUvwWvl.resize (IPosition(2, 3, nfreq));
+    if (itsType == UVWWVL  ||  itsType == UVWWVLS) {
+      itsUvwCol.attach (table, "UVW");
+    }
+    // Set itsIdColName for recreateColumnObjects.
+    itsIdColName = "DATA_DESC_ID";
+    itsIdNode = table.col(itsIdColName);
+    // Get the spectal window ids.
+    Table ddtab(table.keywordSet().asTable("DATA_DESCRIPTION"));
+    ScalarColumn<Int>(ddtab, "SPECTRAL_WINDOW_ID").getColumn (itsDDIds);
   }
 
   void UDFMSCal::setupStokes (const Table& table,
@@ -205,14 +325,14 @@ namespace casacore {
     // There must be at least 1 argument (data).
     if (operands.size() == 0  ||  operands.size() > 3) {
       throw AipsError ("1, 2, or 3 arguments must be given to "
-                       "DERIVEDMSCAL.STOKES");
+                       "MSCAL.STOKES");
     }
     itsDataNode = TableExprNode(operands[0]);
     if (operands[0]->valueType() != TableExprNodeRep::VTArray  ||
         !(operands[0]->dataType() == TableExprNodeRep::NTBool  ||
           operands[0]->dataType() == TableExprNodeRep::NTDouble  ||
           operands[0]->dataType() == TableExprNodeRep::NTComplex)) {
-      throw AipsError ("First argument of DERIVEDMSCAL.STOKES must be a "
+      throw AipsError ("First argument of MSCAL.STOKES must be a "
                        "Complex, Double or Bool array");
     }
     // The optional second argument gives the output correlation types.
@@ -222,7 +342,7 @@ namespace casacore {
       if (! operands[1]->isConstant()  ||
           operands[1]->valueType() != TableExprNodeRep::VTScalar  ||
           operands[1]->dataType() != TableExprNodeRep::NTString) {
-        throw AipsError ("Second argument of DERIVEDMSCAL.STOKES must be a "
+        throw AipsError ("Second argument of MSCAL.STOKES must be a "
                          "constant String scalar");
       }
       type = operands[1]->getString(0);
@@ -234,7 +354,7 @@ namespace casacore {
       if (! operands[2]->isConstant()  ||
           operands[2]->valueType() != TableExprNodeRep::VTScalar  ||
           operands[2]->dataType() != TableExprNodeRep::NTBool) {
-        throw AipsError ("Second argument of DERIVEDMSCAL.STOKES must be a "
+        throw AipsError ("Second argument of MSCAL.STOKES must be a "
                          "constant Bool scalar");
       }
       rescale = operands[2]->getBool(0);
@@ -258,7 +378,7 @@ namespace casacore {
     Vector<String> types = stringToVector(type);
     if (types.empty()) {
       throw AipsError("No polarization types given in second argument of "
-                      "DERIVEDMSCAL.STOKES");
+                      "MSCAL.STOKES");
     }
     Vector<Int> outTypes(types.size());
     for (uInt i=0; i<types.size(); ++i) {
@@ -281,12 +401,12 @@ namespace casacore {
   {
     // There must be 1 argument (scalar string).
     if (operands.size() != 1) {
-      throw AipsError ("1 argument must be given to DERIVEDMSCAL selections");
+      throw AipsError ("1 argument must be given to MSCAL selections");
     }
     if (operands[0]->valueType() != TableExprNodeRep::VTScalar  ||
         operands[0]->dataType()  != TableExprNodeRep::NTString  ||
         !operands[0]->isConstant()) {
-      throw AipsError ("Argument of DERIVEDMSCAL selection must be a "
+      throw AipsError ("Argument of MSCAL selection must be a "
                        "constant string scalar");
     }
     // Get and process the selection string.
@@ -418,14 +538,151 @@ namespace casacore {
     }
   }
 
+  void UDFMSCal::setupGetValue (const Table& table,
+                                PtrBlock<TableExprNodeRep*>& operands)
+  {
+    int idinx = 0;
+    // See if subtable and column name have to be given explicitly as the
+    // first arguments.
+    if (itsSubColName.empty()) {
+      idinx = 1;
+      if (itsSubTabName.empty()) idinx = 2;
+    }
+    uInt nargReq = idinx;
+    // Id column must be given if id (ANTENNA1/2) is not part of function name.
+    if (itsIdColName.empty()) nargReq++;
+    if (operands.size() != nargReq) {
+      throw AipsError ("Function " + itsFuncName + " has " + 
+                       String::toString(operands.size()) +
+                       " arguments, but should have " +
+                       String::toString(nargReq));
+    }
+    // Get subtable and column name; they must be constant strings.
+    for (int i=0; i<idinx; ++i) {
+      if (! operands[i]->isConstant()  ||
+          operands[i]->valueType() != TableExprNodeRep::VTScalar  ||
+          operands[i]->dataType() != TableExprNodeRep::NTString) {
+        throw AipsError ("First " + String::toString(idinx) +
+                         " argument(s) of function " + itsFuncName +
+                         " must be constant strings");
+      }
+      String str = operands[i]->getString(0);
+      if (str.empty()) {
+        throw AipsError ("An empty subtable name or column name given in "
+                         "function " + itsFuncName);
+      }
+      if (i == idinx-1) {
+        itsSubColName = str;
+      } else {
+        itsSubTabName = str;
+      }
+    }
+    // An id column needs to be given if not using ANTENNA1 or ANTENNA2.
+    // It must be an integer column.
+    if (itsIdColName.empty()) {
+      if (operands[idinx]->valueType() != TableExprNodeRep::VTScalar  ||
+          operands[idinx]->dataType() != TableExprNodeRep::NTInt) {
+        throw AipsError ("Last argument of function " + itsFuncName +
+                         " must be an integer scalar");
+      }
+      itsIdNode = operands[idinx];
+    } else {
+      if (itsArg == 1) {
+        // Subtable has an indirection via the DATA_DESCRIPTION.
+        // Get the ids of the required column.
+        Table ddtab(table.keywordSet().asTable("DATA_DESCRIPTION"));
+        ScalarColumn<Int>(ddtab, itsIdColName).getColumn (itsDDIds);
+        itsIdColName = "DATA_DESC_ID";
+      }
+      // Create the id node.
+      /// This fails for GROUPBY, because node does not use groupby rownrs.
+      /// I.e. has to do applySelection!!!
+      /// Maybe let ExprUDFNode map group rownr to original rownr, but that
+      /// causes problems when aggregate function used in mscal.
+      /// Maybe add the created nodes in TableParse to applySelNodes_p, but
+      /// maybe has to take care if it is in a group.
+      /// Also look at other UDF functions (in mscal and meas).
+      itsIdNode = table.col(itsIdColName);
+    }
+    // Create the node for the data item in the subtable.
+    Table subtab(table.keywordSet().asTable(itsSubTabName));
+    itsDataNode = subtab.col(itsSubColName);
+  }
+
+
+  void UDFMSCal::recreateColumnObjects (const Vector<uInt>& rownrs)
+  {
+    if (! itsIdColName.empty()) {
+      TableExprNodeRep* col = const_cast<TableExprNodeRep*>(itsIdNode.getNodeRep());
+      col->applySelection (rownrs);
+    }
+    if (! itsUvwCol.isNull()) {
+      Table tab(itsUvwCol.table());
+      itsUvwCol.attach (tab(rownrs), "UVW");
+    }
+    Table tab(itsEngine.getTable());
+    if (! tab.isNull()) {
+      itsEngine.setTable (tab(rownrs));
+    }
+  }
+
+  Int64 UDFMSCal::getRowNr (const TableExprId& id)
+  {
+    Int64 rownr = itsIdNode.getInt(id);
+    if (itsArg == 1) {
+      rownr = itsDDIds[rownr];
+    }
+    return rownr;
+  }
+
+  Array<Double> UDFMSCal::toWvls (const TableExprId& id)
+  {
+    const Vector<Double>& wvl = itsWavels[itsDDIds[itsIdNode.getInt(id)]];
+    Double* ptr = itsTmpUvwWvl.data();
+    for (uInt i=0; i<wvl.size(); ++i) {
+      for (int j=0; j<3; ++j) {
+        *ptr++ = wvl[i] * itsTmpVector[j];
+      }
+    }
+    // Return the correct part of the array.
+    if (itsTmpUvwWvl.shape()[1] == Int(wvl.size())) {
+      return itsTmpUvwWvl;
+    }
+    return itsTmpUvwWvl(IPosition(2,0,0), IPosition(2, 2, wvl.size()-1));
+  }
+
   Bool UDFMSCal::getBool (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);
     switch (itsType) {
     case SELECTION:
       return itsDataNode.getBool (id);
+    case GETVALUE:
+      {
+        Int64 rownr = getRowNr(id);
+        if (itsArg < 0  &&  rownr >= itsDataNode.nrow()) {
+          return False;
+        }
+        return itsDataNode.getBool (rownr);
+      }
     default:
       throw AipsError ("UDFMSCal: unexpected getBool function");
+    }
+  }
+
+  Int64 UDFMSCal::getInt (const TableExprId& id)
+  {
+    switch (itsType) {
+    case GETVALUE:
+      {
+        Int64 rownr = getRowNr(id);
+        if (itsArg < 0  &&  rownr >= itsDataNode.nrow()) {
+          return 0;
+        }
+        return itsDataNode.getInt (rownr);
+      }
+    default:
+      throw AipsError ("UDFMSCal: unexpected getInt function");
     }
   }
 
@@ -439,20 +696,79 @@ namespace casacore {
       return itsEngine.getPA (itsArg, id.rownr());
     case LAST:
       return itsEngine.getLAST (itsArg, id.rownr());
+    case GETVALUE:
+      {
+        Int64 rownr = getRowNr(id);
+        if (itsArg < 0  &&  rownr >= itsDataNode.nrow()) {
+          return 0.;
+        }
+        return itsDataNode.getDouble (rownr);
+      }
     default:
       throw AipsError ("UDFMSCal: unexpected getDouble function");
     }
   }
 
+  DComplex UDFMSCal::getDComplex (const TableExprId& id)
+  {
+    DebugAssert (id.byRow(), AipsError);
+    switch (itsType) {
+    case GETVALUE:
+      {
+        Int64 rownr = getRowNr(id);
+        if (itsArg < 0  &&  rownr >= itsDataNode.nrow()) {
+          return DComplex();
+        }
+        return itsDataNode.getDComplex (rownr);
+      }
+    default:
+      throw AipsError ("UDFMSCal: unexpected getDComplex function");
+    }
+  }
+
+  String UDFMSCal::getString (const TableExprId& id)
+  {
+    DebugAssert (id.byRow(), AipsError);
+    switch (itsType) {
+    case GETVALUE:
+      {
+        Int64 rownr = getRowNr(id);
+        if (itsArg < 0  &&  rownr >= itsDataNode.nrow()) {
+          return String();
+        }
+        return itsDataNode.getString (rownr);
+      }
+    default:
+      throw AipsError ("UDFMSCal: unexpected getString function");
+    }
+  }
+
   Array<Bool> UDFMSCal::getArrayBool (const TableExprId& id)
   {
-    if (itsType != STOKES) {
+    DebugAssert (id.byRow(), AipsError);
+    switch (itsType) {
+    case STOKES:
+      {
+        Array<Bool> out;
+        // Combine the flags.
+        itsStokesConv.convert (out, itsDataNode.getArrayBool (id));
+        return out;
+      }
+    case GETVALUE:
+      return itsDataNode.getArrayBool (getRowNr(id));
+    default:
       throw AipsError ("UDFMSCal: unexpected getArrayBool function");
     }
-    Array<Bool> out;
-    // Combine the flags.
-    itsStokesConv.convert (out, itsDataNode.getArrayBool (id));
-    return out;
+  }
+
+  Array<Int64> UDFMSCal::getArrayInt (const TableExprId& id)
+  {
+    switch (itsType) {
+    case GETVALUE:
+      return itsDataNode.getArrayInt (getRowNr(id));
+    default:
+      throw AipsError ("UDFMSCal: unexpected getArrayInt function");
+    }
   }
 
   Array<Double> UDFMSCal::getArrayDouble (const TableExprId& id)
@@ -465,9 +781,23 @@ namespace casacore {
     case AZEL:
       itsEngine.getAzEl (itsArg, id.rownr(), itsTmpVector);
       return itsTmpVector;
-    case UVW:
+    case NEWUVW:
       itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);
       return itsTmpVector;
+    case UVWWVL:
+      itsUvwCol.get (id.rownr(), itsTmpVector);
+      itsTmpVector *= itsWavel[itsDDIds[itsIdNode.getInt(id)]];
+      return itsTmpVector;
+    case UVWWVLS:
+      itsUvwCol.get (id.rownr(), itsTmpVector);
+      return toWvls (id);
+    case NEWUVWWVL:
+      itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);
+      itsTmpVector *= itsWavel[itsDDIds[itsIdNode.getInt(id)]];
+      return itsTmpVector;
+    case NEWUVWWVLS:
+      itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);
+      return toWvls (id);
     case STOKES:
       {
         // Unfortunately stokes weight conversion is only defined for Float,
@@ -484,6 +814,8 @@ namespace casacore {
         convertArray (outd, outf);
         return outd;
       }
+    case GETVALUE:
+      return itsDataNode.getArrayDouble (getRowNr(id));
     default:
       throw AipsError ("UDFMSCal: unexpected getArrayDouble function");
     }
@@ -491,23 +823,39 @@ namespace casacore {
 
   Array<DComplex> UDFMSCal::getArrayDComplex (const TableExprId& id)
   {
-    if (itsType != STOKES) {
-      throw AipsError ("UDFMSCal: unexpected getArrayComplex function");
+    switch (itsType) {
+    case STOKES:
+      {
+        // Unfortunately stokes conversion is only defined for type Complex,
+        // while TableExprNode only has DComplex.
+        // So conversions are necessary for the time being.
+        // In the future we can add DComplex support to StokesConverter
+        // or Complex support to TableExprNode.
+        Array<Complex> outf, dataf;
+        Array<DComplex> outd, datad;
+        itsDataNode.get (id, datad);
+        dataf.resize (datad.shape());
+        convertArray (dataf, datad);
+        itsStokesConv.convert (outf, dataf);
+        outd.resize (outf.shape());
+        convertArray (outd, outf);
+        return outd;
+      }
+    case GETVALUE:
+      return itsDataNode.getArrayDComplex (getRowNr(id));
+    default:
+      throw AipsError ("UDFMSCal: unexpected getArrayDComplex function");
     }
-    // Unfortunately stokes conversion is only defined for type Complex,
-    // while TableExprNode only has DComplex.
-    // So conversions are necessary for the time being.
-    // In the future we can add DComplex support to StokesConverter
-    // or Complex support to TableExprNode.
-    Array<Complex> outf, dataf;
-    Array<DComplex> outd, datad;
-    itsDataNode.get (id, datad);
-    dataf.resize (datad.shape());
-    convertArray (dataf, datad);
-    itsStokesConv.convert (outf, dataf);
-    outd.resize (outf.shape());
-    convertArray (outd, outf);
-    return outd;
+  }
+
+  Array<String> UDFMSCal::getArrayString (const TableExprId& id)
+  {
+    switch (itsType) {
+    case GETVALUE:
+      return itsDataNode.getArrayString (getRowNr(id));
+    default:
+      throw AipsError ("UDFMSCal: unexpected getArrayString function");
+    }
   }
 
 } //end namespace

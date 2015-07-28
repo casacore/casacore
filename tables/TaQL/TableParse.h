@@ -567,6 +567,10 @@ private:
   // at the first stage.
   void makeProjectExprSel();
 
+  // Add a column node to applySelNodes_p.
+  void addApplySelNode (const TableExprNode& node)
+    { applySelNodes_p.push_back (node); }
+
   // Set the selected rows for the column objects in applySelNodes_p.
   // These nodes refer the original table. They requires different row
   // numbers than the selected groups and projected columns.

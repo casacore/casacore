@@ -122,6 +122,10 @@ public:
   // Destructor.
   ~MSCalEngine();
 
+  // Get the table used.
+  Table getTable() const
+    { return itsTable; }
+
   // Use the given table (MS or CalTable) in the engine.
   void setTable (const Table&);
 

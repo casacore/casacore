@@ -38,28 +38,46 @@ void register_derivedmscal()
   DerivedMSCal::registerClass();
 
   // Register the TaQL UDFs.
-  UDFBase::registerUDF ("derivedmscal.HA",      UDFMSCal::makeHA);
-  UDFBase::registerUDF ("derivedmscal.HA1",     UDFMSCal::makeHA1);
-  UDFBase::registerUDF ("derivedmscal.HA2",     UDFMSCal::makeHA2);
-  UDFBase::registerUDF ("derivedmscal.HADEC",   UDFMSCal::makeHADEC);
-  UDFBase::registerUDF ("derivedmscal.HADEC1",  UDFMSCal::makeHADEC1);
-  UDFBase::registerUDF ("derivedmscal.HADEC2",  UDFMSCal::makeHADEC2);
-  UDFBase::registerUDF ("derivedmscal.PA1",     UDFMSCal::makePA1);
-  UDFBase::registerUDF ("derivedmscal.PA2",     UDFMSCal::makePA2);
-  UDFBase::registerUDF ("derivedmscal.LAST",    UDFMSCal::makeLAST);
-  UDFBase::registerUDF ("derivedmscal.LAST1",   UDFMSCal::makeLAST1);
-  UDFBase::registerUDF ("derivedmscal.LAST2",   UDFMSCal::makeLAST2);
-  UDFBase::registerUDF ("derivedmscal.AZEL1",   UDFMSCal::makeAZEL1);
-  UDFBase::registerUDF ("derivedmscal.AZEL2",   UDFMSCal::makeAZEL2);
-  UDFBase::registerUDF ("derivedmscal.UVW",     UDFMSCal::makeUVW);
-  UDFBase::registerUDF ("derivedmscal.STOKES",  UDFMSCal::makeStokes);
-  UDFBase::registerUDF ("derivedmscal.BASELINE",UDFMSCal::makeBaseline);
-  UDFBase::registerUDF ("derivedmscal.TIME",    UDFMSCal::makeTime);
-  UDFBase::registerUDF ("derivedmscal.SPW",     UDFMSCal::makeSpw);
-  UDFBase::registerUDF ("derivedmscal.UVDIST",  UDFMSCal::makeUVDist);
-  UDFBase::registerUDF ("derivedmscal.FIELD",   UDFMSCal::makeField);
-  UDFBase::registerUDF ("derivedmscal.ARRAY",   UDFMSCal::makeArray);
-  UDFBase::registerUDF ("derivedmscal.SCAN",    UDFMSCal::makeScan);
-  UDFBase::registerUDF ("derivedmscal.STATE",   UDFMSCal::makeState);
-  UDFBase::registerUDF ("derivedmscal.OBS",     UDFMSCal::makeObs);
+  // Derived quantities.
+  UDFBase::registerUDF ("derivedmscal.HA",        UDFMSCal::makeHA);
+  UDFBase::registerUDF ("derivedmscal.HA1",       UDFMSCal::makeHA1);
+  UDFBase::registerUDF ("derivedmscal.HA2",       UDFMSCal::makeHA2);
+  UDFBase::registerUDF ("derivedmscal.HADEC",     UDFMSCal::makeHADEC);
+  UDFBase::registerUDF ("derivedmscal.HADEC1",    UDFMSCal::makeHADEC1);
+  UDFBase::registerUDF ("derivedmscal.HADEC2",    UDFMSCal::makeHADEC2);
+  UDFBase::registerUDF ("derivedmscal.PA1",       UDFMSCal::makePA1);
+  UDFBase::registerUDF ("derivedmscal.PA2",       UDFMSCal::makePA2);
+  UDFBase::registerUDF ("derivedmscal.LAST",      UDFMSCal::makeLAST);
+  UDFBase::registerUDF ("derivedmscal.LAST1",     UDFMSCal::makeLAST1);
+  UDFBase::registerUDF ("derivedmscal.LAST2",     UDFMSCal::makeLAST2);
+  UDFBase::registerUDF ("derivedmscal.AZEL1",     UDFMSCal::makeAZEL1);
+  UDFBase::registerUDF ("derivedmscal.AZEL2",     UDFMSCal::makeAZEL2);
+  UDFBase::registerUDF ("derivedmscal.UVWWVL",    UDFMSCal::makeUvwWvl);
+  UDFBase::registerUDF ("derivedmscal.UVWWVLS",   UDFMSCal::makeUvwWvls);
+  UDFBase::registerUDF ("derivedmscal.NEWUVW",    UDFMSCal::makeUVW);
+  UDFBase::registerUDF ("derivedmscal.NEWUVWWVL", UDFMSCal::makeWvl);
+  UDFBase::registerUDF ("derivedmscal.NEWUVWWVLS",UDFMSCal::makeWvls);
+  UDFBase::registerUDF ("derivedmscal.STOKES",    UDFMSCal::makeStokes);
+  // CASA selection.
+  UDFBase::registerUDF ("derivedmscal.BASELINE",  UDFMSCal::makeBaseline);
+  UDFBase::registerUDF ("derivedmscal.TIME",      UDFMSCal::makeTime);
+  UDFBase::registerUDF ("derivedmscal.SPW",       UDFMSCal::makeSpw);
+  UDFBase::registerUDF ("derivedmscal.UVDIST",    UDFMSCal::makeUVDist);
+  UDFBase::registerUDF ("derivedmscal.FIELD",     UDFMSCal::makeField);
+  UDFBase::registerUDF ("derivedmscal.ARRAY",     UDFMSCal::makeArray);
+  UDFBase::registerUDF ("derivedmscal.SCAN",      UDFMSCal::makeScan);
+  UDFBase::registerUDF ("derivedmscal.STATE",     UDFMSCal::makeState);
+  UDFBase::registerUDF ("derivedmscal.OBS",       UDFMSCal::makeObs);
+  // Data from subtables.
+  UDFBase::registerUDF ("derivedmscal.ANT1NAME",  UDFMSCal::makeAnt1Name);
+  UDFBase::registerUDF ("derivedmscal.ANT2NAME",  UDFMSCal::makeAnt2Name);
+  UDFBase::registerUDF ("derivedmscal.ANT1COL",   UDFMSCal::makeAnt1Col);
+  UDFBase::registerUDF ("derivedmscal.ANT2COL",   UDFMSCal::makeAnt2Col);
+  UDFBase::registerUDF ("derivedmscal.STATECOL",  UDFMSCal::makeStateCol);
+  UDFBase::registerUDF ("derivedmscal.OBSCOL",    UDFMSCal::makeObsCol);
+  UDFBase::registerUDF ("derivedmscal.SPWCOL",    UDFMSCal::makeSpwCol);
+  UDFBase::registerUDF ("derivedmscal.POLCOL",    UDFMSCal::makePolCol);
+  UDFBase::registerUDF ("derivedmscal.FIELDCOL",  UDFMSCal::makeFieldCol);
+  UDFBase::registerUDF ("derivedmscal.PROCCOL",   UDFMSCal::makeProcCol);
+  UDFBase::registerUDF ("derivedmscal.SUBCOL",    UDFMSCal::makeSubCol);
 }

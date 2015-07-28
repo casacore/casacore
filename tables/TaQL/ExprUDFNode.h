@@ -93,6 +93,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Get the nodes representing a table column.
     virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
   
+    // Do not apply the selection.
+    virtual void disableApplySelection();
+
+    // If needed, let the UDF re-create column objects for a selection of rows.
+    // It calls the function recreateColumnObjects.
+    virtual void applySelection (const Vector<uInt>& rownrs);
+
     // UDFs do not need a TableExprGroupFuncBase,
     // so TableExprGroupNull is returned.
     CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
