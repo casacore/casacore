@@ -307,7 +307,6 @@ void MSFitsInput::readRandomGroupUVFits(Int obsType) {
         itsLog << LogOrigin("MSFitsInput", __func__)
                << LogIO::POST;
         Int nField = 0, nSpW = 0;
-
         useAltrval = False;
         getPrimaryGroupAxisInfo();
 
@@ -582,7 +581,6 @@ void MSFitsInput::readFitsFile(Int obsType) {
     	}
     }
     catch(const AipsError& ex) {
-
     	if (_msCreated) {
     		String name = ms_p.tableName();
     		itsLog << LogIO::NORMAL << "Exception while processing UVFITS file. Deleting incomplete MS '"
@@ -660,7 +658,6 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
         refPix_p(i) = static_cast<Double> (priGroup_p.crpix(i));
         delta_p(i) = static_cast<Double> (priGroup_p.cdelt(i));
     }
-
     // Check if required axes are there
     if (getIndex(coordType_p, "COMPLEX") < 0) {
         itsLog << "Data does not have a COMPLEX axis" << LogIO::EXCEPTION;
@@ -719,16 +716,32 @@ void MSFitsInput::getPrimaryGroupAxisInfo() {
             corrType_p(i) = Stokes::RR;
             break;
         case 4:
-            corrType_p(i) = Stokes::V;
+            // corrType_p(i) = Stokes::V;
+            ThrowCc(
+                "Stokes V cannot be decomposed into proper correlation types "
+                "without making assumptions. This functionality is not supported"
+            );
             break;
         case 3:
-            corrType_p(i) = Stokes::U;
+            //corrType_p(i) = Stokes::U;
+            ThrowCc(
+                "Stokes U cannot be decomposed into proper correlation types "
+                "without making assumptions. This functionality is not supported"
+            );
             break;
         case 2:
-            corrType_p(i) = Stokes::Q;
+            //corrType_p(i) = Stokes::Q;
+            ThrowCc(
+                "Stokes Q cannot be decomposed into proper correlation types "
+                "without making assumptions. This functionality is not supported"
+            );
             break;
         case 1:
-            corrType_p(i) = Stokes::I;
+            //corrType_p(i) = Stokes::I;
+            ThrowCc(
+                "Stokes I cannot be decomposed into proper correlation types "
+                "without making assumptions. This functionality is not supported"
+            ); 
             break;
         default:
             if (corrType_p(i) < 0) {
@@ -2187,7 +2200,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
         // purposeful assignment of throwImmediately
         // because it appears that the sense of rows and columns are reversed here
         Int nrestfreqs = restFreq_p.nrow();
-        throwImmediately = nrestfreqs != (Int) noif;
+        throwImmediately = nrestfreqs != noif;
         ThrowIf(
     			throwImmediately,
     			"Inconsistent SU table, number of elements in rest frequency column is "
@@ -2776,7 +2789,6 @@ void MSFitsInput::sortPolarizations() {
 void MSFitsInput::fillPolarizationTable() {
     MSPolarizationColumns& msPol(msc_p->polarization());
     Int nCorr = nPixel_p(getIndex(coordType_p, "STOKES"));
-
     // fill out the polarization info (only single entry allowed in fits input)
     ms_p.polarization().addRow();
     msPol.numCorr().put(0, nCorr);
