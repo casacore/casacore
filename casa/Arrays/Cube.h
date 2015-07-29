@@ -88,11 +88,17 @@ public:
     Cube(size_t l1, size_t l2, size_t l3);
 
     // A l1xl2xl3 sized cube.
+    Cube(size_t l1, size_t l2, size_t l3, ArrayInitPolicy initPolicy);
+
+    // A l1xl2xl3 sized cube.
     // Fill it with the initial value.
     Cube(size_t l1, size_t l2, size_t l3, const T &initialValue);
 
     // A Cube where the shape ("len") is defined with IPositions.
     Cube(const IPosition &len);
+
+    // A Cube where the shape ("len") is defined with IPositions.
+    Cube(const IPosition &len, ArrayInitPolicy initPolicy);
 
     // A Cube where the shape ("len") is defined with IPositions.
     // Fill it with the initial value.
@@ -108,6 +114,8 @@ public:
 
     // Create an Cube of a given shape from a pointer.
     Cube(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
+    // Create an Cube of a given shape from a pointer.
+    Cube(const IPosition &shape, T *storage, StorageInitPolicy policy, AbstractAllocator<T> const &allocator);
     // Create an  Cube of a given shape from a pointer. Because the pointer
     // is const, a copy is always made.
     Cube(const IPosition &shape, const T *storage);
@@ -126,9 +134,9 @@ public:
     // Resize to the given shape.
     // Resize without argument is equal to resize(0,0,0).
     // <group>
-    void resize(size_t nx, size_t ny, size_t nz, Bool copyValues=False);
+    void resize(size_t nx, size_t ny, size_t nz, Bool copyValues=False, ArrayInitPolicy policy = ArrayInitPolicy::INIT);
     virtual void resize();
-    virtual void resize(const IPosition &newShape, Bool copyValues=False);
+    virtual void resize(const IPosition &newShape, Bool copyValues=False, ArrayInitPolicy policy = ArrayInitPolicy::INIT);
     // </group>
 
     // Copy the values from other to this cube. If this cube has zero
@@ -294,21 +302,12 @@ public:
     size_t nplane() const
       { return this->length_p(2); }
 
-    // Replace the data values with those in the pointer <src>storage</src>.
-    // The results are undefined is storage does not point at nelements() or
-    // more data elements. After takeStorage() is called, <src>unique()</src>
-    // is True.
-    // <group>
-    virtual void takeStorage(const IPosition &shape, T *storage,
-		     StorageInitPolicy policy = COPY);
-    // Since the pointer is const, a copy is always taken.
-    virtual void takeStorage(const IPosition &shape, const T *storage);
-    // </group>
-
     // Checks that the cube is consistent (invariants check out).
     virtual Bool ok() const;
 
 protected:
+    virtual void preTakeStorage(const IPosition &shape);
+    virtual void postTakeStorage();
     // Remove the degenerate axes from other and store result in this cube.
     // An exception is thrown if removing degenerate axes does not result
     // in a cube.

@@ -53,6 +53,13 @@ template<class T> Matrix<T>::Matrix(const IPosition &len)
     AlwaysAssert(len.nelements() == 2, ArrayError);
 }
 
+template<class T> Matrix<T>::Matrix(const IPosition &len, ArrayInitPolicy initPolicy)
+  : Array<T>(len, initPolicy)
+{
+    makeIndexingConstants();
+    AlwaysAssert(len.nelements() == 2, ArrayError);
+}
+
 template<class T> Matrix<T>::Matrix(const IPosition &len, const T &initialValue)
   : Array<T>(len, initialValue)
 {
@@ -62,6 +69,13 @@ template<class T> Matrix<T>::Matrix(const IPosition &len, const T &initialValue)
 
 template<class T> Matrix<T>::Matrix(size_t l1, size_t l2)
 : Array<T>(IPosition(2, l1, l2))
+{
+    makeIndexingConstants();
+    DebugAssert(ok(), ArrayError);
+}
+
+template<class T> Matrix<T>::Matrix(size_t l1, size_t l2, ArrayInitPolicy initPolicy)
+: Array<T>(IPosition(2, l1, l2), initPolicy)
 {
     makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
@@ -104,22 +118,22 @@ template<class T> void Matrix<T>::resize()
 {
     resize (IPosition(2,0));
 }
-template<class T> void Matrix<T>::resize(const IPosition &l, Bool copyValues)
+template<class T> void Matrix<T>::resize(const IPosition &l, Bool copyValues, ArrayInitPolicy policy)
 {
     DebugAssert(ok(), ArrayError);
     if (l.nelements() != 2)
 	throw(ArrayConformanceError("Matrix<T>::resize() - attempt to form "
 				    "non-Matrix"));
-    Array<T>::resize(l, copyValues);
+    Array<T>::resize(l, copyValues, policy);
     makeIndexingConstants();
 }
 
-template<class T> void Matrix<T>::resize(size_t nx, size_t ny, Bool copyValues)
+template<class T> void Matrix<T>::resize(size_t nx, size_t ny, Bool copyValues, ArrayInitPolicy policy)
 {
     DebugAssert(ok(), ArrayError);
     IPosition l(2);
     l(0) = nx; l(1) = ny;
-    Matrix<T>::resize(l, copyValues);
+    Matrix<T>::resize(l, copyValues, policy);
 }
 
 // <thrown>
@@ -402,6 +416,15 @@ Matrix<T>::Matrix(const IPosition &shape, T *storage,
 }
 
 template<class T>
+Matrix<T>::Matrix(const IPosition &shape, T *storage,
+                  StorageInitPolicy policy, AbstractAllocator<T> const &allocator)
+  : Array<T>(shape, storage, policy, allocator)
+{
+    AlwaysAssert(shape.nelements() == 2, ArrayError);
+    makeIndexingConstants();
+}
+
+template<class T>
 Matrix<T>::Matrix(const IPosition &shape, const T *storage)
   : Array<T>(shape, storage)
 {
@@ -411,19 +434,16 @@ Matrix<T>::Matrix(const IPosition &shape, const T *storage)
 
 
 template<class T>
-void Matrix<T>::takeStorage(const IPosition &shape, T *storage,
-		     StorageInitPolicy policy)
+void Matrix<T>::preTakeStorage(const IPosition &shape)
 {
+    Array<T>::preTakeStorage(shape);
     AlwaysAssert(shape.nelements() == 2, ArrayError);
-    Array<T>::takeStorage(shape, storage, policy);
-    makeIndexingConstants();
 }
 
 template<class T>
-void Matrix<T>::takeStorage(const IPosition &shape, const T *storage)
+void Matrix<T>::postTakeStorage()
 {
-    AlwaysAssert(shape.nelements() == 2, ArrayError);
-    Array<T>::takeStorage(shape, storage);
+    Array<T>::postTakeStorage();
     makeIndexingConstants();
 }
 

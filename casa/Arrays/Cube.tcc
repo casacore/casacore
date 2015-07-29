@@ -53,6 +53,13 @@ template<class T> Cube<T>::Cube(size_t l1, size_t l2, size_t l3)
     DebugAssert(ok(), ArrayError);
 }
 
+template<class T> Cube<T>::Cube(size_t l1, size_t l2, size_t l3, ArrayInitPolicy initPolicy)
+: Array<T>(IPosition(3, l1, l2, l3), initPolicy)
+{
+    makeIndexingConstants();
+    DebugAssert(ok(), ArrayError);
+}
+
 template<class T> Cube<T>::Cube(size_t l1, size_t l2, size_t l3,
 				const T &initialValue)
 : Array<T>(IPosition(3, l1, l2, l3), initialValue)
@@ -63,6 +70,13 @@ template<class T> Cube<T>::Cube(size_t l1, size_t l2, size_t l3,
 
 template<class T> Cube<T>::Cube(const IPosition &len)
   : Array<T>(len)
+{
+    makeIndexingConstants();
+    AlwaysAssert(len.nelements() == 3, ArrayError);
+}
+
+template<class T> Cube<T>::Cube(const IPosition &len, ArrayInitPolicy initPolicy)
+  : Array<T>(len, initPolicy)
 {
     makeIndexingConstants();
     AlwaysAssert(len.nelements() == 3, ArrayError);
@@ -103,23 +117,23 @@ template<class T> void Cube<T>::resize()
 {
     resize (IPosition(3,0));
 }
-template<class T> void Cube<T>::resize(const IPosition &len, Bool copyValues)
+template<class T> void Cube<T>::resize(const IPosition &len, Bool copyValues, ArrayInitPolicy policy)
 {
     DebugAssert(ok(), ArrayError);
     if (len.nelements() != 3)
 	throw(ArrayConformanceError("Cube<T>::resize() - attempt to form "
 				    "non-Cube"));
-    Array<T>::resize(len, copyValues);
+    Array<T>::resize(len, copyValues, policy);
     makeIndexingConstants();
 }
 
 template<class T> void Cube<T>::resize(size_t nx, size_t ny, size_t nz,
-				       Bool copyValues)
+				       Bool copyValues, ArrayInitPolicy policy)
 {
     DebugAssert(ok(), ArrayError);
     IPosition l(3);
     l(0) = nx; l(1) = ny; l(2) = nz;
-    Cube<T>::resize(l, copyValues);
+    Cube<T>::resize(l, copyValues, policy);
 }
 
 // <thrown>
@@ -353,6 +367,15 @@ Cube<T>::Cube(const IPosition &shape, T *storage,
 }
 
 template<class T>
+Cube<T>::Cube(const IPosition &shape, T *storage,
+                  StorageInitPolicy policy, AbstractAllocator<T> const &allocator)
+  : Array<T>(shape, storage, policy, allocator)
+{
+    AlwaysAssert(shape.nelements() == 3, ArrayError);
+    makeIndexingConstants();
+}
+
+template<class T>
 Cube<T>::Cube(const IPosition &shape, const T *storage)
   : Array<T>(shape, storage)
 {
@@ -362,19 +385,16 @@ Cube<T>::Cube(const IPosition &shape, const T *storage)
 
 
 template<class T>
-void Cube<T>::takeStorage(const IPosition &shape, T *storage,
-		     StorageInitPolicy policy)
+void Cube<T>::preTakeStorage(const IPosition &shape)
 {
+    Array<T>::preTakeStorage(shape);
     AlwaysAssert(shape.nelements() == 3, ArrayError);
-    Array<T>::takeStorage(shape, storage, policy);
-    makeIndexingConstants();
 }
 
 template<class T>
-void Cube<T>::takeStorage(const IPosition &shape, const T *storage)
+void Cube<T>::postTakeStorage()
 {
-    AlwaysAssert(shape.nelements() == 3, ArrayError);
-    Array<T>::takeStorage(shape, storage);
+    Array<T>::postTakeStorage();
     makeIndexingConstants();
 }
 

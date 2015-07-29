@@ -2,6 +2,11 @@
 # CASA casa
 #
 
+configure_file (
+  config.h.in
+  "${PROJECT_BINARY_DIR}/casacore/casa/config.h"
+  @ONLY)
+
 add_library (casa_casa
 Arrays/ArrayBase.cc
 Arrays/ArrayError.cc
@@ -592,6 +597,7 @@ DESTINATION include/casacore/casa/Utilities
 )
 
 install (FILES
+${PROJECT_BINARY_DIR}/casacore/casa/config.h
 aipsdef.h
 aipsenv.h
 aips.h

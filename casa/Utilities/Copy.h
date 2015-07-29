@@ -1,6 +1,8 @@
 //# Copy.h: Copy objects from one C-style array to another.
-//# Copyright (C) 1994-1997,1999-2002,2005
+//# Copyright (C) 1994-1997,1999-2002,2005,2015
 //# Associated Universities, Inc. Washington DC, USA.
+//# National Astronomical Observatory of Japan
+//# 2-21-1, Osawa, Mitaka, Tokyo, 181-8588, Japan.
 //#
 //# This library is free software; you can redistribute it and/or modify it
 //# under the terms of the GNU Library General Public License as published by
@@ -180,8 +182,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <src>fromStride</src>-th position into every <src>toStride</src>-th
   // one.
   //
-  // Objcopy does not take an overlap of source and destination into account.
+  // Objcopy/objcopyctor does not take an overlap of source and destination into account.
   // Objmove should be used if that is an issue.
+  //
+  // Objcopyctor copy objects from <src>from</src> by calling copy constructor
+  // on each element in <src>to</src>.
   //
   // An exception will be thrown if the source or the destination does not
   // exist or if the strides are non-positive.
@@ -196,7 +201,41 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                  size_t toStride, size_t fromStride) {
     objthrowcp2(to,from,n,toStride,fromStride); while (n--) {
       *to = *from; to += toStride; from += fromStride; } }
-  // </group> 
+
+  template<class T> void objcopyctor(T* to, const T* from, size_t n) {
+    objthrowcp1(to, from, n);
+    size_t i;
+    try {
+        for (i = 0; i < n; ++i) {
+            ::new (&to[i]) T(from[i]);
+        }
+    } catch (...) {
+        while (i > 0) { // roll back
+            to[--i].~T();
+        }
+        throw;
+    }
+  }
+  template<class T> void objcopyctor(T* to, const T* from, size_t n,
+                                 size_t toStride, size_t fromStride) {
+    objthrowcp2(to, from, n, toStride, fromStride);
+    size_t i = 0;
+    try {
+        for (i = 0; i < n; ++i) {
+            ::new (to) T(*from);
+            to += toStride;
+            from += fromStride;
+        }
+    } catch (...) {
+        while (i > 0) { // roll back
+            --i;
+            to -= toStride;
+            to->~T();
+        }
+        throw;
+    }
+  }
+  // </group>
   
   // Fill <src>n</src> elements of an array of objects with the given
   // value, optionally with a stride. Note that the fillValue is passed

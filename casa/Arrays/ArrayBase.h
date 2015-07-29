@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Containers/Allocator.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -143,7 +144,7 @@ public:
 
   // Resize the array and optionally copy the values.
   // <br>The default implementation in ArrayBase throws an exception.
-  virtual void resize(const IPosition &newShape, Bool copyValues=False);
+  virtual void resize(const IPosition &newShape, Bool copyValues=False, ArrayInitPolicy policy = ArrayInitPolicy::INIT);
 
   // Create an ArrayIterator object of the correct type.
   // This is implemented in the derived Array classes.
