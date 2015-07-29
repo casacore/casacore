@@ -40,6 +40,10 @@
 #include <vector>
 #include <map>
 
+#if PY_MAJOR_VERSION >= 3
+#define IS_PY3K
+#endif
+
 // Define classes and functions to convert the basic data types and
 // containers to and from Python.
 
@@ -83,7 +87,11 @@ namespace casacore { namespace python {
 
     static void* convertible(PyObject* obj_ptr)
     {
-      if (!PyString_Check(obj_ptr)) return 0;
+#ifdef IS_PY3K
+    if (!PyUnicode_Check(obj_ptr)) return 0;
+#else
+    if (!PyString_Check(obj_ptr)) return 0;
+#endif
       return obj_ptr;
     }
 
@@ -91,7 +99,19 @@ namespace casacore { namespace python {
       PyObject* obj_ptr,
       boost::python::converter::rvalue_from_python_stage1_data* data)
     {
-      const char* value = PyString_AsString(obj_ptr);
+#ifdef IS_PY3K
+    PyObject * temp_bytes = PyUnicode_AsEncodedString(obj_ptr, "ASCII", "strict"); // Owned reference
+    char* value;
+    if (temp_bytes != NULL) {
+        value = PyBytes_AS_STRING(temp_bytes); // Borrowed pointer
+        value = strdup(value);
+        Py_DECREF(temp_bytes);
+    } else {
+      boost::python::throw_error_already_set();
+    }
+#else
+    const char* value = PyString_AsString(obj_ptr);
+#endif
       if (value == 0) boost::python::throw_error_already_set();
       void* storage = (
         (boost::python::converter::rvalue_from_python_storage<String>*)
@@ -411,11 +431,20 @@ namespace casacore { namespace python {
       incref(obj_ptr);        // incr refcount, because ~object decrements it
       // Accept single values.
       if (PyBool_Check(obj_ptr)
-	  || PyInt_Check(obj_ptr)
+#ifdef IS_PY3K
+	  || PyLong_Check(obj_ptr)
+#else
+      || PyInt_Check(obj_ptr)
+#endif
 	  || PyLong_Check(obj_ptr)
 	  || PyFloat_Check(obj_ptr)
 	  || PyComplex_Check(obj_ptr)
-	  || PyString_Check(obj_ptr)) {
+#ifdef IS_PY3K
+	  || PyUnicode_Check(obj_ptr)) {
+#else
+      || PyString_Check(obj_ptr)) {
+#endif
+
 	extract<container_element_type> elem_proxy(py_obj);
 	if (!elem_proxy.check()) return 0;
 	return obj_ptr;
@@ -457,11 +486,17 @@ namespace casacore { namespace python {
       data->convertible = storage;
       ContainerType& result = *((ContainerType*)storage);
       if (PyBool_Check(obj_ptr)
+#ifndef IS_PY3K
 	  || PyInt_Check(obj_ptr)
+#endif
 	  || PyLong_Check(obj_ptr)
 	  || PyFloat_Check(obj_ptr)
 	  || PyComplex_Check(obj_ptr)
-	  || PyString_Check(obj_ptr)
+#ifdef IS_PY3K
+	  || PyUnicode_Check(obj_ptr)
+#else
+      || PyString_Check(obj_ptr)
+#endif
 	  || PycArrayScalarCheck(obj_ptr)) {
 	extract<container_element_type> elem_proxy(obj_ptr);
 	ConversionPolicy::reserve(result, 1);

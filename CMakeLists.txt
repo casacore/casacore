@@ -57,10 +57,13 @@ enable_language (Fortran)
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-# By default build the Python bindings
+# By default build only Python2 bindings
 option (BUILD_PYTHON "Build the python bindings" YES)
+option (BUILD_PYTHON3 "Build the python3 bindings" NO)
+
 # By default build shared libraries
 option (ENABLE_SHARED "Build shared libraries" YES)
+
 option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
 # By default do not use HDF5, FFTW3, threads
@@ -231,12 +234,15 @@ if (NOT ${MODULE} STREQUAL "casa")
         endif (NOT ${MODULE} STREQUAL "measures")
     endif (NOT ${MODULE} STREQUAL "tables")
 endif (NOT ${MODULE} STREQUAL "casa")
+
 if (BUILD_PYTHON)
     set (_modules ${_modules} python)
-    find_package(Boost REQUIRED COMPONENTS python)
-    find_package(Python REQUIRED)
-    find_package (NUMPY REQUIRED)
 endif (BUILD_PYTHON)
+
+if (BUILD_PYTHON3)
+    set (_modules ${_modules} python3)
+endif (BUILD_PYTHON3)
+
 
 # Determine which external packages to use.
 include (CTest)
@@ -409,14 +415,25 @@ message (STATUS "SOFA library? ......... = ${SOFA_LIBRARIES}")
 message (STATUS "CFitsio library? ...... = ${CFITSIO_LIBRARIES}")
 message (STATUS "HDF5 library? ......... = ${HDF5_hdf5_LIBRARY}")
 message (STATUS "FFTW3 library? ........ = ${FFTW3_LIBRARIES}")
+
 message (STATUS "BUILD_PYTHON .......... = ${BUILD_PYTHON}")
+message (STATUS "BUILD_PYTHON3 .......... = ${BUILD_PYTHON3}")
+
 if (BUILD_PYTHON)
-    message (STATUS "PYTHON library? ....... = ${PYTHON_LIBRARIES}")
-    message (STATUS "NUMPY include? ........ = ${NUMPY_INCLUDE_DIRS}")
-    message (STATUS "Boost library? ........ = ${Boost_LIBRARIES}")
-    message (STATUS "Boost includes? ....... = ${Boost_INCLUDE_DIRS}")
+    message (STATUS "PYTHON2_EXECUTABLE ......... = ${PYTHON2_EXECUTABLE}")
+    message (STATUS "PYTHON2_LIBRARIES........... = ${PYTHON2_LIBRARIES}")
+    message (STATUS "PYTHON2_NUMPY_INCLUDE_DIRS . = ${PYTHON2_NUMPY_INCLUDE_DIRS}")
+    message (STATUS "PYTHON2_Boost_LIBRARIES .... = ${PYTHON2_Boost_LIBRARIES}")
+    message (STATUS "PYTHON2_Boost_INCLUDE_DIRS . = ${PYTHON2_Boost_INCLUDE_DIRS}")
 endif (BUILD_PYTHON)
 
+if (BUILD_PYTHON3)
+    message (STATUS "PYTHON3_EXECUTABLE ......... = ${PYTHON3_EXECUTABLE}")
+    message (STATUS "PYTHON3_LIBRARIES .......... = ${PYTHON3_LIBRARIES}")
+    message (STATUS "PYTHON3_NUMPY_INCLUDE_DIRS . = ${PYTHON3_NUMPY_INCLUDE_DIRS}")
+    message (STATUS "PYTHON3_Boost_LIBRARIES .... = ${PYTHON3_Boost_LIBRARIES}")
+    message (STATUS "PYTHON3_Boost_INCLUDE_DIRS . = ${PYTHON3_Boost_INCLUDE_DIRS}")
+endif (BUILD_PYTHON3)
 
 # List of build variables and defaults.
 #  BUILD_PYTHON                  NO
