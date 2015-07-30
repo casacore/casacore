@@ -1455,7 +1455,7 @@ void testIt(MSMetaData& md) {
 			}
 			{
 				cout << "*** test getSummary()" << endl;
-				cout << "summary " << md.getSummary() << endl;
+				//cout << "summary " << md.getSummary() << endl;
 			}
 			{
 				cout << "*** test getProjects()" << endl;
@@ -1516,7 +1516,8 @@ void testIt(MSMetaData& md) {
 				vector<MFrequency> rf = md.getRefFreqs();
 				for (uInt i=0; i<n; ++i) {
 					AlwaysAssert(rf[i].getRefString() == "TOPO", AipsError);
-					AlwaysAssert(rf[i].getUnit() == Unit("Hz"), AipsError);
+                    cout << "*** unit " << rf[i].getUnit().getName() << endl;
+                    AlwaysAssert(rf[i].getUnit() == Unit("Hz"), AipsError);
 					cout << std::setprecision(20) << "got " << rf[i].get("Hz").getValue() << " exp " << expec[i] << endl;
 					AlwaysAssert(near(rf[i].get("Hz").getValue(), expec[i], 1e-8), AipsError);
 				}

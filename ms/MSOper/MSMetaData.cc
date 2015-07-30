@@ -3025,44 +3025,12 @@ vector<MDirection> MSMetaData::getPhaseDirs() const {
 		return _phaseDirs;
 	}
 	String name = MSField::columnName(MSFieldEnums::PHASE_DIR);
-	ROArrayColumn<Double> phaseDirCol(_ms->field(),  name);
-	const TableRecord& keywords = phaseDirCol.keywordSet();
-	Record measInfo = keywords.asRecord("MEASINFO");
-	map<uInt, MDirection::Types> myTypes;
-	{
-		vector<uInt> tabRefCodes = measInfo.asArrayuInt("TabRefCodes").tovector();
-		vector<String> tabRefTypes = measInfo.asArrayString("TabRefTypes").tovector();
-		uInt n = tabRefCodes.size();
-		MDirection::Types tp;
-		for (uInt i=0; i<n; ++i) {
-			ThrowIf(
-				! MDirection::getType(tp, tabRefTypes[i]),
-				"Unknown direction frame " + tabRefTypes[i]
-		    );
-			myTypes[tabRefCodes[i]] = tp;
-		}
+	ScalarMeasColumn<MDirection> phaseDirCol(_ms->field(), name);
+	uInt nrows = nFields();
+	vector<MDirection> myDirs(nrows);
+	for (uInt i=0; i<nrows; ++i) {
+		myDirs[i] = phaseDirCol(i);
 	}
-	uInt n = phaseDirCol.nrow();
-	vector<MDirection::Types> refFrames(n);
-	{
-		vector<Int> phaseDirRefs = ROScalarColumn<Int>(_ms->field(),"PhaseDir_Ref" ).getColumn().tovector();
-		for (uInt i=0; i<n; ++i) {
-			refFrames[i] = myTypes[phaseDirRefs[i]];
-		}
-	}
-	vector<String> u = keywords.asArrayString("QuantumUnits").tovector();
-	std::pair<String, String> units(u[0], u[1]);
-	vector<MDirection> myDirs = _getDirections(phaseDirCol, units, refFrames);
-	cout << "mydirs size " << myDirs.size() << endl;
-	/*
-	vector<MDirection> myDirs(n);
-	for (uInt i=0; i<n; ++i) {
-		vector<Double> longlat = phaseDirCol.get(i).tovector();
-		Quantity longitude(longlat[0], units[0]);
-		Quantity latitude(longlat[1], units[1]);
-		myDirs[i] = MDirection(longitude, latitude, refFrames[i]);
-	}
-	*/
 	if (_cacheUpdated(_sizeof(myDirs))) {
 		_phaseDirs = myDirs;
 	}
@@ -4111,26 +4079,11 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
 	ArrayColumn<Double> cwCol = spwCols.chanWidth();
 	Array<String> cwUnits;
 	cwCol.keywordSet().get("QuantumUnits", cwUnits);
-	ScalarColumn<Double> rfCol = spwCols.refFrequency();
-	Vector<Double> rfs = rfCol.getColumn();
-	Array<String> rfUnits;
-	rfCol.keywordSet().get("QuantumUnits", rfUnits);
-	std::map<uInt, String> codeToType;
-	{
-		Record info = rfCol.keywordSet().asRecord("MEASINFO");
-		Array<uInt> codes = info.asArrayuInt("TabRefCodes");
-		Array<String> types = info.asArrayString("TabRefTypes");
-		Array<uInt>::const_iterator iter = codes.begin();
-		Array<uInt>::const_iterator end = codes.end();
-		Array<String>::const_iterator titer = types.begin();
-		while (iter != end) {
-			codeToType[*iter] = *titer;
-			++iter;
-			++titer;
-		}
-	}
+	ScalarMeasColumn<MFrequency> reffreqs(
+		_ms->spectralWindow(),
+		MSSpectralWindow::columnName(MSSpectralWindowEnums::REF_FREQUENCY)
+	);
 	ScalarColumn<Int> mrfCol = spwCols.measFreqRef();
-
 	Vector<Int> nss  = spwCols.netSideband().getColumn();
 	Vector<String> name = spwCols.name().getColumn();
 	Bool myHasBBCNo = hasBBCNo();
@@ -4138,7 +4091,10 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
 	vector<Double> freqLimits(2);
 	Vector<Double> tmp;
 	vector<SpwProperties> spwInfo(bws.size());
-	for (uInt i=0; i<bws.size(); ++i) {
+	const static Unit emptyUnit;
+	const static Unit hz("Hz");
+	uInt nrows = bws.size();
+	for (uInt i=0; i<nrows; ++i) {
 		spwInfo[i].bandwidth = bws[i];
 		tmp.resize(0);
 		cfCol.get(i, tmp);
@@ -4165,9 +4121,10 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
 		    	sqldSpw.insert(i);
 		    }
 		}
-		MFrequency::Types rfType;
-		MFrequency::getType(rfType, codeToType[mrfCol.get(i)]);
-		spwInfo[i].reffreq = MFrequency(Quantity(rfs[i], *rfUnits.begin()), rfType);
+		spwInfo[i].reffreq = reffreqs(i);
+		if (spwInfo[i].reffreq.getUnit() == emptyUnit) {
+			spwInfo[i].reffreq.set(hz);
+		}
 		// algorithm from thunter, CAS-5794
 		if (
 			nchan >= 15
