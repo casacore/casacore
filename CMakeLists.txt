@@ -144,7 +144,7 @@ if (CXX11 OR CASA_BUILD)
       if (CASA_BUILD)
         message(FATAL_ERROR "CASA_BUILD requires a c++11 compatible compiler")
       endif()
-      option(CXX11 "" NO)
+      set(CXX11 OFF)
     endif()
 endif()
 
