@@ -32,8 +32,8 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// Set if compiler supports C++11.
-#if __cplusplus == 201103L
+// Set if compiler supports C++11 or newer
+#if __cplusplus >= 201103L
 #define AIPS_CXX11
 #endif
 
