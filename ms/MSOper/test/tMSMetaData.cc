@@ -1620,7 +1620,6 @@ void testIt(MSMetaData& md) {
 				uInt n = *iter == 9 ? 12 : 13;
 				AlwaysAssert(ants.size() == n, AipsError);
 				std::set<Int>::const_iterator aIter = ants.begin();
-				std::set<Int>::const_iterator aEnd = ants.end();
 				for (Int i=0; i<14; ++i, ++aIter) {
 					if (i == 12 || (*iter == 9 && i == 7)) {
 						++i;
