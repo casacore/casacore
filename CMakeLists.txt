@@ -6,6 +6,7 @@ project(casacore)
 cmake_minimum_required (VERSION 2.6.0)
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
+include(CheckFunctionExists)
 
 # fixes warnings on cmake 3.x+ For now we want the old behavior to be backwards compatible
 if (POLICY CMP0048)
@@ -189,6 +190,12 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_C_FLAGS "-Qunused-arguments ${CMAKE_C_FLAGS}")    
 endif()
 
+# Since 2015, we need pwrite and pwrite (POSIX 2001)
+check_function_exists(pread HAVE_PREAD)
+check_function_exists(pwrite HAVE_PWRITE)
+if (NOT (HAVE_PREAD AND HAVE_PWRITE))
+        message(FATAL_ERROR "Casacore requires pread and pwrite functionality" )
+endif (NOT (HAVE_PREAD AND HAVE_PWRITE))
 
 # FindHDF5 uses environment variables, so set it if needed.
 if (HDF5_ROOT_DIR)
