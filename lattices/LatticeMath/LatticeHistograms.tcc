@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: LatticeHistograms.tcc 21563 2015-02-16 07:05:15Z gervandiepen $
 
 #ifndef LATTICES_LATTICEHISTOGRAMS_TCC
 #define LATTICES_LATTICEHISTOGRAMS_TCC
@@ -1280,7 +1280,6 @@ void HistTiledCollapser<T>::process (
 // Process the data in the current chunk.   Everything in this
 // chunk belongs in one output location in the accumulation
 // lattices
-//
 
 // Fish out the min and max for this chunk of the data 
 // from the statistics object
@@ -1288,13 +1287,15 @@ void HistTiledCollapser<T>::process (
    typedef typename NumericTraits<T>::PrecisionType AccumType; 
    Vector<AccumType> stats;
    pStats_p->getStats(stats, startPos, True);
+   ThrowIf(
+		   stats.empty(),
+		   "Failed to compute statistics, if you set a range you have likely excluded all valid pixels"
+   );
 
 // Assignment from AccumType to T ok (e.g. Double to FLoat)
-
    Vector<T> clip(2);
    clip(0) = stats(LatticeStatsBase::MIN);
    clip(1) = stats(LatticeStatsBase::MAX);
-
 // Set histogram bin width
    
    const T binWidth = LatticeHistSpecialize::setBinWidth(clip(0), clip(1), nBins_p);
