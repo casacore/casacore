@@ -620,7 +620,7 @@ std::set<Int> MSMetaData::getScansForState(
 	ArrayKey arrayKey;
 	arrayKey.obsID = obsID;
 	arrayKey.arrayID = arrayID;
-	std::set<ScanKey> scanKeys = _getScanKeys(arrayKey);
+	std::set<ScanKey> scanKeys = getScanKeys(arrayKey);
 	//CountedPtr<Vector<Int> > scans = _getScans();
 	std::set<ScanKey>::const_iterator iter = scanKeys.begin();
 	std::set<ScanKey>::const_iterator end = scanKeys.end();
@@ -671,7 +671,7 @@ std::map<ScanKey, std::set<Int> > MSMetaData::_getScanToStatesMap() const {
 	std::map<ScanKey, std::set<Int> > myScanToStatesMap;
 	if (nStates() == 0) {
 		std::set<Int> empty;
-		std::set<ScanKey> scanKeys = this->_getScanKeys();
+		std::set<ScanKey> scanKeys = _getScanKeys();
 		//std::set<SubScanKey> subScanKeys;
 		//_getSubScanKeys(subScanKeys, scanKeys);
 		std::set<ScanKey>::const_iterator end = scanKeys.end();
@@ -1145,7 +1145,7 @@ std::set<ScanKey> MSMetaData::_getScanKeys() const {
 	return scanKeys;
 }
 
-std::set<ScanKey> MSMetaData::_getScanKeys(const ArrayKey& arrayKey) const {
+std::set<ScanKey> MSMetaData::getScanKeys(const ArrayKey& arrayKey) const {
 	std::set<ScanKey> allScanKeys = _getScanKeys();
 	Bool doAllObsIDs = arrayKey.obsID < 0;
 	Bool doAllArrayIDs = arrayKey.arrayID < 0;
@@ -1185,7 +1185,7 @@ std::set<ScanKey> MSMetaData::_getScanKeys(
 }
 
 std::set<Int> MSMetaData::_getScanNumbers(const ArrayKey& arrayKey) const {
-	std::set<ScanKey> scans = _getScanKeys(arrayKey);
+	std::set<ScanKey> scans = getScanKeys(arrayKey);
 	std::set<Int> scanNumbers;
 	std::set<ScanKey>::const_iterator iter = scans.begin();
 	std::set<ScanKey>::const_iterator end = scans.end();
@@ -1329,7 +1329,7 @@ std::set<Int> MSMetaData::getScansForSpw(
 	ArrayKey arrayKey;
 	arrayKey.obsID = obsID;
 	arrayKey.arrayID = arrayID;
-	std::set<ScanKey> myScanKeys = _getScanKeys(arrayKey);
+	std::set<ScanKey> myScanKeys = getScanKeys(arrayKey);
 	std::map<ScanKey, std::set<uInt> > scanToSpwMap;
 	vector<std::set<ScanKey> > spwToScanMap;
 	_getScansAndSpwMaps(
@@ -1884,7 +1884,7 @@ std::set<Int> MSMetaData::getScansForTimes(
 	ArrayKey arrayKey;
 	arrayKey.obsID = obsID;
 	arrayKey.arrayID = arrayID;
-	std::set<ScanKey> uniqueScans = _getScanKeys(arrayKey);
+	std::set<ScanKey> uniqueScans = getScanKeys(arrayKey);
 	CountedPtr<std::map<ScanKey, std::set<Double> > > scanToTimesMap = _getScanToTimesMap();
 	Double minTime = center - tol;
 	Double maxTime = center + tol;
@@ -2292,7 +2292,7 @@ std::set<Int> MSMetaData::getScansForFieldID(
 	ArrayKey arrayKey;
 	arrayKey.obsID = obsID;
 	arrayKey.arrayID = arrayID;
-	std::set<ScanKey> scanKeys = _getScanKeys(arrayKey);
+	std::set<ScanKey> scanKeys = getScanKeys(arrayKey);
 	std::set<ScanKey>::const_iterator iter = scanKeys.begin();
 	std::set<ScanKey>::const_iterator end = scanKeys.end();
 	std::set<Int> scanNumbers;
@@ -2388,7 +2388,7 @@ std::set<Int> MSMetaData::getScansForIntent(
 	ArrayKey arrayKey;
 	arrayKey.obsID = obsID;
 	arrayKey.arrayID = arrayID;
-	std::set<ScanKey> scanKeys = _getScanKeys(arrayKey);
+	std::set<ScanKey> scanKeys = getScanKeys(arrayKey);
 	std::set<ScanKey>::const_iterator iter = scanKeys.begin();
 	std::set<ScanKey>::const_iterator end = scanKeys.end();
 	std::set<ScanKey> foundScans = intentToScansMap[intent];
@@ -2477,7 +2477,7 @@ void MSMetaData::_createScanRecords(
 	Record& parent, const ArrayKey& arrayKey,
 	const std::map<SubScanKey, SubScanProperties>& subScanProps
 ) const {
-	std::set<ScanKey> scanKeys = _getScanKeys(arrayKey);
+	std::set<ScanKey> scanKeys = getScanKeys(arrayKey);
 	std::set<ScanKey>::const_iterator scanIter = scanKeys.begin();
 	std::set<ScanKey>::const_iterator scanEnd = scanKeys.end();
 	while(scanIter != scanEnd) {

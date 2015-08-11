@@ -260,9 +260,9 @@ public:
 	QVD getAntennaOffset(const String& name);
 
 	vector<QVD > getAntennaOffsets() const;
+
 	// get the positions of the specified antennas. If <src>which</src> is empty, return
 	// all antenna positions.
-
 	vector<MPosition> getAntennaPositions(
 		const vector<uInt>& which=std::vector<uInt>(0)
 	) const;
@@ -323,6 +323,11 @@ public:
 
 	// get the phase directions from the FIELD subtable
 	vector<MDirection> getPhaseDirs() const;
+
+	// get all ScanKeys in the dataset that have the specified <src>arrayKey</src>.
+	// If negative values for either the obsID and/or arrayID portions of the ArrayKey
+	// indicate that all obsIDs and/or arrayIDs should be used.
+	std::set<ScanKey> getScanKeys(const ArrayKey& arrayKey) const;
 
 	// get the scans associated with the specified intent
 	std::set<Int> getScansForIntent(
@@ -723,9 +728,6 @@ private:
 
 	// get all ScanKeys in the dataset
 	std::set<ScanKey> _getScanKeys() const;
-
-	// get all ScanKeys in the dataset that have the specified arrayKey
-	std::set<ScanKey> _getScanKeys(const ArrayKey& arrayKey) const;
 
 	// get the scan keys in the specified set that have the associated arrayKey
 	std::set<ScanKey> _getScanKeys(
