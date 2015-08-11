@@ -1,12 +1,31 @@
+language: cpp
+
 os:
   - linux
   - osx
 
-language: cpp
-
 compiler:
   - clang
   - gcc
+
+env:
+  - CXX11=True
+  - CXX11=False
+
+matrix:
+  exclude:
+    - os: linux
+      compiler: gcc
+      env: CXX11=True
+    - os: linux
+      compiler: clang
+      env: CXX11=False
+    - os: osx
+      compiler: gcc
+      env: CXX11=False
+    - os: osx
+      compiler: clang
+      env: CXX11=True
 
 sudo: false
 
@@ -48,6 +67,7 @@ before_script:
       -DBUILD_PYTHON=ON
       -DDATA_DIR=$PWD
       -DSOFA_ROOT_DIR=$HOME
+      -DCXX11=$CXX11
       -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/installed
 
 script:
