@@ -441,70 +441,44 @@ private:
 };
 
 
-#if defined( __i386__ ) || defined(i386) || defined(_M_IX86) || \
-    defined(__x86_64__) || defined(__amd64__) || defined(__x86_64) || \
-    defined(_M_AMD64)
-#define CASACORE_HAVE_UNALIGNED_ACCESS
-#endif
-
-
 inline void CanonicalConversion::reverse2 (void* to, const void* from)
 {
-#ifdef CASACORE_HAVE_UNALIGNED_ACCESS
-    unsigned short x = *(unsigned short*)from;
-    *(unsigned short*)to = ((x & 0xffu) << 8) | (x >> 8);
-#else
-    ((char*)to)[0] = ((const char*)from)[1];
-    ((char*)to)[1] = ((const char*)from)[0];
-#endif
+    unsigned short x, xsw;
+    memcpy(&x, from, 2);
+    xsw = ((x & 0xffu) << 8u) | (x >> 8u);
+    memcpy(to, &xsw, 2);
 }
 
 inline void CanonicalConversion::reverse4 (void* to, const void* from)
 {
-#ifdef CASACORE_HAVE_UNALIGNED_ACCESS
-    unsigned int x = *(unsigned int*)from;
+    unsigned int x, xsw;
+    memcpy(&x, from, 4);
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
-    *(unsigned int*)to = __builtin_bswap32(x);
+    xsw = __builtin_bswap32(x);
 #else
-    /* also recognized as bswap by clang and gcc >= 4.5 */
-    *(unsigned int*)to = ((x & 0xffu) << 24) | ((x & 0xff00u) << 8) |
-                         ((x & 0xff0000u) >> 8) | (x >> 24);
+    xsw = ((x & 0xffu) << 24u) | ((x & 0xff00u) << 8u) |
+          ((x & 0xff0000u) >> 8u) | (x >> 24u);
 #endif
-
-#else
-    ((char*)to)[0] = ((const char*)from)[3];
-    ((char*)to)[1] = ((const char*)from)[2];
-    ((char*)to)[2] = ((const char*)from)[1];
-    ((char*)to)[3] = ((const char*)from)[0];
-#endif
+    memcpy(to, &xsw, 4);
 }
 
 inline void CanonicalConversion::reverse8 (void* to, const void* from)
 {
-#ifdef CASACORE_HAVE_UNALIGNED_ACCESS
-    uInt64 x = *(uInt64*)from;
+    uInt64 x, xsw;
+    memcpy(&x, from, 8);
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
-    *(uInt64*)to = __builtin_bswap64(x);
+    xsw = __builtin_bswap64(x);
 #else
-    *(uInt64*)to = ((x & 0xffULL) << 56) |
-                   ((x & 0xff00ULL) << 40) |
-                   ((x & 0xff0000ULL) << 24) |
-                   ((x & 0xff000000ULL) << 8) |
-                   ((x & 0xff00000000ULL) >> 8) |
-                   ((x & 0xff0000000000ULL) >> 24) |
-                   ((x & 0xff000000000000ULL) >> 40) |
-                   ( x >> 56);
+    xsw = ((x & 0xffULL) << 56ULL) |
+          ((x & 0xff00ULL) << 40ULL) |
+          ((x & 0xff0000ULL) << 24ULL) |
+          ((x & 0xff000000ULL) << 8ULL) |
+          ((x & 0xff00000000ULL) >> 8ULL) |
+          ((x & 0xff0000000000ULL) >> 24ULL) |
+          ((x & 0xff000000000000ULL) >> 40ULL) |
+          ( x >> 56ULL);
 #endif
-#else
-    ((char*)to)[0] = ((const char*)from)[7];
-    ((char*)to)[1] = ((const char*)from)[6];
-    ((char*)to)[2] = ((const char*)from)[5];
-    ((char*)to)[3] = ((const char*)from)[4];
-    ((char*)to)[4] = ((const char*)from)[3];
-    ((char*)to)[5] = ((const char*)from)[2];
-    ((char*)to)[6] = ((const char*)from)[1];
-    ((char*)to)[7] = ((const char*)from)[0];
-#endif
+    memcpy(to, &xsw, 8);
 }
 
 inline void CanonicalConversion::move2 (void* to, const void* from)
@@ -519,6 +493,7 @@ inline void CanonicalConversion::move4 (void* to, const void* from)
 
 inline void CanonicalConversion::move8 (void* to, const void* from)
 {
+    /* memcpy is overlap save if size fits into a register */
     if (sizeof(to) < 8) {
         memmove(to, from, 8);
     }
