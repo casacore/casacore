@@ -475,7 +475,7 @@ TableExprNode TableParseSelect::handleKeyCol (const String& name, Bool tryProj)
     // Create column or keyword node.
     try {
       TableExprNode node(tab.keyCol (columnName, fieldNames));
-      applySelNodes_p.push_back (node);
+      addApplySelNode (node);
       return node;
     } catch (const TableError&) {
       throw TableInvExpr (name + " is an unknown column (or keyword) in table "
@@ -885,7 +885,7 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
   // A rowid function node needs to be added to applySelNodes_p.
   const TableExprNodeRep* rep = node.getNodeRep();
   if (dynamic_cast<const TableExprNodeRowid*>(rep)) {
-    applySelNodes_p.push_back (const_cast<TableExprNodeRep*>(rep));
+    addApplySelNode (node);
   }
   return node;
 }
@@ -896,19 +896,27 @@ TableExprNode TableParseSelect::makeUDFNode (TableParseSelect* sel,
                                              const Table& table,
                                              const TaQLStyle& style)
 {
+  TableExprNode udf;
   if (sel) {
     Vector<String> parts = stringToVector (name, '.');
     if (parts.size() > 2) {
       // At least 3 parts; see if the first part is a table shorthand.
       Table tab = sel->findTable (parts[0]);
       if (! tab.isNull()) {
-        return TableExprNode::newUDFNode (name.substr(parts[0].size() + 1),
-                                          arguments, tab, style);
+        udf = TableExprNode::newUDFNode (name.substr(parts[0].size() + 1),
+                                         arguments, tab, style);
       }
     }
   }
-  // Use the full name and given (i.e. first) table.
-  return TableExprNode::newUDFNode (name, arguments, table, style);
+  // If not created, use the full name and given (i.e. first) table.
+  if (udf.isNull()) {
+    udf = TableExprNode::newUDFNode (name, arguments, table, style);
+  }
+  // A UDF might create table column nodes, so add it to applySelNodes_p.
+  if (sel) {
+    sel->addApplySelNode (udf);
+  }
+  return udf;
 }
 
 //# Parse the name of a function.
@@ -2291,7 +2299,9 @@ CountedPtr<TableExprGroupResult> TableParseSelect::doOnlyCountAll
   // The nr of rows is the result of count(*), so simply set it.
   func.setResult (rownrs_p.size());
   // The resulting table has only 1 group; use the last row with it.
-  rownrs_p.reference (Vector<uInt>(1, rownrs_p[rownrs_p.size()-1]));
+  if (! rownrs_p.empty()) {
+    rownrs_p.reference (Vector<uInt>(1, rownrs_p[rownrs_p.size()-1]));
+  }
   // Save the aggregation results in a result object.
   return CountedPtr<TableExprGroupResult>(new TableExprGroupResult(funcSets));
 }

@@ -265,10 +265,10 @@ namespace casacore {
     const String& getUnit() const
       { return itsUnit; }
 
-    // Get the nodes representing an aggregate function.
+    // Get the nodes in the function operands representing an aggregate function.
     void getAggrNodes (vector<TableExprNodeRep*>& aggr);
 
-    // Get the nodes representing a table column.
+    // Get the nodes in the function operands representing a table column.
     void getColumnNodes (vector<TableExprNodeRep*>& cols);
   
   private:
@@ -308,6 +308,11 @@ namespace casacore {
     // Define if the UDF is an aggregate function (usually used in GROUPBY).
     void setAggregate (Bool isAggregate);
 
+    // Let a derived class recreate its column objects in case a selection
+    // has to be applied.
+    // The default implementation does nothing.
+    virtual void recreateColumnObjects (const Vector<uInt>& rownrs);
+
   public:
     // Register the name and construction function of a UDF (thread-safe).
     // An exception is thrown if this name already exists with a different
@@ -339,6 +344,14 @@ namespace casacore {
     Bool isAggregate() const
       { return itsIsAggregate; }
 
+    // Do not apply the selection.
+    void disableApplySelection()
+      { itsApplySelection = False; }
+
+    // If needed, let the UDF re-create column objects for a selection of rows.
+    // It calls the function recreateColumnObjects.
+    void applySelection (const Vector<uInt>& rownrs);
+
     // Create a UDF object (thread-safe).
     // It looks in the map with fixed function names. If unknown,
     // it looks if a wildcarded function name is supported (for PyTaQL).
@@ -353,6 +366,7 @@ namespace casacore {
     String                         itsUnit;
     Bool                           itsIsConstant;
     Bool                           itsIsAggregate;
+    Bool                           itsApplySelection;
     //# The registry is used for two purposes:
     //# 1. It is a map of known function names (lib.func) to funcptr.
     //#    Function name * means that the library can contain any function,

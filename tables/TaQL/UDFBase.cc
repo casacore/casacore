@@ -40,10 +40,11 @@ namespace casacore {
 
 
   UDFBase::UDFBase()
-    : itsDataType    (TableExprNodeRep::NTAny),
-      itsNDim        (-2),
-      itsIsConstant  (False),
-      itsIsAggregate (False)
+    : itsDataType       (TableExprNodeRep::NTAny),
+      itsNDim           (-2),
+      itsIsConstant     (False),
+      itsIsAggregate    (False),
+      itsApplySelection (True)
   {}
 
   UDFBase::~UDFBase()
@@ -148,6 +149,18 @@ namespace casacore {
     { throw TableInvExpr ("UDFBase::getArrayString not implemented"); }
   Array<MVTime>  UDFBase:: getArrayDate     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayDate not implemented"); }
+
+  void UDFBase::recreateColumnObjects (const Vector<uInt>&)
+  {}
+
+  void UDFBase::applySelection (const Vector<uInt>& rownrs)
+  {
+    if (itsApplySelection) {
+      recreateColumnObjects (rownrs);
+      // Clear switch in case called for a second time.
+      itsApplySelection = False;
+    }
+  }
 
   void UDFBase::registerUDF (const String& name, MakeUDFObject* func)
   {

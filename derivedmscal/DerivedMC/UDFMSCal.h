@@ -84,6 +84,7 @@ namespace casacore {
 //  <li> SCAN is scan selection using CASA syntax.
 //  <li> STATE is state selection using CASA syntax.
 //  <li> OBS is observation selection using CASA syntax.
+//  <li> ANTNAME is the name of the given antenna.
 // </ul>
 // The first functions have data type double and unit radian (except UVW).
 // The HADEC, AZEL, and UVW functions return arrays while the others return
@@ -114,11 +115,23 @@ namespace casacore {
   {
   public:
     // Define the possible 'column' types.
-    enum ColType {HA, HADEC, PA, LAST, AZEL, UVW, STOKES, SELECTION};
+    enum ColType {HA, HADEC, PA, LAST, AZEL, NEWUVW,
+                  UVWWVL, UVWWVLS, NEWUVWWVL, NEWUVWWVLS,
+                  STOKES, SELECTION, GETVALUE};
     // Define the possible selection types.
     enum SelType {BASELINE, TIME, UVDIST, SPW, FIELD, ARRAY, SCAN, STATE, OBS};
 
-    explicit UDFMSCal (ColType, Int arg);
+    // Create object the given ColType and SelType.
+    UDFMSCal (ColType, Int arg);
+
+    // Create the object for getting a value from a column in a subtable.
+    // <group>
+    explicit UDFMSCal (const String& funcName);
+    UDFMSCal (const String& funcName, const String& subtabName,
+              const String& idColName, Int arg=0);
+    UDFMSCal (const String& funcName, const String& subtabName,
+              const String& idColName, const String& colName);
+    // </group>
 
     // Function to create an object.
     static UDFBase* makeHA       (const String&);
@@ -135,6 +148,10 @@ namespace casacore {
     static UDFBase* makeAZEL1    (const String&);
     static UDFBase* makeAZEL2    (const String&);
     static UDFBase* makeUVW      (const String&);
+    static UDFBase* makeWvl      (const String&);
+    static UDFBase* makeWvls     (const String&);
+    static UDFBase* makeUvwWvl   (const String&);
+    static UDFBase* makeUvwWvls  (const String&);
     static UDFBase* makeStokes   (const String&);
     static UDFBase* makeBaseline (const String&);
     static UDFBase* makeTime     (const String&);
@@ -145,16 +162,36 @@ namespace casacore {
     static UDFBase* makeScan     (const String&);
     static UDFBase* makeState    (const String&);
     static UDFBase* makeObs      (const String&);
+    static UDFBase* makeAnt1Name (const String&);
+    static UDFBase* makeAnt2Name (const String&);
+    static UDFBase* makeAnt1Col  (const String&);
+    static UDFBase* makeAnt2Col  (const String&);
+    static UDFBase* makeStateCol (const String&);
+    static UDFBase* makeObsCol   (const String&);
+    static UDFBase* makeSpwCol   (const String&);
+    static UDFBase* makePolCol   (const String&);
+    static UDFBase* makeFieldCol (const String&);
+    static UDFBase* makeProcCol  (const String&);
+    static UDFBase* makeSubCol   (const String&);
 
     // Setup the object.
     virtual void setup (const Table&, const TaQLStyle&);
 
     // Get the value.
-    virtual Bool   getBool   (const TableExprId& id);
-    virtual Double getDouble (const TableExprId& id);
-    virtual Array<Bool> getArrayBool (const TableExprId& id);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
+    virtual Bool     getBool     (const TableExprId& id);
+    virtual Int64    getInt      (const TableExprId& id);
+    virtual Double   getDouble   (const TableExprId& id);
+    virtual DComplex getDComplex (const TableExprId& id);
+    virtual String   getString   (const TableExprId& id);
+    virtual Array<Bool>     getArrayBool     (const TableExprId& id);
+    virtual Array<Int64>    getArrayInt      (const TableExprId& id);
+    virtual Array<Double>   getArrayDouble   (const TableExprId& id);
     virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual Array<String>   getArrayString   (const TableExprId& id);
+
+    // Let a derived class recreate its column objects in case a selection
+    // has to be applied.
+    virtual void recreateColumnObjects (const Vector<uInt>& rownrs);
 
   private:
     // Setup the Stokes conversion.
@@ -168,15 +205,44 @@ namespace casacore {
     // Setup direction conversion if a direction is explicitly given.
     void setupDir (TableExprNodeRep*& operand);
 
+    // Setup getting column values from a subtable.
+    void setupGetValue (const Table& table,
+                        PtrBlock<TableExprNodeRep*>& operands);
+
+    // Setup getting the wavelength information.
+    void setupWvls (const Table& table,
+                    PtrBlock<TableExprNodeRep*>& operands,
+                    uInt nargMax);
+
+    // Get the rownr in the subtable for GetValue.
+    // If itsArg==1 it uses indirection using itsDDIds.
+    Int64 getRowNr (const TableExprId& id);
+
+    // Convert the UVW coordinates to wavelengths for the full spectrum.
+    Array<Double> toWvls (const TableExprId&);
+
     //# Data members.
     MSCalEngine     itsEngine;
     StokesConverter itsStokesConv;
-    TableExprNode   itsDataNode;   //# for stokes and selections
+    TableExprNode   itsDataNode;   //# for stokes, selections and getvalues
+    TableExprNode   itsIdNode;     //# node giving rowid for getvalues
+    ArrayColumn<Double> itsUvwCol;
     ColType         itsType;
-    Int             itsArg;        //# antnr or SelType
-    //# Preallocate vector to avoid having to construct them too often.
+    Int             itsArg;        //# antnr or SelType or getValueType
+                                   //# -1 subtable can be empty
+                                   //#  0 normal subtable
+                                   //#  1 indirect subtable via DATA_DESC_ID
+    String          itsFuncName;
+    String          itsSubTabName;
+    String          itsIdColName;
+    String          itsSubColName;
+    //# Preallocate arrays to avoid having to construct them too often.
     //# Makes it thread-unsafe though.
     Vector<Double>  itsTmpVector;
+    Array<Double>   itsTmpUvwWvl;
+    Vector<Int>     itsDDIds;      //# spw or pol ids from DATA_DESCRIPTION
+    vector<Double>          itsWavel;
+    vector<Vector<Double> > itsWavels;
   };
 
 
