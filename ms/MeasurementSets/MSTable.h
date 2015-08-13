@@ -240,15 +240,13 @@ public:
     }
 
     // Rename a column
-    // An exception is thrown if this invalidates the table
+    // No exception is thrown if this invalidates the table
+    // in order to permit more complex operations with invalid
+    // intermediate states
     void renameColumn(const String & newName,
 		      const String & oldName)
     {
 	Table::renameColumn(newName, oldName);
-	if (!this->validate()) {
-          throw(AipsError("renameColumn " + oldName + " to " + newName +
-                          " -> invalid MeasurementSet"));
-        }
     }
 
 protected:
