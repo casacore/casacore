@@ -367,7 +367,9 @@ class Allocator_private {
     // while static initialization
     // and other threads are not started yet.
     if (ptr == 0) {
-      ::new (u.alloc_obj) BulkAllocatorImpl<Allocator>(); // this instance will never be destructed.
+      // Use construct below to avoid https://gcc.gnu.org/bugzilla/show_bug.cgi?id=42032 
+      ::new (reinterpret_cast<BulkAllocatorImpl<Allocator>*>(u.alloc_obj)) BulkAllocatorImpl<Allocator>(); // this instance will never be destructed.
+      //      ::new (u.alloc_obj) BulkAllocatorImpl<Allocator>(); // this instance will never be destructed.
       ptr = reinterpret_cast<BulkAllocatorImpl<Allocator> *>(u.alloc_obj);
     }
     return ptr;
