@@ -886,20 +886,20 @@ void testIt(MSMetaData& md) {
 			std::set<Int> expec2;
 			std::set<Int> curScanSet;
 			for (
-					std::set<Int>::const_iterator curScan=scans.begin();
-					curScan!=scans.end(); ++curScan
+				std::set<Int>::const_iterator curScan=scans.begin();
+				curScan!=scans.end(); ++curScan
 			) {
 				std::set<Int> expec;
 				curScanSet.insert(*curScan);
-				if (*curScan<=4) {
+				if (*curScan <= 4) {
 					expec.insert(0);
 					expec2.insert(0);
 				}
-				else if (*curScan==5) {
+				else if (*curScan == 5) {
 					expec.insert(1);
 					expec2.insert(1);
 				}
-				else if (*curScan<=7) {
+				else if (*curScan <= 7) {
 					expec.insert(2);
 					expec2.insert(2);
 				}
@@ -931,14 +931,29 @@ void testIt(MSMetaData& md) {
 				scanKey.arrayID = 0;
 				scanKey.scan = *curScan;
 				AlwaysAssert(
-						md.getFieldsForScan(scanKey) == expec,
-						AipsError
+					md.getFieldsForScan(scanKey) == expec,
+					AipsError
 				);
 				AlwaysAssert(
-						md.getFieldsForScans(curScanSet, 0, 0) == expec2,
-						AipsError
+					md.getFieldsForScans(curScanSet, 0, 0) == expec2,
+					AipsError
 				);
 			}
+			std::set<Int> expec3;
+			expec3.insert(3);
+			expec3.insert(4);
+			std::set<ScanKey> scanKeys;
+			ScanKey x;
+			x.obsID = 0;
+			x.arrayID = 0;
+			x.scan = 19;
+			scanKeys.insert(x);
+			x.scan = 31;
+			scanKeys.insert(x);
+			AlwaysAssert(
+				md.getFieldsForScans(scanKeys) == expec3,
+				AipsError
+			);
 		}
 		{
 			cout << "*** test getFieldsForIntent() and getIntentToFieldsMap()" << endl;

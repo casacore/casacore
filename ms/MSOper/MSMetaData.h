@@ -297,6 +297,9 @@ public:
 		const std::set<Int>& scans, Int obsID, Int arrayID
 	) const;
 
+	// get the field IDs associated with the specified scans
+	std::set<Int> getFieldsForScans(const std::set<ScanKey>& scans) const;
+
 	// get the field IDs associated with the specified intent.
 	std::set<Int> getFieldsForIntent(const String& intent);
 
