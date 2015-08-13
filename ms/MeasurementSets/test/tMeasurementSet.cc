@@ -456,21 +456,6 @@ uInt tConstructors(const String& msName)
 	} 
 	if (!thrown) errCount++;
       
-      
-	// make table invalid before destruction
-	thrown=False;
-	try {
-	    SetupNewTable newtab("tMeasurementSet_tmp.msAnt","antTD",Table::New);
-	    MSAntenna msant(newtab);
-	    msant.markForDelete();
-	    msant.renameColumn("myPos",MSAntenna::columnName(MSAntenna::POSITION));
-	} catch (AipsError x) {
-	    thrown = True;
-	} 
-	// This throws the wrong exception: "Table: cannot rename a column"
-	// There seems to be no way to make the table invalid, as both
-	// removeColumn and renameColumn throw an exception.
-	if (!thrown) errCount++;
     }
 
     //cleanup
