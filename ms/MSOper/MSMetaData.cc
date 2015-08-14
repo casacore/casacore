@@ -2336,15 +2336,20 @@ std::set<Int> MSMetaData::getFieldsForScans(
 	arrayKey.obsID = obsID;
 	arrayKey.arrayID = arrayID;
 	std::set<ScanKey> myScanKeys = scanKeys(scans, arrayKey);
-	_checkScans(myScanKeys);
-	std::set<ScanKey>::const_iterator iter = myScanKeys.begin();
-	std::set<ScanKey>::const_iterator end = myScanKeys.end();
+	return getFieldsForScans(myScanKeys);
+}
+
+std::set<Int> MSMetaData::getFieldsForScans(
+	const std::set<ScanKey>& scanKeys
+) const {
+	_checkScans(scanKeys);
+	std::set<ScanKey>::const_iterator iter = scanKeys.begin();
+	std::set<ScanKey>::const_iterator end = scanKeys.end();
 	std::set<Int> fields;
 	while (iter != end) {
 		std::set<Int> myfields = getFieldsForScan(*iter);
 		fields.insert(myfields.begin(), myfields.end());
 		++iter;
-
 	}
 	return fields;
 }
