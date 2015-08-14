@@ -219,24 +219,18 @@ public:
     // </group>
 
     // Remove a column from a table
-    // An exception is thrown if this invalidates the table
+    // No exception is thrown if this invalidates the table
+    // in order to permit more complex operations with invalid
+    // intermediate states
     void removeColumn(const String & columnName)
     {
 	Table::removeColumn(columnName);
-	if (!this->validate()) {
-          throw(AipsError("removeColumn " + columnName +
-                          " -> invalid MeasurementSet"));
-	}
     }
 
     // Remove columns from a table
-    // An exception is thrown if this invalidates the table
     void removeColumn(const Vector<String>& columnNames)
     {
 	Table::removeColumn(columnNames);
-	if (!this->validate()) {
-          throw(AipsError("removeColumn(s) -> invalid MeasurementSet"));
-	}
     }
 
     // Rename a column
