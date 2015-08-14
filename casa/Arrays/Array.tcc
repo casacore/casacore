@@ -748,6 +748,10 @@ template<class T> void Array<T>::resize()
 {
     resize (IPosition());
 }
+template<class T> void Array<T>::resize(const IPosition &len, Bool copyValues)
+{
+    resize(len, copyValues, defaultArrayInitPolicy());
+}
 template<class T> void Array<T>::resize(const IPosition &len, Bool copyValues, ArrayInitPolicy policy)
 {
     DebugAssert(ok(), ArrayError);

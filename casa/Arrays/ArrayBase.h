@@ -144,7 +144,11 @@ public:
 
   // Resize the array and optionally copy the values.
   // <br>The default implementation in ArrayBase throws an exception.
-  virtual void resize(const IPosition &newShape, Bool copyValues=False, ArrayInitPolicy policy = ArrayInitPolicy::INIT);
+  virtual void resize(const IPosition &newShape, Bool copyValues=False);
+
+  // Resize the array and optionally copy the values.
+  // <br>The default implementation in ArrayBase throws an exception.
+  virtual void resize(const IPosition &newShape, Bool copyValues, ArrayInitPolicy policy);
 
   // Create an ArrayIterator object of the correct type.
   // This is implemented in the derived Array classes.

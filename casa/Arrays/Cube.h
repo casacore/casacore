@@ -134,9 +134,13 @@ public:
     // Resize to the given shape.
     // Resize without argument is equal to resize(0,0,0).
     // <group>
-    void resize(size_t nx, size_t ny, size_t nz, Bool copyValues=False, ArrayInitPolicy policy = ArrayInitPolicy::INIT);
+    using Array<T>::resize;
+    void resize(size_t nx, size_t ny, size_t nz, Bool copyValues=False) {
+        Cube<T>::resize(nx, ny, nz, copyValues, Array<T>::defaultArrayInitPolicy());
+    }
+    void resize(size_t nx, size_t ny, size_t nz, Bool copyValues, ArrayInitPolicy policy);
     virtual void resize();
-    virtual void resize(const IPosition &newShape, Bool copyValues=False, ArrayInitPolicy policy = ArrayInitPolicy::INIT);
+    virtual void resize(const IPosition &newShape, Bool copyValues, ArrayInitPolicy policy);
     // </group>
 
     // Copy the values from other to this cube. If this cube has zero

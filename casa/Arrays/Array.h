@@ -507,8 +507,8 @@ public:
     // be called first.
     // <group>
     virtual void resize();
-    virtual void resize(const IPosition &newShape, Bool copyValues=False, ArrayInitPolicy policy = ArrayInitPolicy::INIT);
-    //virtual void resize(const IPosition &newShape, Bool copyValues, ArrayInitPolicy initPolicy);
+    virtual void resize(const IPosition &newShape, Bool copyValues=False);
+    virtual void resize(const IPosition &newShape, Bool copyValues, ArrayInitPolicy policy);
     // </group>
 
     // Access a single element of the array. This is relatively
@@ -886,6 +886,9 @@ private:
     // otherwise BulkAllocator for the current allocator is returned.
     Allocator_private::BulkAllocator<T> *nonNewDelAllocator() const;
 protected:
+    static ArrayInitPolicy defaultArrayInitPolicy() {
+        return Block<T>::init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT;
+    }
     // pre/post processing hook of takeStorage() for subclasses.
     virtual void preTakeStorage(const IPosition &) {}
     virtual void postTakeStorage() {}

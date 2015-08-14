@@ -1062,6 +1062,7 @@ void newCubeTest()
         Cube<Int> c(shape, values, COPY, DefaultAllocator<Int>::value);
         delete[] values;
         c.resize(IPosition(3, 2, 3, 2), False, ArrayInitPolicy::NO_INIT);
+        c.resize(2, 4, 4, False, ArrayInitPolicy::NO_INIT);
     }
 }
 
@@ -1079,6 +1080,7 @@ void newMatrixTest()
         Matrix<Int> c(shape, values, COPY, DefaultAllocator<Int>::value);
         delete[] values;
         c.resize(IPosition(2, 2, 3), False, ArrayInitPolicy::NO_INIT);
+        c.resize(4, 4, False, ArrayInitPolicy::NO_INIT);
     }
 }
 
@@ -1096,6 +1098,7 @@ void newVectorTest()
         Vector<Int> c(shape, values, COPY, DefaultAllocator<Int>::value);
         delete[] values;
         c.resize(IPosition(1, 3), False, ArrayInitPolicy::NO_INIT);
+        c.resize(4, False, ArrayInitPolicy::NO_INIT);
     }
 }
 

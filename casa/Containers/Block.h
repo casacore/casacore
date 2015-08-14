@@ -752,12 +752,12 @@ public:
       return allocator_p;
   }
 
-  // end of friend
-
   static bool init_anyway() {
      return !(Block_internal_IsFundamental<T>::value
          || Block_internal_IsPointer<T>::value);
    }
+
+  // end of friend
 
   void init(ArrayInitPolicy initPolicy) {
     set_capacity(get_size());
