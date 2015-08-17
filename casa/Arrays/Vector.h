@@ -167,10 +167,13 @@ public:
     //# be hidden).
     // Resize without argument is equal to resize(0, False).
     // <group>
-    void resize(size_t len, Bool copyValues=False, ArrayInitPolicy policy = ArrayInitPolicy::INIT)
+    using Array<T>::resize;
+    void resize(size_t len, Bool copyValues=False)
+      { Vector<T>::resize(len, copyValues, Array<T>::defaultArrayInitPolicy()); }
+    void resize(size_t len, Bool copyValues, ArrayInitPolicy policy)
       { if (len != this->nelements()) resize (IPosition(1,len), copyValues, policy); }
-    virtual void resize(const IPosition &len, Bool copyValues=False, ArrayInitPolicy policy = ArrayInitPolicy::INIT);
     virtual void resize();
+    virtual void resize(const IPosition &len, Bool copyValues, ArrayInitPolicy policy);
     // </group>
 
     // Assign to this Vector. If this Vector is zero-length, then resize

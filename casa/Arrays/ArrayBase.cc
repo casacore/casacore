@@ -690,6 +690,10 @@ CountedPtr<ArrayBase> ArrayBase::makeArray() const
 {
   throw ArrayError ("ArrayBase::makeArray cannot be used");
 }
+void ArrayBase::resize(const IPosition&, Bool)
+{
+  throw ArrayError ("ArrayBase::resize cannot be used");
+}
 void ArrayBase::resize(const IPosition&, Bool, ArrayInitPolicy)
 {
   throw ArrayError ("ArrayBase::resize cannot be used");
