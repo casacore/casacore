@@ -613,6 +613,22 @@ private:
 };
 
 
+//# Explicitly instantiate these templates in ArrayColumn_tmpl.cc
+#ifdef AIPS_CXX11
+  extern template class ArrayColumn<Bool>;
+  extern template class ArrayColumn<Char>;
+  extern template class ArrayColumn<Short>;
+  extern template class ArrayColumn<uShort>;
+  extern template class ArrayColumn<Int>;
+  extern template class ArrayColumn<uInt>;
+  extern template class ArrayColumn<Float>;
+  extern template class ArrayColumn<Double>;
+  extern template class ArrayColumn<Complex>;
+  extern template class ArrayColumn<DComplex>;
+  extern template class ArrayColumn<String>;
+#endif
+
+
 } //# NAMESPACE CASACORE - END
 
 

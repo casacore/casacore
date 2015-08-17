@@ -893,6 +893,24 @@ public:
  };
 
 
+//# Instantiate extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class Block<Bool>;
+  extern template class Block<Char>;
+  extern template class Block<Short>;
+  extern template class Block<uShort>;
+  extern template class Block<Int>;
+  extern template class Block<uInt>;
+  extern template class Block<Int64>;
+  extern template class Block<Float>;
+  extern template class Block<Double>;
+  extern template class Block<Complex>;
+  extern template class Block<DComplex>;
+  extern template class Block<String>;
+  extern template class Block<void*>;
+#endif
+
+
 } //# NAMESPACE CASACORE - END
 
 #endif

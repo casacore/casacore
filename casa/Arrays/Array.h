@@ -922,7 +922,26 @@ protected:
                    begin_p + size_t(length_p(ndim()-1)) * steps_p(ndim()-1))); }
 };
 
+
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class Array<Bool>;
+  extern template class Array<Char>;
+  extern template class Array<Short>;
+  extern template class Array<uShort>;
+  extern template class Array<Int>;
+  extern template class Array<uInt>;
+  extern template class Array<Int64>;
+  extern template class Array<Float>;
+  extern template class Array<Double>;
+  extern template class Array<Complex>;
+  extern template class Array<DComplex>;
+  extern template class Array<String>;
+#endif
+
 }//#End casa namespace
+
+
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/Array.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES
