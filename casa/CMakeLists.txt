@@ -15,6 +15,7 @@ Arrays/ArrayPosIter.cc
 Arrays/ArrayUtil2.cc
 Arrays/Array2.cc
 Arrays/Array2Math.cc
+Arrays/Array_tmpl.cc
 Arrays/AxesMapping.cc
 Arrays/AxesSpecifier.cc
 Arrays/ExtendSpecifier.cc
@@ -24,6 +25,7 @@ Arrays/MaskArrMath2.cc
 Arrays/Matrix2Math.cc
 Arrays/Slice.cc
 Arrays/Slicer.cc
+Arrays/Vector_tmpl.cc
 BasicMath/Math.cc
 BasicMath/Primes.cc
 BasicMath/Random.cc
@@ -35,6 +37,7 @@ BasicSL/STLMath.cc
 BasicSL/String.cc
 Containers/Allocator.cc
 Containers/Block.cc
+Containers/Block_tmpl.cc
 Containers/HashMap2.cc
 Containers/IterError.cc
 Containers/List2.cc

@@ -2199,7 +2199,7 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField) {
     	restfreq.getColumn(restFreq_p);
         // purposeful assignment of throwImmediately
         // because it appears that the sense of rows and columns are reversed here
-        Int nrestfreqs = restFreq_p.nrow();
+        uInt nrestfreqs = restFreq_p.nrow();
         throwImmediately = nrestfreqs != noif;
         ThrowIf(
     			throwImmediately,

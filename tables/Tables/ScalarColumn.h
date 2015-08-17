@@ -263,11 +263,28 @@ protected:
 };
 
 
-//# Make old name ROScalarColumn still available.
-#define ROScalarColumn ScalarColumn
+//# Explicitly instantiate these templates in ScalarColumn_tmpl.cc
+#ifdef AIPS_CXX11
+  extern template class ScalarColumn<Bool>;
+  extern template class ScalarColumn<Char>;
+  extern template class ScalarColumn<Short>;
+  extern template class ScalarColumn<uShort>;
+  extern template class ScalarColumn<Int>;
+  extern template class ScalarColumn<uInt>;
+  extern template class ScalarColumn<Float>;
+  extern template class ScalarColumn<Double>;
+  extern template class ScalarColumn<Complex>;
+  extern template class ScalarColumn<DComplex>;
+  extern template class ScalarColumn<String>;
+#endif
 
 
 } //# NAMESPACE CASACORE - END
+
+
+//# Make old name ROScalarColumn still available.
+#define ROScalarColumn ScalarColumn
+
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/tables/Tables/ScalarColumn.tcc>

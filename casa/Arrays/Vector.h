@@ -315,7 +315,25 @@ private:
     void initVector(const Block<T> &, Int64 nr);      // copy semantics
 };
 
+
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class Vector<Bool>;
+  extern template class Vector<Char>;
+  extern template class Vector<Short>;
+  extern template class Vector<uShort>;
+  extern template class Vector<Int>;
+  extern template class Vector<uInt>;
+  extern template class Vector<Int64>;
+  extern template class Vector<Float>;
+  extern template class Vector<Double>;
+  extern template class Vector<Complex>;
+  extern template class Vector<DComplex>;
+  extern template class Vector<String>;
+#endif
+
 } //#End namespace casacore
+
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/Vector.tcc>

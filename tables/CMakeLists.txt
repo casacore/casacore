@@ -18,6 +18,8 @@ endforeach (src)
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 add_library (casa_tables
+Tables/ArrayColumn_tmpl.cc
+Tables/ArrColDesc_tmpl.cc
 Tables/BaseColDesc.cc
 Tables/BaseColumn.cc
 Tables/BaseTabIter.cc
@@ -41,6 +43,8 @@ Tables/RefColumn.cc
 Tables/RefRows.cc
 Tables/RefTable.cc
 Tables/RowCopier.cc
+Tables/ScaColDesc_tmpl.cc
+Tables/ScalarColumn_tmpl.cc
 Tables/ScaRecordColData.cc
 Tables/ScaRecordColDesc.cc
 Tables/SetupNewTab.cc
