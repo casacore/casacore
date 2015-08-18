@@ -1153,8 +1153,18 @@ void BaseTable::showColumnInfo (ostream& os, const TableDesc& tdesc,
     }
     if (keywords.isDefined("MEASINFO")) {
       const TableRecord& meas = keywords.subRecord("MEASINFO");
-      os << " measure=" << meas.asString("type") << ','
-         << meas.asString("Ref");
+      os << " measure=";
+      if (meas.isDefined("type")) {
+	os << meas.asString("type");
+      }	else {
+	os << "unknown";
+      }
+      if (meas.isDefined("Ref")) {
+        os << ',' << meas.asString("Ref");
+      }
+      if (meas.isDefined("VarRefCol")) {
+        os << " refcol=" << meas.asString("VarRefCol");
+      }
     }
     if (cdesc.options() & ColumnDesc::Direct) {
       os << " directly stored";
