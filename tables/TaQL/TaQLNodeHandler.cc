@@ -517,8 +517,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     TableParseSelect* curSel = pushStack (TableParseSelect::PUPDATE);
     handleTables  (node.itsTables);
-    handleUpdate  (node.itsUpdate);
     handleTables  (node.itsFrom);
+    handleUpdate  (node.itsUpdate);
     handleWhere   (node.itsWhere);
     visitNode     (node.itsSort);
     visitNode     (node.itsLimitOff);
