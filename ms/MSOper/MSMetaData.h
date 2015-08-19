@@ -143,9 +143,12 @@ public:
 	// get unique scan numbers
 	std::set<Int> getScanNumbers(Int obsID, Int arrayID) const;
 
+	// get a set of scan numbers for the specified stateID, obsID, and arrayID.
+	// If obsID and/or arrayID is negative, all observation IDs and/or array IDs
+	// will be used.
 	std::set<Int> getScansForState(
 		Int stateID, Int obsID, Int arrayID
-	);
+	) const;
 
 	// SOURCE.DIRECTION
 	vector<MDirection> getSourceDirections() const;
@@ -225,7 +228,9 @@ public:
 	// ALMA-specific. Get the square law detector (total power) spectral windows.
 	std::set<uInt> getSQLDSpw();
 
-	// Get the scans which fail into the specified time range (center-tol to center+tol)
+	// Get the scan numbers which fail into the specified time range (center-tol to center+tol),
+	// inclusive. A negative value of obsID and/or arrayID indicates that all observation IDs
+	// and/or all arrayIDs should be used.
 	std::set<Int> getScansForTimes(
 		Double center, Double tol, Int obsID, Int arrayID
 	) const;
@@ -247,8 +252,9 @@ public:
 	// get the times for the specified scan
 	// std::set<Double> getTimesForScan(const uInt scan) const;
 
-	// get the stateIDs associated with the specified scan.
-	std::set<Int> getStatesForScan(uInt obsID, uInt arrayID, Int scan) const;
+	// get the stateIDs associated with the specified scan. If obsID and/or arrayID
+	// is negative, all observation IDs and/or array IDs will be used.
+	std::set<Int> getStatesForScan(Int obsID, Int arrayID, Int scan) const;
 
 	// get the position of the specified antenna relative to the observatory position.
 	// the three vector returned represents the longitudinal, latitudinal, and elevation
@@ -696,7 +702,7 @@ private:
 
 	Bool _hasFieldID(Int fieldID) const;
 
-	Bool _hasStateID(Int stateID);
+	Bool _hasStateID(Int stateID) const;
 
 	void _hasAntennaID(Int antennaID);
 
@@ -739,11 +745,6 @@ private:
 
 	// get all valid scan numbers associated with the specified arrayKey
 	std::set<Int> _getScanNumbers(const ArrayKey& arrayKey) const;
-
-	// get the scan numbers associated with the scanKeys. The members of
-	// scanKeys do not have to have the same ArrayKey, and no warning is
-	// given if they are not.
-	std::set<Int> _getScanNumbers(const std::set<ScanKey>& scanKeys) const;
 
 	void _getScansAndDDIDMaps(
 		std::map<ScanKey, std::set<uInt> >& scanToDDIDMap,
