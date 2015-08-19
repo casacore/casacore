@@ -612,7 +612,7 @@ CountedPtr<Vector<Int> > MSMetaData::_getDataDescIDs() const {
 
 std::set<Int> MSMetaData::getScansForState(
 	Int stateID, Int obsID, Int arrayID
-) {
+) const {
 	if (! _hasStateID(stateID)) {
 		return std::set<Int>();
 	}
@@ -621,7 +621,6 @@ std::set<Int> MSMetaData::getScansForState(
 	arrayKey.obsID = obsID;
 	arrayKey.arrayID = arrayID;
 	std::set<ScanKey> scanKeys = getScanKeys(arrayKey);
-	//CountedPtr<Vector<Int> > scans = _getScans();
 	std::set<ScanKey>::const_iterator iter = scanKeys.begin();
 	std::set<ScanKey>::const_iterator end = scanKeys.end();
 	std::set<Int> stateIDs, scansForState;
@@ -1185,32 +1184,7 @@ std::set<ScanKey> MSMetaData::_getScanKeys(
 }
 
 std::set<Int> MSMetaData::_getScanNumbers(const ArrayKey& arrayKey) const {
-	std::set<ScanKey> scans = getScanKeys(arrayKey);
-	std::set<Int> scanNumbers;
-	std::set<ScanKey>::const_iterator iter = scans.begin();
-	std::set<ScanKey>::const_iterator end = scans.end();
-	Int obsID = arrayKey.obsID;
-	Int arrayID = arrayKey.arrayID;
-	while (iter != end) {
-		if (iter->obsID == obsID && iter->arrayID == arrayID) {
-			scanNumbers.insert(iter->scan);
-		}
-		++iter;
-	}
-	return scanNumbers;
-}
-
-std::set<Int> MSMetaData::_getScanNumbers(
-	const std::set<ScanKey>& scanKeys
-) const {
-	std::set<Int> scanNumbers;
-	std::set<ScanKey>::const_iterator iter = scanKeys.begin();
-	std::set<ScanKey>::const_iterator end = scanKeys.end();
-	while (iter != end) {
-		scanNumbers.insert(iter->scan);
-		++iter;
-	}
-	return scanNumbers;
+	return scanNumbers(getScanKeys(arrayKey));
 }
 
 void MSMetaData::_getScansAndDDIDMaps(
@@ -1323,18 +1297,14 @@ std::set<Int> MSMetaData::getScansForSpw(
 	const uInt spw, Int obsID, Int arrayID
 ) const {
 	uInt myNSpw = nSpw(True);
-	ThrowIf(
-		spw >= myNSpw, "spectral window out of range"
-	);
+	ThrowIf(spw >= myNSpw, "spectral window out of range");
 	ArrayKey arrayKey;
 	arrayKey.obsID = obsID;
 	arrayKey.arrayID = arrayID;
 	std::set<ScanKey> myScanKeys = getScanKeys(arrayKey);
 	std::map<ScanKey, std::set<uInt> > scanToSpwMap;
 	vector<std::set<ScanKey> > spwToScanMap;
-	_getScansAndSpwMaps(
-		scanToSpwMap, spwToScanMap
-	);
+	_getScansAndSpwMaps(scanToSpwMap, spwToScanMap);
 	std::set<ScanKey>::const_iterator iter = myScanKeys.begin();
 	std::set<ScanKey>::const_iterator end = myScanKeys.end();
 	std::set<Int> scanNumbers;
@@ -1344,7 +1314,6 @@ std::set<Int> MSMetaData::getScansForSpw(
 		if (spws.find(spw) != spws.end()) {
 			scanNumbers.insert(iter->scan);
 		}
-
 		++iter;
 	}
 	return scanNumbers;
@@ -1880,7 +1849,6 @@ std::set<Int> MSMetaData::getScansForTimes(
 	Double center, Double tol, Int obsID, Int arrayID
 ) const {
 	_checkTolerance(tol);
-	// std::set<Int> uniqueScans = getScanNumbers();
 	ArrayKey arrayKey;
 	arrayKey.obsID = obsID;
 	arrayKey.arrayID = arrayID;
@@ -2405,18 +2373,28 @@ std::set<Int> MSMetaData::getScansForIntent(
 		}
 		++iter;
 	}
-	return _getScanNumbers(filteredScans);
+	return scanNumbers(filteredScans);
 }
 
 std::set<Int> MSMetaData::getStatesForScan(
-	uInt obsID, uInt arrayID, Int scan
+	Int obsID, Int arrayID, Int scan
 ) const {
-	ScanKey scanKey;
-	scanKey.obsID = obsID;
-	scanKey.arrayID = arrayID;
-	scanKey.scan = scan;
-	_checkScan(scanKey);
-	return _getScanToStatesMap().find(scanKey)->second;
+	ArrayKey arrayKey;
+	arrayKey.obsID = obsID;
+	arrayKey.arrayID = arrayID;
+	std::set<ScanKey> scanKeys = getScanKeys(arrayKey);
+	std::map<ScanKey, std::set<Int> > scanToStates = _getScanToStatesMap();
+	std::set<Int> states;
+	std::set<ScanKey>::const_iterator iter = scanKeys.begin();
+	std::set<ScanKey>::const_iterator end = scanKeys.end();
+	while (iter != end) {
+		if (iter->scan == scan) {
+			std::set<Int> myStates = scanToStates[*iter];
+			states.insert(myStates.begin(), myStates.end());
+		}
+		++iter;
+	}
+	return states;
 }
 
 Record MSMetaData::getSummary() const {
@@ -4043,7 +4021,7 @@ std::set<Int> MSMetaData::getUniqueFiedIDs() const {
 	return _uniqueFieldIDs;
 }
 
-Bool MSMetaData::_hasStateID(const Int stateID) {
+Bool MSMetaData::_hasStateID(const Int stateID) const {
 	// This method is responsible for setting _uniqueStateIDs
 	ThrowIf(
 		stateID >= (Int)nStates(),
