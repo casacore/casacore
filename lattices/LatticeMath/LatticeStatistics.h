@@ -581,6 +581,12 @@ private:
    void _doStatsLoop(uInt nsets, CountedPtr<LattStatsProgress> progressMeter);
 };
 
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class LatticeStatistics<Float>;
+#endif
+
+
 } //# NAMESPACE CASA - END
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
