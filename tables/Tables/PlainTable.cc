@@ -285,12 +285,19 @@ void PlainTable::closeObject()
 	//# Check if table can indeed be deleted.
 	//# If not, set delete flag to False.
         //# It only checks if the main table is multi-used.
-	if (isMultiUsed(False)) {
-	    unmarkForDelete (False, "");
-	    throw (TableError ("Table " + name_p + " cannot be deleted;"
-			       " the table or a subtable is still used"
-			       " in another process"));
-	}
+        //# File locking support in Lustre (maybe other file systems too)
+        //# seems to be asynchronous to some degree, so try a few times.
+        int nTrys = 5;
+        while (isMultiUsed(False)) {
+            if (nTrys == 0) {
+                unmarkForDelete (False, "");
+                throw (TableError ("Table " + name_p + " cannot be deleted;"
+                                   " the table or a subtable is still used"
+                                   " in another process"));
+            }
+            sleep(1);
+            --nTrys;
+        }
     }
     //# Remove it from the table cache (if added).
     if (addToCache_p) {

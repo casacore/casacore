@@ -91,11 +91,11 @@ int main()
       os << "Pluto:      " << val << endl;
     }
     MeasIERS::closeTables();
-    const TableCache& cache = PlainTable::tableCache();
-    if(cache.ntable()>0){
+    Vector<String> openTables = PlainTable::tableCache().getTableNames();
+    if (openTables.size() > 0){
       cout << "ERROR: cache not empty!" << endl;
-      for (uInt i=0; i<cache.ntable(); ++i) {
-	cout << "    " << i << ": \"" <<  cache(i)->tableName() << "\"" << endl;
+      for (uInt i=0; i<openTables.size(); ++i) {
+	cout << "    " << i << ": \"" <<  openTables[i] << "\"" << endl;
       }
     }
 

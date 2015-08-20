@@ -488,9 +488,13 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
     case arrsumsqrFUNC:
         if (operands_p[0]->valueType() == VTArray) {
 	    Array<Int64> arr = operands_p[0]->getArrayInt (id);
-            AlwaysAssert (arr.contiguousStorage(), AipsError);
-            return std::accumulate(arr.cbegin(), arr.cend(), Int64(0),
-                                   casacore::SumSqr<Int64>());
+            if (arr.contiguousStorage()) {
+              return std::accumulate(arr.cbegin(), arr.cend(), Int64(0),
+                                     casacore::SumSqr<Int64>());
+            } else {
+              return std::accumulate(arr.begin(), arr.end(), Int64(0),
+                                     casacore::SumSqr<Int64>());
+            }
 	} else {
 	    Int64 val = operands_p[0]->getInt(id);
 	    return val * val;
@@ -671,9 +675,13 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
     case arrsumsqrFUNC:
         if (operands_p[0]->valueType() == VTArray) {
 	    Array<Double> arr = operands_p[0]->getArrayDouble (id);
-            AlwaysAssert (arr.contiguousStorage(), AipsError);
-            return std::accumulate(arr.cbegin(), arr.cend(), Double(0),
-                                   casacore::SumSqr<Double>());
+            if (arr.contiguousStorage()) {
+              return std::accumulate(arr.cbegin(), arr.cend(), Double(0),
+                                     casacore::SumSqr<Double>());
+            } else {
+              return std::accumulate(arr.begin(), arr.end(), Double(0),
+                                     casacore::SumSqr<Double>());
+            }
 	} else {
 	    Double val = operands_p[0]->getDouble(id);
 	    return val * val;
