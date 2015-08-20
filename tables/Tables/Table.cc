@@ -572,33 +572,8 @@ BaseTable* Table::makeBaseTable (const String& name, const String& type,
 BaseTable* Table::lookCache (const String& name, int tableOption,
 			     const TableLock& lockOptions)
 {
-    //# Exit if table is not in cache yet.
-    PlainTable* btp = PlainTable::tableCache()(name);
-    if (btp == 0) {
-	return btp;
-    }
-    //# Check if option matches. It does if equal.
-    //# Otherwise it does if option in cached table is "more".
-    //# Note that class PlainTable already throws an exception if
-    //# a new table is created with the same name as an open table.
-    int cachedTableOption = btp->tableOption();
-    if ((tableOption == cachedTableOption)
-    ||  ((cachedTableOption == Table::New
-      ||  cachedTableOption == Table::NewNoReplace
-      ||  cachedTableOption == Table::Update)
-     &&  (tableOption == Table::Update
-      ||  tableOption == Table::Old))) {
-	btp->mergeLock (lockOptions);
-	return btp;
-    }
-    if (cachedTableOption == Table::Old  &&  tableOption == Table::Update) {
-	btp->mergeLock (lockOptions);
-	btp->reopenRW();
-	return btp;
-    }
-    throw (TableInvOper ("Table " + name +
-			 " cannot be opened/created (already in cache)"));
-    return 0;
+    return PlainTable::tableCache().lookCache (name, tableOption,
+                                               lockOptions);
 }
 
 
@@ -639,55 +614,18 @@ Bool Table::hasDataChanged()
 
 uInt Table::nAutoLocks()
 {
-    uInt n=0;
-    const TableCache& cache = PlainTable::tableCache();
-    uInt ntab = cache.ntable();
-    for (uInt i=0; i<ntab; i++) {
-	const PlainTable& table = *(cache(i));
-	if (table.lockOptions().option() == TableLock::AutoLocking) {
-	    //# Having a read lock is enough.
-	    if (table.hasLock (FileLocker::Read)) {
-		n++;
-	    }
-	}
-    }
-    return n;
+  return PlainTable::tableCache().nAutoLocks();
 }
 
 void Table::relinquishAutoLocks (Bool all)
 {
-    TableCache& cache = PlainTable::tableCache();
-    uInt ntab = cache.ntable();
-    for (uInt i=0; i<ntab; i++) {
-	PlainTable& table = *(cache(i));
-	if (table.lockOptions().option() == TableLock::AutoLocking) {
-	    //# Having a read lock is enough.
-	    if (table.hasLock (FileLocker::Read)) {
-		if (all) {
-		    table.unlock();
-		}else{
-		    table.autoReleaseLock (True);
-		}
-	    }
-	}
-    }
+  PlainTable::tableCache().relinquishAutoLocks (all);
 }
 
 Vector<String> Table::getLockedTables (FileLocker::LockType lockType,
                                        int lockOption)
 {
-    vector<String> names;
-    TableCache& cache = PlainTable::tableCache();
-    uInt ntab = cache.ntable();
-    for (uInt i=0; i<ntab; i++) {
-	PlainTable& table = *(cache(i));
-	if (lockOption < 0  ||  table.lockOptions().option() == lockOption) {
-	    if (table.hasLock (lockType)) {
-                names.push_back (table.tableName());
-	    }
-	}
-    }
-    return Vector<String>(names);
+  return PlainTable::tableCache().getLockedTables (lockType, lockOption);
 }
 
 

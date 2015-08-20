@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/IO/FileLocker.h>
 #include <casacore/casa/Containers/SimOrdMap.h>
 #include <casacore/casa/OS/Mutex.h>
 
@@ -37,6 +38,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class PlainTable;
+class TableLock;
+template<class T> class Vector;
 
 
 // <summary>
@@ -102,14 +105,6 @@ public:
     // Return a zero pointer if not found.
     PlainTable* operator() (const String& tableName) const;
 
-    // Try to find a table at the given index in the cache.
-    // Return a pointer to a table if found (thus if already open).
-    // Return a zero pointer if not found.
-    PlainTable* operator() (uInt index) const;
-
-    // Return the number of open tables in the cache.
-    uInt ntable() const;
-
     // Add an open table to the cache.
     void define (const String& tableName, PlainTable*);
 
@@ -120,11 +115,45 @@ public:
     // If oldName is not in the cache, nothing will be done.
     void rename (const String& newName, const String& oldName);
 
+    // Determine the number of locked tables opened with the AutoLock option
+    // (Locked table means locked for read and/or write).
+    uInt nAutoLocks();
+
+    // Unlock locked tables opened with the AutoLock option.
+    // If <src>all=True</src> all such tables will be unlocked.
+    // If <src>all=False</src> only tables requested by another process
+    // will be unlocked.
+    void relinquishAutoLocks (Bool all);
+
+    // Get the names of the tables in the cache.
+    Vector<String> getTableNames() const;
+
+    // Get the names of tables locked in this process.
+    // By default all locked tables are given (note that a write lock
+    // implies a read lock), but it is possible to select on lock type
+    // FileLocker::Write and on option (TableLock::AutoLocking,
+    // TableLock::ReadLocking, or TableLock::PermanentLocking).
+    Vector<String> getLockedTables (FileLocker::LockType,
+                                    int lockOption);
+
+    // Flush a possibly cached Table.
+    void flushTable (const String& tableName,
+                     Bool fsync, Bool recursive);
+
+    // Look in the cache if the table is already open.
+    // If so, check if table option matches.
+    // If needed reopen the table for read/write and merge the lock options.
+    PlainTable* lookCache (const String& name, int tableOption,
+                           const TableLock& tableInfo);
+
 private:
     // The copy constructor is forbidden.
     TableCache (const TableCache&);
     // The assignment operator is forbidden.
     TableCache& operator= (const TableCache&);
+
+    // Get the table without doing a mutex lock (for operator()).
+    PlainTable* getTable (const String& tableName) const;
 
     //# void* iso. PlainTable* is used in the map declaration
     //# to reduce the number of template instantiations.
