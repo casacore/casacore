@@ -934,6 +934,7 @@ protected:
 #ifdef AIPS_CXX11
   extern template class Array<Bool>;
   extern template class Array<Char>;
+  extern template class Array<uChar>;
   extern template class Array<Short>;
   extern template class Array<uShort>;
   extern template class Array<Int>;
