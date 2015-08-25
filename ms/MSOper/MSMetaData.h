@@ -655,6 +655,9 @@ private:
 
 	CountedPtr<QVD > _getExposureTimes();
 
+    // If there are no intents, then fieldToIntentsMap will be of length
+    // nFields() and all of its entries will be the empty set, and
+    // intentToFieldsMap will be empty
 	void _getFieldsAndIntentsMaps(
 		vector<std::set<String> >& fieldToIntentsMap,
 		std::map<String, std::set<Int> >& intentToFieldsMap
