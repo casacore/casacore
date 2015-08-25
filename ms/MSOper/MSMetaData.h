@@ -288,6 +288,14 @@ public:
 	//if that is attached to that field id
 	MDirection phaseDirFromFieldIDAndTime(const uInt fieldID,  
 					      const MEpoch& ep=MEpoch(Quantity(0.0, Unit("s")))) const ;
+
+    // Get the reference direction for a given field ID and epoch interpolate
+    // polynomial if it is the field ID is such or use ephemerides table
+    // if that is attached to that field ID
+    MDirection getReferenceDirection(
+        const uInt fieldID,
+        const MEpoch& ep=MEpoch(Quantity(0.0, Unit("s")))
+    ) const;
 	
 	// get the field IDs for the specified field name. Case insensitive.
 	std::set<Int> getFieldIDsForField(const String& field) const;
