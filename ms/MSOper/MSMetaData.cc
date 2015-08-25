@@ -4089,9 +4089,8 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
 		tmp.resize(0);
 		cwCol.get(i, tmp);
 		spwInfo[i].chanwidths = QVD(tmp, *cwUnits.begin());
-		// coded this way in ValueMapping
-		spwInfo[i].netsideband = nss[i] == 2 ? 1 : -1;
-		spwInfo[i].nchans = tmp.size();
+		spwInfo[i].netsideband = nss[i];
+        spwInfo[i].nchans = tmp.size();
 		uInt nchan = spwInfo[i].nchans;
 		QVD halfWidths = (spwInfo[i].chanwidths)/2.0;
 		Quantity lowFreq = (spwInfo[i].chanfreqs - halfWidths).min();

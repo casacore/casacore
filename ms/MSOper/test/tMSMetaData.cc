@@ -1994,6 +1994,18 @@ void testIt(MSMetaData& md) {
             }
         }
         {
+            cout << "*** test getNetSidebands()" << endl;
+            vector<Int> netsb = md.getNetSidebands();
+            Int expec[] = {
+                3, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2,
+                2, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
+            };
+            uInt n = netsb.size();
+            for(uInt i=0; i<n; ++i) {
+                AlwaysAssert(netsb[i] == expec[i], AipsError);
+            }
+        }
+        {
 			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}
