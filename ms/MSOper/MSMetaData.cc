@@ -3690,6 +3690,11 @@ void MSMetaData::_getFieldsAndIntentsMaps(
 	std::map<String, std::set<Int> >& intentToFieldsMap
 ) {
 	// This method is responsible for setting _intentToFieldIDMap and _fieldToIntentsMap
+    if (getIntents().empty()) {
+        fieldToIntentsMap = vector<std::set<String> >(nFields());
+        intentToFieldsMap.clear();
+        return;
+    }
 	if (! _intentToFieldIDMap.empty() && ! _fieldToIntentsMap.empty()) {
 		fieldToIntentsMap = _fieldToIntentsMap;
 		intentToFieldsMap = _intentToFieldIDMap;
