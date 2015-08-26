@@ -2006,6 +2006,42 @@ void testIt(MSMetaData& md) {
             }
         }
         {
+            cout << "*** test getReferenceDirection()" << endl;
+            uInt nfields = md.nFields();
+            for (uInt i=0; i<nfields; ++i) {
+                MDirection dir = md.getReferenceDirection(i);
+                Vector<Double> angle = dir.getAngle().getValue();
+                switch(i) {
+                case 0:
+                    AlwaysAssert(near(angle[0], -2.8964345, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.10104256, 1e-6), AipsError);
+                    break;
+                case 1:
+                    AlwaysAssert(near(angle[0], -2.71545722, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.22613985, 1e-6), AipsError);
+                    break;
+                case 2:
+                    AlwaysAssert(near(angle[0], -2.72554329, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.1219181, 1e-6), AipsError);
+                    break;
+                case 3:
+                    AlwaysAssert(near(angle[0], -1.98190197, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.44437211, 1e-6), AipsError);
+                    break;
+                case 4:
+                    AlwaysAssert(near(angle[0], -2.04411602, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.32533384, 1e-6), AipsError);
+                    break;
+                case 5:
+                    AlwaysAssert(near(angle[0], -1.94537525, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.27584353, 1e-6), AipsError);
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+        {
 			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}
