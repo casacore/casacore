@@ -42,7 +42,7 @@
 #include <casacore/casa/OS/HostInfo.h>
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/System/AipsrcValue.h>
-
+#include <time.h>    //# for nanosleep
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -285,12 +285,22 @@ void PlainTable::closeObject()
 	//# Check if table can indeed be deleted.
 	//# If not, set delete flag to False.
         //# It only checks if the main table is multi-used.
-	if (isMultiUsed(False)) {
-	    unmarkForDelete (False, "");
-	    throw (TableError ("Table " + name_p + " cannot be deleted;"
-			       " the table or a subtable is still used"
-			       " in another process"));
-	}
+        //# File locking support in Lustre (maybe other file systems too)
+        //# seems to be asynchronous to some degree, so try a few times.
+        int nTrys = 5;
+        timespec timet;
+        timet.tv_sec = 1;
+        timet.tv_nsec = 0;
+        while (isMultiUsed(False)) {
+            if (nTrys == 0) {
+                unmarkForDelete (False, "");
+                throw (TableError ("Table " + name_p + " cannot be deleted;"
+                                   " the table or a subtable is still used"
+                                   " in another process"));
+            }
+            nanosleep (&timet, 0); // nanosleep works well with signals
+            --nTrys;
+        }
     }
     //# Remove it from the table cache (if added).
     if (addToCache_p) {

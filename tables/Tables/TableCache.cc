@@ -26,7 +26,11 @@
 //# $Id$
 
 #include <casacore/tables/Tables/TableCache.h>
-#include <casacore/casa/Exceptions/Error.h>
+#include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/PlainTable.h>
+#include <casacore/tables/Tables/TableLock.h>
+#include <casacore/tables/Tables/TableError.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -40,25 +44,18 @@ TableCache::~TableCache()
 
 PlainTable* TableCache::operator() (const String& tableName) const
 {
+    ScopedMutexLock sc(itsMutex);
+    return getTable (tableName);
+}
+
+PlainTable* TableCache::getTable (const String& tableName) const
+{
     PlainTable** ptr = (PlainTable**)(tableMap_p.isDefined (tableName));
     if (ptr) {
 	return *ptr;
     }
     return 0;
 }
-
-PlainTable* TableCache::operator() (uInt index) const
-{
-    ScopedMutexLock sc(itsMutex);
-    return (PlainTable*) (tableMap_p.getVal (index));
-}
-
-uInt TableCache::ntable() const
-{
-    ScopedMutexLock sc(itsMutex);
-    return tableMap_p.ndefined();
-}
-
 
 void TableCache::define (const String& tableName, PlainTable* tab)
 {
@@ -94,6 +91,114 @@ void TableCache::rename (const String& newName, const String& oldName)
 	tableMap_p.rename (newName, oldName);
     }
 }
+
+uInt TableCache::nAutoLocks()
+{
+    ScopedMutexLock sc(itsMutex);
+    uInt n=0;
+    uInt ntab = tableMap_p.ndefined();
+    for (uInt i=0; i<ntab; i++) {
+	PlainTable& table = *static_cast<PlainTable*>(tableMap_p.getVal(i));
+	if (table.lockOptions().option() == TableLock::AutoLocking) {
+	    //# Having a read lock is enough.
+	    if (table.hasLock (FileLocker::Read)) {
+		n++;
+	    }
+	}
+    }
+    return n;
+}
+
+void TableCache::relinquishAutoLocks (Bool all)
+{
+    ScopedMutexLock sc(itsMutex);
+    uInt ntab = tableMap_p.ndefined();
+    for (uInt i=0; i<ntab; i++) {
+	PlainTable& table = *static_cast<PlainTable*>(tableMap_p.getVal(i));
+	if (table.lockOptions().option() == TableLock::AutoLocking) {
+	    //# Having a read lock is enough.
+	    if (table.hasLock (FileLocker::Read)) {
+		if (all) {
+		    table.unlock();
+		}else{
+		    table.autoReleaseLock (True);
+		}
+	    }
+	}
+    }
+}
+
+Vector<String> TableCache::getTableNames() const
+{
+    ScopedMutexLock sc(itsMutex);
+    uInt ntab = tableMap_p.ndefined();
+    Vector<String> names;
+    for (uInt i=0; i<ntab; i++) {
+	PlainTable& table = *static_cast<PlainTable*>(tableMap_p.getVal(i));
+        names[i] = table.tableName();
+    }
+    return names;
+}
+
+Vector<String> TableCache::getLockedTables (FileLocker::LockType lockType,
+                                            int lockOption)
+{
+    ScopedMutexLock sc(itsMutex);
+    vector<String> names;
+    uInt ntab = tableMap_p.ndefined();
+    for (uInt i=0; i<ntab; i++) {
+	PlainTable& table = *static_cast<PlainTable*>(tableMap_p.getVal(i));
+	if (lockOption < 0  ||  table.lockOptions().option() == lockOption) {
+	    if (table.hasLock (lockType)) {
+                names.push_back (table.tableName());
+	    }
+	}
+    }
+    return Vector<String>(names);
+}
+
+void TableCache::flushTable (const String& name,
+                             Bool fsync, Bool recursive)
+{
+  ScopedMutexLock sc(itsMutex);
+  PlainTable* tab = getTable(name);
+  if (tab) {
+    tab->flush (fsync, recursive);
+  }
+}
+
+PlainTable* TableCache::lookCache (const String& name, int tableOption,
+                                   const TableLock& lockOptions)
+{
+    ScopedMutexLock sc(itsMutex);
+    //# Exit if table is not in cache yet.
+    PlainTable* btp = getTable(name);
+    if (btp == 0) {
+	return btp;
+    }
+    //# Check if option matches. It does if equal.
+    //# Otherwise it does if option in cached table is "more".
+    //# Note that class PlainTable already throws an exception if
+    //# a new table is created with the same name as an open table.
+    int cachedTableOption = btp->tableOption();
+    if ((tableOption == cachedTableOption)
+    ||  ((cachedTableOption == Table::New
+      ||  cachedTableOption == Table::NewNoReplace
+      ||  cachedTableOption == Table::Update)
+     &&  (tableOption == Table::Update
+      ||  tableOption == Table::Old))) {
+	btp->mergeLock (lockOptions);
+	return btp;
+    }
+    if (cachedTableOption == Table::Old  &&  tableOption == Table::Update) {
+	btp->mergeLock (lockOptions);
+	btp->reopenRW();
+	return btp;
+    }
+    throw (TableInvOper ("Table " + name +
+			 " cannot be opened/created (already in cache)"));
+}
+
 
 } //# NAMESPACE CASACORE - END
 
