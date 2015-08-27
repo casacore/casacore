@@ -132,7 +132,7 @@ Vector<String> TableCache::getTableNames() const
 {
     ScopedMutexLock sc(itsMutex);
     uInt ntab = tableMap_p.ndefined();
-    Vector<String> names;
+    Vector<String> names(ntab);
     for (uInt i=0; i<ntab; i++) {
 	PlainTable& table = *static_cast<PlainTable*>(tableMap_p.getVal(i));
         names[i] = table.tableName();
