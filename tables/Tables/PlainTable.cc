@@ -42,7 +42,7 @@
 #include <casacore/casa/OS/HostInfo.h>
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/System/AipsrcValue.h>
-
+#include <time.h>    //# for nanosleep
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -288,6 +288,9 @@ void PlainTable::closeObject()
         //# File locking support in Lustre (maybe other file systems too)
         //# seems to be asynchronous to some degree, so try a few times.
         int nTrys = 5;
+        timespec timet;
+        timet.tv_sec = 1;
+        timet.tv_nsec = 0;
         while (isMultiUsed(False)) {
             if (nTrys == 0) {
                 unmarkForDelete (False, "");
@@ -295,7 +298,7 @@ void PlainTable::closeObject()
                                    " the table or a subtable is still used"
                                    " in another process"));
             }
-            sleep(1);
+            nanosleep (&timet, 0); // nanosleep works well with signals
             --nTrys;
         }
     }
