@@ -1,4 +1,4 @@
-//# MSSelectionErrorHandler.cc: Error handler for the MSSelection classes
+//# MSSSpwErrorHandler.cc: Error handler for the SPW parser
 //# Copyright (C) 1994,1995,1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,42 +25,14 @@
 //#
 //# $Id$
 
-#include <casacore/ms/MSSel/MSSelectionErrorHandler.h>
+#include <casacore/ms/MSSel/MSSSpwErrorHandler.h>
 #include <casacore/ms/MSSel/MSSelectionError.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  MSSelectionErrorHandler::MSSelectionErrorHandler()
-    :tokenList(), messageList()
-  {}
-
-  MSSelectionErrorHandler::MSSelectionErrorHandler(const MSSelectionErrorHandler& that)
-    :tokenList(), messageList()
-  {
-    operator=(that);
-  }
-
-  MSSelectionErrorHandler& MSSelectionErrorHandler::operator=(const MSSelectionErrorHandler& that)
-  {
-    if (this != &that)
-      {
-	tokenList = that.tokenList;
-	messageList = that.messageList;
-      }
-    return *this;
-  }
-
-  MSSelectionErrorHandler::~MSSelectionErrorHandler () {}
-  
-  void MSSelectionErrorHandler::reportError(const char *token,const String message)
-  {
-    if (token!=NULL) tokenList.push_back(token);
-    messageList.push_back(message);
-  }
-
-  String MSSelectionErrorHandler::constructMessage()
+  String MSSSpwErrorHandler::constructMessage()
   {
     ostringstream Mesg;
     if (messageList.size() > 0)
@@ -75,22 +47,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return casaMesg;
   }
 
-  void MSSelectionErrorHandler::handleError(MSSelectionError& mssErrorType) 
+  void MSSSpwErrorHandler::handleError(MSSelectionError&  mssErrorType) 
   {
     if (messageList.size() > 0)
       {
 	String mesg(constructMessage());
 	mssErrorType.addMessage(mesg);
-	throw(mssErrorType);
-	// LogIO logIO;
-	// logIO << mssErrorType.getMesg() << LogIO::WARN;
+	LogIO logIO;
+	logIO << mssErrorType.getMesg() << LogIO::WARN << LogIO::POST;
       }
-  }
-
-  void MSSelectionErrorHandler::reset()
-  {
-    tokenList.resize(0);
-    messageList.resize(0);
   }
 
 } //# NAMESPACE CASACORE - END

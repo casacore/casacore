@@ -52,15 +52,18 @@
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/ms/MSSel/MSSelectionError.h>
+#include <casacore/ms/MSSel/MSSSpwErrorHandler.h>
 #include <casacore/ms/MSSel/MSSelectionTools.h>
 #include <casacore/ms/MSSel/MSSelectableTable.h>
 #include <casacore/ms/MSSel/MSSelectableMainColumn.h>
 #include <casacore/ms/MSSel/MSAntennaParse.h>
 #include <casacore/ms/MSSel/MSStateParse.h>
+#include <casacore/ms/MSSel/MSSpwParse.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casa/Utilities/CountedPtr.h>
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //----------------------------------------------------------------------------
@@ -76,7 +79,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), mssErrHandler_p(NULL), 
     isMS_p(True), toTENCalled_p(False)
   {
-    clear();
+    clear(); // Clear the internals of the MSSelection object
+    clearErrorHandlers(); // Clear the static error handlers
+    // Install the default error handlers
+    initErrorHandler(ANTENNA_EXPR);
+    initErrorHandler(STATE_EXPR);
+    initErrorHandler(SPW_EXPR);
   }
   
   //----------------------------------------------------------------------------
@@ -109,6 +117,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // using the setExpr* methods to do that keeps that state of the
     // object consistent.
     //
+    clear();// Clear the internals of the MSSelection object
+    clearErrorHandlers();// Clear the static error handlers
+    // Install the default error handlers
+    initErrorHandler(ANTENNA_EXPR);
+    initErrorHandler(STATE_EXPR);
+    initErrorHandler(SPW_EXPR);
     reset(ms,mode,
 	  timeExpr,
 	  antennaExpr,
@@ -160,6 +174,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     setTaQLExpr(taqlExpr);
     setStateExpr(stateExpr);
     setObservationExpr(observationExpr);
+    //clearErrorHandlers();
 
     if (mode==PARSE_NOW)
       fullTEN_p = toTableExprNode(&msLike);
@@ -183,11 +198,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // using the setExpr* methods to do that keeps that state of the
     // object consistent.
     //
-    //    msFace_p.setTable(ms);
-    //    ms_p = msFace_p.asMS();
     ms_p = &ms;
     
-    clear(); // Clear everything
+    clear(); // Clear the internals of the MSSelection object
     setAntennaExpr(antennaExpr);
     setFieldExpr(fieldExpr);
     setSpwExpr(spwExpr);
@@ -368,13 +381,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     if (mssErrHandler_p != NULL) 
       {
-	delete mssErrHandler_p;
-	mssErrHandler_p=MSAntennaParse::thisMSAErrorHandler=NULL;
-	mssErrHandler_p=MSStateParse::thisMSSErrorHandler=NULL;
+    	delete mssErrHandler_p;
+    	mssErrHandler_p=MSAntennaParse::thisMSAErrorHandler=NULL;
       }
-    mssErrHandler_p=MSAntennaParse::thisMSAErrorHandler=NULL;
-    mssErrHandler_p=MSStateParse::thisMSSErrorHandler=NULL;
-    //    mssErrHandler_p=NULL;
+    MSStateParse::cleanupErrorHandler();
+    MSSpwParse::cleanupErrorHandler();
   }
   
   void MSSelection::deleteNodes()
@@ -432,32 +443,42 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (MSAntennaParse::thisMSAErrorHandler == NULL)
 	    {
-	      if (mssErrHandler_p == NULL) mssErrHandler_p = new MSSelectionErrorHandler();
-	      setErrorHandler(ANTENNA_EXPR, mssErrHandler_p);
+	      if (mssErrHandler_p == NULL) 
+		{
+		  mssErrHandler_p = new MSSelectionErrorHandler();
+		  MSSelectionErrorHandler* tt = new MSSelectionErrorHandler();
+		  setErrorHandler(ANTENNA_EXPR, tt);//mssErrHandler_p);
+		}
 	    }
 	  else
-	    {
-	      //mssErrHandler_p = MSAntennaParse::thisMSAErrorHandler;
-	      MSAntennaParse::thisMSAErrorHandler->reset();
-	      //	mssErrHandler_p->reset();
-	    }
+	    MSAntennaParse::thisMSAErrorHandler->reset();
 	  break;
 	}
       case STATE_EXPR:
 	{
 	  if (MSStateParse::thisMSSErrorHandler == NULL)
 	    {
-	      if (mssErrHandler_p == NULL) mssErrHandler_p = new MSSelectionErrorHandler();
-	      setErrorHandler(STATE_EXPR, mssErrHandler_p);
+	      //if (mssErrHandler_p == NULL) mssErrHandler_p = new MSSelectionErrorHandler();
+	      MSSelectionErrorHandler *tt = new MSSelectionErrorHandler();
+	      setErrorHandler(STATE_EXPR, tt, True);
 	    }
-	  else
-	    {
-	      //mssErrHandler_p = MSAntennaParse::thisMSAErrorHandler;
-	      MSStateParse::thisMSSErrorHandler->reset();
-	      //	mssErrHandler_p->reset();
-	    }
+	   else
+	     MSStateParse::thisMSSErrorHandler->reset();
 	  break;
 	}
+      case SPW_EXPR:
+	{
+	  if (MSSpwParse::thisMSSpwErrorHandler == NULL)
+	    {
+	      // if (mssErrHandler_p == NULL) mssErrHandler_p = new MSSSpwErrorHandler();
+	      MSSSpwErrorHandler* tt = new MSSSpwErrorHandler();
+	      setErrorHandler(SPW_EXPR, tt, True /*overRide*/);
+	    }
+	  else
+	    MSSpwParse::thisMSSpwErrorHandler->reset();
+	  break;
+	}
+	
       default:  
 	throw(MSSelectionError(String("Wrong MSExprType in MSSelection::initErrorHandler()")));
 	break;
@@ -487,8 +508,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     TableExprNode condition;
     
-    initErrorHandler(ANTENNA_EXPR);
-    initErrorHandler(STATE_EXPR);
+    // initErrorHandler(ANTENNA_EXPR);
+    // initErrorHandler(STATE_EXPR);
+    // initErrorHandler(SPW_EXPR);
 
     try
       {
@@ -661,13 +683,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	runErrorHandler();
 	deleteNodes();
-	deleteErrorHandlers();
+	//deleteErrorHandlers();
 	throw(x);
       }	
 
     runErrorHandler();
-    deleteErrorHandlers();
     deleteNodes();
+    //deleteErrorHandlers();
     return condition;
   }
 
@@ -699,22 +721,55 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MSSelection::setErrorHandler(const MSExprType type,  MSSelectionErrorHandler* mssEH,
 				    const Bool overRide)
   {
+    //
+    // We make a copy (clone) of the supplied error handler pointer
+    // and manage that pointer internally.  This means that the
+    // supplied error handler must be set up before being passed here.
+    //
     switch (type)
       {
       case ANTENNA_EXPR:
 	{
 	  if (overRide)
-	    MSAntennaParse::thisMSAErrorHandler = mssEH;
+	    {
+	      if (mssEH == NULL) MSAntennaParse::thisMSAErrorHandler = mssEH;
+	      else MSAntennaParse::thisMSAErrorHandler = mssEH->clone();
+	    }
 	  else if (MSAntennaParse::thisMSAErrorHandler == NULL)
-	    MSAntennaParse::thisMSAErrorHandler = mssEH;
+	    {
+	      if (mssEH == NULL) MSAntennaParse::thisMSAErrorHandler = mssEH;
+	      else MSAntennaParse::thisMSAErrorHandler = mssEH->clone();
+	    }
 	  break;
 	}
       case STATE_EXPR:
 	{
 	  if (overRide)
-	    MSStateParse::thisMSSErrorHandler = mssEH;
+	    {
+	      MSStateParse::cleanupErrorHandler();
+	      if (mssEH == NULL) MSStateParse::thisMSSErrorHandler = mssEH;
+	      else MSStateParse::thisMSSErrorHandler = mssEH->clone();
+	    }
 	  else if (MSStateParse::thisMSSErrorHandler == NULL)
-	    MSStateParse::thisMSSErrorHandler = mssEH;
+	    {
+	      if (mssEH == NULL) MSStateParse::thisMSSErrorHandler = mssEH;
+	      else MSStateParse::thisMSSErrorHandler = mssEH->clone();
+	    }
+	  break;
+	}
+      case SPW_EXPR:
+	{
+	  if (overRide)
+	    {
+	      MSSpwParse::cleanupErrorHandler();
+	      if (mssEH == NULL) MSSpwParse::thisMSSpwErrorHandler = mssEH;
+	      else MSSpwParse::thisMSSpwErrorHandler = mssEH->clone();
+	    }
+	  else if (MSSpwParse::thisMSSpwErrorHandler == NULL)
+	    {
+	      if (mssEH == NULL) MSSpwParse::thisMSSpwErrorHandler = mssEH;
+	      else MSSpwParse::thisMSSpwErrorHandler = mssEH->clone();
+	    }
 	  break;
 	}
       default: throw(MSSelectionError(String("Wrong MSExprType in MSSelection::setErrorHandler()")));
@@ -734,6 +789,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	MSSelectionStateParseError msStateException(String(""));
 	MSStateParse::thisMSSErrorHandler->handleError(msStateException);
+      }
+
+    if (MSSpwParse::thisMSSpwErrorHandler->nMessages() > 0)
+      {
+	MSSelectionSpwParseError msSpwException(String(""));
+	MSSpwParse::thisMSSpwErrorHandler->handleError(msSpwException);
       }
   }
 
@@ -792,7 +853,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   //----------------------------------------------------------------------------
-  
+  //
+  // Forst the setting of the static error handlers to a known state
+  // (NULL)
+  //
+  void MSSelection::clearErrorHandlers()
+  {
+    setErrorHandler(STATE_EXPR,NULL,True);
+    setErrorHandler(SPW_EXPR,NULL,True);
+    setErrorHandler(ANTENNA_EXPR,NULL,True);
+  }
+  //----------------------------------------------------------------------------
   void MSSelection::clear(const MSExprType type)
   {
     if (type==NO_EXPR)
@@ -1071,6 +1142,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     return False;
   }
+  const String MSSelection::getExpr(const MSExprType type)
+  {
+    String exprStr;
+    switch (type)
+      {
+      case ANTENNA_EXPR:     exprStr = antennaExpr_p;break;
+      case FIELD_EXPR:       exprStr = fieldExpr_p;break;
+      case SPW_EXPR:         exprStr = spwExpr_p;break;
+      case SCAN_EXPR:        exprStr = scanExpr_p;break;
+      case ARRAY_EXPR:       exprStr = arrayExpr_p;break;
+      case TIME_EXPR:        exprStr = timeExpr_p;break;
+      case UVDIST_EXPR:      exprStr = uvDistExpr_p;break;
+      case TAQL_EXPR:        exprStr = taqlExpr_p;break;
+      case POLN_EXPR:        exprStr = polnExpr_p;break;
+      case STATE_EXPR:       exprStr = stateExpr_p;break;
+      case OBSERVATION_EXPR: exprStr = observationExpr_p;break;
+      default:;
+      };
+    return exprStr;
+  }
+
   //----------------------------------------------------------------------------
   // This function also optionally sorts the matrix of SPWIDs and
   // associated channel selection indices in ascending order of
@@ -1149,10 +1241,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	Double avgChanWidth = chanList_l(i,3)*sum(msSpwSubTable.chanWidth()(spwID))
 	  /msSpwSubTable.chanWidth()(spwID).nelements();
 	
-	freqList_l(i,0) = (Double)chanList_l(i,0);
-	freqList_l(i,1) = chanFreq(IPosition(1,chanList_l(i,1)));
-	freqList_l(i,2) = chanFreq(IPosition(1,chanList_l(i,2)));
-	freqList_l(i,3) = avgChanWidth;
+	Int validStartChan, validEndChan, nChan=chanFreq.nelements();
+	freqList_l(i,0) = (Double)chanList_l(i,0); // The SPW ID
+	validStartChan = min(nChan-1,chanList_l(i,1));
+	validEndChan = max(nChan-1,chanList_l(i,2));
+	freqList_l(i,1) = chanFreq(IPosition(1,validStartChan)); //chanFreq(IPosition(1,chanList_l(i,1))); // The the freq. of start channel in Hz
+	freqList_l(i,2) = chanFreq(IPosition(1,validEndChan));   //chanFreq(IPosition(1,chanList_l(i,2))); // The freq. of stop channel in Hz
+	freqList_l(i,3) = avgChanWidth;  // The channel width in Hz
       }
     
     return freqList_l;
@@ -1289,6 +1384,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       setUvDistExpr(selectionItem.asString("poln"));
       //    cout << polnExpr_p << ", poln" << endl;
     }
+    
+    clearErrorHandlers();
   }
   
   Bool MSSelection::definedAndSet(const Record& inpRec, const String& fieldName)
