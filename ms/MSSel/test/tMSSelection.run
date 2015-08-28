@@ -1,0 +1,82 @@
+#!/bin/sh
+# -----------------------------------------------------------------------------
+# Usage: tMSSelection.run
+# -----------------------------------------------------------------------------
+# This script executes the program tMSSelection to test the
+# MSSelection module.
+#
+# $Id$
+#-----------------------------------------------------------------------------
+
+  #CASADEMO=`echo $CASAPATH | awk '{printf("%s/casacore.git/ms/MSSel/test/",$1)}'`+'/'
+  MS=$CASADEMO"mssel_test_small.ms"
+
+  BINPATH='/home/tara2/sanjay/casa_trunk_pristine/trunk/casacore.git/build/ms/MSSel/test/'
+
+  if [ ${#CASAPATH} = 0 ]
+  then
+     echo "UNTESTED: tMSSelection.run (CASAPATH not defined)"
+     exit 3
+  fi
+
+  function runCmd(){
+      #echo "Test:$1 "$2; 
+      eval "$2"
+      }
+
+  function getTestMS() {
+      tar zxf $testsrcdir/$MS.tgz
+  }
+
+  function cleanup() {
+      \rm -rf $MS
+  }
+
+  # Get the test MS (un-tar it from $testsrcdir).
+  getTestMS;
+
+  runCmd 1 "$casa_checktool tMSSelection ms=$MS baseline='1,2,3'";
+  runCmd 2 "$casa_checktool tMSSelection ms=$MS baseline='1,2,3&'"; 
+  runCmd 3 "$casa_checktool tMSSelection ms=$MS baseline='1,2,3&*'"; 
+  runCmd 4 "$casa_checktool tMSSelection ms=$MS baseline='1,2,3&&'";
+  runCmd 5 "$casa_checktool tMSSelection ms=$MS baseline='1,2,3&&&'";
+  runCmd 6 "$casa_checktool tMSSelection ms=$MS baseline='!1,2,3&&&'";
+  runCmd 7 "$casa_checktool tMSSelection ms=$MS baseline='1,2,3&4,5,6'";
+  runCmd 8 "$casa_checktool tMSSelection ms=$MS baseline='!1,2,3&4,5,6'";
+  runCmd 9 "$casa_checktool tMSSelection ms=$MS baseline='!1,2,3&'";
+
+  runCmd 10 "$casa_checktool tMSSelection ms=$MS baseline='1,2,3&;1,2,3&&'";
+  runCmd 11 "$casa_checktool tMSSelection ms=$MS baseline='1,2,3&;1,2,3&&&'";
+  runCmd 12 "$casa_checktool tMSSelection ms=$MS baseline='1,2,3&;!1,2,3&&&'";
+  runCmd 13 "$casa_checktool tMSSelection ms=$MS baseline='*;!1&2,3,4'";
+
+  runCmd 14 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11'"
+  runCmd 15 "$casa_checktool tMSSelection ms=$MS baseline='DV*@A1*,DV*@P*,DV*@S*&(DV*)@(P*);!5;!11'"
+  runCmd 16 "$casa_checktool tMSSelection ms=$MS baseline='DV*@A1*,DV*@P*,DV*@S*;!20;!21'"
+
+  runCmd 17 "$casa_checktool tMSSelection ms=$MS baseline='1,2,3&' spw='ALMA*'";
+  runCmd 18 "$casa_checktool tMSSelection ms=$MS baseline='1,2,3&' spw='ALMA*FULL*:85290~86290.305MHz'";
+  runCmd 19 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*)' spw='ALMA*FULL*:5~10;20~30;50~70'";
+  runCmd 20 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70'";
+  runCmd 21 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='0~4:5~10;20~30;50~70' field='0'";
+  runCmd 22 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' field='J16*'";
+  runCmd 23 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*PHASE*'";
+  runCmd 24 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*OFF*'";
+  runCmd 25 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*OFF*' time='*+0:0:1'";
+  runCmd 26 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*OFF*' time='*+0:0:1' uvdist='>1000m'";
+  runCmd 27 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*OFF*' time='*+0:0:1' uvdist='>1000m:50%'";
+  runCmd 28 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX'";
+  runCmd 29 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX'";
+
+  runCmd 30 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*,*JUNK*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'";
+  runCmd 31 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz,x' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'";
+  runCmd 32 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11;x' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'";
+
+  runCmd 33 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*,*JUNK*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'";
+  runCmd 34 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz,x' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'";
+  runCmd 35 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11;x' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'";
+
+  #
+  # Remove the test MS and any other cleanup required.
+  #
+  cleanup;

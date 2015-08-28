@@ -45,6 +45,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     if (MSStateParse::node_p!=0x0) delete MSStateParse::node_p;
     MSStateParse::node_p=0x0;
+    // if (MSStateParse::thisMSSErrorHandler!=0x0) delete MSStateParse::thisMSSErrorHandler;
+    // MSStateParse::thisMSSErrorHandler=0x0;
     node_p = new TableExprNode();
   }
   
@@ -54,7 +56,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     if (MSStateParse::node_p!=0x0) delete MSStateParse::node_p;
     MSStateParse::node_p=0x0;
-    if(node_p) delete node_p;
+    // if (MSStateParse::thisMSSErrorHandler!=0x0) delete MSStateParse::thisMSSErrorHandler;
+    // MSStateParse::thisMSSErrorHandler=0x0;
     node_p = new TableExprNode();
     idList.resize(0);
     //    setMS(ms);

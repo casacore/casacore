@@ -32,6 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/ms/MSSel/MSParse.h>
 #include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/ms/MSSel/MSSelectionErrorHandler.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -115,11 +116,14 @@ public:
   // Get table expression node object.
   static const TableExprNode* node();
   static MSSpwParse* thisMSSParser;
+  static MSSelectionErrorHandler* thisMSSpwErrorHandler;
   static Vector<Int> selectedDDIDs() {return ddidList;}
   static Vector<Int> selectedIDs() {return idList;}
   static Matrix<Int> selectedChanIDs() {return chanList;}
   static void reset() {idList.resize(0);chanList.resize(0,0);ddidList.resize(0);};
-  static void cleanup() {if (node_p) delete node_p;node_p=0x0;};
+  static void cleanupNode() {if (node_p) delete node_p;node_p=0x0;}
+  static void cleanupErrorHandler() {if (thisMSSpwErrorHandler) delete thisMSSpwErrorHandler;thisMSSpwErrorHandler=0x0;}
+  static void cleanup() {cleanupNode(); cleanupErrorHandler();}
 
   MSSpectralWindow& subTable() {return spwSubTable_p;}
 private:

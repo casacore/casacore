@@ -13,7 +13,7 @@
 
   if [ ${#AIPSPATH} = 0 ]
   then
-     echo "UNTESTED: tMSSelection.run (AIPSPATH not defined)"
+     echo "UNTESTED: tMSFitsSelection.run (AIPSPATH not defined)"
      exit 3
   fi
   IN='3C273XC1.fits'
@@ -26,8 +26,8 @@
 
   if [ ! -e $FITS ]
   then
-     echo "UNTESTED: tMSSelection.run ($FITS not found)"
+     echo "UNTESTED: tMSFitsSelection.run ($FITS not found)"
      exit 3
   fi
 
-  $casa_checktool ./tMSSelection fits=$FITS ms=$MS
+  $casa_checktool ./tMSFitsSelection fits=$FITS ms=$MS
