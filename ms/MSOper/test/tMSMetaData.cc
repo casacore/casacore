@@ -2042,6 +2042,74 @@ void testIt(MSMetaData& md) {
             }
         }
         {
+            cout << "*** test getChanEffectiveBWs()" << endl;
+            vector<QVector<Double> > ebw = md.getChanEffectiveBWs(False);
+            vector<QVector<Double> >::const_iterator iter = ebw.begin();
+            vector<QVector<Double> >::const_iterator end = ebw.end();
+            Double expec = 0;
+            while (iter != end) {
+                size_t nchans = iter->size();
+                if (nchans == 1) {
+                    ++iter;
+                    continue;
+                }
+                else if (nchans == 4) {
+                    expec = 7.5e9;
+                }
+                else if (nchans == 128) {
+                    expec = 1.5625e7;
+                }
+                else if (nchans == 3840) {
+                    expec = 30517.578125;
+                }
+                Vector<Double> vals = iter->getValue();
+                Vector<Double>::const_iterator jiter = vals.begin();
+                Vector<Double>::const_iterator jend = vals.end();
+                while (jiter != jend) {
+                    AlwaysAssert(*jiter == expec, AipsError);
+                    ++jiter;
+                }
+                ++iter;
+            }
+            vector<QVector<Double> > ebwv = md.getChanEffectiveBWs(True);
+            AlwaysAssert(near(ebwv[9].getValue()[0], 20.32464960, 1e-8), AipsError);
+            AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
+        }
+        {
+            cout << "*** test getChanResolutions()" << endl;
+            vector<QVector<Double> > ebw = md.getChanResolutions(False);
+            vector<QVector<Double> >::const_iterator iter = ebw.begin();
+            vector<QVector<Double> >::const_iterator end = ebw.end();
+            Double expec = 0;
+            while (iter != end) {
+                size_t nchans = iter->size();
+                if (nchans == 1) {
+                    ++iter;
+                    continue;
+                }
+                else if (nchans == 4) {
+                    expec = 7.5e9;
+                }
+                else if (nchans == 128) {
+                    expec = 1.5625e7;
+                }
+                else if (nchans == 3840) {
+                    expec = 30517.578125;
+                }
+                Vector<Double> vals = iter->getValue();
+                Vector<Double>::const_iterator jiter = vals.begin();
+                Vector<Double>::const_iterator jend = vals.end();
+                while (jiter != jend) {
+                    AlwaysAssert(*jiter == expec, AipsError);
+                    ++jiter;
+                }
+                ++iter;
+            }
+            vector<QVector<Double> > ebwv = md.getChanResolutions(True);
+            AlwaysAssert(near(ebwv[9].getValue()[0], 20.32464960, 1e-8), AipsError);
+            AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
+        }
+        {
 			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}

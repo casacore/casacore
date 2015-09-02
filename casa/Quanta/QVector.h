@@ -66,6 +66,13 @@ template <class T> class QVector : public Quantum<Vector<T> > {
 
 	QVector(const Vector<T>& v, const Unit& u);
 
+	// convert a Vector of Quanta to a QVector. Useful
+	// when reading a table column of Quanta. All elements in
+	// q will be converted to units of the first element in q.
+	// An exception will be thrown if not all elements in q conform
+	// to the same unit.
+	QVector(const Vector<Quantum<T> >& q);
+
 	// Copy constructor (deep copy)
 	QVector(const QVector& other);
 
