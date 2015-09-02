@@ -429,17 +429,31 @@ public:
 
 	vector<Double> getBandWidths() const;
 
+	vector<Quantity> getCenterFreqs() const;
+
+	// get the effective bandwidth for each channel. Each element in
+	// the returned vector represents a separate spectral window, with
+	// ID given by its location in the vector. If asVelWidths is True,
+	// convert the values to velocity widths.
+	vector<QVD> getChanEffectiveBWs(Bool asVelWidths) const;
+
 	vector<QVD > getChanFreqs() const;
+
+	// get the resolution for each channel. Each element in
+	// the returned vector represents a separate spectral window, with
+	// ID given by its location in the vector. If asVelWidths is True,
+    // convert the values to velocity widths.
+	vector<QVD> getChanResolutions(Bool asVelWidths) const;
 
 	vector<QVD > getChanWidths() const;
 
-	vector<Int> getNetSidebands();
+	vector<Quantity> getMeanFreqs() const;
 
-	vector<Quantity> getMeanFreqs();
-
-	vector<Quantity> getCenterFreqs() const;
+	vector<Int> getNetSidebands() const;
 
 	vector<MFrequency> getRefFreqs() const;
+
+
 
 	vector<uInt> nChans() const;
 
@@ -489,6 +503,10 @@ private:
 		// from the REF_FREQUENCY column
 		MFrequency reffreq;
 		String name;
+		// EFFECTIVE_BANDWIDTH
+		QVD effbw;
+		// RESOLUTION
+		QVD resolution;
 	};
 
 	struct TimeStampProperties {
@@ -592,8 +610,6 @@ private:
 
 	mutable vector<std::pair<Quantity, Quantity> > _properMotions;
 
-	//mutable CountedPtr<std::map<Double, TimeStampProperties> > _timeStampPropsMap;
-
 	// disallow copy constructor and = operator
 	MSMetaData(const MSMetaData&);
 	MSMetaData operator =(const MSMetaData&);
@@ -615,8 +631,6 @@ private:
 	Bool _cacheUpdated(const Float incrementInBytes) const;
 
 	void _checkField(uInt fieldID) const;
-
-	//static void _checkScan(const Int scan, const std::set<Int> allScans);
 
 	void _checkScan(const ScanKey& key) const;
 
@@ -640,6 +654,11 @@ private:
 		Record& parent,
 		const SubScanProperties& subScanProps
 	);
+
+	// convert a QVD in frequency units to velocity units using
+	// the give reference frequency. No explicit checking is done
+	// for unit correctness of the inputs.
+	static QVD _freqWidthToVelWidth(const QVD& v, const MFrequency& refFreq);
 
 	vector<String> _getAntennaNames(
 		std::map<String, uInt>& namesToIDsMap
