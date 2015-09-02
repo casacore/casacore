@@ -658,7 +658,7 @@ private:
 	// convert a QVD in frequency units to velocity units using
 	// the give reference frequency. No explicit checking is done
 	// for unit correctness of the inputs.
-	static QVD _freqWidthToVelWidth(const QVD& v, const MFrequency& refFreq);
+	static QVD _freqWidthToVelWidth(const QVD& v, const Quantity& refFreq);
 
 	vector<String> _getAntennaNames(
 		std::map<String, uInt>& namesToIDsMap

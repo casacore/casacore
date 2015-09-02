@@ -2072,7 +2072,7 @@ void testIt(MSMetaData& md) {
                 ++iter;
             }
             vector<QVector<Double> > ebwv = md.getChanEffectiveBWs(True);
-            AlwaysAssert(near(ebwv[9].getValue()[0], 20.32464960, 1e-8), AipsError);
+            AlwaysAssert(near(ebwv[9].getValue()[0], 20.23684342, 1e-8), AipsError);
             AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
         }
         {
@@ -2106,7 +2106,7 @@ void testIt(MSMetaData& md) {
                 ++iter;
             }
             vector<QVector<Double> > ebwv = md.getChanResolutions(True);
-            AlwaysAssert(near(ebwv[9].getValue()[0], 20.32464960, 1e-8), AipsError);
+            AlwaysAssert(near(ebwv[9].getValue()[0], 20.23684342, 1e-8), AipsError);
             AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
         }
         {
