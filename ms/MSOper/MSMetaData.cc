@@ -1620,16 +1620,15 @@ vector<Double> MSMetaData::getBandWidths() const {
 }
 
 QVD MSMetaData::_freqWidthToVelWidth(
-    const QVD& v, const MFrequency& refFreq
+    const QVD& v, const Quantity& refFreq
 ) {
     QVD dv = v;
     dv.convert("Hz");
-    dv = dv/refFreq.get("Hz").getValue();
+    dv = dv/refFreq.getValue("Hz");
     dv.scale(C::c/1000);
     dv.setUnit("km/s");
     return dv;
 }
-
 
 vector<QVD>MSMetaData::getChanEffectiveBWs(Bool asVelWidths) const {
     std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
@@ -1645,11 +1644,11 @@ vector<QVD>MSMetaData::getChanEffectiveBWs(Bool asVelWidths) const {
         if (
             asVelWidths
             && iter->effbw.isConform("Hz")
-            && iter->reffreq.get("Hz").getValue() > 0
+            && iter->meanfreq.getValue() > 0
         ) {
 
             out.push_back(
-                _freqWidthToVelWidth(iter->effbw, iter->reffreq)
+                _freqWidthToVelWidth(iter->effbw, iter->meanfreq)
             );
         }
         else {
@@ -1689,10 +1688,10 @@ vector<QVD>MSMetaData::getChanResolutions(Bool asVelWidths) const {
         if (
             asVelWidths
             && iter->resolution.isConform("Hz")
-            && iter->reffreq.get("Hz").getValue() > 0
+            && iter->meanfreq.getValue() > 0
         ) {
             out.push_back(
-                _freqWidthToVelWidth(iter->resolution, iter->reffreq)
+                _freqWidthToVelWidth(iter->resolution, iter->meanfreq)
             );
         }
         else {
