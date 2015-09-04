@@ -97,6 +97,16 @@ Bool operator<(const ArrayKey& lhs, const ArrayKey& rhs);
 // construct scan keys given a set of scan numbers and an ArrayKey
 std::set<ScanKey> scanKeys(const std::set<Int>& scans, const ArrayKey& arrayKey);
 
+// represents primary key in the SOURCE table
+struct SourceKey {
+    // SOURCE_ID column
+    uInt id;
+    uInt spw;
+};
+
+// define operator<() so it can be used as a key in std::map
+Bool operator<(const SourceKey& lhs, const SourceKey& rhs);
+
 }
 
 #endif

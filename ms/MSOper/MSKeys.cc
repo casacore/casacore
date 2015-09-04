@@ -137,6 +137,16 @@ std::set<ScanKey> scanKeys(
 	return scanKeys;
 }
 
+Bool operator<(const SourceKey& lhs, const SourceKey& rhs) {
+    if (lhs.id < rhs.id) {
+        return True;
+    }
+    else if (lhs.id == rhs.id && lhs.spw < rhs.spw) {
+        return True;
+    }
+    return False;
+}
+
 
 }
 
