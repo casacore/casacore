@@ -537,10 +537,9 @@ void showHelp()
   cerr << endl;
   cerr << "TaQL is the query language for casacore tables and is described at"
        << endl;
-  cerr << "  http://www.astron.nl/casacore/trunk/casacore/doc/notes/199.html"
-       << endl;
+  cerr << "  http://casacore.github.io/casacore-notes/199.html" << endl;
   cerr << "taql can be started with multiple arguments containing options and" << endl;
-  cerr << "an optional TaQL command as the last argument." << endl;
+  cerr << "an optional TaQL command as the last argument(s)." << endl;
   cerr << "It will run interactively if no TaQL command is given. `If possible," << endl;
   cerr << "interactive commands are kept in $HOME/.taql_history for later reuse." << endl;
   cerr << "Use q, quit, exit, or ^D to exit." << endl;
@@ -859,9 +858,15 @@ int main (int argc, const char* argv[])
     }
     prefix = "using style " + style + ' ';
     if (st < argc) {
+      // A command can be given as multiple parameters to make tab-completion
+      // easier. Thus combine it all.
+      String command(argv[st]);
+      while (++st < argc) {
+        command += ' ' + String(argv[st]);
+      }
       // Execute the given command.
       doCommand (printCommand==1, printSelect==1, printMeas==1, printRows==1,
-                 String(), prefix, argv[st], vector<const Table*>());
+                 String(), prefix, command, vector<const Table*>());
     } else {
     // Ask the user for commands.
       cout << "Using default TaQL style " << style << endl;

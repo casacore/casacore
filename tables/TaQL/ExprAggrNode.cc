@@ -52,6 +52,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   (Block<Int>& dtypeOper, ValueType& resVT, FunctionType ftype,
    PtrBlock<TableExprNodeRep*>& nodes)
   {
+    if (ftype >= FirstAggrArrayFunc  &&  ftype < LastAggrArrayFunc  &&
+        nodes.size() > 0  &&  nodes[0]->valueType() != VTArray) {
+      throw TableInvExpr ("Argument of GxxxS functions has to be an array");
+    }
     resVT = VTScalar;
     switch (ftype) {
     case countallFUNC:
@@ -91,18 +95,31 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       checkNumOfArg (0, 0, nodes);
       resVT = VTArray;
       return checkDT (dtypeOper, NTAny, NTInt, nodes);
+    case gminsFUNC:
+    case gmaxsFUNC:
+      resVT = VTArray;
     case gminFUNC:
     case gmaxFUNC:
       checkNumOfArg (1, 1, nodes);
       return checkDT (dtypeOper, NTReal, NTReal, nodes);
+    case gsumsFUNC:
+    case gproductsFUNC:
+    case gsumsqrsFUNC:
+      resVT = VTArray;
     case gsumFUNC:
     case gproductFUNC:
     case gsumsqrFUNC:
       checkNumOfArg (1, 1, nodes);
       return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
+    case gmeansFUNC:
+      resVT = VTArray;
     case gmeanFUNC:
       checkNumOfArg (1, 1, nodes);
       return checkDT (dtypeOper, NTNumeric, NTDouCom, nodes);
+    case gvariancesFUNC:
+    case gstddevsFUNC:
+    case grmssFUNC:
+      resVT = VTArray;
     case gvarianceFUNC:
     case gstddevFUNC:
     case grmsFUNC:
@@ -117,10 +134,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                             "has to be a constant scalar");
       }
       return checkDT (dtypeOper, NTReal, NTDouble, nodes);
+    case ganysFUNC:
+    case gallsFUNC:
+      resVT = VTArray;
     case ganyFUNC:
     case gallFUNC:
       checkNumOfArg (1, 1, nodes);
       return checkDT (dtypeOper, NTBool, NTBool, nodes);
+    case gntruesFUNC:
+    case gnfalsesFUNC:
+      resVT = VTArray;
     case gntrueFUNC:
     case gnfalseFUNC:
       checkNumOfArg (1, 1, nodes);
@@ -372,6 +395,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   Double TableExprAggrNode::getDouble (const TableExprId& id)
   {
+    if (dataType() != NTDouble) {
+      return TableExprNodeRep::getDouble (id);
+    }
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
     if (itsFunc->isLazy()) {
       return itsFunc->getDouble (aid.result().ids(id.rownr()));
@@ -381,6 +407,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   DComplex TableExprAggrNode::getDComplex (const TableExprId& id)
   {
+    if (dataType() != NTComplex) {
+      return TableExprNodeRep::getDComplex (id);
+    }
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
     if (itsFunc->isLazy()) {
       return itsFunc->getDComplex (aid.result().ids(id.rownr()));

@@ -330,5 +330,33 @@ Array<DComplex> RealToComplex(const Array<Double> &rarray)
 }
 
 
+IPosition checkExpandArray (IPosition& mult,
+                            const IPosition& inShape,
+                            const IPosition& outShape,
+                            const IPosition& alternate)
+{
+  if (inShape.size() == 0  ||  inShape.size() != outShape.size()) {
+    throw ArrayError("expandArray: input and output array must have the "
+                     "same dimensionality and cannot be empty");
+  }
+  mult.resize (inShape.size());
+  IPosition alt(inShape.size(), 0);
+  for (uInt i=0; i<inShape.size(); ++i) {
+    if (inShape[i] <= 0  ||  inShape[i] > outShape[i]  ||
+        outShape[i] % inShape[i] != 0) {
+      throw ArrayError("expandArray: length of each input array axis must "
+                       "be <= output axis and divide evenly");
+    }
+    mult[i] = outShape[i] / inShape[i];
+    // Note that for an input length 1, linear and alternate come to the same.
+    // Linear is faster, so use that if possible.
+    if (i < alternate.size()  &&  inShape[i] > 1) {
+      alt[i] = alternate[i];
+    }
+  }
+  return alt;
+}
+
+
 } //# NAMESPACE CASACORE - END
 

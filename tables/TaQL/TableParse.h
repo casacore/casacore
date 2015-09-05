@@ -667,6 +667,7 @@ private:
 		      Int ndim, const IPosition& shape,
 		      const String& dmType, const String& dmGroup,
 		      const String& comment,
+                      const TableRecord& keywordSet,
 		      const String& unitName);
 
   // Find the names of all stored columns in a table.
@@ -746,6 +747,8 @@ private:
   Block<String> columnOldNames_p;
   //# The new data type for a column.
   Block<String> columnDtypes_p;
+  //# The keywords used in a column.
+  Block<TableRecord> columnKeywords_p;
   //# Number of real expressions used in selected columns.
   uInt nrSelExprUsed_p;
   //# Distinct values in output?

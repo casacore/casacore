@@ -397,6 +397,466 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 
+  TableExprGroupArrayAnys::TableExprGroupArrayAnys(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayBool (node)
+  {}
+  TableExprGroupArrayAnys::~TableExprGroupArrayAnys()
+  {}
+  void TableExprGroupArrayAnys::apply (const TableExprId& id)
+  {
+    Array<Bool> arr(itsOperand->getArrayBool(id));
+    if (! arr.empty()) {
+      if (checkShape (arr, "GANYS")) {
+        itsValue = arr;
+      } else {
+        itsValue = itsValue || arr;
+      }
+    }
+  }
+
+  TableExprGroupArrayAlls::TableExprGroupArrayAlls(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayBool (node)
+  {}
+  TableExprGroupArrayAlls::~TableExprGroupArrayAlls()
+  {}
+  void TableExprGroupArrayAlls::apply (const TableExprId& id)
+  {
+    Array<Bool> arr(itsOperand->getArrayBool(id));
+    if (! arr.empty()) {
+      if (checkShape (arr, "GALLS")) {
+        itsValue = arr;
+      } else {
+        itsValue = itsValue && arr;
+      }
+    }
+  }
+
+  TableExprGroupArrayNTrues::TableExprGroupArrayNTrues(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayInt (node)
+  {}
+  TableExprGroupArrayNTrues::~TableExprGroupArrayNTrues()
+  {}
+  void TableExprGroupArrayNTrues::apply (const TableExprId& id)
+  {
+    Array<Bool> arr(itsOperand->getArrayBool(id));
+    if (! arr.empty()) {
+      if (checkShape (arr, "GNTRUES")) {
+        itsValue = 0;
+      }
+      Bool deleteIt;
+      const Bool* inPtr = arr.getStorage (deleteIt);
+      for (size_t i=0; i<arr.size(); ++i) {
+        if (inPtr[i]) {
+          itsValue.data()[i]++;
+        }
+      }
+      arr.freeStorage (inPtr, deleteIt);
+    }
+  }
+
+  TableExprGroupArrayNFalses::TableExprGroupArrayNFalses(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayInt (node)
+  {}
+  TableExprGroupArrayNFalses::~TableExprGroupArrayNFalses()
+  {}
+  void TableExprGroupArrayNFalses::apply (const TableExprId& id)
+  {
+    Array<Bool> arr(itsOperand->getArrayBool(id));
+    if (! arr.empty()) {
+      if (checkShape (arr, "GNFALSES")) {
+        itsValue = 0;
+      }
+      Bool deleteIt;
+      const Bool* inPtr = arr.getStorage (deleteIt);
+      for (size_t i=0; i<arr.size(); ++i) {
+        if (! inPtr[i]) {
+          itsValue.data()[i]++;
+        }
+      }
+      arr.freeStorage (inPtr, deleteIt);
+    }
+  }
+
+
+  TableExprGroupMinsArrayInt::TableExprGroupMinsArrayInt(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayInt (node)
+  {}
+  TableExprGroupMinsArrayInt::~TableExprGroupMinsArrayInt()
+  {}
+  void TableExprGroupMinsArrayInt::apply (const TableExprId& id)
+  {
+    Array<Int64> arr = itsOperand->getArrayInt(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GMINS")) {
+        itsValue = arr;
+      } else {
+        itsValue = min(itsValue, arr);
+      }
+    }
+  }
+
+  TableExprGroupMaxsArrayInt::TableExprGroupMaxsArrayInt(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayInt (node)
+  {}
+  TableExprGroupMaxsArrayInt::~TableExprGroupMaxsArrayInt()
+  {}
+  void TableExprGroupMaxsArrayInt::apply (const TableExprId& id)
+  {
+    Array<Int64> arr = itsOperand->getArrayInt(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GMAXS")) {
+        itsValue = arr;
+      } else {
+        itsValue = max(itsValue, arr);
+      }
+    }
+  }
+
+  TableExprGroupSumsArrayInt::TableExprGroupSumsArrayInt(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayInt (node)
+  {}
+  TableExprGroupSumsArrayInt::~TableExprGroupSumsArrayInt()
+  {}
+  void TableExprGroupSumsArrayInt::apply (const TableExprId& id)
+  {
+    Array<Int64> arr = itsOperand->getArrayInt(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GSUMS")) {
+        itsValue = arr;
+      } else {
+        itsValue += arr;
+      }
+    }
+  }
+
+  TableExprGroupProductsArrayInt::TableExprGroupProductsArrayInt(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayInt (node)
+  {}
+  TableExprGroupProductsArrayInt::~TableExprGroupProductsArrayInt()
+  {}
+  void TableExprGroupProductsArrayInt::apply (const TableExprId& id)
+  {
+    Array<Int64> arr = itsOperand->getArrayInt(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GPRODUCTS")) {
+        itsValue = arr;
+      } else {
+        itsValue *= arr;
+      }
+    }
+  }
+
+  TableExprGroupSumSqrsArrayInt::TableExprGroupSumSqrsArrayInt(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayInt (node)
+  {}
+  TableExprGroupSumSqrsArrayInt::~TableExprGroupSumSqrsArrayInt()
+  {}
+  void TableExprGroupSumSqrsArrayInt::apply (const TableExprId& id)
+  {
+    Array<Int64> arr = itsOperand->getArrayInt(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GSUMSQRS")) {
+        itsValue = arr*arr;
+      } else {
+        itsValue += arr*arr;
+      }
+    }
+  }
+
+
+  TableExprGroupMinsArrayDouble::TableExprGroupMinsArrayDouble(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDouble (node)
+  {}
+  TableExprGroupMinsArrayDouble::~TableExprGroupMinsArrayDouble()
+  {}
+  void TableExprGroupMinsArrayDouble::apply (const TableExprId& id)
+  {
+    Array<Double> arr = itsOperand->getArrayDouble(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GMINS")) {
+        itsValue = arr;
+      } else {
+        itsValue = min(itsValue, arr);
+      }
+    }
+  }
+
+  TableExprGroupMaxsArrayDouble::TableExprGroupMaxsArrayDouble(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDouble (node)
+  {}
+  TableExprGroupMaxsArrayDouble::~TableExprGroupMaxsArrayDouble()
+  {}
+  void TableExprGroupMaxsArrayDouble::apply (const TableExprId& id)
+  {
+    Array<Double> arr = itsOperand->getArrayDouble(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GMAXS")) {
+        itsValue = arr;
+      } else {
+        itsValue = max(itsValue, arr);
+      }
+    }
+  }
+
+  TableExprGroupSumsArrayDouble::TableExprGroupSumsArrayDouble(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDouble (node)
+  {}
+  TableExprGroupSumsArrayDouble::~TableExprGroupSumsArrayDouble()
+  {}
+  void TableExprGroupSumsArrayDouble::apply (const TableExprId& id)
+  {
+    Array<Double> arr = itsOperand->getArrayDouble(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GSUMS")) {
+        itsValue = arr;
+      } else {
+        itsValue += arr;
+      }
+    }
+  }
+
+  TableExprGroupProductsArrayDouble::TableExprGroupProductsArrayDouble(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDouble (node)
+  {}
+  TableExprGroupProductsArrayDouble::~TableExprGroupProductsArrayDouble()
+  {}
+  void TableExprGroupProductsArrayDouble::apply (const TableExprId& id)
+  {
+    Array<Double> arr = itsOperand->getArrayDouble(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GPRODUCTS")) {
+        itsValue = arr;
+      } else {
+        itsValue *= arr;
+      }
+    }
+  }
+
+  TableExprGroupSumSqrsArrayDouble::TableExprGroupSumSqrsArrayDouble(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDouble (node)
+  {}
+  TableExprGroupSumSqrsArrayDouble::~TableExprGroupSumSqrsArrayDouble()
+  {}
+  void TableExprGroupSumSqrsArrayDouble::apply (const TableExprId& id)
+  {
+    Array<Double> arr = itsOperand->getArrayDouble(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GSUMSQRS")) {
+        itsValue = arr*arr;
+      } else {
+        itsValue += arr*arr;
+      }
+    }
+  }
+
+  TableExprGroupMeansArrayDouble::TableExprGroupMeansArrayDouble(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDouble (node)
+  {}
+  TableExprGroupMeansArrayDouble::~TableExprGroupMeansArrayDouble()
+  {}
+  void TableExprGroupMeansArrayDouble::apply (const TableExprId& id)
+  {
+    Array<Double> arr = itsOperand->getArrayDouble(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GMEANS")) {
+        // Future: if arr is a masked array, only add where not masked
+        itsValue = arr;
+        itsNr.resize (arr.shape());
+        itsNr = 1;
+      } else {
+        itsValue += arr;
+        itsNr += (Int64)1;
+      }
+    }
+  }
+  void TableExprGroupMeansArrayDouble::finish()
+  {
+    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),
+                 AipsError);
+    Array<Double>::iterator itv = itsValue.begin();
+    for (Array<Int64>::const_iterator itn = itsNr.begin();
+         itn != itsNr.end(); ++itn, ++itv) {
+      if (*itn > 0) {
+        *itv /= *itn;
+      }
+    }
+  }
+
+  TableExprGroupVariancesArrayDouble::TableExprGroupVariancesArrayDouble(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDouble (node)
+  {}
+  TableExprGroupVariancesArrayDouble::~TableExprGroupVariancesArrayDouble()
+  {}
+  void TableExprGroupVariancesArrayDouble::apply (const TableExprId& id)
+  {
+    // Calculate mean and variance in a running way using a
+    // numerically stable algorithm.
+    // See en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+    Array<Double> arr = itsOperand->getArrayDouble(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GVARIANCES")) {
+        // First time.
+        itsNr.resize (arr.shape());
+        itsMean.resize (arr.shape());
+        itsNr    = 1;
+        itsMean  = arr;
+        itsValue = 0.;
+      } else {
+        itsNr += (Int64)1;
+        Array<Double> delta(arr - itsMean);
+        Array<Double> tmpd(delta.shape());
+        std::transform (delta.begin(), delta.end(), itsNr.begin(),
+                        tmpd.begin(), Divides<Double,Int64>());
+        itsMean += tmpd;
+        delta *= arr - itsMean;
+        itsValue += delta;
+      }
+    }
+  }
+  void TableExprGroupVariancesArrayDouble::finish()
+  {
+    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),                 AipsError);
+    Array<Double>::iterator itv = itsValue.begin();
+    for (Array<Int64>::const_iterator itn = itsNr.begin();
+         itn != itsNr.end(); ++itn, ++itv) {
+      if (*itn > 1) {
+        *itv /= *itn - 1;
+      } else {
+        *itv = 0;
+      }
+    }
+  }
+
+  TableExprGroupStdDevsArrayDouble::TableExprGroupStdDevsArrayDouble(TableExprNodeRep* node)
+    : TableExprGroupVariancesArrayDouble (node)
+  {}
+  TableExprGroupStdDevsArrayDouble::~TableExprGroupStdDevsArrayDouble()
+  {}
+  void TableExprGroupStdDevsArrayDouble::finish()
+  {
+    TableExprGroupVariancesArrayDouble::finish();
+    itsValue = sqrt(itsValue);
+  }
+
+  TableExprGroupRmssArrayDouble::TableExprGroupRmssArrayDouble(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDouble (node)
+  {}
+  TableExprGroupRmssArrayDouble::~TableExprGroupRmssArrayDouble()
+  {}
+  void TableExprGroupRmssArrayDouble::apply (const TableExprId& id)
+  {
+    Array<Double> arr = itsOperand->getArrayDouble(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GRMSS")) {
+        itsValue = arr*arr;
+        itsNr.resize (arr.shape());
+        itsNr = 1;
+      } else {
+        itsValue += arr*arr;
+        itsNr += (Int64)1;
+      }
+    }
+  }
+  void TableExprGroupRmssArrayDouble::finish()
+  {
+    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),
+                 AipsError);
+    Array<Double>::iterator itv = itsValue.begin();
+    for (Array<Int64>::const_iterator itn = itsNr.begin();
+         itn != itsNr.end(); ++itn, ++itv) {
+      if (*itn > 0) {
+        *itv = sqrt(*itv / *itn);
+      } else {
+        *itv = 0;
+      }
+    }
+  }
+
+  TableExprGroupSumsArrayDComplex::TableExprGroupSumsArrayDComplex(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDComplex (node)
+  {}
+  TableExprGroupSumsArrayDComplex::~TableExprGroupSumsArrayDComplex()
+  {}
+  void TableExprGroupSumsArrayDComplex::apply (const TableExprId& id)
+  {
+    Array<DComplex> arr = itsOperand->getArrayDComplex(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GSUMS")) {
+        itsValue = arr;
+      } else {
+        itsValue += arr;
+      }
+    }
+  }
+
+  TableExprGroupProductsArrayDComplex::TableExprGroupProductsArrayDComplex(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDComplex (node)
+  {}
+  TableExprGroupProductsArrayDComplex::~TableExprGroupProductsArrayDComplex()
+  {}
+  void TableExprGroupProductsArrayDComplex::apply (const TableExprId& id)
+  {
+    Array<DComplex> arr = itsOperand->getArrayDComplex(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GPRODUCTS")) {
+        itsValue = arr;
+      } else {
+        itsValue *= arr;
+      }
+    }
+  }
+
+  TableExprGroupSumSqrsArrayDComplex::TableExprGroupSumSqrsArrayDComplex(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDComplex (node)
+  {}
+  TableExprGroupSumSqrsArrayDComplex::~TableExprGroupSumSqrsArrayDComplex()
+  {}
+  void TableExprGroupSumSqrsArrayDComplex::apply (const TableExprId& id)
+  {
+    Array<DComplex> arr = itsOperand->getArrayDComplex(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GSUMSQRS")) {
+        itsValue = arr*arr;
+      } else {
+        itsValue += arr*arr;
+      }
+    }
+  }
+
+  TableExprGroupMeansArrayDComplex::TableExprGroupMeansArrayDComplex(TableExprNodeRep* node)
+    : TableExprGroupFuncArrayDComplex (node)
+  {}
+  TableExprGroupMeansArrayDComplex::~TableExprGroupMeansArrayDComplex()
+  {}
+  void TableExprGroupMeansArrayDComplex::apply (const TableExprId& id)
+  {
+    Array<DComplex> arr = itsOperand->getArrayDComplex(id);
+    if (! arr.empty()) {
+      if (checkShape (arr, "GMEANS")) {
+        // Future: if arr is a masked array, only add where not masked
+        itsValue = arr;
+        itsNr.resize (arr.shape());
+        itsNr = 1;
+      } else {
+        itsValue += arr;
+        itsNr += (Int64)1;
+      }
+    }
+  }
+  void TableExprGroupMeansArrayDComplex::finish()
+  {
+    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),
+                 AipsError);
+    Array<DComplex>::iterator itv = itsValue.begin();
+    for (Array<Int64>::const_iterator itn = itsNr.begin();
+         itn != itsNr.end(); ++itn, ++itv) {
+      if (*itn > 0) {
+        *itv /= *itn;
+      }
+    }
+  }
+
+
   TableExprGroupHistBase::TableExprGroupHistBase (TableExprNodeRep* node,
                                                   Int64 nbin,
                                                   Double start, Double end)
