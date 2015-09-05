@@ -92,6 +92,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // </group>
 
   private:
+    // Create the correct aggregate function object.
+    CountedPtr<TableExprGroupFuncBase> doMakeGroupAggrFunc();
+
     //# Data members.
     CountedPtr<TableExprGroupFuncBase> itsFunc;
   };

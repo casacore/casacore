@@ -465,6 +465,406 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   // <summary>
+  // Aggregate class counting per array index in a group if any is true
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class counting per array index in a group if any is true.
+  // </synopsis>
+  class TableExprGroupArrayAnys: public TableExprGroupFuncArrayBool
+  {
+  public:
+    TableExprGroupArrayAnys (TableExprNodeRep* node);
+    virtual ~TableExprGroupArrayAnys();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class counting per array index in a group if all are true
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class counting per array index in a group if all are true.
+  // </synopsis>
+  class TableExprGroupArrayAlls: public TableExprGroupFuncArrayBool
+  {
+  public:
+    TableExprGroupArrayAlls (TableExprNodeRep* node);
+    virtual ~TableExprGroupArrayAlls();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class counting per array index in a group the nr of true values
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class counting per array index in a group the nr of true values.
+  // </synopsis>
+  class TableExprGroupArrayNTrues: public TableExprGroupFuncArrayInt
+  {
+  public:
+    TableExprGroupArrayNTrues (TableExprNodeRep* node);
+    virtual ~TableExprGroupArrayNTrues();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class counting per array index in a group the nr of false values
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class counting per array index in a group the nr of false values.
+  // </synopsis>
+  class TableExprGroupArrayNFalses: public TableExprGroupFuncArrayInt
+  {
+  public:
+    TableExprGroupArrayNFalses (TableExprNodeRep* node);
+    virtual ~TableExprGroupArrayNFalses();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining per array index in a group the minimum value
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining per array index in a group the minimum value.
+  // </synopsis>
+  class TableExprGroupMinsArrayInt: public TableExprGroupFuncArrayInt
+  {
+  public:
+    TableExprGroupMinsArrayInt (TableExprNodeRep* node);
+    virtual ~TableExprGroupMinsArrayInt();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining per array index in a group the maximum value
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining per array index in a group the maximum value.
+  // </synopsis>
+  class TableExprGroupMaxsArrayInt: public TableExprGroupFuncArrayInt
+  {
+  public:
+    TableExprGroupMaxsArrayInt (TableExprNodeRep* node);
+    virtual ~TableExprGroupMaxsArrayInt();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining per array index in a group the sum of values
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining per array index in a group the sum of values.
+  // </synopsis>
+  class TableExprGroupSumsArrayInt: public TableExprGroupFuncArrayInt
+  {
+  public:
+    TableExprGroupSumsArrayInt (TableExprNodeRep* node);
+    virtual ~TableExprGroupSumsArrayInt();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining per array index in a group the product of values
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining per array index in a group the product of values.
+  // </synopsis>
+  class TableExprGroupProductsArrayInt: public TableExprGroupFuncArrayInt
+  {
+  public:
+    TableExprGroupProductsArrayInt (TableExprNodeRep* node);
+    virtual ~TableExprGroupProductsArrayInt();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining per array index in a group the sum of value squares
+  // in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining per array index in a group the sum of value squares.
+  // </synopsis>
+  class TableExprGroupSumSqrsArrayInt: public TableExprGroupFuncArrayInt
+  {
+  public:
+    TableExprGroupSumSqrsArrayInt (TableExprNodeRep* node);
+    virtual ~TableExprGroupSumSqrsArrayInt();
+    virtual void apply (const TableExprId& id);
+  };
+
+
+  // <summary>
+  // Aggregate class determining the minimum double array value in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the minimum double array value in a group.
+  // </synopsis>
+  class TableExprGroupMinsArrayDouble: public TableExprGroupFuncArrayDouble
+  {
+  public:
+    TableExprGroupMinsArrayDouble (TableExprNodeRep* node);
+    virtual ~TableExprGroupMinsArrayDouble();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining the maximum double array value in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the maximum double array value in a group.
+  // </synopsis>
+  class TableExprGroupMaxsArrayDouble: public TableExprGroupFuncArrayDouble
+  {
+  public:
+    TableExprGroupMaxsArrayDouble (TableExprNodeRep* node);
+    virtual ~TableExprGroupMaxsArrayDouble();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining the sum of double array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the sum of double array values in a group.
+  // </synopsis>
+  class TableExprGroupSumsArrayDouble: public TableExprGroupFuncArrayDouble
+  {
+  public:
+    TableExprGroupSumsArrayDouble (TableExprNodeRep* node);
+    virtual ~TableExprGroupSumsArrayDouble();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining the product of double array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the product of double array values in a group.
+  // </synopsis>
+  class TableExprGroupProductsArrayDouble: public TableExprGroupFuncArrayDouble
+  {
+  public:
+    TableExprGroupProductsArrayDouble (TableExprNodeRep* node);
+    virtual ~TableExprGroupProductsArrayDouble();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining the sum of squares of double array values
+  // in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the sum of squares of double array values
+  // in a group.
+  // </synopsis>
+  class TableExprGroupSumSqrsArrayDouble: public TableExprGroupFuncArrayDouble
+  {
+  public:
+    TableExprGroupSumSqrsArrayDouble (TableExprNodeRep* node);
+    virtual ~TableExprGroupSumSqrsArrayDouble();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining the mean of array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the mean of array values in a group.
+  // </synopsis>
+  class TableExprGroupMeansArrayDouble: public TableExprGroupFuncArrayDouble
+  {
+  public:
+    TableExprGroupMeansArrayDouble (TableExprNodeRep* node);
+    virtual ~TableExprGroupMeansArrayDouble();
+    virtual void apply (const TableExprId& id);
+    virtual void finish();
+  private:
+    Array<Int64> itsNr;
+  };
+
+  // <summary>
+  // Aggregate class determining the variance of array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the variance of array values in a group.
+  // It uses a running algorithm
+  // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
+  // </synopsis>
+  class TableExprGroupVariancesArrayDouble: public TableExprGroupFuncArrayDouble
+  {
+  public:
+    TableExprGroupVariancesArrayDouble (TableExprNodeRep* node);
+    virtual ~TableExprGroupVariancesArrayDouble();
+    virtual void apply (const TableExprId& id);
+    virtual void finish();
+  protected:
+    Array<Int64>  itsNr;
+    Array<Double> itsMean;
+  };
+
+  // <summary>
+  // Aggregate class determining the standard devation of array values
+  // in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the standard deviation of array values
+  // in a group. It uses a running algorithm
+  // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
+  // </synopsis>
+  class TableExprGroupStdDevsArrayDouble: public TableExprGroupVariancesArrayDouble
+  {
+  public:
+    TableExprGroupStdDevsArrayDouble (TableExprNodeRep* node);
+    virtual ~TableExprGroupStdDevsArrayDouble();
+    virtual void finish();
+  };
+
+  // <summary>
+  // Aggregate class determining the RMS of array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the RMS of array values in a group.
+  // </synopsis>
+  class TableExprGroupRmssArrayDouble: public TableExprGroupFuncArrayDouble
+  {
+  public:
+    TableExprGroupRmssArrayDouble (TableExprNodeRep* node);
+    virtual ~TableExprGroupRmssArrayDouble();
+    virtual void apply (const TableExprId& id);
+    virtual void finish();
+  private:
+    Array<Int64> itsNr;
+  };
+
+
+  // <summary>
+  // Aggregate class determining the sum of complex array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the sum of complex array values in a group.
+  // </synopsis>
+  class TableExprGroupSumsArrayDComplex: public TableExprGroupFuncArrayDComplex
+  {
+  public:
+    TableExprGroupSumsArrayDComplex (TableExprNodeRep* node);
+    virtual ~TableExprGroupSumsArrayDComplex();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining the product of complex array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the product of complex array values in a group.
+  // </synopsis>
+  class TableExprGroupProductsArrayDComplex: public TableExprGroupFuncArrayDComplex
+  {
+  public:
+    TableExprGroupProductsArrayDComplex (TableExprNodeRep* node);
+    virtual ~TableExprGroupProductsArrayDComplex();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining the sum of squares of complex array values
+  // in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the sum of squares of complex array values
+  // in a group.
+  // </synopsis>
+  class TableExprGroupSumSqrsArrayDComplex: public TableExprGroupFuncArrayDComplex
+  {
+  public:
+    TableExprGroupSumSqrsArrayDComplex (TableExprNodeRep* node);
+    virtual ~TableExprGroupSumSqrsArrayDComplex();
+    virtual void apply (const TableExprId& id);
+  };
+
+  // <summary>
+  // Aggregate class determining the mean of complex array values in a group
+  // </summary>
+  // <use visibility=local>
+  // <reviewed reviewer="" date="" tests="tExprGroup">
+  // </reviewed>
+  // <synopsis>
+  // Aggregate class determining the mean of complex array values in a group.
+  // </synopsis>
+  class TableExprGroupMeansArrayDComplex: public TableExprGroupFuncArrayDComplex
+  {
+  public:
+    TableExprGroupMeansArrayDComplex (TableExprNodeRep* node);
+    virtual ~TableExprGroupMeansArrayDComplex();
+    virtual void apply (const TableExprId& id);
+    virtual void finish();
+  private:
+    Array<Int64> itsNr;
+  };
+
+
+  // <summary>
   // Base aggregate class determining the histogram of values in a group
   // </summary>
   // <use visibility=local>

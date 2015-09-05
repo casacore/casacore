@@ -676,10 +676,10 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
         if (operands_p[0]->valueType() == VTArray) {
 	    Array<Double> arr = operands_p[0]->getArrayDouble (id);
             if (arr.contiguousStorage()) {
-              return std::accumulate(arr.cbegin(), arr.cend(), Double(0),
+              return std::accumulate(arr.cbegin(), arr.cend(), 0.,
                                      casacore::SumSqr<Double>());
             } else {
-              return std::accumulate(arr.begin(), arr.end(), Double(0),
+              return std::accumulate(arr.begin(), arr.end(), 0.,
                                      casacore::SumSqr<Double>());
             }
 	} else {
@@ -1339,11 +1339,13 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case boxallFUNC:
     case arrayFUNC:
     case transposeFUNC:
+    case resizeFUNC:
       {
         // Most functions can have Int or Double in and result in Double.
         dtin = NTReal;
         dtout = NTDouble;
-	uInt axarg = 1;
+        uInt axarg = 1;
+        uInt optarg = 0;
         switch (fType) {
 	case arrsumsFUNC:
 	case arrproductsFUNC:
@@ -1372,6 +1374,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	    dtin = NTBool;
             dtout = NTInt;
 	    break;
+        case resizeFUNC:
+            optarg = 1;
 	case arrayFUNC:
         case transposeFUNC:
 	    dtin = dtout = NTAny;
@@ -1382,7 +1386,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	// The result is an array.
 	// All arguments (except possibly first) must be integers.
         resVT = VTArray;
-        checkNumOfArg (axarg+1, axarg+1, nodes);
+        checkNumOfArg (axarg+1, axarg+optarg+1, nodes);
 	dtypeOper.resize(axarg+1);
 	dtypeOper = NTReal;
 	// Check if first argument is array.
@@ -1418,6 +1422,13 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         }
 	// The last argument forms the axes as an array object.
 	AlwaysAssert (nodes[axarg]->valueType() == VTArray, AipsError);
+        // Check if an optional arg (voor expand) is an Int.
+        if (nodes.size() == axarg+optarg+1) {
+          if (nodes[axarg+optarg]->dataType() != NTInt) {
+            throw TableInvExpr ("The 3rd argument of RESIZE"
+                                " has to be integer");
+          }
+        }
 	return dtout;
       }
     default:
