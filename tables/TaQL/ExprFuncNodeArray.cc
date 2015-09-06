@@ -50,7 +50,8 @@ TableExprFuncNodeArray::TableExprFuncNodeArray
   node_p      (ftype, dtype, vtype, source),
   origin_p    (style.origin()),
   isCOrder_p  (style.isCOrder()),
-  constAxes_p (False)
+  constAxes_p (False),
+  constAlt_p  (False)
 {
     table_p = source.table();
     exprtype_p = Variable;
@@ -124,6 +125,12 @@ void TableExprFuncNodeArray::tryToConst()
 	    constAxes_p = True;
 	}
         break;
+    case TableExprFuncNode::resizeFUNC:
+        if (operands().size() < 3  ||  operands()[2]->isConstant()) {
+	    getAlternate (0);
+	    constAlt_p = True;
+	}
+        // fall through
     case TableExprFuncNode::arrayFUNC:
         if (operands()[axarg]->isConstant()) {
 	    ipos_p = getArrayShape (0, axarg);
@@ -246,6 +253,34 @@ IPosition TableExprFuncNodeArray::getOrder (const TableExprId& id, Int ndim)
   return removeAxes (order, ndim);
 }
 
+const IPosition& TableExprFuncNodeArray::getAlternate (const TableExprId& id)
+{
+  // Only do it if not constant or known.
+  if (! constAlt_p) {
+    if (operands().size() < 3) {
+      expandAlt_p = IPosition();    // normal resize
+    } else {
+      if (operands()[2]->valueType() == VTScalar) {
+        // A scalar is true for all axes.
+        // The dimensionality is unknown, so make it very large to cover all.
+        expandAlt_p = IPosition(20, operands()[2]->getInt(id));
+      } else {
+        Array<Int64> arr(operands()[2]->getArrayInt(id));
+        expandAlt_p.resize (arr.size());
+        if (isCOrder_p) {
+          for (uInt i=0; i<arr.size(); ++i) {
+            expandAlt_p[i] = arr.data()[arr.size() - i - 1];
+          }
+        } else {
+          for (uInt i=0; i<arr.size(); ++i) {
+            expandAlt_p[i] = arr.data()[i];
+          }
+        }
+      }
+    }
+  }
+  return expandAlt_p;
+}
 
 Array<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
 {
@@ -426,6 +461,19 @@ Array<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
       {
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
+    case TableExprFuncNode::resizeFUNC:
+      {
+	const IPosition& shp = getArrayShape(id);
+	Array<Bool> arr (operands()[0]->getArrayBool(id));
+        const IPosition& alt = getAlternate(id);
+        if (alt.empty()) {
+          arr.resize (shp, True, ArrayInitPolicy::INIT);
+          return arr;
+        }
+	Array<Bool> res(shp);
+	expandArray (res, arr, alt);
+        return res;
       }
     case TableExprFuncNode::isnanFUNC:
 	if (argDataType() == NTComplex) {
@@ -753,6 +801,19 @@ Array<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
       {
 	Array<Int64> arr (operands()[0]->getArrayInt(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
+    case TableExprFuncNode::resizeFUNC:
+      {
+	const IPosition& shp = getArrayShape(id);
+	Array<Int64> arr (operands()[0]->getArrayInt(id));
+        const IPosition& alt = getAlternate(id);
+        if (alt.empty()) {
+          arr.resize (shp, True, ArrayInitPolicy::INIT);
+          return arr;
+        }
+	Array<Int64> res(shp);
+	expandArray (res, arr, alt);
+        return res;
       }
     case TableExprFuncNode::iifFUNC:
       {
@@ -1190,6 +1251,19 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
       }
+    case TableExprFuncNode::resizeFUNC:
+      {
+	const IPosition& shp = getArrayShape(id);
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+        const IPosition& alt = getAlternate(id);
+        if (alt.empty()) {
+          arr.resize (shp, True, ArrayInitPolicy::INIT);
+          return arr;
+        }
+	Array<Double> res(shp);
+	expandArray (res, arr, alt);
+        return res;
+      }
     case TableExprFuncNode::iifFUNC:
       {
 	Array<Bool> arrc;
@@ -1469,6 +1543,19 @@ Array<DComplex> TableExprFuncNodeArray::getArrayDComplex
       {
 	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
+    case TableExprFuncNode::resizeFUNC:
+      {
+	const IPosition& shp = getArrayShape(id);
+	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
+        const IPosition& alt = getAlternate(id);
+        if (alt.empty()) {
+          arr.resize (shp, True, ArrayInitPolicy::INIT);
+          return arr;
+        }
+	Array<DComplex> res(shp);
+	expandArray (res, arr, alt);
+        return res;
       }
     case TableExprFuncNode::complexFUNC:
       {
@@ -1877,6 +1964,19 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	Array<String> arr (operands()[0]->getArrayString(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
       }
+    case TableExprFuncNode::resizeFUNC:
+      {
+	const IPosition& shp = getArrayShape(id);
+	Array<String> arr (operands()[0]->getArrayString(id));
+        const IPosition& alt = getAlternate(id);
+        if (alt.empty()) {
+          arr.resize (shp, True, ArrayInitPolicy::INIT);
+          return arr;
+        }
+	Array<String> res(shp);
+	expandArray (res, arr, alt);
+        return res;
+      }
     case TableExprFuncNode::iifFUNC:
       {
 	Array<Bool> arrc;
@@ -2039,6 +2139,19 @@ Array<MVTime> TableExprFuncNodeArray::getArrayDate (const TableExprId& id)
       {
 	Array<MVTime> arr (operands()[0]->getArrayDate(id));
 	return reorderArray (arr, getOrder(id, arr.ndim()), False);
+      }
+    case TableExprFuncNode::resizeFUNC:
+      {
+	const IPosition& shp = getArrayShape(id);
+	Array<MVTime> arr (operands()[0]->getArrayDate(id));
+        const IPosition& alt = getAlternate(id);
+        if (alt.empty()) {
+          arr.resize (shp, True, ArrayInitPolicy::INIT);
+          return arr;
+        }
+	Array<MVTime> res(shp);
+	expandArray (res, arr, alt);
+        return res;
       }
     case TableExprFuncNode::iifFUNC:
       {

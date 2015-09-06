@@ -183,6 +183,7 @@ namespace casacore {
   {
     String fname(name);
     fname.downcase();
+    String sfname(fname);
     // Split name in library and function name.
     // Require that a . is found and is not the first or last character.
     Int j = fname.index('.');
@@ -215,8 +216,11 @@ namespace casacore {
         return iter->second (fname);
       }
     }
-    throw TableInvExpr ("TaQL function " + name + " (=" + fname +
-                        ") is unknown");
+    String unk;
+    if (fname != sfname) {
+      unk = " (=" + fname + ')';
+    }
+    throw TableInvExpr ("TaQL function " + sfname + unk + " is unknown");
   }
 
 } // end namespace
