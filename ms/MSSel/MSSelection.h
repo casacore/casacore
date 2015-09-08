@@ -418,6 +418,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Clear sub-expression and reset priority.  Default behavior is to
     // reset all sub-expressions.
     void clear(const MSExprType type=NO_EXPR);
+    
+    // Set all error handlers to a known state (NULL).
+    void clearErrorHandlers();
+
     Bool exprIsNull(const MSExprType type=NO_EXPR);
     
     // Convey to the various parsers to delete the TENs they hold

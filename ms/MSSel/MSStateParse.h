@@ -101,7 +101,9 @@ public:
   static MSSelectionErrorHandler* thisMSSErrorHandler;
   static Vector<Int> selectedIDs() {return idList;};
   static void reset(){idList.resize(0);};
-  static void cleanup() {if (node_p) delete node_p;node_p=0x0;};//if (thisMSSErrorHandler) delete thisMSSErrorHandler;thisMSSErrorHandler=0x0;}
+  static void cleanupNode() {if (node_p) delete node_p;node_p=0x0;}
+  static void cleanupErrorHandler() {if (thisMSSErrorHandler) delete thisMSSErrorHandler;thisMSSErrorHandler=0x0;}
+  static void cleanup() {cleanupNode(); cleanupErrorHandler();}
 private:
   static TableExprNode* node_p;
   const String colName;
