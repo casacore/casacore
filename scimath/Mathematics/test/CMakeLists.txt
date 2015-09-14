@@ -20,6 +20,7 @@ tMedianSlider
 tSmooth
 tSparseDiff
 tStatAcc
+tStatisticsTypes
 tStatisticsUtilities
 tVanVleck
 tVectorKernel
