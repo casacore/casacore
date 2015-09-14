@@ -8,6 +8,7 @@ tMSScanGram
 tMSSpwGram
 tMSTimeGram
 tMSUvDistGram
+tMSSelection
 )
 
 foreach (test ${tests})
