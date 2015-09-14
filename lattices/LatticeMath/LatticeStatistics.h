@@ -45,6 +45,7 @@
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/scimath/Mathematics/FitToHalfStatisticsData.h>
 #include <casacore/scimath/Mathematics/StatisticsData.h>
+#include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
 #include <vector>
 #include <list>
 
@@ -54,9 +55,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template <class T> class MaskedLattice;
 template <class T> class TempLattice;
 class IPosition;
-
-template <class AccumType, class T, class U> class StatisticsAlgorithm;
-template <class AccumType, class T, class U> class ClassicalStatistics;
 
 #include <casacore/casa/iosstrfwd.h>
 
