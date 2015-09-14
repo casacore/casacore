@@ -35,35 +35,35 @@
 
 namespace casacore {
 
-template <class AccumType, class InputIterator, class MaskIterator>
-const AccumType FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::TWO = AccumType(2);
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+const AccumType FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::TWO = AccumType(2);
 
 // min > max indicates that these quantities have not be calculated
-template <class AccumType, class InputIterator, class MaskIterator>
-FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::FitToHalfStatistics(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::FitToHalfStatistics(
 	FitToHalfStatisticsData::CENTER centerType,
 	FitToHalfStatisticsData::USE_DATA useData,
 	AccumType centerValue
 )
-	: ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>(),
+	: ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>(),
 	  _centerType(centerType), _useLower(useData == FitToHalfStatisticsData::LE_CENTER), _centerValue(centerValue),
 	  _statsData(initializeStatsData<AccumType>()), _doMedAbsDevMed(False), _rangeIsSet(False),
 	  _realMax(), _realMin() {
 	reset();
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::~FitToHalfStatistics() {}
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::~FitToHalfStatistics() {}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-FitToHalfStatistics<AccumType, InputIterator, MaskIterator>&
-FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::operator=(
-	const FitToHalfStatistics<AccumType, InputIterator, MaskIterator>& other
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>&
+FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::operator=(
+	const FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
 ) {
     if (this == &other) {
         return *this;
     }
-    ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::operator=(other);
+    ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::operator=(other);
     _centerType = other._centerType;
     _useLower = other._useLower;
     _centerValue = other._centerValue;
@@ -75,8 +75,8 @@ FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::operator=(
     return *this;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-AccumType FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getMedian(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+AccumType FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedian(
 	CountedPtr<uInt64> , CountedPtr<AccumType> ,
 	CountedPtr<AccumType> , uInt , Bool
 ) {
@@ -86,8 +86,8 @@ AccumType FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	return *_getStatsData().median;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-AccumType FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getMedianAndQuantiles(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+AccumType FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedianAndQuantiles(
 	std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax,
@@ -101,8 +101,8 @@ AccumType FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	return getMedian();
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-AccumType FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getMedianAbsDevMed(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+AccumType FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedianAbsDevMed(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes, Bool persistSortedArray
 ) {
@@ -114,7 +114,7 @@ AccumType FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 		CountedPtr<AccumType> realMin, realMax;
 		//_getRealMinMax(realMin, realMax, knownMin, knownMax);
 		_getStatsData().medAbsDevMed = new AccumType(
-			ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::getMedianAbsDevMed(
+			ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedianAbsDevMed(
 				realNPts, knownMin, knownMax, binningThreshholdSizeBytes, persistSortedArray
 			)
 		);
@@ -122,8 +122,8 @@ AccumType FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	return *_getStatsData().medAbsDevMed;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_getRealMinMax(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_getRealMinMax(
 		CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
 	CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax
 ) {
@@ -150,13 +150,13 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_getRealMinMax
 }
 
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getMinMax(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMinMax(
 	AccumType& mymin, AccumType& mymax
 ) {
 	if ( _getStatsData().min.null() || _getStatsData().max.null()) {
 		// This call returns the min and max of the real portion of the dataset
-		ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::getMinMax(mymin, mymax);
+		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMinMax(mymin, mymax);
 		_realMin = new AccumType(mymin);
 		_realMax = new AccumType(mymax);
 		if (_useLower) {
@@ -174,8 +174,8 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getMinMax(
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-std::map<Double, AccumType> FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getQuantiles(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+std::map<Double, AccumType> FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getQuantiles(
 	const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts,
 	CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
 	uInt binningThreshholdSizeBytes, Bool persistSortedArray
@@ -277,7 +277,7 @@ std::map<Double, AccumType> FitToHalfStatistics<AccumType, InputIterator, MaskIt
 		? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
 	CountedPtr<AccumType> realMin, realMax;
 	_getRealMinMax(realMin, realMax, knownMin, knownMax);
-	std::map<Double, AccumType> realPart = ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::getQuantiles(
+	std::map<Double, AccumType> realPart = ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getQuantiles(
 		realPortionFractions, realNPts, realMin, realMax, binningThreshholdSizeBytes,
 		persistSortedArray
 	);
@@ -301,22 +301,22 @@ std::map<Double, AccumType> FitToHalfStatistics<AccumType, InputIterator, MaskIt
 	return actual;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-uInt64 FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::getNPts() {
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+uInt64 FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getNPts() {
 	if (_getStatsData().npts == 0) {
 		// guard against subsequent calls multiplying by two
-		_getStatsData().npts = 2*ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::getNPts();
+		_getStatsData().npts = 2*ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getNPts();
 	}
 	return (uInt64)_getStatsData().npts;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::reset() {
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::reset() {
 	_clearData();
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::setCalculateAsAdded(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::setCalculateAsAdded(
 	Bool c
 ) {
 	ThrowIf(
@@ -325,32 +325,32 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::setCalculateAs
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_clearData() {
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_clearData() {
 	_doMedAbsDevMed = False;
 	StatsData<AccumType> oldStats = copy(_statsData);
 	_statsData = initializeStatsData<AccumType>();
 	_statsData.mean = oldStats.mean;
 	_statsData.median = oldStats.median.null() ? NULL : new AccumType(*oldStats.median);
-	ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::_clearData();
+	ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_clearData();
 
 }
 
 
-template <class AccumType, class InputIterator, class MaskIterator>
-StatsData<AccumType> FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_getStatistics() {
-	ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::_getStatistics();
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+StatsData<AccumType> FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_getStatistics() {
+	ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_getStatistics();
 	_getStatsData().sum = _getStatsData().mean * _getStatsData().sumweights;
 	return copy(_getStatsData());
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_setRange() {
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_setRange() {
 	if (_rangeIsSet) {
 		return;
 	}
 	//this->_setRangeIsBeingSet(True);
-	ClassicalStatistics<AccumType, InputIterator, MaskIterator> cs(*this);
+	ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator> cs(*this);
 	if (_centerType == FitToHalfStatisticsData::CMEAN || _centerType == FitToHalfStatisticsData::CMEDIAN) {
 		_centerValue = _centerType == FitToHalfStatisticsData::CMEAN
 			? cs.getStatistic(StatisticsData::MEAN)
@@ -363,7 +363,7 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_setRange() {
 	CountedPtr<std::pair<AccumType, AccumType> > range = _useLower
 		? new std::pair<AccumType, AccumType>(mymin, _centerValue)
 		: new std::pair<AccumType, AccumType>(_centerValue, mymax);
-	ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::_setRange(range);
+	ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_setRange(range);
 	_rangeIsSet = True;
 }
 
@@ -377,31 +377,31 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_setRange() {
 		ngood += 2; \
 	}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_unweightedStats(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		_unweightedStatsCodeFH
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_unweightedStats(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
 ) {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -414,20 +414,20 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_unweightedSta
 		) {
 			_unweightedStatsCodeFH
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_unweightedStats(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride
 ) {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -435,21 +435,21 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_unweightedSta
 		if (*mask) {
 			_unweightedStatsCodeFH
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_unweightedStats(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
 	Bool isInclude
 ) {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -463,18 +463,18 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_unweightedSta
 		) {
 			_unweightedStatsCodeFH
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_updateMaxMin(
 	AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride,
 	const Int64& currentDataset
 ) {
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
+	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider
 		= this->_getDataProvider();
 	if (maxpos >= 0) {
 		_realMax = new AccumType(mymax);
@@ -516,36 +516,36 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
 		); \
 	}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride
 ) {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		if (*weight > 0) {
 			_weightedStatsCodeFH
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -559,22 +559,22 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats
 		) {
 			_weightedStatsCodeFH
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
 ) {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -589,21 +589,21 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats
 		) {
 			_weightedStatsCodeFH
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -611,7 +611,7 @@ void FitToHalfStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats
 		if (*mask && *weight > 0) {
 			_weightedStatsCodeFH
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
