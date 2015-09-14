@@ -99,8 +99,7 @@ Record toRecord(const StatsData<AccumType>& stats) {
 		StatisticsData::toString(StatisticsData::RMS), stats.rms
 	);
 	r.define(
-		StatisticsData::toString(StatisticsData::STDDEV),
-		sqrt(stats.stddev)
+		StatisticsData::toString(StatisticsData::STDDEV), stats.stddev
 	);
 	r.define(
 		StatisticsData::toString(StatisticsData::SUM), stats.sum
