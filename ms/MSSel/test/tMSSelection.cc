@@ -88,10 +88,10 @@ void showTableCache()
 
   Int n=lockedTables.nelements();
   if(n > 0)
-    cerr << endl << "####WARNING!!!!: The Table Cache has the following " << n << " entries:"  << endl;
+    cout << endl << "####WARNING!!!!: The Table Cache has the following " << n << " entries:"  << endl;
   
   for (Int i=0; i<n; ++i) 
-    cerr << "    " << i << ": \"" <<  lockedTables(i) << "\"" << endl;
+    cout << "    " << i << ": \"" <<  lockedTables(i) << "\"" << endl;
 }
 //
 //-------------------------------------------------------------------------
@@ -111,9 +111,8 @@ void printBaselineList(Matrix<Int> list,ostream& os)
 //
 //-------------------------------------------------------------------------
 //
-void printInfo(MSSelection& msSelection)
+void printInfo(MSSelection& msSelection, Int& nRows)
 {
-  cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
   cout << "BE: Baseline Expr=" << msSelection.getExpr(MSSelection::ANTENNA_EXPR) << endl;
   cout << "\tBE: Ant1         = " << msSelection.getAntenna1List() << endl;
   cout << "\tBE: Ant2         = " << msSelection.getAntenna2List() << endl;
@@ -155,6 +154,9 @@ void printInfo(MSSelection& msSelection)
   cout << "DDIDs(Poln)  = " << msSelection.getDDIDList()     << endl;
   cout << "DDIDs(SPW)   = " << msSelection.getSPWDDIDList()     << endl;
   cout << "StateList    = " << msSelection.getStateObsModeList() << endl;
+
+  cout << "Number of selected rows: " << nRows << endl;
+
   cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 }
 //
@@ -211,11 +213,14 @@ int main(int argc, char **argv)
     			  stateObsModeStr,observationStr);
     	// TableExprNode ten=msSelection.toTableExprNode(&msInterface);
     	// cerr << "TEN rows = " << ten.nrow() << endl;
-    	printInfo(msSelection);
 	msSelection.getSelectedMS(selectedMS);
-    	if (selectedMS.nrow()==0)
+	Int nRows =  selectedMS.nrow();
+
+    	printInfo(msSelection,nRows);
+
+    	if (nRows==0)
     	  {
-    	    cerr << "###Informational:  Nothing selected.  ";
+    	    cout << "###Informational:  Nothing selected.  ";
     	    if (OutMSBuf != "")
     	      cout << "New MS not written." << endl;
     	    else
@@ -229,11 +234,10 @@ int main(int argc, char **argv)
 	      else          selectedMS.rename(OutMSBuf,Table::New);
 	      }
 	  }
-    	cerr << "Number of selected rows: " << selectedMS.nrow() << endl;
       }
     catch (MSSelectionError& x)
       {
-    	cerr << "###MSSelectionError: " << x.getMesg() << endl;
+    	cout << "###MSSelectionError: " << x.getMesg() << endl;
       }
     //
     // Catch any exception thrown by AIPS++ libs.  Do your cleanup here
@@ -244,7 +248,7 @@ int main(int argc, char **argv)
     //
     catch (AipsError& x)
       {
-    	cerr << "###AipsError: " << x.getMesg() << endl;
+    	cout << "###AipsError: " << x.getMesg() << endl;
       }
   }
 
