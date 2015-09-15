@@ -187,6 +187,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Bool setPolnExpr(const String& polnExpr);
     Bool setStateExpr(const String& stateExpr);
     Bool setObservationExpr(const String& obervationExpr);
+
+    // Accessor for the various selection expressions as strings.
+    const String getExpr(const MSExprType type=NO_EXPR);
     
     // Accessor for result of parsing all of the selection
     // expressions.  The final TableExprNode (TEN) is the result of

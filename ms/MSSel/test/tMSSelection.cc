@@ -1,3 +1,29 @@
+//# Copyright (C) 1995,1996,1997,1999,2001,2002,2005
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This program is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU General Public License as published by the Free
+//# Software Foundation; either version 2 of the License, or (at your option)
+//# any later version.
+//#
+//# This program is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+//# more details.
+//#
+//# You should have received a copy of the GNU General Public License along
+//# with this program; if not, write to the Free Software Foundation, Inc.,
+//# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
 #include <casa/aips.h>
 #include <ms/MSSel/MSSelection.h>
 #include <ms/MSSel/MSSelectionError.h>
@@ -13,9 +39,6 @@ using namespace casa;
 
 //
 //-------------------------------------------------------------------------
-//
-#define RestartUI(Label)  {if(clIsInteractive()) {goto Label;}}
-//#define RestartUI(Label)  {if(clIsInteractive()) {clRetry();goto Label;}}
 //
 void UI(int argc, char **argv, string& MSNBuf, string& OutMSBuf, bool& deepCopy,
 	string& fieldStr, string& timeStr, string& spwStr, string& baselineStr,
@@ -75,13 +98,13 @@ void showTableCache()
 //
 void printBaselineList(Matrix<Int> list,ostream& os)
 {
-  os << "Baselines = ";
+  os << "\tBaselines = ";
   IPosition shp=list.shape();
   for(Int j=0;j<shp(1);j++)
     {
       for(Int i=0;i<shp(0);i++)
 	os << list(i,j) << " ";
-      os << endl << "            " ;
+      os << endl << "\t            " ;
     }
   os << endl;
 }
@@ -90,26 +113,49 @@ void printBaselineList(Matrix<Int> list,ostream& os)
 //
 void printInfo(MSSelection& msSelection)
 {
-  cout << "Ant1         = " << msSelection.getAntenna1List() << endl;
-  cout << "Ant2         = " << msSelection.getAntenna2List() << endl;
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+  cout << "BE: Baseline Expr=" << msSelection.getExpr(MSSelection::ANTENNA_EXPR) << endl;
+  cout << "\tBE: Ant1         = " << msSelection.getAntenna1List() << endl;
+  cout << "\tBE: Ant2         = " << msSelection.getAntenna2List() << endl;
+  printBaselineList(msSelection.getBaselineList(),cout);
   //  cout << "Baselines    = " << msSelection.getBaselineList() << endl;
-  cout << "Field        = " << msSelection.getFieldList()    << endl;
-  cout << "SPW          = " << msSelection.getSpwList()      << endl;
-  cout << "Chan         = " << msSelection.getChanList(NULL,1,True)     << endl;
-  cout << "Freq         = " << msSelection.getChanFreqList(NULL,True)     << endl;
-  cout << "Scan         = " << msSelection.getScanList()     << endl;
-  cout << "StateObsMode = " << msSelection.getStateObsModeList()     << endl;
-  cout << "Array        = " << msSelection.getSubArrayList() << endl;
-  cout << "Time         = " << msSelection.getTimeList()     << endl;
-  cout << "UVRange      = " << msSelection.getUVList()       << endl;
-  cout << "UV in meters = " << msSelection.getUVUnitsList()  << endl;
+
+  cout << "FE: Field Expr=" << msSelection.getExpr(MSSelection::FIELD_EXPR) << endl;
+  cout << "\tFE: Field        = " << msSelection.getFieldList()    << endl;
+
+  cout << "SE: SPW Expr=" << msSelection.getExpr(MSSelection::SPW_EXPR) << endl;
+  cout << "\tSE: SPW          = " << msSelection.getSpwList()      << endl;
+  cout << "\tSE: Chan         = " << msSelection.getChanList(NULL,1,True)     << endl;
+  cout << "\tSE: Freq         = " << msSelection.getChanFreqList(NULL,True)     << endl;
+
+  cout << "ScE: Scan Expr=" << msSelection.getExpr(MSSelection::SCAN_EXPR) << endl;
+  cout << "\tScE: tScan         = " << msSelection.getScanList()     << endl;
+  
+  cout << "StE: STATE Expr=" << msSelection.getExpr(MSSelection::STATE_EXPR) << endl;
+  cout << "\tStE: StateObsMode = " << msSelection.getStateObsModeList()     << endl;
+
+  cout << "AE: Array Expr=" << msSelection.getExpr(MSSelection::ARRAY_EXPR) << endl;
+  cout << "\tAE: Array        = " << msSelection.getSubArrayList() << endl;
+
+  cout << "TE: Time Expr=" << msSelection.getExpr(MSSelection::TIME_EXPR) << endl;
+  cout << "\tTE: Time         = " << msSelection.getTimeList()     << endl;
+
+  cout << "UVE: UVRange Expr=" << msSelection.getExpr(MSSelection::UVDIST_EXPR) << endl;
+  cout << "\tUVE: UVRange      = " << msSelection.getUVList()       << endl;
+  cout << "\tUVE: UV in meters = " << msSelection.getUVUnitsList()  << endl;
+
+  cout << "OE: Observation Expr=" << msSelection.getExpr(MSSelection::OBSERVATION_EXPR) << endl;
+  cout << "\tOE: ObservationIDList    = " << msSelection.getObservationList() << endl;
+
+  cout << "PE: Poln Expr=" << msSelection.getExpr(MSSelection::POLN_EXPR) << endl;
+  cout << "\tPE: PolMap       = " << msSelection.getPolMap()       << endl;
+  cout << "\tPE: CorrMap      = " << msSelection.getCorrMap( )     << endl;
+
+  cout << endl << "===========================================================" << endl;
   cout << "DDIDs(Poln)  = " << msSelection.getDDIDList()     << endl;
   cout << "DDIDs(SPW)   = " << msSelection.getSPWDDIDList()     << endl;
-  cout << "PolMap       = " << msSelection.getPolMap()       << endl;
-  cout << "CorrMap      = " << msSelection.getCorrMap( )     << endl;
   cout << "StateList    = " << msSelection.getStateObsModeList() << endl;
-  cout << "ObservationIDList    = " << msSelection.getObservationList() << endl;
-  printBaselineList(msSelection.getBaselineList(),cout);
+  cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 }
 //
 //-------------------------------------------------------------------------
