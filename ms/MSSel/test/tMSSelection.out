@@ -448,7 +448,7 @@ DDIDs(SPW)   = [1]
 StateList    = []
 Number of selected rows: 437
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Test:13  /home/tara2/sanjay/casa_trunk_pristine/trunk/casacore.git/build/ms/MSSel/test//tMSSelection ms=/home/tara2/sanjay/casa_trunk_pristine/trunk/casacore.git/ms/MSSel/test//mssel_test.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' spw='ALMA*FULL*:5~10;20~30;50~70' field='0'
+Test:13  /home/tara2/sanjay/casa_trunk_pristine/trunk/casacore.git/build/ms/MSSel/test//tMSSelection ms=/home/tara2/sanjay/casa_trunk_pristine/trunk/casacore.git/ms/MSSel/test//mssel_test.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' spw='0~4:5~10;20~30;50~70' field='0'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21
 	BE: Ant1         = [18, 20, 21, 22, 23, 24, 26, 28, 0, 7, 9, 12, 13, -20, -21]
 	BE: Ant2         = [23, 26, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 27, 28]
@@ -457,17 +457,29 @@ BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21
 	            
 FE: Field Expr=0
 	FE: Field        = [0]
-SE: SPW Expr=ALMA*FULL*:5~10;20~30;50~70
-	SE: SPW          = [1]
-	SE: Chan         = Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
-[1, 5, 10, 1
+SE: SPW Expr=0~4:5~10;20~30;50~70
+	SE: SPW          = [0, 1, 2]
+	SE: Chan         = Axis Lengths: [9, 4]  (NB: Matrix in Row/Column order)
+[0, 5, 3, 1
+ 0, 20, 3, 1
+ 0, 50, 3, 1
+ 1, 5, 10, 1
  1, 20, 30, 1
- 1, 50, 63, 1]
+ 1, 50, 63, 1
+ 2, 5, 0, 1
+ 2, 20, 0, 1
+ 2, 50, 0, 1]
 
-	SE: Freq         = Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
-[1, 8.61341e+10, 8.59778e+10, -3.125e+07
+	SE: Freq         = Axis Lengths: [9, 4]  (NB: Matrix in Row/Column order)
+[0, 1.51741e-316, 1.9055e+11, 1.875e+09
+ 0, 3.33269e-317, 1.9055e+11, 1.875e+09
+ 0, 0, 1.9055e+11, 1.875e+09
+ 1, 8.61341e+10, 8.59778e+10, -3.125e+07
  1, 8.56653e+10, 8.53528e+10, -3.125e+07
- 1, 8.47278e+10, 8.43216e+10, -3.125e+07]
+ 1, 8.47278e+10, 8.43216e+10, -3.125e+07
+ 2, 0, 8.52903e+10, 1.8125e+09
+ 2, 0, 8.52903e+10, 1.8125e+09
+ 2, 6.94983e-310, 8.52903e+10, 1.8125e+09]
 
 ScE: Scan Expr=
 	ScE: tScan         = []
@@ -488,9 +500,9 @@ PE: Poln Expr=
 
 ===========================================================
 DDIDs(Poln)  = []
-DDIDs(SPW)   = [1]
+DDIDs(SPW)   = [0, 1, 2]
 StateList    = []
-Number of selected rows: 133
+Number of selected rows: 266
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Test:14  /home/tara2/sanjay/casa_trunk_pristine/trunk/casacore.git/build/ms/MSSel/test//tMSSelection ms=/home/tara2/sanjay/casa_trunk_pristine/trunk/casacore.git/ms/MSSel/test//mssel_test.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' spw='ALMA*FULL*:5~10;20~30;50~70' field='J16*'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21
