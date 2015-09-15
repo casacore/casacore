@@ -1,18 +1,18 @@
 #!/bin/sh
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Usage: tMSSelection.run
-#-----------------------------------------------------------------------------
-# This script executes the program tMSSelection to test if new the
-# measurement set selection is working.
-
-# The script supplies the names of all test tables found in the system.
-# It is meant to be run from assay, but can also be used standalone.
+# -----------------------------------------------------------------------------
+# This script executes the program tMSSelection to test the
+# MSSelection module.
 #
 # $Id$
 #-----------------------------------------------------------------------------
 
   CASADEMO=`echo $CASAPATH | awk '{printf("%s/casacore.git/ms/MSSel/test/",$1)}'`
   MS=$CASADEMO"/mssel_test.ms"
+
+  BINPATH='/home/tara2/sanjay/casa_trunk_pristine/trunk/casacore.git/build/ms/MSSel/test/'
+
   if [ ${#CASAPATH} = 0 ]
   then
      echo "UNTESTED: tMSSelection.run (CASAPATH not defined)"
@@ -35,7 +35,6 @@
       echo "Test:$1 "$2; eval "$2"
       }
 
-  BINPATH='/home/tara2/sanjay/casa_trunk_pristine/trunk/casacore.git/build/ms/MSSel/test/'
   runCmd 1 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='1,2,3&'"; 
   runCmd 2 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='1,2,3&&'";
   runCmd 3 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='1,2,3&&&'";
@@ -49,7 +48,7 @@
   runCmd 10 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='1,2,3&' spw='ALMA*'";
   runCmd 11 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='1,2,3&' spw='ALMA*FULL*:85290~86290.305MHz'";
   runCmd 12 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' spw='ALMA*FULL*:5~10;20~30;50~70'";
-  runCmd 13 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' spw='ALMA*FULL*:5~10;20~30;50~70' field='0'";
+  runCmd 13 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' spw='0~4:5~10;20~30;50~70' field='0'";
   runCmd 14 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' spw='ALMA*FULL*:5~10;20~30;50~70' field='J16*'";
   runCmd 15 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*PHASE*'";
   runCmd 16 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*OFF*'";
