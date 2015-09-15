@@ -1133,6 +1133,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     return False;
   }
+  const String MSSelection::getExpr(const MSExprType type)
+  {
+    String exprStr;
+    switch (type)
+      {
+      case ANTENNA_EXPR:     exprStr = antennaExpr_p;break;
+      case FIELD_EXPR:       exprStr = fieldExpr_p;break;
+      case SPW_EXPR:         exprStr = spwExpr_p;break;
+      case SCAN_EXPR:        exprStr = scanExpr_p;break;
+      case ARRAY_EXPR:       exprStr = arrayExpr_p;break;
+      case TIME_EXPR:        exprStr = timeExpr_p;break;
+      case UVDIST_EXPR:      exprStr = uvDistExpr_p;break;
+      case TAQL_EXPR:        exprStr = taqlExpr_p;break;
+      case POLN_EXPR:        exprStr = polnExpr_p;break;
+      case STATE_EXPR:       exprStr = stateExpr_p;break;
+      case OBSERVATION_EXPR: exprStr = observationExpr_p;break;
+      default:;
+      };
+    return exprStr;
+  }
+
   //----------------------------------------------------------------------------
   // This function also optionally sorts the matrix of SPWIDs and
   // associated channel selection indices in ascending order of
