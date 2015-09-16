@@ -35,7 +35,6 @@
 #include <casacore/ms/MSSel/MSSelectionErrorHandler.h>
 #include <casacore/ms/MSSel/MSSelectionErrorHandler.h>
 #include <vector>
-using namespace std;
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
