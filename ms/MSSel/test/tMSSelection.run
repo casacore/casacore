@@ -8,8 +8,8 @@
 # $Id$
 #-----------------------------------------------------------------------------
 
-  CASADEMO=`echo $CASAPATH | awk '{printf("%s/casacore.git/ms/MSSel/test/",$1)}'`
-  MS=$CASADEMO"/mssel_test.ms"
+  #CASADEMO=`echo $CASAPATH | awk '{printf("%s/casacore.git/ms/MSSel/test/",$1)}'`+'/'
+  MS=$CASADEMO"mssel_test.ms"
 
   BINPATH='/home/tara2/sanjay/casa_trunk_pristine/trunk/casacore.git/build/ms/MSSel/test/'
 
@@ -36,6 +36,17 @@
       eval "$2"
       }
 
+  function getTestMS() {
+      tar zxf $testsrcdir/mssel_test.ms.tgz
+  }
+
+  function cleanup() {
+      \rm -rf mssel_test.ms
+  }
+
+  # Get the test MS (un-tar it from $testsrcdir).
+  getTestMS;
+
   runCmd 1 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='1,2,3&'"; 
   runCmd 2 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='1,2,3&&'";
   runCmd 3 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='1,2,3&&&'";
@@ -59,3 +70,7 @@
   runCmd 20 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX'";
   runCmd 21 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX'";
 
+  #
+  # Remove the test MS and any other cleanup required.
+  #
+  cleanup;
