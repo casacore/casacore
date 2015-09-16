@@ -32,7 +32,8 @@
   #    exit 3
   # fi
   function runCmd(){
-      echo "Test:$1 "$2; eval "$2"
+      #echo "Test:$1 "$2; 
+      eval "$2"
       }
 
   runCmd 1 "$casa_checktool $BINPATH/tMSSelection ms=$MS baseline='1,2,3&'"; 

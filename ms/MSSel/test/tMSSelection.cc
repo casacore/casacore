@@ -125,7 +125,7 @@ void printInfo(MSSelection& msSelection, Int& nRows)
   cout << "SE: SPW Expr=" << msSelection.getExpr(MSSelection::SPW_EXPR) << endl;
   cout << "\tSE: SPW          = " << msSelection.getSpwList()      << endl;
   cout << "\tSE: Chan         = " << msSelection.getChanList(NULL,1,True)     << endl;
-  cout << "\tSE: Freq         = " << msSelection.getChanFreqList(NULL,True)     << endl;
+  //cout << "\tSE: Freq         = " << msSelection.getChanFreqList(NULL,True)     << endl;
 
   cout << "ScE: Scan Expr=" << msSelection.getExpr(MSSelection::SCAN_EXPR) << endl;
   cout << "\tScE: tScan         = " << msSelection.getScanList()     << endl;
