@@ -261,7 +261,7 @@ MSSel/MSSelectableTable.h
 MSSel/MSSelection.h
 MSSel/MSSelectionError.h
 MSSel/MSSelectionErrorHandler.h
-MSSel/MSSSpwErrorHanlder.h
+MSSel/MSSSpwErrorHandler.h
 MSSel/MSSelectionKeywords.h
 MSSel/MSSelectionTools.h
 MSSel/MSSelector.h
