@@ -270,11 +270,14 @@ def countfiles(dirname, test, basic, ccperc, verbose, printlevel, level, usecode
         if file not in ['.svn', '.cvs', 'CVS', 'doc']:
             ffile = os.path.join(dirname,file)
             try:
-                mode = os.stat(ffile).st_mode
+                mode = os.lstat(ffile).st_mode
             except OSError:
                 sys.stderr.write ('No such file: %s\n' % ffile)
                 continue
-            if stat.S_ISDIR(mode):
+            if stat.S_ISLNK(mode):
+                # skip symlinks because casacore contains symlink to itself
+                continue
+            elif stat.S_ISDIR(mode):
                 cnts = countfiles (ffile, test, basic, ccperc, verbose, printlevel, level+1, usecode, dosum)
                 for j in [0,1]:
                     for t in types:

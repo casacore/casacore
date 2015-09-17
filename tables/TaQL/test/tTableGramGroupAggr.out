@@ -259,3 +259,18 @@ select gsum(arr1), gmedian(arr2) as MED, gfractile(arr3,0.5), ab from tTableGram
  3732 155 155 6
  2580 107 107 4
  4884 203 203 8
+select gmin(ab) + gsum(ag) from tTableGramGroupAggr_tmp.tab
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+ (65,0)
+select gmin(ae) + gmax(ab) from tTableGramGroupAggr_tmp.tab
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+ 12
+select gsum(ag) + gmax(ae) from tTableGramGroupAggr_tmp.tab
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+ (77,0)

@@ -1,0 +1,397 @@
+*** Testing aggregate functions for all data types ...
+select min(gaggr(ab)) as A, gmin(ab) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select max(gaggr(ab)) as A, gmax(ab) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select sum(gaggr(ab)) as A, gsum(ab) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select product(gaggr(ab)) as A, gproduct(ab) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select sumsqr(gaggr(ab)) as A, gsumsqr(ab) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select mean(gaggr(ab)) as A, gmean(ab) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select variance(gaggr(ab)) as A, gvariance(ab) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select stddev(gaggr(ab)) as A, gstddev(ab) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select rms(gaggr(ab)) as A, grms(ab) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select fractile(gaggr(ab), 0.4) as A, gfractile(ab,0.4) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select min(gaggr(ag)) as A, gmin(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select min(gaggr(ag)) as A, gmin(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function min - invalid operand data type; function argument is not real
+select max(gaggr(ag)) as A, gmax(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select max(gaggr(ag)) as A, gmax(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function max - invalid operand data type; function argument is not real
+select sum(gaggr(ag)) as A, gsum(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select product(gaggr(ag)) as A, gproduct(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select sumsqr(gaggr(ag)) as A, gsumsqr(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select mean(gaggr(ag)) as A, gmean(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select variance(gaggr(ag)) as A, gvariance(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select variance(gaggr(ag)) as A, gvariance(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function variance - invalid operand data type; function argument is not real
+select stddev(gaggr(ag)) as A, gstddev(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select stddev(gaggr(ag)) as A, gstddev(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function stddev - invalid operand data type; function argument is not real
+select rms(gaggr(ag)) as A, grms(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select rms(gaggr(ag)) as A, grms(ag) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function rms - invalid operand data type; function argument is not real
+select fractile(gaggr(ag), 0.4) as A, gfractile(ag,0.4) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select fractile(gaggr(ag), 0.4) as A, gfractile(ag,0.4) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function fractile - invalid operand data type; function argument is not real
+select min(gaggr(ae)) as A, gmin(ae) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select max(gaggr(ae)) as A, gmax(ae) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select sum(gaggr(ae)) as A, gsum(ae) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select product(gaggr(ae)) as A, gproduct(ae) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select sumsqr(gaggr(ae)) as A, gsumsqr(ae) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select mean(gaggr(ae)) as A, gmean(ae) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select variance(gaggr(ae)) as A, gvariance(ae) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select stddev(gaggr(ae)) as A, gstddev(ae) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select rms(gaggr(ae)) as A, grms(ae) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select fractile(gaggr(ae), 0.4) as A, gfractile(ae,0.4) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select min(gaggr(arr1)) as A, gmin(arr1) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select max(gaggr(arr1)) as A, gmax(arr1) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select sum(gaggr(arr1)) as A, gsum(arr1) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select product(gaggr(arr1)) as A, gproduct(arr1) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select sumsqr(gaggr(arr1)) as A, gsumsqr(arr1) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select mean(gaggr(arr1)) as A, gmean(arr1) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select variance(gaggr(arr1)) as A, gvariance(arr1) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select stddev(gaggr(arr1)) as A, gstddev(arr1) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select rms(gaggr(arr1)) as A, grms(arr1) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select fractile(gaggr(arr1), 0.4) as A, gfractile(arr1,0.4) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select min(gaggr(int(arr1))) as A, gmin(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select max(gaggr(int(arr1))) as A, gmax(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select sum(gaggr(int(arr1))) as A, gsum(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select product(gaggr(int(arr1))) as A, gproduct(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select sumsqr(gaggr(int(arr1))) as A, gsumsqr(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select mean(gaggr(int(arr1))) as A, gmean(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select variance(gaggr(int(arr1))) as A, gvariance(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select stddev(gaggr(int(arr1))) as A, gstddev(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select rms(gaggr(int(arr1))) as A, grms(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select fractile(gaggr(int(arr1)), 0.4) as A, gfractile(int(arr1),0.4) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select min(gaggr(complex(arr1,0))) as A, gmin(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select min(gaggr(complex(arr1,0))) as A, gmin(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function min - invalid operand data type; function argument is not real
+select max(gaggr(complex(arr1,0))) as A, gmax(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select max(gaggr(complex(arr1,0))) as A, gmax(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function max - invalid operand data type; function argument is not real
+select sum(gaggr(complex(arr1,0))) as A, gsum(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select product(gaggr(complex(arr1,0))) as A, gproduct(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select sumsqr(gaggr(complex(arr1,0))) as A, gsumsqr(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select mean(gaggr(complex(arr1,0))) as A, gmean(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select variance(gaggr(complex(arr1,0))) as A, gvariance(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select variance(gaggr(complex(arr1,0))) as A, gvariance(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function variance - invalid operand data type; function argument is not real
+select stddev(gaggr(complex(arr1,0))) as A, gstddev(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select stddev(gaggr(complex(arr1,0))) as A, gstddev(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function stddev - invalid operand data type; function argument is not real
+select rms(gaggr(complex(arr1,0))) as A, grms(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select rms(gaggr(complex(arr1,0))) as A, grms(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function rms - invalid operand data type; function argument is not real
+select fractile(gaggr(complex(arr1,0)), 0.4) as A, gfractile(complex(arr1,0),0.4) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B
+
+Caught an exception: Error in TaQL command: 'select fractile(gaggr(complex(arr1,0)), 0.4) as A, gfractile(complex(arr1,0),0.4) as B from tTableGramGroupAggrAll_tmp.tab having A!~=B'
+  Error in select expression: Erronous use of function fractile - invalid operand data type; function argument is not real
+using style python select mins(gaggr(arr1),0) as A, gmins(arr1) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select maxs(gaggr(arr1),0) as A, gmaxs(arr1) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select sums(gaggr(arr1),0) as A, gsums(arr1) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select products(gaggr(arr1),0) as A, gproducts(arr1) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select sumsqrs(gaggr(arr1),0) as A, gsumsqrs(arr1) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select means(gaggr(arr1),0) as A, gmeans(arr1) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select variances(gaggr(arr1),0) as A, gvariances(arr1) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select stddevs(gaggr(arr1),0) as A, gstddevs(arr1) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select rmss(gaggr(arr1),0) as A, grmss(arr1) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select mins(gaggr(int(arr1)),0) as A, gmins(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select maxs(gaggr(int(arr1)),0) as A, gmaxs(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select sums(gaggr(int(arr1)),0) as A, gsums(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select products(gaggr(int(arr1)),0) as A, gproducts(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select sumsqrs(gaggr(int(arr1)),0) as A, gsumsqrs(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select means(gaggr(int(arr1)),0) as A, gmeans(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select variances(gaggr(int(arr1)),0) as A, gvariances(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select stddevs(gaggr(int(arr1)),0) as A, gstddevs(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select rmss(gaggr(int(arr1)),0) as A, grmss(int(arr1)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select mins(gaggr(complex(arr1,0)),0) as A, gmins(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+
+Caught an exception: Error in TaQL command: 'using style python select mins(gaggr(complex(arr1,0)),0) as A, gmins(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)'
+  Error in select expression: Erronous use of function mins - invalid operand data type; function argument is not real
+using style python select maxs(gaggr(complex(arr1,0)),0) as A, gmaxs(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+
+Caught an exception: Error in TaQL command: 'using style python select maxs(gaggr(complex(arr1,0)),0) as A, gmaxs(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)'
+  Error in select expression: Erronous use of function maxs - invalid operand data type; function argument is not real
+using style python select sums(gaggr(complex(arr1,0)),0) as A, gsums(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select products(gaggr(complex(arr1,0)),0) as A, gproducts(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select sumsqrs(gaggr(complex(arr1,0)),0) as A, gsumsqrs(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select means(gaggr(complex(arr1,0)),0) as A, gmeans(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select variances(gaggr(complex(arr1,0)),0) as A, gvariances(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+
+Caught an exception: Error in TaQL command: 'using style python select variances(gaggr(complex(arr1,0)),0) as A, gvariances(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)'
+  Error in select expression: Erronous use of function variances - invalid operand data type; function argument is not real
+using style python select stddevs(gaggr(complex(arr1,0)),0) as A, gstddevs(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+
+Caught an exception: Error in TaQL command: 'using style python select stddevs(gaggr(complex(arr1,0)),0) as A, gstddevs(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)'
+  Error in select expression: Erronous use of function stddevs - invalid operand data type; function argument is not real
+using style python select rmss(gaggr(complex(arr1,0)),0) as A, grmss(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)
+
+Caught an exception: Error in TaQL command: 'using style python select rmss(gaggr(complex(arr1,0)),0) as A, grmss(complex(arr1,0)) as B from tTableGramGroupAggrAll_tmp.tab having not all(A~=B)'
+  Error in select expression: Erronous use of function rmss - invalid operand data type; function argument is not real
+select any(gaggr(ab>5)) as A, gany(ab>5) as B from tTableGramGroupAggrAll_tmp.tab having A!=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select all(gaggr(ab>5)) as A, gall(ab>5) as B from tTableGramGroupAggrAll_tmp.tab having A!=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select ntrue(gaggr(ab>5)) as A, gntrue(ab>5) as B from tTableGramGroupAggrAll_tmp.tab having A!=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select nfalse(gaggr(ab>5)) as A, gnfalse(ab>5) as B from tTableGramGroupAggrAll_tmp.tab having A!=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select any(gaggr(arr1>5)) as A, gany(arr1>5) as B from tTableGramGroupAggrAll_tmp.tab having A!=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select all(gaggr(arr1>5)) as A, gall(arr1>5) as B from tTableGramGroupAggrAll_tmp.tab having A!=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select ntrue(gaggr(arr1>5)) as A, gntrue(arr1>5) as B from tTableGramGroupAggrAll_tmp.tab having A!=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+select nfalse(gaggr(arr1>5)) as A, gnfalse(arr1>5) as B from tTableGramGroupAggrAll_tmp.tab having A!=B
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select anys(gaggr(arr1>5),0) as A, ganys(arr1>5) as B from tTableGramGroupAggrAll_tmp.tab having not all(A=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select alls(gaggr(arr1>5),0) as A, galls(arr1>5) as B from tTableGramGroupAggrAll_tmp.tab having not all(A=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select ntrues(gaggr(arr1>5),0) as A, gntrues(arr1>5) as B from tTableGramGroupAggrAll_tmp.tab having not all(A=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B
+using style python select nfalses(gaggr(arr1>5),0) as A, gnfalses(arr1>5) as B from tTableGramGroupAggrAll_tmp.tab having not all(A=B)
+    has been executed
+    select result of 0 rows
+2 selected columns:  A B

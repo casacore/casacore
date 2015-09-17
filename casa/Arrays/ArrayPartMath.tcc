@@ -121,7 +121,7 @@ template<class T> Array<T> partialProducts (const Array<T>& array,
   uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
 				 collapseAxes);
   Array<T> result (resShape);
-  result = 0;
+  result = T(1);
   Bool deleteData, deleteRes;
   const T* arrData = array.getStorage (deleteData);
   const T* data = arrData;
