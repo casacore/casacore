@@ -445,6 +445,40 @@ int main() {
     		AlwaysAssert(near(sd.variance, variance), AipsError);
     	}
     	{
+    		// integer weights
+			ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		cs.setData(v0.begin(), w0.begin(), w0.size());
+    		cs.addData(v1.begin(), w1.begin(), w1.size());
+    		StatsData<Double> sd = cs.getStatistics();
+    		Double variance = (529.0 - 82.0*82.0/20.0)/19.0;
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 10, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 2, AipsError);
+    		AlwaysAssert(near(sd.mean, 4.1), AipsError);
+    		AlwaysAssert(*sd.min == 1, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == 7, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(529.0/20.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 82.0, AipsError);
+    		AlwaysAssert(sd.sumweights == 20.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 529.0, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
+    	}
+    	{
     		// weights and ranges
     		ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		vector<Double> w0(v0.size());
@@ -485,6 +519,46 @@ int main() {
     		AlwaysAssert(near(sd.variance, variance), AipsError);
     	}
     	{
+    		// integer weights; ranges
+			ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 9;
+    		cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
+    		cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+    		StatsData<Double> sd = cs.getStatistics();
+    		Double variance = (195.25 - 40.5*40.5/11.0)/10.0;
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, 40.5/11.0), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(195.25/11.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 40.5, AipsError);
+    		AlwaysAssert(sd.sumweights == 11.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 195.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
+    	}
+    	{
     		// weights, ranges, and masks
     		ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		vector<Double> w0(v0.size());
@@ -494,6 +568,72 @@ int main() {
     		w0[3] = 4;
     		w0[4] = 5;
     		vector<Double> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = True;
+    		m0[2] = True;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = True;
+    		m1[1] = True;
+    		m1[2] = False;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 12;
+    		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
+    		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+    		StatsData<Double> sd = cs.getStatistics();
+    		Double variance = (195.25 - 40.5*40.5/11.0)/10.0;
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, 40.5/11.0), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(195.25/11.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 40.5, AipsError);
+    		AlwaysAssert(sd.sumweights == 11.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 195.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
+    		AlwaysAssert(
+    			cs.getStatisticIndex(StatisticsData::MAX)
+    			== std::pair<Int64 COMMA Int64>(1, 1),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			cs.getStatisticIndex(StatisticsData::MIN)
+    			== std::pair<Int64 COMMA Int64>(0, 4),
+    			AipsError
+    		);
+    		AlwaysAssert(cs.getStatistic(
+    			StatisticsData::NPTS) == 3, AipsError
+    		);
+    		AlwaysAssert(cs.getStatistic(
+    			StatisticsData::RMS) == sqrt(195.25/11.0), AipsError
+    		);
+    	}
+    	{
+    		// integer weights; ranges, and masks
+		    ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
     		w1[0] = 1;
     		w1[1] = 2;
     		w1[2] = 3;
@@ -594,7 +734,50 @@ int main() {
     		AlwaysAssert(sd.sumsq == 195.25, AipsError);
     		AlwaysAssert(near(sd.variance, variance), AipsError);
     	}
-
+    	{
+    		// integer weights; masks
+			ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = False;
+    		m0[2] = False;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = False;
+    		m1[1] = True;
+    		m1[2] = False;
+    		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
+    		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
+    		StatsData<Double> sd = cs.getStatistics();
+    		Double variance = (195.25 - 40.5*40.5/11.0)/10.0;
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, 40.5/11.0), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(195.25/11.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 40.5, AipsError);
+    		AlwaysAssert(sd.sumweights == 11.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 195.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
+    	}
     	{
     		// getMinMax(), two datasets
     		ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
@@ -700,6 +883,26 @@ int main() {
     		AlwaysAssert(mymax == 8, AipsError);
     	}
     	{
+		    // getMinMax, integer weights
+		    ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+		    vector<Int> w0(v0.size());
+		    w0[0] = 1;
+		    w0[1] = 0;
+		    w0[2] = 3;
+		    w0[3] = 4;
+		    w0[4] = 5;
+		    vector<Int> w1(v1.size());
+		    w1[0] = 1;
+		    w1[1] = 2;
+		    w1[2] = 0;
+		    cs.setData(v0.begin(), w0.begin(), w0.size());
+		    cs.addData(v1.begin(), w1.begin(), w1.size());
+		    Double mymin, mymax;
+		    cs.getMinMax(mymin, mymax);
+		    AlwaysAssert(mymin == 1.5, AipsError);
+		    AlwaysAssert(mymax == 8, AipsError);
+    	}
+	    {
     		// getMinMax(), weights and ranges
     		ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		vector<Double> w0(v0.size());
@@ -725,6 +928,32 @@ int main() {
     		AlwaysAssert(mymin == 2.5, AipsError);
     		AlwaysAssert(mymax == 8, AipsError);
     	}
+	    {
+		    // getMinMax(), integer weights, and ranges
+		    ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+		    vector<Int> w0(v0.size());
+		    w0[0] = 0;
+		    w0[1] = 2;
+		    w0[2] = 3;
+		    w0[3] = 4;
+		    w0[4] = 5;
+		    vector<Int> w1(v1.size());
+		    w1[0] = 1;
+		    w1[1] = 2;
+		    w1[2] = 3;
+		    vector<std::pair<Double, Double> > r0(1);
+		    r0[0].first = 0.9;
+		    r0[0].second = 1.6;
+		    vector<std::pair<Double, Double> > r1(1);
+		    r1[0].first = 6;
+		    r1[0].second = 9;
+		    cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
+		    cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+		    Double mymin, mymax;
+		    cs.getMinMax(mymin, mymax);
+		    AlwaysAssert(mymin == 2.5, AipsError);
+		    AlwaysAssert(mymax == 8, AipsError);
+	    }
     	{
     		// getMinMax(), weights, ranges, and masks
     		ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
@@ -761,8 +990,42 @@ int main() {
     		AlwaysAssert(mymin == 2.5, AipsError);
     		AlwaysAssert(mymax == 8, AipsError);
     	}
-
-
+    	{
+    		// getMinMax(), integer weights, ranges, and masks
+		    ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = True;
+    		m0[2] = True;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = True;
+    		m1[1] = True;
+    		m1[2] = False;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 12;
+    		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
+    		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+    		Double mymin, mymax;
+    		cs.getMinMax(mymin, mymax);
+    		AlwaysAssert(mymin == 2.5, AipsError);
+    		AlwaysAssert(mymax == 8, AipsError);
+    	}
 
 
     	{
@@ -980,6 +1243,41 @@ int main() {
     		AlwaysAssert(q == 10.0, AipsError);
     	}
     	{
+    		// getQuantile(): integer weights
+		    ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		cs.setData(v0.begin(), w0.begin(), w0.size());
+    		cs.addData(v1.begin(), w1.begin(), w1.size());
+    		// 1, 1.5, 2.5, 3, 5, 8, 10
+    		Double q = cs.getQuantile(0.1);
+    		AlwaysAssert(q == 1.0, AipsError);
+    		q = cs.getQuantile(0.2);
+    		AlwaysAssert(q == 1.5, AipsError);
+    		q = cs.getQuantile(0.3);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.4);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.5);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.6);
+    		AlwaysAssert(q == 5.0, AipsError);
+    		q = cs.getQuantile(0.7);
+    		AlwaysAssert(q == 5.0, AipsError);
+    		q = cs.getQuantile(0.8);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.9);
+    		AlwaysAssert(q == 10.0, AipsError);
+    	}
+    	{
     		// getQuantile(): ranges and weights
     		ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		vector<Double> w0(v0.size());
@@ -989,6 +1287,47 @@ int main() {
     		w0[3] = 4;
     		w0[4] = 5;
     		vector<Double> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 9;
+    		cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
+    		cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+    		// 2.5, 3, 8
+    		Double q = cs.getQuantile(0.1);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.2);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.3);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.4);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.5);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.6);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.7);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.8);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.9);
+    		AlwaysAssert(q == 8.0, AipsError);
+    	}
+    	{
+    		// getQuantile(): ranges and integer weights
+		    ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
     		w1[0] = 1;
     		w1[1] = 2;
     		w1[2] = 3;
@@ -1066,6 +1405,51 @@ int main() {
     		AlwaysAssert(q == 8.0, AipsError);
     	}
     	{
+    		// getQuantile(): integer weights and mask
+		    ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = False;
+    		m0[2] = False;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = False;
+    		m1[1] = True;
+    		m1[2] = False;
+    		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
+    		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
+    		// 2.5, 3, 8
+    		Double q = cs.getQuantile(0.1);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.2);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.3);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.4);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.5);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.6);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.7);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.8);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.9);
+    		AlwaysAssert(q == 8.0, AipsError);
+    	}
+    	{
     		// getQuantile(): weights, mask, ranges
     		ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		vector<Double> w0(v0.size());
@@ -1075,6 +1459,77 @@ int main() {
     		w0[3] = 4;
     		w0[4] = 5;
     		vector<Double> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = True;
+    		m0[2] = True;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = True;
+    		m1[1] = True;
+    		m1[2] = False;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 12;
+    		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
+    		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+    		// 2.5, 3, 8
+    		Double q = cs.getQuantile(0.1);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.2);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.3);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.4);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.5);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.6);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.7);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.8);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.9);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		std::set<Double> quantiles;
+    		quantiles.insert(0.1);
+    		quantiles.insert(0.2);
+    		quantiles.insert(0.3);
+    		quantiles.insert(0.4);
+    		quantiles.insert(0.5);
+    		quantiles.insert(0.6);
+    		quantiles.insert(0.7);
+    		quantiles.insert(0.8);
+    		quantiles.insert(0.9);
+    		std::map<Double, Double> qs = cs.getQuantiles(quantiles);
+    		AlwaysAssert(qs[0.1] == 2.5, AipsError);
+    		AlwaysAssert(qs[0.2] == 2.5, AipsError);
+    		AlwaysAssert(qs[0.3] == 2.5, AipsError);
+    		AlwaysAssert(qs[0.4] == 3.0, AipsError);
+    		AlwaysAssert(qs[0.5] == 3.0, AipsError);
+    		AlwaysAssert(qs[0.6] == 3.0, AipsError);
+    		AlwaysAssert(qs[0.7] == 8.0, AipsError);
+    		AlwaysAssert(qs[0.8] == 8.0, AipsError);
+    		AlwaysAssert(qs[0.9] == 8.0, AipsError);
+    	}
+    	{
+    		// getQuantile(): integer weights, mask, ranges
+		    ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
     		w1[0] = 1;
     		w1[1] = 2;
     		w1[2] = 3;
@@ -1252,7 +1707,7 @@ int main() {
     		AlwaysAssert(median == -0.5, AipsError);
 
     	}
-    	{
+	    {
     		// getMedian() with mask, but no weights or ranges, using binning
     		ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		cs.setData(bigData.begin(), bigMask.begin(), bigData.size());

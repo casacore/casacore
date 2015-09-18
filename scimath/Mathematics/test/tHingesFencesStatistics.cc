@@ -424,6 +424,40 @@ int main() {
     		AlwaysAssert(near(sd.variance, variance), AipsError);
     	}
     	{
+    		// integer weights
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		cs.setData(v0.begin(), w0.begin(), w0.size());
+    		cs.addData(v1.begin(), w1.begin(), w1.size());
+    		StatsData<Double> sd = cs.getStatistics();
+    		Double variance = (529.0 - 82.0*82.0/20.0)/19.0;
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 10, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 2, AipsError);
+    		AlwaysAssert(near(sd.mean, 4.1), AipsError);
+    		AlwaysAssert(*sd.min == 1, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == 7, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(529.0/20.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 82.0, AipsError);
+    		AlwaysAssert(sd.sumweights == 20.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 529.0, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
+    	}
+    	{
     		// weights and ranges
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		vector<Double> w0(v0.size());
@@ -433,6 +467,46 @@ int main() {
     		w0[3] = 4;
     		w0[4] = 5;
     		vector<Double> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 9;
+    		cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
+    		cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+    		StatsData<Double> sd = cs.getStatistics();
+    		Double variance = (195.25 - 40.5*40.5/11.0)/10.0;
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, 40.5/11.0), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(195.25/11.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 40.5, AipsError);
+    		AlwaysAssert(sd.sumweights == 11.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 195.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
+    	}
+    	{
+    		// integer weights and ranges
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
     		w1[0] = 1;
     		w1[1] = 2;
     		w1[2] = 3;
@@ -530,6 +604,72 @@ int main() {
     		);
     	}
     	{
+    		// integer weights, ranges, and masks
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = True;
+    		m0[2] = True;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = True;
+    		m1[1] = True;
+    		m1[2] = False;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 12;
+    		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
+    		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+    		StatsData<Double> sd = cs.getStatistics();
+    		Double variance = (195.25 - 40.5*40.5/11.0)/10.0;
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, 40.5/11.0), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(195.25/11.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 40.5, AipsError);
+    		AlwaysAssert(sd.sumweights == 11.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 195.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
+    		AlwaysAssert(
+    			cs.getStatisticIndex(StatisticsData::MAX)
+    			== std::pair<Int64 COMMA Int64>(1, 1),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			cs.getStatisticIndex(StatisticsData::MIN)
+    			== std::pair<Int64 COMMA Int64>(0, 4),
+    			AipsError
+    		);
+    		AlwaysAssert(cs.getStatistic(
+    			StatisticsData::NPTS) == 3, AipsError
+    		);
+    		AlwaysAssert(cs.getStatistic(
+    			StatisticsData::RMS) == sqrt(195.25/11.0), AipsError
+    		);
+    	}
+    	{
     		// weights, masks
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		vector<Double> w0(v0.size());
@@ -539,6 +679,50 @@ int main() {
     		w0[3] = 4;
     		w0[4] = 5;
     		vector<Double> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = False;
+    		m0[2] = False;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = False;
+    		m1[1] = True;
+    		m1[2] = False;
+    		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
+    		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
+    		StatsData<Double> sd = cs.getStatistics();
+    		Double variance = (195.25 - 40.5*40.5/11.0)/10.0;
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 8, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, 40.5/11.0), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == 3, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(195.25/11.0), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
+    		AlwaysAssert(sd.sum == 40.5, AipsError);
+    		AlwaysAssert(sd.sumweights == 11.0, AipsError);
+    		AlwaysAssert(sd.sumsq == 195.25, AipsError);
+    		AlwaysAssert(near(sd.variance, variance), AipsError);
+    	}
+    	{
+    		// integer weights, masks
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
     		w1[0] = 1;
     		w1[1] = 2;
     		w1[2] = 3;
@@ -679,6 +863,26 @@ int main() {
     		AlwaysAssert(mymax == 8, AipsError);
     	}
     	{
+		    // getMinMax, integer weights
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+		    vector<Int> w0(v0.size());
+		    w0[0] = 1;
+		    w0[1] = 0;
+		    w0[2] = 3;
+		    w0[3] = 4;
+		    w0[4] = 5;
+		    vector<Int> w1(v1.size());
+		    w1[0] = 1;
+		    w1[1] = 2;
+		    w1[2] = 0;
+		    cs.setData(v0.begin(), w0.begin(), w0.size());
+		    cs.addData(v1.begin(), w1.begin(), w1.size());
+		    Double mymin, mymax;
+		    cs.getMinMax(mymin, mymax);
+		    AlwaysAssert(mymin == 1.5, AipsError);
+		    AlwaysAssert(mymax == 8, AipsError);
+    	}
+	    {
     		// getMinMax(), weights and ranges
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		vector<Double> w0(v0.size());
@@ -704,6 +908,32 @@ int main() {
     		AlwaysAssert(mymin == 2.5, AipsError);
     		AlwaysAssert(mymax == 8, AipsError);
     	}
+	    {
+		    // getMinMax(), integer weights and ranges
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+		    vector<Int> w0(v0.size());
+		    w0[0] = 0;
+		    w0[1] = 2;
+		    w0[2] = 3;
+		    w0[3] = 4;
+		    w0[4] = 5;
+		    vector<Int> w1(v1.size());
+		    w1[0] = 1;
+		    w1[1] = 2;
+		    w1[2] = 3;
+		    vector<std::pair<Double, Double> > r0(1);
+		    r0[0].first = 0.9;
+		    r0[0].second = 1.6;
+		    vector<std::pair<Double, Double> > r1(1);
+		    r1[0].first = 6;
+		    r1[0].second = 9;
+		    cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
+		    cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+		    Double mymin, mymax;
+		    cs.getMinMax(mymin, mymax);
+		    AlwaysAssert(mymin == 2.5, AipsError);
+		    AlwaysAssert(mymax == 8, AipsError);
+	    }
     	{
     		// getMinMax(), weights, ranges, and masks
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
@@ -714,6 +944,42 @@ int main() {
     		w0[3] = 4;
     		w0[4] = 5;
     		vector<Double> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = True;
+    		m0[2] = True;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = True;
+    		m1[1] = True;
+    		m1[2] = False;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 12;
+    		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
+    		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+    		Double mymin, mymax;
+    		cs.getMinMax(mymin, mymax);
+    		AlwaysAssert(mymin == 2.5, AipsError);
+    		AlwaysAssert(mymax == 8, AipsError);
+    	}
+    	{
+    		// getMinMax(), integer weights, ranges, and masks
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
     		w1[0] = 1;
     		w1[1] = 2;
     		w1[2] = 3;
@@ -959,6 +1225,41 @@ int main() {
     		AlwaysAssert(q == 10.0, AipsError);
     	}
     	{
+    		// getQuantile(): integer weights
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		cs.setData(v0.begin(), w0.begin(), w0.size());
+    		cs.addData(v1.begin(), w1.begin(), w1.size());
+    		// 1, 1.5, 2.5, 3, 5, 8, 10
+    		Double q = cs.getQuantile(0.1);
+    		AlwaysAssert(q == 1.0, AipsError);
+    		q = cs.getQuantile(0.2);
+    		AlwaysAssert(q == 1.5, AipsError);
+    		q = cs.getQuantile(0.3);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.4);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.5);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.6);
+    		AlwaysAssert(q == 5.0, AipsError);
+    		q = cs.getQuantile(0.7);
+    		AlwaysAssert(q == 5.0, AipsError);
+    		q = cs.getQuantile(0.8);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.9);
+    		AlwaysAssert(q == 10.0, AipsError);
+    	}
+    	{
     		// getQuantile(): ranges and weights
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		vector<Double> w0(v0.size());
@@ -968,6 +1269,47 @@ int main() {
     		w0[3] = 4;
     		w0[4] = 5;
     		vector<Double> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 9;
+    		cs.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
+    		cs.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+    		// 2.5, 3, 8
+    		Double q = cs.getQuantile(0.1);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.2);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.3);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.4);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.5);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.6);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.7);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.8);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.9);
+    		AlwaysAssert(q == 8.0, AipsError);
+    	}
+    	{
+    		// getQuantile(): ranges and integer weights
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
     		w1[0] = 1;
     		w1[1] = 2;
     		w1[2] = 3;
@@ -1045,6 +1387,51 @@ int main() {
     		AlwaysAssert(q == 8.0, AipsError);
     	}
     	{
+    		// getQuantile(): integer weights and mask
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = False;
+    		m0[2] = False;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = False;
+    		m1[1] = True;
+    		m1[2] = False;
+    		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
+    		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
+    		// 2.5, 3, 8
+    		Double q = cs.getQuantile(0.1);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.2);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.3);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.4);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.5);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.6);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.7);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.8);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.9);
+    		AlwaysAssert(q == 8.0, AipsError);
+    	}
+    	{
     		// getQuantile(): weights, mask, ranges
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
     		vector<Double> w0(v0.size());
@@ -1054,6 +1441,77 @@ int main() {
     		w0[3] = 4;
     		w0[4] = 5;
     		vector<Double> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = True;
+    		m0[2] = True;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = True;
+    		m1[1] = True;
+    		m1[2] = False;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 12;
+    		cs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
+    		cs.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+    		// 2.5, 3, 8
+    		Double q = cs.getQuantile(0.1);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.2);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.3);
+    		AlwaysAssert(q == 2.5, AipsError);
+    		q = cs.getQuantile(0.4);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.5);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.6);
+    		AlwaysAssert(q == 3.0, AipsError);
+    		q = cs.getQuantile(0.7);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.8);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		q = cs.getQuantile(0.9);
+    		AlwaysAssert(q == 8.0, AipsError);
+    		std::set<Double> quantiles;
+    		quantiles.insert(0.1);
+    		quantiles.insert(0.2);
+    		quantiles.insert(0.3);
+    		quantiles.insert(0.4);
+    		quantiles.insert(0.5);
+    		quantiles.insert(0.6);
+    		quantiles.insert(0.7);
+    		quantiles.insert(0.8);
+    		quantiles.insert(0.9);
+    		std::map<Double, Double> qs = cs.getQuantiles(quantiles);
+    		AlwaysAssert(qs[0.1] == 2.5, AipsError);
+    		AlwaysAssert(qs[0.2] == 2.5, AipsError);
+    		AlwaysAssert(qs[0.3] == 2.5, AipsError);
+    		AlwaysAssert(qs[0.4] == 3.0, AipsError);
+    		AlwaysAssert(qs[0.5] == 3.0, AipsError);
+    		AlwaysAssert(qs[0.6] == 3.0, AipsError);
+    		AlwaysAssert(qs[0.7] == 8.0, AipsError);
+    		AlwaysAssert(qs[0.8] == 8.0, AipsError);
+    		AlwaysAssert(qs[0.9] == 8.0, AipsError);
+    	}
+    	{
+    		// getQuantile(): integer weights, mask, ranges
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> cs;
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
     		w1[0] = 1;
     		w1[1] = 2;
     		w1[2] = 3;
@@ -1763,6 +2221,72 @@ int main() {
     		);
     	}
     	{
+    		// integer weights
+    		// 5, 2, 6, 10, 7, -1
+    		// 15, 11, 6, 20, -3, 14
+
+    		// 2, 6, 10, 7, -1
+    		// 11, 6, 20, -3, 14
+
+    		// 2, 6, 10, 7
+    		// 11, 6
+
+    		// 4 + 18 + 40 + 35 + 22 + 18
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> hfs(0);
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		w0[5] = 1;
+    		w0[6] = 0;
+    		w0[7] = 2;
+    		w0[8] = 3;
+    		w0[9] = 2;
+    		w0[10] = 1;
+    		w0[11] = 2;
+    		hfs.setData(v0.begin(), w0.begin(), v0.size()/2);
+    		hfs.addData(v0.begin() + v0.size()/2, w0.begin() + w0.size()/2, v0.size() - v0.size()/2);
+    		StatsData<Double> sd = hfs.getStatistics();
+    		Double eSum = 137;
+    		Double eSumWeights = 19;
+    		Double eNpts = 6;
+    		Double eSumSq = 1111;
+    		Double eVar = (eSumSq - eSum*eSum/eSumWeights)/(eSumWeights - 1);
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(sd.mean == eSum/eSumWeights, AipsError);
+    		AlwaysAssert(*sd.min == 2, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eSumWeights), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(near(sd.variance, eVar), AipsError);
+    		AlwaysAssert(
+    			hfs.getStatisticIndex(StatisticsData::MAX)
+    			== std::pair<Int64 COMMA Int64>(1, 1),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			hfs.getStatisticIndex(StatisticsData::MIN)
+    			== std::pair<Int64 COMMA Int64>(0, 1),
+    			AipsError
+    		);
+    		AlwaysAssert(hfs.getStatistic(
+    			StatisticsData::NPTS) == eNpts, AipsError
+    		);
+    		AlwaysAssert(hfs.getStatistic(
+    			StatisticsData::RMS) == sqrt(eSumSq/eSumWeights), AipsError
+    		);
+    	}
+    	{
     		// weights and ranges
     		// 5, 2, 6, 10, 7, -1
     		// 15, 11, 6, 20, -3, 14
@@ -1778,6 +2302,83 @@ int main() {
 
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> hfs(0);
     		vector<Double> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3; // *6 = 18
+    		w0[3] = 4; // *10 = 40
+    		w0[4] = 5; // *7 = 35
+    		w0[5] = 1;
+    		w0[6] = 0;
+    		w0[7] = 2; // *11 = 22
+    		w0[8] = 3; // *6 = 18
+    		w0[9] = 2;
+    		w0[10] = 1;
+    		w0[11] = 2;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 1;
+    		r0[0].second = 2;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 0;
+    		r1[0].second = 15;
+    		hfs.setData(v0.begin(), w0.begin(), v0.size()/2, r0, False);
+    		hfs.addData(
+    			v0.begin() + v0.size()/2, w0.begin() + w0.size()/2,
+    			v0.size() - v0.size()/2, r1, True
+    		);
+    		StatsData<Double> sd = hfs.getStatistics();
+    		Double eSum = 133;
+    		Double eSumWeights = 17;
+    		Double eNpts = 5;
+    		Double eSumSq = 1103;
+    		Double eVar = (eSumSq - eSum*eSum/eSumWeights)/(eSumWeights - 1);
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(sd.mean == eSum/eSumWeights, AipsError);
+    		AlwaysAssert(*sd.min == 6, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 2, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eSumWeights), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(near(sd.variance, eVar), AipsError);
+    		AlwaysAssert(
+    			hfs.getStatisticIndex(StatisticsData::MAX)
+    			== std::pair<Int64 COMMA Int64>(1, 1),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			hfs.getStatisticIndex(StatisticsData::MIN)
+    			== std::pair<Int64 COMMA Int64>(0, 2),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			hfs.getStatistic(StatisticsData::NPTS) == eNpts, AipsError
+    		);
+    		AlwaysAssert(hfs.getStatistic(
+    			StatisticsData::RMS) == sqrt(eSumSq/eSumWeights), AipsError
+    		);
+    	}
+    	{
+    		// integer weights and ranges
+    		// 5, 2, 6, 10, 7, -1
+    		// 15, 11, 6, 20, -3, 14
+
+    		// 2, 6, 10, 7, -1
+    		// 11, 6, 20, -3, 14
+
+    		// 6, 10, 7, -1
+    		// 11, 6, 14
+
+    		// 6, 10, 7
+    		// 11, 6
+
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> hfs(0);
+    		vector<Int> w0(v0.size());
     		w0[0] = 0;
     		w0[1] = 2;
     		w0[2] = 3; // *6 = 18
@@ -1926,6 +2527,92 @@ int main() {
     		);
     	}
     	{
+    		// integer weights, ranges, and masks
+    		// 5, 2, 6, 10, 7, -1
+    		// 15, 11, 6, 20, -3, 14
+
+    		// 2, 6, 10, 7, -1
+    		// 11, 6, 20, -3, 14
+
+    		// 6, 10, 7, -1
+    		// 11, 6, 14
+
+    		// 6, 10, -1
+    		// 11, 14
+
+    		// 6, 10
+    		// 11
+
+
+
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> hfs(0);
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3; // *6 = 18
+    		w0[3] = 4; // *10 = 40
+    		w0[4] = 5;
+    		w0[5] = 1;
+    		w0[6] = 0;
+    		w0[7] = 2; // *11 = 22
+    		w0[8] = 3;
+    		w0[9] = 2;
+    		w0[10] = 1;
+    		w0[11] = 2;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 1;
+    		r0[0].second = 2;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 0;
+    		r1[0].second = 15;
+    		vector<Bool> m0(v0.size(), True);
+    		m0[4] = False;
+    		m0[8] = False;
+    		hfs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size()/2, r0, False);
+    		hfs.addData(
+    			v0.begin() + v0.size()/2, w0.begin() + w0.size()/2,
+    			m0.begin() + m0.size()/2,
+    			v0.size() - v0.size()/2, r1, True
+    		);
+    		StatsData<Double> sd = hfs.getStatistics();
+    		Double eSum = 80;
+    		Double eSumWeights = 9;
+    		Double eNpts = 3;
+    		Double eSumSq = 750;
+    		Double eVar = (eSumSq - eSum*eSum/eSumWeights)/(eSumWeights - 1);
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, eSum/eSumWeights), AipsError);
+    		AlwaysAssert(*sd.min == 6, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 2, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eSumWeights), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(near(sd.variance, eVar), AipsError);
+    		AlwaysAssert(
+    			hfs.getStatisticIndex(StatisticsData::MAX)
+    			== std::pair<Int64 COMMA Int64>(1, 1),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			hfs.getStatisticIndex(StatisticsData::MIN)
+    			== std::pair<Int64 COMMA Int64>(0, 2),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			hfs.getStatistic(StatisticsData::NPTS) == eNpts, AipsError
+    		);
+    		AlwaysAssert(hfs.getStatistic(
+    			StatisticsData::RMS) == sqrt(eSumSq/eSumWeights), AipsError
+    		);
+    	}
+    	{
     		// weights, masks
     		// 5, 2, 6, 10, 7, -1
     		// 15, 11, 6, 20, -3, 14
@@ -1941,6 +2628,81 @@ int main() {
 
     		HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> hfs(0);
     		vector<Double> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2; // *2 = 4
+    		w0[2] = 3; // *6 = 18
+    		w0[3] = 4; // *10 = 40
+    		w0[4] = 5;
+    		w0[5] = 1; // *-1 = -1
+    		w0[6] = 0;
+    		w0[7] = 2; // *11 = 22
+    		w0[8] = 3;
+    		w0[9] = 2;
+    		w0[10] = 1;
+    		w0[11] = 2;
+    		vector<Bool> m0(v0.size(), True);
+    		m0[4] = False;
+    		m0[8] = False;
+    		hfs.setData(v0.begin(), w0.begin(), m0.begin(), v0.size()/2);
+    		hfs.addData(
+    			v0.begin() + v0.size()/2, w0.begin() + w0.size()/2,
+    			m0.begin() + m0.size()/2,
+    			v0.size() - v0.size()/2
+    		);
+    		StatsData<Double> sd = hfs.getStatistics();
+    		Double eSum = 83;
+    		Double eSumWeights = 12;
+    		Double eNpts = 5;
+    		Double eSumSq = 759;
+    		Double eVar = (eSumSq - eSum*eSum/eSumWeights)/(eSumWeights - 1);
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(*sd.max == 11, AipsError);
+    		AlwaysAssert(sd.maxpos.first == 1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == 1, AipsError);
+    		AlwaysAssert(near(sd.mean, eSum/eSumWeights), AipsError);
+    		AlwaysAssert(*sd.min == -1, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 5, AipsError);
+    		AlwaysAssert(sd.npts == eNpts, AipsError);
+    		AlwaysAssert(sd.rms == sqrt(eSumSq/eSumWeights), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
+    		AlwaysAssert(sd.sum == eSum, AipsError);
+    		AlwaysAssert(sd.sumsq == eSumSq, AipsError);
+    		AlwaysAssert(near(sd.variance, eVar), AipsError);
+    		AlwaysAssert(
+    			hfs.getStatisticIndex(StatisticsData::MAX)
+    			== std::pair<Int64 COMMA Int64>(1, 1),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			hfs.getStatisticIndex(StatisticsData::MIN)
+    			== std::pair<Int64 COMMA Int64>(0, 5),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			hfs.getStatistic(StatisticsData::NPTS) == eNpts, AipsError
+    		);
+    		AlwaysAssert(hfs.getStatistic(
+    			StatisticsData::RMS) == sqrt(eSumSq/eSumWeights), AipsError
+    		);
+    	}
+    	{
+    		// integer weights, masks
+    		// 5, 2, 6, 10, 7, -1
+    		// 15, 11, 6, 20, -3, 14
+
+    		// 2, 6, 10, 7, -1
+    		// 11, 6, 20, -3, 14
+
+    		// 2, 6, 10, -1
+    		// 11, 20, -3, 14
+
+    		// 2, 6, 10, -1
+    		// 11
+
+		    HingesFencesStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> hfs(0);
+    		vector<Int> w0(v0.size());
     		w0[0] = 0;
     		w0[1] = 2; // *2 = 4
     		w0[2] = 3; // *6 = 18
