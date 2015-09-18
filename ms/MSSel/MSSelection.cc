@@ -1232,10 +1232,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	Double avgChanWidth = chanList_l(i,3)*sum(msSpwSubTable.chanWidth()(spwID))
 	  /msSpwSubTable.chanWidth()(spwID).nelements();
 	
-	freqList_l(i,0) = (Double)chanList_l(i,0);
-	freqList_l(i,1) = chanFreq(IPosition(1,chanList_l(i,1)));
-	freqList_l(i,2) = chanFreq(IPosition(1,chanList_l(i,2)));
-	freqList_l(i,3) = avgChanWidth;
+	Int validStartChan, validEndChan, nChan=chanFreq.nelements();
+	freqList_l(i,0) = (Double)chanList_l(i,0); // The SPW ID
+	validStartChan = min(nChan-1,chanList_l(i,1));
+	validEndChan = max(nChan-1,chanList_l(i,2));
+	freqList_l(i,1) = chanFreq(IPosition(1,validStartChan)); //chanFreq(IPosition(1,chanList_l(i,1))); // The the freq. of start channel in Hz
+	freqList_l(i,2) = chanFreq(IPosition(1,validEndChan));   //chanFreq(IPosition(1,chanList_l(i,2))); // The freq. of stop channel in Hz
+	freqList_l(i,3) = avgChanWidth;  // The channel width in Hz
       }
     
     return freqList_l;

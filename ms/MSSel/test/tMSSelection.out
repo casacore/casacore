@@ -9,6 +9,7 @@ FE: Field Expr=
 SE: SPW Expr=
 	SE: SPW          = []
 	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=
@@ -43,6 +44,7 @@ FE: Field Expr=
 SE: SPW Expr=
 	SE: SPW          = []
 	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=
@@ -77,6 +79,7 @@ FE: Field Expr=
 SE: SPW Expr=
 	SE: SPW          = []
 	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=
@@ -111,6 +114,7 @@ FE: Field Expr=
 SE: SPW Expr=
 	SE: SPW          = []
 	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=
@@ -145,6 +149,7 @@ FE: Field Expr=
 SE: SPW Expr=
 	SE: SPW          = []
 	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=
@@ -179,6 +184,7 @@ FE: Field Expr=
 SE: SPW Expr=
 	SE: SPW          = []
 	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=
@@ -213,6 +219,7 @@ FE: Field Expr=
 SE: SPW Expr=
 	SE: SPW          = []
 	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=
@@ -247,6 +254,7 @@ FE: Field Expr=
 SE: SPW Expr=
 	SE: SPW          = []
 	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=
@@ -281,6 +289,7 @@ FE: Field Expr=
 SE: SPW Expr=
 	SE: SPW          = []
 	SE: Chan         = Axis Lengths: [0, 0] []
+	SE: Freq         = Axis Lengths: [0, 0] []
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=
@@ -318,6 +327,10 @@ SE: SPW Expr=ALMA*
 [1, 0, 63, 1
  2, 0, 0, 1]
 
+	SE: Freq         = Axis Lengths: [2, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62903e+10, 8.43216e+10, -3.125e+07
+ 2, 8.52903e+10, 8.52903e+10, 1.8125e+09]
+
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=
@@ -353,6 +366,9 @@ SE: SPW Expr=ALMA*FULL*:85290~86290.305MHz
 	SE: SPW          = [1]
 	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
 [1, 1, 32, 1]
+
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62591e+10, 8.43216e+10, -3.125e+07]
 
 ScE: Scan Expr=
 	ScE: tScan         = []
@@ -391,6 +407,11 @@ SE: SPW Expr=ALMA*FULL*:5~10;20~30;50~70
 [1, 5, 10, 1
  1, 20, 30, 1
  1, 50, 63, 1]
+
+	SE: Freq         = Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[1, 8.61341e+10, 8.43216e+10, -3.125e+07
+ 1, 8.56653e+10, 8.43216e+10, -3.125e+07
+ 1, 8.47278e+10, 8.43216e+10, -3.125e+07]
 
 ScE: Scan Expr=
 	ScE: tScan         = []
@@ -436,6 +457,17 @@ SE: SPW Expr=0~4:5~10;20~30;50~70
  2, 20, 0, 1
  2, 50, 0, 1]
 
+	SE: Freq         = Axis Lengths: [9, 4]  (NB: Matrix in Row/Column order)
+[0, 1.9055e+11, 1.9055e+11, 1.875e+09
+ 0, 1.9055e+11, 1.9055e+11, 1.875e+09
+ 0, 1.9055e+11, 1.9055e+11, 1.875e+09
+ 1, 8.61341e+10, 8.43216e+10, -3.125e+07
+ 1, 8.56653e+10, 8.43216e+10, -3.125e+07
+ 1, 8.47278e+10, 8.43216e+10, -3.125e+07
+ 2, 8.52903e+10, 8.52903e+10, 1.8125e+09
+ 2, 8.52903e+10, 8.52903e+10, 1.8125e+09
+ 2, 8.52903e+10, 8.52903e+10, 1.8125e+09]
+
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=
@@ -473,6 +505,11 @@ SE: SPW Expr=ALMA*FULL*:5~10;20~30;50~70
 [1, 5, 10, 1
  1, 20, 30, 1
  1, 50, 63, 1]
+
+	SE: Freq         = Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[1, 8.61341e+10, 8.43216e+10, -3.125e+07
+ 1, 8.56653e+10, 8.43216e+10, -3.125e+07
+ 1, 8.47278e+10, 8.43216e+10, -3.125e+07]
 
 ScE: Scan Expr=
 	ScE: tScan         = []
@@ -512,6 +549,11 @@ SE: SPW Expr=ALMA*FULL*:5~10;20~30;50~70
  1, 20, 30, 1
  1, 50, 63, 1]
 
+	SE: Freq         = Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[1, 8.61341e+10, 8.43216e+10, -3.125e+07
+ 1, 8.56653e+10, 8.43216e+10, -3.125e+07
+ 1, 8.47278e+10, 8.43216e+10, -3.125e+07]
+
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=*PHASE*
@@ -550,6 +592,11 @@ SE: SPW Expr=ALMA*FULL*:5~10;20~30;50~70
  1, 20, 30, 1
  1, 50, 63, 1]
 
+	SE: Freq         = Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[1, 8.61341e+10, 8.43216e+10, -3.125e+07
+ 1, 8.56653e+10, 8.43216e+10, -3.125e+07
+ 1, 8.47278e+10, 8.43216e+10, -3.125e+07]
+
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=*OFF*
@@ -587,6 +634,11 @@ SE: SPW Expr=ALMA*FULL*:5~10;20~30;50~70
 [1, 5, 10, 1
  1, 20, 30, 1
  1, 50, 63, 1]
+
+	SE: Freq         = Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[1, 8.61341e+10, 8.43216e+10, -3.125e+07
+ 1, 8.56653e+10, 8.43216e+10, -3.125e+07
+ 1, 8.47278e+10, 8.43216e+10, -3.125e+07]
 
 ScE: Scan Expr=
 	ScE: tScan         = []
@@ -628,6 +680,11 @@ SE: SPW Expr=ALMA*FULL*:5~10;20~30;50~70
 [1, 5, 10, 1
  1, 20, 30, 1
  1, 50, 63, 1]
+
+	SE: Freq         = Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[1, 8.61341e+10, 8.43216e+10, -3.125e+07
+ 1, 8.56653e+10, 8.43216e+10, -3.125e+07
+ 1, 8.47278e+10, 8.43216e+10, -3.125e+07]
 
 ScE: Scan Expr=
 	ScE: tScan         = []
@@ -673,6 +730,11 @@ SE: SPW Expr=ALMA*FULL*:5~10;20~30;50~70
  1, 20, 30, 1
  1, 50, 63, 1]
 
+	SE: Freq         = Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[1, 8.61341e+10, 8.43216e+10, -3.125e+07
+ 1, 8.56653e+10, 8.43216e+10, -3.125e+07
+ 1, 8.47278e+10, 8.43216e+10, -3.125e+07]
+
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=*OFF*
@@ -715,6 +777,9 @@ SE: SPW Expr=ALMA*FULL*:85290~86290.305MHz
 	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
 [1, 1, 32, 1]
 
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62591e+10, 8.43216e+10, -3.125e+07]
+
 ScE: Scan Expr=
 	ScE: tScan         = []
 StE: STATE Expr=*OFF*
@@ -756,6 +821,9 @@ SE: SPW Expr=ALMA*FULL*:85290~86290.305MHz
 	SE: SPW          = [1]
 	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
 [1, 1, 32, 1]
+
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62591e+10, 8.43216e+10, -3.125e+07]
 
 ScE: Scan Expr=
 	ScE: tScan         = []
