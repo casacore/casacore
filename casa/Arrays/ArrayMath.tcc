@@ -1372,6 +1372,68 @@ template<class T, class U> void convertArray(Array<T> &to,
     }
 }
 
+
+template<class T>
+void expandArray (Array<T>& out, const Array<T>& in,
+                  const IPosition& alternate)
+{
+  IPosition mult;
+  IPosition alt = checkExpandArray (mult, in.shape(), out.shape(),
+                                    alternate);
+  // Make sure output is contiguous.
+  Bool deleteIt;
+  T* outPtr = out.getStorage (deleteIt);
+  expandRecursive (in.ndim()-1, in.shape(), mult, in.steps(),
+                   in.data(), outPtr, alt);
+  out.putStorage (outPtr, deleteIt);
+}
+
+template<class T>
+T* expandRecursive (int axis, const IPosition& shp, const IPosition& mult,
+                    const IPosition& inSteps,
+                    const T* in, T* out, const IPosition& alternate)
+{
+  if (axis == 0) {
+    if (alternate[0]) {
+      for (uInt j=0; j<mult[0]; ++j) {
+        const T* pin = in;
+        for (uInt i=0; i<shp[0]; ++i) {
+          *out++ = *pin;
+          pin += inSteps[0];
+        }
+      }
+    } else {
+      for (uInt i=0; i<shp[0]; ++i) {
+        for (uInt j=0; j<mult[0]; ++j) {
+          *out++ = *in;
+        }
+        in += inSteps[0];
+      }
+    }
+  } else {
+    if (alternate[axis]) {
+      for (uInt j=0; j<mult[axis]; ++j) {
+        const T* pin = in;
+        for (uInt i=0; i<shp[axis]; ++i) {
+          out = expandRecursive (axis-1, shp, mult, inSteps,
+                                 pin, out, alternate);
+          pin += inSteps[axis];
+        }
+      }
+    } else {
+      for (uInt i=0; i<shp[axis]; ++i) {
+        for (uInt j=0; j<mult[axis]; ++j) {
+          out = expandRecursive (axis-1, shp, mult, inSteps,
+                                 in, out, alternate);
+        }
+        in += inSteps[axis];
+      }
+    }
+  }
+  return out;
+}
+
+
 } //# NAMESPACE CASACORE - END
 
 #endif

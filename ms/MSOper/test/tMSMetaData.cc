@@ -1214,7 +1214,6 @@ void testIt(MSMetaData& md) {
 		}
 		{
 			cout << "*** test getUniqueBaselines() and nBaselines()" << endl;
-			cout << md.getUniqueBaselines() << endl;
 			AlwaysAssert(md.nBaselines() == 21, AipsError);
 		}
 		{
@@ -1295,7 +1294,6 @@ void testIt(MSMetaData& md) {
 					default:
 						throw AipsError();
 					}
-					cout << "number " << iter->first << endl;
 					AlwaysAssert(iter->second == expec, AipsError);
 				}
 			}
@@ -1345,7 +1343,6 @@ void testIt(MSMetaData& md) {
 		{
 			cout << "*** test getCenterFreqs()" << endl;
 			vector<Quantity> centers = md.getCenterFreqs();
-			cout << "centers " << centers << endl;
 			Double mine[] = {
 				187550000000.0,	214250000000.0,
 				214234375000.0,	216250000000.0,
@@ -1531,9 +1528,7 @@ void testIt(MSMetaData& md) {
 				vector<MFrequency> rf = md.getRefFreqs();
 				for (uInt i=0; i<n; ++i) {
 					AlwaysAssert(rf[i].getRefString() == "TOPO", AipsError);
-                    cout << "*** unit " << rf[i].getUnit().getName() << endl;
                     AlwaysAssert(rf[i].getUnit() == Unit("Hz"), AipsError);
-					cout << std::setprecision(20) << "got " << rf[i].get("Hz").getValue() << " exp " << expec[i] << endl;
 					AlwaysAssert(near(rf[i].get("Hz").getValue(), expec[i], 1e-8), AipsError);
 				}
 			}
@@ -1798,7 +1793,7 @@ void testIt(MSMetaData& md) {
 			}
 		}
 		{
-			cout << "test getSpwToTimesForScan()" << endl;
+			cout << "*** test getSpwToTimesForScan()" << endl;
 			ScanKey scan;
 			scan.obsID = 0;
 			scan.arrayID = 0;
@@ -2039,6 +2034,108 @@ void testIt(MSMetaData& md) {
                 default:
                     break;
                 }
+            }
+        }
+        {
+            cout << "*** test getChanEffectiveBWs()" << endl;
+            vector<QVector<Double> > ebw = md.getChanEffectiveBWs(False);
+            vector<QVector<Double> >::const_iterator iter = ebw.begin();
+            vector<QVector<Double> >::const_iterator end = ebw.end();
+            Double expec = 0;
+            while (iter != end) {
+                size_t nchans = iter->size();
+                if (nchans == 1) {
+                    ++iter;
+                    continue;
+                }
+                else if (nchans == 4) {
+                    expec = 7.5e9;
+                }
+                else if (nchans == 128) {
+                    expec = 1.5625e7;
+                }
+                else if (nchans == 3840) {
+                    expec = 30517.578125;
+                }
+                Vector<Double> vals = iter->getValue();
+                Vector<Double>::const_iterator jiter = vals.begin();
+                Vector<Double>::const_iterator jend = vals.end();
+                while (jiter != jend) {
+                    AlwaysAssert(*jiter == expec, AipsError);
+                    ++jiter;
+                }
+                ++iter;
+            }
+            vector<QVector<Double> > ebwv = md.getChanEffectiveBWs(True);
+            AlwaysAssert(near(ebwv[9].getValue()[0], 20.23684342, 1e-8), AipsError);
+            AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
+        }
+        {
+            cout << "*** test getChanResolutions()" << endl;
+            vector<QVector<Double> > ebw = md.getChanResolutions(False);
+            vector<QVector<Double> >::const_iterator iter = ebw.begin();
+            vector<QVector<Double> >::const_iterator end = ebw.end();
+            Double expec = 0;
+            while (iter != end) {
+                size_t nchans = iter->size();
+                if (nchans == 1) {
+                    ++iter;
+                    continue;
+                }
+                else if (nchans == 4) {
+                    expec = 7.5e9;
+                }
+                else if (nchans == 128) {
+                    expec = 1.5625e7;
+                }
+                else if (nchans == 3840) {
+                    expec = 30517.578125;
+                }
+                Vector<Double> vals = iter->getValue();
+                Vector<Double>::const_iterator jiter = vals.begin();
+                Vector<Double>::const_iterator jend = vals.end();
+                while (jiter != jend) {
+                    AlwaysAssert(*jiter == expec, AipsError);
+                    ++jiter;
+                }
+                ++iter;
+            }
+            vector<QVector<Double> > ebwv = md.getChanResolutions(True);
+            AlwaysAssert(near(ebwv[9].getValue()[0], 20.23684342, 1e-8), AipsError);
+            AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
+        }
+        {
+            cout << "test getRestFrequencies()" << endl;
+            map<SourceKey, SHARED_PTR<vector<MFrequency> > > rfs = md.getRestFrequencies();
+            map<SourceKey, SHARED_PTR<vector<MFrequency> > >::const_iterator iter = rfs.begin();
+            map<SourceKey, SHARED_PTR<vector<MFrequency> > >::const_iterator end = rfs.end();
+            while (iter != end) {
+                if (iter->second ) {
+                    AlwaysAssert(
+                        iter->first.id == 0 && iter->first.spw == 34, AipsError
+                    );
+                    AlwaysAssert(iter->second->size() == 2, AipsError);
+                    AlwaysAssert((*iter->second)[0].get("Hz").getValue() == 1e10, AipsError);
+                    AlwaysAssert((*iter->second)[1].get("Hz").getValue() == 2e10, AipsError);
+                }
+                ++iter;
+            }
+        }
+        {
+            cout << "test getTransitions()" << endl;
+            map<SourceKey, SHARED_PTR<vector<String> > > rfs = md.getTransitions();
+            map<SourceKey, SHARED_PTR<vector<String> > >::const_iterator iter = rfs.begin();
+            map<SourceKey, SHARED_PTR<vector<String> > >::const_iterator end = rfs.end();
+            while (iter != end) {
+                if (iter->second ) {
+                    AlwaysAssert(
+                        iter->first.id == 0 && iter->first.spw == 34, AipsError
+                    );
+                    AlwaysAssert(iter->second->size() == 2, AipsError);
+                    AlwaysAssert((*iter->second)[0] == "myline", AipsError);
+                    AlwaysAssert((*iter->second)[1] == "yourline", AipsError);
+                }
+                ++iter;
             }
         }
         {
