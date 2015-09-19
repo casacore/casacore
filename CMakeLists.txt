@@ -57,8 +57,9 @@ enable_language (Fortran)
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+# By default build the Python bindings
+option (BUILD_PYTHON "Build the python bindings" YES)
 # By default build shared libraries
-option (BUILD_PYTHON "Build the python bindings" NO)
 option (ENABLE_SHARED "Build shared libraries" YES)
 option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
