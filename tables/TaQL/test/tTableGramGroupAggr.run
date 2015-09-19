@@ -96,6 +96,11 @@ $casa_checktool ./tTableGramGroupAggr 'select gsum(ab) from tTableGramGroupAggr_
 # in all clauses.
 $casa_checktool ./tTableGramGroupAggr 'select gsum(arr1), gmedian(arr2) as MED, gfractile(arr3,0.5), ab from tTableGramGroupAggr_tmp.tab where ab>1 and ac<10 groupby ab having MED%48==11 and ab>=0 orderby desc MED%96, ab asc'
 
+# Test mixed aggregate arithmetic (ab=Int, ag=DComplex, ae=Float)
+$casa_checktool ./tTableGramGroupAggr "select gmin(ab) + gsum(ag) from tTableGramGroupAggr_tmp.tab"
+$casa_checktool ./tTableGramGroupAggr "select gmin(ae) + gmax(ab) from tTableGramGroupAggr_tmp.tab"
+$casa_checktool ./tTableGramGroupAggr "select gsum(ag) + gmax(ae) from tTableGramGroupAggr_tmp.tab"
+
 
 # Remove the symlink
-rm tTableGramGroupAggr
+rm -f tTableGramGroupAggr

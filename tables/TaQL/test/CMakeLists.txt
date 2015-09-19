@@ -32,6 +32,7 @@ tTaQLNode
 # Only test scripts, no test programs.
 set (testscripts
 tTableGramGroupAggr
+tTableGramGroupAggrAll
 )
 
 # Some test sources include a test .h file.
