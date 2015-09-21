@@ -257,21 +257,25 @@ template <typename T> void ImageUtilities::openImage(
 	);
 	LatticeBase* lattPtr = ImageOpener::openImage (fileName);
     ThrowIf(
-		lattPtr == 0,
+		! lattPtr,
 		"Image " + fileName + " cannot be opened; its type is unknown"
 	);
     T x = 0;
-    ThrowIf(
-        lattPtr->dataType() != whatType(&x),
-        "Logic Error: " + fileName
-        + " has a different data type than the data type of the requested object"
-    );
+    if (lattPtr->dataType() != whatType(&x)) {
+    	delete lattPtr;
+        ThrowCc(
+        	"Logic Error: " + fileName
+			+ " has a different data type than the data type of the requested object"
+		);
+    }
 	pImage = dynamic_cast<ImageInterface<T> *>(lattPtr);
-	ThrowIf(
-		pImage == 0,
-		"Unrecognized image data type, "
-	    "presently only Float and Complex images are supported"
-	);
+	if (pImage == 0) {
+		delete lattPtr;
+		ThrowCc(
+			"Unrecognized image data type, "
+			"presently only Float and Complex images are supported"
+		);
+	}
 }
 
 template <typename T> void ImageUtilities::openImage(
