@@ -43,7 +43,8 @@ using namespace casa;
 void UI(int argc, char **argv, string& MSNBuf, string& OutMSBuf, bool& deepCopy,
 	string& fieldStr, string& timeStr, string& spwStr, string& baselineStr,
 	string& scanStr, string& arrayStr, string& uvdistStr,string& taqlStr, string& polnStr,
-	string& stateObsModeStr, string& observationStr)
+	string& stateObsModeStr, string& observationStr,
+	bool& installEH)
 {
       Input inputs(1);
 
@@ -61,6 +62,7 @@ void UI(int argc, char **argv, string& MSNBuf, string& OutMSBuf, bool& deepCopy,
       inputs.create("stateobsmode",stateObsModeStr,"STATE selection expr.");  
       inputs.create("observation",observationStr,"OBS selection expr.");  
       inputs.create("taql",taqlStr,"TaQL selection expr.");  
+      inputs.create("installeh","1","Install LogError handlers?");
       inputs.readArguments(argc, argv);
 
       MSNBuf=inputs.getString("ms");
@@ -77,6 +79,7 @@ void UI(int argc, char **argv, string& MSNBuf, string& OutMSBuf, bool& deepCopy,
       stateObsModeStr=inputs.getString("stateobsmode");
       observationStr=inputs.getString("observation");
       taqlStr=inputs.getString("taql");
+      installEH=inputs.getBool("installeh");
 }
 //
 //-------------------------------------------------------------------------
@@ -171,7 +174,7 @@ int main(int argc, char **argv)
   string MSNBuf,OutMSBuf,fieldStr,timeStr,spwStr,baselineStr,
     uvdistStr,taqlStr,scanStr,arrayStr, polnStr,stateObsModeStr,
     observationStr;
-  Bool deepCopy=0;
+  Bool deepCopy=0,installEH=1;
 
   MSNBuf=OutMSBuf=fieldStr=timeStr=spwStr=baselineStr=
     uvdistStr=taqlStr=scanStr=arrayStr=polnStr=stateObsModeStr=observationStr="";
@@ -180,7 +183,8 @@ int main(int argc, char **argv)
   fieldStr=spwStr="";
   UI(argc, argv, MSNBuf,OutMSBuf, deepCopy,
      fieldStr,timeStr,spwStr,baselineStr,scanStr,arrayStr,
-     uvdistStr,taqlStr,polnStr,stateObsModeStr,observationStr);
+     uvdistStr,taqlStr,polnStr,stateObsModeStr,observationStr,
+     installEH);
   //
   //---------------------------------------------------
   //
@@ -199,10 +203,18 @@ int main(int argc, char **argv)
     
 	MSInterface msInterface(ms);
 	MSSelection msSelection;
-	MSSelectionLogError mssLEA,mssLES, mssLESpw;
-	msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA,True);
-	msSelection.setErrorHandler(MSSelection::STATE_EXPR, &mssLES,True);
-	msSelection.setErrorHandler(MSSelection::SPW_EXPR, &mssLESpw,True);
+	if (installEH)
+	  {
+	    //
+	    // Install error handlers such that it also tests UDF
+	    // error handlers having shorter life-cycle than the
+	    // MSSelection object.
+	    //
+	    MSSelectionLogError mssLEA,mssLES, mssLESpw;
+	    msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA,True);
+	    msSelection.setErrorHandler(MSSelection::STATE_EXPR, &mssLES,True);
+	    msSelection.setErrorHandler(MSSelection::SPW_EXPR, &mssLESpw,True);
+	  }
 
     	// msSelection.reset(ms,MSSelection::PARSE_NOW,
     	// 			timeStr,baselineStr,fieldStr,spwStr,
@@ -252,6 +264,9 @@ int main(int argc, char **argv)
     	cout << "###AipsError: " << x.getMesg() << endl;
       }
   }
-
+  //
+  // There should be no tables in the cache outside the scope of the
+  // MSSelection object.
+  //
   showTableCache();
 }

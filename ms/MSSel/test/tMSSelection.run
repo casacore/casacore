@@ -69,6 +69,13 @@
   runCmd 19 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*OFF*' time='*+0:0:1' uvdist='>1000m:50%'";
   runCmd 20 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX'";
   runCmd 21 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX'";
+  runCmd 21 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' stateobsmode='*OFF*,*JUNK*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'";
+  runCmd 21 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz,x' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'";
+  runCmd 21 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21;x' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'";
+
+  runCmd 21 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' stateobsmode='*OFF*,*JUNK*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'";
+  runCmd 21 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz,x' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'";
+  runCmd 21 "$casa_checktool tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!20;!21;x' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'";
 
   #
   # Remove the test MS and any other cleanup required.
