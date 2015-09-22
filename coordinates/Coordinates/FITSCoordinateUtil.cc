@@ -590,6 +590,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		   << "The SIP convention for representing distortion in FITS headers\n  is not part of FITS standard v3.0"
 		   << " and not yet supported by CASA.\n  Header\n  "<< header[i] << "\n  was interpreted as\n  " << tmp << LogIO::POST;
 	    } else {
+	        if(header[i].contains("-GLS")){
+	  	    os << LogIO::WARN << "Note: The GLS projection is deprecated. Use SFL instead." << LogIO::POST;
+	        }
 		all = all.append(header(i));
 	    }
 	    delete [] tmp;

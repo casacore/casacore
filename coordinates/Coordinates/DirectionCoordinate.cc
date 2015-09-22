@@ -604,6 +604,7 @@ Bool DirectionCoordinate::setReferencePixel(const Vector<Double> &refPix)
     //cout << "refPix[0]=" << refPix[0]
     //     << " refPix[1]=" << refPix[1]
     //     << endl;
+
     wcs_p.crpix[0] = refPix[0];
     wcs_p.crpix[1] = refPix[1];
     set_wcs(wcs_p);
@@ -639,6 +640,7 @@ Bool DirectionCoordinate::setIncrement(const Vector<Double> &inc)
 //
     Vector<Double> tmp(inc.copy());
     fromCurrent(tmp);
+
     wcs_p.cdelt[0] = tmp[0];  
     wcs_p.cdelt[1] = tmp[1];
     set_wcs(wcs_p);
@@ -656,6 +658,16 @@ Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
 //
     Vector<Double> tmp(refval.copy());
     fromCurrent(tmp);
+//
+    // special treatment for SFL projection (see Calabretta & Greisen 2002)
+    if(projection_p.type() == Projection::SFL){
+      if (wcs_p.cdelt[1] != 0. && (!wcs_p.altlin&4 || wcs_p.crota[1]==0.) ){
+	// Force reference point to lat = 0 if CROTA is not set or is zero
+        // to avoid "wcsset_error: Ill-conditioned coordinate transformation parameters"
+	wcs_p.crpix[1] -= tmp[1]/wcs_p.cdelt[1];
+	tmp[1] = 0.;
+      }
+    }
 //
     wcs_p.crval[0] = tmp[0];
     wcs_p.crval[1] = tmp[1];
