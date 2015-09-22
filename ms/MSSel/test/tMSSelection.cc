@@ -199,9 +199,10 @@ int main(int argc, char **argv)
     
 	MSInterface msInterface(ms);
 	MSSelection msSelection;
-	MSSelectionLogError mssLEA,mssLES;
-	msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA);
-	msSelection.setErrorHandler(MSSelection::STATE_EXPR, &mssLES);
+	MSSelectionLogError mssLEA,mssLES, mssLESpw;
+	msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA,True);
+	msSelection.setErrorHandler(MSSelection::STATE_EXPR, &mssLES,True);
+	msSelection.setErrorHandler(MSSelection::SPW_EXPR, &mssLESpw,True);
 
     	// msSelection.reset(ms,MSSelection::PARSE_NOW,
     	// 			timeStr,baselineStr,fieldStr,spwStr,

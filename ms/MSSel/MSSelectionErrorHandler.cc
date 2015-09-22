@@ -34,7 +34,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MSSelectionErrorHandler::MSSelectionErrorHandler()
     :tokenList(), messageList()
+  {}
+
+  MSSelectionErrorHandler::MSSelectionErrorHandler(const MSSelectionErrorHandler& that)
+    :tokenList(), messageList()
   {
+    operator=(that);
+  }
+
+  MSSelectionErrorHandler& MSSelectionErrorHandler::operator=(const MSSelectionErrorHandler& that)
+  {
+    if (this != &that)
+      {
+	tokenList = that.tokenList;
+	messageList = that.messageList;
+      }
+    return *this;
   }
 
   MSSelectionErrorHandler::~MSSelectionErrorHandler () {}

@@ -37,7 +37,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MSStateParse* MSStateParse::thisMSSIParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSStateParse::node_p = 0x0;
   Vector<Int> MSStateParse::idList;
-  MSSelectionErrorHandler* MSStateParse::thisMSSErrorHandler = 0;
+  //CountedPtr<MSSelectionErrorHandler> MSStateParse::thisMSSErrorHandler;
+  MSSelectionErrorHandler* MSStateParse::thisMSSErrorHandler=NULL;
 
   //# Constructor
   MSStateParse::MSStateParse ()
@@ -46,7 +47,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (MSStateParse::node_p!=0x0) delete MSStateParse::node_p;
     MSStateParse::node_p=0x0;
     // if (MSStateParse::thisMSSErrorHandler!=0x0) delete MSStateParse::thisMSSErrorHandler;
-    // MSStateParse::thisMSSErrorHandler=0x0;
+    //MSStateParse::thisMSSErrorHandler=0x0;
     node_p = new TableExprNode();
   }
   
@@ -57,7 +58,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (MSStateParse::node_p!=0x0) delete MSStateParse::node_p;
     MSStateParse::node_p=0x0;
     // if (MSStateParse::thisMSSErrorHandler!=0x0) delete MSStateParse::thisMSSErrorHandler;
-    // MSStateParse::thisMSSErrorHandler=0x0;
+    //MSStateParse::thisMSSErrorHandler=0x0;
     node_p = new TableExprNode();
     idList.resize(0);
     //    setMS(ms);
