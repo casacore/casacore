@@ -527,7 +527,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Set the error handler to be used for reporting errors while
     // parsing the type of expression give by the first argument.
     void setErrorHandler(const MSExprType type, MSSelectionErrorHandler* mssEH,
-			 const Bool overRide=False);
+			 const Bool overRide=True);
     
     // Initialize the error handler.  This is set the error-handler to
     // the user supplied error handler via setErrorHandler() or to the

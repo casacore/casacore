@@ -206,9 +206,9 @@ int main(int argc, char **argv)
 	if (installEH)
 	  {
 	    //
-	    // Install error handlers such that it also tests UDF
-	    // error handlers having shorter life-cycle than the
-	    // MSSelection object.
+	    // Install error handlers such that it also tests user
+	    // defined error handlers having shorter life-cycle than
+	    // the MSSelection object.
 	    //
 	    MSSelectionLogError mssLEA,mssLES, mssLESpw;
 	    msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA,True);
