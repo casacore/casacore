@@ -226,6 +226,7 @@ int main(int argc, char **argv)
     			  stateObsModeStr,observationStr);
     	// TableExprNode ten=msSelection.toTableExprNode(&msInterface);
     	// cerr << "TEN rows = " << ten.nrow() << endl;
+
 	Int nRows=0;
 	try
 	  {
