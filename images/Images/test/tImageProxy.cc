@@ -38,6 +38,7 @@ int main() {
         ImageInfo ii = proxy.imageInfoObject();
         AlwaysAssert(ii.getBeamSet().hasSingleBeam(), AipsError);
         AlwaysAssert(proxy.type() == TpFloat, AipsError);
+        AlwaysAssert(proxy.coordSysObject().nWorldAxes() == 2, AipsError);
     }
     catch (const AipsError& x) {
         cout << "Caught error " << x.getMesg() << endl;

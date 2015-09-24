@@ -917,6 +917,11 @@ namespace casacore { //# name space casa begins
     return coord;
   }
 
+    const CoordinateSystem& ImageProxy::coordSysObject() const {
+        checkNull();
+        return *itsCoordSys;
+    }
+
   Vector<Double> ImageProxy::toWorld (const Vector<Double>& pixel,
                                       Bool reverseAxes)
   {
@@ -975,7 +980,7 @@ namespace casacore { //# name space casa begins
     return rec;
   }
 
-  ImageInfo ImageProxy::imageInfoObject() const {
+  const ImageInfo& ImageProxy::imageInfoObject() const {
     if (itsImageFloat) {
       return itsImageFloat->imageInfo();
     }
