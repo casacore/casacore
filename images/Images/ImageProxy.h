@@ -41,6 +41,7 @@
 namespace casacore {
 
   //# Forward Declarations.
+  class ImageInfo;
   template<typename T> class ImageInterface;
   class LatticeExprNode;
   class CoordinateSystem;
@@ -175,6 +176,8 @@ namespace casacore {
     // Get the data type of the image.
     String dataType() const;
 
+    DataType type() const;
+
     // Get the image type (PagedImage, HDF5Image, etc.)
     String imageType() const;
 
@@ -280,6 +283,8 @@ namespace casacore {
 
     // Get the image info.
     Record imageInfo() const;
+
+    ImageInfo imageInfoObject() const;
 
     // Get the miscellaneous info.
     Record miscInfo() const;
