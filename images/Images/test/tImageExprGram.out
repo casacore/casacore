@@ -17,13 +17,19 @@ Scanned so far: b/b*
 Scanned so far: min(b,b,b)
 
 Expr:  a = 1
+Images used: []
 Expr:  a = b
+Images used: [b]
 Expr:  a = sin(\c)
+Images used: [c]
 Expr:  a = 'c'+2
+Images used: [c]
 Expr:  a = b+('c'+d)[region]     (using $n notation)
 Expr:  a = nelements(b[$region]
 Expr:  a = nelements(b[$region1 || $region2) - length(b[$region1],0)
+Images used: [b,b]
 Expr:  a = 3.5*b + cos('c')-10/min('c',d)*-e*log(b)-pi()
+Images used: [b,c,c,d,e,b]
 Expr:  a = (b+'c'-d/2.0*-b) + pi()
 Expr:  a = pow('c',d)
 Expr:  a = fmod('c'*2,d)

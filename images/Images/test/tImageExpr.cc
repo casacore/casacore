@@ -31,6 +31,7 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/Utilities/Assert.h>
 
 #include <casacore/coordinates/Coordinates/CoordinateUtil.h>
@@ -65,6 +66,9 @@ void testExpr()
     AlwaysAssertExit (! img.isPersistent());
     img.save ("tImageExpr_tmp.imgexpr");
     AlwaysAssertExit (img.isPersistent());
+    AlwaysAssertExit (ImageExprParse::getImageNames().size() == 2  &&
+                      ImageExprParse::getImageNames()[0] == "tImageExpr_tmp.img1" &&
+                      ImageExprParse::getImageNames()[1] == "tImageExpr_tmp.img2");
   }
   {
     // Reopen the expression from the file.
@@ -74,6 +78,9 @@ void testExpr()
     AlwaysAssertExit (allEQ(img->get(), arr+arr));
     AlwaysAssertExit (img->isPersistent());
     delete img;
+    AlwaysAssertExit (ImageExprParse::getImageNames().size() == 2  &&
+                      ImageExprParse::getImageNames()[0] == "tImageExpr_tmp.img1" &&
+                      ImageExprParse::getImageNames()[1] == "tImageExpr_tmp.img2");
   }
   {
     // Do a recursive test.
@@ -94,6 +101,9 @@ void testExpr()
     AlwaysAssertExit (allEQ(img->get(), arr+arr+arr));
     AlwaysAssertExit (img->isPersistent());
     delete img;
+    AlwaysAssertExit (ImageExprParse::getImageNames().size() == 2  &&
+                      ImageExprParse::getImageNames()[0] == "tImageExpr_tmp.img1" &&
+                      ImageExprParse::getImageNames()[1] == "tImageExpr_tmp.imgexpr");
   }
 }
 

@@ -280,6 +280,10 @@ public:
     // Make an IPosition containing the binning values.
     static IPosition makeBinning (const LatticeExprNode& values);
 
+    // Get the names of the images used in the expression.
+    static const vector<String>& getImageNames()
+        { return theirNames; }
+
     // Set the static node object (used by the .y file).
     static void setNode (const LatticeExprNode& node)
         { theirNode = node; }
@@ -316,6 +320,11 @@ private:
 
     //# A 'global' node object to hold the resulting expression.
     static LatticeExprNode theirNode;
+
+    //# The names of the images used in the expression.
+    //# and the level of nesting.
+    static vector<String> theirNames;
+    static Int theirLevel;
 
     DataType itsType;
     Bool     itsBval;              //# boolean literal
