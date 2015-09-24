@@ -42,6 +42,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/BasicSL/Constants.h>
+#include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Inputs/Input.h>
@@ -195,6 +196,7 @@ int main (int argc, const char* argv[])
     cout << endl;
     cout << "Expr:  a = 1" << endl;
     LatticeExpr<Double> expr (ImageExprParse::command ("1.0"));
+    cout << "Images used: " << ImageExprParse::getImageNames() << endl;
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       shape, IPosition(aArr.ndim(),1));
@@ -208,6 +210,7 @@ int main (int argc, const char* argv[])
   {
     cout << "Expr:  a = b" << endl;
     LatticeExpr<Double> expr(ImageExprParse::command ("b"));
+    cout << "Images used: " << ImageExprParse::getImageNames() << endl;
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       shape, IPosition(aArr.ndim(),1));
@@ -221,6 +224,7 @@ int main (int argc, const char* argv[])
   {
     cout << "Expr:  a = sin(\\c)" << endl;
     LatticeExpr<Double> expr(ImageExprParse::command ("sin(\\c)"));
+    cout << "Images used: " << ImageExprParse::getImageNames() << endl;
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       shape, IPosition(aArr.ndim(),1));
@@ -235,6 +239,7 @@ int main (int argc, const char* argv[])
   {
     cout << "Expr:  a = 'c'+2" << endl;
     LatticeExpr<Double> expr(ImageExprParse::command ("'c'+2"));
+    cout << "Images used: " << ImageExprParse::getImageNames() << endl;
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       shape, IPosition(aArr.ndim(),1));
@@ -311,6 +316,7 @@ int main (int argc, const char* argv[])
 			     ("nelements(b[$R1 || $R2]) - "
 			      "length(b[$R1],0)",
 			      temps, regions));
+    cout << "Images used: " << ImageExprParse::getImageNames() << endl;
     delete regions[0];
     delete regions[1];
     a.copyData(expr);
@@ -328,6 +334,7 @@ int main (int argc, const char* argv[])
 
     LatticeExpr<Double> expr( ImageExprParse::command
                ("(3.5*b) + (cos('c')) - (10/min('c',d)*(-e)*log(b)) - (pi()) "));
+    cout << "Images used: " << ImageExprParse::getImageNames() << endl;
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       shape, IPosition(aArr.ndim(),1));
