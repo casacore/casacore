@@ -1937,7 +1937,7 @@ std::set<Int> MSMetaData::getScansForTimes(
 	std::set<ScanKey>::const_iterator end = uniqueScans.end();
 	while (scan != end) {
 		std::set<Double> times = scanToTimesMap->find(*scan)->second;
-		if (*(++times.rend()) >= minTime && *times.begin() <= maxTime) {
+		if (*(max_element(times.begin(), times.end())) >= minTime && *times.begin() <= maxTime) {
 			scans.insert(scan->scan);
 		}
 		++scan;
