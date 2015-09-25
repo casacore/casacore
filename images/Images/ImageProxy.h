@@ -41,6 +41,7 @@
 namespace casacore {
 
   //# Forward Declarations.
+  class ImageInfo;
   template<typename T> class ImageInterface;
   class LatticeExprNode;
   class CoordinateSystem;
@@ -175,6 +176,8 @@ namespace casacore {
     // Get the data type of the image.
     String dataType() const;
 
+    DataType type() const;
+
     // Get the image type (PagedImage, HDF5Image, etc.)
     String imageType() const;
 
@@ -266,6 +269,8 @@ namespace casacore {
     // Get the coordinate system.
     Record coordSys() const;
 
+    const CoordinateSystem& coordSysObject() const;
+
     // Convert a pixel coordinate to world coordinate.
     // if <src>reverseAxes=True</src> the input and output vector will be
     // reversed (as needed for pyrap).
@@ -280,6 +285,8 @@ namespace casacore {
 
     // Get the image info.
     Record imageInfo() const;
+
+    const ImageInfo& imageInfoObject() const;
 
     // Get the miscellaneous info.
     Record miscInfo() const;

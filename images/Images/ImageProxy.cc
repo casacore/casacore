@@ -31,6 +31,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageProxy.h>
 #include <casacore/images/Images/ImageInterface.h>
+#include <casacore/images/Images/ImageInfo.h>
 #include <casacore/images/Images/ImageConcat.h>
 #include <casacore/images/Images/ImageFITSConverter.h>
 #include <casacore/images/Images/ImageRegrid.h>
@@ -577,6 +578,11 @@ namespace casacore { //# name space casa begins
     return ostr.str();
   }
 
+  DataType ImageProxy::type() const {
+      checkNull();
+      return itsLattice->dataType();
+  }
+
   String ImageProxy::imageType() const
   {
     // LatticeBase does not have a fileType function or so.
@@ -911,6 +917,11 @@ namespace casacore { //# name space casa begins
     return coord;
   }
 
+    const CoordinateSystem& ImageProxy::coordSysObject() const {
+        checkNull();
+        return *itsCoordSys;
+    }
+
   Vector<Double> ImageProxy::toWorld (const Vector<Double>& pixel,
                                       Bool reverseAxes)
   {
@@ -965,18 +976,26 @@ namespace casacore { //# name space casa begins
   {
     Record rec;
     String error;
+    imageInfoObject().toRecord(error, rec);
+    return rec;
+  }
+
+  const ImageInfo& ImageProxy::imageInfoObject() const {
     if (itsImageFloat) {
-      itsImageFloat->imageInfo().toRecord (error, rec);
-    } else if (itsImageDouble) {
-      itsImageDouble->imageInfo().toRecord (error, rec);
-    } else if (itsImageComplex) {
-      itsImageComplex->imageInfo().toRecord (error, rec);
-    } else if (itsImageDComplex) {
-      itsImageDComplex->imageInfo().toRecord (error, rec);
-    } else {
+      return itsImageFloat->imageInfo();
+    }
+    else if (itsImageDouble) {
+      return itsImageDouble->imageInfo();
+    }
+    else if (itsImageComplex) {
+      return itsImageComplex->imageInfo();
+    }
+    else if (itsImageDComplex) {
+      return itsImageDComplex->imageInfo();
+    }
+    else {
       throw AipsError ("ImageProxy does not contain an image object");
     }
-    return rec;
   }
 
   Record ImageProxy::miscInfo() const
