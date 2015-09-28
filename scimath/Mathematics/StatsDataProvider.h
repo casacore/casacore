@@ -36,7 +36,8 @@ namespace casacore {
 // Abstract base class which defines interface for providing "datasets" to the statistics framework
 // when nontrivial means of doing so are not sufficient.
 
-template <class AccumType, class InputIterator, class MaskIterator=const Bool*> class StatsDataProvider {
+template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
+class StatsDataProvider {
 public:
 
 	virtual ~StatsDataProvider();
@@ -57,7 +58,7 @@ public:
 	virtual uInt64 getCount() = 0;
 
 	// get the current dataset
-	virtual InputIterator getData() = 0;
+	virtual DataIterator getData() = 0;
 
 	// Get the associated mask of the current dataset. Only called if hasMask() returns True;
 	virtual MaskIterator getMask() = 0;
@@ -72,7 +73,7 @@ public:
 	virtual uInt getStride() = 0;
 
 	// Get the associated weights of the current dataset. Only called if hasWeights() returns True;
-	virtual InputIterator getWeights() = 0;
+	virtual WeightsIterator getWeights() = 0;
 
 	// Does the current data set have an associated mask?
 	virtual Bool hasMask() const = 0;

@@ -33,16 +33,16 @@
 
 namespace casacore {
 
-template <class AccumType, class InputIterator, class MaskIterator>
-StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::StatisticsAlgorithm()
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::StatisticsAlgorithm()
 : _data(), _weights(), _masks(), _counts(), _dataStrides(), _maskStrides(),
   _isIncludeRanges(), _dataRanges(), _sortedArray(), _statsToCalculate(),
   _unsupportedStats(), _dataProvider(NULL) {}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>&
-StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::operator= (
-	const StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>& other
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>&
+StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::operator= (
+	const StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
 ) {
 	 if (this == &other) {
 		 return *this;
@@ -63,12 +63,12 @@ StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::operator= (
 	 return *this;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::~StatisticsAlgorithm() {}
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::~StatisticsAlgorithm() {}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
-	const InputIterator& first, uInt nr, uInt dataStride, Bool nrAccountsForStride
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::addData(
+	const DataIterator& first, uInt nr, uInt dataStride, Bool nrAccountsForStride
 ) {
 	_throwIfDataProviderDefined();
 	_data.push_back(first);
@@ -84,9 +84,9 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
 	_addData();
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
-	const InputIterator& first, uInt nr,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::addData(
+	const DataIterator& first, uInt nr,
 	const DataRanges& dataRanges, Bool isInclude, uInt dataStride,
 	Bool nrAccountsForStride
 ) {
@@ -106,9 +106,9 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
 	this->addData(first, nr, dataStride, nrAccountsForStride);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
-	const InputIterator& first, const MaskIterator& maskFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::addData(
+	const DataIterator& first, const MaskIterator& maskFirst,
 	uInt nr, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
 ) {
 	_throwIfDataProviderDefined();
@@ -118,9 +118,9 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
 	this->addData(first, nr, dataStride, nrAccountsForStride);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
-	const InputIterator& first, const MaskIterator& maskFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::addData(
+	const DataIterator& first, const MaskIterator& maskFirst,
 	uInt nr, const DataRanges& dataRanges,
 	Bool isInclude, uInt dataStride, Bool nrAccountsForStride,
 	uInt maskStride
@@ -135,9 +135,9 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
-	const InputIterator& first, const InputIterator& weightFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::addData(
+	const DataIterator& first, const WeightsIterator& weightFirst,
 	uInt nr, uInt dataStride, Bool nrAccountsForStride
 ) {
 	_throwIfDataProviderDefined();
@@ -145,9 +145,9 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
 	this->addData(first, nr, dataStride, nrAccountsForStride);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
-	const InputIterator& first, const InputIterator& weightFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::addData(
+	const DataIterator& first, const WeightsIterator& weightFirst,
 	uInt nr, const DataRanges& dataRanges,
 	Bool isInclude, uInt dataStride, Bool nrAccountsForStride
 ) {
@@ -158,9 +158,9 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
-	const InputIterator& first, const InputIterator& weightFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::addData(
+	const DataIterator& first, const WeightsIterator& weightFirst,
 	const MaskIterator& maskFirst, uInt nr, uInt dataStride,
 	Bool nrAccountsForStride, uInt maskStride
 ) {
@@ -171,9 +171,9 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
-	const InputIterator& first, const InputIterator& weightFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::addData(
+	const DataIterator& first, const WeightsIterator& weightFirst,
 	const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
 	Bool isInclude, uInt dataStride, Bool nrAccountsForStride,
 	uInt maskStride
@@ -186,13 +186,13 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::addData(
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::deleteSortedArray() {
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::deleteSortedArray() {
 	_sortedArray.clear();
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-AccumType StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::getQuantile(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+AccumType StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::getQuantile(
 	Double quantile, CountedPtr<uInt64> knownNpts,
 	CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
 	uInt binningThreshholdSizeBytes, Bool persistSortedArray
@@ -204,8 +204,8 @@ AccumType StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::getQuanti
 	).begin()->second;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-AccumType StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::getStatistic(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+AccumType StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::getStatistic(
 	StatisticsData::STATS stat
 ) {
 	ThrowIf(
@@ -221,22 +221,22 @@ AccumType StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::getStatis
 	return this->_getStatistic(stat);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-StatsData<AccumType> StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::getStatistics() {
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+StatsData<AccumType> StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::getStatistics() {
 	return this->_getStatistics();
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
-	const InputIterator& first, uInt nr, uInt dataStride, Bool nrAccountsForStride
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::setData(
+	const DataIterator& first, uInt nr, uInt dataStride, Bool nrAccountsForStride
 ) {
 	_clearData();
 	addData(first, nr, dataStride, nrAccountsForStride);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
-	const InputIterator& first, uInt nr,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::setData(
+	const DataIterator& first, uInt nr,
 	const DataRanges& dataRanges, Bool isInclude, uInt dataStride,
 	Bool nrAccountsForStride
 ) {
@@ -246,9 +246,9 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
-	const InputIterator& first, const MaskIterator& maskFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::setData(
+	const DataIterator& first, const MaskIterator& maskFirst,
 	uInt nr, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
 ) {
 	_clearData();
@@ -257,9 +257,9 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
-	const InputIterator& first, const MaskIterator& maskFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::setData(
+	const DataIterator& first, const MaskIterator& maskFirst,
 	uInt nr, const DataRanges& dataRanges,
 	Bool isInclude, uInt dataStride, Bool nrAccountsForStride,
 	uInt maskStride
@@ -271,18 +271,18 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
-	const InputIterator& first, const InputIterator& weightFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::setData(
+	const DataIterator& first, const WeightsIterator& weightFirst,
 	uInt nr, uInt dataStride, Bool nrAccountsForStride
 ) {
 	_clearData();
 	addData(first, weightFirst, nr, dataStride, nrAccountsForStride);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
-	const InputIterator& first, const InputIterator& weightFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::setData(
+	const DataIterator& first, const WeightsIterator& weightFirst,
 	uInt nr, const DataRanges& dataRanges,
 	Bool isInclude, uInt dataStride, Bool nrAccountsForStride
 ) {
@@ -293,9 +293,9 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
-	const InputIterator& first, const InputIterator& weightFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::setData(
+	const DataIterator& first, const WeightsIterator& weightFirst,
 	const MaskIterator& maskFirst, uInt nr, uInt dataStride,
 	Bool nrAccountsForStride, uInt maskStride
 ) {
@@ -306,9 +306,9 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
-	const InputIterator& first, const InputIterator& weightFirst,
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::setData(
+	const DataIterator& first, const WeightsIterator& weightFirst,
 	const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
 	Bool isInclude, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
 ) {
@@ -319,15 +319,15 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setData(
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setStatsToCalculate(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::setStatsToCalculate(
 	std::set<StatisticsData::STATS>& stats
 ) {
 	_statsToCalculate = stats;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_clearData() {
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::_clearData() {
 	_data.clear();
 	_counts.clear();
 	_masks.clear();
@@ -339,8 +339,8 @@ void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_clearData() {
 	_dataProvider = NULL;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-std::map<uInt64, AccumType> StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_valuesFromArray(
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+std::map<uInt64, AccumType> StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::_valuesFromArray(
 	vector<AccumType>& myArray, const std::set<uInt64>& indices
 ) {
 	//uInt64 largestIdx = *indices.rbegin();
@@ -370,8 +370,8 @@ std::map<uInt64, AccumType> StatisticsAlgorithm<AccumType, InputIterator, MaskIt
 	return indexToValuesMap;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_throwIfDataProviderDefined() const {
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::_throwIfDataProviderDefined() const {
 	ThrowIf(
 		_dataProvider,
 		"Logic Error: Cannot add data after a data provider has been set. Call setData() to clear "

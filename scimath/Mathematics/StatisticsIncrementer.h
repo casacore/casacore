@@ -33,7 +33,8 @@ namespace casacore {
 
 // Utility functions used for incrementing pointers in a data set used by the stats framework.
 
-template <class InputIterator, class MaskIterator=const Bool*>  class StatisticsIncrementer {
+template <class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
+class StatisticsIncrementer {
 public:
 
 	~StatisticsIncrementer() {}
@@ -42,22 +43,22 @@ public:
 	// <src> loopCount is always incremented by one, independent of the values
 	// of <src>dataStride</src> and <src>maskStride</src>
 	inline static void increment(
-		InputIterator& datum, Int64& loopCount, Bool unityStride, uInt dataStride
+		DataIterator& datum, Int64& loopCount, Bool unityStride, uInt dataStride
 	);
 
 	inline static void increment(
-		InputIterator& datum, Int64& loopCount, InputIterator& weight,
+		DataIterator& datum, Int64& loopCount, WeightsIterator& weight,
 		Bool unityStride, uInt dataStride
 	);
 
 	inline static void increment(
-		InputIterator& datum, Int64& loopCount, MaskIterator& mask,
+		DataIterator& datum, Int64& loopCount, MaskIterator& mask,
 		Bool unityStride, uInt dataStride, uInt maskStride
 	);
 
 	inline static void increment(
-		InputIterator& datum, Int64& loopCount,
-		InputIterator& weight, MaskIterator& mask,
+		DataIterator& datum, Int64& loopCount,
+		WeightsIterator& weight, MaskIterator& mask,
 		Bool unityStride, uInt dataStride, uInt maskStride
 	);
 	// </group>

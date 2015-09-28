@@ -123,6 +123,14 @@ int main() {
     		AlwaysAssert(sd.npts == 100, AipsError);
     		AlwaysAssert(*sd.max == data[99], AipsError);
     	}
+    	{
+    		// a compile test: change final template parameter to Int*
+    		ChauvenetCriterionStatistics<Double, Double*, Bool*, Int*> cs(-1, -1);
+    		cs.setData(data, 107);
+    		StatsData<Double> sd = cs.getStatistics();
+    		AlwaysAssert(sd.npts == 100, AipsError);
+    		AlwaysAssert(*sd.max == data[99], AipsError);
+    	}
 
     }
 

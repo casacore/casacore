@@ -31,11 +31,11 @@
 
 namespace casacore {
 
-template <class AccumType, class InputIterator, class MaskIterator>
-StatsDataProvider<AccumType, InputIterator, MaskIterator>::StatsDataProvider() {}
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>::StatsDataProvider() {}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-StatsDataProvider<AccumType, InputIterator, MaskIterator>::~StatsDataProvider() {}
+template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>::~StatsDataProvider() {}
 
 }
 

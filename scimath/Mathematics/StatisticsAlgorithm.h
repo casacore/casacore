@@ -97,7 +97,8 @@ namespace casacore {
 // has a weight of zero is not considered a member of the dataset for the pruposes of
 // quantile calculations.
 
-template <class AccumType, class InputIterator, class MaskIterator=const Bool*> class StatisticsAlgorithm {
+template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
+class StatisticsAlgorithm {
 
 public:
 
@@ -119,48 +120,48 @@ public:
 	// considered bad (excluded) if <src>isInclude</src> is False.
 
 	virtual void addData(
-		const InputIterator& first, uInt nr, uInt dataStride=1,
+		const DataIterator& first, uInt nr, uInt dataStride=1,
 		Bool nrAccountsForStride=False
 	);
 
 	virtual void addData(
-		const InputIterator& first, uInt nr,
+		const DataIterator& first, uInt nr,
 		const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
 		Bool nrAccountsForStride=False
 	);
 
 	virtual void addData(
-		const InputIterator& first, const MaskIterator& maskFirst,
+		const DataIterator& first, const MaskIterator& maskFirst,
 		uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False, uInt maskStride=1
 	);
 
 	virtual void addData(
-		const InputIterator& first, const MaskIterator& maskFirst,
+		const DataIterator& first, const MaskIterator& maskFirst,
 		uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void addData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False
 	);
 
 	virtual void addData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False
 	);
 
 	virtual void addData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
 		Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void addData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
 		uInt maskStride=1
@@ -231,49 +232,49 @@ public:
 	// setdata() clears any current datasets or data provider and then adds the specified data set as
 	// the first dataset in the (possibly new) set of data sets for which statistics are
 	// to be calculated. See addData() for parameter meanings.
-	virtual void setData(const InputIterator& first, uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False);
+	virtual void setData(const DataIterator& first, uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False);
 
 	virtual void setData(
-		const InputIterator& first, uInt nr,
+		const DataIterator& first, uInt nr,
 		const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
 		Bool nrAccountsForStride=False
 	);
 
 	virtual void setData(
-		const InputIterator& first, const MaskIterator& maskFirst,
+		const DataIterator& first, const MaskIterator& maskFirst,
 		uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void setData(
-		const InputIterator& first, const MaskIterator& maskFirst,
+		const DataIterator& first, const MaskIterator& maskFirst,
 		uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void setData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		uInt nr, uInt dataStride=1,
 		Bool nrAccountsForStride=False
 	);
 
 	virtual void setData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1,
 		Bool nrAccountsForStride=False
 	);
 
 	virtual void setData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
 		Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void setData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
 		uInt maskStride=1
@@ -283,7 +284,7 @@ public:
 	// instead of settng and adding data "by hand", set the data provider that will provide
 	// all the data sets. Calling this method will clear any other data sets that have
 	// previously been set or added.
-	virtual void setDataProvider(StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider) {
+	virtual void setDataProvider(StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider) {
 		ThrowIf(! dataProvider, "Logic Error: data provider cannot be NULL");
 		_clearData();
 		_dataProvider = dataProvider;
@@ -297,8 +298,8 @@ protected:
 	StatisticsAlgorithm();
 
 	// use copy semantics
-	StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>& operator=(
-		const StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>& other
+	StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
+		const StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
 	);
 
 	// Allows derived classes to do things after data is set or added.
@@ -309,9 +310,9 @@ protected:
 
 	const vector<Int64>& _getCounts() const { return _counts; }
 
-	const vector<InputIterator>& _getData() const { return _data; }
+	const vector<DataIterator>& _getData() const { return _data; }
 
-	StatsDataProvider<AccumType, InputIterator, MaskIterator>* _getDataProvider() {
+	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>* _getDataProvider() {
 		return _dataProvider;
 	}
 
@@ -339,7 +340,7 @@ protected:
 		return _unsupportedStats;
 	}
 
-	const std::map<uInt, InputIterator>& _getWeights() const {
+	const std::map<uInt, WeightsIterator>& _getWeights() const {
 		return _weights;
 	}
 
@@ -360,9 +361,9 @@ protected:
 	void _setSortedArray(const vector<AccumType>& v) { _sortedArray = v; }
 
 private:
-	vector<InputIterator> _data;
+	vector<DataIterator> _data;
 	// maps data to weights
-	std::map<uInt, InputIterator> _weights;
+	std::map<uInt, WeightsIterator> _weights;
 	// maps data to masks
 	std::map<uInt, MaskIterator> _masks;
 	vector<Int64> _counts;
@@ -372,7 +373,7 @@ private:
 	std::map<uInt, DataRanges> _dataRanges;
 	vector<AccumType> _sortedArray;
 	std::set<StatisticsData::STATS> _statsToCalculate, _unsupportedStats;
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *_dataProvider;
+	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *_dataProvider;
 
 	void _throwIfDataProviderDefined() const;
 };
