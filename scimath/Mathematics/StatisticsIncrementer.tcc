@@ -31,9 +31,9 @@
 
 namespace casacore {
 
-template <class InputIterator, class MaskIterator>
-void StatisticsIncrementer<InputIterator, MaskIterator>::increment(
-	InputIterator& datum, Int64& loopCount, Bool unityStride, uInt dataStride
+template <class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+	DataIterator& datum, Int64& loopCount, Bool unityStride, uInt dataStride
 ) {
 	if (unityStride) {
 		++datum;
@@ -49,9 +49,9 @@ void StatisticsIncrementer<InputIterator, MaskIterator>::increment(
 	++loopCount;
 }
 
-template <class InputIterator, class MaskIterator>
-void StatisticsIncrementer<InputIterator, MaskIterator>::increment(
-	InputIterator& datum, Int64& loopCount, InputIterator& weight,
+template <class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+	DataIterator& datum, Int64& loopCount, WeightsIterator& weight,
 	Bool unityStride, uInt dataStride
 ) {
 	if (unityStride) {
@@ -69,9 +69,9 @@ void StatisticsIncrementer<InputIterator, MaskIterator>::increment(
 	++loopCount;
 }
 
-template <class InputIterator, class MaskIterator>
-void StatisticsIncrementer<InputIterator, MaskIterator>::increment(
-	InputIterator& datum, Int64& loopCount, InputIterator& weight,
+template <class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+	DataIterator& datum, Int64& loopCount, WeightsIterator& weight,
 	MaskIterator& mask, Bool unityStride, uInt dataStride, uInt maskStride
 ) {
 	if (unityStride) {
@@ -105,9 +105,9 @@ void StatisticsIncrementer<InputIterator, MaskIterator>::increment(
 	++loopCount;
 }
 
-template <class InputIterator, class MaskIterator>
-void StatisticsIncrementer<InputIterator, MaskIterator>::increment(
-	InputIterator& datum, Int64& loopCount, MaskIterator& mask,
+template <class DataIterator, class MaskIterator, class WeightsIterator>
+void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+	DataIterator& datum, Int64& loopCount, MaskIterator& mask,
 	Bool unityStride, uInt dataStride, uInt maskStride
 ) {
 	if (unityStride) {

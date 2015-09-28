@@ -1,4 +1,5 @@
-//# Copyright (C) 2014
+ //# tImageProxy.cc
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -22,22 +23,27 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
+//#
+//# $Id$
 
-#ifndef SCIMATH_STATSDATAPROVIDER_TCC
-#define SCIMATH_STATSDATAPROVIDER_TCC
+#include <casacore/images/Images/ImageProxy.h>
 
-#include <casacore/scimath/Mathematics/StatsDataProvider.h>
+#include <casacore/images/Images/ImageInfo.h>
 
-namespace casacore {
+#include <casacore/casa/namespace.h>
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>::StatsDataProvider() {}
-
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>::~StatsDataProvider() {}
-
+int main() {
+    try {
+        ImageProxy proxy("imagetestimage.fits", "", vector<ImageProxy>());
+        ImageInfo ii = proxy.imageInfoObject();
+        AlwaysAssert(ii.getBeamSet().hasSingleBeam(), AipsError);
+        AlwaysAssert(proxy.type() == TpFloat, AipsError);
+        AlwaysAssert(proxy.coordSysObject().nWorldAxes() == 2, AipsError);
+    }
+    catch (const AipsError& x) {
+        cout << "Caught error " << x.getMesg() << endl;
+        return 1;
+    } 
+    cout << "OK" << endl;
+    return 0;
 }
-
-
-#endif

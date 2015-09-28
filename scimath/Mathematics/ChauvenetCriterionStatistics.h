@@ -44,8 +44,9 @@ namespace casacore {
 // Alternatively, one can specify a z score which indicates the number of standard deviations
 // beyond which to discard points. In this case, no iterating is done.
 
-template <class AccumType, class InputIterator, class MaskIterator=const Bool*> class ChauvenetCriterionStatistics
-	: public ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator> {
+template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator>
+class ChauvenetCriterionStatistics
+	: public ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator> {
 public:
 
 	// If <src>zscore</src> is not negative, use that value to discard outliers beyond
@@ -59,8 +60,8 @@ public:
 	virtual ~ChauvenetCriterionStatistics();
 
 	// copy semantics
-	ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>& operator=(
-		const ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>& other
+	ChauvenetCriterionStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
+		const ChauvenetCriterionStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
 	);
 
 	// get the algorithm that this object uses for computing stats

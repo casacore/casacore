@@ -43,8 +43,9 @@ namespace casacore {
 // distribution, and the total number of points is exactly twice the number of real
 // data points that are included.
 
-template <class AccumType, class InputIterator, class MaskIterator=const Bool*> class FitToHalfStatistics
-	: public ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator> {
+template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
+class FitToHalfStatistics
+	: public ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator> {
 public:
 
 	const static AccumType TWO;
@@ -59,8 +60,8 @@ public:
 	virtual ~FitToHalfStatistics();
 
 	// copy semantics
-	FitToHalfStatistics<AccumType, InputIterator, MaskIterator>& operator=(
-		const FitToHalfStatistics<AccumType, InputIterator, MaskIterator>& other
+	FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
+		const FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
 	);
 
 	// get the algorithm that this object uses for computing stats
@@ -162,28 +163,28 @@ protected:
 	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, Int64 nr, uInt dataStride
+		const DataIterator& dataBegin, Int64 nr, uInt dataStride
 	);
 
 	// no weights, no mask
 	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+		const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 		const DataRanges& ranges, Bool isInclude
 	);
 
 	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+		const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 		const MaskIterator& maskBegin, uInt maskStride
 	);
 
 	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+		const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 		const MaskIterator& maskBegin, uInt maskStride,
 		const DataRanges& ranges, Bool isInclude
 	);
@@ -199,28 +200,28 @@ protected:
 	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, const InputIterator& weightsBegin,
+		const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 		Int64 nr, uInt dataStride
 	);
 
 	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, const InputIterator& weightsBegin,
+		const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 		Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 	);
 
 	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, const InputIterator& weightBegin,
+		const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 		Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 	);
 
 	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, const InputIterator& weightBegin,
+		const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 		Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 		const DataRanges& ranges, Bool isInclude
 	);

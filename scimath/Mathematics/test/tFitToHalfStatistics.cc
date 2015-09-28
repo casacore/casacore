@@ -740,6 +740,64 @@ int main() {
     		);
     	}
     	{
+    		// integer weights
+		    FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> fh(
+    			FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
+    		);
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		fh.setData(v0.begin(), w0.begin(), w0.size());
+    		fh.addData(v1.begin(), w1.begin(), w1.size());
+    		StatsData<Double> sd = fh.getStatistics();
+    		Double npts = 8;
+    		Double sumofweights = 28;
+    		Double sumsq = 641.44;
+    		Double nvariance =  123.72;
+    		Double mean = 4.3;
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(near(*sd.max, 2*mean - 1), AipsError);
+    		AlwaysAssert(sd.maxpos.first == -1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == -1, AipsError);
+    		AlwaysAssert(near(sd.mean, mean), AipsError);
+    		AlwaysAssert(*sd.min == 1, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 1, AipsError);
+    		AlwaysAssert(sd.npts == npts, AipsError);
+    		AlwaysAssert(near(sd.rms, sqrt(sumsq/sumofweights)), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(nvariance/(sumofweights - 1))), AipsError);
+    		AlwaysAssert(near(sd.sum, mean*sumofweights), AipsError);
+    		AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
+    		AlwaysAssert(near(sd.variance, nvariance/(sumofweights - 1)), AipsError);
+    		AlwaysAssert(
+    			fh.getStatisticIndex(StatisticsData::MAX)
+    			== std::pair<Int64 COMMA Int64>(-1, -1),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			fh.getStatisticIndex(StatisticsData::MIN)
+    			== std::pair<Int64 COMMA Int64>(0, 1),
+    			AipsError
+    		);
+    		AlwaysAssert(fh.getStatistic(
+    			StatisticsData::NPTS) == npts, AipsError
+    		);
+    		AlwaysAssert(
+    			near(
+    				fh.getStatistic(StatisticsData::RMS),
+    				sqrt(sumsq/sumofweights)
+    			), AipsError
+    		);
+    	}
+    	{
     		// weights and ranges
     		// 4, 2.5
     		// 8
@@ -753,6 +811,70 @@ int main() {
     		w0[3] = 4;
     		w0[4] = 5;
     		vector<Double> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 9;
+    		fh.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
+    		fh.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+    		StatsData<Double> sd = fh.getStatistics();
+    		Double npts = 4;
+    		Double sumofweights = 18;
+    		Double sumsq = 154146.0/484.0;
+    		Double nvariance = 11568.0/484.0;
+    		Double mean = 44.5/11.0;
+    		AlwaysAssert(! sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(near(*sd.max, 2*mean - 2.5), AipsError);
+    		AlwaysAssert(sd.maxpos.first == -1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == -1, AipsError);
+    		AlwaysAssert(near(sd.mean, mean), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == npts, AipsError);
+    		AlwaysAssert(near(sd.rms, sqrt(sumsq/sumofweights)), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(nvariance/(sumofweights - 1))), AipsError);
+    		AlwaysAssert(near(sd.sum, mean*sumofweights), AipsError);
+    		AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
+    		AlwaysAssert(near(sd.variance, nvariance/(sumofweights - 1)), AipsError);
+    		AlwaysAssert(
+    			fh.getStatisticIndex(StatisticsData::MAX)
+    			== std::pair<Int64 COMMA Int64>(-1, -1),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			fh.getStatisticIndex(StatisticsData::MIN)
+    			== std::pair<Int64 COMMA Int64>(0, 4),
+    			AipsError
+    		);
+    		AlwaysAssert(fh.getStatistic(
+    			StatisticsData::NPTS) == npts, AipsError
+    		);
+    		AlwaysAssert(
+    			near(
+    				fh.getStatistic(StatisticsData::RMS),
+    				sqrt(sumsq/sumofweights)
+    			), AipsError
+    		);
+    	}
+    	{
+    		// integer weights and ranges
+		    FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> fh(
+    			FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
+    		);
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
     		w1[0] = 1;
     		w1[1] = 2;
     		w1[2] = 3;
@@ -882,6 +1004,80 @@ int main() {
     		);
     	}
     	{
+    		// integer weights; ranges, and masks
+		    FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> fh(
+    			FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
+    		);
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = True;
+    		m0[2] = True;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = True;
+    		m1[1] = True;
+    		m1[2] = False;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 12;
+    		fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
+    		fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+    		StatsData<Double> sd = fh.getStatistics();
+    		Double npts = 4;
+    		Double sumofweights = 18;
+    		Double sumsq = 154146.0/484.0;
+    		Double nvariance = 11568.0/484.0;
+    		Double mean = 44.5/11.0;
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(near(*sd.max, 2*mean - 2.5), AipsError);
+    		AlwaysAssert(sd.maxpos.first == -1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == -1, AipsError);
+    		AlwaysAssert(near(sd.mean, mean), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == npts, AipsError);
+    		AlwaysAssert(near(sd.rms, sqrt(sumsq/sumofweights)), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(nvariance/(sumofweights - 1))), AipsError);
+    		AlwaysAssert(near(sd.sum, mean*sumofweights), AipsError);
+    		AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
+    		AlwaysAssert(near(sd.variance, nvariance/(sumofweights - 1)), AipsError);
+    		AlwaysAssert(
+    			fh.getStatisticIndex(StatisticsData::MAX)
+    			== std::pair<Int64 COMMA Int64>(-1, -1),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			fh.getStatisticIndex(StatisticsData::MIN)
+    			== std::pair<Int64 COMMA Int64>(0, 4),
+    			AipsError
+    		);
+    		AlwaysAssert(fh.getStatistic(
+    			StatisticsData::NPTS) == npts, AipsError
+    		);
+    		AlwaysAssert(
+    			near(
+    				fh.getStatistic(StatisticsData::RMS),
+    				sqrt(sumsq/sumofweights)
+    			), AipsError
+    		);
+    	}
+    	{
     		// weights, masks
     		FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
     			FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
@@ -893,6 +1089,74 @@ int main() {
     		w0[3] = 4;
     		w0[4] = 5;
     		vector<Double> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = False;
+    		m0[2] = False;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = False;
+    		m1[1] = True;
+    		m1[2] = False;
+    		fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size());
+    		fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size());
+    		StatsData<Double> sd = fh.getStatistics();
+    		Double npts = 4;
+    		Double sumofweights = 18;
+    		Double sumsq = 154146.0/484.0;
+    		Double nvariance = 11568.0/484.0;
+    		Double mean = 44.5/11.0;
+    		AlwaysAssert(sd.masked, AipsError);
+    		AlwaysAssert(sd.weighted, AipsError);
+    		AlwaysAssert(near(*sd.max, 2*mean - 2.5), AipsError);
+    		AlwaysAssert(sd.maxpos.first == -1, AipsError);
+    		AlwaysAssert(sd.maxpos.second == -1, AipsError);
+    		AlwaysAssert(near(sd.mean, mean), AipsError);
+    		AlwaysAssert(*sd.min == 2.5, AipsError);
+    		AlwaysAssert(sd.minpos.first == 0, AipsError);
+    		AlwaysAssert(sd.minpos.second == 4, AipsError);
+    		AlwaysAssert(sd.npts == npts, AipsError);
+    		AlwaysAssert(near(sd.rms, sqrt(sumsq/sumofweights)), AipsError);
+    		AlwaysAssert(near(sd.stddev, sqrt(nvariance/(sumofweights - 1))), AipsError);
+    		AlwaysAssert(near(sd.sum, mean*sumofweights), AipsError);
+    		AlwaysAssert(near(sd.sumsq, sumsq), AipsError);
+    		AlwaysAssert(near(sd.variance, nvariance/(sumofweights - 1)), AipsError);
+    		AlwaysAssert(
+    			fh.getStatisticIndex(StatisticsData::MAX)
+    			== std::pair<Int64 COMMA Int64>(-1, -1),
+    			AipsError
+    		);
+    		AlwaysAssert(
+    			fh.getStatisticIndex(StatisticsData::MIN)
+    			== std::pair<Int64 COMMA Int64>(0, 4),
+    			AipsError
+    		);
+    		AlwaysAssert(fh.getStatistic(
+    			StatisticsData::NPTS) == npts, AipsError
+    		);
+    		AlwaysAssert(
+    			near(
+    				fh.getStatistic(StatisticsData::RMS),
+    				sqrt(sumsq/sumofweights)
+    			), AipsError
+    		);
+    	}
+    	{
+    		// integer weights, masks
+		    FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> fh(
+    			FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
+    		);
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
     		w1[0] = 1;
     		w1[1] = 2;
     		w1[2] = 3;
@@ -1080,6 +1344,28 @@ int main() {
     		AlwaysAssert(near(mymax, 5.5), AipsError);
     	}
     	{
+		    // getMinMax, integer weights
+		    FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> fh(
+			    FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
+			);
+		    vector<Int> w0(v0.size());
+		    w0[0] = 1;
+		    w0[1] = 0;
+		    w0[2] = 3;
+		    w0[3] = 4;
+		    w0[4] = 5;
+		    vector<Int> w1(v1.size());
+		    w1[0] = 1;
+		    w1[1] = 2;
+		    w1[2] = 0;
+		    fh.setData(v0.begin(), w0.begin(), w0.size());
+		    fh.addData(v1.begin(), w1.begin(), w1.size());
+		    Double mymin, mymax;
+		    fh.getMinMax(mymin, mymax);
+		    AlwaysAssert(mymin == 1.5, AipsError);
+		    AlwaysAssert(near(mymax, 5.5), AipsError);
+    	}
+    	{
     		// 4, 2.5
     		// 8
     		// getMinMax(), weights and ranges
@@ -1109,7 +1395,34 @@ int main() {
     		AlwaysAssert(mymin == 2.5, AipsError);
     		AlwaysAssert(near(mymax, 123.0/22.0), AipsError);
     	}
-
+    	{
+		    // getMinMax(), integer weights and ranges
+		    FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> fh(
+    			FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
+			);
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 9;
+    		fh.setData(v0.begin(), w0.begin(), v0.size(), r0, False);
+    		fh.addData(v1.begin(), w1.begin(), v1.size(), r1, True);
+    		Double mymin, mymax;
+    		fh.getMinMax(mymin, mymax);
+    		AlwaysAssert(mymin == 2.5, AipsError);
+    		AlwaysAssert(near(mymax, 123.0/22.0), AipsError);
+    	}
     	{
     		// getMinMax(), weights, ranges, and masks
     		FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
@@ -1123,6 +1436,45 @@ int main() {
     		w0[3] = 4;
     		w0[4] = 5;
     		vector<Double> w1(v1.size());
+    		w1[0] = 1;
+    		w1[1] = 2;
+    		w1[2] = 3;
+    		vector<Bool> m0(v0.size());
+    		m0[0] = True;
+    		m0[1] = True;
+    		m0[2] = True;
+    		m0[3] = True;
+    		m0[4] = True;
+    		vector<Bool> m1(v1.size());
+    		m1[0] = True;
+    		m1[1] = True;
+    		m1[2] = False;
+    		vector<std::pair<Double, Double> > r0(1);
+    		r0[0].first = 0.9;
+    		r0[0].second = 1.6;
+    		vector<std::pair<Double, Double> > r1(1);
+    		r1[0].first = 6;
+    		r1[0].second = 12;
+    		fh.setData(v0.begin(), w0.begin(), m0.begin(), v0.size(), r0, False);
+    		fh.addData(v1.begin(), w1.begin(), m1.begin(), v1.size(), r1, True);
+    		Double mymin, mymax;
+    		fh.getMinMax(mymin, mymax);
+    		AlwaysAssert(mymin == 2.5, AipsError);
+    		AlwaysAssert(near(mymax, 123.0/22.0), AipsError);
+    	}
+    	{
+    		// getMinMax(), integer weights, ranges, and masks
+		    FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator, vector<Int>::const_iterator> fh(
+    			FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
+    		);
+
+    		vector<Int> w0(v0.size());
+    		w0[0] = 0;
+    		w0[1] = 2;
+    		w0[2] = 3;
+    		w0[3] = 4;
+    		w0[4] = 5;
+    		vector<Int> w1(v1.size());
     		w1[0] = 1;
     		w1[1] = 2;
     		w1[2] = 3;
