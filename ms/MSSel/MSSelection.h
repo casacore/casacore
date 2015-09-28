@@ -187,6 +187,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Bool setPolnExpr(const String& polnExpr);
     Bool setStateExpr(const String& stateExpr);
     Bool setObservationExpr(const String& obervationExpr);
+
+    // Accessor for the various selection expressions as strings.
+    const String getExpr(const MSExprType type=NO_EXPR);
     
     // Accessor for result of parsing all of the selection
     // expressions.  The final TableExprNode (TEN) is the result of
@@ -418,6 +421,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Clear sub-expression and reset priority.  Default behavior is to
     // reset all sub-expressions.
     void clear(const MSExprType type=NO_EXPR);
+    
+    // Set all error handlers to a known state (NULL).
+    void clearErrorHandlers();
+
     Bool exprIsNull(const MSExprType type=NO_EXPR);
     
     // Convey to the various parsers to delete the TENs they hold
@@ -520,7 +527,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Set the error handler to be used for reporting errors while
     // parsing the type of expression give by the first argument.
     void setErrorHandler(const MSExprType type, MSSelectionErrorHandler* mssEH,
-			 const Bool overRide=False);
+			 const Bool overRide=True);
     
     // Initialize the error handler.  This is set the error-handler to
     // the user supplied error handler via setErrorHandler() or to the

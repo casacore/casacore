@@ -123,7 +123,7 @@ const TableExprNode* msStateGramParseNode()
 {
   return MSStateParse::node();
 }
-void msStateGramParseDeleteNode() {MSStateParse::cleanup();}
+void msStateGramParseDeleteNode() {MSStateParse::cleanupNode();}
 //# Give the string position.
 Int& msStateGramPosition()
 {

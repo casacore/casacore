@@ -1,4 +1,6 @@
 doc/html/
 build/
 *~
-
+*table.lock
+*CMakeCache.txt
+*CMakeFiles

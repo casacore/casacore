@@ -27,6 +27,7 @@
 
 #include <casacore/measures/Measures/MDoppler.h>
 #include <casacore/ms/MSSel/MSSpwIndex.h>
+#include <casacore/ms/MSSel/MSSpwParse.h>
 #include <casacore/casa/Arrays/MaskedArray.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
@@ -35,6 +36,8 @@
 #include <casacore/ms/MSSel/MSSelectionTools.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Logging/LogIO.h>
+#include <algorithm>
+#include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
@@ -90,6 +93,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     Vector<Int> IDs;
     IDs = set_intersection(sourceId,spwIDs);
+    //
+    // If IDs has less than sourceId, some sourceIds found no match.
+    // So construct a message, and send it off to the SPW parser error
+    // handler.
+    //
+    if (IDs.nelements() != sourceId.nelements())
+      {
+	vector<int> tt = IDs.tovector();
+	ostringstream Mesg, tok;
+	Mesg << "Spw Expression: No match found for ";
+	for (uInt i=0;i<sourceId.nelements();i++)
+	  {
+	    vector<int>::iterator ndx = find(tt.begin(), tt.end(), sourceId[i]);
+	    if (ndx == tt.end()) tok << sourceId[i] << ",";
+	  }
+	MSSpwParse::thisMSSpwErrorHandler->reportError(tok.str().c_str(), Mesg.str());
+      }
+
     return IDs;
   } 
   //

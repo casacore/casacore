@@ -184,7 +184,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   void msSpwGramParseDeleteNode()
   {
-    MSSpwParse::cleanup();
+    MSSpwParse::cleanupNode();
   }
   
   //# Give the string position.
