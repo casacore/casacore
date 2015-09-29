@@ -379,11 +379,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   void MSSelection::deleteErrorHandlers()
   {
-    if (mssErrHandler_p != NULL) 
-      {
-    	delete mssErrHandler_p;
-    	mssErrHandler_p=MSAntennaParse::thisMSAErrorHandler=NULL;
-      }
+    // if (mssErrHandler_p != NULL) 
+    //   {
+    // 	delete mssErrHandler_p;
+    // 	mssErrHandler_p=MSAntennaParse::thisMSAErrorHandler=NULL;
+    //   }
+    MSAntennaParse::cleanupErrorHandler();
     MSStateParse::cleanupErrorHandler();
     MSSpwParse::cleanupErrorHandler();
   }
@@ -434,7 +435,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 				    "Only field-, spw-, scan-, time- and antenna-selection is supported for CalTables")));
     return ms;
   }
+  //
   //----------------------------------------------------------------------------
+  // Method to install the defaul error hanlder or reset existing
+  // error handlers. If the pointer to error hanlder is NULL, this
+  // method will install the default error handler.  If the pointer is
+  // != NULL, this method will reset the existing error handler.
+  //
+  // The operations in this method requires modifying the error
+  // handler pointer in various parsers (which are in C, not C++).
+  // This dual-purpose design of this method (reset or install error
+  // handlers) is to keep the handling of error-handler pointers
+  // localized to this method only.
+  //
   void MSSelection::initErrorHandler(const MSExprType type)
   {
     switch (type)
@@ -443,11 +456,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (MSAntennaParse::thisMSAErrorHandler == NULL)
 	    {
-	      if (mssErrHandler_p == NULL) 
+	      //if (mssErrHandler_p == NULL) 
 		{
-		  mssErrHandler_p = new MSSelectionErrorHandler();
+		  //mssErrHandler_p = new MSSelectionErrorHandler();
 		  MSSelectionErrorHandler* tt = new MSSelectionErrorHandler();
-		  setErrorHandler(ANTENNA_EXPR, tt);//mssErrHandler_p);
+		  setErrorHandler(ANTENNA_EXPR, tt, True);//mssErrHandler_p);
 		}
 	    }
 	  else
@@ -458,7 +471,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (MSStateParse::thisMSSErrorHandler == NULL)
 	    {
-	      //if (mssErrHandler_p == NULL) mssErrHandler_p = new MSSelectionErrorHandler();
 	      MSSelectionErrorHandler *tt = new MSSelectionErrorHandler();
 	      setErrorHandler(STATE_EXPR, tt, True);
 	    }
@@ -470,7 +482,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (MSSpwParse::thisMSSpwErrorHandler == NULL)
 	    {
-	      // if (mssErrHandler_p == NULL) mssErrHandler_p = new MSSSpwErrorHandler();
 	      MSSSpwErrorHandler* tt = new MSSSpwErrorHandler();
 	      setErrorHandler(SPW_EXPR, tt, True /*overRide*/);
 	    }
@@ -508,9 +519,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     TableExprNode condition;
     
-    // initErrorHandler(ANTENNA_EXPR);
-    // initErrorHandler(STATE_EXPR);
-    // initErrorHandler(SPW_EXPR);
+    // Reset existing error handlers (EH).
+    //
+    // The default EHs are installed in the constructors or via call
+    // to setErrorHandler() by the client code.  The following calls
+    // to initErrorHandler() will resets the existing error handler
+    // before initiating the parsing cycle.
+    initErrorHandler(ANTENNA_EXPR);
+    initErrorHandler(STATE_EXPR);
+    initErrorHandler(SPW_EXPR);
 
     try
       {
