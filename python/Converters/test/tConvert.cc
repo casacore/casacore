@@ -32,6 +32,7 @@
 #include <casacore/python/Converters/PycArray.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 #include <boost/python.hpp>
 
@@ -83,6 +84,8 @@ namespace casacore { namespace python {
       {cout << "vecvh " << in.size() << endl; return in;}
     IPosition testipos (const IPosition& in)
       {cout << "IPos " << in << endl; return in;}
+    void testIterError()
+      {throw IterError();}
   };
 
 
@@ -109,6 +112,7 @@ namespace casacore { namespace python {
       .def ("teststdvecvecuint", &TConvert::teststdvecvecuint)
       .def ("teststdvecvh"  , &TConvert::teststdvecvh)
       .def ("testipos",       &TConvert::testipos)
+      .def ("testitererror",  &TConvert::testIterError)
       ;
   }
 
