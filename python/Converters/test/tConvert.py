@@ -147,6 +147,24 @@ def testnps():
     testarrc(NUM.complex64([-56-66j,-57-67j]));
     testarrc(NUM.complex128([-76-86j,-77-87j]));
 
+def testexcp():
+    # Test a normal exception.
+    excp = False
+    try:
+        b = t.testvh([1, "str"])   # incompatible types
+    except:
+        excp = True
+    if not excp:
+        print "Normal exception in testexcp was not converted"
+    # Test an IterError exception.
+    excp = False
+    try:
+        b = t.testitererror()
+    except StopIteration:
+        excp = True
+    if not excp:
+        print "IterError exception in testexcp was not converted"
+
 def testnp():
     # Test byte and sbyte.
     b = NUM.int8([-1,-2]);
@@ -159,6 +177,7 @@ def testnp():
     print res.shape;
     print t.testvh(NUM.array([["abcd","c"],["12","x12"]]));
     testnps();
+    testexcp();
 
 if __name__ == "__main__":
 
