@@ -1937,7 +1937,9 @@ std::set<Int> MSMetaData::getScansForTimes(
 	std::set<ScanKey>::const_iterator end = uniqueScans.end();
 	while (scan != end) {
 		std::set<Double> times = scanToTimesMap->find(*scan)->second;
-		if (*(max_element(times.begin(), times.end())) >= minTime && *times.begin() <= maxTime) {
+        // rbegin() points to the last element in a container. For a std::set,
+        // the last element is the largest, and the first is the smallest.
+		if (*times.rbegin() >= minTime && *times.begin() <= maxTime) {
 			scans.insert(scan->scan);
 		}
 		++scan;
