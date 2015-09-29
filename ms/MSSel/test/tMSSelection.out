@@ -1,3 +1,4 @@
+Test:1  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3'
 BE: Baseline Expr=1,2,3
 	BE: Ant1         = [1, 2, 3]
 	BE: Ant2         = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -33,6 +34,7 @@ DDIDs(SPW)   = []
 StateList    = []
 Number of selected rows: 276
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:2  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&'
 BE: Baseline Expr=1,2,3&
 	BE: Ant1         = [1, 2, 3]
 	BE: Ant2         = [1, 2, 3]
@@ -69,6 +71,7 @@ StateList    = []
 Number of selected rows: 0
 ###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:3  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&*'
 BE: Baseline Expr=1,2,3&*
 	BE: Ant1         = [1, 2, 3]
 	BE: Ant2         = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -104,6 +107,7 @@ DDIDs(SPW)   = []
 StateList    = []
 Number of selected rows: 276
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:4  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&&'
 BE: Baseline Expr=1,2,3&&
 	BE: Ant1         = [1, 2, 3]
 	BE: Ant2         = [1, 2, 3]
@@ -140,6 +144,7 @@ StateList    = []
 Number of selected rows: 0
 ###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:5  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&&&'
 BE: Baseline Expr=1,2,3&&&
 	BE: Ant1         = [1, 2, 3]
 	BE: Ant2         = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -176,6 +181,7 @@ StateList    = []
 Number of selected rows: 0
 ###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:6  ./tMSSelection ms=mssel_test_small.ms baseline='!1,2,3&&&'
 BE: Baseline Expr=!1,2,3&&&
 	BE: Ant1         = [-1, -2, -3]
 	BE: Ant2         = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -211,6 +217,7 @@ DDIDs(SPW)   = []
 StateList    = []
 Number of selected rows: 1058
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:7  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&4,5,6'
 BE: Baseline Expr=1,2,3&4,5,6
 	BE: Ant1         = [1, 2, 3]
 	BE: Ant2         = [4, 5, 6]
@@ -247,6 +254,7 @@ StateList    = []
 Number of selected rows: 0
 ###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:8  ./tMSSelection ms=mssel_test_small.ms baseline='!1,2,3&4,5,6'
 BE: Baseline Expr=!1,2,3&4,5,6
 	BE: Ant1         = [-1, -2, -3]
 	BE: Ant2         = [-4, -5, -6]
@@ -282,6 +290,7 @@ DDIDs(SPW)   = []
 StateList    = []
 Number of selected rows: 1058
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:9  ./tMSSelection ms=mssel_test_small.ms baseline='!1,2,3&'
 BE: Baseline Expr=!1,2,3&
 	BE: Ant1         = [-1, -2, -3]
 	BE: Ant2         = [-1, -2, -3]
@@ -317,6 +326,7 @@ DDIDs(SPW)   = []
 StateList    = []
 Number of selected rows: 1058
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:10  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&;1,2,3&&'
 BE: Baseline Expr=1,2,3&;1,2,3&&
 	BE: Ant1         = [1, 2, 3]
 	BE: Ant2         = [1, 2, 3]
@@ -353,6 +363,7 @@ StateList    = []
 Number of selected rows: 0
 ###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:11  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&;1,2,3&&&'
 BE: Baseline Expr=1,2,3&;1,2,3&&&
 	BE: Ant1         = [1, 2, 3]
 	BE: Ant2         = [1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -389,6 +400,7 @@ StateList    = []
 Number of selected rows: 0
 ###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:12  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&;!1,2,3&&&'
 BE: Baseline Expr=1,2,3&;!1,2,3&&&
 	BE: Ant1         = [1, 2, 3, -1, -2, -3]
 	BE: Ant2         = [1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -425,6 +437,7 @@ StateList    = []
 Number of selected rows: 0
 ###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:13  ./tMSSelection ms=mssel_test_small.ms baseline='*;!1&2,3,4'
 BE: Baseline Expr=*;!1&2,3,4
 	BE: Ant1         = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1]
 	BE: Ant2         = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -2, -3, -4]
@@ -460,6 +473,7 @@ DDIDs(SPW)   = []
 StateList    = []
 Number of selected rows: 1058
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:14  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -495,6 +509,7 @@ DDIDs(SPW)   = []
 StateList    = []
 Number of selected rows: 460
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:15  ./tMSSelection ms=mssel_test_small.ms baseline='DV*@A1*,DV*@P*,DV*@S*&(DV*)@(P*);!5;!11'
 BE: Baseline Expr=DV*@A1*,DV*@P*,DV*@S*&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 10, 12, 9, 11, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -530,6 +545,7 @@ DDIDs(SPW)   = []
 StateList    = []
 Number of selected rows: 230
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:16  ./tMSSelection ms=mssel_test_small.ms baseline='DV*@A1*,DV*@P*,DV*@S*;!20;!21'
 BE: Baseline Expr=DV*@A1*,DV*@P*,DV*@S*;!20;!21
 	BE: Ant1         = [5, 6, 7, 8, 10, 12, 9, 11]
 	BE: Ant2         = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
@@ -565,6 +581,7 @@ DDIDs(SPW)   = []
 StateList    = []
 Number of selected rows: 1058
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:17  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&' spw='ALMA*'
 BE: Baseline Expr=1,2,3&
 	BE: Ant1         = [1, 2, 3]
 	BE: Ant2         = [1, 2, 3]
@@ -607,6 +624,7 @@ StateList    = []
 Number of selected rows: 0
 ###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:18  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&' spw='ALMA*FULL*:85290~86290.305MHz'
 BE: Baseline Expr=1,2,3&
 	BE: Ant1         = [1, 2, 3]
 	BE: Ant2         = [1, 2, 3]
@@ -647,6 +665,89 @@ StateList    = []
 Number of selected rows: 0
 ###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:18a  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&' spw='ALMA*FULL*:85290~96290.305MHz'
+BE: Baseline Expr=1,2,3&
+	BE: Ant1         = [1, 2, 3]
+	BE: Ant2         = [1, 2, 3]
+	Baselines = 1 1 2 
+	            2 3 3 
+	            
+FE: Field Expr=
+	FE: Field        = []
+SE: SPW Expr=ALMA*FULL*:85290~96290.305MHz
+	SE: SPW          = [1]
+	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 0, 32, 1]
+
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62903e+10, 8.43216e+10, -3.125e+07]
+
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=
+	TE: Time         = Axis Lengths: [2, 0] []
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = 
+	PE: CorrMap      = 
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = [1]
+StateList    = []
+Number of selected rows: 0
+###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:18b  ./tMSSelection ms=mssel_test_small.ms baseline='1,2,3&' spw='ALMA*FULL*:75290~86290.305MHz'
+BE: Baseline Expr=1,2,3&
+	BE: Ant1         = [1, 2, 3]
+	BE: Ant2         = [1, 2, 3]
+	Baselines = 1 1 2 
+	            2 3 3 
+	            
+FE: Field Expr=
+	FE: Field        = []
+SE: SPW Expr=ALMA*FULL*:75290~86290.305MHz
+	SE: SPW          = [1]
+	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 1, 63, 1]
+
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62591e+10, 8.43216e+10, -3.125e+07]
+
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=
+	TE: Time         = Axis Lengths: [2, 0] []
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = 
+	PE: CorrMap      = 
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = [1]
+StateList    = []
+Number of selected rows: 0
+###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:19  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*)' spw='ALMA*FULL*:5~10;20~30;50~70'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*)
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4]
 	BE: Ant2         = [9, 11]
@@ -690,6 +791,50 @@ DDIDs(SPW)   = [1]
 StateList    = []
 Number of selected rows: 529
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:19a  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*)' spw='"ALMA_RB_03#BB_1#SW-01#FULL_RES"'
+BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*)
+	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4]
+	BE: Ant2         = [9, 11]
+	Baselines = 5 5 6 6 7 7 8 8 9 10 10 12 12 0 0 1 1 2 2 3 3 4 4 
+	            9 11 9 11 9 11 9 11 11 9 11 9 11 9 11 9 11 9 11 9 11 9 11 
+	            
+FE: Field Expr=
+	FE: Field        = []
+SE: SPW Expr="ALMA_RB_03#BB_1#SW-01#FULL_RES"
+	SE: SPW          = [1]
+	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 0, 63, 1]
+
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62903e+10, 8.43216e+10, -3.125e+07]
+
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=
+	TE: Time         = Axis Lengths: [2, 0] []
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = 
+	PE: CorrMap      = 
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = [1]
+StateList    = []
+Number of selected rows: 529
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:19b  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*)' spw='"ALMA_RB_03#BB_1#SW-01#FULL_RE"'
+###AipsError: No Spw ID(s) matched specifications 
+(near char. 0 in string ""ALMA_RB_03#BB_1#SW-01#FULL_RE"")
+Test:20  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -733,6 +878,7 @@ DDIDs(SPW)   = [1]
 StateList    = []
 Number of selected rows: 230
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:21  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='0~4:5~10;20~30;50~70' field='0'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -788,6 +934,7 @@ DDIDs(SPW)   = [0, 1, 2]
 StateList    = []
 Number of selected rows: 140
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:22  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' field='J16*'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -831,6 +978,7 @@ DDIDs(SPW)   = [1]
 StateList    = []
 Number of selected rows: 70
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:23  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*PHASE*'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -874,6 +1022,7 @@ DDIDs(SPW)   = [1]
 StateList    = [6, 7]
 Number of selected rows: 160
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:24  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*OFF*'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -917,6 +1066,7 @@ DDIDs(SPW)   = [1]
 StateList    = [0, 1]
 Number of selected rows: 30
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:25  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*OFF*' time='*+0:0:1'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -963,6 +1113,7 @@ DDIDs(SPW)   = [1]
 StateList    = [0, 1]
 Number of selected rows: 10
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:26  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*OFF*' time='*+0:0:1' uvdist='>1000m'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -1012,6 +1163,7 @@ DDIDs(SPW)   = [1]
 StateList    = [0, 1]
 Number of selected rows: 8
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:27  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' stateobsmode='*OFF*' time='*+0:0:1' uvdist='>1000m:50%'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -1061,6 +1213,7 @@ DDIDs(SPW)   = [1]
 StateList    = [0, 1]
 Number of selected rows: 9
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:28  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -1106,6 +1259,7 @@ DDIDs(SPW)   = [1]
 StateList    = [0, 1]
 Number of selected rows: 9
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:29  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -1151,12 +1305,16 @@ DDIDs(SPW)   = [1]
 StateList    = [0, 1]
 Number of selected rows: 9
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:30  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*,*JUNK*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'
 ###MSSelectionError: State Expression: No match found for "*JUNK*"
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:31  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz,x' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'
 ###MSSelectionError: Spw Expression: No match found for "x" 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:32  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11;x' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'
 ###MSSelectionError: Antenna Expression: No match found for token(s) "x"  
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:33  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*,*JUNK*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -1202,6 +1360,7 @@ DDIDs(SPW)   = [1]
 StateList    = [0, 1]
 Number of selected rows: 9
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:34  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz,x' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -1247,6 +1406,7 @@ DDIDs(SPW)   = [1]
 StateList    = [0, 1]
 Number of selected rows: 9
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:35  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11;x' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'
 BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11;x
 	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
 	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
@@ -1291,4 +1451,198 @@ DDIDs(Poln)  = [1, 2]
 DDIDs(SPW)   = [1]
 StateList    = [0, 1]
 Number of selected rows: 9
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:36  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='0,100' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'
+BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
+	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
+	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
+	Baselines = 5 5 6 6 7 7 8 8 9 10 10 12 12 0 0 1 1 2 2 3 3 4 4 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 
+	            9 11 9 11 9 11 9 11 11 9 11 9 11 9 11 9 11 9 11 9 11 9 11 0 1 2 3 4 5 6 7 8 9 10 11 12 0 1 2 3 4 5 6 7 8 9 10 11 12 
+	            
+FE: Field Expr=
+	FE: Field        = []
+SE: SPW Expr=ALMA*FULL*:85290~86290.305MHz
+	SE: SPW          = [1]
+	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 1, 32, 1]
+
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62591e+10, 8.43216e+10, -3.125e+07]
+
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=0,100
+	StE: StateObsMode = [0]
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=*+0:0:1
+	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+[4.91793e+09
+ 4.91793e+09]
+
+UVE: UVRange Expr=>1000m:50%
+	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+[500
+ 5.10424e+38]
+
+	UVE: UV in meters = [1]
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=XX,YX
+	PE: PolMap       = (0,[0, 2])
+	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+
+===========================================================
+DDIDs(Poln)  = [1, 2]
+DDIDs(SPW)   = [1]
+StateList    = [0]
+Number of selected rows: 0
+###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:37  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*' spw='0,1,100' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'
+BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
+	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
+	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
+	Baselines = 5 5 6 6 7 7 8 8 9 10 10 12 12 0 0 1 1 2 2 3 3 4 4 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 
+	            9 11 9 11 9 11 9 11 11 9 11 9 11 9 11 9 11 9 11 9 11 9 11 0 1 2 3 4 5 6 7 8 9 10 11 12 0 1 2 3 4 5 6 7 8 9 10 11 12 
+	            
+FE: Field Expr=
+	FE: Field        = []
+SE: SPW Expr=0,1,100
+	SE: SPW          = [0, 1]
+	SE: Chan         = Axis Lengths: [2, 4]  (NB: Matrix in Row/Column order)
+[0, 0, 3, 1
+ 1, 0, 63, 1]
+
+	SE: Freq         = Axis Lengths: [2, 4]  (NB: Matrix in Row/Column order)
+[0, 1.8455e+11, 1.9055e+11, 1.875e+09
+ 1, 8.62903e+10, 8.43216e+10, -3.125e+07]
+
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=*OFF*
+	StE: StateObsMode = [0, 1]
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=*+0:0:1
+	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+[4.91793e+09
+ 4.91793e+09]
+
+UVE: UVRange Expr=>1000m:50%
+	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+[500
+ 5.10424e+38]
+
+	UVE: UV in meters = [1]
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=XX,YX
+	PE: PolMap       = (0,[0, 2])
+	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+
+===========================================================
+DDIDs(Poln)  = [1, 2]
+DDIDs(SPW)   = [0, 1]
+StateList    = [0, 1]
+Number of selected rows: 9
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:38  ./tMSSelection ms=mssel_test_small.ms baseline='0,1,2;500' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='1'
+BE: Baseline Expr=0,1,2;500
+	BE: Ant1         = [0, 1, 2]
+	BE: Ant2         = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+	Baselines = 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 
+	            1 2 3 4 5 6 7 8 9 10 11 12 2 3 4 5 6 7 8 9 10 11 12 3 4 5 6 7 8 9 10 11 12 
+	            
+FE: Field Expr=
+	FE: Field        = []
+SE: SPW Expr=ALMA*FULL*:85290~86290.305MHz
+	SE: SPW          = [1]
+	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 1, 32, 1]
+
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62591e+10, 8.43216e+10, -3.125e+07]
+
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=*OFF*
+	StE: StateObsMode = [0, 1]
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=*+0:0:1
+	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+[4.91793e+09
+ 4.91793e+09]
+
+UVE: UVRange Expr=>1000m:50%
+	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+[500
+ 5.10424e+38]
+
+	UVE: UV in meters = [1]
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=XX,YX
+	PE: PolMap       = (0,[0, 2])
+	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+
+===========================================================
+DDIDs(Poln)  = [1, 2]
+DDIDs(SPW)   = [1]
+StateList    = [0, 1]
+Number of selected rows: 6
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:39  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='0,100' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'
+BE: Baseline Expr=(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11
+	BE: Ant1         = [5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, -5, -11]
+	BE: Ant2         = [9, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12]
+	Baselines = 5 5 6 6 7 7 8 8 9 10 10 12 12 0 0 1 1 2 2 3 3 4 4 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 -11 
+	            9 11 9 11 9 11 9 11 11 9 11 9 11 9 11 9 11 9 11 9 11 9 11 0 1 2 3 4 5 6 7 8 9 10 11 12 0 1 2 3 4 5 6 7 8 9 10 11 12 
+	            
+FE: Field Expr=
+	FE: Field        = []
+SE: SPW Expr=ALMA*FULL*:85290~86290.305MHz
+	SE: SPW          = [1]
+	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 1, 32, 1]
+
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62591e+10, 8.43216e+10, -3.125e+07]
+
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=0,100
+	StE: StateObsMode = [0]
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=*+0:0:1
+	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+[4.91793e+09
+ 4.91793e+09]
+
+UVE: UVRange Expr=>1000m:50%
+	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+[500
+ 5.10424e+38]
+
+	UVE: UV in meters = [1]
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=XX,YX
+	PE: PolMap       = (0,[0, 2])
+	PE: CorrMap      = (0,[[0, 2], [1, 2]])
+
+===========================================================
+DDIDs(Poln)  = [1, 2]
+DDIDs(SPW)   = [1]
+StateList    = [0]
+Number of selected rows: 0
+###MSSelectionError: MSSelectionNullSelection : The selected table has zero rows.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:40  ./tMSSelection ms=mssel_test_small.ms baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*' spw='0,1,100' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'
+###MSSelectionError: Spw Expression: No match found for 100, 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Test:41  ./tMSSelection ms=mssel_test_small.ms baseline='0,1,2;500' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'
+###MSSelectionError: No match found for the antenna specificion [ID(s): [500]] 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
