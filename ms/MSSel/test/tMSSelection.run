@@ -11,7 +11,7 @@
   MS=$CASADEMO"mssel_test_small.ms"
 
   runCmd(){
-      echo "Test:$1 "$2; 
+      #echo "Test:$1 "$2; 
       eval "$2"
       }
 
