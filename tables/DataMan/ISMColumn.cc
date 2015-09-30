@@ -1334,7 +1334,7 @@ size_t ISMColumn::fromString (void* out, const void* in, size_t n,
     // Note that the length of itself is also included.
     char* buf = (char*)out;
     uInt leng = 0;
-    size_t strleng;
+    uInt strleng;
     if (n > 1) {
 	leng = writeLeng (buf, &leng, 1);
     }
