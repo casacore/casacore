@@ -76,7 +76,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     spwIDs_p(), scanIDs_p(), arrayIDs_p(), ddIDs_p(), observationIDs_p(), baselineIDs_p(),
     selectedTimesList_p(), selectedUVRange_p(),selectedUVUnits_p(),
     selectedPolMap_p(Vector<Int>(0)), selectedSetupMap_p(Vector<Vector<Int> >(0)),
-    maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), mssErrHandler_p(NULL), 
+    maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), 
     isMS_p(True), toTENCalled_p(False)
   {
     clear(); // Clear the internals of the MSSelection object
@@ -109,7 +109,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     spwIDs_p(), scanIDs_p(),ddIDs_p(),baselineIDs_p(), selectedTimesList_p(),
     selectedUVRange_p(),selectedUVUnits_p(),selectedPolMap_p(Vector<Int>(0)),
     selectedSetupMap_p(Vector<Vector<Int> >(0)),
-    maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), mssErrHandler_p(NULL), 
+    maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), 
     isMS_p(True), toTENCalled_p(False)
   {
     //
@@ -379,11 +379,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   void MSSelection::deleteErrorHandlers()
   {
-    // if (mssErrHandler_p != NULL) 
-    //   {
-    // 	delete mssErrHandler_p;
-    // 	mssErrHandler_p=MSAntennaParse::thisMSAErrorHandler=NULL;
-    //   }
     MSAntennaParse::cleanupErrorHandler();
     MSStateParse::cleanupErrorHandler();
     MSSpwParse::cleanupErrorHandler();
@@ -456,12 +451,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (MSAntennaParse::thisMSAErrorHandler == NULL)
 	    {
+<<<<<<< .merge_file_HMF9zi
 	      //if (mssErrHandler_p == NULL) 
 		{
 		  //mssErrHandler_p = new MSSelectionErrorHandler();
 		  MSSelectionErrorHandler* tt = new MSSelectionErrorHandler();
 		  setErrorHandler(ANTENNA_EXPR, tt, True);//mssErrHandler_p);
 		}
+=======
+	      MSSelectionErrorHandler* tt = new MSSelectionErrorHandler();
+	      setErrorHandler(ANTENNA_EXPR, tt, True);
+>>>>>>> .merge_file_Zcqg3f
 	    }
 	  else
 	    MSAntennaParse::thisMSAErrorHandler->reset();

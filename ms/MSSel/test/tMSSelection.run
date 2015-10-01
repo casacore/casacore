@@ -46,8 +46,20 @@
   runCmd 16 "$casa_checktool ./tMSSelection ms=$MS baseline='DV*@A1*,DV*@P*,DV*@S*;!20;!21'"
 
   runCmd 17 "$casa_checktool ./tMSSelection ms=$MS baseline='1,2,3&' spw='ALMA*'";
-  runCmd 18 "$casa_checktool ./tMSSelection ms=$MS baseline='1,2,3&' spw='ALMA*FULL*:85290~86290.305MHz'";
-  runCmd 19 "$casa_checktool ./tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*)' spw='ALMA*FULL*:5~10;20~30;50~70'";
+  #
+  # Check with physical range spec. in SPW selection
+  #
+  runCmd 18 "$casa_checktool ./tMSSelection ms=$MS baseline='1,2,3&' spw='ALMA*FULL*:85290~86290.305MHz'";  # Spec. within limits
+  runCmd 18a "$casa_checktool ./tMSSelection ms=$MS baseline='1,2,3&' spw='ALMA*FULL*:85290~96290.305MHz'"; # Spec. underflows
+  runCmd 18b "$casa_checktool ./tMSSelection ms=$MS baseline='1,2,3&' spw='ALMA*FULL*:75290~86290.305MHz'"; # Spec. overflows
+
+  # 
+  # Check name spec. in SPW selection
+  # 
+  runCmd 19 "$casa_checktool ./tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*)' spw='ALMA*FULL*:5~10;20~30;50~70'"; # Name as pattern
+  runCmd 19a "$casa_checktool ./tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*)' spw='\"ALMA_RB_03#BB_1#SW-01#FULL_RES\"'"; # Name as literal
+  runCmd 19b "$casa_checktool ./tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*)' spw='\"ALMA_RB_03#BB_1#SW-01#FULL_RE\"'";  # Name as literal with error
+
   runCmd 20 "$casa_checktool ./tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70'";
   runCmd 21 "$casa_checktool ./tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='0~4:5~10;20~30;50~70' field='0'";
   runCmd 22 "$casa_checktool ./tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' spw='ALMA*FULL*:5~10;20~30;50~70' field='J16*'";
