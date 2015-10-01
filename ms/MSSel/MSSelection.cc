@@ -451,17 +451,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (MSAntennaParse::thisMSAErrorHandler == NULL)
 	    {
-<<<<<<< .merge_file_HMF9zi
-	      //if (mssErrHandler_p == NULL) 
-		{
-		  //mssErrHandler_p = new MSSelectionErrorHandler();
-		  MSSelectionErrorHandler* tt = new MSSelectionErrorHandler();
-		  setErrorHandler(ANTENNA_EXPR, tt, True);//mssErrHandler_p);
-		}
-=======
 	      MSSelectionErrorHandler* tt = new MSSelectionErrorHandler();
 	      setErrorHandler(ANTENNA_EXPR, tt, True);
->>>>>>> .merge_file_Zcqg3f
 	    }
 	  else
 	    MSAntennaParse::thisMSAErrorHandler->reset();
