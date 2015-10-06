@@ -259,6 +259,11 @@ public:
 // A return value of <src>False</src> indicates  that the internal status of the class is bad. 
    Bool getHistograms (Array<T>& values, Array<T>& counts);
 
+   // in this version, the set of stats for each histogram is also returned. The
+   // stats array has the  shape of the display axes.
+   Bool getHistograms (Array<T>& values, Array<T>& counts, Array<Vector<T> >& stats);
+
+
 // This function retrieves the histogram at the specified location 
 // into <src>Vectors</src>.  The histogram is retrieved in the form 
 // specified by the <src>setForm</src> function. The vectors are resized 
