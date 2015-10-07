@@ -55,40 +55,110 @@ void test1DFloat (LatticeHistograms<Float>& histo, const IPosition& shape, uInt 
 void test2DFloat (LatticeHistograms<Float>& histo,  const IPosition& shape, uInt nBin);
 
 
-int main()
-{
-   try {
-      LogOrigin lor("tLatticeHistograms", "main()", WHERE);
-      LogIO os(lor);
-//
-      doitFloat(os);
-      {
-    	  Array<Float> arr(IPosition(2, 5, 10, 0));
-    	  arr.set(0);
-    	  for (uInt i=0; i<10; i++ ) {
-    		  arr(IPosition(2, 4, i)) = 100*(i+1);
-    		  arr(IPosition(2, 0, i)) = -arr(IPosition(2, 4, i));
-    	  }
-    	  ArrayLattice<Float> latt(arr);
-    	  SubLattice<Float> subLatt(latt);
-    	  LatticeHistograms<Float> lh(subLatt);
-    	  lh.setNBins(25);
-    	  Array<Float> values, counts;
-    	  Vector<Float> range(2);
-    	  range[0] = -5;
-    	  range[1] = 5;
-    	  lh.setIncludeRange(range);
-    	  lh.getHistograms(values, counts);
-    	  AlwaysAssert(counts(IPosition(1, 12)) == 30, AipsError);
-    	  //cout << "values " << values << endl;
-    	  //cout << "counts " << counts << endl;
-
-      }
-   } catch (const AipsError& x) {
-     cerr << "aipserror: error " << x.getMesg() << endl;
-     return 1;
-  } 
-  return 0;
+int main() {
+    try {
+        LogOrigin lor("tLatticeHistograms", __func__, WHERE);
+        LogIO os(lor);
+        doitFloat(os);
+        {
+            Array<Float> arr(IPosition(2, 5, 10), 0.0);
+            for (uInt i=0; i<10; i++ ) {
+                arr(IPosition(2, 4, i)) = 100*(i+1);
+                arr(IPosition(2, 0, i)) = -arr(IPosition(2, 4, i));
+            }
+            ArrayLattice<Float> latt(arr);
+            SubLattice<Float> subLatt(latt);
+            LatticeHistograms<Float> lh(subLatt);
+            lh.setNBins(25);
+            Array<Float> values, counts;
+            Vector<Float> range(2);
+            range[0] = -5;
+            range[1] = 5;
+            lh.setIncludeRange(range);
+            lh.getHistograms(values, counts);
+            AlwaysAssert(counts(IPosition(1, 12)) == 30, AipsError);
+        }
+        {
+            Array<Float> arr(IPosition(3, 2, 4, 6), 0.0);
+            Float sum = 0;
+            for (uInt i=0; i<2; ++i) {
+                for (uInt j=0; j<4; ++j) {
+                    for (uInt k=0; k<6; ++k) {
+                        arr(IPosition(3, i, j, k)) = i + j + k;
+                        sum += arr(IPosition(3, i, j, k));
+                    }
+                }
+            }
+            ArrayLattice<Float> latt(arr);
+            SubLattice<Float> subLatt(latt);
+            LatticeHistograms<Float> lh(subLatt);
+            lh.setNBins(25);
+            Array<Float> values, counts;
+            Array<Vector<Float> > stats;
+            lh.getHistograms(values, counts, stats);
+            AlwaysAssert(stats.shape() == IPosition(1, 1), AipsError);
+            lh.getHistograms(values, counts, stats);
+            AlwaysAssert(
+                    stats(IPosition(1, 0))[LatticeStatsBase::SUM] == sum,
+                    AipsError
+            );
+            AlwaysAssert(
+                    stats(IPosition(1, 0))[LatticeStatsBase::NPTS] == 48,
+                    AipsError
+            );
+            AlwaysAssert(
+                    stats(IPosition(1, 0))[LatticeStatsBase::MEAN] == sum/48,
+                    AipsError
+            );
+            Vector<Int> axes(2, 0);
+            axes[1] = 1;
+            lh.setAxes(axes);
+            lh.getHistograms(values, counts, stats);
+            AlwaysAssert(stats.shape() == IPosition(1, 6), AipsError);
+            for (uInt i=0; i<6; ++i) {
+                Float sum = 16 + 8*i;
+                AlwaysAssert(
+                        stats(IPosition(1, i))[LatticeStatsBase::SUM] == sum,
+                        AipsError
+                );
+                AlwaysAssert(
+                        stats(IPosition(1, i))[LatticeStatsBase::NPTS] == 8,
+                        AipsError
+                );
+                AlwaysAssert(
+                        stats(IPosition(1, i))[LatticeStatsBase::MEAN] = sum/8.0,
+                        AipsError
+                );
+            }
+            axes.resize(1);
+            axes[0] = 1;
+            lh.setAxes(axes);
+            lh.getHistograms(values, counts, stats);
+            AlwaysAssert(stats.shape() == IPosition(2, 2, 6), AipsError);
+            for (uInt i=0; i<2; ++i) {
+                for (uInt j=0; j<6; ++j) {
+                    Float sum = 4*(i+j) + 6;
+                    AlwaysAssert(
+                            stats(IPosition(2, i, j))[LatticeStatsBase::SUM] == sum,
+                            AipsError
+                    );
+                    AlwaysAssert(
+                            stats(IPosition(2, i, j))[LatticeStatsBase::NPTS] == 4,
+                            AipsError
+                    );
+                    AlwaysAssert(
+                            stats(IPosition(2, i, j))[LatticeStatsBase::MEAN] = sum/4.0,
+                            AipsError
+                    );
+                }
+            }
+        }
+    }
+    catch (const AipsError& x) {
+        cerr << "aipserror: error " << x.getMesg() << endl;
+        return 1;
+    }
+    return 0;
 }
    
  
