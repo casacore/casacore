@@ -583,7 +583,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     OrderedMap<Int, Vector<Int> > selectedPolMap_p;
     OrderedMap<Int, Vector<Vector<Int> > > selectedSetupMap_p;
     Int maxScans_p, maxObs_p, maxArray_p;
-    MSSelectionErrorHandler* mssErrHandler_p;
     Bool isMS_p,toTENCalled_p;
   };
   
