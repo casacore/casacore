@@ -155,7 +155,7 @@ public:
   MVPosition &operator=(const MVPosition &other);
   
   // Destructor
-  ~MVPosition();
+  virtual ~MVPosition();
   
   //# Operators
   // Multiplication defined as in-product
@@ -279,7 +279,7 @@ protected:
   Double getLat(Double ln) const;
   //# Data
   // Position vector (in m)
-  Vector<Double> xyz;
+  Vector<Double> & xyz;
 };
 
 //# Global functions
