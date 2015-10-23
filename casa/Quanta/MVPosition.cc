@@ -273,14 +273,12 @@ MVPosition MVPosition::operator-(const MVPosition &right) const{
 }
 
 MVPosition &MVPosition::operator*=(const RotMatrix &right) {
-  MVPosition result;
-  for (Int i=0; i<3; i++) {
-    result(i) = 0;
-    for (Int j=0; j<3; j++) {
-      result(i) += xyz(j) * right(j,i);
-    }
-  }
-  *this = result;
+  Double x = xyz(0);
+  Double y = xyz(1);
+  Double z = xyz(2);
+  xyz(0) = x * right(0, 0) + y * right(1, 0) + z * right(2, 0);
+  xyz(1) = x * right(0, 1) + y * right(1, 1) + z * right(2, 1);
+  xyz(2) = x * right(0, 2) + y * right(1, 2) + z * right(2, 2);
   return *this;
 }
 
