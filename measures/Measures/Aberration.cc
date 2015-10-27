@@ -167,9 +167,8 @@ void Aberration::calcAber(Double t) {
     case B1950:
       {
         for (i=0; i<12; i++) {
-          const Polynomial<Double>& aberArgP = MeasTable::aber1950Arg(i);
-          fa(i) = aberArgP(t);
-          dfa(i) = (aberArgP.derivative())(t);
+          fa(i) = MeasTable::aber1950Arg(i)(t);
+          dfa(i) = MeasTable::aber1950ArgDeriv(i)(t);
         }
 	CountedPtr<Matrix<Double> > mul = MeasTable::mulAber1950(t, 1e-6);
         DebugAssert (mul->contiguousStorage(), AipsError);
@@ -213,10 +212,8 @@ void Aberration::calcAber(Double t) {
 	}
       } else {
 	for (i=0; i<13; i++) {
-	  const Polynomial<Double>& aberArgP = MeasTable::aberArg(i);
-
-	  fa(i) = aberArgP(t);
-	  dfa(i) = (aberArgP.derivative())(t);
+	  fa(i) = MeasTable::aberArg(i)(t);
+	  dfa(i) = MeasTable::aberArgDeriv(i)(t);
 	}
 	CountedPtr<Matrix<Double> > mul = MeasTable::mulAber(t, 1e-6);
         DebugAssert (mul->contiguousStorage(), AipsError);

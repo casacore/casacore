@@ -289,7 +289,9 @@ public:
   // (B1950). 
   // <group>
   static const Polynomial<Double> &aberArg(uInt which);
+  static const Polynomial<Double> &aberArgDeriv(uInt which);
   static const Polynomial<Double> &aber1950Arg(uInt which);
+  static const Polynomial<Double> &aber1950ArgDeriv(uInt which);
   // </group>
   
   // Generate the 'which' vector of the aberration series arguments
@@ -344,6 +346,8 @@ public:
   // Fundamental arguments for Soma et al. methods
   // <group>
   static const Polynomial<Double> &posArg(uInt which);
+  // Precomputed derivative of PosArg
+  static const Polynomial<Double> &posArgDeriv(uInt which);
   // </group>
   // Generate the which' vector of the position series arguments
   // <group>

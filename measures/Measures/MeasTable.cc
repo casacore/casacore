@@ -3236,6 +3236,28 @@ const Polynomial<Double> &MeasTable::aberArg(uInt which) {
   return polyArray[which];
 }
 
+// Derivative aber
+const Polynomial<Double> &MeasTable::aberArgDeriv(uInt which) {
+  static volatile Bool needInit = True;
+  static Polynomial<Double> polyArray[13];
+
+  if (needInit) {
+	const Polynomial<Double> * polyArray_ptrs[13];
+    for (int i=0; i<13; i++) {
+	  polyArray_ptrs[i] = &aberArg(i);
+    }
+    ScopedMutexLock locker(theirMutex);
+    if (needInit) {
+      for (int i=0; i<13; i++) {
+        polyArray[i] = polyArray_ptrs[i]->derivative();
+      }
+      needInit = False;
+    }
+  }
+  DebugAssert(which < 13, AipsError);
+  return polyArray[which];
+}
+
 const Polynomial<Double> &MeasTable::aber1950Arg(uInt which) {
   static volatile Bool needInit = True;
   static Polynomial<Double> polyArray[12];
@@ -3263,6 +3285,28 @@ const Polynomial<Double> &MeasTable::aber1950Arg(uInt which) {
           polyArray[i].setCoefficient(j,
                                       ABERFUND[i][j]*C::arcsec);
         }
+      }
+      needInit = False;
+    }
+  }
+  DebugAssert(which < 12, AipsError);
+  return polyArray[which];
+}
+
+// Derivative aber1950
+const Polynomial<Double> &MeasTable::aber1950ArgDeriv(uInt which) {
+  static volatile Bool needInit = True;
+  static Polynomial<Double> polyArray[12];
+
+  if (needInit) {
+	const Polynomial<Double> * polyArray_ptrs[12];
+    for (int i=0; i<12; i++) {
+	  polyArray_ptrs[i] = &aber1950Arg(i);
+    }
+    ScopedMutexLock locker(theirMutex);
+    if (needInit) {
+      for (int i=0; i<12; i++) {
+        polyArray[i] = polyArray_ptrs[i]->derivative();
       }
       needInit = False;
     }
@@ -3826,6 +3870,29 @@ const Polynomial<Double> &MeasTable::posArg(uInt which) {
           polyArray[i].setCoefficient(j,
                                       POSFUND[i][j]*C::degree);
         }
+      }
+
+      needInit = False;
+    }
+  }
+  DebugAssert(which < 12, AipsError);
+  return polyArray[which];
+}
+
+// Derivative of Earth and Sun position polynomial
+const Polynomial<Double> &MeasTable::posArgDeriv(uInt which) {
+  static volatile Bool needInit = True;
+  static Polynomial<Double> polyArray[12];
+
+  if (needInit) {
+	const Polynomial<Double> * polyArray_ptrs[12];
+    for (int i=0; i<12; i++) {
+	  polyArray_ptrs[i] = &posArg(i);
+    }
+    ScopedMutexLock locker(theirMutex);
+    if (needInit) {
+      for (int i=0; i<12; i++) {
+        polyArray[i] = polyArray_ptrs[i]->derivative();
       }
       needInit = False;
     }
