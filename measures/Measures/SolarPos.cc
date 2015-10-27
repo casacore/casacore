@@ -226,7 +226,7 @@ void SolarPos::calcEarth(Double t) {
 	      } else {
 		for (i=0; i<12; i++) {
 		  fa(i) = MeasTable::posArg(i)(t);
-		  dfa(i) = (MeasTable::posArg(i).derivative())(t);
+		  dfa(i) = MeasTable::posArgDeriv(i)(t);
 		}
                 CountedPtr<Matrix<Double> > mul = MeasTable::mulPosEarthXY(t, 1e-6);
                 DebugAssert (mul->contiguousStorage(), AipsError);
@@ -301,7 +301,7 @@ void SolarPos::calcSun(Double t) {
               } else {
 		for (i=0; i<12; i++) {
 		  fa(i) = MeasTable::posArg(i)(t);
-		  dfa(i) = (MeasTable::posArg(i).derivative())(t);
+		  dfa(i) = MeasTable::posArgDeriv(i)(t);
 		}
                 CountedPtr<Matrix<Double> > mul = MeasTable::mulPosSunXY(t, 1e-6);
                 DebugAssert (mul->contiguousStorage(), AipsError);
