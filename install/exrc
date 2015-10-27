@@ -1,4 +1,0 @@
-set ignorecase
-set shell=/bin/csh
-set nowrapscan
-set showmode
