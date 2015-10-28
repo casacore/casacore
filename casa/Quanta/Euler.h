@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Quanta/Quantum.h>
+#include <utility>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -189,10 +190,13 @@ class Euler
 
 private:
 //# Data
-// Actual vector with 3 Euler angles
-    Vector<Double> euler;
-// Axes
-    Vector<Int> axes;
+    typedef std::pair<Vector<Double> *, Vector<Int> *> DataArrays;
+// data container
+    DataArrays data;
+// vector with 3 Euler angles (data.first)
+    Vector<Double> & euler;
+// Axes (data.second)
+    Vector<Int> & axes;
 
 //# Private Member Functions
 // The makeRad functions check and convert the input Quantities to radians
@@ -200,6 +204,12 @@ private:
     static Double makeRad(const Quantity &in);
     static Vector<Double> makeRad(const Quantum<Vector<Double> > &in);
 // </group>
+    DataArrays get_arrays();
+    void return_arrays(DataArrays array);
+#if defined(AIPS_CXX11) && !defined(__APPLE__)
+    static thread_local DataArrays arrays[50];
+    static thread_local size_t available;
+#endif
 };
 
 
