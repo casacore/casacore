@@ -1327,6 +1327,9 @@ void testIt(MSMetaData& md) {
 		{
 			cout << "*** test getFirstExposureTimeMap()" << endl;
 			vector<std::map<Int, Quantity> > mymap = md.getFirstExposureTimeMap();
+			cout << "val " << mymap[0][30].getValue("s") << endl;
+            cout << "val " << mymap[0][30] << endl;
+
 			AlwaysAssert(near(mymap[0][30].getValue("s"), 1.152), AipsError);
 			AlwaysAssert(near(mymap[10][17].getValue("s"), 1.008), AipsError)
 
@@ -2137,6 +2140,25 @@ void testIt(MSMetaData& md) {
                 }
                 ++iter;
             }
+        }
+        {
+            cout << "test getSubScanProperties" << endl;
+            SubScanKey sskey;
+            sskey.arrayID = 0;
+            sskey.fieldID = 0;
+            sskey.obsID = 0;
+            sskey.scan = 0;
+            Bool thrown = False;
+            try {
+                md.getSubScanProperties(sskey);
+            }
+            catch (const AipsError& x) {
+                thrown = True;
+            }
+            AlwaysAssert(thrown, AipsError);
+            sskey.scan = 1;
+            MSMetaData::SubScanProperties props = md.getSubScanProperties(sskey);
+            AlwaysAssert(props.nrows == 367, AipsError);
         }
         {
 			cout << "*** cache size " << md.getCache() << endl;
