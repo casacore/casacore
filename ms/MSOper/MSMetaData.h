@@ -68,6 +68,22 @@ public:
 		SQLD_ONLY
 	};
 
+    struct TimeStampProperties {
+        std::set<Int> ddIDs;
+        uInt nrows;
+    };
+
+    struct SubScanProperties {
+        std::set<Int> antennas;
+        Double beginTime;
+        std::set<uInt> ddIDs;
+        Double endTime;
+        Quantity meanExposureTime;
+        uInt nrows;
+        std::set<Int> stateIDs;
+        std::map<Double, TimeStampProperties> timeProps;
+    };
+
 	// construct an object which stores a pointer to the MS and queries the MS
 	// only as necessary. The MeasurementSet pointer passed in should not go out
 	// of scope in the calling code until the caller has finished with this object,
@@ -369,6 +385,12 @@ public:
 
 	vector<String> getSpwNames() const;
 
+	// get all sub scan keys for the specified array key.
+	std::set<SubScanKey> getSubScanKeys(const ArrayKey& arrayKey) const;
+
+	// get the sub scan properties for the specified sub scan
+	SubScanProperties getSubScanProperties(const SubScanKey& subScan) const;
+
 	// get a data structure, consumable by users, representing a summary of the dataset
 	Record getSummary() const;
 
@@ -514,20 +536,8 @@ private:
 		QVD resolution;
 	};
 
-	struct TimeStampProperties {
-		std::set<Int> ddIDs;
-		uInt nrows;
-	};
 
-	struct SubScanProperties {
-		std::set<Int> antennas;
-		Double beginTime;
-		std::set<uInt> ddIDs;
-		Double endTime;
-		uInt nrows;
-		std::set<Int> stateIDs;
-		std::map<Double, TimeStampProperties> timeProps;
-	};
+
 
 	// represents non-primary key data for a SOURCE table row
 	struct SourceProperties {
@@ -553,8 +563,6 @@ private:
 		_arrayToScansMap, _scanToAntennasMap */;
 	mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
 	mutable std::map<String, uInt> _antennaNameToIDMap;
-	//mutable std::map<ArrayKey, ArrayProperties> _arrayProperties;
-	//mutable std::map<ScanKey, ScanProperties> _scanProperties;
 	mutable std::map<SubScanKey, SubScanProperties> _subScanProperties;
 
 	mutable std::map<String, std::set<Int> > _intentToFieldIDMap;
@@ -562,7 +570,6 @@ private:
 	mutable std::map<ScanKey, std::pair<Double, Double> > _scanToTimeRangeMap;
 	mutable std::map<std::pair<ScanKey, uInt>, Double> _scanSpwToIntervalMap;
 	mutable std::map<std::pair<ScanKey, uInt>, std::set<Double> > _scanSpwToTimesMap;
-	//mutable std::map<ScanKey, Double> _scanToIntervalMap;
 	mutable std::map<std::pair<ScanKey, uInt>, std::set<uInt> > _scanSpwToPolIDMap;
 	mutable std::set<String> _uniqueIntents;
 	mutable std::set<Int>  _uniqueFieldIDs, _uniqueStateIDs;
@@ -570,7 +577,6 @@ private:
 	mutable SHARED_PTR<Vector<Int> > _antenna1, _antenna2, _scans, _fieldIDs,
 		_stateIDs, _dataDescIDs, _observationIDs, _arrayIDs;
 	mutable SHARED_PTR<std::map<SubScanKey, uInt> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
-	//mutable SHARED_PTR<std::map<Int, uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
 
 	mutable SHARED_PTR<vector<uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
  	mutable std::map<ScanKey, std::set<String> > _scanToIntentsMap;
@@ -586,7 +592,7 @@ private:
 	mutable vector<Array<Int> >_corrProds;
 
 	mutable SHARED_PTR<Vector<Double> > _times;
-	SHARED_PTR<QVD > _exposures;
+	mutable SHARED_PTR<QVD > _exposures;
 	mutable SHARED_PTR<std::map<ScanKey, std::set<Double> > > _scanToTimesMap;
 	std::map<String, std::set<uInt> > _intentToSpwsMap;
 	mutable std::map<String, std::set<Double> > _intentToTimesMap;
@@ -614,6 +620,7 @@ private:
 	mutable std::set<ScanKey> _scanKeys;
 	mutable std::set<SubScanKey> _subscans;
 	mutable std::map<ScanKey, std::set<SubScanKey> > _scanToSubScans;
+	mutable std::map<ArrayKey, std::set<SubScanKey> > _arrayToSubScans;
 
 	mutable vector<std::pair<MEpoch, MEpoch> > _timeRangesForObs;
 
@@ -622,6 +629,8 @@ private:
 	mutable vector<std::pair<Quantity, Quantity> > _properMotions;
 
 	mutable map<SourceKey, SourceProperties> _sourceInfo;
+
+	//mutable map<SubScanKey, Quantity> _meanExposureTimeMap;
 
 	// disallow copy constructor and = operator
 	MSMetaData(const MSMetaData&);
@@ -683,11 +692,14 @@ private:
 		SHARED_PTR<Vector<Int> >& ant1,
 		SHARED_PTR<Vector<Int> >& ant2
 	) const;
+
 	SHARED_PTR<Vector<Int> > _getArrayIDs() const;
+
+	std::map<ArrayKey, std::set<SubScanKey> > _getArrayKeysToSubScanKeys() const;
 
 	SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
 
-	SHARED_PTR<QVD > _getExposureTimes();
+	SHARED_PTR<QVD > _getExposureTimes() const;
 
     // If there are no intents, then fieldToIntentsMap will be of length
     // nFields() and all of its entries will be the empty set, and
@@ -751,6 +763,8 @@ private:
 		const ROMSPointingColumns& pCols, const Int& index,
 		const Double& time
 	) const;
+
+	//map<SubScanKey, Quantity> _getMeanExposureTimes() const;
 
 	vector<std::set<Int> > _getObservationIDToArrayIDsMap() const;
 
