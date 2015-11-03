@@ -391,7 +391,7 @@ void LatticeApply<T,U>::tiledApply (
 
     const IPosition& inShape = latticeIn.shape();
     const uInt inDim = inShape.nelements();
-    IPosition inTileShape = latticeIn.niceCursorShape();
+    IPosition inTileShape = latticeIn.niceCursorShape(1024*1024);
     TileStepper inNav(inShape, inTileShape, collapseAxes);
     RO_LatticeIterator<T> inIter(latticeIn, inNav);
 
