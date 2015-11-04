@@ -3888,9 +3888,9 @@ std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(
 	ROMSPointingColumns pCols(_ms->pointing());
 	Int pidx1, pidx2;
 	pidx1 = pCols.pointingIndex(antenna1, time, initialguess);
-    if (autocorr) {
+	if (autocorr) {
 		pidx2 = pidx1;
-    }
+	}
 	else pidx2 = pCols.pointingIndex(antenna2, time, initialguess);
 	String intervalColName = MeasurementSet::columnName(MSMainEnums::INTERVAL);
 	Double interval = ScalarColumn<Double>(*_ms, intervalColName).get(row);
