@@ -630,8 +630,6 @@ private:
 
 	mutable map<SourceKey, SourceProperties> _sourceInfo;
 
-	//mutable map<SubScanKey, Quantity> _meanExposureTimeMap;
-
 	// disallow copy constructor and = operator
 	MSMetaData(const MSMetaData&);
 	MSMetaData operator =(const MSMetaData&);

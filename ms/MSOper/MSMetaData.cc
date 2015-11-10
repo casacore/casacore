@@ -2010,15 +2010,6 @@ SHARED_PTR<QVD> MSMetaData::_getExposureTimes() const {
 	    *iter = exposure(i).getValue();
 	}
 	SHARED_PTR<QVD> ex(new QVD(v, exposure.getUnits()));
-
-	/*
-	String colName = MeasurementSet::columnName(MSMainEnums::EXPOSURE);
-	ScalarColumn<Double> exposure (*_ms, colName);
-	String unit = *exposure.keywordSet().asArrayString("QuantumUnits").begin();
-	SHARED_PTR<QVD> ex(
-		new QVD(exposure.getColumn(), unit)
-	);
-	*/
 	if (_cacheUpdated((20 + sizeof(Double))*ex->getValue().size())) {
 		_exposures = ex;
 	}
