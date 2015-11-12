@@ -107,6 +107,9 @@ struct SourceKey {
 // define operator<() so it can be used as a key in std::map
 Bool operator<(const SourceKey& lhs, const SourceKey& rhs);
 
+// get a set of unique ArrayKeys from a set of ScanKeys
+std::set<ArrayKey> uniqueArrayKeys(const std::set<ScanKey>& scanKeys);
+
 }
 
 #endif

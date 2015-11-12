@@ -1447,7 +1447,7 @@ vector<std::map<Int, Quantity> > MSMetaData::getFirstExposureTimeMap() {
 	SHARED_PTR<Vector<Int> > scans = _getScans();
 	SHARED_PTR<Vector<Int> > dataDescIDs = _getDataDescIDs();
 	SHARED_PTR<Vector<Double> > times = _getTimes();
-	SHARED_PTR<QVD > exposureTimes = _getExposureTimes();
+	SHARED_PTR<QVD> exposureTimes = _getExposureTimes();
 	vector<std::map<Int, Quantity> > firstExposureTimeMap(nDataDescIDs);
 	vector<std::map<Int, Double> > tmap(nDataDescIDs);
 	Vector<Int>::const_iterator siter = scans->begin();
@@ -1625,7 +1625,7 @@ QVD MSMetaData::_freqWidthToVelWidth(
     return dv;
 }
 
-vector<QVD>MSMetaData::getChanEffectiveBWs(Bool asVelWidths) const {
+vector<QVD> MSMetaData::getChanEffectiveBWs(Bool asVelWidths) const {
     std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
     vector<MSMetaData::SpwProperties> props = _getSpwInfo(
         avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw
@@ -1994,16 +1994,22 @@ SHARED_PTR<Vector<Double> > MSMetaData::_getTimes() const {
 	return times;
 }
 
-SHARED_PTR<QVD > MSMetaData::_getExposureTimes() {
+SHARED_PTR<QVD> MSMetaData::_getExposureTimes() const {
 	if (_exposures && ! _exposures->getValue().empty()) {
 		return _exposures;
 	}
-	String colName = MeasurementSet::columnName(MSMainEnums::EXPOSURE);
-	ScalarColumn<Double> exposure (*_ms, colName);
-	String unit = *exposure.keywordSet().asArrayString("QuantumUnits").begin();
-	SHARED_PTR<QVD > ex(
-		new QVD(exposure.getColumn(), unit)
+	ScalarQuantColumn<Double> exposure(
+	    *_ms, MeasurementSet::columnName(MSMainEnums::EXPOSURE)
 	);
+	uInt nrow = _ms->nrow();
+	Vector<Double> v(nrow);
+	Vector<Double>::iterator iter = v.begin();
+    Vector<Double>::iterator end = v.end();
+    uInt i = 0;
+    for (; iter!=end; ++iter, ++i) {
+	    *iter = exposure(i).getValue();
+	}
+	SHARED_PTR<QVD> ex(new QVD(v, exposure.getUnits()));
 	if (_cacheUpdated((20 + sizeof(Double))*ex->getValue().size())) {
 		_exposures = ex;
 	}
@@ -3210,7 +3216,7 @@ QVD MSMetaData::getAntennaOffset(uInt which) {
 	return getAntennaOffsets()[which];
 }
 
-vector<QVD > MSMetaData::getAntennaOffsets() const {
+vector<QVD> MSMetaData::getAntennaOffsets() const {
 	// This method is responsble for setting _antennaOffsets
 	if (! _antennaOffsets.empty()) {
 		return _antennaOffsets;
@@ -3230,7 +3236,7 @@ vector<QVD > MSMetaData::getAntennaOffsets() const {
 	Double latObs = obsLongLat[1];
 	vector<MPosition> antennaPositions = _getAntennaPositions();
 	vector<MPosition>::const_iterator end = antennaPositions.end();
-	vector<QVD > antennaOffsets;
+	vector<QVD> antennaOffsets;
 	for (
 		vector<MPosition>::const_iterator iter=antennaPositions.begin();
 		iter!=end; ++iter
@@ -3346,6 +3352,18 @@ Quantity MSMetaData::getEffectiveTotalExposureTime() {
 	return eTime;
 }
 
+MSMetaData::SubScanProperties MSMetaData::getSubScanProperties(
+    const SubScanKey& subScan
+) const {
+    std::map<SubScanKey, SubScanProperties> mymap = _getSubScanProperties();
+    std::map<SubScanKey, SubScanProperties>::const_iterator iter = mymap.find(subScan);
+    ThrowIf(
+        iter == mymap.end(),
+        "Requested subscan key does not exist in the MS"
+    );
+    return iter->second;
+}
+
 std::map<SubScanKey, MSMetaData::SubScanProperties> MSMetaData::_getSubScanProperties(
 ) const {
 	// responsible for setting _subScanProperties, _scanProperties,
@@ -3362,6 +3380,7 @@ std::map<SubScanKey, MSMetaData::SubScanProperties> MSMetaData::_getSubScanPrope
 	SHARED_PTR<Vector<Int> > arrays = _getArrayIDs();
 	SHARED_PTR<Vector<Int> > observations = _getObservationIDs();
 	SHARED_PTR<Vector<Int> > ant1, ant2;
+	SHARED_PTR<QVD> exposureTimes = _getExposureTimes();
 	_getAntennas(ant1, ant2);
 	Vector<Int>::const_iterator scanIter = scans->begin();
 	Vector<Int>::const_iterator scanEnd = scans->end();
@@ -3374,7 +3393,12 @@ std::map<SubScanKey, MSMetaData::SubScanProperties> MSMetaData::_getSubScanPrope
 	Vector<Int>::const_iterator arIter = arrays->begin();
 	Vector<Double>::const_iterator tIter = times->begin();
     std::map<SubScanKey, SubScanProperties> mysubscans;
+    const Vector<Double>& exposures = exposureTimes->getValue();
+    Vector<Double>::const_iterator eiter = exposures.begin();
+
+    std::map<SubScanKey, Double> meanExposure;
     SubScanKey subScanKey;
+    uInt nrows;
 	while (scanIter != scanEnd) {
         subScanKey.obsID = *oIter;
         subScanKey.arrayID = *arIter;
@@ -3388,11 +3412,14 @@ std::map<SubScanKey, MSMetaData::SubScanProperties> MSMetaData::_getSubScanPrope
 			props.endTime = *tIter;
 			props.nrows = 1;
             mysubscans[subScanKey] = props;
+            meanExposure[subScanKey] = *eiter;
 		}
 		else {
             mysubscans[subScanKey].beginTime = min(*tIter, mysubscans[subScanKey].beginTime);
             mysubscans[subScanKey].endTime = max(*tIter, mysubscans[subScanKey].endTime);
             ++mysubscans[subScanKey].nrows;
+            nrows = mysubscans[subScanKey].nrows;
+            meanExposure[subScanKey] = (meanExposure[subScanKey]*(nrows - 1) + *eiter)/nrows;
 		}
         mysubscans[subScanKey].antennas.insert(*a1Iter);
         mysubscans[subScanKey].antennas.insert(*a2Iter);
@@ -3414,8 +3441,16 @@ std::map<SubScanKey, MSMetaData::SubScanProperties> MSMetaData::_getSubScanPrope
 		++arIter;
 		++a1Iter;
 		++a2Iter;
+		++eiter;
 	}
-	uInt structSize = 2*sizeof(Double) + sizeof(Int);
+	std::map<SubScanKey, SubScanProperties>::iterator miter = mysubscans.begin();
+    std::map<SubScanKey, SubScanProperties>::iterator mend = mysubscans.end();
+    const Unit& eunit = exposureTimes->getFullUnit();
+    for ( ; miter!=mend; ++miter) {
+        miter->second.meanExposureTime = Quantity(meanExposure[miter->first], eunit);
+    }
+
+	uInt structSize = 3*sizeof(Double) + sizeof(Int);
     uInt keySize = 4*sizeof(Int);
     std::map<SubScanKey, SubScanProperties>::const_iterator mIter = mysubscans.begin();
     std::map<SubScanKey, SubScanProperties>::const_iterator mEnd = mysubscans.end();
@@ -3878,17 +3913,23 @@ std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(
 		row >= this->nRows(),
 		"Row number exceeds number of rows in the MS"
 	);
-	SHARED_PTR<Vector<Int> > ant1, ant2;
-	_getAntennas(ant1, ant2);
-	antenna1 = (*ant1)[row];
-	antenna2 = (*ant2)[row];
-	time = (*_getTimes())[row];
+	// KS note: 2015/10/30
+	// getColum method (also used in _getAntennas and _getTimes) is
+	// too expesive for the current purpose of getting single cell.
+	String ant1ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA1);
+	String ant2ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA2);
+	antenna1 = ROScalarColumn<Int>(*_ms, ant1ColName).get(row);
+	antenna2 = ROScalarColumn<Int>(*_ms, ant2ColName).get(row);
+	bool autocorr = (antenna1==antenna2);
+	String timeColName = MeasurementSet::columnName(MSMainEnums::TIME);
+	time = ScalarColumn<Double>(*_ms, timeColName).get(row);
 	ROMSPointingColumns pCols(_ms->pointing());
 	Int pidx1, pidx2;
 	pidx1 = pCols.pointingIndex(antenna1, time, initialguess);
-	pidx2 = pCols.pointingIndex(antenna2, time, initialguess);
+	if (autocorr) pidx2 = pidx1;
+	else pidx2 = pCols.pointingIndex(antenna2, time, initialguess);
 	String intervalColName = MeasurementSet::columnName(MSMainEnums::INTERVAL);
-	Double interval = ScalarColumn<Double>(*_ms, intervalColName).getColumn()[row];
+	Double interval = ScalarColumn<Double>(*_ms, intervalColName).get(row);
 	MDirection dir1, dir2;
 	if (!interpolate || interval >= pCols.interval()(pidx1)) {
 		dir1 = pCols.directionMeas(pidx1);
@@ -3896,7 +3937,10 @@ std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(
 	else {
 		dir1 = _getInterpolatedDirection(pCols, pidx1, time);
 	}
-	if (!interpolate || interval >= pCols.interval()(pidx2)) {
+	if (autocorr) {
+	  dir2 = dir1;
+	}
+	else if (!interpolate || interval >= pCols.interval()(pidx2)) {
 		dir2 = pCols.directionMeas(pidx2);
 	}
 	else {
@@ -4268,6 +4312,58 @@ std::map<Int, uInt> MSMetaData::_toUIntMap(const Vector<Int>& v) {
 	}
 	return m;
 }
+
+std::set<SubScanKey> MSMetaData::getSubScanKeys(
+    const ArrayKey& arrayKey
+) const {
+    std::map<ArrayKey, std::set<SubScanKey> > mymap = _getArrayKeysToSubScanKeys();
+    std::map<ArrayKey, std::set<SubScanKey> >::const_iterator iter = mymap.find(arrayKey);
+    ThrowIf(
+        iter == mymap.end(),
+        "MS does not contain requested ArrayKey"
+    );
+    return iter->second;
+}
+
+std::map<ArrayKey, std::set<SubScanKey> > MSMetaData::_getArrayKeysToSubScanKeys() const {
+    // this method is responsible for setting _arrayToSubScans
+    if (! _arrayToSubScans.empty()) {
+        return _arrayToSubScans;
+    }
+    std::set<SubScanKey> subScans = _getSubScanKeys();
+    std::set<SubScanKey>::const_iterator iter = subScans.begin();
+    std::set<SubScanKey>::const_iterator end = subScans.end();
+    std::map<ArrayKey, std::set<SubScanKey> > mymap;
+    ArrayKey akey;
+    for ( ; iter != end; ++iter) {
+        akey.arrayID = iter->arrayID;
+        akey.obsID = iter->obsID;
+        if (mymap.find(akey) == mymap.end()) {
+            mymap[akey] = std::set<SubScanKey>();
+        }
+        mymap[akey].insert(*iter);
+    }
+    uInt mysize = 0;
+    std::map<ArrayKey, std::set<SubScanKey> >::const_iterator miter = mymap.begin();
+    std::map<ArrayKey, std::set<SubScanKey> >::const_iterator mend = mymap.end();
+    for ( ; miter != mend; ++miter) {
+        mysize += sizeof(SubScanKey)*miter->second.size();
+    }
+    mysize += mymap.size() * sizeof(ArrayKey);
+    if (_cacheUpdated(mysize)) {
+        _arrayToSubScans = mymap;
+    }
+    return mymap;
+}
+/*
+map<SubScanKey, Quantity> MSMetaData::_getMeanExposureTimes() const {
+    // this method is responsible for setting _meanExposureTimeMap
+    if (! _meanExposureTimeMap.empty()) {
+        return _meanExposureTimeMap;
+    }
+
+}
+*/
 
 }
 
