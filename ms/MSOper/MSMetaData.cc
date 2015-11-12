@@ -3913,22 +3913,21 @@ std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(
 		row >= this->nRows(),
 		"Row number exceeds number of rows in the MS"
 	);
-	// KS note: 2015/10/30
-	// getColum method (also used in _getAntennas and _getTimes) is
-	// too expesive for the current purpose of getting single cell.
-	String ant1ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA1);
-	String ant2ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA2);
+	const String& ant1ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA1);
+	const String& ant2ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA2);
 	antenna1 = ROScalarColumn<Int>(*_ms, ant1ColName).get(row);
 	antenna2 = ROScalarColumn<Int>(*_ms, ant2ColName).get(row);
 	bool autocorr = (antenna1==antenna2);
-	String timeColName = MeasurementSet::columnName(MSMainEnums::TIME);
+	const String& timeColName = MeasurementSet::columnName(MSMainEnums::TIME);
 	time = ScalarColumn<Double>(*_ms, timeColName).get(row);
 	ROMSPointingColumns pCols(_ms->pointing());
 	Int pidx1, pidx2;
 	pidx1 = pCols.pointingIndex(antenna1, time, initialguess);
-	if (autocorr) pidx2 = pidx1;
+	if (autocorr) {
+		pidx2 = pidx1;
+	}
 	else pidx2 = pCols.pointingIndex(antenna2, time, initialguess);
-	String intervalColName = MeasurementSet::columnName(MSMainEnums::INTERVAL);
+	const String& intervalColName = MeasurementSet::columnName(MSMainEnums::INTERVAL);
 	Double interval = ScalarColumn<Double>(*_ms, intervalColName).get(row);
 	MDirection dir1, dir2;
 	if (!interpolate || interval >= pCols.interval()(pidx1)) {
@@ -3938,7 +3937,7 @@ std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(
 		dir1 = _getInterpolatedDirection(pCols, pidx1, time);
 	}
 	if (autocorr) {
-	  dir2 = dir1;
+		dir2 = dir1;
 	}
 	else if (!interpolate || interval >= pCols.interval()(pidx2)) {
 		dir2 = pCols.directionMeas(pidx2);
