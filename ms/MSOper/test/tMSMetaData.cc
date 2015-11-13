@@ -2161,6 +2161,22 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(props.nrows == 367, AipsError);
         }
         {
+        	cout << "*** test getScanKeys()" << endl;
+        	std::set<ScanKey> keys = md.getScanKeys();
+        	ScanKey expec;
+        	expec.arrayID = 0;
+        	expec.obsID = 0;
+        	for (Int i=1; i<34; ++i) {
+            	expec.scan = i;
+            	if (i == 33) {
+            		AlwaysAssert(keys.find(expec) == keys.end(), AipsError);
+            	}
+            	else {
+            		AlwaysAssert(keys.find(expec) != keys.end(), AipsError);
+            	}
+        	}
+        }
+        {
 			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}
