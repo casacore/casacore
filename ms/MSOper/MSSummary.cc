@@ -324,10 +324,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 	//Limiting record length
 	Int recLength=0;
 	const Int maxRecLength=10000; //limiting for speed and size sake
-	ArrayKey aryKey;
-	aryKey.arrayID = -1;
-	set<ScanKey> allScanKeys = _msmd->getScanKeys(aryKey);
-	set<ArrayKey> allArrayKeys = uniqueArrayKeys(allScanKeys);
+	set<ArrayKey> allArrayKeys = uniqueArrayKeys(_msmd->getScanKeys());
 
 	set<ArrayKey>::const_iterator iter = allArrayKeys.begin();
 	set<ArrayKey>::const_iterator end = allArrayKeys.end();

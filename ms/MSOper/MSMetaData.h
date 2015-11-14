@@ -364,6 +364,9 @@ public:
 	// get the phase directions from the FIELD subtable
 	vector<MDirection> getPhaseDirs() const;
 
+	// get all ScanKeys in the dataset
+	std::set<ScanKey> getScanKeys() const;
+
 	// get all ScanKeys in the dataset that have the specified <src>arrayKey</src>.
 	// If negative values for either the obsID and/or arrayID portions of the ArrayKey
 	// indicate that all obsIDs and/or arrayIDs should be used.
@@ -535,9 +538,6 @@ private:
 		// RESOLUTION
 		QVD resolution;
 	};
-
-
-
 
 	// represents non-primary key data for a SOURCE table row
 	struct SourceProperties {
@@ -783,9 +783,6 @@ private:
 		SHARED_PTR<vector<uInt> >& fieldToNACRowsMap,
 		SHARED_PTR<vector<uInt> >& fieldToNXCRowsMap
 	) const;
-
-	// get all ScanKeys in the dataset
-	std::set<ScanKey> _getScanKeys() const;
 
 	// get the scan keys in the specified set that have the associated arrayKey
 	std::set<ScanKey> _getScanKeys(
