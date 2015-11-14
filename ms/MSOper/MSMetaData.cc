@@ -209,7 +209,7 @@ std::set<Int> MSMetaData::getScanNumbers(Int obsID, Int arrayID) const {
 
 uInt MSMetaData::nScans() {
 	if (_nScans == 0) {
-		_nScans = _getScanKeys().size();
+		_nScans = getScanKeys().size();
 	}
 	return _nScans;
 }
@@ -666,7 +666,7 @@ std::map<ScanKey, std::set<Int> > MSMetaData::_getScanToStatesMap() const {
 	std::map<ScanKey, std::set<Int> > myScanToStatesMap;
 	if (nStates() == 0) {
 		std::set<Int> empty;
-		std::set<ScanKey> scanKeys = _getScanKeys();
+		std::set<ScanKey> scanKeys = getScanKeys();
 		//std::set<SubScanKey> subScanKeys;
 		//_getSubScanKeys(subScanKeys, scanKeys);
 		std::set<ScanKey>::const_iterator end = scanKeys.end();
@@ -1136,7 +1136,7 @@ std::set<String> MSMetaData::getFieldNamesForSpw(const uInt spw) {
 	return fieldNames;
 }
 
-std::set<ScanKey> MSMetaData::_getScanKeys() const {
+std::set<ScanKey> MSMetaData::getScanKeys() const {
 	if (! _scanKeys.empty()) {
 		return _scanKeys;
 	}
@@ -1155,7 +1155,7 @@ std::set<ScanKey> MSMetaData::_getScanKeys() const {
 }
 
 std::set<ScanKey> MSMetaData::getScanKeys(const ArrayKey& arrayKey) const {
-	std::set<ScanKey> allScanKeys = _getScanKeys();
+	std::set<ScanKey> allScanKeys = getScanKeys();
 	Bool doAllObsIDs = arrayKey.obsID < 0;
 	Bool doAllArrayIDs = arrayKey.arrayID < 0;
 	if (doAllObsIDs && doAllArrayIDs) {
@@ -2047,7 +2047,7 @@ std::set<Double> MSMetaData::getTimesForScans(
 	// std::set<Int> scanNumbers = getScanNumbers();
 	std::set<ScanKey>::const_iterator scan = scans.begin();
 	std::set<ScanKey>::const_iterator end = scans.end();
-	std::set<ScanKey> scanKeys = _getScanKeys();
+	std::set<ScanKey> scanKeys = getScanKeys();
 	while (scan != end) {
 		_checkScan(*scan);
 		times.insert(
@@ -3913,22 +3913,21 @@ std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(
 		row >= this->nRows(),
 		"Row number exceeds number of rows in the MS"
 	);
-	// KS note: 2015/10/30
-	// getColum method (also used in _getAntennas and _getTimes) is
-	// too expesive for the current purpose of getting single cell.
-	String ant1ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA1);
-	String ant2ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA2);
+	const String& ant1ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA1);
+	const String& ant2ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA2);
 	antenna1 = ROScalarColumn<Int>(*_ms, ant1ColName).get(row);
 	antenna2 = ROScalarColumn<Int>(*_ms, ant2ColName).get(row);
 	bool autocorr = (antenna1==antenna2);
-	String timeColName = MeasurementSet::columnName(MSMainEnums::TIME);
+	const String& timeColName = MeasurementSet::columnName(MSMainEnums::TIME);
 	time = ScalarColumn<Double>(*_ms, timeColName).get(row);
 	ROMSPointingColumns pCols(_ms->pointing());
 	Int pidx1, pidx2;
 	pidx1 = pCols.pointingIndex(antenna1, time, initialguess);
-	if (autocorr) pidx2 = pidx1;
+	if (autocorr) {
+		pidx2 = pidx1;
+	}
 	else pidx2 = pCols.pointingIndex(antenna2, time, initialguess);
-	String intervalColName = MeasurementSet::columnName(MSMainEnums::INTERVAL);
+	const String& intervalColName = MeasurementSet::columnName(MSMainEnums::INTERVAL);
 	Double interval = ScalarColumn<Double>(*_ms, intervalColName).get(row);
 	MDirection dir1, dir2;
 	if (!interpolate || interval >= pCols.interval()(pidx1)) {
@@ -3938,7 +3937,7 @@ std::pair<MDirection, MDirection> MSMetaData::getPointingDirection(
 		dir1 = _getInterpolatedDirection(pCols, pidx1, time);
 	}
 	if (autocorr) {
-	  dir2 = dir1;
+		dir2 = dir1;
 	}
 	else if (!interpolate || interval >= pCols.interval()(pidx2)) {
 		dir2 = pCols.directionMeas(pidx2);
@@ -4121,7 +4120,7 @@ void MSMetaData::_checkField(uInt fieldID) const {
 }
 
 void MSMetaData::_checkScan(const ScanKey& key) const {
-	std::set<ScanKey> allKeys = _getScanKeys();
+	std::set<ScanKey> allKeys = getScanKeys();
 	ThrowIf(
 		allKeys.find(key) == allKeys.end(),
 		"Unknown scan " + toString(key)
@@ -4129,7 +4128,7 @@ void MSMetaData::_checkScan(const ScanKey& key) const {
 }
 
 void MSMetaData::_checkScans(const std::set<ScanKey>& scanKeys) const {
-	std::set<ScanKey> allKeys = _getScanKeys();
+	std::set<ScanKey> allKeys = getScanKeys();
 	std::set<ScanKey>::const_iterator iter = scanKeys.begin();
 	std::set<ScanKey>::const_iterator end = scanKeys.end();
 	while (iter != end) {
