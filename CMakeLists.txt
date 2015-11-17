@@ -332,6 +332,24 @@ if(USE_THREADS)
     endif(CMAKE_COMPILER_IS_GNUCXX)
 endif(USE_THREADS)
 
+# Check whether DATA_DIR contains data (only if measures is build)
+# Warning: this check is not exhaustive
+if (";${_modules};" MATCHES ";measures;")
+    if (DATA_DIR)
+        get_filename_component(ABS_DATA_DIR "${DATA_DIR}" ABSOLUTE)
+        if (NOT EXISTS "${ABS_DATA_DIR}/ephemerides/"
+            AND NOT EXISTS "${ABS_DATA_DIR}/share/casacore/data/ephemerides")
+            message(FATAL_ERROR "No ephemerides data found in the specified DATA_DIR")
+        endif()
+    elseif (NOT EXISTS "${CMAKE_INSTALL_PREFIX}/data/ephemerides"
+        AND NOT EXISTS "/usr/local/share/casacore/data/ephemerides")
+            message(WARNING
+              "No ephemerides data found in the default data locations, so the location must be specified at runtime. If you have preinstalled casacore data, specify it with -DDATA_DIR."
+            )
+    endif()
+endif()
+
+
 # Set compiler flag in no table locking.
 if (NOT ENABLE_TABLELOCKING)
     add_definitions(-DAIPS_TABLE_NOLOCKING)
@@ -380,6 +398,7 @@ message (STATUS "USE_STACKTRACE ........ = ${USE_STACKTRACE}")
 message (STATUS "CMAKE_CXX_COMPILER .... = ${CMAKE_CXX_COMPILER}")
 message (STATUS "CMAKE_CXX_FLAGS ....... = ${CMAKE_CXX_FLAGS}")
 message (STATUS "C++11 support ......... = ${CXX11}")
+message (STATUS "DATA directory ........ = ${DATA_DIR}")
 message (STATUS "DL library? ........... = ${DL_LIBRARIES}")
 message (STATUS "Pthreads library? ..... = ${PTHREADS_LIBRARIES}")
 message (STATUS "Readline library? ..... = ${READLINE_LIBRARIES}")
