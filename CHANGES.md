@@ -1,3 +1,11 @@
+# next release
+
+changes since 2.0.3
+
+- Add experimental Python3 support. Read the README for instructions
+- Changed behavior from 2.0.3: Use PYTHON2_* configuration options to set
+  your python2 interpreter.
+
 # 2.0.3
 
 ## General
