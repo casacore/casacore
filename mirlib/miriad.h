@@ -217,7 +217,7 @@ void uvvarini_c (int tno, int *vhan);
 void uvvarset_c (int vhan, Const char *var);
 void uvvarcpy_c (int vhan, int tout);
 int  uvvarupd_c (int vhan);
-void uvrdvr_c   (int tno, int type, Const char *var, char *data, char *def, int n);
+void uvrdvr_c   (int tno, int type, Const char *var, char *data, const char *def, int n);
 void uvgetvr_c  (int tno, int type, Const char *var, char *data, int n);
 void uvprobvr_c (int tno, Const char *var, char *type, int *length, int *updated);
 void uvputvr_c  (int tno, int type, Const char *var, Const char *data, int n);

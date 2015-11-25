@@ -701,7 +701,7 @@ private:
     // is the index in a vector of a set of aggregate function objects.
     vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
     std::map<T, int> keyFuncMap;
-    T lastKey = std::numeric_limits<Double>::max();
+    T lastKey = std::numeric_limits<T>::max();
     int groupnr = -1;
     // Loop through all rows.
     // For each row generate the key to get the right entry.
