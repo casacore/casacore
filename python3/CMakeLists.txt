@@ -18,12 +18,18 @@ if (PYTHON3_FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs)
 endif()
 
 # Detect the python properties
-set(Python_FIND_VERSION 3)
-set(PythonInterp_FIND_VERSION_MAJOR 3)
+set(Python_ADDITIONAL_VERSIONS 3.5 3.4)
+
 find_package(Python REQUIRED)
+
 if (PYTHONINTERP_FOUND)
-    # NOTE: the name of the python3 version of boost is probably Debian/Ubuntu specific
-    find_package(Boost REQUIRED COMPONENTS python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+    if (APPLE)
+        find_package(Boost REQUIRED COMPONENTS python3)
+    else ()
+        # NOTE: the name of the python3 version of boost is probably Debian/Ubuntu specific
+        find_package(Boost REQUIRED COMPONENTS python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+    endif (APPLE)
+
     find_package (NUMPY REQUIRED)
 
     # copy the variables to their final destination
@@ -36,7 +42,7 @@ if (PYTHONINTERP_FOUND)
     set(PYTHON3_NUMPY_INCLUDE_DIRS ${NUMPY_INCLUDE_DIRS} PARENT_SCOPE)
     set(PYTHON3_Boost_LIBRARIES ${Boost_LIBRARIES} PARENT_SCOPE)
     set(PYTHON3_Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} PARENT_SCOPE)
-    set(PYTHON3_Boost_PYTHON_LIBRARY_RELEASE ${Boost_PYTHON_LIBRARY_RELEASE} PARENT_SCOPE)
+    set(PYTHON3_Boost_PYTHON_LIBRARY_RELEASE ${PYTHON3_Boost_LIBRARIES} PARENT_SCOPE)
     set(PYTHON3_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS} PARENT_SCOPE)
 
     # to access the variables here we also need to set them in the local scope
@@ -68,7 +74,8 @@ add_library (casa_python3
 ../python/Converters/PycValueHolder.cc
 )
 
-target_link_libraries (casa_python3 casa_casa ${PYTHON3_Boost_PYTHON_LIBRARY_RELEASE} ${PYTHON3_LIBRARIES})
+
+target_link_libraries (casa_python3 casa_casa ${PYTHON3_Boost_LIBRARIES} ${PYTHON3_LIBRARIES})
 
 install (TARGETS casa_python3
 RUNTIME DESTINATION bin
