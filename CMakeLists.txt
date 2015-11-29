@@ -112,7 +112,7 @@ endif (ENABLE_SHARED)
 # Casacore uses longlong, so no warnings for it.
 # Clang gives warning on bison generated code; disable unneeded-internal-declaration.
 if (NOT CMAKE_CXX_FLAGS)
-    set (CMAKE_CXX_FLAGS "-Wextra -Wall -W -Wpointer-arith -Woverloaded-virtual -Wwrite-strings -pedantic -Wno-long-long")
+    set (CMAKE_CXX_FLAGS "-Wextra -Wall -W -Wpointer-arith -Woverloaded-virtual -Wwrite-strings -pedantic -Wno-long-long -fsigned-char")
 #SET(CMAKE_CXX_FLAGS="-g -O0 -Wall -Wextra -Wshadow -Wunused-variable
 # -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers
 # -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs
