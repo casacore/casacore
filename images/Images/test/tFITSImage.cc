@@ -144,6 +144,11 @@ try {
    AlwaysAssert(allNear(dataArray, dataMask, fitsArray2, fitsMask2), AipsError);
    AlwaysAssert(fitsCS2.near(dataCS), AipsError);
 //
+   // Convert the header to FITS.
+   ImageFITSHeaderInfo fhi;
+   AlwaysAssertExit (ImageFITSConverter::ImageHeaderToFITS (error, fhi,
+                                                            fitsImage));
+   cout << fhi.kw.toString() << endl;
    cerr << "ok " << endl;
 
 } catch (AipsError x) {
