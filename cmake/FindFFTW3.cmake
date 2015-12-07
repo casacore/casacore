@@ -87,6 +87,8 @@ find_path(FFTW3_INCLUDE_DIR fftw3.h
 mark_as_advanced(FFTW3_INCLUDE_DIR)
 list(APPEND _check_list FFTW3_INCLUDE_DIR)
 
+set(FFTW3_INCLUDE_DIRS ${FFTW3_INCLUDE_DIR})
+
 # Handle the QUIETLY and REQUIRED arguments and set FFTW_FOUND to TRUE if
 # all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
