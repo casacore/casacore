@@ -43,7 +43,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifndef CASADATA
-#define CASADATA "/usr/local"
+#define CASADATA "/usr/local/share/data/casacore"
 #endif
 
 //# Constants
@@ -421,45 +421,11 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
               }
             }
             if (!found) {
+              String casadata=String(CASADATA);
+              casadata.gsub("%CASAROOT%", Aipsrc::aipsRoot());
+              casadata.gsub("%CASAHOME%", Aipsrc::aipsHome());
+              Path cdatapath(casadata);
               for (Int i=0; i<2; i++) {
-                ldir = Aipsrc::aipsHome() + "/data/" + path[i];
-                searched.resize(searched.nelements()+1, True);
-                searched[searched.nelements()-1] = ldir;
-                if (Table::isReadable(ldir + name)) {
-                  found = True;
-                  break;
-                }
-                ldir = Aipsrc::aipsRoot() + "/data/" + path[i];
-                searched.resize(searched.nelements()+1, True);
-                searched[searched.nelements()-1] = ldir;
-                if (Table::isReadable(ldir + name)) {
-                  found = True;
-                  break;
-                }
-                ldir = Aipsrc::aipsHome() + "/share/casacore/data/" + path[i];
-                searched.resize(searched.nelements()+1, True);
-                searched[searched.nelements()-1] = ldir;
-                if (Table::isReadable(ldir + name)) {
-                  found = True;
-                  break;
-                }
-                ldir = Aipsrc::aipsRoot() + "/share/casacore/data/" + path[i];
-                searched.resize(searched.nelements()+1, True);
-                searched[searched.nelements()-1] = ldir;
-                if (Table::isReadable(ldir + name)) {
-                  found = True;
-                  break;
-                }
-                Path cdatapath(String(CASADATA));
-                ldir = cdatapath.absoluteName() + path[i];
-                searched.resize(searched.nelements() + 1, True);
-                searched[searched.nelements() - 1] = ldir;
-                if (Table::isReadable(ldir + name)) {
-                  found = True;
-                  break;
-                }
-                ldir = cdatapath.absoluteName() + "/share/casacore/data/" \
-                  + path[i];
                 ldir = cdatapath.absoluteName() + path[i];
                 searched.resize(searched.nelements() + 1, True);
                 searched[searched.nelements() - 1] = ldir;

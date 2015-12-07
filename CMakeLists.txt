@@ -339,19 +339,13 @@ if(USE_THREADS)
 endif(USE_THREADS)
 
 # Check whether DATA_DIR contains data (only if measures is build)
-# Warning: this check is not exhaustive
+if (NOT DATA_DIR)
+   set (DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/data/casacore)
+endif (NOT DATA_DIR)
 if (";${_modules};" MATCHES ";measures;")
-    if (DATA_DIR)
-        get_filename_component(ABS_DATA_DIR "${DATA_DIR}" ABSOLUTE)
-        if (NOT EXISTS "${ABS_DATA_DIR}/ephemerides/"
-            AND NOT EXISTS "${ABS_DATA_DIR}/share/casacore/data/ephemerides")
-            message(FATAL_ERROR "No ephemerides data found in the specified DATA_DIR")
-        endif()
-    elseif (NOT EXISTS "${CMAKE_INSTALL_PREFIX}/data/ephemerides"
-        AND NOT EXISTS "/usr/local/share/casacore/data/ephemerides")
-            message(WARNING
-              "No ephemerides data found in the default data locations, so the location must be specified at runtime. If you have preinstalled casacore data, specify it with -DDATA_DIR."
-            )
+    get_filename_component(ABS_DATA_DIR "${DATA_DIR}" ABSOLUTE)
+    if (NOT EXISTS "${ABS_DATA_DIR}/ephemerides/")
+        message(WARNING "No ephemerides data found in the specified DATA_DIR (\"${DATA_DIR}\"), so the location must be specified at runtime. If you have preinstalled casacore data, specify the location with -DDATA_DIR.")
     endif()
 endif()
 
@@ -446,7 +440,7 @@ endif (BUILD_PYTHON3)
 #  USE_THREADS                   NO
 #  USE_OPENMP                    NO
 #  USE_STACKTRACE                NO
-#  DATA_DIR                      ""
+#  DATA_DIR                      ${CMAKE_INSTALL_PREFIX}/share/casacore/data
 #  MODULE                        all
 #                                Values for MODULE (incremental list):
 #                                - casa

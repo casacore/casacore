@@ -78,7 +78,7 @@ $ cmake -DUSE_FFTW3=ON -DDATA_DIR=/usr/share/casacore/data -DUSE_OPENMP=ON \
 ```
 
 The `DATA_DIR` should point to the location where you extracted the measures
-data.
+data. Special variables `%CASAROOT%` and `%CASAHOME%` can be used here, which can be set at run time through the `.casarc` file.
 
 We have expirmental support for Python3 now. You can build python3 support using
 `-DBUILD_PYTHON3=on`. Note that CMake may have problems detecting the correct
