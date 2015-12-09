@@ -436,6 +436,20 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
 		  found = True;
 		  break;
 		}
+		ldir = Aipsrc::aipsHome() + "/share/casacore/data/" + path[i];
+		searched.resize(searched.nelements()+1, True);
+		searched[searched.nelements()-1] = ldir;
+		if (Table::isReadable(ldir + name)) {
+		  found = True;
+		  break;
+		}
+		ldir = Aipsrc::aipsRoot() + "/share/casacore/data/" + path[i];
+		searched.resize(searched.nelements()+1, True);
+		searched[searched.nelements()-1] = ldir;
+		if (Table::isReadable(ldir + name)) {
+		  found = True;
+		  break;
+		}
 		Path cdatapath(String(CASADATA));
 		ldir = cdatapath.absoluteName() + path[i];
 		searched.resize(searched.nelements() + 1, True);
