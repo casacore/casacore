@@ -72,6 +72,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Double bscale;
     Short minshort;
     Short maxshort;
+    double minPix;
+    double maxPix;
     IPosition newShape;
     IPosition cursorOrder;
     FitsKeywordList kw;
