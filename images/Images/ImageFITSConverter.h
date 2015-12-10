@@ -31,119 +31,142 @@
 #define IMAGES_IMAGEFITSCONVERTER_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/fits/FITS/fits.h>
+#include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/DataType.h>
 
 #ifndef WCSLIB_GETWCSTAB
- #define WCSLIB_GETWCSTAB
+#define WCSLIB_GETWCSTAB
 #endif
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T> class PagedImage;
-template<class T> class ImageInterface;
-template<class T> class Vector;
-class FitsOutput;
-class IPosition;
-class File;
-class ImageInfo;
-class CoordinateSystem;
-class RecordInterface;
-class TableRecord;
-class LogIO;
-class Unit;
-class LoggerHolder;
-class ConstFitsKeywordList;
-class FitsInput;
+  template<class T> class PagedImage;
+  template<class T> class ImageInterface;
+  template<class T> class Vector;
+  class FitsOutput;
+  class File;
+  class ImageInfo;
+  class CoordinateSystem;
+  class RecordInterface;
+  class TableRecord;
+  class LogIO;
+  class Unit;
+  class LoggerHolder;
+  class ConstFitsKeywordList;
+  class FitsInput;
 
-// <summary>
-// Interconvert between Casacore Images and FITS files.
-// </summary>
+  // <summary>
+  // Struct holding information derived from the image and its header
+  // </summary>
+  // <synopsis>
+  // This is a helper struct to pass information from ImageHeaderToFITS
+  // to ImageToFITSOut.
+  // </synopsis>
+  struct ImageFITSHeaderInfo {
+    Bool applyMask;
+    Bool needNonOptimalCursor;
+    Bool hasBlanks;
+    Double bzero;
+    Double bscale;
+    Short minshort;
+    Short maxshort;
+    IPosition newShape;
+    IPosition cursorOrder;
+    FitsKeywordList kw;
+    Array<Bool>* pMask;
+  };
 
-// <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
-// </reviewed>
+  // <summary>
+  // Interconvert between Casacore Images and FITS files.
+  // </summary>
 
-// <prerequisite>
-// <li> <linkto class="PagedImage">PagedImage</linkto>
-// <li> <linkto class="PrimaryArray">PrimaryArray</linkto> (and FITS concepts in
-//      general).
-// </prerequisite>
-//
-// <synopsis>
-// This class is a helper class that is used to interconvert between Casacore
-// images and FITS files. This adds no functionality over the general abilities
-// available in the underlying FITS classes, however it is a useful higher-level
-// packaging.
-//
-// There are two fundamental member functions in this class.
-// <src>FITSToImage</src> which turns a FITS file into a Casacore image, and
-// <src>ImageToFITS</src> which does the opposite.
-//
-// We can read images from any HDU inside the FITS file (although this isn't
-// well tested). Images with a quality axis (i.e. contain data and error values)
-// are stored in the primary HDU (data) and an extension HDU (error). Other
-// images are always written to the primary HDU.
-//
-// Pixels in the FITS file which are blanked are masked out (the mask
-// is set to False) in the output image.   On conversion to FITS,
-// masked values are blanked.    The mask which is read is the current
-// default mask.
-// </synopsis>
-//
-// <example>
-// A FITS to image conversion may be accomplished as follows:
-// <srcBlock>
-//    PagedImage<Float> *image = 0;
-//    String fitsName = "exists.fits";
-//    String imageName = "new.image";
-//    String error;
-//    Bool ok = ImageFITSConverter::FITSToImage(image, error, imageName, fitsName);
-//    if (!image) ... error ...
-// </srcBlock>
-// A couple of things to note:
-// <ul>
-//    <li> If <src>ok</src> is False, the conversion failed and <src>error</src>
-//         will be set.
-//    <li> The pointer "image" is set if the conversion succeeds. If it is
-//         zero the conversion failed and <src>error</src> will contain an
-//         error message.
-//    <li> The caller is responsible for deleting the pointer <src>image</src>
-//         when the conversion is successful.
-// </ul>
-// Similarly, an image to FITS conversion may be accomplished as follows:
-// <srcBlock>
-//    String imageName = argv[1];
-//    PagedImage<Float> image = ...; // An existing image from somewhere
-//    String fitsName = "new.fits";
-//    String error;
-//    Bool ok = ImageFITSConverter::ImageToFITS(error, image, fitsName);
-// </srcBlock>
-// A couple of similar remarks can be made about this example:
-// <ul>
-//    <li> If <src>ok</src> is False, the conversion failed and <src>error</src>
-//         will be set.
-// </ul>
-// </example>
-//
-// <motivation>
-// FITS files are the fundamental transport format for images in Astronomy.
-// </motivation>
-//
-// <todo asof="1999/02/15">
-//   <li> It might be useful to have functions that convert between FITS
-//        and general lattices.
-//   <li> Add support for PagedImage<Complex>
-//   <li> Convert multiple images at once?
-//   <li> Allow writing FITS files to an image extension in an existing
-//        FITS file.
-// </todo>
+  // <use visibility=export>
 
-class ImageFITSConverter
-{
-public:
-	const static String CASAMBM;
+  // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+  // </reviewed>
+
+  // <prerequisite>
+  // <li> <linkto class="PagedImage">PagedImage</linkto>
+  // <li> <linkto class="PrimaryArray">PrimaryArray</linkto> (and FITS concepts in
+  //      general).
+  // </prerequisite>
+  //
+  // <synopsis>
+  // This class is a helper class that is used to interconvert between Casacore
+  // images and FITS files. This adds no functionality over the general abilities
+  // available in the underlying FITS classes, however it is a useful higher-level
+  // packaging.
+  //
+  // There are two fundamental member functions in this class.
+  // <src>FITSToImage</src> which turns a FITS file into a Casacore image, and
+  // <src>ImageToFITS</src> which does the opposite.
+  //
+  // We can read images from any HDU inside the FITS file (although this isn't
+  // well tested). Images with a quality axis (i.e. contain data and error values)
+  // are stored in the primary HDU (data) and an extension HDU (error). Other
+  // images are always written to the primary HDU.
+  //
+  // Pixels in the FITS file which are blanked are masked out (the mask
+  // is set to False) in the output image.   On conversion to FITS,
+  // masked values are blanked.    The mask which is read is the current
+  // default mask.
+  // </synopsis>
+  //
+  // <example>
+  // A FITS to image conversion may be accomplished as follows:
+  // <srcBlock>
+  //    PagedImage<Float> *image = 0;
+  //    String fitsName = "exists.fits";
+  //    String imageName = "new.image";
+  //    String error;
+  //    Bool ok = ImageFITSConverter::FITSToImage(image, error, imageName, fitsName);
+  //    if (!image) ... error ...
+  // </srcBlock>
+  // A couple of things to note:
+  // <ul>
+  //    <li> If <src>ok</src> is False, the conversion failed and <src>error</src>
+  //         will be set.
+  //    <li> The pointer "image" is set if the conversion succeeds. If it is
+  //         zero the conversion failed and <src>error</src> will contain an
+  //         error message.
+  //    <li> The caller is responsible for deleting the pointer <src>image</src>
+  //         when the conversion is successful.
+  // </ul>
+  // Similarly, an image to FITS conversion may be accomplished as follows:
+  // <srcBlock>
+  //    String imageName = argv[1];
+  //    PagedImage<Float> image = ...; // An existing image from somewhere
+  //    String fitsName = "new.fits";
+  //    String error;
+  //    Bool ok = ImageFITSConverter::ImageToFITS(error, image, fitsName);
+  // </srcBlock>
+  // A couple of similar remarks can be made about this example:
+  // <ul>
+  //    <li> If <src>ok</src> is False, the conversion failed and <src>error</src>
+  //         will be set.
+  // </ul>
+  // </example>
+  //
+  // <motivation>
+  // FITS files are the fundamental transport format for images in Astronomy.
+  // </motivation>
+  //
+  // <todo asof="1999/02/15">
+  //   <li> It might be useful to have functions that convert between FITS
+  //        and general lattices.
+  //   <li> Add support for PagedImage<Complex>
+  //   <li> Convert multiple images at once?
+  //   <li> Allow writing FITS files to an image extension in an existing
+  //        FITS file.
+  // </todo>
+
+  class ImageFITSConverter
+  {
+  public:
+    const static String CASAMBM;
 
     // Convert a FITS file to a Casacore image.
     // <ul>
@@ -179,16 +202,6 @@ public:
 			    Bool allowOverwrite=False,
                             Bool zeroBlanks=False);
 
-// Old version
-//    static Bool FITSToImageOld(ImageInterface<Float>*& newImage,
-//			    String &error,
-//			    const String &imageName,
-//			    const String &fitsName, 
-//			    uInt whichHDU = 0,
-//			    uInt memoryInMB = 64,
-//			    Bool allowOverwrite=False,
-//                            Bool zeroBlanks=False);
-
     // Convert a Casacore image to a FITS file.
     // <ul>
     //   <li> <src>return</src> True if the conversion succeeds, False 
@@ -222,158 +235,171 @@ public:
     //   <li> <src>origin</src> gives the origin, i.e., the name of the package.
     //        If empty, it defaults to "casacore-"getVersion().
     //   </ul>
+    // <group>
     static Bool ImageToFITS(String &error,
-    		ImageInterface<Float> &image,
-    		const String &fitsName,
-    		uInt memoryInMB = 64,
-    		Bool preferVelocity = True,
-    		Bool opticalVelocity = True,
-    		Int BITPIX=-32,
-    		Float minPix = 1.0, Float maxPix = -1.0,
-    		Bool allowOverwrite=False,
-    		Bool degenerateLast=False,
-    		Bool verbose=True,
-    		Bool stokesLast=False,
-    		Bool preferWavelength=False,
-    		Bool airWavelength=False,
-		const String& origin = String(),
-		Bool history=True);
+                            ImageInterface<Float> &image,
+                            const String &fitsName,
+                            uInt memoryInMB = 64,
+                            Bool preferVelocity = True,
+                            Bool opticalVelocity = True,
+                            Int BITPIX=-32,
+                            Float minPix = 1.0, Float maxPix = -1.0,
+                            Bool allowOverwrite=False,
+                            Bool degenerateLast=False,
+                            Bool verbose=True,
+                            Bool stokesLast=False,
+                            Bool preferWavelength=False,
+                            Bool airWavelength=False,
+                            const String& origin = String(),
+                            Bool history=True);
+    static Bool ImageHeaderToFITS(String &error,
+                                  ImageFITSHeaderInfo& fhi,
+                                  const ImageInterface<Float> &image,
+                                  Bool preferVelocity = True,
+                                  Bool opticalVelocity = True,
+                                  Int BITPIX=-32,
+                                  Float minPix = 1.0, Float maxPix = -1.0,
+                                  Bool degenerateLast=False,
+                                  Bool verbose=True,
+                                  Bool stokesLast=False,
+                                  Bool preferWavelength=False,
+                                  Bool airWavelength=False,
+                                  Bool primHead = True,
+                                  Bool allowAppend = True,
+                                  const String& origin = String(),
+                                  Bool history=True);
+    // </group>
 
-    // Helper function - used to calculate a cursor appropriate for the desired
-    // memory use. It's not intended that application programmers call this, but
-    // you may if it's useful to you.
+    // Helper function - used to calculate a cursor appropriate for the
+    // desired memory use. It's not intended that application programmers
+    // call this, but you may if it's useful to you.
     static IPosition copyCursorShape(String &report,
 				     const IPosition &shape, 
 				     uInt imagePixelSize,
 				     uInt fitsPixelSize,
 				     uInt memoryInMB);
 
-// Recover CoordinateSystem from header.  Used keywords are removed from header
-// and the unused one returned in a Record for ease of use.  Degenerate axes 
-// may be added to shape if needed
-    static CoordinateSystem getCoordinateSystem (Int& imageType, RecordInterface& headerRec,
+    // Recover CoordinateSystem from header.
+    // Used keywords are removed from header and the unused ones returned
+    // in a Record for ease of use.
+    // Degenerate axes may be added to shape if needed.
+    static CoordinateSystem getCoordinateSystem (Int& imageType,
+                                                 RecordInterface& headerRec,
                                                  const Vector<String>& header,
                                                  LogIO& os, uInt whichRep,
-                                                 IPosition& shape, Bool dropStokes);
+                                                 IPosition& shape,
+                                                 Bool dropStokes);
 
-// Old version
-//    static CoordinateSystem getCoordinateSystemOld (Int& imageType, RecordInterface& header,
-//                                                 LogIO& os, IPosition& shape, Bool dropStokes);
-
-// Recover ImageInfo from header. Used keywords are removed from header
+    // Recover ImageInfo from header. Used keywords are removed from header
     static ImageInfo getImageInfo (RecordInterface& header);
 
-//Old version
-//    static ImageInfo getImageInfoOld (RecordInterface& header);
-
-// Recover brightness unit from header. Used keywords are removed from header
+    // Recover brightness unit from header.
+    // Used keywords are removed from header.
     static Unit getBrightnessUnit (RecordInterface& header, LogIO& os);
-// Old version
-//    static Unit getBrightnessUnitOld (RecordInterface& header, LogIO& os);
 
-// Recover history from FITS file keywrod list into logger
-   static void restoreHistory (LoggerHolder& logger,
-                               ConstFitsKeywordList& kw);
+    // Recover history from FITS file keyword list into logger.
+    static void restoreHistory (LoggerHolder& logger,
+                                ConstFitsKeywordList& kw);
 			       
-// Parse header record and set MiscInfo
-   static Bool extractMiscInfo (RecordInterface& miscInfo, const RecordInterface& header);
+    // Parse header record and set MiscInfo
+    static Bool extractMiscInfo (RecordInterface& miscInfo,
+                                 const RecordInterface& header);
 
-   // read the BEAMS table if present and add the restoring beams to <src>info</src>
-   static void readBeamsTable(
-		   ImageInfo& info, const String& filename,
-		   const DataType type
-   );
+    // Read the BEAMS table if present and add the restoring beams to
+    // <src>info</src>.
+    static void readBeamsTable (ImageInfo& info, const String& filename,
+                                const DataType type);
 
-private:
+  private:
 
-// Put a CASA image to an opened FITS image
-// Parameters as in "ImageToFITS". In addition:
-// <ul>
-//   <li> <src>output</src> The FITS output to write to.
-//   <li> <src>primHead</src> Write to a primary HDU.
-//   <li> <src>allowAppend</src> Allow to append extension HDU's.
-// </ul>
-   static Bool ImageToFITSOut(
-		   String &error, LogIO &os,
-		   const ImageInterface<Float> &image,
-		   FitsOutput *output, uInt memoryInMB = 64,
-  		 Bool preferVelocity = True,
-  		 Bool opticalVelocity = True,
-  		 Int BITPIX=-32,
-  		 Float minPix = 1.0, Float maxPix = -1.0,
-  		 Bool degenerateLast=False,
-  		 Bool verbose=True,
-  		 Bool stokesLast=False,
-  		 Bool preferWavelength=False,
-  		 Bool airWavelength=False,
-  		 Bool primHead=True,
-  		 Bool allowAppend=False,
-		 const String& origin = String(),
-		 Bool history=True  
-   );
+    // Put a CASA image to an opened FITS image
+    // Parameters as in "ImageToFITS". In addition:
+    // <ul>
+    //   <li> <src>output</src> The FITS output to write to.
+    //   <li> <src>primHead</src> Write to a primary HDU.
+    //   <li> <src>allowAppend</src> Allow to append extension HDU's.
+    // </ul>
+    static Bool ImageToFITSOut (String &error, LogIO &os,
+                                const ImageInterface<Float> &image,
+                                FitsOutput *output, uInt memoryInMB = 64,
+                                Bool preferVelocity = True,
+                                Bool opticalVelocity = True,
+                                Int BITPIX=-32,
+                                Float minPix = 1.0, Float maxPix = -1.0,
+                                Bool degenerateLast=False,
+                                Bool verbose=True,
+                                Bool stokesLast=False,
+                                Bool preferWavelength=False,
+                                Bool airWavelength=False,
+                                Bool primHead=True,
+                                Bool allowAppend=False,
+                                const String& origin = String(),
+                                Bool history=True);
 
-// Put a CASA image with quality coordinate
-// to an opened FITS file
-// Parameters as in "ImageToFITS". In addition:
-// <ul>
-//   <li> <src>output</src> The FITS output to write to.
-// </ul>
-   static Bool QualImgToFITSOut(String &error,
-      		LogIO &os,
-      		ImageInterface<Float> &image,
-      		FitsOutput *outfile,
-      		uInt memoryInMB,
-      		Bool preferVelocity,
-      		Bool opticalVelocity,
-      		Int BITPIX, Float minPix, Float maxPix,
-      		Bool degenerateLast,
-      		Bool verbose, Bool stokesLast,
-      		Bool preferWavelength,
-      		Bool airWavelength,
-		const String& origin,
-		Bool history
-   );
+    // Put a CASA image with quality coordinate
+    // to an opened FITS file
+    // Parameters as in "ImageToFITS". In addition:
+    // <ul>
+    //   <li> <src>output</src> The FITS output to write to.
+    // </ul>
+    static Bool QualImgToFITSOut (String &error,
+                                  LogIO &os,
+                                  ImageInterface<Float> &image,
+                                  FitsOutput *outfile,
+                                  uInt memoryInMB,
+                                  Bool preferVelocity,
+                                  Bool opticalVelocity,
+                                  Int BITPIX, Float minPix, Float maxPix,
+                                  Bool degenerateLast,
+                                  Bool verbose, Bool stokesLast,
+                                  Bool preferWavelength,
+                                  Bool airWavelength,
+                                  const String& origin,
+                                  Bool history);
 
-   static Bool removeFile (String& error, const File& outFile,
-                           const String& outName, Bool allowOverwrite);
+    // If existing, remove the file, symlink, or directory given by
+    // <src>outFile</src>. It is only removed if allowOverwrite=True.
+    // An exception (using argument outName) is thrown if the file could
+    // not be removed.
+    static Bool removeFile (String& error, const File& outFile,
+                            const String& outName, Bool allowOverwrite);
 
-// Create an open FITS file with the name given
-   static Bool openFitsOutput(String &error, FitsOutput *(&openFitsOutput), const String &fitsName,
-   		                            const Bool &allowOverwrite);
-
-
-     static void _writeBeamsTable(FitsOutput *const &outfile, const ImageInfo& info);
-
-};
+    // Create an open FITS file with the name given
+    static Bool openFitsOutput (String &error, FitsOutput *(&openFitsOutput),
+                                const String &fitsName,
+                                const Bool &allowOverwrite);
 
 
-// <summary>
-// This class is an internal class for ImageFITSConverter.
-// </summary>
+    static void _writeBeamsTable (FitsOutput *const &outfile,
+                                  const ImageInfo& info);
 
-// <use visibility=local>
+  };
 
-// <synopsis>
-// This class is an internal class used to implement 
-// ImageFitsConverter::FITSToImage - in particular, it has the code which
-// is dependent on the various types (BITPIX values).
-// </synopsis>
-template<class HDUType> class ImageFITSConverterImpl
-{
-public:
-    static void FITSToImage(
-    	ImageInterface<Float> *&newImage,
-    	String &error,
-    	const String &newImageName,
-    	const uInt whichRep,
-    	HDUType &fitsImage,
-    	const String& fitsFilename,
-    	const DataType dataType,
-    	const uInt memoryInMB = 64,
-    	const Bool zeroBlanks=False
-    	);
 
-};
+  // <summary>
+  // This class is an internal class for ImageFITSConverter.
+  // </summary>
+
+  // <use visibility=local>
+
+  // <synopsis>
+  // This class is an internal class used to implement 
+  // ImageFitsConverter::FITSToImage - in particular, it has the code which
+  // is dependent on the various types (BITPIX values).
+  // </synopsis>
+  template<class HDUType> class ImageFITSConverterImpl
+  {
+  public:
+    static void FITSToImage(ImageInterface<Float> *&newImage,
+                            String &error,
+                            const String &newImageName,
+                            const uInt whichRep,
+                            HDUType &fitsImage,
+                            const String& fitsFilename,
+                            const DataType dataType,
+                            const uInt memoryInMB = 64,
+                            const Bool zeroBlanks=False);
+  };
 
 
 } //# NAMESPACE CASACORE - END
