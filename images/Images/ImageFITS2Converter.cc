@@ -1013,6 +1013,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (BITPIX>0) {
       header.define("datamin", minPix);
       header.define("datamax", maxPix);
+      fhi.minPix = minPix;
+      fhi.maxPix = maxPix;
+    }
+    else {
+      fhi.minPix = 1.0;
+      fhi.maxPix = -1.0;
     }
     //
     const ImageInfo& ii = image.imageInfo();
@@ -1406,9 +1412,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
               if (isNaN(ptr[j]) || !maskPtr[j]) {
                 buffer16[j] = fhi.minshort;
               } else {
-                if (ptr[j] > maxPix) {
+                if (ptr[j] > fhi.maxPix) {
                   buffer16[j] = fhi.maxshort;
-                } else if (ptr[j] < minPix) {
+                } else if (ptr[j] < fhi.minPix) {
                   buffer16[j] = fhi.minshort + blankOffset;
                 } else {
                   buffer16[j] = Short((ptr[j] - fhi.bzero)/fhi.bscale);
@@ -1422,9 +1428,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
               if (isNaN(ptr[j])) {
                 buffer16[j] = fhi.minshort;
               } else {
-                if (ptr[j] > maxPix) {
+                if (ptr[j] > fhi.maxPix) {
                   buffer16[j] = fhi.maxshort;
-                } else if (ptr[j] < minPix) {
+                } else if (ptr[j] < fhi.minPix) {
                   buffer16[j] = fhi.minshort + blankOffset;
                 } else {
                   buffer16[j] = Short((ptr[j] - fhi.bzero)/fhi.bscale);
@@ -1477,7 +1483,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       //
       if (pMeter) delete pMeter;
-      if (fhi.pMask!=0) delete fhi.pMask;
     }
     catch (const AipsError& x) {
       error = "Unknown error copying image to FITS file";

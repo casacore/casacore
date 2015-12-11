@@ -46,7 +46,8 @@
 
 #include <casacore/casa/namespace.h>
 Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
-              const Array<Float>& fits, const Array<Bool>& fitsMask, Float tol=1.0e-5);
+              const Array<Float>& fits, const Array<Bool>& fitsMask,
+              Float tol=1.0e-5, Float abstol=-1.);
 
 int main (int argc, const char* argv[])
 {
@@ -151,8 +152,16 @@ try {
    cout << fhi.kw.toString() << endl;
    cerr << "ok " << endl;
 
+   String file = "imagetestimage2.fits";
+   ImageFITSConverter::ImageToFITS(error, fitsImage, file, 64, True, True, 16, 1.0, -1.0, True);
+   ImageInterface<Float>* pLoadImage;
+   ImageFITSConverter::FITSToImage(pLoadImage, error, imageName, file);
+   AlwaysAssert(allNear(pLoadImage->get(), pLoadImage->getMask(), fitsArray2, fitsMask2, 0.0, 0.001), AipsError);
+   delete pLoadImage;
+
+
 } catch (AipsError x) {
-   cerr << "aipserror: error " << x.getMesg() << endl;
+   cout << "aipserror: error " << x.getMesg() << endl;
    return 1;
 }
   return 0;
@@ -160,7 +169,7 @@ try {
 
 Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
               const Array<Float>& fits, const Array<Bool>& fitsMask,
-              Float tol)
+              Float tol, Float abstol)
 {
    Bool deletePtrData, deletePtrDataMask, deletePtrFITS, deletePtrFITSMask;
    const Float* pData = data.getStorage(deletePtrData);
@@ -174,7 +183,8 @@ Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
          return False;
       }
       if (pDataMask[i]) { 
-         if (!near(pData[i], pFITS[i], tol)) {
+         if ((abstol < 0 && !near(pData[i], pFITS[i], tol)) ||
+             (abstol >= 0 && !nearAbs(pData[i], pFITS[i], abstol))) {
             cerr << "data differ, tol = " << tol << endl;
             cerr << pData[i] << ", " << pFITS[i] << endl;
             return False;

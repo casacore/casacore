@@ -35,6 +35,8 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+
 
 #ifndef WCSLIB_GETWCSTAB
 #define WCSLIB_GETWCSTAB
@@ -72,10 +74,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Double bscale;
     Short minshort;
     Short maxshort;
+    double minPix;
+    double maxPix;
     IPosition newShape;
     IPosition cursorOrder;
     FitsKeywordList kw;
-    Array<Bool>* pMask;
+    CountedPtr<Array<Bool> > pMask;
   };
 
 
