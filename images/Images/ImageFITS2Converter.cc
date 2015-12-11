@@ -1483,7 +1483,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       //
       if (pMeter) delete pMeter;
-      if (fhi.pMask!=0) delete fhi.pMask;
     }
     catch (const AipsError& x) {
       error = "Unknown error copying image to FITS file";
