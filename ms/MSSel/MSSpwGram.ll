@@ -140,9 +140,6 @@ SIDENTIFIER  ({NAMES}+"*")
 ">"       { msSpwGramPosition() += yyleng;
             return GT;
           }
-"&"       { msSpwGramPosition() += yyleng;
-            return AMPERSAND;
-          }
 ";"       { msSpwGramPosition() += yyleng;
             return SEMICOLON;
           }
