@@ -385,55 +385,38 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
       else{
         String udir;
 
-        if(!dir.empty())
+        if(!dir.empty()) {
           udir = dir + '/';
-        ldir = "./";
-        searched.resize(searched.nelements()+1, True);
-        searched[searched.nelements()-1] = ldir;
-        if (!Table::isReadable(ldir + name)) {
-          ldir = "./data/";
-          searched.resize(searched.nelements() + 1, True);
-          searched[searched.nelements()-1] = ldir;
-          if (!Table::isReadable(ldir + name)) {
-            Bool found = False;
-            String mdir;
-            if (Aipsrc::find(mdir, "measures.directory")) {
-              mdir.trim();
-              Path mpath = Path(mdir);
-              mpath.append(udir);
-              ldir = mpath.absoluteName()+"/";
-              searched.resize(searched.nelements()+1, True);
-              searched[searched.nelements()-1] = ldir;
-              if  (Table::isReadable(ldir+name)) {
-                found = True;
-              }
-              if (!found) {
-                for (Int i=0; i<2; i++) {
-                  Path mpath = Path(mdir +"/" + path[i]);
-                  ldir = mpath.absoluteName()+"/";
-                  searched.resize(searched.nelements()+1, True);
-                  searched[searched.nelements()-1] = ldir;
-                  if  (Table::isReadable(ldir+name)) {
-                    found = True;
-                    break;
-                  }
-                }
-              }
+        }
+        Bool found = False;
+        String mdir;
+        if (Aipsrc::find(mdir, "measures.directory")) {
+          mdir.trim();
+          Path mpath = Path(mdir);
+          mpath.append(udir);
+          for (Int i=0; i<2; i++) {
+            Path mpath = Path(mdir +"/" + path[i]);
+            ldir = mpath.absoluteName()+"/";
+            searched.resize(searched.nelements()+1, True);
+            searched[searched.nelements()-1] = ldir;
+            if  (Table::isReadable(ldir+name)) {
+              found = True;
+              break;
             }
-            if (!found) {
-              String casadata=String(CASADATA);
-              casadata.gsub("%CASAROOT%", Aipsrc::aipsRoot());
-              casadata.gsub("%CASAHOME%", Aipsrc::aipsHome());
-              Path cdatapath(casadata);
-              for (Int i=0; i<2; i++) {
-                ldir = cdatapath.absoluteName() + path[i];
-                searched.resize(searched.nelements() + 1, True);
-                searched[searched.nelements() - 1] = ldir;
-                if (Table::isReadable(ldir + name)) {
-                  found = True;
-                  break;
-                }
-              }
+          }
+        }
+        if (!found) {
+          String casadata=String(CASADATA);
+          casadata.gsub("%CASAROOT%", Aipsrc::aipsRoot());
+          casadata.gsub("%CASAHOME%", Aipsrc::aipsHome());
+          Path cdatapath(casadata);
+          for (Int i=0; i<2; i++) {
+            ldir = cdatapath.absoluteName() + path[i];
+            searched.resize(searched.nelements() + 1, True);
+            searched[searched.nelements() - 1] = ldir;
+            if (Table::isReadable(ldir + name)) {
+              found = True;
+              break;
             }
           }
         }
