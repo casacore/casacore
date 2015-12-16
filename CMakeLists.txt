@@ -78,6 +78,13 @@ option (CASA_BUILD "Building the in the CASA (http://casa.nrao.edu) environment"
 
 set(CASA_DEFAULT_ALIGNMENT "32" CACHE STRING "Default alignment of casa::AlignedAllocator")
 
+# basic setup for building within CASA environment
+if( CASA_BUILD )
+   if( NOT DATA_DIR )
+      set(DATA_DIR "%CASAROOT%/data")
+   endif( )
+endif( )
+
 # Test if shared libraries have to be built.
 if (ENABLE_SHARED)
     option (BUILD_SHARED_LIBS "" YES)
