@@ -1,0 +1,3 @@
+#!/bin/sh
+
+$casa_checktool ./tFITSImage | sed 's/DATE    =\(.*written\)   /DATE =>>>\1<<</'

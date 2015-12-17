@@ -4,3 +4,6 @@ build/
 *table.lock
 *CMakeCache.txt
 *CMakeFiles
+.project
+.cproject
+.settings
