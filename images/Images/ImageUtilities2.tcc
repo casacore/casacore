@@ -27,7 +27,6 @@
 
 #ifndef IMAGES_IMAGEUTILITIES2_TCC
 #define IMAGES_IMAGEUTILITIES2_TCC
-//
 
 #include <casacore/images/Images/ImageUtilities.h>
 
@@ -37,8 +36,10 @@
 #include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
 #include <casacore/coordinates/Coordinates/TabularCoordinate.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/images/Images/FITSImage.h>
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/images/Images/ImageOpener.h>
+#include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Images/SubImage.h>
 #include <casacore/images/Images/TempImage.h>
@@ -243,39 +244,41 @@ template <typename T, typename U> void ImageUtilities::copyMask (
 }
 
 template <typename T> void ImageUtilities::openImage(
-	ImageInterface<T>*& pImage,
-	const String& fileName
+    ImageInterface<T>*& pImage,
+    const String& fileName
 ) {
     ThrowIf(
-		fileName.empty(),
-		"The image filename is empty"
-	);
-	File file(fileName);
-	ThrowIf(
-		! file.exists(),
-		"File '" + fileName + "' does not exist"
-	);
-	LatticeBase* lattPtr = ImageOpener::openImage (fileName);
+        fileName.empty(),
+        "The image filename is empty"
+    );
+    File file(fileName);
     ThrowIf(
-		! lattPtr,
-		"Image " + fileName + " cannot be opened; its type is unknown"
-	);
+        ! file.exists(),
+        "File '" + fileName + "' does not exist"
+    );
+    FITSImage::registerOpenFunction();
+    MIRIADImage::registerOpenFunction();
+    LatticeBase* lattPtr = ImageOpener::openImage (fileName);
+    ThrowIf(
+        ! lattPtr,
+        "Image " + fileName + " cannot be opened; its type is unknown"
+    );
     T x = 0;
     if (lattPtr->dataType() != whatType(&x)) {
-    	delete lattPtr;
+        delete lattPtr;
         ThrowCc(
-        	"Logic Error: " + fileName
-			+ " has a different data type than the data type of the requested object"
-		);
+            "Logic Error: " + fileName
+            + " has a different data type than the data type of the requested object"
+        );
     }
-	pImage = dynamic_cast<ImageInterface<T> *>(lattPtr);
-	if (pImage == 0) {
-		delete lattPtr;
-		ThrowCc(
-			"Unrecognized image data type, "
-			"presently only Float and Complex images are supported"
-		);
-	}
+    pImage = dynamic_cast<ImageInterface<T> *>(lattPtr);
+    if (pImage == 0) {
+        delete lattPtr;
+        ThrowCc(
+            "Unrecognized image data type, "
+            "presently only Float and Complex images are supported"
+        );
+    }
 }
 
 template <typename T> void ImageUtilities::openImage(
