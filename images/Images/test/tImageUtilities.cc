@@ -82,8 +82,7 @@ void doOpens()
       }
       {
          PtrHolder<ImageInterface<Float> > im;
-         //ImageUtilities::openImage(im, name2, os);
-	 os << "Skipping openImage() for fits.img because ImageOpener::openImage('fits.img') reports type is unknown.  Needs investigation." << LogIO::POST;
+         ImageUtilities::openImage(im, name2);
       }
    }
 //
