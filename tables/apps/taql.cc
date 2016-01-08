@@ -77,7 +77,7 @@ bool readLine (String& line, const String& prompt)
 {
   if (!prompt.empty()) cerr << prompt;
   getline (cin, line);
-  return cin;
+  return cin.good();
 }
 #endif
 
