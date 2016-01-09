@@ -55,6 +55,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  const String& obsExpr="",
 		  MSSelection *mss=NULL
 		  );
+
+  // Added feedExpr
+  Bool mssSetData2(const MeasurementSet& ms, 
+		  MeasurementSet& selectedMS,
+		  const String& outMSName="",
+		  const String& timeExpr="",
+		  const String& antennaExpr="",
+		  const String& fieldExpr="",
+		  const String& spwExpr="",
+		  const String& uvDistExpr="",
+		  const String& taQLExpr="",
+		  const String& polnExpr="",
+		  const String& scanExpr="",
+		  const String& arrayExpr="",
+		  const String& stateExpr="",
+		  const String& obsExpr="",
+		  const String& feedExpr="",
+		  MSSelection *mss=NULL
+		  );
+
+
   // Collective selection also returning in-row (corr/chan) slices
   Bool mssSetData(const MeasurementSet& ms, 
 		  MeasurementSet& selectedMS,
@@ -75,7 +96,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  const Int defaultChanStep=1,
 		  MSSelection *mss=NULL
 		  );
-  
+
+  // Added feedExpr
+  Bool mssSetData2(const MeasurementSet& ms, 
+		  MeasurementSet& selectedMS,
+		  Vector<Vector<Slice> >& chanSlices,
+		  Vector<Vector<Slice> >& corrSlices,
+		  const String& outMSName="",
+		  const String& timeExpr="",
+		  const String& antennaExpr="",
+		  const String& fieldExpr="",
+		  const String& spwExpr="",
+		  const String& uvDistExpr="",
+		  const String& taQLExpr="",
+		  const String& polnExpr="",
+		  const String& scanExpr="",
+		  const String& arrayExpr="",
+		  const String& stateExpr="",
+		  const String& obsExpr="",
+		  const String& feedExpr="",
+		  const Int defaultChanStep=1,
+		  MSSelection *mss=NULL
+		  );
+
   Bool getSelectedTable(Table& selectedTab,     const Table& baseTab,
 			TableExprNode& fullTEN,	const String& outName);
 
