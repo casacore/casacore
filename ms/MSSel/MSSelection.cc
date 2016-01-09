@@ -38,6 +38,7 @@
 #include <casacore/ms/MSSel/MSPolnGram.h>
 #include <casacore/ms/MSSel/MSStateGram.h>
 #include <casacore/ms/MSSel/MSObservationGram.h>
+#include <casacore/ms/MSSel/MSFeedGram.h>
 #include <casacore/ms/MeasurementSets/MSRange.h>
 #include <casacore/tables/TaQL/TableParse.h>
 #include <casacore/tables/TaQL/RecordGram.h>
@@ -72,8 +73,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     fullTEN_p(),ms_p(NULL),  antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
     polnExpr_p(""), taqlExpr_p(""), stateExpr_p(""), observationExpr_p(""),
-    exprOrder_p(MAX_EXPR, NO_EXPR), antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), 
-    spwIDs_p(), scanIDs_p(), arrayIDs_p(), ddIDs_p(), observationIDs_p(), baselineIDs_p(),
+    feedExpr_p(""), exprOrder_p(MAX_EXPR, NO_EXPR), antenna1IDs_p(), antenna2IDs_p(),
+    fieldIDs_p(), spwIDs_p(), scanIDs_p(), arrayIDs_p(), ddIDs_p(), observationIDs_p(),
+    feed1IDs_p(), feed2IDs_p(), baselineIDs_p(), feedPairIDs_p(),
     selectedTimesList_p(), selectedUVRange_p(),selectedUVUnits_p(),
     selectedPolMap_p(Vector<Int>(0)), selectedSetupMap_p(Vector<Vector<Int> >(0)),
     maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), 
@@ -101,14 +103,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			   const String& scanExpr,
 			   const String& arrayExpr,
 			   const String& stateExpr,
-			   const String& observationExpr):
+			   const String& observationExpr,
+			   const String& feedExpr):
     fullTEN_p(), ms_p(&ms), antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
     polnExpr_p(""),taqlExpr_p(""), stateExpr_p(""), observationExpr_p(""),
-    exprOrder_p(MAX_EXPR, NO_EXPR), antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), 
-    spwIDs_p(), scanIDs_p(),ddIDs_p(),baselineIDs_p(), selectedTimesList_p(),
-    selectedUVRange_p(),selectedUVUnits_p(),selectedPolMap_p(Vector<Int>(0)),
-    selectedSetupMap_p(Vector<Vector<Int> >(0)),
+    feedExpr_p(""), exprOrder_p(MAX_EXPR, NO_EXPR), antenna1IDs_p(), antenna2IDs_p(),
+    fieldIDs_p(), spwIDs_p(), scanIDs_p(),ddIDs_p(),baselineIDs_p(), feedPairIDs_p(),
+    selectedTimesList_p(), selectedUVRange_p(),selectedUVUnits_p(),
+    selectedPolMap_p(Vector<Int>(0)), selectedSetupMap_p(Vector<Vector<Int> >(0)),
     maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), 
     isMS_p(True), toTENCalled_p(False)
   {
@@ -134,7 +137,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  scanExpr,
 	  arrayExpr,
 	  stateExpr,
-	  observationExpr);
+	  observationExpr,
+      feedExpr);
   }
   
   
@@ -152,7 +156,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			  const String& scanExpr,
 			  const String& arrayExpr,
 			  const String& stateExpr,
-			  const String& observationExpr)
+			  const String& observationExpr,
+			  const String& feedExpr)
   {
     ms_p=msLike.asMS();
     isMS_p=msLike.isMS();
@@ -174,6 +179,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     setTaQLExpr(taqlExpr);
     setStateExpr(stateExpr);
     setObservationExpr(observationExpr);
+    setFeedExpr(feedExpr);
     //clearErrorHandlers();
 
     if (mode==PARSE_NOW)
@@ -191,7 +197,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			  const String& scanExpr,
 			  const String& arrayExpr,
 			  const String& stateExpr,
-			  const String& observationExpr)
+			  const String& observationExpr,
+			  const String& feedExpr)
   {
     //
     // Do not initialize the private string variables directly. Instead
@@ -212,6 +219,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     setTaQLExpr(taqlExpr);
     setStateExpr(stateExpr);
     setObservationExpr(observationExpr);
+    setFeedExpr(feedExpr);
 
     if (mode==PARSE_NOW)
       fullTEN_p = toTableExprNode(ms_p);
@@ -231,9 +239,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MSSelection::MSSelection(const Record& selectionItem) : 
     antennaExpr_p(""), fieldExpr_p(""), spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), 
     timeExpr_p(""), uvDistExpr_p(""), polnExpr_p(""),taqlExpr_p(""),stateExpr_p(""), 
-    observationExpr_p(""), antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), spwIDs_p(),
-    ddIDs_p(),baselineIDs_p(), selectedPolMap_p(Vector<Int>(0)), 
-    selectedSetupMap_p(Vector<Vector<Int> >(0))
+    observationExpr_p(""), feedExpr_p(""),
+    antenna1IDs_p(), antenna2IDs_p(), fieldIDs_p(), spwIDs_p(), ddIDs_p(),
+    feed1IDs_p(), feed2IDs_p(), baselineIDs_p(), feedPairIDs_p(),
+    selectedPolMap_p(Vector<Int>(0)), selectedSetupMap_p(Vector<Vector<Int> >(0))
     
   {
     // Construct from a record representing a selection item
@@ -277,6 +286,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       this->taqlExpr_p    = other.taqlExpr_p;
       this->polnExpr_p    = other.polnExpr_p;
       this->stateExpr_p   = other.stateExpr_p;
+      this->feedExpr_p    = other.feedExpr_p;
       this->exprOrder_p   = other.exprOrder_p;
     }
   }
@@ -302,6 +312,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       this->taqlExpr_p    = other.taqlExpr_p;
       this->polnExpr_p    = other.polnExpr_p;
       this->stateExpr_p   = other.stateExpr_p;
+      this->feedExpr_p    = other.feedExpr_p;
       this->exprOrder_p   = other.exprOrder_p;
       this->isMS_p        = other.isMS_p;
     }
@@ -382,6 +393,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     MSAntennaParse::cleanupErrorHandler();
     MSStateParse::cleanupErrorHandler();
     MSSpwParse::cleanupErrorHandler();
+    MSFeedParse::cleanupErrorHandler();
   }
   
   void MSSelection::deleteNodes()
@@ -458,6 +470,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    MSAntennaParse::thisMSAErrorHandler->reset();
 	  break;
 	}
+      case FEED_EXPR:
+	{
+	  if (MSFeedParse::thisMSFErrorHandler == NULL)
+	    {
+	      MSSelectionErrorHandler* tt = new MSSelectionErrorHandler();
+	      setErrorHandler(FEED_EXPR, tt, True);
+	    }
+	  else
+	    MSFeedParse::thisMSFErrorHandler->reset();
+	  break;
+	}
       case STATE_EXPR:
 	{
 	  if (MSStateParse::thisMSSErrorHandler == NULL)
@@ -519,6 +542,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     initErrorHandler(ANTENNA_EXPR);
     initErrorHandler(STATE_EXPR);
     initErrorHandler(SPW_EXPR);
+    initErrorHandler(FEED_EXPR);
 
     try
       {
@@ -601,6 +625,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  arrayIDs_p.resize(0);
 		  if(arrayExpr_p != "")
 		    node = msArrayGramParseCommand(ms, arrayExpr_p, arrayIDs_p, maxArray_p);
+		  break;
+		}
+	      case FEED_EXPR:
+		{
+		  if(feedExpr_p != "")
+		    feed1IDs_p.resize(0);
+            feed2IDs_p.resize(0);
+		    feedPairIDs_p.resize(0,2);
+		    node = msFeedGramParseCommand(ms, feedExpr_p, feed1IDs_p, feed2IDs_p,
+                    feedPairIDs_p);
 		  break;
 		}
 	      case UVDIST_EXPR:
@@ -750,6 +784,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    }
 	  break;
 	}
+      case FEED_EXPR:
+	{
+	  if (overRide)
+	    {
+	      if (mssEH == NULL) MSFeedParse::thisMSFErrorHandler = mssEH;
+	      else MSFeedParse::thisMSFErrorHandler = mssEH->clone();
+	    }
+	  else if (MSFeedParse::thisMSFErrorHandler == NULL)
+	    {
+	      if (mssEH == NULL) MSFeedParse::thisMSFErrorHandler = mssEH;
+	      else MSFeedParse::thisMSFErrorHandler = mssEH->clone();
+	    }
+	  break;
+	}
       case STATE_EXPR:
 	{
 	  if (overRide)
@@ -870,6 +918,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     setErrorHandler(STATE_EXPR,NULL,True);
     setErrorHandler(SPW_EXPR,NULL,True);
     setErrorHandler(ANTENNA_EXPR,NULL,True);
+    setErrorHandler(FEED_EXPR,NULL,True);
   }
   //----------------------------------------------------------------------------
   void MSSelection::clear(const MSExprType type)
@@ -951,7 +1000,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     return False;
   }
+
+  //----------------------------------------------------------------------------
   
+  Bool MSSelection::setFeedExpr(const String& feedExpr)
+  {
+    // Set the feed
+    // Input:
+    //    feedExpr       const String&  Supplementary feed expression
+    // Output to private data:
+    //    feedExpr_p     String         Supplementary feed expression
+    //
+    if(setOrder(FEED_EXPR))
+      {
+	feedExpr_p = feedExpr;
+	resetTEN();
+	return True;
+      }
+    
+    return False;
+  }
+
   //----------------------------------------------------------------------------
   
   Bool MSSelection::setFieldExpr(const String& fieldExpr)

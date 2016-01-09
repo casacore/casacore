@@ -29,6 +29,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/ms/MSSel/MSSelection.h>
+#include <casacore/ms/MSSel/MSSelectionTools.h>
 #include <string.h>
 #include <iostream>
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -99,6 +100,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  MSSelection *mymss
 		  )
   {
+      return mssSetData2(ms, selectedMS, outMSName, timeExpr, antennaExpr, fieldExpr,
+              spwExpr, uvDistExpr, taQLExpr, polnExpr, scanExpr, arrayExpr,
+              stateExpr, obsExpr, "", mymss);
+  }
+
+  Bool mssSetData2(const MeasurementSet& ms, 
+		  MeasurementSet& selectedMS,
+		  const String& outMSName,
+		  const String& timeExpr,
+		  const String& antennaExpr,
+		  const String& fieldExpr,
+		  const String& spwExpr,
+		  const String& uvDistExpr,
+		  const String& taQLExpr,
+		  const String& polnExpr,
+		  const String& scanExpr,
+		  const String& arrayExpr,
+		  const String& stateExpr,
+		  const String& obsExpr,
+		  const String& feedExpr,
+		  MSSelection *mymss
+		  )
+  {
     //
     // Parse the various expressions and produce the accmuluated TEN
     // internally.
@@ -113,7 +137,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	mss->reset(ms,MSSelection::PARSE_NOW,
 		   timeExpr,antennaExpr,fieldExpr,spwExpr,
 		   uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr,
-		   stateExpr, obsExpr);
+		   stateExpr, obsExpr, feedExpr);
 	//
 	// Apply the internal accumulated TEN to the MS and produce the
 	// selected MS.  
@@ -132,6 +156,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (mymss==NULL) delete mss;
     return rstat;
   }
+
   //
   //----------------------------------------------------------------------------
   //
@@ -155,6 +180,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  MSSelection *mymss
 		  )
   {
+      return mssSetData2(ms, selectedMS, chanSlices, corrSlices, outMSName, 
+              timeExpr, antennaExpr, fieldExpr, spwExpr, uvDistExpr,
+              taQLExpr, polnExpr, scanExpr, arrayExpr, stateExpr, 
+              obsExpr, "", defaultChanStep, mymss);
+  }
+
+
+  Bool mssSetData2(const MeasurementSet& ms, 
+		  MeasurementSet& selectedMS,
+		  Vector<Vector<Slice> >& chanSlices,
+		  Vector<Vector<Slice> >& corrSlices,
+		  const String& outMSName,
+		  const String& timeExpr,
+		  const String& antennaExpr,
+		  const String& fieldExpr,
+		  const String& spwExpr,
+		  const String& uvDistExpr,
+		  const String& taQLExpr,
+		  const String& polnExpr,
+		  const String& scanExpr,
+		  const String& arrayExpr,
+		  const String& stateExpr,
+		  const String& obsExpr,
+		  const String& feedExpr,
+		  const Int defaultChanStep,
+		  MSSelection *mymss
+		  )
+  {
     //
     // Parse the various expressions and produce the accmuluated TEN
     // internally.
@@ -168,7 +221,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	mss->reset(ms,MSSelection::PARSE_NOW,
 		   timeExpr,antennaExpr,fieldExpr,spwExpr,
 		   uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr,
-		   stateExpr, obsExpr);
+		   stateExpr, obsExpr, feedExpr);
 	//
 	// Apply the internal accumulated TEN to the MS and produce the
 	// selected MS.  
@@ -190,6 +243,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (mymss == NULL) delete mss;
     return rstat;
   }
+
   //
   //----------------------------------------------------------------------------
   //
@@ -223,6 +277,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Vector<Int> spwDDIDList=thisSelection.getSPWDDIDList();
     Vector<Int> stateIDList=thisSelection.getStateObsModeList();
     Vector<Int> observationIDList=thisSelection.getObservationList();
+    Vector<Int> feed1List=thisSelection.getFeed1List();
+    Vector<Int> feed2List=thisSelection.getFeed2List();
+    Vector<Int> feedPairList=thisSelection.getFeedPairList();
     OrderedMap<Int, Vector<Int > > polMap=thisSelection.getPolMap();
     OrderedMap<Int, Vector<Vector<Int> > > corrMap=thisSelection.getCorrMap();
     Vector<Int> allDDIDList;
@@ -242,6 +299,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     retval.define("dd",allDDIDList);
     retval.define("stateid",stateIDList);
     retval.define("observationid",observationIDList);
+    retval.define("feed1",feed1List);
+    retval.define("feed2",feed2List);
+    retval.define("feedpairs",feedPairList);
 
     return retval;
   }

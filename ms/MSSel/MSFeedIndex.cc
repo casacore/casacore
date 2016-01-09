@@ -33,6 +33,9 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/ms/MeasurementSets/MSFeed.h>
+#include <casacore/ms/MSSel/MSSelectionTools.h>
+#include <casacore/ms/MSSel/MSSelectionError.h>
+#include <casacore/ms/MSSel/MSFeedParse.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Quanta/MVAngle.h>
 #include <casacore/casa/Quanta/QLogical.h>
@@ -179,6 +182,23 @@ Vector<Int> MSFeedIndex::matchAntennaId (const Int& antennaId,
   return maskFeedIds.getCompressedArray();
 }
 
+Vector<Int> MSFeedIndex::matchFeedId(const Vector<Int>& sourceId)
+{
+    Vector<Int> feedIds = msFeedCols_p->feedId().getColumn();
+    Vector<Int> IDs = set_intersection(sourceId, feedIds);
+    if (IDs.nelements() == 0)
+      {
+        ostringstream mesg;
+        mesg << "No match found for requested feeds [ID(s): " << sourceId << "]";
+        // Use the error handler if defined, otherwise throw.
+        if (MSFeedParse::thisMSFErrorHandler) {
+          MSFeedParse::thisMSFErrorHandler->reportError ("", mesg.str());
+        } else {
+          throw (MSSelectionFeedParseError(mesg));
+        }
+      }
+    return IDs;
+}
 
 } //# NAMESPACE CASACORE - END
 
