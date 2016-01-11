@@ -134,7 +134,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     try
       {
-	mss->reset(ms,MSSelection::PARSE_NOW,
+	mss->reset2(ms,MSSelection::PARSE_NOW,
 		   timeExpr,antennaExpr,fieldExpr,spwExpr,
 		   uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr,
 		   stateExpr, obsExpr, feedExpr);
@@ -218,7 +218,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     try
       {
-	mss->reset(ms,MSSelection::PARSE_NOW,
+	mss->reset2(ms,MSSelection::PARSE_NOW,
 		   timeExpr,antennaExpr,fieldExpr,spwExpr,
 		   uvDistExpr,taQLExpr,polnExpr,scanExpr,arrayExpr,
 		   stateExpr, obsExpr, feedExpr);

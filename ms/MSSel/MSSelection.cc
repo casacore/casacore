@@ -87,6 +87,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     initErrorHandler(ANTENNA_EXPR);
     initErrorHandler(STATE_EXPR);
     initErrorHandler(SPW_EXPR);
+    initErrorHandler(FEED_EXPR);
   }
   
   //----------------------------------------------------------------------------
@@ -126,7 +127,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     initErrorHandler(ANTENNA_EXPR);
     initErrorHandler(STATE_EXPR);
     initErrorHandler(SPW_EXPR);
-    reset(ms,mode,
+    initErrorHandler(FEED_EXPR);
+    reset2(ms,mode,
 	  timeExpr,
 	  antennaExpr,
 	  fieldExpr,
@@ -143,8 +145,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   
   //----------------------------------------------------------------------------
-  
+
   void MSSelection::reset(MSSelectableTable& msLike,
+			  const MSSMode& mode,
+			  const String& timeExpr,
+			  const String& antennaExpr,
+			  const String& fieldExpr,
+			  const String& spwExpr,
+			  const String& uvDistExpr,
+			  const String& taqlExpr,
+			  const String& polnExpr,
+			  const String& scanExpr,
+			  const String& arrayExpr,
+			  const String& stateExpr,
+			  const String& observationExpr) {
+    reset2(msLike, mode, timeExpr, antennaExpr, fieldExpr, spwExpr,
+            uvDistExpr, taqlExpr, polnExpr, scanExpr, arrayExpr,
+            stateExpr, observationExpr, "");
+  }
+
+  void MSSelection::reset2(MSSelectableTable& msLike,
 			  const MSSMode& mode,
 			  const String& timeExpr,
 			  const String& antennaExpr,
@@ -185,7 +205,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (mode==PARSE_NOW)
       fullTEN_p = toTableExprNode(&msLike);
   }
+
   void MSSelection::reset(const MeasurementSet& ms,
+			  const MSSMode& mode,
+			  const String& timeExpr,
+			  const String& antennaExpr,
+			  const String& fieldExpr,
+			  const String& spwExpr,
+			  const String& uvDistExpr,
+			  const String& taqlExpr,
+			  const String& polnExpr,
+			  const String& scanExpr,
+			  const String& arrayExpr,
+			  const String& stateExpr,
+			  const String& observationExpr)
+  {
+    reset2(ms, mode, timeExpr, antennaExpr, fieldExpr, spwExpr,
+            uvDistExpr, taqlExpr, polnExpr, scanExpr, arrayExpr,
+            stateExpr, observationExpr, "");
+  }
+
+  void MSSelection::reset2(const MeasurementSet& ms,
 			  const MSSMode& mode,
 			  const String& timeExpr,
 			  const String& antennaExpr,
@@ -433,10 +473,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	 // (spwExpr_p != "")  ||         // Will be opened-up for CalTables in the future
 	 //(scanExpr_p != "")  ||
 	 //(observationExpr_p != "") || 
-	 (arrayExpr_p != "") || (uvDistExpr_p != "")      ||
-	 //(taqlExpr_p != "")  || 
-	 (polnExpr_p != "")        || 
-	 (stateExpr_p != "")
+	 (arrayExpr_p != "") || 
+     (uvDistExpr_p != "") ||
+	 //(taqlExpr_p != "") || 
+	 (polnExpr_p != "") || 
+	 (stateExpr_p != "") ||
+     (feedExpr_p != "")
 	 ))
       throw(MSSelectionError(String("MSSelection::toTableExprNode(MSSelectableTable*): "
 				    "Only field-, spw-, scan-, time- and antenna-selection is supported for CalTables")));
@@ -629,12 +671,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		}
 	      case FEED_EXPR:
 		{
-		  if(feedExpr_p != "")
+		  if(feedExpr_p != "") {
 		    feed1IDs_p.resize(0);
             feed2IDs_p.resize(0);
 		    feedPairIDs_p.resize(0,2);
 		    node = msFeedGramParseCommand(ms, feedExpr_p, feed1IDs_p, feed2IDs_p,
                     feedPairIDs_p);
+            }
 		  break;
 		}
 	      case UVDIST_EXPR:
@@ -841,6 +884,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	MSAntennaParse::thisMSAErrorHandler->handleError(msAntException);
       }
  
+    if (MSFeedParse::thisMSFErrorHandler->nMessages() > 0)
+      {
+	MSSelectionFeedParseError msFeedException(String(""));
+	MSFeedParse::thisMSFErrorHandler->handleError(msFeedException);
+      }
+ 
     if (MSStateParse::thisMSSErrorHandler->nMessages() > 0)
       {
 	MSSelectionStateParseError msStateException(String(""));
@@ -876,6 +925,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  exprIsNull = 
 	    (antennaExpr_p     == "") & 
+	    (feedExpr_p        == "") & 
 	    (fieldExpr_p       == "") & 
 	    (spwExpr_p         == "") &
 	    (scanExpr_p        == "") & 
@@ -892,6 +942,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	switch (type)
 	  {
 	  case ANTENNA_EXPR:     exprIsNull = (antennaExpr_p == "");break;
+	  case FEED_EXPR:        exprIsNull = (feedExpr_p    == "");break;
 	  case FIELD_EXPR:       exprIsNull = (fieldExpr_p   == "");break;
 	  case SPW_EXPR:         exprIsNull = (spwExpr_p     == "");break;
 	  case SCAN_EXPR:        exprIsNull = (scanExpr_p    == "");break;
@@ -926,6 +977,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (type==NO_EXPR)
       {
 	antennaExpr_p = "";
+	feedExpr_p = "";
 	fieldExpr_p   = "";
 	spwExpr_p     = "";
 	scanExpr_p    = "";
@@ -947,6 +999,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	      switch (type)
 		{
 		case ANTENNA_EXPR: antennaExpr_p = "";break;
+		case FEED_EXPR:    feedExpr_p    = "";break;
 		case FIELD_EXPR:   fieldExpr_p   = "";break;
 		case SPW_EXPR:     spwExpr_p     = "";break;
 		case SCAN_EXPR:    scanExpr_p    = "";break;
@@ -1225,6 +1278,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     switch (type)
       {
       case ANTENNA_EXPR:     exprStr = antennaExpr_p;break;
+      case FEED_EXPR:        exprStr = feedExpr_p;break;
       case FIELD_EXPR:       exprStr = fieldExpr_p;break;
       case SPW_EXPR:         exprStr = spwExpr_p;break;
       case SCAN_EXPR:        exprStr = scanExpr_p;break;
@@ -1417,6 +1471,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       setAntennaExpr(selectionItem.asString("antenna"));
       //    cout << antennaExpr_p << ", antenna" << endl;
     }
+
+    // Feed expression
+    if (definedAndSet(selectionItem,"feed")) {
+      setFieldExpr(selectionItem.asString("feed"));
+      //    cout << feedExpr_p << ", feed" << endl;
+    }
+
     // Field expression
     if (definedAndSet(selectionItem,"field")) {
       setFieldExpr(selectionItem.asString("field"));

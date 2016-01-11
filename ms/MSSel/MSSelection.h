@@ -508,14 +508,44 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	       const String& scanExpr        = "",
 	       const String& arrayExpr       = "",
 	       const String& stateExpr       = "",
+	       const String& observationExpr = "");
+
+    // Add feedExpr; keep old signature for backwards compatibility
+    void reset2(const MeasurementSet& ms,
+	       const MSSMode& mode           = PARSE_NOW,
+	       const String& timeExpr        = "",
+	       const String& antennaExpr     = "",
+	       const String& fieldExpr       = "",
+	       const String& spwExpr         = "",
+	       const String& uvDistExpr      = "",
+	       const String& taqlExpr        = "",
+	       const String& polnExpr        = "",
+	       const String& scanExpr        = "",
+	       const String& arrayExpr       = "",
+	       const String& stateExpr       = "",
 	       const String& observationExpr = "",
 	       const String& feedExpr        = "");
 
-    // This version of reset() works with generic MSSeletableTable
+    // This version of reset() works with generic MSSelectableTable
     // object.  Accessing the services of the MSSelection module via
     // this interface is recommended over the version of reset() that
     // uses MeasurementSet.
     void reset(MSSelectableTable& msLike,
+	       const MSSMode& mode           = PARSE_NOW,
+	       const String& timeExpr        = "",
+	       const String& antennaExpr     = "",
+	       const String& fieldExpr       = "",
+	       const String& spwExpr         = "",
+	       const String& uvDistExpr      = "",
+	       const String& taqlExpr        = "",
+	       const String& polnExpr        = "",
+	       const String& scanExpr        = "",
+	       const String& arrayExpr       = "",
+	       const String& stateExpr       = "",
+	       const String& observationExpr = "");
+
+    // Add feedExpr; keep old signature for backwards compatibility
+    void reset2(MSSelectableTable& msLike,
 	       const MSSMode& mode           = PARSE_NOW,
 	       const String& timeExpr        = "",
 	       const String& antennaExpr     = "",
