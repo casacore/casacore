@@ -1137,9 +1137,9 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, DataIterator
     		vector<uInt64>::const_iterator bCounts = iCountSet->begin();
     		vector<uInt64>::const_iterator iCounts = bCounts;
     		vector<uInt64>::const_iterator eCounts = iCountSet->end();
-    		uInt dataCount = 0;
-    		uInt prevDataCount = 0;
-    		uInt loopCount = 0;
+    		uInt64 dataCount = 0;
+    		uInt64 prevDataCount = 0;
+    		uInt64 loopCount = 0;
     		while (iIdx != eIdx) {
     			ThrowIf(iCounts == eCounts, "Logic Error: ran out of bins, accounting error");
     			dataCount += *iCounts;
@@ -1153,8 +1153,8 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, DataIterator
     				while(iIdx != eIdx && *iIdx < dataCount) {
     					// this loop takes into account that multiple indices
     					// could fall in the same bin
-    					uInt oldIdx = *iIdx;
-    					uInt newIdx = oldIdx - prevDataCount;
+    					uInt64 oldIdx = *iIdx;
+    					uInt64 newIdx = oldIdx - prevDataCount;
     					newDataIndices.insert(newIdx);
     					newToOld[newIdx] = oldIdx;
     					++iIdx;
