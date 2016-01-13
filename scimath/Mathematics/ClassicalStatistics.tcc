@@ -1139,7 +1139,7 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, DataIterator
     		vector<uInt64>::const_iterator eCounts = iCountSet->end();
     		uInt64 dataCount = 0;
     		uInt64 prevDataCount = 0;
-    		uInt loopCount = 0;
+    		uInt64 loopCount = 0;
     		while (iIdx != eIdx) {
     			ThrowIf(iCounts == eCounts, "Logic Error: ran out of bins, accounting error");
     			dataCount += *iCounts;
