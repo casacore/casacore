@@ -141,8 +141,8 @@ void testIt(MSMetaData& md) {
 	scanKey.obsID = 0;
 	scanKey.arrayID = 0;
 	for (
-			std::set<Int>::const_iterator scanNum = scans.begin();
-			scanNum!=scans.end(); ++scanNum
+		std::set<Int>::const_iterator scanNum = scans.begin();
+		scanNum!=scans.end(); ++scanNum
 	) {
 		scanKey.scan = *scanNum;
 		std::set<String> intents = md.getIntentsForScan(scanKey);
@@ -2174,6 +2174,90 @@ void testIt(MSMetaData& md) {
             	else {
             		AlwaysAssert(keys.find(expec) != keys.end(), AipsError);
             	}
+        	}
+        }
+        {
+        	cout << "*** test getIntentsForSubScan()" << endl;
+        	ArrayKey arrayKey;
+        	arrayKey.obsID = 0;
+        	arrayKey.arrayID = 0;
+        	std::set<SubScanKey> sskeys = md.getSubScanKeys(arrayKey);
+        	std::set<SubScanKey>::const_iterator ssiter = sskeys.begin();
+        	std::set<SubScanKey>::const_iterator ssend = sskeys.end();
+
+        	for (; ssiter!=ssend; ++ssiter) {
+        		std::set<String> intents = md.getIntentsForSubScan(*ssiter);
+        		std::set<String> exp;
+        		Int scan = ssiter->scan;
+        		if (scan == 1 || scan == 5 || scan == 8) {
+        			String mystr[] = {
+        				"CALIBRATE_POINTING#ON_SOURCE", "CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+2);
+        		}
+        		else if (scan == 2) {
+        			String mystr[] = {
+        				"CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE",
+						"CALIBRATE_SIDEBAND_RATIO#ON_SOURCE",
+						"CALIBRATE_WVR#OFF_SOURCE",
+						"CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+4);
+        		}
+        		else if (
+        			scan == 3 || scan == 6
+					|| scan == 9 || scan == 11
+					|| scan == 13 || scan == 15
+					|| scan == 17 || scan == 19
+					|| scan == 22 || scan == 24
+					|| scan == 26 || scan == 29
+					|| scan == 31
+        		) {
+        			String mystr[] = {
+        				"CALIBRATE_ATMOSPHERE#OFF_SOURCE",
+						"CALIBRATE_ATMOSPHERE#ON_SOURCE",
+						"CALIBRATE_WVR#OFF_SOURCE",
+						"CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+4);
+        		}
+        		else if (scan == 4) {
+        			String mystr[] = {
+        				"CALIBRATE_BANDPASS#ON_SOURCE",
+						"CALIBRATE_PHASE#ON_SOURCE",
+						"CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+3);
+        		}
+        		else if (scan == 7) {
+        			String mystr[] = {
+        				"CALIBRATE_AMPLI#ON_SOURCE",
+						"CALIBRATE_PHASE#ON_SOURCE",
+						"CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+3);
+        		}
+        		else if (
+        			scan == 10 || scan == 14
+					|| scan == 18 || scan == 21
+					|| scan == 25 || scan == 28
+					|| scan == 32
+        		) {
+        			String mystr[] = {
+        				"CALIBRATE_PHASE#ON_SOURCE",
+						"CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+2);
+        		}
+        		else if (
+        			scan == 12 || scan == 16
+					|| scan == 20 || scan == 23
+					|| scan == 27 || scan == 30
+        		) {
+        			exp.insert("OBSERVE_TARGET#ON_SOURCE");
+        		}
+        		uniqueIntents.insert(exp.begin(), exp.end());
+        		AlwaysAssert(intents == exp, AipsError);
         	}
         }
         {

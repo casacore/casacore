@@ -355,8 +355,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 		uInt subsetscan = 0;
 		Int lastscan = 0;
 		for (; siter != send; ++siter) {
-			// ms table at this scan
-			// Table t(stiter.table());
 			MSMetaData::SubScanProperties props = _msmd->getSubScanProperties(*siter);
 			Int nrow = props.nrows;
 
@@ -426,7 +424,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 					os << intToScanMap[*spwiter];
 				}
 				os << "] ";
-				std::set<String> intents = _msmd->getIntentsForScan(scan);
+				std::set<String> intents = _msmd->getIntentsForSubScan(*siter);
 				if (! intents.empty()) {
 					os << intents;
 				}

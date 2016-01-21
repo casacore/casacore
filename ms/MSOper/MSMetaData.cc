@@ -710,6 +710,56 @@ std::map<ScanKey, std::set<Int> > MSMetaData::_getScanToStatesMap() const {
 	return myScanToStatesMap;
 }
 
+void MSMetaData::_getSubScansAndIntentsMaps(
+	map<SubScanKey, std::set<String> >& subScanToIntentsMap,
+	map<String, std::set<SubScanKey> >& intentToSubScansMap
+) const {
+	// This method is responsible for setting _subScanToIntentsMap and _intentToSubScansMap
+	if (! _subScanToIntentsMap.empty() && ! _intentToSubScansMap.empty()) {
+		subScanToIntentsMap = _subScanToIntentsMap;
+		intentToSubScansMap = _intentToSubScansMap;
+		return;
+	}
+	subScanToIntentsMap.clear();
+	intentToSubScansMap.clear();
+	if (_ms->state().nrow() == 0) {
+		// because the decision was made to support MSes with non-existent STATE tables
+		std::set<SubScanKey> sskeys = _getSubScanKeys();
+		std::set<SubScanKey>::const_iterator ssiter = sskeys.begin();
+		std::set<SubScanKey>::const_iterator ssend = sskeys.end();
+		for (; ssiter!=ssend; ++ssiter) {
+			subScanToIntentsMap[*ssiter] = std::set<String>();
+		}
+	}
+	else {
+		vector<std::set<String> > stateToIntentsMap;
+		std::set<String> uniqueIntents;
+		_getStateToIntentsMap(stateToIntentsMap, uniqueIntents);
+		map<SubScanKey, MSMetaData::SubScanProperties> props = _getSubScanProperties();
+		map<SubScanKey, MSMetaData::SubScanProperties>::const_iterator iter = props.begin();
+		map<SubScanKey, MSMetaData::SubScanProperties>::const_iterator end = props.end();
+		for (; iter!=end; ++iter) {
+			SubScanKey sskey = iter->first;
+			std::set<Int> stateIDs = iter->second.stateIDs;
+			std::set<Int>::const_iterator siter = stateIDs.begin();
+			std::set<Int>::const_iterator send = stateIDs.end();
+			for (; siter!=send; ++siter) {
+				std::set<String> intents = stateToIntentsMap[*siter];
+				subScanToIntentsMap[sskey].insert(intents.begin(), intents.end());
+				std::set<String>::const_iterator initer = intents.begin();
+				std::set<String>::const_iterator inend = intents.end();
+				for (; initer!=inend; ++initer) {
+					intentToSubScansMap[*initer].insert(sskey);
+				}
+			}
+		}
+	}
+	if (_cacheUpdated(_sizeof(subScanToIntentsMap) + _sizeof(intentToSubScansMap))) {
+		_subScanToIntentsMap = subScanToIntentsMap;
+		_intentToSubScansMap = intentToSubScansMap;
+	}
+}
+
 void MSMetaData::_getScansAndIntentsMaps(
 	std::map<ScanKey, std::set<String> >& scanToIntentsMap,
 	std::map<String, std::set<ScanKey> >& intentToScansMap
@@ -900,6 +950,19 @@ std::set<String> MSMetaData::getIntentsForScan(const ScanKey& scan) const {
 		intentToScansMap
 	);
 	return scanToIntentsMap[scan];
+}
+
+std::set<String> MSMetaData::getIntentsForSubScan(
+	const SubScanKey& subScan
+) const {
+	_checkSubScan(subScan);
+	std::map<SubScanKey, std::set<String> > subScanToIntentsMap;
+	std::map<String, std::set<SubScanKey> > intentToSubScansMap;
+	_getSubScansAndIntentsMaps(
+		subScanToIntentsMap,
+		intentToSubScansMap
+	);
+	return subScanToIntentsMap[subScan];
 }
 
 Bool MSMetaData::_cacheUpdated(const Float incrementInBytes) const {
