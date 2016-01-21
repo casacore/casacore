@@ -1734,10 +1734,9 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         ROMSFeedColumns feedCols(feedTable);
         ArrayColumn<String> inpoltype(feedCols.polarizationType());
         ScalarColumn<Int> inantid(feedCols.antennaId());
+        ArrayQuantColumn<Double> receptorAngle(feedCols.receptorAngleQuant());
 
-        FITSTableWriter writer(output, desc, strlengths, nant, header, units,
-                False);
-
+        FITSTableWriter writer(output, desc, strlengths, nant, header, units, False);
         RecordFieldPtr<String> anname(writer.row(), "ANNAME");
         RecordFieldPtr<Array<Double> > stabxyz(writer.row(), "STABXYZ");
         RecordFieldPtr<Array<Double> > orbparm(writer.row(), "ORBPARM");
@@ -1756,41 +1755,9 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         // Set the ones we're not going to change once
         *orbparm = 0.0;
         *poltya = " ";
-        *polaa = 0.0;
         *polcala = 0.0;
         *poltyb = " ";
-        *polab = 0.0;
         *polcalb = 0.0;
-
-        /*
-         Block<Int> id(nant);
-         Bool useAntName = True;
-         for (uInt a = 0; a < nant; a++) {
-         String antName = antid(a) ;   // antid here is from the NAME column
-
-         // For *VLA*, may need to strip off leading VA or EA
-         if (arrayName.contains("VLA")) {
-         if (!antName.matches(RXint))
-         antName=antName.after("A");
-         }
-
-         // Attempt to interpret as an integer
-         if (antName.matches(RXint) ) {
-         id[a] = atoi(antName.chars());
-         }
-         else {
-         useAntName = False;
-         break;
-         }
-         }
-         // at least one antenna name failed to resolve as a number,
-         //   so punt and use indices+1
-         if (useAntName == False) {
-         for (uInt a = 0; a < nant; a++) {
-         id[a] = a + 1; // 1 relative antenna numbers in FITS
-         }
-         }
-         */
 
         Vector<Int> id;
         handleAntNumbers(ms, id);
@@ -1818,10 +1785,12 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
             Vector<Double> corstabxyz = antpos.getValue().getValue() - arraypos;
 
             // Do UVFITS-dependent position corrections:
-            if (doRot)
+            if (doRot) {
                 corstabxyz = product(posRot, corstabxyz);
-            if (doRefl)
+            }
+            if (doRefl) {
                 corstabxyz(1) = -corstabxyz(1);
+            }
             *stabxyz = corstabxyz;
 
             *nosta = id[antnum];
@@ -1829,17 +1798,23 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
             // MS has "EQUATORIAL", "ALT-AZ", "X-Y",  "SPACE-HALCA" 
             if (mount.contains("ALT-AZ")) {
                 *mntsta = 0;
-            } else if (mount.contains("EQUATORIAL")) {
+            }
+            else if (mount.contains("EQUATORIAL")) {
                 *mntsta = 1;
-            } else if (mount.contains("ORBIT")) {
+            }
+            else if (mount.contains("ORBIT")) {
                 *mntsta = 2;
-            } else if (mount.contains("X-Y")) {
+            }
+            else if (mount.contains("X-Y")) {
                 *mntsta = 3;
-            } else if (mount.contains("SPACE-HALCA")) {
+            }
+            else if (mount.contains("SPACE-HALCA")) {
                 *mntsta = 7;
-            } else if (mount.contains("BIZARRE")) {
+            }
+            else if (mount.contains("BIZARRE")) {
                 *mntsta = 4; // 5, 6
-            } else {
+            }
+            else {
                 *mntsta = 7; // fits does not use anyway, put it 7
             }
             *staxof = inantoffset(antnum)(IPosition(1, 0));
@@ -1855,11 +1830,15 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
                 if (Int(antnum) == inantid(i)) {
                     found = True;
                     Vector<String> poltypes = inpoltype(i);
+                    Vector<Quantity> ra;
+                    receptorAngle.get(i, ra);
                     if (poltypes.nelements() >= 1) {
                         *poltya = poltypes(0);
+                        *polaa = ra[0].getValue("deg");
                     }
                     if (poltypes.nelements() >= 2) {
                         *poltyb = poltypes(1);
+                        *polab = ra[1].getValue("deg");
                     }
                 }
             }
