@@ -11,6 +11,7 @@ MSFieldGram
 MSObservationGram
 MSScanGram
 MSSpwGram
+MSSpwGramPP
 MSTimeGram
 MSUvDistGram
 MSStateGram
@@ -104,6 +105,7 @@ MSSel/MSSelectionTools.cc
 MSSel/MSSelector.cc
 MSSel/MSSourceIndex.cc
 MSSel/MSSpwGram.cc
+MSSel/MSSpwGramPP.cc
 MSSel/MSSpwIndex.cc
 MSSel/MSSpWindowIndex.cc
 MSSel/MSSpwParse.cc
@@ -142,6 +144,8 @@ ${BISON_MSObservationGram_OUTPUTS}
 ${FLEX_MSObservationGram_OUTPUTS}
 ${BISON_MSSpwGram_OUTPUTS}
 ${FLEX_MSSpwGram_OUTPUTS}
+${BISON_MSSpwGramPP_OUTPUTS}
+${FLEX_MSSpwGramPP_OUTPUTS}
 ${BISON_MSTimeGram_OUTPUTS}
 ${FLEX_MSTimeGram_OUTPUTS}
 ${BISON_MSUvDistGram_OUTPUTS}
@@ -271,6 +275,7 @@ MSSel/MSSelUtil2.h
 MSSel/MSSelUtil2.tcc
 MSSel/MSSourceIndex.h
 MSSel/MSSpwGram.h
+MSSel/MSSpwGramPP.h
 MSSel/MSSpwIndex.h
 MSSel/MSSpWindowIndex.h
 MSSel/MSSpwParse.h

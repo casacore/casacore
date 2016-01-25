@@ -30,7 +30,7 @@
 #include <casacore/ms/MSSel/MSAntennaGram.h>
 #include <casacore/ms/MSSel/MSCorrGram.h>
 #include <casacore/ms/MSSel/MSFieldGram.h>
-#include <casacore/ms/MSSel/MSSpwGram.h>
+#include <casacore/ms/MSSel/MSSpwGramPP.h>
 #include <casacore/ms/MSSel/MSScanGram.h>
 #include <casacore/ms/MSSel/MSArrayGram.h>
 #include <casacore/ms/MSSel/MSTimeGram.h>
@@ -390,7 +390,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     msCorrGramParseDeleteNode();
     msFieldGramParseDeleteNode();
     //    msScanGramParseDeleteNode();
-    msSpwGramParseDeleteNode();
+    msSpwGramPPParseDeleteNode();
     msTimeGramParseDeleteNode();
     msUvDistGramParseDeleteNode();
     msStateGramParseDeleteNode();
@@ -569,11 +569,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		    {
 		      TableExprNode colAsTEN = msLike->col(msLike->columnName(MS::DATA_DESC_ID));
 		      spwIDs_p.resize(0);
-		      if (msSpwGramParseCommand(msLike->spectralWindow(), 
+		      if (msSpwGramPPParseCommand(msLike->spectralWindow(), 
 						msLike->dataDescription(),
 						colAsTEN, spwExpr_p,
 						spwIDs_p, chanIDs_p,spwDDIDs_p) == 0)
-			node = *(msSpwGramParseNode());
+			node = *(msSpwGramPPParseNode());
 		    }
 		  break;
 		}
