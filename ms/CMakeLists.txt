@@ -7,6 +7,7 @@ parser_inputs
 MSAntennaGram
 MSArrayGram
 MSCorrGram
+MSFeedGram
 MSFieldGram
 MSObservationGram
 MSScanGram
@@ -80,7 +81,9 @@ MSSel/MSCorrGram.cc
 MSSel/MSCorrParse.cc
 MSSel/MSDataDescIndex.cc
 MSSel/MSDopplerIndex.cc
+MSSel/MSFeedGram.cc
 MSSel/MSFeedIndex.cc
+MSSel/MSFeedParse.cc
 MSSel/MSFieldGram.cc
 MSSel/MSFieldIndex.cc
 MSSel/MSFieldParse.cc
@@ -136,6 +139,8 @@ ${BISON_MSArrayGram_OUTPUTS}
 ${FLEX_MSArrayGram_OUTPUTS}
 ${BISON_MSCorrGram_OUTPUTS}
 ${FLEX_MSCorrGram_OUTPUTS}
+${BISON_MSFeedGram_OUTPUTS}
+${FLEX_MSFeedGram_OUTPUTS}
 ${BISON_MSFieldGram_OUTPUTS}
 ${FLEX_MSFieldGram_OUTPUTS}
 ${BISON_MSScanGram_OUTPUTS}

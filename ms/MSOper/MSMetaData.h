@@ -141,6 +141,8 @@ public:
 
 	std::set<String> getIntentsForScan(const ScanKey& scan) const;
 
+	std::set<String> getIntentsForSubScan(const SubScanKey& subScan) const;
+
 	// get all intents, in no particular (nor guaranteed) order.
 	std::set<String> getIntents() const;
 
@@ -559,14 +561,14 @@ private:
 	mutable vector<uInt> _dataDescIDToSpwMap, _dataDescIDToPolIDMap;
 	std::map<Int, std::set<uInt> > _fieldToSpwMap;
 	mutable std::map<ScanKey, std::set<Int> > _scanToStatesMap, _scanToFieldsMap, _scanToAntennasMap;
-	mutable std::map<Int, std::set<Int> >	_fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap /*,
-		_arrayToScansMap, _scanToAntennasMap */;
+	mutable std::map<Int, std::set<Int> >	_fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap;
 	mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
 	mutable std::map<String, uInt> _antennaNameToIDMap;
 	mutable std::map<SubScanKey, SubScanProperties> _subScanProperties;
 
 	mutable std::map<String, std::set<Int> > _intentToFieldIDMap;
 	mutable std::map<String, std::set<ScanKey> > _intentToScansMap;
+	mutable std::map<String, std::set<SubScanKey> > _intentToSubScansMap;
 	mutable std::map<ScanKey, std::pair<Double, Double> > _scanToTimeRangeMap;
 	mutable std::map<std::pair<ScanKey, uInt>, Double> _scanSpwToIntervalMap;
 	mutable std::map<std::pair<ScanKey, uInt>, std::set<Double> > _scanSpwToTimesMap;
@@ -580,6 +582,7 @@ private:
 
 	mutable SHARED_PTR<vector<uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
  	mutable std::map<ScanKey, std::set<String> > _scanToIntentsMap;
+ 	mutable std::map<SubScanKey, std::set<String> > _subScanToIntentsMap;
 	mutable vector<std::set<String> > _stateToIntentsMap, _spwToIntentsMap, _fieldToIntentsMap;
 	mutable vector<SpwProperties> _spwInfo;
 	mutable vector<std::set<Int> > _spwToFieldIDsMap, _obsToArraysMap;
@@ -841,6 +844,11 @@ private:
 	vector<String> _getStationNames();
 
 	std::map<SubScanKey, SubScanProperties> _getSubScanProperties() const;
+
+	void _getSubScansAndIntentsMaps(
+		std::map<SubScanKey, std::set<String> >& subScanToIntentsMap,
+		std::map<String, std::set<SubScanKey> >& intentToSubScansMap
+	) const;
 
 	std::set<SubScanKey> _getSubScanKeys() const;
 
