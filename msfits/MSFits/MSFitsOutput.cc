@@ -1755,8 +1755,10 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         // Set the ones we're not going to change once
         *orbparm = 0.0;
         *poltya = " ";
+        *polaa = 0.0;
         *polcala = 0.0;
         *poltyb = " ";
+        *polab = 0.0;
         *polcalb = 0.0;
 
         Vector<Int> id;
