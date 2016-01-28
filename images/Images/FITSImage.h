@@ -219,8 +219,11 @@ public:
   // Check class invariants.
   virtual Bool ok() const;
 
-  // Return the (internal) data type (TpFloat or TpShort).
-  DataType dataType () const
+  // Return the data type (TpFloat).
+  virtual DataType dataType() const;
+
+  // Return the (internal) data type.
+  DataType internalDataType() const
     { return dataType_p; }
 
   // Return the HDU number
