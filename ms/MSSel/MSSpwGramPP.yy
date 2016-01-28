@@ -83,6 +83,7 @@
   #include <limits.h>
   int MSSpwGramPPlex (YYSTYPE*);
   ostringstream MSSpwGramPPStrTok;
+  string delim="";
   void checkSpwPPError(Vector<Int>& list, ostringstream& msg, const char *token)
   {
     if (list.nelements() == 0)
@@ -106,7 +107,7 @@ SpwStatement: FullExpr
                 {
 		  $$=MSSpwParse::thisMSSParser->endOfCeremony(*($1));
 		  getTT()="";
-		  cerr << MSSpwGramPPStrTok.str() << endl;MSSpwGramPPStrTok.str("");MSSpwGramPPStrTok.clear();
+		  cerr << "### " << MSSpwGramPPStrTok.str() << endl;MSSpwGramPPStrTok.str("");MSSpwGramPPStrTok.clear();
 		}
             | LPAREN FullExpr RPAREN 
 	       {$$ = $2;}
@@ -449,7 +450,8 @@ FullSpec: Spw
 	      // 	  MSSpwGramPPStrTok << (*($1))[i] << ",";
 	      // 	MSSpwGramPPStrTok << (*($1))[N-1];
 	      // }
-	      getTT() += " # ";
+	      getTT() += "# ";
+	      delim = " # ";
 	      // {
 	      // 	int N=(*($3)).nelements();
 	      // 	for (int i=0; i<(N-1);i++)
@@ -488,6 +490,6 @@ FullSpec: Spw
 	    }
 ;
 FullExpr: FullSpec        {} 
-| FullExpr SEMICOLON FullSpec   { MSSpwGramPPStrTok << getTT() ;getTT()="";}
+| FullExpr SEMICOLON FullSpec   { MSSpwGramPPStrTok << delim << getTT();delim="";getTT()="";}
 ;
 %%
