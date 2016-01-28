@@ -123,15 +123,31 @@ Bool MeasIERS::get(Double &returnValue,
       return False;
     }
   }
+
   // Interpolation fraction
   Int indx = Int(date - ldat[which][0][0]);
+
+  // old version in use up to Jan 2016
+  // if (indx >= 0  &&  indx < Int(ldat[which][0].size())-1) {
+  //   Double f = date - ldat[which][0][indx];
+  //   returnValue = ldat[which][type][indx+1]*f - ldat[which][type][indx]*(f-1.0);
+  //   return True;
+  // }
+
   if (indx >= 0  &&  indx < Int(ldat[which][0].size())-1) {
-    Double f = date - ldat[which][0][indx];
-    returnValue = ldat[which][type][indx+1]*f - ldat[which][type][indx]*(f-1.0);
+    Double f = date - ldat[which][0][indx]; // Fraction
+    Double vlo = ldat[which][type][indx]; // Get daily values
+    Double vhi = ldat[which][type][indx+1];
+    if (abs(vhi-vlo) > 0.5) { // Jump
+      vhi -= sign(vhi-vlo); // Remove jump
+    }
+    returnValue = vhi*f - vlo*(f-1.0);
     return True;
   }
+
   return False;
 }
+
 
 void MeasIERS::initMeas() {
   static const String names[MeasIERS::N_Types] = {

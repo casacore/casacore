@@ -297,147 +297,147 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
                 }
             }
         }
-    } else {
+    }
+    else {
         itsLog << LogOrigin("MSFitsInput", "MSFitsInput")
                << "Failed to open fits file " << fitsFile << LogIO::EXCEPTION;
     }
 }
 
 void MSFitsInput::readRandomGroupUVFits(Int obsType) {
-        itsLog << LogOrigin("MSFitsInput", __func__)
-               << LogIO::POST;
-        Int nField = 0, nSpW = 0;
-        useAltrval = False;
-        getPrimaryGroupAxisInfo();
+    itsLog << LogOrigin("MSFitsInput", __func__)
+		        << LogIO::POST;
+    Int nField = 0, nSpW = 0;
+    useAltrval = False;
+    getPrimaryGroupAxisInfo();
 
-        Bool useTSM = True;
+    Bool useTSM = True;
 
-        setupMeasurementSet(msFile_p, useTSM, obsType);
+    setupMeasurementSet(msFile_p, useTSM, obsType);
 
-        // fill the OBSERVATION table
-        fillObsTables();
+    // fill the OBSERVATION table
+    fillObsTables();
 
-        Int totMem = HostInfo::memoryTotal();
+    Int totMem = HostInfo::memoryTotal();
 
-        // 8 bytes per complex number and the other data like flag, weight is
-        // is 1/2 of the total
-        Int estMem = priGroup_p.gcount() * max(1, nIF_p) / 1024 * nPixel_p(
-                getIndex(coordType_p, "STOKES")) * nPixel_p(getIndex(
-                coordType_p, "FREQ")) * 8 * 2;
-        Int ns = max(1, nIF_p);
-        Int nc = nPixel_p( getIndex(coordType_p, "STOKES"));
-        Int nf = nPixel_p( getIndex(coordType_p, "FREQ"));
-        long estStor = priGroup_p.gcount() * ns / 1024 * 
-             (7 * 8 + 11 * 4 + (2 * nc + 3 * nc * nf) * 4 + nc * nf + 1);
-        float needS = estStor / 1024. ;
-        Directory curD(msFile_p);
-        float freeS = curD.freeSpaceInMB();
- 
-        itsLog << LogOrigin("MSFitsInput", __func__)
-               << ((needS > freeS) ? LogIO::WARN : LogIO::DEBUG1) 
-               << "Estimate of Needed Storage Space in MB: " 
-               << 0.9 * needS << "~" << 1.6 * needS 
-               << "\n                      Free Space in MB: " << freeS 
-               << LogIO::POST;
+    // 8 bytes per complex number and the other data like flag, weight is
+    // is 1/2 of the total
+    Int estMem = priGroup_p.gcount() * max(1, nIF_p) / 1024
+        * nPixel_p(getIndex(coordType_p, "STOKES"))
+        * nPixel_p(getIndex(coordType_p, "FREQ")) * 8 * 2;
+    Int ns = max(1, nIF_p);
+    Int nc = nPixel_p( getIndex(coordType_p, "STOKES"));
+    Int nf = nPixel_p( getIndex(coordType_p, "FREQ"));
+    Long estStor = priGroup_p.gcount() * ns / 1024
+        * (7 * 8 + 11 * 4 + (2 * nc + 3 * nc * nf) * 4 + nc * nf + 1);
+    Float needS = estStor / 1024. ;
+    Directory curD(msFile_p);
+    Float freeS = curD.freeSpaceInMB();
 
-        // In reality it can be twice that number
-        // We can remove the estMem limit of 1 Gbyte, below,
-        // if we are fully in 64 bits world
-        //
+    itsLog << LogOrigin("MSFitsInput", __func__)
+        << ((needS > freeS) ? LogIO::WARN : LogIO::DEBUG1)
+        << "Estimate of Needed Storage Space in MB: "
+        << 0.9 * needS << "~" << 1.6 * needS
+        << "\n                      Free Space in MB: " << freeS
+        << LogIO::POST;
 
-        // fill the main table
-        if ((estMem < totMem) && (estMem < 1000000)) {
-            //fill column wise and keep columns in memory
-            try {
-                fillMSMainTableColWise(nField, nSpW);
-            }
-            catch(const AipsError& ex) {
-                itsLog << LogOrigin("MSFitsInput", __func__)
-                   << ex.getMesg() 
-                   << LogIO::EXCEPTION;
-            }
-        } else {
-            //else fill row wise
-            try {
-                fillMSMainTable(nField, nSpW);
-            }
-            catch(const AipsError& ex) {
-                itsLog << LogOrigin("MSFitsInput", __func__)
-                   << ex.getMesg() 
-                   << LogIO::EXCEPTION;
-            }
+    // In reality it can be twice that number
+    // We can remove the estMem limit of 1 Gbyte, below,
+    // if we are fully in 64 bits world
+    //
+
+    // fill the main table
+    if ((estMem < totMem) && (estMem < 1000000)) {
+        //fill column wise and keep columns in memory
+        try {
+            fillMSMainTableColWise(nField, nSpW);
         }
-        // now handle the BinaryTable extensions for the subtables
-        Bool haveAn = False, haveField = False, haveSpW = False;
-        while (infile_p->rectype() != FITS::EndOfFile && !infile_p->err()) {
-            if (infile_p->hdutype() != FITS::BinaryTableHDU) {
-                itsLog << LogOrigin("MSFitsInput", __func__)
-                       << LogIO::NORMAL << "Skipping unhandled extension"
-                       << LogIO::POST;
-                infile_p->skip_hdu();
-            } else {
-                BinaryTable binTab(*infile_p);
-                // see if we can recognize the type
-                String type = binTab.extname();
-                itsLog << LogOrigin("MSFitsInput", __func__)
-                       << LogIO::DEBUG1 << "Found binary table of type "
-                       << type << " following data" << LogIO::POST;
-                itsLog << LogOrigin("MSFitsInput", __func__)
-                       << LogIO::NORMAL
-                       << "extname=" << type << " nrows=" << binTab.nrows()
-                       << " ncols=" << binTab.ncols() << " rowsize=" << binTab.rowsize() 
-                       << " pcount=" << binTab.pcount() << " gcount=" << binTab.gcount()
-                       << LogIO::POST;
-                if (type.contains("AN") && !haveAn) {
-                    haveAn = True;
-                    fillAntennaTable(binTab);
-                } else if (type.contains("FQ") && !haveSpW) {
-                    haveSpW = True;
-                    fillSpectralWindowTable(binTab, nSpW);
-
-                } else if (type.contains("SU") && !haveField) {
-                    haveField = True;
-                    fillFieldTable(binTab, nField);
-                    setFreqFrameVar(binTab);
-                    //in case spectral window was already filled
-                    if (haveSpW) {
-                        updateSpectralWindowTable();
-                    }
-                } else {
-                    itsLog << LogOrigin("MSFitsInput", __func__)
-                           << LogIO::NORMAL
-                           << "Skipping table, duplicate or unrecognized type: "
-                           << type << LogIO::POST;
-                    //    binTab.fullTable("", Table::Scratch); // infile.skip_hdu();
-                    binTab.fullTable();
+        catch(const AipsError& ex) {
+            itsLog << LogOrigin("MSFitsInput", __func__)
+		        << ex.getMesg()
+		        << LogIO::EXCEPTION;
+        }
+    }
+    else {
+        //else fill row wise
+        try {
+            fillMSMainTable(nField, nSpW);
+        }
+        catch(const AipsError& ex) {
+            itsLog << LogOrigin("MSFitsInput", __func__)
+               << ex.getMesg()
+               << LogIO::EXCEPTION;
+        }
+    }
+    // now handle the BinaryTable extensions for the subtables
+    Bool haveAn = False, haveField = False, haveSpW = False;
+    while (infile_p->rectype() != FITS::EndOfFile && !infile_p->err()) {
+        if (infile_p->hdutype() != FITS::BinaryTableHDU) {
+            itsLog << LogOrigin("MSFitsInput", __func__)
+	            << LogIO::NORMAL << "Skipping unhandled extension"
+	            << LogIO::POST;
+            infile_p->skip_hdu();
+        }
+        else {
+            BinaryTable binTab(*infile_p);
+            // see if we can recognize the type
+            String type = binTab.extname();
+            itsLog << LogOrigin("MSFitsInput", __func__)
+                << LogIO::DEBUG1 << "Found binary table of type "
+                << type << " following data" << LogIO::POST;
+            itsLog << LogOrigin("MSFitsInput", __func__)
+                << LogIO::NORMAL
+                << "extname=" << type << " nrows=" << binTab.nrows()
+                << " ncols=" << binTab.ncols() << " rowsize=" << binTab.rowsize()
+                << " pcount=" << binTab.pcount() << " gcount=" << binTab.gcount()
+                << LogIO::POST;
+            if (type.contains("AN") && !haveAn) {
+                haveAn = True;
+                fillAntennaTable(binTab);
+            }
+            else if (type.contains("FQ") && !haveSpW) {
+                haveSpW = True;
+                fillSpectralWindowTable(binTab, nSpW);
+            }
+            else if (type.contains("SU") && !haveField) {
+                haveField = True;
+                fillFieldTable(binTab, nField);
+                setFreqFrameVar(binTab);
+                //in case spectral window was already filled
+                if (haveSpW) {
+                    updateSpectralWindowTable();
                 }
             }
+            else {
+                itsLog << LogOrigin("MSFitsInput", __func__)
+                    << LogIO::NORMAL
+                    << "Skipping table, duplicate or unrecognized type: "
+                    << type << LogIO::POST;
+                binTab.fullTable();
+            }
         }
-        if (!haveSpW) {
+    }
+    if (!haveSpW) {
+        // single freq. case
+        fillSpectralWindowTable();
+    }
 
-            // single freq. case
-            fillSpectralWindowTable();
-        }
+    if (!haveField) {
+        // single source case
+        fillFieldTable(nField);
+    }
 
-        if (!haveField) {
-            // single source case
-            fillFieldTable(nField);
-        }
+    //this is uselessly slow thus replace it
+    fillExtraTables();
 
-        //this is uselessly slow thus replace it
-        fillExtraTables();
+    fixEpochReferences();
 
-        //fillPointingTable();
-        //fillSourceTable();
-
-        fixEpochReferences();
-
-        if (!haveAn) {
-            itsLog << LogOrigin("MSFitsInput", __func__)
-                   << "Cannot find an AN Table. This is required."
-                   << LogIO::EXCEPTION;
-        }
-        fillFeedTable();
+    if (!haveAn) {
+        itsLog << LogOrigin("MSFitsInput", __func__)
+            << "Cannot find an AN Table. This is required."
+            << LogIO::EXCEPTION;
+    }
+    fillFeedTable();
 }
 
 void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
@@ -472,19 +472,19 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
            infile_p->rectype() != FITS::EndOfFile && !infile_p->err()) { 
         if (//infile_p->rectype() != FITS::HDURecord ||
             infile_p->hdutype() != FITS::BinaryTableHDU) {
-            itsLog << LogOrigin("MSFitsInput", "readPrimaryTableUVFits")
+            itsLog << LogOrigin("MSFitsInput", __func__)
                    << LogIO::NORMAL << "Skipping unhandled extension"
                    << LogIO::POST;
             infile_p->skip_hdu();
         } 
         else {
-            itsLog << LogOrigin("MSFitsInput", "readPrimaryTableUVFits")
+            itsLog << LogOrigin("MSFitsInput", __func__)
                    << LogIO::DEBUG1 << "Binary Table HDU ------>>>" << LogIO::POST;
 
             BinaryTable* fqTab = 0;
             while (moreToDo &&
                    infile_p->hdutype() == FITS::BinaryTableHDU) {
-                itsLog << LogOrigin("MSFitsInput", "readPrimaryTableUVFits")
+                itsLog << LogOrigin("MSFitsInput", __func__)
                        << LogIO::DEBUG1
                        << "Found binary table of type "
                        << infile_p->rectype() << " following data"
@@ -493,7 +493,7 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
                 BinaryTable* bt = new BinaryTable(*infile_p);
                 String type = bt->extname();
 
-                itsLog << LogOrigin("MSFitsInput", "readPrimaryTableUVFits")
+                itsLog << LogOrigin("MSFitsInput", __func__)
                        << LogIO::NORMAL
                        << "extname=" << bt->extname() << " nrows=" << bt->nrows()
                        << " ncols=" << bt->ncols() << " rowsize=" << bt->rowsize() 
@@ -535,8 +535,8 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
                     try {
                         fillMSMainTable(*bt);
                     }
-                    catch(AipsError ex) {
-                        itsLog << LogOrigin("MSFitsInput", "readPrimaryTableUVFits")
+                    catch(const AipsError& ex) {
+                        itsLog << LogOrigin("MSFitsInput", __func__)
                                << ex.getMesg() 
                                << LogIO::EXCEPTION;
                     }
@@ -547,21 +547,17 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
                     moreToDo = false;
         }
                 else {
-                    //bt->fullTable();
-                    //infile_p->skip_all(FITS::BinaryTableHDU);
                     infile_p->skip_hdu();
-                    itsLog << LogOrigin("MSFitsInput", "readPrimaryTableUVFits")
+                    itsLog << LogOrigin("MSFitsInput", __func__)
                            << LogIO::NORMAL << "skip " << type << LogIO::POST;
                 }
-                itsLog << LogOrigin("MSFitsInput", "readPrimaryTable")
+                itsLog << LogOrigin("MSFitsInput", __func__)
                        << LogIO::DEBUG1 << "<<<------ Binary Table HDU" << LogIO::POST;
             }
 
             //fill source table
         }
     }
-
-
 }
 
 void MSFitsInput::readFitsFile(Int obsType) {
@@ -1722,7 +1718,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     Bool missingAnts = False;
     nAntMax = nAnt_p;
     if (nAnt_p != bt.nrows()) {
-        itsLog << LogOrigin("MSFitsInput", "fillAntennaTable")
+        itsLog << LogOrigin("MSFitsInput", __func__)
                << array_p
                 << " telescope quirk detected.  Filler purports to construct the full"
                 << " ANTENNA table with possible blank entries."
@@ -1734,10 +1730,12 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     if (nAnt - 1 > nAntMax)
         nAntMax = nAnt - 1;
 
-    if (missingAnts)
+    if (missingAnts) {
         receptorAngle_p.resize(2 * (nAntMax + 1));
-    else
+    }
+    else {
         receptorAngle_p.resize(2 * nAnt);
+    }
     receptorAngle_p = 0.0;
     Vector<Double> arrayXYZ(3);
     arrayXYZ = 0.0;
@@ -1748,9 +1746,6 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     arrayXYZ(0) = bt.getKeywords().asdouble("ARRAYX");
     arrayXYZ(1) = bt.getKeywords().asdouble("ARRAYY");
     arrayXYZ(2) = bt.getKeywords().asdouble("ARRAYZ");
-
-    // itsLog << LogIO::NORMAL << "number of antennas ="<<nAnt<<LogIO::POST;
-    // itsLog << LogIO::NORMAL << "array ref pos:"<<arrayXYZ<<LogIO::POST;
 
     // Since we cannot write these quantities, we cannot rely upon
     // their presence in any UVFITS file that we read:
@@ -1791,20 +1786,26 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     timsys_p = timsys;
     // Fill in some likely values
     Float diameter = 25;
-    if (array_p == "ATCA")
-        diameter = 22;
     Bool doSMA = (array_p == "SMA");
     Bool doCARMA = (array_p == "CARMA");
-    if (doSMA)
+    if (array_p == "ATCA") {
+        diameter = 22;
+    }
+    else if (doSMA) {
         diameter = 6;
-    if (array_p == "ATA")
+    }
+    else if (array_p == "ATA") {
         diameter = 6.1;
-    if (array_p == "HATCREEK" || array_p == "BIMA")
+    }
+    else if (array_p == "HATCREEK" || array_p == "BIMA") {
         diameter = 6.1;
-    if (array_p == "GMRT")
+    }
+    else if (array_p == "GMRT") {
         diameter = 45.0;
-    if (array_p == "IRAM_PDB" || array_p == "IRAM PDB")
+    }
+    else if (array_p == "IRAM_PDB" || array_p == "IRAM PDB") {
         diameter = 15.0;
+    }
 
     //   Table anTab=bt.fullTable("",Table::Scratch);
     Table anTab = bt.fullTable();
@@ -1819,18 +1820,25 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     Vector<Float> antDiams(nAnt);
     antDiams.set(diameter);
 
-
-    //If it has a column called DIAMETER ...make use of it
+    //If it has a column called DIAMETER ...make use of it if
+    // any of the values are valid
+    Bool diamColFound = False;
     if (anTab.tableDesc().isColumn("DIAMETER")) {
-        ROScalarColumn<Float> fitsDiams(anTab, "DIAMETER");
-        antDiams = fitsDiams.getColumn();
-    } else if ((array_p == "OVRO") || (array_p == "CARMA")) {
+        Vector<Float> tmpDiams = ROScalarColumn<Float>(anTab, "DIAMETER").getColumn();
+        if (anyGT(tmpDiams, 0.0f)) {
+            antDiams = tmpDiams;
+            diamColFound = True;
+        }
+    }
+    if (! diamColFound && ((array_p == "OVRO") || (array_p == "CARMA"))) {
         for (Int i = 0; i < nAnt; i++) {
             //Crystal Brogan has guaranteed that it is always this order
-            if (id(i) <= 6)
+            if (id(i) <= 6) {
                 antDiams(i) = 10.4;
-            else
+            }
+            else {
                 antDiams(i) = 6.1;
+            }
         }
     }
     // Prepare handling of UVFITS Antenna position coord conventions:
@@ -1928,9 +1936,6 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         }
         else if (doVLARot && newNameStyle) {
             ostringstream oss;
-            //if (name(i).contains("EVLA"))
-            //    oss << "EA" << setw(2) << setfill('0') << id(i);
-            //else
             oss << "VA" << setw(2) << setfill('0') << id(i);
             //cerr << name(i) << endl;
             ant.name().put(row, oss.str());
