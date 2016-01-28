@@ -8,6 +8,7 @@ tMDirection
 tMEarthMagnetic
 tMFrequency
 tMeasComet
+tMeasIERS
 tMeasJPL
 tMeasMath
 tMeasure
