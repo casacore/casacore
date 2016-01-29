@@ -402,7 +402,11 @@ private:
   Double epoch_p;
   MDirection::Types epochRef_p; // This is a direction measure reference code
                                 // determined by epoch_p, hence the name and type.
-  Int nAnt_p;
+  // unique antennas found in the visibility data
+  // NOTE These are 1-based
+  std::set<Int> _uniqueAnts;
+  // number of rows in the created MS ANTENNA table
+  Int _nAntRow;
   Int nArray_p;
   Vector<Double> receptorAngle_p;
   MFrequency::Types freqsys_p;
@@ -419,6 +423,8 @@ private:
   Matrix<Double> restFreq_p; // used for UVFITS
   Matrix<Double> sysVel_p;
   Bool _msCreated;
+
+  std::pair<Int, Int> _extractAntennas(Float baseline);
 
 };
 
