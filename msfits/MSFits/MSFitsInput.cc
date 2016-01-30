@@ -237,7 +237,7 @@ void MSPrimaryTableHolder::detach() {
 //------------------------------------------------------------
 MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
         const Bool useNewStyle) :
-    infile_p(0), msc_p(0), restfreq_p(0), addSourceTable_p(False), itsLog(LogOrigin(
+    infile_p(0), msc_p(0), _uniqueAnts(), _nAntRow(0), restfreq_p(0), addSourceTable_p(False), itsLog(LogOrigin(
             "MSFitsInput", "MSFitsInput")), newNameStyle(useNewStyle), _msCreated(False) {
     // First, lets verify that fitsfile exists and that it appears to be a
     // FITS file.
@@ -497,15 +497,12 @@ void MSFitsInput::readPrimaryTableUVFits(Int obsType) {
                        << LogIO::NORMAL
                        << "extname=" << bt->extname() << " nrows=" << bt->nrows()
                        << " ncols=" << bt->ncols() << " rowsize=" << bt->rowsize() 
-                       //<< " pcount=" << bt->pcount() << " gcount=" << bt->gcount()
                        << LogIO::POST;
 
                 if (type.contains("AN")) {
-                    nAnt_p = bt->nrows();
                     fillAntennaTable(*bt);
                 } 
                 else if (type.contains("FQ")) {
-                    //Int nSpW = bt->nrows();
                     fqTab = &(*bt);
                 }
                 else if (type.contains("SU")) {
@@ -1142,7 +1139,6 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
     Int iInttim = getIndex(pType, "INTTIM");
 
     receptorAngle_p.resize(1);
-    nAnt_p = 0;
     itsLog << LogIO::NORMAL << "Reading and writing " << nGroups
             << " visibility groups" << LogIO::POST;
     Int row = -1;
@@ -1184,7 +1180,6 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
 
     ms_p.addRow(totRows);
     Int nif = max(1, nIF_p);
-
     // Loop over groups
     for (Int group = 0; group < nGroups; group++) {
 
@@ -1212,20 +1207,15 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
         Int arrayId = Int(100.0 * (baseline - Int(baseline) + 0.001));
         nArray_p = max(nArray_p, arrayId + 1);
         for (Int k = 0; k < nif; ++k) {
-
             Int index = group * nif + k;
             // Extract uvw
             uvw(0, index) = priGroup_p.parm(iU) * C::c;
             uvw(1, index) = priGroup_p.parm(iV) * C::c;
             uvw(2, index) = priGroup_p.parm(iW) * C::c;
             // Convert from units of seconds to meters
-
-            ant1(index) = Int(baseline) / 256;
-            nAnt_p = max(nAnt_p, ant1(index));
-            ant2(index) = Int(baseline) - ant1(index) * 256;
-            nAnt_p = max(nAnt_p, ant2(index));
-            ant1(index)--;
-            ant2(index)--; // make 0-based
+            std::pair<Int, Int> ants = _extractAntennas(baseline);
+            ant1[index] = ants.first;
+            ant2[index] = ants.second;
         }
         // Ensure arrayId-specific params are of correct length:
         if (scanNumber.shape() < nArray_p) {
@@ -1371,7 +1361,7 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW) {
                 lastFillFieldId = fieldId;
             }
         }
-    } 
+    }
     // If determining interval on-the-fly, fill interval/exposure columns
     //  now:
     if (discernIntExp) {
@@ -1455,7 +1445,6 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
     Int iInttim = getIndex(pType, "INTTIM");
 
     receptorAngle_p.resize(1);
-    nAnt_p = 0;
     itsLog << LogIO::NORMAL << "Reading and writing " << nGroups
             << " visibility groups" << LogIO::POST;
     Int row = -1;
@@ -1526,14 +1515,9 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
         Float baseline = priGroup_p.parm(iBsln);
         Int arrayId = Int(100.0 * (baseline - Int(baseline) + 0.001));
         nArray_p = max(nArray_p, arrayId + 1);
-
-        Int ant1 = Int(baseline) / 256;
-        nAnt_p = max(nAnt_p, ant1);
-        Int ant2 = Int(baseline) - ant1 * 256;
-        nAnt_p = max(nAnt_p, ant2);
-        ant1--;
-        ant2--; // make 0-based
-
+        std::pair<Int, Int> ants = _extractAntennas(baseline);
+        Int ant1 = ants.first;
+        Int ant2 = ants.second;
         // Ensure arrayId-specific params are of correct length:
         if (scanNumber.shape() < nArray_p) {
             scanNumber.resize(nArray_p, True);
@@ -1690,7 +1674,6 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
         }
         meter.update((group + 1) * 1.0);
     }
-
     // If determining interval on-the-fly, fill interval/exposure columns
     //  now:
     if (discernIntExp) {
@@ -1701,46 +1684,79 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW) {
 
     // fill the receptorAngle with defaults, just in case there is no AN table
     receptorAngle_p = 0;
-    // set the Measure References
-
-
-    // Extract and print data manager cache statistics
-    // for flag and weight spectrum
-    // ROTiledStManAccessor dmFlag(ms_p, "TiledFlag");
-
-    //  ROTiledStManAccessor dmWeight(ms_p, "TiledWgtSpectrum");
 }
 
 void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
-    const Regex trailing(" *$"); // trailing blanks
+    static const Regex trailing(" *$"); // trailing blanks
     TableRecord btKeywords = bt.getKeywords();
-    Int nAnt, nAntMax;
-    Bool missingAnts = False;
-    nAntMax = nAnt_p;
-    if (nAnt_p != bt.nrows()) {
-        itsLog << LogOrigin("MSFitsInput", __func__)
-               << array_p
-                << " telescope quirk detected.  Filler purports to construct the full"
-                << " ANTENNA table with possible blank entries."
-                << LogIO::NORMAL1 << LogIO::POST;
-        missingAnts = True;
-    }
-
-    nAnt = bt.nrows();
-    if (nAnt - 1 > nAntMax)
-        nAntMax = nAnt - 1;
-
-    if (missingAnts) {
-        receptorAngle_p.resize(2 * (nAntMax + 1));
+    Int nAnt = bt.nrows();
+    Table anTab = bt.fullTable();
+    ROScalarColumn<Int> id(anTab, "NOSTA");
+    Vector<Int> ids = id.getColumn();
+    std::set<Int> sids(ids.begin(), ids.end());
+    _nAntRow = *std::max_element(sids.begin(), sids.end());
+    if (_uniqueAnts.empty()) {
+        ThrowIf(
+            _nAntRow < nAnt,
+            "Logic Error: Please submit a defect report and include where we can find your dataset"
+        );
+        if (_nAntRow > nAnt) {
+            itsLog << LogOrigin("MSFitsInput", __func__)
+                << LogIO::WARN << array_p
+                << " there is at least one gap in the antenna "
+                << "sequence found in the FITS AN table. Empty "
+                << "rows will be inserted into the ANTENNA table "
+                << "representing the gap(s)." << LogIO::POST;
+        }
     }
     else {
-        receptorAngle_p.resize(2 * nAnt);
+        Int nAntVis = _uniqueAnts.size();
+        ThrowIf(
+            nAntVis > nAnt,
+            "The number of antennas in the visibilities exceeds "
+            "the number of rows in the AN table. Cannot proceed"
+        );
+        Int maxAntVis = *std::max_element(_uniqueAnts.begin(), _uniqueAnts.end());
+        ThrowIf(
+            maxAntVis > _nAntRow,
+            "This data set has (1-based) antenna number " + String::toString(maxAntVis)
+            + " in the visibility data, but there is no corresponding "
+            "antenna ID in the FITS AN table. Cannot proceed."
+        );
+        std::set<Int>::const_iterator iter = _uniqueAnts.begin();
+        std::set<Int>::const_iterator end = _uniqueAnts.end();
+        for (; iter!=end; ++iter) {
+            ThrowIf(
+                std::find(sids.begin(), sids.end(), *iter) == sids.end(),
+                "(1-based) antenna " + String::toString(*iter)
+                + " exists in the visibility data, but there is no "
+                " record which references it in the FITS AN table. "
+                "Cannot proceed"
+            );
+        }
     }
+    std::set<Int>::const_iterator iter = sids.begin();
+    std::set<Int>::const_iterator end = sids.end();
+    Int i = 1;
+    for (; iter!=end; ++iter, ++i) {
+        if (*iter != i) {
+            itsLog << LogOrigin("MSFitsInput", __func__)
+                << LogIO::WARN << array_p
+                << " there is at least one gap in the antenna "
+                << "sequence found in the FITS AN table. Empty "
+                << "rows will be inserted into the ANTENNA table "
+                << "representing the gaps." << LogIO::POST;
+            break;
+        }
+    }
+    receptorAngle_p.resize(2 * _nAntRow);
     receptorAngle_p = 0.0;
     Vector<Double> arrayXYZ(3);
     arrayXYZ = 0.0;
-    if (!btKeywords.isDefined("ARRAYX") || !btKeywords.isDefined("ARRAYY")
-            || !btKeywords.isDefined("ARRAYZ")) {
+    if (
+        !btKeywords.isDefined("ARRAYX") || !btKeywords.isDefined("ARRAYY")
+        || !btKeywords.isDefined("ARRAYZ")
+    ) {
         throw(AipsError("MSFitsInput: Illegal AN file: no antenna positions"));
     }
     arrayXYZ(0) = bt.getKeywords().asdouble("ARRAYX");
@@ -1807,11 +1823,8 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         diameter = 15.0;
     }
 
-    //   Table anTab=bt.fullTable("",Table::Scratch);
-    Table anTab = bt.fullTable();
     MSAntennaColumns& ant(msc_p->antenna());
     ROScalarColumn<String> name(anTab, "ANNAME");
-    ROScalarColumn<Int> id(anTab, "NOSTA");
     ROScalarColumn<Int> mountType(anTab, "MNTSTA");
     ROScalarColumn<Float> offset(anTab, "STAXOF");
     ROScalarColumn<Float> polangleA(anTab, "POLAA");
@@ -1874,27 +1887,16 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
 
     // add antenna info to table
     ant.setPositionRef(MPosition::ITRF);
-    Int row = ms_p.antenna().nrow();
 
-    if (missingAnts && (row < nAntMax)) {
-        Int n = nAntMax - row + 1;
-        for (Int i = 0; i < n; i++) {
-            ms_p.antenna().addRow();
-            row++;
-        }
-    }
-    row = ms_p.antenna().nrow() - 1;
-    for (uInt i = 0; i < ms_p.antenna().nrow(); i++)
+    ms_p.antenna().addRow(_nAntRow);
+    for (Int i = 0; i < _nAntRow; ++i) {
+        // This loop initially flags all rows.
+        // The good rows will be unflagged in the next loop.
+        // Bad rows (representing gaps in the antenna IDs) will remain flagged.
         ant.flagRow().put(i, True);
-
-    for (Int i = 0; i < nAnt; i++) {
-        if (!missingAnts) {
-            ms_p.antenna().addRow();
-            row++;
-        } else {
-            row = id(i) - 1;
-        }
-
+    }
+    for (Int i = 0; i < nAnt; ++i) {
+        Int row = id(i) - 1;
         ant.dishDiameter().put(row, antDiams(i));
         String mount;
         switch (mountType(i)) {
@@ -1920,8 +1922,9 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
             break;
         }
         //overwrite mount type for SMA
-        if (doSMA)
+        if (doSMA) {
             mount = "ALT-AZ";
+        }
         ant.flagRow().put(row, False);
         ant.mount().put(row, mount);
         if (array_p == "CARMA" && newNameStyle) {
@@ -2393,9 +2396,9 @@ void MSFitsInput::fillFeedTable() {
     // Use TIME_RANGE in OBSERVATION table to set TIME here.
     const Vector<Double> obsTimes = msc_p->observation().timeRange()(0);
     // nAnt as here ensures ANTENNA and FEED have the same number
-    //   of rows (nAnt_p <= nAnt, since some ants not in data)
+    //   of rows since some ants may not be present in the visibility data
     Int nAnt = msc_p->antenna().nrow();
-    for (Int ant = 0; ant < nAnt; ant++) {
+    for (Int ant = 0; ant < nAnt; ++ant) {
         ms_p.feed().addRow();
         row++;
         msfc.antennaId().put(row, ant);
@@ -2991,11 +2994,6 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
     Int iFreq = getIndex(TType, "FREQSEL");
     Int iVis = getIndex(TType, "VISIBILITIES");
 
-
-
-    //receptorAngle_p.resize(1);
-    //nAnt_p = 0;
-
     itsLog << LogIO::NORMAL << "Fill MS Main Table of " << nrows
             << " rows uvfits visibility data " << LogIO::POST;
     Int row = -1;
@@ -3027,14 +3025,8 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
     nArray_p = -1;
 
     Bool lastRowFlag = False;
-
     for (Int group = 0; group < nrows; group++) {
         const Table tb = (group < 1) ? bt.thisRow() : bt.nextRow();
-        //if (group == 0)
-        //tb.deepCopy("nname", Table::New);
-
-        //const TableDesc td = tb.tableDesc();
-        //td.show();
         try {
             ROScalarColumn<Float> colDate(tb, TType(iTime0));
             ROScalarColumn<Float> colUU(tb, TType(iU));
@@ -3079,13 +3071,9 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
             Float baseline = colBL.asfloat(0);
             Int arrayId = Int(100.0 * (baseline - Int(baseline) + 0.001));
             nArray_p = max(nArray_p, arrayId + 1);
-
-            Int ant1 = Int(baseline) / 256;
-            nAnt_p = max(nAnt_p, ant1);
-            Int ant2 = Int(baseline) - ant1 * 256;
-            nAnt_p = max(nAnt_p, ant2);
-            ant1--;
-            ant2--; // make 0-based
+            std::pair<Int, Int> ants = _extractAntennas(baseline);
+            Int ant1 = ants.first;
+            Int ant2 = ants.second;
 
             // Ensure arrayId-specific params are of correct length:
             if (scanNumber.shape() < nArray_p) {
@@ -3234,14 +3222,14 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
 
             }
             meter.update((group + 1) * 1.0);
-        } catch (AipsError x) {
+        }
+        catch (const AipsError& x) {
             itsLog << LogOrigin("MSFitsInput", "fillMSMainTable")
                     << "Exception while filling MS main table. " << x.getMesg()
                     << LogIO::EXCEPTION;
         }
 
     }
-
     // If determining interval on-the-fly, fill interval/exposure columns
     //  now:
     if (discernIntExp) {
@@ -3251,7 +3239,7 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
     }
 
     // fill the receptorAngle with defaults, just in case there is no AN table
-    receptorAngle_p.resize(2 * nAnt_p);
+    receptorAngle_p.resize(2 * _nAntRow);
     receptorAngle_p = 0;
     // set the Measure References
 
@@ -3262,6 +3250,19 @@ void MSFitsInput::fillMSMainTable(BinaryTable& bt) {
         dec = refVal_p(getIndex(coordType_p, "DEC"));
         fillFieldTable(ra, dec, object);
     }
+}
+
+std::pair<Int, Int> MSFitsInput::_extractAntennas(Float baseline) {
+    Int ant1 = Int(baseline) / 256;
+    Int ant2 = Int(baseline) - ant1 * 256;
+    _nAntRow = max(_nAntRow, ant1);
+    _nAntRow = max(_nAntRow, ant2);
+    _uniqueAnts.insert(ant1);
+    _uniqueAnts.insert(ant2);
+    // make 0-based
+    ant1--;
+    ant2--;
+    return make_pair(ant1, ant2);
 }
 
 void MSFitsInput::fillObservationTable(ConstFitsKeywordList& kwl) {
