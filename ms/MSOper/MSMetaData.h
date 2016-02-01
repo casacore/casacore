@@ -416,8 +416,9 @@ public:
 	Matrix<Bool> getUniqueBaselines();
 
 	// get the number of unique baselines represented in the main MS table which in theory can be
-	// less than n*(n-1)/2
-	virtual uInt nBaselines();
+	// less than n*(n-1)/2. If <src>includeAutoCorrelation</src> is True, include autocorrelation
+	// "baselines" in the enumeration.
+	virtual uInt nBaselines(Bool includeAutoCorrelation=False);
 
 	// get the effective total exposure time. This is the effective time spent collecting unflagged data.
 	Quantity getEffectiveTotalExposureTime();
