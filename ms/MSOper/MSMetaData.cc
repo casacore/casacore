@@ -3325,13 +3325,18 @@ vector<QVD> MSMetaData::getAntennaOffsets() const {
 	return antennaOffsets;
 }
 
-uInt MSMetaData::nBaselines() {
-	Matrix<Bool> baselines = getUniqueBaselines();
-	for (uInt i=0; i<baselines.nrow(); ++i) {
-		// discard autocorrelation "baselines" for calculation
-		baselines(i, i) = False;
+uInt MSMetaData::nBaselines(Bool includeAutoCorrelation) {
+	Matrix<Bool> baselines = getUniqueBaselines().copy();
+	uInt ac = 0;
+	uInt nrows = baselines.nrow();
+	for (uInt i=0; i<nrows; ++i) {
+	    if (includeAutoCorrelation && baselines(i, i)) {
+	        // count autocorrelations separately from cross correlations
+	        ++ac;
+	    }
+	    baselines(i, i) = False;
 	}
-	return ntrue(baselines)/2;
+	return ntrue(baselines)/2 + ac;
 }
 
 Matrix<Bool> MSMetaData::getUniqueBaselines() {
@@ -3352,7 +3357,6 @@ Matrix<Bool> MSMetaData::getUniqueBaselines() {
 		++a1Iter;
 		++a2Iter;
 	}
-	//Matrix<Bool> uBaselines = _getUniqueBaselines(*ant1, *ant2);
 	if (_cacheUpdated(sizeof(Bool)*baselines.size())) {
 		_uniqueBaselines = baselines;
 	}
