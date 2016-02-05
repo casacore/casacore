@@ -110,6 +110,7 @@ void MSTableImpl::addMeasColumn(TableDesc& td, const String& column,
 }
 
 
+Mutex MSTableImpl::initialized_mutex(Mutex::Recursive);
 Bool MSTableImpl::initialized_p(False);
 
 Int MSTableImpl::mapType(const SimpleOrderedMap<Int,String>& columnMap,
@@ -568,6 +569,7 @@ Table MSTableImpl::referenceCopy(const Table& tab, const String& newTableName,
 
 void MSTableImpl::init()
 {
+    ScopedMutexLock lock(initialized_mutex);
     if (initialized_p) return;
     initialized_p = True;
     MeasurementSet::init();
