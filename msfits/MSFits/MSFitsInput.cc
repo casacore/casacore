@@ -280,14 +280,7 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
 
     if (_infile) {
         if (_infile->err() == FitsIO::IOERR) {
-            ostringstream oss;
-            oss << "Failed to read file " << fitsFile
-                << ". It appears the file exists and is readable, so "
-                << "you may have stumbled across a file name cfitsio does "
-                << "not like. You should try renaming your file, perhaps "
-                << "by adding a .uvfits extension and/or by removing any "
-                << "non-alphanumeric characters from the name";
-            ThrowCc(oss.str());
+            ThrowCc("Failed to read file " + fitsFile);
         }
         else if (_infile->err()) {
             _log << LogOrigin("MSFitsInput", "MSFitsInput")
