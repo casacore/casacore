@@ -75,7 +75,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	// using cfitsio of NASA to open fits file for writting and reading.
 	int l_status, iomode;
 	File myfile(m_filename);
-	if (myfile.exists() && myfile.isReadable()) {
+	if (myfile.isReadable()) {
 	    // the file name does not use fits extensions
 	    l_status = OPEN_DISK_FILE;
 	}
