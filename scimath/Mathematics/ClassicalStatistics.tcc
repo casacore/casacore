@@ -34,39 +34,42 @@
 
 #include <iomanip>
 
+// because this has become unwieldy
+#define _TDEF template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+
 namespace casacore {
 
 // min > max indicates that these quantities have not be calculated
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::ClassicalStatistics()
-	: StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>(),
+_TDEF
+ClassicalStatistics<_TPARMS>::ClassicalStatistics()
+	: StatisticsAlgorithm<_TPARMS>(),
 	  _statsData(initializeStatsData<AccumType>()),
 	  _idataset(0), _calculateAsAdded(False), _doMaxMin(True),
 	  _doMedAbsDevMed(False), _mustAccumulate(False) {
 	reset();
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::~ClassicalStatistics() {}
+_TDEF
+ClassicalStatistics<_TPARMS>::~ClassicalStatistics() {}
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::ClassicalStatistics(
-    const ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& cs
-) : StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>(cs),
+_TDEF
+ClassicalStatistics<_TPARMS>::ClassicalStatistics(
+    const ClassicalStatistics<_TPARMS>& cs
+) : StatisticsAlgorithm<_TPARMS>(cs),
 	_statsData(cs._statsData),
     _idataset(cs._idataset),_calculateAsAdded(cs._calculateAsAdded),
     _doMaxMin(cs._doMaxMin), _doMedAbsDevMed(cs._doMedAbsDevMed), _mustAccumulate(cs._mustAccumulate) {
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>&
-ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::operator=(
-	const ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
+_TDEF
+ClassicalStatistics<_TPARMS>&
+ClassicalStatistics<_TPARMS>::operator=(
+	const ClassicalStatistics<_TPARMS>& other
 ) {
     if (this == &other) {
         return *this;
     }
-    StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::operator=(other);
+    StatisticsAlgorithm<_TPARMS>::operator=(other);
     _statsData = copy(_statsData);
     _idataset = other._idataset;
     _calculateAsAdded = other._calculateAsAdded;
@@ -76,8 +79,8 @@ ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::ope
     return *this;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-AccumType ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedian(
+_TDEF
+AccumType ClassicalStatistics<_TPARMS>::getMedian(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
 	Bool persistSortedArray
@@ -104,8 +107,8 @@ AccumType ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIter
 	return *_getStatsData().median;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-std::set<uInt64> ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_medianIndices(
+_TDEF
+std::set<uInt64> ClassicalStatistics<_TPARMS>::_medianIndices(
 	CountedPtr<uInt64> knownNpts
 ) {
 	std::set<uInt64> indices;
@@ -120,8 +123,8 @@ std::set<uInt64> ClassicalStatistics<AccumType, DataIterator, MaskIterator, Weig
 	return indices;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-AccumType ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedianAbsDevMed(
+_TDEF
+AccumType ClassicalStatistics<_TPARMS>::getMedianAbsDevMed(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
 	Bool persistSortedArray
@@ -156,8 +159,8 @@ AccumType ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIter
 }
 
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-AccumType ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedianAndQuantiles(
+_TDEF
+AccumType ClassicalStatistics<_TPARMS>::getMedianAndQuantiles(
 	std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
@@ -207,8 +210,8 @@ AccumType ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIter
 	return *_getStatsData().median;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMinMax(
+_TDEF
+void ClassicalStatistics<_TPARMS>::getMinMax(
 	AccumType& mymin, AccumType& mymax
 ) {
 	if ( _getStatsData().min.null() || _getStatsData().max.null()) {
@@ -227,8 +230,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	mymax = *_getStatsData().max;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-uInt64 ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getNPts() {
+_TDEF
+uInt64 ClassicalStatistics<_TPARMS>::getNPts() {
 	if (_getStatsData().npts == 0) {
 		ThrowIf(
 			_calculateAsAdded,
@@ -241,8 +244,8 @@ uInt64 ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterato
 	return (uInt64)_getStatsData().npts;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-std::map<Double, AccumType> ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getQuantiles(
+_TDEF
+std::map<Double, AccumType> ClassicalStatistics<_TPARMS>::getQuantiles(
 	const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
 	Bool persistSortedArray
@@ -291,13 +294,13 @@ std::map<Double, AccumType> ClassicalStatistics<AccumType, DataIterator, MaskIte
 	return quantileToValue;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::reset() {
+_TDEF
+void ClassicalStatistics<_TPARMS>::reset() {
 	_clearData();
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::setCalculateAsAdded(
+_TDEF
+void ClassicalStatistics<_TPARMS>::setCalculateAsAdded(
 	Bool c
 ) {
 	ThrowIf (
@@ -313,9 +316,9 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	_calculateAsAdded = c;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::setDataProvider(
-	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider
+_TDEF
+void ClassicalStatistics<_TPARMS>::setDataProvider(
+	StatsDataProvider<_TPARMS> *dataProvider
 ) {
 	ThrowIf(
 		_calculateAsAdded,
@@ -323,11 +326,11 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 		"in which case it is nonsensical to use a data provider. Please call "
 		"setCalculateAsAdded(False), and then set the data provider"
 	);
-	StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::setDataProvider(dataProvider);
+	StatisticsAlgorithm<_TPARMS>::setDataProvider(dataProvider);
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::setStatsToCalculate(
+_TDEF
+void ClassicalStatistics<_TPARMS>::setStatsToCalculate(
 	std::set<StatisticsData::STATS>& stats
 ) {
 	ThrowIf(
@@ -338,36 +341,36 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	_doMaxMin = stats.empty()
 		|| stats.find(StatisticsData::MAX) != stats.end()
 		|| stats.find(StatisticsData::MIN) != stats.end();
-	StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::setStatsToCalculate(stats);
+	StatisticsAlgorithm<_TPARMS>::setStatsToCalculate(stats);
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_addData() {
+_TDEF
+void ClassicalStatistics<_TPARMS>::_addData() {
 	this->_setSortedArray(vector<AccumType>());
 	_getStatsData().median = NULL;
 	_mustAccumulate = True;
 	if (_calculateAsAdded) {
 		_getStatistics();
-		StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::_clearData();
+		StatisticsAlgorithm<_TPARMS>::_clearData();
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_clearData() {
+_TDEF
+void ClassicalStatistics<_TPARMS>::_clearData() {
 	_clearStats();
-	StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::_clearData();
+	StatisticsAlgorithm<_TPARMS>::_clearData();
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_clearStats() {
+_TDEF
+void ClassicalStatistics<_TPARMS>::_clearStats() {
 	_statsData = initializeStatsData<AccumType>();
     _idataset = 0;
 	_doMedAbsDevMed = False;
 	_mustAccumulate = True;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-std::pair<Int64, Int64> ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getStatisticIndex(
+_TDEF
+std::pair<Int64, Int64> ClassicalStatistics<_TPARMS>::getStatisticIndex(
 	StatisticsData::STATS stat
 ) {
 	ThrowIf(
@@ -410,8 +413,8 @@ std::pair<Int64, Int64> ClassicalStatistics<AccumType, DataIterator, MaskIterato
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-AccumType ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_getStatistic(
+_TDEF
+AccumType ClassicalStatistics<_TPARMS>::_getStatistic(
 	StatisticsData::STATS stat
 ) {
 	AccumType value;
@@ -426,15 +429,15 @@ AccumType ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIter
 	return value;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-StatsData<AccumType> ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_getStatistics() {
+_TDEF
+StatsData<AccumType> ClassicalStatistics<_TPARMS>::_getStatistics() {
 	if (! _mustAccumulate) {
 		return _getStatsData();
 	}
 	_initIterators();
 	_getStatsData().masked = False;
 	_getStatsData().weighted = False;
-	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider
+	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -543,16 +546,16 @@ StatsData<AccumType> ClassicalStatistics<AccumType, DataIterator, MaskIterator, 
 	return copy(_getStatsData());
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& /*dataBegin*/, Int64 nr, uInt /*dataStride*/
 ) const {
 	npts += nr;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
@@ -576,8 +579,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride
@@ -596,8 +599,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
@@ -623,8 +626,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride
@@ -643,8 +646,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
@@ -670,8 +673,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
@@ -699,8 +702,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
@@ -720,8 +723,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumulate(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_accumulate(
 	AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos, const AccumType& datum, Int64 count
 ) {
 	if (_doMaxMin) {
@@ -738,8 +741,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumulate(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_accumulate(
 	AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos,
     const AccumType& datum, const AccumType& weight, Int64 count
 ) {
@@ -758,8 +761,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-vector<vector<uInt64> > ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_binCounts(
+_TDEF
+vector<vector<uInt64> > ClassicalStatistics<_TPARMS>::_binCounts(
 	vector<CountedPtr<AccumType> >& sameVal,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
 ) {
@@ -803,7 +806,7 @@ vector<vector<uInt64> > ClassicalStatistics<AccumType, DataIterator, MaskIterato
 		++iDesc;
 	}
 	_initIterators();
-    StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider
+    StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -892,13 +895,13 @@ vector<vector<uInt64> > ClassicalStatistics<AccumType, DataIterator, MaskIterato
 	return bins;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_createDataArray(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_createDataArray(
 	vector<AccumType>& ary
 ) {
 	//cout << __func__ << endl;
 	_initIterators();
-	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider
+	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -978,8 +981,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_createDataArrays(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_createDataArrays(
 	vector<vector<AccumType> >& arys, const vector<std::pair<AccumType, AccumType> > &includeLimits,
 	uInt maxCount
 ) {
@@ -1008,7 +1011,7 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 		++iLimits;
 	}
 	_initIterators();
-	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider
+	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
 	uInt currentCount = 0;
 	while (True) {
@@ -1096,8 +1099,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_dataFromMultipleBins(
+_TDEF
+vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromMultipleBins(
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt maxArraySize,
 	const vector<std::set<uInt64> >& dataIndices
 ) {
@@ -1221,8 +1224,8 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, DataIterator
 	return ret;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_dataFromSingleBins(
+_TDEF
+vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromSingleBins(
 	const vector<uInt64>& binNpts, uInt maxArraySize, const vector<std::pair<AccumType, AccumType> >& binLimits,
 	const vector<std::set<uInt64> >& dataIndices
 ) {
@@ -1312,8 +1315,8 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, DataIterator
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_convertToAbsDevMedArray(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_convertToAbsDevMedArray(
 	vector<AccumType>& myArray, AccumType median
 ) {
 	typename vector<AccumType>::iterator iter = myArray.begin();
@@ -1324,13 +1327,13 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_doMinMax(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_doMinMax(
 	AccumType& datamin, AccumType& datamax
 ) {
 	//cout << __func__ << endl;
     _initIterators();
-	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider
+	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
 	CountedPtr<AccumType> mymax;
 	CountedPtr<AccumType> mymin;
@@ -1417,11 +1420,11 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	datamax = *mymax;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Int64 ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_doNpts() {
+_TDEF
+Int64 ClassicalStatistics<_TPARMS>::_doNpts() {
 	//cout << __func__ << endl;
 	_initIterators();
-	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider
+	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
 	uInt64 npts = 0;
 	while (True) {
@@ -1541,8 +1544,8 @@ Int64 ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator
 		} \
 	}
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -1570,8 +1573,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -1608,8 +1611,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -1641,8 +1644,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -1681,8 +1684,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -1714,8 +1717,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -1754,8 +1757,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -1796,8 +1799,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightBegin,
@@ -1830,8 +1833,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-std::map<uInt64, AccumType> ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_indicesToValues(
+_TDEF
+std::map<uInt64, AccumType> ClassicalStatistics<_TPARMS>::_indicesToValues(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt maxArraySize,
 	const std::set<uInt64>& indices, Bool persistSortedArray
@@ -1880,8 +1883,8 @@ std::map<uInt64, AccumType> ClassicalStatistics<AccumType, DataIterator, MaskIte
 	)[0];
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_initIterators() {
+_TDEF
+void ClassicalStatistics<_TPARMS>::_initIterators() {
 	ThrowIf(
 		this->_getData().size() == 0 && ! this->_getDataProvider(),
 		"No data sets have been added"
@@ -1910,9 +1913,9 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	_hasWeights = False;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_initLoopVars() {
-	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider
+_TDEF
+void ClassicalStatistics<_TPARMS>::_initLoopVars() {
+	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
 	if (dataProvider) {
 		_myData = dataProvider->getData();
@@ -1956,13 +1959,13 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_isNptsSmallerThan(
+_TDEF
+Bool ClassicalStatistics<_TPARMS>::_isNptsSmallerThan(
 	vector<AccumType>& unsortedAry, uInt maxArraySize
 ) {
 	//cout << __func__ << endl;
 	_initIterators();
-	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider
+	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
 	Bool limitReached = False;
 	while (True) {
@@ -2055,8 +2058,8 @@ Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	return True;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_makeBins(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_makeBins(
 	typename StatisticsUtilities<AccumType>::BinDesc& bins, AccumType minData, AccumType maxData, uInt maxBins, Bool allowPad
 ) {
 
@@ -2089,8 +2092,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 		mymax = new AccumType(*datum); \
 	}
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
@@ -2105,8 +2108,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
@@ -2130,8 +2133,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride
@@ -2150,8 +2153,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
@@ -2177,8 +2180,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride
@@ -2197,8 +2200,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
@@ -2224,8 +2227,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
@@ -2253,8 +2256,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
@@ -2279,8 +2282,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - *_statsData.median) : *datum; \
 	ary.push_back(myDatum);
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
 	Int64 count = 0;
@@ -2294,8 +2297,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
@@ -2318,8 +2321,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -2337,8 +2340,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
@@ -2364,8 +2367,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride
 ) const {
@@ -2383,8 +2386,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
@@ -2410,8 +2413,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -2430,8 +2433,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
@@ -2485,8 +2488,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
@@ -2506,8 +2509,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
@@ -2536,8 +2539,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
@@ -2561,8 +2564,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude,
@@ -2594,8 +2597,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
@@ -2619,8 +2622,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude,
@@ -2652,8 +2655,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
@@ -2678,8 +2681,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude,
@@ -2712,8 +2715,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+_TDEF
+Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	uInt maxElements
 ) const {
@@ -2741,8 +2744,8 @@ Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 		return True; \
 	}
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+_TDEF
+Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude,
 	uInt maxElements
@@ -2768,8 +2771,8 @@ Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	return False;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+_TDEF
+Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	uInt maxElements
@@ -2790,8 +2793,8 @@ Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	return False;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+_TDEF
+Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
@@ -2819,8 +2822,8 @@ Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	return False;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+_TDEF
+Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	uInt maxElements
@@ -2841,8 +2844,8 @@ Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	return False;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+_TDEF
+Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
@@ -2870,8 +2873,8 @@ Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	return False;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+_TDEF
+Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, uInt maxElements
@@ -2893,8 +2896,8 @@ Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	return False;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+_TDEF
+Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
@@ -2923,12 +2926,12 @@ Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	return False;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_updateMaxMin(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_updateMaxMin(
 	AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride,
 	const Int64& currentDataset
 ) {
-	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider
+	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
 	if (maxpos >= 0) {
 		_getStatsData().maxpos.first = currentDataset;
@@ -2948,8 +2951,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride
@@ -2969,8 +2972,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	ngood = nr;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -2998,8 +3001,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -3022,8 +3025,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -3054,8 +3057,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_valuesFromSortedArray(
+_TDEF
+Bool ClassicalStatistics<_TPARMS>::_valuesFromSortedArray(
 	std::map<uInt64, AccumType>& values, CountedPtr<uInt64> knownNpts,
 	const std::set<uInt64>& indices, uInt maxArraySize, Bool persistSortedArray
 ) {
@@ -3120,7 +3123,7 @@ Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 			}
 		}
 	}
-	values = StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::_valuesFromArray(
+	values = StatisticsAlgorithm<_TPARMS>::_valuesFromArray(
 		myArray, indices
 	);
 	if (! _doMedAbsDevMed) {
@@ -3134,8 +3137,8 @@ Bool ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	return True;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -3157,8 +3160,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -3187,8 +3190,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -3219,8 +3222,8 @@ void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+_TDEF
+void ClassicalStatistics<_TPARMS>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightBegin,
