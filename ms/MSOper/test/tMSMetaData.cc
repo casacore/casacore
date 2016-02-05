@@ -1214,7 +1214,8 @@ void testIt(MSMetaData& md) {
 		}
 		{
 			cout << "*** test getUniqueBaselines() and nBaselines()" << endl;
-			AlwaysAssert(md.nBaselines() == 21, AipsError);
+			AlwaysAssert(md.nBaselines(False) == 21, AipsError);
+			AlwaysAssert(md.nBaselines(True) == 25, AipsError);
 		}
 		{
 			cout << "*** test getEffectiveTotalExposureTime()" << endl;

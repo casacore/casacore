@@ -161,6 +161,9 @@ public:
 // Get the name tag of the defined unit
     const String &getName() const;
 
+// Get the full name of the defined unit
+    const String &getFullName() const;
+
 private:
 //# Data members
 // Value of defined unit
