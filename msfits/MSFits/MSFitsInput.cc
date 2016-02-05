@@ -242,7 +242,7 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
     // First, lets verify that fitsfile exists and that it appears to be a
     // FITS file.
     File f(fitsFile);
-    if (!f.exists() || !f.isReadable()) {
+    if (! f.exists() || ! f.isReadable()) {
         _log << LogOrigin("MSFitsInput", "MSFitsInput")
                << "File " << fitsFile << " does not exist or is not readable"
                 << LogIO::EXCEPTION;
@@ -280,13 +280,21 @@ MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
 
     if (_infile) {
         if (_infile->err() == FitsIO::IOERR) {
-            _log << LogOrigin("MSFitsInput", "MSFitsInput")
-                   << "Failed to read file " << fitsFile << LogIO::EXCEPTION;
-        } else if (_infile->err()) {
+            ostringstream oss;
+            oss << "Failed to read file " << fitsFile
+                << ". It appears the file exists and is readable, so "
+                << "you may have stumbled across a file name cfitsio does "
+                << "not like. You should try renaming your file, perhaps "
+                << "by adding a .uvfits extension and/or by removing any "
+                << "non-alphanumeric characters from the name";
+            ThrowCc(oss.str());
+        }
+        else if (_infile->err()) {
             _log << LogOrigin("MSFitsInput", "MSFitsInput")
                    << "Failed to read initial record -- exiting."
                     << LogIO::EXCEPTION;
-        } else {
+        }
+        else {
 
             if (checkInput(*_infile)) {
                 if (_infile->hdutype() == FITS::PrimaryGroupHDU) {
