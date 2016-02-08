@@ -119,10 +119,15 @@ public:
 	// at index int(N/2) in the equivalent sorted dataset, where N is the number of points.
 	// For a dataset with an even number of points, the median is the mean of the values at
 	// indices int(N/2)-1 and int(N/2) in the sorted dataset.
+	// <src>nBins</src> is the number of bins, per histogram, to use to bin the data. More
+	// bins decrease the likelihood that multiple passes of the data set will be necessary, but
+	// also increase the amount of memory used. If nBins is set to less than 1,000, it is
+	// automatically increased to 1,000; there should be no reason to ever set nBins to be
+	// this small.
 	virtual AccumType getMedian(
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
-		Bool persistSortedArray=False
+		Bool persistSortedArray=False, uInt64 nBins=10000
 	);
 
 	// If one needs to compute both the median and quantile values, it is better to call
@@ -135,14 +140,16 @@ public:
 		std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 
 	// get the median of the absolute deviation about the median of the data.
 	virtual AccumType getMedianAbsDevMed(
 		CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 
 	// Get the specified quantiles. <src>fractions</src> must be between 0 and 1,
@@ -150,7 +157,8 @@ public:
 	virtual std::map<Double, AccumType> getQuantiles(
 		const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 
 	// </group>
@@ -698,13 +706,13 @@ private:
 	// non-overlapping histograms and the histograms should be specified in ascending order.
 	vector<std::map<uInt64, AccumType> > _dataFromMultipleBins(
 		const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt maxArraySize,
-		const vector<std::set<uInt64> >& dataIndices
+		const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 	);
 
 	vector<std::map<uInt64, AccumType> > _dataFromSingleBins(
 		const vector<uInt64>& binNpts, uInt maxArraySize,
 		const vector<std::pair<AccumType, AccumType> >& binLimits,
-		const vector<std::set<uInt64> >& dataIndices
+		const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 	);
 
 	Int64 _doNpts();
@@ -713,7 +721,8 @@ private:
 	std::map<uInt64, AccumType> _indicesToValues(
 		CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 		CountedPtr<AccumType> knownMax, uInt maxArraySize,
-		const std::set<uInt64>& dataIndices, Bool persistSortedArray
+		const std::set<uInt64>& dataIndices, Bool persistSortedArray,
+		uInt64 nBins
 	);
 
 	void _initIterators();

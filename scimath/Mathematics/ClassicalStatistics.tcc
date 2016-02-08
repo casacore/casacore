@@ -83,7 +83,7 @@ _TDEF
 AccumType ClassicalStatistics<_TPARMS>::getMedian(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-	Bool persistSortedArray
+	Bool persistSortedArray, uInt64 nBins
 ) {
 	if (! _getStatsData().median.null()) {
 		return *_getStatsData().median;
@@ -92,7 +92,7 @@ AccumType ClassicalStatistics<_TPARMS>::getMedian(
 	std::map<uInt64, AccumType> indexToValue = _indicesToValues(
 		knownNpts, knownMin, knownMax,
 		binningThreshholdSizeBytes/sizeof(AccumType),
-		indices, persistSortedArray
+		indices, persistSortedArray, nBins
 	);
 	//_median = indexToValue.size() == 1
 	_getStatsData().median = indexToValue.size() == 1
@@ -127,7 +127,7 @@ _TDEF
 AccumType ClassicalStatistics<_TPARMS>::getMedianAbsDevMed(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-	Bool persistSortedArray
+	Bool persistSortedArray, uInt64 nBins
 ) {
 	if (! _getStatsData().medAbsDevMed.null()) {
 		return *_getStatsData().medAbsDevMed;
@@ -136,7 +136,8 @@ AccumType ClassicalStatistics<_TPARMS>::getMedianAbsDevMed(
 	// This call calculates the _median of the data set which is stored internally and
 	// used, but is not necessary to be captured in the return value here.
 	getMedian(
-		knownNpts, knownMin, knownMax, binningThreshholdSizeBytes, persistSortedArray
+		knownNpts, knownMin, knownMax, binningThreshholdSizeBytes,
+		persistSortedArray, nBins
 	);
 	std::set<uInt64> indices = _medianIndices(knownNpts);
 	// throw the proper switch
@@ -144,7 +145,7 @@ AccumType ClassicalStatistics<_TPARMS>::getMedianAbsDevMed(
 	std::map<uInt64, AccumType> indexToValue = _indicesToValues(
 		knownNpts, knownMin, knownMax,
 		binningThreshholdSizeBytes/sizeof(AccumType),
-		indices, persistSortedArray
+		indices, persistSortedArray, nBins
 	);
 	_doMedAbsDevMed = False;
 	_getStatsData().medAbsDevMed = indexToValue.size() == 1
@@ -158,13 +159,12 @@ AccumType ClassicalStatistics<_TPARMS>::getMedianAbsDevMed(
 	return *_getStatsData().medAbsDevMed;
 }
 
-
 _TDEF
 AccumType ClassicalStatistics<_TPARMS>::getMedianAndQuantiles(
 	std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-	Bool persistSortedArray
+	Bool persistSortedArray, uInt64 nBins
 ) {
 	std::set<uInt64> medianIndices;
 	quantiles.clear();
@@ -189,7 +189,7 @@ AccumType ClassicalStatistics<_TPARMS>::getMedianAndQuantiles(
 	std::map<uInt64, AccumType> indexToValue = _indicesToValues(
 		mynpts, knownMin, knownMax,
 		binningThreshholdSizeBytes/sizeof(AccumType),
-		indices, persistSortedArray
+		indices, persistSortedArray, nBins
 	);
 	if (_getStatsData().median.null()) {
 		_getStatsData().median = *mynpts % 2 == 0
@@ -248,7 +248,7 @@ _TDEF
 std::map<Double, AccumType> ClassicalStatistics<_TPARMS>::getQuantiles(
 	const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-	Bool persistSortedArray
+	Bool persistSortedArray, uInt64 nBins
 ) {
 	if (fractions.empty()) {
 		return std::map<Double, AccumType>();
@@ -282,7 +282,7 @@ std::map<Double, AccumType> ClassicalStatistics<_TPARMS>::getQuantiles(
 	std::map<uInt64, AccumType> indexToValue = _indicesToValues(
 		knownNpts, knownMin, knownMax,
 		binningThreshholdSizeBytes/sizeof(AccumType),
-		uniqueIndices, persistSortedArray
+		uniqueIndices, persistSortedArray, nBins
 	);
 	qToIIter = quantileToIndexMap.begin();
 	while (qToIIter != qToIEnd) {
@@ -766,7 +766,6 @@ vector<vector<uInt64> > ClassicalStatistics<_TPARMS>::_binCounts(
 	vector<CountedPtr<AccumType> >& sameVal,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
 ) {
-	//cout << __func__ << endl;
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bDesc = binDesc.begin();
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iDesc = bDesc;
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eDesc = binDesc.end();
@@ -899,7 +898,6 @@ _TDEF
 void ClassicalStatistics<_TPARMS>::_createDataArray(
 	vector<AccumType>& ary
 ) {
-	//cout << __func__ << endl;
 	_initIterators();
 	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
@@ -986,7 +984,6 @@ void ClassicalStatistics<_TPARMS>::_createDataArrays(
 	vector<vector<AccumType> >& arys, const vector<std::pair<AccumType, AccumType> > &includeLimits,
 	uInt maxCount
 ) {
-	//cout << __func__ << endl;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator bLimits = includeLimits.begin();
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator iLimits = bLimits;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = includeLimits.end();
@@ -1102,13 +1099,8 @@ void ClassicalStatistics<_TPARMS>::_createDataArrays(
 _TDEF
 vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromMultipleBins(
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt maxArraySize,
-	const vector<std::set<uInt64> >& dataIndices
+	const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
-	/*
-	cout << __func__ << " called with binDesc " << binDesc
-		<< " maxArraySize " << maxArraySize << " dataIndices "
-		<< dataIndices << endl;
-	*/
 	// dataIndices are relative to minimum bin minimum border
     vector<CountedPtr<AccumType> > sameVal(binDesc.size(), NULL);
     vector<vector<uInt64> > binCounts = _binCounts(sameVal, binDesc);
@@ -1192,7 +1184,7 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromMult
     }
     if (! vnpts.empty()) {
     	vector<std::map<uInt64, AccumType> > dataFromBins = _dataFromSingleBins(
-    		vnpts, maxArraySize, vlimits, vindices
+    		vnpts, maxArraySize, vlimits, vindices, nBins
     	);
     	typename vector<std::map<uInt64, AccumType> >::const_iterator iDataSet = dataFromBins.begin();
     	typename vector<std::map<uInt64, AccumType> >::const_iterator eDataSet = dataFromBins.end();
@@ -1226,14 +1218,10 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromMult
 
 _TDEF
 vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromSingleBins(
-	const vector<uInt64>& binNpts, uInt maxArraySize, const vector<std::pair<AccumType, AccumType> >& binLimits,
-	const vector<std::set<uInt64> >& dataIndices
+	const vector<uInt64>& binNpts, uInt maxArraySize,
+	const vector<std::pair<AccumType, AccumType> >& binLimits,
+	const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
-	/*
-	cout << __func__ << " called with binNpts " << binNpts << " maxArraySize "
-		<< maxArraySize << " binLimits " << binLimits << " dataIndices "
-		<< dataIndices << endl;
-		*/
 	uInt64 totalPts = 0;
 	vector<uInt64>::const_iterator bNpts = binNpts.begin();
 	vector<uInt64>::const_iterator iNpts = bNpts;
@@ -1242,7 +1230,6 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromSing
 		totalPts += *iNpts;
 		++iNpts;
 	}
-
 	if (totalPts <= maxArraySize) {
         // contents of bin is small enough to be sorted in memory, so
 		// get the bin limits and stuff the good points within those limits
@@ -1303,15 +1290,17 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromSing
 		typename vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = binLimits.end();
 		vector<typename StatisticsUtilities<AccumType>::BinDesc> binDesc;
 		while (iLimits != eLimits) {
+		    // we want at least 1000 bins
+		    nBins = max(nBins, 1000);
 			typename StatisticsUtilities<AccumType>::BinDesc histogram;
 			_makeBins(
 				histogram, iLimits->first, iLimits->second,
-				10000, False
+				nBins, False
 			);
 			binDesc.push_back(histogram);
 			++iLimits;
 		}
-		return _dataFromMultipleBins(binDesc, maxArraySize, dataIndices);
+		return _dataFromMultipleBins(binDesc, maxArraySize, dataIndices, nBins);
 	}
 }
 
@@ -1331,7 +1320,6 @@ _TDEF
 void ClassicalStatistics<_TPARMS>::_doMinMax(
 	AccumType& datamin, AccumType& datamax
 ) {
-	//cout << __func__ << endl;
     _initIterators();
 	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
@@ -1422,7 +1410,6 @@ void ClassicalStatistics<_TPARMS>::_doMinMax(
 
 _TDEF
 Int64 ClassicalStatistics<_TPARMS>::_doNpts() {
-	//cout << __func__ << endl;
 	_initIterators();
 	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();
@@ -1837,12 +1824,13 @@ _TDEF
 std::map<uInt64, AccumType> ClassicalStatistics<_TPARMS>::_indicesToValues(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt maxArraySize,
-	const std::set<uInt64>& indices, Bool persistSortedArray
+	const std::set<uInt64>& indices, Bool persistSortedArray, uInt64 nBins
 ) {
 	std::map<uInt64, AccumType> indexToValue;
     if (
 		_valuesFromSortedArray(
-			indexToValue, knownNpts, indices, maxArraySize, persistSortedArray
+			indexToValue, knownNpts, indices, maxArraySize,
+			persistSortedArray
 		)
 	) {
 		return indexToValue;
@@ -1879,7 +1867,7 @@ std::map<uInt64, AccumType> ClassicalStatistics<_TPARMS>::_indicesToValues(
 	uInt64 mynpts = knownNpts.null() ? getNPts() : *knownNpts;
 	vector<uInt64> vmynpts(1, mynpts);
 	return _dataFromSingleBins(
-		vmynpts, maxArraySize, vlimits, vindices
+		vmynpts, maxArraySize, vlimits, vindices, nBins
 	)[0];
 }
 
@@ -1963,7 +1951,6 @@ _TDEF
 Bool ClassicalStatistics<_TPARMS>::_isNptsSmallerThan(
 	vector<AccumType>& unsortedAry, uInt maxArraySize
 ) {
-	//cout << __func__ << endl;
 	_initIterators();
 	StatsDataProvider<_TPARMS> *dataProvider
 		= this->_getDataProvider();

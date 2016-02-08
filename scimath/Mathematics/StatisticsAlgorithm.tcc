@@ -195,12 +195,13 @@ template <class AccumType, class DataIterator, class MaskIterator, class Weights
 AccumType StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>::getQuantile(
 	Double quantile, CountedPtr<uInt64> knownNpts,
 	CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-	uInt binningThreshholdSizeBytes, Bool persistSortedArray
+	uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
 ) {
 	std::set<Double> qs;
 	qs.insert(quantile);
 	return getQuantiles(
-		qs, knownNpts, knownMin, knownMax, binningThreshholdSizeBytes, persistSortedArray
+		qs, knownNpts, knownMin, knownMax, binningThreshholdSizeBytes,
+		persistSortedArray, nBins
 	).begin()->second;
 }
 

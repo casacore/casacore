@@ -177,7 +177,7 @@ public:
 	virtual AccumType getMedian(
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
-		Bool persistSortedArray=False
+		Bool persistSortedArray=False, uInt64 nBins=10000
 	) = 0;
 
 	// The return value is the median; the quantiles are returned in the <src>quantileToValue</src> map.
@@ -185,34 +185,31 @@ public:
 		std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	) = 0;
 
 	// get the median of the absolute deviation about the median of the data.
 	virtual AccumType getMedianAbsDevMed(
 		CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	) = 0;
 
-
-	// get a quantile value. quantile takes values of 0 to 1 exclusive.
-	// If the dataset is greater than binningThreshholdSizeBytes bytes in size,
-	// the data will not be sorted but binned. The returned value in this case is
-	// only approximate.
 	AccumType getQuantile(
 		Double quantile, CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
 		uInt binningThreshholdSizeBytes=4096*4096,
-		Bool persistSortedArray=False
+		Bool persistSortedArray=False, uInt64 nBins=10000
 	);
-
 
 	// get a map of quantiles to values.
 	virtual std::map<Double, AccumType> getQuantiles(
 		const std::set<Double>& quantiles, CountedPtr<uInt64> npts=NULL,
 		CountedPtr<AccumType> min=NULL, CountedPtr<AccumType> max=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	) = 0;
 
 	// get the value of the specified statistic

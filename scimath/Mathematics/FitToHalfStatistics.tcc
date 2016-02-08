@@ -78,7 +78,7 @@ FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::ope
 template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
 AccumType FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedian(
 	CountedPtr<uInt64> , CountedPtr<AccumType> ,
-	CountedPtr<AccumType> , uInt , Bool
+	CountedPtr<AccumType> , uInt , Bool , uInt64
 ) {
 	if (_getStatsData().median.null()) {
 		_getStatsData().median = new AccumType(_centerValue);
@@ -91,12 +91,12 @@ AccumType FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIter
 	std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax,
-	uInt binningThreshholdSizeBytes, Bool persistSortedArray
+	uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
 ) {
 	// The median is trivial, we just need to compute the quantiles
 	quantileToValue = getQuantiles(
 		quantiles, knownNpts, knownMin, knownMax,
-		binningThreshholdSizeBytes, persistSortedArray
+		binningThreshholdSizeBytes, persistSortedArray, nBins
 	);
 	return getMedian();
 }
@@ -104,7 +104,8 @@ AccumType FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIter
 template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
 AccumType FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedianAbsDevMed(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes, Bool persistSortedArray
+	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
+	Bool persistSortedArray, uInt64 nBins
 ) {
 	if (_getStatsData().medAbsDevMed.null()) {
 		// The number of points to hand to the base class is the number of real data points,
@@ -115,7 +116,8 @@ AccumType FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIter
 		//_getRealMinMax(realMin, realMax, knownMin, knownMax);
 		_getStatsData().medAbsDevMed = new AccumType(
 			ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedianAbsDevMed(
-				realNPts, knownMin, knownMax, binningThreshholdSizeBytes, persistSortedArray
+				realNPts, knownMin, knownMax, binningThreshholdSizeBytes,
+				persistSortedArray, nBins
 			)
 		);
 	}
@@ -178,7 +180,7 @@ template <class AccumType, class DataIterator, class MaskIterator, class Weights
 std::map<Double, AccumType> FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getQuantiles(
 	const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts,
 	CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-	uInt binningThreshholdSizeBytes, Bool persistSortedArray
+	uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
 ) {
 	ThrowIf(
 		*fractions.begin() <= 0 || *fractions.rbegin() >= 1,
@@ -278,8 +280,8 @@ std::map<Double, AccumType> FitToHalfStatistics<AccumType, DataIterator, MaskIte
 	CountedPtr<AccumType> realMin, realMax;
 	_getRealMinMax(realMin, realMax, knownMin, knownMax);
 	std::map<Double, AccumType> realPart = ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getQuantiles(
-		realPortionFractions, realNPts, realMin, realMax, binningThreshholdSizeBytes,
-		persistSortedArray
+		realPortionFractions, realNPts, realMin, realMax,
+		binningThreshholdSizeBytes, persistSortedArray, nBins
 	);
 	fiter = fractions.begin();
 	while (fiter != fend) {

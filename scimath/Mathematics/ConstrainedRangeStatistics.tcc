@@ -66,13 +66,14 @@ template <class AccumType, class DataIterator, class MaskIterator, class Weights
 AccumType ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedian(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-	Bool persistSortedArray
+	Bool persistSortedArray, uInt64 nBins
 ) {
 	if (this->_getStatsData().median.null()) {
 		_setRange();
 		this->_getStatsData().median = new AccumType(
 			ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedian(
-				knownNpts, knownMin, knownMax, binningThreshholdSizeBytes, persistSortedArray
+				knownNpts, knownMin, knownMax, binningThreshholdSizeBytes,
+				persistSortedArray, nBins
 			)
 		);
 	}
@@ -82,7 +83,8 @@ AccumType ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, Weig
 template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
 AccumType ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedianAbsDevMed(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes, Bool persistSortedArray
+	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
+	Bool persistSortedArray, uInt64 nBins
 ) {
 	_setRange();
 	if (this->_getStatsData().median.null()) {
@@ -91,7 +93,8 @@ AccumType ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, Weig
 	}
 	_doMedAbsDevMed = True;
 	AccumType medabsdevmed = ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedianAbsDevMed(
-		knownNpts, knownMin, knownMax, binningThreshholdSizeBytes, persistSortedArray
+		knownNpts, knownMin, knownMax, binningThreshholdSizeBytes,
+		persistSortedArray, nBins
 	);
 	_doMedAbsDevMed = False;
 	return medabsdevmed;
@@ -102,12 +105,12 @@ AccumType ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, Weig
 	std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax,
-	uInt binningThreshholdSizeBytes, Bool persistSortedArray
+	uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
 ) {
 	_setRange();
 	return ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getMedianAndQuantiles(
 		quantileToValue, quantiles, knownNpts, knownMin, knownMax,
-		binningThreshholdSizeBytes, persistSortedArray
+		binningThreshholdSizeBytes, persistSortedArray, nBins
 	);
 }
 
@@ -131,12 +134,12 @@ template <class AccumType, class DataIterator, class MaskIterator, class Weights
 std::map<Double, AccumType> ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getQuantiles(
 	const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts,
 	CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-	uInt binningThreshholdSizeBytes, Bool persistSortedArray
+	uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
 ) {
 	_setRange();
 	return ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::getQuantiles(
 		quantiles, knownNpts, knownMin, knownMax, binningThreshholdSizeBytes,
-		persistSortedArray
+		persistSortedArray, nBins
 	);
 }
 
