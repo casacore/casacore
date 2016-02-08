@@ -38,6 +38,10 @@
 #include <set>
 #include <vector>
 
+// because the template signature has become unwieldy
+#define CASA_STATD template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+#define CASA_STATP AccumType, DataIterator, MaskIterator, WeightsIterator
+
 namespace casacore {
 
 // Base class of statistics algorithm class hierarchy.
@@ -281,7 +285,7 @@ public:
 	// instead of settng and adding data "by hand", set the data provider that will provide
 	// all the data sets. Calling this method will clear any other data sets that have
 	// previously been set or added.
-	virtual void setDataProvider(StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider) {
+	virtual void setDataProvider(StatsDataProvider<CASA_STATP> *dataProvider) {
 		ThrowIf(! dataProvider, "Logic Error: data provider cannot be NULL");
 		_clearData();
 		_dataProvider = dataProvider;
@@ -295,8 +299,8 @@ protected:
 	StatisticsAlgorithm();
 
 	// use copy semantics
-	StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
-		const StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
+	StatisticsAlgorithm<CASA_STATP>& operator=(
+		const StatisticsAlgorithm<CASA_STATP>& other
 	);
 
 	// Allows derived classes to do things after data is set or added.
@@ -309,7 +313,7 @@ protected:
 
 	const vector<DataIterator>& _getData() const { return _data; }
 
-	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>* _getDataProvider() {
+	StatsDataProvider<CASA_STATP>* _getDataProvider() {
 		return _dataProvider;
 	}
 
@@ -370,7 +374,7 @@ private:
 	std::map<uInt, DataRanges> _dataRanges;
 	vector<AccumType> _sortedArray;
 	std::set<StatisticsData::STATS> _statsToCalculate, _unsupportedStats;
-	StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *_dataProvider;
+	StatsDataProvider<CASA_STATP> *_dataProvider;
 
 	void _throwIfDataProviderDefined() const;
 };

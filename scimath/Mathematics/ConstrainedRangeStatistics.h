@@ -42,14 +42,14 @@ namespace casacore {
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator>
 class ConstrainedRangeStatistics
-	: public ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator> {
+	: public ClassicalStatistics<CASA_STATP> {
 public:
 
 	virtual ~ConstrainedRangeStatistics();
 
 	// copy semantics
-	ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
-		const ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
+	ConstrainedRangeStatistics<CASA_STATP>& operator=(
+		const ConstrainedRangeStatistics<CASA_STATP>& other
 	);
 
 	// <group>

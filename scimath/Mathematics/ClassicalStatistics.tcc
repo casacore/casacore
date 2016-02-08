@@ -34,42 +34,39 @@
 
 #include <iomanip>
 
-// because this has become unwieldy
-#define _TDEF template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-
 namespace casacore {
 
 // min > max indicates that these quantities have not be calculated
-_TDEF
-ClassicalStatistics<_TPARMS>::ClassicalStatistics()
-	: StatisticsAlgorithm<_TPARMS>(),
+CASA_STATD
+ClassicalStatistics<CASA_STATP>::ClassicalStatistics()
+	: StatisticsAlgorithm<CASA_STATP>(),
 	  _statsData(initializeStatsData<AccumType>()),
 	  _idataset(0), _calculateAsAdded(False), _doMaxMin(True),
 	  _doMedAbsDevMed(False), _mustAccumulate(False) {
 	reset();
 }
 
-_TDEF
-ClassicalStatistics<_TPARMS>::~ClassicalStatistics() {}
+CASA_STATD
+ClassicalStatistics<CASA_STATP>::~ClassicalStatistics() {}
 
-_TDEF
-ClassicalStatistics<_TPARMS>::ClassicalStatistics(
-    const ClassicalStatistics<_TPARMS>& cs
-) : StatisticsAlgorithm<_TPARMS>(cs),
+CASA_STATD
+ClassicalStatistics<CASA_STATP>::ClassicalStatistics(
+    const ClassicalStatistics<CASA_STATP>& cs
+) : StatisticsAlgorithm<CASA_STATP>(cs),
 	_statsData(cs._statsData),
     _idataset(cs._idataset),_calculateAsAdded(cs._calculateAsAdded),
     _doMaxMin(cs._doMaxMin), _doMedAbsDevMed(cs._doMedAbsDevMed), _mustAccumulate(cs._mustAccumulate) {
 }
 
-_TDEF
-ClassicalStatistics<_TPARMS>&
-ClassicalStatistics<_TPARMS>::operator=(
-	const ClassicalStatistics<_TPARMS>& other
+CASA_STATD
+ClassicalStatistics<CASA_STATP>&
+ClassicalStatistics<CASA_STATP>::operator=(
+	const ClassicalStatistics<CASA_STATP>& other
 ) {
     if (this == &other) {
         return *this;
     }
-    StatisticsAlgorithm<_TPARMS>::operator=(other);
+    StatisticsAlgorithm<CASA_STATP>::operator=(other);
     _statsData = copy(_statsData);
     _idataset = other._idataset;
     _calculateAsAdded = other._calculateAsAdded;
@@ -79,8 +76,8 @@ ClassicalStatistics<_TPARMS>::operator=(
     return *this;
 }
 
-_TDEF
-AccumType ClassicalStatistics<_TPARMS>::getMedian(
+CASA_STATD
+AccumType ClassicalStatistics<CASA_STATP>::getMedian(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
 	Bool persistSortedArray, uInt64 nBins
@@ -107,8 +104,8 @@ AccumType ClassicalStatistics<_TPARMS>::getMedian(
 	return *_getStatsData().median;
 }
 
-_TDEF
-std::set<uInt64> ClassicalStatistics<_TPARMS>::_medianIndices(
+CASA_STATD
+std::set<uInt64> ClassicalStatistics<CASA_STATP>::_medianIndices(
 	CountedPtr<uInt64> knownNpts
 ) {
 	std::set<uInt64> indices;
@@ -123,8 +120,8 @@ std::set<uInt64> ClassicalStatistics<_TPARMS>::_medianIndices(
 	return indices;
 }
 
-_TDEF
-AccumType ClassicalStatistics<_TPARMS>::getMedianAbsDevMed(
+CASA_STATD
+AccumType ClassicalStatistics<CASA_STATP>::getMedianAbsDevMed(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
 	Bool persistSortedArray, uInt64 nBins
@@ -159,8 +156,8 @@ AccumType ClassicalStatistics<_TPARMS>::getMedianAbsDevMed(
 	return *_getStatsData().medAbsDevMed;
 }
 
-_TDEF
-AccumType ClassicalStatistics<_TPARMS>::getMedianAndQuantiles(
+CASA_STATD
+AccumType ClassicalStatistics<CASA_STATP>::getMedianAndQuantiles(
 	std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
@@ -210,8 +207,8 @@ AccumType ClassicalStatistics<_TPARMS>::getMedianAndQuantiles(
 	return *_getStatsData().median;
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::getMinMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::getMinMax(
 	AccumType& mymin, AccumType& mymax
 ) {
 	if ( _getStatsData().min.null() || _getStatsData().max.null()) {
@@ -230,8 +227,8 @@ void ClassicalStatistics<_TPARMS>::getMinMax(
 	mymax = *_getStatsData().max;
 }
 
-_TDEF
-uInt64 ClassicalStatistics<_TPARMS>::getNPts() {
+CASA_STATD
+uInt64 ClassicalStatistics<CASA_STATP>::getNPts() {
 	if (_getStatsData().npts == 0) {
 		ThrowIf(
 			_calculateAsAdded,
@@ -244,8 +241,8 @@ uInt64 ClassicalStatistics<_TPARMS>::getNPts() {
 	return (uInt64)_getStatsData().npts;
 }
 
-_TDEF
-std::map<Double, AccumType> ClassicalStatistics<_TPARMS>::getQuantiles(
+CASA_STATD
+std::map<Double, AccumType> ClassicalStatistics<CASA_STATP>::getQuantiles(
 	const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
 	Bool persistSortedArray, uInt64 nBins
@@ -294,13 +291,13 @@ std::map<Double, AccumType> ClassicalStatistics<_TPARMS>::getQuantiles(
 	return quantileToValue;
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::reset() {
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::reset() {
 	_clearData();
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::setCalculateAsAdded(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::setCalculateAsAdded(
 	Bool c
 ) {
 	ThrowIf (
@@ -316,9 +313,9 @@ void ClassicalStatistics<_TPARMS>::setCalculateAsAdded(
 	_calculateAsAdded = c;
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::setDataProvider(
-	StatsDataProvider<_TPARMS> *dataProvider
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::setDataProvider(
+	StatsDataProvider<CASA_STATP> *dataProvider
 ) {
 	ThrowIf(
 		_calculateAsAdded,
@@ -326,11 +323,11 @@ void ClassicalStatistics<_TPARMS>::setDataProvider(
 		"in which case it is nonsensical to use a data provider. Please call "
 		"setCalculateAsAdded(False), and then set the data provider"
 	);
-	StatisticsAlgorithm<_TPARMS>::setDataProvider(dataProvider);
+	StatisticsAlgorithm<CASA_STATP>::setDataProvider(dataProvider);
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::setStatsToCalculate(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::setStatsToCalculate(
 	std::set<StatisticsData::STATS>& stats
 ) {
 	ThrowIf(
@@ -341,36 +338,36 @@ void ClassicalStatistics<_TPARMS>::setStatsToCalculate(
 	_doMaxMin = stats.empty()
 		|| stats.find(StatisticsData::MAX) != stats.end()
 		|| stats.find(StatisticsData::MIN) != stats.end();
-	StatisticsAlgorithm<_TPARMS>::setStatsToCalculate(stats);
+	StatisticsAlgorithm<CASA_STATP>::setStatsToCalculate(stats);
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_addData() {
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_addData() {
 	this->_setSortedArray(vector<AccumType>());
 	_getStatsData().median = NULL;
 	_mustAccumulate = True;
 	if (_calculateAsAdded) {
 		_getStatistics();
-		StatisticsAlgorithm<_TPARMS>::_clearData();
+		StatisticsAlgorithm<CASA_STATP>::_clearData();
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_clearData() {
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_clearData() {
 	_clearStats();
-	StatisticsAlgorithm<_TPARMS>::_clearData();
+	StatisticsAlgorithm<CASA_STATP>::_clearData();
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_clearStats() {
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_clearStats() {
 	_statsData = initializeStatsData<AccumType>();
     _idataset = 0;
 	_doMedAbsDevMed = False;
 	_mustAccumulate = True;
 }
 
-_TDEF
-std::pair<Int64, Int64> ClassicalStatistics<_TPARMS>::getStatisticIndex(
+CASA_STATD
+std::pair<Int64, Int64> ClassicalStatistics<CASA_STATP>::getStatisticIndex(
 	StatisticsData::STATS stat
 ) {
 	ThrowIf(
@@ -413,8 +410,8 @@ std::pair<Int64, Int64> ClassicalStatistics<_TPARMS>::getStatisticIndex(
 	}
 }
 
-_TDEF
-AccumType ClassicalStatistics<_TPARMS>::_getStatistic(
+CASA_STATD
+AccumType ClassicalStatistics<CASA_STATP>::_getStatistic(
 	StatisticsData::STATS stat
 ) {
 	AccumType value;
@@ -429,15 +426,15 @@ AccumType ClassicalStatistics<_TPARMS>::_getStatistic(
 	return value;
 }
 
-_TDEF
-StatsData<AccumType> ClassicalStatistics<_TPARMS>::_getStatistics() {
+CASA_STATD
+StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
 	if (! _mustAccumulate) {
 		return _getStatsData();
 	}
 	_initIterators();
 	_getStatsData().masked = False;
 	_getStatsData().weighted = False;
-	StatsDataProvider<_TPARMS> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -546,16 +543,16 @@ StatsData<AccumType> ClassicalStatistics<_TPARMS>::_getStatistics() {
 	return copy(_getStatsData());
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& /*dataBegin*/, Int64 nr, uInt /*dataStride*/
 ) const {
 	npts += nr;
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
@@ -579,8 +576,8 @@ void ClassicalStatistics<_TPARMS>::_accumNpts(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride
@@ -599,8 +596,8 @@ void ClassicalStatistics<_TPARMS>::_accumNpts(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
@@ -626,8 +623,8 @@ void ClassicalStatistics<_TPARMS>::_accumNpts(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride
@@ -646,8 +643,8 @@ void ClassicalStatistics<_TPARMS>::_accumNpts(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
@@ -673,8 +670,8 @@ void ClassicalStatistics<_TPARMS>::_accumNpts(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
@@ -702,8 +699,8 @@ void ClassicalStatistics<_TPARMS>::_accumNpts(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
@@ -723,8 +720,8 @@ void ClassicalStatistics<_TPARMS>::_accumNpts(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_accumulate(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumulate(
 	AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos, const AccumType& datum, Int64 count
 ) {
 	if (_doMaxMin) {
@@ -741,8 +738,8 @@ void ClassicalStatistics<_TPARMS>::_accumulate(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_accumulate(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumulate(
 	AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos,
     const AccumType& datum, const AccumType& weight, Int64 count
 ) {
@@ -761,8 +758,8 @@ void ClassicalStatistics<_TPARMS>::_accumulate(
 	}
 }
 
-_TDEF
-vector<vector<uInt64> > ClassicalStatistics<_TPARMS>::_binCounts(
+CASA_STATD
+vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
 	vector<CountedPtr<AccumType> >& sameVal,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
 ) {
@@ -805,7 +802,7 @@ vector<vector<uInt64> > ClassicalStatistics<_TPARMS>::_binCounts(
 		++iDesc;
 	}
 	_initIterators();
-    StatsDataProvider<_TPARMS> *dataProvider
+    StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -894,12 +891,12 @@ vector<vector<uInt64> > ClassicalStatistics<_TPARMS>::_binCounts(
 	return bins;
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_createDataArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_createDataArray(
 	vector<AccumType>& ary
 ) {
 	_initIterators();
-	StatsDataProvider<_TPARMS> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -979,8 +976,8 @@ void ClassicalStatistics<_TPARMS>::_createDataArray(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_createDataArrays(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_createDataArrays(
 	vector<vector<AccumType> >& arys, const vector<std::pair<AccumType, AccumType> > &includeLimits,
 	uInt maxCount
 ) {
@@ -1008,7 +1005,7 @@ void ClassicalStatistics<_TPARMS>::_createDataArrays(
 		++iLimits;
 	}
 	_initIterators();
-	StatsDataProvider<_TPARMS> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	uInt currentCount = 0;
 	while (True) {
@@ -1096,8 +1093,8 @@ void ClassicalStatistics<_TPARMS>::_createDataArrays(
 	}
 }
 
-_TDEF
-vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromMultipleBins(
+CASA_STATD
+vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromMultipleBins(
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt maxArraySize,
 	const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
@@ -1216,8 +1213,8 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromMult
 	return ret;
 }
 
-_TDEF
-vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromSingleBins(
+CASA_STATD
+vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromSingleBins(
 	const vector<uInt64>& binNpts, uInt maxArraySize,
 	const vector<std::pair<AccumType, AccumType> >& binLimits,
 	const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
@@ -1304,8 +1301,8 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<_TPARMS>::_dataFromSing
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_convertToAbsDevMedArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_convertToAbsDevMedArray(
 	vector<AccumType>& myArray, AccumType median
 ) {
 	typename vector<AccumType>::iterator iter = myArray.begin();
@@ -1316,12 +1313,12 @@ void ClassicalStatistics<_TPARMS>::_convertToAbsDevMedArray(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_doMinMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_doMinMax(
 	AccumType& datamin, AccumType& datamax
 ) {
     _initIterators();
-	StatsDataProvider<_TPARMS> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	CountedPtr<AccumType> mymax;
 	CountedPtr<AccumType> mymin;
@@ -1408,10 +1405,10 @@ void ClassicalStatistics<_TPARMS>::_doMinMax(
 	datamax = *mymax;
 }
 
-_TDEF
-Int64 ClassicalStatistics<_TPARMS>::_doNpts() {
+CASA_STATD
+Int64 ClassicalStatistics<CASA_STATP>::_doNpts() {
 	_initIterators();
-	StatsDataProvider<_TPARMS> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	uInt64 npts = 0;
 	while (True) {
@@ -1531,8 +1528,8 @@ Int64 ClassicalStatistics<_TPARMS>::_doNpts() {
 		} \
 	}
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -1560,8 +1557,8 @@ void ClassicalStatistics<_TPARMS>::_findBins(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -1598,8 +1595,8 @@ void ClassicalStatistics<_TPARMS>::_findBins(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -1631,8 +1628,8 @@ void ClassicalStatistics<_TPARMS>::_findBins(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -1671,8 +1668,8 @@ void ClassicalStatistics<_TPARMS>::_findBins(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -1704,8 +1701,8 @@ void ClassicalStatistics<_TPARMS>::_findBins(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -1744,8 +1741,8 @@ void ClassicalStatistics<_TPARMS>::_findBins(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -1786,8 +1783,8 @@ void ClassicalStatistics<_TPARMS>::_findBins(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightBegin,
@@ -1820,8 +1817,8 @@ void ClassicalStatistics<_TPARMS>::_findBins(
 	}
 }
 
-_TDEF
-std::map<uInt64, AccumType> ClassicalStatistics<_TPARMS>::_indicesToValues(
+CASA_STATD
+std::map<uInt64, AccumType> ClassicalStatistics<CASA_STATP>::_indicesToValues(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt maxArraySize,
 	const std::set<uInt64>& indices, Bool persistSortedArray, uInt64 nBins
@@ -1871,8 +1868,8 @@ std::map<uInt64, AccumType> ClassicalStatistics<_TPARMS>::_indicesToValues(
 	)[0];
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_initIterators() {
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_initIterators() {
 	ThrowIf(
 		this->_getData().size() == 0 && ! this->_getDataProvider(),
 		"No data sets have been added"
@@ -1901,9 +1898,9 @@ void ClassicalStatistics<_TPARMS>::_initIterators() {
 	_hasWeights = False;
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_initLoopVars() {
-	StatsDataProvider<_TPARMS> *dataProvider
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_initLoopVars() {
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	if (dataProvider) {
 		_myData = dataProvider->getData();
@@ -1947,12 +1944,12 @@ void ClassicalStatistics<_TPARMS>::_initLoopVars() {
 	}
 }
 
-_TDEF
-Bool ClassicalStatistics<_TPARMS>::_isNptsSmallerThan(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_isNptsSmallerThan(
 	vector<AccumType>& unsortedAry, uInt maxArraySize
 ) {
 	_initIterators();
-	StatsDataProvider<_TPARMS> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	Bool limitReached = False;
 	while (True) {
@@ -2045,8 +2042,8 @@ Bool ClassicalStatistics<_TPARMS>::_isNptsSmallerThan(
 	return True;
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_makeBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_makeBins(
 	typename StatisticsUtilities<AccumType>::BinDesc& bins, AccumType minData, AccumType maxData, uInt maxBins, Bool allowPad
 ) {
 
@@ -2079,8 +2076,8 @@ void ClassicalStatistics<_TPARMS>::_makeBins(
 		mymax = new AccumType(*datum); \
 	}
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
@@ -2095,8 +2092,8 @@ void ClassicalStatistics<_TPARMS>::_minMax(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
@@ -2120,8 +2117,8 @@ void ClassicalStatistics<_TPARMS>::_minMax(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride
@@ -2140,8 +2137,8 @@ void ClassicalStatistics<_TPARMS>::_minMax(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
@@ -2167,8 +2164,8 @@ void ClassicalStatistics<_TPARMS>::_minMax(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride
@@ -2187,8 +2184,8 @@ void ClassicalStatistics<_TPARMS>::_minMax(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
@@ -2214,8 +2211,8 @@ void ClassicalStatistics<_TPARMS>::_minMax(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
@@ -2243,8 +2240,8 @@ void ClassicalStatistics<_TPARMS>::_minMax(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
@@ -2269,8 +2266,8 @@ void ClassicalStatistics<_TPARMS>::_minMax(
 	AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - *_statsData.median) : *datum; \
 	ary.push_back(myDatum);
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
 	Int64 count = 0;
@@ -2284,8 +2281,8 @@ void ClassicalStatistics<_TPARMS>::_populateArray(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
@@ -2308,8 +2305,8 @@ void ClassicalStatistics<_TPARMS>::_populateArray(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -2327,8 +2324,8 @@ void ClassicalStatistics<_TPARMS>::_populateArray(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
@@ -2354,8 +2351,8 @@ void ClassicalStatistics<_TPARMS>::_populateArray(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride
 ) const {
@@ -2373,8 +2370,8 @@ void ClassicalStatistics<_TPARMS>::_populateArray(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
@@ -2400,8 +2397,8 @@ void ClassicalStatistics<_TPARMS>::_populateArray(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -2420,8 +2417,8 @@ void ClassicalStatistics<_TPARMS>::_populateArray(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
@@ -2475,8 +2472,8 @@ void ClassicalStatistics<_TPARMS>::_populateArray(
 	}
 
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArrays(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
@@ -2496,8 +2493,8 @@ void ClassicalStatistics<_TPARMS>::_populateArrays(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArrays(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
@@ -2526,8 +2523,8 @@ void ClassicalStatistics<_TPARMS>::_populateArrays(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArrays(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
@@ -2551,8 +2548,8 @@ void ClassicalStatistics<_TPARMS>::_populateArrays(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArrays(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude,
@@ -2584,8 +2581,8 @@ void ClassicalStatistics<_TPARMS>::_populateArrays(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArrays(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
@@ -2609,8 +2606,8 @@ void ClassicalStatistics<_TPARMS>::_populateArrays(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArrays(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude,
@@ -2642,8 +2639,8 @@ void ClassicalStatistics<_TPARMS>::_populateArrays(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArrays(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
@@ -2668,8 +2665,8 @@ void ClassicalStatistics<_TPARMS>::_populateArrays(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_populateArrays(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude,
@@ -2702,8 +2699,8 @@ void ClassicalStatistics<_TPARMS>::_populateArrays(
 	}
 }
 
-_TDEF
-Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	uInt maxElements
 ) const {
@@ -2731,8 +2728,8 @@ Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 		return True; \
 	}
 
-_TDEF
-Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude,
 	uInt maxElements
@@ -2758,8 +2755,8 @@ Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	return False;
 }
 
-_TDEF
-Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	uInt maxElements
@@ -2780,8 +2777,8 @@ Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	return False;
 }
 
-_TDEF
-Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
@@ -2809,8 +2806,8 @@ Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	return False;
 }
 
-_TDEF
-Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	uInt maxElements
@@ -2831,8 +2828,8 @@ Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	return False;
 }
 
-_TDEF
-Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
@@ -2860,8 +2857,8 @@ Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	return False;
 }
 
-_TDEF
-Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, uInt maxElements
@@ -2883,8 +2880,8 @@ Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	return False;
 }
 
-_TDEF
-Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
@@ -2913,12 +2910,12 @@ Bool ClassicalStatistics<_TPARMS>::_populateTestArray(
 	return False;
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_updateMaxMin(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_updateMaxMin(
 	AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride,
 	const Int64& currentDataset
 ) {
-	StatsDataProvider<_TPARMS> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	if (maxpos >= 0) {
 		_getStatsData().maxpos.first = currentDataset;
@@ -2938,8 +2935,8 @@ void ClassicalStatistics<_TPARMS>::_updateMaxMin(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_unweightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride
@@ -2959,8 +2956,8 @@ void ClassicalStatistics<_TPARMS>::_unweightedStats(
 	ngood = nr;
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_unweightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -2988,8 +2985,8 @@ void ClassicalStatistics<_TPARMS>::_unweightedStats(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_unweightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -3012,8 +3009,8 @@ void ClassicalStatistics<_TPARMS>::_unweightedStats(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_unweightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -3044,8 +3041,8 @@ void ClassicalStatistics<_TPARMS>::_unweightedStats(
 	}
 }
 
-_TDEF
-Bool ClassicalStatistics<_TPARMS>::_valuesFromSortedArray(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
 	std::map<uInt64, AccumType>& values, CountedPtr<uInt64> knownNpts,
 	const std::set<uInt64>& indices, uInt maxArraySize, Bool persistSortedArray
 ) {
@@ -3110,7 +3107,7 @@ Bool ClassicalStatistics<_TPARMS>::_valuesFromSortedArray(
 			}
 		}
 	}
-	values = StatisticsAlgorithm<_TPARMS>::_valuesFromArray(
+	values = StatisticsAlgorithm<CASA_STATP>::_valuesFromArray(
 		myArray, indices
 	);
 	if (! _doMedAbsDevMed) {
@@ -3124,8 +3121,8 @@ Bool ClassicalStatistics<_TPARMS>::_valuesFromSortedArray(
 	return True;
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_weightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -3147,8 +3144,8 @@ void ClassicalStatistics<_TPARMS>::_weightedStats(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_weightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -3177,8 +3174,8 @@ void ClassicalStatistics<_TPARMS>::_weightedStats(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_weightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -3209,8 +3206,8 @@ void ClassicalStatistics<_TPARMS>::_weightedStats(
 	}
 }
 
-_TDEF
-void ClassicalStatistics<_TPARMS>::_weightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightBegin,

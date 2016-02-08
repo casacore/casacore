@@ -37,46 +37,46 @@
 namespace casacore {
 
 // min > max indicates that these quantities have not be calculated
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::HingesFencesStatistics(
+CASA_STATD
+HingesFencesStatistics<CASA_STATP>::HingesFencesStatistics(
 	Double f
 )
-	: ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>(),
+	: ConstrainedRangeStatistics<CASA_STATP>(),
 	  _f(f), _rangeIsSet(False), _hasRange(False) {
 	reset();
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::~HingesFencesStatistics() {}
+CASA_STATD
+HingesFencesStatistics<CASA_STATP>::~HingesFencesStatistics() {}
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>&
-HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::operator=(
-	const HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
+CASA_STATD
+HingesFencesStatistics<CASA_STATP>&
+HingesFencesStatistics<CASA_STATP>::operator=(
+	const HingesFencesStatistics<CASA_STATP>& other
 ) {
     if (this == &other) {
         return *this;
     }
-    ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::operator=(other);
+    ClassicalStatistics<CASA_STATP>::operator=(other);
     _f = other._f;
     _rangeIsSet = other._rangeIsSet;
     _hasRange = other._hasRange;
     return *this;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::reset() {
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::reset() {
 	_rangeIsSet = False;
 	_hasRange = False;
 	//_range = NULL;
 	//_median = NULL;
 	//_doMedAbsDevMed = False;
 	//_settingRange = False;
-	ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::reset();
+	ConstrainedRangeStatistics<CASA_STATP>::reset();
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::setCalculateAsAdded(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::setCalculateAsAdded(
 	Bool c
 ) {
 	ThrowIf(
@@ -85,161 +85,161 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	);
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, nr, dataStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ClassicalStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, nr, dataStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, nr, dataStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ClassicalStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, nr, dataStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, nr, dataStride, maskBegin, maskStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ClassicalStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, nr, dataStride, maskBegin, maskStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
 	Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, nr, dataStride, maskBegin,
 			maskStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ClassicalStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, nr, dataStride, maskBegin,
 			maskStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin,weightsBegin, nr, dataStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ClassicalStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin,weightsBegin, nr, dataStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, weightsBegin, nr,
 			dataStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ClassicalStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, weightsBegin, nr,
 			dataStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, weightsBegin, nr,
 			dataStride, maskBegin, maskStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ClassicalStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, weightsBegin, nr,
 			dataStride, maskBegin, maskStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, weightsBegin, nr,
 			dataStride, maskBegin, maskStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_accumNpts(
+		ClassicalStatistics<CASA_STATP>::_accumNpts(
 			npts, dataBegin, weightsBegin, nr,
 			dataStride, maskBegin, maskStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -247,21 +247,21 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	const vector<AccumType>& maxLimit
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ConstrainedRangeStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin,
 			nr, dataStride, binDesc, maxLimit
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ClassicalStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin,
 			nr, dataStride, binDesc, maxLimit
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -270,21 +270,21 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	const vector<AccumType>& maxLimit
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ConstrainedRangeStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, nr,
 			dataStride, ranges, isInclude, binDesc, maxLimit
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ClassicalStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, nr,
 			dataStride, ranges, isInclude, binDesc, maxLimit
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -293,21 +293,21 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	const vector<AccumType>& maxLimit
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ConstrainedRangeStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, nr,
 			dataStride, maskBegin, maskStride, binDesc, maxLimit
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ClassicalStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, nr,
 			dataStride, maskBegin, maskStride, binDesc, maxLimit
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -317,21 +317,21 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	const vector<AccumType>& maxLimit
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ConstrainedRangeStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude, binDesc, maxLimit
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ClassicalStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude, binDesc, maxLimit
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -340,21 +340,21 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	const vector<AccumType>& maxLimit
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ConstrainedRangeStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, weightsBegin,
 			nr, dataStride, binDesc, maxLimit
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ClassicalStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, weightsBegin,
 			nr, dataStride, binDesc, maxLimit
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -363,21 +363,21 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	const vector<AccumType>& maxLimit
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ConstrainedRangeStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, weightsBegin,
 			nr, dataStride, ranges, isInclude, binDesc, maxLimit
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ClassicalStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, weightsBegin,
 			nr, dataStride, ranges, isInclude, binDesc, maxLimit
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -387,14 +387,14 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	const vector<AccumType>& maxLimit
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ConstrainedRangeStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride, ranges, isInclude,
 			binDesc, maxLimit
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ClassicalStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride, ranges, isInclude,
 			binDesc, maxLimit
@@ -402,8 +402,8 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -412,637 +412,637 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	const vector<AccumType>& maxLimit
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ConstrainedRangeStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride, binDesc, maxLimit
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_findBins(
+		ClassicalStatistics<CASA_STATP>::_findBins(
 			binCounts, sameVal, allSame, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride, binDesc, maxLimit
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, nr, dataStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ClassicalStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, nr, dataStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, nr, dataStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ClassicalStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, nr, dataStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, nr, dataStride, maskBegin, maskStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ClassicalStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, nr, dataStride, maskBegin, maskStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
 	Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ClassicalStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, weightsBegin, nr, dataStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ClassicalStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, weightsBegin, nr, dataStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, weightsBegin, nr, dataStride,
 			ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ClassicalStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, weightsBegin, nr, dataStride,
 			ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, weightsBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ClassicalStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, weightsBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, weightsBegin, nr, dataStride,
 			maskBegin, maskStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_minMax(
+		ClassicalStatistics<CASA_STATP>::_minMax(
 			mymin, mymax, dataBegin, weightsBegin, nr, dataStride,
 			maskBegin, maskStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, nr, dataStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ClassicalStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, nr, dataStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, nr, dataStride,
 			ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ClassicalStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, nr, dataStride,
 			ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, nr, dataStride,
 			maskBegin, maskStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ClassicalStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, nr, dataStride,
 			maskBegin, maskStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ClassicalStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, weightsBegin,
 			nr, dataStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ClassicalStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, weightsBegin,
 			nr, dataStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, weightsBegin,
 			nr, dataStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ClassicalStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, weightsBegin,
 			nr, dataStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ClassicalStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, weightsBegin,	nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArray(
+		ClassicalStatistics<CASA_STATP>::_populateArray(
 			ary, dataBegin, weightsBegin,	nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, nr, dataStride,
 			includeLimits, maxCount
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ClassicalStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, nr, dataStride,
 			includeLimits, maxCount
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, nr, dataStride,
 			ranges, isInclude, includeLimits, maxCount
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ClassicalStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, nr, dataStride,
 			ranges, isInclude, includeLimits, maxCount
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, nr, dataStride,
 			maskBegin, maskStride, includeLimits, maxCount
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ClassicalStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, nr, dataStride,
 			maskBegin, maskStride, includeLimits, maxCount
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude, includeLimits, maxCount
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ClassicalStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude, includeLimits, maxCount
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, weightsBegin,
 			nr, dataStride, includeLimits, maxCount
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ClassicalStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, weightsBegin,
 			nr, dataStride, includeLimits, maxCount
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, weightsBegin,
 			nr, dataStride, ranges, isInclude, includeLimits, maxCount
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ClassicalStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, weightsBegin,
 			nr, dataStride, ranges, isInclude, includeLimits, maxCount
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride, includeLimits, maxCount
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ClassicalStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride, includeLimits, maxCount
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, weightsBegin,	nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude, includeLimits, maxCount
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateArrays(
+		ClassicalStatistics<CASA_STATP>::_populateArrays(
 			arys, currentCount, dataBegin, weightsBegin,	nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude, includeLimits, maxCount
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+CASA_STATD
+Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	uInt maxElements
 ) const {
 	if (_hasRange) {
-		return ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ConstrainedRangeStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin,	nr, dataStride, maxElements
 		);
 	}
 	else {
-		return ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ClassicalStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin,	nr, dataStride, maxElements
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+CASA_STATD
+Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude,
 	uInt maxElements
 ) const {
 	if (_hasRange) {
-		return ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ConstrainedRangeStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin,	nr, dataStride, ranges, isInclude, maxElements
 		);
 	}
 	else {
-		return ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ClassicalStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin,	nr, dataStride, ranges, isInclude, maxElements
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+CASA_STATD
+Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	uInt maxElements
 ) const {
 	if (_hasRange) {
-		return ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ConstrainedRangeStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin,	nr, dataStride, maskBegin, maskStride, maxElements
 		);
 	}
 	else {
-		return ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ClassicalStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin,	nr, dataStride, maskBegin, maskStride, maxElements
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+CASA_STATD
+Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
 	if (_hasRange) {
-		return ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ConstrainedRangeStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin,	nr, dataStride, maskBegin,
 			maskStride, ranges, isInclude, maxElements
 		);
 	}
 	else {
-		return ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ClassicalStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin,	nr, dataStride, maskBegin,
 			maskStride, ranges, isInclude, maxElements
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+CASA_STATD
+Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	uInt maxElements
 ) const {
 	if (_hasRange) {
-		return ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ConstrainedRangeStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin, weightsBegin, nr, dataStride, maxElements
 		);
 	}
 	else {
-		return ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ClassicalStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin, weightsBegin, nr, dataStride, maxElements
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+CASA_STATD
+Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
 	if (_hasRange) {
-		return ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ConstrainedRangeStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin, weightsBegin, nr, dataStride, ranges, isInclude, maxElements
 		);
 	}
 	else {
-		return ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ClassicalStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin, weightsBegin, nr, dataStride, ranges, isInclude, maxElements
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+CASA_STATD
+Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin,
 	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, uInt maxElements
 ) const {
 	if (_hasRange) {
-		return ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ConstrainedRangeStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin, weightsBegin, nr, dataStride,
 			maskBegin, maskStride, maxElements
 		);
 	}
 	else {
-		return ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ClassicalStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin, weightsBegin, nr, dataStride,
 			maskBegin, maskStride, maxElements
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-Bool HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+CASA_STATD
+Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
 	if (_hasRange) {
-		return ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ConstrainedRangeStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin, weightsBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude, maxElements
 		);
 	}
 	else {
-		return ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_populateTestArray(
+		return ClassicalStatistics<CASA_STATP>::_populateTestArray(
 			ary, dataBegin, weightsBegin, nr, dataStride,
 			maskBegin, maskStride, ranges, isInclude, maxElements
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_setRange() {
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_setRange() {
 	if (_rangeIsSet) {
 		return;
 	}
@@ -1054,80 +1054,80 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	std::set<Double> quantiles;
 	quantiles.insert(0.25);
 	quantiles.insert(0.75);
-	ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator> cs(*this);
+	ClassicalStatistics<CASA_STATP> cs(*this);
 	std::map<Double, AccumType> quartiles = cs.getQuantiles(quantiles);
-	//ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_clearStats();
+	//ClassicalStatistics<CASA_STATP>::_clearStats();
 	AccumType iqr = quartiles[0.75] - quartiles[0.25];
 	CountedPtr<std::pair<AccumType, AccumType> > range = new std::pair<AccumType, AccumType>(
 		quartiles[0.25] - _f*iqr, quartiles[0.75] + _f*iqr
 	);
-	ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_setRange(range);
+	ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
 	_rangeIsSet = True;
 	_hasRange = True;
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+		ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
 			ngood, mymin, mymax, minpos, maxpos, dataBegin, nr, dataStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+		ClassicalStatistics<CASA_STATP>::_unweightedStats(
 			ngood, mymin, mymax, minpos, maxpos, dataBegin, nr, dataStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
 ) {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+		ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
 			ngood, mymin, mymax, minpos, maxpos,
 			dataBegin, nr, dataStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+		ClassicalStatistics<CASA_STATP>::_unweightedStats(
 			ngood, mymin, mymax, minpos, maxpos,
 			dataBegin, nr, dataStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride
 ) {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+		ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
 			ngood, mymin, mymax, minpos, maxpos,
 			dataBegin, nr, dataStride, maskBegin, maskStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+		ClassicalStatistics<CASA_STATP>::_unweightedStats(
 			ngood, mymin, mymax, minpos, maxpos,
 			dataBegin, nr, dataStride, maskBegin, maskStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -1135,63 +1135,63 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	Bool isInclude
 ) {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+		ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
 			ngood, mymin, mymax, minpos, maxpos, dataBegin, nr,
 			dataStride, maskBegin, maskStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_unweightedStats(
+		ClassicalStatistics<CASA_STATP>::_unweightedStats(
 			ngood, mymin, mymax, minpos, maxpos, dataBegin, nr,
 			dataStride, maskBegin, maskStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride
 ) {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+		ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
 			mymin, mymax, minpos, maxpos, dataBegin,
 			weightsBegin, nr, dataStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+		ClassicalStatistics<CASA_STATP>::_weightedStats(
 			mymin, mymax, minpos, maxpos, dataBegin,
 			weightsBegin, nr, dataStride
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+		ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
 			mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
 			nr, dataStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+		ClassicalStatistics<CASA_STATP>::_weightedStats(
 			mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
 			nr, dataStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
@@ -1199,34 +1199,34 @@ void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterat
 	const DataRanges& ranges, Bool isInclude
 ) {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+		ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
 			mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride, ranges, isInclude
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+		ClassicalStatistics<CASA_STATP>::_weightedStats(
 			mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride, ranges, isInclude
 		);
 	}
 }
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-void HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
 	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) {
 	if (_hasRange) {
-		ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+		ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
 			mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride
 		);
 	}
 	else {
-		ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>::_weightedStats(
+		ClassicalStatistics<CASA_STATP>::_weightedStats(
 			mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
 			nr, dataStride, maskBegin, maskStride
 		);

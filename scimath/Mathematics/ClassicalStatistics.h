@@ -38,9 +38,6 @@
 #include <vector>
 #include <utility>
 
-// because the template signature has become unwieldy
-#define _TPARMS AccumType, DataIterator, MaskIterator, WeightsIterator
-
 namespace casacore {
 
 // Class to calculate statistics in a "classical" sense, ie using accumulators with no
@@ -59,19 +56,19 @@ namespace casacore {
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator> 
 class ClassicalStatistics
-	: public StatisticsAlgorithm<_TPARMS> {
+	: public StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator> {
 public:
 
 	ClassicalStatistics();
 
 	// copy semantics
-	ClassicalStatistics(const ClassicalStatistics<_TPARMS>& cs);
+	ClassicalStatistics(const ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& cs);
 
 	virtual ~ClassicalStatistics();
 
 	// copy semantics
-	ClassicalStatistics<_TPARMS>& operator=(
-		const ClassicalStatistics<_TPARMS>& other
+	ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
+		const ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
 	);
 
 	// get the algorithm that this object uses for computing stats
@@ -189,7 +186,7 @@ public:
 	virtual void setCalculateAsAdded(Bool c);
 
 	// An exception will be thrown if setCalculateAsAdded(True) has been called.
-	void setDataProvider(StatsDataProvider<_TPARMS> *dataProvider);
+	void setDataProvider(StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider);
 
 	void setStatsToCalculate(std::set<StatisticsData::STATS>& stats);
 

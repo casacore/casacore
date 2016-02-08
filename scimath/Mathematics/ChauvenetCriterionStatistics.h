@@ -46,7 +46,7 @@ namespace casacore {
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator>
 class ChauvenetCriterionStatistics
-	: public ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator> {
+	: public ConstrainedRangeStatistics<CASA_STATP> {
 public:
 
 	// If <src>zscore</src> is not negative, use that value to discard outliers beyond
@@ -60,8 +60,8 @@ public:
 	virtual ~ChauvenetCriterionStatistics();
 
 	// copy semantics
-	ChauvenetCriterionStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
-		const ChauvenetCriterionStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
+	ChauvenetCriterionStatistics<CASA_STATP>& operator=(
+		const ChauvenetCriterionStatistics<CASA_STATP>& other
 	);
 
 	// get the algorithm that this object uses for computing stats

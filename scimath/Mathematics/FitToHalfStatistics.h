@@ -45,7 +45,7 @@ namespace casacore {
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
 class FitToHalfStatistics
-	: public ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator> {
+	: public ConstrainedRangeStatistics<CASA_STATP> {
 public:
 
 	const static AccumType TWO;
@@ -60,8 +60,8 @@ public:
 	virtual ~FitToHalfStatistics();
 
 	// copy semantics
-	FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
-		const FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
+	FitToHalfStatistics<CASA_STATP>& operator=(
+		const FitToHalfStatistics<CASA_STATP>& other
 	);
 
 	// get the algorithm that this object uses for computing stats
