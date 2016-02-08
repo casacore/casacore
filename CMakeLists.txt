@@ -347,7 +347,7 @@ endif(USE_THREADS)
 
 # Check whether DATA_DIR contains data (only if measures is build)
 if (NOT DATA_DIR)
-   set (DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/data/casacore)
+   set (DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/casacore/data)
 endif (NOT DATA_DIR)
 if (";${_modules};" MATCHES ";measures;")
     get_filename_component(ABS_DATA_DIR "${DATA_DIR}" ABSOLUTE)
