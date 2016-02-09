@@ -797,7 +797,6 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     Double timeOld = 0;
     Double timeNew = 0;
     uInt nsets = pStoreLattice_p->size()/storeLatticeShape.getLast(1)[0];
-
     if (_algConf.algorithm == StatisticsData::CLASSICAL) {
         uInt nel = pInLattice_p->size()/nsets;
         timeOld = nsets*(_aOld + _bOld*nel);
@@ -899,7 +898,7 @@ void LatticeStatistics<T>::_doStatsLoop(
 			stepper.atStart() && ! progressMeter.null()
 			&& ! nsetsIsLarge
 		) {
-			uInt nelem = subLat.size();
+			uInt64 nelem = subLat.size();
 			uInt nSublatticeSteps = nelem > 4096*4096
 				? nelem/subLat.advisedMaxPixels()
 				: 1;
@@ -995,8 +994,9 @@ void LatticeStatistics<T>::_doStatsLoop(
 template <class T>
 void LatticeStatistics<T>::generateRobust () {
 	Bool showMsg = haveLogger_p && doRobust_p && displayAxes_p.nelements()==0;
-	if (showMsg) os_p << LogIO::NORMAL1 << "Computing robust statistics" << LogIO::POST;
-
+	if (showMsg) {
+	    os_p << LogIO::NORMAL << "Computing quantiles..." << LogIO::POST;
+	}
 	const uInt nCursorAxes = cursorAxes_p.nelements();
 	const IPosition latticeShape(pInLattice_p->shape());
 	IPosition cursorShape(pInLattice_p->ndim(),1);
@@ -1018,6 +1018,7 @@ void LatticeStatistics<T>::generateRobust () {
 	std::map<Double, AccumType> quantiles;
 	CountedPtr<uInt64> knownNpts;
 	CountedPtr<AccumType> knownMax, knownMin;
+	static const uInt maxArraySizeBytes = 1e8;
 	if (doRobust_p) {
 		fractions.insert(0.25);
 		fractions.insert(0.75);
@@ -1069,13 +1070,33 @@ void LatticeStatistics<T>::generateRobust () {
 		// getMedian() and getQuartiles() separately
 		knownMin = new AccumType(pStoreLattice_p->getAt(posMin));
 		knownMax = new AccumType(pStoreLattice_p->getAt(posMax));
+		Int64 nBins = 10000;
+		if (knownNpts) {
+		    // try to prevent multiple passes for
+		    // large images
+		    if (*knownNpts > 1e10) {
+		        nBins = 1e7;
+		    }
+		    else if (*knownNpts > 1e9) {
+		        nBins = 1e6;
+		    }
+		    else if (*knownNpts > 1e8) {
+		        nBins = 1e5;
+		    }
+		}
 		pStoreLattice_p->putAt(
 			sa->getMedianAndQuantiles(
-				quantiles, fractions, knownNpts, knownMin, knownMax
+				quantiles, fractions, knownNpts, knownMin, knownMax,
+				maxArraySizeBytes, False, nBins
 			),
 			pos
 		);
-		pStoreLattice_p->putAt(sa->getMedianAbsDevMed(), pos2);
+		pStoreLattice_p->putAt(
+		    sa->getMedianAbsDevMed(
+		        knownNpts, knownMin, knownMax, maxArraySizeBytes,
+		        False, nBins
+		    ), pos2
+		);
 		pStoreLattice_p->putAt(quantiles[0.75] - quantiles[0.25], pos3);
 		pStoreLattice_p->putAt(quantiles[0.25], posQ1);
 		pStoreLattice_p->putAt(quantiles[0.75], posQ3);
