@@ -31,11 +31,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# constants
-
-// IAU definition of light time (s) unit distance to calculate IAU units
-static const Double IAU_tauA=499.0047837;	
-
 // Initialise the maps
 void UnitMap::initUMSI2() {
   // non-metric SI units
@@ -91,7 +86,7 @@ void UnitMap::initUMSI2() {
 						 "jansky")));
   UnitMap::mapSI->insert(map<String, UnitName>::value_type
 			 ("AU",   	UnitName("AU",
-						 UnitVal(C::c * IAU_tauA,"m"),
+						 UnitVal(149597870700,"m"),
 						 "astronomical unit")));
   UnitMap::mapSI->insert(map<String, UnitName>::value_type
 			 ("UA",   	UnitName("UA",
