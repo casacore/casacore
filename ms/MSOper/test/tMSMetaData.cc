@@ -413,8 +413,8 @@ void testIt(MSMetaData& md) {
 		scanKey.obsID = 0;
 		scanKey.arrayID = 0;
 		for (
-				std::set<Int>::const_iterator scan=scanNumbers.begin();
-				scan!=scanNumbers.end(); ++scan
+		    std::set<Int>::const_iterator scan=scanNumbers.begin();
+		    scan!=scanNumbers.end(); ++scan
 		) {
 			std::set<uInt> exp;
 			if (*scan == 1 || *scan==5 || *scan==8) {
@@ -2260,6 +2260,93 @@ void testIt(MSMetaData& md) {
         		uniqueIntents.insert(exp.begin(), exp.end());
         		AlwaysAssert(intents == exp, AipsError);
         	}
+        }
+        {
+            cout << "*** test getSpwsForSubScan()" << endl;
+            ArrayKey arrayKey;
+            arrayKey.obsID = 0;
+            arrayKey.arrayID = 0;
+            std::set<SubScanKey> sskeys = md.getSubScanKeys(arrayKey);
+            std::set<SubScanKey>::const_iterator ssiter = sskeys.begin();
+            std::set<SubScanKey>::const_iterator ssend = sskeys.end();
+            for (; ssiter!=ssend; ++ssiter) {
+                std::set<uInt> exp;
+                Int scan = ssiter->scan;
+                if (scan == 1 || scan==5 || scan==8) {
+                    uInt myints[] = {
+                        0, 1, 2, 3, 4, 5, 6, 7, 8
+                    };
+                    exp.insert(myints, myints+9);
+                }
+                else if (
+                    scan == 2 || scan==3 || scan==6 || scan==9
+                    || scan==11 || scan==13 || scan==15 || scan==17
+                    || scan==19 || scan==22 || scan==24 || scan==26
+                    || scan==29 || scan==31
+                ) {
+                    uInt myints[] = {
+                        0, 9, 10, 11, 12, 13, 14, 15, 16
+                    };
+                    exp.insert(myints, myints+9);
+                }
+                else if (
+                    scan==4 || scan==7 || scan==10 || scan==12
+                    || scan==14 || scan==16 || scan==18 || scan==20
+                    || scan==21 || scan==23 || scan==25 || scan==27
+                    || scan==28 || scan==30 || scan==32
+                ) {
+                    uInt myints[] = {
+                        0, 17, 18, 19, 20, 21, 22, 23, 24
+                    };
+                    exp.insert(myints, myints+9);
+                }
+                AlwaysAssert(md.getSpwsForSubScan(*ssiter) == exp, AipsError);
+            }
+        }
+        {
+            cout << "test getAverageIntervalsForSubScan()" << endl;
+            ArrayKey arrayKey;
+            arrayKey.obsID = 0;
+            arrayKey.arrayID = 0;
+            std::set<SubScanKey> sskeys = md.getSubScanKeys(arrayKey);
+            std::set<SubScanKey>::const_iterator ssiter = sskeys.begin();
+            std::set<SubScanKey>::const_iterator ssend = sskeys.end();
+            for (; ssiter!=ssend; ++ssiter) {
+                std::map<uInt, Quantity> mIntervals = md.getAverageIntervalsForSubScan(*ssiter);
+                std::set<uInt> spws = md.getSpwsForSubScan(*ssiter);
+                AlwaysAssert(mIntervals.size() == spws.size(), AipsError);
+                std::map<uInt, Quantity>::const_iterator miter = mIntervals.begin();
+                std::map<uInt, Quantity>::const_iterator mend = mIntervals.end();
+                for (; miter!=mend; ++miter) {
+                    uInt spw = miter->first;
+                    AlwaysAssert(spws.find(spw) != spws.end(), AipsError);
+                    Double v = 0;
+                    if (spw == 0) {
+                        v = 1.152;
+                    }
+                    else if (
+                        spw == 1 || spw == 3 || spw == 5 || spw == 7
+                        || spw == 9 || spw == 11 || spw == 13 || spw == 15
+                    ) {
+                        v = 2.016;
+                    }
+                    else if (
+                        spw == 2 || spw == 4 || spw == 6 || spw == 8
+                        || spw == 10 || spw == 12 || spw == 14 || spw == 16
+                        || spw == 18 || spw == 20 || spw == 22 || spw == 24
+                    ) {
+                        v = 1.008;
+                    }
+                    else if (
+                        spw == 17 || spw == 19 || spw == 21 || spw == 23
+                    ) {
+                        v = 6.048;
+
+                    }
+                    Quantity expec(v, "s");
+                    AlwaysAssert(near(miter->second, expec, 1e-1), AipsError);
+                }
+            }
         }
         {
 			cout << "*** cache size " << md.getCache() << endl;
