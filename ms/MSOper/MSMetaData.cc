@@ -3529,12 +3529,12 @@ std::map<SubScanKey, MSMetaData::SubScanProperties> MSMetaData::_getSubScanPrope
     Unit unit = intervalTimes->getFullUnit();
     for (; iter!=end; ++iter) {
         SubScanKey ssKey = iter->first;
-        map<uInt, vector<Double> > spwToIntervalSets = iter->second;
+        const map<uInt, vector<Double> >& spwToIntervalSets = iter->second;
         map<uInt, vector<Double> >::const_iterator siter = spwToIntervalSets.begin();
         map<uInt, vector<Double> >::const_iterator send = spwToIntervalSets.end();
         for (; siter!=send; ++siter) {
             uInt spw = siter->first;
-            vector<Double> myIntervals = siter->second;
+            const vector<Double>& myIntervals = siter->second;
             Double mysum = std::accumulate(myIntervals.begin(), myIntervals.end(), 0.0);
             mysubscans[ssKey].meanInterval[spw] = Quantity(mysum/myIntervals.size(), unit);
         }
