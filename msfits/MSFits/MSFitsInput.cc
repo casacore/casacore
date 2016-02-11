@@ -2425,8 +2425,8 @@ void MSFitsInput::fillExtraTables() {
     // table entries for each field/spw combination
 
     if (_addSourceTable)
-        _log << LogOrigin("MSFitsInput", "fillExtraTables")
-               << LogIO::NORMAL << "Filling SOURCE table." << LogIO::POST;
+        _log << LogOrigin("MSFitsInput", __func__)
+               << LogIO::NORMAL << "Filling SOURCE table (this may take some time)." << LogIO::POST;
 
     Int nrow = _ms.nrow();
     Int nAnt = _ms.antenna().nrow();
