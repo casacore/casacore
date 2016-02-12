@@ -2,6 +2,7 @@ set (tests
 tfits2ms
 tMSConcat
 tMSFITSInput
+tMSFITSOutput
 tMSFitsSelection
 )
 
