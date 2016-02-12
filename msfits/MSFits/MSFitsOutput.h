@@ -69,15 +69,16 @@ public:
   //                       as needed to fit the IF structure.  Does not yet
   //                       support spws with different shapes.
   //  @param avgchan       average every N channels
+  //  @param overwrite     overwrite existing file?
   static Bool writeFitsFile(
 		  const String& fitsfile, const MeasurementSet& ms,
 		  const String& column, Int startchan=0,
 		  Int nchan=1, Int stepchan=1,
 		  Bool writeSysCal = False,
 		  Bool asMultiSource = False, Bool combineSpw=False,
-		  Bool writeStation=False, Double sensitivity = 1.0,
-		  const Bool padWithFlags=false, Int avgchan = 1,
-		  uInt fieldNumber=0
+		  Bool writeStation=False, Double sensitivity=1.0,
+		  const Bool padWithFlags=false, Int avgchan=1,
+		  uInt fieldNumber=0, Bool overwrite=False
   );
 
 private:

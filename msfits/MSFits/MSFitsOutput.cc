@@ -35,6 +35,8 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/RecordDesc.h>
 #include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/OS/File.h>
+#include <casacore/casa/OS/RegularFile.h>
 #include <casacore/casa/OS/Time.h>
 #include <casacore/fits/FITS/hdu.h>
 #include <casacore/fits/FITS/fitsio.h>
@@ -89,7 +91,8 @@ Bool MSFitsOutput::writeFitsFile(
 	const MeasurementSet& ms, const String& column, Int startchan,
 	Int nchan, Int stepchan, Bool writeSysCal, Bool asMultiSource,
 	Bool combineSpw, Bool writeStation, Double sensitivity,
-	const Bool padWithFlags, Int avgchan, uInt fieldNumber
+	const Bool padWithFlags, Int avgchan, uInt fieldNumber,
+	Bool overwrite
 ) {
     ROMSObservationColumns obsCols(ms.observation());
     
@@ -118,11 +121,18 @@ Bool MSFitsOutput::writeFitsFile(
     }
 
     String errmsg;
-    NewFile fileOK(True);
-    if (!fileOK.valueOK(outfile, errmsg)) {
-        os << LogIO::SEVERE << "Error in output file : " << errmsg
+    if (overwrite && File(outfile).exists()) {
+        RegularFile(outfile).remove();
+        os << LogIO::NORMAL << "Removing existing file "
+            << outfile << LogIO::POST;
+    }
+    else if (! overwrite) {
+        NewFile fileOK(True);
+        if (!fileOK.valueOK(outfile, errmsg)) {
+            os << LogIO::SEVERE << "Error in output file : " << errmsg
                 << LogIO::POST;
-        return False;
+            return False;
+        }
     }
 
     os << LogIO::NORMAL << "Converting MeasurementSet " << ms.tableName()
