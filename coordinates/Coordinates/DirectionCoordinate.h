@@ -326,9 +326,11 @@ public:
     // if the conversion succeeds, otherwise it returns False and method
     // errorMessage returns its error message.
     // The output vectors are appropriately resized.
+    // if <src>useConversionFrame</src>, if the coordinate has a conversion
+    // layer frame, it is used. Else, the native frame is used for the conversion.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
-			 const Vector<Double> &pixel) const;
+			 const Vector<Double> &pixel, Bool useConversionFrame=True) const;
     virtual Bool toPixel(Vector<Double> &pixel, 
 			 const Vector<Double> &world) const;
     // </group>

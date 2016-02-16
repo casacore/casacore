@@ -144,7 +144,7 @@ Bool QualityCoordinate::toPixel(Int& pixel, Quality::QualityTypes quality) const
 
 
 Bool QualityCoordinate::toWorld(Vector<Double>& world,
-			       const Vector<Double>& pixel) const
+			       const Vector<Double>& pixel, Bool) const
 {
 	// tested: tQualityCoordinate: 403
     DebugAssert(pixel.nelements()==1, AipsError);
