@@ -54,6 +54,7 @@ tImageExpr
 tImageExpr2Gram
 tImageExpr3Gram
 tImageExprGram
+tImageExprParse
 tImageExprParse_addDir
 tImageInfo
 tImageProxy

@@ -141,13 +141,15 @@ ImageExprParse::ImageExprParse (const DComplex& value)
 
 ImageExprParse::ImageExprParse (const Char* value)
 : itsType (TpString),
-  itsSval (String(value))
-{}
+  itsSval (String(value)) {
+    ThrowIf(itsSval.empty(), "Illegal empty expression");
+}
 
 ImageExprParse::ImageExprParse (const String& value)
 : itsType (TpString),
-  itsSval (value)
-{}
+  itsSval (value) {
+    ThrowIf(itsSval.empty(), "Illegal empty expression");
+}
 
 Table& ImageExprParse::getRegionTable (void*, Bool)
 {
