@@ -136,7 +136,7 @@ Bool StokesCoordinate::toPixel(Int& pixel, Stokes::StokesTypes stokes) const
 
 
 Bool StokesCoordinate::toWorld(Vector<Double>& world, 
-			       const Vector<Double>& pixel) const
+			       const Vector<Double>& pixel, Bool) const
 {
     DebugAssert(pixel.nelements()==1, AipsError);
     world.resize(1);

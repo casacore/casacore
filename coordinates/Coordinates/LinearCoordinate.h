@@ -174,10 +174,12 @@ public:
     // Convert a pixel position to a worl position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and method
     // errorMessage returns an error message.  The output 
-    // vectors are appropriately resized.
+    // vectors are appropriately resized. The value of the Bool parameter passed
+    // to toWorld() has no effect as this type of coordinate does not support a
+    // conversion layer frame.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
-			 const Vector<Double> &pixel) const;
+			 const Vector<Double> &pixel, Bool=True) const;
     virtual Bool toPixel(Vector<Double> &pixel, 
 			 const Vector<Double> &world) const;
     // </group>

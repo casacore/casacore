@@ -297,7 +297,7 @@ void DirectionCoordinate::setReferenceConversion (MDirection::Types type)
 }
 
 Bool DirectionCoordinate::toWorld(Vector<Double> &world,
- 				  const Vector<Double> &pixel) const
+ 				  const Vector<Double> &pixel, Bool useConversionFrame) const
 {
 
 // To World with wcs
@@ -310,7 +310,9 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 
 // Convert to specified conversion reference type
   
-       convertTo(world);  
+       if (useConversionFrame) {
+           convertTo(world);
+       }
        return True;
     } else {
        return False;

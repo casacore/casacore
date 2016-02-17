@@ -447,6 +447,46 @@ int main()
     	  cerr << "The input was verified" << endl;
 
       }
+      {
+          cout << "*** test toWorld using both native and conversion layer frames" << endl;
+          CoordinateSystem csys = CoordinateUtil::defaultCoords(4);
+          Matrix<Double> xform(2, 2, 0);
+          xform.diagonal() = 1;
+          DirectionCoordinate dc(
+              MDirection::J2000, Projection::SIN, Quantity(0, "deg"), Quantity(0, "deg"),
+              Quantity(-1, "arcsec"), Quantity(1, "arcsec"), xform, 0, 0
+          );
+          dc.setReferenceConversion(MDirection::GALACTIC);
+          SpectralCoordinate sc(
+              MFrequency::LSRK, Quantity(1500, "MHz"), Quantity(1, "kHz"),
+              0, Quantity(1500, "MHz")
+          );
+          MEpoch epoch(Quantity(60000, "d"), MEpoch::UTC);
+          MPosition position(
+              Quantity(10, "m"), Quantity(135, "deg"), Quantity(40, "deg"), MPosition::ITRF
+          );
+          MDirection direction(Quantity(20, "deg"), Quantity(50, "deg"), MDirection::J2000);
+          sc.setReferenceConversion(MFrequency::CMB, epoch, position, direction);
+          csys.replaceCoordinate(dc, 0);
+          csys.replaceCoordinate(sc, 2);
+          Vector<Double> pixel(4, 0);
+          pixel[0] = 60;
+          pixel[1] = 60;
+          pixel[3] = 10;
+          Vector<Double> world(4);
+          csys.toWorld(world, pixel);
+          AlwaysAssert(near(world[0], 1.6811, 1e-5), AipsError);
+          AlwaysAssert(near(world[1], -1.05011, 1e-5), AipsError);
+          AlwaysAssert(near(world[3], 1.50121e+09, 1e-5), AipsError);
+          csys.toWorld(world, pixel, True);
+          AlwaysAssert(near(world[0], 1.6811, 1e-5), AipsError);
+          AlwaysAssert(near(world[1], -1.05011, 1e-5), AipsError);
+          AlwaysAssert(near(world[3], 1.50121e+09, 1e-5), AipsError);
+          csys.toWorld(world, pixel, False);
+          AlwaysAssert(near(world[0], 6.28289, 1e-5), AipsError);
+          AlwaysAssert(near(world[1], 2.90888e-4, 1e-5), AipsError);
+          AlwaysAssert(world[3] == 1.50001e+09, AipsError);
+      }
 
    }
    catch (const AipsError& x) {

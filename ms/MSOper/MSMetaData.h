@@ -78,8 +78,12 @@ public:
         Double beginTime;
         std::set<uInt> ddIDs;
         Double endTime;
+        // the key is the spwID, the value is the meanInterval for
+        // the subscan and that spwID
+        map<uInt, Quantity> meanInterval;
         Quantity meanExposureTime;
         uInt nrows;
+        std::set<uInt> spws;
         std::set<Int> stateIDs;
         std::map<Double, TimeStampProperties> timeProps;
     };
@@ -226,6 +230,9 @@ public:
 	// get the set of spectral windows for the specified scan.
 	std::set<uInt> getSpwsForScan(const ScanKey& scan) const;
 
+	// get the set of spectral windows for the specified subscan.
+	std::set<uInt> getSpwsForSubScan(const SubScanKey& subScan) const;
+
 	// get the set of scan numbers for the specified spectral window.
 	std::set<Int> getScansForSpw(uInt spw, Int obsID, Int arrayID) const;
 
@@ -301,7 +308,13 @@ public:
 	// <src>names</src> cannot be empty.
 	vector<MPosition> getAntennaPositions(const vector<String>& names);
 
+	// the first key in the returned map is the spectral window ID, the second is
+	// the average interval for the specified scan for that spw.
 	std::map<uInt, Double> getAverageIntervalsForScan(const ScanKey& scan) const;
+
+	// the first key in the returned map is the spectral window ID, the second is
+	// the average interval for the specified sub scan for that spw.
+	std::map<uInt, Quantity> getAverageIntervalsForSubScan(const SubScanKey& subScan) const;
 
 	vector<uInt> getBBCNos() const;
 
@@ -580,7 +593,7 @@ private:
 	mutable SHARED_PTR<Vector<Int> > _antenna1, _antenna2, _scans, _fieldIDs,
 		_stateIDs, _dataDescIDs, _observationIDs, _arrayIDs;
 	mutable SHARED_PTR<std::map<SubScanKey, uInt> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
-
+	mutable SHARED_PTR<QVD> _intervals;
 	mutable SHARED_PTR<vector<uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
  	mutable std::map<ScanKey, std::set<String> > _scanToIntentsMap;
  	mutable std::map<SubScanKey, std::set<String> > _subScanToIntentsMap;
@@ -736,6 +749,8 @@ private:
 	SHARED_PTR<ArrayColumn<Bool> > _getFlags() const;
 
 	std::map<String, std::set<Double> > _getIntentsToTimesMap() const;
+
+	SHARED_PTR<QVD> _getIntervals() const;
 
 	SHARED_PTR<Vector<Int> > _getObservationIDs() const;
 

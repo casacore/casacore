@@ -369,7 +369,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			Double btime = timerange.first;
 			Double etime = timerange.second;
 			Double day=floor(MVTime(btime/C::day).day());
-			std::set<uInt> spw = _msmd->getSpwsForScan(scan);
+			std::set<uInt> spw = _msmd->getSpwsForSubScan(*siter);
 			String name=fieldnames(siter->fieldID);
 			if (verbose) {
 				os.output().setf(ios::right, ios::adjustfield);
@@ -412,7 +412,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 				os.output().width(widthLead); os << "  ";
 				os << spw;
 				os.output().width(widthLead); os << "  ";
-				std::map<uInt, Double> intToScanMap = _msmd->getAverageIntervalsForScan(scan);
+				std::map<uInt, Quantity> intToScanMap = _msmd->getAverageIntervalsForSubScan(*siter);
 				os << "[";
 				for (
 					std::set<uInt>::const_iterator spwiter=spw.begin();
@@ -421,7 +421,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 					if (spwiter!=spw.begin()) {
 						os << ", ";
 					}
-					os << intToScanMap[*spwiter];
+					os << intToScanMap[*spwiter].getValue("s");
 				}
 				os << "] ";
 				std::set<String> intents = _msmd->getIntentsForSubScan(*siter);

@@ -207,7 +207,7 @@ uInt LinearCoordinate::nWorldAxes() const
 }
 
 Bool LinearCoordinate::toWorld(Vector<Double> &world, 
-			       const Vector<Double> &pixel) const
+			       const Vector<Double> &pixel, Bool) const
 {
    return toWorldWCS (world, pixel, wcs_p);
 }
