@@ -442,7 +442,7 @@ uInt SpectralCoordinate::nWorldAxes() const
 
 
 Bool SpectralCoordinate::toWorld (Vector<Double> &world,
-                                  const Vector<Double> &pixel) const
+                                  const Vector<Double> &pixel, Bool useConversionFrame) const
 {
 
 // Convert to World (Hz)
@@ -462,7 +462,9 @@ Bool SpectralCoordinate::toWorld (Vector<Double> &world,
 
 // Convert to output reference type
 
-    convertTo(world);    
+    if (useConversionFrame) {
+        convertTo(world);
+    }
 //
     return ok;
 }

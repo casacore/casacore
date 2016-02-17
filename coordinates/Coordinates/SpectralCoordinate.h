@@ -283,9 +283,11 @@ public:
     // <src>errorMessage()</src> contains an error message.  The input vectors
     // must be of length one and the output vectors are resized if they are not
     // already of length one.
+    // if <src>useConversionFrame</src>, if the coordinate has a conversion
+    // layer frame, it is used. Else, the native frame is used for the conversion.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
-  		         const Vector<Double> &pixel) const;
+  		         const Vector<Double> &pixel, Bool useConversionFrame=True) const;
     virtual Bool toPixel(Vector<Double> &pixel, 
   		         const Vector<Double> &world) const;
     Bool toWorld(Double& world, const Double& pixel) const;
