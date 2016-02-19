@@ -2256,7 +2256,7 @@ Bool MSConcat::copySource(const MeasurementSet& otherms){
       if(refType>=MDirection::MERCURY && refType<MDirection::N_Planets){ // we have a solar system object
 	solSystObjects_p.define(otherFieldCols.sourceId()(i)+maxSrcId+1, (Int) refType);
       }
-      if(!fieldCols.ephemPath(i).empty()){ // this is an ephemeris object
+      if(!otherFieldCols.ephemPath(i).empty()){ // this is an ephemeris object
 	solSystObjects_p.define(otherFieldCols.sourceId()(i)+maxSrcId+1, -2); // mark as -2
       }
     }
