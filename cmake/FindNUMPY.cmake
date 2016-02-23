@@ -61,6 +61,9 @@ if(NOT _NUMPY_SEARCH_SUCCESS MATCHES 0)
     if(NumPy_FIND_REQUIRED)
         message(FATAL_ERROR
             "NumPy import failure:\n${_NUMPY_ERROR_VALUE}")
+    else()
+        message(WARNING
+            "NumPy import failure:\n${_NUMPY_ERROR_VALUE}")
     endif()
     set(NUMPY_FOUND FALSE)
     return()
