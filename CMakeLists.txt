@@ -61,6 +61,9 @@ set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 option (BUILD_PYTHON "Build the python bindings" YES)
 option (BUILD_PYTHON3 "Build the python3 bindings" NO)
 
+# You can use this to override library installation location, for example for debian multi-arch
+set (LIBRARY_OUTPUT_PATH lib${LIB_SUFFIX} CACHE PATH "Where to install the casacore libraries")
+
 # By default build shared libraries
 option (ENABLE_SHARED "Build shared libraries" YES)
 
