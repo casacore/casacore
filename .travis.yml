@@ -1,4 +1,5 @@
 language: cpp
+cache: ccache
 
 os:
   - linux
@@ -9,8 +10,12 @@ compiler:
   - gcc
 
 env:
-  - CXX11=True
-  - CXX11=False
+  global:
+    - CCACHE_COMPRESS=1
+    - CCACHE_CPP2=yes
+  matrix:
+    - CXX11=True
+    - CXX11=False
 
 matrix:
   exclude:
@@ -35,6 +40,7 @@ install:
 addons:
   apt:
     packages:
+    - ccache
     - cmake
     - flex
     - bison
@@ -58,9 +64,13 @@ before_script:
 
 script:
   - cd ${TRAVIS_BUILD_DIR}/build
+  - ccache -M 160M # non cxx11 builds need around 120mb
+  - ccache -s
+  - ccache -z
   - make -j4
   - make test
   - make install
+  - ccache -s
 
 notifications:
   webhooks:
