@@ -156,21 +156,13 @@ private:
     //    @param padWithFlags   If true && combineSpw==true, pad the spws with
     //                          flags as necessary to fit the IF structure.
     //    @param avgchan        average every N channels
-    static FitsOutput *writeMain(
+    FitsOutput* _writeMain(
         Int& refPixelFreq, Double& refFreq,
-        Double& chanbw,
-        const String& outFITSFile,
-        const MeasurementSet& rawms,
-        const String& column,
-        const Block<Int>& spwidMap,
-        Int nrspw,
-        Int startchan, Int nchan, Int stepchan,
+        Double& chanbw, const String& outFITSFile,
+        const Block<Int>& spwidMap, Int nrspw,
         const Block<Int>& fieldidMap,
-        Bool asMultiSource,
-        const Bool combineSpw,
-        const Bool padWithFlags,
-        Int avgchan, uInt fieldNumber
-    );
+        Bool asMultiSource
+    ) const;
 
     // Write the FQ table.
     // If combineSpw is True, all spectral-windows are written in one
@@ -245,7 +237,7 @@ private:
     //                  IDs to consider.
     //    @return number of selected IDs in allids
 
-    static Int makeIdMap(
+    static Int _makeIdMap(
         Block<Int>& map, Vector<Int>& selids,
         const Vector<Int>& allids
     );

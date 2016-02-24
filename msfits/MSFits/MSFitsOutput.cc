@@ -28,6 +28,7 @@
 #include <casacore/msfits/MSFits/MSFitsOutput.h>
 #include <casacore/msfits/MSFits/MSFitsOutputAstron.h>
 #include <casacore/ms/MeasurementSets/MSColumns.h>
+#include <casacore/ms/MSOper/MSMetaData.h>
 #include <casacore/tables/Tables.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Containers/Block.h>
@@ -154,18 +155,11 @@ void MSFitsOutput::write() const {
         << " stepchan=" << _stepChan << " avgchan=" << _avgChan << LogIO::POST;
     const uInt nrow = _ms.nrow();
     String msfile = _ms.tableName();
-    String outfile;
-    // OK, get the output name
-    if (_fitsfile == "") {
-        if (msfile.contains(Regex("\\.ms$"))) {
-            outfile = msfile.before(Regex("\\.ms"), 0) + ".fits";
-        }
-        else {
-            outfile = msfile + ".fits";
-        }
-    }
-    else {
-        outfile = _fitsfile; // Use the supplied name
+    String outfile = _fitsfile;
+    if (outfile.empty()) {
+        outfile = msfile.contains(Regex("\\.ms$"))
+            ? msfile.before(Regex("\\.ms"), 0) + ".fits"
+            : msfile + ".fits";
     }
     String errmsg;
     if (_overwrite && File(outfile).exists()) {
@@ -196,46 +190,11 @@ void MSFitsOutput::write() const {
     Vector<Int> spwids;
     uInt nrspw;
     {
-
-        /* Note: The MAIN table does not point directly to
-            spwIDs but to the DATA_DESC_ID table, which in turn points
-            to entries in the SPECTRAL_WINDOW table (the spwid).
-            First, determine which spwIDs are referenced from the MAIN table.
-        */
-
-        Vector<Int> ddidcol(ScalarColumn<Int> (
-            _ms, MS::columnName(MS::DATA_DESC_ID)).getColumn()
-        );
-        Vector<Int> spwidcol(ScalarColumn<Int> (
-            _ms.dataDescription(),
-            MSDataDescription::columnName(
-                MSDataDescription::SPECTRAL_WINDOW_ID)
-            ) .getColumn()
-        );
-
-        std::set<Int> allIDs;
-        for (uInt i = 0; i < ddidcol.nelements(); i++) {
-            Int ddid = ddidcol(i);
-            if (static_cast<uInt> (ddid) < spwidcol.nelements()) {
-                Int spwid = spwidcol(ddid);
-                allIDs.insert(spwid);
-            }
-            else {
-                os << LogIO::SEVERE << _ms.tableName() << " row " << i << ": "
-                    << "Invalid data description ID = " << ddid
-                    << ". DATA_DESC_ID table " << "has "
-                    << spwidcol.nelements() << " rows" << LogIO::POST;
-            }
-        }
-
-        /* Convert to vector */
-        Vector<Int> allids(allIDs.size());
-        uInt j = 0;
-        for (std::set<Int>::iterator i = allIDs.begin(); i != allIDs.end(); i++) {
-            allids[j++] = *i;
-        }
-
-        nrspw = makeIdMap(spwidMap, spwids, allids);
+        MSMetaData md(&_ms, 100);
+        std::set<uInt> spwIDs = md.getSpwIDs();
+        Vector<Int> allids(spwIDs.size());
+        copy(spwIDs.begin(), spwIDs.end(), allids.begin());
+        nrspw = _makeIdMap(spwidMap, spwids, allids);
     }
 
     // If not asMultiSource, check if multiple sources are present.
@@ -254,17 +213,15 @@ void MSFitsOutput::write() const {
             }
         }
         Vector<Int> fieldids;
-        nrfield = makeIdMap(fieldidMap, fieldids, fldid);
+        nrfield = _makeIdMap(fieldidMap, fieldids, fldid);
     }
 
     // Write main table. Get freq and channel-width back.
     Int refPixelFreq;
     Double refFreq, chanbw;
-    FitsOutput* fitsOutput = writeMain(
+    FitsOutput* fitsOutput = _writeMain(
         refPixelFreq, refFreq, chanbw, outfile,
-        _ms, _column, spwidMap, nrspw, _startChan, _nchan,
-        _stepChan, fieldidMap, doMultiSource, _combineSpw,
-        _padWithFlags, _avgChan, _fieldNumber
+        spwidMap, nrspw, fieldidMap, doMultiSource
     );
 
     Bool ok = fitsOutput;
@@ -393,17 +350,16 @@ uInt MSFitsOutput::get_tbf_end(const uInt rownr, const uInt nrow,
     return tbfend;
 }
 
-FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
-        Double& chanbw, const String &outFITSFile, const MeasurementSet &rawms,
-        const String &column, const Block<Int>& spwidMap, Int nrspw,
-        Int chanstart, Int nchan, Int chanstep, const Block<Int>& fieldidMap,
-        Bool asMultiSource, const Bool combineSpw, Bool padWithFlags, Int avgchan,
-        uInt fieldNumber) {
-    if (avgchan < 0)
-       avgchan = 1;
+FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
+    Double& chanbw, const String &outFITSFile,
+    const Block<Int>& spwidMap, Int nrspw,
+    const Block<Int>& fieldidMap,
+    Bool asMultiSource
+) const {
+    Int avgchan = _avgChan < 0 ? 1 : _avgChan;
     FitsOutput *outfile = 0;
     LogIO os(LogOrigin("MSFitsOutput", __func__));
-    const uInt nrow = rawms.nrow();
+    const uInt nrow = _ms.nrow();
     if (nrow == 0) {
         os << LogIO::SEVERE << "Empty measurement set!" << LogIO::POST;
         return 0;
@@ -411,7 +367,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 
     Bool doWsrt = False;
     {
-        MSObservation obsTable(rawms.observation());
+        MSObservation obsTable(_ms.observation());
         if (obsTable.nrow() > 0) {
             ScalarColumn<String> inarrayname(obsTable,
                     MSObservation::columnName(MSObservation::TELESCOPE_NAME));
@@ -423,7 +379,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     String objectname;
     {
     	// field table info
-    	MSField fieldTable(rawms.field());
+    	MSField fieldTable(_ms.field());
     	ROMSFieldColumns msfc(fieldTable);
     	if (asMultiSource) {
     		// UVFITS expects zeros for multi-source
@@ -431,14 +387,14 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     	}
     	else {
     		// Use the actual RA/Decl
-    		radec = msfc.phaseDirMeas(fieldNumber).getAngle().getValue();
+    		radec = msfc.phaseDirMeas(_fieldNumber).getAngle().getValue();
     		radec *= 180.0 / C::pi; // convert to degrees for FITS
     		if (radec(0) < 0) {
     			radec(0) += 360.0;
     		}
-    		objectname = msfc.name()(fieldNumber);
+    		objectname = msfc.name()(_fieldNumber);
     	}
-    	uInt myfield = asMultiSource ? 0 : fieldNumber;
+    	uInt myfield = asMultiSource ? 0 : _fieldNumber;
     	Bool foundEpoch = False;
     	String dirtype = msfc.phaseDirMeas(myfield).getRefString();
     	if (dirtype.contains("2000")) {
@@ -458,13 +414,13 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     // First scan the SPECTRAL_WINDOW table to make sure that the data
     // shape is constant, the correlation type is constant, and that the
     // frequencies can be represented as f = f0 + i*inc
-    MSDataDescription ddTable = rawms.dataDescription();
-    MSSpectralWindow spectralTable = rawms.spectralWindow();
-    MSPolarization polTable = rawms.polarization();
+    MSDataDescription ddTable = _ms.dataDescription();
+    MSSpectralWindow spectralTable = _ms.spectralWindow();
+    MSPolarization polTable = _ms.polarization();
     MSSource srcTable;
     uInt nsrc = 0;
     try {
-        srcTable = rawms.source();
+        srcTable = _ms.source();
         nsrc = srcTable.nrow();
     }
     catch (const AipsError& x) {
@@ -527,6 +483,9 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     Vector<Int> stokes;
     Int measFreq0 = -1;
     uInt i;
+    Int nchan = _nchan;
+    Int chanstep = _stepChan;
+    Int chanstart = _startChan;
     for (i = 0; i < ndds; i++) {
         if (i < spwidMap.nelements() && spwidMap[i] >= 0) {
             const Int s = spwId(i);
@@ -541,6 +500,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
                     delta = -delta; // This makes delta (and later bw0) NEGATIVE
             }
             // If first time, set the various values.
+
             if (numcorr0 == 0) {
                 numcorr0 = numcorr(p);
                 numchan0 = numchan(s);
@@ -554,20 +514,19 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
                 bw0 = delta;
                 chanbw = abs(delta);
                 stokes = stokesTypes(p);
-
-                if ((nchan > 0) && (chanstep > 0) && (chanstart >= 0)
-                        && ((nchan * chanstep + chanstart) <= numchan0)) {
-
-                    f0 = freqs(chanstart);
-                    bw0 = delta * chanstep;
-                } else {
+                if (
+                    (_nchan > 0) && (_stepChan > 0) && (_startChan >= 0)
+                    && ((_nchan * _stepChan + _startChan) <= numchan0)
+                ) {
+                    f0 = freqs(_startChan);
+                    bw0 = delta * _stepChan;
+                }
+                else {
                     nchan = numchan0;
                     chanstep = 1;
                     chanstart = 0;
                 }
-
                 measFreq0 = measFreq(s);
-
             }
 
             // Check if values match.
@@ -668,13 +627,13 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     // DATA: COMPLEX(2)+WEIGHT, NUM_CORR, NUM_CHAN, IF, RA, DEC
     RecordDesc desc;
     String columnName;
-    String col = column;
+    String col = _column;
     col.upcase();
     if (col == "OBSERVED" || col == MS::columnName(MS::DATA)) {
         columnName = MS::columnName(MS::DATA);
         os << "Writing DATA column" << LogIO::POST;
     } else if (col == "MODEL" || col == "MODEL_DATA") {
-        if (rawms.tableDesc().isColumn("MODEL_DATA")) {
+        if (_ms.tableDesc().isColumn("MODEL_DATA")) {
             columnName = "MODEL_DATA";
             os << "Writing MODEL_DATA column" << LogIO::POST;
         } else {
@@ -683,7 +642,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
                     << LogIO::POST;
         }
     } else if (col == "CORRECTED" || col == "CORRECTED_DATA") {
-        if (rawms.tableDesc().isColumn("CORRECTED_DATA")) {
+        if (_ms.tableDesc().isColumn("CORRECTED_DATA")) {
             columnName = "CORRECTED_DATA";
             os << "Writing CORRECTED_DATA column" << LogIO::POST;
         } else {
@@ -694,22 +653,22 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
         }
     } else {
         columnName = MS::columnName(MS::DATA);
-        os << LogIO::SEVERE << "Unrecognized column " << column
+        os << LogIO::SEVERE << "Unrecognized column " << _column
                 << ", writing DATA" << LogIO::POST;
     }
 
     // Does the MS have a WEIGHT_SPECTRUM?
-    Bool hasWeightArray = rawms.tableDesc(). isColumn(MS::columnName(
+    Bool hasWeightArray = _ms.tableDesc(). isColumn(MS::columnName(
             MS::WEIGHT_SPECTRUM));
 
     if (hasWeightArray) {
-        ROMSMainColumns tempCols(rawms);
+        ROMSMainColumns tempCols(_ms);
         if (!tempCols.weightSpectrum().isDefined(0))
             hasWeightArray = False;
     }
 
     IPosition dataShape(6, 3, numcorr0, nchan, 1, 1, 1);
-    if (combineSpw) {
+    if (_combineSpw) {
         dataShape(3) = nrspw;
     }
     desc.addField("data", TpArrayFloat, dataShape);
@@ -725,7 +684,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     // BASELINE
     desc.addField("baseline", TpFloat);
     // FREQSEL
-    ScalarColumn<Int> inddid(rawms, MS::columnName(MS::DATA_DESC_ID));
+    ScalarColumn<Int> inddid(_ms, MS::columnName(MS::DATA_DESC_ID));
     desc.addField("freqsel", TpFloat);
     // SOURCE and INTTIM only in multi-source table
     if (asMultiSource) {
@@ -740,7 +699,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     ek.define("bzero", 0.0);
     String bunit = "UNCALIB";
     {
-        TableColumn indata(rawms, columnName);
+        TableColumn indata(_ms, columnName);
         if (indata.keywordSet().isDefined("QuantumUnit")
                 && indata.keywordSet().dataType("QuantumUnit") == TpString) {
             indata.keywordSet().get("QuantumUnit", bunit);
@@ -847,30 +806,12 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 
     // OBS-TIME
     {
-        ScalarColumn<Double> intm(rawms, MS::columnName(MS::TIME));
+        ScalarColumn<Double> intm(_ms, MS::columnName(MS::TIME));
         ek.define("date-obs", toFITSDate(intm(0) / C::day)); // First time entry
     }
 
-    /*
-    // EPOCH
-    Bool foundEpoch = False;
-    String dirtype = msfc.phaseDirMeas(0).getRefString();
-    if (dirtype.contains("2000")) {
-        ek.define("epoch", 2000.0);
-        foundEpoch = True;
-    } else if (dirtype.contains("1950")) {
-        ek.define("epoch", 1950.0);
-        foundEpoch = True;
-    }
-    if (!foundEpoch) {
-        os << LogIO::SEVERE << "Cannot deduce MS epoch. Assuming J2000"
-                << LogIO::POST;
-        ek.define("epoch", 2000.0);
-    }
-    */
-
     // TELESCOP INSTRUME
-    ROMSObservationColumns obsC(rawms.observation());
+    ROMSObservationColumns obsC(_ms.observation());
     if (obsC.nrow() == 0) {
         os << LogIO::SEVERE << "No Observation info!" << LogIO::POST;
         return 0;
@@ -934,17 +875,21 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 
     // Sort the table in order of TIME, ANTENNA1, ANTENNA2, FIELDID, SPWID.
     // Iterate through the table on the first 4 fields.
-    Block<String> sortNames(combineSpw ? 4 : 5);
+    Block<String> sortNames(_combineSpw ? 4 : 5);
     sortNames[0] = MS::columnName(MS::TIME_CENTROID);
     sortNames[1] = MS::columnName(MS::ANTENNA1);
     sortNames[2] = MS::columnName(MS::ANTENNA2);
     sortNames[3] = MS::columnName(MS::FIELD_ID);
     Vector<uInt> sortIndex;
-    if (combineSpw) // combineSpw will do its own
-        sortIndex.resize(nrow); // DATA_DESC_ID sorting.
-    else
+    if (_combineSpw) {
+        // combineSpw will do its own
+        // DATA_DESC_ID sorting.
+        sortIndex.resize(nrow);
+    }
+    else {
         sortNames[4] = MS::columnName(MS::DATA_DESC_ID);
-    Table sortTable = rawms.sort(sortNames);
+    }
+    Table sortTable = _ms.sort(sortNames);
 
     // Make objects for the various columns.
     ArrayColumn<Complex> indata(sortTable, columnName);
@@ -972,10 +917,13 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     }
 
     uInt nif = 1;
-    if (combineSpw)
+    Bool padWithFlags = _padWithFlags;
+    if (_combineSpw) {
         nif = nrspw;
-    if (nif < 2)
-        padWithFlags = false;
+    }
+    if (nif < 2) {
+        padWithFlags = False;
+    }
 
     ScalarColumn<Double> ininterval;
     if (padWithFlags)
@@ -989,7 +937,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     uInt nOutRow = nrow;
     Vector<uInt> tbfends;
 
-    if (combineSpw) {
+    if (_combineSpw) {
         // Prepare a list of the expected DDIDs as a function of rownr % nif.
         // If inspwinid(rownr) != expectedDDIDs[rownr % nif], something has gone
         // wrong (probably combinespw && multiple tunings, CAS-2048).
@@ -1129,7 +1077,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
     }
 
     Vector<Int> antnumbers;
-    handleAntNumbers(rawms, antnumbers);
+    handleAntNumbers(_ms, antnumbers);
 
     // Loop through all rows.
     ProgressMeter meter(0.0, nOutRow * 1.0, "UVFITS Writer", "Rows copied", "",
@@ -1166,7 +1114,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
         // so far.
         uInt rownr = rawrownr;
         uInt tbfend = tbfrownr + nif - 1;
-        if (combineSpw && nif > 1) {
+        if (_combineSpw && nif > 1) {
             tbfend = tbfends[rownr];
             rownr = sortIndex[rawrownr];
         }
@@ -1174,7 +1122,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
         for (uInt m = 0; m < nif; ++m) {
             Bool rowFlag; // FLAG_ROW
 
-            if (combineSpw && (rownr >= nrow // flag remaining IFs in tbfrownr
+            if (_combineSpw && (rownr >= nrow // flag remaining IFs in tbfrownr
                     || inspwinid(rownr) != expectedDDIDs[m])) {
                 if (padWithFlags) {
                     // Save this row for the next one, and fill in with flagged junk.
@@ -1237,12 +1185,10 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
                  */
                 // lasttime = intimec(rownr);
 
-                if (!padWithFlags || rawrownr <= tbfend) {
+                if (! padWithFlags || rawrownr <= tbfend) {
                     ++rawrownr; // register that the spw was present.
-                    if (combineSpw && nif > 1)
-                        rownr = sortIndex[rawrownr];
-                    else
-                        rownr = rawrownr;
+                    rownr = _combineSpw && nif > 1
+                        ? sortIndex[rawrownr] : rawrownr;
                 }
             }
 
@@ -1413,11 +1359,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 
         // FREQSEL (in the future it might be FREQ_GRP+1)
         //    *ofreqsel = inddid(i) + 1;
-        if (combineSpw) {
-            *ofreqsel = 1;
-        } else {
-            *ofreqsel = 1 + spwidMap[inspwinid(tbfrownr)];
-        }
+        *ofreqsel = _combineSpw ? 1 : 1 + spwidMap[inspwinid(tbfrownr)];
 
         // SOURCE
         // INTTIM
@@ -2789,7 +2731,7 @@ Table MSFitsOutput::handleSysCal(const MeasurementSet& ms,
 
  returns: nr, number of selected IDs in allids
  */
-Int MSFitsOutput::makeIdMap(Block<Int>& map, Vector<Int>& selids, const Vector<
+Int MSFitsOutput::_makeIdMap(Block<Int>& map, Vector<Int>& selids, const Vector<
         Int>& allids) {
     // Determine the number of ids and make a mapping of
     // id number in the table to id number in fits.
