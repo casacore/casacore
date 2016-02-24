@@ -27,7 +27,6 @@
 
 #include <casacore/msfits/MSFits/MSFitsOutput.h>
 #include <casacore/msfits/MSFits/MSFitsOutputAstron.h>
-#include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MeasurementSets/MSColumns.h>
 #include <casacore/tables/Tables.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -69,7 +68,57 @@
 
 #include <set>
 
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+namespace casacore {
+
+MSFitsOutput::MSFitsOutput(
+    const String& fitsfile, const MeasurementSet& ms,
+    const String& column
+) : _fitsfile(fitsfile), _column(column), _ms(ms),
+    _startChan(0), _nchan(1), _stepChan(1), _avgChan(1),
+    _writeSysCal(False), _asMultiSource(False), _combineSpw(False),
+    _writeStation(False), _padWithFlags(False), _overwrite(False),
+    _sensitivity(1.0), _fieldNumber(0) {}
+
+void MSFitsOutput::setChannelInfo(
+    Int startChan, Int nchan, Int stepChan, Int avgChan
+) {
+    _startChan = startChan;
+    _nchan = nchan;
+    _stepChan = stepChan;
+    _avgChan = avgChan;
+}
+
+void MSFitsOutput::setWriteSysCal(Bool s) {
+    _writeSysCal = s;
+}
+
+void MSFitsOutput::setAsMultiSource(Bool asMultiSource) {
+    _asMultiSource = asMultiSource;
+}
+
+void MSFitsOutput::setCombineSpw(Bool combineSpw) {
+    _combineSpw = combineSpw;
+}
+
+void MSFitsOutput::setWriteStation(Bool writeStation) {
+    _writeStation = writeStation;
+}
+
+void MSFitsOutput::setSensitivity(Double sensitivity) {
+    _sensitivity = sensitivity;
+}
+
+void MSFitsOutput::setPadWitFlags(Bool padWithFlags) {
+    _padWithFlags = padWithFlags;
+}
+
+void MSFitsOutput::setFieldNumber(uInt fieldNumber) {
+    _fieldNumber = fieldNumber;
+}
+
+void MSFitsOutput::setOverwrite(Bool overwrite) {
+    _overwrite = overwrite;
+}
 
 static String toFITSDate(const MVTime &time) {
     String date, timesys;
@@ -86,63 +135,60 @@ void MSFitsOutput::timeToDay(Int &day, Double &dayFraction, Double time) {
     dayFraction = time - floor(time);
 }
 
-Bool MSFitsOutput::writeFitsFile(
-	const String& fitsfile,
-	const MeasurementSet& ms, const String& column, Int startchan,
-	Int nchan, Int stepchan, Bool writeSysCal, Bool asMultiSource,
-	Bool combineSpw, Bool writeStation, Double sensitivity,
-	const Bool padWithFlags, Int avgchan, uInt fieldNumber,
-	Bool overwrite
-) {
-    ROMSObservationColumns obsCols(ms.observation());
-    
-    if (obsCols.nrow() > 0 && (obsCols.telescopeName()(0) == "WSRT"
-            || obsCols.telescopeName()(0) == "LOFAR")) {
-         return MSFitsOutputAstron::writeFitsFile(fitsfile, ms, column,
-                startchan, nchan, stepchan, writeSysCal, asMultiSource,
-                combineSpw, writeStation, sensitivity);
+void MSFitsOutput::write() const {
+    ROMSObservationColumns obsCols(_ms.observation());
+    if (
+        obsCols.nrow() > 0 && (obsCols.telescopeName()(0) == "WSRT"
+        || obsCols.telescopeName()(0) == "LOFAR")
+    ) {
+        ThrowIf(
+            ! MSFitsOutputAstron::writeFitsFile(_fitsfile, _ms, _column,
+                _startChan, _nchan, _stepChan, _writeSysCal, _asMultiSource,
+                _combineSpw, _writeStation, _sensitivity
+            ), "Unable to write Astron-specific UVFITS file"
+        );
+        return;
     }
     LogIO os(LogOrigin("MSFitsOutput", __func__));
-    os << LogIO::NORMAL << " nchan=" << nchan << " startchan=" << startchan 
-         << " stepchan=" << stepchan << " avgchan=" << avgchan << LogIO::POST; 
-    const uInt nrow = ms.nrow();
-    String msfile = ms.tableName();
+    os << LogIO::NORMAL << " nchan=" << _nchan << " startchan=" << _startChan
+        << " stepchan=" << _stepChan << " avgchan=" << _avgChan << LogIO::POST;
+    const uInt nrow = _ms.nrow();
+    String msfile = _ms.tableName();
     String outfile;
     // OK, get the output name
-    if (fitsfile == "") {
+    if (_fitsfile == "") {
         if (msfile.contains(Regex("\\.ms$"))) {
-            String copy = msfile; // need a copy because .before is non-const
-            outfile = copy.before(Regex("\\.ms"), 0) + ".fits";
-        } else {
+            outfile = msfile.before(Regex("\\.ms"), 0) + ".fits";
+        }
+        else {
             outfile = msfile + ".fits";
         }
-    } else {
-        outfile = fitsfile; // Use the supplied name
     }
-
+    else {
+        outfile = _fitsfile; // Use the supplied name
+    }
     String errmsg;
-    if (overwrite && File(outfile).exists()) {
+    if (_overwrite && File(outfile).exists()) {
         RegularFile(outfile).remove();
         os << LogIO::NORMAL << "Removing existing file "
             << outfile << LogIO::POST;
     }
-    else if (! overwrite) {
+    else if (! _overwrite) {
         NewFile fileOK(True);
-        if (!fileOK.valueOK(outfile, errmsg)) {
-            os << LogIO::SEVERE << "Error in output file : " << errmsg
-                << LogIO::POST;
-            return False;
-        }
+        ThrowIf (
+            ! fileOK.valueOK(outfile, errmsg),
+            "Error in output file : " + errmsg
+        );
     }
 
-    os << LogIO::NORMAL << "Converting MeasurementSet " << ms.tableName()
-            << " to FITS file '" << outfile << "'" << LogIO::POST;
+    os << LogIO::NORMAL << "Converting MeasurementSet " << _ms.tableName()
+        << " to FITS file '" << outfile << "'" << LogIO::POST;
 
     // Determine if this MS is a subset of a main MS.
-    Bool isSubset = (nrow != 1 + max(ms.rowNumbers()));
+    Bool isSubset = nrow != (1 + max(_ms.rowNumbers()));
     if (isSubset) {
-        os << LogIO::NORMAL << "MS " << ms.tableName()
-                << " is a subset of another MS" << LogIO::POST;
+        os << LogIO::NORMAL << "MS " << _ms.tableName()
+            << " is a subset of another MS" << LogIO::POST;
     }
 
     // Find the number of IF's (spectral-windows).
@@ -152,29 +198,33 @@ Bool MSFitsOutput::writeFitsFile(
     {
 
         /* Note: The MAIN table does not point directly to
-         spwIDs but to the DATA_DESC_ID table, which in turn points
-         to entries in the SPECTRAL_WINDOW table (the spwid).
-         First, determine which spwIDs are referenced from the MAIN table.
-         */
+            spwIDs but to the DATA_DESC_ID table, which in turn points
+            to entries in the SPECTRAL_WINDOW table (the spwid).
+            First, determine which spwIDs are referenced from the MAIN table.
+        */
 
-        Vector<Int> ddidcol(ScalarColumn<Int> (ms, MS::columnName(
-                MS::DATA_DESC_ID)).getColumn());
-        Vector<Int> spwidcol(ScalarColumn<Int> (ms.dataDescription(),
-                MSDataDescription::columnName(
-                        MSDataDescription::SPECTRAL_WINDOW_ID)) .getColumn());
+        Vector<Int> ddidcol(ScalarColumn<Int> (
+            _ms, MS::columnName(MS::DATA_DESC_ID)).getColumn()
+        );
+        Vector<Int> spwidcol(ScalarColumn<Int> (
+            _ms.dataDescription(),
+            MSDataDescription::columnName(
+                MSDataDescription::SPECTRAL_WINDOW_ID)
+            ) .getColumn()
+        );
 
         std::set<Int> allIDs;
         for (uInt i = 0; i < ddidcol.nelements(); i++) {
             Int ddid = ddidcol(i);
             if (static_cast<uInt> (ddid) < spwidcol.nelements()) {
                 Int spwid = spwidcol(ddid);
-
                 allIDs.insert(spwid);
-            } else {
-                os << LogIO::SEVERE << ms.tableName() << " row " << i << ": "
-                        << "Invalid data description ID = " << ddid
-                        << ". DATA_DESC_ID table " << "has "
-                        << spwidcol.nelements() << " rows" << LogIO::POST;
+            }
+            else {
+                os << LogIO::SEVERE << _ms.tableName() << " row " << i << ": "
+                    << "Invalid data description ID = " << ddid
+                    << ". DATA_DESC_ID table " << "has "
+                    << spwidcol.nelements() << " rows" << LogIO::POST;
             }
         }
 
@@ -191,15 +241,16 @@ Bool MSFitsOutput::writeFitsFile(
     // If not asMultiSource, check if multiple sources are present.
     Block<Int> fieldidMap;
     uInt nrfield;
+    Bool doMultiSource = _asMultiSource;
     {
-        ScalarColumn<Int> fldidcol(ms, MS::columnName(MS::FIELD_ID));
+        ScalarColumn<Int> fldidcol(_ms, MS::columnName(MS::FIELD_ID));
         Vector<Int> fldid = fldidcol.getColumn();
-        if (!asMultiSource) {
-            if (!allEQ(fldid, fldid(0))) {
-                asMultiSource = True;
+        if (! doMultiSource) {
+            if (! allEQ(fldid, fldid(0))) {
+                doMultiSource = True;
                 os << LogIO::WARN
-                        << "Multiple sources are present, thus written "
-                            "as a multi-source FITS file" << LogIO::POST;
+                    << "Multiple sources are present, thus written "
+                    "as a multi-source FITS file" << LogIO::POST;
             }
         }
         Vector<Int> fieldids;
@@ -210,87 +261,111 @@ Bool MSFitsOutput::writeFitsFile(
     Int refPixelFreq;
     Double refFreq, chanbw;
     FitsOutput* fitsOutput = writeMain(
-    	refPixelFreq, refFreq, chanbw, outfile,
-    	ms, column, spwidMap, nrspw, startchan, nchan, stepchan,
-    	fieldidMap, asMultiSource, combineSpw, padWithFlags, avgchan,
-    	fieldNumber
+        refPixelFreq, refFreq, chanbw, outfile,
+        _ms, _column, spwidMap, nrspw, _startChan, _nchan,
+        _stepChan, fieldidMap, doMultiSource, _combineSpw,
+        _padWithFlags, _avgChan, _fieldNumber
     );
 
-    Bool ok = (fitsOutput != 0);
-    if (!ok) {
-        os << LogIO::SEVERE << "Could not write main table\n" << LogIO::POST;
-    } else {
-        os << LogIO::NORMAL << "Writing AIPS FQ table" << LogIO::POST;
-        ok = writeFQ(fitsOutput, ms, spwidMap, nrspw, refFreq, refPixelFreq,
-                chanbw, combineSpw, startchan, nchan, stepchan, avgchan);
-    }
-    if (!ok) {
-        os << LogIO::SEVERE << "Could not write FQ table\n" << LogIO::POST;
-    } else {
-        os << LogIO::NORMAL << "Writing AIPS AN table" << LogIO::POST;
-        ok = writeAN(fitsOutput, ms, refFreq, writeStation);
-    }
-    if (!ok) {
-        os << LogIO::SEVERE << "Could not write AN table\n" << LogIO::POST;
-    }
-
-    if (ok && asMultiSource) {
+    Bool ok = fitsOutput;
+    ThrowIf (
+        ! ok, "Could not write main table\n"
+    );
+    os << LogIO::NORMAL << "Writing AIPS FQ table" << LogIO::POST;
+    ThrowIf(
+        ! writeFQ(
+            fitsOutput, _ms, spwidMap, nrspw, refFreq, refPixelFreq,
+            chanbw, _combineSpw, _startChan, _nchan, _stepChan, _avgChan
+        ), "Could not write FQ table"
+    );
+    os << LogIO::NORMAL << "Writing AIPS AN table" << LogIO::POST;
+    ThrowIf(
+        ! writeAN(fitsOutput, _ms, refFreq, _writeStation),
+        "Could not write AN table"
+    );
+    if (doMultiSource) {
         os << LogIO::NORMAL << "Writing AIPS SU table" << LogIO::POST;
-        bool bk = writeSU(fitsOutput, ms, fieldidMap, nrfield, spwidMap, nrspw);
-        if (!bk) {
-            os << LogIO::WARN << "Could not write SU table\n" << LogIO::POST;
+        if (
+            ! writeSU(fitsOutput, _ms, fieldidMap, nrfield, spwidMap, nrspw)
+        ) {
+            os << LogIO::NORMAL << "Could not write SU table" << LogIO::POST;
         }
     }
-
     // If needed, create tables from the SYSCAL table.
     // Determine if we have to skip the first SYSCAL time.
     // This is needed for WSRT MS's, where the first time in the SYSCAL
     // table is the average at the middle of the observation.
-    if (ok && writeSysCal) {
-        if (ms.sysCal().tableDesc().ncolumn() == 0) {
+    if (_writeSysCal) {
+        if (_ms.sysCal().tableDesc().ncolumn() == 0) {
             os << LogIO::WARN << "MS has no or empty SYSCAL subtable, "
-                    << "could not write AIPS TY table and AIPS GC table"
-                    << LogIO::POST;
+                << "could not write AIPS TY table and AIPS GC table"
+                << LogIO::POST;
         }
-        else if (ms.sysCal().nrow() == 0) {
+        else if (_ms.sysCal().nrow() == 0) {
             os << LogIO::WARN << "MS has empty SYSCAL subtable, "
-                    << "could not write AIPS TY table and AIPS GC table"
-                    << LogIO::POST;
+                << "could not write AIPS TY table and AIPS GC table"
+                << LogIO::POST;
         }
         else {
-            Table syscal = handleSysCal(ms, spwids, isSubset);
-
+            Table syscal = handleSysCal(_ms, spwids, isSubset);
             os << LogIO::NORMAL << "writing AIPS TY table" << LogIO::POST;
-            bool bk = writeTY(fitsOutput, ms, syscal, spwidMap, nrspw, combineSpw);
-            if (!bk) {
+            Bool bk = writeTY(
+                fitsOutput, _ms, syscal, spwidMap, nrspw, _combineSpw
+            );
+            if (! bk) {
                 os << LogIO::WARN << "Could not write TY table\n"
-                        << LogIO::POST;
-            } else {
+                    << LogIO::POST;
+            }
+            else {
                 os << LogIO::NORMAL << "Writing AIPS GC table" << LogIO::POST;
-                bk = writeGC(fitsOutput, ms, syscal, spwidMap, nrspw,
-                        combineSpw, sensitivity, refPixelFreq, refFreq, chanbw);
+                bk = writeGC(
+                    fitsOutput, _ms, syscal, spwidMap, nrspw,
+                    _combineSpw, _sensitivity, refPixelFreq, refFreq, chanbw
+                );
             }
             if (!bk) {
                 os << LogIO::WARN << "Could not write GC table\n"
-                        << LogIO::POST;
+                    << LogIO::POST;
             }
         }
     }
-    if (ok) {
-        if (ms.weather().tableDesc().ncolumn() != 0) {
-            os << LogIO::NORMAL << "Writing AIPS WX table" << LogIO::POST;
-            bool bk = writeWX(fitsOutput, ms);
-            if (!bk) {
-                os << LogIO::WARN << "Could not write WX table\n"
-                        << LogIO::POST;
-            }
+    if (_ms.weather().tableDesc().ncolumn() != 0) {
+        os << LogIO::NORMAL << "Writing AIPS WX table" << LogIO::POST;
+        Bool bk = writeWX(fitsOutput, _ms);
+        if (!bk) {
+            os << LogIO::WARN << "Could not write WX table"
+                << LogIO::POST;
         }
     }
-
     // flush output to disk
     delete fitsOutput;
+}
 
-    return ok;
+Bool MSFitsOutput::writeFitsFile(
+	const String& fitsfile,
+	const MeasurementSet& ms, const String& column, Int startchan,
+	Int nchan, Int stepchan, Bool writeSysCal, Bool asMultiSource,
+	Bool combineSpw, Bool writeStation, Double sensitivity,
+	const Bool padWithFlags, Int avgchan, uInt fieldNumber,
+	Bool overwrite
+) {
+    MSFitsOutput out(fitsfile, ms, column);
+    out.setChannelInfo(startchan, nchan, stepchan, avgchan);
+    out.setWriteSysCal(writeSysCal);
+    out.setAsMultiSource(asMultiSource);
+    out.setCombineSpw(combineSpw);
+    out.setWriteStation(writeStation);
+    out.setSensitivity(sensitivity);
+    out.setPadWitFlags(padWithFlags);
+    out.setFieldNumber(fieldNumber);
+    out.setOverwrite(overwrite);
+    try {
+        out.write();
+        return True;
+    }
+    catch (const AipsError&) {
+        return False;
+    }
 }
 
 uInt MSFitsOutput::get_tbf_end(const uInt rownr, const uInt nrow,

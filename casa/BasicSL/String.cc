@@ -166,19 +166,19 @@ SubString String::at(Char c, Int startpos) {
   return _substr(index(c, startpos), 1);
 }
 
-SubString String::before(size_type pos) {
+SubString String::before(size_type pos) const {
   return _substr(0, pos);
 }
 
-SubString String::before(const string &str, size_type startpos) {
+SubString String::before(const string &str, size_type startpos) const {
   return _substr(0, index(str, startpos));
 }
 
-SubString String::before(const Char *s, size_type startpos) {
+SubString String::before(const Char *s, size_type startpos) const {
   return _substr(0, index(s, startpos));
 }
 
-SubString String::before(Char c, size_type startpos) {
+SubString String::before(Char c, size_type startpos) const {
   return _substr(0, index(c, startpos));
 }
 
@@ -389,7 +389,7 @@ SubString String::at(const RegexBase &r, Int startpos) {
   return _substr(first, mlen);
 }
 
-SubString String::before(const RegexBase &r, size_type startpos) {
+SubString String::before(const RegexBase &r, size_type startpos) const {
   Int mlen;
   size_type first = r.search(c_str(), length(), mlen, startpos);
   return _substr(0, first);
