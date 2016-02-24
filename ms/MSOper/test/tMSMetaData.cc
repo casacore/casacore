@@ -2349,6 +2349,17 @@ void testIt(MSMetaData& md) {
             }
         }
         {
+            cout << "*** test getSpwIDs()" << endl;
+            std::set<uInt> spws = md.getSpwIDs();
+            AlwaysAssert(spws.size() == 25, AipsError);
+            std::set<uInt>::const_iterator iter = spws.begin();
+            std::set<uInt>::const_iterator end = spws.end();
+            uInt i = 0;
+            for (; iter!=end; ++iter, ++i) {
+                AlwaysAssert(*iter == i, AipsError);
+            }
+        }
+        {
 			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}

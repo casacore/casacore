@@ -401,7 +401,13 @@ public:
 	// The first value of the pair is spw, the second is polarization ID.
 	std::map<std::pair<uInt, uInt>, uInt> getSpwIDPolIDToDataDescIDMap() const;
 
+	// get a map of the spwIDs to spw names from the spw table
 	vector<String> getSpwNames() const;
+
+	// get all the spws associated with the data description IDs listed in the main table.
+	// This will not correspond to a list of the row numbers in the SPECTRAL_WINDOW table
+	// if there are data description IDs that are not in the main table.
+	std::set<uInt> getSpwIDs() const;
 
 	// get all sub scan keys for the specified array key.
 	std::set<SubScanKey> getSubScanKeys(const ArrayKey& arrayKey) const;
