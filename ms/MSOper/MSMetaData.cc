@@ -1953,13 +1953,15 @@ vector<String> MSMetaData::getSpwNames() const {
 }
 
 std::set<uInt> MSMetaData::getSpwIDs() const {
-    Vector<Int> ddIDs = *_getDataDescIDs();
-    vector<uInt> ddIDToSpw = getDataDescIDToSpwMap();
+    const Vector<Int> ddIDs = *_getDataDescIDs();
+    const vector<uInt>& ddIDToSpw = getDataDescIDToSpwMap();
     Vector<Int>::const_iterator iter = ddIDs.begin();
     Vector<Int>::const_iterator end = ddIDs.end();
     std::set<uInt> spws;
     for ( ; iter!=end; ++iter) {
-        spws.insert(*iter);
+        if (*iter >= 0) {
+            spws.insert(ddIDToSpw[*iter]);
+        }
     }
     return spws;
 }
