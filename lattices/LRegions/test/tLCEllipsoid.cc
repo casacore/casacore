@@ -62,47 +62,10 @@ void show(const LCEllipsoid& ellipse) {
             break;
         }
     }
-    /*
-	cout << shape << endl;
-		for (Int j=shape(1)-1; j>=0; j--) {
-			for (uInt i=0; i<shape(0); i++) {
-
-			IPosition x;
-			x.
-	    	cout << mask[count] << " ";
-	    	mask.
-	    	count++;
-		}
-		cout << endl;
-	}
-     */
 }
-
-/*
-void show(const LCEllipsoid2& ellipse) {
-	Array<bool> mask = ellipse.get();
-	uInt pos = 0;
-	IPosition shape = mask.shape();
-	cout << shape << endl;
-		for (Int j=shape(1)-1; j>=0; j--) {
-			for (uInt i=0; i<shape(0); i++) {
-
-	    	cout << mask(IPosition(2,i,j)) << " ";
-		}
-		cout << endl;
-	}
-}
- */
 
 int main() {
     try {
-        /*
-    	Vector<Float> center(2, 30);
-    	Float radius = 10;
-    	IPosition latticeShape(2,60);
-    	LCEllipsoid circle(center, radius, latticeShape);
-    	show(circle);
-         */
         {
             Float theta = C::pi/3;
             Float xcenter = 30;
@@ -170,47 +133,8 @@ int main() {
             AlwaysAssert(ellipse3 == ellipse4, AipsError);
             near(ellipse3.theta(), ellipse4.theta());
         }
-        /*
-    	{
-
-    	Vector<Float> phi(2,1.0471975511965976);
-    	phi[0] = 0;
-    	phi[1] *= 0.75;
-    	//Vector<Float> phi(1,0);
-
-    	Vector<Float> center(3, 30);
-    	// center[1] = 5;
-    	IPosition latticeShape(3,60);
-
-    	Vector<Float> radii(3, 10);
-    	radii[1] = 5;
-    	radii[2] = 7;
-
-
-    	LCEllipsoid2 ellipse(center, radii, phi, latticeShape);
-    	show(ellipse);
-    	}
-
-         */
-        /*
-    	{
-
-    	Vector<Float> phi(2, 1.0471975511965976);
-    	phi[1] = 0.52359877559829882;
-    	Vector<Float> center(3, 30);
-    	IPosition latticeShape(3,60);
-
-    	Vector<Float> radii(3, 20);
-    	radii[1] = 10;
-    	radii[2] = 5;
-    	LCEllipsoid2 ellipse(center, radii, phi, latticeShape);
-    	show(ellipse);
-    	}
-         */
-
-
     }
-    catch (AipsError x) {
+    catch (const AipsError& x) {
         cout << "Caught exception: " << x.getMesg() << endl;
         return 1;
     } 
