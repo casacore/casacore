@@ -170,12 +170,6 @@ private:
         const Vector<Float>& radii, const IPosition& latticeShape
     );
 
-    Slicer _makeBox2D (
-    	const Vector<Float>& center,
-    	const Vector<Float>& radii,
-    	const IPosition& latticeShape
-    );
-
     // Define the mask to indicate which elements are inside the ellipsoid.
     void defineMask();
 

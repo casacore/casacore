@@ -37,12 +37,12 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-LCEllipsoid::LCEllipsoid() {}
+LCEllipsoid::LCEllipsoid() : _theta(0) {}
 
 LCEllipsoid::LCEllipsoid (
     const IPosition& center, Float radius,
     const IPosition& latticeShape
-) : LCRegionFixed (latticeShape), _radii(latticeShape.size(), radius) {
+) : LCRegionFixed (latticeShape), _radii(latticeShape.size(), radius), _theta(0) {
     fillCenter (center);
     setBoundingBox (_makeBox(_radii, latticeShape));
     defineMask();
@@ -52,7 +52,7 @@ LCEllipsoid::LCEllipsoid (
     const Vector<Float>& center, Float radius,
     const IPosition& latticeShape
 ) : LCRegionFixed (latticeShape), _center(center.copy()),
-    _radii(latticeShape.nelements(), radius) {
+    _radii(latticeShape.nelements(), radius), _theta(0) {
     setBoundingBox(_makeBox(_radii, latticeShape));
     defineMask();
 }
@@ -61,7 +61,7 @@ LCEllipsoid::LCEllipsoid(
     const Vector<Double>& center, Double radius,
     const IPosition& latticeShape
 ) : LCRegionFixed (latticeShape), _center(center.size()),
-    _radii(center.size(), radius) {
+    _radii(center.size(), radius), _theta(0) {
     for (uInt i=0; i<center.size(); ++i) {
         _center[i] = center[i];
     }
@@ -73,7 +73,7 @@ LCEllipsoid::LCEllipsoid(
     const Vector<Float>& center, const Vector<Float>& radii,
     const IPosition& latticeShape
 ) : LCRegionFixed (latticeShape), _center(center.copy()),
-    _radii(radii.copy()) {
+    _radii(radii.copy()), _theta(0) {
     setBoundingBox(_makeBox(_radii, latticeShape));
     defineMask();
 }
@@ -83,7 +83,7 @@ LCEllipsoid::LCEllipsoid(
     const Vector<Double>& radii,
     const IPosition& latticeShape
 ) : LCRegionFixed (latticeShape), _center(center.size()),
-    _radii(radii.size()) {
+    _radii(radii.size()), _theta(0) {
     for (uInt i=0; i<center.size(); i++) {
         _center[i] = center[i];
         if (i < radii.size()) {
@@ -120,7 +120,10 @@ LCEllipsoid::LCEllipsoid (
         defineMask();
     }
     else {
-        setBoundingBox(_makeBox2D(_center, _radii, latticeShape));
+        // overkill but the general way to find the minimal
+        // box eludes me atm.
+        Vector<Float> proj(_radii.size(), max(_radii));
+        setBoundingBox(_makeBox(proj, latticeShape));
         _defineMask2D();
     }
 }
@@ -254,9 +257,6 @@ Slicer LCEllipsoid::_makeBox(
     const Vector<Float>& radii, const IPosition& latticeShape
 ) {
     uInt nrdim = _center.size();
-    if (nrdim == 2) {
-        _theta = 0;
-    }
     // First make sure dimensionalities conform.
     if (latticeShape.size() != nrdim  ||  radii.size() != nrdim) {
         ThrowCc("dimensionality of center,radii,lattice mismatch");
@@ -276,62 +276,15 @@ Slicer LCEllipsoid::_makeBox(
             );
         }
         _epsilon[i] = powf(10.0, int(log10(2*radii[i]))-5);
-        blc(i) = max(Int(_center[i] - radii[i] + 1 - _epsilon[i]), 0);
-
-        trc(i) = min(Int(_center[i] + radii[i] + _epsilon[i]), latticeShape(i) - 1);
-        if (blc(i) > trc(i)) {
+        blc[i] = max(Int(_center[i] - radii[i] + 1 - _epsilon[i]), 0);
+        trc[i] = min(Int(_center[i] + radii[i] + _epsilon[i]), latticeShape(i) - 1);
+        if (blc[i] > trc[i]) {
             ostringstream rstr;
             rstr << radii;
             ThrowCc(
                 "ellipsoid is empty (radii " + rstr.str()
                 + " too small)"
             );
-        }
-    }
-    return Slicer(blc, trc, Slicer::endIsLast);
-}
-
-// FIXME copy and pasted a lot of code from makeBox, refactor
-Slicer LCEllipsoid::_makeBox2D (
-    const Vector<Float>& center, const Vector<Float>& radii,
-    const IPosition& latticeShape
-) {
-    uInt ndim = center.nelements();
-    AlwaysAssert(ndim == 2, AipsError);
-    // First make sure dimensionalities conform.
-    if (latticeShape.nelements() != ndim  ||  radii.nelements() != ndim) {
-        throw (AipsError ("LCEllipsoid::LCEllipsoid - "
-                "dimensionality of center,radii,lattice mismatch"));
-    }
-
-    // Determine blc and trc.
-    IPosition blc(ndim);
-    IPosition trc(ndim);
-    _epsilon.resize(ndim);
-    //FIXME overkill but the general way to find the minimal
-    // box eludes me atm.
-    Vector<Float> proj(_radii.size(), max(_radii));
-
-    for (uInt i=0; i<ndim; i++) {
-        if (center(i) > latticeShape(i)-1  ||  center(i) < 0) {
-            ostringstream cstr, lstr;
-            cstr << center;
-            lstr << latticeShape;
-            throw (AipsError ("LCEllipsoid::" + String(__FUNCTION__)
-                    + ": invalid center " + String(cstr) +
-                    " (outside lattice " + String(lstr) + ")"));
-        }
-        _epsilon(i) = powf(10.0, int(log10(2*radii(i)))-5);
-
-        blc(i) = max(Int(center(i) - proj[i] + 1 - _epsilon(i)), 0);
-
-        trc(i) = min(Int(center(i) + proj[i] + _epsilon(i)), latticeShape(i) - 1);
-        if (blc(i) > trc(i)) {
-            ostringstream rstr;
-            rstr << radii;
-            throw (AipsError ("LCEllipsoid::LCEllipsoid - "
-                    "ellipsoid is empty (radii " + String(rstr) +
-                    " too small)"));
         }
     }
     return Slicer(blc, trc, Slicer::endIsLast);
