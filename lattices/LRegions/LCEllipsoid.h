@@ -166,9 +166,9 @@ private:
     void fillCenter (const IPosition& center);
 
     // Make the bounding box from center, radii, and shape.
-    Slicer makeBox (const Vector<Float>& center,
-			   const Vector<Float>& radii,
-			   const IPosition& latticeShape);
+    Slicer _makeBox(
+        const Vector<Float>& radii, const IPosition& latticeShape
+    );
 
     Slicer _makeBox2D (
     	const Vector<Float>& center,
@@ -182,9 +182,8 @@ private:
     //for 2-D ellipse with non-zero theta
     void _defineMask2D();
 
-
-    Vector<Float> itsCenter;
-    Vector<Float> itsRadii;
+    Vector<Float> _center;
+    Vector<Float> _radii;
     // small offset to guard against roundoff error
     Vector<Float> _epsilon;
     // for 2-D case only
@@ -194,11 +193,11 @@ private:
 
 inline const Vector<Float>& LCEllipsoid::center() const
 {
-    return itsCenter;
+    return _center;
 }
 inline const Vector<Float>& LCEllipsoid::radii() const
 {
-    return itsRadii;
+    return _radii;
 }
 
 
