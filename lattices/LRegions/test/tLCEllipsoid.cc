@@ -37,32 +37,32 @@
 #include <casacore/casa/namespace.h>
 
 void show(const LCEllipsoid& ellipse) {
-	Array<bool> mask = ellipse.get();
-	IPosition shape = mask.shape();
-	IPosition index = shape-1;
-	uInt j=0;
-	while(True) {
-		for (Int i=0; i<shape(0); i++) {
-			index[0] = i;
-			cout << mask(index) << " ";
-		}
-		cout << index << endl;
-		for (j=1; j<shape.size(); j++) {
-			if (index[j] == 0) {
-				index[j] = shape[j]-1;
-				cout << endl;
-			}
-			else {
-				index[j]--;
-				break;
-			}
+    Array<bool> mask = ellipse.get();
+    IPosition shape = mask.shape();
+    IPosition index = shape-1;
+    uInt j=0;
+    while(True) {
+        for (Int i=0; i<shape(0); i++) {
+            index[0] = i;
+            cout << mask(index) << " ";
+        }
+        cout << index << endl;
+        for (j=1; j<shape.size(); j++) {
+            if (index[j] == 0) {
+                index[j] = shape[j]-1;
+                cout << endl;
+            }
+            else {
+                index[j]--;
+                break;
+            }
 
-		}
-		if (j == shape.size()) {
-			break;
-		}
-	}
-/*
+        }
+        if (j == shape.size()) {
+            break;
+        }
+    }
+    /*
 	cout << shape << endl;
 		for (Int j=shape(1)-1; j>=0; j--) {
 			for (uInt i=0; i<shape(0); i++) {
@@ -75,7 +75,7 @@ void show(const LCEllipsoid& ellipse) {
 		}
 		cout << endl;
 	}
-	*/
+     */
 }
 
 /*
@@ -92,86 +92,85 @@ void show(const LCEllipsoid2& ellipse) {
 		cout << endl;
 	}
 }
-*/
+ */
 
-int main()
-{
+int main() {
     try {
-    	/*
+        /*
     	Vector<Float> center(2, 30);
     	Float radius = 10;
     	IPosition latticeShape(2,60);
     	LCEllipsoid circle(center, radius, latticeShape);
     	show(circle);
-*/
-    	{
-    		Float theta = C::pi/3;
-    		Float xcenter = 30;
-    		Float ycenter = 30;
-    		IPosition latticeShape(2,60);
-    		Float major = 20;
-    		Float minor = 10;
-    		LCEllipsoid ellipse(
-    			xcenter, ycenter, major, minor, theta, latticeShape
-    		);
-    		show(ellipse);
-    		LCEllipsoid *copy = dynamic_cast<LCEllipsoid *>(LCEllipsoid::fromRecord(ellipse.toRecord(""), ""));
-    		AlwaysAssert(ellipse == *copy, AipsError);
-    		near(ellipse.theta(), copy->theta());
-                delete copy;
+         */
+        {
+            Float theta = C::pi/3;
+            Float xcenter = 30;
+            Float ycenter = 30;
+            IPosition latticeShape(2,60);
+            Float major = 20;
+            Float minor = 10;
+            LCEllipsoid ellipse(
+                xcenter, ycenter, major, minor, theta, latticeShape
+            );
+            show(ellipse);
+            LCEllipsoid *copy = dynamic_cast<LCEllipsoid *>(LCEllipsoid::fromRecord(ellipse.toRecord(""), ""));
+            AlwaysAssert(ellipse == *copy, AipsError);
+            near(ellipse.theta(), copy->theta());
+            delete copy;
 
-    		Float theta2 = theta + C::pi;
-    		LCEllipsoid ellipse2(
-    			xcenter, ycenter, major, minor, theta2, latticeShape
-    		);
-    		AlwaysAssert(ellipse == ellipse2, AipsError);
-    		near(ellipse.theta(), ellipse2.theta());
+            Float theta2 = theta + C::pi;
+            LCEllipsoid ellipse2(
+                xcenter, ycenter, major, minor, theta2, latticeShape
+            );
+            AlwaysAssert(ellipse == ellipse2, AipsError);
+            near(ellipse.theta(), ellipse2.theta());
 
-    		Float theta3 = theta - C::pi;
-    		LCEllipsoid ellipse3(
-    			xcenter, ycenter, major, minor, theta3, latticeShape
-    		);
-    		AlwaysAssert(ellipse == ellipse3, AipsError);
-    		near(ellipse.theta(), ellipse3.theta());
-    	}
-    	{
-    		Float theta = 0;
-    		Float xcenter = 30;
-    		Float ycenter = 30;
-    		Vector<Float> center(2,xcenter);
-    		center[1] = ycenter;
-    		IPosition latticeShape(2,60);
-    		Float major = 20;
-    		Float minor = 10;
-    		Vector<Float> radii(2, major);
-    		radii[1] = minor;
-    		LCEllipsoid ellipse(
-    				xcenter, ycenter, major, minor, theta, latticeShape
-    		);
-    		LCEllipsoid ellipse2(
-    			center, radii, latticeShape
-    		);
-    		show(ellipse);
-    		show(ellipse2);
-    		LCEllipsoid *copy = dynamic_cast<LCEllipsoid *>(LCEllipsoid::fromRecord(ellipse2.toRecord(""), ""));
-    		AlwaysAssert(ellipse == ellipse2, AipsError);
-    		AlwaysAssert(ellipse == *copy, AipsError);
-    		near(ellipse.theta(), ellipse2.theta());
-                delete copy;
+            Float theta3 = theta - C::pi;
+            LCEllipsoid ellipse3(
+                xcenter, ycenter, major, minor, theta3, latticeShape
+            );
+            AlwaysAssert(ellipse == ellipse3, AipsError);
+            near(ellipse.theta(), ellipse3.theta());
+        }
+        {
+            Float theta = 0;
+            Float xcenter = 30;
+            Float ycenter = 30;
+            Vector<Float> center(2,xcenter);
+            center[1] = ycenter;
+            IPosition latticeShape(2,60);
+            Float major = 20;
+            Float minor = 10;
+            Vector<Float> radii(2, major);
+            radii[1] = minor;
+            LCEllipsoid ellipse(
+                xcenter, ycenter, major, minor, theta, latticeShape
+            );
+            LCEllipsoid ellipse2(
+                    center, radii, latticeShape
+            );
+            show(ellipse);
+            show(ellipse2);
+            LCEllipsoid *copy = dynamic_cast<LCEllipsoid *>(LCEllipsoid::fromRecord(ellipse2.toRecord(""), ""));
+            AlwaysAssert(ellipse == ellipse2, AipsError);
+            AlwaysAssert(ellipse == *copy, AipsError);
+            near(ellipse.theta(), ellipse2.theta());
+            delete copy;
 
-    		Float theta2 = C::pi/2;
-    		LCEllipsoid ellipse3(
-    			xcenter, ycenter, major, minor, theta2, latticeShape
-    		);
-    		radii[0] = minor;
-    		radii[1] = major;
-    		LCEllipsoid ellipse4(
-    			center, radii, latticeShape
-    		);
-    		AlwaysAssert(ellipse3 == ellipse4, AipsError);
-    		near(ellipse3.theta(), ellipse4.theta());
-    	}
-    	/*
+            Float theta2 = C::pi/2;
+            LCEllipsoid ellipse3(
+                xcenter, ycenter, major, minor, theta2, latticeShape
+            );
+            radii[0] = minor;
+            radii[1] = major;
+            LCEllipsoid ellipse4(
+                center, radii, latticeShape
+            );
+            AlwaysAssert(ellipse3 == ellipse4, AipsError);
+            near(ellipse3.theta(), ellipse4.theta());
+        }
+        /*
     	{
 
     	Vector<Float> phi(2,1.0471975511965976);
@@ -192,8 +191,8 @@ int main()
     	show(ellipse);
     	}
 
-	*/
-    	/*
+         */
+        /*
     	{
 
     	Vector<Float> phi(2, 1.0471975511965976);
@@ -207,12 +206,13 @@ int main()
     	LCEllipsoid2 ellipse(center, radii, phi, latticeShape);
     	show(ellipse);
     	}
-    	*/
+         */
 
 
-    } catch (AipsError x) {
-    	cout << "Caught exception: " << x.getMesg() << endl;
-	return 1;
+    }
+    catch (AipsError x) {
+        cout << "Caught exception: " << x.getMesg() << endl;
+        return 1;
     } 
     cout << "OK" << endl;
     return 0;
