@@ -1952,6 +1952,20 @@ vector<String> MSMetaData::getSpwNames() const {
 	return out;
 }
 
+std::set<uInt> MSMetaData::getSpwIDs() const {
+    const Vector<Int> ddIDs = *_getDataDescIDs();
+    const vector<uInt>& ddIDToSpw = getDataDescIDToSpwMap();
+    Vector<Int>::const_iterator iter = ddIDs.begin();
+    Vector<Int>::const_iterator end = ddIDs.end();
+    std::set<uInt> spws;
+    for ( ; iter!=end; ++iter) {
+        if (*iter >= 0) {
+            spws.insert(ddIDToSpw[*iter]);
+        }
+    }
+    return spws;
+}
+
 std::set<uInt> MSMetaData::getFDMSpw() {
 	if (! _fdmSpw.empty()) {
 		return _fdmSpw;

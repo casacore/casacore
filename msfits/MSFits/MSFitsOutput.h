@@ -28,15 +28,15 @@
 #ifndef MS_MSFITSOUTPUT_H
 #define MS_MSFITSOUTPUT_H
 
-//# Includes
+#include <casacore/casa/BasicSL/String.h>
+#include <casacore/ms/MeasurementSets/MeasurementSet.h>
+
 #include <casacore/casa/aips.h>
 
 namespace casacore {
 
 //# Forward Declarations
-class String;
 class FitsOutput;
-class MeasurementSet;
 template<class T> class ScalarColumn;
 class Table;
 template<class T> class Block;
@@ -49,6 +49,52 @@ template<class T> class Vector;
 
 class MSFitsOutput {
 public:
+    //  @param fitsfile      Output filename
+    //  @param ms            input
+    //  @param column        specifies which "data" column to write
+    //                       ("observed", "calibrated", "model")
+    MSFitsOutput(
+        const String& fitsfile, const MeasurementSet& ms,
+        const String& column
+    );
+
+    //  @param startchan     1st channel
+    //  @param nchan         # of channels
+    //  @param stepchan      # of channels to stride by
+    //  @param avgchan       average every N channels
+    void setChannelInfo(
+        Int startChan, Int nchan, Int stepChan, Int avgChan
+    );
+
+    //  @param writeSysCal   whether to write the system calibration table
+    void setWriteSysCal(Bool writeSysCal);
+
+    //  @param asMultiSource If true a multi-source UVFits file is written.
+    void setAsMultiSource(Bool asMultiSource);
+
+    //  @param combineSpw    If true it attempts to write the spectral windows as
+    //                       IFs.  This is necessary for many aips tasks, and
+    //                       for difmap.
+    void setCombineSpw(Bool combineSpw);
+
+    //  @param writeStation  If true uses pad instead of antenna names.
+    void setWriteStation(Bool writeStation);
+
+    void setSensitivity(Double sensitivity);
+
+    //  @param padWithFlags  If true and combineSpw==true, fill spws with flags
+    //                       as needed to fit the IF structure.  Does not yet
+    //                       support spws with different shapes.
+    void setPadWitFlags(Bool padWithFlags);
+
+    void setFieldNumber(uInt fieldNumber);
+
+    //  @param overwrite     overwrite existing file?
+    void setOverwrite(Bool overwrite);
+
+    // write the uvfits file.
+    void write() const;
+
     // Convert a MeasurementSet to random group UVFITS.
     //  @param fitsfile      Output filename
     //  @param ms            input
@@ -81,6 +127,15 @@ public:
     );
 
 private:
+    const String _fitsfile, _column;
+    const MeasurementSet _ms;
+    Int _startChan, _nchan, _stepChan, _avgChan;
+    Bool _writeSysCal, _asMultiSource, _combineSpw,
+        _writeStation, _padWithFlags, _overwrite;
+    Double _sensitivity;
+    uInt _fieldNumber;
+
+
     // Write the main table.
     //    @param refPixelFreq
     //    @param refFreq
@@ -101,21 +156,13 @@ private:
     //    @param padWithFlags   If true && combineSpw==true, pad the spws with
     //                          flags as necessary to fit the IF structure.
     //    @param avgchan        average every N channels
-    static FitsOutput *writeMain(
+    FitsOutput* _writeMain(
         Int& refPixelFreq, Double& refFreq,
-        Double& chanbw,
-        const String& outFITSFile,
-        const MeasurementSet& rawms,
-        const String& column,
-        const Block<Int>& spwidMap,
-        Int nrspw,
-        Int startchan, Int nchan, Int stepchan,
+        Double& chanbw, const String& outFITSFile,
+        const Block<Int>& spwidMap, Int nrspw,
         const Block<Int>& fieldidMap,
-        Bool asMultiSource,
-        const Bool combineSpw,
-        const Bool padWithFlags,
-        Int avgchan, uInt fieldNumber
-    );
+        Bool asMultiSource
+    ) const;
 
     // Write the FQ table.
     // If combineSpw is True, all spectral-windows are written in one
@@ -190,7 +237,7 @@ private:
     //                  IDs to consider.
     //    @return number of selected IDs in allids
 
-    static Int makeIdMap(
+    static Int _makeIdMap(
         Block<Int>& map, Vector<Int>& selids,
         const Vector<Int>& allids
     );
