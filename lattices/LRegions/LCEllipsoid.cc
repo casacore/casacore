@@ -265,19 +265,19 @@ Slicer LCEllipsoid::_makeBox(
     IPosition blc(nrdim);
     IPosition trc(nrdim);
     _epsilon.resize(nrdim);
+    _centerIsInside = True;
     for (uInt i=0; i<nrdim; ++i) {
         if (_center[i] > latticeShape[i]-1  ||  _center[i] < 0) {
-            ostringstream cstr, lstr;
-            cstr << _center;
-            lstr << latticeShape;
-            ThrowCc(
-                "invalid center " + cstr.str()
-                + " (outside lattice " + lstr.str() + ")"
+            _centerIsInside = False;
+            ThrowIf(
+                _center[i] + radii[i] < 0
+                || _center[i] - radii[i] > latticeShape[i] - 1,
+                "Ellipsoid lies completely outside the lattice"
             );
         }
         _epsilon[i] = powf(10.0, int(log10(2*radii[i]))-5);
         blc[i] = max(Int(_center[i] - radii[i] + 1 - _epsilon[i]), 0);
-        trc[i] = min(Int(_center[i] + radii[i] + _epsilon[i]), latticeShape(i) - 1);
+        trc[i] = min(Int(_center[i] + radii[i] + _epsilon[i]), latticeShape[i] - 1);
         if (blc[i] > trc[i]) {
             ostringstream rstr;
             rstr << radii;
@@ -299,6 +299,10 @@ const Float& LCEllipsoid::theta() const {
 }
 
 void LCEllipsoid::defineMask() {
+    if (! _centerIsInside) {
+        _doOutside();
+        return;
+    }
     uInt i;
     // Create the mask with the shape of the bounding box.
     // Set the mask initially to False.
@@ -373,7 +377,7 @@ void LCEllipsoid::_defineMask2D() {
     // Create the mask with the shape of the bounding box.
     // Set the mask initially to False.
     const IPosition& length = boundingBox().length();
-    uInt ndim = length.nelements();
+    uInt ndim = length.size();
     AlwaysAssert(ndim == 2, AipsError);
     Array<Bool> mask(length);
     mask = False;
@@ -388,7 +392,7 @@ void LCEllipsoid::_defineMask2D() {
     }
     // Initialize some variables for the loop below.
     Float prevSum = 0;
-    for (Int y=0; y<length[1]; y++) {
+    for (Int y=0; y<length[1]; ++y) {
         Float ydiff = Float(y-center[1]);
         for (Int x=0; x<length[0]; ++x) {
             Float xdiff = Float(x-center[0]);
@@ -406,7 +410,74 @@ void LCEllipsoid::_defineMask2D() {
         maskData += length[0];
     }
     mask.putStorage (maskData, deleteIt);
+    ThrowIf(
+        ! _centerIsInside && ! casa::anyTrue(mask),
+        "Ellipsoid lies entirely outside the lattice"
+    );
     setMask (mask);
+}
+
+void LCEllipsoid::_doOutside() {
+    // Create the mask with the shape of the bounding box.
+    // Set the mask initially to False.
+    const IPosition& length = boundingBox().length();
+    Float center0 = _center[0] - boundingBox().start()[0];
+    uInt ndim = length.size();
+    Array<Bool> mask(length);
+    Int np = length[0];
+    mask = False;
+    // Get access to the mask storage.
+    Bool deleteIt;
+    Bool* maskData = mask.getStorage (deleteIt);
+    Vector<Float> center(ndim);
+    Vector<Float> rad2 = _radii * _radii;
+    IPosition pos(ndim, 0);
+    Vector<Float> d2(ndim);
+    Float curD2 = 0;
+    for (uInt i=1; i<ndim; ++i) {
+        center[i] = _center[i] - Float(boundingBox().start()[i]);
+        d2[i] = center[i]*center[i]/rad2[i];
+        // sumsq of all components except the first
+        curD2 += d2[i];
+    }
+    uInt i = 1;
+    while (True) {
+        if (1 - curD2 >= 0) {
+            // x**2/rad2[0] = 1 - curD2
+            Float maxXDiff = _radii[0] * sqrt(1 - curD2);
+            Int start = max(Int(center0 - maxXDiff + 1 - _epsilon[0]), 0);
+            Int end = min(Int(center0 + maxXDiff + _epsilon[0]), np-1);
+            for (Int j=start; j<=end; ++j) {
+                maskData[j] = True;
+            }
+        }
+        maskData += np;
+        for (i=1; i<ndim; ++i) {
+            curD2 -= d2[i];
+            if (++pos[i] < length[i]) {
+                Float d = center[i] - pos[i];
+                d /= _radii[i];
+                d2[i] = d*d;
+                curD2 += d2[i];
+                break;
+            }
+            // This dimension is done. Reset it and continue with the next.
+            pos[i] = 0;
+            Float d = center[i]/_radii[i];
+            d2[i] = d*d;
+            curD2 += d2[i];
+        }
+        // End the iteration when all dimensions are done.
+        if (i == ndim) {
+            break;
+        }
+    }
+    mask.putStorage (maskData, deleteIt);
+    ThrowIf(
+        ! _centerIsInside && ! casa::anyTrue(mask),
+        "Ellipsoid lies entirely outside the lattice"
+    );
+    setMask(mask);
 }
 
 } //# NAMESPACE CASACORE - END

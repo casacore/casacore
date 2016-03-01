@@ -173,8 +173,12 @@ private:
     // Define the mask to indicate which elements are inside the ellipsoid.
     void defineMask();
 
-    //for 2-D ellipse with non-zero theta
+    //for 2-D ellipse with non-zero theta. Works for both cases center
+    // inside or outside the lattice.
     void _defineMask2D();
+
+    // set the mask in the case the center lies outside the lattice
+    void _doOutside();
 
     Vector<Float> _center;
     Vector<Float> _radii;
@@ -182,6 +186,8 @@ private:
     Vector<Float> _epsilon;
     // for 2-D case only
     Float _theta;
+    // is center inside the lattice?
+    Bool _centerIsInside;
 };
 
 

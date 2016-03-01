@@ -133,6 +133,115 @@ int main() {
             AlwaysAssert(ellipse3 == ellipse4, AipsError);
             near(ellipse3.theta(), ellipse4.theta());
         }
+        {
+            Float theta = C::pi/4;
+            Float xcenter = 40;
+            Float ycenter = 40;
+            IPosition latticeShape(2,60);
+            Float major = 10;
+            Float minor = 5;
+            // off center ellipse
+            LCEllipsoid ellipse(
+                xcenter, ycenter, major, minor, theta, latticeShape
+            );
+            show(ellipse);
+        }
+        {
+            // all of ellipse outside lattice
+            Float xcenter = 80;
+            Float ycenter = 80;
+            Vector<Float> center(2,xcenter);
+            center[1] = ycenter;
+            IPosition latticeShape(2,60);
+            Float major = 20;
+            Float minor = 10;
+            Vector<Float> radii(2, major);
+            radii[1] = minor;
+            Bool thrown = False;
+            try {
+                LCEllipsoid e0(center, radii, latticeShape);
+            }
+            catch (const AipsError& x) {
+                thrown = True;
+            }
+            AlwaysAssert(thrown, AipsError);
+            // 2-D with non-zero theta, test exception is thrown from _define2D()
+            // since ellipse totally outside lattice
+            xcenter = 40;
+            ycenter = 80;
+            major = 40;
+            minor = 10;
+            // 5 degrees
+            Float theta = C::pi/36;
+            thrown = False;
+            try {
+                LCEllipsoid ellipse(
+                    xcenter, ycenter, major, minor, theta, latticeShape
+                );
+            }
+            catch (const AipsError& x) {
+                thrown = True;
+            }
+            AlwaysAssert(thrown, AipsError);
+        }
+        {
+            // center outside lattice, but part of the ellipse in inside
+            // lattice
+            Float xcenter = -10;
+            Float ycenter = -10;
+            Vector<Float> center(2,xcenter);
+            center[1] = ycenter;
+            IPosition latticeShape(2,60);
+            Float major = 30;
+            Float minor = 20;
+            Vector<Float> radii(2, major);
+            radii[1] = minor;
+            LCEllipsoid ellipse(center, radii, latticeShape);
+            show(ellipse);
+
+            center[0] = 69;
+            LCEllipsoid ellipse1(center, radii, latticeShape);
+            show(ellipse1);
+
+            center[1] = 69;
+            LCEllipsoid ellipse2(center, radii, latticeShape);
+            show(ellipse2);
+
+            center[0] = -10;
+            LCEllipsoid ellipse3(center, radii, latticeShape);
+            show(ellipse3);
+
+            Float theta = C::pi/4;
+            major = 36;
+            minor = 16;
+            xcenter = -1;
+            ycenter = -1;
+            LCEllipsoid ellipse4(
+                xcenter, ycenter, major, minor, theta, latticeShape
+            );
+            show(ellipse4);
+
+            xcenter = 60;
+            ycenter = -1;
+            LCEllipsoid ellipse5(
+                xcenter, ycenter, major, minor, theta, latticeShape
+            );
+            show(ellipse5);
+
+            xcenter = 60;
+            ycenter = 60;
+            LCEllipsoid ellipse6(
+                    xcenter, ycenter, major, minor, theta, latticeShape
+            );
+            show(ellipse6);
+
+            xcenter = -1;
+            ycenter = 60;
+            LCEllipsoid ellipse7(
+                xcenter, ycenter, major, minor, theta, latticeShape
+            );
+            show(ellipse7);
+        }
     }
     catch (const AipsError& x) {
         cout << "Caught exception: " << x.getMesg() << endl;
