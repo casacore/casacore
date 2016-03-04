@@ -57,7 +57,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // to define the special case of an N-dimensional sphere.
 // <br>
 // The center and the radii of the ellipsoid do not need to be pixel aligned.
-// The center of the ellipsoid must be inside the lattice.
+// The center of the ellipsoid may be outside the lattice.
 // The current implementation only supports ellipsoids with axes parallel
 // to the lattice axes except in the case of a 2-D ellipse for which a
 // constructor is provided for specifying the angle between the x-axis
@@ -166,22 +166,18 @@ private:
     void fillCenter (const IPosition& center);
 
     // Make the bounding box from center, radii, and shape.
-    Slicer makeBox (const Vector<Float>& center,
-			   const Vector<Float>& radii,
-			   const IPosition& latticeShape);
-
-    Slicer _makeBox2D (
-    	const Vector<Float>& center,
-    	const Vector<Float>& radii,
-    	const IPosition& latticeShape
-    );
+    Slicer makeBox (const Vector<Float>& radii,
+                         const IPosition& latticeShape);
 
     // Define the mask to indicate which elements are inside the ellipsoid.
     void defineMask();
 
-    //for 2-D ellipse with non-zero theta
+    //for 2-D ellipse with non-zero theta. Works for both cases center
+    // inside or outside the lattice.
     void _defineMask2D();
 
+    // set the mask in the case the center lies outside the lattice
+    void _doOutside();
 
     Vector<Float> itsCenter;
     Vector<Float> itsRadii;
@@ -189,6 +185,8 @@ private:
     Vector<Float> _epsilon;
     // for 2-D case only
     Float _theta;
+    // is center inside the lattice?
+    Bool _centerIsInside;
 };
 
 

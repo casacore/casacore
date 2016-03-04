@@ -14,7 +14,7 @@ wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar
 tar zxvf WSRT_Measures.ztar
 
 
-cmake .. \
+CXX="ccache $CXX" cmake .. \
     -DUSE_FFTW3=ON \
     -DBUILD_TESTING=ON \
     -DUSE_OPENMP=OFF \
