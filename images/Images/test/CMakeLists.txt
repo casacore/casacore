@@ -51,6 +51,7 @@ tImageBeamSet
 tImageConcat
 tImageEmpty
 tImageExpr
+tImageExpr2
 tImageExpr2Gram
 tImageExpr3Gram
 tImageExprGram

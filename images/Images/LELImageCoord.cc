@@ -125,9 +125,21 @@ LatticeExprNode LELImageCoord::makeSubLattice
     return SubImage<Float>
                  (ImageExpr<Float> (LatticeExpr<Float>(expr), ""),
 		  region);
+  case TpDouble:
+    return SubImage<Double>
+                 (ImageExpr<Double> (LatticeExpr<Double>(expr), ""),
+		  region);
   case TpComplex:
     return SubImage<Complex>
                  (ImageExpr<Complex> (LatticeExpr<Complex>(expr), ""),
+		  region);
+  case TpDComplex:
+    return SubImage<DComplex>
+                 (ImageExpr<DComplex> (LatticeExpr<DComplex>(expr), ""),
+		  region);
+  case TpBool:
+    return SubImage<Bool>
+                 (ImageExpr<Bool> (LatticeExpr<Bool>(expr), ""),
 		  region);
   default:
     throw (AipsError ("LELImageCoord::makeSubLattice - unknown datatype"));
@@ -150,9 +162,21 @@ LatticeExprNode LELImageCoord::makeExtendLattice
     return ExtendImage<Float>
                 (ImageExpr<Float>(LatticeExpr<Float>(expr), ""),
 		 newShape, newCsys);
+  case TpDouble:
+    return ExtendImage<Double>
+                (ImageExpr<Double>(LatticeExpr<Double>(expr), ""),
+		 newShape, newCsys);
   case TpComplex:
     return ExtendImage<Complex>
                 (ImageExpr<Complex>(LatticeExpr<Complex>(expr), ""),
+		 newShape, newCsys);
+  case TpDComplex:
+    return ExtendImage<DComplex>
+                (ImageExpr<DComplex>(LatticeExpr<DComplex>(expr), ""),
+		 newShape, newCsys);
+  case TpBool:
+    return ExtendImage<Bool>
+                (ImageExpr<Bool>(LatticeExpr<Bool>(expr), ""),
 		 newShape, newCsys);
   default:
     throw (AipsError ("LELImageCoord::makeExtendLattice - unknown datatype"));
@@ -169,9 +193,17 @@ LatticeExprNode LELImageCoord::makeRebinLattice
     return RebinImage<Float>
                  (ImageExpr<Float> (LatticeExpr<Float>(expr), ""),
 		  binning);
+  case TpDouble:
+    return RebinImage<Double>
+                 (ImageExpr<Double> (LatticeExpr<Double>(expr), ""),
+		  binning);
   case TpComplex:
     return RebinImage<Complex>
                  (ImageExpr<Complex> (LatticeExpr<Complex>(expr), ""),
+		  binning);
+  case TpDComplex:
+    return RebinImage<DComplex>
+                 (ImageExpr<DComplex> (LatticeExpr<DComplex>(expr), ""),
 		  binning);
   default:
     throw (AipsError ("LELLattCoord::makeRebinLattice - invalid datatype"));

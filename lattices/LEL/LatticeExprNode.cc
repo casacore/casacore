@@ -1602,8 +1602,7 @@ LatticeExprNode operator&& (const LatticeExprNode& left,
       return LELRegion::makeIntersection (*left.pExprBool_p,
 					  *right.pExprBool_p);
    }
-   return new LELBinaryBool(LELBinaryEnums::AND, left.makeBool(),
-			    right.makeBool());
+   return LatticeExprNode::newLogBinary (LELBinaryEnums::AND, left, right);
 }
 
 LatticeExprNode operator|| (const LatticeExprNode& left,
@@ -1617,8 +1616,7 @@ LatticeExprNode operator|| (const LatticeExprNode& left,
    if (LatticeExprNode::areRegions (left, right)) {
       return LELRegion::makeUnion (*left.pExprBool_p, *right.pExprBool_p);
    }
-   return new LELBinaryBool(LELBinaryEnums::OR, left.makeBool(),
-			    right.makeBool());
+   return LatticeExprNode::newLogBinary (LELBinaryEnums::OR, left, right);
 }
 
 LatticeExprNode operator! (const LatticeExprNode& expr)
@@ -2084,6 +2082,33 @@ LatticeExprNode LatticeExprNode::newNumBinary (LELBinaryEnums::Operation oper,
 				    expr1.pExprDComplex_p);
   }
   return LatticeExprNode();
+}
+
+
+LatticeExprNode LatticeExprNode::newLogBinary (LELBinaryEnums::Operation oper,
+					       const LatticeExprNode& left,
+					       const LatticeExprNode& right)
+//
+// Create a new node for a logical binary operator.
+// The result has the same data type as the combined input type.
+//
+{
+  DataType dtype = resultDataType (left.dataType(), right.dataType());
+  LatticeExprNode expr0;
+  LatticeExprNode expr1;
+  switch (dtype) {
+  case TpBool:
+    expr0 = left.makeBool();
+    expr1 = right.makeBool();
+    break;
+  default:
+    throw (AipsError ("LatticeExprNode::newLogBinary - "
+		      "Non-Bool argument used in logical binary operation"));
+  }
+  // Make the operands the same dimensionality (if needed and possible).
+  makeEqualDim (expr0, expr1);
+  return new LELBinaryBool (oper, expr0.pExprBool_p,
+                            expr1.pExprBool_p);
 }
 
 
