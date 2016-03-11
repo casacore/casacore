@@ -67,29 +67,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Constructor assigns pointer.  If MS goes out of scope you
 // will get rubbish.  Also sets string to separate subtable output.
 //
-MSSummary::MSSummary (const MeasurementSet& ms)
-: pMS(&ms), _msmd(new MSMetaData(&ms, 50.0)),
+MSSummary::MSSummary (const MeasurementSet& ms, Float maxCacheMB)
+: pMS(&ms), _msmd(new MSMetaData(&ms, maxCacheMB)),
   dashlin1(replicate("-",80)),
   dashlin2(replicate("=",80)),
   _listUnflaggedRowCount(False),
-  _cacheSizeMB(50)
+  _cacheSizeMB(maxCacheMB)
 {}
 
-MSSummary::MSSummary (const MeasurementSet* ms)
-: pMS(ms), _msmd(new MSMetaData(ms, 50.0)),
+MSSummary::MSSummary (const MeasurementSet* ms, Float maxCacheMB)
+: pMS(ms), _msmd(new MSMetaData(ms, maxCacheMB)),
   dashlin1(replicate("-",80)),
   dashlin2(replicate("=",80)),
   _listUnflaggedRowCount(False),
-  _cacheSizeMB(50)
+  _cacheSizeMB(maxCacheMB)
 {}
 
-MSSummary::MSSummary (const MeasurementSet* ms, const String msname)
-: pMS(ms), _msmd(new MSMetaData(ms, 50)),
+MSSummary::MSSummary (const MeasurementSet* ms, const String msname, Float maxCacheMB)
+: pMS(ms), _msmd(new MSMetaData(ms, maxCacheMB)),
   dashlin1(replicate("-",80)),
   dashlin2(replicate("=",80)),
   msname_p(msname),
   _listUnflaggedRowCount(False),
-  _cacheSizeMB(50)
+  _cacheSizeMB(maxCacheMB)
 {}
 //
 // Destructor does nothing
@@ -122,7 +122,7 @@ String MSSummary::name () const
 //
 // Reassign pointer.
 //
-Bool MSSummary::setMS (const MeasurementSet& ms)
+Bool MSSummary::setMS (const MeasurementSet& ms, Float maxCacheMB)
 {
 	const MeasurementSet* pTemp;
 	pTemp = &ms;
@@ -130,7 +130,8 @@ Bool MSSummary::setMS (const MeasurementSet& ms)
 		return False;
 	} else {
 		pMS = pTemp;
-		_msmd.reset(new MSMetaData(&ms, _cacheSizeMB));
+		Float cache = maxCacheMB < 0 ? _cacheSizeMB : maxCacheMB;
+		_msmd.reset(new MSMetaData(&ms, cache));
 		return True;
 	}
 }
@@ -328,6 +329,12 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 
 	set<ArrayKey>::const_iterator iter = allArrayKeys.begin();
 	set<ArrayKey>::const_iterator end = allArrayKeys.end();
+	_msmd->setForceSubScanPropsToCache(True);
+	SHARED_PTR<const std::map<ScanKey, std::pair<Double,Double> > > scanToTRMap = _msmd->getScanToTimeRangeMap();
+	SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > ssprops
+	    = _msmd->getSubScanProperties(True);
+	SHARED_PTR<const std::map<SubScanKey, std::set<String> > > ssToIntents = _msmd->getSubScanToIntentsMap();
+	SHARED_PTR<const map<SubScanKey, uInt64> > nrowMap = _msmd->getNRowMap(MSMetaData::BOTH);
 	for (; iter != end; ++iter) {
 		Int obsid = iter->obsID;
 		Int arrid = iter->arrayID;
@@ -355,9 +362,8 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 		uInt subsetscan = 0;
 		Int lastscan = 0;
 		for (; siter != send; ++siter) {
-			MSMetaData::SubScanProperties props = _msmd->getSubScanProperties(*siter);
+			const MSMetaData::SubScanProperties& props = ssprops->find(*siter)->second;
 			Int nrow = props.nrows;
-
 			Int thisscan = siter->scan;
 			set<uInt> ddIDs = props.ddIDs;
 			std::set<Int> stateIDs = props.stateIDs;
@@ -365,11 +371,11 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			scan.arrayID = siter->arrayID;
 			scan.obsID = siter->obsID;
 			scan.scan = siter->scan;
-			std::pair<Double, Double> timerange = _msmd->getTimeRangeForScan(scan);
+			const std::pair<Double, Double>& timerange = scanToTRMap->find(scan)->second;
 			Double btime = timerange.first;
 			Double etime = timerange.second;
 			Double day=floor(MVTime(btime/C::day).day());
-			std::set<uInt> spw = _msmd->getSpwsForSubScan(*siter);
+			const std::set<uInt>& spw = props.spws;
 			String name=fieldnames(siter->fieldID);
 			if (verbose) {
 				os.output().setf(ios::right, ios::adjustfield);
@@ -399,7 +405,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 				os.output().width(widthField); os << name.at(0,20);
 				os.output().width(widthnrow);
 				os.output().setf(ios::right, ios::adjustfield);
-				os <<  _msmd->nRows(MSMetaData::BOTH, arrid, obsid, siter->scan, siter->fieldID);
+				os <<  nrowMap->find(*siter)->second;
 				if (_listUnflaggedRowCount) {
 					ostringstream xx;
 					xx << std::fixed << setprecision(2)
@@ -412,7 +418,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 				os.output().width(widthLead); os << "  ";
 				os << spw;
 				os.output().width(widthLead); os << "  ";
-				std::map<uInt, Quantity> intToScanMap = _msmd->getAverageIntervalsForSubScan(*siter);
+				const std::map<uInt, Quantity>& intToScanMap = ssprops->find(*siter)->second.meanInterval;
 				os << "[";
 				for (
 					std::set<uInt>::const_iterator spwiter=spw.begin();
@@ -421,10 +427,10 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 					if (spwiter!=spw.begin()) {
 						os << ", ";
 					}
-					os << intToScanMap[*spwiter].getValue("s");
+					os << intToScanMap.find(*spwiter)->second.getValue("s");
 				}
 				os << "] ";
-				std::set<String> intents = _msmd->getIntentsForSubScan(*siter);
+				const std::set<String>& intents = ssToIntents->find(*siter)->second;
 				if (! intents.empty()) {
 					os << intents;
 				}
@@ -463,6 +469,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 			++recLength;
 			lastscan = thisscan;
 		}
+
 		if (verbose) {
 			os << LogIO::POST;
 		}
