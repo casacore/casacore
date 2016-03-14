@@ -1,4 +1,4 @@
-//# showtable.cc: This program shows table info and contents.
+//# showtableinfo.cc: This program shows table info and contents.
 //# Copyright (C) 2011
 //# Associated Universities, Inc. Washington DC, USA.
 //#

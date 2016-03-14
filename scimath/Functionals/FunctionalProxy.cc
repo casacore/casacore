@@ -223,9 +223,11 @@ void FunctionalProxy::setmasks(const Vector<Bool>& val) {
   if (type_ == 0) {
     rec = fhd2rec();
     rec.define("masks", val);
+    rec2fhd(rec);
   } else {
     rec = fhdc2rec();
-    rec2fhd(rec);
+    rec.define("masks", val);
+    rec2fhdc(rec);
   }
 }
 
