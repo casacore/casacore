@@ -3630,7 +3630,7 @@ SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > MSMetaDat
     }
     static const uInt iSize = sizeof(Int);
     static const uInt dSize = sizeof(Double);
-	static const uInt structSize = 3*dSize + iSize;
+    static const uInt structSize = 3*dSize + iSize;
     static const uInt keySize = 4*iSize;
     miter = mysubscans->begin();
     uInt64 mapSize = mysubscans->size() * (structSize + keySize);
@@ -3644,7 +3644,7 @@ SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > MSMetaDat
     }
     if (_cacheUpdated(mapSize)) {
         _subScanProperties = mysubscans;
-	}
+    }
     else if (_forceSubScanPropsToCache) {
        _cacheMB += mapSize/1e6;
        _subScanProperties = mysubscans;
