@@ -147,6 +147,8 @@ public:
 
 	std::set<String> getIntentsForSubScan(const SubScanKey& subScan) const;
 
+	SHARED_PTR<const std::map<SubScanKey, std::set<String> > > getSubScanToIntentsMap() const;
+
 	// get all intents, in no particular (nor guaranteed) order.
 	std::set<String> getIntents() const;
 
@@ -192,6 +194,8 @@ public:
 	uInt nRows() const;
 
 	uInt nRows(CorrelationType cType);
+
+	SHARED_PTR<const map<SubScanKey, uInt> > getNRowMap(CorrelationType type) const;
 
 	uInt nRows(
 		CorrelationType cType, Int arrayID, Int observationID,
@@ -280,6 +284,9 @@ public:
 	// the start and stop time of the scan, determined from min(TIME(x)-0.5*INTERVAL(x)) and
 	// max(TIME(x)-0.5*INTERVAL(x))
 	std::pair<Double, Double> getTimeRangeForScan(const ScanKey& scanKey) const;
+
+	// get the map of scans to time ranges.
+	SHARED_PTR<const std::map<ScanKey, std::pair<Double,Double> > > getScanToTimeRangeMap() const;
 
 	// get the times for the specified scan
 	// std::set<Double> getTimesForScan(const uInt scan) const;
@@ -412,8 +419,23 @@ public:
 	// get all sub scan keys for the specified array key.
 	std::set<SubScanKey> getSubScanKeys(const ArrayKey& arrayKey) const;
 
-	// get the sub scan properties for the specified sub scan
-	SubScanProperties getSubScanProperties(const SubScanKey& subScan) const;
+	// get the sub scan properties for the specified sub scan.
+
+	SubScanProperties getSubScanProperties(
+	    const SubScanKey& subScan, Bool showProgress=False
+	) const;
+
+    SHARED_PTR<const std::map<SubScanKey, SubScanProperties> > getSubScanProperties(
+        Bool showProgress=False
+    ) const;
+
+	// If True, force the subscan properties structure to be
+	// cached regardless of the stipulations on the maximum cache. Normally,
+	// the subscan properties structure is small compared to the size of any
+	// one column that is necessary to create it, and since creating this
+	// structure can be very expensive, especially for large datasets, it
+	// is often a good idea to cache it if it will be accessed many times.
+	void setForceSubScanPropsToCache(Bool b) { _forceSubScanPropsToCache = b; }
 
 	// get a data structure, consumable by users, representing a summary of the dataset
 	Record getSummary() const;
@@ -584,12 +606,12 @@ private:
 	mutable std::map<Int, std::set<Int> >	_fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap;
 	mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
 	mutable std::map<String, uInt> _antennaNameToIDMap;
-	mutable std::map<SubScanKey, SubScanProperties> _subScanProperties;
+	mutable SHARED_PTR<std::map<SubScanKey, SubScanProperties> > _subScanProperties;
 
 	mutable std::map<String, std::set<Int> > _intentToFieldIDMap;
 	mutable std::map<String, std::set<ScanKey> > _intentToScansMap;
 	mutable std::map<String, std::set<SubScanKey> > _intentToSubScansMap;
-	mutable std::map<ScanKey, std::pair<Double, Double> > _scanToTimeRangeMap;
+	mutable SHARED_PTR<const std::map<ScanKey, std::pair<Double, Double> > > _scanToTimeRangeMap;
 	mutable std::map<std::pair<ScanKey, uInt>, Double> _scanSpwToIntervalMap;
 	mutable std::map<std::pair<ScanKey, uInt>, std::set<Double> > _scanSpwToTimesMap;
 	mutable std::map<std::pair<ScanKey, uInt>, std::set<uInt> > _scanSpwToPolIDMap;
@@ -602,7 +624,7 @@ private:
 	mutable SHARED_PTR<QVD> _intervals;
 	mutable SHARED_PTR<vector<uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
  	mutable std::map<ScanKey, std::set<String> > _scanToIntentsMap;
- 	mutable std::map<SubScanKey, std::set<String> > _subScanToIntentsMap;
+ 	mutable SHARED_PTR<const std::map<SubScanKey, std::set<String> > > _subScanToIntentsMap;
 	mutable vector<std::set<String> > _stateToIntentsMap, _spwToIntentsMap, _fieldToIntentsMap;
 	mutable vector<SpwProperties> _spwInfo;
 	mutable vector<std::set<Int> > _spwToFieldIDsMap, _obsToArraysMap;
@@ -635,7 +657,7 @@ private:
 	const vector<const Table*> _taqlTempTable;
 	mutable SHARED_PTR<ArrayColumn<Bool> > _flagsColumn;
 
-	mutable Bool _spwInfoStored;
+	mutable Bool _spwInfoStored, _forceSubScanPropsToCache;
 	vector<std::map<Int, Quantity> > _firstExposureTimeMap;
 	mutable vector<Int> _numCorrs, _source_sourceIDs, _field_sourceIDs;
 
@@ -865,10 +887,8 @@ private:
 
 	vector<String> _getStationNames();
 
-	std::map<SubScanKey, SubScanProperties> _getSubScanProperties() const;
-
 	void _getSubScansAndIntentsMaps(
-		std::map<SubScanKey, std::set<String> >& subScanToIntentsMap,
+		SHARED_PTR<const std::map<SubScanKey, std::set<String> > >& subScanToIntentsMap,
 		std::map<String, std::set<SubScanKey> >& intentToSubScansMap
 	) const;
 
@@ -879,7 +899,7 @@ private:
 
 	//In scanSpwToIntervalMap, the key is a scan, spw pair.
 	void _getTimesAndInvervals(
-		std::map<ScanKey, std::pair<Double, Double> >& scanToTimeRangeMap,
+		SHARED_PTR<const std::map<ScanKey, std::pair<Double, Double> > >& scanToTimeRangeMap,
 		std::map<std::pair<ScanKey, uInt>, Double>& scanSpwToIntervalMap,
 		std::map<std::pair<ScanKey, uInt>, std::set<Double> >& scanSpwToTimesMap
 	) const;

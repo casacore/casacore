@@ -242,6 +242,18 @@ LogIO &operator<<(LogIO &os, uInt item)
     return os;
 }
 
+LogIO &operator<<(LogIO &os, Int64 item)
+{
+    os.output() << item;
+    return os;
+}
+
+LogIO &operator<<(LogIO &os, uInt64 item)
+{
+    os.output() << item;
+    return os;
+}
+
 LogIO &operator<<(LogIO &os, uLong item)
 {
     os.output() << item;
