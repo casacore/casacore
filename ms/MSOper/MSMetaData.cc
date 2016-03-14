@@ -230,17 +230,17 @@ uInt MSMetaData::nArrays() {
 	return _nArrays;
 }
 
-uInt64 MSMetaData::nRows() const {
+uInt MSMetaData::nRows() const {
 	return _ms->nrow();
 }
 
-uInt64 MSMetaData::nRows(CorrelationType cType) {
+uInt MSMetaData::nRows(CorrelationType cType) {
 	if (cType == BOTH) {
 		return nRows();
 	}
-	uInt64 nACRows, nXCRows;
-	SHARED_PTR<std::map<SubScanKey, uInt64> > subScanToNACRowsMap, subScanToNXCRowsMap;
-	SHARED_PTR<vector<uInt64> > fieldToNACRowsMap, fieldToNXCRowsMap;
+	uInt nACRows, nXCRows;
+	SHARED_PTR<std::map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
+	SHARED_PTR<vector<uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
 	_getRowStats(
 		nACRows, nXCRows, subScanToNACRowsMap,
 		subScanToNXCRowsMap, fieldToNACRowsMap,
@@ -254,10 +254,10 @@ uInt64 MSMetaData::nRows(CorrelationType cType) {
 	}
 }
 
-SHARED_PTR<const map<SubScanKey, uInt64> > MSMetaData::getNRowMap(CorrelationType cType) const {
-    uInt64 nACRows, nXCRows;
-    SHARED_PTR<std::map<SubScanKey, uInt64> > subScanToNACRowsMap, subScanToNXCRowsMap;
-    SHARED_PTR<vector<uInt64> > fieldToNACRowsMap, fieldToNXCRowsMap;
+SHARED_PTR<const map<SubScanKey, uInt> > MSMetaData::getNRowMap(CorrelationType cType) const {
+    uInt nACRows, nXCRows;
+    SHARED_PTR<std::map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
+    SHARED_PTR<vector<uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
     _getRowStats(
         nACRows, nXCRows, subScanToNACRowsMap,
         subScanToNXCRowsMap, fieldToNACRowsMap,
@@ -269,11 +269,11 @@ SHARED_PTR<const map<SubScanKey, uInt64> > MSMetaData::getNRowMap(CorrelationTyp
     else if (cType == CROSS) {
         return subScanToNXCRowsMap;
     }
-    SHARED_PTR<map<SubScanKey, uInt64> > mymap(
-        new map<SubScanKey, uInt64>()
+    SHARED_PTR<map<SubScanKey, uInt> > mymap(
+        new map<SubScanKey, uInt>()
     );
-    map<SubScanKey, uInt64>::const_iterator iter = subScanToNACRowsMap->begin();
-    map<SubScanKey, uInt64>::const_iterator end = subScanToNACRowsMap->end();
+    map<SubScanKey, uInt>::const_iterator iter = subScanToNACRowsMap->begin();
+    map<SubScanKey, uInt>::const_iterator end = subScanToNACRowsMap->end();
     for (; iter!=end; ++iter) {
         SubScanKey key = iter->first;
         (*mymap)[key] = iter->second + (*subScanToNXCRowsMap)[key];
@@ -281,7 +281,7 @@ SHARED_PTR<const map<SubScanKey, uInt64> > MSMetaData::getNRowMap(CorrelationTyp
     return mymap;
 }
 
-uInt64 MSMetaData::nRows(
+uInt MSMetaData::nRows(
 	CorrelationType cType, Int arrayID, Int observationID,
 	Int scanNumber, Int fieldID
 ) const {
@@ -291,9 +291,9 @@ uInt64 MSMetaData::nRows(
 	subScanKey.scan = scanNumber;
 	subScanKey.fieldID = fieldID;
 	_checkSubScan(subScanKey);
-	uInt64 nACRows, nXCRows;
-	SHARED_PTR<std::map<SubScanKey, uInt64> > subScanToNACRowsMap, subScanToNXCRowsMap;
-	SHARED_PTR<vector<uInt64> > fieldToNACRowsMap, fieldToNXCRowsMap;
+	uInt nACRows, nXCRows;
+	SHARED_PTR<std::map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
+	SHARED_PTR<vector<uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
     _getRowStats(
 		nACRows, nXCRows, subScanToNACRowsMap,
 		subScanToNXCRowsMap, fieldToNACRowsMap,
@@ -311,11 +311,11 @@ uInt64 MSMetaData::nRows(
 	}
 }
 
-uInt64 MSMetaData::nRows(CorrelationType cType, uInt fieldID) const {
+uInt MSMetaData::nRows(CorrelationType cType, uInt fieldID) const {
 	_checkField(fieldID);
-	uInt64 nACRows, nXCRows;
-	SHARED_PTR<std::map<SubScanKey, uInt64> > subScanToNACRowsMap, subScanToNXCRowsMap;
-	SHARED_PTR<vector<uInt64> > fieldToNACRowsMap, fieldToNXCRowsMap;
+	uInt nACRows, nXCRows;
+	SHARED_PTR<std::map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
+	SHARED_PTR<vector<uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
 	_getRowStats(
 		nACRows, nXCRows, subScanToNACRowsMap,
 		subScanToNXCRowsMap, fieldToNACRowsMap,
@@ -414,19 +414,19 @@ Double MSMetaData::nUnflaggedRows(CorrelationType cType, Int fieldID) const {
 }
 
 void MSMetaData::_getRowStats(
-	uInt64& nACRows, uInt64& nXCRows,
-	std::map<SubScanKey, uInt64>*& subScanToNACRowsMap,
-	std::map<SubScanKey, uInt64>*& subScanToNXCRowsMap,
-	vector<uInt64>*& fieldToNACRowsMap,
-	vector<uInt64>*& fieldToNXCRowsMap
+	uInt& nACRows, uInt& nXCRows,
+	std::map<SubScanKey, uInt>*& subScanToNACRowsMap,
+	std::map<SubScanKey, uInt>*& subScanToNXCRowsMap,
+	vector<uInt>*& fieldToNACRowsMap,
+	vector<uInt>*& fieldToNXCRowsMap
 ) const {
 	nACRows = 0;
 	nXCRows = 0;
-	subScanToNACRowsMap = new std::map<SubScanKey, uInt64>();
-	subScanToNXCRowsMap = new std::map<SubScanKey, uInt64>();
+	subScanToNACRowsMap = new std::map<SubScanKey, uInt>();
+	subScanToNXCRowsMap = new std::map<SubScanKey, uInt>();
 	uInt myNFields = nFields();
-	fieldToNACRowsMap = new vector<uInt64>(myNFields, 0);
-	fieldToNXCRowsMap = new vector<uInt64>(myNFields, 0);
+	fieldToNACRowsMap = new vector<uInt>(myNFields, 0);
+	fieldToNXCRowsMap = new vector<uInt>(myNFields, 0);
 	std::set<SubScanKey> subScanKeys = _getSubScanKeys();
 	std::set<SubScanKey>::const_iterator subIter = subScanKeys.begin();
 	std::set<SubScanKey>::const_iterator subEnd = subScanKeys.end();
@@ -474,11 +474,11 @@ void MSMetaData::_getRowStats(
 }
 
 void MSMetaData::_getRowStats(
-	uInt64& nACRows, uInt64& nXCRows,
-	SHARED_PTR<std::map<SubScanKey, uInt64> >& scanToNACRowsMap,
-	SHARED_PTR<std::map<SubScanKey, uInt64> >& scanToNXCRowsMap,
-	SHARED_PTR<vector<uInt64> >& fieldToNACRowsMap,
-	SHARED_PTR<vector<uInt64> >& fieldToNXCRowsMap
+	uInt& nACRows, uInt& nXCRows,
+	SHARED_PTR<std::map<SubScanKey, uInt> >& scanToNACRowsMap,
+	SHARED_PTR<std::map<SubScanKey, uInt> >& scanToNXCRowsMap,
+	SHARED_PTR<vector<uInt> >& fieldToNACRowsMap,
+	SHARED_PTR<vector<uInt> >& fieldToNXCRowsMap
 ) const {
 	// this method is responsible for setting _nACRows, _nXCRows, _subScanToNACRowsMap,
 	// _subScanToNXCRowsMap, _fieldToNACRowsMap, _fieldToNXCRowsMap
@@ -492,8 +492,8 @@ void MSMetaData::_getRowStats(
 		return;
 	}
 
-	std::map<SubScanKey, uInt64> *myScanToNACRowsMap, *myScanToNXCRowsMap;
-	vector<uInt64> *myFieldToNACRowsMap, *myFieldToNXCRowsMap;
+	std::map<SubScanKey, uInt> *myScanToNACRowsMap, *myScanToNXCRowsMap;
+	vector<uInt> *myFieldToNACRowsMap, *myFieldToNXCRowsMap;
 	_getRowStats(
 		nACRows, nXCRows, myScanToNACRowsMap,
 		myScanToNXCRowsMap, myFieldToNACRowsMap,
@@ -3543,7 +3543,7 @@ SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > MSMetaDat
     std::map<SubScanKey, map<uInt, vector<Double> > > intervalSets;
     SubScanKey subScanKey;
     uInt nrows;
-    uInt64 count = 0;
+    uInt count = 0;
     SHARED_PTR<ProgressMeter> pm;
     if (showProgress) {
         LogIO log;
@@ -3633,7 +3633,7 @@ SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > MSMetaDat
     static const uInt structSize = 3*dSize + iSize;
     static const uInt keySize = 4*iSize;
     miter = mysubscans->begin();
-    uInt64 mapSize = mysubscans->size() * (structSize + keySize);
+    uInt mapSize = mysubscans->size() * (structSize + keySize);
     for ( ; miter != mend; ++miter) {
         mapSize += iSize*(
             miter->second.ddIDs.size() + miter->second.stateIDs.size()

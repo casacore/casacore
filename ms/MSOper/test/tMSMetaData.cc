@@ -2381,11 +2381,11 @@ void testIt(MSMetaData& md) {
             key.obsID = 0;
             key.scan = 1;
             key.fieldID = 0;
-            SHARED_PTR<const map<SubScanKey, uInt64> > both = md.getNRowMap(MSMetaData::BOTH);
+            SHARED_PTR<const map<SubScanKey, uInt> > both = md.getNRowMap(MSMetaData::BOTH);
             AlwaysAssert(both->find(key)->second == 367, AipsError);
-            SHARED_PTR<const map<SubScanKey, uInt64> > ac = md.getNRowMap(MSMetaData::AUTO);
+            SHARED_PTR<const map<SubScanKey, uInt> > ac = md.getNRowMap(MSMetaData::AUTO);
             AlwaysAssert(ac->find(key)->second == 51, AipsError);
-            SHARED_PTR<const map<SubScanKey, uInt64> > xc = md.getNRowMap(MSMetaData::CROSS);
+            SHARED_PTR<const map<SubScanKey, uInt> > xc = md.getNRowMap(MSMetaData::CROSS);
             AlwaysAssert(xc->find(key)->second == 316, AipsError);
         }
         {

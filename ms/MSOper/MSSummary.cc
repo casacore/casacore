@@ -334,7 +334,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 	SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > ssprops
 	    = _msmd->getSubScanProperties(True);
 	SHARED_PTR<const std::map<SubScanKey, std::set<String> > > ssToIntents = _msmd->getSubScanToIntentsMap();
-	SHARED_PTR<const map<SubScanKey, uInt64> > nrowMap = _msmd->getNRowMap(MSMetaData::BOTH);
+	SHARED_PTR<const map<SubScanKey, uInt> > nrowMap = _msmd->getNRowMap(MSMetaData::BOTH);
 	for (; iter != end; ++iter) {
 		Int obsid = iter->obsID;
 		Int arrid = iter->arrayID;
