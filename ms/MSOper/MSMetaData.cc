@@ -3607,7 +3607,7 @@ SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > MSMetaDat
 		    }
 		}
 	}
-	std::map<SubScanKey, SubScanProperties>::iterator miter = mysubscans->begin();
+    std::map<SubScanKey, SubScanProperties>::iterator miter = mysubscans->begin();
     std::map<SubScanKey, SubScanProperties>::iterator mend = mysubscans->end();
     const Unit& eunit = exposureTimes->getFullUnit();
     for ( ; miter!=mend; ++miter) {
