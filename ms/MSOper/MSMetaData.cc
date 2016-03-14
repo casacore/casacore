@@ -3643,13 +3643,13 @@ SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > MSMetaDat
         mapSize += (iSize + dSize) * miter->second.meanInterval.size();
     }
     if (_cacheUpdated(mapSize)) {
-        _subScanProperties = mysubscans;
+       _subScanProperties = mysubscans;
     }
     else if (_forceSubScanPropsToCache) {
        _cacheMB += mapSize/1e6;
        _subScanProperties = mysubscans;
     }
-	return mysubscans;
+    return mysubscans;
 }
 
 std::map<Double, Double> MSMetaData::_getTimeToTotalBWMap(
