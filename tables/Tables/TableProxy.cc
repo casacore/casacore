@@ -118,13 +118,18 @@ TableProxy::TableProxy (const Vector<String>& tableNames,
 			const Record& lockOptions,
 			int option)
 {
-  Block<String> names(tableNames.size());
-  std::copy (tableNames.begin(), tableNames.end(), names.begin());
+  // Open the tables here (and not by Table ctor) to make it
+  // possible to use the :: syntax for subtables.
+  TableLock lockOpt = makeLockOptions(lockOptions);
+  Block<Table> tabs(tableNames.size());
+  for (uInt i=0; i<tableNames.size(); ++i) {
+    tabs[i] = Table::openTable (tableNames[i], lockOpt,
+                                Table::TableOption(option));
+  }
   Block<String> subNames(concatenateSubTableNames.size());
   std::copy (concatenateSubTableNames.begin(), concatenateSubTableNames.end(),
 	     subNames.begin());
-  table_p = Table (names, subNames, makeLockOptions(lockOptions),
-		   Table::TableOption(option));
+  table_p = Table (tabs, subNames);
 }
  
 TableProxy::TableProxy (const std::vector<TableProxy>& tables,
