@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Untar the input file to get the MS.
+rm -rf tMSSummary_tmp.MS
+tar zxf tMSSummary.in
+
+# Test with various ways of representing MEASINFO in CHAN_FREQ
+# and REF_FREQUENCY.
+# 1. no variable refcol
+# 2. variable refcol with and without uint TabRefCodes/Types
+# 3. int TabRefCodes with an unknown entry for TabRefCodes/Types
+for ext in 1 2 3
+do
+    echo
+    echo
+    echo "*** Test with SPECTRAL_WINDOW_$ext"
+    rm -rf tMSSummary_tmp.MS/SPECTRAL_WINDOW
+    cp -r tMSSummary_tmp.MS/SPECTRAL_WINDOW_$ext tMSSummary_tmp.MS/SPECTRAL_WINDOW
+    $casa_checktool ./tMSSummary
+done

@@ -27,33 +27,49 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MSOper/MSSummary.h>
+#include <ostream>
+#include <sstream>
+
+using namespace std;
+using namespace casacore;
+
+void testSumm()
+{
+  // Note that class MSSummary uses LogIO. Use that on a stringstream
+  // which will be printed on stdout at the ended.
+  MeasurementSet ms("tMSSummary_tmp.MS", Table::Old);
+  MSSummary mss(ms);
+  ostringstream ostr;
+  LogSink logsink(LogMessage::NORMAL, &ostr, False);
+  LogIO os(logsink);
+  mss.list (os, True);
+  // Remove the extra fields (time, severity) from the output string.
+  String str(ostr.str());
+  str.gsub (Regex(".*\tINFO\t[+]?\t"), "");
+  cout << str;
+}
 
 int main(int argc, const char* argv[])
 {
-  using namespace std;
-  using namespace casacore;
-
-  if (argc != 2) {
-  	cout << "Usage: "<< argv[0] << " MS_filename" << endl;
-	return 0;
-  }
-
   try {
     cout << "MSSummary" << endl;
     cout << "--------------------------------------" << endl;
-
     LogIO os(LogOrigin("tMSSummary", "main()"));
 
-    String MSName(argv[1]);
-    MeasurementSet ms(MSName, Table::Old);
-    MSSummary mss(ms);
-    //mss.list(os, verbose);
-    mss.listHistory(os);
-  } catch (AipsError x) {
+    if (argc < 2) {
+      testSumm();
+    } else {
+      String MSName(argv[1]);
+      MeasurementSet ms(MSName, Table::Old);
+      MSSummary mss(ms);
+      mss.listHistory(os);
+    }
+  } catch (const AipsError& x) {
     cout << x.getMesg() << endl;
   } 
   
