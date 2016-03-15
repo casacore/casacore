@@ -142,6 +142,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void* getHandle() const
       { return itsHandle; }
 
+    // Get the possible error.
+    const std::string& getError() const
+      { return itsError; }
+
   private:
     // Open (load)the dynamic library.
     void open (const std::string& name);
@@ -155,8 +159,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     //# Handle to dynamic library; note that the pointer is not owned, so the
     //# generated copy ctor and assignment are fine.
-    void* itsHandle;
-    Bool  itsDoClose;
+    void*       itsHandle;
+    Bool        itsDoClose;
+    std::string itsError;
   };
 
 } //# NAMESPACE CASACORE - END
