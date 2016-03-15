@@ -100,8 +100,8 @@
   COMMAND="$casa_checktool $@"
   set $@
 
-# Get the current directory.
-  curdir=`pwd`
+# Get the current directory (resolving symlinks).
+  curdir=`pwd -P`
 
 # If there is a .run file then use it without checktool.
 # Start it using sh if not executable.

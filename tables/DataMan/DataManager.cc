@@ -328,8 +328,11 @@ DataManagerCtor DataManager::getCtor (const String& type)
 DataManager* DataManager::unknownDataManager (const String& type,
 					      const Record&)
 {
-    throw (DataManUnknownCtor ("Data Manager class " + type + 
-			       " is not registered"));
+    throw DataManUnknownCtor ("Data Manager class " + type + 
+                              " is not registered\n"
+                              "  Check (DY)LD_LIBRARY_PATH matches the"
+                              " libraries used during the build of "
+                              + type);
     return 0;
 }
 

@@ -183,18 +183,24 @@ namespace casacore {
   {
     String fname(name);
     fname.downcase();
+    // Try to find the function.
+    map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
+    if (iter != theirRegistry.end()) {
+      return iter->second (fname);
+    }
     String sfname(fname);
     // Split name in library and function name.
     // Require that a . is found and is not the first or last character.
     Int j = fname.index('.');
+    String libname;
     if (j > 0  &&  j < Int(fname.size())-1) {
       // Replace a possible synonym for the library name.
-      String libname(fname.substr(0,j));
+      libname = fname.substr(0,j);
       libname = style.findSynonym (libname);
       fname   = libname + fname.substr(j);
       ScopedMutexLock lock(theirMutex);
       // See if the library is already loaded.
-      map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (libname);
+      iter = theirRegistry.find (libname);
       if (iter == theirRegistry.end()) {
         // Try to load the dynamic library.
         DynLib dl(libname, string("libcasa_"), "register_"+libname, False);
@@ -220,7 +226,10 @@ namespace casacore {
     if (fname != sfname) {
       unk = " (=" + fname + ')';
     }
-    throw TableInvExpr ("TaQL function " + sfname + unk + " is unknown");
+    throw TableInvExpr ("TaQL function " + sfname + unk +
+                        " is unknown\n"
+                        "  Check (DY)LD_LIBRARY_PATH matches the"
+                        " libraries used during the build of " + libname);
   }
 
 } // end namespace

@@ -101,6 +101,14 @@ Array<Int> RecordInterface::toArrayInt (const RecordFieldId& id) const
       convertArray (arr, tmp);
       break;
     }
+  case TpUInt:
+  case TpArrayUInt:
+    {
+      Array<uInt> tmp = asArrayuInt (id);
+      arr.resize (tmp.shape());
+      convertArray (arr, tmp);
+      break;
+    }
   default:
     arr = asArrayInt (id);
   }
@@ -124,6 +132,14 @@ Array<uInt> RecordInterface::toArrayuInt (const RecordFieldId& id) const
   case TpArrayShort:
     {
       Array<Short> tmp = asArrayShort (id);
+      arr.resize (tmp.shape());
+      convertArray (arr, tmp);
+      break;
+    }
+  case TpInt:
+  case TpArrayInt:
+    {
+      Array<Int> tmp = asArrayInt (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;

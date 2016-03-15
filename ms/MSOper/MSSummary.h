@@ -96,9 +96,12 @@ class MSSummary
 {
 public:
 // Constructor
-   MSSummary (const MeasurementSet&);
-   MSSummary (const MeasurementSet*);
-   MSSummary (const MeasurementSet* ms, const String msname);
+// <group>
+// <src>maxCacheMB</src> is the maximum cache size in MB to use for the created
+// MSMetaData object.
+   MSSummary (const MeasurementSet& ms, Float maxCacheMB = 50.0);
+   MSSummary (const MeasurementSet* ms, Float maxCacheMB = 50.0);
+   MSSummary (const MeasurementSet* ms, const String msname, Float maxCacheMB = 50.0);
 
 // Destructor
   ~MSSummary();
@@ -109,8 +112,10 @@ public:
 // Retrieve image name
    String name() const;
 
-// Set a new MS
-   Bool setMS (const MeasurementSet& ms);
+// Set a new MS. <src>maxCacheMB</src> is the maximum cache size of the
+// created MSMetaData tool. If negative, the cache size used when this object
+// was created is used.
+   Bool setMS (const MeasurementSet& ms, Float maxCacheMB=-1);
 
 // List all header information.
    void list (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
@@ -164,8 +169,8 @@ public:
 
    void setListUnflaggedRowCount(Bool v) { _listUnflaggedRowCount = v; }
 
-   // set the cache size, in MB, for the MSMetaData object.
-   void setMetaDataCacheSizeInMB(Float cacheSize) { _cacheSizeMB = cacheSize; }
+   // OBSOLETE. No longer does anything, kept for compilation backward compatibility.
+   void setMetaDataCacheSizeInMB(Float) {}
 
 private:
 // Pointer to MS

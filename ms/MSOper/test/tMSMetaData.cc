@@ -2160,6 +2160,9 @@ void testIt(MSMetaData& md) {
             sskey.scan = 1;
             MSMetaData::SubScanProperties props = md.getSubScanProperties(sskey);
             AlwaysAssert(props.nrows == 367, AipsError);
+            SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > allProps
+                = md.getSubScanProperties();
+            AlwaysAssert(allProps->find(sskey)->second.nrows == 367, AipsError);
         }
         {
         	cout << "*** test getScanKeys()" << endl;
@@ -2178,14 +2181,14 @@ void testIt(MSMetaData& md) {
         	}
         }
         {
-        	cout << "*** test getIntentsForSubScan()" << endl;
+        	cout << "*** test getIntentsForSubScan() and getSubScanToIntentsMap()" << endl;
         	ArrayKey arrayKey;
         	arrayKey.obsID = 0;
         	arrayKey.arrayID = 0;
         	std::set<SubScanKey> sskeys = md.getSubScanKeys(arrayKey);
         	std::set<SubScanKey>::const_iterator ssiter = sskeys.begin();
         	std::set<SubScanKey>::const_iterator ssend = sskeys.end();
-
+        	SHARED_PTR<const std::map<SubScanKey, std::set<String> > > mymap = md.getSubScanToIntentsMap();
         	for (; ssiter!=ssend; ++ssiter) {
         		std::set<String> intents = md.getIntentsForSubScan(*ssiter);
         		std::set<String> exp;
@@ -2259,6 +2262,7 @@ void testIt(MSMetaData& md) {
         		}
         		uniqueIntents.insert(exp.begin(), exp.end());
         		AlwaysAssert(intents == exp, AipsError);
+                AlwaysAssert(mymap->find(*ssiter)->second == exp, AipsError);
         	}
         }
         {
@@ -2358,6 +2362,31 @@ void testIt(MSMetaData& md) {
             for (; iter!=end; ++iter, ++i) {
                 AlwaysAssert(*iter == i, AipsError);
             }
+        }
+        {
+            cout << "*** test getScanToTimeRangeMap()" << endl;
+            SHARED_PTR<const std::map<ScanKey, std::pair<Double,Double> > > mymap
+                = md.getScanToTimeRangeMap();
+            ScanKey key;
+            key.arrayID = 0;
+            key.obsID = 0;
+            key.scan = 1;
+            AlwaysAssert(near(mymap->find(key)->second.first,  4842824745.0, 1.0), AipsError);
+            AlwaysAssert(near(mymap->find(key)->second.second, 4842824839.0, 1.0), AipsError);
+        }
+        {
+            cout << "*** test getNRowsMap()" << endl;
+            SubScanKey key;
+            key.arrayID = 0;
+            key.obsID = 0;
+            key.scan = 1;
+            key.fieldID = 0;
+            SHARED_PTR<const map<SubScanKey, uInt> > both = md.getNRowMap(MSMetaData::BOTH);
+            AlwaysAssert(both->find(key)->second == 367, AipsError);
+            SHARED_PTR<const map<SubScanKey, uInt> > ac = md.getNRowMap(MSMetaData::AUTO);
+            AlwaysAssert(ac->find(key)->second == 51, AipsError);
+            SHARED_PTR<const map<SubScanKey, uInt> > xc = md.getNRowMap(MSMetaData::CROSS);
+            AlwaysAssert(xc->find(key)->second == 316, AipsError);
         }
         {
 			cout << "*** cache size " << md.getCache() << endl;
