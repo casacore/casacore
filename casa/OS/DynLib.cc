@@ -66,11 +66,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         }
       }
     }
+    if (itsHandle == 0) {
+      throw AipsError ("Shared library " + library +
+                       " found in CASACORE_LDPATH nor (DY)LD_LIBRARY_PATH\n"
+                       + itsError);
+    }
     if (itsHandle  &&  !funcName.empty()) {
       // Found the dynamic library.
       // Now find and execute the given function.
-      // Because a compiler like g++ gives a warning when casting a pointer to a
-      // function pointer, a union is used to achieve this.
+      // Because a compiler like g++ gives a warning when casting a pointer
+      // to a function pointer, a union is used to achieve this.
       // Ensure the pointer sizes are the same.
       typedef void (*func_ptr)();
       AlwaysAssert (sizeof(func_ptr) == sizeof(void*), AipsError);
@@ -83,12 +88,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       if (! ptrCast.ptr) {
         close();
         throw AipsError("Found dynamic library " + fullName +
-                        ", but not its " + funcName + " function");
+                        ", but not its " + funcName + " function\n  " +
+                        itsError);
       }
 /// Note: the following is a g++ specific way to avoid the warning.
 ///#ifdef __GNUC__
 ///__extension__
 ///#endif
+      // Execute the function.
       ptrCast.funcPtr();
     }
   }
@@ -112,9 +119,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void* DynLib::getFunc (const std::string& funcName)
   {
+    itsError.clear();
 #ifdef HAVE_DLOPEN
     if (itsHandle ) {
-      return dlsym (itsHandle, funcName.c_str());
+      void* fptr = dlsym (itsHandle, funcName.c_str());
+      if (fptr == 0) {
+        itsError = dlerror();
+      }
+      return fptr;
     }
 #endif
     return 0;
@@ -124,6 +136,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
 #ifdef HAVE_DLOPEN
     itsHandle = dlopen (name.c_str(), RTLD_NOW | RTLD_GLOBAL);
+    if (itsHandle == 0) {
+      itsError += string(dlerror()) + '\n';
+    }
 #endif
   }
 
@@ -148,7 +163,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       Vector<String> parts = stringToVector (path, ':');
       for (uInt j=0; j<parts.size(); ++j) {
         if (! parts[j].empty()) {
-          string libDir = parts[j];
+          string libDir = parts[j] + '/';
           // Check if shared library can be found there.
           std::string pref("lib");
           std::string ext;
