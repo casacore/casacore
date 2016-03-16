@@ -700,9 +700,7 @@ char* TSMCube::initCallBack (void* owner)
 {
     uInt size = ((TSMCube*)owner)->localTileLength();
     char* buffer = new char[size];
-    for (uInt i=0; i<size; i++) {
-        buffer[i] = 0;
-    }
+    memset(buffer, 0, size);
     return buffer;
 }
 
