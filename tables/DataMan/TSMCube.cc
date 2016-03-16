@@ -1073,14 +1073,16 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
 
         while (True) {
             if (writeFlag) {
-	      TSMCube_MoveData (dataArray+dataOffset, section+sectionOffset);
-            }else{
-	      TSMCube_MoveData (section+sectionOffset, dataArray+dataOffset);
-	    }
-            dataOffset    += localSize;
+                TSMCube_MoveData(dataArray + dataOffset,
+                                 section + sectionOffset);
+            } else {
+                TSMCube_MoveData(section + sectionOffset,
+                                 dataArray + dataOffset);
+            }
+            dataOffset += localSize;
             sectionOffset += localSize;
-            for (j=1; j<nrdim_p; j++) {
-                dataOffset    += dataIncr(j);
+            for (j = 1; j < nrdim_p; j++) {
+                dataOffset += dataIncr(j);
                 sectionOffset += sectionIncr(j);
                 if (++dataPos(j) <= endPixel(j)) {
                     break;
@@ -1166,11 +1168,12 @@ void TSMCube::accessLine (char* section, uInt pixelOffset,
         // Otherwise loop through all pixels.
         if (contiguous) {
             if (writeFlag) {
-	        TSMCube_MoveData(dataArray,section);
-            }else{
-	        TSMCube_MoveData(section,dataArray);
-	    }
-	    section += localSize;
+                TSMCube_MoveData(dataArray,section);
+            }
+            else {
+                TSMCube_MoveData(section,dataArray);
+            }
+            section += localSize;
         }else{
             // Try to make the data copy as fast as possible.
             // Do this by specializing the cases (which occur very often)
@@ -1438,53 +1441,56 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
 
         while (True) {
             if (strided) {
-		uInt nrp = nrPixel(0);
+                uInt nrp = nrPixel(0);
                 for (j=0; j<nrp; j++) {
                     if (writeFlag) {
-		      switch (localPixelWords) {
-		      case 2:
-			((Int*)(dataArray+dataOffset))[1] =
-			  ((Int*)(section+sectionOffset))[1];
-		      case 1:
-			((Int*)(dataArray+dataOffset))[0] =
-			  ((Int*)(section+sectionOffset))[0];
-			break;
-		      default:
-			TSMCube_copyChar ((Char*)(dataArray+dataOffset),
-					  (Char*)(section+sectionOffset),
-					  localPixelSize);
-		      }
-                    }else{
-		      switch (localPixelWords) {
-		      case 2:
-			((Int*)(section+sectionOffset))[1] =
-			  ((Int*)(dataArray+dataOffset))[1];
-		      case 1:
-			((Int*)(section+sectionOffset))[0] =
-			  ((Int*)(dataArray+dataOffset))[0];
-			break;
-		      default:
-			TSMCube_copyChar ((Char*)(section+sectionOffset),
-					  (Char*)(dataArray+dataOffset),
-					  localPixelSize);
-		      }
+                        switch (localPixelWords) {
+                            case 2:
+                                ((Int*)(dataArray+dataOffset))[1] =
+                                    ((Int*)(section+sectionOffset))[1];
+                            case 1:
+                                ((Int*)(dataArray+dataOffset))[0] =
+                                    ((Int*)(section+sectionOffset))[0];
+                                break;
+                            default:
+                                TSMCube_copyChar ((Char*)(dataArray+dataOffset),
+                                                  (Char*)(section+sectionOffset),
+                                                  localPixelSize);
+                        }
+                    }
+                    else {
+                        switch (localPixelWords) {
+                            case 2:
+                                ((Int*)(section+sectionOffset))[1] =
+                                    ((Int*)(dataArray+dataOffset))[1];
+                            case 1:
+                                ((Int*)(section+sectionOffset))[0] =
+                                    ((Int*)(dataArray+dataOffset))[0];
+                                break;
+                            default:
+                                TSMCube_copyChar ((Char*)(section+sectionOffset),
+                                                  (Char*)(dataArray+dataOffset),
+                                                  localPixelSize);
+                        }
                     }
                     dataOffset    += strideSize;
                     sectionOffset += localPixelSize;
                 }
-            }else{
+            }
+            else {
                 if (writeFlag) {
                     TSMCube_MoveData (dataArray+dataOffset,
-				      section+sectionOffset);
-                }else{
-		    TSMCube_MoveData (section+sectionOffset,
-				      dataArray+dataOffset);
+                                      section+sectionOffset);
+                }
+                else {
+                    TSMCube_MoveData (section+sectionOffset,
+                                      dataArray+dataOffset);
                 }
                 dataOffset    += localSize;
                 sectionOffset += localSize;
             }
             for (j=1; j<nrdim_p; j++) {
-              // Catch attempt to increment dataOffset below 0
+                // Catch attempt to increment dataOffset below 0
                 DebugAssert(dataIncr(j) >= 0 ||
                             dataOffset >= static_cast<uInt>(-dataIncr(j)),
                             DataManError);
