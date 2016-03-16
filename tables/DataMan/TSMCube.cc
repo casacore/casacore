@@ -1035,9 +1035,20 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
                             expandedTileShape_p.offsetIncrement (dataLength);
         IPosition sectionIncr = localPixelSize *
                             expandedSectionShape.offsetIncrement (dataLength);
-        uInt localSize    = dataLength(0) * localPixelSize;
 
         while (True) {
+            uInt localSize = dataLength(0) * localPixelSize;
+            /* merge zero increments into one copy */
+            for (j = 1; j < nrdim_p; j++) {
+                if (dataIncr(j) == 0 && sectionIncr(j) == 0) {
+                    localSize *= dataLength(j);
+                    dataPos(j) = endPixel(j);
+                }
+                else {
+                    break;
+                }
+            }
+
             if (writeFlag) {
                 TSMCube_MoveData(dataArray + dataOffset,
                                  section + sectionOffset, localSize);
