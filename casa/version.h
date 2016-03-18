@@ -32,8 +32,8 @@
 #include <casacore/casa/aips.h>
 
 #define CASACORE_MAJOR_VERSION 2
-#define CASACORE_MINOR_VERSION 0
-#define CASACORE_PATCH_VERSION 3
+#define CASACORE_MINOR_VERSION 1
+#define CASACORE_PATCH_VERSION 0
 
 #define STRING(x) STR_HELPER(x)
 #define STR_HELPER(x) #x
