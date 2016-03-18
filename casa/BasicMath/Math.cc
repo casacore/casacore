@@ -178,7 +178,7 @@ Bool isInf(Float val) {
   // infinite. I can only have access to Solaris, Linux and SGI machines to
   // determine this.
 #if defined(AIPS_LINUX)
-  return (isinf(Double(val)));
+  return (std::isinf(Double(val)));
 #elif defined(AIPS_DARWIN)
   return (std::isinf(Double(val)));
 #elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
@@ -212,7 +212,7 @@ Bool isInf(Double val) {
   // infinite. I can only have access to Solaris, Linux and SGI machines to
   // determine this.
 #if defined(AIPS_LINUX)
-  return (isinf(Double(val)));
+  return (std::isinf(Double(val)));
 #elif defined(AIPS_DARWIN)
   return (std::isinf(Double(val)));
 #elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
