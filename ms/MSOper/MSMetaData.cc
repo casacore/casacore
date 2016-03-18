@@ -3537,7 +3537,8 @@ SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > MSMetaDat
     );
     const Vector<Double>& exposures = exposureTimes->getValue();
     Vector<Double>::const_iterator eiter = exposures.begin();
-    Vector<Double>::const_iterator iIter = exposures.begin();
+    const Vector<Double>& intervals = intervalTimes->getValue();
+    Vector<Double>::const_iterator iIter = intervals.begin();
 
     std::map<SubScanKey, Double> meanExposure;
     std::map<SubScanKey, map<uInt, vector<Double> > > intervalSets;
