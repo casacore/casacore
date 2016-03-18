@@ -13,7 +13,7 @@ Data records: 87       Total elapsed time = 10 seconds
 
    ObservationID = 0         ArrayID = 0
   Date        Timerange (UTC)          Scan  FldId FieldName             nRows     SpwIds   Average Interval(s)    ScanIntent
-  28-May-2001/02:26:50.0 - 02:27:00.0     0      0 3C286                       87  [0]  [9.95] 
+  28-May-2001/02:26:50.0 - 02:27:00.0     0      0 3C286                       87  [0]  [10] 
            (nRows = Total number of rows per scan) 
 Fields: 1
   ID   Code Name                RA               Decl           Epoch        nRows
@@ -54,7 +54,7 @@ Data records: 87       Total elapsed time = 10 seconds
 
    ObservationID = 0         ArrayID = 0
   Date        Timerange (UTC)          Scan  FldId FieldName             nRows     SpwIds   Average Interval(s)    ScanIntent
-  28-May-2001/02:26:50.0 - 02:27:00.0     0      0 3C286                       87  [0]  [9.95] 
+  28-May-2001/02:26:50.0 - 02:27:00.0     0      0 3C286                       87  [0]  [10] 
            (nRows = Total number of rows per scan) 
 Fields: 1
   ID   Code Name                RA               Decl           Epoch        nRows
@@ -95,7 +95,7 @@ Data records: 87       Total elapsed time = 10 seconds
 
    ObservationID = 0         ArrayID = 0
   Date        Timerange (UTC)          Scan  FldId FieldName             nRows     SpwIds   Average Interval(s)    ScanIntent
-  28-May-2001/02:26:50.0 - 02:27:00.0     0      0 3C286                       87  [0]  [9.95] 
+  28-May-2001/02:26:50.0 - 02:27:00.0     0      0 3C286                       87  [0]  [10] 
            (nRows = Total number of rows per scan) 
 Fields: 1
   ID   Code Name                RA               Decl           Epoch        nRows

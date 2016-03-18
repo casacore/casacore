@@ -2163,6 +2163,19 @@ void testIt(MSMetaData& md) {
             SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > allProps
                 = md.getSubScanProperties();
             AlwaysAssert(allProps->find(sskey)->second.nrows == 367, AipsError);
+            for (uInt i=0; i<9; ++i) {
+                Double expec = 0;
+                if (i == 0) {
+                    expec = 1.152;
+                }
+                else if (i == 1 || i == 3 || i == 5 || i == 7) {
+                    expec = 2.016;
+                }
+                else {
+                    expec = 1.008;
+                }
+                AlwaysAssert(near(props.meanInterval[i].getValue(), expec), AipsError);
+            }
         }
         {
         	cout << "*** test getScanKeys()" << endl;
