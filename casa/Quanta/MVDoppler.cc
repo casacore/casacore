@@ -200,14 +200,8 @@ Bool MVDoppler::putValue(const Vector<Quantum<Double> > &in) {
 }
 
 Double MVDoppler::makeD(Double v, const Unit &dt, Bool rev) const{
-  static Bool needInit = True;
-  static UnitVal Velocity;
-  static Double LVel(0.0);
-  if (needInit || LVel == 0.0) {
-    needInit = False;
-    Velocity = UnitVal::LENGTH/UnitVal::TIME;
-    LVel = QC::c.getBaseValue();
-  }
+  static UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
+  static Double LVel = QC::c.getBaseValue();
   Double x;
   if (dt.getValue() == UnitVal::NODIM) {
     x = dt.getValue().getFac();

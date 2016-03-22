@@ -216,25 +216,14 @@ Bool MVFrequency::putValue(const Vector<Quantum<Double> > &in) {
 }
 
 Double MVFrequency::makeF(Double v, const Unit &dt, Bool rev) const{
-  static Bool needInit = True;
-  static UnitVal InvTime;
-  static UnitVal AngleTime;
-  static UnitVal InvLength;
-  static UnitVal Energy;
-  static UnitVal Impuls;
-  static Double LVel;
-  static Double Planck;
-  if (needInit) {
-    needInit = False;
-    InvTime = UnitVal::NODIM/UnitVal::TIME;
-    AngleTime = UnitVal::ANGLE/UnitVal::TIME;
-    InvLength = UnitVal::NODIM/UnitVal::LENGTH;
-    Energy = UnitVal::MASS*UnitVal::LENGTH*UnitVal::LENGTH/
-      UnitVal::TIME/UnitVal::TIME;
-    Impuls = UnitVal::MASS*UnitVal::LENGTH;
-    LVel = (QC::c).getBaseValue();
-    Planck = (QC::h).getBaseValue();
-  }
+  static UnitVal InvTime = UnitVal::NODIM/UnitVal::TIME;
+  static UnitVal AngleTime = UnitVal::ANGLE/UnitVal::TIME;
+  static UnitVal InvLength = UnitVal::NODIM/UnitVal::LENGTH;
+  static UnitVal Energy = UnitVal::MASS*UnitVal::LENGTH*UnitVal::LENGTH/
+    UnitVal::TIME/UnitVal::TIME;
+  static UnitVal Impuls = UnitVal::MASS*UnitVal::LENGTH;
+  static Double LVel = (QC::c).getBaseValue();
+  static Double Planck = (QC::h).getBaseValue();
   Double x;
   if (dt.getValue() == UnitVal::TIME) {
     return (1.0/dt.getValue().getFac()/v);
