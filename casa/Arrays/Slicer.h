@@ -280,6 +280,7 @@ public:
     // This value should be different from MIN_INT in IPosition.h.
     // It should also not be the lowest possible value, since that
     // will probably be used as an undefined value.
+    // It must be a negative number.
     enum {MimicSource= -2147483646};
 
     // Define the possible interpretations of the end-value.
@@ -365,19 +366,9 @@ public:
     // <thrown>
     //   <li> ArraySlicerError
     // </thrown>
-    // <group>
-    // Infer the slicer's shape from an array, using a zero origin.
     IPosition inferShapeFromSource 
            (const IPosition& shape, IPosition& startResult,
             IPosition& endResult, IPosition& strideResult) const;
-
-    // Infer the slicer shape from an array, with the given origin.
-    // The returned values are based on a zero origin.
-    IPosition inferShapeFromSource 
-          (const IPosition& shape, const IPosition& origin,
-           IPosition& startResult,  IPosition& endResult,
-           IPosition& strideResult) const;
-    // </group>
 
     // Report the defined starting position.
     const IPosition& start() const;
