@@ -91,6 +91,14 @@ MSSummary::MSSummary (const MeasurementSet* ms, const String msname, Float maxCa
   _listUnflaggedRowCount(False),
   _cacheSizeMB(maxCacheMB)
 {}
+
+MSSummary::MSSummary (SHARED_PTR<MSMetaData> msmd)
+    : pMS(msmd->getMS()), _msmd(msmd), dashlin1(replicate("-",80)),
+      dashlin2(replicate("=",80)),
+      _listUnflaggedRowCount(False),
+    _cacheSizeMB(msmd->getMaxCacheSizeMB()) {
+}
+
 //
 // Destructor does nothing
 //
@@ -240,7 +248,8 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 		os << "The MAIN table is empty: there are no data!!!" << endl << LogIO::POST;
 		return;
 	}
-	std::pair<Double, Double> timerange = _msmd->getTimeRange();
+       _msmd->setForceSubScanPropsToCache(True);
+	std::pair<Double, Double> timerange = _msmd->getTimeRange(True);
 	Double startTime = timerange.first;
 	Double stopTime = timerange.second;
 	Double exposTime = stopTime - startTime;
@@ -249,7 +258,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 
 	ROMSMainColumns msmc(*pMS);
 	String timeref=msmc.time().keywordSet().subRecord("MEASINFO").asString("Ref");
-
 	// Output info
 	os << "Data records: " << nrow() << "       Total elapsed time = "
 			<< exposTime << " seconds" << endl
@@ -329,7 +337,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
 
 	set<ArrayKey>::const_iterator iter = allArrayKeys.begin();
 	set<ArrayKey>::const_iterator end = allArrayKeys.end();
-	_msmd->setForceSubScanPropsToCache(True);
 	SHARED_PTR<const std::map<ScanKey, std::pair<Double,Double> > > scanToTRMap = _msmd->getScanToTimeRangeMap();
 	SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > ssprops
 	    = _msmd->getSubScanProperties(True);

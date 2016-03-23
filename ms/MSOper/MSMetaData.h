@@ -84,6 +84,8 @@ public:
         Quantity meanExposureTime;
         uInt nrows;
         std::set<uInt> spws;
+        // number of rows for each spectral window
+        map<uInt, uInt> spwNRows;
         std::set<Int> stateIDs;
         std::map<Double, TimeStampProperties> timeProps;
     };
@@ -376,6 +378,9 @@ public:
 	// Get the fields which fail into the specified time range (center-tol to center+tol)
 	std::set<Int> getFieldsForTimes(Double center, Double tol);
 
+	// max cache size in MB
+	Float getMaxCacheSizeMB() const { return _maxCacheMB; }
+
 	// get telescope names in the order they are listed in the OBSERVATION table. These are
 	// the telescopes (observatories), not the antenna names.
 	vector<String> getObservatoryNames();
@@ -552,10 +557,56 @@ public:
 
 	// get the time range for the entire dataset. min(TIME(x) - 0.5*INTERVAL(x)) to
 	// max(TIME(x) + 0.5*INTERVAL(x))
-	std::pair<Double, Double> getTimeRange() const;
+	std::pair<Double, Double> getTimeRange(Bool showProgress=False) const;
 
 	// Number of unique values from SOURCE.SOURCE_ID
 	uInt nUniqueSourceIDsFromSourceTable() const;
+
+	const MeasurementSet* getMS() const { return _ms; }
+
+protected:
+
+	struct ScanProperties {
+		// the key is the spwID, the value is the meanInterval for
+		// the subscan and that spwID
+		map<uInt, Quantity> meanInterval;
+		// number of rows for each spectral window
+		map<uInt, uInt> spwNRows;
+		// time range (which takes into account helf of the corresponding
+		// interval, which is not accounted for in the SubScanProperties times
+		std::pair<Double, Double> timeRange;
+		// times for each spectral window
+		map<uInt, std::set<Double> > times;
+	};
+
+	virtual void _computeScanAndSubScanProperties(
+		SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
+		SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
+		Bool showProgress
+	) const;
+
+	void _getAntennas(
+		SHARED_PTR<Vector<Int> >& ant1,
+		SHARED_PTR<Vector<Int> >& ant2
+	) const;
+
+	SHARED_PTR<Vector<Int> > _getArrayIDs() const;
+
+	SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
+
+	SHARED_PTR<QVD > _getExposureTimes() const;
+
+	SHARED_PTR<Vector<Int> > _getFieldIDs() const;
+
+	SHARED_PTR<QVD> _getIntervals() const;
+
+	SHARED_PTR<Vector<Int> > _getObservationIDs() const;
+
+	SHARED_PTR<Vector<Int> > _getScans() const;
+
+	SHARED_PTR<Vector<Int> > _getStateIDs() const;
+
+	SHARED_PTR<Vector<Double> > _getTimes() const;
 
 private:
 
@@ -606,14 +657,12 @@ private:
 	mutable std::map<Int, std::set<Int> >	_fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap;
 	mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
 	mutable std::map<String, uInt> _antennaNameToIDMap;
-	mutable SHARED_PTR<std::map<SubScanKey, SubScanProperties> > _subScanProperties;
+	mutable SHARED_PTR<const std::map<ScanKey, ScanProperties> > _scanProperties;
+	mutable SHARED_PTR<const std::map<SubScanKey, SubScanProperties> > _subScanProperties;
 
 	mutable std::map<String, std::set<Int> > _intentToFieldIDMap;
 	mutable std::map<String, std::set<ScanKey> > _intentToScansMap;
 	mutable std::map<String, std::set<SubScanKey> > _intentToSubScansMap;
-	mutable SHARED_PTR<const std::map<ScanKey, std::pair<Double, Double> > > _scanToTimeRangeMap;
-	mutable std::map<std::pair<ScanKey, uInt>, Double> _scanSpwToIntervalMap;
-	mutable std::map<std::pair<ScanKey, uInt>, std::set<Double> > _scanSpwToTimesMap;
 	mutable std::map<std::pair<ScanKey, uInt>, std::set<uInt> > _scanSpwToPolIDMap;
 	mutable std::set<String> _uniqueIntents;
 	mutable std::set<Int>  _uniqueFieldIDs, _uniqueStateIDs;
@@ -731,18 +780,7 @@ private:
 
 	vector<MPosition> _getAntennaPositions() const;
 
-	void _getAntennas(
-		SHARED_PTR<Vector<Int> >& ant1,
-		SHARED_PTR<Vector<Int> >& ant2
-	) const;
-
-	SHARED_PTR<Vector<Int> > _getArrayIDs() const;
-
 	std::map<ArrayKey, std::set<SubScanKey> > _getArrayKeysToSubScanKeys() const;
-
-	SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
-
-	SHARED_PTR<QVD > _getExposureTimes() const;
 
     // If there are no intents, then fieldToIntentsMap will be of length
     // nFields() and all of its entries will be the empty set, and
@@ -772,23 +810,11 @@ private:
 		SHARED_PTR<std::map<Double, std::set<Int> > >& timesToFieldMap
 	);
 
-	SHARED_PTR<Vector<Int> > _getFieldIDs() const;
-
 	SHARED_PTR<ArrayColumn<Bool> > _getFlags() const;
 
 	std::map<String, std::set<Double> > _getIntentsToTimesMap() const;
 
-	SHARED_PTR<QVD> _getIntervals() const;
-
-	SHARED_PTR<Vector<Int> > _getObservationIDs() const;
-
-	SHARED_PTR<Vector<Int> > _getScans() const;
-
 	vector<std::set<String> > _getSpwToIntentsMap();
-
-	SHARED_PTR<Vector<Int> > _getStateIDs() const;
-
-	SHARED_PTR<Vector<Double> > _getTimes() const;
 
 	//SHARED_PTR<std::map<Double, TimeStampProperties> > _getTimeStampProperties() const;
 
@@ -892,17 +918,16 @@ private:
 		std::map<String, std::set<SubScanKey> >& intentToSubScansMap
 	) const;
 
+	void _getScanAndSubScanProperties(
+		SHARED_PTR<const std::map<ScanKey, ScanProperties> >& scanProps,
+		SHARED_PTR<const std::map<SubScanKey, SubScanProperties> >& subScanProps,
+		Bool showProgress
+	) const;
+
 	std::set<SubScanKey> _getSubScanKeys() const;
 
 	// get subscans related to the given scan
 	std::set<SubScanKey> _getSubScanKeys(const ScanKey& scanKey) const;
-
-	//In scanSpwToIntervalMap, the key is a scan, spw pair.
-	void _getTimesAndInvervals(
-		SHARED_PTR<const std::map<ScanKey, std::pair<Double, Double> > >& scanToTimeRangeMap,
-		std::map<std::pair<ScanKey, uInt>, Double>& scanSpwToIntervalMap,
-		std::map<std::pair<ScanKey, uInt>, std::set<Double> >& scanSpwToTimesMap
-	) const;
 
 	void _getUnflaggedRowStats(
 		Double& nACRows, Double& nXCRows,
