@@ -180,12 +180,7 @@ Vector<Quantum<Double> > MVRadialVelocity::getRecordValue() const {
 }
 
 Bool MVRadialVelocity::putValue(const Vector<Quantum<Double> > &in) {
-  static Bool needInit = True;
-  static UnitVal Velocity;
-  if (needInit) {
-    needInit = False;
-    Velocity = UnitVal::LENGTH/UnitVal::TIME;
-  }
+  static const UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
   uInt i = in.nelements();
   if (i == 0) {
     val = 0.0;
@@ -228,7 +223,7 @@ MVRadialVelocity::shiftFrequency(const Quantum<Vector<Double> > &freq) const {
 }
 
 Double MVRadialVelocity::makeF(const Unit &dt) const{
-  static UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
+  static const UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
   Quantity(1.0,dt).assure(Velocity);
   return (dt.getValue().getFac());
 }

@@ -165,7 +165,7 @@ MVAngle::formatTypes MVAngle::giveMe(const String &in) {
     "NO_DM",
     "DIG2"
   };
-  static MVAngle::formatTypes nam[N_name] = {
+  static const MVAngle::formatTypes nam[N_name] = {
     MVAngle::ANGLE,
     MVAngle::TIME,
     MVAngle::CLEAN,

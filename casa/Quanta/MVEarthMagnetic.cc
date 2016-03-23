@@ -61,7 +61,7 @@ MVEarthMagnetic::MVEarthMagnetic(Double in) :
 
 MVEarthMagnetic::MVEarthMagnetic(const Quantity &l) :
   MVPosition() {
-    static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
+    static const UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
       UnitVal::CURRENT;
     l.assure(testUnit);
     xyz(2) = l.getBaseValue();
@@ -72,7 +72,7 @@ MVEarthMagnetic::MVEarthMagnetic(Double in0, Double in1, Double in2) :
 
 MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, Double angle0, Double angle1) : 
   MVPosition() {
-    static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
+    static const UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
       UnitVal::CURRENT;
     l.assure(testUnit);
     Double loc = std::cos(angle1);
@@ -85,7 +85,7 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, Double angle0, Double angle1
 MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, const Quantity &angle0, 
 				 const Quantity &angle1) : 
   MVPosition() {
-    static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
+    static const UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
       UnitVal::CURRENT;
     l.assure(testUnit);
     Double loc = (cos(angle1)).getValue();
@@ -97,7 +97,7 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, const Quantity &angle0,
 
 MVEarthMagnetic::MVEarthMagnetic(const Quantum<Vector<Double> > &angle) :
   MVPosition() {
-    static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
+    static const UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
       UnitVal::CURRENT;
     uInt i; i = angle.getValue().nelements();
     if (i > 3 ) {
@@ -125,7 +125,7 @@ MVEarthMagnetic::MVEarthMagnetic(const Quantum<Vector<Double> > &angle) :
 MVEarthMagnetic::MVEarthMagnetic(const Quantity &l, 
 		     const Quantum<Vector<Double> > &angle) :
   MVPosition() {
-    static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
+    static const UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
       UnitVal::CURRENT;
     uInt i; i = angle.getValue().nelements();
     if (i > 3 ) {
@@ -374,7 +374,7 @@ Vector<Quantum<Double> > MVEarthMagnetic::getRecordValue() const {
 }
 
 Bool MVEarthMagnetic::putValue(const Vector<Quantum<Double> > &in) {
-  static UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
+  static const UnitVal testUnit = UnitVal::MASS/UnitVal::TIME/UnitVal::TIME/
     UnitVal::CURRENT;
   uInt i; i = in.nelements();
   if (i != 3 ) return False;
