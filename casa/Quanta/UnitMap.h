@@ -37,6 +37,7 @@
 #include <casacore/casa/Quanta/UnitDim.h>
 #include <casacore/casa/Quanta/UnitVal.h>
 #include <casacore/casa/Quanta/UnitName.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -330,14 +331,16 @@ public:
   static map<String, UnitVal> *mapCache;  
   // FITS unit list inclusion
   static Bool doneFITS;
+  static Mutex fitsMutex;
   
   //# member functions
   // Get the name of a FITS unit
-  static Bool getNameFITS(UnitName *&name, uInt which);
+  static Bool getNameFITS(const UnitName *&name, uInt which);
   // Get the belonging unit to a FITS unit
   static const String &getStringFITS(uInt which);
-  // Initialise the static map
+  // Initialise the static maps
   static void initUM();
+  static void doInitUM (void*);
   // Bits and pieces of initUM() to get compilation speed improved
   // <group>
   static void initUMPrefix();

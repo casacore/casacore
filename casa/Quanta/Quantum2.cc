@@ -79,9 +79,9 @@ Bool readQuantity(Quantity &res, MUString &in)
 
 Bool readQuantity(Quantity &res, const String &in)
 {
-  static Regex ex("^[[:space:][:punct:]]*[[:digit:]]");
-  static Regex ex2("[tT][oO][dD][aA][yY]");
-  static Regex ex3("[nN][oO][wW]");
+  static const Regex ex("^[[:space:][:punct:]]*[[:digit:]]");
+  static const Regex ex2("[tT][oO][dD][aA][yY]");
+  static const Regex ex3("[nN][oO][wW]");
   MUString tmp(in);
   // The next construct is to cater for an unexplained error in
   // the Linux egcs stream input library; and an even more funny one in sgi
