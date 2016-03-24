@@ -178,21 +178,12 @@ Vector<Quantum<Double> > MVFrequency::getRecordValue() const {
 }
 
 Bool MVFrequency::putValue(const Vector<Quantum<Double> > &in) {
-  static Bool needInit = True;
-  static UnitVal InvTime;
-  static UnitVal AngleTime;
-  static UnitVal InvLength;
-  static UnitVal Energy;
-  static UnitVal Impuls;
-  if (needInit) {
-    needInit = False;
-    InvTime = UnitVal::NODIM/UnitVal::TIME;
-    AngleTime = UnitVal::ANGLE/UnitVal::TIME;
-    InvLength = UnitVal::NODIM/UnitVal::LENGTH;
-    Energy = UnitVal::MASS*UnitVal::LENGTH*UnitVal::LENGTH/
-      UnitVal::TIME/UnitVal::TIME;
-    Impuls = UnitVal::MASS*UnitVal::LENGTH;
-  }
+  static const UnitVal InvTime = UnitVal::NODIM/UnitVal::TIME;
+  static const UnitVal AngleTime = UnitVal::ANGLE/UnitVal::TIME;
+  static const UnitVal InvLength = UnitVal::NODIM/UnitVal::LENGTH;
+  static const UnitVal Energy = UnitVal::MASS*UnitVal::LENGTH*UnitVal::LENGTH/
+    UnitVal::TIME/UnitVal::TIME;
+  static const UnitVal Impuls = UnitVal::MASS*UnitVal::LENGTH;
   uInt i = in.nelements();
   if (i == 0) {
     val = 0.0;
@@ -216,25 +207,14 @@ Bool MVFrequency::putValue(const Vector<Quantum<Double> > &in) {
 }
 
 Double MVFrequency::makeF(Double v, const Unit &dt, Bool rev) const{
-  static Bool needInit = True;
-  static UnitVal InvTime;
-  static UnitVal AngleTime;
-  static UnitVal InvLength;
-  static UnitVal Energy;
-  static UnitVal Impuls;
-  static Double LVel;
-  static Double Planck;
-  if (needInit) {
-    needInit = False;
-    InvTime = UnitVal::NODIM/UnitVal::TIME;
-    AngleTime = UnitVal::ANGLE/UnitVal::TIME;
-    InvLength = UnitVal::NODIM/UnitVal::LENGTH;
-    Energy = UnitVal::MASS*UnitVal::LENGTH*UnitVal::LENGTH/
-      UnitVal::TIME/UnitVal::TIME;
-    Impuls = UnitVal::MASS*UnitVal::LENGTH;
-    LVel = (QC::c).getBaseValue();
-    Planck = (QC::h).getBaseValue();
-  }
+  static const UnitVal InvTime = UnitVal::NODIM/UnitVal::TIME;
+  static const UnitVal AngleTime = UnitVal::ANGLE/UnitVal::TIME;
+  static const UnitVal InvLength = UnitVal::NODIM/UnitVal::LENGTH;
+  static const UnitVal Energy = UnitVal::MASS*UnitVal::LENGTH*UnitVal::LENGTH/
+    UnitVal::TIME/UnitVal::TIME;
+  static const UnitVal Impuls = UnitVal::MASS*UnitVal::LENGTH;
+  static const Double LVel = (QC::c).getBaseValue();
+  static const Double Planck = (QC::h).getBaseValue();
   Double x;
   if (dt.getValue() == UnitVal::TIME) {
     return (1.0/dt.getValue().getFac()/v);

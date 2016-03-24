@@ -204,7 +204,7 @@ Bool UnitVal::create(MUString &str, UnitVal &res) {
 }
 
 Int UnitVal::psign(MUString& str) {
-  static Regex sep("[ \\*\\./]");
+  static const Regex sep("[ \\*\\./]");
   Int lc = 1;
   while (str.testChar(sep)) {
     if (str.testChar('/')) lc = -lc;
@@ -222,8 +222,8 @@ Int UnitVal::power(MUString &str) {
 }
 
 Bool UnitVal::field(MUString &str, UnitVal &res) {
-  static Regex un1("[a-zA-Z_\"'$:%]");
-  static Regex un2("[a-zA-Z_0\"'$:%]");
+  static const Regex un1("[a-zA-Z_\"'$:%]");
+  static const Regex un2("[a-zA-Z_0\"'$:%]");
   UnitName loc;
   uInt wh(str.getPtr());
   res = UnitVal(); 		// Initial 1 value

@@ -103,6 +103,9 @@ public:
    MSSummary (const MeasurementSet* ms, Float maxCacheMB = 50.0);
    MSSummary (const MeasurementSet* ms, const String msname, Float maxCacheMB = 50.0);
 
+   // construct the object using an MSMetaDataObject
+   MSSummary (SHARED_PTR<MSMetaData> msmd);
+
 // Destructor
   ~MSSummary();
 
@@ -151,7 +154,7 @@ public:
    void listFeed (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
    void listField (LogIO& os, Bool verbose=False) const;
    void listField (LogIO& os, Record& outRec, Bool verbose=False,
-		   Bool fillRecord=True) const;
+           Bool fillRecord=True) const;
    void listObservation (LogIO& os, Bool verbose=False) const;
    void listHistory (LogIO& os) const;
    void listPolarization (LogIO& os, Bool verbose=False) const;
@@ -175,7 +178,7 @@ public:
 private:
 // Pointer to MS
    const MeasurementSet* pMS;
-   SPtrHolder<MSMetaData> _msmd;
+   SHARED_PTR<MSMetaData> _msmd;
 
 // Formatting strings
    const String dashlin1, dashlin2;
