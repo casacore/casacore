@@ -52,7 +52,8 @@ Table TableCopy::makeEmptyTable (const String& newName,
 				 Table::TableOption option,
 				 Table::EndianFormat endianFormat,
 				 Bool replaceTSM,
-				 Bool noRows)
+				 Bool noRows,
+                                 const StorageOption& stopt)
 {
   TableDesc tabDesc = tab.actualTableDesc();
   Record dminfo (dataManagerInfo);
@@ -71,7 +72,7 @@ Table TableCopy::makeEmptyTable (const String& newName,
   // Replace non-writable storage managers by StandardStMan.
   // This is for instance needed for LofarStMan.
   dminfo = DataManInfo::adjustStMan (dminfo, "StandardStMan", True);
-  SetupNewTable newtab (newName, tabDesc, option);
+  SetupNewTable newtab (newName, tabDesc, option, stopt);
   newtab.bindCreate (dminfo);
   return Table(newtab, (noRows ? 0 : tab.nrow()), False, endianFormat);
 }
@@ -194,6 +195,46 @@ void TableCopy::copySubTables (TableRecord& outKeys,
     }
   }
 }
+
+void TableCopy::cloneColumn (const Table& fromTable, const String& fromColumn,
+                             Table& toTable, const String& newColumn,
+                             const String& dataManagerName)
+{
+  // Use existing column description and give it the new name.
+  TableDesc td;
+  td.addColumn (fromTable.tableDesc()[fromColumn], newColumn);
+  // Get datamanager info of DATA column.
+  Block<String> selcol(1);
+  selcol[0] = fromColumn;
+  // Do the selection to only get dminfo of DATA
+  Table t1(fromTable.project (selcol));
+  Record dminfo = t1.dataManagerInfo();
+  // Set the datamananger name if not given.
+  String dmName (dataManagerName);
+  if (dmName.empty()) {
+    dmName = newColumn + "_dm";
+  }
+  // Adjust the dminfo.
+  // It has a subrecord per dataman, thus in this case only 1.
+  Record& rec = dminfo.rwSubRecord(0);
+  rec.define ("COLUMNS", Vector<String>(1, newColumn));
+  rec.define ("NAME", dmName);
+  // Now add the column.
+  toTable.addColumn (td, dminfo);
+}
+
+void TableCopy::copyColumnData (const Table& tabFrom, const String& colFrom,
+                                Table& tabTo, const String& colTo)
+{
+  AlwaysAssert (tabFrom.nrow() == tabTo.nrow(), AipsError);
+  ROTableRow inrow(tabFrom, Vector<String>(1, colFrom));
+  TableRow  outrow(tabTo, Vector<String>(1, colTo));
+  for (uInt i=0; i<tabFrom.nrow(); i++) {
+    inrow.get (i);
+    outrow.put (i, inrow.record(), inrow.getDefined(), False);
+  }
+}
+
 
 } //# NAMESPACE CASACORE - END
 

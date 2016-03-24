@@ -95,7 +95,8 @@ public:
 			       Table::TableOption option,
 			       Table::EndianFormat endianFormat,
 			       Bool replaceTSM = True,
-			       Bool noRows = False);
+			       Bool noRows = False,
+                               const StorageOption& = StorageOption());
 
   // Make an (empty) memory table with the same layout as the input one.
   // It has the same keywords and columns as the input one.
@@ -143,6 +144,50 @@ public:
 			     Bool noRows=False,
 			     const Block<String>& omit=Block<String>());
 
+  // Clone a column in the from table to a new column in the to table.
+  // The new column gets the same table description and data manager as the
+  // from column. It has to get a unique data mananger name. If not given,
+  // it is the new column name followed by "_dm".
+  static void cloneColumn (const Table& fromTable, const String& fromColumn,
+                           Table& toTable, const String& newColumn,
+                           const String& dataManagerName = String());
+
+  // Copy the data from one column to another.
+  // It can be used after function cloneColumn to populate the new column.
+  static void copyColumnData (const Table& fromTable, const String& fromColumn,
+                              Table& toTable, const String& toColumn);
+
+  // Fill the table column with the given array.
+  // The template type must match the column data type.
+  template<typename T>
+  static void fillArrayColumn (Table& table, const String& column,
+                               const Array<T>& value);
+
+  // Fill the table column with the given value.
+  // If the column contains arrays, the arrays are filled with the value.
+  // The template type must match the column data type.
+  template<typename T>
+  static void fillColumnData (Table& table, const String& column,
+                              const T& value);
+  static void fillColumnData (Table& table, const String& column,
+                              const char* value)
+    { fillColumnData (table, column, String(value)); }
+
+  // Fill the table column with the given value.
+  // The column must contain arrays. The arrays get the shape of the
+  // corresponding row in the fromColumn in the fromTable.
+  // It can be used after function cloneColumn to initialize the new column.
+  // The template type must match the column data type.
+  template<typename T>
+  static void fillColumnData (Table& table, const String& column,
+                              const T& value,
+                              const Table& fromTable, const String& fromColumn);
+  static void fillColumnData (Table& table, const String& column,
+                              const char* value,
+                              const Table& fromTable, const String& fromColumn)
+    { fillColumnData (table, column, String(value), fromTable, fromColumn); }
+                              
+
   // Replace TiledDataStMan by TiledShapeStMan in the DataManagerInfo record.
   // Since TiledShapeStMan does not support ID columns, they are
   // adjusted as well in tabDesc and dminfo.
@@ -185,4 +230,7 @@ public:
 
 } //# NAMESPACE CASACORE - END
 
+#ifndef CASACORE_NO_AUTO_TEMPLATES
+#include <casacore/tables/Tables/TableCopy.tcc>
+#endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

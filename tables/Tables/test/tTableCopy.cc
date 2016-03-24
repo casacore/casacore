@@ -63,6 +63,64 @@ void testDM()
     cout << dminfo << endl;
 }
 
+void testCloneColumn()
+{
+  cout << "testCloneColumn ..." << endl;
+  // First create a table.
+  TableDesc td;
+  td.addColumn (ArrayColumnDesc<Complex>("DATA", 1));
+  td.addColumn (ScalarColumnDesc<String>("SCALAR", 1));
+  td.addColumn (ArrayColumnDesc<Int>("ARRAY", 0));
+  SetupNewTable newtab("tTableCopy_tmp.data", td, Table::New);
+  StandardStMan ssm;
+  TiledShapeStMan tsm("DATA_stm", IPosition(2,8,2));
+  newtab.bindAll (ssm);
+  newtab.bindColumn ("DATA", tsm);
+  Table tab(newtab, 4);
+  ArrayColumn<Complex> col(tab, "DATA");
+  for (uInt row=0; row<tab.nrow(); ++row) {
+    Vector<Complex> vec(10*row+1);
+    indgen (vec);
+    if (row != 2) {
+      // Keep a row cell without an array.
+      col.put (row, vec);
+    }
+  }
+  // Now clone the column and copy the data.
+  TableCopy::cloneColumn (tab, "DATA", tab, "DATA1");
+  TableCopy::cloneColumn (tab, "DATA", tab, "DATA2", "Data2StMan");
+  cout << tab.dataManagerInfo() << endl;
+  TableCopy::copyColumnData (tab, "DATA", tab, "DATA1");
+  // Check if the data are the same.
+  ArrayColumn<Complex> col1(tab, "DATA1");
+  for (uInt row=0; row<tab.nrow(); ++row) {
+    if (col.isDefined(row)) {
+      AlwaysAssertExit (allEQ (col(row), col1(row)));
+    } else {
+      AlwaysAssertExit (! col1.isDefined(row));
+    }
+  }
+  // Initialize the array.
+  TableCopy::fillColumnData (tab, "DATA2", Complex(-1,-2), tab, "DATA");
+  // Initialize the scalar and other array.
+  TableCopy::fillColumnData (tab, "SCALAR", "str");
+  TableCopy::fillArrayColumn (tab, "ARRAY", Vector<Int>(3,2));
+  // Check if the data are correct.
+  ArrayColumn<Complex> col2(tab, "DATA2");
+  ScalarColumn<String> cols(tab, "SCALAR");
+  ArrayColumn<Int> cola(tab, "ARRAY");
+  for (uInt row=0; row<tab.nrow(); ++row) {
+    if (col.isDefined(row)) {
+      AlwaysAssertExit (col.shape(row).isEqual (col2.shape(row)));
+      AlwaysAssertExit (allEQ (col2(row), Complex(-1,-2)));
+    } else {
+      AlwaysAssertExit (! col2.isDefined(row));
+    }
+    AlwaysAssertExit (cols(row) == "str");
+    AlwaysAssertExit (allEQ (cola(row), Vector<Int>(3,2)));
+  }
+}
+
 int main (int argc, const char* argv[])
 {
   Table::TableType ttyp = Table::Plain;
@@ -104,6 +162,7 @@ int main (int argc, const char* argv[])
 
     if (argc <= 1) {
       testDM();
+      testCloneColumn();
     }
   } catch (exception& x) {
     cout << x.what() << endl;

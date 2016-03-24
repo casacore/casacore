@@ -254,6 +254,7 @@ Tables/TableAttr.h
 Tables/TableCache.h
 Tables/TableColumn.h
 Tables/TableCopy.h
+Tables/TableCopy.tcc
 Tables/TableDesc.h
 Tables/TableError.h
 Tables/TableIndexProxy.h
