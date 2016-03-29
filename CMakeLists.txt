@@ -346,23 +346,19 @@ if(USE_THREADS)
     endif(CMAKE_COMPILER_IS_GNUCXX)
 endif(USE_THREADS)
 
-# Check whether DATA_DIR contains data (only if measures is build)
+# Set default DATA_DIR if undefined.
 if (NOT DATA_DIR)
    set (DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/casacore/data)
 endif (NOT DATA_DIR)
-if (";${_modules};" MATCHES ";measures;")
-    get_filename_component(ABS_DATA_DIR "${DATA_DIR}" ABSOLUTE)
-    if (NOT EXISTS "${ABS_DATA_DIR}/ephemerides/")
-        message(WARNING "No ephemerides data found in the specified DATA_DIR (\"${DATA_DIR}\"), so the location must be specified at runtime. If you have preinstalled casacore data, specify the location with -DDATA_DIR.")
-    endif()
-endif()
+# Let cmake cache DATA_DIR.
+set (DATA_DIR "${DATA_DIR}" CACHE PATH "Measures tables root")
 
 
-# Set compiler flag in no table locking.
+# Set compiler flag if no table locking.
 if (NOT ENABLE_TABLELOCKING)
     add_definitions(-DAIPS_TABLE_NOLOCKING)
 endif (NOT ENABLE_TABLELOCKING)
-
+# Set compiler flag if stack tracing.
 if(USE_STACKTRACE)
     add_definitions(-DUSE_STACKTRACE)
 endif(USE_STACKTRACE)
@@ -424,7 +420,7 @@ message (STATUS "HDF5 library? ......... = ${HDF5_hdf5_LIBRARY}")
 message (STATUS "FFTW3 library? ........ = ${FFTW3_LIBRARIES}")
 
 message (STATUS "BUILD_PYTHON .......... = ${BUILD_PYTHON}")
-message (STATUS "BUILD_PYTHON3 .......... = ${BUILD_PYTHON3}")
+message (STATUS "BUILD_PYTHON3 ......... = ${BUILD_PYTHON3}")
 
 if (BUILD_PYTHON)
     message (STATUS "PYTHON2_EXECUTABLE ......... = ${PYTHON2_EXECUTABLE}")
