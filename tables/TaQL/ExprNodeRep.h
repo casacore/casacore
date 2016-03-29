@@ -390,6 +390,9 @@ public:
     // the example above the data type of T.
     NodeDataType dataType() const;
 
+    // Is the data type real (i.e., integer or double)?
+    Bool isReal() const;
+
     // Get the value type.
     ValueType valueType() const;
 
@@ -697,6 +700,9 @@ protected:
 //# Get the data type of the node.
 inline TableExprNodeRep::NodeDataType TableExprNodeRep::dataType() const
     { return dtype_p; }
+
+inline Bool TableExprNodeRep::isReal() const
+    { return dtype_p==NTInt || dtype_p==NTDouble; }
 
 //# Get the value type of the node.
 inline TableExprNodeRep::ValueType TableExprNodeRep::valueType() const

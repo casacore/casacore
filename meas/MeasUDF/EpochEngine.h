@@ -35,6 +35,7 @@
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/measures/Measures/MCEpoch.h>
 #include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
 #include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
 
 namespace casacore {
@@ -94,6 +95,10 @@ namespace casacore {
     MEpoch::Types refType() const
       { return itsRefType; } 
 
+    // Tell if the fraction has to be used for sidereal times.
+    Bool sidFrac() const
+      { return itsSidFrac; }
+
     // Get the shape.
     const IPosition& shape() const
       { return itsShape; }
@@ -127,7 +132,7 @@ namespace casacore {
     Bool handleEpochType (TableExprNodeRep* operand, Bool doThrow);
 
     // Set the MeasConvert object.
-    void setConverter (MEpoch::Types toType);
+    void setConverter (MEpoch::Types toType, Bool sidFrac);
 
     // Set the possible position engine.
     // It can be done only once.
@@ -141,12 +146,14 @@ namespace casacore {
     IPosition                   itsShape;
     Int                         itsNDim;
     Unit                        itsUnit;
-    MeasFrame                   itsFrame;       //# frame used by converter
+    Bool                        itsSidFrac;    //# T = fraction for sidereal 
+    MeasFrame                   itsFrame;      //# frame used by converter
     MEpoch::Convert             itsConverter;
     Vector<MEpoch>              itsConstants;
     MEpoch::Types               itsRefType;
     TableExprNode               itsExprNode;
-    ArrayMeasColumn<MEpoch>     itsMeasCol;
+    ScalarMeasColumn<MEpoch>    itsMeasScaCol;
+    ArrayMeasColumn<MEpoch>     itsMeasArrCol;
     PositionEngine*             itsPositionEngine;
   };
 
