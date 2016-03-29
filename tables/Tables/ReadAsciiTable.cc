@@ -72,6 +72,13 @@ Bool ReadAsciiTable::getLine (ifstream& file, Int& lineNumber,
       return False;
     }
     Int nch = file.gcount();
+    // Remove linefeed or newline.
+    if (nch > 0) nch--;
+    // Remove possible carriage return.
+    if (nch > 1  &&  line[nch-1] == '\r') {
+      nch--;
+    }
+    line[nch] = '\0';
     lineNumber++;
     if (lineNumber >= firstLine) {
       if (lastLine <= 0  ||  lineNumber <= lastLine) {
