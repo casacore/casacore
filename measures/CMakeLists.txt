@@ -2,6 +2,12 @@
 # CASA measures
 #
 
+# Check whether DATA_DIR contains data (only if measures is build)
+get_filename_component(ABS_DATA_DIR "${DATA_DIR}" ABSOLUTE)
+if (NOT EXISTS "${ABS_DATA_DIR}/ephemerides/")
+    message(WARNING "No ephemerides data found in the specified DATA_DIR (\"${DATA_DIR}\"), so the location must be specified at runtime. If you have preinstalled casacore data, specify the location with -DDATA_DIR.")
+endif()
+
 # If given, add the data directory as compile variable.
 # If it contains a single $, it needs to be doubled for make purposes.
 if (DATA_DIR)
