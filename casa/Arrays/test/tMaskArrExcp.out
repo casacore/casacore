@@ -141,11 +141,11 @@ MaskedArray<T> ::min(const MaskedArray<T> &, const MaskedArray<T> &) - arrays do
 
 Test conformance, ::min (Array, Array, MaskedArray)
 Caught an ArrayConformanceError:
-ArrayMath/Logical function min: arrays not conformant
+ArrayMath/Logical function min: array shapes [11] and [10] differ
 
 Test conformance, ::min (Array, Array, MaskedArray)
 Caught an ArrayConformanceError:
-ArrayMath/Logical function min: arrays not conformant
+ArrayMath/Logical function min: array shapes [10] and [11] differ
 
 Test insufficient elements, ::sum (const MaskedArray &)
 Caught an ArrayError:

@@ -555,6 +555,10 @@ public:
     // ArrayAccessor.</note>
     Array<T> operator[] (size_t i) const;
 
+    // Get the diagonal of each matrix part in the full array.
+    // The matrices are taken using axes firstAxes and firstAxis+1.
+    // diag==0 is main diagonal; diag>0 above the main diagonal; diag<0 below.
+    Array<T> diagonals (uInt firstAxis=0, Int64 diag=0) const;
 
     // The array is masked by the input LogicalArray.
     // This mask must conform to the array.

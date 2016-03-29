@@ -22,6 +22,7 @@ tAxesSpecifier
 tBoxedArrayMath
 tCompareBoxedPartial
 tConvertArray
+tDiagonal
 tExtendSpecifier
 tIPosition
 tLinAlgebra
