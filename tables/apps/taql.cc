@@ -44,6 +44,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <map>
 #include <vector>
+#include <fstream>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/iomanip.h>
 
@@ -62,13 +63,91 @@ using namespace std;
 // Define the type for the map of name to (resulttable,command).
 typedef map<String, pair<Table,String> > TableMap;
 
+void removeCR (String& line)
+{
+  // Remove possible carriage-return (in DOS files).
+  if (line.size() > 0  &&  line[line.size() - 1] == '\r') {
+    line = line.substr(0, line.size()-1);
+  }
+}
+
+uInt lskipws (const String& value, uInt st, uInt end)
+{
+  for (; st<end && isspace(value[st]); ++st)
+    ;
+  return st;
+}
+  
+uInt rskipws (const String& value, uInt st, uInt end)
+{
+  for (; end>st && isspace(value[end-1]); --end)
+    ;
+  return end;
+}
+
+uInt skipQuoted (const String& str, uInt st, uInt end)
+{
+  // Skip until the matching end quote is found.
+  char ch = str[st++];
+  for (; st<end; ++st) {
+    if (str[st] == ch) return st+1;
+    if (str[st] == '\\') st++;   // skip escaped char
+  }
+  throw AipsError ("Unbalanced quoted string at position "
+                   + String::toString(st) + " in " + str);
+}
+
+// Split a line using ; as separator.
+// Skip comments indicated by #.
+// Ignore those characters if in a quoted string.
+// An empty string is added where a separator is used.
+// In this way it is clear if the first part of the next line
+// has to be added to the last part of this line.
+vector<String> splitLine (const String& line)
+{
+  vector<String> parts;
+  // Skip leading and trailing whitespace.
+  uInt st = lskipws (line, 0, line.size());
+  if (!line.empty()  &&  line[st] != '#') {         // skip if only comment
+    uInt end = rskipws (line, st, line.size());
+    uInt stcmd = st;                   // first non-blank character
+    while (st<end) {
+      if (line[st] == '"'  ||  line[st] == '\'') {
+        st = skipQuoted (line, st, end);
+      } else if (line[st] == '#') {
+        end = rskipws(line, stcmd, st);     // A comment ends the line
+      } else if (line[st] == ';') {
+        // Save the command.
+        uInt endcmd = rskipws(line, stcmd, st);
+        if (stcmd < endcmd) {
+          parts.push_back (line.substr(stcmd, endcmd-stcmd));
+          parts.push_back (string());
+        }
+        st = lskipws (line, st+1, end);
+        stcmd = st;
+      } else {
+        st++;
+      }
+    }
+    // Handle possible last command.
+    if (stcmd < end) {
+      uInt endcmd = rskipws(line, stcmd, st);
+      if (stcmd < endcmd) {
+        parts.push_back (line.substr(stcmd, endcmd-stcmd));
+      }
+    }
+  }
+  return parts;
+}
+
 
 #ifdef HAVE_READLINE
-bool readLine (string& line, const string& prompt)
+bool readLine (String& line, const string& prompt)
 {
   char* str = readline(prompt.c_str());
   if (!str) return false;
   line = string(str);
+  removeCR (line);
   free(str);
   return true;
 }
@@ -77,36 +156,25 @@ bool readLine (String& line, const String& prompt)
 {
   if (!prompt.empty()) cerr << prompt;
   getline (cin, line);
+  removeCR (line);
   return cin.good();
 }
 #endif
 
-bool readLineSkip (String& line, const String& prompt,
-                   const String& commentChars)
+bool readLineSkip (String& line, const String& prompt)
 {
-  Regex lwhiteRE("^[ \t]*");
-  Regex rwhiteRE("[ \t]*$");
   bool fnd = false;
   while (!fnd  &&  readLine (line, prompt)) {
-    // Skip leading and trailing whitespace.
-    line.del (lwhiteRE);
-    line.del (rwhiteRE);
-    if (line.empty()) {                            
-      cerr << "h or help gives help info" << endl;
-    } else {
-      // non-empty line.
-      if (commentChars.empty()  ||  commentChars.size() > line.size()) {
-        // Do not test for comment
-        fnd = true;
-      } else {
-        for (uInt i=0; i<commentChars.size(); ++i) {
-          if (commentChars[i] != line[i]) {
-            // non-comment
-            fnd = true;
-            break;
-          }
-        }
-      }
+    vector<String> parts = splitLine(line);
+    // Remove last part if empty.
+    if (! parts.empty()  &&  parts[parts.size()-1].empty()) {
+      parts.resize (parts.size() - 1);
+    }
+    if (parts.size() > 1) {
+      cerr << "A single TaQL command must be given" << endl;
+    } else if (! parts.empty()) {                            
+      line = parts[0];
+      fnd  = true;
     }
   }
 #ifdef HAVE_READLINE
@@ -266,7 +334,8 @@ template<> void showArray (const Array<MVTime>& arr)
 
 // Show the required columns.
 // First test if they exist and contain scalars or arrays.
-void showTable (const Table& tab, const Vector<String>& colnam, bool printMeas)
+void showTable (const Table& tab, const Vector<String>& colnam,
+                bool printMeas, const String& delim)
 {
   uInt nrcol = 0;
   PtrBlock<TableColumn*> tableColumns(colnam.nelements());
@@ -318,7 +387,7 @@ void showTable (const Table& tab, const Vector<String>& colnam, bool printMeas)
   for (i=0; i<tab.nrow(); i++) {
     for (uInt j=0; j<nrcol; j++) {
       if (j > 0) {
-        cout << "\t";
+        cout << delim;
       }
       if (! tableColumns[j]->isDefined (i)) {
         cout << " no_array";
@@ -405,8 +474,10 @@ void showExpr(const TableExprNode& expr)
     case TpString:
       showArray (expr.getColumnString (rownrs));
       break;
-    default:
-      if (expr.getNodeRep()->dataType() == TableExprNodeRep::NTDate) {
+    case TpQuantity:
+      {
+        AlwaysAssert (expr.getNodeRep()->dataType() == TableExprNodeRep::NTDate,
+                      AipsError);
         MVTime time;
         if (expr.nrow() != 1) cout << '[';
         for (uInt i=0; i<expr.nrow(); i++) {
@@ -415,9 +486,10 @@ void showExpr(const TableExprNode& expr)
           showTime (time);
         }
         if (expr.nrow() != 1) cout << ']';
-      } else {
-        cout << "Unknown expression scalar type " << expr.getColumnDataType();
       }
+      break;
+    default:
+      cout << "Unknown expression scalar type " << expr.getColumnDataType();
     }
     cout << endl;
   } else {
@@ -442,23 +514,48 @@ void showExpr(const TableExprNode& expr)
         showArray (expr.getArrayString(i));
         break;
       default:
-        if (expr.getNodeRep()->dataType() == TableExprNodeRep::NTDate) {
-          Array<MVTime> arr;
-          expr.get (i, arr);
-          showArray (arr);
-        } else {
           cout << "Unknown expression array type " << expr.dataType();
-        }
       }
       cout << endl;
     }
   }
 }
 
+void showParseError (const TableParseError& x)
+{
+  // Try to highlight parse error on a tty. A color init
+  //# string consists of one or more of the following numeric codes:
+  //# Attribute codes:
+  //# 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
+  //# Text color codes:
+  //# 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+  //# Background color codes:
+  //# 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
+  // cerr has fd 2 (per C++ standard)
+  const String& msg(x.getMesg());
+  if (isatty(2)  &&  x.pos() >= 0) {
+    // Cater for leading part of the message.
+    int errLen = x.token().size();
+    int errPos = x.pos() - errLen + 23;
+    if (msg[errPos + errLen -1] == '\n') {
+      errLen--;
+    }
+    // For now use yellow background (43) to highlight the error.
+    cerr << msg.substr(0, errPos) << "\033[1;43m"
+         << msg.substr(errPos, errLen);
+    cerr << "\033[0m" << msg.substr(errPos+errLen) << endl;
+    if (errLen == 0) {
+      cerr << "Probably a missing parenthesis or bracket" << endl;
+    }
+  } else {
+    cerr << msg <<endl;
+  }
+}
+
 
 // Sort and select data.
 Table doCommand (bool printCommand, bool printSelect, bool printMeas,
-                 bool printRows,
+                 bool printRows, bool printHeader, const String& delim,
                  const String& varName, const String& prefix, const String& str,
                  const vector<const Table*>& tempTables)
 {
@@ -466,24 +563,27 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
   // Only show results for SELECT, COUNT and CALC.
   String::size_type spos = str.find_first_not_of (' ');
   Bool addCalc = False;
+  Bool showHelp = False;
   Bool doCount = False;
   Bool showResult = False;
   if (spos != String::npos) {
     String::size_type epos = str.find (' ', spos);
     if (epos == String::npos) {
-      // single word (e.g. 1+2), so cannot contain a command name
-      addCalc = True;
-    } else {
-      String s = str.substr(spos, epos-spos);
-      s.downcase();
-      addCalc = !(s=="select" || s=="update" || s=="insert" || s=="calc" ||
-                  s=="delete" || s=="create" || s=="createtable" ||
-                  s=="count"  || s=="using"  || s=="usingstyle"  || s=="time");
-      showResult = (s=="select");
-      if (s=="count") {
-        doCount    = True;
-        showResult = True;
-      }
+      epos = str.size();
+    }
+    String s = str.substr(spos, epos-spos);
+    s.downcase();
+    showHelp = (s=="show" || s=="help");
+    addCalc = !(s=="select" || s=="update" || s=="insert" ||
+                s=="calc" || s=="delete" || s=="count"  || 
+                s=="create" || s=="createtable" ||
+                s=="alter" || s=="altertable" ||
+                s=="using"  || s=="usingstyle"  || s=="time" ||
+                showHelp);
+    showResult = (s=="select");
+    if (s=="count") {
+      doCount    = True;
+      showResult = True;
     }
   }
   String strc(str);
@@ -502,7 +602,7 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
     colNames.resize (colNames.size() + 1, True);
     colNames[colNames.size() - 1] = "_COUNT_";
   }
-  if (printCommand) {
+  if (printCommand && !showHelp) {
     if (!varName.empty()) {
       cout << varName << " = ";
     }
@@ -511,19 +611,21 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
   }
   if (result.isTable()) {
     tabp = result.table();
-    if (printRows  ||  (printSelect && showResult && colNames.size() > 0)) {
+    if (printRows) {
       cout << "    " << cmd << " result of " << tabp.nrow()
            << " rows" << endl;
     }
     if (printSelect && showResult && colNames.size() > 0) {
-      // Show the selected column names.
-      cout << colNames.nelements() << " selected columns: ";
-      for (i=0; i<colNames.nelements(); i++) {
-        cout << " " << colNames(i);
+      if (printHeader) {
+        // Show the selected column names.
+        cout << colNames.nelements() << " selected columns: ";
+        for (i=0; i<colNames.nelements(); i++) {
+          cout << " " << colNames(i);
+        }
+        cout << endl;
       }
-      cout << endl;
       // Show the contents of the columns.
-      showTable (tabp, colNames, printMeas);
+      showTable (tabp, colNames, printMeas, delim);
     }
   } else {
     showExpr (result.node());
@@ -540,15 +642,16 @@ void showHelp()
   cerr << "  http://casacore.github.io/casacore-notes/199.html" << endl;
   cerr << "taql can be started with multiple arguments containing options and" << endl;
   cerr << "an optional TaQL command as the last argument(s)." << endl;
-  cerr << "It will run interactively if no TaQL command is given. `If possible," << endl;
+  cerr << "Using the -f option commands are taken from a file. The commands can be" << endl;
+  cerr << "split over multiple lines. Therefore a ; has to be used to delimite a command" << endl;
+  cerr << "After a # a line can contain comments." << endl;
+  cerr << "It will run interactively if command nor file is given. If possible," << endl;
   cerr << "interactive commands are kept in $HOME/.taql_history for later reuse." << endl;
   cerr << "Use q, quit, exit, or ^D to exit." << endl;
   cerr << endl;
   cerr << "Any TaQL command can be used. If no command name is given, CALC is assumed." << endl;
   cerr << "For example:" << endl;
-  cerr << "   mean([select EXPOSURE from my.ms])" << endl;
-  cerr << "   mjdtodate([select distinct TIME from my.ms])    #print as dates" << endl;
-  cerr << "   date() + 60     #which date is 60 days after today" << endl;
+  cerr << "   date() + 107     #which date is 107 days after today" << endl;
   cerr << "   select from my.ms where ANTENNA1=1 giving sel.ms" << endl;
   cerr << "The result of a CALC command will be printed." << endl;
   cerr << "The number of resulting rows and the values of possible selected" << endl;
@@ -567,16 +670,23 @@ void showHelp()
   cerr << "clears 'var' (removes it from the saved selections)." << endl;
   cerr << "Use command ? to show all saved selections." << endl;
   cerr << endl;
+  cerr << "The 'show' command shows some information." << endl;
+  cerr << "   show units           show the possible units and prefixes" << endl;
+  cerr << "   show meastypes       show the possible measure types" << endl;
+  cerr << endl;
   cerr << "taql can be started with a few options:" << endl;
   cerr << " -s or --style defines the TaQL style." << endl;
   cerr << "  The default style is python; if no value is given after -s it defaults to glish" << endl;
   cerr << " -h  or --help          show this help and exits." << endl;
+  cerr << " -f filename            name of file containing TaQL commands." << endl;
+  cerr << " -d delim               delimiter used between column values." << endl;
   cerr << " -ps or --printselect   show the values of selected columns." << endl;
   cerr << " -pm or --printmeasure  if possible, show values as formatted measures" << endl;
   cerr << " -pc or --printcommand  show the (expanded) TaQL command." << endl;
   cerr << " -pr or --printrows     show the number of rows selected, updated, etc." << endl;
+  cerr << " -ph or --printheader   show the header of names of the selected columns" << endl;
   cerr << "The default for -pc is on for interactive mode, otherwise off." << endl;
-  cerr << "The default for -pr, -ps, and -pm is on." << endl;
+  cerr << "The default for -pr, -ph, -ps, and -pm is on." << endl;
   cerr << endl;
 }
 
@@ -636,7 +746,7 @@ void showTableInfo (const String& name, const Table& tab,
 void showTableMap (const TableMap& tables)
 {
   if (tables.empty()) {
-    cout << "  no saved selections;    note: use h or help to get help info" << endl;
+    cout << "  no saved selections;    note: use h to get help info" << endl;
       } else {
     for (TableMap::const_iterator iter = tables.begin();
          iter != tables.end(); ++iter) {
@@ -717,14 +827,17 @@ vector<const Table*> replaceVars (String& str, const TableMap& tables)
 
 // Ask and execute commands till quit or ^D is given.
 void askCommands (bool printCommand, bool printSelect, bool printMeas,
-                  bool printRows, const String& prefix)
+                  bool printRows, bool printHeader, const String& delim,
+                  const String& prefix, const vector<String>& commands)
 {
 #ifdef HAVE_READLINE
   string histFile;
-  String homeDir = EnvironmentVariable::get("HOME");
-  if (! homeDir.empty()) {
-    histFile = homeDir + "/.taql_history";
-    read_history(histFile.c_str());
+  if (commands.empty()) {
+    String homeDir = EnvironmentVariable::get("HOME");
+    if (! homeDir.empty()) {
+      histFile = homeDir + "/.taql_history";
+      read_history(histFile.c_str());
+    }
   }
 #endif
   Regex varassRE("^[a-zA-Z_][a-zA-Z0-9_]*[ \t]*=");
@@ -732,20 +845,28 @@ void askCommands (bool printCommand, bool printSelect, bool printMeas,
   Regex lwhiteRE("^[ \t]*");
   Regex rwhiteRE("[ \t]*$");
   TableMap tables;
+  uInt inx=0;
   while (True) {
-    String str;
-    if (! readLineSkip (str, "TaQL> ", "#")) {
-      cerr << endl;
-      break;
-    }
-    if (str == "h"  ||  str == "help") {
-      showHelp();
-    } else if (str == "?") {
-      showTableMap (tables);
-    } else if (str == "exit"  ||  str == "quit"  ||  str == "q") {
-      break;
-    } else {
-      try {
+    try {
+      String str;
+      if (commands.empty()) {
+        if (! readLineSkip (str, "TaQL> ")) {
+          cerr << endl;
+          break;
+        }
+      } else {
+        if (inx >= commands.size()) {
+          break;
+        }
+        str = commands[inx++];
+      }
+      if (str == "h"  ||  str == "-h"  ||  str == "--help") {
+        showHelp();
+      } else if (str == "?") {
+        showTableMap (tables);
+      } else if (str == "exit"  ||  str == "quit"  ||  str == "q") {
+        break;
+      } else {
         String varName;
         String::size_type assLen = varassRE.match (str.c_str(), str.size());
         if (assLen != String::npos) {
@@ -783,16 +904,19 @@ void askCommands (bool printCommand, bool printSelect, bool printMeas,
             String command(str);
             vector<const Table*> tabs = replaceVars (str, tables);
             Table tab = doCommand (printCommand, printSelect, printMeas,
-                                   printRows, varName, prefix, str, tabs);
+                                   printRows, printHeader, delim,
+                                   varName, prefix, str, tabs);
             if (!varName.empty()  &&  !tab.isNull()) {
               // Keep the resulting table if a variable was given.
               tables[varName] = make_pair(tab, command);
             }
           }
         }
-      } catch (AipsError& x) {
-        cerr << x.getMesg() << endl;
       }
+    } catch (const TableParseError& x) {
+      showParseError (x);
+    } catch (const AipsError& x) {
+      cerr << x.getMesg() << endl;
     }
   }
 #ifdef HAVE_READLINE
@@ -802,15 +926,47 @@ void askCommands (bool printCommand, bool printSelect, bool printMeas,
 #endif
 }
 
+vector<String> fileCommands (const string& fname)
+{
+  vector<String> commands;
+  bool appendLast = false;
+  std::ifstream ifs(fname.c_str());
+  if (! ifs.good()) {
+    throw AipsError("Cannot open file " + fname);
+  }
+  String line;
+  getline (ifs, line);
+  while (ifs.good()) {
+    removeCR (line);
+    vector<String> parts = splitLine(line);
+    for (size_t i=0; i<parts.size(); ++i) {
+      if (! parts[i].empty()) {
+        if (appendLast) {
+          commands[commands.size() - 1].append (' '+ parts[i]);
+          appendLast = false;
+        } else {
+          commands.push_back (parts[i]);
+        }
+      }
+    }
+    appendLast = !parts.empty()  &&  !parts[parts.size()-1].empty();
+    getline (ifs, line);
+  }
+  return commands;
+}
+
 
 int main (int argc, const char* argv[])
 {
   try {
     string style = "python";
+    string fname;
     int printCommand = -1;
     int printSelect  = 1;
     int printMeas    = 1;
     int printRows    = 1;
+    int printHeader  = 1;
+    String delim('\t');
     int st;
     for (st=1; st<argc; ++st) {
       string arg(argv[st]);
@@ -826,6 +982,11 @@ int main (int argc, const char* argv[])
             st++;
           }
         }
+      } else if (arg == "-d") {
+        if (st+1 < argc) {
+          delim = argv[st+1];
+          st++;
+        }
       } else if (arg == "-pc"  ||  arg == "--printcommand") {
         printCommand = 1;
       } else if (arg == "-ps"  ||  arg == "--printselect") {
@@ -834,6 +995,8 @@ int main (int argc, const char* argv[])
         printMeas = 1;
       } else if (arg == "-pr"  ||  arg == "--printrows") {
         printRows = 1;
+      } else if (arg == "-ph"  ||  arg == "--printheader") {
+        printHeader = 1;
       } else if (arg == "-nopc"  ||  arg == "--noprintcommand") {
         printCommand = 0;
       } else if (arg == "-nops"  ||  arg == "--noprintselect") {
@@ -842,6 +1005,15 @@ int main (int argc, const char* argv[])
         printMeas = 0;
       } else if (arg == "-nopr"  ||  arg == "--noprintrows") {
         printRows = 0;
+      } else if (arg == "-noph"  ||  arg == "--noprintheader") {
+        printHeader = 0;;
+      } else if (arg == "-f") {
+        if (st < argc-1) {
+          st++;
+          fname = argv[st];
+        } else {
+          throw AipsError("No file name given after -f");
+        }
       } else if (arg == "-h"  ||  arg == "--help") {
         showHelp();
         return 0;
@@ -857,7 +1029,13 @@ int main (int argc, const char* argv[])
       style = "glish";
     }
     prefix = "using style " + style + ' ';
-    if (st < argc) {
+    if (! fname.empty()) {
+      vector<String> commands = fileCommands (fname);
+      if (! commands.empty()) {
+        askCommands (printCommand!=0, printSelect!=0, printMeas!=0,
+                     printRows!=0, printHeader!=0, delim, prefix, commands);
+      }
+    } else if (st < argc) {
       // A command can be given as multiple parameters to make tab-completion
       // easier. Thus combine it all.
       String command(argv[st]);
@@ -865,15 +1043,19 @@ int main (int argc, const char* argv[])
         command += ' ' + String(argv[st]);
       }
       // Execute the given command.
-      doCommand (printCommand==1, printSelect==1, printMeas==1, printRows==1,
-                 String(), prefix, command, vector<const Table*>());
+      doCommand (printCommand==1, printSelect==1, printMeas==1,
+                 printRows==1, printHeader==1,
+                 delim, String(), prefix, command, vector<const Table*>());
     } else {
     // Ask the user for commands.
       cout << "Using default TaQL style " << style << endl;
       askCommands (printCommand!=0, printSelect!=0, printMeas!=0,
-                   printRows!=0, prefix);
+                   printRows!=0, printHeader!=0,
+                   delim, prefix, vector<String>());
     }
-  } catch (AipsError& x) {
+  } catch (const TableParseError& x) {
+    showParseError (x);
+  } catch (const AipsError& x) {
     cerr << "\nCaught an exception: " << x.getMesg() << endl;
     return 1;
   } 

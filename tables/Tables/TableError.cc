@@ -191,10 +191,23 @@ TableVectorNonConform::~TableVectorNonConform () throw()
 {}
 
 
-TableParseError::TableParseError (const String& s,Category c)
-: TableError ("Error in TaQL command: " + s,c)
+TableParseError::TableParseError (const String& s, int pos,
+                                  const String& token, Category c)
+  : TableError ("Error in TaQL command: " + s, c),
+  itsPos   (pos),
+  itsToken (token)
 {}
 TableParseError::~TableParseError () throw()
+{}
+
+
+TableGramError::TableGramError (int pos, const String& token, Category c)
+: TableError ("parse error at or near position " +
+              String::toString(pos) + " '" + token + "'", c),
+  itsPos   (pos),
+  itsToken (token)
+{}
+TableGramError::~TableGramError () throw()
 {}
 
 } //# NAMESPACE CASACORE - END
