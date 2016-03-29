@@ -107,6 +107,7 @@ namespace casacore {
     PositionEngine itsPositionEngine;
     FuncType       itsType;
     MEpoch::Types  itsRefType;
+    Bool           itsSidFrac;   // T = use fraction for sidereal times
   };
 
 } //end namespace
