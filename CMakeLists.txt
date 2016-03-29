@@ -223,25 +223,34 @@ set (_uselapack NO)
 set (_usefits NO)
 set (_usewcs NO)
 set (_modules casa)
+set (_modules2 )
 if (NOT ${MODULE} STREQUAL "casa")
     set (_modules ${_modules} tables)
     set (_usebison YES)
     if (NOT ${MODULE} STREQUAL "tables")
-        set (_modules ${_modules} scimath_f scimath measures meas lattices)
+        set (_modules ${_modules} scimath_f scimath measures meas)
         set (_uselapack YES)
         if (NOT ${MODULE} STREQUAL "measures")
-            set (_modules ${_modules} fits)
-            set (_usefits YES)
-            if (${MODULE} STREQUAL "ms" OR ${MODULE} STREQUAL "all")
-                set (_modules ${_modules} ms derivedmscal msfits)
-            endif (${MODULE} STREQUAL "ms" OR ${MODULE} STREQUAL "all")
+            if (${MODULE} STREQUAL "ms")
+                set (_modules ${_modules} ms derivedmscal)
+            endif()
+            if (${MODULE} STREQUAL "msfits" OR ${MODULE} STREQUAL "all")
+                set (_modules2 ${_modules2} ms msfits derivedmscal)
+                set (_usefits YES)
+            endif()
             if (${MODULE} STREQUAL "images" OR ${MODULE} STREQUAL "all")
-                set (_modules ${_modules} mirlib coordinates images)
+                set (_modules2 ${_modules2} lattices mirlib coordinates images)
                 set (_usewcs YES)
-            endif (${MODULE} STREQUAL "images" OR ${MODULE} STREQUAL "all")
-        endif (NOT ${MODULE} STREQUAL "measures")
-    endif (NOT ${MODULE} STREQUAL "tables")
-endif (NOT ${MODULE} STREQUAL "casa")
+                set (_usefits YES)
+            endif()
+        endif()
+    endif()
+endif()
+
+if (_usefits)
+    set (_modules ${_modules} fits)
+endif()
+set (_modules ${_modules} ${_modules2})
 
 if (BUILD_PYTHON)
     set (_modules ${_modules} python)
@@ -451,11 +460,13 @@ endif (BUILD_PYTHON3)
 #  USE_STACKTRACE                NO
 #  DATA_DIR                      ${CMAKE_INSTALL_PREFIX}/share/casacore/data
 #  MODULE                        all
-#                                Values for MODULE (incremental list):
-#                                - casa
-#                                - tables
-#                                - measures
-#                                - ms OR images
+#                                Possible value for MODULE (previous built too):
+#                                - casa     (casa)
+#                                - tables   (tables)
+#                                - measures (scimath,scimath_f,measures,meas)
+#                                -  ms      (ms,derivedmscal)
+#                                or msfits  (fits,ms,msfits,derivedmscal)
+#                                or images  (fits,lattices,mirlib,coordinates,images)
 #                                - all
 # 
 # List of possibly used external packages and where
