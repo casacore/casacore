@@ -252,6 +252,25 @@ public:
     // Otherwise each individual field is copied.
     virtual void assign (const RecordInterface& that);
 
+    // Convert the TableRecord to a Record (recursively).
+    // A possible Table object is converted to a string containing
+    // the table name preceeded by 'Table: ' (as used by TableProxy).
+    Record toRecord() const;
+
+    // Fill the TableRecord from the given Record.
+    // The fields are appended to the TableRecord.
+    // It is the opposite of toRecord, so a String containg 'Table: '
+    // is handled as a Table (if it exists).
+    void fromRecord (const Record& rec);
+
+    // Get or define the value as a ValueHolder.
+    // This is useful to pass around a value of any supported type.
+    // <group>
+    virtual ValueHolder asValueHolder (const RecordFieldId&) const;
+    virtual void defineFromValueHolder (const RecordFieldId&,
+                                        const ValueHolder&);
+    // </group>
+
     // Get the comment for this field.
     virtual const String& comment (const RecordFieldId&) const;
 

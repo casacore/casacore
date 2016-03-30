@@ -61,13 +61,10 @@ void a()
     // Define the shape of an array.
     // Also define an origin.
     IPosition shape(2,20,30);
-    IPosition origin(2,-5,15);
-    // Now define some Slicer's and apply the shape and/or origin.
+    // Now define some Slicer's and apply the shape.
     IPosition blc,trc,inc;
     Slicer ns0 (IPosition(2,0,24));
     cout << ns0.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    cout << ns0.inferShapeFromSource (shape, origin, blc,trc,inc)
 	 << blc<<trc<<inc << endl;
     Slicer ns1 (IPosition(2,3,5), IPosition(2,13,21),
 		Slicer::endIsLast);
@@ -85,8 +82,6 @@ void a()
     Slicer ns10 (IPosition(2,0,24));
     cout << ns10.inferShapeFromSource (shape, blc,trc,inc)
 	 << blc<<trc<<inc << endl;
-    cout << ns10.inferShapeFromSource (shape, origin, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
     Slicer ns11 (IPosition(2,3,5), IPosition(2,13,21));
     cout << ns11.inferShapeFromSource (shape, blc,trc,inc)
 	 << blc<<trc<<inc << endl;
@@ -99,8 +94,6 @@ void a()
     // Define some Slicer's with an undetermined blc and/or trc.
     Slicer ns20 (IPosition(2,Slicer::MimicSource,24));
     cout << ns20.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    cout << ns20.inferShapeFromSource (shape, origin, blc,trc,inc)
 	 << blc<<trc<<inc << endl;
     Slicer ns21 (IPosition(2,3,5), IPosition(2,13,Slicer::MimicSource),
 		 Slicer::endIsLast);
@@ -117,8 +110,6 @@ void a()
     Slicer ns30 (IPosition(2,Slicer::MimicSource,24));
     cout << ns30.inferShapeFromSource (shape, blc,trc,inc)
 	 << blc<<trc<<inc << endl;
-    cout << ns30.inferShapeFromSource (shape, origin, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
     Slicer ns31 (IPosition(2,3,5), IPosition(2,13,Slicer::MimicSource));
     cout << ns31.inferShapeFromSource (shape, blc,trc,inc)
 	 << blc<<trc<<inc << endl;
@@ -131,8 +122,6 @@ void a()
 
     Slicer ns40 (Slice(0), Slice(24));
     cout << ns40.inferShapeFromSource (shape, blc,trc,inc)
-	 << blc<<trc<<inc << endl;
-    cout << ns40.inferShapeFromSource (shape, origin, blc,trc,inc)
 	 << blc<<trc<<inc << endl;
     Slicer ns41 (Slice(3,13), Slice(5,21));
     cout << ns41.inferShapeFromSource (shape, blc,trc,inc)
@@ -155,6 +144,11 @@ void a()
 	 << blc<<trc<<inc << endl;
     cout << ns50.ndim() << ns50.start() << ns50.end() << ns50.stride()
 	 << ns50.length() << endl;
+
+    // Define some Slicers with a negative start or end.
+    Slicer ns60 (IPosition(2,-13,10), IPosition(2,15,-3), Slicer::endIsLast);
+    cout << ns60.inferShapeFromSource (shape, blc,trc,inc)
+	 << blc<<trc<<inc << endl;
 
     // Try copy constructor.
     Slicer ns3(ns2);
@@ -213,49 +207,6 @@ void a()
     try {
 	ns90.inferShapeFromSource (shape, blc, trc, inc);
     }catch (AipsError x) {                   // shape length invalid
-	cout << x.getMesg() << endl;
-    } 
-    try {
-	ns90.inferShapeFromSource (IPosition(1,10), origin, blc, trc, inc);
-    }catch (AipsError x) {                   // origin length invalid
-	cout << x.getMesg() << endl;
-    } 
-
-    // Do some erronous infers resulting in too small or large blc/trc.
-    // The correct ones are just on the edge.
-    Slicer ns91 (IPosition(1,-10), IPosition(1,Slicer::MimicSource));
-    ns91.inferShapeFromSource (IPosition(1,100), IPosition(1,-10),
-			       blc, trc, inc);
-    try {
-	ns91.inferShapeFromSource (IPosition(1,100), IPosition(1,-9),
-				   blc, trc, inc);
-    }catch (AipsError x) {                   // blc < 0
-	cout << x.getMesg() << endl;
-    } 
-    ns91.inferShapeFromSource (IPosition(1,10), IPosition(1,-19),
-			       blc, trc, inc);
-    try {
-	ns91.inferShapeFromSource (IPosition(1,10), IPosition(1,-20),
-				   blc, trc, inc);
-    }catch (AipsError x) {                   // blc > shp
-	cout << x.getMesg() << endl;
-    } 
-
-    Slicer ns92 (IPosition(1,Slicer::MimicSource), IPosition(1,-10),
-		 Slicer::endIsLast);
-    ns92.inferShapeFromSource (IPosition(1,10), IPosition(1,-19),
-			       blc, trc, inc);
-    try {
-	ns92.inferShapeFromSource (IPosition(1,10), IPosition(1,-20),
-				   blc, trc, inc);
-    }catch (AipsError x) {                   // trc > shp
-	cout << x.getMesg() << endl;
-    } 
-    ns92.inferShapeFromSource (IPosition(1,10),IPosition(1,-9),blc,trc,inc);
-    try {
-	ns92.inferShapeFromSource (IPosition(1,10), IPosition(1,-8),
-				   blc, trc, inc);
-    }catch (AipsError x) {                   // trc < blc-1
 	cout << x.getMesg() << endl;
     } 
     

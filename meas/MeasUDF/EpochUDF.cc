@@ -48,9 +48,11 @@ namespace casacore {
     uInt argnr = 0;
     if (itsType == LAST) {
       itsRefType = MEpoch::LAST;
+      itsSidFrac = True;
     } else {
       itsEngine.handleEpochType (operands()[0], True);
       itsRefType = itsEngine.refType();
+      itsSidFrac = itsEngine.sidFrac();
       argnr = 1;
     }
     // Get the epochs.
@@ -66,7 +68,7 @@ namespace casacore {
     if (operands().size() > argnr) {
       throw AipsError ("Too many arguments given in a MEAS function");
     }
-    itsEngine.setConverter (itsRefType);
+    itsEngine.setConverter (itsRefType, itsSidFrac);
     // Set datatype, shape, unit, etc.
     setDataType (TableExprNodeRep::NTDouble);
     const IPosition& shape = itsEngine.shape();

@@ -43,6 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class RecordDesc;
+class ValueHolder;
 class IPosition;
 
 
@@ -288,6 +289,14 @@ public:
     // pointing to the removed field, but no other RecordFieldPtr's.
     // </note>
     virtual void removeField (const RecordFieldId&) = 0;
+
+    // Get or define the value as a ValueHolder.
+    // This is useful to pass around a value of any supported type.
+    // <group>
+    virtual ValueHolder asValueHolder (const RecordFieldId&) const;
+    virtual void defineFromValueHolder (const RecordFieldId&,
+                                        const ValueHolder&);
+    // </group>
 
     // Define a value for the given field.
     // Array conformance rules will not be applied for variable shaped arrays.

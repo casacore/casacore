@@ -740,7 +740,7 @@ void QuantumHolder::toArray() {
 }
 
 const String &QuantumHolder::ident() const {
-  static String myid = "quant";
+  static const String myid = "quant";
   return myid;
 }
 
