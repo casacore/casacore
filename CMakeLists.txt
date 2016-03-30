@@ -83,6 +83,35 @@ if( CASA_BUILD )
    if( NOT DATA_DIR )
       set(DATA_DIR "%CASAROOT%/data")
    endif( )
+   set(USE_FFTW3 ON)
+   set(USE_THREADS ON)
+   ###
+   ### after CASA switches from ASAP to libsakura, CASA will no longer
+   ### use casacore's python module and it will no longer use boost...
+   ###
+   set(BUILD_PYTHON ON)
+   set(Boost_NO_BOOST_CMAKE 1)
+   if (EXISTS "/opt/casa/01/include/python2.7")
+      ### RHEL7
+      set(PYTHON_LIBRARY "/opt/casa/01/lib/libpython2.7.so")
+      set(PYTHON_INCLUDE_DIR "/opt/casa/01/include/python2.7")
+      set(PYTHON_EXECUTABLE:FILEPATH "/opt/casa/01/bin/python")
+      if (EXISTS "/usr/include/boost")
+         set(BOOST_ROOT "/usr")
+      endif( )
+   elseif(EXISTS "/usr/lib64/casa/01/include/python2.7")
+      ### RHEL5/RHEL6
+      set(PYTHON_LIBRARY "/usr/lib64/casa/01/lib/libpython2.7.so")
+      set(PYTHON_INCLUDE_DIR "/usr/lib64/casa/01/include/python2.7")
+      set(PYTHON_EXECUTABLE:FILEPATH "/usr/lib64/casa/01/bin/python")
+      if (EXISTS "/usr/lib64/casa/01/include/boost")
+         ### RHEL5
+         set(BOOST_ROOT "/usr/lib64/casa/01")
+      elseif (EXISTS "/usr/include/boost")
+         ### RHEL6
+         set(BOOST_ROOT="/usr")
+      endif( )
+   endif( )
 endif( )
 
 # Test if shared libraries have to be built.
