@@ -498,6 +498,8 @@ Int RecordInterface::asInt (const RecordFieldId& id) const
         break;
     case TpUInt:
 	return *(const uInt*)get_pointer (whichField, TpUInt);
+    case TpInt64:
+	return *(const Int64*)get_pointer (whichField, TpInt64);
     default:
 	throw (AipsError ("RecordInterface::asInt - invalid data type"));
     }
@@ -516,6 +518,8 @@ uInt RecordInterface::asuInt (const RecordFieldId& id) const
 	return *(const Int*)get_pointer (whichField, TpInt);
     case TpUInt:
 	break;
+    case TpInt64:
+	return *(const Int64*)get_pointer (whichField, TpInt64);
     default:
 	throw (AipsError ("RecordInterface::asuInt - invalid data type"));
     }
