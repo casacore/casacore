@@ -416,22 +416,22 @@ Array<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
     case TableExprFuncNode::runallFUNC:
       {
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
-	return slidingArrayMath (arr, getArrayShape(id), AllFunc());
+        return slidingArrayMath (arr, getArrayShape(id), AllFunc<Bool>());
       }
     case TableExprFuncNode::runanyFUNC:
       {
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
-	return slidingArrayMath (arr, getArrayShape(id), AnyFunc());
+	return slidingArrayMath (arr, getArrayShape(id), AnyFunc<Bool>());
       }
     case TableExprFuncNode::boxallFUNC:
       {
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
-	return boxedArrayMath (arr, getArrayShape(id), AllFunc());
+	return boxedArrayMath (arr, getArrayShape(id), AllFunc<Bool>());
       }
     case TableExprFuncNode::boxanyFUNC:
       {
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
-	return boxedArrayMath (arr, getArrayShape(id), AnyFunc());
+	return boxedArrayMath (arr, getArrayShape(id), AnyFunc<Bool>());
       }
     case TableExprFuncNode::arrayFUNC:
       {

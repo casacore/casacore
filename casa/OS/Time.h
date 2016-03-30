@@ -108,9 +108,9 @@ class Time {
      // Copy constructor
    Time (const Time& time);
 
-     // return the Julian day
+     // return the Julian day (unit day)
    double julianDay () const;
-     // return the modified Julian day
+     // return the modified Julian day (unit day)
    double modifiedJulianDay () const;
 
      // initialise the julian day data with Time class
