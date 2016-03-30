@@ -41,42 +41,12 @@ using namespace casacore;
 using namespace std;
 
 
-void showKeys (const Table& table, Bool showtabkey, Bool showcolkey,
-               Int maxval)
-{
-  Bool shown = False;
-  if (showtabkey) {
-    if (table.keywordSet().size() > 0) {
-      cout << "  Table Keywords" << endl;
-      table.keywordSet().print (cout, maxval, "    ");
-      cout << endl;
-      shown = True;
-    }
-  }
-  if (showcolkey) {
-    Vector<String> colNames (table.tableDesc().columnNames());
-    for (uInt i=0; i<colNames.size(); ++i) {
-      TableRecord keys (TableColumn(table, colNames[i]).keywordSet());
-      if (keys.size() > 0) {
-        cout << "  Column " << colNames[i] << endl;
-        keys.print (cout, maxval, "    ");
-        cout << endl;
-        shown = True;
-      }
-    }
-  }
-  if (!shown) {
-    cout << endl;
-  }
-}
-
-
 int main (int argc, char* argv[])
 {
   try {
     // Read the input parameters.
     Input inputs(1);
-    inputs.version("2013Oct16GvD");
+    inputs.version("2016Feb17GvD");
     inputs.create("in", "", "Input table", "string");
     inputs.create("dm", "T", "Show data manager info?", "bool");
     inputs.create("col", "T", "Show column info?", "bool");
@@ -128,28 +98,7 @@ int main (int argc, char* argv[])
     }
     // Show the table structure.
     table.showStructure (cout, showdm, showcol, showsub, sortcol);
-    if (showtabkey || showcolkey) {
-      // Show table and/or column keywords.
-      cout << endl
-           << "Keywords of main table " << endl
-           << "----------------------" << endl;
-      showKeys (seltab, showtabkey, showcolkey, maxval);
-      if (showsub) {
-        // Also show them in the subtables.
-        TableRecord keyset (table.keywordSet());
-        for (uInt i=0; i<keyset.nfields(); ++i) {
-          if (keyset.dataType(i) == TpTable) {
-            Table tab(keyset.asTable(i));
-            // Do not show keywords if the subtable references the parent table.
-            if (! tab.isSameRoot (table)) {
-              cout << "Keywords of subtable " << keyset.name(i) << endl
-                   << "--------------------" << endl;
-              showKeys (keyset.asTable(i), showtabkey, showcolkey, maxval);
-            }
-          }
-        }
-      }
-    }
+    table.showKeywords (cout, showsub, showtabkey, showcolkey, maxval);
     if (browse) {
       // Need to make table persistent for casabrowser.
       String tmpName;
@@ -159,7 +108,7 @@ int main (int argc, char* argv[])
         char tmpnm[] = "/tmp/shtabXXXXXX";
         int fd = mkstemp(tmpnm);
         tmpName = tmpnm;
-        cout << "tmpnm="<<tmpName<<endl;
+        ///cout << "tmpnm="<<tmpName<<endl;
         // Close and delete the file.
         ::close(fd);
         ::unlink(tmpnm);
@@ -174,7 +123,7 @@ int main (int argc, char* argv[])
         clog << "Removing temporary table " << tmpName << endl;
         // Use Directory instead of Table::deleteTable because the
         // latter tests if the table is writable, which it is not if
-        // the underlying table is ot writable.
+        // the underlying table is not writable.
         Directory dir(tmpName);
         dir.removeRecursive();
       }
