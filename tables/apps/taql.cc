@@ -42,6 +42,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/version.h>
 #include <map>
 #include <vector>
 #include <casacore/casa/iostream.h>
@@ -532,6 +533,11 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
 }
 
 
+void showVersion()
+{
+  cerr << "taql version " << getVersionCASA() << endl;
+}
+
 void showHelp()
 {
   cerr << endl;
@@ -570,7 +576,8 @@ void showHelp()
   cerr << "taql can be started with a few options:" << endl;
   cerr << " -s or --style defines the TaQL style." << endl;
   cerr << "  The default style is python; if no value is given after -s it defaults to glish" << endl;
-  cerr << " -h  or --help          show this help and exits." << endl;
+  cerr << " -h  or --help          show this help and exit." << endl;
+  cerr << " -v  or --version       show the taql version and exit." << endl;
   cerr << " -ps or --printselect   show the values of selected columns." << endl;
   cerr << " -pm or --printmeasure  if possible, show values as formatted measures" << endl;
   cerr << " -pc or --printcommand  show the (expanded) TaQL command." << endl;
@@ -842,6 +849,9 @@ int main (int argc, const char* argv[])
         printMeas = 0;
       } else if (arg == "-nopr"  ||  arg == "--noprintrows") {
         printRows = 0;
+      } else if (arg == "-v"  ||  arg == "--version") {
+        showVersion();
+        return 0;
       } else if (arg == "-h"  ||  arg == "--help") {
         showHelp();
         return 0;
