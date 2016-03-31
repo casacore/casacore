@@ -214,7 +214,7 @@ Table::Table (const Block<String>& tableNames,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-  baseTabPtr_p = new ConcatTable (tableNames, subTables, subDirName,
+    baseTabPtr_p = new ConcatTable (tableNames, subTables, subDirName,
 				    option, TableLock(), tsmOpt);
     baseTabPtr_p->link();
 }
@@ -451,8 +451,8 @@ void Table::copy (const String& newName, TableOption option,
 		  Bool noRows) const
 {
     if (noRows) {
-        baseTabPtr_p->deepCopy (newName, Record(), option, False,
-				AipsrcEndian, noRows);
+        baseTabPtr_p->deepCopy (newName, Record(), StorageOption(),
+                                option, False, AipsrcEndian, noRows);
     } else {
         baseTabPtr_p->copy (newName, option);
     }
@@ -464,8 +464,8 @@ void Table::deepCopy (const String& newName,
 		      EndianFormat endianFormat,
 		      Bool noRows) const
 {
-    baseTabPtr_p->deepCopy (newName, Record(), option, valueCopy,
-			    endianFormat, noRows);
+    baseTabPtr_p->deepCopy (newName, Record(), StorageOption(),
+                            option, valueCopy, endianFormat, noRows);
 }
 
 Table Table::copyToMemoryTable (const String& newName, Bool noRows) const
@@ -986,6 +986,64 @@ ostream& operator<< (ostream& ios, const Table& tab)
     ios << " rows)";
     ios << endl;
     return ios;
+}
+
+void Table::showKeywords (ostream& ios, Bool showSubTables,
+                          Bool showTabKey, Bool showColKey,
+                          Int maxVal) const
+{
+  if (showTabKey || showColKey) {
+    // Show table and/or column keywords.
+    ios << endl
+        << "Keywords of main table " << endl
+        << "----------------------" << endl;
+    showKeywordSets (ios, showTabKey, showColKey, maxVal);
+    if (showSubTables) {
+      // Also show them in the subtables.
+      TableRecord keyset (keywordSet());
+      for (uInt i=0; i<keyset.nfields(); ++i) {
+        if (keyset.dataType(i) == TpTable) {
+          Table tab(keyset.asTable(i));
+          // Do not show if the subtable references the parent table.
+          if (! isSameRoot (tab)) {
+            ios << "Keywords of subtable " << keyset.name(i) << endl
+                << "--------------------" << endl;
+            tab.showKeywordSets (ios, showTabKey, showColKey, maxVal);
+          }
+        }
+      }
+    }
+  }
+}
+  
+void Table::showKeywordSets (ostream& ios,
+                             Bool showTabKey, Bool showColKey,
+                             Int maxVal) const
+{
+  Bool shown = False;
+  if (showTabKey) {
+    if (keywordSet().size() > 0) {
+      ios << "  Table Keywords" << endl;
+      keywordSet().print (ios, maxVal, "    ");
+      ios << endl;
+      shown = True;
+    }
+  }
+  if (showColKey) {
+    Vector<String> colNames (tableDesc().columnNames());
+    for (uInt i=0; i<colNames.size(); ++i) {
+      TableRecord keys (TableColumn(*this, colNames[i]).keywordSet());
+      if (keys.size() > 0) {
+        ios << "  Column " << colNames[i] << endl;
+        keys.print (ios, maxVal, "    ");
+        ios << endl;
+        shown = True;
+      }
+    }
+  }
+  if (!shown) {
+    ios << endl;
+  }
 }
 
 } //# NAMESPACE CASACORE - END

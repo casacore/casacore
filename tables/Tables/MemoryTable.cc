@@ -155,15 +155,18 @@ Bool MemoryTable::isWritable() const
 void MemoryTable::copy (const String& newName, int tableOption) const
 {
   Record dmInfo = colSetPtr_p->dataManagerInfo();
-  deepCopy (newName, dmInfo, tableOption, True, Table::AipsrcEndian, False);
+  deepCopy (newName, dmInfo, StorageOption(),
+            tableOption, True, Table::AipsrcEndian, False);
 }
 
 void MemoryTable::deepCopy (const String& newName,
 			    const Record& dataManagerInfo,
+                            const StorageOption& stopt,
 			    int tableOption, Bool, int endianFormat,
 			    Bool noRows) const
 {
-  trueDeepCopy (newName, dataManagerInfo, tableOption, endianFormat, noRows);
+  trueDeepCopy (newName, dataManagerInfo, stopt,
+                tableOption, endianFormat, noRows);
 }
 
 void MemoryTable::rename (const String& newName, int)
