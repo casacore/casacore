@@ -252,6 +252,9 @@ Bool DataManager::canAddColumn() const
 Bool DataManager::canRemoveColumn() const
     { return False; }
 
+Bool DataManager::canRenameColumn() const
+    { return True; }
+
 void DataManager::addRow (uInt)
     { throw (DataManInvOper ("DataManager::addRow not allowed")); }
 
