@@ -564,7 +564,23 @@ public:
 
     const MeasurementSet* getMS() const { return _ms; }
 
-protected:
+    // If set to true, enable parallel computations where possible,
+    // else, always do serial computations.
+    void setParallel(Bool b) {
+#ifndef _OPENMP
+        if (b) {
+            LogIO log;
+            log << LogOrigin("MSMetaData", __func__, WHERE)
+                << LogIO::WARN << "This library was not compiled using openmp. "
+                << "Multi-threading is disabled" << LogIO::POST;
+            _parallel = False;
+            return;
+        }
+#endif
+        _parallel = b;
+    }
+
+private:
 
     struct ScanProperties {
         // the key is the spwID, the value is the meanInterval for
@@ -578,37 +594,6 @@ protected:
         // times for each spectral window
         map<uInt, std::set<Double> > times;
     };
-
-    virtual void _computeScanAndSubScanProperties(
-        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
-        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
-        Bool showProgress
-    ) const;
-
-    void _getAntennas(
-        SHARED_PTR<Vector<Int> >& ant1,
-        SHARED_PTR<Vector<Int> >& ant2
-    ) const;
-
-    SHARED_PTR<Vector<Int> > _getArrayIDs() const;
-
-    SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
-
-    SHARED_PTR<QVD > _getExposureTimes() const;
-
-    SHARED_PTR<Vector<Int> > _getFieldIDs() const;
-
-    SHARED_PTR<QVD> _getIntervals() const;
-
-    SHARED_PTR<Vector<Int> > _getObservationIDs() const;
-
-    SHARED_PTR<Vector<Int> > _getScans() const;
-
-    SHARED_PTR<Vector<Int> > _getStateIDs() const;
-
-    SHARED_PTR<Vector<Double> > _getTimes() const;
-
-private:
 
     struct SpwProperties {
         Double bandwidth;
@@ -649,7 +634,7 @@ private:
     mutable Float _cacheMB;
     const Float _maxCacheMB;
     mutable uInt _nStates, _nACRows, _nXCRows, _nSpw, _nFields, _nAntennas,
-        _nObservations, _nScans, _nArrays, _nrows, _nPol, _nDataDescIDs;
+        _nObservations, _nScans, _nArrays, _nrows, _nPol, _nDataDescIDs, _pmCount;
     mutable std::map<ScanKey, std::set<uInt> > _scanToSpwsMap, _scanToDDIDsMap;
     mutable vector<uInt> _dataDescIDToSpwMap, _dataDescIDToPolIDMap;
     std::map<Int, std::set<uInt> > _fieldToSpwMap;
@@ -706,6 +691,7 @@ private:
     const vector<const Table*> _taqlTempTable;
     mutable SHARED_PTR<ArrayColumn<Bool> > _flagsColumn;
 
+    Bool _parallel;
     mutable Bool _spwInfoStored, _forceSubScanPropsToCache;
     vector<std::map<Int, Quantity> > _firstExposureTimeMap;
     mutable vector<Int> _numCorrs, _source_sourceIDs, _field_sourceIDs;
@@ -754,6 +740,20 @@ private:
 
     static void _checkTolerance(const Double tol);
 
+    void _computeScanAndSubScanProperties(
+        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
+        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
+        Bool showProgress
+    ) const;
+
+#ifdef _OPENMP
+    void _computeScanAndSubScanPropertiesParallel(
+        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
+        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
+        Bool showProgress
+    ) const;
+#endif
+
     void _createScanRecords(
         Record& parent, const ArrayKey& arrayKey,
         const std::map<SubScanKey, SubScanProperties>& subScanProps
@@ -780,7 +780,34 @@ private:
 
     vector<MPosition> _getAntennaPositions() const;
 
+    void _getAntennas(
+        SHARED_PTR<Vector<Int> >& ant1,
+        SHARED_PTR<Vector<Int> >& ant2
+    ) const;
+
+    SHARED_PTR<Vector<Int> > _getArrayIDs() const;
+
     std::map<ArrayKey, std::set<SubScanKey> > _getArrayKeysToSubScanKeys() const;
+
+#ifdef _OPENMP
+    // for parallel retrieving of scan/subscan properties
+    pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
+    _getChunkSubScanProperties(
+        SHARED_PTR<const Vector<Int> > scans, SHARED_PTR<const Vector<Int> > fields,
+        SHARED_PTR<const Vector<Int> > ddIDs, SHARED_PTR<const Vector<Int> > states,
+        SHARED_PTR<const Vector<Double> > times, SHARED_PTR<const Vector<Int> > arrays,
+        SHARED_PTR<const Vector<Int> > observations, SHARED_PTR<const Vector<Int> > ant1,
+        SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const QVD> exposureTimes,
+        SHARED_PTR<const QVD> intervalTimes, const vector<uInt>& ddIDToSpw,
+        uInt beginRow, uInt endRow
+    ) const;
+#endif
+
+    SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
+
+    SHARED_PTR<QVD > _getExposureTimes() const;
+
+    SHARED_PTR<Vector<Int> > _getFieldIDs() const;
 
     // If there are no intents, then fieldToIntentsMap will be of length
     // nFields() and all of its entries will be the empty set, and
@@ -814,7 +841,17 @@ private:
 
     std::map<String, std::set<Double> > _getIntentsToTimesMap() const;
 
+    SHARED_PTR<QVD> _getIntervals() const;
+
+    SHARED_PTR<Vector<Int> > _getObservationIDs() const;
+
+    SHARED_PTR<Vector<Int> > _getScans() const;
+
     vector<std::set<String> > _getSpwToIntentsMap();
+
+    SHARED_PTR<Vector<Int> > _getStateIDs() const;
+
+    SHARED_PTR<Vector<Double> > _getTimes() const;
 
     //SHARED_PTR<std::map<Double, TimeStampProperties> > _getTimeStampProperties() const;
 

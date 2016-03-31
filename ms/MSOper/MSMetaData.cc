@@ -28,6 +28,7 @@
 #include <casacore/ms/MSOper/MSMetaData.h>
 
 #include <casacore/casa/Arrays/MaskArrMath.h>
+#include <casacore/casa/Arrays/VectorSTLIterator.h>
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/System/ProgressMeter.h>
 #include <casacore/measures/Measures/MeasTable.h>
@@ -39,6 +40,12 @@
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/TaQL/TableParse.h>
 #include <casacore/tables/Tables/TableProxy.h>
+
+#include <utility>
+
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 #define _ORIGIN "MSMetaData::" + String(__FUNCTION__) + ": "
 
@@ -88,7 +95,7 @@ MSMetaData::MSMetaData(const MeasurementSet *const &ms, const Float maxCacheSize
       ),
       _taqlTempTable(
         File(ms->tableName()).exists() ? 0 : 1, ms
-      ), _flagsColumn(),
+      ), _flagsColumn(), _parallel(False),
        _spwInfoStored(False), _forceSubScanPropsToCache(False) {}
 
 MSMetaData::~MSMetaData() {}
@@ -3546,6 +3553,345 @@ void MSMetaData::_computeScanAndSubScanProperties(
     }
 }
 
+#ifdef _OPENMP
+void MSMetaData::_computeScanAndSubScanPropertiesParallel(
+    SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
+    SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
+    Bool showProgress
+) const {
+    uInt nrows = nRows();
+    SHARED_PTR<Vector<Int> > scans = _getScans();
+    SHARED_PTR<Vector<Int> > fields = _getFieldIDs();
+    SHARED_PTR<Vector<Int> > ddIDs = _getDataDescIDs();
+    SHARED_PTR<Vector<Int> > states = _getStateIDs();
+    SHARED_PTR<Vector<Double> > times = _getTimes();
+    SHARED_PTR<Vector<Int> > arrays = _getArrayIDs();
+    SHARED_PTR<Vector<Int> > observations = _getObservationIDs();
+    SHARED_PTR<Vector<Int> > ant1, ant2;
+    SHARED_PTR<QVD> exposureTimes = _getExposureTimes();
+    SHARED_PTR<QVD> intervalTimes = _getIntervals();
+    vector<uInt> ddIDToSpw = getDataDescIDToSpwMap();
+    _getAntennas(ant1, ant2);
+    uInt nthreads = min((uInt)1000, nrows);
+    uInt chunkSize = nrows/nthreads;
+    if (nrows % nthreads > 0) {
+        ++chunkSize;
+    }
+    _pmCount = 0;
+    SHARED_PTR<ProgressMeter> pm;
+    if (showProgress) {
+        LogIO log;
+        log << LogOrigin("MSMetaDataThreaded", __func__, WHERE)
+            << LogIO::NORMAL << "Compute subscan properties " << LogIO::POST;
+        pm.reset(new ProgressMeter(0, nrows, "Compute subscan info"));
+    }
+    pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> > *fut =
+        new pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >[nthreads];
+#pragma omp parallel for
+    for (uInt i=0; i<nthreads; ++i) {
+        fut[i] = _getChunkSubScanProperties(
+            scans, fields, ddIDs, states, times, arrays,
+            observations, ant1, ant2, exposureTimes,
+            intervalTimes,  ddIDToSpw,  i * chunkSize,
+            std::min((i + 1) * chunkSize - 1, nrows - 1)
+        );
+#pragma omp critical(progresslock)
+        {
+            if (pm) {
+#pragma omp flush(_pmCount)
+                pm->update(_pmCount);
+            }
+        }
+    }
+    vector<pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> > >  props(fut, fut+nthreads);
+    delete [] fut;
+    scanProps.reset(
+        new std::map<ScanKey, ScanProperties>()
+    );
+    subScanProps.reset(
+        new std::map<SubScanKey, SubScanProperties>()
+    );
+    map<SubScanKey, map<uInt, Quantity> > ssSumInterval;
+    for (uInt i=0; i<nthreads; ++i) {
+        const map<ScanKey, ScanProperties>& vScanProps = props[i].first;
+        map<ScanKey, ScanProperties>::const_iterator viter = vScanProps.begin();
+        map<ScanKey, ScanProperties>::const_iterator vend = vScanProps.end();
+        for (; viter!=vend; ++viter) {
+            const ScanKey& scanKey = viter->first;
+            const std::pair<Double, Double>& range = viter->second.timeRange;
+            if (scanProps->find(scanKey) == scanProps->end()) {
+                (*scanProps)[scanKey].timeRange = range;
+            }
+            else {
+                std::pair<Double, Double>& tr = (*scanProps)[scanKey].timeRange;
+                tr.first = min(tr.first, range.first);
+                tr.second = max(tr.second, range.second);
+            }
+            std::map<uInt, uInt>::const_iterator spnIter = viter->second.spwNRows.begin();
+            std::map<uInt, uInt>::const_iterator spnEnd = viter->second.spwNRows.end();
+            for (; spnIter!=spnEnd; ++spnIter) {
+                const uInt& spw = spnIter->first;
+                const std::set<Double> scanTimes = viter->second.times.find(spw)->second;
+                if ((*scanProps)[scanKey].spwNRows.find(spw) == (*scanProps)[scanKey].spwNRows.end()) {
+                    (*scanProps)[scanKey].spwNRows[spw] = spnIter->second;
+                    (*scanProps)[scanKey].times[spw] = scanTimes;
+                }
+                else {
+                    (*scanProps)[scanKey].spwNRows[spw] += spnIter->second;
+                    (*scanProps)[scanKey].times[spw].insert(scanTimes.begin(), scanTimes.end());
+                }
+                const std::set<Double> mytimes = vScanProps.find(scanKey)->second.times.find(spw)->second;
+                (*scanProps)[scanKey].times[spw].insert(mytimes.begin(), mytimes.end());
+            }
+        }
+        map<SubScanKey, SubScanProperties>::const_iterator ssIter = props[i].second.begin();
+        map<SubScanKey, SubScanProperties>::const_iterator ssEnd = props[i].second.end();
+        for (; ssIter!=ssEnd; ++ssIter) {
+            const SubScanKey& ssKey = ssIter->first;
+            const SubScanProperties& val = ssIter->second;
+            if (subScanProps->find(ssKey) == subScanProps->end()) {
+                (*subScanProps)[ssKey] = val;
+                map<uInt, Quantity>::const_iterator mi = val.meanInterval.begin();
+                map<uInt, Quantity>::const_iterator me = val.meanInterval.end();
+                for (; mi!=me; ++mi) {
+                    const uInt& spw = mi->first;
+                    ssSumInterval[ssKey][spw] = mi->second*Quantity(val.spwNRows.find(spw)->second);
+                }
+            }
+            else {
+                SubScanProperties& fp = (*subScanProps)[ssKey];
+                fp.antennas.insert(val.antennas.begin(), val.antennas.end());
+                fp.beginTime = min(fp.beginTime, val.beginTime);
+                fp.ddIDs.insert(val.ddIDs.begin(), val.ddIDs.end());
+                fp.endTime = max(fp.endTime, val.endTime);
+                // the nrows increment must come before the mean exposure time
+                // computation
+                fp.nrows += val.nrows;
+                fp.meanExposureTime = (fp.meanExposureTime*Quantity(fp.nrows - 1) + val.meanExposureTime)/fp.nrows;
+                fp.stateIDs.insert(val.stateIDs.begin(), val.stateIDs.end());
+                fp.spws.insert(val.spws.begin(), val.spws.end());
+
+                std::set<uInt>::const_iterator spwIter = val.spws.begin();
+                std::set<uInt>::const_iterator spwEnd = val.spws.end();
+                for (; spwIter!=spwEnd; ++spwIter) {
+                    const uInt& spw = *spwIter;
+                    uInt vSpwNRows = val.spwNRows.find(spw)->second;
+                    fp.spwNRows[spw] += vSpwNRows;
+                    const Quantity& vMeanInt = val.meanInterval.find(spw)->second;
+                    if (ssSumInterval[ssKey].find(spw) == ssSumInterval[ssKey].end()) {
+                        ssSumInterval[ssKey][spw] = vMeanInt * Quantity(vSpwNRows, "");
+                    }
+                    else {
+                        ssSumInterval[ssKey][spw] += vMeanInt * Quantity(vSpwNRows, "");
+                    }
+                }
+                map<Double, TimeStampProperties>::const_iterator tpIter = val.timeProps.begin();
+                map<Double, TimeStampProperties>::const_iterator tpEnd = val.timeProps.end();
+                for (; tpIter!=tpEnd; ++tpIter) {
+                    Double time = tpIter->first;
+                    const TimeStampProperties& tprops = tpIter->second;
+                    if (fp.timeProps.find(time) == fp.timeProps.end()) {
+                        fp.timeProps[time] = tprops;
+                    }
+                    else {
+                        fp.timeProps[time].ddIDs.insert(tprops.ddIDs.begin(), tprops.ddIDs.end());
+                        fp.timeProps[time].nrows += tprops.nrows;
+                    }
+                }
+            }
+        }
+    }
+    map<ScanKey, map<uInt, Quantity> > scanSumInterval;
+    map<SubScanKey, SubScanProperties>::iterator ssIter = subScanProps->begin();
+    map<SubScanKey, SubScanProperties>::iterator ssEnd = subScanProps->end();
+    for (; ssIter!=ssEnd; ++ssIter) {
+        const SubScanKey& ssKey = ssIter->first;
+        SubScanProperties& props = ssIter->second;
+        map<uInt, uInt>::const_iterator ssSpwNRowsIter = props.spwNRows.begin();
+        map<uInt, uInt>::const_iterator ssSpwNRowsEnd = props.spwNRows.end();
+        for (; ssSpwNRowsIter!=ssSpwNRowsEnd; ++ssSpwNRowsIter) {
+            const uInt& spw = ssSpwNRowsIter->first;
+            props.meanInterval[spw] = ssSumInterval[ssKey][spw]/ssSpwNRowsIter->second;
+        }
+        const ScanKey scanKey = casa::scanKey(ssKey);
+        if (scanSumInterval.find(scanKey) == scanSumInterval.end()) {
+            scanSumInterval[scanKey] = ssSumInterval[ssKey];
+        }
+        else {
+            map<uInt, Quantity>::const_iterator spwSumIter = ssSumInterval[ssKey].begin();
+            map<uInt, Quantity>::const_iterator spwSumEnd = ssSumInterval[ssKey].end();
+
+            for (; spwSumIter!=spwSumEnd; ++spwSumIter) {
+                const uInt& spw = spwSumIter->first;
+                if (scanSumInterval[scanKey].find(spw) == scanSumInterval[scanKey].end()) {
+                    scanSumInterval[scanKey][spw] = spwSumIter->second;
+                }
+                else {
+                    scanSumInterval[scanKey][spw] += spwSumIter->second;
+                }
+            }
+        }
+    }
+    map<ScanKey, ScanProperties>::iterator scanPropsIter = scanProps->begin();
+    map<ScanKey, ScanProperties>::iterator scanPropsEnd = scanProps->end();
+    for (; scanPropsIter!=scanPropsEnd; ++scanPropsIter) {
+        const ScanKey& scanKey = scanPropsIter->first;
+        map<uInt, uInt>::const_iterator scanSpwNRowsIter = scanPropsIter->second.spwNRows.begin();
+        map<uInt, uInt>::const_iterator scanSpwNRowsEnd = scanPropsIter->second.spwNRows.end();
+        for (; scanSpwNRowsIter!=scanSpwNRowsEnd; ++scanSpwNRowsIter) {
+            const uInt& spw = scanSpwNRowsIter->first;
+            const uInt& nrows = scanSpwNRowsIter->second;
+            scanPropsIter->second.meanInterval[spw] = scanSumInterval[scanKey][spw]/nrows;
+        }
+    }
+}
+#endif
+
+#ifdef _OPENMP
+pair<map<ScanKey, MSMetaData::ScanProperties>, map<SubScanKey, MSMetaData::SubScanProperties> >
+MSMetaData::_getChunkSubScanProperties(
+    SHARED_PTR<const Vector<Int> > scans, SHARED_PTR<const Vector<Int> > fields,
+    SHARED_PTR<const Vector<Int> > ddIDs, SHARED_PTR<const Vector<Int> > states,
+    SHARED_PTR<const Vector<Double> > times, SHARED_PTR<const Vector<Int> > arrays,
+    SHARED_PTR<const Vector<Int> > observations, SHARED_PTR<const Vector<Int> > ant1,
+    SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const QVD> exposureTimes,
+    SHARED_PTR<const QVD> intervalTimes, const vector<uInt>& ddIDToSpw, uInt beginRow,
+    uInt endRow
+) const {
+    VectorSTLIterator<Int> scanIter(*scans);
+    scanIter += beginRow;
+    VectorSTLIterator<Int> a1Iter(*ant1);
+    a1Iter += beginRow;
+    VectorSTLIterator<Int> a2Iter(*ant2);
+    a2Iter += beginRow;
+    VectorSTLIterator<Int> fIter(*fields);
+    fIter += beginRow;
+    VectorSTLIterator<Int> dIter(*ddIDs);
+    dIter += beginRow;
+    VectorSTLIterator<Int> stateIter(*states);
+    stateIter += beginRow;
+    VectorSTLIterator<Int> oIter(*observations);
+    oIter += beginRow;
+    VectorSTLIterator<Int> arIter(*arrays);
+    arIter += beginRow;
+    VectorSTLIterator<Double> tIter(*times);
+    tIter += beginRow;
+    VectorSTLIterator<Double> eiter(exposureTimes->getValue());
+    eiter += beginRow;
+    VectorSTLIterator<Double> iIter(intervalTimes->getValue());
+    iIter += beginRow;
+    map<ScanKey, ScanProperties> scanProps;
+    map<SubScanKey, SubScanProperties> mysubscans;
+    map<SubScanKey, Double> exposureSum;
+    map<pair<SubScanKey, uInt>, Double> intervalSum;
+    ScanKey scanKey;
+    SubScanKey subScanKey;
+    pair<SubScanKey, uInt> subScanSpw;
+    uInt row = beginRow;
+    while (row <= endRow) {
+        scanKey.obsID = *oIter;
+        scanKey.arrayID = *arIter;
+        scanKey.scan = *scanIter;
+        Double half = *iIter/2;
+        uInt spw = ddIDToSpw[*dIter];
+        if (scanProps.find(scanKey) == scanProps.end()) {
+            scanProps[scanKey].timeRange = std::make_pair(*tIter-half, *tIter+half);
+            scanProps[scanKey].times[spw] = std::set<Double>();
+            scanProps[scanKey].spwNRows[spw] = 1;
+        }
+        else {
+            pair<Double, Double>& timeRange = scanProps[scanKey].timeRange;
+            timeRange.first = min(timeRange.first, *tIter-half);
+            timeRange.second = max(timeRange.second, *tIter+half);
+            map<uInt, std::set<Double> >& times = scanProps[scanKey].times;
+            if (times.find(spw) == times.end()) {
+                times[spw] = std::set<Double>();
+                scanProps[scanKey].spwNRows[spw] = 1;
+            }
+            else {
+                ++scanProps[scanKey].spwNRows[spw];
+            }
+        }
+        scanProps[scanKey].times[spw].insert(*tIter);
+        subScanKey.obsID = *oIter;
+        subScanKey.arrayID = *arIter;
+        subScanKey.scan = *scanIter;
+        subScanKey.fieldID = *fIter;
+        if (
+            mysubscans.find(subScanKey) == mysubscans.end()
+        ) {
+            SubScanProperties props;
+            props.beginTime = *tIter;
+            props.endTime = *tIter;
+            props.nrows = 1;
+            mysubscans[subScanKey] = props;
+            exposureSum[subScanKey] = *eiter;
+        }
+        else {
+            mysubscans[subScanKey].beginTime = min(*tIter, mysubscans[subScanKey].beginTime);
+            mysubscans[subScanKey].endTime = max(*tIter, mysubscans[subScanKey].endTime);
+            ++mysubscans[subScanKey].nrows;
+            exposureSum[subScanKey] += *eiter;
+        }
+        subScanSpw.first = subScanKey;
+        subScanSpw.second = spw;
+        if (intervalSum.find(subScanSpw) == intervalSum.end()) {
+            intervalSum[subScanSpw] = *iIter;
+            mysubscans[subScanKey].spwNRows[spw] = 1;
+        }
+        else {
+            intervalSum[subScanSpw] += *iIter;
+            ++mysubscans[subScanKey].spwNRows[spw];
+        }
+        mysubscans[subScanKey].antennas.insert(*a1Iter);
+        mysubscans[subScanKey].antennas.insert(*a2Iter);
+        mysubscans[subScanKey].ddIDs.insert(*dIter);
+        mysubscans[subScanKey].spws.insert(spw);
+        mysubscans[subScanKey].stateIDs.insert(*stateIter);
+        std::map<Double, TimeStampProperties>& timeProps = mysubscans[subScanKey].timeProps;
+        if (timeProps.find(*tIter) == timeProps.end()) {
+            timeProps[*tIter].nrows = 1;
+        }
+        else {
+            ++timeProps[*tIter].nrows;
+        }
+        timeProps[*tIter].ddIDs.insert(*dIter);
+        ++tIter;
+        ++scanIter;
+        ++fIter;
+        ++dIter;
+        ++stateIter;
+        ++oIter;
+        ++arIter;
+        ++a1Iter;
+        ++a2Iter;
+        ++eiter;
+        ++iIter;
+        ++row;
+#pragma omp atomic
+        ++_pmCount;
+    }
+    const Unit& eunit = exposureTimes->getFullUnit();
+    map<SubScanKey, SubScanProperties>::iterator ssIter = mysubscans.begin();
+    map<SubScanKey, SubScanProperties>::iterator ssEnd = mysubscans.end();
+    for (; ssIter!=ssEnd; ++ssIter) {
+        SubScanProperties& props = ssIter->second;
+        props.meanExposureTime = Quantity(exposureSum[ssIter->first]/props.nrows, eunit);
+    }
+    const Unit& unit = intervalTimes->getFullUnit();
+    map<pair<SubScanKey, uInt>, Double>::const_iterator intSumIter = intervalSum.begin();
+    map<pair<SubScanKey, uInt>, Double>::const_iterator intSumEnd = intervalSum.end();
+    for (; intSumIter!=intSumEnd; ++intSumIter) {
+        const SubScanKey& ssKey = intSumIter->first.first;
+        const uInt& spw = intSumIter->first.second;
+        const Double& sum = intSumIter->second;
+        SubScanProperties& props = mysubscans[ssKey];
+        props.meanInterval[spw] = Quantity(sum/props.spwNRows[spw], unit);
+    }
+    return make_pair(scanProps, mysubscans);
+}
+#endif
+
 SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > MSMetaData::getSubScanProperties(
     Bool showProgress
 ) const {
@@ -3571,9 +3917,22 @@ void MSMetaData::_getScanAndSubScanProperties(
     }
     SHARED_PTR<std::map<SubScanKey, SubScanProperties> > myssprops;
     SHARED_PTR<std::map<ScanKey, ScanProperties> > myscanprops;
+#ifdef _OPENMP
+    if (_parallel) {
+        _computeScanAndSubScanPropertiesParallel(
+            myscanprops, myssprops, showProgress
+        );
+    }
+    else {
+        _computeScanAndSubScanProperties(
+            myscanprops, myssprops, showProgress
+        );
+    }
+#else
     _computeScanAndSubScanProperties(
         myscanprops, myssprops, showProgress
     );
+#endif
     scanProps = myscanprops;
     subScanProps = myssprops;
 

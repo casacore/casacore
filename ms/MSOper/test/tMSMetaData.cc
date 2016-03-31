@@ -2430,6 +2430,10 @@ int main() {
     	testIt(md2);
     	AlwaysAssert(md2.getCache() == 0, AipsError);
 
+    	// parallel processing
+    	MSMetaData md3(&ms, 100);
+    	md3.setParallel(True);
+    	testIt(md3);
 
     	cout << "OK" << endl;
     } 
