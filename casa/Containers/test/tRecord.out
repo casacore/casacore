@@ -168,11 +168,12 @@ RecordInterface::asComplex - invalid data type
   TpDouble2a: Double 0
   TpComplex2a: Complex (0,0)
   TpDComplex2a: DComplex (0,0)
-  TpArrayString2a: String array with shape [3], first values:
-    []
+  TpArrayString2a: String array with shape [3]
+    [, , ]
   TpArrayString3a: String array with shape []
     []
   TpString2a: String ""
+*1: {
   TpBool: Bool 0
   TpUChar: uChar 0
   TpShort: Short 0
@@ -224,11 +225,12 @@ RecordInterface::asComplex - invalid data type
   TpDouble2a: Double 0
   TpComplex2a: Complex (0,0)
   TpDComplex2a: DComplex (0,0)
-  TpArrayString2a: String array with shape [3]
-    [, , ]
+  TpArrayString2a: String array with shape [3], first values:
+    []
   TpArrayString3a: String array with shape []
     []
   TpString2a: String ""
+}
 >>> Instance-specific assertion error message:
 (Record.cc : 281) Failed AlwaysAssertExit this != &other
 <<<

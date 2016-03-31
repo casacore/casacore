@@ -38,7 +38,9 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Define the statics.
+  Mutex TableTrace::theirMutex;
   std::ofstream TableTrace::theirTraceFile;
+  std::ostream* TableTrace::theirStream = 0;
   int TableTrace::theirDoTrace = 0;
   int TableTrace::theirOper = 0;
   int TableTrace::theirColType = 0;
@@ -48,12 +50,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   int TableTrace::traceTable (const String& tableName, char oper)
   {
     // Open trace file if not done yet.
-    // Tables are not used in a multi-threaded way, thus no mutex is needed.
     if (theirDoTrace == 0) {
       initTracing();
     }
     int tabid = -1;
     if (theirDoTrace > 0) {
+      ScopedMutexLock locker(theirMutex);
       // Table should not be found, but who knows ...
       tabid = findTable (tableName);
       int id = tabid;
@@ -69,9 +71,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       writeTraceFirst (tabid, tableName, oper);
       if (id >= 0) {
-        theirTraceFile << "**ERROR** table already in use";
+        *theirStream << "**ERROR** table already in use";
       }
-      theirTraceFile << endl;
+      *theirStream << endl;
     }
     return tabid;
   }
@@ -82,15 +84,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       initTracing();
     }
     if (theirDoTrace > 0) {
+      ScopedMutexLock locker(theirMutex);
       int tabid = findTable (tableName);
       writeTraceFirst (tabid, tableName, 'c');
       if (tabid < 0) {
-        theirTraceFile << "**ERROR** unknown table";
+        *theirStream << "**ERROR** unknown table";
       } else {
         // Free entry.
         theirTables[tabid] = String();
       }
-      theirTraceFile << endl;
+      *theirStream << endl;
     }
   }
 
@@ -101,7 +104,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     if (theirDoTrace > 0) {
       writeTraceFirst (tabid, '*'+oper+'*', 't');
-      theirTraceFile << endl;
+      *theirStream << endl;
     }
   }
 
@@ -113,7 +116,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (theirDoTrace > 1) {
       int tabid = findTable (parentName);
       writeTraceFirst (tabid, "*reftable*", oper);
-      theirTraceFile << endl;
+      *theirStream << endl;
     }
   }
 
@@ -156,21 +159,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     // Get current time.
     MVTime time((Time()));
-    time.print (theirTraceFile, MVTime::Format(MVTime::TIME, 9));
-    theirTraceFile << ' ' << oper << " t=" << tabid << ' ' << name << ' ';
+    time.print (*theirStream, MVTime::Format(MVTime::TIME, 9));
+    *theirStream << ' ' << oper << " t=" << tabid << ' ' << name << ' ';
   }
 
   void TableTrace::writeRefRows (const RefRows& rownrs)
   {
     const Vector<uInt> rows = rownrs.rowVector();
     for (uInt i=0; i<rows.size(); ++i) {
-      if (i>0) theirTraceFile << ',';
-      theirTraceFile << rows[i];
+      if (i>0) *theirStream << ',';
+      *theirStream << rows[i];
       if (rownrs.isSliced()) {
         if (rows[i+1] >= rows[i] + rows[i+2]) {
-          theirTraceFile << ':' << rows[i+1];
+          *theirStream << ':' << rows[i+1];
           if (rows[i+2] > 1) {
-            theirTraceFile << ':' << rows[i+2];
+            *theirStream << ':' << rows[i+2];
           }
         }
         i += 2;
@@ -182,55 +185,56 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                const IPosition& trc,
                                const IPosition& inc)
   {
-    theirTraceFile << ' ';
+    *theirStream << ' ';
     // Use showContainer instead of operator<< to avoid spaces.
-    showContainer (theirTraceFile, blc);
-    showContainer (theirTraceFile, trc);
-    showContainer (theirTraceFile, inc);
+    showContainer (*theirStream, blc);
+    showContainer (*theirStream, trc);
+    showContainer (*theirStream, inc);
   }
 
   void TableTrace::trace (int tabid, const String& columnName, char oper)
   {
     writeTraceFirst (tabid, columnName, oper);
-    theirTraceFile << '*' << endl;
+    *theirStream << '*' << endl;
   }
   void TableTrace::trace (int tabid, const String& columnName, char oper,
                           Int64 row)
   {
     writeTraceFirst (tabid, columnName, oper);
-    theirTraceFile << row << endl;
+    *theirStream << row << endl;
   }
   void TableTrace::trace (int tabid, const String& columnName, char oper,
                           const RefRows& rownrs)
   {
     writeTraceFirst (tabid, columnName, oper);
     writeRefRows (rownrs);
+    *theirStream << endl;
   }
 
   void TableTrace::trace (int tabid, const String& columnName, char oper,
                           const IPosition& shape)
   {
     writeTraceFirst (tabid, columnName, oper);
-    theirTraceFile << "* ";
-    showContainer (theirTraceFile, shape);
-    theirTraceFile << endl;
+    *theirStream << "* ";
+    showContainer (*theirStream, shape);
+    *theirStream << endl;
   }
   void TableTrace::trace (int tabid, const String& columnName, char oper,
                           Int64 row, const IPosition& shape)
   {
     writeTraceFirst (tabid, columnName, oper);
-    theirTraceFile << row << ' ';
-    showContainer (theirTraceFile, shape);
-    theirTraceFile << endl;
+    *theirStream << row << ' ';
+    showContainer (*theirStream, shape);
+    *theirStream << endl;
   }
   void TableTrace::trace (int tabid, const String& columnName, char oper,
                           const RefRows& rownrs, const IPosition& shape)
   {
     writeTraceFirst (tabid, columnName, oper);
     writeRefRows (rownrs);
-    theirTraceFile << ' ';
-    showContainer (theirTraceFile, shape);
-    theirTraceFile << endl;
+    *theirStream << ' ';
+    showContainer (*theirStream, shape);
+    *theirStream << endl;
   }
 
   void TableTrace::trace (int tabid, const String& columnName, char oper,
@@ -239,10 +243,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                           const IPosition& inc)
   {
     writeTraceFirst (tabid, columnName, oper);
-    theirTraceFile << "* ";
-    showContainer (theirTraceFile, shape);
+    *theirStream << "* ";
+    showContainer (*theirStream, shape);
     writeSlice (blc, trc, inc);
-    theirTraceFile << endl;
+    *theirStream << endl;
   }
   void TableTrace::trace (int tabid, const String& columnName, char oper,
                           Int64 row, const IPosition& shape,
@@ -250,10 +254,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                           const IPosition& inc)
   {
     writeTraceFirst (tabid, columnName, oper);
-    theirTraceFile << row << ' ';
-    showContainer (theirTraceFile, shape);
+    *theirStream << row << ' ';
+    showContainer (*theirStream, shape);
     writeSlice (blc, trc, inc);
-    theirTraceFile << endl;
+    *theirStream << endl;
   }
   void TableTrace::trace (int tabid, const String& columnName, char oper,
                           const RefRows& rownrs, const IPosition& shape,
@@ -262,28 +266,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     writeTraceFirst (tabid, columnName, oper);
     writeRefRows (rownrs);
-    theirTraceFile << ' ';
-    showContainer (theirTraceFile, shape);
+    *theirStream << ' ';
+    showContainer (*theirStream, shape);
     writeSlice (blc, trc, inc);
-    theirTraceFile << endl;
+    *theirStream << endl;
   }
 
   void TableTrace::initTracing()
   {
+    ScopedMutexLock locker(theirMutex);
+    if (theirDoTrace != 0) {
+      // Already initialized in another thread.
+      return;
+    }
     // Set initially to no tracing.
     theirDoTrace = -1;
     // Get the file name.
     String fname;
     AipsrcValue<String>::find (fname, "table.trace.filename", "");
     if (! fname.empty()) {
-      String expName = Path(fname).expandedName();
-      theirTraceFile.open (fname.c_str());
-      if (! theirTraceFile) {
-        throw TableError ("Could not open table column trace file " + fname);
+      if (fname == "stdout") {
+        theirStream = &std::cout;
+      } else if (fname == "stderr") {
+        theirStream = &std::cerr;
+      } else {
+        String expName = Path(fname).expandedName();
+        theirTraceFile.open (fname.c_str());
+        if (! theirTraceFile) {
+          throw TableError ("Could not open table column trace file " + fname);
+        }
+        theirStream = &theirTraceFile;
       }
-      theirTraceFile << "# time oper tabid name row(s) shape blc/trc/inc"
+      *theirStream << "# time oper tabid name row(s) shape blc/trc/inc"
                      << endl;
-      theirTraceFile << "# Note: shapes are in Fortran order" << endl << endl;
+      *theirStream << "# Note: shapes are in Fortran order" << endl << endl;
       theirDoTrace = 1;
       initOper();
       initColumn();

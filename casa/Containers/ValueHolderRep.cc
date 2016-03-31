@@ -32,6 +32,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
@@ -134,10 +135,10 @@ ValueHolderRep::ValueHolderRep (const Array<Short>& value)
 
 ValueHolderRep::ValueHolderRep (const Array<uShort>& value)
   : itsNdim (value.ndim()),
-    itsType (TpArrayInt),
-    itsPtr  (new Array<Int>(value.shape()))
+    itsType (TpArrayUInt),
+    itsPtr  (new Array<uInt>(value.shape()))
 {
-  convertArray (*static_cast<Array<Int>*>(itsPtr), value);
+  convertArray (*static_cast<Array<uInt>*>(itsPtr), value);
 }
 
 ValueHolderRep::ValueHolderRep (const Array<Int>& value)
@@ -270,7 +271,8 @@ Bool ValueHolderRep::asBool() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asBool - invalid data type");
+  throw AipsError ("ValueHolderRep::asBool - invalid data type " +
+                   String::toString(itsType));
 }
 
 uChar ValueHolderRep::asuChar() const
@@ -293,7 +295,8 @@ uChar ValueHolderRep::asuChar() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asuChar - invalid data type");
+  throw AipsError ("ValueHolderRep::asuChar - invalid data type " +
+                   String::toString(itsType));
 }
 
 Short ValueHolderRep::asShort() const
@@ -316,7 +319,8 @@ Short ValueHolderRep::asShort() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asShort - invalid data type");
+  throw AipsError ("ValueHolderRep::asShort - invalid data type " +
+                   String::toString(itsType));
 }
 
 uShort ValueHolderRep::asuShort() const
@@ -339,7 +343,8 @@ uShort ValueHolderRep::asuShort() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asuShort - invalid data type");
+  throw AipsError ("ValueHolderRep::asuShort - invalid data type " +
+                   String::toString(itsType));
 }
 
 Int ValueHolderRep::asInt() const
@@ -359,7 +364,8 @@ Int ValueHolderRep::asInt() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asInt - invalid data type");
+  throw AipsError ("ValueHolderRep::asInt - invalid data type " +
+                   String::toString(itsType));
 }
 
 uInt ValueHolderRep::asuInt() const
@@ -382,7 +388,8 @@ uInt ValueHolderRep::asuInt() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asuInt - invalid data type");
+  throw AipsError ("ValueHolderRep::asuInt - invalid data type " +
+                   String::toString(itsType));
 }
 
 Int64 ValueHolderRep::asInt64() const
@@ -402,7 +409,8 @@ Int64 ValueHolderRep::asInt64() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asInt64 - invalid data type");
+  throw AipsError ("ValueHolderRep::asInt64 - invalid data type " +
+                   String::toString(itsType));
 }
 
 Float ValueHolderRep::asFloat() const
@@ -422,7 +430,8 @@ Float ValueHolderRep::asFloat() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asFloat - invalid data type");
+  throw AipsError ("ValueHolderRep::asFloat - invalid data type " +
+                   String::toString(itsType));
 }
 
 Double ValueHolderRep::asDouble() const
@@ -442,7 +451,8 @@ Double ValueHolderRep::asDouble() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asDouble - invalid data type");
+  throw AipsError ("ValueHolderRep::asDouble - invalid data type " +
+                   String::toString(itsType));
 }
 
 Complex ValueHolderRep::asComplex() const
@@ -467,7 +477,8 @@ Complex ValueHolderRep::asComplex() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asComplex - invalid data type");
+  throw AipsError ("ValueHolderRep::asComplex - invalid data type " +
+                   String::toString(itsType));
 }
 
 DComplex ValueHolderRep::asDComplex() const
@@ -491,7 +502,8 @@ DComplex ValueHolderRep::asDComplex() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asDComplex - invalid data type");
+  throw AipsError ("ValueHolderRep::asDComplex - invalid data type " +
+                   String::toString(itsType));
 }
 
 const String& ValueHolderRep::asString() const
@@ -502,7 +514,8 @@ const String& ValueHolderRep::asString() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asString - invalid data type");
+  throw AipsError ("ValueHolderRep::asString - invalid data type " +
+                   String::toString(itsType));
 }
 
 const Array<Bool> ValueHolderRep::asArrayBool() const
@@ -983,7 +996,8 @@ const Record& ValueHolderRep::asRecord() const
   default:
     ;
   }
-  throw AipsError ("ValueHolderRep::asRecord - invalid data type");
+  throw AipsError ("ValueHolderRep::asRecord - invalid data type " +
+                   String::toString(itsType));
 }
 
 
@@ -1130,7 +1144,8 @@ ValueHolderRep* ValueHolderRep::fromRecord (const Record& rec,
   default:
     break;
   }
-  throw AipsError ("ValueHolder::fromRecord - unknown data type");
+  throw AipsError ("ValueHolder::fromRecord - unknown data type " +
+                   String::toString(rec.dataType(id)));
 }
 
 ostream& ValueHolderRep::write (ostream& os) const
@@ -1187,7 +1202,8 @@ ostream& ValueHolderRep::write (ostream& os) const
     os << "Empty untyped array";
     break;
   default:
-    throw AipsError ("ValueHolder::write - unknown data type");
+    throw AipsError ("ValueHolder::write - unknown data type " +
+                     String::toString(itsType));
     break;
   }
   return os;
@@ -1213,7 +1229,8 @@ bool ValueHolderRep::operator< (const ValueHolderRep& right) const
   case TpString:
     return *static_cast<String*>(itsPtr) < *static_cast<String*>(right.itsPtr);
   default:
-    throw AipsError ("ValueHolder::operator< - unsupported data type");
+    throw AipsError ("ValueHolder::operator< - unsupported data type " +
+                     String::toString(itsType));
   }
 }
 
