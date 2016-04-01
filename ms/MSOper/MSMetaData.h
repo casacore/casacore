@@ -746,12 +746,6 @@ private:
         Bool showProgress
     ) const;
 
-    void _computeScanAndSubScanPropertiesParallel(
-        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
-        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
-        Bool showProgress
-    ) const;
-
     void _createScanRecords(
         Record& parent, const ArrayKey& arrayKey,
         const std::map<SubScanKey, SubScanProperties>& subScanProps
