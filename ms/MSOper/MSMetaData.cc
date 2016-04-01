@@ -3572,9 +3572,9 @@ void MSMetaData::_computeScanAndSubScanPropertiesParallel(
     SHARED_PTR<QVD> intervalTimes = _getIntervals();
     vector<uInt> ddIDToSpw = getDataDescIDToSpwMap();
     _getAntennas(ant1, ant2);
-    uInt nthreads = min((uInt)1000, nrows);
-    uInt chunkSize = nrows/nthreads;
-    if (nrows % nthreads > 0) {
+    uInt nchunks = min((uInt)1000, nrows);
+    uInt chunkSize = nrows/nchunks;
+    if (nrows % nchunks > 0) {
         ++chunkSize;
     }
     _pmCount = 0;
@@ -3586,9 +3586,9 @@ void MSMetaData::_computeScanAndSubScanPropertiesParallel(
         pm.reset(new ProgressMeter(0, nrows, "Compute subscan info"));
     }
     pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> > *fut =
-        new pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >[nthreads];
+        new pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >[nchunks];
 #pragma omp parallel for
-    for (uInt i=0; i<nthreads; ++i) {
+    for (uInt i=0; i<nchunks; ++i) {
         fut[i] = _getChunkSubScanProperties(
             scans, fields, ddIDs, states, times, arrays,
             observations, ant1, ant2, exposureTimes,
@@ -3603,7 +3603,7 @@ void MSMetaData::_computeScanAndSubScanPropertiesParallel(
             }
         }
     }
-    vector<pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> > >  props(fut, fut+nthreads);
+    vector<pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> > >  props(fut, fut+nchunks);
     delete [] fut;
     scanProps.reset(
         new std::map<ScanKey, ScanProperties>()
@@ -3612,7 +3612,7 @@ void MSMetaData::_computeScanAndSubScanPropertiesParallel(
         new std::map<SubScanKey, SubScanProperties>()
     );
     map<SubScanKey, map<uInt, Quantity> > ssSumInterval;
-    for (uInt i=0; i<nthreads; ++i) {
+    for (uInt i=0; i<nchunks; ++i) {
         const map<ScanKey, ScanProperties>& vScanProps = props[i].first;
         map<ScanKey, ScanProperties>::const_iterator viter = vScanProps.begin();
         map<ScanKey, ScanProperties>::const_iterator vend = vScanProps.end();
