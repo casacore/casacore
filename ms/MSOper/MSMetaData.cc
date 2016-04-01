@@ -3594,12 +3594,10 @@ void MSMetaData::_computeScanAndSubScanPropertiesParallel(
             intervalTimes,  ddIDToSpw,  i * chunkSize,
             std::min((i + 1) * chunkSize - 1, nrows - 1)
         );
-#pragma omp atomic
-        ++doneChunks;
 #pragma omp critical(progresslock)
         {
             if (pm) {
-#pragma omp flush(doneChunks)
+                ++doneChunks;
                 pm->update(doneChunks);
             }
         }
