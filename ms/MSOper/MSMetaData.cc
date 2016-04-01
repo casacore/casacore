@@ -3553,7 +3553,6 @@ void MSMetaData::_computeScanAndSubScanProperties(
     }
 }
 
-#ifdef _OPENMP
 void MSMetaData::_computeScanAndSubScanPropertiesParallel(
     SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
     SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
@@ -3747,9 +3746,7 @@ void MSMetaData::_computeScanAndSubScanPropertiesParallel(
         }
     }
 }
-#endif
 
-#ifdef _OPENMP
 pair<map<ScanKey, MSMetaData::ScanProperties>, map<SubScanKey, MSMetaData::SubScanProperties> >
 MSMetaData::_getChunkSubScanProperties(
     SHARED_PTR<const Vector<Int> > scans, SHARED_PTR<const Vector<Int> > fields,
@@ -3890,7 +3887,6 @@ MSMetaData::_getChunkSubScanProperties(
     }
     return make_pair(scanProps, mysubscans);
 }
-#endif
 
 SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > MSMetaData::getSubScanProperties(
     Bool showProgress

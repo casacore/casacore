@@ -746,13 +746,11 @@ private:
         Bool showProgress
     ) const;
 
-#ifdef _OPENMP
     void _computeScanAndSubScanPropertiesParallel(
         SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
         SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
         Bool showProgress
     ) const;
-#endif
 
     void _createScanRecords(
         Record& parent, const ArrayKey& arrayKey,
@@ -789,7 +787,6 @@ private:
 
     std::map<ArrayKey, std::set<SubScanKey> > _getArrayKeysToSubScanKeys() const;
 
-#ifdef _OPENMP
     // for parallel retrieving of scan/subscan properties
     pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
     _getChunkSubScanProperties(
@@ -801,7 +798,6 @@ private:
         SHARED_PTR<const QVD> intervalTimes, const vector<uInt>& ddIDToSpw,
         uInt beginRow, uInt endRow
     ) const;
-#endif
 
     SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
 
