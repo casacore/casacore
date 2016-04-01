@@ -3577,16 +3577,16 @@ void MSMetaData::_computeScanAndSubScanPropertiesParallel(
     if (nrows % nchunks > 0) {
         ++chunkSize;
     }
-    _pmCount = 0;
     SHARED_PTR<ProgressMeter> pm;
     if (showProgress) {
         LogIO log;
-        log << LogOrigin("MSMetaDataThreaded", __func__, WHERE)
+        log << LogOrigin("MSMetaData", __func__, WHERE)
             << LogIO::NORMAL << "Compute subscan properties " << LogIO::POST;
-        pm.reset(new ProgressMeter(0, nrows, "Compute subscan info"));
+        pm.reset(new ProgressMeter(0, nchunks, "Compute subscan info"));
     }
     pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> > *fut =
         new pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >[nchunks];
+    uInt doneChunks = 0;
 #pragma omp parallel for
     for (uInt i=0; i<nchunks; ++i) {
         fut[i] = _getChunkSubScanProperties(
@@ -3595,11 +3595,13 @@ void MSMetaData::_computeScanAndSubScanPropertiesParallel(
             intervalTimes,  ddIDToSpw,  i * chunkSize,
             std::min((i + 1) * chunkSize - 1, nrows - 1)
         );
+#pragma omp atomic
+        ++doneChunks;
 #pragma omp critical(progresslock)
         {
             if (pm) {
-#pragma omp flush(_pmCount)
-                pm->update(_pmCount);
+#pragma omp flush(doneChunks)
+                pm->update(doneChunks);
             }
         }
     }
@@ -3868,8 +3870,6 @@ MSMetaData::_getChunkSubScanProperties(
         ++eiter;
         ++iIter;
         ++row;
-#pragma omp atomic
-        ++_pmCount;
     }
     const Unit& eunit = exposureTimes->getFullUnit();
     map<SubScanKey, SubScanProperties>::iterator ssIter = mysubscans.begin();

@@ -634,7 +634,7 @@ private:
     mutable Float _cacheMB;
     const Float _maxCacheMB;
     mutable uInt _nStates, _nACRows, _nXCRows, _nSpw, _nFields, _nAntennas,
-        _nObservations, _nScans, _nArrays, _nrows, _nPol, _nDataDescIDs, _pmCount;
+        _nObservations, _nScans, _nArrays, _nrows, _nPol, _nDataDescIDs;
     mutable std::map<ScanKey, std::set<uInt> > _scanToSpwsMap, _scanToDDIDsMap;
     mutable vector<uInt> _dataDescIDToSpwMap, _dataDescIDToPolIDMap;
     std::map<Int, std::set<uInt> > _fieldToSpwMap;
