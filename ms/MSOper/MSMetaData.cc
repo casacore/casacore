@@ -3416,7 +3416,7 @@ void MSMetaData::_computeScanAndSubScanProperties(
             scans, fields, ddIDs, states, times, arrays,
             observations, ant1, ant2, exposureTimes,
             intervalTimes,  ddIDToSpw,  i * chunkSize,
-            std::min((i + 1) * chunkSize - 1, nrows - 1)
+            std::min((i + 1) * chunkSize, nrows)
         );
 #pragma omp critical(progresslock)
         {
@@ -3609,7 +3609,7 @@ MSMetaData::_getChunkSubScanProperties(
     SubScanKey subScanKey;
     pair<SubScanKey, uInt> subScanSpw;
     uInt row = beginRow;
-    while (row <= endRow) {
+    while (row < endRow) {
         scanKey.obsID = *oIter;
         scanKey.arrayID = *arIter;
         scanKey.scan = *scanIter;
