@@ -43,10 +43,6 @@
 
 #include <utility>
 
-#ifdef _OPENMP
-#include <omp.h>
-#endif
-
 #define _ORIGIN "MSMetaData::" + String(__FUNCTION__) + ": "
 
 namespace casacore {
