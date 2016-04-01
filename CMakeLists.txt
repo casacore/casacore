@@ -84,7 +84,7 @@ if( CASA_BUILD )
       set(DATA_DIR "%CASAROOT%/data")
    endif( )
    set(USE_FFTW3 ON)
-   set(USE_THREADS ON)
+   set(FFTW3_DISABLE_THREADS ON)
    ###
    ### after CASA switches from ASAP to libsakura, CASA will no longer
    ### use casacore's python module and it will no longer use boost...
