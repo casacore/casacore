@@ -480,7 +480,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayBool (name);
+                array(start, end) = coordValues.toArrayBool (name);
             }
         }
         break;
@@ -499,7 +499,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayInt (name);
+                array(start, end) = coordValues.toArrayInt (name);
             }
         }
         break;
@@ -518,7 +518,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayuInt (name);
+                array(start, end) = coordValues.toArrayuInt (name);
             }
         }
         break;
@@ -537,7 +537,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayfloat (name);
+                array(start, end) = coordValues.toArrayFloat (name);
             }
         }
         break;
@@ -556,7 +556,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArraydouble (name);
+                array(start, end) = coordValues.toArrayDouble (name);
             }
         }
         break;
@@ -575,7 +575,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayComplex (name);
+                array(start, end) = coordValues.toArrayComplex (name);
             }
         }
         break;
@@ -594,7 +594,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayDComplex (name);
+                array(start, end) = coordValues.toArrayDComplex (name);
             }
         }
         break;
@@ -613,7 +613,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayString (name);
+                array(start, end) = coordValues.toArrayString (name);
             }
         }
         break;

@@ -300,38 +300,9 @@ template<class T> Vector<T> Matrix<T>::column(size_t n)
 template<class T> Vector<T> Matrix<T>::diagonal(Int64 n)
 {
     DebugAssert(ok(), ArrayError);
-    Int64 absn;
-    if (n < 0) absn = -n; else absn = n;
-
-    if (this->length_p(0) != this->length_p(1))
-	throw(ArrayConformanceError("Matrix<T>::diagonal() - "
-				    "non-square matrix"));
-
-    if (absn >= this->length_p(0))
-	throw(ArrayConformanceError("Matrix<T>::diagonal() - "
-				    "diagonal out of range"));
-
-    Int64 r, c;
-    if ( n < 0 ) {
-	r = absn;
-	c = 0;
-    } else {
-	r = 0;
-	c = absn;
-    }
-    Int64 len = this->length_p(0) - absn;
-    Matrix<T> tmp((*this)(Slice(r,len), Slice(c)));
-    tmp.ndimen_p = 1;
-    tmp.length_p.resize (1);
-    tmp.inc_p.resize (1);
-    tmp.originalLength_p.resize (1);
-    tmp.nels_p = tmp.length_p(0);
-    if (tmp.nels_p > 1) {
-        tmp.inc_p(0) = this->steps_p(0) + this->steps_p(1);
-	tmp.contiguous_p = False;
-    }
+    Matrix<T> tmp(*this);
+    tmp.begin_p += tmp.makeDiagonal (0, n);
     tmp.makeSteps();
-	
     return tmp;  // should match Vector<T>(const Array<T> &)
 }
 

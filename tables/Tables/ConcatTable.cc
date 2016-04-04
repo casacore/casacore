@@ -453,10 +453,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void ConcatTable::deepCopy (const String& newName,
 			      const Record& dataManagerInfo,
+                              const StorageOption& stopt,
 			      int tableOption, Bool, int endianFormat,
 			      Bool noRows) const
   {
-    trueDeepCopy (newName, dataManagerInfo, tableOption,
+    trueDeepCopy (newName, dataManagerInfo, stopt, tableOption,
 		  endianFormat, noRows);
   }
 

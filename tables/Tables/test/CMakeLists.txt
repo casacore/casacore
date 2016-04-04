@@ -48,6 +48,7 @@ tTableLockSync
 tTableLockSync_2
 tTableRecord
 tTableRow
+tTableTrace
 tTableVector
 tTable_1
 tTable_2

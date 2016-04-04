@@ -83,6 +83,35 @@ if( CASA_BUILD )
    if( NOT DATA_DIR )
       set(DATA_DIR "%CASAROOT%/data")
    endif( )
+   set(USE_FFTW3 ON)
+   set(USE_THREADS ON)
+   ###
+   ### after CASA switches from ASAP to libsakura, CASA will no longer
+   ### use casacore's python module and it will no longer use boost...
+   ###
+   set(BUILD_PYTHON ON)
+   set(Boost_NO_BOOST_CMAKE 1)
+   if (EXISTS "/opt/casa/01/include/python2.7")
+      ### RHEL7
+      set(PYTHON_LIBRARY "/opt/casa/01/lib/libpython2.7.so")
+      set(PYTHON_INCLUDE_DIR "/opt/casa/01/include/python2.7")
+      set(PYTHON_EXECUTABLE:FILEPATH "/opt/casa/01/bin/python")
+      if (EXISTS "/usr/include/boost")
+         set(BOOST_ROOT "/usr")
+      endif( )
+   elseif(EXISTS "/usr/lib64/casa/01/include/python2.7")
+      ### RHEL5/RHEL6
+      set(PYTHON_LIBRARY "/usr/lib64/casa/01/lib/libpython2.7.so")
+      set(PYTHON_INCLUDE_DIR "/usr/lib64/casa/01/include/python2.7")
+      set(PYTHON_EXECUTABLE:FILEPATH "/usr/lib64/casa/01/bin/python")
+      if (EXISTS "/usr/lib64/casa/01/include/boost")
+         ### RHEL5
+         set(BOOST_ROOT "/usr/lib64/casa/01")
+      elseif (EXISTS "/usr/include/boost")
+         ### RHEL6
+         set(BOOST_ROOT="/usr")
+      endif( )
+   endif( )
 endif( )
 
 # Test if shared libraries have to be built.
@@ -223,25 +252,34 @@ set (_uselapack NO)
 set (_usefits NO)
 set (_usewcs NO)
 set (_modules casa)
+set (_modules2 )
 if (NOT ${MODULE} STREQUAL "casa")
     set (_modules ${_modules} tables)
     set (_usebison YES)
     if (NOT ${MODULE} STREQUAL "tables")
-        set (_modules ${_modules} scimath_f scimath measures meas lattices)
+        set (_modules ${_modules} scimath_f scimath measures meas)
         set (_uselapack YES)
         if (NOT ${MODULE} STREQUAL "measures")
-            set (_modules ${_modules} fits)
-            set (_usefits YES)
-            if (${MODULE} STREQUAL "ms" OR ${MODULE} STREQUAL "all")
-                set (_modules ${_modules} ms derivedmscal msfits)
-            endif (${MODULE} STREQUAL "ms" OR ${MODULE} STREQUAL "all")
+            if (${MODULE} STREQUAL "ms")
+                set (_modules ${_modules} ms derivedmscal)
+            endif()
+            if (${MODULE} STREQUAL "msfits" OR ${MODULE} STREQUAL "all")
+                set (_modules2 ${_modules2} ms msfits derivedmscal)
+                set (_usefits YES)
+            endif()
             if (${MODULE} STREQUAL "images" OR ${MODULE} STREQUAL "all")
-                set (_modules ${_modules} mirlib coordinates images)
+                set (_modules2 ${_modules2} lattices mirlib coordinates images)
                 set (_usewcs YES)
-            endif (${MODULE} STREQUAL "images" OR ${MODULE} STREQUAL "all")
-        endif (NOT ${MODULE} STREQUAL "measures")
-    endif (NOT ${MODULE} STREQUAL "tables")
-endif (NOT ${MODULE} STREQUAL "casa")
+                set (_usefits YES)
+            endif()
+        endif()
+    endif()
+endif()
+
+if (_usefits)
+    set (_modules ${_modules} fits)
+endif()
+set (_modules ${_modules} ${_modules2})
 
 if (BUILD_PYTHON)
     set (_modules ${_modules} python)
@@ -346,23 +384,19 @@ if(USE_THREADS)
     endif(CMAKE_COMPILER_IS_GNUCXX)
 endif(USE_THREADS)
 
-# Check whether DATA_DIR contains data (only if measures is build)
+# Set default DATA_DIR if undefined.
 if (NOT DATA_DIR)
    set (DATA_DIR ${CMAKE_INSTALL_PREFIX}/share/casacore/data)
 endif (NOT DATA_DIR)
-if (";${_modules};" MATCHES ";measures;")
-    get_filename_component(ABS_DATA_DIR "${DATA_DIR}" ABSOLUTE)
-    if (NOT EXISTS "${ABS_DATA_DIR}/ephemerides/")
-        message(WARNING "No ephemerides data found in the specified DATA_DIR (\"${DATA_DIR}\"), so the location must be specified at runtime. If you have preinstalled casacore data, specify the location with -DDATA_DIR.")
-    endif()
-endif()
+# Let cmake cache DATA_DIR.
+set (DATA_DIR "${DATA_DIR}" CACHE PATH "Measures tables root")
 
 
-# Set compiler flag in no table locking.
+# Set compiler flag if no table locking.
 if (NOT ENABLE_TABLELOCKING)
     add_definitions(-DAIPS_TABLE_NOLOCKING)
 endif (NOT ENABLE_TABLELOCKING)
-
+# Set compiler flag if stack tracing.
 if(USE_STACKTRACE)
     add_definitions(-DUSE_STACKTRACE)
 endif(USE_STACKTRACE)
@@ -424,7 +458,7 @@ message (STATUS "HDF5 library? ......... = ${HDF5_hdf5_LIBRARY}")
 message (STATUS "FFTW3 library? ........ = ${FFTW3_LIBRARIES}")
 
 message (STATUS "BUILD_PYTHON .......... = ${BUILD_PYTHON}")
-message (STATUS "BUILD_PYTHON3 .......... = ${BUILD_PYTHON3}")
+message (STATUS "BUILD_PYTHON3 ......... = ${BUILD_PYTHON3}")
 
 if (BUILD_PYTHON)
     message (STATUS "PYTHON2_EXECUTABLE ......... = ${PYTHON2_EXECUTABLE}")
@@ -455,11 +489,13 @@ endif (BUILD_PYTHON3)
 #  USE_STACKTRACE                NO
 #  DATA_DIR                      ${CMAKE_INSTALL_PREFIX}/share/casacore/data
 #  MODULE                        all
-#                                Values for MODULE (incremental list):
-#                                - casa
-#                                - tables
-#                                - measures
-#                                - ms OR images
+#                                Possible value for MODULE (previous built too):
+#                                - casa     (casa)
+#                                - tables   (tables)
+#                                - measures (scimath,scimath_f,measures,meas)
+#                                -  ms      (ms,derivedmscal)
+#                                or msfits  (fits,ms,msfits,derivedmscal)
+#                                or images  (fits,lattices,mirlib,coordinates,images)
 #                                - all
 # 
 # List of possibly used external packages and where

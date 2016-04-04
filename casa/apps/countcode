@@ -60,13 +60,13 @@ types = [ ('C++', ['cc', 'tcc', 'hcc', 'cpp', 'cxx'], None, [], '//', '/\*', '\*
           ('xml', ['xml', 'xsl', 'xsd'], None, [], '', '', '', 0),
           ('html', ['html', 'htm'], None, [], '', '', '', 0),
           ('binary', [], None, [], '', '', '', 0),               # binary files
-          ('ignore', ['log', 'shar', 'tmp', 'ps', 'fig'], re.compile('.*(~|-sav|-new)'), ['templates','makefile','changelog'], '', '', '', 0),  # files to be ignored
-          ('other', [], None, [], '', '', '', 0) ]
+          ('ignore', ['log', 'shar', 'tmp', 'ps', 'fig','omt'], re.compile('.*(~|-sav|-new|info|params|sed|md)'), ['templates','makefile','changelog','.gitignore','.travis.yml'], '', '', '', 0),  # files to be ignored
+          ('unknown', [], None, [], '', '', '', 0) ]
 
 
 def showTypes (verbose):
     for (type,exts,extre,filenms,comm,scomm,ecomm,ctyp) in types:
-        print '%-24s ctyp=%d' % (type,ctyp)
+        print '%-24s code=%d' % (type,ctyp)
         print '  file name extensions: ', exts
         if verbose:
             if not extre is None:
@@ -225,7 +225,7 @@ def printCount(file, type, cnt, ccperc):
 
 # Count another file.
 # If present, use the shebang to derive the file type.
-# Otherwise count it as other.
+# Otherwise count it as unknown.
 def countother(filename, basic, usecode):
     f = open(filename)
     nline  = 0
@@ -254,20 +254,21 @@ def countother(filename, basic, usecode):
         nline += 1
     # Unknown file type, nothing to be counted.
     if usecode:
-        return ('other', 0, (1,0,0,0,0,0))
-    return ('other', 0, (1,nline,0,0,nblank,0))
+        return ('unknown', 0, (1,0,0,0,0,0))
+    return ('unknown', 0, (1,nline,0,0,nblank,0))
 
 def countfiles(dirname, test, basic, ccperc, verbose, printlevel, level, usecode, dosum):
     sums = [{}, {}]
     for t in types:
         sums[0][t[0]] = [0,0,0,0,0,0]
         sums[1][t[0]] = [0,0,0,0,0,0]
+    # Determine if it is a test directory.
     inx = 0
     if test  and  os.path.basename(dirname) == 'test':
         inx = 1
     files = os.listdir(dirname)
     for file in files:
-        if file not in ['.svn', '.cvs', 'CVS', 'doc']:
+        if file not in ['.git', '.svn', '.cvs', 'CVS', 'doc']:
             ffile = os.path.join(dirname,file)
             try:
                 mode = os.lstat(ffile).st_mode
@@ -306,7 +307,7 @@ def countfiles(dirname, test, basic, ccperc, verbose, printlevel, level, usecode
                 if not usecode  or  ctyp != 0:
                     for i in range(len(cnt)):
                         sums[inx][type][i] += cnt[i]
-                    if type == 'other':
+                    if type == 'unknown':
                         sys.stderr.write ('Unknown type: %s\n' % ffile)
                     elif verbose:
                         sys.stderr.write ('** %s\n' % ffile)
@@ -363,11 +364,11 @@ if __name__ == '__main__':
         print 'It supports many file types. The type is recognized from the file name extension'
         print ' or the shebang script type. Use -s to see all supported types.'
         print 'The following line types are counted:'
-        print '  code:     pure code lines'
+        print '  code:     pure code lines)'
         print '  comment:  pure comment lines'
         print '  blank:    empty lines or lines containing whitespace only'
         print '  header:   the copyright header (leading comment lines)'
-        print '  other:    all other lines'
+        print '  other:    all other lines  (e.g., single {, /*, etc.)'
         print 'Unless -b is given, a pure code or comment line has to contain an alphanumeric'
         print ' character; e.g., a single } does not count as code line.'
         print 'It calculates the percentage of code and comment lines in the total number of'

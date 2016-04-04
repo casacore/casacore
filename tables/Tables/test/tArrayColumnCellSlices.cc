@@ -61,7 +61,7 @@ void createTable (
 
     // Now create a new table from the description.
 
-    SetupNewTable newtab("tArrayColumnSlices_tmp.data", td, Table::New);
+    SetupNewTable newtab("tArrayColumnCellSlices_tmp.data", td, Table::New);
     Table tab(newtab, nRows, False, Table::LocalEndian);
     ArrayColumn<Int> arrayColumn (tab, "testArrayColumn");
 
@@ -123,7 +123,7 @@ readAndCompareArray (ArrayColumn<Int> & arrayColumn)
 
 void readCellSlices()
 {
-  Table tab("tArrayColumnSlices_tmp.data");
+  Table tab("tArrayColumnCellSlices_tmp.data");
   ArrayColumn<Int> arrayColumn(tab, "testArrayColumn");
   {
       // Check ColumnSlicer validation logic
@@ -326,7 +326,7 @@ void readCellSlices()
 
 void writeCellSlices()
 {
-    Table tab("tArrayColumnSlices_tmp.data", Table::Update);
+    Table tab("tArrayColumnCellSlices_tmp.data", Table::Update);
     ArrayColumn<Int> arrayColumn(tab, "testArrayColumn");
   
   {

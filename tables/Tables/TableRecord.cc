@@ -28,6 +28,8 @@
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/Tables/TableKeyword.h>
 #include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -440,6 +442,63 @@ void TableRecord::setTableAttr (const TableRecord& other,
       attr.setName (tabkey.tableAttributes().name());
       tabkey.setTableAttributes (attr);
     }
+  }
+}
+
+Record TableRecord::toRecord() const
+{
+  Record rec;
+  uInt nr = nfields();
+  for (uInt i=0; i<nr; i++) {
+    asValueHolder(i).toRecord (rec, name(i));
+  }
+  return rec;
+}
+
+ValueHolder TableRecord::asValueHolder (const RecordFieldId& fieldId) const
+{
+  switch (dataType(fieldId)) {
+  case TpTable:
+    return ValueHolder ("Table: " + tableAttributes(fieldId).name());
+  case TpRecord:
+    return ValueHolder (subRecord(fieldId).toRecord());
+  default:
+    return RecordInterface::asValueHolder (fieldId);
+  }
+}
+
+void TableRecord::fromRecord (const Record& rec)
+{
+  for (uInt i=0; i<rec.nfields(); i++) {
+    defineFromValueHolder (rec.name(i),
+                           ValueHolder::fromRecord(rec, i));
+  }
+}
+
+void TableRecord::defineFromValueHolder (const RecordFieldId& fieldId,
+                                         const ValueHolder& value)
+{
+  switch (value.dataType()) {
+  case TpString:
+    {
+      String val = value.asString();
+      if (val.index("Table: ") == 0  &&  Table::isReadable (val.from(7))) {
+	Table tab(val.from(7));
+	defineTable (fieldId, tab);
+      } else {
+	define (fieldId, val);
+      }
+    }
+    break;
+  case TpRecord:
+    {
+      TableRecord trec;
+      trec.fromRecord(value.asRecord());
+      defineRecord (fieldId, trec);
+    }
+    break;
+  default:
+    RecordInterface::defineFromValueHolder (fieldId, value);
   }
 }
 

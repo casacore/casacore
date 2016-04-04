@@ -105,9 +105,7 @@ int tableGramInput (char* buf, int max_size)
 
 void TableGramerror (const char*)
 {
-    throw (TableError ("parse error at or near position " +
-		       String::toString(tableGramPosition()) + " '" +
-		       String(TableGramtext) + "'"));
+    throw TableGramError (tableGramPosition(), String(TableGramtext));
 }
 
 String tableGramRemoveEscapes (const String& in)

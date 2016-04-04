@@ -16,6 +16,116 @@ TableRecordRep::get_pointer - field SubRecord is not of type TableRecord
 >>> Instance-specific assertion error message:
 (/aips++/code/aips/implement/Tables/TableRecord.cc : 121) Failed AlwaysAssertExit conform (other)
 <<<
+  TpBool: Bool 0
+  TpUChar: uChar 0
+  TpShort: Short 0
+  TpInt: Int 0
+  TpUInt: uInt 0
+  TpFloat: Float 0
+  TpDouble: Double 0
+  TpComplex: Complex (0,0)
+  TpDComplex: DComplex (0,0)
+  TpString: String ""
+  TpArrayBool: Bool array with shape [1]
+    [0]
+  TpArrayUChar: uChar array with shape [1]
+    [0]
+  TpArrayShort: Short array with shape [1]
+    [0]
+  TpArrayInt: Int array with shape [1]
+    [0]
+  TpArrayUInt: uInt array with shape [1]
+    [0]
+  TpArrayFloat: Float array with shape [1]
+    [0]
+  TpArrayDouble: Double array with shape [1]
+    [0]
+  TpArrayComplex: Complex array with shape [1]
+    [(0,0)]
+  TpArrayDComplex: DComplex array with shape [1]
+    [(0,0)]
+  TpArrayString: String array with shape []
+    []
+  SubRecord1: {
+    fa: Float 3
+    ia: Int 2
+  }
+  SubRecord: {
+    SubFloat: Float 0
+    SubInt: Int 0
+  }
+  TpBool2a: Bool 0
+  TpUChar2a: uChar 0
+  TpShort2a: Short 0
+  TpInt2a: Int 0
+  TpUInt2a: uInt 0
+  TpFloat2a: Float 0
+  TpDouble2a: Double 0
+  TpComplex2a: Complex (0,0)
+  TpDComplex2a: DComplex (0,0)
+  TpArrayString2a: String array with shape [3]
+    [, , ]
+  TpArrayString3a: String array with shape []
+    []
+  TpString2a: String ""
+  TpBool: Bool 0
+  TpUChar: uChar 0
+  TpShort: Short 0
+  TpInt: Int 0
+  TpUInt: uInt 0
+  TpFloat: Float 0
+  TpDouble: Double 0
+  TpComplex: Complex (0,0)
+  TpDComplex: DComplex (0,0)
+  TpString: String ""
+  TpArrayBool: Bool array with shape [1]
+    [0]
+  TpArrayUChar: uChar array with shape [1]
+    [0]
+  TpArrayShort: Short array with shape [1]
+    [0]
+  TpArrayInt: Int array with shape [1]
+    [0]
+  TpArrayUInt: uInt array with shape [1]
+    [0]
+  TpArrayFloat: Float array with shape [1]
+    [0]
+  TpArrayDouble: Double array with shape [1]
+    [0]
+  TpArrayComplex: Complex array with shape [1]
+    [(0,0)]
+  TpArrayDComplex: DComplex array with shape [1]
+    [(0,0)]
+  TpArrayString: String array with shape []
+    []
+  SubRecord1: {
+    fa: Float 3
+    ia: Int 2
+  }
+  SubRecord: {
+    SubFloat: Float 0
+    SubInt: Int 0
+  }
+  TpBool2a: Bool 0
+  TpUChar2a: uChar 0
+  TpShort2a: Short 0
+  TpInt2a: Int 0
+  TpUInt2a: uInt 0
+  TpFloat2a: Float 0
+  TpDouble2a: Double 0
+  TpComplex2a: Complex (0,0)
+  TpDComplex2a: DComplex (0,0)
+  TpArrayString2a: String array with shape [3]
+    [, , ]
+  TpArrayString3a: String array with shape []
+    []
+  TpString2a: String ""
 TableKeyword::operator=; non-conforming table
 TableRecordRep::get_pointer - incorrect data type used for field tab1
+Record
+  tab1: String "Table: tTableRecord_tmp.tab1"
+  tab1a: String "Table: tTableRecord_tmp.tab1"
+TableRecord
+  tab1: Table tTableRecord_tmp.tab1
+  tab1a: Table tTableRecord_tmp.tab1
 OK

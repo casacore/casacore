@@ -491,8 +491,47 @@ public:
 class TableParseError : public TableError {
 public:
     // This constructor generates a message containing the table command.
-    TableParseError (const String& commandString,Category c=INVALID_ARGUMENT);
+    TableParseError (const String& commandString,
+                     int pos=-1, const String& token=String(),
+                     Category c=INVALID_ARGUMENT);
     ~TableParseError () throw();
+  // Get error position or token.
+  int pos() const
+    {return itsPos; }
+  const String& token() const
+    { return itsToken; }
+private:
+  int    itsPos;
+  String itsToken;
+};
+
+
+// <summary>
+// Table grammar error; invalid table command
+// </summary>
+// <use visibility=export>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <synopsis> 
+// The parser in TableGram/TableParse found an error in
+// the given table command.
+// </synopsis> 
+
+class TableGramError : public TableError {
+public:
+    // This constructor generates a message containing the table command.
+    TableGramError (int pos, const String& token,
+                    Category c=INVALID_ARGUMENT);
+    ~TableGramError () throw();
+  // Get error position or token.
+  int pos() const
+    {return itsPos; }
+  const String& token() const
+    { return itsToken; }
+private:
+  int    itsPos;
+  String itsToken;
 };
 
 

@@ -23,14 +23,12 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
-
-#ifndef CASA_ARRAYPARTMATH_TCC
-#define CASA_ARRAYPARTMATH_TCC
+//# $Id: ArrayPartMath.tcc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/Arrays/ArrayPartMath.h>
+#include <casacore/casa/Arrays/ArrayIter.h>
 #include <casacore/casa/Arrays/ArrayError.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -85,6 +83,75 @@ template<class T> Array<T> partialSums (const Array<T>& array,
     } else {
       for (uInt i=0; i<n0; i++) {
 	*res += *data++;
+	res += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=stax; ax<ndim; ax++) {
+      res += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  array.freeStorage (arrData, deleteData);
+  result.putStorage (resData, deleteRes);
+  return result;
+}
+
+template<class T> Array<T> partialSumSqrs (const Array<T>& array,
+                                           const IPosition& collapseAxes)
+{
+  if (collapseAxes.nelements() == 0) {
+    return array.copy();
+  }
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<T>();
+  }
+  IPosition resShape, incr;
+  Int nelemCont = 0;
+  uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
+				 collapseAxes);
+  Array<T> result (resShape);
+  result = 0;
+  Bool deleteData, deleteRes;
+  const T* arrData = array.getStorage (deleteData);
+  const T* data = arrData;
+  T* resData = result.getStorage (deleteRes);
+  T* res = resData;
+  // Find out how contiguous the data is, i.e. if some contiguous data
+  // end up in the same output element.
+  // cont tells if any data are contiguous.
+  // stax gives the first non-contiguous axis.
+  // n0 gives the number of contiguous elements.
+  Bool cont = True;
+  uInt n0 = nelemCont;
+  Int incr0 = incr(0);
+  if (nelemCont <= 1) {
+    cont = False;
+    n0 = shape(0);
+    stax = 1;
+  }
+  // Loop through all data and assemble as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (cont) {
+      T tmp = *res;
+      for (uInt i=0; i<n0; i++) {
+	tmp += *data * *data;
+        data++;
+      }
+      *res = tmp;
+    } else {
+      for (uInt i=0; i<n0; i++) {
+	*res += *data * *data;
+        data++;
 	res += incr0;
       }
     }
@@ -844,129 +911,108 @@ template<class T> Array<T> partialInterFractileRanges (const Array<T>& array,
 }
 
 
-template <typename T, typename FuncType>
-Array<T> boxedArrayMath (const Array<T>& array,
-			 const IPosition& boxSize,
-			 const FuncType& funcObj)
+template<typename T, typename RES>
+void partialArrayMath (Array<RES>& res,
+                       const Array<T>& a,
+                       const IPosition& collapseAxes,
+                       const ArrayFunctorBase<T,RES>& funcObj)
 {
-  uInt ndim = array.ndim();
+  ReadOnlyArrayIterator<T> aiter(a, collapseAxes);
+  IPosition shape(a.shape().removeAxes (collapseAxes));
+  res.resize (shape);
+  RES* data = res.data();
+  while (!aiter.pastEnd()) {
+    *data++ = funcObj(aiter.array());
+    aiter.next();
+  }
+}
+
+
+template <typename T, typename RES>
+void boxedArrayMath (Array<RES>& result,
+                     const Array<T>& array,
+                     const IPosition& boxShape,
+                     const ArrayFunctorBase<T,RES>& funcObj)
+{
   const IPosition& shape = array.shape();
-  // Set missing axes to 1.
-  IPosition boxsz (boxSize);
-  if (boxsz.size() != ndim) {
-    uInt sz = boxsz.size();
-    boxsz.resize (ndim);
-    for (uInt i=sz; i<ndim; ++i) {
-      boxsz[i] = 1;
-    }
-  }
-  // Determine the output shape.
-  IPosition resShape(ndim);
-  for (uInt i=0; i<ndim; ++i) {
-    // Set unspecified axes to full length.
-    if (boxsz[i] <= 0  ||  boxsz[i] > shape[i]) {
-      boxsz[i] = shape[i];
-    }
-    resShape[i] = (shape[i] + boxsz[i] - 1) / boxsz[i];
-  }
-  // Need to make shallow copy because operator() is non-const.
-  Array<T> arr (array);
-  Array<T> result (resShape);
+  uInt ndim = shape.size();
+  IPosition fullBoxShape, resShape;
+  fillBoxedShape (shape, boxShape, fullBoxShape, resShape);
+  result.resize (resShape);
   DebugAssert (result.contiguousStorage(), AipsError);
   T* res = result.data();
   // Loop through all data and assemble as needed.
   IPosition blc(ndim, 0);
-  IPosition trc(boxsz-1);
+  IPosition trc(fullBoxShape-1);
   while (True) {
-    *res++ = funcObj (arr(blc,trc));
+    *res++ = funcObj (array(blc,trc));
     uInt ax;
     for (ax=0; ax<ndim; ++ax) {
-      blc[ax] += boxsz[ax];
+      blc[ax] += fullBoxShape[ax];
       if (blc[ax] < shape[ax]) {
-	trc[ax] += boxsz[ax];
+	trc[ax] += fullBoxShape[ax];
 	if (trc[ax] >= shape[ax]) {
 	  trc[ax] = shape[ax]-1;
 	}
 	break;
       }
       blc[ax] = 0;
-      trc[ax] = boxsz[ax]-1;
+      trc[ax] = fullBoxShape[ax]-1;
     }
     if (ax == ndim) {
       break;
     }
   }
-  return result;
 }
 
-template <typename T, typename FuncType>
-Array<T> slidingArrayMath (const Array<T>& array, const IPosition& halfBoxSize,
-			   const FuncType& funcObj,
-			   Bool fillEdge)
+template <typename T, typename RES>
+void slidingArrayMath (Array<RES>& result,
+                       const Array<T>& array,
+                       const IPosition& halfBoxShape,
+                       const ArrayFunctorBase<T,RES>& funcObj,
+                       Bool fillEdge)
 {
-  uInt ndim = array.ndim();
   const IPosition& shape = array.shape();
-  // Set full box size (-1) and resize/fill as needed.
-  IPosition hboxsz (2*halfBoxSize);
-  if (hboxsz.size() != ndim) {
-    uInt sz = hboxsz.size();
-    hboxsz.resize (ndim);
-    for (uInt i=sz; i<hboxsz.size(); ++i) {
-      hboxsz[i] = 0;
-    }
+  uInt ndim = shape.size();
+  IPosition boxEnd, resShape;
+  Bool empty = fillSlidingShape (shape, halfBoxShape, boxEnd, resShape);
+  if (fillEdge) {
+    result.resize (shape);
+    result = RES();
+  } else {
+    result.resize (resShape);
   }
-  // Determine the output shape. See if anything has to be done.
-  IPosition resShape(ndim);
-  for (uInt i=0; i<ndim; ++i) {
-    resShape[i] = shape[i] - hboxsz[i];
-    if (resShape[i] <= 0) {
-      if (!fillEdge) {
-	return Array<T>();
+  if (!empty) {
+    Array<RES>  resa (result);
+    if (fillEdge) {
+      IPosition boxEnd2 (boxEnd/2);
+      resa.reference (resa(boxEnd2, resShape+boxEnd2-1));
+    }
+    typename Array<RES>::iterator iterarr(resa.begin());
+    // Loop through all data and assemble as needed.
+    IPosition blc(ndim, 0);
+    IPosition trc(boxEnd);
+    IPosition pos(ndim, 0);
+    while (True) {
+      *iterarr = funcObj (array(blc,trc));
+      ++iterarr;
+      uInt ax;
+      for (ax=0; ax<ndim; ++ax) {
+        if (++pos[ax] < resShape[ax]) {
+          blc[ax]++;
+          trc[ax]++;
+          break;
+        }
+        pos(ax) = 0;
+        blc[ax] = 0;
+        trc[ax] = boxEnd[ax];
       }
-      Array<T> res(shape);
-      res = T();
-      return res;
-    }
-  }
-  // Need to make shallow copy because operator() is non-const.
-  Array<T> arr (array);
-  Array<T> result (resShape);
-  if (arr.size() == 0) {
-    return result;
-  }
-  DebugAssert (result.contiguousStorage(), AipsError);
-  T* res = result.data();
-  // Loop through all data and assemble as needed.
-  IPosition blc(ndim, 0);
-  IPosition trc(hboxsz);
-  IPosition pos(ndim, 0);
-  while (True) {
-    *res++ = funcObj (arr(blc,trc));
-    uInt ax;
-    for (ax=0; ax<ndim; ++ax) {
-      if (++pos[ax] < resShape[ax]) {
-	blc[ax]++;
-	trc[ax]++;
-	break;
+      if (ax == ndim) {
+        break;
       }
-      pos(ax) = 0;
-      blc[ax] = 0;
-      trc[ax] = hboxsz[ax];
-    }
-    if (ax == ndim) {
-      break;
     }
   }
-  if (!fillEdge) {
-    return result;
-  }
-  Array<T> fullResult(shape);
-  fullResult = T();
-  hboxsz /= 2;
-  fullResult(hboxsz, resShape+hboxsz-1) = result;
-  return fullResult;
 }
+
 
 } //# NAMESPACE CASACORE - END
-
-#endif

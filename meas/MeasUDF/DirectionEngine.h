@@ -162,12 +162,19 @@ namespace casacore {
                        const TableExprId& id,
                        Array<MDirection>& directions);
 
-    // Calucate the rise and set time of a source for a given elevation,
-    // latitude, and epoch.
-    void calcRiseSet (double dec,
-                      double el, double lat,
-                      double ra, double epoch,
-                      double& rise, double& set) const;
+    // Calucate the rise and set time of a source for a given position and
+    // epoch. Argument <src>h</src> defines the possible edge of sun/moon.
+    void calcRiseSet (const MDirection& dir,
+                      const MPosition& pos,
+                      const MEpoch& epoch,
+                      double h,
+                      double& rise, double& set);
+    int fillRiseSet (double epoch,
+                     const MDirection& dir,
+                     double lat,
+                     double h,
+                     const MEpoch& off,
+                     double* rise, double* set);
 
     //# Data members.
     IPosition                       itsShape;
@@ -176,6 +183,7 @@ namespace casacore {
     MeasFrame                       itsFrame;       //# frame used by converter
     MDirection::Convert             itsConverter;
     Vector<MDirection>              itsConstants;
+    Vector<Double>                  itsH;           //# diff for sun or moon
     MDirection::Types               itsRefType;
     TableExprNode                   itsExprNode;
     ArrayMeasColumn<MDirection>     itsMeasCol;

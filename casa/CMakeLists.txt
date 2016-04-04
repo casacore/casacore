@@ -11,6 +11,7 @@ add_library (casa_casa
 Arrays/ArrayBase.cc
 Arrays/ArrayError.cc
 Arrays/ArrayOpsDiffShapes.cc
+Arrays/ArrayPartMath.cc
 Arrays/ArrayPosIter.cc
 Arrays/ArrayUtil2.cc
 Arrays/Array2.cc
@@ -244,6 +245,7 @@ Arrays/ArrayIter.h
 Arrays/ArrayIter.tcc
 Arrays/ArrayLogical.h
 Arrays/ArrayLogical.tcc
+Arrays/ArrayMathBase.h
 Arrays/ArrayMath.h
 Arrays/ArrayMath.tcc
 Arrays/ArrayOpsDiffShapes.h
