@@ -23,11 +23,12 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprUnitNode.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprUnitNode.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Quanta/Quantum.h>
+#include <casacore/tables/TaQL/MArray.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 
 
@@ -57,13 +58,18 @@ Double TableExprNodeUnit::set (TableExprNodeRep& parent,
     parent.setUnit (child.unit());
   } else {
     if (! child.unit().empty()) {
-      // Check if conversion is possible.
-      Quantity q(1., child.unit());
-      if (! q.isConform (unit)) {
+      // Conversion is only possible between units of the same type
+      // and between time/angle.
+      UnitVal type1 = unit.getValue();
+      UnitVal type2 = child.unit().getValue();
+      if (! (type1 == type2  
+             || (type1 == UnitVal::ANGLE  &&  type2 == UnitVal::TIME)
+             || (type2 == UnitVal::ANGLE  &&  type1 == UnitVal::TIME))) {
 	throw TableInvExpr ("Units " + unit.getName() + " and " +
 			    child.unit().getName() + " do not conform");
       }
       // Get conversion factor.
+      Quantity q(1., child.unit());
       factor = q.getValue (unit);
     }
     parent.setUnit (unit);
@@ -162,11 +168,17 @@ TableExprNodeArrayUnit::~TableExprNodeArrayUnit()
 Double TableExprNodeArrayUnit::getUnitFactor() const
   { return factor_p; }
 
-Array<Double> TableExprNodeArrayUnit::getArrayDouble (const TableExprId& id)
-  { return factor_p * lnode_p->getArrayDouble(id); }
+MArray<Double> TableExprNodeArrayUnit::getArrayDouble (const TableExprId& id)
+{ 
+  MArray<Double> arr = lnode_p->getArrayDouble(id);
+  return MArray<Double> (factor_p * arr.array(), arr.mask());
+}
 
-Array<DComplex> TableExprNodeArrayUnit::getArrayDComplex(const TableExprId& id)
-  { return DComplex(factor_p) * lnode_p->getArrayDComplex(id); }
+MArray<DComplex> TableExprNodeArrayUnit::getArrayDComplex(const TableExprId& id)
+{
+  MArray<DComplex> arr = lnode_p->getArrayDComplex(id);
+  return MArray<DComplex> (DComplex(factor_p) * arr.array(), arr.mask());
+}
 
 
 

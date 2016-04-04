@@ -1,0 +1,779 @@
+using style python select * from tTableGramUpdate_tmp.ref1
+    has been executed
+    select result of 5 rows
+3 selected columns:  cola colv cols
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-2, -2, -2, -2, -2]
+[0, 1, 0][-2, -2, -2, -2, -2]
+	[7, 7, 7, 7, 7, 7]	0
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-1, -1, -1, -1, -1]
+[0, 1, 0][-1, -1, -1, -1, -1]
+	[7, 7, 7, 7, 7, 7]	1
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][0, 0, 0, 0, 0]
+[0, 1, 0][0, 0, 0, 0, 0]
+	[7, 7, 7, 7, 7, 7]	2
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][1, 1, 1, 1, 1]
+[0, 1, 0][1, 1, 1, 1, 1]
+	[7, 7, 7, 7, 7, 7]	3
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][2, 2, 2, 2, 2]
+[0, 1, 0][2, 2, 2, 2, 2]
+	[7, 7, 7, 7, 7, 7]	4
+using style python select * from tTableGramUpdate_tmp.ref2
+    has been executed
+    select result of 5 rows
+3 selected columns:  cola colv cols
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-2, -2, -2, -2, -2]
+[0, 1, 0][-2, -2, -2, -2, -2]
+	[7, 7, 7, 7, 7, 7]	0
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-11, -11, -11, -1, -1]
+[0, 1, 0][-11, -11, -11, -1, -1]
+	[7, 7, 8, 8, 8, 7]	-1
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-10, -10, -10, 0, 0]
+[0, 1, 0][-10, -10, -10, 0, 0]
+	[7, 7, 8, 8, 8, 7]	0
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-9, -9, -9, 1, 1]
+[0, 1, 0][-9, -9, -9, 1, 1]
+	[7, 7, 8, 8, 8, 7]	1
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][2, 2, 2, 2, 2]
+[0, 1, 0][2, 2, 2, 2, 2]
+	[7, 7, 7, 7, 7, 7]	4
+using style python select * from tTableGramUpdate_tmp.ref3
+    has been executed
+    select result of 5 rows
+3 selected columns:  cola colv cols
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-1, -1, -1, -1, -1]
+[0, 1, 0][-1, -1, -1, -1, -1]
+	[10, 10, 10, 10, 10, 10]	5
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-8, -8, -8, 0, 0]
+[0, 1, 0][-8, -8, -8, 0, 0]
+	[10, 10, 8, 8, 8, 10]	4
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-7, -7, -7, 1, 1]
+[0, 1, 0][-7, -7, -7, 1, 1]
+	[10, 10, 8, 8, 8, 10]	5
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-8, -8, -8, 2, 2]
+[0, 1, 0][-8, -8, -8, 2, 2]
+	[10, 10, 8, 8, 8, 10]	6
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][3, 3, 3, 3, 3]
+[0, 1, 0][3, 3, 3, 3, 3]
+	[10, 10, 10, 10, 10, 10]	9
+using style python select * from tTableGramUpdate_tmp.ref4
+    has been executed
+    select result of 5 rows
+3 selected columns:  cola colv cols
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-1, -1, -1, -1, -1]
+[0, 1, 0][-1, -1, -1, -1, -1]
+	[10, 12, 12, 12, 10, 10]	5
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-8, -8, -8, 0, 0]
+[0, 1, 0][-8, -8, -8, 1, 1]
+	[10, 13, 8, 8, 8, 10]	4
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-7, -7, -7, 1, 1]
+[0, 1, 0][-7, -7, -7, 1, 1]
+	[10, 14, 8, 8, 8, 10]	5
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-8, -8, -8, 2, 2]
+[0, 1, 0][-8, -8, -8, 2, 2]
+	[10, 15, 8, 8, 8, 10]	6
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][3, 3, 3, 3, 3]
+[0, 1, 0][3, 3, 3, 3, 3]
+	[10, 16, 16, 16, 10, 10]	9
+using style python select * from tTableGramUpdate_tmp.ref5
+    has been executed
+    select result of 5 rows
+3 selected columns:  cola colv cols
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-1, -1, -1, -1, -1]
+[0, 1, 0][-1, -1, -1, -1, -1]
+	[3, 3, 3, 3, 3, 10]	5
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-8, -8, -8, 0, 0]
+[0, 1, 0][-8, -8, -8, 1, 1]
+	[3, 13, 3, 3, 3, 10]	4
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-7, -7, -7, 1, 1]
+[0, 1, 0][-7, -7, -7, 1, 1]
+	[3, 3, 3, 3, 3, 10]	5
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][-8, -8, -8, 4, 4]
+[0, 1, 0][-8, -8, -8, 2, 2]
+	[3, 15, 3, 3, 3, 10]	6
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][4, 4, 4, 4, 4]
+[0, 1, 0][3, 3, 3, 3, 3]
+	[3, 3, 3, 3, 3, 10]	9
+
+Testing datatype I2 ...
+
+    cretab result of 5 rows
+update tTableGramUpdate_tmp.tab1 set cols=0+rowid(), cola=array(0+rowid()-2,5,2,1), colv=array(7,6)
+    has been executed
+    update result of 5 rows
+3 selected columns:  cols cola colv
+ 0 shape=[5, 2, 1] shape=[6]
+ 1 shape=[5, 2, 1] shape=[6]
+ 2 shape=[5, 2, 1] shape=[6]
+ 3 shape=[5, 2, 1] shape=[6]
+ 4 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols-2, cola[1:3,,]=cola[2:4,,]-10, colv[3:5]=8 where cols>=0+1 and cols<=0+3
+    has been executed
+    update result of 3 rows
+3 selected columns:  cols cola colv
+ -1 shape=[5, 2, 1] shape=[6]
+ 0 shape=[5, 2, 1] shape=[6]
+ 1 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols+10, cola[real(cola)<0-9]=cola+2, cols=cols-5, cola=cola+1, colv[real(colv)==7]=10
+    has been executed
+    update result of 5 rows
+5 selected columns:  cols cola cols cola colv
+ 5 shape=[5, 2, 1] 5 shape=[5, 2, 1] shape=[6]
+ 4 shape=[5, 2, 1] 4 shape=[5, 2, 1] shape=[6]
+ 5 shape=[5, 2, 1] 5 shape=[5, 2, 1] shape=[6]
+ 6 shape=[5, 2, 1] 6 shape=[5, 2, 1] shape=[6]
+ 9 shape=[5, 2, 1] 9 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,2:,]==0]=array(0+rowid(),[5,1,1]), colv[2:4][(real(colv)>9)[2:4]]=12+rowid()
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[real(cola)>0+1.1][,1:1,]=array(0+4,5,1,1), colv[int(real(colv))%2=0][1:5]=3
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+Testing datatype I4 ...
+
+    cretab result of 5 rows
+update tTableGramUpdate_tmp.tab1 set cols=0+rowid(), cola=array(0+rowid()-2,5,2,1), colv=array(7,6)
+    has been executed
+    update result of 5 rows
+3 selected columns:  cols cola colv
+ 0 shape=[5, 2, 1] shape=[6]
+ 1 shape=[5, 2, 1] shape=[6]
+ 2 shape=[5, 2, 1] shape=[6]
+ 3 shape=[5, 2, 1] shape=[6]
+ 4 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols-2, cola[1:3,,]=cola[2:4,,]-10, colv[3:5]=8 where cols>=0+1 and cols<=0+3
+    has been executed
+    update result of 3 rows
+3 selected columns:  cols cola colv
+ -1 shape=[5, 2, 1] shape=[6]
+ 0 shape=[5, 2, 1] shape=[6]
+ 1 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols+10, cola[real(cola)<0-9]=cola+2, cols=cols-5, cola=cola+1, colv[real(colv)==7]=10
+    has been executed
+    update result of 5 rows
+5 selected columns:  cols cola cols cola colv
+ 5 shape=[5, 2, 1] 5 shape=[5, 2, 1] shape=[6]
+ 4 shape=[5, 2, 1] 4 shape=[5, 2, 1] shape=[6]
+ 5 shape=[5, 2, 1] 5 shape=[5, 2, 1] shape=[6]
+ 6 shape=[5, 2, 1] 6 shape=[5, 2, 1] shape=[6]
+ 9 shape=[5, 2, 1] 9 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,2:,]==0]=array(0+rowid(),[5,1,1]), colv[2:4][(real(colv)>9)[2:4]]=12+rowid()
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[real(cola)>0+1.1][,1:1,]=array(0+4,5,1,1), colv[int(real(colv))%2=0][1:5]=3
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+Testing datatype R4 ...
+
+    cretab result of 5 rows
+update tTableGramUpdate_tmp.tab1 set cols=0+rowid(), cola=array(0+rowid()-2,5,2,1), colv=array(7,6)
+    has been executed
+    update result of 5 rows
+3 selected columns:  cols cola colv
+ 0 shape=[5, 2, 1] shape=[6]
+ 1 shape=[5, 2, 1] shape=[6]
+ 2 shape=[5, 2, 1] shape=[6]
+ 3 shape=[5, 2, 1] shape=[6]
+ 4 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols-2, cola[1:3,,]=cola[2:4,,]-10, colv[3:5]=8 where cols>=0+1 and cols<=0+3
+    has been executed
+    update result of 3 rows
+3 selected columns:  cols cola colv
+ -1 shape=[5, 2, 1] shape=[6]
+ 0 shape=[5, 2, 1] shape=[6]
+ 1 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols+10, cola[real(cola)<0-9]=cola+2, cols=cols-5, cola=cola+1, colv[real(colv)==7]=10
+    has been executed
+    update result of 5 rows
+5 selected columns:  cols cola cols cola colv
+ 5 shape=[5, 2, 1] 5 shape=[5, 2, 1] shape=[6]
+ 4 shape=[5, 2, 1] 4 shape=[5, 2, 1] shape=[6]
+ 5 shape=[5, 2, 1] 5 shape=[5, 2, 1] shape=[6]
+ 6 shape=[5, 2, 1] 6 shape=[5, 2, 1] shape=[6]
+ 9 shape=[5, 2, 1] 9 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,2:,]==0]=array(0+rowid(),[5,1,1]), colv[2:4][(real(colv)>9)[2:4]]=12+rowid()
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[real(cola)>0+1.1][,1:1,]=array(0+4,5,1,1), colv[int(real(colv))%2=0][1:5]=3
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+Testing datatype R8 ...
+
+    cretab result of 5 rows
+update tTableGramUpdate_tmp.tab1 set cols=0+rowid(), cola=array(0+rowid()-2,5,2,1), colv=array(7,6)
+    has been executed
+    update result of 5 rows
+3 selected columns:  cols cola colv
+ 0 shape=[5, 2, 1] shape=[6]
+ 1 shape=[5, 2, 1] shape=[6]
+ 2 shape=[5, 2, 1] shape=[6]
+ 3 shape=[5, 2, 1] shape=[6]
+ 4 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols-2, cola[1:3,,]=cola[2:4,,]-10, colv[3:5]=8 where cols>=0+1 and cols<=0+3
+    has been executed
+    update result of 3 rows
+3 selected columns:  cols cola colv
+ -1 shape=[5, 2, 1] shape=[6]
+ 0 shape=[5, 2, 1] shape=[6]
+ 1 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols+10, cola[real(cola)<0-9]=cola+2, cols=cols-5, cola=cola+1, colv[real(colv)==7]=10
+    has been executed
+    update result of 5 rows
+5 selected columns:  cols cola cols cola colv
+ 5 shape=[5, 2, 1] 5 shape=[5, 2, 1] shape=[6]
+ 4 shape=[5, 2, 1] 4 shape=[5, 2, 1] shape=[6]
+ 5 shape=[5, 2, 1] 5 shape=[5, 2, 1] shape=[6]
+ 6 shape=[5, 2, 1] 6 shape=[5, 2, 1] shape=[6]
+ 9 shape=[5, 2, 1] 9 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,2:,]==0]=array(0+rowid(),[5,1,1]), colv[2:4][(real(colv)>9)[2:4]]=12+rowid()
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[real(cola)>0+1.1][,1:1,]=array(0+4,5,1,1), colv[int(real(colv))%2=0][1:5]=3
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+Testing datatype C4 ...
+
+    cretab result of 5 rows
+update tTableGramUpdate_tmp.tab1 set cols=0+rowid(), cola=array(0+rowid()-2,5,2,1), colv=array(7,6)
+    has been executed
+    update result of 5 rows
+3 selected columns:  cols cola colv
+ (0,0) shape=[5, 2, 1] shape=[6]
+ (1,0) shape=[5, 2, 1] shape=[6]
+ (2,0) shape=[5, 2, 1] shape=[6]
+ (3,0) shape=[5, 2, 1] shape=[6]
+ (4,0) shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols-2, cola[1:3,,]=cola[2:4,,]-10, colv[3:5]=8 where cols>=0+1 and cols<=0+3
+    has been executed
+    update result of 3 rows
+3 selected columns:  cols cola colv
+ (-1,0) shape=[5, 2, 1] shape=[6]
+ (0,0) shape=[5, 2, 1] shape=[6]
+ (1,0) shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols+10, cola[real(cola)<0-9]=cola+2, cols=cols-5, cola=cola+1, colv[real(colv)==7]=10
+    has been executed
+    update result of 5 rows
+5 selected columns:  cols cola cols cola colv
+ (5,0) shape=[5, 2, 1] (5,0) shape=[5, 2, 1] shape=[6]
+ (4,0) shape=[5, 2, 1] (4,0) shape=[5, 2, 1] shape=[6]
+ (5,0) shape=[5, 2, 1] (5,0) shape=[5, 2, 1] shape=[6]
+ (6,0) shape=[5, 2, 1] (6,0) shape=[5, 2, 1] shape=[6]
+ (9,0) shape=[5, 2, 1] (9,0) shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,2:,]==0]=array(0+rowid(),[5,1,1]), colv[2:4][(real(colv)>9)[2:4]]=12+rowid()
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[real(cola)>0+1.1][,1:1,]=array(0+4,5,1,1), colv[int(real(colv))%2=0][1:5]=3
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+Testing datatype C8 ...
+
+    cretab result of 5 rows
+update tTableGramUpdate_tmp.tab1 set cols=0+rowid(), cola=array(0+rowid()-2,5,2,1), colv=array(7,6)
+    has been executed
+    update result of 5 rows
+3 selected columns:  cols cola colv
+ (0,0) shape=[5, 2, 1] shape=[6]
+ (1,0) shape=[5, 2, 1] shape=[6]
+ (2,0) shape=[5, 2, 1] shape=[6]
+ (3,0) shape=[5, 2, 1] shape=[6]
+ (4,0) shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols-2, cola[1:3,,]=cola[2:4,,]-10, colv[3:5]=8 where cols>=0+1 and cols<=0+3
+    has been executed
+    update result of 3 rows
+3 selected columns:  cols cola colv
+ (-1,0) shape=[5, 2, 1] shape=[6]
+ (0,0) shape=[5, 2, 1] shape=[6]
+ (1,0) shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols+10, cola[real(cola)<0-9]=cola+2, cols=cols-5, cola=cola+1, colv[real(colv)==7]=10
+    has been executed
+    update result of 5 rows
+5 selected columns:  cols cola cols cola colv
+ (5,0) shape=[5, 2, 1] (5,0) shape=[5, 2, 1] shape=[6]
+ (4,0) shape=[5, 2, 1] (4,0) shape=[5, 2, 1] shape=[6]
+ (5,0) shape=[5, 2, 1] (5,0) shape=[5, 2, 1] shape=[6]
+ (6,0) shape=[5, 2, 1] (6,0) shape=[5, 2, 1] shape=[6]
+ (9,0) shape=[5, 2, 1] (9,0) shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,2:,]==0]=array(0+rowid(),[5,1,1]), colv[2:4][(real(colv)>9)[2:4]]=12+rowid()
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[real(cola)>0+1.1][,1:1,]=array(0+4,5,1,1), colv[int(real(colv))%2=0][1:5]=3
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+Testing datatype U1 ...
+
+    cretab result of 5 rows
+update tTableGramUpdate_tmp.tab1 set cols=20+rowid(), cola=array(20+rowid()-2,5,2,1), colv=array(7,6)
+    has been executed
+    update result of 5 rows
+3 selected columns:  cols cola colv
+ 20 shape=[5, 2, 1] shape=[6]
+ 21 shape=[5, 2, 1] shape=[6]
+ 22 shape=[5, 2, 1] shape=[6]
+ 23 shape=[5, 2, 1] shape=[6]
+ 24 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols-2, cola[1:3,,]=cola[2:4,,]-10, colv[3:5]=8 where cols>=20+1 and cols<=20+3
+    has been executed
+    update result of 3 rows
+3 selected columns:  cols cola colv
+ 19 shape=[5, 2, 1] shape=[6]
+ 20 shape=[5, 2, 1] shape=[6]
+ 21 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols+10, cola[real(cola)<20-9]=cola+2, cols=cols-5, cola=cola+1, colv[real(colv)==7]=10
+    has been executed
+    update result of 5 rows
+5 selected columns:  cols cola cols cola colv
+ 25 shape=[5, 2, 1] 25 shape=[5, 2, 1] shape=[6]
+ 24 shape=[5, 2, 1] 24 shape=[5, 2, 1] shape=[6]
+ 25 shape=[5, 2, 1] 25 shape=[5, 2, 1] shape=[6]
+ 26 shape=[5, 2, 1] 26 shape=[5, 2, 1] shape=[6]
+ 29 shape=[5, 2, 1] 29 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,2:,]==20]=array(20+rowid(),[5,1,1]), colv[2:4][(real(colv)>9)[2:4]]=12+rowid()
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[real(cola)>20+1.1][,1:1,]=array(20+4,5,1,1), colv[int(real(colv))%2=0][1:5]=3
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+Testing datatype U2 ...
+
+    cretab result of 5 rows
+update tTableGramUpdate_tmp.tab1 set cols=20+rowid(), cola=array(20+rowid()-2,5,2,1), colv=array(7,6)
+    has been executed
+    update result of 5 rows
+3 selected columns:  cols cola colv
+ 20 shape=[5, 2, 1] shape=[6]
+ 21 shape=[5, 2, 1] shape=[6]
+ 22 shape=[5, 2, 1] shape=[6]
+ 23 shape=[5, 2, 1] shape=[6]
+ 24 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols-2, cola[1:3,,]=cola[2:4,,]-10, colv[3:5]=8 where cols>=20+1 and cols<=20+3
+    has been executed
+    update result of 3 rows
+3 selected columns:  cols cola colv
+ 19 shape=[5, 2, 1] shape=[6]
+ 20 shape=[5, 2, 1] shape=[6]
+ 21 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols+10, cola[real(cola)<20-9]=cola+2, cols=cols-5, cola=cola+1, colv[real(colv)==7]=10
+    has been executed
+    update result of 5 rows
+5 selected columns:  cols cola cols cola colv
+ 25 shape=[5, 2, 1] 25 shape=[5, 2, 1] shape=[6]
+ 24 shape=[5, 2, 1] 24 shape=[5, 2, 1] shape=[6]
+ 25 shape=[5, 2, 1] 25 shape=[5, 2, 1] shape=[6]
+ 26 shape=[5, 2, 1] 26 shape=[5, 2, 1] shape=[6]
+ 29 shape=[5, 2, 1] 29 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,2:,]==20]=array(20+rowid(),[5,1,1]), colv[2:4][(real(colv)>9)[2:4]]=12+rowid()
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[real(cola)>20+1.1][,1:1,]=array(20+4,5,1,1), colv[int(real(colv))%2=0][1:5]=3
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+Testing datatype U4 ...
+
+    cretab result of 5 rows
+update tTableGramUpdate_tmp.tab1 set cols=20+rowid(), cola=array(20+rowid()-2,5,2,1), colv=array(7,6)
+    has been executed
+    update result of 5 rows
+3 selected columns:  cols cola colv
+ 20 shape=[5, 2, 1] shape=[6]
+ 21 shape=[5, 2, 1] shape=[6]
+ 22 shape=[5, 2, 1] shape=[6]
+ 23 shape=[5, 2, 1] shape=[6]
+ 24 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols-2, cola[1:3,,]=cola[2:4,,]-10, colv[3:5]=8 where cols>=20+1 and cols<=20+3
+    has been executed
+    update result of 3 rows
+3 selected columns:  cols cola colv
+ 19 shape=[5, 2, 1] shape=[6]
+ 20 shape=[5, 2, 1] shape=[6]
+ 21 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cols=cols+10, cola[real(cola)<20-9]=cola+2, cols=cols-5, cola=cola+1, colv[real(colv)==7]=10
+    has been executed
+    update result of 5 rows
+5 selected columns:  cols cola cols cola colv
+ 25 shape=[5, 2, 1] 25 shape=[5, 2, 1] shape=[6]
+ 24 shape=[5, 2, 1] 24 shape=[5, 2, 1] shape=[6]
+ 25 shape=[5, 2, 1] 25 shape=[5, 2, 1] shape=[6]
+ 26 shape=[5, 2, 1] 26 shape=[5, 2, 1] shape=[6]
+ 29 shape=[5, 2, 1] 29 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,2:,]==20]=array(20+rowid(),[5,1,1]), colv[2:4][(real(colv)>9)[2:4]]=12+rowid()
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tab1 set cola[real(cola)>20+1.1][,1:1,]=array(20+4,5,1,1), colv[int(real(colv))%2=0][1:5]=3
+    has been executed
+    update result of 5 rows
+2 selected columns:  cola colv
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+ shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+Testing datatype B ...
+using style python select * from tTableGramUpdate_tmp.refb1
+    has been executed
+    select result of 3 rows
+3 selected columns:  cola colv cols
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][0, 0, 0, 0, 0]
+[0, 1, 0][0, 0, 0, 0, 0]
+	[1, 1, 1, 1, 1, 1]	1
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][1, 1, 1, 1, 1]
+[0, 1, 0][1, 1, 1, 1, 1]
+	[1, 1, 1, 1, 1, 1]	0
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][1, 1, 1, 1, 1]
+[0, 1, 0][1, 1, 1, 1, 1]
+	[1, 1, 1, 1, 1, 1]	1
+using style python select * from tTableGramUpdate_tmp.refb2
+    has been executed
+    select result of 3 rows
+3 selected columns:  cola colv cols
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][1, 1, 1, 0, 0]
+[0, 1, 0][1, 1, 1, 0, 0]
+	[1, 1, 0, 0, 0, 1]	0
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][0, 0, 0, 1, 1]
+[0, 1, 0][0, 0, 0, 1, 1]
+	[1, 1, 0, 0, 0, 1]	1
+Ndim=3 Axis Lengths: [5, 2, 1] 
+[0, 0, 0][0, 0, 0, 1, 1]
+[0, 1, 0][0, 0, 0, 1, 1]
+	[1, 1, 0, 0, 0, 1]	0
+
+    cretab result of 3 rows
+update tTableGramUpdate_tmp.tabb set cols=rowid()%2==0, cola=array(rowid()%3!=0,[5,2,1]), colv=array(T,6)
+    has been executed
+    update result of 3 rows
+3 selected columns:  cols cola colv
+ 1 shape=[5, 2, 1] shape=[6]
+ 0 shape=[5, 2, 1] shape=[6]
+ 1 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tabb set cols=!cols, cola[1:3,,]=!cola[2:4,,], colv[3:5]=F
+    has been executed
+    update result of 3 rows
+3 selected columns:  cols cola colv
+ 0 shape=[5, 2, 1] shape=[6]
+ 1 shape=[5, 2, 1] shape=[6]
+ 0 shape=[5, 2, 1] shape=[6]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+Testing datatype S ...
+using style python select * from tTableGramUpdate_tmp.refs1
+    has been executed
+    select result of 2 rows
+3 selected columns:  cola colv cols
+Ndim=3 Axis Lengths: [3, 1, 1] 
+[0, 0, 0][1, 1, 1]
+	[xy, xy, xy]	0
+Ndim=3 Axis Lengths: [3, 1, 1] 
+[0, 0, 0][2, 2, 2]
+	[xy, xy, xy]	1
+using style python select * from tTableGramUpdate_tmp.refs2
+    has been executed
+    select result of 2 rows
+3 selected columns:  cola colv cols
+Ndim=3 Axis Lengths: [3, 1, 1] 
+[0, 0, 0][1g, 1g, 1]
+	[xy, bcd, bcd]	0abc
+Ndim=3 Axis Lengths: [3, 1, 1] 
+[0, 0, 0][2g, 2g, 2]
+	[xy, bcd, bcd]	1abc
+
+    cretab result of 2 rows
+update tTableGramUpdate_tmp.tabs set cols=str(rowid()), cola=array(str(rowid()+1),[3,1,1]), colv=array('xy',3)
+    has been executed
+    update result of 2 rows
+3 selected columns:  cols cola colv
+ 0 shape=[3, 1, 1] shape=[3]
+ 1 shape=[3, 1, 1] shape=[3]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+update tTableGramUpdate_tmp.tabs set cols=cols+'abc', cola[1:2,,]=cola[2:3,,]+'g', colv[2:3]='bcd'
+    has been executed
+    update result of 2 rows
+3 selected columns:  cols cola colv
+ 0abc shape=[3, 1, 1] shape=[3]
+ 1abc shape=[3, 1, 1] shape=[3]
+    select result of 0 rows
+2 selected columns:  colv cols2
+
+Testing erronous commands ...
+update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])
+
+Caught an exception: Error in TaQL command: 'update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])'
+  Update mask must conform the column's array section
+update tTableGramUpdate_tmp.tab1 set cola[,1:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])
+
+Caught an exception: Error in TaQL command: 'update tTableGramUpdate_tmp.tab1 set cola[,1:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])'
+  Error in select expression: Array shapes in update of column cola mismatch
+update tTableGramUpdate_tmp.tab1 set cola[real(cola)>1.1][,1:1,]=array(4,5,2,1)
+
+Caught an exception: Error in TaQL command: 'update tTableGramUpdate_tmp.tab1 set cola[real(cola)>1.1][,1:1,]=array(4,5,2,1)'
+  Error in select expression: Array shapes in update of column cola mismatch

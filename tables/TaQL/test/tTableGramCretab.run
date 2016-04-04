@@ -1,0 +1,44 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the TableGram and TableParse class.  All files generated will
+# be deleted on exit.
+#=============================================================================
+
+# Create a symlink to achieve that casacore_memcheck (if used) will use
+# that name 
+rm -f tTableGramCretab
+ln -s tTableGram tTableGramCretab
+
+
+# Execute all kind of table creation commands.
+# Check the result using showtableinfo (leave out version line).
+
+# Test create and insert with a unit.
+echo ""
+$casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab1 (col1 i4 [shape=[2,3], unit="m"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]'
+../../apps/showtableinfo in=tTableGramCretab_tmp.tab1 | grep -v 'showtableinfo:'
+
+echo ""
+$casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab2 as [plain_big=T,storage="multifile"] [col1 i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2 B]'
+../../apps/showtableinfo in=tTableGramCretab_tmp.tab2 | grep -v 'showtableinfo:'
+
+echo ""
+$casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab3 as [endian="little", blocksize=2048, type="plain", storage="multifile"] [col1x i4 [shape=[3,4]], col2y B]'
+../../apps/showtableinfo in=tTableGramCretab_tmp.tab3 | grep -v 'showtableinfo:'
+
+# Some erronous commands.
+echo ""
+$casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab3 as [endian="little", blocksize=2048, type="plain", storage="multifile", overwrite=F] [col1x i4 [shape=[3,4]], col2y B]'
+$casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab1 as [endian="little", blocksize=2048, type="plain", storage="multifil"] [col1x i4 [shape=[3,4]], col2y B]'
+$casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab1 as [blocksize=2048.] [col1x i4 [shape=[3,4]], col2y B]'
+$casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab1 as blocksize [col1x i4 [shape=[3,4]], col2y B]'
+$casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab1 as blocksize=2048 [col1x i4 [shape=[3,4]], col2y B]'
+
+# A table created using a selection while changing the dminfo.
+echo ""
+$casa_checktool ./tTableGramCretab 'select from tTableGramCretab_tmp.tab3 where col2y giving tTableGramCretab_tmp.tab4 as [plain=T,storage="multifile"] dminfo [NAME="ISM1",TYPE="IncrementalStMan",COLUMNS=["col1x","col2y"]]'
+../../apps/showtableinfo in=tTableGramCretab_tmp.tab4 | grep -v 'showtableinfo:'
+
+
+# Remove the symlink
+rm -f tTableGramCretab

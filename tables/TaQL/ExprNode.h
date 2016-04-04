@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprNode.h 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #ifndef TABLES_EXPRNODE_H
 #define TABLES_EXPRNODE_H
@@ -35,6 +35,7 @@
 #include <casacore/tables/TaQL/ExprFuncNode.h>
 #include <casacore/tables/TaQL/ExprConeNode.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
+#include <casacore/tables/TaQL/MArray.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
@@ -50,6 +51,7 @@ class TableRecord;
 class TableExprNodeSet;
 template<class T> class Block;
 template<class T> class Array;
+template<class T> class MArray;
 class TableExprNode;
 
 
@@ -323,8 +325,11 @@ class TableExprNode;
   // Defined for scalars and arrays.
     TableExprNode imag (const TableExprNode& node);
 
-  // Convert double to int (using floor).
+  // Convert double, bool, or string to int (using floor).
     TableExprNode integer (const TableExprNode& node);
+
+  // Convert numeric or string value to bool (0, no, false, - means false)
+    TableExprNode boolean (const TableExprNode& node);
 
   // The amplitude (i.e. sqrt(re*re + im*im)) of a complex node.
   // This is a synonym for function abs.
@@ -344,6 +349,9 @@ class TableExprNode;
   // One or both arguments can be scalar or array.
     TableExprNode formComplex (const TableExprNode& real,
 			       const TableExprNode& imag);
+  // Form a complex number from a string.
+  // Defined for scalars and arrays.
+    TableExprNode formComplex (const TableExprNode& node);
 
   // Functions operating on a Double or Complex scalar or array resulting in
   // a scalar with the same data type.
@@ -445,9 +453,37 @@ class TableExprNode;
     TableExprNode array (const TableExprNode& values,
 			 const TableExprNodeSet& shape);
 
-  // Transpose all axes of an array.
+  // Form a masked array.
+    TableExprNode marray (const TableExprNode& array,
+                          const TableExprNode& mask);
+
+  // Get the data array of a masked array.
+    TableExprNode arrayData (const TableExprNode& array);
+
+  // Flatten a masked array (get unmasked elements).
+    TableExprNode arrayFlatten (const TableExprNode& array);
+
+  // Get the mask of a masked array.
+  // If the array has no mask, it return an array with all False values.
+    TableExprNode arrayMask (const TableExprNode& array);
+
+  // Get the diagonal of a (masked) array;
+  // If the array is not a Matrix, it will take the diagonals of the
+  // subarrays given by the two axes in the axes argument. Those
+  // axes have to have the same length (thus each subarray is a Matrix).
+  // If no axes are given, they default to the first two axes.
+  // <br>The <src>diag</src> argument tells which diagonal to take.
+  // 0 is the main diagonal, >0 is above main diagonal, <0 is below.
+    TableExprNode diagonal (const TableExprNode& array);
+    TableExprNode diagonal (const TableExprNode& array,
+                            const TableExprNode& firstAxis);
+    TableExprNode diagonal (const TableExprNode& array,
+                            const TableExprNode& firstAxis,
+                            const TableExprNode& diag);
+
+  // Transpose all axes of a (masked) array.
     TableExprNode transpose (const TableExprNode& array);
-  // Transpose an array by making the given axes the first axes.
+  // Transpose a (masked) array by making the given axes the first axes.
     TableExprNode transpose (const TableExprNode& array,
                              const TableExprNode& axes);
 
@@ -719,11 +755,14 @@ class TableExprNode
     friend TableExprNode conj (const TableExprNode& node);
     friend TableExprNode real (const TableExprNode& node);
     friend TableExprNode imag (const TableExprNode& node);
+    friend TableExprNode integer (const TableExprNode& node);
+    friend TableExprNode boolean (const TableExprNode& node);
     friend TableExprNode amplitude (const TableExprNode& node);
     friend TableExprNode phase (const TableExprNode& node);
     friend TableExprNode arg (const TableExprNode& node);
     friend TableExprNode formComplex (const TableExprNode& real,
 				      const TableExprNode& imag);
+    friend TableExprNode formComplex (const TableExprNode& node);
     friend TableExprNode sum (const TableExprNode& array);
     friend TableExprNode product (const TableExprNode& array);
     friend TableExprNode sumSquare (const TableExprNode& array);
@@ -786,9 +825,20 @@ class TableExprNode
     friend TableExprNode runningAll (const TableExprNode& array);
     friend TableExprNode array (const TableExprNode& values,
 				const TableExprNodeSet& shape);
+    friend TableExprNode marray (const TableExprNode& array,
+                                 const TableExprNode& mask);
+    friend TableExprNode arrayData (const TableExprNode& array);
+    friend TableExprNode arrayMask (const TableExprNode& array);
+    friend TableExprNode arrayFlatten (const TableExprNode& array);
     friend TableExprNode transpose (const TableExprNode& array);
     friend TableExprNode transpose (const TableExprNode& array,
-                                    const TableExprNode& axes);
+                                    const TableExprNodeSet& axes);
+    friend TableExprNode diagonal (const TableExprNode& array);
+    friend TableExprNode diagonal (const TableExprNode& array,
+                                   const TableExprNode& firstAxis);
+    friend TableExprNode diagonal (const TableExprNode& array,
+                                  const TableExprNode& firstAxis,
+                                  const TableExprNode& diag);
     friend TableExprNode isdefined (const TableExprNode& array);
     friend TableExprNode nelements (const TableExprNode& array);
     friend TableExprNode ndim (const TableExprNode& array);
@@ -870,6 +920,18 @@ public:
     TableExprNode (const Array<DComplex>& value);
     TableExprNode (const Array<String>& value);
     TableExprNode (const Array<MVTime>& value);
+    TableExprNode (const MArray<Bool>& value);
+    TableExprNode (const MArray<uChar>& value);
+    TableExprNode (const MArray<Short>& value);
+    TableExprNode (const MArray<uShort>& value);
+    TableExprNode (const MArray<Int>& value);
+    TableExprNode (const MArray<uInt>& value);
+    TableExprNode (const MArray<Float>& value);
+    TableExprNode (const MArray<Double>& value);
+    TableExprNode (const MArray<Complex>& value);
+    TableExprNode (const MArray<DComplex>& value);
+    TableExprNode (const MArray<String>& value);
+    TableExprNode (const MArray<MVTime>& value);
     // </group>
 
     // Construct a node from a node representation.
@@ -887,6 +949,10 @@ public:
     // Does the node contain no actual node?
     Bool isNull() const
       { return node_p == 0; }
+
+    // Do not apply the selection.
+    void disableApplySelection()
+      { node_p->disableApplySelection(); }
 
     // Re-create the column object for a selection of rows.
     // Nothing is done if the node does not represent a column object.
@@ -913,11 +979,6 @@ public:
     uInt nrow() const
       { return node_p->nrow(); }
 
-    // Is the result value defined?
-    // Normally it is, but not for a column with an undefined value.
-    Bool isResultDefined (const TableExprId& id) const
-      { return node_p->isDefined (id); }
-
     // Get a value for this node in the given row.
     // These functions are implemented in the derived classes and
     // will usually invoke the get in their children and apply the
@@ -930,6 +991,12 @@ public:
     void get (const TableExprId& id, String& value) const;
     void get (const TableExprId& id, TaqlRegex& value) const;
     void get (const TableExprId& id, MVTime& value) const;
+    void get (const TableExprId& id, MArray<Bool>& value) const;
+    void get (const TableExprId& id, MArray<Int64>& value) const;
+    void get (const TableExprId& id, MArray<Double>& value) const;
+    void get (const TableExprId& id, MArray<DComplex>& value) const;
+    void get (const TableExprId& id, MArray<String>& value) const;
+    void get (const TableExprId& id, MArray<MVTime>& value) const;
     void get (const TableExprId& id, Array<Bool>& value) const;
     void get (const TableExprId& id, Array<Int64>& value) const;
     void get (const TableExprId& id, Array<Double>& value) const;
@@ -946,14 +1013,16 @@ public:
     Array<Double>   getArrayDouble   (const TableExprId& id) const;
     Array<DComplex> getArrayDComplex (const TableExprId& id) const;
     Array<String>   getArrayString   (const TableExprId& id) const;
+    Array<MVTime>   getArrayDate     (const TableExprId& id) const;
     // Get a value as an array, even it it is a scalar.
     // This is useful in case one can give an argument as scalar or array.
     // <group>
-    Array<Bool>     getBoolAS     (const TableExprId& id) const;
-    Array<Int64>    getIntAS      (const TableExprId& id) const;
-    Array<Double>   getDoubleAS   (const TableExprId& id) const;
-    Array<DComplex> getDComplexAS (const TableExprId& id) const;
-    Array<String>   getStringAS   (const TableExprId& id) const;
+    MArray<Bool>     getBoolAS     (const TableExprId& id) const;
+    MArray<Int64>    getIntAS      (const TableExprId& id) const;
+    MArray<Double>   getDoubleAS   (const TableExprId& id) const;
+    MArray<DComplex> getDComplexAS (const TableExprId& id) const;
+    MArray<String>   getStringAS   (const TableExprId& id) const;
+    MArray<MVTime>   getDateAS     (const TableExprId& id) const;
     // </group>
 
     // </group>
@@ -1018,6 +1087,13 @@ public:
     // (which is handled as a constant).
     static TableExprNode newKeyConst (const TableRecord&,
 				      const Vector<String>& fieldNames);
+
+    // Handle all field names except the last one. ALl of them must
+    // be records. The last record is returned.
+    // fullName is filled with the full keyword name separated by dots.
+    static TableRecord* findLastKeyRec (const TableRecord& keyset,
+                                        const Vector<String>& fieldNames,
+                                        String& fullName);
 
     // Throw invalid data type exception.
     static void throwInvDT (const String& message);
@@ -1147,23 +1223,41 @@ inline void TableExprNode::get (const TableExprId& id, TaqlRegex& value) const
 inline void TableExprNode::get (const TableExprId& id, MVTime& value) const
     { value = node_p->getDate (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<Bool>& value) const
+				MArray<Bool>& value) const
     { value = node_p->getArrayBool (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<Int64>& value) const
+				MArray<Int64>& value) const
     { value = node_p->getArrayInt (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<Double>& value) const
+				MArray<Double>& value) const
     { value = node_p->getArrayDouble (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<DComplex>& value) const
+				MArray<DComplex>& value) const
     { value = node_p->getArrayDComplex (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<String>& value) const
+				MArray<String>& value) const
     { value = node_p->getArrayString (id); }
 inline void TableExprNode::get (const TableExprId& id,
-				Array<MVTime>& value) const
+				MArray<MVTime>& value) const
     { value = node_p->getArrayDate (id); }
+inline void TableExprNode::get (const TableExprId& id,
+				Array<Bool>& value) const
+    { value = node_p->getArrayBool (id).array(); }
+inline void TableExprNode::get (const TableExprId& id,
+				Array<Int64>& value) const
+    { value = node_p->getArrayInt (id).array(); }
+inline void TableExprNode::get (const TableExprId& id,
+				Array<Double>& value) const
+    { value = node_p->getArrayDouble (id).array(); }
+inline void TableExprNode::get (const TableExprId& id,
+				Array<DComplex>& value) const
+    { value = node_p->getArrayDComplex (id).array(); }
+inline void TableExprNode::get (const TableExprId& id,
+				Array<String>& value) const
+    { value = node_p->getArrayString (id).array(); }
+inline void TableExprNode::get (const TableExprId& id,
+				Array<MVTime>& value) const
+    { value = node_p->getArrayDate (id).array(); }
 inline Bool TableExprNode::getBool (const TableExprId& id) const
     { return node_p->getBool (id); }
 inline Int64 TableExprNode::getInt (const TableExprId& id) const
@@ -1175,25 +1269,29 @@ inline DComplex TableExprNode::getDComplex (const TableExprId& id) const
 inline String TableExprNode::getString (const TableExprId& id) const
     { return node_p->getString (id); }
 inline Array<Bool> TableExprNode::getArrayBool (const TableExprId& id) const
-    { return node_p->getArrayBool (id); }
+    { return node_p->getArrayBool (id).array(); }
 inline Array<Int64> TableExprNode::getArrayInt (const TableExprId& id) const
-    { return node_p->getArrayInt (id); }
+    { return node_p->getArrayInt (id).array(); }
 inline Array<Double> TableExprNode::getArrayDouble (const TableExprId& id) const
-    { return node_p->getArrayDouble (id); }
+    { return node_p->getArrayDouble (id).array(); }
 inline Array<DComplex> TableExprNode::getArrayDComplex (const TableExprId& id) const
-    { return node_p->getArrayDComplex (id); }
+    { return node_p->getArrayDComplex (id).array(); }
 inline Array<String> TableExprNode::getArrayString (const TableExprId& id) const
-    { return node_p->getArrayString (id); }
-inline Array<Bool> TableExprNode::getBoolAS (const TableExprId& id) const
+    { return node_p->getArrayString (id).array(); }
+inline Array<MVTime> TableExprNode::getArrayDate (const TableExprId& id) const
+    { return node_p->getArrayDate (id).array(); }
+inline MArray<Bool> TableExprNode::getBoolAS (const TableExprId& id) const
     { return node_p->getBoolAS (id); }
-inline Array<Int64> TableExprNode::getIntAS (const TableExprId& id) const
+inline MArray<Int64> TableExprNode::getIntAS (const TableExprId& id) const
     { return node_p->getIntAS (id); }
-inline Array<Double> TableExprNode::getDoubleAS (const TableExprId& id) const
+inline MArray<Double> TableExprNode::getDoubleAS (const TableExprId& id) const
     { return node_p->getDoubleAS (id); }
-inline Array<DComplex> TableExprNode::getDComplexAS (const TableExprId& id) const
+inline MArray<DComplex> TableExprNode::getDComplexAS (const TableExprId& id) const
     { return node_p->getDComplexAS (id); }
-inline Array<String> TableExprNode::getStringAS (const TableExprId& id) const
+inline MArray<String> TableExprNode::getStringAS (const TableExprId& id) const
     { return node_p->getStringAS (id); }
+inline MArray<MVTime> TableExprNode::getDateAS (const TableExprId& id) const
+    { return node_p->getDateAS (id); }
 
 inline Array<Bool>      TableExprNode::getColumnBool (const Vector<uInt>& rownrs) const
     { return node_p->getColumnBool (rownrs); }
@@ -1495,6 +1593,10 @@ inline TableExprNode integer (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::intFUNC, node);
 }
+inline TableExprNode boolean (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::boolFUNC, node);
+}
 inline TableExprNode conj (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::conjFUNC, node);
@@ -1516,6 +1618,11 @@ inline TableExprNode formComplex (const TableExprNode& real,
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::complexFUNC,
 					   real, imag);
+}
+inline TableExprNode formComplex (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::complexFUNC,
+                                           node);
 }
 inline TableExprNode strlength (const TableExprNode& node)
 {
@@ -1989,16 +2096,45 @@ inline TableExprNode array (const TableExprNode& values,
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrayFUNC,
 					   values, shape);
 }
+inline TableExprNode marray (const TableExprNode& array,
+                             const TableExprNode& mask)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::marrayFUNC,
+					   array, mask);
+}
+inline TableExprNode arrayData (const TableExprNode& array)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrdataFUNC,
+					   array);
+}
+inline TableExprNode arrayMask (const TableExprNode& array)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrmaskFUNC,
+					   array);
+}
+inline TableExprNode arrayFlatten (const TableExprNode& array)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrflatFUNC,
+					   array);
+}
 inline TableExprNode transpose (const TableExprNode& array)
 {
+    // Needs an empty axes argument.
     return TableExprNode::newFunctionNode (TableExprFuncNode::transposeFUNC,
-					   array);
+                                           array,
+                                           TableExprNode(Vector<Int>()));
 }
 inline TableExprNode transpose (const TableExprNode& array,
                                 const TableExprNodeSet& axes)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::transposeFUNC,
 					   array, axes);
+}
+inline TableExprNode diagonal (const TableExprNode& array)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::diagonalFUNC,
+					   array,
+                                           TableExprNode(Vector<Int>()));
 }
 inline TableExprNode isdefined (const TableExprNode& node)
 {

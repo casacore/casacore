@@ -115,8 +115,9 @@ void doDiscreteBool()
     AlwaysAssertExit (tset.end() == 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<Bool> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     AlwaysAssertExit (allEQ(Vector<Bool>(1,True), vec));
     checkMatchBool (tset, True, True);
     checkMatchBool (tset, False, False);
@@ -137,8 +138,9 @@ void doDiscreteInt()
     AlwaysAssertExit (tset.end() != 0);
     AlwaysAssertExit (tset.increment() != 0);
     Vector<Int64> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     Vector<Int64> exp(50);
     indgen (exp, Int64(1), Int64(2));
     AlwaysAssertExit (allEQ(exp, vec));
@@ -155,7 +157,7 @@ void doDiscreteInt()
     Vector<Int64> vec(51);
     vec[0] = -3;
     vec[1] = -1;
-    uInt cnt=2;
+    Int64 cnt=2;
     tset.fillVector (vec, cnt, 0);
     vec.resize (cnt, True);
     Vector<Int64> exp(51);
@@ -170,7 +172,7 @@ void doDiscreteInt()
     AlwaysAssertExit (tset.end() != 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<Int64> vec(98);
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
     vec.resize (cnt, True);
     Vector<Int64> exp(98);
@@ -185,8 +187,9 @@ void doDiscreteInt()
     AlwaysAssertExit (tset.end() == 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<Int64> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     AlwaysAssertExit (allEQ(Vector<Int64>(1,1), vec));
   }
   {
@@ -197,7 +200,7 @@ void doDiscreteInt()
     AlwaysAssertExit (tset.end() != 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<Int64> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
     vec.resize (cnt, True);
     Vector<Int64> exp(100);
@@ -212,8 +215,9 @@ void doDiscreteInt()
     AlwaysAssertExit (tset.end() == 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<Int64> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     AlwaysAssertExit (allEQ(Vector<Int64>(1,0), vec));
   }
   {
@@ -224,8 +228,9 @@ void doDiscreteInt()
     AlwaysAssertExit (tset.end() == 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<Int64> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     AlwaysAssertExit (allEQ(Vector<Int64>(1,1), vec));
     checkMatchInt (tset, 1, True);
     checkMatchInt (tset, 2, False);
@@ -250,7 +255,7 @@ void doDiscreteDouble()
     AlwaysAssertExit (tset.end() != 0);
     AlwaysAssertExit (tset.increment() != 0);
     Vector<Double> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
     vec.resize (cnt, True);
     Vector<Double> exp(46);
@@ -269,7 +274,7 @@ void doDiscreteDouble()
     Vector<Double> vec(25);
     vec[0] = 0.6;
     vec[1] = 0.8;
-    uInt cnt=2;
+    Int64 cnt=2;
     tset.fillVector (vec, cnt, 0);
     vec.resize (cnt, True);
     Vector<Double> exp(48);
@@ -284,7 +289,7 @@ void doDiscreteDouble()
     AlwaysAssertExit (tset.end() != 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<Double> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
     vec.resize (cnt, True);
     Vector<Double> exp(10);
@@ -299,8 +304,9 @@ void doDiscreteDouble()
     AlwaysAssertExit (tset.end() == 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<Double> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     AlwaysAssertExit (allNear(Vector<Double>(1, 1.), vec, 1e-13));
   }
   {
@@ -311,8 +317,9 @@ void doDiscreteDouble()
     AlwaysAssertExit (tset.end() == 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<Double> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     AlwaysAssertExit (allNear(Vector<Double>(1, 1.), vec, 1e-13));
     checkMatchDouble (tset, 1., True);
     checkMatchDouble (tset, -2., False);
@@ -339,8 +346,9 @@ void doDiscreteDComplex()
     AlwaysAssertExit (tset.end() == 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<DComplex> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     AlwaysAssertExit (allEQ(Vector<DComplex>(1,DComplex(1,2)), vec));
     checkMatchDComplex (tset, DComplex(1,2), True);
     checkMatchDComplex (tset, DComplex(1,2.1), False);
@@ -367,8 +375,9 @@ void doDiscreteString()
     AlwaysAssertExit (tset.end() == 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<String> vec;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
     AlwaysAssertExit (allEQ(Vector<String>(1,"abcd"), vec));
     checkMatchString (tset, "abcd", True);
     checkMatchString (tset, "abc", False);
@@ -390,8 +399,9 @@ void doDiscreteDate()
     AlwaysAssertExit (tset.end() != 0);
     AlwaysAssertExit (tset.increment() != 0);
     Vector<MVTime> vect;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vect, cnt, 0);
+    vect.resize (cnt, True);
     Vector<Double> vec(vect.size());
     convertArray (vec, vect);
     Vector<Double> exp(5);
@@ -409,8 +419,9 @@ void doDiscreteDate()
     AlwaysAssertExit (tset.end() != 0);
     AlwaysAssertExit (tset.increment() != 0);
     Vector<MVTime> vect;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vect, cnt, 0);
+    vect.resize (cnt, True);
     Vector<Double> vec(vect.size());
     convertArray (vec, vect);
     Vector<Double> exp(5);
@@ -425,7 +436,7 @@ void doDiscreteDate()
     AlwaysAssertExit (tset.end() != 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<MVTime> vect;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vect, cnt, 0);
     vect.resize (cnt, True);
     Vector<Double> vec(vect.size());
@@ -442,7 +453,7 @@ void doDiscreteDate()
     AlwaysAssertExit (tset.end() == 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<MVTime> vect;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vect, cnt, 0);
     vect.resize (cnt, True);
     Vector<Double> vec(vect.size());
@@ -457,7 +468,7 @@ void doDiscreteDate()
     AlwaysAssertExit (tset.end() == 0);
     AlwaysAssertExit (tset.increment() == 0);
     Vector<MVTime> vect;
-    uInt cnt=0;
+    Int64 cnt=0;
     tset.fillVector (vect, cnt, 0);
     vect.resize (cnt, True);
     Vector<Double> vec(vect.size());

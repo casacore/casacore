@@ -155,7 +155,7 @@ namespace casacore {
       throw AipsError ("Object names given as directions in a MEAS function "
                        "must be constant values");
     }
-    Array<String> names = operand->getStringAS(0);
+    Array<String> names = operand->getStringAS(0).array();
     itsConstants.resize (names.shape());
     itsH.resize (names.size());
     for (uInt i=0; i<names.size(); ++i) {

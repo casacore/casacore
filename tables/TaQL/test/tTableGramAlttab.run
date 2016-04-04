@@ -1,0 +1,52 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the TableGram and TableParse class.  All files generated will
+# be deleted on exit.
+#=============================================================================
+
+# Create a symlink to achieve that casacore_memcheck (if used) will use
+# that name 
+rm -f tTableGramAlttab
+ln -s tTableGram tTableGramAlttab
+
+
+# Execute all kind of table creation commands.
+# Check the result using showtableinfo (leave out version line).
+
+# First create the tables to use.
+echo ""
+$casa_checktool ./tTableGramAlttab 'create table tTableGramAlttab_tmp.tab2 (col1 i4 [shape=[2,3], unit="m"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]'
+$casa_checktool ./tTableGramAlttab 'create table tTableGramAlttab_tmp.tab2/subtab'
+../../apps/showtableinfo in=tTableGramAlttab_tmp.tab2 | grep -v 'showtableinfo:'
+$casa_checktool ./tTableGramAlttab 'alter table tTableGramAlttab_tmp.tab2/subtab ADD COLUMN colxyz S SET KEYWORD colxyz::skey="newval", tabk=4 as I2'
+../../apps/showtableinfo in=tTableGramAlttab_tmp.tab2/subtab tabkey=T colkey=T | grep -v 'showtableinfo:'
+
+echo ""
+$casa_checktool ./tTableGramAlttab 'alter table tTableGramAlttab_tmp.tab2 SET KEYWORD subtab="Table: tTableGramAlttab_tmp.tab2/subtab", ::key1=3 AS I2, col1::subrec=[=], col1::subrec.k1="3x", key2=[2+3,4+5.] AS R4'
+../../apps/showtableinfo in=tTableGramAlttab_tmp.tab2 tabkey=T colkey=T | grep -v 'showtableinfo:'
+
+echo ""
+$casa_checktool ./tTableGramAlttab 'alter table tTableGramAlttab_tmp.tab2 SET KEYWORD keyrec=[sub1=[k1=1 as U1, k2=2 as I2, k3=3 as U4, k4=4 as I2, k5=5 as I4, k6=6 as I8, k7=7 as R4, k8=8 as R8, k9=9 as C4, k10=10 as C8, k11=T as B, K12="s" as S, subtab="Table: tTableGramAlttab_tmp.tab2/subtab"], sub2=[sub2a=[k1=1, k2=2., k3=3+3j, k4=T, k5="s"], sub2b=[k1=1. as R4, k2=2. as R8, k3=3. as C4, k4=4. as C8], sub2c=[k1=1+2i as C4]]]'
+../../apps/showtableinfo in=tTableGramAlttab_tmp.tab2 tabkey=T colkey=T | grep -v 'showtableinfo:'
+
+echo ""
+$casa_checktool ./tTableGramAlttab 'alter table tTableGramAlttab_tmp.tab2 FROM ::subtab t1 COPY KEYWORD col1::subrec.k2 = t1.::tabk, col1::subrec.k1=t1.colxyz::skey, col1::subrec.k3=t1.::tabk as R4, keyrecc=keyrec RENAME KEYWORDS key1 TO key1n DROp keyword subtab, keyrec'
+../../apps/showtableinfo in=tTableGramAlttab_tmp.tab2 tabkey=T colkey=T | grep -v 'showtableinfo:'
+
+echo ""
+$casa_checktool ./tTableGramAlttab 'alter table tTableGramAlttab_tmp.tab2 ADD COLUMN col1a i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2a B'
+../../apps/showtableinfo in=tTableGramAlttab_tmp.tab2 | grep -v 'showtableinfo:'
+
+echo ""
+$casa_checktool ./tTableGramAlttab 'alter table tTableGramAlttab_tmp.tab2 RENAME COLUMN col1a to col1b, col2a to col2b'
+../../apps/showtableinfo in=tTableGramAlttab_tmp.tab2 | grep -v 'showtableinfo:'
+
+$casa_checktool ./tTableGramAlttab 'alter table tTableGramAlttab_tmp.tab2 DELETE COLUMN col1b,col2 ,ADDrows 4 +5, set keyword col1::emvec=[] as R4'
+../../apps/showtableinfo in=tTableGramAlttab_tmp.tab2 colkey=T | grep -v 'showtableinfo:'
+
+$casa_checktool ./tTableGramAlttab 'alter table [create table tTableGramAlttab_tmp.tab3 (ab R4)] set keyword ac=3'
+$casa_checktool ./tTableGramAlttab 'select iscolumn("col1b"), iskeyword("ac"), iscolumn("col2b"), iskeyword("col1::subrec"), iskeyword("col1::subrec.k2"), iskeyword("key1n"), t2.iscolumn("ab"), t2.iskeyword("ac"), t2.iscolumn("col2b"), t2.iskeyword("key1n") from tTableGramAlttab_tmp.tab2, tTableGramAlttab_tmp.tab3 as t2 limit 1'
+
+
+# Remove the symlink
+rm -f tTableGramAlttab

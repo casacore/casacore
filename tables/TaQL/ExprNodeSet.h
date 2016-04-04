@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprNodeSet.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef TABLES_EXPRNODESET_H
 #define TABLES_EXPRNODESET_H
@@ -157,17 +157,17 @@ public:
     // which gets incremented with the number of values appended.
     // This is used by the system to convert a set to a vector.
     // <group>
-    void fillVector (Vector<Bool>& vec, uInt& cnt,
+    void fillVector (Vector<Bool>& vec, Int64& cnt,
+                     const TableExprId& id) const;
+    void fillVector (Vector<Int64>& vec, Int64& cnt,
+                     const TableExprId& id) const;
+    void fillVector (Vector<Double>& vec, Int64& cnt,
+                     const TableExprId& id) const;
+    void fillVector (Vector<DComplex>& vec, Int64& cnt,
 		     const TableExprId& id) const;
-    void fillVector (Vector<Int64>& vec, uInt& cnt,
+    void fillVector (Vector<String>& vec, Int64& cnt,
 		     const TableExprId& id) const;
-    void fillVector (Vector<Double>& vec, uInt& cnt,
-		     const TableExprId& id) const;
-    void fillVector (Vector<DComplex>& vec, uInt& cnt,
-		     const TableExprId& id) const;
-    void fillVector (Vector<String>& vec, uInt& cnt,
-		     const TableExprId& id) const;
-    void fillVector (Vector<MVTime>& vec, uInt& cnt,
+    void fillVector (Vector<MVTime>& vec, Int64& cnt,
 		     const TableExprId& id) const;
     // </group>
 
@@ -331,7 +331,10 @@ public:
     ~TableExprNodeSet();
     
     // Add an element to the set.
-    void add (const TableExprNodeSetElem&);
+    // If adaptType=True, the data type is the highest of the elements added.
+    // Otherwise it is that of the first element.
+    // True is meant for a set of values, False for function arguments.
+    void add (const TableExprNodeSetElem&, Bool adaptType=False);
 
     // Show the node.
     void show (ostream& os, uInt indent) const;
@@ -349,7 +352,7 @@ public:
     void checkEqualDataTypes() const;
 
     // Contains the set only single elements?
-    // Single means that only single values are given (thus no end nor incr).
+    // Single means that only single values are given (thus end nor incr).
     Bool isSingle() const;
 
     // Contains the set only discrete elements?
@@ -373,17 +376,17 @@ public:
     // If not possible, a copy of the set is returned.
     TableExprNodeRep* setOrArray() const;
 
-    // Convert the const set to an array.
-    TableExprNodeRep* toArray() const;
+    template<typename T>
+    MArray<T> toArray (const TableExprId& id) const;
 
     // Get an array value for this bounded set in the given row.
     // <group>
-    virtual Array<Bool> getArrayBool         (const TableExprId& id);
-    virtual Array<Int64> getArrayInt         (const TableExprId& id);
-    virtual Array<Double> getArrayDouble     (const TableExprId& id);
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual Array<String> getArrayString     (const TableExprId& id);
-    virtual Array<MVTime> getArrayDate       (const TableExprId& id);
+    virtual MArray<Bool> getArrayBool         (const TableExprId& id);
+    virtual MArray<Int64> getArrayInt         (const TableExprId& id);
+    virtual MArray<Double> getArrayDouble     (const TableExprId& id);
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<String> getArrayString     (const TableExprId& id);
+    virtual MArray<MVTime> getArrayDate       (const TableExprId& id);
     // </group>
 
     // Does a value occur in the set?
@@ -394,18 +397,18 @@ public:
     virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
     virtual Bool hasString   (const TableExprId& id, const String& value);
     virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
-    virtual Array<Bool> hasArrayBool     (const TableExprId& id,
-					  const Array<Bool>& value);
-    virtual Array<Bool> hasArrayInt      (const TableExprId& id,
-					  const Array<Int64>& value);
-    virtual Array<Bool> hasArrayDouble   (const TableExprId& id,
-					  const Array<Double>& value);
-    virtual Array<Bool> hasArrayDComplex (const TableExprId& id,
-					  const Array<DComplex>& value);
-    virtual Array<Bool> hasArrayString   (const TableExprId& id,
-					  const Array<String>& value);
-    virtual Array<Bool> hasArrayDate     (const TableExprId& id,
-					  const Array<MVTime>& value);
+    virtual MArray<Bool> hasArrayBool     (const TableExprId& id,
+                                           const MArray<Bool>& value);
+    virtual MArray<Bool> hasArrayInt      (const TableExprId& id,
+                                           const MArray<Int64>& value);
+    virtual MArray<Bool> hasArrayDouble   (const TableExprId& id,
+                                           const MArray<Double>& value);
+    virtual MArray<Bool> hasArrayDComplex (const TableExprId& id,
+                                           const MArray<DComplex>& value);
+    virtual MArray<Bool> hasArrayString   (const TableExprId& id,
+                                           const MArray<String>& value);
+    virtual MArray<Bool> hasArrayDate     (const TableExprId& id,
+                                           const MArray<MVTime>& value);
     // </group>
 
     // Let a set node convert itself to the given unit.
@@ -418,14 +421,29 @@ private:
     // Delete all set elements in itsElems.
     void deleteElems();
 
-    // Convert a bounded set to an Array.
+    // Convert the const set to an array.
+    TableExprNodeRep* toConstArray() const;
+
+    // Get the array in a templated way.
     // <group>
-    Array<Bool>     toArrayBool     (const TableExprId& id) const;
-    Array<Int64>    toArrayInt      (const TableExprId& id) const;
-    Array<Double>   toArrayDouble   (const TableExprId& id) const;
-    Array<DComplex> toArrayDComplex (const TableExprId& id) const;
-    Array<String>   toArrayString   (const TableExprId& id) const;
-    Array<MVTime>   toArrayDate     (const TableExprId& id) const;
+    void getArray (MArray<Bool>& marr, TableExprNodeRep* node,
+                           const TableExprId& id) const
+      { marr.reference (node->getArrayBool (id)); }
+    void getArray (MArray<Int64>& marr, TableExprNodeRep* node,
+                            const TableExprId& id) const
+      { marr.reference (node->getArrayInt (id)); }
+    void getArray (MArray<Double>& marr, TableExprNodeRep* node,
+                             const TableExprId& id) const
+      { marr.reference (node->getArrayDouble (id)); }
+    void getArray (MArray<DComplex>& marr, TableExprNodeRep* node,
+                               const TableExprId& id) const
+      { marr.reference (node->getArrayDComplex (id)); }
+    void getArray (MArray<String>& marr, TableExprNodeRep* node,
+                             const TableExprId& id) const
+      { marr.reference (node->getArrayString (id)); }
+    void getArray (MArray<MVTime>& marr, TableExprNodeRep* node,
+                             const TableExprId& id) const
+      { marr.reference (node->getArrayDate (id)); }
     // </group>
 
     // Sort and combine intervals.
@@ -480,6 +498,62 @@ inline const TableExprNodeSetElem&
     return *(itsElems[index]);
 }
 
+
+template<typename T>
+MArray<T> TableExprNodeSet::toArray (const TableExprId& id) const
+{
+  // TODO: align possible units
+    DebugAssert (itsBounded, AipsError);
+    Int64 n = nelements();
+    if (hasArrays()) {
+      MArray<T> marr;
+      getArray (marr, itsElems[0]->start(), id);
+      if (marr.isNull()) return marr;
+      Array<T> result (marr.array());
+      Array<Bool> mask (marr.mask());
+      IPosition shp = result.shape();
+      uInt naxes = shp.size();
+      shp.append (IPosition(1,n));
+      result.resize (shp, True);
+      if (! mask.empty()) mask.resize (shp, True);
+      ArrayIterator<T> iter(result, shp.size()-1);
+      IPosition s(shp);
+      IPosition e(shp);
+      s[naxes] = 0;
+      e[naxes] = 0;
+      for (Int64 i=1; i<n; i++) {
+        iter.next();
+        s[naxes]++;
+        e[naxes]++;
+        MArray<T> marr;
+        getArray (marr, itsElems[i]->start(), id);
+        if (marr.isNull()) return marr;
+        if (! marr.shape().isEqual (iter.array().shape())) {
+          throw TableInvExpr("Shapes of nested arrays do not match");
+        }
+        iter.array() = marr.array();
+        if (marr.hasMask()) {
+          if (mask.empty()) {
+            mask.resize (shp);
+            mask = False;
+          }
+          mask(s,e) = marr.mask();
+        } else if (! mask.empty()) {
+          mask(s,e) = False;
+        }
+      }
+      return MArray<T>(result, mask);
+    } else {
+      Int64 n = nelements();
+      Int64 cnt = 0;
+      Vector<T> result (n);
+      for (Int64 i=0; i<n; i++) {
+        itsElems[i]->fillVector (result, cnt, id);
+      }
+      result.resize (cnt, True);
+      return MArray<T>(result);
+    }
+}
 
 
 

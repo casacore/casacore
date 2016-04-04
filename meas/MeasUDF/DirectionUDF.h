@@ -95,7 +95,7 @@ namespace casacore {
   public:
     // Define the possible function types.
     enum FuncType {DIRECTION, HADEC, AZEL, APP, J2000, B1950,
-                   ECLIPTIC, GALACTIC, SUPERGALACTIC};
+                   ECLIPTIC, GALACTIC, SUPERGALACTIC, ITRF};
 
     // Create for the given function type.
     // The Bools tell if rise/set times have to be calculated.
@@ -111,6 +111,7 @@ namespace casacore {
     static UDFBase* makeECL     (const String&);
     static UDFBase* makeGAL     (const String&);
     static UDFBase* makeSGAL    (const String&);
+    static UDFBase* makeITRF    (const String&);
     static UDFBase* makeRISESET (const String&);
 
     // Setup the object.
@@ -118,8 +119,8 @@ namespace casacore {
 
     // Get the value.
     virtual Double getDouble (const TableExprId& id);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
-    virtual Array<MVTime> getArrayDate (const TableExprId& id);
+    virtual MArray<Double> getArrayDouble (const TableExprId& id);
+    virtual MArray<MVTime> getArrayDate (const TableExprId& id);
 
   private:
     //# Data members.

@@ -1,4 +1,22 @@
 testing select ...
+select 3+4
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+ 7
+select 3+4 where 1>2
+    has been executed
+    select result of 0 rows
+1 selected columns:  Col_1
+select gsum(3+4) as C having C > 12
+    has been executed
+    select result of 0 rows
+1 selected columns:  C
+select gsum(3+4) as C where 1<2 having C<12 orderby C giving as memory
+    has been executed
+    select result of 1 rows
+1 selected columns:  C
+ 7
 select ab,ac,ad,ae,af,ag into tTableGram_tmp.data2 from tTableGram_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
     has been executed
     select result of 5 rows
@@ -287,13 +305,13 @@ select ab,ac from tTableGram_tmp.tab where ab IN [:=2,4=:<6,7<:]
  5 6
  8 9
  9 10
-select ab,ac from tTableGram_tmp.tab where ab IN (2,(3))
+select ab,ac from tTableGram_tmp.tab where ab IN [2,(3)]
     has been executed
     select result of 2 rows
 2 selected columns:  ab ac
  2 3
  3 4
-select ab,ac from tTableGram_tmp.tab where ab NOT IN (2,(3))
+select ab,ac from tTableGram_tmp.tab where ab NOT IN [2,(3)]
     has been executed
     select result of 8 rows
 2 selected columns:  ab ac
@@ -787,6 +805,32 @@ select ab,ac from tTableGram_tmp.tab
  7 8
  9 10
  3 34
+insert into [createtable tTableGram_tmp.tab2 (ab I4, ac U2, ad I4)] values (10,11,1),(12,13,2),(14,15,4)
+    has been executed
+    insert result of 3 rows
+3 selected columns:  ab ac ad
+ 10 11 1
+ 12 13 2
+ 14 15 4
+insert top 4 into tTableGram_tmp.tab2 values (rowid(), ab+10, rownumber())
+    has been executed
+    insert result of 4 rows
+3 selected columns:  ab ac ad
+ 3 13 4
+ 4 14 5
+ 5 15 6
+ 6 16 7
+select ab,ac,ad from tTableGram_tmp.tab2
+    has been executed
+    select result of 7 rows
+3 selected columns:  ab ac ad
+ 10 11 1
+ 12 13 2
+ 14 15 4
+ 3 13 4
+ 4 14 5
+ 5 15 6
+ 6 16 7
 
 testing create ...
 create table tTableGram_tmp.tab2 (col1 i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]
@@ -927,6 +971,29 @@ Unit: rad
   row 0:  Axis Lengths: [1, 2]  (NB: Matrix in Row/Column order)
 [0, 2.27282]
 
+
+Testing indexing and nested arrays ...
+calc [1:10][3] == 3
+    has been executed
+[1]
+calc [1:10][-3] == 7
+    has been executed
+[1]
+calc all([1:10][:5] == [1:5])
+    has been executed
+[1]
+calc all([1:10][::3] == [1,4,7,10])
+    has been executed
+[1]
+calc all([1:10][-7:-3:2] == [3,5,7])
+    has been executed
+[1]
+calc all([[[1,2,3],[4,5,6]]] = array([1:6],3,2,1))
+    has been executed
+[1]
+calc all([[[1,2,3],[4,5,6]],array([7:12],3,2)] = array([1:12],3,2,2))
+    has been executed
+[1]
 
 testing units ...
 calc sum([select ab d as ABDAY from tTableGram_tmp.tab])
@@ -1092,3 +1159,52 @@ select ab,ac from tTableGram_tmp.tab
  8 3
  9 2
  10 1
+update [create table tTableGram_tmp.tst as plain_big col1 int limit 3 ] set col1=rowid()
+    has been executed
+    update result of 3 rows
+1 selected columns:  col1
+ 0
+ 1
+ 2
+select * from tTableGram_tmp.tst
+    has been executed
+    select result of 3 rows
+1 selected columns:  col1
+ 0
+ 1
+ 2
+
+select gcount() from [tTableGram_tmp.tst,"tTableGram_*.tst" subtables a,b]
+
+Caught an exception: Error in TaQL command: 'select gcount() from [tTableGram_tmp.tst,"tTableGram_*.tst" subtables a,b]'
+  RecordInterface: field a is unknown
+select gcount() from [tTableGram_tmp.tst,tTableGram_tmp.tst giving tTableGram_tmp.tst2]
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+ 6
+select col1 from tTableGram_tmp.tst2
+    has been executed
+    select result of 6 rows
+1 selected columns:  col1
+ 0
+ 1
+ 2
+ 0
+ 1
+ 2
+select gcount() from [tTableGram_tmp.tst,tTableGram_tmp.tst],[tTableGram_tmp.tst,tTableGram_tmp.tst,tTableGram_tmp.tst]
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+ 6
+select gcount() from [tTableGram_tmp.tst,tTableGram_tmp.tst]
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+ 6
+select gcount() from [tTableGram_tmp.tst as t1,tTableGram_tmp.tst as t2,[[tTableGram_tmp.tst,tTableGram_tmp.tst] as t3] as t4] as t5
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+ 12

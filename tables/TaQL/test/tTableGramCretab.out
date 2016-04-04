@@ -1,0 +1,86 @@
+
+create table tTableGramCretab_tmp.tab1 (col1 i4 [shape=[2,3], unit="m"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]
+    has been executed
+    cretab result of 0 rows
+2 selected columns:  col1 col2
+
+Structure of table tTableGramCretab_tmp.tab1
+------------------ 
+0 rows, 2 columns in little endian format (using 2 data managers)
+
+ IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
+    ActualCacheSize=1 PERSCACHESIZE=1
+  col1 Int      shape=[2,3] unit=[m]
+
+ StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col2 Bool     scalar
+
+create table tTableGramCretab_tmp.tab2 as [plain_big=T,storage="multifile"] [col1 i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2 B]
+    has been executed
+    cretab result of 0 rows
+2 selected columns:  col1 col2
+
+Structure of table tTableGramCretab_tmp.tab2
+------------------ 
+0 rows, 2 columns in big endian format (using 2 data managers)
+  Stored as MultiFile with blocksize 32768
+
+ IncrementalStMan file=table.f0  name=IncrementalStMan  bucketsize=32768
+    ActualCacheSize=1 PERSCACHESIZE=1
+  col1 Int      shape=[2,3] unit=[m]
+
+ StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col2 Bool     scalar
+
+create table tTableGramCretab_tmp.tab3 as [endian="little", blocksize=2048, type="plain", storage="multifile"] [col1x i4 [shape=[3,4]], col2y B]
+    has been executed
+    cretab result of 0 rows
+2 selected columns:  col1x col2y
+
+Structure of table tTableGramCretab_tmp.tab3
+------------------ 
+0 rows, 2 columns in little endian format (using 1 data managers)
+  Stored as MultiFile with blocksize 2048
+
+ StandardStMan file=table.f0  name=StandardStMan  bucketsize=260
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col1x Int      shape=[3,4]
+  col2y Bool     scalar
+
+create table tTableGramCretab_tmp.tab3 as [endian="little", blocksize=2048, type="plain", storage="multifile", overwrite=F] [col1x i4 [shape=[3,4]], col2y B]
+
+Caught an exception: Error in TaQL command: 'create table tTableGramCretab_tmp.tab3 as [endian="little", blocksize=2048, type="plain", storage="multifile", overwrite=F] [col1x i4 [shape=[3,4]], col2y B]'
+  Table tTableGramCretab_tmp.tab3 already exists
+create table tTableGramCretab_tmp.tab1 as [endian="little", blocksize=2048, type="plain", storage="multifil"] [col1x i4 [shape=[3,4]], col2y B]
+
+Caught an exception: Error in TaQL command: 'create table tTableGramCretab_tmp.tab1 as [endian="little", blocksize=2048, type="plain", storage="multifil"] [col1x i4 [shape=[3,4]], col2y B]'
+  Error in TaQL command: storage must have a string value multifile, multihdf5, sepfile, default or aipsrc
+create table tTableGramCretab_tmp.tab1 as [blocksize=2048.] [col1x i4 [shape=[3,4]], col2y B]
+
+Caught an exception: Error in TaQL command: 'create table tTableGramCretab_tmp.tab1 as [blocksize=2048.] [col1x i4 [shape=[3,4]], col2y B]'
+  Error in TaQL command: blocksize must have an integer value
+create table tTableGramCretab_tmp.tab1 as blocksize [col1x i4 [shape=[3,4]], col2y B]
+
+Caught an exception: Error in TaQL command: 'create table tTableGramCretab_tmp.tab1 as blocksize [col1x i4 [shape=[3,4]], col2y B]'
+  Error in TaQL command: blocksize must have an integer value
+create table tTableGramCretab_tmp.tab1 as blocksize=2048 [col1x i4 [shape=[3,4]], col2y B]
+
+Caught an exception: Error in TaQL command: create table tTableGramCretab_tmp.tab1 as blocksize=2048 [col1x i4 [shape=[3,4]], col2y B]
+  parse error at or near position 52 '='
+
+select from tTableGramCretab_tmp.tab3 where col2y giving tTableGramCretab_tmp.tab4 as [plain=T,storage="multifile"] dminfo [NAME="ISM1",TYPE="IncrementalStMan",COLUMNS=["col1x","col2y"]]
+    has been executed
+    select result of 0 rows
+0 selected columns: 
+
+Structure of table tTableGramCretab_tmp.tab4
+------------------ 
+0 rows, 2 columns in little endian format (using 1 data managers)
+  Stored as MultiFile with blocksize 32768
+
+ IncrementalStMan file=table.f0  name=ISM1  bucketsize=32768
+    ActualCacheSize=1 PERSCACHESIZE=1
+  col1x Int      shape=[3,4]
+  col2y Bool     scalar

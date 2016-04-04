@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: UDFBase.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef TABLES_UDFBASE_H
 #define TABLES_UDFBASE_H
@@ -214,7 +214,7 @@ namespace casacore {
   //     // Cast the id to a TableExprIdAggr object.
   //     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
   //     // Get the vector of ids for this group.
-  //     const vector<TableExprId>& ids = aid.result().ids(id.groupnr());
+  //     const vector<TableExprId>& ids = aid.result().ids(id.rownr());
   //     // Get the values for all ids and accumulate them.
   //     Int64 sum3 = 0;
   //     for (vector<TableExprId>::const_iterator it=ids.begin();
@@ -253,12 +253,12 @@ namespace casacore {
     virtual String    getString   (const TableExprId& id);
     virtual TaqlRegex getRegex    (const TableExprId& id);
     virtual MVTime    getDate     (const TableExprId& id);
-    virtual Array<Bool>     getArrayBool     (const TableExprId& id);
-    virtual Array<Int64>    getArrayInt      (const TableExprId& id);
-    virtual Array<Double>   getArrayDouble   (const TableExprId& id);
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual Array<String>   getArrayString   (const TableExprId& id);
-    virtual Array<MVTime>   getArrayDate     (const TableExprId& id);
+    virtual MArray<Bool>     getArrayBool     (const TableExprId& id);
+    virtual MArray<Int64>    getArrayInt      (const TableExprId& id);
+    virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<String>   getArrayString   (const TableExprId& id);
+    virtual MArray<MVTime>   getArrayDate     (const TableExprId& id);
     // </group>
 
     // Get the unit.

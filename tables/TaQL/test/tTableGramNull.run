@@ -1,0 +1,35 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the TableGram and TableParse class.  All files generated will
+# be deleted on exit.
+#=============================================================================
+
+# Create a symlink to achieve that casacore_memcheck (if used) will use
+# that name 
+rm -f tTableGramNull
+ln -s tTableGram tTableGramNull
+
+
+# Test null array basics.
+$casa_checktool ./tTableGramNull 'isnull(sums(nullarray(1),1))'
+$casa_checktool ./tTableGramNull 'isnull(nullarray(1.)+1)'
+
+# Create and print a table.
+../../apps/taql -nopr "create table tTableGramNull_tmp.tab (cola R4 [ndim=0], colv I2 [ndim=1], cols I2) limit 5"
+$casa_checktool ./tTableGramNull 'select from tTableGramNull_tmp.tab where isnull(cola)'
+$casa_checktool ./tTableGramNull 'select from tTableGramNull_tmp.tab where isnull(colv)'
+$casa_checktool ./tTableGramNull 'select from tTableGramNull_tmp.tab where isnull(cols)'
+
+# Update the table.
+$casa_checktool ../../apps/taql 'update tTableGramNull_tmp.tab set cola=iif(rowid()%2==0, nullarray(1), array([1:6],[2,3]))'
+$casa_checktool ./tTableGramNull 'select rowid() from tTableGramNull_tmp.tab where isnull(cola)'
+$casa_checktool ./tTableGramNull 'select sum(cola) from tTableGramNull_tmp.tab'
+$casa_checktool ../../apps/taql 'select cola+1 from tTableGramNull_tmp.tab'
+
+# Insert 3 rows.
+$casa_checktool ../../apps/taql 'insert into tTableGramNull_tmp.tab (cola) values (array(5,0)), (nullarray(1)), (array(3,1))'
+$casa_checktool ./tTableGramNull 'select rowid() from tTableGramNull_tmp.tab where isnull(cola)'
+$casa_checktool ./tTableGramNull 'select sum(cola) from tTableGramNull_tmp.tab'
+
+# Remove the symlink
+rm -f tTableGramNull
