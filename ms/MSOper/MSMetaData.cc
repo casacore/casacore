@@ -3399,6 +3399,8 @@ void MSMetaData::_computeScanAndSubScanProperties(
     uInt chunkSize = nrows/nchunks;
     if (nrows % nchunks > 0) {
         ++chunkSize;
+        // integer division
+        nchunks = nrows/chunkSize + 1;
     }
     SHARED_PTR<ProgressMeter> pm;
     if (showProgress) {
