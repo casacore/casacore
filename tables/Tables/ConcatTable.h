@@ -226,6 +226,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // It copies the contents of each row to get a real copy.
     virtual void deepCopy (const String& newName,
 			   const Record& dataManagerInfo,
+                           const StorageOption&,
 			   int tableOption, Bool, int endianFormat,
 			   Bool noRows) const;
 

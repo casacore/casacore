@@ -42,6 +42,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/version.h>
 #include <map>
 #include <vector>
 #include <fstream>
@@ -634,6 +635,11 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
 }
 
 
+void showVersion()
+{
+  cerr << "taql version " << getVersionCASA() << endl;
+}
+
 void showHelp()
 {
   cerr << endl;
@@ -677,7 +683,8 @@ void showHelp()
   cerr << "taql can be started with a few options:" << endl;
   cerr << " -s or --style defines the TaQL style." << endl;
   cerr << "  The default style is python; if no value is given after -s it defaults to glish" << endl;
-  cerr << " -h  or --help          show this help and exits." << endl;
+  cerr << " -h  or --help          show this help and exit." << endl;
+  cerr << " -v  or --version       show the taql version and exit." << endl;
   cerr << " -f filename            name of file containing TaQL commands." << endl;
   cerr << " -d delim               delimiter used between column values." << endl;
   cerr << " -ps or --printselect   show the values of selected columns." << endl;
@@ -1014,6 +1021,9 @@ int main (int argc, const char* argv[])
         } else {
           throw AipsError("No file name given after -f");
         }
+      } else if (arg == "-v"  ||  arg == "--version") {
+        showVersion();
+        return 0;
       } else if (arg == "-h"  ||  arg == "--help") {
         showHelp();
         return 0;

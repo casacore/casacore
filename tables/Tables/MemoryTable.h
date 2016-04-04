@@ -142,6 +142,7 @@ public:
   virtual void copy (const String& newName, int tableOption) const;
   virtual void deepCopy (const String& newName,
 			 const Record& dataManagerInfo,
+                         const StorageOption&,
 			 int tableOption, Bool, int endianFormat,
 			 Bool noRows) const;
   // </group>
