@@ -16,7 +16,7 @@ Structure of table tTableGramCretab_tmp.tab1
     ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
   col2 Bool     scalar
 
-create table tTableGramCretab_tmp.tab2 as [plain_big=T,storage="multifile"] [col1 i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2 B]
+create table tTableGramCretab_tmp.tab2 as [plain_big=T,storage="multifile",blocksize=32768] [col1 i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2 B]
     has been executed
     cretab result of 0 rows
 2 selected columns:  col1 col2
@@ -70,7 +70,7 @@ create table tTableGramCretab_tmp.tab1 as blocksize=2048 [col1x i4 [shape=[3,4]]
 Caught an exception: Error in TaQL command: create table tTableGramCretab_tmp.tab1 as blocksize=2048 [col1x i4 [shape=[3,4]], col2y B]
   parse error at or near position 52 '='
 
-select from tTableGramCretab_tmp.tab3 where col2y giving tTableGramCretab_tmp.tab4 as [plain=T,storage="multifile"] dminfo [NAME="ISM1",TYPE="IncrementalStMan",COLUMNS=["col1x","col2y"]]
+select from tTableGramCretab_tmp.tab3 where col2y giving tTableGramCretab_tmp.tab4 as [plain=T,storage="multifile",blocksize=32768] dminfo [NAME="ISM1",TYPE="IncrementalStMan",COLUMNS=["col1x","col2y"]]
     has been executed
     select result of 0 rows
 0 selected columns: 
