@@ -319,6 +319,10 @@ endif (_usefits STREQUAL YES)
 if (_usewcs STREQUAL YES)
 #    find_package (WCSLIB 4.20 REQUIRED)
     find_package (WCSLIB 4.7 REQUIRED)     # needed for CASA
+    if (WCSLIB_VERSION_STRING STREQUAL "5.14")
+      # WCSlib 5.14 throws segfaults on lots of tests, e.g. tTempImage
+      message(WARNING "Casacore is not compatible with wcslib 5.14, see issue gh-384.")
+    endif (WCSLIB_VERSION_STRING STREQUAL "5.14")
 endif (_usewcs STREQUAL YES)
  
 # Set the include directories and HAVE compiler variables
