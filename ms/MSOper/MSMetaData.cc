@@ -3570,6 +3570,20 @@ void MSMetaData::_computeScanAndSubScanProperties(
     }
 }
 
+void MSMetaData::setParallel(Bool b) {
+#ifndef _OPENMP
+    if (b) {
+        LogIO log; 
+        log << LogOrigin("MSMetaData", __func__, WHERE)
+            << LogIO::WARN << "This library was not compiled using openmp. "
+            << "Multi-threading is disabled" << LogIO::POST;
+        _parallel = False;
+        return;
+    }
+#endif
+    _parallel = b; 
+}
+
 pair<map<ScanKey, MSMetaData::ScanProperties>, map<SubScanKey, MSMetaData::SubScanProperties> >
 MSMetaData::_getChunkSubScanProperties(
     SHARED_PTR<const Vector<Int> > scans, SHARED_PTR<const Vector<Int> > fields,

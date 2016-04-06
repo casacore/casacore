@@ -49,6 +49,8 @@ struct SubScanKey;
 // Class to interrogate  an MS for metadata. Interrogation happens on demand
 // and resulting metadata are stored for use by subsequent queries if the
 // cache has not exceeded the specified limit.
+// Parallel processing in certain parts of the code can be enabled by
+// calling setParallel(True);
 // </summary>
 
 class MSMetaData {
@@ -566,19 +568,7 @@ public:
 
     // If set to true, enable parallel computations where possible,
     // else, always do serial computations.
-    void setParallel(Bool b) {
-#ifndef _OPENMP
-        if (b) {
-            LogIO log;
-            log << LogOrigin("MSMetaData", __func__, WHERE)
-                << LogIO::WARN << "This library was not compiled using openmp. "
-                << "Multi-threading is disabled" << LogIO::POST;
-            _parallel = False;
-            return;
-        }
-#endif
-        _parallel = b;
-    }
+    void setParallel(Bool b);
 
 private:
 
