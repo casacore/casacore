@@ -3398,7 +3398,6 @@ void MSMetaData::_computeScanAndSubScanProperties(
     uInt nchunks = min((uInt)1000, nrows);
     uInt chunkSize = nrows/nchunks;
     if (nrows % nchunks > 0) {
-        ++chunkSize;
         // integer division
         nchunks = nrows/chunkSize + 1;
     }
