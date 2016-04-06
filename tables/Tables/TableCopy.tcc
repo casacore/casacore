@@ -30,12 +30,35 @@
 
 //# Includes
 #include <casacore/tables/Tables/TableCopy.h>
+#include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Utilities/Assert.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
+
+  template<typename T>
+  void TableCopy::cloneColumnTyped (const Table& fromTable,
+                                    const String& fromColumn,
+                                    Table& toTable, const String& newColumn,
+                                    const String& dataManagerName)
+  {
+    // Get existing column description.
+    ColumnDesc cd(fromTable.tableDesc()[fromColumn]);
+    if (cd.isScalar()) {
+      ScalarColumnDesc<T> scd(newColumn, cd.comment(), cd.dataManagerType(),
+                              cd.dataManagerGroup(), T(), cd.options());
+      cd = ColumnDesc(scd);
+    } else {
+      ArrayColumnDesc<T> acd(newColumn, cd.comment(), cd.dataManagerType(),
+                             cd.dataManagerGroup(),
+                             cd.shape(), cd.options(), cd.ndim());
+      cd = ColumnDesc(acd);
+    }
+    doCloneColumn (fromTable, fromColumn, toTable, cd, dataManagerName);
+  }
 
   template<typename T>
   void TableCopy::fillArrayColumn (Table& table, const String& column,

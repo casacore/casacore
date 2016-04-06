@@ -626,7 +626,7 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	break;
     case TpArrayBool:
 	(*(ArrayColumn<Bool>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.asArrayBool (whichField));
+	                        (rownr, record.toArrayBool (whichField));
 	break;
     case TpUChar:
 	(*(ScalarColumn<uChar>*)(itsColumns[whichColumn])).put
@@ -634,7 +634,7 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	break;
     case TpArrayUChar:
 	(*(ArrayColumn<uChar>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.asArrayuChar (whichField));
+	                        (rownr, record.toArrayuChar (whichField));
 	break;
     case TpShort:
 	(*(ScalarColumn<Short>*)(itsColumns[whichColumn])).put
@@ -642,7 +642,7 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	break;
     case TpArrayShort:
 	(*(ArrayColumn<Short>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.asArrayShort (whichField));
+	                        (rownr, record.toArrayShort (whichField));
 	break;
     case TpInt:
 	(*(ScalarColumn<Int>*)(itsColumns[whichColumn])).put
@@ -650,7 +650,7 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	break;
     case TpArrayInt:
 	(*(ArrayColumn<Int>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.asArrayInt (whichField));
+	                        (rownr, record.toArrayInt (whichField));
 	break;
     case TpUInt:
 	(*(ScalarColumn<uInt>*)(itsColumns[whichColumn])).put
@@ -658,7 +658,7 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	break;
     case TpArrayUInt:
 	(*(ArrayColumn<uInt>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.asArrayuInt (whichField));
+	                        (rownr, record.toArrayuInt (whichField));
 	break;
     case TpFloat:
 	(*(ScalarColumn<Float>*)(itsColumns[whichColumn])).put
@@ -666,7 +666,7 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	break;
     case TpArrayFloat:
 	(*(ArrayColumn<Float>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.asArrayfloat (whichField));
+	                        (rownr, record.toArrayFloat (whichField));
 	break;
     case TpDouble:
 	(*(ScalarColumn<Double>*)(itsColumns[whichColumn])).put
@@ -674,7 +674,7 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	break;
     case TpArrayDouble:
 	(*(ArrayColumn<Double>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.asArraydouble (whichField));
+	                        (rownr, record.toArrayDouble (whichField));
 	break;
     case TpComplex:
 	(*(ScalarColumn<Complex>*)(itsColumns[whichColumn])).put
@@ -682,7 +682,7 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	break;
     case TpArrayComplex:
 	(*(ArrayColumn<Complex>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.asArrayComplex (whichField));
+	                        (rownr, record.toArrayComplex (whichField));
 	break;
     case TpDComplex:
 	(*(ScalarColumn<DComplex>*)(itsColumns[whichColumn])).put
@@ -690,7 +690,7 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	break;
     case TpArrayDComplex:
 	(*(ArrayColumn<DComplex>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.asArrayDComplex (whichField));
+	                        (rownr, record.toArrayDComplex (whichField));
 	break;
     case TpString:
 	(*(ScalarColumn<String>*)(itsColumns[whichColumn])).put
@@ -698,7 +698,7 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 	break;
     case TpArrayString:
 	(*(ArrayColumn<String>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.asArrayString (whichField));
+	                        (rownr, record.toArrayString (whichField));
 	break;
     case TpRecord:
 	(*(ScalarColumn<TableRecord>*)(itsColumns[whichColumn])).put

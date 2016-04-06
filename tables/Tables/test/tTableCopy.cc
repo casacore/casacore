@@ -89,13 +89,21 @@ void testCloneColumn()
   // Now clone the column and copy the data.
   TableCopy::cloneColumn (tab, "DATA", tab, "DATA1");
   TableCopy::cloneColumn (tab, "DATA", tab, "DATA2", "Data2StMan");
+  TableCopy::cloneColumnTyped<DComplex> (tab, "DATA", tab, "DATA3");
+  TableCopy::cloneColumnTyped<Int> (tab, "SCALAR", tab, "SCALAR3");
   cout << tab.dataManagerInfo() << endl;
   TableCopy::copyColumnData (tab, "DATA", tab, "DATA1");
+  TableCopy::copyColumnData (tab, "DATA", tab, "DATA3");
   // Check if the data are the same.
   ArrayColumn<Complex> col1(tab, "DATA1");
+  ArrayColumn<DComplex> col3(tab, "DATA3");
   for (uInt row=0; row<tab.nrow(); ++row) {
     if (col.isDefined(row)) {
-      AlwaysAssertExit (allEQ (col(row), col1(row)));
+      Vector<Complex> vec(col(row));
+      Vector<DComplex> vecd(vec.shape());
+      convertArray (vecd, vec);
+      AlwaysAssertExit (allEQ (col1(row), vec));
+      AlwaysAssertExit (allEQ (col3(row), vecd));
     } else {
       AlwaysAssertExit (! col1.isDefined(row));
     }
@@ -104,10 +112,12 @@ void testCloneColumn()
   TableCopy::fillColumnData (tab, "DATA2", Complex(-1,-2), tab, "DATA");
   // Initialize the scalar and other array.
   TableCopy::fillColumnData (tab, "SCALAR", "str");
+  TableCopy::fillColumnData (tab, "SCALAR3", 2);
   TableCopy::fillArrayColumn (tab, "ARRAY", Vector<Int>(3,2));
   // Check if the data are correct.
   ArrayColumn<Complex> col2(tab, "DATA2");
   ScalarColumn<String> cols(tab, "SCALAR");
+  ScalarColumn<Int> cols3(tab, "SCALAR3");
   ArrayColumn<Int> cola(tab, "ARRAY");
   for (uInt row=0; row<tab.nrow(); ++row) {
     if (col.isDefined(row)) {
@@ -117,15 +127,19 @@ void testCloneColumn()
       AlwaysAssertExit (! col2.isDefined(row));
     }
     AlwaysAssertExit (cols(row) == "str");
+    AlwaysAssertExit (cols3(row) == 2);
     AlwaysAssertExit (allEQ (cola(row), Vector<Int>(3,2)));
   }
 }
 
+
 int main (int argc, const char* argv[])
 {
   Table::TableType ttyp = Table::Plain;
-  if (argc > 1  &&  String(argv[1]) == String("m")) {
-    ttyp = Table::Memory;
+  if (argc > 1) {
+    if (String(argv[1]) == String("m")) {
+      ttyp = Table::Memory;
+    }
   }
   Bool noRows = False;
   if (argc > 2  &&  String(argv[2]) == String("n")) {
@@ -164,7 +178,7 @@ int main (int argc, const char* argv[])
       testDM();
       testCloneColumn();
     }
-  } catch (exception& x) {
+  } catch (const exception& x) {
     cout << x.what() << endl;
     return 1;
   }

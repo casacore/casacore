@@ -38,6 +38,7 @@ tScalarRecordColumn
 tTable
 tTableAccess
 tTableCopy
+tTableCopyPerf
 tTableDesc
 tTableDescHyper
 tTableInfo

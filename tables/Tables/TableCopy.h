@@ -147,13 +147,33 @@ public:
   // Clone a column in the from table to a new column in the to table.
   // The new column gets the same table description and data manager as the
   // from column. It has to get a unique data mananger name. If not given,
-  // it is the new column name followed by "_dm".
+  // it is the new column name.
   static void cloneColumn (const Table& fromTable, const String& fromColumn,
                            Table& toTable, const String& newColumn,
                            const String& dataManagerName = String());
+  // Cloning as above, but the data type is set to the template parameter.
+  template<typename T> 
+  static void cloneColumnTyped (const Table& fromTable, const String& fromColumn,
+                                Table& toTable, const String& newColumn,
+                                const String& dataManagerName = String());
 
   // Copy the data from one column to another.
   // It can be used after function cloneColumn to populate the new column.
+  // Note that the data types of the column do not need to match; data type
+  // promotion is done if needed.
+  // <note role=tip>
+  // Note that a TaQL command can be used to fill a column in any way.
+  // For example, fill toColumn with the real part of a complex fromColumn:
+  // <srcblock>
+  //   Block<Table> tables(2);
+  //   tables[0] = toTable;
+  //   tables[1] = fromTable;
+  //   tableCommand ("update $1 set toColumn=real(t2.fromColumn) from $2 t2",
+  //                 tables);
+  // </srcblock>
+  // When copying a column in a straightforward way, the TaQL way is about 25%
+  // slower than using the function <src>copyColumnData</src>.
+  // </note>
   static void copyColumnData (const Table& fromTable, const String& fromColumn,
                               Table& toTable, const String& toColumn);
 
@@ -169,6 +189,7 @@ public:
   template<typename T>
   static void fillColumnData (Table& table, const String& column,
                               const T& value);
+  // Specialization to handle a C-string correctly.
   static void fillColumnData (Table& table, const String& column,
                               const char* value)
     { fillColumnData (table, column, String(value)); }
@@ -182,6 +203,7 @@ public:
   static void fillColumnData (Table& table, const String& column,
                               const T& value,
                               const Table& fromTable, const String& fromColumn);
+  // Specialization to handle a C-string correctly.
   static void fillColumnData (Table& table, const String& column,
                               const char* value,
                               const Table& fromTable, const String& fromColumn)
@@ -224,6 +246,11 @@ public:
   // hypercolumn definitions to the actual data manager info.
   static void adjustDesc (TableDesc& tabDesc, const Record& dminfo)
     { DataManInfo::adjustDesc (tabDesc, dminfo); }
+
+private:
+  static void doCloneColumn (const Table& fromTable, const String& fromColumn,
+                             Table& toTable, const ColumnDesc& newColumn,
+                             const String& dataManagerName);
 };
 
 

@@ -134,7 +134,7 @@ testCloneColumn ...
   }
   *3: {
     TYPE: String "TiledShapeStMan"
-    NAME: String "DATA1_dm"
+    NAME: String "DATA1"
     SEQNR: uInt 2
     SPEC: {
       ActualMaxCacheSize: Int 0
@@ -165,6 +165,36 @@ testCloneColumn ...
     }
     COLUMNS: String array with shape [1]
       [DATA2]
+  }
+  *5: {
+    TYPE: String "TiledShapeStMan"
+    NAME: String "DATA3"
+    SEQNR: uInt 4
+    SPEC: {
+      ActualMaxCacheSize: Int 0
+      DEFAULTTILESHAPE: Int array with shape [2]
+        [8, 2]
+      MAXIMUMCACHESIZE: Int 0
+      HYPERCUBES: {
+      }
+      SEQNR: uInt 4
+      IndexSize: uInt 0
+    }
+    COLUMNS: String array with shape [1]
+      [DATA3]
+  }
+  *6: {
+    TYPE: String "StandardStMan"
+    NAME: String "SCALAR3"
+    SEQNR: uInt 5
+    SPEC: {
+      ActualCacheSize: Int 2
+      BUCKETSIZE: Int 640
+      PERSCACHESIZE: Int 2
+      IndexLength: Int 0
+    }
+    COLUMNS: String array with shape [1]
+      [SCALAR3]
   }
 
 tTableCopy_tmp.tbl

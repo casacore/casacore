@@ -201,8 +201,18 @@ void TableCopy::cloneColumn (const Table& fromTable, const String& fromColumn,
                              const String& dataManagerName)
 {
   // Use existing column description and give it the new name.
+  ColumnDesc cd(fromTable.tableDesc()[fromColumn]);
+  cd.setName (newColumn);
+  doCloneColumn (fromTable, fromColumn, toTable, cd, dataManagerName);
+}
+
+void TableCopy::doCloneColumn (const Table& fromTable, const String& fromColumn,
+                               Table& toTable, const ColumnDesc& newColumn,
+                               const String& dataManagerName)
+{
+  // Use existing column description and give it the new name.
   TableDesc td;
-  td.addColumn (fromTable.tableDesc()[fromColumn], newColumn);
+  td.addColumn (newColumn);
   // Get datamanager info of DATA column.
   Block<String> selcol(1);
   selcol[0] = fromColumn;
@@ -212,12 +222,12 @@ void TableCopy::cloneColumn (const Table& fromTable, const String& fromColumn,
   // Set the datamananger name if not given.
   String dmName (dataManagerName);
   if (dmName.empty()) {
-    dmName = newColumn + "_dm";
+    dmName = newColumn.name();
   }
   // Adjust the dminfo.
   // It has a subrecord per dataman, thus in this case only 1.
   Record& rec = dminfo.rwSubRecord(0);
-  rec.define ("COLUMNS", Vector<String>(1, newColumn));
+  rec.define ("COLUMNS", Vector<String>(1, newColumn.name()));
   rec.define ("NAME", dmName);
   // Now add the column.
   toTable.addColumn (td, dminfo);
