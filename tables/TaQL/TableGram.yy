@@ -35,9 +35,11 @@ using namespace casacore;
 %pure-parser                /* make parser re-entrant */
 
 /*
-The grammar has 1 shift/reduce conflict which is resolved in a correct way.
+The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
+- '(orexpr' can be the start of a set or be a subexpression.
+- '[name'   can be the start of a set or subquery or be a record value.
 */
-%expect 1
+%expect 2
 
 %token STYLE
 %token TIMING
@@ -1569,11 +1571,10 @@ set:       LBRACKET elems RBRACKET {
                $2->setIsSetOrArray();
                $$ = $2;
            }
-/*         | LPAREN elems RPAREN {
+         | LPAREN elems RPAREN {
                $2->setIsSetOrArray();
                $$ = $2;
            }
-*/
          | subquery {
                $$ = $1;
            }
