@@ -91,7 +91,7 @@ MSMetaData::MSMetaData(const MeasurementSet *const &ms, const Float maxCacheSize
       ),
       _taqlTempTable(
         File(ms->tableName()).exists() ? 0 : 1, ms
-      ), _flagsColumn(), _parallel(False),
+      ), _flagsColumn(),
        _spwInfoStored(False), _forceSubScanPropsToCache(False) {}
 
 MSMetaData::~MSMetaData() {}
@@ -3404,14 +3404,15 @@ void MSMetaData::_computeScanAndSubScanProperties(
     SHARED_PTR<ProgressMeter> pm;
     if (showProgress) {
         LogIO log;
+        const static String title = "Computing scan and subscan properties...";
         log << LogOrigin("MSMetaData", __func__, WHERE)
-            << LogIO::NORMAL << "Compute subscan properties " << LogIO::POST;
-        pm.reset(new ProgressMeter(0, nchunks, "Compute subscan info"));
+            << LogIO::NORMAL << title << LogIO::POST;
+        pm.reset(new ProgressMeter(0, nchunks, title));
     }
     pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> > *fut =
         new pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >[nchunks];
     uInt doneChunks = 0;
-#pragma omp parallel for if (_parallel)
+#pragma omp parallel for 
     for (uInt i=0; i<nchunks; ++i) {
         fut[i] = _getChunkSubScanProperties(
             scans, fields, ddIDs, states, times, arrays,
@@ -3568,20 +3569,6 @@ void MSMetaData::_computeScanAndSubScanProperties(
             scanPropsIter->second.meanInterval[spw] = scanSumInterval[scanKey][spw]/nrows;
         }
     }
-}
-
-void MSMetaData::setParallel(Bool b) {
-#ifndef _OPENMP
-    if (b) {
-        LogIO log; 
-        log << LogOrigin("MSMetaData", __func__, WHERE)
-            << LogIO::WARN << "This library was not compiled using openmp. "
-            << "Multi-threading is disabled" << LogIO::POST;
-        _parallel = False;
-        return;
-    }
-#endif
-    _parallel = b; 
 }
 
 pair<map<ScanKey, MSMetaData::ScanProperties>, map<SubScanKey, MSMetaData::SubScanProperties> >

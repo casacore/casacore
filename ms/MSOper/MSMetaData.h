@@ -49,8 +49,7 @@ struct SubScanKey;
 // Class to interrogate  an MS for metadata. Interrogation happens on demand
 // and resulting metadata are stored for use by subsequent queries if the
 // cache has not exceeded the specified limit.
-// Parallel processing in certain parts of the code can be enabled by
-// calling setParallel(True);
+// Parallel processing is enabled using openmp.
 // </summary>
 
 class MSMetaData {
@@ -566,10 +565,6 @@ public:
 
     const MeasurementSet* getMS() const { return _ms; }
 
-    // If set to true, enable parallel computations where possible,
-    // else, always do serial computations.
-    void setParallel(Bool b);
-
 private:
 
     struct ScanProperties {
@@ -681,7 +676,6 @@ private:
     const vector<const Table*> _taqlTempTable;
     mutable SHARED_PTR<ArrayColumn<Bool> > _flagsColumn;
 
-    Bool _parallel;
     mutable Bool _spwInfoStored, _forceSubScanPropsToCache;
     vector<std::map<Int, Quantity> > _firstExposureTimeMap;
     mutable vector<Int> _numCorrs, _source_sourceIDs, _field_sourceIDs;
@@ -771,7 +765,7 @@ private:
 
     std::map<ArrayKey, std::set<SubScanKey> > _getArrayKeysToSubScanKeys() const;
 
-    // for parallel retrieving of scan/subscan properties
+    // Uses openmp for parallel processing
     pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
     _getChunkSubScanProperties(
         SHARED_PTR<const Vector<Int> > scans, SHARED_PTR<const Vector<Int> > fields,
