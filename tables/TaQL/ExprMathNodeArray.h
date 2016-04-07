@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprMathNodeArray.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef TABLES_EXPRMATHNODEARRAY_H
 #define TABLES_EXPRMATHNODEARRAY_H
@@ -102,7 +102,7 @@ class TableExprNodeArrayPlusInt : public TableExprNodeArrayPlus
 public:
     TableExprNodeArrayPlusInt (const TableExprNodeRep&);
     ~TableExprNodeArrayPlusInt();
-    Array<Int64> getArrayInt (const TableExprId& id);
+    MArray<Int64> getArrayInt (const TableExprId& id);
 };
 
 
@@ -133,7 +133,7 @@ class TableExprNodeArrayPlusDouble : public TableExprNodeArrayPlus
 public:
     TableExprNodeArrayPlusDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayPlusDouble();
-    Array<Double> getArrayDouble (const TableExprId& id);
+    MArray<Double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -164,7 +164,7 @@ class TableExprNodeArrayPlusDComplex : public TableExprNodeArrayPlus
 public:
     TableExprNodeArrayPlusDComplex (const TableExprNodeRep&);
     ~TableExprNodeArrayPlusDComplex();
-    Array<DComplex> getArrayDComplex (const TableExprId& id);
+    MArray<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
 
@@ -195,7 +195,7 @@ class TableExprNodeArrayPlusString : public TableExprNodeArrayPlus
 public:
     TableExprNodeArrayPlusString (const TableExprNodeRep&);
     ~TableExprNodeArrayPlusString();
-    Array<String> getArrayString (const TableExprId& id);
+    MArray<String> getArrayString (const TableExprId& id);
 private:
     // Concatenate <src>nr</src> arrays of strings.
     // The increment is 0 for a scalar value. Otherwise it is 1.
@@ -232,8 +232,8 @@ public:
     TableExprNodeArrayPlusDate (const TableExprNodeRep&);
     ~TableExprNodeArrayPlusDate();
     virtual void handleUnits();
-    Array<Double> getArrayDouble (const TableExprId& id);
-    Array<MVTime> getArrayDate   (const TableExprId& id);
+    MArray<Double> getArrayDouble (const TableExprId& id);
+    MArray<MVTime> getArrayDate   (const TableExprId& id);
 };
 
 
@@ -291,7 +291,7 @@ class TableExprNodeArrayMinusInt : public TableExprNodeArrayMinus
 public:
     TableExprNodeArrayMinusInt (const TableExprNodeRep&);
     ~TableExprNodeArrayMinusInt();
-    Array<Int64> getArrayInt (const TableExprId& id);
+    MArray<Int64> getArrayInt (const TableExprId& id);
 };
 
 
@@ -321,7 +321,7 @@ class TableExprNodeArrayMinusDouble : public TableExprNodeArrayMinus
 public:
     TableExprNodeArrayMinusDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayMinusDouble();
-    Array<Double> getArrayDouble (const TableExprId& id);
+    MArray<Double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -351,7 +351,7 @@ class TableExprNodeArrayMinusDComplex : public TableExprNodeArrayMinus
 public:
     TableExprNodeArrayMinusDComplex (const TableExprNodeRep&);
     ~TableExprNodeArrayMinusDComplex();
-    Array<DComplex> getArrayDComplex (const TableExprId& id);
+    MArray<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
 
@@ -382,8 +382,8 @@ public:
     TableExprNodeArrayMinusDate (const TableExprNodeRep&);
     ~TableExprNodeArrayMinusDate();
     virtual void handleUnits();
-    Array<Double> getArrayDouble (const TableExprId& id);
-    Array<MVTime> getArrayDate   (const TableExprId& id);
+    MArray<Double> getArrayDouble (const TableExprId& id);
+    MArray<MVTime> getArrayDate   (const TableExprId& id);
 };
 
 
@@ -442,7 +442,7 @@ class TableExprNodeArrayTimesInt : public TableExprNodeArrayTimes
 public:
     TableExprNodeArrayTimesInt (const TableExprNodeRep&);
     ~TableExprNodeArrayTimesInt();
-    Array<Int64> getArrayInt (const TableExprId& id);
+    MArray<Int64> getArrayInt (const TableExprId& id);
 };
 
 
@@ -472,7 +472,7 @@ class TableExprNodeArrayTimesDouble : public TableExprNodeArrayTimes
 public:
     TableExprNodeArrayTimesDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayTimesDouble();
-    Array<Double> getArrayDouble (const TableExprId& id);
+    MArray<Double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -502,7 +502,7 @@ class TableExprNodeArrayTimesDComplex : public TableExprNodeArrayTimes
 public:
     TableExprNodeArrayTimesDComplex (const TableExprNodeRep&);
     ~TableExprNodeArrayTimesDComplex();
-    Array<DComplex> getArrayDComplex (const TableExprId& id);
+    MArray<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
 
@@ -561,7 +561,7 @@ class TableExprNodeArrayDivideDouble : public TableExprNodeArrayDivide
 public:
     TableExprNodeArrayDivideDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayDivideDouble();
-    Array<Double> getArrayDouble (const TableExprId& id);
+    MArray<Double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -591,7 +591,7 @@ class TableExprNodeArrayDivideDComplex : public TableExprNodeArrayDivide
 public:
     TableExprNodeArrayDivideDComplex (const TableExprNodeRep&);
     ~TableExprNodeArrayDivideDComplex();
-    Array<DComplex> getArrayDComplex (const TableExprId& id);
+    MArray<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
 
@@ -649,7 +649,7 @@ class TableExprNodeArrayModuloInt : public TableExprNodeArrayModulo
 public:
     TableExprNodeArrayModuloInt (const TableExprNodeRep&);
     ~TableExprNodeArrayModuloInt();
-    Array<Int64> getArrayInt (const TableExprId& id);
+    MArray<Int64> getArrayInt (const TableExprId& id);
 };
 
 
@@ -678,7 +678,7 @@ class TableExprNodeArrayModuloDouble : public TableExprNodeArrayModulo
 public:
     TableExprNodeArrayModuloDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayModuloDouble();
-    Array<Double> getArrayDouble (const TableExprId& id);
+    MArray<Double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -708,7 +708,7 @@ class TableExprNodeArrayBitAndInt : public TableExprNodeArray
 public:
     TableExprNodeArrayBitAndInt (const TableExprNodeRep&);
     ~TableExprNodeArrayBitAndInt();
-    Array<Int64> getArrayInt (const TableExprId& id);
+    MArray<Int64> getArrayInt (const TableExprId& id);
 };
 
 
@@ -737,7 +737,7 @@ class TableExprNodeArrayBitOrInt : public TableExprNodeArray
 public:
     TableExprNodeArrayBitOrInt (const TableExprNodeRep&);
     ~TableExprNodeArrayBitOrInt();
-    Array<Int64> getArrayInt (const TableExprId& id);
+    MArray<Int64> getArrayInt (const TableExprId& id);
 };
 
 
@@ -766,7 +766,7 @@ class TableExprNodeArrayBitXorInt : public TableExprNodeArray
 public:
     TableExprNodeArrayBitXorInt (const TableExprNodeRep&);
     ~TableExprNodeArrayBitXorInt();
-    Array<Int64> getArrayInt (const TableExprId& id);
+    MArray<Int64> getArrayInt (const TableExprId& id);
 };
 
 
@@ -795,9 +795,9 @@ class TableExprNodeArrayMIN : public TableExprNodeArray
 public:
     TableExprNodeArrayMIN (const TableExprNodeRep&);
     ~TableExprNodeArrayMIN();
-    Array<Int64>    getArrayInt      (const TableExprId& id);
-    Array<Double>   getArrayDouble   (const TableExprId& id);
-    Array<DComplex> getArrayDComplex (const TableExprId& id);
+    MArray<Int64>    getArrayInt      (const TableExprId& id);
+    MArray<Double>   getArrayDouble   (const TableExprId& id);
+    MArray<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
 
@@ -825,7 +825,7 @@ class TableExprNodeArrayBitNegate : public TableExprNodeArray
 public:
     TableExprNodeArrayBitNegate (const TableExprNodeRep&);
     ~TableExprNodeArrayBitNegate();
-    Array<Int64> getArrayInt (const TableExprId& id);
+    MArray<Int64> getArrayInt (const TableExprId& id);
 };
 
 

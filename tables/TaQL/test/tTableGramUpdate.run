@@ -1,0 +1,163 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the TableGram and TableParse class.  All files generated will
+# be deleted on exit.
+#=============================================================================
+
+# Create a symlink to achieve that casacore_memcheck (if used) will use
+# that name 
+rm -f tTableGramUpdate
+ln -s tTableGram tTableGramUpdate
+
+
+# Execute all kind of table update commands, especially a mix of
+# array slices and masks and various data types.
+# Check the result using a select command.
+
+# Create and print reference tables.
+../../apps/taql -nopr "create table tTableGramUpdate_tmp.ref1 (cola I2 [shape=[1,2,5]], colv I2 [ndim=1], cols I2)"
+for val in 0 1 2 3 4
+do
+  ../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref1 (cols,cola,colv) VALUES($val, array($val-2,1,2,5), array(7,6))"
+done
+../../apps/taql -pc 'select * from tTableGramUpdate_tmp.ref1'
+
+../../apps/taql -nopr "create table tTableGramUpdate_tmp.ref2 (cola I2 [shape=[1,2,5]], colv I2 [ndim=1], cols I2)"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref2 (cols,cola,colv) VALUES(0, array(-2,1,2,5), array(7,6))"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref2 (cols,cola,colv) VALUES(-1, array([-11,-11,-11,-1,-1,-11,-11,-11,-1,-1],1,2,5), [7,7,8,8,8,7])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref2 (cols,cola,colv) VALUES(0, array([-10,-10,-10,0,0,-10,-10,-10,0,0],1,2,5), [7,7,8,8,8,7])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref2 (cols,cola,colv) VALUES(1, array([-9,-9,-9,1,1,-9,-9,-9,1,1],1,2,5), [7,7,8,8,8,7])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref2 (cols,cola,colv) VALUES(4, array(2,1,2,5), array(7,6))"
+../../apps/taql -pc 'select * from tTableGramUpdate_tmp.ref2'
+
+../../apps/taql -nopr "create table tTableGramUpdate_tmp.ref3 (cola I2 [shape=[1,2,5]], colv I2 [ndim=1], cols I2)"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref3 (cols,cola,colv) VALUES(5, array(-1,1,2,5), array(10,6))"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref3 (cols,cola,colv) VALUES(4, array([-8,-8,-8,0,0,-8,-8,-8,0,0],1,2,5), [10,10,8,8,8,10])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref3 (cols,cola,colv) VALUES(5, array([-7,-7,-7,1,1,-7,-7,-7,1,1],1,2,5), [10,10,8,8,8,10])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref3 (cols,cola,colv) VALUES(6, array([-8,-8,-8,2,2,-8,-8,-8,2,2],1,2,5), [10,10,8,8,8,10])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref3 (cols,cola,colv) VALUES(9, array(3,1,2,5), array(10,6))"
+../../apps/taql -pc 'select * from tTableGramUpdate_tmp.ref3'
+
+../../apps/taql -nopr "create table tTableGramUpdate_tmp.ref4 (cola I2 [shape=[1,2,5]], colv I2 [ndim=1], cols I2)"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref4 (cols,cola,colv) VALUES(5, array(-1,1,2,5), [10,12,12,12,10,10])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref4 (cols,cola,colv) VALUES(4, array([-8,-8,-8,0,0,-8,-8,-8,1,1],1,2,5), [10,13,8,8,8,10])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref4 (cols,cola,colv) VALUES(5, array([-7,-7,-7,1,1,-7,-7,-7,1,1],1,2,5), [10,14,8,8,8,10])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref4 (cols,cola,colv) VALUES(6, array([-8,-8,-8,2,2,-8,-8,-8,2,2],1,2,5), [10,15,8,8,8,10])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref4 (cols,cola,colv) VALUES(9, array(3,1,2,5), [10,16,16,16,10,10])"
+../../apps/taql -pc 'select * from tTableGramUpdate_tmp.ref4'
+
+../../apps/taql -nopr "create table tTableGramUpdate_tmp.ref5 (cola I2 [shape=[1,2,5]], colv I2 [ndim=1], cols I2)"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref5 (cols,cola,colv) VALUES(5, array(-1,1,2,5), [3,3,3,3,3,10])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref5 (cols,cola,colv) VALUES(4, array([-8,-8,-8,0,0,-8,-8,-8,1,1],1,2,5), [3,13,3,3,3,10])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref5 (cols,cola,colv) VALUES(5, array([-7,-7,-7,1,1,-7,-7,-7,1,1],1,2,5), [3,3,3,3,3,10])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref5 (cols,cola,colv) VALUES(6, array([-8,-8,-8,4,4,-8,-8,-8,2,2],1,2,5), [3,15,3,3,3,10])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.ref5 (cols,cola,colv) VALUES(9, array([4,4,4,4,4,3,3,3,3,3],1,2,5), [3,3,3,3,3,10])"
+../../apps/taql -pc 'select * from tTableGramUpdate_tmp.ref5'
+
+
+# Create tables and do updates for various numeric data taypes.
+add=0
+for dtype in I2 I4 R4 R8 C4 C8 U1 U2 U4
+do
+  echo
+  echo "Testing datatype $dtype ..."
+  if [ $dtype = U1 ]; then
+    add=20    # add 20 for unsigned to make everything positive
+  fi
+  # Create a new table with various columns and some rows.
+  # Update the table and show the result.
+  echo ""
+  ../../apps/taql "create table tTableGramUpdate_tmp.tab1 (cola $dtype [shape=[1,2,5]], colv $dtype [ndim=1], cols $dtype) limit 5"
+  $casa_checktool ./tTableGramUpdate "update tTableGramUpdate_tmp.tab1 set cols=$add+rowid(), cola=array($add+rowid()-2,5,2,1), colv=array(7,6)"
+  ../../apps/taql "select t1.colv, t2.colv as cols2 from tTableGramUpdate_tmp.tab1 t1, tTableGramUpdate_tmp.ref1 t2 where t1.cols!=$add+t2.cols or any(t1.cola!=$add+t2.cola) or any(t1.colv!=t2.colv)"
+
+  # Update part of an array using a slice for a few rows only.
+  echo ""
+  $casa_checktool ./tTableGramUpdate "update tTableGramUpdate_tmp.tab1 set cols=cols-2, cola[1:3,,]=cola[2:4,,]-10, colv[3:5]=8 where cols>=$add+1 and cols<=$add+3"
+  ../../apps/taql "select t1.colv, t2.colv as cols2 from tTableGramUpdate_tmp.tab1 t1, tTableGramUpdate_tmp.ref2 t2 where t1.cols!=$add+t2.cols or any(t1.cola!=$add+t2.cola) or any(t1.colv!=t2.colv)"
+
+  # Update part of an array using a mask; also do multiple updates.
+  echo ""
+  $casa_checktool ./tTableGramUpdate "update tTableGramUpdate_tmp.tab1 set cols=cols+10, cola[real(cola)<$add-9]=cola+2, cols=cols-5, cola=cola+1, colv[real(colv)==7]=10"
+  ../../apps/taql "select t1.colv, t2.colv as cols2 from tTableGramUpdate_tmp.tab1 t1, tTableGramUpdate_tmp.ref3 t2 where t1.cols!=$add+t2.cols or any(t1.cola!=$add+t2.cola) or any(t1.colv!=t2.colv)"
+
+  # Update using a slice and mask.
+  echo ""
+  $casa_checktool ./tTableGramUpdate "update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,2:,]==$add]=array($add+rowid(),[5,1,1]), colv[2:4][(real(colv)>9)[2:4]]=12+rowid()"
+  ../../apps/taql "select t1.colv, t2.colv as cols2 from tTableGramUpdate_tmp.tab1 t1, tTableGramUpdate_tmp.ref4 t2 where t1.cols!=$add+t2.cols or any(t1.cola!=$add+t2.cola) or any(t1.colv!=t2.colv)"
+
+  # Update using a mask and slice.
+  echo ""
+  $casa_checktool ./tTableGramUpdate "update tTableGramUpdate_tmp.tab1 set cola[real(cola)>$add+1.1][,1:1,]=array($add+4,5,1,1), colv[int(real(colv))%2=0][1:5]=3"
+  ../../apps/taql "select t1.colv, t2.colv as cols2 from tTableGramUpdate_tmp.tab1 t1, tTableGramUpdate_tmp.ref5 t2 where t1.cols!=$add+t2.cols or any(t1.cola!=$add+t2.cola) or any(t1.colv!=t2.colv)"
+done
+
+
+# Do tests for Bool.
+echo
+echo "Testing datatype B ..."
+
+# Create the reference tables.
+../../apps/taql -nopr "create table tTableGramUpdate_tmp.refb1 (cola B [shape=[1,2,5]], colv B [ndim=1], cols B)"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.refb1 (cols,cola,colv) VALUES(T, array(F,1,2,5), array(T,6))"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.refb1 (cols,cola,colv) VALUES(F, array(T,1,2,5), array(T,6))"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.refb1 (cols,cola,colv) VALUES(T, array(T,1,2,5), array(T,6))"
+../../apps/taql -pc 'select * from tTableGramUpdate_tmp.refb1'
+
+../../apps/taql -nopr "create table tTableGramUpdate_tmp.refb2 (cola B [shape=[1,2,5]], colv B [ndim=1], cols B)"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.refb2 (cols,cola,colv) VALUES(F, array([T,T,T,F,F,T,T,T,F,F],1,2,5), [T,T,F,F,F,T])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.refb2 (cols,cola,colv) VALUES(T, array([F,F,F,T,T,F,F,F,T,T],1,2,5), [T,T,F,F,F,T])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.refb2 (cols,cola,colv) VALUES(F, array([F,F,F,T,T,F,F,F,T,T],1,2,5), [T,T,F,F,F,T])"
+../../apps/taql -pc 'select * from tTableGramUpdate_tmp.refb2'
+
+# Create a new table with various columns and some rows.
+# Update the table and show the result.
+echo ""
+../../apps/taql "create table tTableGramUpdate_tmp.tabb (cola B [shape=[1,2,5]], colv B [ndim=1], cols B) limit 3"
+$casa_checktool ./tTableGramUpdate "update tTableGramUpdate_tmp.tabb set cols=rowid()%2==0, cola=array(rowid()%3!=0,[5,2,1]), colv=array(T,6)"
+../../apps/taql "select t1.colv, t2.colv as cols2 from tTableGramUpdate_tmp.tabb t1, tTableGramUpdate_tmp.refb1 t2 where t1.cols!=t2.cols or any(t1.cola!=t2.cola) or any(t1.colv!=t2.colv)"
+
+# Update part of an array using a slice for a few rows only.
+echo ""
+$casa_checktool ./tTableGramUpdate "update tTableGramUpdate_tmp.tabb set cols=!cols, cola[1:3,,]=!cola[2:4,,], colv[3:5]=F"
+../../apps/taql "select t1.colv, t2.colv as cols2 from tTableGramUpdate_tmp.tabb t1, tTableGramUpdate_tmp.refb2 t2 where t1.cols!=t2.cols or any(t1.cola!=t2.cola) or any(t1.colv!=t2.colv)"
+
+
+# Do tests for String.
+echo
+echo "Testing datatype S ..."
+
+# Create the reference tables.
+../../apps/taql -nopr "create table tTableGramUpdate_tmp.refs1 (cola S [shape=[1,1,3]], colv S [ndim=1], cols S)"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.refs1 (cols,cola,colv) VALUES('0', array('1',1,1,3), array('xy',3))"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.refs1 (cols,cola,colv) VALUES('1', array('2',1,1,3), array('xy',3))"
+../../apps/taql -pc 'select * from tTableGramUpdate_tmp.refs1'
+
+../../apps/taql -nopr "create table tTableGramUpdate_tmp.refs2 (cola S [shape=[1,1,3]], colv S [ndim=1], cols S)"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.refs2 (cols,cola,colv) VALUES('0abc', array(['1g','1g','1'],1,1,3), ['xy','bcd','bcd'])"
+../../apps/taql -nopr "insert into tTableGramUpdate_tmp.refs2 (cols,cola,colv) VALUES('1abc', array(['2g','2g','2'],1,1,3), ['xy','bcd','bcd'])"
+../../apps/taql -pc 'select * from tTableGramUpdate_tmp.refs2'
+
+# Create a new table with various columns and some rows.
+# Update the table and show the result.
+echo ""
+../../apps/taql "create table tTableGramUpdate_tmp.tabs (cola S [shape=[1,1,3]], colv S [ndim=1], cols S) limit 2"
+$casa_checktool ./tTableGramUpdate "update tTableGramUpdate_tmp.tabs set cols=str(rowid()), cola=array(str(rowid()+1),[3,1,1]), colv=array('xy',3)"
+../../apps/taql "select t1.colv, t2.colv as cols2 from tTableGramUpdate_tmp.tabs t1, tTableGramUpdate_tmp.refs1 t2 where t1.cols!=t2.cols or any(t1.cola!=t2.cola) or any(t1.colv!=t2.colv)"
+
+# Update part of an array using a slice for a few rows only.
+echo ""
+$casa_checktool ./tTableGramUpdate "update tTableGramUpdate_tmp.tabs set cols=cols+'abc', cola[1:2,,]=cola[2:3,,]+'g', colv[2:3]='bcd'"
+../../apps/taql "select t1.colv, t2.colv as cols2 from tTableGramUpdate_tmp.tabs t1, tTableGramUpdate_tmp.refs2 t2 where t1.cols!=t2.cols or any(t1.cola!=t2.cola) or any(t1.colv!=t2.colv)"
+
+
+# Do some erronous updates.
+echo
+echo "Testing erronous commands ..."
+$casa_checktool ./tTableGramUpdate 'update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])'
+$casa_checktool ./tTableGramUpdate 'update tTableGramUpdate_tmp.tab1 set cola[,1:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])'
+$casa_checktool ./tTableGramUpdate 'update tTableGramUpdate_tmp.tab1 set cola[real(cola)>1.1][,1:1,]=array(4,5,2,1)'
+
+
+# Remove the symlink
+rm -f tTableGramUpdate

@@ -514,6 +514,13 @@ void showExpr(const TableExprNode& expr)
       case TpString:
         showArray (expr.getArrayString(i));
         break;
+      case TpQuantity:
+        {
+          AlwaysAssert (expr.getNodeRep()->dataType() == TableExprNodeRep::NTDate,
+                        AipsError);
+          showArray (expr.getArrayDate(i));
+        }
+        break;
       default:
           cout << "Unknown expression array type " << expr.dataType();
       }

@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: TableProxy.cc 21399 2013-11-12 07:55:35Z gervandiepen $
 
 
 #include <casacore/tables/Tables/TableProxy.h>
@@ -482,7 +482,9 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     break;
   case TpUChar:
   case TpShort:
+  case TpUShort:
   case TpInt:
+  case TpUInt:
   case TpInt64:
     os << vh.asInt64();
     break;
@@ -530,7 +532,9 @@ void TableProxy::printValueHolder (const ValueHolder& vh, ostream& os,
     break;
   case TpArrayUChar:
   case TpArrayShort:
+  case TpArrayUShort:
   case TpArrayInt:
+  case TpArrayUInt:
   case TpArrayInt64:
     {
       Array<Int64> arr = vh.asArrayInt64();
@@ -814,41 +818,41 @@ void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
     switch (expr.dataType()) {
     case TpBool:
       for (uInt i=0; i<expr.nrow(); i++) {
-	Array<Bool> arr;
+	MArray<Bool> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr);
+	res.define (String::toString(i), arr.array());
         stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
     case TpInt64:
       for (uInt i=0; i<expr.nrow(); i++) {
-	Array<Int64> arr;
+	MArray<Int64> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr);
+	res.define (String::toString(i), arr.array());
         stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
     case TpDouble:
       for (uInt i=0; i<expr.nrow(); i++) {
-	Array<Double> arr;
+	MArray<Double> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr);
+	res.define (String::toString(i), arr.array());
         stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
     case TpDComplex:
       for (uInt i=0; i<expr.nrow(); i++) {
-	Array<DComplex> arr;
+	MArray<DComplex> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr);
+	res.define (String::toString(i), arr.array());
         stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
     case TpString:
       for (uInt i=0; i<expr.nrow(); i++) {
-	Array<String> arr;
+	MArray<String> arr;
 	expr.get (i, arr);
-	res.define (String::toString(i), arr);
+	res.define (String::toString(i), arr.array());
         stillSameShape (sameShape, resShape, arr.shape());
       }
       break;
@@ -1407,7 +1411,7 @@ ValueHolder TableProxy::getKeyword (const String& columnName,
   } else {
     findKeyId (fieldid, keySet, keywordName, columnName);
   }
-  return getKeyValue (*keySet, fieldid);
+  return keySet->asValueHolder(fieldid);
 }
 
 Record TableProxy::getKeywordSet (const String& columnName)
@@ -1419,7 +1423,7 @@ Record TableProxy::getKeywordSet (const String& columnName)
     TableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.keywordSet());
   }
-  return getKeyValues (*keySet);
+  return keySet->toRecord();
 }
 
 void TableProxy::putKeyword (const String& columnName,
@@ -1442,7 +1446,7 @@ void TableProxy::putKeyword (const String& columnName,
     findKeyId (fieldid, keySet, keywordName, columnName,
 	       False, True, makeSubRecord);
   }
-  putKeyValue (*keySet, fieldid, value);
+  keySet->defineFromValueHolder (fieldid, value);
 }
 
 void TableProxy::putKeywordSet (const String& columnName,
@@ -1455,7 +1459,7 @@ void TableProxy::putKeywordSet (const String& columnName,
     TableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.rwKeywordSet());
   }
-  putKeyValues (*keySet, valueSet);
+  keySet->fromRecord (valueSet);
 }
 
 void TableProxy::removeKeyword (const String& columnName,
@@ -1768,8 +1772,8 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
       }
       // Define the keywords if needed.
       if (cold.isDefined ("keywords")) {
-        putKeyValues (tabdesc.rwColumnDesc(nrdone).rwKeywordSet(),
-                      cold.asRecord("keywords"));
+        TableRecord keySet (tabdesc.rwColumnDesc(nrdone).rwKeywordSet());
+        keySet.fromRecord (cold.asRecord("keywords"));
       }
     }
     nrdone++;
@@ -2168,7 +2172,7 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
 	ScalarColumn<TableRecord> ac(table_p,colName); 
 	if (isCell) {
 	  // Transform a TableRecord into a Record.
-	  return ValueHolder (getKeyValues(ac(rownr)));
+	  return ValueHolder (ac(rownr).toRecord());
 	} else {
 	  throw TableError ("TableProxy::getColumn not possible for a column"
 	                    " containing records");
@@ -2848,7 +2852,7 @@ void TableProxy::putValueInTable (const String& colName,
 	if (isCell) {
 	  // Transform a Record into a TableRecord.
 	  TableRecord rec;
-	  putKeyValues (rec, value.asRecord());
+	  rec.fromRecord (value.asRecord());
 	  col.put (rownr, rec);
 	} else {
 	  throw TableError ("TableProxy::putColumn not possible for a column"
@@ -3184,173 +3188,6 @@ void TableProxy::findKeyId (RecordFieldId& fieldid,
       }
     }
     usedName += '.';
-  }
-}
-
-Record TableProxy::getKeyValues (const TableRecord& keySet)
-{
-  Record rec;
-  uInt nr = keySet.nfields();
-  for (uInt i=0; i<nr; i++) {
-    getKeyValue(keySet, i).toRecord (rec, keySet.name(i));
-  }
-  return rec;
-}
-
-ValueHolder TableProxy::getKeyValue (const TableRecord& keySet, 
-				     const RecordFieldId& fieldId)
-{
-  switch (keySet.dataType(fieldId)) {
-  case TpBool:
-    return ValueHolder (keySet.asBool(fieldId));
-  case TpUChar:
-    return ValueHolder (keySet.asuChar(fieldId));
-  case TpShort:
-    return ValueHolder (keySet.asShort(fieldId));
-  case TpInt:
-    return ValueHolder (keySet.asInt(fieldId));
-  case TpUInt:
-    return ValueHolder (keySet.asuInt(fieldId));
-  case TpInt64:
-    return ValueHolder (keySet.asInt64(fieldId));
-  case TpFloat:
-    return ValueHolder (keySet.asFloat(fieldId));
-  case TpDouble:
-    return ValueHolder (keySet.asDouble(fieldId));
-  case TpComplex:
-    return ValueHolder (keySet.asComplex(fieldId));
-  case TpDComplex:
-    return ValueHolder (keySet.asDComplex(fieldId));
-  case TpString:
-    return ValueHolder (keySet.asString(fieldId));
-  case TpArrayBool:
-    return ValueHolder (keySet.asArrayBool(fieldId));
-  case TpArrayUChar:
-    return ValueHolder (keySet.asArrayuChar(fieldId));
-  case TpArrayShort:
-    return ValueHolder (keySet.asArrayShort(fieldId));
-  case TpArrayInt:
-    return ValueHolder (keySet.asArrayInt(fieldId));
-  case TpArrayUInt:
-    return ValueHolder (keySet.asArrayuInt(fieldId));
-  case TpArrayInt64:
-    return ValueHolder (keySet.asArrayInt64(fieldId));
-  case TpArrayFloat:
-    return ValueHolder (keySet.asArrayFloat(fieldId));
-  case TpArrayDouble:
-    return ValueHolder (keySet.asArrayDouble(fieldId));
-  case TpArrayComplex:
-    return ValueHolder (keySet.asArrayComplex(fieldId));
-  case TpArrayDComplex:
-    return ValueHolder (keySet.asArrayDComplex(fieldId));
-  case TpArrayString:
-    return ValueHolder (keySet.asArrayString(fieldId));
-  case TpTable:
-    return ValueHolder ("Table: "+keySet.tableAttributes(fieldId).name());
-  case TpRecord:
-    return ValueHolder (getKeyValues(keySet.subRecord(fieldId)));
-  default:
-    throw (AipsError ("TableProxy::getKeyword: unknown data type"));
-  }
-}
-
-void TableProxy::putKeyValues (TableRecord& keySet, const Record& valueSet)
-{
-  for (uInt i=0; i<valueSet.nfields(); i++) {
-    putKeyValue (keySet, valueSet.name(i),
-		 ValueHolder::fromRecord(valueSet, i));
-  }
-}
-
-void TableProxy::putKeyValue (TableRecord& keySet, 
-			      const RecordFieldId& fieldId,
-			      const ValueHolder& value)
-{
-  switch (value.dataType()) {
-  case TpBool:
-    keySet.define (fieldId, value.asBool());
-    break;
-  case TpArrayBool:
-    keySet.define (fieldId, value.asArrayBool());
-    break;
-  case TpUChar:
-    keySet.define (fieldId, value.asuChar());
-    break;
-  case TpArrayUChar:
-    keySet.define (fieldId, value.asArrayuChar());
-    break;
-  case TpShort:
-    keySet.define (fieldId, value.asShort());
-    break;
-  case TpArrayShort:
-    keySet.define (fieldId, value.asArrayShort());
-    break;
-  case TpInt:
-    keySet.define (fieldId, value.asInt());
-    break;
-  case TpArrayInt:
-    keySet.define (fieldId, value.asArrayInt());
-    break;
-  case TpUInt:
-    keySet.define (fieldId, value.asuInt());
-    break;
-  case TpArrayUInt:
-    keySet.define (fieldId, value.asArrayuInt());
-    break;
-  case TpInt64:
-    keySet.define (fieldId, value.asInt64());
-    break;
-  case TpArrayInt64:
-    keySet.define (fieldId, value.asArrayInt64());
-    break;
-  case TpFloat:
-    keySet.define (fieldId, value.asFloat());
-    break;
-  case TpArrayFloat:
-    keySet.define (fieldId, value.asArrayFloat());
-    break;
-  case TpDouble:
-    keySet.define (fieldId, value.asDouble());
-    break;
-  case TpArrayDouble:
-    keySet.define (fieldId, value.asArrayDouble());
-    break;
-  case TpComplex:
-    keySet.define (fieldId, value.asComplex());
-    break;
-  case TpArrayComplex:
-    keySet.define (fieldId, value.asArrayComplex());
-    break;
-  case TpDComplex:
-    keySet.define (fieldId, value.asDComplex());
-    break;
-  case TpArrayDComplex:
-    keySet.define (fieldId, value.asArrayDComplex());
-    break;
-  case TpString:
-    {
-      String val = value.asString();
-      if (val.index("Table: ") == 0  &&  Table::isReadable (val.from(7))) {
-	Table tab(val.from(7));
-	keySet.defineTable (fieldId, tab);
-      } else {
-	keySet.define (fieldId, val);
-      }
-    }
-    break;
-  case TpArrayString:
-    keySet.define (fieldId, value.asArrayString());
-    break;
-  case TpRecord:
-    {
-      TableRecord trec;
-      putKeyValues (trec, value.asRecord());
-      keySet.defineRecord (fieldId, trec);
-    }
-    break;
-  default:
-    throw (AipsError ("TableProxy::putKeyValue - "
-		      "cannot handle given keyword type"));
   }
 }
 

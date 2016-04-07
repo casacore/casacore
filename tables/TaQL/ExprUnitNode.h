@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprUnitNode.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef TABLES_EXPRUNITNODE_H
 #define TABLES_EXPRUNITNODE_H
@@ -125,8 +125,8 @@ public:
   TableExprNodeArrayUnit (TableExprNodeRep& child, const Unit& unit);
   ~TableExprNodeArrayUnit();
   virtual Double getUnitFactor() const;
-  virtual Array<Double>   getArrayDouble   (const TableExprId& id);
-  virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
+  virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
+  virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
 private:
   Double factor_p;
 };
