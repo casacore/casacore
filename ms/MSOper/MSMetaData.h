@@ -49,6 +49,7 @@ struct SubScanKey;
 // Class to interrogate  an MS for metadata. Interrogation happens on demand
 // and resulting metadata are stored for use by subsequent queries if the
 // cache has not exceeded the specified limit.
+// Parallel processing is enabled using openmp.
 // </summary>
 
 class MSMetaData {
@@ -564,7 +565,7 @@ public:
 
     const MeasurementSet* getMS() const { return _ms; }
 
-protected:
+private:
 
     struct ScanProperties {
         // the key is the spwID, the value is the meanInterval for
@@ -578,37 +579,6 @@ protected:
         // times for each spectral window
         map<uInt, std::set<Double> > times;
     };
-
-    virtual void _computeScanAndSubScanProperties(
-        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
-        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
-        Bool showProgress
-    ) const;
-
-    void _getAntennas(
-        SHARED_PTR<Vector<Int> >& ant1,
-        SHARED_PTR<Vector<Int> >& ant2
-    ) const;
-
-    SHARED_PTR<Vector<Int> > _getArrayIDs() const;
-
-    SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
-
-    SHARED_PTR<QVD > _getExposureTimes() const;
-
-    SHARED_PTR<Vector<Int> > _getFieldIDs() const;
-
-    SHARED_PTR<QVD> _getIntervals() const;
-
-    SHARED_PTR<Vector<Int> > _getObservationIDs() const;
-
-    SHARED_PTR<Vector<Int> > _getScans() const;
-
-    SHARED_PTR<Vector<Int> > _getStateIDs() const;
-
-    SHARED_PTR<Vector<Double> > _getTimes() const;
-
-private:
 
     struct SpwProperties {
         Double bandwidth;
@@ -754,6 +724,12 @@ private:
 
     static void _checkTolerance(const Double tol);
 
+    void _computeScanAndSubScanProperties(
+        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
+        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
+        Bool showProgress
+    ) const;
+
     void _createScanRecords(
         Record& parent, const ArrayKey& arrayKey,
         const std::map<SubScanKey, SubScanProperties>& subScanProps
@@ -780,7 +756,32 @@ private:
 
     vector<MPosition> _getAntennaPositions() const;
 
+    void _getAntennas(
+        SHARED_PTR<Vector<Int> >& ant1,
+        SHARED_PTR<Vector<Int> >& ant2
+    ) const;
+
+    SHARED_PTR<Vector<Int> > _getArrayIDs() const;
+
     std::map<ArrayKey, std::set<SubScanKey> > _getArrayKeysToSubScanKeys() const;
+
+    // Uses openmp for parallel processing
+    pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
+    _getChunkSubScanProperties(
+        SHARED_PTR<const Vector<Int> > scans, SHARED_PTR<const Vector<Int> > fields,
+        SHARED_PTR<const Vector<Int> > ddIDs, SHARED_PTR<const Vector<Int> > states,
+        SHARED_PTR<const Vector<Double> > times, SHARED_PTR<const Vector<Int> > arrays,
+        SHARED_PTR<const Vector<Int> > observations, SHARED_PTR<const Vector<Int> > ant1,
+        SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const QVD> exposureTimes,
+        SHARED_PTR<const QVD> intervalTimes, const vector<uInt>& ddIDToSpw,
+        uInt beginRow, uInt endRow
+    ) const;
+
+    SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
+
+    SHARED_PTR<QVD > _getExposureTimes() const;
+
+    SHARED_PTR<Vector<Int> > _getFieldIDs() const;
 
     // If there are no intents, then fieldToIntentsMap will be of length
     // nFields() and all of its entries will be the empty set, and
@@ -814,7 +815,17 @@ private:
 
     std::map<String, std::set<Double> > _getIntentsToTimesMap() const;
 
+    SHARED_PTR<QVD> _getIntervals() const;
+
+    SHARED_PTR<Vector<Int> > _getObservationIDs() const;
+
+    SHARED_PTR<Vector<Int> > _getScans() const;
+
     vector<std::set<String> > _getSpwToIntentsMap();
+
+    SHARED_PTR<Vector<Int> > _getStateIDs() const;
+
+    SHARED_PTR<Vector<Double> > _getTimes() const;
 
     //SHARED_PTR<std::map<Double, TimeStampProperties> > _getTimeStampProperties() const;
 

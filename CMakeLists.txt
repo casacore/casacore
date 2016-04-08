@@ -84,6 +84,7 @@ if( CASA_BUILD )
       set(DATA_DIR "%CASAROOT%/data")
    endif( )
    set(USE_FFTW3 ON)
+   set(USE_OPENMP ON)
    set(USE_THREADS ON)
    ###
    ### after CASA switches from ASAP to libsakura, CASA will no longer
