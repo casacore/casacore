@@ -343,6 +343,8 @@ void showTable (const Table& tab, const Vector<String>& colnam,
   Block<Vector<String> > timeUnit(colnam.nelements());
   Block<Vector<String> > posUnit(colnam.nelements());
   Block<Vector<String> > dirUnit(colnam.nelements());
+  Block<String> colUnits(colnam.nelements());
+  Bool hasUnits = False;
   uInt i;
   for (i=0; i<colnam.nelements(); i++) {
     if (! tab.tableDesc().isColumn (colnam(i))) {
@@ -355,23 +357,30 @@ void showTable (const Table& tab, const Vector<String>& colnam,
 	     << " contains scalars nor arrays"
 	     << endl;
 	delete tableColumns[nrcol];
+        tableColumns[nrcol] = 0;
       }else{
+        // Get possible units.
+        const TableRecord& keys = tableColumns[nrcol]->keywordSet();
+        Vector<String> units;
+        if (keys.isDefined ("QuantumUnits")) {
+          units = keys.asArrayString("QuantumUnits");
+          if (! units.empty()) {
+            colUnits[nrcol] = units[0];
+            hasUnits = True;
+          }
+        }
         // If needed, see if it is a Measure type we know of.
         if (printMeas) {
-          const TableRecord& keys = tableColumns[nrcol]->keywordSet();
           if (keys.isDefined ("MEASINFO")) {
             const TableRecord& meas = keys.subRecord("MEASINFO");
-            if (keys.isDefined ("QuantumUnits")) {
-              Vector<String> units (keys.asArrayString("QuantumUnits"));
-              if (meas.isDefined ("type")) {
-                String type = meas.asString("type");
-                if (type == "epoch") {
-                  timeUnit[nrcol] = units;
-                } else if (type == "position") {
-                  posUnit[nrcol] = units;
-                } else if (type == "direction") {
-                  dirUnit[nrcol] = units;
-                }
+            if (meas.isDefined ("type")) {
+              String type = meas.asString("type");
+              if (type == "epoch") {
+                timeUnit[nrcol] = units;
+              } else if (type == "position") {
+                posUnit[nrcol] = units;
+              } else if (type == "direction") {
+                dirUnit[nrcol] = units;
               }
             }
           }
@@ -382,6 +391,17 @@ void showTable (const Table& tab, const Vector<String>& colnam,
   }
   if (nrcol == 0) {
     return;
+  }
+  // Show possible units.
+  if (hasUnits) {
+    cout << "Unit: ";
+    for (uInt j=0; j<nrcol; j++) {
+      if (j > 0) {
+        cout << delim;
+      }
+      cout << colUnits[j];
+    }
+    cout << endl;
   }
   // Use TableProxy, so we can be type-agnostic.
   TableProxy proxy(tab);
@@ -404,6 +424,9 @@ void showTable (const Table& tab, const Vector<String>& colnam,
           showPos (vh.asArrayDouble(), posUnit[j]);
         } else if (! dirUnit[j].empty()) {
           showDir (vh.asArrayDouble(), dirUnit[j]);
+        } else if (vh.dataType() == TpBool) {
+          // std::boolalpha seems to persist.
+          cout << (vh.asBool() ? "true" : "false");
         } else {
           cout << vh;
         }
@@ -567,10 +590,10 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
                  const String& varName, const String& prefix, const String& str,
                  const vector<const Table*>& tempTables)
 {
-  // If no command is given, assume it is CALC.
+  // If no command is given, assume it is SELECT.
   // Only show results for SELECT, COUNT and CALC.
   String::size_type spos = str.find_first_not_of (' ');
-  Bool addCalc = False;
+  Bool addComm = False;
   Bool showHelp = False;
   Bool doCount = False;
   Bool showResult = False;
@@ -582,7 +605,7 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
     String s = str.substr(spos, epos-spos);
     s.downcase();
     showHelp = (s=="show" || s=="help");
-    addCalc = !(s=="select" || s=="update" || s=="insert" ||
+    addComm = !(s=="select" || s=="update" || s=="insert" ||
                 s=="calc" || s=="delete" || s=="count"  || 
                 s=="create" || s=="createtable" ||
                 s=="alter" || s=="altertable" ||
@@ -595,8 +618,12 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
     }
   }
   String strc(str);
-  if (addCalc) {
-    strc = "CALC " + str;
+  if (addComm) {
+    strc = "SELECT " + str;
+    printCommand = False;
+    printRows = False;
+    showResult = True;
+    printHeader = False;
   }
   strc = prefix + strc;
   Table tabp;
@@ -662,7 +689,7 @@ void showHelp()
   cerr << "interactive commands are kept in $HOME/.taql_history for later reuse." << endl;
   cerr << "Use q, quit, exit, or ^D to exit." << endl;
   cerr << endl;
-  cerr << "Any TaQL command can be used. If no command name is given, CALC is assumed." << endl;
+  cerr << "Any TaQL command can be used. If no command name is given, SELECT is assumed." << endl;
   cerr << "For example:" << endl;
   cerr << "   date() + 107     #which date is 107 days after today" << endl;
   cerr << "   select from my.ms where ANTENNA1=1 giving sel.ms" << endl;
@@ -914,7 +941,6 @@ void askCommands (bool printCommand, bool printSelect, bool printMeas,
             showTableInfo (name, it->second.first, it->second.second, level);
           } else {
             // No name, so it must be a command.
-            // Note that CALC commands can omit CALC.
             String command(str);
             vector<const Table*> tabs = replaceVars (str, tables);
             Table tab = doCommand (printCommand, printSelect, printMeas,

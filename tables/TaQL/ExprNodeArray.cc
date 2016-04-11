@@ -1149,11 +1149,11 @@ TableExprNodeIndex::TableExprNodeIndex (const TableExprNodeSet& indices,
 					const TaQLStyle& style)
 : TableExprNodeMulti (NTInt, VTIndex, OtColumn, indices),
   origin_p           (style.origin()),
-  endMinus_p         (style.origin()),
+  endMinus_p         (0),
   isCOrder_p         (style.isCOrder()),
   isSingle_p         (True)
 {
-    if (style.isEndExcl()) ++endMinus_p;
+    if (style.isEndExcl()) endMinus_p = 1;
     fillIndex (indices);
 }
 
@@ -1206,7 +1206,7 @@ void TableExprNodeIndex::fillSlicer (const TableExprId& id)
             if (val < 0) {
                 start_p(i) = val;
             }else{
-                start_p(i) = operands_p[j]->getInt(id) - origin_p;
+                start_p(i) = val - origin_p;
             }
 	}
 	j++;
@@ -1216,9 +1216,9 @@ void TableExprNodeIndex::fillSlicer (const TableExprId& id)
 	    }else{
 		Int64 val = operands_p[j]->getInt (id);
 		if (val < 0) {
-                    end_p(i) = val;
+                    end_p(i) = val - endMinus_p;
 		}else{
-		    end_p(i) = val - endMinus_p;
+		    end_p(i) = val - origin_p - endMinus_p;
 		}
 	    }
 	}
@@ -1306,7 +1306,12 @@ void TableExprNodeIndex::convertConstIndex()
 	start_p(i) = 0;
 	if (rep != 0) {
 	    if (rep->isConstant()) {
-		start_p(i) = rep->getInt(0) - origin_p;
+                Int64 val = rep->getInt(0);
+                if (val < 0) {
+                    start_p(i) = val;
+                }else{
+                    start_p(i) = val - origin_p;
+                }
 	    }else{
 		varIndex_p[j] = True;
 	    }
@@ -1322,9 +1327,9 @@ void TableExprNodeIndex::convertConstIndex()
 		Int64 val = rep->getInt(0);
 		if (val != Slicer::MimicSource) {
                     if (val < 0) {
-                        end_p(i) = val;
-                    }else{
                         end_p(i) = val - endMinus_p;
+                    }else{
+                        end_p(i) = val - origin_p - endMinus_p;
                     }
 		}
 	    }else{

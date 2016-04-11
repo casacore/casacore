@@ -41,7 +41,7 @@ Direction conversion functions:
 Unit: m
 [2.99486, 0.346737, 3.98881]
 [2010/08/10/04:06:04, 2010/08/10/19:10:42]
-0
+false
 Unit: rad
 Axis Lengths: [366, 2]  (NB: Matrix in Row/Column order)
 [2.05311, 4.09106
