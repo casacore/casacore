@@ -676,15 +676,15 @@ using style python select * from tTableGramUpdate_tmp.refb1
 Ndim=3 Axis Lengths: [5, 2, 1] 
 [0, 0, 0][0, 0, 0, 0, 0]
 [0, 1, 0][0, 0, 0, 0, 0]
-	[1, 1, 1, 1, 1, 1]	1
+	[1, 1, 1, 1, 1, 1]	true
 Ndim=3 Axis Lengths: [5, 2, 1] 
 [0, 0, 0][1, 1, 1, 1, 1]
 [0, 1, 0][1, 1, 1, 1, 1]
-	[1, 1, 1, 1, 1, 1]	0
+	[1, 1, 1, 1, 1, 1]	false
 Ndim=3 Axis Lengths: [5, 2, 1] 
 [0, 0, 0][1, 1, 1, 1, 1]
 [0, 1, 0][1, 1, 1, 1, 1]
-	[1, 1, 1, 1, 1, 1]	1
+	[1, 1, 1, 1, 1, 1]	true
 using style python select * from tTableGramUpdate_tmp.refb2
     has been executed
     select result of 3 rows
@@ -692,15 +692,15 @@ using style python select * from tTableGramUpdate_tmp.refb2
 Ndim=3 Axis Lengths: [5, 2, 1] 
 [0, 0, 0][1, 1, 1, 0, 0]
 [0, 1, 0][1, 1, 1, 0, 0]
-	[1, 1, 0, 0, 0, 1]	0
+	[1, 1, 0, 0, 0, 1]	false
 Ndim=3 Axis Lengths: [5, 2, 1] 
 [0, 0, 0][0, 0, 0, 1, 1]
 [0, 1, 0][0, 0, 0, 1, 1]
-	[1, 1, 0, 0, 0, 1]	1
+	[1, 1, 0, 0, 0, 1]	true
 Ndim=3 Axis Lengths: [5, 2, 1] 
 [0, 0, 0][0, 0, 0, 1, 1]
 [0, 1, 0][0, 0, 0, 1, 1]
-	[1, 1, 0, 0, 0, 1]	0
+	[1, 1, 0, 0, 0, 1]	false
 
     cretab result of 3 rows
 update tTableGramUpdate_tmp.tabb set cols=rowid()%2==0, cola=array(rowid()%3!=0,[5,2,1]), colv=array(T,6)

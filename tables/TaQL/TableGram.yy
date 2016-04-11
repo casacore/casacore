@@ -153,8 +153,10 @@ The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
 %type <node> nrowspec
 %type <node> colspec
 %type <nodelist> columns
+%type <nodelist> collist
 %type <nodelist> nmcolumns
 %type <nodelist> colspecs
+%type <nodelist> colspecl
 %type <nodelist> showlist
 %type <nodelist> showflds
 %type <node> updrow
@@ -966,12 +968,16 @@ columns:   {          /* no column names given (thus take all) */
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | colexpr {
+         | collist {
+               $$ = $1;
+           }
+
+collist:   colexpr {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
                $$->add (*$1);
 	   }
-         | columns COMMA colexpr {
+         | collist COMMA colexpr {
 	       $$ = $1;
                $$->add (*$3);
 	   }
@@ -1056,12 +1062,16 @@ colspecs:  {          /* no column specifications given */
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | colspec {
+         | colspecl {
+               $$ = $1;
+           }
+
+colspecl: colspec {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
                $$->add (*$1);
 	   }
-         | colspecs COMMA colspec {
+         | colspecl COMMA colspec {
 	       $$ = $1;
                $$->add (*$3);
 	   }

@@ -976,7 +976,7 @@ Testing indexing and nested arrays ...
 calc [1:10][3] == 3
     has been executed
 [1]
-calc [1:10][-3] == 7
+calc [1:10][-3] == 8
     has been executed
 [1]
 calc all([1:10][:5] == [1:5])
@@ -985,7 +985,7 @@ calc all([1:10][:5] == [1:5])
 calc all([1:10][::3] == [1,4,7,10])
     has been executed
 [1]
-calc all([1:10][-7:-3:2] == [3,5,7])
+calc all([1:10][-7:-3:2] == [4,6,8])
     has been executed
 [1]
 calc all([[[1,2,3],[4,5,6]]] = array([1:6],3,2,1))
