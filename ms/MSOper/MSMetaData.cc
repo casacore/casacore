@@ -1247,12 +1247,23 @@ std::set<ScanKey> MSMetaData::getScanKeys() const {
         return _scanKeys;
     }
     std::set<ScanKey> scanKeys;
-    std::set<SubScanKey> subScanKeys = _getSubScanKeys();
-    std::set<SubScanKey>::const_iterator iter = subScanKeys.begin();
-    std::set<SubScanKey>::const_iterator end = subScanKeys.end();
-    while (iter != end) {
-        scanKeys.insert(scanKey(*iter));
-        ++iter;
+    if (_scanProperties) {
+        // scan keys already exist and are cached, they just need to be
+        // harvested
+        map<ScanKey, ScanProperties>::const_iterator iter = _scanProperties->begin();
+        map<ScanKey, ScanProperties>::const_iterator end = _scanProperties->end();
+        for (; iter!=end; ++iter) {
+            scanKeys.insert(iter->first);
+        }
+    }
+    else {
+        std::set<SubScanKey> subScanKeys = _getSubScanKeys();
+        std::set<SubScanKey>::const_iterator iter = subScanKeys.begin();
+        std::set<SubScanKey>::const_iterator end = subScanKeys.end();
+        while (iter != end) {
+            scanKeys.insert(scanKey(*iter));
+            ++iter;
+        }
     }
     if (_cacheUpdated(sizeof(ScanKey)*scanKeys.size())) {
         _scanKeys = scanKeys;
