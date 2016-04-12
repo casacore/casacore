@@ -1260,9 +1260,8 @@ std::set<ScanKey> MSMetaData::getScanKeys() const {
         std::set<SubScanKey> subScanKeys = _getSubScanKeys();
         std::set<SubScanKey>::const_iterator iter = subScanKeys.begin();
         std::set<SubScanKey>::const_iterator end = subScanKeys.end();
-        while (iter != end) {
+        for (; iter!=end; ++iter) {
             scanKeys.insert(scanKey(*iter));
-            ++iter;
         }
     }
     if (_cacheUpdated(sizeof(ScanKey)*scanKeys.size())) {
