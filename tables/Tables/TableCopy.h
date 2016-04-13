@@ -175,7 +175,8 @@ public:
   // slower than using the function <src>copyColumnData</src>.
   // </note>
   static void copyColumnData (const Table& fromTable, const String& fromColumn,
-                              Table& toTable, const String& toColumn);
+                              Table& toTable, const String& toColumn,
+                              Bool preserveTileShape=True);
 
   // Fill the table column with the given array.
   // The template type must match the column data type.
@@ -202,12 +203,15 @@ public:
   template<typename T>
   static void fillColumnData (Table& table, const String& column,
                               const T& value,
-                              const Table& fromTable, const String& fromColumn);
+                              const Table& fromTable, const String& fromColumn,
+                              Bool preserveTileShape=True);
   // Specialization to handle a C-string correctly.
   static void fillColumnData (Table& table, const String& column,
                               const char* value,
-                              const Table& fromTable, const String& fromColumn)
-    { fillColumnData (table, column, String(value), fromTable, fromColumn); }
+                              const Table& fromTable, const String& fromColumn,
+                              Bool preserveTileShape=True)
+    { fillColumnData (table, column, String(value), fromTable, fromColumn,
+                      preserveTileShape); }
                               
 
   // Replace TiledDataStMan by TiledShapeStMan in the DataManagerInfo record.

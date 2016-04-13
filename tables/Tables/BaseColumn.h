@@ -145,6 +145,9 @@ public:
     // Get the shape of an array in a particular cell.
     virtual IPosition shape (uInt rownr) const;
 
+    // Get the tile shape of an array in a particular cell.
+    virtual IPosition tileShape (uInt rownr) const;
+
     // Ask the data manager if the shape of an existing array can be changed.
     // Default is no.
     virtual Bool canChangeShape() const;

@@ -204,6 +204,9 @@ void readTable (const IPosition& dwShape, const TSMOption& tsmOpt)
 	    cout << "mismatch in time row " << i << endl;
 	}
 	timeValue += 5;
+        if (i < 10) {
+          cout << "tileshape=" << data.tileShape(i) << endl;
+        }
     }
 }
 

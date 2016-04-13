@@ -86,7 +86,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableCopy::fillColumnData (Table& table, const String& column,
                                   const T& value,
                                   const Table& fromTable,
-                                  const String& fromColumn)
+                                  const String& fromColumn,
+                                  Bool preserveTileShape)
   {
     TableColumn fromCol(fromTable, fromColumn);
     AlwaysAssert (fromCol.columnDesc().isArray(), AipsError);
@@ -104,6 +105,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             arr.resize (shp);
           }
           arr = value;
+          if (preserveTileShape) {
+            toCol.setShape (i, arr.shape(), fromCol.tileShape(i));
+          }
         }
         toCol.put (i, arr);
       }

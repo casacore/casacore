@@ -86,6 +86,12 @@ IPosition BaseColumn::shape (uInt) const
   return IPosition(0);
 }
 
+IPosition BaseColumn::tileShape (uInt) const
+{
+  throw (TableInvOper ("invalid tileShape() for column " + colDesc_p.name() +
+                       "; only valid for an array"));
+}
+
 
 Bool BaseColumn::canChangeShape() const
 {

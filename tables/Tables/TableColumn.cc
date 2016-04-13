@@ -29,6 +29,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Containers/ValueHolder.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -206,137 +207,226 @@ String TableColumn::asString (uInt rownr) const
 
 
 void TableColumn::put (uInt thisRownr, const TableColumn& that,
-		       uInt thatRownr)
+		       uInt thatRownr, Bool preserveTileShape)
 {
-    TABLECOLUMNCHECKROW(thisRownr);
-    checkWritable();
-    if (columnDesc().isScalar()) {
-	switch (columnDesc().dataType()) {
-	case TpBool:
-	    putScalar (thisRownr, that.asBool (thatRownr));
-	    return;
-	case TpUChar:
-	    putScalar (thisRownr, that.asuChar (thatRownr));
-	    return;
-	case TpShort:
-	    putScalar (thisRownr, that.asShort (thatRownr));
-	    return;
-	case TpUShort:
-	    putScalar (thisRownr, that.asuShort (thatRownr));
-	    return;
-	case TpInt:
-	    putScalar (thisRownr, that.asInt (thatRownr));
-	    return;
-	case TpUInt:
-	    putScalar (thisRownr, that.asuInt (thatRownr));
-	    return;
-	case TpFloat:
-	    putScalar (thisRownr, that.asfloat (thatRownr));
-	    return;
-	case TpDouble:
-	    putScalar (thisRownr, that.asdouble (thatRownr));
-	    return;
-	case TpComplex:
-	    putScalar (thisRownr, that.asComplex (thatRownr));
-	    return;
-	case TpDComplex:
-	    putScalar (thisRownr, that.asDComplex (thatRownr));
-	    return;
-	case TpString:
-	    putScalar (thisRownr, that.asString (thatRownr));
-	    return;
-	default:
-	    throw (TableInvDT ("TableColumn::put; invalid type promotion"));
-	}
-    }else{
-	if (columnDesc().isArray()) {
-	    if (columnDesc().dataType() != that.columnDesc().dataType()) {
-		throw (TableInvDT ("TableColumn::put; array types mismatch"));
-	    }
-	    if (that.isDefined (thatRownr)) {
-//#// If not defined, the this-value should be unset (if there is one).
-//#// However, this requires an undefine function, which is not there yet.
-		//# Get the shape and define it for non-FixedShape arrays.
-		//# Then get the data and put it depending on the type.
-		IPosition shape = that.shape (thatRownr);
-		if ((columnDesc().options() & ColumnDesc::FixedShape)
-		                                  != ColumnDesc::FixedShape) {
-		    baseColPtr_p->setShape (thisRownr, shape);
-		}
-		switch (columnDesc().dataType()) {
-		case TpBool:
-		    { Array<Bool> array(shape);
-		      baseColPtr(that)->get (thatRownr, &array);
-		      baseColPtr_p->put (thisRownr, &array);
-		    }
-		    return;
-		case TpUChar:
-		    { Array<uChar> array(shape);
-		      baseColPtr(that)->get (thatRownr, &array);
-		      baseColPtr_p->put (thisRownr, &array);
-		    }
-		    return;
-		case TpShort:
-		    { Array<Short> array(shape);
-		      baseColPtr(that)->get (thatRownr, &array);
-		      baseColPtr_p->put (thisRownr, &array);
-		    }
-		    return;
-		case TpUShort:
-		    { Array<uShort> array(shape);
-		      baseColPtr(that)->get (thatRownr, &array);
-		      baseColPtr_p->put (thisRownr, &array);
-		    }
-		    return;
-		case TpInt:
-		    { Array<Int> array(shape);
-		      baseColPtr(that)->get (thatRownr, &array);
-		      baseColPtr_p->put (thisRownr, &array);
-		    }
-		    return;
-		case TpUInt:
-		    { Array<uInt> array(shape);
-		      baseColPtr(that)->get (thatRownr, &array);
-		      baseColPtr_p->put (thisRownr, &array);
-		    }
-		    return;
-		case TpFloat:
-		    { Array<float> array(shape);
-		      baseColPtr(that)->get (thatRownr, &array);
-		      baseColPtr_p->put (thisRownr, &array);
-		    }
-		    return;
-		case TpDouble:
-		    { Array<double> array(shape);
-		      baseColPtr(that)->get (thatRownr, &array);
-		      baseColPtr_p->put (thisRownr, &array);
-		    }
-		    return;
-		case TpComplex:
-		    { Array<Complex> array(shape);
-		      baseColPtr(that)->get (thatRownr, &array);
-		      baseColPtr_p->put (thisRownr, &array);
-		    }
-		    return;
-		case TpDComplex:
-		    { Array<DComplex> array(shape);
-		      baseColPtr(that)->get (thatRownr, &array);
-		      baseColPtr_p->put (thisRownr, &array);
-		    }
-		    return;
-		case TpString:
-		    { Array<String> array(shape);
-		      baseColPtr(that)->get (thatRownr, &array);
-			  baseColPtr_p->put (thisRownr, &array);
-		    }
-		    return;
-		default:
-		    break;
-		}
-	    }
-	}
+  TABLECOLUMNCHECKROW(thisRownr);
+  checkWritable();
+  if (columnDesc().isScalar()) {
+    switch (columnDesc().dataType()) {
+    case TpBool:
+      putScalar (thisRownr, that.asBool (thatRownr));
+      break;
+    case TpUChar:
+      putScalar (thisRownr, that.asuChar (thatRownr));
+      break;
+    case TpShort:
+      putScalar (thisRownr, that.asShort (thatRownr));
+      break;
+    case TpUShort:
+      putScalar (thisRownr, that.asuShort (thatRownr));
+      break;
+    case TpInt:
+      putScalar (thisRownr, that.asInt (thatRownr));
+      break;
+    case TpUInt:
+      putScalar (thisRownr, that.asuInt (thatRownr));
+      break;
+    case TpFloat:
+      putScalar (thisRownr, that.asfloat (thatRownr));
+      break;
+    case TpDouble:
+      putScalar (thisRownr, that.asdouble (thatRownr));
+      break;
+    case TpComplex:
+      putScalar (thisRownr, that.asComplex (thatRownr));
+      break;
+    case TpDComplex:
+      putScalar (thisRownr, that.asDComplex (thatRownr));
+      break;
+    case TpString:
+      putScalar (thisRownr, that.asString (thatRownr));
+      break;
+    default:
+      throw (TableInvDT ("TableColumn::put; invalid type promotion"));
     }
-    throw (TableInvDT ("TableColumn::put"));
+  }else{
+    if (! columnDesc().isArray()) {
+      throw (TableInvDT ("TableColumn::put; no scalar or array"));
+    }
+    if (! that.columnDesc().isArray()) {
+      throw (TableInvDT ("TableColumn::put; array types mismatch"));
+    }
+    if (that.isDefined (thatRownr)) {
+      //#// If not defined, the this-value should be unset (if there is one).
+      //#// However, this requires an undefine function, which is not there yet.
+      //# Get the shape and define it for non-FixedShape arrays.
+      //# Then get the data and put it depending on the type.
+      IPosition shape = that.shape (thatRownr);
+      if (preserveTileShape) {
+        IPosition tileShape = that.tileShape (thatRownr);
+        if (tileShape.empty()) {
+          baseColPtr_p->setShape (thisRownr, shape);
+        } else {
+          baseColPtr_p->setShape (thisRownr, shape, tileShape);
+        }
+      } else if ((columnDesc().options() & ColumnDesc::FixedShape)
+                 != ColumnDesc::FixedShape) {
+        baseColPtr_p->setShape (thisRownr, shape);
+      }
+      ValueHolder vh;
+      switch (that.columnDesc().dataType()) {
+      case TpBool:
+        {
+          Array<Bool> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
+      case TpUChar:
+        {
+          Array<uChar> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
+      case TpShort:
+        {
+          Array<Short> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
+      case TpUShort:
+        {
+          Array<uShort> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
+      case TpInt:
+        {
+          Array<Int> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
+      case TpUInt:
+        {
+          Array<uInt> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
+      case TpFloat:
+        {
+          Array<float> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
+      case TpDouble:
+        {
+          Array<double> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
+      case TpComplex:
+        {
+          Array<Complex> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
+      case TpDComplex:
+        {
+          Array<DComplex> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
+      case TpString:
+        {
+          Array<String> array(shape);
+          baseColPtr(that)->get (thatRownr, &array);
+          vh = ValueHolder (array);
+        }
+        break;
+      default:
+        throw (TableInvDT ("TableColumn::put of that column"));
+      }
+      switch (columnDesc().dataType()) {
+      case TpBool:
+        {
+          Array<Bool> arr (vh.asArrayBool());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      case TpUChar:
+        {
+          Array<uChar> arr (vh.asArrayuChar());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      case TpShort:
+        {
+          Array<Short> arr (vh.asArrayShort());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      case TpUShort:
+        {
+          Array<uShort> arr (vh.asArrayuShort());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      case TpInt:
+        {
+          Array<Int> arr (vh.asArrayInt());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      case TpUInt:
+        {
+          Array<uInt> arr (vh.asArrayuInt());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      case TpFloat:
+        {
+          Array<Float> arr (vh.asArrayFloat());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      case TpDouble:
+        {
+          Array<Double> arr (vh.asArrayDouble());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      case TpComplex:
+        {
+          Array<Complex> arr (vh.asArrayComplex());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      case TpDComplex:
+        {
+          Array<DComplex> arr (vh.asArrayDComplex());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      case TpString:
+        {
+          Array<String> arr (vh.asArrayString());
+          baseColPtr_p->put (thisRownr, &arr);
+        }
+        break;
+      default:
+        throw (TableInvDT ("TableColumn::put of this column"));
+      }
+    }
+  }
 }
 
 

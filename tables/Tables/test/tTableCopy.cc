@@ -63,26 +63,31 @@ void testDM()
     cout << dminfo << endl;
 }
 
-void testCloneColumn()
+void testCloneColumn (const DataManager& tsm, Bool fixed)
 {
   cout << "testCloneColumn ..." << endl;
   // First create a table.
   TableDesc td;
-  td.addColumn (ArrayColumnDesc<Complex>("DATA", 1));
+  if (fixed) {
+    td.addColumn (ArrayColumnDesc<Complex>("DATA", IPosition(1,10)));
+  } else {
+    td.addColumn (ArrayColumnDesc<Complex>("DATA", 1));
+  }
   td.addColumn (ScalarColumnDesc<String>("SCALAR", 1));
   td.addColumn (ArrayColumnDesc<Int>("ARRAY", 0));
   SetupNewTable newtab("tTableCopy_tmp.data", td, Table::New);
   StandardStMan ssm;
-  TiledShapeStMan tsm("DATA_stm", IPosition(2,8,2));
   newtab.bindAll (ssm);
   newtab.bindColumn ("DATA", tsm);
   Table tab(newtab, 4);
   ArrayColumn<Complex> col(tab, "DATA");
   for (uInt row=0; row<tab.nrow(); ++row) {
     Vector<Complex> vec(10*row+1);
+    if (fixed) vec.resize(10);
     indgen (vec);
-    if (row != 2) {
+    if (fixed  ||  row != 2) {
       // Keep a row cell without an array.
+      col.setShape (row, vec.shape(), IPosition(2, 4, 4));
       col.put (row, vec);
     }
   }
@@ -91,9 +96,9 @@ void testCloneColumn()
   TableCopy::cloneColumn (tab, "DATA", tab, "DATA2", "Data2StMan");
   TableCopy::cloneColumnTyped<DComplex> (tab, "DATA", tab, "DATA3");
   TableCopy::cloneColumnTyped<Int> (tab, "SCALAR", tab, "SCALAR3");
-  cout << tab.dataManagerInfo() << endl;
-  TableCopy::copyColumnData (tab, "DATA", tab, "DATA1");
+  TableCopy::copyColumnData (tab, "DATA", tab, "DATA1", False);
   TableCopy::copyColumnData (tab, "DATA", tab, "DATA3");
+  cout << tab.dataManagerInfo() << endl;
   // Check if the data are the same.
   ArrayColumn<Complex> col1(tab, "DATA1");
   ArrayColumn<DComplex> col3(tab, "DATA3");
@@ -130,6 +135,16 @@ void testCloneColumn()
     AlwaysAssertExit (cols3(row) == 2);
     AlwaysAssertExit (allEQ (cola(row), Vector<Int>(3,2)));
   }
+}
+
+void testCloneColumns()
+{
+  TiledShapeStMan tsm1("DATA_stm", IPosition(2,8,2));
+  testCloneColumn (tsm1, False);
+  TiledCellStMan tsm2("DATA_stm", IPosition(2,8,2));
+  testCloneColumn (tsm2, False);
+  TiledColumnStMan tsm3("DATA_stm", IPosition(2,8,2));
+  testCloneColumn (tsm3, True);
 }
 
 
@@ -176,7 +191,7 @@ int main (int argc, const char* argv[])
 
     if (argc <= 1) {
       testDM();
-      testCloneColumn();
+      testCloneColumns();
     }
   } catch (const exception& x) {
     cout << x.what() << endl;

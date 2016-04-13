@@ -381,6 +381,12 @@ IPosition DataManagerColumn::shape (uInt)
     return IPosition(0);
 }
 
+// The tile shape of the array in the given row.
+IPosition DataManagerColumn::tileShape (uInt)
+{
+    return IPosition(0);
+}
+
 Bool DataManagerColumn::canChangeShape() const
 {
     return False;

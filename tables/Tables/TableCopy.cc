@@ -234,14 +234,14 @@ void TableCopy::doCloneColumn (const Table& fromTable, const String& fromColumn,
 }
 
 void TableCopy::copyColumnData (const Table& tabFrom, const String& colFrom,
-                                Table& tabTo, const String& colTo)
+                                Table& tabTo, const String& colTo,
+                                Bool preserveTileShape)
 {
   AlwaysAssert (tabFrom.nrow() == tabTo.nrow(), AipsError);
-  ROTableRow inrow(tabFrom, Vector<String>(1, colFrom));
-  TableRow  outrow(tabTo, Vector<String>(1, colTo));
+  TableColumn incol(tabFrom, colFrom);
+  TableColumn outcol(tabTo, colTo);
   for (uInt i=0; i<tabFrom.nrow(); i++) {
-    inrow.get (i);
-    outrow.put (i, inrow.record(), inrow.getDefined(), False);
+    outcol.put (i, incol, preserveTileShape);
   }
 }
 

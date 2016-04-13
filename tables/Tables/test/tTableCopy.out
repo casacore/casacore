@@ -96,6 +96,56 @@ testCloneColumn ...
           CubeShape: Int array with shape [2]
             [1, 1]
           TileShape: Int array with shape [2]
+            [1, 4]
+          CellShape: Int array with shape [1]
+            [1]
+          BucketSize: Int 32
+          ID: {
+          }
+        }
+        *2: {
+          CubeShape: Int array with shape [2]
+            [11, 1]
+          TileShape: Int array with shape [2]
+            [4, 4]
+          CellShape: Int array with shape [1]
+            [11]
+          BucketSize: Int 128
+          ID: {
+          }
+        }
+        *3: {
+          CubeShape: Int array with shape [2]
+            [31, 1]
+          TileShape: Int array with shape [2]
+            [4, 4]
+          CellShape: Int array with shape [1]
+            [31]
+          BucketSize: Int 128
+          ID: {
+          }
+        }
+      }
+      SEQNR: uInt 1
+      IndexSize: uInt 4
+    }
+    COLUMNS: String array with shape [1]
+      [DATA]
+  }
+  *3: {
+    TYPE: String "TiledShapeStMan"
+    NAME: String "DATA1"
+    SEQNR: uInt 2
+    SPEC: {
+      ActualMaxCacheSize: Int 0
+      DEFAULTTILESHAPE: Int array with shape [2]
+        [8, 2]
+      MAXIMUMCACHESIZE: Int 0
+      HYPERCUBES: {
+        *1: {
+          CubeShape: Int array with shape [2]
+            [1, 1]
+          TileShape: Int array with shape [2]
             [1, 2]
           CellShape: Int array with shape [1]
             [1]
@@ -126,25 +176,8 @@ testCloneColumn ...
           }
         }
       }
-      SEQNR: uInt 1
-      IndexSize: uInt 4
-    }
-    COLUMNS: String array with shape [1]
-      [DATA]
-  }
-  *3: {
-    TYPE: String "TiledShapeStMan"
-    NAME: String "DATA1"
-    SEQNR: uInt 2
-    SPEC: {
-      ActualMaxCacheSize: Int 0
-      DEFAULTTILESHAPE: Int array with shape [2]
-        [8, 2]
-      MAXIMUMCACHESIZE: Int 0
-      HYPERCUBES: {
-      }
       SEQNR: uInt 2
-      IndexSize: uInt 0
+      IndexSize: uInt 4
     }
     COLUMNS: String array with shape [1]
       [DATA1]
@@ -176,9 +209,369 @@ testCloneColumn ...
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
       HYPERCUBES: {
+        *1: {
+          CubeShape: Int array with shape [2]
+            [1, 1]
+          TileShape: Int array with shape [2]
+            [1, 4]
+          CellShape: Int array with shape [1]
+            [1]
+          BucketSize: Int 64
+          ID: {
+          }
+        }
+        *2: {
+          CubeShape: Int array with shape [2]
+            [11, 1]
+          TileShape: Int array with shape [2]
+            [4, 4]
+          CellShape: Int array with shape [1]
+            [11]
+          BucketSize: Int 256
+          ID: {
+          }
+        }
+        *3: {
+          CubeShape: Int array with shape [2]
+            [31, 1]
+          TileShape: Int array with shape [2]
+            [4, 4]
+          CellShape: Int array with shape [1]
+            [31]
+          BucketSize: Int 256
+          ID: {
+          }
+        }
       }
       SEQNR: uInt 4
-      IndexSize: uInt 0
+      IndexSize: uInt 4
+    }
+    COLUMNS: String array with shape [1]
+      [DATA3]
+  }
+  *6: {
+    TYPE: String "StandardStMan"
+    NAME: String "SCALAR3"
+    SEQNR: uInt 5
+    SPEC: {
+      ActualCacheSize: Int 2
+      BUCKETSIZE: Int 640
+      PERSCACHESIZE: Int 2
+      IndexLength: Int 0
+    }
+    COLUMNS: String array with shape [1]
+      [SCALAR3]
+  }
+
+testCloneColumn ...
+  *1: {
+    TYPE: String "StandardStMan"
+    NAME: String "SSM"
+    SEQNR: uInt 0
+    SPEC: {
+      ActualCacheSize: Int 2
+      BUCKETSIZE: Int 640
+      PERSCACHESIZE: Int 2
+      IndexLength: Int 0
+    }
+    COLUMNS: String array with shape [2]
+      [ARRAY, SCALAR]
+  }
+  *2: {
+    TYPE: String "TiledCellStMan"
+    NAME: String "DATA_stm"
+    SEQNR: uInt 1
+    SPEC: {
+      ActualMaxCacheSize: Int 0
+      DEFAULTTILESHAPE: Int array with shape [2]
+        [8, 2]
+      MAXIMUMCACHESIZE: Int 0
+      HYPERCUBES: {
+        *1: {
+          CubeShape: Int array with shape [1]
+            [1]
+          TileShape: Int array with shape [1]
+            [1]
+          CellShape: Int array with shape [1]
+            [1]
+          BucketSize: Int 8
+          ID: {
+          }
+        }
+        *2: {
+          CubeShape: Int array with shape [1]
+            [11]
+          TileShape: Int array with shape [1]
+            [4]
+          CellShape: Int array with shape [1]
+            [11]
+          BucketSize: Int 32
+          ID: {
+          }
+        }
+        *3: {
+          CubeShape: Int array with shape [1]
+            [31]
+          TileShape: Int array with shape [1]
+            [4]
+          CellShape: Int array with shape [1]
+            [31]
+          BucketSize: Int 32
+          ID: {
+          }
+        }
+      }
+      SEQNR: uInt 1
+    }
+    COLUMNS: String array with shape [1]
+      [DATA]
+  }
+  *3: {
+    TYPE: String "TiledCellStMan"
+    NAME: String "DATA1"
+    SEQNR: uInt 2
+    SPEC: {
+      ActualMaxCacheSize: Int 0
+      DEFAULTTILESHAPE: Int array with shape [2]
+        [8, 2]
+      MAXIMUMCACHESIZE: Int 0
+      HYPERCUBES: {
+        *1: {
+          CubeShape: Int array with shape [1]
+            [1]
+          TileShape: Int array with shape [1]
+            [1]
+          CellShape: Int array with shape [1]
+            [1]
+          BucketSize: Int 8
+          ID: {
+          }
+        }
+        *2: {
+          CubeShape: Int array with shape [1]
+            [11]
+          TileShape: Int array with shape [1]
+            [8]
+          CellShape: Int array with shape [1]
+            [11]
+          BucketSize: Int 64
+          ID: {
+          }
+        }
+        *3: {
+          CubeShape: Int array with shape [1]
+            [31]
+          TileShape: Int array with shape [1]
+            [8]
+          CellShape: Int array with shape [1]
+            [31]
+          BucketSize: Int 64
+          ID: {
+          }
+        }
+      }
+      SEQNR: uInt 2
+    }
+    COLUMNS: String array with shape [1]
+      [DATA1]
+  }
+  *4: {
+    TYPE: String "TiledCellStMan"
+    NAME: String "Data2StMan"
+    SEQNR: uInt 3
+    SPEC: {
+      ActualMaxCacheSize: Int 0
+      DEFAULTTILESHAPE: Int array with shape [2]
+        [8, 2]
+      MAXIMUMCACHESIZE: Int 0
+      HYPERCUBES: {
+      }
+      SEQNR: uInt 3
+    }
+    COLUMNS: String array with shape [1]
+      [DATA2]
+  }
+  *5: {
+    TYPE: String "TiledCellStMan"
+    NAME: String "DATA3"
+    SEQNR: uInt 4
+    SPEC: {
+      ActualMaxCacheSize: Int 0
+      DEFAULTTILESHAPE: Int array with shape [2]
+        [8, 2]
+      MAXIMUMCACHESIZE: Int 0
+      HYPERCUBES: {
+        *1: {
+          CubeShape: Int array with shape [1]
+            [1]
+          TileShape: Int array with shape [1]
+            [1]
+          CellShape: Int array with shape [1]
+            [1]
+          BucketSize: Int 16
+          ID: {
+          }
+        }
+        *2: {
+          CubeShape: Int array with shape [1]
+            [11]
+          TileShape: Int array with shape [1]
+            [4]
+          CellShape: Int array with shape [1]
+            [11]
+          BucketSize: Int 64
+          ID: {
+          }
+        }
+        *3: {
+          CubeShape: Int array with shape [1]
+            [31]
+          TileShape: Int array with shape [1]
+            [4]
+          CellShape: Int array with shape [1]
+            [31]
+          BucketSize: Int 64
+          ID: {
+          }
+        }
+      }
+      SEQNR: uInt 4
+    }
+    COLUMNS: String array with shape [1]
+      [DATA3]
+  }
+  *6: {
+    TYPE: String "StandardStMan"
+    NAME: String "SCALAR3"
+    SEQNR: uInt 5
+    SPEC: {
+      ActualCacheSize: Int 2
+      BUCKETSIZE: Int 640
+      PERSCACHESIZE: Int 2
+      IndexLength: Int 0
+    }
+    COLUMNS: String array with shape [1]
+      [SCALAR3]
+  }
+
+testCloneColumn ...
+  *1: {
+    TYPE: String "StandardStMan"
+    NAME: String "SSM"
+    SEQNR: uInt 0
+    SPEC: {
+      ActualCacheSize: Int 2
+      BUCKETSIZE: Int 640
+      PERSCACHESIZE: Int 2
+      IndexLength: Int 0
+    }
+    COLUMNS: String array with shape [2]
+      [ARRAY, SCALAR]
+  }
+  *2: {
+    TYPE: String "TiledColumnStMan"
+    NAME: String "DATA_stm"
+    SEQNR: uInt 1
+    SPEC: {
+      ActualMaxCacheSize: Int 0
+      DEFAULTTILESHAPE: Int array with shape [2]
+        [8, 2]
+      MAXIMUMCACHESIZE: Int 0
+      HYPERCUBES: {
+        *1: {
+          CubeShape: Int array with shape [2]
+            [10, 4]
+          TileShape: Int array with shape [2]
+            [8, 2]
+          CellShape: Int array with shape [1]
+            [10]
+          BucketSize: Int 128
+          ID: {
+          }
+        }
+      }
+      SEQNR: uInt 1
+    }
+    COLUMNS: String array with shape [1]
+      [DATA]
+  }
+  *3: {
+    TYPE: String "TiledColumnStMan"
+    NAME: String "DATA1"
+    SEQNR: uInt 2
+    SPEC: {
+      ActualMaxCacheSize: Int 0
+      DEFAULTTILESHAPE: Int array with shape [2]
+        [8, 2]
+      MAXIMUMCACHESIZE: Int 0
+      HYPERCUBES: {
+        *1: {
+          CubeShape: Int array with shape [2]
+            [10, 4]
+          TileShape: Int array with shape [2]
+            [8, 2]
+          CellShape: Int array with shape [1]
+            [10]
+          BucketSize: Int 128
+          ID: {
+          }
+        }
+      }
+      SEQNR: uInt 2
+    }
+    COLUMNS: String array with shape [1]
+      [DATA1]
+  }
+  *4: {
+    TYPE: String "TiledColumnStMan"
+    NAME: String "Data2StMan"
+    SEQNR: uInt 3
+    SPEC: {
+      ActualMaxCacheSize: Int 0
+      DEFAULTTILESHAPE: Int array with shape [2]
+        [8, 2]
+      MAXIMUMCACHESIZE: Int 0
+      HYPERCUBES: {
+        *1: {
+          CubeShape: Int array with shape [2]
+            [10, 4]
+          TileShape: Int array with shape [2]
+            [8, 2]
+          CellShape: Int array with shape [1]
+            [10]
+          BucketSize: Int 128
+          ID: {
+          }
+        }
+      }
+      SEQNR: uInt 3
+    }
+    COLUMNS: String array with shape [1]
+      [DATA2]
+  }
+  *5: {
+    TYPE: String "TiledColumnStMan"
+    NAME: String "DATA3"
+    SEQNR: uInt 4
+    SPEC: {
+      ActualMaxCacheSize: Int 0
+      DEFAULTTILESHAPE: Int array with shape [2]
+        [8, 2]
+      MAXIMUMCACHESIZE: Int 0
+      HYPERCUBES: {
+        *1: {
+          CubeShape: Int array with shape [2]
+            [10, 4]
+          TileShape: Int array with shape [2]
+            [8, 2]
+          CellShape: Int array with shape [1]
+            [10]
+          BucketSize: Int 256
+          ID: {
+          }
+        }
+      }
+      SEQNR: uInt 4
     }
     COLUMNS: String array with shape [1]
       [DATA3]
