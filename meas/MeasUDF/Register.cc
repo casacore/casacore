@@ -64,6 +64,8 @@ void register_meas()
   UDFBase::registerUDF ("meas.LST",           EpochUDF::makeLAST);
   UDFBase::registerUDF ("meas.DIR",           DirectionUDF::makeDIR);
   UDFBase::registerUDF ("meas.DIRECTION",     DirectionUDF::makeDIR);
+  UDFBase::registerUDF ("meas.DIRCOS",        DirectionUDF::makeDIRCOS);
+  UDFBase::registerUDF ("meas.DIRECTIONCOSINE", DirectionUDF::makeDIRCOS);
   UDFBase::registerUDF ("meas.HADEC",         DirectionUDF::makeHADEC);
   UDFBase::registerUDF ("meas.AZEL",          DirectionUDF::makeAZEL);
   UDFBase::registerUDF ("meas.APP",           DirectionUDF::makeAPP);
@@ -161,6 +163,9 @@ namespace casacore {
     os << "       ITRFDIRECTION is a synonym for ITRFD" << endl;
     os << "  MEAS.RISET (direction, epoch, position)        get rise/set time" << endl;
     os << "       RISESET is a synonym for RISET" << endl;
+    os << "  MEAS.DIRCOS (type, direction [,epoch, position])" << endl;
+    os << "       as DIR returning 3 direction cosines instead of 2 angles" << endl;
+    os << "       DIRECTIONCOSINE is a synonym for DIRCOS" << endl;
     if (showTypes) {
       os << endl << "Known source directions (names are case-insenstive):" << endl;
       os << "  All sources in the Measures Sources table" << endl;

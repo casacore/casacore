@@ -390,7 +390,7 @@ namespace casacore {
   }
 
   Array<Double> DirectionEngine::getArrayDouble (const TableExprId& id,
-                                                 Bool riseSet)
+                                                 Bool riseSet, Bool asDirCos)
   {
     DebugAssert (id.byRow(), AipsError);
     Array<MDirection> res (getDirections(id));
@@ -411,7 +411,8 @@ namespace casacore {
       if (res.size() > 1) {
         shape = res.shape();
       }
-      shape.prepend (IPosition(1,2));    // 2 values per MDirection
+      // 2 or 3 values per MDirection
+      shape.prepend (IPosition(1, asDirCos ? 3:2));
       if (eps.size() > 1) {
         shape.append (eps.shape());
       }
@@ -440,14 +441,22 @@ namespace casacore {
               calcRiseSet (*resIter, *posIter, *epsIter,
                            (hIndex<itsH.size() ? itsH[hIndex] : 0),
                            outPtr[0], outPtr[1]);
+              outPtr += 2;
             } else {
               MDirection mdir = itsConverter();
-              // Get angles as radians.
-              Vector<Double> md (mdir.getValue().get());
-              outPtr[0] = md[0];
-              outPtr[1] = md[1];
+              if (asDirCos) {
+                // Get angles as radians.
+                Vector<Double> md (mdir.getValue().getValue());
+                *outPtr++ = md[0];
+                *outPtr++ = md[1];
+                *outPtr++ = md[2];
+              } else {
+                // Get angles as radians.
+                Vector<Double> md (mdir.getValue().get());
+                *outPtr++ = md[0];
+                *outPtr++ = md[1];
+              }
             }
-            outPtr += 2;
           }
         }
       }

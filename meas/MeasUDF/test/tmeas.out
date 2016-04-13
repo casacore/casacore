@@ -37,9 +37,14 @@ Direction conversion functions:
        ITRFDIRECTION is a synonym for ITRFD
   MEAS.RISET (direction, epoch, position)        get rise/set time
        RISESET is a synonym for RISET
+  MEAS.DIRCOS (type, direction [,epoch, position])
+       as DIR returning 3 direction cosines instead of 2 angles
+       DIRECTIONCOSINE is a synonym for DIRCOS
 
 Unit: m
 [2.99486, 0.346737, 3.98881]
+[-0.291542, 0.270379]
+[0.923005, -0.276987, 0.267097]
 [2010/08/10/04:06:04, 2010/08/10/19:10:42]
 false
 Unit: rad

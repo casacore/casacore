@@ -36,6 +36,8 @@ namespace casacore {
 
   UDFBase* DirectionUDF::makeDIR (const String&)
     { return new DirectionUDF (DIRECTION); }
+  UDFBase* DirectionUDF::makeDIRCOS (const String&)
+    { return new DirectionUDF (DIRCOS); }
   UDFBase* DirectionUDF::makeHADEC (const String&)
     { return new DirectionUDF (HADEC); }
   UDFBase* DirectionUDF::makeAZEL (const String&)
@@ -134,11 +136,12 @@ namespace casacore {
 
   MArray<Double> DirectionUDF::getArrayDouble (const TableExprId& id)
   {
-    return MArray<Double>(itsEngine.getArrayDouble (id, itsRiseSet));
+    return MArray<Double>(itsEngine.getArrayDouble (id, itsRiseSet,
+                                                    itsType==DIRCOS));
   }
   MArray<MVTime> DirectionUDF::getArrayDate (const TableExprId& id)
   {
-    Array<Double> res = itsEngine.getArrayDouble (id, itsRiseSet);
+    Array<Double> res = itsEngine.getArrayDouble (id, itsRiseSet, False);
     Array<MVTime> dates(res.shape());
     for (uInt i=0; i<res.size(); ++i) {
       dates.data()[i] = MVTime(res.data()[i]);
