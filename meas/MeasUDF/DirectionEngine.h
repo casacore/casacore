@@ -128,8 +128,10 @@ namespace casacore {
       { return itsUnit; }  
 
     // Get the values.
-    // The Bools tell if rise/set times have to be calculated.
-    Array<Double> getArrayDouble (const TableExprId& id, Bool riseSet);
+    // The first Bool tells if rise/set times have to be calculated.
+    // The second Bool tells if direction cosines have to be calculated.
+    Array<Double> getArrayDouble (const TableExprId& id, Bool riseSet,
+                                  Bool asDirCos);
 
     // Get the directions.
     Array<MDirection> getDirections (const TableExprId& id);

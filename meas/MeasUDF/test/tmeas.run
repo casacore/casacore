@@ -8,6 +8,8 @@ echo
 
 # Test various commands
 $casa_checktool ../../../tables/apps/taql 'meas.wgs("WSRT")'
+$casa_checktool ../../../tables/apps/taql 'str(meas.dir("ITRF", "SUN", 10Aug2010/13:12:11, "WSRT"))'
+$casa_checktool ../../../tables/apps/taql 'str(meas.dircos("ITRF", "SUN", 10Aug2010/13:12:11, "WSRT"))'
 $casa_checktool ../../../tables/apps/taql 'str(meas.riseset("SUN", 10Aug2010/13:12:11, "WSRT"))'
 
 # Check if all dates are correct.

@@ -94,7 +94,7 @@ namespace casacore {
   {
   public:
     // Define the possible function types.
-    enum FuncType {DIRECTION, HADEC, AZEL, APP, J2000, B1950,
+    enum FuncType {DIRECTION, DIRCOS, HADEC, AZEL, APP, J2000, B1950,
                    ECLIPTIC, GALACTIC, SUPERGALACTIC, ITRF};
 
     // Create for the given function type.
@@ -103,6 +103,7 @@ namespace casacore {
 
     // Function to create an object.
     static UDFBase* makeDIR     (const String&);
+    static UDFBase* makeDIRCOS  (const String&);
     static UDFBase* makeHADEC   (const String&);
     static UDFBase* makeAZEL    (const String&);
     static UDFBase* makeAPP     (const String&);
