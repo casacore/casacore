@@ -247,7 +247,7 @@ namespace casacore {
       throw AipsError ("An observatory name used as position in a MEAS function"
                        " must be a constant string");
     }
-    Array<String> names = operand->getStringAS(0);
+    Array<String> names = operand->getStringAS(0).array();
     itsConstants.resize (names.shape());
     for (uInt i=0; i<names.size(); ++i) {
       if (! MeasTable::Observatory (itsConstants.data()[i], names.data()[i])) {
@@ -354,12 +354,12 @@ namespace casacore {
       throw AipsError ("Position reference type suffix in a MEAS function is "
                        "given as xyz, while heights are used");
     }
-    Array<Double> angles = anglesNode->getArrayDouble(0);
+    Array<Double> angles = anglesNode->getArrayDouble(0).array();
     if (angles.size() %2 != 0) {
       throw AipsError ("Angles given as position in a MEAS function must "
                        "be a constant double array of multiple of 2 values");
     }
-    Array<Double> height = heightNode->getArrayDouble(0);
+    Array<Double> height = heightNode->getArrayDouble(0).array();
     if (angles.size() != 2*height.size()) {
       throw AipsError ("Angles and heights given as position in a MEAS "
                        "function have mismatching sizes");

@@ -2430,7 +2430,6 @@ int main() {
     	testIt(md2);
     	AlwaysAssert(md2.getCache() == 0, AipsError);
 
-
     	cout << "OK" << endl;
     } 
     catch (const AipsError& x) {

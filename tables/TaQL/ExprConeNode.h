@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprConeNode.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef TABLES_EXPRCONENODE_H
 #define TABLES_EXPRCONENODE_H
@@ -132,8 +132,8 @@ public:
 
   // 'get' Functions to get the desired result of a function.
   // <group>
-  Array<Bool>  getArrayBool (const TableExprId& id);
-  Array<Int64> getArrayInt  (const TableExprId& id);
+  MArray<Bool>  getArrayBool (const TableExprId& id);
+  MArray<Int64> getArrayInt  (const TableExprId& id);
   // </group>
 
   // Link the children to the node and convert the children

@@ -1449,13 +1449,9 @@ void MSSummary::getSpectralWindowInfo(Record& outRec) const
     }
 }
 
-
-void MSSummary::listPolarization (LogIO& os, Bool verbose) const
-{
+void MSSummary::listPolarization (LogIO& os, Bool) const {
     // Create a MS-pol-columns object
     ROMSPolarizationColumns msPolC(pMS->polarization());
-
-    if (verbose) {}    //null; always the same output
 
     uInt nRow = pMS->polarization().nrow();
     if (nRow<=0) {
@@ -1491,9 +1487,9 @@ void MSSummary::listPolarization (LogIO& os, Bool verbose) const
     os << LogIO::POST;
 }
 
-void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
-                                        Bool /*oneBased*/) const
-{
+void MSSummary::listSpectralAndPolInfo (
+    LogIO& os, Bool, Bool
+) const {
     // Create a MS-spwin-columns object
     ROMSSpWindowColumns msSWC(pMS->spectralWindow());
 
@@ -1502,16 +1498,13 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
     // Create a MS-data_desc-columns object
     ROMSDataDescColumns msDDC(pMS->dataDescription());
 
-
-    if (verbose) {}    //null; always the same output
-
-    if (msDDC.nrow()<=0) {
+    if (_msmd->nDataDescriptions() == 0) {
         os << "The DATA_DESCRIPTION table is empty: see the FEED table" << endl;
     }
-    if (msSWC.nrow()<=0) {
+    if (_msmd->nSpw(True) == 0) {
         os << "The SPECTRAL_WINDOW table is empty: see the FEED table" << endl;
     }
-    if (msPolC.nrow()<=0) {
+    if (_msmd->nPol() == 0) {
         os << "The POLARIZATION table is empty: see the FEED table" << endl;
     }
 
@@ -1537,11 +1530,10 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
         Int widthName = 5;
         for (
             vector<String>::const_iterator iter=names.begin();
-            iter!=names.end(); iter++
+            iter!=names.end(); ++iter
         ) {
             widthName = max(widthName, (Int)iter->size());
         }
-
         // Define the column widths
         Int widthLead    =  2;
         Int widthSpwId       =  7;
@@ -1578,7 +1570,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
         vector<uInt> nChans = _msmd->nChans();
         vector<QVD> chanFreqs = _msmd->getChanFreqs();
         vector<QVD> chanWidths = _msmd->getChanWidths();
-         vector<Quantity> centerFreqs = _msmd->getCenterFreqs();
+        vector<Quantity> centerFreqs = _msmd->getCenterFreqs();
         vector<Double> bandwidths = _msmd->getBandWidths();
         vector<uInt> bbcNo = hasBBCNo ? _msmd->getBBCNos() : vector<uInt>();
 
@@ -1589,13 +1581,12 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
         std::vector<std::set<uInt> > spwToDDID = _msmd->getSpwToDataDescriptionIDMap();
         std::set<uInt> uDDIDSet(uddId.begin(), uddId.end());
         vector<uInt> ddToPolID = _msmd->getDataDescIDToPolIDMap();
-        while (iter != end) {
-        // for (uInt i=0; i<ddId.nelements(); i++) {
+        for (; iter != end; ++iter) {
             Int spw = *iter;
             std::set<uInt> ddids = spwToDDID[spw];
             std::set<uInt>::const_iterator diter = ddids.begin();
             std::set<uInt>::const_iterator dend = ddids.end();
-            while (diter != dend) {
+            for (; diter!=dend; ++diter) {
                 uInt dd = *diter;
                 if (uDDIDSet.find(dd) == uDDIDSet.end()) {
                     // data description ID not in main table, so not reported here
@@ -1641,15 +1632,13 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose,
                 //            os.output().width(widthFrqNum);
                 //            os<< msSWC.refFrequency()(spw)/1.0e6;
                 // 9th column: the correlation type(s)
-                for (uInt j=0; j<msPolC.corrType()(pol).nelements(); j++) {
+                for (uInt j=0; j<msPolC.corrType()(pol).nelements(); ++j) {
                     os.output().width(widthCorrType);
                     Int index = msPolC.corrType()(pol)(IPosition(1,j));
                     os << Stokes::name(Stokes::type(index));
                 }
-                ++diter;
             }
             os << endl;
-            ++iter;
         }
     }
     os << LogIO::POST;

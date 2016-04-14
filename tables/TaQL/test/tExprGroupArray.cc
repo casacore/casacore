@@ -84,10 +84,10 @@ void checkLazy (const TableExprNode& expr,
   }
   funcid.finish();
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  Array<Bool> val = func->getArrayBool(*funcid.getIds());
-  if (!allEQ (val, expVal)) {
+  MArray<Bool> val = func->getArrayBool(*funcid.getIds());
+  if (!allEQ (val.array(), expVal)) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected "
+    cout << str << ": found value " << val.array() << "; expected "
          << expVal << endl;
   }
 }
@@ -110,10 +110,10 @@ void checkLazy (const TableExprNode& expr,
   funcSets.push_back (new TableExprGroupFuncSet());
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   funcSets[0]->add (func);
-  Array<Int64> val = func->getArrayInt(*funcid.getIds());
-  if (!allEQ (val, expVal)) {
+  MArray<Int64> val = func->getArrayInt(*funcid.getIds());
+  if (!allEQ (val.array(), expVal)) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected "
+    cout << str << ": found value " << val.array() << "; expected "
          << expVal << endl;
   }
   vector<CountedPtr<vector<TableExprId> > > ids(1, funcid.getIds());
@@ -121,10 +121,10 @@ void checkLazy (const TableExprNode& expr,
     new TableExprGroupResult(funcSets, ids);
   TableExprIdAggr aid(groupResult);
   aid.setRownr (0);
-  Array<Int64> val2 = aggr.getArrayInt (aid);
-  if (!allEQ (val2, expVal)) {
+  MArray<Int64> val2 = aggr.getArrayInt (aid);
+  if (!allEQ (val2.array(), expVal)) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected "
+    cout << str << ": found value " << val2.array() << "; expected "
          << expVal << endl;
   }
 }
@@ -144,10 +144,10 @@ void checkLazy (const TableExprNode& expr,
   }
   funcid.finish();
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  Array<Double> val = func->getArrayDouble(*funcid.getIds());
-  if (!allNear (val, expVal, 1.e-10)) {
+  MArray<Double> val = func->getArrayDouble(*funcid.getIds());
+  if (!allNear (val.array(), expVal, 1.e-10)) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected "
+    cout << str << ": found value " << val.array() << "; expected "
          << expVal << endl;
   }
 }
@@ -167,10 +167,10 @@ void checkLazy (const TableExprNode& expr,
   }
   funcid.finish();
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  Array<DComplex> val = func->getArrayDComplex(*funcid.getIds());
-  if (!allNear (val, expVal, 1.e-10)) {
+  MArray<DComplex> val = func->getArrayDComplex(*funcid.getIds());
+  if (!allNear (val.array(), expVal, 1.e-10)) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected "
+    cout << str << ": found value " << val.array() << "; expected "
          << expVal << endl;
   }
 }
@@ -190,10 +190,10 @@ void checkHist (const TableExprNode& expr,
     func->apply (id);
   }
   func->finish();
-  Array<Int64> val = func->getArrayInt(vector<TableExprId>());
-  if (!allEQ (val, expVal)) {
+  MArray<Int64> val = func->getArrayInt(vector<TableExprId>());
+  if (!allEQ (val.array(), expVal)) {
     foundError = True;
-    cout << "ghist: found value " << val << "; expected "
+    cout << "ghist: found value " << val.array() << "; expected "
          << expVal << endl;
   }
 }

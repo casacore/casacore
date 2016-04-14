@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprNode.cc 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
@@ -195,6 +195,67 @@ TableExprNode::TableExprNode (const Array<MVTime>& val)
     node_p->link();
 }
 
+TableExprNode::TableExprNode (const MArray<Bool>& val)
+{
+    node_p = new TableExprNodeArrayConstBool (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<uChar>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<Short>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<uShort>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<Int>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<uInt>& val)
+{
+    node_p = new TableExprNodeArrayConstInt (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<Float>& val)
+{
+    node_p = new TableExprNodeArrayConstDouble (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<Double>& val)
+{
+    node_p = new TableExprNodeArrayConstDouble (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<Complex>& val)
+{
+    node_p = new TableExprNodeArrayConstDComplex (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<DComplex>& val)
+{
+    node_p = new TableExprNodeArrayConstDComplex (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<String>& val)
+{
+    node_p = new TableExprNodeArrayConstString (val);
+    node_p->link();
+}
+TableExprNode::TableExprNode (const MArray<MVTime>& val)
+{
+    node_p = new TableExprNodeArrayConstDate (val);
+    node_p->link();
+}
+
 TableExprNode::TableExprNode (TableExprNodeRep* node)
 : node_p (node->link())
 {}
@@ -259,7 +320,8 @@ TableExprNode TableExprNode::useUnit (const Unit& unit) const
 {
     if (node_p->dataType() != TableExprNodeRep::NTInt
     &&  node_p->dataType() != TableExprNodeRep::NTDouble
-    &&  node_p->dataType() != TableExprNodeRep::NTComplex) {
+    &&  node_p->dataType() != TableExprNodeRep::NTComplex
+    &&  node_p->dataType() != TableExprNodeRep::NTDate) {
         throwInvDT("units can only be used with numeric values");
     }
     return TableExprNodeUnit::useUnit (node_p, unit);
@@ -818,7 +880,6 @@ TableExprNodeRep* TableExprNode::newGE (TableExprNodeRep* right) const
 TableExprNodeRep* TableExprNode::newIN (TableExprNodeRep* right,
                                         const TaQLStyle& style) const
 {
-    // Use EQ if a single value is used (scalar or single set element).
     TableExprNodeRep::ValueType vtRight = right->valueType();
     if (vtRight == TableExprNodeRep::VTScalar) {
       return newEQ (right);
@@ -1078,6 +1139,33 @@ TableExprNode TableExprNode::newColumnNode (const Table& table,
     return tsnptr;
 }
 
+// Find the last TableRecord of the field names of a keyword.
+TableRecord* TableExprNode::findLastKeyRec (const TableRecord& keyset,
+                                            const Vector<String>& fieldNames,
+                                            String& fullName)
+{
+    const TableRecord* ksPtr = &keyset;
+    // All field names, except last one, should be records.
+    uInt last = fieldNames.nelements() - 1;
+    fullName.clear();
+    Int fieldnr = 0;
+    for (uInt i=0; i<last; i++) {
+	if (i > 0) {
+	    fullName += '.';
+	}
+	fullName += fieldNames(i);
+	fieldnr = ksPtr->fieldNumber (fieldNames(i));
+	if (fieldnr < 0) {
+	    throw (TableInvExpr ("Keyword " + fullName + " does not exist"));
+	}
+        if (ksPtr->dataType(fieldnr) != TpRecord) {
+          throw (TableInvExpr ("Keyword " + fullName + " is no record, "
+                               "so no subfields can be given for it"));
+        }
+        ksPtr = &(ksPtr->subRecord(fieldnr));
+    }
+    return const_cast<TableRecord*>(ksPtr);
+}
 
 //# Create a constant node for a keyword on behalf of the Table class.
 //# The constructor reads in the value and stores it as a constant.
@@ -1085,104 +1173,109 @@ TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
 					  const Vector<String>& fieldNames)
 {
     TableExprNodeRep* tsnptr = 0;
-    const TableRecord* ksPtr = &keyset;
-    // All field names, except last one, should be records.
-    uInt last = fieldNames.nelements() - 1;
-    String keyword;
-    Int fieldnr = 0;
-    for (uInt i=0; i<=last; i++) {
-	if (i > 0) {
-	    keyword += '.';
-	}
-	keyword += fieldNames(i);
-	fieldnr = ksPtr->fieldNumber (fieldNames(i));
-	if (fieldnr < 0) {
-	    throw (TableInvExpr ("Keyword " + keyword + " does not exist"));
-	}
-	if (i < last) {
-	    if (ksPtr->dataType(fieldnr) != TpRecord) {
-		throw (TableInvExpr ("Keyword " + keyword + " is no record, "
-				     "so no subfields can be given for it"));
-	    }
-	    ksPtr = &(ksPtr->subRecord(fieldnr));
-	}
+    String fullName;
+    const TableRecord* ks = findLastKeyRec (keyset, fieldNames, fullName);
+    String name = fieldNames[fieldNames.size() - 1];
+    fullName += '.' + name;
+    Int fieldnr = ks->fieldNumber (name);
+    if (fieldnr < 0) {
+      throw (TableInvExpr ("Keyword " + fullName + " does not exist"));
     }
-    const String& name = fieldNames(last);
-    switch (ksPtr->dataType (fieldnr)) {
+    switch (ks->dataType (fieldnr)) {
     case TpBool:
-	tsnptr = new TableExprNodeConstBool (ksPtr->asBool (name));
+	tsnptr = new TableExprNodeConstBool (ks->asBool (name));
 	break;
     case TpString:
-	tsnptr = new TableExprNodeConstString (ksPtr->asString (name));
+	tsnptr = new TableExprNodeConstString (ks->asString (name));
 	break;
     case TpComplex:
     case TpDComplex:
-	tsnptr = new TableExprNodeConstDComplex (ksPtr->asDComplex (name));
+	tsnptr = new TableExprNodeConstDComplex (ks->asDComplex (name));
 	break;
     case TpFloat:
     case TpDouble:
-	tsnptr = new TableExprNodeConstDouble (ksPtr->asDouble (name));
+	tsnptr = new TableExprNodeConstDouble (ks->asDouble (name));
 	break;
     case TpChar:
     case TpShort:
     case TpInt:
-	tsnptr = new TableExprNodeConstInt (ksPtr->asInt (name));
+	tsnptr = new TableExprNodeConstInt (ks->asInt (name));
 	break;
     case TpUChar:
     case TpUShort:
     case TpUInt:
-	tsnptr = new TableExprNodeConstInt (ksPtr->asuInt (name));
+	tsnptr = new TableExprNodeConstInt (ks->asuInt (name));
 	break;
     case TpArrayBool:
-	tsnptr = new TableExprNodeArrayConstBool (ksPtr->asArrayBool (name));
+	tsnptr = new TableExprNodeArrayConstBool (ks->asArrayBool (name));
 	break;
     case TpArrayString:
 	tsnptr = new TableExprNodeArrayConstString
-                                               (ksPtr->asArrayString (name));
+                                               (ks->asArrayString (name));
 	break;
     case TpArrayComplex:
 	tsnptr = new TableExprNodeArrayConstDComplex
-                                               (ksPtr->asArrayComplex (name));
+                                               (ks->asArrayComplex (name));
 	break;
     case TpArrayDComplex:
 	tsnptr = new TableExprNodeArrayConstDComplex
-                                               (ksPtr->asArrayDComplex (name));
+                                               (ks->asArrayDComplex (name));
 	break;
     case TpArrayUChar:
 	tsnptr = new TableExprNodeArrayConstInt
-                                               (ksPtr->asArrayuChar (name));
+                                               (ks->asArrayuChar (name));
 	break;
     case TpArrayShort:
 	tsnptr = new TableExprNodeArrayConstInt
-                                               (ksPtr->asArrayShort (name));
+                                               (ks->asArrayShort (name));
 	break;
     case TpArrayInt:
 	tsnptr = new TableExprNodeArrayConstInt
-                                               (ksPtr->asArrayInt (name));
+                                               (ks->asArrayInt (name));
 	break;
     case TpArrayUInt:
 	tsnptr = new TableExprNodeArrayConstInt
-                                               (ksPtr->asArrayuInt (name));
+                                               (ks->asArrayuInt (name));
 	break;
     case TpArrayFloat:
 	tsnptr = new TableExprNodeArrayConstDouble
-                                               (ksPtr->asArrayFloat (name));
+                                               (ks->asArrayFloat (name));
 	break;
     case TpArrayDouble:
 	tsnptr = new TableExprNodeArrayConstDouble
-                                               (ksPtr->asArrayDouble (name));
+                                               (ks->asArrayDouble (name));
 	break;
     case TpRecord:
-	throw (TableInvExpr ("Keyword " + keyword + " contains records, "
+	throw (TableInvExpr ("Keyword " + fullName + " contains records, "
 			     "so subfields have to be given for it"));
 	break;
     case TpTable:
 	throw (TableInvExpr ("Keyword " + name + " is a table"));
 	break;
     default:
-	throw (TableInvExpr ("keyword " + keyword + " has unknown data type"));
+	throw (TableInvExpr ("keyword " + fullName +
+                             " has unknown data type"));
     }
     return tsnptr;
+}
+
+TableExprNode diagonal (const TableExprNode& array,
+                        const TableExprNode& firstAxis)
+{
+    TableExprNodeSet set;
+    set.add (TableExprNodeSetElem(firstAxis));
+    return TableExprNode::newFunctionNode (TableExprFuncNode::diagonalFUNC,
+					   array, set);
+}
+TableExprNode diagonal (const TableExprNode& array,
+                        const TableExprNode& firstAxis,
+                        const TableExprNode& diag)
+{
+    TableExprNodeSet set;
+    set.add (TableExprNodeSetElem(firstAxis));
+    set.add (TableExprNodeSetElem(diag));
+    return TableExprNode::newFunctionNode (TableExprFuncNode::diagonalFUNC,
+					   array, set);
 }
 
 TableExprNode TableExprNode::newFunctionNode
@@ -1298,7 +1391,7 @@ TableExprNode TableExprNode::newFunctionNode
     TableExprNode res;
     if (resVT == TableExprNodeRep::VTScalar) {
         TableExprFuncNode* fnode = new TableExprFuncNode (ftype, resDT,
-							  resVT, set);
+							  resVT, set, table);
         SPtrHolder<TableExprFuncNode> fnodeHold(fnode);
 	res = TableExprFuncNode::fillNode (fnode, par, dtypeOper);
         fnodeHold.release();
@@ -1452,6 +1545,8 @@ DataType TableExprNode::dataType() const
 	    return TpDComplex;
 	case TableExprNodeRep::NTString:
 	    return TpString;
+	case TableExprNodeRep::NTDate:
+	    return TpQuantity;
 	default:
             return TpOther;
 	}

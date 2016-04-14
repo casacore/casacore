@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprUDFNodeArray.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 //# Includes
 #include <casacore/tables/TaQL/ExprUDFNodeArray.h>
@@ -86,17 +86,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return new TableExprGroupNull(this);
   }
 
-  Array<Bool>     TableExprUDFNodeArray::getArrayBool    (const TableExprId& id)
+  MArray<Bool>     TableExprUDFNodeArray::getArrayBool    (const TableExprId& id)
     { return itsUDF->getArrayBool (id); }
-  Array<Int64>    TableExprUDFNodeArray::getArrayInt     (const TableExprId& id)
+  MArray<Int64>    TableExprUDFNodeArray::getArrayInt     (const TableExprId& id)
     { return itsUDF->getArrayInt (id); }
-  Array<Double>   TableExprUDFNodeArray::getArrayDouble  (const TableExprId& id)
+  MArray<Double>   TableExprUDFNodeArray::getArrayDouble  (const TableExprId& id)
     { return itsUDF->getArrayDouble (id); }
-  Array<DComplex> TableExprUDFNodeArray::getArrayDComplex(const TableExprId& id)
+  MArray<DComplex> TableExprUDFNodeArray::getArrayDComplex(const TableExprId& id)
     { return itsUDF->getArrayDComplex (id); }
-  Array<String>   TableExprUDFNodeArray::getArrayString  (const TableExprId& id)
+  MArray<String>   TableExprUDFNodeArray::getArrayString  (const TableExprId& id)
     { return itsUDF->getArrayString (id); }
-  Array<MVTime>   TableExprUDFNodeArray::getArrayDate    (const TableExprId& id)
+  MArray<MVTime>   TableExprUDFNodeArray::getArrayDate    (const TableExprId& id)
     { return itsUDF->getArrayDate (id); }
 
 } //# NAMESPACE CASACORE - END

@@ -253,7 +253,7 @@ IPosition Slicer::inferShapeFromSource (const IPosition& shp,
 	if (asEnd_p == endIsLast) {
 	    if (end_p(i) != MimicSource) {
                 end(i) = end_p(i);
-                if (end(i) < 0) end(i) += shp(i) - 1;
+                if (end(i) < 0) end(i) += shp(i);
 	    }
 	}else{
 	    if (len_p(i) != MimicSource) {

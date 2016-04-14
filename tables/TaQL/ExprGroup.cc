@@ -33,6 +33,7 @@
 #include <casacore/tables/TaQL/ExprUDFNode.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <limits>
 
 
@@ -102,7 +103,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableExprGroupKeySet::fill (const vector<TableExprNode>& nodes,
                                    const TableExprId& id)
   {
-    DebugAssert (nodes.size() == itsKeys.size(), AipsError);
+    AlwaysAssert (nodes.size() == itsKeys.size(), AipsError);
     for (uInt i=0; i<itsKeys.size(); ++i) {
       switch (itsKeys[i].dataType()) {
       case TableExprNodeRep::NTBool:
@@ -202,17 +203,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   { throw TableInvExpr ("TableExprGroupFuncBase::getDate not implemented"); }
   String TableExprGroupFuncBase::getString (const vector<TableExprId>&)
   { throw TableInvExpr ("TableExprGroupFuncBase::getString not implemented"); }
-  Array<Bool> TableExprGroupFuncBase::getArrayBool (const vector<TableExprId>&)
+  MArray<Bool> TableExprGroupFuncBase::getArrayBool (const vector<TableExprId>&)
   { throw TableInvExpr ("TableExprGroupFuncBase::getArrayBool not implemented"); }
-  Array<Int64> TableExprGroupFuncBase::getArrayInt (const vector<TableExprId>&)
+  MArray<Int64> TableExprGroupFuncBase::getArrayInt (const vector<TableExprId>&)
   { throw TableInvExpr ("TableExprGroupFuncBase::getArrayInt not implemented"); }
-  Array<Double> TableExprGroupFuncBase::getArrayDouble (const vector<TableExprId>&)
+  MArray<Double> TableExprGroupFuncBase::getArrayDouble (const vector<TableExprId>&)
   { throw TableInvExpr ("TableExprGroupFuncBase::getArrayDouble not implemented"); }
-  Array<DComplex> TableExprGroupFuncBase::getArrayDComplex (const vector<TableExprId>&)
+  MArray<DComplex> TableExprGroupFuncBase::getArrayDComplex (const vector<TableExprId>&)
   { throw TableInvExpr ("TableExprGroupFuncBase::getArrayDComplex not implemented"); }
-  Array<MVTime> TableExprGroupFuncBase::getArrayDate (const vector<TableExprId>&)
+  MArray<MVTime> TableExprGroupFuncBase::getArrayDate (const vector<TableExprId>&)
   { throw TableInvExpr ("TableExprGroupFuncBase::getArrayDate not implemented"); }
-  Array<String> TableExprGroupFuncBase::getArrayString (const vector<TableExprId>&)
+  MArray<String> TableExprGroupFuncBase::getArrayString (const vector<TableExprId>&)
   { throw TableInvExpr ("TableExprGroupFuncBase::getArrayString not implemented"); }
 
 
@@ -253,17 +254,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     { return itsOperand->getDate (itsId); }
   String TableExprGroupFirst::getString (const vector<TableExprId>&)
     { return itsOperand->getString (itsId); }
-  Array<Bool> TableExprGroupFirst::getArrayBool (const vector<TableExprId>&)
+  MArray<Bool> TableExprGroupFirst::getArrayBool (const vector<TableExprId>&)
     { return itsOperand->getArrayBool (itsId); }
-  Array<Int64> TableExprGroupFirst::getArrayInt (const vector<TableExprId>&)
+  MArray<Int64> TableExprGroupFirst::getArrayInt (const vector<TableExprId>&)
     { return itsOperand->getArrayInt (itsId); }
-  Array<Double> TableExprGroupFirst::getArrayDouble (const vector<TableExprId>&)
+  MArray<Double> TableExprGroupFirst::getArrayDouble (const vector<TableExprId>&)
     { return itsOperand->getArrayDouble (itsId); }
-  Array<DComplex> TableExprGroupFirst:: getArrayDComplex (const vector<TableExprId>&)
+  MArray<DComplex> TableExprGroupFirst:: getArrayDComplex (const vector<TableExprId>&)
     { return itsOperand->getArrayDComplex (itsId); }
-  Array<MVTime> TableExprGroupFirst::getArrayDate (const vector<TableExprId>&)
+  MArray<MVTime> TableExprGroupFirst::getArrayDate (const vector<TableExprId>&)
     { return itsOperand->getArrayDate (itsId); }
-  Array<String> TableExprGroupFirst::getArrayString (const vector<TableExprId>&)
+  MArray<String> TableExprGroupFirst::getArrayString (const vector<TableExprId>&)
     { return itsOperand->getArrayString (itsId); }
 
   TableExprGroupLast::TableExprGroupLast (TableExprNodeRep* node)
@@ -309,14 +310,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     throw TableInvExpr ("TableExprGroupRowid::apply should not be called");
   }
-  Array<Int64> TableExprGroupRowid::getArrayInt (const vector<TableExprId>& ids)
+  MArray<Int64> TableExprGroupRowid::getArrayInt (const vector<TableExprId>& ids)
   {
     Vector<Int64> rowIds(ids.size());
     for (size_t i=0; i<ids.size(); ++ i) {
       rowIds[i] = ids[i].rownr();
     }
-    return rowIds;
-  }
+    return MArray<Int64>(rowIds);  }
 
   TableExprGroupAggr::TableExprGroupAggr (TableExprNodeRep* node)
     : TableExprGroupFuncBase (node)
@@ -331,17 +331,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     throw TableInvExpr ("TableExprGroupAggr::apply should not be called");
   }
-  Array<Bool> TableExprGroupAggr::getArrayBool (const vector<TableExprId>& ids)
+  MArray<Bool> TableExprGroupAggr::getArrayBool (const vector<TableExprId>& ids)
     { return getArray<Bool>(ids); }
-  Array<Int64> TableExprGroupAggr::getArrayInt (const vector<TableExprId>& ids)
+  MArray<Int64> TableExprGroupAggr::getArrayInt (const vector<TableExprId>& ids)
     { return getArray<Int64>(ids); }
-  Array<Double> TableExprGroupAggr::getArrayDouble (const vector<TableExprId>& ids)
+  MArray<Double> TableExprGroupAggr::getArrayDouble (const vector<TableExprId>& ids)
     { return getArray<Double>(ids); }
-  Array<DComplex> TableExprGroupAggr::getArrayDComplex (const vector<TableExprId>& ids)
+  MArray<DComplex> TableExprGroupAggr::getArrayDComplex (const vector<TableExprId>& ids)
     { return getArray<DComplex>(ids); }
-  Array<MVTime> TableExprGroupAggr::getArrayDate (const vector<TableExprId>& ids)
+  MArray<MVTime> TableExprGroupAggr::getArrayDate (const vector<TableExprId>& ids)
     { return getArray<MVTime>(ids); }
-  Array<String> TableExprGroupAggr::getArrayString (const vector<TableExprId>& ids)
+  MArray<String> TableExprGroupAggr::getArrayString (const vector<TableExprId>& ids)
     { return getArray<String>(ids); }
 
 
@@ -375,109 +375,115 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TableExprGroupFuncArrayBool::~TableExprGroupFuncArrayBool()
   {}
-  Array<Bool> TableExprGroupFuncArrayBool::getArrayBool (const vector<TableExprId>&)
-    { return itsValue; }
-  Bool TableExprGroupFuncArrayBool::checkShape (const ArrayBase& arr,
+  MArray<Bool> TableExprGroupFuncArrayBool::getArrayBool (const vector<TableExprId>&)
+    { return MArray<Bool>(itsValue); }
+  Bool TableExprGroupFuncArrayBool::checkShape (const MArrayBase& arr,
                                                 const String& func)
   {
     if (itsValue.empty()) {
-      itsValue.resize (arr.shape());
+      itsValue.resize (arr.shape(), arr.hasMask());
       return True;    // first time itsValue is used
     }
     if (! itsValue.shape().isEqual (arr.shape())) {
       throw TableInvExpr ("Mismatching array shapes in aggregate function " +
                           func);
     }
+    AlwaysAssert (arr.hasMask() == itsValue.hasMask(), AipsError);
     return False;
   }
 
   TableExprGroupFuncArrayInt::~TableExprGroupFuncArrayInt()
   {}
-  Array<Int64> TableExprGroupFuncArrayInt::getArrayInt (const vector<TableExprId>&)
-    { return itsValue; }
-  Bool TableExprGroupFuncArrayInt::checkShape (const ArrayBase& arr,
+  MArray<Int64> TableExprGroupFuncArrayInt::getArrayInt (const vector<TableExprId>&)
+    { return MArray<Int64>(itsValue); }
+  Bool TableExprGroupFuncArrayInt::checkShape (const MArrayBase& arr,
                                                const String& func)
   {
     if (itsValue.empty()) {
-      itsValue.resize (arr.shape());
+      itsValue.resize (arr.shape(), arr.hasMask());
       return True;    // first time itsValue is used
     }
     if (! itsValue.shape().isEqual (arr.shape())) {
       throw TableInvExpr ("Mismatching array shapes in aggregate function " +
                           func);
     }
+    AlwaysAssert (arr.hasMask() == itsValue.hasMask(), AipsError);
     return False;
   }
 
   TableExprGroupFuncArrayDouble::~TableExprGroupFuncArrayDouble()
   {}
-  Array<Double> TableExprGroupFuncArrayDouble::getArrayDouble (const vector<TableExprId>&)
-    { return itsValue; }
-  Bool TableExprGroupFuncArrayDouble::checkShape (const ArrayBase& arr,
+  MArray<Double> TableExprGroupFuncArrayDouble::getArrayDouble (const vector<TableExprId>&)
+    { return MArray<Double>(itsValue); }
+  Bool TableExprGroupFuncArrayDouble::checkShape (const MArrayBase& arr,
                                                   const String& func)
   {
     if (itsValue.empty()) {
-      itsValue.resize (arr.shape());
+      itsValue.resize (arr.shape(), arr.hasMask());
       return True;    // first time itsValue is used
     }
     if (! itsValue.shape().isEqual (arr.shape())) {
       throw TableInvExpr ("Mismatching array shapes in aggregate function " +
                           func);
     }
+    AlwaysAssert (arr.hasMask() == itsValue.hasMask(), AipsError);
     return False;
   }
 
   TableExprGroupFuncArrayDComplex::~TableExprGroupFuncArrayDComplex()
   {}
-  Array<DComplex> TableExprGroupFuncArrayDComplex::getArrayDComplex (const vector<TableExprId>&)
-    { return itsValue; }
-  Bool TableExprGroupFuncArrayDComplex::checkShape (const ArrayBase& arr,
+  MArray<DComplex> TableExprGroupFuncArrayDComplex::getArrayDComplex (const vector<TableExprId>&)
+    { return MArray<DComplex>(itsValue); }
+  Bool TableExprGroupFuncArrayDComplex::checkShape (const MArrayBase& arr,
                                                     const String& func)
   {
     if (itsValue.empty()) {
-      itsValue.resize (arr.shape());
+      itsValue.resize (arr.shape(), arr.hasMask());
       return True;    // first time itsValue is used
     }
     if (! itsValue.shape().isEqual (arr.shape())) {
       throw TableInvExpr ("Mismatching array shapes in aggregate function " +
                           func);
     }
+    AlwaysAssert (arr.hasMask() == itsValue.hasMask(), AipsError);
     return False;
   }
 
   TableExprGroupFuncArrayDate::~TableExprGroupFuncArrayDate()
   {}
-  Array<MVTime> TableExprGroupFuncArrayDate::getArrayDate (const vector<TableExprId>&)
-    { return itsValue; }
-  Bool TableExprGroupFuncArrayDate::checkShape (const ArrayBase& arr,
+  MArray<MVTime> TableExprGroupFuncArrayDate::getArrayDate (const vector<TableExprId>&)
+    { return MArray<MVTime>(itsValue); }
+  Bool TableExprGroupFuncArrayDate::checkShape (const MArrayBase& arr,
                                                 const String& func)
   {
     if (itsValue.empty()) {
-      itsValue.resize (arr.shape());
+      itsValue.resize (arr.shape(), arr.hasMask());
       return True;    // first time itsValue is used
     }
     if (! itsValue.shape().isEqual (arr.shape())) {
       throw TableInvExpr ("Mismatching array shapes in aggregate function " +
                           func);
     }
+    AlwaysAssert (arr.hasMask() == itsValue.hasMask(), AipsError);
     return False;
   }
 
   TableExprGroupFuncArrayString::~TableExprGroupFuncArrayString()
   {}
-  Array<String> TableExprGroupFuncArrayString::getArrayString (const vector<TableExprId>&)
-    { return itsValue; }
-  Bool TableExprGroupFuncArrayString::checkShape (const ArrayBase& arr,
+  MArray<String> TableExprGroupFuncArrayString::getArrayString (const vector<TableExprId>&)
+    { return MArray<String>(itsValue); }
+  Bool TableExprGroupFuncArrayString::checkShape (const MArrayBase& arr,
                                                   const String& func)
   {
     if (itsValue.empty()) {
-      itsValue.resize (arr.shape());
+      itsValue.resize (arr.shape(), arr.hasMask());
       return True;    // first time itsValue is used
     }
     if (! itsValue.shape().isEqual (arr.shape())) {
       throw TableInvExpr ("Mismatching array shapes in aggregate function " +
                           func);
     }
+    AlwaysAssert (arr.hasMask() == itsValue.hasMask(), AipsError);
     return False;
   }
 
