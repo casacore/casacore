@@ -1,0 +1,301 @@
+
+create table tTableGramAlttab_tmp.tab2 (col1 i4 [shape=[2,3], unit="m"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]
+    has been executed
+    cretab result of 0 rows
+2 selected columns:  col1 col2
+create table tTableGramAlttab_tmp.tab2/subtab
+    has been executed
+    cretab result of 0 rows
+0 selected columns: 
+
+Structure of table tTableGramAlttab_tmp.tab2
+------------------ 
+0 rows, 2 columns in little endian format (using 2 data managers)
+
+ IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
+    ActualCacheSize=1 PERSCACHESIZE=1
+  col1 Int      shape=[2,3] unit=[m]
+
+ StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col2 Bool     scalar
+alter table tTableGramAlttab_tmp.tab2/subtab ADD COLUMN colxyz S SET KEYWORD colxyz::skey="newval", tabk=4 as I2
+    has been executed
+    alttab result of 0 rows
+0 selected columns: 
+
+Structure of table tTableGramAlttab_tmp.tab2/subtab
+------------------ 
+0 rows, 1 columns in little endian format (using 1 data managers)
+
+ StandardStMan file=table.f0  name=SSM  bucketsize=384
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  colxyz String   scalar
+
+Keywords of main table 
+----------------------
+  Table Keywords
+    tabk: Short 4
+
+  Column colxyz
+    skey: String "newval"
+
+
+alter table tTableGramAlttab_tmp.tab2 SET KEYWORD subtab="Table: tTableGramAlttab_tmp.tab2/subtab", ::key1=3 AS I2, col1::subrec=[=], col1::subrec.k1="3x", key2=[2+3,4+5.] AS R4
+    has been executed
+    alttab result of 0 rows
+0 selected columns: 
+
+Structure of table tTableGramAlttab_tmp.tab2
+------------------ 
+0 rows, 2 columns in little endian format (using 2 data managers)
+
+ IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
+    ActualCacheSize=1 PERSCACHESIZE=1
+  col1 Int      shape=[2,3] unit=[m]
+
+ StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col2 Bool     scalar
+
+ SubTables:
+    tTableGramAlttab_tmp.tab2/subtab
+
+Keywords of main table 
+----------------------
+  Table Keywords
+    subtab: Table tTableGramAlttab_tmp.tab2/subtab
+    key1: Short 3
+    key2: Float array with shape [2]
+      [5, 9]
+
+  Column col1
+    QuantumUnits: String array with shape [1]
+      [m]
+    subrec: {
+      k1: String "3x"
+    }
+
+
+alter table tTableGramAlttab_tmp.tab2 SET KEYWORD keyrec=[sub1=[k1=1 as U1, k2=2 as I2, k3=3 as U4, k4=4 as I2, k5=5 as I4, k6=6 as I8, k7=7 as R4, k8=8 as R8, k9=9 as C4, k10=10 as C8, k11=T as B, K12="s" as S, subtab="Table: tTableGramAlttab_tmp.tab2/subtab"], sub2=[sub2a=[k1=1, k2=2., k3=3+3j, k4=T, k5="s"], sub2b=[k1=1. as R4, k2=2. as R8, k3=3. as C4, k4=4. as C8], sub2c=[k1=1+2i as C4]]]
+    has been executed
+    alttab result of 0 rows
+0 selected columns: 
+
+Structure of table tTableGramAlttab_tmp.tab2
+------------------ 
+0 rows, 2 columns in little endian format (using 2 data managers)
+
+ IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
+    ActualCacheSize=1 PERSCACHESIZE=1
+  col1 Int      shape=[2,3] unit=[m]
+
+ StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col2 Bool     scalar
+
+ SubTables:
+    tTableGramAlttab_tmp.tab2/subtab
+
+Keywords of main table 
+----------------------
+  Table Keywords
+    subtab: Table tTableGramAlttab_tmp.tab2/subtab
+    key1: Short 3
+    key2: Float array with shape [2]
+      [5, 9]
+    keyrec: {
+      sub1: {
+        k1: uChar 1
+        k2: Short 2
+        k3: uInt 3
+        k4: Short 4
+        k5: Int 5
+        k6: Int64 6
+        k7: Float 7
+        k8: Double 8
+        k9: Complex (9,0)
+        k10: DComplex (10,0)
+        k11: Bool 1
+        K12: String "s"
+        subtab: Table tTableGramAlttab_tmp.tab2/subtab
+      }
+      sub2: {
+        sub2a: {
+          k1: Int64 1
+          k2: Double 2
+          k3: DComplex (3,3)
+          k4: Bool 1
+          k5: String "s"
+        }
+        sub2b: {
+          k1: Float 1
+          k2: Double 2
+          k3: Complex (3,0)
+          k4: DComplex (4,0)
+        }
+        sub2c: {
+          k1: Complex (1,2)
+        }
+      }
+    }
+
+  Column col1
+    QuantumUnits: String array with shape [1]
+      [m]
+    subrec: {
+      k1: String "3x"
+    }
+
+
+alter table tTableGramAlttab_tmp.tab2 FROM ::subtab t1 COPY KEYWORD col1::subrec.k2 = t1.::tabk, col1::subrec.k1=t1.colxyz::skey, col1::subrec.k3=t1.::tabk as R4, keyrecc=keyrec RENAME KEYWORDS key1 TO key1n DROp keyword subtab, keyrec
+    has been executed
+    alttab result of 0 rows
+0 selected columns: 
+
+Structure of table tTableGramAlttab_tmp.tab2
+------------------ 
+0 rows, 2 columns in little endian format (using 2 data managers)
+
+ IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
+    ActualCacheSize=1 PERSCACHESIZE=1
+  col1 Int      shape=[2,3] unit=[m]
+
+ StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col2 Bool     scalar
+
+Keywords of main table 
+----------------------
+  Table Keywords
+    key1n: Short 3
+    key2: Float array with shape [2]
+      [5, 9]
+    keyrecc: {
+      sub1: {
+        k1: uChar 1
+        k2: Short 2
+        k3: uInt 3
+        k4: Short 4
+        k5: Int 5
+        k6: Int64 6
+        k7: Float 7
+        k8: Double 8
+        k9: Complex (9,0)
+        k10: DComplex (10,0)
+        k11: Bool 1
+        K12: String "s"
+        subtab: Table tTableGramAlttab_tmp.tab2/subtab
+      }
+      sub2: {
+        sub2a: {
+          k1: Int64 1
+          k2: Double 2
+          k3: DComplex (3,3)
+          k4: Bool 1
+          k5: String "s"
+        }
+        sub2b: {
+          k1: Float 1
+          k2: Double 2
+          k3: Complex (3,0)
+          k4: DComplex (4,0)
+        }
+        sub2c: {
+          k1: Complex (1,2)
+        }
+      }
+    }
+
+  Column col1
+    QuantumUnits: String array with shape [1]
+      [m]
+    subrec: {
+      k1: String "newval"
+      k2: Short 4
+      k3: Float 4
+    }
+
+
+alter table tTableGramAlttab_tmp.tab2 ADD COLUMN col1a i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2a B
+    has been executed
+    alttab result of 0 rows
+0 selected columns: 
+
+Structure of table tTableGramAlttab_tmp.tab2
+------------------ 
+0 rows, 4 columns in little endian format (using 3 data managers)
+
+ IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
+    ActualCacheSize=1 PERSCACHESIZE=1
+  col1  Int      shape=[2,3] unit=[m]
+
+ StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col2  Bool     scalar
+
+ StandardStMan file=table.f2  name=SSM  bucketsize=260
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col1a Int      shape=[2,3] unit=[m]
+  col2a Bool     scalar
+
+alter table tTableGramAlttab_tmp.tab2 RENAME COLUMN col1a to col1b, col2a to col2b
+    has been executed
+    alttab result of 0 rows
+0 selected columns: 
+
+Structure of table tTableGramAlttab_tmp.tab2
+------------------ 
+0 rows, 4 columns in little endian format (using 3 data managers)
+
+ IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
+    ActualCacheSize=1 PERSCACHESIZE=1
+  col1  Int      shape=[2,3] unit=[m]
+
+ StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col2  Bool     scalar
+
+ StandardStMan file=table.f2  name=SSM  bucketsize=260
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  col1b Int      shape=[2,3] unit=[m]
+  col2b Bool     scalar
+alter table tTableGramAlttab_tmp.tab2 DELETE COLUMN col1b,col2 ,ADDrows 4 +5, set keyword col1::emvec=[] as R4
+    has been executed
+    alttab result of 9 rows
+0 selected columns: 
+
+Structure of table tTableGramAlttab_tmp.tab2
+------------------ 
+9 rows, 2 columns in little endian format (using 2 data managers)
+
+ IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
+    ActualCacheSize=1 PERSCACHESIZE=1
+  col1  Int      shape=[2,3] unit=[m]
+
+ StandardStMan file=table.f2  name=SSM  bucketsize=260
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=134
+  col2b Bool     scalar
+
+Keywords of main table 
+----------------------
+  Column col1
+    QuantumUnits: String array with shape [1]
+      [m]
+    subrec: {
+      k1: String "newval"
+      k2: Short 4
+      k3: Float 4
+    }
+    emvec: Float array with shape [0]
+      []
+
+alter table [create table tTableGramAlttab_tmp.tab3 (ab R4)] set keyword ac=3
+    has been executed
+    alttab result of 0 rows
+0 selected columns: 
+select iscolumn("col1b"), iskeyword("ac"), iscolumn("col2b"), iskeyword("col1::subrec"), iskeyword("col1::subrec.k2"), iskeyword("key1n"), t2.iscolumn("ab"), t2.iskeyword("ac"), t2.iscolumn("col2b"), t2.iskeyword("key1n") from tTableGramAlttab_tmp.tab2, tTableGramAlttab_tmp.tab3 as t2 limit 1
+    has been executed
+    select result of 1 rows
+10 selected columns:  Col_1 Col_2 Col_3 Col_4 Col_5 Col_6 Col_7 Col_8 Col_9 Col_10
+ 0 0 1 1 1 1 1 1 0 0

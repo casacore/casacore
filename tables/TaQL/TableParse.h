@@ -37,6 +37,7 @@
 #include <casacore/tables/TaQL/ExprGroup.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Sort.h>
+#include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/Block.h>
 #include <map>
 #include <vector>
@@ -247,8 +248,8 @@ private:
 // </prerequisite>
 
 // <etymology>
-// TableParseUpdate holds a column name, optional indices, and an
-// update expression.
+// TableParseUpdate holds a column name, optional indices, optional mask,
+// and an update expression.
 // </etymology>
 
 // <synopsis> 
@@ -266,23 +267,49 @@ public:
 
   // Construct from a column name and expression.
   // By default it checks if no aggregate functions are used.
-  TableParseUpdate (const String& columnName, const TableExprNode&,
+  TableParseUpdate (const String& columnName,
+                    const String& columnNameMask,
+                    const TableExprNode&,
                     Bool checkAggr=True);
 
-  // Construct from a column name, subscripts, and expression.
+  // Construct from a column name, subscripts or mask, and expression.
   // It checks if no aggregate functions are used.
   TableParseUpdate (const String& columnName,
+                    const String& columnNameMask,
 		    const TableExprNodeSet& indices,
-		    const TableExprNode&,
+                    const TableExprNode&,
 		    const TaQLStyle&);
 
+  // Construct from a column name, subscripts and mask, and expression.
+  // It checks if no aggregate functions are used.
+  // It checks if one of the indices represents subscripts, the other a mask.
+  TableParseUpdate (const String& columnName,
+                    const String& columnNameMask,
+		    const TableExprNodeSet& indices1,
+		    const TableExprNodeSet& indices2,
+                    const TableExprNode&,
+		    const TaQLStyle&);
+  // Handle the subscripts or mask.
+  // It checks if subscripts or mask was not already used.
+  void handleIndices (const TableExprNodeSet& indices,
+                      const TaQLStyle& style);
   ~TableParseUpdate();
 
   // Set the column name.
   void setColumnName (const String& name);
 
+  // Set the column name forthe mask.
+  void setColumnNameMask (const String& name);
+
   // Get the column name.
   const String& columnName() const;
+
+  // Get the possible column name for the mask.
+  const String& columnNameMask() const;
+
+  // Tell if the mask is given first (i.e., before slice).
+  Bool maskFirst() const
+    { return maskFirst_p; }
 
   // Get the pointer to the indices.
   TableExprNodeIndex* indexPtr() const;
@@ -296,14 +323,21 @@ public:
   TableExprNode& node();
   // </group>
 
+  // Get the mask.
+  const TableExprNode& mask() const
+    { return mask_p; }
+
   // Adapt the possible unit of the expression to the possible unit
   // of the column.
   void adaptUnit (const Unit& columnUnit);
 
 private:
   String              columnName_p;
-  TableExprNodeIndex* indexPtr_p;      //# copy of pointer in indexNode_p
+  String              columnNameMask_p;
+  Bool                maskFirst_p;  //# True = mask is given before slice
+  TableExprNodeIndex* indexPtr_p;   //# copy of pointer in indexNode_p
   TableExprNode       indexNode_p;
+  TableExprNode       mask_p;
   TableExprNode       node_p;
 };
 
@@ -353,7 +387,8 @@ public:
     PDELETE,
     PCOUNT,
     PCALC,
-    PCRETAB
+    PCRETAB,
+    PALTTAB
   };
 
   enum GroupAggrType {
@@ -375,6 +410,9 @@ public:
   // Return the expression node.
   TableExprNode getNode() const
     { return node_p; }
+
+  // Create a temporary table in no tables are given in FROM.
+  void makeTableNoFrom (const vector<TableParseSelect*>& stack);
 
   // Execute the select command (select/sort/projection/groupby/having/giving).
   // The setInGiving flag tells if a set in the GIVING part is allowed.
@@ -414,14 +452,56 @@ public:
   void handleCalcComm (const TableExprNode&);
 
   // Keep the create table command.
-  void handleCreTab (const String& tableName, const Record& dmInfo);
+  void handleCreTab (const Record& dmInfo);
 
   // Keep the column specification in a create table command.
   void handleColSpec (const String& columnName, const String& dataType,
 		      const Record& spec, Bool isCOrder=False);
 
+  // Reopen the table (for update) used in the ALTER TABLE command.
+  void handleAltTab();
+
+  // Add columns to the table of ALTER TABLE.
+  // The column descriptions have already been added to tableDesc_p.
+  void handleAddCol (const Record& dmInfo);
+
+  // Add a keyword or replace a keyword with the value of another keyword.
+  // The keywords can be table or column keywords (col::key).
+  ValueHolder getRecFld (const String& name);
+
+  // Define a field with the given data type in the Record.
+  static void setRecFld (RecordInterface& rec,
+                         const String& name,
+                         const String& dtype,
+                         const ValueHolder& vh);
+
+  // Get the type string. If empty, it is made from the given
+  // data type.
+  static String getTypeString (const String& typeStr, DataType type);
+
+  // Add a keyword or replace a keyword with a value.
+  // The keyword can be a table or column keyword (col::key).
+  // The data type string can be empty leaving the data type unchanged.
+  void handleSetKey (const String& name, const String& dtype,
+                     const ValueHolder& value);
+
+  // Rename a table or column keyword.
+  void handleRenameKey (const String& oldName, const String& newName);
+
+  // Remove a table or column keyword.
+  void handleRemoveKey (const String& name);
+
+  // Split the given name into optional shorthand, column and fields.
+  // Find the keywordset for it and fill in the final keyword name.
+  // It is a helper function for handleSetKey, etc.
+  TableRecord& findKeyword (const String& name, String& keyName);
+
   // Add an update object.
   void addUpdate (TableParseUpdate* upd);
+
+  // Set the insert expressions for all rows.
+  void setInsertExprs (const std::vector<TableExprNode> exprs)
+    { insertExprs_p = exprs; }
 
   // Keep the update expressions.
   void handleUpdate();
@@ -451,12 +531,26 @@ public:
   // Evaluate and keep the offset value.
   void handleOffset (const TableExprNode& expr);
 
+  // Evaluate and add the rows.
+  void handleAddRow (const TableExprNode& expr);
+
   // Add a table nr, name, or object to the container.
   void addTable (Int tabnr, const String& name,
 		 const Table& table,
 		 const String& shorthand,
 		 const vector<const Table*> tempTables,
 		 const vector<TableParseSelect*>& stack);
+
+  // Make a Table object for given name, seqnr or so.
+  // If <src>alwaysOpen=False</src> the table will only be looked up,
+  // but not opened if not found. This is meant for concatenated tables
+  // in TaQLNodeHandler.
+  Table makeTable (Int tabnr, const String& name,
+                   const Table& ftab,
+                   const String& shorthand,
+                   const vector<const Table*> tempTables,
+                   const vector<TableParseSelect*>& stack,
+                   Bool alwaysOpen=True);
 
   // Replace the first table (used by CALC command).
   void replaceTable (const Table& table);
@@ -487,13 +581,18 @@ public:
 
   // Add a column to the list of column names.
   void handleColumn (Int type, const String& name, const TableExprNode& expr,
-		     const String& newName, const String& newDtype);
+		     const String& newName, const String& nameMask,
+                     const String& newDtype);
 
   // Finish the addition of columns to the list of column names.
   void handleColumnFinish (Bool distinct);
 
+  // Set the DataManager info for a new table.
+  void setDMInfo (const Record& dminfo)
+    { dminfo_p = dminfo;}
+
   // Handle the name and type given in a GIVING clause.
-  void handleGiving (const String& name, Int type);
+  void handleGiving (const String& name, const Record& type);
 
   // Handle the set given in a GIVING clause.
   void handleGiving (const TableExprNodeSet&);
@@ -506,6 +605,19 @@ public:
 
   // An exception is thrown if the node uses an aggregate function.
   static void checkAggrFuncs (const TableExprNode& node);
+
+  // Split a name into its parts (shorthand, column and field names).
+  // True is returned if the name contained a keyword part.
+  // In that case fieldNames contains the keyword name and the possible
+  // subfields. The possible shorthand and the column name are
+  // filled in if it is a column keyword.
+  // If the name represents a column, fieldNames contains the subfields
+  // of the column (for the case where the column contains records).
+  // If the name is invalid, an exception is thrown if checkError=True.
+  // Otherwise the name is treated as a normal name without keyword.
+  static Bool splitName (String& shorthand, String& columnName,
+                         Vector<String>& fieldNames, const String& name,
+                         Bool checkError, Bool isKeyword);
 
 private:
   // Test if groupby or aggregate functions are given.
@@ -560,6 +672,11 @@ private:
   Table doProjectExpr (Bool useSel,
                        const CountedPtr<TableExprGroupResult>& groups);
 
+  // Create a table using the given parameters.
+  // The variables set by handleGiven are used for name and type.
+  Table createTable (const TableDesc& td,
+                     Int64 nrow, const Record& dmInfo);
+
   // Make the (empty) table for the epxression in the SELECT clause.
   void makeProjectExprTable();
 
@@ -610,15 +727,38 @@ private:
   // Update the values in the columns (helpers of doUpdate).
   // <group>
   template<typename TCOL, typename TNODE>
-  void updateValue2 (uInt row, const TableExprId& rowid, Bool isScalarCol,
-                     const TableExprNode& node, TableColumn& col,
-                     const Slicer* slicerPtr,
-                     IPosition& blc, IPosition& trc, IPosition& inc);
-  template<typename T>
-  void updateValue1 (uInt row, const TableExprId& rowid, Bool isScalarCol,
-                     const TableExprNode& node, TableColumn& col,
-                     const Slicer* slicerPtr,
-                     IPosition& blc, IPosition& trc, IPosition& inc);
+  void updateValue (uInt row, const TableExprId& rowid,
+                    Bool isScalarCol, const TableExprNode& node,
+                    const Array<Bool>& mask, Bool maskFirst,
+                    TableColumn& col, const Slicer* slicerPtr,
+                    ArrayColumn<Bool>& maskCol);
+  template<typename TCOL, typename TNODE>
+  void updateScalar (uInt row, const TableExprId& rowid,
+                     const TableExprNode& node,
+                     TableColumn& col);
+  template<typename TCOL, typename TNODE>
+  void updateArray (uInt row, const TableExprId& rowid,
+                    const TableExprNode& node,
+                    const Array<TNODE>& res,
+                    ArrayColumn<TCOL>& col);
+  template<typename TCOL, typename TNODE>
+  void updateSlice (uInt row, const TableExprId& rowid,
+                    const TableExprNode& node,
+                    const Array<TNODE>& res,
+                    const Slicer& slice,
+                    ArrayColumn<TCOL>& col);
+  template<typename TCOL, typename TNODE>
+  void copyMaskedValue (uInt row, ArrayColumn<TCOL>& acol,
+                        const Slicer* slicerPtr,
+                        const TNODE* val,
+                        uInt incr, const Array<Bool>& mask);
+  Array<Bool> makeMaskSlice (const Array<Bool>& mask,
+                             Bool maskFirst,
+                             const IPosition& shapeCol,
+                             const Slicer* slicerPtr);
+  void checkMaskColumn (Bool hasMask,
+                        const ArrayColumn<Bool>& maskCol,
+                        const TableColumn& col);
   // </group>
 
   // Make a data type from the string.
@@ -638,19 +778,6 @@ private:
 
   // Evaluate an int scalar expression.
   Int64 evalIntScaExpr (const TableExprNode& expr) const;
-
-  // Split a name into its parts (shorthand, column and field names).
-  // True is returned when the name contained a keyword part.
-  // In that case fieldNames contains the keyword name and the possible
-  // subfields. The possible shorthand and the column name are
-  // filled in if it is a column keyword.
-  // If the name represents a column, fieldNames contains the subfields
-  // of the column (for the case where the column contains records).
-  // If the name is invalid, an exception is thrown if checkError=True.
-  // Otherwise the name is treated as a normal name without keyword.
-  Bool splitName (String& shorthand, String& columnName,
-		  Vector<String>& fieldNames, const String& name,
-		  Bool checkError) const;
 
   // Find a table for the given shorthand.
   // If no shorthand is given, the first table is returned (if there).
@@ -741,6 +868,8 @@ private:
   vector<TableParse> fromTables_p;
   //# Block of selected column names (new name in case of select).
   Block<String> columnNames_p;
+  //# Block of selected mask column names (for masked arrays).
+  Block<String> columnNameMasks_p;
   //# Block of selected column expressions.
   Block<TableExprNode> columnExpr_p;
   //# The old name for a selected column.
@@ -755,7 +884,12 @@ private:
   Bool distinct_p;
   //# Name and type of the resulting table (from GIVING part).
   String resultName_p;
-  Int    resultType_p;
+  uInt   resultType_p;    //# 0-unknown 1=memory 2=scratch 3=plain
+  Bool   resultCreated_p; //# Has the result table been created?
+  StorageOption storageOption_p;
+  Table::EndianFormat endianFormat_p;
+  Bool overwrite_p;
+  Record dminfo_p;
   //# Resulting set (from GIVING part).
   TableExprNodeSet* resultSet_p;
   //# The WHERE expression tree.
@@ -774,8 +908,10 @@ private:
   Int64 offset_p;
   //# The possible stride in offset:endrow:stride.
   Int64 stride_p;
-  //# The update or insert expression list.
+  //# The update and insert list.
   std::vector<TableParseUpdate*> update_p;
+  //# The insert expressions (possibly for multiple rows).
+  std::vector<TableExprNode> insertExprs_p;
   //# The table selection to be inserted.
   TableParseSelect* insSel_p;
   //# The sort list.
@@ -818,8 +954,12 @@ inline const Table& TableParse::table() const
 
 inline void TableParseUpdate::setColumnName (const String& name)
   { columnName_p = name; }
+inline void TableParseUpdate::setColumnNameMask (const String& name)
+  { columnNameMask_p = name; }
 inline const String& TableParseUpdate::columnName() const
   { return columnName_p; }
+inline const String& TableParseUpdate::columnNameMask() const
+  { return columnNameMask_p; }
 inline TableExprNodeIndex* TableParseUpdate::indexPtr() const
   { return indexPtr_p; }
 inline const TableExprNode& TableParseUpdate::indexNode() const

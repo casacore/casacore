@@ -1,0 +1,218 @@
+
+Test simple masking ...
+select sum(arr1),sum(arr1[arr1%3>0]),sum(arr1[arr1%3==0]) from tTableGramMasked_tmp.tab
+    has been executed
+    select result of 10 rows
+3 selected columns:  Col_1 Col_2 Col_3
+ 276 84 192
+ 852 276 576
+ 1428 468 960
+ 2004 660 1344
+ 2580 852 1728
+ 3156 1044 2112
+ 3732 1236 2496
+ 4308 1428 2880
+ 4884 1620 3264
+ 5460 1812 3648
+
+Test replace(un)masked ...
+select sum(arraydata(replacemasked(arr1[arr1%3>0], 1))) from tTableGramMasked_tmp.tab
+    has been executed
+    select result of 10 rows
+1 selected columns:  Col_1
+ 100
+ 292
+ 484
+ 676
+ 868
+ 1060
+ 1252
+ 1444
+ 1636
+ 1828
+select sum(arraydata(replaceunmasked(arr1[arr1%3>0], 1))) from tTableGramMasked_tmp.tab
+    has been executed
+    select result of 10 rows
+1 selected columns:  Col_1
+ 200
+ 584
+ 968
+ 1352
+ 1736
+ 2120
+ 2504
+ 2888
+ 3272
+ 3656
+
+Test (col,mask) in SELECT ...
+select arr1, sums(arr1[arr1%2=0],1,2) as (a1,m1) R4 from tTableGramMasked_tmp.tab limit 2 giving tTableGramMasked_tmp.tab1
+    has been executed
+    select result of 2 rows
+2 selected columns:  arr1 a1
+ shape=[2, 3, 4] shape=[4]
+ shape=[2, 3, 4] shape=[4]
+    select result of 2 rows
+2 selected columns:  a1 m1
+[9, 27, 45, 63]       [0, 0, 0, 0]
+[81, 99, 117, 135]    [0, 0, 0, 0]
+select sums(gaggr(arr1[arr1%2=0]),[1,4]) as (a1,m1) R4 from tTableGramMasked_tmp.tab groupby ab%2 giving tTableGramMasked_tmp.tab1
+    has been executed
+    select result of 2 rows
+1 selected columns:  a1
+ shape=[3, 4]
+ shape=[3, 4]
+    select result of 2 rows
+2 selected columns:  a1 m1
+Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[485, 515, 545, 575
+ 495, 525, 555, 585
+ 505, 535, 565, 595]
+      Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[0, 0, 0, 0
+ 0, 0, 0, 0
+ 0, 0, 0, 0]
+
+Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[605, 635, 665, 695
+ 615, 645, 675, 705
+ 625, 655, 685, 715]
+      Axis Lengths: [3, 4]  (NB: Matrix in Row/Column order)
+[0, 0, 0, 0
+ 0, 0, 0, 0
+ 0, 0, 0, 0]
+select gsums(arr1[array(rowid()%2=0,shape(arr1))]) as (a1,m1) R4 from tTableGramMasked_tmp.tab groupby ab%2 giving tTableGramMasked_tmp.tab2
+    has been executed
+    select result of 2 rows
+1 selected columns:  a1
+ shape=[2, 3, 4]
+ shape=[2, 3, 4]
+    select result of 2 rows
+2 selected columns:  a1 m1
+Ndim=3 Axis Lengths: [2, 3, 4] 
+[0, 0, 0][0, 0]
+[0, 1, 0][0, 0]
+[0, 2, 0][0, 0]
+[0, 0, 1][0, 0]
+[0, 1, 1][0, 0]
+[0, 2, 1][0, 0]
+[0, 0, 2][0, 0]
+[0, 1, 2][0, 0]
+[0, 2, 2][0, 0]
+[0, 0, 3][0, 0]
+[0, 1, 3][0, 0]
+[0, 2, 3][0, 0]
+      Ndim=3 Axis Lengths: [2, 3, 4] 
+[0, 0, 0][1, 1]
+[0, 1, 0][1, 1]
+[0, 2, 0][1, 1]
+[0, 0, 1][1, 1]
+[0, 1, 1][1, 1]
+[0, 2, 1][1, 1]
+[0, 0, 2][1, 1]
+[0, 1, 2][1, 1]
+[0, 2, 2][1, 1]
+[0, 0, 3][1, 1]
+[0, 1, 3][1, 1]
+[0, 2, 3][1, 1]
+
+Ndim=3 Axis Lengths: [2, 3, 4] 
+[0, 0, 0][600, 605]
+[0, 1, 0][610, 615]
+[0, 2, 0][620, 625]
+[0, 0, 1][630, 635]
+[0, 1, 1][640, 645]
+[0, 2, 1][650, 655]
+[0, 0, 2][660, 665]
+[0, 1, 2][670, 675]
+[0, 2, 2][680, 685]
+[0, 0, 3][690, 695]
+[0, 1, 3][700, 705]
+[0, 2, 3][710, 715]
+      Ndim=3 Axis Lengths: [2, 3, 4] 
+[0, 0, 0][0, 0]
+[0, 1, 0][0, 0]
+[0, 2, 0][0, 0]
+[0, 0, 1][0, 0]
+[0, 1, 1][0, 0]
+[0, 2, 1][0, 0]
+[0, 0, 2][0, 0]
+[0, 1, 2][0, 0]
+[0, 2, 2][0, 0]
+[0, 0, 3][0, 0]
+[0, 1, 3][0, 0]
+[0, 2, 3][0, 0]
+
+
+Test HAVING on mask in (col,mask) ...
+using style trace select sums(gaggr(arr1[array(ab%2=1,shape(arr1))]),4) as (a1,m1) from tTableGramMasked_tmp.tab groupby ab%2 having !any(m1) giving tTableGramMasked_tmp.tab3
+    has been executed
+    select result of 1 rows
+1 selected columns:  a1
+ shape=[2, 3, 4]
+    select result of 2 rows
+2 selected columns:  a1 m1
+Ndim=3 Axis Lengths: [2, 3, 4] 
+[0, 0, 0][480, 485]
+[0, 1, 0][490, 495]
+[0, 2, 0][500, 505]
+[0, 0, 1][510, 515]
+[0, 1, 1][520, 525]
+[0, 2, 1][530, 535]
+[0, 0, 2][540, 545]
+[0, 1, 2][550, 555]
+[0, 2, 2][560, 565]
+[0, 0, 3][570, 575]
+[0, 1, 3][580, 585]
+[0, 2, 3][590, 595]
+      Ndim=3 Axis Lengths: [2, 3, 4] 
+[0, 0, 0][0, 0]
+[0, 1, 0][0, 0]
+[0, 2, 0][0, 0]
+[0, 0, 1][0, 0]
+[0, 1, 1][0, 0]
+[0, 2, 1][0, 0]
+[0, 0, 2][0, 0]
+[0, 1, 2][0, 0]
+[0, 2, 2][0, 0]
+[0, 0, 3][0, 0]
+[0, 1, 3][0, 0]
+[0, 2, 3][0, 0]
+
+Ndim=3 Axis Lengths: [2, 3, 4] 
+[0, 0, 0][0, 0]
+[0, 1, 0][0, 0]
+[0, 2, 0][0, 0]
+[0, 0, 1][0, 0]
+[0, 1, 1][0, 0]
+[0, 2, 1][0, 0]
+[0, 0, 2][0, 0]
+[0, 1, 2][0, 0]
+[0, 2, 2][0, 0]
+[0, 0, 3][0, 0]
+[0, 1, 3][0, 0]
+[0, 2, 3][0, 0]
+      Ndim=3 Axis Lengths: [2, 3, 4] 
+[0, 0, 0][1, 1]
+[0, 1, 0][1, 1]
+[0, 2, 0][1, 1]
+[0, 0, 1][1, 1]
+[0, 1, 1][1, 1]
+[0, 2, 1][1, 1]
+[0, 0, 2][1, 1]
+[0, 1, 2][1, 1]
+[0, 2, 2][1, 1]
+[0, 0, 3][1, 1]
+[0, 1, 3][1, 1]
+[0, 2, 3][1, 1]
+
+Test (col,mask) in INSERT ...
+insert into [create table tTableGramMasked_tmp.tab1 a1 I4 ndim=1, m1 B ndim=1] ((a1,m1)) VALUES (array([1:2],2)[array([T,F],2)])
+    has been executed
+    insert result of 1 rows
+1 selected columns:  a1
+ shape=[2]
+    select result of 1 rows
+2 selected columns:  a1 m1
+[1, 2]        [1, 0]
+

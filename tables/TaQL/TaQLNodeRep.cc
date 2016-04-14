@@ -60,6 +60,8 @@ String TaQLNodeRep::checkDataType (const String& dtype)
     } else if (dtstr == "U4" ||  dtstr == "UI4"
 	   ||  dtstr == "UINT"  ||  dtstr == "UINTEGER") {
       dtstr = "U4";
+    } else if (dtstr == "I8"  ||  dtstr == "INT8") {
+      dtstr = "I8";
     } else if (dtstr == "FLT"  ||  dtstr == "R4"  ||  dtstr == "FLOAT") {
       dtstr = "R4";
     } else if (dtstr == "DBL"  ||  dtstr == "R8"  ||  dtstr == "DOUBLE") {
@@ -71,6 +73,8 @@ String TaQLNodeRep::checkDataType (const String& dtype)
       dtstr = "C8";
     } else if (dtstr == "S"  ||  dtstr == "STRING") {
       dtstr = "S";
+    } else if (dtstr == "TIME"  ||  dtstr == "DATE"  ||  dtstr == "EPOCH") {
+      dtstr = "EPOCH";
     } else {
       throw TableError ("Datatype '" + dtype + "' is invalid");
     }

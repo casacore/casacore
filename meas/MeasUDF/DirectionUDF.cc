@@ -36,6 +36,8 @@ namespace casacore {
 
   UDFBase* DirectionUDF::makeDIR (const String&)
     { return new DirectionUDF (DIRECTION); }
+  UDFBase* DirectionUDF::makeDIRCOS (const String&)
+    { return new DirectionUDF (DIRCOS); }
   UDFBase* DirectionUDF::makeHADEC (const String&)
     { return new DirectionUDF (HADEC); }
   UDFBase* DirectionUDF::makeAZEL (const String&)
@@ -52,6 +54,8 @@ namespace casacore {
     { return new DirectionUDF (GALACTIC); }
   UDFBase* DirectionUDF::makeSGAL (const String&)
     { return new DirectionUDF (SUPERGALACTIC); }
+  UDFBase* DirectionUDF::makeITRF (const String&)
+    { return new DirectionUDF (ITRF); }
   UDFBase* DirectionUDF::makeRISESET (const String&)
     { return new DirectionUDF (HADEC, True); }
 
@@ -79,6 +83,8 @@ namespace casacore {
       itsRefType = MDirection::GALACTIC;
     } else if (itsType == SUPERGALACTIC) {
       itsRefType = MDirection::SUPERGAL;
+    } else if (itsType == ITRF) {
+      itsRefType = MDirection::ITRF;
     } else {
       itsEngine.handleDirType (operands()[0]);
       itsRefType = itsEngine.refType();
@@ -125,21 +131,22 @@ namespace casacore {
 
   Double DirectionUDF::getDouble (const TableExprId& id)
   {
-    return getArrayDouble (id).data()[0];
+    return getArrayDouble(id).array().data()[0];
   }
 
-  Array<Double> DirectionUDF::getArrayDouble (const TableExprId& id)
+  MArray<Double> DirectionUDF::getArrayDouble (const TableExprId& id)
   {
-    return itsEngine.getArrayDouble (id, itsRiseSet);
+    return MArray<Double>(itsEngine.getArrayDouble (id, itsRiseSet,
+                                                    itsType==DIRCOS));
   }
-  Array<MVTime> DirectionUDF::getArrayDate (const TableExprId& id)
+  MArray<MVTime> DirectionUDF::getArrayDate (const TableExprId& id)
   {
-    Array<Double> res = itsEngine.getArrayDouble (id, itsRiseSet);
+    Array<Double> res = itsEngine.getArrayDouble (id, itsRiseSet, False);
     Array<MVTime> dates(res.shape());
     for (uInt i=0; i<res.size(); ++i) {
       dates.data()[i] = MVTime(res.data()[i]);
     }
-    return dates;
+    return MArray<MVTime>(dates);
   }
 
 } //end namespace

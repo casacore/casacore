@@ -33,10 +33,173 @@
 #include <casacore/tables/Tables/TableColumn.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Utilities/Sort.h>
+#include <casacore/tables/TaQL/MArrayMath.h>
+#include <casacore/tables/TaQL/MArrayLogical.h>
+#include <vector>
 #include <limits>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
+
+  // Clear value is masked off.
+  template<typename T>
+  void TEGClearMasked (MArray<T>& arr)
+  {
+    if (arr.hasMask()) {
+      Array<Bool>::const_contiter m = arr.mask().cbegin();
+      for (typename Array<T>::contiter p = arr.array().cbegin();
+           p != arr.array().cend(); ++p, ++m) {
+        if (*m) *p = T();
+      }
+    }
+  }
+
+  template<typename T>
+  void TEGMin (const MArray<T>& src, MArray<T>& dst)
+  {
+    typename Array<T>::const_iterator in = src.array().begin();
+    if (src.hasMask()) {
+      typename Array<Bool>::const_iterator min = src.mask().begin();
+      typename Array<Bool>::contiter mout = dst.wmask().cbegin();
+      for (typename Array<T>::contiter out = dst.array().cbegin();
+           out != dst.array().cend(); ++in, ++min, ++out, ++mout) {
+        if (! *min) {
+          *mout = False;
+          if (*in < *out) *out = *in;
+        }
+      }
+    } else {
+      for (typename Array<T>::contiter out = dst.array().cbegin();
+           out != dst.array().cend(); ++in, ++out) {
+        if (*in < *out) *out = *in;
+      }
+    }
+  }
+
+  template<typename T>
+  void TEGMax (const MArray<T>& src, MArray<T>& dst)
+  {
+    typename Array<T>::const_iterator in = src.array().begin();
+    if (src.hasMask()) {
+      typename Array<Bool>::const_iterator min = src.mask().begin();
+      typename Array<Bool>::contiter mout = dst.wmask().cbegin();
+      for (typename Array<T>::contiter out = dst.array().cbegin();
+           out != dst.array().cend(); ++in, ++min, ++out, ++mout) {
+        if (! *min) {
+          *mout = False;
+          if (*in > *out) *out = *in;
+        }
+      }
+    } else {
+      for (typename Array<T>::contiter out = dst.array().cbegin();
+           out != dst.array().cend(); ++in, ++out) {
+        if (*in > *out) *out = *in;
+      }
+    }
+  }
+
+  template<typename T>
+  void TEGSum (const MArray<T>& src, MArray<T>& dst)
+  {
+    if (src.hasMask()) {
+      typename Array<T>::const_iterator in = src.array().begin();
+      typename Array<Bool>::const_iterator min = src.mask().begin();
+      typename Array<Bool>::contiter mout = dst.wmask().cbegin();
+      for (typename Array<T>::contiter out = dst.array().cbegin();
+           out != dst.array().cend(); ++in, ++min, ++out, ++mout) {
+        if (! *min) {
+          *mout = False;
+          *out += *in;
+        }
+      }
+    } else {
+      dst.array() += src.array();
+    }
+  }
+
+  template<typename T>
+  void TEGProduct (const MArray<T>& src, MArray<T>& dst)
+  {
+    if (src.hasMask()) {
+      typename Array<T>::const_iterator in = src.array().begin();
+      typename Array<Bool>::const_iterator min = src.mask().begin();
+      typename Array<Bool>::contiter mout = dst.wmask().cbegin();
+      for (typename Array<T>::contiter out = dst.array().cbegin();
+           out != dst.array().cend(); ++in, ++min, ++out, ++mout) {
+        if (! *min) {
+          *mout = False;
+          *out *= *in;
+        }
+      }
+    } else {
+      dst.array() *= src.array();
+    }
+  }
+
+  template<typename T>
+  void TEGSumSqr (const MArray<T>& src, MArray<T>& dst)
+  {
+    if (src.hasMask()) {
+      typename Array<T>::const_iterator in = src.array().begin();
+      typename Array<Bool>::const_iterator min = src.mask().begin();
+      typename Array<Bool>::contiter mout = dst.wmask().cbegin();
+      for (typename Array<T>::contiter out = dst.array().cbegin();
+           out != dst.array().cend(); ++in, ++min, ++out, ++mout) {
+        if (! *min) {
+          *mout = False;
+          *out += *in * *in;
+        }
+      }
+    } else {
+      typename Array<T>::const_iterator in = src.array().begin();
+      for (typename Array<T>::contiter out = dst.array().cbegin();
+           out != dst.array().cend(); ++in, ++out) {
+        *out += *in * *in;
+      }
+    }
+  }
+
+  template<typename T>
+  void TEGMeanAdd (const MArray<T>& src, Array<T>& dst, Array<Int64>& nr)
+  {
+    typename Array<Int64>::contiter itn = nr.cbegin();
+    if (src.hasMask()) {
+      typename Array<T>::const_iterator in = src.array().begin();
+      typename Array<Bool>::const_iterator min = src.mask().begin();
+      for (typename Array<T>::contiter out = dst.cbegin();
+           out != dst.cend(); ++in, ++min, ++out, ++itn) {
+        if (! *min) {
+          *out += *in;
+          (*itn)++;
+        }
+      }
+    } else {
+      typename Array<T>::const_iterator in = src.array().begin();
+      for (typename Array<T>::contiter out = dst.cbegin();
+           out != dst.cend(); ++in, ++out, ++itn) {
+        *out += *in;
+        (*itn)++;
+      }
+    }
+  }
+
+  template<typename T>
+  void TEGMeanFinish (MArray<T>& val, const Array<Int64>& nr)
+  {
+    DebugAssert (nr.contiguousStorage()  &&  val.array().contiguousStorage(),
+                 AipsError);
+    typename Array<T>::contiter itv = val.array().cbegin();
+    typename Array<Bool>::contiter itm = val.wmask().cbegin();
+    // Note: itm also get incremented if there is no mask, but that is harmless.
+    for (Array<Int64>::const_contiter itn = nr.cbegin();
+         itn != nr.cend(); ++itn, ++itv, ++itm) {
+      if (*itn > 0) {
+        *itv /= *itn;
+      } else if (val.hasMask()) {
+        *itm = True;
+      }
+    }
+  }
 
 
   TableExprGroupArrayAny::TableExprGroupArrayAny(TableExprNodeRep* node)
@@ -92,7 +255,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMinArrayInt::apply (const TableExprId& id)
   {
-    Array<Int64> arr = itsOperand->getArrayInt(id);
+    MArray<Int64> arr = itsOperand->getArrayInt(id);
     if (! arr.empty()) {
       Int64 v = min(arr);
       if (v<itsValue) itsValue = v;
@@ -106,7 +269,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMaxArrayInt::apply (const TableExprId& id)
   {
-    Array<Int64> arr = itsOperand->getArrayInt(id);
+    MArray<Int64> arr = itsOperand->getArrayInt(id);
     if (! arr.empty()) {
       Int64 v = max(arr);
       if (v>itsValue) itsValue = v;
@@ -130,7 +293,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupProductArrayInt::apply (const TableExprId& id)
   {
-    Array<Int64> arr = itsOperand->getArrayInt(id);
+    MArray<Int64> arr = itsOperand->getArrayInt(id);
     if (! arr.empty()) {
       itsValue *= product(arr);
     }
@@ -143,7 +306,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupSumSqrArrayInt::apply (const TableExprId& id)
   {
-    Array<Int64> arr = itsOperand->getArrayInt(id);
+    MArray<Int64> arr = itsOperand->getArrayInt(id);
     itsValue += sum(arr*arr);
   }
 
@@ -155,7 +318,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMinArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
       Double v = min(arr);
       if (v<itsValue) itsValue = v;
@@ -169,7 +332,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMaxArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
       Double v = max(arr);
       if (v>itsValue) itsValue = v;
@@ -193,7 +356,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupProductArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
       itsValue *= product(arr);
     }
@@ -206,7 +369,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupSumSqrArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     itsValue += sum(arr*arr);
   }
 
@@ -218,9 +381,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMeanArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     itsValue += sum(arr);
-    itsNr    += arr.size();
+    if (arr.hasMask()) {
+      itsNr += nfalse(arr.mask());
+    } else {
+      itsNr += arr.size();
+    }
   }
   void TableExprGroupMeanArrayDouble::finish()
   {
@@ -241,17 +408,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Calculate mean and variance in a running way using a
     // numerically stable algorithm
     // See en.wikipedia.org/wiki/Algorithms_for_calculating_variance
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
       Double meanv = mean(arr);
       Double m2    = 0;
-      if (arr.size() > 1) {
-        m2 = variance(arr, meanv) * (arr.size()-1);
+      Int64  nr    = arr.size();
+      if (arr.hasMask()) {
+        nr = nfalse(arr.mask());
+      }
+      if (nr > 1) {
+        m2 = variance(arr, meanv) * (nr-1);
       }
       Double delta = meanv - itsValue;   // itsValue contains the overall mean
-      itsValue = (itsNr*itsValue + arr.size()*meanv) / (itsNr + arr.size());
-      itsM2   += (m2 + delta*delta*itsNr*arr.size() / (itsNr + arr.size()));
-      itsNr += arr.size();
+      itsValue = (itsNr*itsValue + nr*meanv) / (itsNr + nr);
+      itsM2   += (m2 + delta*delta*itsNr*nr / (itsNr + nr));
+      itsNr   += nr;
     }
   }
   void TableExprGroupVarianceArrayDouble::finish()
@@ -282,9 +453,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupRmsArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     itsValue += sum(arr*arr);
-    itsNr    += arr.size();
+    if (arr.hasMask()) {
+      itsNr += nfalse(arr.mask());
+    } else  {
+      itsNr += arr.size();
+    }
   }
   void TableExprGroupRmsArrayDouble::finish()
   {
@@ -314,31 +489,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       // All arrays have to be combined in a single vector.
       // Get first array to estimate the total size.
-      Array<Double> arr = itsOperand->getArrayDouble(ids[0]);
-      vector<Double> values;
-      values.reserve (ids.size() * arr.size());
-      copyArray (arr, values);
+      size_t nr = 0;
+      MArray<Double> arr0 = itsOperand->getArrayDouble(ids[0]);
+      std::vector<Double> values(ids.size() * arr0.size());
+      nr += arr0.flatten (&(values[0]), values.size());
       for (uInt i=1; i<ids.size(); ++i) {
         // Get value and make contiguous if needed.
-        Array<Double> arr = itsOperand->getArrayDouble(ids[i]);
-        copyArray (arr, values);
+        MArray<Double> arr = itsOperand->getArrayDouble(ids[i]);
+        if (arr.size() > values.size()-nr) {
+          values.resize (values.size() + arr.size());
+        }
+        nr += arr.flatten (&(values[0]) + nr, values.size()-nr);
       }
       return GenSort<Double>::kthLargest
-        (&(values[0]), values.size(),
-         static_cast<Int>((values.size() - 1)*itsFrac + 0.001));
+        (&(values[0]), nr,
+         static_cast<Int64>((nr - 1)*itsFrac + 0.001));
     } catch (const std::exception& x) {
       throw TableInvExpr ("Cannot compute gfractile; "
                           "probably too many data - " + String(x.what()));
-    }
-  }
-  void TableExprGroupFractileArrayDouble::copyArray
-  (const Array<Double>& arr, vector<Double>& buffer) const
-  {
-    // Array does not need to be contiguous, so use iterator.
-    Array<Double>::const_iterator iterEnd = arr.end();
-    for (Array<Double>::const_iterator iter = arr.begin();
-         iter!=iterEnd; ++iter) {
-      buffer.push_back (*iter);
     }
   }
 
@@ -360,7 +528,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupProductArrayDComplex::apply (const TableExprId& id)
   {
-    Array<DComplex> arr = itsOperand->getArrayDComplex(id);
+    MArray<DComplex> arr = itsOperand->getArrayDComplex(id);
     if (! arr.empty()) {
       itsValue *= product(arr);
     }
@@ -373,7 +541,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupSumSqrArrayDComplex::apply (const TableExprId& id)
   {
-    Array<DComplex> arr = itsOperand->getArrayDComplex(id);
+    MArray<DComplex> arr = itsOperand->getArrayDComplex(id);
     itsValue += sum(arr*arr);
   }
 
@@ -385,9 +553,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMeanArrayDComplex::apply (const TableExprId& id)
   {
-    Array<DComplex> arr = itsOperand->getArrayDComplex(id);
+    MArray<DComplex> arr = itsOperand->getArrayDComplex(id);
     itsValue += sum(arr);
-    itsNr    += arr.size();
+    if (arr.hasMask()) {
+      itsNr += nfalse(arr.mask());
+    } else {
+      itsNr += arr.size();
+    }
   }
   void TableExprGroupMeanArrayDComplex::finish()
   {
@@ -404,12 +576,28 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupArrayAnys::apply (const TableExprId& id)
   {
-    Array<Bool> arr(itsOperand->getArrayBool(id));
+    MArray<Bool> arr(itsOperand->getArrayBool(id));
     if (! arr.empty()) {
       if (checkShape (arr, "GANYS")) {
-        itsValue = arr;
+        itsValue.array() = arr.array();
+        itsValue.wmask() = arr.mask();
+      } else if (arr.hasMask()) {
+        Array<Bool>::const_iterator in = arr.array().begin();
+        Array<Bool>::const_iterator min = arr.mask().begin();
+        Array<Bool>::contiter mout = itsValue.wmask().cbegin();
+        for (Array<Bool>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++min, ++out, ++mout) {
+          if (! *min) {
+            *mout = False;
+            *out = *out || *in;
+          }
+        }
       } else {
-        itsValue = itsValue || arr;
+        Array<Bool>::const_iterator in = arr.array().begin();
+        for (Array<Bool>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++out) {
+          *out = *out || *in;
+        }
       }
     }
   }
@@ -421,12 +609,28 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupArrayAlls::apply (const TableExprId& id)
   {
-    Array<Bool> arr(itsOperand->getArrayBool(id));
+    MArray<Bool> arr(itsOperand->getArrayBool(id));
     if (! arr.empty()) {
       if (checkShape (arr, "GALLS")) {
-        itsValue = arr;
+        itsValue.array() = arr.array();
+        itsValue.wmask() = arr.mask();
+      } else if (arr.hasMask()) {
+        Array<Bool>::const_iterator in = arr.array().begin();
+        Array<Bool>::const_iterator min = arr.mask().begin();
+        Array<Bool>::contiter mout = itsValue.wmask().cbegin();
+        for (Array<Bool>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++min, ++out, ++mout) {
+          if (! *min) {
+            *mout = False;
+            *out = *out && *in;
+          }
+        }
       } else {
-        itsValue = itsValue && arr;
+        Array<Bool>::const_iterator in = arr.array().begin();
+        for (Array<Bool>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++out) {
+          *out = *out && *in;
+        }
       }
     }
   }
@@ -438,19 +642,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupArrayNTrues::apply (const TableExprId& id)
   {
-    Array<Bool> arr(itsOperand->getArrayBool(id));
+    MArray<Bool> arr(itsOperand->getArrayBool(id));
     if (! arr.empty()) {
       if (checkShape (arr, "GNTRUES")) {
-        itsValue = 0;
+        itsValue.array() = 0;
+        itsValue.wmask() = True;
       }
-      Bool deleteIt;
-      const Bool* inPtr = arr.getStorage (deleteIt);
-      for (size_t i=0; i<arr.size(); ++i) {
-        if (inPtr[i]) {
-          itsValue.data()[i]++;
+      if (arr.hasMask()) {
+        Array<Bool>::const_iterator in = arr.array().begin();
+        Array<Bool>::const_iterator min = arr.mask().begin();
+        Array<Bool>::contiter mout = itsValue.wmask().cbegin();
+        for (Array<Int64>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++min, ++out, ++mout) {
+          if (! *min) {
+            *mout = False;
+            if (*in) {
+              (*out)++;
+            }
+          }
+        }
+      } else {
+        Array<Bool>::const_iterator in = arr.array().begin();
+        for (Array<Int64>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++out) {
+          if (*in) {
+            (*out)++;
+          }
         }
       }
-      arr.freeStorage (inPtr, deleteIt);
     }
   }
 
@@ -461,19 +680,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupArrayNFalses::apply (const TableExprId& id)
   {
-    Array<Bool> arr(itsOperand->getArrayBool(id));
+    MArray<Bool> arr(itsOperand->getArrayBool(id));
     if (! arr.empty()) {
       if (checkShape (arr, "GNFALSES")) {
-        itsValue = 0;
+        itsValue.array() = 0;
+        itsValue.wmask() = True;
       }
-      Bool deleteIt;
-      const Bool* inPtr = arr.getStorage (deleteIt);
-      for (size_t i=0; i<arr.size(); ++i) {
-        if (! inPtr[i]) {
-          itsValue.data()[i]++;
+      if (arr.hasMask()) {
+        Array<Bool>::const_iterator in = arr.array().begin();
+        Array<Bool>::const_iterator min = arr.mask().begin();
+        Array<Bool>::contiter mout = itsValue.wmask().cbegin();
+        for (Array<Int64>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++min, ++out, ++mout) {
+          if (! *min) {
+            *mout = False;
+            if (! *in) {
+              (*out)++;
+            }
+          }
+        }
+      } else {
+        Array<Bool>::const_iterator in = arr.array().begin();
+        for (Array<Int64>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++out) {
+          if (! *in) {
+            (*out)++;
+          }
         }
       }
-      arr.freeStorage (inPtr, deleteIt);
     }
   }
 
@@ -485,14 +719,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMinsArrayInt::apply (const TableExprId& id)
   {
-    Array<Int64> arr = itsOperand->getArrayInt(id);
+    MArray<Int64> arr(itsOperand->getArrayInt(id));
     if (! arr.empty()) {
       if (checkShape (arr, "GMINS")) {
-        itsValue = arr;
-      } else {
-        itsValue = min(itsValue, arr);
+        itsValue.array() = std::numeric_limits<Int64>::max();
+        itsValue.wmask() = True;
       }
+      TEGMin (arr, itsValue);
     }
+  }
+  void TableExprGroupMinsArrayInt::finish()
+  {
+    TEGClearMasked (itsValue);
   }
 
   TableExprGroupMaxsArrayInt::TableExprGroupMaxsArrayInt(TableExprNodeRep* node)
@@ -502,14 +740,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMaxsArrayInt::apply (const TableExprId& id)
   {
-    Array<Int64> arr = itsOperand->getArrayInt(id);
+    MArray<Int64> arr(itsOperand->getArrayInt(id));
     if (! arr.empty()) {
       if (checkShape (arr, "GMAXS")) {
-        itsValue = arr;
-      } else {
-        itsValue = max(itsValue, arr);
+        itsValue.array() = std::numeric_limits<Int64>::min();
+        itsValue.wmask() = True;
       }
+      TEGMax (arr, itsValue);
     }
+  }
+  void TableExprGroupMaxsArrayInt::finish()
+  {
+    TEGClearMasked (itsValue);
   }
 
   TableExprGroupSumsArrayInt::TableExprGroupSumsArrayInt(TableExprNodeRep* node)
@@ -519,13 +761,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupSumsArrayInt::apply (const TableExprId& id)
   {
-    Array<Int64> arr = itsOperand->getArrayInt(id);
+    MArray<Int64> arr = itsOperand->getArrayInt(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GSUMS")) {
-        itsValue = arr;
-      } else {
-        itsValue += arr;
+        itsValue.array() = 0;
+        itsValue.wmask() = True;
       }
+      TEGSum (arr, itsValue);
     }
   }
 
@@ -536,14 +778,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupProductsArrayInt::apply (const TableExprId& id)
   {
-    Array<Int64> arr = itsOperand->getArrayInt(id);
+    MArray<Int64> arr = itsOperand->getArrayInt(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GPRODUCTS")) {
-        itsValue = arr;
-      } else {
-        itsValue *= arr;
+        itsValue.array() = 1;
+        itsValue.wmask() = True;
       }
+      TEGProduct (arr, itsValue);
     }
+  }
+  void TableExprGroupProductsArrayInt::finish()
+  {
+    TEGClearMasked (itsValue);
   }
 
   TableExprGroupSumSqrsArrayInt::TableExprGroupSumSqrsArrayInt(TableExprNodeRep* node)
@@ -553,13 +799,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupSumSqrsArrayInt::apply (const TableExprId& id)
   {
-    Array<Int64> arr = itsOperand->getArrayInt(id);
+    MArray<Int64> arr = itsOperand->getArrayInt(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GSUMSQRS")) {
-        itsValue = arr*arr;
-      } else {
-        itsValue += arr*arr;
+        itsValue.array() = 0;
+        itsValue.wmask() = True;
       }
+      TEGSumSqr (arr, itsValue);
     }
   }
 
@@ -571,14 +817,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMinsArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr(itsOperand->getArrayDouble(id));
     if (! arr.empty()) {
       if (checkShape (arr, "GMINS")) {
-        itsValue = arr;
-      } else {
-        itsValue = min(itsValue, arr);
+        itsValue.array() = std::numeric_limits<Double>::max();
+        itsValue.wmask() = True;
       }
+      TEGMin (arr, itsValue);
     }
+  }
+  void TableExprGroupMinsArrayDouble::finish()
+  {
+    TEGClearMasked (itsValue);
   }
 
   TableExprGroupMaxsArrayDouble::TableExprGroupMaxsArrayDouble(TableExprNodeRep* node)
@@ -588,14 +838,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMaxsArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GMAXS")) {
-        itsValue = arr;
-      } else {
-        itsValue = max(itsValue, arr);
+        itsValue.array() = std::numeric_limits<Double>::min();
+        itsValue.wmask() = True;
       }
+      TEGMax (arr, itsValue);
     }
+  }
+  void TableExprGroupMaxsArrayDouble::finish()
+  {
+    TEGClearMasked (itsValue);
   }
 
   TableExprGroupSumsArrayDouble::TableExprGroupSumsArrayDouble(TableExprNodeRep* node)
@@ -605,13 +859,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupSumsArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GSUMS")) {
-        itsValue = arr;
-      } else {
-        itsValue += arr;
+        itsValue.array() = 0;
+        itsValue.wmask() = True;
       }
+      TEGSum (arr, itsValue);
     }
   }
 
@@ -622,14 +876,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupProductsArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GPRODUCTS")) {
-        itsValue = arr;
-      } else {
-        itsValue *= arr;
+        itsValue.array() = 1;
+        itsValue.wmask() = True;
       }
+      TEGProduct (arr, itsValue);
     }
+  }
+  void TableExprGroupProductsArrayDouble::finish()
+  {
+    TEGClearMasked (itsValue);
   }
 
   TableExprGroupSumSqrsArrayDouble::TableExprGroupSumSqrsArrayDouble(TableExprNodeRep* node)
@@ -639,13 +897,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupSumSqrsArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GSUMSQRS")) {
-        itsValue = arr*arr;
-      } else {
-        itsValue += arr*arr;
+        itsValue.array() = 0;
+        itsValue.wmask() = True;
       }
+      TEGSumSqr (arr, itsValue);
     }
   }
 
@@ -656,30 +914,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMeansArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GMEANS")) {
-        // Future: if arr is a masked array, only add where not masked
-        itsValue = arr;
+        itsValue.array() = 0;
+        itsValue.wmask() = False;
         itsNr.resize (arr.shape());
-        itsNr = 1;
-      } else {
-        itsValue += arr;
-        itsNr += (Int64)1;
+        itsNr = 0;
       }
+      TEGMeanAdd (arr, itsValue.array(), itsNr);
     }
   }
   void TableExprGroupMeansArrayDouble::finish()
   {
-    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),
-                 AipsError);
-    Array<Double>::iterator itv = itsValue.begin();
-    for (Array<Int64>::const_iterator itn = itsNr.begin();
-         itn != itsNr.end(); ++itn, ++itv) {
-      if (*itn > 0) {
-        *itv /= *itn;
-      }
-    }
+    TEGMeanFinish (itsValue, itsNr);
   }
 
   TableExprGroupVariancesArrayDouble::TableExprGroupVariancesArrayDouble(TableExprNodeRep* node)
@@ -692,37 +940,56 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Calculate mean and variance in a running way using a
     // numerically stable algorithm.
     // See en.wikipedia.org/wiki/Algorithms_for_calculating_variance
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GVARIANCES")) {
-        // First time.
-        itsNr.resize (arr.shape());
+        itsValue.array() = 0;
+        itsValue.wmask() = False;
         itsMean.resize (arr.shape());
-        itsNr    = 1;
-        itsMean  = arr;
-        itsValue = 0.;
+        itsMean = 0;
+        itsNr.resize (arr.shape());
+        itsNr = 0;
+      }
+      Array<Double>::contiter itm = itsMean.cbegin();
+      Array<Int64>::contiter itn = itsNr.cbegin();
+      Array<Double>::const_iterator in = arr.array().begin();
+      if (arr.hasMask()) {
+        Array<Bool>::const_iterator min = arr.mask().begin();
+        for (Array<Double>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++min, ++out, ++itm, ++itn) {
+          if (! *min) {
+            (*itn)++;
+            Double delta = *in - *itm;
+            *itm += delta / *itn;
+            delta *= *in - *itm;
+            *out += delta;
+          }
+        }
       } else {
-        itsNr += (Int64)1;
-        Array<Double> delta(arr - itsMean);
-        Array<Double> tmpd(delta.shape());
-        std::transform (delta.begin(), delta.end(), itsNr.begin(),
-                        tmpd.begin(), Divides<Double,Int64>());
-        itsMean += tmpd;
-        delta *= arr - itsMean;
-        itsValue += delta;
+        for (Array<Double>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++out, ++itm, ++itn) {
+          (*itn)++;
+          Double delta = *in - *itm;
+          *itm += delta / *itn;
+          delta *= *in - *itm;
+          *out += delta;
+        }
       }
     }
   }
   void TableExprGroupVariancesArrayDouble::finish()
   {
     DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),                 AipsError);
-    Array<Double>::iterator itv = itsValue.begin();
-    for (Array<Int64>::const_iterator itn = itsNr.begin();
-         itn != itsNr.end(); ++itn, ++itv) {
+    Array<Double>::contiter itv = itsValue.array().cbegin();
+    Array<Bool>::contiter itm = itsValue.wmask().cbegin();
+    // Note: itm also get incremented if there is no mask, but that is harmless.
+    for (Array<Int64>::const_contiter itn = itsNr.cbegin();
+         itn != itsNr.cend(); ++itn, ++itv, ++itm) {
       if (*itn > 1) {
         *itv /= *itn - 1;
       } else {
         *itv = 0;
+        *itm = True;
       }
     }
   }
@@ -745,15 +1012,31 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupRmssArrayDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble(id);
+    MArray<Double> arr = itsOperand->getArrayDouble(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GRMSS")) {
-        itsValue = arr*arr;
+        itsValue.array() = 0;
+        itsValue.wmask() = False;
         itsNr.resize (arr.shape());
-        itsNr = 1;
+        itsNr = 0;
+      }
+      Array<Int64>::contiter itn = itsNr.cbegin();
+      Array<Double>::const_iterator in = arr.array().begin();
+      if (arr.hasMask()) {
+        Array<Bool>::const_iterator min = arr.mask().begin();
+        for (Array<Double>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++min, ++out, ++itn) {
+          if (! *min) {
+            *out += *in * *in;
+            (*itn)++;
+          }
+        }
       } else {
-        itsValue += arr*arr;
-        itsNr += (Int64)1;
+        for (Array<Double>::contiter out = itsValue.array().cbegin();
+             out != itsValue.array().cend(); ++in, ++out, ++itn) {
+          *out += *in * *in;
+          (*itn)++;
+        }
       }
     }
   }
@@ -761,13 +1044,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),
                  AipsError);
-    Array<Double>::iterator itv = itsValue.begin();
-    for (Array<Int64>::const_iterator itn = itsNr.begin();
-         itn != itsNr.end(); ++itn, ++itv) {
+    Array<Double>::contiter itv = itsValue.array().cbegin();
+    Array<Bool>::contiter itm = itsValue.wmask().cbegin();
+    // Note: itm also get incremented if there is no mask, but that is harmless.
+    for (Array<Int64>::const_contiter itn = itsNr.cbegin();
+         itn != itsNr.cend(); ++itn, ++itv, ++itm) {
       if (*itn > 0) {
         *itv = sqrt(*itv / *itn);
-      } else {
-        *itv = 0;
+      } else if (itsValue.hasMask()) {
+        *itm = True;
       }
     }
   }
@@ -779,13 +1064,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupSumsArrayDComplex::apply (const TableExprId& id)
   {
-    Array<DComplex> arr = itsOperand->getArrayDComplex(id);
+    MArray<DComplex> arr = itsOperand->getArrayDComplex(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GSUMS")) {
-        itsValue = arr;
-      } else {
-        itsValue += arr;
+        itsValue.array() = DComplex();
+        itsValue.wmask() = True;
       }
+      TEGSum (arr, itsValue);
     }
   }
 
@@ -796,14 +1081,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupProductsArrayDComplex::apply (const TableExprId& id)
   {
-    Array<DComplex> arr = itsOperand->getArrayDComplex(id);
-    if (! arr.empty()) {
-      if (checkShape (arr, "GPRODUCTS")) {
-        itsValue = arr;
-      } else {
-        itsValue *= arr;
-      }
+    MArray<DComplex> arr = itsOperand->getArrayDComplex(id);
+    if (checkShape (arr, "GPRODUCTS")) {
+      itsValue.array() = DComplex(1,0);
+      itsValue.wmask() = True;
     }
+    TEGProduct (arr, itsValue);
+  }
+  void TableExprGroupProductsArrayDComplex::finish()
+  {
+    TEGClearMasked (itsValue);
   }
 
   TableExprGroupSumSqrsArrayDComplex::TableExprGroupSumSqrsArrayDComplex(TableExprNodeRep* node)
@@ -813,13 +1100,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupSumSqrsArrayDComplex::apply (const TableExprId& id)
   {
-    Array<DComplex> arr = itsOperand->getArrayDComplex(id);
+    MArray<DComplex> arr = itsOperand->getArrayDComplex(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GSUMSQRS")) {
-        itsValue = arr*arr;
-      } else {
-        itsValue += arr*arr;
+        itsValue.array() = DComplex();
+        itsValue.wmask() = True;
       }
+      TEGSumSqr (arr, itsValue);
     }
   }
 
@@ -830,30 +1117,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupMeansArrayDComplex::apply (const TableExprId& id)
   {
-    Array<DComplex> arr = itsOperand->getArrayDComplex(id);
+    MArray<DComplex> arr = itsOperand->getArrayDComplex(id);
     if (! arr.empty()) {
       if (checkShape (arr, "GMEANS")) {
-        // Future: if arr is a masked array, only add where not masked
-        itsValue = arr;
+        itsValue.array() = DComplex();
+        itsValue.wmask() = False;
         itsNr.resize (arr.shape());
-        itsNr = 1;
-      } else {
-        itsValue += arr;
-        itsNr += (Int64)1;
+        itsNr = 0;
       }
+      TEGMeanAdd (arr, itsValue.array(), itsNr);
     }
   }
   void TableExprGroupMeansArrayDComplex::finish()
   {
-    DebugAssert (itsNr.contiguousStorage()  &&  itsValue.contiguousStorage(),
-                 AipsError);
-    Array<DComplex>::iterator itv = itsValue.begin();
-    for (Array<Int64>::const_iterator itn = itsNr.begin();
-         itn != itsNr.end(); ++itn, ++itv) {
-      if (*itn > 0) {
-        *itv /= *itn;
-      }
-    }
+    TEGMeanFinish (itsValue, itsNr);
   }
 
 
@@ -877,9 +1154,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     itsHist[bin]++;
   }
-  Array<Int64> TableExprGroupHistBase::getArrayInt (const vector<TableExprId>&)
+  MArray<Int64> TableExprGroupHistBase::getArrayInt (const vector<TableExprId>&)
   {
-    return itsHist;
+    return MArray<Int64>(itsHist);
   }
 
   TableExprGroupHistScalar::TableExprGroupHistScalar (TableExprNodeRep* node,
@@ -903,12 +1180,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupHistInt::apply (const TableExprId& id)
   {
-    Array<Int64> arr = itsOperand->getArrayInt (id);
+    MArray<Int64> arr = itsOperand->getArrayInt (id);
     // Array does not need to be contiguous, so use iterator.
-    Array<Int64>::const_iterator iterEnd = arr.end();
-    for (Array<Int64>::const_iterator iter = arr.begin();
-         iter!=iterEnd; ++iter) {
-      add (*iter);
+    if (! arr.hasMask()) {
+      Array<Int64>::const_iterator iterEnd = arr.array().end();
+      for (Array<Int64>::const_iterator iter = arr.array().begin();
+           iter!=iterEnd; ++iter) {
+        add (*iter);
+      }
+    } else {
+      Array<Int64>::const_iterator iterEnd = arr.array().end();
+      Array<Bool>::const_iterator miter = arr.mask().begin();
+      for (Array<Int64>::const_iterator iter = arr.array().begin();
+           iter!=iterEnd; ++iter, ++miter) {
+        if (!*miter) add (*iter);
+      }
     }
   }
 
@@ -921,12 +1207,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupHistDouble::apply (const TableExprId& id)
   {
-    Array<Double> arr = itsOperand->getArrayDouble (id);
+    MArray<Double> arr = itsOperand->getArrayDouble (id);
     // Array does not need to be contiguous, so use iterator.
-    Array<Double>::const_iterator iterEnd = arr.end();
-    for (Array<Double>::const_iterator iter = arr.begin();
-         iter!=iterEnd; ++iter) {
-      add (*iter);
+    if (! arr.hasMask()) {
+      Array<Double>::const_iterator iterEnd = arr.array().end();
+      for (Array<Double>::const_iterator iter = arr.array().begin();
+           iter!=iterEnd; ++iter) {
+        add (*iter);
+      }
+    } else {
+      Array<Double>::const_iterator iterEnd = arr.array().end();
+      Array<Bool>::const_iterator miter = arr.mask().begin();
+      for (Array<Double>::const_iterator iter = arr.array().begin();
+           iter!=iterEnd; ++iter, ++miter) {
+        if (!*miter) add (*iter);
+      }
     }
   }
 

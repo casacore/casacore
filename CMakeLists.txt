@@ -84,6 +84,7 @@ if( CASA_BUILD )
       set(DATA_DIR "%CASAROOT%/data")
    endif( )
    set(USE_FFTW3 ON)
+   set(USE_OPENMP ON)
    set(USE_THREADS ON)
    ###
    ### after CASA switches from ASAP to libsakura, CASA will no longer
@@ -319,6 +320,10 @@ endif (_usefits STREQUAL YES)
 if (_usewcs STREQUAL YES)
 #    find_package (WCSLIB 4.20 REQUIRED)
     find_package (WCSLIB 4.7 REQUIRED)     # needed for CASA
+    if (WCSLIB_VERSION_STRING STREQUAL "5.14")
+      # WCSlib 5.14 throws segfaults on lots of tests, e.g. tTempImage
+      message(WARNING "Casacore is not compatible with wcslib 5.14, see issue gh-384.")
+    endif (WCSLIB_VERSION_STRING STREQUAL "5.14")
 endif (_usewcs STREQUAL YES)
  
 # Set the include directories and HAVE compiler variables
@@ -355,9 +360,13 @@ endif (READLINE_FOUND)
 
 if(USE_OPENMP)
     set (USE_THREADS YES)
-    find_package (OpenMP REQUIRED)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    find_package (OpenMP)
+    if (OPENMP_FOUND)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    else (OPENMP_FOUND)
+        message(WARNING "Cannot fullfill USE_OPENMP, compiler does not support it")
+    endif (OPENMP_FOUND)
 endif(USE_OPENMP)
 # Thread support?
 if(USE_THREADS)

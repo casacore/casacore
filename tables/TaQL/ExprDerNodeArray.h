@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprDerNodeArray.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef TABLES_EXPRDERNODEARRAY_H
 #define TABLES_EXPRDERNODEARRAY_H
@@ -62,10 +62,11 @@ class TableExprNodeArrayConstBool : public TableExprNodeArray
 {
 public:
     TableExprNodeArrayConstBool (const Array<Bool>& value);
+    TableExprNodeArrayConstBool (const MArray<Bool>& value);
     ~TableExprNodeArrayConstBool();
-    Array<Bool> getArrayBool (const TableExprId& id);
+    MArray<Bool> getArrayBool (const TableExprId& id);
 private:
-    Array<Bool> value_p;
+    MArray<Bool> value_p;
 };
 
 
@@ -98,12 +99,18 @@ public:
     TableExprNodeArrayConstInt (const Array<uShort>& value);
     TableExprNodeArrayConstInt (const Array<Short>& value);
     TableExprNodeArrayConstInt (const Array<uChar>& value);
+    TableExprNodeArrayConstInt (const MArray<Int64>& value);
+    TableExprNodeArrayConstInt (const MArray<uInt>& value);
+    TableExprNodeArrayConstInt (const MArray<Int>& value);
+    TableExprNodeArrayConstInt (const MArray<uShort>& value);
+    TableExprNodeArrayConstInt (const MArray<Short>& value);
+    TableExprNodeArrayConstInt (const MArray<uChar>& value);
     ~TableExprNodeArrayConstInt();
-    Array<Int64>    getArrayInt      (const TableExprId& id);
-    Array<Double>   getArrayDouble   (const TableExprId& id);
-    Array<DComplex> getArrayDComplex (const TableExprId& id);
+    MArray<Int64>    getArrayInt      (const TableExprId& id);
+    MArray<Double>   getArrayDouble   (const TableExprId& id);
+    MArray<DComplex> getArrayDComplex (const TableExprId& id);
 private:
-    Array<Int64> value_p;
+    MArray<Int64> value_p;
 };
 
 
@@ -133,11 +140,14 @@ public:
     TableExprNodeArrayConstDouble (const Array<Double>& value);
     TableExprNodeArrayConstDouble (const Array<Float>& value);
     TableExprNodeArrayConstDouble (const Array<Int64>& value);
+    TableExprNodeArrayConstDouble (const MArray<Double>& value);
+    TableExprNodeArrayConstDouble (const MArray<Float>& value);
+    TableExprNodeArrayConstDouble (const MArray<Int64>& value);
     ~TableExprNodeArrayConstDouble();
-    Array<Double>   getArrayDouble   (const TableExprId& id);
-    Array<DComplex> getArrayDComplex (const TableExprId& id);
+    MArray<Double>   getArrayDouble   (const TableExprId& id);
+    MArray<DComplex> getArrayDComplex (const TableExprId& id);
 private:
-    Array<Double> value_p;
+    MArray<Double> value_p;
 };
 
 
@@ -168,10 +178,14 @@ public:
     TableExprNodeArrayConstDComplex (const Array<Complex>& value);
     TableExprNodeArrayConstDComplex (const Array<Double>& value);
     TableExprNodeArrayConstDComplex (const Array<Int64>& value);
+    TableExprNodeArrayConstDComplex (const MArray<DComplex>& value);
+    TableExprNodeArrayConstDComplex (const MArray<Complex>& value);
+    TableExprNodeArrayConstDComplex (const MArray<Double>& value);
+    TableExprNodeArrayConstDComplex (const MArray<Int64>& value);
     ~TableExprNodeArrayConstDComplex();
-    Array<DComplex> getArrayDComplex (const TableExprId& id);
+    MArray<DComplex> getArrayDComplex (const TableExprId& id);
 private:
-    Array<DComplex> value_p;
+    MArray<DComplex> value_p;
 };
 
 
@@ -199,10 +213,11 @@ class TableExprNodeArrayConstString : public TableExprNodeArray
 {
 public:
     TableExprNodeArrayConstString (const Array<String>& value);
+    TableExprNodeArrayConstString (const MArray<String>& value);
     ~TableExprNodeArrayConstString();
-    Array<String> getArrayString (const TableExprId& id);
+    MArray<String> getArrayString (const TableExprId& id);
 private:
-    Array<String> value_p;
+    MArray<String> value_p;
 };
 
 
@@ -230,11 +245,12 @@ class TableExprNodeArrayConstDate : public TableExprNodeArray
 {
 public:
     TableExprNodeArrayConstDate (const Array<MVTime>& value);
+    TableExprNodeArrayConstDate (const MArray<MVTime>& value);
     ~TableExprNodeArrayConstDate();
-    Array<Double> getArrayDouble(const TableExprId& id);
-    Array<MVTime> getArrayDate  (const TableExprId& id);
+    MArray<Double> getArrayDouble(const TableExprId& id);
+    MArray<MVTime> getArrayDate  (const TableExprId& id);
 private:
-    Array<MVTime> value_p;
+    MArray<MVTime> value_p;
 };
 
 

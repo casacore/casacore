@@ -210,7 +210,7 @@ private:
 
 
 // <summary>
-// Envelope class for a node containing a select command.
+// Envelope class for a node containing a list of nodes.
 // </summary>
 // <use visibility=local>
 // <reviewed reviewer="" date="" tests="tTaQLNode">
@@ -230,6 +230,8 @@ public:
   void add (TaQLNodeRep* noderep);
   void setIsSetOrArray();
   void setPPFix (const String& prefix, const String& postfix);
+  void setSeparator (const String& sep);
+  void setSeparator (uInt incr, const String& sep);
   const TaQLMultiNodeRep* getMultiRep() const
     { return itsNRep; }
 private:

@@ -76,6 +76,15 @@ string(REGEX REPLACE "\n" ";" _NUMPY_VALUES ${_NUMPY_VALUES})
 list(GET _NUMPY_VALUES -2 NUMPY_VERSION)
 list(GET _NUMPY_VALUES -1 NUMPY_INCLUDE_DIRS)
 
+if("${NUMPY_INCLUDE_DIRS}" STREQUAL "None")
+    # If numpy headers are not installed, n.get_include() returns None
+    message(FATAL_ERROR
+        "Numpy was found, but headers were not installed.")
+    set(NUMPY_INCLUDE_DIRS) # Unset this variable
+    set(NUMPY_FOUND FALSE)
+    return()
+endif()
+
 string(REGEX MATCH "^[0-9]+\\.[0-9]+\\.[0-9]+" _VER_CHECK "${NUMPY_VERSION}")
 if("${_VER_CHECK}" STREQUAL "")
     # The output from Python was unexpected. Raise an error always
