@@ -256,30 +256,56 @@ uInt MSMetaData::nRows(CorrelationType cType) {
 }
 
 SHARED_PTR<const map<SubScanKey, uInt> > MSMetaData::getNRowMap(CorrelationType cType) const {
-    uInt nACRows, nXCRows;
-    SHARED_PTR<std::map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
-    SHARED_PTR<vector<uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
-    _getRowStats(
-        nACRows, nXCRows, subScanToNACRowsMap,
-        subScanToNXCRowsMap, fieldToNACRowsMap,
-        fieldToNXCRowsMap
-    );
-    if (cType == AUTO) {
-        return subScanToNACRowsMap;
+    if (_subScanProperties) {
+        // necessary quantities already exist and just need to be harvested
+        SHARED_PTR<map<SubScanKey, uInt> > mymap(
+            new map<SubScanKey, uInt>()
+        );
+        map<SubScanKey, SubScanProperties>::const_iterator iter = _subScanProperties->begin();
+        map<SubScanKey, SubScanProperties>::const_iterator end = _subScanProperties->end();
+        if (cType == AUTO) {
+            for (; iter!=end; ++iter) {
+                (*mymap)[iter->first] = iter->second.acRows;
+            }
+        }
+        else if (cType == CROSS) {
+            for (; iter!=end; ++iter) {
+                (*mymap)[iter->first] = iter->second.nrows - iter->second.acRows;
+            }
+        }
+        else {
+            for (; iter!=end; ++iter) {
+                (*mymap)[iter->first] = iter->second.nrows;
+            }
+        }
+        return mymap;
     }
-    else if (cType == CROSS) {
-        return subScanToNXCRowsMap;
+    else {
+        uInt nACRows, nXCRows;
+        SHARED_PTR<std::map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
+        SHARED_PTR<vector<uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
+        _getRowStats(
+            nACRows, nXCRows, subScanToNACRowsMap,
+            subScanToNXCRowsMap, fieldToNACRowsMap,
+            fieldToNXCRowsMap
+        );
+        if (cType == AUTO) {
+            return subScanToNACRowsMap;
+        }
+        else if (cType == CROSS) {
+            return subScanToNXCRowsMap;
+        }
+        SHARED_PTR<map<SubScanKey, uInt> > mymap(
+            new map<SubScanKey, uInt>()
+        );
+        map<SubScanKey, uInt>::const_iterator iter = subScanToNACRowsMap->begin();
+        map<SubScanKey, uInt>::const_iterator end = subScanToNACRowsMap->end();
+        for (; iter!=end; ++iter) {
+            SubScanKey key = iter->first;
+            (*mymap)[key] = iter->second + (*subScanToNXCRowsMap)[key];
+        }
+        return mymap;
     }
-    SHARED_PTR<map<SubScanKey, uInt> > mymap(
-        new map<SubScanKey, uInt>()
-    );
-    map<SubScanKey, uInt>::const_iterator iter = subScanToNACRowsMap->begin();
-    map<SubScanKey, uInt>::const_iterator end = subScanToNACRowsMap->end();
-    for (; iter!=end; ++iter) {
-        SubScanKey key = iter->first;
-        (*mymap)[key] = iter->second + (*subScanToNXCRowsMap)[key];
-    }
-    return mymap;
 }
 
 uInt MSMetaData::nRows(
@@ -3495,6 +3521,7 @@ void MSMetaData::_computeScanAndSubScanProperties(
             }
             else {
                 SubScanProperties& fp = (*subScanProps)[ssKey];
+                fp.acRows += val.acRows;
                 fp.antennas.insert(val.antennas.begin(), val.antennas.end());
                 fp.beginTime = min(fp.beginTime, val.beginTime);
                 fp.ddIDs.insert(val.ddIDs.begin(), val.ddIDs.end());
@@ -3654,6 +3681,7 @@ MSMetaData::_getChunkSubScanProperties(
             mysubscans.find(subScanKey) == mysubscans.end()
         ) {
             SubScanProperties props;
+            props.acRows = *a1Iter == *a2Iter ? 1 : 0;
             props.beginTime = *tIter;
             props.endTime = *tIter;
             props.nrows = 1;
@@ -3661,6 +3689,9 @@ MSMetaData::_getChunkSubScanProperties(
             exposureSum[subScanKey] = *eiter;
         }
         else {
+            if (*a1Iter == *a2Iter) {
+                ++mysubscans[subScanKey].acRows;
+            }
             mysubscans[subScanKey].beginTime = min(*tIter, mysubscans[subScanKey].beginTime);
             mysubscans[subScanKey].endTime = max(*tIter, mysubscans[subScanKey].endTime);
             ++mysubscans[subScanKey].nrows;
@@ -3772,7 +3803,7 @@ void MSMetaData::_getScanAndSubScanProperties(
         }
     }
 
-    static const uInt ssStructSize = 3*dSize + iSize;
+    static const uInt ssStructSize = 3*dSize + 2*iSize;
     static const uInt sskeySize = 4*iSize;
     uInt subScanSize = subScanProps->size() * (ssStructSize + sskeySize);
     std::map<SubScanKey, SubScanProperties>::const_iterator subIter = subScanProps->begin();

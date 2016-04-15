@@ -75,6 +75,8 @@ public:
     };
 
     struct SubScanProperties {
+        // number of auto-correlation rows
+        uInt acRows;
         std::set<Int> antennas;
         Double beginTime;
         std::set<uInt> ddIDs;
