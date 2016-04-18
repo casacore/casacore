@@ -227,6 +227,9 @@ public:
     // get a set of spectral windows corresponding to the specified field name
     std::set<uInt> getSpwsForField(const String& fieldName);
 
+    // get the values of the CODE column from the field table
+    vector<String> getFieldCodes() const;
+
     // get the set of field IDs corresponding to the specified spectral window.
     std::set<Int> getFieldIDsForSpw(const uInt spw);
 
@@ -652,7 +655,7 @@ private:
     mutable vector<std::set<ScanKey> > _spwToScansMap, _ddidToScansMap, _fieldToScansMap;
 
     mutable vector<String> _fieldNames, _antennaNames, _observatoryNames,
-        _stationNames, _observers, _projects, _sourceNames;
+        _stationNames, _observers, _projects, _sourceNames, _fieldCodes;
     mutable vector<vector<String> > _schedules;
     mutable vector<vector<Int> > _corrTypes;
     mutable vector<Array<Int> >_corrProds;

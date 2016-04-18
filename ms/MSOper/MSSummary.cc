@@ -159,12 +159,10 @@ void MSSummary::list (LogIO& os, Record& outRec, Bool verbose,
 {
     // List a title for the Summary
     listTitle (os);
-
     // List the main table as well as the subtables in a useful order and format
     listWhere (os,verbose);
     listWhat (os,outRec, verbose, fillRecord);
     listHow (os,verbose, oneBased);
-
     // These aren't really useful (yet?)
     //  listSource (os,verbose);
     //  listSysCal (os,verbose);
@@ -177,7 +175,6 @@ void MSSummary::list (LogIO& os, Record& outRec, Bool verbose,
 
     // Post it
     os.post();
-
 }
 
 
@@ -274,20 +271,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
         outRec.define("EndTime", stopTime/C::day);
         outRec.define("timeref", timeref);
     }
-
-    //        if (verbose) {   // do "scan" listing
-
-    // Set up iteration over OBSID, ARRID, and SCAN_NUMBER:
-    //      Block<String> mssortcols(3);
-    //      mssortcols[0] = "OBSERVATION_ID";
-    //      mssortcols[1] = "ARRAY_ID";
-    //      mssortcols[2] = "SCAN_NUMBER";
-    //      MSIter msIter(const_cast<MeasurementSet&>(*pMS),mssortcols,0.0,False );
-
-    //      for (msIter.origin(); msIter.more(); msIter++) {
-    //      }
-
-
     // the selected MS (all of it) as a Table tool:
     //   MS is accessed as a generic table here because
     //   the ms tool hard-wires iteration over SPWID, FLDID,
@@ -313,7 +296,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
     // Spw Ids
     ROMSDataDescColumns dd(pMS->dataDescription());
     Vector<Int> specwindids(dd.spectralWindowId().getColumn());
-
     // Field widths for printing:
     Int widthLead  =  2;
     Int widthScan  =  4;
@@ -476,7 +458,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
             ++recLength;
             lastscan = thisscan;
         }
-
         if (verbose) {
             os << LogIO::POST;
         }
@@ -994,25 +975,19 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
 }
 void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRecord) const
 {
-
-    // Make a MS-field-columns object
-    ROMSFieldColumns msFC(pMS->field());
-
     // Is source table present?
     Bool srcok=!(pMS->source().isNull() || pMS->source().nrow()<1);
-
-    // Determine fields present in the main table
-    MSRange msr(*pMS);
-    Vector<Int> fieldId;
-    //ant2 = msr.range(MSS::ANTENNA2).asArrayInt(RecordFieldId(0));
-    fieldId = msr.range(MSS::FIELD_ID).asArrayInt(RecordFieldId(0));
-
-    if (msFC.phaseDir().nrow()<=0) {
+    uInt nfields = _msmd->nFields();
+    std::set<Int> uniqueFields = _msmd->getUniqueFiedIDs();
+    uInt nFieldsInMain = uniqueFields.size();
+    if (nfields <= 0) {
         os << "The FIELD table is empty" << endl;
-    } else if (fieldId.nelements()==0) {
+    }
+    else if (uniqueFields.empty()) {
         os << "The MAIN table is empty" << endl;
-    } else {
-        os << "Fields: " << fieldId.nelements()<<endl;
+    }
+    else {
+        os << "Fields: " << nFieldsInMain << endl;
         Int widthLead  =  2;
         Int widthField =  5;
         Int widthCode  =  5;
@@ -1024,7 +999,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
         Int widthnVis  =  10;
         Int widthNUnflaggedRows = 13;
 
-        outrec.define("nfields", Int(fieldId.nelements()));
+        outrec.define("nfields", Int(nFieldsInMain));
         if (verbose) {}  // null, always same output
 
         // Line is    ID Date Time Name RA Dec Type
@@ -1048,41 +1023,52 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
         }
         os << endl;
         // loop through fields
-        for (uInt i=0; i<fieldId.nelements(); i++) {
-            uInt fld=fieldId(i);
-            if (fld<msFC.phaseDir().nrow()) {
-                MDirection mRaDec=msFC.phaseDirMeas(fld);
+        vector<MDirection> phaseDirs = _msmd->getPhaseDirs();
+        vector<String> fieldNames = _msmd->getFieldNames();
+        vector<String> codes = _msmd->getFieldCodes();
+        std::set<Int>::const_iterator fiter = uniqueFields.begin();
+        std::set<Int>::const_iterator fend = uniqueFields.end();
+        vector<Int> sourceIDs = _msmd->getFieldTableSourceIDs();
+        for (; fiter!=fend; ++fiter) {
+            Int fld = *fiter;
+            if (fld >=0 && fld < (Int)nfields) {
+                MDirection mRaDec = phaseDirs[fld];
                 MVAngle mvRa = mRaDec.getAngle().getValue()(0);
-                MVAngle mvDec= mRaDec.getAngle().getValue()(1);
-                String name=msFC.name()(fld);
-                if (name.length()>20) name.replace(19,1,"*");
+                MVAngle mvDec = mRaDec.getAngle().getValue()(1);
+                String name = fieldNames[fld];
+                if (name.length()>20) {
+                    name.replace(19,1,"*");
+                }
                 os.output().setf(ios::left, ios::adjustfield);
                 os.output().width(widthLead);    os << "  ";
                 os.output().width(widthField);    os << (fld);
-                os.output().width(widthCode);   os << msFC.code()(fld);
+                os.output().width(widthCode);   os << codes[fld];
                 os.output().width(widthName);    os << name.at(0,20);
                 os.output().width(widthRA);    os << mvRa(0.0).string(MVAngle::TIME,12);
                 os.output().width(widthDec);    os << mvDec.string(MVAngle::DIG2,11);
                 os.output().width(widthType);
                 os << MDirection::showType(mRaDec.getRefPtr()->getType());
-                if (srcok) {os.output().width(widthSrc);    os << msFC.sourceId()(fld);}
-                if (nVisPerField_.nelements()>fld) {
+                if (srcok) {
+                    os.output().width(widthSrc);
+                    os << sourceIDs[fld];
+                }
+                if ((Int)nVisPerField_.nelements() > fld) {
                     os.output().setf(ios::right, ios::adjustfield);
                     os.output().width(widthnVis);
                     os << _msmd->nRows(MSMetaData::BOTH, fld);
                     if (_listUnflaggedRowCount) {
-                                          os.output().width(widthNUnflaggedRows);
-                                          ostringstream xx;
-                                          xx << std::fixed << setprecision(2) << std::right
-                                             << _msmd->nUnflaggedRows(MSMetaData::BOTH, fld);
-                                          os << xx.str();
-                                        }
+                        os.output().width(widthNUnflaggedRows);
+                        ostringstream xx;
+                        xx << std::fixed << setprecision(2) << std::right
+                            << _msmd->nUnflaggedRows(MSMetaData::BOTH, fld);
+                        os << xx.str();
+                    }
                 }
                 os << endl;
                 if(fillRecord){
                     Record fieldrec;
                     fieldrec.define("name", name);
-                    fieldrec.define("code",msFC.code()(fld));
+                    fieldrec.define("code", codes[fld]);
                     MeasureHolder mh(mRaDec);
                     Record dirrec;
                     String err;
@@ -1098,9 +1084,6 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
             }
 
         }
-
-        //        os << "   (nVis = Total number of time/baseline visibilities per field) " << endl;
-
     }
     os << endl << LogIO::POST;
 }

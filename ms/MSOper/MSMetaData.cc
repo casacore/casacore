@@ -1244,6 +1244,20 @@ vector<String> MSMetaData::getFieldNames() const {
     return fieldNames;
 }
 
+vector<String> MSMetaData::getFieldCodes() const {
+    // this method is responsible for setting _fieldCodes
+    if (! _fieldCodes.empty()) {
+        return _fieldCodes;
+    }
+    String fieldCodeColName = MSField::columnName(MSFieldEnums::CODE);
+    ROScalarColumn<String> codeCol(_ms->field(), fieldCodeColName);
+    vector<String> fieldCodes = codeCol.getColumn().tovector();
+    if (_cacheUpdated(_sizeof(fieldCodes))) {
+        _fieldCodes = fieldCodes;
+    }
+    return fieldCodes;
+}
+
 std::set<Int> MSMetaData::getFieldIDsForSpw(const uInt spw) {
     uInt myNSpw = nSpw(True);
     if (spw >= myNSpw) {
@@ -1665,26 +1679,31 @@ std::set<SubScanKey> MSMetaData::_getSubScanKeys() const {
         return _subscans;
     }
     std::set<SubScanKey> mysubscans;
-    SHARED_PTR<Vector<Int> > scans = _getScans();
-    SHARED_PTR<Vector<Int> > fields = _getFieldIDs();
-    SHARED_PTR<Vector<Int> > arrays = _getArrayIDs();
-    SHARED_PTR<Vector<Int> > obs = _getObservationIDs();
-    Vector<Int>::const_iterator scanIter = scans->begin();
-    Vector<Int>::const_iterator scanEnd = scans->end();
-    Vector<Int>::const_iterator fIter = fields->begin();
-    Vector<Int>::const_iterator oIter = obs->begin();
-    Vector<Int>::const_iterator aIter = arrays->begin();
-    SubScanKey subScanKey;
-    while (scanIter != scanEnd) {
-        subScanKey.obsID = *oIter;
-        subScanKey.arrayID = *aIter;
-        subScanKey.scan = *scanIter;
-        subScanKey.fieldID = *fIter;
-        mysubscans.insert(subScanKey);
-        ++scanIter;
-        ++fIter;
-        ++oIter;
-        ++aIter;
+    if (_subScanProperties) {
+        map<SubScanKey, SubScanProperties>::const_iterator iter = _subScanProperties->begin();
+        map<SubScanKey, SubScanProperties>::const_iterator end = _subScanProperties->end();
+        for (; iter!=end; ++iter) {
+            mysubscans.insert(iter->first);
+        }
+    }
+    else {
+        SHARED_PTR<Vector<Int> > scans = _getScans();
+        SHARED_PTR<Vector<Int> > fields = _getFieldIDs();
+        SHARED_PTR<Vector<Int> > arrays = _getArrayIDs();
+        SHARED_PTR<Vector<Int> > obs = _getObservationIDs();
+        Vector<Int>::const_iterator scanIter = scans->begin();
+        Vector<Int>::const_iterator scanEnd = scans->end();
+        Vector<Int>::const_iterator fIter = fields->begin();
+        Vector<Int>::const_iterator oIter = obs->begin();
+        Vector<Int>::const_iterator aIter = arrays->begin();
+        SubScanKey subScanKey;
+        for (; scanIter != scanEnd; ++scanIter, ++fIter, ++oIter, ++aIter) {
+            subScanKey.obsID = *oIter;
+            subScanKey.arrayID = *aIter;
+            subScanKey.scan = *scanIter;
+            subScanKey.fieldID = *fIter;
+            mysubscans.insert(subScanKey);
+        }
     }
     if (_cacheUpdated(mysubscans.size()*sizeof(SubScanKey))) {
         _subscans = mysubscans;
@@ -4527,8 +4546,17 @@ Bool MSMetaData::_hasFieldID(const Int fieldID) const {
 
 std::set<Int> MSMetaData::getUniqueFiedIDs() const {
     if (_uniqueFieldIDs.empty()) {
-        SHARED_PTR<Vector<Int> > allFieldIDs = _getFieldIDs();
-        _uniqueFieldIDs.insert(allFieldIDs->begin(), allFieldIDs->end());
+        if (_subScanProperties) {
+            map<SubScanKey, SubScanProperties>::const_iterator iter = _subScanProperties->begin();
+            map<SubScanKey, SubScanProperties>::const_iterator end = _subScanProperties->end();
+            for (; iter!=end; ++iter) {
+                _uniqueFieldIDs.insert(iter->first.fieldID);
+            }
+        }
+        else {
+            SHARED_PTR<Vector<Int> > allFieldIDs = _getFieldIDs();
+            _uniqueFieldIDs.insert(allFieldIDs->begin(), allFieldIDs->end());
+        }
     }
     return _uniqueFieldIDs;
 }

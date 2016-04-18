@@ -2402,6 +2402,11 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(xc->find(key)->second == 316, AipsError);
         }
         {
+            cout << "*** test getFieldCodes()" << endl;
+            Vector<String> codes = Vector<String>(md.getFieldCodes());
+            AlwaysAssert(allEQ(codes, String("none")), AipsError);
+        }
+        {
 			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}
