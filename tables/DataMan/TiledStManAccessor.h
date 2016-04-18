@@ -271,6 +271,7 @@ public:
     // <br>When forceSmaller is False, the cache is not resized when the
     // new size is smaller.
     void setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller = True);
+    void setHypercubeCacheSize (uInt hypercube, uInt nbuckets, Bool forceSmaller = True);
 
     // Clear the caches used by the hypercubes in this storage manager.
     // It will flush the caches as needed and remove all buckets from them

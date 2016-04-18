@@ -187,6 +187,12 @@ void ROTiledStManAccessor::setCacheSize (uInt rownr, uInt nbuckets,
     dataManPtr_p->setCacheSize (rownr, nbuckets, forceSmaller);
 }
 
+void ROTiledStManAccessor::setHypercubeCacheSize (uInt hypercube, uInt nbuckets,
+					 Bool forceSmaller)
+{
+    static_cast<TiledStMan *> (dataManPtr_p)->setHypercubeCacheSize (hypercube, nbuckets, forceSmaller);
+}
+
 void ROTiledStManAccessor::clearCaches()
 {
     dataManPtr_p->emptyCaches();

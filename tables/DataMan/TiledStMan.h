@@ -243,6 +243,7 @@ public:
     // <br>A flag is set indicating that the TSMDataColumn
     // access functions do not need to size the cache.
     void setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller);
+    void setHypercubeCacheSize (uInt hypercube, uInt nbuckets, Bool forceSmaller);
 
     // Determine if the user set the cache size (using setCacheSize).
     Bool userSetCache (uInt rownr) const;
