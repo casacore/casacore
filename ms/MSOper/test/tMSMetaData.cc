@@ -1342,7 +1342,7 @@ void testIt(MSMetaData& md) {
 			for (Int i=0; i<6; ++i) {
 				expec.insert(i);
 			}
-			AlwaysAssert(md.getUniqueFiedIDs() == expec, AipsError);
+			AlwaysAssert(md.getUniqueFieldIDs() == expec, AipsError);
 		}
 		{
 			cout << "*** test getCenterFreqs()" << endl;
@@ -2159,10 +2159,13 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(thrown, AipsError);
             sskey.scan = 1;
             MSMetaData::SubScanProperties props = md.getSubScanProperties(sskey);
-            AlwaysAssert(props.nrows == 367, AipsError);
+            AlwaysAssert(props.acRows + props.xcRows == 367, AipsError);
             SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > allProps
                 = md.getSubScanProperties();
-            AlwaysAssert(allProps->find(sskey)->second.nrows == 367, AipsError);
+            AlwaysAssert(
+                allProps->find(sskey)->second.acRows + allProps->find(sskey)->second.xcRows == 367,
+                AipsError
+            );
             for (uInt i=0; i<9; ++i) {
                 Double expec = 0;
                 if (i == 0) {

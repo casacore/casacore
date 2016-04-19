@@ -85,12 +85,13 @@ public:
         // the subscan and that spwID
         map<uInt, Quantity> meanInterval;
         Quantity meanExposureTime;
-        uInt nrows;
         std::set<uInt> spws;
         // number of rows for each spectral window
         map<uInt, uInt> spwNRows;
         std::set<Int> stateIDs;
-        std::map<Double, TimeStampProperties> timeProps;
+        map<Double, TimeStampProperties> timeProps;
+        // number of cross-correlation rows.
+        uInt xcRows;
     };
 
     // construct an object which stores a pointer to the MS and queries the MS
@@ -551,8 +552,14 @@ public:
     // get polarization IDs for the specified scan and spwid
     std::set<uInt> getPolarizationIDs(uInt obsID, Int arrayID, Int scan, uInt spwid) const;
 
+    // DEPRECATED because of spelling error. Use getUniqueFieldIDs()
+    // instead.
+    inline std::set<Int> getUniqueFiedIDs() const {
+        return getUniqueFieldIDs();
+    }
+
     // get unique field IDs that exist in the main table.
-    std::set<Int> getUniqueFiedIDs() const;
+    std::set<Int> getUniqueFieldIDs() const;
 
     // get the pointing directions associated with antenna1 and antenna2 for
     // the specified row of the main MS table
@@ -646,7 +653,7 @@ private:
         _stateIDs, _dataDescIDs, _observationIDs, _arrayIDs;
     mutable SHARED_PTR<std::map<SubScanKey, uInt> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
     mutable SHARED_PTR<QVD> _intervals;
-    mutable SHARED_PTR<vector<uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
+    mutable SHARED_PTR<map<Int, uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
     mutable std::map<ScanKey, std::set<String> > _scanToIntentsMap;
     mutable SHARED_PTR<const std::map<SubScanKey, std::set<String> > > _subScanToIntentsMap;
     mutable vector<std::set<String> > _stateToIntentsMap, _spwToIntentsMap, _fieldToIntentsMap;
@@ -859,18 +866,18 @@ private:
 
     void _getRowStats(
         uInt& nACRows, uInt& nXCRows,
-        std::map<SubScanKey, uInt>*& subScanToNACRowsMap,
-        std::map<SubScanKey, uInt>*& subScanToNXCRowsMap,
-        vector<uInt>*& fieldToNACRowsMap,
-        vector<uInt>*& fieldToNXCRowsMap
+        map<SubScanKey, uInt>*& subScanToNACRowsMap,
+        map<SubScanKey, uInt>*& subScanToNXCRowsMap,
+        map<Int, uInt>*& fieldToNACRowsMap,
+        map<Int, uInt>*& fieldToNXCRowsMap
     ) const;
 
     void _getRowStats(
         uInt& nACRows, uInt& nXCRows,
         SHARED_PTR<std::map<SubScanKey, uInt> >& scanToNACRowsMap,
         SHARED_PTR<std::map<SubScanKey, uInt> >& scanToNXCRowsMap,
-        SHARED_PTR<vector<uInt> >& fieldToNACRowsMap,
-        SHARED_PTR<vector<uInt> >& fieldToNXCRowsMap
+        SHARED_PTR<map<Int, uInt> >& fieldToNACRowsMap,
+        SHARED_PTR<map<Int, uInt> >& fieldToNXCRowsMap
     ) const;
 
     // get the scan keys in the specified set that have the associated arrayKey
