@@ -77,21 +77,21 @@ public:
     struct SubScanProperties {
         // number of auto-correlation rows
         uInt acRows;
+        // number of cross-correlation rows.
+        uInt xcRows;
         std::set<Int> antennas;
         Double beginTime;
         std::set<uInt> ddIDs;
         Double endTime;
         // the key is the spwID, the value is the meanInterval for
         // the subscan and that spwID
-        map<uInt, Quantity> meanInterval;
+        std::map<uInt, Quantity> meanInterval;
         Quantity meanExposureTime;
         std::set<uInt> spws;
         // number of rows for each spectral window
-        map<uInt, uInt> spwNRows;
+        std::map<uInt, uInt> spwNRows;
         std::set<Int> stateIDs;
-        map<Double, TimeStampProperties> timeProps;
-        // number of cross-correlation rows.
-        uInt xcRows;
+        std::map<Double, TimeStampProperties> timeProps;
     };
 
     // construct an object which stores a pointer to the MS and queries the MS
