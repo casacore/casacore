@@ -352,7 +352,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
         Int lastscan = 0;
         for (; siter != send; ++siter) {
             const MSMetaData::SubScanProperties& props = ssprops->find(*siter)->second;
-            Int nrow = props.nrows;
+            Int nrow = props.acRows + props.xcRows;
             Int thisscan = siter->scan;
             set<uInt> ddIDs = props.ddIDs;
             std::set<Int> stateIDs = props.stateIDs;
@@ -978,7 +978,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
     // Is source table present?
     Bool srcok=!(pMS->source().isNull() || pMS->source().nrow()<1);
     uInt nfields = _msmd->nFields();
-    std::set<Int> uniqueFields = _msmd->getUniqueFiedIDs();
+    std::set<Int> uniqueFields = _msmd->getUniqueFieldIDs();
     uInt nFieldsInMain = uniqueFields.size();
     if (nfields <= 0) {
         os << "The FIELD table is empty" << endl;
@@ -1017,9 +1017,9 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
             os.output().width(widthnVis);
             os << "nRows";
             if (_listUnflaggedRowCount) {
-                          os.output().width(widthNUnflaggedRows);
-                          os << "nUnflRows";
-                        }
+                os.output().width(widthNUnflaggedRows);
+                os << "nUnflRows";
+            }
         }
         os << endl;
         // loop through fields
@@ -1082,7 +1082,6 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
             } else {
                 os << "Field "<<fld<<" not found in FIELD table"<<endl;
             }
-
         }
     }
     os << endl << LogIO::POST;
