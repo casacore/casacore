@@ -201,7 +201,7 @@ public:
 
     uInt nRows(CorrelationType cType);
 
-    SHARED_PTR<const map<SubScanKey, uInt> > getNRowMap(CorrelationType type) const;
+    SHARED_PTR<const std::map<SubScanKey, uInt> > getNRowMap(CorrelationType type) const;
 
     uInt nRows(
         CorrelationType cType, Int arrayID, Int observationID,
@@ -238,7 +238,7 @@ public:
     std::set<String> getFieldNamesForSpw(const uInt spw);
 
     // get rest frequencies from the SOURCE table
-    map<SourceKey, SHARED_PTR<vector<MFrequency> > > getRestFrequencies() const;
+    std::map<SourceKey, SHARED_PTR<vector<MFrequency> > > getRestFrequencies() const;
 
     // get the set of spectral windows for the specified scan.
     std::set<uInt> getSpwsForScan(const ScanKey& scan) const;
@@ -251,7 +251,7 @@ public:
 
     // get the transitions from the SOURCE table. If there are no transitions
     // for a particular key, the shared ptr contains the null ptr.
-    map<SourceKey, SHARED_PTR<vector<String> > > getTransitions() const;
+    std::map<SourceKey, SHARED_PTR<vector<String> > > getTransitions() const;
 
     // get the number of antennas in the ANTENNA table
     uInt nAntennas() const;
@@ -582,14 +582,14 @@ private:
     struct ScanProperties {
         // the key is the spwID, the value is the meanInterval for
         // the subscan and that spwID
-        map<uInt, Quantity> meanInterval;
+        std::map<uInt, Quantity> meanInterval;
         // number of rows for each spectral window
-        map<uInt, uInt> spwNRows;
+        std::map<uInt, uInt> spwNRows;
         // time range (which takes into account helf of the corresponding
         // interval, which is not accounted for in the SubScanProperties times
         std::pair<Double, Double> timeRange;
         // times for each spectral window
-        map<uInt, std::set<Double> > times;
+        std::map<uInt, std::set<Double> > times;
     };
 
     struct SpwProperties {
@@ -653,7 +653,7 @@ private:
         _stateIDs, _dataDescIDs, _observationIDs, _arrayIDs;
     mutable SHARED_PTR<std::map<SubScanKey, uInt> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
     mutable SHARED_PTR<QVD> _intervals;
-    mutable SHARED_PTR<map<Int, uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
+    mutable SHARED_PTR<std::map<Int, uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
     mutable std::map<ScanKey, std::set<String> > _scanToIntentsMap;
     mutable SHARED_PTR<const std::map<SubScanKey, std::set<String> > > _subScanToIntentsMap;
     mutable vector<std::set<String> > _stateToIntentsMap, _spwToIntentsMap, _fieldToIntentsMap;
@@ -704,7 +704,7 @@ private:
 
     mutable vector<std::pair<Quantity, Quantity> > _properMotions;
 
-    mutable map<SourceKey, SourceProperties> _sourceInfo;
+    mutable std::map<SourceKey, SourceProperties> _sourceInfo;
 
     // disallow copy constructor and = operator
     MSMetaData(const MSMetaData&);
@@ -778,7 +778,7 @@ private:
     std::map<ArrayKey, std::set<SubScanKey> > _getArrayKeysToSubScanKeys() const;
 
     // Uses openmp for parallel processing
-    pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
+    pair<std::map<ScanKey, ScanProperties>, std::map<SubScanKey, SubScanProperties> >
     _getChunkSubScanProperties(
         SHARED_PTR<const Vector<Int> > scans, SHARED_PTR<const Vector<Int> > fields,
         SHARED_PTR<const Vector<Int> > ddIDs, SHARED_PTR<const Vector<Int> > states,
@@ -866,18 +866,18 @@ private:
 
     void _getRowStats(
         uInt& nACRows, uInt& nXCRows,
-        map<SubScanKey, uInt>*& subScanToNACRowsMap,
-        map<SubScanKey, uInt>*& subScanToNXCRowsMap,
-        map<Int, uInt>*& fieldToNACRowsMap,
-        map<Int, uInt>*& fieldToNXCRowsMap
+        std::map<SubScanKey, uInt>*& subScanToNACRowsMap,
+        std::map<SubScanKey, uInt>*& subScanToNXCRowsMap,
+        std::map<Int, uInt>*& fieldToNACRowsMap,
+        std::map<Int, uInt>*& fieldToNXCRowsMap
     ) const;
 
     void _getRowStats(
         uInt& nACRows, uInt& nXCRows,
         SHARED_PTR<std::map<SubScanKey, uInt> >& scanToNACRowsMap,
         SHARED_PTR<std::map<SubScanKey, uInt> >& scanToNXCRowsMap,
-        SHARED_PTR<map<Int, uInt> >& fieldToNACRowsMap,
-        SHARED_PTR<map<Int, uInt> >& fieldToNXCRowsMap
+        SHARED_PTR<std::map<Int, uInt> >& fieldToNACRowsMap,
+        SHARED_PTR<std::map<Int, uInt> >& fieldToNXCRowsMap
     ) const;
 
     // get the scan keys in the specified set that have the associated arrayKey
@@ -911,7 +911,7 @@ private:
 
     SHARED_PTR<std::map<ScanKey, std::set<Double> > > _getScanToTimesMap() const;
 
-    map<SourceKey, SourceProperties> _getSourceInfo() const;
+    std::map<SourceKey, SourceProperties> _getSourceInfo() const;
 
     vector<SpwProperties> _getSpwInfo(
         std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw,
