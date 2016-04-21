@@ -1481,14 +1481,14 @@ void MSSummary::listSpectralAndPolInfo (
         os << "The POLARIZATION table is empty: see the FEED table" << endl;
     }
     // determine the data_desc_ids present in the main table
-    std::set<Int> ddId = _msmd->getUniqueDataDescIDs();
+    std::set<uInt> ddId = _msmd->getUniqueDataDescIDs();
     // now get the corresponding spectral windows and pol setups
     vector<uInt> polIds = _msmd->getDataDescIDToPolIDMap();
     Vector<uInt> spwIds(_msmd->getDataDescIDToSpwMap());
     std::set<uInt> uniquePolIDs;
     std::set<uInt> uniqueSpws;
-    std::set<Int>::const_iterator dIter = ddId.begin();
-    std::set<Int>::const_iterator dEnd = ddId.end();
+    std::set<uInt>::const_iterator dIter = ddId.begin();
+    std::set<uInt>::const_iterator dEnd = ddId.end();
     for (; dIter!=dEnd; ++dIter) {
         uniquePolIDs.insert(polIds[*dIter]);
         uniqueSpws.insert(spwIds[*dIter]);
@@ -1554,7 +1554,6 @@ void MSSummary::listSpectralAndPolInfo (
         Vector<uInt>::const_iterator iter = spwIds.begin();
         Vector<uInt>::const_iterator end = spwIds.end();
         std::vector<std::set<uInt> > spwToDDID = _msmd->getSpwToDataDescriptionIDMap();
-        std::set<uInt> uDDIDSet(ddId.begin(), ddId.end());
         vector<MFrequency> refFreqs = _msmd->getRefFreqs();
         for (; iter != end; ++iter) {
             Int spw = *iter;
@@ -1563,7 +1562,7 @@ void MSSummary::listSpectralAndPolInfo (
             std::set<uInt>::const_iterator dend = ddids.end();
             for (; diter!=dend; ++diter) {
                 uInt dd = *diter;
-                if (uDDIDSet.find(dd) == uDDIDSet.end()) {
+                if (ddId.find(dd) == ddId.end()) {
                     // data description ID not in main table, so not reported here
                     continue;
                 }

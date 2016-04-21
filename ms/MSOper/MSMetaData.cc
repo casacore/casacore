@@ -4549,7 +4549,7 @@ Bool MSMetaData::_hasFieldID(const Int fieldID) const {
     return uniqueFields.find(fieldID) != uniqueFields.end();
 }
 
-std::set<Int> MSMetaData::getUniqueDataDescIDs() const {
+std::set<uInt> MSMetaData::getUniqueDataDescIDs() const {
     // this method is responsible for setting _uniqueDataDescIDs
     if (_uniqueDataDescIDs.empty()) {
         if (_subScanProperties) {

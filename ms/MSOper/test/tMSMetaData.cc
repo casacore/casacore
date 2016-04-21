@@ -2411,14 +2411,12 @@ void testIt(MSMetaData& md) {
         }
         {
             cout << "*** test uniqueDataDescIDs()" << endl;
-            std::set<Int> ddids = md.getUniqueDataDescIDs();
+            std::set<uInt> ddids = md.getUniqueDataDescIDs();
             AlwaysAssert(ddids.size() == 25, AipsError);
-            std::set<Int>::const_iterator iter = ddids.begin();
-            std::set<Int>::const_iterator end = ddids.end();
-            Int i = 0;
-            for (; iter!=end; ++iter, ++i) {
-                AlwaysAssert(*iter == i, AipsError);
-            }
+            Vector<uInt> expec = indgen(25, (uInt)0, (uInt)1);
+            AlwaysAssert(allEQ(
+                Vector<uInt>(vector<uInt>(ddids.begin(), ddids.end())), expec), AipsError
+            );
         }
         {
 			cout << "*** cache size " << md.getCache() << endl;
