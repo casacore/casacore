@@ -552,6 +552,9 @@ public:
     // get polarization IDs for the specified scan and spwid
     std::set<uInt> getPolarizationIDs(uInt obsID, Int arrayID, Int scan, uInt spwid) const;
 
+    // get unique data description IDs that exist in the main table
+    std::set<Int> getUniqueDataDescIDs() const;
+
     // DEPRECATED because of spelling error. Use getUniqueFieldIDs()
     // instead.
     inline std::set<Int> getUniqueFiedIDs() const {
@@ -647,7 +650,7 @@ private:
     mutable std::map<String, std::set<SubScanKey> > _intentToSubScansMap;
     mutable std::map<std::pair<ScanKey, uInt>, std::set<uInt> > _scanSpwToPolIDMap;
     mutable std::set<String> _uniqueIntents;
-    mutable std::set<Int>  _uniqueFieldIDs, _uniqueStateIDs;
+    mutable std::set<Int>  _uniqueFieldIDs, _uniqueStateIDs, _uniqueDataDescIDs;
     mutable std::set<uInt> _avgSpw, _tdmSpw, _fdmSpw, _wvrSpw, _sqldSpw;
     mutable SHARED_PTR<Vector<Int> > _antenna1, _antenna2, _scans, _fieldIDs,
         _stateIDs, _dataDescIDs, _observationIDs, _arrayIDs;

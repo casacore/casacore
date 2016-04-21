@@ -2410,6 +2410,17 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(allEQ(codes, String("none")), AipsError);
         }
         {
+            cout << "*** test uniqueDataDescIDs()" << endl;
+            std::set<Int> ddids = md.getUniqueDataDescIDs();
+            AlwaysAssert(ddids.size() == 25, AipsError);
+            std::set<Int>::const_iterator iter = ddids.begin();
+            std::set<Int>::const_iterator end = ddids.end();
+            Int i = 0;
+            for (; iter!=end; ++iter, ++i) {
+                AlwaysAssert(*iter == i, AipsError);
+            }
+        }
+        {
 			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}
