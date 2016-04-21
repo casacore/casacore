@@ -4549,6 +4549,25 @@ Bool MSMetaData::_hasFieldID(const Int fieldID) const {
     return uniqueFields.find(fieldID) != uniqueFields.end();
 }
 
+std::set<uInt> MSMetaData::getUniqueDataDescIDs() const {
+    // this method is responsible for setting _uniqueDataDescIDs
+    if (_uniqueDataDescIDs.empty()) {
+        if (_subScanProperties) {
+            map<SubScanKey, SubScanProperties>::const_iterator iter = _subScanProperties->begin();
+            map<SubScanKey, SubScanProperties>::const_iterator end = _subScanProperties->end();
+            for (; iter!=end; ++iter) {
+                const std::set<uInt>& ddIDs = iter->second.ddIDs; 
+                _uniqueDataDescIDs.insert(ddIDs.begin(), ddIDs.end());
+            }
+        }
+        else {
+            SHARED_PTR<Vector<Int> > allDDIDs = _getDataDescIDs();
+            _uniqueDataDescIDs.insert(allDDIDs->begin(), allDDIDs->end());
+        }
+    }
+    return _uniqueDataDescIDs;
+}
+
 std::set<Int> MSMetaData::getUniqueFieldIDs() const {
     if (_uniqueFieldIDs.empty()) {
         if (_subScanProperties) {
@@ -4640,7 +4659,6 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         _ms->spectralWindow(),
         MSSpectralWindow::columnName(MSSpectralWindowEnums::RESOLUTION)
     );
-    ScalarColumn<Int> mrfCol = spwCols.measFreqRef();
     Vector<Int> nss  = spwCols.netSideband().getColumn();
     Vector<String> name = spwCols.name().getColumn();
     Bool myHasBBCNo = hasBBCNo();

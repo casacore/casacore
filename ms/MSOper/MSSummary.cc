@@ -220,12 +220,11 @@ void MSSummary::listHow (LogIO& os, Bool verbose, Bool oneBased) const
 {
     // listSpectralWindow (os,verbose);
     // listPolarization (os,verbose);
-        listSpectralAndPolInfo(os, verbose, oneBased);
+    listSpectralAndPolInfo(os, verbose, oneBased);
     listSource (os,verbose);
     //  listFeed (os,verbose, oneBased));
     listAntenna (os,verbose);
 }
-
 
 //
 // SUBTABLES
@@ -1472,14 +1471,6 @@ void MSSummary::listPolarization (LogIO& os, Bool) const {
 void MSSummary::listSpectralAndPolInfo (
     LogIO& os, Bool, Bool
 ) const {
-    // Create a MS-spwin-columns object
-    ROMSSpWindowColumns msSWC(pMS->spectralWindow());
-
-    // Create a MS-pol-columns object
-    ROMSPolarizationColumns msPolC(pMS->polarization());
-    // Create a MS-data_desc-columns object
-    ROMSDataDescColumns msDDC(pMS->dataDescription());
-
     if (_msmd->nDataDescriptions() == 0) {
         os << "The DATA_DESCRIPTION table is empty: see the FEED table" << endl;
     }
@@ -1489,24 +1480,26 @@ void MSSummary::listSpectralAndPolInfo (
     if (_msmd->nPol() == 0) {
         os << "The POLARIZATION table is empty: see the FEED table" << endl;
     }
-
     // determine the data_desc_ids present in the main table
-    MSRange msr(*pMS);
-    Vector<Int> ddId = msr.range(MSS::DATA_DESC_ID).asArrayInt(RecordFieldId(0));
-    Vector<uInt> uddId(ddId.nelements());
-    for (uInt i=0; i<ddId.nelements(); i++) uddId(i)=ddId(i);
+    std::set<uInt> ddId = _msmd->getUniqueDataDescIDs();
     // now get the corresponding spectral windows and pol setups
-    Vector<Int> spwIds = msDDC.spectralWindowId().getColumnCells(uddId);
-    Vector<Int> polIds = msDDC.polarizationId().getColumnCells(uddId);
+    vector<uInt> polIds = _msmd->getDataDescIDToPolIDMap();
+    Vector<uInt> spwIds(_msmd->getDataDescIDToSpwMap());
+    std::set<uInt> uniquePolIDs;
+    std::set<uInt> uniqueSpws;
+    std::set<uInt>::const_iterator dIter = ddId.begin();
+    std::set<uInt>::const_iterator dEnd = ddId.end();
+    for (; dIter!=dEnd; ++dIter) {
+        uniquePolIDs.insert(polIds[*dIter]);
+        uniqueSpws.insert(spwIds[*dIter]);
+    }
     const Int option=Sort::HeapSort | Sort::NoDuplicates;
     const Sort::Order order=Sort::Ascending;
-    uInt nSpw = GenSort<Int>::sort (spwIds, order, option);
-    Int nPol = GenSort<Int>::sort (polIds, order, option);
-
-    if (ddId.nelements()>0) {
+    GenSort<uInt>::sort (spwIds, order, option);
+    if (! ddId.empty()) {
         os << "Spectral Windows: ";
-        os << " ("<<nSpw<<" unique spectral windows and ";
-        os << nPol << " unique polarization setups)"<<endl;
+        os << " (" << uniqueSpws.size() << " unique spectral windows and ";
+        os << uniquePolIDs.size() << " unique polarization setups)"<<endl;
 
         vector<String> names = _msmd->getSpwNames();
         Int widthName = 5;
@@ -1523,7 +1516,8 @@ void MSSummary::listSpectralAndPolInfo (
         Int widthFreq    = 12;
         Int widthFrqNum    = 12;
         Int widthNumChan    =  6;
-        Int widthCorrTypes    = msPolC.corrType()(0).nelements()*4;
+        vector<vector<Int> > corrTypes = _msmd->getCorrTypes();
+        Int widthCorrTypes = 4*corrTypes[0].size();
         Int widthCorrType    =  4;
         uInt widthBBCNo = 8;
 
@@ -1540,7 +1534,6 @@ void MSSummary::listSpectralAndPolInfo (
         os.output().width(widthFreq);    os << " ChanWid(kHz) ";
         os.output().width(widthFreq);    os << " TotBW(kHz)";
         os.output().width(widthFreq);    os << "CtrFreq(MHz) ";
-        //        os.output().width(widthFreq);    os << "Ref(MHz)";
         Bool hasBBCNo = _msmd->hasBBCNo();
         if (hasBBCNo) {
             os.output().width(widthBBCNo);
@@ -1558,11 +1551,10 @@ void MSSummary::listSpectralAndPolInfo (
 
         os.output().precision(9);
         // order by spwid, not ddid, CAS-7376
-        Vector<Int>::const_iterator iter = spwIds.begin();
-        Vector<Int>::const_iterator end = spwIds.end();
+        Vector<uInt>::const_iterator iter = spwIds.begin();
+        Vector<uInt>::const_iterator end = spwIds.end();
         std::vector<std::set<uInt> > spwToDDID = _msmd->getSpwToDataDescriptionIDMap();
-        std::set<uInt> uDDIDSet(uddId.begin(), uddId.end());
-        vector<uInt> ddToPolID = _msmd->getDataDescIDToPolIDMap();
+        vector<MFrequency> refFreqs = _msmd->getRefFreqs();
         for (; iter != end; ++iter) {
             Int spw = *iter;
             std::set<uInt> ddids = spwToDDID[spw];
@@ -1570,11 +1562,10 @@ void MSSummary::listSpectralAndPolInfo (
             std::set<uInt>::const_iterator dend = ddids.end();
             for (; diter!=dend; ++diter) {
                 uInt dd = *diter;
-                if (uDDIDSet.find(dd) == uDDIDSet.end()) {
+                if (ddId.find(dd) == ddId.end()) {
                     // data description ID not in main table, so not reported here
                     continue;
                 }
-                Int pol = ddToPolID[dd];
                 os.output().setf(ios::left, ios::adjustfield);
                 os.output().width(widthLead);        os << "  ";
                 // 1th column: Spectral Window Id
@@ -1590,7 +1581,7 @@ void MSSummary::listSpectralAndPolInfo (
                 // 4th column: Reference Frame info
                 // os.output().setf(ios::left, ios::adjustfield);
                 os.output().width(widthFrame);
-                os<< msSWC.refFrequencyMeas()(spw).getRefString();
+                os<< refFreqs[spw].getRefString();
                 // 5th column: Chan 1 freq (may be at high freq end of band!)
                 os.output().setf(ios::fixed);
                 os.output().precision(3);
@@ -1614,10 +1605,12 @@ void MSSummary::listSpectralAndPolInfo (
                 //            os.output().width(widthFrqNum);
                 //            os<< msSWC.refFrequency()(spw)/1.0e6;
                 // 9th column: the correlation type(s)
-                for (uInt j=0; j<msPolC.corrType()(pol).nelements(); ++j) {
+                Int pol = polIds[dd];
+                vector<Int>::const_iterator cIter = corrTypes[pol].begin();
+                vector<Int>::const_iterator cEnd = corrTypes[pol].end();
+                for (; cIter!=cEnd; ++cIter) {
                     os.output().width(widthCorrType);
-                    Int index = msPolC.corrType()(pol)(IPosition(1,j));
-                    os << Stokes::name(Stokes::type(index));
+                    os << Stokes::name(Stokes::type(*cIter));
                 }
             }
             os << endl;
