@@ -125,6 +125,8 @@ data.isDefined=0
 weig.isDefined=1
 freq.isDefined=1
 [16][10][16, 10][16, 10]
+Testing cache sizing via accessor 
+... completed testing cache sizing via accessor; status: passed
 Checking 10 rows
 WriteNoHyper ...
 Checking 101 rows

@@ -271,6 +271,9 @@ public:
     // <br>When forceSmaller is False, the cache is not resized when the
     // new size is smaller.
     void setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller = True);
+
+    // This version allows setting the tile cache for a particular hypercube.  This
+    // is useful when iterating over the hypercubes in an StMan.
     void setHypercubeCacheSize (uInt hypercube, uInt nbuckets, Bool forceSmaller = True);
 
     // Clear the caches used by the hypercubes in this storage manager.
