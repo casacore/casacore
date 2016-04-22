@@ -4549,6 +4549,27 @@ Bool MSMetaData::_hasFieldID(const Int fieldID) const {
     return uniqueFields.find(fieldID) != uniqueFields.end();
 }
 
+const std::set<Int>& MSMetaData::getUniqueAntennaIDs() const {
+    // this method is responsible for setting _uniqueAntennas
+    if (_uniqueAntennaIDs.empty()) {
+        if (_subScanProperties) {
+            map<SubScanKey, SubScanProperties>::const_iterator iter = _subScanProperties->begin();
+            map<SubScanKey, SubScanProperties>::const_iterator end = _subScanProperties->end();
+            for (; iter!=end; ++iter) {
+                const std::set<Int>& ants = iter->second.antennas;
+                _uniqueAntennaIDs.insert(ants.begin(), ants.end());
+            }
+        }
+        else {
+            SHARED_PTR<Vector<Int> > ant1, ant2;
+            _getAntennas(ant1, ant2);
+            _uniqueAntennaIDs.insert(ant1->begin(), ant1->end());
+            _uniqueAntennaIDs.insert(ant2->begin(), ant2->end());
+        }
+    }    
+    return _uniqueAntennaIDs;
+}
+
 std::set<uInt> MSMetaData::getUniqueDataDescIDs() const {
     // this method is responsible for setting _uniqueDataDescIDs
     if (_uniqueDataDescIDs.empty()) {

@@ -2410,12 +2410,24 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(allEQ(codes, String("none")), AipsError);
         }
         {
-            cout << "*** test uniqueDataDescIDs()" << endl;
+            cout << "*** test getUniqueDataDescIDs()" << endl;
             std::set<uInt> ddids = md.getUniqueDataDescIDs();
-            AlwaysAssert(ddids.size() == 25, AipsError);
             Vector<uInt> expec = indgen(25, (uInt)0, (uInt)1);
-            AlwaysAssert(allEQ(
-                Vector<uInt>(vector<uInt>(ddids.begin(), ddids.end())), expec), AipsError
+            AlwaysAssert(
+                allEQ(
+                    Vector<uInt>(vector<uInt>(ddids.begin(), ddids.end())), expec
+                ), AipsError
+            );
+        }
+        {
+            cout << "*** test getUniqueAntennaIDs()" << endl;
+            std::set<Int> ants = md.getUniqueAntennaIDs();
+            Int evals[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13};
+            Vector<Int> expec(vector<Int>(evals, evals+13));
+            AlwaysAssert(
+                allEQ(
+                    Vector<Int>(vector<Int>(ants.begin(), ants.end())), expec
+                ), AipsError
             );
         }
         {
