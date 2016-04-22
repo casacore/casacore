@@ -758,39 +758,20 @@ void MSSummary::getScanSummary (Record& outRec) const
 
 void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 {
-
-    // Make a MS-antenna object
-    MSAntenna antennaTable(pMS->antenna());
-    uInt nrow(antennaTable.nrow());
-
-    // Quit if no antennas
-    if (nrow<=0) {
+    if (_msmd->nAntennas() == 0) { 
         os << "The ANTENNA table is empty" << endl;
         return;
-    }
-
+    }    
     // Determine antennas  present in the main table
-    MSRange msr(*pMS);
-    Vector<Int> ant1,ant2;
-    ant1 = msr.range(MSS::ANTENNA1).asArrayInt(RecordFieldId(0));
-    ant2 = msr.range(MSS::ANTENNA2).asArrayInt(RecordFieldId(0));
-    //GlishArray(msr.range(MSS::ANTENNA1).get(0)).get(ant1);
-    //GlishArray(msr.range(MSS::ANTENNA2).get(0)).get(ant2);
-    Vector<Int> antIds(ant1.nelements()+ant2.nelements());
-    antIds(Slice(0,ant1.nelements()))=ant1;
-    antIds(Slice(ant1.nelements(),ant2.nelements()))=ant2;
-    const Int option=Sort::HeapSort | Sort::NoDuplicates;
-    const Sort::Order order=Sort::Ascending;
-    Int nAnt=GenSort<Int>::sort (antIds, order, option);
-
-    // Get Antenna table columns:
-    ROMSAntennaColumns antCol(antennaTable);
-
+    const std::set<Int>& antIds = _msmd->getUniqueAntennaIDs();
+    uInt nAnt = antIds.size();
+    std::map<String, uInt> namesToIDsMap;
+    vector<String> names = _msmd->getAntennaNames(namesToIDsMap);
+    vector<String> stations = _msmd->getAntennaStations();
     if (verbose) {
         // Detailed antenna list
-
         String title;
-        title="Antennas: "+String::toString(nAnt)+":";
+        title="Antennas: " + String::toString(nAnt) + ":";
         String indent("  ");
         uInt indwidth =5;
         uInt namewidth=6;
@@ -804,7 +785,6 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 
         os.output().setf(ios::fixed, ios::floatfield);
         os.output().setf(ios::left, ios::adjustfield);
-
         // Write the title:
         os << title << endl;
         // Write the column headings:
@@ -840,35 +820,32 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
         os.output().width(positionwidth);
         os << "z";
         os << endl;
-
         vector<MPosition> antPos = _msmd->getAntennaPositions();
         Bool posIsITRF = antPos[0].type() != MPosition::ITRF;
         vector<QVD> offsets = _msmd->getAntennaOffsets();
-
-        // For each ant
-        for (Int i=0; i<nAnt; i++) {
+        QVD diameters = _msmd->getAntennaDiameters();
+        std::set<Int>::const_iterator iter = antIds.begin();
+        std::set<Int>::const_iterator end = antIds.end();
+        const static Unit diamUnit="m";
+        for (; iter!=end; ++iter) {
             os.output().setf(ios::left, ios::adjustfield);
-
-            Int ant=antIds(i);
+            Int ant = *iter;
             // Get diameter
-            Quantity diam=antCol.dishDiameterQuant()(ant);
-            Unit diamUnit="m";
-
+            const Quantity& diam = diameters[ant];
             // Get position
-            MPosition mLongLat=antCol.positionMeas()(ant);
-            MVAngle mvLong= mLongLat.getAngle().getValue()(0);
-            MVAngle mvLat= mLongLat.getAngle().getValue()(1);
-            Vector<Double> antOff = offsets[ant].getValue("m");
+            const MPosition& mLongLat = antPos[ant];
+            MVAngle mvLong = mLongLat.getAngle().getValue()(0);
+            MVAngle mvLat = mLongLat.getAngle().getValue()(1);
             if (posIsITRF) {
                 MeasConvert<MPosition> toItrf(antPos[ant], MPosition::ITRF);
-                antPos[i] = toItrf(antPos[ant]);
+                antPos[ant] = toItrf(antPos[ant]);
             }
             Vector<Double> xyz = antPos[ant].get("m").getValue();
             // write the row
             os << indent;
             os.output().width(indwidth);  os << ant;
-            os.output().width(namewidth); os << antCol.name()(ant);
-            os.output().width(statwidth); os << antCol.station()(ant);
+            os.output().width(namewidth); os << names[ant];
+            os.output().width(statwidth); os << stations[ant];
             os.output().precision(diamprec);
             os.output().width(diamwidth); os << diam.getValue(diamUnit)<<"m   ";
             os.output().width(longwidth); os << mvLong.string(MVAngle::ANGLE,7);
@@ -876,6 +853,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
             os.output().setf(ios::right, ios::adjustfield);
             os.output().precision(4);
             os.output().width(offsetwidth);
+            Vector<Double> antOff = offsets[ant].getValue("m");
             os << antOff[0];
             os.output().width(offsetwidth);
             os << antOff[1];
@@ -890,20 +868,25 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
             os << xyz[2];
             os << endl;
         }
-
-    } else {
+    }
+    else {
         // Horizontal list of the stations names:
         os << "Antennas: " << nAnt << " 'name'='station' " <<  endl;
         String line, leader;
-        Int last=antIds(0)-1;
-        for (Int i=0; i<nAnt; i++) {
-            Int ant=antIds(i);
+        Int last = *antIds.begin() - 1;
+        std::set<Int>::const_iterator iter = antIds.begin();
+        std::set<Int>::const_iterator end = antIds.end();
+        Int maxAnt = *std::max_element(antIds.begin(), antIds.end());
+        for (; iter!=end; ++iter) {
+            Int ant = *iter;
             // Build the line
-            line = line + "'" + antCol.name()(ant) + "'" + "=";
-            line = line + "'" + antCol.station()(ant) + "'";
+            line = line + "'" + names[ant] + "'" + "=";
+            line = line + "'" + stations[ant] + "'";
             // Add comma if not at the end
-            if (ant != (nAnt-1)) line = line + ", ";
-            if (line.length()>55 || ant==(nAnt-1)) {
+            if (ant != maxAnt) {
+                line = line + ", ";
+            }
+            if (line.length() > 55 || ant == maxAnt) {
                 // This line is finished, dump it after the line leader
                 leader = String::toString(last+1) +"-" +String::toString(ant) +": ";
                 os << "   ID=";
@@ -917,7 +900,6 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
     }
     os << LogIO::POST;
 }
-
 
 void MSSummary::listFeed (LogIO& os, Bool verbose, Bool oneBased) const
 {

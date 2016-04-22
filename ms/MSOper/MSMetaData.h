@@ -122,7 +122,7 @@ public:
     ) const;
 
     // get the antenna stations for the specified antenna IDs
-    vector<String> getAntennaStations(const vector<uInt>& antennaIDs);
+    vector<String> getAntennaStations(const vector<uInt>& antennaIDs=vector<uInt>());
 
     // get the antenna stations for the specified antenna names
     vector<String> getAntennaStations(const vector<String>& antennaNames);
@@ -552,6 +552,10 @@ public:
     // get polarization IDs for the specified scan and spwid
     std::set<uInt> getPolarizationIDs(uInt obsID, Int arrayID, Int scan, uInt spwid) const;
 
+    // get the unique antennas (the union of the ANTENNA_1 and ANTENNA_2 columns) from
+    // the main table
+    const std::set<Int>& getUniqueAntennaIDs() const;
+
     // get unique data description IDs that exist in the main table
     std::set<uInt> getUniqueDataDescIDs() const;
 
@@ -650,7 +654,7 @@ private:
     mutable std::map<String, std::set<SubScanKey> > _intentToSubScansMap;
     mutable std::map<std::pair<ScanKey, uInt>, std::set<uInt> > _scanSpwToPolIDMap;
     mutable std::set<String> _uniqueIntents;
-    mutable std::set<Int>  _uniqueFieldIDs, _uniqueStateIDs;
+    mutable std::set<Int>  _uniqueFieldIDs, _uniqueStateIDs, _uniqueAntennaIDs;
     mutable std::set<uInt> _avgSpw, _tdmSpw, _fdmSpw, _wvrSpw, _sqldSpw, _uniqueDataDescIDs;
     mutable SHARED_PTR<Vector<Int> > _antenna1, _antenna2, _scans, _fieldIDs,
         _stateIDs, _dataDescIDs, _observationIDs, _arrayIDs;
