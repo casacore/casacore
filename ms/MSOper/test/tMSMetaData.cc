@@ -2431,6 +2431,46 @@ void testIt(MSMetaData& md) {
             );
         }
         {
+            cout << "*** test getFirstExposureTimeMap()" << endl;
+            vector<map<Int, Quantity> > mymap = md.getFirstExposureTimeMap();
+            AlwaysAssert(mymap.size() == 25, AipsError);
+            for (Int i=0; i<25; ++i) {
+                uInt expSize = 0;
+                Quantity expExposure(0, "s");
+                if (i == 0) {
+                    expSize = 32;
+                    expExposure.setValue(1.152);
+                }
+                else if (i == 1 || i == 3 || i == 5 || i == 7) {
+                    expSize = 3;
+                    expExposure.setValue(2.016);
+                }
+                else if (i == 2 || i == 4 || i == 6 || i == 8) {
+                    expSize = 3;
+                    expExposure.setValue(1.008);
+                }
+                else if (i == 9 || i == 11 || i == 13 || i == 15) {
+                    expSize = 14;
+                    expExposure.setValue(2.016);
+                }
+                else if (i == 10 || i == 12 || i == 14 || i == 16) {
+                    expSize = 14;
+                    expExposure.setValue(1.008);
+                }
+                else if (i == 17 || i == 19 || i == 21 || i == 23) {
+                    expSize = 15;
+                    expExposure.setValue(6.048);
+                }
+                else if (i == 18 || i == 20 || i == 22 || i == 24) {
+                    expSize = 15;
+                    expExposure.setValue(1.008);
+                }
+                AlwaysAssert(mymap[i].size() == expSize, AipsError);
+                AlwaysAssert(mymap[i].begin()->second == expExposure, AipsError);
+            }
+            
+        }
+        {
 			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}

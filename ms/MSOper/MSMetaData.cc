@@ -2174,18 +2174,15 @@ SHARED_PTR<QVD> MSMetaData::_getExposureTimes() const {
     if (_exposures && ! _exposures->getValue().empty()) {
         return _exposures;
     }
-    ScalarQuantColumn<Double> exposure(
+    ScalarColumn<Double> col(
         *_ms, MeasurementSet::columnName(MSMainEnums::EXPOSURE)
     );
-    uInt nrow = _ms->nrow();
-    Vector<Double> v(nrow);
-    Vector<Double>::iterator iter = v.begin();
-    Vector<Double>::iterator end = v.end();
-    uInt i = 0;
-    for (; iter!=end; ++iter, ++i) {
-        *iter = exposure(i).getValue();
-    }
-    SHARED_PTR<QVD> ex(new QVD(v, exposure.getUnits()));
+    Unit units = ScalarQuantColumn<Double>(
+        *_ms, MeasurementSet::columnName(MSMainEnums::EXPOSURE)
+    ).getUnits();
+    SHARED_PTR<QVD> ex(new QVD(Vector<Double>(), units));
+    Vector<Double>& val = ex->getValue();
+    col.getColumn(val);
     if (_cacheUpdated((20 + sizeof(Double))*ex->getValue().size())) {
         _exposures = ex;
     }
