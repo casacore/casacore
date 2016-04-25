@@ -424,9 +424,7 @@ void ImageStatistics<T>::displayStats(
 	// Find world coordinates of min and max. We list pixel coordinates
 	// of min/max relative to the start of the parent lattice
 	//if (!fixedMinMax_p) {
-	CoordinateSystem cSys(pInImage_p->coordinates());
-	String minPosString = CoordinateUtil::formatCoordinate (minPos_p, cSys, precision_);
-	String maxPosString = CoordinateUtil::formatCoordinate (maxPos_p, cSys, precision_);
+	const CoordinateSystem& cSys(pInImage_p->coordinates());
 	//}
 
 	// Have to convert LogIO object to ostream before can apply
@@ -486,12 +484,14 @@ void ImageStatistics<T>::displayStats(
 			oss.str("");
 		}
 		if (maxPos_p.size() > 0) {
-			oss << "         -- position of max value (world) [maxposf]: " << maxPosString;
+			oss << "         -- position of max value (world) [maxposf]: " 
+                << CoordinateUtil::formatCoordinate (maxPos_p, cSys, precision_);
 			messages.push_back(oss.str());
 			oss.str("");
 		}
 		if (minPos_p.size() > 0) {
-			oss << "         -- position of min value (world) [minposf]: " << minPosString;
+			oss << "         -- position of min value (world) [minposf]: "
+                << CoordinateUtil::formatCoordinate (minPos_p, cSys, precision_);
 			messages.push_back(oss.str());
 			oss.str("");
 		}
