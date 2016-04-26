@@ -41,15 +41,17 @@ void test1();
 void test2();
 void test3();
 void test4();
+void test5();
 
 int main()
 {
 try {
-   test0();
-   test1();
-   test2();
-   test3();
-   test4();
+    test0();
+    test1();
+    test2();
+    test3();
+    test4();
+    test5();
 }
 catch (const AipsError& x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
@@ -691,5 +693,22 @@ void test4 ()
        }
     }
     cerr << endl;
+}
+
+void test5() {
+    CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
+    IPosition pos(4,0);
+    String form = CoordinateUtil::formatCoordinate(pos, csys);
+    String expec = "00:00:00.000, +00.00.00.000, I, 1.415e+09Hz";
+    AlwaysAssert(form == expec, AipsError);
+    Bool thrown = False;
+    try {
+        pos = IPosition(1,0);
+        form = CoordinateUtil::formatCoordinate(pos, csys);
+    }
+    catch (const AipsError& x) {
+        thrown = True;
+    }
+    AlwaysAssert(thrown, AipsError);
 }
 

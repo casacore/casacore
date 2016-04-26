@@ -1009,6 +1009,12 @@ Stokes::StokesTypes CoordinateUtil::findSingleStokes (LogIO& os, const Coordinat
 String CoordinateUtil::formatCoordinate(
     const IPosition& pixel, const CoordinateSystem& csys, Int precision
 ) {
+    ThrowIf(
+        pixel.size() != csys.nPixelAxes(),
+        "Number of elements in pixel (" + String::toString(pixel.size())
+        + ") must be equal to number of pixel axes in coordinate system ("
+        + String::toString(csys.nPixelAxes()) + ")"
+    );
     Vector<Double> pixel2(csys.nPixelAxes());
     for (uInt i=0; i<pixel2.nelements(); i++) {
         pixel2(i) = pixel(i);
@@ -1021,12 +1027,10 @@ String CoordinateUtil::formatCoordinate (
     const Vector<Double>& pixel, const CoordinateSystem& csys, Int precision
 ) {
     Vector<Double> world;
-
     if (!csys.toWorld(world, pixel)) {
         String err = String("Error converting coordinate position because ") + csys.errorMessage();
         throw(AipsError(err));
     }
-
     String s2;
     for (uInt i=0; i<world.nelements(); i++) {
         String u;
