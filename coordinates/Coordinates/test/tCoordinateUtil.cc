@@ -41,19 +41,21 @@ void test1();
 void test2();
 void test3();
 void test4();
+void test5();
 
 int main()
 {
 try {
-   test0();
-   test1();
-   test2();
-   test3();
-   test4();
+    test0();
+    test1();
+    test2();
+    test3();
+    test4();
+    test5();
 }
 catch (const AipsError& x) {
-	cerr << "aipserror: error " << x.getMesg() << endl;
-	return 1;
+    cerr << "aipserror: error " << x.getMesg() << endl;
+    return 1;
 }
  
   return 0;
@@ -78,27 +80,27 @@ void test0()
 
   IPosition newAxes, stretchAxes;
   AlwaysAssertExit (CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
-						    IPosition(4,5,6,1,5),
-						    IPosition(4,5,1,1,1),
-						    csys4, csys4));
+                            IPosition(4,5,6,1,5),
+                            IPosition(4,5,1,1,1),
+                            csys4, csys4));
   AlwaysAssertExit (newAxes.isEqual (IPosition()));
   AlwaysAssertExit (stretchAxes.isEqual (IPosition(2,1,3)));
   AlwaysAssertExit (CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
-						    IPosition(3,5,6,3),
-						    IPosition(2,5,6),
-						    csys3, csys2));
+                            IPosition(3,5,6,3),
+                            IPosition(2,5,6),
+                            csys3, csys2));
   AlwaysAssertExit (newAxes.isEqual (IPosition(1,2)));
   AlwaysAssertExit (stretchAxes.isEqual (IPosition()));
   AlwaysAssertExit (CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
-						    IPosition(4,5,6,3,4),
-						    IPosition(2,5,6),
-						    csys4, csys2));
+                            IPosition(4,5,6,3,4),
+                            IPosition(2,5,6),
+                            csys4, csys2));
   AlwaysAssertExit (newAxes.isEqual (IPosition(2,2,3)));
   AlwaysAssertExit (stretchAxes.isEqual (IPosition()));
   AlwaysAssertExit (CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
-						    IPosition(4,5,6,3,4),
-						    IPosition(3,5,6,1),
-						    csys4, csys3));
+                            IPosition(4,5,6,3,4),
+                            IPosition(3,5,6,1),
+                            csys4, csys3));
   AlwaysAssertExit (newAxes.isEqual (IPosition(1,2)));
   AlwaysAssertExit (stretchAxes.isEqual (IPosition(1,3)));
 }
@@ -114,15 +116,15 @@ void test1()
     AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys1, csys2) == 9);
     AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys2, csys1) == 9);
     AlwaysAssertExit (! CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
-							IPosition(2,5,6),
-							IPosition(1,8),
-							csys1, csys2));
+                            IPosition(2,5,6),
+                            IPosition(1,8),
+                            csys1, csys2));
 
     CoordinateUtil::addDirAxes (csys2);
     AlwaysAssertExit (CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
-						      IPosition(3,8,5,6),
-						      IPosition(2,1,1),
-						      csys2, csys1));
+                              IPosition(3,8,5,6),
+                              IPosition(2,1,1),
+                              csys2, csys1));
     AlwaysAssertExit (newAxes.isEqual (IPosition(1,0)));
     AlwaysAssertExit (stretchAxes.isEqual (IPosition(2,1,2)));
 
@@ -130,9 +132,9 @@ void test1()
     AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys1, csys2) == 9);
     AlwaysAssertExit (CoordinateUtil::compareCoordinates (csys2, csys1) == 9);
     AlwaysAssertExit (! CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
-							IPosition(3,5,6,3),
-							IPosition(3,3,4,6),
-							csys1, csys2));
+                            IPosition(3,5,6,3),
+                            IPosition(3,3,4,6),
+                            csys1, csys2));
   }
 }
 
@@ -600,57 +602,57 @@ void test3 ()
    }
 
    {
-	   // axis order is preserved when dropping an axis.
-	   CoordinateSystem cSysIn = CoordinateUtil::defaultCoords4D();
-	   Vector<Int> order(4);
-	   order[0] = 0;
-	   order[1] = 1;
-	   order[2] = 3;
-	   order[3] = 2;
-	   cSysIn.transpose(order, order);
-	   cSysIn.removePixelAxis(0, 0.0);
-	   CoordinateSystem cSysOut;
-	   Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn, False);
-	   AlwaysAssert(dropped==False, AipsError);
-	   AlwaysAssert(
-	       cSysOut.spectralAxisNumber() != cSysIn.spectralAxisNumber(),
-	       AipsError
-	   );
-	   AlwaysAssert(
+       // axis order is preserved when dropping an axis.
+       CoordinateSystem cSysIn = CoordinateUtil::defaultCoords4D();
+       Vector<Int> order(4);
+       order[0] = 0;
+       order[1] = 1;
+       order[2] = 3;
+       order[3] = 2;
+       cSysIn.transpose(order, order);
+       cSysIn.removePixelAxis(0, 0.0);
+       CoordinateSystem cSysOut;
+       Bool dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn, False);
+       AlwaysAssert(dropped==False, AipsError);
+       AlwaysAssert(
+           cSysOut.spectralAxisNumber() != cSysIn.spectralAxisNumber(),
+           AipsError
+       );
+       AlwaysAssert(
            cSysOut.polarizationAxisNumber() != cSysIn.polarizationAxisNumber(),
            AipsError
        );
-	   AlwaysAssert(
-		   cSysOut.worldAxes(cSysOut.spectralCoordinateNumber())[0]
-		   != cSysIn.worldAxes(cSysIn.spectralCoordinateNumber())[0],
-		   AipsError
-	   );
-	   AlwaysAssert(
-	       cSysOut.worldAxes(cSysOut.polarizationCoordinateNumber())[0]
-	       != cSysIn.worldAxes(cSysIn.polarizationCoordinateNumber())[0],
-	   	   AipsError
-	   );
-	   cSysOut = CoordinateSystem();
-	   dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn, True);
+       AlwaysAssert(
+           cSysOut.worldAxes(cSysOut.spectralCoordinateNumber())[0]
+           != cSysIn.worldAxes(cSysIn.spectralCoordinateNumber())[0],
+           AipsError
+       );
+       AlwaysAssert(
+           cSysOut.worldAxes(cSysOut.polarizationCoordinateNumber())[0]
+           != cSysIn.worldAxes(cSysIn.polarizationCoordinateNumber())[0],
+           AipsError
+       );
+       cSysOut = CoordinateSystem();
+       dropped = CoordinateUtil::dropRemovedAxes(cSysOut, cSysIn, True);
 
-	   AlwaysAssert(
-	       cSysOut.spectralAxisNumber() == cSysIn.spectralAxisNumber(),
-	   	   AipsError
-	   );
-	   AlwaysAssert(
-	       cSysOut.polarizationAxisNumber() == cSysIn.polarizationAxisNumber(),
-	       AipsError
-	   );
-	   AlwaysAssert(
-	       cSysOut.worldAxes(cSysOut.spectralCoordinateNumber())[0]
-	   	   == cSysIn.worldAxes(cSysIn.spectralCoordinateNumber())[0],
-	   	   AipsError
-	   );
-	   AlwaysAssert(
-	       cSysOut.worldAxes(cSysOut.polarizationCoordinateNumber())[0]
-	       == cSysIn.worldAxes(cSysIn.polarizationCoordinateNumber())[0],
-	       AipsError
-	   );
+       AlwaysAssert(
+           cSysOut.spectralAxisNumber() == cSysIn.spectralAxisNumber(),
+           AipsError
+       );
+       AlwaysAssert(
+           cSysOut.polarizationAxisNumber() == cSysIn.polarizationAxisNumber(),
+           AipsError
+       );
+       AlwaysAssert(
+           cSysOut.worldAxes(cSysOut.spectralCoordinateNumber())[0]
+           == cSysIn.worldAxes(cSysIn.spectralCoordinateNumber())[0],
+           AipsError
+       );
+       AlwaysAssert(
+           cSysOut.worldAxes(cSysOut.polarizationCoordinateNumber())[0]
+           == cSysIn.worldAxes(cSysIn.polarizationCoordinateNumber())[0],
+           AipsError
+       );
    }
 }
 
@@ -691,5 +693,22 @@ void test4 ()
        }
     }
     cerr << endl;
+}
+
+void test5() {
+    CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
+    IPosition pos(4,0);
+    String form = CoordinateUtil::formatCoordinate(pos, csys);
+    String expec = "00:00:00.000, +00.00.00.000, I, 1.415e+09Hz";
+    AlwaysAssert(form == expec, AipsError);
+    Bool thrown = False;
+    try {
+        pos = IPosition(1,0);
+        form = CoordinateUtil::formatCoordinate(pos, csys);
+    }
+    catch (const AipsError& x) {
+        thrown = True;
+    }
+    AlwaysAssert(thrown, AipsError);
 }
 
