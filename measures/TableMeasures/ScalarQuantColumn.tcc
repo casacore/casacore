@@ -250,8 +250,7 @@ SHARED_PTR<Quantum<Vector<T> > > ScalarQuantColumn<T>::getColumn() const {
         for (; viter != vend; ++viter, ++uiter) {
             q.setValue(*viter);
             q.setUnit(*uiter);
-            q.convert(unitOut);
-            *viter = q.getValue();
+            *viter = q.getValue(unitOut);
         }
     }
     else {
