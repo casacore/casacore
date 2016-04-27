@@ -1604,7 +1604,7 @@ vector<std::map<Int, Quantity> > MSMetaData::getFirstExposureTimeMap() {
     SHARED_PTR<Vector<Int> > scans = _getScans();
     SHARED_PTR<Vector<Int> > dataDescIDs = _getDataDescIDs();
     SHARED_PTR<Vector<Double> > times = _getTimes();
-    SHARED_PTR<QVD> exposureTimes = _getExposureTimes();
+    SHARED_PTR<Quantum<Vector<Double> > > exposureTimes = _getExposureTimes();
     vector<std::map<Int, Quantity> > firstExposureTimeMap(nDataDescIDs);
     vector<std::map<Int, Double> > tmap(nDataDescIDs);
     Vector<Int>::const_iterator siter = scans->begin();
@@ -2170,19 +2170,14 @@ SHARED_PTR<Vector<Double> > MSMetaData::_getTimes() const {
     return times;
 }
 
-SHARED_PTR<QVD> MSMetaData::_getExposureTimes() const {
+SHARED_PTR<Quantum<Vector<Double> > > MSMetaData::_getExposureTimes() const {
     if (_exposures && ! _exposures->getValue().empty()) {
         return _exposures;
     }
-    ScalarColumn<Double> col(
+    ScalarQuantColumn<Double> col(
         *_ms, MeasurementSet::columnName(MSMainEnums::EXPOSURE)
     );
-    Unit units = ScalarQuantColumn<Double>(
-        *_ms, MeasurementSet::columnName(MSMainEnums::EXPOSURE)
-    ).getUnits();
-    SHARED_PTR<QVD> ex(new QVD(Vector<Double>(), units));
-    Vector<Double>& val = ex->getValue();
-    col.getColumn(val);
+    SHARED_PTR<Quantum<Vector<Double> > > ex = col.getColumn();    
     if (_cacheUpdated((20 + sizeof(Double))*ex->getValue().size())) {
         _exposures = ex;
     }
@@ -3441,7 +3436,7 @@ void MSMetaData::_computeScanAndSubScanProperties(
     SHARED_PTR<Vector<Int> > arrays = _getArrayIDs();
     SHARED_PTR<Vector<Int> > observations = _getObservationIDs();
     SHARED_PTR<Vector<Int> > ant1, ant2;
-    SHARED_PTR<QVD> exposureTimes = _getExposureTimes();
+    SHARED_PTR<Quantum<Vector<Double> > > exposureTimes = _getExposureTimes();
     SHARED_PTR<QVD> intervalTimes = _getIntervals();
     vector<uInt> ddIDToSpw = getDataDescIDToSpwMap();
     _getAntennas(ant1, ant2);
@@ -3629,7 +3624,7 @@ MSMetaData::_getChunkSubScanProperties(
     SHARED_PTR<const Vector<Int> > ddIDs, SHARED_PTR<const Vector<Int> > states,
     SHARED_PTR<const Vector<Double> > times, SHARED_PTR<const Vector<Int> > arrays,
     SHARED_PTR<const Vector<Int> > observations, SHARED_PTR<const Vector<Int> > ant1,
-    SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const QVD> exposureTimes,
+    SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const Quantum<Vector<Double> > > exposureTimes,
     SHARED_PTR<const QVD> intervalTimes, const vector<uInt>& ddIDToSpw, uInt beginRow,
     uInt endRow
 ) const {

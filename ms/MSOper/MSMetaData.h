@@ -675,7 +675,7 @@ private:
     mutable vector<Array<Int> >_corrProds;
 
     mutable SHARED_PTR<Vector<Double> > _times;
-    mutable SHARED_PTR<QVD > _exposures;
+    mutable SHARED_PTR<Quantum<Vector<Double> > > _exposures;
     mutable SHARED_PTR<std::map<ScanKey, std::set<Double> > > _scanToTimesMap;
     std::map<String, std::set<uInt> > _intentToSpwsMap;
     mutable std::map<String, std::set<Double> > _intentToTimesMap;
@@ -791,14 +791,14 @@ private:
         SHARED_PTR<const Vector<Int> > ddIDs, SHARED_PTR<const Vector<Int> > states,
         SHARED_PTR<const Vector<Double> > times, SHARED_PTR<const Vector<Int> > arrays,
         SHARED_PTR<const Vector<Int> > observations, SHARED_PTR<const Vector<Int> > ant1,
-        SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const QVD> exposureTimes,
+        SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const Quantum<Vector<Double> > > exposureTimes,
         SHARED_PTR<const QVD> intervalTimes, const vector<uInt>& ddIDToSpw,
         uInt beginRow, uInt endRow
     ) const;
 
     SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
 
-    SHARED_PTR<QVD > _getExposureTimes() const;
+    SHARED_PTR<Quantum<Vector<Double> > > _getExposureTimes() const;
 
     SHARED_PTR<Vector<Int> > _getFieldIDs() const;
 

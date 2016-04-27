@@ -503,6 +503,12 @@ int main (int argc, const char* argv[])
       cout << aqc4a.getUnits() << endl;
       cout << aqc4a(0) << endl;
     }
+    {
+        // test ScalarQuantColumn::getColumn()
+        ScalarQuantColumn<Double> col(qtab, "ScaQuantDouble"); 
+        SHARED_PTR<Quantum<Vector<Double> > > v = col.getColumn();
+        AlwaysAssert(v->getValue().size() == 5, AipsError);
+    }
 
   } catch (AipsError x) {
     cout << "Unexpected exception1: " << x.getMesg() << endl;
