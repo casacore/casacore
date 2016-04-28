@@ -518,6 +518,13 @@ int main (int argc, const char* argv[])
         }
         ScalarQuantColumn<Complex> ccol(qtab, "ScaQuantComplex");
         SHARED_PTR<Quantum<Vector<Complex> > > x = ccol.getColumn(); 
+        AlwaysAssert(x->getValue().size() == 5, AipsError);
+        SHARED_PTR<Quantum<Vector<Complex> > > y = ccol.getColumn("rad"); 
+        for (uInt i=0; i<5; ++i) {
+            AlwaysAssert(
+                near(y->getValue()[i], frac*x->getValue()[i]), AipsError
+            );
+        }
     }
 
   } catch (AipsError x) {
