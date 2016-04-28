@@ -195,13 +195,13 @@ public:
   void throwIfNull() const;
 
   // get the column as a Quantum<Vector<T> >. If <src>unit</src> is
-  // not null, the returned Quantum will have that unit. Else if
-  // itsConv is True, the returned Quantum will have itsUnitOut as
-  // the unit. Else if the units are variable, the
+  // not empty, the returned Quantum will have that unit. Else if
+  // a unit was specified at construction of this object, the returned
+  // Quantum will have that unit. Else if the units are variable, the
   // values in the returned Vector have been converted to the
   // unit of the 0th row entry. Otherwise, the units of the returned
-  // Quantum are itsUnit.
-  SHARED_PTR<Quantum<Vector<T> > > getColumn(const Unit* unit=NULL) const;
+  // Quantum are the units specified in the column descriptor.
+  SHARED_PTR<Quantum<Vector<T> > > getColumn(const Unit& unit="") const;
 
 protected:
   //# Quantum column's units (if units not variable)

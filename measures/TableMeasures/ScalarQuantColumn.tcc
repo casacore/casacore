@@ -235,18 +235,20 @@ void ScalarQuantColumn<T>::put (uInt rownr, const Quantum<T>& q)
 }
 
 template<class T>
-SHARED_PTR<Quantum<Vector<T> > > ScalarQuantColumn<T>::getColumn(const Unit* unit) const {
+SHARED_PTR<Quantum<Vector<T> > > ScalarQuantColumn<T>::getColumn(const Unit& unit) const {
     SHARED_PTR<Quantum<Vector<T> > > qv;
-    const Unit* unitOut = unit ? unit
-        : itsConvOut ? &itsUnitOut : NULL;
+    Unit unitOut;
+    Bool convert = ! unit.empty() || itsConvOut;
+    if (convert) {
+        unitOut = unit.empty() ? itsUnitOut : unit;
+    }
     if (itsUnitsCol) {
         Vector<String> units = itsUnitsCol->getColumn();
         Vector<String>::const_iterator uiter = units.begin();
-        Unit first(*uiter);
-        if (! unitOut) {
-            unitOut = &first;
+        if (! convert) {
+            unitOut = Unit(*uiter);
         }
-        qv.reset(new Quantum<Vector<T> >(Vector<T>(), *unitOut));
+        qv.reset(new Quantum<Vector<T> >(Vector<T>(), unitOut));
         Vector<T>& val = qv->getValue();
         itsDataCol->getColumn(val);
         typename Vector<T>::iterator viter = val.begin();
@@ -255,16 +257,17 @@ SHARED_PTR<Quantum<Vector<T> > > ScalarQuantColumn<T>::getColumn(const Unit* uni
         for (; viter != vend; ++viter, ++uiter) {
             q.setValue(*viter);
             q.setUnit(*uiter);
-            *viter = q.getValue(*unitOut);
+            *viter = q.getValue(unitOut);
         }
     }
     else {
         qv.reset(new Quantum<Vector<T> >(Vector<T>(), itsUnit));
         Vector<T>& val = qv->getValue();
         itsDataCol->getColumn(val);
-        if (unitOut) {
-            val = qv->getValue(*unitOut);
-            qv->setUnit(*unitOut);
+        if (convert) {
+            qv->convert(unitOut);
+            //val = qv->getValue(unitOut);
+            //qv->setUnit(unitOut);
         }
     }
     return qv;
