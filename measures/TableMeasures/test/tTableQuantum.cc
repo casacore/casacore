@@ -508,6 +508,15 @@ int main (int argc, const char* argv[])
         ScalarQuantColumn<Double> col(qtab, "ScaQuantDouble"); 
         SHARED_PTR<Quantum<Vector<Double> > > v = col.getColumn();
         AlwaysAssert(v->getValue().size() == 5, AipsError);
+        Unit rad("rad");
+        SHARED_PTR<Quantum<Vector<Double> > > w = col.getColumn(&rad);
+        AlwaysAssert(w->getValue().size() == 5, AipsError);
+        Double frac = C::pi/180;
+        for (uInt i=0; i<5; ++i) {
+            AlwaysAssert(
+                near(w->getValue()[i], frac*v->getValue()[i]), AipsError
+            );
+        }
     }
 
   } catch (AipsError x) {
