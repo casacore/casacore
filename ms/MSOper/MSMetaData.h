@@ -1007,6 +1007,10 @@ private:
 
     static std::map<Int, uInt> _toUIntMap(const Vector<Int>& v);
 
+    template <class T> SHARED_PTR<Vector<T> > _getMainScalarColumn(
+        MSMainEnums::PredefinedColumns col
+    ) const;
+
 };
 
 
