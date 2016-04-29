@@ -951,8 +951,8 @@ uInt MSMetaData::_sizeof(const vector<vector<String> >& v) {
     return size;
 }
 
-uInt MSMetaData::_sizeof(const QVD& m) {
-    return (sizeof(Double)+10)*m.getValue().size();
+uInt MSMetaData::_sizeof(const Quantum<Vector<Double> >& m) {
+    return (sizeof(Double))*m.getValue().size() + m.getUnit().size();
 }
 
 template <class T> uInt MSMetaData::_sizeof(const std::map<String, std::set<T> >& m) {
@@ -2172,7 +2172,7 @@ SHARED_PTR<Quantum<Vector<Double> > > MSMetaData::_getExposureTimes() const {
         *_ms, MeasurementSet::columnName(MSMainEnums::EXPOSURE)
     );
     SHARED_PTR<Quantum<Vector<Double> > > ex = col.getColumn();    
-    if (_cacheUpdated((20 + sizeof(Double))*ex->getValue().size())) {
+    if (_cacheUpdated(_sizeof(*ex))) {
         _exposures = ex;
     }
     return ex;
@@ -3432,7 +3432,7 @@ void MSMetaData::_computeScanAndSubScanProperties(
     SHARED_PTR<Vector<Int> > ant1, ant2;
     _getAntennas(ant1, ant2);
     SHARED_PTR<Quantum<Vector<Double> > > exposureTimes = _getExposureTimes();
-    SHARED_PTR<QVD> intervalTimes = _getIntervals();
+    SHARED_PTR<Quantum<Vector<Double> > > intervalTimes = _getIntervals();
     vector<uInt> ddIDToSpw = getDataDescIDToSpwMap();
     uInt nchunks = min((uInt)1000, nrows);
     uInt chunkSize = nrows/nchunks;
@@ -3619,7 +3619,7 @@ MSMetaData::_getChunkSubScanProperties(
     SHARED_PTR<const Vector<Double> > times, SHARED_PTR<const Vector<Int> > arrays,
     SHARED_PTR<const Vector<Int> > observations, SHARED_PTR<const Vector<Int> > ant1,
     SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const Quantum<Vector<Double> > > exposureTimes,
-    SHARED_PTR<const QVD> intervalTimes, const vector<uInt>& ddIDToSpw, uInt beginRow,
+    SHARED_PTR<const Quantum<Vector<Double> > > intervalTimes, const vector<uInt>& ddIDToSpw, uInt beginRow,
     uInt endRow
 ) const {
     VectorSTLIterator<Int> scanIter(*scans);
@@ -4620,19 +4620,15 @@ void MSMetaData::_hasAntennaID(Int antennaID) {
     );
 }
 
-SHARED_PTR<QVD> MSMetaData::_getIntervals() const {
+SHARED_PTR<Quantum<Vector<Double> > > MSMetaData::_getIntervals() const {
     // this method is responsible for setting _intervals
     if (_intervals) {
         return _intervals;
     }
-    String colName = MeasurementSet::columnName(MSMainEnums::INTERVAL);
-    ScalarQuantColumn<Double> sqcInterval(*_ms, colName);
-    ScalarColumn<Double> scInterval(*_ms, colName);
-    SHARED_PTR<QVD> intervals(
-        new QVD(
-            scInterval.getColumn(), sqcInterval.getUnits()
-        )
+    ScalarQuantColumn<Double> col(
+        *_ms, MeasurementSet::columnName(MSMainEnums::INTERVAL)
     );
+    SHARED_PTR<Quantum<Vector<Double> > > intervals = col.getColumn();    
     if (_cacheUpdated(_sizeof(*intervals))) {
         _intervals = intervals;
     }
