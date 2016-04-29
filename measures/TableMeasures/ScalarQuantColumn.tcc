@@ -234,7 +234,34 @@ void ScalarQuantColumn<T>::put (uInt rownr, const Quantum<T>& q)
   }
 }
 
-} //# NAMESPACE CASACORE - END
+template<class T>
+SHARED_PTR<Quantum<Vector<T> > > ScalarQuantColumn<T>::getColumn(const Unit& unit) const {
+    SHARED_PTR<Quantum<Vector<T> > > qv;
+    if ((itsUnitsCol && itsUnitsCol->nrow() > 0) || ! unit.empty()) {
+        Unit unitOut;
+        if (! unit.empty()) {
+            unitOut = unit;
+        }
+        else {
+            unitOut = itsUnitsCol->get(0);
+        }
+        qv.reset(new Quantum<Vector<T> >(Vector<T>(), unitOut));
+        Vector<T>& val = qv->getValue();
+        itsDataCol->getColumn(val);
+        Quantum<T> q;
+        for (uInt i = 0; i < val.size(); ++i) {
+            get(i, q, unitOut);
+            val[i] = q.getValue();
+        }
+    }
+    else {
+        qv.reset(new Quantum<Vector<T> >(Vector<T>(), itsUnit));
+        Vector<T>& val = qv->getValue();
+        itsDataCol->getColumn(val);
+    }
+    return qv;
+}
 
+} //# NAMESPACE CASACORE - END
 
 #endif
