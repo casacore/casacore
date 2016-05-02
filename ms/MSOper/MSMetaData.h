@@ -659,7 +659,6 @@ private:
     mutable SHARED_PTR<Vector<Int> > _antenna1, _antenna2, _scans, _fieldIDs,
         _stateIDs, _dataDescIDs, _observationIDs, _arrayIDs;
     mutable SHARED_PTR<std::map<SubScanKey, uInt> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
-    mutable SHARED_PTR<QVD> _intervals;
     mutable SHARED_PTR<std::map<Int, uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
     mutable std::map<ScanKey, std::set<String> > _scanToIntentsMap;
     mutable SHARED_PTR<const std::map<SubScanKey, std::set<String> > > _subScanToIntentsMap;
@@ -675,7 +674,7 @@ private:
     mutable vector<Array<Int> >_corrProds;
 
     mutable SHARED_PTR<Vector<Double> > _times;
-    mutable SHARED_PTR<Quantum<Vector<Double> > > _exposures;
+    mutable SHARED_PTR<Quantum<Vector<Double> > > _exposures, _intervals;
     mutable SHARED_PTR<std::map<ScanKey, std::set<Double> > > _scanToTimesMap;
     std::map<String, std::set<uInt> > _intentToSpwsMap;
     mutable std::map<String, std::set<Double> > _intentToTimesMap;
@@ -792,7 +791,7 @@ private:
         SHARED_PTR<const Vector<Double> > times, SHARED_PTR<const Vector<Int> > arrays,
         SHARED_PTR<const Vector<Int> > observations, SHARED_PTR<const Vector<Int> > ant1,
         SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const Quantum<Vector<Double> > > exposureTimes,
-        SHARED_PTR<const QVD> intervalTimes, const vector<uInt>& ddIDToSpw,
+        SHARED_PTR<const Quantum<Vector<Double> > > intervalTimes, const vector<uInt>& ddIDToSpw,
         uInt beginRow, uInt endRow
     ) const;
 
@@ -834,7 +833,7 @@ private:
 
     std::map<String, std::set<Double> > _getIntentsToTimesMap() const;
 
-    SHARED_PTR<QVD> _getIntervals() const;
+    SHARED_PTR<Quantum<Vector<Double> > > _getIntervals() const;
 
     SHARED_PTR<Vector<Int> > _getObservationIDs() const;
 
@@ -994,7 +993,7 @@ private:
     template <class T>
     static uInt _sizeof(const vector<T>& v);
 
-    static uInt _sizeof(const QVD& m);
+    static uInt _sizeof(const Quantum<Vector<Double> >& m);
 
     template <class T>
     static uInt _sizeof(const vector<std::set<T> >& v);
@@ -1006,6 +1005,10 @@ private:
     static uInt _sizeof(const std::map<std::pair<Int, uInt>, std::set<uInt> >& map);
 
     static std::map<Int, uInt> _toUIntMap(const Vector<Int>& v);
+
+    template <class T> SHARED_PTR<Vector<T> > _getMainScalarColumn(
+        MSMainEnums::PredefinedColumns col
+    ) const;
 
 };
 
