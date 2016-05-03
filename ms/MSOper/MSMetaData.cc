@@ -241,7 +241,7 @@ uInt MSMetaData::nRows(CorrelationType cType) {
     }
     uInt nACRows, nXCRows;
     SHARED_PTR<std::map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
-    SHARED_PTR<vector<uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
+    SHARED_PTR<map<Int, uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
     _getRowStats(
         nACRows, nXCRows, subScanToNACRowsMap,
         subScanToNXCRowsMap, fieldToNACRowsMap,
@@ -257,8 +257,8 @@ uInt MSMetaData::nRows(CorrelationType cType) {
 
 SHARED_PTR<const map<SubScanKey, uInt> > MSMetaData::getNRowMap(CorrelationType cType) const {
     uInt nACRows, nXCRows;
-    SHARED_PTR<std::map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
-    SHARED_PTR<vector<uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
+    SHARED_PTR<map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
+    SHARED_PTR<map<Int, uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
     _getRowStats(
         nACRows, nXCRows, subScanToNACRowsMap,
         subScanToNXCRowsMap, fieldToNACRowsMap,
@@ -293,8 +293,8 @@ uInt MSMetaData::nRows(
     subScanKey.fieldID = fieldID;
     _checkSubScan(subScanKey);
     uInt nACRows, nXCRows;
-    SHARED_PTR<std::map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
-    SHARED_PTR<vector<uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
+    SHARED_PTR<map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
+    SHARED_PTR<map<Int, uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
     _getRowStats(
         nACRows, nXCRows, subScanToNACRowsMap,
         subScanToNXCRowsMap, fieldToNACRowsMap,
@@ -315,8 +315,8 @@ uInt MSMetaData::nRows(
 uInt MSMetaData::nRows(CorrelationType cType, uInt fieldID) const {
     _checkField(fieldID);
     uInt nACRows, nXCRows;
-    SHARED_PTR<std::map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
-    SHARED_PTR<vector<uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
+    SHARED_PTR<map<SubScanKey, uInt> > subScanToNACRowsMap, subScanToNXCRowsMap;
+    SHARED_PTR<map<Int, uInt> > fieldToNACRowsMap, fieldToNXCRowsMap;
     _getRowStats(
         nACRows, nXCRows, subScanToNACRowsMap,
         subScanToNXCRowsMap, fieldToNACRowsMap,
@@ -418,59 +418,82 @@ void MSMetaData::_getRowStats(
     uInt& nACRows, uInt& nXCRows,
     std::map<SubScanKey, uInt>*& subScanToNACRowsMap,
     std::map<SubScanKey, uInt>*& subScanToNXCRowsMap,
-    vector<uInt>*& fieldToNACRowsMap,
-    vector<uInt>*& fieldToNXCRowsMap
+    map<Int, uInt>*& fieldToNACRowsMap,
+    map<Int, uInt>*& fieldToNXCRowsMap
 ) const {
     nACRows = 0;
     nXCRows = 0;
     subScanToNACRowsMap = new std::map<SubScanKey, uInt>();
     subScanToNXCRowsMap = new std::map<SubScanKey, uInt>();
-    uInt myNFields = nFields();
-    fieldToNACRowsMap = new vector<uInt>(myNFields, 0);
-    fieldToNXCRowsMap = new vector<uInt>(myNFields, 0);
+    fieldToNACRowsMap = new map<Int, uInt>();
+    fieldToNXCRowsMap = new map<Int, uInt>();
     std::set<SubScanKey> subScanKeys = _getSubScanKeys();
     std::set<SubScanKey>::const_iterator subIter = subScanKeys.begin();
     std::set<SubScanKey>::const_iterator subEnd = subScanKeys.end();
-    while (subIter != subEnd) {
+    for (; subIter != subEnd; ++subIter) {
+        // initialize subscan map
         (*subScanToNACRowsMap)[*subIter] = 0;
         (*subScanToNXCRowsMap)[*subIter] = 0;
-        ++subIter;
     }
-    SHARED_PTR<Vector<Int> > ant1, ant2;
-    _getAntennas(ant1, ant2);
-    SHARED_PTR<Vector<Int> > scans = _getScans();
-    SHARED_PTR<Vector<Int> > fieldIDs = _getFieldIDs();
-    SHARED_PTR<Vector<Int> > obsIDs = _getObservationIDs();
-    SHARED_PTR<Vector<Int> > arrIDs = _getArrayIDs();
-    Vector<Int>::const_iterator aEnd = ant1->end();
-    Vector<Int>::const_iterator a1Iter = ant1->begin();
-    Vector<Int>::const_iterator a2Iter = ant2->begin();
-    Vector<Int>::const_iterator sIter = scans->begin();
-    Vector<Int>::const_iterator fIter = fieldIDs->begin();
-    Vector<Int>::const_iterator oIter = obsIDs->begin();
-    Vector<Int>::const_iterator arIter = arrIDs->begin();
-    SubScanKey subScanKey;
-    while (a1Iter!=aEnd) {
-        subScanKey.obsID = *oIter;
-        subScanKey.arrayID = *arIter;
-        subScanKey.scan = *sIter;
-        subScanKey.fieldID = *fIter;
-        if (*a1Iter == *a2Iter) {
-            ++nACRows;
-            ++(*subScanToNACRowsMap)[subScanKey];
-            ++(*fieldToNACRowsMap)[*fIter];
+    std::set<Int> fieldIDs = getUniqueFieldIDs();
+    std::set<Int>::const_iterator fIter = fieldIDs.begin();
+    std::set<Int>::const_iterator fEnd = fieldIDs.end();
+    for (; fIter!=fEnd; ++fIter) {
+        // initialize field maps
+        (*fieldToNACRowsMap)[*fIter] = 0;
+        (*fieldToNXCRowsMap)[*fIter] = 0;
+    }
+    if (_subScanProperties) {
+        map<SubScanKey, SubScanProperties>::const_iterator iter = _subScanProperties->begin();
+        map<SubScanKey, SubScanProperties>::const_iterator end = _subScanProperties->end();
+        for (; iter!=end; ++iter) {
+            const SubScanKey& subscan = iter->first;
+            const SubScanProperties& props = iter->second;
+            const Int& fieldID = subscan.fieldID;
+            nACRows += props.acRows;
+            (*subScanToNACRowsMap)[subscan] += props.acRows;
+            (*subScanToNXCRowsMap)[subscan] += props.xcRows;
+            (*fieldToNACRowsMap)[fieldID] += props.acRows;
+            (*fieldToNXCRowsMap)[fieldID] += props.xcRows;
         }
-        else {
-            ++nXCRows;
-            ++(*subScanToNXCRowsMap)[subScanKey];
-            ++(*fieldToNXCRowsMap)[*fIter];
+        // doing this single computation is more effecient than summing
+        // the xcRows in the loop
+        nXCRows = nACRows - nRows();
+    }
+    else {
+        SHARED_PTR<Vector<Int> > ant1, ant2;
+        _getAntennas(ant1, ant2);
+        SHARED_PTR<Vector<Int> > scans = _getScans();
+        SHARED_PTR<Vector<Int> > fieldIDs = _getFieldIDs();
+        SHARED_PTR<Vector<Int> > obsIDs = _getObservationIDs();
+        SHARED_PTR<Vector<Int> > arrIDs = _getArrayIDs();
+        Vector<Int>::const_iterator aEnd = ant1->end();
+        Vector<Int>::const_iterator a1Iter = ant1->begin();
+        Vector<Int>::const_iterator a2Iter = ant2->begin();
+        Vector<Int>::const_iterator sIter = scans->begin();
+        Vector<Int>::const_iterator fIter = fieldIDs->begin();
+        Vector<Int>::const_iterator oIter = obsIDs->begin();
+        Vector<Int>::const_iterator arIter = arrIDs->begin();
+        SubScanKey subScanKey;
+        for (
+            ; a1Iter!=aEnd;
+            ++a1Iter, ++a2Iter, ++sIter, ++fIter, ++arIter, ++oIter
+        ) {
+            subScanKey.obsID = *oIter;
+            subScanKey.arrayID = *arIter;
+            subScanKey.scan = *sIter;
+            subScanKey.fieldID = *fIter;
+            if (*a1Iter == *a2Iter) {
+                ++nACRows;
+                ++(*subScanToNACRowsMap)[subScanKey];
+                ++(*fieldToNACRowsMap)[*fIter];
+            }
+            else {
+                ++nXCRows;
+                ++(*subScanToNXCRowsMap)[subScanKey];
+                ++(*fieldToNXCRowsMap)[*fIter];
+            }
         }
-        ++a1Iter;
-        ++a2Iter;
-        ++sIter;
-        ++fIter;
-        ++arIter;
-        ++oIter;
     }
 }
 
@@ -478,8 +501,8 @@ void MSMetaData::_getRowStats(
     uInt& nACRows, uInt& nXCRows,
     SHARED_PTR<std::map<SubScanKey, uInt> >& scanToNACRowsMap,
     SHARED_PTR<std::map<SubScanKey, uInt> >& scanToNXCRowsMap,
-    SHARED_PTR<vector<uInt> >& fieldToNACRowsMap,
-    SHARED_PTR<vector<uInt> >& fieldToNXCRowsMap
+    SHARED_PTR<map<Int, uInt> >& fieldToNACRowsMap,
+    SHARED_PTR<map<Int, uInt> >& fieldToNXCRowsMap
 ) const {
     // this method is responsible for setting _nACRows, _nXCRows, _subScanToNACRowsMap,
     // _subScanToNXCRowsMap, _fieldToNACRowsMap, _fieldToNXCRowsMap
@@ -494,7 +517,7 @@ void MSMetaData::_getRowStats(
     }
 
     std::map<SubScanKey, uInt> *myScanToNACRowsMap, *myScanToNXCRowsMap;
-    vector<uInt> *myFieldToNACRowsMap, *myFieldToNXCRowsMap;
+    map<Int, uInt> *myFieldToNACRowsMap, *myFieldToNXCRowsMap;
     _getRowStats(
         nACRows, nXCRows, myScanToNACRowsMap,
         myScanToNXCRowsMap, myFieldToNACRowsMap,
@@ -529,16 +552,8 @@ void MSMetaData::_getAntennas(
         ant1 = _antenna1;
         ant2 = _antenna2;
     }
-    String ant1ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA1);
-    ROScalarColumn<Int> ant1Col(*_ms, ant1ColName);
-    Vector<Int> a1 = ant1Col.getColumn();
-    String ant2ColName = MeasurementSet::columnName(MSMainEnums::ANTENNA2);
-    ROScalarColumn<Int> ant2Col(*_ms, ant2ColName);
-    Vector<Int> a2 = ant2Col.getColumn();
-
-    ant1.reset(new Vector<Int>(a1));
-    ant2.reset(new Vector<Int>(a2));
-
+    ant1 = _getMainScalarColumn<Int>(MSMainEnums::ANTENNA1);
+    ant2 = _getMainScalarColumn<Int>(MSMainEnums::ANTENNA2);
     if (_cacheUpdated(2*sizeof(Int)*ant1->size())) {
         _antenna1 = ant1;
         _antenna2 = ant2;
@@ -549,8 +564,9 @@ SHARED_PTR<Vector<Int> > MSMetaData::_getScans() const {
     if (_scans && _scans->size() > 0) {
         return _scans;
     }
-    String scanColName = MeasurementSet::columnName(MSMainEnums::SCAN_NUMBER);
-    SHARED_PTR<Vector<Int> > scans(new Vector<Int>(ROScalarColumn<Int>(*_ms, scanColName).getColumn()));
+    SHARED_PTR<Vector<Int> > scans = _getMainScalarColumn<Int>(
+        MSMainEnums::SCAN_NUMBER
+    );
     if (_cacheUpdated(sizeof(Int)*scans->size())) {
         _scans = scans;
     }
@@ -561,9 +577,8 @@ SHARED_PTR<Vector<Int> > MSMetaData::_getObservationIDs() const {
     if (_observationIDs && _observationIDs->size() > 0) {
         return _observationIDs;
     }
-    static const String obsColName = MeasurementSet::columnName(MSMainEnums::OBSERVATION_ID);
-    SHARED_PTR<Vector<Int> > obsIDs(
-        new Vector<Int>(ROScalarColumn<Int>(*_ms, obsColName).getColumn())
+    SHARED_PTR<Vector<Int> > obsIDs = _getMainScalarColumn<Int>(
+        MSMainEnums::OBSERVATION_ID
     );
     if (_cacheUpdated(sizeof(Int)*obsIDs->size())) {
         _observationIDs = obsIDs;
@@ -575,9 +590,8 @@ SHARED_PTR<Vector<Int> > MSMetaData::_getArrayIDs() const {
     if (_arrayIDs && _arrayIDs->size() > 0) {
         return _arrayIDs;
     }
-    static const String arrColName = MeasurementSet::columnName(MSMainEnums::ARRAY_ID);
-    SHARED_PTR<Vector<Int> > arrIDs(
-        new Vector<Int>(ROScalarColumn<Int>(*_ms, arrColName).getColumn())
+    SHARED_PTR<Vector<Int> > arrIDs = _getMainScalarColumn<Int>(
+        MSMainEnums::ARRAY_ID
     );
     if (_cacheUpdated(sizeof(Int)*arrIDs->size())) {
         _arrayIDs = arrIDs;
@@ -589,9 +603,8 @@ SHARED_PTR<Vector<Int> > MSMetaData::_getFieldIDs() const {
     if (_fieldIDs && ! _fieldIDs->empty()) {
         return _fieldIDs;
     }
-    String fieldIdColName = MeasurementSet::columnName(MSMainEnums::FIELD_ID);
-    SHARED_PTR<Vector<Int> > fields(
-        new Vector<Int>(ROScalarColumn<Int>(*_ms, fieldIdColName).getColumn())
+    SHARED_PTR<Vector<Int> > fields = _getMainScalarColumn<Int>(
+        MSMainEnums::FIELD_ID
     );
     if (_cacheUpdated(sizeof(Int)*fields->size())) {
         _fieldIDs = fields;
@@ -603,9 +616,8 @@ SHARED_PTR<Vector<Int> > MSMetaData::_getStateIDs() const {
     if (_stateIDs && _stateIDs->size() > 0) {
         return _stateIDs;
     }
-    static const String stateColName = MeasurementSet::columnName(MSMainEnums::STATE_ID);
-    SHARED_PTR<Vector<Int> > states(
-        new Vector<Int>(ROScalarColumn<Int>(*_ms, stateColName).getColumn())
+    SHARED_PTR<Vector<Int> > states = _getMainScalarColumn<Int>(
+        MSMainEnums::STATE_ID
     );
     Int maxState = max(*states);
     Int nstates = (Int)nStates();
@@ -625,10 +637,8 @@ SHARED_PTR<Vector<Int> > MSMetaData::_getDataDescIDs() const {
     if (_dataDescIDs && ! _dataDescIDs->empty()) {
         return _dataDescIDs;
     }
-    static const String ddColName = MeasurementSet::columnName(MSMainEnums::DATA_DESC_ID);
-    ROScalarColumn<Int> ddCol(*_ms, ddColName);
-    SHARED_PTR<Vector<Int> > dataDescIDs(
-        new Vector<Int>(ddCol.getColumn())
+    SHARED_PTR<Vector<Int> > dataDescIDs = _getMainScalarColumn<Int>(
+        MSMainEnums::DATA_DESC_ID
     );
     if (_cacheUpdated(sizeof(Int)*dataDescIDs->size())) {
         _dataDescIDs = dataDescIDs;
@@ -941,8 +951,8 @@ uInt MSMetaData::_sizeof(const vector<vector<String> >& v) {
     return size;
 }
 
-uInt MSMetaData::_sizeof(const QVD& m) {
-    return (sizeof(Double)+10)*m.getValue().size();
+uInt MSMetaData::_sizeof(const Quantum<Vector<Double> >& m) {
+    return (sizeof(Double))*m.getValue().size() + m.getUnit().size();
 }
 
 template <class T> uInt MSMetaData::_sizeof(const std::map<String, std::set<T> >& m) {
@@ -1216,6 +1226,20 @@ vector<String> MSMetaData::getFieldNames() const {
         _fieldNames = fieldNames;
     }
     return fieldNames;
+}
+
+vector<String> MSMetaData::getFieldCodes() const {
+    // this method is responsible for setting _fieldCodes
+    if (! _fieldCodes.empty()) {
+        return _fieldCodes;
+    }
+    String fieldCodeColName = MSField::columnName(MSFieldEnums::CODE);
+    ROScalarColumn<String> codeCol(_ms->field(), fieldCodeColName);
+    vector<String> fieldCodes = codeCol.getColumn().tovector();
+    if (_cacheUpdated(_sizeof(fieldCodes))) {
+        _fieldCodes = fieldCodes;
+    }
+    return fieldCodes;
 }
 
 std::set<Int> MSMetaData::getFieldIDsForSpw(const uInt spw) {
@@ -1567,7 +1591,7 @@ vector<std::map<Int, Quantity> > MSMetaData::getFirstExposureTimeMap() {
     SHARED_PTR<Vector<Int> > scans = _getScans();
     SHARED_PTR<Vector<Int> > dataDescIDs = _getDataDescIDs();
     SHARED_PTR<Vector<Double> > times = _getTimes();
-    SHARED_PTR<QVD> exposureTimes = _getExposureTimes();
+    SHARED_PTR<Quantum<Vector<Double> > > exposureTimes = _getExposureTimes();
     vector<std::map<Int, Quantity> > firstExposureTimeMap(nDataDescIDs);
     vector<std::map<Int, Double> > tmap(nDataDescIDs);
     Vector<Int>::const_iterator siter = scans->begin();
@@ -1639,26 +1663,31 @@ std::set<SubScanKey> MSMetaData::_getSubScanKeys() const {
         return _subscans;
     }
     std::set<SubScanKey> mysubscans;
-    SHARED_PTR<Vector<Int> > scans = _getScans();
-    SHARED_PTR<Vector<Int> > fields = _getFieldIDs();
-    SHARED_PTR<Vector<Int> > arrays = _getArrayIDs();
-    SHARED_PTR<Vector<Int> > obs = _getObservationIDs();
-    Vector<Int>::const_iterator scanIter = scans->begin();
-    Vector<Int>::const_iterator scanEnd = scans->end();
-    Vector<Int>::const_iterator fIter = fields->begin();
-    Vector<Int>::const_iterator oIter = obs->begin();
-    Vector<Int>::const_iterator aIter = arrays->begin();
-    SubScanKey subScanKey;
-    while (scanIter != scanEnd) {
-        subScanKey.obsID = *oIter;
-        subScanKey.arrayID = *aIter;
-        subScanKey.scan = *scanIter;
-        subScanKey.fieldID = *fIter;
-        mysubscans.insert(subScanKey);
-        ++scanIter;
-        ++fIter;
-        ++oIter;
-        ++aIter;
+    if (_subScanProperties) {
+        map<SubScanKey, SubScanProperties>::const_iterator iter = _subScanProperties->begin();
+        map<SubScanKey, SubScanProperties>::const_iterator end = _subScanProperties->end();
+        for (; iter!=end; ++iter) {
+            mysubscans.insert(iter->first);
+        }
+    }
+    else {
+        SHARED_PTR<Vector<Int> > scans = _getScans();
+        SHARED_PTR<Vector<Int> > fields = _getFieldIDs();
+        SHARED_PTR<Vector<Int> > arrays = _getArrayIDs();
+        SHARED_PTR<Vector<Int> > obs = _getObservationIDs();
+        Vector<Int>::const_iterator scanIter = scans->begin();
+        Vector<Int>::const_iterator scanEnd = scans->end();
+        Vector<Int>::const_iterator fIter = fields->begin();
+        Vector<Int>::const_iterator oIter = obs->begin();
+        Vector<Int>::const_iterator aIter = arrays->begin();
+        SubScanKey subScanKey;
+        for (; scanIter != scanEnd; ++scanIter, ++fIter, ++oIter, ++aIter) {
+            subScanKey.obsID = *oIter;
+            subScanKey.arrayID = *aIter;
+            subScanKey.scan = *scanIter;
+            subScanKey.fieldID = *fIter;
+            mysubscans.insert(subScanKey);
+        }
     }
     if (_cacheUpdated(mysubscans.size()*sizeof(SubScanKey))) {
         _subscans = mysubscans;
@@ -2114,37 +2143,36 @@ SHARED_PTR<std::map<ScanKey, std::set<Double> > > MSMetaData::_getScanToTimesMap
     return scanToTimesMap;
 }
 
+template <class T> SHARED_PTR<Vector<T> > MSMetaData::_getMainScalarColumn(
+    MSMainEnums::PredefinedColumns col
+) const {
+    String name = MeasurementSet::columnName(col);
+    ScalarColumn<T> mycol(*_ms, name);
+    SHARED_PTR<Vector<T> > v(new Vector<T>());
+    mycol.getColumn(*v);
+    return v;
+}
+
 SHARED_PTR<Vector<Double> > MSMetaData::_getTimes() const {
     if (_times && ! _times->empty()) {
         return _times;
     }
-    String timeColName = MeasurementSet::columnName(MSMainEnums::TIME);
-    SHARED_PTR<Vector<Double> > times(
-        new Vector<Double>(     ScalarColumn<Double>(*_ms, timeColName).getColumn())
-    );
+    SHARED_PTR<Vector<Double> > times = _getMainScalarColumn<Double>(MSMainEnums::TIME);
     if (_cacheUpdated(sizeof(Double)*times->size())) {
         _times = times;
     }
     return times;
 }
 
-SHARED_PTR<QVD> MSMetaData::_getExposureTimes() const {
+SHARED_PTR<Quantum<Vector<Double> > > MSMetaData::_getExposureTimes() const {
     if (_exposures && ! _exposures->getValue().empty()) {
         return _exposures;
     }
-    ScalarQuantColumn<Double> exposure(
+    ScalarQuantColumn<Double> col(
         *_ms, MeasurementSet::columnName(MSMainEnums::EXPOSURE)
     );
-    uInt nrow = _ms->nrow();
-    Vector<Double> v(nrow);
-    Vector<Double>::iterator iter = v.begin();
-    Vector<Double>::iterator end = v.end();
-    uInt i = 0;
-    for (; iter!=end; ++iter, ++i) {
-        *iter = exposure(i).getValue();
-    }
-    SHARED_PTR<QVD> ex(new QVD(v, exposure.getUnits()));
-    if (_cacheUpdated((20 + sizeof(Double))*ex->getValue().size())) {
+    SHARED_PTR<Quantum<Vector<Double> > > ex = col.getColumn();    
+    if (_cacheUpdated(_sizeof(*ex))) {
         _exposures = ex;
     }
     return ex;
@@ -2567,8 +2595,9 @@ void MSMetaData::_createSubScanRecords(
         Record subScanRec;
         SubScanProperties props = subScanProps.find(*subScanIter)->second;
         subScanRec.define("data description IDs", Vector<Int>(props.ddIDs.begin(), props.ddIDs.size(), 0));
-        subScanRec.define("nrows", props.nrows);
-        scanNRows += props.nrows;
+        uInt nrows = props.acRows + props.xcRows;
+        subScanRec.define("nrows", nrows);
+        scanNRows += nrows;
         subScanRec.define("antennas", Vector<Int>(props.antennas.begin(), props.antennas.size(), 0));
         antennasForScan.insert(props.antennas.begin(), props.antennas.end());
         subScanRec.define("begin time", props.beginTime);
@@ -3401,10 +3430,10 @@ void MSMetaData::_computeScanAndSubScanProperties(
     SHARED_PTR<Vector<Int> > arrays = _getArrayIDs();
     SHARED_PTR<Vector<Int> > observations = _getObservationIDs();
     SHARED_PTR<Vector<Int> > ant1, ant2;
-    SHARED_PTR<QVD> exposureTimes = _getExposureTimes();
-    SHARED_PTR<QVD> intervalTimes = _getIntervals();
-    vector<uInt> ddIDToSpw = getDataDescIDToSpwMap();
     _getAntennas(ant1, ant2);
+    SHARED_PTR<Quantum<Vector<Double> > > exposureTimes = _getExposureTimes();
+    SHARED_PTR<Quantum<Vector<Double> > > intervalTimes = _getIntervals();
+    vector<uInt> ddIDToSpw = getDataDescIDToSpwMap();
     uInt nchunks = min((uInt)1000, nrows);
     uInt chunkSize = nrows/nchunks;
     if (nrows % nchunks > 0) {
@@ -3495,14 +3524,16 @@ void MSMetaData::_computeScanAndSubScanProperties(
             }
             else {
                 SubScanProperties& fp = (*subScanProps)[ssKey];
+                // the rows increment must come before the mean exposure time
+                // computation
+                fp.acRows += val.acRows;
+                fp.xcRows += val.xcRows;
                 fp.antennas.insert(val.antennas.begin(), val.antennas.end());
                 fp.beginTime = min(fp.beginTime, val.beginTime);
                 fp.ddIDs.insert(val.ddIDs.begin(), val.ddIDs.end());
                 fp.endTime = max(fp.endTime, val.endTime);
-                // the nrows increment must come before the mean exposure time
-                // computation
-                fp.nrows += val.nrows;
-                fp.meanExposureTime = (fp.meanExposureTime*Quantity(fp.nrows - 1) + val.meanExposureTime)/fp.nrows;
+                uInt nrows = fp.acRows + fp.xcRows;
+                fp.meanExposureTime = (fp.meanExposureTime*Quantity(nrows - 1) + val.meanExposureTime)/nrows;
                 fp.stateIDs.insert(val.stateIDs.begin(), val.stateIDs.end());
                 fp.spws.insert(val.spws.begin(), val.spws.end());
 
@@ -3587,8 +3618,8 @@ MSMetaData::_getChunkSubScanProperties(
     SHARED_PTR<const Vector<Int> > ddIDs, SHARED_PTR<const Vector<Int> > states,
     SHARED_PTR<const Vector<Double> > times, SHARED_PTR<const Vector<Int> > arrays,
     SHARED_PTR<const Vector<Int> > observations, SHARED_PTR<const Vector<Int> > ant1,
-    SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const QVD> exposureTimes,
-    SHARED_PTR<const QVD> intervalTimes, const vector<uInt>& ddIDToSpw, uInt beginRow,
+    SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const Quantum<Vector<Double> > > exposureTimes,
+    SHARED_PTR<const Quantum<Vector<Double> > > intervalTimes, const vector<uInt>& ddIDToSpw, uInt beginRow,
     uInt endRow
 ) const {
     VectorSTLIterator<Int> scanIter(*scans);
@@ -3650,20 +3681,28 @@ MSMetaData::_getChunkSubScanProperties(
         subScanKey.arrayID = *arIter;
         subScanKey.scan = *scanIter;
         subScanKey.fieldID = *fIter;
+        Bool autocorr = *a1Iter == *a2Iter;
         if (
             mysubscans.find(subScanKey) == mysubscans.end()
         ) {
+            // first time this subscan has been seen
             SubScanProperties props;
+            props.acRows = autocorr ? 1 : 0;
+            props.xcRows = autocorr ? 0 : 1;
             props.beginTime = *tIter;
             props.endTime = *tIter;
-            props.nrows = 1;
             mysubscans[subScanKey] = props;
             exposureSum[subScanKey] = *eiter;
         }
         else {
+            if (autocorr) {
+                ++mysubscans[subScanKey].acRows;
+            }
+            else {
+                ++mysubscans[subScanKey].xcRows;
+            }
             mysubscans[subScanKey].beginTime = min(*tIter, mysubscans[subScanKey].beginTime);
             mysubscans[subScanKey].endTime = max(*tIter, mysubscans[subScanKey].endTime);
-            ++mysubscans[subScanKey].nrows;
             exposureSum[subScanKey] += *eiter;
         }
         subScanSpw.first = subScanKey;
@@ -3707,7 +3746,9 @@ MSMetaData::_getChunkSubScanProperties(
     map<SubScanKey, SubScanProperties>::iterator ssEnd = mysubscans.end();
     for (; ssIter!=ssEnd; ++ssIter) {
         SubScanProperties& props = ssIter->second;
-        props.meanExposureTime = Quantity(exposureSum[ssIter->first]/props.nrows, eunit);
+        props.meanExposureTime = Quantity(
+            exposureSum[ssIter->first]/(props.acRows + props.xcRows), eunit
+        );
     }
     const Unit& unit = intervalTimes->getFullUnit();
     map<pair<SubScanKey, uInt>, Double>::const_iterator intSumIter = intervalSum.begin();
@@ -3772,7 +3813,7 @@ void MSMetaData::_getScanAndSubScanProperties(
         }
     }
 
-    static const uInt ssStructSize = 3*dSize + iSize;
+    static const uInt ssStructSize = 3*dSize + 2*iSize;
     static const uInt sskeySize = 4*iSize;
     uInt subScanSize = subScanProps->size() * (ssStructSize + sskeySize);
     std::map<SubScanKey, SubScanProperties>::const_iterator subIter = subScanProps->begin();
@@ -4490,14 +4531,63 @@ Bool MSMetaData::_hasFieldID(const Int fieldID) const {
         + String::toString(nFields())
         + ") in this MS's FIELD table"
     );
-    std::set<Int> uniqueFields = getUniqueFiedIDs();
+    std::set<Int> uniqueFields = getUniqueFieldIDs();
     return uniqueFields.find(fieldID) != uniqueFields.end();
 }
 
-std::set<Int> MSMetaData::getUniqueFiedIDs() const {
+const std::set<Int>& MSMetaData::getUniqueAntennaIDs() const {
+    // this method is responsible for setting _uniqueAntennas
+    if (_uniqueAntennaIDs.empty()) {
+        if (_subScanProperties) {
+            map<SubScanKey, SubScanProperties>::const_iterator iter = _subScanProperties->begin();
+            map<SubScanKey, SubScanProperties>::const_iterator end = _subScanProperties->end();
+            for (; iter!=end; ++iter) {
+                const std::set<Int>& ants = iter->second.antennas;
+                _uniqueAntennaIDs.insert(ants.begin(), ants.end());
+            }
+        }
+        else {
+            SHARED_PTR<Vector<Int> > ant1, ant2;
+            _getAntennas(ant1, ant2);
+            _uniqueAntennaIDs.insert(ant1->begin(), ant1->end());
+            _uniqueAntennaIDs.insert(ant2->begin(), ant2->end());
+        }
+    }    
+    return _uniqueAntennaIDs;
+}
+
+std::set<uInt> MSMetaData::getUniqueDataDescIDs() const {
+    // this method is responsible for setting _uniqueDataDescIDs
+    if (_uniqueDataDescIDs.empty()) {
+        if (_subScanProperties) {
+            map<SubScanKey, SubScanProperties>::const_iterator iter = _subScanProperties->begin();
+            map<SubScanKey, SubScanProperties>::const_iterator end = _subScanProperties->end();
+            for (; iter!=end; ++iter) {
+                const std::set<uInt>& ddIDs = iter->second.ddIDs; 
+                _uniqueDataDescIDs.insert(ddIDs.begin(), ddIDs.end());
+            }
+        }
+        else {
+            SHARED_PTR<Vector<Int> > allDDIDs = _getDataDescIDs();
+            _uniqueDataDescIDs.insert(allDDIDs->begin(), allDDIDs->end());
+        }
+    }
+    return _uniqueDataDescIDs;
+}
+
+std::set<Int> MSMetaData::getUniqueFieldIDs() const {
     if (_uniqueFieldIDs.empty()) {
-        SHARED_PTR<Vector<Int> > allFieldIDs = _getFieldIDs();
-        _uniqueFieldIDs.insert(allFieldIDs->begin(), allFieldIDs->end());
+        if (_subScanProperties) {
+            map<SubScanKey, SubScanProperties>::const_iterator iter = _subScanProperties->begin();
+            map<SubScanKey, SubScanProperties>::const_iterator end = _subScanProperties->end();
+            for (; iter!=end; ++iter) {
+                _uniqueFieldIDs.insert(iter->first.fieldID);
+            }
+        }
+        else {
+            SHARED_PTR<Vector<Int> > allFieldIDs = _getFieldIDs();
+            _uniqueFieldIDs.insert(allFieldIDs->begin(), allFieldIDs->end());
+        }
     }
     return _uniqueFieldIDs;
 }
@@ -4530,19 +4620,15 @@ void MSMetaData::_hasAntennaID(Int antennaID) {
     );
 }
 
-SHARED_PTR<QVD> MSMetaData::_getIntervals() const {
+SHARED_PTR<Quantum<Vector<Double> > > MSMetaData::_getIntervals() const {
     // this method is responsible for setting _intervals
     if (_intervals) {
         return _intervals;
     }
-    String colName = MeasurementSet::columnName(MSMainEnums::INTERVAL);
-    ScalarQuantColumn<Double> sqcInterval(*_ms, colName);
-    ScalarColumn<Double> scInterval(*_ms, colName);
-    SHARED_PTR<QVD> intervals(
-        new QVD(
-            scInterval.getColumn(), sqcInterval.getUnits()
-        )
+    ScalarQuantColumn<Double> col(
+        *_ms, MeasurementSet::columnName(MSMainEnums::INTERVAL)
     );
+    SHARED_PTR<Quantum<Vector<Double> > > intervals = col.getColumn();    
     if (_cacheUpdated(_sizeof(*intervals))) {
         _intervals = intervals;
     }
@@ -4576,7 +4662,6 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         _ms->spectralWindow(),
         MSSpectralWindow::columnName(MSSpectralWindowEnums::RESOLUTION)
     );
-    ScalarColumn<Int> mrfCol = spwCols.measFreqRef();
     Vector<Int> nss  = spwCols.netSideband().getColumn();
     Vector<String> name = spwCols.name().getColumn();
     Bool myHasBBCNo = hasBBCNo();

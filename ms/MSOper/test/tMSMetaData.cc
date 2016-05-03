@@ -1342,7 +1342,7 @@ void testIt(MSMetaData& md) {
 			for (Int i=0; i<6; ++i) {
 				expec.insert(i);
 			}
-			AlwaysAssert(md.getUniqueFiedIDs() == expec, AipsError);
+			AlwaysAssert(md.getUniqueFieldIDs() == expec, AipsError);
 		}
 		{
 			cout << "*** test getCenterFreqs()" << endl;
@@ -2159,10 +2159,13 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(thrown, AipsError);
             sskey.scan = 1;
             MSMetaData::SubScanProperties props = md.getSubScanProperties(sskey);
-            AlwaysAssert(props.nrows == 367, AipsError);
+            AlwaysAssert(props.acRows + props.xcRows == 367, AipsError);
             SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > allProps
                 = md.getSubScanProperties();
-            AlwaysAssert(allProps->find(sskey)->second.nrows == 367, AipsError);
+            AlwaysAssert(
+                allProps->find(sskey)->second.acRows + allProps->find(sskey)->second.xcRows == 367,
+                AipsError
+            );
             for (uInt i=0; i<9; ++i) {
                 Double expec = 0;
                 if (i == 0) {
@@ -2400,6 +2403,72 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(ac->find(key)->second == 51, AipsError);
             SHARED_PTR<const map<SubScanKey, uInt> > xc = md.getNRowMap(MSMetaData::CROSS);
             AlwaysAssert(xc->find(key)->second == 316, AipsError);
+        }
+        {
+            cout << "*** test getFieldCodes()" << endl;
+            Vector<String> codes = Vector<String>(md.getFieldCodes());
+            AlwaysAssert(allEQ(codes, String("none")), AipsError);
+        }
+        {
+            cout << "*** test getUniqueDataDescIDs()" << endl;
+            std::set<uInt> ddids = md.getUniqueDataDescIDs();
+            Vector<uInt> expec = indgen(25, (uInt)0, (uInt)1);
+            AlwaysAssert(
+                allEQ(
+                    Vector<uInt>(vector<uInt>(ddids.begin(), ddids.end())), expec
+                ), AipsError
+            );
+        }
+        {
+            cout << "*** test getUniqueAntennaIDs()" << endl;
+            std::set<Int> ants = md.getUniqueAntennaIDs();
+            Int evals[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13};
+            Vector<Int> expec(vector<Int>(evals, evals+13));
+            AlwaysAssert(
+                allEQ(
+                    Vector<Int>(vector<Int>(ants.begin(), ants.end())), expec
+                ), AipsError
+            );
+        }
+        {
+            cout << "*** test getFirstExposureTimeMap()" << endl;
+            vector<map<Int, Quantity> > mymap = md.getFirstExposureTimeMap();
+            AlwaysAssert(mymap.size() == 25, AipsError);
+            for (Int i=0; i<25; ++i) {
+                uInt expSize = 0;
+                Quantity expExposure(0, "s");
+                if (i == 0) {
+                    expSize = 32;
+                    expExposure.setValue(1.152);
+                }
+                else if (i == 1 || i == 3 || i == 5 || i == 7) {
+                    expSize = 3;
+                    expExposure.setValue(2.016);
+                }
+                else if (i == 2 || i == 4 || i == 6 || i == 8) {
+                    expSize = 3;
+                    expExposure.setValue(1.008);
+                }
+                else if (i == 9 || i == 11 || i == 13 || i == 15) {
+                    expSize = 14;
+                    expExposure.setValue(2.016);
+                }
+                else if (i == 10 || i == 12 || i == 14 || i == 16) {
+                    expSize = 14;
+                    expExposure.setValue(1.008);
+                }
+                else if (i == 17 || i == 19 || i == 21 || i == 23) {
+                    expSize = 15;
+                    expExposure.setValue(6.048);
+                }
+                else if (i == 18 || i == 20 || i == 22 || i == 24) {
+                    expSize = 15;
+                    expExposure.setValue(1.008);
+                }
+                AlwaysAssert(mymap[i].size() == expSize, AipsError);
+                AlwaysAssert(mymap[i].begin()->second == expExposure, AipsError);
+            }
+            
         }
         {
 			cout << "*** cache size " << md.getCache() << endl;
