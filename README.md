@@ -47,6 +47,14 @@ $ sudo apt-get install libhdf5-serial-dev libfftw3-dev python-numpy \
     libboost-python-dev
 ```
 
+On CentOS you can install these with:
+ ```bash 
+$ sudo yum install cmake cmake-gui gcc-gfortran gcc-c++ flex bison \
+        blas blas-devel  lapack lapck-devel cfitsio cfitsio-devel \
+        wcslib wcslib-devel ncurses ncurses-devel readline readline-devel\
+        python-devel boost boost-devel fftw fftw-devel hdf5 hdf5-devel\
+        numpy boost-python 
+```
 
 ## Obtaining measures data
 
