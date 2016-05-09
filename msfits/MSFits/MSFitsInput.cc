@@ -1764,6 +1764,24 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     arrayXYZ(1) = bt.getKeywords().asdouble("ARRAYY");
     arrayXYZ(2) = bt.getKeywords().asdouble("ARRAYZ");
 
+    static const String xyzHand = "XYZHAND";
+    String handed;
+    if (bt.getKeywords().isDefined(xyzHand)) {
+        handed = bt.getKeywords().asString(xyzHand);
+    }
+    else {
+        _log << LogOrigin("MSFitsInput", __func__) << LogIO::WARN
+            << xyzHand + " keyword not found in AN table. Will assume "
+            << "antenna coordinate system is right handed." << LogIO::POST;
+    }
+    Bool leftHanded = handed == "LEFT";
+    if (leftHanded) {
+        _log << LogOrigin("MSFitsInput", __func__)
+            << LogIO::NORMAL << "Antenna positions in the uvfits "
+            << "AN table are in a left handed coordinate system "
+            << "and so will undergo a y -> -y transformation when "
+            << "written to the MS" << LogIO::POST;
+    }
     // Since we cannot write these quantities, we cannot rely upon
     // their presence in any UVFITS file that we read:
     Double rdate = 0.0;
@@ -1804,7 +1822,6 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     // Fill in some likely values
     Float diameter = 25;
     Bool doSMA = (_array == "SMA");
-    Bool doCARMA = (_array == "CARMA");
     if (_array == "ATCA") {
         diameter = 22;
     }
@@ -1856,36 +1873,37 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         }
     }
     // Prepare handling of UVFITS Antenna position coord conventions:
-    // VLA requires rotation of local coords:
-    Bool doVLARot = (_array == "VLA");
-    // initialize rotation matrix with zero rotation
+    // VLA requires rotation of local coords in some cases
+    Bool rotate = False;
     Matrix<Double> posRot = Rot3D(0, 0.0);
-    // Similar transformations are added for SMA and CARMA for now.
-    // May need to make these default processing for most of the telescopes
-    // in future.
-    if (doVLARot) {
-        // Array position for VLA from aips may be wrong, so use
-        //  authoritative position from measures (station positions
-        //  are from on-line system and are relative to this)
-        MPosition vlaCentre;
-        AlwaysAssert(MeasTable::Observatory(vlaCentre, "VLA"), AipsError);
-        arrayXYZ = vlaCentre.getValue().getValue();
-        // Form rotation around Z axis by VLA longitude=atan(arrayY/arrayX)
-        Double vlaLong = atan2(arrayXYZ(1), arrayXYZ(0));
-        posRot = Rot3D(2, vlaLong); // Applied to each ant position below
+    if (_rotateAnts) {
+        if (_array == "VLA") {
+            // Array position for VLA from aips may be wrong, so use
+            //  authoritative position from measures (station positions
+            //  are from on-line system and are relative to this)
+            MPosition vlaCenter;
+            AlwaysAssert(MeasTable::Observatory(vlaCenter, "VLA"), AipsError);
+            if (allNearAbs(arrayXYZ, vlaCenter.getValue().getValue(), 10)) {
+                arrayXYZ = vlaCenter.getValue().getValue();
+                // Form rotation around Z axis by VLA longitude=atan(arrayY/arrayX)
+                Double vlaLong = atan2(arrayXYZ(1), arrayXYZ(0));
+                posRot = Rot3D(2, vlaLong); // Applied to each ant position below
+                rotate = True;
+            }
+            else {
+                _log << LogOrigin("MSFitsInput", __func__) << LogIO::WARN
+                << "Array position from UVFITS file is not near that of the "
+                << "position from the Observatories table. No rotation of "
+                << "antenna positions will be performed." << LogIO::POST;
+            }
+        }
+        else {
+            _log << LogOrigin("MSFitsInput", __func__) << LogIO::WARN
+                << "Array " + _array + " is not a candidate to have "
+                << "its antenna positions rotated. No rotation of antenna "
+                << "positions will be performed" << LogIO::POST;
+        }
     }
-    if (doSMA || doCARMA) {
-        //do VLA-like rotation...for SMA and CARMA
-        MPosition arrayCentre;
-        AlwaysAssert(MeasTable::Observatory(arrayCentre, _array), AipsError);
-        arrayXYZ = arrayCentre.getValue().getValue();
-        Double arrayLong = atan2(arrayXYZ(1), arrayXYZ(0));
-        posRot = Rot3D(2, arrayLong); // Applied to each ant position below
-    }
-    // All "VLBI" (==arrayXYZ<1000) requires y-axis reflection:
-    //  (ATCA looks like "VLBI" in UVFITS, but is already correct)
-    Bool doVLBIRefl = ((_array != "ATCA") && allLE(abs(arrayXYZ), 1000.0));
-
     // add antenna info to table
     ant.setPositionRef(MPosition::ITRF);
 
@@ -1938,7 +1956,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
             oss << "EA" << setw(2) << setfill('0') << id(i);
             ant.name().put(row, oss.str());
         }
-        else if (doVLARot && _newNameStyle) {
+        else if (_array == "VLA" && _newNameStyle) {
             ostringstream oss;
             oss << "VA" << setw(2) << setfill('0') << id(i);
             //cerr << name(i) << endl;
@@ -1957,27 +1975,21 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         // Do UVFITS-dependent position corrections:
         // ROArrayColumn antXYZ(i) may need coord transform; do it in corXYZ:
         Vector<Double> corXYZ = antXYZ(i);
-        // If nec, rotate coordinates out of local VLA frame to ITRF
-        //if ( doVLARot ) corXYZ=product(posRot,corXYZ);
-        if (doVLARot || doSMA || doCARMA)
+        if (rotate) {
             corXYZ = product(posRot, corXYZ);
-
-        // If nec, reflect y-coord to yield right-handed geocentric:
-        if (doVLBIRefl)
+        }
+        if (leftHanded) {
             corXYZ(1) = -corXYZ(1);
-
+        }
         ant.position().put(row, arrayXYZ + corXYZ);
         // store the angle for use in the feed table
         _receptorAngle(2 * i + 0) = polangleA(i) * C::degree;
         _receptorAngle(2 * i + 1) = polangleB(i) * C::degree;
     }
-
     // store these items in non-standard keywords for now
     ant.name().rwKeywordSet().define("ARRAY_NAME", arrnam);
     ant.position().rwKeywordSet().define("ARRAY_POSITION", arrayXYZ);
 }
-
-
 
 void MSFitsInput::fillSpectralWindowTable(BinaryTable& bt, Int nSpW)
 {
