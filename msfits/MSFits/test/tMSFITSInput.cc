@@ -29,18 +29,8 @@
 #include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/OS/EnvVar.h>
 #include <casacore/msfits/MSFits/MSFitsInput.h>
-#include <casacore/ms/MSOper/MSMetaData.h>
-#include <casacore/casa/BasicSL/STLIO.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
 
 using namespace casacore;
-
-void removeIfNecessary(const String& msname) {
-    Directory d(msname);
-    if (d.exists()) {
-        d.removeRecursive();
-    }
-}
 
 int main() {
     try {
@@ -53,7 +43,6 @@ int main() {
             return 0;
         }
         String msfile = "myoutms.ms";
-        removeIfNecessary(msfile);
         MSFitsInput msfitsin(msfile, fitsfile);
         Bool thrown = False;
         try {
@@ -63,56 +52,6 @@ int main() {
             thrown = True;
         }
         AlwaysAssert(thrown, AipsError);
-        {
-            cout << "test rotating antenna positions" << endl;
-            fitsfile = datadir + "regression/unittest/uvfits/casa_4.6_vla.uvfits";
-            String msfile = "rotated_positions.ms";
-            removeIfNecessary(msfile);
-            SHARED_PTR<MSFitsInput> reader(new MSFitsInput(msfile, fitsfile));
-            reader->rotateAntennaPositions(True);
-            reader->readFitsFile();
-            MeasurementSet ms(msfile);
-            SHARED_PTR<MSMetaData> md(new MSMetaData(&ms, 50));
-            vector<MPosition> pos = md->getAntennaPositions(vector<uInt>(1, 0));
-            Vector<Double> expec(3);
-            expec[0] = -1601145.65187839;
-            expec[1] = -5041988.31653595;
-            expec[2] = 3554878.93106461;
-            AlwaysAssert(allNearAbs(pos[0].getValue().getValue(), expec, 1e-6), AipsError);
-
-            msfile = "nonrotated_positions.ms";
-            removeIfNecessary(msfile);
-            reader.reset(new MSFitsInput(msfile, fitsfile));
-            reader->readFitsFile();
-            ms = MeasurementSet(msfile);
-            md.reset(new MSMetaData(&ms, 50));
-            pos = md->getAntennaPositions(vector<uInt>(1, 0));
-            AlwaysAssert(! allNearAbs(pos[0].getValue().getValue(), expec, 1e-6), AipsError);
-
-            fitsfile = datadir + "regression/unittest/uvfits/casa_4.7_vla.uvfits";
-            msfile = "4_7.ms";
-            removeIfNecessary(msfile);
-            reader.reset(new MSFitsInput(msfile, fitsfile));
-            // This should have no effect on processing now, since in this uvfits
-            // file, the array position is at the ITRF origin
-            reader->rotateAntennaPositions(True);
-            reader->readFitsFile();
-            ms = MeasurementSet(msfile);
-            md.reset(new MSMetaData(&ms, 50));
-            pos = md->getAntennaPositions(vector<uInt>(1, 0));
-            AlwaysAssert(allNearAbs(pos[0].getValue().getValue(), expec, 1e-6), AipsError);
-
-            // and just check to make the default value of rotating antenna positions
-            // works as expected
-            removeIfNecessary(msfile);
-            reader.reset(new MSFitsInput(msfile, fitsfile));
-            reader->readFitsFile();
-            ms = MeasurementSet(msfile);
-            md.reset(new MSMetaData(&ms, 50));
-            pos = md->getAntennaPositions(vector<uInt>(1, 0));
-            AlwaysAssert(allNearAbs(pos[0].getValue().getValue(), expec, 1e-6), AipsError);
-
-        }
     }
     catch (const AipsError& x) {
         cerr << x.getMesg() << endl;
