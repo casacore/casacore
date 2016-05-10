@@ -67,7 +67,7 @@ script:
   - ccache -M 160M # non cxx11 builds need around 120mb
   - ccache -s
   - ccache -z
-  - make -j4
+  - make -j2
   - make test
   - make install
   - ccache -s
