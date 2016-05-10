@@ -1410,7 +1410,7 @@ void TableParseSelect::handleColSpec (const String& colName,
     if (name == "NDIM") {
       ndim = spec.asInt(i);
     } else if (name == "SHAPE") {
-      Vector<Int> ivec(spec.asArrayInt(i));
+      Vector<Int> ivec(spec.toArrayInt(i));
       if (isCOrder) {
 	Int nd = ivec.nelements();
 	shape.resize (nd);

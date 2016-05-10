@@ -548,11 +548,13 @@ void BaseTable::addColumns (const TableDesc& desc, const Record& dmInfo,
   if (dmInfo.nfields() == 1  &&  dmInfo.dataType(0) == TpRecord) {
     rec = dmInfo.subRecord(0);
   }
-  if (rec.isDefined("TYPE")  &&  rec.isDefined("NAME")
-  &&  rec.isDefined("SPEC")) {
+  if (rec.isDefined("TYPE")  &&  rec.isDefined("NAME")) {
     String dmType = rec.asString ("TYPE");
     String dmGroup = rec.asString ("NAME");
-    const Record& sp = rec.subRecord ("SPEC");;
+    Record sp;
+    if (rec.isDefined("SPEC")) {
+      sp = rec.subRecord ("SPEC");
+    }
     DataManager* dataMan = DataManager::getCtor(dmType) (dmGroup, sp);
     addColumn (desc, *dataMan, addToParent);
     delete dataMan;

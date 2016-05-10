@@ -157,7 +157,7 @@ void VirtualTaQLColumn::prepare()
   TableColumn tabcol (table(), itsColumnName);
   itsExpr = tabcol.keywordSet().asString ("_VirtualTaQLEngine_CalcExpr");
   // Compile the expression.
-  TaQLResult res = tableCommand ("calc from $1 calc " + itsExpr, table());
+  TaQLResult res = tableCommand ("calc " + itsExpr + " from $1" , table());
   itsNode = new TableExprNode(res.node());
   // Check if the expression type matches the column type.
   if (itsNode->isScalar() == itsIsArray) {

@@ -201,10 +201,13 @@ void SetupNewTableRep::bindCreate (const Record& spec)
     for (uInt i=0; i<spec.nfields(); i++) {
         const Record& rec = spec.subRecord(i);
 	if (rec.isDefined("TYPE")  &&  rec.isDefined("NAME")
-	&&  rec.isDefined("SPEC")  &&  rec.isDefined("COLUMNS")) {
+	&&  rec.isDefined("COLUMNS")) {
 	    String dmType = rec.asString ("TYPE");
 	    String dmGroup = rec.asString ("NAME");
-	    const Record& sp = rec.subRecord ("SPEC");;
+            Record sp;
+            if (rec.isDefined("SPEC")) {
+              sp = rec.subRecord ("SPEC");
+            }
 	    Vector<String> cols (rec.asArrayString ("COLUMNS"));
 	    DataManager* dataMan = DataManager::getCtor(dmType) (dmGroup, sp);
 	    // Bind the columns to this data manager.
