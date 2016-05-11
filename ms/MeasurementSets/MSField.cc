@@ -37,6 +37,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Utilities/Regex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -102,16 +103,14 @@ MSField::MSField(const MSField &other)
 MSField::~MSField()
 {
 // check to make sure that this MSField is still valid
-    if (!hasBeenDestroyed_p &&  !validate()) {
-	hasBeenDestroyed_p = True;
+    if (!hasBeenDestroyed_p  &&  !validate()) {
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
-	// now we can thrown an exception
-	throw (AipsError("~MSField() - "
-			 "Table written is not a valid MSField"));
+        LogIO os;
+        os << LogIO::WARN
+           << "~MSField() - Table written is not a valid MSField"
+           << LogIO::POST;
     }
-    // if we get to here, let nature take its course
-    // this should not be necessary, but do it for insurance anyway
     hasBeenDestroyed_p = True;
 }
 

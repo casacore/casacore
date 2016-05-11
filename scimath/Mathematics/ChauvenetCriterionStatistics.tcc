@@ -35,39 +35,39 @@
 
 namespace casacore {
 
-template <class AccumType, class InputIterator, class MaskIterator>
-ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>::ChauvenetCriterionStatistics(
+CASA_STATD
+ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(
 	Double zscore, Int maxIterations
 )
-  : ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>(),
+  : ConstrainedRangeStatistics<CASA_STATP>(),
     _zscore(zscore), _maxIterations(maxIterations), _rangeIsSet(False), _niter(0) {}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>::~ChauvenetCriterionStatistics() {}
+CASA_STATD
+ChauvenetCriterionStatistics<CASA_STATP>::~ChauvenetCriterionStatistics() {}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>&
-ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>::operator=(
-	const ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>& other
+CASA_STATD
+ChauvenetCriterionStatistics<CASA_STATP>&
+ChauvenetCriterionStatistics<CASA_STATP>::operator=(
+	const ChauvenetCriterionStatistics<CASA_STATP>& other
 ) {
     if (this == &other) {
         return *this;
     }
-    ClassicalStatistics<AccumType, InputIterator, MaskIterator>::operator=(other);
+    ClassicalStatistics<CASA_STATP>::operator=(other);
     _zscore = other._zscore;
     _maxIterations = other._maxIterations;
     _niter = other._niter;
     return *this;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>::reset() {
-	ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::reset();
+CASA_STATD
+void ChauvenetCriterionStatistics<CASA_STATP>::reset() {
+	ConstrainedRangeStatistics<CASA_STATP>::reset();
 	_rangeIsSet = False;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>::setCalculateAsAdded(
+CASA_STATD
+void ChauvenetCriterionStatistics<CASA_STATP>::setCalculateAsAdded(
 	Bool c
 ) {
 	ThrowIf(
@@ -76,8 +76,8 @@ void ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>::setCa
 	);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>::_setRange() {
+CASA_STATD
+void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
 	if (_rangeIsSet) {
 		return;
 	}
@@ -86,7 +86,7 @@ void ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>::_setR
 	StatsData<AccumType> sd;
 	while (_niter <= maxI) {
 		if (_niter == 0) {
-			ClassicalStatistics<AccumType, InputIterator, MaskIterator> cs(*this);
+			ClassicalStatistics<CASA_STATP> cs(*this);
 			sd = cs.getStatistics();
 		}
 		else {
@@ -99,7 +99,7 @@ void ChauvenetCriterionStatistics<AccumType, InputIterator, MaskIterator>::_setR
 		CountedPtr<std::pair<AccumType, AccumType> > range = new std::pair<AccumType, AccumType>(
 			sd.mean - zScore*sd.stddev, sd.mean + zScore*sd.stddev
 		);
-		ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator>::_setRange(range);
+		ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
 		// _rangeIsSet is set here to prevent infinite recursion on next loop iteration
 		_rangeIsSet = True;
 		prevNpts = (uInt64)sd.npts;

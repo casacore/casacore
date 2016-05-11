@@ -36,6 +36,10 @@
  *
  */
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+#include <sched.h>
 #include <string.h>
 #include <ctype.h>
 #include <sys/types.h>
@@ -122,27 +126,42 @@ HostMachineInfo::HostMachineInfo( ) : valid(1)
     int fd, len;
     char *p;
 
-#ifndef AIPS_CRAY_PGI
-    /* make sure the proc filesystem is mounted */
-    {
-	struct statfs sb;
-	if (statfs(PROCFS, &sb) < 0 || sb.f_type != PROC_SUPER_MAGIC)
-	{
-	    fprintf( stderr, "proc filesystem not mounted on " PROCFS "\n" );
-	    valid = 0;
-	    return;
+    /* get number of usable CPUs */
+    cpu_set_t cpuset;
+    if (sched_getaffinity(0, sizeof(cpuset), &cpuset) == 0) {
+# ifdef CPU_COUNT /* glibc < 2.6 */
+	cpus = CPU_COUNT(&cpuset);
+# else
+	for (int i = 0; i < CPU_SETSIZE; i++) {
+	    if (CPU_ISSET(i, &cpuset)) {
+		cpus++;
+	    }
 	}
+# endif
     }
+    else {
+#ifndef AIPS_CRAY_PGI
+	/* make sure the proc filesystem is mounted */
+	{
+	    struct statfs sb;
+	    if (statfs(PROCFS, &sb) < 0 || sb.f_type != PROC_SUPER_MAGIC)
+	    {
+		fprintf( stderr, "proc filesystem not mounted on " PROCFS "\n" );
+		valid = 0;
+		return;
+	    }
+	}
 #endif
 
-    /* get number of CPUs */
-    {
-	cpus = 0;
-	FILE *fptr = fopen(CPUINFO, "r");
-	while ( (p = fgets( buffer, sizeof(buffer), fptr )) ) {
-	    if ( ! strncmp( p, "processor", 9 ) ) ++cpus;
+	/* get number of CPUs */
+	{
+	    cpus = 0;
+	    FILE *fptr = fopen(CPUINFO, "r");
+	    while ( (p = fgets( buffer, sizeof(buffer), fptr )) ) {
+		if ( ! strncmp( p, "processor", 9 ) ) ++cpus;
+	    }
+	    fclose(fptr);
 	}
-	fclose(fptr);
     }
 
     /* get system total memory */

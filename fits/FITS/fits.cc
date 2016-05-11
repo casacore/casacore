@@ -2154,6 +2154,19 @@ FitsKeywordList & FitsKeywordList:: operator = (const FitsKeywordList &w) {
 	return *this;
 }
 
+std::string FitsKeywordList::toString() const
+{
+  std::string s;
+  s.resize(80*total);
+  std::fill (s.begin(), s.end(), ' ');
+  char* sptr = &(s[0]);
+  for (FitsKeyword *x = beg_; x != 0; x = x->next_) {
+    FitsKeyCardTranslator::fmtcard (sptr, *x);
+    sptr += 80;
+  }
+  return s;
+}
+
 FitsKeyword *FitsKeywordList::next() {
 	if (cursor == total) { return 0; }
 	if (cursor == 0) { ++cursor; return pos; }

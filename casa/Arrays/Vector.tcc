@@ -52,8 +52,20 @@ template<class T> Vector<T>::Vector(size_t Length)
     DebugAssert(ok(), ArrayError);
 }
 
+template<class T> Vector<T>::Vector(size_t Length, ArrayInitPolicy initPolicy)
+: Array<T>(IPosition(1, Length), initPolicy)
+{
+    DebugAssert(ok(), ArrayError);
+}
+
 template<class T> Vector<T>::Vector(const IPosition& len)
   : Array<T>(len)
+{
+    if (len.nelements() != 1) this->throwNdimVector();
+}
+
+template<class T> Vector<T>::Vector(const IPosition& len, ArrayInitPolicy initPolicy)
+  : Array<T>(len, initPolicy)
 {
     if (len.nelements() != 1) this->throwNdimVector();
 }
@@ -71,16 +83,15 @@ template<class T> Vector<T>::Vector(const IPosition& len, const T &initialValue)
 }
 
 template<class T> Vector<T>::Vector(const Block<T> &other, Int64 nr)
-: Array<T>(IPosition(1, other.nelements()))
+: Array<T>(IPosition(1, other.nelements()), ArrayInitPolicy::INIT)
 {
     initVector (other, nr);
     DebugAssert(ok(), ArrayError);
 }
 
 template<class T> Vector<T>::Vector(const Block<T> &other)
-: Array<T>(IPosition(1, other.nelements()))
+: Array<T>(IPosition(1, other.nelements()), const_cast<T *>(other.storage()), COPY)
 {
-    initVector (other, 0);
     DebugAssert(ok(), ArrayError);
 }
 
@@ -135,6 +146,14 @@ Vector<T>::Vector(const IPosition &shape, T *storage,
 }
 
 template<class T>
+Vector<T>::Vector(const IPosition &shape, T *storage,
+                  StorageInitPolicy policy, AbstractAllocator<T> const &allocator)
+  : Array<T>(shape, storage, policy, allocator)
+{
+    if (shape.nelements() != 1) this->throwNdimVector();
+}
+
+template<class T>
 Vector<T>::Vector(const IPosition &shape, const T *storage)
   : Array<T>(shape, storage)
 {
@@ -155,18 +174,18 @@ template<class T> void Vector<T>::resize()
 // <thrown>
 //    <item> ArrayConformanceError
 // </thrown>
-template<class T> void Vector<T>::resize(const IPosition &l, Bool copyValues)
+template<class T> void Vector<T>::resize(const IPosition &l, Bool copyValues, ArrayInitPolicy policy)
 {
     DebugAssert(ok(), ArrayError);
     if (l.nelements() != 1) this->throwNdimVector();
     if (copyValues) {
         Vector<T> oldref(*this);
-	Array<T>::resize(l);
+	Array<T>::resize(l, False, policy);
 	size_t minNels = std::min(this->nelements(), oldref.nelements());
 	objcopy(this->begin_p, oldref.begin_p, minNels,
 		this->inc_p(0), oldref.inc_p(0));
     } else {
-	Array<T>::resize(l);
+	Array<T>::resize(l, False, policy);
     }
     DebugAssert(ok(), ArrayError);
 }
@@ -291,18 +310,11 @@ void Vector<T>::doNonDegenerate (const Array<T> &other,
 }
 
 template<class T>
-void Vector<T>::takeStorage(const IPosition &shape, T *storage,
-			    StorageInitPolicy policy)
+void Vector<T>::preTakeStorage(const IPosition &shape)
 {
-    if (shape.nelements() != 1) this->throwNdimVector();
-    Array<T>::takeStorage(shape, storage, policy);
-}
-
-template<class T>
-void Vector<T>::takeStorage(const IPosition &shape, const T *storage)
-{
-    if (shape.nelements() != 1) this->throwNdimVector();
-    Array<T>::takeStorage(shape, storage);
+    Array<T>::preTakeStorage(shape);
+    if (shape.nelements() != 1)
+        this->throwNdimVector();
 }
 
 template<class T> Bool Vector<T>::ok() const

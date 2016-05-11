@@ -223,13 +223,26 @@ void Unit::check()
     throw (AipsError("Unit::check Illegal unit string '" +
 		     uName + "'"));
   }
-  char *b1 = strdup(uName.c_str());
-  char *b2 = (char*) malloc((uName.size()+1)*sizeof(char));
+  char stackbuf1[200];
+  char stackbuf2[200];
+  char *b1, *b2;
+  /* avoid heap allocations for common small strings */
+  if (uName.size() < sizeof(stackbuf1)) {
+    strcpy(stackbuf1, uName.c_str());
+    b1 = &stackbuf1[0];
+    b2 = &stackbuf2[0];
+  }
+  else {
+    b1 = strdup(uName.c_str());
+    b2 = (char*) malloc((uName.size()+1)*sizeof(char));
+  }
   pass_one(b1,b2);
   pass_two(b2,b1);
   uName = b1;
-  free(b1);
-  free(b2);
+  if (b1 != &stackbuf1[0]) {
+    free(b1);
+    free(b2);
+  }
 }
 
 } //# NAMESPACE CASACORE - END

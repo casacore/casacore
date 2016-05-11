@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: tMeasurementSet.cc 21451 2014-06-10 07:48:08Z gervandiepen $
 
 //# Includes
 
@@ -266,9 +266,6 @@ uInt tNonStatic(const String& sdmsName)
     //    String parentName = ms.tableName();
     //    String subName = ms.keywordSet().asTable("ANTENNA").tableName();
     //    cout << "Parent: "<<parentName<<", sub:"<<subName<<endl;
-    // Write the bool column, otherwise valgrind gives 'uninitialized error'.
-    ScalarColumn<Bool> flagCol(ms, "FLAG_ROW");
-    flagCol.fillColumn (False);
     ms.flush();
 
     // ok, use operator to convert ms to sms
@@ -303,22 +300,22 @@ uInt tConstructors(const String& msName)
 
     // make tableDesc
     {
-      TableDesc td(MSFeed::requiredTableDesc(),"badTD","",TableDesc::New);
+        TableDesc td(MSFeed::requiredTableDesc(),"badTD","",TableDesc::New);
     }
     // make non MS table
     {
-      SetupNewTable newtab("tMeasurementSet_tmp.badmsTable",
-			   "badTD",Table::New);
-      Table tab(newtab);
+        SetupNewTable newtab("tMeasurementSet_tmp.badmsTable",
+			     "badTD",Table::New);
+        Table tab(newtab);
     }
 
 
     // try creating bad MS
     Bool thrown=False;
     try {
-      MeasurementSet badms("tMeasurementSet_tmp.badmsTable");
+	MeasurementSet badms("tMeasurementSet_tmp.badmsTable");
     } catch (AipsError x) {
-      thrown = True;
+	thrown = True;
     } 
     if (!thrown) errCount++;
 
@@ -327,9 +324,9 @@ uInt tConstructors(const String& msName)
     // try creating bad MS
     thrown=False;
     try {
-      MeasurementSet badms("tMeasurementSet_tmp.badmsTable","");
+	MeasurementSet badms("tMeasurementSet_tmp.badmsTable","");
     } catch (AipsError x) {
-      thrown = True;
+	thrown = True;
     } 
     if (!thrown) errCount++;
 
@@ -341,10 +338,10 @@ uInt tConstructors(const String& msName)
     // try the same with a bad table
     thrown=False;
     try {
-      Table badtab("tMeasurementSet_tmp.badmsTab;e","");
-      MeasurementSet badms(badtab);
+	Table badtab("tMeasurementSet_tmp.badmsTab;e","");
+	MeasurementSet badms(badtab);
     } catch (AipsError x) {
-      thrown = True;
+	thrown = True;
     } 
     if (!thrown) errCount++;
 
@@ -359,121 +356,106 @@ uInt tConstructors(const String& msName)
     // can't test copy construct from bad MS, because we can't make one..
 
     {
-      // Test MSAntenna constructors, as test of all MSTable derived classes
-      // Test default constructor
-      MSAntenna msant1;
+	// Test MSAntenna constructors, as test of all MSTable derived classes
+	// Test default constructor
+	MSAntenna msant1;
       
-      // make two tableDescs
-      {
-	TableDesc td1(MSAntenna::requiredTableDesc(),"antTD","",TableDesc::New);
-	TableDesc td2(MSFeed::requiredTableDesc(),"badAntTD","",TableDesc::New);
-      }
-      // construct from name and tabledesc
-      SetupNewTable newtab1("tMeasurementSet_tmp.msant2","antTD",Table::New);
-      {
-	MSAntenna msant(newtab1);
-      }
-      MSAntenna msant2("tMeasurementSet_tmp.msant2","antTD",Table::Old);
-      
-      // try an invalid tableDesc
-      Bool thrown=False;
-      try {
-	MSAntenna msant2b("tMeasurementSet_tmp.msant2","badAntTD",Table::Old);
-	msant2b.markForDelete();
-      } catch (AipsError x) {
-	thrown = True;
-      } 
-      // No exception is thrown here, even though the td name is wrong..
-      //if (!thrown) errCount++;
-      
-      // construct from SetupNewTable
-      SetupNewTable newtab2("tMeasurementSet_tmp.msant3",
-			    MSAntenna::requiredTableDesc(),Table::New);
-      MSAntenna msant3(newtab2,5);
-      msant3.markForDelete();
-      
-      // try invalid newtab
-      thrown = False;
-      try {
-	SetupNewTable newtab("tMeasurementSet_tmp.msant3b",
-			     MSFeed::requiredTableDesc(),Table::New);
-	MSAntenna msant3b(newtab,5);
-      } catch (AipsError x) {
-	thrown = True;
-      } 
-      if (!thrown) errCount++;
-
-      // cleanup the mess
-      {
-	SetupNewTable newtab("tMeasurementSet_tmp.msant3b",
-			     MSFeed::requiredTableDesc(),Table::New);
-	Table tab(newtab);
-	tab.markForDelete();
-      }
-      
-      // construct from Table
-      SetupNewTable newtab3("tMeasurementSet_tmp.msantTable",
-			    "antTD",Table::New);
-      Table tab(newtab3);
-      tab.markForDelete();
-      MSAntenna msant4(tab);
-      
-      // try invalid table
-      thrown = False;
-      try {
-	SetupNewTable newtab4("tMeasurementSet_tmp.badmsantTable",
-			      "badAntTD",Table::New);
-	Table tab(newtab4);
-	tab.markForDelete();
-	MSAntenna msant4b(tab);
-      } catch (AipsError x) {
-	thrown = True;
-      } 
-      if (!thrown) errCount++;
-      
-      // construct from existing table
-      MSAntenna msant5("tMeasurementSet_tmp.msantTable",Table::Old);
-
-      // try invalid table
-      thrown = False;
-      try {
+	// make two tableDescs
 	{
-	  Table tab("tMeasurementSet_tmp.badmsantTable","badAntTD",Table::New);
+	    TableDesc td1(MSAntenna::requiredTableDesc(),"antTD","",TableDesc::New);
+	    TableDesc td2(MSFeed::requiredTableDesc(),"badAntTD","",TableDesc::New);
 	}
-	MSAntenna msant5b("tMeasurementSet_tmp.badmsantTable");
-      } catch (AipsError x) {
-	thrown = True;
-      } 
-      if (!thrown) errCount++;
+	// construct from name and tabledesc
+	SetupNewTable newtab1("tMeasurementSet_tmp.msant2","antTD",Table::New);
+	{
+	    MSAntenna msant(newtab1);
+	}
+	MSAntenna msant2("tMeasurementSet_tmp.msant2","antTD",Table::Old);
+      
+	// try an invalid tableDesc
+	Bool thrown=False;
+	try {
+	    MSAntenna msant2b("tMeasurementSet_tmp.msant2","badAntTD",Table::Old);
+	    msant2b.markForDelete();
+	} catch (AipsError x) {
+	    thrown = True;
+	} 
+	// No exception is thrown here, even though the td name is wrong..
+	//if (!thrown) errCount++;
+      
+	// construct from SetupNewTable
+	SetupNewTable newtab2("tMeasurementSet_tmp.msant3",
+			      MSAntenna::requiredTableDesc(),Table::New);
+	MSAntenna msant3(newtab2,5);
+	msant3.markForDelete();
+      
+	// try invalid newtab
+	thrown = False;
+	try {
+	    SetupNewTable newtab("tMeasurementSet_tmp.msant3b",
+				 MSFeed::requiredTableDesc(),Table::New);
+	    MSAntenna msant3b(newtab,5);
+	} catch (AipsError x) {
+	    thrown = True;
+	} 
+	if (!thrown) errCount++;
 
-      // Copy construct
-      MSAntenna msant6(msant4);
+	// cleanup the mess
+	{
+	    SetupNewTable newtab("tMeasurementSet_tmp.msant3b",
+				 MSFeed::requiredTableDesc(),Table::New);
+	    Table tab(newtab);
+	    tab.markForDelete();
+	}
       
-      // try copy construct from invalid 
-      try {
-	MSFeed msfeed("msfeed", Table::New);
-	msfeed.markForDelete();
-	MSAntenna msant6b(msfeed);
-      } catch (AipsError x) {
-	thrown = True;
-      } 
-      if (!thrown) errCount++;
+	// construct from Table
+	SetupNewTable newtab3("tMeasurementSet_tmp.msantTable",
+			      "antTD",Table::New);
+	Table tab(newtab3);
+	tab.markForDelete();
+	MSAntenna msant4(tab);
       
+	// try invalid table
+	thrown = False;
+	try {
+	    SetupNewTable newtab4("tMeasurementSet_tmp.badmsantTable",
+				  "badAntTD",Table::New);
+	    Table tab(newtab4);
+	    tab.markForDelete();
+	    MSAntenna msant4b(tab);
+	} catch (AipsError x) {
+	    thrown = True;
+	} 
+	if (!thrown) errCount++;
       
-      // make table invalid before destruction
-      thrown=False;
-      try {
-	SetupNewTable newtab("tMeasurementSet_tmp.msAnt","antTD",Table::New);
-	MSAntenna msant(newtab);
-	msant.markForDelete();
-	msant.renameColumn("myPos",MSAntenna::columnName(MSAntenna::POSITION));
-      } catch (AipsError x) {
-	thrown = True;
-      } 
-      // This throws the wrong exception: "Table: cannot rename a column"
-      // There seems to be no way to make the table invalid, as both
-      // removeColumn and renameColumn throw an exception.
-      if (!thrown) errCount++;
+	// construct from existing table
+	MSAntenna msant5("tMeasurementSet_tmp.msantTable",Table::Old);
+
+	// try invalid table
+	thrown = False;
+	try {
+	    {
+		Table tab("tMeasurementSet_tmp.badmsantTable","badAntTD",Table::New);
+	    }
+	    MSAntenna msant5b("tMeasurementSet_tmp.badmsantTable");
+	} catch (AipsError x) {
+	    thrown = True;
+	} 
+	if (!thrown) errCount++;
+
+	// Copy construct
+	MSAntenna msant6(msant4);
+      
+	// try copy construct from invalid 
+	try {
+	    MSFeed msfeed("msfeed", Table::New);
+	    msfeed.markForDelete();
+	    MSAntenna msant6b(msfeed);
+	} catch (AipsError x) {
+	    thrown = True;
+	} 
+	if (!thrown) errCount++;
+      
     }
 
     //cleanup
@@ -610,7 +592,7 @@ int main() {
     checkErrors(newErrors);
     errCount += newErrors;
 
-    cout << "\nTest other constructors ... ";
+    cout << "\nTest other constructors ... "; 
     newErrors = tConstructors(msName);
     checkErrors(newErrors);
     errCount += newErrors;

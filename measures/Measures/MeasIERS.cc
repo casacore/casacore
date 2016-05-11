@@ -43,7 +43,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifndef CASADATA
-#define CASADATA "/usr/local"
+#define CASADATA "/usr/local/share/data/casacore"
 #endif
 
 //# Constants
@@ -66,9 +66,9 @@ Mutex MeasIERS::theirMutex;
 
 //# Member functions
 Bool MeasIERS::get(Double &returnValue,
-		   MeasIERS::Files file, 
-		   MeasIERS::Types type, 
-		   Double date) {
+                   MeasIERS::Files file,
+                   MeasIERS::Types type,
+                   Double date) {
   returnValue = 0.0;
   if (needInit) {
     ScopedMutexLock locker(theirMutex);
@@ -114,7 +114,7 @@ Bool MeasIERS::get(Double &returnValue,
         } else {
           os << LogIO::NORMAL
              << "Requested JD " << date
-             << " is outside the range of the IERS (Earth axis data) table." 	 
+             << " is outside the range of the IERS (Earth axis data) table."
              << "\nCalculations will proceed with less precision"
              << LogIO::POST;
         }
@@ -123,15 +123,31 @@ Bool MeasIERS::get(Double &returnValue,
       return False;
     }
   }
+
   // Interpolation fraction
   Int indx = Int(date - ldat[which][0][0]);
+
+  // old version in use up to Jan 2016
+  // if (indx >= 0  &&  indx < Int(ldat[which][0].size())-1) {
+  //   Double f = date - ldat[which][0][indx];
+  //   returnValue = ldat[which][type][indx+1]*f - ldat[which][type][indx]*(f-1.0);
+  //   return True;
+  // }
+
   if (indx >= 0  &&  indx < Int(ldat[which][0].size())-1) {
-    Double f = date - ldat[which][0][indx];
-    returnValue = ldat[which][type][indx+1]*f - ldat[which][type][indx]*(f-1.0);
+    Double f = date - ldat[which][0][indx]; // Fraction
+    Double vlo = ldat[which][type][indx]; // Get daily values
+    Double vhi = ldat[which][type][indx+1];
+    if (abs(vhi-vlo) > 0.5) { // Jump
+      vhi -= sign(vhi-vlo); // Remove jump
+    }
+    returnValue = vhi*f - vlo*(f-1.0);
     return True;
   }
+
   return False;
 }
+
 
 void MeasIERS::initMeas() {
   static const String names[MeasIERS::N_Types] = {
@@ -240,12 +256,12 @@ void MeasIERS::closeTables() {
 
 // Table handling
 Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
-			RORecordFieldPtr<Double> rfp[],
-			String &vs, Double &dt,
-			Int N, const String rfn[],
-			const String &name,
-			const String &rc, const String &dir,
-			const Table *tabin) {
+                        RORecordFieldPtr<Double> rfp[],
+                        String &vs, Double &dt,
+                        Int N, const String rfn[],
+                        const String &name,
+                        const String &rc, const String &dir,
+                        const Table *tabin) {
   Table tab;
   Bool ok = findTab(tab, tabin, rc, dir, name);
 
@@ -253,12 +269,12 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
     return false;            // findTab logs its own errors.
   
   LogIO os(LogOrigin("MeasIERS",
-		     String("getTable(Table &, TableRecord &, "
-			    "ROTableRow &, RORecordFieldPtr<Double> *, "
-			    "String &vs, Double &dt, "
-			    "Int N, const String *, const String &, "
-			    "const String &, const String &)"),
-		     WHERE));
+                     String("getTable(Table &, TableRecord &, "
+                            "ROTableRow &, RORecordFieldPtr<Double> *, "
+                            "String &vs, Double &dt, "
+                            "Int N, const String *, const String &, "
+                            "const String &, const String &)"),
+                     WHERE));
 
   TableRecord ks(tab.keywordSet());
 
@@ -269,10 +285,10 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
     // Check that the table is not missing any expected columns.
     for (Int i=0; i < N; i++) {
       if (!rw.record().isDefined(rfn[i])) {
-	os << LogIO::SEVERE
-	   << "Column " << rfn[i] << " is missing."
-	   << LogIO::POST;
-	ok = False;// break;
+        os << LogIO::SEVERE
+           << "Column " << rfn[i] << " is missing."
+           << LogIO::POST;
+        ok = False;// break;
       }
     }
   }
@@ -291,13 +307,13 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
 }
 
 Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
-			Vector<RORecordFieldPtr<Double> >& rfp,
-			String &vs, Double &dt,
-			const Vector<String>& reqcols,
-			Vector<String>& optcols,
-			const String &name,
-			const String &rc, const String &dir,
-			const Table *tabin)
+                        Vector<RORecordFieldPtr<Double> >& rfp,
+                        String &vs, Double &dt,
+                        const Vector<String>& reqcols,
+                        Vector<String>& optcols,
+                        const String &name,
+                        const String &rc, const String &dir,
+                        const Table *tabin)
 {
   Table tab;
   Bool ok = findTab(tab, tabin, rc, dir, name);
@@ -306,7 +322,7 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
     return false;            // findTab logs its own errors.
   
   LogIO os(LogOrigin("MeasIERS", "getTable(Vector<String>& optcols)",
-		     WHERE));
+                     WHERE));
 
   TableRecord ks(tab.keywordSet());
 
@@ -317,10 +333,10 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
     // Check that the table is not missing any required columns.
     for(Int i = reqcols.nelements(); i--;){
       if(!rw.record().isDefined(reqcols[i])){
-	os << LogIO::SEVERE
-	   << "Required column " << reqcols[i] << " is missing."
-	   << LogIO::POST;
-	ok = False;// break;
+        os << LogIO::SEVERE
+           << "Required column " << reqcols[i] << " is missing."
+           << LogIO::POST;
+        ok = False;// break;
       }
     }
   }
@@ -359,112 +375,75 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
 
 // Helper function for getTable().
 Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
-		       const String &dir, const String &name)
+                       const String &dir, const String &name)
 {
   Bool ok = true;
   LogIO os(LogOrigin("MeasIERS", "findTab", WHERE));
   
-  if(!tabin){				// No table object given: search name
+  if(!tabin){                                // No table object given: search name
     String ldir;
     Vector<String> searched;
 
-    if(name[0] == '/'){			// Absolute path given.
+    if(name[0] == '/'){                        // Absolute path given.
       ldir = "";
     }
     else{
       const String path[2] = {
-	"/ephemerides/",
-	"/geodetic/"
+        "/ephemerides/",
+        "/geodetic/"
       };
 
       if (Aipsrc::find(ldir, rc)){
-	ldir += '/';
-	searched.resize(searched.nelements() + 1, True);
-	searched[searched.nelements() - 1] = ldir;
+        ldir += '/';
+        searched.resize(searched.nelements() + 1, True);
+        searched[searched.nelements() - 1] = ldir;
       }
       else{
-	String udir;
+        String udir;
 
-	if(!dir.empty())
-	  udir = dir + '/';
-	ldir = "./";
-	searched.resize(searched.nelements()+1, True);
-	searched[searched.nelements()-1] = ldir;
-	if (!Table::isReadable(ldir + name)) {
-	  ldir = "./data/";
-	  searched.resize(searched.nelements() + 1, True);
-	  searched[searched.nelements()-1] = ldir;
-	  if (!Table::isReadable(ldir + name)) {
-	    Bool found = False;
-	    String mdir;
-	    if (Aipsrc::find(mdir, "measures.directory")) {
-              mdir.trim();
-              Path mpath = Path(mdir);
-              mpath.append(udir);
-              ldir = mpath.absoluteName()+"/";
-              searched.resize(searched.nelements()+1, True);
-              searched[searched.nelements()-1] = ldir;
-              if  (Table::isReadable(ldir+name)) {
-                found = True;
-              }
-              if (!found) {
-                for (Int i=0; i<2; i++) {
-                  Path mpath = Path(mdir +"/" + path[i]);
-                  ldir = mpath.absoluteName()+"/";
-                  searched.resize(searched.nelements()+1, True);
-                  searched[searched.nelements()-1] = ldir;
-                  if  (Table::isReadable(ldir+name)) {
-                    found = True;
-                    break;
-                  }
-                }
-              }
-	    }
-	    if (!found) {
-	      for (Int i=0; i<2; i++) {
-		ldir = Aipsrc::aipsHome() + "/data/" + path[i];
-		searched.resize(searched.nelements()+1, True);
-		searched[searched.nelements()-1] = ldir;
-		if (Table::isReadable(ldir + name)) {
-		  found = True;
-		  break;
-		}
-		ldir = Aipsrc::aipsRoot() + "/data/" + path[i];
-		searched.resize(searched.nelements()+1, True);
-		searched[searched.nelements()-1] = ldir;
-		if (Table::isReadable(ldir + name)) {
-		  found = True;
-		  break;
-		}
-		Path cdatapath(String(CASADATA));
-		ldir = cdatapath.absoluteName() + path[i];
-		searched.resize(searched.nelements() + 1, True);
-		searched[searched.nelements() - 1] = ldir;
-		if (Table::isReadable(ldir + name)) {
-		  found = True;
-		  break;
-		}
-		ldir = cdatapath.absoluteName() + "/share/casacore/data/" \
-		  + path[i];
-		ldir = cdatapath.absoluteName() + path[i];
-		searched.resize(searched.nelements() + 1, True);
-		searched[searched.nelements() - 1] = ldir;
-		if (Table::isReadable(ldir + name)) {
-		  found = True;
-		  break;
-		}              
-	      }
-	    }
-	  }
-	}
+        if(!dir.empty()) {
+          udir = dir + '/';
+        }
+        Bool found = False;
+        String mdir;
+        if (Aipsrc::find(mdir, "measures.directory")) {
+          mdir.trim();
+          Path mpath = Path(mdir);
+          mpath.append(udir);
+          for (Int i=0; i<2; i++) {
+            Path mpath = Path(mdir +"/" + path[i]);
+            ldir = mpath.absoluteName()+"/";
+            searched.resize(searched.nelements()+1, True);
+            searched[searched.nelements()-1] = ldir;
+            if  (Table::isReadable(ldir+name)) {
+              found = True;
+              break;
+            }
+          }
+        }
+        if (!found) {
+          String casadata=String(CASADATA);
+          casadata.gsub("%CASAROOT%", Aipsrc::aipsRoot());
+          casadata.gsub("%CASAHOME%", Aipsrc::aipsHome());
+          Path cdatapath(casadata);
+          for (Int i=0; i<2; i++) {
+            ldir = cdatapath.absoluteName() + path[i];
+            searched.resize(searched.nelements() + 1, True);
+            searched[searched.nelements() - 1] = ldir;
+            if (Table::isReadable(ldir + name)) {
+              found = True;
+              break;
+            }
+          }
+        }
       }
     }
     if(!Table::isReadable(ldir + name)){
       os << LogIO::WARN <<
-	String("Requested data table ") << name <<
-	String(" cannot be found in the searched directories:\n");
+        String("Requested data table ") << name <<
+        String(" cannot be found in the searched directories:\n");
       for(uInt i = 0; i < searched.nelements(); ++i)
-	os << searched[i] << "\n";
+        os << searched[i] << "\n";
       os << LogIO::POST;
       return False;
     }
@@ -478,7 +457,7 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
 
 // Helper function for getTable().
 Bool MeasIERS::handle_keywords(Double &dt, String &vs, const TableRecord& ks,
-			       const Table& tab)
+                               const Table& tab)
 {
   LogIO os(LogOrigin("MeasIERS", "handle_keywords", WHERE));
   Bool ok = true;

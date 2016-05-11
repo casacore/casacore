@@ -474,6 +474,28 @@ int main()
     	  );
     	  AlwaysAssert(! dc.isNCP(), AipsError);
       }
+      {
+          cout << "*** test toWorld without converting to conversion layer frame" << endl;
+          Matrix<Double> xform(2, 2, 0);
+          xform.diagonal() = 1;
+          DirectionCoordinate dc(
+              MDirection::J2000, Projection::SIN, Quantity(0, "deg"), Quantity(0, "deg"),
+              Quantity(-1, "arcsec"), Quantity(1, "arcsec"), xform, 0, 0
+          );
+          dc.setReferenceConversion(MDirection::GALACTIC);
+          Vector<Double> pixel(2, 60);
+          Vector<Double> world(2);
+          // default uses True
+          dc.toWorld(world, pixel);
+          AlwaysAssert(near(world[0], 1.6811, 1e-5), AipsError);
+          AlwaysAssert(near(world[1], -1.05011, 1e-5), AipsError);
+          dc.toWorld(world, pixel, True);
+          AlwaysAssert(near(world[0], 1.6811, 1e-5), AipsError);
+          AlwaysAssert(near(world[1], -1.05011, 1e-5), AipsError);
+          dc.toWorld(world, pixel, False);
+          AlwaysAssert(near(world[0], 6.28289, 1e-5), AipsError);
+          AlwaysAssert(near(world[1], 2.90888e-4, 1e-5), AipsError);
+      }
 
   } catch (const AipsError& x) {
       cerr << "aipserror: error " << x.getMesg() << endl;

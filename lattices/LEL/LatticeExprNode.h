@@ -799,6 +799,12 @@ private:
 					const LatticeExprNode& left,
 					const LatticeExprNode& right);
 
+// Create a new node for a logical binary operator.
+// The result has the same data type as the combined input type.
+   static LatticeExprNode newLogBinary (LELBinaryEnums::Operation oper,
+					const LatticeExprNode& left,
+					const LatticeExprNode& right);
+
 // Create a new node for a comparison binary operator.
 // The result has the same data type as the combined input type.
    static LatticeExprNode newBinaryCmp (LELBinaryEnums::Operation oper,

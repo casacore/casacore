@@ -36,6 +36,7 @@
 #include <casacore/tables/DataMan/StManAipsIO.h>
 #include <casacore/tables/DataMan/ForwardCol.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -102,16 +103,14 @@ MSState::MSState(const MSState &other)
 MSState::~MSState()
 {
 // check to make sure that this MSState is still valid
-    if (!hasBeenDestroyed_p &&  !validate()) {
-	hasBeenDestroyed_p = True;
+    if (!hasBeenDestroyed_p  &&  !validate()) {
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
-	// now we can thrown an exception
-	throw (AipsError("~MSState() - "
-			 "Table written is not a valid MSState"));
+        LogIO os;
+        os << LogIO::WARN
+           << "~MSState() - Table written is not a valid MSState"
+           << LogIO::POST;
     }
-    // if we get to here, let nature take its course
-    // this should not be necessary, but do it for insurance anyway
     hasBeenDestroyed_p = True;
 }
 

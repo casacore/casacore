@@ -40,7 +40,7 @@ WHATEVER_VECTOR_FORWARD_DEC;
 #include <casacore/casa/stdvector.h>
 #endif
 
-namespace casacore { //#Begin namespace casa
+namespace casacore { //#Begin namespace casacore
 
 // <summary> A 1-D Specialization of the Array class </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
@@ -98,7 +98,9 @@ public:
     // A Vector with a defined length and origin of zero.
     // <group>
     explicit Vector(size_t Length);
+    Vector(size_t Length, ArrayInitPolicy initPolicy);
     explicit Vector(const IPosition& Length);
+    Vector(const IPosition& Length, ArrayInitPolicy initPolicy);
     // </group>
 
     // A Vector with a defined length and origin of zero.
@@ -125,6 +127,8 @@ public:
 
     // Create an Vector of a given shape from a pointer.
     Vector(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
+    // Create an Vector of a given shape from a pointer.
+    Vector(const IPosition &shape, T *storage, StorageInitPolicy policy, AbstractAllocator<T> const &allocator);
     // Create an Vector of a given shape from a pointer. Because the pointer
     // is const, a copy is always made.
     Vector(const IPosition &shape, const T *storage);
@@ -163,10 +167,13 @@ public:
     //# be hidden).
     // Resize without argument is equal to resize(0, False).
     // <group>
+    using Array<T>::resize;
     void resize(size_t len, Bool copyValues=False)
-      { if (len != this->nelements()) resize (IPosition(1,len), copyValues); }
-    virtual void resize(const IPosition &len, Bool copyValues=False);
+      { Vector<T>::resize(len, copyValues, Array<T>::defaultArrayInitPolicy()); }
+    void resize(size_t len, Bool copyValues, ArrayInitPolicy policy)
+      { if (len != this->nelements()) resize (IPosition(1,len), copyValues, policy); }
     virtual void resize();
+    virtual void resize(const IPosition &len, Bool copyValues, ArrayInitPolicy policy);
     // </group>
 
     // Assign to this Vector. If this Vector is zero-length, then resize
@@ -292,21 +299,11 @@ public:
     void shape(Int &Shape) const
       { Shape = this->length_p(0); }
 
-    // Replace the data values with those in the pointer <src>storage</src>.
-    // The results are undefined is storage does not point at nelements() or
-    // more data elements. After takeStorage() is called, <src>unique()</src>
-    // is True.
-    // <group>
-    virtual void takeStorage(const IPosition &shape, T *storage,
-			     StorageInitPolicy policy = COPY);
-    // Since the pointer is const, a copy is always taken.
-    virtual void takeStorage(const IPosition &shape, const T *storage);
-    // </group>
-
     // Verify that dimensionality is 1 and then call Array<T>::ok()
     virtual Bool ok() const;
 
 protected:
+    virtual void preTakeStorage(const IPosition &shape);
     // Remove the degenerate axes from other and store result in this vector.
     // An exception is thrown if removing degenerate axes does not result
     // in a vector.
@@ -318,7 +315,25 @@ private:
     void initVector(const Block<T> &, Int64 nr);      // copy semantics
 };
 
+
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class Vector<Bool>;
+  extern template class Vector<Char>;
+  extern template class Vector<Short>;
+  extern template class Vector<uShort>;
+  extern template class Vector<Int>;
+  extern template class Vector<uInt>;
+  extern template class Vector<Int64>;
+  extern template class Vector<Float>;
+  extern template class Vector<Double>;
+  extern template class Vector<Complex>;
+  extern template class Vector<DComplex>;
+  extern template class Vector<String>;
+#endif
+
 } //#End namespace casacore
+
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/Vector.tcc>

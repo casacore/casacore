@@ -1473,7 +1473,7 @@ int uvvarupd_c(int vhan)
   return(FORT_FALSE);
 }
 /************************************************************************/
-void uvrdvr_c(int tno,int type,Const char *var,char *data,char *def,int n)
+void uvrdvr_c(int tno,int type,Const char *var,char *data,const char *def,int n)
 /**uvrdvr -- Return the value of a UV variable.				*/
 /*&rjs                                                                  */
 /*:uv-i/o								*/

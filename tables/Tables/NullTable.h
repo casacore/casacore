@@ -92,6 +92,7 @@ public:
   virtual Bool isWritable() const;
   virtual void deepCopy (const String& newName,
 			 const Record& dataManagerInfo,
+                         const StorageOption&,
 			 int tableOption,
 			 Bool valueCopy,
 			 int endianFormat,

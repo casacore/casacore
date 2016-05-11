@@ -337,6 +337,9 @@ public:
     // Does the data manager allow to delete columns? (default no)
     virtual Bool canRemoveColumn() const;
 
+    // Does the data manager allow to rename columns? (default yes)
+    virtual Bool canRenameColumn() const;
+
     // Set the maximum cache size (in bytes) to be used by a storage manager.
     // The default implementation does nothing.
     virtual void setMaximumCacheSize (uInt nbytes);

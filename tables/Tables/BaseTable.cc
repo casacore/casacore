@@ -402,14 +402,15 @@ void BaseTable::renameSubTables (const String&, const String&)
 {}
 
 void BaseTable::deepCopy (const String& newName,
-			  const Record& dataManagerInfo,
+                          const Record& dataManagerInfo,
+                          const StorageOption& stopt,
 			  int tableOption,
 			  Bool valueCopy,
 			  int endianFormat,
 			  Bool noRows) const
 {
     if (valueCopy  ||  dataManagerInfo.nfields() > 0  ||  noRows) {
-        trueDeepCopy (newName, dataManagerInfo, tableOption,
+      trueDeepCopy (newName, dataManagerInfo, stopt, tableOption,
 		      endianFormat, noRows);
     } else {
         copy (newName, tableOption);
@@ -418,6 +419,7 @@ void BaseTable::deepCopy (const String& newName,
 
 void BaseTable::trueDeepCopy (const String& newName,
 			      const Record& dataManagerInfo,
+                              const StorageOption& stopt,
 			      int tableOption,
 			      int endianFormat,
 			      Bool noRows) const
@@ -440,7 +442,8 @@ void BaseTable::trueDeepCopy (const String& newName,
     Table oldtab(ncThis);
     Table newtab = TableCopy::makeEmptyTable
                         (absNewName, dataManagerInfo, oldtab, Table::New,
-			 Table::EndianFormat(endianFormat), True, noRows);
+			 Table::EndianFormat(endianFormat), True, noRows,
+                         stopt);
     if (!noRows) {
       TableCopy::copyRows (newtab, oldtab);
     }
@@ -1014,7 +1017,9 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
     os << " (" << info_p.subType() << ')';
   }
   os << endl;
-  os << nrow() << " rows, " << tdesc.ncolumn() << " columns (using "
+  os << nrow() << " rows, " << tdesc.ncolumn() << " columns in ";
+  os << (asBigEndian() ? "big" : "little") << " endian format";
+  os << " (using "
      << dminfo.nfields() << " data managers)" <<endl;
   const StorageOption& stopt = storageOption();
   if (stopt.option() == StorageOption::MultiFile) {
@@ -1153,8 +1158,18 @@ void BaseTable::showColumnInfo (ostream& os, const TableDesc& tdesc,
     }
     if (keywords.isDefined("MEASINFO")) {
       const TableRecord& meas = keywords.subRecord("MEASINFO");
-      os << " measure=" << meas.asString("type") << ','
-         << meas.asString("Ref");
+      os << " measure=";
+      if (meas.isDefined("type")) {
+	os << meas.asString("type");
+      }	else {
+	os << "unknown";
+      }
+      if (meas.isDefined("Ref")) {
+        os << ',' << meas.asString("Ref");
+      }
+      if (meas.isDefined("VarRefCol")) {
+        os << " refcol=" << meas.asString("VarRefCol");
+      }
     }
     if (cdesc.options() & ColumnDesc::Direct) {
       os << " directly stored";

@@ -271,8 +271,7 @@ Bool ColumnSet::canRenameColumn (const String& columnName) const
     if (! tdescPtr_p->isColumn (columnName)) {
 	return False;
     }
-    return True;
-    ////    return getColumn(columnName)->dataManager()->canRenameColumn();
+    return getColumn(columnName)->dataManager()->canRenameColumn();
 }
 
 

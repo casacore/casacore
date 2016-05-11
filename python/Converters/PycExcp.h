@@ -32,10 +32,11 @@
 
 namespace casacore { namespace python {
 
+  // Convert an IterError exception to a Python StopIteration.
+  // In this way an iteration loop can be done.
   void translate_iterexcp (const casacore::IterError& e);
-  void translate_stdexcp (const std::exception& e);
 
-  // Register exception translators for std::exception and casacore::IterError.
+  // Register exception translators for casacore::IterError.
   void register_convert_excp();
 
 }}

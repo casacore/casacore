@@ -1,0 +1,48 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the TableGram and TableParse class.  All files generated will
+# be deleted on exit.
+#=============================================================================
+
+# Create a symlink to achieve that casacore_memcheck (if used) will use
+# that name 
+rm -f tTableGramEpoch
+ln -s tTableGram tTableGramEpoch
+
+# Execute all kind of TaQL commands involving epochs.
+# Check the result using showtableinfo (leave out version line).
+
+# Create a table with an Epoch column.
+$casa_checktool ./tTableGramEpoch 'select 4mar53 giving tTableGramEpoch_tmp.tab'
+../../apps/taql -pc 'select * from tTableGramEpoch_tmp.tab'
+../../apps/showtableinfo in=tTableGramEpoch_tmp.tab colkey=1 | grep -v 'showtableinfo:'
+
+# Same with unit seconds.
+$casa_checktool ./tTableGramEpoch 'select 4mar53 s giving tTableGramEpoch_tmp.tab'
+../../apps/taql -pc 'select * from tTableGramEpoch_tmp.tab'
+../../apps/showtableinfo in=tTableGramEpoch_tmp.tab colkey=1 | grep -v 'showtableinfo:'
+
+# Insert another row.
+$casa_checktool ./tTableGramEpoch 'insert into tTableGramEpoch_tmp.tab values (04-03-1963)'
+./tTableGram 'select * from tTableGramEpoch_tmp.tab'
+../../apps/taql -pc 'select * from tTableGramEpoch_tmp.tab'
+
+# Update a row.
+$casa_checktool ./tTableGramEpoch 'update tTableGramEpoch_tmp.tab set Col_1=1958-05-11 where Col_1=4-mar-1963'
+./tTableGram 'select * from tTableGramEpoch_tmp.tab'
+../../apps/taql -pc 'select * from tTableGramEpoch_tmp.tab'
+
+# Create using SELECT with a given data type.
+$casa_checktool ./tTableGramEpoch 'select 34447 as TIME TIME giving tTableGramEpoch_tmp.tab'
+../../apps/taql -pc 'select * from tTableGramEpoch_tmp.tab'
+../../apps/showtableinfo in=tTableGramEpoch_tmp.tab colkey=1 | grep -v 'showtableinfo:'
+
+# Create using CREATE TABLE
+$casa_checktool ./tTableGramEpoch 'create table tTableGramEpoch_tmp.tab TIME TIME'
+../../apps/showtableinfo in=tTableGramEpoch_tmp.tab colkey=1 | grep -v 'showtableinfo:'
+$casa_checktool ./tTableGramEpoch 'create table tTableGramEpoch_tmp.tab TIME EPOCH [UNIT="s"]'
+../../apps/showtableinfo in=tTableGramEpoch_tmp.tab colkey=1 | grep -v 'showtableinfo:'
+
+
+# Remove the symlink
+rm -f tTableGramEpoch

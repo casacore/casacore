@@ -53,23 +53,22 @@ namespace casacore {
       // Position is given by observatory name.
       handleObservatory (args[argnr]);
     } else {
-      if (args[argnr]->dataType() != TableExprNodeRep::NTDouble) {
-        throw AipsError ("Invalid or integer position given in a MEAS function");
+      if (!args[argnr]->isReal()) {
+        throw AipsError ("Invalid position given in a MEAS function");
       }
     // Normally positions must be given in an array, but a single one
     // can be 2 or 3 scalars.
       if (args.size() > nargnr  &&
-          args[argnr]->dataType() == TableExprNodeRep::NTDouble  &&
+          args[argnr]->isReal()  &&
           args[argnr]->valueType() == TableExprNodeRep::VTScalar  &&
-          args[nargnr]->dataType() == TableExprNodeRep::NTDouble  &&
+          args[nargnr]->isReal()  &&
           args[nargnr]->valueType() == TableExprNodeRep::VTScalar) {
         asScalar = True;
         nargnr++;
       }
       // See if there is a node giving height(s).
       TableExprNodeRep* heightNode=0;
-      if (args.size() > nargnr  &&
-          args[nargnr]->dataType() == TableExprNodeRep::NTDouble) {
+      if (args.size() > nargnr  &&  args[nargnr]->isReal()) {
         heightNode = args[nargnr];
         nargnr++;
       }
@@ -205,7 +204,7 @@ namespace casacore {
         (heightNode  &&
          ! (heightNode->isConstant()  &&
             heightNode->valueType() == TableExprNodeRep::VTScalar))) {
-      throw AipsError ("Scalar values given as position a MEAS function "
+      throw AipsError ("Scalar values given as position in a MEAS function "
                        "must be constant values");
     }
     makeDefaults (e1->unit());
@@ -248,7 +247,7 @@ namespace casacore {
       throw AipsError ("An observatory name used as position in a MEAS function"
                        " must be a constant string");
     }
-    Array<String> names = operand->getStringAS(0);
+    Array<String> names = operand->getStringAS(0).array();
     itsConstants.resize (names.shape());
     for (uInt i=0; i<names.size(); ++i) {
       if (! MeasTable::Observatory (itsConstants.data()[i], names.data()[i])) {
@@ -260,7 +259,7 @@ namespace casacore {
 
   void PositionEngine::handlePosArray (TableExprNodeRep*& operand)
   {
-    if (operand->dataType() != TableExprNodeRep::NTDouble  ||
+    if (!operand->isReal()  ||
         operand->valueType() != TableExprNodeRep::VTArray) {
       throw AipsError ("A single double argument given as position in a "
                        "MEAS function must be a double array of values "
@@ -342,10 +341,10 @@ namespace casacore {
   void PositionEngine::handlePosArray (TableExprNodeRep* anglesNode,
                                        TableExprNodeRep* heightNode)
   {
-    if (anglesNode->dataType() != TableExprNodeRep::NTDouble  ||
+    if (!anglesNode->isReal()  ||
         anglesNode->valueType() != TableExprNodeRep::VTArray  ||
         !anglesNode->isConstant()  ||
-        heightNode->dataType() != TableExprNodeRep::NTDouble  ||
+        !heightNode->isReal()  ||
         heightNode->valueType() != TableExprNodeRep::VTArray  ||
         !heightNode->isConstant()) {
       throw AipsError ("Positions given as angles,heights in a MEAS "
@@ -355,12 +354,12 @@ namespace casacore {
       throw AipsError ("Position reference type suffix in a MEAS function is "
                        "given as xyz, while heights are used");
     }
-    Array<Double> angles = anglesNode->getArrayDouble(0);
+    Array<Double> angles = anglesNode->getArrayDouble(0).array();
     if (angles.size() %2 != 0) {
       throw AipsError ("Angles given as position in a MEAS function must "
                        "be a constant double array of multiple of 2 values");
     }
-    Array<Double> height = heightNode->getArrayDouble(0);
+    Array<Double> height = heightNode->getArrayDouble(0).array();
     if (angles.size() != 2*height.size()) {
       throw AipsError ("Angles and heights given as position in a MEAS "
                        "function have mismatching sizes");
@@ -447,25 +446,11 @@ namespace casacore {
                                                 Int toValueType)
   {
     DebugAssert (id.byRow(), AipsError);
-    Array<MPosition> res;
-    if (! itsMeasCol.isNull()) {
-      res = itsMeasCol.convert (id.rownr(), toRefType);
-    } else {
-      res.resize (itsConstants.shape());
-      for (uInt i=0; i<res.size(); ++i) {
-        res.data()[i] = MPosition::Convert (itsConstants.data()[i],
-                                            toRefType)();
-      }
-    }
+    Array<MPosition> res (getPositions(id));
     Array<Double> out;
     if (res.size() > 0) {
       if (toValueType == 1) {
         out.resize (res.shape());
-        Array<MPosition>::const_contiter resIter = res.cbegin();
-        for (uInt i=0; i<res.size(); ++i, ++resIter) {
-          // Get as height.
-          out.data()[i] = resIter->getValue().getLength().getValue();
-        }
       } else {
         IPosition shape(1,3);
         if (toValueType == 2) {
@@ -475,16 +460,23 @@ namespace casacore {
           shape.append (res.shape());
         }
         out.resize (shape);
-        VectorIterator<Double> outIter(out);
-        for (Array<MPosition>::const_contiter resIter = res.cbegin();
-             !outIter.pastEnd(); outIter.next(), ++resIter) {
+      }
+      VectorIterator<Double> outIter(out);
+      Array<MPosition>::const_contiter resIter = res.cbegin();
+      for (uInt i=0; i<res.size(); ++i, ++resIter) {
+        MPosition pos = MPosition::Convert (*resIter, toRefType)();
+        if (toValueType == 1) {
+          // Get as height.
+          out.data()[i] = pos.getValue().getLength().getValue();
+        } else {
           if (toValueType == 3) {
             // Get as xyz.
-            outIter.vector() = resIter->getValue().getValue();
+            outIter.vector() = pos.getValue().getValue();
           } else {
             // Get as lon,lat.
-            outIter.vector() = resIter->getValue().getAngle().getValue();
+            outIter.vector() = pos.getValue().getAngle().getValue();
           }
+          outIter.next();
         }
       }
     }

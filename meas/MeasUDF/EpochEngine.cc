@@ -29,6 +29,7 @@
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/TaQL/ExprUnitNode.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
+#include <casacore/tables/TaQL/ExprDerNode.h>
 //#include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 
@@ -61,9 +62,9 @@ namespace casacore {
       args[argnr] = const_cast<TableExprNodeRep*>(dNode.getNodeRep())->link();
     }
     // Check if the value is a date or double.
-    if (args[argnr]->dataType() != TableExprNodeRep::NTDouble  &&
+    if (!args[argnr]->isReal()  &&
         args[argnr]->dataType() != TableExprNodeRep::NTDate) {
-      throw AipsError ("Invalid or integer epoch given in a MEAS function");
+      throw AipsError ("Invalid epoch given in a MEAS function");
     }
     // Values can be given as [t1,t2,...],reftype
     uInt nargnr = argnr+1;
@@ -101,7 +102,15 @@ namespace casacore {
       }
       return False;
     }
+    itsSidFrac = False;
     String str = operand->getString(0);
+    str.upcase();
+    if (str.size() >= 2  &&  str[0] == 'F'  &&
+        (str[1] == '-' || str[1] == '_')) {
+      str = str.substr(2);
+    } else if (str.size() >= 4  &&  str[2] == 'S'  &&  str[3] == 'T') {
+      itsSidFrac = True;
+    }
     MEpoch::Types refType;
     Bool fnd = MEpoch::getType (refType, str);
     if (fnd) {
@@ -115,12 +124,12 @@ namespace casacore {
 
   void EpochEngine::handleEpochArray (TableExprNodeRep* operand)
   {
-    if ((operand->dataType() != TableExprNodeRep::NTDouble  &&
+    if ((!operand->isReal()  &&
          operand->dataType() != TableExprNodeRep::NTDate)  ||
         (operand->valueType() != TableExprNodeRep::VTScalar  &&
          operand->valueType() != TableExprNodeRep::VTArray)) {
       throw AipsError ("An epoch given in a MEAS function "
-                       "must be a double, string, or datetime scalar or array");
+                       "must be a numeric, string, or datetime scalar or array");
     }
     if (operand->isConstant()) {
       handleConstant (operand);
@@ -128,27 +137,43 @@ namespace casacore {
     }
     // Try if the argument is a column.
     // If found, try to handle it as a TableMeasures column.
-    const TableExprNodeArrayColumn* colNode =
-      dynamic_cast<TableExprNodeArrayColumn*>(operand);
+    const TableColumn* tabCol = 0;
     Bool directCol = True;
-    if (!colNode) {
-      // The node is an expression, not a column.
-      directCol = False;
-      // Try if the node is an array part of a column.
-      TableExprNodeArrayPart* partNode =
-        dynamic_cast<TableExprNodeArrayPart*>(operand);
-      if (partNode) {
-        colNode = partNode->getColumnNode();
+    const TableExprNodeColumn* scaNode =
+      dynamic_cast<TableExprNodeColumn*>(operand);
+    if (scaNode) {
+      tabCol = &(scaNode->getColumn());
+    } else {
+      const TableExprNodeArrayColumn* colNode =
+        dynamic_cast<TableExprNodeArrayColumn*>(operand);
+      if (colNode) {
+        tabCol = &(colNode->getColumn());
+      } else {
+        // The node is an expression, not a column.
+        directCol = False;
+        // Try if the node is an array part of a column.
+        TableExprNodeArrayPart* partNode =
+          dynamic_cast<TableExprNodeArrayPart*>(operand);
+        if (partNode) {
+          colNode = partNode->getColumnNode();
+          tabCol  = &(colNode->getColumn());
+        }
       }
     }
-    if (colNode) {
+    if (tabCol) {
       // Try if the column contains measures.
-      const TableColumn& tabCol = colNode->getColumn();
-      itsShape = tabCol.shapeColumn();
-      itsNDim  = tabCol.ndimColumn();
-      if (TableMeasDescBase::hasMeasures (tabCol)) {
-        ArrayMeasColumn<MEpoch> measTmp(tabCol.table(),
-                                        tabCol.columnDesc().name());
+      if (scaNode) {
+        itsNDim = 0;
+      } else {
+        itsNDim  = tabCol->ndimColumn();
+        itsShape = tabCol->shapeColumn();
+      }
+      if (TableMeasDescBase::hasMeasures (*tabCol)) {
+        TableMeasColumn measTmp(tabCol->table(),
+                                tabCol->columnDesc().name());
+        // Check the measure is an MEpoch.
+        AlwaysAssert(measTmp.measDesc().type() == MEpoch::showMe(),
+                     AipsError);
         // Get and check the node's refType if it is fixed.
         MEpoch::Types nodeRefType = MEpoch::N_Types;
         if (! (measTmp.measDesc().isRefCodeVariable()  ||
@@ -160,20 +185,26 @@ namespace casacore {
                              String::toString(itsRefType) +
                              " mismatches type " +
                              String::toString(nodeRefType) + " of column " +
-                             tabCol.columnDesc().name());
+                             tabCol->columnDesc().name());
           }
           itsRefType = nodeRefType;
         }
         // A direct column can directly be accessed using TableMeasures.
         if (directCol) {
-          itsMeasCol.reference (measTmp);
+          if (scaNode) {
+            itsMeasScaCol.attach (tabCol->table(),
+                                  tabCol->columnDesc().name());
+          } else {
+            itsMeasArrCol.attach (tabCol->table(),
+                                  tabCol->columnDesc().name());
+          }
           return;
         }
         // It is a part, so we cannot use TableMeasures.
         // If the reference type is variable, the user should index the result
         // of the meas.epoch function.
         if (nodeRefType == MEpoch::N_Types) {
-            throw AipsError ("Column " + tabCol.columnDesc().name() +
+            throw AipsError ("Column " + tabCol->columnDesc().name() +
                              ", which has a variable reference frame, "
                              "is used in a MEAS function with slicing. "
                              "The slicing should be done after the function "
@@ -181,7 +212,7 @@ namespace casacore {
         }
       }
     }
-    if (itsMeasCol.isNull()) {
+    if (itsMeasScaCol.isNull()  &&  itsMeasArrCol.isNull()) {
       if (itsRefType == MEpoch::N_Types) {
         throw AipsError("No reference type given for a non-constant MEAS "
                         "function epoch argument");
@@ -203,11 +234,11 @@ namespace casacore {
     }
     // Get values (as doubles or dates).
     Array<Double> epochs;
-    if (operand->dataType() == TableExprNodeRep::NTDouble) {
-      epochs.reference (operand->getDoubleAS(0));
+    if (operand->isReal()) {
+      epochs.reference (operand->getDoubleAS(0).array());
     } else {
       unit = "s";
-      Array<MVTime> dates = operand->getDateAS(0);
+      Array<MVTime> dates = operand->getDateAS(0).array();
       epochs.resize (dates.shape());
       for (uInt i=0; i<dates.size(); ++i) {
         epochs.data()[i] = dates.data()[i].second();
@@ -240,10 +271,11 @@ namespace casacore {
     itsFrame.set (MPosition());
   }
 
-  void EpochEngine::setConverter (MEpoch::Types toType)
+  void EpochEngine::setConverter (MEpoch::Types toType, Bool sidFrac)
   {
     MEpoch::Ref ref(toType, itsFrame);
     itsConverter = MEpoch::Convert (toType, ref);
+    itsSidFrac   = sidFrac;
   }
 
   Array<MEpoch> EpochEngine::getEpochs (const TableExprId& id)
@@ -251,10 +283,12 @@ namespace casacore {
     if (itsConstants.size() > 0) {
       return itsConstants;
     }
-    if (!itsMeasCol.isNull()) {
-      return itsMeasCol(id.rownr());
+    if (!itsMeasScaCol.isNull()) {
+      return Vector<MEpoch>(1, itsMeasScaCol(id.rownr()));
+    } else if (!itsMeasArrCol.isNull()) {
+      return itsMeasArrCol(id.rownr());
     }
-    Array<Double> values = itsExprNode.getDoubleAS(id);
+    Array<Double> values = itsExprNode.getDoubleAS(id).array();
     Array<MEpoch> epochs(values.shape());
     Unit unit = itsExprNode.unit();
     if (unit.empty()) {
@@ -297,7 +331,12 @@ namespace casacore {
           }
           MEpoch ep = itsConverter();
           // Convert to seconds.
-          *outPtr++ = ep.getValue().get() * 24*3600;
+          // Possibly strip day from sidereal times.
+          if (itsSidFrac) {
+            *outPtr++ = fmod(ep.getValue().get(), 1.) * 24*3600;
+          } else {
+            *outPtr++ = ep.getValue().get() * 24*3600;
+          }
         }
       }
     }

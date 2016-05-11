@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Cube.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
@@ -422,6 +422,57 @@ void testMinMax1()
   AlwaysAssertExit (maxpos == IPosition(3,2,2,2));
 }
 
+void testExpand()
+{
+  // Test linear expansion.
+  Cube<Int> mat1(IPosition(3,2,3,1));
+  indgen(mat1);
+  Cube<Int> mat2(IPosition(3,8,6,2));
+  for (int i=0; i<2; ++i) {
+    for (int j=0; j<6; ++j) {
+      for (int k=0; k<8; ++k) {
+        mat2(k,j,i) = mat1(k/4, j/2, 0);
+      }
+    }
+  }
+  Array<Int> out(IPosition(3,8,6,2));
+  expandArray (out, mat1);
+  AlwaysAssertExit (allEQ (out, mat2));
+  // Test alternate expansion.
+  for (int i=0; i<2; ++i) {
+    for (int j=0; j<6; ++j) {
+      for (int k=0; k<8; ++k) {
+        mat2(k,j,i) = mat1(k%2, j%3, 0);
+      }
+    }
+  }
+  out=-1;
+  expandArray (out, mat1, IPosition(3,1));
+  AlwaysAssertExit (allEQ (out, mat2));
+  // Test mixed expansion.
+  for (int i=0; i<2; ++i) {
+    for (int j=0; j<6; ++j) {
+      for (int k=0; k<8; ++k) {
+        mat2(k,j,i) = mat1(k/4, j%3, 0);
+      }
+    }
+  }
+  out=-1;
+  expandArray (out, mat1, IPosition(3,0,1,1));
+  AlwaysAssertExit (allEQ (out, mat2));
+  // Test another mixed expansion.
+  for (int i=0; i<2; ++i) {
+    for (int j=0; j<6; ++j) {
+      for (int k=0; k<8; ++k) {
+        mat2(k,j,i) = mat1(k%2, j/2, 0);
+      }
+    }
+  }
+  out=-1;
+  expandArray (out, mat1, IPosition(3,1,0,0));
+  AlwaysAssertExit (allEQ (out, mat2));
+}
+
 // Instantiate the macro-ed functions.
 TestBinary(+, testPlusInt, Int, Int)
 TestBinary(-, testMinusInt, Int, Int)
@@ -563,6 +614,7 @@ int main()
     testMakeComplex<Float,Complex>();
     testMakeComplex<Double,DComplex>();
     testMinMax1();
+    testExpand();
   } catch (AipsError x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;

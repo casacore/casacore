@@ -65,6 +65,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // The default constructor generates the message "Table error".
     MSSelectionErrorHandler();
+    MSSelectionErrorHandler(const MSSelectionErrorHandler& that);
+    MSSelectionErrorHandler &operator=(const MSSelectionErrorHandler& that);
+
+    virtual MSSelectionErrorHandler* clone() {return new MSSelectionErrorHandler();};
     virtual ~MSSelectionErrorHandler ();
     
     virtual void reportError(const char *token,const String source=String(""));
@@ -93,6 +97,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
     MSSelectionLogError():MSSelectionErrorHandler() {}
+    virtual MSSelectionLogError* clone() {return new MSSelectionLogError();};
     virtual ~MSSelectionLogError() {}
     virtual void handleError(MSSelectionError& mssErrorType)
     {

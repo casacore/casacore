@@ -46,15 +46,44 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 const Double MVPosition::loLimit = 743.568;
 const Double MVPosition::hiLimit = 743.569;
 
+// simplistic vector(3) cache to reduce allocation overhead for temporaries
+#if defined(AIPS_CXX11) && !defined(__APPLE__)
+static thread_local size_t available = 0;
+static thread_local Vector<Double> * arrays[50];
+#endif
+
+Vector<Double> * get_array()
+{
+#if defined(AIPS_CXX11) && !defined(__APPLE__)
+  if (available > 0) {
+    return arrays[--available];
+  }
+#endif
+  return new Vector<Double>(3);
+}
+
+void return_array(Vector<Double> * array)
+{
+#if defined(AIPS_CXX11) && !defined(__APPLE__)
+  if (available < sizeof(arrays) / sizeof(arrays[0]) &&
+		  array->size() == 3 &&
+		  array->nrefs() == 1) {
+    arrays[available++] = array;
+    return;
+  }
+#endif
+  delete array;
+}
+
 //# Constructors
 MVPosition::MVPosition() :
-  xyz(3) {
+  xyz(*get_array()) {
     xyz = Double(0.0);
 }
 
 MVPosition::MVPosition(const MVPosition &other) : 
   MeasValue(),
-  xyz(3)
+  xyz(*get_array())
 {
   xyz = other.xyz;
 }
@@ -67,27 +96,27 @@ MVPosition &MVPosition::operator=(const MVPosition &other) {
 }
 
 MVPosition::MVPosition(Double in) :
-  xyz(3) {
+	xyz(*get_array()) {
     xyz = Double(0.0);
     xyz(2) = in;
   }
 
 MVPosition::MVPosition(const Quantity &l) :
-  xyz(3) {
+  xyz(*get_array()) {
     xyz = Double(0.0);
     l.assure(UnitVal::LENGTH);
     xyz(2) = l.getBaseValue();
   }
 
 MVPosition::MVPosition(Double in0, Double in1, Double in2) : 
-  xyz(3) {
+	xyz(*get_array()) {
     xyz(0) = in0;
     xyz(1) = in1;
     xyz(2) = in2;
   }
 
 MVPosition::MVPosition(const Quantity &l, Double angle0, Double angle1) : 
-  xyz(3) {
+  xyz(*get_array()) {
   Double loc = std::cos(angle1);
   xyz(0) = std::cos(angle0)*loc;
   xyz(1) = std::sin(angle0)*loc;
@@ -100,7 +129,7 @@ MVPosition::MVPosition(const Quantity &l, Double angle0, Double angle1) :
 
 MVPosition::MVPosition(const Quantity &l, const Quantity &angle0, 
 		       const Quantity &angle1) : 
-  xyz(3) {
+  xyz(*get_array()) {
   Double loc = (cos(angle1)).getValue();
   xyz(0) = ((cos(angle0)).getValue()) * loc;
   xyz(1) = ((sin(angle0)).getValue()) * loc;
@@ -113,7 +142,7 @@ MVPosition::MVPosition(const Quantity &l, const Quantity &angle0,
 }
 
 MVPosition::MVPosition(const Quantum<Vector<Double> > &angle) :
-  xyz(3) {
+  xyz(*get_array()) {
   uInt i; i = angle.getValue().nelements();
   if (i > 3 ) {
     throw (AipsError("Illegeal vector length in MVPosition constructor"));
@@ -139,7 +168,7 @@ MVPosition::MVPosition(const Quantum<Vector<Double> > &angle) :
 
 MVPosition::MVPosition(const Quantity &l, 
 		       const Quantum<Vector<Double> > &angle) :
-  xyz(3) {
+	xyz(*get_array()) {
     uInt i; i = angle.getValue().nelements();
     if (i > 3 ) {
       throw (AipsError("Illegal vector length in MVPosition constructor"));
@@ -166,7 +195,7 @@ MVPosition::MVPosition(const Quantity &l,
   }
 
 MVPosition::MVPosition(const Vector<Double> &other) :
-  xyz(3) {
+	xyz(*get_array()) {
     uInt i; i = other.nelements();
     if (i > 3 ) {
       throw (AipsError("Illegal vector length in MVPosition constructor"));
@@ -190,14 +219,17 @@ MVPosition::MVPosition(const Vector<Double> &other) :
   }
 
 MVPosition::MVPosition(const Vector<Quantity> &other) :
-  xyz(3) {
+  xyz(*get_array()) {
   if (!putValue(other)) {
     throw (AipsError("Illegal quantum vector in MVPosition constructor"));
   }
 }
 
 //# Destructor
-MVPosition::~MVPosition() {}
+MVPosition::~MVPosition()
+{
+  return_array(&xyz);
+}
 
 //# Operators
 Bool MVPosition::
@@ -273,14 +305,12 @@ MVPosition MVPosition::operator-(const MVPosition &right) const{
 }
 
 MVPosition &MVPosition::operator*=(const RotMatrix &right) {
-  MVPosition result;
-  for (Int i=0; i<3; i++) {
-    result(i) = 0;
-    for (Int j=0; j<3; j++) {
-      result(i) += xyz(j) * right(j,i);
-    }
-  }
-  *this = result;
+  Double x = xyz(0);
+  Double y = xyz(1);
+  Double z = xyz(2);
+  xyz(0) = x * right(0, 0) + y * right(1, 0) + z * right(2, 0);
+  xyz(1) = x * right(0, 1) + y * right(1, 1) + z * right(2, 1);
+  xyz(2) = x * right(0, 2) + y * right(1, 2) + z * right(2, 2);
   return *this;
 }
 

@@ -101,7 +101,7 @@ public:
   explicit ValueHolder (const Record& value);
   // </group>
 
-  // Create an empty N-dim array.
+  // Create an empty N-dim array (gets type TpOther).
   ValueHolder (uInt ndim, Bool dummy);
 
   // Create a ValueHolder from a ValueHolderRep.

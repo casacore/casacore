@@ -109,6 +109,9 @@ public:
   // return feed id.'s (and associated row numbers) for a given antenna id.
   Vector<Int> matchAntennaId(const Int& antennaId, Vector<Int>& rowNumbers);
 
+  // return valid feed id.'s for a given list of feed id.'s.
+  Vector<Int> matchFeedId(const Vector<Int>& sourceId);
+
 protected:
   // the specialized compare function to pass to the
   // <linkto class=ColumnsIndex>ColumnsIndex</linkto> object.  This supports -1

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# This script tests the taql program.
+
+# Direct command.
+../../apps/taql '1+2'
+echo
+
+# Commands in 'interactive' mode.
+../../apps/taql <<EOF
+  1  +  2  ;  
+(7km)m 
+EOF
+echo
+
+# Commands from a file.
+../../apps/taql -nopc -f ttaql.in 

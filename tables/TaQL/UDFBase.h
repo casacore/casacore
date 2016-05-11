@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: UDFBase.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef TABLES_UDFBASE_H
 #define TABLES_UDFBASE_H
@@ -214,7 +214,7 @@ namespace casacore {
   //     // Cast the id to a TableExprIdAggr object.
   //     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
   //     // Get the vector of ids for this group.
-  //     const vector<TableExprId>& ids = aid.result().ids(id.groupnr());
+  //     const vector<TableExprId>& ids = aid.result().ids(id.rownr());
   //     // Get the values for all ids and accumulate them.
   //     Int64 sum3 = 0;
   //     for (vector<TableExprId>::const_iterator it=ids.begin();
@@ -253,22 +253,22 @@ namespace casacore {
     virtual String    getString   (const TableExprId& id);
     virtual TaqlRegex getRegex    (const TableExprId& id);
     virtual MVTime    getDate     (const TableExprId& id);
-    virtual Array<Bool>     getArrayBool     (const TableExprId& id);
-    virtual Array<Int64>    getArrayInt      (const TableExprId& id);
-    virtual Array<Double>   getArrayDouble   (const TableExprId& id);
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual Array<String>   getArrayString   (const TableExprId& id);
-    virtual Array<MVTime>   getArrayDate     (const TableExprId& id);
+    virtual MArray<Bool>     getArrayBool     (const TableExprId& id);
+    virtual MArray<Int64>    getArrayInt      (const TableExprId& id);
+    virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<String>   getArrayString   (const TableExprId& id);
+    virtual MArray<MVTime>   getArrayDate     (const TableExprId& id);
     // </group>
 
     // Get the unit.
     const String& getUnit() const
       { return itsUnit; }
 
-    // Get the nodes representing an aggregate function.
+    // Get the nodes in the function operands representing an aggregate function.
     void getAggrNodes (vector<TableExprNodeRep*>& aggr);
 
-    // Get the nodes representing a table column.
+    // Get the nodes in the function operands representing a table column.
     void getColumnNodes (vector<TableExprNodeRep*>& cols);
   
   private:
@@ -308,6 +308,11 @@ namespace casacore {
     // Define if the UDF is an aggregate function (usually used in GROUPBY).
     void setAggregate (Bool isAggregate);
 
+    // Let a derived class recreate its column objects in case a selection
+    // has to be applied.
+    // The default implementation does nothing.
+    virtual void recreateColumnObjects (const Vector<uInt>& rownrs);
+
   public:
     // Register the name and construction function of a UDF (thread-safe).
     // An exception is thrown if this name already exists with a different
@@ -339,6 +344,14 @@ namespace casacore {
     Bool isAggregate() const
       { return itsIsAggregate; }
 
+    // Do not apply the selection.
+    void disableApplySelection()
+      { itsApplySelection = False; }
+
+    // If needed, let the UDF re-create column objects for a selection of rows.
+    // It calls the function recreateColumnObjects.
+    void applySelection (const Vector<uInt>& rownrs);
+
     // Create a UDF object (thread-safe).
     // It looks in the map with fixed function names. If unknown,
     // it looks if a wildcarded function name is supported (for PyTaQL).
@@ -353,6 +366,7 @@ namespace casacore {
     String                         itsUnit;
     Bool                           itsIsConstant;
     Bool                           itsIsAggregate;
+    Bool                           itsApplySelection;
     //# The registry is used for two purposes:
     //# 1. It is a map of known function names (lib.func) to funcptr.
     //#    Function name * means that the library can contain any function,

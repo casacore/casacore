@@ -137,6 +137,30 @@ std::set<ScanKey> scanKeys(
 	return scanKeys;
 }
 
+Bool operator<(const SourceKey& lhs, const SourceKey& rhs) {
+    if (lhs.id < rhs.id) {
+        return True;
+    }
+    else if (lhs.id == rhs.id && lhs.spw < rhs.spw) {
+        return True;
+    }
+    return False;
+}
+
+std::set<ArrayKey> uniqueArrayKeys(const std::set<ScanKey>& scanKeys) {
+    std::set<ArrayKey> arrayKeys;
+    std::set<ScanKey>::const_iterator iter = scanKeys.begin();
+    std::set<ScanKey>::const_iterator end = scanKeys.end();
+    ArrayKey akey;
+    while (iter != end) {
+        akey.arrayID = iter->arrayID;
+        akey.obsID = iter->obsID;
+        arrayKeys.insert(akey);
+        ++iter;
+    }
+    return arrayKeys;
+}
+
 
 }
 

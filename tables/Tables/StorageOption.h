@@ -98,9 +98,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Option option() const
       { return itsOption; }
 
+    // Set the option.
+    void setOption (Option option)
+      { itsOption = option; }
+
     // Get the block size.
     uInt blockSize() const
       { return itsBlockSize; }
+
+    // Set the block size.
+    void setBlockSize (Int blockSize)
+      { itsBlockSize = blockSize; }
 
   private:
     Option itsOption;

@@ -31,6 +31,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Utilities/Register.h>
 #include <casacore/measures/Measures/MDirection.h>
+#include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/casa/Quanta/MVAngle.h>
 #include <casacore/casa/Quanta/MVTime.h>
 #include <casacore/casa/Quanta/QMath.h>
@@ -103,6 +104,7 @@ MDirection MDirection::makeMDirection (const String& sourceName)
     }
     // Now see if it is a known standard source.
     MVDirection mvdir;
+    Bool fnd = True;
     // Make it case-insensitive.
     String name(sourceName);
     name.upcase();
@@ -121,10 +123,18 @@ MDirection MDirection::makeMDirection (const String& sourceName)
     } else if (name == "PERA") {
       mvdir = MVDirection (0.87180363,         0.72451580);
     } else {
+      fnd = False;
+    }
+    if (fnd) {
+      return MDirection (mvdir, MDirection::J2000);
+    }
+    // Finally see if it exists in the Sources table.
+    MDirection md;
+    if (! MeasTable::Source (md, sourceName)) {
       throw AipsError ("MDirection: " + sourceName +
                        " is an unknown source name");
     }
-    return MDirection (mvdir, MDirection::J2000);
+    return md;
 }
 
 

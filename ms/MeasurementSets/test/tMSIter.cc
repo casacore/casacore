@@ -146,6 +146,25 @@ void iterMS (double binwidth)
   }
 }
 
+void iterMSMemory (double binwidth)
+{
+  MeasurementSet ms("tMSIter_tmp.ms");
+  Block<int> sort(2);
+  sort[0] = MS::ANTENNA1;
+  sort[1] = MS::ANTENNA2;
+  MSIter msIter(ms, sort, binwidth, False, False); // Use stored table in memory
+  for (msIter.origin(); msIter.more(); msIter++) {
+    cout << "nrow=" << msIter.table().nrow()
+         << " a1=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
+         << " a2=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
+         << " time="
+         << ROScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
+         << endl;
+  }
+}
+
+
+
 int main (int argc, char* argv[])
 {
   try {
@@ -171,6 +190,7 @@ int main (int argc, char* argv[])
     }
     createMS(nant, ntime, msinterval);
     iterMS (binwidth);
+    iterMSMemory (binwidth);
   } catch (std::exception& x) {
     cerr << "Unexpected exception: " << x.what() << endl;
     return 1;

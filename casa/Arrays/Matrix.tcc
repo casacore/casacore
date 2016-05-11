@@ -53,6 +53,13 @@ template<class T> Matrix<T>::Matrix(const IPosition &len)
     AlwaysAssert(len.nelements() == 2, ArrayError);
 }
 
+template<class T> Matrix<T>::Matrix(const IPosition &len, ArrayInitPolicy initPolicy)
+  : Array<T>(len, initPolicy)
+{
+    makeIndexingConstants();
+    AlwaysAssert(len.nelements() == 2, ArrayError);
+}
+
 template<class T> Matrix<T>::Matrix(const IPosition &len, const T &initialValue)
   : Array<T>(len, initialValue)
 {
@@ -62,6 +69,13 @@ template<class T> Matrix<T>::Matrix(const IPosition &len, const T &initialValue)
 
 template<class T> Matrix<T>::Matrix(size_t l1, size_t l2)
 : Array<T>(IPosition(2, l1, l2))
+{
+    makeIndexingConstants();
+    DebugAssert(ok(), ArrayError);
+}
+
+template<class T> Matrix<T>::Matrix(size_t l1, size_t l2, ArrayInitPolicy initPolicy)
+: Array<T>(IPosition(2, l1, l2), initPolicy)
 {
     makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
@@ -104,22 +118,22 @@ template<class T> void Matrix<T>::resize()
 {
     resize (IPosition(2,0));
 }
-template<class T> void Matrix<T>::resize(const IPosition &l, Bool copyValues)
+template<class T> void Matrix<T>::resize(const IPosition &l, Bool copyValues, ArrayInitPolicy policy)
 {
     DebugAssert(ok(), ArrayError);
     if (l.nelements() != 2)
 	throw(ArrayConformanceError("Matrix<T>::resize() - attempt to form "
 				    "non-Matrix"));
-    Array<T>::resize(l, copyValues);
+    Array<T>::resize(l, copyValues, policy);
     makeIndexingConstants();
 }
 
-template<class T> void Matrix<T>::resize(size_t nx, size_t ny, Bool copyValues)
+template<class T> void Matrix<T>::resize(size_t nx, size_t ny, Bool copyValues, ArrayInitPolicy policy)
 {
     DebugAssert(ok(), ArrayError);
     IPosition l(2);
     l(0) = nx; l(1) = ny;
-    Matrix<T>::resize(l, copyValues);
+    Matrix<T>::resize(l, copyValues, policy);
 }
 
 // <thrown>
@@ -286,38 +300,9 @@ template<class T> Vector<T> Matrix<T>::column(size_t n)
 template<class T> Vector<T> Matrix<T>::diagonal(Int64 n)
 {
     DebugAssert(ok(), ArrayError);
-    Int64 absn;
-    if (n < 0) absn = -n; else absn = n;
-
-    if (this->length_p(0) != this->length_p(1))
-	throw(ArrayConformanceError("Matrix<T>::diagonal() - "
-				    "non-square matrix"));
-
-    if (absn >= this->length_p(0))
-	throw(ArrayConformanceError("Matrix<T>::diagonal() - "
-				    "diagonal out of range"));
-
-    Int64 r, c;
-    if ( n < 0 ) {
-	r = absn;
-	c = 0;
-    } else {
-	r = 0;
-	c = absn;
-    }
-    Int64 len = this->length_p(0) - absn;
-    Matrix<T> tmp((*this)(Slice(r,len), Slice(c)));
-    tmp.ndimen_p = 1;
-    tmp.length_p.resize (1);
-    tmp.inc_p.resize (1);
-    tmp.originalLength_p.resize (1);
-    tmp.nels_p = tmp.length_p(0);
-    if (tmp.nels_p > 1) {
-        tmp.inc_p(0) = this->steps_p(0) + this->steps_p(1);
-	tmp.contiguous_p = False;
-    }
+    Matrix<T> tmp(*this);
+    tmp.begin_p += tmp.makeDiagonal (0, n);
     tmp.makeSteps();
-	
     return tmp;  // should match Vector<T>(const Array<T> &)
 }
 
@@ -402,6 +387,15 @@ Matrix<T>::Matrix(const IPosition &shape, T *storage,
 }
 
 template<class T>
+Matrix<T>::Matrix(const IPosition &shape, T *storage,
+                  StorageInitPolicy policy, AbstractAllocator<T> const &allocator)
+  : Array<T>(shape, storage, policy, allocator)
+{
+    AlwaysAssert(shape.nelements() == 2, ArrayError);
+    makeIndexingConstants();
+}
+
+template<class T>
 Matrix<T>::Matrix(const IPosition &shape, const T *storage)
   : Array<T>(shape, storage)
 {
@@ -411,19 +405,16 @@ Matrix<T>::Matrix(const IPosition &shape, const T *storage)
 
 
 template<class T>
-void Matrix<T>::takeStorage(const IPosition &shape, T *storage,
-		     StorageInitPolicy policy)
+void Matrix<T>::preTakeStorage(const IPosition &shape)
 {
+    Array<T>::preTakeStorage(shape);
     AlwaysAssert(shape.nelements() == 2, ArrayError);
-    Array<T>::takeStorage(shape, storage, policy);
-    makeIndexingConstants();
 }
 
 template<class T>
-void Matrix<T>::takeStorage(const IPosition &shape, const T *storage)
+void Matrix<T>::postTakeStorage()
 {
-    AlwaysAssert(shape.nelements() == 2, ArrayError);
-    Array<T>::takeStorage(shape, storage);
+    Array<T>::postTakeStorage();
     makeIndexingConstants();
 }
 

@@ -503,6 +503,29 @@ int main (int argc, const char* argv[])
       cout << aqc4a.getUnits() << endl;
       cout << aqc4a(0) << endl;
     }
+    {
+        // test ScalarQuantColumn::getColumn()
+        ScalarQuantColumn<Double> col(qtab, "ScaQuantDouble"); 
+        SHARED_PTR<Quantum<Vector<Double> > > v = col.getColumn();
+        AlwaysAssert(v->getValue().size() == 5, AipsError);
+        SHARED_PTR<Quantum<Vector<Double> > > w = col.getColumn("rad");
+        AlwaysAssert(w->getValue().size() == 5, AipsError);
+        Double frac = C::pi/180;
+        for (uInt i=0; i<5; ++i) {
+            AlwaysAssert(
+                near(w->getValue()[i], frac*v->getValue()[i]), AipsError
+            );
+        }
+        ScalarQuantColumn<Complex> ccol(qtab, "ScaQuantComplex");
+        SHARED_PTR<Quantum<Vector<Complex> > > x = ccol.getColumn(); 
+        AlwaysAssert(x->getValue().size() == 5, AipsError);
+        SHARED_PTR<Quantum<Vector<Complex> > > y = ccol.getColumn("rad"); 
+        for (uInt i=0; i<5; ++i) {
+            AlwaysAssert(
+                near(y->getValue()[i], frac*x->getValue()[i]), AipsError
+            );
+        }
+    }
 
   } catch (AipsError x) {
     cout << "Unexpected exception1: " << x.getMesg() << endl;

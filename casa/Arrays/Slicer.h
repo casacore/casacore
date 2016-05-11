@@ -95,6 +95,7 @@ class Slice;
 //   // assume proper declarations, and meaningful values in the source array
 //   subArray = sourceArray (slicer);
 // </srcblock>
+// It gets elements 0,3,6,9,12,15,18,21,24,27 for each dimension.
 //
 // <note role=caution> If you wish to extract elements from the array 
 // at intervals, these intervals must be regular.   The interval is one 
@@ -114,11 +115,22 @@ class Slice;
 //   Slicer slicer (start, end, stride, Slicer::endIsLast);
 //   subArray = sourceArray (slicer);
 // </srcblock>
+// Note that in this example end(3,28,29,28) gives the same result.
 // (We use "end" as the name of the formal parameter because it supports 
 // both meanings -- "last index" or "length."  You may wish to use a 
 // clarifying name for the actual parameter in your code, as we have 
 // above when we used "length".)
 // </note>
+// Similar to Python it is possible to address the start and/or end value
+// from the end by giving a negative value (-1 means the last value).
+// However, a length and stride cannot be negative.
+// Unlike Python the end value is inclusive (as discussed above).
+// For example,
+// <srcblock>
+//    Slicer slicer (IPosition(1,-4), IPosition(1,-2), Slicer::endIsLast)
+//    Slicer slicer (IPosition(1,6),  IPosition(1,8),  Slicer::endIsLast)
+// </srcblock>
+// Both Slicers give the same result when used on a Vector with length 10.
 //
 // <h4> Constructing with Partial Information </h4>
 // 
@@ -128,7 +140,9 @@ class Slice;
 // a value of 1 will be used for all dimensions.  If you specify a "start" 
 // but nothing else, a stride of 1, and (perhaps against expectation)
 // a length of 1 will be used. 
-// 
+//
+// Note that using a negative start or end is also partial information.
+// The actual array shape is needed to derive the exact start or end value.
 //
 // To instruct the Slicer to get otherwise unspecified information 
 // from the source array, you can create an IPosition like  "end"
@@ -280,6 +294,7 @@ public:
     // This value should be different from MIN_INT in IPosition.h.
     // It should also not be the lowest possible value, since that
     // will probably be used as an undefined value.
+    // It must be a negative number.
     enum {MimicSource= -2147483646};
 
     // Define the possible interpretations of the end-value.
@@ -365,19 +380,9 @@ public:
     // <thrown>
     //   <li> ArraySlicerError
     // </thrown>
-    // <group>
-    // Infer the slicer's shape from an array, using a zero origin.
     IPosition inferShapeFromSource 
            (const IPosition& shape, IPosition& startResult,
             IPosition& endResult, IPosition& strideResult) const;
-
-    // Infer the slicer shape from an array, with the given origin.
-    // The returned values are based on a zero origin.
-    IPosition inferShapeFromSource 
-          (const IPosition& shape, const IPosition& origin,
-           IPosition& startResult,  IPosition& endResult,
-           IPosition& strideResult) const;
-    // </group>
 
     // Report the defined starting position.
     const IPosition& start() const;

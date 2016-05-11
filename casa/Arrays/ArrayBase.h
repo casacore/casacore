@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Containers/Allocator.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -145,6 +146,10 @@ public:
   // <br>The default implementation in ArrayBase throws an exception.
   virtual void resize(const IPosition &newShape, Bool copyValues=False);
 
+  // Resize the array and optionally copy the values.
+  // <br>The default implementation in ArrayBase throws an exception.
+  virtual void resize(const IPosition &newShape, Bool copyValues, ArrayInitPolicy policy);
+
   // Create an ArrayIterator object of the correct type.
   // This is implemented in the derived Array classes.
   // <br>The default implementation in ArrayBase throws an exception.
@@ -218,11 +223,17 @@ protected:
 
   // Make a subset of an array.
   // It checks if start,end,incr are within the array limits.
-  // It returns the offset of the subset in the array.
+  // It returns the offset of the subset in the (original) array.
   size_t makeSubset (ArrayBase& out,
                      const IPosition& b,
                      const IPosition& e,
                      const IPosition& i);
+
+  // Set the length and stride such that the diagonal of the matrices
+  // defined by two consecutive axes is formed.
+  // <src>diag</src> == 0 indicates the main diagonal, >0 above, <0 below.
+  // It returns the offset of the diagonal in the (original) array.
+  size_t makeDiagonal (uInt firstAxis, Int64 diag);
 
   // Are the shapes identical?
   Bool conform2 (const ArrayBase& other) const
@@ -299,6 +310,20 @@ size_t ArrayIndexOffset (uInt Ndim, const ssize_t* Shape,
                          const IPosition& Index);
 size_t ArrayIndexOffset (uInt Ndim, const ssize_t* Shape, 
                          const ssize_t* Inc, const IPosition& Index);
+// </group>
+
+// Function to check the shapes. It throws an exception if not equal.
+// <group>
+void throwArrayShapes (const IPosition& shape1,
+                       const IPosition& shape2,
+                       const char* name);
+inline void checkArrayShapes (const ArrayBase& left, const ArrayBase& right,
+                              const char* name)
+{
+  if (! left.shape().isEqual (right.shape())) {
+    throwArrayShapes (left.shape(), right.shape(), name);
+  }
+}
 // </group>
 
 // </group>

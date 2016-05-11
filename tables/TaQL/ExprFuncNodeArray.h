@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprFuncNodeArray.h 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #ifndef TABLES_EXPRFUNCNODEARRAY_H
 #define TABLES_EXPRFUNCNODEARRAY_H
@@ -87,18 +87,18 @@ public:
   
     // 'get' Functions to get the desired result of a function
     // <group>
-    virtual Array<Bool> getArrayBool (const TableExprId& id);
-    virtual Array<Int64> getArrayInt (const TableExprId& id);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual Array<String> getArrayString (const TableExprId& id);
-    virtual Array<MVTime> getArrayDate (const TableExprId& id);
+    virtual MArray<Bool> getArrayBool (const TableExprId& id);
+    virtual MArray<Int64> getArrayInt (const TableExprId& id);
+    virtual MArray<Double> getArrayDouble (const TableExprId& id);
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<String> getArrayString (const TableExprId& id);
+    virtual MArray<MVTime> getArrayDate (const TableExprId& id);
     // </group>
 
     // Get the function node.
-    const TableExprFuncNode* getChild() const
-      { return &node_p; }
     TableExprFuncNode* getChild()
+      { return &node_p; }
+    const TableExprFuncNode* getChild() const
       { return &node_p; }
 
     // Link the children to the node and convert the children
@@ -146,12 +146,28 @@ private:
     // Get the transpose order of the array axes.
     IPosition getOrder (const TableExprId& id, Int ndim);
 
+    // Get the arguments for the diagonals function.
+    // They are checked and if needed adapted if the shape is not empty.
+    const IPosition& getDiagonalArg (const TableExprId& id,
+                                     const IPosition& shp);
+
+    // Set the alternate value expandAlt_p for array expand and return it.
+    const IPosition& getAlternate (const TableExprId& id);
+
+    // Templated fucntion to resize/expand an array.
+    template<typename T>
+    MArray<T> TEFResize (const MArray<T>& arr, const TableExprId& id);
+
+
+    //# Data members
     TableExprFuncNode node_p;
     Int               origin_p;        //# axes origin
     Bool              isCOrder_p;      //# axes order
     Bool              constAxes_p;     //# True = collapse axes are constant
+    Bool              constAlt_p;      //# True = expandAlt_p is constant
     IPosition         ipos_p;          //# the (maybe constant) axes or shape
     IPosition         iposN_p;         //# the non-reversed axes or shape
+    IPosition         expandAlt_p;     //# alternate for expand/resize
 };
 
 

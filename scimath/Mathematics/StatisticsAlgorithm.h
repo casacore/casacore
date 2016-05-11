@@ -38,6 +38,10 @@
 #include <set>
 #include <vector>
 
+// because the template signature has become unwieldy
+#define CASA_STATD template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+#define CASA_STATP AccumType, DataIterator, MaskIterator, WeightsIterator
+
 namespace casacore {
 
 // Base class of statistics algorithm class hierarchy.
@@ -97,7 +101,8 @@ namespace casacore {
 // has a weight of zero is not considered a member of the dataset for the pruposes of
 // quantile calculations.
 
-template <class AccumType, class InputIterator, class MaskIterator=const Bool*> class StatisticsAlgorithm {
+template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
+class StatisticsAlgorithm {
 
 public:
 
@@ -119,48 +124,48 @@ public:
 	// considered bad (excluded) if <src>isInclude</src> is False.
 
 	virtual void addData(
-		const InputIterator& first, uInt nr, uInt dataStride=1,
+		const DataIterator& first, uInt nr, uInt dataStride=1,
 		Bool nrAccountsForStride=False
 	);
 
 	virtual void addData(
-		const InputIterator& first, uInt nr,
+		const DataIterator& first, uInt nr,
 		const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
 		Bool nrAccountsForStride=False
 	);
 
 	virtual void addData(
-		const InputIterator& first, const MaskIterator& maskFirst,
+		const DataIterator& first, const MaskIterator& maskFirst,
 		uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False, uInt maskStride=1
 	);
 
 	virtual void addData(
-		const InputIterator& first, const MaskIterator& maskFirst,
+		const DataIterator& first, const MaskIterator& maskFirst,
 		uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void addData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False
 	);
 
 	virtual void addData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False
 	);
 
 	virtual void addData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
 		Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void addData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
 		uInt maskStride=1
@@ -176,7 +181,7 @@ public:
 	virtual AccumType getMedian(
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
-		Bool persistSortedArray=False
+		Bool persistSortedArray=False, uInt64 nBins=10000
 	) = 0;
 
 	// The return value is the median; the quantiles are returned in the <src>quantileToValue</src> map.
@@ -184,34 +189,31 @@ public:
 		std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	) = 0;
 
 	// get the median of the absolute deviation about the median of the data.
 	virtual AccumType getMedianAbsDevMed(
 		CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	) = 0;
 
-
-	// get a quantile value. quantile takes values of 0 to 1 exclusive.
-	// If the dataset is greater than binningThreshholdSizeBytes bytes in size,
-	// the data will not be sorted but binned. The returned value in this case is
-	// only approximate.
 	AccumType getQuantile(
 		Double quantile, CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
 		uInt binningThreshholdSizeBytes=4096*4096,
-		Bool persistSortedArray=False
+		Bool persistSortedArray=False, uInt64 nBins=10000
 	);
-
 
 	// get a map of quantiles to values.
 	virtual std::map<Double, AccumType> getQuantiles(
 		const std::set<Double>& quantiles, CountedPtr<uInt64> npts=NULL,
 		CountedPtr<AccumType> min=NULL, CountedPtr<AccumType> max=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	) = 0;
 
 	// get the value of the specified statistic
@@ -231,49 +233,49 @@ public:
 	// setdata() clears any current datasets or data provider and then adds the specified data set as
 	// the first dataset in the (possibly new) set of data sets for which statistics are
 	// to be calculated. See addData() for parameter meanings.
-	virtual void setData(const InputIterator& first, uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False);
+	virtual void setData(const DataIterator& first, uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False);
 
 	virtual void setData(
-		const InputIterator& first, uInt nr,
+		const DataIterator& first, uInt nr,
 		const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
 		Bool nrAccountsForStride=False
 	);
 
 	virtual void setData(
-		const InputIterator& first, const MaskIterator& maskFirst,
+		const DataIterator& first, const MaskIterator& maskFirst,
 		uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void setData(
-		const InputIterator& first, const MaskIterator& maskFirst,
+		const DataIterator& first, const MaskIterator& maskFirst,
 		uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void setData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		uInt nr, uInt dataStride=1,
 		Bool nrAccountsForStride=False
 	);
 
 	virtual void setData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1,
 		Bool nrAccountsForStride=False
 	);
 
 	virtual void setData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
 		Bool nrAccountsForStride=False,
 		uInt maskStride=1
 	);
 
 	virtual void setData(
-		const InputIterator& first, const InputIterator& weightFirst,
+		const DataIterator& first, const WeightsIterator& weightFirst,
 		const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
 		Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
 		uInt maskStride=1
@@ -283,7 +285,7 @@ public:
 	// instead of settng and adding data "by hand", set the data provider that will provide
 	// all the data sets. Calling this method will clear any other data sets that have
 	// previously been set or added.
-	virtual void setDataProvider(StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider) {
+	virtual void setDataProvider(StatsDataProvider<CASA_STATP> *dataProvider) {
 		ThrowIf(! dataProvider, "Logic Error: data provider cannot be NULL");
 		_clearData();
 		_dataProvider = dataProvider;
@@ -297,8 +299,8 @@ protected:
 	StatisticsAlgorithm();
 
 	// use copy semantics
-	StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>& operator=(
-		const StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>& other
+	StatisticsAlgorithm<CASA_STATP>& operator=(
+		const StatisticsAlgorithm<CASA_STATP>& other
 	);
 
 	// Allows derived classes to do things after data is set or added.
@@ -309,9 +311,9 @@ protected:
 
 	const vector<Int64>& _getCounts() const { return _counts; }
 
-	const vector<InputIterator>& _getData() const { return _data; }
+	const vector<DataIterator>& _getData() const { return _data; }
 
-	StatsDataProvider<AccumType, InputIterator, MaskIterator>* _getDataProvider() {
+	StatsDataProvider<CASA_STATP>* _getDataProvider() {
 		return _dataProvider;
 	}
 
@@ -339,7 +341,7 @@ protected:
 		return _unsupportedStats;
 	}
 
-	const std::map<uInt, InputIterator>& _getWeights() const {
+	const std::map<uInt, WeightsIterator>& _getWeights() const {
 		return _weights;
 	}
 
@@ -360,9 +362,9 @@ protected:
 	void _setSortedArray(const vector<AccumType>& v) { _sortedArray = v; }
 
 private:
-	vector<InputIterator> _data;
+	vector<DataIterator> _data;
 	// maps data to weights
-	std::map<uInt, InputIterator> _weights;
+	std::map<uInt, WeightsIterator> _weights;
 	// maps data to masks
 	std::map<uInt, MaskIterator> _masks;
 	vector<Int64> _counts;
@@ -372,7 +374,7 @@ private:
 	std::map<uInt, DataRanges> _dataRanges;
 	vector<AccumType> _sortedArray;
 	std::set<StatisticsData::STATS> _statsToCalculate, _unsupportedStats;
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *_dataProvider;
+	StatsDataProvider<CASA_STATP> *_dataProvider;
 
 	void _throwIfDataProviderDefined() const;
 };

@@ -37,36 +37,36 @@
 namespace casacore {
 
 // min > max indicates that these quantities have not be calculated
-template <class AccumType, class InputIterator, class MaskIterator>
-ClassicalStatistics<AccumType, InputIterator, MaskIterator>::ClassicalStatistics()
-	: StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>(),
+CASA_STATD
+ClassicalStatistics<CASA_STATP>::ClassicalStatistics()
+	: StatisticsAlgorithm<CASA_STATP>(),
 	  _statsData(initializeStatsData<AccumType>()),
 	  _idataset(0), _calculateAsAdded(False), _doMaxMin(True),
 	  _doMedAbsDevMed(False), _mustAccumulate(False) {
 	reset();
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-ClassicalStatistics<AccumType, InputIterator, MaskIterator>::~ClassicalStatistics() {}
+CASA_STATD
+ClassicalStatistics<CASA_STATP>::~ClassicalStatistics() {}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-ClassicalStatistics<AccumType, InputIterator, MaskIterator>::ClassicalStatistics(
-    const ClassicalStatistics<AccumType, InputIterator, MaskIterator>& cs
-) : StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>(cs),
+CASA_STATD
+ClassicalStatistics<CASA_STATP>::ClassicalStatistics(
+    const ClassicalStatistics<CASA_STATP>& cs
+) : StatisticsAlgorithm<CASA_STATP>(cs),
 	_statsData(cs._statsData),
     _idataset(cs._idataset),_calculateAsAdded(cs._calculateAsAdded),
     _doMaxMin(cs._doMaxMin), _doMedAbsDevMed(cs._doMedAbsDevMed), _mustAccumulate(cs._mustAccumulate) {
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-ClassicalStatistics<AccumType, InputIterator, MaskIterator>&
-ClassicalStatistics<AccumType, InputIterator, MaskIterator>::operator=(
-	const ClassicalStatistics<AccumType, InputIterator, MaskIterator>& other
+CASA_STATD
+ClassicalStatistics<CASA_STATP>&
+ClassicalStatistics<CASA_STATP>::operator=(
+	const ClassicalStatistics<CASA_STATP>& other
 ) {
     if (this == &other) {
         return *this;
     }
-    StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::operator=(other);
+    StatisticsAlgorithm<CASA_STATP>::operator=(other);
     _statsData = copy(_statsData);
     _idataset = other._idataset;
     _calculateAsAdded = other._calculateAsAdded;
@@ -76,11 +76,11 @@ ClassicalStatistics<AccumType, InputIterator, MaskIterator>::operator=(
     return *this;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian(
+CASA_STATD
+AccumType ClassicalStatistics<CASA_STATP>::getMedian(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-	Bool persistSortedArray
+	Bool persistSortedArray, uInt64 nBins
 ) {
 	if (! _getStatsData().median.null()) {
 		return *_getStatsData().median;
@@ -89,7 +89,7 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	std::map<uInt64, AccumType> indexToValue = _indicesToValues(
 		knownNpts, knownMin, knownMax,
 		binningThreshholdSizeBytes/sizeof(AccumType),
-		indices, persistSortedArray
+		indices, persistSortedArray, nBins
 	);
 	//_median = indexToValue.size() == 1
 	_getStatsData().median = indexToValue.size() == 1
@@ -104,8 +104,8 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	return *_getStatsData().median;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-std::set<uInt64> ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_medianIndices(
+CASA_STATD
+std::set<uInt64> ClassicalStatistics<CASA_STATP>::_medianIndices(
 	CountedPtr<uInt64> knownNpts
 ) {
 	std::set<uInt64> indices;
@@ -120,11 +120,11 @@ std::set<uInt64> ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_m
 	return indices;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedianAbsDevMed(
+CASA_STATD
+AccumType ClassicalStatistics<CASA_STATP>::getMedianAbsDevMed(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-	Bool persistSortedArray
+	Bool persistSortedArray, uInt64 nBins
 ) {
 	if (! _getStatsData().medAbsDevMed.null()) {
 		return *_getStatsData().medAbsDevMed;
@@ -133,7 +133,8 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	// This call calculates the _median of the data set which is stored internally and
 	// used, but is not necessary to be captured in the return value here.
 	getMedian(
-		knownNpts, knownMin, knownMax, binningThreshholdSizeBytes, persistSortedArray
+		knownNpts, knownMin, knownMax, binningThreshholdSizeBytes,
+		persistSortedArray, nBins
 	);
 	std::set<uInt64> indices = _medianIndices(knownNpts);
 	// throw the proper switch
@@ -141,7 +142,7 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	std::map<uInt64, AccumType> indexToValue = _indicesToValues(
 		knownNpts, knownMin, knownMax,
 		binningThreshholdSizeBytes/sizeof(AccumType),
-		indices, persistSortedArray
+		indices, persistSortedArray, nBins
 	);
 	_doMedAbsDevMed = False;
 	_getStatsData().medAbsDevMed = indexToValue.size() == 1
@@ -155,13 +156,12 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	return *_getStatsData().medAbsDevMed;
 }
 
-
-template <class AccumType, class InputIterator, class MaskIterator>
-AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedianAndQuantiles(
+CASA_STATD
+AccumType ClassicalStatistics<CASA_STATP>::getMedianAndQuantiles(
 	std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-	Bool persistSortedArray
+	Bool persistSortedArray, uInt64 nBins
 ) {
 	std::set<uInt64> medianIndices;
 	quantiles.clear();
@@ -186,7 +186,7 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	std::map<uInt64, AccumType> indexToValue = _indicesToValues(
 		mynpts, knownMin, knownMax,
 		binningThreshholdSizeBytes/sizeof(AccumType),
-		indices, persistSortedArray
+		indices, persistSortedArray, nBins
 	);
 	if (_getStatsData().median.null()) {
 		_getStatsData().median = *mynpts % 2 == 0
@@ -207,8 +207,8 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMedian
 	return *_getStatsData().median;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMinMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::getMinMax(
 	AccumType& mymin, AccumType& mymax
 ) {
 	if ( _getStatsData().min.null() || _getStatsData().max.null()) {
@@ -227,8 +227,8 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getMinMax(
 	mymax = *_getStatsData().max;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-uInt64 ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getNPts() {
+CASA_STATD
+uInt64 ClassicalStatistics<CASA_STATP>::getNPts() {
 	if (_getStatsData().npts == 0) {
 		ThrowIf(
 			_calculateAsAdded,
@@ -241,11 +241,11 @@ uInt64 ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getNPts() {
 	return (uInt64)_getStatsData().npts;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-std::map<Double, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getQuantiles(
+CASA_STATD
+std::map<Double, AccumType> ClassicalStatistics<CASA_STATP>::getQuantiles(
 	const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-	Bool persistSortedArray
+	Bool persistSortedArray, uInt64 nBins
 ) {
 	if (fractions.empty()) {
 		return std::map<Double, AccumType>();
@@ -279,7 +279,7 @@ std::map<Double, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIt
 	std::map<uInt64, AccumType> indexToValue = _indicesToValues(
 		knownNpts, knownMin, knownMax,
 		binningThreshholdSizeBytes/sizeof(AccumType),
-		uniqueIndices, persistSortedArray
+		uniqueIndices, persistSortedArray, nBins
 	);
 	qToIIter = quantileToIndexMap.begin();
 	while (qToIIter != qToIEnd) {
@@ -291,13 +291,13 @@ std::map<Double, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIt
 	return quantileToValue;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::reset() {
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::reset() {
 	_clearData();
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::setCalculateAsAdded(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::setCalculateAsAdded(
 	Bool c
 ) {
 	ThrowIf (
@@ -313,9 +313,9 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::setCalculateAs
 	_calculateAsAdded = c;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::setDataProvider(
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::setDataProvider(
+	StatsDataProvider<CASA_STATP> *dataProvider
 ) {
 	ThrowIf(
 		_calculateAsAdded,
@@ -323,11 +323,11 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::setDataProvide
 		"in which case it is nonsensical to use a data provider. Please call "
 		"setCalculateAsAdded(False), and then set the data provider"
 	);
-	StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setDataProvider(dataProvider);
+	StatisticsAlgorithm<CASA_STATP>::setDataProvider(dataProvider);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::setStatsToCalculate(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::setStatsToCalculate(
 	std::set<StatisticsData::STATS>& stats
 ) {
 	ThrowIf(
@@ -338,36 +338,36 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::setStatsToCalc
 	_doMaxMin = stats.empty()
 		|| stats.find(StatisticsData::MAX) != stats.end()
 		|| stats.find(StatisticsData::MIN) != stats.end();
-	StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::setStatsToCalculate(stats);
+	StatisticsAlgorithm<CASA_STATP>::setStatsToCalculate(stats);
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_addData() {
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_addData() {
 	this->_setSortedArray(vector<AccumType>());
 	_getStatsData().median = NULL;
 	_mustAccumulate = True;
 	if (_calculateAsAdded) {
 		_getStatistics();
-		StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_clearData();
+		StatisticsAlgorithm<CASA_STATP>::_clearData();
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_clearData() {
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_clearData() {
 	_clearStats();
-	StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_clearData();
+	StatisticsAlgorithm<CASA_STATP>::_clearData();
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_clearStats() {
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_clearStats() {
 	_statsData = initializeStatsData<AccumType>();
     _idataset = 0;
 	_doMedAbsDevMed = False;
 	_mustAccumulate = True;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-std::pair<Int64, Int64> ClassicalStatistics<AccumType, InputIterator, MaskIterator>::getStatisticIndex(
+CASA_STATD
+std::pair<Int64, Int64> ClassicalStatistics<CASA_STATP>::getStatisticIndex(
 	StatisticsData::STATS stat
 ) {
 	ThrowIf(
@@ -410,8 +410,8 @@ std::pair<Int64, Int64> ClassicalStatistics<AccumType, InputIterator, MaskIterat
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_getStatistic(
+CASA_STATD
+AccumType ClassicalStatistics<CASA_STATP>::_getStatistic(
 	StatisticsData::STATS stat
 ) {
 	AccumType value;
@@ -426,15 +426,15 @@ AccumType ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_getStati
 	return value;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-StatsData<AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_getStatistics() {
+CASA_STATD
+StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
 	if (! _mustAccumulate) {
 		return _getStatsData();
 	}
 	_initIterators();
 	_getStatsData().masked = False;
 	_getStatsData().weighted = False;
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -543,21 +543,21 @@ StatsData<AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIterator>
 	return copy(_getStatsData());
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
-	const InputIterator& /*dataBegin*/, Int64 nr, uInt /*dataStride*/
+	const DataIterator& /*dataBegin*/, Int64 nr, uInt /*dataStride*/
 ) const {
 	npts += nr;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -570,19 +570,19 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
 		) {
 			++npts;
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride
 ) const {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -590,20 +590,20 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
 		if (*mask) {
 			++npts;
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
 	Bool isInclude
 ) const {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -617,40 +617,40 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
 		) {
 			++npts;
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		if (*weight > 0) {
 			++npts;
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -664,21 +664,21 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
 		) {
 			++npts;
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -693,20 +693,20 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
 		) {
 			++npts;
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumNpts(
 	uInt64& npts,
-	const InputIterator& dataBegin, const InputIterator& weightBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -714,14 +714,14 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumNpts(
 		if (*mask && *weight > 0) {
 			++npts;
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumulate(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumulate(
 	AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos, const AccumType& datum, Int64 count
 ) {
 	if (_doMaxMin) {
@@ -738,8 +738,8 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumulate(
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumulate(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_accumulate(
 	AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos,
     const AccumType& datum, const AccumType& weight, Int64 count
 ) {
@@ -758,12 +758,11 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_accumulate(
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-vector<vector<uInt64> > ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_binCounts(
+CASA_STATD
+vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
 	vector<CountedPtr<AccumType> >& sameVal,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
 ) {
-	//cout << __func__ << endl;
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bDesc = binDesc.begin();
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iDesc = bDesc;
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eDesc = binDesc.end();
@@ -803,7 +802,7 @@ vector<vector<uInt64> > ClassicalStatistics<AccumType, InputIterator, MaskIterat
 		++iDesc;
 	}
 	_initIterators();
-    StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
+    StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -892,13 +891,12 @@ vector<vector<uInt64> > ClassicalStatistics<AccumType, InputIterator, MaskIterat
 	return bins;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_createDataArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_createDataArray(
 	vector<AccumType>& ary
 ) {
-	//cout << __func__ << endl;
 	_initIterators();
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	while (True) {
 		_initLoopVars();
@@ -978,12 +976,11 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_createDataArr
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_createDataArrays(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_createDataArrays(
 	vector<vector<AccumType> >& arys, const vector<std::pair<AccumType, AccumType> > &includeLimits,
 	uInt maxCount
 ) {
-	//cout << __func__ << endl;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator bLimits = includeLimits.begin();
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator iLimits = bLimits;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = includeLimits.end();
@@ -1008,7 +1005,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_createDataArr
 		++iLimits;
 	}
 	_initIterators();
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	uInt currentCount = 0;
 	while (True) {
@@ -1096,16 +1093,11 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_createDataArr
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_dataFromMultipleBins(
+CASA_STATD
+vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromMultipleBins(
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt maxArraySize,
-	const vector<std::set<uInt64> >& dataIndices
+	const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
-	/*
-	cout << __func__ << " called with binDesc " << binDesc
-		<< " maxArraySize " << maxArraySize << " dataIndices "
-		<< dataIndices << endl;
-	*/
 	// dataIndices are relative to minimum bin minimum border
     vector<CountedPtr<AccumType> > sameVal(binDesc.size(), NULL);
     vector<vector<uInt64> > binCounts = _binCounts(sameVal, binDesc);
@@ -1137,9 +1129,9 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterato
     		vector<uInt64>::const_iterator bCounts = iCountSet->begin();
     		vector<uInt64>::const_iterator iCounts = bCounts;
     		vector<uInt64>::const_iterator eCounts = iCountSet->end();
-    		uInt dataCount = 0;
-    		uInt prevDataCount = 0;
-    		uInt loopCount = 0;
+    		uInt64 dataCount = 0;
+    		uInt64 prevDataCount = 0;
+    		uInt64 loopCount = 0;
     		while (iIdx != eIdx) {
     			ThrowIf(iCounts == eCounts, "Logic Error: ran out of bins, accounting error");
     			dataCount += *iCounts;
@@ -1153,8 +1145,8 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterato
     				while(iIdx != eIdx && *iIdx < dataCount) {
     					// this loop takes into account that multiple indices
     					// could fall in the same bin
-    					uInt oldIdx = *iIdx;
-    					uInt newIdx = oldIdx - prevDataCount;
+    					uInt64 oldIdx = *iIdx;
+    					uInt64 newIdx = oldIdx - prevDataCount;
     					newDataIndices.insert(newIdx);
     					newToOld[newIdx] = oldIdx;
     					++iIdx;
@@ -1189,7 +1181,7 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterato
     }
     if (! vnpts.empty()) {
     	vector<std::map<uInt64, AccumType> > dataFromBins = _dataFromSingleBins(
-    		vnpts, maxArraySize, vlimits, vindices
+    		vnpts, maxArraySize, vlimits, vindices, nBins
     	);
     	typename vector<std::map<uInt64, AccumType> >::const_iterator iDataSet = dataFromBins.begin();
     	typename vector<std::map<uInt64, AccumType> >::const_iterator eDataSet = dataFromBins.end();
@@ -1221,16 +1213,12 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterato
 	return ret;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_dataFromSingleBins(
-	const vector<uInt64>& binNpts, uInt maxArraySize, const vector<std::pair<AccumType, AccumType> >& binLimits,
-	const vector<std::set<uInt64> >& dataIndices
+CASA_STATD
+vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromSingleBins(
+	const vector<uInt64>& binNpts, uInt maxArraySize,
+	const vector<std::pair<AccumType, AccumType> >& binLimits,
+	const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
-	/*
-	cout << __func__ << " called with binNpts " << binNpts << " maxArraySize "
-		<< maxArraySize << " binLimits " << binLimits << " dataIndices "
-		<< dataIndices << endl;
-		*/
 	uInt64 totalPts = 0;
 	vector<uInt64>::const_iterator bNpts = binNpts.begin();
 	vector<uInt64>::const_iterator iNpts = bNpts;
@@ -1239,7 +1227,6 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterato
 		totalPts += *iNpts;
 		++iNpts;
 	}
-
 	if (totalPts <= maxArraySize) {
         // contents of bin is small enough to be sorted in memory, so
 		// get the bin limits and stuff the good points within those limits
@@ -1300,20 +1287,22 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<AccumType, InputIterato
 		typename vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = binLimits.end();
 		vector<typename StatisticsUtilities<AccumType>::BinDesc> binDesc;
 		while (iLimits != eLimits) {
+		    // we want at least 1000 bins
+		    nBins = max(nBins, 1000);
 			typename StatisticsUtilities<AccumType>::BinDesc histogram;
 			_makeBins(
 				histogram, iLimits->first, iLimits->second,
-				10000, False
+				nBins, False
 			);
 			binDesc.push_back(histogram);
 			++iLimits;
 		}
-		return _dataFromMultipleBins(binDesc, maxArraySize, dataIndices);
+		return _dataFromMultipleBins(binDesc, maxArraySize, dataIndices, nBins);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_convertToAbsDevMedArray(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_convertToAbsDevMedArray(
 	vector<AccumType>& myArray, AccumType median
 ) {
 	typename vector<AccumType>::iterator iter = myArray.begin();
@@ -1324,13 +1313,12 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_convertToAbsD
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doMinMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_doMinMax(
 	AccumType& datamin, AccumType& datamax
 ) {
-	//cout << __func__ << endl;
     _initIterators();
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	CountedPtr<AccumType> mymax;
 	CountedPtr<AccumType> mymin;
@@ -1417,11 +1405,10 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doMinMax(
 	datamax = *mymax;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-Int64 ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doNpts() {
-	//cout << __func__ << endl;
+CASA_STATD
+Int64 ClassicalStatistics<CASA_STATP>::_doNpts() {
 	_initIterators();
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	uInt64 npts = 0;
 	while (True) {
@@ -1541,11 +1528,11 @@ Int64 ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_doNpts() {
 		} \
 	}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
-    const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
 ) const {
 	vector<vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -1559,22 +1546,22 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
 	typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
 	typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		 _findBinCode
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
-    const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
 ) const {
@@ -1589,7 +1576,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
 	typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
 	typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -1602,17 +1589,17 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 		) {
 			_findBinCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
-    const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
 ) const {
@@ -1627,7 +1614,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
 	typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
 	typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -1635,17 +1622,17 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 		if (*mask) {
 			_findBinCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
-    const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
 	Bool isInclude,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
@@ -1661,7 +1648,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
 	typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
 	typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -1675,17 +1662,17 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 		) {
 			_findBinCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
-    const InputIterator& dataBegin, const InputIterator& weightsBegin,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
 ) const {
@@ -1700,25 +1687,25 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
 	typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
 	typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		if (*weight > 0) {
 			_findBinCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
-    const InputIterator& dataBegin, const InputIterator& weightsBegin,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
 ) const {
@@ -1733,8 +1720,8 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
 	typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
 	typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -1748,17 +1735,17 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 		) {
 			_findBinCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
-    const InputIterator& dataBegin, const InputIterator& weightsBegin,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
@@ -1774,8 +1761,8 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
 	typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
 	typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -1790,17 +1777,17 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 		) {
 			_findBinCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_findBins(
 	vector<vector<uInt64> >& binCounts,
     vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
-    const InputIterator& dataBegin, const InputIterator& weightBegin,
+    const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
 ) const {
@@ -1815,8 +1802,8 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 	typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
 	typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
 	typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -1824,22 +1811,23 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_findBins(
 		if (*mask && *weight > 0) {
 			_findBinCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-std::map<uInt64, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_indicesToValues(
+CASA_STATD
+std::map<uInt64, AccumType> ClassicalStatistics<CASA_STATP>::_indicesToValues(
 	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
 	CountedPtr<AccumType> knownMax, uInt maxArraySize,
-	const std::set<uInt64>& indices, Bool persistSortedArray
+	const std::set<uInt64>& indices, Bool persistSortedArray, uInt64 nBins
 ) {
 	std::map<uInt64, AccumType> indexToValue;
     if (
 		_valuesFromSortedArray(
-			indexToValue, knownNpts, indices, maxArraySize, persistSortedArray
+			indexToValue, knownNpts, indices, maxArraySize,
+			persistSortedArray
 		)
 	) {
 		return indexToValue;
@@ -1876,12 +1864,12 @@ std::map<uInt64, AccumType> ClassicalStatistics<AccumType, InputIterator, MaskIt
 	uInt64 mynpts = knownNpts.null() ? getNPts() : *knownNpts;
 	vector<uInt64> vmynpts(1, mynpts);
 	return _dataFromSingleBins(
-		vmynpts, maxArraySize, vlimits, vindices
+		vmynpts, maxArraySize, vlimits, vindices, nBins
 	)[0];
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_initIterators() {
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_initIterators() {
 	ThrowIf(
 		this->_getData().size() == 0 && ! this->_getDataProvider(),
 		"No data sets have been added"
@@ -1891,7 +1879,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_initIterators
 	}
 	else {
 		_dataCount = 0;
-		const vector<InputIterator>& data = this->_getData();
+		const vector<DataIterator>& data = this->_getData();
 		_diter = data.begin();
 		_dend = data.end();
 		const vector<uInt>& dataStrides = this->_getDataStrides();
@@ -1910,9 +1898,9 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_initIterators
 	_hasWeights = False;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_initLoopVars() {
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_initLoopVars() {
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	if (dataProvider) {
 		_myData = dataProvider->getData();
@@ -1956,13 +1944,12 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_initLoopVars(
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_isNptsSmallerThan(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_isNptsSmallerThan(
 	vector<AccumType>& unsortedAry, uInt maxArraySize
 ) {
-	//cout << __func__ << endl;
 	_initIterators();
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	Bool limitReached = False;
 	while (True) {
@@ -2055,8 +2042,8 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_isNptsSmaller
 	return True;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_makeBins(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_makeBins(
 	typename StatisticsUtilities<AccumType>::BinDesc& bins, AccumType minData, AccumType maxData, uInt maxBins, Bool allowPad
 ) {
 
@@ -2089,29 +2076,29 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_makeBins(
 		mymax = new AccumType(*datum); \
 	}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		_minMaxCode
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -2124,19 +2111,19 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
 		) {
 			_minMaxCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride
 ) const {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -2144,20 +2131,20 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
 		if (*mask) {
 			_minMaxCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
 	Bool isInclude
 ) const {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -2171,40 +2158,40 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
 		) {
 			_minMaxCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		if (*weight > 0) {
 			_minMaxCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -2218,21 +2205,21 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
 		) {
 			_minMaxCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -2247,20 +2234,20 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
 		) {
 			_minMaxCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_minMax(
 	CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-	const InputIterator& dataBegin, const InputIterator& weightBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -2268,7 +2255,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
 		if (*mask && *weight > 0) {
 			_minMaxCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
@@ -2279,28 +2266,28 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_minMax(
 	AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - *_statsData.median) : *datum; \
 	ary.push_back(myDatum);
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin, Int64 nr, uInt dataStride
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
 	Int64 count = 0;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		_populateArrayCode1
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin, Int64 nr,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
 	Int64 count = 0;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
 	typename DataRanges::const_iterator endRange = ranges.end();
@@ -2312,39 +2299,39 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 		) {
 			_populateArrayCode1
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
 	Int64 count = 0;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
 	MaskIterator mask = maskBegin;
 	while (count < nr) {
 		if (*mask) {
 			_populateArrayCode1
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin, Int64 nr,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
 	Int64 count = 0;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
 	MaskIterator mask = maskBegin;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -2358,39 +2345,39 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 		) {
 			_populateArrayCode1
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin,
-	const InputIterator& weightsBegin, Int64 nr, uInt dataStride
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin,
+	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		if (*weight > 0) {
 			_populateArrayCode1
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin,
-	const InputIterator& weightsBegin, Int64 nr, uInt dataStride,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin,
+	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -2404,19 +2391,19 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 		) {
 			_populateArrayCode1
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin, const InputIterator& weightBegin,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -2424,20 +2411,20 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 		if (*mask && *weight > 0) {
 			_populateArrayCode1
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin, const InputIterator& weightBegin,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -2452,7 +2439,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 		) {
 			_populateArrayCode1
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
@@ -2485,9 +2472,9 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 	}
 
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArrays(
-	vector<vector<AccumType> >& arys, uInt& currentCount, const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
+	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
 	typename vector<vector<AccumType> >::iterator bArys = arys.begin();
@@ -2496,19 +2483,19 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
 	Int64 count = 0;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		_populateArraysCode
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArrays(
-	vector<vector<AccumType> >& arys, uInt& currentCount, const InputIterator& dataBegin, Int64 nr,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
+	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
@@ -2518,7 +2505,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
 	Int64 count = 0;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
 	typename DataRanges::const_iterator endRange = ranges.end();
@@ -2530,15 +2517,15 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 		) {
 			_populateArraysCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArrays(
-	vector<vector<AccumType> >& arys, uInt& currentCount, const InputIterator& dataBegin,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
+	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
@@ -2548,22 +2535,22 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
 	Int64 count = 0;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
 	MaskIterator mask = maskBegin;
 	while (count < nr) {
 		if (*mask) {
 			_populateArraysCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArrays(
-	vector<vector<AccumType> >& arys, uInt& currentCount, const InputIterator& dataBegin, Int64 nr,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
+	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
@@ -2574,7 +2561,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
 	Int64 count = 0;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
 	MaskIterator mask = maskBegin;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -2588,16 +2575,16 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 		) {
 			_populateArraysCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArrays(
-	vector<vector<AccumType> >& arys, uInt& currentCount, const InputIterator& dataBegin,
-	const InputIterator& weightsBegin, Int64 nr, uInt dataStride,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
+	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
+	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
 	typename vector<vector<AccumType> >::iterator bArys = arys.begin();
@@ -2605,24 +2592,24 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		if (*weight > 0) {
 			_populateArraysCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArrays(
-	vector<vector<AccumType> >& arys, uInt& currentCount, const InputIterator& dataBegin,
-	const InputIterator& weightsBegin, Int64 nr, uInt dataStride,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
+	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
+	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
@@ -2631,8 +2618,8 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -2646,15 +2633,15 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 		) {
 			_populateArraysCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArrays(
-	vector<vector<AccumType> >& arys, uInt& currentCount, const InputIterator& dataBegin, const InputIterator& weightBegin,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
+	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
 ) const {
@@ -2663,8 +2650,8 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -2672,15 +2659,15 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 		if (*mask && *weight > 0) {
 			_populateArraysCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArrays(
-	vector<vector<AccumType> >& arys, uInt& currentCount, const InputIterator& dataBegin, const InputIterator& weightBegin,
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_populateArrays(
+	vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude,
 	const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
@@ -2690,8 +2677,8 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
 	typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -2706,27 +2693,27 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateArray
 		) {
 			_populateArraysCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	uInt maxElements
 ) const {
 	if (ary.size() + nr > maxElements) {
 		return True;
 	}
 	Int64 count = 0;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		//ary.push_back(_doMedAbsDevMed ? abs((AccumType)*datum - *_median) : *datum);
 		ary.push_back(_doMedAbsDevMed ? abs((AccumType)*datum - *_statsData.median) : *datum);
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
@@ -2741,15 +2728,15 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestA
 		return True; \
 	}
 
-template <class AccumType, class InputIterator, class MaskIterator>
-Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin, Int64 nr,
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const DataRanges& ranges, Bool isInclude,
 	uInt maxElements
 ) const {
 	Int64 count = 0;
 	uInt npts = ary.size();
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
 	typename DataRanges::const_iterator endRange = ranges.end();
@@ -2761,21 +2748,21 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestA
 		) {
 			_PopulateTestArrayCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 	return False;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin,
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	uInt maxElements
 ) const {
 	Int64 count = 0;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
 	MaskIterator mask = maskBegin;
 	uInt npts = ary.size();
@@ -2783,21 +2770,21 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestA
 		if (*mask) {
 			_PopulateTestArrayCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 	return False;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin, Int64 nr,
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
 	uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
 	Int64 count = 0;
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
 	MaskIterator mask = maskBegin;
 	uInt npts = ary.size();
@@ -2812,21 +2799,21 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestA
 		) {
 			_PopulateTestArrayCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 	return False;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin,
-	const InputIterator& weightsBegin, Int64 nr, uInt dataStride,
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin,
+	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	uInt maxElements
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	uInt npts = ary.size();
@@ -2834,21 +2821,21 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestA
 		if (*weight > 0) {
 			_PopulateTestArrayCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 	return False;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin,
-	const InputIterator& weightsBegin, Int64 nr, uInt dataStride,
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin,
+	const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -2863,21 +2850,21 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestA
 		) {
 			_PopulateTestArrayCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 	return False;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin,
-	const InputIterator& weightBegin, Int64 nr, uInt dataStride,
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin,
+	const WeightsIterator& weightBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, uInt maxElements
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride;
@@ -2886,21 +2873,21 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestA
 		if (*mask && *weight > 0) {
 			_PopulateTestArrayCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 	return False;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestArray(
-	vector<AccumType>& ary, const InputIterator& dataBegin, const InputIterator& weightBegin,
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
+	vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -2916,19 +2903,19 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_populateTestA
 		) {
 			_PopulateTestArrayCode
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 	return False;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_updateMaxMin(
 	AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride,
 	const Int64& currentDataset
 ) {
-	StatsDataProvider<AccumType, InputIterator, MaskIterator> *dataProvider
+	StatsDataProvider<CASA_STATP> *dataProvider
 		= this->_getDataProvider();
 	if (maxpos >= 0) {
 		_getStatsData().maxpos.first = currentDataset;
@@ -2948,35 +2935,35 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_updateMaxMin(
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_unweightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride
 
 ) {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
 		_accumulate (
 			mymin, mymax, minpos, maxpos, *datum, count
 		);
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 	ngood = nr;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_unweightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const DataRanges& ranges, Bool isInclude
 ) {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -2992,20 +2979,20 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_unweightedSta
 			);
 			++ngood;
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_unweightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride
 ) {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -3016,22 +3003,22 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_unweightedSta
 			);
 			++ngood;
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_unweightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 	uInt64& ngood, AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
 	Bool isInclude
 
 ) {
-	InputIterator datum = dataBegin;
+	DataIterator datum = dataBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -3048,14 +3035,14 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_unweightedSta
 			);
 			++ngood;
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_valuesFromSortedArray(
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
 	std::map<uInt64, AccumType>& values, CountedPtr<uInt64> knownNpts,
 	const std::set<uInt64>& indices, uInt maxArraySize, Bool persistSortedArray
 ) {
@@ -3120,7 +3107,7 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_valuesFromSor
 			}
 		}
 	}
-	values = StatisticsAlgorithm<AccumType, InputIterator, MaskIterator>::_valuesFromArray(
+	values = StatisticsAlgorithm<CASA_STATP>::_valuesFromArray(
 		myArray, indices
 	);
 	if (! _doMedAbsDevMed) {
@@ -3134,15 +3121,15 @@ Bool ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_valuesFromSor
 	return True;
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride
 ) {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	while (count < nr) {
@@ -3151,21 +3138,21 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats
 				mymin, mymax, minpos, maxpos, *datum, *weight, count
 			);
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1;
 	typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -3181,22 +3168,22 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats
 				mymin, mymax, minpos, maxpos, *datum, *weight, count
 			);
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, unityStride, dataStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, const InputIterator& weightsBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 	const DataRanges& ranges, Bool isInclude
 ) {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightsBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightsBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -3213,21 +3200,21 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats
 				mymin, mymax, minpos, maxpos, *datum, *weight, count
 			);
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}
 }
 
-template <class AccumType, class InputIterator, class MaskIterator>
-void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats(
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_weightedStats(
 	AccumType& mymin, AccumType& mymax,
 	Int64& minpos, Int64& maxpos,
-	const InputIterator& dataBegin, const InputIterator& weightBegin,
+	const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) {
-	InputIterator datum = dataBegin;
-	InputIterator weight = weightBegin;
+	DataIterator datum = dataBegin;
+	WeightsIterator weight = weightBegin;
 	MaskIterator mask = maskBegin;
 	Int64 count = 0;
 	Bool unityStride = dataStride == 1 && maskStride == 1;
@@ -3237,7 +3224,7 @@ void ClassicalStatistics<AccumType, InputIterator, MaskIterator>::_weightedStats
 				mymin, mymax, minpos, maxpos, *datum, *weight, count
 			);
 		}
-		StatisticsIncrementer<InputIterator, MaskIterator>::increment(
+		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 			datum, count, weight, mask, unityStride, dataStride, maskStride
 		);
 	}

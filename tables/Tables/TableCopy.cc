@@ -52,7 +52,8 @@ Table TableCopy::makeEmptyTable (const String& newName,
 				 Table::TableOption option,
 				 Table::EndianFormat endianFormat,
 				 Bool replaceTSM,
-				 Bool noRows)
+				 Bool noRows,
+                                 const StorageOption& stopt)
 {
   TableDesc tabDesc = tab.actualTableDesc();
   Record dminfo (dataManagerInfo);
@@ -71,7 +72,7 @@ Table TableCopy::makeEmptyTable (const String& newName,
   // Replace non-writable storage managers by StandardStMan.
   // This is for instance needed for LofarStMan.
   dminfo = DataManInfo::adjustStMan (dminfo, "StandardStMan", True);
-  SetupNewTable newtab (newName, tabDesc, option);
+  SetupNewTable newtab (newName, tabDesc, option, stopt);
   newtab.bindCreate (dminfo);
   return Table(newtab, (noRows ? 0 : tab.nrow()), False, endianFormat);
 }

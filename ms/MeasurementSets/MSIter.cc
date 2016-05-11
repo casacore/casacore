@@ -83,14 +83,17 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 }
 
 
-MSIter::MSIter():nMS_p(0),msc_p(0),allBeamOffsetsZero_p(True),
+MSIter::MSIter():nMS_p(0),msc_p(0),storeSorted_p(False),allBeamOffsetsZero_p(True),
   timeComp_p(0) {}
 
 MSIter::MSIter(const MeasurementSet& ms,
 	       const Block<Int>& sortColumns,
 	       Double timeInterval,
-	       Bool addDefaultSortColumns)
-: msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval),
+	       Bool addDefaultSortColumns,
+	       Bool storeSorted)
+: msc_p(0),curMS_p(0),lastMS_p(-1),
+  storeSorted_p(storeSorted),
+  interval_p(timeInterval),
   allBeamOffsetsZero_p(True),
   timeComp_p(0)
 {
@@ -102,8 +105,11 @@ MSIter::MSIter(const MeasurementSet& ms,
 MSIter::MSIter(const Block<MeasurementSet>& mss,
 	       const Block<Int>& sortColumns,
 	       Double timeInterval,
-	       Bool addDefaultSortColumns)
-: bms_p(mss),msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval),
+	       Bool addDefaultSortColumns,
+	       Bool storeSorted)
+: bms_p(mss),msc_p(0),curMS_p(0),lastMS_p(-1),
+  storeSorted_p(storeSorted),
+  interval_p(timeInterval),
   timeComp_p(0)
 {
   construct(sortColumns,addDefaultSortColumns);
@@ -269,7 +275,8 @@ void MSIter::construct(const Block<Int>& sortColumns,
       sorted = bms_p[i].sort(columns, Sort::Ascending, Sort::QuickSort);
     }
     
-    if (store) {
+    // Only store if globally requested _and_ locally decided
+    if (storeSorted_p && store) {
 	// We need to get the name of the base table to add a persistent
 	// subtable (the ms used here might be a reference table)
 	// There is no table function to get this, so we use the name of

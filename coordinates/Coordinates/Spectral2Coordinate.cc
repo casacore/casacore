@@ -103,7 +103,13 @@ Bool SpectralCoordinate::pixelToVelocity (Double& velocity, Double pixel) const
    if (!toWorld(world, pixel)) return False;
    velocity = pVelocityMachine_p->makeVelocity(world).getValue();
 //
-   return True;
+   if(isNaN(velocity)){
+     set_error("velocity is NaN");
+     return False;
+   }
+   else{
+     return True;
+   }
 }
 
 Bool SpectralCoordinate::pixelToVelocity (Vector<Double>& velocity, const Vector<Double>& pixel) const
@@ -119,7 +125,13 @@ Bool SpectralCoordinate::pixelToVelocity (Vector<Double>& velocity, const Vector
       velocity(i) = pVelocityMachine_p->makeVelocity(world).getValue();
    }
 //
-   return True;
+   if(isNaN(velocity(0))){
+     set_error("velocity is NaN");
+     return False;
+   }
+   else{
+     return True;
+   }
 }
 
 Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, Double frequency) const
@@ -127,7 +139,13 @@ Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, Double 
    velocity = pVelocityMachine_p->makeVelocity(frequency);
    MVFrequency mvf(frequency);
 //
-   return True;
+   if(isNaN(velocity.getValue())){
+     set_error("velocity is NaN");
+     return False;
+   }
+   else{
+     return True;
+   }
 }
 
 
@@ -136,7 +154,13 @@ Bool SpectralCoordinate::frequencyToVelocity (Double& velocity, Double frequency
    static Quantum<Double> t;
    t = pVelocityMachine_p->makeVelocity(frequency);
    velocity = t.getValue();
-   return True;
+   if(isNaN(velocity)){
+     set_error("velocity is NaN");
+     return False;
+   }
+   else{
+     return True;
+   }
 }
 
 Bool SpectralCoordinate::frequencyToVelocity (Vector<Double>& velocity, const Vector<Double>& frequency) const
@@ -145,7 +169,13 @@ Bool SpectralCoordinate::frequencyToVelocity (Vector<Double>& velocity, const Ve
    velocity.resize(frequency.nelements());
    velocity = pVelocityMachine_p->makeVelocity(frequency).getValue();
 //
-   return True;
+   if(isNaN(velocity(0))){
+     set_error("velocity is NaN");
+     return False;
+   }
+   else{
+     return True;
+   }
 }
 
 Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, const MFrequency& frequency) const
@@ -156,7 +186,13 @@ Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, const M
 Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, const MVFrequency& frequency) const
 {
    velocity = pVelocityMachine_p->operator()(frequency);
-   return True;
+   if(isNaN(velocity.getValue())){
+     set_error("velocity is NaN");
+     return False;
+   }
+   else {
+     return True;
+   }
 }
 
 Bool SpectralCoordinate::frequencyToWavelength (Vector<Double>& wavelength, const Vector<Double>& frequency) const
@@ -165,28 +201,19 @@ Bool SpectralCoordinate::frequencyToWavelength (Vector<Double>& wavelength, cons
 
    // wave = C::c/freq * 1/to_hz_p * 1/to_m_p
    Double factor = C::c/to_hz_p/to_m_p;
+   Bool rval=True;
    for(uInt i=0; i<frequency.nelements(); i++){
      if(frequency(i)>0.){
        wavelength(i) = factor/frequency(i);
      }
      else{
        wavelength(i) = HUGE_VAL;
+       set_error("input frequency is <= 0");
+       rval = False;
      }
    }
-   return True;
+   return rval;
 }
-/*
-Double SpectralCoordinate::refractiveIndex(const Double& lambda_um){
-     Double lambda2 = lambda_um * lambda_um;
-     // based on Greisen et al., 2006, A&A, 464, 746 
-     Double nOfLambda = 1.;
-     if(lambda2 > 0.){
-       nOfLambda = 1. + 1E-6 * (287.6155 + 1.62887/lambda2 
-				  + 0.01360/lambda2/lambda2);	
-     }
-     //cout << "ref index " << nOfLambda << endl; 
-     return nOfLambda;
-}*/
   
 Bool SpectralCoordinate::frequencyToAirWavelength (Vector<Double>& wavelength, const Vector<Double>& frequency) const
 {
@@ -194,6 +221,7 @@ Bool SpectralCoordinate::frequencyToAirWavelength (Vector<Double>& wavelength, c
 
    // airwave = C::c/freq * 1/to_hz_p * 1/to_m_p/refractive_index
    Double factor = C::c/to_hz_p/to_m_p;
+   Bool rval = True;
    for(uInt i=0; i<frequency.nelements(); i++){
      if(frequency(i)>0.){
        Double vacWave = factor/frequency(i);
@@ -203,9 +231,11 @@ Bool SpectralCoordinate::frequencyToAirWavelength (Vector<Double>& wavelength, c
      }
      else{
        wavelength(i) = HUGE_VAL;
+       set_error("input frequency is <= 0");
+       rval = False;
      }
    }
-   return True;
+   return rval;
 }
 
 
@@ -215,7 +245,7 @@ Bool SpectralCoordinate::airWavelengthToFrequency (Vector<Double>& frequency, co
 
    // freq = C::c/wave * 1/to_hz_p * 1/to_m_p, wave = n(airwave)*airwave
    Double factor = C::c/to_hz_p/to_m_p;
-
+   Bool rval  = True;
    for(uInt i=0; i<airWavelength.nelements(); i++){
   
      if(airWavelength(i)>0.){
@@ -226,9 +256,11 @@ Bool SpectralCoordinate::airWavelengthToFrequency (Vector<Double>& frequency, co
      }
      else{
        frequency(i) = HUGE_VAL;
+       set_error("input frequency is <= 0");
+       rval = False;
      }
    }
-   return True;
+   return rval;
 }
 
 Bool SpectralCoordinate::wavelengthToFrequency (Vector<Double>& frequency, const Vector<Double>& wavelength) const
@@ -261,7 +293,14 @@ Bool SpectralCoordinate::velocityToPixel (Vector<Double>& pixel, const Vector<Do
 Bool SpectralCoordinate::velocityToFrequency (Double& frequency, Double velocity) const
 {
    frequency = pVelocityMachine_p->makeFrequency (velocity).getValue();
-   return True;
+
+   if(frequency<=0.){
+     set_error("frequency <= 0");
+     return False;
+   }
+   else {
+     return True;
+   }
 }
 
 Bool SpectralCoordinate::velocityToFrequency (Vector<Double>& frequency,  
@@ -272,7 +311,14 @@ Bool SpectralCoordinate::velocityToFrequency (Vector<Double>& frequency,
       frequency(i) = pVelocityMachine_p->makeFrequency (velocity(i)).getValue();
    }
 //
-   return True;
+   if(frequency(0)<=0.){
+     set_error("frequency <= 0");
+     return False;
+   }
+   else {
+     return True;
+   }
+
 }
 
 void SpectralCoordinate::makeVelocityMachine (const String& velUnit, 
@@ -335,7 +381,7 @@ Int SpectralCoordinate::makeConversionMachines (MFrequency::Types type,
    if (!ok1 || !ok2) {
 
 // This means the trial conversions when the machines were made failed.
-// Usually it means the rest frequency is radial velocity was required
+// Usually this means the rest frequency or radial velocity was required
 
       deleteConversionMachines();
       return -1;

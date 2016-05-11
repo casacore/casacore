@@ -7,6 +7,7 @@ parser_inputs
 MSAntennaGram
 MSArrayGram
 MSCorrGram
+MSFeedGram
 MSFieldGram
 MSObservationGram
 MSScanGram
@@ -79,7 +80,9 @@ MSSel/MSCorrGram.cc
 MSSel/MSCorrParse.cc
 MSSel/MSDataDescIndex.cc
 MSSel/MSDopplerIndex.cc
+MSSel/MSFeedGram.cc
 MSSel/MSFeedIndex.cc
+MSSel/MSFeedParse.cc
 MSSel/MSFieldGram.cc
 MSSel/MSFieldIndex.cc
 MSSel/MSFieldParse.cc
@@ -98,6 +101,7 @@ MSSel/MSSelectableTable.cc
 MSSel/MSSelection.cc
 MSSel/MSSelectionError.cc
 MSSel/MSSelectionErrorHandler.cc
+MSSel/MSSSpwErrorHandler.cc
 MSSel/MSSelectionKeywords.cc
 MSSel/MSSelectionTools.cc
 MSSel/MSSelector.cc
@@ -133,6 +137,8 @@ ${BISON_MSArrayGram_OUTPUTS}
 ${FLEX_MSArrayGram_OUTPUTS}
 ${BISON_MSCorrGram_OUTPUTS}
 ${FLEX_MSCorrGram_OUTPUTS}
+${BISON_MSFeedGram_OUTPUTS}
+${FLEX_MSFeedGram_OUTPUTS}
 ${BISON_MSFieldGram_OUTPUTS}
 ${FLEX_MSFieldGram_OUTPUTS}
 ${BISON_MSScanGram_OUTPUTS}
@@ -260,6 +266,7 @@ MSSel/MSSelectableTable.h
 MSSel/MSSelection.h
 MSSel/MSSelectionError.h
 MSSel/MSSelectionErrorHandler.h
+MSSel/MSSSpwErrorHandler.h
 MSSel/MSSelectionKeywords.h
 MSSel/MSSelectionTools.h
 MSSel/MSSelector.h

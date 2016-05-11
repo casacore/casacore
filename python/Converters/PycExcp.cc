@@ -41,18 +41,10 @@ namespace casacore { namespace python {
     PyErr_SetString(PyExc_StopIteration, e.what());
   }
 
-  void translate_stdexcp (const std::exception& e)
-  {
-    // Use the Python 'C' API to set up an exception object
-    PyErr_SetString(PyExc_RuntimeError, e.what());
-  }
-
 
   //# Note that the most general exception must be registered first.
   void register_convert_excp()
   {
-    boost::python::register_exception_translator<std::exception>
-      (&translate_stdexcp);
     boost::python::register_exception_translator<casacore::IterError>
       (&translate_iterexcp);
   }

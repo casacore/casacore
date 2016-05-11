@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: LatticeHistograms.tcc 21563 2015-02-16 07:05:15Z gervandiepen $
 
 #ifndef LATTICES_LATTICEHISTOGRAMS_TCC
 #define LATTICES_LATTICEHISTOGRAMS_TCC
@@ -521,79 +521,72 @@ Bool LatticeHistograms<T>::display()
    return True;
 }
 
-
-
-
 template <class T>
-Bool LatticeHistograms<T>::getHistograms (Array<T>& values,
-                                        Array<T>& counts)
-//
-// Retrieve histograms values and counts into arrays
-//
-{
-   if (!goodParameterStatus_p) {
-      return False;
-   }
-
-
-// Generate storage lattices if required
-   
-   if (needStorageLattice_p) {
-      if (!generateStorageLattice()) return False;      
-   }
-
-
-// Set up iterator to work through histogram storage lattice line by line
-// Use the LatticeStepper (default) which will guarentee the access pattern.  
-// There will be no overhang (as tile shape for first axis is length of axis)
-  
-   IPosition cursorShape(pStoreLattice_p->ndim(),1);
-   cursorShape(0) = pStoreLattice_p->shape()(0);
-
-   IPosition vectorAxis(1,0);
-   vectorAxis(0) = 0;
-   
-// Make the stepper explicitly so we can specify the cursorAxes
-// and then vectorCursor will cope with an axis of length 1
-// (it is possible the user could ask for a histogram with one bin !)
-
-   LatticeStepper histStepper(pStoreLattice_p->shape(), cursorShape,
-                              vectorAxis, IPosition::makeAxisPath(pStoreLattice_p->ndim()));
-   RO_LatticeIterator<T> histIterator(*pStoreLattice_p, histStepper);
-
-
-// Resize output arrays and setup vector iterators
-
-   counts.resize(pStoreLattice_p->shape());
-   values.resize(pStoreLattice_p->shape());
-
-   VectorIterator<T> valuesIterator(values);
-   VectorIterator<T> countsIterator(counts);
-
-   Vector<T> stats;
-   T linearSum, linearYMax;
-
-// Iterate through histogram storage lattice
-   
-   for (histIterator.reset(),valuesIterator.origin(),countsIterator.origin(); 
-       !histIterator.atEnd(); histIterator++,valuesIterator.next(),countsIterator.next()) {
- 
-// Find statistics from the data that made this histogram 
-
-      getStatistics (stats, histIterator.position());
-
-
-// Extract the histogram in the appropriate form
- 
-      extractOneHistogram (linearSum, linearYMax, valuesIterator.vector(), 
-                           countsIterator.vector(), stats,
-                           histIterator.vectorCursor());
-   }
-
-   return True;
+Bool LatticeHistograms<T>::getHistograms(
+        Array<T>& values, Array<T>& counts
+) {
+    Array<Vector<T> > stats;
+    return getHistograms(values, counts, stats);
 }
 
+template <class T>
+Bool LatticeHistograms<T>::getHistograms(
+        Array<T>& values, Array<T>& counts, Array<Vector<T> >& stats
+) {
+    if (!goodParameterStatus_p) {
+        return False;
+    }
+    // Generate storage lattices if required
+    if (needStorageLattice_p) {
+        if (!generateStorageLattice()) return False;
+    }
 
+    // Set up iterator to work through histogram storage lattice line by line
+    // Use the LatticeStepper (default) which will guarantee the access pattern.
+    // There will be no overhang (as tile shape for first axis is length of axis)
+    IPosition cursorShape(pStoreLattice_p->ndim(),1);
+    cursorShape(0) = pStoreLattice_p->shape()(0);
+    IPosition vectorAxis(1,0);
+
+    // Make the stepper explicitly so we can specify the cursorAxes
+    // and then vectorCursor will cope with an axis of length 1
+    // (it is possible the user could ask for a histogram with one bin !)
+    LatticeStepper histStepper(
+            pStoreLattice_p->shape(), cursorShape,
+            vectorAxis, IPosition::makeAxisPath(pStoreLattice_p->ndim())
+    );
+    RO_LatticeIterator<T> histIterator(*pStoreLattice_p, histStepper);
+    // Resize output arrays and setup vector iterators
+    IPosition shape = pStoreLattice_p->shape();
+    counts.resize(shape);
+    values.resize(shape);
+    static const IPosition removeAxis(1, 0);
+    stats.resize(
+            shape.size() == 1 ? IPosition(1,1) : shape.removeAxes(removeAxis)
+    );
+    VectorIterator<T> valuesIterator(values);
+    VectorIterator<T> countsIterator(counts);
+    Vector<T> stat;
+    T linearSum, linearYMax;
+    // Iterate through histogram storage lattice
+    for (
+            histIterator.reset(),valuesIterator.origin(),countsIterator.origin();
+            ! histIterator.atEnd();
+            histIterator++,valuesIterator.next(),countsIterator.next()
+    ) {
+        // Find statistics from the data that made this histogram
+        IPosition pos = histIterator.position();
+        getStatistics (stat, pos);
+        stats(pos.size() == 1 ? IPosition(1, 0) : pos.removeAxes(removeAxis)).assign(stat);
+        // Extract the histogram in the appropriate form
+        extractOneHistogram(
+                linearSum, linearYMax, valuesIterator.vector(),
+                countsIterator.vector(), stat,
+                histIterator.vectorCursor()
+        );
+    }
+    return True;
+}
 
 template <class T>
 Bool LatticeHistograms<T>::getHistogram (Vector<T>& values,
@@ -1280,7 +1273,6 @@ void HistTiledCollapser<T>::process (
 // Process the data in the current chunk.   Everything in this
 // chunk belongs in one output location in the accumulation
 // lattices
-//
 
 // Fish out the min and max for this chunk of the data 
 // from the statistics object
@@ -1288,13 +1280,15 @@ void HistTiledCollapser<T>::process (
    typedef typename NumericTraits<T>::PrecisionType AccumType; 
    Vector<AccumType> stats;
    pStats_p->getStats(stats, startPos, True);
+   ThrowIf(
+		   stats.empty(),
+		   "Failed to compute statistics, if you set a range you have likely excluded all valid pixels"
+   );
 
 // Assignment from AccumType to T ok (e.g. Double to FLoat)
-
    Vector<T> clip(2);
    clip(0) = stats(LatticeStatsBase::MIN);
    clip(1) = stats(LatticeStatsBase::MAX);
-
 // Set histogram bin width
    
    const T binWidth = LatticeHistSpecialize::setBinWidth(clip(0), clip(1), nBins_p);

@@ -292,6 +292,8 @@ LogIO &operator<<(LogIO &os, Complex item);
 LogIO &operator<<(LogIO &os, DComplex item);
 LogIO &operator<<(LogIO &os, Int item);
 LogIO &operator<<(LogIO &os, uInt item);
+LogIO &operator<<(LogIO &os, Int64 item);
+LogIO &operator<<(LogIO &os, uInt64 item);
 LogIO &operator<<(LogIO &os, uLong item);
 LogIO &operator<<(LogIO &os, Long item);
 LogIO &operator<<(LogIO &os, Bool item);

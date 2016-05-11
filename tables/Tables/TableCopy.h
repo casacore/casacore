@@ -95,7 +95,8 @@ public:
 			       Table::TableOption option,
 			       Table::EndianFormat endianFormat,
 			       Bool replaceTSM = True,
-			       Bool noRows = False);
+			       Bool noRows = False,
+                               const StorageOption& = StorageOption());
 
   // Make an (empty) memory table with the same layout as the input one.
   // It has the same keywords and columns as the input one.

@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: tLatticeStatistics.cc 20650 2009-06-30 07:21:23Z gervandiepen $
 // 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
@@ -170,36 +170,25 @@ int main()
 			stats.getStatistic(npts, LatticeStatsBase::NPTS, False);
 			AlwaysAssert(npts.size() == 0, AipsError);
 		}
-#if 0
 		{
-			// using setAlgorithm()
+			// using configure*() methods
 			ArrayLattice<Float> latt(data);
 			SubLattice<Float> subLatt(latt);
 			LatticeStatistics<Float> stats(subLatt);
-			stats.setAlgorithm(StatisticsData::CLASSICAL);
+			stats.configureClassical();
 			Array<Double> mean;
 			Float expec = casacore::mean(data);
 			stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
 			AlwaysAssert(near(*mean.begin(), expec), AipsError);
-			stats.setAlgorithm(StatisticsData::HINGESFENCES);
 			stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
 			AlwaysAssert(near(*mean.begin(), expec), AipsError);
 			stats.configureHingesFences(0.0);
 			stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
 			expec = -41960.081836;
 			AlwaysAssert(near(*mean.begin(), expec), AipsError);
-			Bool exceptionThrown = False;
-			try {
-				stats.configureFitToHalf();
-			}
-			catch (const AipsError& x) {
-				exceptionThrown = True;
-			}
-			AlwaysAssert(exceptionThrown, AipsError);
-			stats.setAlgorithm(StatisticsData::FITTOHALF);
 			stats.configureFitToHalf(
-					FitToHalfStatisticsData::CMEAN,
-					FitToHalfStatisticsData::LE_CENTER
+				FitToHalfStatisticsData::CMEAN,
+				FitToHalfStatisticsData::LE_CENTER
 			);
 			Array<Double> v;
 			stats.getStatistic(v, LatticeStatsBase::MEAN, False);
@@ -359,7 +348,6 @@ int main()
 			}
 			subLatt.setPixelMask(ArrayLattice<Bool>(mask), True);
 			stats = LatticeStatistics<Float>(subLatt);
-			stats.setAlgorithm(StatisticsData::FITTOHALF);
 			stats.configureFitToHalf(
 				FitToHalfStatisticsData::CMEAN,
 				FitToHalfStatisticsData::LE_CENTER
@@ -384,7 +372,6 @@ int main()
 			AlwaysAssert(maxPos.size() == 0, AipsError);
 
 		}
-#endif
 	}
 	catch (const AipsError& x) {
 		cerr << "aipserror: error " << x.getMesg() << endl;

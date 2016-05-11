@@ -241,5 +241,20 @@ MSSelectionObservationParseError::MSSelectionObservationParseError (const String
 MSSelectionObservationParseError::~MSSelectionObservationParseError () throw()
 {}
 
+//
+//-----------------------------------------------------------------------------------
+//
+MSSelectionFeedError::MSSelectionFeedError (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionFeedError::~MSSelectionFeedError () throw()
+{}
+
+MSSelectionFeedParseError::MSSelectionFeedParseError (const String& str,Category c)
+: MSSelectionFeedError(str,c)
+{}
+MSSelectionFeedParseError::~MSSelectionFeedParseError () throw()
+{}
+
 } //# NAMESPACE CASACORE - END
 

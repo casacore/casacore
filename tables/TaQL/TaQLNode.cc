@@ -55,7 +55,11 @@ TaQLNode TaQLNode::parse (const String& command)
   theirStyle.reset();
   try {
     tableGramParseCommand (str);
-  } catch (std::exception& x) {
+  } catch (const TableGramError& x) {
+    // Keep erronous position and token in new exception
+    clearNodesCreated();
+    throw TableParseError (str + "  " + x.what(), x.pos(), x.token());
+  } catch (const std::exception& x) {
     // Parse error, so delete all nodes and rethrow.
     clearNodesCreated();
     throw TableParseError (str + "  " + x.what());
@@ -162,6 +166,20 @@ TaQLNode TaQLNode::restoreNode (AipsIO& aio)
     return TaQLRegexNodeRep::restore (aio);
   case TaQLNode_Count:
     return TaQLCountNodeRep::restore (aio);
+  case TaQLNode_Groupby:
+    return TaQLGroupNodeRep::restore (aio);
+  case TaQLNode_AltTab:
+    return TaQLAltTabNodeRep::restore (aio);
+  case TaQLNode_AddCol:
+    return TaQLAddColNodeRep::restore (aio);
+  case TaQLNode_SetKey:
+    return TaQLSetKeyNodeRep::restore (aio);
+  case TaQLNode_RenDrop:
+    return TaQLRenDropNodeRep::restore (aio);
+  case TaQLNode_AddRow:
+    return TaQLAddRowNodeRep::restore (aio);
+  case TaQLNode_ConcTab:
+    return TaQLConcTabNodeRep::restore (aio);
   default:
     throw AipsError ("TaQLNode::restoreNode - unknown node type");
   }
@@ -255,6 +273,14 @@ void TaQLMultiNode::setPPFix (const String& prefix, const String& postfix)
   itsNRep->setPPFix (prefix, postfix);
 }
 
+void TaQLMultiNode::setSeparator (const String& sep)
+{
+  itsNRep->setSeparator (sep);
+}
+void TaQLMultiNode::setSeparator (uInt incr, const String& sep)
+{
+  itsNRep->setSeparator (incr, sep);
+}
 
 
 TaQLQueryNode::TaQLQueryNode (TaQLQueryNodeRep* rep)

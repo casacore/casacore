@@ -31,6 +31,7 @@
 #include <casacore/ms/MSSel/MSSelectionError.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Logging/LogIO.h>
+#include <casacore/ms/MSSel/MSSelectionErrorHandler.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
@@ -40,6 +41,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   Vector<Int> MSSpwParse::ddidList;
   Matrix<Int> MSSpwParse::chanList; 
   TableExprNode MSSpwParse::columnAsTEN_p;
+  MSSelectionErrorHandler* MSSpwParse::thisMSSpwErrorHandler = 0;
   //# Constructor
   //
   //------------------------------------------------------------------

@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id$
+//# $Id: MSTable.h 21451 2014-06-10 07:48:08Z gervandiepen $
 
 #ifndef MS_MSTABLE_H
 #define MS_MSTABLE_H
@@ -81,7 +81,7 @@ template <class T> class Block;
 //
 // Upon destruction, the table is checked to see that all
 // required columns and keywords are still present.
-// If not an exception is thrown.  Nevertheless,
+// If not an exception is thrown. (Not a good idea!) Nevertheless,
 // the table will be flushed to disk if it is writable -
 // preserving its state.
 //
@@ -218,6 +218,31 @@ public:
 
     // </group>
 
+    // Remove a column from a table
+    // No exception is thrown if this invalidates the table
+    // in order to permit more complex operations with invalid
+    // intermediate states
+    void removeColumn(const String & columnName)
+    {
+	Table::removeColumn(columnName);
+    }
+
+    // Remove columns from a table
+    void removeColumn(const Vector<String>& columnNames)
+    {
+	Table::removeColumn(columnNames);
+    }
+
+    // Rename a column
+    // No exception is thrown if this invalidates the table
+    // in order to permit more complex operations with invalid
+    // intermediate states
+    void renameColumn(const String & newName,
+		      const String & oldName)
+    {
+	Table::renameColumn(newName, oldName);
+    }
+
 protected:
     // These constructors mirror the Table ones
     // <group name=tableLikeConstructors>
@@ -285,6 +310,7 @@ protected:
     // those given in writableColumns, those are empty and writable.
     Table referenceCopy(const String& newTableName, 
 			const Block<String>& writableColumns) const;
+
 };
 
 

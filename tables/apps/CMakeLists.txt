@@ -1,4 +1,4 @@
-foreach(prog showtable showtablelock taql lsmf tomf)
+foreach(prog showtableinfo showtablelock taql lsmf tomf tablefromascii)
     add_executable (${prog}  ${prog}.cc)
     target_link_libraries (${prog} casa_tables)
     install(TARGETS ${prog} DESTINATION bin)

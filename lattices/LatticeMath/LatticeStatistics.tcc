@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: LatticeStatistics.tcc 21586 2015-03-25 13:46:25Z gervandiepen $
 
 #ifndef LATTICES_LATTICESTATISTICS_TCC
 #define LATTICES_LATTICESTATISTICS_TCC
@@ -285,7 +285,9 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
 //
       for (uInt i=0; i<cursorAxes_p.nelements(); i++) {
          if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(pInLattice_p->ndim()-1)) {
-            error_p = "Invalid cursor axes";
+            ostringstream oss;
+            oss << "Invalid cursor axes: " << axes;
+             error_p = oss.str();
             return False;
          }
       }
@@ -376,7 +378,6 @@ Bool LatticeStatistics<T>::setList (const Bool& doList)
       return False;
    }
    doList_p = doList;
-
    return True;
 } 
 
@@ -658,7 +659,6 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
     else if (type==RMS) {
        retrieveStorageStatistic (sumSq, SUMSQ, dropDeg);
        ReadOnlyVectorIterator<AccumType> sumSqIt(sumSq);
-//
        while (!nPtsIt.pastEnd()) {
           for (uInt i=0; i<n1; i++) {
              sliceIt.vector()(i) = 
@@ -669,12 +669,12 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
           sumSqIt.next();
           sliceIt.next();
        }
-    } else {
+    }
+    else {
        if (haveLogger_p) os_p << LogIO::SEVERE << "Internal error" << endl << LogIO::POST;
        slice.resize(IPosition(0,0));
        return False;
     }
-
    return True;
 }
 
@@ -797,7 +797,6 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     Double timeOld = 0;
     Double timeNew = 0;
     uInt nsets = pStoreLattice_p->size()/storeLatticeShape.getLast(1)[0];
-
     if (_algConf.algorithm == StatisticsData::CLASSICAL) {
         uInt nel = pInLattice_p->size()/nsets;
         timeOld = nsets*(_aOld + _bOld*nel);
@@ -831,7 +830,6 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
         _doStatsLoop(nsets, pProgressMeter);
     }
     pProgressMeter = NULL;
-
     // Do robust statistics separately as required.
     generateRobust();
     needStorageLattice_p = False;
@@ -900,7 +898,7 @@ void LatticeStatistics<T>::_doStatsLoop(
 			stepper.atStart() && ! progressMeter.null()
 			&& ! nsetsIsLarge
 		) {
-			uInt nelem = subLat.size();
+			uInt64 nelem = subLat.size();
 			uInt nSublatticeSteps = nelem > 4096*4096
 				? nelem/subLat.advisedMaxPixels()
 				: 1;
@@ -936,15 +934,15 @@ void LatticeStatistics<T>::_doStatsLoop(
 		if (fixedMinMax_p && ! noInclude_p) {
 			currentMax = range_p[1];
 		}
-		else if (! stats.max.null()) {
-			currentMax = *stats.max;
+		else {
+			currentMax = stats.max.null() ? 0 : *stats.max;
 		}
 		pStoreLattice_p->putAt(currentMax, posMax);
 		if (fixedMinMax_p && ! noInclude_p) {
 			currentMin = range_p[0];
 		}
-		else if (! stats.min.null()) {
-			currentMin = *stats.min;
+		else {
+			currentMin = stats.min.null() ? 0 : *stats.min;
 		}
 		pStoreLattice_p->putAt(currentMin, posMin);
 		if (isReal) {
@@ -993,12 +991,12 @@ void LatticeStatistics<T>::_doStatsLoop(
 	}
 }
 
-
 template <class T>
 void LatticeStatistics<T>::generateRobust () {
 	Bool showMsg = haveLogger_p && doRobust_p && displayAxes_p.nelements()==0;
-	if (showMsg) os_p << LogIO::NORMAL1 << "Computing robust statistics" << LogIO::POST;
-
+	if (showMsg) {
+	    os_p << LogIO::NORMAL << "Computing quantiles..." << LogIO::POST;
+	}
 	const uInt nCursorAxes = cursorAxes_p.nelements();
 	const IPosition latticeShape(pInLattice_p->shape());
 	IPosition cursorShape(pInLattice_p->ndim(),1);
@@ -1020,6 +1018,7 @@ void LatticeStatistics<T>::generateRobust () {
 	std::map<Double, AccumType> quantiles;
 	CountedPtr<uInt64> knownNpts;
 	CountedPtr<AccumType> knownMax, knownMin;
+	static const uInt maxArraySizeBytes = 1e8;
 	if (doRobust_p) {
 		fractions.insert(0.25);
 		fractions.insert(0.75);
@@ -1071,13 +1070,33 @@ void LatticeStatistics<T>::generateRobust () {
 		// getMedian() and getQuartiles() separately
 		knownMin = new AccumType(pStoreLattice_p->getAt(posMin));
 		knownMax = new AccumType(pStoreLattice_p->getAt(posMax));
+		Int64 nBins = 10000;
+		if (knownNpts) {
+		    // try to prevent multiple passes for
+		    // large images
+		    if (*knownNpts > 1e10) {
+		        nBins = 1e7;
+		    }
+		    else if (*knownNpts > 1e9) {
+		        nBins = 1e6;
+		    }
+		    else if (*knownNpts > 1e8) {
+		        nBins = 1e5;
+		    }
+		}
 		pStoreLattice_p->putAt(
 			sa->getMedianAndQuantiles(
-				quantiles, fractions, knownNpts, knownMin, knownMax
+				quantiles, fractions, knownNpts, knownMin, knownMax,
+				maxArraySizeBytes, False, nBins
 			),
 			pos
 		);
-		pStoreLattice_p->putAt(sa->getMedianAbsDevMed(), pos2);
+		pStoreLattice_p->putAt(
+		    sa->getMedianAbsDevMed(
+		        knownNpts, knownMin, knownMax, maxArraySizeBytes,
+		        False, nBins
+		    ), pos2
+		);
 		pStoreLattice_p->putAt(quantiles[0.75] - quantiles[0.25], pos3);
 		pStoreLattice_p->putAt(quantiles[0.25], posQ1);
 		pStoreLattice_p->putAt(quantiles[0.75], posQ3);

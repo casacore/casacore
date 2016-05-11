@@ -141,8 +141,8 @@ void testIt(MSMetaData& md) {
 	scanKey.obsID = 0;
 	scanKey.arrayID = 0;
 	for (
-			std::set<Int>::const_iterator scanNum = scans.begin();
-			scanNum!=scans.end(); ++scanNum
+		std::set<Int>::const_iterator scanNum = scans.begin();
+		scanNum!=scans.end(); ++scanNum
 	) {
 		scanKey.scan = *scanNum;
 		std::set<String> intents = md.getIntentsForScan(scanKey);
@@ -413,8 +413,8 @@ void testIt(MSMetaData& md) {
 		scanKey.obsID = 0;
 		scanKey.arrayID = 0;
 		for (
-				std::set<Int>::const_iterator scan=scanNumbers.begin();
-				scan!=scanNumbers.end(); ++scan
+		    std::set<Int>::const_iterator scan=scanNumbers.begin();
+		    scan!=scanNumbers.end(); ++scan
 		) {
 			std::set<uInt> exp;
 			if (*scan == 1 || *scan==5 || *scan==8) {
@@ -886,20 +886,20 @@ void testIt(MSMetaData& md) {
 			std::set<Int> expec2;
 			std::set<Int> curScanSet;
 			for (
-					std::set<Int>::const_iterator curScan=scans.begin();
-					curScan!=scans.end(); ++curScan
+				std::set<Int>::const_iterator curScan=scans.begin();
+				curScan!=scans.end(); ++curScan
 			) {
 				std::set<Int> expec;
 				curScanSet.insert(*curScan);
-				if (*curScan<=4) {
+				if (*curScan <= 4) {
 					expec.insert(0);
 					expec2.insert(0);
 				}
-				else if (*curScan==5) {
+				else if (*curScan == 5) {
 					expec.insert(1);
 					expec2.insert(1);
 				}
-				else if (*curScan<=7) {
+				else if (*curScan <= 7) {
 					expec.insert(2);
 					expec2.insert(2);
 				}
@@ -931,14 +931,29 @@ void testIt(MSMetaData& md) {
 				scanKey.arrayID = 0;
 				scanKey.scan = *curScan;
 				AlwaysAssert(
-						md.getFieldsForScan(scanKey) == expec,
-						AipsError
+					md.getFieldsForScan(scanKey) == expec,
+					AipsError
 				);
 				AlwaysAssert(
-						md.getFieldsForScans(curScanSet, 0, 0) == expec2,
-						AipsError
+					md.getFieldsForScans(curScanSet, 0, 0) == expec2,
+					AipsError
 				);
 			}
+			std::set<Int> expec3;
+			expec3.insert(3);
+			expec3.insert(4);
+			std::set<ScanKey> scanKeys;
+			ScanKey x;
+			x.obsID = 0;
+			x.arrayID = 0;
+			x.scan = 19;
+			scanKeys.insert(x);
+			x.scan = 31;
+			scanKeys.insert(x);
+			AlwaysAssert(
+				md.getFieldsForScans(scanKeys) == expec3,
+				AipsError
+			);
 		}
 		{
 			cout << "*** test getFieldsForIntent() and getIntentToFieldsMap()" << endl;
@@ -1199,8 +1214,8 @@ void testIt(MSMetaData& md) {
 		}
 		{
 			cout << "*** test getUniqueBaselines() and nBaselines()" << endl;
-			cout << md.getUniqueBaselines() << endl;
-			AlwaysAssert(md.nBaselines() == 21, AipsError);
+			AlwaysAssert(md.nBaselines(False) == 21, AipsError);
+			AlwaysAssert(md.nBaselines(True) == 25, AipsError);
 		}
 		{
 			cout << "*** test getEffectiveTotalExposureTime()" << endl;
@@ -1280,7 +1295,6 @@ void testIt(MSMetaData& md) {
 					default:
 						throw AipsError();
 					}
-					cout << "number " << iter->first << endl;
 					AlwaysAssert(iter->second == expec, AipsError);
 				}
 			}
@@ -1314,6 +1328,9 @@ void testIt(MSMetaData& md) {
 		{
 			cout << "*** test getFirstExposureTimeMap()" << endl;
 			vector<std::map<Int, Quantity> > mymap = md.getFirstExposureTimeMap();
+			cout << "val " << mymap[0][30].getValue("s") << endl;
+            cout << "val " << mymap[0][30] << endl;
+
 			AlwaysAssert(near(mymap[0][30].getValue("s"), 1.152), AipsError);
 			AlwaysAssert(near(mymap[10][17].getValue("s"), 1.008), AipsError)
 
@@ -1325,12 +1342,11 @@ void testIt(MSMetaData& md) {
 			for (Int i=0; i<6; ++i) {
 				expec.insert(i);
 			}
-			AlwaysAssert(md.getUniqueFiedIDs() == expec, AipsError);
+			AlwaysAssert(md.getUniqueFieldIDs() == expec, AipsError);
 		}
 		{
 			cout << "*** test getCenterFreqs()" << endl;
 			vector<Quantity> centers = md.getCenterFreqs();
-			cout << "centers " << centers << endl;
 			Double mine[] = {
 				187550000000.0,	214250000000.0,
 				214234375000.0,	216250000000.0,
@@ -1455,7 +1471,7 @@ void testIt(MSMetaData& md) {
 			}
 			{
 				cout << "*** test getSummary()" << endl;
-				cout << "summary " << md.getSummary() << endl;
+				//cout << "summary " << md.getSummary() << endl;
 			}
 			{
 				cout << "*** test getProjects()" << endl;
@@ -1516,8 +1532,7 @@ void testIt(MSMetaData& md) {
 				vector<MFrequency> rf = md.getRefFreqs();
 				for (uInt i=0; i<n; ++i) {
 					AlwaysAssert(rf[i].getRefString() == "TOPO", AipsError);
-					AlwaysAssert(rf[i].getUnit() == Unit("Hz"), AipsError);
-					cout << std::setprecision(20) << "got " << rf[i].get("Hz").getValue() << " exp " << expec[i] << endl;
+                    AlwaysAssert(rf[i].getUnit() == Unit("Hz"), AipsError);
 					AlwaysAssert(near(rf[i].get("Hz").getValue(), expec[i], 1e-8), AipsError);
 				}
 			}
@@ -1619,7 +1634,6 @@ void testIt(MSMetaData& md) {
 				uInt n = *iter == 9 ? 12 : 13;
 				AlwaysAssert(ants.size() == n, AipsError);
 				std::set<Int>::const_iterator aIter = ants.begin();
-				std::set<Int>::const_iterator aEnd = ants.end();
 				for (Int i=0; i<14; ++i, ++aIter) {
 					if (i == 12 || (*iter == 9 && i == 7)) {
 						++i;
@@ -1783,7 +1797,7 @@ void testIt(MSMetaData& md) {
 			}
 		}
 		{
-			cout << "test getSpwToTimesForScan()" << endl;
+			cout << "*** test getSpwToTimesForScan()" << endl;
 			ScanKey scan;
 			scan.obsID = 0;
 			scan.arrayID = 0;
@@ -1964,7 +1978,499 @@ void testIt(MSMetaData& md) {
 			uInt n = md.nUniqueSourceIDsFromSourceTable();
 			AlwaysAssert(n == 6, AipsError);
 		}
-		{
+        {
+            cout << "*** test getFieldNames()" << endl;
+            vector<String> fnames = md.getFieldNames();
+            String z[] = {"3C279", "J1337-129", "Titan", "J1625-254", "V866 Sco", "RNO 90"};
+            vector<String> expec(z, z+6);
+            vector<String>::const_iterator iter = fnames.begin();
+            vector<String>::const_iterator end = fnames.end();
+            vector<String>::const_iterator eIter = expec.begin();
+            while (iter != end) {
+                AlwaysAssert(*iter == *eIter, AipsError);
+                ++iter;
+                ++eIter;
+            }
+        }
+        {
+            cout << "*** test getNetSidebands()" << endl;
+            vector<Int> netsb = md.getNetSidebands();
+            Int expec[] = {
+                3, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2,
+                2, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
+            };
+            uInt n = netsb.size();
+            for(uInt i=0; i<n; ++i) {
+                AlwaysAssert(netsb[i] == expec[i], AipsError);
+            }
+        }
+        {
+            cout << "*** test getReferenceDirection()" << endl;
+            uInt nfields = md.nFields();
+            for (uInt i=0; i<nfields; ++i) {
+                MDirection dir = md.getReferenceDirection(i);
+                Vector<Double> angle = dir.getAngle().getValue();
+                switch(i) {
+                case 0:
+                    AlwaysAssert(near(angle[0], -2.8964345, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.10104256, 1e-6), AipsError);
+                    break;
+                case 1:
+                    AlwaysAssert(near(angle[0], -2.71545722, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.22613985, 1e-6), AipsError);
+                    break;
+                case 2:
+                    AlwaysAssert(near(angle[0], -2.72554329, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.1219181, 1e-6), AipsError);
+                    break;
+                case 3:
+                    AlwaysAssert(near(angle[0], -1.98190197, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.44437211, 1e-6), AipsError);
+                    break;
+                case 4:
+                    AlwaysAssert(near(angle[0], -2.04411602, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.32533384, 1e-6), AipsError);
+                    break;
+                case 5:
+                    AlwaysAssert(near(angle[0], -1.94537525, 1e-6), AipsError);
+                    AlwaysAssert(near(angle[1], -0.27584353, 1e-6), AipsError);
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+        {
+            cout << "*** test getChanEffectiveBWs()" << endl;
+            vector<QVector<Double> > ebw = md.getChanEffectiveBWs(False);
+            vector<QVector<Double> >::const_iterator iter = ebw.begin();
+            vector<QVector<Double> >::const_iterator end = ebw.end();
+            Double expec = 0;
+            while (iter != end) {
+                size_t nchans = iter->size();
+                if (nchans == 1) {
+                    ++iter;
+                    continue;
+                }
+                else if (nchans == 4) {
+                    expec = 7.5e9;
+                }
+                else if (nchans == 128) {
+                    expec = 1.5625e7;
+                }
+                else if (nchans == 3840) {
+                    expec = 30517.578125;
+                }
+                Vector<Double> vals = iter->getValue();
+                Vector<Double>::const_iterator jiter = vals.begin();
+                Vector<Double>::const_iterator jend = vals.end();
+                while (jiter != jend) {
+                    AlwaysAssert(*jiter == expec, AipsError);
+                    ++jiter;
+                }
+                ++iter;
+            }
+            vector<QVector<Double> > ebwv = md.getChanEffectiveBWs(True);
+            AlwaysAssert(near(ebwv[9].getValue()[0], 20.23684342, 1e-8), AipsError);
+            AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
+        }
+        {
+            cout << "*** test getChanResolutions()" << endl;
+            vector<QVector<Double> > ebw = md.getChanResolutions(False);
+            vector<QVector<Double> >::const_iterator iter = ebw.begin();
+            vector<QVector<Double> >::const_iterator end = ebw.end();
+            Double expec = 0;
+            while (iter != end) {
+                size_t nchans = iter->size();
+                if (nchans == 1) {
+                    ++iter;
+                    continue;
+                }
+                else if (nchans == 4) {
+                    expec = 7.5e9;
+                }
+                else if (nchans == 128) {
+                    expec = 1.5625e7;
+                }
+                else if (nchans == 3840) {
+                    expec = 30517.578125;
+                }
+                Vector<Double> vals = iter->getValue();
+                Vector<Double>::const_iterator jiter = vals.begin();
+                Vector<Double>::const_iterator jend = vals.end();
+                while (jiter != jend) {
+                    AlwaysAssert(*jiter == expec, AipsError);
+                    ++jiter;
+                }
+                ++iter;
+            }
+            vector<QVector<Double> > ebwv = md.getChanResolutions(True);
+            AlwaysAssert(near(ebwv[9].getValue()[0], 20.23684342, 1e-8), AipsError);
+            AlwaysAssert(ebwv[9].getUnit() == "km/s", AipsError);
+        }
+        {
+            cout << "test getRestFrequencies()" << endl;
+            map<SourceKey, SHARED_PTR<vector<MFrequency> > > rfs = md.getRestFrequencies();
+            map<SourceKey, SHARED_PTR<vector<MFrequency> > >::const_iterator iter = rfs.begin();
+            map<SourceKey, SHARED_PTR<vector<MFrequency> > >::const_iterator end = rfs.end();
+            while (iter != end) {
+                if (iter->second ) {
+                    AlwaysAssert(
+                        iter->first.id == 0 && iter->first.spw == 34, AipsError
+                    );
+                    AlwaysAssert(iter->second->size() == 2, AipsError);
+                    AlwaysAssert((*iter->second)[0].get("Hz").getValue() == 1e10, AipsError);
+                    AlwaysAssert((*iter->second)[1].get("Hz").getValue() == 2e10, AipsError);
+                }
+                ++iter;
+            }
+        }
+        {
+            cout << "test getTransitions()" << endl;
+            map<SourceKey, SHARED_PTR<vector<String> > > rfs = md.getTransitions();
+            map<SourceKey, SHARED_PTR<vector<String> > >::const_iterator iter = rfs.begin();
+            map<SourceKey, SHARED_PTR<vector<String> > >::const_iterator end = rfs.end();
+            while (iter != end) {
+                if (iter->second ) {
+                    AlwaysAssert(
+                        iter->first.id == 0 && iter->first.spw == 34, AipsError
+                    );
+                    AlwaysAssert(iter->second->size() == 2, AipsError);
+                    AlwaysAssert((*iter->second)[0] == "myline", AipsError);
+                    AlwaysAssert((*iter->second)[1] == "yourline", AipsError);
+                }
+                ++iter;
+            }
+        }
+        {
+            cout << "test getSubScanProperties" << endl;
+            SubScanKey sskey;
+            sskey.arrayID = 0;
+            sskey.fieldID = 0;
+            sskey.obsID = 0;
+            sskey.scan = 0;
+            Bool thrown = False;
+            try {
+                md.getSubScanProperties(sskey);
+            }
+            catch (const AipsError& x) {
+                thrown = True;
+            }
+            AlwaysAssert(thrown, AipsError);
+            sskey.scan = 1;
+            MSMetaData::SubScanProperties props = md.getSubScanProperties(sskey);
+            AlwaysAssert(props.acRows + props.xcRows == 367, AipsError);
+            SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > allProps
+                = md.getSubScanProperties();
+            AlwaysAssert(
+                allProps->find(sskey)->second.acRows + allProps->find(sskey)->second.xcRows == 367,
+                AipsError
+            );
+            for (uInt i=0; i<9; ++i) {
+                Double expec = 0;
+                if (i == 0) {
+                    expec = 1.152;
+                }
+                else if (i == 1 || i == 3 || i == 5 || i == 7) {
+                    expec = 2.016;
+                }
+                else {
+                    expec = 1.008;
+                }
+                AlwaysAssert(near(props.meanInterval[i].getValue(), expec), AipsError);
+            }
+        }
+        {
+        	cout << "*** test getScanKeys()" << endl;
+        	std::set<ScanKey> keys = md.getScanKeys();
+        	ScanKey expec;
+        	expec.arrayID = 0;
+        	expec.obsID = 0;
+        	for (Int i=1; i<34; ++i) {
+            	expec.scan = i;
+            	if (i == 33) {
+            		AlwaysAssert(keys.find(expec) == keys.end(), AipsError);
+            	}
+            	else {
+            		AlwaysAssert(keys.find(expec) != keys.end(), AipsError);
+            	}
+        	}
+        }
+        {
+        	cout << "*** test getIntentsForSubScan() and getSubScanToIntentsMap()" << endl;
+        	ArrayKey arrayKey;
+        	arrayKey.obsID = 0;
+        	arrayKey.arrayID = 0;
+        	std::set<SubScanKey> sskeys = md.getSubScanKeys(arrayKey);
+        	std::set<SubScanKey>::const_iterator ssiter = sskeys.begin();
+        	std::set<SubScanKey>::const_iterator ssend = sskeys.end();
+        	SHARED_PTR<const std::map<SubScanKey, std::set<String> > > mymap = md.getSubScanToIntentsMap();
+        	for (; ssiter!=ssend; ++ssiter) {
+        		std::set<String> intents = md.getIntentsForSubScan(*ssiter);
+        		std::set<String> exp;
+        		Int scan = ssiter->scan;
+        		if (scan == 1 || scan == 5 || scan == 8) {
+        			String mystr[] = {
+        				"CALIBRATE_POINTING#ON_SOURCE", "CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+2);
+        		}
+        		else if (scan == 2) {
+        			String mystr[] = {
+        				"CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE",
+						"CALIBRATE_SIDEBAND_RATIO#ON_SOURCE",
+						"CALIBRATE_WVR#OFF_SOURCE",
+						"CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+4);
+        		}
+        		else if (
+        			scan == 3 || scan == 6
+					|| scan == 9 || scan == 11
+					|| scan == 13 || scan == 15
+					|| scan == 17 || scan == 19
+					|| scan == 22 || scan == 24
+					|| scan == 26 || scan == 29
+					|| scan == 31
+        		) {
+        			String mystr[] = {
+        				"CALIBRATE_ATMOSPHERE#OFF_SOURCE",
+						"CALIBRATE_ATMOSPHERE#ON_SOURCE",
+						"CALIBRATE_WVR#OFF_SOURCE",
+						"CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+4);
+        		}
+        		else if (scan == 4) {
+        			String mystr[] = {
+        				"CALIBRATE_BANDPASS#ON_SOURCE",
+						"CALIBRATE_PHASE#ON_SOURCE",
+						"CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+3);
+        		}
+        		else if (scan == 7) {
+        			String mystr[] = {
+        				"CALIBRATE_AMPLI#ON_SOURCE",
+						"CALIBRATE_PHASE#ON_SOURCE",
+						"CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+3);
+        		}
+        		else if (
+        			scan == 10 || scan == 14
+					|| scan == 18 || scan == 21
+					|| scan == 25 || scan == 28
+					|| scan == 32
+        		) {
+        			String mystr[] = {
+        				"CALIBRATE_PHASE#ON_SOURCE",
+						"CALIBRATE_WVR#ON_SOURCE"
+        			};
+        			exp.insert(mystr, mystr+2);
+        		}
+        		else if (
+        			scan == 12 || scan == 16
+					|| scan == 20 || scan == 23
+					|| scan == 27 || scan == 30
+        		) {
+        			exp.insert("OBSERVE_TARGET#ON_SOURCE");
+        		}
+        		uniqueIntents.insert(exp.begin(), exp.end());
+        		AlwaysAssert(intents == exp, AipsError);
+                AlwaysAssert(mymap->find(*ssiter)->second == exp, AipsError);
+        	}
+        }
+        {
+            cout << "*** test getSpwsForSubScan()" << endl;
+            ArrayKey arrayKey;
+            arrayKey.obsID = 0;
+            arrayKey.arrayID = 0;
+            std::set<SubScanKey> sskeys = md.getSubScanKeys(arrayKey);
+            std::set<SubScanKey>::const_iterator ssiter = sskeys.begin();
+            std::set<SubScanKey>::const_iterator ssend = sskeys.end();
+            for (; ssiter!=ssend; ++ssiter) {
+                std::set<uInt> exp;
+                Int scan = ssiter->scan;
+                if (scan == 1 || scan==5 || scan==8) {
+                    uInt myints[] = {
+                        0, 1, 2, 3, 4, 5, 6, 7, 8
+                    };
+                    exp.insert(myints, myints+9);
+                }
+                else if (
+                    scan == 2 || scan==3 || scan==6 || scan==9
+                    || scan==11 || scan==13 || scan==15 || scan==17
+                    || scan==19 || scan==22 || scan==24 || scan==26
+                    || scan==29 || scan==31
+                ) {
+                    uInt myints[] = {
+                        0, 9, 10, 11, 12, 13, 14, 15, 16
+                    };
+                    exp.insert(myints, myints+9);
+                }
+                else if (
+                    scan==4 || scan==7 || scan==10 || scan==12
+                    || scan==14 || scan==16 || scan==18 || scan==20
+                    || scan==21 || scan==23 || scan==25 || scan==27
+                    || scan==28 || scan==30 || scan==32
+                ) {
+                    uInt myints[] = {
+                        0, 17, 18, 19, 20, 21, 22, 23, 24
+                    };
+                    exp.insert(myints, myints+9);
+                }
+                AlwaysAssert(md.getSpwsForSubScan(*ssiter) == exp, AipsError);
+            }
+        }
+        {
+            cout << "test getAverageIntervalsForSubScan()" << endl;
+            ArrayKey arrayKey;
+            arrayKey.obsID = 0;
+            arrayKey.arrayID = 0;
+            std::set<SubScanKey> sskeys = md.getSubScanKeys(arrayKey);
+            std::set<SubScanKey>::const_iterator ssiter = sskeys.begin();
+            std::set<SubScanKey>::const_iterator ssend = sskeys.end();
+            for (; ssiter!=ssend; ++ssiter) {
+                std::map<uInt, Quantity> mIntervals = md.getAverageIntervalsForSubScan(*ssiter);
+                std::set<uInt> spws = md.getSpwsForSubScan(*ssiter);
+                AlwaysAssert(mIntervals.size() == spws.size(), AipsError);
+                std::map<uInt, Quantity>::const_iterator miter = mIntervals.begin();
+                std::map<uInt, Quantity>::const_iterator mend = mIntervals.end();
+                for (; miter!=mend; ++miter) {
+                    uInt spw = miter->first;
+                    AlwaysAssert(spws.find(spw) != spws.end(), AipsError);
+                    Double v = 0;
+                    if (spw == 0) {
+                        v = 1.152;
+                    }
+                    else if (
+                        spw == 1 || spw == 3 || spw == 5 || spw == 7
+                        || spw == 9 || spw == 11 || spw == 13 || spw == 15
+                    ) {
+                        v = 2.016;
+                    }
+                    else if (
+                        spw == 2 || spw == 4 || spw == 6 || spw == 8
+                        || spw == 10 || spw == 12 || spw == 14 || spw == 16
+                        || spw == 18 || spw == 20 || spw == 22 || spw == 24
+                    ) {
+                        v = 1.008;
+                    }
+                    else if (
+                        spw == 17 || spw == 19 || spw == 21 || spw == 23
+                    ) {
+                        v = 6.048;
+
+                    }
+                    Quantity expec(v, "s");
+                    AlwaysAssert(near(miter->second, expec, 1e-1), AipsError);
+                }
+            }
+        }
+        {
+            cout << "*** test getSpwIDs()" << endl;
+            std::set<uInt> spws = md.getSpwIDs();
+            AlwaysAssert(spws.size() == 25, AipsError);
+            std::set<uInt>::const_iterator iter = spws.begin();
+            std::set<uInt>::const_iterator end = spws.end();
+            uInt i = 0;
+            for (; iter!=end; ++iter, ++i) {
+                AlwaysAssert(*iter == i, AipsError);
+            }
+        }
+        {
+            cout << "*** test getScanToTimeRangeMap()" << endl;
+            SHARED_PTR<const std::map<ScanKey, std::pair<Double,Double> > > mymap
+                = md.getScanToTimeRangeMap();
+            ScanKey key;
+            key.arrayID = 0;
+            key.obsID = 0;
+            key.scan = 1;
+            AlwaysAssert(near(mymap->find(key)->second.first,  4842824745.0, 1.0), AipsError);
+            AlwaysAssert(near(mymap->find(key)->second.second, 4842824839.0, 1.0), AipsError);
+        }
+        {
+            cout << "*** test getNRowsMap()" << endl;
+            SubScanKey key;
+            key.arrayID = 0;
+            key.obsID = 0;
+            key.scan = 1;
+            key.fieldID = 0;
+            SHARED_PTR<const map<SubScanKey, uInt> > both = md.getNRowMap(MSMetaData::BOTH);
+            AlwaysAssert(both->find(key)->second == 367, AipsError);
+            SHARED_PTR<const map<SubScanKey, uInt> > ac = md.getNRowMap(MSMetaData::AUTO);
+            AlwaysAssert(ac->find(key)->second == 51, AipsError);
+            SHARED_PTR<const map<SubScanKey, uInt> > xc = md.getNRowMap(MSMetaData::CROSS);
+            AlwaysAssert(xc->find(key)->second == 316, AipsError);
+        }
+        {
+            cout << "*** test getFieldCodes()" << endl;
+            Vector<String> codes = Vector<String>(md.getFieldCodes());
+            AlwaysAssert(allEQ(codes, String("none")), AipsError);
+        }
+        {
+            cout << "*** test getUniqueDataDescIDs()" << endl;
+            std::set<uInt> ddids = md.getUniqueDataDescIDs();
+            Vector<uInt> expec = indgen(25, (uInt)0, (uInt)1);
+            AlwaysAssert(
+                allEQ(
+                    Vector<uInt>(vector<uInt>(ddids.begin(), ddids.end())), expec
+                ), AipsError
+            );
+        }
+        {
+            cout << "*** test getUniqueAntennaIDs()" << endl;
+            std::set<Int> ants = md.getUniqueAntennaIDs();
+            Int evals[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13};
+            Vector<Int> expec(vector<Int>(evals, evals+13));
+            AlwaysAssert(
+                allEQ(
+                    Vector<Int>(vector<Int>(ants.begin(), ants.end())), expec
+                ), AipsError
+            );
+        }
+        {
+            cout << "*** test getFirstExposureTimeMap()" << endl;
+            vector<map<Int, Quantity> > mymap = md.getFirstExposureTimeMap();
+            AlwaysAssert(mymap.size() == 25, AipsError);
+            for (Int i=0; i<25; ++i) {
+                uInt expSize = 0;
+                Quantity expExposure(0, "s");
+                if (i == 0) {
+                    expSize = 32;
+                    expExposure.setValue(1.152);
+                }
+                else if (i == 1 || i == 3 || i == 5 || i == 7) {
+                    expSize = 3;
+                    expExposure.setValue(2.016);
+                }
+                else if (i == 2 || i == 4 || i == 6 || i == 8) {
+                    expSize = 3;
+                    expExposure.setValue(1.008);
+                }
+                else if (i == 9 || i == 11 || i == 13 || i == 15) {
+                    expSize = 14;
+                    expExposure.setValue(2.016);
+                }
+                else if (i == 10 || i == 12 || i == 14 || i == 16) {
+                    expSize = 14;
+                    expExposure.setValue(1.008);
+                }
+                else if (i == 17 || i == 19 || i == 21 || i == 23) {
+                    expSize = 15;
+                    expExposure.setValue(6.048);
+                }
+                else if (i == 18 || i == 20 || i == 22 || i == 24) {
+                    expSize = 15;
+                    expExposure.setValue(1.008);
+                }
+                AlwaysAssert(mymap[i].size() == expSize, AipsError);
+                AlwaysAssert(mymap[i].begin()->second == expExposure, AipsError);
+            }
+            
+        }
+        {
 			cout << "*** cache size " << md.getCache() << endl;
 		}
 	}
@@ -1992,7 +2498,6 @@ int main() {
     	MSMetaData md2(&ms, 0);
     	testIt(md2);
     	AlwaysAssert(md2.getCache() == 0, AipsError);
-
 
     	cout << "OK" << endl;
     } 

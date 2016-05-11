@@ -34,6 +34,9 @@
 #ifdef __SSE2__
 #include <emmintrin.h>
 #endif
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -458,15 +461,12 @@ size_t Conversion::bitToBool (void* to, const void* from,
     const size_t bits_per_loop = 8;
     const size_t nwords = nvalues / bits_per_loop;
 #ifdef _OPENMP
-# pragma omp parallel if (nwords >= 1024*2)
+    size_t nthr = std::min((size_t)omp_get_max_threads(),
+                           nwords / (16 * 1024));
+# pragma omp parallel for if (nwords >= 32 * 1024) num_threads(nthr)
 #endif
-    {
-#ifdef _OPENMP
-# pragma omp for
-#endif
-	for (size_t i = 0; i < nwords; ++i) {
-	    data[i] = conv_tab[bits[i]].d;
-	}
+    for (size_t i = 0; i < nwords; ++i) {
+        data[i] = conv_tab[bits[i]].d;
     }
     return nwords * (bits_per_loop / 8)
 	+ bitToBool_ (&data[nwords], &bits[nwords],

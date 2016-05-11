@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id$
+//# $Id: LatticeAddNoise.h 21549 2015-01-28 10:01:12Z gervandiepen $
 
 #ifndef LATTICES_LATTICEADDNOISE_H
 #define LATTICES_LATTICEADDNOISE_H
@@ -86,9 +86,13 @@ public:
    LatticeAddNoise();
 
 // Constructor. An exception will occur if we cannot generate 
-// the distribution (e.g. illegal parameters).  
-   LatticeAddNoise (Random::Types type,
-                    const Vector<Double>& parameters);
+// the distribution (e.g. illegal parameters).  seed1 and seed2
+   // are used to seed the MLCG object.
+   LatticeAddNoise (
+		 Random::Types type,
+         const Vector<Double>& parameters,
+         Int seed1=0, Int seed2=1
+   );
 
 // Copy constructor (copy semantics)
    LatticeAddNoise (const LatticeAddNoise& other);

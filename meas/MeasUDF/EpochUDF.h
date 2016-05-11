@@ -99,7 +99,7 @@ namespace casacore {
 
     // Get the value.
     virtual Double getDouble (const TableExprId& id);
-    virtual Array<Double> getArrayDouble (const TableExprId& id);
+    virtual MArray<Double> getArrayDouble (const TableExprId& id);
 
   private:
     //# Data members.
@@ -107,6 +107,7 @@ namespace casacore {
     PositionEngine itsPositionEngine;
     FuncType       itsType;
     MEpoch::Types  itsRefType;
+    Bool           itsSidFrac;   // T = use fraction for sidereal times
   };
 
 } //end namespace

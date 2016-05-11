@@ -31,6 +31,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/OS/Conversion.h>
+#include <cstring>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -437,53 +438,65 @@ private:
 };
 
 
-
 inline void LECanonicalConversion::reverse2 (void* to, const void* from)
 {
-    ((char*)to)[0] = ((const char*)from)[1];
-    ((char*)to)[1] = ((const char*)from)[0];
+    unsigned short x, xsw;
+    memcpy(&x, from, 2);
+    xsw = ((x & 0xffu) << 8u) | (x >> 8u);
+    memcpy(to, &xsw, 2);
 }
+
 inline void LECanonicalConversion::reverse4 (void* to, const void* from)
 {
-    ((char*)to)[0] = ((const char*)from)[3];
-    ((char*)to)[1] = ((const char*)from)[2];
-    ((char*)to)[2] = ((const char*)from)[1];
-    ((char*)to)[3] = ((const char*)from)[0];
+    unsigned int x, xsw;
+    memcpy(&x, from, 4);
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
+    xsw = __builtin_bswap32(x);
+#else
+    xsw = ((x & 0xffu) << 24u) | ((x & 0xff00u) << 8u) |
+          ((x & 0xff0000u) >> 8u) | (x >> 24u);
+#endif
+    memcpy(to, &xsw, 4);
 }
+
 inline void LECanonicalConversion::reverse8 (void* to, const void* from)
 {
-    ((char*)to)[0] = ((const char*)from)[7];
-    ((char*)to)[1] = ((const char*)from)[6];
-    ((char*)to)[2] = ((const char*)from)[5];
-    ((char*)to)[3] = ((const char*)from)[4];
-    ((char*)to)[4] = ((const char*)from)[3];
-    ((char*)to)[5] = ((const char*)from)[2];
-    ((char*)to)[6] = ((const char*)from)[1];
-    ((char*)to)[7] = ((const char*)from)[0];
+    uInt64 x, xsw;
+    memcpy(&x, from, 8);
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
+    xsw = __builtin_bswap64(x);
+#else
+    xsw = ((x & 0xffULL) << 56ULL) |
+          ((x & 0xff00ULL) << 40ULL) |
+          ((x & 0xff0000ULL) << 24ULL) |
+          ((x & 0xff000000ULL) << 8ULL) |
+          ((x & 0xff00000000ULL) >> 8ULL) |
+          ((x & 0xff0000000000ULL) >> 24ULL) |
+          ((x & 0xff000000000000ULL) >> 40ULL) |
+          ( x >> 56ULL);
+#endif
+    memcpy(to, &xsw, 8);
 }
 
 inline void LECanonicalConversion::move2 (void* to, const void* from)
 {
-    ((char*)to)[0] = ((const char*)from)[0];
-    ((char*)to)[1] = ((const char*)from)[1];
+    memcpy(to, from, 2);
 }
+
 inline void LECanonicalConversion::move4 (void* to, const void* from)
 {
-    ((char*)to)[0] = ((const char*)from)[0];
-    ((char*)to)[1] = ((const char*)from)[1];
-    ((char*)to)[2] = ((const char*)from)[2];
-    ((char*)to)[3] = ((const char*)from)[3];
+    memcpy(to, from, 4);
 }
+
 inline void LECanonicalConversion::move8 (void* to, const void* from)
 {
-    ((char*)to)[0] = ((const char*)from)[0];
-    ((char*)to)[1] = ((const char*)from)[1];
-    ((char*)to)[2] = ((const char*)from)[2];
-    ((char*)to)[3] = ((const char*)from)[3];
-    ((char*)to)[4] = ((const char*)from)[4];
-    ((char*)to)[5] = ((const char*)from)[5];
-    ((char*)to)[6] = ((const char*)from)[6];
-    ((char*)to)[7] = ((const char*)from)[7];
+    /* memcpy is overlap save if size fits into a register */
+    if (sizeof(to) < 8) {
+        memmove(to, from, 8);
+    }
+    else {
+        memcpy(to, from, 8);
+    }
 }
 
 

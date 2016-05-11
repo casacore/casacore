@@ -295,6 +295,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //-------------------------------------------------------------------
   //  
+  class MSSelectionFeedError : public MSSelectionError {
+  public:
+    // Add given message to string "MSSelection time error: ".
+    MSSelectionFeedError (const String& message,Category c=GENERAL);
+    ~MSSelectionFeedError () throw();
+  };
+  
+  class MSSelectionFeedParseError: public MSSelectionFeedError {
+  public:
+    MSSelectionFeedParseError (const String& message,Category c=GENERAL);
+    ~MSSelectionFeedParseError () throw();
+  };
+
+  //
+  //-------------------------------------------------------------------
+  //  
   String constructMessage(const Int pos, const String& command);
 } //# NAMESPACE CASACORE - END
 

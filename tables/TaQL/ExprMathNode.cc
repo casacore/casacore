@@ -227,7 +227,11 @@ TableExprNodeDivide::~TableExprNodeDivide()
 void TableExprNodeDivide::handleUnits()
 {
     if (lnode_p->unit().empty()) {
-        setUnit (rnode_p->unit());
+        if (! rnode_p->unit().empty()) {
+            Quantity q1 (1);
+            Quantity q2 (1, rnode_p->unit());
+            setUnit ((q1/q2).getFullUnit());
+        }
     } else if (rnode_p->unit().empty()) {
         // For backward compatibility dividing seconds by 86400 is a
         // conversion to days.
@@ -242,7 +246,12 @@ void TableExprNodeDivide::handleUnits()
     } else {
         Quantity q1 (1, lnode_p->unit());
 	Quantity q2 (1, rnode_p->unit());
-	setUnit ((q1/q2).getFullUnit());
+        // If same unit kinds, result is no unit.
+        if (q1.isConform (q2)) {
+            makeEqualUnits (lnode_p, rnode_p);
+        } else {
+            setUnit ((q1/q2).getFullUnit());
+        }
     }
 }
 

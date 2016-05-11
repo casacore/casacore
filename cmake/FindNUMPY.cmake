@@ -61,6 +61,9 @@ if(NOT _NUMPY_SEARCH_SUCCESS MATCHES 0)
     if(NumPy_FIND_REQUIRED)
         message(FATAL_ERROR
             "NumPy import failure:\n${_NUMPY_ERROR_VALUE}")
+    else()
+        message(WARNING
+            "NumPy import failure:\n${_NUMPY_ERROR_VALUE}")
     endif()
     set(NUMPY_FOUND FALSE)
     return()
@@ -72,6 +75,15 @@ string(REGEX REPLACE "\n" ";" _NUMPY_VALUES ${_NUMPY_VALUES})
 # Just in case there is unexpected output from the Python command.
 list(GET _NUMPY_VALUES -2 NUMPY_VERSION)
 list(GET _NUMPY_VALUES -1 NUMPY_INCLUDE_DIRS)
+
+if("${NUMPY_INCLUDE_DIRS}" STREQUAL "None")
+    # If numpy headers are not installed, n.get_include() returns None
+    message(FATAL_ERROR
+        "Numpy was found, but headers were not installed.")
+    set(NUMPY_INCLUDE_DIRS) # Unset this variable
+    set(NUMPY_FOUND FALSE)
+    return()
+endif()
 
 string(REGEX MATCH "^[0-9]+\\.[0-9]+\\.[0-9]+" _VER_CHECK "${NUMPY_VERSION}")
 if("${_VER_CHECK}" STREQUAL "")

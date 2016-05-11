@@ -101,11 +101,17 @@ public:
     Matrix(size_t l1, size_t l2);
 
     // A Matrix with "l1" rows and "l2" columns.
+    Matrix(size_t l1, size_t l2, ArrayInitPolicy initPolicy);
+
+    // A Matrix with "l1" rows and "l2" columns.
     // Fill it with the initial value.
     Matrix(size_t l1, size_t l2, const T &initialValue);
 
     // A matrix of shape with shape "len".
     Matrix(const IPosition &len);
+
+    // A matrix of shape with shape "len".
+    Matrix(const IPosition &len, ArrayInitPolicy initPolicy);
 
     // A matrix of shape with shape "len".
     // Fill it with the initial value.
@@ -120,6 +126,8 @@ public:
 
     // Create an Matrix of a given shape from a pointer.
     Matrix(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
+    // Create an Matrix of a given shape from a pointer.
+    Matrix(const IPosition &shape, T *storage, StorageInitPolicy policy, AbstractAllocator<T> const &allocator);
     // Create an Matrix of a given shape from a pointer. Because the pointer
     // is const, a copy is always made.
     Matrix(const IPosition &shape, const T *storage);
@@ -142,9 +150,13 @@ public:
     // Resize to the given shape (must be 2-dimensional).
     // Resize without argument is equal to resize(0,0).
     // <group>
-    void resize(size_t nx, size_t ny, Bool copyValues=False);
+    using Array<T>::resize;
+    void resize(size_t nx, size_t ny, Bool copyValues=False) {
+        Matrix<T>::resize(nx, ny, copyValues, Array<T>::defaultArrayInitPolicy());
+    }
+    void resize(size_t nx, size_t ny, Bool copyValues, ArrayInitPolicy policy);
     virtual void resize();
-    virtual void resize(const IPosition &newShape, Bool copyValues=False);
+    virtual void resize(const IPosition &newShape, Bool copyValues, ArrayInitPolicy policy);
     // </group>
 
     // Copy the values from other to this Matrix. If this matrix has zero
@@ -293,21 +305,12 @@ public:
     size_t ncolumn() const
       { return this->length_p(1); }
 
-    // Replace the data values with those in the pointer <src>storage</src>.
-    // The results are undefined is storage does not point at nelements() or
-    // more data elements. After takeStorage() is called, <src>unique()</src>
-    // is True.
-    // <group>
-    virtual void takeStorage(const IPosition &shape, T *storage,
-			     StorageInitPolicy policy = COPY);
-    // Since the pointer is const, a copy is always taken.
-    virtual void takeStorage(const IPosition &shape, const T *storage);
-    // </group>
-
     // Checks that the Matrix is consistent (invariants check out).
     virtual Bool ok() const;
 
 protected:
+    virtual void preTakeStorage(const IPosition &shape);
+    virtual void postTakeStorage();
     // Remove the degenerate axes from other and store result in this matrix.
     // An exception is thrown if removing degenerate axes does not result
     // in a matrix.

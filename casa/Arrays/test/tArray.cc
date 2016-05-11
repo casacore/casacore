@@ -1,6 +1,8 @@
 //# tArray.cc: Test program for the Array class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2015
 //# Associated Universities, Inc. Washington DC, USA.
+//# National Astronomical Observatory of Japan
+//# 2-21-1, Osawa, Mitaka, Tokyo, 181-8588, Japan.
 //#
 //# This program is free software; you can redistribute it and/or modify it
 //# under the terms of the GNU General Public License as published by the Free
@@ -55,6 +57,8 @@
 #include <casacore/casa/Arrays/Slicer.h>
 #include <casacore/casa/Arrays/ArrayError.h>
 #include <casacore/casa/BasicMath/Functional.h>
+#include <stdint.h>
+#include <limits>
 
 
 #include <casacore/casa/namespace.h>
@@ -1002,6 +1006,346 @@ void testRowColDiag()
   doRowColDiag (m(IPosition(2,1,2), IPosition(2,17,12), IPosition(2,3,2)));
 }
 
+namespace {
+
+struct LifecycleChecker {
+  LifecycleChecker() {
+    if (ctor_count >= ctor_error_trigger) {
+      throw 0;
+    }
+    ++ctor_count;
+  }
+  LifecycleChecker(LifecycleChecker const &) {
+    if (ctor_count >= ctor_error_trigger) {
+      throw 0;
+    }
+    ++ctor_count;
+  }
+  ~LifecycleChecker() {
+    ++dtor_count;
+  }
+  LifecycleChecker & operator =(LifecycleChecker const&) {
+    if (assign_count >= assign_error_trigger) {
+      throw 0;
+    }
+    ++assign_count;
+    return *this;
+  }
+  static void clear() {
+    assign_count = ctor_count = dtor_count = 0;
+    assign_error_trigger = ctor_error_trigger = std::numeric_limits<size_t>::max();
+  }
+  static size_t assign_count;
+  static size_t ctor_count;
+  static size_t dtor_count;
+  static size_t ctor_error_trigger;
+  static size_t assign_error_trigger;
+};
+
+size_t LifecycleChecker::assign_count = 0;
+size_t LifecycleChecker::ctor_count = 0;
+size_t LifecycleChecker::dtor_count = 0;
+size_t LifecycleChecker::ctor_error_trigger = std::numeric_limits<size_t>::max();
+size_t LifecycleChecker::assign_error_trigger = std::numeric_limits<size_t>::max();
+
+void newCubeTest()
+{
+    {
+        Cube<Int> c(IPosition(3, 2, 2, 2), ArrayInitPolicy::NO_INIT);
+    }
+    {
+        Cube<Int> c(2UL, 2UL, 2UL, ArrayInitPolicy::NO_INIT);
+    }
+    {
+        IPosition shape(3, 2, 2, 2);
+        Int *values = new Int[shape.product()];
+        Cube<Int> c(shape, values, COPY, DefaultAllocator<Int>::value);
+        delete[] values;
+        c.resize(IPosition(3, 2, 3, 2), False, ArrayInitPolicy::NO_INIT);
+        c.resize(2, 4, 4, False, ArrayInitPolicy::NO_INIT);
+    }
+}
+
+void newMatrixTest()
+{
+    {
+        Matrix<Int> c(IPosition(2, 2, 2), ArrayInitPolicy::NO_INIT);
+    }
+    {
+        Matrix<Int> c(2UL, 2UL, ArrayInitPolicy::NO_INIT);
+    }
+    {
+        IPosition shape(2, 2, 2);
+        Int *values = new Int[shape.product()];
+        Matrix<Int> c(shape, values, COPY, DefaultAllocator<Int>::value);
+        delete[] values;
+        c.resize(IPosition(2, 2, 3), False, ArrayInitPolicy::NO_INIT);
+        c.resize(4, 4, False, ArrayInitPolicy::NO_INIT);
+    }
+}
+
+void newVectorTest()
+{
+    {
+        Vector<Int> c(IPosition(1, 2), ArrayInitPolicy::NO_INIT);
+    }
+    {
+        Vector<Int> c(2UL, ArrayInitPolicy::NO_INIT);
+    }
+    {
+        IPosition shape(1, 2);
+        Int *values = new Int[shape.product()];
+        Vector<Int> c(shape, values, COPY, DefaultAllocator<Int>::value);
+        delete[] values;
+        c.resize(IPosition(1, 3), False, ArrayInitPolicy::NO_INIT);
+        c.resize(4, False, ArrayInitPolicy::NO_INIT);
+    }
+}
+
+void newInterfaceTest()
+{
+    newCubeTest();
+    newMatrixTest();
+    newVectorTest();
+    {
+        for (size_t i = 0; i < 200; ++i) {
+            Array<Int> ai(IPosition(2, 2, 3), ArrayInitPolicy::NO_INIT);
+            intptr_t addr = (intptr_t)ai.data();
+            AlwaysAssertExit(addr % DefaultAllocator<Int>::type::alignment == 0);
+        }
+    }
+    {
+        IPosition const shape(2, 2, 3);
+        size_t const nelems = shape.product();
+        Array<Int> ai(shape, Int(0));
+        Bool deleteIt;
+        {
+            Int const *ptr = ai.getStorage(deleteIt);
+            for (size_t i = 0; i < nelems; ++i) {
+                AlwaysAssertExit(ptr[i] == 0);
+            }
+            ai.freeStorage(ptr, deleteIt);
+            AlwaysAssertExit(ptr == 0);
+        }
+        {
+            Int *ptr = ai.getStorage(deleteIt);
+            for (size_t i = 0; i < nelems; ++i) {
+                AlwaysAssertExit(ptr[i] == 0);
+                ptr[i] = Int(i);
+            }
+            ai.putStorage(ptr, deleteIt);
+            AlwaysAssertExit(ptr == 0);
+            for (size_t i = 0; i < nelems; ++i) {
+                AlwaysAssertExit(ai.data()[i] == Int(i));
+            }
+        }
+        {
+            void const *ptr = ai.getVStorage(deleteIt);
+            ai.freeVStorage(ptr, deleteIt);
+            AlwaysAssertExit(ptr == 0);
+        }
+        {
+            void *ptr = ai.getStorage(deleteIt);
+            ai.putVStorage(ptr, deleteIt);
+            AlwaysAssertExit(ptr == 0);
+        }
+    }
+    {
+        IPosition const shape(2, 2, 3);
+        LifecycleChecker::clear();
+        LifecycleChecker *ptr = new LifecycleChecker[shape.product()];
+        {
+            Array<LifecycleChecker> a;
+            a.takeStorage(shape, ptr, SHARE);
+            a.resize(IPosition(2, 3, 3), False, ArrayInitPolicy::INIT);
+        }
+        delete[] ptr;
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+
+        LifecycleChecker::clear();
+        ptr = new LifecycleChecker[shape.product()];
+        {
+            Array<LifecycleChecker> a;
+            a.takeStorage(shape, ptr, TAKE_OVER);
+            a.resize(IPosition(2, 3, 3), True, ArrayInitPolicy::INIT);
+        }
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+
+        LifecycleChecker::clear();
+        ptr = new LifecycleChecker[shape.product()];
+        {
+            Array<LifecycleChecker> a;
+            a.takeStorage(shape, ptr, COPY);
+        }
+        delete[] ptr;
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+    }
+    {
+        IPosition const shape(2, 2, 3);
+        LifecycleChecker::clear();
+        LifecycleChecker *ptr = new LifecycleChecker[shape.product()];
+        {
+            Array<LifecycleChecker> a(shape, ptr, SHARE);
+        }
+        delete[] ptr;
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+
+        LifecycleChecker::clear();
+        ptr = new LifecycleChecker[shape.product()];
+        {
+            Array<LifecycleChecker> a(shape, ptr, TAKE_OVER);
+        }
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+
+        LifecycleChecker::clear();
+        ptr = new LifecycleChecker[shape.product()];
+        {
+            Array<LifecycleChecker> a(shape, ptr, COPY);
+        }
+        delete[] ptr;
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+    }
+    {
+        IPosition const shape(2, 2, 3);
+        size_t const nelems = shape.product();
+        LifecycleChecker::clear();
+        DefaultAllocator<LifecycleChecker>::type defAlloc;
+        LifecycleChecker *ptr = defAlloc.allocate(shape.product());
+        for (size_t i = 0; i < nelems; ++i) {
+            defAlloc.construct(&ptr[i]);
+        }
+        {
+            Array<LifecycleChecker> a;
+            a.takeStorage(shape, ptr, SHARE, DefaultAllocator<LifecycleChecker>::value);
+            a.resize(IPosition(2, 3, 3), False, ArrayInitPolicy::INIT);
+        }
+        for (size_t i = 0; i < nelems; ++i) {
+            defAlloc.destroy(&ptr[i]);
+        }
+        defAlloc.deallocate(ptr, nelems);
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+
+        LifecycleChecker::clear();
+        ptr = defAlloc.allocate(shape.product());
+        for (size_t i = 0; i < nelems; ++i) {
+            defAlloc.construct(&ptr[i]);
+        }
+        {
+            Array<LifecycleChecker> a;
+            a.takeStorage(shape, ptr, TAKE_OVER, DefaultAllocator<LifecycleChecker>::value);
+            a.resize(IPosition(2, 3, 3), True, ArrayInitPolicy::INIT);
+        }
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+
+        LifecycleChecker::clear();
+        ptr = defAlloc.allocate(shape.product());
+        {
+            Array<LifecycleChecker> a;
+            a.takeStorage(shape, ptr, COPY, DefaultAllocator<LifecycleChecker>::value);
+        }
+        defAlloc.deallocate(ptr, nelems);
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+    }
+    {
+        IPosition const shape(2, 2, 3);
+        size_t const nelems = shape.product();
+        LifecycleChecker::clear();
+        DefaultAllocator<LifecycleChecker>::type defAlloc;
+        LifecycleChecker *ptr = defAlloc.allocate(shape.product());
+        for (size_t i = 0; i < nelems; ++i) {
+            defAlloc.construct(&ptr[i]);
+        }
+        {
+            Array<LifecycleChecker> a(shape, ptr, SHARE, DefaultAllocator<LifecycleChecker>::value);
+        }
+        for (size_t i = 0; i < nelems; ++i) {
+            defAlloc.destroy(&ptr[i]);
+        }
+        defAlloc.deallocate(ptr, nelems);
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+
+        LifecycleChecker::clear();
+        ptr = defAlloc.allocate(shape.product());
+        for (size_t i = 0; i < nelems; ++i) {
+            defAlloc.construct(&ptr[i]);
+        }
+        {
+            Array<LifecycleChecker> a(shape, ptr, TAKE_OVER, DefaultAllocator<LifecycleChecker>::value);
+        }
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+
+        LifecycleChecker::clear();
+        ptr = defAlloc.allocate(shape.product());
+        {
+            Array<LifecycleChecker> a(shape, ptr, COPY, DefaultAllocator<LifecycleChecker>::value);
+        }
+        defAlloc.deallocate(ptr, nelems);
+        AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
+    }
+    {
+        IPosition const shape(2, 2, 3);
+        LifecycleChecker::clear();
+        {
+            Array<LifecycleChecker> a(shape, ArrayInitPolicy::NO_INIT);
+        }
+        AlwaysAssertExit(LifecycleChecker::ctor_count == 0);
+        AlwaysAssertExit(LifecycleChecker::dtor_count == (size_t)shape.product());
+
+        LifecycleChecker::clear();
+        {
+            Array<LifecycleChecker> a(shape, ArrayInitPolicy::INIT);
+        }
+        AlwaysAssertExit(LifecycleChecker::ctor_count == (size_t)shape.product());
+        AlwaysAssertExit(LifecycleChecker::dtor_count == (size_t)shape.product());
+
+        {
+            Array<LifecycleChecker> a;
+            LifecycleChecker::clear();
+            a.resize(shape, False, ArrayInitPolicy::NO_INIT);
+        }
+        AlwaysAssertExit(LifecycleChecker::ctor_count == 0);
+        AlwaysAssertExit(LifecycleChecker::dtor_count == (size_t )shape.product());
+
+        {
+            Array<LifecycleChecker> a;
+            LifecycleChecker::clear();
+            a.resize(shape, False, ArrayInitPolicy::INIT);
+        }
+        AlwaysAssertExit(LifecycleChecker::ctor_count == (size_t )shape.product());
+        AlwaysAssertExit(LifecycleChecker::dtor_count == (size_t )shape.product());
+    }
+    {
+        IPosition const shape(2, 2, 3);
+        Array<Int> ai(shape);
+        AlwaysAssertExit(ai.capacity() == 2 * 3);
+        for (ssize_t c = 0; c < 3; ++c) {
+            for (ssize_t r = 0; r < 2; ++r) {
+                IPosition pos(2, r, c);
+                ai(pos) = r*100 + c;
+            }
+        }
+        Int *p = ai.data();
+        Int order[] = {0, 100, 1, 101, 2, 102};
+        for (ssize_t i = 0; i < (Int)ai.capacity(); ++i) {
+            AlwaysAssertExit(p[i] == order[i]);
+            cout << "> " << p[i] << endl;
+        }
+        {
+            ArrayPositionIterator iter(shape, 1);
+            for (; !iter.pastEnd(); iter.next()) {
+                cout << ": " << ai(iter.pos()) << endl;
+            }
+        }
+        {
+            ArrayPositionIterator iter(shape, 0);
+            for (; !iter.pastEnd(); iter.next()) {
+                cout << "- " << ai(iter.pos()) << endl;
+            }
+        }
+    }
+}
+
+} // anonymous namespace
 
 int main()
 {
@@ -1279,6 +1623,7 @@ int main()
 
         testReformOrResize();
 
+        newInterfaceTest();
     } catch (const AipsError& x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
 	return 1;

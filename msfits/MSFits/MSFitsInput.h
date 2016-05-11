@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSFitsInput.h 21531 2014-12-24 11:46:02Z gervandiepen $
 
 #ifndef MS_MSFITSINPUT_H
 #define MS_MSFITSINPUT_H
@@ -281,6 +281,16 @@ public:
   // 
   void readFitsFile(Int obsType = MSTileLayout::Standard);
 
+  // A simultaneous change to MSFitsOutput means that no longer are
+  // antenna positions being rotated when written to UVFITS. Calling
+  // this method with b=True will perform the reverse of a rotation
+  // when converting from uvfits to MS for relevant UVFITS files which
+  // were written prior to this change. Else no rotation of antenna
+  // positions is done.
+  void rotateAntennaPositions(Bool b) {
+      _rotateAnts = b;
+  }
+
 protected:
 
   // Check that the input is a UV fits file with required contents.
@@ -376,7 +386,6 @@ protected:
   void readRandomGroupUVFits(Int obsType);
   void readPrimaryTableUVFits(Int obsType);
 
-
 private:
   //# The default constructor is private and undefined
   MSFitsInput();
@@ -385,39 +394,45 @@ private:
   //# The assignment operator is private and undefined
   MSFitsInput& operator=(const MSFitsInput& other);
 
-
-  FitsInput* infile_p;
-  String msFile_p;
-  MSPrimaryGroupHolder priGroup_p;
-  MSPrimaryTableHolder priTable_p;
-  MeasurementSet ms_p;
-  MSColumns* msc_p;
-  Int nIF_p;
-  Vector<Int> nPixel_p,corrType_p;
-  Block<Int> corrIndex_p;
-  Matrix<Int> corrProduct_p;
-  Vector<String> coordType_p;
-  Vector<Double> refVal_p, refPix_p, delta_p;
-  String array_p,object_p,timsys_p;
-  Double epoch_p;
-  MDirection::Types epochRef_p; // This is a direction measure reference code
+  FitsInput* _infile;
+  String _msFile;
+  MSPrimaryGroupHolder _priGroup;
+  MSPrimaryTableHolder _priTable;
+  MeasurementSet _ms;
+  MSColumns* _msc;
+  Int _nIF;
+  Vector<Int> _nPixel, _corrType;
+  Block<Int> _corrIndex;
+  Matrix<Int> _corrProduct;
+  Vector<String> _coordType;
+  Vector<Double> _refVal, _refPix, _delta;
+  String _array, _object, _timsys;
+  Double _epoch;
+  MDirection::Types _epochRef; // This is a direction measure reference code
                                 // determined by epoch_p, hence the name and type.
-  Int nAnt_p;
-  Int nArray_p;
-  Vector<Double> receptorAngle_p;
-  MFrequency::Types freqsys_p;
-  Double restfreq_p; // used for images
-  Bool addSourceTable_p;
-  LogIO itsLog;
-  Record header;
-  Double refFreq_p;
-  Bool useAltrval;
-  Vector<Double> chanFreq_p;
-  Bool newNameStyle;
-  Vector<Double> obsTime;
+  // unique antennas found in the visibility data
+  // NOTE These are 1-based
+  std::set<Int> _uniqueAnts;
+  // number of rows in the created MS ANTENNA table
+  Int _nAntRow;
+  Int _nArray;
+  Vector<Double> _receptorAngle;
+  MFrequency::Types _freqsys;
+  Double _restfreq; // used for images
+  Bool _addSourceTable;
+  LogIO _log;
+  Record _header;
+  Double _refFreq;
+  Bool _useAltrval;
+  Vector<Double> _chanFreq;
+  Bool _newNameStyle;
+  Vector<Double> _obsTime;
 
-  Matrix<Double> restFreq_p; // used for UVFITS
-  Matrix<Double> sysVel_p;
+  Matrix<Double> _restFreq; // used for UVFITS
+  Matrix<Double> _sysVel;
+  Bool _msCreated, _rotateAnts;
+
+  std::pair<Int, Int> _extractAntennas(Float baseline);
 
 };
 

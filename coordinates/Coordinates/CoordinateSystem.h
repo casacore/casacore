@@ -424,9 +424,12 @@ public:
     // <src>errorMessage()</src> contains an error message. 
     // The input vector must be of length <src>nPixelAxes</src> or
     // <src>nWorldAxes</src>.  The output vector  is resized appropriately.
+    // if <src>useConversionFrame</src>, if the coordinate has a conversion layer frame
+    // (such as can be present in spectral and direction coordinates), it
+    // is used. Else, the native frame is used for the conversion.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
-			 const Vector<Double> &pixel) const;
+			 const Vector<Double> &pixel, Bool useConversionFrame=True) const;
     // This one throws an exception rather than returning False. After all, that's
     // what exceptions are for.
     virtual Vector<Double> toWorld(const Vector<Double> &pixel) const;

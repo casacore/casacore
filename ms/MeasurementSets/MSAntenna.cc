@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSAntenna.cc 18093 2004-11-30 17:51:10Z ddebonis $
 
 #include <casacore/ms/MeasurementSets/MSAntenna.h>
 
@@ -36,6 +36,7 @@
 #include <casacore/tables/DataMan/StManAipsIO.h>
 #include <casacore/tables/DataMan/ForwardCol.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -101,16 +102,14 @@ MSAntenna::MSAntenna(const MSAntenna &other)
 MSAntenna::~MSAntenna()
 {
 // check to make sure that this MSAntenna is still valid
-    if (!hasBeenDestroyed_p &&  !validate()) {
-	hasBeenDestroyed_p = True;
+    if (!hasBeenDestroyed_p  &&  !validate()) {
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
-	// now we can thrown an exception
-	throw (AipsError("~MSAntenna() - "
-			 "Table written is not a valid MSAntenna"));
+        LogIO os;
+        os << LogIO::WARN
+           << "~MSAntenna() - Table written is not a valid MSAntenna"
+           << LogIO::POST;
     }
-    // if we get to here, let nature take its course
-    // this should not be necessary, but do it for insurance anyway
     hasBeenDestroyed_p = True;
 }
 

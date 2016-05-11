@@ -751,6 +751,9 @@ class FitsKeywordList {
 	FitsKeywordList(ConstFitsKeywordList &);
 	FitsKeywordList & operator = (const FitsKeywordList &);
 
+        // Convert the list to a string containing the 80-byte FITS headers.
+        std::string toString() const;
+
         // delete the current keyword (the thing returned by curr()) from the list
 	void del();
 
@@ -998,6 +1001,7 @@ class FitsKeyCardTranslator {
 	int no_errs() const;
 	const char *err(int) const;
 	int err_cardno(int) const;
+        static void fmtcard(char *, const FitsKeyword &);
     private:
 	int cardno;		// the current card number within record
 	const int FitsCardSize;
@@ -1007,7 +1011,6 @@ class FitsKeyCardTranslator {
 	int no_errs_;
 	const char **err_;
 	int *err_cardno_;
-	void fmtcard(char *, const FitsKeyword &);
 	char *blanks;
 };
 

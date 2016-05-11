@@ -43,8 +43,9 @@ namespace casacore {
 // distribution, and the total number of points is exactly twice the number of real
 // data points that are included.
 
-template <class AccumType, class InputIterator, class MaskIterator=const Bool*> class FitToHalfStatistics
-	: public ConstrainedRangeStatistics<AccumType, InputIterator, MaskIterator> {
+template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
+class FitToHalfStatistics
+	: public ConstrainedRangeStatistics<CASA_STATP> {
 public:
 
 	const static AccumType TWO;
@@ -59,8 +60,8 @@ public:
 	virtual ~FitToHalfStatistics();
 
 	// copy semantics
-	FitToHalfStatistics<AccumType, InputIterator, MaskIterator>& operator=(
-		const FitToHalfStatistics<AccumType, InputIterator, MaskIterator>& other
+	FitToHalfStatistics<CASA_STATP>& operator=(
+		const FitToHalfStatistics<CASA_STATP>& other
 	);
 
 	// get the algorithm that this object uses for computing stats
@@ -72,7 +73,7 @@ public:
 	AccumType getMedian(
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
-		Bool persistSortedArray=False
+		Bool persistSortedArray=False, uInt64 nBins=10000
 	);
 
 	// <group>
@@ -108,14 +109,16 @@ public:
 		std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 
 	// get the median of the absolute deviation about the median of the data.
 	AccumType getMedianAbsDevMed(
 		CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 
 	// Get the specified quantiles. <src>fractions</src> must be between 0 and 1,
@@ -123,7 +126,8 @@ public:
 	std::map<Double, AccumType> getQuantiles(
 		const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 	// </group>
 
@@ -162,28 +166,28 @@ protected:
 	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, Int64 nr, uInt dataStride
+		const DataIterator& dataBegin, Int64 nr, uInt dataStride
 	);
 
 	// no weights, no mask
 	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+		const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 		const DataRanges& ranges, Bool isInclude
 	);
 
 	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+		const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 		const MaskIterator& maskBegin, uInt maskStride
 	);
 
 	void _unweightedStats(
 		uInt64& ngood, AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, Int64 nr, uInt dataStride,
+		const DataIterator& dataBegin, Int64 nr, uInt dataStride,
 		const MaskIterator& maskBegin, uInt maskStride,
 		const DataRanges& ranges, Bool isInclude
 	);
@@ -199,28 +203,28 @@ protected:
 	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, const InputIterator& weightsBegin,
+		const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 		Int64 nr, uInt dataStride
 	);
 
 	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, const InputIterator& weightsBegin,
+		const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
 		Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 	);
 
 	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, const InputIterator& weightBegin,
+		const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 		Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 	);
 
 	void _weightedStats(
 		AccumType& mymin, AccumType& mymax,
 		Int64& minpos, Int64& maxpos,
-		const InputIterator& dataBegin, const InputIterator& weightBegin,
+		const DataIterator& dataBegin, const WeightsIterator& weightBegin,
 		Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
 		const DataRanges& ranges, Bool isInclude
 	);

@@ -257,16 +257,14 @@ MeasurementSet::MeasurementSet(const MeasurementSet &other)
 MeasurementSet::~MeasurementSet()
 {
 // check to make sure that this MS is still valid
-    if (!hasBeenDestroyed_p &&  !validate()) {
-	hasBeenDestroyed_p = True;
+    if (!hasBeenDestroyed_p  &&  !validate()) {
 	// the table is otherwise OK, so ensure that it is written if necessary
 	this->flush();
-	// now we can thrown an exception
-	throw (AipsError("~MS() - Table written is not a valid MS"));
+        LogIO os;
+        os << LogIO::WARN
+           << "~MS() - Table written is not a valid MS"
+           << LogIO::POST;
     }
-    // Table::relinquishAutoLocks(True);
-    // if we get to here, let nature take its course
-    // this should not be necessary, but do it for insurance anyway
     hasBeenDestroyed_p = True;
 }
 

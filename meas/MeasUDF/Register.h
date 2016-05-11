@@ -29,6 +29,8 @@
 #define MEAS_REGISTER_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/tables/TaQL/UDFBase.h>
+#include <ostream>
 
 // <group name=MeasUDF>
 // This function registers the TaQL user defined functions handling
@@ -40,5 +42,29 @@ extern "C" {
 }
 
 // </group>
+
+
+namespace casacore {
+  // <synopsis>
+  // General meas function to show the available functions.
+  // </synopsis>
+  class HelpMeasUDF: public UDFBase
+  {
+  public:
+    // Function to create an object.
+    static UDFBase* makeHELP (const String&);
+
+    // Setup the object.
+    virtual void setup (const Table&, const TaQLStyle&);
+
+    // Get the value.
+    virtual String getString (const TableExprId& id);
+
+    // Show the possible functions.
+    static void showFuncsPosition  (std::ostream&, Bool showTypes);
+    static void showFuncsEpoch     (std::ostream&, Bool showTypes);
+    static void showFuncsDirection (std::ostream&, Bool showTypes);
+  };
+}
 
 #endif

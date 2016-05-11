@@ -280,6 +280,21 @@ protected:
 };
 
 
+//# Explicitly instantiate these templates in ArrColDesc_tmpl.cc
+#ifdef AIPS_CXX11
+  extern template class ArrayColumnDesc<Bool>;
+  extern template class ArrayColumnDesc<Char>;
+  extern template class ArrayColumnDesc<Short>;
+  extern template class ArrayColumnDesc<uShort>;
+  extern template class ArrayColumnDesc<Int>;
+  extern template class ArrayColumnDesc<uInt>;
+  extern template class ArrayColumnDesc<Float>;
+  extern template class ArrayColumnDesc<Double>;
+  extern template class ArrayColumnDesc<Complex>;
+  extern template class ArrayColumnDesc<DComplex>;
+  extern template class ArrayColumnDesc<String>;
+#endif
+
 
 } //# NAMESPACE CASACORE - END
 

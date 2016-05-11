@@ -1020,27 +1020,31 @@ int main()
          }
          delete plc;
       }
-//
-// Test FITS conversion
-//
-/*
       {
-         LogIO os(LogOrigin("tSpectralCoordinate", "main()", WHERE));
-         SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
-         Record rec;
-         lc.toFITS(rec, 0, os, False, True);
-//
-//          SpectralCoordinate lc2;
-//          String errMsg;
-//          if (!SpectralCoordinate::fromFITSOld(lc2, errMsg, rec, 0, os,  True)) {
-//             throw(AipsError(String("fromFITSOld function failed because") + errMsg));  
-//          }
-//          if (!lc.near(lc2, 1e-6)) {
-//             throw(AipsError("FITS reflection failed"));  
-//          }
+          cout << "Test toWorld using both native and conversion layer frames" << endl;
+          SpectralCoordinate sc(
+              MFrequency::LSRK, Quantity(1500, "MHz"), Quantity(1, "kHz"),
+              0, Quantity(1500, "MHz")
+          );
+          MEpoch epoch(Quantity(60000, "d"), MEpoch::UTC);
+          MPosition position(
+              Quantity(10, "m"), Quantity(135, "deg"), Quantity(40, "deg"), MPosition::ITRF
+          );
+          MDirection direction(Quantity(20, "deg"), Quantity(50, "deg"), MDirection::J2000);
+          sc.setReferenceConversion(MFrequency::CMB, epoch, position, direction);
+          Vector<Double> pixel(1, 10);
+          Vector<Double> world(1);
+          sc.toWorld(world, pixel);
+          AlwaysAssert(near(world[0], 1.50121e+09, 1e-5), AipsError);
+          sc.toWorld(world, pixel, True);
+          AlwaysAssert(near(world[0], 1.50121e+09, 1e-5), AipsError);
+          sc.toWorld(world, pixel, False);
+          AlwaysAssert(world[0] == 1.50001e+09, AipsError);
+
       }
-*/
-   } catch (AipsError x) {
+
+   }
+   catch (const AipsError& x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
    }

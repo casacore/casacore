@@ -252,6 +252,9 @@ Bool DataManager::canAddColumn() const
 Bool DataManager::canRemoveColumn() const
     { return False; }
 
+Bool DataManager::canRenameColumn() const
+    { return True; }
+
 void DataManager::addRow (uInt)
     { throw (DataManInvOper ("DataManager::addRow not allowed")); }
 
@@ -328,8 +331,11 @@ DataManagerCtor DataManager::getCtor (const String& type)
 DataManager* DataManager::unknownDataManager (const String& type,
 					      const Record&)
 {
-    throw (DataManUnknownCtor ("Data Manager class " + type + 
-			       " is not registered"));
+    throw DataManUnknownCtor ("Data Manager class " + type + 
+                              " is not registered\n"
+                              "  Check (DY)LD_LIBRARY_PATH matches the"
+                              " libraries used during the build of "
+                              + type);
     return 0;
 }
 

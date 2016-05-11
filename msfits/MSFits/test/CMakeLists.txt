@@ -1,7 +1,9 @@
 set (tests
 tfits2ms
 tMSConcat
-tMSSelection
+tMSFITSInput
+tMSFITSOutput
+tMSFitsSelection
 )
 
 foreach (test ${tests})

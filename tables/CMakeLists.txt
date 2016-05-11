@@ -18,6 +18,8 @@ endforeach (src)
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 add_library (casa_tables
+Tables/ArrayColumn_tmpl.cc
+Tables/ArrColDesc_tmpl.cc
 Tables/BaseColDesc.cc
 Tables/BaseColumn.cc
 Tables/BaseTabIter.cc
@@ -41,6 +43,8 @@ Tables/RefColumn.cc
 Tables/RefRows.cc
 Tables/RefTable.cc
 Tables/RowCopier.cc
+Tables/ScaColDesc_tmpl.cc
+Tables/ScalarColumn_tmpl.cc
 Tables/ScaRecordColData.cc
 Tables/ScaRecordColDesc.cc
 Tables/SetupNewTab.cc
@@ -149,6 +153,7 @@ TaQL/ExprRange.cc
 TaQL/ExprUDFNode.cc
 TaQL/ExprUDFNodeArray.cc
 TaQL/ExprUnitNode.cc
+TaQL/MArrayBase.cc
 TaQL/RecordExpr.cc
 TaQL/RecordGram.cc
 TaQL/TaQLNode.cc
@@ -158,6 +163,7 @@ TaQL/TaQLNodeRep.cc
 TaQL/TaQLNodeResult.cc
 TaQL/TaQLNodeVisitor.cc
 TaQL/TaQLResult.cc
+TaQL/TaQLShow.cc
 TaQL/TaQLStyle.cc
 TaQL/TableExprData.cc
 TaQL/TableExprId.cc
@@ -376,6 +382,12 @@ TaQL/ExprRange.h
 TaQL/ExprUDFNode.h
 TaQL/ExprUDFNodeArray.h
 TaQL/ExprUnitNode.h
+TaQL/MArrayBase.h
+TaQL/MArrayLogical.h
+TaQL/MArrayMathBase.h
+TaQL/MArrayMath.h
+TaQL/MArrayUtil.h
+TaQL/MArray.h
 TaQL/RecordExpr.h
 TaQL/RecordGram.h
 TaQL/TaQLNode.h
@@ -385,6 +397,7 @@ TaQL/TaQLNodeRep.h
 TaQL/TaQLNodeResult.h
 TaQL/TaQLNodeVisitor.h
 TaQL/TaQLResult.h
+TaQL/TaQLShow.h
 TaQL/TaQLStyle.h
 TaQL/TableExprData.h
 TaQL/TableExprId.h

@@ -31,7 +31,16 @@ fi
 $casa_checktool ./tTableGram 0
 
 # Now execute all kind of commands.
+
 echo "testing select ..."
+$casa_checktool ./tTableGram 'select 3+4'
+
+$casa_checktool ./tTableGram 'select 3+4 where 1>2'
+
+$casa_checktool ./tTableGram 'select gsum(3+4) as C having C > 12'
+
+$casa_checktool ./tTableGram 'select gsum(3+4) as C where 1<2 having C<12 orderby C giving as memory'
+
 $casa_checktool ./tTableGram 'select ab,ac,ad,ae,af,ag into tTableGram_tmp.data2 from tTableGram_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab'
 
 $casa_checktool ./tTableGram 'select distinct ab+1,ac as ac2 from tTableGram_tmp.tab'
@@ -92,8 +101,8 @@ $casa_checktool ./tTableGram 'select distinct max(ab,3) from tTableGram_tmp.tab 
 
 $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [:=2,4=:<6,7<:]'
 
-$casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN (2,(3))'
-$casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab NOT IN (2,(3))'
+$casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [2,(3)]'
+$casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab NOT IN [2,(3)]'
 
 $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab where ab IN [select from tTableGram_tmp.tab where ab>4 giving [ac=:=ac+0.5]]'
 
@@ -196,6 +205,10 @@ $casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab'
 $casa_checktool ./tTableGram 'insert into tTableGram_tmp.tab (ab,ac) values (1+2,3*ab + sum([select ab from tTableGram_tmp.tab]))'
 $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab'
 
+$casa_checktool ./tTableGram 'insert into [createtable tTableGram_tmp.tab2 (ab I4, ac U2, ad I4)] values (10,11,1),(12,13,2),(14,15,4)'
+$casa_checktool ./tTableGram 'insert top 4 into tTableGram_tmp.tab2 values (rowid(), ab+10, rownumber())'
+$casa_checktool ./tTableGram 'select ab,ac,ad from tTableGram_tmp.tab2'
+
 # Test create and insert with a unit.
 echo ""
 echo "testing create ..."
@@ -232,6 +245,18 @@ $casa_checktool ./tTableGram 'calc -4.1//2'
 $casa_checktool ./tTableGram 'calc -4**2'
 $casa_checktool ./tTableGram 'calc angdist([10,12],[10,12,13,14])'
 
+# Some tests of indexing, also negative (from the end).
+# It uses Glish style, thus 1:10 is 10 inclusive.
+echo
+echo "Testing indexing and nested arrays ..."
+$casa_checktool ./tTableGram 'calc [1:10][3] == 3'
+$casa_checktool ./tTableGram 'calc [1:10][-3] == 8'
+$casa_checktool ./tTableGram 'calc all([1:10][:5] == [1:5])'
+$casa_checktool ./tTableGram 'calc all([1:10][::3] == [1,4,7,10])'
+$casa_checktool ./tTableGram 'calc all([1:10][-7:-3:2] == [4,6,8])'
+$casa_checktool ./tTableGram 'calc all([[[1,2,3],[4,5,6]]] = array([1:6],3,2,1))'
+$casa_checktool ./tTableGram 'calc all([[[1,2,3],[4,5,6]],array([7:12],3,2)] = array([1:12],3,2,2))'
+
 # Some tests of units.
 echo ""
 echo "testing units ..."
@@ -267,3 +292,16 @@ $casa_checktool ./tTableGram 'update tTableGram_tmp.tab t1, tTableGram_tmp.rev t
 $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab'
 $casa_checktool ./tTableGram 'delete from tTableGram_tmp.tab t1, tTableGram_tmp.rev t2 where ab=t2.ab'
 $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab'
+
+# Do an update of a nested create.
+$casa_checktool ./tTableGram 'update [create table tTableGram_tmp.tst as plain_big col1 int limit 3 ] set col1=rowid()'
+$casa_checktool ./tTableGram 'select * from tTableGram_tmp.tst'
+
+# Do a count of a concatenated table.
+echo
+$casa_checktool ./tTableGram 'select gcount() from [tTableGram_tmp.tst,"tTableGram_*.tst" subtables a,b]'
+$casa_checktool ./tTableGram 'select gcount() from [tTableGram_tmp.tst,tTableGram_tmp.tst giving tTableGram_tmp.tst2]'
+$casa_checktool ./tTableGram 'select col1 from tTableGram_tmp.tst2'
+$casa_checktool ./tTableGram 'select gcount() from [tTableGram_tmp.tst,tTableGram_tmp.tst],[tTableGram_tmp.tst,tTableGram_tmp.tst,tTableGram_tmp.tst]'
+$casa_checktool ./tTableGram 'select gcount() from [tTableGram_tmp.tst,tTableGram_tmp.tst]'
+$casa_checktool ./tTableGram 'select gcount() from [tTableGram_tmp.tst as t1,tTableGram_tmp.tst as t2,[[tTableGram_tmp.tst,tTableGram_tmp.tst] as t3] as t4] as t5'

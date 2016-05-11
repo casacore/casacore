@@ -1,6 +1,8 @@
 //# Array.h: A templated N-D Array class with zero origin
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2015
 //# Associated Universities, Inc. Washington DC, USA,
+//# National Astronomical Observatory of Japan
+//# 2-21-1, Osawa, Mitaka, Tokyo, 181-8588, Japan.
 //#
 //# This library is free software; you can redistribute it and/or modify it
 //# under the terms of the GNU Library General Public License as published by
@@ -169,24 +171,74 @@ template<class T> class Array : public ArrayBase
 public:
 
     // Result has dimensionality of zero, and  nelements is zero.
+    // Storage will be allocated by <src>DefaultAllocator<T></src>.
     Array();
 
     // Create an array of the given shape, i.e. after construction
     // array.ndim() == shape.nelements() and array.shape() == shape.
     // The origin of the Array is zero.
+    // Storage is allocated by <src>DefaultAllocator<T></src>.
+    // Without initPolicy parameter, the initialization of elements depends on type <src>T</src>.
+    // When <src>T</src> is a fundamental type like <src>int</src>, elements are NOT initialized.
+    // When <src>T</src> is a class type like <src>casa::Complex</src> or <src>std::string</src>, elements are initialized.
+    // This inconsistent behavior confuses programmers and make it hard to write efficient and generic code using template.
+    // Especially when <src>T</src> is of type <src>Complex</src> or <src>DComplex</src> and it is unnecessary to initialize,
+    // provide initPolicy with value <src>NO_INIT</src> to skip the initialization.
+    // Therefore, it is strongly recommended to explicitly provide initPolicy parameter,
     explicit Array(const IPosition &shape);
+
+    // Create an array of the given shape, i.e. after construction
+    // array.ndim() == shape.nelements() and array.shape() == shape.
+    // The origin of the Array is zero.
+    // Storage is allocated by <src>DefaultAllocator<T></src>.
+    // When initPolicy parameter is <src>INIT</src>, elements are initialized with the default value of <src>T()</src>.
+    // When initPolicy parameter is <src>NO_INIT</src>, elements are NOT initialized and programmers are responsible to
+    // initialize elements before they are referred, especially when <src>T</src> is such type like <src>std::string</src>.
+    // <srcblock>
+    //   IPosition shape(1, 10);
+    //   Array<Int> ai(shape, ArrayInitPolicy::NO_INIT);
+    //   size_t nread = fread(ai.data(), sizeof(Int), ai.nelements(), fp);
+    // </srcblock>
+    Array(const IPosition &shape, ArrayInitPolicy initPolicy);
 
     // Create an array of the given shape and initialize it with the
     // initial value.
+    // Storage is allocated by <src>DefaultAllocator<T></src>.
     Array(const IPosition &shape, const T &initialValue);
 
     // After construction, this and other reference the same storage.
     Array(const Array<T> &other);
 
     // Create an Array of a given shape from a pointer.
+    // If <src>policy</src> is <src>COPY</src>, storage of a new copy is allocated by <src>DefaultAllocator<T></src>.
+    // If <src>policy</src> is <src>TAKE_OVER</src>, <src>storage</src> will be destructed and released by <src>NewDelAllocator<T></src>.
+    // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
+    // whenever <src>policy</src> == <src>TAKE_OVER</src>
+    // to let <src>Array</src> to know how to release the <src>storage</src>.
     Array(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
+
+    // Create an Array of a given shape from a pointer.
+    // If <src>policy</src> is <src>COPY</src>, storage of a new copy is allocated by the specified allocator.
+    // If <src>policy</src> is <src>TAKE_OVER</src>, <src>storage</src> will be destructed and released by the specified allocator.
+    // Otherwise, <src>allocator</src> is ignored.
+    // It is strongly recommended to allocate and initialize <src>storage</src> with <src>DefaultAllocator<T></src>
+    // rather than new[] or <src>NewDelAllocator<T></src> because new[] can't decouple allocation and initialization.
+    // <src>DefaultAllocator<T>::type</src> is a subclass of std::allocator. You can allocate <src>storage</src> via
+    // the allocator as below.
+    // <srcblock>
+    //   FILE *fp = ...;
+    //   typedef DefaultAllocator<Int> Alloc;
+    //   Alloc::type alloc;
+    //   IPosition shape(1, 10);
+    //   Int *ptr = alloc.allocate(shape.product());
+    //   size_t nread = fread(ptr, sizeof(Int), shape.product(), fp);
+    //   Array<Int> ai(shape, ptr, TAKE_OVER, Alloc::value);
+    // </srcblock>
+    Array(const IPosition &shape, T *storage, StorageInitPolicy policy, AbstractAllocator<T> const &allocator);
+
     // Create an Array of a given shape from a pointer. Because the pointer
     // is const, a copy is always made.
+    // The copy is allocated by <src>DefaultAllocator<T></src>.
     Array(const IPosition &shape, const T *storage);
 
     // Frees up storage only if this array was the last reference to it.
@@ -285,7 +337,8 @@ public:
     // </srcblock>
     // which likely would be simpler to understand. (Should copy() 
     // be deprecated and removed?)
-    Array<T> copy() const;                         // Make a copy of this
+    //
+    Array<T> copy(ArrayInitPolicy policy = ArrayInitPolicy::NO_INIT) const;                         // Make a copy of this
 
     // This function copies the matching part of from array to this array.
     // The matching part is the part with the minimum size for each axis.
@@ -455,6 +508,7 @@ public:
     // <group>
     virtual void resize();
     virtual void resize(const IPosition &newShape, Bool copyValues=False);
+    virtual void resize(const IPosition &newShape, Bool copyValues, ArrayInitPolicy policy);
     // </group>
 
     // Access a single element of the array. This is relatively
@@ -501,6 +555,10 @@ public:
     // ArrayAccessor.</note>
     Array<T> operator[] (size_t i) const;
 
+    // Get the diagonal of each matrix part in the full array.
+    // The matrices are taken using axes firstAxes and firstAxis+1.
+    // diag==0 is main diagonal; diag>0 above the main diagonal; diag<0 below.
+    Array<T> diagonals (uInt firstAxis=0, Int64 diag=0) const;
 
     // The array is masked by the input LogicalArray.
     // This mask must conform to the array.
@@ -589,14 +647,32 @@ public:
     void freeVStorage(const void *&storage, Bool deleteIt) const;
 
     // Replace the data values with those in the pointer <src>storage</src>.
-    // The results are undefined is storage does not point at nelements() or
-    // more data elements. After takeStorage() is called, <src>unique()</src>
-    // is True.
+    // The results are undefined if storage does not point at nelements() or
+    // more data elements. After takeStorage() is called, <src>nrefs()</src>
+    // is 1.
     // <group>
+    // If <src>policy</src> is <src>COPY</src>, storage of a new copy is allocated by <src>DefaultAllocator<T></src>.
+    // If <src>policy</src> is <src>TAKE_OVER</src>, <src>storage</src> will be destructed and released by <src>NewDelAllocator<T></src>.
+    // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
+    // whenever <src>policy</src> == <src>TAKE_OVER</src>
+    // to let <src>Array</src> to know how to release the <src>storage</src>.
     virtual void takeStorage(const IPosition &shape, T *storage,
 		     StorageInitPolicy policy = COPY);
+
+    // If <src>policy</src> is <src>COPY</src>, storage of a new copy is allocated by <src>allocator</src>.
+    // If <src>policy</src> is <src>TAKE_OVER</src>, <src>storage</src> will be destructed and released by <src>allocator</src>.
+    // Otherwise, <src>storage</src> is ignored.
+    virtual void takeStorage(const IPosition &shape, T *storage,
+        StorageInitPolicy policy, AbstractAllocator<T> const &allocator);
+
     // Since the pointer is const, a copy is always taken.
+    // Storage of a new copy is allocated by <src>DefaultAllocator<T></src>.
     virtual void takeStorage(const IPosition &shape, const T *storage);
+
+    // Since the pointer is const, a copy is always taken.
+    // Storage of a new copy is allocated by the specified allocator.
+    virtual void takeStorage(const IPosition &shape, const T *storage,
+        AbstractAllocator<T> const &allocator);
     // </group>
 
 
@@ -805,7 +881,23 @@ public:
     // </group>
 
 
+private:
+    Array(Allocator_private::AllocSpec<T> allocator);
+    Array(const IPosition &shape, ArrayInitPolicy initPolicy, Allocator_private::BulkAllocator<T> *allocator);
+    // Makes a copy using the allocator.
+    Array<T> copy(ArrayInitPolicy policy, Allocator_private::BulkAllocator<T> *allocator) const;
+    // If the current allocator is NewDelAllocator<T>, BulkAllocator for DefaultAllocator<T> is returned,
+    // otherwise BulkAllocator for the current allocator is returned.
+    Allocator_private::BulkAllocator<T> *nonNewDelAllocator() const;
 protected:
+    static ArrayInitPolicy defaultArrayInitPolicy() {
+        return Block<T>::init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT;
+    }
+    // pre/post processing hook of takeStorage() for subclasses.
+    virtual void preTakeStorage(const IPosition &) {}
+    virtual void postTakeStorage() {}
+    static void copyToContiguousStorage(T *dst, Array<T> const & src, ArrayInitPolicy policy);
+
     // Remove the degenerate axes from the Array object.
     // This is the implementation of the nonDegenerate functions.
     // It has a different name to be able to make it virtual without having
@@ -837,7 +929,26 @@ protected:
                    begin_p + size_t(length_p(ndim()-1)) * steps_p(ndim()-1))); }
 };
 
+
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class Array<Bool>;
+  extern template class Array<Char>;
+  extern template class Array<Short>;
+  extern template class Array<uShort>;
+  extern template class Array<Int>;
+  extern template class Array<uInt>;
+  extern template class Array<Int64>;
+  extern template class Array<Float>;
+  extern template class Array<Double>;
+  extern template class Array<Complex>;
+  extern template class Array<DComplex>;
+  extern template class Array<String>;
+#endif
+
 }//#End casa namespace
+
+
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/Array.tcc>
 #endif //# CASACORE_NO_AUTO_TEMPLATES

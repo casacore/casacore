@@ -32,6 +32,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/LogiArray.h>
+#include <casacore/casa/Arrays/ArrayMathBase.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -390,13 +391,18 @@ template<class T> Bool anyOR (const T &val, const Array<T> &array);
 inline Bool allTrue (const Array<Bool>& array)
   { return allEQ (array, True); }
 
-// Is any all element true?
+// Is any element true?
 inline Bool anyTrue (const Array<Bool>& array)
   { return anyEQ (array, True); }
 
-// 
+// The same functions as above, but for selected axes.
+Array<Bool> partialAllTrue (const Array<Bool>& array,
+                            const IPosition& collapseAxes);
+Array<Bool> partialAnyTrue (const Array<Bool>& array,
+                            const IPosition& collapseAxes);
+
 // Determine the number of true or false elements.
-// Note that is meant for Bool arrays, but can also be used for
+// Note: it is meant for Bool arrays, but can also be used for
 // e.g. Int arrays.
 // <group>
 
@@ -428,21 +434,24 @@ template<class T> Array<uInt> partialNFalse (const Array<T>& array,
 
 // Define logical Functors.
 // <group>
-class AllFunc {
+template<typename T> class AllFunc : public ArrayFunctorBase<T,Bool> {
 public:
-  Bool operator() (const Array<Bool>& arr) const { return allTrue(arr); }
+  virtual ~AllFunc() {}
+  virtual Bool operator() (const Array<T>& arr) const { return allTrue(arr); }
 };
-class AnyFunc {
+template<typename T> class AnyFunc : public ArrayFunctorBase<T,Bool> {
 public:
-  Bool operator() (const Array<Bool>& arr) const { return anyTrue(arr); }
+  virtual ~AnyFunc() {}
+  virtual Bool operator() (const Array<T>& arr) const { return anyTrue(arr); }
 };
-template<typename T> class NTrueFunc {
+
+template<typename T> class NTrueFunc : public ArrayFunctorBase<T,uInt> {
 public:
-  T operator() (const Array<T>& arr) const { return ntrue(arr); }
+  virtual uInt operator() (const Array<T>& arr) const { return ntrue(arr); }
 };
-template<typename T> class NFalseFunc {
+template<typename T> class NFalseFunc : public ArrayFunctorBase<T,uInt> {
 public:
-  T operator() (const Array<T>& arr) const { return nfalse(arr); }
+  virtual uInt operator() (const Array<T>& arr) const { return nfalse(arr); }
 };
 // </group>
 

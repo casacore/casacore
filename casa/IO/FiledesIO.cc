@@ -106,6 +106,21 @@ void FiledesIO::write (Int64 size, const void* buf)
     }
 }
 
+
+void FiledesIO::pwrite (Int64 size, Int64 offset, const void* buf)
+{
+    // Throw an exception if not writable.
+    if (!itsWritable) {
+	throw AipsError ("FiledesIO " + itsFileName
+                         + "is not writable");
+    }
+    if (::tracePWRITE(itsFile, (Char *)buf, size, offset) != size) {
+        int error = errno;
+	throw AipsError ("FiledesIO: write error in "
+                         + itsFileName + ": " + strerror(error));
+    }
+}
+
 Int64 FiledesIO::read (Int64 size, void* buf, Bool throwException)
 {
   // Throw an exception if not readable.
@@ -114,6 +129,34 @@ Int64 FiledesIO::read (Int64 size, void* buf, Bool throwException)
                      + " - is not readable");
   }
   Int64 bytesRead = ::traceREAD (itsFile, (Char *)buf, size);
+  int error = errno;
+  if (bytesRead > size) { // Should never be executed
+    throw AipsError ("FiledesIO::read " + itsFileName
+                     + " - read returned a bad value");
+  }
+  if (bytesRead != size  &&  throwException == True) {
+    if (bytesRead < 0) {
+      throw AipsError ("FiledesIO::read " + itsFileName +
+                       " - error returned by system call: " + 
+                       strerror(error));
+    } else if (bytesRead < size) {
+      throw AipsError ("FiledesIO::read - incorrect number of bytes ("
+		       + String::toString(bytesRead) + " out of "
+                       + String::toString(size) + ") read for file "
+                       + itsFileName);
+    }
+  }
+  return bytesRead;
+}
+
+Int64 FiledesIO::pread (Int64 size, Int64 offset, void* buf, Bool throwException)
+{
+  // Throw an exception if not readable.
+  if (!itsReadable) {
+    throw AipsError ("FiledesIO::read " + itsFileName
+                     + " - is not readable");
+  }
+  Int64 bytesRead = ::tracePREAD (itsFile, (Char *)buf, size, offset);
   int error = errno;
   if (bytesRead > size) { // Should never be executed
     throw AipsError ("FiledesIO::read " + itsFileName

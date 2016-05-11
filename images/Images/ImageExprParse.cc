@@ -105,6 +105,8 @@ Bool imageExprParse_hasNoLast()
 
 //# Initialize static members.
 LatticeExprNode ImageExprParse::theirNode;
+vector<String>  ImageExprParse::theirNames;
+Int             ImageExprParse::theirLevel=0;
 
 
 ImageExprParse::ImageExprParse (Bool value)
@@ -139,13 +141,15 @@ ImageExprParse::ImageExprParse (const DComplex& value)
 
 ImageExprParse::ImageExprParse (const Char* value)
 : itsType (TpString),
-  itsSval (String(value))
-{}
+  itsSval (String(value)) {
+    ThrowIf(itsSval.empty(), "Illegal empty expression");
+}
 
 ImageExprParse::ImageExprParse (const String& value)
 : itsType (TpString),
-  itsSval (value)
-{}
+  itsSval (value) {
+    ThrowIf(itsSval.empty(), "Illegal empty expression");
+}
 
 Table& ImageExprParse::getRegionTable (void*, Bool)
 {
@@ -202,7 +206,14 @@ LatticeExprNode ImageExprParse::command
 			    const PtrBlock<const ImageRegion*>& tempRegions,
 			    const String& dirName)
 {
+    // Clear the image names if at the top level.
+    vector<String> savNames = theirNames;
+    if (theirLevel == 0) {
+        theirNames.clear();
+    }
     // Save the global variables to make it re-entrant.
+    // Note that if a persistent ImageExpr is used in another expression,
+    // ImageOpener will call ::command recursively.
     SAVE_GLOBALS;
     theTempLattices = &tempLattices;
     theTempRegions  = &tempRegions;
@@ -211,6 +222,7 @@ LatticeExprNode ImageExprParse::command
     String message;
     String command = str + '\n';
     Bool error = False;
+    theirLevel++;
     try {
 	// Parse and execute the command.
 	if (imageExprGramParseCommand(command) != 0) {
@@ -221,8 +233,12 @@ LatticeExprNode ImageExprParse::command
 	error = True;
     } 
     //# Save the resulting expression and clear the common node object.
+    //# Only the top level image names are kept.
     LatticeExprNode node = theirNode;
     theirNode = LatticeExprNode();
+    if (--theirLevel > 0) {
+      theirNames = savNames;
+    }
     deleteNodes();
     imageExprParse_clear();
     //# If an exception was thrown; throw it again with the message.
@@ -609,11 +625,13 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     if (names.nelements() == 1) {
 	LatticeExprNode node;
 	if (tryLatticeNode (node, addDir(names(0)))) {
+            theirNames.push_back (names(0));
 	    return node;
 	}
     }
     // If 2 elements given, it should be an image with a mask name.
     if (names.nelements() == 2) {
+        theirNames.push_back (names(0));
         return makeImageNode (addDir(names(0)), names(1));
     }
     // One or three elements have been given.
@@ -632,6 +650,7 @@ LatticeExprNode ImageExprParse::makeLRNode() const
     } else {
 	// The first name is given; see if it is a readable table or HDF5 file.
         String fileName = addDir(names(0));
+        theirNames.push_back (names(0));
 	if (Table::isReadable (fileName)) {
 	  Table table (fileName);
 	  theLastTable = table;

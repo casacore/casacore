@@ -40,6 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 const Double MVEpoch::secInDay(3600*24);
+const Unit MVEpoch::unitDay("d");
 
 //# Constructors
 MVEpoch::MVEpoch() :
@@ -178,7 +179,7 @@ Double MVEpoch::get() const {
 }
 
 Quantity MVEpoch::getTime() const {
-  return (Quantity(get(), "d"));
+  return (Quantity(get(), unitDay));
 }
 
 Quantity MVEpoch::getTime(const Unit &unit) const {
@@ -249,7 +250,7 @@ Bool MVEpoch::putValue(const Vector<Quantum<Double> > &in) {
 
 Double MVEpoch::makeDay(const Quantity &in) const {
   in.assure(UnitVal::TIME);
-  return in.get("d").getValue();
+  return in.get(unitDay).getValue();
 }
 
 void MVEpoch::addTime(Double in) {

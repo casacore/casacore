@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprFuncNode.h 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #ifndef TABLES_EXPRFUNCNODE_H
 #define TABLES_EXPRFUNCNODE_H
@@ -107,10 +107,10 @@ public:
 	normFUNC,         //# 21
 	absFUNC,          //# 22
 	argFUNC,          //# 23
-            // for Int, Double or DComplex returning Double
+            // for Int, Double, DComplex, Bool or String returning Double
 	realFUNC,         //# 24
 	imagFUNC,         //# 25
-            // for Int or Double returning Int (using floor)
+            // for Int, Double, Bool or String returning Int (using floor)
         intFUNC,          //# 26
             // for Int or Double returning Double
 	asinFUNC,         //# 27
@@ -187,80 +187,96 @@ public:
 	    // for any type returning array of that type
 	arrayFUNC,        //# 91
 	transposeFUNC,    //# 92
+        resizeFUNC,       //# 93
+	diagonalFUNC,     //# 94
 	    // for Int, Double or DComplex array returning Bool
-	isnanFUNC,        //# 93
-	isinfFUNC,        //# 94
-        isfiniteFUNC,     //# 95
+	isnanFUNC,        //# 95
+	isinfFUNC,        //# 96
+        isfiniteFUNC,     //# 97
 	    // for any array returning Bool scalar
-	isdefFUNC,        //# 96
+	isdefFUNC,        //# 98
+        isnullFUNC,       //# 99
+        iscolFUNC,        //# 100
+        iskeyFUNC,        //# 101
 	    // for any array returning Int scalar
-	ndimFUNC,         //# 97
-	nelemFUNC,        //# 98
+	ndimFUNC,         //# 102
+	nelemFUNC,        //# 103
 	    // for any array returning Int array
-	shapeFUNC,        //# 99
+	shapeFUNC,        //# 104
             // for String
-	strlengthFUNC,    //# 100          returning Int
-	upcaseFUNC,       //# 101          returning String
-	downcaseFUNC,     //# 102          returning String
-	capitalizeFUNC,   //# 103          returning String
-	trimFUNC,         //# 104          returning String
-	ltrimFUNC,        //# 105          returning String
-	rtrimFUNC,        //# 106          returning String
-	substrFUNC,       //# 107          returning String
-        replaceFUNC,      //# 108          returning String
-	regexFUNC,        //# 109          returning TaqlRegex
-	patternFUNC,      //# 110          returning TaqlRegex
-	sqlpatternFUNC,   //# 111          returning TaqlRegex
+	strlengthFUNC,    //# 105          returning Int
+	upcaseFUNC,       //# 106          returning String
+	downcaseFUNC,     //# 107          returning String
+	capitalizeFUNC,   //# 108          returning String
+	trimFUNC,         //# 109          returning String
+	ltrimFUNC,        //# 110          returning String
+	rtrimFUNC,        //# 111          returning String
+	substrFUNC,       //# 112          returning String
+        replaceFUNC,      //# 113          returning String
+	regexFUNC,        //# 114          returning TaqlRegex
+	patternFUNC,      //# 115          returning TaqlRegex
+	sqlpatternFUNC,   //# 116          returning TaqlRegex
             // for Date
-	datetimeFUNC,     //# 112          returning Date
-	mjdtodateFUNC,    //# 113          returning Date
-	mjdFUNC,          //# 114          returning Double
-	dateFUNC,         //# 115          returning Date
-	timeFUNC,         //# 116          returning Double (in radians)
-	yearFUNC,         //# 117          returning Int
-	monthFUNC,        //# 118          returning Int
-	dayFUNC,          //# 119          returning Int
-	cmonthFUNC,       //# 120          returning String
-	weekdayFUNC,      //# 121          returning Int
-	cdowFUNC,         //# 122          returning String
-	weekFUNC,         //# 123          returning Int
-        ctodFUNC,         //# 124          returning String
-        cdateFUNC,        //# 125          returning String
-        ctimeFUNC,        //# 126          returning String
+	datetimeFUNC,     //# 117          returning Date
+	mjdtodateFUNC,    //# 118          returning Date
+	mjdFUNC,          //# 119          returning Double
+	dateFUNC,         //# 120          returning Date
+	timeFUNC,         //# 121          returning Double (in radians)
+	yearFUNC,         //# 122          returning Int
+	monthFUNC,        //# 123          returning Int
+	dayFUNC,          //# 124          returning Int
+	cmonthFUNC,       //# 125          returning String
+	weekdayFUNC,      //# 126          returning Int
+	cdowFUNC,         //# 127          returning String
+	weekFUNC,         //# 128          returning Int
+        ctodFUNC,         //# 129          returning String
+        cdateFUNC,        //# 130          returning String
+        ctimeFUNC,        //# 131          returning String
             // return values as strings
-        stringFUNC,       //# 127
+        stringFUNC,       //# 132
             // return angles as hms strings
-        hmsFUNC,          //# 128
+        hmsFUNC,          //# 133
             // return angles as dms strings
-        dmsFUNC,          //# 129
+        dmsFUNC,          //# 134
             // return angles as hms/dms strings
-        hdmsFUNC,         //# 130
+        hdmsFUNC,         //# 135
 	    // special function returning a random Double number
-	randFUNC,         //# 131
+	randFUNC,         //# 136
             // special function returning Int row number
-	rownrFUNC,        //# 132
+	rownrFUNC,        //# 137
             // special function returning Int row id (meant for GIVING)
-	rowidFUNC,        //# 133
+	rowidFUNC,        //# 138
             // special function resembling if statement
-	iifFUNC,          //# 134
+	iifFUNC,          //# 139
             // angular distance returning radians
-        angdistFUNC,      //# 135
-        angdistxFUNC,     //# 136
-	    // other functions, implemented in derived class
-	conesFUNC,        //# 137
-	cones3FUNC,       //# 138
-	anyconeFUNC,      //# 139
-	anycone3FUNC,     //# 140
-	findconeFUNC,     //# 141
-	findcone3FUNC,    //# 142
+        angdistFUNC,      //# 140
+        angdistxFUNC,     //# 141
+	    // cone search functions, implemented in derived class
+	conesFUNC,        //# 142
+	cones3FUNC,       //# 143
+	anyconeFUNC,      //# 144
+	anycone3FUNC,     //# 145
+	findconeFUNC,     //# 146
+	findcone3FUNC,    //# 147
+            // for Int, Double, Complex or String returning Bool
+        boolFUNC,         //# 148
+            // masked array functions
+        nullarrayFUNC,    //# 149
+        marrayFUNC,       //# 150
+        arrdataFUNC,      //# 151
+        arrmaskFUNC,      //# 152
+        negatemaskFUNC,   //# 153
+        replmaskedFUNC,   //# 154
+        replunmaskedFUNC, //# 155
+        arrflatFUNC,      //# 156
         //# AGGREGATE functions must be the last ones.
-        FirstAggrFunc,    //# 143
+        FirstAggrFunc,    //# 157
         countallFUNC = FirstAggrFunc,
         gcountFUNC,
         gfirstFUNC,
         glastFUNC,
         //# Grouping doing aggregation on the fly; reducing to a scalar per group
-        gminFUNC,         //# 147
+        gminFUNC,         //# 161
         gmaxFUNC,
         gsumFUNC,
         gproductFUNC,
@@ -273,19 +289,36 @@ public:
         gallFUNC,
         gntrueFUNC,
         gnfalseFUNC,
-        ghistFUNC,
+        //# Grouping doing aggregation on the fly; reducing to an array per group
+        FirstAggrArrayFunc,//# 174
+        gminsFUNC = FirstAggrArrayFunc,
+        gmaxsFUNC,
+        gsumsFUNC,
+        gproductsFUNC,
+        gsumsqrsFUNC,
+        gmeansFUNC,
+        gvariancesFUNC,
+        gstddevsFUNC,
+        grmssFUNC,
+        ganysFUNC,
+        gallsFUNC,
+        gntruesFUNC,
+        gnfalsesFUNC,
+        LastAggrArrayFunc,//# 187
+        ghistFUNC = LastAggrArrayFunc,
         //# Grouping requiring aggregation of rows when getting result
-        gaggrFUNC,        //# 160
+        gaggrFUNC,        //# 188
         growidFUNC,
         gmedianFUNC,
         gfractileFUNC,
         gexpridFUNC,      //# special function (can be inserted by TableParse)
-	NRFUNC            //# should be last
+	NRFUNC            //# 193  should be last
 	};
 
     // Constructor
     TableExprFuncNode (FunctionType, NodeDataType, ValueType,
-		       const TableExprNodeSet& source);
+		       const TableExprNodeSet& source,
+                       const Table& = Table());
 
     // Destructor
     ~TableExprFuncNode ();
@@ -399,6 +432,12 @@ public:
     static double angdist (double ra1, double dec1, double ra2, double dec2)
       { return acos (sin(dec1)*sin(dec2) + cos(dec1)*cos(dec2)*cos(ra1-ra2)); }
 
+    // Read a string as an integer, double, complex or bool.
+    static Int64 string2Int (const String&);
+    static Double string2Real (const String&);
+    static DComplex string2Complex (const String&);
+    static Bool string2Bool (const String&);
+
 private:
     // Try if the function gives a constant result.
     // If so, set the expression type to Constant.
@@ -414,6 +453,7 @@ private:
     NodeDataType argDataType_p;     // common argument data type
     Double       scale_p;           // possible scaling for unit conversion
                                     // (needed for sqrt)
+    Table        table_p;           // table (for iscolumn and iskeyword)
 };
 
 

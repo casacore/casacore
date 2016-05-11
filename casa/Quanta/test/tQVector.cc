@@ -85,6 +85,31 @@ int main () {
 		AlwaysAssert(sub.getValue()[1] == -1996, AipsError);
 		AlwaysAssert(sub.getUnit() == "mg", AipsError);
 
+		{
+		    Vector<Quantity> vq(2, Quantity(5, "s"));
+		    vq[1].setUnit("m");
+		    Bool thrown = False;
+		    try {
+		        // quantities don't have conformant units
+		        QVector<Double> qv(vq);
+		    }
+		    catch (const AipsError x) {
+		        thrown = True;
+		    }
+		    AlwaysAssert(thrown, AipsError);
+		    vq[1].setUnit("s");
+		    vq[1].setValue(2);
+		    QVector<Double> qv(vq);
+		    AlwaysAssert(qv.getValue()[0] == 5, AipsError);
+		    AlwaysAssert(qv.getValue()[1] == 2, AipsError);
+		    AlwaysAssert(qv.getFullUnit().getName() == "s", AipsError);
+		    vq[1].setUnit("ms");
+		    QVector<Double> qv1(vq);
+		    AlwaysAssert(qv1.getValue()[0] == 5, AipsError);
+		    AlwaysAssert(qv1.getValue()[1] == 0.002, AipsError);
+		    AlwaysAssert(qv1.getFullUnit().getName() == "s", AipsError);
+		}
+
 
 	}
 	catch (const AipsError& x) {

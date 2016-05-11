@@ -141,6 +141,7 @@ public:
   //# General Member Functions
   // Constants
   static const Double secInDay;
+  static const Unit unitDay;
   
   // Tell me your type
   // <group>

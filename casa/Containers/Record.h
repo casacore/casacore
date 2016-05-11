@@ -43,7 +43,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T> class Array;
 class IPosition;
 class AipsIO;
-class ValueHolder;
 
 
 // <summary>
@@ -335,8 +334,9 @@ public:
     // Get or define the value as a ValueHolder.
     // This is useful to pass around a value of any supported type.
     // <group>
-    ValueHolder asValueHolder (const RecordFieldId&) const;
-    void defineFromValueHolder (const RecordFieldId&, const ValueHolder&);
+    virtual ValueHolder asValueHolder (const RecordFieldId&) const;
+    virtual void defineFromValueHolder (const RecordFieldId&,
+                                        const ValueHolder&);
     // </group>
 
     // Merge a field from another record into this record.

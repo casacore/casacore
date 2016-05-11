@@ -130,6 +130,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		     POLN_EXPR,
 		     STATE_EXPR,
 		     OBSERVATION_EXPR,
+		     FEED_EXPR,
 		     TAQL_EXPR,
 		     MAX_EXPR = TAQL_EXPR};
     enum MSSMode {PARSE_NOW=0, PARSE_LATE};
@@ -154,7 +155,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		const String& scanExpr="",
 		const String& arrayExpr="",
 		const String& stateExpr="",
-		const String& observationExpr="");
+		const String& observationExpr="",
+		const String& feedExpr="");
     
     // Construct from a record representing a selection item at the
     // CLI or user interface level.  This is functionally same as the
@@ -186,7 +188,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Bool setTaQLExpr(const String& taqlExpr);
     Bool setPolnExpr(const String& polnExpr);
     Bool setStateExpr(const String& stateExpr);
-    Bool setObservationExpr(const String& obervationExpr);
+    Bool setObservationExpr(const String& observationExpr);
+    Bool setFeedExpr(const String& feedExpr);
+
+    // Accessor for the various selection expressions as strings.
+    const String getExpr(const MSExprType type=NO_EXPR);
     
     // Accessor for result of parsing all of the selection
     // expressions.  The final TableExprNode (TEN) is the result of
@@ -201,6 +207,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     inline Vector<Int> getObservationList(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return observationIDs_p;}
 
+    // Accessor for the list of the selected feed1 IDs.
+    inline Vector<Int> getFeed1List(const MeasurementSet* ms=NULL) 
+    {getTEN(ms); return feed1IDs_p;}
+
+    // Accessor for the list of the selected feed2 IDs.
+    inline Vector<Int> getFeed2List(const MeasurementSet* ms=NULL) 
+    {getTEN(ms); return feed2IDs_p;}
+
+    // Similar to baselines for antennas
+    inline Matrix<Int> getFeedPairList(const MeasurementSet* ms=NULL) 
+    {getTEN(ms); return feedPairIDs_p;}
+    
     // Accessor for the list of selected sub-array IDs.
     inline Vector<Int> getSubArrayList(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return arrayIDs_p;}
@@ -418,6 +436,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Clear sub-expression and reset priority.  Default behavior is to
     // reset all sub-expressions.
     void clear(const MSExprType type=NO_EXPR);
+    
+    // Set all error handlers to a known state (NULL).
+    void clearErrorHandlers();
+
     Bool exprIsNull(const MSExprType type=NO_EXPR);
     
     // Convey to the various parsers to delete the TENs they hold
@@ -488,7 +510,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	       const String& stateExpr       = "",
 	       const String& observationExpr = "");
 
-    // This version of reset() works with generic MSSeletableTable
+    // Add feedExpr; keep old signature for backwards compatibility
+    void reset2(const MeasurementSet& ms,
+	       const MSSMode& mode           = PARSE_NOW,
+	       const String& timeExpr        = "",
+	       const String& antennaExpr     = "",
+	       const String& fieldExpr       = "",
+	       const String& spwExpr         = "",
+	       const String& uvDistExpr      = "",
+	       const String& taqlExpr        = "",
+	       const String& polnExpr        = "",
+	       const String& scanExpr        = "",
+	       const String& arrayExpr       = "",
+	       const String& stateExpr       = "",
+	       const String& observationExpr = "",
+	       const String& feedExpr        = "");
+
+    // This version of reset() works with generic MSSelectableTable
     // object.  Accessing the services of the MSSelection module via
     // this interface is recommended over the version of reset() that
     // uses MeasurementSet.
@@ -506,6 +544,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	       const String& stateExpr       = "",
 	       const String& observationExpr = "");
 
+    // Add feedExpr; keep old signature for backwards compatibility
+    void reset2(MSSelectableTable& msLike,
+	       const MSSMode& mode           = PARSE_NOW,
+	       const String& timeExpr        = "",
+	       const String& antennaExpr     = "",
+	       const String& fieldExpr       = "",
+	       const String& spwExpr         = "",
+	       const String& uvDistExpr      = "",
+	       const String& taqlExpr        = "",
+	       const String& polnExpr        = "",
+	       const String& scanExpr        = "",
+	       const String& arrayExpr       = "",
+	       const String& stateExpr       = "",
+	       const String& observationExpr = "",
+	       const String& feedExpr        = "");
+
     // Set the maximum value acceptable for SCAN, OBSERVATION or
     // SUB-ARRAY IDs. The main-table columns for these do not refere
     // to rows of sub-tables and therefore there is no cheap way to
@@ -520,7 +574,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Set the error handler to be used for reporting errors while
     // parsing the type of expression give by the first argument.
     void setErrorHandler(const MSExprType type, MSSelectionErrorHandler* mssEH,
-			 const Bool overRide=False);
+			 const Bool overRide=True);
     
     // Initialize the error handler.  This is set the error-handler to
     // the user supplied error handler via setErrorHandler() or to the
@@ -564,19 +618,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     String taqlExpr_p;
     String stateExpr_p;
     String observationExpr_p;
+    String feedExpr_p;
     // Priority
     Vector<Int> exprOrder_p;
     Vector<Int> antenna1IDs_p,antenna2IDs_p,fieldIDs_p, spwIDs_p, scanIDs_p, arrayIDs_p,
-      ddIDs_p,stateObsModeIDs_p, observationIDs_p, spwDDIDs_p;
+      ddIDs_p,stateObsModeIDs_p, observationIDs_p, spwDDIDs_p, feed1IDs_p, feed2IDs_p;
     Matrix<Int> chanIDs_p;
     Matrix<Int> baselineIDs_p;
+    Matrix<Int> feedPairIDs_p;
     Matrix<Double> selectedTimesList_p;
     Matrix<Double> selectedUVRange_p;
     Vector<Bool> selectedUVUnits_p;
     OrderedMap<Int, Vector<Int> > selectedPolMap_p;
     OrderedMap<Int, Vector<Vector<Int> > > selectedSetupMap_p;
     Int maxScans_p, maxObs_p, maxArray_p;
-    MSSelectionErrorHandler* mssErrHandler_p;
     Bool isMS_p,toTENCalled_p;
   };
   

@@ -1,35 +1,81 @@
+language: cpp
+cache: ccache
+
 os:
   - linux
   - osx
-
-language: cpp
 
 compiler:
   - clang
   - gcc
 
+env:
+  global:
+    - CCACHE_COMPRESS=1
+    - CCACHE_CPP2=yes
+  matrix:
+    - CXX11=True
+    - CXX11=False
+
+matrix:
+  exclude:
+    - os: linux
+      compiler: gcc
+      env: CXX11=True
+    - os: linux
+      compiler: clang
+      env: CXX11=False
+    - os: osx
+      compiler: gcc
+      env: CXX11=False
+    - os: osx
+      compiler: clang
+      env: CXX11=True
+
+sudo: false
+
 install:
-  - ./travis-deps.sh
+  - ./.travis/install.sh
+
+addons:
+  apt:
+    packages:
+    - ccache
+    - cmake
+    - flex
+    - bison
+    - libblas-dev
+    - liblapack-dev
+    - libcfitsio3-dev
+    - wcslib-dev
+    - libfftw3-dev
+    - gfortran
+    - libncurses5-dev
+    - libreadline6-dev
+    - libhdf5-serial-dev
+    - libboost-dev
+    - libboost-python-dev
+    - python-numpy
+    - python3-numpy
 
 
 before_script:
-  - wget http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz -O /tmp/sofa.tgz
-  - tar -xzf /tmp/sofa.tgz
-  - cd sofa/20150209_a/f77/src/ && make && make test && cd ../../../../
-  - mkdir build
-  - cd build
-  - wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar
-  - tar zxvf WSRT_Measures.ztar
-  - cmake ..
-      -DUSE_FFTW3=ON
-      -DBUILD_TESTING=ON
-      -DUSE_OPENMP=OFF
-      -DUSE_HDF5=ON
-      -DBUILD_PYTHON=ON
-      -DDATA_DIR=$PWD
-      -DSOFA_ROOT_DIR=$HOME
+  - ./.travis/before_script.sh
 
 script:
-  - make -j4 
+  - cd ${TRAVIS_BUILD_DIR}/build
+  - ccache -M 160M # non cxx11 builds need around 120mb
+  - ccache -s
+  - ccache -z
+  - make -j4
   - make test
-  - sudo make install
+  - make install
+  - ccache -s
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/a21dbde2d416245fd698
+    on_success: always
+    on_failure: always
+    on_start: false

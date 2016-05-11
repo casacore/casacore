@@ -32,8 +32,8 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// Set if compiler supports C++11.
-#if __cplusplus == 201103L
+// Set if compiler supports C++11 or newer
+#if __cplusplus >= 201103L
 #define AIPS_CXX11
 #endif
 
@@ -45,6 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define AIPS_GCC
 #endif
 
+/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
 #if defined(AIPS_GCC2)
 #undef AIPS_GCC2
 #endif
@@ -52,6 +53,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define AIPS_GCC2
 #endif
 
+/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
 #if defined(AIPS_GCC295)
 #undef AIPS_GCC295
 #endif
@@ -59,6 +61,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define AIPS_GCC295
 #endif
 
+/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
 #if defined(AIPS_GCC3)
 #undef AIPS_GCC3
 #endif
@@ -66,6 +69,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define AIPS_GCC3
 #endif
 
+/* ONLY USE IF CODE WILL _NOT_ WORK WITH NEWER VERSIONS */
 #if defined(AIPS_GCC4)
 #undef AIPS_GCC4
 #endif
@@ -171,7 +175,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define AIPS_CRAY_CATAMOUNT
 #endif
 
-#if (defined(__ia64) || defined(__x86_64__))
+#if (defined(__ia64) || defined(__x86_64__) || defined(__aarch64__))
 # if !defined(AIPS_64B)
 # define AIPS_64B
 # endif
@@ -199,10 +203,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 # endif
 #endif
 
-//  Automatically configure for known LITTLE ENDIAN systems
+//  If the compiler specifies endianness, use that
 #if !(defined(AIPS_LITTLE_ENDIAN))
-#if (defined(AIPS_ALPHA) || defined(AIPS_I386) || defined(__x86_64__))
+#if (defined(__BYTE_ORDER__) && defined(__ORDER_LITTLE_ENDIAN__))
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 #define AIPS_LITTLE_ENDIAN
+#endif
+#else
+//  Automatically configure for known LITTLE ENDIAN systems
+#if (defined(AIPS_ALPHA) || defined(AIPS_I386) || defined(__x86_64__) || defined(__ARMEL__) || defined(__AARCH64EL__))
+#define AIPS_LITTLE_ENDIAN
+#endif
 #endif
 #endif
 

@@ -182,12 +182,22 @@ public:
   // and with identical values of the other iteration columns (e.g.
   // DATA_DESCRIPTION_ID and FIELD_ID).
   // See the examples above for the effect of different sort orders.
+  //
+  // The storeSorted parameter determines how the resulting SORT_TABLE is
+  // managed.  If storeSorted is true then the table will be stored on disk;
+  // this potentially allows its reuse in the future but has also been shown
+  // to be a problem when the MS is being read in parallel.  If storeSorted is
+  // false then the SORTED_TABLE is constructed and used in memory which keeps
+  // concurrent readers from interfering with each other.
+
   MSIter(const MeasurementSet& ms, const Block<Int>& sortColumns, 
-	 Double timeInterval=0, Bool addDefaultSortColumns=True);
+	 Double timeInterval=0, Bool addDefaultSortColumns=True,
+	 Bool storeSorted=True);
 
   // Same as above with multiple MSs as input.
   MSIter(const Block<MeasurementSet>& mss, const Block<Int>& sortColumns, 
-	 Double timeInterval=0, Bool addDefaultSortColumns=True);
+	 Double timeInterval=0, Bool addDefaultSortColumns=True,
+	 Bool storeSorted=True);
 
   // Copy construct. This calls the assigment operator.
   MSIter(const MSIter & other);
@@ -375,6 +385,9 @@ protected:
     newPolarizationId_p, newDataDescId_p, preselected_p,
     timeDepFeed_p, spwDepFeed_p, checkFeed_p;
   Int startChan_p;
+
+  // Globally control disk storage of SORTED_TABLE
+  Bool storeSorted_p;
 
   // time selection
   Double interval_p;

@@ -27,6 +27,8 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicMath/Functors.h>
+#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -86,6 +88,34 @@ double sumsqr (double l, double r)
   { return l + r*r; }
 
 
+void testCompare()
+{
+  typedef Complex T;
+  IPosition shp(3,5,8,4);
+  Array<T> arr1(shp), arr2(shp);
+  Array<T> arr1s(arr1(IPosition(3,0,0,0), IPosition(3,3,7,3)));
+  Array<T> arr2s(arr2(IPosition(3,0,0,0), IPosition(3,3,7,3)));
+  indgen (arr1);
+  indgen (arr2);
+  AlwaysAssertExit (compareAll(arr1.begin(), arr1.end(),
+                               arr2.begin(), Near<T>()));
+  AlwaysAssertExit (compareAny(arr1.begin(), arr1.end(),
+                               arr2.begin(), Near<T>()));
+  AlwaysAssertExit (compareAll(arr1s.begin(), arr1s.end(),
+                               arr2s.begin(), Near<T>()));
+  AlwaysAssertExit (compareAny(arr1s.begin(), arr1s.end(),
+                               arr2s.begin(), Near<T>()));
+  arr1(IPosition(3,1,0,0)) -= 1;
+  AlwaysAssertExit (! compareAll(arr1.begin(), arr1.end(),
+                                 arr2.begin(), Near<T>()));
+  AlwaysAssertExit (compareAny(arr1.begin(), arr1.end(),
+                               arr2.begin(), Near<T>()));
+  AlwaysAssertExit (! compareAll(arr1s.begin(), arr1s.end(),
+                                 arr2s.begin(), Near<T>()));
+  AlwaysAssertExit (compareAny(arr1s.begin(), arr1s.end(),
+                               arr2s.begin(), Near<T>()));
+}
+
 int main()
 {
   try {
@@ -130,7 +160,8 @@ int main()
       for (uInt i=0; i<res.size(); ++i) {
         AlwaysAssertExit (near(res[i], v1[i] + (v2[i]-0.25)*(v2[i]-0.25)));
       }
-  }
+    }
+    testCompare();
   } catch (AipsError& x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;

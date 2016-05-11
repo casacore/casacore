@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: LatticeAddNoise.cc 21549 2015-01-28 10:01:12Z gervandiepen $
 
 #include <casacore/lattices/LatticeMath/LatticeAddNoise.h>
 
@@ -46,21 +46,21 @@ LatticeAddNoise::LatticeAddNoise()
   itsNoise(0)
 {}
    
-LatticeAddNoise::LatticeAddNoise (Random::Types type,
-                                  const Vector<Double>& parameters)
+LatticeAddNoise::LatticeAddNoise(
+	Random::Types type,
+    const Vector<Double>& parameters, Int seed1, Int seed2
+)
 : itsType(type),
   itsParameters(parameters.copy()),
-  itsNoise(0)
-{
+  itsGen(seed1, seed2),
+  itsNoise(NULL) {
    makeDistribution();
 }
   
 LatticeAddNoise::LatticeAddNoise (const LatticeAddNoise& other)
 : itsType(other.itsType),
   itsParameters(other.itsParameters.copy()),
-  itsGen(other.itsGen),
-  itsNoise(0)
-{
+  itsGen(other.itsGen), itsNoise(NULL) {
    makeDistribution();
 }
  
@@ -71,7 +71,6 @@ LatticeAddNoise& LatticeAddNoise::operator=(const LatticeAddNoise& other)
       itsParameters.resize(0);
       itsParameters = other.itsParameters;
       itsGen = other.itsGen;
-//
       makeDistribution();
    }
    return *this;
@@ -163,14 +162,12 @@ void LatticeAddNoise::addNoiseToArray (Array<Complex>& data)
    data.putStorage(p, deleteIt);
 }
 
-
 void LatticeAddNoise::makeDistribution ()
 {
    if (itsNoise) {
       delete itsNoise;
       itsNoise = 0;
    }
-//
    itsNoise = Random::construct(itsType, &itsGen);
    if (itsNoise) {
       if (!itsNoise->checkParameters(itsParameters)) {

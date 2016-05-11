@@ -181,19 +181,6 @@ template<class T> class Matrix;
   // </group>
 
 
-// Function to check the shapes. It throws an exception if not equal.
-// <group>
-void throwArrayShapes (const char* name);
-inline void checkArrayShapes (const ArrayBase& left, const ArrayBase& right,
-                              const char* name)
-{
-  if (! left.shape().isEqual (right.shape())) {
-    throwArrayShapes (name);
-  }
-}
-// </group>
-
-
 // Functions to apply a binary or unary operator to arrays.
 // They are modeled after std::transform.
 // They do not check if the shapes conform; as in std::transform the
@@ -606,6 +593,9 @@ template<class T> inline Vector<T> indgen(uInt length, T start, T inc)
 // Sum of every element of the array.
 template<class T> T sum(const Array<T> &a);
 // 
+// Sum the square of every element of the array.
+template<class T> T sumsqr(const Array<T> &a);
+// 
 // Product of every element of the array. This could of course easily
 // overflow.
 template<class T> T product(const Array<T> &a);
@@ -794,8 +784,14 @@ Matrix<DComplex> conj(const Matrix<DComplex> &carray);
 // Form an array of complex numbers from the given real arrays.
 // Note that Complex and DComplex are simply typedefs for std::complex<float>
 // and std::complex<double>, so the result is in fact one of these types.
+// <group>
 template<typename T>
 Array<std::complex<T> > makeComplex(const Array<T> &real, const Array<T>& imag);
+template<typename T>
+Array<std::complex<T> > makeComplex(const T &real, const Array<T>& imag);
+template<typename T>
+Array<std::complex<T> > makeComplex(const Array<T> &real, const T& imag);
+// </group>
 
 // Set the real part of the left complex array to the right real array.
 template<typename L, typename R>
@@ -885,6 +881,30 @@ template<class T> Array<T> square(const Array<T> &val);
 
 // Returns an array where every element is cubed.
 template<class T> Array<T> cube(const Array<T> &val);
+
+// Expand the values of an array. The arrays must have the same dimensionality.
+// The length of each axis in the input array must be <= the length of the
+// corresponding axis in the output array and divide evenly.
+// For each axis <src>mult</src> is set to output/input.
+// <br>The <src>alternate</src> argument determines how the values are expanded.
+// If a row contains values '1 2 3', they can be expanded "linearly"
+// as '1 1 2 2 3 3'  or  alternately as '1 2 3 1 2 3'
+// This choice can be made for each axis; a value 0 means linearly,
+// another value means alternately. If the length of alternate is less than
+// the dimensionality of the arrays, the missing ones default to 0.
+template<class T> void expandArray (Array<T>& out, const Array<T>& in,
+                                    const IPosition& alternate=IPosition());
+// Helper function for expandArray using recursion for each axis.
+template<class T>
+T* expandRecursive (int axis, const IPosition& shp, const IPosition& mult,
+                    const IPosition& inSteps,
+                    const T* in, T* out, const IPosition& alternate);
+// Check array shapes for expandArray. It returns the alternate argument,
+// where possibly missing values are appended (as 0).
+IPosition checkExpandArray (IPosition& mult,
+                            const IPosition& inShape,
+                            const IPosition& outShape,
+                            const IPosition& alternate);
 
 
 // </group>
