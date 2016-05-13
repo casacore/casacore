@@ -49,10 +49,10 @@ $ sudo apt-get install libhdf5-serial-dev libfftw3-dev python-numpy \
     libboost-python-dev libpython3.4-dev libpython2.7-dev
 ```
 
-On CentOS you can install these with:
+On CentOS7 you can install these with:
  ```bash 
 $ sudo yum install cmake cmake-gui gcc-gfortran gcc-c++ flex bison \
-        blas blas-devel  lapack lapck-devel cfitsio cfitsio-devel \
+        blas blas-devel  lapack lapack-devel cfitsio cfitsio-devel \
         wcslib wcslib-devel ncurses ncurses-devel readline readline-devel\
         python-devel boost boost-devel fftw fftw-devel hdf5 hdf5-devel\
         numpy boost-python 
