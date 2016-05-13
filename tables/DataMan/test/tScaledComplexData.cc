@@ -141,7 +141,7 @@ void a()
 	arrf += Complex(840, 840);
     }
 
-    //# Do an erronous thing.
+    //# Do an erroneous thing.
     //# 2005-02-15 GvD: this test does not work correctly, because the
     //# exception calls the BaseTable dtor. In there the table directory
     //# gets removed, but there is still an open file which NFS renames

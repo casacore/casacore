@@ -56,7 +56,7 @@ TaQLNode TaQLNode::parse (const String& command)
   try {
     tableGramParseCommand (str);
   } catch (const TableGramError& x) {
-    // Keep erronous position and token in new exception
+    // Keep erroneous position and token in new exception
     clearNodesCreated();
     throw TableParseError (str + "  " + x.what(), x.pos(), x.token());
   } catch (const std::exception& x) {

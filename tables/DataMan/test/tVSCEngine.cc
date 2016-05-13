@@ -94,7 +94,7 @@ void a() {
 	colA.put (i, VSCExample(i,i+1));
     }
 
-    //# Do an erronous thing.
+    //# Do an erroneous thing.
     SetupNewTable newtab2("tVSCEngine_tmp.dat2", td, Table::Scratch);
     newtab2.bindColumn ("x", engine);
 ///    try {

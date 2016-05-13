@@ -151,9 +151,9 @@ $casa_checktool ./tTableGramUpdate "update tTableGramUpdate_tmp.tabs set cols=co
 ../../apps/taql "select t1.colv, t2.colv as cols2 from tTableGramUpdate_tmp.tabs t1, tTableGramUpdate_tmp.refs2 t2 where t1.cols!=t2.cols or any(t1.cola!=t2.cola) or any(t1.colv!=t2.colv)"
 
 
-# Do some erronous updates.
+# Do some erroneous updates.
 echo
-echo "Testing erronous commands ..."
+echo "Testing erroneous commands ..."
 $casa_checktool ./tTableGramUpdate 'update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])'
 $casa_checktool ./tTableGramUpdate 'update tTableGramUpdate_tmp.tab1 set cola[,1:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])'
 $casa_checktool ./tTableGramUpdate 'update tTableGramUpdate_tmp.tab1 set cola[real(cola)>1.1][,1:1,]=array(4,5,2,1)'

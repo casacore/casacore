@@ -628,7 +628,7 @@ void ISMBase::open (uInt tabNrrow, AipsIO& ios)
                              0, False, multiFile());
     AlwaysAssert (file_p != 0, AipsError);
     //# Westerbork MSs have a problem, because TMS used for a while
-    //# the erronous version of ISMBase.cc.
+    //# the erroneous version of ISMBase.cc.
     //# So if we have an old ISM version, do a makeIndex to get
     //# the version from the index. That was 3.
     if (version_p == 1) {

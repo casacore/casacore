@@ -249,7 +249,7 @@ void a (Bool doExcp)
 	colA.put (i, vec);
     }
 
-    //# Do an erronous thing.
+    //# Do an erroneous thing.
     SetupNewTable newtab2("dRetypedArrayEngine_tmp.dat2", td, Table::Scratch);
     newtab2.bindColumn ("Data", engine);
     if (doExcp) {
