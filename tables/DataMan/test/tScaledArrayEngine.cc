@@ -125,7 +125,7 @@ void a() {
 	arrf += (float)(6*arrd.nelements());
     }
 
-    //# Do an erronous thing.
+    //# Do an erroneous thing.
     SetupNewTable newtab2("tScaledArrayEngine_tmp.dat2", td, Table::Scratch);
     newtab2.bindColumn ("source2", engine1);
 ///    try {

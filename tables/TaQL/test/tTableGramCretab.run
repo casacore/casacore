@@ -26,7 +26,7 @@ echo ""
 $casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab3 as [endian="little", blocksize=2048, type="plain", storage="multifile"] [col1x i4 [shape=[3,4]], col2y B]'
 ../../apps/showtableinfo in=tTableGramCretab_tmp.tab3 | grep -v 'showtableinfo:'
 
-# Some erronous commands.
+# Some erroneous commands.
 echo ""
 $casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab3 as [endian="little", blocksize=2048, type="plain", storage="multifile", overwrite=F] [col1x i4 [shape=[3,4]], col2y B]'
 $casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab1 as [endian="little", blocksize=2048, type="plain", storage="multifil"] [col1x i4 [shape=[3,4]], col2y B]'

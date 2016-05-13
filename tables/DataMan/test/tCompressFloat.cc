@@ -112,7 +112,7 @@ void writeData (Bool autoScale)
 		      arrf(IPosition(3,0,i,0), IPosition(3,1,i,3)));
   }
 
-  //# Do an erronous thing.
+  //# Do an erroneous thing.
   //# However, this fails to run on Linux (so outcommented).
   ///  SetupNewTable newtab2("tCompressFloat_tmp.dat2", td, Table::Scratch);
   ///  newtab2.bindColumn ("source2", engine1);

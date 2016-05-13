@@ -307,7 +307,7 @@ void b (Bool doExcp) {
     }
 }
 
-// Do some more erronous constructions.
+// Do some more erroneous constructions.
 void c (Bool doExcp) {
     // The next 2 statements are outcommented, because they result
     // in a bus error with the g++ compiler for reasons not understood.

@@ -191,7 +191,7 @@ void doIt()
   e12 = e12.useUnit("min");
   checkScaDouble ("12min arcmin", 0, e12.useUnit("arcmin"), 180., "arcmin");
 
-  // Check erronous expressions.
+  // Check erroneous expressions.
   TableExprNode s2(3);
   s2 = s2.useUnit ("rad");
   checkFailure ("e2+s2", e2+s2);

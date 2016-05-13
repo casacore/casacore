@@ -123,7 +123,7 @@ void a()
     arrf += (float)(6*arrf.nelements());
   }
 
-  //# Do an erronous thing.
+  //# Do an erroneous thing.
   SetupNewTable newtab2("tMappedArrayEngine_tmp.dat2", td, Table::Scratch);
   newtab2.bindColumn ("source2", engine1);
 ///    try {
