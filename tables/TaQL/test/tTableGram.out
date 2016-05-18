@@ -790,7 +790,7 @@ select ab from tTableGram_tmp.tab
  5
  7
  9
-insert into tTableGram_tmp.tab (ab,ac) values (1+2,3*ab + sum([select ab from tTableGram_tmp.tab]))
+insert into tTableGram_tmp.tab set ab=1+2, ac=3*ab + sum([select ab from tTableGram_tmp.tab])
     has been executed
     insert result of 1 rows
 2 selected columns:  ab ac
