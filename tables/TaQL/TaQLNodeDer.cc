@@ -1359,15 +1359,17 @@ TaQLInsertNodeRep::TaQLInsertNodeRep (const TaQLMultiNode& tables,
     const TaQLUpdExprNodeRep* rep = dynamic_cast<const TaQLUpdExprNodeRep*>
       (nodes[i].getRep());
     AlwaysAssert (rep, AipsError);
-    if (rep->itsIndices1.isValid()) {
-      throw TableInvExpr ("Column indices cannot be given in an "
+    if (rep->itsIndices1.isValid()  ||  rep->itsIndices2.isValid()) {
+      throw TableInvExpr ("Column indices or masks cannot be given in an "
                           "INSERT command");
     }
     // Add the column name and value expression.
     itsColumns.add (new TaQLKeyColNodeRep (rep->itsName));
     values.add (rep->itsExpr);
   }
-  itsValues = values;
+  TaQLMultiNode valuesList(False);
+  valuesList.add (values);
+  itsValues = valuesList;
 }
 TaQLInsertNodeRep::~TaQLInsertNodeRep()
 {}
