@@ -146,21 +146,28 @@ public:
 
   // Clone a column in the from table to a new column in the to table.
   // The new column gets the same table description and data manager as the
-  // from column. It has to get a unique data mananger name. If not given,
+  // from column. It has to get a unique data manager name. If not given,
   // it is the new column name.
-  static void cloneColumn (const Table& fromTable, const String& fromColumn,
-                           Table& toTable, const String& newColumn,
+  static void cloneColumn (const Table& fromTable,
+                           const String& fromColumn,
+                           Table& toTable,
+                           const String& newColumn,
                            const String& dataManagerName = String());
   // Cloning as above, but the data type is set to the template parameter.
   template<typename T> 
-  static void cloneColumnTyped (const Table& fromTable, const String& fromColumn,
-                                Table& toTable, const String& newColumn,
+  static void cloneColumnTyped (const Table& fromTable,
+                                const String& fromColumn,
+                                Table& toTable,
+                                const String& newColumn,
                                 const String& dataManagerName = String());
 
   // Copy the data from one column to another.
   // It can be used after function cloneColumn to populate the new column.
   // Note that the data types of the column do not need to match; data type
   // promotion is done if needed.
+  // <br>The <src>preserveTileShape</src> argument tells if the original
+  // tile shape is kept if a tiled data manager is used. If False, the
+  // default tile shape of the data manager is used.
   // <note role=tip>
   // Note that a TaQL command can be used to fill a column in any way.
   // For example, fill toColumn with the real part of a complex fromColumn:
@@ -174,8 +181,10 @@ public:
   // When copying a column in a straightforward way, the TaQL way is about 25%
   // slower than using the function <src>copyColumnData</src>.
   // </note>
-  static void copyColumnData (const Table& fromTable, const String& fromColumn,
-                              Table& toTable, const String& toColumn,
+  static void copyColumnData (const Table& fromTable,
+                              const String& fromColumn,
+                              Table& toTable,
+                              const String& toColumn,
                               Bool preserveTileShape=True);
 
   // Fill the table column with the given array.
