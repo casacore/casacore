@@ -357,7 +357,7 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (record.asuInt("TpUInt2") == 4);
     AlwaysAssertExit (allEQ (record.asArrayuInt("TpUInt2"), uInt(4)));
 
-    // Do some erronous defines and assigns.
+    // Do some erroneous defines and assigns.
     if (doExcp) {
 	doDefineAssign (record);
     }

@@ -159,12 +159,10 @@ void MSSummary::list (LogIO& os, Record& outRec, Bool verbose,
 {
     // List a title for the Summary
     listTitle (os);
-
     // List the main table as well as the subtables in a useful order and format
     listWhere (os,verbose);
     listWhat (os,outRec, verbose, fillRecord);
     listHow (os,verbose, oneBased);
-
     // These aren't really useful (yet?)
     //  listSource (os,verbose);
     //  listSysCal (os,verbose);
@@ -177,7 +175,6 @@ void MSSummary::list (LogIO& os, Record& outRec, Bool verbose,
 
     // Post it
     os.post();
-
 }
 
 
@@ -223,12 +220,11 @@ void MSSummary::listHow (LogIO& os, Bool verbose, Bool oneBased) const
 {
     // listSpectralWindow (os,verbose);
     // listPolarization (os,verbose);
-        listSpectralAndPolInfo(os, verbose, oneBased);
+    listSpectralAndPolInfo(os, verbose, oneBased);
     listSource (os,verbose);
     //  listFeed (os,verbose, oneBased));
     listAntenna (os,verbose);
 }
-
 
 //
 // SUBTABLES
@@ -274,20 +270,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
         outRec.define("EndTime", stopTime/C::day);
         outRec.define("timeref", timeref);
     }
-
-    //        if (verbose) {   // do "scan" listing
-
-    // Set up iteration over OBSID, ARRID, and SCAN_NUMBER:
-    //      Block<String> mssortcols(3);
-    //      mssortcols[0] = "OBSERVATION_ID";
-    //      mssortcols[1] = "ARRAY_ID";
-    //      mssortcols[2] = "SCAN_NUMBER";
-    //      MSIter msIter(const_cast<MeasurementSet&>(*pMS),mssortcols,0.0,False );
-
-    //      for (msIter.origin(); msIter.more(); msIter++) {
-    //      }
-
-
     // the selected MS (all of it) as a Table tool:
     //   MS is accessed as a generic table here because
     //   the ms tool hard-wires iteration over SPWID, FLDID,
@@ -313,7 +295,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
     // Spw Ids
     ROMSDataDescColumns dd(pMS->dataDescription());
     Vector<Int> specwindids(dd.spectralWindowId().getColumn());
-
     // Field widths for printing:
     Int widthLead  =  2;
     Int widthScan  =  4;
@@ -370,7 +351,7 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
         Int lastscan = 0;
         for (; siter != send; ++siter) {
             const MSMetaData::SubScanProperties& props = ssprops->find(*siter)->second;
-            Int nrow = props.nrows;
+            Int nrow = props.acRows + props.xcRows;
             Int thisscan = siter->scan;
             set<uInt> ddIDs = props.ddIDs;
             std::set<Int> stateIDs = props.stateIDs;
@@ -476,7 +457,6 @@ void MSSummary::listMain (LogIO& os, Record& outRec, Bool verbose,
             ++recLength;
             lastscan = thisscan;
         }
-
         if (verbose) {
             os << LogIO::POST;
         }
@@ -778,39 +758,20 @@ void MSSummary::getScanSummary (Record& outRec) const
 
 void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 {
-
-    // Make a MS-antenna object
-    MSAntenna antennaTable(pMS->antenna());
-    uInt nrow(antennaTable.nrow());
-
-    // Quit if no antennas
-    if (nrow<=0) {
+    if (_msmd->nAntennas() == 0) { 
         os << "The ANTENNA table is empty" << endl;
         return;
-    }
-
+    }    
     // Determine antennas  present in the main table
-    MSRange msr(*pMS);
-    Vector<Int> ant1,ant2;
-    ant1 = msr.range(MSS::ANTENNA1).asArrayInt(RecordFieldId(0));
-    ant2 = msr.range(MSS::ANTENNA2).asArrayInt(RecordFieldId(0));
-    //GlishArray(msr.range(MSS::ANTENNA1).get(0)).get(ant1);
-    //GlishArray(msr.range(MSS::ANTENNA2).get(0)).get(ant2);
-    Vector<Int> antIds(ant1.nelements()+ant2.nelements());
-    antIds(Slice(0,ant1.nelements()))=ant1;
-    antIds(Slice(ant1.nelements(),ant2.nelements()))=ant2;
-    const Int option=Sort::HeapSort | Sort::NoDuplicates;
-    const Sort::Order order=Sort::Ascending;
-    Int nAnt=GenSort<Int>::sort (antIds, order, option);
-
-    // Get Antenna table columns:
-    ROMSAntennaColumns antCol(antennaTable);
-
+    const std::set<Int>& antIds = _msmd->getUniqueAntennaIDs();
+    uInt nAnt = antIds.size();
+    std::map<String, uInt> namesToIDsMap;
+    vector<String> names = _msmd->getAntennaNames(namesToIDsMap);
+    vector<String> stations = _msmd->getAntennaStations();
     if (verbose) {
         // Detailed antenna list
-
         String title;
-        title="Antennas: "+String::toString(nAnt)+":";
+        title="Antennas: " + String::toString(nAnt) + ":";
         String indent("  ");
         uInt indwidth =5;
         uInt namewidth=6;
@@ -824,7 +785,6 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
 
         os.output().setf(ios::fixed, ios::floatfield);
         os.output().setf(ios::left, ios::adjustfield);
-
         // Write the title:
         os << title << endl;
         // Write the column headings:
@@ -860,35 +820,32 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
         os.output().width(positionwidth);
         os << "z";
         os << endl;
-
         vector<MPosition> antPos = _msmd->getAntennaPositions();
         Bool posIsITRF = antPos[0].type() != MPosition::ITRF;
         vector<QVD> offsets = _msmd->getAntennaOffsets();
-
-        // For each ant
-        for (Int i=0; i<nAnt; i++) {
+        QVD diameters = _msmd->getAntennaDiameters();
+        std::set<Int>::const_iterator iter = antIds.begin();
+        std::set<Int>::const_iterator end = antIds.end();
+        const static Unit diamUnit="m";
+        for (; iter!=end; ++iter) {
             os.output().setf(ios::left, ios::adjustfield);
-
-            Int ant=antIds(i);
+            Int ant = *iter;
             // Get diameter
-            Quantity diam=antCol.dishDiameterQuant()(ant);
-            Unit diamUnit="m";
-
+            const Quantity& diam = diameters[ant];
             // Get position
-            MPosition mLongLat=antCol.positionMeas()(ant);
-            MVAngle mvLong= mLongLat.getAngle().getValue()(0);
-            MVAngle mvLat= mLongLat.getAngle().getValue()(1);
-            Vector<Double> antOff = offsets[ant].getValue("m");
+            const MPosition& mLongLat = antPos[ant];
+            MVAngle mvLong = mLongLat.getAngle().getValue()(0);
+            MVAngle mvLat = mLongLat.getAngle().getValue()(1);
             if (posIsITRF) {
                 MeasConvert<MPosition> toItrf(antPos[ant], MPosition::ITRF);
-                antPos[i] = toItrf(antPos[ant]);
+                antPos[ant] = toItrf(antPos[ant]);
             }
             Vector<Double> xyz = antPos[ant].get("m").getValue();
             // write the row
             os << indent;
             os.output().width(indwidth);  os << ant;
-            os.output().width(namewidth); os << antCol.name()(ant);
-            os.output().width(statwidth); os << antCol.station()(ant);
+            os.output().width(namewidth); os << names[ant];
+            os.output().width(statwidth); os << stations[ant];
             os.output().precision(diamprec);
             os.output().width(diamwidth); os << diam.getValue(diamUnit)<<"m   ";
             os.output().width(longwidth); os << mvLong.string(MVAngle::ANGLE,7);
@@ -896,6 +853,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
             os.output().setf(ios::right, ios::adjustfield);
             os.output().precision(4);
             os.output().width(offsetwidth);
+            Vector<Double> antOff = offsets[ant].getValue("m");
             os << antOff[0];
             os.output().width(offsetwidth);
             os << antOff[1];
@@ -910,20 +868,25 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
             os << xyz[2];
             os << endl;
         }
-
-    } else {
+    }
+    else {
         // Horizontal list of the stations names:
         os << "Antennas: " << nAnt << " 'name'='station' " <<  endl;
         String line, leader;
-        Int last=antIds(0)-1;
-        for (Int i=0; i<nAnt; i++) {
-            Int ant=antIds(i);
+        Int last = *antIds.begin() - 1;
+        std::set<Int>::const_iterator iter = antIds.begin();
+        std::set<Int>::const_iterator end = antIds.end();
+        Int maxAnt = *std::max_element(antIds.begin(), antIds.end());
+        for (; iter!=end; ++iter) {
+            Int ant = *iter;
             // Build the line
-            line = line + "'" + antCol.name()(ant) + "'" + "=";
-            line = line + "'" + antCol.station()(ant) + "'";
+            line = line + "'" + names[ant] + "'" + "=";
+            line = line + "'" + stations[ant] + "'";
             // Add comma if not at the end
-            if (ant != (nAnt-1)) line = line + ", ";
-            if (line.length()>55 || ant==(nAnt-1)) {
+            if (ant != maxAnt) {
+                line = line + ", ";
+            }
+            if (line.length() > 55 || ant == maxAnt) {
                 // This line is finished, dump it after the line leader
                 leader = String::toString(last+1) +"-" +String::toString(ant) +": ";
                 os << "   ID=";
@@ -937,7 +900,6 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
     }
     os << LogIO::POST;
 }
-
 
 void MSSummary::listFeed (LogIO& os, Bool verbose, Bool oneBased) const
 {
@@ -994,25 +956,19 @@ void MSSummary::listField (LogIO& os, Bool verbose) const
 }
 void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRecord) const
 {
-
-    // Make a MS-field-columns object
-    ROMSFieldColumns msFC(pMS->field());
-
     // Is source table present?
     Bool srcok=!(pMS->source().isNull() || pMS->source().nrow()<1);
-
-    // Determine fields present in the main table
-    MSRange msr(*pMS);
-    Vector<Int> fieldId;
-    //ant2 = msr.range(MSS::ANTENNA2).asArrayInt(RecordFieldId(0));
-    fieldId = msr.range(MSS::FIELD_ID).asArrayInt(RecordFieldId(0));
-
-    if (msFC.phaseDir().nrow()<=0) {
+    uInt nfields = _msmd->nFields();
+    std::set<Int> uniqueFields = _msmd->getUniqueFieldIDs();
+    uInt nFieldsInMain = uniqueFields.size();
+    if (nfields <= 0) {
         os << "The FIELD table is empty" << endl;
-    } else if (fieldId.nelements()==0) {
+    }
+    else if (uniqueFields.empty()) {
         os << "The MAIN table is empty" << endl;
-    } else {
-        os << "Fields: " << fieldId.nelements()<<endl;
+    }
+    else {
+        os << "Fields: " << nFieldsInMain << endl;
         Int widthLead  =  2;
         Int widthField =  5;
         Int widthCode  =  5;
@@ -1024,7 +980,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
         Int widthnVis  =  10;
         Int widthNUnflaggedRows = 13;
 
-        outrec.define("nfields", Int(fieldId.nelements()));
+        outrec.define("nfields", Int(nFieldsInMain));
         if (verbose) {}  // null, always same output
 
         // Line is    ID Date Time Name RA Dec Type
@@ -1042,47 +998,58 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
             os.output().width(widthnVis);
             os << "nRows";
             if (_listUnflaggedRowCount) {
-                          os.output().width(widthNUnflaggedRows);
-                          os << "nUnflRows";
-                        }
+                os.output().width(widthNUnflaggedRows);
+                os << "nUnflRows";
+            }
         }
         os << endl;
         // loop through fields
-        for (uInt i=0; i<fieldId.nelements(); i++) {
-            uInt fld=fieldId(i);
-            if (fld<msFC.phaseDir().nrow()) {
-                MDirection mRaDec=msFC.phaseDirMeas(fld);
+        vector<MDirection> phaseDirs = _msmd->getPhaseDirs();
+        vector<String> fieldNames = _msmd->getFieldNames();
+        vector<String> codes = _msmd->getFieldCodes();
+        std::set<Int>::const_iterator fiter = uniqueFields.begin();
+        std::set<Int>::const_iterator fend = uniqueFields.end();
+        vector<Int> sourceIDs = _msmd->getFieldTableSourceIDs();
+        for (; fiter!=fend; ++fiter) {
+            Int fld = *fiter;
+            if (fld >=0 && fld < (Int)nfields) {
+                MDirection mRaDec = phaseDirs[fld];
                 MVAngle mvRa = mRaDec.getAngle().getValue()(0);
-                MVAngle mvDec= mRaDec.getAngle().getValue()(1);
-                String name=msFC.name()(fld);
-                if (name.length()>20) name.replace(19,1,"*");
+                MVAngle mvDec = mRaDec.getAngle().getValue()(1);
+                String name = fieldNames[fld];
+                if (name.length()>20) {
+                    name.replace(19,1,"*");
+                }
                 os.output().setf(ios::left, ios::adjustfield);
                 os.output().width(widthLead);    os << "  ";
                 os.output().width(widthField);    os << (fld);
-                os.output().width(widthCode);   os << msFC.code()(fld);
+                os.output().width(widthCode);   os << codes[fld];
                 os.output().width(widthName);    os << name.at(0,20);
                 os.output().width(widthRA);    os << mvRa(0.0).string(MVAngle::TIME,12);
                 os.output().width(widthDec);    os << mvDec.string(MVAngle::DIG2,11);
                 os.output().width(widthType);
                 os << MDirection::showType(mRaDec.getRefPtr()->getType());
-                if (srcok) {os.output().width(widthSrc);    os << msFC.sourceId()(fld);}
-                if (nVisPerField_.nelements()>fld) {
+                if (srcok) {
+                    os.output().width(widthSrc);
+                    os << sourceIDs[fld];
+                }
+                if ((Int)nVisPerField_.nelements() > fld) {
                     os.output().setf(ios::right, ios::adjustfield);
                     os.output().width(widthnVis);
                     os << _msmd->nRows(MSMetaData::BOTH, fld);
                     if (_listUnflaggedRowCount) {
-                                          os.output().width(widthNUnflaggedRows);
-                                          ostringstream xx;
-                                          xx << std::fixed << setprecision(2) << std::right
-                                             << _msmd->nUnflaggedRows(MSMetaData::BOTH, fld);
-                                          os << xx.str();
-                                        }
+                        os.output().width(widthNUnflaggedRows);
+                        ostringstream xx;
+                        xx << std::fixed << setprecision(2) << std::right
+                            << _msmd->nUnflaggedRows(MSMetaData::BOTH, fld);
+                        os << xx.str();
+                    }
                 }
                 os << endl;
                 if(fillRecord){
                     Record fieldrec;
                     fieldrec.define("name", name);
-                    fieldrec.define("code",msFC.code()(fld));
+                    fieldrec.define("code", codes[fld]);
                     MeasureHolder mh(mRaDec);
                     Record dirrec;
                     String err;
@@ -1096,11 +1063,7 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
             } else {
                 os << "Field "<<fld<<" not found in FIELD table"<<endl;
             }
-
         }
-
-        //        os << "   (nVis = Total number of time/baseline visibilities per field) " << endl;
-
     }
     os << endl << LogIO::POST;
 }
@@ -1490,14 +1453,6 @@ void MSSummary::listPolarization (LogIO& os, Bool) const {
 void MSSummary::listSpectralAndPolInfo (
     LogIO& os, Bool, Bool
 ) const {
-    // Create a MS-spwin-columns object
-    ROMSSpWindowColumns msSWC(pMS->spectralWindow());
-
-    // Create a MS-pol-columns object
-    ROMSPolarizationColumns msPolC(pMS->polarization());
-    // Create a MS-data_desc-columns object
-    ROMSDataDescColumns msDDC(pMS->dataDescription());
-
     if (_msmd->nDataDescriptions() == 0) {
         os << "The DATA_DESCRIPTION table is empty: see the FEED table" << endl;
     }
@@ -1507,24 +1462,26 @@ void MSSummary::listSpectralAndPolInfo (
     if (_msmd->nPol() == 0) {
         os << "The POLARIZATION table is empty: see the FEED table" << endl;
     }
-
     // determine the data_desc_ids present in the main table
-    MSRange msr(*pMS);
-    Vector<Int> ddId = msr.range(MSS::DATA_DESC_ID).asArrayInt(RecordFieldId(0));
-    Vector<uInt> uddId(ddId.nelements());
-    for (uInt i=0; i<ddId.nelements(); i++) uddId(i)=ddId(i);
+    std::set<uInt> ddId = _msmd->getUniqueDataDescIDs();
     // now get the corresponding spectral windows and pol setups
-    Vector<Int> spwIds = msDDC.spectralWindowId().getColumnCells(uddId);
-    Vector<Int> polIds = msDDC.polarizationId().getColumnCells(uddId);
+    vector<uInt> polIds = _msmd->getDataDescIDToPolIDMap();
+    Vector<uInt> spwIds(_msmd->getDataDescIDToSpwMap());
+    std::set<uInt> uniquePolIDs;
+    std::set<uInt> uniqueSpws;
+    std::set<uInt>::const_iterator dIter = ddId.begin();
+    std::set<uInt>::const_iterator dEnd = ddId.end();
+    for (; dIter!=dEnd; ++dIter) {
+        uniquePolIDs.insert(polIds[*dIter]);
+        uniqueSpws.insert(spwIds[*dIter]);
+    }
     const Int option=Sort::HeapSort | Sort::NoDuplicates;
     const Sort::Order order=Sort::Ascending;
-    uInt nSpw = GenSort<Int>::sort (spwIds, order, option);
-    Int nPol = GenSort<Int>::sort (polIds, order, option);
-
-    if (ddId.nelements()>0) {
+    GenSort<uInt>::sort (spwIds, order, option);
+    if (! ddId.empty()) {
         os << "Spectral Windows: ";
-        os << " ("<<nSpw<<" unique spectral windows and ";
-        os << nPol << " unique polarization setups)"<<endl;
+        os << " (" << uniqueSpws.size() << " unique spectral windows and ";
+        os << uniquePolIDs.size() << " unique polarization setups)"<<endl;
 
         vector<String> names = _msmd->getSpwNames();
         Int widthName = 5;
@@ -1541,7 +1498,8 @@ void MSSummary::listSpectralAndPolInfo (
         Int widthFreq    = 12;
         Int widthFrqNum    = 12;
         Int widthNumChan    =  6;
-        Int widthCorrTypes    = msPolC.corrType()(0).nelements()*4;
+        vector<vector<Int> > corrTypes = _msmd->getCorrTypes();
+        Int widthCorrTypes = 4*corrTypes[0].size();
         Int widthCorrType    =  4;
         uInt widthBBCNo = 8;
 
@@ -1558,7 +1516,6 @@ void MSSummary::listSpectralAndPolInfo (
         os.output().width(widthFreq);    os << " ChanWid(kHz) ";
         os.output().width(widthFreq);    os << " TotBW(kHz)";
         os.output().width(widthFreq);    os << "CtrFreq(MHz) ";
-        //        os.output().width(widthFreq);    os << "Ref(MHz)";
         Bool hasBBCNo = _msmd->hasBBCNo();
         if (hasBBCNo) {
             os.output().width(widthBBCNo);
@@ -1576,11 +1533,10 @@ void MSSummary::listSpectralAndPolInfo (
 
         os.output().precision(9);
         // order by spwid, not ddid, CAS-7376
-        Vector<Int>::const_iterator iter = spwIds.begin();
-        Vector<Int>::const_iterator end = spwIds.end();
+        Vector<uInt>::const_iterator iter = spwIds.begin();
+        Vector<uInt>::const_iterator end = spwIds.end();
         std::vector<std::set<uInt> > spwToDDID = _msmd->getSpwToDataDescriptionIDMap();
-        std::set<uInt> uDDIDSet(uddId.begin(), uddId.end());
-        vector<uInt> ddToPolID = _msmd->getDataDescIDToPolIDMap();
+        vector<MFrequency> refFreqs = _msmd->getRefFreqs();
         for (; iter != end; ++iter) {
             Int spw = *iter;
             std::set<uInt> ddids = spwToDDID[spw];
@@ -1588,11 +1544,10 @@ void MSSummary::listSpectralAndPolInfo (
             std::set<uInt>::const_iterator dend = ddids.end();
             for (; diter!=dend; ++diter) {
                 uInt dd = *diter;
-                if (uDDIDSet.find(dd) == uDDIDSet.end()) {
+                if (ddId.find(dd) == ddId.end()) {
                     // data description ID not in main table, so not reported here
                     continue;
                 }
-                Int pol = ddToPolID[dd];
                 os.output().setf(ios::left, ios::adjustfield);
                 os.output().width(widthLead);        os << "  ";
                 // 1th column: Spectral Window Id
@@ -1608,7 +1563,7 @@ void MSSummary::listSpectralAndPolInfo (
                 // 4th column: Reference Frame info
                 // os.output().setf(ios::left, ios::adjustfield);
                 os.output().width(widthFrame);
-                os<< msSWC.refFrequencyMeas()(spw).getRefString();
+                os<< refFreqs[spw].getRefString();
                 // 5th column: Chan 1 freq (may be at high freq end of band!)
                 os.output().setf(ios::fixed);
                 os.output().precision(3);
@@ -1632,10 +1587,12 @@ void MSSummary::listSpectralAndPolInfo (
                 //            os.output().width(widthFrqNum);
                 //            os<< msSWC.refFrequency()(spw)/1.0e6;
                 // 9th column: the correlation type(s)
-                for (uInt j=0; j<msPolC.corrType()(pol).nelements(); ++j) {
+                Int pol = polIds[dd];
+                vector<Int>::const_iterator cIter = corrTypes[pol].begin();
+                vector<Int>::const_iterator cEnd = corrTypes[pol].end();
+                for (; cIter!=cEnd; ++cIter) {
                     os.output().width(widthCorrType);
-                    Int index = msPolC.corrType()(pol)(IPosition(1,j));
-                    os << Stokes::name(Stokes::type(index));
+                    os << Stokes::name(Stokes::type(*cIter));
                 }
             }
             os << endl;

@@ -1198,7 +1198,7 @@ TableExprNode TableParseSelect::makeFuncNode
     if (err.size() > 28  &&  err.before(28) == "Error in select expression: ") {
       err = err.from(28);
     }
-    throw TableInvExpr ("Erronous use of function " + name + " - " + err);
+    throw TableInvExpr ("Erroneous use of function " + name + " - " + err);
   }
 }
 

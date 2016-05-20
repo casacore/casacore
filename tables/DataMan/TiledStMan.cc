@@ -466,6 +466,14 @@ void TiledStMan::setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller)
     hypercube->setCacheSize (nbuckets, forceSmaller, True);
 }
 
+void TiledStMan::setHypercubeCacheSize (uInt hypercube, uInt nbuckets, Bool forceSmaller)
+{
+    // Set the cache size (in buckets) for the given hypercube.
+    TSMCube* tsmCube = getTSMCube (hypercube);
+    tsmCube->setCacheSize (nbuckets, forceSmaller, True);
+}
+
+
 Bool TiledStMan::userSetCache (uInt rownr) const
 {
     return getHypercube(rownr)->userSetCache();

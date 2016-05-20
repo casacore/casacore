@@ -163,6 +163,7 @@ $casa_checktool ./tTaQLNode 'insert into tTaQLNode_tmp.tab select from tTaQLNode
 $casa_checktool ./tTaQLNode 'insert into tTaQLNode_tmp.tab ((ab1,ab2),ac) values (1+2,3*ab + sum([select ab from tTaQLNode_tmp.tab]))'
 $casa_checktool ./tTaQLNode 'insert into tTaQLNode_tmp.tab values (1+2),(8),(9),(10)'
 $casa_checktool ./tTaQLNode 'insert limit 10 into tTaQLNode_tmp.tab values (1)'
+$casa_checktool ./tTaQLNode 'insert into tTaQLNode_tmp.tab set ab1=1, ab2="str"'
 
 $casa_checktool ./tTaQLNode 'count ab,ac+1 from tTaQLnode_tmp.tab'
 $casa_checktool ./tTaQLNode 'count min(ab),ac+1 from tTaQLnode_tmp.tab where ac>1'

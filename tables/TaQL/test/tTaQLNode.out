@@ -299,6 +299,9 @@ INSERT INTO tTaQLNode_tmp.tab VALUES [(1)+(2)],[8],[9],[10]
 insert limit 10 into tTaQLNode_tmp.tab values (1)
 INSERT LIMIT 10 INTO tTaQLNode_tmp.tab VALUES [1]
 
+insert into tTaQLNode_tmp.tab set ab1=1, ab2="str"
+INSERT INTO tTaQLNode_tmp.tab [ab1,ab2] VALUES [1,'str']
+
 count ab,ac+1 from tTaQLnode_tmp.tab
 COUNT  ab,(ac)+(1) FROM tTaQLnode_tmp.tab
 

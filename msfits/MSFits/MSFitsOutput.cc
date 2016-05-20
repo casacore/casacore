@@ -1621,7 +1621,6 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         MEpoch ia0time(itime, MEpoch::UTC);
         MEpoch gsttime = MEpoch::Convert(ia0time, MEpoch::GMST)();
         gstday = gsttime.get("d").getValue();
-
     }
     Double gstdeg = 360 * (gstday - floor(gstday));
     {
@@ -1637,53 +1636,28 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
     const Euler& polarMotion = MeasTable::polarMotion(utcday);
 
     // Each array gets its own antenna table
-    for (uInt arraynum = 0; arraynum < narray; arraynum++) {
+    for (uInt arraynum = 0; arraynum < narray; ++arraynum) {
         // Get the observatory's position and convert to ITRF.
         String obsName = inarrayname(arraynum);
         MPosition pos;
         MeasTable::Observatory(pos, obsName);
         MPosition itrfpos = MPosition::Convert(pos, MPosition::ITRF)();
         MVPosition mvpos = itrfpos.getValue();
-        Vector<Double> arraypos = mvpos.getValue();
-
-        // Prepare handling of peculiar UVFITS antenna position conventions:
-        // VLA and WSRT requires rotation into local frame:
-        String arrayName = inarrayname(arraynum);
-        Bool doRot = (arrayName == "VLA" /*|| arrayName == "WSRT"*/);
-        Matrix<Double> posRot = Rot3D(0, 0.0);
-
-        if (doRot) {
-            // form rotation around Z-axis by longitude:
-            Double posLong = mvpos.getLong();
-            posRot = Rot3D(2, -posLong); // opposite rotation cf MSFitsInput
-        }
-        // "VLBI" (==arraypos<1000m) requires y-axis reflection:
-        //   (ATCA looks like VLBI in UVFITS, but is already RHed.)
-        // It looks as if WSRT needs y-axis reflection for UVFIX.
-        Bool doRefl = (/*(arrayName == "WSRT") || */((arrayName != "ATCA"
-                && arrayName != "EVLA") && allLE(abs(arraypos), 1000.0)));
-
-        // EVLA wants full ITRF per antenna and arraypos=(0,0,0)
-        if (arrayName == "EVLA" || arrayName == "ALMA")
-            arraypos.set(0.0);
-
-        // Discern the position reference frame
         ROMSAntennaColumns antCols(ms.antenna());
-
         // Nominally arraypos+antpos will be ITRF (see below),
         //   unless we tinker with it, in which case it is
         //   a local convention
         String posref("ITRF");
-        if (doRot || doRefl)
-            posref = arrayName;
-
         // #### Header
         Record header;
         header.define("EXTNAME", "AIPS AN"); // EXTNAME
         header.define("EXTVER", Int(arraynum + 1)); // EXTVER
-        header.define("ARRAYX", arraypos(0)); // ARRAYX
-        header.define("ARRAYY", arraypos(1)); // ARRAYY
-        header.define("ARRAYZ", arraypos(2)); // ARRAYZ
+        // we are now writing antenna positions in ITRF, so the
+        // corresponding array center is always the origin of this
+        // coordinate system
+        header.define("ARRAYX", 0);
+        header.define("ARRAYY", 0);
+        header.define("ARRAYZ", 0);
         header.define("GSTIA0", gstdeg); // GSTIA0
         header.define("DEGPDY", degpdy); // DEGPDY
         header.define("FREQ", refFreq); // FREQ
@@ -1697,13 +1671,13 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         header.define("NUMORB", 0); // NUMORB
         header.define("NOPCAL", 0); // NOPCAL
         header.define("POLTYPE", "        "); // POLTYPE
-
+        header.define("XYZHAND", "RIGHT"); // handedness of antenna coord system
 
         // Added Nov 2009, following AIPS addition
         header.define("FRAME", posref); // FRAME
         os << LogIO::NORMAL // Requested by CAS-437.
-                << "Using " << posref << " frame for antenna positions."
-                << LogIO::POST;
+            << "Using " << posref << " frame for antenna positions."
+            << LogIO::POST;
 
         // NOT in going aips
         // header.define("DATUTC", 0.0);
@@ -1805,23 +1779,14 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
                 }
             }
         }
-        for (uInt antnum = 0; antnum < nant; antnum++) {
+        for (uInt antnum = 0; antnum < nant; ++antnum) {
             *anname = anames(antnum);
 
             // Get antenna position in ITRF coordinates.
             // Take difference with array position.
             MPosition antpos = inantposition.convert(antnum, MPosition::ITRF);
-            Vector<Double> corstabxyz = antpos.getValue().getValue() - arraypos;
-
-            // Do UVFITS-dependent position corrections:
-            if (doRot) {
-                corstabxyz = product(posRot, corstabxyz);
-            }
-            if (doRefl) {
-                corstabxyz(1) = -corstabxyz(1);
-            }
+            Vector<Double> corstabxyz = antpos.getValue().getValue();
             *stabxyz = corstabxyz;
-
             *nosta = id[antnum];
             String mount = upcase(inantmount(antnum));
             // MS has "EQUATORIAL", "ALT-AZ", "X-Y",  "SPACE-HALCA" 
@@ -1855,7 +1820,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
             Bool found = False;
             *poltya = " ";
             *poltyb = " ";
-            for (uInt i = 0; i < nmax; i++) {
+            for (uInt i = 0; i < nmax; ++i) {
                 if (Int(antnum) == inantid(i)) {
                     found = True;
                     Vector<String> poltypes = inpoltype(i);
@@ -1878,9 +1843,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
             }
             writer.write();
         }
-
     }
-
     return True;
 }
 

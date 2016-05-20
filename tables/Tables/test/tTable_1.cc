@@ -83,7 +83,7 @@ void a(uInt nrrow) {
 //#//    newtab.bindColumn ("arr3",smk1);
     Table tab(newtab, nrrow);
 
-    //# Do some erronous things.
+    //# Do some erroneous things.
     try {
 	newtab.bindColumn ("ab", sm1);     // newtab is already in use
     } catch (AipsError x) {

@@ -202,7 +202,7 @@ $casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab'
 $casa_checktool ./tTableGram 'delete from tTableGram_tmp.tab where ab%2==0'
 $casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab'
 
-$casa_checktool ./tTableGram 'insert into tTableGram_tmp.tab (ab,ac) values (1+2,3*ab + sum([select ab from tTableGram_tmp.tab]))'
+$casa_checktool ./tTableGram 'insert into tTableGram_tmp.tab set ab=1+2, ac=3*ab + sum([select ab from tTableGram_tmp.tab])'
 $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab'
 
 $casa_checktool ./tTableGram 'insert into [createtable tTableGram_tmp.tab2 (ab I4, ac U2, ad I4)] values (10,11,1),(12,13,2),(14,15,4)'

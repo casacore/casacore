@@ -764,7 +764,7 @@ update tTableGramUpdate_tmp.tabs set cols=cols+'abc', cola[1:2,,]=cola[2:3,,]+'g
     select result of 0 rows
 2 selected columns:  colv cols2
 
-Testing erronous commands ...
+Testing erroneous commands ...
 update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])
 
 Caught an exception: Error in TaQL command: 'update tTableGramUpdate_tmp.tab1 set cola[,2:,][real(cola)[,1:,]==0]=array(rowid(),[5,1,1])'
