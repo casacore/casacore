@@ -1148,7 +1148,7 @@ void MSMetaData::_getFieldsAndSpwMaps(
     std::map<SubScanKey, SubScanProperties>::const_iterator end = subScanProps->end();
     for (; iter!=end; ++iter) {
         Int fieldID = iter->first.fieldID;
-        std::set<uInt> spws = iter->second.spws;
+        const std::set<uInt>& spws = iter->second.spws;
         if (fieldToSpwMap.find(fieldID) == fieldToSpwMap.end()) {
             fieldToSpwMap[fieldID] = spws;
         }
