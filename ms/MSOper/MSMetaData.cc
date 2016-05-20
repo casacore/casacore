@@ -48,7 +48,7 @@
 namespace casacore {
 
 MSMetaData::MSMetaData(const MeasurementSet *const &ms, const Float maxCacheSizeMB)
-    : _ms(ms), _cacheMB(0), _maxCacheMB(maxCacheSizeMB), _nStates(0),
+    : _ms(ms), _showProgress(False), _cacheMB(0), _maxCacheMB(maxCacheSizeMB), _nStates(0),
       _nACRows(0), _nXCRows(0), _nSpw(0), _nFields(0),
       _nAntennas(0), _nObservations(0), _nScans(0), _nArrays(0),
       _nrows(0), _nPol(0), _nDataDescIDs(0),
@@ -3441,7 +3441,7 @@ void MSMetaData::_computeScanAndSubScanProperties(
         nchunks = nrows/chunkSize + 1;
     }
     SHARED_PTR<ProgressMeter> pm;
-    if (showProgress) {
+    if (showProgress || _showProgress) {
         LogIO log;
         const static String title = "Computing scan and subscan properties...";
         log << LogOrigin("MSMetaData", __func__, WHERE)

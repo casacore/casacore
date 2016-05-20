@@ -584,6 +584,8 @@ public:
 
     const MeasurementSet* getMS() const { return _ms; }
 
+    void setShowProgress(Bool b) { _showProgress = b; }
+
 private:
 
     struct ScanProperties {
@@ -635,6 +637,7 @@ private:
     // will occur.
 
     const MeasurementSet* _ms;
+    Bool _showProgress;
     mutable Float _cacheMB;
     const Float _maxCacheMB;
     mutable uInt _nStates, _nACRows, _nXCRows, _nSpw, _nFields, _nAntennas,
