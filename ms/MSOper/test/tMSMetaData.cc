@@ -319,7 +319,8 @@ void testIt(MSMetaData& md) {
 		cout << "*** test nFields()" << endl;
 		uInt nFields = md.nFields();
 		AlwaysAssert(nFields == 6, AipsError);
-		cout << "*** test getSpwsForField()" << endl;
+		cout << "*** test getSpwsForField() and getFieldsToSpwsMap()" << endl;
+		std::map<Int, std::set<uInt> > mymap = md.getFieldsToSpwsMap();
 		String names[] = {
 				"3C279", "J1337-129", "Titan",
 				"J1625-254", "V866 Sco", "RNO 90"
@@ -350,6 +351,7 @@ void testIt(MSMetaData& md) {
             cout << "*** i " << i << " " << md.getSpwsForField(i) << endl;
 			AlwaysAssert(md.getSpwsForField(i) == exp, AipsError);
 			AlwaysAssert(md.getSpwsForField(names[i]) == exp, AipsError);
+			AlwaysAssert(mymap[i] == exp, AipsError);
 			cout << "*** cache size " << md.getCache() << endl;
 
 		}

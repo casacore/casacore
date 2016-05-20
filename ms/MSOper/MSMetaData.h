@@ -223,7 +223,7 @@ public:
     std::vector<std::set<uInt> > getSpwToDataDescriptionIDMap() const;
 
     // get a set of spectral windows corresponding to the specified fieldID
-    std::set<uInt> getSpwsForField(const Int fieldID);
+    std::set<uInt> getSpwsForField(const Int fieldID) const;
 
     // get a set of spectral windows corresponding to the specified field name
     std::set<uInt> getSpwsForField(const String& fieldName);
@@ -236,6 +236,9 @@ public:
 
     // get the set of field names corresponding to the specified spectral window.
     std::set<String> getFieldNamesForSpw(const uInt spw);
+
+    // get the mapping of fields to spws
+    std::map<Int, std::set<uInt> > getFieldsToSpwsMap() const;
 
     // get rest frequencies from the SOURCE table
     std::map<SourceKey, SHARED_PTR<vector<MFrequency> > > getRestFrequencies() const;
@@ -644,7 +647,7 @@ private:
         _nObservations, _nScans, _nArrays, _nrows, _nPol, _nDataDescIDs;
     mutable std::map<ScanKey, std::set<uInt> > _scanToSpwsMap, _scanToDDIDsMap;
     mutable vector<uInt> _dataDescIDToSpwMap, _dataDescIDToPolIDMap;
-    std::map<Int, std::set<uInt> > _fieldToSpwMap;
+    mutable std::map<Int, std::set<uInt> > _fieldToSpwMap;
     mutable std::map<ScanKey, std::set<Int> > _scanToStatesMap, _scanToFieldsMap, _scanToAntennasMap;
     mutable std::map<Int, std::set<Int> >    _fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap;
     mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
@@ -820,7 +823,7 @@ private:
     void _getFieldsAndSpwMaps(
         std::map<Int, std::set<uInt> >& fieldToSpwMap,
         vector<std::set<Int> >& spwToFieldMap
-    );
+    ) const;
 
     void _getFieldsAndStatesMaps(
         std::map<Int, std::set<Int> >& fieldToStatesMap,
