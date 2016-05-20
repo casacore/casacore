@@ -362,20 +362,6 @@ public:
     void put (uInt rownr, const Array<T>& array);
 
     // Copy the value of a cell of that column to a cell of this column.
-    // The data types of both columns must be the same, otherwise an
-    // exception is thrown.
-    // <group>
-    // Use the same row numbers for both cells.
-    void put (uInt rownr, const ArrayColumn<T>& that,
-              Bool preserveTileShape=False)
-      { put (rownr, that, rownr, preserveTileShape); }
-    // Use possibly different row numbers for that (i.e. input) and
-    // and this (i.e. output) cell.
-    void put (uInt thisRownr, const ArrayColumn<T>& that, uInt thatRownr,
-              Bool preserveTileShape=False);
-    // </group>
-
-    // Copy the value of a cell of that column to a cell of this column.
     // This function uses a generic TableColumn object as input.
     // The data types of both columns must be the same, otherwise an
     // exception is thrown.
