@@ -95,6 +95,18 @@ int main() {
       AlwaysAssert(nearAbs(roundDouble(x,4), -0.01235, 1e-8), AipsError);
       x = 0;
       AlwaysAssert(roundDouble(x) == 0, AipsError);
+      AlwaysAssert(floormod(5,3) == 2, AipsError);
+      AlwaysAssert(floormod(-5,3) == 1, AipsError);
+      AlwaysAssert(floormod(5,-3) == -1, AipsError);
+      AlwaysAssert(floormod(-5,-3) == -2, AipsError);
+      AlwaysAssert(floormod(5.,3.) == 2., AipsError);
+      AlwaysAssert(floormod(-5.,3.) == 1., AipsError);
+      AlwaysAssert(floormod(5.,-3.) == -1., AipsError);
+      AlwaysAssert(floormod(-5.,-3.) == -2., AipsError);
+      AlwaysAssert(floormod(3.,3.) == 0., AipsError);
+      AlwaysAssert(floormod(-3.,3.) == 0., AipsError);
+      AlwaysAssert(floormod(3.,-3.) == 0., AipsError);
+      AlwaysAssert(floormod(-3.,-3.) == 0., AipsError);
     }
   }
   catch (AipsError x) {

@@ -291,11 +291,11 @@ TableExprNodeModuloInt::TableExprNodeModuloInt (const TableExprNodeRep& node)
 TableExprNodeModuloInt::~TableExprNodeModuloInt()
 {}
 Int64 TableExprNodeModuloInt::getInt (const TableExprId& id)
-    { return lnode_p->getInt(id) % rnode_p->getInt(id); }
+    { return floormod (lnode_p->getInt(id), rnode_p->getInt(id)); }
 Double TableExprNodeModuloInt::getDouble (const TableExprId& id)
-    { return lnode_p->getInt(id) % rnode_p->getInt(id); }
+    { return getInt (id); }
 DComplex TableExprNodeModuloInt::getDComplex (const TableExprId& id)
-    { return double(lnode_p->getInt(id) % rnode_p->getInt(id)); }
+    { return getInt (id); }
 
 TableExprNodeModuloDouble::TableExprNodeModuloDouble (const TableExprNodeRep& node)
 : TableExprNodeModulo (NTDouble, node)
@@ -303,9 +303,9 @@ TableExprNodeModuloDouble::TableExprNodeModuloDouble (const TableExprNodeRep& no
 TableExprNodeModuloDouble::~TableExprNodeModuloDouble()
 {}
 Double TableExprNodeModuloDouble::getDouble (const TableExprId& id)
-    { return std::fmod (lnode_p->getDouble(id), rnode_p->getDouble(id)); }
+    { return floormod (lnode_p->getDouble(id), rnode_p->getDouble(id)); }
 DComplex TableExprNodeModuloDouble::getDComplex (const TableExprId& id)
-    { return std::fmod (lnode_p->getDouble(id), rnode_p->getDouble(id)); }
+    { return getDouble (id); }
 
 
 TableExprNodeBitAndInt::TableExprNodeBitAndInt (const TableExprNodeRep& node)

@@ -157,6 +157,7 @@ OFFSET    [Oo][Ff][Ff][Ss][Ee][Tt]
 BETWEEN   [Bb][Ee][Tt][Ww][Ee][Ee][Nn]
 EXISTS    [Ee][Xx][Ii][Ss][Tt][Ss]
 LIKE      [Ll][Ii][Kk][Ee]
+ILIKE     [Ii][Ll][Ii][Kk][Ee]
 IN        [Ii][Nn]
 INCONE    [Ii][Nn]{WHITE}[Cc][Oo][Nn][Ee]{WHITE1}
 AS        [Aa][Ss]
@@ -492,6 +493,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {BETWEEN} { tableGramPosition() += yyleng; return BETWEEN; }
 {EXISTS}  { tableGramPosition() += yyleng; return EXISTS; }
 {LIKE}    { tableGramPosition() += yyleng; return LIKE; }
+{ILIKE}   { tableGramPosition() += yyleng; return ILIKE; }
 "&&"      { tableGramPosition() += yyleng; return AND; }
 {AND}     { tableGramPosition() += yyleng; return AND; }
 "||"      { tableGramPosition() += yyleng; return OR; }

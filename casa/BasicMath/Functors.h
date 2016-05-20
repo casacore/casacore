@@ -205,13 +205,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return RES(x)/y; }
   };
 
-  // Functor to take modulo of (integer) variables of possibly different types.
-  // This is unlike std::divides which requires equal types.
+  // Functor to take modulo of (integer) variables of possibly different types
+  // in the C way.
+  // This is unlike std::modulo which requires equal types.
   template <typename L, typename R=L, typename RES=L>
   struct Modulo : public std::binary_function<L,R,RES>
   {
     RES operator() (const L& x, const R& y) const
       { return RES(x)%y; }
+  };
+
+  // Functor to take modulo of variables of possibly different types
+  // using the floor modulo (% as used in Python).
+  template <typename L, typename R=L, typename RES=L>
+  struct FloorMod : public std::binary_function<L,R,RES>
+  {
+    RES operator() (const L& x, const R& y) const
+    { return floormod (RES(x), RES(y)); }
   };
 
   // Functor for bitwise and of (integer) values.

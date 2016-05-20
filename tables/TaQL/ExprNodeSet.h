@@ -506,6 +506,7 @@ MArray<T> TableExprNodeSet::toArray (const TableExprId& id) const
     DebugAssert (itsBounded, AipsError);
     Int64 n = nelements();
     if (hasArrays()) {
+      // Handle a nested array; this is done recursively.
       MArray<T> marr;
       getArray (marr, itsElems[0]->start(), id);
       if (marr.isNull()) return marr;
