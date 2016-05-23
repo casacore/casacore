@@ -293,6 +293,8 @@ C
       integer chanmap(nvischan), polmap(nvispol)
       integer dowt
 
+      complex nvalue
+
       real convFunc(*)
       real norm
       real wt, wtx, wty
@@ -350,6 +352,12 @@ C          if (ogridsd(nx, ny, loc, support)) then
                      apol=polmap(ipol)+1
                      if((flag(ipol,ichan,irow).ne.1).and.
      $                    (apol.ge.1).and.(apol.le.npol)) then
+                        if(dowt.eq.1) then
+                           nvalue=cmplx(weight(ichan,irow))
+                        else
+                           nvalue=weight(ichan,irow)*
+     $                          conjg(values(ipol,ichan,irow))
+                        end if
                         norm=0.0
                         ir=1
 C                        do iy=-support,support
@@ -364,8 +372,7 @@ C                            do ix=-support,support
                               wt=convFunc(irad(ir))
                               grid(ax,ay,apol,achan)=
      $                             grid(ax,ay,apol,achan)+
-     $                             weight(ichan,irow)*wt*
-     $                             conjg(values(ipol,ichan,irow))
+     $                               nvalue*wt
                               wgrid(ax,ay,apol,achan)=
      $                             wgrid(ax,ay,apol,achan)+
      $                             weight(ichan,irow)*wt
