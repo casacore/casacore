@@ -1013,7 +1013,9 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
         for (; fiter!=fend; ++fiter) {
             Int fld = *fiter;
             if (fld >=0 && fld < (Int)nfields) {
-                MDirection mRaDec = phaseDirs[fld];
+                MDirection mRaDec = _msmd->phaseDirFromFieldIDAndTime(
+                    fld, MEpoch(Quantity(0, "s"))
+                );
                 MVAngle mvRa = mRaDec.getAngle().getValue()(0);
                 MVAngle mvDec = mRaDec.getAngle().getValue()(1);
                 String name = fieldNames[fld];
