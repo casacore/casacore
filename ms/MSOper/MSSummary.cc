@@ -1010,12 +1010,11 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
         std::set<Int>::const_iterator fiter = uniqueFields.begin();
         std::set<Int>::const_iterator fend = uniqueFields.end();
         vector<Int> sourceIDs = _msmd->getFieldTableSourceIDs();
+        static const MEpoch ezero(Quantity(0, "s"));
         for (; fiter!=fend; ++fiter) {
             Int fld = *fiter;
             if (fld >=0 && fld < (Int)nfields) {
-                MDirection mRaDec = _msmd->phaseDirFromFieldIDAndTime(
-                    fld, MEpoch(Quantity(0, "s"))
-                );
+                MDirection mRaDec = _msmd->phaseDirFromFieldIDAndTime(fld, ezero);
                 MVAngle mvRa = mRaDec.getAngle().getValue()(0);
                 MVAngle mvDec = mRaDec.getAngle().getValue()(1);
                 String name = fieldNames[fld];
