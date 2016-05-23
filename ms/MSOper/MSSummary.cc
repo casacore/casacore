@@ -1004,7 +1004,6 @@ void MSSummary::listField (LogIO& os, Record& outrec,  Bool verbose, Bool fillRe
         }
         os << endl;
         // loop through fields
-        vector<MDirection> phaseDirs = _msmd->getPhaseDirs();
         vector<String> fieldNames = _msmd->getFieldNames();
         vector<String> codes = _msmd->getFieldCodes();
         std::set<Int>::const_iterator fiter = uniqueFields.begin();
