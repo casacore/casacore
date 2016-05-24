@@ -1114,9 +1114,6 @@ SHARED_PTR<std::set<Int> > MSMetaData::_getEphemFieldIDs() const {
         return _ephemFields;
     }
     Vector<Int> colData = ephemCol.getColumn();
-    if (! anyTrue(colData >= 0)) {
-        return _ephemFields;
-    }
     Vector<Int>::const_iterator iter = colData.begin();
     Vector<Int>::const_iterator end = colData.end();
     uInt i = 0;
