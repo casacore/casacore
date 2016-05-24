@@ -395,8 +395,10 @@ public:
     // get the position of the specified telescope (observatory).
     MPosition getObservatoryPosition(uInt which) const;
 
-    // get the phase directions from the FIELD subtable
-    vector<MDirection> getPhaseDirs() const;
+    // get the phase directions from the FIELD subtable. The <src>ep</src> parameter
+    // specifies for which epoch to return the directions of any ephemeris objects
+    // in the data set. It is ignored for non-ephemeris objects.
+    vector<MDirection> getPhaseDirs(const MEpoch& ep=MEpoch(Quantity(0.0, Unit("s")))) const;
 
     // get all ScanKeys in the dataset
     std::set<ScanKey> getScanKeys() const;
@@ -711,6 +713,7 @@ private:
     mutable vector<std::pair<Quantity, Quantity> > _properMotions;
 
     mutable std::map<SourceKey, SourceProperties> _sourceInfo;
+    mutable SHARED_PTR<std::set<Int> > _ephemFields;
 
     // disallow copy constructor and = operator
     MSMetaData(const MSMetaData&);
@@ -796,6 +799,9 @@ private:
     ) const;
 
     SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
+
+    // get the field IDs of ephemeris objects
+    SHARED_PTR<std::set<Int> > _getEphemFieldIDs() const;
 
     SHARED_PTR<Quantum<Vector<Double> > > _getExposureTimes() const;
 
