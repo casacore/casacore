@@ -28,6 +28,7 @@
 //# Includes
 #include <casacore/fits/FITS/BinTable.h>
 #include <casacore/fits/FITS/fits.h>
+#include <casacore/fits/FITS/hdu.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/DataMan/IncrementalStMan.h>
