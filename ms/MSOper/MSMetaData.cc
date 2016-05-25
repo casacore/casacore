@@ -1093,7 +1093,6 @@ std::set<String> MSMetaData::getIntentsForField(Int fieldID) {
     return fieldToIntentsMap[fieldID];
 }
 
-
 uInt MSMetaData::nFields() const {
     if (_nFields > 0) {
         return _nFields;
@@ -1101,6 +1100,29 @@ uInt MSMetaData::nFields() const {
     uInt nFields = _ms->field().nrow();
     _nFields = nFields;
     return nFields;
+}
+
+SHARED_PTR<std::set<Int> > MSMetaData::_getEphemFieldIDs() const {
+    // responsible for setting _ephemFields
+    if (_ephemFields) {
+        return _ephemFields;
+    }
+    ROMSFieldColumns msfc(_ms->field());
+    ROScalarColumn<Int> ephemCol = msfc.ephemerisId();
+    _ephemFields.reset(new std::set<Int>());
+    if (ephemCol.isNull()) {
+        return _ephemFields;
+    }
+    Vector<Int> colData = ephemCol.getColumn();
+    Vector<Int>::const_iterator iter = colData.begin();
+    Vector<Int>::const_iterator end = colData.end();
+    uInt i = 0;
+    for (; iter!=end; ++iter, ++i) {
+        if (*iter >= 0) {
+            _ephemFields->insert(i);
+        }
+    }
+    return _ephemFields;
 }
 
 MDirection MSMetaData::phaseDirFromFieldIDAndTime(const uInt fieldID,  const MEpoch& ep) const {
@@ -3177,20 +3199,30 @@ MPosition MSMetaData::getObservatoryPosition(uInt which) const {
     return observatoryPositions[which];
 }
 
-vector<MDirection> MSMetaData::getPhaseDirs() const {
+vector<MDirection> MSMetaData::getPhaseDirs(const MEpoch& ep) const {
     // this method is responsible for setting _phaseDirs
-    if (! _phaseDirs.empty()) {
-        return _phaseDirs;
+    vector<MDirection> myDirs;
+    if (_phaseDirs.empty()) {
+        String name = MSField::columnName(MSFieldEnums::PHASE_DIR);
+        ScalarMeasColumn<MDirection> phaseDirCol(_ms->field(), name);
+        uInt nrows = nFields();
+        for (uInt i=0; i<nrows; ++i) {
+            myDirs.push_back(phaseDirCol(i));
+        }
+        if (_cacheUpdated(_sizeof(myDirs))) {
+            _phaseDirs = myDirs;
+        }
     }
-    String name = MSField::columnName(MSFieldEnums::PHASE_DIR);
-    ScalarMeasColumn<MDirection> phaseDirCol(_ms->field(), name);
-    uInt nrows = nFields();
-    vector<MDirection> myDirs(nrows);
-    for (uInt i=0; i<nrows; ++i) {
-        myDirs[i] = phaseDirCol(i);
+    else {
+        myDirs = _phaseDirs;
     }
-    if (_cacheUpdated(_sizeof(myDirs))) {
-        _phaseDirs = myDirs;
+    // get the correct directions for ephemeris objects and put them
+    // in the vector
+    SHARED_PTR<std::set<Int> > ephems = _getEphemFieldIDs();
+    std::set<Int>::const_iterator iter = ephems->begin();
+    std::set<Int>::const_iterator end = ephems->end();
+    for (; iter!=end; ++iter) {
+        myDirs[*iter] = phaseDirFromFieldIDAndTime(*iter, ep);
     }
     return myDirs;
 }
