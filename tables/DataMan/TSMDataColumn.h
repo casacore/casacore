@@ -150,6 +150,9 @@ public:
     // Get the shape of the item in the given row.
     IPosition shape (uInt rownr);
 
+    // Get the tile shape of the item in the given row.
+    IPosition tileShape (uInt rownr);
+
     // Get a scalar value in the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the Scalar/ArrayColumn get function).

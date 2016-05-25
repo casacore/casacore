@@ -683,6 +683,10 @@ public:
     // By default it returns a zero-length IPosition (for a scalar value).
     virtual IPosition shape (uInt rownr);
 
+    // Get the tile shape of the item in the given row.
+    // By default it returns a zero-length IPosition.
+    virtual IPosition tileShape (uInt rownr);
+
     // Can the data manager handle chaging the shape of an existing array?
     // Default is no.
     virtual Bool canChangeShape() const;

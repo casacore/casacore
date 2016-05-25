@@ -215,7 +215,7 @@ void ScalarColumn<T>::put (uInt thisRownr, const ScalarColumn<T>& that,
 
 template<class T>
 void ScalarColumn<T>::put (uInt thisRownr, const TableColumn& that,
-			   uInt thatRownr)
+			   uInt thatRownr, Bool)
 {
     T value;
     that.getScalarValue (thatRownr, &value, columnDesc().dataTypeId());

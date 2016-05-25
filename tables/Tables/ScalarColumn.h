@@ -216,11 +216,12 @@ public:
     // Otherwise an exception is thrown.
     // <group>
     // Use the same row numbers for both cells.
-    void put (uInt rownr, const TableColumn& that)
+    void put (uInt rownr, const TableColumn& that, Bool=False)
 	{ put (rownr, that, rownr); }
     // Use possibly different row numbers for that (i.e. input) and
     // and this (i.e. output) cell.
-    void put (uInt thisRownr, const TableColumn& that, uInt thatRownr);
+    void put (uInt thisRownr, const TableColumn& that, uInt thatRownr,
+              Bool=False);
     // </group>
 
     // Put the vector of all values in the column.
