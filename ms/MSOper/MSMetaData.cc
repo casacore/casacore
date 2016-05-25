@@ -48,7 +48,7 @@
 namespace casacore {
 
 MSMetaData::MSMetaData(const MeasurementSet *const &ms, const Float maxCacheSizeMB)
-    : _ms(ms), _cacheMB(0), _maxCacheMB(maxCacheSizeMB), _nStates(0),
+    : _ms(ms), _showProgress(False), _cacheMB(0), _maxCacheMB(maxCacheSizeMB), _nStates(0),
       _nACRows(0), _nXCRows(0), _nSpw(0), _nFields(0),
       _nAntennas(0), _nObservations(0), _nScans(0), _nArrays(0),
       _nrows(0), _nPol(0), _nDataDescIDs(0),
@@ -1154,61 +1154,48 @@ MDirection MSMetaData::getReferenceDirection(
 void MSMetaData::_getFieldsAndSpwMaps(
     std::map<Int, std::set<uInt> >& fieldToSpwMap,
     vector<std::set<Int> >& spwToFieldMap
-) {
+) const {
     // This method has the responsibility of setting _fieldToSpwMap and _spwToFieldIDMap
     if (! _fieldToSpwMap.empty() && ! _spwToFieldIDsMap.empty()) {
         fieldToSpwMap = _fieldToSpwMap;
         spwToFieldMap = _spwToFieldIDsMap;
         return;
     }
-    SHARED_PTR<Vector<Int> > allDDIDs = _getDataDescIDs();
-    SHARED_PTR<Vector<Int> > allFieldIDs = _getFieldIDs();
-    Vector<Int>::const_iterator endDDID = allDDIDs->end();
-    Vector<Int>::const_iterator curField = allFieldIDs->begin();
     fieldToSpwMap.clear();
     spwToFieldMap.resize(nSpw(True));
-    vector<uInt> ddidToSpwMap = getDataDescIDToSpwMap();
-    for (
-        Vector<Int>::const_iterator curDDID=allDDIDs->begin();
-        curDDID!=endDDID; ++curDDID, ++curField
-    ) {
-        uInt spw = ddidToSpwMap[*curDDID];
-        fieldToSpwMap[*curField].insert(spw);
-        spwToFieldMap[spw].insert(*curField);
+    SHARED_PTR<const std::map<ScanKey, ScanProperties> > scanProps;
+    SHARED_PTR<const std::map<SubScanKey, SubScanProperties> > subScanProps;
+    _getScanAndSubScanProperties(scanProps, subScanProps, _showProgress);
+    std::map<SubScanKey, SubScanProperties>::const_iterator iter = subScanProps->begin();
+    std::map<SubScanKey, SubScanProperties>::const_iterator end = subScanProps->end();
+    for (; iter!=end; ++iter) {
+        Int fieldID = iter->first.fieldID;
+        const std::set<uInt>& spws = iter->second.spws;
+        fieldToSpwMap[fieldID].insert(spws.begin(), spws.end());
+        std::set<uInt>::const_iterator spwIter = spws.begin();
+        std::set<uInt>::const_iterator spwEnd = spws.end();
+        for (; spwIter!=spwEnd; ++spwIter) {
+            spwToFieldMap[*spwIter].insert(fieldID);
+        }
     }
-    std::map<Int, std::set<uInt> >::const_iterator mapEnd = fieldToSpwMap.end();
-    uInt mySize = 0;
-    for (
-        std::map<Int, std::set<uInt> >::const_iterator curMap = fieldToSpwMap.begin();
-        curMap != mapEnd; ++curMap
-    ) {
-        mySize += curMap->second.size();
-    }
-    mySize *= sizeof(uInt);
-    mySize += sizeof(Int) * fieldToSpwMap.size() + sizeof(uInt)*spwToFieldMap.size();
-    vector<std::set<Int> >::const_iterator map2End = spwToFieldMap.end();
-    uInt count = 0;
-    for (
-        vector<std::set<Int> >::const_iterator curMap = spwToFieldMap.begin();
-        curMap != map2End; ++curMap
-    ) {
-        count += curMap->size();
-    }
-    mySize += sizeof(Int)*count;
-    if (_cacheUpdated(mySize)) {
+    if (_cacheUpdated(_sizeof(fieldToSpwMap) + _sizeof(spwToFieldMap))) {
         _fieldToSpwMap = fieldToSpwMap;
         _spwToFieldIDsMap = spwToFieldMap;
     }
 }
 
-std::set<uInt> MSMetaData::getSpwsForField(Int fieldID) {
-    if (! _hasFieldID(fieldID)) {
-        return std::set<uInt>();
-    }
+std::map<Int, std::set<uInt> > MSMetaData::getFieldsToSpwsMap() const {
     std::map<Int, std::set<uInt> > myFieldToSpwMap;
     vector<std::set<Int> > mySpwToFieldMap;
     _getFieldsAndSpwMaps(myFieldToSpwMap, mySpwToFieldMap);
-    return myFieldToSpwMap[fieldID];
+    return myFieldToSpwMap;
+}
+
+std::set<uInt> MSMetaData::getSpwsForField(Int fieldID) const {
+    if (! _hasFieldID(fieldID)) {
+        return std::set<uInt>();
+    }
+    return getFieldsToSpwsMap()[fieldID];
 }
 
 std::set<uInt> MSMetaData::getSpwsForField(const String& fieldName) {
@@ -3473,7 +3460,7 @@ void MSMetaData::_computeScanAndSubScanProperties(
         nchunks = nrows/chunkSize + 1;
     }
     SHARED_PTR<ProgressMeter> pm;
-    if (showProgress) {
+    if (showProgress || _showProgress) {
         LogIO log;
         const static String title = "Computing scan and subscan properties...";
         log << LogOrigin("MSMetaData", __func__, WHERE)
