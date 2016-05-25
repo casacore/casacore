@@ -597,7 +597,7 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t,
             //cout << "[HeaderDataUnit::HeaderDataUnit] kwlist_:\n" << kwlist_ << endl;
             return;
         }
-	fits_data_size = fin->datasize(); // assign values	
+	fits_data_size = fin->datasize(); // assign values
 	fits_item_size = FITS::fitssize(data_type);
 	local_item_size = FITS::localsize(data_type);
 
@@ -605,7 +605,14 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t,
         //     << "fits_item_size=" << fits_item_size 
         //     << "local_item_size=" << local_item_size 
         //     << endl;
-	no_dims = kwlist_(FITS::NAXIS)->asInt();
+	if(kwlist_(FITS::NAXIS) != 0){
+	  //cout << "kwlist_(FITS::NAXIS) " << *kwlist_(FITS::NAXIS) << endl;
+	  no_dims = kwlist_(FITS::NAXIS)->asInt();
+	}
+	else{
+	  errmsg(NOAXISN, "[HeaderDataUnit::HeaderDataUnit] NAXIS keyword missing.");
+	  return;
+	}
         //cout << "[HeaderDataUnit::HeaderDataUnit] no_dims=" << no_dims << endl;
 
 	if (no_dims > 0) {
