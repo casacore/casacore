@@ -1149,12 +1149,7 @@ void MSMetaData::_getFieldsAndSpwMaps(
     for (; iter!=end; ++iter) {
         Int fieldID = iter->first.fieldID;
         const std::set<uInt>& spws = iter->second.spws;
-        if (fieldToSpwMap.find(fieldID) == fieldToSpwMap.end()) {
-            fieldToSpwMap[fieldID] = spws;
-        }
-        else {
-            fieldToSpwMap[fieldID].insert(spws.begin(), spws.end());
-        }
+        fieldToSpwMap[fieldID].insert(spws.begin(), spws.end());
         std::set<uInt>::const_iterator spwIter = spws.begin();
         std::set<uInt>::const_iterator spwEnd = spws.end();
         for (; spwIter!=spwEnd; ++spwIter) {
