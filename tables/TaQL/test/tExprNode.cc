@@ -457,11 +457,11 @@ void doIt()
   checkScaInt ("& si-si", exprid, esi1&esi2, si1&si2);
   checkScaInt ("| si-si", exprid, esi1|esi2, si1|si2);
   checkScaInt ("^ si-si", exprid, esi1^esi2, si1^si2);
-  checkScaInt ("% si-si", exprid, esi1%esi2, si1%si2);
+  checkScaInt ("% si-si", exprid, esi1%esi2, floormod(si1,si2));
   checkScaDouble ("/ si-si", exprid, esi1/esi2, sid1/si2);
   checkScaDouble ("+ sd-si", exprid, esd1+esi2, sd1+sid2);
   checkScaDouble ("/ sd-sd", exprid, esd1/esd2, sd1/sd2);
-  checkScaDouble ("% sd-sd", exprid, esd1%esd2, fmod(sd1,sd2));
+  checkScaDouble ("% sd-sd", exprid, esd1%esd2, floormod(sd1,sd2));
   checkScaDouble ("**sd-sd", exprid, pow(esd1,esd2), pow(sd1,sd2));
   checkArrDouble ("+ ad-ad", exprid, earrd1+earri2, arrd1+arrid2);
   checkArrDouble ("+ ad-ci", exprid, earrd1+20, arrd1+20.);
@@ -473,16 +473,16 @@ void doIt()
   checkArrInt ("& ai-si", exprid, earri1&esi2, arri1&si2);
   checkArrInt ("| si-ai", exprid, esi2|earri1, arri1|si2);
   checkArrInt ("^ ai-ai", exprid, earri1^earri2, arri1^arri2);
-  checkArrInt ("% ai-ai", exprid, earri1%earri2, arri1%arri2);
+  checkArrInt ("% ai-ai", exprid, earri1%earri2, floormod(arri1,arri2));
   checkArrDouble ("/ ai-ai", exprid, earri1/earri2, arrid1/arrid2);
   checkArrDouble ("- ci-ad", exprid, 12-earrd2, 12.-arrd2);
   checkArrDouble ("* sd-ai", exprid, esd1*earri2, sd1*arrid2);
   checkArrDouble ("/ ad-ad", exprid, earrd1/earrd2, arrd1/arrd2);
   checkArrDouble ("/ ad-sd", exprid, earrd1/esd2, arrd1/sd2);
   checkArrDouble ("/ sd-ad", exprid, esd1/earrd2, sd1/arrd2);
-  checkArrDouble ("% ad-ad", exprid, earrd1%earrd2, fmod(arrd1,arrd2));
-  checkArrDouble ("% ad-sd", exprid, earrd1%esd2, fmod(arrd1,sd2));
-  checkArrDouble ("% sd-ad", exprid, esd1%earrd2, fmod(sd1,arrd2));
+  checkArrDouble ("% ad-ad", exprid, earrd1%earrd2, floormod(arrd1,arrd2));
+  checkArrDouble ("% ad-sd", exprid, earrd1%esd2, floormod(arrd1,sd2));
+  checkArrDouble ("% sd-ad", exprid, esd1%earrd2, floormod(sd1,arrd2));
   checkArrDouble ("**ad-ad", exprid, pow(earrd1,earrd2), pow(arrd1,arrd2));
   checkArrDouble ("**ad-sd", exprid, pow(earrd1,esd2), pow(arrd1,sd2));
   checkArrDouble ("**sd-ad", exprid, pow(esd1,earrd2), pow(sd1,arrd2));
@@ -862,7 +862,7 @@ void doIt()
   checkScaInt ("fmod si-si", exprid, fmod(esi1,esi2), si1%si2);
   checkScaDouble ("fmod sd-sd", exprid, fmod(esd1,esd2), fmod(sd1,sd2));
   checkArrInt ("fmod ai-ai", exprid, fmod(earri1,earri2), arri1%arri2);
-  checkArrDouble ("fmod ad-ad", exprid, earrd1%earrd2, fmod(arrd1,arrd2));
+  checkArrDouble ("fmod ad-ad", exprid, fmod(earrd1,earrd2), fmod(arrd1,arrd2));
   checkArrDouble ("fmod ad-sd", exprid, fmod(earrd1,esd2), fmod(arrd1,sd2));
   checkArrDouble ("fmod sd-ad", exprid, fmod(esd1,earrd2), fmod(sd1,arrd2));
   // Check min of max of 2 values.

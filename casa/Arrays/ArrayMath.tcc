@@ -1037,6 +1037,26 @@ template<class T> Array<T> fmod(const Array<T> &a, const T &b)
 
 
 // <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<class T> Array<T> floormod(const Array<T> &a, const Array<T> &b)
+{
+    checkArrayShapes (a, b, "floormod");
+    return arrayTransformResult (a, b, casacore::FloorMod<T>());
+}
+
+template<class T> Array<T> floormod(const T &a, const Array<T> &b)
+{
+    return arrayTransformResult (a, b, casacore::FloorMod<T>());
+}
+
+template<class T> Array<T> floormod(const Array<T> &a, const T &b)
+{
+    return arrayTransformResult (a, b, casacore::FloorMod<T>());
+}
+
+
+// <thrown>
 //    </item> ArrayError
 // </thrown>
 template<class T> T sum(const Array<T> &a)

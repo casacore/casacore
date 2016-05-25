@@ -426,10 +426,16 @@ void TableExprNodeSetElem::fillVector (Vector<Int64>& vec, Int64& cnt,
     Int64 start = itsStart==0  ?  0 : itsStart->getInt (id);
     Int64 end   = itsEnd==0  ?  start : itsEnd->getInt (id);
     Int64 incr  = itsIncr==0  ?  1 : itsIncr->getInt (id);
-    if (start > end) {
-	return;
+    if (incr == 0) {
+      throw TableInvExpr("Increment in a range must be non-zero");
     }
-    Int64 nval = 1 + (end - start) / incr;
+    Int64 nval = std::max(Int64(0), 1 + (end - start) / incr);
+    if (itsEndExcl  &&  nval > 0) {
+      Int64 rngend = start + (nval-1)*incr;
+      if (rngend == end) {
+        nval -= 1;
+      }
+    }
     Int64 n = vec.nelements();
     if (n < cnt+nval) {
         vec.resize (cnt+max(64,nval), True);
@@ -437,9 +443,6 @@ void TableExprNodeSetElem::fillVector (Vector<Int64>& vec, Int64& cnt,
     for (Int64 i=0; i<nval; i++) {
 	vec(cnt++) = start;
 	start += incr;
-        if (itsEndExcl  &&  start >= end) {
-            break;
-        }
     }
 }
 void TableExprNodeSetElem::fillVector (Vector<Double>& vec, Int64& cnt,
@@ -449,10 +452,16 @@ void TableExprNodeSetElem::fillVector (Vector<Double>& vec, Int64& cnt,
     Double start = itsStart==0  ?  0 : itsStart->getDouble (id);
     Double end   = itsEnd==0  ?  start : itsEnd->getDouble (id);
     Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (id);
-    if (start > end) {
-	return;
+    if (incr == 0) {
+      throw TableInvExpr("Increment in a range must be non-zero");
     }
-    Int64 nval = 1 + (end - start) / incr;
+    Int64 nval = std::max(Int64(0), Int64(1 + (end - start) / incr + 1e-10));
+    if (itsEndExcl  &&  nval > 0) {
+      Double rngend = start + (nval-1)*incr;
+      if (near(rngend, end)  ||  (end == 0  &&  nearAbs(rngend, end))) {
+        nval -= 1;
+      }
+    }
     Int64 n = vec.nelements();
     if (n < cnt+nval) {
         vec.resize (cnt+max(64,nval), True);
@@ -460,9 +469,6 @@ void TableExprNodeSetElem::fillVector (Vector<Double>& vec, Int64& cnt,
     for (Int64 i=0; i<nval; i++) {
 	vec(cnt++) = start;
 	start += incr;
-        if (itsEndExcl  &&  start >= end) {
-            break;
-        }
     }
 }
 void TableExprNodeSetElem::fillVector (Vector<DComplex>& vec, Int64& cnt,
@@ -492,10 +498,16 @@ void TableExprNodeSetElem::fillVector (Vector<MVTime>& vec, Int64& cnt,
     Double start = itsStart==0  ?  0 : Double(itsStart->getDate (id));
     Double end   = itsEnd==0  ?  start : Double(itsEnd->getDate (id));
     Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (id);
-    if (start > end) {
-	return;
+    if (incr == 0) {
+      throw TableInvExpr("Increment in a range must be non-zero");
     }
-    Int64 nval = 1 + (end - start) / incr;
+    Int64 nval = std::max(Int64(0), Int64(1 + (end - start) / incr + 1e-10));
+    if (itsEndExcl  &&  nval > 0) {
+      Double rngend = start + (nval-1)*incr;
+      if (near(rngend, end)  ||  (end == 0  &&  nearAbs(rngend, end))) {
+        nval -= 1;
+      }
+    }
     Int64 n = vec.nelements();
     if (n < cnt+nval) {
         vec.resize (cnt+max(64,nval), True);
@@ -503,9 +515,6 @@ void TableExprNodeSetElem::fillVector (Vector<MVTime>& vec, Int64& cnt,
     for (Int64 i=0; i<nval; i++) {
 	vec(cnt++) = start;
 	start += incr;
-        if (itsEndExcl  &&  start >= end) {
-            break;
-        }
     }
 }
 
@@ -531,8 +540,8 @@ void TableExprNodeSetElem::matchInt (Bool* match, const Int64* value,
     Int64 start = itsStart==0  ?  0 : itsStart->getInt (id);
     Int64 end   = itsEnd==0  ?  start : itsEnd->getInt (id);
     Int64 incr  = itsIncr==0  ?  1 : itsIncr->getInt (id);
-    if (start > end) {
-	return;
+    if (incr == 0) {
+      throw TableInvExpr("Increment in a range must be non-zero");
     }
     Bool* lastVal = match + nval;
     if (itsSingle) {
@@ -549,13 +558,21 @@ void TableExprNodeSetElem::matchInt (Bool* match, const Int64* value,
             end -= 1;
         }
 	while (match < lastVal) {
-	    Int64 tmp = *value - start;
-	    if (tmp >= 0  &&  (itsEnd == 0  ||  tmp <= end)) {
-                if (tmp%incr == 0) {
-		    *match = True;
-		}
-	    }
-	    value++;
+            Int64 tmp = *value - start;
+            if (incr > 0) {
+                if (tmp >= 0  &&  (itsEnd == 0  ||  tmp <= end)) {
+                    if (tmp%incr == 0) {
+                        *match = True;
+                    }
+                }
+            } else {
+                if (tmp <= 0  &&  (itsEnd == 0  ||  tmp >= end)) {
+                    if (tmp%incr == 0) {
+                        *match = True;
+                    }
+                }
+            }
+            value++;
 	    match++;
 	}
     }else{
@@ -579,8 +596,8 @@ void TableExprNodeSetElem::matchDouble (Bool* match, const Double* value,
     Double start = itsStart==0  ?  0 : itsStart->getDouble (id);
     Double end   = itsEnd==0  ?  start : itsEnd->getDouble (id);
     Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (id);
-    if (start > end) {
-	return;
+    if (incr == 0) {
+      throw TableInvExpr("Increment in a range must be non-zero");
     }
     Bool* lastVal = match + nval;
     if (itsSingle) {
@@ -595,12 +612,21 @@ void TableExprNodeSetElem::matchDouble (Bool* match, const Double* value,
 	end -= start;
 	while (match < lastVal) {
 	    Double tmp = *value - start;
-	    if (tmp >= 0  &&  (itsEnd == 0  ||  tmp < end  ||
-                               (!itsEndExcl && tmp==end))) {
-                if (near(tmp, incr*Int64(tmp/incr + 0.5))) {
-		    *match = True;
-		}
-	    }
+            if (incr > 0) {
+                if (tmp >= 0  &&  (itsEnd == 0  ||  tmp < end  ||
+                                   (!itsEndExcl && tmp==end))) {
+                    if (near(tmp, incr*Int64(tmp/incr + 0.5))) {
+                        *match = True;
+                    }
+                }
+            } else {
+                if (tmp <= 0  &&  (itsEnd == 0  ||  tmp > end  ||
+                                   (!itsEndExcl && tmp==end))) {
+                    if (near(tmp, incr*Int64(tmp/incr + 0.5))) {
+                        *match = True;
+                    }
+                }
+            }
 	    value++;
 	    match++;
 	}
@@ -675,8 +701,8 @@ void TableExprNodeSetElem::matchDate (Bool* match, const MVTime* value,
     Double start = itsStart==0  ?  0 : Double(itsStart->getDate (id));
     Double end   = itsEnd==0  ?  start : Double(itsEnd->getDate (id));
     Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (id);
-    if (start > end) {
-	return;
+    if (incr == 0) {
+      throw TableInvExpr("Increment in a range must be non-zero");
     }
     Bool* lastVal = match + nval;
     if (itsSingle) {
@@ -691,12 +717,20 @@ void TableExprNodeSetElem::matchDate (Bool* match, const MVTime* value,
 	end -= start;
 	while (match < lastVal) {
 	    Double tmp = Double(*value) - start;
-	    if (tmp >= 0  &&  (itsEnd == 0  ||  tmp < end  ||
-                               (!itsEndExcl && tmp==end))) {
-		Double div = tmp/incr;
-		if (int(div) == div) {
-		    *match = True;
-		}
+            if (incr > 0) {
+                if (tmp >= 0  &&  (itsEnd == 0  ||  tmp < end  ||
+                                   (!itsEndExcl && tmp==end))) {
+                    if (near(tmp, incr*Int64(tmp/incr + 0.5))) {
+		        *match = True;
+                    }
+                }
+            } else {
+                if (tmp <= 0  &&  (itsEnd == 0  ||  tmp > end  ||
+                                   (!itsEndExcl && tmp==end))) {
+                    if (near(tmp, incr*Int64(tmp/incr + 0.5))) {
+		        *match = True;
+                    }
+                }
 	    }
 	    value++;
 	    match++;

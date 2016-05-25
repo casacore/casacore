@@ -792,9 +792,17 @@ namespace casacore {
     case STOKES:
       {
         Array<Bool> out;
+        MArray<Bool> marr;
+        itsDataNode.get (id, marr);
         // Combine the flags.
-        itsStokesConv.convert (out, itsDataNode.getArrayBool (id));
-        return MArray<Bool>(out);
+        itsStokesConv.convert (out, marr.array());
+        if (! marr.hasMask()) {
+          return MArray<Bool>(out);
+        }
+        // Combine the mask elements.
+        Array<Bool> mask;
+        itsStokesConv.convert (mask, marr.mask());
+        return MArray<Bool> (out, mask);
       }
     case GETVALUE:
       return itsDataNode.getBoolAS (getRowNr(id));
@@ -855,7 +863,13 @@ namespace casacore {
         itsStokesConv.convert (outf, dataf);
         outd.resize (outf.shape());
         convertArray (outd, outf);
-        return MArray<Double>(outd);
+        if (! datad.hasMask()) {
+          return MArray<Double>(outd);
+        }
+        // Combine the mask elements.
+        Array<Bool> mask;
+        itsStokesConv.convert (mask, datad.mask());
+        return MArray<Double>(outd, mask);
       }
     case GETVALUE:
       return itsDataNode.getDoubleAS (getRowNr(id));
@@ -883,7 +897,13 @@ namespace casacore {
         itsStokesConv.convert (outf, dataf);
         outd.resize (outf.shape());
         convertArray (outd, outf);
-        return MArray<DComplex>(outd);
+        if (! datad.hasMask()) {
+          return MArray<DComplex>(outd);
+        }
+        // Combine the mask elements.
+        Array<Bool> mask;
+        itsStokesConv.convert (mask, datad.mask());
+        return MArray<DComplex>(outd, mask);
       }
     case GETVALUE:
       return itsDataNode.getDComplexAS (getRowNr(id));
