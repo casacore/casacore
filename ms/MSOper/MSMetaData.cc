@@ -1280,16 +1280,26 @@ std::set<ScanKey> MSMetaData::getScanKeys() const {
         return _scanKeys;
     }
     std::set<ScanKey> scanKeys;
-    if (_scanProperties) {
-        // scan keys already exist and are cached, they just need to be
-        // harvested
-        map<ScanKey, ScanProperties>::const_iterator iter = _scanProperties->begin();
-        map<ScanKey, ScanProperties>::const_iterator end = _scanProperties->end();
+    if (_scanProperties || _forceSubScanPropsToCache) {
+        SHARED_PTR<const map<ScanKey, ScanProperties> > scanProps;
+        if (_scanProperties) {
+            scanProps = _scanProperties;
+        }
+        else {
+            // we probably are going to create _scanProperties at some point,
+            // because object has been configured with _forceSubScanPropsToCache = True,
+            // so just create it now
+            SHARED_PTR<const map<SubScanKey, SubScanProperties> > subScanProps;
+            _getScanAndSubScanProperties(scanProps, subScanProps, False);
+        }
+        map<ScanKey, ScanProperties>::const_iterator iter = scanProps->begin();
+        map<ScanKey, ScanProperties>::const_iterator end = scanProps->end();
         for (; iter!=end; ++iter) {
             scanKeys.insert(iter->first);
         }
     }
     else {
+        // fastest way if we don't have _scanProperties and aren't going to need it later
         std::set<SubScanKey> subScanKeys = _getSubScanKeys();
         std::set<SubScanKey>::const_iterator iter = subScanKeys.begin();
         std::set<SubScanKey>::const_iterator end = subScanKeys.end();
