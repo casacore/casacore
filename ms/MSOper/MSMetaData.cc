@@ -652,7 +652,7 @@ std::set<Int> MSMetaData::getScansForState(
     if (! _hasStateID(stateID)) {
         return std::set<Int>();
     }
-    std::map<ScanKey, std::set<Int> > myScanToStatesMap = _getScanToStatesMap();
+    std::map<ScanKey, std::set<Int> > myScanToStatesMap = getScanToStatesMap();
     ArrayKey arrayKey;
     arrayKey.obsID = obsID;
     arrayKey.arrayID = arrayID;
@@ -699,7 +699,7 @@ std::map<ScanKey, std::set<Int> > MSMetaData::_getScanToAntennasMap() const {
     return myScanToAntsMap;
 }
 
-std::map<ScanKey, std::set<Int> > MSMetaData::_getScanToStatesMap() const {
+std::map<ScanKey, std::set<Int> > MSMetaData::getScanToStatesMap() const {
     if (! _scanToStatesMap.empty()) {
         return _scanToStatesMap;
     }
@@ -818,7 +818,7 @@ void MSMetaData::_getScansAndIntentsMaps(
     _getStateToIntentsMap(
         stateToIntentsMap, uniqueIntents
     );
-    std::map<ScanKey, std::set<Int> > scanToStatesMap = _getScanToStatesMap();
+    std::map<ScanKey, std::set<Int> > scanToStatesMap = getScanToStatesMap();
     std::map<ScanKey, std::set<Int> >::const_iterator end = scanToStatesMap.end();
     std::set<Int> states;
     std::set<String> intents;
@@ -2506,7 +2506,7 @@ std::set<Int> MSMetaData::getStatesForScan(
     arrayKey.obsID = obsID;
     arrayKey.arrayID = arrayID;
     std::set<ScanKey> scanKeys = getScanKeys(arrayKey);
-    std::map<ScanKey, std::set<Int> > scanToStates = _getScanToStatesMap();
+    std::map<ScanKey, std::set<Int> > scanToStates = getScanToStatesMap();
     std::set<Int> states;
     std::set<ScanKey>::const_iterator iter = scanKeys.begin();
     std::set<ScanKey>::const_iterator end = scanKeys.end();

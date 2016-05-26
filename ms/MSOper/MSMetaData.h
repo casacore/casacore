@@ -181,6 +181,9 @@ public:
         Int stateID, Int obsID, Int arrayID
     ) const;
 
+    // get the mapping of scans to states
+    std::map<ScanKey, std::set<Int> > getScanToStatesMap() const;
+
     // SOURCE.DIRECTION
     vector<MDirection> getSourceDirections() const;
 
@@ -922,8 +925,6 @@ private:
     ) const;
 
     std::map<ScanKey, std::set<Int> > _getScanToAntennasMap() const;
-
-    std::map<ScanKey, std::set<Int> > _getScanToStatesMap() const;
 
     std::map<ScanKey, std::set<SubScanKey> > _getScanToSubScansMap() const;
 
