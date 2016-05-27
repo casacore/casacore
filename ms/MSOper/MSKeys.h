@@ -94,6 +94,14 @@ struct ArrayKey {
 // define operator<() so it can be used as a key in std::map
 Bool operator<(const ArrayKey& lhs, const ArrayKey& rhs);
 
+inline Bool operator==(const ArrayKey& lhs, const ArrayKey& rhs) {
+    return lhs.arrayID == rhs.arrayID && lhs.obsID == rhs.obsID;
+}
+
+inline Bool operator!=(const ArrayKey& lhs, const ArrayKey& rhs) {
+    return ! (lhs == rhs);
+}
+
 // construct scan keys given a set of scan numbers and an ArrayKey
 std::set<ScanKey> scanKeys(const std::set<Int>& scans, const ArrayKey& arrayKey);
 
@@ -109,6 +117,9 @@ Bool operator<(const SourceKey& lhs, const SourceKey& rhs);
 
 // get a set of unique ArrayKeys from a set of ScanKeys
 std::set<ArrayKey> uniqueArrayKeys(const std::set<ScanKey>& scanKeys);
+
+// given a set of scan keys, return the subset that matches the given array key
+std::set<ScanKey> filter(const std::set<ScanKey> scans, const ArrayKey& arrayKey);
 
 }
 

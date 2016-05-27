@@ -56,6 +56,51 @@ int main() {
             ++iter;
             AlwaysAssert(iter->arrayID == 1 && iter->obsID == 2, AipsError);
         }
+        {
+            cout << "*** test ArrayKey==" << endl;
+            ArrayKey first, second;
+            first.arrayID = 4;
+            first.obsID = 6;
+            second.arrayID = 4;
+            second.obsID = 6;
+            AlwaysAssert(first == second, AipsError);
+            second.obsID = 5;
+            AlwaysAssert(first != second, AipsError);
+            second.obsID = 6;
+            second.arrayID = 3;
+            AlwaysAssert(first != second, AipsError);
+        }
+        {
+            cout << "*** test filter" << endl;
+            std::set<ScanKey> scanKeys;
+            ScanKey sk;
+            sk.obsID = 0;
+            sk.arrayID = 0;
+            sk.scan = 9;
+            scanKeys.insert(sk);
+            sk.obsID = 1;
+            scanKeys.insert(sk);
+            sk.arrayID = 1;
+            scanKeys.insert(sk);
+            sk.obsID = 0;
+            scanKeys.insert(sk);
+            std::set<ScanKey>::const_iterator iter = scanKeys.begin();
+            std::set<ScanKey>::const_iterator end = scanKeys.end();
+            ArrayKey x;
+            uInt i = 0;
+            ScanKey expec;
+            expec.scan = 9;
+            for (; iter!=end; ++iter, ++i) {
+                x.obsID = i % 2;
+                x.obsID = i/2;
+                x.arrayID = iter->arrayID;
+                std::set<ScanKey> filtered = filter(scanKeys, x);
+                AlwaysAssert(filtered.size() == 1, AipsError);
+                expec.obsID = x.obsID;
+                expec.arrayID = x.arrayID;
+                AlwaysAssert(*filtered.begin() == expec, AipsError);
+            }
+        }
     	cout << "OK" << endl;
     } 
     catch (const AipsError& x) {
