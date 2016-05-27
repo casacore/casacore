@@ -1275,23 +1275,31 @@ std::set<String> MSMetaData::getFieldNamesForSpw(const uInt spw) {
     return fieldNames;
 }
 
+SHARED_PTR<const map<ScanKey, MSMetaData::ScanProperties> >
+MSMetaData::generateScanPropsIfWanted() const {
+    if (_scanProperties) {
+        // we already have it, just return it
+        return _scanProperties;
+    }
+    if (_forceSubScanPropsToCache) {
+        // it hasn't been generated yet, but we will likely
+        // need it later, so just generate it now
+        SHARED_PTR<const map<ScanKey, ScanProperties> > scanProps;
+        SHARED_PTR<const map<SubScanKey, SubScanProperties> > subScanProps;
+        _getScanAndSubScanProperties(scanProps, subScanProps, False);
+        return scanProps;
+    }
+    // we don't have it, and we aren't going to want it
+    return SHARED_PTR<const map<ScanKey, ScanProperties> >();
+}
+
 std::set<ScanKey> MSMetaData::getScanKeys() const {
     if (! _scanKeys.empty()) {
         return _scanKeys;
     }
     std::set<ScanKey> scanKeys;
-    if (_scanProperties || _forceSubScanPropsToCache) {
-        SHARED_PTR<const map<ScanKey, ScanProperties> > scanProps;
-        if (_scanProperties) {
-            scanProps = _scanProperties;
-        }
-        else {
-            // we probably are going to create _scanProperties at some point,
-            // because object has been configured with _forceSubScanPropsToCache = True,
-            // so just create it now
-            SHARED_PTR<const map<SubScanKey, SubScanProperties> > subScanProps;
-            _getScanAndSubScanProperties(scanProps, subScanProps, False);
-        }
+    SHARED_PTR<const map<ScanKey, ScanProperties> > scanProps = generateScanPropsIfWanted();
+    if (scanProps) {
         map<ScanKey, ScanProperties>::const_iterator iter = scanProps->begin();
         map<ScanKey, ScanProperties>::const_iterator end = scanProps->end();
         for (; iter!=end; ++iter) {
