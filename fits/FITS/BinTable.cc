@@ -28,6 +28,7 @@
 //# Includes
 #include <casacore/fits/FITS/BinTable.h>
 #include <casacore/fits/FITS/fits.h>
+#include <casacore/fits/FITS/hdu.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/DataMan/IncrementalStMan.h>
@@ -70,8 +71,11 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
     BinaryTableExtension(fitsin, errhandler), currRowTab(0), nelem(0), 
     colNames(0), vatypes_p(0), vaptr_p(0), va_p(0), theheap_p(0)
 {
+
+    AlwaysAssert(err() == HeaderDataUnit::OK, AipsError);
+
     // is there a heap
-    if (pcount()) {
+    if (pcount()>0) {
 	// yes, must read the entire table in at once so that
 	// we can have access to the heap as we step through the table
 	read(nrows());
