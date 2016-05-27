@@ -72,7 +72,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
     colNames(0), vatypes_p(0), vaptr_p(0), va_p(0), theheap_p(0)
 {
 
-    AlwaysAssert(err() == HeaderDataUnit::HDUErrs::OK, AipsError);
+    AlwaysAssert(err() == HeaderDataUnit::OK, AipsError);
 
     // is there a heap
     if (pcount()>0) {
