@@ -780,6 +780,11 @@ private:
     // for unit correctness of the inputs.
     static QVD _freqWidthToVelWidth(const QVD& v, const Quantity& refFreq);
 
+    // if _scanProps has been generated, just return it. If the caller has
+    // configured the object to generate _scanProps at some point, this call will
+    // generate it. Otherwise, the returned object contains a null pointer.
+    SHARED_PTR<const map<ScanKey, ScanProperties> > _generateScanPropsIfWanted() const;
+
     vector<String> _getAntennaNames(
         std::map<String, uInt>& namesToIDsMap
     ) const;

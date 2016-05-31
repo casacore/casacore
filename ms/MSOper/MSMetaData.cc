@@ -1275,21 +1275,39 @@ std::set<String> MSMetaData::getFieldNamesForSpw(const uInt spw) {
     return fieldNames;
 }
 
+SHARED_PTR<const map<ScanKey, MSMetaData::ScanProperties> >
+MSMetaData::_generateScanPropsIfWanted() const {
+    if (_scanProperties) {
+        // we already have it, just return it
+        return _scanProperties;
+    }
+    if (_forceSubScanPropsToCache) {
+        // it hasn't been generated yet, but we will likely
+        // need it later, so just generate it now
+        SHARED_PTR<const map<ScanKey, ScanProperties> > scanProps;
+        SHARED_PTR<const map<SubScanKey, SubScanProperties> > subScanProps;
+        _getScanAndSubScanProperties(scanProps, subScanProps, False);
+        return scanProps;
+    }
+    // we don't have it, and we aren't going to want it later
+    return SHARED_PTR<const map<ScanKey, ScanProperties> >();
+}
+ 
 std::set<ScanKey> MSMetaData::getScanKeys() const {
     if (! _scanKeys.empty()) {
         return _scanKeys;
     }
     std::set<ScanKey> scanKeys;
-    if (_scanProperties) {
-        // scan keys already exist and are cached, they just need to be
-        // harvested
-        map<ScanKey, ScanProperties>::const_iterator iter = _scanProperties->begin();
-        map<ScanKey, ScanProperties>::const_iterator end = _scanProperties->end();
+    SHARED_PTR<const map<ScanKey, ScanProperties> > scanProps = _generateScanPropsIfWanted();
+    if (scanProps) {
+        map<ScanKey, ScanProperties>::const_iterator iter = scanProps->begin();
+        map<ScanKey, ScanProperties>::const_iterator end = scanProps->end();
         for (; iter!=end; ++iter) {
             scanKeys.insert(iter->first);
         }
     }
     else {
+        // fastest way if we don't have _scanProperties and aren't going to need it later
         std::set<SubScanKey> subScanKeys = _getSubScanKeys();
         std::set<SubScanKey>::const_iterator iter = subScanKeys.begin();
         std::set<SubScanKey>::const_iterator end = subScanKeys.end();
