@@ -442,13 +442,13 @@ MArray<Int64> TableExprNodeArrayModuloInt::getArrayInt
 {
     switch (argtype_p) {
     case ArrSca:
-	return lnode_p->getArrayInt(id) % rnode_p->getInt(id);
+        return floormod (lnode_p->getArrayInt(id), rnode_p->getInt(id));
     case ScaArr:
-	return lnode_p->getInt(id) % rnode_p->getArrayInt(id);
+        return floormod (lnode_p->getInt(id), rnode_p->getArrayInt(id));
     default:
 	break;
     }
-    return lnode_p->getArrayInt(id) % rnode_p->getArrayInt(id);
+    return floormod (lnode_p->getArrayInt(id), rnode_p->getArrayInt(id));
 }
 
 
@@ -463,13 +463,13 @@ MArray<Double> TableExprNodeArrayModuloDouble::getArrayDouble
 {
     switch (argtype_p) {
     case ArrSca:
-      return fmod (lnode_p->getArrayDouble(id), rnode_p->getDouble(id));
+        return floormod (lnode_p->getArrayDouble(id), rnode_p->getDouble(id));
     case ScaArr:
-      return fmod (lnode_p->getDouble(id), rnode_p->getArrayDouble(id));
+        return floormod (lnode_p->getDouble(id), rnode_p->getArrayDouble(id));
     default:
 	break;
     }
-    return fmod (lnode_p->getArrayDouble(id), rnode_p->getArrayDouble(id));
+    return floormod (lnode_p->getArrayDouble(id), rnode_p->getArrayDouble(id));
 }
 
 

@@ -647,6 +647,20 @@ namespace casacore {
     { return MArray<T> (fmod(left, right.array()), right); }
 
   template<typename T>
+  MArray<T> floormod(const MArray<T>& left, const MArray<T>& right)
+    { return (left.isNull() || right.isNull()  ?  MArray<T>() :
+              MArray<T> (floormod(left.array(), right.array()),
+                         left.combineMask(right))); }
+
+  template<typename T>
+  MArray<T> floormod(const MArray<T>& left, const T& right)
+    { return MArray<T> (floormod(left.array(), right), left); }
+
+  template<typename T>
+  MArray<T> floormod(const T& left, const MArray<T>& right)
+    { return MArray<T> (floormod(left, right.array()), right); }
+
+  template<typename T>
   MArray<T> conj(const MArray<T>& arr)
     { return MArray<T> (conj(arr.array()), arr); }
 

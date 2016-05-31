@@ -223,7 +223,7 @@ public:
     std::vector<std::set<uInt> > getSpwToDataDescriptionIDMap() const;
 
     // get a set of spectral windows corresponding to the specified fieldID
-    std::set<uInt> getSpwsForField(const Int fieldID);
+    std::set<uInt> getSpwsForField(const Int fieldID) const;
 
     // get a set of spectral windows corresponding to the specified field name
     std::set<uInt> getSpwsForField(const String& fieldName);
@@ -236,6 +236,9 @@ public:
 
     // get the set of field names corresponding to the specified spectral window.
     std::set<String> getFieldNamesForSpw(const uInt spw);
+
+    // get the mapping of fields to spws
+    std::map<Int, std::set<uInt> > getFieldsToSpwsMap() const;
 
     // get rest frequencies from the SOURCE table
     std::map<SourceKey, SHARED_PTR<vector<MFrequency> > > getRestFrequencies() const;
@@ -395,8 +398,10 @@ public:
     // get the position of the specified telescope (observatory).
     MPosition getObservatoryPosition(uInt which) const;
 
-    // get the phase directions from the FIELD subtable
-    vector<MDirection> getPhaseDirs() const;
+    // get the phase directions from the FIELD subtable. The <src>ep</src> parameter
+    // specifies for which epoch to return the directions of any ephemeris objects
+    // in the data set. It is ignored for non-ephemeris objects.
+    vector<MDirection> getPhaseDirs(const MEpoch& ep=MEpoch(Quantity(0.0, Unit("s")))) const;
 
     // get all ScanKeys in the dataset
     std::set<ScanKey> getScanKeys() const;
@@ -584,6 +589,8 @@ public:
 
     const MeasurementSet* getMS() const { return _ms; }
 
+    void setShowProgress(Bool b) { _showProgress = b; }
+
 private:
 
     struct ScanProperties {
@@ -635,13 +642,14 @@ private:
     // will occur.
 
     const MeasurementSet* _ms;
+    Bool _showProgress;
     mutable Float _cacheMB;
     const Float _maxCacheMB;
     mutable uInt _nStates, _nACRows, _nXCRows, _nSpw, _nFields, _nAntennas,
         _nObservations, _nScans, _nArrays, _nrows, _nPol, _nDataDescIDs;
     mutable std::map<ScanKey, std::set<uInt> > _scanToSpwsMap, _scanToDDIDsMap;
     mutable vector<uInt> _dataDescIDToSpwMap, _dataDescIDToPolIDMap;
-    std::map<Int, std::set<uInt> > _fieldToSpwMap;
+    mutable std::map<Int, std::set<uInt> > _fieldToSpwMap;
     mutable std::map<ScanKey, std::set<Int> > _scanToStatesMap, _scanToFieldsMap, _scanToAntennasMap;
     mutable std::map<Int, std::set<Int> >    _fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap;
     mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
@@ -711,6 +719,7 @@ private:
     mutable vector<std::pair<Quantity, Quantity> > _properMotions;
 
     mutable std::map<SourceKey, SourceProperties> _sourceInfo;
+    mutable SHARED_PTR<std::set<Int> > _ephemFields;
 
     // disallow copy constructor and = operator
     MSMetaData(const MSMetaData&);
@@ -797,6 +806,9 @@ private:
 
     SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
 
+    // get the field IDs of ephemeris objects
+    SHARED_PTR<std::set<Int> > _getEphemFieldIDs() const;
+
     SHARED_PTR<Quantum<Vector<Double> > > _getExposureTimes() const;
 
     SHARED_PTR<Vector<Int> > _getFieldIDs() const;
@@ -817,7 +829,7 @@ private:
     void _getFieldsAndSpwMaps(
         std::map<Int, std::set<uInt> >& fieldToSpwMap,
         vector<std::set<Int> >& spwToFieldMap
-    );
+    ) const;
 
     void _getFieldsAndStatesMaps(
         std::map<Int, std::set<Int> >& fieldToStatesMap,

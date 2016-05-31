@@ -144,6 +144,85 @@ public:
 			     Bool noRows=False,
 			     const Block<String>& omit=Block<String>());
 
+  // Clone a column in the from table to a new column in the to table.
+  // The new column gets the same table description and data manager as the
+  // from column. It has to get a unique data manager name. If not given,
+  // it is the new column name.
+  static void cloneColumn (const Table& fromTable,
+                           const String& fromColumn,
+                           Table& toTable,
+                           const String& newColumn,
+                           const String& dataManagerName = String());
+  // Cloning as above, but the data type is set to the template parameter.
+  template<typename T> 
+  static void cloneColumnTyped (const Table& fromTable,
+                                const String& fromColumn,
+                                Table& toTable,
+                                const String& newColumn,
+                                const String& dataManagerName = String());
+
+  // Copy the data from one column to another.
+  // It can be used after function cloneColumn to populate the new column.
+  // Note that the data types of the column do not need to match; data type
+  // promotion is done if needed.
+  // <br>The <src>preserveTileShape</src> argument tells if the original
+  // tile shape is kept if a tiled data manager is used. If False, the
+  // default tile shape of the data manager is used.
+  // <note role=tip>
+  // Note that a TaQL command can be used to fill a column in any way.
+  // For example, fill toColumn with the real part of a complex fromColumn:
+  // <srcblock>
+  //   Block<Table> tables(2);
+  //   tables[0] = toTable;
+  //   tables[1] = fromTable;
+  //   tableCommand ("update $1 set toColumn=real(t2.fromColumn) from $2 t2",
+  //                 tables);
+  // </srcblock>
+  // When copying a column in a straightforward way, the TaQL way is about 25%
+  // slower than using the function <src>copyColumnData</src>.
+  // </note>
+  static void copyColumnData (const Table& fromTable,
+                              const String& fromColumn,
+                              Table& toTable,
+                              const String& toColumn,
+                              Bool preserveTileShape=True);
+
+  // Fill the table column with the given array.
+  // The template type must match the column data type.
+  template<typename T>
+  static void fillArrayColumn (Table& table, const String& column,
+                               const Array<T>& value);
+
+  // Fill the table column with the given value.
+  // If the column contains arrays, the arrays are filled with the value.
+  // The template type must match the column data type.
+  template<typename T>
+  static void fillColumnData (Table& table, const String& column,
+                              const T& value);
+  // Specialization to handle a C-string correctly.
+  static void fillColumnData (Table& table, const String& column,
+                              const char* value)
+    { fillColumnData (table, column, String(value)); }
+
+  // Fill the table column with the given value.
+  // The column must contain arrays. The arrays get the shape of the
+  // corresponding row in the fromColumn in the fromTable.
+  // It can be used after function cloneColumn to initialize the new column.
+  // The template type must match the column data type.
+  template<typename T>
+  static void fillColumnData (Table& table, const String& column,
+                              const T& value,
+                              const Table& fromTable, const String& fromColumn,
+                              Bool preserveTileShape=True);
+  // Specialization to handle a C-string correctly.
+  static void fillColumnData (Table& table, const String& column,
+                              const char* value,
+                              const Table& fromTable, const String& fromColumn,
+                              Bool preserveTileShape=True)
+    { fillColumnData (table, column, String(value), fromTable, fromColumn,
+                      preserveTileShape); }
+                              
+
   // Replace TiledDataStMan by TiledShapeStMan in the DataManagerInfo record.
   // Since TiledShapeStMan does not support ID columns, they are
   // adjusted as well in tabDesc and dminfo.
@@ -180,10 +259,18 @@ public:
   // hypercolumn definitions to the actual data manager info.
   static void adjustDesc (TableDesc& tabDesc, const Record& dminfo)
     { DataManInfo::adjustDesc (tabDesc, dminfo); }
+
+private:
+  static void doCloneColumn (const Table& fromTable, const String& fromColumn,
+                             Table& toTable, const ColumnDesc& newColumn,
+                             const String& dataManagerName);
 };
 
 
 
 } //# NAMESPACE CASACORE - END
 
+#ifndef CASACORE_NO_AUTO_TEMPLATES
+#include <casacore/tables/Tables/TableCopy.tcc>
+#endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

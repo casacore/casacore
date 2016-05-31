@@ -878,9 +878,9 @@ ArrayColumn<T>::putColumnCells (const RefRows& rows,
 
 template<class T>
 void ArrayColumn<T>::put (uInt thisRownr, const TableColumn& that,
-			  uInt thatRownr)
+			  uInt thatRownr, Bool preserveTileShape)
 {
-    TableColumn::put (thisRownr, that, thatRownr);
+  TableColumn::put (thisRownr, that, thatRownr, preserveTileShape);
 }
 
 template<class T>
@@ -1116,13 +1116,6 @@ void ArrayColumn<T>::putColumnCells (const RefRows& rownrs,
     baseColPtr_p->putColumnSliceCells (rownrs, arraySection, &arr);
 }
 
-
-template<class T>
-void ArrayColumn<T>::put (uInt thisRownr, const ArrayColumn<T>& that,
-			  uInt thatRownr)
-{
-    put (thisRownr, that(thatRownr));
-}
 
 //# This is a very simple implementation.
 //# However, it does not need to be more fancy, since an array operation

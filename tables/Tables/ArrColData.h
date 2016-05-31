@@ -150,6 +150,10 @@ public:
     // If the cell does not contain an array, an empty IPosition is returned.
     IPosition shape(uInt rownr) const;
 
+    // Get the tile shape of an array in a particular cell.
+    // If the cell does not contain an array, an empty IPosition is returned.
+    IPosition tileShape(uInt rownr) const;
+
     // Set dimensions of array in a particular cell.
     // <group>
     void setShape (uInt rownr, const IPosition& shape);

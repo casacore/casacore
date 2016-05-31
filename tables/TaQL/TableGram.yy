@@ -94,6 +94,7 @@ The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
 %token BETWEEN
 %token EXISTS
 %token LIKE
+%token ILIKE
 %token LPAREN
 %token RPAREN
 %token COMMA
@@ -1355,12 +1356,40 @@ relexpr:   arithexpr {
 	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_EQ, *$1, ref));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
+         | arithexpr ILIKE arithexpr {
+   	       TaQLMultiNode mn1(False);
+               mn1.add (*$1);
+               TaQLNode tn1 (new TaQLFuncNodeRep("LOWER", mn1));
+   	       TaQLMultiNode mn2(False);
+               mn2.add (*$3);
+               TaQLNode tn2 (new TaQLFuncNodeRep("LOWER", mn2));
+   	       TaQLMultiNode re(False);
+               re.add (tn2);
+               TaQLNode ref (new TaQLFuncNodeRep("SQLPATTERN", re));
+	       $$ = new TaQLNode(
+	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_EQ, tn1, ref));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
          | arithexpr NOT LIKE arithexpr {
    	       TaQLMultiNode re(False);
                re.add (*$4);
                TaQLNode ref (new TaQLFuncNodeRep("SQLPATTERN", re));
 	       $$ = new TaQLNode(
 	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_NE, *$1, ref));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | arithexpr NOT ILIKE arithexpr {
+   	       TaQLMultiNode mn1(False);
+               mn1.add (*$1);
+               TaQLNode tn1 (new TaQLFuncNodeRep("LOWER", mn1));
+   	       TaQLMultiNode mn2(False);
+               mn2.add (*$4);
+               TaQLNode tn2 (new TaQLFuncNodeRep("LOWER", mn2));
+   	       TaQLMultiNode re(False);
+               re.add (tn2);
+               TaQLNode ref (new TaQLFuncNodeRep("SQLPATTERN", re));
+	       $$ = new TaQLNode(
+	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_NE, tn1, ref));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | EXISTS subquery {
@@ -1825,12 +1854,22 @@ colonrange: arithexpr COLON arithexpr {
                     new TaQLIndexNodeRep (*$1, *$3, 0));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
+         | arithexpr COLON arithexpr COLON {
+	       $$ = new TaQLNode(
+                    new TaQLIndexNodeRep (*$1, *$3, 0));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
          | arithexpr COLON arithexpr COLON arithexpr {
 	       $$ = new TaQLNode(
                     new TaQLIndexNodeRep (*$1, *$3, *$5));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | COLON arithexpr {
+	       $$ = new TaQLNode(
+                    new TaQLIndexNodeRep (0, *$2, 0));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | COLON arithexpr COLON {
 	       $$ = new TaQLNode(
                     new TaQLIndexNodeRep (0, *$2, 0));
 	       TaQLNode::theirNodesCreated.push_back ($$);

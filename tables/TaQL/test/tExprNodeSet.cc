@@ -1,4 +1,4 @@
-//# tExprNode.cc: Test program for the ExprNodeSet selection classes
+//# tExprNodeSet.cc: Test program for the ExprNodeSet selection classes
 //# Copyright (C) 2009
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -129,6 +129,9 @@ void doDiscreteInt()
   TableExprNode st(1);
   TableExprNode end(99);
   TableExprNode incr(2);
+  TableExprNode stn(-1);
+  TableExprNode endn(-99);
+  TableExprNode incrn(-2);
   {
     TableExprNodeSetElem tset(&st, &end, &incr, False);
     AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTInt);
@@ -146,6 +149,39 @@ void doDiscreteInt()
     AlwaysAssertExit (allEQ(exp, vec));
     checkMatchInt (tset, 1, True);
     checkMatchInt (tset, 2, False);
+  }
+  {
+    TableExprNodeSetElem tset(&stn, &endn, &incrn, False);
+    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTInt);
+    AlwaysAssertExit (tset.isDiscrete());
+    AlwaysAssertExit (!tset.isSingle());
+    AlwaysAssertExit (tset.start() != 0);
+    AlwaysAssertExit (tset.end() != 0);
+    AlwaysAssertExit (tset.increment() != 0);
+    Vector<Int64> vec;
+    Int64 cnt=0;
+    tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
+    Vector<Int64> exp(50);
+    indgen (exp, Int64(-1), Int64(-2));
+    AlwaysAssertExit (allEQ(exp, vec));
+    checkMatchInt (tset, -7, True);
+    checkMatchInt (tset, -10, False);
+  }
+  {
+    TableExprNodeSetElem tset(&stn, 0, &incrn, False);
+    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTInt);
+    AlwaysAssertExit (tset.isDiscrete());
+    AlwaysAssertExit (!tset.isSingle());
+    AlwaysAssertExit (tset.start() != 0);
+    AlwaysAssertExit (tset.end() == 0);
+    AlwaysAssertExit (tset.increment() != 0);
+    Vector<Int64> vec;
+    Int64 cnt=0;
+    tset.fillVector (vec, cnt, 0);
+    AlwaysAssertExit (cnt == 1  &&  vec[0] == -1);
+    checkMatchInt (tset, -1, True);
+    checkMatchInt (tset, -2, False);
   }
   {
     TableExprNodeSetElem tset(&st, &end, &incr, True);
@@ -190,7 +226,7 @@ void doDiscreteInt()
     Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
     vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<Int64>(1,1), vec));
+    AlwaysAssertExit (allEQ(Vector<Int64>(), vec));
   }
   {
     TableExprNodeSetElem tset(0, &end, 0, False);
@@ -218,7 +254,7 @@ void doDiscreteInt()
     Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
     vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<Int64>(1,0), vec));
+    AlwaysAssertExit (allEQ(Vector<Int64>(), vec));
   }
   {
     TableExprNodeSetElem tset(st);
@@ -245,6 +281,9 @@ void doDiscreteDouble()
   end.useUnit ("m");
   TableExprNode incr(2);
   incr.useUnit ("cm");
+  TableExprNode stn(100.);
+  TableExprNode endn(10.);
+  TableExprNode incrn(-2.5);
   {
     TableExprNodeSetElem tset(&st, &end, &incr, False);
     AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
@@ -263,6 +302,43 @@ void doDiscreteDouble()
     AlwaysAssertExit (allNear(exp, vec, 1e-13));
     checkMatchDouble (tset, 3., True);
     checkMatchDouble (tset, 3.1, False);
+  }
+  {
+    TableExprNodeSetElem tset(&stn, &endn, &incrn, True);
+    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
+    AlwaysAssertExit (tset.isDiscrete());
+    AlwaysAssertExit (!tset.isSingle());
+    AlwaysAssertExit (tset.start() != 0);
+    AlwaysAssertExit (tset.end() != 0);
+    AlwaysAssertExit (tset.increment() != 0);
+    Vector<Double> vec;
+    Int64 cnt=0;
+    tset.fillVector (vec, cnt, 0);
+    vec.resize (cnt, True);
+    Vector<Double> exp(36);
+    indgen (exp, 100., -2.5);
+    AlwaysAssertExit (allNear(exp, vec, 1e-13));
+    checkMatchDouble (tset, 100., True);
+    checkMatchDouble (tset, 12.51, False);
+    checkMatchDouble (tset, 12.5, True);
+    checkMatchDouble (tset, 10., False);
+  }
+  {
+    TableExprNodeSetElem tset(&stn, 0, &incrn, True);
+    AlwaysAssertExit (tset.dataType() == TableExprNodeRep::NTDouble);
+    AlwaysAssertExit (tset.isDiscrete());
+    AlwaysAssertExit (!tset.isSingle());
+    AlwaysAssertExit (tset.start() != 0);
+    AlwaysAssertExit (tset.end() == 0);
+    AlwaysAssertExit (tset.increment() != 0);
+    Vector<Double> vec;
+    Int64 cnt=0;
+    tset.fillVector (vec, cnt, 0);
+    AlwaysAssertExit (cnt == 0);
+    checkMatchDouble (tset, 100., True);
+    checkMatchDouble (tset, -100., True);
+    checkMatchDouble (tset, -102., False);
+    checkMatchDouble (tset, 102.5, False);
   }
   {
     TableExprNodeSetElem tset(&st, &end, &incr, True);
@@ -307,7 +383,7 @@ void doDiscreteDouble()
     Int64 cnt=0;
     tset.fillVector (vec, cnt, 0);
     vec.resize (cnt, True);
-    AlwaysAssertExit (allNear(Vector<Double>(1, 1.), vec, 1e-13));
+    AlwaysAssertExit (allNear(Vector<Double>(), vec, 1e-13));
   }
   {
     TableExprNodeSetElem tset(st);
@@ -458,7 +534,7 @@ void doDiscreteDate()
     vect.resize (cnt, True);
     Vector<Double> vec(vect.size());
     convertArray (vec, vect);
-    AlwaysAssertExit (allNear(Vector<Double>(1, 54926.5), vec, 1e-13));
+    AlwaysAssertExit (allNear(Vector<Double>(), vec, 1e-13));
   }
   {
     TableExprNodeSetElem tset(st);

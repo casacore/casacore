@@ -148,6 +148,11 @@ IPosition ArrayColumnData<T>::shape (uInt rownr) const
 {
     return dataColPtr_p->shape(rownr);
 }
+template<class T>
+IPosition ArrayColumnData<T>::tileShape (uInt rownr) const
+{
+    return dataColPtr_p->tileShape(rownr);
+}
 
 
 template<class T>
@@ -377,17 +382,14 @@ template<class T>
 void ArrayColumnData<T>::checkShape (const IPosition& shape) const
 {
     if ((columnDesc().options() & ColumnDesc::FixedShape)
-	                               == ColumnDesc::FixedShape) {
-	throw (TableInvOper
-	     ("ArrayColumn::setShape only possible for non-FixedShape arrays"
-              " of column " + colDescPtr_p->name()));
-    }
-    if (columnDesc().ndim() > 0) {
+	                               != ColumnDesc::FixedShape) {
+      if (columnDesc().ndim() > 0) {
 	if (Int(shape.nelements()) != columnDesc().ndim()) {
 	    throw (TableInvOper
 		   ("ArrayColumn::setShape: mismatch in #dim of array"
                     " of column " + colDescPtr_p->name()));
 	}
+      }
     }
 }
 
