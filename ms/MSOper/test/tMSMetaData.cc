@@ -634,9 +634,15 @@ void testIt(MSMetaData& md) {
             );
         }
         {
-            cout << "*** test getStatesForScan()" << endl;
+            cout << "*** test getStatesForScan() getScanToStatesMap()" << endl;
             std::set<Int> expec;
             std::set<Int> scanNumbers = md.getScanNumbers(0, 0);
+            std::map<ScanKey, std::set<Int> > mymap = md.getScanToStatesMap();
+            AlwaysAssert(scanNumbers.size() == mymap.size(), AipsError);
+            ScanKey scanKey;
+            scanKey.scan = 0;
+            scanKey.arrayID = 0;
+            scanKey.obsID = 0;
             for (
                     std::set<Int>::const_iterator curScan=scanNumbers.begin();
                     curScan!=scanNumbers.end(); ++curScan
@@ -693,6 +699,8 @@ void testIt(MSMetaData& md) {
                 }
                 std::set<Int> got = md.getStatesForScan(0, 0, *curScan);
                 AlwaysAssert(got == expec, AipsError);
+                scanKey.scan = *curScan;
+                AlwaysAssert(mymap[scanKey] == expec, AipsError);
             }
             cout << "*** cache size " << md.getCache() << endl;
         }
