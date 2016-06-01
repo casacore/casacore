@@ -47,14 +47,17 @@ const Double MVPosition::loLimit = 743.568;
 const Double MVPosition::hiLimit = 743.569;
 
 // simplistic vector(3) cache to reduce allocation overhead for temporaries
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
+#ifndef USE_THREADS
+static size_t available = 0;
+static Vector<Double> * arrays[50];
+#elif !defined(__APPLE__)
 static thread_local size_t available = 0;
 static thread_local Vector<Double> * arrays[50];
 #endif
 
 Vector<Double> * get_array()
 {
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
+#if !defined(USE_THREADS) || !defined(__APPLE__)
   if (available > 0) {
     return arrays[--available];
   }
@@ -64,7 +67,7 @@ Vector<Double> * get_array()
 
 void return_array(Vector<Double> * array)
 {
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
+#if !defined(USE_THREADS) || !defined(__APPLE__)
   if (available < sizeof(arrays) / sizeof(arrays[0]) &&
 		  array->size() == 3 &&
 		  array->nrefs() == 1) {

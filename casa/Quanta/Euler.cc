@@ -39,14 +39,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Euler class
 
 // simplistic Vector(3) cache to reduce allocation overhead for temporaries
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
+#ifndef USE_THREADS
+size_t Euler::available = 0;
+Euler::DataArrays Euler::arrays[50];
+#elif defined(AIPS_CXX11) && !defined(__APPLE__)
 thread_local size_t Euler::available = 0;
 thread_local Euler::DataArrays Euler::arrays[50];
 #endif
 
 Euler::DataArrays Euler::get_arrays()
 {
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
+#if !defined(USE_THREADS) || ( defined(AIPS_CXX11) && !defined(__APPLE__) )
   if (available > 0) {
     return arrays[--available];
   }
@@ -56,7 +59,7 @@ Euler::DataArrays Euler::get_arrays()
 
 void Euler::return_arrays(Euler::DataArrays array)
 {
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
+#if !defined(USE_THREADS) || ( defined(AIPS_CXX11) && !defined(__APPLE__) )
   if (available < sizeof(arrays) / sizeof(arrays[0]) &&
 		  array.first->size() == 3 && array.second->size() == 3 &&
 		  array.first->nrefs() == 1 && array.second->nrefs() == 1) {

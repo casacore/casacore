@@ -108,4 +108,11 @@ namespace std {};
 #define WHATEVER_VECTOR_FORWARD_DEC template <class T, class U> class vector
 #endif
 
+//  Many compilers support thread local storage (TLS) pre-C++11 via __thread.
+//  There is some issue on __APPLE__ when the Xcode version of Clang is used or
+//  the wrong std runtime, but do not define thread_local away into sys headers.
+#if __cplusplus < 201103
+# define thread_local __thread  // if it clashes, resort to introducing AIPS_TLS
+#endif
+
 #endif

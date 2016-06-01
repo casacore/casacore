@@ -206,7 +206,11 @@ private:
 // </group>
     DataArrays get_arrays();
     void return_arrays(DataArrays array);
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
+
+#ifndef USE_THREADS
+    static DataArrays arrays[50];
+    static size_t available;
+#elif defined(AIPS_CXX11) && !defined(__APPLE__)
     static thread_local DataArrays arrays[50];
     static thread_local size_t available;
 #endif
