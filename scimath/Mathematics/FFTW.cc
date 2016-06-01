@@ -93,26 +93,28 @@ namespace casacore {
       itsPlanC2CBf (0),
       itsPlanC2CB  (0)
   {
+    // Always lock. Need C++11 or later to implement double checked locking correctly.
+    // Perceived to be not worth the effort here, because code that uses this class
+    // should be aware that planning only works if activity from other threads is none
+    // (or representative). That means that optimizing for contention here makes no sense.
+    ScopedMutexLock lock(theirMutex);
     if (!is_initialized_fftw) {
-      ScopedMutexLock lock(theirMutex);
-      if (!is_initialized_fftw) {
-        int numCPUs = HostInfo::numCPUs();
-        int nthreads = 1;
-        // cerr << "Number of threads is " << numCPUs << endl;
-        if (numCPUs > 1) {
-          nthreads = numCPUs;
-        }
-      
-        //    std::cout << "init threads " << fftwf_init_threads() << std::endl;
-        //    std::cout << "init threads " << fftw_init_threads() << std::endl;
-#ifdef HAVE_FFTW3_THREADS
-        fftwf_init_threads();
-        fftw_init_threads();
-        fftwf_plan_with_nthreads(nthreads);
-        fftw_plan_with_nthreads(nthreads);
-#endif
-        is_initialized_fftw = True;
+      int numCPUs = HostInfo::numCPUs();
+      int nthreads = 1;
+      // cerr << "Number of threads is " << numCPUs << endl;
+      if (numCPUs > 1) {
+        nthreads = numCPUs;
       }
+      
+      //    std::cout << "init threads " << fftwf_init_threads() << std::endl;
+      //    std::cout << "init threads " << fftw_init_threads() << std::endl;
+#ifdef HAVE_FFTW3_THREADS
+      fftwf_init_threads();
+      fftw_init_threads();
+      fftwf_plan_with_nthreads(nthreads);
+      fftw_plan_with_nthreads(nthreads);
+#endif
+      is_initialized_fftw = True;
     }
     //    std::cerr << "will use " << nthreads << " threads " << std::endl;
 
