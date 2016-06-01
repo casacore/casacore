@@ -170,7 +170,7 @@ namespace casacore {
 ///   </table>
 ///
 ///   Detailed build instructions are given on the 
-///   <a href="http://code.google.com/p/casacore/wiki/BuildInstructions">
+///   <a href="https://github.com/casacore/casacore/wiki/BuildInstructions">
 ///   casacore</a> pages. It makes it possible to build selective parts of casacore.
 ///   <br>When using a specific casacore package, it is useful to know
 ///   the package dependencies when linking a program. They are as follows:
