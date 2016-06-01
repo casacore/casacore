@@ -180,12 +180,8 @@ private:
   static uInt ToRef_p[N_Routes][3];
   // Transition matrix
   static uInt FromTo_p[MEarthMagnetic::N_Types][MEarthMagnetic::N_Types];
-  // Mutex for thread-safety.
-  static MutexedInit theirMutexedInit;
-
-  // Fill the global state in a thread-safe way.
-  static void fillState()
-    { theirMutexedInit.exec(); }
+  // Object to ensure safe multi-threaded lazy single initialization
+  static CallOnce0 theirInitOnce;
 
   //# Constructors
   // Copy constructor (not implemented)
@@ -218,8 +214,8 @@ private:
 		 const MConvertBase &mc);
   
 private:
-  // Fill the global state in a thread-safe way.
-  static void doFillState (void*);  
+  // Fill the global state. Called using theirInitOnce.
+  static void doFillState();
 };
 
 
