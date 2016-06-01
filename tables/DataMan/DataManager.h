@@ -1,5 +1,5 @@
 //# DataManager.h: Abstract base classes for a data manager
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001,2002,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -515,7 +515,7 @@ private:
     // Declare the mapping of the data manager type name to a static
     // "makeObject" function.
     static SimpleOrderedMap<String,DataManagerCtor> theirRegisterMap;
-    static MutexedInit theirMutexedInit;
+    static Mutex theirMutex;
 
 public:
     // Has the object already been cloned?
@@ -536,11 +536,6 @@ public:
     // Test if a data manager is registered (thread-safe).
     static Bool isRegistered (const String& dataManagerType);
 
-    // Register the main data managers (if not done yet).
-    // It is fully thread-safe.
-    static void registerMainCtor()
-      { theirMutexedInit.exec(); }
-
     // Serve as default function for theirRegisterMap, which catches all
     // unknown data manager types.
     // <thrown>
@@ -550,13 +545,8 @@ public:
 					    const Record& spec);
 
 private:
-    // Register a data manager constructor.
-    static void unlockedRegisterCtor (const String& type,
-                                      DataManagerCtor func)
-      { theirRegisterMap.define (type, func); }
-
-    // Do the actual (thread-safe) registration of the main data managers.
-    static void doRegisterMainCtor (void*);
+    // Register the main data managers.
+    static SimpleOrderedMap<String,DataManagerCtor> initRegisterMap();
 };
 
 

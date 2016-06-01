@@ -198,9 +198,11 @@ public:
     static TableExprNode handleLiteral (RecordGramVal*);
 
     // Find the field name and create a TableExprNode from it.
+    // To be called only by the yy parser (under theirMutex).
     static TableExprNode handleField (const String& name);
 
     // Handle a function.
+    // To be called only by the yy parser (under theirMutex).
     static TableExprNode handleFunc (const String& name,
 				     const TableExprNodeSet& arguments);
 
@@ -218,19 +220,23 @@ public:
 
     // Add a token to the list of tokens to be deleted
     // for the possible tokens in the RecordGram.yy union.
+    // The addToken() functions are to be called only by the yy parser (under theirMutex).
     static void addToken (TableExprNode* ptr);
     static void addToken (RecordGramVal* ptr);
     static void addToken (TableExprNodeSet* ptr);
     static void addToken (TableExprNodeSetElem* ptr);
+
     // Delete a token and remove from the list.
+    // The deleteToken() functions are to be called only by the yy parser (under theirMutex).
     static void deleteToken (TableExprNode* ptr);
     static void deleteToken (RecordGramVal* ptr);
     static void deleteToken (TableExprNodeSet* ptr);
     static void deleteToken (TableExprNodeSetElem* ptr);
+
+private:
     // Delete all tokens not deleted yet.
     static void deleteTokenStorage();
 
-private:
     // Do the conversion of an expression string to an expression tree.
     static TableExprNode doParse (const String& expression);
 
