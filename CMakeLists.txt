@@ -414,6 +414,16 @@ if(USE_THREADS)
             message(FATAL_ERROR "${_errmsg} ${CMAKE_CXX_COMPILER}")
         endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     endif(CMAKE_COMPILER_IS_GNUCXX)
+else()
+    # Compile with -fno-threadsafe-statics if supp to reduce some thread safety overhead.
+    check_cxx_compiler_flag(-fno-threadsafe-statics HAS_CXX_NO_THREADSAFE_STATICS)
+    if (HAS_CXX_NO_THREADSAFE_STATICS)
+        set(CMAKE_CXX_FLAGS "-fno-threadsafe-statics ${CMAKE_CXX_FLAGS}")
+    endif()
+    check_c_compiler_flag(-fno-threadsafe-statics HAS_C_NO_THREADSAFE_STATICS)
+    if (HAS_C_NO_THREADSAFE_STATICS)
+        set(CMAKE_C_FLAGS "-fno-threadsafe-statics ${CMAKE_C_FLAGS}")
+    endif()
 endif(USE_THREADS)
 
 # Set default DATA_DIR if undefined.
