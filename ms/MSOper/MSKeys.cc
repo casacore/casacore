@@ -161,6 +161,24 @@ std::set<ArrayKey> uniqueArrayKeys(const std::set<ScanKey>& scanKeys) {
     return arrayKeys;
 }
 
+std::set<ScanKey> filter(const std::set<ScanKey> scans, const ArrayKey& arrayKey) {
+    std::set<ScanKey> subset;
+    std::set<ScanKey>::const_iterator iter = scans.begin();
+    std::set<ScanKey>::const_iterator end = scans.end();
+    ArrayKey arrayFromScan;
+    for (; iter!=end; ++iter) {
+        arrayFromScan.arrayID = iter->arrayID;
+        arrayFromScan.obsID = iter->obsID;
+        if (arrayFromScan == arrayKey) {
+            subset.insert(*iter);
+        }
+        else if (arrayKey < arrayFromScan) {
+            // take advantage of implicit sorting
+            break;
+        }
+    }
+    return subset;
+}
 
 }
 
