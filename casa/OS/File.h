@@ -304,8 +304,12 @@ private:
     // Full pathname of the file.
     Path itsPath;
     // A sequence number to generate unique file names.
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+    static std::atomic<uInt> uniqueSeqnr_p;
+#else // !USE_THREADS (empty Mutex impl) or pre-C++11
     static uInt uniqueSeqnr_p;
     static Mutex theirMutex;
+#endif
 };
 
 
