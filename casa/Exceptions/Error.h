@@ -493,6 +493,23 @@ public:
 };
 
 
+// <summary>Initialization error, typically of static data shared between objects</summary>
+// <use visibility=export>
+//
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
+//
+// <synopsis>
+// This error indicates that some initialization has failed. It is preferable
+// to throw this in an initX() function called by std::call_once() or similar
+// over returning a bool or other result variable.
+// </synopsis>
+//
+// <todo asof="">
+// </todo>
+
+class InitError : public AipsError {
+};
 
 } //# NAMESPACE CASACORE - END
 
