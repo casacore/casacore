@@ -57,12 +57,23 @@ public:
     // Get the next <src>uInt</src> value in the sequence (thread-safe).
     // <group>
     uInt getNext();
-    static uInt SgetNext() {return ++num;}
+    static uInt SgetNext() {
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+      return next.fetch_add(1);
+#else // !USE_THREADS (empty Mutex impl) or pre-C++11
+      ScopedMutexLock lock(theirMutex);
+      return next++;
+#endif
+    }
     // </group>
 
 private:
-    static uInt num;
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+    static std::atomic<uInt> next;
+#else // !USE_THREADS (empty Mutex impl) or pre-C++11
+    static uInt next;
     static Mutex theirMutex;
+#endif
 };
 
 

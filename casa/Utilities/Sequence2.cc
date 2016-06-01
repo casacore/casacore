@@ -29,13 +29,21 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-uInt uIntSequence::num = 0;
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+std::atomic<uInt> uIntSequence::next(1); // start at 1 to stay in sync with RegSequence
+#else // !USE_THREADS (empty Mutex impl) or pre-C++11
+uInt uIntSequence::next = 1;
 Mutex uIntSequence::theirMutex;
+#endif
 
 uInt uIntSequence::SgetNext()
 {
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+  return next.fetch_add(1);
+#else // !USE_THREADS (empty Mutex impl) or pre-C++11
   ScopedMutexLock lock(theirMutex);
-  return ++num;
+  return next++;
+#endif
 }
 
 } //# NAMESPACE CASACORE - END

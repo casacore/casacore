@@ -74,8 +74,12 @@ public:
     // </group>
 
 private:
-    static uInt num;
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+    static std::atomic<uInt> next;
+#else  // !USE_THREADS (empty Mutex impl) or pre-C++11
+    static uInt next;
     static Mutex theirMutex;
+#endif
 };
 
 
