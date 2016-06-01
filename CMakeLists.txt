@@ -66,13 +66,13 @@ option (ENABLE_SHARED "Build shared libraries" YES)
 
 option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
-# By default do not use HDF5, FFTW3, threads
-option (CXX11 "Compile as C++11 if possible" NO)
+# By default build as C++11 and use FFTW and multi-threading, but not HDF5
+option (CXX11 "Compile as C++11 if possible" YES)
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
 option (USE_HDF5 "Build HDF5 " NO)
-option (USE_FFTW3 "Use FFTW instead of FFTPack" NO)
-option (USE_THREADS "Use Mutex thread synchronization" NO)
-option (USE_OPENMP "Use OpenMP threading" NO)
+option (USE_FFTW3 "Use FFTW instead of FFTPack" YES)
+option (USE_THREADS "Use Mutex thread synchronization" YES)
+option (USE_OPENMP "Use OpenMP threading" YES)
 option (USE_STACKTRACE "Show stacktrace in case of exception" NO)
 option (CASA_BUILD "Building the in the CASA (http://casa.nrao.edu) environment" NO)
 
@@ -520,15 +520,16 @@ if (BUILD_PYTHON3)
 endif (BUILD_PYTHON3)
 
 # List of build variables and defaults.
-#  BUILD_PYTHON                  NO
+#  BUILD_PYTHON                  YES
+#  BUILD_PYTHON3                 NO
 #  ENABLE_SHARED                 YES
 #  ENABLE_RPATH                  YES
-#  CXX11                         NO
+#  CXX11                         YES
 #  ENABLE_TABLELOCKING           YES
 #  USE_HDF5                      NO
-#  USE_FFTW3                     NO
-#  USE_THREADS                   NO
-#  USE_OPENMP                    NO
+#  USE_FFTW3                     YES
+#  USE_THREADS                   YES
+#  USE_OPENMP                    YES
 #  USE_STACKTRACE                NO
 #  DATA_DIR                      ${CMAKE_INSTALL_PREFIX}/share/casacore/data
 #  MODULE                        all
