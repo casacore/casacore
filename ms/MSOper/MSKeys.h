@@ -40,10 +40,10 @@ class String;
 // and field ID. Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct SubScanKey {
-	Int obsID;
-	Int arrayID;
-	Int scan;
-	Int fieldID;
+    Int obsID;
+    Int arrayID;
+    Int scan;
+    Int fieldID;
 };
 
 // define operator<() so it can be used as a key in std::map
@@ -57,18 +57,18 @@ std::ostream& operator<<(std::ostream& os, const SubScanKey& scanKey);
 // Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct ScanKey {
-	Int obsID;
-	Int arrayID;
-	Int scan;
+    Int obsID;
+    Int arrayID;
+    Int scan;
 };
 
 // create a ScanKey from a SubScanKey, just omits the SubScanKey's fieldID
 inline ScanKey scanKey(const SubScanKey& subScanKey) {
-	ScanKey key;
-	key.obsID = subScanKey.obsID;
-	key.arrayID = subScanKey.arrayID;
-	key.scan = subScanKey.scan;
-	return key;
+    ScanKey key;
+    key.obsID = subScanKey.obsID;
+    key.arrayID = subScanKey.arrayID;
+    key.scan = subScanKey.scan;
+    return key;
 }
 
 String toString(const ScanKey& scanKey);
@@ -87,12 +87,20 @@ std::ostream& operator<<(std::ostream& os, const ScanKey& scanKey);
 // Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct ArrayKey {
-	Int obsID;
-	Int arrayID;
+    Int obsID;
+    Int arrayID;
 };
 
 // define operator<() so it can be used as a key in std::map
 Bool operator<(const ArrayKey& lhs, const ArrayKey& rhs);
+
+inline Bool operator==(const ArrayKey& lhs, const ArrayKey& rhs) {
+    return lhs.arrayID == rhs.arrayID && lhs.obsID == rhs.obsID;
+}
+
+inline Bool operator!=(const ArrayKey& lhs, const ArrayKey& rhs) {
+    return ! (lhs == rhs);
+}
 
 // construct scan keys given a set of scan numbers and an ArrayKey
 std::set<ScanKey> scanKeys(const std::set<Int>& scans, const ArrayKey& arrayKey);
@@ -109,6 +117,9 @@ Bool operator<(const SourceKey& lhs, const SourceKey& rhs);
 
 // get a set of unique ArrayKeys from a set of ScanKeys
 std::set<ArrayKey> uniqueArrayKeys(const std::set<ScanKey>& scanKeys);
+
+// given a set of scan keys, return the subset that matches the given array key
+std::set<ScanKey> filter(const std::set<ScanKey> scans, const ArrayKey& arrayKey);
 
 }
 

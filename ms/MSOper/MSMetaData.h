@@ -181,6 +181,9 @@ public:
         Int stateID, Int obsID, Int arrayID
     ) const;
 
+    // get the mapping of scans to states
+    std::map<ScanKey, std::set<Int> > getScanToStatesMap() const;
+
     // SOURCE.DIRECTION
     vector<MDirection> getSourceDirections() const;
 
@@ -777,6 +780,11 @@ private:
     // for unit correctness of the inputs.
     static QVD _freqWidthToVelWidth(const QVD& v, const Quantity& refFreq);
 
+    // if _scanProps has been generated, just return it. If the caller has
+    // configured the object to generate _scanProps at some point, this call will
+    // generate it. Otherwise, the returned object contains a null pointer.
+    SHARED_PTR<const map<ScanKey, ScanProperties> > _generateScanPropsIfWanted() const;
+
     vector<String> _getAntennaNames(
         std::map<String, uInt>& namesToIDsMap
     ) const;
@@ -922,8 +930,6 @@ private:
     ) const;
 
     std::map<ScanKey, std::set<Int> > _getScanToAntennasMap() const;
-
-    std::map<ScanKey, std::set<Int> > _getScanToStatesMap() const;
 
     std::map<ScanKey, std::set<SubScanKey> > _getScanToSubScansMap() const;
 
