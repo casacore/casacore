@@ -28,7 +28,7 @@ set(CPACK_PACKAGE_NAME "casacore")
 set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
 
 set(CPACK_PACKAGE_CONTACT "Malte Marquarding") #required
-set(CPACK_PACKAGE_VENDOR "casacore.googlecode.com")
+set(CPACK_PACKAGE_VENDOR "https://github.com/casacore/casacore")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Astronomical data processing library")
 
 string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE) 
