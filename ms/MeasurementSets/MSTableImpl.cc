@@ -1,5 +1,5 @@
 //# MSTableImpl.cc:  the class that hold measurements from telescopes
-//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,6 +60,7 @@
 #include <casacore/measures/Measures/MEarthMagnetic.h>
 
 #include <casacore/casa/iostream.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -108,10 +109,6 @@ void MSTableImpl::addMeasColumn(TableDesc& td, const String& column,
     measCol.write(td);
   }
 }
-
-
-Mutex MSTableImpl::initialized_mutex(Mutex::Recursive);
-Bool MSTableImpl::initialized_p(False);
 
 Int MSTableImpl::mapType(const SimpleOrderedMap<Int,String>& columnMap,
 			 const String &name)
@@ -569,27 +566,55 @@ Table MSTableImpl::referenceCopy(const Table& tab, const String& newTableName,
 
 void MSTableImpl::init()
 {
-    ScopedMutexLock lock(initialized_mutex);
-    if (initialized_p) return;
-    initialized_p = True;
-    MeasurementSet::init();
-    MSAntenna::init();
-    MSDataDescription::init();
-    MSDoppler::init();
-    MSFeed::init();
-    MSField::init();
-    MSFlagCmd::init();
-    MSFreqOffset::init();
-    MSHistory::init();
-    MSObservation::init();
-    MSPointing::init();
-    MSPolarization::init();
-    MSProcessor::init();
-    MSSource::init();
-    MSSpectralWindow::init();
-    MSState::init();
-    MSSysCal::init();
-    MSWeather::init();
+  // Recursive mutex for recursive map inits. Always locks in pre-C++11 builds.
+  // Need C++11 or later to implement double checked locking correctly.
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+  static std::recursive_mutex umMutex;
+  static std::atomic<int> initialized;
+  // Cannot use call_once() (recursion), so distinguish between init states.
+  const int INITING = 1;
+  const int INITIALIZED = 2;
+
+  int init = initialized.load(std::memory_order_acquire);
+  if (init < INITIALIZED) {
+    std::lock_guard<std::recursive_mutex> lock(umMutex);
+    init = initialized.load(std::memory_order_relaxed);
+    if (init < INITING) {
+      // Set initialized, because the init() calls below recurse into this init().
+      // Note: lacks exception safety.
+      initialized.store(INITING, std::memory_order_relaxed);
+#else // !USE_THREADS (empty Mutex impl) or pre-C++11
+  static Mutex umMutex(Mutex::Recursive);
+  static bool initialized;
+
+    ScopedMutexLock lock(umMutex); // indented here is clearer
+    if (!initialized) {
+      initialized = true;
+#endif
+      // Initialize (sub)tables
+      MeasurementSet::init();
+      MSAntenna::init();
+      MSDataDescription::init();
+      MSDoppler::init();
+      MSFeed::init();
+      MSField::init();
+      MSFlagCmd::init();
+      MSFreqOffset::init();
+      MSHistory::init();
+      MSObservation::init();
+      MSPointing::init();
+      MSPolarization::init();
+      MSProcessor::init();
+      MSSource::init();
+      MSSpectralWindow::init();
+      MSState::init();
+      MSSysCal::init();
+      MSWeather::init();
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+      initialized.store(INITIALIZED, std::memory_order_release);
+    }
+#endif
+  }
 }
 
 
