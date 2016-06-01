@@ -1,5 +1,5 @@
 //# Mutex.h: Classes to handle mutexes and (un)locking
-//# Copyright (C) 2011
+//# Copyright (C) 2011,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,17 @@
 
 #include <casacore/casa/aips.h>
 
+#ifdef USE_THREADS
+# include <cerrno>
+# ifdef AIPS_CXX11
+#  include <mutex>
+#  include <atomic>
+# endif
+# include <pthread.h>
+#endif
+
+#include <casacore/casa/Exceptions/Error.h>
+
 //# Mostly copied from the LOFAR software.
 
 namespace casacore {
@@ -41,7 +52,7 @@ namespace casacore {
   // </reviewed>
   //
   // <synopsis>
-  // This class is a wrapper around a phtreads mutex.
+  // This class is a wrapper around a pthreads mutex.
   // <br>Although the Mutex class has a lock function, class ScopedMutexLock
   // should be used to obtain a lock, because it makes locking exception-safe.
   // </synopsis>
@@ -55,20 +66,57 @@ namespace casacore {
     // otherwise PTHREAD_MUTEX_DEFAULT.
     enum Type {Normal, ErrorCheck, Recursive, Default, Auto};
 
+#ifdef USE_THREADS
+
     // Create the mutex.
     Mutex (Type type=Auto);
 
     // Destroy the mutex.
     ~Mutex();
 
-    // Set a lock on the mutex. It waits till it gets the lock.
-    void lock();
+    // Lock the mutex. It blocks until it can get exclusive access to the lock.
+    void lock()
+    {
+      int error = pthread_mutex_lock(&itsMutex);
+      if (AIPS_UNLIKELY(error != 0)) {
+        throw SystemCallError("pthread_mutex_lock", error);
+      }
+    }
 
     // Unlock the mutex.
-    void unlock();
+    void unlock()
+    {
+      int error = pthread_mutex_unlock(&itsMutex);
+      if (AIPS_UNLIKELY(error != 0)) {
+        // Terminates if in a destructor during exception, but acceptable,
+        // since it would be a serious bug hopefully exposed by a test case.
+        throw SystemCallError("pthread_mutex_unlock", error);
+      }
+    }
 
     // Try to lock the mutex. True is returned if it succeeded.
-    bool trylock();
+    bool trylock()
+    {
+      int error = pthread_mutex_trylock(&itsMutex);
+      if (error == 0) {
+        return true;
+      } else if (error == EBUSY ||
+                 error == EDEADLK) { // returned by ErrorCheck mutex
+        return false;
+      } else {
+        throw SystemCallError("pthread_mutex_trylock", error);
+      }
+    }
+
+#else
+
+    Mutex (Mutex::Type=Auto) { }
+    ~Mutex() { }
+    void lock() { }
+    void unlock() { }
+    bool trylock() { return true; }
+
+#endif
 
   private:
     // Forbid copy constructor.
@@ -77,8 +125,9 @@ namespace casacore {
     Mutex& operator= (const Mutex&);
 
     //# Data members
-    //# Use void*, because we cannot forward declare pthread_mutex_t.
-    void* itsMutex;
+#ifdef USE_THREADS
+    pthread_mutex_t itsMutex;
+#endif
   };
 
 
@@ -116,81 +165,150 @@ namespace casacore {
   };
 
 
-  // <summary>Thread-safe initialization of global variables</summary>
+  // <summary>Wrapper around pthread_once() and its flag type and init value.
+  // </summary>
   // <use visibility=export>
   //
   // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
   // </reviewed>
   //
   // <synopsis>
-  // This class does a double checked lock.
+  // Ease correct lazy initialization of static data in the easy cases.
   // <br>
   // Often data needs to be initialized once and accessed many times. To do
-  // this in a thread-safe way, a mutex lock needs to be used. However, that
-  // is relatively expensive.
-  // The double checked lock idiom overcomes this problem. A Bool flag tells
-  // if an operation needs to be done. If so, a lock is set and the flag is
-  // tested again in case another thread happened to do the operation between
-  // the test and acquiring the lock.
-  // At the end of the operation the flag is cleared.
-  // 
+  // this in a thread-safe way, a mutex is expensive, and double-checked
+  // locking (as well as 'static' function scope inits) can only be written
+  // correctly portably from C++11 on. Prefer to use C++11 std::call_once().
+  // Instead, resort to pthread_once(). Unlike std::call_once() it cannot
+  // call with args or return values (can use C++11 lambda to do it) and does
+  // not do stack unwinding (although glibc built with -fexceptions does it).
   //
-  // The flag needs to be declared volatile to avoid execution ordering
-  // problems in case a compiler optimizes too much.
-  // <note role-warning>
-  // This idiom is not fully portable, because on more exotic machines the
-  // caches in different cores may not be synchronized well.
-  // </note>
+  // Restrictions with any once call primitive (C++11, C11, pthread, boost)
+  // are that the called function cannot safely call itself (recursion),
+  // and that the flag should not (or cannot) be reset (meaning of 'once').
+  // Note that if the function and flag reside in a (dynamically) loaded
+  // library and you load (and unload) it more than once, then the function
+  // can be called multiple times.
+  //
+  // Note that non-constant (i.e. dynamic) initialization of a static decl
+  // in a function is not guaranteed thread-safe before C++11 (although GCC
+  // and Clang make it so). This is hard to get right, since Mutex and CallOnce
+  // itself have the same issue. (One could declare a static smart ptr.)
+  // We resort to C++11 guarantees and depend on GCC/Clang/... for pre-C++11.
   // </synopsis>
   //
   // <example>
-  // <srcblock>
-  // // Declare static variables.
-  // static volatile Bool needInit = True;
-  // static Mutex mutex;
-  // // Execute the code in a scope, so the destructor is called automatically.
-  // {
-  //   CheckedMutexLock locker(mutex, needInit);
-  //   if (locker.doIt()) {
-  //      .. do the initialization
-  //   }
-  // }
-  // </srcblock>
+  // (Note that this simple case can also be solved with C++11 thread-safe
+  //  initialization of function statics (can be slightly more efficient).)
+  // all under namespace casacore:
+  // .h:
+  //     class A {
+  //       static std::vector<int> theirSharedInts;
+  //       static CallOnce         theirInitOnce;
+  //       void initX();
+  //
+  //     public:
+  //       int getX(size_t idx);
+  //     };
+  // .cc:
+  //     vector<int>  A::theirSharedInts(1);
+  //     CallOnce     A::theirInitOnce;
+  //
+  //     void A::initX(int val) {
+  //       theirSharedInts[0] = val;
+  //     }
+  //
+  //     int A::getX(size_t idx) {
+  //       theirInitOnce(initX, 42);
+  //       return theirSharedInts.at(idx);
+  //     }
   // </example>
 
-  class MutexedInit
+  // CallOnce0: func has 0 args. For pre-C++11 use pthread_once(), no Mutex.
+  class CallOnce0
   {
   public:
-    // Define the initialization function to call.
-    typedef void InitFunc (void*);
+    CallOnce0()
+#ifdef USE_THREADS
+# ifndef AIPS_CXX11 // pre-C++11
+    : itsFlag(PTHREAD_ONCE_INIT)
+# endif
+#else
+    : itsFlag(false)
+#endif
+    { }
 
-    // Create the mutex and set that the initialization should be done.
-    MutexedInit (InitFunc* func, void* arg=0, Mutex::Type type=Mutex::Auto);
+    void operator()(void (*fn)()) {
+#ifdef USE_THREADS
+# ifdef AIPS_CXX11
+      std::call_once(itsFlag, fn);
+# else // pre-C++11
+      pthread_once(&itsFlag, fn);
+# endif
+#else
+      if (!itsFlag) {
+        (*fn)();
+        itsFlag = true;
+      }
+#endif
+    }
 
-    // Execute the initialization function if not done yet.
-    void exec()
-      { if (itsDoExec) doExec(); }
+private:
+    // Forbid copy constructor.
+    CallOnce0(const CallOnce0&);
+    // Forbid assignment.
+    CallOnce0& operator= (const CallOnce0&);
 
-    // Get the mutex (to make it possible to lock for other purposes).
-    Mutex& mutex()
-      { return itsMutex; }
+#ifdef USE_THREADS
+# ifdef AIPS_CXX11
+    std::once_flag itsFlag;
+# else // pre-C++11
+    pthread_once_t itsFlag;
+# endif
+#else
+    bool itsFlag;
+#endif
+  };
+
+  // CallOnce: func has one arg. For pre-C++11: resort to a Mutex.
+  // One arg can also be used as an output or to refer to an object (more args).
+  // Don't fully expose std::call_once() i/f until we drop pre-C++11 support.
+  class CallOnce
+  {
+  public:
+    CallOnce()
+#if not defined(USE_THREADS) || not defined(AIPS_CXX11)
+    : itsFlag(false)
+#endif
+    { }
+
+    template<typename T>
+    void operator()(void (*fn)(T), T t) {
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+      std::call_once(itsFlag, fn, t);
+#else // !USE_THREADS (empty Mutex impl) or pre-C++11
+      // Warning: do not wrap with a check on itsFlag (unsafe double-checked locking)!
+      ScopedMutexLock lock(itsMutex);
+      if (!itsFlag) {
+        (*fn)(t);
+        itsFlag = true;
+      }
+#endif
+    }
 
   private:
     // Forbid copy constructor.
-    MutexedInit (const MutexedInit&);
+    CallOnce(const CallOnce&);
     // Forbid assignment.
-    MutexedInit& operator= (const MutexedInit&);
+    CallOnce& operator= (const CallOnce&);
 
-    // Thread-safe execution of the initialization function (if still needed).
-    void doExec();
-
-    //# Data members
-    Mutex         itsMutex;
-    InitFunc*     itsFunc;
-    void*         itsArg;
-    volatile Bool itsDoExec;
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+    std::once_flag itsFlag;
+#else // !USE_THREADS (empty Mutex impl) or pre-C++11
+    bool  itsFlag;
+    Mutex itsMutex;
+#endif
   };
-
 
 } // namespace casacore
 

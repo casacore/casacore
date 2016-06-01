@@ -1,5 +1,5 @@
 //# aipsenv.h: Global initialization for special Casacore macros
-//# Copyright (C) 2000,2001,2002,2003,2004
+//# Copyright (C) 2000,2001,2002,2003,2004,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -230,6 +230,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 # endif
 #endif
 
+
+//  Compiler hints for branch prediction (and code layout).
+//  Use only after profiling performance critical code,
+//  or on checks for exceptional conditions.
+#if defined __GNUC__ || defined __clang__
+#define AIPS_LIKELY(x)   __builtin_expect(!!(x), 1)
+#define AIPS_UNLIKELY(x) __builtin_expect(!!(x), 0)
+#else
+#define AIPS_LIKELY(x)   (x)
+#define AIPS_UNLIKELY(x) (x)
+#endif
 
 } //# NAMESPACE CASACORE - END
 #endif
