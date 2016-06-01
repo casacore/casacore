@@ -1,5 +1,5 @@
 //# MeasTable.cc: MeasTable provides Measure computing database data
-//# Copyright (C) 1995-1999,2000-2004
+//# Copyright (C) 1995-1999,2000-2004,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -56,7 +56,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifndef CASADATA
-#define CASADATA "/usr/local/share/data/casacore"
+#define CASADATA "/usr/local/share/casacore/data"
 #endif
 
 
@@ -73,67 +73,61 @@ MeasTableMulPosSunXY   MeasTable::theirMulPosSunXY;
 MeasTableMulPosSunZ    MeasTable::theirMulPosSunZ;
 MeasTableMulPosEarthXY MeasTable::theirMulPosEarthXY;
 MeasTableMulPosEarthZ  MeasTable::theirMulPosEarthZ;
-MutexedInit MeasTable::obsMutexedInit (MeasTable::doInitObservatories);
+CallOnce MeasTable::theirPlanetaryInitOnce;
+CallOnce MeasTable::theirPlanetaryConstantsInitOnce;
+CallOnce0 MeasTable::theirObsInitOnce;
 Vector<String> MeasTable::obsNams;
 Vector<MPosition> MeasTable::obsPos;
 Vector<String> MeasTable::antResponsesPath;
-MutexedInit MeasTable::lineMutexedInit (MeasTable::doInitLines);
+CallOnce0 MeasTable::theirLinesInitOnce;
 Vector<String> MeasTable::lineNams;
 Vector<MFrequency> MeasTable::linePos;
-MutexedInit MeasTable::srcMutexedInit (MeasTable::doInitSources);
+CallOnce0 MeasTable::theirSrcInitOnce;
 Vector<String> MeasTable::srcNams;
 Vector<MDirection> MeasTable::srcPos;
-MutexedInit MeasTable::igrfMutexedInit (MeasTable::doInitIGRF);
+CallOnce0 MeasTable::theirIGRFInitOnce;
 Double MeasTable::dtimeIGRF = 0;
 Double MeasTable::firstIGRF = 0;
 std::vector<Vector<Double> > MeasTable::coefIGRF;
 std::vector<Vector<Double> > MeasTable::dIGRF;
-uInt MeasTable::iau2000_reg = 0;
-uInt MeasTable::iau2000a_reg = 0;
-Mutex MeasTable::theirMutex;
+#if !defined(USE_THREADS) || defined(__APPLE__)
+Mutex MeasTable::theirdUT1Mutex;
+#endif
 
 //# Member functions
 Bool MeasTable::useIAU2000() {
-  if (!MeasTable::iau2000_reg) {
-    iau2000_reg =
-      AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use"),
-                                    False);
-  }
-  return AipsrcValue<Bool>::get(MeasTable::iau2000_reg);
+  // Aipsrc registration (for speed) of use of iau2000 and if so the 2000a version.
+  static const uInt iau2000_reg =
+    AipsrcValue<Bool>::registerRC("measures.iau2000.b_use", False);
+  return AipsrcValue<Bool>::get(iau2000_reg);
 }
 
 Bool MeasTable::useIAU2000A() {
-  if (!MeasTable::iau2000a_reg) {
-    iau2000a_reg =
-      AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use2000a"),
-                                    False);
-  }
-  return AipsrcValue<Bool>::get(MeasTable::iau2000a_reg);
+  // comment as above in useIAU2000()
+  static const uInt iau2000a_reg =
+    AipsrcValue<Bool>::registerRC("measures.iau2000.b_use2000a", False);
+  return AipsrcValue<Bool>::get(iau2000a_reg);
 }
 
-Double MeasTable::
-precRate00(const uInt which) {
-  static Double preoblcor[3] = { -0.29965*C::arcsec,
-				 -0.02524*C::arcsec,
-				 0*C::arcsec };
+Double MeasTable::precRate00(const uInt which) {
+  static const Double preoblcor[3] = { -0.29965*C::arcsec,
+				       -0.02524*C::arcsec,
+				       0*C::arcsec };
   DebugAssert(which < 3, AipsError);
   return preoblcor[which];
 }
 
-RotMatrix MeasTable::
-frameBias00() {
-  static Double bias[3] = { -0.041775*C::arcsec,
-			    -0.0068192*C::arcsec,
-			    -0.0146*C::arcsec};
-  static RotMatrix rbias (Euler(bias[2], 3,
+RotMatrix MeasTable::frameBias00() {
+  static const Double bias[3] = { -0.041775*C::arcsec,
+				  -0.0068192*C::arcsec,
+				  -0.0146*C::arcsec};
+  static const RotMatrix rbias (Euler(bias[2], 3,
                                 bias[0]*sin(MeasData::eps0J2000()),
                                 2, -bias[1], 1));
   return rbias;
 }
 
-void MeasTable::
-precessionCoef(Double T,
-	       Polynomial<Double> result[3]) {
+void MeasTable::precessionCoef(Double T, Polynomial<Double> result[3]) {
   static const Double PCOEF[3][6] = {
     {+2306.2181,+1.39656,-0.000139,+0.30188,-0.000344,+0.017998},
     {+2004.3109,-0.85330,-0.000217,-0.42665,-0.000217,-0.041833},
@@ -142,8 +136,7 @@ precessionCoef(Double T,
   calcPrecesCoef(T, result, &PCOEF[0]);
 }
 
-void MeasTable::
-precessionCoef2000(Polynomial<Double> result[3]) {
+void MeasTable::precessionCoef2000(Polynomial<Double> result[3]) {
   static const Double PCOEF[3][6] = {
     { 2.5976176,2306.0809506, 0.3019015, 0.0179663,-0.0000327,-0.0000002},
     { 0.0,      2004.1917476,-0.4269353,-0.0418251,-0.0000601,-0.0000001},
@@ -152,8 +145,7 @@ precessionCoef2000(Polynomial<Double> result[3]) {
   calcPrecesCoef2000(result, &PCOEF[0]);
 }
 
-void MeasTable::precessionCoef1950(Double T,
-				   Polynomial<Double> result[3]) {
+void MeasTable::precessionCoef1950(Double T, Polynomial<Double> result[3]) {
   static const Double PCOEF[3][6] = {
     {2303.5545,+1.39720,0.000060,+0.30240,-0.000270,+0.017995},
     {2005.1120,-0.85290,-0.00037,-0.42650,-0.000370,-0.041800},
@@ -190,8 +182,6 @@ void MeasTable::calcPrecesCoef2000(Polynomial<Double> result[3],
 }
 
 const Polynomial<Double> &MeasTable::fundArg(uInt which) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> polyArray[6];
   static const Double FUND[6][4] = {
     {  84381.448,        -46.8150,-0.0059, 0.001813}, 
     { 485866.733, 1717915922.633, 31.310,  0.064}, 
@@ -200,14 +190,12 @@ const Polynomial<Double> &MeasTable::fundArg(uInt which) {
     {1072261.307, 1602961601.328, -6.891,  0.019}, 
     { 450160.280,   -6962890.539,  7.455,  0.008}
   };
-  calcFundArg(needInit, polyArray, &FUND[0]);
+  static const std::vector<Polynomial<Double> > polyArray(calcFundArg(&FUND[0]));
   DebugAssert(which < 6, AipsError);
   return polyArray[which];
 }
 
 const Polynomial<Double> &MeasTable::fundArg1950(uInt which) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> polyArray[6];
   static const Double FUND[6][4] = {
     {  84428.26,        -46.846,-0.0059, 0.00181},
     {1065976.59, 1717915856.79, 33.09,   0.0518},
@@ -216,14 +204,12 @@ const Polynomial<Double> &MeasTable::fundArg1950(uInt which) {
     { 1262654.95,1602961611.18, -5.17,   0.0068},
     {  933059.79,  -6962911.23,  7.48,   0.0080}
   };
-  calcFundArg(needInit, polyArray, &FUND[0]);
+  static const std::vector<Polynomial<Double> > polyArray(calcFundArg(&FUND[0]));
   DebugAssert(which < 6, AipsError);
   return polyArray[which];
 }
 
 const Polynomial<Double> &MeasTable::fundArg2000(uInt which) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> polyArray[6];
   static const Double FUND[6][5] = {
     {  84381.448,    -46.8150-0.02524, -0.0059,  0.001813,  0.0},
     { 485868.249036, 1717915923.2178,  31.8792,  0.051635, -0.00024470},
@@ -232,14 +218,12 @@ const Polynomial<Double> &MeasTable::fundArg2000(uInt which) {
     {1072260.70369,  1602961601.2090, - 6.3706,  0.006593, -0.00003169},
     { 450160.398036,   -6962890.5431,   7.4722,  0.007702, -0.00005939}
   };
-  calcFundArg00(needInit, polyArray, &FUND[0]);
+  static const std::vector<Polynomial<Double> > polyArray(calcFundArg00(&FUND[0]));
   DebugAssert(which < 6, AipsError);
   return polyArray[which];
 }
 
 const Polynomial<Double> &MeasTable::planetaryArg2000(uInt which) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> polyArray[14];
   static const Double FUND[8][2] = {
     { 4.402608842, 2608.7903141574 },
     { 3.176146697, 1021.3285546211 },
@@ -250,68 +234,52 @@ const Polynomial<Double> &MeasTable::planetaryArg2000(uInt which) {
     { 5.481293871,    7.4781598567 },
     { 5.321159000,    3.8127774000 }
   };
-  calcPlanArg00(needInit, polyArray, &FUND[0]);
+  static const std::vector<Polynomial<Double> > polyArray(calcPlanArg00(&FUND[0]));
   DebugAssert(which < 14, AipsError);
   return polyArray[which];
 }
 
-void MeasTable::calcFundArg(volatile Bool &need, 
-			    Polynomial<Double> result[6],
-			    const Double coeff[6][4]) {
-  if (need) {
-    ScopedMutexLock locker(theirMutex);
-    if (need) {
-      Int i,j;
-      for (i=0; i<6; i++) {
-        result[i] = Polynomial<Double>(3);
-        for (j=0; j<4; j++) {
-          result[i].setCoefficient(j, coeff[i][j]*C::arcsec);
-        }
-      }
-      need = False;
+std::vector<Polynomial<Double> > MeasTable::calcFundArg(const Double coeff[6][4]) {
+  std::vector<Polynomial<Double> > result(6);
+  Int i,j;
+  for (i=0; i<6; i++) {
+    result[i] = Polynomial<Double>(3);
+    for (j=0; j<4; j++) {
+      result[i].setCoefficient(j, coeff[i][j]*C::arcsec);
     }
   }
+  return result;
 }    
 
-void MeasTable::calcFundArg00(volatile Bool &need, 
-			      Polynomial<Double> result[6],
-			      const Double coeff[6][5]) {
-  if (need) {
-    ScopedMutexLock locker(theirMutex);
-    if (need) {
-      Int i,j;
-      for (i=0; i<6; i++) {
-        result[i] = Polynomial<Double>(4);
-        for (j=0; j<5; j++) {
-          result[i].setCoefficient(j, coeff[i][j]*C::arcsec);
-        }
-      }
-      need = False;
+std::vector<Polynomial<Double> > MeasTable::calcFundArg00(const Double coeff[6][5]) {
+  std::vector<Polynomial<Double> > result(6);
+  Int i,j;
+  for (i=0; i<6; i++) {
+    result[i] = Polynomial<Double>(4);
+    for (j=0; j<5; j++) {
+      result[i].setCoefficient(j, coeff[i][j]*C::arcsec);
     }
   }
+  return result;
 }    
 
-void MeasTable::calcPlanArg00(volatile Bool &need, 
-			      Polynomial<Double> result[14],
-			      const Double coeff[8][2]) {
+std::vector<Polynomial<Double> > MeasTable::calcPlanArg00(const Double coeff[8][2]) {
   static const Double APA[3] = { 0.0, 0.02438175, 0.00000538691 };
-  if (need) {
-    ScopedMutexLock locker(theirMutex);
-    if (need) {
-      for (uInt i=0; i<5; i++) result[i] = fundArg2000(i+1);
-      for (uInt i=5; i<13; i++) {
-        result[i] = Polynomial<Double>(1);
-        for (uInt j=0; j<2; j++) {
-          result[i].setCoefficient(j, coeff[i-5][j]);
-        }
-      }
-      result[13] = Polynomial<Double>(2);
-      for (uInt j=0; j<3; j++) {
-        result[13].setCoefficient(j, APA[j]);
-      }
-      need = False;
+  std::vector<Polynomial<Double> > result(14);
+  for (uInt i=0; i<5; i++) {
+    result[i] = fundArg2000(i+1);
+  }
+  for (uInt i=5; i<13; i++) {
+    result[i] = Polynomial<Double>(1);
+    for (uInt j=0; j<2; j++) {
+      result[i].setCoefficient(j, coeff[i-5][j]);
     }
   }
+  result[13] = Polynomial<Double>(2);
+  for (uInt j=0; j<3; j++) {
+    result[13].setCoefficient(j, APA[j]);
+  }
+  return result;
 }    
 
 const Double* MeasTable::mulArg(uInt which) {
@@ -2808,21 +2776,22 @@ CountedPtr<Matrix<Double> > MeasTable::mulSC1950(Double time, Double epsilon) {
 
 
 Double MeasTable::dPsiEps(uInt which, Double T) {
-  // Note that use of msgDone is not thread-safe, but it is harmless if
-  // the message accidently appears multiple times.
-  static Bool msgDone = False;
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+  static std::atomic<Bool> msgDone;
+#else
+  static Bool msgDone;
+#endif
   DebugAssert(which < 2, AipsError);
   Double r = 0;
   MeasIERS::Types type = (which==1  ?  MeasIERS::dEps : MeasIERS::dPsi);
   if (!MeasIERS::get(r, MeasIERS::MEASURED, type, T)) {
+    // It is harmless if the message accidentally appears multiple times.
     if (!msgDone) {
+      LogIO os(LogOrigin("MeasTable", "dPsiEps(uInt, Double)", WHERE));
+      os << LogIO::NORMAL3
+         << "High precision nutation information not available."
+         << LogIO::POST;
       msgDone = True;
-      LogIO os(LogOrigin("MeasTable",
-                         String("dPsiEps(uInt, Double)"),
-                         WHERE));
-      os << LogIO::NORMAL3 << 
-        String("High precision nutation information not available.") <<
-        LogIO::POST;
     }
   }
   ///  cout << "psieps " << r << endl;
@@ -2830,70 +2799,59 @@ Double MeasTable::dPsiEps(uInt which, Double T) {
 }
 
 // Planetary data
-Vector<Double> MeasTable::Planetary(MeasTable::Types which, 
-                                    Double T) {
-  Vector<Double> res(6);
-  static volatile Bool needInit = True;
+Vector<Double> MeasTable::Planetary(MeasTable::Types which, Double T) {
   static MeasJPL::Files fil(MeasJPL::DE200);
-  static String tnam[2] = { "DE200", "DE405"};
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      uInt t;
-      Aipsrc::find (t, String("measures.jpl.ephemeris"), 2, tnam,
-                    String("DE200"));
-      fil = (MeasJPL::Files)t;
-      needInit = False;
-    }
-  }
-  if (!MeasJPL::get(res, fil, (MeasJPL::Types)which,
-                    MVEpoch(T))) {
+  theirPlanetaryInitOnce(calcPlanetary, &fil);
+
+  Vector<Double> res(6);
+  if (!MeasJPL::get(res, fil, (MeasJPL::Types)which, MVEpoch(T))) {
+    const String tnam[2] = {"DE200", "DE405"};
     LogIO os(LogOrigin("MeasTable",
-                       String("Planetary(MeasTable::Types, Double)"),
-                       WHERE));
-    os << "Cannot find the planetary data for MeasJPL object number " << (Int) which
-       << " at UT day " << T << " in table "
-       << tnam[fil] << LogIO::WARN;
+                       "Planetary(MeasTable::Types, Double)", WHERE));
+    os << "Cannot find the planetary data for MeasJPL object number "
+       << (Int) which << " at UT day " << T << " in table " << tnam[fil]
+       << LogIO::WARN;
     res = 0.;
   }
   return res;
 }
 
+void MeasTable::calcPlanetary(MeasJPL::Files *fil) {
+  const String tnam[2] = {"DE200", "DE405"};
+  uInt t;
+  Aipsrc::find(t, "measures.jpl.ephemeris", 2, tnam, "DE200");
+  *fil = (MeasJPL::Files)t;
+}
+
 // Planetary constants
 Double MeasTable::Planetary(MeasTable::JPLconst what) {
-  static volatile Bool needInit = True;
   static Double cn[MeasTable::N_JPLconst];
-  static MeasJPL::Files fil(MeasJPL::DE200);
-  static String tnam[2] = { "DE200", "DE405"};
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      uInt t;
-      Aipsrc::find (t, String("measures.jpl.ephemeris"), 2, tnam,
-		  String("DE200"));
-      fil = (MeasJPL::Files)t;
-      for (uInt i=0; i<MeasTable::N_JPLconst; i++) {
-        if (!MeasJPL::getConst(cn[i], fil, 
-                               (MeasJPL::Codes) i)) {
-          LogIO os(LogOrigin("MeasTable",
-                             String("Planetary(MeasTable::JPLconst)"),
-                             WHERE));
-          os << String("Cannot find the planetary data table ") +
-            tnam[fil] << LogIO::EXCEPTION;
-        }
-      }
-      needInit = False;
+  theirPlanetaryConstantsInitOnce(calcPlanetaryConstants, cn);
+  return cn[what];
+}
+
+void MeasTable::calcPlanetaryConstants(Double cn[MeasTable::N_JPLconst]) {
+  const String tnam[2] = {"DE200", "DE405"};
+  uInt t;
+  Aipsrc::find(t, "measures.jpl.ephemeris", 2, tnam, "DE200");
+  MeasJPL::Files fil = (MeasJPL::Files)t;
+
+  for (uInt i=0; i<MeasTable::N_JPLconst; i++) {
+    if (!MeasJPL::getConst(cn[i], fil, (MeasJPL::Codes) i)) {
+      LogIO os(LogOrigin("MeasTable",
+                         "Planetary(MeasTable::JPLconst)", WHERE));
+      os << "Cannot find the planetary data table " + tnam[fil]
+         << LogIO::EXCEPTION;
     }
   }
-  return cn[what];
 }
 
 // Observatory data
 void MeasTable::initObservatories() {
-  obsMutexedInit.exec();
+  theirObsInitOnce(doInitObservatories);
 }
 
-void MeasTable::doInitObservatories (void*)
+void MeasTable::doInitObservatories()
 {
   Table t;
   ROTableRow row;
@@ -2903,18 +2861,13 @@ void MeasTable::doInitObservatories (void*)
   Double dt;
   String vs;	
   if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 3, rfn, "Observatories",
-                          "measures.observatory.directory",
-                          "geodetic")) {
-    LogIO os(LogOrigin("MeasTable",
-                       String("initObservatories()"),
-                       WHERE));
+                          "measures.observatory.directory", "geodetic")) {
+    LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
     os << "Cannot read table of Observatories" << LogIO::EXCEPTION;
   }
   Int N = t.nrow();
   if (N<1) {
-    LogIO os(LogOrigin("MeasTable",
-                       String("initObservatories()"),
-                       WHERE));
+    LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
     os << "No entries in table of Observatories" << LogIO::EXCEPTION;
   }
   obsNams.resize(N);
@@ -2934,9 +2887,7 @@ void MeasTable::doInitObservatories (void*)
       antResponsesPath(i) = *RORecordFieldPtr<String>(row.record(), "AntennaResponses");
     }
     if (!tmp.giveMe(mr, *RORecordFieldPtr<String>(row.record(), "Type"))) {
-      LogIO os(LogOrigin("MeasTable",
-                         String("initObservatories()"),
-                         WHERE));
+      LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
       os << "Illegal position type in Observatories" << LogIO::EXCEPTION;
     }
     obsPos(i) = MPosition(MVPosition(Quantity(*(rfp[2]), "m"),
@@ -2946,12 +2897,12 @@ void MeasTable::doInitObservatories (void*)
 }
 
 const Vector<String> &MeasTable::Observatories() {
-  MeasTable::initObservatories();
+  theirObsInitOnce(doInitObservatories);
   return MeasTable::obsNams;
 }
 
 Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
-  MeasTable::initObservatories();
+  theirObsInitOnce(doInitObservatories);
   uInt i=MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
     obs = MeasTable::obsPos[i];
@@ -2961,7 +2912,7 @@ Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
 }
 
 Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
-  MeasTable::initObservatories();
+  theirObsInitOnce(doInitObservatories);
   uInt i=MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
     antRespPath = MeasTable::antResponsesPath(i);
@@ -3004,12 +2955,12 @@ Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
   return False; // observatory not found
 }
 
-// Source data
+// Line data
 void MeasTable::initLines() {
-  lineMutexedInit.exec();
+  theirLinesInitOnce(doInitLines);
 }
 
-void MeasTable::doInitLines (void*)
+void MeasTable::doInitLines()
 {
   Table t;
   ROTableRow row;
@@ -3019,18 +2970,13 @@ void MeasTable::doInitLines (void*)
   Double dt;
   String vs;	
   if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 1, rfn, "Lines",
-                          "measures.line.directory",
-                          "ephemerides")) {
-    LogIO os(LogOrigin("MeasTable",
-                       String("initLines()"),
-                       WHERE));
+                          "measures.line.directory", "ephemerides")) {
+    LogIO os(LogOrigin("MeasTable", "doInitLines()", WHERE));
     os << "Cannot read table of spectral Lines" << LogIO::EXCEPTION;
   }
   Int N = t.nrow();
   if (N<1) {
-    LogIO os(LogOrigin("MeasTable",
-                       String("initLines()"),
-                       WHERE));
+    LogIO os(LogOrigin("MeasTable", "doInitLines()", WHERE));
     os << "No entries in table of spectral Lines" << LogIO::EXCEPTION;
   }
   lineNams.resize(N);
@@ -3046,12 +2992,12 @@ void MeasTable::doInitLines (void*)
 }
 
 const Vector<String> &MeasTable::Lines() {
-  MeasTable::initLines();
+  theirLinesInitOnce(doInitLines);
   return MeasTable::lineNams;
 }
 
 Bool MeasTable::Line(MFrequency &obs, const String &nam) {
-  MeasTable::initLines();
+  theirLinesInitOnce(doInitLines);
   uInt i=MUString::minimaxNC(nam, MeasTable::lineNams);
   if (i < MeasTable::lineNams.nelements()) {
     obs = MeasTable::linePos(i);
@@ -3062,10 +3008,10 @@ Bool MeasTable::Line(MFrequency &obs, const String &nam) {
 
 // Source data
 void MeasTable::initSources() {
-  srcMutexedInit.exec();
+  theirSrcInitOnce(doInitSources);
 }
 
-void MeasTable::doInitSources (void*)
+void MeasTable::doInitSources()
 {
   Table t;
   ROTableRow row;
@@ -3075,18 +3021,13 @@ void MeasTable::doInitSources (void*)
   Double dt;
   String vs;	
   if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 2, rfn, "Sources",
-                          "measures.sources.directory",
-                          "ephemerides")) {
-    LogIO os(LogOrigin("MeasTable",
-                       String("initSources()"),
-                       WHERE));
+                          "measures.sources.directory", "ephemerides")) {
+    LogIO os(LogOrigin("MeasTable", "doInitSources()", WHERE));
     os << "Cannot read table of Sources" << LogIO::EXCEPTION;
   }
   Int N = t.nrow();
   if (N<1) {
-    LogIO os(LogOrigin("MeasTable",
-                       String("initSources()"),
-                       WHERE));
+    LogIO os(LogOrigin("MeasTable", "doInitSources()", WHERE));
     os << "No entries in table of Sources" << LogIO::EXCEPTION;
   }
   srcNams.resize(N);
@@ -3097,9 +3038,7 @@ void MeasTable::doInitSources (void*)
     row.get(i);
     srcNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
     if (!tmp.giveMe(mr, *RORecordFieldPtr<String>(row.record(), "Type"))) {
-      LogIO os(LogOrigin("MeasTable",
-                         String("initSources()"),
-                         WHERE));
+      LogIO os(LogOrigin("MeasTable", "doInitSources()", WHERE));
       os << "Illegal direction type in Sources" << LogIO::EXCEPTION;
     }
     srcPos(i) = MDirection(MVDirection(Quantity(*(rfp[0]), "deg"),
@@ -3108,12 +3047,12 @@ void MeasTable::doInitSources (void*)
 }
 
 const Vector<String> &MeasTable::Sources() {
-  MeasTable::initSources();
+  theirSrcInitOnce(doInitSources);
   return MeasTable::srcNams;
 }
 
 Bool MeasTable::Source(MDirection &obs, const String &nam) {
-  MeasTable::initSources();
+  theirSrcInitOnce(doInitSources);
   uInt i=MUString::minimaxNC(nam, MeasTable::srcNams);
   if (i < MeasTable::srcNams.nelements()) {
     obs = MeasTable::srcPos(i);
@@ -3124,7 +3063,7 @@ Bool MeasTable::Source(MDirection &obs, const String &nam) {
 
 // Magnetic field (IGRF) function
 Vector<Double> MeasTable::IGRF(Double tm) {
-  MeasTable::initIGRF();
+  theirIGRFInitOnce(doInitIGRF);
   // Look up closest MJD interval. Note that each interval has same width.
   Int indx = Int((tm-firstIGRF) / dtimeIGRF) - 1;
   if (indx >= Int(coefIGRF.size())) {
@@ -3139,31 +3078,27 @@ Vector<Double> MeasTable::IGRF(Double tm) {
 }
 
 void MeasTable::initIGRF() {
-  igrfMutexedInit.exec();
+  theirIGRFInitOnce(doInitIGRF);
 }
-void MeasTable::doInitIGRF (void*)
+
+void MeasTable::doInitIGRF()
 {
   Table t;
   TableRecord kws;
   ROTableRow row;
-  String rfn[1] = {"MJD"};
+  const String rfn[1] = {"MJD"};
   RORecordFieldPtr<Double> rfp[1];
   Double dt;
   String vs;	
   if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 1, rfn, "IGRF",
-                          "measures.igrf.directory",
-                          "geodetic")) {
-    LogIO os(LogOrigin("MeasTable",
-                       String("IGRF(Double)"),
-                       WHERE));
+                          "measures.igrf.directory", "geodetic")) {
+    LogIO os(LogOrigin("MeasTable", "doInitIGRF()", WHERE));
     os << "Cannot read table of IGRF models" << LogIO::EXCEPTION;
   }
   Int N = t.nrow();
   if (N<10 || !kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
       !kws.isDefined("dMJD") || kws.asDouble("dMJD") < 300) {
-    LogIO os(LogOrigin("MeasTable",
-                       String("doInitIGRF()"),
-                       WHERE));
+    LogIO os(LogOrigin("MeasTable", "doInitIGRF()", WHERE));
     os << "Incorrect entries in table of IGRF models" << LogIO::EXCEPTION;
   }
   firstIGRF = kws.asDouble("MJD0");
@@ -3176,9 +3111,7 @@ void MeasTable::doInitIGRF (void*)
   for (Int i=0; i<N; ++i) {
     double igrfmjd = accmjd(i);
     if (! near(igrfmjd, firstIGRF+(i+1)*dtimeIGRF)) {
-      LogIO os(LogOrigin("MeasTable",
-                         String("doInitIGRF()"),
-                         WHERE));
+      LogIO os(LogOrigin("MeasTable", "doInitIGRF()", WHERE));
       os << "Non-constant MJD increment in IGRF models table"
          << LogIO::EXCEPTION;
     }
@@ -3189,8 +3122,12 @@ void MeasTable::doInitIGRF (void*)
 
 // Aberration function
 const Polynomial<Double> &MeasTable::aberArg(uInt which) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> polyArray[13];
+  static const std::vector<Polynomial<Double> > polyArray(calcAberArg());
+  DebugAssert(which < 13, AipsError);
+  return polyArray[which];
+}
+
+std::vector<Polynomial<Double> > MeasTable::calcAberArg() {
   static const Double ABERFUND[13][2] = {
     {4.4026088,	2608.7903142},
     {3.1761467,	1021.3285546},
@@ -3206,49 +3143,40 @@ const Polynomial<Double> &MeasTable::aberArg(uInt which) {
     {6.2400601,	 628.3019553},
     {1.6279052,	8433.4661601}
   };
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Int i,j;
-      for (i=0; i<13; i++) {
-        polyArray[i] = Polynomial<Double>(1);
-        for (j=0; j<2; j++) {
-          polyArray[i].setCoefficient(j,
-                                      ABERFUND[i][j]);
-        }
-      }
-      needInit = False;
+  std::vector<Polynomial<Double> > polyArray(13);
+  Int i,j;
+  for (i=0; i<13; i++) {
+    polyArray[i] = Polynomial<Double>(1);
+    for (j=0; j<2; j++) {
+      polyArray[i].setCoefficient(j, ABERFUND[i][j]);
     }
   }
-  DebugAssert(which < 13, AipsError);
-  return polyArray[which];
+  return polyArray;
 }
 
 // Derivative aber
 const Polynomial<Double> &MeasTable::aberArgDeriv(uInt which) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> polyArray[13];
-
-  if (needInit) {
-	const Polynomial<Double> * polyArray_ptrs[13];
-    for (int i=0; i<13; i++) {
-	  polyArray_ptrs[i] = &aberArg(i);
-    }
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      for (int i=0; i<13; i++) {
-        polyArray[i] = polyArray_ptrs[i]->derivative();
-      }
-      needInit = False;
-    }
-  }
+  static const std::vector<Polynomial<Double> > polyArray(calcAberArgDeriv());
   DebugAssert(which < 13, AipsError);
   return polyArray[which];
 }
 
+std::vector<Polynomial<Double> > MeasTable::calcAberArgDeriv() {
+  std::vector<Polynomial<Double> > polyArray(13);
+  for (int i=0; i<13; i++) {
+    const Polynomial<Double> *polyPtr = &aberArg(i);
+    polyArray[i] = polyPtr->derivative();
+  }
+  return polyArray;
+}
+
 const Polynomial<Double> &MeasTable::aber1950Arg(uInt which) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> polyArray[12];
+  static const std::vector<Polynomial<Double> > polyArray(calcAber1950Arg());
+  DebugAssert(which < 12, AipsError);
+  return polyArray[which];
+}
+
+std::vector<Polynomial<Double> > MeasTable::calcAber1950Arg() {
   static const Double ABERFUND[12][4] = {
     {1065976.59, 1717915856.79, 33.09,   0.0518},
     {1290513.0,  129596579.1,   -0.54,   -0.0120},
@@ -3263,44 +3191,31 @@ const Polynomial<Double> &MeasTable::aber1950Arg(uInt which) {
     {260701.20,	1542164.400,	0,	0},
     {135831.60,	786459.600,	0,	0}
   };
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Int i,j;
-      for (i=0; i<12; i++) {
-        polyArray[i] = Polynomial<Double>(3);
-        for (j=0; j<4; j++) {
-          polyArray[i].setCoefficient(j,
-                                      ABERFUND[i][j]*C::arcsec);
-        }
-      }
-      needInit = False;
+  std::vector<Polynomial<Double> > polyArray(12);
+  Int i,j;
+  for (i=0; i<12; i++) {
+    polyArray[i] = Polynomial<Double>(3);
+    for (j=0; j<4; j++) {
+      polyArray[i].setCoefficient(j, ABERFUND[i][j]*C::arcsec);
     }
   }
-  DebugAssert(which < 12, AipsError);
-  return polyArray[which];
+  return polyArray;
 }
 
 // Derivative aber1950
 const Polynomial<Double> &MeasTable::aber1950ArgDeriv(uInt which) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> polyArray[12];
-
-  if (needInit) {
-	const Polynomial<Double> * polyArray_ptrs[12];
-    for (int i=0; i<12; i++) {
-	  polyArray_ptrs[i] = &aber1950Arg(i);
-    }
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      for (int i=0; i<12; i++) {
-        polyArray[i] = polyArray_ptrs[i]->derivative();
-      }
-      needInit = False;
-    }
-  }
+  static const std::vector<Polynomial<Double> > polyArray(calcAber1950ArgDeriv());
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
+}
+
+std::vector<Polynomial<Double> > MeasTable::calcAber1950ArgDeriv() {
+  std::vector<Polynomial<Double> > polyArray(12);
+  for (int i=0; i<12; i++) {
+    const Polynomial<Double> *polyPtr = &aber1950Arg(i);
+    polyArray[i] = polyPtr->derivative();
+  }
+  return polyArray;
 }
 
 const Double* MeasTable::mulAberArg(uInt which) {
@@ -3587,8 +3502,12 @@ CountedPtr<Matrix<Double> > MeasTable::mulAber1950(Double time, Double epsilon) 
 }
 
 const Vector<Double> &MeasTable::mulSunAber(uInt which) {
-  static volatile Bool needInit = True;
-  static Vector<Double> argArray[17];
+  static const std::vector<Vector<Double> > argArray(calcMulSunAber());
+  DebugAssert(which < 17, AipsError);
+  return argArray[which];
+}
+
+std::vector<Vector<Double> > MeasTable::calcMulSunAber() {
   static const Short MSUNABER[17][6] = {
     {	719,	0,	6,	-660,	-15,	-283},
     {	159,	0,	2,	-147,	-6,	-61},
@@ -3608,28 +3527,26 @@ const Vector<Double> &MeasTable::mulSunAber(uInt which) {
     {	-1,	0,	0,	1,	0,	0},
     {	1,	0,	0,	0,	0,	0}
   };
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      UnitVal AUperDay(1e-8,"AU/d");
-      Double factor = AUperDay.getFac();
-      Int i,j;
-      for (i=0; i<17; i++) {
-        argArray[i].resize(6);
-        for (j=0; j<6; j++) {
-          argArray[i](j) = MSUNABER[i][j] * factor;
-        }
-      }
-      needInit = False;
+  std::vector<Vector<Double> > argArray(17);
+  UnitVal AUperDay(1e-8,"AU/d");
+  Double factor = AUperDay.getFac();
+  Int i,j;
+  for (i=0; i<17; i++) {
+    argArray[i].resize(6);
+    for (j=0; j<6; j++) {
+      argArray[i](j) = MSUNABER[i][j] * factor;
     }
   }
+  return argArray;
+}
+
+const Vector<Double> &MeasTable::mulEarthAber(uInt which) {
+  static const std::vector<Vector<Double> > argArray(calcMulEarthAber());
   DebugAssert(which < 17, AipsError);
   return argArray[which];
 }
 
-const Vector<Double> &MeasTable::mulEarthAber(uInt which) {
-  static volatile Bool needInit = True;
-  static Vector<Double> argArray[17];
+std::vector<Vector<Double> > MeasTable::calcMulEarthAber() {
   static const Short MEARTHABER[17][3] = {
     {	715,	-656,	-285},
     {	0,	26,	-59},
@@ -3649,50 +3566,40 @@ const Vector<Double> &MeasTable::mulEarthAber(uInt which) {
     {	1,	0,	0},
     {	0,	0,	-1}
   };
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      UnitVal AUperDay(1e-8,"AU/d");
-      Double factor = AUperDay.getFac();
-      Int i,j;
-      for (i=0; i<17; i++) {
-        argArray[i].resize(3);
-        for (j=0; j<3; j++) {
-          argArray[i](j) = MEARTHABER[i][j] * factor;
-        }
-      }
-      needInit = False;
+  std::vector<Vector<Double> > argArray(17);
+  UnitVal AUperDay(1e-8,"AU/d");
+  Double factor = AUperDay.getFac();
+  Int i,j;
+  for (i=0; i<17; i++) {
+    argArray[i].resize(3);
+    for (j=0; j<3; j++) {
+      argArray[i](j) = MEARTHABER[i][j] * factor;
     }
   }
-  DebugAssert(which < 17, AipsError);
-  return argArray[which];
+  return argArray;
 }
 
 const Vector<Double> &MeasTable::AberETerm(uInt which) {
-  static volatile Bool needInit = True;
-  static Vector<Double> termArray[2];
-  static const Double TERM[2][3] = {
-    {-1.62557,	-0.31919,	-0.13843},
-    {+1.245,		-1.580,		-0.659}
-  };
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Int i;
-      for (i=0; i<2; i++) {
-        termArray[i].resize(3);
-      } 
-      for (i=0; i<3; i++) {
-        termArray[0](i) = TERM[0][i] * 1e-6;
-      }
-      for (i=0; i<3; i++) {
-        termArray[1](i) = TERM[1][i] * 1e-3;
-      }
-      needInit = False;
-    }
-  }
+  static const std::vector<Vector<Double> > termArray(calcAberETerm());
   DebugAssert(which < 2, AipsError);
   return termArray[which];
+}
+
+std::vector<Vector<Double> > MeasTable::calcAberETerm() {
+  static const Double TERM[2][3] = {
+    {-1.62557,  -0.31919, -0.13843},
+    {+1.245,    -1.580,   -0.659}
+  };
+  std::vector<Vector<Double> > termArray(2);
+  Int i;
+  for (i=0; i<2; i++) {
+    termArray[i].resize(3);
+  }
+  for (i=0; i<3; i++) {
+    termArray[0](i) = TERM[0][i] * 1e-6;
+    termArray[1](i) = TERM[1][i] * 1e-3;
+  }
+  return termArray;
 }
 
 // Diurnal Aberration factor
@@ -3707,186 +3614,166 @@ Double MeasTable::diurnalAber(Double radius, Double T) {
 
 // LSR velocity (kinematical)
 const Vector<Double> &MeasTable::velocityLSRK(uInt which) {
-  static volatile Bool needInit = True;
-  static Vector<Double> argArray[2];
-  static const Double LSR[2][3] = {
-    {0.0145021, -0.865863, 0.500071},
-    {0.00724658, -0.865985, 0.500018}
-  };
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Double v = 20.0*1000.;
-      for (Int i=0; i<2; i++) {
-        argArray[i].resize(3);
-        for (Int j=0; j<3; j++) {
-          argArray[i](j) = v * LSR[i][j];
-        }
-      }
-      needInit = False;
-    }
-  }
+  static const std::vector<Vector<Double> > argArray(calcVelocityLSRK());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
+}
+
+std::vector<Vector<Double> > MeasTable::calcVelocityLSRK() {
+  static const Double LSR[2][3] = {
+    {0.0145021,  -0.865863, 0.500071},
+    {0.00724658, -0.865985, 0.500018}
+  };
+  std::vector<Vector<Double> > argArray(2);
+  Double v = 20.0*1000.;
+  for (Int i=0; i<2; i++) {
+    argArray[i].resize(3);
+    for (Int j=0; j<3; j++) {
+      argArray[i](j) = v * LSR[i][j];
+    }
+  }
+  return argArray;
 }
 
 // LSR velocity (dynamical)
 const Vector<Double> &MeasTable::velocityLSR(uInt which) {
-  static volatile Bool needInit = True;
-  static Vector<Double> argArray[2];
+  static const std::vector<Vector<Double> > argArray(calcVelocityLSR());
+  DebugAssert(which < 2, AipsError);
+  return argArray[which];
+}
+
+std::vector<Vector<Double> > MeasTable::calcVelocityLSR() {
   static const Double LSR[2][3] = {
     {-0.0385568, -0.881138, 0.471285},
     {-0.0461164, -0.880664, 0.471491}
   };
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Double v = sqrt(81.+144.+49.)*1000.;
-      for (Int i=0; i<2; i++) {
-        argArray[i].resize(3);
-        for (Int j=0; j<3; j++) {
-          argArray[i](j) = v * LSR[i][j];
-        }
-      }
-      needInit = False;
+  std::vector<Vector<Double> > argArray(2);
+  Double v = sqrt(81.+144.+49.)*1000.;
+  for (Int i=0; i<2; i++) {
+    argArray[i].resize(3);
+    for (Int j=0; j<3; j++) {
+      argArray[i](j) = v * LSR[i][j];
     }
   }
-  DebugAssert(which < 2, AipsError);
-  return argArray[which];
+  return argArray;
 }
 
 // LSR velocity wrt galactic centre
 const Vector<Double> &MeasTable::velocityLSRGal(uInt which) {
-  static volatile Bool needInit = True;
-  static Vector<Double> argArray[2];
-  static const Double LSR[2][3] = {
-    {0.494109, -0.44483, 0.746982},
-    {0.492728, -0.450347, 0.744585}
-  };
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Double v = 220.*1000.;
-      for (Int i=0; i<2; i++) {
-        argArray[i].resize(3);
-        for (Int j=0; j<3; j++) {
-          argArray[i](j) = v * LSR[i][j];
-        }
-      }
-      needInit = False;
-    }
-  }
+  static const std::vector<Vector<Double> > argArray(calcVelocityLSRGal());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
+}
+
+std::vector<Vector<Double> > MeasTable::calcVelocityLSRGal() {
+  static const Double LSR[2][3] = {
+    {0.494109, -0.44483 , 0.746982},
+    {0.492728, -0.450347, 0.744585}
+  };
+  std::vector<Vector<Double> > argArray(2);
+  Double v = 220.*1000.;
+  for (Int i=0; i<2; i++) {
+    argArray[i].resize(3);
+    for (Int j=0; j<3; j++) {
+      argArray[i](j) = v * LSR[i][j];
+    }
+  }
+  return argArray;
 }
 
 // LGROUP velocity wrt bary center
 const Vector<Double> &MeasTable::velocityLGROUP(uInt which) {
-  static volatile Bool needInit = True;
-  static Vector<Double> argArray[2];
-  static const Double LGROUP[2][3] = {
-    {0.593553979227, -0.177954636914, 0.784873124106}, 
-    {0.5953342407,   -0.184600136022, 0.781984610866} 
-  };
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Double v = 308.*1000.;
-      for (Int i=0; i<2; i++) {
-        argArray[i].resize(3);
-        for (Int j=0; j<3; j++) {
-          argArray[i](j) = v * LGROUP[i][j];
-        }
-      }
-      needInit = False;
-    }
-  }
+  static const std::vector<Vector<Double> > argArray(calcVelocityLGROUP());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
+}
+
+std::vector<Vector<Double> > MeasTable::calcVelocityLGROUP() {
+  static const Double LGROUP[2][3] = {
+    {0.593553979227, -0.177954636914, 0.784873124106},
+    {0.5953342407,   -0.184600136022, 0.781984610866} 
+  };
+  std::vector<Vector<Double> > argArray(2);
+  Double v = 308.*1000.;
+  for (Int i=0; i<2; i++) {
+    argArray[i].resize(3);
+    for (Int j=0; j<3; j++) {
+      argArray[i](j) = v * LGROUP[i][j];
+    }
+  }
+  return argArray;
 }
 
 // CMB velocity wrt bary center
 const Vector<Double> &MeasTable::velocityCMB(uInt which) {
-  static volatile Bool needInit = True;
-  static Vector<Double> argArray[2];
-  static const Double CMB[2][3] = {
-    {-0.97176985257,  0.202393953108, -0.121243727187},
-    {-0.970024232022, 0.213247954272, -0.11652595972}
-  };
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Double v = 369.5*1000.;
-      for (Int i=0; i<2; i++) {
-        argArray[i].resize(3);
-        for (Int j=0; j<3; j++) {
-          argArray[i](j) = v * CMB[i][j];
-        }
-      }
-      needInit = False;
-    }
-  }
+  static const std::vector<Vector<Double> > argArray(calcVelocityCMB());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
 
-// Earth and Sun position
-const Polynomial<Double> &MeasTable::posArg(uInt which) { 
-  static volatile Bool needInit = True;
-  static Polynomial<Double> polyArray[12];
-  static const Double POSFUND[12][2] = {
-    {252.25,	149472.67},			//Q
-    {181.9798,	 58517.8157},			//V
-    {100.46644851,	 35999.37285186},		//E
-    {355.43327,	 19140.29933},			//M
-    { 34.351484,	  3034.905675},			//J
-    { 50.077471,	  1222.113794},			//S
-    {314.055005,	   428.466998},			//U
-    {304.348665,	   218.486200},			//N
-    {238.47,	   145.28},			//P
-    {297.850206,	445267.111519},			//D
-    { 93.27210,	483202.01753},			//F
-    {134.9634,	477198.8676}			//l
+std::vector<Vector<Double> > MeasTable::calcVelocityCMB() {
+  static const Double CMB[2][3] = {
+    {-0.97176985257,  0.202393953108, -0.121243727187},
+    {-0.970024232022, 0.213247954272, -0.11652595972}
   };
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Int i,j;
-      for (i=0; i<12; i++) {
-        polyArray[i] = Polynomial<Double>(1);
-        for (j=0; j<2; j++) {
-          polyArray[i].setCoefficient(j,
-                                      POSFUND[i][j]*C::degree);
-        }
-      }
-
-      needInit = False;
+  std::vector<Vector<Double> > argArray(2);
+  Double v = 369.5*1000.;
+  for (Int i=0; i<2; i++) {
+    argArray[i].resize(3);
+    for (Int j=0; j<3; j++) {
+      argArray[i](j) = v * CMB[i][j];
     }
   }
+  return argArray;
+}
+
+// Earth and Sun position
+const Polynomial<Double> &MeasTable::posArg(uInt which) { 
+  static const std::vector<Polynomial<Double> > polyArray(calcPosArg());
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
 }
 
-// Derivative of Earth and Sun position polynomial
-const Polynomial<Double> &MeasTable::posArgDeriv(uInt which) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> polyArray[12];
-
-  if (needInit) {
-	const Polynomial<Double> * polyArray_ptrs[12];
-    for (int i=0; i<12; i++) {
-	  polyArray_ptrs[i] = &posArg(i);
-    }
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      for (int i=0; i<12; i++) {
-        polyArray[i] = polyArray_ptrs[i]->derivative();
-      }
-      needInit = False;
+std::vector<Polynomial<Double> > MeasTable::calcPosArg() {
+  static const Double POSFUND[12][2] = {
+    {252.25,       149472.67},      // Q
+    {181.9798,     58517.8157},     // V
+    {100.46644851, 35999.37285186}, // E
+    {355.43327,    19140.29933},    // M
+    { 34.351484,   3034.905675},    // J
+    { 50.077471,   1222.113794},    // S
+    {314.055005,   428.466998},     // U
+    {304.348665,   218.486200},     // N
+    {238.47,       145.28},         // P
+    {297.850206,   445267.111519},  // D
+    { 93.27210,    483202.01753},   // F
+    {134.9634,     477198.8676}     // l
+  };
+  std::vector<Polynomial<Double> > polyArray(12);
+  Int i,j;
+  for (i=0; i<12; i++) {
+    polyArray[i] = Polynomial<Double>(1);
+    for (j=0; j<2; j++) {
+      polyArray[i].setCoefficient(j, POSFUND[i][j]*C::degree);
     }
   }
+  return polyArray;
+}
+
+// Derivative of Earth and Sun position polynomial
+const Polynomial<Double> &MeasTable::posArgDeriv(uInt which) {
+  static const std::vector<Polynomial<Double> > polyArray(calcPosArgDeriv());
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
+}
+
+std::vector<Polynomial<Double> > MeasTable::calcPosArgDeriv() {
+  std::vector<Polynomial<Double> > polyArray(12);
+  for (int i=0; i<12; i++) {
+    const Polynomial<Double> *polyPtr = &posArg(i);
+    polyArray[i] = polyPtr->derivative();
+  }
+  return polyArray;
 }
 
 const Double* MeasTable::mulPosEarthXYArg(uInt which) {
@@ -4290,22 +4177,19 @@ CountedPtr<Matrix<Double> > MeasTable::mulPosSunZ(Double time, Double epsilon)
 }
 
 const RotMatrix &MeasTable::posToRect() {
-  static RotMatrix rot(Euler(+84381.4091 * C::arcsec, 1,
-                             -0.0930 * C::arcsec, 3));
+  static const RotMatrix rot(Euler(+84381.4091 * C::arcsec, 1,
+                                   -0.0930 * C::arcsec, 3));
   return rot;
 }
 
 const RotMatrix &MeasTable::rectToPos() {
-  static volatile Bool needInit = True;
-  static RotMatrix rot;
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      rot = MeasTable::posToRect();
-      rot.transpose();
-      needInit = False;
-    }
-  }
+  static RotMatrix rot(calcRectToPos());
+  return rot;
+}
+
+RotMatrix MeasTable::calcRectToPos() {
+  RotMatrix rot(MeasTable::posToRect());
+  rot.transpose();
   return rot;
 }
 
@@ -4316,42 +4200,41 @@ const RotMatrix &MeasTable::galToSupergal() {
 }
 
 const RotMatrix &MeasTable::ICRSToJ2000() {
-  static volatile Bool needInit = True;
-  static RotMatrix rot;
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      rot = MeasTable::frameBias00();
-      rot.transpose();
-      needInit = False;;
-    }
-  }
+  static RotMatrix rot(calcICRSToJ2000());
+  return rot;
+}
+
+RotMatrix MeasTable::calcICRSToJ2000() {
+  RotMatrix rot(MeasTable::frameBias00());
+  rot.transpose();
   return rot;
 }
 
 // Position related routines
 Double MeasTable::WGS84(uInt which) {
-  static const Double data[2] = {
-    6378137,	298.257223563};
-  
+  static const Double data[2] = { 6378137, 298.257223563};
+
   DebugAssert(which < 2, AipsError);
   return data[which];
 }
 
 // Polar motion related routines
 Euler MeasTable::polarMotion(Double ut) {
-  static Bool msgDone = False;
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+    static std::atomic<Bool> msgDone;
+#else
+    static Bool msgDone;
+#endif
   Euler res(0.0, 2, 0.0, 1, 0.0, 3);
   if (!MeasIERS::get(res(0), MeasIERS::MEASURED, MeasIERS::X, ut) ||
       !MeasIERS::get(res(1), MeasIERS::MEASURED, MeasIERS::Y, ut)) {
+    // It is harmless if the message accidentally appears multiple times.
     if (!msgDone) {
+      LogIO os(LogOrigin("MeasTable", "PolarMotion(Double)", WHERE));
+      os << LogIO::NORMAL3
+         << "High precision polar motion information not available."
+         << LogIO::POST;
       msgDone = True;
-      LogIO os(LogOrigin("MeasTable",
-                         String("PolarMotion(Double)"),
-                         WHERE));
-      os << LogIO::NORMAL3 << 
-        String("High precision polar motion information not available.") <<
-        LogIO::POST;
     }
   }
   ///    cout << "polarmotion " << res(0) << ' ' << res(1) << endl;
@@ -4362,53 +4245,10 @@ Euler MeasTable::polarMotion(Double ut) {
 
 // Time functions
 Double MeasTable::dUTC(Double utc) {
-  static volatile Bool needInit = True;
-  static Int N = 0;
-  static Double (*LEAP)[4];
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      Table t;
-      ROTableRow row;
-      TableRecord kws;
-      String rfn[4] = {"MJD", "dUTC", "Offset", "Multiplier"};
-      RORecordFieldPtr<Double> rfp[4];
-      Double dt;
-      String vs;
-      if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 4, rfn, "TAI_UTC",
-			      "measures.tai_utc.directory",
-			      "geodetic")) {
-	LogIO os(LogOrigin("MeasTable",
-			   String("dUTC(Double)"),
-			   WHERE));
-	os << "Cannot read leap second table TAI_UTC" << LogIO::EXCEPTION;
-      }
-      N = t.nrow();
-      if (N < 35) {
-	LogIO os(LogOrigin("MeasTable",
-			   String("dUTC(Double)"),
-			   WHERE));
-	os << "Leap second table TAI_UTC corrupted" << LogIO::EXCEPTION;
-      }
-      if (Time().modifiedJulianDay() - dt > 180) {
-	LogIO os(LogOrigin("MeasTable",
-			   String("dUTC(Double)"),
-			   WHERE));
-	os << LogIO::SEVERE <<
-	  String("Leap second table TAI_UTC seems out-of-date. \n") +
-	  "Until the table is updated (see the CASA documentation or your system admin),\n" +
-	  "times and coordinates derived from UTC could be wrong by 1s or more." << LogIO::POST;
-      }
-      LEAP = (Double (*)[4])(new Double[4*N]);
-      for (Int i=0; i < N; i++) {
-	row.get(i);
-	for (Int j=0; j < 4; j++) {
-	  LEAP[i][j] = *(rfp[j]);
-	}
-      }
-      needInit = False;
-    }
-  }
+  static const Statics_dUTC st(calc_dUTC());
+  Double (* const &LEAP)[4] = st.LEAP; // alias to avoid more clutter below
+  const int &N = st.N;                // idem
+
   Double val(0);
   if (utc < LEAP[0][0]) {
     val = LEAP[0][1] + (utc - LEAP[0][2])*LEAP[0][3];
@@ -4424,6 +4264,45 @@ Double MeasTable::dUTC(Double utc) {
     }
   }
   return val;
+}
+
+MeasTable::Statics_dUTC MeasTable::calc_dUTC() {
+  Statics_dUTC rv;
+
+  Table t;
+  ROTableRow row;
+  TableRecord kws;
+  const String rfn[4] = {"MJD", "dUTC", "Offset", "Multiplier"};
+  RORecordFieldPtr<Double> rfp[4];
+  Double dt;
+  String vs;
+  if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 4, rfn, "TAI_UTC",
+                          "measures.tai_utc.directory", "geodetic")) {
+    LogIO os(LogOrigin("MeasTable", "dUTC(Double)", WHERE));
+    os << "Cannot read leap second table TAI_UTC" << LogIO::EXCEPTION;
+  }
+  rv.N = t.nrow();
+  if (rv.N < 35) {
+    LogIO os(LogOrigin("MeasTable", "dUTC(Double)", WHERE));
+    os << "Leap second table TAI_UTC corrupted" << LogIO::EXCEPTION;
+  }
+  if (Time().modifiedJulianDay() - dt > 180) {
+    LogIO os(LogOrigin("MeasTable", "dUTC(Double)", WHERE));
+    os << LogIO::SEVERE
+       << "Leap second table TAI_UTC seems out-of-date.\n"
+          "Until the table is updated (see the CASA documentation or your system admin),\n"
+          "times and coordinates derived from UTC could be wrong by 1s or more."
+       << LogIO::POST;
+  }
+  rv.LEAP = (Double (*)[4])(new Double[4*rv.N]);
+  for (Int i=0; i < rv.N; i++) {
+    row.get(i);
+    for (Int j=0; j < 4; j++) {
+      rv.LEAP[i][j] = *(rfp[j]);
+    }
+  }
+
+  return rv;
 }
 
 Double MeasTable::dTAI(Double) {
@@ -4444,52 +4323,46 @@ Double MeasTable::dTCG(Double tai) {
 }
 
 Double MeasTable::GMST0(Double ut1) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> stPoly(3);
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      stPoly.setCoefficient(0, 24110.54841);	
-      stPoly.setCoefficient(1, 8640184.812866);
-      stPoly.setCoefficient(2, 0.093104);	
-      stPoly.setCoefficient(3, -6.2e-6);
-      needInit = False;
-    }
-  }
+  static Polynomial<Double> stPoly(calcGMST0());
   return (stPoly((ut1-MeasData::MJD2000)/MeasData::JDCEN));
 }
 
+Polynomial<Double> MeasTable::calcGMST0() {
+  Polynomial<Double> stPoly(3);
+  stPoly.setCoefficient(0, 24110.54841);
+  stPoly.setCoefficient(1, 8640184.812866);
+  stPoly.setCoefficient(2, 0.093104);
+  stPoly.setCoefficient(3, -6.2e-6);
+  return stPoly;
+}
+
 Double MeasTable::GMST00(Double ut1, Double tt) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> stPoly(4);
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      stPoly.setCoefficient(0, 0.014506*C::arcsec);	
-      stPoly.setCoefficient(1, 4612.15739966*C::arcsec+630.73514045148926);
-      stPoly.setCoefficient(2, + 1.39667721*C::arcsec);	
-      stPoly.setCoefficient(3, - 0.00009344*C::arcsec);
-      stPoly.setCoefficient(4, + 0.00001882*C::arcsec);
-      needInit = False;
-    }
-  }
+  static Polynomial<Double> stPoly(calcGMST00());
   return (stPoly((tt-MeasData::MJD2000)/MeasData::JDCEN) +
 	  MeasTable::ERA00(ut1));
 }
 
+Polynomial<Double> MeasTable::calcGMST00() {
+  Polynomial<Double> stPoly(4);
+  stPoly.setCoefficient(0, 0.014506*C::arcsec);
+  stPoly.setCoefficient(1, 4612.15739966*C::arcsec+630.73514045148926);
+  stPoly.setCoefficient(2, + 1.39667721*C::arcsec);
+  stPoly.setCoefficient(3, - 0.00009344*C::arcsec);
+  stPoly.setCoefficient(4, + 0.00001882*C::arcsec);
+  return stPoly;
+}
+
 Double MeasTable::ERA00(Double ut1) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> stPoly(1);
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      stPoly.setCoefficient(0, 0.7790572732640*C::_2pi);	
-      stPoly.setCoefficient(1, 0.00273781191135448*C::_2pi);
-      needInit = False;
-    }
-  }
+  static Polynomial<Double> stPoly(calcERA00());
   ut1 -= MeasData::MJD2000;
   return MVAngle(stPoly(ut1)+ C::_2pi*fmod(ut1, 1.0))(0.0).radian();
+}
+
+Polynomial<Double> MeasTable::calcERA00() {
+  Polynomial<Double> stPoly(1);
+  stPoly.setCoefficient(0, 0.7790572732640*C::_2pi);
+  stPoly.setCoefficient(1, 0.00273781191135448*C::_2pi);
+  return stPoly;
 }
 
 Double MeasTable::sprime00(Double tt) {
@@ -4497,53 +4370,57 @@ Double MeasTable::sprime00(Double tt) {
 }
 
 Double MeasTable::GMUT0(Double gmst1) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> stPoly(3);
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      stPoly.setCoefficient(0, -0.65830845056254866847);
-      stPoly.setCoefficient(1, -235.90946916710752);
-      stPoly.setCoefficient(2, -0.00000252822553597972);
-      stPoly.setCoefficient(3, 0.0000000001679);
-      needInit = False;
-    }
-  }
+  static Polynomial<Double> stPoly(calcGMUT0());
   return (stPoly((gmst1-MeasData::MJD2000-6713.)/MeasData::JDCEN));
 }
 
+Polynomial<Double> MeasTable::calcGMUT0() {
+  Polynomial<Double> stPoly(3);
+  stPoly.setCoefficient(0, -0.65830845056254866847);
+  stPoly.setCoefficient(1, -235.90946916710752);
+  stPoly.setCoefficient(2, -0.00000252822553597972);
+  stPoly.setCoefficient(3, 0.0000000001679);
+  return stPoly;
+}
+
 Double MeasTable::UTtoST(Double ut1) {
-  static volatile Bool needInit = True;
-  static Polynomial<Double> UTSTPoly(2);
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      UTSTPoly.setCoefficient(0, 1.002737909350795);
-      UTSTPoly.setCoefficient(1, +5.9006e-11);
-      UTSTPoly.setCoefficient(2, -5.9e-15);	
-      needInit = False;
-    }
-  }
+  static Polynomial<Double> UTSTPoly(calcUTtoST());
   return(UTSTPoly((ut1-MeasData::MJD2000)/MeasData::JDCEN));
 }
 
+Polynomial<Double> MeasTable::calcUTtoST() {
+  Polynomial<Double> UTSTPoly(2);
+  UTSTPoly.setCoefficient(0, 1.002737909350795);
+  UTSTPoly.setCoefficient(1, +5.9006e-11);
+  UTSTPoly.setCoefficient(2, -5.9e-15);
+  return UTSTPoly;
+}
+
 Double MeasTable::dUT1(Double utc) {
-  static Bool msgDone = False;
-  static Double res = 0;
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+  static std::atomic<Bool> msgDone;
+#else
+  static Bool msgDone;
+#endif
+
+#if defined(USE_THREADS) && !defined(__APPLE__)
+  static thread_local Double res = 0.0;
+  static thread_local Double checkT = -1e6;
+#else // !USE_THREADS (empty Mutex impl) or __APPLE__
+  ScopedMutexLock lock(theirdUT1Mutex); // Pity. Try to narrow blunt __APPLE__ cond.
+  static Double res = 0.0;
   static Double checkT = -1e6;
-  ScopedMutexLock locker(theirMutex);
+#endif
   if ( !nearAbs(utc, checkT, 0.04)) {
     checkT = utc;
-    if (!MeasIERS::get(res, MeasIERS::MEASURED, MeasIERS::dUT1,
-		       utc)) {
+    if (!MeasIERS::get(res, MeasIERS::MEASURED, MeasIERS::dUT1, utc)) {
+      // It is harmless if the message accidentally appears multiple times.
       if (!msgDone) {
+	LogIO os(LogOrigin("MeasTable", "dUT1(Double)", WHERE));
+	os << LogIO::NORMAL3
+	   << "High precision dUT1 information not available."
+	   << LogIO::POST;
 	msgDone = True;
-	LogIO os(LogOrigin("MeasTable",
-			   String("dUT1(Double)"),
-			   WHERE));
-	os << LogIO::NORMAL3 << 
-	  String("High precision dUT1 information not available.") <<
-	  LogIO::POST;
       }
     }
   }

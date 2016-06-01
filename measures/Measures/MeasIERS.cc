@@ -1,5 +1,5 @@
 //# MeasIERS.cc: Interface to IERS tables
-//# Copyright (C) 1996-2003,2007,2008
+//# Copyright (C) 1996-2003,2007,2008,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,25 +43,23 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifndef CASADATA
-#define CASADATA "/usr/local/share/data/casacore"
+#define CASADATA "/usr/local/share/casacore/data"
 #endif
 
 //# Constants
 const Double MeasIERS::INTV = 5;
 
 //# Static data
+CallOnce0 MeasIERS::theirCallOnce;
 uInt MeasIERS::predicttime_reg = 0;
 uInt MeasIERS::notable_reg = 0;
 uInt MeasIERS::forcepredict_reg = 0;
-volatile Bool MeasIERS::needInit = True;
 Double MeasIERS::dateNow = 0.0;
 Vector<Double> MeasIERS::ldat[MeasIERS::N_Files][MeasIERS::N_Types];
-Bool MeasIERS::msgDone = False;
 const String MeasIERS::tp[MeasIERS::N_Files] = {"IERSeop97", "IERSpredict"};
 uInt MeasIERS::sizeNote = 0;
 uInt MeasIERS::nNote = 0;
 MeasIERS::CLOSEFUN *MeasIERS::toclose = 0;
-Mutex MeasIERS::theirMutex;
 
 
 //# Member functions
@@ -70,15 +68,13 @@ Bool MeasIERS::get(Double &returnValue,
                    MeasIERS::Types type,
                    Double date) {
   returnValue = 0.0;
-  if (needInit) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit) {
-      initMeas();
-      needInit = False;
-    }
-  }
+  theirCallOnce(initMeas);
+
   // Exit if no table has to be used.
-  if (AipsrcValue<Bool>::get(MeasIERS::notable_reg)) return True;
+  if (AipsrcValue<Bool>::get(MeasIERS::notable_reg)) {
+    return True;
+  }
+
   // Test if PREDICTED has to be used.
   Int which = MEASURED;
   if (file == PREDICTED ||
@@ -95,13 +91,20 @@ Bool MeasIERS::get(Double &returnValue,
       which = PREDICTED;
     }
   }
+
   if (which == PREDICTED) {
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+    static std::atomic<Bool> msgDone;
+#else
+    static Bool msgDone;
+#endif
     const Vector<Double>& mjds = ldat[which][0];
     if (mjds.empty()  ||  ut < mjds[0]  ||  ut >= mjds[mjds.size()-1]) {
+      // It is harmless if the message accidentally appears multiple times.
       if (!msgDone) {
+        msgDone = True;
         LogIO os(LogOrigin("MeasIERS",
-                           String("fillMeas(MeasIERS::Files, Double)"),
-                           WHERE));
+                           "fillMeas(MeasIERS::Files, Double)", WHERE));
         Time now;       // current time
         if (date > now.modifiedJulianDay()){
           // People using times from the future are almost certainly simulating
@@ -118,7 +121,6 @@ Bool MeasIERS::get(Double &returnValue,
              << "\nCalculations will proceed with less precision"
              << LogIO::POST;
         }
-        msgDone = True;
       }
       return False;
     }
@@ -168,15 +170,12 @@ void MeasIERS::initMeas() {
                                        "measures.ierspredict.directory"};
 
   predicttime_reg = 
-    AipsrcValue<Double>::registerRC(String("measures.measiers.d_predicttime"),
-                                    Unit("d"), Unit("d"),
-                                    MeasIERS::INTV);
+    AipsrcValue<Double>::registerRC("measures.measiers.d_predicttime",
+                                    Unit("d"), Unit("d"), MeasIERS::INTV);
   notable_reg = 
-    AipsrcValue<Bool>::registerRC(String("measures.measiers.b_notable"),
-                                  False);
+    AipsrcValue<Bool>::registerRC("measures.measiers.b_notable", False);
   forcepredict_reg = 
-    AipsrcValue<Bool>::registerRC(String("measures.measiers.b_forcepredict"),
-                                  False);
+    AipsrcValue<Bool>::registerRC("measures.measiers.b_forcepredict", False);
   dateNow = Time().modifiedJulianDay();
 
   TableRecord kws;
@@ -191,9 +190,7 @@ void MeasIERS::initMeas() {
                             N_Types, names, tp[which],
                             tplc[which],
                             "geodetic")) {
-      LogIO os(LogOrigin("MeasIERS",
-                         String("initMeas(MeasIERS::Files)"),
-                         WHERE));
+      LogIO os(LogOrigin("MeasIERS", "initMeas(MeasIERS::Files)", WHERE));
       os << LogIO::NORMAL1
          << "Cannot read IERS (Earth axis data) table " << tp[which]
          << "\nCalculations will proceed with lower precision"
@@ -207,26 +204,28 @@ void MeasIERS::initMeas() {
       // Check if MJD in first and last row match and have step 1.
       const Vector<Double>& mjds = ldat[which][0];
       if (mjds[mjds.size()-1] != mjds[0] + mjds.size()-1) {
-        LogIO os(LogOrigin("MeasIERS",
-                           String("initMeas(MeasIERS::Files)"),
-                           WHERE));
-        os << String("IERS table ") + tp[which] +
-          " seems to be corrupted (time step not 1)"
-           << LogIO::EXCEPTION;
+        LogIO os(LogOrigin("MeasIERS", "initMeas(MeasIERS::Files)", WHERE));
+        os << "IERS table " << tp[which]
+           << " seems to be corrupted (time step not 1)" << LogIO::EXCEPTION;
       }
     }
   }
 }
 
 void MeasIERS::closeMeas() {
-  ScopedMutexLock locker(theirMutex);
-  needInit = True;
+  // Cannot get this fast & thread-safe without rewriting initMeas/closeMeas.
+  // But this is only used to check for memory leaks at the end and possibly
+  // to compare tables in tests, so don't bother. Apply pray and HACK below...
   dateNow = 0.0;
   for (uInt i=0; i<N_Files; ++i) {
     for (uInt j=0; j<N_Types; ++j) {
       ldat[i][j].resize();
     }
   }
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+  std::atomic_thread_fence(std::memory_order_release); // pray
+#endif
+  new (&theirCallOnce) CallOnce0; // HACK
 }
 
 void MeasIERS::openNote(CLOSEFUN fun) {
@@ -269,11 +268,11 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
     return false;            // findTab logs its own errors.
   
   LogIO os(LogOrigin("MeasIERS",
-                     String("getTable(Table &, TableRecord &, "
-                            "ROTableRow &, RORecordFieldPtr<Double> *, "
-                            "String &vs, Double &dt, "
-                            "Int N, const String *, const String &, "
-                            "const String &, const String &)"),
+                     "getTable(Table &, TableRecord &, "
+                     "ROTableRow &, RORecordFieldPtr<Double> *, "
+                     "String &vs, Double &dt, "
+                     "Int N, const String *, const String &, "
+                     "const String &, const String &)",
                      WHERE));
 
   TableRecord ks(tab.keywordSet());
@@ -293,7 +292,7 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
     }
   }
   if (!ok) {
-    os << name + " has an incompatible format."
+    os << name << " has an incompatible format."
        << "\nYou may want to notify the CASA system manager about it."
        << LogIO::EXCEPTION;
     return False;
@@ -321,8 +320,7 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
   if(!ok)
     return false;            // findTab logs its own errors.
   
-  LogIO os(LogOrigin("MeasIERS", "getTable(Vector<String>& optcols)",
-                     WHERE));
+  LogIO os(LogOrigin("MeasIERS", "getTable(Vector<String>& optcols)", WHERE));
 
   TableRecord ks(tab.keywordSet());
 
@@ -439,18 +437,19 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
       }
     }
     if(!Table::isReadable(ldir + name)){
-      os << LogIO::WARN <<
-        String("Requested data table ") << name <<
-        String(" cannot be found in the searched directories:\n");
-      for(uInt i = 0; i < searched.nelements(); ++i)
+      os << LogIO::WARN
+         << "Requested data table " << name
+         << " cannot be found in the searched directories:\n";
+      for(uInt i = 0; i < searched.nelements(); ++i) {
         os << searched[i] << "\n";
+      }
       os << LogIO::POST;
       return False;
     }
     tab = Table(ldir + name);
-  }
-  else
+  } else {
     tab = *tabin;
+  }
 
   return ok;
 }
@@ -464,7 +463,7 @@ Bool MeasIERS::handle_keywords(Double &dt, String &vs, const TableRecord& ks,
   
   if(!ks.isDefined("VS_DATE") || !ks.isDefined("VS_VERSION") ||
      !ks.isDefined("VS_CREATE") || !ks.isDefined("VS_TYPE") ||
-     (tab.tableInfo().type() != String("IERS"))){
+     (tab.tableInfo().type() != "IERS")) {
     ok = False;
     os << LogIO::DEBUG1
        << "ks.isDefined(VS_DATE) " << ks.isDefined("VS_DATE")

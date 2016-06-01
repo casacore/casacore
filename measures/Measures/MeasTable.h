@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/measures/Measures/MeasJPL.h>      // calcPlanetary(MeasJPL::Files *)
 #include <casacore/measures/Measures/MeasTableMul.h>
 #include <casacore/measures/Measures/MeasData.h>
 #include <casacore/measures/Measures/MPosition.h>
@@ -147,8 +148,10 @@ public:
   // Selection related data
   // <group>
   // Are the IAU2000 precession/nutation to be used or not (IAU1984)
+  // Note that an Aipsrc::reRead() is not reflected in the return value here.
   static Bool useIAU2000();
   // If IAU2000 model, do we use the high precision 2000A model?
+  // Note that an Aipsrc::reRead() is not reflected in the return value here.
   static Bool useIAU2000A();
   // </group>
 
@@ -230,8 +233,7 @@ public:
   // Get the position (AU or rad) and velocity (AU/d or rad/d) for specified
   // code at TDB T. The ephemeris to use (now DE200 or DE405) can be selected
   // with the 'measures.jpl.ephemeris' aipsrc resource (default DE200).
-  static Vector<Double> Planetary(MeasTable::Types which, 
-                                  Double T); 
+  static Vector<Double> Planetary(MeasTable::Types which, Double T);
   // Get the JPL DE constant indicated
   static Double Planetary(MeasTable::JPLconst what);
   // </group>
@@ -239,6 +241,7 @@ public:
   // Observatory positions
   // <group>
   // Initialise list of all observatories from Observatories table
+  // Called using theirObsInitOnce.
   static void initObservatories();
   // Get list of all observatories
   static const Vector<String> &Observatories();
@@ -258,6 +261,7 @@ public:
   // Source list positions
   // <group>
   // Initialise list of all source from Sources table
+  // Called using theirSrcInitOnce.
   static void initSources();
   // Get list of all sources
   static const Vector<String> &Sources();
@@ -268,6 +272,7 @@ public:
   // Rest frequencies
   // <group>
   // Initialise list from internal Table for now
+  // Called using theirLinesInitOnce.
   static void initLines();
   // Get list of all frequencies
   static const Vector<String> &Lines();
@@ -276,6 +281,7 @@ public:
   // </group>
 
   // Initialise list of IGRF data
+  // Called using theirIGRFInitOnce.
   static void initIGRF();
   // Earth magnetic field (IGRF) data
   // Get the harmonic terms for specified time (mjd)
@@ -433,10 +439,13 @@ private:
   
   //# General member functions
 
-  static void doInitObservatories (void*);
-  static void doInitLines (void*);
-  static void doInitSources (void*);
-  static void doInitIGRF (void*);
+  static void doInitObservatories();
+  static void doInitLines();
+  static void doInitSources();
+  static void doInitIGRF();
+
+  // The calcNNN() functions are helpers to initialize
+  // function scope static variables in the NNN() callers.
 
   // Calculate precessionCoef
   // <group>
@@ -448,17 +457,73 @@ private:
 
   // Calculate fundArg
   // <group>
-  static void calcFundArg(volatile Bool &need, Polynomial<Double> result[6],
-			  const Double coeff[6][4]); 
-  static void calcFundArg00(volatile Bool &need, Polynomial<Double> result[6],
-			    const Double coeff[6][5]); 
-  static void calcPlanArg00(volatile Bool &need, 
-			    Polynomial<Double> result[14],
-			    const Double coeff[8][2]);
+  static std::vector<Polynomial<Double> > calcFundArg(const Double coeff[6][4]);
+  static std::vector<Polynomial<Double> > calcFundArg00(const Double coeff[6][5]);
+  static std::vector<Polynomial<Double> > calcPlanArg00(const Double coeff[8][2]);
   // </group>
 
+  // Calculate planetary data
+  // <group>
+  static void calcPlanetary(MeasJPL::Files* fil);
+  static void calcPlanetaryConstants(Double cn[MeasTable::N_JPLconst]);
+  // </group>
+
+  // Calculate aberration data
+  // <group>
+  static std::vector<Polynomial<Double> > calcAberArg();
+  static std::vector<Polynomial<Double> > calcAberArgDeriv();
+  static std::vector<Polynomial<Double> > calcAber1950Arg();
+  static std::vector<Polynomial<Double> > calcAber1950ArgDeriv();
+  static std::vector<Vector<Double> > calcMulSunAber();
+  static std::vector<Vector<Double> > calcMulEarthAber();
+  static std::vector<Vector<Double> > calcAberETerm();
+  // </group>
+
+  // Calculate velocity data
+  // <group>
+  static std::vector<Vector<Double> > calcVelocityLSRK();
+  static std::vector<Vector<Double> > calcVelocityLSR();
+  static std::vector<Vector<Double> > calcVelocityLSRGal();
+  static std::vector<Vector<Double> > calcVelocityLGROUP();
+  static std::vector<Vector<Double> > calcVelocityCMB();
+  // </group>
+
+  // Calculate Earth and Sun position data
+  // <group>
+  static std::vector<Polynomial<Double> > calcPosArg();
+  static std::vector<Polynomial<Double> > calcPosArgDeriv();
+  // </group>
+
+  // Calculate some of the rotation matrices for coordinate conversion
+  // <group>
+  static RotMatrix calcRectToPos();
+  static RotMatrix calcICRSToJ2000();
+  // </group>
+
+  // Calculate time related conversion data
+
+  // For dUTC() pack vars for clean initialization of function scope statics.
+  // Thread-safe (C++11). For pre-C++11 depends on compiler (GCC, Clang make it so).
+  struct Statics_dUTC {
+    Double (*LEAP)[4];
+    Int N;
+  };
+  // <group>
+  static Statics_dUTC calc_dUTC();
+  static Polynomial<Double> calcGMST0();
+  static Polynomial<Double> calcGMST00();
+  static Polynomial<Double> calcERA00();
+  static Polynomial<Double> calcGMUT0();
+  static Polynomial<Double> calcUTtoST();
+  // </group>
 
   //# Data
+  // Planetary table data
+  // <group>
+  static CallOnce theirPlanetaryInitOnce;
+  static CallOnce theirPlanetaryConstantsInitOnce;
+  // </group>
+
   // Multipliers for nutation, etc.
   // <group>
   static MeasTableMulSC         theirMulSC;
@@ -472,28 +537,29 @@ private:
   static MeasTableMulPosEarthXY theirMulPosEarthXY;
   static MeasTableMulPosEarthZ  theirMulPosEarthZ;
   // </group>
+
   // Observatories table data
   // <group>
-  static MutexedInit obsMutexedInit;
+  static CallOnce0 theirObsInitOnce;
   static Vector<String> obsNams;
   static Vector<MPosition> obsPos;
   static Vector<String> antResponsesPath;
   // </group>
   // Spectral line table data
   // <group>
-  static MutexedInit lineMutexedInit;
+  static CallOnce0 theirLinesInitOnce;
   static Vector<String> lineNams;
   static Vector<MFrequency> linePos;
   // </group>
   // Sources table data
   // <group>
-  static MutexedInit srcMutexedInit;
+  static CallOnce0 theirSrcInitOnce;
   static Vector<String> srcNams;
   static Vector<MDirection> srcPos;
   // </group>
   // IGRF data
   // <group>
-  static MutexedInit igrfMutexedInit;
+  static CallOnce0 theirIGRFInitOnce;
   static Double dtimeIGRF;
   static Double firstIGRF;
   static Double lastIGRF;
@@ -502,14 +568,10 @@ private:
   static std::vector<Vector<Double> > coefIGRF;
   static std::vector<Vector<Double> > dIGRF;
   // </group>
-  // Aipsrc registration (for speed) of use of iau2000 and if so
-  // the 2000a version
-  // <group>
-  static uInt iau2000_reg;
-  static uInt iau2000a_reg;
-  // </group>
-  // Mutex for thread-safety.
-  static Mutex theirMutex;
+
+#if !defined(USE_THREADS) || defined(__APPLE__)
+  static Mutex theirdUT1Mutex;
+#endif
 };
 
 

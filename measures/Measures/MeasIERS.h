@@ -1,5 +1,5 @@
 //# MeasIERS.h: Interface to IERS tables
-//# Copyright (C) 1996,1997,1999,2000,2002,2007
+//# Copyright (C) 1996,1997,1999,2000,2002,2007,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -231,10 +231,10 @@ public:
 
   // Make sure all static tables are closed that were opened with getTable
   // (like JPL, IERS). This is the preferred way to close the
-  // Measures related data tables.
+  // Measures related data tables. Only call it last at end of program.
   static void closeTables();
 
-  // Close the set of IERS tables only
+  // Close the set of IERS tables only. Only call it last at end of program.
   static void closeMeas();
 
 private:
@@ -263,13 +263,12 @@ private:
 			      const TableRecord& ks, const Table& tab);
 
   //# Data members
-  static volatile Bool needInit;
+  // Object to ensure safe multi-threaded lazy single initialization
+  static CallOnce0 theirCallOnce;
   // Current date
   static Double dateNow;
   // Read data (meas - predict)
   static Vector<Double> ldat[N_Files][N_Types];
-  // Message given
-  static Bool msgDone;
   // File names
   static const String tp[N_Files];
   // Check prediction interval
@@ -284,8 +283,6 @@ private:
   static CLOSEFUN *toclose;
   // Number of close notifications
   static uInt nNote;
-  // Mutex for thread-safety.
-  static Mutex theirMutex;
 };
 
 //# Inline Implementations

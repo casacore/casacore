@@ -1,5 +1,5 @@
 //# MeasJPL.cc: Interface to JPL DE tables
-//# Copyright (C) 1996,1997,1998,1999,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2001,2002,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,7 +48,7 @@ Bool MeasJPL::get(Vector<Double> &returnValue,
 		  const MVEpoch &date) {
   returnValue = 0.0;
   // Open the file if needed.
-  if (!initMeas(file)) {
+  if (!initMeasOnce(file)) {
     return False;
   }
   // Get or read the correct data if needed.
@@ -118,7 +118,7 @@ Bool MeasJPL::get(Vector<Double> &returnValue,
 
 Bool MeasJPL::getConst(Double &res, MeasJPL::Files which,
 		       MeasJPL::Codes what) {
-  if (initMeas(which)) {
+  if (initMeasOnce(which)) {
     res = cn[which][what];
     return True;
   }
@@ -127,7 +127,7 @@ Bool MeasJPL::getConst(Double &res, MeasJPL::Files which,
 
 Bool MeasJPL::getConst(Double &res, MeasJPL::Files which,
 		       const String &nam) {
-  if (initMeas(which)) {
+  if (initMeasOnce(which)) {
     const TableRecord &tr = t[which].keywordSet();
     if (tr.isDefined(nam)) {
       res = tr.asDouble(nam);
@@ -137,20 +137,16 @@ Bool MeasJPL::getConst(Double &res, MeasJPL::Files which,
   return False;
 }
 
-Bool MeasJPL::initMeas(MeasJPL::Files which) {
-  if (needInit[which]) {
-    ScopedMutexLock locker(theirMutex);
-    if (needInit[which]) {
-      if (!doInitMeas(which)) {
-        return False;
-      }
-      needInit[which] = False;
-    }
+Bool MeasJPL::initMeasOnce(MeasJPL::Files which) {
+  try {
+    theirCallOnce[which](doInitMeas, which);
+  } catch (InitError& ) {
+    return False;
   }
   return True;
 }
 
-Bool MeasJPL::doInitMeas(MeasJPL::Files which) {
+void MeasJPL::doInitMeas(MeasJPL::Files which) {
   static const String names[MeasJPL::N_Columns] = {
     "MJD",
     "x" };
@@ -228,30 +224,32 @@ Bool MeasJPL::doInitMeas(MeasJPL::Files which) {
   if (!ok) {
     // Close table if open.
     t[which] = Table();
-    LogIO os(LogOrigin("MeasJPL",
-                       String("initMeas(MeasJPL::Files)"),
-                       WHERE));
-    os << String("Corrupted JPL table ") + tp[which] << LogIO::EXCEPTION;
+    LogIO os(LogOrigin("MeasJPL", "initMeas(MeasJPL::Files)", WHERE));
+    os << "Corrupted JPL table " + tp[which] << LogIO::EXCEPTION;
   }
-  return (! t[which].isNull());
+
+  if (t[which].isNull()) {
+    throw InitError();
+  }
 }
 
 void MeasJPL::closeMeas() {
+  // Cannot get this fast & thread-safe without rewriting initMeas/closeMeas.
+  // But this is only used to check for memory leaks at the end and possibly
+  // to compare tables in tests, don't bother. Apply pray and HACK below...
   for (uInt i=0; i<N_Files; ++i) {
-    if (!needInit[i]) {
-      ScopedMutexLock locker(theirMutex);
-      if (!needInit[i]) {
-        if (! t[i].isNull()) {
-          mjd0[i] = 0;
-          mjdl[i] = 0;
-          dmjd[i] = 0;
-          curDate[i].resize (0);
-          dval[i].resize (0);
-          t[i] = Table();
-        }
-        needInit[i] = True;
-      }
+    if (! t[i].isNull()) {
+      mjd0[i] = 0;
+      mjdl[i] = 0;
+      dmjd[i] = 0;
+      curDate[i].resize (0);
+      dval[i].resize (0);
+      t[i] = Table();
     }
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+    std::atomic_thread_fence(std::memory_order_release); // pray
+#endif
+    new (&theirCallOnce[i]) CallOnce; // HACK
   }
 }
 
@@ -320,7 +318,8 @@ void MeasJPL::interMeas(Double res[], MeasJPL::Files, Double intv,
   }
 }
 
-volatile Bool MeasJPL::needInit[MeasJPL::N_Files] = {True, True};
+CallOnce MeasJPL::theirCallOnce[MeasJPL::N_Files];
+Mutex MeasJPL::theirMutex;
 Table MeasJPL::t[MeasJPL::N_Files];
 ArrayColumn<Double> MeasJPL::acc[MeasJPL::N_Files];
 Int MeasJPL::mjd0[MeasJPL::N_Files] = {0, 0};
@@ -333,7 +332,6 @@ vector<Vector<Double> > MeasJPL::dval[MeasJPL::N_Files];
 Double MeasJPL::aufac[MeasJPL::N_Files];
 Double MeasJPL::emrat[MeasJPL::N_Files];
 Double MeasJPL::cn[MeasJPL::N_Files][MeasJPL::N_Codes];
-Mutex MeasJPL::theirMutex;
 
 } //# NAMESPACE CASACORE - END
 
