@@ -30,20 +30,20 @@
 namespace casacore {
 
 Bool operator<(const SubScanKey& lhs, const SubScanKey& rhs) {
-	if (lhs.obsID < rhs.obsID) {
-		return True;
+    if (lhs.obsID < rhs.obsID) {
+        return True;
     }
-	else if (lhs.obsID == rhs.obsID) {
-		if (lhs.arrayID < rhs.arrayID) {
-			return True;
+    else if (lhs.obsID == rhs.obsID) {
+        if (lhs.arrayID < rhs.arrayID) {
+            return True;
         }
-		else if (lhs.arrayID == rhs.arrayID) {
-			if (lhs.scan < rhs.scan) {
-				return True;
+        else if (lhs.arrayID == rhs.arrayID) {
+            if (lhs.scan < rhs.scan) {
+                return True;
             }
-			else if (lhs.scan == rhs.scan) {
-				if (lhs.fieldID < rhs.fieldID) {
-					return True;
+            else if (lhs.scan == rhs.scan) {
+                if (lhs.fieldID < rhs.fieldID) {
+                    return True;
                 }
             }
         }
@@ -52,34 +52,34 @@ Bool operator<(const SubScanKey& lhs, const SubScanKey& rhs) {
 }
 
 String toString(const SubScanKey& subScanKey) {
-	return toString(scanKey(subScanKey)) + " fieldID="
-		+ String::toString(subScanKey.fieldID);
+    return toString(scanKey(subScanKey)) + " fieldID="
+        + String::toString(subScanKey.fieldID);
 }
 
 std::ostream& operator<<(std::ostream& os, const SubScanKey& subScanKey) {
-	os << toString(subScanKey) << endl;
-	return os;
+    os << toString(subScanKey) << endl;
+    return os;
 }
 
 
 String toString(const ScanKey& scanKey) {
-	return "observationID=" + String::toString(scanKey.obsID)
-		+ " arrayID=" + String::toString(scanKey.arrayID)
-		+ " scan number=" + String::toString(scanKey.scan);
+    return "observationID=" + String::toString(scanKey.obsID)
+        + " arrayID=" + String::toString(scanKey.arrayID)
+        + " scan number=" + String::toString(scanKey.scan);
 }
 
 
 Bool operator<(const ScanKey& lhs, const ScanKey& rhs) {
-	if (lhs.obsID < rhs.obsID) {
-		return True;
+    if (lhs.obsID < rhs.obsID) {
+        return True;
     }
-	else if (lhs.obsID == rhs.obsID) {
-		if (lhs.arrayID < rhs.arrayID) {
-			return True;
+    else if (lhs.obsID == rhs.obsID) {
+        if (lhs.arrayID < rhs.arrayID) {
+            return True;
         }
-		else if (lhs.arrayID == rhs.arrayID) {
-			if (lhs.scan < rhs.scan) {
-				return True;
+        else if (lhs.arrayID == rhs.arrayID) {
+            if (lhs.scan < rhs.scan) {
+                return True;
             }
         }
     }
@@ -87,54 +87,54 @@ Bool operator<(const ScanKey& lhs, const ScanKey& rhs) {
 }
 
 Bool operator==(const ScanKey& lhs, const ScanKey& rhs) {
-	return lhs.obsID == rhs.obsID && lhs.arrayID == rhs.arrayID
-		&& lhs.scan == rhs.scan;
+    return lhs.obsID == rhs.obsID && lhs.arrayID == rhs.arrayID
+        && lhs.scan == rhs.scan;
 }
 
 std::set<Int> scanNumbers(const std::set<ScanKey>& scanKeys) {
-	std::set<Int> scanNumbers;
-	std::set<ScanKey>::const_iterator iter = scanKeys.begin();
-	std::set<ScanKey>::const_iterator end = scanKeys.end();
-	while (iter != end) {
-		scanNumbers.insert(iter->scan);
-		++iter;
-	}
-	return scanNumbers;
+    std::set<Int> scanNumbers;
+    std::set<ScanKey>::const_iterator iter = scanKeys.begin();
+    std::set<ScanKey>::const_iterator end = scanKeys.end();
+    while (iter != end) {
+        scanNumbers.insert(iter->scan);
+        ++iter;
+    }
+    return scanNumbers;
 }
 
 ostream& operator<<(ostream& os, const ScanKey& scanKey) {
-	os << toString(scanKey) << endl;
-	return os;
+    os << toString(scanKey) << endl;
+    return os;
 }
 
 
 Bool operator<(const ArrayKey& lhs, const ArrayKey& rhs) {
-	if (lhs.obsID < rhs.obsID) {
-		return True;
+    if (lhs.obsID < rhs.obsID) {
+        return True;
     }
-	else if (lhs.obsID == rhs.obsID) {
-		if (lhs.arrayID < rhs.arrayID) {
-			return True;
+    else if (lhs.obsID == rhs.obsID) {
+        if (lhs.arrayID < rhs.arrayID) {
+            return True;
         }
     }
     return False;
 }
 
 std::set<ScanKey> scanKeys(
-	const std::set<Int>& scans, const ArrayKey& arrayKey
+    const std::set<Int>& scans, const ArrayKey& arrayKey
 ) {
-	std::set<ScanKey> scanKeys;
-	std::set<Int>::const_iterator iter = scans.begin();
-	std::set<Int>::const_iterator end = scans.end();
-	ScanKey scanKey;
-	scanKey.obsID = arrayKey.obsID;
-	scanKey.arrayID = arrayKey.arrayID;
-	while (iter != end) {
-		scanKey.scan = *iter;
-		scanKeys.insert(scanKey);
-		++iter;
-	}
-	return scanKeys;
+    std::set<ScanKey> scanKeys;
+    std::set<Int>::const_iterator iter = scans.begin();
+    std::set<Int>::const_iterator end = scans.end();
+    ScanKey scanKey;
+    scanKey.obsID = arrayKey.obsID;
+    scanKey.arrayID = arrayKey.arrayID;
+    while (iter != end) {
+        scanKey.scan = *iter;
+        scanKeys.insert(scanKey);
+        ++iter;
+    }
+    return scanKeys;
 }
 
 Bool operator<(const SourceKey& lhs, const SourceKey& rhs) {
