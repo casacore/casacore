@@ -37,6 +37,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define AIPS_CXX11
 #endif
 
+// Set if compiler supports C++14 or newer
+#if __cplusplus >= 201402L
+#define AIPS_CXX11
+#define AIPS_CXX14
+#endif
+
 // Set if GCC compiler is used.
 #if defined(AIPS_GCC)
 #undef AIPS_GCC
