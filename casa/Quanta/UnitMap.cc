@@ -1,5 +1,5 @@
 //# UnitMap.cc: defines the UnitMap class containing standard unit definitions
-//# Copyright (C) 1994-2002,2007
+//# Copyright (C) 1994-2002,2007,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,13 +39,33 @@ Mutex UnitMap::fitsMutex;
 
 
 void UnitMap::initUM() {
-  // Mutex for map initializations.
-  static Mutex umMutex;
-  static Bool needInit = True;
-  if (needInit) {
-    ScopedMutexLock lock(umMutex);
-    if (needInit) {
-      // Initialise lists
+  // Recursive mutex for recursive map inits. Always locks in pre-C++11 builds.
+  // Need C++11 or later to implement double checked locking correctly.
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+  static std::recursive_mutex umMutex;
+  static std::atomic<int> initialized;
+  // Cannot use std::call_once() (recursion), so distinguish between init states.
+  const int INITING = 1;
+  const int INITIALIZED = 2;
+
+  int init = initialized.load(std::memory_order_acquire);
+  if (init < INITIALIZED) {
+    std::lock_guard<std::recursive_mutex> lock(umMutex);
+    init = initialized.load(std::memory_order_relaxed);
+    if (init < INITING) {
+      // Set initialized, because the initUMSI.() and initUMCust.() calls below
+      // may call clearCache(), which calls initUM().
+      // Note: lacks exception safety. Was already broken (new map<> below).
+      initialized.store(INITING, std::memory_order_relaxed);
+#else // !USE_THREADS (empty Mutex impl) or pre-C++11
+  static Mutex umMutex(Mutex::Recursive);
+  static bool initialized;
+
+    ScopedMutexLock lock(umMutex); // indented here is clearer
+    if (!initialized) {
+      initialized = true;
+#endif
+      // Initialize lists
       UnitMap::mapPref = 
         new map<String, UnitName>;
       UnitMap::mapDef =
@@ -62,9 +82,7 @@ void UnitMap::initUM() {
       // Define the map
       // Known prefixes
       UnitMap::initUMPrefix();
-      // Set needInit here, because the following functions may use
-      // clearCache, which calls initUM.
-      needInit = False;
+
       // Defining SI units
       UnitMap::initUMSI1();
       UnitMap::initUMSI2();
@@ -74,7 +92,10 @@ void UnitMap::initUM() {
       UnitMap::initUMCust3();
       //# Start with clean cache
       UnitMap::mapCache->clear();
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+      initialized.store(INITIALIZED, std::memory_order_release);
     }
+#endif
   }
 }
 
@@ -226,33 +247,34 @@ Bool UnitMap::getNameFITS(const UnitName *&name, uInt which) {
 
 void UnitMap::addFITS() {
   UnitMap::initUM();
+
+  // Could be optimized using C++11 std::call_once(), but infrequently called.
+  // If to be optimized, do note clearFITS() below (but not used atm).
+  // Double checked locking is unsafe pre-C++11!
+  ScopedMutexLock lock(UnitMap::fitsMutex);
   if (! UnitMap::doneFITS) {
-    ScopedMutexLock lock(UnitMap::fitsMutex);
-    if (! UnitMap::doneFITS) {
-      uInt cnt = 0;
-      const UnitName *Fname;
-      while (UnitMap::getNameFITS(Fname, cnt)) {
-        UnitMap::putUser(*Fname);
-        cnt++;
-      }
-      UnitMap::doneFITS = True;
+    uInt cnt = 0;
+    const UnitName *Fname;
+    while (UnitMap::getNameFITS(Fname, cnt)) {
+      UnitMap::putUser(*Fname);
+      cnt++;
     }
+    UnitMap::doneFITS = True;
   }
 }
 
 void UnitMap::clearFITS() {
   UnitMap::initUM();
+
+  ScopedMutexLock lock(UnitMap::fitsMutex);
   if (UnitMap::doneFITS) {
-    ScopedMutexLock lock(UnitMap::fitsMutex);
-    if (UnitMap::doneFITS) {
-      uInt cnt = 0;
-      const UnitName *Fname;
-      while (UnitMap::getNameFITS(Fname, cnt)) {
-        UnitMap::removeUser(*Fname);
-        cnt++;
-      }
-      UnitMap::doneFITS = False;
+    uInt cnt = 0;
+    const UnitName *Fname;
+    while (UnitMap::getNameFITS(Fname, cnt)) {
+      UnitMap::removeUser(*Fname);
+      cnt++;
     }
+    UnitMap::doneFITS = False;
   }
 }
 
