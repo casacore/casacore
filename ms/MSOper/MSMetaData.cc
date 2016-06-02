@@ -1421,6 +1421,13 @@ void MSMetaData::_getScansAndDDIDMaps(
     }
 }
 
+std::map<ScanKey, std::set<uInt> > MSMetaData::getScanToSpwsMap() const {
+    std::map<ScanKey, std::set<uInt> > scanToSpwMap;
+    vector<std::set<ScanKey> > spwToScanMap;
+    _getScansAndSpwMaps(scanToSpwMap, spwToScanMap);
+    return scanToSpwMap;
+}
+
 void MSMetaData::_getScansAndSpwMaps(
     std::map<ScanKey, std::set<uInt> >& scanToSpwMap,
     vector<std::set<ScanKey> >& spwToScanMap
