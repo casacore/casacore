@@ -2377,8 +2377,10 @@ void FITSIDItoMS1::fillAntennaTable()
      else{
        ant.name().put(row, name(i));
      }
-     //Vector<Double> offsets(3); offsets=0.; offsets(0)=offset(i);
-     //ant.offset().put(row,offset);
+     Vector<Float> tempf=offset(i);
+     Vector<Double> tempd(3);
+     for (Int j=0; j<3; j++) tempd[j]=tempf[j];
+     ant.offset().put(row,tempd);
 
      //ant.station().put(row,name(i));
      ant.station().put(row,arrnam+":"+temps);     
