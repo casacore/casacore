@@ -255,6 +255,9 @@ public:
     // get the set of scan numbers for the specified spectral window.
     std::set<Int> getScansForSpw(uInt spw, Int obsID, Int arrayID) const;
 
+    // get the complete mapping of scans to spws
+    std::map<ScanKey, std::set<uInt> > getScanToSpwsMap() const;
+
     // get the transitions from the SOURCE table. If there are no transitions
     // for a particular key, the shared ptr contains the null ptr.
     std::map<SourceKey, SHARED_PTR<vector<String> > > getTransitions() const;
@@ -784,6 +787,13 @@ private:
     // configured the object to generate _scanProps at some point, this call will
     // generate it. Otherwise, the returned object contains a null pointer.
     SHARED_PTR<const map<ScanKey, ScanProperties> > _generateScanPropsIfWanted() const;
+
+    // if _subScanProperties has been generated, just return it. If
+    // the caller has configured the object to generate _subScanPropertiess
+    // at some point, this call will generate it. Otherwise, the returned object
+    // contains a null pointer.
+    SHARED_PTR<const map<SubScanKey, SubScanProperties> >
+    _generateSubScanPropsIfWanted() const;
 
     vector<String> _getAntennaNames(
         std::map<String, uInt>& namesToIDsMap

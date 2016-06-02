@@ -410,7 +410,8 @@ void testIt(MSMetaData& md) {
         cout << "nscans " << md.nScans() << endl;
         AlwaysAssert(md.nScans() == 32, AipsError);
         std::set<Int> scanNumbers = md.getScanNumbers(0, 0);
-        cout << "*** test getSpwsForScan() and getPolarizationIDs()" << endl;
+        cout << "*** test getSpwsForScan(), getScanToSpwsMap(), getPolarizationIDs()" << endl;
+        std::map<ScanKey, std::set<uInt> > mymap = md.getScanToSpwsMap();
         ScanKey scanKey;
         scanKey.obsID = 0;
         scanKey.arrayID = 0;
@@ -449,6 +450,7 @@ void testIt(MSMetaData& md) {
             }
             scanKey.scan = *scan;
             AlwaysAssert(md.getSpwsForScan(scanKey) == exp, AipsError);
+            AlwaysAssert(mymap[scanKey] == exp, AipsError);
             for (
                 std::set<uInt>::const_iterator spw=exp.begin();
                 spw!=exp.end(); ++spw

@@ -1292,6 +1292,25 @@ MSMetaData::_generateScanPropsIfWanted() const {
     // we don't have it, and we aren't going to want it later
     return SHARED_PTR<const map<ScanKey, ScanProperties> >();
 }
+
+
+SHARED_PTR<const map<SubScanKey, MSMetaData::SubScanProperties> >
+MSMetaData::_generateSubScanPropsIfWanted() const {
+    if (_subScanProperties) {
+        // we already have it, just return it
+        return _subScanProperties;
+    }
+    if (_forceSubScanPropsToCache) {
+        // it hasn't been generated yet, but we will likely
+        // need it later, so just generate it now
+        SHARED_PTR<const map<ScanKey, ScanProperties> > scanProps;
+        SHARED_PTR<const map<SubScanKey, SubScanProperties> > subScanProps;
+        _getScanAndSubScanProperties(scanProps, subScanProps, False);
+        return subScanProps;
+    }
+    // we don't have it, and we aren't going to want it later
+    return SHARED_PTR<const map<SubScanKey, SubScanProperties> >();
+}
  
 std::set<ScanKey> MSMetaData::getScanKeys() const {
     if (! _scanKeys.empty()) {
@@ -1402,6 +1421,13 @@ void MSMetaData::_getScansAndDDIDMaps(
     }
 }
 
+std::map<ScanKey, std::set<uInt> > MSMetaData::getScanToSpwsMap() const {
+    std::map<ScanKey, std::set<uInt> > scanToSpwMap;
+    vector<std::set<ScanKey> > spwToScanMap;
+    _getScansAndSpwMaps(scanToSpwMap, spwToScanMap);
+    return scanToSpwMap;
+}
+
 void MSMetaData::_getScansAndSpwMaps(
     std::map<ScanKey, std::set<uInt> >& scanToSpwMap,
     vector<std::set<ScanKey> >& spwToScanMap
@@ -1415,26 +1441,43 @@ void MSMetaData::_getScansAndSpwMaps(
     scanToSpwMap.clear();
     spwToScanMap.clear();
     spwToScanMap.resize(nSpw(True));
-    std::map<ScanKey, std::set<uInt> > scanToDDIDMap;
-    vector<std::set<ScanKey> > ddIDToScanMap;
-    _getScansAndDDIDMaps(scanToDDIDMap, ddIDToScanMap);
-    vector<uInt> ddToSpw = getDataDescIDToSpwMap();
-    std::map<ScanKey, std::set<uInt> >::const_iterator iter = scanToDDIDMap.begin();
-    std::map<ScanKey, std::set<uInt> >::const_iterator end = scanToDDIDMap.end();
-    std::set<uInt>::const_iterator dIter;
-    std::set<uInt>::const_iterator dEnd;
-    while (iter != end) {
-        ScanKey scanKey = iter->first;
-        std::set<uInt> ddids = scanToDDIDMap[scanKey];
-        dIter = ddids.begin();
-        dEnd = ddids.end();
-        while (dIter != dEnd) {
-            uInt spw = ddToSpw[*dIter];
-            scanToSpwMap[scanKey].insert(spw);
-            spwToScanMap[spw].insert(scanKey);
-            ++dIter;
+    SHARED_PTR<const map<SubScanKey, SubScanProperties> > subScanProps
+        = _generateSubScanPropsIfWanted();
+    if (subScanProps) {
+        map<SubScanKey, SubScanProperties>::const_iterator iter = subScanProps->begin();
+        map<SubScanKey, SubScanProperties>::const_iterator end = subScanProps->end();
+        for (; iter!=end; ++iter) {
+            ScanKey sk = scanKey(iter->first);
+            std::set<uInt> spws = iter->second.spws;
+            scanToSpwMap[sk].insert(spws.begin(), spws.end());
+            std::set<uInt>::const_iterator spwIter = spws.begin();
+            std::set<uInt>::const_iterator spwEnd = spws.end();
+            for (; spwIter!=spwEnd; ++spwIter) {
+                spwToScanMap[*spwIter].insert(sk);
+            }
         }
-        ++iter;
+    }
+    else {
+        // fastest way to generate what we want if we don't have _subScanProperties
+        std::map<ScanKey, std::set<uInt> > scanToDDIDMap;
+        vector<std::set<ScanKey> > ddIDToScanMap;
+        _getScansAndDDIDMaps(scanToDDIDMap, ddIDToScanMap);
+        vector<uInt> ddToSpw = getDataDescIDToSpwMap();
+        std::map<ScanKey, std::set<uInt> >::const_iterator iter = scanToDDIDMap.begin();
+        std::map<ScanKey, std::set<uInt> >::const_iterator end = scanToDDIDMap.end();
+        std::set<uInt>::const_iterator dIter;
+        std::set<uInt>::const_iterator dEnd;
+        for (; iter!=end; ++iter) {
+            ScanKey scanKey = iter->first;
+            std::set<uInt> ddids = scanToDDIDMap[scanKey];
+            dIter = ddids.begin();
+            dEnd = ddids.end();
+            for (; dIter!=dEnd; ++dIter) {
+                uInt spw = ddToSpw[*dIter];
+                scanToSpwMap[scanKey].insert(spw);
+                spwToScanMap[spw].insert(scanKey);
+            }
+        }
     }
     if (_cacheUpdated(_sizeof(scanToSpwMap)) + _sizeof(spwToScanMap)) {
         _scanToSpwsMap = scanToSpwMap;
