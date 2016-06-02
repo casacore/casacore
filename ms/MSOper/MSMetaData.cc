@@ -652,7 +652,7 @@ std::set<Int> MSMetaData::getScansForState(
     if (! _hasStateID(stateID)) {
         return std::set<Int>();
     }
-    std::map<ScanKey, std::set<Int> > myScanToStatesMap = _getScanToStatesMap();
+    std::map<ScanKey, std::set<Int> > myScanToStatesMap = getScanToStatesMap();
     ArrayKey arrayKey;
     arrayKey.obsID = obsID;
     arrayKey.arrayID = arrayID;
@@ -699,7 +699,7 @@ std::map<ScanKey, std::set<Int> > MSMetaData::_getScanToAntennasMap() const {
     return myScanToAntsMap;
 }
 
-std::map<ScanKey, std::set<Int> > MSMetaData::_getScanToStatesMap() const {
+std::map<ScanKey, std::set<Int> > MSMetaData::getScanToStatesMap() const {
     if (! _scanToStatesMap.empty()) {
         return _scanToStatesMap;
     }
@@ -818,7 +818,7 @@ void MSMetaData::_getScansAndIntentsMaps(
     _getStateToIntentsMap(
         stateToIntentsMap, uniqueIntents
     );
-    std::map<ScanKey, std::set<Int> > scanToStatesMap = _getScanToStatesMap();
+    std::map<ScanKey, std::set<Int> > scanToStatesMap = getScanToStatesMap();
     std::map<ScanKey, std::set<Int> >::const_iterator end = scanToStatesMap.end();
     std::set<Int> states;
     std::set<String> intents;
@@ -1275,21 +1275,58 @@ std::set<String> MSMetaData::getFieldNamesForSpw(const uInt spw) {
     return fieldNames;
 }
 
+SHARED_PTR<const map<ScanKey, MSMetaData::ScanProperties> >
+MSMetaData::_generateScanPropsIfWanted() const {
+    if (_scanProperties) {
+        // we already have it, just return it
+        return _scanProperties;
+    }
+    if (_forceSubScanPropsToCache) {
+        // it hasn't been generated yet, but we will likely
+        // need it later, so just generate it now
+        SHARED_PTR<const map<ScanKey, ScanProperties> > scanProps;
+        SHARED_PTR<const map<SubScanKey, SubScanProperties> > subScanProps;
+        _getScanAndSubScanProperties(scanProps, subScanProps, False);
+        return scanProps;
+    }
+    // we don't have it, and we aren't going to want it later
+    return SHARED_PTR<const map<ScanKey, ScanProperties> >();
+}
+
+
+SHARED_PTR<const map<SubScanKey, MSMetaData::SubScanProperties> >
+MSMetaData::_generateSubScanPropsIfWanted() const {
+    if (_subScanProperties) {
+        // we already have it, just return it
+        return _subScanProperties;
+    }
+    if (_forceSubScanPropsToCache) {
+        // it hasn't been generated yet, but we will likely
+        // need it later, so just generate it now
+        SHARED_PTR<const map<ScanKey, ScanProperties> > scanProps;
+        SHARED_PTR<const map<SubScanKey, SubScanProperties> > subScanProps;
+        _getScanAndSubScanProperties(scanProps, subScanProps, False);
+        return subScanProps;
+    }
+    // we don't have it, and we aren't going to want it later
+    return SHARED_PTR<const map<SubScanKey, SubScanProperties> >();
+}
+ 
 std::set<ScanKey> MSMetaData::getScanKeys() const {
     if (! _scanKeys.empty()) {
         return _scanKeys;
     }
     std::set<ScanKey> scanKeys;
-    if (_scanProperties) {
-        // scan keys already exist and are cached, they just need to be
-        // harvested
-        map<ScanKey, ScanProperties>::const_iterator iter = _scanProperties->begin();
-        map<ScanKey, ScanProperties>::const_iterator end = _scanProperties->end();
+    SHARED_PTR<const map<ScanKey, ScanProperties> > scanProps = _generateScanPropsIfWanted();
+    if (scanProps) {
+        map<ScanKey, ScanProperties>::const_iterator iter = scanProps->begin();
+        map<ScanKey, ScanProperties>::const_iterator end = scanProps->end();
         for (; iter!=end; ++iter) {
             scanKeys.insert(iter->first);
         }
     }
     else {
+        // fastest way if we don't have _scanProperties and aren't going to need it later
         std::set<SubScanKey> subScanKeys = _getSubScanKeys();
         std::set<SubScanKey>::const_iterator iter = subScanKeys.begin();
         std::set<SubScanKey>::const_iterator end = subScanKeys.end();
@@ -1384,6 +1421,13 @@ void MSMetaData::_getScansAndDDIDMaps(
     }
 }
 
+std::map<ScanKey, std::set<uInt> > MSMetaData::getScanToSpwsMap() const {
+    std::map<ScanKey, std::set<uInt> > scanToSpwMap;
+    vector<std::set<ScanKey> > spwToScanMap;
+    _getScansAndSpwMaps(scanToSpwMap, spwToScanMap);
+    return scanToSpwMap;
+}
+
 void MSMetaData::_getScansAndSpwMaps(
     std::map<ScanKey, std::set<uInt> >& scanToSpwMap,
     vector<std::set<ScanKey> >& spwToScanMap
@@ -1397,26 +1441,43 @@ void MSMetaData::_getScansAndSpwMaps(
     scanToSpwMap.clear();
     spwToScanMap.clear();
     spwToScanMap.resize(nSpw(True));
-    std::map<ScanKey, std::set<uInt> > scanToDDIDMap;
-    vector<std::set<ScanKey> > ddIDToScanMap;
-    _getScansAndDDIDMaps(scanToDDIDMap, ddIDToScanMap);
-    vector<uInt> ddToSpw = getDataDescIDToSpwMap();
-    std::map<ScanKey, std::set<uInt> >::const_iterator iter = scanToDDIDMap.begin();
-    std::map<ScanKey, std::set<uInt> >::const_iterator end = scanToDDIDMap.end();
-    std::set<uInt>::const_iterator dIter;
-    std::set<uInt>::const_iterator dEnd;
-    while (iter != end) {
-        ScanKey scanKey = iter->first;
-        std::set<uInt> ddids = scanToDDIDMap[scanKey];
-        dIter = ddids.begin();
-        dEnd = ddids.end();
-        while (dIter != dEnd) {
-            uInt spw = ddToSpw[*dIter];
-            scanToSpwMap[scanKey].insert(spw);
-            spwToScanMap[spw].insert(scanKey);
-            ++dIter;
+    SHARED_PTR<const map<SubScanKey, SubScanProperties> > subScanProps
+        = _generateSubScanPropsIfWanted();
+    if (subScanProps) {
+        map<SubScanKey, SubScanProperties>::const_iterator iter = subScanProps->begin();
+        map<SubScanKey, SubScanProperties>::const_iterator end = subScanProps->end();
+        for (; iter!=end; ++iter) {
+            ScanKey sk = scanKey(iter->first);
+            std::set<uInt> spws = iter->second.spws;
+            scanToSpwMap[sk].insert(spws.begin(), spws.end());
+            std::set<uInt>::const_iterator spwIter = spws.begin();
+            std::set<uInt>::const_iterator spwEnd = spws.end();
+            for (; spwIter!=spwEnd; ++spwIter) {
+                spwToScanMap[*spwIter].insert(sk);
+            }
         }
-        ++iter;
+    }
+    else {
+        // fastest way to generate what we want if we don't have _subScanProperties
+        std::map<ScanKey, std::set<uInt> > scanToDDIDMap;
+        vector<std::set<ScanKey> > ddIDToScanMap;
+        _getScansAndDDIDMaps(scanToDDIDMap, ddIDToScanMap);
+        vector<uInt> ddToSpw = getDataDescIDToSpwMap();
+        std::map<ScanKey, std::set<uInt> >::const_iterator iter = scanToDDIDMap.begin();
+        std::map<ScanKey, std::set<uInt> >::const_iterator end = scanToDDIDMap.end();
+        std::set<uInt>::const_iterator dIter;
+        std::set<uInt>::const_iterator dEnd;
+        for (; iter!=end; ++iter) {
+            ScanKey scanKey = iter->first;
+            std::set<uInt> ddids = scanToDDIDMap[scanKey];
+            dIter = ddids.begin();
+            dEnd = ddids.end();
+            for (; dIter!=dEnd; ++dIter) {
+                uInt spw = ddToSpw[*dIter];
+                scanToSpwMap[scanKey].insert(spw);
+                spwToScanMap[spw].insert(scanKey);
+            }
+        }
     }
     if (_cacheUpdated(_sizeof(scanToSpwMap)) + _sizeof(spwToScanMap)) {
         _scanToSpwsMap = scanToSpwMap;
@@ -2496,7 +2557,7 @@ std::set<Int> MSMetaData::getStatesForScan(
     arrayKey.obsID = obsID;
     arrayKey.arrayID = arrayID;
     std::set<ScanKey> scanKeys = getScanKeys(arrayKey);
-    std::map<ScanKey, std::set<Int> > scanToStates = _getScanToStatesMap();
+    std::map<ScanKey, std::set<Int> > scanToStates = getScanToStatesMap();
     std::set<Int> states;
     std::set<ScanKey>::const_iterator iter = scanKeys.begin();
     std::set<ScanKey>::const_iterator end = scanKeys.end();
