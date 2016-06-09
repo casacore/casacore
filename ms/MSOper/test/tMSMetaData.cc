@@ -467,7 +467,11 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getScansForSpw()" << endl;
+            cout << "*** test getScansForSpw() and getSpwToScansMap()" << endl;
+            vector<std::set<ScanKey> > spwToScans = md.getSpwToScansMap();
+            ScanKey scanKey;
+            scanKey.obsID = 0;
+            scanKey.arrayID = 0;
             for (uInt i=0; i<md.nSpw(True); ++i) {
                 std::set<Int> exp;
                 if (i==0) {
@@ -501,6 +505,14 @@ void testIt(MSMetaData& md) {
                     // empty set
                 }
                 AlwaysAssert(md.getScansForSpw(i, 0, 0) == exp, AipsError);
+                std::set<Int>::const_iterator iter = exp.begin();
+                std::set<Int>::const_iterator end = exp.end();
+                std::set<ScanKey> expSet;
+                for (; iter!=end; ++iter) {
+                    scanKey.scan = *iter;
+                    expSet.insert(scanKey);
+                }
+                AlwaysAssert(spwToScans[i] == expSet, AipsError);
             }
         }
         {

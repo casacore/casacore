@@ -258,6 +258,9 @@ public:
     // get the complete mapping of scans to spws
     std::map<ScanKey, std::set<uInt> > getScanToSpwsMap() const;
 
+    // get the complete mapping of spws to scans
+    std::vector<std::set<ScanKey> > getSpwToScansMap() const;
+
     // get the transitions from the SOURCE table. If there are no transitions
     // for a particular key, the shared ptr contains the null ptr.
     std::map<SourceKey, SHARED_PTR<vector<String> > > getTransitions() const;

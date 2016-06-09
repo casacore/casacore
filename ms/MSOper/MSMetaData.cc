@@ -1428,6 +1428,13 @@ std::map<ScanKey, std::set<uInt> > MSMetaData::getScanToSpwsMap() const {
     return scanToSpwMap;
 }
 
+vector<std::set<ScanKey> > MSMetaData::getSpwToScansMap() const {
+    std::map<ScanKey, std::set<uInt> > scanToSpwMap;
+    vector<std::set<ScanKey> > spwToScanMap;
+    _getScansAndSpwMaps(scanToSpwMap, spwToScanMap);
+    return spwToScanMap;
+}
+
 void MSMetaData::_getScansAndSpwMaps(
     std::map<ScanKey, std::set<uInt> >& scanToSpwMap,
     vector<std::set<ScanKey> >& spwToScanMap
