@@ -2772,6 +2772,13 @@ std::map<String, std::set<Double> > MSMetaData::_getIntentsToTimesMap() const {
     return mymap;
 }
 
+vector<std::set<ScanKey> > MSMetaData::getFieldToScansMap() const {
+    vector<std::set<ScanKey> > fieldToScansMap;
+    std::map<ScanKey, std::set<Int> > scanToFieldsMap;
+    _getFieldsAndScansMaps(fieldToScansMap, scanToFieldsMap);
+    return fieldToScansMap;
+}
+
 void MSMetaData::_getFieldsAndScansMaps(
     vector<std::set<ScanKey> >& fieldToScansMap,
     std::map<ScanKey, std::set<Int> >& scanToFieldsMap
