@@ -129,11 +129,11 @@ MDirection ROMSPointingColumns::sourceOffsetMeas(Int row,
     for (Int i=start; i<end; i++) {
       if (antennaId()(i)==antenna) {
 	Double halfInt=0.0;  
-	if(interval()(i)==0){
+	if(interval()(i)==0.0){
 	  Int counter=0;
 	  Int adder=1;
 	  
-	  while(time()(i+counter)==time()(i)){
+	  while(!( (time()(i+counter)!=time()(i))&& (antennaId()(i+counter) == antennaId()(i)))){
 	    counter=counter+adder;
 	    if(nrow <= i+counter){
 	      adder=-1; 
@@ -145,6 +145,7 @@ MDirection ROMSPointingColumns::sourceOffsetMeas(Int row,
 	else{
 	  halfInt = interval()(i)/2.0;
 	}
+	 
 	if (halfInt>0.0) {
 	  if (time()(i) >= ptime - halfInt && time()(i) <= ptime + halfInt) {
 	    return i;
