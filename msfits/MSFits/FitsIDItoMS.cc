@@ -150,6 +150,7 @@ static Int getIndexContains(Vector<String>& map, const String& key,
 }
 
 Bool FITSIDItoMS1::firstMain = True; // initialize the class variable firstMain
+Bool FITSIDItoMS1::firstSyscal = True; // initialize the class variable firstSyscal
 Double FITSIDItoMS1::rdate = 0.; // initialize the class variable rdate
 String FITSIDItoMS1::array_p = ""; // initialize the class variable array_p
 SimpleOrderedMap<Int,Int> FITSIDItoMS1::antIdFromNo(-1); // initialize the class variable antIdFromNo
@@ -182,6 +183,7 @@ SimpleOrderedMap<Int,Int> FITSIDItoMS1::antIdFromNo(-1); // initialize the class
   
   if(initFirstMain){
       firstMain = True;
+      firstSyscal = True;
       antIdFromNo.clear();
       rdate = 0.;
   }
@@ -1702,7 +1704,11 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   }
 
   if(addSyscal){
-    cout << "Syscal table setup needs to be inplemented." << endl;
+    TableDesc td = MSSysCal::requiredTableDesc();
+    MSSysCal::addColumnToDesc(td, MSSysCal::TSYS);
+    SetupNewTable tabSetup(ms.sysCalTableName(), td, option);
+    ms.rwKeywordSet().defineTable(MS::keywordName(MS::SYSCAL),
+				  Table(tabSetup));
   }
 
   // update the references to the subtable keywords
@@ -2377,8 +2383,10 @@ void FITSIDItoMS1::fillAntennaTable()
      else{
        ant.name().put(row, name(i));
      }
-     //Vector<Double> offsets(3); offsets=0.; offsets(0)=offset(i);
-     //ant.offset().put(row,offset);
+     Vector<Float> tempf=offset(i);
+     Vector<Double> tempd(3);
+     for (Int j=0; j<3; j++) tempd[j]=tempf[j];
+     ant.offset().put(row,tempd);
 
      //ant.station().put(row,name(i));
      ant.station().put(row,arrnam+":"+temps);     
@@ -2929,12 +2937,58 @@ Bool FITSIDItoMS1::fillCorrelatorModelTable()
 
 Bool FITSIDItoMS1::fillSysCalTable()
 {
-
   *itsLog << LogOrigin("FitsIDItoMS()", "fillSysCalTable");
-  //MSSysCalColumns& msSysCal(msc_p->sysCal());
-  *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
-  return False;
+  MSSysCalColumns& msSysCal(msc_p->sysCal());
 
+  ConstFitsKeywordList& kwl = kwlist();
+  const FitsKeyword* fkw;
+  String kwname;
+  kwl.first();
+  Int nIF = 1;
+  while ((fkw = kwl.next())){
+    kwname = fkw->name();
+    if (kwname == "NO_BAND") {
+      nIF = fkw->asInt();
+    }
+  }
+
+  Int nVal=nrows();
+  Bool dualPol=False;
+
+  Table tyTab = oldfullTable("");
+  ROScalarColumn<Double> time(tyTab, "TIME");
+  ROScalarColumn<Float> timeint(tyTab, "TIME_INTERVAL");
+  ROScalarColumn<Int> anNo(tyTab, "ANTENNA_NO");
+  ROArrayColumn<Float> tsys_1(tyTab, "TSYS_1");
+  ROArrayColumn<Float> tsys_2;
+  if(tyTab.tableDesc().isColumn("TSYS_2")) {
+    tsys_2.attach(tyTab, "TSYS_2"); // this column is optional
+    dualPol=True;
+  }
+  Vector<Float> tsys(dualPol ? 2 : 1);
+
+  Int outRow=-1;
+  for (Int inRow=0; inRow<nVal; inRow++) {
+    for (Int inIF=0; inIF<nIF; inIF++) {
+      ms_p.sysCal().addRow(); outRow++;
+      if (antIdFromNo.isDefined(anNo(inRow))) {
+	msSysCal.antennaId().put(outRow, antIdFromNo(anNo(inRow)));
+      } else {
+    	*itsLog << LogIO::SEVERE << "Internal error: no mapping for ANTENNA_NO "
+				<< anNo(inRow) << LogIO::EXCEPTION;
+      }
+      msSysCal.feedId().put(outRow,0); // only one feed ID == 0
+      msSysCal.time().put(outRow,time(inRow)*C::day + rdate);
+      msSysCal.interval().put(outRow,timeint(inRow)*C::day);
+      msSysCal.spectralWindowId().put(outRow,inIF);
+      tsys(0)=tsys_1(inRow)(IPosition(1,inIF));
+      if (dualPol)
+	tsys(1)=tsys_2(inRow)(IPosition(1,inIF));
+      msSysCal.tsys().put(outRow,tsys);
+    }
+  }
+
+  return True;
 }
 
 Bool FITSIDItoMS1::fillFlagCmdTable()
@@ -3099,7 +3153,15 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
   else{
     Bool useTSM=False;
     Bool mainTbl=False;
-    setupMeasurementSet(msFile, useTSM, mainTbl);
+    Bool addCorrMode=False;
+    Bool addSyscal=False;
+
+    if (firstSyscal && extname == "SYSTEM_TEMPERATURE") {
+      addSyscal=True;
+      firstSyscal=False;
+    }
+
+    setupMeasurementSet(msFile, useTSM, mainTbl, addCorrMode, addSyscal);
     
     Bool success = True; // for the optional tables, we have a return value permitting us
                          // to skip them if they cannot be read
