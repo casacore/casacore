@@ -133,12 +133,15 @@ MDirection ROMSPointingColumns::sourceOffsetMeas(Int row,
 	  Int counter=0;
 	  Int adder=1;
 	  
-	  while(!( (time()(i+counter)!=time()(i))&& (antennaId()(i+counter) == antennaId()(i)))){
+	  while(!( (time()(i+counter)!=time()(i))&& (antennaId()(i+counter) == antenna))){
 	    counter=counter+adder;
 	    if(nrow <= i+counter){
 	      adder=-1; 
 	      counter=0;
-	    }        
+	    }
+	    ////Could not find another point (interval is infinite)  hence only 1 valid point
+	    if( (i+counter) < 0)
+	      return i;
 	  }       
 	  halfInt = abs(time()(i+counter)-time()(i))/2.0;
 	}
