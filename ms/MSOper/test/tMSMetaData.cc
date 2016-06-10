@@ -466,40 +466,54 @@ void testIt(MSMetaData& md) {
                 AlwaysAssert(pols == exppols, AipsError);
             }
         }
-        cout << "*** test getScansForSpw()" << endl;
-        for (uInt i=0; i<md.nSpw(True); ++i) {
-            std::set<Int> exp;
-            if (i==0) {
-                Int myints[] = {
+        {
+            cout << "*** test getScansForSpw() and getSpwToScansMap()" << endl;
+            vector<std::set<ScanKey> > spwToScans = md.getSpwToScansMap();
+            ScanKey scanKey;
+            scanKey.obsID = 0;
+            scanKey.arrayID = 0;
+            for (uInt i=0; i<md.nSpw(True); ++i) {
+                std::set<Int> exp;
+                if (i==0) {
+                    Int myints[] = {
                         1,  2,  3,  4,  5,  6,  7,  8,  9,
                         10, 11, 12, 13, 14, 15, 16, 17, 18,
                         19, 20, 21, 22, 23, 24, 25, 26, 27,
                         28, 29, 30, 31, 32
-                };
-                exp.insert(myints, myints+32);
-            }
-            else if (i<9) {
-                Int myints[] = {1, 5, 8};
-                exp.insert(myints, myints+3);
-            }
-            else if (i<17) {
-                Int myints[] = {
+                    };
+                    exp.insert(myints, myints+32);
+                }
+                else if (i<9) {
+                    Int myints[] = {1, 5, 8};
+                    exp.insert(myints, myints+3);
+                }
+                else if (i<17) {
+                    Int myints[] = {
                         2,  3,  6,  9, 11, 13, 15,
                         17, 19, 22, 24, 26, 29, 31
-                };
-                exp.insert(myints, myints+14);
-            }
-            else if (i<25) {
-                Int myints[] = {
+                    };
+                    exp.insert(myints, myints+14);
+                }
+                else if (i<25) {
+                    Int myints[] = {
                         4,  7, 10, 12, 14, 16, 18,
                         20, 21, 23, 25, 27, 28, 30, 32
-                };
-                exp.insert(myints, myints+15);
+                    };
+                    exp.insert(myints, myints+15);
+                }
+                else {
+                    // empty set
+                }
+                AlwaysAssert(md.getScansForSpw(i, 0, 0) == exp, AipsError);
+                std::set<Int>::const_iterator iter = exp.begin();
+                std::set<Int>::const_iterator end = exp.end();
+                std::set<ScanKey> expSet;
+                for (; iter!=end; ++iter) {
+                    scanKey.scan = *iter;
+                    expSet.insert(scanKey);
+                }
+                AlwaysAssert(spwToScans[i] == expSet, AipsError);
             }
-            else {
-                // empty set
-            }
-            AlwaysAssert(md.getScansForSpw(i, 0, 0) == exp, AipsError);
         }
         {
             cout << "*** test nAntennas()" << endl;
