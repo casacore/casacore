@@ -543,7 +543,8 @@ public:
                         Bool showDataMans=True,
                         Bool showColumns=True,
                         Bool showSubTables=False,
-                        Bool sortColumns=False) const;
+                        Bool sortColumns=False,
+                        Bool cOrder=False) const;
 
     // Show the table and/or column keywords, possibly also of all subtables.
     // Maximum <src>maxVal> values of Arrays will be shown.
@@ -1245,9 +1246,10 @@ inline void Table::showStructure (std::ostream& os,
                                   Bool showDataMans,
                                   Bool showColumns,
                                   Bool showSubTables,
-                                  Bool sortColumns) const
+                                  Bool sortColumns,
+                                  Bool cOrder) const
     { baseTabPtr_p->showStructure (os, showDataMans, showColumns,
-                                   showSubTables, sortColumns); }
+                                   showSubTables, sortColumns, cOrder); }
 
 
 
