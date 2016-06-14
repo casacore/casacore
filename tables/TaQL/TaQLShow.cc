@@ -839,7 +839,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     String origType(type);
     type.downcase();
     if (cmd == "table") {
-      return showTable (parts);
+      return showTable (parts, style);
     } else if (cmd == "command"  ||  cmd == "commands") {
       return showCommand (type);
     } else if (cmd == "expr"  ||  cmd == "expression") {
@@ -870,7 +870,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     throw AipsError (cmd + " is an unknown SHOW command");
   }
 
-  String TaQLShow::showTable (const Vector<String>& parts)
+  String TaQLShow::showTable (const Vector<String>& parts,
+                              const TaQLStyle& style)
   {
     if (parts.size() < 2  ||  parts[1].empty()) {
       return getHelp (tableHelp);
@@ -911,7 +912,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     }
     std::ostringstream os;
-    table.showStructure (os, showdm, showcol, showsub, sortcol);
+    table.showStructure (os, showdm, showcol, showsub, sortcol,
+                         style.isCOrder());
     table.showKeywords (os, showsub, tabkey, colkey);
     return os.str();
   }

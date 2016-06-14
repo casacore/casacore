@@ -59,6 +59,7 @@
 */
 WHITE1    [ \t\n]
 WHITE     {WHITE1}*
+COMMENT   "#".*
 DIGIT     [0-9]
 INT       {DIGIT}+
 INT2      {DIGIT}{DIGIT}
@@ -175,20 +176,20 @@ NAMETAB   ([A-Za-z0-9_./+\-~$@:]|(\\.))+
 UDFLIBSYN {NAME}{WHITE}"="{WHITE}{NAME}
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
-REGEX3    m#[^#]+#
+REGEX3    m@[^@]+@
 REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 FREGEX1   f"/"[^/]+"/"
 FREGEX2   f%[^%]+%
-FREGEX3   f#[^#]+#
+FREGEX3   f@[^@]+@
 FREGEX    {FREGEX1}|{FREGEX2}|{FREGEX3}
 PATT1     p\/[^/]+\/
 PATT2     p%[^%]+%
-PATT3     p#[^#]+#
+PATT3     p@[^@]+@
 PATT      {PATT1}|{PATT2}|{PATT3}
 PATTEX    ({REGEX}|{FREGEX}|{PATT})i?
 DIST1     d\/[^/]+\/
 DIST2     d%[^%]+%
-DIST3     d#[^#]+#
+DIST3     d@[^@]+@
 DISTOPT   [bi]*{INT}?[bi]*
 DISTEX    ({DIST1}|{DIST2}|{DIST3}){DISTOPT}
 OPERREX   "!"?"~"
@@ -451,6 +452,10 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             BEGIN(EXPRstate);
             return RPAREN;
           }
+";"       {
+            tableGramPosition() += yyleng;
+            return SEMICOL;
+          }
 
  /* UDF libname synonym definition */
 <STYLEstate>{UDFLIBSYN} {
@@ -695,6 +700,9 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 
  /* Whitespace is skipped */
 {WHITE}   { tableGramPosition() += yyleng; }
+
+ /* Comment is skipped */
+{COMMENT} { tableGramPosition() += yyleng; }
 
  /* An unterminated string is an error */
 {USTRING} { throw (TableInvExpr ("Unterminated string")); }

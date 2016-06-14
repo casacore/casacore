@@ -39,6 +39,7 @@
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicSL/STLMath.h>
 #include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Record.h>
@@ -1008,7 +1009,8 @@ void BaseTable::checkRowNumberThrow (uInt rownr) const
 }
 
 void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
-                               Bool showSubTables, Bool sortColumns)
+                               Bool showSubTables, Bool sortColumns,
+                               Bool cOrder)
 {
   TableDesc tdesc = actualTableDesc();
   Record dminfo = dataManagerInfo();
@@ -1039,7 +1041,8 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
   if (!showDataMans) {
     if (showColumns) {
       os << endl;
-      showColumnInfo (os, tdesc, maxl, tdesc.columnNames(), sortColumns);
+      showColumnInfo (os, tdesc, maxl, tdesc.columnNames(), sortColumns,
+                      cOrder);
     }
   } else {
     for (uInt i=0; i<dminfo.nfields(); ++i) {
@@ -1087,7 +1090,7 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
       }
       if (showColumns) {
         showColumnInfo (os, tdesc, maxl, dm.asArrayString ("COLUMNS"),
-                        sortColumns);
+                        sortColumns, cOrder);
       }
     }
   }
@@ -1114,7 +1117,7 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
              << " references the parent table!!" << endl;
         } else {
           tab.showStructure (os, showDataMans, showColumns,
-                             showSubTables, sortColumns);
+                             showSubTables, sortColumns, cOrder);
         }
       }
     }
@@ -1126,7 +1129,7 @@ void BaseTable::showStructureExtra (ostream&) const
 
 void BaseTable::showColumnInfo (ostream& os, const TableDesc& tdesc,
                                 uInt maxl, const Array<String>& columnNames,
-                                Bool sort) const
+                                Bool sort, Bool cOrder) const
 {
   Vector<String> columns(columnNames);
   if (sort) {
@@ -1145,7 +1148,11 @@ void BaseTable::showColumnInfo (ostream& os, const TableDesc& tdesc,
     } else if (cdesc.isArray()) {
       if (cdesc.options() & ColumnDesc::FixedShape) {
         os << " shape=";
-        showContainer (os, cdesc.shape());
+        if (cOrder) {
+          showContainer (os, reversedCasaContainer(cdesc.shape()));
+        } else {
+          showContainer (os, cdesc.shape());
+        }
       } else if (cdesc.ndim() > 0) {
         os << " ndim=" << cdesc.ndim();
       } else {

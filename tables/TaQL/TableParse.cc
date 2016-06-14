@@ -1563,6 +1563,10 @@ void TableParseSelect::handleColSpec (const String& colName,
       if (ndim < 0) {
 	ndim = 0;
       }
+    } else if (name == "DIRECT") {
+      if (spec.asInt(i) == 1) {
+        options = 1;
+      }
     } else if (name == "DMTYPE") {
       dmType = spec.asString(i);
     } else if (name == "DMGROUP") {
