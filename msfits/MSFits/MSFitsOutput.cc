@@ -460,7 +460,6 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
 
     ScalarColumn<Int> measFreq(spectralTable, MSSpectralWindow::columnName(
             MSSpectralWindow::MEAS_FREQ_REF));
-
     Double restFreq(0.0);
     if (nsrc > 0) {
         ArrayColumn<Double> restfreqcol(srcTable, MSSource::columnName(
@@ -494,7 +493,8 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
             Vector<Double> freqs = frequencies(s);
             if (freqs.nelements() > 1) {
                 delta = freqs(1) - freqs(0);
-            } else {
+            }
+            else {
                 delta = totalbw(0);
                 if (doWsrt && (delta > 0))
                     delta = -delta; // This makes delta (and later bw0) NEGATIVE
@@ -554,24 +554,20 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
                         << LogIO::POST;
                 return 0;
             }
-            //cout << "freqs.nelements()=" << freqs.nelements() << endl;
-            Vector<Double> selChans(nchan);
-            for (uInt j = 0; j < (uInt)nchan; j++) {
-                uInt k = chanstart + j * chanstep;
-                selChans(j) = freqs(k);
-            }
-            //cout << "selChans.nelements()=" << selChans.nelements() << endl;
-            //for (uInt j = 0; j < selChans.nelements(); j++) {
-            //    cout << selChans(j) << " ";
-            //}
-            //cout << endl;
-            delta = selChans(1) - selChans(0);
-            for (uInt j = 1; j < selChans.nelements(); j++) {
-                if (!near(delta, selChans(j) - selChans(j - 1), 1.0e-5)) {
-                    os << LogIO::SEVERE
+            if (nchan > 1) {
+                Vector<Double> selChans(nchan);
+                for (uInt j = 0; j < (uInt)nchan; ++j) {
+                    uInt k = chanstart + j * chanstep;
+                    selChans(j) = freqs(k);
+                }
+                delta = selChans(1) - selChans(0);
+                for (uInt j = 1; j < selChans.nelements(); ++j) {
+                    if (!near(delta, selChans(j) - selChans(j - 1), 1.0e-5)) {
+                        os << LogIO::SEVERE
                             << "Channel width varies across the band"
                             << LogIO::POST;
-                    return 0;
+                        return 0;
+                    }
                 }
             }
             if (measFreq(s) != measFreq0) {
@@ -586,14 +582,17 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
     if (doWsrt) {
         f0RefPix = nchan / 2;
         refFreq = f0 + f0RefPix * bw0;
-    } else {
+    }
+    else {
         f0RefPix = 1 + nchan / 2;
-        if (f0RefPix == 1) 
+        if (f0RefPix == 1) { 
             // single-channel out
             refFreq = f0 + bw0 / 2.0 - delta / 2.0;
-        else 
+        }
+        else { 
             // multi-channel out  (f0RefPix is a *one* - based index!)
             refFreq = f0 + (f0RefPix - 1) * bw0;
+        }
     }
     refPixelFreq = f0RefPix;
 
