@@ -280,7 +280,7 @@ Table TableParseSelect::makeTable (Int tabnr, const String& name,
     //# SELECT statement.
     String shand, columnName;
     Vector<String> fieldNames;
-    if (splitName (shand, columnName, fieldNames, name, False, False)) { 
+    if (splitName (shand, columnName, fieldNames, name, False, False, True)) {
       table = tableKey (name, shand, columnName, fieldNames, stack);
     } else {
       // If no or equal shorthand is given, try to see if the
@@ -339,6 +339,9 @@ Table TableParseSelect::findTableKey (const Table& table,
 {
   //# Pick the table or column keyword set.
   if (columnName.empty()  ||  table.tableDesc().isColumn (columnName)) {
+    if (columnName.empty() && fieldNames.empty()) {
+        return table;
+    }
     const TableRecord* keyset = columnName.empty()  ?
       &(table.keywordSet()) :
       &(TableColumn (table, columnName).keywordSet());
@@ -378,11 +381,12 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
 				  Vector<String>& fieldNames,
 				  const String& name,
 				  Bool checkError,
-                                  Bool isKeyword)
+                                  Bool isKeyword,
+                                  Bool allowNoKey)
 {
   //# Make a copy, because some String functions are non-const.
   //# Usually the name consists of a columnName only, so use that.
-  //# A keyword is given if :: is part of the name of if isKeyword is set.
+  //# A keyword is given if :: is part of the name or if isKeyword is set.
   shorthand = "";
   columnName = name;
   String restName;
@@ -403,7 +407,7 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
     // They represent the keyword name and possible subfields in case
     // the keyword is a record.
     restName = columnName.after(j+1);
-    if (restName.empty()) {
+    if (!allowNoKey && restName.empty()) {
       if (checkError) {
 	throw (TableInvExpr ("No keyword given in name " + name));
       }
@@ -498,7 +502,8 @@ TableExprNode TableParseSelect::handleKeyCol (const String& name, Bool tryProj)
   //# Split the name into optional shorthand, column, and optional keyword.
   String shand, columnName;
   Vector<String> fieldNames;
-  Bool hasKey = splitName (shand, columnName, fieldNames, name, True, False);
+  Bool hasKey = splitName (shand, columnName, fieldNames, name, True, False,
+                           False);
   //# Use first table if there is no shorthand given.
   //# Otherwise find the table.
   Table tab = findTable (shand);
@@ -1778,7 +1783,7 @@ TableRecord& TableParseSelect::findKeyword (const String& name,
   //# Split the name into optional shorthand, column, and keyword.
   String shand, columnName;
   Vector<String> fieldNames;
-  splitName (shand, columnName, fieldNames, name, True, True);
+  splitName (shand, columnName, fieldNames, name, True, True, False);
   Table tab = findTable (shand);
   if (tab.isNull()) {
     throw (TableInvExpr("Shorthand " + shand + " has not been defined"));
