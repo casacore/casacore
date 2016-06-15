@@ -420,7 +420,7 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
         String shand, columnName;
         Vector<String> fieldNames;
         TableParseSelect::splitName (shand, columnName, fieldNames,
-                                     name, True, True);
+                                     name, True, True, False);
         if (! shand.empty()) {
           return False;
         }

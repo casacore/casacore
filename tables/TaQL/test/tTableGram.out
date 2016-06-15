@@ -831,6 +831,11 @@ select ab,ac,ad from tTableGram_tmp.tab2
  4 14 5
  5 15 6
  6 16 7
+select [select ab from ::][rownr()] from tTableGram_tmp.tab limit 1
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+ 1
 
 testing create ...
 create table tTableGram_tmp.tab2 (col1 i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]
