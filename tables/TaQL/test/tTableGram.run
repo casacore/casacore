@@ -208,6 +208,7 @@ $casa_checktool ./tTableGram 'select ab,ac from tTableGram_tmp.tab'
 $casa_checktool ./tTableGram 'insert into [createtable tTableGram_tmp.tab2 (ab I4, ac U2, ad I4)] values (10,11,1),(12,13,2),(14,15,4)'
 $casa_checktool ./tTableGram 'insert top 4 into tTableGram_tmp.tab2 values (rowid(), ab+10, rownumber())'
 $casa_checktool ./tTableGram 'select ab,ac,ad from tTableGram_tmp.tab2'
+$casa_checktool ./tTableGram 'select [select ab from ::][rownr()] from tTableGram_tmp.tab limit 1'
 
 # Test create and insert with a unit.
 echo ""

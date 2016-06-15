@@ -55,6 +55,7 @@ int main (int argc, char* argv[])
     inputs.create("maxval", "25", "Max nr of array values to show", "int");
     inputs.create("sub", "F", "Show info for all subtables?", "bool");
     inputs.create("sort", "F", "Sort columns in alphabetical order?", "bool");
+    inputs.create("corder", "F", "Show shapes in C-order?", "bool");
     inputs.create("browse", "F", "Browse contents of table?", "bool");
     inputs.create("selcol", "", "TaQL column selection string", "string");
     inputs.create("selrow", "", "TaQL row selection string", "string");
@@ -73,6 +74,7 @@ int main (int argc, char* argv[])
     Int  maxval     = inputs.getInt ("maxval");
     Bool showsub    = inputs.getBool("sub");
     Bool sortcol    = inputs.getBool("sort");
+    Bool cOrder     = inputs.getBool ("corder");
     Bool browse     = inputs.getBool("browse");
     String selcol  (inputs.getString("selcol"));
     String selrow  (inputs.getString("selrow"));
@@ -97,7 +99,7 @@ int main (int argc, char* argv[])
       seltab = tableCommand (command);
     }
     // Show the table structure.
-    table.showStructure (cout, showdm, showcol, showsub, sortcol);
+    table.showStructure (cout, showdm, showcol, showsub, sortcol, cOrder);
     table.showKeywords (cout, showsub, showtabkey, showcolkey, maxval);
     if (browse) {
       // Need to make table persistent for casabrowser.

@@ -103,6 +103,7 @@ The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
 %token LBRACE
 %token RBRACE
 %token COLON
+%token SEMICOL
 %token OPENOPEN
 %token OPENCLOSED
 %token CLOSEDOPEN
@@ -112,6 +113,7 @@ The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
 %token CLOSEDEMPTY
 %token EMPTYCLOSED
 %type <val> literal
+%type <val> asdtype
 %type <nodename> tabname
 %type <nodename> stabname
 %type <nodename> namefld
@@ -247,7 +249,12 @@ int TableGramlex (YYSTYPE*);
 %}
 
 %%
-topcomm:   command
+/* A command can optionally be ended with a semicolon */
+topcomm:   topcomm1
+         | topcomm1 SEMICOL
+         ;
+
+topcomm1:  command
          | sttimcoms command
          ;
 
@@ -301,7 +308,7 @@ showcomm:   SHOW showlist {
            }
          ;
 
-showlist:  {      /* no list */
+showlist:  {   /* no list */
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
@@ -315,6 +322,7 @@ showflds:  showflds tabname {
          | tabname {
 	       $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
+               $$->setSeparator (" ");
                $$->add (*$1);
            }
          ;
@@ -505,7 +513,7 @@ insrow:    INTO tables insclist selcomm {
            }
          ;
 
-insclist:  {         /* no insert column-list */   
+insclist:  {   /* no insert column-list */   
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
@@ -739,16 +747,10 @@ copykeys:  copykeys COMMA copykey {
                $$->add (*$1);
            }
 
-copykey:  namefld EQASS namefld {
+copykey:   namefld EQASS namefld asdtype {
 	       $$ = new TaQLNode(
                     new TaQLRecFldNodeRep($1->getString(),
-                                          $3->getString(), ""));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
-        | namefld EQASS namefld AS NAME {
-	       $$ = new TaQLNode(
-                    new TaQLRecFldNodeRep($1->getString(),
-                                          $3->getString(), $5->getString()));
+                                          $3->getString(), $4->getString()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
 
@@ -769,11 +771,11 @@ brackval:  LBRACKET recexpr RBRACKET {
                $$ = new TaQLRecFldNodeRep ("", empty, "");
            }
          | LBRACKET RBRACKET AS NAME {
-               /* empty vector of the given type */
+               /* empty vector of the given datatype */
                $$ = new TaQLRecFldNodeRep ("", TaQLNode(), $4->getString());
            }
 
-dminfo:    {      /* no datamans */
+dminfo:    {   /* no datamans */
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
@@ -793,7 +795,7 @@ exprlist:  exprlist COMMA orexpr {
            }
          ;
 
-groupby:   {          /* no groupby */
+groupby:   {   /* no groupby */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
@@ -809,7 +811,7 @@ groupby:   {          /* no groupby */
 	   }
          ;
 
-having:    {          /* no having */
+having:    {   /* no having */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
@@ -818,7 +820,7 @@ having:    {          /* no having */
 	   }
          ;
 
-order:     {          /* no sort */
+order:     {   /* no sort */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
@@ -864,7 +866,7 @@ order:     {          /* no sort */
 	   }
          ;
 
-limitoff:  {         /* no limit,offset */
+limitoff:  {   /* no limit,offset */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
@@ -946,7 +948,7 @@ tabnmtyps: NAME {  /* PLAIN_BIG, etc. for backward compatibility */
 	   }
          ;
   
-given:     {          /* no result */
+given:     {   /* no result */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
@@ -965,7 +967,7 @@ into:      INTO tabnmtyp {
 	   }
          ;
 
-columns:   {          /* no column names given (thus take all) */
+columns:   {   /* no column names given (thus take all) */
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
@@ -1050,7 +1052,7 @@ nmcolumns: NAME {
 	   }
          ;
 
-nrowspec:  {          /* no nrows given */
+nrowspec:  {   /* no nrows given */
                $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
@@ -1059,7 +1061,7 @@ nrowspec:  {          /* no nrows given */
 	   }
          ;
 
-colspecs:  {          /* no column specifications given */
+colspecs:  {   /* no column specifications given */
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
@@ -1213,15 +1215,15 @@ concslist: NAME {
 	   }
          ;
 
-concinto:  {    /* no GIVING */
-                $$ = new TaQLConstNode(new TaQLConstNodeRep(String()));
-                TaQLNode::theirNodesCreated.push_back ($$);
+concinto:  {   /* no GIVING */
+               $$ = new TaQLConstNode(new TaQLConstNodeRep(String()));
+               TaQLNode::theirNodesCreated.push_back ($$);
            }
          | GIVING tabname {
-                $$ = $2;
+               $$ = $2;
            }
          | INTO tabname {
-                $$ = $2;
+               $$ = $2;
           }
          ;
 
@@ -1259,7 +1261,7 @@ tabconc:   tabalias {
            }
 	 ;
 
-whexpr:    {                   /* no selection */
+whexpr:    {   /* no selection */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
@@ -1941,7 +1943,7 @@ recexpr:   recexpr COMMA recfield {
 	       $$->setPPFix ("[", "]");
                $$->add (*$1);
 	   }
-       ;
+         ;
 
 recfield:  srecfield {
                $$ = $1;
@@ -1949,7 +1951,7 @@ recfield:  srecfield {
          | rrecfield {
                $$ = $1;
            }
-       ;
+         ;
 
 srecfield: NAME EQASS srecval {
                $$ = new TaQLNode(
@@ -1957,13 +1959,10 @@ srecfield: NAME EQASS srecval {
 	       TaQLNode::theirNodesCreated.push_back ($$);
                delete $3;
            }
-      ;
+         ;
 
-srecval:   orexpr {
-               $$ = new TaQLRecFldNodeRep ("", *$1, "");
-           }
-         | orexpr AS NAME {     /* unit */
-	       $$ = new TaQLRecFldNodeRep ("", *$1, $3->getString());
+srecval:   orexpr asdtype {
+	       $$ = new TaQLRecFldNodeRep ("", *$1, $2->getString());
            }
 
 rrecfield: NAME EQASS brackval {
@@ -1972,6 +1971,15 @@ rrecfield: NAME EQASS brackval {
 	       TaQLNode::theirNodesCreated.push_back ($$);
                delete $3;
            }
-       ;
+         ;
+
+asdtype:   {   /* no datatype */
+               $$ = new TaQLConstNode(new TaQLConstNodeRep(String()));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | AS NAME {
+               $$ = $2;
+           }
+         ;
 
 %%

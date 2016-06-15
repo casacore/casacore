@@ -166,17 +166,7 @@ bool readLineSkip (String& line, const String& prompt)
 {
   bool fnd = false;
   while (!fnd  &&  readLine (line, prompt)) {
-    vector<String> parts = splitLine(line);
-    // Remove last part if empty.
-    if (! parts.empty()  &&  parts[parts.size()-1].empty()) {
-      parts.resize (parts.size() - 1);
-    }
-    if (parts.size() > 1) {
-      cerr << "A single TaQL command must be given" << endl;
-    } else if (! parts.empty()) {                            
-      line = parts[0];
-      fnd  = true;
-    }
+    fnd = !line.empty();
   }
 #ifdef HAVE_READLINE
   if (fnd) add_history (line.c_str());

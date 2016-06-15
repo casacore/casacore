@@ -789,8 +789,12 @@ void testIt(MSMetaData& md) {
             }
         }
         {
-            cout << "*** test getScansForFieldID()" << endl;
+            cout << "*** test getScansForFieldID() and getFieldToScansMap" << endl;
+            vector<std::set<ScanKey> > mymap = md.getFieldToScansMap();
             std::set<Int> expec;
+            ArrayKey aKey;
+            aKey.arrayID = 0;
+            aKey.obsID = 0;
             for (uInt i=0; i<6; ++i) {
                 expec.clear();
                 switch(i) {
@@ -833,6 +837,7 @@ void testIt(MSMetaData& md) {
                     throw AipsError("bad fieldID");
                 }
                 AlwaysAssert(md.getScansForFieldID(i, 0, 0) == expec, AipsError);
+                AlwaysAssert(mymap[i] == scanKeys(expec, aKey), AipsError);
             }
         }
         {

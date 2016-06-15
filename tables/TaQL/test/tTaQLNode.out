@@ -1,13 +1,13 @@
 select 1*3
 SELECT (1)*(3)
 
-select 1*3 giving a.b
+select 1*3 giving a.b;
 SELECT (1)*(3) GIVING a.b
 
 select 1*3,5+7 into a.b where a>2 groupby c1,c2 having e1<0 and e2>3 orderby d1,d2 limit 2:5:2
 SELECT (1)*(3),(5)+(7) WHERE (a)>(2) GROUPBY c1,c2 HAVING ((e1)<(0))&&((e2)>(3)) ORDERBY d1,d2 LIMIT 2:5:2 GIVING a.b
 
-select from a.tab
+select from a.tab #comment
 SELECT FROM a.tab
 
 select from [a1.tab,a2.tab,[a3a.tab,a3b.tab]]
@@ -60,8 +60,8 @@ SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (af)<>(SQLPATTERN('_3%'))
 select from tTaQLNode_tmp.tab where af ~ d/abc/
 SELECT FROM tTaQLNode_tmp.tab WHERE (af)~d/abc/
 
-select from tTaQLNode_tmp.tab where af ~ d#abc#ib3
-SELECT FROM tTaQLNode_tmp.tab WHERE (af)~d#abc#ib3
+select from tTaQLNode_tmp.tab where af ~ d@abc@ib3
+SELECT FROM tTaQLNode_tmp.tab WHERE (af)~d@abc@ib3
 
 select from tTaQLNode_tmp.tab where af ~ d/abc/03bi
 SELECT FROM tTaQLNode_tmp.tab WHERE (af)~d/abc/ib3

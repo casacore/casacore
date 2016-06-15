@@ -143,6 +143,9 @@ public:
     // Get the FIELD.SOURCE_ID column.
     vector<Int> getFieldTableSourceIDs() const;
 
+    // get the mapping of field ID to scans
+    vector<std::set<ScanKey> > getFieldToScansMap() const;
+
     std::map<String, std::set<Int> > getIntentToFieldsMap();
 
     std::map<String, std::set<ScanKey> > getIntentToScansMap();

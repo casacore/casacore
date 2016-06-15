@@ -615,9 +615,10 @@ public:
   // of the column (for the case where the column contains records).
   // If the name is invalid, an exception is thrown if checkError=True.
   // Otherwise the name is treated as a normal name without keyword.
+  // If allowEmtpy is True, :: is allowed, otherwise an error is thrown.
   static Bool splitName (String& shorthand, String& columnName,
                          Vector<String>& fieldNames, const String& name,
-                         Bool checkError, Bool isKeyword);
+                         Bool checkError, Bool isKeyword, Bool allowNoKey);
 
 private:
   // Test if groupby or aggregate functions are given.

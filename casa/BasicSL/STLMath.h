@@ -69,6 +69,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
+  // Reverse a Casacore container like IPosition, Block, or Vector.
+  template<typename CONTAINER>
+  inline CONTAINER reversedCasaContainer (const CONTAINER& in)
+  {
+    size_t sz = in.size();
+    CONTAINER out(sz);
+    for (size_t i=0; i<sz; ++i) {
+      out[i] = in[sz-i-1];
+    }
+    return out;
+  }
+
   // Add two std::vector objects.
   template<class T>
   std::vector<T> operator+ (const std::vector<T> &left,
