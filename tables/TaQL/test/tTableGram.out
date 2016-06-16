@@ -549,6 +549,20 @@ calc from tTableGram_tmp.tab  calc findcone([ab,ab],[select from tTableGram_tmp.
     has been executed
 [1, 2, 2, 1, 2, 2, 1, 1, 2, 1]
 
+testing some erroneous commands ...
+select abcd from tTableGram_tmp.tab
+
+Caught an exception: Error in TaQL command: 'select abcd from tTableGram_tmp.tab'
+  Error in select expression: abcd is an unknown column (or keyword) in table tTableGram_tmp.tab
+select t1.ab from tTableGram_tmp.tab t0, [select from t0 limit 5] t1
+
+Caught an exception: Error in TaQL command: 'select t1.ab from tTableGram_tmp.tab t0, [select from t0 limit 5] t1'
+  Error in select expression: Nr of rows of tables used in select expressions must be equal to first table
+select from tTableGram_tmp.tab t0, [select from tTableGram_tmp.tab limit 5] t1 where t0.ab = t1.ab
+
+Caught an exception: Error in TaQL command: 'select from tTableGram_tmp.tab t0, [select from tTableGram_tmp.tab limit 5] t1 where t0.ab = t1.ab'
+  Error in select expression: Nr of rows (5) in table column t1.ab differs from column t0.ab (10)
+
 testing calc ...
 calc sum([select from tTableGram_tmp.tab giving [ab+1]])
     has been executed
