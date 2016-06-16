@@ -272,6 +272,10 @@ public:
     // new size is smaller.
     void setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller = True);
 
+    // This version allows setting the tile cache for a particular hypercube.  This
+    // is useful when iterating over the hypercubes in an StMan.
+    void setHypercubeCacheSize (uInt hypercube, uInt nbuckets, Bool forceSmaller = True);
+
     // Clear the caches used by the hypercubes in this storage manager.
     // It will flush the caches as needed and remove all buckets from them
     // resulting in a possibly large drop in memory used.

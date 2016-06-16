@@ -337,6 +337,9 @@ public:
     // Does the data manager allow to delete columns? (default no)
     virtual Bool canRemoveColumn() const;
 
+    // Does the data manager allow to rename columns? (default yes)
+    virtual Bool canRenameColumn() const;
+
     // Set the maximum cache size (in bytes) to be used by a storage manager.
     // The default implementation does nothing.
     virtual void setMaximumCacheSize (uInt nbytes);
@@ -679,6 +682,10 @@ public:
     // Get the shape of the item in the given row.
     // By default it returns a zero-length IPosition (for a scalar value).
     virtual IPosition shape (uInt rownr);
+
+    // Get the tile shape of the item in the given row.
+    // By default it returns a zero-length IPosition.
+    virtual IPosition tileShape (uInt rownr);
 
     // Can the data manager handle chaging the shape of an existing array?
     // Default is no.

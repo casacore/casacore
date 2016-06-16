@@ -95,7 +95,7 @@ void checkUnits()
   testUnit ("calc 2 'km/s' * 20s", 40., "km/s.s");
   testUnit ("calc 2 'km/h' + 1 'm/s'", 5.6, "km/h");
   testUnit ("calc 2m*3m", 6., "m.m");
-  testUnit ("calc sumsqr([3.m,10dm])", 10., "(m)2");
+  testUnit ("calc sumsqr([3.m,10dm])", 10., "m.m");
   testUnit ("calc sqrt(9 'm2')", 3., "m");
   testUnit ("calc 20Aug06 - 13Aug06", 7., "d");
   testUnit ("calc 20Aug06 +86400s + 12*60min - 13Aug06", 8.5, "d");
@@ -286,30 +286,30 @@ void showExpr(const TableExprNode& expr)
       switch (expr.dataType()) {
       case TpBool:
 	{
-	  Array<Bool> arr;
+	  MArray<Bool> arr;
 	  expr.get (i, arr);
-	  cout << arr;
+	  cout << arr.array();
 	  break;
 	}
       case TpDouble:
 	{
-	  Array<Double> arr;
+	  MArray<Double> arr;
 	  expr.get (i, arr);
-	  cout << arr;
+	  cout << arr.array();
 	  break;
 	}
       case TpDComplex:
 	{
-	  Array<DComplex> arr;
+	  MArray<DComplex> arr;
 	  expr.get (i, arr);
-	  cout << arr;
+	  cout << arr.array();
 	  break;
 	}
       case TpString:
 	{
-	  Array<String> arr;
+	  MArray<String> arr;
 	  expr.get (i, arr);
-	  cout << arr;
+	  cout << arr.array();
 	  break;
 	}
       default:
@@ -335,9 +335,11 @@ void seltab (const String& str)
     } else {
       s = str.substr(spos, epos-spos);
       s.downcase();
-      addCalc = !(s=="select" || s=="update" || s=="insert" || s=="calc" ||
-                  s=="delete" || s=="create" || s=="createtable" ||
-                  s=="count"  || s=="using"  || s=="usingstyle"  || s=="time");
+      addCalc = !(s=="select" || s=="update" || s=="insert" ||
+                  s=="calc" || s=="delete" || s=="count" ||
+                  s=="create" || s=="createtable" ||
+                  s=="alter" || s=="altertable" ||
+                  s=="using"  || s=="usingstyle"  || s=="time");
     }
   } 
   String strc(str);

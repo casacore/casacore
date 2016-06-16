@@ -28,6 +28,7 @@
 # include <casacore/casa/sstream.h>
 # include <casacore/fits/FITS/blockio.h>
 # include <casacore/casa/string.h>
+#include <casacore/casa/OS/File.h>
 #include <unistd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -73,7 +74,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	strcpy(m_filename,f);
 	// using cfitsio of NASA to open fits file for writting and reading.
 	int l_status, iomode;
-	l_status = 0; 
+	File myfile(m_filename);
+	if (myfile.isReadable()) {
+	    // the file name does not use fits extensions
+	    l_status = OPEN_DISK_FILE;
+	}
+	else {
+	    l_status = 0;
+	}
 	if (m_options & O_CREAT){
 	    if (fits_create_file(&m_fptr, m_filename, &l_status)){ /*create FITS file*/
 		fits_report_error(stderr, l_status); /* print error report */

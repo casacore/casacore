@@ -210,10 +210,11 @@ int main(int argc, char **argv)
 	    // defined error handlers having shorter life-cycle than
 	    // the MSSelection object.
 	    //
-	    MSSelectionLogError mssLEA,mssLES, mssLESpw;
+	    MSSelectionLogError mssLEA,mssLES, mssLESpw, mssLEF;
 	    msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA,True);
 	    msSelection.setErrorHandler(MSSelection::STATE_EXPR, &mssLES,True);
 	    msSelection.setErrorHandler(MSSelection::SPW_EXPR, &mssLESpw,True);
+	    msSelection.setErrorHandler(MSSelection::FEED_EXPR, &mssLEF,True);
 	  }
 
     	// msSelection.reset(ms,MSSelection::PARSE_NOW,

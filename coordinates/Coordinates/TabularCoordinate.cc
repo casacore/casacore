@@ -241,7 +241,7 @@ Bool TabularCoordinate::toPixel(Double &pixel, Double world) const
 }
 
 Bool TabularCoordinate::toWorld(Vector<Double> &world, 
-  	                        const Vector<Double> &pixel) const
+  	                        const Vector<Double> &pixel, Bool) const
 {
    Bool rval = True;
    world.resize(pixel.nelements());

@@ -231,6 +231,10 @@ public:
     IPosition shape (uInt rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->shape (rownr); }
 
+    // Get the tile shape of an array in a particular cell.
+    IPosition tileShape (uInt rownr) const
+	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->tileShape (rownr); }
+
     // Get the value of a scalar in the given row.
     // Data type promotion is possible.
     // These functions only work for the standard data types.
@@ -317,12 +321,13 @@ public:
     // the data cannot be converted.
     // <group>
     // Use the same row numbers for both cells.
-    void put (uInt rownr, const TableColumn& that)
-	{ TABLECOLUMNCHECKROW(rownr); put (rownr, that, rownr); }
+    void put (uInt rownr, const TableColumn& that,
+              Bool preserveTileShape=False)
+      { put (rownr, that, rownr, preserveTileShape); }
     // Use possibly different row numbers for that (i.e. input) and
     // and this (i.e. output) cell.
     virtual void put (uInt thisRownr, const TableColumn& that,
-		      uInt thatRownr);
+		      uInt thatRownr, Bool preserveTileShape=False);
     // </group>
 
     // Copy the values of that column to this column.

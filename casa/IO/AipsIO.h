@@ -182,16 +182,15 @@ public:
 ////		     uInt filebufSize=1048576,
                      MultiFileBase* mfile=0);
 
-    // Construct and open/create a file with the given name.
+    // Construct from a stream object derived from ByteIO.
     // This can for instance by used to use AipsIO on a file descriptor
     // for which a <linkto class=FilebufIO>FilebufIO</linkto>
     // object has been created.
     // The actual IO is done via a CanonicalIO object on top of it.
     explicit AipsIO (ByteIO*);
 
-    // Construct and open by connecting to the given file descriptor.
-    // The actual IO is done via a filebuf object with a buffer
-    // of the given size.
+    // Construct from a stream object derived from TypeIO, thus from
+    // a stream on top of ByteIOn doing the possible conversions.
     explicit AipsIO (TypeIO*);
 
     // Close if not done yet

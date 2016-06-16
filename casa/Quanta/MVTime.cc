@@ -295,7 +295,7 @@ MVTime::formatTypes MVTime::giveMe(const String &in) {
     "YMD_ONLY",
     "MOD_MASK"
   };
-  static MVTime::formatTypes nam[N_name] = {
+  static const MVTime::formatTypes nam[N_name] = {
     MVTime::ANGLE,
     MVTime::TIME,
     MVTime::CLEAN,

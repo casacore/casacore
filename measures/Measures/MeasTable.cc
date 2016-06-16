@@ -56,7 +56,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifndef CASADATA
-#define CASADATA "/usr/local"
+#define CASADATA "/usr/local/share/data/casacore"
 #endif
 
 
@@ -2988,23 +2988,11 @@ Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
 	isValid = Table::isReadable(absPathName);
       }
       if(!isValid){
-	Path lPath(Aipsrc::aipsHome() + "/data/" + antRespPath);
-	isValid = Table::isReadable(absPathName);
-      }
-      if(!isValid){
-	Path lPath(Aipsrc::aipsRoot() + "/data/" + antRespPath);
-	absPathName = lPath.absoluteName();
-	isValid = Table::isReadable(absPathName);
-      }
-      if(!isValid){
-	Path lPath(String(CASADATA) + "/" + antRespPath);
-	absPathName = lPath.absoluteName();
-	isValid = Table::isReadable(absPathName);
-      }
-      if(!isValid){
-	Path lPath(String(CASADATA)+ "/share/casacore/data/" + antRespPath);
-	absPathName = lPath.absoluteName();
-	isValid = Table::isReadable(absPathName);
+        String casadata=String(CASADATA);
+        casadata.gsub("%CASAROOT%", Aipsrc::aipsRoot());
+        casadata.gsub("%CASAHOME%", Aipsrc::aipsHome());
+        Path lPath(casadata + "/" + antRespPath);
+        isValid = Table::isReadable(absPathName);
       }
       if(!isValid){
 	return False; // table not found

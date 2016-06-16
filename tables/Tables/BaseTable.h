@@ -226,6 +226,7 @@ public:
     virtual void copy (const String& newName, int tableOption) const;
     virtual void deepCopy (const String& newName,
 			   const Record& dataManagerInfo,
+                           const StorageOption&,
 			   int tableOption,
 			   Bool valueCopy,
 			   int endianFormat,
@@ -270,7 +271,8 @@ public:
                         Bool showDataMan,
                         Bool showColumns,
                         Bool showSubTables,
-                        Bool sortColumns);
+                        Bool sortColumns,
+                        Bool cOrder);
 
     // Get readonly access to the table keyword set.
     virtual TableRecord& keywordSet() = 0;
@@ -498,6 +500,7 @@ protected:
     // Make a true deep copy of the table.
     void trueDeepCopy (const String& newName,
 		       const Record& dataManagerInfo,
+                       const StorageOption&,
 		       int tableOption,
 		       int endianFormat,
 		       Bool noRows) const;
@@ -551,7 +554,8 @@ private:
     // Show the info of the given columns.
     // Sort the columns if needed.
     void showColumnInfo (ostream& os, const TableDesc&, uInt maxNameLength,
-                         const Array<String>& columnNames, Bool sort) const;
+                         const Array<String>& columnNames, Bool sort,
+                         Bool cOrder) const;
 
     // Throw an exception for checkRowNumber.
     void checkRowNumberThrow (uInt rownr) const;

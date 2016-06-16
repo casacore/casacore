@@ -34,38 +34,48 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+// Initialize statics.
+Mutex UnitMap::fitsMutex;
+
+
 void UnitMap::initUM() {
+  // Mutex for map initializations.
+  static Mutex umMutex;
   static Bool needInit = True;
-  if (!needInit) return;
-  needInit = False;
-
-  // Initialise lists
-  UnitMap::mapPref = 
-    new map<String, UnitName>;
-  UnitMap::mapDef =
-    new map<String, UnitName>;
-  UnitMap::mapSI =
-    new map<String, UnitName>;
-  UnitMap::mapCust =
-    new map<String, UnitName>;
-  UnitMap::mapUser =
-    new map<String, UnitName>;
-  UnitMap::mapCache =
-    new map<String, UnitVal>;
-  UnitMap::doneFITS = False;
-  // Define the map
-  // Known prefixes
-  UnitMap::initUMPrefix();
-  // Defining SI units
-  UnitMap::initUMSI1();
-  UnitMap::initUMSI2();
-  // non-SI customary units
-  UnitMap::initUMCust1();
-  UnitMap::initUMCust2();
-  UnitMap::initUMCust3();
-
-  //# Start with clean cache
-  UnitMap::mapCache->clear();
+  if (needInit) {
+    ScopedMutexLock lock(umMutex);
+    if (needInit) {
+      // Initialise lists
+      UnitMap::mapPref = 
+        new map<String, UnitName>;
+      UnitMap::mapDef =
+        new map<String, UnitName>;
+      UnitMap::mapSI =
+        new map<String, UnitName>;
+      UnitMap::mapCust =
+        new map<String, UnitName>;
+      UnitMap::mapUser =
+        new map<String, UnitName>;
+      UnitMap::mapCache =
+        new map<String, UnitVal>;
+      UnitMap::doneFITS = False;
+      // Define the map
+      // Known prefixes
+      UnitMap::initUMPrefix();
+      // Set needInit here, because the following functions may use
+      // clearCache, which calls initUM.
+      needInit = False;
+      // Defining SI units
+      UnitMap::initUMSI1();
+      UnitMap::initUMSI2();
+      // non-SI customary units
+      UnitMap::initUMCust1();
+      UnitMap::initUMCust2();
+      UnitMap::initUMCust3();
+      //# Start with clean cache
+      UnitMap::mapCache->clear();
+    }
+  }
 }
 
 UnitMap::UnitMap() {}
@@ -161,7 +171,7 @@ void UnitMap::removeUser(const UnitName& name) {
 }
 
 const String &UnitMap::getStringFITS(uInt which) {
-  static String FITSstring[N_FITS] = {
+  static const String FITSstring[N_FITS] = {
     "beam",
     "d",
     "deg",
@@ -185,8 +195,8 @@ const String &UnitMap::getStringFITS(uInt which) {
   return FITSstring[which];
 }
 
-Bool UnitMap::getNameFITS(UnitName *&name, uInt which) {
-  static UnitName FITSunit[N_FITS] = {
+Bool UnitMap::getNameFITS(const UnitName *&name, uInt which) {
+  static const UnitName FITSunit[N_FITS] = {
     UnitName("BEAM",	UnitVal(1.0, getStringFITS(0)),	"dimensionless beam"),
     UnitName("DAYS", 	UnitVal(1.0, getStringFITS(1)),	"day"),
     UnitName("DEGREES", UnitVal(1.0, getStringFITS(2)),	"degree"),
@@ -217,35 +227,41 @@ Bool UnitMap::getNameFITS(UnitName *&name, uInt which) {
 void UnitMap::addFITS() {
   UnitMap::initUM();
   if (! UnitMap::doneFITS) {
-    uInt cnt = 0;
-    UnitName *Fname;
-    while (UnitMap::getNameFITS(Fname, cnt)) {
-      UnitMap::putUser(*Fname);
-      cnt++;
+    ScopedMutexLock lock(UnitMap::fitsMutex);
+    if (! UnitMap::doneFITS) {
+      uInt cnt = 0;
+      const UnitName *Fname;
+      while (UnitMap::getNameFITS(Fname, cnt)) {
+        UnitMap::putUser(*Fname);
+        cnt++;
+      }
+      UnitMap::doneFITS = True;
     }
-    UnitMap::doneFITS = True;
   }
 }
 
 void UnitMap::clearFITS() {
   UnitMap::initUM();
   if (UnitMap::doneFITS) {
-    uInt cnt = 0;
-    UnitName *Fname;
-    while (UnitMap::getNameFITS(Fname, cnt)) {
-      UnitMap::removeUser(*Fname);
-      cnt++;
+    ScopedMutexLock lock(UnitMap::fitsMutex);
+    if (UnitMap::doneFITS) {
+      uInt cnt = 0;
+      const UnitName *Fname;
+      while (UnitMap::getNameFITS(Fname, cnt)) {
+        UnitMap::removeUser(*Fname);
+        cnt++;
+      }
+      UnitMap::doneFITS = False;
     }
-    UnitMap::doneFITS = False;
   }
 }
 
 Unit UnitMap::fromFITS(const Unit &un) {
-  static Regex sepa("[^a-zA-Z]");
+  static const Regex sepa("[^a-zA-Z]");
   MUString mus(un.getName());
   String y;
   String z;
-  UnitName *nam;
+  const UnitName *nam;
   while (!mus.eos()) {
     if (mus.testChar(sepa)) y += String(mus.getChar());
     else {
@@ -264,11 +280,11 @@ Unit UnitMap::fromFITS(const Unit &un) {
 }
 
 Unit UnitMap::toFITS(const Unit &un) {
-  static Regex sepa("[^a-zA-Z]");
+  static const Regex sepa("[^a-zA-Z]");
   MUString mus(un.getName());
   String y;
   String z;
-  UnitName *nam;
+  const UnitName *nam;
   while (!mus.eos()) {
     if (mus.testChar(sepa)) y += String(mus.getChar());
     else {

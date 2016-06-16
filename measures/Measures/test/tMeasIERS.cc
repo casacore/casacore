@@ -28,6 +28,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures/MeasIERS.h>
+#include <casacore/casa/Quanta/MVTime.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/iomanip.h>
@@ -45,11 +46,12 @@ void getX (double date)
 
 int main()
 {
-  // Get a value for various epochs.
   try {
 
     cout << "Test measure class MeasIERS" << endl;
     cout << "---------------------------" << endl;
+
+    // Get a value for various epochs.
 
     cout << setprecision(9);
     Vector<Double> val(6);
@@ -64,6 +66,27 @@ int main()
     getX (55000);
     getX (55809);
     getX (600000);
+
+
+    // Test for handling of leap seconds (CAS-7984)
+
+    Double startMJD = 57202; // 2015-06-29T00:00:00
+    Double oneHour = 1.0/24.;
+    for (Int i = 0; i < 72; i++) {
+      const Double mjd = startMJD + i * oneHour;
+      const MVTime now(mjd);
+      Double dUT;
+      Bool rval = MeasIERS::get(dUT, MeasIERS::PREDICTED, MeasIERS::dUT1, mjd);
+      if(!rval){
+	cout << "MeasIERS::get returned False for PREDICTED, dUT1, mjd " << mjd << endl;
+	return 2;
+      }
+      cout << now.string(casa::MVTime::YMD) 
+	   << " " << setprecision(3) << fixed << mjd
+	   << " " << dUT << endl;
+    } 
+    
+
   } catch (const std::exception& x) {
     cout << x.what() << endl;
     return 1;

@@ -181,19 +181,6 @@ template<class T> class Matrix;
   // </group>
 
 
-// Function to check the shapes. It throws an exception if not equal.
-// <group>
-void throwArrayShapes (const char* name);
-inline void checkArrayShapes (const ArrayBase& left, const ArrayBase& right,
-                              const char* name)
-{
-  if (! left.shape().isEqual (right.shape())) {
-    throwArrayShapes (name);
-  }
-}
-// </group>
-
-
 // Functions to apply a binary or unary operator to arrays.
 // They are modeled after std::transform.
 // They do not check if the shapes conform; as in std::transform the
@@ -492,6 +479,9 @@ template<class T> Array<T> sign(const Array<T> &a);
 template<class T> Array<T> fmod(const Array<T> &a, const Array<T> &b);
 template<class T> Array<T> fmod(const T &a, const Array<T> &b);
 template<class T> Array<T> fmod(const Array<T> &a, const T &b);
+template<class T> Array<T> floormod(const Array<T> &a, const Array<T> &b);
+template<class T> Array<T> floormod(const T &a, const Array<T> &b);
+template<class T> Array<T> floormod(const Array<T> &a, const T &b);
 template<class T> Array<T> pow(const Array<T> &a, const Double &b);
 template<class T> Array<T> tan(const Array<T> &a);
 template<class T> Array<T> tanh(const Array<T> &a);
@@ -605,6 +595,9 @@ template<class T> inline Vector<T> indgen(uInt length, T start, T inc)
 
 // Sum of every element of the array.
 template<class T> T sum(const Array<T> &a);
+// 
+// Sum the square of every element of the array.
+template<class T> T sumsqr(const Array<T> &a);
 // 
 // Product of every element of the array. This could of course easily
 // overflow.
@@ -794,8 +787,14 @@ Matrix<DComplex> conj(const Matrix<DComplex> &carray);
 // Form an array of complex numbers from the given real arrays.
 // Note that Complex and DComplex are simply typedefs for std::complex<float>
 // and std::complex<double>, so the result is in fact one of these types.
+// <group>
 template<typename T>
 Array<std::complex<T> > makeComplex(const Array<T> &real, const Array<T>& imag);
+template<typename T>
+Array<std::complex<T> > makeComplex(const T &real, const Array<T>& imag);
+template<typename T>
+Array<std::complex<T> > makeComplex(const Array<T> &real, const T& imag);
+// </group>
 
 // Set the real part of the left complex array to the right real array.
 template<typename L, typename R>

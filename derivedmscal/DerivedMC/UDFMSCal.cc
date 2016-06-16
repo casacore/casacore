@@ -27,10 +27,12 @@
 
 #include <casacore/derivedmscal/DerivedMC/UDFMSCal.h>
 #include <casacore/ms/MSSel/MSAntennaGram.h>
+#include <casacore/ms/MSSel/MSCorrGram.h>
 #include <casacore/ms/MSSel/MSTimeGram.h>
 #include <casacore/ms/MSSel/MSUvDistGram.h>
 #include <casacore/ms/MSSel/MSSpwGram.h>
 #include <casacore/ms/MSSel/MSFieldGram.h>
+#include <casacore/ms/MSSel/MSFeedGram.h>
 #include <casacore/ms/MSSel/MSArrayGram.h>
 #include <casacore/ms/MSSel/MSStateGram.h>
 #include <casacore/ms/MSSel/MSStateParse.h>
@@ -96,6 +98,8 @@ namespace casacore {
     { return new UDFMSCal (LAST, 0); }
   UDFBase* UDFMSCal::makeLAST2 (const String&)
     { return new UDFMSCal (LAST, 1); }
+  UDFBase* UDFMSCal::makeAZEL (const String&)
+    { return new UDFMSCal (AZEL, -1); }
   UDFBase* UDFMSCal::makeAZEL1 (const String&)
     { return new UDFMSCal (AZEL, 0); }
   UDFBase* UDFMSCal::makeAZEL2 (const String&)
@@ -114,6 +118,8 @@ namespace casacore {
     { return new UDFMSCal (STOKES, -1); }
   UDFBase* UDFMSCal::makeBaseline (const String&)
   { return new UDFMSCal (SELECTION, BASELINE); }
+  UDFBase* UDFMSCal::makeCorr (const String&)
+    { return new UDFMSCal (SELECTION, CORR); }
   UDFBase* UDFMSCal::makeTime (const String&)
     { return new UDFMSCal (SELECTION, TIME); }
   UDFBase* UDFMSCal::makeUVDist (const String&)
@@ -122,6 +128,8 @@ namespace casacore {
     { return new UDFMSCal (SELECTION, SPW); }
   UDFBase* UDFMSCal::makeField (const String&)
     { return new UDFMSCal (SELECTION, FIELD); }
+  UDFBase* UDFMSCal::makeFeed (const String&)
+    { return new UDFMSCal (SELECTION, FEED); }
   UDFBase* UDFMSCal::makeArray (const String&)
     { return new UDFMSCal (SELECTION, ARRAY); }
   UDFBase* UDFMSCal::makeScan (const String&)
@@ -221,7 +229,7 @@ namespace casacore {
       break;
     case GETVALUE:
       setupGetValue (table, operands());
-      setNDim (0);
+      setNDim (itsDataNode.getNodeRep()->ndim());
       setDataType (itsDataNode.getNodeRep()->dataType());
       setUnit (itsDataNode.getNodeRep()->unit().getName());
       break;
@@ -247,7 +255,7 @@ namespace casacore {
       // Make sure the unit is rad.
       // Turn the array into a vector.
       TableExprNodeUnit::adaptUnit (operand, "rad");
-      Array<Double> dirs(operand->getArrayDouble(0));
+      Array<Double> dirs(operand->getArrayDouble(0).array());
       if (dirs.size() != 2) {
         throw AipsError ("Argument to MSCAL function is not an array "
                          "of 2 values");
@@ -437,6 +445,15 @@ namespace casacore {
         MSAntennaParse::thisMSAErrorHandler = curHandler;
       }
       break;
+    case CORR:
+      {
+        MeasurementSet ms(table);
+        if (msCorrGramParseCommand(&ms, selStr) == 0) {
+          itsDataNode = *(msCorrGramParseNode());
+        }
+        msCorrGramParseDeleteNode();
+      }
+      break;
     case TIME:
       {
         MeasurementSet ms(table);
@@ -484,6 +501,31 @@ namespace casacore {
         itsDataNode = msFieldGramParseCommand (fieldtab, colAsTEN, selStr,
                                                fldid);
         msFieldGramParseDeleteNode();
+      }
+      break;
+    case FEED:
+      {
+        Table feedtab(table.keywordSet().asTable("FEED"));
+        TableExprNode f1 (table.col("FEED1"));
+        TableExprNode f2 (f1);
+        if (table.tableDesc().isColumn("FEED2")) {
+          f2 = TableExprNode (table.col("FEED2"));
+        }
+        Vector<Int> selectedFeed1;
+        Vector<Int> selectedFeed2;
+        Matrix<Int> selectedFeedPairs;
+        MSSelectionErrorHandler* curHandler = MSFeedParse::thisMSFErrorHandler;
+        UDFMSCalErrorHandler errorHandler;
+        MSFeedParse::thisMSFErrorHandler = &errorHandler;
+        try {
+          itsDataNode = msFeedGramParseCommand (feedtab, f1, f2, selStr, 
+                                                selectedFeed1, selectedFeed2,
+                                                selectedFeedPairs);
+        } catch (const std::exception&) {
+          MSFeedParse::thisMSFErrorHandler = curHandler;
+          throw;
+        }          
+        MSFeedParse::thisMSFErrorHandler = curHandler;
       }
       break;
     case ARRAY:
@@ -743,85 +785,100 @@ namespace casacore {
     }
   }
 
-  Array<Bool> UDFMSCal::getArrayBool (const TableExprId& id)
+  MArray<Bool> UDFMSCal::getArrayBool (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);
     switch (itsType) {
     case STOKES:
       {
         Array<Bool> out;
+        MArray<Bool> marr;
+        itsDataNode.get (id, marr);
         // Combine the flags.
-        itsStokesConv.convert (out, itsDataNode.getArrayBool (id));
-        return out;
+        itsStokesConv.convert (out, marr.array());
+        if (! marr.hasMask()) {
+          return MArray<Bool>(out);
+        }
+        // Combine the mask elements.
+        Array<Bool> mask;
+        itsStokesConv.convert (mask, marr.mask());
+        return MArray<Bool> (out, mask);
       }
     case GETVALUE:
-      return itsDataNode.getArrayBool (getRowNr(id));
+      return itsDataNode.getBoolAS (getRowNr(id));
     default:
       throw AipsError ("UDFMSCal: unexpected getArrayBool function");
     }
   }
 
-  Array<Int64> UDFMSCal::getArrayInt (const TableExprId& id)
+  MArray<Int64> UDFMSCal::getArrayInt (const TableExprId& id)
   {
     switch (itsType) {
     case GETVALUE:
-      return itsDataNode.getArrayInt (getRowNr(id));
+      return itsDataNode.getIntAS (getRowNr(id));
     default:
       throw AipsError ("UDFMSCal: unexpected getArrayInt function");
     }
   }
 
-  Array<Double> UDFMSCal::getArrayDouble (const TableExprId& id)
+  MArray<Double> UDFMSCal::getArrayDouble (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);
     switch (itsType) {
     case HADEC:
       itsEngine.getHaDec (itsArg, id.rownr(), itsTmpVector);
-      return itsTmpVector;
+      return MArray<Double>(itsTmpVector);
     case AZEL:
       itsEngine.getAzEl (itsArg, id.rownr(), itsTmpVector);
-      return itsTmpVector;
+      return MArray<Double>(itsTmpVector);
     case NEWUVW:
       itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);
-      return itsTmpVector;
+      return MArray<Double>(itsTmpVector);
     case UVWWVL:
       itsUvwCol.get (id.rownr(), itsTmpVector);
       itsTmpVector *= itsWavel[itsDDIds[itsIdNode.getInt(id)]];
-      return itsTmpVector;
+      return MArray<Double>(itsTmpVector);
     case UVWWVLS:
       itsUvwCol.get (id.rownr(), itsTmpVector);
-      return toWvls (id);
+      return MArray<Double>(toWvls (id));
     case NEWUVWWVL:
       itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);
       itsTmpVector *= itsWavel[itsDDIds[itsIdNode.getInt(id)]];
-      return itsTmpVector;
+      return MArray<Double>(itsTmpVector);
     case NEWUVWWVLS:
       itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);
-      return toWvls (id);
+      return MArray<Double>(toWvls (id));
     case STOKES:
       {
         // Unfortunately stokes weight conversion is only defined for Float,
         // while TableExprNode only has Double.
         // So conversions are necessary for the time being.
         // In the future we can add Double support to StokesConverter.
-        Array<Float> outf, dataf;
-        Array<Double> outd, datad;
+        MArray<Double> datad;
+        Array<Float>  dataf, outf;
+        Array<Double> outd;
         itsDataNode.get (id, datad);
         dataf.resize (datad.shape());
-        convertArray (dataf, datad);
+        convertArray (dataf, datad.array());
         itsStokesConv.convert (outf, dataf);
         outd.resize (outf.shape());
         convertArray (outd, outf);
-        return outd;
+        if (! datad.hasMask()) {
+          return MArray<Double>(outd);
+        }
+        // Combine the mask elements.
+        Array<Bool> mask;
+        itsStokesConv.convert (mask, datad.mask());
+        return MArray<Double>(outd, mask);
       }
     case GETVALUE:
-      return itsDataNode.getArrayDouble (getRowNr(id));
+      return itsDataNode.getDoubleAS (getRowNr(id));
     default:
       throw AipsError ("UDFMSCal: unexpected getArrayDouble function");
     }
   }
 
-  Array<DComplex> UDFMSCal::getArrayDComplex (const TableExprId& id)
+  MArray<DComplex> UDFMSCal::getArrayDComplex (const TableExprId& id)
   {
     switch (itsType) {
     case STOKES:
@@ -831,28 +888,35 @@ namespace casacore {
         // So conversions are necessary for the time being.
         // In the future we can add DComplex support to StokesConverter
         // or Complex support to TableExprNode.
+        MArray<DComplex> datad;
         Array<Complex> outf, dataf;
-        Array<DComplex> outd, datad;
+        Array<DComplex> outd;
         itsDataNode.get (id, datad);
         dataf.resize (datad.shape());
-        convertArray (dataf, datad);
+        convertArray (dataf, datad.array());
         itsStokesConv.convert (outf, dataf);
         outd.resize (outf.shape());
         convertArray (outd, outf);
-        return outd;
+        if (! datad.hasMask()) {
+          return MArray<DComplex>(outd);
+        }
+        // Combine the mask elements.
+        Array<Bool> mask;
+        itsStokesConv.convert (mask, datad.mask());
+        return MArray<DComplex>(outd, mask);
       }
     case GETVALUE:
-      return itsDataNode.getArrayDComplex (getRowNr(id));
+      return itsDataNode.getDComplexAS (getRowNr(id));
     default:
       throw AipsError ("UDFMSCal: unexpected getArrayDComplex function");
     }
   }
 
-  Array<String> UDFMSCal::getArrayString (const TableExprId& id)
+  MArray<String> UDFMSCal::getArrayString (const TableExprId& id)
   {
     switch (itsType) {
     case GETVALUE:
-      return itsDataNode.getArrayString (getRowNr(id));
+      return itsDataNode.getStringAS (getRowNr(id));
     default:
       throw AipsError ("UDFMSCal: unexpected getArrayString function");
     }

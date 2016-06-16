@@ -44,7 +44,7 @@ namespace casacore {
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
 class HingesFencesStatistics
-	: public ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator> {
+	: public ConstrainedRangeStatistics<CASA_STATP> {
 public:
 
 	// If <src>f</src> is negative, the full dataset is used; ie the object has the same
@@ -54,8 +54,8 @@ public:
 	virtual ~HingesFencesStatistics();
 
 	// copy semantics
-	HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
-		const HingesFencesStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
+	HingesFencesStatistics<CASA_STATP>& operator=(
+		const HingesFencesStatistics<CASA_STATP>& other
 	);
 
 	// get the algorithm that this object uses for computing stats

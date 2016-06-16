@@ -543,7 +543,22 @@ public:
                         Bool showDataMans=True,
                         Bool showColumns=True,
                         Bool showSubTables=False,
-                        Bool sortColumns=False) const;
+                        Bool sortColumns=False,
+                        Bool cOrder=False) const;
+
+    // Show the table and/or column keywords, possibly also of all subtables.
+    // Maximum <src>maxVal> values of Arrays will be shown.
+    void showKeywords (std::ostream&,
+                       Bool showSubTables=False,
+                       Bool showTabKey=True,
+                       Bool showColKey=False,
+                       Int maxVal=25) const;
+  
+    // Show the table and/or column keywords of this table.
+    // Maximum <src>maxVal> values of Arrays will be shown.
+    void showKeywordSets (std::ostream&,
+                          Bool showTabKey, Bool showColKey,
+                          Int maxVal) const;
 
     // Test if a table with the given name exists and is writable.
     static Bool isWritable (const String& tableName, bool throwIf=False);
@@ -678,6 +693,11 @@ public:
 		   EndianFormat=AipsrcEndian,
 		   Bool noRows=False) const;
     void deepCopy (const String& newName, const Record& dataManagerInfo,
+		   TableOption, Bool valueCopy=False,
+		   EndianFormat=AipsrcEndian,
+		   Bool noRows=False) const;
+    void deepCopy (const String& newName, const Record& dataManagerInfo,
+                   const StorageOption&,
 		   TableOption, Bool valueCopy=False,
 		   EndianFormat=AipsrcEndian,
 		   Bool noRows=False) const;
@@ -1135,7 +1155,18 @@ inline void Table::deepCopy (const String& newName,
 			     Bool valueCopy,
 			     EndianFormat endianFormat,
 			     Bool noRows) const
-    { baseTabPtr_p->deepCopy (newName, dataManagerInfo, option, valueCopy,
+    { baseTabPtr_p->deepCopy (newName, dataManagerInfo, StorageOption(),
+                              option, valueCopy,
+			      endianFormat, noRows); }
+inline void Table::deepCopy (const String& newName,
+			     const Record& dataManagerInfo,
+                             const StorageOption& stopt,
+			     TableOption option,
+			     Bool valueCopy,
+			     EndianFormat endianFormat,
+			     Bool noRows) const
+    { baseTabPtr_p->deepCopy (newName, dataManagerInfo, stopt,
+                              option, valueCopy,
 			      endianFormat, noRows); }
 inline void Table::markForDelete()
     { baseTabPtr_p->markForDelete (True, ""); }
@@ -1215,9 +1246,10 @@ inline void Table::showStructure (std::ostream& os,
                                   Bool showDataMans,
                                   Bool showColumns,
                                   Bool showSubTables,
-                                  Bool sortColumns) const
+                                  Bool sortColumns,
+                                  Bool cOrder) const
     { baseTabPtr_p->showStructure (os, showDataMans, showColumns,
-                                   showSubTables, sortColumns); }
+                                   showSubTables, sortColumns, cOrder); }
 
 
 

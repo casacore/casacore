@@ -38,6 +38,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -168,6 +169,7 @@ public:
     static void init();
     
 private:
+    static Mutex initialized_mutex;
     static Bool initialized_p;
 };
 

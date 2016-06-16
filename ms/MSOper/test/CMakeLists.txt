@@ -1,5 +1,6 @@
 set (tests
 tMSDerivedValues
+tMSKeys
 tMSMetaData
 tMSReader
 tMSSummary

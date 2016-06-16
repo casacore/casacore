@@ -118,7 +118,13 @@ void TSMDataColumn::setShapeTiled (uInt rownr, const IPosition& shape,
     if (cubeShape.nelements() == 0) {
 	stmanPtr_p->setShape (rownr, hypercube, shape, tileShape);
     }else{
-	if (! shape.isEqual(cubeShape)) {
+        Bool eq = True;
+        for (uInt i=0; i<shape.size(); ++i) {
+          if (shape[i] != cubeShape[i]) {
+            eq = False;
+          }
+        }
+	if (!eq) {
 	    if (! canChangeShape()) {
 		throw (TSMError
 		       ("Shape of data cells in same hypercube differs"));
@@ -162,6 +168,13 @@ IPosition TSMDataColumn::shape (uInt rownr)
 	shape(i) = cubeShape(i);
     }
     return shape;
+}
+
+IPosition TSMDataColumn::tileShape (uInt rownr)
+{
+    //# If no shape is defined, throw exception.
+    TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
+    return hypercube->tileShape();
 }
 
 

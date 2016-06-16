@@ -29,6 +29,8 @@
 #define DERIVEDMSCAL_REGISTER_H
 
 #include <casacore/casa/aips.h>
+#include <casacore/tables/TaQL/UDFBase.h>
+#include <ostream>
 
 // <group name=DerivedMSCal>
 // This function registers the DerivedMSCal virtual column engine and
@@ -40,5 +42,31 @@ extern "C" {
 }
 
 // </group>
+
+
+
+namespace casacore {
+  // <synopsis>
+  // General meas function to show the available functions.
+  // </synopsis>
+  class HelpMsCalUDF: public UDFBase
+  {
+  public:
+    // Function to create an object.
+    static UDFBase* makeHELP (const String&);
+
+    // Setup the object.
+    virtual void setup (const Table&, const TaQLStyle&);
+
+    // Get the value.
+    virtual String getString (const TableExprId& id);
+
+    // Show the possible functions.
+    static void showFuncsDerived   (std::ostream&);
+    static void showFuncsStokes    (std::ostream&, Bool showStokes);
+    static void showFuncsSelection (std::ostream&);
+    static void showFuncsSubtable  (std::ostream&);
+  };
+}
 
 #endif

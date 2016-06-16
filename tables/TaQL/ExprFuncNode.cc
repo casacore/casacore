@@ -23,17 +23,19 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprFuncNode.cc 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprFuncNode.h>
-#include <casacore/tables/Tables/TableError.h>
+#include <casacore/tables/TaQL/TableParse.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/ExprDerNode.h>
 #include <casacore/tables/TaQL/ExprUnitNode.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/Arrays/ArrayMath.h>
-#include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/tables/TaQL/MArrayMath.h>
+#include <casacore/tables/TaQL/MArrayLogical.h>
 #include <casacore/casa/Quanta/MVTime.h>
 #include <casacore/casa/Quanta/MVAngle.h>
 #include <casacore/casa/Quanta/Quantum.h>
@@ -48,11 +50,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
 				      ValueType vtype,
-				      const TableExprNodeSet& source)
+				      const TableExprNodeSet& source,
+                                      const Table& table)
 : TableExprNodeMulti (dtype, vtype, OtFunc, source),
   funcType_p         (ftype),
   argDataType_p      (dtype),
-  scale_p            (1)
+  scale_p            (1),
+  table_p            (table)
 {}
 
 TableExprFuncNode::~TableExprFuncNode()
@@ -120,43 +124,60 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case ceilFUNC:
     case fmodFUNC:
     case arrsumFUNC:
-    case arrminFUNC:
-    case arrmaxFUNC:
-    case arrmeanFUNC:
-    case arrstddevFUNC:
-    case arravdevFUNC:
-    case arrrmsFUNC:
-    case arrmedianFUNC:
-    case arrfractileFUNC:
     case arrsumsFUNC:
+    case arrminFUNC:
     case arrminsFUNC:
-    case arrmaxsFUNC:
-    case arrmeansFUNC:
-    case arrstddevsFUNC:
-    case arravdevsFUNC:
-    case arrrmssFUNC:
-    case arrmediansFUNC:
-    case arrfractilesFUNC:
     case runminFUNC:
-    case runmaxFUNC:
-    case runmeanFUNC:
-    case runstddevFUNC:
-    case runavdevFUNC:
-    case runrmsFUNC:
-    case runmedianFUNC:
     case boxminFUNC:
+    case arrmaxFUNC:
+    case arrmaxsFUNC:
+    case runmaxFUNC:
     case boxmaxFUNC:
+    case arrmeanFUNC:
+    case arrmeansFUNC:
+    case runmeanFUNC:
     case boxmeanFUNC:
+    case arrstddevFUNC:
+    case arrstddevsFUNC:
+    case runstddevFUNC:
     case boxstddevFUNC:
+    case arravdevFUNC:
+    case arravdevsFUNC:
+    case runavdevFUNC:
     case boxavdevFUNC:
     case boxrmsFUNC:
+    case arrrmsFUNC:
+    case arrrmssFUNC:
+    case runrmsFUNC:
+    case arrmedianFUNC:
+    case arrmediansFUNC:
+    case runmedianFUNC:
     case boxmedianFUNC:
-    case gsumFUNC:
+    case arrfractileFUNC:
+    case arrfractilesFUNC:
+    case arrayFUNC:
+    case transposeFUNC:
+    case resizeFUNC:
+    case diagonalFUNC:
+    case marrayFUNC:
+    case arrdataFUNC:
+    case negatemaskFUNC:
+    case replmaskedFUNC:
+    case replunmaskedFUNC:
+    case arrflatFUNC:
     case gminFUNC:
     case gmaxFUNC:
+    case gsumFUNC:
     case gmeanFUNC:
     case gstddevFUNC:
     case grmsFUNC:
+    case gminsFUNC:
+    case gmaxsFUNC:
+    case gsumsFUNC:
+    case gmeansFUNC:
+    case gstddevsFUNC:
+    case grmssFUNC:
+    case gaggrFUNC:
     case gmedianFUNC:
     case gfractileFUNC:
       // These functions return the same unit as their child.
@@ -167,21 +188,23 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case arrsumsqrFUNC:
     case arrsumsqrsFUNC:
     case gsumsqrFUNC:
+    case gsumsqrsFUNC:
     case arrvarianceFUNC:
     case arrvariancesFUNC:
     case runvarianceFUNC:
     case boxvarianceFUNC: 
     case gvarianceFUNC:
+    case gvariancesFUNC:
      // These functions return the square of their child.
       if (! childUnit.empty()) {
         Quantity q(1., childUnit);
-        node->setUnit (pow(q,2).getFullUnit());
+        node->setUnit ((q*q).getFullUnit());
       }
       break;
     case cubeFUNC:
       if (! childUnit.empty()) {
         Quantity q(1., childUnit);
-        node->setUnit (pow(q,3).getFullUnit());
+        node->setUnit ((q*q*q).getFullUnit());
       }
       break;
     case sqrtFUNC:
@@ -310,11 +333,16 @@ void TableExprFuncNode::tryToConst()
 	break;
     case nelemFUNC:
     case isdefFUNC:
+    case isnullFUNC:
 	if (operands_p[0]->ndim() == 0
         ||  operands_p[0]->shape().nelements() > 0  ) {
 	    exprtype_p = Constant;
 	}
 	break;
+    case iscolFUNC:
+    case iskeyFUNC:
+        exprtype_p = Constant;
+        break;
     default:
 	break;
     }
@@ -323,19 +351,32 @@ void TableExprFuncNode::tryToConst()
 Bool TableExprFuncNode::getBool (const TableExprId& id)
 {
     switch (funcType_p) {
+    case boolFUNC:
+      if (operands_p[0]->dataType() == NTBool) {
+        return operands_p[0]->getBool(id);
+      } else if (operands_p[0]->dataType() == NTInt) {
+        return (operands_p[0]->getInt(id) != 0);
+      } else if (operands_p[0]->dataType() == NTDouble) {
+        return (operands_p[0]->getDouble(id) != 0);
+      } else if (operands_p[0]->dataType() == NTComplex) {
+        return (operands_p[0]->getDComplex(id) != DComplex());
+      } else if (operands_p[0]->dataType() == NTDate) {
+        return (operands_p[0]->getDouble(id) != 0);
+      }
+      return string2Bool (operands_p[0]->getString(id));
     case anyFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return anyTrue (operands_p[0]->getArrayBool(id));
+            return anyTrue (operands_p[0]->getArrayBool(id));
 	}
 	return operands_p[0]->getBool (id);
     case allFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return allTrue (operands_p[0]->getArrayBool(id));
+            return allTrue (operands_p[0]->getArrayBool(id));
 	}
 	return operands_p[0]->getBool (id);
     case isnanFUNC:
 	if (argDataType_p == NTComplex) {
-            return isNaN(operands_p[0]->getDComplex(id));
+          return isNaN(operands_p[0]->getDComplex(id));
 	}
         return isNaN(operands_p[0]->getDouble(id));
     case isinfFUNC:
@@ -350,6 +391,57 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
         return isFinite(operands_p[0]->getDouble(id));
     case isdefFUNC:
 	return operands_p[0]->isDefined (id);
+    case isnullFUNC:
+        if (operands_p[0]->valueType() == VTArray) {
+          switch (operands()[0]->dataType()) {
+          case NTBool:
+            return (operands()[0]->getArrayBool(id).isNull());
+          case NTInt:
+            return (operands()[0]->getArrayInt(id).isNull());
+          case NTDouble:
+            return (operands()[0]->getArrayDouble(id).isNull());
+          case NTComplex:
+            return (operands()[0]->getArrayDComplex(id).isNull());
+          case NTString:
+            return (operands()[0]->getArrayString(id).isNull());
+          case NTDate:
+            return (operands()[0]->getArrayDate(id).isNull());
+          default:
+            throw TableInvExpr ("TableExprFuncNode::getBool, "
+                                "unknown datatype in isNull function");
+          }
+        }
+        return False;
+    case iscolFUNC:
+        return table_p.tableDesc().isColumn (operands_p[0]->getString (id));
+    case iskeyFUNC:
+      {
+        String name = operands_p[0]->getString (id);
+        String shand, columnName;
+        Vector<String> fieldNames;
+        TableParseSelect::splitName (shand, columnName, fieldNames,
+                                     name, True, True, False);
+        if (! shand.empty()) {
+          return False;
+        }
+        const TableRecord* rec;
+        String fullName;
+        try {
+          if (columnName.empty()) {
+            rec = TableExprNode::findLastKeyRec (table_p.keywordSet(),
+                                                 fieldNames, fullName);
+          } else {
+            const TableRecord& colkeys
+              (TableColumn(table_p, columnName).keywordSet());
+            rec = TableExprNode::findLastKeyRec (colkeys,
+                                                 fieldNames, fullName);
+          }
+        } catch (const std::exception&) {
+          return False;
+        }
+        String keyName = fieldNames[fieldNames.size() -1 ];
+        return rec->isDefined (keyName);
+      }
     case near2FUNC:
 	if (argDataType_p == NTDouble) {
 	    return near (operands_p[0]->getDouble(id),
@@ -430,7 +522,11 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
     case absFUNC:
         return abs (operands_p[0]->getInt(id));
     case intFUNC:
-	if (argDataType_p == NTDouble) {
+        if (operands_p[0]->dataType() == NTString) {
+            return string2Int (operands_p[0]->getString(id));
+        } else if (operands_p[0]->dataType() == NTBool) {
+            return operands_p[0]->getBool(id) ? 1:0;
+        } else if (argDataType_p == NTDouble) {
             return Int64 (operands_p[0]->getDouble(id));
         }
         return operands_p[0]->getInt(id);
@@ -467,12 +563,14 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
 	return operands_p[0]->getDate(id).yearweek();
     case arrminFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return min (operands_p[0]->getArrayInt (id));
-	}
+          MArray<Int64> tmp = operands_p[0]->getArrayInt (id);
+          return min(tmp);
+        }
 	return operands_p[0]->getInt (id);
     case arrmaxFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return max (operands_p[0]->getArrayInt (id));
+          MArray<Int64> tmp = operands_p[0]->getArrayInt (id);
+          return max(tmp);
 	}
 	return operands_p[0]->getInt (id);
     case arrsumFUNC:
@@ -487,14 +585,7 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
 	return operands_p[0]->getInt (id);
     case arrsumsqrFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<Int64> arr = operands_p[0]->getArrayInt (id);
-            if (arr.contiguousStorage()) {
-              return std::accumulate(arr.cbegin(), arr.cend(), Int64(0),
-                                     casacore::SumSqr<Int64>());
-            } else {
-              return std::accumulate(arr.begin(), arr.end(), Int64(0),
-                                     casacore::SumSqr<Int64>());
-            }
+	    return sumsqr (operands_p[0]->getArrayInt (id));
 	} else {
 	    Int64 val = operands_p[0]->getInt(id);
 	    return val * val;
@@ -598,11 +689,15 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
 	}
 	return arg (operands_p[0]->getDComplex(id));
     case realFUNC:
-	if (argDataType_p == NTInt) {
+        if (operands_p[0]->dataType() == NTString) {
+            return string2Real (operands_p[0]->getString(id));
+        } else if (operands_p[0]->dataType() == NTBool) {
+            return operands_p[0]->getBool(id) ? 1:0;
+	} else if (argDataType_p == NTInt) {
 	    return operands_p[0]->getInt(id);
 	} else if (argDataType_p == NTDouble) {
 	    return operands_p[0]->getDouble(id);
-	}
+        }
 	return operands_p[0]->getDComplex(id).real();
     case imagFUNC:
 	if (argDataType_p == NTDouble) {
@@ -674,14 +769,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
 	return operands_p[0]->getDouble (id);
     case arrsumsqrFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<Double> arr = operands_p[0]->getArrayDouble (id);
-            if (arr.contiguousStorage()) {
-              return std::accumulate(arr.cbegin(), arr.cend(), 0.,
-                                     casacore::SumSqr<Double>());
-            } else {
-              return std::accumulate(arr.begin(), arr.end(), 0.,
-                                     casacore::SumSqr<Double>());
-            }
+	    return sumsqr (operands_p[0]->getArrayDouble (id));
 	} else {
 	    Double val = operands_p[0]->getDouble(id);
 	    return val * val;
@@ -693,28 +781,16 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
 	return operands_p[0]->getDouble (id);
     case arrvarianceFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<Double> arr = operands_p[0]->getArrayDouble (id);
-	    if (arr.nelements() < 2) {
-	        return 0;
-	    }
-	    return variance (arr);
+	    return variance (operands_p[0]->getArrayDouble (id));
 	}
 	return 0;
     case arrstddevFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<Double> arr = operands_p[0]->getArrayDouble (id);
-	    if (arr.nelements() < 2) {
-	        return 0;
-	    }
-	    return stddev (arr);
+	    return stddev (operands_p[0]->getArrayDouble (id));
 	}
 	return 0;
     case arravdevFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<Double> arr = operands_p[0]->getArrayDouble (id);
-	    if (arr.empty()) {
-	        return 0;
-	    }
 	    return avdev (operands_p[0]->getArrayDouble (id));
 	}
 	return 0;
@@ -740,15 +816,15 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
     case angdistFUNC:
     case angdistxFUNC:
       {
-        Array<double> a1 = operands_p[0]->getArrayDouble(id);
-        Array<double> a2 = operands_p[1]->getArrayDouble(id);
-        if (!(a1.size() == 2  &&  a1.contiguousStorage()  &&
-              a2.size() == 2  &&  a2.contiguousStorage())) {
+        MArray<double> a1 = operands_p[0]->getArrayDouble(id);
+        MArray<double> a2 = operands_p[1]->getArrayDouble(id);
+        if (!(a1.size() == 2  &&  a1.array().contiguousStorage()  &&
+              a2.size() == 2  &&  a2.array().contiguousStorage())) {
           throw TableInvExpr ("Arguments of function ANGDIST[x] must have a "
                               "multiple of 2 values");
         }
-        const double* d1 = a1.data();
-        const double* d2 = a2.data();
+        const double* d1 = a1.array().data();
+        const double* d2 = a2.array().data();
         return angdist (d1[0], d1[1], d2[0], d2[1]);
       }
     case datetimeFUNC:
@@ -818,6 +894,10 @@ DComplex TableExprFuncNode::getDComplex (const TableExprId& id)
 	return val0;
       }
     case complexFUNC:
+        // A single argument is always a string.
+        if (operands_p.size() == 1) {
+            return string2Complex (operands_p[0]->getString(id));
+        }
 	return DComplex (operands_p[0]->getDouble (id),
 			 operands_p[1]->getDouble (id));
     case arrsumFUNC:
@@ -832,16 +912,7 @@ DComplex TableExprFuncNode::getDComplex (const TableExprId& id)
 	return operands_p[0]->getDComplex (id);
     case arrsumsqrFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    Array<DComplex> arr = operands_p[0]->getArrayDComplex (id);
-	    Bool deleteIt;
-	    const DComplex* data = arr.getStorage (deleteIt);
-	    uInt nr = arr.nelements();
-	    DComplex result = 0;   
-	    for (uInt i=0; i < nr; i++) {
-	        result += data[i] * data[i];
-	    }
-	    arr.freeStorage (data, deleteIt);
-	    return result;
+	    return sumsqr (operands_p[0]->getArrayDComplex (id));
 	} else {
 	    DComplex val = operands_p[0]->getDComplex (id);
 	    return val * val;
@@ -906,8 +977,10 @@ String TableExprFuncNode::getString (const TableExprId& id)
     case substrFUNC:
       {
 	String str = operands_p[0]->getString (id);
-        size_t st = std::max (Int64(0), operands_p[1]->getInt (id));
-        size_t sz = String::npos;
+        Int64 st = operands_p[1]->getInt (id);
+        if (st < 0) st += str.size();
+        if (st < 0) st = 0;
+        Int64 sz = String::npos;
         if (operands_p.size() > 2) {
           sz = std::max (Int64(0), operands_p[2]->getInt (id));
         }
@@ -1279,8 +1352,13 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	}
 	return checkDT (dtypeOper, NTAny, NTInt, nodes);
     case isdefFUNC:
+    case isnullFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTAny, NTBool, nodes);
+    case iscolFUNC:
+    case iskeyFUNC:
+	checkNumOfArg (1, 1, nodes);
+	return checkDT (dtypeOper, NTString, NTBool, nodes);
     case angdistFUNC:
     case angdistxFUNC:
         checkNumOfArg (2, 2, nodes);
@@ -1294,6 +1372,35 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
           resVT = VTArray;    // result is scalar if both arg have 2 values
         }
         return checkDT (dtypeOper, NTReal, NTDouble, nodes);
+    case marrayFUNC:
+        checkNumOfArg (2, 2, nodes);
+        resVT = VTArray;
+        if (nodes[1]->dataType() != NTBool) {
+          throw TableInvExpr("Second argument of marray function must be bool");
+        }
+        checkDT (dtypeOper, NTAny, NTBool, nodes);
+        return nodes[0]->dataType();
+        break;
+    case nullarrayFUNC:
+    case arrdataFUNC:
+    case negatemaskFUNC:
+    case arrflatFUNC:
+        checkNumOfArg (1, 1, nodes);
+        resVT = VTArray;
+	return checkDT (dtypeOper, NTAny, NTAny, nodes);
+        break;
+    case arrmaskFUNC:
+        checkNumOfArg (1, 1, nodes);
+        resVT = VTArray;
+	return checkDT (dtypeOper, NTAny, NTBool, nodes);
+        break;
+    case replmaskedFUNC:
+    case replunmaskedFUNC:
+        checkNumOfArg (2, 2, nodes);
+        resVT = VTArray;
+	checkDT (dtypeOper, NTAny, NTAny, nodes);
+        return nodes[0]->dataType();
+        break;
     default:
 	break;
     }
@@ -1339,6 +1446,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case boxallFUNC:
     case arrayFUNC:
     case transposeFUNC:
+    case diagonalFUNC:
     case resizeFUNC:
       {
         // Most functions can have Int or Double in and result in Double.
@@ -1378,6 +1486,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
             optarg = 1;
 	case arrayFUNC:
         case transposeFUNC:
+        case diagonalFUNC:
 	    dtin = dtout = NTAny;
 	    break;
 	default:
@@ -1591,8 +1700,15 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case absFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTNumeric, NTReal, nodes);
-    case argFUNC:
     case realFUNC:
+	checkNumOfArg (1, 1, nodes);
+        if (nodes[0]->dataType() == NTString) {
+          return checkDT (dtypeOper, NTString, NTDouble, nodes);
+        } else if (nodes[0]->dataType() == NTBool) {
+          return checkDT (dtypeOper, NTBool, NTDouble, nodes);
+        }
+	return checkDT (dtypeOper, NTNumeric, NTDouble, nodes);
+    case argFUNC:
     case imagFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTNumeric, NTDouble, nodes);
@@ -1611,7 +1727,15 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	return checkDT (dtypeOper, NTReal, NTReal, nodes);
     case intFUNC:
 	checkNumOfArg (1, 1, nodes);
+        if (nodes[0]->dataType() == NTString) {
+          return checkDT (dtypeOper, NTString, NTInt, nodes);
+        } else if (nodes[0]->dataType() == NTBool) {
+          return checkDT (dtypeOper, NTBool, NTInt, nodes);
+        }
 	return checkDT (dtypeOper, NTReal, NTInt, nodes);
+    case boolFUNC:
+	checkNumOfArg (1, 1, nodes);
+	return checkDT (dtypeOper, NTAny, NTBool, nodes);
     case near2FUNC:
     case nearabs2FUNC:
 	checkNumOfArg (2, 2, nodes);
@@ -1640,6 +1764,9 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	checkNumOfArg (2, 2, nodes);
 	return checkDT (dtypeOper, NTReal, NTReal, nodes);
     case complexFUNC:
+        if (nodes.size() == 1  &&  nodes[0]->dataType() == NTString) {
+            return checkDT (dtypeOper, NTString, NTComplex, nodes);
+        }
 	checkNumOfArg (2, 2, nodes);
 	return checkDT (dtypeOper, NTReal, NTComplex, nodes);
     case isnanFUNC:
@@ -1697,5 +1824,53 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     }
     return NTNumeric;
 }
+
+Int64 TableExprFuncNode::string2Int (const String& str)
+{
+  istringstream istr(str);
+  // Initialize to 0 to make sure an empty string is handled correctly.
+  Int64 v=0;
+  istr >> v;
+  return v;
+}
+
+Double TableExprFuncNode::string2Real (const String& str)
+{
+  istringstream istr(str);
+  Double v=0;
+  istr >> v;
+  return v;
+}
+
+DComplex TableExprFuncNode::string2Complex (const String& str)
+{
+  istringstream istr(str);
+  Double r=0, i=0;
+  char c=' ';
+  istr >> c;
+  if (c == '(') {
+    // Like (12.3, 45.6)
+    istr >> r >> c >> i;
+  } else {
+    // Like 12.3, 45.6    or    12.3 + 45.6i
+    istringstream istr2(str);
+    istr2 >> r >> c >> i;
+  }
+  if (c == '-') i = -i;
+  return DComplex(r,i);
+}
+
+Bool TableExprFuncNode::string2Bool (const String& str)
+{
+  String s(str);
+  s.trim();
+  s.downcase();
+  if (s.empty()  ||  s == "f"  ||  s == "false"  ||  s == "0"  ||
+      s == "-"   ||  s == "n"  ||  s == "no") {
+    return False;
+  }
+  return True;
+}
+
 
 } //# NAMESPACE CASACORE - END

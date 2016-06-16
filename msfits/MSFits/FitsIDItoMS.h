@@ -293,6 +293,7 @@ protected:
   MeasurementSet ms_p;
   MSColumns* msc_p;
   static Bool firstMain;
+  static Bool firstSyscal;
   Bool uv_data_hasWeights_p;
   Bool weightKwPresent_p;
   Bool weightypKwPresent_p;

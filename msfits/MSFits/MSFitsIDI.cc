@@ -380,6 +380,11 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
       mssub.rename (itsMSOut+"/POINTING",Table::Update);
       msmain.rwKeywordSet().defineTable("POINTING",mssub);
     }
+    if (subTableName(isub)=="SYSTEM_TEMPERATURE") {
+      Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/SYSCAL",Table::Update);
+      mssub.rename (itsMSOut+"/SYSCAL",Table::New);
+      msmain.rwKeywordSet().defineTable("SYSCAL",mssub);
+    }
     //if (subTableName(isub)=="INTERFEROMETER_MODEL") {
     //  Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/IDI_CORRELATOR_MODEL",Table::Update);
     //  mssub.rename (itsMSOut+"/IDI_CORRELATOR_MODEL",Table::Update);

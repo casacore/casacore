@@ -178,9 +178,11 @@ public:
     // if the conversion succeeds, otherwise it returns False and method
     // errorMessage contains an error message.  The output
     // vectors are appropriately resized.
+    // The Bool parameter in toWorld() has no effect as this coordinate does
+    // not support a conversion layer frame.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
-			 const Vector<Double> &pixel) const;
+			 const Vector<Double> &pixel, Bool=True) const;
     virtual Bool toPixel(Vector<Double> &pixel, 
 			 const Vector<Double> &world) const;
     Bool toWorld(Double &world, Double pixel) const;

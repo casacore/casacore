@@ -1,0 +1,167 @@
+select 4mar53 giving tTableGramEpoch_tmp.tab
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+ 34440
+using style python select * from tTableGramEpoch_tmp.tab
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+04-Mar-1953
+
+Structure of table /Users/diepen/casa/masktql/build/dbg/tables/TaQL/test/tTableGramEpoch_tmp.tab
+------------------ 
+1 rows, 1 columns in little endian format (using 1 data managers)
+
+ StandardStMan file=table.f0  name=StandardStMan  bucketsize=256
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=126
+  Col_1 double   scalar unit=[d] measure=epoch,UTC
+
+Keywords of main table 
+----------------------
+  Column Col_1
+    MEASINFO: {
+      type: String "epoch"
+      Ref: String "UTC"
+    }
+    QuantumUnits: String array with shape [1]
+      [d]
+
+select 4mar53 s giving tTableGramEpoch_tmp.tab
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+ 2.97562e+09
+using style python select * from tTableGramEpoch_tmp.tab
+    has been executed
+    select result of 1 rows
+1 selected columns:  Col_1
+04-Mar-1953
+
+Structure of table /Users/diepen/casa/masktql/build/dbg/tables/TaQL/test/tTableGramEpoch_tmp.tab
+------------------ 
+1 rows, 1 columns in little endian format (using 1 data managers)
+
+ StandardStMan file=table.f0  name=StandardStMan  bucketsize=256
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=126
+  Col_1 double   scalar unit=[s] measure=epoch,UTC
+
+Keywords of main table 
+----------------------
+  Column Col_1
+    MEASINFO: {
+      type: String "epoch"
+      Ref: String "UTC"
+    }
+    QuantumUnits: String array with shape [1]
+      [s]
+
+insert into tTableGramEpoch_tmp.tab values (04-03-1963)
+    has been executed
+    insert result of 1 rows
+1 selected columns:  Col_1
+ 3.29115e+09
+select * from tTableGramEpoch_tmp.tab
+    has been executed
+    select result of 2 rows
+1 selected columns:  Col_1
+ 2.97562e+09
+ 3.29115e+09
+using style python select * from tTableGramEpoch_tmp.tab
+    has been executed
+    select result of 2 rows
+1 selected columns:  Col_1
+04-Mar-1953
+04-Mar-1963
+update tTableGramEpoch_tmp.tab set Col_1=1958-05-11 where Col_1=4-mar-1963
+    has been executed
+    update result of 1 rows
+1 selected columns:  Col_1
+ 3.13926e+09
+select * from tTableGramEpoch_tmp.tab
+    has been executed
+    select result of 2 rows
+1 selected columns:  Col_1
+ 2.97562e+09
+ 3.13926e+09
+using style python select * from tTableGramEpoch_tmp.tab
+    has been executed
+    select result of 2 rows
+1 selected columns:  Col_1
+04-Mar-1953
+11-May-1958
+select 34447 as TIME TIME giving tTableGramEpoch_tmp.tab
+    has been executed
+    select result of 1 rows
+1 selected columns:  TIME
+ 34447
+using style python select * from tTableGramEpoch_tmp.tab
+    has been executed
+    select result of 1 rows
+1 selected columns:  TIME
+11-Mar-1953
+
+Structure of table /Users/diepen/casa/masktql/build/dbg/tables/TaQL/test/tTableGramEpoch_tmp.tab
+------------------ 
+1 rows, 1 columns in little endian format (using 1 data managers)
+
+ StandardStMan file=table.f0  name=StandardStMan  bucketsize=256
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=126
+  TIME double   scalar unit=[d] measure=epoch,UTC
+
+Keywords of main table 
+----------------------
+  Column TIME
+    MEASINFO: {
+      type: String "epoch"
+      Ref: String "UTC"
+    }
+    QuantumUnits: String array with shape [1]
+      [d]
+
+create table tTableGramEpoch_tmp.tab TIME TIME
+    has been executed
+    cretab result of 0 rows
+1 selected columns:  TIME
+
+Structure of table /Users/diepen/casa/masktql/build/dbg/tables/TaQL/test/tTableGramEpoch_tmp.tab
+------------------ 
+0 rows, 1 columns in little endian format (using 1 data managers)
+
+ StandardStMan file=table.f0  name=StandardStMan  bucketsize=256
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  TIME double   scalar unit=[d] measure=epoch,UTC
+
+Keywords of main table 
+----------------------
+  Column TIME
+    MEASINFO: {
+      type: String "epoch"
+      Ref: String "UTC"
+    }
+    QuantumUnits: String array with shape [1]
+      [d]
+
+create table tTableGramEpoch_tmp.tab TIME EPOCH [UNIT="s"]
+    has been executed
+    cretab result of 0 rows
+1 selected columns:  TIME
+
+Structure of table /Users/diepen/casa/masktql/build/dbg/tables/TaQL/test/tTableGramEpoch_tmp.tab
+------------------ 
+0 rows, 1 columns in little endian format (using 1 data managers)
+
+ StandardStMan file=table.f0  name=StandardStMan  bucketsize=256
+    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+  TIME double   scalar unit=[s] measure=epoch,UTC
+
+Keywords of main table 
+----------------------
+  Column TIME
+    MEASINFO: {
+      type: String "epoch"
+      Ref: String "UTC"
+    }
+    QuantumUnits: String array with shape [1]
+      [s]
+

@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprDerNode.cc 21521 2014-12-10 08:06:42Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprDerNode.h>
 #include <casacore/tables/Tables/Table.h>
@@ -323,12 +323,21 @@ TableExprNodeRowid::~TableExprNodeRowid ()
 {}
 void TableExprNodeRowid::applySelection (const Vector<uInt>& rownrs)
 {
-    // Select the rowid-s of the given rows.
-    Vector<uInt> newRows(rownrs.size());
-    for (uInt i=0; i<rownrs.size(); ++i) {
-        newRows[i] = rownrs_p[rownrs[i]];
+    // Append rows for an insert.
+    if (rownrs.size() == 1  &&  rownrs[0] >= rownrs_p.size()) {
+        uInt sz = rownrs_p.size();
+        rownrs_p.resize (rownrs[0], True);
+        for (uInt i=sz; i<rownrs_p.size(); ++i) {
+            rownrs_p[i] = i;
+        }
+    } else {
+        // Select the rowid-s of the given rows.
+        Vector<uInt> newRows(rownrs.size());
+        for (uInt i=0; i<rownrs.size(); ++i) {
+            newRows[i] = rownrs_p[rownrs[i]];
+        }
+        rownrs_p.reference (newRows);
     }
-    rownrs_p.reference (newRows);
 }
 Int64 TableExprNodeRowid::getInt (const TableExprId& id)
 {

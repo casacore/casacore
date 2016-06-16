@@ -292,7 +292,12 @@ void TableExprNodeINInt::convertConstChild()
   if (rnode_p->isConstant()  &&  rnode_p->valueType() == VTArray) {
     // Convert set/array to a Bool array (for direct lookup) if the range
     // is sufficiently small.
-    Array<Int64> arr = rnode_p->getArrayInt(0);
+    MArray<Int64> values = rnode_p->getArrayInt(0);
+    Array<Int64> arr(values.array());
+    if (values.hasMask()) {
+      // Remove masked elements.
+      arr.reference (values.flatten());
+    }
     if (! arr.empty()) {
       minMax (itsMin, itsMax, arr);
       Int64 sz = itsMax - itsMin + 1;

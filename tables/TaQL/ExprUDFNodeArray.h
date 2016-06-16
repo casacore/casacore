@@ -23,13 +23,12 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: ExprUDFNodeArray.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef TABLES_EXPRUDFNODEARRAY_H
 #define TABLES_EXPRUDFNODEARRAY_H
 
 //# Includes
-#include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/tables/TaQL/UDFBase.h>
 
@@ -101,12 +100,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Functions to get the desired result of a function
     // <group>
-    virtual Array<Bool>     getArrayBool     (const TableExprId& id);
-    virtual Array<Int64>    getArrayInt      (const TableExprId& id);
-    virtual Array<Double>   getArrayDouble   (const TableExprId& id);
-    virtual Array<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual Array<String>   getArrayString   (const TableExprId& id);
-    virtual Array<MVTime>   getArrayDate     (const TableExprId& id);
+    virtual MArray<Bool>     getArrayBool     (const TableExprId& id);
+    virtual MArray<Int64>    getArrayInt      (const TableExprId& id);
+    virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<String>   getArrayString   (const TableExprId& id);
+    virtual MArray<MVTime>   getArrayDate     (const TableExprId& id);
     // </group>
 
   private:

@@ -244,6 +244,10 @@ public:
     // access functions do not need to size the cache.
     void setCacheSize (uInt rownr, uInt nbuckets, Bool forceSmaller);
 
+    // Sets the cache size using the hypercube instead of the row number.
+    // Useful for iterating over all hypercubes.
+    void setHypercubeCacheSize (uInt hypercube, uInt nbuckets, Bool forceSmaller);
+
     // Determine if the user set the cache size (using setCacheSize).
     Bool userSetCache (uInt rownr) const;
 

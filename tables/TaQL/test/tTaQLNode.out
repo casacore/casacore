@@ -1,8 +1,26 @@
+select 1*3
+SELECT (1)*(3)
+
+select 1*3 giving a.b;
+SELECT (1)*(3) GIVING a.b
+
+select 1*3,5+7 into a.b where a>2 groupby c1,c2 having e1<0 and e2>3 orderby d1,d2 limit 2:5:2
+SELECT (1)*(3),(5)+(7) WHERE (a)>(2) GROUPBY c1,c2 HAVING ((e1)<(0))&&((e2)>(3)) ORDERBY d1,d2 LIMIT 2:5:2 GIVING a.b
+
+select from a.tab #comment
+SELECT FROM a.tab
+
+select from [a1.tab,a2.tab,[a3a.tab,a3b.tab]]
+SELECT FROM [a1.tab,a2.tab,[a3a.tab,a3b.tab]]
+
 select ab,ac,ad,ae,af,ag into tTaQLNode_tmp.data2 from tTaQLNode_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
 SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab AS sh WHERE ((ALL((ab)>(2)))&&(((ae)<(10))||((ae)>(11))))&&((ag)<>((10)+(1i))) ORDERBY ac DESC,ab GIVING tTaQLNode_tmp.data2
 
 select ab,ac,ad,ae,af,ag into tTaQLNode_tmp.data2 as PLAIN_LOCAL from tTaQLNode_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
-SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab AS sh WHERE ((ALL((ab)>(2)))&&(((ae)<(10))||((ae)>(11))))&&((ag)<>((10)+(1i))) ORDERBY ac DESC,ab GIVING tTaQLNode_tmp.data2 AS plain_local
+SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab AS sh WHERE ((ALL((ab)>(2)))&&(((ae)<(10))||((ae)>(11))))&&((ag)<>((10)+(1i))) ORDERBY ac DESC,ab GIVING tTaQLNode_tmp.data2 AS [PLAIN_LOCAL=T]
+
+select from tTaQLNode_tmp.tab sh giving tTaQLNode_tmp.data2 as [type="PLAIN",endian="local",storage="multifile",blocksize=32768] dminfo [name="ISM1",type="IncrementalStMan"], [name="SSM1",type="StandardStMan", bucketsize=1000]
+SELECT FROM tTaQLNode_tmp.tab AS sh GIVING tTaQLNode_tmp.data2 AS [type='PLAIN',endian='local',storage='multifile',blocksize=32768] DMINFO [name='ISM1',type='IncrementalStMan'],[name='SSM1',type='StandardStMan',bucketsize=1000]
 
 select distinct ab+1 as ab1,ac,ad,ae,af,ag from tTaQLNode_tmp.data2
 SELECT DISTINCT (ab)+(1) AS ab1,ac,ad,ae,af,ag FROM tTaQLNode_tmp.data2
@@ -42,8 +60,8 @@ SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (af)<>(SQLPATTERN('_3%'))
 select from tTaQLNode_tmp.tab where af ~ d/abc/
 SELECT FROM tTaQLNode_tmp.tab WHERE (af)~d/abc/
 
-select from tTaQLNode_tmp.tab where af ~ d#abc#ib3
-SELECT FROM tTaQLNode_tmp.tab WHERE (af)~d#abc#ib3
+select from tTaQLNode_tmp.tab where af ~ d@abc@ib3
+SELECT FROM tTaQLNode_tmp.tab WHERE (af)~d@abc@ib3
 
 select from tTaQLNode_tmp.tab where af ~ d/abc/03bi
 SELECT FROM tTaQLNode_tmp.tab WHERE (af)~d/abc/ib3
@@ -102,10 +120,10 @@ SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE NOT((ab) IN {2,4})
 select ab,ac from tTaQLNode_tmp.tab where ab IN [:=2,4=:<6,7<:]
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN [<,2},{4,6>,<7,>]
 
-select ab,ac from tTaQLNode_tmp.tab where ab IN (2,(3))
+select ab,ac from tTaQLNode_tmp.tab where ab IN [2,(3)]
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (ab) IN [2,3]
 
-select ab,ac from tTaQLNode_tmp.tab where ab NOT IN (2,(3))
+select ab,ac from tTaQLNode_tmp.tab where ab NOT IN [2,(3)]
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE NOT((ab) IN [2,3])
 
 select ab,ac from tTaQLNode_tmp.tab where ab IN [select from tTaQLNode_tmp.tab where ab>4 giving [ac=:=ac+0.5]]
@@ -248,6 +266,9 @@ UPDATE tTaQLNode_tmp.tab SET arr1[1,1,1]=3,arr1[2,2,2]=(arr1)[1,1,1],ab=sum(arr1
 update tTaQLNode_tmp.tab set arr1[1,,]=4, ab=sum(arr1) limit 1 offset 3
 UPDATE tTaQLNode_tmp.tab SET arr1[1,,]=4,ab=sum(arr1) LIMIT 1 OFFSET 3
 
+update tTaQLNode_tmp.tab set arr1[arr1>0][1,,]=4, ab=sum(arr1) limit 1 offset 3
+UPDATE tTaQLNode_tmp.tab SET arr1[(arr1)>(0)][1,,]=4,ab=sum(arr1) LIMIT 1 OFFSET 3
+
 delete from tTaQLNode_tmp.tab limit 3 offset 2
 DELETE FROM tTaQLNode_tmp.tab LIMIT 3 OFFSET 2
 
@@ -257,29 +278,29 @@ DELETE FROM tTaQLNode_tmp.tab ORDERBY DESC ab LIMIT 1 OFFSET 2
 select ab from tTaQLNode_tmp.tab
 SELECT ab FROM tTaQLNode_tmp.tab
 
+select ab[am] as (c1,c2) from tTaQLNode_tmp.tab
+SELECT (ab)[am] AS (c1,c2) FROM tTaQLNode_tmp.tab
+
 delete from tTaQLNode_tmp.tab
 DELETE FROM tTaQLNode_tmp.tab
-
-select ab from tTaQLNode_tmp.tab
-SELECT ab FROM tTaQLNode_tmp.tab
-
-insert into tTaQLNode_tmp.tab select from tTaQLNode_tmp.tabc
-INSERT INTO tTaQLNode_tmp.tab SELECT FROM tTaQLNode_tmp.tabc
-
-select ab from tTaQLNode_tmp.tab
-SELECT ab FROM tTaQLNode_tmp.tab
 
 delete from tTaQLNode_tmp.tab where ab%2==0
 DELETE FROM tTaQLNode_tmp.tab WHERE ((ab)%(2))=(0)
 
-select ab from tTaQLNode_tmp.tab
-SELECT ab FROM tTaQLNode_tmp.tab
+insert into tTaQLNode_tmp.tab select from tTaQLNode_tmp.tabc
+INSERT INTO tTaQLNode_tmp.tab SELECT FROM tTaQLNode_tmp.tabc
 
-insert into tTaQLNode_tmp.tab (ab,ac) values (1+2,3*ab + sum([select ab from tTaQLNode_tmp.tab]))
-INSERT INTO tTaQLNode_tmp.tab [ab,ac] VALUES [(1)+(2),((3)*(ab))+(sum([SELECT ab FROM tTaQLNode_tmp.tab]))]
+insert into tTaQLNode_tmp.tab ((ab1,ab2),ac) values (1+2,3*ab + sum([select ab from tTaQLNode_tmp.tab]))
+INSERT INTO tTaQLNode_tmp.tab [(ab1,ab2),ac] VALUES [(1)+(2),((3)*(ab))+(sum([SELECT ab FROM tTaQLNode_tmp.tab]))]
 
-select ab,ac from tTaQLNode_tmp.tab
-SELECT ab,ac FROM tTaQLNode_tmp.tab
+insert into tTaQLNode_tmp.tab values (1+2),(8),(9),(10)
+INSERT INTO tTaQLNode_tmp.tab VALUES [(1)+(2)],[8],[9],[10]
+
+insert limit 10 into tTaQLNode_tmp.tab values (1)
+INSERT LIMIT 10 INTO tTaQLNode_tmp.tab VALUES [1]
+
+insert into tTaQLNode_tmp.tab set ab1=1, ab2="str"
+INSERT INTO tTaQLNode_tmp.tab [ab1,ab2] VALUES [1,'str']
 
 count ab,ac+1 from tTaQLnode_tmp.tab
 COUNT  ab,(ac)+(1) FROM tTaQLnode_tmp.tab
@@ -287,6 +308,51 @@ COUNT  ab,(ac)+(1) FROM tTaQLnode_tmp.tab
 count min(ab),ac+1 from tTaQLnode_tmp.tab where ac>1
 COUNT  min(ab),(ac)+(1) FROM tTaQLnode_tmp.tab WHERE (ac)>(1)
 
+update a.tab set (c1,cm)=arr
+UPDATE a.tab SET (c1,cm)=arr
+
+update a.tab set (c1,cm)[1:5]=arr
+UPDATE a.tab SET (c1,cm)[1:5]=arr
+
 create table tTaQLNode_tmp.tab col1 i4, col2 r4 ndim=1, c3 r8 [ndim=2, shape=[3,4]] dminfo [name="ISM1",type="IncrementalStMan"], [name="SSM1",type="StandardStMan", bucketsize=1000]
 CREATE TABLE tTaQLNode_tmp.tab col1 I4,col2 R4 ndim=1,c3 R8 [ndim=2,shape=[3,4]] DMINFO [name='ISM1',type='IncrementalStMan'],[name='SSM1',type='StandardStMan',bucketsize=1000]
+
+create table tTaQLNode_tmp.tab limit 10*10
+CREATE TABLE tTaQLNode_tmp.tab  LIMIT (10)*(10)
+
+select gcount() from [tTableGram_tmp.tst as t1,tTableGram_tmp.tst as t2,[[tTableGram_tmp.tst,tTableGram_tmp.tst] as t3] as t4] as t5
+SELECT COUNTALL() FROM [tTableGram_tmp.tst AS t1,tTableGram_tmp.tst AS t2,[[tTableGram_tmp.tst,tTableGram_tmp.tst] AS t3] AS t4] AS t5
+
+select from [t_tmp.tst1,t_tmp.tst2 subtables a,b giving a.tab]
+SELECT FROM [t_tmp.tst1,t_tmp.tst2 SUBTABLES a,b GIVING a.tab]
+
+alter table a.b rename column old to new
+ALTER TABLE a.b RENAME COLUMN old TO new
+
+alter table a.b rename column old to new, old1 to new1, old2 to new2
+ALTER TABLE a.b RENAME COLUMN old TO new,old1 TO new1,old2 TO new2
+
+alter table x.y drop column col
+ALTER TABLE x.y DROP COLUMN col
+
+alter table x.y drop column col, col1,col2
+ALTER TABLE x.y DROP COLUMN col,col1,col2
+
+alter table x.y drop column col rename column old to new
+ALTER TABLE x.y DROP COLUMN col RENAME COLUMN old TO new
+
+alter table x.y set keyword xyz=14
+ALTER TABLE x.y SET KEYWORD xyz=14
+
+alter table x.y set keyword xy.z=14 AS uint
+ALTER TABLE x.y SET KEYWORD xy.z=14 AS U4
+
+alter table x.y set keyword xyz=[14,15,16] as float
+ALTER TABLE x.y SET KEYWORD xyz=[14,15,16] AS R4
+
+alter table x.y set keyword xyz=[f1=14 as uint, f2=[f2a=4]]
+ALTER TABLE x.y SET KEYWORD xyz=[f1=14 AS U4,f2=[f2a=4]]
+
+alter table x.y set keyword x=[] as bool, y=[y1=2,y2=[3+4/2, a+b/c], y3=[] as s, y4=[=]]
+ALTER TABLE x.y SET KEYWORD x=[] AS B,y=[y1=2,y2=[(3)+((4)/(2)),(a)+((b)/(c))],y3=[] AS S,y4=[=]]
 

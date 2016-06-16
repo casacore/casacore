@@ -33,6 +33,7 @@
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/DataMan/TiledShapeStMan.h>
+#include <casacore/tables/DataMan/TiledStManAccessor.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -153,6 +154,43 @@ void writeFixed (const TSMOption& tsmOpt)
     }
 }
 
+void testCacheSizing ()
+{
+    String result = "passed";
+    cout << "Testing cache sizing via accessor " << endl;
+
+    // Open the temporary table and establish a storage manager accessor.
+
+    Table table("tTiledShapeStMan_tmp.data", Table::Old, TSMOption::Aipsrc);
+    ROTiledStManAccessor accessor (table, "TSMExample", false);
+
+    // Set the cache sizes for the various hypercubes.
+
+    int nCubes = accessor.nhypercubes();
+    for (int cube = 0; cube < nCubes; cube ++){
+
+	if (accessor.getBucketSize(cube) != 0){
+	    int nBuckets = (cube + 1) * 3;
+	    accessor.setHypercubeCacheSize (cube, nBuckets);
+	}
+      
+    }
+
+    // Verify that the cache sizes are as expected.
+
+    for (int cube = 0; cube < nCubes; cube ++){
+
+	int nBuckets = accessor.getCacheSize (cube);
+	int nBucketsExpected = (cube + 1) * 3;
+	if (nBuckets != nBucketsExpected && accessor.getBucketSize(cube) != 0){
+	    cout << "Expected cache size of " << nBucketsExpected << "; got " << nBuckets << endl;
+	    result = "*FAILED*";
+	}
+    }
+
+    cout << "... completed testing cache sizing via accessor; status: " << result << endl;
+}
+
 void readTable (const IPosition& dwShape, const TSMOption& tsmOpt)
 {
   Table table("tTiledShapeStMan_tmp.data", Table::Old, tsmOpt);
@@ -204,6 +242,9 @@ void readTable (const IPosition& dwShape, const TSMOption& tsmOpt)
 	    cout << "mismatch in time row " << i << endl;
 	}
 	timeValue += 5;
+        if (i < 10) {
+          cout << "tileshape=" << data.tileShape(i) << endl;
+        }
     }
 }
 
@@ -569,6 +610,7 @@ int main () {
         writeFixVar (TSMOption::Cache);
 	readTable (IPosition(2,16,25), TSMOption::MMap);
 	writeVarShaped (TSMOption::Default);
+        testCacheSizing ();
 	readTable (IPosition(), TSMOption::Aipsrc);
 	writeNoHyper (TSMOption::Aipsrc);
 	readTable (IPosition(2,16,25), TSMOption::Default);

@@ -788,13 +788,13 @@ class String : public string {
   // Start at startpos and extract the string "before" the argument's 
   // position, exclusive. ** Casacore addition
   // <group name=before>
-  SubString before(size_type pos);
-  SubString before(const string &str, size_type startpos = 0);
-  SubString before(const Char *s, size_type startpos = 0);
-  SubString before(Char c, size_type startpos = 0);
-  SubString before(const RegexBase &r, size_type startpos = 0);
+  SubString before(size_type pos) const;
+  SubString before(const string &str, size_type startpos = 0) const;
+  SubString before(const Char *s, size_type startpos = 0) const;
+  SubString before(Char c, size_type startpos = 0) const;
+  SubString before(const RegexBase &r, size_type startpos = 0) const;
   // Next one for overloading reasons
-  SubString before(Int pos) {
+  SubString before(Int pos) const {
     return before(static_cast<size_type>(pos)); };    
   // </group>
 
@@ -878,7 +878,7 @@ class String : public string {
 private:
   // Helper functions for at, before etc
   // <group>
-  SubString _substr(size_type first, size_type l) {
+  SubString _substr(size_type first, size_type l) const {
     return SubString(*this, first, l); }
   // </group>
 

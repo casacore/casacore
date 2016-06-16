@@ -28,6 +28,10 @@
 #include <casacore/python/Converters/PycImport.h>
 #include <casacore/casa/OS/Path.h>
 
+#if PY_MAJOR_VERSION >= 3
+#define IS_PY3K
+#endif
+
 namespace casacore { namespace python {
 
     boost::python::object PycImport (const String& moduleName,
@@ -44,7 +48,12 @@ namespace casacore { namespace python {
         string workingDir = Path(".").absoluteName();
         char path[] = "path";      // warning if "path" is used below
         PyObject* sysPath = PySys_GetObject(path);
-        PyList_Insert (sysPath, 0, PyString_FromString(workingDir.c_str()));
+#ifdef IS_PY3K
+        PyList_Insert (sysPath, 0, PyUnicode_FromString(workingDir.c_str()));
+#else
+          PyList_Insert (sysPath, 0, PyString_FromString(workingDir.c_str()));
+#endif
+
         // First import main.
         boost::python::object mainModule = boost::python::import
           ("__main__");

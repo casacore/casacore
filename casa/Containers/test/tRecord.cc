@@ -27,6 +27,7 @@
 
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/RecordField.h>
+#include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Arrays/Array.h>
@@ -40,9 +41,8 @@
 
 #include <casacore/casa/namespace.h>
 // This program tests the Record and RecordRep classes.
-// Its expected output (which only consists of exception text)
-// is stored in tRecord.out and can be checked using assay.
-// This will also delete the temporary output file.
+// Its expected output is stored in tRecord.out and can be checked
+// using assay. This will also delete the temporary output file.
 // <p>
 // It can throw several exceptions, which may result in memory leaks.
 // To check if no real memory leaks occur, the program can be run
@@ -235,8 +235,14 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
     AlwaysAssertExit (record.subRecord(subField1).asFloat(0) == 3);
     record.print (cout, 0, "  ");
     record.print (cout, -1, "  ");
-    record.print (cout, 1, "  ");
     cout << record;
+    // Test conversion to ValueHolder.
+    Record recin;
+    recin.defineRecord ("rec", record);
+    ValueHolder vh = recin.asValueHolder(0);
+    Record recout;
+    recout.defineFromValueHolder (0, vh);
+    recout.print (cout, 1);
 }
 
 void doIt (Bool doExcp)

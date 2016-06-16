@@ -32,6 +32,10 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <boost/python/object.hpp>
 
+#if PY_MAJOR_VERSION >= 3
+#define IS_PY3K
+#endif
+
 namespace casacore { namespace python {
 
   boost::python::object casa_value_to_python::makeobject
@@ -94,11 +98,19 @@ namespace casacore { namespace python {
   void* casa_value_from_python::convertible(PyObject* obj_ptr)
   {
     if (! (PyBool_Check(obj_ptr)
-	   || PyInt_Check(obj_ptr)
+#ifdef IS_PY3K
+	   || PyLong_Check(obj_ptr)
+#else
+       || PyInt_Check(obj_ptr)
+#endif
 	   || PyLong_Check(obj_ptr)
 	   || PyFloat_Check(obj_ptr)
 	   || PyComplex_Check(obj_ptr)
-	   || PyString_Check(obj_ptr)
+#ifdef IS_PY3K
+	   || PyUnicode_Check(obj_ptr)
+#else
+       || PyString_Check(obj_ptr)
+#endif
 	   || PyDict_Check(obj_ptr)
 	   || PyList_Check(obj_ptr)
 	   || PyTuple_Check(obj_ptr)
@@ -144,7 +156,11 @@ namespace casacore { namespace python {
       return casa_array_from_python::makeScalar (obj_ptr);
     } else if (PyBool_Check(obj_ptr)) {
       return ValueHolder(extract<bool>(obj_ptr)());
+#ifdef IS_PY3K
+    } else if (PyLong_Check(obj_ptr)) {
+#else
     } else if (PyInt_Check(obj_ptr)) {
+#endif
       return ValueHolder(extract<int>(obj_ptr)());
     } else if (PyLong_Check(obj_ptr)) {
       return ValueHolder(extract<Int64>(obj_ptr)());
@@ -152,7 +168,11 @@ namespace casacore { namespace python {
       return ValueHolder(extract<double>(obj_ptr)());
     } else if (PyComplex_Check(obj_ptr)) {
       return ValueHolder(extract<std::complex<double> >(obj_ptr)());
+#ifdef IS_PY3K
+    } else if (PyUnicode_Check(obj_ptr)) {
+#else
     } else if (PyString_Check(obj_ptr)) {
+#endif
       return ValueHolder(String(extract<std::string>(obj_ptr)()));
     } else if (PyDict_Check(obj_ptr)) {
       dict d = extract<dict>(obj_ptr)();
@@ -228,7 +248,12 @@ namespace casacore { namespace python {
         dt = PycArrayScalarType (py_elem_obj.ptr());
       } else if (PyBool_Check (py_elem_obj.ptr())) {
 	dt = TpBool;
+#ifdef IS_PY3K
+      } else if (PyLong_Check (py_elem_obj.ptr())) {
+#else
       } else if (PyInt_Check (py_elem_obj.ptr())) {
+#endif
+
 	dt = TpInt;
       } else if (PyLong_Check (py_elem_obj.ptr())) {
 	dt = TpInt64;
@@ -236,7 +261,11 @@ namespace casacore { namespace python {
 	dt = TpDouble;
       } else if (PyComplex_Check (py_elem_obj.ptr())) {
 	dt = TpDComplex;
+#ifdef IS_PY3K
+      } else if (PyUnicode_Check (py_elem_obj.ptr())) {
+#else
       } else if (PyString_Check (py_elem_obj.ptr())) {
+#endif
 	dt = TpString;
       } else {
         throw AipsError ("PycValueHolder: unknown python data type");

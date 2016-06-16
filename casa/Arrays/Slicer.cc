@@ -169,7 +169,7 @@ void Slicer::fillEndLen()
 		//# End is given; check if start<=end.
 		//# Fill in length of result if start and end are given.
 		len_p(i) = MimicSource;
-		if (start_p(i) != MimicSource  &&  end_p(i) != MimicSource) {
+		if (start_p(i) >= 0  &&  end_p(i) >= 0) {
 		    len_p(i) = end_p(i) - start_p(i);         // input-length
 		    if (len_p(i) < 0) {
 			throw (ArraySlicerError ("end<start"));
@@ -180,10 +180,10 @@ void Slicer::fillEndLen()
 		//# Length is given; check if >= 0.
 		//# Fill in end if start and length are given.
 		end_p(i) = MimicSource;
-		if (len_p(i) != MimicSource) {
-		    if (len_p(i) < 0) {
-			throw (ArraySlicerError ("length<0"));
-		    }
+                if (len_p(i) != MimicSource) {
+                    if (len_p(i) < 0) {
+                        throw (ArraySlicerError ("length<0"));
+                    }
 		    end_p(i) = start_p(i) + (len_p(i) - 1) * stride_p(i);
 		}
 	    }
@@ -197,7 +197,7 @@ void Slicer::fillFixed()
 {
     fixed_p = True;
     for (uInt i=0; i<start_p.nelements(); i++) {
-	if (start_p(i) == MimicSource  ||  end_p(i) == MimicSource) {
+	if (start_p(i) < 0  ||  end_p(i) < 0) {
 	    fixed_p = False;
 	    break;
 	}
@@ -221,21 +221,10 @@ IPosition Slicer::inferShapeFromSource (const IPosition& shp,
 					IPosition& end,
 					IPosition& stride) const
 {
-    IPosition origin(shp.nelements(), 0);
-    return inferShapeFromSource (shp, origin, start, end, stride);
-}
-
-IPosition Slicer::inferShapeFromSource (const IPosition& shp,
-					const IPosition& ori,
-					IPosition& start,
-					IPosition& end,
-					IPosition& stride) const
-{
-    //# Check if length of shape and origin conform the Slicer.
-    if (shp.nelements() != start_p.nelements()
-    ||  ori.nelements() != start_p.nelements()) {
+    //# Check if length of shape conforms the Slicer.
+    if (shp.nelements() != start_p.nelements()) {
 	throw (ArraySlicerError
-	               ("Shape/Origin IPosition-lengths differ from ndim()"));
+	               ("Shape IPosition-lengths differ from ndim()"));
     }
     //# Resize the output IPositions.
     //# Initialize them, so they will do for unspecified values.
@@ -249,7 +238,8 @@ IPosition Slicer::inferShapeFromSource (const IPosition& shp,
     for (uInt i=0; i<start_p.nelements(); i++) {
 	//# Fill and check start value; unspecified means 0.
 	if (start_p(i) != MimicSource) {
-	    start(i) = start_p(i) - ori(i);
+            start(i) = start_p(i);
+            if (start(i) < 0) start(i) += shp(i);
 	}
 	if (start(i) < 0) {
 	    throw (ArraySlicerError ("infer: startResult<0"));
@@ -262,7 +252,8 @@ IPosition Slicer::inferShapeFromSource (const IPosition& shp,
 	//# If given as length, unspecified is also end of axis.
 	if (asEnd_p == endIsLast) {
 	    if (end_p(i) != MimicSource) {
-		end(i) = end_p(i) - ori(i);
+                end(i) = end_p(i);
+                if (end(i) < 0) end(i) += shp(i);
 	    }
 	}else{
 	    if (len_p(i) != MimicSource) {
@@ -282,7 +273,6 @@ IPosition Slicer::inferShapeFromSource (const IPosition& shp,
 	if (end(i) >= shp(i)) {
 	    throw (ArraySlicerError ("infer: endResult>=shape"));
 	}
-
     }
     return res;
 }

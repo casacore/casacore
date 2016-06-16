@@ -33,141 +33,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ValueHolder Record::asValueHolder (const RecordFieldId& id) const
 {
-  switch (dataType(id)) {
-  case TpBool:
-    return ValueHolder(asBool(id));
-  case TpUChar:
-    return ValueHolder(asuChar(id));
-  case TpShort:
-    return ValueHolder(asShort(id));
-  case TpInt:
-    return ValueHolder(asInt(id));
-  case TpUInt:
-    return ValueHolder(asuInt(id));
-  case TpInt64:
-    return ValueHolder(asInt64(id));
-  case TpFloat:
-    return ValueHolder(asFloat(id));
-  case TpDouble:
-    return ValueHolder(asDouble(id));
-  case TpComplex:
-    return ValueHolder(asComplex(id));
-  case TpDComplex:
-    return ValueHolder(asDComplex(id));
-  case TpString:
-    return ValueHolder(asString(id));
-  case TpArrayBool:
-    return ValueHolder(asArrayBool(id));
-  case TpArrayUChar:
-    return ValueHolder(asArrayuChar(id));
-  case TpArrayShort:
-    return ValueHolder(asArrayShort(id));
-  case TpArrayInt:
-    return ValueHolder(asArrayInt(id));
-  case TpArrayUInt:
-    return ValueHolder(asArrayuInt(id));
-  case TpArrayInt64:
-    return ValueHolder(asArrayInt64(id));
-  case TpArrayFloat:
-    return ValueHolder(asArrayFloat(id));
-  case TpArrayDouble:
-    return ValueHolder(asArrayDouble(id));
-  case TpArrayComplex:
-    return ValueHolder(asArrayComplex(id));
-  case TpArrayDComplex:
-    return ValueHolder(asArrayDComplex(id));
-  case TpArrayString:
-    return ValueHolder(asArrayString(id));
-  case TpRecord:
+  if (dataType(id) == TpRecord) {
     return ValueHolder(subRecord(id));
-  default:
-    break;
+  } else {
+    return RecordInterface::asValueHolder (id);
   }
-  throw AipsError ("Record::asValueHolder - unknown data type");
 }
 
 void Record::defineFromValueHolder (const RecordFieldId& id,
 				    const ValueHolder& value)
 {
-  switch (value.dataType()) {
-  case TpBool:
-    define (id, value.asBool());
-    break;
-  case TpUChar:
-    define (id, value.asuChar());
-    break;
-  case TpShort:
-    define (id, value.asShort());
-    break;
-  case TpUShort:
-  case TpInt:
-    define (id, value.asInt());
-    break;
-  case TpUInt:
-    define (id, value.asuInt());
-    break;
-  case TpInt64:
-    define (id, value.asInt64());
-    break;
-  case TpFloat:
-    define (id, value.asFloat());
-    break;
-  case TpDouble:
-    define (id, value.asDouble());
-    break;
-  case TpComplex:
-    define (id, value.asComplex());
-    break;
-  case TpDComplex:
-    define (id, value.asDComplex());
-    break;
-  case TpString:
-    define (id, value.asString());
-    break;
-  case TpArrayBool:
-    define (id, value.asArrayBool());
-    break;
-  case TpArrayUChar:
-    define (id, value.asArrayuChar());
-    break;
-  case TpArrayShort:
-    define (id, value.asArrayShort());
-    break;
-  case TpArrayUShort:
-  case TpArrayInt:
-    define (id, value.asArrayInt());
-    break;
-  case TpArrayUInt:
-    define (id, value.asArrayuInt());
-    break;
-  case TpArrayInt64:
-    define (id, value.asArrayInt64());
-    break;
-  case TpArrayFloat:
-    define (id, value.asArrayFloat());
-    break;
-  case TpArrayDouble:
-    define (id, value.asArrayDouble());
-    break;
-  case TpArrayComplex:
-    define (id, value.asArrayComplex());
-    break;
-  case TpArrayDComplex:
-    define (id, value.asArrayDComplex());
-    break;
-  case TpArrayString:
-    define (id, value.asArrayString());
-    break;
-  case TpRecord:
+  if (value.dataType() == TpRecord) {
     defineRecord (id, value.asRecord());
-    break;
-  case TpOther:
-    // An untyped array is handled as an Int array.
-    define (id, value.asArrayInt());
-    break;
-  default:
-    throw AipsError ("Record::defineFromValueHolder - unknown data type");
-    break;
+  } else {
+    RecordInterface::defineFromValueHolder (id, value);
   }
 }
 

@@ -386,7 +386,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void apply (const TableExprId& id);
     virtual Double getDouble (const vector<TableExprId>& ids);
   private:
-    void copyArray (const Array<Double>& arr, vector<Double>& buffer) const;
     Double itsFrac;
   };
 
@@ -547,6 +546,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupMinsArrayInt (TableExprNodeRep* node);
     virtual ~TableExprGroupMinsArrayInt();
     virtual void apply (const TableExprId& id);
+    virtual void finish();
   };
 
   // <summary>
@@ -564,6 +564,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupMaxsArrayInt (TableExprNodeRep* node);
     virtual ~TableExprGroupMaxsArrayInt();
     virtual void apply (const TableExprId& id);
+    virtual void finish();
   };
 
   // <summary>
@@ -598,6 +599,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupProductsArrayInt (TableExprNodeRep* node);
     virtual ~TableExprGroupProductsArrayInt();
     virtual void apply (const TableExprId& id);
+    virtual void finish();
   };
 
   // <summary>
@@ -634,6 +636,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupMinsArrayDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupMinsArrayDouble();
     virtual void apply (const TableExprId& id);
+    virtual void finish();
   };
 
   // <summary>
@@ -651,6 +654,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupMaxsArrayDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupMaxsArrayDouble();
     virtual void apply (const TableExprId& id);
+    virtual void finish();
   };
 
   // <summary>
@@ -685,6 +689,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupProductsArrayDouble (TableExprNodeRep* node);
     virtual ~TableExprGroupProductsArrayDouble();
     virtual void apply (const TableExprId& id);
+    virtual void finish();
   };
 
   // <summary>
@@ -822,6 +827,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupProductsArrayDComplex (TableExprNodeRep* node);
     virtual ~TableExprGroupProductsArrayDComplex();
     virtual void apply (const TableExprId& id);
+    virtual void finish();
   };
 
   // <summary>
@@ -879,7 +885,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     explicit TableExprGroupHistBase (TableExprNodeRep* node,
                                      Int64 nbin, Double start, Double end);
     virtual ~TableExprGroupHistBase();
-    virtual Array<Int64> getArrayInt (const vector<TableExprId>&);
+    virtual MArray<Int64> getArrayInt (const vector<TableExprId>&);
   protected:
     // Add the value to the histogram.
     void add (Double value);

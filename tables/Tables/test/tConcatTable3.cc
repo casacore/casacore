@@ -69,7 +69,7 @@ void checkTable (Int stval, uInt nrow)
 ///void checkTable (const Table& tab, uInt nkey, uInt nsubrow, Int stval,
 ///		 Bool reorder=True, uInt nrow=10)
 {
-  Table tab("tConcatTable_tmp.conctab");
+  Table tab("tConcatTable3_tmp.conctab");
   AlwaysAssertExit (tab.nrow() == nrow);
   /*
   AlwaysAssertExit (tab.keywordSet().nfields() == nkey);
@@ -95,7 +95,7 @@ void concatTables()
   names[1] = "tConcatTable3_tmp.tab2";
   names[2] = "tConcatTable3_tmp.tab3";
   Table concTab (names, Block<String>(), Table::Old, TSMOption(), "SUBDIR");
-  concTab.rename ("tConcatTable_tmp.conctab", Table::New);
+  concTab.rename ("tConcatTable3_tmp.conctab", Table::New);
 }
 
 int main()

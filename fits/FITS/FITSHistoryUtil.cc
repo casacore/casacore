@@ -103,7 +103,7 @@ uInt FITSHistoryUtil::getHistoryGroup(Vector<String> &strings,
 		    }
 		    break;
 		} else {
-		    os << LogIO::SEVERE << "CASA END found in history without"
+		    os << LogIO::DEBUG1 << "CASA END found in history without"
 			" a corresponding START. Ignoring" << LogIO::POST;
 		}
 	    } else {

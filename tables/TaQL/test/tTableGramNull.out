@@ -1,0 +1,71 @@
+CALC isnull(sums(nullarray(1),1))
+    has been executed
+[1]
+CALC isnull(nullarray(1.)+1)
+    has been executed
+[1]
+select from tTableGramNull_tmp.tab where isnull(cola)
+    has been executed
+    select result of 5 rows
+0 selected columns: 
+select from tTableGramNull_tmp.tab where isnull(colv)
+    has been executed
+    select result of 5 rows
+0 selected columns: 
+select from tTableGramNull_tmp.tab where isnull(cols)
+    has been executed
+    select result of 0 rows
+0 selected columns: 
+    update result of 5 rows
+select rowid() from tTableGramNull_tmp.tab where isnull(cola)
+    has been executed
+    select result of 3 rows
+1 selected columns:  Col_1
+ 0
+ 2
+ 4
+select sum(cola) from tTableGramNull_tmp.tab
+    has been executed
+    select result of 5 rows
+1 selected columns:  Col_1
+ 0
+ 16
+ 0
+ 16
+ 0
+    select result of 5 rows
+1 selected columns:  Col_1
+ no_array
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[2, 5
+ 3, 6
+ 4, 2]
+
+ no_array
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[2, 5
+ 3, 6
+ 4, 2]
+
+ no_array
+    insert result of 3 rows
+select rowid() from tTableGramNull_tmp.tab where isnull(cola)
+    has been executed
+    select result of 4 rows
+1 selected columns:  Col_1
+ 0
+ 2
+ 4
+ 6
+select sum(cola) from tTableGramNull_tmp.tab
+    has been executed
+    select result of 8 rows
+1 selected columns:  Col_1
+ 0
+ 16
+ 0
+ 16
+ 0
+ 0
+ 0
+ 3

@@ -78,7 +78,7 @@ Float -16
 Complex (-16,0)
 (-16+0j)
     testarrvh
-VH Array<Int>
+VH Array<uInt>
 [15 16]
 VH uShort
 15

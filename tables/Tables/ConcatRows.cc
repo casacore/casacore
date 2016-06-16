@@ -34,6 +34,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void ConcatRows::add (uInt nrow)
   {
+    if (Int64(nrow) + itsRows[itsNTable] >= Int64(65536)*65536) {
+      throw TableError ("Concatenation of tables exceeds 2**32 rows");
+    }
     itsNTable++;
     itsRows.resize (itsNTable+1);
     itsRows[itsNTable] = itsRows[itsNTable-1] + nrow;

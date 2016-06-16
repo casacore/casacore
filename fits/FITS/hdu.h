@@ -74,7 +74,7 @@ class HeaderDataUnit {
 	virtual ~HeaderDataUnit();
 
 	Int dims() const 			{ return no_dims; }
-	Int dim(int n) const 			{ return dimn[n]; }
+	Int dim(int n) const 			{ return (0<no_dims && n<no_dims ? dimn[n] : 0); }
 	OFF_T fitsdatasize() const 		{ return fits_data_size; }
 	FITS::ValueType datatype() const	{ return data_type; }
 	Int fitsitemsize() const 		{ return fits_item_size; }

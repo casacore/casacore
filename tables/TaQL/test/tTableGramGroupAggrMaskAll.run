@@ -1,0 +1,76 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the GROUPBY and masked aggregate functionality of
+# TableGram and TableParse class.  All files generated will
+# be deleted on exit.
+#=============================================================================
+
+# If the first argument given to the script is 1, it will only create the
+# tTableGramGroupAggrMaskAll_tmp.tab tables and not execute the tTableGram commands.
+
+
+# Set default testsrcdir if undefined.
+if test "$testsrcdir" = ""; then
+  testsrcdir=../../../../../casacore/tables/TaQL/test
+fi
+
+# Use table tTable_2.data_v0 as the input by copying it (twice).
+rm -rf tTableGramGroupAggrMaskAll_tmp.tab*
+mkdir tTableGramGroupAggrMaskAll_tmp.tab
+cp -r $testsrcdir/../../Tables/test/tTable_2.data_v0/table.* tTableGramGroupAggrMaskAll_tmp.tab
+chmod 644 tTableGramGroupAggrMaskAll_tmp.tab/*
+cp -r tTableGramGroupAggrMaskAll_tmp.tab tTableGramGroupAggrMaskAll_tmp.tabc
+
+if test "$1" = 1; then
+  exit 0;
+fi
+
+
+# Create a symlink to achieve that casacore_memcheck (if used) will use
+# that name 
+rm -f tTableGramGroupAggrMaskAll
+ln -s tTableGram tTableGramGroupAggrMaskAll
+
+
+# Test all aggregate functions for all possible data and value types.
+# Some will give an 'invalid data type' exception.
+# Note that $casa_checktool is not used for valgrind because it takes long.
+# This could be changed in the future.
+echo "*** Testing aggregate functions for all data types ..."
+# Testing numeric ones.
+for COL in 'arr1[arr1%3!=0]' 'int(arr1[arr1%2=0])' 'complex(arr1[arr1%100=50],0)'
+do
+  # Check gsum against sum, etc.
+  for FUNC in min max sum product sumsqr mean variance stddev rms
+  do
+    ./tTableGramGroupAggrMaskAll "select $FUNC(gaggr($COL)) as A, g$FUNC($COL) as B from tTableGramGroupAggrMaskAll_tmp.tab having A!~=B"
+  done
+  ./tTableGramGroupAggrMaskAll "select fractile(gaggr($COL), 0.4) as A, gfractile($COL,0.4) as B from tTableGramGroupAggrMaskAll_tmp.tab having A!~=B"
+done
+# Check gsums against sums, etc.
+for COL in 'arr1[arr1%3!=0]' 'int(arr1[arr1%2=0])' 'complex(arr1[arr1%100=50],0)'
+do
+  for FUNC in min max sum product sumsqr mean variance stddev rms
+  do
+    ./tTableGramGroupAggrMaskAll "using style python select ${FUNC}s(gaggr($COL),0) as A, g${FUNC}s($COL) as B from tTableGramGroupAggrMaskAll_tmp.tab having not all(A~=B)"
+  done
+done
+# Testing boolean ones.
+for COL in 'arr1[arr1%3!=0]'
+do
+  for FUNC in any all ntrue nfalse
+  do
+    ./tTableGramGroupAggrMaskAll "select $FUNC(gaggr($COL>5)) as A, g$FUNC($COL>5) as B from tTableGramGroupAggrMaskAll_tmp.tab having A!=B"
+  done
+done
+for COL in 'arr1[arr1%3!=0]'
+do
+  for FUNC in any all ntrue nfalse
+  do
+    ./tTableGramGroupAggrMaskAll "using style python select ${FUNC}s(gaggr(arr1>5),0) as A, g${FUNC}s(arr1>5) as B from tTableGramGroupAggrMaskAll_tmp.tab having not all(A=B)"
+  done
+done
+
+
+# Remove the symlink
+rm -f tTableGramGroupAggrMaskAll

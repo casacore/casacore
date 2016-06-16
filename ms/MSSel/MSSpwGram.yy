@@ -77,7 +77,7 @@
 %type <fval> PhyVal
 %type <fval2> UnitCode
 
-%nonassoc GT GE LT LE NE GTNLT COMMA DASH AMPERSAND SEMICOLON COLON CARET
+%nonassoc GT GE LT LE NE GTNLT COMMA DASH SEMICOLON COLON CARET
 %right TILDA
 %{
   #include <limits.h>
@@ -250,16 +250,16 @@ FreqList: FListElements
            {
 	     if (!($$)) delete $$;
 	     $$ = new Vector<Float>(0);
-	     Int N0=(*($$)).nelements(),N1=4; 
+	     uInt N0=(*($$)).nelements(),N1=4; 
 	     (*($$)).resize(N0+N1,True);  // Resize the existing list
-	      for(Int i=N0;i<N0+N1;i++)
+	      for(uInt i=N0;i<N0+N1;i++)
 		(*($$))(i) = (Float)($1[i-N0]);
 	   } 
-        | FreqList SEMICOLON FListElements
+        | FreqList COMMA FListElements
            {
-	     Int N0=(*($$)).nelements(), N1=4;
+	     uInt N0=(*($$)).nelements(), N1=4;
 	      (*($$)).resize(N0+N1,True);  // Resize the existing list
-	      for(Int i=N0;i<N0+N1;i++)
+	      for(uInt i=N0;i<N0+N1;i++)
 		(*($$))(i) = $3[i-N0];
 	   }
         ;
@@ -460,6 +460,6 @@ FullSpec: Spw
 	    }
 ;
 FullExpr: FullSpec        {} 
-        | FullExpr COMMA FullSpec   {}
+        | FullExpr SEMICOLON FullSpec   {}
 ;
 %%

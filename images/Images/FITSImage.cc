@@ -441,6 +441,11 @@ Bool FITSImage::ok() const
    return True;
 }  
 
+DataType FITSImage::dataType() const
+{
+   return TpFloat;
+}
+
 Bool FITSImage::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
 {
    if (!hasBlanks_p) {

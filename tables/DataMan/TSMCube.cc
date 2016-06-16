@@ -48,55 +48,30 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// Find out if local size is a multiple of 4, so we can move as integers.
-#define TSMCube_FindMult \
-  uInt localPixelWords = 0; \
-  if (localPixelSize % sizeof(Int) == 0) { \
-    localPixelWords = localPixelSize / sizeof(Int); \
-  }
-
-
-// Find out if we should use a simple "do-loop" move instead of memcpy
-// because memcpy is slow for small blocks.
-#define TSMCube_FindMove(nrpixel) \
-  Int moveType = 2; \
-  uInt localWords = 0; \
-  if (localPixelWords > 0) { \
-    localWords = (nrpixel) * localPixelWords; \
-    if (localWords <= 30) { \
-      moveType = 0; \
-    } \
-  } else if (localSize <= 30) { \
-    moveType = 1; \
-  }
-
-// Move the data according to the moveType.
-#define TSMCube_MoveData(to,from) \
-  switch (moveType) { \
-  case 0: \
-    TSMCube_copyInt ((Int*)(to), (const Int*)(from), localWords); \
-    break; \
-  case 1: \
-    TSMCube_copyChar ((Char*)(to), (const Char*)(from), localSize); \
-    break; \
-  case 2: \
-    memcpy (to, from, localSize); \
-    break; \
-  }
-
-inline void TSMCube_copyInt (Int* to, const Int* from, uInt nr)
+// memcpy with constant argument is inlined
+#define TSM_COPY(a, b, n) case n: memcpy(a, b, n); break
+static void TSMCube_MoveData(char * a, char * b, int n)
 {
-  for (uInt i=0; i<nr; i++) {
-    to[i] = from[i];
-  }
+    switch (n) {
+        case 0: break;
+        TSM_COPY(a, b, 1);
+        TSM_COPY(a, b, 2);
+        TSM_COPY(a, b, 3);
+        TSM_COPY(a, b, 4);
+        TSM_COPY(a, b, 5);
+        TSM_COPY(a, b, 6);
+        TSM_COPY(a, b, 7);
+        TSM_COPY(a, b, 8);
+        TSM_COPY(a, b, 12);
+        TSM_COPY(a, b, 16);
+        TSM_COPY(a, b, 20);
+        TSM_COPY(a, b, 24);
+        TSM_COPY(a, b, 28);
+        TSM_COPY(a, b, 32);
+        default: memcpy(a, b, n);
+    }
 }
-
-inline void TSMCube_copyChar (Char* to, const Char* from, uInt nr)
-{
-  for (uInt i=0; i<nr; i++) {
-    to[i] = from[i];
-  }
-}
+#undef TSM_COPY
 
 
 
@@ -505,7 +480,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayBool (name);
+                array(start, end) = coordValues.toArrayBool (name);
             }
         }
         break;
@@ -524,7 +499,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayInt (name);
+                array(start, end) = coordValues.toArrayInt (name);
             }
         }
         break;
@@ -543,7 +518,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayuInt (name);
+                array(start, end) = coordValues.toArrayuInt (name);
             }
         }
         break;
@@ -562,7 +537,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayfloat (name);
+                array(start, end) = coordValues.toArrayFloat (name);
             }
         }
         break;
@@ -581,7 +556,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArraydouble (name);
+                array(start, end) = coordValues.toArrayDouble (name);
             }
         }
         break;
@@ -600,7 +575,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayComplex (name);
+                array(start, end) = coordValues.toArrayComplex (name);
             }
         }
         break;
@@ -619,7 +594,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayDComplex (name);
+                array(start, end) = coordValues.toArrayDComplex (name);
             }
         }
         break;
@@ -638,7 +613,7 @@ void TSMCube::extendCoordinates (const Record& coordValues,
                 array.reference (newArray);
             }
             if (start(0) < Int(length)) {
-                array(start, end) = coordValues.asArrayString (name);
+                array(start, end) = coordValues.toArrayString (name);
             }
         }
         break;
@@ -725,9 +700,7 @@ char* TSMCube::initCallBack (void* owner)
 {
     uInt size = ((TSMCube*)owner)->localTileLength();
     char* buffer = new char[size];
-    for (uInt i=0; i<size; i++) {
-        buffer[i] = 0;
-    }
+    memset(buffer, 0, size);
     return buffer;
 }
 
@@ -1002,9 +975,6 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
         return;
     }
 
-    // Find out if local size is a multiple of 4, so we can move as integers.
-    TSMCube_FindMult;
-
     // If the section is a line, call a specialized function.
     // Note that a single pixel is also handled as a line.
     if (nOneLong >= nrdim_p - 1) {
@@ -1065,22 +1035,31 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
                             expandedTileShape_p.offsetIncrement (dataLength);
         IPosition sectionIncr = localPixelSize *
                             expandedSectionShape.offsetIncrement (dataLength);
-        uInt localSize    = dataLength(0) * localPixelSize;
-
-	// Find out if we should use a simple "do-loop" move instead of memcpy
-	// because memcpy is slow for small blocks.
-	TSMCube_FindMove (dataLength(0));
 
         while (True) {
+            uInt localSize = dataLength(0) * localPixelSize;
+            /* merge zero increments into one copy */
+            for (j = 1; j < nrdim_p; j++) {
+                if (dataIncr(j) == 0 && sectionIncr(j) == 0) {
+                    localSize *= dataLength(j);
+                    dataPos(j) = endPixel(j);
+                }
+                else {
+                    break;
+                }
+            }
+
             if (writeFlag) {
-	      TSMCube_MoveData (dataArray+dataOffset, section+sectionOffset);
-            }else{
-	      TSMCube_MoveData (section+sectionOffset, dataArray+dataOffset);
-	    }
-            dataOffset    += localSize;
+                TSMCube_MoveData(dataArray + dataOffset,
+                                 section + sectionOffset, localSize);
+            } else {
+                TSMCube_MoveData(section + sectionOffset,
+                                 dataArray + dataOffset, localSize);
+            }
+            dataOffset += localSize;
             sectionOffset += localSize;
-            for (j=1; j<nrdim_p; j++) {
-                dataOffset    += dataIncr(j);
+            for (j = 1; j < nrdim_p; j++) {
+                dataOffset += dataIncr(j);
                 sectionOffset += sectionIncr(j);
                 if (++dataPos(j) <= endPixel(j)) {
                     break;
@@ -1125,8 +1104,6 @@ void TSMCube::accessLine (char* section, uInt pixelOffset,
                           uInt endPixelInLastTile,
                           uInt lineIndex)
 {
-    // Find out if local size is a multiple of 4, so we can move as integers.
-    TSMCube_FindMult;
     // Get the stride to get to the next tile.
     uInt tileIncr = expandedTilesPerDim_p(lineIndex);
     uInt tileNr = expandedTilesPerDim_p.offset (startTile);
@@ -1148,10 +1125,6 @@ void TSMCube::accessLine (char* section, uInt pixelOffset,
         }
 	uInt localSize = nrPixel * localPixelSize;
 
-	// Find out if we should use a simple "do-loop" move instead of memcpy
-	// because memcpy is slow for small blocks.
-	TSMCube_FindMove(nrPixel);
-
 //      cout << "tilePos=" << startTile << endl;
 //      cout << "tileNr=" << tileNr << endl;
 //      cout << "start=" << startPixel << endl;
@@ -1166,11 +1139,12 @@ void TSMCube::accessLine (char* section, uInt pixelOffset,
         // Otherwise loop through all pixels.
         if (contiguous) {
             if (writeFlag) {
-	        TSMCube_MoveData(dataArray,section);
-            }else{
-	        TSMCube_MoveData(section,dataArray);
-	    }
-	    section += localSize;
+                TSMCube_MoveData(dataArray,section,localSize);
+            }
+            else {
+                TSMCube_MoveData(section,dataArray,localSize);
+            }
+            section += localSize;
         }else{
             // Try to make the data copy as fast as possible.
             // Do this by specializing the cases (which occur very often)
@@ -1362,9 +1336,6 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
     uInt dataOffset;
     size_t sectionOffset;
 
-    // Find out if local size is a multiple of 4, so we can move as integers.
-    TSMCube_FindMult;
-
     // Determine if the first dimension is strided.
     Bool strided = (stride(0) != 1);
     // The first time all dimensions are evaluated to set pixelStart/End
@@ -1432,59 +1403,38 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
             strideSize = stride(0) * localPixelSize;
         }
 
-	// Find out if we should use a simple "do-loop" move instead of memcpy
-	// because memcpy is slow for small blocks.
-	TSMCube_FindMove(nrPixel(0));
-
         while (True) {
             if (strided) {
-		uInt nrp = nrPixel(0);
+                uInt nrp = nrPixel(0);
                 for (j=0; j<nrp; j++) {
                     if (writeFlag) {
-		      switch (localPixelWords) {
-		      case 2:
-			((Int*)(dataArray+dataOffset))[1] =
-			  ((Int*)(section+sectionOffset))[1];
-		      case 1:
-			((Int*)(dataArray+dataOffset))[0] =
-			  ((Int*)(section+sectionOffset))[0];
-			break;
-		      default:
-			TSMCube_copyChar ((Char*)(dataArray+dataOffset),
-					  (Char*)(section+sectionOffset),
-					  localPixelSize);
-		      }
-                    }else{
-		      switch (localPixelWords) {
-		      case 2:
-			((Int*)(section+sectionOffset))[1] =
-			  ((Int*)(dataArray+dataOffset))[1];
-		      case 1:
-			((Int*)(section+sectionOffset))[0] =
-			  ((Int*)(dataArray+dataOffset))[0];
-			break;
-		      default:
-			TSMCube_copyChar ((Char*)(section+sectionOffset),
-					  (Char*)(dataArray+dataOffset),
-					  localPixelSize);
-		      }
+                        TSMCube_MoveData((Char*)(dataArray+dataOffset),
+                                         (Char*)(section+sectionOffset),
+                                         localPixelSize);
+                    }
+                    else {
+                        TSMCube_MoveData((Char*)(section+sectionOffset),
+                                         (Char*)(dataArray+dataOffset),
+                                         localPixelSize);
                     }
                     dataOffset    += strideSize;
                     sectionOffset += localPixelSize;
                 }
-            }else{
+            }
+            else {
                 if (writeFlag) {
-                    TSMCube_MoveData (dataArray+dataOffset,
-				      section+sectionOffset);
-                }else{
-		    TSMCube_MoveData (section+sectionOffset,
-				      dataArray+dataOffset);
+                    TSMCube_MoveData(dataArray+dataOffset,
+                                     section+sectionOffset,localSize);
+                }
+                else {
+                    TSMCube_MoveData(section+sectionOffset,
+                                     dataArray+dataOffset,localSize);
                 }
                 dataOffset    += localSize;
                 sectionOffset += localSize;
             }
             for (j=1; j<nrdim_p; j++) {
-              // Catch attempt to increment dataOffset below 0
+                // Catch attempt to increment dataOffset below 0
                 DebugAssert(dataIncr(j) >= 0 ||
                             dataOffset >= static_cast<uInt>(-dataIncr(j)),
                             DataManError);

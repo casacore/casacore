@@ -1057,7 +1057,7 @@ Vector<Double> CoordinateSystem::toWorld(const IPosition& pixel) const {
 }
 
 Bool CoordinateSystem::toWorld(Vector<Double> &world, 
-			       const Vector<Double> &pixel) const
+			       const Vector<Double> &pixel, Bool useConversionFrame) const
 {
     if(pixel.nelements() != nPixelAxes()){
 	ostringstream oss;
@@ -1093,7 +1093,7 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 	}
 	Bool oldok = ok;
 	ok = coordinates_p[i]->toWorld(
-		       *(world_tmps_p[i]), *(pixel_tmps_p[i]));
+		       *(world_tmps_p[i]), *(pixel_tmps_p[i]), useConversionFrame);
 
 	if (!ok) {
 

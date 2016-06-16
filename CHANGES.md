@@ -1,3 +1,33 @@
+
+# 2.1.0
+
+## General
+- Lots of code improvement, optimization and added tests
+
+## Measures
+- The default search path for measures data is now smaller. The path can
+  be set at cmake time by specifying `-DDATA_DIR=/path/to/data`. This path
+  can contain `%CASAROOT%` which is expanded at run time, to support 
+  relocatable installations. The measures path can also still be set in
+  `.casarc`. (#277)
+- Inserted fix to leap second handling problem (#290)
+- Various coordinate performance improvements  (#258)
+
+## Tables
+- Renamed showtable to showtableinfo (#320)
+- Added several TaQL functions (#229)
+
+## MS
+- Improve testing of MSSummary (#330)
+- Many improvements for the MS related functions (#318, #291, #228, #208, ...)
+- Fix multithreaded MS creation (#298)
+
+## Python
+- Build python bindings by default (not for CASA build)
+- Add experimental Python3 support. Read the README for instructions (#280)
+- Changed behavior from 2.0.3: Use PYTHON2_* configuration options to set
+  your python2 interpreter. (#280)
+
 # 2.0.3
 
 ## General

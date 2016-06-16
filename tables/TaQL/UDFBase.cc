@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: UDFBase.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 //# Includes
 #include <casacore/tables/TaQL/UDFBase.h>
@@ -137,17 +137,17 @@ namespace casacore {
     { throw TableInvExpr ("UDFBase::getRegex not implemented"); }
   MVTime    UDFBase::getDate     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getDate not implemented"); }
-  Array<Bool>     UDFBase::getArrayBool     (const TableExprId&)
+  MArray<Bool>     UDFBase::getArrayBool     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayBool not implemented"); }
-  Array<Int64>    UDFBase::getArrayInt      (const TableExprId&)
+  MArray<Int64>    UDFBase::getArrayInt      (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayInt not implemented"); }
-  Array<Double>  UDFBase:: getArrayDouble   (const TableExprId&)
+  MArray<Double>  UDFBase:: getArrayDouble   (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayDouble not implemented"); }
-  Array<DComplex> UDFBase::getArrayDComplex (const TableExprId&)
+  MArray<DComplex> UDFBase::getArrayDComplex (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayDComplex not implemented"); }
-  Array<String>  UDFBase:: getArrayString   (const TableExprId&)
+  MArray<String>  UDFBase:: getArrayString   (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayString not implemented"); }
-  Array<MVTime>  UDFBase:: getArrayDate     (const TableExprId&)
+  MArray<MVTime>  UDFBase:: getArrayDate     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayDate not implemented"); }
 
   void UDFBase::recreateColumnObjects (const Vector<uInt>&)
@@ -183,18 +183,24 @@ namespace casacore {
   {
     String fname(name);
     fname.downcase();
+    // Try to find the function.
+    map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
+    if (iter != theirRegistry.end()) {
+      return iter->second (fname);
+    }
     String sfname(fname);
     // Split name in library and function name.
     // Require that a . is found and is not the first or last character.
     Int j = fname.index('.');
+    String libname;
     if (j > 0  &&  j < Int(fname.size())-1) {
       // Replace a possible synonym for the library name.
-      String libname(fname.substr(0,j));
+      libname = fname.substr(0,j);
       libname = style.findSynonym (libname);
       fname   = libname + fname.substr(j);
       ScopedMutexLock lock(theirMutex);
       // See if the library is already loaded.
-      map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (libname);
+      iter = theirRegistry.find (libname);
       if (iter == theirRegistry.end()) {
         // Try to load the dynamic library.
         DynLib dl(libname, string("libcasa_"), "register_"+libname, False);
@@ -220,7 +226,10 @@ namespace casacore {
     if (fname != sfname) {
       unk = " (=" + fname + ')';
     }
-    throw TableInvExpr ("TaQL function " + sfname + unk + " is unknown");
+    throw TableInvExpr ("TaQL function " + sfname + unk +
+                        " is unknown\n"
+                        "  Check (DY)LD_LIBRARY_PATH matches the"
+                        " libraries used during the build of " + libname);
   }
 
 } // end namespace

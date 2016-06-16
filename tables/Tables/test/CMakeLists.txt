@@ -38,6 +38,7 @@ tScalarRecordColumn
 tTable
 tTableAccess
 tTableCopy
+tTableCopyPerf
 tTableDesc
 tTableDescHyper
 tTableInfo
@@ -48,6 +49,7 @@ tTableLockSync
 tTableLockSync_2
 tTableRecord
 tTableRow
+tTableTrace
 tTableVector
 tTable_1
 tTable_2

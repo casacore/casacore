@@ -356,7 +356,7 @@ private:
 //      can be used to put some fields from the given TableRecord.
 //      Only fields having a corresponding name in the TableRow object
 //      will be put. Similar to the first way data type promotion will
-//      be applied for numeric scalars.
+//      be applied for numeric values.
 //      <br>E.g.: Suppose the TableRow object has columns A, C, and B,
 //      and the given TableRecord has fields B, D, and C. Only fields B and C
 //      will be put. As the example shows, the order of the fields is not
@@ -462,7 +462,7 @@ public:
     // in the given row.
     // The names and order of the fields in the TableRecord must conform
     // those of the description of the TableRow. The data types of numeric
-    // scalars do not need to conform exactly; they can be promoted
+    // values do not need to conform exactly; they can be promoted
     // (e.g. an Int value in the record may correspond to a float column).
     // If not conforming, an exception is thrown.
     // <note> For performance reasons it is optional to check
@@ -486,7 +486,7 @@ public:
     // <br>E.g.: If the TableRow contains columns A and B, and the
     // record contains fields B and C, only field B will be put.
     // <br>In principle the data types of the matching fields must match,
-    // but data type promotion of numeric scalars will be applied.
+    // but data type promotion of numeric values will be applied.
     void putMatchingFields (uInt rownr, const TableRecord& record);
 
 private:

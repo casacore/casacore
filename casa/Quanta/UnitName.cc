@@ -75,6 +75,10 @@ const String &UnitName::getName() const {
     return (basicTag);
 }
 
+const String &UnitName::getFullName() const {
+    return (basicName);
+}
+
 ostream& operator<< (ostream &os, const UnitName &name) {
     static String FillString("                                ");
     Int i=os.precision();

@@ -39,6 +39,7 @@
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/BasicSL/STLMath.h>
 #include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Record.h>
@@ -402,14 +403,15 @@ void BaseTable::renameSubTables (const String&, const String&)
 {}
 
 void BaseTable::deepCopy (const String& newName,
-			  const Record& dataManagerInfo,
+                          const Record& dataManagerInfo,
+                          const StorageOption& stopt,
 			  int tableOption,
 			  Bool valueCopy,
 			  int endianFormat,
 			  Bool noRows) const
 {
     if (valueCopy  ||  dataManagerInfo.nfields() > 0  ||  noRows) {
-        trueDeepCopy (newName, dataManagerInfo, tableOption,
+      trueDeepCopy (newName, dataManagerInfo, stopt, tableOption,
 		      endianFormat, noRows);
     } else {
         copy (newName, tableOption);
@@ -418,6 +420,7 @@ void BaseTable::deepCopy (const String& newName,
 
 void BaseTable::trueDeepCopy (const String& newName,
 			      const Record& dataManagerInfo,
+                              const StorageOption& stopt,
 			      int tableOption,
 			      int endianFormat,
 			      Bool noRows) const
@@ -440,7 +443,8 @@ void BaseTable::trueDeepCopy (const String& newName,
     Table oldtab(ncThis);
     Table newtab = TableCopy::makeEmptyTable
                         (absNewName, dataManagerInfo, oldtab, Table::New,
-			 Table::EndianFormat(endianFormat), True, noRows);
+			 Table::EndianFormat(endianFormat), True, noRows,
+                         stopt);
     if (!noRows) {
       TableCopy::copyRows (newtab, oldtab);
     }
@@ -548,11 +552,13 @@ void BaseTable::addColumns (const TableDesc& desc, const Record& dmInfo,
   if (dmInfo.nfields() == 1  &&  dmInfo.dataType(0) == TpRecord) {
     rec = dmInfo.subRecord(0);
   }
-  if (rec.isDefined("TYPE")  &&  rec.isDefined("NAME")
-  &&  rec.isDefined("SPEC")) {
+  if (rec.isDefined("TYPE")  &&  rec.isDefined("NAME")) {
     String dmType = rec.asString ("TYPE");
     String dmGroup = rec.asString ("NAME");
-    const Record& sp = rec.subRecord ("SPEC");;
+    Record sp;
+    if (rec.isDefined("SPEC")) {
+      sp = rec.subRecord ("SPEC");
+    }
     DataManager* dataMan = DataManager::getCtor(dmType) (dmGroup, sp);
     addColumn (desc, *dataMan, addToParent);
     delete dataMan;
@@ -1003,7 +1009,8 @@ void BaseTable::checkRowNumberThrow (uInt rownr) const
 }
 
 void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
-                               Bool showSubTables, Bool sortColumns)
+                               Bool showSubTables, Bool sortColumns,
+                               Bool cOrder)
 {
   TableDesc tdesc = actualTableDesc();
   Record dminfo = dataManagerInfo();
@@ -1014,7 +1021,9 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
     os << " (" << info_p.subType() << ')';
   }
   os << endl;
-  os << nrow() << " rows, " << tdesc.ncolumn() << " columns (using "
+  os << nrow() << " rows, " << tdesc.ncolumn() << " columns in ";
+  os << (asBigEndian() ? "big" : "little") << " endian format";
+  os << " (using "
      << dminfo.nfields() << " data managers)" <<endl;
   const StorageOption& stopt = storageOption();
   if (stopt.option() == StorageOption::MultiFile) {
@@ -1032,7 +1041,8 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
   if (!showDataMans) {
     if (showColumns) {
       os << endl;
-      showColumnInfo (os, tdesc, maxl, tdesc.columnNames(), sortColumns);
+      showColumnInfo (os, tdesc, maxl, tdesc.columnNames(), sortColumns,
+                      cOrder);
     }
   } else {
     for (uInt i=0; i<dminfo.nfields(); ++i) {
@@ -1080,7 +1090,7 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
       }
       if (showColumns) {
         showColumnInfo (os, tdesc, maxl, dm.asArrayString ("COLUMNS"),
-                        sortColumns);
+                        sortColumns, cOrder);
       }
     }
   }
@@ -1107,7 +1117,7 @@ void BaseTable::showStructure (ostream& os, Bool showDataMans, Bool showColumns,
              << " references the parent table!!" << endl;
         } else {
           tab.showStructure (os, showDataMans, showColumns,
-                             showSubTables, sortColumns);
+                             showSubTables, sortColumns, cOrder);
         }
       }
     }
@@ -1119,7 +1129,7 @@ void BaseTable::showStructureExtra (ostream&) const
 
 void BaseTable::showColumnInfo (ostream& os, const TableDesc& tdesc,
                                 uInt maxl, const Array<String>& columnNames,
-                                Bool sort) const
+                                Bool sort, Bool cOrder) const
 {
   Vector<String> columns(columnNames);
   if (sort) {
@@ -1138,7 +1148,11 @@ void BaseTable::showColumnInfo (ostream& os, const TableDesc& tdesc,
     } else if (cdesc.isArray()) {
       if (cdesc.options() & ColumnDesc::FixedShape) {
         os << " shape=";
-        showContainer (os, cdesc.shape());
+        if (cOrder) {
+          showContainer (os, reversedCasaContainer(cdesc.shape()));
+        } else {
+          showContainer (os, cdesc.shape());
+        }
       } else if (cdesc.ndim() > 0) {
         os << " ndim=" << cdesc.ndim();
       } else {

@@ -45,7 +45,7 @@ namespace casacore {
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
 class FitToHalfStatistics
-	: public ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator> {
+	: public ConstrainedRangeStatistics<CASA_STATP> {
 public:
 
 	const static AccumType TWO;
@@ -60,8 +60,8 @@ public:
 	virtual ~FitToHalfStatistics();
 
 	// copy semantics
-	FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
-		const FitToHalfStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
+	FitToHalfStatistics<CASA_STATP>& operator=(
+		const FitToHalfStatistics<CASA_STATP>& other
 	);
 
 	// get the algorithm that this object uses for computing stats
@@ -73,7 +73,7 @@ public:
 	AccumType getMedian(
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
-		Bool persistSortedArray=False
+		Bool persistSortedArray=False, uInt64 nBins=10000
 	);
 
 	// <group>
@@ -109,14 +109,16 @@ public:
 		std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 
 	// get the median of the absolute deviation about the median of the data.
 	AccumType getMedianAbsDevMed(
 		CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 
 	// Get the specified quantiles. <src>fractions</src> must be between 0 and 1,
@@ -124,7 +126,8 @@ public:
 	std::map<Double, AccumType> getQuantiles(
 		const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 	// </group>
 

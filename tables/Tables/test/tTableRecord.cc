@@ -44,9 +44,8 @@
 
 #include <casacore/casa/namespace.h>
 // This program tests the TableRecord and TableRecordRep classes.
-// Its expected output (which only consists of exception text)
-// is stored in tTableRecord.out and can be checked using assay.
-// This will also delete the temporary output file.
+// Its expected output is stored in tTableRecord.out and can be checked
+// using assay. This will also delete the temporary output file.
 // <p>
 // It can throw several exceptions, which may result in memory leaks.
 // To check if no real memory leaks occur, the program can be run
@@ -226,6 +225,13 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
     AlwaysAssertExit (record.subRecord(subField1).asfloat(0) == 4);
     record = record1;
     AlwaysAssertExit (record.subRecord(subField1).asfloat(0) == 3);
+    // Print the record.
+    cout << record;
+    // Convert to and from a Record.
+    Record srec = record.toRecord();
+    TableRecord trec;
+    trec.fromRecord (srec);
+    cout << trec;
 }
 
 void doIt (Bool doExcp)
@@ -351,7 +357,7 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (record.asuInt("TpUInt2") == 4);
     AlwaysAssertExit (allEQ (record.asArrayuInt("TpUInt2"), uInt(4)));
 
-    // Do some erronous defines and assigns.
+    // Do some erroneous defines and assigns.
     if (doExcp) {
 	doDefineAssign (record);
     }
@@ -796,6 +802,15 @@ void testTable (Bool doExcp)
     rec1.defineTable ("tab1a", t1);
     AlwaysAssertExit (rec1.conform(rec2));      // second table type is var.
     AlwaysAssertExit (! rec2.conform(rec1));    // second table type mismatches
+    // Convert to and from a Record.
+    // First flush, otherwise fromRecord won't find a table.
+    tab1.flush();
+    tab2.flush();
+    Record srec = rec1.toRecord();
+    cout << "Record" << endl << srec;
+    TableRecord trec;
+    trec.fromRecord (srec);
+    cout << "TableRecord" << endl << trec;
 
     // Constructor from RecordInterface
     // The first one should dynamic cast itself to a TableRecord,

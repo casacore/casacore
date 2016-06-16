@@ -923,6 +923,16 @@ MaskedArray<T> Array<T>::operator() (const MaskedLogicalArray &mask)
     return ret;
 }
 
+template<class T>
+Array<T> Array<T>::diagonals (uInt firstAxis, Int64 diag) const
+{
+    DebugAssert(ok(), ArrayError);
+    Array<T> tmp(*this);
+    tmp.begin_p += tmp.makeDiagonal (firstAxis, diag);
+    tmp.makeSteps();
+    return tmp;
+}
+
 
 template<class T> uInt Array<T>::nrefs() const
 {

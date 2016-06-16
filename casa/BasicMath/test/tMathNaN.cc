@@ -43,7 +43,7 @@
 			    ((*(Int *)(x) & 0x007fffff) != 0x00000000))
 
 inline Bool isNaN_isnan(Float val) {
-  return (isnan(Double(val)));
+  return (std::isnan(Double(val)));
 }
 
 inline Bool isNaN_isnanf(const Float& val) {

@@ -1037,6 +1037,26 @@ template<class T> Array<T> fmod(const Array<T> &a, const T &b)
 
 
 // <thrown>
+//   </item> ArrayConformanceError
+// </thrown>
+template<class T> Array<T> floormod(const Array<T> &a, const Array<T> &b)
+{
+    checkArrayShapes (a, b, "floormod");
+    return arrayTransformResult (a, b, casacore::FloorMod<T>());
+}
+
+template<class T> Array<T> floormod(const T &a, const Array<T> &b)
+{
+    return arrayTransformResult (a, b, casacore::FloorMod<T>());
+}
+
+template<class T> Array<T> floormod(const Array<T> &a, const T &b)
+{
+    return arrayTransformResult (a, b, casacore::FloorMod<T>());
+}
+
+
+// <thrown>
 //    </item> ArrayError
 // </thrown>
 template<class T> T sum(const Array<T> &a)
@@ -1044,6 +1064,13 @@ template<class T> T sum(const Array<T> &a)
   return a.contiguousStorage() ?
     std::accumulate(a.cbegin(), a.cend(), T(), std::plus<T>()) :
     std::accumulate(a.begin(),  a.end(),  T(), std::plus<T>());
+}
+
+template<class T> T sumsqr(const Array<T> &a)
+{
+  return a.contiguousStorage() ?
+    std::accumulate(a.cbegin(), a.cend(), T(), casacore::SumSqr<T>()) :
+    std::accumulate(a.begin(),  a.end(),  T(), casacore::SumSqr<T>());
 }
 
 // <thrown>
@@ -1323,6 +1350,24 @@ Array<std::complex<T> > makeComplex(const Array<T> &left, const Array<T>& right)
   Array<std::complex<T> > res(left.shape());
   arrayContTransform (left, right, res,
                       casacore::MakeComplex<T,T,std::complex<T> >());
+  return res;
+}
+
+template<typename T>
+Array<std::complex<T> > makeComplex(const T &left, const Array<T>& right)
+{
+  Array<std::complex<T> > res(right.shape());
+  arrayContTransform (left, right, res,
+                      casa::MakeComplex<T,T,std::complex<T> >());
+  return res;
+}
+
+template<typename T>
+Array<std::complex<T> > makeComplex(const Array<T> &left, const T& right)
+{
+  Array<std::complex<T> > res(left.shape());
+  arrayContTransform (left, right, res,
+                      casa::MakeComplex<T,T,std::complex<T> >());
   return res;
 }
 

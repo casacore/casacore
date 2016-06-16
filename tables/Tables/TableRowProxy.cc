@@ -84,7 +84,7 @@ Bool TableRowProxy::isNull() const
 
 Record TableRowProxy::get (uInt rownr) const
 {
-  return TableProxy::getKeyValues (rorow_p.get (rownr, True));
+  return rorow_p.get(rownr, True).toRecord();
 }
 
 void TableRowProxy::put (uInt rownr, const Record& record,
@@ -94,7 +94,7 @@ void TableRowProxy::put (uInt rownr, const Record& record,
     throw TableError ("TableRowProxy: the given TableRow is not writable");
   }
   TableRecord trec;
-  TableProxy::putKeyValues (trec, record);
+  trec.fromRecord (record);
   if (matchingFields) {
     rwrow_p.putMatchingFields (rownr, trec);
   } else {

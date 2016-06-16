@@ -7,10 +7,12 @@ parser_inputs
 MSAntennaGram
 MSArrayGram
 MSCorrGram
+MSFeedGram
 MSFieldGram
 MSObservationGram
 MSScanGram
 MSSpwGram
+MSSpwGramPP
 MSTimeGram
 MSUvDistGram
 MSStateGram
@@ -79,7 +81,9 @@ MSSel/MSCorrGram.cc
 MSSel/MSCorrParse.cc
 MSSel/MSDataDescIndex.cc
 MSSel/MSDopplerIndex.cc
+MSSel/MSFeedGram.cc
 MSSel/MSFeedIndex.cc
+MSSel/MSFeedParse.cc
 MSSel/MSFieldGram.cc
 MSSel/MSFieldIndex.cc
 MSSel/MSFieldParse.cc
@@ -104,6 +108,7 @@ MSSel/MSSelectionTools.cc
 MSSel/MSSelector.cc
 MSSel/MSSourceIndex.cc
 MSSel/MSSpwGram.cc
+MSSel/MSSpwGramPP.cc
 MSSel/MSSpwIndex.cc
 MSSel/MSSpWindowIndex.cc
 MSSel/MSSpwParse.cc
@@ -134,6 +139,8 @@ ${BISON_MSArrayGram_OUTPUTS}
 ${FLEX_MSArrayGram_OUTPUTS}
 ${BISON_MSCorrGram_OUTPUTS}
 ${FLEX_MSCorrGram_OUTPUTS}
+${BISON_MSFeedGram_OUTPUTS}
+${FLEX_MSFeedGram_OUTPUTS}
 ${BISON_MSFieldGram_OUTPUTS}
 ${FLEX_MSFieldGram_OUTPUTS}
 ${BISON_MSScanGram_OUTPUTS}
@@ -142,6 +149,8 @@ ${BISON_MSObservationGram_OUTPUTS}
 ${FLEX_MSObservationGram_OUTPUTS}
 ${BISON_MSSpwGram_OUTPUTS}
 ${FLEX_MSSpwGram_OUTPUTS}
+${BISON_MSSpwGramPP_OUTPUTS}
+${FLEX_MSSpwGramPP_OUTPUTS}
 ${BISON_MSTimeGram_OUTPUTS}
 ${FLEX_MSTimeGram_OUTPUTS}
 ${BISON_MSUvDistGram_OUTPUTS}
@@ -271,6 +280,7 @@ MSSel/MSSelUtil2.h
 MSSel/MSSelUtil2.tcc
 MSSel/MSSourceIndex.h
 MSSel/MSSpwGram.h
+MSSel/MSSpwGramPP.h
 MSSel/MSSpwIndex.h
 MSSel/MSSpWindowIndex.h
 MSSel/MSSpwParse.h

@@ -25,13 +25,14 @@
 //#
 //# $Id: BaseColumn.h 21130 2011-10-18 07:39:05Z gervandiepen $
 
-#ifndef TABLES_COLUMNTRACE_H
-#define TABLES_COLUMNTRACE_H
+#ifndef TABLES_TABLETRACE_H
+#define TABLES_TABLETRACE_H
 
 
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/Regex.h>
+#include <casacore/casa/OS/Mutex.h>
 #include <ostream>
 #include <fstream>
 #include <vector>
@@ -62,6 +63,8 @@ class IPosition;
 // <ul>
 //  <li> <src>table.trace.filename</src> gives the name of the file in which
 //       the trace will be written. If empty (default), no tracing will be done.
+//       If 'stdout' is given, tracing is done to stdout.
+//       If 'stderr' is given, tracing is done to stderr.
 //  <li> <src>table.trace.operation</src> gives the operation to trace.
 //       be traced. It can be one or more of:
 //       <br>s: creation of RefTable (selection/sort/iter)
@@ -171,7 +174,9 @@ private:
                           const IPosition& inc);
 
   //# Data members
+  static Mutex               theirMutex;
   static std::ofstream       theirTraceFile;
+  static std::ostream*       theirStream;
   static int                 theirDoTrace;   //# 0=init -1=no 1=yes 2=reftable
   static int                 theirOper;      //# 1=rtrace 2=wtrace
   static int                 theirColType;   //# 1=scalar 2=array 4=record

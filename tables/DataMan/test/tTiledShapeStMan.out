@@ -1,5 +1,15 @@
 WriteFixed ...
 Checking 101 rows
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
 WriteVar ...
  pol.isDefined=0
  pol.isDefined=1
@@ -32,6 +42,11 @@ weig.isDefined=1
 freq.isDefined=1
 [16][25][16, 25][16, 25]
 Checking 5 rows
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
 WriteFixVar ...
  pol.isDefined=1
  pol.isDefined=1
@@ -64,6 +79,11 @@ weig.isDefined=1
 freq.isDefined=1
 [16][25][16, 25][16, 25]
 Checking 5 rows
+tileshape=[16, 25, 82]
+tileshape=[16, 25, 82]
+tileshape=[16, 25, 82]
+tileshape=[16, 25, 82]
+tileshape=[16, 25, 82]
 WriteVarShaped ...
  pol.isDefined=0
  pol.isDefined=1
@@ -125,6 +145,28 @@ data.isDefined=0
 weig.isDefined=1
 freq.isDefined=1
 [16][10][16, 10][16, 10]
+Testing cache sizing via accessor 
+... completed testing cache sizing via accessor; status: passed
 Checking 10 rows
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
+tileshape=[12, 10, 273]
 WriteNoHyper ...
 Checking 101 rows
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]
+tileshape=[5, 6, 1092]

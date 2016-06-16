@@ -45,6 +45,8 @@
 %s GIVINGstate
 %s FROMstate
 %s CRETABstate
+/* exclusive state */
+%x SHOWstate
 
 /* The order in the following list is important, since, for example,
    the word "giving" must be recognized as GIVING and not as NAME.
@@ -57,12 +59,13 @@
 */
 WHITE1    [ \t\n]
 WHITE     {WHITE1}*
+COMMENT   "#".*
 DIGIT     [0-9]
 INT       {DIGIT}+
 INT2      {DIGIT}{DIGIT}
 INT4      {INT2}{INT2}
 HEXINT    0[xX][0-9a-fA-F]+
-EXP       [DdEe][+-]?{INT}
+EXP       [Ee][+-]?{INT}
 FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
 FLINT     {FLOAT}|{INT}
 COMPLEX   {FLINT}[ij]
@@ -75,14 +78,15 @@ DATEA     {INT}{MONTH}{INT}|{INT}"-"{MONTH}"-"{INT}
 DATEH     ({INT2}"-"{INT2}"-"{INT4})|({INT4}"-"{INT2}"-"{INT2})
 DATES     {INT4}"/"{INT2}"/"{INT2}
 DATE      {DATEA}|{DATEH}|{DATES}
-DTIMEHM   {INT}[hH]({INT}?([mM]({FLINT})?)?)?
+DTIMEH    {INT}[hH]({INT}?([mM]({FLINT})?)?)?
 DTIMEC    {INT}":"({INT}?(":"({FLINT})?)?)?
-DTIME     {DTIMEHM}|{DTIMEC}
+DTIME     {DTIMEH}|{DTIMEC}
 DATETIME  {DATE}([-/ ]{DTIME})?
 
+POSHM     {INT}[hH]{INT}[mM]{FLINT}?
 POSDM     {INT}[dD]{INT}[mM]{FLINT}?
-POSD      {INT}"."{INT}?"."{FLINT}?
-TIME      {DTIMEHM}|{POSDM}|{POSD}
+POSD      {INT}"."{INT}"."{FLINT}
+TIME      {POSHM}|{POSDM}|{POSD}
 /*
      positions/times with colons cannot be allowed, because they interfere
      with the interval syntax. It is only possible when preceeded by a date.
@@ -102,16 +106,33 @@ INTERSECT [Ii][Nn][Tt][Ee][Rr][Ss][Ee][Cc][Tt]
 EXCEPT    ([Ee][Xx][Cc][Ee][Pp][Tt])|([Mm][Ii][Nn][Uu][Ss])
 STYLE     [Uu][Ss][Ii][Nn][Gg]{WHITE}[Ss][Tt][Yy][Ll][Ee]{WHITE1}
 TIMEWORD  [Tt][Ii][Mm][Ee]
+SHOW      ([Ss][Hh][Oo][Ww])|([Hh][Ee][Ll][Pp])
 SELECT    [Ss][Ee][Ll][Ee][Cc][Tt]
 UPDATE    [Uu][Pp][Dd][Aa][Tt][Ee]
 INSERT    [Ii][Nn][Ss][Ee][Rr][Tt]
 DELETE    [Dd][Ee][Ll][Ee][Tt][Ee]
+DROP      ([Dd][Rr][Oo][Pp])|{DELETE}
+ADD       [Aa][Dd][Dd]
+RENAME    [Rr][Ee][Nn][Aa][Mm][Ee]
+SET       [Ss][Ee][Tt]
+COPY      [Cc][Oo][Pp][Yy]
+COLUMN    [Cc][Oo][Ll][Uu][Mm][Nn]([Ss])?
+KEYWORD   [Kk][Ee][Yy][Ww][Oo][Rr][Dd]([Ss])?
+ROW       [Rr][Oo][Ww]([Ss])?
 COUNT     [Cc][Oo][Uu][Nn][Tt]
 COUNTALL  [Gg]{COUNT}{WHITE}"("{WHITE}"*"?{WHITE}")"
 CALC      [Cc][Aa][Ll][Cc]
 CREATETAB [Cc][Rr][Ee][Aa][Tt][Ee]{WHITE}[Tt][Aa][Bb][Ll][Ee]{WHITE1}
+ALTERTAB  [Aa][Ll][Tt][Ee][Rr]{WHITE}[Tt][Aa][Bb][Ll][Ee]{WHITE1}
+ADDCOL    ,?{WHITE}{ADD}{WHITE}{COLUMN}{WHITE1}
+RENAMECOL ,?{WHITE}{RENAME}{WHITE}{COLUMN}{WHITE1}
+DROPCOL   ,?{WHITE}{DROP}{WHITE}{COLUMN}{WHITE1}
+SETKEY    ,?{WHITE}{SET}{WHITE}{KEYWORD}{WHITE1}
+COPYKEY   ,?{WHITE}{COPY}{WHITE}{KEYWORD}{WHITE1}
+RENAMEKEY ,?{WHITE}{RENAME}{WHITE}{KEYWORD}{WHITE1}
+DROPKEY   ,?{WHITE}{DROP}{WHITE}{KEYWORD}{WHITE1}
+ADDROW    ,?{WHITE}{ADD}{WHITE}{ROW}{WHITE1}
 DMINFO    [Dd][Mm][Ii][Nn][Ff][Oo]
-SET       [Ss][Ee][Tt]
 VALUES    [Vv][Aa][Ll][Uu][Ee][Ss]
 FROM      [Ff][Rr][Oo][Mm]
 WHERE     [Ww][Hh][Ee][Rr][Ee]
@@ -124,6 +145,7 @@ GIVING1   [Gg][Ii][Vv][Ii][Nn][Gg]
 SAVETO    [Ss][Aa][Vv][Ee]{WHITE}[Tt][Oo]{WHITE1}
 GIVING    {GIVING1}|{SAVETO}
 INTO      [Ii][Nn][Tt][Oo]
+SUBTABLES [Ss][Uu][Bb][Tt][Aa][Bb][Ll][Ee][Ss]
 GROUPBY   [Gg][Rr][Oo][Uu][Pp]{WHITE}[Bb][Yy]{WHITE1}
 GROUPROLL {GROUPBY}{WHITE}[Rr][Oo][Ll][Ll][Uu][Pp]{WHITE1}
 HAVING    [Hh][Aa][Vv][Ii][Nn][Gg]
@@ -131,14 +153,16 @@ JOIN      [Jj][Oo][Ii][Nn]
 ON        [Oo][Nn]
 ASC       [Aa][Ss][Cc]
 DESC      [Dd][Ee][Ss][Cc]
-LIMIT     [Ll][Ii][Mm][Ii][Tt]
+LIMIT     ([Ll][Ii][Mm][Ii][Tt])|([Tt][Oo][Pp])
 OFFSET    [Oo][Ff][Ff][Ss][Ee][Tt]
 BETWEEN   [Bb][Ee][Tt][Ww][Ee][Ee][Nn]
 EXISTS    [Ee][Xx][Ii][Ss][Tt][Ss]
 LIKE      [Ll][Ii][Kk][Ee]
+ILIKE     [Ii][Ll][Ii][Kk][Ee]
 IN        [Ii][Nn]
 INCONE    [Ii][Nn]{WHITE}[Cc][Oo][Nn][Ee]{WHITE1}
 AS        [Aa][Ss]
+TO        [Tt][Oo]
 AND       [Aa][Nn][Dd]
 OR        [Oo][Rr]
 XOR       [Xx][Oo][Rr]
@@ -146,26 +170,26 @@ NOT       [Nn][Oo][Tt]
 ALL       [Aa][Ll][Ll]
 ALLFUNC   {ALL}{WHITE}"("
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
-NAMEFLD   {NAME}?"."?{NAME}?("::")?{NAME}("."{NAME})*
+NAMEFLD   ({NAME}".")?{NAME}?("::")?{NAME}("."{NAME})*
 TEMPTAB   [$]{INT}
 NAMETAB   ([A-Za-z0-9_./+\-~$@:]|(\\.))+
 UDFLIBSYN {NAME}{WHITE}"="{WHITE}{NAME}
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
-REGEX3    m#[^#]+#
+REGEX3    m@[^@]+@
 REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 FREGEX1   f"/"[^/]+"/"
 FREGEX2   f%[^%]+%
-FREGEX3   f#[^#]+#
+FREGEX3   f@[^@]+@
 FREGEX    {FREGEX1}|{FREGEX2}|{FREGEX3}
 PATT1     p\/[^/]+\/
 PATT2     p%[^%]+%
-PATT3     p#[^#]+#
+PATT3     p@[^@]+@
 PATT      {PATT1}|{PATT2}|{PATT3}
 PATTEX    ({REGEX}|{FREGEX}|{PATT})i?
 DIST1     d\/[^/]+\/
 DIST2     d%[^%]+%
-DIST3     d#[^#]+#
+DIST3     d@[^@]+@
 DISTOPT   [bi]*{INT}?[bi]*
 DISTEX    ({DIST1}|{DIST2}|{DIST3}){DISTOPT}
 OPERREX   "!"?"~"
@@ -191,6 +215,16 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
     are found. ( and [ indicate the beginning of a set(subquery).
     ) and ] indicate the end of subquery.
  */
+
+ /* In SHOW command any word (such as SELECT) is allowed */
+<SHOWstate>{NAME} {
+            tableGramPosition() += yyleng;
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
+	    return NAME;
+	  }
+
 {UNION}  {
             tableGramPosition() += yyleng;
             throw (TableInvExpr ("UNION is not supported yet"));
@@ -257,6 +291,51 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	    BEGIN(CRETABstate);
 	    return CREATETAB;
 	  }
+{ALTERTAB} {
+            tableGramPosition() += yyleng;
+	    BEGIN(CRETABstate);
+	    return ALTERTAB;
+	  }
+{ADDCOL}  {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return ADDCOL;
+          } 
+{RENAMECOL} {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return RENAMECOL;
+          } 
+{DROPCOL} {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return DROPCOL;
+          } 
+{SETKEY}  {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return SETKEY;
+          } 
+{COPYKEY} {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return COPYKEY;
+          } 
+{RENAMEKEY} {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return RENAMEKEY;
+          } 
+{DROPKEY} {
+            tableGramPosition() += yyleng;
+	    BEGIN(EXPRstate);
+	    return DROPKEY;
+          } 
+{ADDROW}  {
+	    BEGIN(EXPRstate);
+            tableGramPosition() += yyleng;
+	    return ADDROW;
+          } 
 {DMINFO}  {
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
@@ -299,6 +378,10 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             tableGramPosition() += yyleng;
 	    return INTO;
           }
+{SUBTABLES}    {
+            tableGramPosition() += yyleng;
+	    return SUBTABLES;
+          }
 {LIMIT}   {
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
@@ -337,6 +420,10 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             tableGramPosition() += yyleng;
             return AS;
           }
+{TO}      {
+            tableGramPosition() += yyleng;
+            return TO;
+          }
 {IN}      {
             tableGramPosition() += yyleng;
             return IN;
@@ -364,6 +451,10 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             tableGramPosition() += yyleng;
             BEGIN(EXPRstate);
             return RPAREN;
+          }
+";"       {
+            tableGramPosition() += yyleng;
+            return SEMICOL;
           }
 
  /* UDF libname synonym definition */
@@ -407,6 +498,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {BETWEEN} { tableGramPosition() += yyleng; return BETWEEN; }
 {EXISTS}  { tableGramPosition() += yyleng; return EXISTS; }
 {LIKE}    { tableGramPosition() += yyleng; return LIKE; }
+{ILIKE}   { tableGramPosition() += yyleng; return ILIKE; }
 "&&"      { tableGramPosition() += yyleng; return AND; }
 {AND}     { tableGramPosition() += yyleng; return AND; }
 "||"      { tableGramPosition() += yyleng; return OR; }
@@ -526,17 +618,30 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 
  /* In the Exprstate the word TIME is a normal column or function name.
     Otherwise it is the TIME keyword (to show timings).
+    The same for SHOW.
  */
-<EXPRstate>{TIMEWORD} { 
+<EXPRstate,FROMstate,CRETABstate,GIVINGstate>{TIMEWORD} { 
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return NAME;
 	  }
-{TIMEWORD}    {
+{TIMEWORD} {
             tableGramPosition() += yyleng;
 	    return TIMING;
+	  }
+<EXPRstate,FROMstate,CRETABstate,GIVINGstate>{SHOW} { 
+            tableGramPosition() += yyleng;
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
+	    return NAME;
+	  }
+{SHOW}    {
+            tableGramPosition() += yyleng;
+            BEGIN(SHOWstate);
+	    return SHOW;
 	  }
             
  /* In the FROM clause a shorthand (for a table) can be given.
@@ -585,7 +690,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	  }
 
  /* A table file name can be given in the UPDATE, FROM, GIVING, CRETAB clause */
-<FROMstate,CRETABstate,GIVINGstate>{NAMETAB} {
+<FROMstate,CRETABstate,GIVINGstate,SHOWstate>{NAMETAB} {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
@@ -595,6 +700,9 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 
  /* Whitespace is skipped */
 {WHITE}   { tableGramPosition() += yyleng; }
+
+ /* Comment is skipped */
+{COMMENT} { tableGramPosition() += yyleng; }
 
  /* An unterminated string is an error */
 {USTRING} { throw (TableInvExpr ("Unterminated string")); }

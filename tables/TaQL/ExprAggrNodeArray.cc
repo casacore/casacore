@@ -180,7 +180,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                         " is unknown");
   }
 
-  Array<Bool> TableExprAggrNodeArray::getArrayBool (const TableExprId& id)
+  MArray<Bool> TableExprAggrNodeArray::getArrayBool (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
     if (itsFunc->isLazy()) {
@@ -189,7 +189,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
     return set.getFuncs()[itsFunc->seqnr()]->getArrayBool();
   }
-  Array<Int64> TableExprAggrNodeArray::getArrayInt (const TableExprId& id)
+  MArray<Int64> TableExprAggrNodeArray::getArrayInt (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
     if (itsFunc->isLazy()) {
@@ -198,7 +198,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
     return set.getFuncs()[itsFunc->seqnr()]->getArrayInt();
   }
-  Array<Double> TableExprAggrNodeArray::getArrayDouble (const TableExprId& id)
+  MArray<Double> TableExprAggrNodeArray::getArrayDouble (const TableExprId& id)
   {
     if (dataType() != NTDouble) {
       return TableExprNodeArray::getArrayDouble (id);
@@ -210,7 +210,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
     return set.getFuncs()[itsFunc->seqnr()]->getArrayDouble();
   }
-  Array<DComplex> TableExprAggrNodeArray::getArrayDComplex (const TableExprId& id)
+  MArray<DComplex> TableExprAggrNodeArray::getArrayDComplex (const TableExprId& id)
   {
     if (dataType() != NTComplex) {
       return TableExprNodeArray::getArrayDComplex (id);
@@ -222,7 +222,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
     return set.getFuncs()[itsFunc->seqnr()]->getArrayDComplex();
   }
-  Array<String> TableExprAggrNodeArray::getArrayString (const TableExprId& id)
+  MArray<String> TableExprAggrNodeArray::getArrayString (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
     if (itsFunc->isLazy()) {
@@ -231,7 +231,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
     return set.getFuncs()[itsFunc->seqnr()]->getArrayString();
   }
-  Array<MVTime> TableExprAggrNodeArray::getArrayDate (const TableExprId& id)
+  MArray<MVTime> TableExprAggrNodeArray::getArrayDate (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
     if (itsFunc->isLazy()) {

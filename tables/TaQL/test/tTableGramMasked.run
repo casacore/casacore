@@ -1,0 +1,55 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Script to test the masked array in TableGram and TableParse.
+# All files generated will be deleted on exit.
+#=============================================================================
+
+# Create a symlink to achieve that casacore_memcheck (if used) will use
+# that name 
+rm -f tTableGramMasked
+ln -s tTableGram tTableGramMasked
+
+# Set default testsrcdir if undefined.
+if test "$testsrcdir" = ""; then
+  testsrcdir=../../../../../casacore/tables/TaQL/test
+fi
+
+# Use table tTable_2.data_v0 as the input by copying it.
+rm -rf tTableGramMasked_tmp.tab*
+mkdir tTableGramMasked_tmp.tab
+cp -r $testsrcdir/../../Tables/test/tTable_2.data_v0/table.* tTableGramMasked_tmp.tab
+chmod 644 tTableGramMasked_tmp.tab/*
+
+echo
+echo "Test simple masking ..."
+$casa_checktool ./tTableGramMasked 'select sum(arr1),sum(arr1[arr1%3>0]),sum(arr1[arr1%3==0]) from tTableGramMasked_tmp.tab'
+
+echo
+echo "Test replace(un)masked ..."
+$casa_checktool ./tTableGramMasked 'select sum(arraydata(replacemasked(arr1[arr1%3>0], 1))) from tTableGramMasked_tmp.tab'
+
+$casa_checktool ./tTableGramMasked 'select sum(arraydata(replaceunmasked(arr1[arr1%3>0], 1))) from tTableGramMasked_tmp.tab'
+
+echo
+echo "Test (col,mask) in SELECT ..."
+$casa_checktool ./tTableGramMasked 'select arr1, sums(arr1[arr1%2=0],1,2) as (a1,m1) R4 from tTableGramMasked_tmp.tab limit 2 giving tTableGramMasked_tmp.tab1'
+$casa_checktool ../../apps/taql 'select a1,m1 from tTableGramMasked_tmp.tab1'
+
+$casa_checktool ./tTableGramMasked 'select sums(gaggr(arr1[arr1%2=0]),[1,4]) as (a1,m1) R4 from tTableGramMasked_tmp.tab groupby ab%2 giving tTableGramMasked_tmp.tab1'
+$casa_checktool ../../apps/taql 'select a1,m1 from tTableGramMasked_tmp.tab1'
+$casa_checktool ./tTableGramMasked 'select gsums(arr1[array(rowid()%2=0,shape(arr1))]) as (a1,m1) R4 from tTableGramMasked_tmp.tab groupby ab%2 giving tTableGramMasked_tmp.tab2'
+$casa_checktool ../../apps/taql 'select a1,m1 from tTableGramMasked_tmp.tab2'
+
+echo
+echo "Test HAVING on mask in (col,mask) ..."
+$casa_checktool ./tTableGramMasked 'using style trace select sums(gaggr(arr1[array(ab%2=1,shape(arr1))]),4) as (a1,m1) from tTableGramMasked_tmp.tab groupby ab%2 having !any(m1) giving tTableGramMasked_tmp.tab3'
+$casa_checktool ../../apps/taql 'select a1,m1 from tTableGramMasked_tmp.tab3'
+
+echo
+echo "Test (col,mask) in INSERT ..."
+$casa_checktool ./tTableGramMasked 'insert into [create table tTableGramMasked_tmp.tab1 a1 I4 ndim=1, m1 B ndim=1] ((a1,m1)) VALUES (array([1:2],2)[array([T,F],2)])'
+../../apps/taql 'select * from tTableGramMasked_tmp.tab1'
+
+
+# Remove the symlink
+rm -f tTableGramMasked

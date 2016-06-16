@@ -119,7 +119,7 @@ void b()
   *astring = "aa";
   cout << colInx9.getRowNumbers() << endl;
   cout << colInx9.getRowNumbers(True) << endl;
-  // Test a not unique index in an erronous way.
+  // Test a not unique index in an erroneous way.
   try {
     colInx9.getRowNumber(found);
   } catch (AipsError x) {

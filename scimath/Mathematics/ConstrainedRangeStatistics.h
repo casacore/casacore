@@ -42,14 +42,14 @@ namespace casacore {
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator>
 class ConstrainedRangeStatistics
-	: public ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator> {
+	: public ClassicalStatistics<CASA_STATP> {
 public:
 
 	virtual ~ConstrainedRangeStatistics();
 
 	// copy semantics
-	ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
-		const ConstrainedRangeStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
+	ConstrainedRangeStatistics<CASA_STATP>& operator=(
+		const ConstrainedRangeStatistics<CASA_STATP>& other
 	);
 
 	// <group>
@@ -95,14 +95,15 @@ public:
 	AccumType getMedian(
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
-		Bool persistSortedArray=False
+		Bool persistSortedArray=False, uInt64 nBins=10000
 	);
 
 	// get the median of the absolute deviation about the median of the data.
 	AccumType getMedianAbsDevMed(
 		CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 
 	// If one needs to compute both the median and quantile values, it is better to call
@@ -113,7 +114,8 @@ public:
 		std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
 		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
 		CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 
 	// Get the specified quantiles. <src>quantiles</src> must be between 0 and 1,
@@ -121,7 +123,8 @@ public:
 	std::map<Double, AccumType> getQuantiles(
 		const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts=NULL,
 		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False
+		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+		uInt64 nBins=10000
 	);
 	// </group>
 

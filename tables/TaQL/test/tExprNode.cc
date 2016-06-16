@@ -122,7 +122,7 @@ void checkScaDate (const String& str, TableExprId& exprid,
                    const MVTime& value)
 {
   cout << "checkScaDate " << str << endl;
-  AlwaysAssertExit (expr.dataType() == TpOther);
+  AlwaysAssertExit (expr.dataType() == TpQuantity);
   MVTime val;
   expr.get (exprid, val);
   if (!near (Double(val), Double(value), 1.e-10)) {
@@ -138,11 +138,12 @@ void checkArrBool (const String& str, TableExprId& exprid,
 {
   cout << "checkArrBool " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpBool);
-  Array<Bool> val;
+  MArray<Bool> val;
   expr.get (exprid, val);
-  if (! allEQ (val, value)) {
+  if (! allEQ (val.array(), value)) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected " << value << endl;
+    cout << str << ": found value " << val.array()
+         << "; expected " << value << endl;
   }
 }
 
@@ -152,10 +153,10 @@ void checkArrInt (const String& str, TableExprId& exprid,
 {
   cout << "checkArrInt " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpInt);
-  Array<Int64> val64;
+  MArray<Int64> val64;
   expr.get (exprid, val64);
   Array<Int> val(val64.shape());
-  convertArray (val, val64);
+  convertArray (val, val64.array());
   if (! allEQ (val, value)) {
     foundError = True;
     cout << str << ": found value " << val << "; expected " << value << endl;
@@ -168,11 +169,12 @@ void checkArrDouble (const String& str, TableExprId& exprid,
 {
   cout << "checkArrDouble " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpDouble);
-  Array<Double> val;
+  MArray<Double> val;
   expr.get (exprid, val);
-  if (! allNear (val, value, 1.e-10)) {
+  if (! allNear (val.array(), value, 1.e-10)) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected " << value << endl;
+    cout << str << ": found value " << val.array()
+         << "; expected " << value << endl;
   }
 }
 
@@ -182,11 +184,12 @@ void checkArrDComplex (const String& str, TableExprId& exprid,
 {
   cout << "checkArrDComplex " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpDComplex);
-  Array<DComplex> val;
+  MArray<DComplex> val;
   expr.get (exprid, val);
-  if (! allNear (val, value, 1.e-10)) {
+  if (! allNear (val.array(), value, 1.e-10)) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected " << value << endl;
+    cout << str << ": found value " << val.array()
+         << "; expected " << value << endl;
   }
 }
 
@@ -196,11 +199,12 @@ void checkArrString (const String& str, TableExprId& exprid,
 {
   cout << "checkArrString " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpString);
-  Array<String> val;
+  MArray<String> val;
   expr.get (exprid, val);
-  if (! allEQ (val, value)) {
+  if (! allEQ (val.array(), value)) {
     foundError = True;
-    cout << str << ": found value " << val << "; expected " << value << endl;
+    cout << str << ": found value " << val.array()
+         << "; expected " << value << endl;
   }
 }
 
@@ -453,11 +457,11 @@ void doIt()
   checkScaInt ("& si-si", exprid, esi1&esi2, si1&si2);
   checkScaInt ("| si-si", exprid, esi1|esi2, si1|si2);
   checkScaInt ("^ si-si", exprid, esi1^esi2, si1^si2);
-  checkScaInt ("% si-si", exprid, esi1%esi2, si1%si2);
+  checkScaInt ("% si-si", exprid, esi1%esi2, floormod(si1,si2));
   checkScaDouble ("/ si-si", exprid, esi1/esi2, sid1/si2);
   checkScaDouble ("+ sd-si", exprid, esd1+esi2, sd1+sid2);
   checkScaDouble ("/ sd-sd", exprid, esd1/esd2, sd1/sd2);
-  checkScaDouble ("% sd-sd", exprid, esd1%esd2, fmod(sd1,sd2));
+  checkScaDouble ("% sd-sd", exprid, esd1%esd2, floormod(sd1,sd2));
   checkScaDouble ("**sd-sd", exprid, pow(esd1,esd2), pow(sd1,sd2));
   checkArrDouble ("+ ad-ad", exprid, earrd1+earri2, arrd1+arrid2);
   checkArrDouble ("+ ad-ci", exprid, earrd1+20, arrd1+20.);
@@ -469,16 +473,16 @@ void doIt()
   checkArrInt ("& ai-si", exprid, earri1&esi2, arri1&si2);
   checkArrInt ("| si-ai", exprid, esi2|earri1, arri1|si2);
   checkArrInt ("^ ai-ai", exprid, earri1^earri2, arri1^arri2);
-  checkArrInt ("% ai-ai", exprid, earri1%earri2, arri1%arri2);
+  checkArrInt ("% ai-ai", exprid, earri1%earri2, floormod(arri1,arri2));
   checkArrDouble ("/ ai-ai", exprid, earri1/earri2, arrid1/arrid2);
   checkArrDouble ("- ci-ad", exprid, 12-earrd2, 12.-arrd2);
   checkArrDouble ("* sd-ai", exprid, esd1*earri2, sd1*arrid2);
   checkArrDouble ("/ ad-ad", exprid, earrd1/earrd2, arrd1/arrd2);
   checkArrDouble ("/ ad-sd", exprid, earrd1/esd2, arrd1/sd2);
   checkArrDouble ("/ sd-ad", exprid, esd1/earrd2, sd1/arrd2);
-  checkArrDouble ("% ad-ad", exprid, earrd1%earrd2, fmod(arrd1,arrd2));
-  checkArrDouble ("% ad-sd", exprid, earrd1%esd2, fmod(arrd1,sd2));
-  checkArrDouble ("% sd-ad", exprid, esd1%earrd2, fmod(sd1,arrd2));
+  checkArrDouble ("% ad-ad", exprid, earrd1%earrd2, floormod(arrd1,arrd2));
+  checkArrDouble ("% ad-sd", exprid, earrd1%esd2, floormod(arrd1,sd2));
+  checkArrDouble ("% sd-ad", exprid, esd1%earrd2, floormod(sd1,arrd2));
   checkArrDouble ("**ad-ad", exprid, pow(earrd1,earrd2), pow(arrd1,arrd2));
   checkArrDouble ("**ad-sd", exprid, pow(earrd1,esd2), pow(arrd1,sd2));
   checkArrDouble ("**sd-ad", exprid, pow(esd1,earrd2), pow(sd1,arrd2));
@@ -858,7 +862,7 @@ void doIt()
   checkScaInt ("fmod si-si", exprid, fmod(esi1,esi2), si1%si2);
   checkScaDouble ("fmod sd-sd", exprid, fmod(esd1,esd2), fmod(sd1,sd2));
   checkArrInt ("fmod ai-ai", exprid, fmod(earri1,earri2), arri1%arri2);
-  checkArrDouble ("fmod ad-ad", exprid, earrd1%earrd2, fmod(arrd1,arrd2));
+  checkArrDouble ("fmod ad-ad", exprid, fmod(earrd1,earrd2), fmod(arrd1,arrd2));
   checkArrDouble ("fmod ad-sd", exprid, fmod(earrd1,esd2), fmod(arrd1,sd2));
   checkArrDouble ("fmod sd-ad", exprid, fmod(esd1,earrd2), fmod(sd1,arrd2));
   // Check min of max of 2 values.
@@ -1027,10 +1031,10 @@ void doIt()
   checkScaString ("ltrim(ss)", exprid, rtrim(TableExprNode("  a b  ")), "  a b");
   checkScaString ("rtrim(ss)", exprid, ltrim(TableExprNode("  a b  ")), "a b  ");
   checkScaString ("substr(ss,2)", exprid, substr(TableExprNode("abcdef"),2), "cdef");
-  checkScaString ("substr(ss,2,10)", exprid, substr(TableExprNode("abcdef"),2,10), "cdef");
+  checkScaString ("substr(ss,-4,10)", exprid, substr(TableExprNode("abcdef"),-4,10), "cdef");
   checkScaString ("substr(ss,3,2)", exprid, substr(TableExprNode("abcdef"),3,2), "de");
-  checkArrString ("substr(trim(as),-1,2)", exprid, substr(trim(earrs1),-1,2), Vector<String>(arrs1.size(), "a1"));
-  checkArrString ("substr(as,-1,-1)", exprid, substr(earrs1,-1,-1), Vector<String>(arrs1.size(), ""));
+  checkArrString ("substr(trim(as),-10,2)", exprid, substr(trim(earrs1),-10,2), Vector<String>(arrs1.size(), "a1"));
+  checkArrString ("substr(as,-100,-1)", exprid, substr(earrs1,-100,-1), Vector<String>(arrs1.size(), ""));
   checkScaString ("replace(ss,ss1)", exprid, replace(TableExprNode("abcdef"),"ab"), "cdef");
   checkScaString ("replace(ss,ss2)", exprid, replace(TableExprNode("abcdefab"),"ab"), "cdef");
   checkScaString ("replace(ss,ss2,ss)", exprid, replace(TableExprNode("abcdefab"),"ab", "xyz"), "xyzcdefxyz");
@@ -1059,6 +1063,16 @@ void doIt()
   checkScaInt ("week", exprid, week(datetime("1Jan09/12:")), 1);
   checkScaString ("cdow", exprid, cdow(datetime("1Jan09/12:")), "Thu");
   checkScaString ("cmonth", exprid, cmonth(datetime("1Jan09/12:")), "Jan");
+
+  // Check indexing and slicing; also negative.
+  Slicer sl1(IPosition(1,1), IPosition(1,2), Slicer::endIsLast);
+  Slicer sl2(IPosition(1,0), IPosition(1,3), IPosition(1,2), Slicer::endIsLast);
+  Slicer sl3(IPosition(1,-2), IPosition(1,-1), Slicer::endIsLast);
+  checkScaString ("[2]", exprid, earrs1(IPosition(1,2)), arrs1[2]);
+  checkScaString ("[-3]", exprid, earrs1(IPosition(1,-3)), arrs1[1]);
+  checkArrString ("[1:2]", exprid, earrs1(sl1), arrs1(sl1));
+  checkArrString ("[0:3:2]", exprid, earrs1(sl2), arrs1(sl2));
+  checkArrString ("[-2:-1]", exprid, earrs1(sl3), arrs1(sl3));
 
   // Check various kind of failures.
   checkFailure ("& si-sd", esi1&esd1);

@@ -60,7 +60,7 @@ void b (const String& dir, const String& suffix, Char separator,
 void b1 (const String& dir);
 void b2 (const String& dir);
 void b3 (const String& dir, const IPosition& autoShape);
-void erronous();
+void erroneous();
 
 int main (int argc, const char* argv[])
 {
@@ -94,7 +94,7 @@ int main (int argc, const char* argv[])
 	b3 (dir, IPosition(2,2,5));
 	b3 (dir, IPosition(2,3,5));
 	b3 (dir, IPosition(2,0,5));
-	erronous();
+	erroneous();
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
@@ -482,7 +482,7 @@ void tryerror()
   AlwaysAssertExit (ok==False);
 }
 
-void erronous()
+void erroneous()
 {
   {
     ofstream ofile("tReadAsciiTable_tmp.header");
