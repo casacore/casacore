@@ -3683,6 +3683,20 @@ void TableParseSelect::handleGiving (const TableExprNodeSet& set)
   resultSet_p = new TableExprNodeSet (set);
 }
 
+void TableParseSelect::checkTableProjSizes() const
+{
+  // Check if all tables used in non-constant select expressions
+  // have the same size as the first table. 
+  Int64 nrow = fromTables_p[0].table().nrow();
+  for (uInt i=0; i<columnExpr_p.nelements(); i++) {
+    if (! columnExpr_p[i].getNodeRep()->isConstant()) {
+      if (columnExpr_p[i].getNodeRep()->nrow() != nrow) {
+        throw TableInvExpr("Nr of rows of tables used in select "
+                           "expressions must be equal to first table");
+      }
+    }
+  }
+}
 
 //# Execute all parts of a TaQL command doing some selection.
 void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
@@ -3744,7 +3758,10 @@ void TableParseSelect::execute (Bool showTimings, Bool setInGiving,
   //# Test if aggregate, groupby, or having is used.
   vector<TableExprNodeRep*> aggrNodes;
   Int groupAggrUsed = testGroupAggr (aggrNodes);
-  if (doTracing  &&  groupAggrUsed) {
+  if (groupAggrUsed == 0) {
+    // Check if tables used in projection have the same size.
+    checkTableProjSizes();
+  } else if (doTracing) {
     cerr << "GROUPBY to be done using " << aggrNodes.size()
          << " aggregate nodes" << endl;
   }

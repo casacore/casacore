@@ -156,6 +156,14 @@ $casa_checktool ./tTableGram 'calc from tTableGram_tmp.tab calc findcone([ab,ab]
 $casa_checktool ./tTableGram 'calc from tTableGram_tmp.tab  calc findcone([ab,ab],[select from tTableGram_tmp.tab giving [ab,ab]],[1rad,2rad])'
 
 echo ""
+echo "testing some erroneous commands ..."
+# Unknown column
+./tTableGram 'select abcd from tTableGram_tmp.tab'
+# Different table sizes
+./tTableGram 'select t1.ab from tTableGram_tmp.tab t0, [select from t0 limit 5] t1'
+./tTableGram 'select from tTableGram_tmp.tab t0, [select from tTableGram_tmp.tab limit 5] t1 where t0.ab = t1.ab'
+
+echo ""
 echo "testing calc ..."
 $casa_checktool ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab+1]])'
 $casa_checktool ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab,ac,ab:ac]])'
