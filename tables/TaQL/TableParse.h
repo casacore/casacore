@@ -815,6 +815,10 @@ private:
   static Table findTableKey (const Table& table, const String& columnName,
 			     const Vector<String>& keyNames);
 
+  // Check if the tables used in selection columns have the same
+  // size as the first table given in FROM.
+  void checkTableProjSizes() const;
+
   // Create the set of aggregate functions and groupby keys in case
   // a single groupby key is given.
   // This offers much faster map access then doGroupByAggrMultiple.
