@@ -364,16 +364,6 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
         os << LogIO::SEVERE << "Empty measurement set!" << LogIO::POST;
         return 0;
     }
-
-    Bool doWsrt = False;
-    {
-        MSObservation obsTable(_ms.observation());
-        if (obsTable.nrow() > 0) {
-            ScalarColumn<String> inarrayname(obsTable,
-                    MSObservation::columnName(MSObservation::TELESCOPE_NAME));
-            doWsrt = inarrayname(0) == "WSRT";
-        }
-    }
     Record ek; // ek == extra keys
     Vector<Double> radec;
     String objectname;
@@ -496,8 +486,6 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
             }
             else {
                 delta = totalbw(0);
-                if (doWsrt && (delta > 0))
-                    delta = -delta; // This makes delta (and later bw0) NEGATIVE
             }
             // If first time, set the various values.
 
@@ -579,20 +567,14 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
     }
 
     Int f0RefPix(0);
-    if (doWsrt) {
-        f0RefPix = nchan / 2;
-        refFreq = f0 + f0RefPix * bw0;
+    f0RefPix = 1 + nchan / 2;
+    if (f0RefPix == 1) {
+        // single-channel out
+        refFreq = f0 + bw0 / 2.0 - delta / 2.0;
     }
     else {
-        f0RefPix = 1 + nchan / 2;
-        if (f0RefPix == 1) { 
-            // single-channel out
-            refFreq = f0 + bw0 / 2.0 - delta / 2.0;
-        }
-        else { 
-            // multi-channel out  (f0RefPix is a *one* - based index!)
-            refFreq = f0 + (f0RefPix - 1) * bw0;
-        }
+        // multi-channel out  (f0RefPix is a *one* - based index!)
+        refFreq = f0 + (f0RefPix - 1) * bw0;
     }
     refPixelFreq = f0RefPix;
 
@@ -728,15 +710,7 @@ FitsOutput *MSFitsOutput::_writeMain(Int& refPixelFreq, Double& refFreq,
     ek.define("ctype4", "FREQ");
     ek.define("crval4", refFreq);
     ek.define("cdelt4", bw0);
-    if (doWsrt) {
-        if (refPixelFreq != 1) {
-            ek.define("crpix4", Double(1 + refPixelFreq));
-        } else {
-            ek.define("crpix4", Double(refPixelFreq));
-        }
-    } else {
-        ek.define("crpix4", Double(refPixelFreq));
-    }
+    ek.define("crpix4", Double(refPixelFreq));
     ek.define("crota4", 0.0);
 
     ek.define("ctype5", "IF");
@@ -1448,19 +1422,17 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
             MSSpectralWindow::TOTAL_BANDWIDTH));
     ScalarColumn<Int> insideband(specTable, MSSpectralWindow::columnName(
             MSSpectralWindow::NET_SIDEBAND));
-
-    Bool doWsrt = False;
     String telescopeName;
     {
         MSObservation obsTable(ms.observation());
         if (obsTable.nrow() > 0) {
-            ScalarColumn<String> inarrayname(obsTable,
-                    MSObservation::columnName(MSObservation::TELESCOPE_NAME));
-            doWsrt = inarrayname(0) == "WSRT";
+            ScalarColumn<String> inarrayname(
+                obsTable,
+                MSObservation::columnName(MSObservation::TELESCOPE_NAME)
+            );
             telescopeName = inarrayname(0);
         }
     }
-
     // ##### Header
     Record header;
     // NO_IF
@@ -1553,16 +1525,15 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
                     } else {
                         (*ifwidth)(inx) = abs(chanbw);
                     }
-                } else if (doWsrt) {
-                    (*ifwidth)(inx) = abs(chanbw);
-                } else {
+                }
+                else {
                     (*ifwidth)(inx) = (chanbw);
                 }
             } else {
                 (*ifwidth)(inx) = intotbw(i);
             }
             (*totbw)(inx) = intotbw(i);
-            if (doWsrt || telescopeName == "ALMA") {
+            if (telescopeName == "ALMA") {
                 if (freqs(1) < freqs(0)) {
                     (*sideband)(inx) = -1;
                 } else {
