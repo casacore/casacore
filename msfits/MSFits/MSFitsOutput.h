@@ -29,6 +29,7 @@
 #define MS_MSFITSOUTPUT_H
 
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 
 #include <casacore/casa/aips.h>
@@ -41,7 +42,6 @@ template<class T> class ScalarColumn;
 class Table;
 template<class T> class Block;
 template<class T> class Vector;
-
 
 // <summary>
 // Write a MeasurementSet to a random group uvfits file.
@@ -266,6 +266,10 @@ private:
         const ScalarColumn<Int>& ant2,
         const Bool asMultiSource,
         const ScalarColumn<Int>& fieldid
+    );
+
+    static void _checkReceptorAngles(
+        const Vector<Quantity>& ra0, Vector<Quantity>& ra1, Int antnum
     );
 };
 
