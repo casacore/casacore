@@ -2499,7 +2499,13 @@ void testIt(MSMetaData& md) {
                 AlwaysAssert(mymap[i].size() == expSize, AipsError);
                 AlwaysAssert(mymap[i].begin()->second == expExposure, AipsError);
             }
-            
+        }
+        {
+            cout << "*** test getUniqueSpwIDs()" << endl;
+            std::set<uInt> spws = md.getUniqueSpwIDs();
+            Vector<Int> expV = casa::indgen(25, 0, 1);
+            std::set<uInt> expec(expV.begin(), expV.end());
+            AlwaysAssert(spws == expec, AipsError);
         }
         {
             cout << "*** cache size " << md.getCache() << endl;

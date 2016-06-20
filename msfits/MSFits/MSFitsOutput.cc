@@ -316,13 +316,8 @@ Bool MSFitsOutput::writeFitsFile(
     out.setPadWitFlags(padWithFlags);
     out.setFieldNumber(fieldNumber);
     out.setOverwrite(overwrite);
-    try {
-        out.write();
-        return True;
-    }
-    catch (const AipsError&) {
-        return False;
-    }
+    out.write();
+    return True;
 }
 
 uInt MSFitsOutput::get_tbf_end(const uInt rownr, const uInt nrow,
@@ -1705,6 +1700,9 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         ROMSFeedColumns feedCols(feedTable);
         ArrayColumn<String> inpoltype(feedCols.polarizationType());
         ScalarColumn<Int> inantid(feedCols.antennaId());
+        ScalarColumn<Int> spwids(feedCols.spectralWindowId());
+        MSMetaData msmd(&ms, 100);
+        std::set<uInt> uSpws = msmd.getUniqueSpwIDs();
         ArrayQuantColumn<Double> receptorAngle(feedCols.receptorAngleQuant());
 
         FITSTableWriter writer(output, desc, strlengths, nant, header, units, False);
@@ -1749,6 +1747,8 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
                 }
             }
         }
+        // antenna -> receptor angles
+        std::map<uInt, Vector<Quantity> > antToRA;
         for (uInt antnum = 0; antnum < nant; ++antnum) {
             *anname = anames(antnum);
 
@@ -1791,18 +1791,32 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
             *poltya = " ";
             *poltyb = " ";
             for (uInt i = 0; i < nmax; ++i) {
-                if (Int(antnum) == inantid(i)) {
+                // filter out irrelevant spws. spw = -1 in the FEED table
+                // inicates that row applies for all spectral windows
+                if (
+                    Int(antnum) == inantid(i)
+                    && (
+                        spwids(i) == -1
+                        || uSpws.find(spwids(i)) != uSpws.end()
+                    )
+                ) {
                     found = True;
                     Vector<String> poltypes = inpoltype(i);
                     Vector<Quantity> ra;
                     receptorAngle.get(i, ra);
-                    if (poltypes.nelements() >= 1) {
-                        *poltya = poltypes(0);
-                        *polaa = ra[0].getValue("deg");
+                    if (antToRA.find(antnum) == antToRA.end()) {
+                        if (poltypes.nelements() >= 1) {
+                            *poltya = poltypes(0);
+                            *polaa = ra[0].getValue("deg");
+                        }
+                        if (poltypes.nelements() >= 2) {
+                            *poltyb = poltypes(1);
+                            *polab = ra[1].getValue("deg");
+                        }
+                        antToRA[antnum] = ra;
                     }
-                    if (poltypes.nelements() >= 2) {
-                        *poltyb = poltypes(1);
-                        *polab = ra[1].getValue("deg");
+                    else {
+                        _checkReceptorAngles(ra, antToRA[antnum], antnum);
                     }
                 }
             }
@@ -1815,6 +1829,30 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         }
     }
     return True;
+}
+
+void MSFitsOutput::_checkReceptorAngles(
+    const Vector<Quantity>& ra0, Vector<Quantity>& ra1, Int antnum
+) {
+    if (ra0.size() != ra1.size()) {
+        ostringstream oss;
+        oss << "Varying number of receptor angles found for "
+            << "specified spectral windows for antenna "
+            << antnum << " is not supported by uvfits";
+        ThrowCc(oss.str());
+    }
+    uInt nra = ra0.size();
+    for (uInt j=0; j<nra; ++j) {
+        if (
+            ! nearAbs(ra0[j].getValue("deg"), ra1[j].getValue("deg"), 0.001)
+        ) {
+            ostringstream oss;
+            oss << "Receptor angle " << j << " for antenna " << antnum
+                << " varies with the selected spectral windows "
+                << "which is not supported by uvfits.";
+            ThrowCc(oss.str());
+        }
+    }
 }
 
 Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
