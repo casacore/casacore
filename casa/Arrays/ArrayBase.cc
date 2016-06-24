@@ -378,15 +378,25 @@ size_t ArrayBase::makeSubset (ArrayBase& out,
 {
   if (b.nelements() != ndim() || e.nelements() != ndim() ||
       i.nelements() != ndim()) {
-    throw(ArrayError("ArrayBase::operator()(b,e,i) - ndim() differs from"
-		     " the array ndim"));
+      ostringstream os;
+      os << "ArrayBase::operator()(b,e,i) - ndim() b: " << b.nelements()
+         << " e: " << e.nelements() << " i: "
+         << i.nelements() << " differs from the array ndim " << ndim();
+      throw(ArrayError(os));
   }
   uInt j;
   for (j=0; j < ndim(); j++) {
     if (b(j) < 0 || b(j) > e(j)+1
     ||  e(j) >= length_p(j)  ||  i(j) < 1) {
-      throw(ArrayError("ArrayBase::operator()(b,e,i) - b,e or i "
-		       "incorrectly specified"));
+      ostringstream os;
+      os << "ArrayBase::operator()(b,e,i) - incorrectly specified" << endl;
+      os << "begin: " << b << endl;
+      os << "end:   " << e << endl;
+      os << "incr:  " << i << endl;
+      os << endl;
+      os << "array shape: " << length_p << endl;
+      os << "required: b >= 0; b <= e; e < shape; i >= 0" << endl;
+      throw(ArrayError(os));
     }
   }
   size_t offs=0;
