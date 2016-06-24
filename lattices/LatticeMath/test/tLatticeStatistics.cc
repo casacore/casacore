@@ -62,322 +62,322 @@ void test2DFloat (LatticeStatistics<Float>& stats, const Vector<Float>& results,
 
 int main()
 {
-	try {
-		LogOrigin lor("tLatticeStatistics", "main()", WHERE);
-		LogIO os(lor);
-		doitFloat(os);
+    try {
+        LogOrigin lor("tLatticeStatistics", "main()", WHERE);
+        LogIO os(lor);
+        doitFloat(os);
 
-		Vector<Float> data(1000);
-		Vector<Float>::iterator iter = data.begin();
-		Vector<Float>::iterator end = data.end();
-		uInt count = 0;
-		while(iter != end) {
-			*iter = count % 2 == 0 ? (Float)count : -(Float)(count*count);
-			++iter;
-			++count;
-		}
-		{
-			ArrayLattice<Float> latt(data);
-			SubLattice<Float> subLatt(latt);
-			LatticeStatistics<Float> stats(subLatt);
-			Array<Double> median, iqr, medabsdevmed, npts, q1, q3;
-			stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
-			AlwaysAssert(*median.begin() == -0.5, AipsError);
-			stats.getStatistic(q1, LatticeStatsBase::Q1, False);
-			AlwaysAssert(*q1.begin() == -251001, AipsError);
-			stats.getStatistic(q3, LatticeStatsBase::Q3, False);
-			AlwaysAssert(*q3.begin() == 498, AipsError);
-			Vector<Float> range(2, 0.1);
-			range[1] = 1001;
-			stats.setInExCludeRange(range, Vector<Float>(), False);
-			stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
-			AlwaysAssert(*median.begin() == 500, AipsError);
-			stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
-			AlwaysAssert(*iqr.begin() == 500, AipsError);
-			stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
-			AlwaysAssert(*medabsdevmed.begin() == 250, AipsError);
-			stats.getStatistic(q1, LatticeStatsBase::Q1, False);
-			AlwaysAssert(*q1.begin() == 250, AipsError);
-			stats.getStatistic(q3, LatticeStatsBase::Q3, False);
-			AlwaysAssert(*q3.begin() == 750, AipsError);
+        Vector<Float> data(1000);
+        Vector<Float>::iterator iter = data.begin();
+        Vector<Float>::iterator end = data.end();
+        uInt count = 0;
+        while(iter != end) {
+            *iter = count % 2 == 0 ? (Float)count : -(Float)(count*count);
+            ++iter;
+            ++count;
+        }
+        {
+            ArrayLattice<Float> latt(data);
+            SubLattice<Float> subLatt(latt);
+            LatticeStatistics<Float> stats(subLatt);
+            Array<Double> median, iqr, medabsdevmed, npts, q1, q3;
+            stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+            AlwaysAssert(*median.begin() == -0.5, AipsError);
+            stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+            AlwaysAssert(*q1.begin() == -251001, AipsError);
+            stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+            AlwaysAssert(*q3.begin() == 498, AipsError);
+            Vector<Float> range(2, 0.1);
+            range[1] = 1001;
+            stats.setInExCludeRange(range, Vector<Float>(), False);
+            stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+            AlwaysAssert(*median.begin() == 500, AipsError);
+            stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
+            AlwaysAssert(*iqr.begin() == 500, AipsError);
+            stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
+            AlwaysAssert(*medabsdevmed.begin() == 250, AipsError);
+            stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+            AlwaysAssert(*q1.begin() == 250, AipsError);
+            stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+            AlwaysAssert(*q3.begin() == 750, AipsError);
 
-			// exclude range
-			stats.setInExCludeRange(Vector<Float>(), range, False);
-			stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
-			AlwaysAssert(*median.begin() == -249001, AipsError);
-			stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
-			AlwaysAssert(*iqr.begin() == 499000, AipsError);
-			stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
-			AlwaysAssert(*medabsdevmed.begin() == 216240, AipsError);
-			stats.getStatistic(q1, LatticeStatsBase::Q1, False);
-			AlwaysAssert(*q1.begin() == -561001, AipsError);
-			stats.getStatistic(q3, LatticeStatsBase::Q3, False);
-			AlwaysAssert(*q3.begin() == -62001, AipsError);
+            // exclude range
+            stats.setInExCludeRange(Vector<Float>(), range, False);
+            stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+            AlwaysAssert(*median.begin() == -249001, AipsError);
+            stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
+            AlwaysAssert(*iqr.begin() == 499000, AipsError);
+            stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
+            AlwaysAssert(*medabsdevmed.begin() == 216240, AipsError);
+            stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+            AlwaysAssert(*q1.begin() == -561001, AipsError);
+            stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+            AlwaysAssert(*q3.begin() == -62001, AipsError);
 
-			// mask
-			Vector<Bool> mask(1000);
-			Vector<Bool>::iterator miter = mask.begin();
-			Vector<Bool>::iterator mend = mask.end();
-			count = 0;
-			while (miter != mend) {
-				*miter = count % 3 == 0;
-				++miter;
-				++count;
-			}
-			subLatt.setPixelMask(ArrayLattice<Bool>(mask), True);
-			stats = LatticeStatistics<Float>(subLatt);
-			stats.getStatistic(npts, LatticeStatsBase::NPTS, False);
-			AlwaysAssert(*npts.begin() == 334, AipsError);
-			stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
-			AlwaysAssert(*median.begin() == -4.5, AipsError);
-			stats.getStatistic(q1, LatticeStatsBase::Q1, False);
-			AlwaysAssert(*q1.begin() == -251001, AipsError);
-			stats.getStatistic(q3, LatticeStatsBase::Q3, False);
-			AlwaysAssert(*q3.begin() == 498, AipsError);
+            // mask
+            Vector<Bool> mask(1000);
+            Vector<Bool>::iterator miter = mask.begin();
+            Vector<Bool>::iterator mend = mask.end();
+            count = 0;
+            while (miter != mend) {
+                *miter = count % 3 == 0;
+                ++miter;
+                ++count;
+            }
+            subLatt.setPixelMask(ArrayLattice<Bool>(mask), True);
+            stats = LatticeStatistics<Float>(subLatt);
+            stats.getStatistic(npts, LatticeStatsBase::NPTS, False);
+            AlwaysAssert(*npts.begin() == 334, AipsError);
+            stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+            AlwaysAssert(*median.begin() == -4.5, AipsError);
+            stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+            AlwaysAssert(*q1.begin() == -251001, AipsError);
+            stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+            AlwaysAssert(*q3.begin() == 498, AipsError);
 
-			// include range
-			stats.setInExCludeRange(range, Vector<Float>(), False);
-			stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
-			AlwaysAssert(*median.begin() == 501, AipsError);
-			stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
-			AlwaysAssert(*iqr.begin() == 498, AipsError);
-			stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
-			AlwaysAssert(*medabsdevmed.begin() == 249, AipsError);
-			stats.getStatistic(q1, LatticeStatsBase::Q1, False);
-			AlwaysAssert(*q1.begin() == 252, AipsError);
-			stats.getStatistic(q3, LatticeStatsBase::Q3, False);
-			AlwaysAssert(*q3.begin() == 750, AipsError);
+            // include range
+            stats.setInExCludeRange(range, Vector<Float>(), False);
+            stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+            AlwaysAssert(*median.begin() == 501, AipsError);
+            stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
+            AlwaysAssert(*iqr.begin() == 498, AipsError);
+            stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
+            AlwaysAssert(*medabsdevmed.begin() == 249, AipsError);
+            stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+            AlwaysAssert(*q1.begin() == 252, AipsError);
+            stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+            AlwaysAssert(*q3.begin() == 750, AipsError);
 
-			// exclude range
-			stats.setInExCludeRange(Vector<Float>(), range, False);
-			stats.getStatistic(npts, LatticeStatsBase::NPTS, False);
-			AlwaysAssert(*npts.begin() == 168, AipsError);
-			stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
-			AlwaysAssert(*median.begin() == -248013, AipsError);
-			stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
-			AlwaysAssert(*iqr.begin() == 505008, AipsError);
-			stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
-			AlwaysAssert(*medabsdevmed.begin() == 216216, AipsError);
-			stats.getStatistic(q1, LatticeStatsBase::Q1, False);
-			AlwaysAssert(*q1.begin() == -567009, AipsError);
-			stats.getStatistic(q3, LatticeStatsBase::Q3, False);
-			AlwaysAssert(*q3.begin() == -62001, AipsError);
+            // exclude range
+            stats.setInExCludeRange(Vector<Float>(), range, False);
+            stats.getStatistic(npts, LatticeStatsBase::NPTS, False);
+            AlwaysAssert(*npts.begin() == 168, AipsError);
+            stats.getStatistic(median, LatticeStatsBase::MEDIAN, False);
+            AlwaysAssert(*median.begin() == -248013, AipsError);
+            stats.getStatistic(iqr, LatticeStatsBase::QUARTILE, False);
+            AlwaysAssert(*iqr.begin() == 505008, AipsError);
+            stats.getStatistic(medabsdevmed, LatticeStatsBase::MEDABSDEVMED, False);
+            AlwaysAssert(*medabsdevmed.begin() == 216216, AipsError);
+            stats.getStatistic(q1, LatticeStatsBase::Q1, False);
+            AlwaysAssert(*q1.begin() == -567009, AipsError);
+            stats.getStatistic(q3, LatticeStatsBase::Q3, False);
+            AlwaysAssert(*q3.begin() == -62001, AipsError);
 
-			// corner case when lattice is completely masked
-			mask.set(False);
-			subLatt.setPixelMask(ArrayLattice<Bool>(mask), True);
-			stats = LatticeStatistics<Float>(subLatt);
-			stats.getStatistic(npts, LatticeStatsBase::NPTS, False);
-			AlwaysAssert(npts.size() == 0, AipsError);
-		}
-		{
-			// using configure*() methods
-			ArrayLattice<Float> latt(data);
-			SubLattice<Float> subLatt(latt);
-			LatticeStatistics<Float> stats(subLatt);
-			stats.configureClassical();
-			Array<Double> mean;
-			Float expec = casacore::mean(data);
-			stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
-			AlwaysAssert(near(*mean.begin(), expec), AipsError);
-			stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
-			AlwaysAssert(near(*mean.begin(), expec), AipsError);
-			stats.configureHingesFences(0.0);
-			stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
-			expec = -41960.081836;
-			AlwaysAssert(near(*mean.begin(), expec), AipsError);
-			stats.configureFitToHalf(
-				FitToHalfStatisticsData::CMEAN,
-				FitToHalfStatisticsData::LE_CENTER
-			);
-			Array<Double> v;
-			stats.getStatistic(v, LatticeStatsBase::MEAN, False);
-			Double m = *v.begin();
-			AlwaysAssert(near(m, casacore::mean(data)), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MEDIAN, False);
-			AlwaysAssert(near(*v.begin(), m), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::NPTS, False);
-			Int npts = (Int)*v.begin();
-			AlwaysAssert(npts == 592, AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUM, False);
-			Double sum = *v.begin();
-			AlwaysAssert(near(sum, m*npts), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
-			AlwaysAssert(near(*v.begin(), 127119111260752.0), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MIN, False);
-			AlwaysAssert(near(*v.begin(), casacore::min(data)), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(), 2*m - casacore::min(data)), AipsError);
-			IPosition minPos, maxPos;
-			stats.getMinMaxPos(minPos, maxPos);
-			AlwaysAssert(minPos.size() == 1 && minPos[0] == 999, AipsError);
-			AlwaysAssert(maxPos.size() == 0, AipsError);
-			stats.getStatistic(v, LatticeStatsBase::Q1, False);
-			AlwaysAssert(near(*v.begin(), -497025.0), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::Q3, False);
-			AlwaysAssert(near(*v.begin(), 161375.0), AipsError);
+            // corner case when lattice is completely masked
+            mask.set(False);
+            subLatt.setPixelMask(ArrayLattice<Bool>(mask), True);
+            stats = LatticeStatistics<Float>(subLatt);
+            stats.getStatistic(npts, LatticeStatsBase::NPTS, False);
+            AlwaysAssert(npts.size() == 0, AipsError);
+        }
+        {
+            // using configure*() methods
+            ArrayLattice<Float> latt(data);
+            SubLattice<Float> subLatt(latt);
+            LatticeStatistics<Float> stats(subLatt);
+            stats.configureClassical();
+            Array<Double> mean;
+            Float expec = casacore::mean(data);
+            stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
+            AlwaysAssert(near(*mean.begin(), expec), AipsError);
+            stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
+            AlwaysAssert(near(*mean.begin(), expec), AipsError);
+            stats.configureHingesFences(0.0);
+            stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
+            expec = -41960.081836;
+            AlwaysAssert(near(*mean.begin(), expec), AipsError);
+            stats.configureFitToHalf(
+                FitToHalfStatisticsData::CMEAN,
+                FitToHalfStatisticsData::LE_CENTER
+            );
+            Array<Double> v;
+            stats.getStatistic(v, LatticeStatsBase::MEAN, False);
+            Double m = *v.begin();
+            AlwaysAssert(near(m, casacore::mean(data)), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MEDIAN, False);
+            AlwaysAssert(near(*v.begin(), m), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::NPTS, False);
+            Int npts = (Int)*v.begin();
+            AlwaysAssert(npts == 592, AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUM, False);
+            Double sum = *v.begin();
+            AlwaysAssert(near(sum, m*npts), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
+            AlwaysAssert(near(*v.begin(), 127119111260752.0), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MIN, False);
+            AlwaysAssert(near(*v.begin(), casacore::min(data)), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MAX, False);
+            AlwaysAssert(near(*v.begin(), 2*m - casacore::min(data)), AipsError);
+            IPosition minPos, maxPos;
+            stats.getMinMaxPos(minPos, maxPos);
+            AlwaysAssert(minPos.size() == 1 && minPos[0] == 999, AipsError);
+            AlwaysAssert(maxPos.size() == 0, AipsError);
+            stats.getStatistic(v, LatticeStatsBase::Q1, False);
+            AlwaysAssert(near(*v.begin(), -497025.0), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::Q3, False);
+            AlwaysAssert(near(*v.begin(), 161375.0), AipsError);
 
-			stats.configureFitToHalf(
-				FitToHalfStatisticsData::CMEAN,
-				FitToHalfStatisticsData::GE_CENTER
-			);
-			stats.getStatistic(v, LatticeStatsBase::MEAN, False);
-			m = *v.begin();
-			AlwaysAssert(near(m, casacore::mean(data)), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MEDIAN, False);
-			AlwaysAssert(near(*v.begin(), m), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::NPTS, False);
-			npts = (Int)*v.begin();
-			AlwaysAssert(npts == 1408, AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUM, False);
-			sum = *v.begin();
-			AlwaysAssert(near(sum, m*npts), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
-			AlwaysAssert(near(*v.begin(), 72880554407048.0), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MIN, False);
-			AlwaysAssert(near(*v.begin(), 2*m - casacore::max(data)), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(), casacore::max(data)), AipsError);
-			stats.getMinMaxPos(minPos, maxPos);
-			AlwaysAssert(minPos.size() == 0, AipsError);
-			AlwaysAssert(maxPos.size() == 1 && maxPos == 998, AipsError);
+            stats.configureFitToHalf(
+                FitToHalfStatisticsData::CMEAN,
+                FitToHalfStatisticsData::GE_CENTER
+            );
+            stats.getStatistic(v, LatticeStatsBase::MEAN, False);
+            m = *v.begin();
+            AlwaysAssert(near(m, casacore::mean(data)), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MEDIAN, False);
+            AlwaysAssert(near(*v.begin(), m), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::NPTS, False);
+            npts = (Int)*v.begin();
+            AlwaysAssert(npts == 1408, AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUM, False);
+            sum = *v.begin();
+            AlwaysAssert(near(sum, m*npts), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
+            AlwaysAssert(near(*v.begin(), 72880554407048.0), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MIN, False);
+            AlwaysAssert(near(*v.begin(), 2*m - casacore::max(data)), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MAX, False);
+            AlwaysAssert(near(*v.begin(), casacore::max(data)), AipsError);
+            stats.getMinMaxPos(minPos, maxPos);
+            AlwaysAssert(minPos.size() == 0, AipsError);
+            AlwaysAssert(maxPos.size() == 1 && maxPos == 998, AipsError);
 
-			stats.configureFitToHalf(
-				FitToHalfStatisticsData::CMEDIAN,
-				FitToHalfStatisticsData::LE_CENTER
-			);
-			stats.getStatistic(v, LatticeStatsBase::MEAN, False);
-			m = *v.begin();
-			AlwaysAssert(near(m, -0.5), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::NPTS, False);
-			npts = (Int)*v.begin();
-			AlwaysAssert(npts == 1000, AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUM, False);
-			sum = *v.begin();
-			AlwaysAssert(near(sum, m*npts), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
-			AlwaysAssert(near(*v.begin(), 199999000001300.0), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MIN, False);
-			AlwaysAssert(near(*v.begin(), casacore::min(data)), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(),2*m - casacore::min(data)), AipsError);
-			stats.getMinMaxPos(minPos, maxPos);
-			AlwaysAssert(minPos.size() == 1 && minPos[0] == 999, AipsError);
-			AlwaysAssert(maxPos.size() == 0, AipsError);
+            stats.configureFitToHalf(
+                FitToHalfStatisticsData::CMEDIAN,
+                FitToHalfStatisticsData::LE_CENTER
+            );
+            stats.getStatistic(v, LatticeStatsBase::MEAN, False);
+            m = *v.begin();
+            AlwaysAssert(near(m, -0.5), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::NPTS, False);
+            npts = (Int)*v.begin();
+            AlwaysAssert(npts == 1000, AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUM, False);
+            sum = *v.begin();
+            AlwaysAssert(near(sum, m*npts), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
+            AlwaysAssert(near(*v.begin(), 199999000001300.0), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MIN, False);
+            AlwaysAssert(near(*v.begin(), casacore::min(data)), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MAX, False);
+            AlwaysAssert(near(*v.begin(),2*m - casacore::min(data)), AipsError);
+            stats.getMinMaxPos(minPos, maxPos);
+            AlwaysAssert(minPos.size() == 1 && minPos[0] == 999, AipsError);
+            AlwaysAssert(maxPos.size() == 0, AipsError);
 
-			stats.configureFitToHalf(
-				FitToHalfStatisticsData::CMEDIAN,
-				FitToHalfStatisticsData::GE_CENTER
-			);
-			stats.getStatistic(v, LatticeStatsBase::MEAN, False);
-			m = *v.begin();
-			AlwaysAssert(near(m, -0.5), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::NPTS, False);
-			npts = (Int)*v.begin();
-			AlwaysAssert(npts == 1000, AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUM, False);
-			sum = *v.begin();
-			AlwaysAssert(near(sum, m*npts), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
-			AlwaysAssert(near(*v.begin(), 332833500.0), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MIN, False);
-			AlwaysAssert(near(*v.begin(), 2*m - casacore::max(data)), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(), casacore::max(data)), AipsError);
-			stats.getMinMaxPos(minPos, maxPos);
-			AlwaysAssert(minPos.size() == 0, AipsError);
-			AlwaysAssert(maxPos.size() == 1 && maxPos[0] == 998, AipsError);
+            stats.configureFitToHalf(
+                FitToHalfStatisticsData::CMEDIAN,
+                FitToHalfStatisticsData::GE_CENTER
+            );
+            stats.getStatistic(v, LatticeStatsBase::MEAN, False);
+            m = *v.begin();
+            AlwaysAssert(near(m, -0.5), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::NPTS, False);
+            npts = (Int)*v.begin();
+            AlwaysAssert(npts == 1000, AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUM, False);
+            sum = *v.begin();
+            AlwaysAssert(near(sum, m*npts), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
+            AlwaysAssert(near(*v.begin(), 332833500.0), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MIN, False);
+            AlwaysAssert(near(*v.begin(), 2*m - casacore::max(data)), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MAX, False);
+            AlwaysAssert(near(*v.begin(), casacore::max(data)), AipsError);
+            stats.getMinMaxPos(minPos, maxPos);
+            AlwaysAssert(minPos.size() == 0, AipsError);
+            AlwaysAssert(maxPos.size() == 1 && maxPos[0] == 998, AipsError);
 
-			stats.configureFitToHalf(
-				FitToHalfStatisticsData::CVALUE,
-				FitToHalfStatisticsData::LE_CENTER,
-				65
-			);
-			stats.getStatistic(v, LatticeStatsBase::MEAN, False);
-			m = *v.begin();
-			AlwaysAssert(m == 65, AipsError);
-			stats.getStatistic(v, LatticeStatsBase::NPTS, False);
-			npts = (Int)*v.begin();
-			AlwaysAssert(npts == 1066, AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUM, False);
-			sum = *v.begin();
-			AlwaysAssert(near(sum, m*npts), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
-			AlwaysAssert(near(*v.begin(), 200042675448460.0), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MIN, False);
-			AlwaysAssert(near(*v.begin(), min(data)), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(), 2*m - casacore::min(data)), AipsError);
-			stats.getMinMaxPos(minPos, maxPos);
-			AlwaysAssert(minPos.size() == 1 && minPos[0] == 999, AipsError);
-			AlwaysAssert(maxPos.size() == 0, AipsError);
+            stats.configureFitToHalf(
+                FitToHalfStatisticsData::CVALUE,
+                FitToHalfStatisticsData::LE_CENTER,
+                65
+            );
+            stats.getStatistic(v, LatticeStatsBase::MEAN, False);
+            m = *v.begin();
+            AlwaysAssert(m == 65, AipsError);
+            stats.getStatistic(v, LatticeStatsBase::NPTS, False);
+            npts = (Int)*v.begin();
+            AlwaysAssert(npts == 1066, AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUM, False);
+            sum = *v.begin();
+            AlwaysAssert(near(sum, m*npts), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
+            AlwaysAssert(near(*v.begin(), 200042675448460.0), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MIN, False);
+            AlwaysAssert(near(*v.begin(), min(data)), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MAX, False);
+            AlwaysAssert(near(*v.begin(), 2*m - casacore::min(data)), AipsError);
+            stats.getMinMaxPos(minPos, maxPos);
+            AlwaysAssert(minPos.size() == 1 && minPos[0] == 999, AipsError);
+            AlwaysAssert(maxPos.size() == 0, AipsError);
 
-			stats.configureFitToHalf(
-				FitToHalfStatisticsData::CVALUE,
-				FitToHalfStatisticsData::GE_CENTER,
-				65
-			);
-			stats.getStatistic(v, LatticeStatsBase::MEAN, False);
-			m = *v.begin();
-			AlwaysAssert(m == 65, AipsError);
-			stats.getStatistic(v, LatticeStatsBase::NPTS, False);
-			npts = (Int)*v.begin();
-			AlwaysAssert(npts == 934, AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUM, False);
-			sum = *v.begin();
-			AlwaysAssert(near(sum, m*npts), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
-			AlwaysAssert(near(*v.begin(), 275539340.0), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MIN, False);
-			AlwaysAssert(near(*v.begin(), 2*m - max(data)), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(), casacore::max(data)), AipsError);
-			stats.getMinMaxPos(minPos, maxPos);
-			AlwaysAssert(minPos.size() == 0, AipsError);
-			AlwaysAssert(maxPos.size() == 1 && maxPos[0] == 998, AipsError);
+            stats.configureFitToHalf(
+                FitToHalfStatisticsData::CVALUE,
+                FitToHalfStatisticsData::GE_CENTER,
+                65
+            );
+            stats.getStatistic(v, LatticeStatsBase::MEAN, False);
+            m = *v.begin();
+            AlwaysAssert(m == 65, AipsError);
+            stats.getStatistic(v, LatticeStatsBase::NPTS, False);
+            npts = (Int)*v.begin();
+            AlwaysAssert(npts == 934, AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUM, False);
+            sum = *v.begin();
+            AlwaysAssert(near(sum, m*npts), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
+            AlwaysAssert(near(*v.begin(), 275539340.0), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MIN, False);
+            AlwaysAssert(near(*v.begin(), 2*m - max(data)), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MAX, False);
+            AlwaysAssert(near(*v.begin(), casacore::max(data)), AipsError);
+            stats.getMinMaxPos(minPos, maxPos);
+            AlwaysAssert(minPos.size() == 0, AipsError);
+            AlwaysAssert(maxPos.size() == 1 && maxPos[0] == 998, AipsError);
 
-			// mask
-			Vector<Bool> mask(1000);
-			Vector<Bool>::iterator miter = mask.begin();
-			Vector<Bool>::iterator mend = mask.end();
-			count = 0;
-			while (miter != mend) {
-				*miter = count % 3 == 0;
-				++miter;
-				++count;
-			}
-			subLatt.setPixelMask(ArrayLattice<Bool>(mask), True);
-			stats = LatticeStatistics<Float>(subLatt);
-			stats.configureFitToHalf(
-				FitToHalfStatisticsData::CMEAN,
-				FitToHalfStatisticsData::LE_CENTER
-			);
-			stats.getStatistic(v, LatticeStatsBase::MEAN, False);
-			m = *v.begin();
-			AlwaysAssert(near(m, -167083.5), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::NPTS, False);
-			npts = (Int)*v.begin();
-			AlwaysAssert(npts == 198, AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUM, False);
-			sum = *v.begin();
-			AlwaysAssert(near(sum, m*npts), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
-			AlwaysAssert(near(*v.begin(), 42804555931071.0), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MIN, False);
-			AlwaysAssert(near(*v.begin(), -998001.0), AipsError);
-			stats.getStatistic(v, LatticeStatsBase::MAX, False);
-			AlwaysAssert(near(*v.begin(), 2*-167083.5 - -998001.0), AipsError);
-			stats.getMinMaxPos(minPos, maxPos);
-			AlwaysAssert(minPos.size() == 1 && minPos[0] == 999, AipsError);
-			AlwaysAssert(maxPos.size() == 0, AipsError);
+            // mask
+            Vector<Bool> mask(1000);
+            Vector<Bool>::iterator miter = mask.begin();
+            Vector<Bool>::iterator mend = mask.end();
+            count = 0;
+            while (miter != mend) {
+                *miter = count % 3 == 0;
+                ++miter;
+                ++count;
+            }
+            subLatt.setPixelMask(ArrayLattice<Bool>(mask), True);
+            stats = LatticeStatistics<Float>(subLatt);
+            stats.configureFitToHalf(
+                FitToHalfStatisticsData::CMEAN,
+                FitToHalfStatisticsData::LE_CENTER
+            );
+            stats.getStatistic(v, LatticeStatsBase::MEAN, False);
+            m = *v.begin();
+            AlwaysAssert(near(m, -167083.5), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::NPTS, False);
+            npts = (Int)*v.begin();
+            AlwaysAssert(npts == 198, AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUM, False);
+            sum = *v.begin();
+            AlwaysAssert(near(sum, m*npts), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::SUMSQ, False);
+            AlwaysAssert(near(*v.begin(), 42804555931071.0), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MIN, False);
+            AlwaysAssert(near(*v.begin(), -998001.0), AipsError);
+            stats.getStatistic(v, LatticeStatsBase::MAX, False);
+            AlwaysAssert(near(*v.begin(), 2*-167083.5 - -998001.0), AipsError);
+            stats.getMinMaxPos(minPos, maxPos);
+            AlwaysAssert(minPos.size() == 1 && minPos[0] == 999, AipsError);
+            AlwaysAssert(maxPos.size() == 0, AipsError);
 
-		}
-	}
-	catch (const AipsError& x) {
-		cerr << "aipserror: error " << x.getMesg() << endl;
-		return 1;
-	}
-	return 0;
+        }
+    }
+    catch (const AipsError& x) {
+        cerr << "aipserror: error " << x.getMesg() << endl;
+        return 1;
+    }
+    return 0;
 }
  
 void doitFloat (LogIO& os) 
