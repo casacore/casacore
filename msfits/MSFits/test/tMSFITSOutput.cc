@@ -53,12 +53,17 @@ int main() {
             ), AipsError
         );
         // this should fail since overwrite is False
-        AlwaysAssert(
-            ! MSFitsOutput::writeFitsFile(
+        Bool thrown = False;
+        try {
+            MSFitsOutput::writeFitsFile(
                 fitsFile, ms, "DATA", 0, 1, 1, False,
                 False, False, False, 1.0, False, 1, 0, False
-            ), AipsError
-        );
+            );
+        }
+        catch (const AipsError&) {
+            thrown = True;
+        }
+        AlwaysAssert(thrown, AipsError);
         // this should succeed, since overwrite is True
         AlwaysAssert(
             MSFitsOutput::writeFitsFile(

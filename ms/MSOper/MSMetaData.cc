@@ -43,7 +43,7 @@
 
 #include <utility>
 
-#define _ORIGIN "MSMetaData::" + String(__FUNCTION__) + ": "
+#define _ORIGIN "MSMetaData::" + String(__func__) + ": "
 
 namespace casacore {
 
@@ -4684,6 +4684,18 @@ std::set<Int> MSMetaData::getUniqueFieldIDs() const {
         }
     }
     return _uniqueFieldIDs;
+}
+
+std::set<uInt> MSMetaData::getUniqueSpwIDs() const {
+    vector<uInt> ddToSpw = getDataDescIDToSpwMap();
+    std::set<uInt> uDDs = getUniqueDataDescIDs();
+    std::set<uInt> uSpws;
+    std::set<uInt>::const_iterator iter = uDDs.begin();
+    std::set<uInt>::const_iterator end = uDDs.end();
+    for (; iter!=end; ++iter) {
+        uSpws.insert(ddToSpw[*iter]);
+    }
+    return uSpws;
 }
 
 Bool MSMetaData::_hasStateID(const Int stateID) const {
