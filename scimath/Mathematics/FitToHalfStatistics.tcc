@@ -41,15 +41,15 @@ const AccumType FitToHalfStatistics<CASA_STATP>::TWO = AccumType(2);
 // min > max indicates that these quantities have not be calculated
 CASA_STATD
 FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
-	FitToHalfStatisticsData::CENTER centerType,
-	FitToHalfStatisticsData::USE_DATA useData,
-	AccumType centerValue
+    FitToHalfStatisticsData::CENTER centerType,
+    FitToHalfStatisticsData::USE_DATA useData,
+    AccumType centerValue
 )
-	: ConstrainedRangeStatistics<CASA_STATP>(),
-	  _centerType(centerType), _useLower(useData == FitToHalfStatisticsData::LE_CENTER), _centerValue(centerValue),
-	  _statsData(initializeStatsData<AccumType>()), _doMedAbsDevMed(False), _rangeIsSet(False),
-	  _realMax(), _realMin() {
-	reset();
+    : ConstrainedRangeStatistics<CASA_STATP>(),
+      _centerType(centerType), _useLower(useData == FitToHalfStatisticsData::LE_CENTER), _centerValue(centerValue),
+      _statsData(initializeStatsData<AccumType>()), _doMedAbsDevMed(False), _rangeIsSet(False),
+      _realMax(), _realMin() {
+    reset();
 }
 
 CASA_STATD
@@ -58,7 +58,7 @@ FitToHalfStatistics<CASA_STATP>::~FitToHalfStatistics() {}
 CASA_STATD
 FitToHalfStatistics<CASA_STATP>&
 FitToHalfStatistics<CASA_STATP>::operator=(
-	const FitToHalfStatistics<CASA_STATP>& other
+    const FitToHalfStatistics<CASA_STATP>& other
 ) {
     if (this == &other) {
         return *this;
@@ -77,546 +77,546 @@ FitToHalfStatistics<CASA_STATP>::operator=(
 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedian(
-	CountedPtr<uInt64> , CountedPtr<AccumType> ,
-	CountedPtr<AccumType> , uInt , Bool , uInt64
+    CountedPtr<uInt64> , CountedPtr<AccumType> ,
+    CountedPtr<AccumType> , uInt , Bool , uInt64
 ) {
-	if (_getStatsData().median.null()) {
-		_getStatsData().median = new AccumType(_centerValue);
-	}
-	return *_getStatsData().median;
+    if (_getStatsData().median.null()) {
+        _getStatsData().median = new AccumType(_centerValue);
+    }
+    return *_getStatsData().median;
 }
 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedianAndQuantiles(
-	std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
-	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-	CountedPtr<AccumType> knownMax,
-	uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
+    std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
+    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
+    CountedPtr<AccumType> knownMax,
+    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
 ) {
-	// The median is trivial, we just need to compute the quantiles
-	quantileToValue = getQuantiles(
-		quantiles, knownNpts, knownMin, knownMax,
-		binningThreshholdSizeBytes, persistSortedArray, nBins
-	);
-	return getMedian();
+    // The median is trivial, we just need to compute the quantiles
+    quantileToValue = getQuantiles(
+        quantiles, knownNpts, knownMin, knownMax,
+        binningThreshholdSizeBytes, persistSortedArray, nBins
+    );
+    return getMedian();
 }
 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
-	CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-	CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-	Bool persistSortedArray, uInt64 nBins
+    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
+    CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
+    Bool persistSortedArray, uInt64 nBins
 ) {
-	if (_getStatsData().medAbsDevMed.null()) {
-		// The number of points to hand to the base class is the number of real data points,
-		// or exactly half of the total number of points
-		CountedPtr<uInt64> realNPts = knownNpts.null()
-			? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
-		CountedPtr<AccumType> realMin, realMax;
-		//_getRealMinMax(realMin, realMax, knownMin, knownMax);
-		_getStatsData().medAbsDevMed = new AccumType(
-			ConstrainedRangeStatistics<CASA_STATP>::getMedianAbsDevMed(
-				realNPts, knownMin, knownMax, binningThreshholdSizeBytes,
-				persistSortedArray, nBins
-			)
-		);
-	}
-	return *_getStatsData().medAbsDevMed;
+    if (_getStatsData().medAbsDevMed.null()) {
+        // The number of points to hand to the base class is the number of real data points,
+        // or exactly half of the total number of points
+        CountedPtr<uInt64> realNPts = knownNpts.null()
+            ? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
+        CountedPtr<AccumType> realMin, realMax;
+        //_getRealMinMax(realMin, realMax, knownMin, knownMax);
+        _getStatsData().medAbsDevMed = new AccumType(
+            ConstrainedRangeStatistics<CASA_STATP>::getMedianAbsDevMed(
+                realNPts, knownMin, knownMax, binningThreshholdSizeBytes,
+                persistSortedArray, nBins
+            )
+        );
+    }
+    return *_getStatsData().medAbsDevMed;
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_getRealMinMax(
-		CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
-	CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax
+        CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
+    CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax
 ) {
-	realMin = new AccumType(_centerValue);
-	realMax = new AccumType(_centerValue);
-	if (knownMin.null() || knownMax.null()) {
-		AccumType mymin, mymax;
-		getMinMax(mymin, mymax);
-		if (_useLower) {
-			realMin = new AccumType(mymin);
-		}
-		else {
-			realMax = new AccumType(mymax);
-		}
-	}
-	else {
-		if (_useLower) {
-			realMin = new AccumType(*knownMin);
-		}
-		else {
-			realMax = new AccumType(*knownMax);
-		}
-	}
+    realMin = new AccumType(_centerValue);
+    realMax = new AccumType(_centerValue);
+    if (knownMin.null() || knownMax.null()) {
+        AccumType mymin, mymax;
+        getMinMax(mymin, mymax);
+        if (_useLower) {
+            realMin = new AccumType(mymin);
+        }
+        else {
+            realMax = new AccumType(mymax);
+        }
+    }
+    else {
+        if (_useLower) {
+            realMin = new AccumType(*knownMin);
+        }
+        else {
+            realMax = new AccumType(*knownMax);
+        }
+    }
 }
 
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::getMinMax(
-	AccumType& mymin, AccumType& mymax
+    AccumType& mymin, AccumType& mymax
 ) {
-	if ( _getStatsData().min.null() || _getStatsData().max.null()) {
-		// This call returns the min and max of the real portion of the dataset
-		ConstrainedRangeStatistics<CASA_STATP>::getMinMax(mymin, mymax);
-		_realMin = new AccumType(mymin);
-		_realMax = new AccumType(mymax);
-		if (_useLower) {
-			mymax = TWO*_centerValue - mymin;
-		}
-		else {
-			mymin = TWO*_centerValue - mymax;
-		}
-		_getStatsData().min = new AccumType(mymin);
-		_getStatsData().max = new AccumType(mymax);
-	}
-	else {
-		mymin = *_getStatsData().min;
-		mymax = *_getStatsData().max;
-	}
+    if ( _getStatsData().min.null() || _getStatsData().max.null()) {
+        // This call returns the min and max of the real portion of the dataset
+        ConstrainedRangeStatistics<CASA_STATP>::getMinMax(mymin, mymax);
+        _realMin = new AccumType(mymin);
+        _realMax = new AccumType(mymax);
+        if (_useLower) {
+            mymax = TWO*_centerValue - mymin;
+        }
+        else {
+            mymin = TWO*_centerValue - mymax;
+        }
+        _getStatsData().min = new AccumType(mymin);
+        _getStatsData().max = new AccumType(mymax);
+    }
+    else {
+        mymin = *_getStatsData().min;
+        mymax = *_getStatsData().max;
+    }
 }
 
 CASA_STATD
 std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
-	const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts,
-	CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-	uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
+    const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts,
+    CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
+    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
 ) {
-	ThrowIf(
-		*fractions.begin() <= 0 || *fractions.rbegin() >= 1,
-		"Value of all quantiles must be between 0 and 1 (noninclusive)"
-	);
-	ThrowIf (
-		! knownNpts.null() && *knownNpts % 2 != 0,
-		"knownNpts must be even for this class"
-	);
-	// fractions that exist in the virtual part of the dataset are determined from the
-	// real fractions reflected about the center point.
-	std::set<Double> realPortionFractions;
-	std::set<Double>::const_iterator fiter = fractions.begin();
-	std::set<Double>::const_iterator fend = fractions.end();
-	// map the actual (full dataset) fractions to the real portion fractions
-	std::map<Double, Double> actualToReal;
-	Double freal = 0;
-	std::map<Double, AccumType> actual;
-	for ( ; fiter != fend; ++fiter) {
-		if (near(*fiter, 0.5)) {
-			if (_realMin.null() || _realMax.null()) {
-				AccumType mymin, mymax;
-				getMinMax(mymin, mymax);
-			}
-			actual[*fiter] = _useLower
-				? *_realMax
-				: TWO*_centerValue - *_realMin;
-			continue;
-		}
-		Bool isVirtualQ = (_useLower && *fiter > 0.5)
-			|| (! _useLower && *fiter < 0.5);
-		if (isVirtualQ) {
-			std::set<Double> actualF;
-			actualF.insert(*fiter);
-			uInt64 allNPts = knownNpts.null()
-				? getNPts() : *knownNpts;
-			std::map<Double, uInt64> actualFToI = StatisticsData::indicesFromFractions(
-				allNPts, actualF
-			);
-			uInt64 actualIdx = actualFToI[*fiter];
-			uInt64 realIdx = 0;
-			if (_useLower) {
-				realIdx = allNPts - (actualIdx + 1);
-			}
-			else {
-				realIdx = allNPts/2 - (actualIdx + 1);
-			}
-			if (_useLower && (realIdx == allNPts/2 - 1)) {
+    ThrowIf(
+        *fractions.begin() <= 0 || *fractions.rbegin() >= 1,
+        "Value of all quantiles must be between 0 and 1 (noninclusive)"
+    );
+    ThrowIf (
+        ! knownNpts.null() && *knownNpts % 2 != 0,
+        "knownNpts must be even for this class"
+    );
+    // fractions that exist in the virtual part of the dataset are determined from the
+    // real fractions reflected about the center point.
+    std::set<Double> realPortionFractions;
+    std::set<Double>::const_iterator fiter = fractions.begin();
+    std::set<Double>::const_iterator fend = fractions.end();
+    // map the actual (full dataset) fractions to the real portion fractions
+    std::map<Double, Double> actualToReal;
+    Double freal = 0;
+    std::map<Double, AccumType> actual;
+    for ( ; fiter != fend; ++fiter) {
+        if (near(*fiter, 0.5)) {
+            if (_realMin.null() || _realMax.null()) {
+                AccumType mymin, mymax;
+                getMinMax(mymin, mymax);
+            }
+            actual[*fiter] = _useLower
+                ? *_realMax
+                : TWO*_centerValue - *_realMin;
+            continue;
+        }
+        Bool isVirtualQ = (_useLower && *fiter > 0.5)
+            || (! _useLower && *fiter < 0.5);
+        if (isVirtualQ) {
+            std::set<Double> actualF;
+            actualF.insert(*fiter);
+            uInt64 allNPts = knownNpts.null()
+                ? getNPts() : *knownNpts;
+            std::map<Double, uInt64> actualFToI = StatisticsData::indicesFromFractions(
+                allNPts, actualF
+            );
+            uInt64 actualIdx = actualFToI[*fiter];
+            uInt64 realIdx = 0;
+            if (_useLower) {
+                realIdx = allNPts - (actualIdx + 1);
+            }
+            else {
+                realIdx = allNPts/2 - (actualIdx + 1);
+            }
+            if (_useLower && (realIdx == allNPts/2 - 1)) {
                 // the actual index is the reflection of the maximum
                 // value of the real portion of the dataset
-				if (_realMax.null()) {
-					AccumType mymin, mymax;
-					getMinMax(mymin, mymax);
-				}
-				actual[*fiter] = TWO*_centerValue - *_realMax;
-				continue;
-			}
-			else if (! _useLower && realIdx == 0) {
+                if (_realMax.null()) {
+                    AccumType mymin, mymax;
+                    getMinMax(mymin, mymax);
+                }
+                actual[*fiter] = TWO*_centerValue - *_realMax;
+                continue;
+            }
+            else if (! _useLower && realIdx == 0) {
                 // the actual index is the reflection of the minimum
                 // value of the real portion ofthe dataset
-				if (_realMin.null()) {
-					AccumType mymin, mymax;
-					getMinMax(mymin, mymax);
-				}
-				actual[*fiter] = TWO*_centerValue - *_realMin;
-				continue;
-			}
-			else {
-				freal = Double(realIdx + 1)/Double(allNPts/2);
-				if (freal == 1) {
-					if (_realMin.null() || _realMax.null()) {
-						AccumType mymin, mymax;
-						getMinMax(mymin, mymax);
-					}
-					actual[*fiter] = *_getStatsData().min;
-					continue;
-				}
-			}
-		}
-		else {
-			// quantile is in the real part of the dataset
-			freal = _useLower ? 2*(*fiter) : 2*(*fiter - 0.5);
-		}
-		realPortionFractions.insert(freal);
-		actualToReal[*fiter] = freal;
-	}
-	if (realPortionFractions.empty()) {
-		return actual;
-	}
-	// if given, knownNpts should be the number of points in the full dataset, or twice
-	// the number in the real portion of the dataset. Points in only the real portion
-	// is what scanning will find, so we need to cut the number of points in half. This
-	// is also true if we have to compute using getNPts(), so we need our own value
-	// to pass in to the call of the base class' method.
-	CountedPtr<uInt64> realNPts = knownNpts.null()
-		? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
-	CountedPtr<AccumType> realMin, realMax;
-	_getRealMinMax(realMin, realMax, knownMin, knownMax);
-	std::map<Double, AccumType> realPart = ConstrainedRangeStatistics<CASA_STATP>::getQuantiles(
-		realPortionFractions, realNPts, realMin, realMax,
-		binningThreshholdSizeBytes, persistSortedArray, nBins
-	);
-	fiter = fractions.begin();
-	while (fiter != fend) {
-		if (actual.find(*fiter) == actual.end()) {
-			Double realF = actualToReal[*fiter];
-			AccumType actualValue = realPart[realF];
-			if (
-				(_useLower && *fiter > 0.5)
-				|| (! _useLower && *fiter < 0.5)
-			) {
-				// quantile in virtual part of the data set, reflect corresponding
-				// real value to get actual value
-				actualValue = TWO*_centerValue - actualValue;
-			}
-			actual[*fiter] = actualValue;
-		}
-		++fiter;
-	}
-	return actual;
+                if (_realMin.null()) {
+                    AccumType mymin, mymax;
+                    getMinMax(mymin, mymax);
+                }
+                actual[*fiter] = TWO*_centerValue - *_realMin;
+                continue;
+            }
+            else {
+                freal = Double(realIdx + 1)/Double(allNPts/2);
+                if (freal == 1) {
+                    if (_realMin.null() || _realMax.null()) {
+                        AccumType mymin, mymax;
+                        getMinMax(mymin, mymax);
+                    }
+                    actual[*fiter] = *_getStatsData().min;
+                    continue;
+                }
+            }
+        }
+        else {
+            // quantile is in the real part of the dataset
+            freal = _useLower ? 2*(*fiter) : 2*(*fiter - 0.5);
+        }
+        realPortionFractions.insert(freal);
+        actualToReal[*fiter] = freal;
+    }
+    if (realPortionFractions.empty()) {
+        return actual;
+    }
+    // if given, knownNpts should be the number of points in the full dataset, or twice
+    // the number in the real portion of the dataset. Points in only the real portion
+    // is what scanning will find, so we need to cut the number of points in half. This
+    // is also true if we have to compute using getNPts(), so we need our own value
+    // to pass in to the call of the base class' method.
+    CountedPtr<uInt64> realNPts = knownNpts.null()
+        ? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
+    CountedPtr<AccumType> realMin, realMax;
+    _getRealMinMax(realMin, realMax, knownMin, knownMax);
+    std::map<Double, AccumType> realPart = ConstrainedRangeStatistics<CASA_STATP>::getQuantiles(
+        realPortionFractions, realNPts, realMin, realMax,
+        binningThreshholdSizeBytes, persistSortedArray, nBins
+    );
+    fiter = fractions.begin();
+    while (fiter != fend) {
+        if (actual.find(*fiter) == actual.end()) {
+            Double realF = actualToReal[*fiter];
+            AccumType actualValue = realPart[realF];
+            if (
+                (_useLower && *fiter > 0.5)
+                || (! _useLower && *fiter < 0.5)
+            ) {
+                // quantile in virtual part of the data set, reflect corresponding
+                // real value to get actual value
+                actualValue = TWO*_centerValue - actualValue;
+            }
+            actual[*fiter] = actualValue;
+        }
+        ++fiter;
+    }
+    return actual;
 }
 
 CASA_STATD
 uInt64 FitToHalfStatistics<CASA_STATP>::getNPts() {
-	if (_getStatsData().npts == 0) {
-		// guard against subsequent calls multiplying by two
-		_getStatsData().npts = 2*ConstrainedRangeStatistics<CASA_STATP>::getNPts();
-	}
-	return (uInt64)_getStatsData().npts;
+    if (_getStatsData().npts == 0) {
+        // guard against subsequent calls multiplying by two
+        _getStatsData().npts = 2*ConstrainedRangeStatistics<CASA_STATP>::getNPts();
+    }
+    return (uInt64)_getStatsData().npts;
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::reset() {
-	_clearData();
+    _clearData();
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(
-	Bool c
+    Bool c
 ) {
-	ThrowIf(
-		c, "FitToHalfStatistics does not support calculating statistics "
-			"incrementally as data sets are added"
-	);
+    ThrowIf(
+        c, "FitToHalfStatistics does not support calculating statistics "
+            "incrementally as data sets are added"
+    );
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_clearData() {
-	_doMedAbsDevMed = False;
-	StatsData<AccumType> oldStats = copy(_statsData);
-	_statsData = initializeStatsData<AccumType>();
-	_statsData.mean = oldStats.mean;
-	_statsData.median = oldStats.median.null() ? NULL : new AccumType(*oldStats.median);
-	ConstrainedRangeStatistics<CASA_STATP>::_clearData();
+    _doMedAbsDevMed = False;
+    StatsData<AccumType> oldStats = copy(_statsData);
+    _statsData = initializeStatsData<AccumType>();
+    _statsData.mean = oldStats.mean;
+    _statsData.median = oldStats.median.null() ? NULL : new AccumType(*oldStats.median);
+    ConstrainedRangeStatistics<CASA_STATP>::_clearData();
 
 }
 
 
 CASA_STATD
 StatsData<AccumType> FitToHalfStatistics<CASA_STATP>::_getStatistics() {
-	ConstrainedRangeStatistics<CASA_STATP>::_getStatistics();
-	_getStatsData().sum = _getStatsData().mean * _getStatsData().sumweights;
-	return copy(_getStatsData());
+    ConstrainedRangeStatistics<CASA_STATP>::_getStatistics();
+    _getStatsData().sum = _getStatsData().mean * _getStatsData().sumweights;
+    return copy(_getStatsData());
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_setRange() {
-	if (_rangeIsSet) {
-		return;
-	}
-	//this->_setRangeIsBeingSet(True);
-	ClassicalStatistics<CASA_STATP> cs(*this);
-	if (_centerType == FitToHalfStatisticsData::CMEAN || _centerType == FitToHalfStatisticsData::CMEDIAN) {
-		_centerValue = _centerType == FitToHalfStatisticsData::CMEAN
-			? cs.getStatistic(StatisticsData::MEAN)
-			: cs.getMedian();
-	}
-	_getStatsData().mean = _centerValue;
-	_getStatsData().median = new AccumType(_centerValue);
-	AccumType mymin, mymax;
-	cs.getMinMax(mymin, mymax);
-	CountedPtr<std::pair<AccumType, AccumType> > range = _useLower
-		? new std::pair<AccumType, AccumType>(mymin, _centerValue)
-		: new std::pair<AccumType, AccumType>(_centerValue, mymax);
-	ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
-	_rangeIsSet = True;
+    if (_rangeIsSet) {
+        return;
+    }
+    //this->_setRangeIsBeingSet(True);
+    ClassicalStatistics<CASA_STATP> cs(*this);
+    if (_centerType == FitToHalfStatisticsData::CMEAN || _centerType == FitToHalfStatisticsData::CMEDIAN) {
+        _centerValue = _centerType == FitToHalfStatisticsData::CMEAN
+            ? cs.getStatistic(StatisticsData::MEAN)
+            : cs.getMedian();
+    }
+    _getStatsData().mean = _centerValue;
+    _getStatsData().median = new AccumType(_centerValue);
+    AccumType mymin, mymax;
+    cs.getMinMax(mymin, mymax);
+    CountedPtr<std::pair<AccumType, AccumType> > range = _useLower
+        ? new std::pair<AccumType, AccumType>(mymin, _centerValue)
+        : new std::pair<AccumType, AccumType>(_centerValue, mymax);
+    ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
+    _rangeIsSet = True;
 }
 
 // use a define to ensure code is compiled inline
 #define _unweightedStatsCodeFH \
-	if (this->_isInRange(*datum)) { \
-		StatisticsUtilities<AccumType>::accumulateSym( \
-			_statsData.npts, _statsData.nvariance, _statsData.sumsq, mymin, mymax, minpos, \
-			maxpos, *datum, count, _centerValue \
-		); \
-		ngood += 2; \
-	}
+    if (this->_isInRange(*datum)) { \
+        StatisticsUtilities<AccumType>::accumulateSym( \
+            _statsData.npts, _statsData.nvariance, _statsData.sumsq, mymin, mymax, minpos, \
+            maxpos, *datum, count, _centerValue \
+        ); \
+        ngood += 2; \
+    }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-	uInt64& ngood, AccumType& mymin, AccumType& mymax,
-	Int64& minpos, Int64& maxpos,
-	const DataIterator& dataBegin, Int64 nr, uInt dataStride
+    uInt64& ngood, AccumType& mymin, AccumType& mymax,
+    Int64& minpos, Int64& maxpos,
+    const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) {
-	DataIterator datum = dataBegin;
-	Int64 count = 0;
-	Bool unityStride = dataStride == 1;
-	while (count < nr) {
-		_unweightedStatsCodeFH
-		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-			datum, count, unityStride, dataStride
-		);
-	}
+    DataIterator datum = dataBegin;
+    Int64 count = 0;
+    Bool unityStride = dataStride == 1;
+    while (count < nr) {
+        _unweightedStatsCodeFH
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, unityStride, dataStride
+        );
+    }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-	uInt64& ngood, AccumType& mymin, AccumType& mymax,
-	Int64& minpos, Int64& maxpos,
-	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-	const DataRanges& ranges, Bool isInclude
+    uInt64& ngood, AccumType& mymin, AccumType& mymax,
+    Int64& minpos, Int64& maxpos,
+    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataRanges& ranges, Bool isInclude
 ) {
-	DataIterator datum = dataBegin;
-	Int64 count = 0;
-	Bool unityStride = dataStride == 1;
-	typename DataRanges::const_iterator beginRange = ranges.begin();
-	typename DataRanges::const_iterator endRange = ranges.end();
-	while (count < nr) {
-		if (
-			StatisticsUtilities<AccumType>::includeDatum(
-				*datum, beginRange, endRange, isInclude
-			)
-		) {
-			_unweightedStatsCodeFH
-		}
-		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-			datum, count, unityStride, dataStride
-		);
-	}
+    DataIterator datum = dataBegin;
+    Int64 count = 0;
+    Bool unityStride = dataStride == 1;
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (count < nr) {
+        if (
+            StatisticsUtilities<AccumType>::includeDatum(
+                *datum, beginRange, endRange, isInclude
+            )
+        ) {
+            _unweightedStatsCodeFH
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, unityStride, dataStride
+        );
+    }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-	uInt64& ngood, AccumType& mymin, AccumType& mymax,
-	Int64& minpos, Int64& maxpos,
-	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-	const MaskIterator& maskBegin, uInt maskStride
+    uInt64& ngood, AccumType& mymin, AccumType& mymax,
+    Int64& minpos, Int64& maxpos,
+    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const MaskIterator& maskBegin, uInt maskStride
 ) {
-	DataIterator datum = dataBegin;
-	MaskIterator mask = maskBegin;
-	Int64 count = 0;
-	Bool unityStride = dataStride == 1 && maskStride == 1;
-	while (count < nr) {
-		if (*mask) {
-			_unweightedStatsCodeFH
-		}
-		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-			datum, count, mask, unityStride, dataStride, maskStride
-		);
-	}
+    DataIterator datum = dataBegin;
+    MaskIterator mask = maskBegin;
+    Int64 count = 0;
+    Bool unityStride = dataStride == 1 && maskStride == 1;
+    while (count < nr) {
+        if (*mask) {
+            _unweightedStatsCodeFH
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, mask, unityStride, dataStride, maskStride
+        );
+    }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-	uInt64& ngood, AccumType& mymin, AccumType& mymax,
-	Int64& minpos, Int64& maxpos,
-	const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-	const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-	Bool isInclude
+    uInt64& ngood, AccumType& mymin, AccumType& mymax,
+    Int64& minpos, Int64& maxpos,
+    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
+    Bool isInclude
 ) {
-	DataIterator datum = dataBegin;
-	MaskIterator mask = maskBegin;
-	Int64 count = 0;
-	Bool unityStride = dataStride == 1 && maskStride == 1;
-	typename DataRanges::const_iterator beginRange = ranges.begin();
-	typename DataRanges::const_iterator endRange = ranges.end();
-	while (count < nr) {
-		if (
-			*mask && StatisticsUtilities<AccumType>::includeDatum(
-				*datum, beginRange, endRange, isInclude
-			)
-		) {
-			_unweightedStatsCodeFH
-		}
-		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-			datum, count, mask, unityStride, dataStride, maskStride
-		);
-	}
+    DataIterator datum = dataBegin;
+    MaskIterator mask = maskBegin;
+    Int64 count = 0;
+    Bool unityStride = dataStride == 1 && maskStride == 1;
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (count < nr) {
+        if (
+            *mask && StatisticsUtilities<AccumType>::includeDatum(
+                *datum, beginRange, endRange, isInclude
+            )
+        ) {
+            _unweightedStatsCodeFH
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, mask, unityStride, dataStride, maskStride
+        );
+    }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_updateMaxMin(
-	AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride,
-	const Int64& currentDataset
+    AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride,
+    const Int64& currentDataset
 ) {
-	StatsDataProvider<CASA_STATP> *dataProvider
-		= this->_getDataProvider();
-	if (maxpos >= 0) {
-		_realMax = new AccumType(mymax);
-		if (! _useLower) {
-			_getStatsData().maxpos.first = currentDataset;
-			_getStatsData().maxpos.second = maxpos * dataStride;
-			_getStatsData().minpos.first = -1;
-			_getStatsData().minpos.second = -1;
-			if (dataProvider) {
-				dataProvider->updateMaxPos(_getStatsData().maxpos);
-			}
-			_getStatsData().max = new AccumType(mymax);
-			_getStatsData().min = new AccumType(TWO*_centerValue - mymax);
-		}
-	}
-	if (minpos >= 0) {
-		_realMin = new AccumType(mymin);
-		if (_useLower) {
-			_getStatsData().minpos.first = currentDataset;
-			_getStatsData().minpos.second = minpos * dataStride;
-			_getStatsData().maxpos.first = -1;
-			_getStatsData().maxpos.second = -1;
-			if (dataProvider) {
-				dataProvider->updateMinPos(_getStatsData().minpos);
-			}
-			_getStatsData().min = new AccumType(mymin);
-			_getStatsData().max = new AccumType(TWO*_centerValue - mymin);
-		}
-	}
+    StatsDataProvider<CASA_STATP> *dataProvider
+        = this->_getDataProvider();
+    if (maxpos >= 0) {
+        _realMax = new AccumType(mymax);
+        if (! _useLower) {
+            _getStatsData().maxpos.first = currentDataset;
+            _getStatsData().maxpos.second = maxpos * dataStride;
+            _getStatsData().minpos.first = -1;
+            _getStatsData().minpos.second = -1;
+            if (dataProvider) {
+                dataProvider->updateMaxPos(_getStatsData().maxpos);
+            }
+            _getStatsData().max = new AccumType(mymax);
+            _getStatsData().min = new AccumType(TWO*_centerValue - mymax);
+        }
+    }
+    if (minpos >= 0) {
+        _realMin = new AccumType(mymin);
+        if (_useLower) {
+            _getStatsData().minpos.first = currentDataset;
+            _getStatsData().minpos.second = minpos * dataStride;
+            _getStatsData().maxpos.first = -1;
+            _getStatsData().maxpos.second = -1;
+            if (dataProvider) {
+                dataProvider->updateMinPos(_getStatsData().minpos);
+            }
+            _getStatsData().min = new AccumType(mymin);
+            _getStatsData().max = new AccumType(TWO*_centerValue - mymin);
+        }
+    }
 }
 
 // use #define to ensure code is compiled inline
 #define _weightedStatsCodeFH \
-	if (this->_isInRange(*datum)) { \
-		StatisticsUtilities<AccumType>::waccumulateSym( \
-			_getStatsData().npts, _getStatsData().sumweights, _getStatsData().nvariance, \
-			_getStatsData().sumsq, mymin, mymax, minpos, maxpos, *datum, \
-			*weight, count, _centerValue \
-		); \
-	}
+    if (this->_isInRange(*datum)) { \
+        StatisticsUtilities<AccumType>::waccumulateSym( \
+            _getStatsData().npts, _getStatsData().sumweights, _getStatsData().nvariance, \
+            _getStatsData().sumsq, mymin, mymax, minpos, maxpos, *datum, \
+            *weight, count, _centerValue \
+        ); \
+    }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
-	AccumType& mymin, AccumType& mymax,
-	Int64& minpos, Int64& maxpos,
-	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-	Int64 nr, uInt dataStride
+    AccumType& mymin, AccumType& mymax,
+    Int64& minpos, Int64& maxpos,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    Int64 nr, uInt dataStride
 ) {
-	DataIterator datum = dataBegin;
-	WeightsIterator weight = weightsBegin;
-	Int64 count = 0;
-	Bool unityStride = dataStride == 1;
-	while (count < nr) {
-		if (*weight > 0) {
-			_weightedStatsCodeFH
-		}
-		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-			datum, count, weight, unityStride, dataStride
-		);
-	}
+    DataIterator datum = dataBegin;
+    WeightsIterator weight = weightsBegin;
+    Int64 count = 0;
+    Bool unityStride = dataStride == 1;
+    while (count < nr) {
+        if (*weight > 0) {
+            _weightedStatsCodeFH
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, weight, unityStride, dataStride
+        );
+    }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
-	AccumType& mymin, AccumType& mymax,
-	Int64& minpos, Int64& maxpos,
-	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-	Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    AccumType& mymin, AccumType& mymax,
+    Int64& minpos, Int64& maxpos,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) {
-	DataIterator datum = dataBegin;
-	WeightsIterator weight = weightsBegin;
-	Int64 count = 0;
-	Bool unityStride = dataStride == 1;
-	typename DataRanges::const_iterator beginRange = ranges.begin();
-	typename DataRanges::const_iterator endRange = ranges.end();
-	while (count < nr) {
-		if (
-			*weight > 0
-			&& StatisticsUtilities<AccumType>::includeDatum(
-				*datum, beginRange, endRange, isInclude
-			)
-		) {
-			_weightedStatsCodeFH
-		}
-		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-			datum, count, weight, unityStride, dataStride
-		);
-	}
+    DataIterator datum = dataBegin;
+    WeightsIterator weight = weightsBegin;
+    Int64 count = 0;
+    Bool unityStride = dataStride == 1;
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (count < nr) {
+        if (
+            *weight > 0
+            && StatisticsUtilities<AccumType>::includeDatum(
+                *datum, beginRange, endRange, isInclude
+            )
+        ) {
+            _weightedStatsCodeFH
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, weight, unityStride, dataStride
+        );
+    }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
-	AccumType& mymin, AccumType& mymax,
-	Int64& minpos, Int64& maxpos,
-	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-	const DataRanges& ranges, Bool isInclude
+    AccumType& mymin, AccumType& mymax,
+    Int64& minpos, Int64& maxpos,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    const DataRanges& ranges, Bool isInclude
 ) {
-	DataIterator datum = dataBegin;
-	WeightsIterator weight = weightsBegin;
-	MaskIterator mask = maskBegin;
-	Int64 count = 0;
-	Bool unityStride = dataStride == 1 && maskStride == 1;
-	typename DataRanges::const_iterator beginRange = ranges.begin();
-	typename DataRanges::const_iterator endRange = ranges.end();
-	while (count < nr) {
-		if (
-			*mask && *weight > 0
-			&& StatisticsUtilities<AccumType>::includeDatum(
-				*datum, beginRange, endRange, isInclude
-			)
-		) {
-			_weightedStatsCodeFH
-		}
-		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-			datum, count, weight, mask, unityStride, dataStride, maskStride
-		);
-	}
+    DataIterator datum = dataBegin;
+    WeightsIterator weight = weightsBegin;
+    MaskIterator mask = maskBegin;
+    Int64 count = 0;
+    Bool unityStride = dataStride == 1 && maskStride == 1;
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (count < nr) {
+        if (
+            *mask && *weight > 0
+            && StatisticsUtilities<AccumType>::includeDatum(
+                *datum, beginRange, endRange, isInclude
+            )
+        ) {
+            _weightedStatsCodeFH
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, weight, mask, unityStride, dataStride, maskStride
+        );
+    }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
-	AccumType& mymin, AccumType& mymax,
-	Int64& minpos, Int64& maxpos,
-	const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-	Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    AccumType& mymin, AccumType& mymax,
+    Int64& minpos, Int64& maxpos,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) {
-	DataIterator datum = dataBegin;
-	WeightsIterator weight = weightsBegin;
-	MaskIterator mask = maskBegin;
-	Int64 count = 0;
-	Bool unityStride = dataStride == 1 && maskStride == 1;
-	while (count < nr) {
-		if (*mask && *weight > 0) {
-			_weightedStatsCodeFH
-		}
-		StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-			datum, count, weight, mask, unityStride, dataStride, maskStride
-		);
-	}
+    DataIterator datum = dataBegin;
+    WeightsIterator weight = weightsBegin;
+    MaskIterator mask = maskBegin;
+    Int64 count = 0;
+    Bool unityStride = dataStride == 1 && maskStride == 1;
+    while (count < nr) {
+        if (*mask && *weight > 0) {
+            _weightedStatsCodeFH
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, weight, mask, unityStride, dataStride, maskStride
+        );
+    }
 }
 
 }

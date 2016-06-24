@@ -45,206 +45,206 @@ namespace casacore {
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
 class FitToHalfStatistics
-	: public ConstrainedRangeStatistics<CASA_STATP> {
+    : public ConstrainedRangeStatistics<CASA_STATP> {
 public:
 
-	const static AccumType TWO;
+    const static AccumType TWO;
 
-	// <src>value</src> is only used if <src>center</src>=CVALUE
-	FitToHalfStatistics(
-		FitToHalfStatisticsData::CENTER center=FitToHalfStatisticsData::CMEAN,
-		FitToHalfStatisticsData::USE_DATA useData=FitToHalfStatisticsData::LE_CENTER,
-		AccumType value=0
-	);
+    // <src>value</src> is only used if <src>center</src>=CVALUE
+    FitToHalfStatistics(
+        FitToHalfStatisticsData::CENTER center=FitToHalfStatisticsData::CMEAN,
+        FitToHalfStatisticsData::USE_DATA useData=FitToHalfStatisticsData::LE_CENTER,
+        AccumType value=0
+    );
 
-	virtual ~FitToHalfStatistics();
+    virtual ~FitToHalfStatistics();
 
-	// copy semantics
-	FitToHalfStatistics<CASA_STATP>& operator=(
-		const FitToHalfStatistics<CASA_STATP>& other
-	);
+    // copy semantics
+    FitToHalfStatistics<CASA_STATP>& operator=(
+        const FitToHalfStatistics<CASA_STATP>& other
+    );
 
-	// get the algorithm that this object uses for computing stats
-	virtual StatisticsData::ALGORITHM algorithm() const {
-		return StatisticsData::FITTOHALF;
-	};
+    // get the algorithm that this object uses for computing stats
+    virtual StatisticsData::ALGORITHM algorithm() const {
+        return StatisticsData::FITTOHALF;
+    };
 
-	// The median is just the center value, so none of the parameters to this method are used.
-	AccumType getMedian(
-		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
-		CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
-		Bool persistSortedArray=False, uInt64 nBins=10000
-	);
+    // The median is just the center value, so none of the parameters to this method are used.
+    AccumType getMedian(
+        CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
+        CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
+        Bool persistSortedArray=False, uInt64 nBins=10000
+    );
 
-	// <group>
-	// In the following group of methods, if the size of the composite dataset
-	// is smaller than
-	// <src>binningThreshholdSizeBytes</src>, the composite dataset
-	// will be (perhaps partially) sorted and persisted in memory during the
-	// call. In that case, and if <src>persistSortedArray</src> is True, this
-	// sorted array will remain in memory after the call and will be used on
-	// subsequent calls of this method when <src>binningThreshholdSizeBytes</src>
-	// is greater than the size of the composite dataset. If
-	// <src>persistSortedArray</src> is False, the sorted array will not be
-	// stored after this call completes and so any subsequent calls for which the
-	// dataset size is less than <src>binningThreshholdSizeBytes</src>, the
-	// dataset will be sorted from scratch. Values which are not included due to
-	// non-unity strides, are not included in any specified ranges, are masked,
-	// or have associated weights of zero are not considered as dataset members
-	// for quantile computations.
-	// If one has a priori information regarding
-	// the number of points (npts) and/or the minimum and maximum values of the data
-	// set, these can be supplied to improve performance. Note however, that if these
-	// values are not correct, the resulting median
-	// and/or quantile values will also not be correct (although see the following notes regarding
-	// max/min). Note that if this object has already had getStatistics()
-	// called, and the min and max were calculated, there is no need to pass these values in
-	// as they have been stored internally and used (although passing them in shouldn't hurt
-	// anything). If provided, npts, the number of points falling in the specified ranges which are
-	// not masked and have weights > 0, should be exactly correct. <src>min</src> can be less than
-	// the true minimum, and <src>max</src> can be greater than the True maximum, but for best
-	// performance, these should be as close to the actual min and max as possible.
+    // <group>
+    // In the following group of methods, if the size of the composite dataset
+    // is smaller than
+    // <src>binningThreshholdSizeBytes</src>, the composite dataset
+    // will be (perhaps partially) sorted and persisted in memory during the
+    // call. In that case, and if <src>persistSortedArray</src> is True, this
+    // sorted array will remain in memory after the call and will be used on
+    // subsequent calls of this method when <src>binningThreshholdSizeBytes</src>
+    // is greater than the size of the composite dataset. If
+    // <src>persistSortedArray</src> is False, the sorted array will not be
+    // stored after this call completes and so any subsequent calls for which the
+    // dataset size is less than <src>binningThreshholdSizeBytes</src>, the
+    // dataset will be sorted from scratch. Values which are not included due to
+    // non-unity strides, are not included in any specified ranges, are masked,
+    // or have associated weights of zero are not considered as dataset members
+    // for quantile computations.
+    // If one has a priori information regarding
+    // the number of points (npts) and/or the minimum and maximum values of the data
+    // set, these can be supplied to improve performance. Note however, that if these
+    // values are not correct, the resulting median
+    // and/or quantile values will also not be correct (although see the following notes regarding
+    // max/min). Note that if this object has already had getStatistics()
+    // called, and the min and max were calculated, there is no need to pass these values in
+    // as they have been stored internally and used (although passing them in shouldn't hurt
+    // anything). If provided, npts, the number of points falling in the specified ranges which are
+    // not masked and have weights > 0, should be exactly correct. <src>min</src> can be less than
+    // the true minimum, and <src>max</src> can be greater than the True maximum, but for best
+    // performance, these should be as close to the actual min and max as possible.
 
-	AccumType getMedianAndQuantiles(
-		std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
-		CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
-		CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-		uInt64 nBins=10000
-	);
+    AccumType getMedianAndQuantiles(
+        std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
+        CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
+        CountedPtr<AccumType> knownMax=NULL,
+        uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+        uInt64 nBins=10000
+    );
 
-	// get the median of the absolute deviation about the median of the data.
-	AccumType getMedianAbsDevMed(
-		CountedPtr<uInt64> knownNpts=NULL,
-		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-		uInt64 nBins=10000
-	);
+    // get the median of the absolute deviation about the median of the data.
+    AccumType getMedianAbsDevMed(
+        CountedPtr<uInt64> knownNpts=NULL,
+        CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
+        uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+        uInt64 nBins=10000
+    );
 
-	// Get the specified quantiles. <src>fractions</src> must be between 0 and 1,
-	// noninclusive.
-	std::map<Double, AccumType> getQuantiles(
-		const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts=NULL,
-		CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
-		uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-		uInt64 nBins=10000
-	);
-	// </group>
+    // Get the specified quantiles. <src>fractions</src> must be between 0 and 1,
+    // noninclusive.
+    std::map<Double, AccumType> getQuantiles(
+        const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts=NULL,
+        CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
+        uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
+        uInt64 nBins=10000
+    );
+    // </group>
 
-	// scan the dataset(s) that have been added, and find the min and max.
-	// This method may be called even if setStatsToCaclulate has been called and
-	// MAX and MIN has been excluded.
-	virtual void getMinMax(AccumType& mymin, AccumType& mymax);
+    // scan the dataset(s) that have been added, and find the min and max.
+    // This method may be called even if setStatsToCaclulate has been called and
+    // MAX and MIN has been excluded.
+    virtual void getMinMax(AccumType& mymin, AccumType& mymax);
 
-	// scan the dataset(s) that have been added, and find the number of good points.
-	// This method may be called even if setStatsToCaclulate has been called and
-	// NPTS has been excluded. If setCalculateAsAdded(True) has previously been
-	// called after this object has been (re)initialized, an exception will be thrown.
-	uInt64 getNPts();
+    // scan the dataset(s) that have been added, and find the number of good points.
+    // This method may be called even if setStatsToCaclulate has been called and
+    // NPTS has been excluded. If setCalculateAsAdded(True) has previously been
+    // called after this object has been (re)initialized, an exception will be thrown.
+    uInt64 getNPts();
 
-	// reset object to initial state. Clears all private fields including data,
-	// accumulators, global range. It does not affect the fence factor (_f), which was
-	// set at object construction.
-	virtual void reset();
+    // reset object to initial state. Clears all private fields including data,
+    // accumulators, global range. It does not affect the fence factor (_f), which was
+    // set at object construction.
+    virtual void reset();
 
-	// This class does not allow statistics to be calculated as datasets are added, so
-	// an exception will be thrown if <src>c</src> is True.
-	void setCalculateAsAdded(Bool c);
+    // This class does not allow statistics to be calculated as datasets are added, so
+    // an exception will be thrown if <src>c</src> is True.
+    void setCalculateAsAdded(Bool c);
 
 protected:
 
-	virtual void _clearData();
+    virtual void _clearData();
 
-	StatsData<AccumType> _getStatistics();
+    StatsData<AccumType> _getStatistics();
 
-	inline StatsData<AccumType>& _getStatsData() { return _statsData; }
+    inline StatsData<AccumType>& _getStatsData() { return _statsData; }
 
-	inline const StatsData<AccumType>& _getStatsData() const { return _statsData; }
+    inline const StatsData<AccumType>& _getStatsData() const { return _statsData; }
 
-	// <group>
-	// no weights, no mask, no ranges
-	void _unweightedStats(
-		uInt64& ngood, AccumType& mymin, AccumType& mymax,
-		Int64& minpos, Int64& maxpos,
-		const DataIterator& dataBegin, Int64 nr, uInt dataStride
-	);
+    // <group>
+    // no weights, no mask, no ranges
+    void _unweightedStats(
+        uInt64& ngood, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride
+    );
 
-	// no weights, no mask
-	void _unweightedStats(
-		uInt64& ngood, AccumType& mymin, AccumType& mymax,
-		Int64& minpos, Int64& maxpos,
-		const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-		const DataRanges& ranges, Bool isInclude
-	);
+    // no weights, no mask
+    void _unweightedStats(
+        uInt64& ngood, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataRanges& ranges, Bool isInclude
+    );
 
-	void _unweightedStats(
-		uInt64& ngood, AccumType& mymin, AccumType& mymax,
-		Int64& minpos, Int64& maxpos,
-		const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-		const MaskIterator& maskBegin, uInt maskStride
-	);
+    void _unweightedStats(
+        uInt64& ngood, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const MaskIterator& maskBegin, uInt maskStride
+    );
 
-	void _unweightedStats(
-		uInt64& ngood, AccumType& mymin, AccumType& mymax,
-		Int64& minpos, Int64& maxpos,
-		const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-		const MaskIterator& maskBegin, uInt maskStride,
-		const DataRanges& ranges, Bool isInclude
-	);
-	// </group>
+    void _unweightedStats(
+        uInt64& ngood, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const MaskIterator& maskBegin, uInt maskStride,
+        const DataRanges& ranges, Bool isInclude
+    );
+    // </group>
 
-	virtual void _updateMaxMin(
-		AccumType mymin, AccumType mymax, Int64 minpos,
-		Int64 maxpos, uInt dataStride, const Int64& currentDataset
-	);
+    virtual void _updateMaxMin(
+        AccumType mymin, AccumType mymax, Int64 minpos,
+        Int64 maxpos, uInt dataStride, const Int64& currentDataset
+    );
 
-	// <group>
-	// has weights, but no mask, no ranges
-	void _weightedStats(
-		AccumType& mymin, AccumType& mymax,
-		Int64& minpos, Int64& maxpos,
-		const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-		Int64 nr, uInt dataStride
-	);
+    // <group>
+    // has weights, but no mask, no ranges
+    void _weightedStats(
+        AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride
+    );
 
-	void _weightedStats(
-		AccumType& mymin, AccumType& mymax,
-		Int64& minpos, Int64& maxpos,
-		const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-		Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
-	);
+    void _weightedStats(
+        AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    );
 
-	void _weightedStats(
-		AccumType& mymin, AccumType& mymax,
-		Int64& minpos, Int64& maxpos,
-		const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-		Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
-	);
+    void _weightedStats(
+        AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    );
 
-	void _weightedStats(
-		AccumType& mymin, AccumType& mymax,
-		Int64& minpos, Int64& maxpos,
-		const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-		Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-		const DataRanges& ranges, Bool isInclude
-	);
-	// </group>
+    void _weightedStats(
+        AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+        const DataRanges& ranges, Bool isInclude
+    );
+    // </group>
 
 private:
-	FitToHalfStatisticsData::CENTER _centerType;
-	Bool _useLower;
-	AccumType _centerValue;
-	StatsData<AccumType> _statsData;
-	Bool _doMedAbsDevMed, _rangeIsSet;
-	// these are the max and min for the real portion of the dataset
-	CountedPtr<AccumType> _realMax, _realMin;
+    FitToHalfStatisticsData::CENTER _centerType;
+    Bool _useLower;
+    AccumType _centerValue;
+    StatsData<AccumType> _statsData;
+    Bool _doMedAbsDevMed, _rangeIsSet;
+    // these are the max and min for the real portion of the dataset
+    CountedPtr<AccumType> _realMax, _realMin;
 
-	void _getRealMinMax(
-			CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
-		CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax
-	);
+    void _getRealMinMax(
+            CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
+        CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax
+    );
 
-	void _setRange();
+    void _setRange();
 };
 
 }

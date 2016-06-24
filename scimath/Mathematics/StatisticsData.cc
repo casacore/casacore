@@ -32,54 +32,54 @@
 namespace casacore {
 
 String StatisticsData::toString(STATS stat) {
-	switch(stat) {
-	case MAX:
-		return "max";
-	case MEAN:
-		return "mean";
-	case MIN:
-		return "min";
-	case NPTS:
-		return "npts";
-	//case QUANTILE:
-		//	return "quantile";
-	case RMS:
-		return "rms";
-	case STDDEV:
-		return "stddev";
-	case SUM:
-		return "sum";
-	case SUMSQ:
-		return "sumsq";
-	case SUMWEIGHTS:
-		return "sumOfWeights";
-	case VARIANCE:
-		return "variance";
-	default:
-		ThrowCc(
-			"Logic error: Unhandled value in switch statement"
-				+ String::toString(stat)
-		);
-	}
+    switch(stat) {
+    case MAX:
+        return "max";
+    case MEAN:
+        return "mean";
+    case MIN:
+        return "min";
+    case NPTS:
+        return "npts";
+    //case QUANTILE:
+        //    return "quantile";
+    case RMS:
+        return "rms";
+    case STDDEV:
+        return "stddev";
+    case SUM:
+        return "sum";
+    case SUMSQ:
+        return "sumsq";
+    case SUMWEIGHTS:
+        return "sumOfWeights";
+    case VARIANCE:
+        return "variance";
+    default:
+        ThrowCc(
+            "Logic error: Unhandled value in switch statement"
+                + String::toString(stat)
+        );
+    }
 }
 
 std::map<Double, uInt64> StatisticsData::indicesFromFractions(
-	uInt64 npts, const std::set<Double>& fractions
+    uInt64 npts, const std::set<Double>& fractions
 ) {
-	std::map<Double, uInt64> fractionToIndexMap;
-	std::set<Double>::const_iterator fiter = fractions.begin();
-	std::set<Double>::const_iterator fend = fractions.end();
-	while (fiter != fend) {
-		Double idxWRT1 = *fiter * npts;
-		Double myfloor = floor(idxWRT1);
-		if (near(idxWRT1, myfloor)) {
-			// prevent rounding due to finite machine precision
-			idxWRT1 = myfloor;
-		}
-		fractionToIndexMap[*fiter] = ((uInt64)ceil(idxWRT1) - 1);
-		++fiter;
-	}
-	return fractionToIndexMap;
+    std::map<Double, uInt64> fractionToIndexMap;
+    std::set<Double>::const_iterator fiter = fractions.begin();
+    std::set<Double>::const_iterator fend = fractions.end();
+    while (fiter != fend) {
+        Double idxWRT1 = *fiter * npts;
+        Double myfloor = floor(idxWRT1);
+        if (near(idxWRT1, myfloor)) {
+            // prevent rounding due to finite machine precision
+            idxWRT1 = myfloor;
+        }
+        fractionToIndexMap[*fiter] = ((uInt64)ceil(idxWRT1) - 1);
+        ++fiter;
+    }
+    return fractionToIndexMap;
 }
 
 }
