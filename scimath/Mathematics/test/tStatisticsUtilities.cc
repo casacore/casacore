@@ -30,10 +30,14 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/Arrays.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/scimath/Mathematics/ClassicalStatistics.h>
 
+#include <utility>
 #include <vector>
 
 #include <casacore/casa/namespace.h>
+
+#define COMMA ,
 
 int main() {
     try {
@@ -235,6 +239,69 @@ int main() {
         AlwaysAssert(datamax == 3, AipsError);
         AlwaysAssert(minpos == 1, AipsError);
         AlwaysAssert(maxpos == 3, AipsError);
+        {
+            cout << "Test combine()" << endl;
+            Double d[] {
+                0.6, 2.7, 9.6, 5.1, 8.2, 2.3, 4.5,
+                -5.6, 8.7,-3.2, -0.5, 3.2
+            };
+            ClassicalStatistics<Double, Double *> cs;
+            cs.addData(d, 12);
+            StatsData<Double> expec = cs.getStatistics();
+            ClassicalStatistics<Double, Double *> cs1;
+            cs1.addData(d, 5);
+            StatsData<Double> sd1 = cs1.getStatistics();
+            ClassicalStatistics<Double, Double *> cs2;
+            cs2.addData(d+5, 7);
+            StatsData<Double> sd2 = cs2.getStatistics();
+            sd2.maxpos.first = 1;
+            sd2.minpos.first = 1;
+            vector<StatsData<Double> > vsd(2);
+            vsd[0] = sd1;
+            vsd[1] = sd2;
+            StatsData<Double> got = StatisticsUtilities<Double>::combine(vsd);
+            AlwaysAssert(got.npts == expec.npts, AipsError);
+            AlwaysAssert(got.mean == expec.mean, AipsError);
+            AlwaysAssert(got.rms == expec.rms, AipsError);
+            AlwaysAssert(near(got.stddev, expec.stddev), AipsError);
+            AlwaysAssert(got.sum == expec.sum, AipsError);
+            AlwaysAssert(got.sumsq == expec.sumsq, AipsError);
+            AlwaysAssert(near(got.variance, expec.variance), AipsError);
+            AlwaysAssert(*got.max == *expec.max, AipsError);
+            AlwaysAssert(*got.min == *expec.min, AipsError);
+            AlwaysAssert(got.maxpos == std::pair<Int64 COMMA Int64>(0, 2), AipsError);
+            AlwaysAssert(got.minpos == std::pair<Int64 COMMA Int64>(1, 2), AipsError);
+
+            ClassicalStatistics<Double, Double *> cs10;
+            cs10.addData(d, 3);
+            StatsData<Double> sd10 = cs10.getStatistics();
+            ClassicalStatistics<Double, Double *> cs11;
+            cs11.addData(d+3, 4);
+            StatsData<Double> sd11 = cs11.getStatistics();
+            sd11.maxpos.first = 1;
+            sd11.minpos.first = 1;
+            ClassicalStatistics<Double, Double *> cs12;
+            cs12.addData(d+7, 5);
+            StatsData<Double> sd12 = cs12.getStatistics();
+            sd12.maxpos.first = 2;
+            sd12.minpos.first = 2;
+            vector<StatsData<Double> > vsd1(3);
+            vsd1[0] = sd10;
+            vsd1[1] = sd11;
+            vsd1[2] = sd12;
+            got = StatisticsUtilities<Double>::combine(vsd1);
+            AlwaysAssert(got.npts == expec.npts, AipsError);
+            AlwaysAssert(got.mean == expec.mean, AipsError);
+            AlwaysAssert(got.rms == expec.rms, AipsError);
+            AlwaysAssert(near(got.stddev, expec.stddev), AipsError);
+            AlwaysAssert(near(got.sum, expec.sum), AipsError);
+            AlwaysAssert(got.sumsq == expec.sumsq, AipsError);
+            AlwaysAssert(near(got.variance, expec.variance), AipsError);
+            AlwaysAssert(*got.max == *expec.max, AipsError);
+            AlwaysAssert(*got.min == *expec.min, AipsError);
+            AlwaysAssert(got.maxpos == std::pair<Int64 COMMA Int64>(0, 2), AipsError);
+            AlwaysAssert(got.minpos == std::pair<Int64 COMMA Int64>(2, 0), AipsError);
+        }
     }
     catch (const AipsError& x) {
         cout << x.getMesg() << endl;
