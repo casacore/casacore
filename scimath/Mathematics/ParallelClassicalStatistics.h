@@ -53,6 +53,11 @@ public:
 
 	~ParallelClassicalStatistics();
 
+    // get the algorithm that this object uses for computing stats
+    virtual StatisticsData::ALGORITHM algorithm() const {
+        return StatisticsData::CLASSICAL;
+    };
+
 	// Throws an exception if <src>b</src> = True; currently this feature is not
 	// supported.
     void setCalculateAsAdded(Bool b);
