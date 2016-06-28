@@ -215,6 +215,9 @@ public:
         Double zs;
         // Chauvenet max iterations
         Int mi;
+        // maximum number of threads to use for
+        // parallel support
+        uInt maxThreads;
     };
 
 // Constructor takes the lattice and a <src>LogIO</src> object for logging.
@@ -380,6 +383,11 @@ public:
 
    void configureClassical(Double aOld, Double bOld, Double aNew, Double bNew);
    // </group>
+
+   // configure classical statistics with parallel support. Note that the new
+   // algorithm is always used in this case. <src>maxThreads</src> is the maximum
+   // number of threads to use.
+   void configurePClassical(uInt maxThreads=omp_get_max_threads());
 
    // configure to use fit to half algorithm.
    void configureFitToHalf(

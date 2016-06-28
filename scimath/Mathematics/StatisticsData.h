@@ -50,7 +50,9 @@ public:
         CHAUVENETCRITERION,
         CLASSICAL,
         FITTOHALF,
-        HINGESFENCES
+        HINGESFENCES,
+        // classical with parallel support
+        PCLASSICAL
     };
 
     enum STATS {
