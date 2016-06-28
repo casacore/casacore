@@ -350,6 +350,9 @@ protected:
 
     inline virtual const StatsData<AccumType>& _getStatsData() const { return _statsData; }
 
+    // increment the relevant loop counters
+    Bool _increment(Bool includeIDataset);
+
     // <group>
     virtual void _minMax(
         CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
