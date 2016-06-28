@@ -434,8 +434,6 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     _initIterators();
     _getStatsData().masked = False;
     _getStatsData().weighted = False;
-    StatsDataProvider<CASA_STATP> *dataProvider
-        = this->_getDataProvider();
     while (True) {
         _initLoopVars();
         AccumType mymin = _getStatsData().min.null() ? AccumType(0) : *_getStatsData().min;
@@ -516,22 +514,8 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
         if (_doMaxMin) {
             _updateMaxMin(mymin, mymax, minpos, maxpos, _myStride, _idataset);
         }
-        ++_idataset;
-        if (dataProvider) {
-            ++(*dataProvider);
-            if (dataProvider->atEnd()) {
-                dataProvider->finalize();
-                break;
-            }
-        }
-        else {
-            ++_diter;
-            if (_diter == _dend) {
-                break;
-            }
-            ++_citer;
-            ++_dsiter;
-            ++_dataCount;
+        if (_increment(True)) {
+            break;
         }
     }
     _mustAccumulate = False;
@@ -541,6 +525,31 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     _getStatsData().rms = sqrt(_getStatsData().sumsq/_getStatsData().sumweights);
     _getStatsData().stddev = sqrt(_getStatsData().variance);
     return copy(_getStatsData());
+}
+
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_increment(Bool includeIDataset) {
+    if (includeIDataset) {
+        ++_idataset;
+    }
+    StatsDataProvider<CASA_STATP> *dataProvider = this->_getDataProvider();
+    if (dataProvider) {
+        ++(*dataProvider);
+        if (dataProvider->atEnd()) {
+            dataProvider->finalize();
+            return True;
+        }
+    }
+    else {
+        ++_diter;
+        if (_diter == _dend) {
+            return True;
+        }
+        ++_citer;
+        ++_dsiter;
+        ++_dataCount;
+    }
+    return False;
 }
 
 CASA_STATD
@@ -802,8 +811,6 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
         ++iDesc;
     }
     _initIterators();
-    StatsDataProvider<CASA_STATP> *dataProvider
-        = this->_getDataProvider();
     while (True) {
         _initLoopVars();
         if (_hasWeights) {
@@ -871,21 +878,8 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
                 binDesc, maxLimit
             );
         }
-        if (dataProvider) {
-            ++(*dataProvider);
-            if (dataProvider->atEnd()) {
-                dataProvider->finalize();
-                break;
-            }
-        }
-        else {
-            ++_diter;
-            if (_diter == _dend) {
-                break;
-            }
-            ++_citer;
-            ++_dsiter;
-            ++_dataCount;
+        if (_increment(False)) {
+            break;
         }
     }
     return bins;
@@ -896,8 +890,6 @@ void ClassicalStatistics<CASA_STATP>::_createDataArray(
     vector<AccumType>& ary
 ) {
     _initIterators();
-    StatsDataProvider<CASA_STATP> *dataProvider
-        = this->_getDataProvider();
     while (True) {
         _initLoopVars();
         if (_hasWeights) {
@@ -957,21 +949,8 @@ void ClassicalStatistics<CASA_STATP>::_createDataArray(
                 ary, _myData, _myCount, _myStride
             );
         }
-        if (dataProvider) {
-            ++(*dataProvider);
-            if (dataProvider->atEnd()) {
-                dataProvider->finalize();
-                break;
-            }
-        }
-        else {
-            ++_diter;
-            if (_diter == _dend) {
-                break;
-            }
-            ++_citer;
-            ++_dsiter;
-            ++_dataCount;
+        if (_increment(False)) {
+            break;
         }
     }
 }
@@ -1005,8 +984,6 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
         ++iLimits;
     }
     _initIterators();
-    StatsDataProvider<CASA_STATP> *dataProvider
-        = this->_getDataProvider();
     uInt currentCount = 0;
     while (True) {
         _initLoopVars();
@@ -1074,21 +1051,8 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
                 includeLimits, maxCount
             );
         }
-        if (dataProvider) {
-            ++(*dataProvider);
-            if (dataProvider->atEnd()) {
-                dataProvider->finalize();
-                break;
-            }
-        }
-        else {
-            ++_diter;
-            if (_diter == _dend) {
-                break;
-            }
-            ++_citer;
-            ++_dsiter;
-            ++_dataCount;
+        if (_increment(False)) {
+            break;
         }
     }
 }
@@ -1318,8 +1282,6 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
     AccumType& datamin, AccumType& datamax
 ) {
     _initIterators();
-    StatsDataProvider<CASA_STATP> *dataProvider
-        = this->_getDataProvider();
     CountedPtr<AccumType> mymax;
     CountedPtr<AccumType> mymin;
     while (True) {
@@ -1380,21 +1342,8 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
             // with it. No filtering of the data is necessary.
             _minMax(mymin, mymax, _myData, _myCount, _myStride);
         }
-        if (dataProvider) {
-            ++(*dataProvider);
-            if (dataProvider->atEnd()) {
-                dataProvider->finalize();
-                break;
-            }
-        }
-        else {
-            ++_diter;
-            if (_diter == _dend) {
-                break;
-            }
-            ++_citer;
-            ++_dsiter;
-            ++_dataCount;
+        if (_increment(False)) {
+            break;
         }
     }
     ThrowIf (
@@ -1408,8 +1357,6 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
 CASA_STATD
 Int64 ClassicalStatistics<CASA_STATP>::_doNpts() {
     _initIterators();
-    StatsDataProvider<CASA_STATP> *dataProvider
-        = this->_getDataProvider();
     uInt64 npts = 0;
     while (True) {
         _initLoopVars();
@@ -1471,21 +1418,8 @@ Int64 ClassicalStatistics<CASA_STATP>::_doNpts() {
                 npts, _myData, _myCount, _myStride
             );
         }
-        if (dataProvider) {
-            ++(*dataProvider);
-            if (dataProvider->atEnd()) {
-                dataProvider->finalize();
-                break;
-            }
-        }
-        else {
-            ++_diter;
-            if (_diter == _dend) {
-                break;
-            }
-            ++_citer;
-            ++_dsiter;
-            ++_dataCount;
+        if (_increment(False)) {
+            break;
         }
     }
     ThrowIf (npts == 0, "No valid data found");
@@ -1949,8 +1883,6 @@ Bool ClassicalStatistics<CASA_STATP>::_isNptsSmallerThan(
     vector<AccumType>& unsortedAry, uInt maxArraySize
 ) {
     _initIterators();
-    StatsDataProvider<CASA_STATP> *dataProvider
-        = this->_getDataProvider();
     Bool limitReached = False;
     while (True) {
         _initLoopVars();
@@ -2021,21 +1953,8 @@ Bool ClassicalStatistics<CASA_STATP>::_isNptsSmallerThan(
             unsortedAry.clear();
             return False;
         }
-        if (dataProvider) {
-            ++(*dataProvider);
-            if (dataProvider->atEnd()) {
-                dataProvider->finalize();
-                break;
-            }
-        }
-        else {
-            ++_diter;
-            if (_diter == _dend) {
-                break;
-            }
-            ++_citer;
-            ++_dsiter;
-            ++_dataCount;
+        if (_increment(False)) {
+            break;
         }
     }
     _getStatsData().npts = unsortedAry.size();
@@ -2940,7 +2859,6 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
     uInt64& ngood, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride
-
 ) {
     DataIterator datum = dataBegin;
     Int64 count = 0;
