@@ -55,7 +55,8 @@ ClassicalStatistics<CASA_STATP>::ClassicalStatistics(
 ) : StatisticsAlgorithm<CASA_STATP>(cs),
     _statsData(cs._statsData),
     _idataset(cs._idataset),_calculateAsAdded(cs._calculateAsAdded),
-    _doMaxMin(cs._doMaxMin), _doMedAbsDevMed(cs._doMedAbsDevMed), _mustAccumulate(cs._mustAccumulate) {
+    _doMaxMin(cs._doMaxMin), _doMedAbsDevMed(cs._doMedAbsDevMed), _mustAccumulate(cs._mustAccumulate),
+    _hasData((cs._hasData)){
 }
 
 CASA_STATD
@@ -73,6 +74,7 @@ ClassicalStatistics<CASA_STATP>::operator=(
     _doMaxMin = other._doMaxMin;
     _doMedAbsDevMed = other._doMedAbsDevMed;
     _mustAccumulate = other._mustAccumulate;
+    _hasData = other._hasData;
     return *this;
 }
 
@@ -324,6 +326,7 @@ void ClassicalStatistics<CASA_STATP>::setDataProvider(
         "setCalculateAsAdded(False), and then set the data provider"
     );
     StatisticsAlgorithm<CASA_STATP>::setDataProvider(dataProvider);
+    _hasData = True;
 }
 
 CASA_STATD
@@ -346,6 +349,7 @@ void ClassicalStatistics<CASA_STATP>::_addData() {
     this->_setSortedArray(vector<AccumType>());
     _getStatsData().median = NULL;
     _mustAccumulate = True;
+    _hasData = True;
     if (_calculateAsAdded) {
         _getStatistics();
         StatisticsAlgorithm<CASA_STATP>::_clearData();
@@ -356,6 +360,7 @@ CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_clearData() {
     _clearStats();
     StatisticsAlgorithm<CASA_STATP>::_clearData();
+    _hasData = False;
 }
 
 CASA_STATD
@@ -1804,10 +1809,7 @@ std::map<uInt64, AccumType> ClassicalStatistics<CASA_STATP>::_indicesToValues(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_initIterators() {
-    ThrowIf(
-        this->_getData().size() == 0 && ! this->_getDataProvider(),
-        "No data sets have been added"
-    );
+    ThrowIf(! _hasData, "No data sets have been added");
     if (this->_getDataProvider()) {
         this->_getDataProvider()->reset();
     }
@@ -1876,6 +1878,25 @@ void ClassicalStatistics<CASA_STATP>::_initLoopVars() {
             _myWeights = _weights.find(_dataCount)->second;
         }
     }
+}
+
+CASA_STATD
+typename ClassicalStatistics<CASA_STATP>::InitContainer
+ClassicalStatistics<CASA_STATP>::_initAndGetLoopVars() {
+    _initLoopVars();
+    InitContainer ic;
+    ic.count = _myCount;
+    ic.dataIter = _myData;
+    ic.dataStride = _myStride;
+    ic.hasMask = _hasMask;
+    ic.hasRanges = _hasRanges;
+    ic.hasWeights = _hasWeights;
+    ic.isIncludeRanges = _myIsInclude;
+    ic.maskIter = _myMask;
+    ic.maskStride = _maskStride;
+    ic.ranges = _myRanges;
+    ic.weightsIter = _myWeights;
+    return ic;
 }
 
 CASA_STATD

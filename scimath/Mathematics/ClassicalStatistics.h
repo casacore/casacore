@@ -175,6 +175,10 @@ public:
     // see base class description
     virtual std::pair<Int64, Int64> getStatisticIndex(StatisticsData::STATS stat);
 
+    // Has any data been added to this object? Will return False if the object has
+    // been reset and no data have been added afterward.
+    Bool hasData() const  { return _hasData; }
+
     // reset object to initial state. Clears all private fields including data,
     // accumulators, etc.
     virtual void reset();
@@ -191,6 +195,21 @@ public:
     void setStatsToCalculate(std::set<StatisticsData::STATS>& stats);
 
 protected:
+
+    // Contains the relevant variables for iterating over a single (sub)dataset
+    struct InitContainer {
+        uInt64 count;
+        DataIterator dataIter;
+        uInt dataStride;
+        Bool hasMask;
+        Bool hasRanges;
+        Bool hasWeights;
+        Bool isIncludeRanges;
+        MaskIterator maskIter;
+        uInt maskStride;
+        DataRanges ranges;
+        WeightsIterator weightsIter;
+    };
 
     // <group>
     // scan through the data set to determine the number of good (unmasked, weight > 0,
@@ -340,6 +359,10 @@ protected:
     ) const;
     // </group>
 
+    Bool _getDoMaxMin() { return _doMaxMin; }
+
+    Bool _getMustAccumulate() const { return _mustAccumulate; }
+
     AccumType _getStatistic(StatisticsData::STATS stat);
 
     StatsData<AccumType> _getStatistics();
@@ -350,6 +373,11 @@ protected:
 
     inline virtual const StatsData<AccumType>& _getStatsData() const { return _statsData; }
 
+    // initialize and return the loop iterators. Useful for derived classes.
+    InitContainer _initAndGetLoopVars();
+
+    void _initIterators();
+    
     // increment the relevant loop counters
     Bool _increment(Bool includeIDataset);
 
@@ -581,6 +609,8 @@ protected:
         uInt maxElements
     ) const;
     // </group>
+    
+    void _setMustAccumulate(Bool b) { _mustAccumulate = b; }
 
     // <group>
     // no weights, no mask, no ranges
@@ -648,11 +678,11 @@ protected:
     );
     // </group>
 
-
 private:
     StatsData<AccumType> _statsData;
     Int64 _idataset;
-    Bool _calculateAsAdded, _doMaxMin, _doMedAbsDevMed, _mustAccumulate;
+    Bool _calculateAsAdded, _doMaxMin, _doMedAbsDevMed, _mustAccumulate,
+        _hasData;
 
     // mutables, used to mitigate repeated code
     mutable typename vector<DataIterator>::const_iterator _dend, _diter;
@@ -724,8 +754,6 @@ private:
         const std::set<uInt64>& dataIndices, Bool persistSortedArray,
         uInt64 nBins
     );
-
-    void _initIterators();
 
     void _initLoopVars();
 

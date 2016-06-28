@@ -17,6 +17,7 @@ tInterpolateArray1D
 tMathFunc
 tMatrixMathLA
 tMedianSlider
+tParallelClassicalStatistics
 tSmooth
 tSparseDiff
 tStatAcc
