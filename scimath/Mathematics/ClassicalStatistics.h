@@ -359,7 +359,9 @@ protected:
     ) const;
     // </group>
 
-    Bool _getDoMaxMin() { return _doMaxMin; }
+    Bool _getDoMaxMin() const { return _doMaxMin; }
+
+    Bool _getIDataset() const { return _idataset; }
 
     Bool _getMustAccumulate() const { return _mustAccumulate; }
 

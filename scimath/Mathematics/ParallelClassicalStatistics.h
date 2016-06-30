@@ -54,7 +54,7 @@ public:
 	~ParallelClassicalStatistics();
 
     // get the algorithm that this object uses for computing stats
-    virtual StatisticsData::ALGORITHM algorithm() const {
+    StatisticsData::ALGORITHM algorithm() const {
         return StatisticsData::CLASSICAL;
     };
 
@@ -69,6 +69,79 @@ protected:
 private:
     uInt _nThreadsMax;
 
+    void _accumulate2(
+        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos, const AccumType& datum, Int64 count
+    );
+
+    void _accumulate2(
+        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos, const AccumType& datum,
+        const AccumType& weight, Int64 count
+    );
+
+    void _unweightedStats2(
+        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride
+    );
+
+    void _unweightedStats2(
+        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataRanges& ranges, Bool isInclude
+    );
+
+    void _unweightedStats2(
+        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const MaskIterator& maskBegin, uInt maskStride
+    );
+
+    void _unweightedStats2(
+        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
+        Bool isInclude
+    );
+
+    void _updateMaxMin2(
+        StatsData<AccumType>& threadStats, AccumType mymin, AccumType mymax,
+        Int64 minpos, Int64 maxpos, uInt initialOffset, uInt dataStride,
+        const Int64& currentDataset
+    );
+
+    void _weightedStats2(
+        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride
+    );
+
+    void _weightedStats2(
+        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    );
+
+    void _weightedStats2(
+        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+        const DataRanges& ranges, Bool isInclude
+    );
+
+    void _weightedStats2(
+        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
+        Int64& minpos, Int64& maxpos,
+        const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    );
 };
 
 }

@@ -252,7 +252,7 @@ int main() {
             AlwaysAssert(exceptionRaised, AipsError);
         }
         {
-            // two datasets, stride = 2,1
+            cout << "test two datasets, stride = 2,1" << endl;
             ParallelClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
             cs.setData(v0.begin(), v0.size(), 2);
             cs.addData(v1.begin(), v1.size());
