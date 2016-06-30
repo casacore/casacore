@@ -433,89 +433,24 @@ AccumType ClassicalStatistics<CASA_STATP>::_getStatistic(
 
 CASA_STATD
 StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
+    StatsData<AccumType>& stats = _getStatsData();
     if (! _mustAccumulate) {
-        return _getStatsData();
+        return copy(stats);
     }
     _initIterators();
-    _getStatsData().masked = False;
-    _getStatsData().weighted = False;
+    stats.masked = False;
+    stats.weighted = False;
     while (True) {
         _initLoopVars();
-        AccumType mymin = _getStatsData().min.null() ? AccumType(0) : *_getStatsData().min;
-        AccumType mymax = _getStatsData().max.null() ? AccumType(0) : *_getStatsData().max;
+        AccumType mymin = stats.min.null() ? AccumType(0) : *stats.min;
+        AccumType mymax = stats.max.null() ? AccumType(0) : *stats.max;
         Int64 minpos = -1;
         Int64 maxpos = -1;
         uInt64 ngood = 0;
-        if (_hasWeights) {
-            _getStatsData().weighted = True;
-            if (_hasMask) {
-                _getStatsData().masked = True;
-                if (_hasRanges) {
-                    _weightedStats(
-                        mymin, mymax, minpos, maxpos,
-                        _myData, _myWeights, _myCount, _myStride,
-                        _myMask, _maskStride, _myRanges, _myIsInclude
-                    );
-                }
-                else {
-                    _weightedStats(
-                        mymin, mymax, minpos, maxpos,
-                        _myData, _myWeights, _myCount, _myStride,
-                        _myMask, _maskStride
-                    );
-                }
-            }
-            else if (_hasRanges) {
-                _weightedStats(
-                    mymin, mymax, minpos, maxpos,
-                    _myData, _myWeights, _myCount,
-                    _myStride, _myRanges, _myIsInclude
-                );
-            }
-            else {
-                // has weights, but no mask nor ranges
-                _weightedStats(
-                    mymin, mymax, minpos, maxpos,
-                    _myData, _myWeights, _myCount, _myStride
-                );
-            }
-        }
-        else if (_hasMask) {
-            // this data set has no weights, but does have a mask
-            _getStatsData().masked = True;
-            if (_hasRanges) {
-                _unweightedStats(
-                    ngood, mymin, mymax, minpos, maxpos,
-                    _myData, _myCount, _myStride, _myMask,
-                    _maskStride, _myRanges, _myIsInclude
-                );
-            }
-            else {
-                _unweightedStats(
-                    ngood, mymin, mymax, minpos, maxpos,
-                    _myData, _myCount, _myStride, _myMask, _maskStride
-                );
-            }
-        }
-        else if (_hasRanges) {
-            // this data set has no weights no mask, but does have a set of ranges
-            // associated with it
-            _unweightedStats(
-                ngood, mymin, mymax, minpos, maxpos,
-                _myData, _myCount, _myStride, _myRanges, _myIsInclude
-            );
-        }
-        else {
-            // simplest case, this data set has no weights, no mask, nor any ranges associated
-            // with it, and its stride is 1. No filtering of the data is necessary.
-            _unweightedStats(
-                ngood, mymin, mymax, minpos, maxpos,
-                _myData, _myCount, _myStride
-            );
-        }
-        if (! _hasWeights) {
-            _getStatsData().sumweights += ngood;
-        }
+        _computeStats(
+            stats, ngood, mymin, mymax, minpos, maxpos, _myData,
+            _myMask, _myWeights, _myStride, _maskStride, _myCount
+        );
         if (_doMaxMin) {
             _updateMaxMin(mymin, mymax, minpos, maxpos, _myStride, _idataset);
         }
@@ -525,11 +460,90 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     }
     _mustAccumulate = False;
     AccumType one = 1;
-    _getStatsData().variance = _getStatsData().sumweights > one
-        ? _getStatsData().nvariance/(_getStatsData().sumweights - one) : 0;
-    _getStatsData().rms = sqrt(_getStatsData().sumsq/_getStatsData().sumweights);
-    _getStatsData().stddev = sqrt(_getStatsData().variance);
-    return copy(_getStatsData());
+    stats.variance = stats.sumweights > one
+        ? stats.nvariance/(stats.sumweights - one) : 0;
+    stats.rms = sqrt(stats.sumsq/stats.sumweights);
+    stats.stddev = sqrt(stats.variance);
+    return copy(stats);
+}
+
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_computeStats(
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin, AccumType& mymax,
+    Int64& minpos, Int64& maxpos, DataIterator dataIter, MaskIterator maskIter,
+    WeightsIterator weightsIter, uInt dataStride, uInt maskStride, uInt64 count
+) {
+    if (_hasWeights) {
+        stats.weighted = True;
+        if (_hasMask) {
+            stats.masked = True;
+            if (_hasRanges) {
+                _weightedStats(
+                    stats, mymin, mymax, minpos, maxpos,
+                    dataIter, weightsIter, count,
+                    dataStride, maskIter, maskStride,
+                    _myRanges, _myIsInclude
+                );
+            }
+            else {
+                _weightedStats(
+                    stats, mymin, mymax, minpos, maxpos,
+                    dataIter, weightsIter, count,
+                    dataStride, maskIter, maskStride
+                );
+            }
+        }
+        else if (_hasRanges) {
+            _weightedStats(
+                stats, mymin, mymax, minpos, maxpos, dataIter,
+                weightsIter, count, dataStride,
+                _myRanges, _myIsInclude
+            );
+        }
+        else {
+            // has weights, but no mask nor ranges
+            _weightedStats(
+                stats, mymin, mymax, minpos, maxpos, dataIter,
+                weightsIter, count, dataStride
+            );
+        }
+    }
+    else if (_hasMask) {
+        // this data set has no weights, but does have a mask
+        stats.masked = True;
+        if (_hasRanges) {
+            _unweightedStats(
+                stats, ngood, mymin, mymax, minpos, maxpos,
+                dataIter, count, dataStride, maskIter, maskStride,
+                _myRanges, _myIsInclude
+            );
+        }
+        else {
+            _unweightedStats(
+                stats, ngood, mymin, mymax, minpos, maxpos,
+                dataIter, count, dataStride, maskIter, maskStride
+            );
+        }
+    }
+    else if (_hasRanges) {
+        // this data set has no weights no mask, but does have a set of ranges
+        // associated with it
+        _unweightedStats(
+            stats, ngood, mymin, mymax, minpos, maxpos,
+            dataIter, count, dataStride, _myRanges, _myIsInclude
+        );
+    }
+    else {
+        // simplest case, this data set has no weights, no mask, nor any ranges associated
+        // with it, and its stride is 1. No filtering of the data is necessary.
+        _unweightedStats(
+            stats, ngood, mymin, mymax, minpos, maxpos, dataIter,
+            count, dataStride
+        );
+    }
+    if (! _hasWeights) {
+        stats.sumweights += ngood;
+    }
 }
 
 CASA_STATD
@@ -736,38 +750,39 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_accumulate(
-    AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos, const AccumType& datum, Int64 count
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax, Int64& minpos,
+    Int64& maxpos, const AccumType& datum, Int64 count
 ) {
     if (_doMaxMin) {
         StatisticsUtilities<AccumType>::accumulate (
-            _statsData.npts, _statsData.sum, _statsData.mean, _statsData.nvariance,
-            _statsData.sumsq, mymin, mymax, minpos,    maxpos, datum, count
+            stats.npts, stats.sum, stats.mean, stats.nvariance,
+            stats.sumsq, mymin, mymax, minpos, maxpos, datum, count
         );
     }
     else {
         StatisticsUtilities<AccumType>::accumulate (
-            _statsData.npts, _statsData.sum, _statsData.mean, _statsData.nvariance,
-            _statsData.sumsq, datum
+            stats.npts, stats.sum, stats.mean, stats.nvariance,
+            stats.sumsq, datum
         );
     }
 }
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_accumulate(
-    AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos,
-    const AccumType& datum, const AccumType& weight, Int64 count
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax, Int64& minpos,
+    Int64& maxpos, const AccumType& datum, const AccumType& weight, Int64 count
 ) {
     if (_doMaxMin) {
         StatisticsUtilities<AccumType>::waccumulate (
-            _statsData.npts, _statsData.sumweights, _statsData.sum, _statsData.mean,
-            _statsData.nvariance, _statsData.sumsq, mymin, mymax, minpos,
+            stats.npts, stats.sumweights, stats.sum, stats.mean,
+            stats.nvariance, stats.sumsq, mymin, mymax, minpos,
             maxpos, datum, weight, count
         );
     }
     else {
         StatisticsUtilities<AccumType>::waccumulate (
-            _statsData.npts, _statsData.sumweights, _statsData.sum, _statsData.mean,
-            _statsData.nvariance, _statsData.sumsq, weight, datum
+            stats.npts, stats.sumweights, stats.sum, stats.mean,
+            stats.nvariance, stats.sumsq, weight, datum
         );
     }
 }
@@ -2877,16 +2892,16 @@ void ClassicalStatistics<CASA_STATP>::_updateMaxMin(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) {
     DataIterator datum = dataBegin;
     Int64 count = 0;
     Bool unityStride = dataStride == 1;
     while (count < nr) {
-        _accumulate (
-            mymin, mymax, minpos, maxpos, *datum, count
+        _accumulate(
+            stats, mymin, mymax, minpos, maxpos, *datum, count
         );
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
             datum, count, unityStride, dataStride
@@ -2897,8 +2912,8 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) {
@@ -2913,8 +2928,8 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
                 *datum, beginRange, endRange, isInclude
             )
         ) {
-            _accumulate (
-                mymin, mymax, minpos, maxpos, *datum, count
+            _accumulate(
+                stats, mymin, mymax, minpos, maxpos, *datum, count
             );
             ++ngood;
         }
@@ -2926,8 +2941,8 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) {
@@ -2937,8 +2952,8 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
     Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask) {
-            _accumulate (
-                mymin, mymax, minpos, maxpos, *datum, count
+            _accumulate(
+                stats, mymin, mymax, minpos, maxpos, *datum, count
             );
             ++ngood;
         }
@@ -2950,8 +2965,8 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
@@ -2969,8 +2984,8 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
                 *datum, beginRange, endRange, isInclude
             )
         ) {
-            _accumulate (
-                mymin, mymax, minpos, maxpos, *datum, count
+            _accumulate(
+                stats, mymin, mymax, minpos, maxpos, *datum, count
             );
             ++ngood;
         }
@@ -3062,7 +3077,7 @@ Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride
@@ -3073,8 +3088,8 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(
     Bool unityStride = dataStride == 1;
     while (count < nr) {
         if (*weight > 0) {
-            _accumulate (
-                mymin, mymax, minpos, maxpos, *datum, *weight, count
+            _accumulate(
+                stats, mymin, mymax, minpos, maxpos, *datum, *weight, count
             );
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
@@ -3085,7 +3100,7 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
@@ -3103,8 +3118,8 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(
                 *datum, beginRange, endRange, isInclude
             )
         ) {
-            _accumulate (
-                mymin, mymax, minpos, maxpos, *datum, *weight, count
+            _accumulate(
+                stats, mymin, mymax, minpos, maxpos, *datum, *weight, count
             );
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
@@ -3115,7 +3130,7 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
@@ -3136,7 +3151,7 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(
             )
         ) {
             _accumulate(
-                mymin, mymax, minpos, maxpos, *datum, *weight, count
+                stats, mymin, mymax, minpos, maxpos, *datum, *weight, count
             );
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
@@ -3147,7 +3162,7 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
@@ -3159,8 +3174,8 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(
     Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask && *weight > 0) {
-            _accumulate (
-                mymin, mymax, minpos, maxpos, *datum, *weight, count
+            _accumulate(
+                stats, mymin, mymax, minpos, maxpos, *datum, *weight, count
             );
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(

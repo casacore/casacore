@@ -164,29 +164,29 @@ protected:
     // <group>
     // no weights, no mask, no ranges
     void _unweightedStats(
-        uInt64& ngood, AccumType& mymin, AccumType& mymax,
-        Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+        AccumType& mymax, Int64& minpos, Int64& maxpos,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride
     );
 
     // no weights, no mask
     void _unweightedStats(
-        uInt64& ngood, AccumType& mymin, AccumType& mymax,
-        Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+        AccumType& mymax, Int64& minpos, Int64& maxpos,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude
     );
 
     void _unweightedStats(
-        uInt64& ngood, AccumType& mymin, AccumType& mymax,
-        Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+        AccumType& mymax, Int64& minpos, Int64& maxpos,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride
     );
 
     void _unweightedStats(
-        uInt64& ngood, AccumType& mymin, AccumType& mymax,
-        Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+        AccumType& mymax, Int64& minpos, Int64& maxpos,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
@@ -201,28 +201,28 @@ protected:
     // <group>
     // has weights, but no mask, no ranges
     void _weightedStats(
-        AccumType& mymin, AccumType& mymax,
+        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
         Int64& minpos, Int64& maxpos,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         Int64 nr, uInt dataStride
     );
 
     void _weightedStats(
-        AccumType& mymin, AccumType& mymax,
+        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
         Int64& minpos, Int64& maxpos,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
     );
 
     void _weightedStats(
-        AccumType& mymin, AccumType& mymax,
+        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
         Int64& minpos, Int64& maxpos,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
     );
 
     void _weightedStats(
-        AccumType& mymin, AccumType& mymax,
+        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
         Int64& minpos, Int64& maxpos,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,

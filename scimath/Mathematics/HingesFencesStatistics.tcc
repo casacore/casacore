@@ -1068,38 +1068,38 @@ void HingesFencesStatistics<CASA_STATP>::_setRange() {
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-            ngood, mymin, mymax, minpos, maxpos, dataBegin, nr, dataStride
+            stats, ngood, mymin, mymax, minpos, maxpos, dataBegin, nr, dataStride
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_unweightedStats(
-            ngood, mymin, mymax, minpos, maxpos, dataBegin, nr, dataStride
+            stats, ngood, mymin, mymax, minpos, maxpos, dataBegin, nr, dataStride
         );
     }
 }
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-            ngood, mymin, mymax, minpos, maxpos,
+            stats, ngood, mymin, mymax, minpos, maxpos,
             dataBegin, nr, dataStride, ranges, isInclude
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_unweightedStats(
-            ngood, mymin, mymax, minpos, maxpos,
+            stats, ngood, mymin, mymax, minpos, maxpos,
             dataBegin, nr, dataStride, ranges, isInclude
         );
     }
@@ -1107,20 +1107,20 @@ void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-            ngood, mymin, mymax, minpos, maxpos,
+            stats, ngood, mymin, mymax, minpos, maxpos,
             dataBegin, nr, dataStride, maskBegin, maskStride
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_unweightedStats(
-            ngood, mymin, mymax, minpos, maxpos,
+            stats, ngood, mymin, mymax, minpos, maxpos,
             dataBegin, nr, dataStride, maskBegin, maskStride
         );
     }
@@ -1128,21 +1128,21 @@ void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-            ngood, mymin, mymax, minpos, maxpos, dataBegin, nr,
+            stats, ngood, mymin, mymax, minpos, maxpos, dataBegin, nr,
             dataStride, maskBegin, maskStride, ranges, isInclude
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_unweightedStats(
-            ngood, mymin, mymax, minpos, maxpos, dataBegin, nr,
+            stats, ngood, mymin, mymax, minpos, maxpos, dataBegin, nr,
             dataStride, maskBegin, maskStride, ranges, isInclude
         );
     }
@@ -1150,20 +1150,20 @@ void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-            mymin, mymax, minpos, maxpos, dataBegin,
+            stats, mymin, mymax, minpos, maxpos, dataBegin,
             weightsBegin, nr, dataStride
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_weightedStats(
-            mymin, mymax, minpos, maxpos, dataBegin,
+            stats, mymin, mymax, minpos, maxpos, dataBegin,
             weightsBegin, nr, dataStride
         );
     }
@@ -1171,20 +1171,20 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-            mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
+            stats, mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
             nr, dataStride, ranges, isInclude
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_weightedStats(
-            mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
+            stats, mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
             nr, dataStride, ranges, isInclude
         );
     }
@@ -1192,7 +1192,7 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
@@ -1200,13 +1200,13 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-            mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
+            stats, mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
             nr, dataStride, maskBegin, maskStride, ranges, isInclude
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_weightedStats(
-            mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
+            stats, mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
             nr, dataStride, maskBegin, maskStride, ranges, isInclude
         );
     }
@@ -1214,20 +1214,20 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-            mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
+            stats, mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
             nr, dataStride, maskBegin, maskStride
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_weightedStats(
-            mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
+            stats, mymin, mymax, minpos, maxpos, dataBegin, weightsBegin,
             nr, dataStride, maskBegin, maskStride
         );
     }

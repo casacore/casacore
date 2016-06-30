@@ -1550,14 +1550,14 @@ Bool ConstrainedRangeStatistics<CASA_STATP>::_populateTestArray(
 
 #define _unweightedStatsCodeCR \
     if (_isInRange(*datum)) { \
-        this->_accumulate (mymin, mymax, minpos, maxpos, *datum, count); \
+        this->_accumulate(stats, mymin, mymax, minpos, maxpos, *datum, count); \
         ++ngood; \
     }
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) {
         DataIterator datum = dataBegin;
@@ -1573,8 +1573,8 @@ void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) {
@@ -1599,8 +1599,8 @@ void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) {
@@ -1620,8 +1620,8 @@ void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-    uInt64& ngood, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
+    AccumType& mymax, Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
@@ -1650,12 +1650,12 @@ void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
 
 #define _weightedStatsCodeCR \
     if (_isInRange(*datum)) { \
-        this->_accumulate (mymin, mymax, minpos, maxpos, *datum, *weight, count); \
+        this->_accumulate(stats, mymin, mymax, minpos, maxpos, *datum, *weight, count); \
     }
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride
@@ -1676,7 +1676,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
@@ -1704,7 +1704,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
@@ -1734,7 +1734,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-    AccumType& mymin, AccumType& mymax,
+    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
     Int64& minpos, Int64& maxpos,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride

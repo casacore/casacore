@@ -68,7 +68,7 @@ protected:
 
 private:
     uInt _nThreadsMax;
-
+/*
     void _accumulate2(
         StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
         Int64& minpos, Int64& maxpos, const AccumType& datum, Int64 count
@@ -107,13 +107,13 @@ private:
         const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
         Bool isInclude
     );
-
+*/
     void _updateMaxMin2(
         StatsData<AccumType>& threadStats, AccumType mymin, AccumType mymax,
         Int64 minpos, Int64 maxpos, uInt initialOffset, uInt dataStride,
         const Int64& currentDataset
     );
-
+/*
     void _weightedStats2(
         StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
         Int64& minpos, Int64& maxpos,
@@ -142,6 +142,7 @@ private:
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
     );
+    */
 };
 
 }
