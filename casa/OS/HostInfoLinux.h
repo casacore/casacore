@@ -49,6 +49,12 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <limits>
 
 // <summary>
 // HostInfo for Linux machines.
@@ -120,10 +126,71 @@ skip_token(const char *p)
     return (char *)p;
 }
 
+// get integer value from v1 cgroup hierarchy of current processes, if
+// sub_value is set it returns the entry of a collection identified by value,
+// e.g. total_rss from memory.stat
+// returns std::numeric_limits<size_t>::max() on error
+// note unset cgroup limits usually have intptr_t.max()
+// does not support v2 cgroups
+static inline size_t
+get_cgroup_limit(std::string group, std::string value, std::string sub_value="")
+{
+    size_t result = std::numeric_limits<size_t>::max();
+    // assume common location, technically one needs to search for mounts
+    const std::string cgroup = std::string("/sys/fs/cgroup/") + group + "/";
+
+    // get hierarchy of current process, v1 format: id:controller:hierarchy
+    std::string line;
+    std::ifstream ifs("/proc/self/cgroup", std::ifstream::in);
+    std::string hierarchy;
+    while (getline(ifs, line)) {
+	std::stringstream ss(line);
+	std::string token;
+	std::vector<std::string> fields;
+	while (getline(ss, token, ':')) {
+	    fields.push_back(token);
+	}
+	if (fields.size() % 3 != 0) {
+	    return result;
+	}
+	for (std::vector<std::string>::size_type i=1; i < fields.size(); i+=3) {
+	    if (fields[i].find(group) != std::string::npos) {
+		hierarchy = fields[i + 1] + "/";
+	    }
+	}
+    }
+    if (hierarchy.size() == 0) {
+	return result;
+    }
+
+    std::ifstream flimit((cgroup + hierarchy + value).c_str(), std::ifstream::in);
+    // if hierarchy does not exist we might be in a namespace, use the root group
+    if (!flimit.is_open()) {
+	flimit.open((cgroup + value).c_str(), std::ifstream::in);
+    }
+    if (flimit.is_open()) {
+	if (!sub_value.empty()) {
+	    /* scan 'key value' entry like memory.stat for key == sub_value */
+	    while (getline(flimit, line)) {
+		std::stringstream ss(line);
+		std::string token;
+		ss >> token;
+		if (token == sub_value) {
+		    ss >> result;
+		    break;
+		}
+	    }
+	}
+	else {
+	    flimit >> result;
+	}
+    }
+    return result;
+}
+
 HostMachineInfo::HostMachineInfo( ) : valid(1)
 {
     char buffer[4096+1];
-    int fd, len;
     char *p;
 
     /* get number of usable CPUs */
@@ -164,26 +231,7 @@ HostMachineInfo::HostMachineInfo( ) : valid(1)
 	}
     }
 
-    /* get system total memory */
-    /* See the sprintf() statements of the file
-       fs/proc/proc_misc.c in the kernel source tree */
-    {
-	fd = open(MEMINFO, O_RDONLY);
-	len = read(fd, buffer, sizeof(buffer)-1);
-	close(fd);
-	buffer[len] = '\0';
-
-	int ret;
-	unsigned long mem_total, swp_total;
-	p = strstr(buffer, "MemTotal:");
-	if ((ret = sscanf (p, "MemTotal: %lu kB\n", &mem_total)) != 1)
-	  cerr << "Error parsing MemTotal in /proc/meminfo\n";
-	memory_total = mem_total;
-	p = strstr(buffer, "SwapTotal:");
-	if ((ret = sscanf (p, "SwapTotal: %lu kB\n", &swp_total)) != 1)
-	  cerr << "Error parsing SwapTotal in /proc/meminfo\n";
-	swap_total = swp_total;
-    }
+    update_info();
 }
 
 void HostMachineInfo::update_info( )
@@ -206,24 +254,51 @@ void HostMachineInfo::update_info( )
 
 	if ((ret = sscanf (p,"MemTotal: %lu kB\nMemFree: %lu kB\n",
 			   &mem_total, &mem_free)) != 2)
-	  cerr << "Error parsing MemTotal and MemFree in /proc/meminfo\n";
+	    cerr << "Error parsing MemTotal and MemFree in /proc/meminfo\n";
 
 	p = strstr (buffer, "Cached:");
 	if ((ret = sscanf (p,"Cached: %lu kB\n", &mem_cached)) != 1)
-	  cerr << "Error parsing Cached in /proc/meminfo\n";
+	    cerr << "Error parsing Cached in /proc/meminfo\n";
 
-	memory_total = mem_total;
-	memory_free = mem_free + mem_cached;
+	// can't use more memory than allowed by cgroups
+	size_t mem_max = get_cgroup_limit("memory", "memory.limit_in_bytes") / 1024;
+	size_t mem_used = get_cgroup_limit("memory", "memory.stat", "total_rss") / 1024;
+	memory_total = std::min((size_t)mem_total, mem_max);
+	// no cgroup limit
+	if (mem_used != std::numeric_limits<size_t>::max() / 1024 &&
+	    mem_max != std::numeric_limits<size_t>::max() / 1024) {
+	    memory_free = mem_max - mem_used;
+	}
+	else {
+	    memory_free = (size_t)(mem_free + mem_cached);
+	}
 	memory_used = memory_total - memory_free;
 
 	p = strstr (buffer, "SwapTotal:");
 	if ((ret = sscanf (p, "SwapTotal: %lu kB\nSwapFree: %lu kB\n",
 			   &swp_total, &swp_free)) != 2)
-	  cerr << "Error parsing SwapTotal and SwapFree in /proc/meminfo\n";
+	    cerr << "Error parsing SwapTotal and SwapFree in /proc/meminfo\n";
 
-	swap_total = swp_total;
-	swap_free = swp_free;
+	// can't use more swap than allowed by cgroups
+	size_t swp_max = get_cgroup_limit("memory", "memory.memsw.limit_in_bytes") / 1024;
+	size_t swp_used = get_cgroup_limit("memory", "memory.stat", "total_swap") / 1024;
+	// limit is mem + swap
+	if (mem_max != std::numeric_limits<size_t>::max() / 1024) {
+	    swap_total = std::min((size_t)swp_total, swp_max - mem_max);
+	}
+	else {
+	    swap_total = swp_total;
+	}
+	if (swp_used != std::numeric_limits<size_t>::max() / 1024 &&
+	    swp_max != std::numeric_limits<size_t>::max() / 1024) {
+	    swap_free = swp_max - swp_used;
+	}
+	else {
+	    swap_free = swp_free;
+	}
 	swap_used = swap_total-swap_free;
+
+
     }
 }
 
