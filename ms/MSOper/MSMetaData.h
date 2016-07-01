@@ -599,6 +599,10 @@ public:
     // Number of unique values from SOURCE.SOURCE_ID
     uInt nUniqueSourceIDsFromSourceTable() const;
 
+    // get the unique spectral window IDs represented by the data description
+    // IDs that appear in the main table
+    std::set<uInt> getUniqueSpwIDs() const;
+
     const MeasurementSet* getMS() const { return _ms; }
 
     void setShowProgress(Bool b) { _showProgress = b; }

@@ -37,6 +37,9 @@
 #ifdef HAVE_FFTW3
 # include <fftw3.h>
 #endif
+#ifdef _OPENMP
+# include <omp.h>
+#endif
 
 #include <iostream>
 
@@ -96,7 +99,11 @@ namespace casacore {
     if (!is_initialized_fftw) {
       ScopedMutexLock lock(theirMutex);
       if (!is_initialized_fftw) {
+#ifdef _OPENMP
+        int numCPUs = omp_get_max_threads();
+#else
         int numCPUs = HostInfo::numCPUs();
+#endif
         int nthreads = 1;
         // cerr << "Number of threads is " << numCPUs << endl;
         if (numCPUs > 1) {
