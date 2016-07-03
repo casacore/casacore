@@ -241,7 +241,7 @@ int main() {
         AlwaysAssert(maxpos == 3, AipsError);
         {
             cout << "Test combine()" << endl;
-            Double d[] {
+            Double d[] = {
                 0.6, 2.7, 9.6, 5.1, 8.2, 2.3, 4.5,
                 -5.6, 8.7,-3.2, -0.5, 3.2
             };
