@@ -261,7 +261,7 @@ int main() {
             vsd[1] = sd2;
             StatsData<Double> got = StatisticsUtilities<Double>::combine(vsd);
             AlwaysAssert(got.npts == expec.npts, AipsError);
-            AlwaysAssert(got.mean == expec.mean, AipsError);
+            AlwaysAssert(near(got.mean, expec.mean), AipsError);
             AlwaysAssert(got.rms == expec.rms, AipsError);
             AlwaysAssert(near(got.stddev, expec.stddev), AipsError);
             AlwaysAssert(got.sum == expec.sum, AipsError);
@@ -291,7 +291,7 @@ int main() {
             vsd1[2] = sd12;
             got = StatisticsUtilities<Double>::combine(vsd1);
             AlwaysAssert(got.npts == expec.npts, AipsError);
-            AlwaysAssert(got.mean == expec.mean, AipsError);
+            AlwaysAssert(near(got.mean, expec.mean), AipsError);
             AlwaysAssert(got.rms == expec.rms, AipsError);
             AlwaysAssert(near(got.stddev, expec.stddev), AipsError);
             AlwaysAssert(near(got.sum, expec.sum), AipsError);

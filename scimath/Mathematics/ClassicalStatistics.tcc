@@ -34,6 +34,10 @@
 
 #include <iomanip>
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
 namespace casacore {
 
 // min > max indicates that these quantities have not be calculated
@@ -56,7 +60,7 @@ ClassicalStatistics<CASA_STATP>::ClassicalStatistics(
     _statsData(cs._statsData),
     _idataset(cs._idataset),_calculateAsAdded(cs._calculateAsAdded),
     _doMaxMin(cs._doMaxMin), _doMedAbsDevMed(cs._doMedAbsDevMed), _mustAccumulate(cs._mustAccumulate),
-    _hasData((cs._hasData)){
+    _hasData((cs._hasData)) {
 }
 
 CASA_STATD
@@ -416,6 +420,12 @@ std::pair<Int64, Int64> ClassicalStatistics<CASA_STATP>::getStatisticIndex(
 }
 
 CASA_STATD
+StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getInitialStats() const {
+    static const StatsData<AccumType> stats = initializeStatsData<AccumType>();
+    return stats;
+}
+
+CASA_STATD
 AccumType ClassicalStatistics<CASA_STATP>::_getStatistic(
     StatisticsData::STATS stat
 ) {
@@ -438,32 +448,129 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
         return copy(stats);
     }
     _initIterators();
-    stats.masked = False;
-    stats.weighted = False;
+#ifdef _OPENMP
+    uInt nThreadsMax = omp_get_max_threads();
+#else
+    uInt nThreadsMax = 1;
+#endif
+    Int64 *maxpos = new Int64[8*nThreadsMax];
+    Int64 *minpos = new Int64[8*nThreadsMax];
+    AccumType *mymax = new AccumType[8*nThreadsMax];
+    AccumType *mymin = new AccumType[8*nThreadsMax];
+    StatsData<AccumType> *tStats = new StatsData<AccumType>[8*nThreadsMax];
+    uInt64 *ngood = new uInt64[8*nThreadsMax];
+    DataIterator *dataIter = new DataIterator[8*nThreadsMax];
+    WeightsIterator *weightsIter = new WeightsIterator[8*nThreadsMax];
+    MaskIterator *maskIter = new MaskIterator[8*nThreadsMax];
+    for (uInt i=0; i<nThreadsMax; ++i) {
+        uInt idx8 = 8*i;
+        tStats[idx8] = _getInitialStats();
+        maxpos[idx8] = -1;
+        minpos[idx8] = -1;
+        mymin[idx8] = 0;
+        mymax[idx8] = 0;
+    }
+    vector<uInt> dataCount(nThreadsMax);
     while (True) {
         _initLoopVars();
-        AccumType mymin = stats.min.null() ? AccumType(0) : *stats.min;
-        AccumType mymax = stats.max.null() ? AccumType(0) : *stats.max;
-        Int64 minpos = -1;
-        Int64 maxpos = -1;
-        uInt64 ngood = 0;
-        _computeStats(
-            stats, ngood, mymin, mymax, minpos, maxpos, _myData,
-            _myMask, _myWeights, _myStride, _maskStride, _myCount
-        );
-        if (_doMaxMin) {
-            _updateMaxMin(mymin, mymax, minpos, maxpos, _myStride, _idataset);
+        uInt nthreads = _myCount == 1
+            ? 1 : min(nThreadsMax, _myCount/100 + 2);
+        uInt extra = _myCount % nthreads;
+        uInt ciCount = _myCount/nthreads;
+        vector<uInt> initialOffset(nthreads);
+        for (uInt i=0; i<nthreads; ++i) {
+            uInt idx8 = 8*i;
+            ngood[idx8] = 0;
+            dataCount[i] = ciCount;
+            if (extra > 0) {
+                ++dataCount[i];
+                --extra;
+            }
+            initialOffset[i] = i*_myStride;
+            dataIter[idx8] = _myData;
+            if (_hasWeights) {
+                weightsIter[idx8] = _myWeights;
+            }
+            for (uInt j=0; j<initialOffset[i]; ++j) {
+                // stagger the iterators for each thread
+                ++dataIter[idx8];
+                if (_hasWeights) {
+                    ++weightsIter[idx8];
+                }
+            }
+            if (_hasMask) {
+                maskIter[idx8] = _myMask;
+                for (uInt j=0; j<i*_maskStride; ++j) {
+                    ++maskIter[idx8];
+                }
+            }
+        }
+        uInt dataStride = _myStride*nthreads;
+        uInt maskStride = _maskStride*nthreads;
+        if (_hasWeights) {
+            stats.weighted = True;
+        }
+        if (_hasMask) {
+            stats.weighted = True;
+        }
+#pragma omp parallel for
+        for (uInt i=0; i<nthreads; ++i) {
+            uInt idx8 = 8*i;
+            _computeStats(
+                tStats[idx8], ngood[idx8], mymin[idx8], mymax[idx8],
+                minpos[idx8], maxpos[idx8], dataIter[idx8], maskIter[idx8],
+                weightsIter[idx8], dataStride, maskStride, dataCount[i]
+            );
+        }
+        for (uInt i=0; i<nthreads; ++i) {
+            uInt idx8 = 8*i;
+            _updateMaxMin(
+                tStats[idx8], mymin[idx8], mymax[idx8], minpos[idx8],
+                maxpos[idx8], initialOffset[i], dataStride, this->_getIDataset()
+            );
         }
         if (_increment(True)) {
             break;
         }
     }
+    delete [] dataIter;
+    delete [] maskIter;
+    delete [] weightsIter;
+    vector<StatsData<AccumType> > xstats;
+    for (uInt i=0; i<nThreadsMax; ++i) {
+        const StatsData<AccumType>& s = tStats[8*i];
+        if(s.npts > 0) {
+            xstats.push_back(s);
+        }
+    }
+    delete [] tStats;
+    delete [] ngood;
+    delete [] maxpos;
+    delete [] minpos;
+    delete [] mymax;
+    delete [] mymin;
+    if (stats.npts > 0) {
+        // we've accumululted some stats previously so we must
+        // account for that here
+        xstats.push_back(stats);
+    }
+    StatsData<AccumType> vstats = StatisticsUtilities<AccumType>::combine(xstats);
+    stats.masked = vstats.masked;
+    stats.max = vstats.max;
+    stats.maxpos = vstats.maxpos;
+    stats.mean = vstats.mean;
+    stats.min = vstats.min;
+    stats.minpos = vstats.minpos;
+    stats.npts = vstats.npts;
+    stats.nvariance = vstats.nvariance;
+    stats.rms = vstats.rms;
+    stats.stddev = vstats.stddev;
+    stats.sum = vstats.sum;
+    stats.sumsq = vstats.sumsq;
+    stats.sumweights = vstats.sumweights;
+    stats.variance = vstats.variance;
+    stats.weighted = vstats.weighted;
     _mustAccumulate = False;
-    AccumType one = 1;
-    stats.variance = stats.sumweights > one
-        ? stats.nvariance/(stats.sumweights - one) : 0;
-    stats.rms = sqrt(stats.sumsq/stats.sumweights);
-    stats.stddev = sqrt(stats.variance);
     return copy(stats);
 }
 
@@ -1894,7 +2001,7 @@ void ClassicalStatistics<CASA_STATP>::_initLoopVars() {
         }
     }
 }
-
+/*
 CASA_STATD
 typename ClassicalStatistics<CASA_STATP>::InitContainer
 ClassicalStatistics<CASA_STATP>::_initAndGetLoopVars() {
@@ -1913,6 +2020,7 @@ ClassicalStatistics<CASA_STATP>::_initAndGetLoopVars() {
     ic.weightsIter = _myWeights;
     return ic;
 }
+*/
 
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_isNptsSmallerThan(
@@ -2867,26 +2975,76 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_updateMaxMin(
-    AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride,
-    const Int64& currentDataset
+    StatsData<AccumType>& threadStats, AccumType mymin,
+    AccumType mymax, Int64 minpos, Int64 maxpos, uInt initialOffset,
+    uInt dataStride, Int64 currentDataset
 ) {
+    Bool maxUpdated = False;
+    Bool minUpdated = False;
+    // update the per thread max/min if necessary
+    if (
+        maxpos >= 0
+        && (threadStats.max.null() || mymax > *threadStats.max)
+    ) {
+        threadStats.maxpos.first = currentDataset;
+        threadStats.maxpos.second = initialOffset + maxpos*dataStride;
+        threadStats.max = new AccumType(mymax);
+        maxUpdated = True;
+    }
+    if (
+        minpos >= 0
+        && (threadStats.min.null() || mymin < *threadStats.min)
+    ) {
+        threadStats.minpos.first = currentDataset;
+        threadStats.minpos.second = initialOffset + minpos*dataStride;
+        threadStats.min = new AccumType(mymin);
+        minUpdated = True;
+    }
+    if (this->_getDataProvider() && (maxUpdated || minUpdated)) {
+        // if force is true, the global stats struct is the same as
+        // threadedStats, and so updating threaded stats means we've
+        // updated the global stats struct, and so must update the
+        // data provider.
+        Bool force = &_getStatsData() == &threadStats; 
+        _updateDataProviderMaxMin(
+            force, minUpdated, maxUpdated, mymin, mymax, minpos, maxpos,
+            initialOffset, dataStride, currentDataset
+        );
+    }
+}
+
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_updateDataProviderMaxMin(
+    Bool force, Bool minUpdated, Bool maxUpdated, AccumType mymin,
+    AccumType mymax, Int64 minpos, Int64 maxpos, uInt initialOffset,
+    uInt dataStride, Int64 currentDataset
+) {
+    // if there is a data provider, and the max and/or min updated,
+    // we have to update the data provider as we go
+    StatsData<AccumType>& stats = _getStatsData();
     StatsDataProvider<CASA_STATP> *dataProvider
         = this->_getDataProvider();
-    if (maxpos >= 0) {
-        _getStatsData().maxpos.first = currentDataset;
-        _getStatsData().maxpos.second = maxpos * dataStride;
-        if (dataProvider) {
-            dataProvider->updateMaxPos(_getStatsData().maxpos);
+    if (
+        maxUpdated && (force || stats.max.null() || mymax > *stats.max)
+    ) {
+        if (! force) {
+            // if force, we've already updated the global stats struct,
+            // so don't need to do it again
+            stats.maxpos.first = currentDataset;
+            stats.maxpos.second = initialOffset + maxpos*dataStride;
+            stats.max = new AccumType(mymax);
         }
-        _getStatsData().max = new AccumType(mymax);
+        dataProvider->updateMaxPos(stats.maxpos);
     }
-    if (minpos >= 0) {
-        _getStatsData().minpos.first = currentDataset;
-        _getStatsData().minpos.second = minpos * dataStride;
-        if (dataProvider) {
-            dataProvider->updateMinPos(_getStatsData().minpos);
+    if (minUpdated && (force || stats.min.null() || mymin < *stats.min)) {
+        if (! force) {
+            // if force, we've already updated the global stats struct,
+            // so don't need to do it again
+            stats.minpos.first = currentDataset;
+            stats.minpos.second = initialOffset + minpos*dataStride;
+            stats.min = new AccumType(mymin);
         }
-        _getStatsData().min = new AccumType(mymin);
+        dataProvider->updateMinPos(stats.minpos);
     }
 }
 

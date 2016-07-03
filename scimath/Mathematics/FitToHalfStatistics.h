@@ -155,6 +155,8 @@ protected:
 
     virtual void _clearData();
 
+    virtual StatsData<AccumType> _getInitialStats() const;
+
     StatsData<AccumType> _getStatistics();
 
     inline StatsData<AccumType>& _getStatsData() { return _statsData; }
@@ -194,8 +196,9 @@ protected:
     // </group>
 
     virtual void _updateMaxMin(
-        AccumType mymin, AccumType mymax, Int64 minpos,
-        Int64 maxpos, uInt dataStride, const Int64& currentDataset
+        StatsData<AccumType>& threadStats, AccumType mymin,
+        AccumType mymax, Int64 minpos, Int64 maxpos, uInt initialOffset,
+        uInt dataStride, Int64 currentDataset
     );
 
     // <group>

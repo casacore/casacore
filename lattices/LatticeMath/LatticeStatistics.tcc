@@ -72,7 +72,6 @@
 #include <casacore/casa/OS/Timer.h>
 
 #include <casacore/scimath/Mathematics/ChauvenetCriterionStatistics.h>
-#include <casacore/scimath/Mathematics/ParallelClassicalStatistics.h>
 #include <casacore/scimath/Mathematics/FitToHalfStatistics.h>
 #include <casacore/scimath/Mathematics/HingesFencesStatistics.h>
 
@@ -696,12 +695,6 @@ void LatticeStatistics<T>::configureClassical(
 }
 
 template <class T>
-void LatticeStatistics<T>::configurePClassical(uInt maxThreads) {
-    _algConf.maxThreads = maxThreads;
-}
-
-
-template <class T>
 void LatticeStatistics<T>::configureHingesFences(Double f) {
     if (
         _algConf.algorithm != StatisticsData::HINGESFENCES
@@ -1132,11 +1125,6 @@ LatticeStatistics<T>::_createStatsAlgorithm() const {
         );
         return sa;
     }
-    case StatisticsData::PCLASSICAL:
-        sa = new ParallelClassicalStatistics<AccumType, const T*, const Bool*>(
-            _algConf.maxThreads
-        );
-        return sa;
     default:
         ThrowCc(
             "Logic Error: Unhandled algorithm "

@@ -338,6 +338,12 @@ void FitToHalfStatistics<CASA_STATP>::_clearData() {
 
 }
 
+CASA_STATD
+StatsData<AccumType> FitToHalfStatistics<CASA_STATP>::_getInitialStats() const {
+    StatsData<AccumType> stats = initializeStatsData<AccumType>();
+    stats.mean = _centerValue;
+    return stats;
+}
 
 CASA_STATD
 StatsData<AccumType> FitToHalfStatistics<CASA_STATP>::_getStatistics() {
@@ -473,38 +479,54 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_updateMaxMin(
-    AccumType mymin, AccumType mymax, Int64 minpos, Int64 maxpos, uInt dataStride,
-    const Int64& currentDataset
+    StatsData<AccumType>& threadStats, AccumType mymin,
+    AccumType mymax, Int64 minpos, Int64 maxpos, uInt initialOffset,
+    uInt dataStride, Int64 currentDataset
 ) {
-    StatsDataProvider<CASA_STATP> *dataProvider
-        = this->_getDataProvider();
-    if (maxpos >= 0) {
-        _realMax = new AccumType(mymax);
+    Bool minUpdated = False;
+    Bool maxUpdated = False;
+    if (
+        maxpos >= 0
+        && (threadStats.max.null() || mymax > *threadStats.max)
+    ) {
+        //_realMax = new AccumType(mymax);
+        if (_realMax.null() || mymax > *_realMax) {
+            _realMax = new AccumType(mymax);
+        }
         if (! _useLower) {
-            _getStatsData().maxpos.first = currentDataset;
-            _getStatsData().maxpos.second = maxpos * dataStride;
-            _getStatsData().minpos.first = -1;
-            _getStatsData().minpos.second = -1;
-            if (dataProvider) {
-                dataProvider->updateMaxPos(_getStatsData().maxpos);
-            }
-            _getStatsData().max = new AccumType(mymax);
-            _getStatsData().min = new AccumType(TWO*_centerValue - mymax);
+            threadStats.maxpos.first = currentDataset;
+            threadStats.maxpos.second = initialOffset + maxpos*dataStride;
+            threadStats.minpos.first = -1;
+            threadStats.minpos.second = -1;
+            threadStats.max = new AccumType(mymax);
+            threadStats.min = new AccumType(TWO*_centerValue - mymax);
+            maxUpdated = True;
         }
     }
-    if (minpos >= 0) {
-        _realMin = new AccumType(mymin);
-        if (_useLower) {
-            _getStatsData().minpos.first = currentDataset;
-            _getStatsData().minpos.second = minpos * dataStride;
-            _getStatsData().maxpos.first = -1;
-            _getStatsData().maxpos.second = -1;
-            if (dataProvider) {
-                dataProvider->updateMinPos(_getStatsData().minpos);
-            }
-            _getStatsData().min = new AccumType(mymin);
-            _getStatsData().max = new AccumType(TWO*_centerValue - mymin);
+    if (
+        minpos >= 0
+        && (threadStats.min.null() || mymin > *threadStats.min)
+    ) {
+        //_realMin = new AccumType(mymin);
+        if (_realMin.null() || mymin > *_realMin) {
+            _realMin = new AccumType(mymin);
         }
+        if (_useLower) {
+            threadStats.minpos.first = currentDataset;
+            threadStats.minpos.second = initialOffset + minpos*dataStride;
+            threadStats.maxpos.first = -1;
+            threadStats.maxpos.second = -1;
+            threadStats.min = new AccumType(mymin);
+            threadStats.max = new AccumType(TWO*_centerValue - mymin);
+            minUpdated = True;
+        }
+    }
+    if (this->_getDataProvider() && (maxUpdated || minUpdated)) {
+        Bool force = &_getStatsData() == &threadStats;
+        this->_updateDataProviderMaxMin(
+            force, minUpdated, maxUpdated, mymin, mymax, minpos, maxpos,
+            initialOffset, dataStride, currentDataset
+        );
     }
 }
 
@@ -620,6 +642,5 @@ void FitToHalfStatistics<CASA_STATP>::_weightedStats(
 }
 
 }
-
 
 #endif

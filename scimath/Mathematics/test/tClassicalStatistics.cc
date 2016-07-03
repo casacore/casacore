@@ -295,7 +295,7 @@ int main() {
             AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
             AlwaysAssert(sd.sum == 29, AipsError);
             AlwaysAssert(sd.sumsq == 201.5, AipsError);
-            AlwaysAssert(sd.variance == variance, AipsError);
+            AlwaysAssert(near(sd.variance, variance), AipsError);
         }
         {
             // data ranges

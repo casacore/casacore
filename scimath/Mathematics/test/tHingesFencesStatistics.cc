@@ -274,7 +274,7 @@ int main() {
             AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
             AlwaysAssert(sd.sum == 29, AipsError);
             AlwaysAssert(sd.sumsq == 201.5, AipsError);
-            AlwaysAssert(sd.variance == variance, AipsError);
+            AlwaysAssert(near(sd.variance, variance), AipsError);
         }
         {
             // data ranges
@@ -1766,10 +1766,10 @@ int main() {
             AlwaysAssert(sd.minpos.second == 1, AipsError);
             AlwaysAssert(sd.npts == eNpts, AipsError);
             AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
-            AlwaysAssert(sd.stddev == sqrt(eVar), AipsError);
+            AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
             AlwaysAssert(sd.sum == eSum, AipsError);
             AlwaysAssert(sd.sumsq == eSumSq, AipsError);
-            AlwaysAssert(sd.variance == eVar, AipsError);
+            AlwaysAssert(near(sd.variance, eVar), AipsError);
             AlwaysAssert(
                 hfs.getStatisticIndex(StatisticsData::MAX)
                     == std::pair<Int64 COMMA Int64>(0, 7),
@@ -1808,10 +1808,10 @@ int main() {
             AlwaysAssert(sd.minpos.second == 1, AipsError);
             AlwaysAssert(sd.npts == eNpts, AipsError);
             AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
-            AlwaysAssert(sd.stddev == sqrt(eVar), AipsError);
+            AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
             AlwaysAssert(sd.sum == eSum, AipsError);
             AlwaysAssert(sd.sumsq == eSumSq, AipsError);
-            AlwaysAssert(sd.variance == eVar, AipsError);
+            AlwaysAssert(near(sd.variance, eVar), AipsError);
             AlwaysAssert(
                 hfs.getStatisticIndex(StatisticsData::MAX)
                 == std::pair<Int64 COMMA Int64>(0, 7),
@@ -1850,10 +1850,10 @@ int main() {
             AlwaysAssert(sd.minpos.second == 1, AipsError);
             AlwaysAssert(sd.npts == eNpts, AipsError);
             AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
-            AlwaysAssert(sd.stddev == sqrt(eVar), AipsError);
+            AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
             AlwaysAssert(sd.sum == eSum, AipsError);
             AlwaysAssert(sd.sumsq == eSumSq, AipsError);
-            AlwaysAssert(sd.variance == eVar, AipsError);
+            AlwaysAssert(near(sd.variance, eVar), AipsError);
             AlwaysAssert(
                 hfs.getStatisticIndex(StatisticsData::MAX)
                 == std::pair<Int64 COMMA Int64>(1, 1),
@@ -1937,14 +1937,15 @@ int main() {
             AlwaysAssert(sd.maxpos.second == 5, AipsError);
             AlwaysAssert(sd.mean == eSum/eNpts, AipsError);
             AlwaysAssert(*sd.min == 6, AipsError);
-            AlwaysAssert(sd.minpos.first == 0, AipsError);
+            // the min, 6, occurs twice, at dataset 0, pos 2, and dataset 1, pos 2
+            AlwaysAssert(sd.minpos.first == 0 || sd.minpos.first == 1, AipsError);
             AlwaysAssert(sd.minpos.second == 2, AipsError);
             AlwaysAssert(sd.npts == eNpts, AipsError);
             AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
             AlwaysAssert(sd.stddev == sqrt(eVar), AipsError);
             AlwaysAssert(sd.sum == eSum, AipsError);
             AlwaysAssert(sd.sumsq == eSumSq, AipsError);
-            AlwaysAssert(sd.variance == eVar, AipsError);
+            AlwaysAssert(near(sd.variance, eVar), AipsError);
             AlwaysAssert(
                 hfs.getStatisticIndex(StatisticsData::MAX)
                 == std::pair<Int64 COMMA Int64>(1, 5),
@@ -1952,7 +1953,9 @@ int main() {
             );
             AlwaysAssert(
                 hfs.getStatisticIndex(StatisticsData::MIN)
-                == std::pair<Int64 COMMA Int64>(0, 2),
+                == std::pair<Int64 COMMA Int64>(0, 2)
+                || hfs.getStatisticIndex(StatisticsData::MIN)
+                == std::pair<Int64 COMMA Int64>(1, 2),
                 AipsError
             );
             AlwaysAssert(hfs.getStatistic(
@@ -2009,7 +2012,7 @@ int main() {
             AlwaysAssert(sd.stddev == sqrt(eVar), AipsError);
             AlwaysAssert(sd.sum == eSum, AipsError);
             AlwaysAssert(sd.sumsq == eSumSq, AipsError);
-            AlwaysAssert(sd.variance == eVar, AipsError);
+            AlwaysAssert(near(sd.variance, eVar), AipsError);
             AlwaysAssert(
                 hfs.getStatisticIndex(StatisticsData::MAX)
                 == std::pair<Int64 COMMA Int64>(1, 0),
@@ -2901,9 +2904,4 @@ int main() {
     } 
     return 0;
 }
-
-
-
-
-
 

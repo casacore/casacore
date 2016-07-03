@@ -384,11 +384,6 @@ public:
    void configureClassical(Double aOld, Double bOld, Double aNew, Double bNew);
    // </group>
 
-   // configure classical statistics with parallel support. Note that the new
-   // algorithm is always used in this case. <src>maxThreads</src> is the maximum
-   // number of threads to use.
-   void configurePClassical(uInt maxThreads=omp_get_max_threads());
-
    // configure to use fit to half algorithm.
    void configureFitToHalf(
            FitToHalfStatisticsData::CENTER centerType=FitToHalfStatisticsData::CMEAN,

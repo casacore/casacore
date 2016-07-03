@@ -196,21 +196,6 @@ public:
 
 protected:
 
-    // Contains the relevant variables for iterating over a single (sub)dataset
-    struct InitContainer {
-        uInt64 count;
-        DataIterator dataIter;
-        uInt dataStride;
-        Bool hasMask;
-        Bool hasRanges;
-        Bool hasWeights;
-        Bool isIncludeRanges;
-        MaskIterator maskIter;
-        uInt maskStride;
-        DataRanges ranges;
-        WeightsIterator weightsIter;
-    };
-
     // <group>
     // scan through the data set to determine the number of good (unmasked, weight > 0,
     // within range) points. The first with no mask, no
@@ -369,8 +354,8 @@ protected:
 
     Bool _getIDataset() const { return _idataset; }
 
-    Bool _getMustAccumulate() const { return _mustAccumulate; }
-
+    virtual StatsData<AccumType> _getInitialStats() const;
+    
     AccumType _getStatistic(StatisticsData::STATS stat);
 
     StatsData<AccumType> _getStatistics();
@@ -380,11 +365,6 @@ protected:
     inline virtual StatsData<AccumType>& _getStatsData() { return _statsData; }
 
     inline virtual const StatsData<AccumType>& _getStatsData() const { return _statsData; }
-
-    // initialize and return the loop iterators. Useful for derived classes.
-    InitContainer _initAndGetLoopVars();
-
-    void _initIterators();
     
     // increment the relevant loop counters
     Bool _increment(Bool includeIDataset);
@@ -617,9 +597,7 @@ protected:
         uInt maxElements
     ) const;
     // </group>
-    
-    void _setMustAccumulate(Bool b) { _mustAccumulate = b; }
-
+   
     // <group>
     // no weights, no mask, no ranges
     virtual void _unweightedStats(
@@ -634,7 +612,6 @@ protected:
         AccumType& mymax, Int64& minpos, Int64& maxpos,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude
-
     );
 
     virtual void _unweightedStats(
@@ -642,7 +619,6 @@ protected:
         AccumType& mymax, Int64& minpos, Int64& maxpos,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride
-
     );
 
     virtual void _unweightedStats(
@@ -653,6 +629,19 @@ protected:
         const DataRanges& ranges, Bool isInclude
     );
     // </group>
+
+    // update min and max if necessary
+    virtual void _updateMaxMin(
+        StatsData<AccumType>& threadStats, AccumType mymin,
+        AccumType mymax, Int64 minpos, Int64 maxpos, uInt initialOffset,
+        uInt dataStride, Int64 currentDataset
+    );
+
+    void _updateDataProviderMaxMin(
+        Bool force, Bool minUpdated, Bool maxUpdated, AccumType mymin,
+        AccumType mymax, Int64 minpos, Int64 maxpos, uInt initialOffset,
+        uInt dataStride, Int64 currentDataset
+    );
 
     // <group>
     // has weights, but no mask, no ranges
@@ -762,6 +751,8 @@ private:
         const std::set<uInt64>& dataIndices, Bool persistSortedArray,
         uInt64 nBins
     );
+    
+    void _initIterators();
 
     void _initLoopVars();
 
@@ -779,22 +770,12 @@ private:
         Bool allowPad
     );
 
-    // If input set has one value, that is the median, if it has two, the median is the average
-    // of those.
-    // static AccumType _medianFromSet(const std::map<uInt64, AccumType>& values);
-
     // get the index (for odd npts) or indices (for even npts) of the median of the sorted array.
     // If knownNpts is not null, it will be used and must be correct. If it is null, the value of
     // _npts will be used if it has been previously calculated. If not, the data sets will
     // be scanned to determine npts.
     std::set<uInt64> _medianIndices(CountedPtr<uInt64> knownNpts);
 
-    // update min and max if necessary
-    virtual void _updateMaxMin(
-        AccumType mymin, AccumType mymax, Int64 minpos,
-        Int64 maxpos, uInt dataStride, const Int64& currentDataset
-    );
-    
     // get values from sorted array if the array is small enough to be held in
     // memory. Note that this is the array containing all good data, not data in
     // just a single bin representing a subset of good data.

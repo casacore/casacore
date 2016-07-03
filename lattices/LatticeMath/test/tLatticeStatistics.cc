@@ -183,13 +183,6 @@ int main()
             stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
             AlwaysAssert(near(*mean.begin(), expec), AipsError);
 
-            // classical with parallel support
-            stats.configurePClassical();
-            stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
-            AlwaysAssert(near(*mean.begin(), expec), AipsError);
-            stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
-            AlwaysAssert(near(*mean.begin(), expec), AipsError);
-
             //hinges-fences
             stats.configureHingesFences(0.0);
             stats.getStatistic(mean, LatticeStatsBase::MEAN, False);
