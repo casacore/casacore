@@ -2001,26 +2001,6 @@ void ClassicalStatistics<CASA_STATP>::_initLoopVars() {
         }
     }
 }
-/*
-CASA_STATD
-typename ClassicalStatistics<CASA_STATP>::InitContainer
-ClassicalStatistics<CASA_STATP>::_initAndGetLoopVars() {
-    _initLoopVars();
-    InitContainer ic;
-    ic.count = _myCount;
-    ic.dataIter = _myData;
-    ic.dataStride = _myStride;
-    ic.hasMask = _hasMask;
-    ic.hasRanges = _hasRanges;
-    ic.hasWeights = _hasWeights;
-    ic.isIncludeRanges = _myIsInclude;
-    ic.maskIter = _myMask;
-    ic.maskStride = _maskStride;
-    ic.ranges = _myRanges;
-    ic.weightsIter = _myWeights;
-    return ic;
-}
-*/
 
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_isNptsSmallerThan(
@@ -3128,7 +3108,6 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
-
 ) {
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
