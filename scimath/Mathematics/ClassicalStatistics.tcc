@@ -40,6 +40,9 @@
 
 namespace casacore {
 
+CASA_STATD
+const uInt ClassicalStatistics<CASA_STATP>::CACHE_PADDING = 8;
+
 // min > max indicates that these quantities have not be calculated
 CASA_STATD
 ClassicalStatistics<CASA_STATP>::ClassicalStatistics()
@@ -453,17 +456,17 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
 #else
     uInt nThreadsMax = 1;
 #endif
-    Int64 *maxpos = new Int64[8*nThreadsMax];
-    Int64 *minpos = new Int64[8*nThreadsMax];
-    AccumType *mymax = new AccumType[8*nThreadsMax];
-    AccumType *mymin = new AccumType[8*nThreadsMax];
-    StatsData<AccumType> *tStats = new StatsData<AccumType>[8*nThreadsMax];
-    uInt64 *ngood = new uInt64[8*nThreadsMax];
-    DataIterator *dataIter = new DataIterator[8*nThreadsMax];
-    WeightsIterator *weightsIter = new WeightsIterator[8*nThreadsMax];
-    MaskIterator *maskIter = new MaskIterator[8*nThreadsMax];
+    Int64 *maxpos = new Int64[CACHE_PADDING*nThreadsMax];
+    Int64 *minpos = new Int64[CACHE_PADDING*nThreadsMax];
+    AccumType *mymax = new AccumType[CACHE_PADDING*nThreadsMax];
+    AccumType *mymin = new AccumType[CACHE_PADDING*nThreadsMax];
+    StatsData<AccumType> *tStats = new StatsData<AccumType>[CACHE_PADDING*nThreadsMax];
+    uInt64 *ngood = new uInt64[CACHE_PADDING*nThreadsMax];
+    DataIterator *dataIter = new DataIterator[CACHE_PADDING*nThreadsMax];
+    WeightsIterator *weightsIter = new WeightsIterator[CACHE_PADDING*nThreadsMax];
+    MaskIterator *maskIter = new MaskIterator[CACHE_PADDING*nThreadsMax];
     for (uInt i=0; i<nThreadsMax; ++i) {
-        uInt idx8 = 8*i;
+        uInt idx8 = CACHE_PADDING*i;
         tStats[idx8] = _getInitialStats();
         maxpos[idx8] = -1;
         minpos[idx8] = -1;
@@ -474,12 +477,12 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     while (True) {
         _initLoopVars();
         uInt nthreads = _myCount == 1
-            ? 1 : min(nThreadsMax, _myCount/100 + 2);
+            ? 1 : min(nThreadsMax, _myCount/5000 + 2);
         uInt extra = _myCount % nthreads;
         uInt ciCount = _myCount/nthreads;
         vector<uInt> initialOffset(nthreads);
         for (uInt i=0; i<nthreads; ++i) {
-            uInt idx8 = 8*i;
+            uInt idx8 = CACHE_PADDING*i;
             ngood[idx8] = 0;
             dataCount[i] = ciCount;
             if (extra > 0) {
@@ -515,7 +518,7 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
         }
 #pragma omp parallel for
         for (uInt i=0; i<nthreads; ++i) {
-            uInt idx8 = 8*i;
+            uInt idx8 = CACHE_PADDING*i;
             _computeStats(
                 tStats[idx8], ngood[idx8], mymin[idx8], mymax[idx8],
                 minpos[idx8], maxpos[idx8], dataIter[idx8], maskIter[idx8],
@@ -523,7 +526,7 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
             );
         }
         for (uInt i=0; i<nthreads; ++i) {
-            uInt idx8 = 8*i;
+            uInt idx8 = CACHE_PADDING*i;
             _updateMaxMin(
                 tStats[idx8], mymin[idx8], mymax[idx8], minpos[idx8],
                 maxpos[idx8], initialOffset[i], dataStride, this->_getIDataset()
@@ -538,7 +541,7 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     delete [] weightsIter;
     vector<StatsData<AccumType> > xstats;
     for (uInt i=0; i<nThreadsMax; ++i) {
-        const StatsData<AccumType>& s = tStats[8*i];
+        const StatsData<AccumType>& s = tStats[CACHE_PADDING*i];
         if(s.npts > 0) {
             xstats.push_back(s);
         }
