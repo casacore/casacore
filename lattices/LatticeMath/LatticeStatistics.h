@@ -215,9 +215,6 @@ public:
         Double zs;
         // Chauvenet max iterations
         Int mi;
-        // maximum number of threads to use for
-        // parallel support
-        uInt maxThreads;
     };
 
 // Constructor takes the lattice and a <src>LogIO</src> object for logging.

@@ -481,14 +481,19 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
         uInt extra = _myCount % nthreads;
         uInt ciCount = _myCount/nthreads;
         vector<uInt> initialOffset(nthreads);
+        uInt dataStride = _myStride*nthreads;
+        uInt maskStride = _maskStride*nthreads;
+        if (_hasWeights) {
+            stats.weighted = True;
+        }
+        if (_hasMask) {
+            stats.masked = True;
+        }
+#pragma omp parallel for
         for (uInt i=0; i<nthreads; ++i) {
             uInt idx8 = CACHE_PADDING*i;
             ngood[idx8] = 0;
-            dataCount[i] = ciCount;
-            if (extra > 0) {
-                ++dataCount[i];
-                --extra;
-            }
+            dataCount[i] = i < extra ? ciCount + 1 : ciCount;
             initialOffset[i] = i*_myStride;
             dataIter[idx8] = _myData;
             if (_hasWeights) {
@@ -507,18 +512,6 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
                     ++maskIter[idx8];
                 }
             }
-        }
-        uInt dataStride = _myStride*nthreads;
-        uInt maskStride = _maskStride*nthreads;
-        if (_hasWeights) {
-            stats.weighted = True;
-        }
-        if (_hasMask) {
-            stats.weighted = True;
-        }
-#pragma omp parallel for
-        for (uInt i=0; i<nthreads; ++i) {
-            uInt idx8 = CACHE_PADDING*i;
             _computeStats(
                 tStats[idx8], ngood[idx8], mymin[idx8], mymax[idx8],
                 minpos[idx8], maxpos[idx8], dataIter[idx8], maskIter[idx8],

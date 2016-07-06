@@ -51,8 +51,6 @@ public:
         CLASSICAL,
         FITTOHALF,
         HINGESFENCES,
-        // classical with parallel support
-        PCLASSICAL
     };
 
     enum STATS {
