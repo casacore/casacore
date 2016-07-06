@@ -1846,7 +1846,7 @@ int main() {
             Double median = fh.getMedianAndQuantiles(
                 quantileToValue, quantiles, npts, mymin, mymax, 100
             );
-            AlwaysAssert(near(median, -0.75), AipsError);
+            AlwaysAssert(near(median, -0.75, 1e-12), AipsError);
             AlwaysAssert(near(quantileToValue[0.25],-50001.5), AipsError);
             AlwaysAssert(near(quantileToValue[0.75], 49998.0), AipsError);
 

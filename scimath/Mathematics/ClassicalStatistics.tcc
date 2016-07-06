@@ -481,8 +481,8 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
         uInt extra = _myCount % nthreads;
         uInt ciCount = _myCount/nthreads;
         vector<uInt> initialOffset(nthreads);
-        uInt dataStride = _myStride*nthreads;
-        uInt maskStride = _maskStride*nthreads;
+        uInt dataStride = _myStride;
+        uInt maskStride = _maskStride;
         if (_hasWeights) {
             stats.weighted = True;
         }
@@ -494,7 +494,8 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
             uInt idx8 = CACHE_PADDING*i;
             ngood[idx8] = 0;
             dataCount[i] = i < extra ? ciCount + 1 : ciCount;
-            initialOffset[i] = i*_myStride;
+            uInt extraOffset = min(extra, i);
+            initialOffset[i] = (i*ciCount + extraOffset)*dataStride;
             dataIter[idx8] = _myData;
             if (_hasWeights) {
                 weightsIter[idx8] = _myWeights;
@@ -508,7 +509,8 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
             }
             if (_hasMask) {
                 maskIter[idx8] = _myMask;
-                for (uInt j=0; j<i*_maskStride; ++j) {
+                uInt maskOffset = maskStride*(i*ciCount + extraOffset);
+                for (uInt j=0; j<maskOffset; ++j) {
                     ++maskIter[idx8];
                 }
             }
