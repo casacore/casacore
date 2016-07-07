@@ -144,7 +144,7 @@ int main() {
             AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
             AlwaysAssert(sd.sum == 33, AipsError);
             AlwaysAssert(sd.sumsq == 211.5, AipsError);
-            AlwaysAssert(sd.variance == variance, AipsError);
+            AlwaysAssert(near(sd.variance, variance), AipsError);
             AlwaysAssert(
                 cs.getStatisticIndex(StatisticsData::MAX)
                 == std::pair<Int64 COMMA Int64>(1, 2),
@@ -217,15 +217,15 @@ int main() {
             cs.addData(t1.begin(), t1.size());
             std::fill(t1.begin(), t1.begin()+t1.size(), 0);
             StatsData<Double> sd = cs.getStatistics();
+            // not accumulating as added, so everything is zero,
+            // and with multi-threading, the min and max positions
+            // could be anywhere in the datasets since all values
+            // are equal, so no longer test for those
             AlwaysAssert(! sd.masked, AipsError);
             AlwaysAssert(! sd.weighted, AipsError);
             AlwaysAssert(*sd.max == 0, AipsError);
-            AlwaysAssert(sd.maxpos.first == 0, AipsError);
-            AlwaysAssert(sd.maxpos.second == 0, AipsError);
             AlwaysAssert(sd.mean == 0, AipsError);
             AlwaysAssert(*sd.min == 0, AipsError);
-            AlwaysAssert(sd.minpos.first == 0, AipsError);
-            AlwaysAssert(sd.minpos.second == 0, AipsError);
             AlwaysAssert(sd.npts == 8, AipsError);
             AlwaysAssert(sd.rms == 0, AipsError);
             AlwaysAssert(sd.stddev == 0, AipsError);

@@ -146,7 +146,7 @@ int main() {
             AlwaysAssert(near(sd.stddev, sqrt(variance)), AipsError);
             AlwaysAssert(sd.sum == 33, AipsError);
             AlwaysAssert(sd.sumsq == 211.5, AipsError);
-            AlwaysAssert(sd.variance == variance, AipsError);
+            AlwaysAssert(near(sd.variance, variance), AipsError);
             AlwaysAssert(
                 cs.getStatisticIndex(StatisticsData::MAX)
                 == std::pair<Int64 COMMA Int64>(1, 2),
@@ -219,15 +219,15 @@ int main() {
             cs.addData(t1.begin(), t1.size());
             std::fill(t1.begin(), t1.begin()+t1.size(), 0);
             StatsData<Double> sd = cs.getStatistics();
+            // not accumulating as added and all values have been set
+            // to zero. With multi-threading, the max and min positions
+            // could be anywhere since all values are equal, so no longer
+            // check those.
             AlwaysAssert(! sd.masked, AipsError);
             AlwaysAssert(! sd.weighted, AipsError);
             AlwaysAssert(*sd.max == 0, AipsError);
-            AlwaysAssert(sd.maxpos.first == 0, AipsError);
-            AlwaysAssert(sd.maxpos.second == 0, AipsError);
             AlwaysAssert(sd.mean == 0, AipsError);
             AlwaysAssert(*sd.min == 0, AipsError);
-            AlwaysAssert(sd.minpos.first == 0, AipsError);
-            AlwaysAssert(sd.minpos.second == 0, AipsError);
             AlwaysAssert(sd.npts == 8, AipsError);
             AlwaysAssert(sd.rms == 0, AipsError);
             AlwaysAssert(sd.stddev == 0, AipsError);
@@ -2009,7 +2009,7 @@ int main() {
             AlwaysAssert(sd.minpos.second == 0, AipsError);
             AlwaysAssert(sd.npts == eNpts, AipsError);
             AlwaysAssert(sd.rms == sqrt(eSumSq/eNpts), AipsError);
-            AlwaysAssert(sd.stddev == sqrt(eVar), AipsError);
+            AlwaysAssert(near(sd.stddev, sqrt(eVar)), AipsError);
             AlwaysAssert(sd.sum == eSum, AipsError);
             AlwaysAssert(sd.sumsq == eSumSq, AipsError);
             AlwaysAssert(near(sd.variance, eVar), AipsError);
@@ -2341,7 +2341,9 @@ int main() {
             AlwaysAssert(sd.maxpos.second == 1, AipsError);
             AlwaysAssert(sd.mean == eSum/eSumWeights, AipsError);
             AlwaysAssert(*sd.min == 6, AipsError);
-            AlwaysAssert(sd.minpos.first == 0, AipsError);
+            // the minimum occurs in two places, and with multi-threading, minpos
+            // could be either one
+            AlwaysAssert(sd.minpos.first == 0 || sd.minpos.first == 1, AipsError);
             AlwaysAssert(sd.minpos.second == 2, AipsError);
             AlwaysAssert(sd.npts == eNpts, AipsError);
             AlwaysAssert(sd.rms == sqrt(eSumSq/eSumWeights), AipsError);
@@ -2418,7 +2420,9 @@ int main() {
             AlwaysAssert(sd.maxpos.second == 1, AipsError);
             AlwaysAssert(sd.mean == eSum/eSumWeights, AipsError);
             AlwaysAssert(*sd.min == 6, AipsError);
-            AlwaysAssert(sd.minpos.first == 0, AipsError);
+            // the minimum occurs in two places, and with multi-threading, minpos
+            // could be either one
+            AlwaysAssert(sd.minpos.first == 0 || sd.minpos.first == 1, AipsError);
             AlwaysAssert(sd.minpos.second == 2, AipsError);
             AlwaysAssert(sd.npts == eNpts, AipsError);
             AlwaysAssert(sd.rms == sqrt(eSumSq/eSumWeights), AipsError);

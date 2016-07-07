@@ -489,29 +489,50 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
         if (_hasMask) {
             stats.masked = True;
         }
+        DataIterator sharedDataIter = _myData;
+        MaskIterator sharedMaskIter = _myMask;
+        WeightsIterator sharedWeightsIter = _myWeights;
+        uInt sharedInitialOffset = 0;
 #pragma omp parallel for
         for (uInt i=0; i<nthreads; ++i) {
             uInt idx8 = CACHE_PADDING*i;
             ngood[idx8] = 0;
             dataCount[i] = i < extra ? ciCount + 1 : ciCount;
-            uInt extraOffset = min(extra, i);
-            initialOffset[i] = (i*ciCount + extraOffset)*dataStride;
-            dataIter[idx8] = _myData;
-            if (_hasWeights) {
-                weightsIter[idx8] = _myWeights;
-            }
-            for (uInt j=0; j<initialOffset[i]; ++j) {
-                // stagger the iterators for each thread
-                ++dataIter[idx8];
+            //uInt extraOffset = min(extra, i);
+            uInt updateIncrement = dataCount[i] * dataStride;
+            //(ciCount + extraOffset)*dataStride;
+#pragma omp critical (setIters) 
+            {
+                // at the beginning of the block, the iterator is where
+                // it should be for this thread. It is the responsibility
+                // of the current thread to update the position of the
+                // shared iterators for the next thread.
+                dataIter[idx8] = sharedDataIter;
+                initialOffset[i] = sharedInitialOffset;
                 if (_hasWeights) {
-                    ++weightsIter[idx8];
+                    weightsIter[idx8] = sharedWeightsIter;
                 }
-            }
-            if (_hasMask) {
-                maskIter[idx8] = _myMask;
-                uInt maskOffset = maskStride*(i*ciCount + extraOffset);
-                for (uInt j=0; j<maskOffset; ++j) {
-                    ++maskIter[idx8];
+                if (_hasMask) {
+                    maskIter[idx8] = sharedMaskIter;
+                }
+                // now update the shared iterator positions for the next
+                // thread if not the last thread
+                if (initialOffset[i] + dataCount[i] < _myCount) {
+                    for (uInt j=0; j<updateIncrement; ++j) {
+                        ++sharedDataIter;
+                    }
+                    sharedInitialOffset += updateIncrement;
+                    if (_hasWeights) {
+                        for (uInt j=0; j<updateIncrement; ++j) {
+                            ++sharedWeightsIter;
+                        }
+                    }
+                    if (_hasMask) {
+                        uInt maskOffset = maskStride*dataCount[i];
+                        for (uInt j=0; j<maskOffset; ++j) {
+                            ++sharedMaskIter;
+                        }
+                    }
                 }
             }
             _computeStats(
