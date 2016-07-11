@@ -309,7 +309,11 @@ protected:
   using ImageInterface<T>::setCoordsMember;
 };
 
-
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class TempImage<Float>;
+  extern template class TempImage<Complex>;
+#endif
 
 } //# NAMESPACE CASACORE - END
 

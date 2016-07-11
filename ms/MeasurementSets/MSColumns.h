@@ -31,6 +31,11 @@
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/measures/Measures/MEpoch.h>
+#include <casacore/measures/Measures/MCPosition.h>
+#include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
+#include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/measures/TableMeasures/ScalarQuantColumn.h>
 #include <casacore/ms/MeasurementSets/MSAntennaColumns.h>
 #include <casacore/ms/MeasurementSets/MSDataDescColumns.h>
 #include <casacore/ms/MeasurementSets/MSDopplerColumns.h>
@@ -310,6 +315,15 @@ private:
   MSSysCalColumns sysCal_p; //optional
   MSWeatherColumns weather_p; //optional
 };
+
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class ArrayMeasColumn<MDirection>;
+  extern template class ScalarMeasColumn<MPosition>;
+  extern template class ScalarMeasColumn<MEpoch>;
+  extern template class ArrayQuantColumn<Double>;
+  extern template class ScalarQuantColumn<Double>;
+#endif
 
 } //# NAMESPACE CASACORE - END
 

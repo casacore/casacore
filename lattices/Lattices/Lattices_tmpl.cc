@@ -1,6 +1,6 @@
-//# AipsrcValue2.cc: Class to read values from the Aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997,1998,1999,2001,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
+//# Array_tmpl.cc: Explicit Array template instantiations
+//# Copyright (C) 2015
+//# Associated Universities, Inc. Washington DC, USA,
 //#
 //# This library is free software; you can redistribute it and/or modify it
 //# under the terms of the GNU Library General Public License as published by
@@ -23,34 +23,24 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
 
 //# Includes
-
-#include <casacore/casa/System/AipsrcValue.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Quanta/Quantum.h>
-#include <casacore/casa/sstream.h>
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+#include <casacore/lattices/LatticeMath/LatticeStatistics.h>
+#include <casacore/lattices/Lattices/LatticeIterInterface.h>
+#include <casacore/lattices/Lattices/PagedArray.h>
+#include <casacore/lattices/Lattices/Lattice.h>
+#include <casacore/lattices/Lattices/SubLattice.h>
 
 //# Instantiate extern templates for often used types.
 #ifdef AIPS_CXX11
-    template class AipsrcValue<Bool>;
-    template class AipsrcValue<Int>;
-    template class AipsrcValue<Double>;
-    template class AipsrcValue<String>;
-#endif
-
-template <> 
-Bool AipsrcValue<String>::find(String &value,
-			       const String &keyword,
-			       const Unit &, const Unit &) {
-  String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
-  value = res;
-  return x;
+namespace casacore {
+  template class LatticeIterInterface<Float>;
+  template class LatticeStatistics<Float>;
+  template class Lattice<Float>;
+  template class Lattice<Complex>;
+  template class PagedArray<Float>;
+  template class PagedArray<Complex>;
+  template class SubLattice<Bool>;
+  template class SubLattice<Float>;
 }
-
-} //# NAMESPACE CASACORE - END
-
+#endif
