@@ -113,7 +113,6 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
         CountedPtr<uInt64> realNPts = knownNpts.null()
             ? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
         CountedPtr<AccumType> realMin, realMax;
-        //_getRealMinMax(realMin, realMax, knownMin, knownMax);
         _getStatsData().medAbsDevMed = new AccumType(
             ConstrainedRangeStatistics<CASA_STATP>::getMedianAbsDevMed(
                 realNPts, knownMin, knownMax, binningThreshholdSizeBytes,
@@ -348,8 +347,19 @@ StatsData<AccumType> FitToHalfStatistics<CASA_STATP>::_getInitialStats() const {
 CASA_STATD
 StatsData<AccumType> FitToHalfStatistics<CASA_STATP>::_getStatistics() {
     ConstrainedRangeStatistics<CASA_STATP>::_getStatistics();
-    _getStatsData().sum = _getStatsData().mean * _getStatsData().sumweights;
-    return copy(_getStatsData());
+    StatsData<AccumType>& stats = _getStatsData();
+    stats.sum = stats.mean * stats.sumweights;
+    if (_useLower) {
+        stats.maxpos.first = -1;
+        stats.maxpos.second = -1;
+        stats.max = new AccumType(TWO*_centerValue - *stats.min);
+    }
+    else {
+        stats.minpos.first = -1;
+        stats.minpos.second = -1;
+        stats.min = new AccumType(TWO*_centerValue - *stats.max);
+    }
+    return copy(stats);
 }
 
 CASA_STATD
@@ -357,7 +367,6 @@ void FitToHalfStatistics<CASA_STATP>::_setRange() {
     if (_rangeIsSet) {
         return;
     }
-    //this->_setRangeIsBeingSet(True);
     ClassicalStatistics<CASA_STATP> cs(*this);
     if (_centerType == FitToHalfStatisticsData::CMEAN || _centerType == FitToHalfStatisticsData::CMEDIAN) {
         _centerValue = _centerType == FitToHalfStatisticsData::CMEAN
@@ -379,39 +388,36 @@ void FitToHalfStatistics<CASA_STATP>::_setRange() {
 #define _unweightedStatsCodeFH \
     if (this->_isInRange(*datum)) { \
         StatisticsUtilities<AccumType>::accumulateSym( \
-            stats.npts, stats.nvariance, stats.sumsq, mymin, mymax, minpos, \
-            maxpos, *datum, count, _centerValue \
+            stats.npts, stats.nvariance, stats.sumsq, *stats.min, *stats.max, stats.minpos, \
+            stats.maxpos, *datum, location, _centerValue \
         ); \
         ngood += 2; \
     }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
-    AccumType& mymax, Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) {
     DataIterator datum = dataBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
         _unweightedStatsCodeFH
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, True, dataStride
         );
+        location.second += dataStride;
     }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
-    AccumType& mymax, Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) {
     DataIterator datum = dataBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -423,36 +429,35 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
             _unweightedStatsCodeFH
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, True, dataStride
         );
+        location.second += dataStride;
     }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
-    AccumType& mymax, Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) {
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask) {
             _unweightedStatsCodeFH
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, True, dataStride, maskStride
         );
+        location.second += dataStride;
     }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
-    AccumType& mymax, Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
@@ -460,7 +465,6 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -472,106 +476,91 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
             _unweightedStatsCodeFH
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, True, dataStride, maskStride
         );
+        location.second += dataStride;
     }
 }
 
 CASA_STATD
-void FitToHalfStatistics<CASA_STATP>::_updateMaxMin(
-    StatsData<AccumType>& threadStats, AccumType mymin,
-    AccumType mymax, Int64 minpos, Int64 maxpos, uInt initialOffset,
-    uInt dataStride, Int64 currentDataset
+void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
+    const StatsData<AccumType>& threadStats
 ) {
-    Bool minUpdated = False;
-    Bool maxUpdated = False;
-    if (
-        maxpos >= 0
-        && (threadStats.max.null() || mymax > *threadStats.max)
-    ) {
-        //_realMax = new AccumType(mymax);
-        if (_realMax.null() || mymax > *_realMax) {
-            _realMax = new AccumType(mymax);
-        }
-        if (! _useLower) {
-            threadStats.maxpos.first = currentDataset;
-            threadStats.maxpos.second = initialOffset + maxpos*dataStride;
-            threadStats.minpos.first = -1;
-            threadStats.minpos.second = -1;
-            threadStats.max = new AccumType(mymax);
-            threadStats.min = new AccumType(TWO*_centerValue - mymax);
-            maxUpdated = True;
-        }
-    }
-    if (
-        minpos >= 0
-        && (threadStats.min.null() || mymin > *threadStats.min)
-    ) {
-        //_realMin = new AccumType(mymin);
-        if (_realMin.null() || mymin > *_realMin) {
-            _realMin = new AccumType(mymin);
-        }
-        if (_useLower) {
-            threadStats.minpos.first = currentDataset;
-            threadStats.minpos.second = initialOffset + minpos*dataStride;
-            threadStats.maxpos.first = -1;
-            threadStats.maxpos.second = -1;
-            threadStats.min = new AccumType(mymin);
-            threadStats.max = new AccumType(TWO*_centerValue - mymin);
-            minUpdated = True;
+    StatsDataProvider<CASA_STATP> *dataProvider
+        = this->_getDataProvider();
+    if (! dataProvider) {
+        return;
+    }    
+    // if there is a data provider, and the max and/or min updated,
+    // we have to update the data provider after each data set is
+    // processed, because the LatticeStatsDataProvider currently
+    // requires that.
+    StatsData<AccumType>& stats = _getStatsData();
+    //Bool same = &threadStats == &stats;
+    uInt iDataset = this->_getIDataset();
+    if ( 
+        iDataset == threadStats.maxpos.first 
+        && (stats.max.null() || *threadStats.max > *stats.max)
+    ) {  
+        if (_realMax.null() || *threadStats.max > *_realMax) {
+            _realMax = threadStats.max;
+            if (! _useLower) {
+                dataProvider->updateMaxPos(threadStats.maxpos);
+            }
         }
     }
-    if (this->_getDataProvider() && (maxUpdated || minUpdated)) {
-        Bool force = &_getStatsData() == &threadStats;
-        this->_updateDataProviderMaxMin(
-            force, minUpdated, maxUpdated, mymin, mymax, minpos, maxpos,
-            initialOffset, dataStride, currentDataset
-        );
+    if ( 
+        iDataset == threadStats.minpos.first 
+        && (stats.max.null() || (*threadStats.min) < (*stats.min))
+    ) {  
+        if (_realMin.null() || (*threadStats.min) < (*_realMin)) {
+            _realMin = threadStats.min;
+            if (_useLower) {
+                dataProvider->updateMinPos(threadStats.minpos);
+            }
+        }
     }
-}
+}  
 
 // use #define to ensure code is compiled inline
 #define _weightedStatsCodeFH \
     if (this->_isInRange(*datum)) { \
         StatisticsUtilities<AccumType>::waccumulateSym( \
             stats.npts, stats.sumweights, stats.nvariance, \
-            stats.sumsq, mymin, mymax, minpos, maxpos, *datum, \
-            *weight, count, _centerValue \
+            stats.sumsq, *stats.min, *stats.max, stats.minpos, stats.maxpos, *datum, \
+            *weight, location, _centerValue \
         ); \
     }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
-    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride
 ) {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
         if (*weight > 0) {
             _weightedStatsCodeFH
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, True, dataStride
         );
+        location.second += dataStride;
     }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
-    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -584,15 +573,15 @@ void FitToHalfStatistics<CASA_STATP>::_weightedStats(
             _weightedStatsCodeFH
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, True, dataStride
         );
+        location.second += dataStride;
     }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
-    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
@@ -601,7 +590,6 @@ void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -614,15 +602,15 @@ void FitToHalfStatistics<CASA_STATP>::_weightedStats(
             _weightedStatsCodeFH
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, True, dataStride, maskStride
         );
+        location.second += dataStride;
     }
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
-    StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
-    Int64& minpos, Int64& maxpos,
+    StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) {
@@ -630,14 +618,14 @@ void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _weightedStatsCodeFH
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, True, dataStride, maskStride
         );
+        location.second += dataStride;
     }
 }
 

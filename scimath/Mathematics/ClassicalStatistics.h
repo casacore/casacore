@@ -253,13 +253,13 @@ protected:
 
     // <group>
     inline void _accumulate(
-        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos,
-        const AccumType& datum , Int64 count
+        StatsData<AccumType>& stats, const AccumType& datum,
+        const LocationType& location
     );
-
+ 
     inline void _accumulate(
-        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax, Int64& minpos, Int64& maxpos, const AccumType& datum,
-        const AccumType& weight, Int64 count
+        StatsData<AccumType>& stats, const AccumType& datum,
+        const AccumType& weight, const LocationType& location
     );
     // </group>
 
@@ -270,9 +270,9 @@ protected:
     void _clearStats();
 
     void _computeStats(
-        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin, AccumType& mymax,
-        Int64& minpos, Int64& maxpos, DataIterator dataIter, MaskIterator maskIter,
-        WeightsIterator weightsIter, uInt dataStride, uInt maskStride, uInt64 count
+        StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
+        DataIterator dataIter, MaskIterator maskIter, WeightsIterator weightsIter,
+        uInt dataStride, uInt maskStride, uInt64 count
     );
 
     // scan dataset(s) to find min and max
@@ -601,74 +601,57 @@ protected:
     // <group>
     // no weights, no mask, no ranges
     virtual void _unweightedStats(
-        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
-        AccumType& mymax, Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride
     );
 
     // no weights, no mask
     virtual void _unweightedStats(
-        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
-        AccumType& mymax, Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude
     );
 
     virtual void _unweightedStats(
-        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
-        AccumType& mymax, Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride
     );
 
     virtual void _unweightedStats(
-        StatsData<AccumType>& stats, uInt64& ngood, AccumType& mymin,
-        AccumType& mymax, Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
     );
+
     // </group>
-
-    // update min and max if necessary
-    virtual void _updateMaxMin(
-        StatsData<AccumType>& threadStats, AccumType mymin,
-        AccumType mymax, Int64 minpos, Int64 maxpos, uInt initialOffset,
-        uInt dataStride, Int64 currentDataset
-    );
-
-    void _updateDataProviderMaxMin(
-        Bool force, Bool minUpdated, Bool maxUpdated, AccumType mymin,
-        AccumType mymax, Int64 minpos, Int64 maxpos, uInt initialOffset,
-        uInt dataStride, Int64 currentDataset
+    virtual void _updateDataProviderMaxMin(
+        const StatsData<AccumType>& threadStats
     );
 
     // <group>
     // has weights, but no mask, no ranges
     virtual void _weightedStats(
-        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
-        Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         Int64 nr, uInt dataStride
     );
 
     virtual void _weightedStats(
-        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
-        Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
     );
 
     virtual void _weightedStats(
-        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
-        Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
     );
 
     virtual void _weightedStats(
-        StatsData<AccumType>& stats, AccumType& mymin, AccumType& mymax,
-        Int64& minpos, Int64& maxpos,
+        StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
@@ -699,6 +682,7 @@ private:
     mutable uInt64 _myCount;
 
     static const uInt CACHE_PADDING;
+    static const uInt BLOCK_SIZE;
 
     // tally the number of data points that fall into each bin provided by <src>binDesc</src>
     // Any points that are less than binDesc.minLimit or greater than

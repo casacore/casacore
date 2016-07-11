@@ -1546,6 +1546,7 @@ Bool ConstrainedRangeStatistics<CASA_STATP>::_populateTestArray(
         return False;
 }
 
+/*
 // use a define to ensure code is compiled inline
 
 #define _unweightedStatsCodeCR \
@@ -1752,6 +1753,222 @@ void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
                 datum, count, weight, mask, unityStride, dataStride, maskStride
             );
         }
+}
+
+*/
+#define _unweightedStatsCodeCR \
+    if (_isInRange(*datum)) { \
+        this->_accumulate(stats, *datum, location); \
+        ++ngood; \
+    }
+
+CASA_STATD
+void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
+    StatsData<AccumType>& stats, uInt64& ngood, /* AccumType& mymin,
+    AccumType& mymax, LocationType& minpos, LocationType& maxpos, */
+    LocationType& location, const DataIterator& dataBegin, Int64 nr,
+    uInt dataStride
+) {
+    DataIterator datum = dataBegin;
+    Int64 count = 0;
+    // Bool unityStride = dataStride == 1;
+    while (count < nr) {
+        _unweightedStatsCodeCR
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, True, dataStride
+        );
+        location.second += dataStride;
+    }
+}
+
+CASA_STATD
+void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
+    StatsData<AccumType>& stats, uInt64& ngood, /* AccumType& mymin,
+    AccumType& mymax, LocationType& minpos, LocationType& maxpos, */
+    LocationType& location, const DataIterator& dataBegin, Int64 nr,
+    uInt dataStride, const DataRanges& ranges, Bool isInclude
+) {
+    DataIterator datum = dataBegin;
+    Int64 count = 0;
+   // Bool unityStride = dataStride == 1;
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (count < nr) {
+        if (
+            StatisticsUtilities<AccumType>::includeDatum(
+                *datum, beginRange, endRange, isInclude
+            )
+        ) {
+            _unweightedStatsCodeCR
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, True, dataStride
+        );
+        location.second += dataStride;
+    }
+}
+
+CASA_STATD
+void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
+    StatsData<AccumType>& stats, uInt64& ngood, /* AccumType& mymin,
+    AccumType& mymax, LocationType& minpos, LocationType& maxpos, */
+    LocationType& location, const DataIterator& dataBegin, Int64 nr,
+    uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+) {
+    DataIterator datum = dataBegin;
+    MaskIterator mask = maskBegin;
+    Int64 count = 0;
+    //Bool unityStride = dataStride == 1 && maskStride == 1;
+    while (count < nr) {
+        if (*mask) {
+            _unweightedStatsCodeCR
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, mask, True, dataStride, maskStride
+        );
+        location.second += dataStride;
+    }
+}
+
+CASA_STATD
+void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
+    StatsData<AccumType>& stats, uInt64& ngood, /* AccumType& mymin,
+    AccumType& mymax, LocationType& minpos, LocationType& maxpos, */
+    LocationType& location, const DataIterator& dataBegin, Int64 nr,
+    uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    const DataRanges& ranges, Bool isInclude
+) {
+    DataIterator datum = dataBegin;
+    MaskIterator mask = maskBegin;
+    Int64 count = 0;
+    //Bool unityStride = dataStride == 1 && maskStride == 1;
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (count < nr) {
+        if (
+            *mask && StatisticsUtilities<AccumType>::includeDatum(
+                *datum, beginRange, endRange, isInclude
+            )
+        ) {
+            _unweightedStatsCodeCR
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, mask, True, dataStride, maskStride
+        );
+        location.second += dataStride;
+    }
+}
+
+// use #define to ensure code is compiled inline
+
+#define _weightedStatsCodeCR \
+    if (_isInRange(*datum)) { \
+        this->_accumulate(stats, *datum, *weight, location); \
+    }
+
+CASA_STATD
+void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
+    StatsData<AccumType>& stats, /* AccumType& mymin, AccumType& mymax,
+    LocationType& minpos, LocationType& maxpos, */ LocationType& location,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    Int64 nr, uInt dataStride
+) {
+    DataIterator datum = dataBegin;
+    WeightsIterator weight = weightsBegin;
+    Int64 count = 0;
+    //Bool unityStride = dataStride == 1;
+    while (count < nr) {
+        if (*weight > 0) {
+            _weightedStatsCodeCR
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, weight, True, dataStride
+        );
+        location.second += dataStride;
+    }
+}
+
+CASA_STATD
+void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
+    StatsData<AccumType>& stats, /* AccumType& mymin, AccumType& mymax,
+    LocationType& minpos, LocationType& maxpos, */ LocationType& location,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+) {
+    DataIterator datum = dataBegin;
+    WeightsIterator weight = weightsBegin;
+    Int64 count = 0;
+    // Bool unityStride = dataStride == 1;
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (count < nr) {
+        if (
+            *weight > 0
+            && StatisticsUtilities<AccumType>::includeDatum(
+                *datum, beginRange, endRange, isInclude
+            )
+        ) {
+            _weightedStatsCodeCR
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, weight, True, dataStride
+        );
+        location.second += dataStride;
+    }
+}
+
+CASA_STATD
+void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
+    StatsData<AccumType>& stats, /* AccumType& mymin, AccumType& mymax,
+    LocationType& minpos, LocationType& maxpos, */ LocationType& location,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    const DataRanges& ranges, Bool isInclude
+) {
+    DataIterator datum = dataBegin;
+    WeightsIterator weight = weightsBegin;
+    MaskIterator mask = maskBegin;
+    Int64 count = 0;
+    //Bool unityStride = dataStride == 1 && maskStride == 1;
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (count < nr) {
+        if (
+            *mask && *weight > 0
+            && StatisticsUtilities<AccumType>::includeDatum(
+                *datum, beginRange, endRange, isInclude
+            )
+        ) {
+            _weightedStatsCodeCR
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, weight, mask, True, dataStride, maskStride
+        );
+        location.second += dataStride;
+    }
+}
+
+CASA_STATD
+void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
+    StatsData<AccumType>& stats, /* AccumType& mymin, AccumType& mymax,
+    LocationType& minpos, LocationType& maxpos, */ LocationType& location,
+    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+) {
+    DataIterator datum = dataBegin;
+    WeightsIterator weight = weightsBegin;
+    MaskIterator mask = maskBegin;
+    Int64 count = 0;
+    Bool unityStride = dataStride == 1 && maskStride == 1;
+    while (count < nr) {
+        if (*mask && *weight > 0) {
+            _weightedStatsCodeCR
+        }
+        StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
+            datum, count, weight, mask, unityStride, dataStride, maskStride
+        );
+        location.second += dataStride;
+    }
 }
 
 }

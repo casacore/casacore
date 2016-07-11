@@ -422,7 +422,6 @@ int main() {
                 ), AipsError
             );
         }
-
         {
             // Verify class does not support computing stats as
             // datasets are added
@@ -1501,7 +1500,6 @@ int main() {
             AlwaysAssert(mymin == 2.5, AipsError);
             AlwaysAssert(near(mymax, 123.0/22.0), AipsError);
         }
-
         {
             // getNPts(), two datasets
             FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
@@ -1619,7 +1617,6 @@ int main() {
             q = fh.getQuantile(0.9);
             AlwaysAssert(q == 10, AipsError);
         }
-
         {
             // getQuantile(): two datasets, stride = 2,1
             // 1.5, 2, 2.5 5, 8, 10
