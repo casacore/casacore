@@ -457,6 +457,10 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
 #else
     uInt nThreadsMax = 1;
 #endif
+    DataIterator *dataIter = new DataIterator[CACHE_PADDING*nThreadsMax];
+    MaskIterator *maskIter = new MaskIterator[CACHE_PADDING*nThreadsMax];
+    WeightsIterator *weightsIter = new WeightsIterator[CACHE_PADDING*nThreadsMax];
+    uInt64 *offset = new uInt64[CACHE_PADDING*nThreadsMax];
     StatsData<AccumType> *tStats = new StatsData<AccumType>[CACHE_PADDING*nThreadsMax];
     for (uInt i=0; i<nThreadsMax; ++i) {
         uInt idx8 = CACHE_PADDING*i;
@@ -468,8 +472,13 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     }
     while (True) {
         _initLoopVars();
+        uInt nBlocks = _myCount/BLOCK_SIZE;
+        uInt extra = _myCount % BLOCK_SIZE;
+        if (extra > 0) {
+            ++nBlocks;
+        }
         uInt nthreads = _myCount == 1
-            ? 1 : min(nThreadsMax, _myCount/5000 + 2);
+            ? 1 : min(nThreadsMax, nBlocks + 1);
         uInt dataStride = _myStride;
         uInt maskStride = _maskStride;
         if (_hasWeights) {
@@ -478,14 +487,19 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
         if (_hasMask) {
             stats.masked = True;
         }
-        DataIterator sharedDataIter = _myData;
-        MaskIterator sharedMaskIter = _myMask;
-        WeightsIterator sharedWeightsIter = _myWeights;
-        uInt sharedInitialOffset = 0;
-        uInt nBlocks = _myCount/BLOCK_SIZE;
-        uInt extra = _myCount % BLOCK_SIZE;
-        if (extra > 0) {
-            ++nBlocks;
+        for (uInt tid=0; tid<nthreads; ++tid) {
+            uInt idx8 = CACHE_PADDING*tid;
+            dataIter[idx8] = _myData;
+            offset[idx8] = tid*BLOCK_SIZE*dataStride;
+            std::advance(dataIter[idx8], offset[idx8]);
+            if (_hasWeights) {
+                weightsIter[idx8] = _myWeights;
+                std::advance(weightsIter[idx8], offset[idx8]);
+            }
+            if (_hasMask) {
+                maskIter[idx8] = _myMask;
+                std::advance(maskIter[idx8], tid*BLOCK_SIZE*maskStride);
+            }
         }
 #pragma omp parallel for num_threads(nthreads)
         for (uInt i=0; i<nBlocks; ++i) {
@@ -494,45 +508,23 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
 #else
             uInt tid = 0;
 #endif
-            DataIterator dataIter = _myData;
-            MaskIterator maskIter = _myMask;
-            WeightsIterator weightsIter = _myWeights;
             uInt64 ngood = 0;
             uInt idx8 = CACHE_PADDING*tid;
-            uInt dataCount = i == nBlocks - 1 && extra > 0 ? extra : BLOCK_SIZE;
-            uInt updateIncrement = dataCount * dataStride;
-            LocationType location(_idataset, 0);
-#pragma omp critical (setIters) 
-            {
-                // at the beginning of the block, the iterator is where
-                // it should be for this thread. It is the responsibility
-                // of the current thread to update the position of the
-                // shared iterators for the next thread.
-                dataIter = sharedDataIter;
-                location.second = sharedInitialOffset;
-                if (_hasWeights) {
-                    weightsIter = sharedWeightsIter;
-                }
-                if (_hasMask) {
-                    maskIter = sharedMaskIter;
-                }
-                // now update the shared iterator positions for the next
-                // thread if not the last thread
-                if (sharedInitialOffset + dataCount < _myCount) {
-                    std::advance(sharedDataIter, updateIncrement);
-                    sharedInitialOffset += updateIncrement;
-                    if (_hasWeights) {
-                        std::advance(sharedWeightsIter, updateIncrement);
-                    }
-                    if (_hasMask) {
-                        std::advance(sharedMaskIter, maskStride*dataCount);
-                    }
-                }
-            }
+            uInt dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
+            LocationType location(_idataset, offset[idx8]);
             _computeStats(
-                tStats[idx8], ngood, location, dataIter, maskIter,
-                weightsIter, dataStride, maskStride, dataCount
+                tStats[idx8], ngood, location, dataIter[idx8], maskIter[idx8],
+                weightsIter[idx8], dataStride, maskStride, dataCount
             );
+            uInt increment = nthreads*BLOCK_SIZE*dataStride;
+            std::advance(dataIter[idx8], increment);
+            if (_hasWeights) {
+                std::advance(weightsIter[idx8], increment);
+            }
+            if (_hasMask) {
+                std::advance(maskIter[idx8], nthreads*BLOCK_SIZE*maskStride);
+            }
+            offset[idx8] += increment;
         }
         for (uInt tid=0; tid<nthreads; ++tid) {
             uInt idx8 = CACHE_PADDING*tid;
@@ -542,6 +534,10 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
             break;
         }
     }
+    delete [] dataIter;
+    delete [] maskIter;
+    delete [] weightsIter;
+    delete [] offset;
     vector<StatsData<AccumType> > xstats;
     for (uInt i=0; i<nThreadsMax; ++i) {
         // in case no max/min was set, clear the nominal values
@@ -558,9 +554,8 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
         }
     }
     delete [] tStats;
-
     if (stats.npts > 0) {
-        // we've accumululted some stats previously so we must
+        // we've accumulated some stats previously so we must
         // account for that here
         xstats.push_back(stats);
     }
@@ -2977,18 +2972,22 @@ void ClassicalStatistics<CASA_STATP>::_updateDataProviderMaxMin(
         && (stats.max.null() || *threadStats.max > *stats.max)
     ) {
         if (! same) {
+            // make certain to make a copy, do not assign
+            // one pointer to another
             stats.maxpos = threadStats.maxpos;
-            stats.max = threadStats.max;
+            stats.max = new AccumType(*threadStats.max);
         }
         dataProvider->updateMaxPos(stats.maxpos);
     }
     if (
         _idataset == threadStats.minpos.first 
-        && (stats.min.null() || *(threadStats.min) < *(stats.min))
+        && (stats.min.null() || (*threadStats.min) < (*stats.min))
     ) {
         if (! same) {
+            // make certain to make a copy of the value, do not assign
+            // one pointer to another
             stats.minpos = threadStats.minpos;
-            stats.min = threadStats.min;
+            stats.min = new AccumType(*threadStats.min);
         }
         dataProvider->updateMinPos(stats.minpos);
     }

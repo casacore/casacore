@@ -503,7 +503,7 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
         && (stats.max.null() || *threadStats.max > *stats.max)
     ) {  
         if (_realMax.null() || *threadStats.max > *_realMax) {
-            _realMax = threadStats.max;
+            _realMax = new AccumType(threadStats.max);
             if (! _useLower) {
                 dataProvider->updateMaxPos(threadStats.maxpos);
             }
@@ -514,7 +514,7 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
         && (stats.max.null() || (*threadStats.min) < (*stats.min))
     ) {  
         if (_realMin.null() || (*threadStats.min) < (*_realMin)) {
-            _realMin = threadStats.min;
+            _realMin = new AccumType(threadStats.min);
             if (_useLower) {
                 dataProvider->updateMinPos(threadStats.minpos);
             }
