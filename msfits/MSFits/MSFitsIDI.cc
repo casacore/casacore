@@ -385,6 +385,11 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
       mssub.rename (itsMSOut+"/SYSCAL",Table::New);
       msmain.rwKeywordSet().defineTable("SYSCAL",mssub);
     }
+    if (subTableName(isub)=="WEATHER") {
+      Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/WEATHER",Table::Update);
+      mssub.rename (itsMSOut+"/WEATHER",Table::New);
+      msmain.rwKeywordSet().defineTable("WEATHER",mssub);
+    }
     //if (subTableName(isub)=="INTERFEROMETER_MODEL") {
     //  Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/IDI_CORRELATOR_MODEL",Table::Update);
     //  mssub.rename (itsMSOut+"/IDI_CORRELATOR_MODEL",Table::Update);
