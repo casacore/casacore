@@ -29,6 +29,8 @@
 
 #include <casacore/scimath/Mathematics/StatisticsUtilities.h>
 
+//#include <casacore/scimath/Mathematics/StatisticsTypes.h>
+
 #include <iostream>
 
 namespace casacore {
@@ -248,6 +250,56 @@ Bool StatisticsUtilities<AccumType>::includeDatum(
     }
     return ! isInclude;
 }
+
+template <class AccumType>
+StatsData<AccumType> StatisticsUtilities<AccumType>::combine(
+    const vector<StatsData<AccumType> >& stats
+) {
+    StatsData<AccumType> res = initializeStatsData<AccumType>();
+    typename vector<StatsData<AccumType> >::const_iterator iter = stats.begin();
+    typename vector<StatsData<AccumType> >::const_iterator end = stats.end();
+    static const AccumType zero = 0;
+    static const AccumType one = 1;
+    for (; iter!=end; ++iter) {
+        if (! iter->max.null()) {
+            if (res.max.null() || *(iter->max) > *res.max) {
+                res.max = iter->max;
+                res.maxpos = iter->maxpos;
+            }
+        }
+        if (! iter->min.null()) {
+            if (res.min.null() || *(iter->min) < *res.min) {
+                res.min = iter->min;
+                res.minpos = iter->minpos;
+            }
+        }
+        AccumType sumweights = iter->sumweights + res.sumweights;
+        AccumType mean = sumweights == zero ? zero
+            : (iter->sumweights*iter->mean + res.sumweights*res.mean)/sumweights;
+        AccumType nvariance = zero;
+        if (sumweights > zero) {
+            AccumType diff1 = iter->mean - mean;
+            AccumType diff2 = res.mean - mean;
+            nvariance = iter->nvariance + res.nvariance
+                + iter->sumweights*diff1*diff1
+                + res.sumweights*diff2*diff2;
+        }
+        res.masked = iter->masked || res.masked;
+        res.mean = mean;
+        res.npts = iter->npts + res.npts;
+        res.nvariance = nvariance;
+        res.sum = iter->sum + res.sum;
+        res.sumsq = iter->sumsq + res.sumsq;
+        res.sumweights = sumweights;
+        res.variance = res.sumweights > one
+            ? nvariance/(res.sumweights - one) : 0;
+        res.rms = sqrt(res.sumsq/res.sumweights);
+        res.stddev = sqrt(res.variance);
+        res.weighted = iter->weighted || res.weighted;
+    }
+    return res;
+}
+
 
 }
 

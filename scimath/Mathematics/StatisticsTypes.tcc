@@ -108,6 +108,9 @@ Record toRecord(const StatsData<AccumType>& stats) {
 		StatisticsData::toString(StatisticsData::SUMSQ), stats.sumsq
 	);
 	r.define(
+		StatisticsData::toString(StatisticsData::SUMWEIGHTS), stats.sumweights
+	);
+	r.define(
 		StatisticsData::toString(StatisticsData::VARIANCE), stats.variance
 	);
 	if (! stats.max.null()) {

@@ -131,7 +131,7 @@ int main() {
 			stats.weighted = False;
 			Record rec = toRecord(stats);
 			AlwaysAssert(
-				!rec.isDefined(StatisticsData::toString(StatisticsData::SUMWEIGHTS)),
+				rec.isDefined(StatisticsData::toString(StatisticsData::SUMWEIGHTS)),
 				AipsError);
 		}
 		{

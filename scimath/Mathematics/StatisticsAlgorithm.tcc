@@ -40,317 +40,317 @@ CASA_STATD StatisticsAlgorithm<CASA_STATP>::StatisticsAlgorithm()
 
 CASA_STATD StatisticsAlgorithm<CASA_STATP>&
 StatisticsAlgorithm<CASA_STATP>::operator= (
-	const StatisticsAlgorithm<CASA_STATP>& other
+    const StatisticsAlgorithm<CASA_STATP>& other
 ) {
-	 if (this == &other) {
-		 return *this;
-	 }
-	 _data = other._data;
-	 _weights = other._weights;
-	 _masks = other._masks;
-	 _counts = other._counts;
-	 _dataStrides = other._dataStrides;
-	 _maskStrides = other._maskStrides;
-	 _isIncludeRanges = other._isIncludeRanges;
-	 _dataRanges = other._dataRanges;
-	 _sortedArray = other._sortedArray;
-	 _statsToCalculate = other._statsToCalculate;
-	 _unsupportedStats = other._unsupportedStats;
-	 // WARN reference sementics
-	 _dataProvider = other._dataProvider;
-	 return *this;
+     if (this == &other) {
+         return *this;
+     }
+     _data = other._data;
+     _weights = other._weights;
+     _masks = other._masks;
+     _counts = other._counts;
+     _dataStrides = other._dataStrides;
+     _maskStrides = other._maskStrides;
+     _isIncludeRanges = other._isIncludeRanges;
+     _dataRanges = other._dataRanges;
+     _sortedArray = other._sortedArray;
+     _statsToCalculate = other._statsToCalculate;
+     _unsupportedStats = other._unsupportedStats;
+     // WARN reference sementics
+     _dataProvider = other._dataProvider;
+     return *this;
 }
 
 CASA_STATD StatisticsAlgorithm<CASA_STATP>::~StatisticsAlgorithm() {}
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
-	const DataIterator& first, uInt nr, uInt dataStride, Bool nrAccountsForStride
+    const DataIterator& first, uInt nr, uInt dataStride, Bool nrAccountsForStride
 ) {
-	_throwIfDataProviderDefined();
-	_data.push_back(first);
-	// internally we store the number of strided points
+    _throwIfDataProviderDefined();
+    _data.push_back(first);
+    // internally we store the number of strided points
 
-	_counts.push_back(
-		nrAccountsForStride ? nr
-			: nr % dataStride == 0
-			  ? nr/dataStride
-				: nr/dataStride + 1
-	);
-	_dataStrides.push_back(dataStride);
-	_addData();
+    _counts.push_back(
+        nrAccountsForStride ? nr
+            : nr % dataStride == 0
+              ? nr/dataStride
+                : nr/dataStride + 1
+    );
+    _dataStrides.push_back(dataStride);
+    _addData();
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
-	const DataIterator& first, uInt nr,
-	const DataRanges& dataRanges, Bool isInclude, uInt dataStride,
-	Bool nrAccountsForStride
+    const DataIterator& first, uInt nr,
+    const DataRanges& dataRanges, Bool isInclude, uInt dataStride,
+    Bool nrAccountsForStride
 ) {
-	_throwIfDataProviderDefined();
-	typename DataRanges::const_iterator riter = dataRanges.begin();
-	typename DataRanges::const_iterator rend = dataRanges.end();
-	while (riter != rend) {
-		ThrowIf(
-			(*riter).first > (*riter).second,
-			"The first value in a range pair cannot be greater than the second"
-		);
-		++riter;
-	}
-	uInt n = _data.size();
-	_isIncludeRanges[n] = isInclude;
-	_dataRanges[n] = dataRanges;
-	this->addData(first, nr, dataStride, nrAccountsForStride);
+    _throwIfDataProviderDefined();
+    typename DataRanges::const_iterator riter = dataRanges.begin();
+    typename DataRanges::const_iterator rend = dataRanges.end();
+    while (riter != rend) {
+        ThrowIf(
+            (*riter).first > (*riter).second,
+            "The first value in a range pair cannot be greater than the second"
+        );
+        ++riter;
+    }
+    uInt n = _data.size();
+    _isIncludeRanges[n] = isInclude;
+    _dataRanges[n] = dataRanges;
+    this->addData(first, nr, dataStride, nrAccountsForStride);
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
-	const DataIterator& first, const MaskIterator& maskFirst,
-	uInt nr, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
+    const DataIterator& first, const MaskIterator& maskFirst,
+    uInt nr, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
 ) {
-	_throwIfDataProviderDefined();
-	uInt key = _data.size();
-	_maskStrides[key] = maskStride;
-	_masks[key] = maskFirst;
-	this->addData(first, nr, dataStride, nrAccountsForStride);
+    _throwIfDataProviderDefined();
+    uInt key = _data.size();
+    _maskStrides[key] = maskStride;
+    _masks[key] = maskFirst;
+    this->addData(first, nr, dataStride, nrAccountsForStride);
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
-	const DataIterator& first, const MaskIterator& maskFirst,
-	uInt nr, const DataRanges& dataRanges,
-	Bool isInclude, uInt dataStride, Bool nrAccountsForStride,
-	uInt maskStride
+    const DataIterator& first, const MaskIterator& maskFirst,
+    uInt nr, const DataRanges& dataRanges,
+    Bool isInclude, uInt dataStride, Bool nrAccountsForStride,
+    uInt maskStride
 ) {
-	_throwIfDataProviderDefined();
-	uInt key = _data.size();
-	_maskStrides[key] = maskStride;
-	_masks[key] = maskFirst;
-	this->addData(
-		first, nr, dataRanges, isInclude,
-		dataStride, nrAccountsForStride
-	);
+    _throwIfDataProviderDefined();
+    uInt key = _data.size();
+    _maskStrides[key] = maskStride;
+    _masks[key] = maskFirst;
+    this->addData(
+        first, nr, dataRanges, isInclude,
+        dataStride, nrAccountsForStride
+    );
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
-	const DataIterator& first, const WeightsIterator& weightFirst,
-	uInt nr, uInt dataStride, Bool nrAccountsForStride
+    const DataIterator& first, const WeightsIterator& weightFirst,
+    uInt nr, uInt dataStride, Bool nrAccountsForStride
 ) {
-	_throwIfDataProviderDefined();
-	_weights[_data.size()] = weightFirst;
-	this->addData(first, nr, dataStride, nrAccountsForStride);
+    _throwIfDataProviderDefined();
+    _weights[_data.size()] = weightFirst;
+    this->addData(first, nr, dataStride, nrAccountsForStride);
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
-	const DataIterator& first, const WeightsIterator& weightFirst,
-	uInt nr, const DataRanges& dataRanges,
-	Bool isInclude, uInt dataStride, Bool nrAccountsForStride
+    const DataIterator& first, const WeightsIterator& weightFirst,
+    uInt nr, const DataRanges& dataRanges,
+    Bool isInclude, uInt dataStride, Bool nrAccountsForStride
 ) {
-	_throwIfDataProviderDefined();
-	_weights[_data.size()] = weightFirst;
-	this->addData(
-		first, nr, dataRanges, isInclude, dataStride, nrAccountsForStride
-	);
+    _throwIfDataProviderDefined();
+    _weights[_data.size()] = weightFirst;
+    this->addData(
+        first, nr, dataRanges, isInclude, dataStride, nrAccountsForStride
+    );
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
-	const DataIterator& first, const WeightsIterator& weightFirst,
-	const MaskIterator& maskFirst, uInt nr, uInt dataStride,
-	Bool nrAccountsForStride, uInt maskStride
+    const DataIterator& first, const WeightsIterator& weightFirst,
+    const MaskIterator& maskFirst, uInt nr, uInt dataStride,
+    Bool nrAccountsForStride, uInt maskStride
 ) {
-	_throwIfDataProviderDefined();
-	_weights[_data.size()] = weightFirst;
-	this->addData(
-		first, maskFirst, nr, dataStride, nrAccountsForStride, maskStride
-	);
+    _throwIfDataProviderDefined();
+    _weights[_data.size()] = weightFirst;
+    this->addData(
+        first, maskFirst, nr, dataStride, nrAccountsForStride, maskStride
+    );
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
-	const DataIterator& first, const WeightsIterator& weightFirst,
-	const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-	Bool isInclude, uInt dataStride, Bool nrAccountsForStride,
-	uInt maskStride
+    const DataIterator& first, const WeightsIterator& weightFirst,
+    const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
+    Bool isInclude, uInt dataStride, Bool nrAccountsForStride,
+    uInt maskStride
 ) {
-	_throwIfDataProviderDefined();
-	_weights[_data.size()] = weightFirst;
-	this->addData(
-		first, maskFirst, nr, dataRanges, isInclude, dataStride,
-		nrAccountsForStride, maskStride
-	);
+    _throwIfDataProviderDefined();
+    _weights[_data.size()] = weightFirst;
+    this->addData(
+        first, maskFirst, nr, dataRanges, isInclude, dataStride,
+        nrAccountsForStride, maskStride
+    );
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::deleteSortedArray() {
-	_sortedArray.clear();
+    _sortedArray.clear();
 }
 
 CASA_STATD AccumType StatisticsAlgorithm<CASA_STATP>::getQuantile(
-	Double quantile, CountedPtr<uInt64> knownNpts,
-	CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-	uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
+    Double quantile, CountedPtr<uInt64> knownNpts,
+    CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
+    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
 ) {
-	std::set<Double> qs;
-	qs.insert(quantile);
-	return getQuantiles(
-		qs, knownNpts, knownMin, knownMax, binningThreshholdSizeBytes,
-		persistSortedArray, nBins
-	).begin()->second;
+    std::set<Double> qs;
+    qs.insert(quantile);
+    return getQuantiles(
+        qs, knownNpts, knownMin, knownMax, binningThreshholdSizeBytes,
+        persistSortedArray, nBins
+    ).begin()->second;
 }
 
 CASA_STATD AccumType StatisticsAlgorithm<CASA_STATP>::getStatistic(
-	StatisticsData::STATS stat
+    StatisticsData::STATS stat
 ) {
-	ThrowIf(
-		_unsupportedStats.find(stat) != _unsupportedStats.end(),
-		StatisticsData::toString(stat) + " is not a supported statistic for this algorithm"
-	);
-	ThrowIf(
-		! _statsToCalculate.empty()
-		&& _statsToCalculate.find(stat) == _statsToCalculate.end(),
-		"You did not explicitly request to compute "
-		+ StatisticsData::toString(stat)
-	);
-	return this->_getStatistic(stat);
+    ThrowIf(
+        _unsupportedStats.find(stat) != _unsupportedStats.end(),
+        StatisticsData::toString(stat) + " is not a supported statistic for this algorithm"
+    );
+    ThrowIf(
+        ! _statsToCalculate.empty()
+        && _statsToCalculate.find(stat) == _statsToCalculate.end(),
+        "You did not explicitly request to compute "
+        + StatisticsData::toString(stat)
+    );
+    return this->_getStatistic(stat);
 }
 
 CASA_STATD StatsData<AccumType> StatisticsAlgorithm<CASA_STATP>::getStatistics() {
-	return this->_getStatistics();
+    return this->_getStatistics();
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
-	const DataIterator& first, uInt nr, uInt dataStride, Bool nrAccountsForStride
+    const DataIterator& first, uInt nr, uInt dataStride, Bool nrAccountsForStride
 ) {
-	_clearData();
-	addData(first, nr, dataStride, nrAccountsForStride);
+    _clearData();
+    addData(first, nr, dataStride, nrAccountsForStride);
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
-	const DataIterator& first, uInt nr,
-	const DataRanges& dataRanges, Bool isInclude, uInt dataStride,
-	Bool nrAccountsForStride
+    const DataIterator& first, uInt nr,
+    const DataRanges& dataRanges, Bool isInclude, uInt dataStride,
+    Bool nrAccountsForStride
 ) {
-	_clearData();
-	addData(
-		first, nr, dataRanges, isInclude, dataStride, nrAccountsForStride
-	);
+    _clearData();
+    addData(
+        first, nr, dataRanges, isInclude, dataStride, nrAccountsForStride
+    );
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
-	const DataIterator& first, const MaskIterator& maskFirst,
-	uInt nr, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
+    const DataIterator& first, const MaskIterator& maskFirst,
+    uInt nr, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
 ) {
-	_clearData();
-	addData(
-		first, maskFirst, nr, dataStride, nrAccountsForStride, maskStride
-	);
+    _clearData();
+    addData(
+        first, maskFirst, nr, dataStride, nrAccountsForStride, maskStride
+    );
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
-	const DataIterator& first, const MaskIterator& maskFirst,
-	uInt nr, const DataRanges& dataRanges,
-	Bool isInclude, uInt dataStride, Bool nrAccountsForStride,
-	uInt maskStride
+    const DataIterator& first, const MaskIterator& maskFirst,
+    uInt nr, const DataRanges& dataRanges,
+    Bool isInclude, uInt dataStride, Bool nrAccountsForStride,
+    uInt maskStride
 ) {
-	_clearData();
-	addData(
-		first, maskFirst, nr, dataRanges, isInclude, dataStride,
-		nrAccountsForStride, maskStride
-	);
+    _clearData();
+    addData(
+        first, maskFirst, nr, dataRanges, isInclude, dataStride,
+        nrAccountsForStride, maskStride
+    );
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
-	const DataIterator& first, const WeightsIterator& weightFirst,
-	uInt nr, uInt dataStride, Bool nrAccountsForStride
+    const DataIterator& first, const WeightsIterator& weightFirst,
+    uInt nr, uInt dataStride, Bool nrAccountsForStride
 ) {
-	_clearData();
-	addData(first, weightFirst, nr, dataStride, nrAccountsForStride);
+    _clearData();
+    addData(first, weightFirst, nr, dataStride, nrAccountsForStride);
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
-	const DataIterator& first, const WeightsIterator& weightFirst,
-	uInt nr, const DataRanges& dataRanges,
-	Bool isInclude, uInt dataStride, Bool nrAccountsForStride
+    const DataIterator& first, const WeightsIterator& weightFirst,
+    uInt nr, const DataRanges& dataRanges,
+    Bool isInclude, uInt dataStride, Bool nrAccountsForStride
 ) {
-	_clearData();
-	addData(
-		first, weightFirst, nr, dataRanges, isInclude,
-		dataStride, nrAccountsForStride
-	);
+    _clearData();
+    addData(
+        first, weightFirst, nr, dataRanges, isInclude,
+        dataStride, nrAccountsForStride
+    );
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
-	const DataIterator& first, const WeightsIterator& weightFirst,
-	const MaskIterator& maskFirst, uInt nr, uInt dataStride,
-	Bool nrAccountsForStride, uInt maskStride
+    const DataIterator& first, const WeightsIterator& weightFirst,
+    const MaskIterator& maskFirst, uInt nr, uInt dataStride,
+    Bool nrAccountsForStride, uInt maskStride
 ) {
-	_clearData();
-	addData(
-		first, weightFirst, maskFirst, nr, dataStride,
-		nrAccountsForStride, maskStride
-	);
+    _clearData();
+    addData(
+        first, weightFirst, maskFirst, nr, dataStride,
+        nrAccountsForStride, maskStride
+    );
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
-	const DataIterator& first, const WeightsIterator& weightFirst,
-	const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-	Bool isInclude, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
+    const DataIterator& first, const WeightsIterator& weightFirst,
+    const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
+    Bool isInclude, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
 ) {
-	_clearData();
-	addData(
-		first, weightFirst, maskFirst, nr, dataRanges, isInclude,
-		dataStride, nrAccountsForStride, maskStride
-	);
+    _clearData();
+    addData(
+        first, weightFirst, maskFirst, nr, dataRanges, isInclude,
+        dataStride, nrAccountsForStride, maskStride
+    );
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setStatsToCalculate(
-	std::set<StatisticsData::STATS>& stats
+    std::set<StatisticsData::STATS>& stats
 ) {
-	_statsToCalculate = stats;
+    _statsToCalculate = stats;
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::_clearData() {
-	_data.clear();
-	_counts.clear();
-	_masks.clear();
-	_weights.clear();
-	_dataRanges.clear();
-	_dataStrides.clear();
-	_maskStrides.clear();
-	_sortedArray.clear();
-	_dataProvider = NULL;
+    _data.clear();
+    _counts.clear();
+    _masks.clear();
+    _weights.clear();
+    _dataRanges.clear();
+    _dataStrides.clear();
+    _maskStrides.clear();
+    _sortedArray.clear();
+    _dataProvider = NULL;
 }
 
 CASA_STATD std::map<uInt64, AccumType> StatisticsAlgorithm<CASA_STATP>::_valuesFromArray(
-	vector<AccumType>& myArray, const std::set<uInt64>& indices
+    vector<AccumType>& myArray, const std::set<uInt64>& indices
 ) {
-	//uInt64 largestIdx = *indices.rbegin();
-	uInt64 arySize = myArray.size();
-	ThrowIf(
-		*indices.rbegin() >= arySize,
-		"Logic Error: Index " + String::toString(*indices.rbegin()) + " is too large. "
-		"The sorted array has size " + String::toString(arySize)
-	);
-	std::map<uInt64, AccumType> indexToValuesMap;
-	std::set<uInt64>::const_iterator initer = indices.begin();
-	std::set<uInt64>::const_iterator inend = indices.end();
-	Int64 lastIndex = 0;
-	while(initer != inend) {
-		GenSort<AccumType>::kthLargest(
-			&myArray[lastIndex], arySize - lastIndex, *initer - lastIndex
-		);
-		lastIndex = *initer;
-		++initer;
-	}
-	std::set<uInt64>::const_iterator iter = indices.begin();
-	std::set<uInt64>::const_iterator end = indices.end();
-	while (iter != end) {
-		indexToValuesMap[*iter] = myArray[*iter];
-		++iter;
-	}
-	return indexToValuesMap;
+    //uInt64 largestIdx = *indices.rbegin();
+    uInt64 arySize = myArray.size();
+    ThrowIf(
+        *indices.rbegin() >= arySize,
+        "Logic Error: Index " + String::toString(*indices.rbegin()) + " is too large. "
+        "The sorted array has size " + String::toString(arySize)
+    );
+    std::map<uInt64, AccumType> indexToValuesMap;
+    std::set<uInt64>::const_iterator initer = indices.begin();
+    std::set<uInt64>::const_iterator inend = indices.end();
+    Int64 lastIndex = 0;
+    while(initer != inend) {
+        GenSort<AccumType>::kthLargest(
+            &myArray[lastIndex], arySize - lastIndex, *initer - lastIndex
+        );
+        lastIndex = *initer;
+        ++initer;
+    }
+    std::set<uInt64>::const_iterator iter = indices.begin();
+    std::set<uInt64>::const_iterator end = indices.end();
+    while (iter != end) {
+        indexToValuesMap[*iter] = myArray[*iter];
+        ++iter;
+    }
+    return indexToValuesMap;
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::_throwIfDataProviderDefined() const {
-	ThrowIf(
-		_dataProvider,
-		"Logic Error: Cannot add data after a data provider has been set. Call setData() to clear "
-		"the existing data provider and to add this new data set"
-	);
+    ThrowIf(
+        _dataProvider,
+        "Logic Error: Cannot add data after a data provider has been set. Call setData() to clear "
+        "the existing data provider and to add this new data set"
+    );
 }
 
 }
