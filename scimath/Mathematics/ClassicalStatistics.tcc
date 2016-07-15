@@ -695,7 +695,6 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
 ) const {
     DataIterator datum = dataBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -707,7 +706,7 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
             ++npts;
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, dataStride
         );
     }
 }
@@ -721,13 +720,12 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask) {
             ++npts;
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
 }
@@ -742,7 +740,6 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -754,7 +751,7 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
             ++npts;
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
 }
@@ -768,13 +765,12 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
         if (*weight > 0) {
             ++npts;
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
 }
@@ -788,7 +784,6 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -801,7 +796,7 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
             ++npts;
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
 }
@@ -817,7 +812,6 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -830,7 +824,7 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
             ++npts;
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
 }
@@ -845,13 +839,12 @@ void ClassicalStatistics<CASA_STATP>::_accumNpts(
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask && *weight > 0) {
             ++npts;
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
 }
@@ -1609,11 +1602,10 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
     typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
          _findBinCode
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, dataStride
         );
     }
 }
@@ -1639,7 +1631,6 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
     typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1651,7 +1642,7 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
             _findBinCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, dataStride
         );
     }
 }
@@ -1678,13 +1669,12 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask) {
             _findBinCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
 }
@@ -1712,7 +1702,6 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1724,7 +1713,7 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
             _findBinCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
 }
@@ -1751,13 +1740,12 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
         if (*weight > 0) {
             _findBinCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
 }
@@ -1784,7 +1772,6 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1797,7 +1784,7 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
             _findBinCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
 }
@@ -1826,7 +1813,6 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1839,7 +1825,7 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
             _findBinCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
 }
@@ -1867,13 +1853,12 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _findBinCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
 }
@@ -2126,11 +2111,10 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 ) const {
     DataIterator datum = dataBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
         _minMaxCode
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, dataStride
         );
     }
 }
@@ -2143,7 +2127,6 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 ) const {
     DataIterator datum = dataBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -2155,7 +2138,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
             _minMaxCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, dataStride
         );
     }
 }
@@ -2169,13 +2152,12 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask) {
             _minMaxCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
 }
@@ -2190,7 +2172,6 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -2202,7 +2183,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
             _minMaxCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
 }
@@ -2216,13 +2197,12 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
         if (*weight > 0) {
             _minMaxCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
 }
@@ -2236,7 +2216,6 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -2249,7 +2228,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
             _minMaxCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
 }
@@ -2265,7 +2244,6 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -2278,7 +2256,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
             _minMaxCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
 }
@@ -2293,13 +2271,12 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _minMaxCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
 }
@@ -2315,11 +2292,10 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 ) const {
     Int64 count = 0;
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
         _populateArrayCode1
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, dataStride
         );
     }
 }
@@ -2331,7 +2307,6 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 ) const {
     Int64 count = 0;
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -2343,7 +2318,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
             _populateArrayCode1
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, dataStride
         );
     }
 }
@@ -2355,14 +2330,13 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 ) const {
     Int64 count = 0;
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     MaskIterator mask = maskBegin;
     while (count < nr) {
         if (*mask) {
             _populateArrayCode1
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
 }
@@ -2375,7 +2349,6 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 ) const {
     Int64 count = 0;
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     MaskIterator mask = maskBegin;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
@@ -2389,7 +2362,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
             _populateArrayCode1
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
 }
@@ -2402,13 +2375,12 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
         if (*weight > 0) {
             _populateArrayCode1
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
 }
@@ -2422,7 +2394,6 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -2435,7 +2406,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
             _populateArrayCode1
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
 }
@@ -2449,13 +2420,12 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _populateArrayCode1
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
 }
@@ -2470,7 +2440,6 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -2483,7 +2452,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
             _populateArrayCode1
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
 }
@@ -2527,11 +2496,10 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
     typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     Int64 count = 0;
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
         _populateArraysCode
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, dataStride
         );
     }
 }
@@ -2549,7 +2517,6 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
     typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     Int64 count = 0;
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -2561,7 +2528,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
             _populateArraysCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, dataStride
         );
     }
 }
@@ -2579,14 +2546,13 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
     typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     Int64 count = 0;
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     MaskIterator mask = maskBegin;
     while (count < nr) {
         if (*mask) {
             _populateArraysCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
 }
@@ -2605,7 +2571,6 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
     typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     Int64 count = 0;
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     MaskIterator mask = maskBegin;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
@@ -2619,7 +2584,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
             _populateArraysCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
 }
@@ -2638,13 +2603,12 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
         if (*weight > 0) {
             _populateArraysCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
 }
@@ -2664,7 +2628,6 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -2677,7 +2640,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
             _populateArraysCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
 }
@@ -2697,13 +2660,12 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _populateArraysCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
 }
@@ -2724,7 +2686,6 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -2737,7 +2698,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
             _populateArraysCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
 }
@@ -2752,11 +2713,10 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
     }
     Int64 count = 0;
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1;
     while (count < nr) {
         ary.push_back(_doMedAbsDevMed ? abs((AccumType)*datum - *_statsData.median) : *datum);
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, dataStride
         );
     }
     return False;
@@ -2779,7 +2739,6 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
     Int64 count = 0;
     uInt npts = ary.size();
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -2791,7 +2750,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
             _PopulateTestArrayCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, unityStride, dataStride
+            datum, count, dataStride
         );
     }
     return False;
@@ -2805,7 +2764,6 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 ) const {
     Int64 count = 0;
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     MaskIterator mask = maskBegin;
     uInt npts = ary.size();
     while (count < nr) {
@@ -2813,7 +2771,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
             _PopulateTestArrayCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
     return False;
@@ -2827,7 +2785,6 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 ) const {
     Int64 count = 0;
     DataIterator datum = dataBegin;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     MaskIterator mask = maskBegin;
     uInt npts = ary.size();
     typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -2842,7 +2799,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
             _PopulateTestArrayCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
     }
     return False;
@@ -2857,14 +2814,13 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     uInt npts = ary.size();
     while (count < nr) {
         if (*weight > 0) {
             _PopulateTestArrayCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
     return False;
@@ -2879,7 +2835,6 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     uInt npts = ary.size();
@@ -2893,7 +2848,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
             _PopulateTestArrayCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, unityStride, dataStride
+            datum, count, weight, dataStride
         );
     }
     return False;
@@ -2909,14 +2864,13 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride;
     uInt npts = ary.size();
     while (count < nr) {
         if (*mask && *weight > 0) {
             _PopulateTestArrayCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
     return False;
@@ -2932,7 +2886,6 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     uInt npts = ary.size();
@@ -2946,7 +2899,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
             _PopulateTestArrayCode
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, unityStride, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
     }
     return False;
@@ -3005,7 +2958,7 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
             stats, *datum, location
         );
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, True, dataStride
+            datum, count, dataStride
         );
         location.second += dataStride;
     }
@@ -3034,7 +2987,7 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
             ++ngood;
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, True, dataStride
+            datum, count, dataStride
         );
         location.second += dataStride;
     }
@@ -3057,7 +3010,7 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
             ++ngood;
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, True, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
         location.second += dataStride;
     }
@@ -3073,7 +3026,6 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
-    Bool unityStride = dataStride == 1 && maskStride == 1;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -3088,7 +3040,7 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
             ++ngood;
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, mask, unityStride, dataStride, maskStride
+            datum, count, mask, dataStride, maskStride
         );
         location.second += dataStride;
     }
@@ -3102,7 +3054,6 @@ Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
     values.clear();
     // I need a little wiggle room, the caller can't make the maximum array size
     // ridiculously small
-    //uInt maxArraySize = binningThreshholdSizeBytes/sizeof(AccumType(0));
     maxArraySize = max(maxArraySize, (uInt)1000);
     vector<AccumType> myArray;
     if (_doMedAbsDevMed && ! this->_getSortedArray().empty()) {
@@ -3189,7 +3140,7 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(
             );
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, True, dataStride
+            datum, count, weight, dataStride
         );
         location.second += dataStride;
     }
@@ -3218,7 +3169,7 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(
             );
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, True, dataStride
+            datum, count, weight, dataStride
         );
         location.second += dataStride;
     }
@@ -3249,7 +3200,7 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(
             );
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, True, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
         location.second += dataStride;
     }
@@ -3272,7 +3223,7 @@ void ClassicalStatistics<CASA_STATP>::_weightedStats(
             );
         }
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-            datum, count, weight, mask, True, dataStride, maskStride
+            datum, count, weight, mask, dataStride, maskStride
         );
         location.second += dataStride;
     }
