@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# measuresdata-update
+# Must be executable. Call it with all defaults or arguments for measuresdata
+#
+
+echo Calling measuresdata "$@"
+measuresdata "$@"
+if [ $? -ne 0 ] ; then
+    echo Severe error calling measuresdata with "$@"
+    exit 1
+fi
+if [ ! -f measuresdata.rc ] ; then
+    echo Severe error: no measuresdata.rc file returned
+    exit 1
+fi
+while grep -qe "^status:\\Wcont" measuresdata.rc ; do
+    data=$(grep "^data:" measuresdata.rc | cut -d\  -f2-)
+    ftp=$(grep "^ftp:" measuresdata.rc | cut -d\  -f2-)
+    http=$(grep "^http:" measuresdata.rc | cut -d\  -f2-)
+    dir=$(grep "^dir:" measuresdata.rc | cut -d\  -f2-)
+    file=$(grep "^file:" measuresdata.rc | cut -d\  -f2-)
+    arg=$(grep "^arg:" measuresdata.rc | cut -d\  -f2-)
+
+    if [ "$data" != "ascii" ] ; then
+        echo Severe: only ascii data protocol supported
+        exit 1
+    elif [ -z "$dir" -o -z "$file" -o -z "$arg" ] ; then
+	echo Severe: missing dir, file or arg data
+	exit 1
+    fi
+
+    if [ -n "$http" ] ; then
+	url="http://$http/$dir/$file"
+    elif [ -n "$ftp" ] ; then
+	url="ftp://$ftp/$dir/$file"
+    else
+	echo Severe: missing ftp/http
+        exit 1
+    fi
+    
+    echo Getting $url
+    curl -O $url
+    
+    echo Calling measuresdata $arg
+    measuresdata $arg
+    if [ $? -ne 0 ] ; then
+	echo Severe error calling measuresdata with $arg
+	exit 1
+    fi
+
+    if [ ! -f measuresdata.rc ] ; then
+	echo Severe error: no measuresdata.rc file returned
+	exit 1
+    fi
+done
+
+if grep -qe "^status:\\Wend" measuresdata.rc ; then
+    echo measuresdata-update finished normally
+    exit 0
+else
+    echo Severe: unknown status given in measuresdata.rc
+    exit 1
+fi
