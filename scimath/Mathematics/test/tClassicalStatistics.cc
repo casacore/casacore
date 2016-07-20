@@ -1731,7 +1731,8 @@ int main() {
             Double medabsdevmed = cs.getMedianAbsDevMed(NULL, NULL, NULL, 100);
             AlwaysAssert(medabsdevmed == 999001, AipsError);
         }
-        { // large array with all the same values, getMedianAndQuartile()
+        {
+            // large array with all the same values, getMedianAndQuartile()
             vector<Float> big(100000, 30);
             ClassicalStatistics<Double, vector<Float>::const_iterator, vector<Bool>::const_iterator> cs;
             cs.addData(big.begin(), big.size());
@@ -1768,7 +1769,6 @@ int main() {
             AlwaysAssert(quantileToValue[0.75] == 30, AipsError);
         }
     }
-
     catch (const AipsError& x) {
         cout << x.getMesg() << endl;
         return 1;
