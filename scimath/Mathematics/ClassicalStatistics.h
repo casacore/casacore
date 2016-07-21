@@ -704,6 +704,12 @@ private:
         const vector<AccumType>& maxLimit
     );
 
+    void _computeDataArrays(
+        vector<vector<AccumType> >& arys, uInt64& currentCount,
+        const vector<std::pair<AccumType, AccumType> >& includeLimits,
+        uInt64 maxCount
+    );
+
     void _computeStats(
         StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
         DataIterator dataIter, MaskIterator maskIter,

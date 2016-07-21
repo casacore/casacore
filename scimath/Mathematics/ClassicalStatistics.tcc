@@ -1174,6 +1174,7 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
     typename vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = includeLimits.end();
     std::pair<AccumType, AccumType> prevLimits;
     while(iLimits != eLimits) {
+        // sanity checks
         if (iLimits->first >= iLimits->second) {
             ostringstream os;
             os << "Logic Error: bin limits are nonsensical: " << *iLimits;
@@ -1196,73 +1197,82 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
     uInt64 currentCount = 0;
     while (True) {
         _initLoopVars();
-        if (_hasWeights) {
-            if (_hasMask) {
-                if (_hasRanges) {
-                    _populateArrays(
-                        arys, currentCount, _myData, _myWeights, _myCount,
-                        _myStride, _myMask, _maskStride, _myRanges, _myIsInclude,
-                        includeLimits, maxCount
-                    );
-                }
-                else {
-                    _populateArrays(
-                        arys, currentCount, _myData, _myWeights,
-                        _myCount, _myStride, _myMask, _maskStride,
-                        includeLimits, maxCount
-                    );
-                }
-            }
-            else if (_hasRanges) {
-                _populateArrays(
-                    arys, currentCount, _myData, _myWeights, _myCount,
-                    _myStride, _myRanges, _myIsInclude,
-                    includeLimits, maxCount
-                );
-            }
-            else {
-                // has weights, but no mask nor ranges
-                _populateArrays(
-                    arys, currentCount, _myData, _myWeights, _myCount, _myStride,
-                    includeLimits, maxCount
-                );
-            }
+        _computeDataArrays(arys, currentCount, includeLimits, maxCount);
+        if (_increment(False)) {
+            break;
         }
-        else if (_hasMask) {
-            // this data set has no weights, but does have a mask
+    }
+}
+
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
+    vector<vector<AccumType> >& arys, uInt64& currentCount,
+    const vector<std::pair<AccumType, AccumType> >& includeLimits,
+    uInt64 maxCount
+) {
+    if (_hasWeights) {
+        if (_hasMask) {
             if (_hasRanges) {
                 _populateArrays(
-                    arys, currentCount, _myData, _myCount, _myStride,
-                    _myMask, _maskStride, _myRanges, _myIsInclude,
+                    arys, currentCount, _myData, _myWeights, _myCount,
+                    _myStride, _myMask, _maskStride, _myRanges, _myIsInclude,
                     includeLimits, maxCount
                 );
             }
             else {
                 _populateArrays(
-                    arys, currentCount, _myData, _myCount, _myStride, _myMask, _maskStride,
+                    arys, currentCount, _myData, _myWeights,
+                    _myCount, _myStride, _myMask, _maskStride,
                     includeLimits, maxCount
                 );
             }
         }
         else if (_hasRanges) {
-            // this data set has no weights no mask, but does have a set of ranges
-            // associated with it
             _populateArrays(
-                arys, currentCount, _myData, _myCount, _myStride,
-                _myRanges, _myIsInclude, includeLimits, maxCount
-            );
-        }
-        else {
-            // simplest case, this data set has no weights, no mask, nor any ranges associated
-            // with it, and its stride is 1. No filtering of the data is necessary.
-            _populateArrays(
-                arys, currentCount, _myData, _myCount, _myStride,
+                arys, currentCount, _myData, _myWeights, _myCount,
+                _myStride, _myRanges, _myIsInclude,
                 includeLimits, maxCount
             );
         }
-        if (_increment(False)) {
-            break;
+        else {
+            // has weights, but no mask nor ranges
+            _populateArrays(
+                arys, currentCount, _myData, _myWeights, _myCount, _myStride,
+                includeLimits, maxCount
+            );
         }
+    }
+    else if (_hasMask) {
+        // this data set has no weights, but does have a mask
+        if (_hasRanges) {
+            _populateArrays(
+                arys, currentCount, _myData, _myCount, _myStride,
+                _myMask, _maskStride, _myRanges, _myIsInclude,
+                includeLimits, maxCount
+            );
+        }
+        else {
+            _populateArrays(
+                arys, currentCount, _myData, _myCount, _myStride, _myMask, _maskStride,
+                includeLimits, maxCount
+            );
+        }
+    }
+    else if (_hasRanges) {
+        // this data set has no weights no mask, but does have a set of ranges
+        // associated with it
+        _populateArrays(
+            arys, currentCount, _myData, _myCount, _myStride,
+            _myRanges, _myIsInclude, includeLimits, maxCount
+        );
+    }
+    else {
+        // simplest case, this data set has no weights, no mask, nor any ranges associated
+        // with it, and its stride is 1. No filtering of the data is necessary.
+        _populateArrays(
+            arys, currentCount, _myData, _myCount, _myStride,
+            includeLimits, maxCount
+        );
     }
 }
 
