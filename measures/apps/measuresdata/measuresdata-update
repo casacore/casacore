@@ -39,6 +39,12 @@ while grep -qe "^status:\\Wcont" measuresdata.rc ; do
         exit 1
     fi
     
+    if [ "$url" = "$old_url" ] ; then
+	echo Severe: measuresdata requests the same url twice: $url
+	exit 1
+    fi
+    old_url=$url
+
     echo Getting $url
     curl -O $url
     
