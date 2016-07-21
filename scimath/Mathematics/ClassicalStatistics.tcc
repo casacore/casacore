@@ -954,18 +954,30 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
             break;
         }
     }
-    vector<vector<uInt64> >::iterator begin = bins.begin();
-    vector<vector<uInt64> >::iterator iter = begin;
-    vector<vector<uInt64> >::iterator end = bins.end();
-    typename vector<CountedPtr<AccumType> >::iterator sbegin = sameVal.begin();
-    typename vector<CountedPtr<AccumType> >::iterator siter = sbegin;
-    typename vector<CountedPtr<AccumType> >::iterator send = sameVal.end();
-    vector<Bool>::iterator abegin = allSame.begin();
-    vector<Bool>::iterator aiter = abegin;
+    _mergeResults(
+        bins, sameVal, allSame, tBins, tSameVal, tAllSame, nThreadsMax
+    );
+    return bins;
+}
+
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_mergeResults(
+    vector<vector<uInt64> >& bins, vector<CountedPtr<AccumType> >& sameVal,
+    vector<Bool>& allSame, const PtrHolder<vector<vector<uInt64> > >& tBins,
+    const PtrHolder<vector<CountedPtr<AccumType> > >& tSameVal,
+    const PtrHolder<vector<Bool> >& tAllSame, uInt nThreadsMax
+) {
+    // merge results from individual threads (tBins, tSameVal, tAllSame)
+    // into single data structures (bins, sameVal, allSame)
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
+        vector<vector<uInt64> >::iterator iter;
+        vector<vector<uInt64> >::iterator end = bins.end();
+        typename vector<CountedPtr<AccumType> >::iterator siter;
+        typename vector<CountedPtr<AccumType> >::iterator send = sameVal.end();
+        vector<Bool>::iterator aiter;
         uInt idx8 = CACHE_PADDING*tid;
         vector<vector<uInt64> >::const_iterator titer = tBins[idx8].begin();
-        for (iter=begin; iter!=end; ++iter, ++titer) {
+        for (iter=bins.begin(); iter!=end; ++iter, ++titer) {
             std::transform(
                 iter->begin(), iter->end(), titer->begin(),
                 iter->begin(), std::plus<Int64>()
@@ -973,7 +985,10 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
         }
         typename vector<CountedPtr<AccumType> >::const_iterator viter = tSameVal[idx8].begin();
         vector<Bool>::const_iterator witer = tAllSame[idx8].begin();
-        for (siter=sbegin, aiter=abegin; siter!=send; ++siter, ++viter, ++aiter, ++witer) {
+        for (
+            siter=sameVal.begin(), aiter=allSame.begin(); siter!=send;
+            ++siter, ++viter, ++aiter, ++witer
+        ) {
             if (! *aiter) {
                 // won't have the same values, do nothing
             }
@@ -1000,10 +1015,8 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
                 siter->reset();
                 *aiter = False;
             }
-
         }
     }
-    return bins;
 }
 
 CASA_STATD

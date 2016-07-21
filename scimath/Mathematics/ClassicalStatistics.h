@@ -777,6 +777,13 @@ private:
         Bool allowPad
     );
 
+    static void _mergeResults(
+        vector<vector<uInt64> >& bins, vector<CountedPtr<AccumType> >& sameVal,
+        vector<Bool>& allSame, const PtrHolder<vector<vector<uInt64> > >& tBins,
+        const PtrHolder<vector<CountedPtr<AccumType> > >& tSameVal,
+        const PtrHolder<vector<Bool> >& tAllSame, uInt nThreadsMax
+    );
+
     // get the index (for odd npts) or indices (for even npts) of the median of the sorted array.
     // If knownNpts is not null, it will be used and must be correct. If it is null, the value of
     // _npts will be used if it has been previously calculated. If not, the data sets will
