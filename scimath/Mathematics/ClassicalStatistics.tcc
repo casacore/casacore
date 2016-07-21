@@ -1166,8 +1166,8 @@ void ClassicalStatistics<CASA_STATP>::_createDataArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_createDataArrays(
-    vector<vector<AccumType> >& arys, const vector<std::pair<AccumType, AccumType> > &includeLimits,
-    uInt maxCount
+    vector<vector<AccumType> >& arys, const vector<std::pair<AccumType, AccumType> >& includeLimits,
+    uInt64 maxCount
 ) {
     typename vector<std::pair<AccumType, AccumType> >::const_iterator bLimits = includeLimits.begin();
     typename vector<std::pair<AccumType, AccumType> >::const_iterator iLimits = bLimits;
@@ -1193,7 +1193,7 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
         ++iLimits;
     }
     _initIterators();
-    uInt currentCount = 0;
+    uInt64 currentCount = 0;
     while (True) {
         _initLoopVars();
         if (_hasWeights) {
@@ -1390,24 +1390,19 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromS
     const vector<std::pair<AccumType, AccumType> >& binLimits,
     const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
-    uInt64 totalPts = 0;
-    vector<uInt64>::const_iterator bNpts = binNpts.begin();
-    vector<uInt64>::const_iterator iNpts = bNpts;
-    vector<uInt64>::const_iterator eNpts = binNpts.end();
-    while (iNpts != eNpts) {
-        totalPts += *iNpts;
-        ++iNpts;
-    }
+    uInt64 totalPts = std::accumulate(binNpts.begin(), binNpts.end(), 0);
     if (totalPts <= maxArraySize) {
         // contents of bin is small enough to be sorted in memory, so
         // get the bin limits and stuff the good points within those limits
         // in an array and sort it
         vector<vector<AccumType> > dataArrays(binLimits.size(), vector<AccumType>(0));
         _createDataArrays(dataArrays, binLimits, totalPts);
+        vector<uInt64>::const_iterator bNpts = binNpts.begin();
+        vector<uInt64>::const_iterator iNpts = bNpts;
+        vector<uInt64>::const_iterator eNpts = binNpts.end();
         typename vector<vector<AccumType> >::iterator bArrays = dataArrays.begin();
         typename vector<vector<AccumType> >::iterator iArrays = bArrays;
         typename vector<vector<AccumType> >::iterator eArrays = dataArrays.end();
-        iNpts = bNpts;
         while (iArrays != eArrays) {
             ThrowIf(
                 iArrays->size() != *iNpts,
@@ -2611,8 +2606,8 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename vector<vector<AccumType> >::iterator bArys = arys.begin();
     typename vector<vector<AccumType> >::iterator iArys = bArys;
@@ -2631,9 +2626,9 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
+    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename vector<vector<AccumType> >::iterator bArys = arys.begin();
     typename vector<vector<AccumType> >::iterator iArys = bArys;
@@ -2660,9 +2655,9 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
+    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename vector<vector<AccumType> >::iterator bArys = arys.begin();
     typename vector<vector<AccumType> >::iterator iArys = bArys;
@@ -2684,10 +2679,10 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
+    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename vector<vector<AccumType> >::iterator bArys = arys.begin();
     typename vector<vector<AccumType> >::iterator iArys = bArys;
@@ -2716,9 +2711,9 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
+    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename vector<vector<AccumType> >::iterator bArys = arys.begin();
     typename vector<vector<AccumType> >::iterator iArys = bArys;
@@ -2740,10 +2735,10 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
+    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename vector<vector<AccumType> >::iterator bArys = arys.begin();
     typename vector<vector<AccumType> >::iterator iArys = bArys;
@@ -2772,9 +2767,9 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename vector<vector<AccumType> >::iterator bArys = arys.begin();
     typename vector<vector<AccumType> >::iterator iArys = bArys;
@@ -2797,10 +2792,10 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename vector<vector<AccumType> >::iterator bArys = arys.begin();
     typename vector<vector<AccumType> >::iterator iArys = bArys;
