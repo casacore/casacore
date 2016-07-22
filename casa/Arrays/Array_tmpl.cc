@@ -35,6 +35,7 @@
 namespace casacore {
   template class Array<Bool>;
   template class Array<Char>;
+  template class Array<uChar>;
   template class Array<Short>;
   template class Array<uShort>;
   template class Array<Int>;

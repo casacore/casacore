@@ -28,6 +28,7 @@
 
 //# Includes
 #include <casacore/tables/Tables/TableInfo.h>
+#include <casacore/tables/Tables/PlainTable.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/iostream.h>
@@ -43,10 +44,19 @@ TableInfo::TableInfo()
 TableInfo::TableInfo (const String& fileName)
 : writeIt_p (True)
 {
-    File file (Path(fileName).absoluteName());
+    String absName = Path(fileName).absoluteName();
+    // check cache first, table may not be flushed yet
+    PlainTable * tb = PlainTable::tableCache()(Path(absName).dirName());
+    if (tb) {
+        *this = tb->tableInfo();
+        return;
+    }
+
+    File file (absName);
     if (! file.exists()) {
 	return;
     }
+
     ifstream os(file.path().absoluteName().chars(), ios::in);
     char buf[1025];
     int  len;

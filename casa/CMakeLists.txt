@@ -24,6 +24,7 @@ Arrays/IPosition.cc
 Arrays/IPosition2.cc
 Arrays/MaskArrMath2.cc
 Arrays/Matrix2Math.cc
+Arrays/Matrix_tmpl.cc
 Arrays/Slice.cc
 Arrays/Slicer.cc
 Arrays/Vector_tmpl.cc

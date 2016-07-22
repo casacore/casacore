@@ -3,6 +3,7 @@
 #
 
 add_library (casa_lattices
+Lattices/Lattices_tmpl.cc
 Lattices/LatticeBase.cc
 Lattices/LatticeIndexer.cc
 Lattices/LatticeLocker.cc

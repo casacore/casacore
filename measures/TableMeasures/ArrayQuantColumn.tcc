@@ -437,6 +437,11 @@ void ArrayQuantColumn<T>::put (uInt rownr, const Array<Quantum<T> >& q)
   q.freeStorage(q_p, deleteQuant);
 }
 
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class Array<Quantum<Double> >;
+#endif
+
 } //# NAMESPACE CASACORE - END
 
 

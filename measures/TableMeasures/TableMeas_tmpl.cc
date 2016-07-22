@@ -1,6 +1,6 @@
-//# AipsrcValue2.cc: Class to read values from the Aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997,1998,1999,2001,2002,2003
-//# Associated Universities, Inc. Washington DC, USA.
+//# Array_tmpl.cc: Explicit Array template instantiations
+//# Copyright (C) 2015
+//# Associated Universities, Inc. Washington DC, USA,
 //#
 //# This library is free software; you can redistribute it and/or modify it
 //# under the terms of the GNU Library General Public License as published by
@@ -23,34 +23,15 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 //# Includes
-
-#include <casacore/casa/System/AipsrcValue.h>
-#include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Quanta/Quantum.h>
-#include <casacore/casa/sstream.h>
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
+#include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
 
 //# Instantiate extern templates for often used types.
 #ifdef AIPS_CXX11
-    template class AipsrcValue<Bool>;
-    template class AipsrcValue<Int>;
-    template class AipsrcValue<Double>;
-    template class AipsrcValue<String>;
-#endif
+namespace casacore {
+    template class Array<Quantum<Double > >;
 
-template <> 
-Bool AipsrcValue<String>::find(String &value,
-			       const String &keyword,
-			       const Unit &, const Unit &) {
-  String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
-  value = res;
-  return x;
 }
-
-} //# NAMESPACE CASACORE - END
-
+#endif

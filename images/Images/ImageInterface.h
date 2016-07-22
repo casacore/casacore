@@ -396,6 +396,12 @@ private:
 };
 
 
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class ImageInterface<Float>;
+  extern template class ImageInterface<Complex>;
+#endif
+
 
 } //# NAMESPACE CASACORE - END
 

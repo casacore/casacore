@@ -41,15 +41,17 @@ template <class T> class CountedPtr;
 
 #define DataRanges std::vector<std::pair<AccumType, AccumType> >
 
+typedef std::pair<Int64, Int64> LocationType;
+
 template <class AccumType> struct StatsData {
 	Bool masked;
 	CountedPtr<AccumType> max;
-	std::pair<Int64, Int64> maxpos;
+	LocationType maxpos;
 	AccumType mean;
 	CountedPtr<AccumType> median;
 	CountedPtr<AccumType> medAbsDevMed;
 	CountedPtr<AccumType> min;
-	std::pair<Int64, Int64> minpos;
+	LocationType minpos;
 	Double npts;
 	AccumType nvariance;
 	AccumType rms;

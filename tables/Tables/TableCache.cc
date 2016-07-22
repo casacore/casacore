@@ -170,9 +170,8 @@ void TableCache::flushTable (const String& name,
 PlainTable* TableCache::lookCache (const String& name, int tableOption,
                                    const TableLock& lockOptions)
 {
-    ScopedMutexLock sc(itsMutex);
     //# Exit if table is not in cache yet.
-    PlainTable* btp = getTable(name);
+    PlainTable* btp = this->operator()(name);
     if (btp == 0) {
 	return btp;
     }

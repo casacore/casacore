@@ -35,6 +35,7 @@ Images/FITSImgParser.cc
 Images/FITSQualityImage.cc
 Images/FITSQualityMask.cc
 Images/HDF5Image2.cc
+Images/Image_tmpl.cc
 Images/ImageAttrGroup.cc
 Images/ImageAttrGroupCasa.cc
 Images/ImageAttrGroupHDF5.cc

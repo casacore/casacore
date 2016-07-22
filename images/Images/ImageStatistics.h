@@ -242,6 +242,10 @@ public:
   using LatticeStatistics<T>::MAX;
 };
 
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class ImageStatistics<Float>;
+#endif
 
 
 } //# NAMESPACE CASACORE - END

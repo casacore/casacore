@@ -190,6 +190,16 @@ public:
 		typename DataRanges::const_iterator endRange, Bool isInclude
 	);
 
+    // use two statistics sets to get the statistics set that would
+    // result in combining the two data sets used to produce the
+    // individual statistics sets. The quantile related stats are
+    // not considered, since it is not in general possible to determine
+    // the resultant quantiles from the information provided; only
+    // the aggregate statistics make sense.
+    static StatsData<AccumType> combine(
+        const vector<StatsData<AccumType> >& stats
+    );
+
 private:
 
 	const static AccumType TWO;

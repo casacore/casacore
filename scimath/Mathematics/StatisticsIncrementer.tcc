@@ -33,109 +33,41 @@ namespace casacore {
 
 template <class DataIterator, class MaskIterator, class WeightsIterator>
 void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-	DataIterator& datum, Int64& loopCount, Bool unityStride, uInt dataStride
+	DataIterator& datum, Int64& loopCount, Bool, uInt dataStride
 ) {
-	if (unityStride) {
-		++datum;
-	}
-	else {
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++c;
-		}
-
-	}
+    std::advance(datum, dataStride);
 	++loopCount;
 }
 
 template <class DataIterator, class MaskIterator, class WeightsIterator>
 void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 	DataIterator& datum, Int64& loopCount, WeightsIterator& weight,
-	Bool unityStride, uInt dataStride
+	Bool, uInt dataStride
 ) {
-	if (unityStride) {
-		++datum;
-		++weight;
-	}
-	else {
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++weight;
-			++c;
-		}
-	}
-	++loopCount;
+    std::advance(datum, dataStride);
+    std::advance(weight, dataStride);
+   	++loopCount;
 }
 
 template <class DataIterator, class MaskIterator, class WeightsIterator>
 void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 	DataIterator& datum, Int64& loopCount, WeightsIterator& weight,
-	MaskIterator& mask, Bool unityStride, uInt dataStride, uInt maskStride
+	MaskIterator& mask, Bool, uInt dataStride, uInt maskStride
 ) {
-	if (unityStride) {
-		++datum;
-		++weight;
-		++mask;
-	}
-	else if (dataStride == maskStride) {
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++weight;
-			++mask;
-			++c;
-		}
-	}
-	else {
-		// dataStride != maskStride
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++weight;
-			++c;
-		}
-		c = 0;
-		while (c < maskStride) {
-			++mask;
-			++c;
-		}
-	}
+    std::advance(datum, dataStride);
+    std::advance(weight, dataStride);
+    std::advance(mask, maskStride);
 	++loopCount;
 }
 
 template <class DataIterator, class MaskIterator, class WeightsIterator>
 void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
 	DataIterator& datum, Int64& loopCount, MaskIterator& mask,
-	Bool unityStride, uInt dataStride, uInt maskStride
+	Bool, uInt dataStride, uInt maskStride
 ) {
-	if (unityStride) {
-		++datum;
-		++mask;
-	}
-	else if (dataStride == maskStride) {
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++mask;
-			++c;
-		}
-	}
-	else {
-		// dataStride != maskStride
-		uInt c = 0;
-		while (c < dataStride) {
-			++datum;
-			++c;
-		}
-		c = 0;
-		while (c < maskStride) {
-			++mask;
-			++c;
-		}
-	}
-	++loopCount;
+    std::advance(datum, dataStride);
+    std::advance(mask, maskStride);
+ 	++loopCount;
 }
 
 }
