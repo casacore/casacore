@@ -673,15 +673,6 @@ private:
     mutable uInt _dataCount, _myStride;
     mutable uInt64 _myCount;
 
-    // per thread iterators
-    PtrHolder<DataIterator> _dataIter;
-    PtrHolder<MaskIterator> _maskIter;
-    PtrHolder<WeightsIterator> _weightsIter;
-    PtrHolder<uInt64> _offset;
-
-    // per dataset variables
-    uInt _nBlocks, _extra, _nthreads;
-
     static const uInt CACHE_PADDING;
     static const uInt BLOCK_SIZE;
 
@@ -757,7 +748,10 @@ private:
     Bool _increment(Bool includeIDataset);
 
     // increment thread-based iterators
-    void _incrementThreadIters(uInt idx8);
+    void _incrementThreadIters(
+        DataIterator& dataIter, MaskIterator& maskIter,
+        WeightsIterator& weightsIter, uInt64& offset, uInt nthreads
+    ) const;
 
     // get the values for the specified indices in the sorted array of all good data
     std::map<uInt64, AccumType> _indicesToValues(
@@ -769,7 +763,13 @@ private:
     
     void _initIterators();
 
-    void _initLoopVars(Bool initThreadIters=False);
+    void _initLoopVars();
+
+    void _initThreadVars(
+        uInt& nBlocks, uInt& extra, uInt& nthreads, PtrHolder<DataIterator>& dataIter,
+        PtrHolder<MaskIterator>& maskIter, PtrHolder<WeightsIterator>& weightsIter,
+        PtrHolder<uInt64>& offset, uInt nThreadsMax
+    ) const;
 
     // Determine by scanning the dataset if the number of good points is smaller than
     // <src>maxArraySize</src>. If so, <src>arrayToSort</src> will contain the unsorted
