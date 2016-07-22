@@ -1194,12 +1194,62 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
         ++iLimits;
     }
     _initIterators();
+    uInt nThreadsMax = _nThreadsMax();
+    PtrHolder<vector<vector<AccumType> > > tArys(
+        new vector<vector<AccumType> >[CACHE_PADDING*nThreadsMax], True
+    );
+    PtrHolder<uInt64> tCurrentCount(
+        new uInt64[CACHE_PADDING*nThreadsMax], True
+    );
+    for (uInt tid=0; tid<nThreadsMax; ++tid) {
+        uInt idx8 = CACHE_PADDING*tid;
+        tArys[idx8] = arys;
+    }
     uInt64 currentCount = 0;
-    while (True) {
-        _initLoopVars();
-        _computeDataArrays(arys, currentCount, includeLimits, maxCount);
+    while (currentCount < maxCount) {
+        _initLoopVars(True);
+        for (uInt tid=0; tid<nThreadsMax; ++tid) {
+            uInt idx8 = CACHE_PADDING*tid;
+            tCurrentCount[idx8] = currentCount;
+        }
+#pragma omp parallel for num_threads(_nthreads)
+        for (uInt i=0; i<_nBlocks; ++i) {
+#ifdef _OPENMP
+            uInt tid = omp_get_thread_num();
+#else
+            uInt tid = 0;
+#endif
+            uInt idx8 = CACHE_PADDING*tid;
+            uInt dataCount = _myCount - _offset[idx8] < BLOCK_SIZE ? _extra : BLOCK_SIZE;
+            _computeDataArrays(
+                tArys[idx8], tCurrentCount[idx8], _dataIter[idx8], _maskIter[idx8],
+                _weightsIter[idx8], dataCount, includeLimits, maxCount
+            );
+            _incrementThreadIters(idx8);
+        }
+        // currentCount could be updated inside the threaded loop for finer
+        // granularity, but that would require a critical block which
+        // might negatively affect performance. Doing it after the main
+        // loop seems a reasonable trade off between possibly short
+        // circuiting earlier vs performance hits if that does not happen
+        uInt64 prevCount = currentCount;
+        for (uInt tid=0; tid<nThreadsMax; ++tid) {
+            uInt idx8 = CACHE_PADDING*tid;
+            currentCount += (tCurrentCount[idx8] - prevCount);
+        }
         if (_increment(False)) {
             break;
+        }
+    }
+    AlwaysAssert(currentCount == maxCount, AipsError);
+    // merge the per-thread arrays
+    for (uInt tid=0; tid<nThreadsMax; ++tid) {
+        uInt idx8 = CACHE_PADDING*tid;
+        typename vector<vector<AccumType> >::iterator iter = arys.begin();
+        typename vector<vector<AccumType> >::iterator end = arys.end();
+        typename vector<vector<AccumType> >::const_iterator titer = tArys[idx8].begin();
+        for (; iter!=end; ++iter, ++titer) {
+            iter->insert(iter->end(), titer->begin(), titer->end());
         }
     }
 }
@@ -1207,6 +1257,8 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
     vector<vector<AccumType> >& arys, uInt64& currentCount,
+    DataIterator dataIter, MaskIterator maskIter,
+    WeightsIterator weightsIter, uInt dataCount,
     const vector<std::pair<AccumType, AccumType> >& includeLimits,
     uInt64 maxCount
 ) {
@@ -1214,22 +1266,22 @@ void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
         if (_hasMask) {
             if (_hasRanges) {
                 _populateArrays(
-                    arys, currentCount, _myData, _myWeights, _myCount,
-                    _myStride, _myMask, _maskStride, _myRanges, _myIsInclude,
+                    arys, currentCount, dataIter, weightsIter, dataCount,
+                    _myStride, maskIter, _maskStride, _myRanges, _myIsInclude,
                     includeLimits, maxCount
                 );
             }
             else {
                 _populateArrays(
-                    arys, currentCount, _myData, _myWeights,
-                    _myCount, _myStride, _myMask, _maskStride,
+                    arys, currentCount, dataIter, weightsIter,
+                    dataCount, _myStride, maskIter, _maskStride,
                     includeLimits, maxCount
                 );
             }
         }
         else if (_hasRanges) {
             _populateArrays(
-                arys, currentCount, _myData, _myWeights, _myCount,
+                arys, currentCount, dataIter, weightsIter, dataCount,
                 _myStride, _myRanges, _myIsInclude,
                 includeLimits, maxCount
             );
@@ -1237,8 +1289,8 @@ void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
         else {
             // has weights, but no mask nor ranges
             _populateArrays(
-                arys, currentCount, _myData, _myWeights, _myCount, _myStride,
-                includeLimits, maxCount
+                arys, currentCount, dataIter, weightsIter,
+                dataCount, _myStride, includeLimits, maxCount
             );
         }
     }
@@ -1246,15 +1298,15 @@ void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
         // this data set has no weights, but does have a mask
         if (_hasRanges) {
             _populateArrays(
-                arys, currentCount, _myData, _myCount, _myStride,
-                _myMask, _maskStride, _myRanges, _myIsInclude,
+                arys, currentCount, dataIter, dataCount, _myStride,
+                maskIter, _maskStride, _myRanges, _myIsInclude,
                 includeLimits, maxCount
             );
         }
         else {
             _populateArrays(
-                arys, currentCount, _myData, _myCount, _myStride, _myMask, _maskStride,
-                includeLimits, maxCount
+                arys, currentCount, dataIter, dataCount, _myStride,
+                maskIter, _maskStride, includeLimits, maxCount
             );
         }
     }
@@ -1262,7 +1314,7 @@ void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
         // this data set has no weights no mask, but does have a set of ranges
         // associated with it
         _populateArrays(
-            arys, currentCount, _myData, _myCount, _myStride,
+            arys, currentCount, dataIter, dataCount, _myStride,
             _myRanges, _myIsInclude, includeLimits, maxCount
         );
     }
@@ -1270,8 +1322,8 @@ void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
         // simplest case, this data set has no weights, no mask, nor any ranges associated
         // with it, and its stride is 1. No filtering of the data is necessary.
         _populateArrays(
-            arys, currentCount, _myData, _myCount, _myStride,
-            includeLimits, maxCount
+            arys, currentCount, dataIter, dataCount,
+            _myStride, includeLimits, maxCount
         );
     }
 }

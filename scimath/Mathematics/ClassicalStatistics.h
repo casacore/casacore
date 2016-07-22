@@ -706,6 +706,8 @@ private:
 
     void _computeDataArrays(
         vector<vector<AccumType> >& arys, uInt64& currentCount,
+        DataIterator dataIter, MaskIterator maskIter,
+        WeightsIterator weightsIter, uInt dataCount,
         const vector<std::pair<AccumType, AccumType> >& includeLimits,
         uInt64 maxCount
     );
