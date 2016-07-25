@@ -31,6 +31,7 @@
 
 #include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
 
+#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/scimath/Mathematics/StatisticsTypes.h>
 #include <casacore/scimath/Mathematics/StatisticsUtilities.h>
 
@@ -269,12 +270,6 @@ protected:
 
     void _clearStats();
 
-    void _computeStats(
-        StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-        DataIterator dataIter, MaskIterator maskIter, WeightsIterator weightsIter,
-        uInt dataStride, uInt maskStride, uInt64 count
-    );
-
     // scan dataset(s) to find min and max
     void _doMinMax(AccumType& vmin, AccumType& vmax);
 
@@ -366,9 +361,6 @@ protected:
 
     inline virtual const StatsData<AccumType>& _getStatsData() const { return _statsData; }
     
-    // increment the relevant loop counters
-    Bool _increment(Bool includeIDataset);
-
     // <group>
     virtual void _minMax(
         CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
@@ -681,6 +673,15 @@ private:
     mutable uInt _dataCount, _myStride;
     mutable uInt64 _myCount;
 
+    // per thread iterators
+    PtrHolder<DataIterator> _dataIter;
+    PtrHolder<MaskIterator> _maskIter;
+    PtrHolder<WeightsIterator> _weightsIter;
+    PtrHolder<uInt64> _offset;
+
+    // per dataset variables
+    uInt _nBlocks, _extra, _nthreads;
+
     static const uInt CACHE_PADDING;
     static const uInt BLOCK_SIZE;
 
@@ -693,6 +694,20 @@ private:
     vector<vector<uInt64> > _binCounts(
         vector<CountedPtr<AccumType> >& sameVal,
         const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
+    );
+
+    void _computeBins(
+        vector<vector<uInt64> >& bins, vector<CountedPtr<AccumType> >& sameVal,
+        vector<Bool>& allSame, DataIterator dataIter, MaskIterator maskIter,
+        WeightsIterator weightsIter, uInt64 count,
+        const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+        const vector<AccumType>& maxLimit
+    );
+
+    void _computeStats(
+        StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
+        DataIterator dataIter, MaskIterator maskIter,
+        WeightsIterator weightsIter, uInt64 count
     );
 
     // convert in place by taking the absolute value of the difference of the vector and the median
@@ -730,6 +745,12 @@ private:
 
     Int64 _doNpts();
 
+    // increment the relevant loop counters
+    Bool _increment(Bool includeIDataset);
+
+    // increment thread-based iterators
+    void _incrementThreadIters(uInt idx8);
+
     // get the values for the specified indices in the sorted array of all good data
     std::map<uInt64, AccumType> _indicesToValues(
         CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
@@ -740,7 +761,7 @@ private:
     
     void _initIterators();
 
-    void _initLoopVars();
+    void _initLoopVars(Bool initThreadIters=False);
 
     // Determine by scanning the dataset if the number of good points is smaller than
     // <src>maxArraySize</src>. If so, <src>arrayToSort</src> will contain the unsorted
@@ -756,11 +777,20 @@ private:
         Bool allowPad
     );
 
+    static void _mergeResults(
+        vector<vector<uInt64> >& bins, vector<CountedPtr<AccumType> >& sameVal,
+        vector<Bool>& allSame, const PtrHolder<vector<vector<uInt64> > >& tBins,
+        const PtrHolder<vector<CountedPtr<AccumType> > >& tSameVal,
+        const PtrHolder<vector<Bool> >& tAllSame, uInt nThreadsMax
+    );
+
     // get the index (for odd npts) or indices (for even npts) of the median of the sorted array.
     // If knownNpts is not null, it will be used and must be correct. If it is null, the value of
     // _npts will be used if it has been previously calculated. If not, the data sets will
     // be scanned to determine npts.
     std::set<uInt64> _medianIndices(CountedPtr<uInt64> knownNpts);
+
+    uInt _nThreadsMax() const;
 
     // get values from sorted array if the array is small enough to be held in
     // memory. Note that this is the array containing all good data, not data in
