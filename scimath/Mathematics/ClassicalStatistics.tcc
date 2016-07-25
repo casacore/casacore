@@ -29,6 +29,7 @@
 
 #include <casacore/scimath/Mathematics/ClassicalStatistics.h>
 
+#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/scimath/Mathematics/StatisticsIncrementer.h>
 #include <casacore/scimath/Mathematics/StatisticsUtilities.h>
 

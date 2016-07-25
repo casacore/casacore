@@ -31,7 +31,6 @@
 
 #include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
 
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/scimath/Mathematics/StatisticsTypes.h>
 #include <casacore/scimath/Mathematics/StatisticsUtilities.h>
 
@@ -40,6 +39,8 @@
 #include <utility>
 
 namespace casacore {
+
+template <class T> class PtrHolder;
 
 // Class to calculate statistics in a "classical" sense, ie using accumulators with no
 // special filtering beyond optional range filtering etc.
