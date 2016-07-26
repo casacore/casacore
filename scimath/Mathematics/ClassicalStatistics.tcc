@@ -3303,14 +3303,8 @@ Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
             // we have to calculate the number of good points
             if (! this->_getDataProvider()) {
                 // we first get an upper limit by adding up the counts
-                uInt nr = 0;
                 const vector<Int64>& counts = this->_getCounts();
-                vector<Int64>::const_iterator citer = counts.begin();
-                vector<Int64>::const_iterator cend = counts.end();
-                while (citer != cend) {
-                    nr += *citer;
-                    ++citer;
-                }
+                uInt64 nr = accumulate(counts.begin(), counts.end(), 0);
                 if (nr <= maxArraySize) {
                     // data can be sorted in memory
                     _createDataArray(myArray);
