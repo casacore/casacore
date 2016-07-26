@@ -1499,7 +1499,6 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromS
         _createDataArrays(dataArrays, binLimits, totalPts);
         vector<uInt64>::const_iterator bNpts = binNpts.begin();
         vector<uInt64>::const_iterator iNpts = bNpts;
-        vector<uInt64>::const_iterator eNpts = binNpts.end();
         typename vector<vector<AccumType> >::iterator bArrays = dataArrays.begin();
         typename vector<vector<AccumType> >::iterator iArrays = bArrays;
         typename vector<vector<AccumType> >::iterator eArrays = dataArrays.end();
