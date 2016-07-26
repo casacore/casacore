@@ -161,6 +161,9 @@ inline Int min(Int a, Int b) { if (a > b) return b; else return a; }
 inline uInt max(uInt a, uInt b){ if (a>b) return a; else return b; }
 inline uInt min(uInt a, uInt b){ if (a>b) return b; else return a; }
 
+inline uInt64 max(uInt64 a, uInt64 b){ if (a>b) return a; else return b; }
+inline uInt64 min(uInt64 a, uInt64 b){ if (a>b) return b; else return a; }
+
 inline Double max(Double a, Double b) { if (a > b) return a; else return b; } 
 inline Double min(Double a, Double b) { if (a > b) return b; else return a; }
 inline Double max(Double a, Float b) { if (a > b) return a; else return b; } 

@@ -467,7 +467,8 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     }
     while (True) {
         _initLoopVars();
-        uInt nBlocks, extra, nthreads;
+        uInt nBlocks, nthreads;
+        uInt64 extra;
         PtrHolder<DataIterator> dataIter;
         PtrHolder<MaskIterator> maskIter;
         PtrHolder<WeightsIterator> weightsIter;
@@ -491,7 +492,7 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
 #endif
             uInt64 ngood = 0;
             uInt idx8 = CACHE_PADDING*tid;
-            uInt dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
+            uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             LocationType location(_idataset, offset[idx8]);
             _computeStats(
                 tStats[idx8], ngood, location, dataIter[idx8], maskIter[idx8],
@@ -949,7 +950,8 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
     }
     while (True) {
         _initLoopVars();
-        uInt nBlocks, extra, nthreads;
+        uInt nBlocks, nthreads;
+        uInt64 extra;
         PtrHolder<DataIterator> dataIter;
         PtrHolder<MaskIterator> maskIter;
         PtrHolder<WeightsIterator> weightsIter;
@@ -966,7 +968,7 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
             uInt tid = 0;
 #endif
             uInt idx8 = CACHE_PADDING*tid;
-            uInt dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
+            uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             _computeBins(
                 tBins[idx8], tSameVal[idx8], tAllSame[idx8], dataIter[idx8],
                 maskIter[idx8], weightsIter[idx8], dataCount, binDesc, maxLimit
@@ -1234,7 +1236,8 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
     uInt64 currentCount = 0;
     while (currentCount < maxCount) {
         _initLoopVars();
-        uInt nBlocks, extra, nthreads;
+        uInt nBlocks, nthreads;
+        uInt64 extra;
         PtrHolder<DataIterator> dataIter;
         PtrHolder<MaskIterator> maskIter;
         PtrHolder<WeightsIterator> weightsIter;
@@ -1255,7 +1258,7 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
             uInt tid = 0;
 #endif
             uInt idx8 = CACHE_PADDING*tid;
-            uInt dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
+            uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             _computeDataArrays(
                 tArys[idx8], tCurrentCount[idx8], dataIter[idx8], maskIter[idx8],
                 weightsIter[idx8], dataCount, includeLimits, maxCount
@@ -1296,7 +1299,7 @@ CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
     vector<vector<AccumType> >& arys, uInt64& currentCount,
     DataIterator dataIter, MaskIterator maskIter,
-    WeightsIterator weightsIter, uInt dataCount,
+    WeightsIterator weightsIter, uInt64 dataCount,
     const vector<std::pair<AccumType, AccumType> >& includeLimits,
     uInt64 maxCount
 ) {
@@ -1368,7 +1371,7 @@ void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
 
 CASA_STATD
 vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromMultipleBins(
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt maxArraySize,
+    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt64 maxArraySize,
     const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
     // dataIndices are relative to minimum bin minimum border
@@ -1486,7 +1489,7 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromM
 
 CASA_STATD
 vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromSingleBins(
-    const vector<uInt64>& binNpts, uInt maxArraySize,
+    const vector<uInt64>& binNpts, uInt64 maxArraySize,
     const vector<std::pair<AccumType, AccumType> >& binLimits,
     const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
@@ -1553,7 +1556,7 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromS
         vector<typename StatisticsUtilities<AccumType>::BinDesc> binDesc;
         while (iLimits != eLimits) {
             // we want at least 1000 bins
-            nBins = max(nBins, 1000);
+            nBins = max(nBins, (uInt64)1000);
             typename StatisticsUtilities<AccumType>::BinDesc histogram;
             _makeBins(
                 histogram, iLimits->first, iLimits->second,
@@ -2047,7 +2050,7 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
 CASA_STATD
 std::map<uInt64, AccumType> ClassicalStatistics<CASA_STATP>::_indicesToValues(
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax, uInt maxArraySize,
+    CountedPtr<AccumType> knownMax, uInt64 maxArraySize,
     const std::set<uInt64>& indices, Bool persistSortedArray, uInt64 nBins
 ) {
     std::map<uInt64, AccumType> indexToValue;
@@ -2170,7 +2173,7 @@ void ClassicalStatistics<CASA_STATP>::_initLoopVars() {
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_initThreadVars(
-    uInt& nBlocks, uInt& extra, uInt& nthreads, PtrHolder<DataIterator>& dataIter,
+    uInt& nBlocks, uInt64& extra, uInt& nthreads, PtrHolder<DataIterator>& dataIter,
     PtrHolder<MaskIterator>& maskIter, PtrHolder<WeightsIterator>& weightsIter,
     PtrHolder<uInt64>& offset, uInt nThreadsMax
 ) const {
@@ -3265,12 +3268,12 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
     std::map<uInt64, AccumType>& values, CountedPtr<uInt64> knownNpts,
-    const std::set<uInt64>& indices, uInt maxArraySize, Bool persistSortedArray
+    const std::set<uInt64>& indices, uInt64 maxArraySize, Bool persistSortedArray
 ) {
     values.clear();
     // I need a little wiggle room, the caller can't make the maximum array size
     // ridiculously small
-    maxArraySize = max(maxArraySize, (uInt)1000);
+    maxArraySize = max(maxArraySize, (uInt64)1000);
     vector<AccumType> myArray;
     if (_doMedAbsDevMed && ! this->_getSortedArray().empty()) {
         // make a copy

@@ -699,7 +699,7 @@ private:
     void _computeDataArrays(
         vector<vector<AccumType> >& arys, uInt64& currentCount,
         DataIterator dataIter, MaskIterator maskIter,
-        WeightsIterator weightsIter, uInt dataCount,
+        WeightsIterator weightsIter, uInt64 dataCount,
         const vector<std::pair<AccumType, AccumType> >& includeLimits,
         uInt64 maxCount
     );
@@ -733,12 +733,12 @@ private:
     // the ordering of histograms in <src>binDesc</src>. <src>binDesc</src> should contain
     // non-overlapping histograms and the histograms should be specified in ascending order.
     vector<std::map<uInt64, AccumType> > _dataFromMultipleBins(
-        const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt maxArraySize,
+        const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt64 maxArraySize,
         const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
     );
 
     vector<std::map<uInt64, AccumType> > _dataFromSingleBins(
-        const vector<uInt64>& binNpts, uInt maxArraySize,
+        const vector<uInt64>& binNpts, uInt64 maxArraySize,
         const vector<std::pair<AccumType, AccumType> >& binLimits,
         const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
     );
@@ -757,7 +757,7 @@ private:
     // get the values for the specified indices in the sorted array of all good data
     std::map<uInt64, AccumType> _indicesToValues(
         CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-        CountedPtr<AccumType> knownMax, uInt maxArraySize,
+        CountedPtr<AccumType> knownMax, uInt64 maxArraySize,
         const std::set<uInt64>& dataIndices, Bool persistSortedArray,
         uInt64 nBins
     );
@@ -767,7 +767,7 @@ private:
     void _initLoopVars();
 
     void _initThreadVars(
-        uInt& nBlocks, uInt& extra, uInt& nthreads, PtrHolder<DataIterator>& dataIter,
+        uInt& nBlocks, uInt64& extra, uInt& nthreads, PtrHolder<DataIterator>& dataIter,
         PtrHolder<MaskIterator>& maskIter, PtrHolder<WeightsIterator>& weightsIter,
         PtrHolder<uInt64>& offset, uInt nThreadsMax
     ) const;
@@ -808,7 +808,7 @@ private:
     // If True is returned, the values map will contain a map of index to value.
     Bool _valuesFromSortedArray(
         std::map<uInt64, AccumType>& values, CountedPtr<uInt64> knownNpts,
-        const std::set<uInt64>& indices, uInt maxArraySize,
+        const std::set<uInt64>& indices, uInt64 maxArraySize,
         Bool persistSortedArray
     );
 };
