@@ -1127,14 +1127,48 @@ void ClassicalStatistics<CASA_STATP>::_createDataArray(
     vector<AccumType>& ary
 ) {
     _initIterators();
+    uInt nThreadsMax = _nThreadsMax();
+    PtrHolder<vector<AccumType> > tAry(
+        new vector<AccumType>[CACHE_PADDING*nThreadsMax], True
+    );
     while (True) {
         _initLoopVars();
-        _computeDataArray(
-            ary, _myData, _myMask, _myWeights, _myCount
+        uInt nBlocks, nthreads;
+        uInt64 extra;
+        PtrHolder<DataIterator> dataIter;
+        PtrHolder<MaskIterator> maskIter;
+        PtrHolder<WeightsIterator> weightsIter;
+        PtrHolder<uInt64> offset;
+        _initThreadVars(
+            nBlocks, extra, nthreads, dataIter,
+            maskIter, weightsIter, offset, nThreadsMax
         );
+#pragma omp parallel for num_threads(nthreads)
+        for (uInt i=0; i<nBlocks; ++i) {
+#ifdef _OPENMP
+            uInt tid = omp_get_thread_num();
+#else
+            uInt tid = 0;
+#endif
+            uInt idx8 = CACHE_PADDING*tid;
+            uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
+            _computeDataArray(
+                tAry[idx8], dataIter[idx8], maskIter[idx8],
+                weightsIter[idx8], dataCount
+            );
+            _incrementThreadIters(
+                dataIter[idx8], maskIter[idx8], weightsIter[idx8],
+                offset[idx8], nthreads
+            );
+        }
         if (_increment(False)) {
             break;
         }
+    }
+    // merge the per-thread arrays
+    for (uInt tid=0; tid<nThreadsMax; ++tid) {
+        const vector<AccumType>& v = tAry[CACHE_PADDING*tid];
+        ary.insert(ary.end(), v.begin(), v.end());
     }
 }
 
