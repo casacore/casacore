@@ -31,7 +31,6 @@
 
 #include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
 
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/scimath/Mathematics/StatisticsTypes.h>
 #include <casacore/scimath/Mathematics/StatisticsUtilities.h>
 
@@ -40,6 +39,8 @@
 #include <utility>
 
 namespace casacore {
+
+template <class T> class PtrHolder;
 
 // Class to calculate statistics in a "classical" sense, ie using accumulators with no
 // special filtering beyond optional range filtering etc.
@@ -473,61 +474,61 @@ protected:
     // the method will return with no further processing.
     // no weights, no mask, no ranges
     virtual void _populateArrays(
-        vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+        vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
 
     // ranges
     virtual void _populateArrays(
-        vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
+        vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
         uInt dataStride, const DataRanges& ranges, Bool isInclude,
-        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
 
     virtual void _populateArrays(
-        vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
+        vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
         Int64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride,
-        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
 
     // mask and ranges
     virtual void _populateArrays(
-        vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, Int64 nr,
+        vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
-        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
 
     // weights
     virtual void _populateArrays(
-        vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
+        vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
         const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
-        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
 
     // weights and ranges
     virtual void _populateArrays(
-        vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
+        vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
         const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude,
-        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
 
     // weights and mask
     virtual void _populateArrays(
-        vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin,
+        vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
         const WeightsIterator& weightBegin, Int64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
-        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
 
     // weights, mask, ranges
     virtual void _populateArrays(
-        vector<vector<AccumType> >& arys, uInt& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+        vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
-        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt maxCount
+        const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
     // </group>
 
@@ -673,15 +674,6 @@ private:
     mutable uInt _dataCount, _myStride;
     mutable uInt64 _myCount;
 
-    // per thread iterators
-    PtrHolder<DataIterator> _dataIter;
-    PtrHolder<MaskIterator> _maskIter;
-    PtrHolder<WeightsIterator> _weightsIter;
-    PtrHolder<uInt64> _offset;
-
-    // per dataset variables
-    uInt _nBlocks, _extra, _nthreads;
-
     static const uInt CACHE_PADDING;
     static const uInt BLOCK_SIZE;
 
@@ -704,6 +696,14 @@ private:
         const vector<AccumType>& maxLimit
     );
 
+    void _computeDataArrays(
+        vector<vector<AccumType> >& arys, uInt64& currentCount,
+        DataIterator dataIter, MaskIterator maskIter,
+        WeightsIterator weightsIter, uInt dataCount,
+        const vector<std::pair<AccumType, AccumType> >& includeLimits,
+        uInt64 maxCount
+    );
+
     void _computeStats(
         StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
         DataIterator dataIter, MaskIterator maskIter,
@@ -723,7 +723,7 @@ private:
     void _createDataArrays(
         vector<vector<AccumType> >& arrays,
         const vector<std::pair<AccumType, AccumType> > &includeLimits,
-        uInt maxCount
+        uInt64 maxCount
     );
     // extract data from multiple histograms given by <src>binDesc</src>.
     // <src>dataIndices</src> represent the indices of the sorted arrays of values to
@@ -749,7 +749,10 @@ private:
     Bool _increment(Bool includeIDataset);
 
     // increment thread-based iterators
-    void _incrementThreadIters(uInt idx8);
+    void _incrementThreadIters(
+        DataIterator& dataIter, MaskIterator& maskIter,
+        WeightsIterator& weightsIter, uInt64& offset, uInt nthreads
+    ) const;
 
     // get the values for the specified indices in the sorted array of all good data
     std::map<uInt64, AccumType> _indicesToValues(
@@ -761,7 +764,13 @@ private:
     
     void _initIterators();
 
-    void _initLoopVars(Bool initThreadIters=False);
+    void _initLoopVars();
+
+    void _initThreadVars(
+        uInt& nBlocks, uInt& extra, uInt& nthreads, PtrHolder<DataIterator>& dataIter,
+        PtrHolder<MaskIterator>& maskIter, PtrHolder<WeightsIterator>& weightsIter,
+        PtrHolder<uInt64>& offset, uInt nThreadsMax
+    ) const;
 
     // Determine by scanning the dataset if the number of good points is smaller than
     // <src>maxArraySize</src>. If so, <src>arrayToSort</src> will contain the unsorted
