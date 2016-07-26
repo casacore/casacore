@@ -696,6 +696,12 @@ private:
         const vector<AccumType>& maxLimit
     );
 
+    void _computeDataArray(
+        vector<AccumType>& ary, DataIterator dataIter,
+        MaskIterator maskIter, WeightsIterator weightsIter,
+        uInt64 dataCount
+    );
+
     void _computeDataArrays(
         vector<vector<AccumType> >& arys, uInt64& currentCount,
         DataIterator dataIter, MaskIterator maskIter,
