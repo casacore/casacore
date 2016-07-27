@@ -559,6 +559,11 @@ void ClassicalStatistics<CASA_STATP>::_incrementThreadIters(
     WeightsIterator& weightsIter, uInt64& offset, uInt nthreads
 ) const {
     uInt increment = nthreads*BLOCK_SIZE*_myStride;
+    if (offset+increment >= _myCount*_myStride) {
+        // necessary because in some cases std::advance will segfault
+        // if advanced past the end of the data structure
+        return;
+    }
     std::advance(dataIter, increment);
     if (_hasWeights) {
         std::advance(weightsIter, increment);
