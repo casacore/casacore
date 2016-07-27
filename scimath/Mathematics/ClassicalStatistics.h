@@ -807,6 +807,8 @@ private:
 
     uInt _nThreadsMax() const;
 
+    uInt _threadIdx() const;
+
     // get values from sorted array if the array is small enough to be held in
     // memory. Note that this is the array containing all good data, not data in
     // just a single bin representing a subset of good data.

@@ -485,13 +485,8 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
         }
 #pragma omp parallel for num_threads(nthreads)
         for (uInt i=0; i<nBlocks; ++i) {
-#ifdef _OPENMP
-            uInt tid = omp_get_thread_num();
-#else
-            uInt tid = 0;
-#endif
             uInt64 ngood = 0;
-            uInt idx8 = CACHE_PADDING*tid;
+            uInt idx8 = _threadIdx();
             uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             LocationType location(_idataset, offset[idx8]);
             _computeStats(
@@ -893,6 +888,16 @@ uInt ClassicalStatistics<CASA_STATP>::_nThreadsMax() const {
 }
 
 CASA_STATD
+uInt ClassicalStatistics<CASA_STATP>::_threadIdx() const {
+#ifdef _OPENMP
+    uInt tid = omp_get_thread_num();
+#else
+    uInt tid = 0;
+#endif
+    return tid * CACHE_PADDING;
+}
+
+CASA_STATD
 vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
     vector<CountedPtr<AccumType> >& sameVal,
     const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
@@ -967,12 +972,7 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
         );
 #pragma omp parallel for num_threads(nthreads)
         for (uInt i=0; i<nBlocks; ++i) {
-#ifdef _OPENMP
-            uInt tid = omp_get_thread_num();
-#else
-            uInt tid = 0;
-#endif
-            uInt idx8 = CACHE_PADDING*tid;
+            uInt idx8 = _threadIdx();
             uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             _computeBins(
                 tBins[idx8], tSameVal[idx8], tAllSame[idx8], dataIter[idx8],
@@ -1150,12 +1150,7 @@ void ClassicalStatistics<CASA_STATP>::_createDataArray(
         );
 #pragma omp parallel for num_threads(nthreads)
         for (uInt i=0; i<nBlocks; ++i) {
-#ifdef _OPENMP
-            uInt tid = omp_get_thread_num();
-#else
-            uInt tid = 0;
-#endif
-            uInt idx8 = CACHE_PADDING*tid;
+            uInt idx8 = _threadIdx();
             uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             _computeDataArray(
                 tAry[idx8], dataIter[idx8], maskIter[idx8],
@@ -1301,13 +1296,8 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
             tCurrentCount[idx8] = currentCount;
         }
 #pragma omp parallel for num_threads(nthreads)
-        for (uInt i=0; i<nBlocks; ++i) {
-#ifdef _OPENMP
-            uInt tid = omp_get_thread_num();
-#else
-            uInt tid = 0;
-#endif
-            uInt idx8 = CACHE_PADDING*tid;
+        for (uInt i=0; i<nBlocks; ++i) {;
+            uInt idx8 = _threadIdx();
             uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             _computeDataArrays(
                 tArys[idx8], tCurrentCount[idx8], dataIter[idx8], maskIter[idx8],
