@@ -1259,7 +1259,8 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     && otherWeightSp.isDefined(0);
   
   // MAIN
-  
+
+  Bool notYetFeedWarned = True;
   Bool doWeightScale = (itsWeightScale!=1. && itsWeightScale>0.);
   Float sScale = 1.; // scale for SIGMA
   if (doWeightScale){
@@ -1435,8 +1436,21 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       thisSigma.put(curRow, otherSigma, r);
     }
     
-    thisFeed1.put(curRow, otherFeed2, r);
-    thisFeed2.put(curRow, otherFeed1, r);
+    if(notYetFeedWarned && (otherFeed1(r)>0 || otherFeed2(r)>0)){
+      log << LogIO::WARN << "MS to be appended contains antennas with multiple feeds. Feed ID reindexing is not implemented.\n" 
+	  << LogIO::POST;
+      notYetFeedWarned = False;
+    }
+
+    if(doConjugateVis){
+      thisFeed1.put(curRow, otherFeed2, r);
+      thisFeed2.put(curRow, otherFeed1, r);
+    }
+    else{
+      thisFeed1.put(curRow, otherFeed1, r);
+      thisFeed2.put(curRow, otherFeed2, r);
+    }
+
     thisTime.put(curRow, otherTime, r);
     thisInterval.put(curRow, otherInterval, r);
     thisExposure.put(curRow, otherExposure, r);
@@ -1967,6 +1981,7 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
       }
 
       antRow.putMatchingFields(antMap[a], antRecord);
+
       // Copy all the feeds associated with the antenna into the feed
       // table. I'm assuming that they are not already there.
       *antInd = a;
@@ -1974,9 +1989,16 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
       const uInt nFeedsToCopy = feedsToCopy.nelements();
       uInt destRow = feed.nrow();
       feed.addRow(nFeedsToCopy);
+      //cout << "antenna " << antMap[a] << ": copying " <<  nFeedsToCopy << " feeds." << endl;
       for (uInt f = 0; f < nFeedsToCopy; f++, destRow++) {
 	feedRecord = otherFeedRow.get(feedsToCopy(f));
 	feedRecord.define(antField, static_cast<Int>(antMap[a]));
+	Int newSPWId = otherFeedCols.spectralWindowId()(feedsToCopy(f));
+	if(doSPW_p){ // the SPW table was rearranged
+	  //cout << "modifiying spwid from " << newSPWId << " to " << newSPWIndex_p(newSPWId) << endl;
+	  newSPWId = newSPWIndex_p(newSPWId);
+	  feedRecord.define(spwField, newSPWId);
+	}
 	feedRow.putMatchingFields(destRow, feedRecord);
       }
     }
