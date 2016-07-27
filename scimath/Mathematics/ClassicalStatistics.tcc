@@ -1296,7 +1296,7 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
             tCurrentCount[idx8] = currentCount;
         }
 #pragma omp parallel for num_threads(nthreads)
-        for (uInt i=0; i<nBlocks; ++i) {;
+        for (uInt i=0; i<nBlocks; ++i) {
             uInt idx8 = _threadIdx();
             uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             _computeDataArrays(
