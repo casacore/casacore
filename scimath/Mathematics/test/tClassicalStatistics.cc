@@ -1749,7 +1749,8 @@ int main() {
             AlwaysAssert(quantileToValue[0.25] == 30, AipsError);
             AlwaysAssert(quantileToValue[0.75] == 30, AipsError);
         }
-        { // two large array with two unique values, getMedianAndQuartile()
+        {
+            // two large array with two unique values, getMedianAndQuartile()
             ClassicalStatistics<Double, vector<Float>::const_iterator, vector<Bool>::const_iterator> cs;
             vector<Float> big(100000, 30);
             cs.addData(big.begin(), big.size());
@@ -1767,6 +1768,29 @@ int main() {
             AlwaysAssert(median == 30, AipsError);
             AlwaysAssert(quantileToValue[0.25] == -10, AipsError);
             AlwaysAssert(quantileToValue[0.75] == 30, AipsError);
+        }
+        {
+            // medium sized randomized array, that can be sorted in memory in one go
+            ClassicalStatistics<Double, vector<Float>::const_iterator, vector<Bool>::const_iterator> cs;
+            vector<Float> big(100000);
+            uInt count = 0;
+            vector<Float>::iterator iter = big.begin();
+            vector<Float>::iterator end = big.end();
+            for (; iter!=end; ++iter, ++count) {
+                *iter = count;
+            }
+            random_shuffle(big.begin(), big.end());
+            cs.addData(big.begin(), big.size());
+            std::set<Double> quantiles;
+            quantiles.insert(0.25);
+            quantiles.insert(0.75);
+            std::map<Double, Double> quantileToValue;
+            Double median = cs.getMedianAndQuantiles(
+                quantileToValue, quantiles
+            );
+            AlwaysAssert(median == 49999.5, AipsError);
+            AlwaysAssert(quantileToValue[0.25] == 24999, AipsError);
+            AlwaysAssert(quantileToValue[0.75] == 74999, AipsError);
         }
     }
     catch (const AipsError& x) {

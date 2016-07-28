@@ -467,7 +467,8 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     }
     while (True) {
         _initLoopVars();
-        uInt nBlocks, extra, nthreads;
+        uInt nBlocks, nthreads;
+        uInt64 extra;
         PtrHolder<DataIterator> dataIter;
         PtrHolder<MaskIterator> maskIter;
         PtrHolder<WeightsIterator> weightsIter;
@@ -484,14 +485,9 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
         }
 #pragma omp parallel for num_threads(nthreads)
         for (uInt i=0; i<nBlocks; ++i) {
-#ifdef _OPENMP
-            uInt tid = omp_get_thread_num();
-#else
-            uInt tid = 0;
-#endif
             uInt64 ngood = 0;
-            uInt idx8 = CACHE_PADDING*tid;
-            uInt dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
+            uInt idx8 = _threadIdx();
+            uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             LocationType location(_idataset, offset[idx8]);
             _computeStats(
                 tStats[idx8], ngood, location, dataIter[idx8], maskIter[idx8],
@@ -558,6 +554,11 @@ void ClassicalStatistics<CASA_STATP>::_incrementThreadIters(
     WeightsIterator& weightsIter, uInt64& offset, uInt nthreads
 ) const {
     uInt increment = nthreads*BLOCK_SIZE*_myStride;
+    if (offset+increment >= _myCount*_myStride) {
+        // necessary because in some cases std::advance will segfault
+        // if advanced past the end of the data structure
+        return;
+    }
     std::advance(dataIter, increment);
     if (_hasWeights) {
         std::advance(weightsIter, increment);
@@ -887,6 +888,16 @@ uInt ClassicalStatistics<CASA_STATP>::_nThreadsMax() const {
 }
 
 CASA_STATD
+uInt ClassicalStatistics<CASA_STATP>::_threadIdx() const {
+#ifdef _OPENMP
+    uInt tid = omp_get_thread_num();
+#else
+    uInt tid = 0;
+#endif
+    return tid * CACHE_PADDING;
+}
+
+CASA_STATD
 vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
     vector<CountedPtr<AccumType> >& sameVal,
     const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
@@ -949,7 +960,8 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
     }
     while (True) {
         _initLoopVars();
-        uInt nBlocks, extra, nthreads;
+        uInt nBlocks, nthreads;
+        uInt64 extra;
         PtrHolder<DataIterator> dataIter;
         PtrHolder<MaskIterator> maskIter;
         PtrHolder<WeightsIterator> weightsIter;
@@ -960,13 +972,8 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
         );
 #pragma omp parallel for num_threads(nthreads)
         for (uInt i=0; i<nBlocks; ++i) {
-#ifdef _OPENMP
-            uInt tid = omp_get_thread_num();
-#else
-            uInt tid = 0;
-#endif
-            uInt idx8 = CACHE_PADDING*tid;
-            uInt dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
+            uInt idx8 = _threadIdx();
+            uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             _computeBins(
                 tBins[idx8], tSameVal[idx8], tAllSame[idx8], dataIter[idx8],
                 maskIter[idx8], weightsIter[idx8], dataCount, binDesc, maxLimit
@@ -1125,68 +1132,108 @@ void ClassicalStatistics<CASA_STATP>::_createDataArray(
     vector<AccumType>& ary
 ) {
     _initIterators();
+    uInt nThreadsMax = _nThreadsMax();
+    PtrHolder<vector<AccumType> > tAry(
+        new vector<AccumType>[CACHE_PADDING*nThreadsMax], True
+    );
     while (True) {
         _initLoopVars();
-        if (_hasWeights) {
-            if (_hasMask) {
-                if (_hasRanges) {
-                    _populateArray(
-                        ary, _myData, _myWeights, _myCount,
-                        _myStride, _myMask, _maskStride, _myRanges, _myIsInclude
-                    );
-                }
-                else {
-                    _populateArray(
-                        ary, _myData, _myWeights,
-                        _myCount, _myStride, _myMask, _maskStride
-                    );
-                }
-            }
-            else if (_hasRanges) {
-                _populateArray(
-                    ary, _myData, _myWeights, _myCount,
-                    _myStride, _myRanges, _myIsInclude
-                );
-            }
-            else {
-                // has weights, but no mask nor ranges
-                _populateArray(
-                    ary, _myData, _myWeights, _myCount, _myStride
-                );
-            }
-        }
-        else if (_hasMask) {
-            // this data set has no weights, but does have a mask
-            if (_hasRanges) {
-                _populateArray(
-                    ary, _myData, _myCount, _myStride,
-                    _myMask, _maskStride, _myRanges, _myIsInclude
-                );
-            }
-            else {
-                _populateArray(
-                    ary, _myData, _myCount, _myStride, _myMask, _maskStride
-                );
-            }
-        }
-        else if (_hasRanges) {
-            // this data set has no weights no mask, but does have a set of ranges
-            // associated with it
-            _populateArray(
-                ary, _myData, _myCount, _myStride,
-                _myRanges, _myIsInclude
+        uInt nBlocks, nthreads;
+        uInt64 extra;
+        PtrHolder<DataIterator> dataIter;
+        PtrHolder<MaskIterator> maskIter;
+        PtrHolder<WeightsIterator> weightsIter;
+        PtrHolder<uInt64> offset;
+        _initThreadVars(
+            nBlocks, extra, nthreads, dataIter,
+            maskIter, weightsIter, offset, nThreadsMax
+        );
+#pragma omp parallel for num_threads(nthreads)
+        for (uInt i=0; i<nBlocks; ++i) {
+            uInt idx8 = _threadIdx();
+            uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
+            _computeDataArray(
+                tAry[idx8], dataIter[idx8], maskIter[idx8],
+                weightsIter[idx8], dataCount
             );
-        }
-        else {
-            // simplest case, this data set has no weights, no mask, nor any ranges associated
-            // with it, and its stride is 1. No filtering of the data is necessary.
-            _populateArray(
-                ary, _myData, _myCount, _myStride
+            _incrementThreadIters(
+                dataIter[idx8], maskIter[idx8], weightsIter[idx8],
+                offset[idx8], nthreads
             );
         }
         if (_increment(False)) {
             break;
         }
+    }
+    // merge the per-thread arrays
+    for (uInt tid=0; tid<nThreadsMax; ++tid) {
+        const vector<AccumType>& v = tAry[CACHE_PADDING*tid];
+        ary.insert(ary.end(), v.begin(), v.end());
+    }
+}
+
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_computeDataArray(
+    vector<AccumType>& ary, DataIterator dataIter,
+    MaskIterator maskIter, WeightsIterator weightsIter,
+    uInt64 dataCount
+) {
+    if (_hasWeights) {
+        if (_hasMask) {
+            if (_hasRanges) {
+                _populateArray(
+                    ary, dataIter, weightsIter, dataCount,
+                    _myStride, maskIter, _maskStride, _myRanges, _myIsInclude
+                );
+            }
+            else {
+                _populateArray(
+                    ary, dataIter, weightsIter,
+                    dataCount, _myStride, maskIter, _maskStride
+                );
+            }
+        }
+        else if (_hasRanges) {
+            _populateArray(
+                ary, dataIter, weightsIter, dataCount,
+                _myStride, _myRanges, _myIsInclude
+            );
+        }
+        else {
+            // has weights, but no mask nor ranges
+            _populateArray(
+                ary, dataIter, weightsIter, dataCount, _myStride
+            );
+        }
+    }
+    else if (_hasMask) {
+        // this data set has no weights, but does have a mask
+        if (_hasRanges) {
+            _populateArray(
+                ary, dataIter, dataCount, _myStride,
+                maskIter, _maskStride, _myRanges, _myIsInclude
+            );
+        }
+        else {
+            _populateArray(
+                ary, dataIter, dataCount, _myStride, maskIter, _maskStride
+            );
+        }
+    }
+    else if (_hasRanges) {
+        // this data set has no weights no mask, but does have a set of ranges
+        // associated with it
+        _populateArray(
+            ary, dataIter, dataCount, _myStride,
+            _myRanges, _myIsInclude
+        );
+    }
+    else {
+        // simplest case, this data set has no weights, no mask, nor any ranges associated
+        // with it, and its stride is 1. No filtering of the data is necessary.
+        _populateArray(
+            ary, dataIter, dataCount, _myStride
+        );
     }
 }
 
@@ -1234,7 +1281,8 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
     uInt64 currentCount = 0;
     while (currentCount < maxCount) {
         _initLoopVars();
-        uInt nBlocks, extra, nthreads;
+        uInt nBlocks, nthreads;
+        uInt64 extra;
         PtrHolder<DataIterator> dataIter;
         PtrHolder<MaskIterator> maskIter;
         PtrHolder<WeightsIterator> weightsIter;
@@ -1249,13 +1297,8 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
         }
 #pragma omp parallel for num_threads(nthreads)
         for (uInt i=0; i<nBlocks; ++i) {
-#ifdef _OPENMP
-            uInt tid = omp_get_thread_num();
-#else
-            uInt tid = 0;
-#endif
-            uInt idx8 = CACHE_PADDING*tid;
-            uInt dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
+            uInt idx8 = _threadIdx();
+            uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             _computeDataArrays(
                 tArys[idx8], tCurrentCount[idx8], dataIter[idx8], maskIter[idx8],
                 weightsIter[idx8], dataCount, includeLimits, maxCount
@@ -1296,7 +1339,7 @@ CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
     vector<vector<AccumType> >& arys, uInt64& currentCount,
     DataIterator dataIter, MaskIterator maskIter,
-    WeightsIterator weightsIter, uInt dataCount,
+    WeightsIterator weightsIter, uInt64 dataCount,
     const vector<std::pair<AccumType, AccumType> >& includeLimits,
     uInt64 maxCount
 ) {
@@ -1368,7 +1411,7 @@ void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
 
 CASA_STATD
 vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromMultipleBins(
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt maxArraySize,
+    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt64 maxArraySize,
     const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
     // dataIndices are relative to minimum bin minimum border
@@ -1486,7 +1529,7 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromM
 
 CASA_STATD
 vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromSingleBins(
-    const vector<uInt64>& binNpts, uInt maxArraySize,
+    const vector<uInt64>& binNpts, uInt64 maxArraySize,
     const vector<std::pair<AccumType, AccumType> >& binLimits,
     const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
@@ -1499,7 +1542,6 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromS
         _createDataArrays(dataArrays, binLimits, totalPts);
         vector<uInt64>::const_iterator bNpts = binNpts.begin();
         vector<uInt64>::const_iterator iNpts = bNpts;
-        vector<uInt64>::const_iterator eNpts = binNpts.end();
         typename vector<vector<AccumType> >::iterator bArrays = dataArrays.begin();
         typename vector<vector<AccumType> >::iterator iArrays = bArrays;
         typename vector<vector<AccumType> >::iterator eArrays = dataArrays.end();
@@ -1554,7 +1596,7 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromS
         vector<typename StatisticsUtilities<AccumType>::BinDesc> binDesc;
         while (iLimits != eLimits) {
             // we want at least 1000 bins
-            nBins = max(nBins, 1000);
+            nBins = max(nBins, (uInt64)1000);
             typename StatisticsUtilities<AccumType>::BinDesc histogram;
             _makeBins(
                 histogram, iLimits->first, iLimits->second,
@@ -2048,7 +2090,7 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
 CASA_STATD
 std::map<uInt64, AccumType> ClassicalStatistics<CASA_STATP>::_indicesToValues(
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax, uInt maxArraySize,
+    CountedPtr<AccumType> knownMax, uInt64 maxArraySize,
     const std::set<uInt64>& indices, Bool persistSortedArray, uInt64 nBins
 ) {
     std::map<uInt64, AccumType> indexToValue;
@@ -2171,7 +2213,7 @@ void ClassicalStatistics<CASA_STATP>::_initLoopVars() {
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_initThreadVars(
-    uInt& nBlocks, uInt& extra, uInt& nthreads, PtrHolder<DataIterator>& dataIter,
+    uInt& nBlocks, uInt64& extra, uInt& nthreads, PtrHolder<DataIterator>& dataIter,
     PtrHolder<MaskIterator>& maskIter, PtrHolder<WeightsIterator>& weightsIter,
     PtrHolder<uInt64>& offset, uInt nThreadsMax
 ) const {
@@ -3266,12 +3308,12 @@ void ClassicalStatistics<CASA_STATP>::_unweightedStats(
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
     std::map<uInt64, AccumType>& values, CountedPtr<uInt64> knownNpts,
-    const std::set<uInt64>& indices, uInt maxArraySize, Bool persistSortedArray
+    const std::set<uInt64>& indices, uInt64 maxArraySize, Bool persistSortedArray
 ) {
     values.clear();
     // I need a little wiggle room, the caller can't make the maximum array size
     // ridiculously small
-    maxArraySize = max(maxArraySize, (uInt)1000);
+    maxArraySize = max(maxArraySize, (uInt64)1000);
     vector<AccumType> myArray;
     if (_doMedAbsDevMed && ! this->_getSortedArray().empty()) {
         // make a copy
@@ -3304,14 +3346,8 @@ Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
             // we have to calculate the number of good points
             if (! this->_getDataProvider()) {
                 // we first get an upper limit by adding up the counts
-                uInt nr = 0;
                 const vector<Int64>& counts = this->_getCounts();
-                vector<Int64>::const_iterator citer = counts.begin();
-                vector<Int64>::const_iterator cend = counts.end();
-                while (citer != cend) {
-                    nr += *citer;
-                    ++citer;
-                }
+                uInt64 nr = accumulate(counts.begin(), counts.end(), 0);
                 if (nr <= maxArraySize) {
                     // data can be sorted in memory
                     _createDataArray(myArray);
