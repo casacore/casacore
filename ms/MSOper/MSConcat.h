@@ -134,9 +134,11 @@ private:
 			    const MSDataDescription& otherDD);
   Bool copySource(const MeasurementSet& otherms);
   Bool updateSource();
+  Bool updateSource2();
   Bool sourceRowsEquivalent(const MSSourceColumns& sourceCol, 
 			    const uInt& rowi, const uInt& rowj,
-			    const Bool dontTestDirection=False);
+			    const Bool dontTestDirection=False,
+			    const Bool dontTestTransAndRest=False);
 
   Bool obsRowsEquivalent(const MSObservationColumns& obsCol, 
 			 const uInt& rowi, const uInt& rowj);
