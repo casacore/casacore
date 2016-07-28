@@ -1626,16 +1626,56 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
     AccumType& datamin, AccumType& datamax
 ) {
     _initIterators();
-    CountedPtr<AccumType> mymax;
-    CountedPtr<AccumType> mymin;
+    uInt nThreadsMax = _nThreadsMax();
+    PtrHolder<CountedPtr<AccumType> > tmin(
+        new CountedPtr<AccumType>[CACHE_PADDING*nThreadsMax], True
+    );
+    PtrHolder<CountedPtr<AccumType> > tmax(
+        new CountedPtr<AccumType>[CACHE_PADDING*nThreadsMax], True
+    );
     while (True) {
         _initLoopVars();
-        _computeMinMax(
-            mymax, mymin, _myData, _myMask, _myWeights, _myCount
+        uInt nBlocks, nthreads;
+        uInt64 extra;
+        PtrHolder<DataIterator> dataIter;
+        PtrHolder<MaskIterator> maskIter;
+        PtrHolder<WeightsIterator> weightsIter;
+        PtrHolder<uInt64> offset;
+        _initThreadVars(
+            nBlocks, extra, nthreads, dataIter,
+            maskIter, weightsIter, offset, nThreadsMax
         );
-
+#pragma omp parallel for num_threads(nthreads)
+        for (uInt i=0; i<nBlocks; ++i) {
+            uInt idx8 = _threadIdx();
+            cout << "x" << endl;;
+            uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
+            _computeMinMax(
+                tmax[idx8], tmin[idx8], dataIter[idx8], maskIter[idx8],
+                weightsIter[idx8], dataCount
+            );
+            _incrementThreadIters(
+                dataIter[idx8], maskIter[idx8], weightsIter[idx8],
+                offset[idx8], nthreads
+            );
+        }
         if (_increment(False)) {
             break;
+        }
+    }
+    CountedPtr<AccumType> mymax;
+    CountedPtr<AccumType> mymin;
+    for (uInt i=0; i<nThreadsMax; ++i) {
+        uInt idx8 = i * CACHE_PADDING;
+        if (! tmin[idx8].null()) {
+            if (mymin.null() || *tmin[idx8] < *mymin) {
+                mymin = tmin[idx8];
+            }
+        }
+        if (! tmax[idx8].null()) {
+            if (mymax.null() || *tmax[idx8] > *mymax) {
+                mymax = tmax[idx8];
+            }
         }
     }
     ThrowIf (
