@@ -1630,62 +1630,10 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
     CountedPtr<AccumType> mymin;
     while (True) {
         _initLoopVars();
-        if (_hasWeights) {
-            if (_hasMask) {
-                if (_hasRanges) {
-                    _minMax(
-                        mymin, mymax, _myData, _myWeights, _myCount, _myStride,
-                        _myMask, _maskStride, _myRanges, _myIsInclude
-                    );
-                }
-                else {
-                    _minMax(
-                        mymin, mymax, _myData, _myWeights, _myCount,
-                        _myStride, _myMask, _maskStride
-                    );
-                }
-            }
-            else if (_hasRanges) {
-                _minMax(
-                    mymin, mymax, _myData, _myWeights, _myCount,
-                    _myStride, _myRanges, _myIsInclude
-                );
-            }
-            else {
-                // has weights, but no mask nor ranges
-                _minMax(
-                    mymin, mymax, _myData, _myWeights, _myCount, _myStride
-                );
-            }
-        }
-        else if (_hasMask) {
-            // this data set has no weights, but does have a mask
-            if (_hasRanges) {
-                _minMax(
-                    mymin, mymax, _myData, _myCount, _myStride, _myMask,
-                    _maskStride, _myRanges, _myIsInclude
-                );
-            }
-            else {
-                _minMax(
-                    mymin, mymax, _myData, _myCount,
-                    _myStride, _myMask, _maskStride
-                );
-            }
-        }
-        else if (_hasRanges) {
-            // this data set has no weights no mask, but does have a set of ranges
-            // associated with it
-            _minMax(
-                mymin, mymax, _myData, _myCount,
-                _myStride, _myRanges, _myIsInclude
-            );
-        }
-        else {
-            // simplest case, this data set has no weights, no mask, nor any ranges associated
-            // with it. No filtering of the data is necessary.
-            _minMax(mymin, mymax, _myData, _myCount, _myStride);
-        }
+        _computeMinMax(
+            mymax, mymin, _myData, _myMask, _myWeights, _myCount
+        );
+
         if (_increment(False)) {
             break;
         }
@@ -1696,6 +1644,70 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
     );
     datamin = *mymin;
     datamax = *mymax;
+}
+
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_computeMinMax(
+    CountedPtr<AccumType>& mymax, CountedPtr<AccumType>& mymin,
+    DataIterator dataIter, MaskIterator maskIter,
+    WeightsIterator weightsIter, uInt64 dataCount
+) {
+    if (_hasWeights) {
+        if (_hasMask) {
+            if (_hasRanges) {
+                _minMax(
+                    mymin, mymax, dataIter, weightsIter, dataCount, _myStride,
+                    maskIter, _maskStride, _myRanges, _myIsInclude
+                );
+            }
+            else {
+                _minMax(
+                    mymin, mymax, dataIter, weightsIter, dataCount,
+                    _myStride, maskIter, _maskStride
+                );
+            }
+        }
+        else if (_hasRanges) {
+            _minMax(
+                mymin, mymax, dataIter, weightsIter, dataCount,
+                _myStride, _myRanges, _myIsInclude
+            );
+        }
+        else {
+            // has weights, but no mask nor ranges
+            _minMax(
+                mymin, mymax, dataIter, weightsIter, dataCount, _myStride
+            );
+        }
+    }
+    else if (_hasMask) {
+        // this data set has no weights, but does have a mask
+        if (_hasRanges) {
+            _minMax(
+                mymin, mymax, dataIter, dataCount, _myStride, maskIter,
+                _maskStride, _myRanges, _myIsInclude
+            );
+        }
+        else {
+            _minMax(
+                mymin, mymax, dataIter, dataCount,
+                _myStride, maskIter, _maskStride
+            );
+        }
+    }
+    else if (_hasRanges) {
+        // this data set has no weights no mask, but does have a set of ranges
+        // associated with it
+        _minMax(
+            mymin, mymax, dataIter, dataCount,
+            _myStride, _myRanges, _myIsInclude
+        );
+    }
+    else {
+        // simplest case, this data set has no weights, no mask, nor any ranges associated
+        // with it. No filtering of the data is necessary.
+        _minMax(mymin, mymax, dataIter, dataCount, _myStride);
+    }
 }
 
 CASA_STATD

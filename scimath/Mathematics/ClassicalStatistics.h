@@ -710,6 +710,12 @@ private:
         uInt64 maxCount
     );
 
+    void _computeMinMax(
+        CountedPtr<AccumType>& mymax, CountedPtr<AccumType>& mymin,
+        DataIterator dataIter, MaskIterator maskIter,
+        WeightsIterator weightsIter, uInt64 dataCount
+    );
+
     void _computeStats(
         StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
         DataIterator dataIter, MaskIterator maskIter,
