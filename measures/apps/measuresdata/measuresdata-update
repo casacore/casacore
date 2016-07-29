@@ -40,8 +40,8 @@ while grep -qe "^status:\\Wcont" measuresdata.rc ; do
     fi
     
     if [ "$url" = "$old_url" ] ; then
-	echo Severe: measuresdata requests the same url twice: $url
-	exit 1
+	echo Warning: measuresdata requests the same url twice: $url
+#	exit 1
     fi
     old_url=$url
 
