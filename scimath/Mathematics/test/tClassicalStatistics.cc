@@ -34,9 +34,6 @@
 
 #include <casacore/casa/namespace.h>
 
-// debug
-// #include <casacore/casa/OS/CXXTimer.h>
-
 #define COMMA ,
 
 int main() {
@@ -1798,23 +1795,24 @@ int main() {
         {
             // large array, getMinMax()
             ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
-            vector<Double> big(500000000);
+            vector<Double> big(1e7);
             uInt count = 0;
             vector<Double>::iterator iter = big.begin();
             vector<Double>::iterator end = big.end();
             for (; iter!=end; ++iter, ++count) {
                 *iter = count;
             }
-            //random_shuffle(big.begin(), big.end());
             cs.addData(big.begin(), big.size());
             Double mymin, mymax;
             cout << "start big" << endl;
-            //CXXTimer timer;
-            //timer.start();
             cs.getMinMax(mymin, mymax);
-            //timer.stop();
-            // serial: about 50 seconds
-            //cout << "total " << timer.totalDuration() << endl;
+            AlwaysAssert(mymin == 0, AipsError);
+            AlwaysAssert(mymax == big.size()-1, AipsError);
+            // do it again, but shuffle the elements
+            random_shuffle(big.begin(), big.end());
+            ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs1;
+            cs1.addData(big.begin(), big.size());
+            cs1.getMinMax(mymin, mymax);
             AlwaysAssert(mymin == 0, AipsError);
             AlwaysAssert(mymax == big.size()-1, AipsError);
         }

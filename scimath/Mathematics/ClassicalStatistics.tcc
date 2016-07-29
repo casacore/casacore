@@ -1648,7 +1648,6 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
 #pragma omp parallel for num_threads(nthreads)
         for (uInt i=0; i<nBlocks; ++i) {
             uInt idx8 = _threadIdx();
-            cout << "x" << endl;;
             uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
             _computeMinMax(
                 tmax[idx8], tmin[idx8], dataIter[idx8], maskIter[idx8],
@@ -2404,10 +2403,10 @@ void ClassicalStatistics<CASA_STATP>::_makeBins(
 #define _minMaxCode \
     if (! mymin.null()) { \
         if (*datum < *mymin) { \
-            mymin = new AccumType(*datum); \
+            *mymin = *datum; \
         } \
         else if (*datum > *mymax) { \
-            mymax = new AccumType(*datum); \
+            *mymax = *datum; \
         } \
     } \
     else { \
