@@ -764,7 +764,9 @@ template<class T> void minMax(T &minVal, T &maxVal, const Array<T> &array)
          iter!=iterEnd; ++iter) {
       if (*iter < minv) {
         minv = *iter;
-      } else if (*iter > maxv) {
+      }
+      // no else allows compiler to use branchless instructions
+      if (*iter > maxv) {
         maxv = *iter;
       }
     }
@@ -774,7 +776,8 @@ template<class T> void minMax(T &minVal, T &maxVal, const Array<T> &array)
          iter!=iterEnd; ++iter) {
       if (*iter < minv) {
         minv = *iter;
-      } else if (*iter > maxv) {
+      }
+      if (*iter > maxv) {
         maxv = *iter;
       }
     }
