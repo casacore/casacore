@@ -1627,14 +1627,44 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
 ) {
     _initIterators();
     uInt nThreadsMax = _nThreadsMax();
-    PtrHolder<CountedPtr<AccumType> > tmin(
-        new CountedPtr<AccumType>[CACHE_PADDING*nThreadsMax], True
+    PtrHolder<AccumType> tmin(
+        new AccumType[CACHE_PADDING*nThreadsMax], True
     );
-    PtrHolder<CountedPtr<AccumType> > tmax(
-        new CountedPtr<AccumType>[CACHE_PADDING*nThreadsMax], True
+    PtrHolder<AccumType> tmax(
+        new AccumType[CACHE_PADDING*nThreadsMax], True
     );
+    Bool firstFound = False;
     while (True) {
         _initLoopVars();
+        if (! firstFound) {
+            // advance iterators to first good point and
+            // use that as initial min/max
+            firstFound = _computeFirst();
+        }
+        if (firstFound) {
+            break;
+        }
+        if (_increment(False)) {
+            break;
+        }
+    }
+    ThrowIf (! firstFound, "No valid data found");
+    for (uInt i=0; i<nThreadsMax; ++i) {
+        uInt idx8 = i * CACHE_PADDING;
+        tmin[idx8] = *_myData;
+        tmax[idx8] = *_myData;
+    }
+    Bool firstLoop = True;
+    while (True) {
+        if (firstLoop) {
+            // the first time through, the iterators have already
+            // been positioned by the previous while loop, so
+            // we do not want to re-initialize them
+            firstLoop = False;
+        }
+        else {
+            _initLoopVars();
+        }
         uInt nBlocks, nthreads;
         uInt64 extra;
         PtrHolder<DataIterator> dataIter;
@@ -1662,32 +1692,223 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
             break;
         }
     }
-    CountedPtr<AccumType> mymax;
-    CountedPtr<AccumType> mymin;
-    for (uInt i=0; i<nThreadsMax; ++i) {
+    datamax = tmax[0];
+    datamin = tmin[0];
+    for (uInt i=1; i<nThreadsMax; ++i) {
         uInt idx8 = i * CACHE_PADDING;
-        if (! tmin[idx8].null()) {
-            if (mymin.null() || *tmin[idx8] < *mymin) {
-                mymin = tmin[idx8];
+        datamin = min(datamin, tmin[idx8]);
+        datamax = max(datamax, tmax[idx8]);
+    }
+}
+
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_computeFirst() const {
+    if (_hasWeights) {
+        if (_hasMask) {
+            if (_hasRanges) {
+                return _findFirst(
+                    _myData, _myWeights, _myCount, _myStride,
+                    _myMask, _maskStride, _myRanges, _myIsInclude
+                );
+            }
+            else {
+                return _findFirst(
+                    _myData, _myWeights, _myCount,
+                    _myStride, _myMask, _maskStride
+                );
             }
         }
-        if (! tmax[idx8].null()) {
-            if (mymax.null() || *tmax[idx8] > *mymax) {
-                mymax = tmax[idx8];
-            }
+        else if (_hasRanges) {
+            return _findFirst(
+                _myData, _myWeights, _myCount,
+                _myStride, _myRanges, _myIsInclude
+            );
+        }
+        else {
+            return _findFirst(
+                _myData, _myWeights, _myCount, _myStride
+            );
         }
     }
-    ThrowIf (
-        mymax.null() || mymin.null(),
-        "No valid data found"
-    );
-    datamin = *mymin;
-    datamax = *mymax;
+    else if (_hasMask) {
+        // this data set has no weights, but does have a mask
+        if (_hasRanges) {
+            return _findFirst(
+                _myData, _myCount, _myStride, _myMask,
+                _maskStride, _myRanges, _myIsInclude
+            );
+        }
+        else {
+            return _findFirst(
+                _myData, _myCount, _myStride,
+                _myMask, _maskStride
+            );
+        }
+    }
+    else if (_hasRanges) {
+        // this data set has no weights no mask, but does have a set of ranges
+        // associated with it
+        return _findFirst(
+            _myData, _myCount, _myStride,
+            _myRanges, _myIsInclude
+        );
+    }
+    else {
+        // no weights, no mask, and no ranges
+        return _findFirst(_myData, _myCount, _myStride);
+    }
+}
+
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_findFirst(
+    DataIterator& , uInt64& , uInt
+) const {
+    // no constraints, the first good point is the first point
+    return True;
+}
+
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, uInt64& nr, uInt dataStride,
+    const DataRanges& ranges, Bool isInclude
+) const {
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (nr > 0) {
+        if (
+            StatisticsUtilities<AccumType>::includeDatum(
+                *dataIter, beginRange, endRange, isInclude
+            )
+        ) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, uInt64& nr, uInt dataStride,
+    MaskIterator& maskIter, uInt maskStride
+) const {
+    while (nr > 0) {
+        if (*maskIter) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(maskIter, maskStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, uInt64& nr, uInt dataStride,
+    MaskIterator& maskIter, uInt maskStride, const DataRanges& ranges,
+    Bool isInclude
+) const {
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (nr > 0) {
+        if (
+            *maskIter && StatisticsUtilities<AccumType>::includeDatum(
+                *dataIter, beginRange, endRange, isInclude
+            )
+        ) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(maskIter, maskStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, WeightsIterator& weightsIter,
+    uInt64& nr, uInt dataStride
+) const {
+    while (nr > 0) {
+        if (*weightsIter > 0) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(weightsIter, dataStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, WeightsIterator& weightsIter,
+    uInt64& nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+) const {
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (nr > 0) {
+        if (
+            *weightsIter > 0 && StatisticsUtilities<AccumType>::includeDatum(
+                *dataIter, beginRange, endRange, isInclude
+            )
+        ) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(weightsIter, dataStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, WeightsIterator& weightsIter,
+    uInt64& nr, uInt dataStride, MaskIterator& maskIter, uInt maskStride,
+    const DataRanges& ranges, Bool isInclude
+) const {
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (nr > 0) {
+        if (
+            *weightsIter > 0 && *maskIter && StatisticsUtilities<AccumType>::includeDatum(
+                *dataIter, beginRange, endRange, isInclude
+            )
+        ) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(maskIter, maskStride);
+        std::advance(weightsIter, dataStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ClassicalStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, WeightsIterator& weightsIter,
+    uInt64& nr, uInt dataStride, MaskIterator& maskIter, uInt maskStride
+) const {
+    while (nr > 0) {
+        if (*weightsIter > 0 && *maskIter) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(maskIter, maskStride);
+        std::advance(weightsIter, dataStride);
+        --nr;
+    }
+    return False;
 }
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_computeMinMax(
-    CountedPtr<AccumType>& mymax, CountedPtr<AccumType>& mymin,
+    AccumType& mymax, AccumType& mymin,
     DataIterator dataIter, MaskIterator maskIter,
     WeightsIterator weightsIter, uInt64 dataCount
 ) {
@@ -2401,22 +2622,12 @@ void ClassicalStatistics<CASA_STATP>::_makeBins(
 }
 
 #define _minMaxCode \
-    if (! mymin.null()) { \
-        if (*datum < *mymin) { \
-            *mymin = *datum; \
-        } \
-        else if (*datum > *mymax) { \
-            *mymax = *datum; \
-        } \
-    } \
-    else { \
-        mymin = new AccumType(*datum); \
-        mymax = new AccumType(*datum); \
-    }
+    mymin = min(*datum, mymin); \
+    mymax = max(*datum, mymax);
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
     DataIterator datum = dataBegin;
@@ -2431,7 +2642,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -2455,7 +2666,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -2474,7 +2685,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
@@ -2500,7 +2711,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride
 ) const {
@@ -2519,7 +2730,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
@@ -2545,7 +2756,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
@@ -2573,7 +2784,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {

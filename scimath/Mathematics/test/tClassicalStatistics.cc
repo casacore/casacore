@@ -63,7 +63,6 @@ int main() {
             AlwaysAssert(sd.minpos.first == 0, AipsError);
             AlwaysAssert(sd.minpos.second == 1, AipsError);
             AlwaysAssert(sd.npts == 5, AipsError);
-            cout << "rms " << sd.rms << endl;
             AlwaysAssert(sd.rms == sqrt(22.5/5.0), AipsError);
             AlwaysAssert(sd.stddev == sqrt(0.625), AipsError);
             AlwaysAssert(sd.sum == 10, AipsError);
@@ -1804,7 +1803,6 @@ int main() {
             }
             cs.addData(big.begin(), big.size());
             Double mymin, mymax;
-            cout << "start big" << endl;
             cs.getMinMax(mymin, mymax);
             AlwaysAssert(mymin == 0, AipsError);
             AlwaysAssert(mymax == big.size()-1, AipsError);
@@ -1815,6 +1813,43 @@ int main() {
             cs1.getMinMax(mymin, mymax);
             AlwaysAssert(mymin == 0, AipsError);
             AlwaysAssert(mymax == big.size()-1, AipsError);
+        }
+        Double x0[] = {10, 3, -1};
+        Double x1[] = {7, 4, 0};
+        Bool m0[] = {False, False, False};
+        Bool m1[] = {False, True, True};
+        Bool w0[] = {0, 0, 0};
+        Bool w1[] = {0, 1, 1};
+        {
+            // getMinMax() check _computeFirst() masking all of first data set
+            ClassicalStatistics<Double, Double*, Bool*> cs;
+            cs.addData(x0, m0, 3);
+            cs.addData(x1, m1, 3);
+            Double mymin, mymax;
+            cs.getMinMax(mymin, mymax);
+            AlwaysAssert(mymin == 0, AipsError);
+            AlwaysAssert(mymax == 4, AipsError);
+        }
+        {
+            // getMinMax() check _computeFirst() all weights=0 of first data set
+            ClassicalStatistics<Double, Double*, Bool*> cs;
+            cs.addData(x0, w0, 3);
+            cs.addData(x1, w1, 3);
+            Double mymin, mymax;
+            cs.getMinMax(mymin, mymax);
+            AlwaysAssert(mymin == 0, AipsError);
+            AlwaysAssert(mymax == 4, AipsError);
+        }
+        {
+            // getMinMax() check _computeFirst() all weights=0 of first data set, second data set masked
+            ClassicalStatistics<Double, Double*, Bool*> cs;
+            cs.addData(x0, w0, 3);
+            cs.addData(x0, m0, 3);
+            cs.addData(x1, w1, 3);
+            Double mymin, mymax;
+            cs.getMinMax(mymin, mymax);
+            AlwaysAssert(mymin == 0, AipsError);
+            AlwaysAssert(mymax == 4, AipsError);
         }
     }
     catch (const AipsError& x) {
