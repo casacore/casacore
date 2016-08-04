@@ -477,7 +477,7 @@ const tableProperties allProperties[] = {
 
   //**********************************************************************//
 
-  { "IGRF",			2.0,			180.0,
+  { "IGRF",			2.0,			0.0,
     True,			13193.75,		1826.25,
     "geodetic/IGRF",		"http",  		"ascii",
     &IGRF,			IGRFCol,		0,
