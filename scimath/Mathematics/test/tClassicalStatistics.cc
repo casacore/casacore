@@ -799,7 +799,7 @@ int main() {
             AlwaysAssert(mymax == 10, AipsError);
         }
         {
-            // getMaxMin(), data ranges
+            // getMinMax(), data ranges
             ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
             vector<std::pair<Double, Double> > r0(1);
             r0[0].first = 2.4;
@@ -1791,6 +1791,30 @@ int main() {
             AlwaysAssert(median == 49999.5, AipsError);
             AlwaysAssert(quantileToValue[0.25] == 24999, AipsError);
             AlwaysAssert(quantileToValue[0.75] == 74999, AipsError);
+        }
+        {
+            // large array, getMinMax()
+            ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+            vector<Double> big(1e7);
+            uInt count = 0;
+            vector<Double>::iterator iter = big.begin();
+            vector<Double>::iterator end = big.end();
+            for (; iter!=end; ++iter, ++count) {
+                *iter = count;
+            }
+            cs.addData(big.begin(), big.size());
+            Double mymin, mymax;
+            cout << "start big" << endl;
+            cs.getMinMax(mymin, mymax);
+            AlwaysAssert(mymin == 0, AipsError);
+            AlwaysAssert(mymax == big.size()-1, AipsError);
+            // do it again, but shuffle the elements
+            random_shuffle(big.begin(), big.end());
+            ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs1;
+            cs1.addData(big.begin(), big.size());
+            cs1.getMinMax(mymin, mymax);
+            AlwaysAssert(mymin == 0, AipsError);
+            AlwaysAssert(mymax == big.size()-1, AipsError);
         }
     }
     catch (const AipsError& x) {

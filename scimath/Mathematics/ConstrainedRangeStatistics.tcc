@@ -686,18 +686,7 @@ StatsData<AccumType> ConstrainedRangeStatistics<CASA_STATP>::_getStatistics() {
 
 #define _minMaxCodeCR \
     if (_isInRange(*datum)) { \
-        if (! mymin.null()) { \
-            if (*datum < *mymin) { \
-                mymin = new AccumType(*datum); \
-            } \
-            else if (*datum > *mymax) { \
-                mymax = new AccumType(*datum); \
-            } \
-        } \
-        else { \
-            mymin = new AccumType(*datum); \
-            mymax = new AccumType(*datum); \
-        } \
+        _minMaxCode \
     }
 
 CASA_STATD
