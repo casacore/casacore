@@ -46,7 +46,7 @@ while grep -qe "^status:\\Wcont" measuresdata.rc ; do
     old_url=$url
 
     echo Getting $url
-    curl -O $url
+    curl -L -O $url
     
     echo Calling measuresdata $arg
     measuresdata $arg
