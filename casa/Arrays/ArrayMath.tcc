@@ -756,9 +756,10 @@ template<class T> void minMax(T &minVal, T &maxVal, const Array<T> &array)
     throw(ArrayError("void minMax(T &min, T &max, const Array<T> &array) - "
                      "Array has no elements"));	
   }
-  T minv = array.data()[0];
-  T maxv = minv;
   if (array.contiguousStorage()) {
+    // minimal scope as some compilers may spill onto stack otherwise
+    T minv = array.data()[0];
+    T maxv = minv;
     typename Array<T>::const_contiter iterEnd = array.cend();
     for (typename Array<T>::const_contiter iter = array.cbegin();
          iter!=iterEnd; ++iter) {
@@ -770,7 +771,11 @@ template<class T> void minMax(T &minVal, T &maxVal, const Array<T> &array)
         maxv = *iter;
       }
     }
+    maxVal = maxv;
+    minVal = minv;
   } else {
+    T minv = array.data()[0];
+    T maxv = minv;
     typename Array<T>::const_iterator iterEnd = array.end();
     for (typename Array<T>::const_iterator iter = array.begin();
          iter!=iterEnd; ++iter) {
@@ -781,9 +786,9 @@ template<class T> void minMax(T &minVal, T &maxVal, const Array<T> &array)
         maxv = *iter;
       }
     }
+    maxVal = maxv;
+    minVal = minv;
   }
-  maxVal = maxv;
-  minVal = minv;
 }
 
 // <thrown>
