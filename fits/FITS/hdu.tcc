@@ -520,7 +520,7 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
 		for (n = 0; n < nmax; ++n)
 		    target[n] = (double)(fscale * array[n] + fzero);
 	    } else {
-		for (n=0; i<Int(nmax); ++n) {
+		for (uInt n = 0; n < nmax; ++n) {
 		    target[n] = array[n] != blankval ?
 			(double)(fscale * array[n] + fzero) : nan;
 		}
@@ -603,7 +603,7 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
 		for (n = 0; n < nmax; ++n)
 		    target[n] = (float)(fscale * array[n] + fzero);
 	    } else {
-		for (n=0; i<Int(nmax); ++n) {
+		for (uInt n = 0; n < nmax; ++n) {
 		    target[n] = array[n] != blankval ?
 			(float)(fscale * array[n] + fzero) : nan;
 		}
