@@ -473,12 +473,10 @@ void PrimaryArray<TYPE>::copy(double *target, int npixels) const
 //============================================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
-        uInt count, n;
-	Int offset, i, j, *sub, *C_factor;
+	uInt count;
+	Int offset, *sub, *C_factor;
 	double fscale = (double)bscale();
 	double fzero = (double)bzero();
-	i=0;
-	n=0;
 
 	Bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? True:False;
 	TYPE blankval = TYPE(0);
@@ -492,8 +490,10 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
 	    sub = &factor[dims()];
 	    C_factor = &sub[dims()];
 	    // compute the C_factors
+	    Int i;
 	    for (i = 0; i < (dims() - 1); ++i)
-		for (j = i + 1, C_factor[i] = 1; j < dims(); ++j)
+		C_factor[i] = 1;
+		for (Int j = i + 1; j < dims(); ++j)
 		    C_factor[i] *= dim(j);
 	    C_factor[i] = 1;
 	    // algorithm for converting F-order to C-order
@@ -517,7 +517,7 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
 	} else {
 	    uInt nmax = nelements();
 	    if (!blanked) {
-		for (n = 0; n < nmax; ++n)
+		for (uInt n = 0; n < nmax; ++n)
 		    target[n] = (double)(fscale * array[n] + fzero);
 	    } else {
 		for (uInt n = 0; n < nmax; ++n) {
@@ -556,12 +556,10 @@ void PrimaryArray<TYPE>::copy(float *target, int npixels) const
 //====================================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
-        uInt count, n;
-	Int offset, i, j, *sub, *C_factor;
+	uInt count;
+	Int offset, *sub, *C_factor;
 	float fscale = (float)bscale();
 	float fzero = (float)bzero();
-	i=0;
-	n=0;
 
 	Bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? True:False;
 	TYPE blankval = TYPE(0);
@@ -575,8 +573,10 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
 	    sub = &factor[dims()];
 	    C_factor = &sub[dims()];
 	    // compute the C_factors
+	    Int i;
 	    for (i = 0; i < (dims() - 1); ++i)
-		for (j = i + 1, C_factor[i] = 1; j < dims(); ++j)
+		C_factor[i] = 1;
+		for (Int j = i + 1; j < dims(); ++j)
 		    C_factor[i] *= dim(j);
 	    C_factor[i] = 1;
 	    // algorithm for converting F-order to C-order
@@ -600,7 +600,7 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
 	} else {
 	    uInt nmax = nelements();
 	    if (!blanked) {
-		for (n = 0; n < nmax; ++n)
+		for (uInt n = 0; n < nmax; ++n)
 		    target[n] = (float)(fscale * array[n] + fzero);
 	    } else {
 		for (uInt n = 0; n < nmax; ++n) {
@@ -624,15 +624,17 @@ void PrimaryArray<TYPE>::move(TYPE *target, int npixels) const
 
 template <class TYPE>
 void PrimaryArray<TYPE>::move(TYPE *target, FITS::FitsArrayOption opt) const {
-	uInt count, offset, i, j;
+	uInt count, offset;
 	Int *sub, *C_factor;
 
 	if (opt == FITS::FtoC) {
 	    sub = &factor[dims()];
 	    C_factor = &sub[dims()];
 	    // compute the C_factors
+	    Int i;
 	    for (i = 0; i < uInt(dims() - 1); ++i)
-		for (j = i + 1, C_factor[i] = 1; j < uInt(dims()); ++j)
+		C_factor[i] = 1;
+		for (Int j = i + 1; j < uInt(dims()); ++j)
 		    C_factor[i] *= dim(j);
 	    C_factor[i] = 1;
 	    // algorithm for converting F-order to C-order
