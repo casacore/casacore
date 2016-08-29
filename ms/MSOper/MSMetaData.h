@@ -572,10 +572,10 @@ public:
     // DEPRECATED
     // get a map of data desc ID, scan number pair to exposure time for the first time
     // for that data desc ID, scan number pair
-    vector<std::map<Int, Quantity> > getFirstExposureTimeMap();
+    std::vector<std::map<Int, Quantity> > getFirstExposureTimeMap();
 
     // get map of scans to first exposure times
-    map<ScanKey, FirstExposureTimeMap> getScanToFirstExposureTimeMap(Bool showProgress) const;
+    std::map<ScanKey, FirstExposureTimeMap> getScanToFirstExposureTimeMap(Bool showProgress) const;
 
     // get polarization IDs for the specified scan and spwid
     std::set<uInt> getPolarizationIDs(uInt obsID, Int arrayID, Int scan, uInt spwid) const;

@@ -3737,6 +3737,10 @@ void MSMetaData::_modifyFirstExposureTimeIfNecessary(
     for (; feiter!=feend; ++feiter) {
         Int ddID = feiter->first;
         Double timestamp = feiter->second.first;
+        // could be implemented in terms of overloaded _modifyFirstExposureTimeIfNecessary,
+        // but would require decomposing the exposure quantity into value and unit. Since
+        // this is called for every row in the main table, that may impact performance so
+        // I've opted to leave it as is.
         if (
             current.find(ddID) == current.end()
             || timestamp < current[ddID].first
@@ -3746,6 +3750,23 @@ void MSMetaData::_modifyFirstExposureTimeIfNecessary(
             // before what has yet been encountered
             current[ddID] = feiter->second;
         }
+    }
+}
+
+void MSMetaData::_modifyFirstExposureTimeIfNecessary(
+    FirstExposureTimeMap& current, Int dataDescID,
+    Double time, Double exposure, const Unit& eunit
+) {
+    if (current.find(dataDescID) == current.end()) {
+        // the data description ID for this sub scan has not yet been
+        // encountered in this chunk
+        current[dataDescID].first = time;
+        current[dataDescID].second = Quantity(exposure, eunit);
+    }
+    else if (time < current[dataDescID].first) {
+        current[dataDescID].first = time;
+        // unit is already set from first time, so only need to reset value
+        current[dataDescID].second.setValue(exposure);
     }
 }
 
@@ -3905,23 +3926,6 @@ MSMetaData::_getChunkSubScanProperties(
         props.meanInterval[spw] = Quantity(sum/props.spwNRows[spw], unit);
     }
     return make_pair(scanProps, mysubscans);
-}
-
-void MSMetaData::_modifyFirstExposureTimeIfNecessary(
-    FirstExposureTimeMap& current, Int dataDescID,
-    Double time, Double exposure, const Unit& eunit
-) {
-    if (current.find(dataDescID) == current.end()) {
-        // the data description ID for this sub scan has not yet been
-        // encountered in this chunk
-        current[dataDescID].first = time;
-        current[dataDescID].second = Quantity(exposure, eunit);
-    }
-    else if (time < current[dataDescID].first) {
-        current[dataDescID].first = time;
-        // unit is already set from first time, so only need to reset value
-        current[dataDescID].second.setValue(exposure);
-    }
 }
 
 SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > MSMetaData::getSubScanProperties(
