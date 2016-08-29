@@ -1660,6 +1660,21 @@ vector<uInt> MSMetaData::getAntennaIDs(
     return ids;
 }
 
+map<ScanKey, MSMetaData::FirstExposureTimeMap> MSMetaData::getScanToFirstExposureTimeMap(
+    Bool showProgress
+) const {
+    SHARED_PTR<const std::map<ScanKey, MSMetaData::ScanProperties> > scanProps
+        = _getScanProperties(showProgress);
+    std::map<ScanKey, MSMetaData::ScanProperties>::const_iterator iter = scanProps->begin();
+    std::map<ScanKey, MSMetaData::ScanProperties>::const_iterator end = scanProps->end();
+    map<ScanKey, FirstExposureTimeMap> ret;
+    for (; iter!=end; ++iter) {
+        ret[iter->first] = iter->second.firstExposureTime;
+    }
+    return ret;
+}
+
+// deprecated, no longer supported
 vector<std::map<Int, Quantity> > MSMetaData::getFirstExposureTimeMap() {
     if (! _firstExposureTimeMap.empty()) {
         return _firstExposureTimeMap;
@@ -1692,7 +1707,6 @@ vector<std::map<Int, Quantity> > MSMetaData::getFirstExposureTimeMap() {
         ++titer;
         ++eiter;
     }
-
     if (_cacheUpdated(_sizeof(firstExposureTimeMap))) {
         _firstExposureTimeMap = firstExposureTimeMap;
     }
@@ -3575,6 +3589,7 @@ void MSMetaData::_computeScanAndSubScanProperties(
         map<ScanKey, ScanProperties>::const_iterator viter = vScanProps.begin();
         map<ScanKey, ScanProperties>::const_iterator vend = vScanProps.end();
         for (; viter!=vend; ++viter) {
+            // iterate over scans in this chunk
             const ScanKey& scanKey = viter->first;
             const std::pair<Double, Double>& range = viter->second.timeRange;
             if (scanProps->find(scanKey) == scanProps->end()) {
@@ -3605,9 +3620,11 @@ void MSMetaData::_computeScanAndSubScanProperties(
         map<SubScanKey, SubScanProperties>::const_iterator ssIter = props[i].second.begin();
         map<SubScanKey, SubScanProperties>::const_iterator ssEnd = props[i].second.end();
         for (; ssIter!=ssEnd; ++ssIter) {
+            // iterate over subscans in this chunk
             const SubScanKey& ssKey = ssIter->first;
             const SubScanProperties& val = ssIter->second;
             if (subScanProps->find(ssKey) == subScanProps->end()) {
+                // first time this subscan has been seen in any chunks
                 (*subScanProps)[ssKey] = val;
                 map<uInt, Quantity>::const_iterator mi = val.meanInterval.begin();
                 map<uInt, Quantity>::const_iterator me = val.meanInterval.end();
@@ -3658,6 +3675,7 @@ void MSMetaData::_computeScanAndSubScanProperties(
                         fp.timeProps[time].nrows += tprops.nrows;
                     }
                 }
+                _modifyFirstExposureTimeIfNecessary(fp.firstExposureTime, val.firstExposureTime);
             }
         }
     }
@@ -3675,12 +3693,13 @@ void MSMetaData::_computeScanAndSubScanProperties(
         }
         const ScanKey scanKey = casa::scanKey(ssKey);
         if (scanSumInterval.find(scanKey) == scanSumInterval.end()) {
+            // first time associated scan key has been seen
             scanSumInterval[scanKey] = ssSumInterval[ssKey];
+            (*scanProps)[scanKey].firstExposureTime = props.firstExposureTime;
         }
         else {
             map<uInt, Quantity>::const_iterator spwSumIter = ssSumInterval[ssKey].begin();
             map<uInt, Quantity>::const_iterator spwSumEnd = ssSumInterval[ssKey].end();
-
             for (; spwSumIter!=spwSumEnd; ++spwSumIter) {
                 const uInt& spw = spwSumIter->first;
                 if (scanSumInterval[scanKey].find(spw) == scanSumInterval[scanKey].end()) {
@@ -3690,6 +3709,9 @@ void MSMetaData::_computeScanAndSubScanProperties(
                     scanSumInterval[scanKey][spw] += spwSumIter->second;
                 }
             }
+            _modifyFirstExposureTimeIfNecessary(
+                (*scanProps)[scanKey].firstExposureTime, ssIter->second.firstExposureTime
+            );
         }
     }
     map<ScanKey, ScanProperties>::iterator scanPropsIter = scanProps->begin();
@@ -3703,6 +3725,48 @@ void MSMetaData::_computeScanAndSubScanProperties(
             const uInt& nrows = scanSpwNRowsIter->second;
             scanPropsIter->second.meanInterval[spw] = scanSumInterval[scanKey][spw]/nrows;
         }
+    }
+}
+
+void MSMetaData::_modifyFirstExposureTimeIfNecessary(
+    FirstExposureTimeMap& current, const FirstExposureTimeMap& test
+) {
+    // deal with first exposure time maps
+    FirstExposureTimeMap::const_iterator feiter = test.begin();
+    FirstExposureTimeMap::const_iterator feend = test.end();
+    for (; feiter!=feend; ++feiter) {
+        Int ddID = feiter->first;
+        Double timestamp = feiter->second.first;
+        // could be implemented in terms of overloaded _modifyFirstExposureTimeIfNecessary,
+        // but would require decomposing the exposure quantity into value and unit. Since
+        // this is called for every row in the main table, that may impact performance so
+        // I've opted to leave it as is.
+        if (
+            current.find(ddID) == current.end()
+            || timestamp < current[ddID].first
+        ) {
+            // dd ID not yet encountered yet
+            // or the first time stamp for this ddID is
+            // before what has yet been encountered
+            current[ddID] = feiter->second;
+        }
+    }
+}
+
+void MSMetaData::_modifyFirstExposureTimeIfNecessary(
+    FirstExposureTimeMap& current, Int dataDescID,
+    Double time, Double exposure, const Unit& eunit
+) {
+    if (current.find(dataDescID) == current.end()) {
+        // the data description ID for this sub scan has not yet been
+        // encountered in this chunk
+        current[dataDescID].first = time;
+        current[dataDescID].second = Quantity(exposure, eunit);
+    }
+    else if (time < current[dataDescID].first) {
+        current[dataDescID].first = time;
+        // unit is already set from first time, so only need to reset value
+        current[dataDescID].second.setValue(exposure);
     }
 }
 
@@ -3746,6 +3810,7 @@ MSMetaData::_getChunkSubScanProperties(
     SubScanKey subScanKey;
     pair<SubScanKey, uInt> subScanSpw;
     uInt row = beginRow;
+    const Unit& eunit = exposureTimes->getFullUnit();
     while (row < endRow) {
         scanKey.obsID = *oIter;
         scanKey.arrayID = *arIter;
@@ -3753,6 +3818,7 @@ MSMetaData::_getChunkSubScanProperties(
         Double half = *iIter/2;
         uInt spw = ddIDToSpw[*dIter];
         if (scanProps.find(scanKey) == scanProps.end()) {
+            // first time this scan has been encountered in this chunk
             scanProps[scanKey].timeRange = std::make_pair(*tIter-half, *tIter+half);
             scanProps[scanKey].times[spw] = std::set<Double>();
             scanProps[scanKey].spwNRows[spw] = 1;
@@ -3779,12 +3845,14 @@ MSMetaData::_getChunkSubScanProperties(
         if (
             mysubscans.find(subScanKey) == mysubscans.end()
         ) {
-            // first time this subscan has been seen
+            // first time this subscan has been encountered in this chunk
             SubScanProperties props;
             props.acRows = autocorr ? 1 : 0;
             props.xcRows = autocorr ? 0 : 1;
             props.beginTime = *tIter;
             props.endTime = *tIter;
+            props.firstExposureTime[*dIter].first = *tIter;
+            props.firstExposureTime[*dIter].second = Quantity(*eiter, eunit);
             mysubscans[subScanKey] = props;
             exposureSum[subScanKey] = *eiter;
         }
@@ -3797,6 +3865,10 @@ MSMetaData::_getChunkSubScanProperties(
             }
             mysubscans[subScanKey].beginTime = min(*tIter, mysubscans[subScanKey].beginTime);
             mysubscans[subScanKey].endTime = max(*tIter, mysubscans[subScanKey].endTime);
+            _modifyFirstExposureTimeIfNecessary(
+                mysubscans[subScanKey].firstExposureTime, *dIter,
+                *tIter, *eiter, eunit
+            );
             exposureSum[subScanKey] += *eiter;
         }
         subScanSpw.first = subScanKey;
@@ -3835,7 +3907,6 @@ MSMetaData::_getChunkSubScanProperties(
         ++iIter;
         ++row;
     }
-    const Unit& eunit = exposureTimes->getFullUnit();
     map<SubScanKey, SubScanProperties>::iterator ssIter = mysubscans.begin();
     map<SubScanKey, SubScanProperties>::iterator ssEnd = mysubscans.end();
     for (; ssIter!=ssEnd; ++ssIter) {
@@ -3868,6 +3939,17 @@ SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> > MSMetaDat
     return subScanProps;
 }
 
+SHARED_PTR<const std::map<ScanKey, MSMetaData::ScanProperties> > MSMetaData::_getScanProperties(
+    Bool showProgress
+) const {
+    SHARED_PTR<const std::map<ScanKey, ScanProperties> > scanProps;
+    SHARED_PTR<const std::map<SubScanKey, SubScanProperties> > subScanProps;
+    _getScanAndSubScanProperties(
+        scanProps, subScanProps, showProgress
+    );
+    return scanProps;
+}
+
 void MSMetaData::_getScanAndSubScanProperties(
     SHARED_PTR<const std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
     SHARED_PTR<const std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
@@ -3893,11 +3975,14 @@ void MSMetaData::_getScanAndSubScanProperties(
 
     static const uInt scanStructSize = 2*dSize;
     static const uInt scanKeySize = 3*iSize;
+    // fudge of sizeof(Unit)
+    static const uInt unitSize = 16;
+    static const uInt feSize = iSize + 2*dSize + unitSize;
     uInt scanSize = scanProps->size() * (scanKeySize + scanStructSize);
     std::map<ScanKey, ScanProperties>::const_iterator scanIter = scanProps->begin();
     std::map<ScanKey, ScanProperties>::const_iterator scanEnd = scanProps->end();
     for (; scanIter!=scanEnd; ++scanIter) {
-        const ScanProperties props = scanIter->second;
+        const ScanProperties& props = scanIter->second;
         scanSize += props.meanInterval.size() * (dSize + 4*iSize);
         const map<uInt, std::set<Double> >& spwTimes = props.times;
         map<uInt, std::set<Double> >::const_iterator tIter = spwTimes.begin();
@@ -3905,6 +3990,7 @@ void MSMetaData::_getScanAndSubScanProperties(
         for (; tIter!=tEnd; ++tIter) {
             scanSize += dSize * tIter->second.size();
         }
+        scanSize += feSize * props.firstExposureTime.size();
     }
 
     static const uInt ssStructSize = 3*dSize + 2*iSize;
@@ -3918,9 +4004,10 @@ void MSMetaData::_getScanAndSubScanProperties(
             props.antennas.size() + props.ddIDs.size() + props.stateIDs.size()
             + props.spws.size()
         );
-        subScanSize += (dSize + iSize) + subIter->second.timeProps.size();
+        subScanSize += (dSize + iSize) + props.timeProps.size();
         // meanInterval + spwNRows
-        subScanSize += (3*iSize + dSize) * subIter->second.meanInterval.size();
+        subScanSize += (3*iSize + dSize) * props.meanInterval.size();
+        subScanSize += feSize * props.firstExposureTime.size();
     }
     uInt mysize = scanSize + subScanSize;
     if (_cacheUpdated(mysize)) {
