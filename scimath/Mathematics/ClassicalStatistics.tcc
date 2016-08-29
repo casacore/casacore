@@ -1626,68 +1626,55 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
     AccumType& datamin, AccumType& datamax
 ) {
     _initIterators();
-    CountedPtr<AccumType> mymax;
-    CountedPtr<AccumType> mymin;
+    uInt nThreadsMax = _nThreadsMax();
+    PtrHolder<CountedPtr<AccumType> > tmin(
+        new CountedPtr<AccumType>[CACHE_PADDING*nThreadsMax], True
+    );
+    PtrHolder<CountedPtr<AccumType> > tmax(
+        new CountedPtr<AccumType>[CACHE_PADDING*nThreadsMax], True
+    );
     while (True) {
         _initLoopVars();
-        if (_hasWeights) {
-            if (_hasMask) {
-                if (_hasRanges) {
-                    _minMax(
-                        mymin, mymax, _myData, _myWeights, _myCount, _myStride,
-                        _myMask, _maskStride, _myRanges, _myIsInclude
-                    );
-                }
-                else {
-                    _minMax(
-                        mymin, mymax, _myData, _myWeights, _myCount,
-                        _myStride, _myMask, _maskStride
-                    );
-                }
-            }
-            else if (_hasRanges) {
-                _minMax(
-                    mymin, mymax, _myData, _myWeights, _myCount,
-                    _myStride, _myRanges, _myIsInclude
-                );
-            }
-            else {
-                // has weights, but no mask nor ranges
-                _minMax(
-                    mymin, mymax, _myData, _myWeights, _myCount, _myStride
-                );
-            }
-        }
-        else if (_hasMask) {
-            // this data set has no weights, but does have a mask
-            if (_hasRanges) {
-                _minMax(
-                    mymin, mymax, _myData, _myCount, _myStride, _myMask,
-                    _maskStride, _myRanges, _myIsInclude
-                );
-            }
-            else {
-                _minMax(
-                    mymin, mymax, _myData, _myCount,
-                    _myStride, _myMask, _maskStride
-                );
-            }
-        }
-        else if (_hasRanges) {
-            // this data set has no weights no mask, but does have a set of ranges
-            // associated with it
-            _minMax(
-                mymin, mymax, _myData, _myCount,
-                _myStride, _myRanges, _myIsInclude
+        uInt nBlocks, nthreads;
+        uInt64 extra;
+        PtrHolder<DataIterator> dataIter;
+        PtrHolder<MaskIterator> maskIter;
+        PtrHolder<WeightsIterator> weightsIter;
+        PtrHolder<uInt64> offset;
+        _initThreadVars(
+            nBlocks, extra, nthreads, dataIter,
+            maskIter, weightsIter, offset, nThreadsMax
+        );
+#pragma omp parallel for num_threads(nthreads)
+        for (uInt i=0; i<nBlocks; ++i) {
+            uInt idx8 = _threadIdx();
+            uInt64 dataCount = _myCount - offset[idx8] < BLOCK_SIZE ? extra : BLOCK_SIZE;
+            _computeMinMax(
+                tmax[idx8], tmin[idx8], dataIter[idx8], maskIter[idx8],
+                weightsIter[idx8], dataCount
             );
-        }
-        else {
-            // simplest case, this data set has no weights, no mask, nor any ranges associated
-            // with it. No filtering of the data is necessary.
-            _minMax(mymin, mymax, _myData, _myCount, _myStride);
+            _incrementThreadIters(
+                dataIter[idx8], maskIter[idx8], weightsIter[idx8],
+                offset[idx8], nthreads
+            );
         }
         if (_increment(False)) {
             break;
+        }
+    }
+    CountedPtr<AccumType> mymax;
+    CountedPtr<AccumType> mymin;
+    for (uInt i=0; i<nThreadsMax; ++i) {
+        uInt idx8 = i * CACHE_PADDING;
+        if (! tmin[idx8].null()) {
+            if (mymin.null() || *tmin[idx8] < *mymin) {
+                mymin = tmin[idx8];
+            }
+        }
+        if (! tmax[idx8].null()) {
+            if (mymax.null() || *tmax[idx8] > *mymax) {
+                mymax = tmax[idx8];
+            }
         }
     }
     ThrowIf (
@@ -1696,6 +1683,70 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
     );
     datamin = *mymin;
     datamax = *mymax;
+}
+
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_computeMinMax(
+    CountedPtr<AccumType>& mymax, CountedPtr<AccumType>& mymin,
+    DataIterator dataIter, MaskIterator maskIter,
+    WeightsIterator weightsIter, uInt64 dataCount
+) {
+    if (_hasWeights) {
+        if (_hasMask) {
+            if (_hasRanges) {
+                _minMax(
+                    mymin, mymax, dataIter, weightsIter, dataCount, _myStride,
+                    maskIter, _maskStride, _myRanges, _myIsInclude
+                );
+            }
+            else {
+                _minMax(
+                    mymin, mymax, dataIter, weightsIter, dataCount,
+                    _myStride, maskIter, _maskStride
+                );
+            }
+        }
+        else if (_hasRanges) {
+            _minMax(
+                mymin, mymax, dataIter, weightsIter, dataCount,
+                _myStride, _myRanges, _myIsInclude
+            );
+        }
+        else {
+            // has weights, but no mask nor ranges
+            _minMax(
+                mymin, mymax, dataIter, weightsIter, dataCount, _myStride
+            );
+        }
+    }
+    else if (_hasMask) {
+        // this data set has no weights, but does have a mask
+        if (_hasRanges) {
+            _minMax(
+                mymin, mymax, dataIter, dataCount, _myStride, maskIter,
+                _maskStride, _myRanges, _myIsInclude
+            );
+        }
+        else {
+            _minMax(
+                mymin, mymax, dataIter, dataCount,
+                _myStride, maskIter, _maskStride
+            );
+        }
+    }
+    else if (_hasRanges) {
+        // this data set has no weights no mask, but does have a set of ranges
+        // associated with it
+        _minMax(
+            mymin, mymax, dataIter, dataCount,
+            _myStride, _myRanges, _myIsInclude
+        );
+    }
+    else {
+        // simplest case, this data set has no weights, no mask, nor any ranges associated
+        // with it. No filtering of the data is necessary.
+        _minMax(mymin, mymax, dataIter, dataCount, _myStride);
+    }
 }
 
 CASA_STATD
@@ -2352,10 +2403,10 @@ void ClassicalStatistics<CASA_STATP>::_makeBins(
 #define _minMaxCode \
     if (! mymin.null()) { \
         if (*datum < *mymin) { \
-            mymin = new AccumType(*datum); \
+            *mymin = *datum; \
         } \
         else if (*datum > *mymax) { \
-            mymax = new AccumType(*datum); \
+            *mymax = *datum; \
         } \
     } \
     else { \

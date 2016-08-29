@@ -74,6 +74,8 @@ public:
         uInt nrows;
     };
 
+    typedef std::map<Int, std::pair<Double, Quantity> > FirstExposureTimeMap;
+
     struct SubScanProperties {
         // number of auto-correlation rows
         uInt acRows;
@@ -86,6 +88,11 @@ public:
         // the key is the spwID, the value is the meanInterval for
         // the subscan and that spwID
         std::map<uInt, Quantity> meanInterval;
+        // The Int represents the data description ID,
+        // The Double represents the time of the first time stamp,
+        // The Quantity represents the exposure time for the corresponding
+        // data description ID and time stamp
+        FirstExposureTimeMap firstExposureTime;
         Quantity meanExposureTime;
         std::set<uInt> spws;
         // number of rows for each spectral window
@@ -562,9 +569,13 @@ public:
 
     uInt nPol();
 
+    // DEPRECATED
     // get a map of data desc ID, scan number pair to exposure time for the first time
     // for that data desc ID, scan number pair
-    vector<std::map<Int, Quantity> > getFirstExposureTimeMap();
+    std::vector<std::map<Int, Quantity> > getFirstExposureTimeMap();
+
+    // get map of scans to first exposure times
+    std::map<ScanKey, FirstExposureTimeMap> getScanToFirstExposureTimeMap(Bool showProgress) const;
 
     // get polarization IDs for the specified scan and spwid
     std::set<uInt> getPolarizationIDs(uInt obsID, Int arrayID, Int scan, uInt spwid) const;
@@ -610,6 +621,11 @@ public:
 private:
 
     struct ScanProperties {
+        // The Int represents the data description ID,
+        // The Double represents the time of the first time stamp,
+        // The Quantity represents the exposure time for the corresponding
+        // data description ID and time stamp
+        FirstExposureTimeMap firstExposureTime;
         // the key is the spwID, the value is the meanInterval for
         // the subscan and that spwID
         std::map<uInt, Quantity> meanInterval;
@@ -926,6 +942,11 @@ private:
         SHARED_PTR<std::map<Int, uInt> >& fieldToNXCRowsMap
     ) const;
 
+    // get scan properties
+    SHARED_PTR<const std::map<ScanKey, MSMetaData::ScanProperties> > _getScanProperties(
+        Bool showProgress
+    ) const;
+
     // get the scan keys in the specified set that have the associated arrayKey
     std::set<ScanKey> _getScanKeys(
         const std::set<ScanKey>& scanKeys, const ArrayKey& arrayKey
@@ -1010,6 +1031,15 @@ private:
         std::map<SubScanKey, Double>*& scanNACRows,
         std::map<SubScanKey, Double>*& scanNXCRows
     ) const;
+
+    static void _modifyFirstExposureTimeIfNecessary(
+        FirstExposureTimeMap& current, const FirstExposureTimeMap& test
+    );
+
+    static void _modifyFirstExposureTimeIfNecessary(
+        FirstExposureTimeMap& current, Int dataDescID,
+        Double time, Double exposure, const Unit& eunit
+    );
 
     static uInt _sizeof(const std::map<Double, MSMetaData::TimeStampProperties> & m);
 
