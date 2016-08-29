@@ -78,6 +78,17 @@ option (CASA_BUILD "Building the in the CASA (http://casa.nrao.edu) environment"
 
 set(CASA_DEFAULT_ALIGNMENT "32" CACHE STRING "Default alignment of casa::AlignedAllocator")
 
+if (UseCasacoreNamespace)
+
+    add_definitions (-DUseCasacoreNamespace)
+    message (STATUS "Using namespace casacore.")
+
+else ()
+
+    message (STATUS "Namespace casacore 'merged' into namespace casa.")
+
+endif ()
+
 # basic setup for building within CASA environment
 if( CASA_BUILD )
    if( NOT DATA_DIR )
