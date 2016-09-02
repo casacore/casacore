@@ -431,7 +431,7 @@ void LCEllipsoid::_defineMask2D() {
     }
     mask.putStorage (maskData, deleteIt);
     ThrowIf(
-        ! _centerIsInside && ! casa::anyTrue(mask),
+        ! _centerIsInside && ! casacore::anyTrue(mask),
         "Ellipsoid lies entirely outside the lattice"
     );
     setMask (mask);
@@ -494,7 +494,7 @@ void LCEllipsoid::_doOutside() {
     }
     mask.putStorage (maskData, deleteIt);
     ThrowIf(
-        ! _centerIsInside && ! casa::anyTrue(mask),
+        ! _centerIsInside && ! casacore::anyTrue(mask),
         "Ellipsoid lies entirely outside the lattice"
     );
     setMask(mask);

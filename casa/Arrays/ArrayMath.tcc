@@ -1366,7 +1366,7 @@ Array<std::complex<T> > makeComplex(const T &left, const Array<T>& right)
 {
   Array<std::complex<T> > res(right.shape());
   arrayContTransform (left, right, res,
-                      casa::MakeComplex<T,T,std::complex<T> >());
+                      casacore::MakeComplex<T,T,std::complex<T> >());
   return res;
 }
 
@@ -1375,7 +1375,7 @@ Array<std::complex<T> > makeComplex(const Array<T> &left, const T& right)
 {
   Array<std::complex<T> > res(left.shape());
   arrayContTransform (left, right, res,
-                      casa::MakeComplex<T,T,std::complex<T> >());
+                      casacore::MakeComplex<T,T,std::complex<T> >());
   return res;
 }
 
