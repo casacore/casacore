@@ -783,7 +783,7 @@ void testIt(MSMetaData& md) {
                 }
                 AlwaysAssert(md.getScansForIntent(*intent, 0, 0) == expec, AipsError);
                 AlwaysAssert(
-                    casa::scanNumbers(md.getIntentToScansMap()[*intent]) == expec,
+                    casacore::scanNumbers(md.getIntentToScansMap()[*intent]) == expec,
                     AipsError
                 );
             }
@@ -2513,7 +2513,7 @@ void testIt(MSMetaData& md) {
         {
             cout << "*** test getUniqueSpwIDs()" << endl;
             std::set<uInt> spws = md.getUniqueSpwIDs();
-            Vector<Int> expV = casa::indgen(25, 0, 1);
+            Vector<Int> expV = casacore::indgen(25, 0, 1);
             std::set<uInt> expec(expV.begin(), expV.end());
             AlwaysAssert(spws == expec, AipsError);
         }

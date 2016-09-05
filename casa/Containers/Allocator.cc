@@ -28,7 +28,7 @@
 
 #include <casacore/casa/Containers/Allocator.h>
 
-namespace casa {
+namespace casacore {
 
 ArrayInitPolicy const ArrayInitPolicy::NO_INIT = ArrayInitPolicy(false);
 ArrayInitPolicy const ArrayInitPolicy::INIT = ArrayInitPolicy(true);
