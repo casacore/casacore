@@ -55,6 +55,9 @@
 #include <sstream>
 #include <vector>
 #include <limits>
+#include <sys/time.h>
+#include <sys/resource.h>
+
 
 // <summary>
 // HostInfo for Linux machines.
@@ -260,6 +263,12 @@ void HostMachineInfo::update_info( )
 	if ((ret = sscanf (p,"Cached: %lu kB\n", &mem_cached)) != 1)
 	    cerr << "Error parsing Cached in /proc/meminfo\n";
 
+	/* check resource limits, note that these are not enforced by linux */
+	struct rlimit rlim;
+	if (getrlimit(RLIMIT_RSS, &rlim) == 0 && rlim.rlim_cur > 0) {
+	    mem_total = std::min(rlim.rlim_cur / 1024, (rlim_t)mem_total);
+	}
+
 	// can't use more memory than allowed by cgroups
 	size_t mem_max = get_cgroup_limit("memory", "memory.limit_in_bytes") / 1024;
 	size_t mem_used = get_cgroup_limit("memory", "memory.stat", "total_rss") / 1024;
@@ -270,7 +279,7 @@ void HostMachineInfo::update_info( )
 	    memory_free = mem_max - mem_used;
 	}
 	else {
-	    memory_free = (size_t)(mem_free + mem_cached);
+	    memory_free = std::min((size_t)(mem_free + mem_cached), (size_t)memory_total);
 	}
 	memory_used = memory_total - memory_free;
 
