@@ -2158,6 +2158,11 @@ std::map<uInt64, AccumType> ClassicalStatistics<CASA_STATP>::_indicesToValues(
         getMinMax(mymin, mymax);
     }
     else {
+        ThrowIf(
+            *knownMax < *knownMin,
+            "Provided max " + String::toString(*knownMax)
+            + " is less than provided min " + String::toString(*knownMin)
+        );
         mymin = *knownMin;
         mymax = *knownMax;
     }

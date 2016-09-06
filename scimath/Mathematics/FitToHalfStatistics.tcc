@@ -128,6 +128,7 @@ void FitToHalfStatistics<CASA_STATP>::_getRealMinMax(
         CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
     CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax
 ) {
+    _setRange();
     realMin = new AccumType(_centerValue);
     realMax = new AccumType(_centerValue);
     if (knownMin.null() || knownMax.null()) {
@@ -322,7 +323,7 @@ void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(
 ) {
     ThrowIf(
         c, "FitToHalfStatistics does not support calculating statistics "
-            "incrementally as data sets are added"
+        "incrementally as data sets are added"
     );
 }
 
