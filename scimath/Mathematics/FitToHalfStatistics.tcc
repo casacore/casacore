@@ -497,14 +497,13 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     // processed, because the LatticeStatsDataProvider currently
     // requires that.
     StatsData<AccumType>& stats = _getStatsData();
-    //Bool same = &threadStats == &stats;
     uInt iDataset = this->_getIDataset();
     if ( 
         iDataset == threadStats.maxpos.first 
         && (stats.max.null() || *threadStats.max > *stats.max)
     ) {  
         if (_realMax.null() || *threadStats.max > *_realMax) {
-            _realMax = new AccumType(threadStats.max);
+            _realMax = new AccumType(*threadStats.max);
             if (! _useLower) {
                 dataProvider->updateMaxPos(threadStats.maxpos);
             }
@@ -512,10 +511,10 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     }
     if ( 
         iDataset == threadStats.minpos.first 
-        && (stats.max.null() || (*threadStats.min) < (*stats.min))
+        && (stats.min.null() || (*threadStats.min) < (*stats.min))
     ) {  
         if (_realMin.null() || (*threadStats.min) < (*_realMin)) {
-            _realMin = new AccumType(threadStats.min);
+            _realMin = new AccumType(*threadStats.min);
             if (_useLower) {
                 dataProvider->updateMinPos(threadStats.minpos);
             }

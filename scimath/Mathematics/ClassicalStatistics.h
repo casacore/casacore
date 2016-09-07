@@ -348,7 +348,7 @@ protected:
 
     Bool _getDoMaxMin() const { return _doMaxMin; }
 
-    Bool _getIDataset() const { return _idataset; }
+    Int64 _getIDataset() const { return _idataset; }
 
     virtual StatsData<AccumType> _getInitialStats() const;
     
