@@ -508,7 +508,7 @@ void ImageStatistics<T>::displayStats(
         messages.push_back(oss.str());
         oss.str("");
         oss << "        -- Variance of the pixel values :           " << var << " "
-                << sbunit << LogIO::POST;
+                << sbunit;
         messages.push_back(oss.str());
         oss.str("");
         oss << "        -- Standard deviation of the Mean [sigma]:  " << sigma << " "
