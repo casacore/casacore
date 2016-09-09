@@ -108,6 +108,7 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
     Bool persistSortedArray, uInt64 nBins
 ) {
     if (_getStatsData().medAbsDevMed.null()) {
+        _setRange();
         // The number of points to hand to the base class is the number of real data points,
         // or exactly half of the total number of points
         CountedPtr<uInt64> realNPts = knownNpts.null()
@@ -128,7 +129,6 @@ void FitToHalfStatistics<CASA_STATP>::_getRealMinMax(
         CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
     CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax
 ) {
-    _setRange();
     realMin = new AccumType(_centerValue);
     realMax = new AccumType(_centerValue);
     if (knownMin.null() || knownMax.null()) {
@@ -151,12 +151,12 @@ void FitToHalfStatistics<CASA_STATP>::_getRealMinMax(
     }
 }
 
-
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::getMinMax(
     AccumType& mymin, AccumType& mymax
 ) {
     if ( _getStatsData().min.null() || _getStatsData().max.null()) {
+        _setRange();
         // This call returns the min and max of the real portion of the dataset
         ConstrainedRangeStatistics<CASA_STATP>::getMinMax(mymin, mymax);
         _realMin = new AccumType(mymin);
@@ -190,6 +190,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
         ! knownNpts.null() && *knownNpts % 2 != 0,
         "knownNpts must be even for this class"
     );
+    _setRange();
     // fractions that exist in the virtual part of the dataset are determined from the
     // real fractions reflected about the center point.
     std::set<Double> realPortionFractions;
@@ -306,6 +307,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
 CASA_STATD
 uInt64 FitToHalfStatistics<CASA_STATP>::getNPts() {
     if (_getStatsData().npts == 0) {
+        _setRange();
         // guard against subsequent calls multiplying by two
         _getStatsData().npts = 2*ConstrainedRangeStatistics<CASA_STATP>::getNPts();
     }
@@ -335,7 +337,6 @@ void FitToHalfStatistics<CASA_STATP>::_clearData() {
     _statsData.mean = oldStats.mean;
     _statsData.median = oldStats.median.null() ? NULL : new AccumType(*oldStats.median);
     ConstrainedRangeStatistics<CASA_STATP>::_clearData();
-
 }
 
 CASA_STATD
