@@ -108,6 +108,7 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
     Bool persistSortedArray, uInt64 nBins
 ) {
     if (_getStatsData().medAbsDevMed.null()) {
+        _setRange();
         // The number of points to hand to the base class is the number of real data points,
         // or exactly half of the total number of points
         CountedPtr<uInt64> realNPts = knownNpts.null()
@@ -150,12 +151,12 @@ void FitToHalfStatistics<CASA_STATP>::_getRealMinMax(
     }
 }
 
-
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::getMinMax(
     AccumType& mymin, AccumType& mymax
 ) {
     if ( _getStatsData().min.null() || _getStatsData().max.null()) {
+        _setRange();
         // This call returns the min and max of the real portion of the dataset
         ConstrainedRangeStatistics<CASA_STATP>::getMinMax(mymin, mymax);
         _realMin = new AccumType(mymin);
@@ -189,6 +190,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
         ! knownNpts.null() && *knownNpts % 2 != 0,
         "knownNpts must be even for this class"
     );
+    _setRange();
     // fractions that exist in the virtual part of the dataset are determined from the
     // real fractions reflected about the center point.
     std::set<Double> realPortionFractions;
@@ -305,6 +307,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
 CASA_STATD
 uInt64 FitToHalfStatistics<CASA_STATP>::getNPts() {
     if (_getStatsData().npts == 0) {
+        _setRange();
         // guard against subsequent calls multiplying by two
         _getStatsData().npts = 2*ConstrainedRangeStatistics<CASA_STATP>::getNPts();
     }
@@ -322,7 +325,7 @@ void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(
 ) {
     ThrowIf(
         c, "FitToHalfStatistics does not support calculating statistics "
-            "incrementally as data sets are added"
+        "incrementally as data sets are added"
     );
 }
 
@@ -334,7 +337,6 @@ void FitToHalfStatistics<CASA_STATP>::_clearData() {
     _statsData.mean = oldStats.mean;
     _statsData.median = oldStats.median.null() ? NULL : new AccumType(*oldStats.median);
     ConstrainedRangeStatistics<CASA_STATP>::_clearData();
-
 }
 
 CASA_STATD
@@ -496,14 +498,13 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     // processed, because the LatticeStatsDataProvider currently
     // requires that.
     StatsData<AccumType>& stats = _getStatsData();
-    //Bool same = &threadStats == &stats;
     uInt iDataset = this->_getIDataset();
     if ( 
         iDataset == threadStats.maxpos.first 
         && (stats.max.null() || *threadStats.max > *stats.max)
     ) {  
         if (_realMax.null() || *threadStats.max > *_realMax) {
-            _realMax = new AccumType(threadStats.max);
+            _realMax = new AccumType(*threadStats.max);
             if (! _useLower) {
                 dataProvider->updateMaxPos(threadStats.maxpos);
             }
@@ -511,10 +512,10 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     }
     if ( 
         iDataset == threadStats.minpos.first 
-        && (stats.max.null() || (*threadStats.min) < (*stats.min))
+        && (stats.min.null() || (*threadStats.min) < (*stats.min))
     ) {  
         if (_realMin.null() || (*threadStats.min) < (*_realMin)) {
-            _realMin = new AccumType(threadStats.min);
+            _realMin = new AccumType(*threadStats.min);
             if (_useLower) {
                 dataProvider->updateMinPos(threadStats.minpos);
             }
