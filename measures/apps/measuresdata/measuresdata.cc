@@ -79,7 +79,7 @@ using std::map;
 // can be used by e.g. the Measures class.
 //
 // The files have to be obtained by other means (e.g. a python script,
-// manually or another script (e.g. the provided measuresdata.csh tcsh script.
+// manually or another script (e.g. the provided measuresdata-update script.
 //
 // Normal operation:
 // <li>

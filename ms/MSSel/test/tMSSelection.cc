@@ -35,7 +35,7 @@
 #include <casacore/casa/Inputs.h>
 
 using namespace std;
-using namespace casa;
+using namespace casacore;
 
 //
 //-------------------------------------------------------------------------

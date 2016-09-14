@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: tInterpolateArray1D.cc 21510 2014-11-21 12:27:56Z gervandiepen $
 //# Includes
 
 
@@ -34,6 +34,7 @@
 #include <casacore/scimath/Mathematics/InterpolateArray1D.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -227,6 +228,54 @@ public:
 };
 
 
+template <class T, class S>
+class TestNearestInterpolation1
+{
+public:
+  TestNearestInterpolation1() 
+  {
+
+    Int N(10);
+    Vector<T> Xa(N,0.0), Xd(N,0.0);
+    Vector<S> Ya(N,0.0), Yd(N,0.0);
+    indgen(Xa);
+    indgen(Ya);
+    for (Int i=0;i<N;++i) {
+      Xd[i]=Xa[N-1-i];
+      Yd[i]=Ya[N-1-i];
+    }
+
+    Int n(90);
+    Vector<T> x(n,0.0);
+    Vector<S> ya(n,0.0), yd(n,0.0);
+    indgen(x);
+    x/=static_cast<T>(10.0);    // tenths
+
+    Int method =  InterpolateArray1D<T,S>::nearestNeighbour;
+
+    InterpolateArray1D<T,S>::interpolate(ya,x,Xa,Ya,method);  // Ascending abscissa
+    InterpolateArray1D<T,S>::interpolate(yd,x,Xd,Yd,method);  // Descending abscissa
+
+    Vector<S> yatest(n,0.0),ydtest(n,0.0);
+    indgen(yatest);
+    yatest/=static_cast<S>(10.0);
+    yatest+=static_cast<S>(0.4999); // ensures middle value goes down (matches InterpolateArray1D)
+    yatest=floor(yatest);
+
+    indgen(ydtest);
+    ydtest/=static_cast<S>(10.0);
+    ydtest+=static_cast<S>(0.5001); // ensures middle value goes up (matches InterpolateArray1D)
+    ydtest=floor(ydtest);
+
+    AlwaysAssert(allEQ(ya,yatest),AipsError);
+    AlwaysAssert(allEQ(yd,ydtest),AipsError);
+
+    ++tests_done;
+
+  }
+};
+
+
 
 
 
@@ -240,13 +289,29 @@ void run_tests()
     return;
 }
 
+template <class T, class S>
+void run_nearest_tests()
+{
+
+    TestNearestInterpolation1<T, S> ();
+
+    return;
+}
+
 int main()
 {
   tests_done = 0;
   try {
 
+      cout << "Testing 'linear' Float/Complex" << endl;
       run_tests<Float, Complex>();
+      cout << "Testing 'linear' Double/Complex" << endl;
       run_tests<Double, Complex>();
+
+      cout << "Testing 'nearestNeighbour' Float/Float, ascending/descending" << endl;
+      run_nearest_tests<Float,Float>();
+      cout << "Testing 'nearestNeighbour' Double/Float, ascending/descending" << endl;
+      run_nearest_tests<Double,Float>();
 
   }
   catch (AipsError x) {

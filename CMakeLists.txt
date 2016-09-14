@@ -86,6 +86,7 @@ if( CASA_BUILD )
    set(USE_FFTW3 ON)
    set(USE_OPENMP ON)
    set(USE_THREADS ON)
+####### JHJ 160913   set(UseCasacoreNamespace 1) # Force casacore routines to live in casacore rather than casa namespace
    ###
    ### after CASA switches from ASAP to libsakura, CASA will no longer
    ### use casacore's python module and it will no longer use boost...
@@ -144,6 +145,17 @@ if (ENABLE_SHARED)
 else()
     option (BUILD_SHARED_LIBS "" NO)
 endif (ENABLE_SHARED)
+
+if (UseCasacoreNamespace)
+
+    add_definitions (-DUseCasacoreNamespace)
+    message (STATUS "Using namespace casacore.")
+
+else ()
+
+    message (STATUS "Namespace casacore 'merged' into namespace casa.")
+
+endif ()
 
 # Define the compiler flags to be used.
 # Note: -Wshadow and -Wunreachable-code give (too) many warnings.

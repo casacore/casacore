@@ -180,7 +180,7 @@ public:
     // Storage is allocated by <src>DefaultAllocator<T></src>.
     // Without initPolicy parameter, the initialization of elements depends on type <src>T</src>.
     // When <src>T</src> is a fundamental type like <src>int</src>, elements are NOT initialized.
-    // When <src>T</src> is a class type like <src>casa::Complex</src> or <src>std::string</src>, elements are initialized.
+    // When <src>T</src> is a class type like <src>casacore::Complex</src> or <src>std::string</src>, elements are initialized.
     // This inconsistent behavior confuses programmers and make it hard to write efficient and generic code using template.
     // Especially when <src>T</src> is of type <src>Complex</src> or <src>DComplex</src> and it is unnecessary to initialize,
     // provide initPolicy with value <src>NO_INIT</src> to skip the initialization.

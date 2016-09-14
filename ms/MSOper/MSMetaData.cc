@@ -3691,7 +3691,7 @@ void MSMetaData::_computeScanAndSubScanProperties(
             const uInt& spw = ssSpwNRowsIter->first;
             props.meanInterval[spw] = ssSumInterval[ssKey][spw]/ssSpwNRowsIter->second;
         }
-        const ScanKey scanKey = casa::scanKey(ssKey);
+        const ScanKey scanKey = casacore::scanKey(ssKey);
         if (scanSumInterval.find(scanKey) == scanSumInterval.end()) {
             // first time associated scan key has been seen
             scanSumInterval[scanKey] = ssSumInterval[ssKey];
