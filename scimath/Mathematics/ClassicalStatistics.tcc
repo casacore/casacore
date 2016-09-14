@@ -45,7 +45,7 @@ CASA_STATD
 const uInt ClassicalStatistics<CASA_STATP>::CACHE_PADDING = 8;
 
 CASA_STATD
-const uInt ClassicalStatistics<CASA_STATP>::BLOCK_SIZE = 2000;
+const uInt ClassicalStatistics<CASA_STATP>::BLOCK_SIZE = 4000;
 
 // min > max indicates that these quantities have not be calculated
 CASA_STATD
