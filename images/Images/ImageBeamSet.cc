@@ -720,8 +720,8 @@ void ImageBeamSet::_beamToStream(
 	minAx.convert(unit);
 	Quantity pa = beam.getPA(True);
 	pa.convert("deg");
-	os << fixed << std::setprecision(2) << std::setw(7) <<  majAx
-		<< " x " << std::setw(7) << minAx << " pa=" << std::setw(6) << pa;
+	os << fixed << std::setprecision(4) << std::setw(9) <<  majAx
+		<< " x " << std::setw(9) << minAx << " pa=" << std::setw(8) << pa;
 }
 
 }
