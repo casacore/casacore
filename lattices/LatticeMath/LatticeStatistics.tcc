@@ -789,7 +789,6 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
         tileShape), useMemory
     );
     // Set up min/max location variables
-
     CountedPtr<LattStatsProgress> pProgressMeter = showProgress_p
         ? new LattStatsProgress() : NULL;
     Double timeOld = 0;
@@ -991,7 +990,10 @@ void LatticeStatistics<T>::_doStatsLoop(
 
 template <class T>
 void LatticeStatistics<T>::generateRobust () {
-    Bool showMsg = haveLogger_p && doRobust_p && displayAxes_p.nelements()==0;
+    if (! doRobust_p) {
+        return;
+    }
+    Bool showMsg = haveLogger_p && displayAxes_p.nelements()==0;
     if (showMsg) {
         os_p << LogIO::NORMAL << "Computing quantiles..." << LogIO::POST;
     }
@@ -1017,14 +1019,12 @@ void LatticeStatistics<T>::generateRobust () {
     CountedPtr<uInt64> knownNpts;
     CountedPtr<AccumType> knownMax, knownMin;
     static const uInt maxArraySizeBytes = 1e8;
-    if (doRobust_p) {
-        fractions.insert(0.25);
-        fractions.insert(0.75);
-        sa = _createStatsAlgorithm();
-        _configureDataProviders(lattDP, maskedLattDP);
-        slicer = Slicer(stepper.position(), stepper.endPosition(), Slicer::endIsLast);
-        subLat = SubLattice<T>(*pInLattice_p, slicer);
-    }
+    fractions.insert(0.25);
+    fractions.insert(0.75);
+    sa = _createStatsAlgorithm();
+    _configureDataProviders(lattDP, maskedLattDP);
+    slicer = Slicer(stepper.position(), stepper.endPosition(), Slicer::endIsLast);
+    subLat = SubLattice<T>(*pInLattice_p, slicer);
     for (stepper.reset(); ! stepper.atEnd(); stepper++) {
         curPos = stepper.position();
         pos = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDIAN);
@@ -1032,13 +1032,11 @@ void LatticeStatistics<T>::generateRobust () {
         pos3 = locInStorageLattice(stepper.position(), LatticeStatsBase::QUARTILE);
         posQ1 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q1);
         posQ3 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q3);
-        if (doRobust_p) {
-            posNpts = locInStorageLattice(stepper.position(), LatticeStatsBase::NPTS);
-            knownNpts = new uInt64((uInt64)abs(pStoreLattice_p->getAt(posNpts)));
-        }
-        if (! doRobust_p || *knownNpts == 0) {
+        posNpts = locInStorageLattice(stepper.position(), LatticeStatsBase::NPTS);
+        knownNpts = new uInt64((uInt64)abs(pStoreLattice_p->getAt(posNpts)));
+        if (*knownNpts == 0) {
             // Stick zero in storage lattice (it's not initialized)
-            AccumType val(0);
+            static const AccumType val(0);
             pStoreLattice_p->putAt(val, pos);
             pStoreLattice_p->putAt(val, pos2);
             pStoreLattice_p->putAt(val, pos3);
