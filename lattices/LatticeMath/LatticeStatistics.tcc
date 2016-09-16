@@ -794,16 +794,22 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     Double timeOld = 0;
     Double timeNew = 0;
     uInt nsets = pStoreLattice_p->size()/storeLatticeShape.getLast(1)[0];
-    if (_algConf.algorithm == StatisticsData::CLASSICAL) {
+    // it doesn't really matter which method is used on smallish lattices, so
+    // only use the old method if the lattice is relatively large. This avoids
+    // the possible discontinuity exception being thrown by the old method for
+    // smallish lattices, so prevents the necessity of retrying the computation
+    // using the new method in this case.
+    Bool tryOldMethod = _algConf.algorithm == StatisticsData::CLASSICAL
+        && pInLattice_p->size() > 100000;
+    if (tryOldMethod) {
         uInt nel = pInLattice_p->size()/nsets;
         timeOld = nsets*(_aOld + _bOld*nel);
         timeNew = nsets*(_aNew + _bNew*nel);
+        tryOldMethod = timeOld < timeNew;
     }
     //Timer timer;
-    if (
-        _algConf.algorithm == StatisticsData::CLASSICAL
-        && timeOld < timeNew 
-    ) {
+    Bool ranOldMethod = False;
+    if (tryOldMethod) {
         // use older method for higher performance in the large loop count
         // regime
         //timer.mark();
@@ -815,15 +821,23 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
         );
         Int newOutAxis = pStoreLattice_p->ndim()-1;
         SubLattice<AccumType> outLatt (*pStoreLattice_p, True);
-        LatticeApply<T,AccumType>::tiledApply(
-            outLatt, *pInLattice_p,
-            collapser, IPosition(cursorAxes_p),
-            newOutAxis,
-            pProgressMeter.null() ? NULL : &*pProgressMeter
-        );
-        collapser.minMaxPos(minPos_p, maxPos_p);
+        try {
+            LatticeApply<T,AccumType>::tiledApply(
+                outLatt, *pInLattice_p,
+                collapser, IPosition(cursorAxes_p),
+                newOutAxis,
+                pProgressMeter.null() ? NULL : &*pProgressMeter
+            );
+            collapser.minMaxPos(minPos_p, maxPos_p);
+            ranOldMethod = True;
+        }
+        catch (const AipsError& x) {
+            // if the data or mask arrays are not contiguous,
+            // an exception will be thrown. Catch it here, so
+            // _doStatsLoop() can be run instead.
+        }
     }
-    else {
+    if (! ranOldMethod) {
         _doStatsLoop(nsets, pProgressMeter);
     }
     pProgressMeter = NULL;
@@ -923,6 +937,14 @@ void LatticeStatistics<T>::_doStatsLoop(
             // I don't understand, things seem to work OK when I try this in tIPosition, but not here.
             _chauvIters[os.str()] = ch->getNiter();
         }
+        // FIXME it is likely that these putAt() calls are the source of the performance
+        // degradation in the case where the old method is faster. Eg consider a lattice
+        // with shape 1000 x 1000 x 3 doing stats with a cursor axis of 2 so that 1000 x 1000
+        // sets of stats are computed. That's 1e6 putAt calls for *each* statistic. A relatively
+        // small array that holds many statistics sets should probably be used as temporary storage,
+        // and when the array is full it should be inserted into the storage lattice using
+        // putSlice(). This is how the old method manages puts, and probably is why it is
+        // so much faster in these types of cases.
         pStoreLattice_p->putAt(stats.mean, posMean);
         pStoreLattice_p->putAt(stats.npts, posNpts);
         pStoreLattice_p->putAt(stats.sum, posSum);
@@ -985,6 +1007,28 @@ void LatticeStatistics<T>::_doStatsLoop(
         if(! progressMeter.null() && nsetsIsLarge) {
             (*progressMeter)++;
         }
+    }
+    if (! doRobust_p) {
+        // zero out the quantile stats since they will not be computed.
+        // For the old TiledApply method, this is done by zeroing out
+        // the array prior to computing the stats (see above FIXME comment
+        // in the current method that explains that).
+        uInt ndim = pStoreLattice_p->ndim();
+        IPosition arrShape = pStoreLattice_p->shape().removeAxes(
+            IPosition(1, ndim - 1)
+        );
+        Array<AccumType> zeros(arrShape, AccumType(0));
+        IPosition start(ndim, 0);
+        start[ndim - 1] = LatticeStatsBase::MEDABSDEVMED;
+        pStoreLattice_p->putSlice(zeros, start);
+        start[ndim - 1] = LatticeStatsBase::MEDIAN;
+        pStoreLattice_p->putSlice(zeros, start);
+        start[ndim - 1] = LatticeStatsBase::Q1;
+        pStoreLattice_p->putSlice(zeros, start);
+        start[ndim - 1] = LatticeStatsBase::Q3;
+        pStoreLattice_p->putSlice(zeros, start);
+        start[ndim - 1] = LatticeStatsBase::QUARTILE;
+        pStoreLattice_p->putSlice(zeros, start);
     }
 }
 
