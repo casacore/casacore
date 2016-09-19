@@ -232,6 +232,7 @@ void StatsTiledCollapser<T,U>::endAccumulator(
 	// we use to effectively mask it.
 
     result.resize(shape);
+    result.set(U(0));
     resultMask.resize(shape);
     resultMask.set(True);
 

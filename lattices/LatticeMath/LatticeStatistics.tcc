@@ -789,22 +789,27 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
         tileShape), useMemory
     );
     // Set up min/max location variables
-
     CountedPtr<LattStatsProgress> pProgressMeter = showProgress_p
         ? new LattStatsProgress() : NULL;
     Double timeOld = 0;
     Double timeNew = 0;
     uInt nsets = pStoreLattice_p->size()/storeLatticeShape.getLast(1)[0];
-    if (_algConf.algorithm == StatisticsData::CLASSICAL) {
+    // it doesn't really matter which method is used on smallish lattices, so
+    // only use the old method if the lattice is relatively large. This avoids
+    // the possible discontinuity exception being thrown by the old method for
+    // smallish lattices, so prevents the necessity of retrying the computation
+    // using the new method in this case.
+    Bool tryOldMethod = _algConf.algorithm == StatisticsData::CLASSICAL
+        && pInLattice_p->size() > 100000;
+    if (tryOldMethod) {
         uInt nel = pInLattice_p->size()/nsets;
         timeOld = nsets*(_aOld + _bOld*nel);
         timeNew = nsets*(_aNew + _bNew*nel);
+        tryOldMethod = timeOld < timeNew;
     }
     //Timer timer;
-    if (
-        _algConf.algorithm == StatisticsData::CLASSICAL
-        && timeOld < timeNew 
-    ) {
+    Bool ranOldMethod = False;
+    if (tryOldMethod) {
         // use older method for higher performance in the large loop count
         // regime
         //timer.mark();
@@ -816,20 +821,30 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
         );
         Int newOutAxis = pStoreLattice_p->ndim()-1;
         SubLattice<AccumType> outLatt (*pStoreLattice_p, True);
-        LatticeApply<T,AccumType>::tiledApply(
-            outLatt, *pInLattice_p,
-            collapser, IPosition(cursorAxes_p),
-            newOutAxis,
-            pProgressMeter.null() ? NULL : &*pProgressMeter
-        );
-        collapser.minMaxPos(minPos_p, maxPos_p);
+        try {
+            LatticeApply<T,AccumType>::tiledApply(
+                outLatt, *pInLattice_p,
+                collapser, IPosition(cursorAxes_p),
+                newOutAxis,
+                pProgressMeter.null() ? NULL : &*pProgressMeter
+            );
+            collapser.minMaxPos(minPos_p, maxPos_p);
+            ranOldMethod = True;
+        }
+        catch (const AipsError& x) {
+            // if the data or mask arrays are not contiguous,
+            // an exception will be thrown. Catch it here, so
+            // _doStatsLoop() can be run instead.
+        }
     }
-    else {
+    if (! ranOldMethod) {
         _doStatsLoop(nsets, pProgressMeter);
     }
     pProgressMeter = NULL;
-    // Do robust statistics separately as required.
-    generateRobust();
+    if (doRobust_p) {
+        // Do robust statistics separately as required.
+        generateRobust();
+    }
     needStorageLattice_p = False;
     doneSomeGoodPoints_p = False;
     return True;
@@ -924,6 +939,14 @@ void LatticeStatistics<T>::_doStatsLoop(
             // I don't understand, things seem to work OK when I try this in tIPosition, but not here.
             _chauvIters[os.str()] = ch->getNiter();
         }
+        // FIXME it is likely that these putAt() calls are the source of the performance
+        // degradation in the case where the old method is faster. Eg consider a lattice
+        // with shape 1000 x 1000 x 3 doing stats with a cursor axis of 2 so that 1000 x 1000
+        // sets of stats are computed. That's 1e6 putAt calls for *each* statistic. A relatively
+        // small array that holds many statistics sets should probably be used as temporary storage,
+        // and when the array is full it should be inserted into the storage lattice using
+        // putSlice(). This is how the old method manages puts, and probably is why it is
+        // so much faster in these types of cases.
         pStoreLattice_p->putAt(stats.mean, posMean);
         pStoreLattice_p->putAt(stats.npts, posNpts);
         pStoreLattice_p->putAt(stats.sum, posSum);
@@ -987,11 +1010,33 @@ void LatticeStatistics<T>::_doStatsLoop(
             (*progressMeter)++;
         }
     }
+    if (! doRobust_p) {
+        // zero out the quantile stats since they will not be computed.
+        // For the old TiledApply method, this is done by zeroing out
+        // the array prior to computing the stats (see above FIXME comment
+        // in the current method that explains that).
+        uInt ndim = pStoreLattice_p->ndim();
+        IPosition arrShape = pStoreLattice_p->shape().removeAxes(
+            IPosition(1, ndim - 1)
+        );
+        Array<AccumType> zeros(arrShape, AccumType(0));
+        IPosition start(ndim, 0);
+        start[ndim - 1] = LatticeStatsBase::MEDABSDEVMED;
+        pStoreLattice_p->putSlice(zeros, start);
+        start[ndim - 1] = LatticeStatsBase::MEDIAN;
+        pStoreLattice_p->putSlice(zeros, start);
+        start[ndim - 1] = LatticeStatsBase::Q1;
+        pStoreLattice_p->putSlice(zeros, start);
+        start[ndim - 1] = LatticeStatsBase::Q3;
+        pStoreLattice_p->putSlice(zeros, start);
+        start[ndim - 1] = LatticeStatsBase::QUARTILE;
+        pStoreLattice_p->putSlice(zeros, start);
+    }
 }
 
 template <class T>
 void LatticeStatistics<T>::generateRobust () {
-    Bool showMsg = haveLogger_p && doRobust_p && displayAxes_p.nelements()==0;
+    Bool showMsg = haveLogger_p && displayAxes_p.nelements()==0;
     if (showMsg) {
         os_p << LogIO::NORMAL << "Computing quantiles..." << LogIO::POST;
     }
@@ -1017,14 +1062,12 @@ void LatticeStatistics<T>::generateRobust () {
     CountedPtr<uInt64> knownNpts;
     CountedPtr<AccumType> knownMax, knownMin;
     static const uInt maxArraySizeBytes = 1e8;
-    if (doRobust_p) {
-        fractions.insert(0.25);
-        fractions.insert(0.75);
-        sa = _createStatsAlgorithm();
-        _configureDataProviders(lattDP, maskedLattDP);
-        slicer = Slicer(stepper.position(), stepper.endPosition(), Slicer::endIsLast);
-        subLat = SubLattice<T>(*pInLattice_p, slicer);
-    }
+    fractions.insert(0.25);
+    fractions.insert(0.75);
+    sa = _createStatsAlgorithm();
+    _configureDataProviders(lattDP, maskedLattDP);
+    slicer = Slicer(stepper.position(), stepper.endPosition(), Slicer::endIsLast);
+    subLat = SubLattice<T>(*pInLattice_p, slicer);
     for (stepper.reset(); ! stepper.atEnd(); stepper++) {
         curPos = stepper.position();
         pos = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDIAN);
@@ -1032,13 +1075,11 @@ void LatticeStatistics<T>::generateRobust () {
         pos3 = locInStorageLattice(stepper.position(), LatticeStatsBase::QUARTILE);
         posQ1 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q1);
         posQ3 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q3);
-        if (doRobust_p) {
-            posNpts = locInStorageLattice(stepper.position(), LatticeStatsBase::NPTS);
-            knownNpts = new uInt64((uInt64)abs(pStoreLattice_p->getAt(posNpts)));
-        }
-        if (! doRobust_p || *knownNpts == 0) {
+        posNpts = locInStorageLattice(stepper.position(), LatticeStatsBase::NPTS);
+        knownNpts = new uInt64((uInt64)abs(pStoreLattice_p->getAt(posNpts)));
+        if (*knownNpts == 0) {
             // Stick zero in storage lattice (it's not initialized)
-            AccumType val(0);
+            static const AccumType val(0);
             pStoreLattice_p->putAt(val, pos);
             pStoreLattice_p->putAt(val, pos2);
             pStoreLattice_p->putAt(val, pos3);
