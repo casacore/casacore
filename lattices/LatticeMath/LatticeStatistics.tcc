@@ -841,8 +841,10 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
         _doStatsLoop(nsets, pProgressMeter);
     }
     pProgressMeter = NULL;
-    // Do robust statistics separately as required.
-    generateRobust();
+    if (doRobust_p) {
+        // Do robust statistics separately as required.
+        generateRobust();
+    }
     needStorageLattice_p = False;
     doneSomeGoodPoints_p = False;
     return True;
@@ -1034,9 +1036,6 @@ void LatticeStatistics<T>::_doStatsLoop(
 
 template <class T>
 void LatticeStatistics<T>::generateRobust () {
-    if (! doRobust_p) {
-        return;
-    }
     Bool showMsg = haveLogger_p && displayAxes_p.nelements()==0;
     if (showMsg) {
         os_p << LogIO::NORMAL << "Computing quantiles..." << LogIO::POST;
