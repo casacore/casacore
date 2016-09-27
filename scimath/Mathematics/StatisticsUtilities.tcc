@@ -29,8 +29,6 @@
 
 #include <casacore/scimath/Mathematics/StatisticsUtilities.h>
 
-//#include <casacore/scimath/Mathematics/StatisticsTypes.h>
-
 #include <iostream>
 
 namespace casacore {
@@ -118,6 +116,17 @@ void StatisticsUtilities<AccumType>::accumulate (
 ) {
 	_NQUAD
 	_MAXMIN
+}
+
+template <class AccumType> template <class LocationType, class DataType>
+void StatisticsUtilities<AccumType>::accumulate (
+    Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
+    AccumType& sumsq, DataType& datamin,
+    DataType& datamax, LocationType& minpos, LocationType& maxpos,
+    const DataType& datum, const LocationType& location
+) {
+    _NQUAD
+    _MAXMIN
 }
 
 template <class AccumType> template <class LocationType>

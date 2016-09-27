@@ -103,6 +103,14 @@ public:
 		const AccumType& datum, const LocationType& location
 	);
 
+	template <class LocationType, class DataType>
+	inline static void accumulate (
+	    Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
+	    AccumType& sumsq, DataType& datamin,
+	    DataType& datamax, LocationType& minpos, LocationType& maxpos,
+	    const DataType& datum, const LocationType& location
+	);
+
 	template <class LocationType>
 	inline static void waccumulate (
 		Double& npts, AccumType& sumofweights, AccumType& sum, AccumType& mean,
