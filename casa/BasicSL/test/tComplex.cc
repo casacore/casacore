@@ -243,7 +243,6 @@ int main() {
   AlwaysAssertExit(isNaN(c1) && isNaN(c2));
   c1 = Complex(0.0); c2 = DComplex(0.0);
   AlwaysAssertExit((!isNaN(c1)) && (!isNaN(c2)));
-
   {
       // Test min/max
       Complex c1(0,1), c2(2,0);
@@ -252,6 +251,18 @@ int main() {
       Complex c4 = max(c1,c2);
       AlwaysAssertExit(near(c2,c4));
   }
-
+  {
+      // test mixed types in addition and subtraction
+      DComplex dd(4.0, 5.0);
+      Complex cc(7.0, 8.0);
+      DComplex r = dd + cc;
+      AlwaysAssertExit(near(r, DComplex(11, 13)));
+      r = cc + dd;
+      AlwaysAssertExit(near(r, DComplex(11, 13)));
+      r = dd - cc;
+      AlwaysAssertExit(near(r, DComplex(-3, -3)));
+      r = cc - dd;
+      AlwaysAssertExit(near(r, DComplex(3, 3)));
+  }
   return(0);
 }
