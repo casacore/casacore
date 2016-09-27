@@ -32,13 +32,13 @@ namespace casacore {
 
 template <class T, class U>
 StatsTiledCollapser<T,U>::StatsTiledCollapser(
-	const Vector<T>& pixelRange,
+    const Vector<T>& pixelRange,
     Bool noInclude, Bool noExclude,
     Bool fixedMinMax
 ) : _range(pixelRange), _include(! noInclude),
-	_exclude(! noExclude), _fixedMinMax(fixedMinMax),
-	_isReal(isReal(whatType(&*(CountedPtr<T>(new T(0)))))),
-	_minpos(0), _maxpos(0) {}
+    _exclude(! noExclude), _fixedMinMax(fixedMinMax),
+    _isReal(isReal(whatType(&*(CountedPtr<T>(new T(0)))))),
+    _minpos(0), _maxpos(0) {}
 
 template <class T, class U>
 void StatsTiledCollapser<T,U>::init (uInt nOutPixelsPerCollapse) {
@@ -73,170 +73,170 @@ void StatsTiledCollapser<T,U>::initAccumulator (uInt n1, uInt n3) {
 
 template <class T, class U>
 void StatsTiledCollapser<T,U>::process (
-	uInt index1, uInt index3,
-	const T* pInData, const Bool* pInMask,
-	uInt dataIncr, uInt maskIncr,
-	uInt nrval, const IPosition& startPos,
-	const IPosition& shape
+    uInt index1, uInt index3,
+    const T* pInData, const Bool* pInMask,
+    uInt dataIncr, uInt maskIncr,
+    uInt nrval, const IPosition& startPos,
+    const IPosition& shape
 ) {
-	// Process the data in the current chunk.   Everything in this
-	// chunk belongs in one output location in the storage
-	// lattices
-	uInt index = index1 + index3*_n1;
-	U& sum = (*_sum)[index];
-	U& sumSq = (*_sumSq)[index];
-	Double& nPts = (*_npts)[index];
-	T& dataMin = (*_min)[index];
-	T& dataMax = (*_max)[index];
-	U& mean = (*_mean)[index];
-	U& variance = (*_variance)[index];
-	U& nvariance = (*_nvariance)[index];
+    // Process the data in the current chunk.   Everything in this
+    // chunk belongs in one output location in the storage
+    // lattices
+    uInt index = index1 + index3*_n1;
+    U& sum = (*_sum)[index];
+    U& sumSq = (*_sumSq)[index];
+    Double& nPts = (*_npts)[index];
+    T& dataMin = (*_min)[index];
+    T& dataMax = (*_max)[index];
+    U& mean = (*_mean)[index];
+    U& variance = (*_variance)[index];
+    U& nvariance = (*_nvariance)[index];
 
-	// If these are != -1 after the accumulating, then
-	// the min and max were updated
-	Int64 minLoc = -1;
-	Int64 maxLoc = -1;
+    // If these are != -1 after the accumulating, then
+    // the min and max were updated
+    Int64 minLoc = -1;
+    Int64 maxLoc = -1;
 
-	vector<std::pair<U, U> > ranges;
-	Bool isInclude = False;
-	if (_include || _exclude) {
-	    ranges.resize(1);
-	    ranges[0] = std::make_pair(_range[0], _range[1]);
-	    isInclude = _include;
-	}
-	typename vector<std::pair<U, U> >::const_iterator beginRange = ranges.begin();
+    vector<std::pair<U, U> > ranges;
+    Bool isInclude = False;
+    if (_include || _exclude) {
+        ranges.resize(1);
+        ranges[0] = std::make_pair(_range[0], _range[1]);
+        isInclude = _include;
+    }
+    typename vector<std::pair<U, U> >::const_iterator beginRange = ranges.begin();
     typename vector<std::pair<U, U> >::const_iterator endRange = ranges.end();
-	if (pInMask == 0) {
-		// All pixels are unmasked
-		if (_include) {
-			Int64 i = -i;
-			for (i=0; i<(Int64)nrval; ++i) {
-				if (
-				    StatisticsUtilities<U>::includeDatum(
-				        *pInData, beginRange, endRange, isInclude
-				    )
-				) {
-				    StatisticsUtilities<U>::accumulate(
-				        nPts, sum, mean, nvariance,
-				        sumSq, dataMin, dataMax, minLoc,
-				        maxLoc, *pInData, i
-				    );
-				}
-				pInData += dataIncr;
-			}
-			if (_fixedMinMax) {
-				dataMin = _range(0);
-				dataMax = _range(1);
-			}
-		}
-		else if (_exclude) {
-			for (Int64 i=0; i<(Int64)nrval; ++i) {
-			    if (
-			        StatisticsUtilities<U>::includeDatum(
-			            *pInData, beginRange, endRange, isInclude
-			        )
-			    ) {
-			        StatisticsUtilities<U>::accumulate(
-			            nPts, sum, mean, nvariance,
-			            sumSq, dataMin, dataMax, minLoc,
-			            maxLoc, *pInData, i
-			        );
-			    }
-				pInData += dataIncr;
-			}
-		}
-		else {
-			// no range
-		    for (Int64 i=0; i<(Int64)nrval; ++i) {
-		        StatisticsUtilities<U>::accumulate(
-		            nPts, sum, mean, nvariance,
-		            sumSq, dataMin, dataMax, minLoc,
-		            maxLoc, *pInData, i
-		        );
-		        pInData += dataIncr;
-		    }
-		}
-	}
-	else {
-		// Some pixels are masked
-		if (_include) {
-			for (Int64 i=0; i<(Int64)nrval; ++i) {
-			    if (
-			        *pInMask && StatisticsUtilities<U>::includeDatum(
-			            *pInData, beginRange, endRange, isInclude
-			        )
-			    ) {
-			        StatisticsUtilities<U>::accumulate(
-			            nPts, sum, mean, nvariance,
-			            sumSq, dataMin, dataMax, minLoc,
-			            maxLoc, *pInData, i
-			        );
-			    }
-				pInData += dataIncr;
-				pInMask += maskIncr;
-			}
-			if (_fixedMinMax) {
-				dataMin = _range(0);
-				dataMax = _range(1);
-			}
-		}
-		else if (_exclude) {
-			for (Int64 i=0; i<(Int64)nrval; ++i) {
-			    if (
-			        *pInMask && StatisticsUtilities<U>::includeDatum(
-			            *pInData, beginRange, endRange, isInclude
-			        )
-			    ) {
-			        StatisticsUtilities<U>::accumulate(
-			            nPts, sum, mean, nvariance,
-			            sumSq, dataMin, dataMax, minLoc,
-			            maxLoc, *pInData, i
-			        );
-			    }
-				pInData += dataIncr;
-				pInMask += maskIncr;
-			}
-		}
-		else {
-			// no ranges
-			for (Int64 i=0; i<(Int64)nrval; ++i) {
-				if (*pInMask) {
-				    StatisticsUtilities<U>::accumulate(
-				        nPts, sum, mean, nvariance,
-				        sumSq, dataMin, dataMax, minLoc,
-				        maxLoc, *pInData, i
-				    );
-				}
-				pInData += dataIncr;
-				pInMask += maskIncr;
-			}
-		}
-	}
-	variance = nPts > 1 ? nvariance/(nPts - 1) : 0;
+    if (pInMask == 0) {
+        // All pixels are unmasked
+        if (_include) {
+            Int64 i = -i;
+            for (i=0; i<(Int64)nrval; ++i) {
+                if (
+                    StatisticsUtilities<U>::includeDatum(
+                        *pInData, beginRange, endRange, isInclude
+                    )
+                ) {
+                    StatisticsUtilities<U>::accumulate(
+                        nPts, sum, mean, nvariance,
+                        sumSq, dataMin, dataMax, minLoc,
+                        maxLoc, *pInData, i
+                    );
+                }
+                pInData += dataIncr;
+            }
+            if (_fixedMinMax) {
+                dataMin = _range(0);
+                dataMax = _range(1);
+            }
+        }
+        else if (_exclude) {
+            for (Int64 i=0; i<(Int64)nrval; ++i) {
+                if (
+                    StatisticsUtilities<U>::includeDatum(
+                        *pInData, beginRange, endRange, isInclude
+                    )
+                ) {
+                    StatisticsUtilities<U>::accumulate(
+                        nPts, sum, mean, nvariance,
+                        sumSq, dataMin, dataMax, minLoc,
+                        maxLoc, *pInData, i
+                    );
+                }
+                pInData += dataIncr;
+            }
+        }
+        else {
+            // no range
+            for (Int64 i=0; i<(Int64)nrval; ++i) {
+                StatisticsUtilities<U>::accumulate(
+                    nPts, sum, mean, nvariance,
+                    sumSq, dataMin, dataMax, minLoc,
+                    maxLoc, *pInData, i
+                );
+                pInData += dataIncr;
+            }
+        }
+    }
+    else {
+        // Some pixels are masked
+        if (_include) {
+            for (Int64 i=0; i<(Int64)nrval; ++i) {
+                if (
+                    *pInMask && StatisticsUtilities<U>::includeDatum(
+                        *pInData, beginRange, endRange, isInclude
+                    )
+                ) {
+                    StatisticsUtilities<U>::accumulate(
+                        nPts, sum, mean, nvariance,
+                        sumSq, dataMin, dataMax, minLoc,
+                        maxLoc, *pInData, i
+                    );
+                }
+                pInData += dataIncr;
+                pInMask += maskIncr;
+            }
+            if (_fixedMinMax) {
+                dataMin = _range(0);
+                dataMax = _range(1);
+            }
+        }
+        else if (_exclude) {
+            for (Int64 i=0; i<(Int64)nrval; ++i) {
+                if (
+                    *pInMask && StatisticsUtilities<U>::includeDatum(
+                        *pInData, beginRange, endRange, isInclude
+                    )
+                ) {
+                    StatisticsUtilities<U>::accumulate(
+                        nPts, sum, mean, nvariance,
+                        sumSq, dataMin, dataMax, minLoc,
+                        maxLoc, *pInData, i
+                    );
+                }
+                pInData += dataIncr;
+                pInMask += maskIncr;
+            }
+        }
+        else {
+            // no ranges
+            for (Int64 i=0; i<(Int64)nrval; ++i) {
+                if (*pInMask) {
+                    StatisticsUtilities<U>::accumulate(
+                        nPts, sum, mean, nvariance,
+                        sumSq, dataMin, dataMax, minLoc,
+                        maxLoc, *pInData, i
+                    );
+                }
+                pInData += dataIncr;
+                pInMask += maskIncr;
+            }
+        }
+    }
+    variance = nPts > 1 ? nvariance/(nPts - 1) : 0;
 
-	// Update overall min and max location.  These are never updated
-	// if fixedMinMax is true.  These values are only meaningful for
-	// Float images.  For Complex they are useless currently.
+    // Update overall min and max location.  These are never updated
+    // if fixedMinMax is true.  These values are only meaningful for
+    // Float images.  For Complex they are useless currently.
 
-	if (_isReal) {
-		if (minLoc != -1) {
-			_minpos = startPos + toIPositionInArray(minLoc, shape);
-		}
-		if (maxLoc != -1) {
-			_maxpos = startPos + toIPositionInArray(maxLoc, shape);
-		}
-	}
+    if (_isReal) {
+        if (minLoc != -1) {
+            _minpos = startPos + toIPositionInArray(minLoc, shape);
+        }
+        if (maxLoc != -1) {
+            _maxpos = startPos + toIPositionInArray(maxLoc, shape);
+        }
+    }
 }
 
 template <class T, class U>
 void StatsTiledCollapser<T,U>::endAccumulator(
-	Array<U>& result, Array<Bool>& resultMask,
-	const IPosition& shape
+    Array<U>& result, Array<Bool>& resultMask,
+    const IPosition& shape
 ) {
-	// Reshape arrays.  The mask is always true.  Any locations
-	// in the storage lattice for which there were no valid points
-	// will have the NPTS field set to zero.  That is what
-	// we use to effectively mask it.
+    // Reshape arrays.  The mask is always true.  Any locations
+    // in the storage lattice for which there were no valid points
+    // will have the NPTS field set to zero.  That is what
+    // we use to effectively mask it.
     result.resize(shape);
     result.set(U(0));
     resultMask.resize(shape);
