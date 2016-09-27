@@ -375,6 +375,67 @@ int main()
             AlwaysAssert(maxPos.size() == 0, AipsError);
 
         }
+        {
+            cout << "test stats for complex value lattice using old and new methods" << endl;
+            // array needs to be large enough to force using of old method
+            uInt size = 500000;
+            Vector<Complex> cdata(size);
+            Vector<Complex>::iterator iter = cdata.begin();
+            Vector<Complex>::iterator end = cdata.end();
+            Float i = 0;
+            DComplex expMean((size -1 )/2.0, (size - 1)/2.0);
+            DComplex expNVar = 0;
+            DComplex expSumSq(0, 0);
+            DComplex diff(0, 0);
+            for (; iter!=end; ++iter, ++i) {
+                *iter = Complex(i, i);
+                expSumSq += *iter * *iter;
+                diff = *iter - expMean;
+                expNVar += diff*diff;
+            }
+            ArrayLattice<Complex> latt(cdata);
+            SubLattice<Complex> subLatt(latt);
+            LatticeStatistics<Complex> stats(subLatt);
+            stats.configureClassical(0, 0, 1, 1);
+            Array<DComplex> sum, npts, mean, sumsq, var, sigma, rms;
+            stats.getStatistic(sum, LatticeStatsBase::SUM);
+            stats.getStatistic(npts, LatticeStatsBase::NPTS);
+            stats.getStatistic(mean, LatticeStatsBase::MEAN);
+            stats.getStatistic(sumsq, LatticeStatsBase::SUMSQ);
+            stats.getStatistic(var, LatticeStatsBase::VARIANCE);
+            stats.getStatistic(sigma, LatticeStatsBase::SIGMA);
+            stats.getStatistic(rms, LatticeStatsBase::RMS);
+            DComplex expSum(124999750000, 124999750000);
+            DComplex expNpts(size, 0);
+            DComplex expVar = expNVar/DComplex(size - 1, 0);
+            DComplex expSigma = sqrt(expVar);
+            DComplex expRMS = sqrt(expSumSq/(Double)size);
+            IPosition pos(1, 0);
+            AlwaysAssert(sum(pos) == expSum, AipsError);
+            AlwaysAssert(npts(pos) == expNpts, AipsError);
+            AlwaysAssert(mean(pos) == expMean, AipsError);
+            AlwaysAssert(near(sumsq(pos), expSumSq), AipsError);
+            AlwaysAssert(near(var(pos), expVar, 1e-10), AipsError);
+            AlwaysAssert(near(sigma(pos), expSigma, 1e-11), AipsError);
+            AlwaysAssert(near(rms(pos), expRMS), AipsError);
+
+            LatticeStatistics<Complex> stats2(subLatt);
+            stats2.configureClassical(1, 1, 0, 0);
+            stats2.getStatistic(sum, LatticeStatsBase::SUM);
+            stats2.getStatistic(npts, LatticeStatsBase::NPTS);
+            stats2.getStatistic(mean, LatticeStatsBase::MEAN);
+            stats2.getStatistic(sumsq, LatticeStatsBase::SUMSQ);
+            stats2.getStatistic(var, LatticeStatsBase::VARIANCE);
+            stats2.getStatistic(sigma, LatticeStatsBase::SIGMA);
+            stats2.getStatistic(rms, LatticeStatsBase::RMS);
+            AlwaysAssert(sum(pos) == expSum, AipsError);
+            AlwaysAssert(npts(pos) == expNpts, AipsError);
+            AlwaysAssert(mean(pos) == expMean, AipsError);
+            AlwaysAssert(near(sumsq(pos), expSumSq, 1e-9), AipsError);
+            AlwaysAssert(near(var(pos), expVar, 1e-10), AipsError);
+            AlwaysAssert(near(sigma(pos), expSigma, 1e-11), AipsError);
+            AlwaysAssert(near(rms(pos), expRMS, 1e-9), AipsError);
+        }
     }
     catch (const AipsError& x) {
         cerr << "aipserror: error " << x.getMesg() << endl;

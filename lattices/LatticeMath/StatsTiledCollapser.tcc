@@ -26,6 +26,8 @@
 
 #include <casacore/lattices/LatticeMath/StatsTiledCollapser.h>
 
+#include <casacore/scimath/Mathematics/StatisticsUtilities.h>
+
 namespace casacore {
 
 template <class T, class U>
@@ -47,7 +49,7 @@ template <class T, class U>
 void StatsTiledCollapser<T,U>::initAccumulator (uInt n1, uInt n3) {
    _sum = new Block<U>(n1*n3);
    _sumSq = new Block<U>(n1*n3);
-   _npts = new Block<U>(n1*n3);
+   _npts = new Block<Double>(n1*n3);
    _mean = new Block<U>(n1*n3);
    _variance = new Block<U>(n1*n3);
    _nvariance = new Block<U>(n1*n3);
@@ -83,85 +85,93 @@ void StatsTiledCollapser<T,U>::process (
 	uInt index = index1 + index3*_n1;
 	U& sum = (*_sum)[index];
 	U& sumSq = (*_sumSq)[index];
-	U& nPts = (*_npts)[index];
+	Double& nPts = (*_npts)[index];
 	T& dataMin = (*_min)[index];
 	T& dataMax = (*_max)[index];
 	U& mean = (*_mean)[index];
 	U& variance = (*_variance)[index];
 	U& nvariance = (*_nvariance)[index];
-	Bool& minMaxInit = (*_initMinMax)[index];
 
 	// If these are != -1 after the accumulating, then
 	// the min and max were updated
+	Int64 minLoc = -1;
+	Int64 maxLoc = -1;
 
-	Int minLoc = -1;
-	Int maxLoc = -1;
-	//
-	T useIt;
+	vector<std::pair<U, U> > ranges;
+	Bool isInclude = False;
+	if (_include || _exclude) {
+	    ranges.resize(1);
+	    ranges[0] = std::make_pair(_range[0], _range[1]);
+	    isInclude = _include;
+	}
+	typename vector<std::pair<U, U> >::const_iterator beginRange = ranges.begin();
+    typename vector<std::pair<U, U> >::const_iterator endRange = ranges.end();
 	if (pInMask == 0) {
-		// All pixels are good
+		// All pixels are unmasked
 		if (_include) {
-			T datum;
-			for (uInt i=0; i<nrval; i++) {
-				datum = *pInData;
-				useIt = LattStatsSpecialize::usePixelInc (_range(0), _range(1), datum);
-				LattStatsSpecialize::accumulate(
-					nPts, sum, mean, nvariance, variance, sumSq,
-					dataMin, dataMax, minLoc, maxLoc, minMaxInit,
-					False, *pInData, i, useIt
-				);
+			Int64 i = -i;
+			for (i=0; i<(Int64)nrval; ++i) {
+				if (
+				    StatisticsUtilities<U>::includeDatum(
+				        *pInData, beginRange, endRange, isInclude
+				    )
+				) {
+				    StatisticsUtilities<U>::accumulate(
+				        nPts, sum, mean, nvariance,
+				        sumSq, dataMin, dataMax, minLoc,
+				        maxLoc, *pInData, i
+				    );
+				}
 				pInData += dataIncr;
 			}
 			if (_fixedMinMax) {
 				dataMin = _range(0);
 				dataMax = _range(1);
 			}
-		} else if (_exclude) {
-			T datum;
-			for (uInt i=0; i<nrval; i++) {
-				datum = *pInData;
-				useIt = LattStatsSpecialize::usePixelExc (
-					_range(0), _range(1), datum
-				);
-				LattStatsSpecialize::accumulate(
-					nPts, sum, mean, nvariance, variance, sumSq,
-					dataMin, dataMax, minLoc, maxLoc, minMaxInit,
-					False, *pInData, i, useIt
-				);
+		}
+		else if (_exclude) {
+			for (Int64 i=0; i<(Int64)nrval; ++i) {
+			    if (
+			        StatisticsUtilities<U>::includeDatum(
+			            *pInData, beginRange, endRange, isInclude
+			        )
+			    ) {
+			        StatisticsUtilities<U>::accumulate(
+			            nPts, sum, mean, nvariance,
+			            sumSq, dataMin, dataMax, minLoc,
+			            maxLoc, *pInData, i
+			        );
+			    }
 				pInData += dataIncr;
 			}
 		}
 		else {
-			// All data accepted
-			LattStatsSpecialize::setUseItTrue(useIt);
-			for (uInt i=0; i<nrval; i++) {
-				LattStatsSpecialize::accumulate(
-					nPts, sum, mean, nvariance, variance, sumSq,
-					dataMin, dataMax, minLoc, maxLoc, minMaxInit,
-					False, *pInData, i, useIt
-				);
-				pInData += dataIncr;
-			}
+			// no range
+		    for (Int64 i=0; i<(Int64)nrval; ++i) {
+		        StatisticsUtilities<U>::accumulate(
+		            nPts, sum, mean, nvariance,
+		            sumSq, dataMin, dataMax, minLoc,
+		            maxLoc, *pInData, i
+		        );
+		        pInData += dataIncr;
+		    }
 		}
 	}
 	else {
 		// Some pixels are masked
 		if (_include) {
-			T datum;
-			Bool mask;
-			for (uInt i=0; i<nrval; i++) {
-				datum = *pInData;
-				mask = *pInMask;
-				if (mask) {
-					useIt = LattStatsSpecialize::usePixelInc (
-						_range(0), _range(1), datum
-					);
-					LattStatsSpecialize::accumulate(
-						nPts, sum, mean, nvariance, variance, sumSq,
-						dataMin, dataMax, minLoc, maxLoc, minMaxInit,
-						False, *pInData, i, useIt
-					);
-				}
+			for (Int64 i=0; i<(Int64)nrval; ++i) {
+			    if (
+			        *pInMask && StatisticsUtilities<U>::includeDatum(
+			            *pInData, beginRange, endRange, isInclude
+			        )
+			    ) {
+			        StatisticsUtilities<U>::accumulate(
+			            nPts, sum, mean, nvariance,
+			            sumSq, dataMin, dataMax, minLoc,
+			            maxLoc, *pInData, i
+			        );
+			    }
 				pInData += dataIncr;
 				pInMask += maskIncr;
 			}
@@ -171,45 +181,43 @@ void StatsTiledCollapser<T,U>::process (
 			}
 		}
 		else if (_exclude) {
-			T datum;
-			Bool mask;
-			for (uInt i=0; i<nrval; i++) {
-				datum = *pInData;
-				mask = *pInMask;
-				if (mask) {
-					useIt = LattStatsSpecialize::usePixelExc (_range(0), _range(1), datum);
-					LattStatsSpecialize::accumulate(
-						nPts, sum, mean, nvariance, variance, sumSq,
-						dataMin, dataMax, minLoc, maxLoc, minMaxInit,
-						False, *pInData, i, useIt
-					);
-				}
+			for (Int64 i=0; i<(Int64)nrval; ++i) {
+			    if (
+			        *pInMask && StatisticsUtilities<U>::includeDatum(
+			            *pInData, beginRange, endRange, isInclude
+			        )
+			    ) {
+			        StatisticsUtilities<U>::accumulate(
+			            nPts, sum, mean, nvariance,
+			            sumSq, dataMin, dataMax, minLoc,
+			            maxLoc, *pInData, i
+			        );
+			    }
 				pInData += dataIncr;
 				pInMask += maskIncr;
 			}
 		}
 		else {
-			// All data accepted
-			LattStatsSpecialize::setUseItTrue(useIt);
-			for (uInt i=0; i<nrval; i++) {
+			// no ranges
+			for (Int64 i=0; i<(Int64)nrval; ++i) {
 				if (*pInMask) {
-					LattStatsSpecialize::accumulate(
-						nPts, sum, mean, nvariance, variance, sumSq,
-						dataMin, dataMax, minLoc, maxLoc, minMaxInit,
-						False, *pInData, i, useIt
-					);
+				    StatisticsUtilities<U>::accumulate(
+				        nPts, sum, mean, nvariance,
+				        sumSq, dataMin, dataMax, minLoc,
+				        maxLoc, *pInData, i
+				    );
 				}
 				pInData += dataIncr;
 				pInMask += maskIncr;
 			}
 		}
 	}
+	variance = nPts > 1 ? nvariance/(nPts - 1) : 0;
 
 	// Update overall min and max location.  These are never updated
 	// if fixedMinMax is true.  These values are only meaningful for
 	// Float images.  For Complex they are useless currently.
 
-	//DataType type = whatType(*T(0));
 	if (_isReal) {
 		if (minLoc != -1) {
 			_minpos = startPos + toIPositionInArray(minLoc, shape);
@@ -225,12 +233,10 @@ void StatsTiledCollapser<T,U>::endAccumulator(
 	Array<U>& result, Array<Bool>& resultMask,
 	const IPosition& shape
 ) {
-
 	// Reshape arrays.  The mask is always true.  Any locations
 	// in the storage lattice for which there were no valid points
 	// will have the NPTS field set to zero.  That is what
 	// we use to effectively mask it.
-
     result.resize(shape);
     result.set(U(0));
     resultMask.resize(shape);
@@ -239,18 +245,21 @@ void StatsTiledCollapser<T,U>::endAccumulator(
     Bool deleteRes;
     U* res = result.getStorage (deleteRes);
     U* resptr = res;
-
     U* sumPtr = _sum->storage();
     U* sumSqPtr = _sumSq->storage();
-    U* nPtsPtr = _npts->storage();
+    CountedPtr<Block<DComplex> > nptsComplex;
+    if (! isReal(whatType(resptr))) {
+        nptsComplex = new Block<DComplex>(_n1*_n3);
+    }
+    U* nPtsPtr;
+    _convertNPts(nPtsPtr, _npts, nptsComplex);
     U* meanPtr = _mean->storage();
     U* variancePtr = _variance->storage();
     const T* minPtr = _min->storage();
     const T* maxPtr = _max->storage();
-
     uInt i,j;
     U* resptr_root = resptr;
-    for (i=0; i<_n3; i++) {
+    for (i=0; i<_n3; ++i) {
        resptr = resptr_root + (Int(LatticeStatsBase::NPTS) * _n1);
        objcopy (resptr, nPtsPtr, _n1);
        nPtsPtr += _n1;
@@ -283,7 +292,6 @@ void StatsTiledCollapser<T,U>::endAccumulator(
 
        resptr_root += _n1 * Int(LatticeStatsBase::NACCUM);
     }
-
     _sum = NULL;
     _sumSq = NULL;
     _npts = NULL;
@@ -293,8 +301,29 @@ void StatsTiledCollapser<T,U>::endAccumulator(
     _mean = NULL;
     _variance = NULL;
     _nvariance = NULL;
-
     result.putStorage (res, deleteRes);
+}
+
+template <class T, class U>
+void StatsTiledCollapser<T,U>::_convertNPts(
+    Double*& nptsPtr, CountedPtr<Block<Double> > npts,
+    CountedPtr<Block<DComplex> >
+) const {
+    nptsPtr = npts->storage();
+}
+
+template <class T, class U>
+void StatsTiledCollapser<T,U>::_convertNPts(
+    DComplex*& nptsPtr, CountedPtr<Block<Double> > npts,
+    CountedPtr<Block<DComplex> > nptsComplex
+) const {
+    DComplex* storage = nptsComplex->storage();
+    Double* realStorage = npts->storage();
+    for (uInt i=0; i<_n1*_n3; ++i) {
+        storage[i].real(realStorage[i]);
+        storage[i].imag(0);
+    }
+    nptsPtr = storage;
 }
 
 template <class T, class U>

@@ -579,6 +579,15 @@ private:
     ) const;
 
    void _doStatsLoop(uInt nsets, CountedPtr<LattStatsProgress> progressMeter);
+
+   inline static AccumType _mean(const AccumType& sum, const AccumType& npts) {
+       return npts <= 0 ? 0 : sum/npts;
+   }
+
+   inline static AccumType _rms(const AccumType& sumsq, const AccumType& npts) {
+       return npts <= 0 ? 0 : sqrt(sumsq/npts);
+   }
+
 };
 
 //# Declare extern templates for often used types.

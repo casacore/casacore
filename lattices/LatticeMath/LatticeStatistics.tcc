@@ -504,12 +504,12 @@ Bool LatticeStatistics<T>::getStats(
     // Compute the rest
 
     const AccumType& n = stats(NPTS);
-    if (!LattStatsSpecialize::hasSomePoints(n)) {
+    if (n <= 0) {
         stats.resize(0);
         return  True;
     }
-    stats(SIGMA) = LattStatsSpecialize::getSigma(stats(VARIANCE));
-    stats(RMS) =  LattStatsSpecialize::getRms(stats(SUMSQ), n);
+    stats(SIGMA) = sqrt(stats(VARIANCE));
+    stats(RMS) =  _rms(stats(SUMSQ), n);
     stats(FLUX) = 0;
     if (_canDoFlux()) {
         Quantum<AccumType> q;
@@ -618,11 +618,11 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
    if (type==MEAN) {
        retrieveStorageStatistic (sum, SUM, dropDeg);
        ReadOnlyVectorIterator<AccumType> sumIt(sum);
+       AccumType npts(0);
        while (!nPtsIt.pastEnd()) {
-           for (uInt i=0; i<n1; i++) {
-               sliceIt.vector()(i) =
-                       LattStatsSpecialize::getMean(sumIt.vector()(i),
-                               nPtsIt.vector()(i));
+           for (uInt i=0; i<n1; ++i) {
+               npts = nPtsIt.vector()(i);
+               sliceIt.vector()(i) = _mean(sumIt.vector()(i), npts);
            }
            nPtsIt.next();
            sumIt.next();
@@ -643,26 +643,23 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
        Array<AccumType> variance;
        retrieveStorageStatistic (variance, VARIANCE, dropDeg);
        ReadOnlyVectorIterator<AccumType> varianceIt(variance);
-
        while (!nPtsIt.pastEnd()) {
           for (uInt i=0; i<n1; i++) {
-              sliceIt.vector()(i) =
-                 LattStatsSpecialize::getSigma(varianceIt.vector()(i));
+              sliceIt.vector()(i) = sqrt(varianceIt.vector()(i));
           }
           nPtsIt.next();
           varianceIt.next();
           sliceIt.next();
        }
     }
-
     else if (type==RMS) {
        retrieveStorageStatistic (sumSq, SUMSQ, dropDeg);
        ReadOnlyVectorIterator<AccumType> sumSqIt(sumSq);
+       AccumType npts = 0;
        while (!nPtsIt.pastEnd()) {
           for (uInt i=0; i<n1; i++) {
-             sliceIt.vector()(i) = 
-                LattStatsSpecialize::getRms(sumSqIt.vector()(i),
-                                            nPtsIt.vector()(i));
+              npts = nPtsIt.vector()(i);
+              sliceIt.vector()(i) = _rms(sumSqIt.vector()(i), npts);
           }
           nPtsIt.next();
           sumSqIt.next();
@@ -1329,7 +1326,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
       os00 << stats.column(NPTS)(j);
       os_p.output() << setw(oDWidth)   << os00.str();
 
-      if (LattStatsSpecialize::hasSomePoints(stats.column(NPTS)(j))) {
+      if (stats.column(NPTS)(j) > 0) {
 
 // Convert to strings.
 
@@ -1403,18 +1400,18 @@ Bool LatticeStatistics<T>::getLayerStats(
 
       // prefer the calculated mean over the accumulated mean because
       // the accumulated mean can have accumulated precision errors
-      AccumType  mean = LattStatsSpecialize::getMean(sum, nPts);
-      // AccumType  var = LattStatsSpecialize::getVariance(sum, sumSq, nPts);
-      AccumType  rms = LattStatsSpecialize::getRms(sumSq, nPts);
-      AccumType  sigma = LattStatsSpecialize::getSigma(var);
+      AccumType  mean = _mean(sum, nPts);
+      AccumType  rms = _rms(sumSq, nPts);
+      AccumType  sigma = sqrt(var);
 
       pos(0) = MIN;
       AccumType  dMin = statsV(pos);
       pos(0) = MAX;
       AccumType  dMax = statsV(pos);
 
-      if (!LattStatsSpecialize::hasSomePoints(nPts)) 
+      if (nPts <= 0) {
           return False;
+      }
 
       stringstream os;
       const Int oPrec = 6;
@@ -1537,16 +1534,13 @@ Bool LatticeStatistics<T>::getLayerStats(
       Bool unused;
       for (uInt i=0; i<n1; i++) {
          const AccumType& nPts = matrix(i,NPTS);
-         if (LattStatsSpecialize::hasSomePoints(nPts)) {
-            ord(i,MEAN) = 
-               LattStatsSpecialize::getMean(matrix(i,SUM), nPts);
+         if (nPts > 0) {
+            ord(i,MEAN) = _mean(matrix(i,SUM), nPts);
             if (canDoFlux) {
                 ord(i,FLUX) = _flux(unused, matrix(i,SUM), area).getValue();
             }
-            ord(i,SIGMA) = LattStatsSpecialize::getSigma(
-                              matrix(i,VARIANCE));
-            ord(i,RMS) =  LattStatsSpecialize::getRms(
-                              matrix(i,SUMSQ), nPts);  
+            ord(i,SIGMA) = sqrt(matrix(i,VARIANCE));
+            ord(i,RMS) =  _rms(matrix(i,SUMSQ), nPts);
           }
       }
 
@@ -1604,18 +1598,18 @@ Bool LatticeStatistics<T>::getLayerStats(
 
     // prefer the calculated mean over the accumulated mean because
     // the accumulated mean can have accumulated precision errors
-    AccumType  mean = LattStatsSpecialize::getMean(sum, nPts);
-    // AccumType  var = LattStatsSpecialize::getVariance(sum, sumSq, nPts);
-    AccumType  rms = LattStatsSpecialize::getRms(sumSq, nPts);
-    AccumType  sigma = LattStatsSpecialize::getSigma(var);
+    AccumType  mean = _mean(sum, nPts);
+    AccumType  rms = _rms(sumSq, nPts);
+    AccumType  sigma = sqrt(var);
 
     pos(0) = MIN;
     AccumType  dMin = statsV(pos);
     pos(0) = MAX;
     AccumType  dMax = statsV(pos);
 
-    if (!LattStatsSpecialize::hasSomePoints(nPts))
+    if (nPts <= 0) {
         return False;
+    }
 
     //const Int oPrec = 6;
     Int oDWidth = 15;
@@ -1713,14 +1707,13 @@ Bool LatticeStatistics<T>::getLayerStats(
     Bool unused;
     for (uInt i=0; i<n1; i++) {
         const AccumType& nPts = matrix(i,NPTS);
-        if (LattStatsSpecialize::hasSomePoints(nPts)) {
-        ord(i,MEAN) = LattStatsSpecialize::getMean(matrix(i,SUM), nPts);
+        if (nPts > 0) {
+        ord(i,MEAN) = _mean(matrix(i,SUM), nPts);
         if (_canDoFlux()) {
             ord(i,FLUX) = _flux(unused, matrix(i,SUM), area).getValue();
         }
-        //ord(i,VARIANCE) = LattStatsSpecialize::getVariance( matrix(i,SUM), matrix(i,SUMSQ), nPts);
-        ord(i,SIGMA) = LattStatsSpecialize::getSigma(matrix(i,VARIANCE));
-        ord(i,RMS) =  LattStatsSpecialize::getRms(matrix(i,SUMSQ), nPts);
+        ord(i,SIGMA) = sqrt(matrix(i,VARIANCE));
+        ord(i,RMS) =  _rms(matrix(i,SUMSQ), nPts);
         }
     }
 
@@ -1754,7 +1747,7 @@ Bool LatticeStatistics<T>::getLayerStats(
         sprintf( buffer, "%d", (int) ord.column(NPTS)(j) );
         stats.push_back(stat_element("Npts",buffer));
 
-        if ( LattStatsSpecialize::hasSomePoints(ord.column(NPTS)(j)) ){
+        if (ord.column(NPTS)(j) > 0){
 
             sprintf( buffer, "%e", ord.column(SUM)(j) );
             stats.push_back(stat_element("Sum",buffer));
@@ -1845,7 +1838,7 @@ Bool LatticeStatistics<T>::listLayerStats (
       os << setw(10)
          << stats.column(NPTS)(j);
 
-      if(LattStatsSpecialize::hasSomePoints(stats.column(NPTS)(j))){
+      if(stats.column(NPTS)(j) > 0){
 
          setStream(os, oPrec);
          os << setw(oDWidth)
@@ -2030,10 +2023,10 @@ Bool LatticeStatistics<T>::display()
       Matrix<AccumType>  matrix(pixelIterator.matrixCursor());   // Reference semantics
       for (uInt i=0; i<n1; i++) {
          const AccumType& nPts = matrix(i,NPTS);
-         if (LattStatsSpecialize::hasSomePoints(nPts)) {
-            ord(i,MEAN) = LattStatsSpecialize::getMean(matrix(i,SUM), nPts);
-            ord(i,SIGMA) = LattStatsSpecialize::getSigma(ord(i,VARIANCE));
-            ord(i,RMS) =  LattStatsSpecialize::getRms(matrix(i,SUMSQ), nPts);  
+         if (nPts > 0) {
+            ord(i,MEAN) = _mean(matrix(i,SUM), nPts);
+            ord(i,SIGMA) = sqrt(ord(i,VARIANCE));
+            ord(i,RMS) =  _rms(matrix(i,SUMSQ), nPts);
           }
       }
 
@@ -2096,20 +2089,16 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice,
 // Returns false if internal class state is bad.
 {
 // Generate storage lattice if required
-
    if (needStorageLattice_p) {
       if (!generateStorageLattice()) {
           return False;
       }
    }
-
 // Were there some good points ?  
 
    const Int nDim = pStoreLattice_p->ndim();
    slice.resize(IPosition(0,0));
-
    if (someGoodPoints()) {
-
 // Get desired statistic slice. Discard degenerate axes (requires
 // empty array on input)
 
@@ -2119,7 +2108,6 @@ Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice,
       Int ISTAT = Int(type);
       IPosition pos(nDim,0);
       pos(nDim-1) = ISTAT;
-
       pStoreLattice_p->getSlice(slice, pos, sliceShape, 
                                 IPosition(nDim,1), dropDeg);
    }
@@ -2329,15 +2317,15 @@ void LatticeStatistics<T>::summStats ()
 
    pos(0) = VARIANCE;
    AccumType  var = stats(pos);
-   AccumType  rms = LattStatsSpecialize::getRms(sumSq, nPts);
-   AccumType  sigma = LattStatsSpecialize::getSigma(var);
+   AccumType  rms = _rms(sumSq, nPts);
+   AccumType  sigma = sqrt(var);
 
    pos(0) = MIN;
    AccumType  dMin = stats(pos);
    pos(0) = MAX;
    AccumType  dMax = stats(pos);
    // Do this check so that we only print the stats when we have values.   
-   if (LattStatsSpecialize::hasSomePoints(nPts)) {
+   if (nPts > 0) {
        displayStats(
            nPts, sum, median, medAbsDevMed, quartile, sumSq,
            mean, var, rms, sigma, dMin, dMax, q1, q3
@@ -2379,7 +2367,7 @@ void LatticeStatistics<T>::displayStats (
    setStream(os13, oPrec);
 //
    os_p << LogIO::NORMAL << endl << LogIO::POST;
-   if (LattStatsSpecialize::hasSomePoints(nPts)) {
+   if (nPts > 0) {
       os00 << nPts;
       os1 << sum; 
       os2 << mean; 

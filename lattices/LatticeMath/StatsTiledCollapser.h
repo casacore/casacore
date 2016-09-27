@@ -158,12 +158,23 @@ private:
     // Accumulators for sum, sum squared, number of points
     // minimum, and maximum
 
-    CountedPtr<Block<U> > _sum, _sumSq, _npts,
+    CountedPtr<Block<Double> > _npts;
+    CountedPtr<Block<U> > _sum, _sumSq,
     	_mean, _variance, _nvariance;
     CountedPtr<Block<T> > _min, _max;
     CountedPtr<Block<Bool> > _initMinMax;
 
     uInt _n1, _n3;
+
+    void _convertNPts(
+        Double*& nptsPtr, CountedPtr<Block<Double> > npts,
+        CountedPtr<Block<DComplex> > nptsComplex
+    ) const;
+
+    void _convertNPts(
+        DComplex*& nptsPtr, CountedPtr<Block<Double> > npts,
+        CountedPtr<Block<DComplex> > nptsComplex
+    ) const;
 };
 
 }
