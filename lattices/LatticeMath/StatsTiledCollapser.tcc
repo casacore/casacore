@@ -99,17 +99,18 @@ void StatsTiledCollapser<T,U>::process (
 
     vector<std::pair<U, U> > ranges;
     Bool isInclude = False;
-    if (_include || _exclude) {
+    Bool hasRange = _include || _exclude;
+    if (hasRange) {
         ranges.resize(1);
         ranges[0] = std::make_pair(_range[0], _range[1]);
         isInclude = _include;
     }
     typename vector<std::pair<U, U> >::const_iterator beginRange = ranges.begin();
     typename vector<std::pair<U, U> >::const_iterator endRange = ranges.end();
+    Int64 i = 0;
     if (pInMask == 0) {
         // All pixels are unmasked
-        if (_include) {
-            Int64 i = -i;
+        if (hasRange) {
             for (i=0; i<(Int64)nrval; ++i) {
                 if (
                     StatisticsUtilities<U>::includeDatum(
@@ -124,25 +125,9 @@ void StatsTiledCollapser<T,U>::process (
                 }
                 pInData += dataIncr;
             }
-            if (_fixedMinMax) {
+            if (_include && _fixedMinMax) {
                 dataMin = _range(0);
                 dataMax = _range(1);
-            }
-        }
-        else if (_exclude) {
-            for (Int64 i=0; i<(Int64)nrval; ++i) {
-                if (
-                    StatisticsUtilities<U>::includeDatum(
-                        *pInData, beginRange, endRange, isInclude
-                    )
-                ) {
-                    StatisticsUtilities<U>::accumulate(
-                        nPts, sum, mean, nvariance,
-                        sumSq, dataMin, dataMax, minLoc,
-                        maxLoc, *pInData, i
-                    );
-                }
-                pInData += dataIncr;
             }
         }
         else {
@@ -159,8 +144,8 @@ void StatsTiledCollapser<T,U>::process (
     }
     else {
         // Some pixels are masked
-        if (_include) {
-            for (Int64 i=0; i<(Int64)nrval; ++i) {
+        if (hasRange) {
+            for (i=0; i<(Int64)nrval; ++i) {
                 if (
                     *pInMask && StatisticsUtilities<U>::includeDatum(
                         *pInData, beginRange, endRange, isInclude
@@ -175,31 +160,14 @@ void StatsTiledCollapser<T,U>::process (
                 pInData += dataIncr;
                 pInMask += maskIncr;
             }
-            if (_fixedMinMax) {
+            if (_include && _fixedMinMax) {
                 dataMin = _range(0);
                 dataMax = _range(1);
             }
         }
-        else if (_exclude) {
-            for (Int64 i=0; i<(Int64)nrval; ++i) {
-                if (
-                    *pInMask && StatisticsUtilities<U>::includeDatum(
-                        *pInData, beginRange, endRange, isInclude
-                    )
-                ) {
-                    StatisticsUtilities<U>::accumulate(
-                        nPts, sum, mean, nvariance,
-                        sumSq, dataMin, dataMax, minLoc,
-                        maxLoc, *pInData, i
-                    );
-                }
-                pInData += dataIncr;
-                pInMask += maskIncr;
-            }
-        }
         else {
             // no ranges
-            for (Int64 i=0; i<(Int64)nrval; ++i) {
+            for (i=0; i<(Int64)nrval; ++i) {
                 if (*pInMask) {
                     StatisticsUtilities<U>::accumulate(
                         nPts, sum, mean, nvariance,
@@ -292,15 +260,6 @@ void StatsTiledCollapser<T,U>::endAccumulator(
 
        resptr_root += _n1 * Int(LatticeStatsBase::NACCUM);
     }
-    _sum = NULL;
-    _sumSq = NULL;
-    _npts = NULL;
-    _min = NULL;
-    _max = NULL;
-    _initMinMax = NULL;
-    _mean = NULL;
-    _variance = NULL;
-    _nvariance = NULL;
     result.putStorage (res, deleteRes);
 }
 
