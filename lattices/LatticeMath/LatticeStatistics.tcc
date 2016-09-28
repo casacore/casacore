@@ -791,13 +791,7 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     Double timeOld = 0;
     Double timeNew = 0;
     uInt nsets = pStoreLattice_p->size()/storeLatticeShape.getLast(1)[0];
-    // it doesn't really matter which method is used on smallish lattices, so
-    // only use the old method if the lattice is relatively large. This avoids
-    // the possible discontinuity exception being thrown by the old method for
-    // smallish lattices, so prevents the necessity of retrying the computation
-    // using the new method in this case.
-    Bool tryOldMethod = _algConf.algorithm == StatisticsData::CLASSICAL
-        && pInLattice_p->size() > 100000;
+    Bool tryOldMethod = _algConf.algorithm == StatisticsData::CLASSICAL;
     if (tryOldMethod) {
         uInt nel = pInLattice_p->size()/nsets;
         timeOld = nsets*(_aOld + _bOld*nel);
