@@ -86,7 +86,7 @@ if( CASA_BUILD )
    set(USE_FFTW3 ON)
    set(USE_OPENMP ON)
    set(USE_THREADS ON)
-####### JHJ 160913   set(UseCasacoreNamespace 1) # Force casacore routines to live in casacore rather than casa namespace
+   set(UseCasacoreNamespace 1) # Force casacore routines to live in casacore rather than casa namespace
    ###
    ### after CASA switches from ASAP to libsakura, CASA will no longer
    ### use casacore's python module and it will no longer use boost...
