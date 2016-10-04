@@ -86,6 +86,7 @@ if( CASA_BUILD )
    set(USE_FFTW3 ON)
    set(USE_OPENMP ON)
    set(USE_THREADS ON)
+   set(UseCasacoreNamespace 1) # Force casacore routines to live in casacore rather than casa namespace
    ###
    ### after CASA switches from ASAP to libsakura, CASA will no longer
    ### use casacore's python module and it will no longer use boost...
@@ -145,12 +146,23 @@ else()
     option (BUILD_SHARED_LIBS "" NO)
 endif (ENABLE_SHARED)
 
+if (UseCasacoreNamespace)
+
+    add_definitions (-DUseCasacoreNamespace)
+    message (STATUS "Using namespace casacore.")
+
+else ()
+
+    message (STATUS "Namespace casacore 'merged' into namespace casa.")
+
+endif ()
+
 # Define the compiler flags to be used.
 # Note: -Wshadow and -Wunreachable-code give (too) many warnings.
 # Casacore uses longlong, so no warnings for it.
 # Clang gives warning on bison generated code; disable unneeded-internal-declaration.
 if (NOT CMAKE_CXX_FLAGS)
-    set (CMAKE_CXX_FLAGS "-Wextra -Wall -W -Wpointer-arith -Woverloaded-virtual -Wwrite-strings -pedantic -Wno-long-long -fsigned-char")
+    set (CMAKE_CXX_FLAGS "-Wextra -Wall -W -Wpointer-arith -Woverloaded-virtual -Wwrite-strings -pedantic -Wno-long-long")
 #SET(CMAKE_CXX_FLAGS="-g -O0 -Wall -Wextra -Wshadow -Wunused-variable
 # -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers
 # -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs
@@ -159,6 +171,7 @@ if (NOT CMAKE_CXX_FLAGS)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unneeded-internal-declaration")
     endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 endif (NOT CMAKE_CXX_FLAGS)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsigned-char")
 
 # Set build type if not given.
 if (NOT CMAKE_BUILD_TYPE)

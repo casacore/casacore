@@ -79,7 +79,7 @@ using std::map;
 // can be used by e.g. the Measures class.
 //
 // The files have to be obtained by other means (e.g. a python script,
-// manually or another script (e.g. the provided measuresdata.csh tcsh script.
+// manually or another script (e.g. the provided measuresdata-update script.
 //
 // Normal operation:
 // <li>
@@ -429,7 +429,7 @@ const tableProperties allProperties[] = {
 
   //**********************************************************************//
 
-  { "IERSeop97",		2.0,			4.0,
+  { "IERSeop97",		2.0,			34.0,
     False,			37664,			1.0,
     "geodetic/IERSeop97",  	"ftp",  		"ascii",
     &IERSeop97,			IERSeop97Col,		0,
@@ -441,7 +441,7 @@ const tableProperties allProperties[] = {
 
   //**********************************************************************//
 
-  { "IERSeop2000",		2.0,			4.0,
+  { "IERSeop2000",		2.0,			34.0,
     False,			37664,			1.0,
     "geodetic/IERSeop2000", 	"ftp",  		"ascii",
     &IERSeop2000,		IERSeop2000Col,		0,

@@ -88,7 +88,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </ul>
 // The aipsrc variables are:
 // <ul>
-//  <li> <src>tables.tsm.option</src> gives the option as the case-insensitive
+//  <li> <src>table.tsm.option</src> gives the option as the case-insensitive
 //       string value:
 //   <ul>
 //    <li> <src>cache</src> means TSMCache.
@@ -101,12 +101,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       It defaults to value <src>default</src>.
 //       Note that <src>mmapold</src> is almost the same as <src>default</src>.
 //       Only on 32-bit systems it is different.
-//  <li> <src>tables.tsm.maxcachesizemb</src> gives the maximum cache size in MB
+//  <li> <src>table.tsm.maxcachesizemb</src> gives the maximum cache size in MB
 //       for option <src>TSMOption::Cache</src>. A value -1 means that
 //       the system determines the maximum. A value 0 means unlimited.
 //       It defaults to -1.
 //       Note it can always be overridden using class ROTiledStManAccessor.
-//  <li> <src>tables.tsm.buffersize</src> gives the buffer size for option
+//  <li> <src>table.tsm.buffersize</src> gives the buffer size for option
 //       <src>TSMOption::Buffer</src>. A value <=0 means use the default 4096.
 //       It defaults to 0.
 // </ul>

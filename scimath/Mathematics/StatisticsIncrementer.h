@@ -40,6 +40,9 @@ public:
 	~StatisticsIncrementer() {}
 
 	//<group>
+	// NOTE versions with <src>unityStride</src> are deprecated, but left for
+	// backward compatibility. Use versions without <src>unityStride</src> for
+	// new code (and update existing code to use new versions).
 	// <src> loopCount is always incremented by one, independent of the values
 	// of <src>dataStride</src> and <src>maskStride</src>
 	inline static void increment(
@@ -61,6 +64,42 @@ public:
 		WeightsIterator& weight, MaskIterator& mask,
 		Bool unityStride, uInt dataStride, uInt maskStride
 	);
+
+    inline static void increment(
+        DataIterator& datum, Int64& loopCount, uInt dataStride
+    ) {
+        std::advance(datum, dataStride);
+        ++loopCount;
+    }
+
+    inline static void increment(
+        DataIterator& datum, Int64& loopCount,
+        WeightsIterator& weight, uInt dataStride
+    ) {
+        std::advance(datum, dataStride);
+        std::advance(weight, dataStride);
+        ++loopCount;
+    }
+
+    inline static void increment(
+        DataIterator& datum, Int64& loopCount, MaskIterator& mask,
+        uInt dataStride, uInt maskStride
+    ) {
+        std::advance(datum, dataStride);
+        std::advance(mask, maskStride);
+        ++loopCount;
+    }
+
+    inline static void increment(
+        DataIterator& datum, Int64& loopCount,
+        WeightsIterator& weight, MaskIterator& mask,
+        uInt dataStride, uInt maskStride
+    ) {
+        std::advance(datum, dataStride);
+        std::advance(weight, dataStride);
+        std::advance(mask, maskStride);
+        ++loopCount;
+    }
 	// </group>
 
 private:

@@ -81,7 +81,7 @@ int main()
 	cout << "MeasIERS::get returned False for PREDICTED, dUT1, mjd " << mjd << endl;
 	return 2;
       }
-      cout << now.string(casa::MVTime::YMD) 
+      cout << now.string(casacore::MVTime::YMD) 
 	   << " " << setprecision(3) << fixed << mjd
 	   << " " << dUT << endl;
     } 

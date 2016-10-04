@@ -131,12 +131,26 @@ public:
     static ptrdiff_t swapFree();
     // </group>
 
+    // Allows to set custom resource values overriding the
+    // existing .apisrc setting and/or system defaults
+    // Expected unit are KiB for memory total
+    // and percentage (%) for memory fraction
+    // Returns the value previously stored
+    // <group>
+    static ptrdiff_t setMemoryTotal(ptrdiff_t memory);
+    static Int setMemoryFraction(Int memfrac);
+    static Int setNumCPUs(Int numCPUs);
+    // </group>
+
 private:
     // we don't want folks creating these...
     HostInfo( );
     const HostInfo &operator=( const HostInfo & );
 
     static HostMachineInfo *info;
+    static ptrdiff_t resources_memory;
+    static Int resources_memfrac;
+    static Int resources_numCPUs;
 };
 
 

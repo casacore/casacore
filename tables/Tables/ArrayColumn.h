@@ -470,6 +470,9 @@ private:
     void checkShape (const IPosition& shp,
                      Array<T>& arr, Bool resize,
                      const String& where) const;
+    void checkShape (const IPosition& shp,
+                     Array<T>& arr, Bool resize,
+                     const char * where) const;
 
 protected:
     // A common function used by all functions that can get or put irregular

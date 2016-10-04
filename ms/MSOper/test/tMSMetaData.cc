@@ -783,7 +783,7 @@ void testIt(MSMetaData& md) {
                 }
                 AlwaysAssert(md.getScansForIntent(*intent, 0, 0) == expec, AipsError);
                 AlwaysAssert(
-                    casa::scanNumbers(md.getIntentToScansMap()[*intent]) == expec,
+                    casacore::scanNumbers(md.getIntentToScansMap()[*intent]) == expec,
                     AipsError
                 );
             }
@@ -1357,15 +1357,25 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(res.size() == 1 && *res.begin() == 3, AipsError);
         }
         {
-            cout << "*** test getFirstExposureTimeMap()" << endl;
+            cout << "*** test getFirstExposureTimeMap() (deprecated)" << endl;
             vector<std::map<Int, Quantity> > mymap = md.getFirstExposureTimeMap();
             cout << "val " << mymap[0][30].getValue("s") << endl;
             cout << "val " << mymap[0][30] << endl;
-
             AlwaysAssert(near(mymap[0][30].getValue("s"), 1.152), AipsError);
             AlwaysAssert(near(mymap[10][17].getValue("s"), 1.008), AipsError)
-
             cout << "mymap " << mymap[10][17] << endl;
+        }
+        {
+            cout << "*** test getScanToFirstExposureTimeMap()" << endl;
+            map<ScanKey, MSMetaData::FirstExposureTimeMap> mymap
+                = md.getScanToFirstExposureTimeMap(False);
+            ScanKey scan;
+            scan.arrayID = 0;
+            scan.obsID = 0;
+            scan.scan = 30;
+            AlwaysAssert(near(mymap[scan][0].second.getValue("s"), 1.152), AipsError);
+            scan.scan = 17;
+            AlwaysAssert(near(mymap[scan][10].second.getValue("s"), 1.008), AipsError)
         }
         {
             cout << "*** test getUniqueFiedIDs()" << endl;
@@ -2503,7 +2513,7 @@ void testIt(MSMetaData& md) {
         {
             cout << "*** test getUniqueSpwIDs()" << endl;
             std::set<uInt> spws = md.getUniqueSpwIDs();
-            Vector<Int> expV = casa::indgen(25, 0, 1);
+            Vector<Int> expV = casacore::indgen(25, 0, 1);
             std::set<uInt> expec(expV.begin(), expV.end());
             AlwaysAssert(spws == expec, AipsError);
         }

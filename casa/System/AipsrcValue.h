@@ -273,6 +273,13 @@ private:
 
 #undef AipsrcValue_Bool
 
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class AipsrcValue<Bool>;
+  extern template class AipsrcValue<Int>;
+  extern template class AipsrcValue<Double>;
+  extern template class AipsrcValue<String>;
+#endif
 
 } //# NAMESPACE CASACORE - END
 

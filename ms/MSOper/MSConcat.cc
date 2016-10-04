@@ -63,6 +63,7 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/OS/Path.h>
 #include <casacore/casa/OS/Directory.h>
+#include <algorithm>
 
 namespace casacore {
 
@@ -330,6 +331,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     log << "Added " << addedRows 
 	<< " rows and matched " << matchedRows 
 	<< " from the field subtable" << LogIO::POST;
+    if(matchedRows>0){ // may have to consolidate SOURCE IDs
+      if(updateSource2()){
+	log << "Consolidated Source IDs in the source subtable." << LogIO::POST;
+      }
+    }
   }
 
   // OBSERVATION
@@ -1010,6 +1016,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     log << "Added " << addedRows 
 	<< " rows and matched " << matchedRows 
 	<< " from the field subtable" << LogIO::POST;
+    if(matchedRows>0){ // may have to consolidate SOURCE IDs
+      if(updateSource2()){
+	log << "Consolidated Source IDs in the source subtable." << LogIO::POST;
+      }
+    }
   }
 
 
@@ -1259,7 +1270,8 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     && otherWeightSp.isDefined(0);
   
   // MAIN
-  
+
+  Bool notYetFeedWarned = True;
   Bool doWeightScale = (itsWeightScale!=1. && itsWeightScale>0.);
   Float sScale = 1.; // scale for SIGMA
   if (doWeightScale){
@@ -1435,8 +1447,21 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
       thisSigma.put(curRow, otherSigma, r);
     }
     
-    thisFeed1.put(curRow, otherFeed2, r);
-    thisFeed2.put(curRow, otherFeed1, r);
+    if(notYetFeedWarned && (otherFeed1(r)>0 || otherFeed2(r)>0)){
+      log << LogIO::WARN << "MS to be appended contains antennas with multiple feeds. Feed ID reindexing is not implemented.\n" 
+	  << LogIO::POST;
+      notYetFeedWarned = False;
+    }
+
+    if(doConjugateVis){
+      thisFeed1.put(curRow, otherFeed2, r);
+      thisFeed2.put(curRow, otherFeed1, r);
+    }
+    else{
+      thisFeed1.put(curRow, otherFeed1, r);
+      thisFeed2.put(curRow, otherFeed2, r);
+    }
+
     thisTime.put(curRow, otherTime, r);
     thisInterval.put(curRow, otherInterval, r);
     thisExposure.put(curRow, otherExposure, r);
@@ -1967,6 +1992,7 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
       }
 
       antRow.putMatchingFields(antMap[a], antRecord);
+
       // Copy all the feeds associated with the antenna into the feed
       // table. I'm assuming that they are not already there.
       *antInd = a;
@@ -1974,9 +2000,16 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
       const uInt nFeedsToCopy = feedsToCopy.nelements();
       uInt destRow = feed.nrow();
       feed.addRow(nFeedsToCopy);
+      //cout << "antenna " << antMap[a] << ": copying " <<  nFeedsToCopy << " feeds." << endl;
       for (uInt f = 0; f < nFeedsToCopy; f++, destRow++) {
 	feedRecord = otherFeedRow.get(feedsToCopy(f));
 	feedRecord.define(antField, static_cast<Int>(antMap[a]));
+	Int newSPWId = otherFeedCols.spectralWindowId()(feedsToCopy(f));
+	if(doSPW_p){ // the SPW table was rearranged
+	  //cout << "modifiying spwid from " << newSPWId << " to " << newSPWIndex_p(newSPWId) << endl;
+	  newSPWId = newSPWIndex_p(newSPWId);
+	  feedRecord.define(spwField, newSPWId);
+	}
 	feedRow.putMatchingFields(destRow, feedRecord);
       }
     }
@@ -2303,7 +2336,7 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
       RecordFieldId sourceIdId(MSSource::columnName(MSSource::SOURCE_ID));
       RecordFieldId sourceSPWId(MSSource::columnName(MSSource::SPECTRAL_WINDOW_ID));
       
-      // loop over the columns of the merged source table 
+      // loop over the rows of the merged source table 
       for (Int j =0 ; j < numrows_this ; ++j){
 	if(thisSPWId(j)<-1){ // came from the second input table
 	  sourceRecord = sourceRow.get(j);
@@ -2483,9 +2516,69 @@ Bool MSConcat::updateSource(){ // to be called after copySource and copySpwAndPo
   return doSource2_p;
 }
 
+Bool MSConcat::updateSource2(){ // to be called after copyField 
+
+  // Go over the SOURCE table in the light of FIELD table merging
+  // and correct SOURCE IDs if necessary.
+
+  Bool rval = False; // were changes made?
+
+  if(Table::isReadable(itsMS.sourceTableName())){
+
+    MSSource& newSource=itsMS.source();
+    MSSourceColumns& sourceCol=source();
+    MSFieldColumns& fieldCol=field();
+    vector<uInt> rowsToBeRemoved;
+
+    // the number of rows in the source table
+    Int numrows_this=newSource.nrow();
+    
+    if(numrows_this > 0){  // the source table is not empty
+
+      Vector<Int> thisId=sourceCol.sourceId().getColumn();
+      Vector<String> thisName=sourceCol.name().getColumn();
+      Vector<Int> thisSPWId=sourceCol.spectralWindowId().getColumn();
+      Vector<Int> thisFSId=fieldCol.sourceId().getColumn();
+
+      // loop over the rows of the merged source table 
+      for (Int j=0 ; j < numrows_this ; ++j){
+	if(std::find(thisFSId.begin(), thisFSId.end(), thisId[j]) == thisFSId.end()){ // source id doesn't exist in field table
+	  //cout << "source id " <<   thisId[j] << " doesn't exist in field table" << endl;
+	  // find equivalent source with different SPW and take that ID
+	  Int foundRow = -1;
+	  for(Int k=0; k < numrows_this ; ++k){ 
+	    if(thisSPWId[k]!=thisSPWId[j] && thisId[k]!=thisId[j] 
+	       && sourceRowsEquivalent(sourceCol, k, j, False, True) ){ // do check direction but not transition and rest (they are potentially different for each SPW)
+	      foundRow = k;
+	      break;
+	    }
+	  }
+	  if(foundRow>=0){
+	    sourceCol.sourceId().put(j, thisId[foundRow]);
+	    thisId[j] = thisId[foundRow];
+	  }
+	  else{ // no adequate source id found
+	    //cout << "Selecting row " << j << " for removal from SOURCE table." << endl;
+	    rowsToBeRemoved.push_back(j);
+	  }
+	  rval = True;
+	}
+      }
+
+      if(rowsToBeRemoved.size()>0){ // actually remove the rows
+	Vector<uInt> rowsTBR(rowsToBeRemoved);
+	newSource.removeRow(rowsTBR);
+	//cout << "Removed " << rowsToBeRemoved.size() << " stray rows from SOURCE table." << endl;
+      }
+
+    }
+  }
+  return rval;
+}
+
 
 Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt& rowi, const uInt& rowj,
-				    const Bool dontTestDirection){
+				    const Bool dontTestDirection, const Bool dontTestTransAndRest){
   // check if the two SOURCE table rows are identical IGNORING SOURCE_ID, SPW_ID, time, and interval
 
   Bool areEquivalent(False);
@@ -2525,7 +2618,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt
       }
       //      if(!areEquivalent) cout << "not equal pulsarId" << endl;
     }
-    if(!(sourceCol.restFrequency().isNull())){
+    if(!dontTestTransAndRest && !(sourceCol.restFrequency().isNull())){
       try {
 	areEquivalent = areEQ(sourceCol.restFrequency(), rowi, rowj);
       }
@@ -2545,7 +2638,7 @@ Bool MSConcat::sourceRowsEquivalent(const MSSourceColumns& sourceCol, const uInt
       }
       //      if(!areEquivalent) cout << "not equal sysvel" << endl;
     }
-    if(!(sourceCol.transition().isNull())){
+    if(!dontTestTransAndRest && !(sourceCol.transition().isNull())){
       try {
 	areEquivalent = areEQ(sourceCol.transition(), rowi, rowj);
       }

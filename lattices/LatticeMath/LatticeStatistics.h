@@ -199,23 +199,23 @@ template <class T> class LatticeStatistics : public LatticeStatsBase
 public:
 
 
-	typedef typename NumericTraits<T>::PrecisionType AccumType;
+    typedef typename NumericTraits<T>::PrecisionType AccumType;
 
-	struct AlgConf {
-		StatisticsData::ALGORITHM algorithm;
-		// hinges-fences f factor
-		Double hf;
-		// fit to have center type
-		FitToHalfStatisticsData::CENTER ct;
-		// fit to half data portion to use
-		FitToHalfStatisticsData::USE_DATA ud;
-		// fit to half center value
-		AccumType cv;
-		// Chauvenet zscore
-		Double zs;
-		// Chauvenet max iterations
-		Int mi;
-	};
+    struct AlgConf {
+        StatisticsData::ALGORITHM algorithm;
+        // hinges-fences f factor
+        Double hf;
+        // fit to have center type
+        FitToHalfStatisticsData::CENTER ct;
+        // fit to half data portion to use
+        FitToHalfStatisticsData::USE_DATA ud;
+        // fit to half center value
+        AccumType cv;
+        // Chauvenet zscore
+        Double zs;
+        // Chauvenet max iterations
+        Int mi;
+    };
 
 // Constructor takes the lattice and a <src>LogIO</src> object for logging.
 // You can specify whether you want to see progress meters or not.
@@ -383,9 +383,9 @@ public:
 
    // configure to use fit to half algorithm.
    void configureFitToHalf(
-		   FitToHalfStatisticsData::CENTER centerType=FitToHalfStatisticsData::CMEAN,
-		   FitToHalfStatisticsData::USE_DATA useData=FitToHalfStatisticsData::LE_CENTER,
-		   AccumType centerValue=0
+           FitToHalfStatisticsData::CENTER centerType=FitToHalfStatisticsData::CMEAN,
+           FitToHalfStatisticsData::USE_DATA useData=FitToHalfStatisticsData::LE_CENTER,
+           AccumType centerValue=0
    );
 
    // configure to use hinges-fences algorithm
@@ -393,7 +393,7 @@ public:
 
    // configure to use Chauvenet's criterion
    void configureChauvenet(
-		   Double zscore=-1, Int maxIterations=-1
+           Double zscore=-1, Int maxIterations=-1
    );
 
    // get number of iterations associated with Chauvenet criterion algorithm
@@ -424,7 +424,7 @@ protected:
    virtual Bool _canDoFlux() const { return False; }
 
    virtual Quantum<AccumType> _flux(Bool&, AccumType, Double) const {
-	   ThrowCc("Logic Error: This object cannot compute flux density");
+       ThrowCc("Logic Error: This object cannot compute flux density");
    }
 
    virtual void listMinMax (ostringstream& osMin,
@@ -471,12 +471,12 @@ protected:
    inline IPosition _storageLatticeShape() const { return pStoreLattice_p->shape(); }
 
    virtual Bool _computeFlux(
-		Array<AccumType>& flux, const Array<AccumType>& npts, const Array<AccumType>& sum
+        Array<AccumType>& flux, const Array<AccumType>& npts, const Array<AccumType>& sum
    );
 
    virtual Bool _computeFlux(
-		   Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
-		   Bool posInLattice
+           Quantum<AccumType>& flux, AccumType sum, const IPosition& pos,
+           Bool posInLattice
    );
 
    // convert a position in the input lattice to the corresponding
@@ -487,7 +487,7 @@ protected:
    // as <src>latticePos</src>. Returns False if
    //<src>latticePos</src> is inconsistent with the input lattice.
    void _latticePosToStoragePos(
-		   IPosition& storagePos, const IPosition& latticePos
+           IPosition& storagePos, const IPosition& latticePos
    );
 
 private:
@@ -510,9 +510,9 @@ private:
    Double _aOld, _bOld, _aNew, _bNew;
 
    void _setDefaultCoeffs() {
-	   // coefficients from timings run on PagedImages on
-	   // etacarinae.cv.nrao.edu (dmehring's development
-	   // machine)
+       // coefficients from timings run on PagedImages on
+       // etacarinae.cv.nrao.edu (dmehring's development
+       // machine)
        _aOld = 4.7e-7;
        _bOld = 2.3e-8;
        _aNew = 1.6e-5;
@@ -522,12 +522,12 @@ private:
 // Summarize the statistics found over the entire lattice
    virtual void summStats();
 
-	   virtual void displayStats(
-		   AccumType nPts, AccumType sum, AccumType median,
-		   AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean,
-		   AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax,
-		   AccumType q1, AccumType q3
-	   );
+       virtual void displayStats(
+           AccumType nPts, AccumType sum, AccumType median,
+           AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean,
+           AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax,
+           AccumType q1, AccumType q3
+       );
 
 // Calculate statistic from storage lattice and return in an array
    Bool calculateStatistic (Array<AccumType>& slice, 
@@ -574,12 +574,18 @@ private:
    CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > _createStatsAlgorithm() const;
 
    void _configureDataProviders(
-		   LatticeStatsDataProvider<T>& lattDP,
-		   MaskedLatticeStatsDataProvider<T>& maskedLattDP
-	) const;
+           LatticeStatsDataProvider<T>& lattDP,
+           MaskedLatticeStatsDataProvider<T>& maskedLattDP
+    ) const;
 
    void _doStatsLoop(uInt nsets, CountedPtr<LattStatsProgress> progressMeter);
 };
+
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class LatticeStatistics<Float>;
+#endif
+
 
 } //# NAMESPACE CASA - END
 

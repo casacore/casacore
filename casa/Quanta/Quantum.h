@@ -441,6 +441,11 @@ Bool readQuantity(Quantity &res, MUString &in);
 Bool readQuantity(Quantity &res, const String &in);
 // </group>
 
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class Quantum<Double>;
+#endif
+
 
 } //# NAMESPACE CASACORE - END
 

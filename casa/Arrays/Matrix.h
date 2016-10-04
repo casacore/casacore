@@ -325,6 +325,15 @@ private:
     void makeIndexingConstants();
 };
 
+//# Declare extern templates for often used types.
+#ifdef AIPS_CXX11
+  extern template class Matrix<Bool>;
+  extern template class Matrix<Float>;
+  extern template class Matrix<Double>;
+  extern template class Matrix<Complex>;
+  extern template class Matrix<DComplex>;
+#endif
+
 } //#End casa namespace
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/casa/Arrays/Matrix.tcc>

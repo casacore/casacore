@@ -155,9 +155,9 @@ public:
 // <src>exit(0)</src>.
 
 #define AlwaysAssert(expr, exception) \
-    {assert_<exception > dummy_(expr, "Failed AlwaysAssert " #expr,__FILE__,(Int)__LINE__); dummy_.null(); }
+    {casacore::assert_<exception > dummy_(expr, "Failed AlwaysAssert " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null(); }
 #define AlwaysAssertExit(expr) \
-    {assert_<AbortError> dummy_(expr, "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,(Int)__LINE__); dummy_.null();}
+    {casacore::assert_<casacore::AbortError> dummy_(expr, "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
 
 #if defined(AIPS_DEBUG)
 
@@ -176,9 +176,9 @@ public:
 //     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr,__FILE__,(Int)__LINE__))
 
 #define DebugAssert(expr, exception) \
-    {assert_<exception > dummy_(expr, "Failed Assertion: " #expr,__FILE__,(Int)__LINE__); dummy_.null();}
+    {casacore::assert_<exception > dummy_(expr, "Failed Assertion: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
 #define DebugAssertExit(expr) \
-    {assert_<AbortError> dummy_(expr, "Unrecoverable Assertion: " #expr,__FILE__,(Int)__LINE__); dummy_.null();}
+    {casacore::assert_<casacore::AbortError> dummy_(expr, "Unrecoverable Assertion: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
 
 #else
 

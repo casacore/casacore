@@ -45,35 +45,35 @@ class String;
 class StatisticsData {
 public:
 
-	// implemented algorithms
-	enum ALGORITHM {
-		CHAUVENETCRITERION,
-		CLASSICAL,
-		FITTOHALF,
-		HINGESFENCES
-	};
+    // implemented algorithms
+    enum ALGORITHM {
+        CHAUVENETCRITERION,
+        CLASSICAL,
+        FITTOHALF,
+        HINGESFENCES
+    };
 
-	enum STATS {
-		MAX,
-		MEAN,
-		MIN,
-		NPTS,
-		RMS,
-		STDDEV,
-		SUM,
-		SUMSQ,
-		// sum of weights
-		SUMWEIGHTS,
-		VARIANCE
-	};
+    enum STATS {
+        MAX,
+        MEAN,
+        MIN,
+        NPTS,
+        RMS,
+        STDDEV,
+        SUM,
+        SUMSQ,
+        // sum of weights
+        SUMWEIGHTS,
+        VARIANCE
+    };
 
-	// get the zero-based indices of the specified fractions in a CDF with npts
-	// number of good points. The returned map maps fractions to indices.
-	static std::map<Double, uInt64> indicesFromFractions(
-		uInt64 npts, const std::set<Double>& fractions
-	);
+    // get the zero-based indices of the specified fractions in a CDF with npts
+    // number of good points. The returned map maps fractions to indices.
+    static std::map<Double, uInt64> indicesFromFractions(
+        uInt64 npts, const std::set<Double>& fractions
+    );
 
-	static String toString(STATS stat);
+    static String toString(STATS stat);
 
 };
 

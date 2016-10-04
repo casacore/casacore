@@ -218,15 +218,17 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
 	    iter.getMask (mask);
 	    const Bool* maskPtr = mask.getStorage (delMask);
 	    const T* dataPtr = array.getStorage (delData);
-	    uInt n = array.nelements();
-	    for (uInt i=0; i<n; i++) {
+	    size_t n = array.nelements();
+	    T lminVal = minVal;
+	    for (size_t i=0; i<n; i++) {
 	       if (maskPtr[i]) {
-		  if (firstTime  ||  dataPtr[i] < minVal) {
+		  if (firstTime  ||  dataPtr[i] < lminVal) {
 		     firstTime = False;
-		     minVal = dataPtr[i];
+		     lminVal = dataPtr[i];
 		  }
 	       }
 	    }
+	    minVal = lminVal;
 	    mask.freeStorage (maskPtr, delMask);
 	    array.freeStorage (dataPtr, delData);
 	    iter++;
@@ -264,15 +266,17 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
 	    iter.getMask (mask);
 	    const Bool* maskPtr = mask.getStorage (delMask);
 	    const T* dataPtr = array.getStorage (delData);
-	    uInt n = array.nelements();
-	    for (uInt i=0; i<n; i++) {
+	    size_t n = array.nelements();
+	    T lmaxVal = maxVal;
+	    for (size_t i=0; i<n; i++) {
 	       if (maskPtr[i]) {
-		  if (firstTime  ||  dataPtr[i] > maxVal) {
+		  if (firstTime  ||  dataPtr[i] > lmaxVal) {
 		     firstTime = False;
-		     maxVal = dataPtr[i];
+		     lmaxVal = dataPtr[i];
 		  }
 	       }
 	    }
+	    maxVal = lmaxVal;
 	    mask.freeStorage (maskPtr, delMask);
 	    array.freeStorage (dataPtr, delData);
 	    iter++;
@@ -289,7 +293,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
          return pExpr_p->getScalar();
       }
       typename NumericTraits<T>::PrecisionType sumVal = 0;
-      Int nrVal = 0;
+      size_t nrVal = 0;
       LatticeExpr<T> latExpr(pExpr_p);
       Bool delData, delMask;
 
@@ -300,10 +304,12 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
 	 while (! iter.atEnd()) {
 	    const Array<T>& array = iter.cursor();
 	    const T* dataPtr = array.getStorage(delData);
-	    uInt n = array.nelements();
-	    for (uInt i=0; i<n; i++) {
-		sumVal += dataPtr[i];
+	    size_t n = array.nelements();
+	    typename NumericTraits<T>::PrecisionType lsumVal = 0;
+	    for (size_t i=0; i<n; i++) {
+		lsumVal += dataPtr[i];
 	    }
+	    sumVal += lsumVal;
 	    array.freeStorage(dataPtr, delData);
 	    nrVal += n;
 	    iter++;
@@ -316,13 +322,17 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
 	    iter.getMask (mask);
 	    const Bool* maskPtr = mask.getStorage (delMask);
 	    const T* dataPtr = array.getStorage (delData);
-	    uInt n = array.nelements();
-	    for (uInt i=0; i<n; i++) {
+	    size_t n = array.nelements();
+	    typename NumericTraits<T>::PrecisionType lsumVal = 0;
+	    size_t lnrVal = 0;
+	    for (size_t i=0; i<n; i++) {
 	       if (maskPtr[i]) {
-		  sumVal += dataPtr[i];
-		  nrVal++;
+		  lsumVal += dataPtr[i];
+		  lnrVal++;
 	       }
 	    }
+	    sumVal += lsumVal;
+	    nrVal += lnrVal;
 	    mask.freeStorage (maskPtr, delMask);
 	    array.freeStorage (dataPtr, delData);
 	    iter++;
@@ -349,10 +359,12 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
 	 while (! iter.atEnd()) {
 	    const Array<T>& array = iter.cursor();
 	    const T* dataPtr = array.getStorage(delData);
-	    uInt n = array.nelements();
-	    for (uInt i=0; i<n; i++) {
-		sumVal += dataPtr[i];
+	    size_t n = array.nelements();
+	    typename NumericTraits<T>::PrecisionType lsumVal = 0;
+	    for (size_t i=0; i<n; i++) {
+		lsumVal += dataPtr[i];
 	    }
+	    sumVal += lsumVal;
 	    array.freeStorage(dataPtr, delData);
 	    iter++;
 	 }
@@ -364,12 +376,14 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
 	    iter.getMask (mask);
 	    const Bool* maskPtr = mask.getStorage (delMask);
 	    const T* dataPtr = array.getStorage (delData);
-	    uInt n = array.nelements();
-	    for (uInt i=0; i<n; i++) {
+	    size_t n = array.nelements();
+	    typename NumericTraits<T>::PrecisionType lsumVal = 0;
+	    for (size_t i=0; i<n; i++) {
 	       if (maskPtr[i]) {
-		  sumVal += dataPtr[i];
+		  lsumVal += dataPtr[i];
 	       }
 	    }
+	    sumVal += lsumVal;
 	    mask.freeStorage (maskPtr, delMask);
 	    array.freeStorage (dataPtr, delData);
 	    iter++;
@@ -502,8 +516,8 @@ void LELFunctionReal1D<T>::eval(LELArray<T>& result,
    {
       Bool deleteIt;
       T* data = result.value().getStorage (deleteIt);
-      uInt nr = result.value().nelements();
-      for (uInt i=0; i<nr; i++) {
+      size_t nr = result.value().nelements();
+      for (size_t i=0; i<nr; i++) {
 	 if (data[i] < 0) {
 	    data[i] = ceil (data[i] - 0.5);
 	 } else {
@@ -738,7 +752,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 	 arg_p[0].evalRef (tmpb, section);
 	 Bool deleteTmpb;
 	 const Bool* tmpbData = tmpb.value().getStorage (deleteTmpb);
-	 uInt n = tmpb.value().nelements();
+	 size_t n = tmpb.value().nelements();
 	 Bool deleteRes, deleteMask;
 	 T* resData = 0;
 	 Bool* maskData = 0;
@@ -767,7 +781,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 	       if (makeMask) {
 		  newMask.resize (result.shape());
 		  maskData = newMask.getStorage (deleteMask);
-		  for (uInt i=0; i<n; i++) {
+		  for (size_t i=0; i<n; i++) {
 		     if (tmpbData[i]) {
 		        resData[i] = tmp1;
 			maskData[i] = mask1;
@@ -777,7 +791,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 		     }
 		  }
 	       } else {
-		  for (uInt i=0; i<n; i++) {
+		  for (size_t i=0; i<n; i++) {
 		     if (tmpbData[i]) {
 			resData[i] = tmp1;
 		     } else {
@@ -797,14 +811,14 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 		     newMask = True;
 		  }
 		  maskData = newMask.getStorage (deleteMask);
-		  for (uInt i=0; i<n; i++) {
+		  for (size_t i=0; i<n; i++) {
 		     if (tmpbData[i]) {
 			resData[i] = tmp1;
 			maskData[i] = mask1;
 		     }
 		  }
 	       } else {
-		  for (uInt i=0; i<n; i++) {
+		  for (size_t i=0; i<n; i++) {
 		     if (tmpbData[i]) {
 			resData[i] = tmp1;
 		     }
@@ -831,14 +845,14 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 	       if (makeMask) {
 		  Bool mask2 = (!arg_p[2].isInvalidScalar());
 		  maskData = newMask.getStorage (deleteMask);
-		  for (uInt i=0; i<n; i++) {
+		  for (size_t i=0; i<n; i++) {
 		     if (! tmpbData[i]) {
 		        resData[i] = tmp2;
 			maskData[i] = mask2;
 		     }
 		  }
 	       } else {
-		  for (uInt i=0; i<n; i++) {
+		  for (size_t i=0; i<n; i++) {
 		     if (! tmpbData[i]) {
 		        resData[i] = tmp2;
 		     }
@@ -855,7 +869,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 		  if (tmp.isMasked()) {
 		     const Bool* tmpMaskData = tmp.mask().getStorage
                                                                (deleteTmpMask);
-		     for (uInt i=0; i<n; i++) {
+		     for (size_t i=0; i<n; i++) {
 			if (! tmpbData[i]) {
 			   resData[i] = tmpData[i];
 			   maskData[i] = tmpMaskData[i];
@@ -863,7 +877,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 		     }
 		     tmp.mask().freeStorage (tmpMaskData, deleteTmpMask);
 		  } else {
-		     for (uInt i=0; i<n; i++) {
+		     for (size_t i=0; i<n; i++) {
 			if (! tmpbData[i]) {
 			   resData[i] = tmpData[i];
 			   maskData[i] = True;
@@ -872,7 +886,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 		  }
 		  tmp.value().freeStorage (tmpData, deleteTmp);
 	       } else {
-		  for (uInt i=0; i<n; i++) {
+		  for (size_t i=0; i<n; i++) {
 		     if (! tmpbData[i]) {
 			resData[i] = tmpData[i];
 		     }
@@ -901,7 +915,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
       //# Replacing is only needed if the first argument has a mask.
       arg_p[0].eval (result, section);
       if (arg_p[0].isMasked()) {
-	 uInt n = result.value().nelements();
+	 size_t n = result.value().nelements();
 	 Bool deleteRes, deleteMask;
 	 T* resData = result.value().getStorage (deleteRes);
 	 const Bool* maskData = result.mask().getStorage (deleteMask);
@@ -913,7 +927,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 	    } else {
 	       arg_p[1].eval (tmp);
 	    }
-	    for (uInt i=0; i<n; i++) {
+	    for (size_t i=0; i<n; i++) {
 	       if (! maskData[i]) {
 		  resData[i] = tmp;
 	       }
@@ -923,7 +937,7 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 	    arg_p[1].evalRef (tmp, section);
 	    Bool deleteTmp;
 	    const T* tmpData = tmp.value().getStorage (deleteTmp);
-	    for (uInt i=0; i<n; i++) {
+	    for (size_t i=0; i<n; i++) {
 	       if (! maskData[i]) {
 		  resData[i] = tmpData[i];
 	       }
@@ -976,7 +990,7 @@ Bool LELFunctionND<T>::prepareScalarExpr()
    cout << "LELFunctionND::prepare" << endl;
 #endif
 
-   uInt i;
+   size_t i;
    for (i=0; i<arg_p.nelements(); i++) {
        Bool invalid = arg_p[i].replaceScalarExpr();
        if (invalid  &&  function_p != LELFunctionEnums::IIF
@@ -1016,7 +1030,7 @@ String LELFunctionND<T>::className() const
 template<class T>
 Bool LELFunctionND<T>::lock (FileLocker::LockType type, uInt nattempts)
 {
-  for (uInt i=0; i<arg_p.nelements(); i++) {
+  for (size_t i=0; i<arg_p.nelements(); i++) {
     if (! arg_p[i].lock (type, nattempts)) {
       return False;
     }
@@ -1026,14 +1040,14 @@ Bool LELFunctionND<T>::lock (FileLocker::LockType type, uInt nattempts)
 template<class T>
 void LELFunctionND<T>::unlock()
 {
-  for (uInt i=0; i<arg_p.nelements(); i++) {
+  for (size_t i=0; i<arg_p.nelements(); i++) {
     arg_p[i].unlock();
   }
 }
 template<class T>
 Bool LELFunctionND<T>::hasLock (FileLocker::LockType type) const
 {
-  for (uInt i=0; i<arg_p.nelements(); i++) {
+  for (size_t i=0; i<arg_p.nelements(); i++) {
     if (! arg_p[i].hasLock (type)) {
       return False;
     }
@@ -1043,7 +1057,7 @@ Bool LELFunctionND<T>::hasLock (FileLocker::LockType type) const
 template<class T>
 void LELFunctionND<T>::resync()
 {
-  for (uInt i=0; i<arg_p.nelements(); i++) {
+  for (size_t i=0; i<arg_p.nelements(); i++) {
     arg_p[i].resync();
   }
 }

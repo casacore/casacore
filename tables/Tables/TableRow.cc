@@ -616,6 +616,19 @@ void ROTableRow::setReread (uInt rownr)
     }
 }
 
+// put into column, convert if necessary
+#define PUTFIELD_ARRAY(type) \
+	do { \
+		try { \
+			(*(ArrayColumn<type>*)(itsColumns[whichColumn])).put \
+			(rownr, record.asArray##type (whichField)); \
+		} \
+		catch (const AipsError & e) { \
+			(*(ArrayColumn<type>*)(itsColumns[whichColumn])).put \
+				(rownr, record.toArray##type (whichField)); \
+		} \
+	} while (0)
+
 void ROTableRow::putField (uInt rownr, const TableRecord& record,
 			   Int whichColumn, Int whichField)
 {
@@ -625,80 +638,70 @@ void ROTableRow::putField (uInt rownr, const TableRecord& record,
 		                (rownr, record.asBool (whichField));
 	break;
     case TpArrayBool:
-	(*(ArrayColumn<Bool>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.toArrayBool (whichField));
+	PUTFIELD_ARRAY(Bool);
 	break;
     case TpUChar:
 	(*(ScalarColumn<uChar>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asuChar (whichField));
 	break;
     case TpArrayUChar:
-	(*(ArrayColumn<uChar>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.toArrayuChar (whichField));
+	PUTFIELD_ARRAY(uChar);
 	break;
     case TpShort:
 	(*(ScalarColumn<Short>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asShort (whichField));
 	break;
     case TpArrayShort:
-	(*(ArrayColumn<Short>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.toArrayShort (whichField));
+	PUTFIELD_ARRAY(Short);
 	break;
     case TpInt:
 	(*(ScalarColumn<Int>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asInt (whichField));
 	break;
     case TpArrayInt:
-	(*(ArrayColumn<Int>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.toArrayInt (whichField));
+	PUTFIELD_ARRAY(Int);
 	break;
     case TpUInt:
 	(*(ScalarColumn<uInt>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asuInt (whichField));
 	break;
     case TpArrayUInt:
-	(*(ArrayColumn<uInt>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.toArrayuInt (whichField));
+	PUTFIELD_ARRAY(uInt);
 	break;
     case TpFloat:
 	(*(ScalarColumn<Float>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asfloat (whichField));
 	break;
     case TpArrayFloat:
-	(*(ArrayColumn<Float>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.toArrayFloat (whichField));
+	PUTFIELD_ARRAY(Float);
 	break;
     case TpDouble:
 	(*(ScalarColumn<Double>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asdouble (whichField));
 	break;
     case TpArrayDouble:
-	(*(ArrayColumn<Double>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.toArrayDouble (whichField));
+	PUTFIELD_ARRAY(Double);
 	break;
     case TpComplex:
 	(*(ScalarColumn<Complex>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asComplex (whichField));
 	break;
     case TpArrayComplex:
-	(*(ArrayColumn<Complex>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.toArrayComplex (whichField));
+	PUTFIELD_ARRAY(Complex);
 	break;
     case TpDComplex:
 	(*(ScalarColumn<DComplex>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asDComplex (whichField));
 	break;
     case TpArrayDComplex:
-	(*(ArrayColumn<DComplex>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.toArrayDComplex (whichField));
+	PUTFIELD_ARRAY(DComplex);
 	break;
     case TpString:
 	(*(ScalarColumn<String>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asString (whichField));
 	break;
     case TpArrayString:
-	(*(ArrayColumn<String>*)(itsColumns[whichColumn])).put
-	                        (rownr, record.toArrayString (whichField));
+	PUTFIELD_ARRAY(String);
 	break;
     case TpRecord:
 	(*(ScalarColumn<TableRecord>*)(itsColumns[whichColumn])).put

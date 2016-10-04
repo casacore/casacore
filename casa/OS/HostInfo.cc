@@ -124,7 +124,9 @@ Int HostInfo::numCPUs(bool use_aipsrc)				\
     static const String keyword("system.resources.cores");	\
     if ( use_aipsrc ) {						\
 	String value;						\
-	if ( Aipsrc::find(value, keyword) ) {			\
+	if (resources_numCPUs > 0) {				\
+		return resources_numCPUs;			\
+	} else if ( Aipsrc::find(value, keyword) ) {			\
 	    int result;						\
 	    if ( sscanf( value.c_str( ), "%d", &result ) == 1 )	\
 		return (Int) result;				\
@@ -144,11 +146,15 @@ ptrdiff_t HostInfo::memoryTotal(bool use_aipsrc) 		\
     /** returns the memory in kilobytes...         **/		\
     if ( use_aipsrc ) {						\
 	String value;						\
-	if ( Aipsrc::find(value, memory) ) {			\
+    if (resources_memory > 0) {				\
+        return resources_memory;				\
+    } else if ( Aipsrc::find(value, memory) ) {		\
 	    int result;						\
 	    if ( sscanf( value.c_str( ), "%d", &result ) == 1 )	\
 		return (ptrdiff_t) result * 1024;		\
-	} else if ( Aipsrc::find(value,	fraction) ) {		\
+    } else if (resources_memfrac > 0) {			\
+        frac = resources_memfrac;				\
+    } else if ( Aipsrc::find(value,	fraction) ) {		\
 	    int result;						\
 	    if ( sscanf( value.c_str( ), "%d", &result ) == 1 )	\
 		frac = result;					\
@@ -200,6 +206,26 @@ ptrdiff_t HostInfo::swapFree( )					\
     if ( ! info ) info = new HostMachineInfo( );		\
     info->update_info( );					\
     return info->valid ? info->swap_free : -1;			\
+}								\
+								\
+ptrdiff_t HostInfo::setMemoryTotal(ptrdiff_t memory)		\
+{								\
+    ptrdiff_t old_memory = resources_memory;			\
+    resources_memory = 1024*memory;				\
+    return old_memory;						\
+}								\
+								\
+Int HostInfo::setMemoryFraction(Int memfrac)			\
+{								\
+    Int old_memfrac = resources_memfrac;			\
+    resources_memfrac = memfrac;				\
+    return old_memfrac;					\
+}								\
+Int HostInfo::setNumCPUs(Int numCPUs)				\
+{								\
+    Int old_numCPUs = resources_numCPUs;			\
+    resources_numCPUs = numCPUs;				\
+    return old_numCPUs;					\
 }
 
 
@@ -271,5 +297,8 @@ ptrdiff_t HostInfo::swapFree( )    { return -1; }
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 HostMachineInfo *HostInfo::info = 0;
+ptrdiff_t HostInfo::resources_memory = 0;
+Int HostInfo::resources_memfrac = 0;
+Int HostInfo::resources_numCPUs = 0;
 
 } //# NAMESPACE CASACORE - END

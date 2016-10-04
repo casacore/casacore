@@ -1,6 +1,6 @@
-//# aipstype.h: Global initialization for standard Casacore types
-//# Copyright (C) 2000,2001,2002
-//# Associated Universities, Inc. Washington DC, USA.
+//# Array_tmpl.cc: Explicit Array template instantiations
+//# Copyright (C) 2015
+//# Associated Universities, Inc. Washington DC, USA,
 //#
 //# This library is free software; you can redistribute it and/or modify it
 //# under the terms of the GNU Library General Public License as published by
@@ -23,38 +23,19 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
-#ifndef CASA_AIPSTYPE_H
-#define CASA_AIPSTYPE_H
+//# Includes
+#include <casacore/casa/Arrays/Matrix.h>
+#include <casacore/casa/Arrays/MatrixMath.h>
 
-// For temporary backward namespace compatibility, use casa as alias for casacore.
-//# Note: namespace casa = casacore; does not work for forward declarations.
-
-#if ! defined (UseCasacoreNamespace)
-#   define casacore casa
-#endif
-
-namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-// Define the standard types used by Casacore
-
-typedef bool Bool;
-const Bool True = true;
-const Bool False = false;
-
-typedef char Char;
-typedef unsigned char uChar;
-typedef short Short;
-typedef unsigned short uShort;
-typedef int Int;
-typedef unsigned int uInt;
-typedef long Long;
-typedef unsigned long uLong;
-typedef float Float;
-typedef double Double;
-typedef long double lDouble;
-
-} //# NAMESPACE CASACORE - END
-
+//# Instantiate extern templates for often used types.
+#ifdef AIPS_CXX11
+namespace casacore {
+  template class Matrix<Bool>;
+  template class Matrix<Float>;
+  template class Matrix<Double>;
+  template class Matrix<Complex>;
+  template class Matrix<DComplex>;
+}
 #endif

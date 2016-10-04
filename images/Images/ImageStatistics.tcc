@@ -508,7 +508,7 @@ void ImageStatistics<T>::displayStats(
         messages.push_back(oss.str());
         oss.str("");
         oss << "        -- Variance of the pixel values :           " << var << " "
-                << sbunit << LogIO::POST;
+                << sbunit;
         messages.push_back(oss.str());
         oss.str("");
         oss << "        -- Standard deviation of the Mean [sigma]:  " << sigma << " "
@@ -610,7 +610,7 @@ template <class T> Quantum<typename ImageStatistics<T>::AccumType> ImageStatisti
                 newStats.setAxes(Vector<Int>(newCursorAxes));
                 Array<AccumType> fluxDensities;
                 newStats.getStatistic(fluxDensities, LatticeStatsBase::FLUX);
-                flux.setValue(casa::sum(fluxDensities));
+                flux.setValue(casacore::sum(fluxDensities));
             }
             const SpectralCoordinate& spCoord = pInImage_p->coordinates().spectralCoordinate();
             Quantity inc(0, "");

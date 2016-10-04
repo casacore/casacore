@@ -138,6 +138,26 @@ int main(int argc, const char* argv[])
     delete [] a3;
     delete [] a4;
     delete [] a5;
+
+    // test N^2 quicksort input to check introsort fallback
+    // would crash due to large recursion without fallback
+    nr = 150000;
+    uInt * indx = new uInt[nr];
+    Int * data = new Int[nr];
+    for (uInt i=0; i < nr; i++) {
+        data[i] = 1;
+        indx[i] = i+1;
+    }
+    indx[nr - 1] = 0;
+    GenSortIndirect<Int>::quickSort (indx, data, nr, Sort::Ascending, 0);
+    for (uInt i=0; i < nr; i++) {
+        data[i] = i;
+    }
+    data[nr - 1] = -1;
+    GenSort<Int>::quickSort (data, nr, Sort::Ascending, 0);
+    delete [] indx;
+    delete [] data;
+
     return 0;                            // exit with success status
 }
 

@@ -13,6 +13,12 @@ cd build
 wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar
 tar zxvf WSRT_Measures.ztar
 
+# no extern templates makes the build a lot larger
+if [ "$CXX11" = "False" ]; then
+  ccache -M 160M
+else
+  ccache -M 80M
+fi
 
 CXX="ccache $CXX" cmake .. \
     -DUSE_FFTW3=ON \
