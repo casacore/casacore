@@ -1942,12 +1942,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Parse the header
 
-	int nCards = strlen(pHeader) / 80;
-	int nReject;
-	::fitskey* keys;
-	int status = 0;
+	// sanitize to avoid segfaults in fitshdr
 	Bool crlfwarned = False;
-
 	for(uInt i=0; i<strlen(pHeader)-1; i++){
 	  uInt headerchar = pHeader[i];
 	  if( (headerchar==10) || (headerchar==13) ){
@@ -1959,7 +1955,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    pHeader[i] = 32;
 	  }
 	}
-	status = fitshdr (pHeader, nCards, nKeyIds, keyids, &nReject, &keys);
+
+	int nCards = strlen(pHeader) / 80;
+	int nReject;
+	::fitskey* keys;
+
+	int status = fitshdr (pHeader, nCards, nKeyIds, keyids, &nReject, &keys);
 	
 	if (status != 0) {
 	  throw(AipsError("Failed to extract non-coordinate cards from FITS header"));
