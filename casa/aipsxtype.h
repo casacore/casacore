@@ -38,14 +38,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 typedef long long Int64;
 typedef unsigned long long uInt64;
 
-//# All FITS code seems to assume longs are 4 bytes. Take care of machines 
-//# for which this isn't true here by defining FitsLong to be the 4 byte int.
-//# Use FitsLong instead of long in the FITS code where it matters.
-#if (defined(AIPS_ALPHA) || defined(AIPS_SGI) || defined(__x86_64__))
-    typedef int FitsLong;
-#else
-    typedef long FitsLong;
-#endif 
+//# All FITS code seems to assume longs are 4 bytes. Currently
+//# this corresponds to an "int" on all useful platforms.
+typedef int FitsLong;
 
 } //# NAMESPACE CASACORE - END
 
