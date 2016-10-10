@@ -1543,12 +1543,14 @@ void MSSummary::listSpectralAndPolInfo (
             std::set<uInt> ddids = spwToDDID[spw];
             std::set<uInt>::const_iterator diter = ddids.begin();
             std::set<uInt>::const_iterator dend = ddids.end();
+            Bool isSpwInMainTable = False;
             for (; diter!=dend; ++diter) {
                 uInt dd = *diter;
                 if (ddId.find(dd) == ddId.end()) {
                     // data description ID not in main table, so not reported here
                     continue;
                 }
+                isSpwInMainTable = True;
                 os.output().setf(ios::left, ios::adjustfield);
                 os.output().width(widthLead);        os << "  ";
                 // 1th column: Spectral Window Id
@@ -1596,7 +1598,11 @@ void MSSummary::listSpectralAndPolInfo (
                     os << Stokes::name(Stokes::type(*cIter));
                 }
             }
-            os << endl;
+            // CAS-9072 avoid printing blank lines if there are
+            // spws that are not represented in the main table
+            if (isSpwInMainTable) {
+                os << endl;
+            }
         }
     }
     os << LogIO::POST;
