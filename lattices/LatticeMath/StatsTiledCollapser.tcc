@@ -46,7 +46,7 @@ void StatsTiledCollapser<T,U>::init (uInt nOutPixelsPerCollapse) {
 }
 
 template <class T, class U>
-void StatsTiledCollapser<T,U>::initAccumulator (uInt n1, uInt n3) {
+void StatsTiledCollapser<T,U>::initAccumulator (uInt64 n1, uInt64 n3) {
    _sum = new Block<U>(n1*n3);
    _sumSq = new Block<U>(n1*n3);
    _npts = new Block<Double>(n1*n3);
@@ -82,7 +82,7 @@ void StatsTiledCollapser<T,U>::process (
     // Process the data in the current chunk.   Everything in this
     // chunk belongs in one output location in the storage
     // lattices
-    uInt index = index1 + index3*_n1;
+    uInt64 index = index1 + index3*_n1;
     U& sum = (*_sum)[index];
     U& sumSq = (*_sumSq)[index];
     Double& nPts = (*_npts)[index];
@@ -225,7 +225,7 @@ void StatsTiledCollapser<T,U>::endAccumulator(
     U* variancePtr = _variance->storage();
     const T* minPtr = _min->storage();
     const T* maxPtr = _max->storage();
-    uInt i,j;
+    uInt64 i, j;
     U* resptr_root = resptr;
     for (i=0; i<_n3; ++i) {
        resptr = resptr_root + (Int(LatticeStatsBase::NPTS) * _n1);
@@ -249,12 +249,12 @@ void StatsTiledCollapser<T,U>::endAccumulator(
        variancePtr += _n1;
 
        resptr = resptr_root + (Int(LatticeStatsBase::MIN) * _n1);
-       for (j=0; j<_n1; j++) {
+       for (j=0; j<_n1; ++j) {
           convertScalar (*resptr++, *minPtr++);
        }
 
        resptr = resptr_root + (Int(LatticeStatsBase::MAX) * _n1);
-       for (j=0; j<_n1; j++) {
+       for (j=0; j<_n1; ++j) {
           convertScalar (*resptr++, *maxPtr++);
        }
 
@@ -278,7 +278,7 @@ void StatsTiledCollapser<T,U>::_convertNPts(
 ) const {
     DComplex* storage = nptsComplex->storage();
     Double* realStorage = npts->storage();
-    for (uInt i=0; i<_n1*_n3; ++i) {
+    for (uInt64 i=0; i<_n1*_n3; ++i) {
         storage[i].real(realStorage[i]);
         storage[i].imag(0);
     }

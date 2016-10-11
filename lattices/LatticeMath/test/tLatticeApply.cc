@@ -124,7 +124,8 @@ public:
     virtual ~MyTiledCollapser();
     virtual void init (uInt nOutPixelsPerCollapse);
     virtual Bool canHandleNullMask() const;
-    virtual void initAccumulator (uInt n1, uInt n3);
+    virtual void initAccumulator (uInt, uInt) {AipsError("deprecated");}
+    virtual void initAccumulator (uInt64 n1, uInt64 n3);
     virtual void process (uInt index1, uInt index3,
 			  const Int* inData, const Bool* inMask,
 			  uInt inDataIncr, uInt inMaskIncr, uInt nrval,
@@ -136,8 +137,8 @@ private:
     Matrix<uInt>* itsSum1;
     Block<Int>*   itsSum2;
     Matrix<uInt>* itsNpts;
-    uInt          itsn1;
-    uInt          itsn3;
+    uInt64        itsn1;
+    uInt64        itsn3;
 };
 MyTiledCollapser::~MyTiledCollapser()
 {
@@ -149,7 +150,7 @@ void MyTiledCollapser::init (uInt nOutPixelsPerCollapse)
 {
     AlwaysAssert (nOutPixelsPerCollapse == 2, AipsError);
 }
-void MyTiledCollapser::initAccumulator (uInt n1, uInt n3)
+void MyTiledCollapser::initAccumulator (uInt64 n1, uInt64 n3)
 {
     itsSum1 = new Matrix<uInt> (n1, n3);
     itsSum2 = new Block<Int> (n1*n3);

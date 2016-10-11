@@ -471,7 +471,12 @@ public:
     virtual void init (uInt nOutPixelsPerCollapse);
 
 // Initialize the accumulator
-    virtual void initAccumulator (uInt n1, uInt n3);
+// DEPRECATED. Use uInt64 version
+    virtual void initAccumulator (uInt, uInt) {
+        AipsError("This method is deprecated");
+    }
+    
+    virtual void initAccumulator (uInt64 n1, uInt64 n3);
 
 // Process the data in the current chunk.
     virtual void process (
@@ -498,8 +503,8 @@ private:
     LatticeStatistics<T>* pStats_p;
     Block<T>* pHist_p;
     uInt nBins_p;
-    uInt n1_p;
-    uInt n3_p;
+    uInt64 n1_p;
+    uInt64 n3_p;
 };
  
 

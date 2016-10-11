@@ -127,7 +127,12 @@ public:
     virtual void init (uInt nOutPixelsPerCollapse);
 
     // Initialiaze the accumulator
-    virtual void initAccumulator (uInt n1, uInt n3);
+    // DEPRECATED. Use uInt64 version.
+    virtual void initAccumulator (uInt, uInt) {
+        AipsError("This method is deprecated");
+    }
+    
+    virtual void initAccumulator (uInt64 n1, uInt64 n3);
 
     // Process the data in the current chunk.
     virtual void process (
@@ -164,7 +169,7 @@ private:
     CountedPtr<Block<T> > _min, _max;
     CountedPtr<Block<Bool> > _initMinMax;
 
-    uInt _n1, _n3;
+    uInt64 _n1, _n3;
 
     void _convertNPts(
         Double*& nptsPtr, CountedPtr<Block<Double> > npts,
