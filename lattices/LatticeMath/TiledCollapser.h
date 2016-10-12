@@ -126,9 +126,6 @@ public:
 // <br>In the <src>endAccumulator</src> function the accumulator
 // data has to be copied into an Array object with the correct
 // shape and data type.
-// DEPRECATED, use uInt64 version
-    virtual void initAccumulator (uInt n1, uInt n3) = 0;
-
     virtual void initAccumulator (uInt64 n1, uInt64 n3) = 0;
 
 // Collapse the given input data containing (<src>nrval</src> values

@@ -124,7 +124,6 @@ public:
     virtual ~MyTiledCollapser();
     virtual void init (uInt nOutPixelsPerCollapse);
     virtual Bool canHandleNullMask() const;
-    virtual void initAccumulator (uInt, uInt) {AipsError("deprecated");}
     virtual void initAccumulator (uInt64 n1, uInt64 n3);
     virtual void process (uInt index1, uInt index3,
 			  const Int* inData, const Bool* inMask,
