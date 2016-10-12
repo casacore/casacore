@@ -40,7 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 // Length of P and Q arrays, half length of CL/SL arrays in IGRF model
-const Int PQ_LEN = 65;
+const Int PQ_LEN = 104;
 // Interval (m) for derivatives in IGRF model
 const Double DER_INTV = 10000;
 
