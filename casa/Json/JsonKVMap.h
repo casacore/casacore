@@ -1,4 +1,4 @@
-//# JsonKVMap.h: Class to hold a collection of Json key:value pairs
+//# JsonKVMap.h: Class to hold a collection of JSON key:value pairs
 //# Copyright (C) 2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -35,7 +35,7 @@
 namespace casacore {
 
   // <summary>
-  // Class to hold a collection of Json key:value pairs.
+  // Class to hold a collection of JSON key:value pairs.
   // </summary>
   
   // <use visibility=export>
@@ -46,7 +46,7 @@ namespace casacore {
   //# </prerequisite>
 
   // <synopsis>
-  // A JsonKVMap object is the result of a Json file parsed by JsonParser.
+  // A JsonKVMap object is the result of a JSON file parsed by JsonParser.
   // It is a map of name to a JsonValue object holding an arbitrary value
   // (including a JsonKVMap for nested structs).
   //
@@ -59,7 +59,7 @@ namespace casacore {
   // </synopsis>
 
   // <motivation>
-  // Json is a commonly used interchange format.
+  // JSON is a commonly used interchange format.
   // </motivation>
 
   //# <todo asof="1996/03/10">

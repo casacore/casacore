@@ -1,4 +1,4 @@
-//# JsonValue.h: Class to hold any Json value
+//# JsonValue.h: Class to hold any JSON value
 //# Copyright (C) 2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -46,7 +46,7 @@ namespace casacore {
 
   
   // <summary>
-  // Class to hold any Json value
+  // Class to hold any JSON value
   // </summary>
 
   // <use visibility=export>
@@ -57,26 +57,29 @@ namespace casacore {
   //# </prerequisite>
 
   // <synopsis>
-  // Class JsonValue can hold an arbitrary Json value which can be a scalar,
+  // Class JsonValue can hold an arbitrary JSON value which can be a scalar,
   // a JsonKVMap object, or a vector of JsonValue objects. In this way
-  // Json values can be nested in any way.
+  // JSON values can be nested in any way.
   // 
   // Internally scalar values are kept as Bool, Int64, Double, DComplex or
   // String values, but the class has functions to obtain the value in any
   // data type as long as it can be converted. Note that conversion from
   // Int64 to Bool is supported.
+  // Null is also a valid JsonValue. A null value can be obtained as a
+  // floating point value resulting in a NaN. For other types an exception
+  // is thrown.
   //
   // It is possible to obtain the value as a multi-dimensional Array object
   // if the values are regular, thus if nested vectors have the same sizes.
   // The data type of an Array is the 'highest' data type of a value in it.
   //
   // Normally a JsonValue objects is created by JsonParser and is the
-  // interface to obtain a value of a filed in a parsed Json file.
+  // interface to obtain a value of a filed in a parsed JSON file.
   // However, users can create JsonValue objects as well.
   // </synopsis>
 
   // <motivation>
-  // Json is a commonly used interchange format.
+  // JSON is a commonly used interchange format.
   // </motivation>
 
   //# <todo asof="1996/03/10">
@@ -86,9 +89,11 @@ namespace casacore {
   class JsonValue
   {
   public:
-    // Construct value with given type. Default is empty vector<JsonValue>.
-    // <group>
+    // The default constructor results in a null value.
     JsonValue();
+
+    // Construct value with given type.
+    // <group>
     JsonValue (Bool);
     JsonValue (int);
     JsonValue (Int64);
@@ -107,7 +112,11 @@ namespace casacore {
     JsonValue& operator= (const JsonValue&);
       
     ~JsonValue();
-      
+
+    // Is the value a null value?
+    Bool isNull() const
+      { return itsValuePtr == 0; }
+
     // Is the value a vector?
     Bool isVector() const
       { return itsDataType == TpOther; }

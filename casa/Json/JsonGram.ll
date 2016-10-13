@@ -39,17 +39,22 @@
 #define YY_DECL int JsonGramlex (YYSTYPE* lvalp)
 %}
 
-WHITE     [ \t\n]*
+/* Json is very strict on number representation; see json.org */
+WHITE     [ \t\n\r\f]*
+DIGIT19   [1-9]
 DIGIT     [0-9]
-INT       [+-]?{DIGIT}+
-DEXP      [Ee][+-]?{INT}
-DOUBLE    [+-]?({INT}{DEXP}|{INT}"."{DIGIT}*({DEXP})?|{DIGIT}*"."{INT}({DEXP})?)
+DIGITS    {DIGIT}+
+INT       -?({DIGIT}|{DIGIT19}{DIGITS})
+DEXP      [Ee][+-]?{DIGITS}
+FRAC      "."{DIGITS}
+DOUBLE    {INT}({FRAC}|{DEXP}|{FRAC}{DEXP})
 DBINT     {DOUBLE}|{INT}
 REAL      \"r\"{WHITE}":"{WHITE}{DBINT}
 IMAG      \"i\"{WHITE}":"{WHITE}{DBINT}
-COMPLEX   \{{WHITE}{REAL}{WHITE}","{WHITE}{IMAG}{WHITE}\}
+COMPLEX   "{"{WHITE}{REAL}{WHITE}","{WHITE}{IMAG}{WHITE}"}"
 TRUE      true
 FALSE     false
+NULL      null
 
 STRING    \"(([^\"\n\\])|(\\.))*\"
 USTRING   \"(([^\"\n\\])|(\\.))*\n
@@ -101,6 +106,11 @@ COMMENT   {COMMENT1}|{COMMENT2}|{COMMENT3}
 {FALSE}   {
             JsonParser::position() += yyleng;
             lvalp->val = new JsonValue (False);
+	    return LITERAL;
+	  }
+{NULL}   {
+            JsonParser::position() += yyleng;
+            lvalp->val = new JsonValue();
 	    return LITERAL;
 	  }
 

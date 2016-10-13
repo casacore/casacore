@@ -40,12 +40,18 @@ using namespace std;
 
 void doScalar()
 {
-  AlwaysAssertExit (JsonValue(True).dataType()  == TpBool);
+  AlwaysAssertExit (JsonValue().isNull());
+  AlwaysAssertExit (! JsonValue(True).isNull());
+  AlwaysAssertExit (! JsonValue(1).isNull());
+  AlwaysAssertExit (! JsonValue(1.).isNull());
+  AlwaysAssertExit (! JsonValue(DComplex()).isNull());
+  AlwaysAssertExit (! JsonValue(String()).isNull());
+  AlwaysAssertExit (JsonValue(True).dataType() == TpBool);
   AlwaysAssertExit (JsonValue(1).dataType() == TpInt64);
   AlwaysAssertExit (JsonValue(1.).dataType() == TpDouble);
   AlwaysAssertExit (JsonValue(Complex()).dataType() == TpDComplex);
   AlwaysAssertExit (JsonValue("").dataType() == TpString);
-  AlwaysAssertExit (JsonValue(True).arrayDataType()  == TpBool);
+  AlwaysAssertExit (JsonValue(True).arrayDataType() == TpBool);
   AlwaysAssertExit (JsonValue(1).arrayDataType() == TpInt64);
   AlwaysAssertExit (JsonValue(1.).arrayDataType() == TpDouble);
   AlwaysAssertExit (JsonValue(Complex()).arrayDataType() == TpDComplex);
@@ -63,6 +69,11 @@ void doScalar()
   AlwaysAssertExit (JsonValue(Complex()).shape() == IPosition(1,1));
   AlwaysAssertExit (JsonValue("").shape() == IPosition(1,1));
 
+  AssertExcept     (JsonValue().getBool());
+  AssertExcept     (JsonValue().getInt());
+  AlwaysAssertExit (isNaN (JsonValue().getDouble()));
+  AlwaysAssertExit (isNaN (JsonValue().getDComplex()));
+  AssertExcept     (JsonValue().getString());
   AlwaysAssertExit (JsonValue(True).getBool() == True);
   AssertExcept     (JsonValue(True).getInt());
   AssertExcept     (JsonValue(True).getDouble());

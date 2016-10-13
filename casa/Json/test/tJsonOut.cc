@@ -58,6 +58,9 @@ int main()
     os.write ("key6", Complex(-1,2));
     os.write ("key7", ValueHolder(DComplex(3,-4)));
     os.write ("key8", "string");
+    os.write ("null1", ValueHolder());     // null value
+    os.write ("null2", floatNaN());        // null value
+    os.write ("null3", doubleNaN());       // null value
     Array<Float> arr(IPosition(2,5,3));
     indgen(arr);
     os.write ("arrf", ValueHolder(arr));

@@ -132,8 +132,8 @@ void doItParse()
   try {
     cout << JsonParser::parse ("{\"key1\":1}") << endl;
     cout << JsonParser::parse ("{\"key2\":\"abc\"}") << endl;
-    cout << JsonParser::parse ("{\"key1\" : 1, \"key2\":\"abc\"}") << endl;
-    cout << JsonParser::parse ("{\"key1\":[1,1.3], \"key2\":\"abc\"}") << endl;
+    cout << JsonParser::parse ("{\"key1\" : null, \"key2\":\"abc\"}") << endl;
+    cout << JsonParser::parse ("{\"key1\":[1,1.3], \"key2\":\"/*abc*/\"}") << endl;
     cout << JsonParser::parse ("{\"key1\":{\"a\":1,\"b\":2}, \"key2\":\"abc\"}") << endl;
     cout << JsonParser::parse ("{\"key1\":{\"r\":1,\"i\":2}, \"key2\":\"abc\"}") << endl;
     cout << JsonParser::parse ("{\"key1\":1 /* ,,, */ ,\"Key2\":true } ") << endl;

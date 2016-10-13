@@ -1,4 +1,4 @@
-//# JsonOut.h: Fill a file or stream in Json format
+//# JsonOut.h: Fill a file or stream in JSON format
 //# Copyright (C) 2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,10 +25,8 @@
 //#
 //# $Id$
 
-
 #ifndef CASA_JSONOUT_H
 #define CASA_JSONOUT_H
-
 
 //# Includes
 #include <casacore/casa/aips.h>
@@ -45,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   // <summary>
-  // Class to fill a file or stream in Json format.
+  // Class to fill a file or stream in JSON format.
   // </summary>
 
   // <use visibility=export>
@@ -56,10 +54,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# </prerequisite>
 
   // <synopsis>
-  // JsonOut is a class to create a Json file. JsonParser.h can be used
-  // to interpret a Json file and get out the information.
+  // JsonOut is a class to create a JSON file. JsonParser.h can be used
+  // to interpret a JSON file whereafter JsonKVMap gets out the information.
   //
-  // Besides the standard Json types (bool, int, float, string), sequences
+  // Besides the standard JSON types (bool, int, float, string), sequences
   // and nested structs, JsonOut also supports Casacore data type (D)Complex,
   // Array, Record, and ValueHolder.
   // <br>- A complex number is written as a nested struct with fields
@@ -70,10 +68,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <br>Note that floating point values are written with high accuracy
   // (7 digits for single precision, 16 digits for double precision).
   //
-  // Although standard Json does not support comments, many parsers do support
+  // Although standard JSON does not support comments, many parsers do support
   // C-style and C++-style comments. JsonOut has the possibility to define
-  // arbitrary comment delimiters (e.g., /* and */ for C-style). If no start
-  // delimiter is given, possible comments are ignored.
+  // arbitrary comment delimiters (e.g., / * and * / for C-style).
+  // If no start delimiter is given, possible comments are ignored.
   //
   // The output of JsonOut can be any iostream. If a file name is given, an
   // ofstream will be opened in the constructor and closed in the destructor.
@@ -85,23 +83,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <example>
   // The following example is read back by the example in class JsonParser.
   // <srcblock>
-  // // Create the Json file.
+  // // Create the JSON file.
   // JsonOut jout(fullName + "/imageconcat.json");
-  // // Start the Json struct; possible comments will be ignored.
+  // // Start the JSON struct; possible comments will be ignored.
   // jout.start();
   // // Write some fields (one line per field).
   // jout.write ("Version", 1);
   // jout.write ("DataType", "float");
   // jout.write ("Axis", latticeConcat_p.axis());
   // jout.write ("Images", Array<String>(latticeNames));
-  // // End the Json struct.
+  // // End the JSON struct.
   // jout.end();
   // </srcblock>
   // See tJsonOut.cc for more elaborate examples.
   // </example>
 
   // <motivation>
-  // Json is a commonly used interchange format.
+  // JSON is a commonly used interchange format.
   // </motivation>
   //
   //# <todo asof="1996/03/10">
@@ -123,17 +121,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Close the stream. It closes the ofstream object if created.
     ~JsonOut();
 
-    // Start a Json structure by writing a { and setting the indentation.
-    // It checks if not inside a Json structure.
+    // Start a JSON structure by writing a { and setting the indentation.
+    // It checks if not inside a JSON structure.
     // It is possible to define the comment delimiters
-    // (e.g., /* and */  or  // and empty).
+    // (e.g., / * and * /  or  // and empty).
     // If commentStart is empty, possible comments are ignored.
     void start (const String& commentStart=String(),
                 const String& commentEnd=String(),
                 const String& indent="  ");
 
     // End a structure by clearing the indentation and writing a }.
-    // It checks if inside a Json structure.
+    // It checks if inside a JSON structure.
     void end();
 
     // Start a nested structure; i.e., a field with a structured value.
@@ -147,6 +145,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Write one or more lines defining a keyword-value pair, where value
     // can be of any type including Array, Record, and ValueHolder.
+    // A non-finite floating point number and a null ValueHolder are
+    // written as a null value.
     // If supported, the comment is written on a line preceeding the
     // 'key:value' line.
     template <typename T>
@@ -156,8 +156,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // If comments are not supported, an empty line is written.
     void writeComment (const String& comment);
 
+    // Write a null value.
+    void putNull();
+
     // Put a scalar value with sufficient accuracy.
-    // A Complex value is written as a nested Json structure
+    // A Complex value is written as a nested JSON structure
     // with fields r and i.
     // A string is enclosed in quotes and escaped where necessary.
     // <br>These functions are meant for internal use by the 'write' function.

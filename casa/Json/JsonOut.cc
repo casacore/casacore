@@ -101,66 +101,70 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void JsonOut::writeKV (const String& name, const ValueHolder& vh)
   {
-    switch (vh.dataType()) {
-    case TpBool:
-      writeKV (name, vh.asBool());
-      break;
-    case TpChar:
-    case TpUChar:
-    case TpShort:
-    case TpUShort:
-    case TpInt:
-    case TpUInt:
-    case TpInt64:
-      writeKV (name, vh.asInt64());
-      break;
-    case TpFloat:
-      writeKV (name, vh.asFloat());
-      break;
-    case TpDouble:
-      writeKV (name, vh.asDouble());
-      break;
-    case TpComplex:
-      writeKV (name, vh.asComplex());
-      break;
-    case TpDComplex:
-      writeKV (name, vh.asDComplex());
-      break;
-    case TpString:
-      writeKV (name, vh.asString());
-      break;
-    case TpArrayBool:
-      writeKV (name, vh.asArrayBool());
-      break;
-    case TpArrayChar:
-    case TpArrayUChar:
-    case TpArrayShort:
-    case TpArrayUShort:
-    case TpArrayInt:
-    case TpArrayUInt:
-    case TpArrayInt64:
-      writeKV (name, vh.asArrayInt64());
-      break;
-    case TpArrayFloat:
-      writeKV (name, vh.asArrayFloat());
-      break;
-    case TpArrayDouble:
-      writeKV (name, vh.asArrayDouble());
-      break;
-    case TpArrayComplex:
-      writeKV (name, vh.asArrayComplex());
-      break;
-    case TpArrayDComplex:
-      writeKV (name, vh.asArrayDComplex());
-      break;
-    case TpArrayString:
-      writeKV (name, vh.asArrayString());
-      break;
-    case TpRecord:
-      writeKV (name, vh.asRecord());
-      break;
-    default:
-      throw JsonError("JsonOut: unknown datatype");
+    if (vh.isNull()) {
+      putNull();
+    } else {
+      switch (vh.dataType()) {
+      case TpBool:
+        writeKV (name, vh.asBool());
+        break;
+      case TpChar:
+      case TpUChar:
+      case TpShort:
+      case TpUShort:
+      case TpInt:
+      case TpUInt:
+      case TpInt64:
+        writeKV (name, vh.asInt64());
+        break;
+      case TpFloat:
+        writeKV (name, vh.asFloat());
+        break;
+      case TpDouble:
+        writeKV (name, vh.asDouble());
+        break;
+      case TpComplex:
+        writeKV (name, vh.asComplex());
+        break;
+      case TpDComplex:
+        writeKV (name, vh.asDComplex());
+        break;
+      case TpString:
+        writeKV (name, vh.asString());
+        break;
+      case TpArrayBool:
+        writeKV (name, vh.asArrayBool());
+        break;
+      case TpArrayChar:
+      case TpArrayUChar:
+      case TpArrayShort:
+      case TpArrayUShort:
+      case TpArrayInt:
+      case TpArrayUInt:
+      case TpArrayInt64:
+        writeKV (name, vh.asArrayInt64());
+        break;
+      case TpArrayFloat:
+        writeKV (name, vh.asArrayFloat());
+        break;
+      case TpArrayDouble:
+        writeKV (name, vh.asArrayDouble());
+        break;
+      case TpArrayComplex:
+        writeKV (name, vh.asArrayComplex());
+        break;
+      case TpArrayDComplex:
+        writeKV (name, vh.asArrayDComplex());
+        break;
+      case TpArrayString:
+        writeKV (name, vh.asArrayString());
+        break;
+      case TpRecord:
+        writeKV (name, vh.asRecord());
+        break;
+      default:
+        throw JsonError("JsonOut: unknown ValueHolder datatype");
+      }
     }
   }
 
@@ -193,21 +197,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsStream << '"' << name << "\": ";
   }
 
+  void JsonOut::putNull()
+  {
+    itsStream << "null";
+  }
+
   void JsonOut::put (Bool value)
   {
     itsStream << (value ? "true" : "false");
   }
   void JsonOut::put (Float value)
   {
-    char buf[16];
-    sprintf (buf, "%.7g", value);
-    itsStream << buf;
+    if (! isFinite(value)) {
+      putNull();
+    } else {
+      char buf[16];
+      sprintf (buf, "%.7g", value);
+      itsStream << buf;
+    }
   }
   void JsonOut::put (Double value)
   {
-    char buf[24];
-    sprintf (buf, "%.16g", value);
-    itsStream << buf;
+    if (! isFinite(value)) {
+      putNull();
+    } else {
+      char buf[24];
+      sprintf (buf, "%.16g", value);
+      itsStream << buf;
+    }
   }
   void JsonOut::put (const Complex& value)
   {
