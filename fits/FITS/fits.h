@@ -39,14 +39,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# All FITS code seems to assume longs are 4 bytes. To take care of machines 
-//# for which this isn't true use FitsLong instead of Long in the FITS code
-//# where it matters.
-# if (defined(__alpha) || defined(__sgi) || defined(__x86_64__))
+//# All FITS code seems to assume longs are 4 bytes. Currently
+//# this corresponds to an "int" on all useful platforms.
     typedef Int FitsLong;
-# else
-    typedef Long FitsLong;
-# endif 
 //# recovered by GYL
 
 //# Forward declarations

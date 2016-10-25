@@ -112,13 +112,13 @@ namespace casacore {
 template <class T, class U=T>
 class StatsTiledCollapser : public TiledCollapser<T, U> {
 public:
-	// Constructor provides pixel selection range and whether that
-	// range is an inclusion or exclusion range.  If <src>fixedMinMax=True</src>
-	// and an inclusion range is given, the min and max is set to
-	// that inclusion range.
+    // Constructor provides pixel selection range and whether that
+    // range is an inclusion or exclusion range.  If <src>fixedMinMax=True</src>
+    // and an inclusion range is given, the min and max is set to
+    // that inclusion range.
     StatsTiledCollapser(
-    	const Vector<T>& pixelRange, Bool noInclude,
-    	Bool noExclude, Bool fixedMinMax
+        const Vector<T>& pixelRange, Bool noInclude,
+        Bool noExclude, Bool fixedMinMax
     );
 
     virtual ~StatsTiledCollapser() {}
@@ -127,15 +127,15 @@ public:
     virtual void init (uInt nOutPixelsPerCollapse);
 
     // Initialiaze the accumulator
-    virtual void initAccumulator (uInt n1, uInt n3);
+    virtual void initAccumulator (uInt64 n1, uInt64 n3);
 
     // Process the data in the current chunk.
     virtual void process (
-    	uInt accumIndex1, uInt accumIndex3,
-    	const T* inData, const Bool* inMask,
-    	uInt dataIncr, uInt maskIncr,
-    	uInt nrval,	const IPosition& startPos,
-    	const IPosition& shape
+        uInt accumIndex1, uInt accumIndex3,
+        const T* inData, const Bool* inMask,
+        uInt dataIncr, uInt maskIncr,
+        uInt nrval,    const IPosition& startPos,
+        const IPosition& shape
     );
 
     // End the accumulation process and return the result arrays
@@ -148,7 +148,7 @@ public:
 
     // Find the location of the minimum and maximum data values
     // in the input lattice.
- 	void minMaxPos(IPosition& minPos, IPosition& maxPos);
+     void minMaxPos(IPosition& minPos, IPosition& maxPos);
 
 private:
     Vector<T> _range;
@@ -158,12 +158,23 @@ private:
     // Accumulators for sum, sum squared, number of points
     // minimum, and maximum
 
-    CountedPtr<Block<U> > _sum, _sumSq, _npts,
-    	_mean, _variance, _nvariance;
+    CountedPtr<Block<Double> > _npts;
+    CountedPtr<Block<U> > _sum, _sumSq,
+        _mean, _variance, _nvariance;
     CountedPtr<Block<T> > _min, _max;
     CountedPtr<Block<Bool> > _initMinMax;
 
-    uInt _n1, _n3;
+    uInt64 _n1, _n3;
+
+    void _convertNPts(
+        Double*& nptsPtr, CountedPtr<Block<Double> > npts,
+        CountedPtr<Block<DComplex> > nptsComplex
+    ) const;
+
+    void _convertNPts(
+        DComplex*& nptsPtr, CountedPtr<Block<Double> > npts,
+        CountedPtr<Block<DComplex> > nptsComplex
+    ) const;
 };
 
 }

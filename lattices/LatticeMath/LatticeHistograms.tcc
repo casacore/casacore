@@ -1250,7 +1250,7 @@ void HistTiledCollapser<T>::init (uInt nOutPixelsPerCollapse)
 }   
    
 template <class T>
-void HistTiledCollapser<T>::initAccumulator (uInt n1, uInt n3)
+void HistTiledCollapser<T>::initAccumulator (uInt64 n1, uInt64 n3)
 //
 // pHist_p contains the histograms for each chunk
 // It is T not uInt so we can handle Complex types

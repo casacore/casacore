@@ -512,8 +512,8 @@ void LatticeApply<T,U>::tiledApply (
 	        }
 	        firstTime = False;
 	        outPos = iterPos;
-	        uInt n1 = 1;
-	        uInt n3 = 1;
+	        uInt64 n1 = 1;
+	        uInt64 n3 = 1;
 	        for (j=0; j<outDim; ++j) {
 		        if (ioMap(j) >= 0) {
 		            outShape(j) = cursorShape(ioMap(j));
