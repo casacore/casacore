@@ -290,8 +290,7 @@ TableExprNodeINInt::TableExprNodeINInt (const TableExprNodeRep& node,
 void TableExprNodeINInt::convertConstChild()
 {
   if (rnode_p->isConstant()  &&  rnode_p->valueType() == VTArray) {
-    // Convert set/array to a Bool array (for direct lookup) if the range
-    // is sufficiently small.
+    // Convert array to a set for lookup
     MArray<Int64> values = rnode_p->getArrayInt(0);
     Array<Int64> arr(values.array());
     if (values.hasMask()) {
@@ -299,21 +298,8 @@ void TableExprNodeINInt::convertConstChild()
       arr.reference (values.flatten());
     }
     if (! arr.empty()) {
-      minMax (itsMin, itsMax, arr);
-      Int64 sz = itsMax - itsMin + 1;
-      if (sz <= 1024*1024) {
-        itsIndex.resize (sz);
-        itsIndex = False;
-        Array<Int64>::const_iterator arrend = arr.end();
-        for (Array<Int64>::const_iterator iter=arr.begin();
-             iter!=arrend; ++iter) {
-          itsIndex[*iter - itsMin] = True;
-        }
-        if (itsDoTracing) {
-          cout << "  created IN index of size " << sz
-               <<" offset=" << itsMin << endl;
-        }
-      }
+      itsIndexSet.clear();
+      itsIndexSet.insert(arr.begin(), arr.end());
     }
   }
 }
@@ -322,9 +308,8 @@ TableExprNodeINInt::~TableExprNodeINInt()
 Bool TableExprNodeINInt::getBool (const TableExprId& id)
 {
     Int64 val = lnode_p->getInt (id);
-    if (itsIndex.size() > 0) {
-      if (val < itsMin  ||  val > itsMax) return False;
-      return itsIndex[val - itsMin];
+    if (itsIndexSet.size() > 0) {
+      return itsIndexSet.find(val) != itsIndexSet.end();
     }
     return rnode_p->hasInt (id, val);
 }

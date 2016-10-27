@@ -33,6 +33,7 @@
 #include <casacore/tables/TaQL/ExprNodeRep.h>
 #include <casacore/tables/TaQL/ExprNodeArray.h>
 #include <casacore/casa/Containers/Block.h>
+#include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -464,7 +465,7 @@ private:
     void setFindFunc (Bool isLeftClosed, Bool isRightClosed);
     // </group>
 
-    PtrBlock<TableExprNodeSetElem*> itsElems;
+    std::vector<TableExprNodeSetElem*> itsElems;
     Bool itsSingle;
     Bool itsDiscrete;
     Bool itsBounded;       //# Set is discrete and all starts/ends are defined
@@ -490,7 +491,7 @@ inline Bool TableExprNodeSet::isBounded() const
 }
 inline uInt TableExprNodeSet::nelements() const
 {
-    return itsElems.nelements();
+    return itsElems.size();
 }
 inline const TableExprNodeSetElem&
                            TableExprNodeSet::operator[] (uInt index) const
