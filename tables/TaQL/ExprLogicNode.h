@@ -31,6 +31,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/ExprNodeRep.h>
+#include <set>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -803,11 +804,8 @@ public:
     virtual Bool getBool (const TableExprId& id);
 private:
     Bool        itsDoTracing;
-    //# If the right node is constant and its range is sufficiently small,
-    //# it is turned into a Bool index for linear lookup time.
-    Block<Bool> itsIndex;
-    Int64       itsMin;
-    Int64       itsMax;
+    // If the right node is constant it is converted to a set
+    std::set<Int64> itsIndexSet;
 };
 
 
