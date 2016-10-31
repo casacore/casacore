@@ -428,13 +428,6 @@ DESTINATION include/casacore/casa/Inputs
 )
 
 install (FILES
-Json/JsonOut.h
-Json/JsonValue.h
-Json/JsonParser.h
-DESTINATION include/casacore/casa/Json
-)
-
-install (FILES
 IO/AipsIOCarray.h
 IO/AipsIOCarray.tcc
 IO/AipsIO.h
