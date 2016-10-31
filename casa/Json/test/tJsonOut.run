@@ -1,8 +1,0 @@
-#! /bin/sh
-#-----------------------------------------------------------------------------
-# Script to execute the tJsonOut program via assay.
-#=============================================================================
-
-$casa_checktool ./tJsonOut
-cat tJsonOut_tmp.txt
-

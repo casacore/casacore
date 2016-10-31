@@ -1,4 +1,4 @@
-//# mainpage.dox: doxygen description of Casacore package
+//# mainpage.dox: doxygen description of casa package
 //# Copyright (C) 2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -35,23 +35,23 @@ namespace casacore {
 ///   <a href="http://aips2.nrao.edu">AIPS++/CASA</a> package. This split
 ///   was made to get
 ///   a better separation of core libraries and applications.
-///   <a href="http://casa.nrao.edu">CASA</a> is now built on top of Casacore.
+///   <a href="http://casa.nrao.edu">CASA</a> is now built on top of casacore.
 ///   
 ///   The system consists of a set of layered libraries (packages) which can 
 ///   be seen best on the <a href="modules.html">Modules page</a>.
 ///   <br>
-///   Included is a library (using Boost-Python) to convert the basic Casacore types
+///   Included is a library (using Boost-Python) to convert the basic casacore types
 ///   (e.g., Array, Record) to and from python. Build of this library is optional.
 ///   <br>
 ///   This library is used in the package 
 ///   <a href="https://github.com/casacore/python-casacore">python-casacore</a> 
 ///   (previously pyrap) that offers a
 ///   high level <a href="http://www.python.org">Python</a> binding to
-///   the Casacore functionality.
+///   the casacore functionality.
 ///   The documentation of the python-casacore packages can be found
 ///   <a href="http://python-casacore.readthedocs.org/">here</a>.
 ///   
-///   The main features of Casacore are:
+///   The main features of AIPS++/CASA are:
 ///   <ul>
 ///   <li>\ref casa : Core functionality and data types like Array and Record.
 ///   <li>\ref scimath : N-dim functions with auto-differentiation and linear or non-linear
@@ -75,10 +75,8 @@ namespace casacore {
 ///   <a href="group__Quanta__module.html">quanta</a>,
 ///   <a href="group__OS__module.html">OS</a>,
 ///   <a href="group__IO__module.html">IO</a>,
-///   <a href="group__HDF5__module.html">HDF5</a>,
-///   <a href="group__Json__module.html">JSON</a>,
 ///   <a href="group__Logging__module.html">logging</a>,
-///   and various other useful classes.
+///   and various other classes.
 ///   </td>
 ///   </tr>
 ///   <tr>
@@ -166,15 +164,15 @@ namespace casacore {
 ///   <td><a href="group__python.html">python</a></td>
 ///   <td>
 ///   N-dim <a href="group__Converters__module.html">python
-///   converters</a> for basic Casacore data types.
+///   converters</a> for basic casacore data types.
 ///   </td>
 ///   </tr>
 ///   </table>
 ///
 ///   Detailed build instructions are given on the 
 ///   <a href="http://code.google.com/p/casacore/wiki/BuildInstructions">
-///   casacore</a> pages. It makes it possible to build selective parts of Casacore.
-///   <br>When using a specific Casacore package, it is useful to know
+///   casacore</a> pages. It makes it possible to build selective parts of casacore.
+///   <br>When using a specific casacore package, it is useful to know
 ///   the package dependencies when linking a program. They are as follows:
 ///   <table border=1>
 ///   <tr>
@@ -232,10 +230,10 @@ namespace casacore {
 ///   </tr>
 ///   </table>
 ///   <a href="http://www.atnf.csiro.au/computing/software/miriad">mirlib</a>
-///   is distributed and built as part of Casacore.
+///   is distributed and built as part of casacore.
 ///   <a href="http://www.atnf.csiro.au/~mcalabre/WCS">wcslib</a> and
 ///   <a href="http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html">cfitsio</a>
-///   are external packages that have to be installed before building all of Casacore.
+///   are external packages that have to be installed before building all of casacore.
 ///   <a href="http://www.boost.org/doc/libs/1_57_0/libs/python/doc">Boost-Python</a>
 ///   is required when building libcasa_python.
    
