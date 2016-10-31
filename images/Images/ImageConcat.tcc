@@ -34,19 +34,16 @@
 
 #include <casacore/casa/OS/Timer.h>
 #include <casacore/casa/OS/Path.h>
-#include <casacore/casa/OS/Directory.h>
 
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
-#include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/Record.h>
-#include <casacore/casa/Json/JsonOut.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/iostream.h>
 
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
@@ -150,7 +147,7 @@ ImageInterface<T>* ImageConcat<T>::cloneII() const
 }
 
 template<class T>
-ImageConcat<T>::ImageConcat (const JsonKVMap& jmap, const String& fileName)
+ImageConcat<T>::ImageConcat (AipsIO& aio, const String& fileName)
 : latticeConcat_p(),
   warnAxisNames_p(True),
   warnAxisUnits_p(True),
@@ -161,34 +158,34 @@ ImageConcat<T>::ImageConcat (const JsonKVMap& jmap, const String& fileName)
   warnInc_p(True),
   warnTab_p(True),
   isContig_p(True),
-  fileName_p(Path(fileName).absoluteName())
+  fileName_p(fileName)
 {
   // This must be the opposite of function save.
-  AlwaysAssert (jmap.getInt("Version", 1) == 1, AipsError);
-  uInt axis = jmap.get("Axis").getInt();
-  Bool tmpClose = jmap.getBool("TempClose", True);
-  Vector<String> names(jmap.get("Images").getArrayString());
+  AlwaysAssert (aio.getstart ("ImageConcat") == 1, AipsError);
+  uInt axis, nlatt;
+  Bool tmpClose;
+  String name;
+  aio >> axis >> tmpClose >> nlatt;
   latticeConcat_p=LatticeConcat<T>(axis, tmpClose);
-  for (uInt i=0; i<names.size(); ++i) {
-    // Add directory of parent as needed.
-    String name = Path::addDirectory (names[i], fileName_p);
+  for (uInt i=0; i<nlatt; ++i) {
+    aio >> name;
     LatticeBase* latt = ImageOpener::openImage (name);
     ImageInterface<T>* img = dynamic_cast<ImageInterface<T>*>(latt);
     if (img == 0) {
       delete latt;
       throw AipsError ("ImageConcat " + fileName +
-                       " contains image " + names[i] +
+                       " contains image " + name +
                        " of another data type");
     }
     setImage (*img, True);
     delete img;
   }
+  aio.getend();
 }
 
 template<class T>
 void ImageConcat<T>::save (const String& fileName) const
 {
-  // Note that an ImageConcat is opened by ImageOpener.
   // Check that all images used are persistent.
   for (uInt i=0; i<latticeConcat_p.nlattices(); ++i) {
     if (! latticeConcat_p.lattice(i)->isPersistent()) {
@@ -196,32 +193,22 @@ void ImageConcat<T>::save (const String& fileName) const
                        "its images is not persistent");
     }
   }
-  // Get the absolute file name.
-  String fullName = Path(fileName).absoluteName();
-  // Create the directory if not existing already.
-  Directory dir(fullName);
-  if (! dir.exists()) {
-    dir.create (False);
-  }
-  // Create the Json file.
-  JsonOut jout(fullName + "/imageconcat.json");
-  jout.start();
-  jout.write ("Version", 1);
-  String dt(ValType::getTypeStr(this->dataType()));
-  dt.trim();
-  jout.write ("DataType", dt);
-  jout.write ("Axis", latticeConcat_p.axis());
-  jout.write ("TempClose", latticeConcat_p.isTempClose());
-  Vector<String> names(latticeConcat_p.nlattices());
+  // Create the AipsIO file.
+  AipsIO aio(fileName, ByteIO::New);
+  // Start with a general header (used by ImageOpener)
+  // and the data type of the image.
+  aio.putstart ("CompoundImage-Conc", 0);
+  aio << Int(this->dataType());
+  // Now save all relevant info.
+  aio.putstart ("ImageConcat", 1);
+  aio << latticeConcat_p.axis() << latticeConcat_p.isTempClose();
+  aio << latticeConcat_p.nlattices();
   for (uInt i=0; i<latticeConcat_p.nlattices(); ++i) {
-    String name = latticeConcat_p.lattice(i)->name(False);
-    String fname = Path(name).absoluteName();
-    // Make path relative to parent, so parent can be moved.
-    names[i] = Path::stripDirectory (fname, fullName);
+    aio << latticeConcat_p.lattice(i)->name(False);
   }
-  jout.write ("Images", Array<String>(names));
-  jout.end();
-  fileName_p = fullName;
+  aio.putend();
+  aio.putend();
+  fileName_p = fileName;
 }
 
 template<class T>
