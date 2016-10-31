@@ -261,7 +261,7 @@ endif (HDF5_ROOT_DIR)
 if (NOT MODULE)
    set (MODULE all)
 endif (NOT MODULE)
-set (_usebison NO)
+set (_usebison YES)
 set (_uselapack NO)
 set (_usefits NO)
 set (_usewcs NO)
@@ -527,8 +527,8 @@ endif (BUILD_PYTHON3)
 #  DL           casa (optional)
 #  READLINE     casa (optional)
 #  HDF5         casa (optional)
-#  BISON        tables,images
-#  FLEX         tables,images
+#  BISON        casa,tables,images
+#  FLEX         casa,tables,images
 #  LAPACK       scimath
 #  BLAS         scimath
 #  FFTW         scimath (optional)

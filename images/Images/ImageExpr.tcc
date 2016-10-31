@@ -38,8 +38,10 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Json/JsonOut.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/Path.h>
+#include <casacore/casa/OS/Directory.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Quanta/Unit.h>
 
@@ -127,22 +129,26 @@ ImageInterface<T>* ImageExpr<T>::cloneII() const
 template<class T>
 void ImageExpr<T>::save (const String& fileName) const
 {
+  // Note that an ImageExpr is opened by ImageOpener.
   // Check that the expression is given.
   if (exprString_p.empty()) {
     throw AipsError ("ImageExpr cannot be made persistent, because "
                      "its expression string is empty");
   }
-  // Create the AipsIO file.
-  AipsIO aio(fileName, ByteIO::New);
-  // Start with a general header (used by ImageOpener)
-  // and the data type of the image.
-  aio.putstart ("CompoundImage-Expr", 0);
-  aio << Int(this->dataType());
-  // Now save the expression string.
-  aio.putstart ("ImageExpr", 1);
-  aio << exprString_p;
-  aio.putend();
-  aio.putend();
+  // Create the directory if not existing already.
+  Directory dir(fileName);
+  if (! dir.exists()) {
+    dir.create (False);
+  }
+  // Create the Json file.
+  JsonOut jout(fileName + "/imageexpr.json");
+  jout.start();
+  jout.write ("Version", 1);
+  String dt(ValType::getTypeStr(this->dataType()));
+  dt.trim();
+  jout.write ("DataType", dt);
+  jout.write ("ImageExpr", exprString_p);
+  jout.end();
   fileName_p = fileName;
 }
 
