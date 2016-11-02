@@ -7,6 +7,20 @@ configure_file (
   "${PROJECT_BINARY_DIR}/casacore/casa/config.h"
   @ONLY)
 
+
+set (
+parser_inputs
+JsonGram
+)
+ 
+foreach (src ${parser_inputs})
+    BISON_TARGET (${src} Json/${src}.yy ${CMAKE_CURRENT_BINARY_DIR}/${src}.ycc COMPILE_FLAGS "-y -p ${src}")
+    FLEX_TARGET (${src} Json/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
+endforeach (src)
+
+include_directories (${CMAKE_CURRENT_BINARY_DIR})
+
+
 add_library (casa_casa
 Arrays/ArrayBase.cc
 Arrays/ArrayError.cc
@@ -99,6 +113,11 @@ IO/RegularFileIO.cc
 IO/StreamIO.cc
 IO/TapeIO.cc
 IO/TypeIO.cc
+Json/JsonError.cc
+Json/JsonKVMap.cc
+Json/JsonOut.cc
+Json/JsonParser.cc
+Json/JsonValue.cc
 Logging/LogFilter.cc
 Logging/LogFilterInterface.cc
 Logging/LogIO.cc
@@ -209,6 +228,8 @@ Utilities/StringDistance.cc
 Utilities/ValType.cc
 aips.cc
 version.cc
+${BISON_JsonGram_OUTPUTS}
+${FLEX_JsonGram_OUTPUTS}
 )
 
 if (HDF5_FOUND)
@@ -229,6 +250,7 @@ add_subdirectory (apps)
 
 install (
 TARGETS casa_casa
+RUNTIME DESTINATION bin
 LIBRARY DESTINATION lib${LIB_SUFFIX}
 ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -446,6 +468,15 @@ DESTINATION include/casacore/casa/IO
 )
 
 install (FILES
+Json/JsonError.h
+Json/JsonKVMap.h
+Json/JsonOut.h
+Json/JsonParser.h
+Json/JsonValue.h
+DESTINATION include/casacore/casa/Json
+)
+
+install (FILES
 Logging/LogFilter.h
 Logging/LogFilterInterface.h
 Logging/LogIO.h
@@ -624,6 +655,7 @@ iosfwd.h
 iosstrfwd.h
 iostream.h
 istream.h
+Json.h
 Logging.h
 math.h
 namespace.h
@@ -648,7 +680,7 @@ DESTINATION include/casacore/casa
 if (BUILD_TESTING)
 	add_subdirectory (test)
 	foreach (casa_module Arrays BasicMath BasicSL Containers
-             Exceptions HDF5 Inputs IO Logging OS Quanta System Utilities)
+             Exceptions HDF5 Inputs IO Json Logging OS Quanta System Utilities)
     	  add_subdirectory (${casa_module}/test)
 	endforeach (casa_module)
 endif (BUILD_TESTING)
