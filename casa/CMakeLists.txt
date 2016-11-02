@@ -471,6 +471,7 @@ install (FILES
 Json/JsonError.h
 Json/JsonKVMap.h
 Json/JsonOut.h
+Json/JsonOut.tcc
 Json/JsonParser.h
 Json/JsonValue.h
 DESTINATION include/casacore/casa/Json
