@@ -132,7 +132,7 @@ void doTypes()
 		    == ImageOpener::UNKNOWN);
   char buf[2880];
   memset (buf, ' ', 2880);
-  memcpy (buf, "SIMPLE  =   T  ", 17);
+  memcpy (buf, "SIMPLE  =   T  ", 15);
   {
     RegularFileIO file (RegularFile("tImageUtilities_tmp/a.image"),
 			ByteIO::Update);

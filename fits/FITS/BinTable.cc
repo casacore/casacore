@@ -1004,8 +1004,8 @@ Table BinaryTable::fullTable()
    MemoryStMan stman ("MemSM");
        newtab.bindAll(stman);
     //		and actually create the table
-    Table *full= new Table(newtab,Table::Memory, nrows());
-    RowCopier rowcop(*full, *currRowTab);
+    Table full = Table(newtab,Table::Memory, nrows());
+    RowCopier rowcop(full, *currRowTab);
     //			loop over all rows remaining
     for (Int outrow = 0, infitsrow = currrow(); infitsrow < nrows(); 
 	 outrow++, infitsrow++) {
@@ -1017,7 +1017,7 @@ Table BinaryTable::fullTable()
 	    fillRow();
 	}
     }		// end of loop over rows
-    return *full;
+    return full;
 }
 
 
