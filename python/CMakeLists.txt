@@ -93,6 +93,4 @@ Converters.h
 DESTINATION include/casacore/python
 )
 
-if (BUILD_TESTING)
-    add_subdirectory (Converters/test)
-endif (BUILD_TESTING)
+add_subdirectory (Converters/test ${EXCL_ALL})

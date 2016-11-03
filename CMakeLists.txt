@@ -423,6 +423,15 @@ if(USE_STACKTRACE)
     add_definitions(-DUSE_STACKTRACE)
 endif(USE_STACKTRACE)
 
+# Enable cmake testing and add make check target that builds and runs the test
+enable_testing()
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+# This legacy flag always builds the tests and runs them with make test. There
+# seems to be no good way to make test executable depend on the test target
+if (NOT BUILD_TESTING)
+    set(EXCL_ALL EXCLUDE_FROM_ALL)
+endif (NOT BUILD_TESTING)
+
 # Add the modules to be built.
 add_subdirectory (build-tools)
 foreach (module ${_modules})
