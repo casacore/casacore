@@ -29,6 +29,7 @@
 #include <casacore/tables/TaQL/UDFBase.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/OS/DynLib.h>
+#include <casacore/casa/version.h>
 
 namespace casacore {
 
@@ -203,7 +204,8 @@ namespace casacore {
       iter = theirRegistry.find (libname);
       if (iter == theirRegistry.end()) {
         // Try to load the dynamic library.
-        DynLib dl(libname, string("libcasa_"), "register_"+libname, False);
+        DynLib dl(libname, string("libcasa_"), STRING(CASACORE_MAJOR_VERSION),
+                  "register_"+libname, False);
         if (dl.getHandle()) {
           // Add to map to indicate library has been loaded.
           // Note that a libname is different from a function name because

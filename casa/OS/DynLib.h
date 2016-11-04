@@ -88,19 +88,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
 
-    // Load the dynamic library. It is tried with prefixes "lib" and <src>prefix</src>
-    // and suffixes ".so" and ".dylib".
-    // If not loaded successfully, the internal handle is NULL.
+    // Load the dynamic library. It is tried with prefixes <src>prefix</src>
+    // and "lib" (in that oder) and with suffix ".so" or ".dylib" (for Apple).
+    // No library version number is used.
+    // If not loaded successfully, an exception is thrown.
     // <br>If a non-empty funcName is given, that function is looked up and
-    // executed. Its signature must be <src>void func()</src>. Note that the
-    // function name should not be mangled, thus declared <src>extern "C"</src>.
+    // executed for initialization purposes. Its signature must be
+    // <src>void func()</src>.
+    // Note that the function name should not be mangled, thus declared
+    // <src>extern "C"</src>.
     // An exception is thrown if the library is loaded successfully, but
     // <src>funcName</src> could not be found.
-    // <br>If <src>closeOnDestruction=True</src>, the dynamic library is closed
-    // on destruction of the DynLib object.
+    // <br>If <src>closeOnDestruction=True</src>, the dynamic library is
+    // closed on destruction of the DynLib object.
     DynLib (const std::string& library,
             const std::string& prefix=std::string(),
             const std::string& funcName=std::string(),
+            bool closeOnDestruction=True);
+
+    // The same as above, but it is tried with and without the given version
+    // (in that order).
+    DynLib (const std::string& library,
+            const std::string& prefix,
+            const std::string& version,
+            const std::string& funcName,
             bool closeOnDestruction=True);
 
     // Load the dynamic library with the given name, prefix, and suffix.
@@ -147,7 +158,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return itsError; }
 
   private:
-    // Open (load)the dynamic library.
+    // Try to open the library with some prefixes, suffixes and versions
+    // and to execute the initialization function.
+    // If successful, itsHandle is filled. Otherwise an exception is thrown.
+    void attach (const std::string& name,
+                 const std::string& prefix,
+                 const std::string& version,
+                 const std::string& funcName);
+
+    // Try to open the library with some prefixes, suffixes and versions
+    // If successful, itsHandle is filled and the full library name is
+    // returned. Otherwise an empty name is returned.
+    std::string tryOpen (const std::string& name,
+                         const std::string& libdir,
+                         const std::string& prefix,
+                         const std::string& version);
+
+    // Open (load) the dynamic library.
     void open (const std::string& name);
 
     // Close (unload) the dynamic library (if opened).
@@ -155,7 +182,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Try if the library can be opened using CASACORE_LDPATH.
     std::string tryCasacorePath (const std::string& library,
-                                 const std::string& prefix);
+                                 const std::string& prefix,
+                                 const std::string& version);
 
     //# Handle to dynamic library; note that the pointer is not owned, so the
     //# generated copy ctor and assignment are fine.

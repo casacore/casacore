@@ -50,6 +50,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/DynLib.h>
 #include <casacore/tables/DataMan/DataManError.h>
+#include <casacore/casa/version.h>
 #include <casacore/casa/stdio.h>                     // for sprintf
 
 
@@ -316,7 +317,8 @@ DataManagerCtor DataManager::getCtor (const String& type)
         libname = libname.substr (0, pos);
     }
     // Try to load and initialize the dynamic library.
-    DynLib dl(libname, string("libcasa_"), "register_"+libname, False);
+    DynLib dl(libname, string("libcasa_"), STRING(CASACORE_MAJOR_VERSION),
+              "register_"+libname, False);
     if (dl.getHandle()) {
         // See if registered now.
         fp = theirRegisterMap.isDefined (type);

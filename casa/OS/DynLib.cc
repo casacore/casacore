@@ -1,4 +1,4 @@
-//# DynLib.cc: Class to handle loadig of dynamic libraries
+//# DynLib.cc: Class to handle loading of dynamic libraries
 //# Copyright (C) 2009
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -36,6 +36,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Exceptions/Error.h>
 #ifdef HAVE_DLOPEN
 #include <dlfcn.h>
@@ -52,52 +53,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     : itsHandle  (0),
       itsDoClose (closeOnDestruction)
   {
-    std::string fullName = tryCasacorePath (library, prefix);
-    if (fullName.empty()) {
-      string pref("lib");
-      string ext;
-      for (int i=0; i<4; ++i) {
-        ext = (i%2==0 ? ".so" : ".dylib");
-        if (i == 2) pref = prefix;
-        fullName = pref + library + ext;
-        open (fullName);
-        if (itsHandle) {
-          break;
-        }
-      }
+    attach (library, prefix, std::string(), funcName);
+  }
+
+  DynLib::DynLib (const std::string& library,
+                  const std::string& prefix,
+                  const std::string& version,
+                  const std::string& funcName,
+                  bool closeOnDestruction)
+    : itsHandle  (0),
+      itsDoClose (closeOnDestruction)
+  {
+    // Add a dot to the version if needed.
+    std::string vers(version);
+    if (! vers.empty()  &&  vers[0] != '.') {
+      vers = '.' + vers;
     }
-    if (itsHandle == 0) {
-      throw AipsError ("Shared library " + library +
-                       " found in CASACORE_LDPATH nor (DY)LD_LIBRARY_PATH\n"
-                       + itsError);
-    }
-    if (itsHandle  &&  !funcName.empty()) {
-      // Found the dynamic library.
-      // Now find and execute the given function.
-      // Because a compiler like g++ gives a warning when casting a pointer
-      // to a function pointer, a union is used to achieve this.
-      // Ensure the pointer sizes are the same.
-      typedef void (*func_ptr)();
-      AlwaysAssert (sizeof(func_ptr) == sizeof(void*), AipsError);
-      typedef union {
-	func_ptr funcPtr;
-	void* ptr;
-      } ptrCastUnion;
-      ptrCastUnion ptrCast;
-      ptrCast.ptr = getFunc (funcName.c_str());
-      if (! ptrCast.ptr) {
-        close();
-        throw AipsError("Found dynamic library " + fullName +
-                        ", but not its " + funcName + " function\n  " +
-                        itsError);
-      }
-/// Note: the following is a g++ specific way to avoid the warning.
-///#ifdef __GNUC__
-///__extension__
-///#endif
-      // Execute the function.
-      ptrCast.funcPtr();
-    }
+    attach (library, prefix, vers, funcName);
   }
 
   DynLib::DynLib (const std::string& library,
@@ -152,8 +124,91 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
+  std::string DynLib::tryOpen (const std::string& library,
+                               const std::string& dir,
+                               const std::string& prefix,
+                               const std::string& version)
+  {
+    std::string pref(prefix);
+    std::string vers(version);
+    std::string fullName;
+    // Try a maximum 4 times (1 or 2 prefix, 1 or 2 version, 1 ext).
+    int i=0;
+    while (i<4  &&  itsHandle==0) {
+#ifdef __APPLE__
+      fullName = dir + pref + library + vers + ".dylib";
+#else
+      fullName = dir + pref + library + ".so" + vers;
+#endif
+      open (fullName);
+      i++;
+      if (i == 2) {
+        if (pref == "lib") i += 2;     // no specific prefix given
+        pref = "lib";
+      }
+      if (i%2 == 1) {
+        vers = std::string();
+        if (version.empty()) i++;      // no version given
+      } else {
+        vers = version; 
+      }
+    }
+    return (itsHandle==0  ?  std::string() : fullName);
+  }
+
+  void DynLib::attach (const std::string& library,
+                       const std::string& prefix,
+                       const std::string& version,
+                       const std::string& funcName)
+  {
+    std::string fullName = tryCasacorePath (library, prefix, version);
+    if (fullName.empty()) {
+      fullName = tryOpen (library, string(), prefix, version);
+    }
+    if (itsHandle == 0) {
+      throw AipsError ("Shared library " + library +
+                       " found in CASACORE_LDPATH nor (DY)LD_LIBRARY_PATH\n"
+                       + itsError);
+    }
+    LogIO os(LogOrigin("DynLib"));
+    os << LogIO::NORMAL3
+       << "Loaded shared library " << fullName
+       << LogIO::POST;
+    if (itsHandle  &&  !funcName.empty()) {
+      // Found the dynamic library.
+      // Now find and execute the given function.
+      // Because a compiler like g++ gives a warning when casting a pointer
+      // to a function pointer, a union is used to achieve this.
+      // Ensure the pointer sizes are the same.
+      typedef void (*func_ptr)();
+      AlwaysAssert (sizeof(func_ptr) == sizeof(void*), AipsError);
+      typedef union {
+	func_ptr funcPtr;
+	void* ptr;
+      } ptrCastUnion;
+      ptrCastUnion ptrCast;
+      ptrCast.ptr = getFunc (funcName.c_str());
+      if (! ptrCast.ptr) {
+        close();
+        throw AipsError("Found dynamic library " + fullName +
+                        ", but not its " + funcName + " function\n  " +
+                        itsError);
+      }
+/// Note: the following is a g++ specific way to avoid the warning.
+///#ifdef __GNUC__
+///__extension__
+///#endif
+      // Execute the function.
+      ptrCast.funcPtr();
+      os << LogIO::NORMAL3
+         << "Executed " << funcName << " in shared library " << fullName
+         << LogIO::POST;
+    }
+  }
+
   std::string DynLib::tryCasacorePath (const std::string& library,
-                                       const std::string& prefix)
+                                       const std::string& prefix,
+                                       const std::string& version)
   {
     // Check if CASACORE_LDPATH is defined.
     String casapath("CASACORE_LDPATH");
@@ -165,16 +220,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         if (! parts[j].empty()) {
           string libDir = parts[j] + '/';
           // Check if shared library can be found there.
-          std::string pref("lib");
-          std::string ext;
-          for (int i=0; i<4; ++i) {
-            ext = (i%2==0 ? ".so" : ".dylib");
-            if (i == 2) pref = prefix;
-            std::string fullName(libDir + pref + library + ext);
-            open (fullName);
-            if (itsHandle) {
-              return fullName;
-            }
+          std::string fullName = tryOpen (library, libDir, prefix, version);
+          if (itsHandle) {
+            return fullName;
           }
         }
       }
