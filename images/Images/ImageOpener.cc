@@ -34,6 +34,8 @@
 #include <casacore/images/Images/ImageConcat.h>
 #include <casacore/images/Images/ImageExpr.h>
 #include <casacore/images/Images/ImageExprParse.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/lattices/LEL/LatticeExprNode.h>
 #include <casacore/casa/HDF5/HDF5File.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
@@ -247,6 +249,8 @@ LatticeBase* ImageOpener::openImage (const String& fileName,
    } else if (type == IMAGEEXPR) {
      return openImageExpr (fileName);
    }
+   FITSImage::registerOpenFunction();
+   MIRIADImage::registerOpenFunction();
    // Try to open a foreign image.
    return theirOpenFuncMap(type) (fileName, spec);
 }
