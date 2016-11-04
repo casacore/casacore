@@ -38,6 +38,7 @@ int main() {
         String *parts = new String[2];
         split(EnvironmentVariable::get("CASAPATH"), parts, 2, String(" "));
         String datadir = parts[0] + "/data/";
+        delete [] parts;
         String msname = datadir + "regression/unittest/uvfits/uvfits_test.ms";
         if (! File(msname).exists()) {
             cout << "Cannot find test fixture so tests cannot be run" << endl;
