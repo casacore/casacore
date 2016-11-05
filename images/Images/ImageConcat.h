@@ -33,6 +33,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Containers/Block.h>
+#include <casacore/casa/Json/JsonKVMap.h>
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/lattices/Lattices/LatticeConcat.h>
 #include <casacore/images/Images/ImageInterface.h>
@@ -129,8 +130,9 @@ public:
 // Constructor. Specify the pixel axis for concatenation
    explicit ImageConcat (uInt axis, Bool tempClose=True);
 
-// Construct the object from an AipsIO file with the given name.
-   ImageConcat (AipsIO& aio, const String& fileName);
+// Construct the object from a Json file with the given name.
+// This constructor is usually called by ImageOpener::openImageConcat.
+   ImageConcat (const JsonKVMap&, const String& fileName);
 
 // Default constructor, Sets the concatenation axis to 0
    ImageConcat();
@@ -147,8 +149,9 @@ public:
 // Make a copy of the object (reference semantics).
    virtual ImageInterface<T>* cloneII() const;
 
-// Save the image in an AipsIO file with the given name.
-// It can be opened by the constructor taking a file name.
+// Save the image in file 'image.concat' in a directory with the given name.
+// An exception is thrown if such a directory or file already exists.
+// It can be opened by ImageOpener::openImage(Concat).
    virtual void save (const String& fileName) const;
 
 // Get the image type (returns name of derived class).

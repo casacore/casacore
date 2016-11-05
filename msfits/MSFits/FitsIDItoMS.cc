@@ -1833,6 +1833,8 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   Int iTime1 = getIndex(tType, "TIME");
   // get index for source
   Int iSource = getIndex(tType, "SOURCE_ID"); 
+  if (iSource < 0)
+    iSource = getIndex(tType, "SOURCE");
   // get index for Freq
   Int iFreq = getIndex(tType, "FREQID");
   // get index for FLUX

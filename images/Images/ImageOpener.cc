@@ -34,9 +34,13 @@
 #include <casacore/images/Images/ImageConcat.h>
 #include <casacore/images/Images/ImageExpr.h>
 #include <casacore/images/Images/ImageExprParse.h>
+#include <casacore/images/Images/FITSImage.h>
+#include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/lattices/LEL/LatticeExprNode.h>
 #include <casacore/casa/HDF5/HDF5File.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/Json/JsonKVMap.h>
+#include <casacore/casa/Json/JsonParser.h>
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/OS/RegularFile.h>
 #include <casacore/casa/IO/RegularFileIO.h>
@@ -65,6 +69,12 @@ ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
 {
   File file(name);
   if (file.isDirectory()) {
+    if (File(name + "/imageconcat.json").isRegular()) {
+      return IMAGECONCAT;
+    }
+    if (File(name + "/imageexpr.json").isRegular()) {
+      return IMAGEEXPR;
+    }
     if (Table::isReadable(name)) {
       TableInfo info = Table::tableInfo (name);
       if (info.type() == TableInfo::type(TableInfo::PAGEDIMAGE)) {
@@ -99,19 +109,6 @@ ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
       String str(buf, 80);
       if (str.matches (Regex("^SIMPLE *= *T.*"))) {
 	return FITS;
-      }
-    }
-    // Check if a CompoundImage (ImageConcat or ImageExpr).
-    // Skip AipsIO's object length, magicval, and string length.
-    if (nread >= 30) {
-      String str1(buf+12, 14);
-      if (str1 == "CompoundImage-") {
-        String str2(buf+26, 4);
-        if (str2 == "Conc") {
-          return IMAGECONCAT;
-        } else if (str2 == "Expr") {
-          return IMAGEEXPR;
-        }
       }
     }
     if (HDF5File::isHDF5(name)) {
@@ -181,43 +178,30 @@ LatticeBase* ImageOpener::openHDF5Image (const String& fileName,
 
 LatticeBase* ImageOpener::openImageConcat (const String& fileName)
 {
-  AipsIO aio(fileName, ByteIO::Old);
-  AlwaysAssert (aio.getstart("CompoundImage-Conc") == 0, AipsError);
-  Int dtype;
-  aio >> dtype;
+  // Note that combined with ImageConcat constructor this is the
+  // opposite of ImageConcat::save.
+  JsonKVMap jmap = JsonParser::parseFile (fileName + "/imageconcat.json");
+  String dtype = jmap.get("DataType").getString();
+  dtype.downcase();
   LatticeBase* img = 0;
-  switch (dtype) {
-  case TpFloat:
-    img = new ImageConcat<Float> (aio, fileName);
-    break;
-  case TpDouble:
-    img = new ImageConcat<Double> (aio, fileName);
-    break;
-  case TpComplex:
-    img = new ImageConcat<Complex> (aio, fileName);
-    break;
-  case TpDComplex:
-    img = new ImageConcat<DComplex> (aio, fileName);
-    break;
-  default:
-    break;
+  if (dtype == "float") {
+    img = new ImageConcat<Float> (jmap, fileName);
+  } else if (dtype == "double") {
+    img = new ImageConcat<Double> (jmap, fileName);
+  } else if (dtype == "complex") {
+    img = new ImageConcat<Complex> (jmap, fileName);
+  } else if (dtype == "dcomplex") {
+    img = new ImageConcat<DComplex> (jmap, fileName);
   }
-  aio.getend();
   return img;
 }
 
 LatticeBase* ImageOpener::openImageExpr (const String& fileName)
 {
-  AipsIO aio(fileName, ByteIO::Old);
-  AlwaysAssert (aio.getstart("CompoundImage-Expr") == 0, AipsError);
-  Int dtype;
-  aio >> dtype;
-  AlwaysAssert (aio.getstart("ImageExpr") == 1, AipsError);
-  String expr;
-  aio >> expr;
+  // This is the opposite of ImageExpr::save.
+  JsonKVMap jmap = JsonParser::parseFile (fileName + "/imageexpr.json");
+  String expr = jmap.get("ImageExpr").getString();
   LatticeBase* img = openExpr (expr, Block<LatticeExprNode>(), fileName);
-  aio.getend();
-  aio.getend();
   return img;
 }
 
@@ -265,6 +249,8 @@ LatticeBase* ImageOpener::openImage (const String& fileName,
    } else if (type == IMAGEEXPR) {
      return openImageExpr (fileName);
    }
+   FITSImage::registerOpenFunction();
+   MIRIADImage::registerOpenFunction();
    // Try to open a foreign image.
    return theirOpenFuncMap(type) (fileName, spec);
 }
