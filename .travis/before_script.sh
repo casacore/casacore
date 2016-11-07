@@ -30,6 +30,7 @@ CXX="ccache $CXX" cmake .. \
     -DUSE_FFTW3=ON \
     -DBUILD_TESTING=ON \
     -DUSE_OPENMP=OFF \
+    -DMODULE=tables \
     -DUSE_HDF5=ON \
     -DBUILD_PYTHON=ON \
     -DBUILD_PYTHON3=$BUILD_PYTHON3 \
