@@ -279,8 +279,9 @@ void StatsTiledCollapser<T,U>::_convertNPts(
     DComplex* storage = nptsComplex->storage();
     Double* realStorage = npts->storage();
     for (uInt64 i=0; i<_n1*_n3; ++i) {
-        storage[i].real(realStorage[i]);
-        storage[i].imag(0);
+         ///C++11 storage[i].real(realStorage[i]);
+         ///C++11 storage[i].imag(0);
+        storage[i] = DComplex(realStorage[i], 0);
     }
     nptsPtr = storage;
 }
