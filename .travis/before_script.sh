@@ -21,7 +21,6 @@ else
 fi
 
 if [ "$TRAVIS_OS_NAME" = osx ]; then
-    rvm get head
     BUILD_PYTHON3=OFF
 else
     BUILD_PYTHON3=ON
