@@ -273,9 +273,8 @@ void HostMachineInfo::update_info( )
 	size_t mem_max = get_cgroup_limit("memory", "memory.limit_in_bytes") / 1024;
 	size_t mem_used = get_cgroup_limit("memory", "memory.stat", "total_rss") / 1024;
 	memory_total = std::min((size_t)mem_total, mem_max);
-	// no cgroup limit
-	if (mem_used != std::numeric_limits<size_t>::max() / 1024 &&
-	    mem_max != std::numeric_limits<size_t>::max() / 1024) {
+	// valid cgroup limit
+	if (mem_max <= memory_total && mem_used <= memory_total && mem_used <= mem_max) {
 	    memory_free = mem_max - mem_used;
 	}
 	else {
@@ -292,14 +291,13 @@ void HostMachineInfo::update_info( )
 	size_t swp_max = get_cgroup_limit("memory", "memory.memsw.limit_in_bytes") / 1024;
 	size_t swp_used = get_cgroup_limit("memory", "memory.stat", "total_swap") / 1024;
 	// limit is mem + swap
-	if (mem_max != std::numeric_limits<size_t>::max() / 1024) {
+	if (mem_max <= mem_total && swp_max <= (size_t)swap_total) {
 	    swap_total = std::min((size_t)swp_total, swp_max - mem_max);
 	}
 	else {
 	    swap_total = swp_total;
 	}
-	if (swp_used != std::numeric_limits<size_t>::max() / 1024 &&
-	    swp_max != std::numeric_limits<size_t>::max() / 1024) {
+        if (swp_max <= (size_t)swap_total && swp_used <= (size_t)swp_total) {
 	    swap_free = swp_max - swp_used;
 	}
 	else {
