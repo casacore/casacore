@@ -48,7 +48,8 @@ using namespace std;
 void check (MSDerivedValues& mdv,
             uInt rownr,
             ScalarColumn<double>& ha,
-            ScalarColumn<double>& last)
+            ScalarColumn<double>& last,
+            ArrayColumn<double>& azel)
 {
   double mha = mdv.hourAngle();
   double tha = ha(rownr);
@@ -56,6 +57,21 @@ void check (MSDerivedValues& mdv,
   double mlast = mdv.last().getValue().get();
   double tlast = last(rownr);
   AlwaysAssertExit (near(mlast, tlast, 1e-10));
+  Vector<double> mazel = mdv.azel().getValue().get();
+  Vector<double> tazel = azel(rownr);
+  AlwaysAssertExit (allNear(mazel, tazel, 1e-10));
+}
+
+void check (MSDerivedValues& mdv,
+            uInt rownr,
+            ScalarColumn<double>& ha,
+            ScalarColumn<double>& last,
+            ArrayColumn<double>& azel,
+            ArrayColumn<double>& itrf)
+{
+  check (mdv, rownr, ha, last, azel);
+  Vector<double> titrf = itrf(rownr);
+  cout << titrf << endl;
 }
 
 void check (MSDerivedValues& mdv,
@@ -65,13 +81,10 @@ void check (MSDerivedValues& mdv,
             ScalarColumn<double>& pa,
             ArrayColumn<double>& azel)
 {
-  check (mdv, rownr, ha, last);
+  check (mdv, rownr, ha, last, azel);
   double mpa = mdv.parAngle();
   double tpa = pa(rownr);
   AlwaysAssertExit (near(mpa, tpa, 1e-10));
-  Vector<double> mazel = mdv.azel().getValue().get();
-  Vector<double> tazel = azel(rownr);
-  AlwaysAssertExit (allNear(mazel, tazel, 1e-10));
 }
 
 void check (uInt rownr,
@@ -120,8 +133,10 @@ int main(int argc, char* argv[])
       td.addColumn (ScalarColumnDesc<double>("LAST"));
       td.addColumn (ScalarColumnDesc<double>("LAST1"));
       td.addColumn (ScalarColumnDesc<double>("LAST2"));
+      td.addColumn (ArrayColumnDesc<double> ("AZEL"));
       td.addColumn (ArrayColumnDesc<double> ("AZEL1"));
       td.addColumn (ArrayColumnDesc<double> ("AZEL2"));
+      td.addColumn (ArrayColumnDesc<double> ("ITRF"));
       td.addColumn (ArrayColumnDesc<double> ("UVW_J2000"));
       DerivedMSCal dataMan;
       tab.addColumn (td, dataMan);
@@ -137,8 +152,10 @@ int main(int argc, char* argv[])
     ScalarColumn<double> last(tab, "LAST");
     ScalarColumn<double> last1(tab, "LAST1");
     ScalarColumn<double> last2(tab, "LAST2");
+    ArrayColumn<double> azel(tab, "AZEL");
     ArrayColumn<double> azel1(tab, "AZEL1");
     ArrayColumn<double> azel2(tab, "AZEL2");
+    ArrayColumn<double> itrf(tab, "ITRF");
     ArrayColumn<double> uvwJ2000(tab, "UVW_J2000");
     ScalarMeasColumn<MEpoch> time(tab, "TIME");
     ScalarColumn<Int> fld(tab, "FIELD_ID");
@@ -182,7 +199,7 @@ int main(int argc, char* argv[])
       }
       mdv.setEpoch (time(i));
       mdv.setAntenna (-1);
-      check (mdv, i, ha, last);
+      check (mdv, i, ha, last, azel, itrf);
       mdv.setAntenna (ant1(i));
       check (mdv, i, ha1, last1, pa1, azel1);
       mdv.setAntenna (ant2(i));

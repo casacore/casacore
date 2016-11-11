@@ -58,6 +58,7 @@ void register_derivedmscal()
   UDFBase::registerUDF ("derivedmscal.AZEL",      UDFMSCal::makeAZEL);
   UDFBase::registerUDF ("derivedmscal.AZEL1",     UDFMSCal::makeAZEL1);
   UDFBase::registerUDF ("derivedmscal.AZEL2",     UDFMSCal::makeAZEL2);
+  UDFBase::registerUDF ("derivedmscal.ITRF",      UDFMSCal::makeITRF);
   UDFBase::registerUDF ("derivedmscal.UVWWVL",    UDFMSCal::makeUvwWvl);
   UDFBase::registerUDF ("derivedmscal.UVWWVLS",   UDFMSCal::makeUvwWvls);
   UDFBase::registerUDF ("derivedmscal.NEWUVW",    UDFMSCal::makeUVW);
@@ -93,7 +94,10 @@ namespace casacore {
 
   void HelpMsCalUDF::showFuncsDerived (ostream& os)
   {
-    os << "Derived values functions:" << endl;
+    os << "Derived direction coordinates functions" << endl;
+    os << "Direction can be given as the name of a FIELD subtable column," << endl;
+    os << "the name of a source, or a vector with source direction." << endl;
+    os << "If no direction argument is given, column PHASE_DIR is used." << endl;
     os << "  double MSCAL.HA()             "
       " hourangle of array center" << endl;
     os << "  double MSCAL.HA1()            "
@@ -112,6 +116,8 @@ namespace casacore {
       " azimuth/elevation of ANTENNA1" << endl;
     os << "  doublearray MSCAL.AZEL2()     "
       " azimuth/elevation of ANTENNA2" << endl;
+    os << "  doublearray MSCAL.ITRF()     "
+      " phase direction in ITRF coordinates" << endl;
     os << "  double MSCAL.LAST()           "
       " local sidereal time of array center" << endl;
     os << "  double MSCAL.LAST1()          "

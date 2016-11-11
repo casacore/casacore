@@ -102,6 +102,12 @@ void MSCalEngine::getAzEl (Int antnr, uInt rownr, Array<double>& data)
   data = itsRADecToAzEl().getValue().get();
 }
 
+void MSCalEngine::getItrf (Int antnr, uInt rownr, Array<double>& data)
+{
+  setData (antnr, rownr);
+  data = itsRADecToItrf().getValue().get();
+}
+
 void MSCalEngine::getUVWJ2000 (uInt rownr, Array<double>& data)
 {
   setData (1, rownr);
@@ -216,6 +222,7 @@ Int MSCalEngine::setData (Int antnr, uInt rownr)
     } else {
       itsLastDirJ2000 = itsDirToJ2000();
       itsRADecToAzEl.setModel (itsLastDirJ2000);
+      itsRADecToItrf.setModel (itsLastDirJ2000);
       itsRADecToHADec.setModel(itsLastDirJ2000);
       itsFrame.resetDirection (itsLastDirJ2000);
     }
@@ -230,6 +237,7 @@ Int MSCalEngine::setData (Int antnr, uInt rownr)
     if (itsFieldDir[calInx][fieldId].isModel()) {
       itsLastDirJ2000 = itsDirToJ2000();
       itsRADecToAzEl.setModel (itsLastDirJ2000);
+      itsRADecToItrf.setModel (itsLastDirJ2000);
       itsRADecToHADec.setModel(itsLastDirJ2000);
       itsFrame.resetDirection (itsLastDirJ2000);
     }
@@ -316,6 +324,8 @@ void MSCalEngine::init()
   itsPoleToAzEl.set (mHADecPole, MDirection::Ref(MDirection::AZEL,itsFrame));
   // Set up the machine to convert RaDec to AzEl.
   itsRADecToAzEl.set (MDirection(), MDirection::Ref(MDirection::AZEL,itsFrame));
+  // Idem RaDec to ITRF.
+  itsRADecToItrf.set (MDirection(), MDirection::Ref(MDirection::ITRF,itsFrame));
   // Idem RaDec to HaDec.
   itsRADecToHADec.set (MDirection(), rHADec);
   // Idem direction to J2000.

@@ -70,12 +70,15 @@ namespace casacore {
 //  <li> LAST2 is the local sidereal time of ANTENNA2.
 //  <li> PA1 is the parallactic angle of ANTENNA1.
 //  <li> PA2 is the parallactic angle of ANTENNA2.
+//  <li> AZEL is the azimuth/elevation of the array center.
 //  <li> AZEL1 is the azimuth/elevation of ANTENNA1.
 //  <li> AZEL2 is the azimuth/elevation of ANTENNA2.
-//  <li> UVW_J2000 is the UVW coordinates in J2000 (in meters)
+//  <li> ITRF is the phase direction in (time-dependent) ITRF coordinates.
+//  <li> UVW_J2000 is the UVW coordinates in J2000 (in meters).
 // </ul>
 // All columns have data type double and unit radian (except UVW). The HADEC,
-// AZEL, and UVW columns are array columnns while the others are scalar columns.
+// AZEL, ITRF and UVW columns are array columnns while the others are
+// scalar columns.
 //
 // This engine is meant for a MeasurementSet, but can be used for any table
 // containing an ANTENNA and FIELD subtable and the relevant columns in the
