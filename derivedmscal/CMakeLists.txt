@@ -33,6 +33,4 @@ DerivedMC.h
 DESTINATION include/casacore/derivedmscal
 )
 
-if (BUILD_TESTING)
-    add_subdirectory (DerivedMC/test)
-endif (BUILD_TESTING)
+add_subdirectory (DerivedMC/test ${EXCL_ALL})

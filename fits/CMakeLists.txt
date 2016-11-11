@@ -29,9 +29,7 @@ target_link_libraries (casa_fits casa_measures ${CFITSIO_LIBRARIES})
 add_subdirectory (apps)
 
 #the tests
-if (BUILD_TESTING)
-	add_subdirectory (FITS/test)
-endif (BUILD_TESTING)
+add_subdirectory (FITS/test ${EXCL_ALL})
 
 install (TARGETS casa_fits
 RUNTIME DESTINATION bin
