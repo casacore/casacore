@@ -69,7 +69,7 @@ script:
   - ccache -s
   - ccache -z
   - make -j2
-  - make test
+  - ctest --verbose
   - make install
   - ccache -s
 
