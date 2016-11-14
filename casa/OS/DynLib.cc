@@ -167,7 +167,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     if (itsHandle == 0) {
       throw AipsError ("Shared library " + library +
-                       " found in CASACORE_LDPATH nor (DY)LD_LIBRARY_PATH\n"
+                       " not found in CASACORE_LDPATH or (DY)LD_LIBRARY_PATH\n"
                        + itsError);
     }
     LogIO os(LogOrigin("DynLib"));

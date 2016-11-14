@@ -317,7 +317,7 @@ DataManagerCtor DataManager::getCtor (const String& type)
         libname = libname.substr (0, pos);
     }
     // Try to load and initialize the dynamic library.
-    DynLib dl(libname, string("libcasa_"), STRING(CASACORE_MAJOR_VERSION),
+    DynLib dl(libname, string("libcasa_"), STRING(SOVERSION),
               "register_"+libname, False);
     if (dl.getHandle()) {
         // See if registered now.
