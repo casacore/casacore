@@ -119,10 +119,14 @@ DataManagerColumn* DerivedMSCal::makeIndArrColumn (const String& name,
     col = new HaDecColumn(&itsEngine, 0);
   } else if (name == "HADEC2") {
     col = new HaDecColumn(&itsEngine, 1);
+  } else if (name == "AZEL") {
+    col = new AzElColumn(&itsEngine, -1);
   } else if (name == "AZEL1") {
     col = new AzElColumn(&itsEngine, 0);
   } else if (name == "AZEL2") {
     col = new AzElColumn(&itsEngine, 1);
+  } else if (name == "ITRF") {
+    col = new ItrfColumn(&itsEngine, -1);
   } else if (name == "UVW_J2000") {
     col = new UVWJ2000Column(&itsEngine);
   } else {

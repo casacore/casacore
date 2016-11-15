@@ -104,6 +104,8 @@ namespace casacore {
     { return new UDFMSCal (AZEL, 0); }
   UDFBase* UDFMSCal::makeAZEL2 (const String&)
     { return new UDFMSCal (AZEL, 1); }
+  UDFBase* UDFMSCal::makeITRF (const String&)
+    { return new UDFMSCal (ITRF, -1); }
   UDFBase* UDFMSCal::makeUVW (const String&)
     { return new UDFMSCal (NEWUVW, -1); }
   UDFBase* UDFMSCal::makeWvl (const String&)
@@ -189,6 +191,7 @@ namespace casacore {
       break;
     case HADEC:
     case AZEL:
+    case ITRF:
       setShape (IPosition(1,2));
       itsTmpVector.resize (2);
       setUnit ("rad");
@@ -830,6 +833,9 @@ namespace casacore {
       return MArray<Double>(itsTmpVector);
     case AZEL:
       itsEngine.getAzEl (itsArg, id.rownr(), itsTmpVector);
+      return MArray<Double>(itsTmpVector);
+    case ITRF:
+      itsEngine.getItrf (itsArg, id.rownr(), itsTmpVector);
       return MArray<Double>(itsTmpVector);
     case NEWUVW:
       itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);

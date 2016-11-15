@@ -17,6 +17,12 @@ endforeach (src)
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
+# Add SOVERSION definition for files needing it.
+foreach (src DataMan/DataManager.cc TaQL/UDFBase.cc)
+    set_source_files_properties(${src}
+                 PROPERTIES COMPILE_FLAGS -DSOVERSION=${LIB_SOVERSION})
+endforeach (src)
+
 add_library (casa_tables
 Tables/ArrayColumn_tmpl.cc
 Tables/ArrColDesc_tmpl.cc
@@ -459,9 +465,7 @@ Tables/UDFBase.h
 DESTINATION include/casacore/tables/Tables
 )
 
-if (BUILD_TESTING)
-    add_subdirectory (Tables/test)
-    add_subdirectory (DataMan/test)
-    add_subdirectory (TaQL/test)
-    add_subdirectory (LogTables/test)
-endif (BUILD_TESTING)
+add_subdirectory (Tables/test ${EXCL_ALL})
+add_subdirectory (DataMan/test ${EXCL_ALL})
+add_subdirectory (TaQL/test ${EXCL_ALL})
+add_subdirectory (LogTables/test ${EXCL_ALL})

@@ -56,7 +56,4 @@ Coordinates.h
 DESTINATION include/casacore/coordinates
 )
 
-if (BUILD_TESTING)
-    add_subdirectory (Coordinates/test)
-endif (BUILD_TESTING)
-
+add_subdirectory (Coordinates/test ${EXCL_ALL})

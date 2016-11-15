@@ -77,12 +77,14 @@ namespace casacore {
 //  <li> LAST2 is the local sidereal time of ANTENNA2.
 //  <li> PA1 is the parallactic angle of ANTENNA1.
 //  <li> PA2 is the parallactic angle of ANTENNA2.
+//  <li> AZEL is the azimuth/elevation of the array center.
 //  <li> AZEL1 is the azimuth/elevation of ANTENNA1.
 //  <li> AZEL2 is the azimuth/elevation of ANTENNA2.
-//  <li> UVW_J2000 is the UVW coordinates in J2000 (in meters)
+//  <li> ITRF is the direction in (time-dependent) ITRF coordinates.
+//  <li> UVW_J2000 is the UVW coordinates in J2000 (in meters).
 // </ul>
 // All values have data type double and unit radian (except UVW). The HADEC,
-// AZEL, and UVW cvalues are arrays while the others are scalars.
+// AZEL, ITRF and UVW cvalues are arrays while the others are scalars.
 //
 // This engine is meant for a MeasurementSet, but can be used for any table
 // containing an ANTENNA and FIELD subtable and the relevant columns in the
@@ -150,6 +152,9 @@ public:
   // Get the azimuth/elevation for the given row.
   void getAzEl (Int antnr, uInt rownr, Array<Double>&);
 
+  // Get the ITRF coordinates for the given row.
+  void getItrf (Int antnr, uInt rownr, Array<Double>&);
+
   // Get the UVW in J2000 for the given row.
   void getUVWJ2000 (uInt rownr, Array<Double>&);
 
@@ -208,6 +213,7 @@ private:
   MDirection::Convert         itsRADecToAzEl;  //# converter ra/dec to az/el
   MDirection::Convert         itsPoleToAzEl;   //# converter pole to az/el
   MDirection::Convert         itsRADecToHADec; //# converter ra/dec to ha/dec
+  MDirection::Convert         itsRADecToItrf;  //# converter ra/dec to itrf
   MDirection::Convert         itsDirToJ2000;   //# converter direction to J2000
   MEpoch::Convert             itsUTCToLAST;    //# converter UTC to LAST
   MBaseline::Convert          itsBLToJ2000;    //# convert ITRF to J2000

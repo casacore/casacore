@@ -184,7 +184,7 @@ namespace casacore {
     Unit                            itsUnit;
     MeasFrame                       itsFrame;       //# frame used by converter
     MDirection::Convert             itsConverter;
-    Vector<MDirection>              itsConstants;
+    Array<MDirection>               itsConstants;
     Vector<Double>                  itsH;           //# diff for sun or moon
     MDirection::Types               itsRefType;
     TableExprNode                   itsExprNode;

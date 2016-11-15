@@ -67,14 +67,14 @@ option (ENABLE_SHARED "Build shared libraries" YES)
 option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
 # By default do not use HDF5, FFTW3, threads
-option (CXX11 "Compile as C++11 if possible" NO)
+option (CXX11 "Compile as C++11 if possible" YES)
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
 option (USE_HDF5 "Build HDF5 " NO)
 option (USE_FFTW3 "Use FFTW instead of FFTPack" NO)
 option (USE_THREADS "Use Mutex thread synchronization" NO)
 option (USE_OPENMP "Use OpenMP threading" NO)
 option (USE_STACKTRACE "Show stacktrace in case of exception" NO)
-option (CASA_BUILD "Building the in the CASA (http://casa.nrao.edu) environment" NO)
+option (CASA_BUILD "Building in the CASA (http://casa.nrao.edu) environment" NO)
 
 set(CASA_DEFAULT_ALIGNMENT "32" CACHE STRING "Default alignment of casa::AlignedAllocator")
 
@@ -435,26 +435,35 @@ if(USE_STACKTRACE)
     add_definitions(-DUSE_STACKTRACE)
 endif(USE_STACKTRACE)
 
+# Enable cmake testing and add make check target that builds and runs the test
+enable_testing()
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+# This legacy flag always builds the tests and runs them with make test. There
+# seems to be no good way to make test executable depend on the test target
+if (NOT BUILD_TESTING)
+    set(EXCL_ALL EXCLUDE_FROM_ALL)
+endif (NOT BUILD_TESTING)
+
+# Determine the SOVERSION and define as compile variable.
+if (casa_soversion)
+    set (LIB_VERSION "${casa_soversion}")
+    set (LIB_SOVERSION "${casa_soversion}")
+    set (CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib" )
+else( )
+    set (LIB_VERSION "${PROJECT_VERSION}")
+    set (LIB_SOVERSION "${PROJECT_VERSION_MAJOR}")
+endif( )
+
 # Add the modules to be built.
 add_subdirectory (build-tools)
 foreach (module ${_modules})
     add_subdirectory (${module})
-    if (casa_soversion)
-        set(CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib" )
-        set_target_properties(
-          casa_${module} 
-          PROPERTIES 
-              VERSION "${casa_soversion}"
-              SOVERSION "${casa_soversion}"
-        )
-    else( )
-        set_target_properties(
-          casa_${module} 
-          PROPERTIES 
-              VERSION "${PROJECT_VERSION}"
-              SOVERSION "${PROJECT_VERSION_MAJOR}"
-        )
-    endif( )
+    set_target_properties(
+      casa_${module} 
+      PROPERTIES 
+          VERSION "${LIB_VERSION}"
+          SOVERSION "${LIB_SOVERSION}"
+    )
     if (CASA_BUILD)
         if (PYTHON_SHARED_LINKER_FLAGS AND ${module} STREQUAL python)
             set_target_properties(casa_python PROPERTIES LINK_FLAGS ${PYTHON_SHARED_LINKER_FLAGS})
@@ -473,6 +482,7 @@ message (STATUS "CMAKE_BUILD_TYPE ...... = ${CMAKE_BUILD_TYPE}")
 message (STATUS "Modules to be built ... = ${_modules}")
 message (STATUS "BUILD_SHARED_LIBS ..... = ${BUILD_SHARED_LIBS}")
 message (STATUS "ENABLE_RPATH .......... = ${ENABLE_RPATH}")
+message (STATUS "CMAKE_INSTALL_NAME_DIR  = ${CMAKE_INSTALL_NAME_DIR}")
 message (STATUS "ENABLE_TABLELOCKING ... = ${ENABLE_TABLELOCKING}")
 message (STATUS "USE_OPENMP ............ = ${USE_OPENMP}")
 message (STATUS "USE_STACKTRACE ........ = ${USE_STACKTRACE}")
@@ -514,7 +524,7 @@ endif (BUILD_PYTHON3)
 #  BUILD_PYTHON                  NO
 #  ENABLE_SHARED                 YES
 #  ENABLE_RPATH                  YES
-#  CXX11                         NO
+#  CXX11                         YES
 #  ENABLE_TABLELOCKING           YES
 #  USE_HDF5                      NO
 #  USE_FFTW3                     NO

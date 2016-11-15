@@ -163,8 +163,5 @@ TableMeasures.h
 DESTINATION include/casacore/measures
 )
 
-if (BUILD_TESTING)
-    add_subdirectory (Measures/test)
-    add_subdirectory (TableMeasures/test)
-endif (BUILD_TESTING)
-
+add_subdirectory (Measures/test ${EXCL_ALL})
+add_subdirectory (TableMeasures/test ${EXCL_ALL})

@@ -203,7 +203,8 @@ namespace casacore {
       iter = theirRegistry.find (libname);
       if (iter == theirRegistry.end()) {
         // Try to load the dynamic library.
-        DynLib dl(libname, string("libcasa_"), "register_"+libname, False);
+        DynLib dl(libname, string("libcasa_"), CASACORE_STRINGIFY(SOVERSION),
+                  "register_"+libname, False);
         if (dl.getHandle()) {
           // Add to map to indicate library has been loaded.
           // Note that a libname is different from a function name because

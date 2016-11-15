@@ -125,6 +125,24 @@ namespace casacore {
   };
 
 
+  // <summary>Pointing ITRF coordinate derived from TIME, etc.</summary>
+  // <use visibility=local>
+  class ItrfColumn : public VirtualArrayColumn<Double>
+  {
+  public:
+    explicit ItrfColumn (MSCalEngine* engine, Int antnr)
+      : itsEngine (engine),
+        itsAntNr  (antnr)
+    {}
+    virtual ~ItrfColumn();
+    virtual IPosition shape (uInt rownr);
+    virtual void getArray (uInt rowNr, Array<Double>& data);
+  private:
+    MSCalEngine* itsEngine;
+    Int          itsAntNr;    //# 0=antenna1 1=antenna2
+  };
+
+
   // <summary>UVW J2000 derived from TIME, etc.</summary>
   // <use visibility=local>
   class UVWJ2000Column : public VirtualArrayColumn<Double>

@@ -306,7 +306,7 @@
     // If the array is empty, numarray still sees it as non-contiguous.
     if (shp.product() > 0) {
       AlwaysAssert (PyArray_ISCONTIGUOUS(po)
-		    &&  PyArray_ISALIGNED(po)
+		    ///&&  PyArray_ISALIGNED(po)   fails on MIPS (see issue 531)
 		    &&  !PyArray_ISBYTESWAPPED(po), AipsError);
     }
     // Create the correct array.
