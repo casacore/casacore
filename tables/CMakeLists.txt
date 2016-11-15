@@ -17,6 +17,12 @@ endforeach (src)
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
+# Add SOVERSION definition for files needing it.
+foreach (src DataMan/DataManager.cc TaQL/UDFBase.cc)
+    set_source_files_properties(${src}
+                 PROPERTIES COMPILE_FLAGS -DSOVERSION=${LIB_SOVERSION})
+endforeach (src)
+
 add_library (casa_tables
 Tables/ArrayColumn_tmpl.cc
 Tables/ArrColDesc_tmpl.cc

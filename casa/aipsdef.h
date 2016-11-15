@@ -84,6 +84,10 @@ namespace std {};
 #endif
 #endif
 
+// Define the macros to stringify a preprocessor variable.
+#define CASACORE_STRINGIFY(x) CASACORE_STRINGIFY_HELPER(x)
+#define CASACORE_STRINGIFY_HELPER(x) #x
+
 // SUN Native compiler has trouble with typedef inside class.
 // PGI compiler (QK_USER) on Cray XT3 needs throw specification in .cc file.
 #if defined(AIPS_SUN_NATIVE)

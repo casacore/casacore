@@ -444,26 +444,26 @@ if (NOT BUILD_TESTING)
     set(EXCL_ALL EXCLUDE_FROM_ALL)
 endif (NOT BUILD_TESTING)
 
+# Determine the SOVERSION and define as compile variable.
+if (casa_soversion)
+    set (LIB_VERSION "${casa_soversion}")
+    set (LIB_SOVERSION "${casa_soversion}")
+    set (CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib" )
+else( )
+    set (LIB_VERSION "${PROJECT_VERSION}")
+    set (LIB_SOVERSION "${PROJECT_VERSION_MAJOR}")
+endif( )
+
 # Add the modules to be built.
 add_subdirectory (build-tools)
 foreach (module ${_modules})
     add_subdirectory (${module})
-    if (casa_soversion)
-        set(CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib" )
-        set_target_properties(
-          casa_${module} 
-          PROPERTIES 
-              VERSION "${casa_soversion}"
-              SOVERSION "${casa_soversion}"
-        )
-    else( )
-        set_target_properties(
-          casa_${module} 
-          PROPERTIES 
-              VERSION "${PROJECT_VERSION}"
-              SOVERSION "${PROJECT_VERSION_MAJOR}"
-        )
-    endif( )
+    set_target_properties(
+      casa_${module} 
+      PROPERTIES 
+          VERSION "${LIB_VERSION}"
+          SOVERSION "${LIB_SOVERSION}"
+    )
     if (CASA_BUILD)
         if (PYTHON_SHARED_LINKER_FLAGS AND ${module} STREQUAL python)
             set_target_properties(casa_python PROPERTIES LINK_FLAGS ${PYTHON_SHARED_LINKER_FLAGS})
@@ -482,6 +482,7 @@ message (STATUS "CMAKE_BUILD_TYPE ...... = ${CMAKE_BUILD_TYPE}")
 message (STATUS "Modules to be built ... = ${_modules}")
 message (STATUS "BUILD_SHARED_LIBS ..... = ${BUILD_SHARED_LIBS}")
 message (STATUS "ENABLE_RPATH .......... = ${ENABLE_RPATH}")
+message (STATUS "CMAKE_INSTALL_NAME_DIR  = ${CMAKE_INSTALL_NAME_DIR}")
 message (STATUS "ENABLE_TABLELOCKING ... = ${ENABLE_TABLELOCKING}")
 message (STATUS "USE_OPENMP ............ = ${USE_OPENMP}")
 message (STATUS "USE_STACKTRACE ........ = ${USE_STACKTRACE}")
