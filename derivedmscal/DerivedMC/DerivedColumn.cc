@@ -73,6 +73,17 @@ namespace casacore {
     itsEngine->getAzEl (itsAntNr, rowNr, data);
   }
 
+  ItrfColumn::~ItrfColumn()
+  {}
+  IPosition ItrfColumn::shape (uInt)
+  {
+    return IPosition(1,2);
+  }
+  void ItrfColumn::getArray (uInt rowNr, Array<Double>& data)
+  {
+    itsEngine->getItrf (itsAntNr, rowNr, data);
+  }
+
   UVWJ2000Column::~UVWJ2000Column()
   {}
   IPosition UVWJ2000Column::shape (uInt)

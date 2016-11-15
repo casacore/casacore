@@ -73,6 +73,7 @@ namespace casacore {
 //  <li> PA2 is the parallactic angle of ANTENNA2.
 //  <li> AZEL1 is the azimuth/elevation of ANTENNA1.
 //  <li> AZEL2 is the azimuth/elevation of ANTENNA2.
+//  <li> ITRF is the PHASE_DIR in ITRF coordinates (depends on TIME only).
 //  <li> UVW_J2000 is the UVW coordinates in J2000 (in meters)
 //  <li> STOKES makes it possible to convert Stokes of data, flag, or weight.
 //  <li> BASELINE is baseline selection using CASA syntax.
@@ -117,7 +118,7 @@ namespace casacore {
   {
   public:
     // Define the possible 'column' types.
-    enum ColType {HA, HADEC, PA, LAST, AZEL, NEWUVW,
+    enum ColType {HA, HADEC, PA, LAST, AZEL, ITRF, NEWUVW,
                   UVWWVL, UVWWVLS, NEWUVWWVL, NEWUVWWVLS,
                   STOKES, SELECTION, GETVALUE};
     // Define the possible selection types.
@@ -151,6 +152,7 @@ namespace casacore {
     static UDFBase* makeAZEL     (const String&);
     static UDFBase* makeAZEL1    (const String&);
     static UDFBase* makeAZEL2    (const String&);
+    static UDFBase* makeITRF     (const String&);
     static UDFBase* makeUVW      (const String&);
     static UDFBase* makeWvl      (const String&);
     static UDFBase* makeWvls     (const String&);
