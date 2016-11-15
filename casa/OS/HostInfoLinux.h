@@ -245,8 +245,8 @@ void HostMachineInfo::update_info( )
     /* get system wide memory usage */
     {
 	char *p;
-	int ret;
-	unsigned long mem_total, mem_free, mem_cached, swp_total, swp_free;
+	unsigned long sys_mem_total, sys_mem_free, sys_mem_cached,
+		      sys_mem_avail, sys_swap_total, sys_swap_free;
 
 	fd = open(MEMINFO, O_RDONLY);
 	len = read(fd, buffer, sizeof(buffer)-1);
@@ -255,57 +255,71 @@ void HostMachineInfo::update_info( )
 
 	p = strstr(buffer, "MemTotal:");
 
-	if ((ret = sscanf (p,"MemTotal: %lu kB\nMemFree: %lu kB\n",
-			   &mem_total, &mem_free)) != 2)
+	if (sscanf (p,"MemTotal: %lu kB\nMemFree: %lu kB\n",
+		    &sys_mem_total, &sys_mem_free) != 2)
 	    cerr << "Error parsing MemTotal and MemFree in /proc/meminfo\n";
 
 	p = strstr (buffer, "Cached:");
-	if ((ret = sscanf (p,"Cached: %lu kB\n", &mem_cached)) != 1)
+	if (sscanf (p,"Cached: %lu kB\n", &sys_mem_cached) != 1)
 	    cerr << "Error parsing Cached in /proc/meminfo\n";
+
+	/* available since 3.14, real available memory accounting for
+	 * unreclaimable page cache and slab cache */
+	p = strstr (buffer, "MemAvailable:");
+	if (!p || sscanf (p,"MemAvailable: %lu kB\n", &sys_mem_avail) != 1) {
+	    /* too old kernel, estimate via cache and free */
+	    sys_mem_avail = sys_mem_cached + sys_mem_free;
+	}
 
 	/* check resource limits, note that these are not enforced by linux */
 	struct rlimit rlim;
 	if (getrlimit(RLIMIT_RSS, &rlim) == 0 && rlim.rlim_cur > 0) {
-	    mem_total = std::min(rlim.rlim_cur / 1024, (rlim_t)mem_total);
+	    sys_mem_total = std::min(rlim.rlim_cur / 1024, (rlim_t)sys_mem_total);
+	    /* without cgroups we cannot determine available memory within the limit */
+	    sys_mem_avail = std::min(sys_mem_total, sys_mem_avail);
 	}
 
-	// can't use more memory than allowed by cgroups
-	size_t mem_max = get_cgroup_limit("memory", "memory.limit_in_bytes") / 1024;
-	size_t mem_used = get_cgroup_limit("memory", "memory.stat", "total_rss") / 1024;
-	memory_total = std::min((size_t)mem_total, mem_max);
-	// valid cgroup limit
-	if (mem_max <= memory_total && mem_used <= memory_total && mem_used <= mem_max) {
-	    memory_free = mem_max - mem_used;
+	/* can't use more memory than allowed by cgroups, enforced */
+	size_t proc_mem_max = get_cgroup_limit("memory", "memory.limit_in_bytes") / 1024;
+	/* usage_in_bytes also includes cache so use memory.stat */
+	size_t proc_mem_used = get_cgroup_limit("memory", "memory.stat", "total_rss") / 1024;
+
+	/* set HostInfo memoryTotal() */
+	memory_total = std::min((size_t)sys_mem_total, proc_mem_max);
+
+	/* if we have a valid cgroup limit we can determine memoryFree() exactly */
+	if (proc_mem_max <= sys_mem_total && proc_mem_used <= proc_mem_max) {
+	    memory_free = proc_mem_max - proc_mem_used;
 	}
 	else {
-	    memory_free = std::min((size_t)(mem_free + mem_cached), (size_t)memory_total);
+	    /* no cgroups so we have to assume all memory of host is available */
+	    memory_free = std::min((size_t)sys_mem_avail, (size_t)memory_total);
 	}
 	memory_used = memory_total - memory_free;
 
 	p = strstr (buffer, "SwapTotal:");
-	if ((ret = sscanf (p, "SwapTotal: %lu kB\nSwapFree: %lu kB\n",
-			   &swp_total, &swp_free)) != 2)
+	if (sscanf (p, "SwapTotal: %lu kB\nSwapFree: %lu kB\n",
+		    &sys_swap_total, &sys_swap_free) != 2)
 	    cerr << "Error parsing SwapTotal and SwapFree in /proc/meminfo\n";
 
-	// can't use more swap than allowed by cgroups
-	size_t swp_max = get_cgroup_limit("memory", "memory.memsw.limit_in_bytes") / 1024;
-	size_t swp_used = get_cgroup_limit("memory", "memory.stat", "total_swap") / 1024;
-	// limit is mem + swap
-	if (mem_max <= mem_total && swp_max <= (size_t)swap_total) {
-	    swap_total = std::min((size_t)swp_total, swp_max - mem_max);
+	/* can't use more swap than allowed by cgroups */
+	size_t proc_swap_max = get_cgroup_limit("memory", "memory.memsw.limit_in_bytes") / 1024;
+	size_t proc_swap_used = get_cgroup_limit("memory", "memory.stat", "total_swap") / 1024;
+	/* limit is mem + swap */
+	if (proc_mem_max <= sys_mem_total && proc_mem_max <= proc_swap_max) {
+	    proc_swap_max = proc_swap_max - proc_mem_max;
+	}
+
+	/* set swapTotal() */
+	swap_total = std::min((size_t)sys_swap_total, proc_swap_max);
+
+	if (proc_swap_max <= (size_t)swap_total && proc_swap_used <= proc_swap_max) {
+	    swap_free = proc_swap_max - proc_swap_used;
 	}
 	else {
-	    swap_total = swp_total;
+	    swap_free = sys_swap_free;
 	}
-        if (swp_max <= (size_t)swap_total && swp_used <= (size_t)swp_total) {
-	    swap_free = swp_max - swp_used;
-	}
-	else {
-	    swap_free = swp_free;
-	}
-	swap_used = swap_total-swap_free;
-
-
+	swap_used = swap_total - swap_free;
     }
 }
 
