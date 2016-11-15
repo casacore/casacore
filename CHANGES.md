@@ -1,3 +1,20 @@
+# 2.2.0
+
+## General
+- Lots of bug fixes and improvements
+- Tests are not built by default anymore, use `-DBUILD_TESTING=True`
+  to build them
+- Building with C++11 is now default, use `-DUSE_CXX11=False` if you do
+  not have a recent compiler (#533)
+- Added JSON support (#506)
+
+## TaQL
+- Major improvements in TaQL, such as masked arrays, new commands
+  `ALTER TABLE`, `SHOW TABLE`, `HELP` (#388)
+
+## Images
+- ImageConcat and ImageExpr now use JSON export (#517)
+
 
 # 2.1.0
 
