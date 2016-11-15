@@ -67,14 +67,14 @@ option (ENABLE_SHARED "Build shared libraries" YES)
 option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
 # By default do not use HDF5, FFTW3, threads
-option (CXX11 "Compile as C++11 if possible" NO)
+option (CXX11 "Compile as C++11 if possible" YES)
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
 option (USE_HDF5 "Build HDF5 " NO)
 option (USE_FFTW3 "Use FFTW instead of FFTPack" NO)
 option (USE_THREADS "Use Mutex thread synchronization" NO)
 option (USE_OPENMP "Use OpenMP threading" NO)
 option (USE_STACKTRACE "Show stacktrace in case of exception" NO)
-option (CASA_BUILD "Building the in the CASA (http://casa.nrao.edu) environment" NO)
+option (CASA_BUILD "Building in the CASA (http://casa.nrao.edu) environment" NO)
 
 set(CASA_DEFAULT_ALIGNMENT "32" CACHE STRING "Default alignment of casa::AlignedAllocator")
 
@@ -523,7 +523,7 @@ endif (BUILD_PYTHON3)
 #  BUILD_PYTHON                  NO
 #  ENABLE_SHARED                 YES
 #  ENABLE_RPATH                  YES
-#  CXX11                         NO
+#  CXX11                         YES
 #  ENABLE_TABLELOCKING           YES
 #  USE_HDF5                      NO
 #  USE_FFTW3                     NO
