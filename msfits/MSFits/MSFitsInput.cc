@@ -1840,7 +1840,6 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     else if (_array == "IRAM_PDB" || _array == "IRAM PDB") {
         diameter = 15.0;
     }
-
     MSAntennaColumns& ant(_msc->antenna());
     ROScalarColumn<String> name(anTab, "ANNAME");
     ROScalarColumn<Int> mountType(anTab, "MNTSTA");
@@ -1853,15 +1852,13 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
 
     //If it has a column called DIAMETER ...make use of it if
     // any of the values are valid
-    Bool diamColFound = False;
     if (anTab.tableDesc().isColumn("DIAMETER")) {
         Vector<Float> tmpDiams = ROScalarColumn<Float>(anTab, "DIAMETER").getColumn();
         if (anyGT(tmpDiams, 0.0f)) {
             antDiams = tmpDiams;
-            diamColFound = True;
         }
     }
-    if (! diamColFound && ((_array == "OVRO") || (_array == "CARMA"))) {
+    else if (_array == "OVRO" || _array == "CARMA") {
         for (Int i = 0; i < nAnt; i++) {
             //Crystal Brogan has guaranteed that it is always this order
             if (id(i) <= 6) {
@@ -1869,6 +1866,24 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
             }
             else {
                 antDiams(i) = 6.1;
+            }
+        }
+    }
+    else if (_array == "ALMA") {
+        // CAS-8875, algorithm from Jen Meyer
+        for (Int i = 0; i < nAnt; i++) {
+            String myName = name(i);
+            if (myName.startsWith("CM")) {
+                antDiams[i] = 7.0;
+            }
+            else if (
+                myName.startsWith("DA") || myName.startsWith("DV")
+                || myName.startsWith("PM")
+            ) {
+                antDiams[i] = 12.0;
+            }
+            else {
+                antDiams[i] = diameter;
             }
         }
     }
