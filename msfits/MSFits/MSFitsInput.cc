@@ -237,8 +237,9 @@ void MSPrimaryTableHolder::detach() {
 //------------------------------------------------------------
 MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
         const Bool useNewStyle) :
-    _infile(0), _msc(0), _uniqueAnts(), _nAntRow(0), _restfreq(0), _addSourceTable(False), _log(LogOrigin(
-            "MSFitsInput", "MSFitsInput")), _newNameStyle(useNewStyle), _msCreated(False) {
+    _infile(0), _msc(0), _uniqueAnts(), _nAntRow(0), _restfreq(0),
+    _addSourceTable(False), _log(LogOrigin("MSFitsInput", "MSFitsInput")),
+    _newNameStyle(useNewStyle), _msCreated(False), _rotateAnts(False) {
     // First, lets verify that fitsfile exists and that it appears to be a
     // FITS file.
     File f(fitsFile);
@@ -1859,7 +1860,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         }
     }
     else if (_array == "OVRO" || _array == "CARMA") {
-        for (Int i = 0; i < nAnt; i++) {
+        for (Int i = 0; i < nAnt; ++i) {
             //Crystal Brogan has guaranteed that it is always this order
             if (id(i) <= 6) {
                 antDiams(i) = 10.4;
@@ -1871,7 +1872,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     }
     else if (_array == "ALMA") {
         // CAS-8875, algorithm from Jen Meyer
-        for (Int i = 0; i < nAnt; i++) {
+        for (Int i = 0; i < nAnt; ++i) {
             String myName = name(i);
             if (myName.startsWith("CM")) {
                 antDiams[i] = 7.0;
