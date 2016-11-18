@@ -1865,18 +1865,13 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
         if (_array == "OVRO" || _array == "CARMA") {
             for (Int i = 0; i < nAnt; ++i) {
                 //Crystal Brogan has guaranteed that it is always this order
-                if (id(i) <= 6) {
-                    antDiams(i) = 10.4;
-                }
-                else {
-                    antDiams(i) = 6.1;
-                }
+                antDiams[i] = id(i) <= 6 ? 10.4 : 6.1;
             }
         }
         else if (_array == "ALMA") {
             // CAS-8875, algorithm from Jen Meyer
             for (Int i = 0; i < nAnt; ++i) {
-                String myName = name(i);
+                const String& myName = name(i);
                 if (myName.startsWith("CM")) {
                     antDiams[i] = 7.0;
                 }
