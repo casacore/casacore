@@ -1772,7 +1772,7 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
       }
       // Define the keywords if needed.
       if (cold.isDefined ("keywords")) {
-        TableRecord keySet (tabdesc.rwColumnDesc(nrdone).rwKeywordSet());
+        TableRecord& keySet (tabdesc.rwColumnDesc(nrdone).rwKeywordSet());
         keySet.fromRecord (cold.asRecord("keywords"));
       }
     }

@@ -69,8 +69,8 @@ namespace casacore {
   class JsonKVMap: public std::map<String, JsonValue>
   {
   public:
-    typedef map<String,JsonValue>::const_iterator const_iterator;
-    typedef map<String,JsonValue>::iterator iterator;
+    typedef std::map<String,JsonValue>::const_iterator const_iterator;
+    typedef std::map<String,JsonValue>::iterator iterator;
 
     JsonKVMap();
       

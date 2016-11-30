@@ -2448,6 +2448,7 @@ void FITSIDItoMS1::fillFeedTable() {
   String kwname;
   kwl.first();
   Int nIF = 1;
+  Int nPcal = 0;
   while ((fkw = kwl.next())){
     kwname = fkw->name();
     if (kwname == "NO_STKD") {
@@ -2462,7 +2463,10 @@ void FITSIDItoMS1::fillFeedTable() {
       nIF = fkw->asInt();
       //cout << kwname << "=" << nIF << endl;
     }
-    
+    if (kwname == "NOPCAL") {
+      nPcal = fkw->asInt();
+      //cout << kwname << "=" << nPcal << endl;
+    }
   }
 
   //access fitsidi AN table
@@ -2506,12 +2510,14 @@ void FITSIDItoMS1::fillFeedTable() {
 
   ROArrayColumn<Float> polcala;
   ROArrayColumn<Float> polcalb;
-  if(anTab.tableDesc().isColumn("POLCALA") && anTab.tableDesc().isColumn("POLCALB")){
-    polcala.attach(anTab, "POLCALA");
-    polcalb.attach(anTab, "POLCALB");
-  }
-  else{
-    *itsLog << LogIO::WARN << "POLCALA and/or POLCALB column is missing in ANTENNA table." << LogIO::POST;
+  if(nPcal > 0){
+    if(anTab.tableDesc().isColumn("POLCALA") && anTab.tableDesc().isColumn("POLCALB")){
+      polcala.attach(anTab, "POLCALA");
+      polcalb.attach(anTab, "POLCALB");
+    }
+    else{
+      *itsLog << LogIO::WARN << "POLCALA and/or POLCALB column is missing in ANTENNA table." << LogIO::POST;
+    }
   }
 
   //  ROArrayColumn<Float> beamfwhm(anTab, "BEAMFWHM"); // this column is optional and there is presently
