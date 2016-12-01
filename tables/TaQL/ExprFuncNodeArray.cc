@@ -1772,8 +1772,8 @@ MArray<DComplex> TableExprFuncNodeArray::getArrayDComplex
 	return conj     (operands()[0]->getArrayDComplex(id));
     case TableExprFuncNode::powFUNC:
         if (operands()[0]->valueType() == VTScalar) {
-	    return pow (operands()[0]->getDComplex(id),
-			operands()[1]->getArrayDComplex(id));
+            return casacore::pow (operands()[0]->getDComplex(id),
+                                  operands()[1]->getArrayDComplex(id));
 	} else if (operands()[1]->valueType() == VTScalar) {
             MArray<DComplex> arr1 (operands()[0]->getArrayDComplex(id));
 	    Array<DComplex> arr2 (arr1.shape());
