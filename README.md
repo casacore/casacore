@@ -113,20 +113,9 @@ PYTHON3_INCLUDE_DIR
 
 If you run into problems with boost libraries, try setting `-DBoost_NO_BOOST_CMAKE=True`. This will be necessary if you have the libraries from NRAO casa in your PATH or LD_LIBRARY_PATH.
 
-## Ubuntu 14.04 packages
+## Ubuntu packages
 
-If you run Ubuntu 14.04 you can use precompiled binary packages
-
-https://launchpad.net/~radio-astro/+archive/ubuntu/main
-
-installation commands:
-```
-sudo apt-get install software-properties-common
-sudo add-apt-repository ppa:radio-astro/main
-sudo apt-get update
-sudo apt-get install casacore2 casacore-data
-```
-
+Casacore is part of the [kern suite](http://kernsuite.info), which supplied precompiled binaries for Ubuntu 14.04 and 16.04
 
 # Documentation
 
