@@ -115,7 +115,7 @@ If you run into problems with boost libraries, try setting `-DBoost_NO_BOOST_CMA
 
 ## Ubuntu packages
 
-Casacore is part of the [kern suite](http://kernsuite.info), which supplied precompiled binaries for Ubuntu 14.04 and 16.04
+Casacore is part of the [kern suite](http://kernsuite.info), which supplies precompiled binaries for Ubuntu 14.04 and 16.04
 
 # Documentation
 
