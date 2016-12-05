@@ -523,6 +523,8 @@ void ImageBeamSet::rotate(const Quantity& angle) {
         iter->setPA(iter->getPA(True) + angle);
         ++iter;
     }
+    _minBeam.setPA(_minBeam.getPA() + angle);
+    _maxBeam.setPA(_maxBeam.getPA() + angle);
 }
 
 void ImageBeamSet::summarize(

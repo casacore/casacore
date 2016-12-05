@@ -616,6 +616,12 @@ int main() {
             AlwaysAssert(
                 beamSet.getBeam().getPA(True) == Quantity(70, "deg"), AipsError
             );
+            AlwaysAssert(
+                beamSet.getMinAreaBeam().getPA(True) == Quantity(70, "deg"), AipsError
+            );
+            AlwaysAssert(
+                beamSet.getMaxAreaBeam().getPA(True) == Quantity(70, "deg"), AipsError
+            );
             Matrix<GaussianBeam> beams(2,2, beam);
             beams(1, 1).setPA(Quantity(90, "deg"));
             beamSet = ImageBeamSet(beams);
@@ -632,6 +638,7 @@ int main() {
             AlwaysAssert(
                 beamSet(1, 1).getPA(True) == Quantity(-40, "deg"), AipsError
             );
+
         }
     }
     catch (const AipsError& x) {
