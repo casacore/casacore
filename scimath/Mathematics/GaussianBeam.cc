@@ -36,258 +36,258 @@ const GaussianBeam GaussianBeam::NULL_BEAM = GaussianBeam();
 
 
 GaussianBeam::GaussianBeam() : _major(Quantity(0, "arcsec")),
-	_minor(Quantity(0, "arcsec")), _pa(Quantity(0, "deg")) {
+    _minor(Quantity(0, "arcsec")), _pa(Quantity(0, "deg")) {
 }
 
 GaussianBeam::GaussianBeam(
-	const Quantity& major, const Quantity& minor,
-	const Quantity& pa
+    const Quantity& major, const Quantity& minor,
+    const Quantity& pa
 ) {
-	setMajorMinor(major, minor);
-	setPA(pa);
+    setMajorMinor(major, minor);
+    setPA(pa);
 }
 
 GaussianBeam::GaussianBeam(
-	const Vector<Quantity>& parms
+    const Vector<Quantity>& parms
 ) {
-	if (parms.size() != 3) {
-		throw AipsError(
-			"GaussianBeam(const Vector<Quantity>& parms): parms must have exactly three elements"
-		);
-	}
-	setMajorMinor(parms[0], parms[1]);
-	setPA(parms[2]);
+    if (parms.size() != 3) {
+        throw AipsError(
+            "GaussianBeam(const Vector<Quantity>& parms): parms must have exactly three elements"
+        );
+    }
+    setMajorMinor(parms[0], parms[1]);
+    setPA(parms[2]);
 }
 
 GaussianBeam::GaussianBeam(const GaussianBeam& other) :
-	_major(other._major), _minor(other._minor),
-	_pa(other._pa) {}
+    _major(other._major), _minor(other._minor),
+    _pa(other._pa) {}
 
 GaussianBeam::~GaussianBeam() {}
 
 GaussianBeam& GaussianBeam::operator=(const GaussianBeam& other) {
-	if (this != &other) {
-		_major = other._major;
-		_minor = other._minor;
-		_pa = other._pa;
-	}
-	return *this;
+    if (this != &other) {
+        _major = other._major;
+        _minor = other._minor;
+        _pa = other._pa;
+    }
+    return *this;
 }
 
 Bool GaussianBeam::operator==(const GaussianBeam& other) const {
-	return _major == other._major && _minor == other._minor
-		&& _pa == other._pa;
-	/*
-	return _major.getValue("rad") == other._major.getValue("rad")
-		&& _minor.getValue("rad") == other._minor.getValue("rad")
-		&& getPA(True).getValue("rad") == other.getPA(True).getValue("rad");
-		*/
+    return _major == other._major && _minor == other._minor
+        && _pa == other._pa;
+    /*
+    return _major.getValue("rad") == other._major.getValue("rad")
+        && _minor.getValue("rad") == other._minor.getValue("rad")
+        && getPA(True).getValue("rad") == other.getPA(True).getValue("rad");
+        */
 }
 
 Bool GaussianBeam::operator!=(const GaussianBeam& other) const {
-	return ! operator==(other);
+    return ! operator==(other);
 }
 
 const Quantity& GaussianBeam::getMajor() const {
-	return _major;
+    return _major;
 }
 
 Double GaussianBeam::getMajor(const Unit& u) const {
-	return _major.getValue(u);
+    return _major.getValue(u);
 }
 
 const Quantity& GaussianBeam::getMinor() const {
-	return _minor;
+    return _minor;
 }
 
 Double GaussianBeam::getMinor(const Unit& u) const {
-	return _minor.getValue(u);
+    return _minor.getValue(u);
 }
 
 Quantity GaussianBeam::getPA(const Bool unwrap) const {
-	if (
-		unwrap
-		&& (
-			_pa > QC::qTurn || _pa <= -QC::qTurn
-		)
-	) {
-		Quantity pa((fmod(_pa.getValue("deg"), 180)), "deg");
-		if (pa > QC::qTurn) {
-			pa -= QC::hTurn;
-			pa.convert(_pa.getUnit());
-			return pa;
-		}
-	}
-	return _pa;
+    if (
+        unwrap
+        && (
+            _pa > QC::qTurn || _pa <= -QC::qTurn
+        )
+    ) {
+        Quantity pa((fmod(_pa.getValue("deg"), 180)), "deg");
+        if (pa > QC::qTurn) {
+            pa -= QC::hTurn;
+            pa.convert(_pa.getUnit());
+            return pa;
+        }
+    }
+    return _pa;
 }
 
 Double GaussianBeam::getPA(const Unit& u, const Bool unwrap) const {
-	return getPA(unwrap).getValue(u);
+    return getPA(unwrap).getValue(u);
 }
 
 void GaussianBeam::setMajorMinor(
-	const Quantity& majAx, const Quantity& minAx
+    const Quantity& majAx, const Quantity& minAx
 ) {
-	static ostringstream oss;
-	ThrowIf(
-		majAx.getValue() < 0,
-		"Major axis cannot be less than zero."
-	);
-	ThrowIf(
-		minAx.getValue() < 0,
-		"Minor axis cannot be less than zero."
-	);
-	ThrowIf (
-		! majAx.isConform("rad"),
-		"Major axis must have angular units ("
-		+ majAx.getUnit() + " is not)."
-	);
-	ThrowIf (
-		! minAx.isConform("rad"),
-		"Major axis must have angular units ("
-		+ minAx.getUnit() + " is not)."
-	);
-	ThrowIf(
-		majAx < minAx,
-		"Major axis must be greater or equal to minor axis"
-	);
-	_major = majAx;
-	_minor = minAx;
+    static ostringstream oss;
+    ThrowIf(
+        majAx.getValue() < 0,
+        "Major axis cannot be less than zero."
+    );
+    ThrowIf(
+        minAx.getValue() < 0,
+        "Minor axis cannot be less than zero."
+    );
+    ThrowIf (
+        ! majAx.isConform("rad"),
+        "Major axis must have angular units ("
+        + majAx.getUnit() + " is not)."
+    );
+    ThrowIf (
+        ! minAx.isConform("rad"),
+        "Major axis must have angular units ("
+        + minAx.getUnit() + " is not)."
+    );
+    ThrowIf(
+        majAx < minAx,
+        "Major axis must be greater or equal to minor axis"
+    );
+    _major = majAx;
+    _minor = minAx;
 }
 
 void GaussianBeam::setPA(const Quantity& pa) {
-	if (! pa.isConform("rad")) {
-		ostringstream oss;
-		oss << className() << "::" << __FUNCTION__;
-		oss << ": Position angle must have angular units ("
-			<< pa.getUnit() << " is not).";
-		throw AipsError(oss.str());
-	}
-	_pa = pa;
+    if (! pa.isConform("rad")) {
+        ostringstream oss;
+        oss << className() << "::" << __FUNCTION__;
+        oss << ": Position angle must have angular units ("
+            << pa.getUnit() << " is not).";
+        throw AipsError(oss.str());
+    }
+    _pa = pa;
 }
 
 Bool GaussianBeam::isNull() const {
-	return _major.getValue() == 0 || _minor.getValue() == 0;
+    return _major.getValue() == 0 || _minor.getValue() == 0;
 }
 
 Double GaussianBeam::getArea(const Unit& unit) const {
     // NOTE we never want to return a Qauntity because of the
     // nonstandard handling of solid angle units in CASA
     Quantity qunit(1, unit);
-	if (qunit.isConform("sr") || qunit.isConform("rad2")) {
-		static const Double coeff = C::pi/(4*C::ln2);
+    if (qunit.isConform("sr") || qunit.isConform("rad2")) {
+        static const Double coeff = C::pi/(4*C::ln2);
         return coeff * (_major * _minor).getValue(unit);
-	}
-	else {
-		ostringstream oss;
-		oss << className() << "::" << __FUNCTION__
-			<< ": Unit " << unit.getName() << " is not a solid angle.";
-		throw AipsError(oss.str());
-	}
+    }
+    else {
+        ostringstream oss;
+        oss << className() << "::" << __FUNCTION__
+            << ": Unit " << unit.getName() << " is not a solid angle.";
+        throw AipsError(oss.str());
+    }
 }
 
 const String& GaussianBeam::className() {
-	static const String c = "GaussianBeam";
-	return c;
+    static const String c = "GaussianBeam";
+    return c;
 }
 
 Record GaussianBeam::toRecord() const {
-	Record outRec;
-	QuantumHolder qh(_major);
-	Record tmp;
-	String error;
-	// there's no need for error checking, this object holds bona-fide quantities.
-	qh.toRecord(error, tmp);
-	outRec.defineRecord("major", tmp);
-	qh = QuantumHolder(_minor);
-	qh.toRecord(error, tmp);
-	outRec.defineRecord("minor", tmp);
-	qh = QuantumHolder(_pa);
-	qh.toRecord(error, tmp);
-	outRec.defineRecord("positionangle", tmp);
-	return outRec;
+    Record outRec;
+    QuantumHolder qh(_major);
+    Record tmp;
+    String error;
+    // there's no need for error checking, this object holds bona-fide quantities.
+    qh.toRecord(error, tmp);
+    outRec.defineRecord("major", tmp);
+    qh = QuantumHolder(_minor);
+    qh.toRecord(error, tmp);
+    outRec.defineRecord("minor", tmp);
+    qh = QuantumHolder(_pa);
+    qh.toRecord(error, tmp);
+    outRec.defineRecord("positionangle", tmp);
+    return outRec;
 }
 
 GaussianBeam GaussianBeam::fromRecord(
-	const Record& rec
+    const Record& rec
 ) {
-	if (rec.nfields() != 3) {
-		throw AipsError("Beam record does not contain 3 fields");
-	}
-	QuantumHolder qh;
-	if (! rec.isDefined("major")) {
-		throw AipsError("Field major missing from restoring beam record");
-	}
-	const RecordInterface& subRec0 = rec.asRecord("major");
-	String error;
-	if (! qh.fromRecord(error, subRec0)) {
-		throw AipsError(error);
-	}
-	Quantity major = qh.asQuantumDouble();
+    if (rec.nfields() != 3) {
+        throw AipsError("Beam record does not contain 3 fields");
+    }
+    QuantumHolder qh;
+    if (! rec.isDefined("major")) {
+        throw AipsError("Field major missing from restoring beam record");
+    }
+    const RecordInterface& subRec0 = rec.asRecord("major");
+    String error;
+    if (! qh.fromRecord(error, subRec0)) {
+        throw AipsError(error);
+    }
+    Quantity major = qh.asQuantumDouble();
 
 
-	if (! rec.isDefined("minor")) {
-		throw AipsError("Field minor missing from restoring beam record");
-	}
-	const RecordInterface& subRec1 = rec.asRecord("minor");
-	if (! qh.fromRecord(error, subRec1)) {
-		throw AipsError(error);
-	}
-	Quantity minor = qh.asQuantumDouble();
+    if (! rec.isDefined("minor")) {
+        throw AipsError("Field minor missing from restoring beam record");
+    }
+    const RecordInterface& subRec1 = rec.asRecord("minor");
+    if (! qh.fromRecord(error, subRec1)) {
+        throw AipsError(error);
+    }
+    Quantity minor = qh.asQuantumDouble();
 
-	if (! rec.isDefined("positionangle")) {
-		throw AipsError("Field positionangle missing from restoring beam record");
-	}
-	const RecordInterface& subRec2 = rec.asRecord("positionangle");
-	if (! qh.fromRecord(error, subRec2)) {
-		throw AipsError(error);
-	}
-	Quantity pa = qh.asQuantumDouble();
-	return GaussianBeam(major, minor, pa);
+    if (! rec.isDefined("positionangle")) {
+        throw AipsError("Field positionangle missing from restoring beam record");
+    }
+    const RecordInterface& subRec2 = rec.asRecord("positionangle");
+    if (! qh.fromRecord(error, subRec2)) {
+        throw AipsError(error);
+    }
+    Quantity pa = qh.asQuantumDouble();
+    return GaussianBeam(major, minor, pa);
 }
 
 ostream &operator<<(ostream &os, const GaussianBeam& beam) {
-	os << "major: " << beam.getMajor() << ", minor: " << beam.getMinor()
-		<< ", pa: " << beam.getPA(True);
-	return os;
+    os << "major: " << beam.getMajor() << ", minor: " << beam.getMinor()
+        << ", pa: " << beam.getPA(True);
+    return os;
 }
 
 LogIO &operator<<(LogIO &os, const GaussianBeam& beam) {
-	ostringstream oss;
-	oss << beam;
-	os << oss.str();
-	return os;
+    ostringstream oss;
+    oss << beam;
+    os << oss.str();
+    return os;
 }
 
 Vector<Quantity> GaussianBeam::toVector(const Bool unwrap) const {
-	Vector<Quantity> beam(3);
-	beam[0] = _major;
-	beam[1] = _minor;
-	beam[2] = unwrap ? getPA(True) : _pa;
-	return beam;
+    Vector<Quantity> beam(3);
+    beam[0] = _major;
+    beam[1] = _minor;
+    beam[2] = unwrap ? getPA(True) : _pa;
+    return beam;
 }
 
 
 void GaussianBeam::convert(
-	const String& majUnit, const String& minUnit, const String& paUnit
+    const String& majUnit, const String& minUnit, const String& paUnit
 ) {
-	_major.convert(majUnit);
-	_minor.convert(minUnit);
-	_pa.convert(paUnit);
+    _major.convert(majUnit);
+    _minor.convert(minUnit);
+    _pa.convert(paUnit);
 }
 
 Bool near(
-	const GaussianBeam& left, const GaussianBeam& other,
-	const Double relWidthTol, const Quantity& absPATol
+    const GaussianBeam& left, const GaussianBeam& other,
+    const Double relWidthTol, const Quantity& absPATol
 ) {
-	if (! absPATol.isConform("rad")) {
-		throw AipsError(
-			"GaussianBeam::near(): absPATol does not have angular units"
-		);
-	}
-	return casacore::near(left.getMajor(), other.getMajor(), relWidthTol)
-		&& casacore::near(left.getMinor(), other.getMinor(), relWidthTol)
-		&& casacore::nearAbs(left.getPA(True), other.getPA(True), absPATol);
+    if (! absPATol.isConform("rad")) {
+        throw AipsError(
+            "GaussianBeam::near(): absPATol does not have angular units"
+        );
+    }
+    return casacore::near(left.getMajor(), other.getMajor(), relWidthTol)
+        && casacore::near(left.getMinor(), other.getMinor(), relWidthTol)
+        && casacore::nearAbs(left.getPA(True), other.getPA(True), absPATol);
 }
 
 }
