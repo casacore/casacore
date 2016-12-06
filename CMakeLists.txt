@@ -78,6 +78,20 @@ option (CASA_BUILD "Building in the CASA (http://casa.nrao.edu) environment" NO)
 
 set(CASA_DEFAULT_ALIGNMENT "32" CACHE STRING "Default alignment of casa::AlignedAllocator")
 
+# ccache use is optional
+option( UseCcache OFF )
+
+if (UseCcache)
+    message (STATUS "Searching for ccache.")
+    find_program(CCACHE_FOUND ccache)
+    if(CCACHE_FOUND)
+        message (STATUS "Ccache found.")
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+    endif(CCACHE_FOUND)
+endif()
+
+
 # basic setup for building within CASA environment
 if( CASA_BUILD )
    if( NOT DATA_DIR )
