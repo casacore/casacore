@@ -10,7 +10,7 @@ create table tTableGramAlttab_tmp.tab2/subtab
 
 Structure of table tTableGramAlttab_tmp.tab2
 ------------------ 
-0 rows, 2 columns in little endian format (using 2 data managers)
+0 rows, 2 columns in an endian format (using 2 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
     ActualCacheSize=1 PERSCACHESIZE=1
@@ -26,7 +26,7 @@ alter table tTableGramAlttab_tmp.tab2/subtab ADD COLUMN colxyz S SET KEYWORD col
 
 Structure of table tTableGramAlttab_tmp.tab2/subtab
 ------------------ 
-0 rows, 1 columns in little endian format (using 1 data managers)
+0 rows, 1 columns in an endian format (using 1 data managers)
 
  StandardStMan file=table.f0  name=SSM  bucketsize=384
     ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
@@ -48,7 +48,7 @@ alter table tTableGramAlttab_tmp.tab2 SET KEYWORD subtab="Table: tTableGramAltta
 
 Structure of table tTableGramAlttab_tmp.tab2
 ------------------ 
-0 rows, 2 columns in little endian format (using 2 data managers)
+0 rows, 2 columns in an endian format (using 2 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
     ActualCacheSize=1 PERSCACHESIZE=1
@@ -84,7 +84,7 @@ alter table tTableGramAlttab_tmp.tab2 SET KEYWORD keyrec=[sub1=[k1=1 as U1, k2=2
 
 Structure of table tTableGramAlttab_tmp.tab2
 ------------------ 
-0 rows, 2 columns in little endian format (using 2 data managers)
+0 rows, 2 columns in an endian format (using 2 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
     ActualCacheSize=1 PERSCACHESIZE=1
@@ -155,7 +155,7 @@ alter table tTableGramAlttab_tmp.tab2 FROM ::subtab t1 COPY KEYWORD col1::subrec
 
 Structure of table tTableGramAlttab_tmp.tab2
 ------------------ 
-0 rows, 2 columns in little endian format (using 2 data managers)
+0 rows, 2 columns in an endian format (using 2 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
     ActualCacheSize=1 PERSCACHESIZE=1
@@ -224,7 +224,7 @@ alter table tTableGramAlttab_tmp.tab2 ADD COLUMN col1a i4 [shape=[2,3], unit="m"
 
 Structure of table tTableGramAlttab_tmp.tab2
 ------------------ 
-0 rows, 4 columns in little endian format (using 3 data managers)
+0 rows, 4 columns in an endian format (using 3 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
     ActualCacheSize=1 PERSCACHESIZE=1
@@ -246,7 +246,7 @@ alter table tTableGramAlttab_tmp.tab2 RENAME COLUMN col1a to col1b, col2a to col
 
 Structure of table tTableGramAlttab_tmp.tab2
 ------------------ 
-0 rows, 4 columns in little endian format (using 3 data managers)
+0 rows, 4 columns in an endian format (using 3 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
     ActualCacheSize=1 PERSCACHESIZE=1
@@ -267,7 +267,7 @@ alter table tTableGramAlttab_tmp.tab2 DELETE COLUMN col1b,col2 ,ADDrows 4 +5, se
 
 Structure of table tTableGramAlttab_tmp.tab2
 ------------------ 
-9 rows, 2 columns in little endian format (using 2 data managers)
+9 rows, 2 columns in an endian format (using 2 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
     ActualCacheSize=1 PERSCACHESIZE=1
