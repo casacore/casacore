@@ -528,19 +528,19 @@ void testIt(MSMetaData& md) {
             for (uInt i=0; i<md.nAntennas(); ++i) {
                 vector<uInt> ids(1);
                 ids[0] = i;
-                std::map<String, uInt> mymap;
+                std::map<String, std::set<uInt> > mymap;
                 AlwaysAssert(
                     md.getAntennaNames(mymap, ids)[0] == expnames[i],
                     AipsError
                 );
             }
             cout << "*** test getAntennaID()" << endl;
-            std::map<String, uInt> mymap;
+            std::map<String, std::set<uInt> > mymap;
             for (uInt i=0; i<md.nAntennas(); ++i) {
                 vector<uInt> ids(1);
                 ids[0] = i;
                 AlwaysAssert(
-                        md.getAntennaIDs(md.getAntennaNames(mymap, ids))[0]==i,
+                        *md.getAntennaIDs(md.getAntennaNames(mymap, ids))[0].begin()==i,
                         AipsError
                 );
             }
@@ -1147,10 +1147,10 @@ void testIt(MSMetaData& md) {
             names[0] = "DV02";
             names[1] = "DV05";
             names[2] = "DV03";
-            stations = md.getAntennaStations(names);
+            vector<vector<String> > stationsByName = md.getAntennaStations(names);
             AlwaysAssert(
-                stations[0] == "A077" && stations[1] == "A082"
-                && stations[2] == "A137", AipsError
+                stationsByName[0][0] == "A077" && stationsByName[1][0] == "A082"
+                && stationsByName[2][0] == "A137", AipsError
             );
         }
         {
