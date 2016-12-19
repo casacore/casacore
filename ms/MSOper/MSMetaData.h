@@ -117,22 +117,39 @@ public:
     // get the antenna diameters
     QVD getAntennaDiameters() const;
 
-    // get the antenna ID for the antenna with the specified name.
+    // if the antenna name appears multiple times in the antenna table, the *last* ID
+    // that it is associated with is returned.
     uInt getAntennaID(const String& antennaName) const;
 
-    vector<uInt> getAntennaIDs(const vector<String>& antennaNames) const;
+    // get all the antenna IDs for the antenna with the specified name. 
+    std::set<uInt> getAntennaIDs(const String& antennaName) const;
 
-    // get the name of the antenna for the specified antenna ID
+    // The returned IDs are ordered in the way they appear in the atenna table
+    vector<std::set<uInt> > getAntennaIDs(const vector<String>& antennaNames) const;
+
+    // In the first instance of getAntennaNames, namesToID map will have the *last* ID
+    // of the antenna name, if it appears multiple times in the antenna table. In the second
+    // occurrence, namesToIDsMap will have the full set of IDs for antenna names that appear
+    // multiple times.
+
     vector<String> getAntennaNames(
         std::map<String, uInt>& namesToIDsMap,
+        const vector<uInt>& antennaIDs=vector<uInt>(0)
+    ) const;
+
+    vector<String> getAntennaNames(
+        std::map<String, std::set<uInt> >& namesToIDsMap,
         const vector<uInt>& antennaIDs=vector<uInt>(0)
     ) const;
 
     // get the antenna stations for the specified antenna IDs
     vector<String> getAntennaStations(const vector<uInt>& antennaIDs=vector<uInt>());
 
-    // get the antenna stations for the specified antenna names
-    vector<String> getAntennaStations(const vector<String>& antennaNames);
+    // get the antenna stations for the specified antenna names. The outer vector is ordered
+    // respective to antennaNames. Because an antenna name can appear more than once in
+    // the antenna table, the inner vector is ordered by row number in which that antenna name
+    // appears.
+    vector<std::vector<String> > getAntennaStations(const vector<String>& antennaNames);
 
     // get the set of antenna IDs for the specified scan.
     std::set<Int> getAntennasForScan(const ScanKey& scan) const;
@@ -331,9 +348,15 @@ public:
     // offsets (elements 0, 1, and 2 respectively). The longitude and latitude offsets are
     // measured along the surface of a sphere centered at the earth's center and whose surface
     // intersects the position of the observatory.
-    QVD getAntennaOffset(uInt which);
+    QVD getAntennaOffset(uInt which) const;
 
-    QVD getAntennaOffset(const String& name);
+    // If the antenna name appears mulitple times, this will return the offset for the first
+    // occurrence of it in the antenna table
+    QVD getAntennaOffset(const String& name) const;
+
+    // If the antenna name appears mulitple times, this will return all the offsets for it,
+    // in the order they appear in the antenna table
+    std::vector<QVD> getAntennaOffsets(const String& name) const;
 
     vector<QVD > getAntennaOffsets() const;
 
@@ -344,7 +367,7 @@ public:
     ) const;
 
     // <src>names</src> cannot be empty.
-    vector<MPosition> getAntennaPositions(const vector<String>& names);
+    vector<vector<MPosition> > getAntennaPositions(const vector<String>& names);
 
     // the first key in the returned map is the spectral window ID, the second is
     // the average interval for the specified scan for that spw.
@@ -685,7 +708,7 @@ private:
     mutable std::map<ScanKey, std::set<Int> > _scanToStatesMap, _scanToFieldsMap, _scanToAntennasMap;
     mutable std::map<Int, std::set<Int> >    _fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap;
     mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
-    mutable std::map<String, uInt> _antennaNameToIDMap;
+    mutable std::map<String, std::set<uInt> > _antennaNameToIDMap;
     mutable SHARED_PTR<const std::map<ScanKey, ScanProperties> > _scanProperties;
     mutable SHARED_PTR<const std::map<SubScanKey, SubScanProperties> > _subScanProperties;
 
@@ -822,7 +845,7 @@ private:
     _generateSubScanPropsIfWanted() const;
 
     vector<String> _getAntennaNames(
-        std::map<String, uInt>& namesToIDsMap
+        std::map<String, std::set<uInt> >& namesToIDsMap
     ) const;
 
     vector<MPosition> _getAntennaPositions() const;

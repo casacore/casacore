@@ -765,7 +765,7 @@ void MSSummary::listAntenna (LogIO& os, Bool verbose) const
     // Determine antennas  present in the main table
     const std::set<Int>& antIds = _msmd->getUniqueAntennaIDs();
     uInt nAnt = antIds.size();
-    std::map<String, uInt> namesToIDsMap;
+    std::map<String, std::set<uInt> > namesToIDsMap;
     vector<String> names = _msmd->getAntennaNames(namesToIDsMap);
     vector<String> stations = _msmd->getAntennaStations();
     if (verbose) {

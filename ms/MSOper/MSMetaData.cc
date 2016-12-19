@@ -1567,7 +1567,7 @@ uInt MSMetaData::nDataDescriptions() const {
 }
 
 vector<String> MSMetaData::_getAntennaNames(
-    std::map<String, uInt>& namesToIDsMap
+    std::map<String, std::set<uInt> >& namesToIDsMap
 ) const {
     if (! _antennaNames.empty()) {
         namesToIDsMap = _antennaNameToIDMap;
@@ -1584,9 +1584,8 @@ vector<String> MSMetaData::_getAntennaNames(
         Vector<String>::const_iterator name=names.begin();
         name!=end; ++name, ++i
     ) {
-        namesToIDsMap[*name] = i;
+        namesToIDsMap[*name].insert(i);
     }
-
     uInt mysize = names.size()*sizeof(uInt);
     for (
         Vector<String>::const_iterator name=names.begin();
@@ -1605,8 +1604,23 @@ vector<String> MSMetaData::getAntennaNames(
     std::map<String, uInt>& namesToIDsMap,
     const vector<uInt>& antennaIDs
 ) const {
+    namesToIDsMap.clear();
+    std::map<String, std::set<uInt> > allMap;
+    vector<String> names = getAntennaNames(allMap, antennaIDs);
+    std::map<String, std::set<uInt> >::const_iterator iter = allMap.begin();
+    std::map<String, std::set<uInt> >::const_iterator end = allMap.end();
+    for (; iter!=end; ++iter) {
+        namesToIDsMap[iter->first] = *iter->second.rbegin();
+    }
+    return names;
+}
+
+vector<String> MSMetaData::getAntennaNames(
+    std::map<String, std::set<uInt> >& namesToIDsMap,
+    const vector<uInt>& antennaIDs
+) const {
     uInt nAnts = nAntennas();
-    std::map<String, uInt> allMap;
+    std::map<String, std::set<uInt> > allMap;
     vector<String> allNames = _getAntennaNames(allMap);
     if (antennaIDs.empty()) {
         namesToIDsMap = allMap;
@@ -1626,35 +1640,37 @@ vector<String> MSMetaData::getAntennaNames(
     ) {
         String antName = allNames[*id];
         names.push_back(antName);
-        namesToIDsMap[antName] = *id;
+        namesToIDsMap[antName].insert(*id);
     }
     return names;
 }
 
-uInt MSMetaData::getAntennaID(
+uInt MSMetaData::getAntennaID(const String& antennaName) const {
+    return *getAntennaIDs(antennaName).rbegin();
+}
+
+std::set<uInt> MSMetaData::getAntennaIDs(
     const String& antennaName
 ) const {
     return getAntennaIDs(vector<String>(1, antennaName))[0];
 }
 
-vector<uInt> MSMetaData::getAntennaIDs(
+vector<std::set<uInt> > MSMetaData::getAntennaIDs(
     const vector<String>& antennaNames
 ) const {
-    std::map<String, uInt> namesToIDsMap;
+    std::map<String, std::set<uInt> > namesToIDsMap;
     vector<String> names = getAntennaNames(namesToIDsMap);
     vector<String>::const_iterator end = antennaNames.end();
-    std::map<String, uInt>::const_iterator mapEnd = namesToIDsMap.end();
-    vector<uInt> ids;
+    std::map<String, std::set<uInt> >::const_iterator mapEnd = namesToIDsMap.end();
+    vector<std::set<uInt> > ids;
     for (
         vector<String>::const_iterator name=antennaNames.begin();
         name!=end; ++name
     ) {
-        std::map<String, uInt>::const_iterator pair = namesToIDsMap.find(*name);
-        if (pair == mapEnd) {
-            throw AipsError(
-                _ORIGIN + "Unknown antenna " + *name
-            );
-        }
+        std::map<String, std::set<uInt> >::const_iterator pair = namesToIDsMap.find(*name);
+        ThrowIf(
+            pair == mapEnd, _ORIGIN + "Unknown antenna " + *name
+        );
         ids.push_back(pair->second);
     }
     return ids;
@@ -1730,8 +1746,21 @@ vector<String> MSMetaData::getAntennaStations(const vector<uInt>& antennaIDs) {
     return myStationNames;
 }
 
-vector<String> MSMetaData::getAntennaStations(const vector<String>& antennaNames) {
-    return getAntennaStations(getAntennaIDs(antennaNames));
+vector<vector<String> > MSMetaData::getAntennaStations(const vector<String>& antennaNames) {
+    vector<std::set<uInt> > ids = getAntennaIDs(antennaNames);
+    vector<std::set<uInt> >::const_iterator iter = ids.begin();
+    vector<std::set<uInt> >::const_iterator end = ids.end();
+    vector<vector<String> > stations;
+    for (; iter!=end; ++iter) {
+        std::set<uInt>::const_iterator siter = iter->begin();
+        std::set<uInt>::const_iterator send = iter->end();
+        vector<String> myStations;
+        for (; siter!=send; ++siter) {
+            myStations.push_back(getAntennaStations(vector<uInt>(1, *siter))[0]);
+        }
+        stations.push_back(myStations);
+    }
+    return stations;
 }
 
 vector<String> MSMetaData::_getStationNames() {
@@ -3339,7 +3368,7 @@ vector<MPosition> MSMetaData::_getAntennaPositions() const {
     return antennaPositions;
 }
 
-vector<MPosition> MSMetaData::getAntennaPositions (
+vector<MPosition> MSMetaData::getAntennaPositions(
     const vector<uInt>& which
 ) const {
     vector<MPosition> allPos = _getAntennaPositions();
@@ -3361,19 +3390,32 @@ vector<MPosition> MSMetaData::getAntennaPositions (
     return output;
 }
 
-vector<MPosition> MSMetaData::getAntennaPositions(
+vector<vector<MPosition> > MSMetaData::getAntennaPositions(
     const vector<String>& names
 ) {
-    if (names.size() == 0) {
-        throw AipsError(_ORIGIN + "names cannot be empty");
+    ThrowIf(
+        names.empty(), _ORIGIN + "names cannot be empty"
+    );
+    vector<std::set<uInt> > ids = getAntennaIDs(names);
+    vector<std::set<uInt> >::const_iterator iter = ids.begin();
+    vector<std::set<uInt> >::const_iterator end = ids.end();
+    vector<vector<MPosition> > pos;
+    for (; iter!=end; ++iter) {
+        std::vector<MPosition> mypos;
+        std::set<uInt>::const_iterator siter = iter->begin();
+        std::set<uInt>::const_iterator send = iter->end();
+        for (; siter!=send; ++siter) {
+            mypos.push_back(getAntennaPositions(vector<uInt>(1, *siter))[0]);
+        }
+        pos.push_back(mypos);
     }
-    return getAntennaPositions(getAntennaIDs(names));
+    return pos;
 }
 
-QVD MSMetaData::getAntennaOffset(uInt which) {
-    if (which >= nAntennas()) {
-        throw AipsError(_ORIGIN + "Out of range exception.");
-    }
+QVD MSMetaData::getAntennaOffset(uInt which) const {
+    ThrowIf(
+        which >= nAntennas(), "Out of range exception."
+    );
     return getAntennaOffsets()[which];
 }
 
@@ -3463,10 +3505,21 @@ Matrix<Bool> MSMetaData::getUniqueBaselines() {
 
 QVD MSMetaData::getAntennaOffset(
     const String& name
-) {
-    vector<String> names(1);
-    names[0] = name;
-    return getAntennaOffset(getAntennaIDs(names)[0]);
+) const {
+    return getAntennaOffsets(name)[0];
+}
+    
+std::vector<QVD> MSMetaData::getAntennaOffsets(
+    const String& name
+) const {
+    std::set<uInt> ids = getAntennaIDs(name);
+    std::vector<QVD> offsets;
+    std::set<uInt>::const_iterator iter = ids.begin();
+    std::set<uInt>::const_iterator end = ids.end();
+    for(; iter!=end; ++iter) {
+        offsets.push_back(getAntennaOffset(*iter));
+    }
+    return offsets;
 }
 
 Quantity MSMetaData::getEffectiveTotalExposureTime() {
