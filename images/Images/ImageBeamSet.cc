@@ -512,7 +512,7 @@ Record ImageBeamSet::toRecord() const {
     return perPlaneBeams;
 }
 
-void ImageBeamSet::rotate(const Quantity& angle) {
+void ImageBeamSet::rotate(const Quantity& angle, Bool unwrap) {
     ThrowIf(
         ! angle.isConform("rad"),
         "Quantity is not an angle"
@@ -520,11 +520,11 @@ void ImageBeamSet::rotate(const Quantity& angle) {
     Matrix<GaussianBeam>::iterator iter = _beams.begin();
     Matrix<GaussianBeam>::iterator end = _beams.end();
     while(iter != end) {
-        iter->setPA(iter->getPA(True) + angle);
+        iter->setPA(iter->getPA(True) + angle, unwrap);
         ++iter;
     }
-    _minBeam.setPA(_minBeam.getPA() + angle);
-    _maxBeam.setPA(_maxBeam.getPA() + angle);
+    _minBeam.setPA(_minBeam.getPA() + angle, unwrap);
+    _maxBeam.setPA(_maxBeam.getPA() + angle, unwrap);
 }
 
 void ImageBeamSet::summarize(
