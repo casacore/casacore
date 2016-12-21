@@ -92,7 +92,8 @@ MSMetaData::MSMetaData(const MeasurementSet *const &ms, const Float maxCacheSize
       _taqlTempTable(
         File(ms->tableName()).exists() ? 0 : 1, ms
       ), _flagsColumn(),
-       _spwInfoStored(False), _forceSubScanPropsToCache(False) {}
+       _spwInfoStored(False), _forceSubScanPropsToCache(False),
+       _sourceTimes() {}
 
 MSMetaData::~MSMetaData() {}
 
@@ -2963,6 +2964,19 @@ vector<MDirection> MSMetaData::getSourceDirections() const {
         _sourceDirs = myvec;
     }
     return myvec;
+}
+
+SHARED_PTR<const Quantum<Vector<Double > > > MSMetaData::getSourceTimes() const {
+    if (_sourceTimes) {
+        return _sourceTimes;
+    }
+    String colName = MSSource::columnName(MSSource::TIME);
+    ScalarQuantColumn<Double> time(_ms->source(), colName);
+    SHARED_PTR<const Quantum<Vector<Double> > > col = time.getColumn();
+    if (_cacheUpdated(_sizeof(*col))) {
+        _sourceTimes = col;
+    }
+    return col;
 }
 
 map<SourceKey, MSMetaData::SourceProperties> MSMetaData::_getSourceInfo() const {

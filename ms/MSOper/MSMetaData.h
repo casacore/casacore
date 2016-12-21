@@ -222,6 +222,9 @@ public:
     // the row number in that table. But not in this case.
     vector<Int> getSourceTableSourceIDs() const;
 
+    // SOURCE.TIME
+    SHARED_PTR<const Quantum<Vector<Double> > > getSourceTimes() const;
+
     // get a set of spectral windows for which the specified <src>intent</src>
     // applies.
     virtual std::set<uInt> getSpwsForIntent(const String& intent);
@@ -775,6 +778,7 @@ private:
 
     mutable std::map<SourceKey, SourceProperties> _sourceInfo;
     mutable SHARED_PTR<std::set<Int> > _ephemFields;
+    mutable SHARED_PTR<const Quantum<Vector<Double> > > _sourceTimes;
 
     // disallow copy constructor and = operator
     MSMetaData(const MSMetaData&);
