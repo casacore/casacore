@@ -88,23 +88,23 @@ class CoordinateSystem;
 class ImageBeamSet {
 public:
 
-	typedef Array<GaussianBeam>::const_iterator BeamIter;
+    typedef Array<GaussianBeam>::const_iterator BeamIter;
 
-	// Construct an empty beam set.
-	ImageBeamSet();
+    // Construct an empty beam set.
+    ImageBeamSet();
 
     // Construct a beam set from an 2-D array of beams representing
     // the frequency and stokes axis.
     // Axis length 1 means it is valid for all channels cq. stokes.
-	// If the image has 0 spectral channels or stokes, the corresponding
-	// length of the axis in the provided matrix should be 1.
-	ImageBeamSet(
-		const Matrix<GaussianBeam>& beams
-	);
+    // If the image has 0 spectral channels or stokes, the corresponding
+    // length of the axis in the provided matrix should be 1.
+    ImageBeamSet(
+        const Matrix<GaussianBeam>& beams
+    );
 
-	// construct an ImageBeamSet representing a single beam which is valid for
-	// all channels and stokes
-	ImageBeamSet(const GaussianBeam& beam);
+    // construct an ImageBeamSet representing a single beam which is valid for
+    // all channels and stokes
+    ImageBeamSet(const GaussianBeam& beam);
 
     // Create an ImageBeamSet of the specified shape with all
     // GaussianBeams initialized to <src>beam</src>.
@@ -113,10 +113,10 @@ public:
     // The copy constructor (reference semantics).
     ImageBeamSet(const ImageBeamSet& other);
 
-	~ImageBeamSet();
+    ~ImageBeamSet();
 
     // Assignment can change the shape (copy semantics).
-	ImageBeamSet& operator=(const ImageBeamSet& other);
+    ImageBeamSet& operator=(const ImageBeamSet& other);
 
     // Beam sets are equal if the shapes and all corresponding beams are equal.
     Bool operator== (const ImageBeamSet& other) const;
@@ -141,7 +141,7 @@ public:
 
     // Does this beam set contain multiple beams?
     Bool hasMultiBeam() const {
-    	return _beams.size() > 1;
+        return _beams.size() > 1;
     }
 
     // Is the beam set empty?
@@ -269,26 +269,26 @@ public:
 
 private:
 
-	static const String _DEFAULT_AREA_UNIT;
+    static const String _DEFAULT_AREA_UNIT;
 
-	Matrix<GaussianBeam> _beams;
-	Matrix<Double> _areas;
-	String _areaUnit;
-	GaussianBeam _minBeam, _maxBeam;
-	IPosition _minBeamPos, _maxBeamPos;
+    Matrix<GaussianBeam> _beams;
+    Matrix<Double> _areas;
+    String _areaUnit;
+    GaussianBeam _minBeam, _maxBeam;
+    IPosition _minBeamPos, _maxBeamPos;
 
-	void _calculateAreas();
+    void _calculateAreas();
 
-	static void _chanInfoToStream(
-		ostream& os, const SpectralCoordinate *spCoord,
-		const uInt chan, const uInt chanWidth, const uInt freqPrec,
-		const uInt velWidth, const uInt velPrec
-	);
+    static void _chanInfoToStream(
+        ostream& os, const SpectralCoordinate *spCoord,
+        const uInt chan, const uInt chanWidth, const uInt freqPrec,
+        const uInt velWidth, const uInt velPrec
+    );
 
-	static void _beamToStream(
-		ostream& os, const GaussianBeam& beam,
-		const Unit& unit
-	);
+    static void _beamToStream(
+        ostream& os, const GaussianBeam& beam,
+        const Unit& unit
+    );
 };
 
 ostream &operator<<(ostream &os, const ImageBeamSet& beamSet);

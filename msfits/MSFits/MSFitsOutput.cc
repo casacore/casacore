@@ -1678,7 +1678,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         ///    desc.addField("POLCALB", TpArrayFloat,           // POLCALB
         ///          IPosition(1,0));
         desc.addField("POLCALB", TpFloat); // POLCALB
-
+        desc.addField("DIAMETER", TpFloat);
         MSAntenna antennaTable = ms.antenna();
         ROMSAntennaColumns antennaCols(antennaTable);
 
@@ -1714,12 +1714,11 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         RecordFieldPtr<Float> staxof(writer.row(), "STAXOF");
         RecordFieldPtr<String> poltya(writer.row(), "POLTYA");
         RecordFieldPtr<Float> polaa(writer.row(), "POLAA");
-        ///    RecordFieldPtr< Array<Float> > polcala(writer.row(), "POLCALA");
         RecordFieldPtr<Float> polcala(writer.row(), "POLCALA");
         RecordFieldPtr<String> poltyb(writer.row(), "POLTYB");
         RecordFieldPtr<Float> polab(writer.row(), "POLAB");
-        ///    RecordFieldPtr< Array<Float> > polcalb(writer.row(), "POLCALB");
         RecordFieldPtr<Float> polcalb(writer.row(), "POLCALB");
+        RecordFieldPtr<Float> diam(writer.row(), "DIAMETER");
 
         // Set the ones we're not going to change once
         *orbparm = 0.0;
@@ -1739,6 +1738,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
         // Also: if writeStation==True use station names instead of antenna names
         // for the output fits file (input fits file tends to have this).
         Vector<String> anames = antid.getColumn();
+        Vector<Double> antDiams = msmd.getAntennaDiameters().getValue("m");
         if (anames.nelements() > 0) {
             if (writeStation || allEQ(anames, anames(0))) {
                 Vector<String> stations = inantname.getColumn();
@@ -1825,6 +1825,7 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
                         << "Could not find polarization types for antenna "
                         << antnum << LogIO::POST;
             }
+            *diam = antDiams[antnum];
             writer.write();
         }
     }

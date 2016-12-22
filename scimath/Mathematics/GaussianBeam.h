@@ -68,89 +68,89 @@ namespace casacore {
 class GaussianBeam {
 public:
 
-	static const GaussianBeam NULL_BEAM;
+    static const GaussianBeam NULL_BEAM;
 
-	// create a beam with all quantities zero (a null beam).
-	GaussianBeam();
+    // create a beam with all quantities zero (a null beam).
+    GaussianBeam();
 
 
-	// Construct a beam from a set of Quantities. If minor > major
-	// an exception is thrown. If any units are not angular, an
-	// exception is thrown
-	GaussianBeam(
-		const Quantity& major, const Quantity& minor,
-		const Quantity& pa
-	);
+    // Construct a beam from a set of Quantities. If minor > major
+    // an exception is thrown. If any units are not angular, an
+    // exception is thrown
+    GaussianBeam(
+        const Quantity& major, const Quantity& minor,
+        const Quantity& pa
+    );
 
-	// Construct a beam from a 3-Vector of Quantities representing
-	// the major axis, the minor axis and the position angle (in that order).
-	// If parms[1] > parms[0] (minor axis > major axis),
-	// an exception is thrown. If any units are not angular, an
-	// exception is thrown
-	GaussianBeam(
-		const Vector<Quantity>& parms
-	);
+    // Construct a beam from a 3-Vector of Quantities representing
+    // the major axis, the minor axis and the position angle (in that order).
+    // If parms[1] > parms[0] (minor axis > major axis),
+    // an exception is thrown. If any units are not angular, an
+    // exception is thrown
+    GaussianBeam(
+        const Vector<Quantity>& parms
+    );
 
-	GaussianBeam(const GaussianBeam& other);
+    GaussianBeam(const GaussianBeam& other);
 
-	~GaussianBeam();
+    ~GaussianBeam();
 
-	GaussianBeam& operator=(const GaussianBeam& other);
+    GaussianBeam& operator=(const GaussianBeam& other);
 
-	Bool operator==(const GaussianBeam& other) const;
+    Bool operator==(const GaussianBeam& other) const;
 
-	Bool operator!=(const GaussianBeam& other) const;
+    Bool operator!=(const GaussianBeam& other) const;
 
-	// returns the major axis in the same units as it had at construction
-	const Quantity& getMajor() const;
+    // returns the major axis in the same units as it had at construction
+    const Quantity& getMajor() const;
 
-	// returns the value portion of the major axis in the specified units
-	Double getMajor(const Unit& u) const;
+    // returns the value portion of the major axis in the specified units
+    Double getMajor(const Unit& u) const;
 
-	// returns the minor axis in the same units as it had at construction
-	const Quantity& getMinor() const;
+    // returns the minor axis in the same units as it had at construction
+    const Quantity& getMinor() const;
 
-	// returns the value portion of the minor axis in the specified units
-	Double getMinor(const Unit& u) const;
+    // returns the value portion of the minor axis in the specified units
+    Double getMinor(const Unit& u) const;
 
-	// returns the position angle's value as it was at construction,
-	// unless <src>unwrap</src> is True, in which case the value of the angle
-	// returned will be between -90 and 90 degrees (but with unit the same
-	// as it had when this object was constructed).
-	Quantity getPA(const Bool unwrap=True) const;
+    // returns the position angle's value as it was at construction,
+    // unless <src>unwrap</src> is True, in which case the value of the angle
+    // returned will be between -90 and 90 degrees (but with unit the same
+    // as it had when this object was constructed).
+    Quantity getPA(const Bool unwrap=True) const;
 
-	// returns the value portion of the position angle in the specified units
-	Double getPA(const Unit& u, const Bool unwrap=True) const;
+    // returns the value portion of the position angle in the specified units
+    Double getPA(const Unit& u, const Bool unwrap=True) const;
 
-	// returns the beam area in the specified <src>unit</src>, which much conform to
-	// solid angle units.
-	Double getArea(const Unit& unit) const;
+    // returns the beam area in the specified <src>unit</src>, which much conform to
+    // solid angle units.
+    Double getArea(const Unit& unit) const;
 
-	// is this object a null beam (ie is either its major and/or minor axis zero)?
-	Bool isNull() const;
+    // is this object a null beam (ie is either its major and/or minor axis zero)?
+    Bool isNull() const;
 
-	// returns GassianBeam.
-	static const String& className();
+    // returns GassianBeam.
+    static const String& className();
 
-	Record toRecord() const;
+    Record toRecord() const;
 
-	void setMajorMinor(const Quantity& majAx, const Quantity& minAx);
+    void setMajorMinor(const Quantity& majAx, const Quantity& minAx);
 
-	void setPA(const Quantity& pa);
+    void setPA(const Quantity& pa);
 
-	static GaussianBeam fromRecord(const Record& rec);
+    static GaussianBeam fromRecord(const Record& rec);
 
-	// convert this object to a three-Vector of (major FWHM, minor FWHM, and pa).
-	// If <src>unwrap</src> is True, the returned pa will fall between -90 and +90
-	// degrees.
-	Vector<Quantity> toVector(const Bool unwrap=True) const;
+    // convert this object to a three-Vector of (major FWHM, minor FWHM, and pa).
+    // If <src>unwrap</src> is True, the returned pa will fall between -90 and +90
+    // degrees.
+    Vector<Quantity> toVector(const Bool unwrap=True) const;
 
-	// convert stored Quantities to the specified units
-	void convert(const String& majUnit, const String& minUnit,
+    // convert stored Quantities to the specified units
+    void convert(const String& majUnit, const String& minUnit,
                      const String& paUnit);
 
 protected:
-	Quantity _major, _minor, _pa;
+    Quantity _major, _minor, _pa;
 
 };
 

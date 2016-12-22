@@ -237,8 +237,9 @@ void MSPrimaryTableHolder::detach() {
 //------------------------------------------------------------
 MSFitsInput::MSFitsInput(const String& msFile, const String& fitsFile,
         const Bool useNewStyle) :
-    _infile(0), _msc(0), _uniqueAnts(), _nAntRow(0), _restfreq(0), _addSourceTable(False), _log(LogOrigin(
-            "MSFitsInput", "MSFitsInput")), _newNameStyle(useNewStyle), _msCreated(False) {
+    _infile(0), _msc(0), _uniqueAnts(), _nAntRow(0), _restfreq(0),
+    _addSourceTable(False), _log(LogOrigin("MSFitsInput", "MSFitsInput")),
+    _newNameStyle(useNewStyle), _msCreated(False), _rotateAnts(False) {
     // First, lets verify that fitsfile exists and that it appears to be a
     // FITS file.
     File f(fitsFile);
@@ -1840,7 +1841,6 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
     else if (_array == "IRAM_PDB" || _array == "IRAM PDB") {
         diameter = 15.0;
     }
-
     MSAntennaColumns& ant(_msc->antenna());
     ROScalarColumn<String> name(anTab, "ANNAME");
     ROScalarColumn<Int> mountType(anTab, "MNTSTA");
@@ -1853,22 +1853,37 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
 
     //If it has a column called DIAMETER ...make use of it if
     // any of the values are valid
-    Bool diamColFound = False;
+    Bool positiveDiamsFound = False;
     if (anTab.tableDesc().isColumn("DIAMETER")) {
         Vector<Float> tmpDiams = ROScalarColumn<Float>(anTab, "DIAMETER").getColumn();
         if (anyGT(tmpDiams, 0.0f)) {
             antDiams = tmpDiams;
-            diamColFound = True;
+            positiveDiamsFound = True;
         }
     }
-    if (! diamColFound && ((_array == "OVRO") || (_array == "CARMA"))) {
-        for (Int i = 0; i < nAnt; i++) {
-            //Crystal Brogan has guaranteed that it is always this order
-            if (id(i) <= 6) {
-                antDiams(i) = 10.4;
+    if (! positiveDiamsFound) {
+        if (_array == "OVRO" || _array == "CARMA") {
+            for (Int i = 0; i < nAnt; ++i) {
+                //Crystal Brogan has guaranteed that it is always this order
+                antDiams[i] = id(i) <= 6 ? 10.4 : 6.1;
             }
-            else {
-                antDiams(i) = 6.1;
+        }
+        else if (_array == "ALMA") {
+            // CAS-8875, algorithm from Jen Meyer
+            for (Int i = 0; i < nAnt; ++i) {
+                const String& myName = name(i);
+                if (myName.startsWith("CM")) {
+                    antDiams[i] = 7.0;
+                }
+                else if (
+                    myName.startsWith("DA") || myName.startsWith("DV")
+                    || myName.startsWith("PM")
+                ) {
+                    antDiams[i] = 12.0;
+                }
+                else {
+                    antDiams[i] = diameter;
+                }
             }
         }
     }
