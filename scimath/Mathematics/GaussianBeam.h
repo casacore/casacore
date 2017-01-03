@@ -136,7 +136,9 @@ public:
 
     void setMajorMinor(const Quantity& majAx, const Quantity& minAx);
 
-    void setPA(const Quantity& pa);
+    // if unwrap=True, unwrap pa so its value lies in the range
+    // -90 to 90 degrees before setting it.
+    void setPA(const Quantity& pa, Bool unwrap=False);
 
     static GaussianBeam fromRecord(const Record& rec);
 
@@ -151,6 +153,9 @@ public:
 
 protected:
     Quantity _major, _minor, _pa;
+
+private:
+    static Quantity _unwrap(const Quantity& pa);
 
 };
 

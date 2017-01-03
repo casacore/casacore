@@ -105,24 +105,29 @@ Double GaussianBeam::getMinor(const Unit& u) const {
 }
 
 Quantity GaussianBeam::getPA(const Bool unwrap) const {
-    if (
-        unwrap
-        && (
-            _pa > QC::qTurn || _pa <= -QC::qTurn
-        )
-    ) {
-        Quantity pa((fmod(_pa.getValue("deg"), 180)), "deg");
-        if (pa > QC::qTurn) {
-            pa -= QC::hTurn;
-            pa.convert(_pa.getUnit());
-            return pa;
-        }
+    if (unwrap) {
+        return _unwrap(_pa);
     }
     return _pa;
 }
 
 Double GaussianBeam::getPA(const Unit& u, const Bool unwrap) const {
     return getPA(unwrap).getValue(u);
+}
+
+Quantity GaussianBeam::_unwrap(const Quantity& pa) {
+    if (pa > QC::qTurn || pa <= -QC::qTurn) {
+        Quantity upa((fmod(pa.getValue("deg"), 180)), "deg");
+        if (upa > QC::qTurn) {
+            upa -= QC::hTurn;
+        }
+        else if (upa <= -QC::qTurn) {
+            upa += QC::hTurn;
+        }
+        upa.convert(pa.getUnit());
+        return upa;
+    }
+    return pa;
 }
 
 void GaussianBeam::setMajorMinor(
@@ -155,15 +160,13 @@ void GaussianBeam::setMajorMinor(
     _minor = minAx;
 }
 
-void GaussianBeam::setPA(const Quantity& pa) {
-    if (! pa.isConform("rad")) {
-        ostringstream oss;
-        oss << className() << "::" << __FUNCTION__;
-        oss << ": Position angle must have angular units ("
-            << pa.getUnit() << " is not).";
-        throw AipsError(oss.str());
-    }
-    _pa = pa;
+void GaussianBeam::setPA(const Quantity& pa, Bool unwrap) {
+    ThrowIf(
+        ! pa.isConform("rad"),
+        "Position angle must have angular units ("
+        +  pa.getUnit() + " is not)."
+    );
+    _pa = unwrap ? _unwrap(pa) : pa;
 }
 
 Bool GaussianBeam::isNull() const {
