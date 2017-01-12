@@ -29,6 +29,7 @@
 
 #include <casacore/ms/MSOper/MSMetaData.h>
 
+#include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/BasicMath/StdLogical.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/OS/Directory.h>
@@ -2516,6 +2517,15 @@ void testIt(MSMetaData& md) {
             Vector<Int> expV = casacore::indgen(25, 0, 1);
             std::set<uInt> expec(expV.begin(), expV.end());
             AlwaysAssert(spws == expec, AipsError);
+        }
+        {
+            cout << "*** test getSourceTimes()" << endl;
+            SHARED_PTR<const Quantum<Vector<Double> > > times = md.getSourceTimes();
+            Vector<Double> v = times->getValue();
+            AlwaysAssert(v.size() == 200, AipsError);
+            AlwaysAssert(times->getUnit() == "s", AipsError);
+            Vector<Double> expec(200, 7033098335);
+            AlwaysAssert(allNear(v, expec, 1e-10), AipsError);
         }
         {
             cout << "*** cache size " << md.getCache() << endl;

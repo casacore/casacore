@@ -265,7 +265,9 @@ public:
     void summarize(LogIO& log, Bool verbose, const CoordinateSystem& csys) const;
 
     // Modify the beam set by rotating all beams counterclockwise through the specified angle.
-    void rotate(const Quantity& angle);
+    // If unwrap=True, unwrap the new position angle(s) so that it falls in the range -90 to
+    // 90 degrees before setting it.
+    void rotate(const Quantity& angle, Bool unwrap=False);
 
 private:
 

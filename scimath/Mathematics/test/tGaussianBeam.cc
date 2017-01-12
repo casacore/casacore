@@ -129,6 +129,20 @@ int main() {
         v = beam.toVector();
         GaussianBeam beam4(v);
         AlwaysAssert(beam4 == beam3, AipsError);
+        {
+            cout << "Test  setPA() and getPA() using unwrapping" << endl;
+            Double u = 60;
+            for (Double d=-660; d<=660; d+=30, u+=30) {
+                if (u > 90) {
+                    u -= 180;
+                }
+                beam.setPA(Quantity(d, "deg"), False);
+                AlwaysAssert(beam.getPA(False).getValue("deg") == d, AipsError);
+                AlwaysAssert(beam.getPA(True).getValue("deg") == u, AipsError);
+                beam.setPA(Quantity(d, "deg"), True);
+                AlwaysAssert(beam.getPA(False).getValue("deg") == u, AipsError);
+            }
+        }
     }
     catch (AipsError x) {
         cout << x.getMesg() << endl;

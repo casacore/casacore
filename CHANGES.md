@@ -4,7 +4,7 @@
 - Lots of bug fixes and improvements
 - Tests are not built by default anymore, use `-DBUILD_TESTING=True`
   to build them
-- Building with C++11 is now default, use `-DUSE_CXX11=False` if you do
+- Building with C++11 is now default, use `-DCXX11=False` if you do
   not have a recent compiler (#533)
 - Added JSON support (#506)
 
