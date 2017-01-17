@@ -42,7 +42,7 @@ namespace casacore {
 // criterion, until the specified maximum number of iterations is reached, or the final
 // iteration results in no additional points being discarded.
 // Alternatively, one can specify a z score which indicates the number of standard deviations
-// beyond which to discard points. In this case, no iterating is done.
+// beyond which to discard points, which is held fixed while iterating.
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator>
 class ChauvenetCriterionStatistics
