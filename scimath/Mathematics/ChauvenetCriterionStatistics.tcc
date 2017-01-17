@@ -37,7 +37,7 @@ namespace casacore {
 
 CASA_STATD
 ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(
-	Double zscore, Int maxIterations
+    Double zscore, Int maxIterations
 )
   : ConstrainedRangeStatistics<CASA_STATP>(),
     _zscore(zscore), _maxIterations(maxIterations), _rangeIsSet(False), _niter(0) {}
@@ -48,7 +48,7 @@ ChauvenetCriterionStatistics<CASA_STATP>::~ChauvenetCriterionStatistics() {}
 CASA_STATD
 ChauvenetCriterionStatistics<CASA_STATP>&
 ChauvenetCriterionStatistics<CASA_STATP>::operator=(
-	const ChauvenetCriterionStatistics<CASA_STATP>& other
+    const ChauvenetCriterionStatistics<CASA_STATP>& other
 ) {
     if (this == &other) {
         return *this;
@@ -62,50 +62,50 @@ ChauvenetCriterionStatistics<CASA_STATP>::operator=(
 
 CASA_STATD
 void ChauvenetCriterionStatistics<CASA_STATP>::reset() {
-	ConstrainedRangeStatistics<CASA_STATP>::reset();
-	_rangeIsSet = False;
+    ConstrainedRangeStatistics<CASA_STATP>::reset();
+    _rangeIsSet = False;
 }
 
 CASA_STATD
 void ChauvenetCriterionStatistics<CASA_STATP>::setCalculateAsAdded(
-	Bool c
+    Bool c
 ) {
-	ThrowIf(
-		c, "ChauvenetCriterionStatistics does not support calculating statistics "
-		"incrementally as data sets are added"
-	);
+    ThrowIf(
+        c, "ChauvenetCriterionStatistics does not support calculating statistics "
+        "incrementally as data sets are added"
+    );
 }
 
 CASA_STATD
 void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
-	if (_rangeIsSet) {
-		return;
-	}
-	uInt maxI = _maxIterations >= 0 ? _maxIterations : 1000;
-	uInt prevNpts = 0;
-	StatsData<AccumType> sd;
-	while (_niter <= maxI) {
-		if (_niter == 0) {
-			ClassicalStatistics<CASA_STATP> cs(*this);
-			sd = cs.getStatistics();
-		}
-		else {
-			sd = this->getStatistics();
-			if ((uInt64)sd.npts == prevNpts) {
-				break;
-			}
-		}
-		Double zScore = _zscore >= 0 ? _zscore : ZScoreCalculator::getMaxZScore((uInt64)sd.npts);
-		CountedPtr<std::pair<AccumType, AccumType> > range = new std::pair<AccumType, AccumType>(
-			sd.mean - zScore*sd.stddev, sd.mean + zScore*sd.stddev
-		);
-		ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
-		// _rangeIsSet is set here to prevent infinite recursion on next loop iteration
-		_rangeIsSet = True;
-		prevNpts = (uInt64)sd.npts;
-		++_niter;
-	}
-	--_niter;
+    if (_rangeIsSet) {
+        return;
+    }
+    uInt maxI = _maxIterations >= 0 ? _maxIterations : 1000;
+    uInt prevNpts = 0;
+    StatsData<AccumType> sd;
+    while (_niter <= maxI) {
+        if (_niter == 0) {
+            ClassicalStatistics<CASA_STATP> cs(*this);
+            sd = cs.getStatistics();
+        }
+        else {
+            sd = this->getStatistics();
+            if ((uInt64)sd.npts == prevNpts) {
+                break;
+            }
+        }
+        Double zScore = _zscore >= 0 ? _zscore : ZScoreCalculator::getMaxZScore((uInt64)sd.npts);
+        CountedPtr<std::pair<AccumType, AccumType> > range = new std::pair<AccumType, AccumType>(
+            sd.mean - zScore*sd.stddev, sd.mean + zScore*sd.stddev
+        );
+        ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
+        // _rangeIsSet is set here to prevent infinite recursion on next loop iteration
+        _rangeIsSet = True;
+        prevNpts = (uInt64)sd.npts;
+        ++_niter;
+    }
+    --_niter;
 }
 
 }
