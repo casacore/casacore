@@ -191,8 +191,8 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
 
 // Deal with lattice pointer
 
-      inLatPtrMgr.reset(other.pInLattice_p->cloneML());
-      pInLattice_p = inLatPtrMgr.get();
+      _inLatPtrMgr.reset(other.pInLattice_p->cloneML());
+      pInLattice_p = _inLatPtrMgr.get();
 // Delete storage lattice 
 
       if (! pStoreLattice_p.null()) {
@@ -396,11 +396,11 @@ Bool LatticeStatistics<T>::setNewLattice(
    }
 
    if (clone) {
-       inLatPtrMgr.reset(lattice.cloneML());
-       pInLattice_p = inLatPtrMgr.get();
+       _inLatPtrMgr.reset(lattice.cloneML());
+       pInLattice_p = _inLatPtrMgr.get();
    }
    else {
-       inLatPtrMgr.reset();
+       _inLatPtrMgr.reset();
        pInLattice_p = &lattice;
    }
 

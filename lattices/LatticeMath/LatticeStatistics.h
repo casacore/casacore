@@ -509,7 +509,7 @@ protected:
 private:
 
    const MaskedLattice<T>* pInLattice_p;
-   SHARED_PTR<const MaskedLattice<T> > inLatPtrMgr;
+   SHARED_PTR<const MaskedLattice<T> > _inLatPtrMgr;
 
    CountedPtr<TempLattice<AccumType> > pStoreLattice_p;
    Vector<Int> nxy_p, statsToPlot_p;
