@@ -270,12 +270,13 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
 
    cursorAxes_p.resize(0);
    cursorAxes_p = axes;
+   uInt ndim = pInLattice_p->ndim();
    if (cursorAxes_p.nelements() == 0) {
    
 // User didn't give any axes.  Set them to all.
        
-      cursorAxes_p.resize(pInLattice_p->ndim());
-      for (uInt i=0; i<pInLattice_p->ndim(); i++) cursorAxes_p(i) = i;
+      cursorAxes_p.resize(ndim);
+      for (uInt i=0; i<ndim; ++i) cursorAxes_p(i) = i;
    } else {
 
 // Sort axes into increasing order and check
@@ -283,7 +284,7 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
       GenSort<Int>::sort(cursorAxes_p, Sort::Ascending, Sort::QuickSort|Sort::NoDuplicates);
 //
       for (uInt i=0; i<cursorAxes_p.nelements(); i++) {
-         if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(pInLattice_p->ndim()-1)) {
+         if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(ndim - 1)) {
             ostringstream oss;
             oss << "Invalid cursor axes: " << axes;
              error_p = oss.str();
@@ -303,7 +304,7 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
 // so poke this in here too.
 
    displayAxes_p.resize(0);
-   displayAxes_p = IPosition::otherAxes(pInLattice_p->ndim(),
+   displayAxes_p = IPosition::otherAxes(ndim,
                                         cursorAxes_p).asVector();
    return True;
 }
@@ -758,9 +759,10 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
      // Work out dimensions of storage lattice (statistics accumulations
      // are along the last axis)
     IPosition storeLatticeShape;
+    IPosition shape = pInLattice_p->shape();
     LatticeStatsBase::setStorageImageShape(
         storeLatticeShape, True, Int(LatticeStatsBase::NACCUM),
-        displayAxes_p, pInLattice_p->shape()
+        displayAxes_p, shape
     );
 
     // Set the storage lattice tile shape to the tile shape of the
@@ -800,12 +802,13 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     }
     //Timer timer;
     Bool ranOldMethod = False;
+    uInt ndim = shape.nelements();
     if (tryOldMethod) {
         // use older method for higher performance in the large loop count
         // regime
         //timer.mark();
-        minPos_p.resize(pInLattice_p->shape().nelements());
-        maxPos_p.resize(pInLattice_p->shape().nelements());
+        minPos_p.resize(ndim);
+        maxPos_p.resize(ndim);
         StatsTiledCollapser<T,AccumType> collapser(
             range_p, noInclude_p, noExclude_p,
             fixedMinMax_p
@@ -1256,11 +1259,13 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 // Write the pixel and world coordinate of the higher order display axes to the logger
 
+   uInt ndim = pInLattice_p->ndim();
+   IPosition shape = pInLattice_p->shape();
    if (nDisplayAxes > 1) {
       Vector<String> sWorld(1);
       Vector<Double> pixels(1);
-      IPosition blc(pInLattice_p->ndim(),0);
-      IPosition trc(pInLattice_p->shape()-1);
+      IPosition blc(ndim, 0);
+      IPosition trc(shape - 1);
 //
       os_p << LogIO::NORMAL;
       for (uInt j=1; j<nDisplayAxes; j++) {
@@ -1277,8 +1282,8 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    Vector<String> sWorld(1);
    Vector<Double> pixels(1);
    pixels(0) = 1.0;
-   IPosition blc(pInLattice_p->ndim(),0);
-   IPosition trc(pInLattice_p->shape()-1);
+   IPosition blc(ndim, 0);
+   IPosition trc(shape - 1);
 
 // Write headers
 
