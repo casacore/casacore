@@ -221,10 +221,18 @@ public:
 // You can specify whether you want to see progress meters or not.
 // You can force the storage lattice to be disk based, otherwise
 // the decision for core or disk is taken for you.
+// If <src>clone</src> is True, the input lattice will be cloned, so the caller
+// can make changes to the input lattice, but the statistics will reflect the
+// lattice as it was at construction. If False, a reference to the input lattice
+// is used, and so the caller shouldn't make changes to the input lattice between
+// construction and calling statistics computation methods, unless it calls setNewLattice()
+// to update the changed lattice. Obviously, cloning the lattice impacts performance
+// and memory usage.
    LatticeStatistics (const MaskedLattice<T>& lattice, 
                       LogIO& os,
                       Bool showProgress=True,
-                      Bool forceDisk=False);
+                      Bool forceDisk=False,
+                      Bool clone=True);
 
 // Constructor takes the lattice only. In the absence of a logger you get no messages.
 // This includes error messages and potential listing of the statistics.
@@ -233,7 +241,8 @@ public:
 // the decision for core or disk is taken for you.
    LatticeStatistics (const MaskedLattice<T>& lattice,
                       Bool showProgress=True,
-                      Bool forceDisk=False);
+                      Bool forceDisk=False,
+                      Bool clone=True);
 
 // Copy constructor.  Copy semantics are followed.  Therefore any storage lattice 
 // that has already been created for <src>other</src> is copied to <src>*this</src>
@@ -352,7 +361,14 @@ public:
 
 // Set a new MaskedLattice object.  A return value of <src>False</src> indicates the 
 // lattice had an invalid type or that the internal state of the class is bad.
-   Bool setNewLattice(const MaskedLattice<T>& lattice);
+// If <src>clone</src> is True, the input lattice will be cloned, so the caller
+// can make changes to the input lattice, but the statistics will reflect the
+// lattice as it was at construction. If False, a reference to the input lattice
+// is used, and so the caller shouldn't make changes to the input lattice between
+// construction and calling statistics computation methods, unless it calls setNewLattice()
+// to update the changed lattice. Obviously, cloning the lattice impacts performance
+// and memory usage.
+   Bool setNewLattice(const MaskedLattice<T>& lattice, Bool clone=True);
 
 // Did we construct with a logger ?
    Bool hasLogger () const {return haveLogger_p;};
@@ -493,6 +509,8 @@ protected:
 private:
 
    const MaskedLattice<T>* pInLattice_p;
+   SHARED_PTR<const MaskedLattice<T> > inLatPtrMgr;
+
    CountedPtr<TempLattice<AccumType> > pStoreLattice_p;
    Vector<Int> nxy_p, statsToPlot_p;
    Vector<T> range_p;

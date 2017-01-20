@@ -81,7 +81,8 @@ template <class T>
 LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
                                          LogIO& os,  
                                          Bool showProgress,
-                                         Bool forceDisk)
+                                         Bool forceDisk,
+                                         Bool clone)
 // 
 // Constructor
 //
@@ -110,7 +111,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
    maxPos_p.resize(0);
    blcParent_p.resize(0);
    configureClassical();
-   if (setNewLattice(lattice)) {
+   if (setNewLattice(lattice, clone)) {
 
 // Cursor axes defaults to all
 
@@ -125,7 +126,8 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
 template <class T>
 LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
                                          Bool showProgress,
-                                         Bool forceDisk)
+                                         Bool forceDisk,
+                                         Bool clone)
 // 
 // Constructor
 //
@@ -154,7 +156,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
    maxPos_p.resize(0);
    blcParent_p.resize(0);
    configureClassical();
-   if (setNewLattice(lattice)) {
+   if (setNewLattice(lattice, clone)) {
 
 // Cursor axes defaults to all
 
@@ -189,10 +191,8 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
 
 // Deal with lattice pointer
 
-      if (pInLattice_p!=0) {
-          delete pInLattice_p;
-      }
-      pInLattice_p = other.pInLattice_p->cloneML();
+      inLatPtrMgr.reset(other.pInLattice_p->cloneML());
+      pInLattice_p = inLatPtrMgr.get();
 // Delete storage lattice 
 
       if (! pStoreLattice_p.null()) {
@@ -247,10 +247,7 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
 }
 
 template <class T>
-LatticeStatistics<T>::~LatticeStatistics() {
-   delete pInLattice_p;
-   pInLattice_p = 0;
-}
+LatticeStatistics<T>::~LatticeStatistics() {}
 
 template <class T>
 Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
@@ -382,12 +379,12 @@ Bool LatticeStatistics<T>::setList (const Bool& doList)
 } 
 
 template <class T>
-Bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice)
-{ 
+Bool LatticeStatistics<T>::setNewLattice(
+    const MaskedLattice<T>& lattice, Bool clone
+) {
    if (!goodParameterStatus_p) {
       return False;
    }
-//
    T* dummy = 0;
    DataType latticeType = whatType(dummy);
    if (latticeType !=TpFloat && latticeType!=TpComplex) {
@@ -398,10 +395,14 @@ Bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice)
       return False;
    }
 
-// Make a clone of the lattice
-
-   if (pInLattice_p!=0) delete pInLattice_p;
-   pInLattice_p = lattice.cloneML();
+   if (clone) {
+       inLatPtrMgr.reset(lattice.cloneML());
+       pInLattice_p = inLatPtrMgr.get();
+   }
+   else {
+       inLatPtrMgr.reset();
+       pInLattice_p = &lattice;
+   }
 
 // This is the location of the input SubLattice in
 // the parent Lattice
