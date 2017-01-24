@@ -60,25 +60,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template <class T>
 ImageStatistics<T>::ImageStatistics (
     const ImageInterface<T>& image, LogIO& os,
-    Bool showProgress, Bool forceDisk
-) : LatticeStatistics<T>(image, os, showProgress, forceDisk),
+    Bool showProgress, Bool forceDisk, Bool clone
+) : LatticeStatistics<T>(image, os, showProgress, forceDisk, clone),
     pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)),
     precision_(-1), _showRobust(False), _recordMessages(False),
     _listStats(True),  _messages() {
-    ThrowIf(! setNewImage(image), error_p);
+    ThrowIf(! setNewImage(image, clone), error_p);
 }
 
 template <class T>
 ImageStatistics<T>::ImageStatistics (
     const ImageInterface<T>& image, Bool showProgress,
-    Bool forceDisk
-) : LatticeStatistics<T>(image, showProgress, forceDisk),
+    Bool forceDisk, Bool clone
+) : LatticeStatistics<T>(image, showProgress, forceDisk, clone),
   pInImage_p(0), blc_(IPosition(image.coordinates().nPixelAxes(), 0)),
   precision_(-1), _showRobust(False), _recordMessages(False),
   _listStats(True), _messages() {
-   if (!setNewImage(image)) {
-      os_p << error_p << LogIO::EXCEPTION;
-   }
+   ThrowIf(!setNewImage(image, clone), error_p);
 }
 
 template <class T>
@@ -90,7 +88,8 @@ ImageStatistics<T>::ImageStatistics(const ImageStatistics<T> &other)
   pInImage_p(0), blc_(other.getBlc()), precision_(other.getPrecision()),
   _showRobust(other._showRobust)
 {
-   pInImage_p = other.pInImage_p->cloneII();
+    _inImPtrMgr.reset(other.pInImage_p->cloneII());
+    pInImage_p = _inImPtrMgr.get();
 }
 
 // Assignment operator.  Storage image is not copied
@@ -99,10 +98,8 @@ template <class T>
 ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &other) {
    if (this != &other) {
       LatticeStatistics<T>::operator=(other);
-      if (pInImage_p!=0) {
-          delete pInImage_p;
-      }
-      pInImage_p = other.pInImage_p->cloneII();
+      _inImPtrMgr.reset(other.pInImage_p->cloneII());
+      pInImage_p = _inImPtrMgr.get();
       precision_ = other.precision_;
       blc_ = other.blc_;
       _showRobust = other._showRobust;
@@ -111,30 +108,27 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
 }
 
 template <class T>
-ImageStatistics<T>::~ImageStatistics() {
-   delete pInImage_p;
-   pInImage_p = 0;
-}
+ImageStatistics<T>::~ImageStatistics() {}
 
 template <class T>
-Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
-{ 
+Bool ImageStatistics<T>::setNewImage(
+    const ImageInterface<T>& image, Bool clone
+) {
    if (!goodParameterStatus_p) {
       return False;
    }
-
-// Make a clone of the image
-
-   if (pInImage_p!=0) {
-       delete pInImage_p;
+   if (clone) {
+       _inImPtrMgr.reset(image.cloneII());
+       pInImage_p = _inImPtrMgr.get();
    }
-   pInImage_p = image.cloneII();
-
+   else {
+       _inImPtrMgr.reset();
+       pInImage_p = &image;
+   }
 
 // Pass it on to LatticeStatistics
 
-   goodParameterStatus_p = this->setNewLattice(image);
-//
+   goodParameterStatus_p = this->setNewLattice(image, clone);
    return goodParameterStatus_p;
 }
 

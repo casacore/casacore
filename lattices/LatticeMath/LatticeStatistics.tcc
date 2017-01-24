@@ -81,7 +81,8 @@ template <class T>
 LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
                                          LogIO& os,  
                                          Bool showProgress,
-                                         Bool forceDisk)
+                                         Bool forceDisk,
+                                         Bool clone)
 // 
 // Constructor
 //
@@ -110,7 +111,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
    maxPos_p.resize(0);
    blcParent_p.resize(0);
    configureClassical();
-   if (setNewLattice(lattice)) {
+   if (setNewLattice(lattice, clone)) {
 
 // Cursor axes defaults to all
 
@@ -125,7 +126,8 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
 template <class T>
 LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
                                          Bool showProgress,
-                                         Bool forceDisk)
+                                         Bool forceDisk,
+                                         Bool clone)
 // 
 // Constructor
 //
@@ -154,7 +156,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
    maxPos_p.resize(0);
    blcParent_p.resize(0);
    configureClassical();
-   if (setNewLattice(lattice)) {
+   if (setNewLattice(lattice, clone)) {
 
 // Cursor axes defaults to all
 
@@ -189,10 +191,8 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
 
 // Deal with lattice pointer
 
-      if (pInLattice_p!=0) {
-          delete pInLattice_p;
-      }
-      pInLattice_p = other.pInLattice_p->cloneML();
+      _inLatPtrMgr.reset(other.pInLattice_p->cloneML());
+      pInLattice_p = _inLatPtrMgr.get();
 // Delete storage lattice 
 
       if (! pStoreLattice_p.null()) {
@@ -247,10 +247,7 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
 }
 
 template <class T>
-LatticeStatistics<T>::~LatticeStatistics() {
-   delete pInLattice_p;
-   pInLattice_p = 0;
-}
+LatticeStatistics<T>::~LatticeStatistics() {}
 
 template <class T>
 Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
@@ -270,12 +267,13 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
 
    cursorAxes_p.resize(0);
    cursorAxes_p = axes;
+   uInt ndim = pInLattice_p->ndim();
    if (cursorAxes_p.nelements() == 0) {
    
 // User didn't give any axes.  Set them to all.
        
-      cursorAxes_p.resize(pInLattice_p->ndim());
-      for (uInt i=0; i<pInLattice_p->ndim(); i++) cursorAxes_p(i) = i;
+      cursorAxes_p.resize(ndim);
+      for (uInt i=0; i<ndim; ++i) cursorAxes_p(i) = i;
    } else {
 
 // Sort axes into increasing order and check
@@ -283,7 +281,7 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
       GenSort<Int>::sort(cursorAxes_p, Sort::Ascending, Sort::QuickSort|Sort::NoDuplicates);
 //
       for (uInt i=0; i<cursorAxes_p.nelements(); i++) {
-         if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(pInLattice_p->ndim()-1)) {
+         if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(ndim - 1)) {
             ostringstream oss;
             oss << "Invalid cursor axes: " << axes;
              error_p = oss.str();
@@ -303,7 +301,7 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
 // so poke this in here too.
 
    displayAxes_p.resize(0);
-   displayAxes_p = IPosition::otherAxes(pInLattice_p->ndim(),
+   displayAxes_p = IPosition::otherAxes(ndim,
                                         cursorAxes_p).asVector();
    return True;
 }
@@ -381,12 +379,12 @@ Bool LatticeStatistics<T>::setList (const Bool& doList)
 } 
 
 template <class T>
-Bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice)
-{ 
+Bool LatticeStatistics<T>::setNewLattice(
+    const MaskedLattice<T>& lattice, Bool clone
+) {
    if (!goodParameterStatus_p) {
       return False;
    }
-//
    T* dummy = 0;
    DataType latticeType = whatType(dummy);
    if (latticeType !=TpFloat && latticeType!=TpComplex) {
@@ -397,10 +395,14 @@ Bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice)
       return False;
    }
 
-// Make a clone of the lattice
-
-   if (pInLattice_p!=0) delete pInLattice_p;
-   pInLattice_p = lattice.cloneML();
+   if (clone) {
+       _inLatPtrMgr.reset(lattice.cloneML());
+       pInLattice_p = _inLatPtrMgr.get();
+   }
+   else {
+       _inLatPtrMgr.reset();
+       pInLattice_p = &lattice;
+   }
 
 // This is the location of the input SubLattice in
 // the parent Lattice
@@ -758,9 +760,10 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
      // Work out dimensions of storage lattice (statistics accumulations
      // are along the last axis)
     IPosition storeLatticeShape;
+    IPosition shape = pInLattice_p->shape();
     LatticeStatsBase::setStorageImageShape(
         storeLatticeShape, True, Int(LatticeStatsBase::NACCUM),
-        displayAxes_p, pInLattice_p->shape()
+        displayAxes_p, shape
     );
 
     // Set the storage lattice tile shape to the tile shape of the
@@ -800,12 +803,13 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     }
     //Timer timer;
     Bool ranOldMethod = False;
+    uInt ndim = shape.nelements();
     if (tryOldMethod) {
         // use older method for higher performance in the large loop count
         // regime
         //timer.mark();
-        minPos_p.resize(pInLattice_p->shape().nelements());
-        maxPos_p.resize(pInLattice_p->shape().nelements());
+        minPos_p.resize(ndim);
+        maxPos_p.resize(ndim);
         StatsTiledCollapser<T,AccumType> collapser(
             range_p, noInclude_p, noExclude_p,
             fixedMinMax_p
@@ -1256,11 +1260,13 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 // Write the pixel and world coordinate of the higher order display axes to the logger
 
+   uInt ndim = pInLattice_p->ndim();
+   IPosition shape = pInLattice_p->shape();
    if (nDisplayAxes > 1) {
       Vector<String> sWorld(1);
       Vector<Double> pixels(1);
-      IPosition blc(pInLattice_p->ndim(),0);
-      IPosition trc(pInLattice_p->shape()-1);
+      IPosition blc(ndim, 0);
+      IPosition trc(shape - 1);
 //
       os_p << LogIO::NORMAL;
       for (uInt j=1; j<nDisplayAxes; j++) {
@@ -1277,8 +1283,8 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    Vector<String> sWorld(1);
    Vector<Double> pixels(1);
    pixels(0) = 1.0;
-   IPosition blc(pInLattice_p->ndim(),0);
-   IPosition trc(pInLattice_p->shape()-1);
+   IPosition blc(ndim, 0);
+   IPosition trc(shape - 1);
 
 // Write headers
 

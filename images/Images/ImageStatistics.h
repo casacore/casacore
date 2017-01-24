@@ -104,10 +104,18 @@ public:
 // You can specify whether you want to see progress meters or not.
 // You can force the storage image to be disk based, otherwise
 // the decision for core or disk is taken for you.
+// If <src>clone</src> is True, the input image will be cloned, so the caller
+// can make changes to the input image, but the statistics will reflect the
+// image as it was at construction. If False, a reference to the input image
+// is used, and so the caller shouldn't make changes to the input image between
+// construction and calling statistics computation methods, unless it calls setNewImage()
+// to update the changed image. Obviously, cloning the image impacts performance
+// and memory usage.
    ImageStatistics (const ImageInterface<T>& image, 
                     LogIO& os,
                     Bool showProgress=True,
-                    Bool forceDisk=False);
+                    Bool forceDisk=False,
+                    Bool clone=True);
 
 // Constructor takes the image only. In the absence of a logger you get no messages.
 // This includes error messages and potential listing of the statistics.
@@ -116,7 +124,8 @@ public:
 // the decision for core or disk is taken for you.
    ImageStatistics (const ImageInterface<T>& image,
                     Bool showProgress=True,
-                    Bool forceDisk=False);
+                    Bool forceDisk=False,
+                    Bool clone=True);
 
 // Copy constructor.  Copy semantics are followed.  Therefore any storage image 
 // that has already been created for <src>other</src> is copied to <src>*this</src>
@@ -132,7 +141,14 @@ public:
 
 // Set a new ImageInterface object.  A return value of <src>False</src> indicates the 
 // image had an invalid type or that the internal state of the class is bad.
-   Bool setNewImage (const ImageInterface<T>& image);
+// If <src>clone</src> is True, the input image will be cloned, so the caller
+// can make changes to the input image, but the statistics will reflect the
+// image as it was at construction. If False, a reference to the input image
+// is used, and so the caller shouldn't make changes to the input image between
+// construction and calling statistics computation methods, unless it calls setNewImage()
+// to update the changed image. Obviously, cloning the image impacts performance
+// and memory usage.
+   Bool setNewImage (const ImageInterface<T>& image, Bool clone=True);
 
    void setPrecision(Int precision);
 
@@ -158,13 +174,12 @@ protected:
 
    virtual Bool _canDoFlux() const;
 
-
-
 private:
 // Data
 
    LogIO os_p;
    const ImageInterface<T>* pInImage_p;
+   SHARED_PTR<const ImageInterface<T> > _inImPtrMgr;
    IPosition blc_;
    Int precision_;
    Bool _showRobust, _recordMessages, _listStats;
