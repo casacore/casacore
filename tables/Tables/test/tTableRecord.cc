@@ -27,9 +27,11 @@
 
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableProxy.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/ScaColDesc.h>
+#include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -821,6 +823,61 @@ void testTable (Bool doExcp)
     TableRecord rec4(rec4a);
     AlwaysAssertExit (rec4.nfields() == 1);
     AlwaysAssertExit (rec4.asDouble("fld1") == 1.);
+
+    // Test that a Record constructed with a TableDesc
+    // can be converted back into an equivalent TableDesc
+    TableDesc td3 ("td3", TableDesc::Scratch);
+    td3.addColumn (ScalarColumnDesc<int> ("icol1"));
+    td3.addColumn (ScalarColumnDesc<double> ("icol2"));
+    td3.addColumn (ScalarColumnDesc<int> ("dcol1"));
+    td3.addColumn (ScalarColumnDesc<float> ("dcol2"));
+    td3.addColumn (ScalarColumnDesc<float> ("col1"));
+    td3.addColumn (ScalarColumnDesc<double> ("col2"));
+
+    // Add a hypercolumn
+    Vector<String> dcnames(2);
+    dcnames[0] = "dcol1";
+    dcnames[1] = "dcol2";
+    Vector<String> ccnames(2);
+    ccnames[0] = "col1";
+    ccnames[1] = "col2";
+    Vector<String> icnames(2);
+    icnames[0] = "icol1";
+    icnames[1] = "icol2";
+    td3.defineHypercolumn("hc1", 2, dcnames, ccnames, icnames);
+
+    // Convert to Record
+    Record rec5 = TableProxy::getTableDesc(td3);
+
+    // Convert back to TableDesc
+    TableDesc td4;
+    String msg;
+    TableProxy::makeTableDesc(rec5, td4, msg);
+
+    // Check that the number of columns is equal
+    AlwaysAssertExit (td3.ncolumn() == td4.ncolumn());
+
+    for(uInt i=0; i<td4.ncolumn(); ++i)
+    {
+        AlwaysAssertExit (td3[i] == td4[i]);
+        AlwaysAssertExit (td3[i] == td4[i]);
+    }
+
+    // Check that the hypercolumn definition is copied
+    Vector<String> dcresult;
+    Vector<String> ccresult;
+    Vector<String> icresult;
+    uInt dim = td4.hypercolumnDesc("hc1", dcresult, ccresult, icresult);
+
+    AlwaysAssertExit (dim == 2);
+
+    for(uInt i=0; i<dim; ++i)
+    {
+        AlwaysAssertExit (dcnames[i] == dcresult[i]);
+        AlwaysAssertExit (ccnames[i] == ccresult[i]);
+        AlwaysAssertExit (icnames[i] == icresult[i]);
+
+    }
 }
 
 void testTable2 (Bool)
@@ -843,7 +900,6 @@ void testTable2 (Bool)
     rec1.defineTable ("tab1a", t1);
     AlwaysAssertExit (rec1.nfields() == 3);
 }
-
 
 int main (int argc, const char*[])
 {

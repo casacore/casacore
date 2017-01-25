@@ -908,23 +908,33 @@ void TableProxy::setProperties (const String& name, Bool byColumn,
 Record TableProxy::getTableDescription (Bool actual, Bool cOrder)
 {
   // Get the table description.
-  TableDesc* tableDescPtr;
+  const TableDesc* tableDescPtr;
   if (actual) {
     tableDescPtr = new TableDesc(table_p.actualTableDesc());
   } else {
     tableDescPtr = new TableDesc(table_p.tableDesc());
   }
-  // Return the table description as a record.
-  Record rec;
-  for (uInt i=0; i<tableDescPtr->ncolumn(); i++) {
-    const ColumnDesc& columnDescription = tableDescPtr->columnDesc(i);
-    rec.defineRecord (columnDescription.name(), 
-		      recordColumnDesc (columnDescription, cOrder));
-  }
-  rec.defineRecord ("_define_hypercolumn_", recordHCDesc (*tableDescPtr));
+  Record rec = getTableDesc(*tableDescPtr, cOrder);
+
   delete tableDescPtr;
   return rec;
 }
+
+Record TableProxy::getTableDesc(const TableDesc & tabdesc, Bool cOrder)
+{
+    Record rec;
+
+    for (uInt i=0; i<tabdesc.ncolumn(); i++) {
+      const ColumnDesc& columnDescription = tabdesc.columnDesc(i);
+      rec.defineRecord (columnDescription.name(),
+                recordColumnDesc (columnDescription, cOrder));
+    }
+
+    rec.defineRecord ("_define_hypercolumn_", recordHCDesc (tabdesc));
+
+    return rec;
+}
+
 
 Record TableProxy::getColumnDescription (const String& columnName,
 					 Bool actual, Bool cOrder)
