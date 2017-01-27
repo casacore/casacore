@@ -834,6 +834,10 @@ void testTable (Bool doExcp)
     td3.addColumn (ScalarColumnDesc<float> ("col1"));
     td3.addColumn (ScalarColumnDesc<double> ("col2"));
 
+
+    uInt keyvalue1 = 10;
+    td3.rwKeywordSet().define("key1", keyvalue1);
+
     // Add a hypercolumn
     Vector<String> dcnames(2);
     dcnames[0] = "dcol1";
@@ -878,6 +882,11 @@ void testTable (Bool doExcp)
         AlwaysAssertExit (icnames[i] == icresult[i]);
 
     }
+
+    // Check that the keyword matches the original value
+    keyvalue1 = 20;
+    td4.keywordSet().get("key1", keyvalue1);
+    AlwaysAssertExit (keyvalue1 == 10);
 }
 
 void testTable2 (Bool)

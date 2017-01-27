@@ -924,13 +924,24 @@ Record TableProxy::getTableDesc(const TableDesc & tabdesc, Bool cOrder)
 {
     Record rec;
 
+    // Convert columns
     for (uInt i=0; i<tabdesc.ncolumn(); i++) {
       const ColumnDesc& columnDescription = tabdesc.columnDesc(i);
       rec.defineRecord (columnDescription.name(),
                 recordColumnDesc (columnDescription, cOrder));
     }
+    
+    // Convert hypercolumns
+    rec.defineRecord ("_define_hypercolumn_",
+        recordHCDesc (tabdesc));
 
-    rec.defineRecord ("_define_hypercolumn_", recordHCDesc (tabdesc));
+    // Convert keywords
+    rec.defineRecord("_keywords_",
+        tabdesc.keywordSet().toRecord());
+    // Convert private keywords
+    rec.defineRecord("_private_keywords_",
+        tabdesc.privateKeywordSet().toRecord());
+
 
     return rec;
 }
@@ -1685,115 +1696,149 @@ Bool TableProxy::makeHC (const Record& gdesc, TableDesc& tabdesc,
 Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
 				String& message)
 {
-  uInt nrdone = 0;
-  while (nrdone < gdesc.nfields()) {
-    String name = gdesc.name(nrdone);
-    const Record& cold (gdesc.asRecord(nrdone));
-    // _define_hypercolumn must be done at the end.
-    // _define_dminfo_ is obsolete and ignored.
-    if (name != "_define_hypercolumn_"  &&  name != "_define_dminfo_") {
-      if (! cold.isDefined("valueType")) {
-	message = "No value type for column " + name;
-	return False;
-      }
-      String valtype = cold.asString("valueType");
-      valtype.downcase();
-      int option = 0;
-      if (cold.isDefined("option")) {
-	option = cold.asInt("option");
-      }
-      int maxlen = 0;
-      if (cold.isDefined("maxlen")) {
-	maxlen = cold.asInt("maxlen");
-      }
-      String comment, dmtype, dmgrp;
-      if (cold.isDefined("comment")) {
-	comment = cold.asString ("comment");
-      }
-      if (cold.isDefined("dataManagerType")) {
-	dmtype = cold.asString("dataManagerType");
-      }
-      if (cold.isDefined("dataManagerGroup")) {
-	dmgrp = cold.asString("dataManagerGroup");
-      }
-      Bool isArray = cold.isDefined("ndim");
-      Int ndim;
-      Vector<Int> shape;
-      if (isArray) {
-	ndim = cold.asInt("ndim");
-	if (cold.isDefined("shape")) {
-	  shape = cold.asArrayInt ("shape");
-	}
-	Bool cOrder = False;
-	if (cold.isDefined("_c_order")) {
-	  cOrder = cold.asBool ("_c_order");
-	}
-	if (! addArrayColumnDesc (tabdesc, valtype, name, comment,
-				  dmtype, dmgrp, option,
-				  ndim, shape, cOrder, message)) {
-	  return False;
-	}
-      }else{
-	if (valtype == "boolean"  ||  valtype == "bool") {
-	  tabdesc.addColumn (ScalarColumnDesc<Bool>
-			     (name, comment, dmtype, dmgrp, option));
-	} else if (valtype == "byte"  ||  valtype == "uchar") {
-	  tabdesc.addColumn (ScalarColumnDesc<uChar>
-			     (name, comment, dmtype, dmgrp, 0, option));
-	} else if (valtype == "short") {
-	  tabdesc.addColumn (ScalarColumnDesc<Short>
-			     (name, comment, dmtype, dmgrp, 0, option));
-	} else if (valtype == "ushort") {
-	  tabdesc.addColumn (ScalarColumnDesc<uShort>
-			     (name, comment, dmtype, dmgrp, 0, option));
-	} else if (valtype == "integer"  ||  valtype == "int") {
-	  tabdesc.addColumn (ScalarColumnDesc<Int>
-			     (name, comment, dmtype, dmgrp, 0, option));
-	} else if (valtype == "uint") {
-	  tabdesc.addColumn (ScalarColumnDesc<uInt>
-			     (name, comment, dmtype, dmgrp, 0, option));
-	} else if (valtype == "float") {
-	  tabdesc.addColumn (ScalarColumnDesc<Float>
-			     (name, comment, dmtype, dmgrp, option));
-	} else if (valtype == "double") {
-	  tabdesc.addColumn (ScalarColumnDesc<Double>
-			     (name, comment, dmtype, dmgrp, option));
-	} else if (valtype == "complex") {
-	  tabdesc.addColumn (ScalarColumnDesc<Complex>
-			     (name, comment, dmtype, dmgrp, option));
-	} else if (valtype == "dcomplex") {
-	  tabdesc.addColumn (ScalarColumnDesc<DComplex>
-			     (name, comment, dmtype, dmgrp, option));
-	} else if (valtype == "string") {
-	  tabdesc.addColumn (ScalarColumnDesc<String>
-			     (name, comment, dmtype, dmgrp, option));
-	} else if (valtype == "record") {
-	  tabdesc.addColumn (ScalarRecordColumnDesc
-			     (name, comment, dmtype, dmgrp));
-	}else{
-	  message = "Unknown data type " + valtype +
-	            " for scalar column " + name;
-	  return False;
-	}
-      }
-      // Set maximum string length.
-      if (maxlen > 0) {
-	tabdesc.rwColumnDesc(nrdone).setMaxLength (maxlen);
-      }
-      // Define the keywords if needed.
-      if (cold.isDefined ("keywords")) {
-        TableRecord& keySet (tabdesc.rwColumnDesc(nrdone).rwKeywordSet());
-        keySet.fromRecord (cold.asRecord("keywords"));
-      }
+    for(uInt nrdone=0; nrdone < gdesc.nfields(); ++nrdone)
+    {
+        String name = gdesc.name(nrdone);
+        const Record& cold (gdesc.asRecord(nrdone));
+
+        // Avoid special records for now
+        if(name == "_define_hypercolumn_")
+        {
+            // Ignore, for now, handled later
+            continue;
+        }
+        else if(name == "_define_dminfo_")
+        {
+            // Ignore, this is obsolete
+            continue;
+        }
+        else if(name == "_keywords_")
+        {
+            // Unpack keywords into TableDesc
+            tabdesc.rwKeywordSet().fromRecord(cold);
+            continue;
+        }
+        else if(name == "_private_keywords_")
+        {
+            // Ignore, private keywords are not
+            // publicly accessable on TableDesc
+            continue;
+        }
+        else if(!cold.isDefined("valueType"))
+        {
+            // Assume it is a column and complain as
+            // no value type exists to describe it
+            message = "No value type for column " + name;
+            return False;
+        }
+
+        String valtype = cold.asString("valueType");
+        valtype.downcase();
+
+        int option = 0;
+        if (cold.isDefined("option")) {
+            option = cold.asInt("option");
+        }
+
+        int maxlen = 0;
+        if (cold.isDefined("maxlen")) {
+            maxlen = cold.asInt("maxlen");
+        }
+
+        String comment, dmtype, dmgrp;
+        if (cold.isDefined("comment")) {
+            comment = cold.asString ("comment");
+        }
+
+        if (cold.isDefined("dataManagerType")) {
+            dmtype = cold.asString("dataManagerType");
+        }
+
+        if (cold.isDefined("dataManagerGroup")) {
+            dmgrp = cold.asString("dataManagerGroup");
+        }
+
+        Bool isArray = cold.isDefined("ndim");
+        Int ndim;
+        Vector<Int> shape;
+
+        if (isArray) {
+            ndim = cold.asInt("ndim");
+            if (cold.isDefined("shape")) {
+                shape = cold.asArrayInt ("shape");
+            }
+            Bool cOrder = False;
+            if (cold.isDefined("_c_order")) {
+                cOrder = cold.asBool ("_c_order");
+            }
+            if (! addArrayColumnDesc (tabdesc, valtype, name, comment,
+                                      dmtype, dmgrp, option,
+                                      ndim, shape, cOrder, message)) {
+                return False;
+            }
+        } else {
+            if (valtype == "boolean"  ||  valtype == "bool") {
+                tabdesc.addColumn (ScalarColumnDesc<Bool>
+                                   (name, comment, dmtype, dmgrp, option));
+            } else if (valtype == "byte"  ||  valtype == "uchar") {
+                tabdesc.addColumn (ScalarColumnDesc<uChar>
+                                   (name, comment, dmtype, dmgrp, 0, option));
+            } else if (valtype == "short") {
+                tabdesc.addColumn (ScalarColumnDesc<Short>
+                                   (name, comment, dmtype, dmgrp, 0, option));
+            } else if (valtype == "ushort") {
+                tabdesc.addColumn (ScalarColumnDesc<uShort>
+                                   (name, comment, dmtype, dmgrp, 0, option));
+            } else if (valtype == "integer"  ||  valtype == "int") {
+                tabdesc.addColumn (ScalarColumnDesc<Int>
+                                   (name, comment, dmtype, dmgrp, 0, option));
+            } else if (valtype == "uint") {
+                tabdesc.addColumn (ScalarColumnDesc<uInt>
+                                   (name, comment, dmtype, dmgrp, 0, option));
+            } else if (valtype == "float") {
+                tabdesc.addColumn (ScalarColumnDesc<Float>
+                                   (name, comment, dmtype, dmgrp, option));
+            } else if (valtype == "double") {
+                tabdesc.addColumn (ScalarColumnDesc<Double>
+                                   (name, comment, dmtype, dmgrp, option));
+            } else if (valtype == "complex") {
+                tabdesc.addColumn (ScalarColumnDesc<Complex>
+                                   (name, comment, dmtype, dmgrp, option));
+            } else if (valtype == "dcomplex") {
+                tabdesc.addColumn (ScalarColumnDesc<DComplex>
+                                   (name, comment, dmtype, dmgrp, option));
+            } else if (valtype == "string") {
+                tabdesc.addColumn (ScalarColumnDesc<String>
+                                   (name, comment, dmtype, dmgrp, option));
+            } else if (valtype == "record") {
+                tabdesc.addColumn (ScalarRecordColumnDesc
+                                   (name, comment, dmtype, dmgrp));
+            }else{
+                message = "Unknown data type " + valtype +
+                        " for scalar column " + name;
+                return False;
+            }
+        }
+        // Set maximum string length.
+        if (maxlen > 0) {
+            tabdesc.rwColumnDesc(nrdone).setMaxLength (maxlen);
+        }
+        // Define the keywords if needed.
+        if (cold.isDefined ("keywords")) {
+            TableRecord& keySet (tabdesc.rwColumnDesc(nrdone).rwKeywordSet());
+            keySet.fromRecord (cold.asRecord("keywords"));
+        }
     }
-    nrdone++;
-  }
-  if (gdesc.isDefined ("_define_hypercolumn_")) {
-    if (! makeHC (gdesc.asRecord("_define_hypercolumn_"), tabdesc, message)) {
-      return False;
+
+    if (gdesc.isDefined ("_define_hypercolumn_"))
+    {
+        if (! makeHC (gdesc.asRecord("_define_hypercolumn_"), tabdesc, message))
+        {
+            return False;
+        }
     }
-  }
-  return True;
+
+    return True;
 }
 
 Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
@@ -1973,6 +2018,11 @@ Record TableProxy::recordColumnDesc (const ColumnDesc& cold, Bool cOrder)
       cdesc.define ("_c_order", cOrder);
     }
   }
+
+  // Column keywords
+  const TableRecord & keys = cold.keywordSet();
+  cdesc.defineRecord("keywords", keys.toRecord());
+
   return cdesc;
 }
 
