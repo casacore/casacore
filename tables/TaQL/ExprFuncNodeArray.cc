@@ -524,7 +524,18 @@ IPosition TableExprFuncNodeArray::getOrder (const TableExprId& id, Int ndim)
     return order;
   }
   // Remove possibly too high axes.
-  return removeAxes (order, ndim);
+  IPosition ord = removeAxes (order, ndim);
+  if (!isCOrder_p) {
+    return ord;
+  }
+  // Take care of correct mapping for Python style.
+  // Unspecified axes have to be added first.
+  IPosition ordf = IPosition::makeAxisPath (ndim, ord);
+  IPosition nord(ordf.size());
+  for (uInt i=0; i<ordf.size(); ++i) {
+    nord[i] = ndim - ordf[ordf.size()-i-1] - 1;
+  }
+  return nord;
 }
 
 const IPosition& TableExprFuncNodeArray::getDiagonalArg (const TableExprId& id,
