@@ -1696,36 +1696,26 @@ Bool TableProxy::makeHC (const Record& gdesc, TableDesc& tabdesc,
 Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
 				String& message)
 {
-    for(uInt nrdone=0, nrcols=0; nrdone < gdesc.nfields(); ++nrdone)
-    {
+    for(uInt nrdone=0, nrcols=0; nrdone < gdesc.nfields(); ++nrdone) {
         String name = gdesc.name(nrdone);
         const Record& cold (gdesc.asRecord(nrdone));
 
         // Avoid special records for now
-        if(name == "_define_hypercolumn_")
-        {
+        if(name == "_define_hypercolumn_") {
             // Ignore, for now, handled later
             continue;
-        }
-        else if(name == "_define_dminfo_")
-        {
+        } else if(name == "_define_dminfo_") {
             // Ignore, this is obsolete
             continue;
-        }
-        else if(name == "_keywords_")
-        {
+        } else if(name == "_keywords_") {
             // Unpack keywords into TableDesc
             tabdesc.rwKeywordSet().fromRecord(cold);
             continue;
-        }
-        else if(name == "_private_keywords_")
-        {
+        } else if(name == "_private_keywords_") {
             // Ignore, private keywords are not
             // publicly accessable on TableDesc
             continue;
-        }
-        else if(!cold.isDefined("valueType"))
-        {
+        } else if(!cold.isDefined("valueType")) {
             // Assume it is a column and complain as
             // no value type exists to describe it
             message = "No value type for column " + name;
@@ -1832,10 +1822,8 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
         ++nrcols;
     }
 
-    if (gdesc.isDefined ("_define_hypercolumn_"))
-    {
-        if (! makeHC (gdesc.asRecord("_define_hypercolumn_"), tabdesc, message))
-        {
+    if (gdesc.isDefined ("_define_hypercolumn_"))  {
+        if (! makeHC (gdesc.asRecord("_define_hypercolumn_"), tabdesc, message))  {
             return False;
         }
     }
