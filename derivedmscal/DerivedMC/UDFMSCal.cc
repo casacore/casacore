@@ -49,7 +49,12 @@ namespace casacore {
   UDFMSCal::UDFMSCal (ColType type, Int arg)
     : itsType (type),
       itsArg  (arg)
-  {}
+  {
+    if (itsType == DELAY) {
+      // Default column to use for delays.
+      itsEngine.setDirColName ("DELAY_DIR");
+    }
+  }
 
   UDFMSCal::UDFMSCal (const String& funcName)
     : itsType       (GETVALUE),
@@ -106,16 +111,28 @@ namespace casacore {
     { return new UDFMSCal (AZEL, 1); }
   UDFBase* UDFMSCal::makeITRF (const String&)
     { return new UDFMSCal (ITRF, -1); }
-  UDFBase* UDFMSCal::makeUVW (const String&)
-    { return new UDFMSCal (NEWUVW, -1); }
-  UDFBase* UDFMSCal::makeWvl (const String&)
-    { return new UDFMSCal (UVWWVL, -1); }
-  UDFBase* UDFMSCal::makeWvls (const String&)
-    { return new UDFMSCal (UVWWVLS, -1); }
   UDFBase* UDFMSCal::makeUvwWvl (const String&)
-    { return new UDFMSCal (NEWUVWWVL, -1); }
+    { return new UDFMSCal (UVWWVL, -1); }
   UDFBase* UDFMSCal::makeUvwWvls (const String&)
-    { return new UDFMSCal (NEWUVWWVLS, -1); }
+    { return new UDFMSCal (UVWWVLS, -1); }
+  UDFBase* UDFMSCal::makeUvwJ2000 (const String&)
+    { return new UDFMSCal (NEWUVW, 0); }
+  UDFBase* UDFMSCal::makeWvlJ2000 (const String&)
+    { return new UDFMSCal (NEWUVWWVL, 0); }
+  UDFBase* UDFMSCal::makeWvlsJ2000 (const String&)
+    { return new UDFMSCal (NEWUVWWVLS, 0); }
+  UDFBase* UDFMSCal::makeUvwAPP (const String&)
+    { return new UDFMSCal (NEWUVW, 1); }
+  UDFBase* UDFMSCal::makeWvlAPP (const String&)
+    { return new UDFMSCal (NEWUVWWVL, 1); }
+  UDFBase* UDFMSCal::makeWvlsAPP (const String&)
+    { return new UDFMSCal (NEWUVWWVLS, 1); }
+  UDFBase* UDFMSCal::makeDelay (const String&)
+    { return new UDFMSCal (DELAY, -1); }
+  UDFBase* UDFMSCal::makeDelay1 (const String&)
+    { return new UDFMSCal (DELAY, 0); }
+  UDFBase* UDFMSCal::makeDelay2 (const String&)
+    { return new UDFMSCal (DELAY, 1); }
   UDFBase* UDFMSCal::makeStokes (const String&)
     { return new UDFMSCal (STOKES, -1); }
   UDFBase* UDFMSCal::makeBaseline (const String&)
@@ -196,18 +213,8 @@ namespace casacore {
       itsTmpVector.resize (2);
       setUnit ("rad");
       break;
-    case NEWUVW:
-      setUnit ("m");
-      setShape (IPosition(1,3));
-      itsTmpVector.resize (3);
-      break;
     case UVWWVL:
       setupWvls (table, operands(), 0);
-      setShape (IPosition(1,3));
-      itsTmpVector.resize (3);
-      break;
-    case NEWUVWWVL:
-      setupWvls (table, operands(), 1);
       setShape (IPosition(1,3));
       itsTmpVector.resize (3);
       break;
@@ -216,10 +223,24 @@ namespace casacore {
       itsTmpVector.resize (3);
       setNDim(2);  // The shape can vary (each band can be different)
       break;
+    case NEWUVW:
+      setUnit ("m");
+      setShape (IPosition(1,3));
+      itsTmpVector.resize (3);
+      break;
+    case NEWUVWWVL:
+      setupWvls (table, operands(), 1);
+      setShape (IPosition(1,3));
+      itsTmpVector.resize (3);
+      break;
     case NEWUVWWVLS:
       setupWvls (table, operands(), 1);
       itsTmpVector.resize (3);
-      setNDim(2);  // The shape can vary (each band can be different)
+      setNDim (2);  // The shape can vary (each band can be different)
+      break;
+    case DELAY:
+      setNDim (0);
+      setUnit ("s");
       break;
     case STOKES:
       setupStokes (table, operands());
@@ -741,6 +762,8 @@ namespace casacore {
       return itsEngine.getPA (itsArg, id.rownr());
     case LAST:
       return itsEngine.getLAST (itsArg, id.rownr());
+    case DELAY:
+      return itsEngine.getDelay (itsArg, id.rownr());
     case GETVALUE:
       {
         Int64 rownr = getRowNr(id);
@@ -837,9 +860,6 @@ namespace casacore {
     case ITRF:
       itsEngine.getItrf (itsArg, id.rownr(), itsTmpVector);
       return MArray<Double>(itsTmpVector);
-    case NEWUVW:
-      itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);
-      return MArray<Double>(itsTmpVector);
     case UVWWVL:
       itsUvwCol.get (id.rownr(), itsTmpVector);
       itsTmpVector *= itsWavel[itsDDIds[itsIdNode.getInt(id)]];
@@ -847,12 +867,15 @@ namespace casacore {
     case UVWWVLS:
       itsUvwCol.get (id.rownr(), itsTmpVector);
       return MArray<Double>(toWvls (id));
+    case NEWUVW:
+      itsEngine.getNewUVW (itsArg, id.rownr(), itsTmpVector);
+      return MArray<Double>(itsTmpVector);
     case NEWUVWWVL:
-      itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);
+      itsEngine.getNewUVW (itsArg, id.rownr(), itsTmpVector);
       itsTmpVector *= itsWavel[itsDDIds[itsIdNode.getInt(id)]];
       return MArray<Double>(itsTmpVector);
     case NEWUVWWVLS:
-      itsEngine.getUVWJ2000 (id.rownr(), itsTmpVector);
+      itsEngine.getNewUVW (itsArg, id.rownr(), itsTmpVector);
       return MArray<Double>(toWvls (id));
     case STOKES:
       {
