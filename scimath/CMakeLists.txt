@@ -35,9 +35,9 @@ Mathematics/ZScoreCalculator.cc
 )
 
 if (FFTW3_FOUND)
-    target_link_libraries (casa_scimath casa_scimath_f ${FFTW3_LIBRARIES})
+    target_link_libraries (casa_scimath casa_scimath_f ${FFTW3_LIBRARIES} ${INTEL_LIBS})
 else (FFTW3_FOUND)
-    target_link_libraries (casa_scimath casa_scimath_f)
+    target_link_libraries (casa_scimath casa_scimath_f ${INTEL_LIBS})
 endif (FFTW3_FOUND)
 
 install (TARGETS casa_scimath

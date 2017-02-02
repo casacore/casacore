@@ -24,7 +24,7 @@ FITS/blockio.cc
 FITS/FITSReader.cc
 )
 
-target_link_libraries (casa_fits casa_measures ${CFITSIO_LIBRARIES})
+target_link_libraries (casa_fits casa_measures ${CFITSIO_LIBRARIES} ${INTEL_LIBS})
 
 add_subdirectory (apps)
 

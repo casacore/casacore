@@ -32,7 +32,7 @@ subcom.f
 vvroutines.f
 )
 
-target_link_libraries (casa_scimath_f casa_tables ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+target_link_libraries (casa_scimath_f casa_tables ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES} ${INTEL_LIBS})
 
 install (
 TARGETS casa_scimath_f

@@ -63,6 +63,7 @@ casa_images
 casa_coordinates
 casa_mirlib
 casa_lattices
+${INTEL_LIBS}
 )
 
 add_subdirectory (apps)

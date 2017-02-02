@@ -12,7 +12,7 @@ MeasUDF/DirectionEngine.cc
 MeasUDF/Register.cc
 )
 
-target_link_libraries (casa_meas casa_measures)
+target_link_libraries (casa_meas casa_measures ${INTEL_LIBS})
 
 install (TARGETS casa_meas
 RUNTIME DESTINATION bin

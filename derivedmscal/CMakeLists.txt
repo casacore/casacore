@@ -10,7 +10,7 @@ DerivedMC/Register.cc
 DerivedMC/UDFMSCal.cc
 )
 
-target_link_libraries (casa_derivedmscal casa_ms)
+target_link_libraries (casa_derivedmscal casa_ms ${INTEL_LIBS})
 
 install (TARGETS casa_derivedmscal
 RUNTIME DESTINATION bin

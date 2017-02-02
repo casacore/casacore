@@ -187,7 +187,7 @@ ${BISON_TableGram_OUTPUTS}
 ${FLEX_TableGram_OUTPUTS}
 )
 
-target_link_libraries (casa_tables casa_casa)
+target_link_libraries (casa_tables casa_casa ${INTEL_LIBS})
 
 add_subdirectory (apps)
 

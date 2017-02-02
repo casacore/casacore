@@ -1,10 +1,10 @@
 foreach(prog findmeastable)
     add_executable (${prog}  ${prog}.cc)
-    target_link_libraries (${prog} casa_measures)
+    target_link_libraries (${prog} casa_measures ${INTEL_LIBS})
     install(TARGETS ${prog} DESTINATION bin)
 endforeach(prog findmeastable)
 
 add_executable (measuresdata  measuresdata/measuresdata.cc)
-target_link_libraries (measuresdata casa_measures)
+target_link_libraries (measuresdata casa_measures ${INTEL_LIBS})
 install(TARGETS measuresdata DESTINATION bin)
 install(PROGRAMS measuresdata/measuresdata-update DESTINATION bin)
