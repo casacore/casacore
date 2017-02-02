@@ -22,7 +22,7 @@ Coordinates/StokesCoordinate.cc
 Coordinates/TabularCoordinate.cc
 )
 
-target_link_libraries (casa_coordinates casa_fits ${WCSLIB_LIBRARIES})
+target_link_libraries (casa_coordinates casa_fits ${WCSLIB_LIBRARIES} ${CASACORE_ARCH_LIBS})
 
 install (TARGETS casa_coordinates
 RUNTIME DESTINATION bin

@@ -24,7 +24,7 @@ MSFits/SDSysCalHandler.cc
 MSFits/SDWeatherHandler.cc
 )
 
-target_link_libraries (casa_msfits casa_ms casa_fits)
+target_link_libraries (casa_msfits casa_ms casa_fits ${CASACORE_ARCH_LIBS})
 
 add_subdirectory (apps)
 

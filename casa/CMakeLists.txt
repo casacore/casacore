@@ -244,6 +244,7 @@ casa_casa
 ${de_libraries}
 ${libm}
 dl
+${CASACORE_ARCH_LIBS}
 )
 
 add_subdirectory (apps)

@@ -157,6 +157,7 @@ ${FLEX_MSStateGram_OUTPUTS}
 
 target_link_libraries (
 casa_ms casa_measures
+${CASACORE_ARCH_LIBS}
 )
 
 add_subdirectory (apps)
