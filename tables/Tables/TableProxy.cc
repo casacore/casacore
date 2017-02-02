@@ -1696,7 +1696,7 @@ Bool TableProxy::makeHC (const Record& gdesc, TableDesc& tabdesc,
 Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
 				String& message)
 {
-    for(uInt nrdone=0; nrdone < gdesc.nfields(); ++nrdone)
+    for(uInt nrdone=0, nrcols=0; nrdone < gdesc.nfields(); ++nrdone)
     {
         String name = gdesc.name(nrdone);
         const Record& cold (gdesc.asRecord(nrdone));
@@ -1821,13 +1821,15 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
         }
         // Set maximum string length.
         if (maxlen > 0) {
-            tabdesc.rwColumnDesc(nrdone).setMaxLength (maxlen);
+            tabdesc.rwColumnDesc(nrcols).setMaxLength (maxlen);
         }
         // Define the keywords if needed.
         if (cold.isDefined ("keywords")) {
-            TableRecord& keySet (tabdesc.rwColumnDesc(nrdone).rwKeywordSet());
+            TableRecord& keySet (tabdesc.rwColumnDesc(nrcols).rwKeywordSet());
             keySet.fromRecord (cold.asRecord("keywords"));
         }
+
+        ++nrcols;
     }
 
     if (gdesc.isDefined ("_define_hypercolumn_"))
