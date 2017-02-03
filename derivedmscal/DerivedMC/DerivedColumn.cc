@@ -92,7 +92,7 @@ namespace casacore {
   }
   void UVWJ2000Column::getArray (uInt rowNr, Array<Double>& data)
   {
-    itsEngine->getUVWJ2000 (rowNr, data);
+    itsEngine->getNewUVW (False, rowNr, data);
   }
 
 } //# end namespace
