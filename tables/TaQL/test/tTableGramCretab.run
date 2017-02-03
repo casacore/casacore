@@ -11,12 +11,12 @@ ln -s tTableGram tTableGramCretab
 
 
 # Execute all kind of table creation commands.
-# Check the result using showtableinfo (leave out version line).
+# Check the result using showtableinfo (leave out version line and endianness).
 
 # Test create and insert with a unit.
 echo ""
 $casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab1 (col1 i4 [shape=[2,3], unit="m"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]'
-../../apps/showtableinfo in=tTableGramCretab_tmp.tab1 | grep -v 'showtableinfo:'
+../../apps/showtableinfo in=tTableGramCretab_tmp.tab1 | grep -v 'showtableinfo:' | sed -e 's/ in .* endian format/ in an endian format/'
 
 echo ""
 $casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab2 as [plain_big=T,storage="multifile",blocksize=32768] [col1 i4 [shape=[2,3], unit="m", dmtype="IncrementalStMan"], col2 B]'
@@ -37,7 +37,7 @@ $casa_checktool ./tTableGramCretab 'create table tTableGramCretab_tmp.tab1 as bl
 # A table created using a selection while changing the dminfo.
 echo ""
 $casa_checktool ./tTableGramCretab 'select from tTableGramCretab_tmp.tab3 where col2y giving tTableGramCretab_tmp.tab4 as [plain=T,storage="multifile",blocksize=32768] dminfo [NAME="ISM1",TYPE="IncrementalStMan",COLUMNS=["col1x","col2y"]]'
-../../apps/showtableinfo in=tTableGramCretab_tmp.tab4 | grep -v 'showtableinfo:'
+../../apps/showtableinfo in=tTableGramCretab_tmp.tab4 | grep -v 'showtableinfo:' | sed -e 's/ in .* endian format/ in an endian format/'
 
 
 # Remove the symlink
