@@ -327,7 +327,6 @@ template<class T> const Matrix<T> Cube<T>::xzPlane(size_t which) const
     Cube<T> *This = const_cast<Cube<T>*>(this);
     // Cast away constness, but the return type is a const Matrix<T>, so
     // this should still be safe.
-    cout << "test" << endl;
     return This->xzPlane(which);
 }
 
