@@ -371,14 +371,16 @@ template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::mapOnGet
 (Array<VirtualType>&, const Array<StoredType>&)
 {
-  throw ("BaseMappedArrayEngine::mapOnGet not implemented");
+  throw DataManInvOper("BaseMappedArrayEngine::mapOnGet not implemented "
+                       "for column " + virtualName());
 }
 
 template<class VirtualType, class StoredType>
 void BaseMappedArrayEngine<VirtualType, StoredType>::mapOnPut
 (const Array<VirtualType>&, Array<StoredType>&)
 {
-  throw ("BaseMappedArrayEngine::mapOnPut not implemented");
+  throw DataManInvOper("BaseMappedArrayEngine::mapOnPut not implemented "
+                       "for column " + virtualName());
 }
 
 

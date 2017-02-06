@@ -268,7 +268,8 @@ public:
   // to the beginning of the column data in that bucket.
   // It also fills in the start and end row for the column data.
   char* find (uInt aRowNr,     uInt aColNr, 
-	      uInt& aStartRow, uInt& anEndRow);
+	      uInt& aStartRow, uInt& anEndRow,
+              const String& colName);
 
   // Add a new bucket and get its bucket number.
   uInt getNewBucket();

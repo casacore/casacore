@@ -126,8 +126,8 @@ void TSMDataColumn::setShapeTiled (uInt rownr, const IPosition& shape,
         }
 	if (!eq) {
 	    if (! canChangeShape()) {
-		throw (TSMError
-		       ("Shape of data cells in same hypercube differs"));
+		throw TSMError ("Shape of data cells in same hypercube differs"
+                                " for column " + columnName());
 	    }
 	    //# Set the new shape and take care that on the next access
 	    //# the cache size is recalculated.
@@ -380,7 +380,8 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
 	if (! isFixedShape()) {
 	  IPosition hcShape = lastCube->cubeShape().getFirst (lastAxis);
 	  if (! cellShape.isEqual (hcShape)) {
-	    throw DataManError("getArrayColumnCells shape mismatch");
+	    throw DataManError("getArrayColumnCells shape mismatch in column "
+                               + columnName());
 	  }
 	}
       } else {

@@ -166,7 +166,7 @@ void SSMIndex::addRow (uInt aNrRows)
 Int SSMIndex::deleteRow (uInt aRowNr)
 {
   // Decrement the rowNrs of all the intervals after the row to be removed
-  uInt anIndex = getIndex(aRowNr);
+  uInt anIndex = getIndex(aRowNr, String());
   Bool isEmpty=False;
 
   for (uInt i = anIndex ; i< itsNUsed; i++) {
@@ -210,14 +210,15 @@ void SSMIndex::recreate()
 }
 
 
-uInt SSMIndex::getIndex (uInt aRowNumber) const
+uInt SSMIndex::getIndex (uInt aRowNumber, const String& colName) const
 {
   Bool isFound;
   uInt anIndex = binarySearchBrackets( isFound, itsLastRow, aRowNumber, 
 				       itsNUsed );
   if (anIndex >= itsNUsed) {
     throw TableError ("SSMIndex::getIndex - access to non-existing row "
-		      + String::toString(aRowNumber) + " in " +
+                      + String::toString(aRowNumber) +
+                      " in column " + colName + " of table " + 
 		      itsSSMPtr->table().tableName());
   }
   return anIndex;
@@ -304,9 +305,10 @@ void SSMIndex::addColumn (Int anOffset, uInt nbits)
 }
 
 void SSMIndex::find (uInt aRowNumber, uInt& aBucketNr, 
-		     uInt& aStartRow, uInt& anEndRow) const
+		     uInt& aStartRow, uInt& anEndRow,
+                     const String& colName) const
 {
-  uInt anIndex = getIndex(aRowNumber);
+  uInt anIndex = getIndex(aRowNumber, colName);
   aBucketNr = itsBucketNumber[anIndex];
   anEndRow = itsLastRow[anIndex];
   aStartRow = 0;

@@ -49,7 +49,7 @@ void SSMDirColumn::deleteRow(uInt aRowNr)
   char* aValue;
   uInt  aSRow;
   uInt  anERow;
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aSRow, anERow);
+  aValue = itsSSMPtr->find (aRowNr, itsColNr, aSRow, anERow, columnName());
   
   if (aRowNr < anERow) {
     // remove from bucket
@@ -83,7 +83,8 @@ void SSMDirColumn::getArrayBoolV     (uInt aRowNr,
 
   Bool* data = aDataPtr->getStorage (deleteIt);
 
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                            columnName());
 
   uInt anOff = (aRowNr-aStartRow) * itsNrCopy;
 
@@ -186,7 +187,8 @@ void SSMDirColumn::getValue(uInt aRowNr, void* data)
   uInt  aStartRow;
   uInt  anEndRow;
   char* aValue;
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                            columnName());
   itsReadFunc (data, aValue+(aRowNr-aStartRow)*itsExternalSizeBytes,
 	       itsNrCopy);
 }
@@ -201,7 +203,8 @@ void SSMDirColumn::putArrayBoolV     (uInt aRowNr,
   uInt  anEndRow;
   char* aValue;
 
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                            columnName());
 
   uInt anOff = (aRowNr-aStartRow) * itsNrCopy;
 

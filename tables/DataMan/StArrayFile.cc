@@ -143,7 +143,8 @@ void StManArrayFile::setpos (Int64 pos)
 {
     Int64 newpos = iofil_p->seek (pos);
     if (newpos != pos) {
-	throw (DataManError ("StManArrayFile::setpos failed"));
+	throw (DataManError ("StManArrayFile::setpos failed in file " +
+                             file_p->fileName()));
     }
 }
 

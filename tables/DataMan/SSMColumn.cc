@@ -101,7 +101,8 @@ void SSMColumn::addRow (uInt aNewNrRows, uInt, Bool doInit)
       uInt  aStartRow;
       uInt  anEndRow;
       char* aValPtr;
-      aValPtr = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+      aValPtr = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                                 columnName());
       aRowNr = anEndRow+1;
       uInt aNr = anEndRow-aStartRow+1;
       aNrRows -= aNr;
@@ -123,14 +124,15 @@ void SSMColumn::deleteRow(uInt aRowNr)
     getRowValue(buf, aRowNr);
     if (buf[2] > 8 ) {
       itsSSMPtr->getStringHandler()->remove(buf[0], buf[1], buf[2]);
-      aValue = itsSSMPtr->find (aRowNr, itsColNr, aSRow, anERow);
+      aValue = itsSSMPtr->find (aRowNr, itsColNr, aSRow, anERow,
+                                columnName());
       shiftRows(aValue,aRowNr,aSRow,anERow);
       itsSSMPtr->setBucketDirty();
       return;
     }
   }
 
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aSRow, anERow);
+  aValue = itsSSMPtr->find (aRowNr, itsColNr, aSRow, anERow, columnName());
 
   // For bools be sure that cache is actual
   Bool isBool = (aDT == TpBool);
@@ -253,7 +255,8 @@ void SSMColumn::getStringV (uInt aRowNr, String* aValue)
     char* sp = const_cast<char*>(aValue->chars());
     uInt  aStartRow;
     uInt  anEndRow;
-    char* buf = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+    char* buf = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                                 columnName());
     itsReadFunc (sp, buf+(aRowNr-aStartRow)*itsExternalSizeBytes,
 		 itsNrCopy);
     // Append a trailing zero (in case needed).
@@ -293,7 +296,8 @@ Char* SSMColumn::getRowValue(Int* data, uInt aRowNr)
   uInt  aStartRow;
   uInt  anEndRow;
   char* aValue;
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                            columnName());
   itsReadFunc (data, aValue+(aRowNr-aStartRow)*itsExternalSizeBytes,
 	       itsNrCopy);
   return aValue+(aRowNr-aStartRow)*itsExternalSizeBytes;
@@ -305,7 +309,8 @@ void SSMColumn::getValue(uInt aRowNr)
     uInt  aStartRow;
     uInt  anEndRow;
     char* aValue;
-    aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+    aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                              columnName());
     itsReadFunc (getDataPtr(), aValue, (anEndRow-aStartRow+1) * itsNrCopy);
     columnCache().set (aStartRow, anEndRow, getDataPtr());
   }
@@ -317,7 +322,8 @@ void SSMColumn::putBoolV (uInt aRowNr, const Bool* aValue)
   uInt  anEndRow;
   char* aDummy;
 
-  aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+  aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                            columnName());
 
   uInt anOff    = aRowNr-aStartRow;
 
@@ -410,7 +416,8 @@ void SSMColumn::putStringV (uInt aRowNr, const String* aValue)
   if (itsMaxLen > 0) {
     uInt  aStartRow;
     uInt  anEndRow;
-    char* aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+    char* aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                                    columnName());
     itsWriteFunc (aDummy+(aRowNr-aStartRow)*itsExternalSizeBytes,
 		  aValue->chars(), min(itsMaxLen, aValue->length()+1));
     itsSSMPtr->setBucketDirty();
@@ -448,7 +455,8 @@ void SSMColumn::putValue(uInt aRowNr, const void* aValue)
 {
   uInt  aStartRow;
   uInt  anEndRow;
-  char* aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+  char* aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                                  columnName());
   itsWriteFunc (aDummy+(aRowNr-aStartRow)*itsExternalSizeBytes,
   		aValue, itsNrCopy);
   itsSSMPtr->setBucketDirty();
@@ -461,7 +469,8 @@ void SSMColumn::putValueShortString(uInt aRowNr, const void* aValue,
   uInt  anEndRow;
   char* aDummy;
 
-  aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+  aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                            columnName());
 
   itsWriteFunc (aDummy+(aRowNr-aStartRow)*itsExternalSizeBytes,
   		aValue, itsNrCopy);
@@ -568,7 +577,8 @@ void SSMColumn::getColumnValue(void* anArray,uInt aNrRows)
     uInt  aStartRow;
     uInt  anEndRow;
     char* aValue;
-    aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+    aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                              columnName());
     aRowNr = anEndRow+1;
     uInt aNr = anEndRow-aStartRow+1;
     rowsToDo -= aNr;
@@ -674,7 +684,8 @@ void SSMColumn::putColumnValue(const void* anArray,uInt aNrRows)
     uInt  aStartRow;
     uInt  anEndRow;
     char* aValPtr;
-    aValPtr = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+    aValPtr = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                               columnName());
     aRowNr = anEndRow+1;
     uInt aNr = anEndRow-aStartRow+1;
     rowsToDo -= aNr;

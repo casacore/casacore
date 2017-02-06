@@ -53,7 +53,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       itsDataManager->setProperties (prop);
     } else {
       throw DataManError ("setProperties cannot be used on a default "
-                          "RODataManAccessor object");
+                          "empty RODataManAccessor object");
     }
   }
 
@@ -63,7 +63,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return itsDataManager->getProperties();
     }
     throw DataManError ("getProperties cannot be used on a default "
-                        "RODataManAccessor object");
+                        "empty RODataManAccessor object");
   }
 
 } //# NAMESPACE CASACORE - END
