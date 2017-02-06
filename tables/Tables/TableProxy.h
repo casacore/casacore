@@ -569,6 +569,9 @@ public:
   Record getTableDescription (Bool actual,         //# use actual description?
 			      Bool cOrder=False);
 
+  // Create a Record table description from a TableDesc object
+  static Record getTableDesc(const TableDesc & tabdesc, Bool cOrder=False);
+
   // Get the column description of a column in the table.
   // It returns a record containing the description.
   Record getColumnDescription (const String& columnName,
@@ -602,8 +605,6 @@ public:
   static void putKeyValues (TableRecord& keySet, const Record& valueSet);
   // </group>
 
-
-private:
   // Get the lock options from the fields in the record.
   // If the record or lockoption is invalid, an exception is thrown.
   static TableLock makeLockOptions (const Record& options);
@@ -614,7 +615,79 @@ private:
 
   // Make hypercolumn definitions for the given hypercolumns.
   static Bool makeHC (const Record& gdesc, TableDesc& tabdesc,
-		      String& message);
+              String& message);
+
+  // Get the value of a keyword.
+  static ValueHolder getKeyValue (const TableRecord& keySet,
+                  const RecordFieldId& fieldId);
+
+  // Put the value of a keyword.
+  static void putKeyValue (TableRecord& keySet,
+               const RecordFieldId& fieldId,
+               const ValueHolder& value);
+
+  // Make a real table description from a table description in a record.
+  // An exception is thrown if the record table description is invalid.
+  // A record table description is a Record object as returned by
+  // getDesc.
+  static Bool makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
+                 String& message);
+
+  // Add an array column description to the table description.
+  // It is used by the function makeDesc.
+  static Bool addArrayColumnDesc (TableDesc& tableDesc,
+                  const String& valueType,
+                  const String& columnName,
+                  const String& comment,
+                  const String& dataManagerType,
+                  const String& dataManagerGroup,
+                  int options,
+                  Int ndim, const Vector<Int>& shape,
+                  Bool cOrder,
+                  String& message);
+
+  // Make a record containing the column description.
+  static Record recordColumnDesc (const ColumnDesc&, Bool cOrder);
+
+  // Make a record containing the description of all hypercolumns.
+  static Record recordHCDesc (const TableDesc& tableDesc);
+
+  // Calculate the values of a CALC expression and store them in field
+  // 'values' in rec.
+  static void calcValues (Record& rec, const TableExprNode& expr);
+
+  // Get the type string as used externally (in e.g. glish).
+  static String getTypeStr (DataType);
+
+  // Optionally reverse the axes.
+  static IPosition fillAxes (const IPosition&, Bool cOrder);
+
+  // Check if the new shape is still the same.
+  // <br> same:   0=first time;   1=still the same;   2=different
+  static void stillSameShape (Int& same, IPosition& shape,
+                              const IPosition& newShape);
+
+  // Copy the array contents of the record fields to a single array.
+  // This can only be done if the shape is constant.
+  template<typename T>
+  static Array<T> record2Array (const Record& rec)
+  {
+    if (rec.empty()) {
+      return Array<T>();
+    }
+    Array<T> tmp;
+    rec.get (0, tmp);
+    IPosition shp(tmp.shape());
+    shp.append (IPosition(1, rec.size()));
+    Array<T> arr(shp);
+    ArrayIterator<T> iter(arr, tmp.ndim());
+    for (uInt i=0; i<rec.size(); ++i, iter.next()) {
+      rec.get (i, iter.array());
+    }
+    return arr;
+  }
+
+private:
 
   // Get the column info for toAscii.
   Bool getColInfo (const String& colName, Bool useBrackets,
@@ -716,84 +789,13 @@ private:
 		  Bool mustExist, Bool change, Bool makeSubRecord);
   // </group>
 
-  // Get the value of a keyword.
-  static ValueHolder getKeyValue (const TableRecord& keySet,
-				  const RecordFieldId& fieldId);
-
-  // Put the value of a keyword.
-  static void putKeyValue (TableRecord& keySet,
-			   const RecordFieldId& fieldId,
-			   const ValueHolder& value);
-
-  // Make a real table description from a table description in a record.
-  // An exception is thrown if the record table description is invalid.
-  // A record table description is a Record object as returned by
-  // getDesc.
-  static Bool makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
-			     String& message);
-
-  // Add an array column description to the table description.
-  // It is used by the function makeDesc.
-  static Bool addArrayColumnDesc (TableDesc& tableDesc,
-				  const String& valueType,
-				  const String& columnName,
-				  const String& comment,
-				  const String& dataManagerType,
-				  const String& dataManagerGroup,
-				  int options,
-				  Int ndim, const Vector<Int>& shape,
-				  Bool cOrder,
-				  String& message);
-
-  // Make a record containing the column description.
-  static Record recordColumnDesc (const ColumnDesc&, Bool cOrder);
-
-  // Make a record containing the description of all hypercolumns.
-  static Record recordHCDesc (const TableDesc& tableDesc);
-
   // Replace the user-given default value (<0) by the default value
   // used by Slicer (i.e. by Slicer::MimicSource).
   void setDefaultForSlicer (IPosition& vec) const;
 
-  // Calculate the values of a CALC expression and store them in field
-  // 'values' in rec.
-  static void calcValues (Record& rec, const TableExprNode& expr);
-
   // Synchronize table if readlocking is in effect.
   // In this way the number of rows is up-to-date.
   void syncTable (Table& table);
-
-  // Get the type string as used externally (in e.g. glish).
-  static String getTypeStr (DataType);
-
-  // Optionally reverse the axes.
-  static IPosition fillAxes (const IPosition&, Bool cOrder);
-
-  // Check if the new shape is still the same.
-  // <br> same:   0=first time;   1=still the same;   2=different
-  static void stillSameShape (Int& same, IPosition& shape,
-                              const IPosition& newShape);
-
-  // Copy the array contents of the record fields to a single array.
-  // This can only be done if the shape is constant.
-  template<typename T>
-  static Array<T> record2Array (const Record& rec)
-  {
-    if (rec.empty()) {
-      return Array<T>();
-    }
-    Array<T> tmp;
-    rec.get (0, tmp);
-    IPosition shp(tmp.shape());
-    shp.append (IPosition(1, rec.size()));
-    Array<T> arr(shp);
-    ArrayIterator<T> iter(arr, tmp.ndim());
-    for (uInt i=0; i<rec.size(); ++i, iter.next()) {
-      rec.get (i, iter.array());
-    }
-    return arr;
-  }
-
 
   //# The data members.
   Table  table_p;
