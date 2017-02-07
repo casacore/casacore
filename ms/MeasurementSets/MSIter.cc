@@ -361,6 +361,7 @@ void MSIter::origin()
 {
   curMS_p=0;
   checkFeed_p=True;
+  if (timeComp_p) timeComp_p->setOffset(0.0);
   if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
   setState();
   newMS_p=newArray_p=newSpectralWindow_p=newField_p=newPolarizationId_p=
@@ -392,6 +393,11 @@ void MSIter::advance()
     if (++curMS_p >= nMS_p) {
       curMS_p--;
       more_p=False;
+    }
+    else {
+      // Time comparer should be reset, too!
+      //  ...for next MS, if nMS_p>1
+      if (timeComp_p) timeComp_p->setOffset(0.0);
     }
   }
   if (more_p) setState();
@@ -788,5 +794,14 @@ void  MSIter::getSpwInFreqRange(Block<Vector<Int> >& spw,
 
   }
 }
+
+// Report Name of slowest column that changes at end of current iteration
+String MSIter::keyChange() const
+{
+  return tabIter_p[curMS_p]->keyChange();
+}
+
+
+
 } //# NAMESPACE CASACORE - END
 

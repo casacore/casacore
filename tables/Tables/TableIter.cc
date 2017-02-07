@@ -127,5 +127,12 @@ void TableIterator::next()
     subTable_p = Table(tabIterPtr_p->next());
 }
 
+// Report Name of slowest column that changes at end of current iteration
+String TableIterator::keyChange() const
+{ 
+  return tabIterPtr_p->keyChange();
+}
+
+
 } //# NAMESPACE CASACORE - END
 

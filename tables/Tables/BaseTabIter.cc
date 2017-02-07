@@ -49,6 +49,7 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
 				      int option)
 : lastRow_p (0),
   nrkeys_p  (keys.nelements()),
+  keyCh_p (""),
   lastVal_p (keys.nelements()),
   curVal_p  (keys.nelements()),
   colPtr_p  (keys.nelements()),
@@ -147,6 +148,7 @@ BaseTable* BaseTableIterator::next()
 	    colPtr_p[i]->get (lastRow_p, curVal_p[i]);
 	    if (cmpObj_p[i]->comp (curVal_p[i], lastVal_p[i])  != 0) {
 		match = False;
+		keyCh_p=colPtr_p[i]->columnDesc().name();   // update so users can see which key changed
 		break;
 	    }
 	}
@@ -155,6 +157,11 @@ BaseTable* BaseTableIterator::next()
 	}
 	itp->addRownr (lastRow_p);
     }
+
+    // If we've reached the end of the table, clear the keyCh_p
+    if (lastRow_p==nr)
+      keyCh_p="";
+
     //# Adjust rownrs in case source table is already a RefTable.
     Vector<uInt>& rownrs = *(itp->rowStorage());
     sortTab_p->adjustRownrs (itp->nrow(), rownrs, False);

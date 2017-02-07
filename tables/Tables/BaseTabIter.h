@@ -104,10 +104,14 @@ public:
     // Return the next group.
     virtual BaseTable* next();
 
+    // Report Name of slowest column that changes at end of current iteration
+    String keyChange() const { return keyCh_p; };
+
 protected:
     BaseTable*             sortTab_p;     //# Table sorted in iteration order
     uInt                   lastRow_p;     //# last row used from reftab
     uInt                   nrkeys_p;      //# nr of columns in group
+    String                 keyCh_p;       //# the column name ending the current iteration
     Block<void*>           lastVal_p;     //# last value per column
     Block<void*>           curVal_p;      //# current value per column
     PtrBlock<BaseColumn*>  colPtr_p;      //# pointer to column objects

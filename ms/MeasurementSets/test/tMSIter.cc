@@ -142,6 +142,7 @@ void iterMS (double binwidth)
          << " a2=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
          << " time="
          << ROScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
+	 << " keyCh=" << msIter.keyChange()
          << endl;
   }
 }
