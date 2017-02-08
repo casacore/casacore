@@ -128,9 +128,9 @@ void TableIterator::next()
 }
 
 // Report Name of slowest column that changes at end of current iteration
-String TableIterator::keyChange() const
+String TableIterator::keyChangeAtLastNext() const
 { 
-  return tabIterPtr_p->keyChange();
+  return tabIterPtr_p->keyChangeAtLastNext();
 }
 
 

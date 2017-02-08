@@ -64,7 +64,7 @@ public:
     virtual void setOffset(Double offset) {offset_p=offset;}
     Double getInterval() const {return interval_p;}
     void setInterval(Double interval) {interval_p=interval;}
-protected:
+private:
     Double interval_p;
     mutable Double offset_p;
 };
@@ -216,14 +216,14 @@ public:
   void setInterval(Double timeInterval);
  
   // Reset iterator to start of data
-  void origin();
+  virtual void origin();
  
   // Return False if there is no more data
-  Bool more() const;
+  virtual Bool more() const;
 
   // Advance iterator through data
-  MSIter & operator++(int);
-  MSIter & operator++();
+  virtual MSIter & operator++(int);
+  virtual MSIter & operator++();
 
   // Report Name of slowest column that changes at end of current iteration
   String keyChange() const;
