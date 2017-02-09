@@ -226,7 +226,7 @@ public:
   virtual MSIter & operator++();
 
   // Report Name of slowest column that changes at end of current iteration
-  String keyChange() const;
+  const String& keyChange() const;
 
   // Return the current Table iteration
   Table table() const;

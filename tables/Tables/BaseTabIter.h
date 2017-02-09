@@ -108,7 +108,7 @@ public:
     //  terminate the most recent call to next()
     //  Enables clients to sense iteration boundary properties
     //  and organize associated iterations
-    String keyChangeAtLastNext() const { return keyChangeAtLastNext_p; };
+    inline const String& keyChangeAtLastNext() const { return keyChangeAtLastNext_p; };
 
 protected:
     BaseTable*             sortTab_p;     //# Table sorted in iteration order

@@ -204,7 +204,7 @@ public:
     // </group>
 
     // Report Name of slowest column that changes at end of current iteration
-    String keyChangeAtLastNext() const;
+    const String& keyChangeAtLastNext() const;
 
     // Get the current group.
     Table table() const;

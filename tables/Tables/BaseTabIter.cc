@@ -161,7 +161,7 @@ BaseTable* BaseTableIterator::next()
 
     // If we've reached the end of the table, clear the keyCh_p
     if (lastRow_p==nr)
-      keyChangeAtLastNext_p="";
+      keyChangeAtLastNext_p=String();
 
     //# Adjust rownrs in case source table is already a RefTable.
     Vector<uInt>& rownrs = *(itp->rowStorage());
