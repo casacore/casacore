@@ -118,6 +118,11 @@ void doiter1()
 	    cout << "error in iter. " << nr << " " << vec(0)
 		 << " " << vec(vec.nelements()-1) << " " << vec.nelements() << endl;
 	}
+	cout << "(" << iter0.keyChangeAtLastNext() << ") ";
+	if ( (nr<9 && iter0.keyChangeAtLastNext()!=iv0[0]) ||
+	     (nr==9 && iter0.keyChangeAtLastNext()!="")  ) {     // last iter is empty string
+	  cout << "error in TableIter::keyChangeAtLastNext() " << iter0.keyChangeAtLastNext() << endl;
+	}
 	nr++;
 	iter0.next();
     }

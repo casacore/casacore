@@ -104,10 +104,17 @@ public:
     // Return the next group.
     virtual BaseTable* next();
 
+    // Report Name of slowest sort column that changed to 
+    //  terminate the most recent call to next()
+    //  Enables clients to sense iteration boundary properties
+    //  and organize associated iterations
+    inline const String& keyChangeAtLastNext() const { return keyChangeAtLastNext_p; };
+
 protected:
     BaseTable*             sortTab_p;     //# Table sorted in iteration order
     uInt                   lastRow_p;     //# last row used from reftab
     uInt                   nrkeys_p;      //# nr of columns in group
+    String                 keyChangeAtLastNext_p;  //# name of column that terminated most recent next()
     Block<void*>           lastVal_p;     //# last value per column
     Block<void*>           curVal_p;      //# current value per column
     PtrBlock<BaseColumn*>  colPtr_p;      //# pointer to column objects
