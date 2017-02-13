@@ -68,12 +68,10 @@ public:
         // commonly used quantile-related types
         MEDIAN,
         MEDABSDEVMED,
-        // first quartile
-        Q1,
-        // third quartile
-        Q3,
+        FIRST_QUARTILE,
+        THIRD_QUARTILE,
         // inner quartile range, Q3 - Q1
-        IQR
+        INNER_QUARTILE_RANGE
     };
 
     // get the zero-based indices of the specified fractions in a CDF with npts

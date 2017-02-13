@@ -439,19 +439,19 @@ AccumType ClassicalStatistics<CASA_STATP>::_getStatistic(
             return this->getMedian();
         case StatisticsData::MEDABSDEVMED:
             return this->getMedianAbsDevMed();
-        case StatisticsData::Q1:
+        case StatisticsData::FIRST_QUARTILE:
             {
                 std::set<Double> f;
                 f.insert(0.25);
                 return this->getQuantiles(f)[0.25];
             }
-        case StatisticsData::Q3:
+        case StatisticsData::THIRD_QUARTILE:
             {
                 std::set<Double> f;
                 f.insert(0.75);
                 return this->getQuantiles(f)[0.75];
             }
-        case StatisticsData::IQR:
+        case StatisticsData::INNER_QUARTILE_RANGE:
             {
                 std::set<Double> f;
                 f.insert(0.25);
