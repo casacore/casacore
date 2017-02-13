@@ -59,11 +59,11 @@ String StatisticsData::toString(STATS stat) {
         return "median";
     case MEDABSDEVMED:
         return "median of the absolute devation from the median";
-    case Q1:
+    case FIRST_QUARTILE:
         return "first quartile";
-    case Q3:
+    case THIRD_QUARTILE:
         return "third quartile";
-    case IQR:
+    case INNER_QUARTILE_RANGE:
         return "inner quartile range";
     default:
         ThrowCc(
