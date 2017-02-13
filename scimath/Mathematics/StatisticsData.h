@@ -64,7 +64,16 @@ public:
         SUMSQ,
         // sum of weights
         SUMWEIGHTS,
-        VARIANCE
+        VARIANCE,
+        // commonly used quantile-related types
+        MEDIAN,
+        MEDABSDEVMED,
+        // first quartile
+        Q1,
+        // third quartile
+        Q3,
+        // inner quartile range, Q3 - Q1
+        IQR
     };
 
     // get the zero-based indices of the specified fractions in a CDF with npts

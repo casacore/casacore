@@ -55,6 +55,16 @@ String StatisticsData::toString(STATS stat) {
         return "sumOfWeights";
     case VARIANCE:
         return "variance";
+    case MEDIAN:
+        return "median";
+    case MEDABSDEVMED:
+        return "median of the absolute devation from the median";
+    case Q1:
+        return "first quartile";
+    case Q3:
+        return "third quartile";
+    case IQR:
+        return "inner quartile range";
     default:
         ThrowCc(
             "Logic error: Unhandled value in switch statement"
