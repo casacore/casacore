@@ -3,7 +3,7 @@ cache: ccache
 
 os:
   - linux
-  - osx
+#  - osx
 
 compiler:
   - clang

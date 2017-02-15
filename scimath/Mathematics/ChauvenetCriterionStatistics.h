@@ -42,53 +42,53 @@ namespace casacore {
 // criterion, until the specified maximum number of iterations is reached, or the final
 // iteration results in no additional points being discarded.
 // Alternatively, one can specify a z score which indicates the number of standard deviations
-// beyond which to discard points. In this case, no iterating is done.
+// beyond which to discard points, which is held fixed while iterating.
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator>
 class ChauvenetCriterionStatistics
-	: public ConstrainedRangeStatistics<CASA_STATP> {
+    : public ConstrainedRangeStatistics<CASA_STATP> {
 public:
 
-	// If <src>zscore</src> is not negative, use that value to discard outliers beyond
-	// zscore standard deviations from the mean, and compute statistics based on the
-	// remaining data. If <src>zscore</src> is negative, use Chauvenet's Criterion to
-	// determine which outliers to discard. <src>maxIterations</src> is the maximum
-	// number of iterations to use before stopping. If negative, continue iterating until the
-	// set zscore or Chauvenet's criterion is met (ie that there are no remaining outliers).
-	ChauvenetCriterionStatistics(Double zscore=-1, Int maxIterations=0);
+    // If <src>zscore</src> is not negative, use that value to discard outliers beyond
+    // zscore standard deviations from the mean, and compute statistics based on the
+    // remaining data. If <src>zscore</src> is negative, use Chauvenet's Criterion to
+    // determine which outliers to discard. <src>maxIterations</src> is the maximum
+    // number of iterations to use before stopping. If negative, continue iterating until the
+    // set zscore or Chauvenet's criterion is met (ie that there are no remaining outliers).
+    ChauvenetCriterionStatistics(Double zscore=-1, Int maxIterations=0);
 
-	virtual ~ChauvenetCriterionStatistics();
+    virtual ~ChauvenetCriterionStatistics();
 
-	// copy semantics
-	ChauvenetCriterionStatistics<CASA_STATP>& operator=(
-		const ChauvenetCriterionStatistics<CASA_STATP>& other
-	);
+    // copy semantics
+    ChauvenetCriterionStatistics<CASA_STATP>& operator=(
+        const ChauvenetCriterionStatistics<CASA_STATP>& other
+    );
 
-	// get the algorithm that this object uses for computing stats
-	virtual StatisticsData::ALGORITHM algorithm() const {
-		return StatisticsData::CHAUVENETCRITERION;
-	};
+    // get the algorithm that this object uses for computing stats
+    virtual StatisticsData::ALGORITHM algorithm() const {
+        return StatisticsData::CHAUVENETCRITERION;
+    };
 
-	// reset object to initial state. Clears all private fields including data,
-	// accumulators, global range. It does not affect the fence factor (_f), which was
-	// set at object construction.
-	virtual void reset();
+    // reset object to initial state. Clears all private fields including data,
+    // accumulators, global range. It does not affect the fence factor (_f), which was
+    // set at object construction.
+    virtual void reset();
 
-	// This class does not allow statistics to be calculated as datasets are added, so
-	// an exception will be thrown if <src>c</src> is True.
-	void setCalculateAsAdded(Bool c);
+    // This class does not allow statistics to be calculated as datasets are added, so
+    // an exception will be thrown if <src>c</src> is True.
+    void setCalculateAsAdded(Bool c);
 
-	// get the number of iterations
-	uInt getNiter() const { return _niter; }
+    // get the number of iterations
+    uInt getNiter() const { return _niter; }
 
 private:
 
-	Double _zscore;
-	Int _maxIterations;
-	Bool _rangeIsSet;
-	uInt _niter;
+    Double _zscore;
+    Int _maxIterations;
+    Bool _rangeIsSet;
+    uInt _niter;
 
-	void _setRange();
+    void _setRange();
 };
 
 }

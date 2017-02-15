@@ -156,6 +156,15 @@ $casa_checktool ./tTableGram 'calc from tTableGram_tmp.tab calc findcone([ab,ab]
 $casa_checktool ./tTableGram 'calc from tTableGram_tmp.tab  calc findcone([ab,ab],[select from tTableGram_tmp.tab giving [ab,ab]],[1rad,2rad])'
 
 echo ""
+echo "Test transpose and axes orderings ..."
+./tTableGram 'using style glish  calc all(shape([[[1],[2]],[[3],[4]],[[5],[6]]]) = [1,2,3])'
+./tTableGram 'using style python calc all(shape([[[1],[2]],[[3],[4]],[[5],[6]]]) = [3,2,1])'
+./tTableGram 'using style glish  calc all(shape(transpose([[[1],[2]],[[3],[4]],[[5],[6]]],[2])) = [2,1,3])'
+./tTableGram 'using style python calc all(shape(transpose([[[1],[2]],[[3],[4]],[[5],[6]]],[1])) = [2,3,1])'
+./tTableGram 'using style glish  calc all(shape(transpose([[[1],[2]],[[3],[4]],[[5],[6]]],[2,3,1])) = [2,3,1])'
+./tTableGram 'using style python calc all(shape(transpose([[[1],[2]],[[3],[4]],[[5],[6]]],[1,2,0])) = [2,1,3])'
+
+echo ""
 echo "testing some erroneous commands ..."
 # Unknown column
 ./tTableGram 'select abcd from tTableGram_tmp.tab'

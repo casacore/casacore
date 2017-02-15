@@ -6,7 +6,7 @@ create table tTableGramCretab_tmp.tab1 (col1 i4 [shape=[2,3], unit="m"], col2 B)
 
 Structure of table tTableGramCretab_tmp.tab1
 ------------------ 
-0 rows, 2 columns in little endian format (using 2 data managers)
+0 rows, 2 columns in an endian format (using 2 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
     ActualCacheSize=1 PERSCACHESIZE=1
@@ -77,7 +77,7 @@ select from tTableGramCretab_tmp.tab3 where col2y giving tTableGramCretab_tmp.ta
 
 Structure of table tTableGramCretab_tmp.tab4
 ------------------ 
-0 rows, 2 columns in little endian format (using 1 data managers)
+0 rows, 2 columns in an endian format (using 1 data managers)
   Stored as MultiFile with blocksize 32768
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=32768

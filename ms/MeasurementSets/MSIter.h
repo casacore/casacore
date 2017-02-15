@@ -60,9 +60,9 @@ public:
   explicit MSInterval(Double interval) : interval_p(interval), offset_p(0) {}
     virtual ~MSInterval() {}
     virtual int comp(const void * obj1, const void * obj2) const;
-    Double getOffset() {return offset_p;}
-    void setOffset(Double offset) {offset_p=offset;}
-    Double getInterval() {return interval_p;}
+    Double getOffset() const {return offset_p;}
+    virtual void setOffset(Double offset) {offset_p=offset;}
+    Double getInterval() const {return interval_p;}
     void setInterval(Double interval) {interval_p=interval;}
 private:
     Double interval_p;
@@ -216,14 +216,17 @@ public:
   void setInterval(Double timeInterval);
  
   // Reset iterator to start of data
-  void origin();
+  virtual void origin();
  
   // Return False if there is no more data
-  Bool more() const;
+  virtual Bool more() const;
 
   // Advance iterator through data
-  MSIter & operator++(int);
-  MSIter & operator++();
+  virtual MSIter & operator++(int);
+  virtual MSIter & operator++();
+
+  // Report Name of slowest column that changes at end of current iteration
+  const String& keyChange() const;
 
   // Return the current Table iteration
   Table table() const;
@@ -358,7 +361,7 @@ protected:
   // advance the iteration
   void advance();
   // set the iteration state
-  void setState();
+  virtual void setState();
   void setMSInfo();
   void setArrayInfo();
   void setFeedInfo();

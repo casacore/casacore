@@ -34,10 +34,12 @@
 #include <casacore/measures/Measures/MCEpoch.h>
 #include <casacore/measures/Measures/MCBaseline.h>
 #include <casacore/measures/Measures/Muvw.h>
+#include <casacore/measures/Measures/MCuvw.h>
 #include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
 #include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/OS/Path.h>
+#include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Utilities/Assert.h>
 
 
@@ -108,9 +110,9 @@ void MSCalEngine::getItrf (Int antnr, uInt rownr, Array<double>& data)
   data = itsRADecToItrf().getValue().get();
 }
 
-void MSCalEngine::getUVWJ2000 (uInt rownr, Array<double>& data)
+void MSCalEngine::getNewUVW (Bool asApp, uInt rownr, Array<double>& data)
 {
-  setData (1, rownr);
+  setData (-1, rownr, True);
   Int ant1 = itsAntCol[0](rownr);
   Int ant2 = itsAntCol[1](rownr);
   if (ant1 == ant2) {
@@ -127,7 +129,13 @@ void MSCalEngine::getUVWJ2000 (uInt rownr, Array<double>& data)
         itsBLToJ2000.setModel (antMB[ant]);
         MVBaseline bas = itsBLToJ2000().getValue();
         MVuvw jvguvw(bas, itsLastDirJ2000.getValue());
-        antUvw[ant] = Muvw(jvguvw, Muvw::J2000).getValue().getVector();
+        if (asApp) {
+          antUvw[ant] = Muvw::Convert(Muvw(jvguvw, Muvw::J2000),
+                                      Muvw::Ref(Muvw::APP, itsFrame))
+            ().getValue().getVector();
+        } else {
+          antUvw[ant] = Muvw(jvguvw, Muvw::J2000).getValue().getVector();
+        }
         uvwFilled[ant] = true;
       }
       ant = ant2;
@@ -135,6 +143,33 @@ void MSCalEngine::getUVWJ2000 (uInt rownr, Array<double>& data)
     // The UVW of the baseline is the difference of the antennae UVW.
     data = antUvw[ant2] - antUvw[ant1];
   }
+}
+
+double MSCalEngine::getDelay (Int antnr, uInt rownr)
+{
+  setData (-1, rownr, True);
+  // Get the direction in ITRF xyz.
+  Vector<double> itrf = itsRADecToItrf().getValue().getValue();
+  Int ant1 = itsAntCol[0](rownr);
+  Int ant2 = itsAntCol[1](rownr);
+  AlwaysAssert (ant1 < Int(itsAntPos[itsLastCalInx].size()), AipsError);
+  AlwaysAssert (ant2 < Int(itsAntPos[itsLastCalInx].size()), AipsError);
+  // Get the antenna positions in ITRF xyz.
+  const Vector<double>& ap1 = itsAntPos[itsLastCalInx][ant1].getValue().getValue();
+  const Vector<double>& ap2 = itsAntPos[itsLastCalInx][ant2].getValue().getValue();
+  // Delay (in meters) is inproduct (subtract array center position).
+  double d1 = (itrf[0] * (ap1[0] - itsArrayItrf[0]) +
+               itrf[1] * (ap1[1] - itsArrayItrf[1]) +
+               itrf[2] * (ap1[2] - itsArrayItrf[2]));
+  double d2 = (itrf[0] * (ap2[0] - itsArrayItrf[0]) +
+               itrf[1] * (ap2[1] - itsArrayItrf[1]) +
+               itrf[2] * (ap2[2] - itsArrayItrf[2]));
+  if (antnr == 0) {
+    return d1 / C::c;
+  } else if (antnr == 1) {
+    return d2 / C::c;
+  }
+  return (d1-d2) / C::c;
 }
 
 void MSCalEngine::setDirection (const MDirection& dir)
@@ -152,7 +187,7 @@ void MSCalEngine::setDirColName (const String& colName)
   itsReadFieldDir = True;
 }
 
-Int MSCalEngine::setData (Int antnr, uInt rownr)
+Int MSCalEngine::setData (Int antnr, uInt rownr, Bool fillAnt)
 {
   // Initialize if not done yet.
   if (itsLastCalInx < 0) {
@@ -180,10 +215,13 @@ Int MSCalEngine::setData (Int antnr, uInt rownr)
   // Also get mount type (alt-az or other).
   Int mount = 0;
   if (antnr < 0) {
-    // Set the array position if needed.
+    // Set the frame's array position if needed.
     if (antnr != itsLastAntId) {
       itsFrame.resetPosition (itsArrayPos);
       itsLastAntId = antnr;
+    }
+    if (fillAnt  &&  itsAntPos[calInx].empty()) {
+      fillAntPos (calDescId, calInx);
     }
   } else {
     // Get the antenna id from the table.
@@ -192,7 +230,7 @@ Int MSCalEngine::setData (Int antnr, uInt rownr)
     // table was not fully filled yet.
     Int antId = itsAntCol[antnr](rownr);
     if (antId != itsLastAntId) {
-      if (antId >= Int(itsAntPos[calInx].size())) {
+      if (itsAntPos[calInx].empty()) {
         fillAntPos (calDescId, calInx);
       }
       AlwaysAssert (antId < Int(itsAntPos[calInx].size()), AipsError);
@@ -312,8 +350,13 @@ void MSCalEngine::init()
     uInt nant = itsAntPos[0].size();
     if (nant > 0) {
       itsArrayPos = itsAntPos[0][nant/2];
+      fndObs = True;
     }
   }
+  AlwaysAssert (fndObs, AipsError);
+  // Convert the antenna position to ITRF (for delay calculations).
+  MPosition itrfPos = MPosition::Convert (itsArrayPos, MPosition::ITRF)();
+  itsArrayItrf = itrfPos.getValue().getValue();
   // Initialize the converters.
   // Set up the frame for epoch and antenna position.
   itsFrame.set (MEpoch(), MPosition(), MDirection());
@@ -354,7 +397,7 @@ void MSCalEngine::fillAntPos (Int calDescId, Int calInx)
   antPos.reserve (tab.nrow());
   mounts.reserve (tab.nrow());
   antMB.reserve  (tab.nrow());
-  for (uInt i=antPos.size(); i<tab.nrow(); ++i) {
+  for (uInt i=0; i<tab.nrow(); ++i) {
     String mount = mountCol(i);
     mount.downcase();
     Int mountType = 0;

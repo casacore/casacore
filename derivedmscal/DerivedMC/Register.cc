@@ -61,9 +61,15 @@ void register_derivedmscal()
   UDFBase::registerUDF ("derivedmscal.ITRF",      UDFMSCal::makeITRF);
   UDFBase::registerUDF ("derivedmscal.UVWWVL",    UDFMSCal::makeUvwWvl);
   UDFBase::registerUDF ("derivedmscal.UVWWVLS",   UDFMSCal::makeUvwWvls);
-  UDFBase::registerUDF ("derivedmscal.NEWUVW",    UDFMSCal::makeUVW);
-  UDFBase::registerUDF ("derivedmscal.NEWUVWWVL", UDFMSCal::makeWvl);
-  UDFBase::registerUDF ("derivedmscal.NEWUVWWVLS",UDFMSCal::makeWvls);
+  UDFBase::registerUDF ("derivedmscal.UVWJ2000",  UDFMSCal::makeUvwJ2000);
+  UDFBase::registerUDF ("derivedmscal.UVWJ2000WVL", UDFMSCal::makeWvlJ2000);
+  UDFBase::registerUDF ("derivedmscal.UVWJ2000WVLS",UDFMSCal::makeWvlsJ2000);
+  UDFBase::registerUDF ("derivedmscal.UVWAPP",    UDFMSCal::makeUvwAPP);
+  UDFBase::registerUDF ("derivedmscal.UVWAPPWVL", UDFMSCal::makeWvlAPP);
+  UDFBase::registerUDF ("derivedmscal.UVWAPPWVLS",UDFMSCal::makeWvlsAPP);
+  UDFBase::registerUDF ("derivedmscal.DELAY1",    UDFMSCal::makeDelay1);
+  UDFBase::registerUDF ("derivedmscal.DELAY2",    UDFMSCal::makeDelay2);
+  UDFBase::registerUDF ("derivedmscal.DELAY",     UDFMSCal::makeDelay);
   UDFBase::registerUDF ("derivedmscal.STOKES",    UDFMSCal::makeStokes);
   // CASA selection.
   UDFBase::registerUDF ("derivedmscal.BASELINE",  UDFMSCal::makeBaseline);
@@ -95,9 +101,12 @@ namespace casacore {
   void HelpMsCalUDF::showFuncsDerived (ostream& os)
   {
     os << "Derived direction coordinates functions" << endl;
-    os << "Direction can be given as the name of a FIELD subtable column," << endl;
-    os << "the name of a source, or a vector with source direction." << endl;
-    os << "If no direction argument is given, column PHASE_DIR is used." << endl;
+    os << " A direction parameter can be given to the functions." << endl;
+    os << " It can be the name of a FIELD subtable column (e.g., 'DELAY_DIR')," << endl;
+    os << " the name of a source (e.g., 'SUN'), or a RA,DEC pair defining" << endl;
+    os << " the J2000 source direction (e.g., [10h42m31.3, 45d51m16])." << endl;
+    os << " If no direction argument is given, column DELAY_DIR is used for the" << endl;
+    os << " delay functions, otherwise column PHASE_DIR." << endl;
     os << "  double MSCAL.HA()             "
       " hourangle of array center" << endl;
     os << "  double MSCAL.HA1()            "
@@ -110,14 +119,14 @@ namespace casacore {
       " hourangle/declination of ANTENNA1" << endl;
     os << "  double MSCAL.HADEC2()         "
       " hourangle/declination of ANTENNA2" << endl;
-    os << "  doublearray MSCAL.AZEL()     "
+    os << "  doublearray MSCAL.AZEL()      "
       " azimuth/elevation of array center" << endl;
     os << "  doublearray MSCAL.AZEL1()     "
       " azimuth/elevation of ANTENNA1" << endl;
     os << "  doublearray MSCAL.AZEL2()     "
       " azimuth/elevation of ANTENNA2" << endl;
-    os << "  doublearray MSCAL.ITRF()     "
-      " phase direction in ITRF coordinates" << endl;
+    os << "  doublearray MSCAL.ITRF()      "
+      " direction in ITRF coordinates" << endl;
     os << "  double MSCAL.LAST()           "
       " local sidereal time of array center" << endl;
     os << "  double MSCAL.LAST1()          "
@@ -128,16 +137,28 @@ namespace casacore {
       " parallactic angle of ANTENNA1" << endl;
     os << "  double MSCAL.PA2()            "
       " parallactic angle of ANTENNA2" << endl;
-    os << "  doublearray MSCAL.NEWUVW()    "
-      " calc UVW coordinates in J2000 in meters" << endl;
-    os << "  doublearray MSCAL.NEWUVWWVL() "
-      " calc UVW coordinates in J2000 in wvl for reffreq" << endl;
-    os << "  doublearray MSCAL.NEWUVWWVLS()"
-      " calc UVW coordinates in J2000 in wvl per channel" << endl;
     os << "  doublearray MSCAL.UVWWVL()    "
       " stored UVW coordinates in wvl for reffreq" << endl;
     os << "  doublearray MSCAL.UVWWVLS()   "
       " stored UVW coordinates in wvl per channel" << endl;
+    os << "  doublearray MSCAL.UVWJ2000()    "
+      " calc J2000 UVW coordinates in meters" << endl;
+    os << "  doublearray MSCAL.UVWJ2000WVL() "
+      " calc J2000 UVW coordinates in wvl for reffreq" << endl;
+    os << "  doublearray MSCAL.UVWJ2000WVLS()"
+      " calc J2000 UVW coordinates in wvl per channel" << endl;
+    os << "  doublearray MSCAL.UVWAPP()    "
+      " calc Apparent UVW coordinates in meters" << endl;
+    os << "  doublearray MSCAL.UVWAPPWVL() "
+      " calc Apparent UVW coordinates in wvl for reffreq" << endl;
+    os << "  doublearray MSCAL.UVWAPPWVLS()"
+      " calc Apparent UVW coordinates in wvl per channel" << endl;
+    os << "  double MSCAL.DELAY1()"
+      " calc delay (seconds) of ANTENNA1 w.r.t. array center" << endl;
+    os << "  double MSCAL.DELAY2()"
+      " calc delay (seconds) of ANTENNA2 w.r.t. array center" << endl;
+    os << "  double MSCAL.DELAY1()"
+      " calc delay (seconds) of ANTENNA1 w.r.t. ANTENNA2" << endl;
   }
 
   void HelpMsCalUDF::showFuncsStokes (ostream& os, Bool showStokes)
@@ -189,8 +210,8 @@ namespace casacore {
       " select using an observation string" << endl;
     os << "  bool MSCAL.ARRAY (string)    "
       " select using an array string" << endl;
-    os << "See http://casacore.github.io/casacore-notes/263.html for"
-      " more information about the CASA selection syntax" << endl;
+    os << " More information about the CASA selection syntax can be found at"
+       << endl << " http://casacore.github.io/casacore-notes/263.html" << endl;
   }
 
   void HelpMsCalUDF::showFuncsSubtable (ostream& os)
@@ -272,8 +293,8 @@ namespace casacore {
          << " is an unknown mscal subtype; use derived, stokes, selection or subtable"
          << endl;
     } else {
-      os << endl << "See also section 'Special MeasurementSet functions'"
-        " at http://casacore.github.io/casacore-notes/199.html"
+      os << endl << "See also section 'Special MeasurementSet functions' at"
+         << endl << "http://casacore.github.io/casacore-notes/199.html"
          << endl;
     }
     return os.str();
