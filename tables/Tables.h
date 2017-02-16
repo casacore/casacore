@@ -1763,7 +1763,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <ANCHOR NAME="Tables:applications">
 // <h4>Applications to inspect/manipulate a table</h4></ANCHOR>
 // <ul>
-//  <li><em>showtable</em> shows the structure of a table. It can show:
+//  <li><em>showtableinfo</em> shows the structure of a table. It can show:
 //   <ul>
 //    <li> the columns and their format (optionally sorted on name)
 //    <li> the data managers used to store the column data

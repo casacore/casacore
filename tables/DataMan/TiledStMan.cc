@@ -409,7 +409,8 @@ TSMCube* TiledStMan::getTSMCube (uInt hypercube)
 {
     if (hypercube >= nhypercubes()  ||  cubeSet_p[hypercube] == 0) {
       throw (AipsError ("TiledStMan::getTSMCube - hypercube nr "
-			+ String::toString(hypercube) + " does not exist"));
+			+ String::toString(hypercube) + " does not exist in " +
+                        hypercolumnName_p));
     }
     return cubeSet_p[hypercube];
 }
@@ -702,7 +703,8 @@ void TiledStMan::setup (Int extraNdim)
     uInt nrIdBound = getBindings (idNames, idColSet_p, True);
     // Check if no non-TiledStMan columns are bound.
     if (nrDataBound + nrCoordBound + nrIdBound  !=  ncolumn()) {
-	throw (TSMError ("non-TiledStMan columns bound"));
+	throw (TSMError ("non-TiledStMan columns bound in " +
+                         hypercolumnName_p));
     }
     // Let the derived class do some more checks.
     setupCheck (tableDesc, dataNames);
@@ -766,13 +768,15 @@ void TiledStMan::checkCubeShape (const TSMCube* hypercube,
 {
     // Check if the dimensionalities are correct.
     if (cubeShape.nelements() != nrdim_p) {
-	throw (TSMError ("addHypercube dimensionality mismatch"));
+	throw (TSMError ("addHypercube dimensionality mismatch in " +
+                         hypercolumnName_p));
     }
     // Check if all dimensions are > 0.
     // Only the last one in shape can be 0 (meaning extensible).
     for (uInt i=0; i<nrdim_p-1; i++) {
 	if (cubeShape(i) == 0) {
-	    throw (TSMError ("addHypercube dimensions are zero"));
+	    throw (TSMError ("addHypercube dimensions are zero in " +
+                             hypercolumnName_p));
 	}
     }
     // Check if cube shape matches fixed shaped columns.
@@ -881,7 +885,8 @@ void TiledStMan::checkAddHypercube (const IPosition& cubeShape,
     checkCoordinates (coordColSet_p, cubeShape, values);
     // Check whether no double id values are given.
     if (getCubeIndex (values) >= 0) {
-	throw (TSMError ("addHypercube with already existing id values"));
+	throw (TSMError ("addHypercube with already existing id values in " +
+                         hypercolumnName_p));
     }
 }
 
@@ -1200,7 +1205,8 @@ TSMFile* TiledStMan::getFile (uInt sequenceNumber)
     //# Do internal check to see if TSMFile really exists.
     if (sequenceNumber >= fileSet_p.nelements()
     ||  fileSet_p[sequenceNumber] == 0) {
-	throw (DataManInternalError ("TiledStMan::getFile"));
+      throw (DataManInternalError ("TiledStMan::getFile in " +
+                                   hypercolumnName_p));
     }
     return fileSet_p[sequenceNumber];
 }

@@ -201,7 +201,8 @@ void MSMBase::addColumn (DataManagerColumn* colp)
       return;
     }
   }
-  throw (DataManInternalError ("MSMBase::addColumn"));
+  throw DataManInternalError ("MSMBase::addColumn, column " +
+                              colp->columnName());
 }
 
 void MSMBase::removeColumn (DataManagerColumn* colp)
@@ -216,7 +217,9 @@ void MSMBase::removeColumn (DataManagerColumn* colp)
       return;
     }
   }
-  throw (DataManInternalError ("MSMBase::removeColumn: no such column"));
+  throw DataManInternalError ("MSMBase::removeColumn: "
+                              " column " + colp->columnName() +
+                              " does not exist");
 }
 
 void MSMBase::addRow (uInt nr)

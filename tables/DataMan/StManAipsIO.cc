@@ -118,8 +118,10 @@ uInt StManColumnAipsIO::findExt (uInt index, Bool setCache)
         }
     }
     if (i > Int(nrext_p)) {
-	throw (indexError<uInt>(index, "StManColumnAipsIO::findExt - "
-				"rownr out of range"));
+	throw indexError<uInt>(index, "StManColumnAipsIO::findExt - "
+                               "rownr " + String::toString(index) +
+                               " in column " + columnName() +
+                               " out of range");
     }
     if (setCache) {
 	columnCache().set (ncum_p[i-1], ncum_p[i]-1, data_p[i]);
@@ -544,8 +546,8 @@ void StManColumnAipsIO::getFile (uInt nrval, AipsIO& ios)
     //# Get and check nr of values.
     ios >> nr;
     if (nr != nrval) {
-	throw (DataManInternalError
-	                ("StManColumnAipsIO::getFile: mismatch in #values"));
+	throw DataManInternalError
+          ("StManColumnAipsIO::getFile: mismatch in #values");
     }
     deleteAll();
     if (nrval > 0) {
@@ -558,7 +560,7 @@ void StManColumnAipsIO::getFile (uInt nrval, AipsIO& ios)
 	        nr = nrval - nrd;
 	    }
 	    if (nr+nrd > nrval) {
-		throw (DataManInternalError ("StManColumnAipsIO::getFile"));
+		throw DataManInternalError ("StManColumnAipsIO::getFile");
 	    }
 	    getData (datap, nrd, nr, ios, version);
 	    nrd += nr;
@@ -752,7 +754,7 @@ void StManAipsIO::addColumn (DataManagerColumn* colp)
 	    return;
 	}
     }
-    throw (DataManInternalError ("StManAipsIO::addColumn"));
+    throw DataManInternalError ("StManAipsIO::addColumn");
 }
 
 void StManAipsIO::removeColumn (DataManagerColumn* colp)
@@ -768,7 +770,9 @@ void StManAipsIO::removeColumn (DataManagerColumn* colp)
 	    return;
 	}
     }
-    throw (DataManInternalError ("StManAipsIO::removeColumn: no such column"));
+    throw DataManInternalError ("StManAipsIO::removeColumn: "
+                                " column " + colp->columnName() +
+                                " does not exist");
 }
 
 void StManAipsIO::addRow (uInt nr)
@@ -851,8 +855,8 @@ void StManAipsIO::resync (uInt nrrow)
     ios >> nrrow_p;
     ios >> nrc;
     if (snr != sequenceNr()  ||  nrc != ncolumn()) {
-	throw (DataManInternalError
-	                 ("StManAipsIO::open: mismatch in seqnr,#col"));
+	throw DataManInternalError
+          ("StManAipsIO::open: mismatch in seqnr,#col");
     }
     if (nrrow != nrrow_p) {
 #if defined(TABLEREPAIR)
@@ -861,17 +865,16 @@ void StManAipsIO::resync (uInt nrrow)
 	cerr << "Remainder will be added or discarded" << endl;
 	setHasPut();
 #else
-	throw (DataManInternalError
-	                 ("StManAipsIO::open: mismatch in #row; expected " +
-			  String::toString(nrrow) + ", found " +
-			  String::toString(nrrow_p)));
+	throw DataManInternalError
+          ("StManAipsIO::open: mismatch in #row; expected " +
+           String::toString(nrrow) + ", found " + String::toString(nrrow_p));
 #endif
     }
     for (i=0; i<ncolumn(); i++) {
 	ios >> dt;
 	if (dt != colSet_p[i]->dataType()) {
-	    throw (DataManInternalError
-		         ("StManAipsIO::open: mismatch in data type"));
+	    throw DataManInternalError
+              ("StManAipsIO::open: mismatch in data type");
 	}
     }
     //# Now read in all the columns.

@@ -72,10 +72,10 @@ IPosition SSMIndStringColumn::shape (uInt aRowNr)
     itsSSMPtr->getStringHandler()->getShape(aShape, buf[0], buf[1], 
 					    buf[2]);
   } else {
-    throw (DataManInvOper ("SSMIndStringColumn::getShape: no array in row "+
-			   String::toString(aRowNr) + " of column "
+    throw DataManInvOper ("SSMIndStringColumn::getShape: no array in row "+
+			   String::toString(aRowNr) + " in column "
                            + columnName()
-                           + " in table " + itsSSMPtr->table().tableName()));
+                           + " of table " + itsSSMPtr->table().tableName());
   }
   return aShape;
 }
@@ -111,10 +111,10 @@ void SSMIndStringColumn::getArrayStringV (uInt aRowNr,
     Int buf[3];
     getRowValue(buf, aRowNr);
     if ( buf[2] == 0 ) {
-      throw (DataManInvOper (
-                 "SSMIndStringColumn::getArrayStringV: no array in row "
-		 + String::toString(aRowNr) + " of column " + columnName()
-                 + " in table " + itsSSMPtr->table().tableName()));
+      throw DataManInvOper
+        ("SSMIndStringColumn::getArrayStringV: no array in row "
+         + String::toString(aRowNr) + " in column " + columnName()
+         + " of table " + itsSSMPtr->table().tableName());
     } else {
 
       itsSSMPtr->getStringHandler()->get(*aDataPtr, buf[0], buf[1], 

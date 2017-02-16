@@ -114,8 +114,10 @@ uInt MSMColumn::findExt (uInt index, Bool setCache)
     }
   }
   if (i > Int(nrext_p)) {
-    throw (indexError<uInt>(index, "MSMColumn::findExt - "
-			    "rownr out of range"));
+    throw indexError<uInt>(index, "MSMColumn::findExt - "
+                           "rownr " + String::toString(index) +
+                           " in column " + columnName() +
+                           " out of range");
   }
   if (setCache) {
     columnCache().set (ncum_p[i-1], ncum_p[i]-1, data_p[i]);

@@ -123,7 +123,8 @@ void ForwardColumnEngine::addColumn (DataManagerColumn* colp)
 	    return;
 	}
     }
-    throw (DataManInternalError ("ForwardColumnEngine::addColumn"));
+    throw DataManInternalError ("ForwardColumnEngine::addColumn on column "
+                                + colp->columnName());
 }
 
 void ForwardColumnEngine::removeColumn (DataManagerColumn* colp)
@@ -139,7 +140,8 @@ void ForwardColumnEngine::removeColumn (DataManagerColumn* colp)
 	    return;
 	}
     }
-    throw (DataManInternalError ("ForwardColumnEngine::removeColumn"));
+    throw DataManInternalError ("ForwardColumnEngine::removeColumn on column "
+                                + colp->columnName());
 }
 
 

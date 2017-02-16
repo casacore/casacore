@@ -56,7 +56,8 @@ void TSMIdColumn::putfloatV (uInt rownr, const float* dataPtr)
     float value;
     TSMIdColumn::getfloatV (rownr, &value);
     if (value != *dataPtr) {
-	throw (TSMError ("TSMIdColumn::put: new value mismatches existing"));
+	throw TSMError ("TSMIdColumn::put: new value mismatches existing "
+                        "in id column " + columnName());
     }
 }
 
@@ -73,7 +74,8 @@ void TSMIdColumn::aips_name2(put,NM) (uInt rownr, const T* dataPtr) \
     T value; \
     TSMIdColumn::aips_name2(get,NM) (rownr, &value); \
     if (value != *dataPtr) { \
-	throw (TSMError ("TSMIdColumn::put: new value mismatches existing")); \
+	throw TSMError ("TSMIdColumn::put: new value mismatches existing" \
+                        " in id column " + columnName()); \
     } \
 }
 

@@ -547,7 +547,7 @@ public:
                         Bool cOrder=False) const;
 
     // Show the table and/or column keywords, possibly also of all subtables.
-    // Maximum <src>maxVal> values of Arrays will be shown.
+    // Maximum <src>maxVal</src> values of Arrays will be shown.
     void showKeywords (std::ostream&,
                        Bool showSubTables=False,
                        Bool showTabKey=True,
