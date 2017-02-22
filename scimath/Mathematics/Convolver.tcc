@@ -62,6 +62,7 @@ Convolver(const Convolver<FType>& other){
   thePsf = other.thePsf;
   theFFT = other.theFFT;
   theIFFT = other.theIFFT;
+  valid = other.valid;
   doFast_p=False;
 }
 
@@ -78,6 +79,7 @@ Convolver<FType>::operator=(const Convolver<FType> & other){
     thePsf = other.thePsf;
     theFFT = other.theFFT;
     theIFFT = other.theIFFT;
+    valid = other.valid;
     doFast_p=False;
   }
   return *this;
