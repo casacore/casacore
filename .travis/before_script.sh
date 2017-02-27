@@ -20,13 +20,20 @@ else
   ccache -M 80M
 fi
 
+if [ "$TRAVIS_OS_NAME" = osx ]; then
+    BUILD_PYTHON3=OFF
+else
+    BUILD_PYTHON3=ON
+fi
+
 CXX="ccache $CXX" cmake .. \
     -DUSE_FFTW3=ON \
     -DBUILD_TESTING=ON \
     -DUSE_OPENMP=OFF \
+    -DMODULE=tables \
     -DUSE_HDF5=ON \
     -DBUILD_PYTHON=ON \
-    -DBUILD_PYTHON3=ON \
+    -DBUILD_PYTHON3=$BUILD_PYTHON3 \
     -DDATA_DIR=$PWD \
     -DSOFA_ROOT_DIR=$HOME \
     -DCXX11=$CXX11 \

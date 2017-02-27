@@ -58,6 +58,8 @@ addons:
     - python-numpy
     - python3-numpy
 
+before_install:
+  - rvm get head
 
 before_script:
   - ./.travis/before_script.sh
@@ -67,7 +69,7 @@ script:
   - ccache -s
   - ccache -z
   - make -j2
-  - make test
+  - ctest --verbose
   - make install
   - ccache -s
 
