@@ -70,7 +70,7 @@ TableMeasures/TableMeasValueDesc.cc
 TableMeasures/TableQuantumDesc.cc
 )
 
-target_link_libraries (casa_measures casa_tables casa_scimath ${INTEL_LIBS})
+target_link_libraries (casa_measures casa_tables casa_scimath ${CASACORE_ARCH_LIBS})
 
 add_subdirectory (apps)
 

@@ -18,7 +18,7 @@ xyzio.c
 )
 
 
-target_link_libraries (casa_mirlib casa_casa ${INTEL_LIBS})
+target_link_libraries (casa_mirlib casa_casa ${CASACORE_ARCH_LIBS})
 
 install (
 TARGETS casa_mirlib

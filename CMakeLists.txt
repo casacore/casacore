@@ -407,7 +407,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
    ##
    get_filename_component(INTEL_PATH ${CMAKE_CXX_COMPILER} DIRECTORY)
    set(INTEL_LIB_PATH ${INTEL_PATH}/../lib/intel64)
-   set(INTEL_LIBS -L${INTEL_LIB_PATH} -limf -lsvml -lirng -lintlc -lifport -lifcore -liomp5)
+   set(CASACORE_ARCH_LIBS ${CASACORE_ARCH_LIBS} -L${INTEL_LIB_PATH} -limf -lsvml -lirng -lintlc -lifport -lifcore -liomp5)
 endif()
 
 if(USE_OPENMP)

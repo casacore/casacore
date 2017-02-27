@@ -66,7 +66,7 @@ Converters/PycRecord.cc
 Converters/PycValueHolder.cc
 )
 
-target_link_libraries (casa_python casa_casa ${PYTHON2_Boost_LIBRARIES} ${PYTHON2_LIBRARIES} ${INTEL_LIBS})
+target_link_libraries (casa_python casa_casa ${PYTHON2_Boost_LIBRARIES} ${PYTHON2_LIBRARIES} ${CASACORE_ARCH_LIBS})
 
 install (TARGETS casa_python
 RUNTIME DESTINATION bin
