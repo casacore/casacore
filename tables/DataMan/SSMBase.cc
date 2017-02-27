@@ -786,8 +786,8 @@ void SSMBase::addColumn (DataManagerColumn* aColumn)
 
     if (rowsPerBucket < 1) {
       // The BucketSize is too small to contain data.
-      throw (DataManError ("StandardStMan::addColumn  bucketsize too small"
-                           " for adding column " + aColumn->columnName()));
+      throw DataManError ("StandardStMan::addColumn  bucketsize too small"
+                          " for adding column " + aColumn->columnName());
     }
 
     uInt nrIdx=itsPtrIndex.nelements();
@@ -904,14 +904,15 @@ char* SSMBase::initCallBack (void* anOwner)
 }
 
 char* SSMBase::find(uInt aRowNr,     uInt aColNr, 
-		    uInt& aStartRow, uInt& anEndRow)
+		    uInt& aStartRow, uInt& anEndRow,
+                    const String& colName)
 {
  
   // Make sure that cache is available and filled.
   getCache();
   SSMIndex* anIndexPtr = itsPtrIndex[itsColIndexMap[aColNr]];
   uInt aBucketNr;
-  anIndexPtr->find(aRowNr,aBucketNr,aStartRow,anEndRow);
+  anIndexPtr->find(aRowNr,aBucketNr,aStartRow,anEndRow, colName);
   char* aPtr = getBucket(aBucketNr);
   return aPtr + itsColumnOffset[aColNr];
 }

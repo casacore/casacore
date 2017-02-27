@@ -412,7 +412,8 @@ void TSMCube::extend (uInt nr, const Record& coordValues,
                       const TSMColumn* lastCoordColumn)
 {
     if (!extensible_p) {
-        throw (TSMError ("Hypercube is not extensible"));
+      throw TSMError ("Hypercube in TSM " + stmanPtr_p->dataManagerName() +
+                      " is not extensible");
     }
     // Make the cache here, otherwise nrTiles_p is too high.
     makeCache();
@@ -618,7 +619,8 @@ void TSMCube::extendCoordinates (const Record& coordValues,
         }
         break;
     default:
-        throw (DataManInvDT ("extendCoordinates"));
+        throw DataManInvDT ("extendCoordinates in TSM " +
+                            stmanPtr_p->dataManagerName());
     }
 }
 
@@ -791,7 +793,7 @@ uInt TSMCube::calcCacheSize (const IPosition& cubeShape,
     ||  windowStart.nelements() > nrdim
     ||  windowLength.nelements() > nrdim
     ||  axisPath.nelements() > nrdim) {
-        throw (TSMError ("calcCacheSize: invalid arguments"));
+      throw TSMError ("calcCacheSize: invalid arguments");
     }
     uInt i;
     // The unspecified sliceShape dimensions are 1.

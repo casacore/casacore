@@ -84,9 +84,10 @@ MSMIndColumn::Data* MSMIndColumn::getShape (uInt rownr)
 {
   void* ptr = getArrayPtr(rownr);
   if (ptr == 0) {
-    throw (DataManInvOper ("MSM: no array in row " +
-			   String::toString(rownr) +
-			   " of " + stmanPtr_p->fileName()));
+    throw DataManInvOper ("MSM: no array in row " +
+                          String::toString(rownr) +
+                          " in column " + columnName() +
+                          " of " + stmanPtr_p->fileName());
   }
   return static_cast<Data*>(ptr);
 }
@@ -265,7 +266,7 @@ MSMIndColumn::Data::Data (const IPosition& shape, int dtype)
     data_p = new String[nelem];
     break;
   default:
-    throw (DataManInvDT("MSMIndColumn"));
+    throw DataManInvDT("MSMIndColumn");
   }
 }
 
@@ -316,7 +317,7 @@ void MSMIndColumn::Data::clear (int dtype)
     delete [] static_cast<String*>(data_p);
     break;
   default:
-    throw (DataManInvDT("MSMIndColumn"));
+    throw DataManInvDT("MSMIndColumn");
   }
   data_p = 0;
 }

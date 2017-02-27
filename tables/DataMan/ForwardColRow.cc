@@ -185,7 +185,7 @@ void ForwardColumnIndexedRow::prepare (const Table& thisTable)
 void ForwardColumnIndexedRow::setShape (uInt, const IPosition&)
 {
     throw (DataManInvOper
-	         ("setShape not supported by ForwardColumnIndexedRowEngine"));
+           ("setShape not supported by data manager ForwardColumnIndexedRow"));
 }
 
 uInt ForwardColumnIndexedRow::ndim (uInt rownr)
@@ -227,13 +227,13 @@ void ForwardColumnIndexedRow::getSliceV (uInt rownr, const Slicer& ns,
 void ForwardColumnIndexedRow::putArrayV (uInt, const void*)
 {
     throw (DataManInvOper
-	    ("put not supported by ForwardColumnIndexedRowEngine"));
+           ("putArray not supported by data manager ForwardColumnIndexedRow"));
 }
 
 void ForwardColumnIndexedRow::putSliceV (uInt, const Slicer&, const void*)
 {
     throw (DataManInvOper
-	    ("put not supported by ForwardColumnIndexedRowEngine"));
+           ("putSlice not supported by data manager ForwardColumnIndexedRow"));
 }
 
 
@@ -243,7 +243,7 @@ void ForwardColumnIndexedRow::aips_name2(get,NM) (uInt rownr, T* dataPtr) \
 void ForwardColumnIndexedRow::aips_name2(put,NM) (uInt, const T*) \
 { \
     throw (DataManInvOper \
-	    ("put not supported by ForwardColumnIndexedRowEngine")); \
+           ("put not supported by data manager ForwardColumnIndexedRow")); \
 }
 
 FORWARDCOLUMNINDEXEDROW_GETPUT(Bool,BoolV)

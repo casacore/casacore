@@ -162,7 +162,8 @@ void VirtualTaQLColumn::prepare()
   // Check if the expression type matches the column type.
   if (itsNode->isScalar() == itsIsArray) {
     throw DataManError ("VirtualTaQLColumn: "
-			"expression and column type mismatch");
+			"expression and " + itsColumnName +
+                        " column type mismatch (not both scalar or array)");
   }
   // Check if the data types match.
   int exptype = itsDataType;
@@ -185,7 +186,8 @@ void VirtualTaQLColumn::prepare()
   }
   if (itsNode->dataType() != exptype) {
     throw DataManError ("VirtualTaQLColumn: "
-			"expression and column data type mismatch");
+			"expression and column " + itsColumnName +
+                        " data type mismatch");
   }
 }
 

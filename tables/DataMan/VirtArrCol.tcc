@@ -226,7 +226,8 @@ void VirtualArrayColumn<T>::getArrayColumnCells (const RefRows& rownrs,
         while (rownr <= end) {
             if (! isFixedShape()) {
                 if (! iter.array().shape().isEqual (shape(rownr))) {
-                    throw DataManError("getArrayColumnCells shape mismatch");
+                    throw DataManError("getArrayColumnCells shape mismatch"
+                                       " for column " + columnName());
                 }
             }
   	    getArray (rownr, iter.array());
@@ -298,7 +299,8 @@ void VirtualArrayColumn<T>::putColumnSliceCells (const RefRows& rownrs,
 template<class T>
 void VirtualArrayColumn<T>::putArray (uInt, const Array<T>&)
 { 
-    throw (DataManInvOper ("VirtualArrayColumn::putArray not possible"));
+    throw DataManInvOper ("VirtualArrayColumn::putArray not possible"
+                          " for column " + columnName());
 }
 
 //# The default implementations of the shape functions throw
@@ -306,29 +308,34 @@ void VirtualArrayColumn<T>::putArray (uInt, const Array<T>&)
 template<class T>
 void VirtualArrayColumn<T>::setShapeColumn (const IPosition&)
 { 
-    throw (DataManInvOper ("VirtualArrayColumn::setShapeColumn not possible"));
+    throw DataManInvOper ("VirtualArrayColumn::setShapeColumn not possible"
+                          " for column " + columnName());
 }
 template<class T>
 void VirtualArrayColumn<T>::setShape (uInt, const IPosition&)
 {
-    throw (DataManInvOper ("VirtualArrayColumn::setShape not possible"));
+    throw DataManInvOper ("VirtualArrayColumn::setShape not possible"
+                          " for column " + columnName());
 }
 template<class T>
 Bool VirtualArrayColumn<T>::isShapeDefined (uInt)
 {
-    throw (DataManInvOper ("VirtualArrayColumn::isShapeDefined not possible"));
+    throw DataManInvOper ("VirtualArrayColumn::isShapeDefined not possible"
+                          " for column " + columnName());
     return False;
 }
 template<class T>
 uInt VirtualArrayColumn<T>::ndim (uInt)
 {
-    throw (DataManInvOper ("VirtualArrayColumn::ndim not possible")); 
+    throw DataManInvOper ("VirtualArrayColumn::ndim not possible"
+                          " for column " + columnName());
     return 0;
 }
 template<class T>
 IPosition VirtualArrayColumn<T>::shape (uInt)
 {
-    throw (DataManInvOper ("VirtualArrayColumn::shape not possible"));
+    throw DataManInvOper ("VirtualArrayColumn::shape not possible"
+                          " for column " + columnName());
     return IPosition(0);
 }
 
