@@ -788,5 +788,12 @@ void  MSIter::getSpwInFreqRange(Block<Vector<Int> >& spw,
 
   }
 }
+
+// Report Name of slowest column that changes at end of current iteration
+const String& MSIter::keyChange() const
+{
+  return tabIter_p[curMS_p]->keyChangeAtLastNext();
+}
+
 } //# NAMESPACE CASACORE - END
 

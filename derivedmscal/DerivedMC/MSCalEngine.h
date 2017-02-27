@@ -155,8 +155,11 @@ public:
   // Get the ITRF coordinates for the given row.
   void getItrf (Int antnr, uInt rownr, Array<Double>&);
 
-  // Get the UVW in J2000 for the given row.
-  void getUVWJ2000 (uInt rownr, Array<Double>&);
+  // Get the UVW in J2000 or APP for the given row.
+  void getNewUVW (Bool asApp, uInt rownr, Array<Double>&);
+
+  // Get the delay for the given row.
+  double getDelay (Int antnr, uInt rownr);
 
 private:
   // Copy constructor cannot be used.
@@ -166,8 +169,9 @@ private:
   MSCalEngine& operator= (const MSCalEngine& that);
   
   // Set the data in the measure converter machines.
+  // The antenna positions are only filled in antnr>=0 or if fillAnt is set.
   // It returns the mount of the antenna.
-  Int setData (Int antnr, uInt rownr);
+  Int setData (Int antnr, uInt rownr, Bool fillAnt=False);
 
   // Initialize the column objects, etc.
   void init();
@@ -202,6 +206,7 @@ private:
   map<string,int>             itsCalMap;       //# map of MS name to index
   vector<Int>                 itsCalIdMap;     //# map of calId to index
   MPosition                   itsArrayPos;
+  Vector<double>              itsArrayItrf;    //# ITRF array position
   vector<vector<MPosition> >  itsAntPos;       //# ITRF antenna positions
   vector<vector<Int> >        itsMount;        //# 1=alt-az  0=else
   vector<vector<MDirection> > itsFieldDir;     //# J2000 field directions

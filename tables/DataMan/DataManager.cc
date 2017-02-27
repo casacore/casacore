@@ -174,7 +174,10 @@ void DataManager::checkDataType (const DataManagerColumn* colPtr,
 				 int dataType, const String& dataTypeId) const
 {
     if (dataType != colPtr->dataType()) {
-	throw (DataManInvDT ("Column " + columnName));
+	throw (DataManInvDT ("Column " + columnName +
+                             " has data type " + 
+                             String::toString(colPtr->dataTypeId()) +
+                             "; expected " + String::toString(dataTypeId)));
     }
     if (dataType == TpOther) {
 	if (dataTypeId != colPtr->dataTypeId()) {
@@ -256,16 +259,20 @@ Bool DataManager::canRenameColumn() const
     { return True; }
 
 void DataManager::addRow (uInt)
-    { throw (DataManInvOper ("DataManager::addRow not allowed")); }
+    { throw DataManInvOper ("DataManager::addRow not allowed for "
+                            "data manager type " + dataManagerType()); }
 
 void DataManager::removeRow (uInt)
-    { throw (DataManInvOper ("DataManager::removeRow not allowed")); }
+    { throw DataManInvOper ("DataManager::removeRow not allowed for "
+                            "data manager type " + dataManagerType()); }
 
 void DataManager::addColumn (DataManagerColumn*)
-    { throw (DataManInvOper ("DataManager::addColumn not allowed")); }
+    { throw DataManInvOper ("DataManager::addColumn not allowed for "
+                            "data manager type " + dataManagerType()); }
 
 void DataManager::removeColumn (DataManagerColumn*)
-    { throw (DataManInvOper ("DataManager::removeColumn not allowed")); }
+    { throw DataManInvOper ("DataManager::removeColumn not allowed for "
+                            "data manager type " + dataManagerType()); }
 
 
 

@@ -124,7 +124,8 @@ void TSMCubeMMap::extend (uInt nr, const Record& coordValues,
                           const TSMColumn* lastCoordColumn)
 {
     if (!extensible_p) {
-        throw (TSMError ("Hypercube is not extensible"));
+      throw TSMError ("Hypercube in TSM " + stmanPtr_p->dataManagerName() +
+                      " is not extensible");
     }
     // Make the cache here, otherwise nrTiles_p is too high.
     makeCache();

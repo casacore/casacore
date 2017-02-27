@@ -1601,6 +1601,8 @@ int main() {
             cs.addData(v0.begin(), v0.size());
             Double median = cs.getMedian();
             AlwaysAssert(median == 2, AipsError);
+            median = cs.getStatistic(StatisticsData::MEDIAN);
+            AlwaysAssert(median == 2, AipsError);
             cs.reset();
             vector<Bool> m0(v0.size(), True);
             m0[0] = False;

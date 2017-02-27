@@ -118,8 +118,8 @@ namespace casacore {
   {
   public:
     // Define the possible 'column' types.
-    enum ColType {HA, HADEC, PA, LAST, AZEL, ITRF, NEWUVW,
-                  UVWWVL, UVWWVLS, NEWUVWWVL, NEWUVWWVLS,
+    enum ColType {HA, HADEC, PA, LAST, AZEL, ITRF, UVWWVL, UVWWVLS,
+                  NEWUVW, NEWUVWWVL, NEWUVWWVLS, DELAY,
                   STOKES, SELECTION, GETVALUE};
     // Define the possible selection types.
     enum SelType {BASELINE, CORR, TIME, UVDIST, SPW, FIELD,
@@ -153,11 +153,17 @@ namespace casacore {
     static UDFBase* makeAZEL1    (const String&);
     static UDFBase* makeAZEL2    (const String&);
     static UDFBase* makeITRF     (const String&);
-    static UDFBase* makeUVW      (const String&);
-    static UDFBase* makeWvl      (const String&);
-    static UDFBase* makeWvls     (const String&);
     static UDFBase* makeUvwWvl   (const String&);
     static UDFBase* makeUvwWvls  (const String&);
+    static UDFBase* makeUvwJ2000 (const String&);
+    static UDFBase* makeWvlJ2000 (const String&);
+    static UDFBase* makeWvlsJ2000(const String&);
+    static UDFBase* makeUvwAPP   (const String&);
+    static UDFBase* makeWvlAPP   (const String&);
+    static UDFBase* makeWvlsAPP  (const String&);
+    static UDFBase* makeDelay    (const String&);
+    static UDFBase* makeDelay1   (const String&);
+    static UDFBase* makeDelay2   (const String&);
     static UDFBase* makeStokes   (const String&);
     static UDFBase* makeBaseline (const String&);
     static UDFBase* makeCorr     (const String&);

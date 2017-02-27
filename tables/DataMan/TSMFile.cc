@@ -76,7 +76,8 @@ TSMFile::TSMFile (const TiledStMan* stman, AipsIO& ios, uInt seqnr,
 {
     getObject (ios);
     if (seqnr != fileSeqnr_p) {
-	throw (DataManInternalError ("TSMFile::TSMFile"));
+      throw DataManInternalError ("TSMFile::TSMFile " + 
+                                  stman->dataManagerName());
     }
     char strc[8];
     sprintf (strc, "_TSM%i", fileSeqnr_p);

@@ -434,16 +434,43 @@ CASA_STATD
 AccumType ClassicalStatistics<CASA_STATP>::_getStatistic(
     StatisticsData::STATS stat
 ) {
-    AccumType value;
-    Record r = toRecord(_getStatistics());
-    String statString = StatisticsData::toString(stat);
-    ThrowIf(
-        ! r.isDefined(statString),
-        "Logic Error: stat " + statString + " is not defined. "
-        "Please file a defect report"
-    );
-    r.get(statString, value);
-    return value;
+    switch (stat) {
+        case StatisticsData::MEDIAN:
+            return this->getMedian();
+        case StatisticsData::MEDABSDEVMED:
+            return this->getMedianAbsDevMed();
+        case StatisticsData::FIRST_QUARTILE:
+            {
+                std::set<Double> f;
+                f.insert(0.25);
+                return this->getQuantiles(f)[0.25];
+            }
+        case StatisticsData::THIRD_QUARTILE:
+            {
+                std::set<Double> f;
+                f.insert(0.75);
+                return this->getQuantiles(f)[0.75];
+            }
+        case StatisticsData::INNER_QUARTILE_RANGE:
+            {
+                std::set<Double> f;
+                f.insert(0.25);
+                f.insert(0.75);
+                std::map<Double, AccumType> qs = this->getQuantiles(f);
+                return qs[0.75] - qs[0.25];
+            }
+        default:
+        AccumType value;
+        Record r = toRecord(_getStatistics());
+        String statString = StatisticsData::toString(stat);
+        ThrowIf(
+            ! r.isDefined(statString),
+            "Logic Error: stat " + statString + " is not defined. "
+            "Please file a defect report"
+        );
+        r.get(statString, value);
+        return value;
+    }
 }
 
 CASA_STATD

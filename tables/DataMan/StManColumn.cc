@@ -859,9 +859,11 @@ void StManColumn::putColumnSliceCellsV (const RefRows& rownrs,
 
 
 void StManColumn::throwGetArray() const
-    { throw (DataManInvOper ("StManColumn::getArray not possible")); }
+    { throw (DataManInvOper ("StManColumn::getArray not possible"
+                             " for column " + columnName())); }
 void StManColumn::throwPutArray() const
-    { throw (DataManInvOper ("StManColumn::putArray not possible")); }
+    { throw (DataManInvOper ("StManColumn::putArray not possible"
+                             " for column " + columnName())); }
 
 
 //# For scalars the default implementation of get/putScalarColumn handles
@@ -973,7 +975,8 @@ void StManColumn::aips_name2(getArrayColumnCells,NM) \
         while (rownr <= end) { \
             if (! isFixedShape()) { \
                 if (! iter.array().shape().isEqual (shape(rownr))) { \
-                    throw DataManError("getArrayColumnCells shape mismatch"); \
+                    throw DataManError("getArrayColumnCells shape mismatch" \
+                                       " for column " + columnName());  \
                 } \
             } \
   	    aips_name2(getArray,NM) (rownr, &(iter.array())); \

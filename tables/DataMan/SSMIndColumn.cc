@@ -80,7 +80,8 @@ void SSMIndColumn::addRow (uInt aNewNrRows, uInt anOldNrRows, Bool doInit)
       uInt  aStartRow;
       uInt  anEndRow;
       char* aValPtr;
-      aValPtr = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+      aValPtr = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                                 columnName());
       aRowNr = anEndRow+1;
       uInt aNr = anEndRow-aStartRow+1;
       aNrRows -= aNr;
@@ -126,7 +127,8 @@ StIndArray* SSMIndColumn::getArrayPtr (uInt aRowNr)
   uInt  anEndRow;
   char* aValue;
 
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow);
+  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                            columnName());
   itsReadFunc (&anOffset, aValue+(aRowNr-aStartRow)*itsExternalSizeBytes,
 	       itsNrCopy);
 
@@ -145,10 +147,10 @@ StIndArray* SSMIndColumn::getShape (uInt aRowNr)
 {
     StIndArray* aPtr = getArrayPtr (aRowNr);
     if (aPtr == 0) {
-      throw (DataManInvOper ("SSMIndColumn::getShape: no array in row "+
-                             String::toString(aRowNr) + " of column "
-                             + columnName()
-                             + " in table " + itsSSMPtr->table().tableName()));
+      throw DataManInvOper ("SSMIndColumn::getShape: no array in row "+
+                            String::toString(aRowNr) + " in column "
+                            + columnName()
+                            + " of table " + itsSSMPtr->table().tableName());
     }
     aPtr->getShape (*itsIosFile);
     return aPtr;
@@ -179,7 +181,7 @@ void SSMIndColumn::deleteRow(uInt aRowNr)
   char* aValue;
   uInt  aSRow;
   uInt  anERow;
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aSRow, anERow);
+  aValue = itsSSMPtr->find (aRowNr, itsColNr, aSRow, anERow, columnName());
   
   if (aRowNr < anERow) {
     // remove from bucket

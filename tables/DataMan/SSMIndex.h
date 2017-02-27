@@ -141,11 +141,11 @@ public:
   // An exception is thrown if not found.
   // It also sets the first and last row number fitting in that bucket.
   void find (uInt aRowNumber, uInt& aBucketNr, uInt& aStartRow,
-	     uInt& anEndRow) const;
+	     uInt& anEndRow, const String& colName) const;
 
 private:
   // Get the index of the bucket containing the given row.
-  uInt getIndex (uInt aRowNr) const;
+  uInt getIndex (uInt aRowNr, const String& colName) const;
 
 
   //# Pointer to specific Storage Manager.    
