@@ -1374,8 +1374,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	
 	Int validStartChan, validEndChan, nChan=chanFreq.nelements();
 	freqList_l(i,0) = (Double)chanList_l(i,0); // The SPW ID
-	validStartChan = min(nChan-1,chanList_l(i,1));
-	validEndChan = max(nChan-1,chanList_l(i,2));
+	validStartChan  = chanList_l(i,1);  // chanList is already checked to be within valid range [0,nChan-1]
+	validEndChan    = chanList_l(i,2);
 	freqList_l(i,1) = chanFreq(IPosition(1,validStartChan)); //chanFreq(IPosition(1,chanList_l(i,1))); // The the freq. of start channel in Hz
 	freqList_l(i,2) = chanFreq(IPosition(1,validEndChan));   //chanFreq(IPosition(1,chanList_l(i,2))); // The freq. of stop channel in Hz
 	freqList_l(i,3) = avgChanWidth;  // The channel width in Hz

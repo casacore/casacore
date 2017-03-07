@@ -107,7 +107,7 @@ SpwStatement: FullExpr
                 {
 		  $$=MSSpwParse::thisMSSParser->endOfCeremony(*($1));
 		  getTT()="";
-		  cerr << "### " << MSSpwGramPPStrTok.str() << endl;MSSpwGramPPStrTok.str("");MSSpwGramPPStrTok.clear();
+		  //cerr << "### " << MSSpwGramPPStrTok.str() << endl;MSSpwGramPPStrTok.str("");MSSpwGramPPStrTok.clear();
 		}
             | LPAREN FullExpr RPAREN 
 	       {$$ = $2;}
