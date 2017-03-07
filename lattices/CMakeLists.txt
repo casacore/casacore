@@ -65,6 +65,7 @@ target_link_libraries (
 casa_lattices
 casa_tables
 casa_scimath
+${CASACORE_ARCH_LIBS}
 )
 
 install (TARGETS casa_lattices
