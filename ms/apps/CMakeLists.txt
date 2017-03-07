@@ -1,5 +1,5 @@
 foreach(prog msselect)
     add_executable (${prog}  ${prog}.cc)
-    target_link_libraries (${prog} casa_ms)
+    target_link_libraries (${prog} casa_ms ${CASACORE_ARCH_LIBS})
     install(TARGETS ${prog} DESTINATION bin)
 endforeach(prog msselect)
