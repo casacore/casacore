@@ -67,7 +67,7 @@ script:
   - ccache -s
   - ccache -z
   - make -j2
-  - make test
+  - env CTEST_OUTPUT_ON_FAILURE=1 make test
   - make install
   - ccache -s
 
