@@ -53,7 +53,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // NDEBUG is not defined (release build) then a throw is used to report the error.
 
 #ifdef NDEBUG
-#define AssertCc(c) {assert (c); }
+#define AssertCc(c) ((void)0)
 #else
 #define AssertCc(c) { if (! (c)) {casacore::AipsError::throwIf (casacore::True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
 #endif
@@ -69,7 +69,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Asserts when in debug build and issues a warning message to the log in release.
 #if defined (NDEBUG)
-#define AssertOrWarn(c,m) {assert (c);}
+#define AssertOrWarn(c,m) ((void)0)
 #else
 #define AssertOrWarn(c,m)\
 { if (! (c)) {\
