@@ -468,8 +468,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			  log_l << Mesg.str() << LogIO::WARN << LogIO::POST;
 			  someMatchFailed=True;
 			}
-		      start = start < 0 ? 0 : start;
-		      stop  = stop >= numChans(spw(i)) ? numChans(spw(i)) - 1 : stop;
+		      start = max(0, min(start,numChans(spw(i))-1));
+		      stop  = min(numChans(spw(i))-1, max(stop,0));
 		    }
 		  if ((start != -1) && (stop != -1)) localFoundSpwList.push_back(spw(i));
 

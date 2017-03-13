@@ -129,20 +129,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			     Matrix<Int>& selectedChans,
 			     Vector<Int>& selectedDDIDs) 
   {
-    Int ret;
-    //    MSSpwParse *thisParser = new MSSpwParse(ms);
-    MSSpwParse *thisParser = new MSSpwParse(spwSubTable, ddSubTable, colAsTEN);
-    try
-      {
-	ret=baseMSSpwGramParseCommand(thisParser, command, selectedIDs, selectedChans, selectedDDIDs);
-      }
-    catch(MSSelectionSpwError &x)
-      {
-	delete thisParser;
-	throw;
-      }
-    delete thisParser;
-    return ret;
+    MSSpwParse thisParser(spwSubTable, ddSubTable, colAsTEN);
+    return baseMSSpwGramParseCommand(&thisParser, command, selectedIDs, selectedChans, selectedDDIDs);
   }
 
   int msSpwGramParseCommand (const MeasurementSet *ms, 
