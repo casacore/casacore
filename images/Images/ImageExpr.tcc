@@ -38,6 +38,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Slicer.h>
+#include <casacore/casa/Json/JsonKVMap.h>
 #include <casacore/casa/Json/JsonOut.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/Path.h>
@@ -57,10 +58,26 @@ ImageExpr<T>::ImageExpr()
 template <class T>
 ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
 			 const String& expr, const String& fileName)
-  : latticeExpr_p(latticeExpr),
-    fileName_p   (fileName)
 {
-  exprString_p = expr;
+  init (latticeExpr, expr, fileName, JsonKVMap());
+}
+
+template <class T>
+ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
+			 const String& expr, const String& fileName,
+                         const JsonKVMap& jmap)
+{
+  init (latticeExpr, expr, fileName, jmap);
+}
+
+template <class T>
+void ImageExpr<T>::init (const LatticeExpr<T>& latticeExpr,
+			 const String& expr, const String& fileName,
+                         const JsonKVMap& jmap)
+{
+  latticeExpr_p = latticeExpr;
+  fileName_p    = fileName;
+  exprString_p  = expr;
   const LELCoordinates lelCoordinate = latticeExpr_p.lelCoordinates();
   const LELLattCoordBase* pLattCoord = &(lelCoordinate.coordinates());
   if (! pLattCoord->hasCoordinates()
@@ -74,7 +91,13 @@ ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
   AlwaysAssert (pImCoord != 0, AipsError);
   this->setCoordsMember (pImCoord->coordinates());
   this->setImageInfoMember (pImCoord->imageInfo());
-  this->setMiscInfoMember (pImCoord->miscInfo());
+  if (jmap.isDefined("MiscInfo")) {
+    TableRecord tabrec;
+    tabrec.fromRecord (jmap.get("MiscInfo").getValueMap().toRecord());
+    this->setMiscInfoMember (tabrec);
+  } else {
+    this->setMiscInfoMember (pImCoord->miscInfo());
+  }
   this->setUnitMember (pImCoord->unit());
 }
 
@@ -148,8 +171,19 @@ void ImageExpr<T>::save (const String& fileName) const
   dt.trim();
   jout.write ("DataType", dt);
   jout.write ("ImageExpr", exprString_p);
+  jout.write ("MiscInfo", this->miscInfo().toRecord());
   jout.end();
   fileName_p = fileName;
+}
+
+template<class T> 
+Bool ImageExpr<T>::setMiscInfo (const RecordInterface& newInfo)
+{
+  this->setMiscInfoMember (newInfo);
+  if (isPersistent()) {
+    save (fileName_p);
+  }
+  return True;
 }
 
 template<class T>

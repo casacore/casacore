@@ -39,6 +39,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
+class JsonKVMap;
 class IPosition;
 class Slicer;
 template <class T> class Array;
@@ -120,6 +121,8 @@ public:
   // An exception is thrown if the expression has no coordinates.
   ImageExpr(const LatticeExpr<T>& latticeExpr, const String& expr,
             const String& fileName = String());
+  ImageExpr(const LatticeExpr<T>& latticeExpr, const String& expr,
+            const String& fileName, const JsonKVMap&);
 
   // Same as previous constructor, but the coordinates are taken from the
   // given LELImageCoord object.
@@ -146,6 +149,10 @@ public:
   // Set the file name.
   void setFileName (const String& name)
     { fileName_p = name; }
+
+  // Replace the miscinfo in the ImageExpr, which writes the image.expr file.
+  // It can fail if, e.g., the directory to write to is not writable.
+  virtual Bool setMiscInfo (const RecordInterface& newInfo);
 
   // Get the image type (returns name of derived class).
   virtual String imageType() const;
@@ -216,6 +223,10 @@ public:
 
 
 private:  
+  void init (const LatticeExpr<T>& latticeExpr, const String& expr,
+             const String& fileName, const JsonKVMap&);
+
+  //# Data members
   LatticeExpr<T> latticeExpr_p;
   Unit unit_p;
   String exprString_p;

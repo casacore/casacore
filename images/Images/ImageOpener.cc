@@ -201,7 +201,7 @@ LatticeBase* ImageOpener::openImageExpr (const String& fileName)
   // This is the opposite of ImageExpr::save.
   JsonKVMap jmap = JsonParser::parseFile (fileName + "/imageexpr.json");
   String expr = jmap.get("ImageExpr").getString();
-  LatticeBase* img = openExpr (expr, Block<LatticeExprNode>(), fileName);
+  LatticeBase* img = openExpr (expr, Block<LatticeExprNode>(), fileName, jmap);
   return img;
 }
 
@@ -209,21 +209,33 @@ LatticeBase* ImageOpener::openExpr (const String& expr,
                                     const Block<LatticeExprNode>& nodes,
                                     const String& fileName)
 {
+  return openExpr (expr, nodes, fileName, JsonKVMap());
+}
+
+LatticeBase* ImageOpener::openExpr (const String& expr,
+                                    const Block<LatticeExprNode>& nodes,
+                                    const String& fileName,
+                                    const JsonKVMap& jmap)
+{
   LatticeBase* lattice = 0;
   PtrBlock<const ImageRegion*> regions;
   LatticeExprNode node = ImageExprParse::command (expr, nodes, regions);
   switch (node.dataType()) {
   case TpFloat:
-    lattice = new ImageExpr<Float> (LatticeExpr<Float>(node), expr, fileName);
+    lattice = new ImageExpr<Float> (LatticeExpr<Float>(node), expr,
+                                    fileName, jmap);
     break;
   case TpDouble:
-    lattice = new ImageExpr<Double> (LatticeExpr<Double>(node), expr, fileName);
+    lattice = new ImageExpr<Double> (LatticeExpr<Double>(node), expr,
+                                     fileName, jmap);
     break;
   case TpComplex:
-    lattice = new ImageExpr<Complex> (LatticeExpr<Complex>(node), expr, fileName);
+    lattice = new ImageExpr<Complex> (LatticeExpr<Complex>(node), expr,
+                                      fileName, jmap);
     break;
   case TpDComplex:
-    lattice = new ImageExpr<DComplex> (LatticeExpr<DComplex>(node), expr, fileName);
+    lattice = new ImageExpr<DComplex> (LatticeExpr<DComplex>(node), expr,
+                                       fileName, jmap);
     break;
   default:
     throw AipsError ("invalid data type of image expression " + expr);

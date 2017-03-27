@@ -41,6 +41,7 @@ namespace casacore {
 
   //# Forward Declarations
   class JsonKVMap;
+  class ValueHolder;
   class IPosition;
   template<typename T> class Array;
 
@@ -150,6 +151,11 @@ namespace casacore {
     // the array shape is irregular (nested vectors have different sizes).
     IPosition shape() const;
     IPosition vectorShape (const std::vector<JsonValue>& vec) const;
+
+    // Get the value as a ValueHolder.
+    // An exception is thrown if the value cannot be represented as such,
+    // because it a vector of differently typed values or nested vectors.
+    ValueHolder getValueHolder() const;
 
     // Get the value in the given data type.
     // Numeric data type promotion can be done as well as conversion of

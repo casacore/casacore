@@ -39,6 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Forward Declarations
 class LatticeBase;
 class LatticeExprNode;
+class JsonKVMap;
 
 // <summary>
 // Definition of image types and handlers
@@ -131,9 +132,14 @@ public:
 
   // Parse an image expression and return the ImageExpr<T> object for it.
   // The block of nodes represents optional $i arguments in the expression.
+  // The JsonKVMap gives the keys found in a persistent image.expr file.
   static LatticeBase* openExpr (const String& expr,
                                 const Block<LatticeExprNode>& nodes,
                                 const String& fileName = String());
+  static LatticeBase* openExpr (const String& expr,
+                                const Block<LatticeExprNode>& nodes,
+                                const String& fileName,
+                                const JsonKVMap&);
 
 private:
   // The default openImage function for an unknown image type.

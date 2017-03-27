@@ -20,6 +20,16 @@ dc1	= {"r":60, "i":70}
 i1	= 10
 s1	= "abc"
 s2	= "defg"
+
+toRecord:
+  b1: Bool 1
+  b2: Bool 0
+  d1: Double 30
+  dc1: DComplex (60,70)
+  i1: Int64 10
+  s1: String "abc"
+  s2: String "defg"
+
 JsonKVMap par3:
 b1	= true
 b2	= false

@@ -128,7 +128,8 @@ template <class T> class ImageConcat : public ImageInterface<T>
 public:
 
 // Constructor. Specify the pixel axis for concatenation
-   explicit ImageConcat (uInt axis, Bool tempClose=True);
+  explicit ImageConcat (uInt axis, Bool tempClose=True,
+                        Bool combineMiscInfo=True);
 
 // Construct the object from a Json file with the given name.
 // This constructor is usually called by ImageOpener::openImageConcat.
@@ -153,6 +154,10 @@ public:
 // An exception is thrown if such a directory or file already exists.
 // It can be opened by ImageOpener::openImage(Concat).
    virtual void save (const String& fileName) const;
+
+// Replace the miscinfo in the ConcatImage, which writes the image.concat file.
+// It can fail if, e.g., the directory to write to is not writable.
+   virtual Bool setMiscInfo (const RecordInterface& newInfo);
 
 // Get the image type (returns name of derived class).
    virtual String imageType() const;
@@ -264,6 +269,7 @@ public:
 
 private:
    LatticeConcat<T> latticeConcat_p;
+   Bool combineMiscInfo_p;
    Bool warnAxisNames_p, warnAxisUnits_p, warnImageUnits_p;
    Bool warnContig_p, warnRefPix_p, warnRefVal_p, warnInc_p, warnTab_p;
    Bool isContig_p;

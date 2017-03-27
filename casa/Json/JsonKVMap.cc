@@ -27,6 +27,8 @@
 
 #include <casacore/casa/Json/JsonKVMap.h>
 #include <casacore/casa/Json/JsonError.h>
+#include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Containers/Record.h>
 #include <iostream>
 
 using namespace std;
@@ -101,6 +103,15 @@ namespace casacore {
       return defVal;
     }
     return value->second.getString();
+  }
+
+  Record JsonKVMap::toRecord() const
+  {
+    Record rec;
+    for (const_iterator iter=begin(); iter!=end(); ++iter) {
+      rec.defineFromValueHolder (iter->first, iter->second.getValueHolder());
+    }
+    return rec;
   }
 
   void JsonKVMap::show (ostream& os) const

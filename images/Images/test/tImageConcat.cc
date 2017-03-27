@@ -61,6 +61,7 @@ void check (uInt axis, MaskedLattice<Float>& ml,
             MaskedLattice<Float>& ml1, 
             MaskedLattice<Float>& ml2,
             MaskedLattice<Float>& ml3);
+void checkMiscInfo (ImageConcat<Float>& image, Bool hasExtra);
 void makeMask (ImageInterface<Float>& im, Bool maskValue, Bool set);
 void testLogger();
 
@@ -130,15 +131,42 @@ int main() {
 
          check (0, ml3, im1, im2);
 
-// Save the concatenated image and read it back.
+// Set some miscInfo
+         TableRecord rec(lc.miscInfo());
+         rec.define ("i4", 4);
+         TableRecord srec;
+         srec.define ("str", "abcd");
+         srec.define ("r4", float(1.0));
+         rec.defineRecord ("srec", srec);
          AlwaysAssertExit (!lc.isPersistent());
+         lc.setMiscInfo (rec);
+         cout << "miscinfo=" << endl << lc.miscInfo();
+
+// Save the concatenated image and read it back.
          lc.save ("tImageConcat_tmp.imgconc");
+         checkMiscInfo (lc, False);
          AlwaysAssertExit (lc.isPersistent());
          LatticeBase* latt = ImageOpener::openImage ("tImageConcat_tmp.imgconc");
          ImageConcat<Float>* lc3 = dynamic_cast<ImageConcat<Float>*>(latt);
          AlwaysAssertExit (lc3 != 0);
          AlwaysAssertExit (allEQ(lc3->get(), lc.get()));
          AlwaysAssertExit (allEQ(lc3->getMask(), lc.getMask()));
+         checkMiscInfo (*lc3, False);
+      }
+      {
+         LatticeBase* latt = ImageOpener::openImage ("tImageConcat_tmp.imgconc");
+         ImageConcat<Float>* lc3 = dynamic_cast<ImageConcat<Float>*>(latt);
+         TableRecord rec=lc3->miscInfo();
+         checkMiscInfo (*lc3, False);
+         rec.define("NewKey", "newvalue");
+         lc3->setMiscInfo(rec);
+         checkMiscInfo (*lc3, True);
+         delete lc3;
+      }
+      {
+         LatticeBase* latt = ImageOpener::openImage ("tImageConcat_tmp.imgconc");
+         ImageConcat<Float>* lc3 = dynamic_cast<ImageConcat<Float>*>(latt);
+         checkMiscInfo (*lc3, True);
          delete lc3;
       }
 
@@ -642,6 +670,21 @@ void check (uInt axis, MaskedLattice<Float>& ml,
    }
 }
 
+void checkMiscInfo (ImageConcat<Float>& img, Bool hasExtraKey)
+{
+  TableRecord rec = img.miscInfo();
+  AlwaysAssertExit (rec.asInt("i4") == 4);
+  TableRecord srec(rec.subRecord("srec"));
+  AlwaysAssertExit (srec.size() == 2);
+  AlwaysAssertExit (srec.asString("str") == "abcd");
+  AlwaysAssertExit (srec.asFloat("r4") == 1.0);
+  if (hasExtraKey) {
+    AlwaysAssertExit (rec.asString("NewKey") == "newvalue");
+    AlwaysAssertExit (rec.size() == 3);
+  } else {
+    AlwaysAssertExit (rec.size() == 2);
+  }
+}
 
 
 void makeMask (ImageInterface<Float>& im, Bool maskValue, Bool set)
