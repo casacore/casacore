@@ -1195,7 +1195,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // ORIGIN
     //
     if (origin.empty()) {
-      header.define("ORIGIN", "casacore-" + getVersion());
+      header.define("ORIGIN", "casacore-" + string(getVersion()));
     } else {
       header.define("ORIGIN", origin);
     }

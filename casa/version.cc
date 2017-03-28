@@ -30,10 +30,9 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Get the casacore version.
-  const std::string getVersion()
+  const char* getVersion()
   {
-    static std::string version("trunk");
-    return version;
+    return CASACORE_VERSION;
   }
 
   // Get the version of casacore on CASA's vendor branch

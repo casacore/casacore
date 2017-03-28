@@ -40,7 +40,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Get the casacore version.
-  const std::string getVersion();
+  extern "C" const char* getVersion();
 
   // Get the version of casacore on CASA's vendor branch
   // Note: CASA's private version of casacore has a lifecycle
