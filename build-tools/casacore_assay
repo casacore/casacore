@@ -194,11 +194,11 @@ EOF
 #  First text on a single line enclosed in >>> and <<<.
 #  Then lines enclosed in lines starting with >>> and <<<.
 # Remove the current directory from the output (to avoid system dependencies).
-  sed -e 's/>>>[^<]*<<<//g' -e '/^>>>/,/^<<</d' ${1}_tmp.out | sed -e "s%$curdir/%%g" > ${1}_tmp.out2
+  sed -e 's/>>>.*<<<//' -e '/^>>>/,/^<<</d' ${1}_tmp.out | sed -e "s%$curdir/%%g" > ${1}_tmp.out2
   mv -f ${1}_tmp.out2 ${1}_tmp.out
 
 # Compare with the expected output.
-  cat "$CAT" | sed -e 's/>>>[^<]*<<<//g' -e '/^>>>/,/^<<</d' > ${1}_tmpo.out
+  cat "$CAT" | sed -e 's/>>>.*<<<//' -e '/^>>>/,/^<<</d' > ${1}_tmpo.out
   if diff ${1}_tmp.out ${1}_tmpo.out
   then
      echo "PASS (output verified): $*"
