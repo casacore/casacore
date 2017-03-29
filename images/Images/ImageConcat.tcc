@@ -66,6 +66,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T>
 ImageConcat<T>::ImageConcat()
 : latticeConcat_p(),
+  combineMiscInfo_p(True),
   warnAxisNames_p(True),
   warnAxisUnits_p(True),
   warnImageUnits_p(True),
@@ -77,8 +78,9 @@ ImageConcat<T>::ImageConcat()
 {}
 
 template<class T>
-ImageConcat<T>::ImageConcat (uInt axis, Bool tempClose)
+ImageConcat<T>::ImageConcat (uInt axis, Bool tempClose, Bool combineMiscInfo)
 : latticeConcat_p(axis, tempClose),
+  combineMiscInfo_p(combineMiscInfo),
   warnAxisNames_p(True),
   warnAxisUnits_p(True),
   warnImageUnits_p(True),
@@ -94,6 +96,7 @@ template<class T>
 ImageConcat<T>::ImageConcat (const ImageConcat<T>& other) 
 : ImageInterface<T>(other),
   latticeConcat_p(other.latticeConcat_p),
+  combineMiscInfo_p(other.combineMiscInfo_p),
   warnAxisNames_p(other.warnAxisNames_p),
   warnAxisUnits_p(other.warnAxisUnits_p),
   warnImageUnits_p(other.warnImageUnits_p),
@@ -122,6 +125,7 @@ ImageConcat<T>& ImageConcat<T>::operator= (const ImageConcat<T>& other)
   if (this != &other) {
      ImageInterface<T>::operator= (other);
      latticeConcat_p = other.latticeConcat_p;
+     combineMiscInfo_p = other.combineMiscInfo_p;
      warnAxisNames_p  = other.warnAxisNames_p;
      warnAxisUnits_p  = other.warnAxisUnits_p;
      warnImageUnits_p = other.warnImageUnits_p;
@@ -152,6 +156,7 @@ ImageInterface<T>* ImageConcat<T>::cloneII() const
 template<class T>
 ImageConcat<T>::ImageConcat (const JsonKVMap& jmap, const String& fileName)
 : latticeConcat_p(),
+  combineMiscInfo_p(False),
   warnAxisNames_p(True),
   warnAxisUnits_p(True),
   warnImageUnits_p(True),
@@ -169,6 +174,8 @@ ImageConcat<T>::ImageConcat (const JsonKVMap& jmap, const String& fileName)
   Bool tmpClose = jmap.getBool("TempClose", True);
   Vector<String> names(jmap.get("Images").getArrayString());
   latticeConcat_p=LatticeConcat<T>(axis, tmpClose);
+  // Combine miscinfo if not defined in the Json file.
+  combineMiscInfo_p = !jmap.isDefined("MiscInfo");
   for (uInt i=0; i<names.size(); ++i) {
     // Add directory of parent as needed.
     String name = Path::addDirectory (names[i], fileName_p);
@@ -182,6 +189,11 @@ ImageConcat<T>::ImageConcat (const JsonKVMap& jmap, const String& fileName)
     }
     setImage (*img, True);
     delete img;
+  }
+  if (jmap.isDefined("MiscInfo")) {
+    TableRecord tabrec;
+    tabrec.fromRecord (jmap.get("MiscInfo").getValueMap().toRecord());
+    this->setMiscInfoMember (tabrec);
   }
 }
 
@@ -220,8 +232,19 @@ void ImageConcat<T>::save (const String& fileName) const
     names[i] = Path::stripDirectory (fname, fullName);
   }
   jout.write ("Images", Array<String>(names));
+  jout.write ("MiscInfo", miscInfo().toRecord());
   jout.end();
   fileName_p = fullName;
+}
+
+template<class T> 
+Bool ImageConcat<T>::setMiscInfo (const RecordInterface& newInfo)
+{
+  setMiscInfoMember (newInfo);
+  if (isPersistent()) {
+    save (fileName_p);
+  }
+  return True;
 }
 
 template<class T>
@@ -269,7 +292,7 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
     this->setImageInfo (image.imageInfo());
     this->setMiscInfoMember (image.miscInfo());
     this->setCoordinates();
-  } else {
+  } else if (combineMiscInfo_p) {
     TableRecord rec = miscInfo();
     rec.merge (image.miscInfo(), RecordInterface::RenameDuplicates);
     this->setMiscInfoMember (rec);

@@ -125,6 +125,7 @@ public:
     { return itsRep.null(); }
 
   // Get the data type (as defined in DataType.h).
+  // Note that TpOther is returned for an empty untyped array.
   DataType dataType() const;
     
   // Get the value.

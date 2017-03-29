@@ -54,7 +54,14 @@ int main()
     os.write ("key2", 1, "comment2");
     os.write ("key3", -10);
     os.write ("key4", 11.5f);
+    os.write ("keyfa", -1e20f);
+    os.write ("keyfb", -1e-20f);
+    os.write ("keyfc", -1.f);
     os.write ("key5", -13.2345);
+    os.write ("keyda", -1e20);
+    os.write ("keydb", -1e-20);
+    os.write ("keydc", -1.);
+    os.write ("keydd", -123456789012345.123456789012345);
     os.write ("key6", Complex(-1,2));
     os.write ("key7", ValueHolder(DComplex(3,-4)));
     os.write ("key8", "string");

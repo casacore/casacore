@@ -34,6 +34,9 @@
 
 namespace casacore {
 
+  //# Forward Declarations
+  class ValueHolder;
+
   // <summary>
   // Class to hold a collection of JSON key:value pairs.
   // </summary>
@@ -98,7 +101,10 @@ namespace casacore {
     DComplex getDComplex (const String& name, const DComplex& defVal) const;
     const String& getString (const String& name, const String& defVal) const;
     // </group>
-      
+
+    // Convert the map to a Record.
+    Record toRecord() const;
+
     // \name Show the contents of the object
     // <group>
     void show (ostream&) const;

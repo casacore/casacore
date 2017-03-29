@@ -64,6 +64,9 @@ void testExpr()
     ImageExpr<Float> img (node, expr);
     AlwaysAssertExit (allEQ(img.get(), arr+arr));
     AlwaysAssertExit (! img.isPersistent());
+    TableRecord rec;
+    rec.define ("key", "value");
+    img.setMiscInfo (rec);
     img.save ("tImageExpr_tmp.imgexpr");
     AlwaysAssertExit (img.isPersistent());
     AlwaysAssertExit (ImageExprParse::getImageNames().size() == 2  &&
@@ -77,10 +80,11 @@ void testExpr()
     AlwaysAssertExit (img != 0);
     AlwaysAssertExit (allEQ(img->get(), arr+arr));
     AlwaysAssertExit (img->isPersistent());
-    delete img;
     AlwaysAssertExit (ImageExprParse::getImageNames().size() == 2  &&
                       ImageExprParse::getImageNames()[0] == "tImageExpr_tmp.img1" &&
                       ImageExprParse::getImageNames()[1] == "tImageExpr_tmp.img2");
+    AlwaysAssertExit (img->miscInfo().asString("key") == "value");
+    delete img;
   }
   {
     // Do a recursive test.

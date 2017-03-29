@@ -26,6 +26,7 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
+#include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <iostream>
 #include <cstdlib>
@@ -102,6 +103,7 @@ void doIt()
   par1 = par;
   cout << "JsonKVMap par1:" << endl;
   par1.show (cout);
+  cout << endl <<"toRecord:" << endl << par1.toRecord() << endl;
 
   cout << "JsonKVMap par3:" << endl;
   JsonKVMap par3(par1);

@@ -213,6 +213,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else {
       char buf[16];
       sprintf (buf, "%.7g", value);
+      // Add a decimal point if needed, otherwise it is integer.
+      unsigned i;
+      for (i=0; i<sizeof(buf); ++i) {
+        if (buf[i] == '.'  ||  buf[i] == 'e') break;
+        if (buf[i] == 0) break;
+      }
+      if (buf[i] ==0 ) {
+        buf[i]   = '.';
+        buf[i+1] = '0';
+        buf[i+2] = 0;
+      }
       itsStream << buf;
     }
   }
@@ -223,6 +234,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else {
       char buf[24];
       sprintf (buf, "%.16g", value);
+      // Add a decimal point if needed, otherwise it is integer.
+      unsigned i;
+      for (i=0; i<sizeof(buf); ++i) {
+        if (buf[i] == '.'  ||  buf[i] == 'e') break;
+        if (buf[i] == 0) break;
+      }
+      if (buf[i] ==0 ) {
+        buf[i]   = '.';
+        buf[i+1] = '0';
+        buf[i+2] = 0;
+      }
       itsStream << buf;
     }
   }

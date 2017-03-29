@@ -29,6 +29,7 @@
 #include <casacore/casa/Json/JsonKVMap.h>
 #include <casacore/casa/Json/JsonOut.h>
 #include <casacore/casa/Json/JsonError.h>
+#include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Arrays/Vector.h>
 
 using namespace std;
@@ -262,6 +263,48 @@ namespace casacore {
       }
     }
     return nshp.concatenate (shp);
+  }
+
+  ValueHolder JsonValue::getValueHolder() const
+  {
+    if (isNull()) {
+      return ValueHolder();
+    }
+    switch (itsDataType) {
+    case TpBool:
+      return ValueHolder(*(Bool*)itsValuePtr);
+    case TpInt64:
+      return ValueHolder(*(Int64*)itsValuePtr);
+    case TpDouble:
+      return ValueHolder(*(double*)itsValuePtr);
+    case TpDComplex:
+      return ValueHolder(*(DComplex*)itsValuePtr);
+    case TpString:
+      return ValueHolder(*(String*)itsValuePtr);
+    case TpRecord:
+      return ValueHolder(((JsonKVMap*)itsValuePtr)->toRecord());
+    case TpOther:
+      break;   // a vector which is handled below
+    default:
+      throw JsonError("JsonValue::getValueHolder - invalid data type");
+    }
+    vector<JsonValue> vec = getVector();
+    switch (vectorDataType(vec)) {
+    case TpBool:
+      return ValueHolder(Vector<Bool>(getVecBool()));
+    case TpInt64:
+      return ValueHolder(Vector<Int64>(getVecInt()));
+    case TpDouble:
+      return ValueHolder(Vector<double>(getVecDouble()));
+    case TpDComplex:
+      return ValueHolder(Vector<DComplex>(getVecDComplex()));
+    case TpString:
+      return ValueHolder(Vector<String>(getVecString()));
+    case TpOther:
+      return ValueHolder(1, True);    // untyped array with 1 axis
+    default:
+      throw JsonError("JsonValue::getValueHolder - vector of mixed data types");
+    }
   }
 
   Bool JsonValue::getBool() const
