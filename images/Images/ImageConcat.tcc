@@ -292,10 +292,12 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
     this->setImageInfo (image.imageInfo());
     this->setMiscInfoMember (image.miscInfo());
     this->setCoordinates();
-  } else if (combineMiscInfo_p) {
-    TableRecord rec = miscInfo();
-    rec.merge (image.miscInfo(), RecordInterface::RenameDuplicates);
-    this->setMiscInfoMember (rec);
+  } else {
+    if (combineMiscInfo_p) {
+      TableRecord rec = miscInfo();
+      rec.merge (image.miscInfo(), RecordInterface::RenameDuplicates);
+      this->setMiscInfoMember (rec);
+    }
 
     // Combine the beams if possible.
     // Should be done before the coordinates are merged.
