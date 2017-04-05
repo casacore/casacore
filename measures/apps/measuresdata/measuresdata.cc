@@ -244,8 +244,8 @@ const String &IERSpredict2000Format = IERSpredictFormat;
 
 // IGRF
 const String IGRFFormat = String("") +
-"a1 x2 i3 i3 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9" +
-" f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9";  // 22 coefficients and SV
+"a1 i3 i3 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7" +
+" f7 f7 f7 f7 f7 f7 f7 f7 f7 f9 f10 f10 f9 f8"; // 24 coefficients and SV
 
 //*************************************************************************//
 
@@ -477,15 +477,15 @@ const tableProperties allProperties[] = {
 
   //**********************************************************************//
 
-  { "IGRF",			2.0,			180.0,
+  { "IGRF",			2.0,			0.0,
     True,			13193.75,		1826.25,
     "geodetic/IGRF",		"http",  		"ascii",
     &IGRF,			IGRFCol,		0,
     vector<String>(),		vector<uInt>(),		vector<TableColumn*>(),
-    "IGRF10 reference magnetic field",			"earthField",
+    "IGRF12 reference magnetic field",			"earthField",
     False,			"",			vector<String>(),
     &IGRFFormat,		vector<formatDescr>(),
-    { "www.ngdc.noaa.gov", "IAGA/vmod", "igrf10coeffs.txt" } },
+    { "www.ngdc.noaa.gov", "IAGA/vmod", "igrf12coeffs.txt" } },
 
   //**********************************************************************//
 
@@ -1336,7 +1336,7 @@ Bool IGRF(tableProperties &tprop, inputValues &inVal) {
   vector<String> field;
   uInt expsize = tprop.fdesc.back().start +  tprop.fdesc.back().n; // Size
   for (uInt i=0; i<lines.size(); ++i) {
-    if (lines[i].size() > 80) {
+    if (lines[i].size() > 180) {
       if (lines[i].size() < expsize) lines[i].resize(expsize, ' ');
       field.resize(0);
       for (uInt j=0; j<tprop.fdesc.size(); ++j) {
