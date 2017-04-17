@@ -71,7 +71,7 @@ MeasurementSet::MeasurementSet()
 
 
 MeasurementSet::MeasurementSet(const String &tableName,
-			       TableOption option) 
+			       TableOption option, Bool checkValidity)
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, option), 
       doNotLockSubtables_p (False),
@@ -85,6 +85,9 @@ MeasurementSet::MeasurementSet(const String &tableName,
 	throw (AipsError("MS(String &, TableOption) - "
 			 "table is not a valid MS"));
     initRefs();
+    if (checkValidity) {
+        _checkInternalConsistency();
+    }
 }
 
 void MeasurementSet::addCat()
@@ -104,7 +107,7 @@ void MeasurementSet::addCat()
 }
 
 MeasurementSet::MeasurementSet (const String &tableName, const TableLock& lockOptions,
-                                bool doNotLockSubtables, TableOption option)
+                                bool doNotLockSubtables, TableOption option, Bool checkValidity)
 : MSTable<PredefinedColumns,
   PredefinedKeywords>(tableName, lockOptions, option),
   doNotLockSubtables_p (doNotLockSubtables),
@@ -119,13 +122,16 @@ MeasurementSet::MeasurementSet (const String &tableName, const TableLock& lockOp
     throw (AipsError("MS(String &, lockOptions, TableOption) - "
 		     "table is not a valid MS"));
   initRefs();
+  if (checkValidity) {
+      _checkInternalConsistency();
+  }
 }
 
 
 
 MeasurementSet::MeasurementSet(const String &tableName,
 			       const TableLock& lockOptions,
-			       TableOption option) 
+			       TableOption option, Bool checkValidity)
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, lockOptions, option), 
       doNotLockSubtables_p (False),
@@ -140,10 +146,13 @@ MeasurementSet::MeasurementSet(const String &tableName,
     throw (AipsError("MS(String &, lockOptions, TableOption) - "
 		     "table is not a valid MS"));
   initRefs();
+  if (checkValidity) {
+      _checkInternalConsistency();
+  }
 }
 
 MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescName,
-			       TableOption option)
+			       TableOption option, Bool checkValidity)
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName, option),
       doNotLockSubtables_p (False),
@@ -157,10 +166,13 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
 	throw (AipsError("MS(String &, String &, TableOption) - "
 			 "table is not a valid MS"));
     initRefs();
+    if (checkValidity) {
+        _checkInternalConsistency();
+    }
 }
 
 MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescName,
-			       const TableLock& lockOptions, TableOption option)
+			       const TableLock& lockOptions, TableOption option, Bool checkValidity)
     : MSTable<PredefinedColumns,
       PredefinedKeywords>(tableName, tableDescName, lockOptions, option),
       doNotLockSubtables_p (False),
@@ -174,6 +186,9 @@ MeasurementSet::MeasurementSet(const String& tableName, const String &tableDescN
 	throw (AipsError("MS(String &, String &, TableOption) - "
 			 "table is not a valid MS"));
     initRefs();
+    if (checkValidity) {
+        _checkInternalConsistency();
+    }
 }
 
 MeasurementSet::MeasurementSet(SetupNewTable &newTab, uInt nrrow,
@@ -1074,6 +1089,45 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field,
 
   return retval;
 }
+
+void MeasurementSet::_checkInternalConsistency() const {
+    Int nrows = 0;
+    String colname, tablename;
+    for (uInt i=0; i<4; ++i) {
+        switch (i) {
+        case 0:
+            nrows = antenna_p.nrow();
+            tablename = antenna_p.tableName();
+            colname = columnName(MSMainEnums::ANTENNA1);
+            break;
+        case 1:
+            nrows = antenna_p.nrow();
+            tablename = antenna_p.tableName();
+            colname = columnName(MSMainEnums::ANTENNA2);
+            break;
+        case 2:
+            nrows = dataDesc_p.nrow();
+            tablename = dataDesc_p.tableName();
+            colname = columnName(MSMainEnums::DATA_DESC_ID);
+            break;
+        case 3:
+            nrows = field_p.nrow();
+            tablename = field_p.tableName();
+            colname = columnName(MSMainEnums::FIELD_ID);
+            break;
+        default:
+            break;
+        }
+        Int mymax = max(ROScalarColumn<Int>(*this, colname).getColumn());
+        ThrowIf(
+            mymax >= nrows,
+            "Illegal " + colname + " value " + String::toString(mymax)
+            + " found in main table. " + dataDesc_p.tableName() + " only has "
+            + String::toString(nrows) + " rows (IDs)"
+        );
+    }
+}
+
 
 const MrsEligibility MrsEligibility::allSubtables_p = allEligible ();
 

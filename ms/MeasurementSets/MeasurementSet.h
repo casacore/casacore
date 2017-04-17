@@ -251,25 +251,29 @@ public:
   // These constructors mirror the Table ones with additional checking
   // on validity (verifying that the MS will have the required columns
   // and keywords)
+  // If checkValidity is True, then additional internal validity
+  // checks are performed. By default this is set to False, because
+  // these checks do impact performance.
   // An exception is thrown if the constructed Table is not a valid MS
   // <thrown>
   //   <li> AipsError
   // </thrown>
   // <group name=tableLikeConstructors>
 
-  MeasurementSet (const String &tableName, TableOption = Table::Old);
+  MeasurementSet (const String &tableName, TableOption option=Table::Old, Bool checkValidity=False);
   MeasurementSet (const String &tableName, const TableLock& lockOptions,
-		          TableOption = Table::Old);
+		          TableOption = Table::Old, Bool checkValidity=False);
 
   MeasurementSet (const String &tableName, const TableLock& lockOptions,
-		          bool doNotLockSubtables, TableOption = Table::Old);
+		          bool doNotLockSubtables, TableOption = Table::Old,
+		          Bool checkValidity=False);
       // Allows keeping subtables unlocked/read-locked independent of lock
       // mode of main table.
 
   MeasurementSet (const String &tableName, const String &tableDescName,
-		  TableOption = Table::Old);
+		  TableOption = Table::Old, Bool checkValidity=False);
   MeasurementSet (const String &tableName, const String &tableDescName,
-		  const TableLock& lockOptions, TableOption = Table::Old);
+		  const TableLock& lockOptions, TableOption = Table::Old, Bool checkValidity=False);
   MeasurementSet (SetupNewTable &newTab, uInt nrrow = 0,
 		  Bool initialize = False);
   MeasurementSet (SetupNewTable &newTab, const TableLock& lockOptions,
@@ -441,6 +445,9 @@ private:
 
   // check that the MS is the latest version (2.0)
   void checkVersion();
+
+  // check the internal consistency of various values
+  void _checkInternalConsistency() const;
 
   // Opens a single subtable as memory resident (if permitted).
   template <typename Subtable>

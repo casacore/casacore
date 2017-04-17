@@ -32,9 +32,11 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
+#include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/tables/Tables.h>
 #include <casacore/tables/Tables/RowCopier.h>
+#include <casacore/tables/Tables/TableProxy.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/measures/Measures/MDirection.h>
@@ -295,7 +297,6 @@ uInt tConstructors(const String& msName)
 
     // existing table on disk, with correct type
     MeasurementSet tms1(msName);
-
     // try invalid table
 
     // make tableDesc
@@ -314,8 +315,9 @@ uInt tConstructors(const String& msName)
     Bool thrown=False;
     try {
 	MeasurementSet badms("tMeasurementSet_tmp.badmsTable");
-    } catch (AipsError x) {
-	thrown = True;
+    }
+    catch (const AipsError& x) {
+        thrown = True;
     } 
     if (!thrown) errCount++;
 
@@ -325,8 +327,9 @@ uInt tConstructors(const String& msName)
     thrown=False;
     try {
 	MeasurementSet badms("tMeasurementSet_tmp.badmsTable","");
-    } catch (AipsError x) {
-	thrown = True;
+    }
+    catch (const AipsError& x) {
+        thrown = True;
     } 
     if (!thrown) errCount++;
 
@@ -340,8 +343,9 @@ uInt tConstructors(const String& msName)
     try {
 	Table badtab("tMeasurementSet_tmp.badmsTab;e","");
 	MeasurementSet badms(badtab);
-    } catch (AipsError x) {
-	thrown = True;
+    }
+    catch (const AipsError& x) {
+        thrown = True;
     } 
     if (!thrown) errCount++;
 
@@ -377,7 +381,8 @@ uInt tConstructors(const String& msName)
 	try {
 	    MSAntenna msant2b("tMeasurementSet_tmp.msant2","badAntTD",Table::Old);
 	    msant2b.markForDelete();
-	} catch (AipsError x) {
+	}
+	catch (const AipsError& x) {
 	    thrown = True;
 	} 
 	// No exception is thrown here, even though the td name is wrong..
@@ -395,7 +400,8 @@ uInt tConstructors(const String& msName)
 	    SetupNewTable newtab("tMeasurementSet_tmp.msant3b",
 				 MSFeed::requiredTableDesc(),Table::New);
 	    MSAntenna msant3b(newtab,5);
-	} catch (AipsError x) {
+	}
+	catch (const AipsError& x) {
 	    thrown = True;
 	} 
 	if (!thrown) errCount++;
@@ -423,7 +429,8 @@ uInt tConstructors(const String& msName)
 	    Table tab(newtab4);
 	    tab.markForDelete();
 	    MSAntenna msant4b(tab);
-	} catch (AipsError x) {
+	}
+	catch (const AipsError& x) {
 	    thrown = True;
 	} 
 	if (!thrown) errCount++;
@@ -438,7 +445,8 @@ uInt tConstructors(const String& msName)
 		Table tab("tMeasurementSet_tmp.badmsantTable","badAntTD",Table::New);
 	    }
 	    MSAntenna msant5b("tMeasurementSet_tmp.badmsantTable");
-	} catch (AipsError x) {
+	}
+	catch (const AipsError& x) {
 	    thrown = True;
 	} 
 	if (!thrown) errCount++;
@@ -451,7 +459,8 @@ uInt tConstructors(const String& msName)
 	    MSFeed msfeed("msfeed", Table::New);
 	    msfeed.markForDelete();
 	    MSAntenna msant6b(msfeed);
-	} catch (AipsError x) {
+	}
+	catch (const AipsError& x) {
 	    thrown = True;
 	} 
 	if (!thrown) errCount++;
@@ -554,6 +563,67 @@ uInt tDestructorError(const String& sdmsName)
     return errCount;
 }
 
+void tValidity(const String& msName) {
+    {
+        // no validity checks, should open OK
+        MeasurementSet ms(msName);
+    }
+    Bool thrown = False;
+    try {
+        // validity checks, should throw as antenna table
+        // has no rows
+        MeasurementSet ms(msName, Table::Old, True);
+    }
+    catch (const AipsError& x) {
+        thrown = True;
+    }
+    AlwaysAssert(thrown, AipsError);
+    {
+        // add a row to the antenna table
+        Table tab(msName + "/ANTENNA");
+        tab.reopenRW();
+        tab.addRow();
+    }
+    thrown = False;
+    try {
+        // validity checks, should throw as data_description table
+        // has no rows
+        MeasurementSet ms(msName, Table::Old, True);
+    }
+    catch (const AipsError& x) {
+        thrown = True;
+    }
+    AlwaysAssert(thrown, AipsError);
+    {
+        // add a row to the data_description table
+        Table tab(msName + "/DATA_DESCRIPTION");
+        tab.reopenRW();
+        tab.addRow();
+    }
+    thrown = False;
+    try {
+        // validity checks, should throw as there is now a bogus field id table
+        // has no rows
+        MeasurementSet ms(msName, Table::Old, True);
+    }
+    catch (const AipsError& x) {
+        thrown = True;
+    }
+    AlwaysAssert(thrown, AipsError);
+    {
+        // add a row to the field table
+        Table tab(msName + "/FIELD");
+        tab.reopenRW();
+        tab.addRow();
+    }
+    {
+        // now we should be able to open the MS
+        // with all current validity checks passing
+        MeasurementSet ms(msName, Table::Old, True);
+    }
+
+}
+
 void checkErrors(uInt newErrors)
 {
     if (newErrors > 0) {
@@ -597,6 +667,9 @@ int main() {
     checkErrors(newErrors);
     errCount += newErrors;
     
+    cout << "test addiitonal validity checks" << endl;
+    tValidity(msName);
+
     cout << "\nTest referenceCopy() ... ";
     newErrors = tReferenceCopy(msName, refMSName);
     checkErrors(newErrors);
@@ -613,7 +686,6 @@ int main() {
     checkErrors(newErrors);
     errCount += newErrors;
 
-
     // delete the msName table
 
     Table ms(msName);
@@ -626,7 +698,8 @@ int main() {
     }
 
     return errCount;
-  } catch (AipsError x) {
+  }
+  catch (const AipsError& x) {
       cerr << x.getMesg() << endl;
   } 
   return 1;
