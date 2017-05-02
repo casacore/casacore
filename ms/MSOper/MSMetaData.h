@@ -74,6 +74,12 @@ public:
         uInt nrows;
     };
 
+    struct ColumnStats {
+        Double max;
+        Double median;
+        Double min;
+    };
+
     typedef std::map<Int, std::pair<Double, Quantity> > FirstExposureTimeMap;
 
     struct SubScanProperties {
@@ -643,6 +649,11 @@ public:
     const MeasurementSet* getMS() const { return _ms; }
 
     void setShowProgress(Bool b) { _showProgress = b; }
+
+    // get statistics related to the values of the INTERVAL column. Returned
+    // values are in seconds. All values in this column are used in the computation,
+    // including those which associated row flags may be set. 
+    ColumnStats getIntervalStatistics() const;
 
 private:
 
