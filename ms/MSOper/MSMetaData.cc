@@ -36,6 +36,7 @@
 #include <casacore/ms/MSOper/MSKeys.h>
 #include <casacore/ms/MeasurementSets/MSFieldColumns.h>
 #include <casacore/ms/MeasurementSets/MSSpWindowColumns.h>
+#include <casacore/scimath/Mathematics/ClassicalStatistics.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/TaQL/TableParse.h>
@@ -4893,6 +4894,17 @@ SHARED_PTR<Quantum<Vector<Double> > > MSMetaData::_getIntervals() const {
         _intervals = intervals;
     }
     return intervals;
+}
+
+MSMetaData::ColumnStats MSMetaData::getIntervalStatistics() const {
+    SHARED_PTR<Quantum<Vector<Double> > > intervals = _getIntervals();
+    Vector<Double> intInSec = intervals->getValue("s");
+    ColumnStats stats;
+    ClassicalStatistics<Double, Vector<Double>::const_iterator> cs;
+    cs.setData(intInSec.begin(), intInSec.size());
+    cs.getMinMax(stats.min, stats.max);
+    stats.median = cs.getMedian();
+    return stats;
 }
 
 vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(

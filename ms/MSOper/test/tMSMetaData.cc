@@ -2528,6 +2528,13 @@ void testIt(MSMetaData& md) {
             AlwaysAssert(allNear(v, expec, 1e-10), AipsError);
         }
         {
+            cout << "*** test getIntervalStatistics()" << endl;
+            MSMetaData::ColumnStats stats = md.getIntervalStatistics();
+            AlwaysAssert(near(stats.min, 1.008), AipsError);
+            AlwaysAssert(near(stats.max, 6.048), AipsError);
+            AlwaysAssert(near(stats.median, 1.008), AipsError);
+        }
+        {
             cout << "*** cache size " << md.getCache() << endl;
         }
     }
