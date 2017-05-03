@@ -1,4 +1,4 @@
-//# MSRange.cc: selection and iteration of an MS
+///# MSRange.cc: selection and iteration of an MS
 //# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -311,7 +311,8 @@ Record MSRange::range(const Vector<Int>& keys,
       break;
     case MSS::ROWS:
       {
-	// Glish doesn't like uInt (like me), so convert Int n=ms_p.nrow();
+	// Glish doesn't like uInt (like me), so convert
+	Int n=ms_p.nrow();
 	Vector<uInt> rowNumbers=ms_p.rowNumbers();
 	Vector<Int> rows(n);
 	convertArray(rows,rowNumbers);
