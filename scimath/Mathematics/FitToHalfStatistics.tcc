@@ -327,7 +327,6 @@ void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::reset() {
     _doMedAbsDevMed = False;
-    StatsData<AccumType> oldStats = copy(_statsData);
     _statsData = initializeStatsData<AccumType>();
     _rangeIsSet = False;
     ConstrainedRangeStatistics<CASA_STATP>::reset();
