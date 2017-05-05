@@ -229,6 +229,9 @@ public:
 
     virtual StatsData<AccumType> getStatistics();
 
+    // reset this object by clearing data.
+    virtual void reset();
+
     // <group>
     // setdata() clears any current datasets or data provider and then adds the specified data set as
     // the first dataset in the (possibly new) set of data sets for which statistics are
@@ -285,11 +288,7 @@ public:
     // instead of settng and adding data "by hand", set the data provider that will provide
     // all the data sets. Calling this method will clear any other data sets that have
     // previously been set or added.
-    virtual void setDataProvider(StatsDataProvider<CASA_STATP> *dataProvider) {
-        ThrowIf(! dataProvider, "Logic Error: data provider cannot be NULL");
-        _clearData();
-        _dataProvider = dataProvider;
-    }
+    virtual void setDataProvider(StatsDataProvider<CASA_STATP> *dataProvider);
 
     // Provide guidance to algorithms by specifying a priori which statistics the
     // caller would like calculated.
@@ -306,8 +305,6 @@ protected:
     // Allows derived classes to do things after data is set or added.
     // Default implementation does nothing.
     virtual void _addData() {}
-
-    virtual void _clearData();
 
     const vector<Int64>& _getCounts() const { return _counts; }
 

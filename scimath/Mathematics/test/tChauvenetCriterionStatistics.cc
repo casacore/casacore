@@ -131,7 +131,21 @@ int main() {
             AlwaysAssert(sd.npts == 100, AipsError);
             AlwaysAssert(*sd.max == data[99], AipsError);
         }
-
+        {
+            // illustrate fix of CAS-10103
+            ChauvenetCriterionStatistics<Double, vector<Float>::const_iterator> cs(3);
+            vector<Float> v0;
+            v0.push_back(1.0);
+            cs.setData(v0.begin(), v0.size());
+            StatsData<Double> sd = cs.getStatistics();
+            AlwaysAssert(sd.mean == 1, AipsError);
+            vector<Float> v1;
+            v1.push_back(10);
+            v1.push_back(11);
+            cs.setData(v1.begin(), v1.size());
+            sd = cs.getStatistics();
+            AlwaysAssert(sd.mean == 10.5, AipsError);
+        }
     }
 
     catch (const AipsError& x) {

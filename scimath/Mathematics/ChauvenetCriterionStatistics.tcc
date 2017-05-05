@@ -64,6 +64,7 @@ CASA_STATD
 void ChauvenetCriterionStatistics<CASA_STATP>::reset() {
     ConstrainedRangeStatistics<CASA_STATP>::reset();
     _rangeIsSet = False;
+    _niter = 0;
 }
 
 CASA_STATD

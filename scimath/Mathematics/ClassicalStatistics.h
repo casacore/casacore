@@ -267,8 +267,6 @@ protected:
 
     void _addData();
 
-    void _clearData();
-
     void _clearStats();
 
     // scan dataset(s) to find min and max
