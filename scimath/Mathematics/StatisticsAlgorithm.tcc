@@ -215,7 +215,7 @@ CASA_STATD StatsData<AccumType> StatisticsAlgorithm<CASA_STATP>::getStatistics()
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
     const DataIterator& first, uInt nr, uInt dataStride, Bool nrAccountsForStride
 ) {
-    _clearData();
+    reset();
     addData(first, nr, dataStride, nrAccountsForStride);
 }
 
@@ -224,7 +224,7 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
     const DataRanges& dataRanges, Bool isInclude, uInt dataStride,
     Bool nrAccountsForStride
 ) {
-    _clearData();
+    reset();
     addData(
         first, nr, dataRanges, isInclude, dataStride, nrAccountsForStride
     );
@@ -234,7 +234,7 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
     const DataIterator& first, const MaskIterator& maskFirst,
     uInt nr, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
 ) {
-    _clearData();
+    reset();
     addData(
         first, maskFirst, nr, dataStride, nrAccountsForStride, maskStride
     );
@@ -246,7 +246,7 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
     Bool isInclude, uInt dataStride, Bool nrAccountsForStride,
     uInt maskStride
 ) {
-    _clearData();
+    reset();
     addData(
         first, maskFirst, nr, dataRanges, isInclude, dataStride,
         nrAccountsForStride, maskStride
@@ -257,7 +257,7 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
     const DataIterator& first, const WeightsIterator& weightFirst,
     uInt nr, uInt dataStride, Bool nrAccountsForStride
 ) {
-    _clearData();
+    reset();
     addData(first, weightFirst, nr, dataStride, nrAccountsForStride);
 }
 
@@ -266,7 +266,7 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
     uInt nr, const DataRanges& dataRanges,
     Bool isInclude, uInt dataStride, Bool nrAccountsForStride
 ) {
-    _clearData();
+    reset();
     addData(
         first, weightFirst, nr, dataRanges, isInclude,
         dataStride, nrAccountsForStride
@@ -278,7 +278,7 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
     const MaskIterator& maskFirst, uInt nr, uInt dataStride,
     Bool nrAccountsForStride, uInt maskStride
 ) {
-    _clearData();
+    reset();
     addData(
         first, weightFirst, maskFirst, nr, dataStride,
         nrAccountsForStride, maskStride
@@ -290,7 +290,7 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setData(
     const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
     Bool isInclude, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
 ) {
-    _clearData();
+    reset();
     addData(
         first, weightFirst, maskFirst, nr, dataRanges, isInclude,
         dataStride, nrAccountsForStride, maskStride
@@ -303,7 +303,15 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setStatsToCalculate(
     _statsToCalculate = stats;
 }
 
-CASA_STATD void StatisticsAlgorithm<CASA_STATP>::_clearData() {
+CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setDataProvider(
+    StatsDataProvider<CASA_STATP> *dataProvider
+) {
+    ThrowIf(! dataProvider, "Logic Error: data provider cannot be NULL");
+    reset();
+    _dataProvider = dataProvider;
+}
+
+CASA_STATD void StatisticsAlgorithm<CASA_STATP>::reset() {
     _data.clear();
     _counts.clear();
     _masks.clear();

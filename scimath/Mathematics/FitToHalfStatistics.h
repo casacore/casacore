@@ -153,8 +153,6 @@ public:
 
 protected:
 
-    virtual void _clearData();
-
     virtual StatsData<AccumType> _getInitialStats() const;
 
     StatsData<AccumType> _getStatistics();

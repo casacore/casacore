@@ -303,11 +303,6 @@ std::map<Double, AccumType> ClassicalStatistics<CASA_STATP>::getQuantiles(
 }
 
 CASA_STATD
-void ClassicalStatistics<CASA_STATP>::reset() {
-    _clearData();
-}
-
-CASA_STATD
 void ClassicalStatistics<CASA_STATP>::setCalculateAsAdded(
     Bool c
 ) {
@@ -361,14 +356,14 @@ void ClassicalStatistics<CASA_STATP>::_addData() {
     _hasData = True;
     if (_calculateAsAdded) {
         _getStatistics();
-        StatisticsAlgorithm<CASA_STATP>::_clearData();
+        StatisticsAlgorithm<CASA_STATP>::reset();
     }
 }
 
 CASA_STATD
-void ClassicalStatistics<CASA_STATP>::_clearData() {
+void ClassicalStatistics<CASA_STATP>::reset() {
     _clearStats();
-    StatisticsAlgorithm<CASA_STATP>::_clearData();
+    StatisticsAlgorithm<CASA_STATP>::reset();
     _hasData = False;
 }
 

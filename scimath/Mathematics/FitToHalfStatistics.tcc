@@ -315,11 +315,6 @@ uInt64 FitToHalfStatistics<CASA_STATP>::getNPts() {
 }
 
 CASA_STATD
-void FitToHalfStatistics<CASA_STATP>::reset() {
-    _clearData();
-}
-
-CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(
     Bool c
 ) {
@@ -330,13 +325,11 @@ void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(
 }
 
 CASA_STATD
-void FitToHalfStatistics<CASA_STATP>::_clearData() {
+void FitToHalfStatistics<CASA_STATP>::reset() {
     _doMedAbsDevMed = False;
-    StatsData<AccumType> oldStats = copy(_statsData);
     _statsData = initializeStatsData<AccumType>();
-    _statsData.mean = oldStats.mean;
-    _statsData.median = oldStats.median.null() ? NULL : new AccumType(*oldStats.median);
-    ConstrainedRangeStatistics<CASA_STATP>::_clearData();
+    _rangeIsSet = False;
+    ConstrainedRangeStatistics<CASA_STATP>::reset();
 }
 
 CASA_STATD
