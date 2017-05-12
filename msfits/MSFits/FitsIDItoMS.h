@@ -298,10 +298,10 @@ protected:
   Bool weather_hasWater_p;
   Bool weather_hasElectron_p;
   Bool uv_data_hasWeights_p;
-  Bool weightKwPresent_p;
   Bool weightypKwPresent_p;
   String weightyp_p;
-  Matrix<Float> weightsFromKW_p;
+  Int nStokes_p;
+  Int nBand_p;
   static SimpleOrderedMap<Int,Int> antIdFromNo;
 
   //

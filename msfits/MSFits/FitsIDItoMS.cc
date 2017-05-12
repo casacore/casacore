@@ -851,9 +851,10 @@ void FITSIDItoMS1::describeColumns()
         kwl.first();
         uInt ctr=0;
 
-	weightKwPresent_p = False;
 	weightypKwPresent_p = False;
 	weightyp_p = "";
+	nStokes_p = 1;
+	nBand_p = 1;
 
         while((kw = kwl.next())){
 	    kwname = kw->name();
@@ -861,6 +862,14 @@ void FITSIDItoMS1::describeColumns()
 		maxis.resize(++ctr,True);
 		maxis(ctr-1)=kw->asInt();
 //		cout << "**maxis=" << maxis << endl;
+	    }
+	    else if(kwname.at(0,7)=="NO_STKD"){
+	        nStokes_p = kw->asInt();
+//		cout << "**nStokes=" << nStokes_p << endl;
+	    }
+	    else if(kwname.at(0,7)=="NO_BAND"){
+	        nBand_p = kw->asInt();
+//		cout << "**nBand=" << nBand_p << endl;
 	    }
 	    else if(kwname.at(0,8)=="WEIGHTYP"){
 	        weightypKwPresent_p = True;
@@ -873,28 +882,14 @@ void FITSIDItoMS1::describeColumns()
 			  << LogIO::POST;
 		}
 	    }
-	    else if(kwname.at(0,6)=="WEIGHT"){
-	        weightKwPresent_p = True;
-		*itsLog << LogIO::WARN << "WEIGHT keyword in UV_DATA table presently not supported."
-			<< LogIO::POST;
-	    }
 	}
 
 	if(maxis.nelements()>1){
 	    if(maxis(1)==2){
 		uv_data_hasWeights_p = False;
-		if(!weightKwPresent_p){
-		    *itsLog << LogIO::WARN << "MAXIS1 keyword == 2 in UV_DATA table AND WEIGHT keyword not present."
-			    << endl << ". Will try to continue ..." << LogIO::POST;
-		}
 	    }
 	    else if(maxis(1)==3){
 		uv_data_hasWeights_p = True;
-		if(weightKwPresent_p){
-		    *itsLog << LogIO::WARN << "MAXIS1 keyword == 3 in UV_DATA table AND WEIGHT keyword present."
-			    << endl << ". Will try to continue by ignoring WEIGHT keyword ..." << LogIO::POST;
-		    weightKwPresent_p = False;
-		}
 	    }
 	    else{
 		uv_data_hasWeights_p = False;
@@ -1841,6 +1836,8 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   Int iFlux = getIndex(tType, "FLUX");
   // get index for Integration time
   Int iInttim = getIndex(tType, "INTTIM"); 
+  // get index for weight
+  Int iWeight = getIndex(tType, "WEIGHT");
 
   /*
   cout << "iU=" << iU << endl;
@@ -2062,8 +2059,10 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 //	    cout<<"    visReal="<< visReal << "visImag="<< visImag<<endl;
 //	  }
 
-	  if(uv_data_hasWeights_p){
-	      memcpy(&visWeight, (static_cast<Float *>(data_addr[iFlux])) + count++, sizeof(Float));     
+	  if (uv_data_hasWeights_p) {
+	    memcpy(&visWeight, (static_cast<Float *>(data_addr[iFlux])) + count++, sizeof(Float));
+	  } else if (iWeight>=0) {
+	    memcpy(&visWeight, (static_cast<Float *>(data_addr[iWeight])) + ifno * nStokes_p + pol, sizeof(Float));
 	  }
 
 	  //const Float wt = priGroup_p(count++); 
@@ -2107,11 +2106,10 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       msc.data().put(putrow,vis);
       // single channel case: make weight and weightSpectrum identical.
       // multichannel case: weight should not be used.
-      if (nChan==1) { 
- 	const Vector<Float> weight(weightSpec.column(0).copy()); 
+      if (nChan==1 || !uv_data_hasWeights_p) {
+ 	const Vector<Float> weight(weightSpec.column(0).copy());
 
 	msc.weight().put(putrow,weight);
-
       }
 
       if(uv_data_hasWeights_p){
