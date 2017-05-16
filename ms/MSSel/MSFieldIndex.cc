@@ -131,13 +131,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     else       reg=reg.fromPattern(pattern);
     
     //    cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
-    IPosition sh(msFieldCols_p.name().getColumn().shape());
     Vector<Bool> flagRow=msFieldCols_p.flagRow().getColumn();
+    Vector<String> codes=msFieldCols_p.code().getColumn();
+    IPosition sh(codes.shape());
     LogicalArray maskArray(sh,False);
     IPosition i=sh;
     for(i(0)=0;i(0)<sh(0);i(0)++)
       {
-	Int ret=(msFieldCols_p.code().getColumn()(i).matches(reg,pos));
+	Int ret=codes(i).matches(reg,pos);
 	maskArray(i) = ( (ret>0) && !flagRow(i));
       }
     
