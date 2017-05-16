@@ -93,17 +93,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	throw(MSSelectionFieldParseError(Mesg.str().c_str()));
       }
     //    cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << endl;
-    IPosition sh(msFieldCols_p.name().getColumn().shape());
+    Vector<String> names=msFieldCols_p.name().getColumn();
+    Vector<Bool> flagRow=msFieldCols_p.flagRow().getColumn();
+    IPosition sh(names.shape());
     LogicalArray maskArray(sh,False);
     IPosition i=sh;
     for(i(0)=0;i(0)<sh(0);i(0)++)
       {
-	String name = msFieldCols_p.name().getColumn()(i);
-	String sname = stripWhite(name); // Strip leading and trailing blanks
-	//	const String &sname = name; // Strip leading and trailing blanks
-	//        cout << "Name = " << name << " SName = " << sname << endl;
+	String sname = stripWhite(names(i)); // Strip leading and trailing blanks
 	Int ret=(sname.matches(reg,pos));
-	maskArray(i) = ((ret>0) && !msFieldCols_p.flagRow().getColumn()(i));
+	maskArray(i) = ((ret>0) && !flagRow(i));
       }
     
     MaskedArray<Int> maskFieldID(fieldIds_p,maskArray);
@@ -132,14 +131,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     else       reg=reg.fromPattern(pattern);
     
     //    cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
-    IPosition sh(msFieldCols_p.name().getColumn().shape());
+    Vector<Bool> flagRow=msFieldCols_p.flagRow().getColumn();
+    Vector<String> codes=msFieldCols_p.code().getColumn();
+    IPosition sh(codes.shape());
     LogicalArray maskArray(sh,False);
     IPosition i=sh;
     for(i(0)=0;i(0)<sh(0);i(0)++)
       {
-	Int ret=(msFieldCols_p.code().getColumn()(i).matches(reg,pos));
-	maskArray(i) = ( (ret>0) &&
-			 !msFieldCols_p.flagRow().getColumn()(i));
+	Int ret=codes(i).matches(reg,pos);
+	maskArray(i) = ( (ret>0) && !flagRow(i));
       }
     
     MaskedArray<Int> maskFieldID(fieldIds_p,maskArray);
@@ -168,8 +168,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Vector<String> strippedNames = msFieldCols_p.name().getColumn();
     IPosition sh=strippedNames.shape();
     for(Int i=0;i<sh(0);i++)
-	strippedNames(i) = stripWhite(msFieldCols_p.name().getColumn()(i));
-
+      {
+	String name=strippedNames(i);
+	strippedNames(i) = stripWhite(name);
+      }
+    
     LogicalArray maskArray = (strippedNames==name &&
 			      !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
@@ -188,9 +191,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //    matchFieldCode   Vector<Int>              Matching field id's
     //
     Vector<String> strippedCodes = msFieldCols_p.code().getColumn();
-    IPosition sh=strippedCodes.shape();
-    for(Int i=0;i<sh(0);i++)
-	strippedCodes(i) = stripWhite(msFieldCols_p.code().getColumn()(i));
+    Int n=strippedCodes.shape()(0);
+
+    for(Int i=0;i<n;i++)
+      {
+	String name=strippedCodes(i);
+	strippedCodes(i) = stripWhite(name);
+      }
 
     LogicalArray maskArray = (strippedCodes==code &&
 			      !msFieldCols_p.flagRow().getColumn());
@@ -293,7 +300,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   Vector<Int> MSFieldIndex::matchFieldIDLT(const Int n)
   {
     LogicalArray maskArray = 
-      //      (msFieldCols_p.sourceId().getColumn() < n &&
       (fieldIds_p < n &&
        !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
@@ -304,7 +310,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   Vector<Int> MSFieldIndex::matchFieldIDGT(const Int n)
   {
     LogicalArray maskArray = 
-      //      (msFieldCols_p.sourceId().getColumn() > n &&
       (fieldIds_p > n &&
        !msFieldCols_p.flagRow().getColumn());
     MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
@@ -315,8 +320,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   Vector<Int> MSFieldIndex::matchFieldIDGTAndLT(const Int n0, const Int n1)
   {
     LogicalArray maskArray = 
-//       (msFieldCols_p.sourceId().getColumn() >= n0 &&
-//        msFieldCols_p.sourceId().getColumn() <= n1 &&
       (fieldIds_p > n0 &&
        fieldIds_p < n1 &&
        !msFieldCols_p.flagRow().getColumn());
