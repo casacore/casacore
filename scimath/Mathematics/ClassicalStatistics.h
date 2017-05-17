@@ -344,6 +344,50 @@ protected:
     ) const;
     // </group>
 
+    // <group>
+    // advance iterators to first good point
+    virtual Bool _findFirst(
+        DataIterator& dataIter, uInt64& nr, uInt dataStride
+    ) const;
+
+    virtual Bool _findFirst(
+        DataIterator& dataIter, uInt64& nr, uInt dataStride,
+        const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual Bool _findFirst(
+        DataIterator& dataIter, uInt64& nr, uInt dataStride,
+        MaskIterator& maskIter, uInt maskStride
+    ) const;
+
+    virtual Bool _findFirst(
+        DataIterator& dataIter, uInt64& nr, uInt dataStride,
+        MaskIterator& maskIter, uInt maskStride, const DataRanges& ranges,
+        Bool isInclude
+    ) const;
+
+    virtual Bool _findFirst(
+        DataIterator& dataIter, WeightsIterator& weightsIter,
+        uInt64& nr, uInt dataStride
+    ) const;
+
+    virtual Bool _findFirst(
+        DataIterator& dataIter, WeightsIterator& weightsIter,
+        uInt64& nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual Bool _findFirst(
+        DataIterator& dataIter, WeightsIterator& weightsIter,
+        uInt64& nr, uInt dataStride, MaskIterator& maskIter, uInt maskStride,
+        const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual Bool _findFirst(
+        DataIterator& dataIter, WeightsIterator& weightsIter,
+        uInt64& nr, uInt dataStride, MaskIterator& maskIter, uInt maskStride
+    ) const;
+    // </group>
+
     Bool _getDoMaxMin() const { return _doMaxMin; }
 
     Int64 _getIDataset() const { return _idataset; }
@@ -354,7 +398,7 @@ protected:
 
     StatsData<AccumType> _getStatistics();
 
-    // retreive stats structure. Allows derived classes to maintain their own
+    // retrieve stats structure. Allows derived classes to maintain their own
     // StatsData structs.
     inline virtual StatsData<AccumType>& _getStatsData() { return _statsData; }
 
@@ -362,50 +406,50 @@ protected:
     
     // <group>
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        AccumType& mymin, AccumType& mymax,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        AccumType& mymin, AccumType& mymax,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        AccumType& mymin, AccumType& mymax,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        AccumType& mymin, AccumType& mymax,
         const DataIterator& dataBegin, Int64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
         Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        AccumType& mymin, AccumType& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         Int64 nr, uInt dataStride
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        AccumType& mymin, AccumType& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        AccumType& mymin, AccumType& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        AccumType& mymin, AccumType& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
     ) const;
@@ -708,8 +752,11 @@ private:
         uInt64 maxCount
     );
 
+    // advance iterators to first good data point
+    Bool _computeFirst() const;
+
     void _computeMinMax(
-        CountedPtr<AccumType>& mymax, CountedPtr<AccumType>& mymin,
+        AccumType& mymax, AccumType& mymin,
         DataIterator dataIter, MaskIterator maskIter,
         WeightsIterator weightsIter, uInt64 dataCount
     );

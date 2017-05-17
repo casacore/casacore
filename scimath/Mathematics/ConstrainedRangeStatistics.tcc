@@ -340,6 +340,163 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 }
 
 CASA_STATD
+Bool ConstrainedRangeStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, uInt64& nr, uInt dataStride
+) const {
+    while (nr > 0) {
+        if (_isInRange(*dataIter)) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ConstrainedRangeStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, uInt64& nr, uInt dataStride,
+    const DataRanges& ranges, Bool isInclude
+) const {
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (nr > 0) {
+        if (
+            _isInRange(*dataIter)
+            && StatisticsUtilities<AccumType>::includeDatum(
+                *dataIter, beginRange, endRange, isInclude
+            )
+        ) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ConstrainedRangeStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, uInt64& nr, uInt dataStride,
+    MaskIterator& maskIter, uInt maskStride
+) const {
+    while (nr > 0) {
+        if (_isInRange(*dataIter) && *maskIter) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(maskIter, maskStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ConstrainedRangeStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, uInt64& nr, uInt dataStride,
+    MaskIterator& maskIter, uInt maskStride, const DataRanges& ranges,
+    Bool isInclude
+) const {
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (nr > 0) {
+        if (
+            _isInRange(*dataIter) && *maskIter
+            && StatisticsUtilities<AccumType>::includeDatum(
+                *dataIter, beginRange, endRange, isInclude
+            )
+        ) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(maskIter, maskStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ConstrainedRangeStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, WeightsIterator& weightsIter,
+    uInt64& nr, uInt dataStride
+) const {
+    while (nr > 0) {
+        if (_isInRange(*dataIter) && *weightsIter > 0) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(weightsIter, dataStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ConstrainedRangeStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, WeightsIterator& weightsIter,
+    uInt64& nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+) const {
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (nr > 0) {
+        if (
+            _isInRange(*dataIter) && *weightsIter > 0
+            && StatisticsUtilities<AccumType>::includeDatum(
+                *dataIter, beginRange, endRange, isInclude
+            )
+        ) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(weightsIter, dataStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ConstrainedRangeStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, WeightsIterator& weightsIter,
+    uInt64& nr, uInt dataStride, MaskIterator& maskIter, uInt maskStride,
+    const DataRanges& ranges, Bool isInclude
+) const {
+    typename DataRanges::const_iterator beginRange = ranges.begin();
+    typename DataRanges::const_iterator endRange = ranges.end();
+    while (nr > 0) {
+        if (
+            _isInRange(*dataIter) && *weightsIter > 0 && *maskIter
+            && StatisticsUtilities<AccumType>::includeDatum(
+                *dataIter, beginRange, endRange, isInclude
+            )
+        ) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(maskIter, maskStride);
+        std::advance(weightsIter, dataStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
+Bool ConstrainedRangeStatistics<CASA_STATP>::_findFirst(
+    DataIterator& dataIter, WeightsIterator& weightsIter,
+    uInt64& nr, uInt dataStride, MaskIterator& maskIter, uInt maskStride
+) const {
+    while (nr > 0) {
+        if (_isInRange(*dataIter) && *weightsIter > 0 && *maskIter) {
+            return True;
+        }
+        std::advance(dataIter, dataStride);
+        std::advance(maskIter, maskStride);
+        std::advance(weightsIter, dataStride);
+        --nr;
+    }
+    return False;
+}
+
+CASA_STATD
 Bool ConstrainedRangeStatistics<CASA_STATP>::_isInRange(
     const AccumType& datum
 ) const {
@@ -691,7 +848,7 @@ StatsData<AccumType> ConstrainedRangeStatistics<CASA_STATP>::_getStatistics() {
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
         DataIterator datum = dataBegin;
@@ -706,7 +863,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -730,7 +887,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -749,7 +906,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
@@ -775,7 +932,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride
 ) const {
@@ -794,7 +951,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
@@ -820,7 +977,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
@@ -848,7 +1005,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    AccumType& mymin, AccumType& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
