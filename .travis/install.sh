@@ -19,6 +19,7 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
         ls /usr/local/Cellar
         tar cfz "$cachefile" --directory /usr/local/Cellar szip cfitsio wcslib fftw hdf5 ccache boost-python
     fi
+    brew install gcc
     # 93M with gz, 85M with xz -9
     ls -lh "$cachefile"
 fi

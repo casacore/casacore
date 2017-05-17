@@ -5,6 +5,8 @@ os:
   - linux
 #  - osx
 
+osx_image: beta-xcode6.1
+
 compiler:
   - clang
   - gcc
