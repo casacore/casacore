@@ -25,6 +25,7 @@ tStatisticsUtilities
 tVanVleck
 tVectorKernel
 tZScoreCalculator
+tInterpolate2D
 )
 
 foreach (test ${tests})

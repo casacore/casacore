@@ -72,11 +72,11 @@ class String;
 // <srcblock>
 //
 // Matrix<Float> matt(10,10);
-// Vector<Float> where(2);  
+// Vector<Double> where(2);
 // where(0) = 3.452;  where(1) = 6.1;
 // Interpolate2D myInterp(Interpolate2D::LINEAR);
 // Float result;
-// Bool ok = myInterp(result, where, matt);
+// Bool ok = myInterp.interp(result, where, matt);
 //
 // </srcblock> 
 // </example>
@@ -88,9 +88,6 @@ class String;
 //
 //
 // <todo asof="1998/08/02">
-//   <li> Now that there are float/double/bool versions, the class should
-//        be templated and specialized versions made as needed. The
-//        code duplucation in the Float/Double versions is pretty awful presently.
 //   <li> Alternative approach: instantiate with an Array, take a block of
 //        vector locations, return a block of interpolation results
 // </todo>
@@ -177,11 +174,8 @@ class Interpolate2D {
                 const Matrix<Bool> &data) const;
   // </group>
   
-  // Recover interpolation method
-  Method interpolationMethod() const {return itsMethod;}
-  
-  // Convert string ("nearest", "linear", "cubic") to interpolation method
-  // Minimum match will do.
+  // Convert string ("nearest", "linear", "cubic", "lanczos") to interpolation
+  // method. The match is case insensitive.
   static Interpolate2D::Method stringToMethod(const String &method);
   
  private:
@@ -232,7 +226,6 @@ class Interpolate2D {
 	       const Double y1[4], 
                const Double y2[4], const Double y12[4]) const;
   //
-  Interpolate2D::Method itsMethod;
   
   // Typedefs for function pointers
   typedef Bool(Interpolate2D::*FuncPtrFloat)
