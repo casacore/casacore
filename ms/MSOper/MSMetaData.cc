@@ -67,9 +67,7 @@ MSMetaData::MSMetaData(const MeasurementSet *const &ms, const Float maxCacheSize
       _uniqueIntents(),
       _uniqueFieldIDs(), _uniqueStateIDs(),
       _avgSpw(), _tdmSpw(),
-      _fdmSpw(), _wvrSpw(), _sqldSpw(), _antenna1(), _antenna2(),
-      _scans(), _fieldIDs(), _stateIDs(), _dataDescIDs(),
-      _observationIDs(),
+      _fdmSpw(), _wvrSpw(), _sqldSpw(),
       _subScanToNACRowsMap(), _subScanToNXCRowsMap(),
       _fieldToNACRowsMap(), _fieldToNXCRowsMap(),
       _scanToIntentsMap(), _stateToIntentsMap(),
@@ -79,7 +77,6 @@ MSMetaData::MSMetaData(const MeasurementSet *const &ms, const Float maxCacheSize
       _fieldToScansMap(),
       _fieldNames(0),
       _antennaNames(0), _observatoryNames(0),
-       _times(),
       _scanToTimesMap(),
       _fieldToTimesMap(), _observatoryPositions(0),
       _antennaOffsets(0), _uniqueBaselines(0, 0),
@@ -92,7 +89,7 @@ MSMetaData::MSMetaData(const MeasurementSet *const &ms, const Float maxCacheSize
       ),
       _taqlTempTable(
         File(ms->tableName()).exists() ? 0 : 1, ms
-      ), _flagsColumn(),
+      ),
        _spwInfoStored(False), _forceSubScanPropsToCache(False),
        _sourceTimes() {}
 
@@ -547,77 +544,35 @@ void MSMetaData::_getAntennas(
     SHARED_PTR<Vector<Int> >& ant1,
     SHARED_PTR<Vector<Int> >& ant2
 ) const {
-    if (
-        _antenna1 && _antenna1->size() > 0
-        && _antenna2 && _antenna2->size() > 0
-    ) {
-        ant1 = _antenna1;
-        ant2 = _antenna2;
-    }
     ant1 = _getMainScalarColumn<Int>(MSMainEnums::ANTENNA1);
     ant2 = _getMainScalarColumn<Int>(MSMainEnums::ANTENNA2);
-    if (_cacheUpdated(2*sizeof(Int)*ant1->size())) {
-        _antenna1 = ant1;
-        _antenna2 = ant2;
-    }
 }
 
 SHARED_PTR<Vector<Int> > MSMetaData::_getScans() const {
-    if (_scans && _scans->size() > 0) {
-        return _scans;
-    }
-    SHARED_PTR<Vector<Int> > scans = _getMainScalarColumn<Int>(
+    return _getMainScalarColumn<Int>(
         MSMainEnums::SCAN_NUMBER
     );
-    if (_cacheUpdated(sizeof(Int)*scans->size())) {
-        _scans = scans;
-    }
-    return scans;
 }
 
 SHARED_PTR<Vector<Int> > MSMetaData::_getObservationIDs() const {
-    if (_observationIDs && _observationIDs->size() > 0) {
-        return _observationIDs;
-    }
-    SHARED_PTR<Vector<Int> > obsIDs = _getMainScalarColumn<Int>(
+    return _getMainScalarColumn<Int>(
         MSMainEnums::OBSERVATION_ID
     );
-    if (_cacheUpdated(sizeof(Int)*obsIDs->size())) {
-        _observationIDs = obsIDs;
-    }
-    return obsIDs;
 }
 
 SHARED_PTR<Vector<Int> > MSMetaData::_getArrayIDs() const {
-    if (_arrayIDs && _arrayIDs->size() > 0) {
-        return _arrayIDs;
-    }
-    SHARED_PTR<Vector<Int> > arrIDs = _getMainScalarColumn<Int>(
+    return _getMainScalarColumn<Int>(
         MSMainEnums::ARRAY_ID
     );
-    if (_cacheUpdated(sizeof(Int)*arrIDs->size())) {
-        _arrayIDs = arrIDs;
-    }
-    return arrIDs;
 }
 
 SHARED_PTR<Vector<Int> > MSMetaData::_getFieldIDs() const {
-    if (_fieldIDs && ! _fieldIDs->empty()) {
-        return _fieldIDs;
-    }
-    SHARED_PTR<Vector<Int> > fields = _getMainScalarColumn<Int>(
+    return _getMainScalarColumn<Int>(
         MSMainEnums::FIELD_ID
     );
-    if (_cacheUpdated(sizeof(Int)*fields->size())) {
-        _fieldIDs = fields;
-    }
-    return fields;
 }
 
 SHARED_PTR<Vector<Int> > MSMetaData::_getStateIDs() const {
-    if (_stateIDs && _stateIDs->size() > 0) {
-        return _stateIDs;
-    }
     SHARED_PTR<Vector<Int> > states = _getMainScalarColumn<Int>(
         MSMainEnums::STATE_ID
     );
@@ -629,23 +584,13 @@ SHARED_PTR<Vector<Int> > MSMetaData::_getStateIDs() const {
         + " rows in its STATE table, but references STATE_ID "
         + String::toString(maxState) + " in its main table."
     );
-    if (_cacheUpdated(sizeof(Int)*states->size())) {
-        _stateIDs = states;
-    }
     return states;
 }
 
 SHARED_PTR<Vector<Int> > MSMetaData::_getDataDescIDs() const {
-    if (_dataDescIDs && ! _dataDescIDs->empty()) {
-        return _dataDescIDs;
-    }
-    SHARED_PTR<Vector<Int> > dataDescIDs = _getMainScalarColumn<Int>(
+    return _getMainScalarColumn<Int>(
         MSMainEnums::DATA_DESC_ID
     );
-    if (_cacheUpdated(sizeof(Int)*dataDescIDs->size())) {
-        _dataDescIDs = dataDescIDs;
-    }
-    return dataDescIDs;
 }
 
 std::set<Int> MSMetaData::getScansForState(
@@ -2276,46 +2221,21 @@ template <class T> SHARED_PTR<Vector<T> > MSMetaData::_getMainScalarColumn(
 }
 
 SHARED_PTR<Vector<Double> > MSMetaData::_getTimes() const {
-    if (_times && ! _times->empty()) {
-        return _times;
-    }
-    SHARED_PTR<Vector<Double> > times = _getMainScalarColumn<Double>(MSMainEnums::TIME);
-    if (_cacheUpdated(sizeof(Double)*times->size())) {
-        _times = times;
-    }
-    return times;
+    return _getMainScalarColumn<Double>(MSMainEnums::TIME);
 }
 
 SHARED_PTR<Quantum<Vector<Double> > > MSMetaData::_getExposureTimes() const {
-    if (_exposures && ! _exposures->getValue().empty()) {
-        return _exposures;
-    }
     ScalarQuantColumn<Double> col(
         *_ms, MeasurementSet::columnName(MSMainEnums::EXPOSURE)
     );
-    SHARED_PTR<Quantum<Vector<Double> > > ex = col.getColumn();    
-    if (_cacheUpdated(_sizeof(*ex))) {
-        _exposures = ex;
-    }
-    return ex;
+    return col.getColumn();
 }
 
 SHARED_PTR<ArrayColumn<Bool> > MSMetaData::_getFlags() const {
-    if (_flagsColumn && _flagsColumn->nrow() > 0) {
-        return _flagsColumn;
-    }
     String flagColName = MeasurementSet::columnName(MSMainEnums::FLAG);
-    SHARED_PTR<ArrayColumn<Bool> > flagsColumn(
+    return SHARED_PTR<ArrayColumn<Bool> >(
         new ArrayColumn<Bool>(*_ms, flagColName)
     );
-    uInt mysize = 0;
-    for (uInt i=0; i<flagsColumn->nrow(); ++i) {
-        mysize += flagsColumn->get(i).size();
-    }
-    if (_cacheUpdated(sizeof(Bool)*mysize)) {
-        _flagsColumn = flagsColumn;
-    }
-    return flagsColumn;
 }
 
 std::set<Double> MSMetaData::getTimesForScans(
@@ -4882,17 +4802,10 @@ void MSMetaData::_hasAntennaID(Int antennaID) {
 }
 
 SHARED_PTR<Quantum<Vector<Double> > > MSMetaData::_getIntervals() const {
-    // this method is responsible for setting _intervals
-    if (_intervals) {
-        return _intervals;
-    }
     ScalarQuantColumn<Double> col(
         *_ms, MeasurementSet::columnName(MSMainEnums::INTERVAL)
     );
-    SHARED_PTR<Quantum<Vector<Double> > > intervals = col.getColumn();    
-    if (_cacheUpdated(_sizeof(*intervals))) {
-        _intervals = intervals;
-    }
+    SHARED_PTR<Quantum<Vector<Double> > > intervals = col.getColumn();
     return intervals;
 }
 

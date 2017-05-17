@@ -733,8 +733,6 @@ private:
     mutable std::set<String> _uniqueIntents;
     mutable std::set<Int>  _uniqueFieldIDs, _uniqueStateIDs, _uniqueAntennaIDs;
     mutable std::set<uInt> _avgSpw, _tdmSpw, _fdmSpw, _wvrSpw, _sqldSpw, _uniqueDataDescIDs;
-    mutable SHARED_PTR<Vector<Int> > _antenna1, _antenna2, _scans, _fieldIDs,
-        _stateIDs, _dataDescIDs, _observationIDs, _arrayIDs;
     mutable SHARED_PTR<std::map<SubScanKey, uInt> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
     mutable SHARED_PTR<std::map<Int, uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
     mutable std::map<ScanKey, std::set<String> > _scanToIntentsMap;
@@ -750,8 +748,6 @@ private:
     mutable vector<vector<Int> > _corrTypes;
     mutable vector<Array<Int> >_corrProds;
 
-    mutable SHARED_PTR<Vector<Double> > _times;
-    mutable SHARED_PTR<Quantum<Vector<Double> > > _exposures, _intervals;
     mutable SHARED_PTR<std::map<ScanKey, std::set<Double> > > _scanToTimesMap;
     std::map<String, std::set<uInt> > _intentToSpwsMap;
     mutable std::map<String, std::set<Double> > _intentToTimesMap;
@@ -769,7 +765,6 @@ private:
     mutable SHARED_PTR<std::map<SubScanKey, Double> > _unflaggedSubScanNACRows, _unflaggedSubScanNXCRows;
     const String _taqlTableName;
     const vector<const Table*> _taqlTempTable;
-    mutable SHARED_PTR<ArrayColumn<Bool> > _flagsColumn;
 
     mutable Bool _spwInfoStored, _forceSubScanPropsToCache;
     vector<std::map<Int, Quantity> > _firstExposureTimeMap;
