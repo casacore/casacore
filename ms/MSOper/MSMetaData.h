@@ -48,7 +48,12 @@ struct SubScanKey;
 // <summary>
 // Class to interrogate  an MS for metadata. Interrogation happens on demand
 // and resulting metadata are stored for use by subsequent queries if the
-// cache has not exceeded the specified limit.
+// cache has not exceeded the specified limit. Caching of MS main table columns
+// has been removed because the cache can be swamped by columns for large
+// MSes, meaning that smaller data structures, which are more computationally
+// expensive to create, aren't cached. Also, the column data is usually only
+// needed temporarily to compute smaller data structures, and the column data
+// is not particularly expensive to recreate if necessary.
 // Parallel processing is enabled using openmp.
 // </summary>
 
