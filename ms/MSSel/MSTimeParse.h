@@ -148,7 +148,7 @@ public:
   Double defaultInteg() {return defaultExposure;}
 
   static void validate(const TimeFields& tf);
-  static void reset(){timeList.resize(2,0);}
+  static void reset(){timeList.resize(3,0);}
   static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
 
   static TableExprNode* node_p;
@@ -167,7 +167,7 @@ public:
   const String colName;
   Bool honourRowFlags_p;
   static Matrix<Double> timeList;
-  void accumulateTimeList(const Double t0, const Double t1);
+  void accumulateTimeList(const Double t0, const Double t1,const Double dT=-1);
   static MSTimeParse *thisMSTParser;
   static TableExprNode columnAsTEN_p;
   static MSSelectableMainColumn *mainColumn_p;
