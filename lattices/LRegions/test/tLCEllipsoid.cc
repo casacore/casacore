@@ -212,8 +212,8 @@ int main() {
             show(ellipse3);
 
             Float theta = C::pi/4;
-            major = 36;
-            minor = 16;
+            major = 36.01;
+            minor = 16.01;
             xcenter = -1;
             ycenter = -1;
             LCEllipsoid ellipse4(
