@@ -593,8 +593,6 @@ private:
 // Stretch min and max by 5%
    void stretchMinMax (AccumType& dMin, AccumType& dMax) const;
 
-   // CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > _createStatsAlgorithm() const;
-
    void _configureDataProviders(
            LatticeStatsDataProvider<T>& lattDP,
            MaskedLatticeStatsDataProvider<T>& maskedLattDP
