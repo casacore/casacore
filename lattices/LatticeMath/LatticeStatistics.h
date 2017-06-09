@@ -46,6 +46,8 @@
 #include <casacore/scimath/Mathematics/FitToHalfStatisticsData.h>
 #include <casacore/scimath/Mathematics/StatisticsData.h>
 #include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
+#include <casacore/scimath/Mathematics/StatisticsAlgorithmFactory.h>
+
 #include <vector>
 #include <list>
 
@@ -201,6 +203,8 @@ public:
 
     typedef typename NumericTraits<T>::PrecisionType AccumType;
 
+    // DEPRECATED. WILL BE REMOVED, USE scimath/Mathematics/StatisticsAlgorithmFactory
+    // instead
     struct AlgConf {
         StatisticsData::ALGORITHM algorithm;
         // hinges-fences f factor
@@ -522,7 +526,7 @@ private:
    T minFull_p, maxFull_p;
    Bool doneFullMinMax_p;
 
-   AlgConf _algConf;
+   StatisticsAlgorithmFactory<AccumType, const T*, const Bool*> _saf;
    std::map<String, uInt> _chauvIters;
 
    Double _aOld, _bOld, _aNew, _bNew;
@@ -588,8 +592,6 @@ private:
 
 // Stretch min and max by 5%
    void stretchMinMax (AccumType& dMin, AccumType& dMax) const;
-
-   CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > _createStatsAlgorithm() const;
 
    void _configureDataProviders(
            LatticeStatsDataProvider<T>& lattDP,

@@ -30,6 +30,7 @@
 #include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
  
 #include <casacore/casa/BasicSL/STLIO.h>
+#include <casa/Utilities/GenSort.h>
 
 namespace casacore {
 
