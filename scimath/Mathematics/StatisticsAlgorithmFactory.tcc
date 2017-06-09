@@ -231,11 +231,10 @@ StatisticsAlgorithmFactory<CASA_STATP>::fromRecord(const Record& r) {
     default:
         ThrowCc(
             "Logic Error: Unhandled algorithm "
-                + String::toString(algorithm)
+            + String::toString(algorithm)
         );
     }
 }
-
 
 }
 

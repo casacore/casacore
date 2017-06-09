@@ -63,9 +63,9 @@ public:
 
     // configure to use fit to half algorithm.
     void configureFitToHalf(
-            FitToHalfStatisticsData::CENTER centerType=FitToHalfStatisticsData::CMEAN,
-            FitToHalfStatisticsData::USE_DATA useData=FitToHalfStatisticsData::LE_CENTER,
-            AccumType centerValue=0
+        FitToHalfStatisticsData::CENTER centerType=FitToHalfStatisticsData::CMEAN,
+        FitToHalfStatisticsData::USE_DATA useData=FitToHalfStatisticsData::LE_CENTER,
+        AccumType centerValue=0
     );
 
     // configure to use hinges-fences algorithm
@@ -74,16 +74,26 @@ public:
     // configure to use Chauvenet's criterion
     void configureChauvenet(Double zscore=-1, Int maxIterations=-1);
 
+    // Create a pointer to an object of a class derived from StatisticsAlgorithm
+    // that reflects the current configuration
     CountedPtr<StatisticsAlgorithm<CASA_STATP> > createStatsAlgorithm() const;
 
     StatisticsData::ALGORITHM algorithm() const { return _algorithm; }
 
+    // Throws an exception if the current configuration is not relevant
+    // to the Chauvenet/zscore algorithm 
     ChauvenetData chauvenetData() const;
 
+    // Throws an exception if the current configuration is not relevant
+    // to the hinges-fences algorithm
     Double hingesFencesFactor() const;
 
+    // Throws an exception if the current configuration is not relevant
+    // to the fit-to-half algorithm
     FitToHalfData fitToHalfData() const;
 
+    // create a record from the current configuration that can be used
+    // to create another object using the fromRecord() method.
     Record toRecord() const;
 
     // create an object from a record
