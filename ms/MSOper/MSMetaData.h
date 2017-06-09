@@ -350,12 +350,12 @@ public:
     // get the map of scans to time ranges.
     SHARED_PTR<const std::map<ScanKey, std::pair<Double,Double> > > getScanToTimeRangeMap() const;
 
-    // get the times for the specified scan
-    // std::set<Double> getTimesForScan(const uInt scan) const;
-
     // get the stateIDs associated with the specified scan. If obsID and/or arrayID
     // is negative, all observation IDs and/or array IDs will be used.
     std::set<Int> getStatesForScan(Int obsID, Int arrayID, Int scan) const;
+
+    // get a map of spectral windows to unique timestamps.
+    std::vector<std::set<Double> > getTimesForSpws(Bool showProgress=True) const;
 
     // get the position of the specified antenna relative to the observatory position.
     // the three vector returned represents the longitudinal, latitudinal, and elevation

@@ -2543,6 +2543,24 @@ std::set<Int> MSMetaData::getStatesForScan(
     return states;
 }
 
+std::vector<std::set<Double> > MSMetaData::getTimesForSpws(Bool showProgress) const {
+    SHARED_PTR<const std::map<ScanKey, ScanProperties> > scanProps
+        = this->_getScanProperties(showProgress);
+    std::vector<std::set<Double> > myvec(nSpw(True));
+    std::map<ScanKey, ScanProperties>::const_iterator iter = scanProps->begin();
+    std::map<ScanKey, ScanProperties>::const_iterator end = scanProps->end();
+    for (; iter!=end; ++iter) {
+        const std::map<uInt, std::set<Double> >& times = iter->second.times;
+        std::map<uInt, std::set<Double> >::const_iterator titer = times.begin();
+        std::map<uInt, std::set<Double> >::const_iterator tend = times.end();
+        for (; titer!=tend; ++titer) {
+            const std::set<Double>& spwTimes = titer->second;
+            myvec[titer->first].insert(spwTimes.begin(), spwTimes.end());
+        }
+    }
+    return myvec;
+}
+
 Record MSMetaData::getSummary() const {
     Record spectralTable;
     spectralTable.define("names", Vector<String>(getSpwNames()));
