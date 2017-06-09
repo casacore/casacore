@@ -382,6 +382,8 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   ArrayColumn<Double>& otherUvw = otherMainCols.uvw();
   ArrayColumn<Float>& otherWeight = otherMainCols.weight();
   ArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
+  ArrayColumn<Float>& otherSigma = otherMainCols.sigma();
+  ArrayColumn<Float>& otherSigmaSp = otherMainCols.sigmaSpectrum();
 
   ScalarColumn<Int>& otherAnt1Col = otherMainCols.antenna1();
   ScalarColumn<Int>& otherAnt2Col = otherMainCols.antenna2();
@@ -559,11 +561,16 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 
   
   Bool copyWtSp = (!otherWeightSp.isNull()) && otherWeightSp.isDefined(0);
+  Bool copySgSp = (!otherSigmaSp.isNull()) && otherSigmaSp.isDefined(0);
   
   // MAIN
   
-  Bool doWeightScale = (itsWeightScale!=1.);
-  
+  Bool doWeightScale = (itsWeightScale!=1.) && (itsWeightScale!=0.);
+  Float sScale = 1.; // scale for SIGMA
+  if (doWeightScale){
+    sScale = 1/sqrt(itsWeightScale);
+  }
+
   if(reindexObsidAndScan){
     for (uInt r = 0; r < otherRows; r++) {
       Int oid = 0;
@@ -772,6 +779,9 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     if(doWeightScale){
       otherWeight.put(r, otherWeight(r)*itsWeightScale);
       if (copyWtSp) otherWeightSp.put(r, otherWeightSp(r)*itsWeightScale);
+      
+      otherSigma.put(r, otherSigma(r) * sScale);
+      if (copySgSp) otherSigmaSp.put(r, otherWeightSp(r) * sScale);
     }
     
   } // end for
@@ -1098,8 +1108,6 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   ScalarColumn<Double>& thisTimeCen = destMainCols.timeCentroid();
   const ROScalarColumn<Int>& otherArrayId = otherMainCols.arrayId();
   ScalarColumn<Int>& thisArrayId = destMainCols.arrayId();
-  const ROArrayColumn<Float>& otherSigma = otherMainCols.sigma();
-  ArrayColumn<Float>& thisSigma = destMainCols.sigma();
   const ROArrayColumn<Bool>& otherFlag = otherMainCols.flag();
   ArrayColumn<Bool>& thisFlag = destMainCols.flag();
   const ROArrayColumn<Bool>& otherFlagCat = otherMainCols.flagCategory();
@@ -1155,6 +1163,10 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   ArrayColumn<Float> thisWeight = destMainCols.weight();
   const ROArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
   ArrayColumn<Float> thisWeightSp = destMainCols.weightSpectrum();
+  const ROArrayColumn<Float>& otherSigma = otherMainCols.sigma();
+  ArrayColumn<Float> thisSigma = destMainCols.sigma();
+  const ROArrayColumn<Float>& otherSigmaSp = otherMainCols.sigmaSpectrum();
+  ArrayColumn<Float> thisSigmaSp = destMainCols.sigmaSpectrum();
 
   const ROScalarColumn<Int>& otherScan = otherMainCols.scanNumber();
   const ROScalarColumn<Int>& otherStateId = otherMainCols.stateId();
@@ -1268,6 +1280,9 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   Bool copyWtSp = !(thisWeightSp.isNull() || otherWeightSp.isNull()); 
   copyWtSp = copyWtSp && thisWeightSp.isDefined(0) 
     && otherWeightSp.isDefined(0);
+  Bool copySgSp = !(thisSigmaSp.isNull() || otherSigmaSp.isNull()); 
+  copySgSp = copySgSp && thisSigmaSp.isDefined(0) 
+    && otherSigmaSp.isDefined(0);
   
   // MAIN
 
@@ -1439,12 +1454,14 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     if(doWeightScale){
       thisWeight.put(curRow, otherWeight(r)*itsWeightScale);
       if (copyWtSp) thisWeightSp.put(curRow, otherWeightSp(r)*itsWeightScale);
-      thisSigma.put(curRow, otherSigma(r) * sScale);
+      thisSigma.put(curRow, otherSigma(r)*sScale);
+      if (copySgSp) thisSigmaSp.put(curRow, otherSigmaSp(r)*sScale);
     }
     else{
       thisWeight.put(curRow, otherWeight, r);
       if (copyWtSp) thisWeightSp.put(curRow, otherWeightSp, r);
       thisSigma.put(curRow, otherSigma, r);
+      if (copySgSp) thisSigmaSp.put(curRow, otherSigmaSp, r);
     }
     
     if(notYetFeedWarned && (otherFeed1(r)>0 || otherFeed2(r)>0)){
