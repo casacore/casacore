@@ -377,7 +377,7 @@ protected:
   Block<Bool> tabIterAtStart_p;
 
   Int nMS_p;
-  ROMSColumns* msc_p;
+  CountedPtr<ROMSColumns> msc_p;
   Table curTable_p;
   Int curMS_p, lastMS_p, curArray_p, lastArray_p, curSource_p;
   String curFieldName_p, curSourceName_p;
@@ -426,8 +426,8 @@ protected:
   MFrequency restFrequency_p;
   MPosition telescopePosition_p;
 
-  MSInterval *timeComp_p;          // Points to the time comparator.
-                                   // 0 if not using a time interval.
+  CountedPtr<MSInterval> timeComp_p; // Points to the time comparator.
+                                     // 0 if not using a time interval.
 };
 
 inline Bool MSIter::more() const { return more_p;}
