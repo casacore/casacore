@@ -379,6 +379,10 @@ MSIter::operator=(const MSIter& other)
   return *this;
 }
 
+MSIter *
+MSIter::clone() const {
+	return new MSIter(*this);
+}
 
 const MS& MSIter::ms(const uInt id) const {
 

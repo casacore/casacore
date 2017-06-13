@@ -202,6 +202,8 @@ public:
   // Copy construct. This calls the assigment operator.
   MSIter(const MSIter & other);
 
+  MSIter *clone() const;
+
   // Destructor
   virtual ~MSIter();
   
