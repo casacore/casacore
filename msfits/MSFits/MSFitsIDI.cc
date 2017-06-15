@@ -288,10 +288,23 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
   Vector<String> subTableName;
   Int subTableNr = -1;
   Table maintab;
-  
+
+  // Correlator
+  String correlat;
+
   // Loop over all HDU in the FITS-IDI file
   Bool initFirstMain = True;
   while (infits.err() == FitsIO::OK && !infits.eof()) {
+
+    // Fetch correlator name from the primary HDU
+    if (infits.hdutype() == FITS::PrimaryArrayHDU) {
+      BytePrimaryArray tab(infits);
+      if (tab.kw("CORRELAT")) {
+	correlat = tab.kw("CORRELAT")->asString();
+	correlat.trim();
+	os << LogIO::NORMAL << "Correlator: " << correlat << LogIO::POST;
+      }
+    }
 
     // Skip non-binary table HDU's
     if (infits.hdutype() != FITS::BinaryTableHDU) {
@@ -304,7 +317,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 
     } else {
       // Process the FITS-IDI input from the position of this binary table
-      FITSIDItoMS1 bintab(infits, itsObsType, initFirstMain);
+      FITSIDItoMS1 bintab(infits, correlat, itsObsType, initFirstMain);
       initFirstMain = False;
       String hduName = bintab.extname();
       hduName = hduName.before(trailing);

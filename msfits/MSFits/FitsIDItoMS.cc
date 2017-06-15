@@ -103,6 +103,8 @@
 
 #include <casacore/casa/iomanip.h>
 
+#include <casacore/scimath/Mathematics/FFTPack.h>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //local debug switch 
@@ -155,11 +157,12 @@ Bool FITSIDItoMS1::firstWeather = True; // initialize the class variable firstWe
 Double FITSIDItoMS1::rdate = 0.; // initialize the class variable rdate
 String FITSIDItoMS1::array_p = ""; // initialize the class variable array_p
 SimpleOrderedMap<Int,Int> FITSIDItoMS1::antIdFromNo(-1); // initialize the class variable antIdFromNo
+SimpleOrderedMap<Int,Int> FITSIDItoMS1::digiLevels(0); // initialize the class variable digiLevels
 
 //	
 // Constructor
 //	
-  FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const Int& obsType, const Bool& initFirstMain)
+FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat, const Int& obsType, const Bool& initFirstMain)
   : BinaryTableExtension(fitsin),
     itsNrMSKs(10),
     itsMSKC(itsNrMSKs," "),
@@ -168,11 +171,12 @@ SimpleOrderedMap<Int,Int> FITSIDItoMS1::antIdFromNo(-1); // initialize the class
     itsgotMSK(itsNrMSKs,False),
     ///infile_p(fitsin),
     itsObsType(obsType),
+    itsCorrelat(correlat),
     msc_p(0)
 {
 
   itsLog = new LogIO();
-  
+
   //
   // Get some things to remember.
   //
@@ -189,6 +193,7 @@ SimpleOrderedMap<Int,Int> FITSIDItoMS1::antIdFromNo(-1); // initialize the class
       weather_hasWater_p = False;
       weather_hasElectron_p = False;
       antIdFromNo.clear();
+      digiLevels.clear();
       rdate = 0.;
   }
   
@@ -876,7 +881,7 @@ void FITSIDItoMS1::describeColumns()
 		weightyp_p = kw->asString();
 		weightyp_p.upcase();
 		weightyp_p.trim();
-		if(weightyp_p!="NORMAL"){
+		if(weightyp_p!="NORMAL" && weightyp_p!="CORRELAT"){
 		  *itsLog << LogIO::WARN << "Found WEIGHTYP keyword with value \"" << weightyp_p
 			  << "\" in UV_DATA table. Presently this keyword is ignored."
 			  << LogIO::POST;
@@ -1747,6 +1752,24 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   msc_p=new MSColumns(ms_p);
 }
 
+// Van Vleck relationship
+static double rho_2(Double r)
+{
+  return sin((C::pi * r) / 2);
+}
+
+// Fred Schwab's rational approximation for 2-bit sampling with n =
+// 3.336 and optimally chosen v_0.  See VLBA Correlat Memo 75.
+static Double rho_4(Double r)
+{
+  Double rr = r*r;
+  Double num, den;
+
+  num = 1.1329552 - 3.1056902 * rr + 2.9296994 * rr*rr - 0.90122460 * rr*rr*rr;
+  den = 1 - 2.7056559 * rr + 2.5012473 * rr*rr - 0.73985978 * rr*rr*rr;
+
+  return (num / den) * r;
+}
 
 void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& nSpW)
 {
@@ -1801,6 +1824,12 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   Vector<Float> sigma(nCorr);
   Matrix<Float> weightSpec(nCorr, nChan);
   Vector<Float> weight(nCorr);
+
+  Vector<Float> tmp(nChan + 1);
+  Vector<Float> work(3 * (nChan + 1) + 15);
+  Bool worksave;
+  Float *workptr = work.getStorage(worksave);
+  FFTPack::costi(nChan + 1, workptr);
 
   const Int nCat = 3; // three initial categories
   // define the categories
@@ -2087,6 +2116,98 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
  	}
       }
 
+      // Apply digital corrections to data correlated with the DiFX
+      // correlator as these have not been applied at the correlator.
+      // Various constants have been taken from VLBA Scientific Memo
+      // 12 as the DiFX tries to emulate the original VLBA FX
+      // correlator as closely as possible.  Note that DiFX doesn't
+      // suffer from saturation so the saturation correction is
+      // omitted here.  DiFX currently doesn't support Hanning
+      // weighting.
+      //
+      // The correction applied here matches what the AIPS FITLD task
+      // does for DiFX-correlated data as closely as possible.  Two
+      // notable differences in the implementation.  This code simply
+      // uses the FFTPACK cosine tranform where FITLD implements its
+      // own cosine tranform based on an FFT.  And this code simply
+      // uses the expressions for rho_2 and rho_4 given in the
+      // literature instead of using a lookup table.
+      if (itsCorrelat == "DIFX") {
+	const double A = 5.36;
+	const Double H = 0.87890625;
+	Double bfacta, bfactc;
+	Double Rm, gamma, alfa;
+	Double (*rho)(Double) = NULL;
+
+	if (digiLevels(ant1) == 4 && digiLevels(ant2) == 4) {
+	  Rm = 4.3048;
+	  alfa = 0.882518;
+	  gamma = 3.335875 * 64.0 / 63.0;
+	  rho = rho_4;
+	} else if (digiLevels(ant1) == 2 && digiLevels(ant2) == 2) {
+	  Rm = 1.0;
+	  alfa = 2.0 / C::pi;
+	  gamma = 1.0 * 64.0 / 63.0;
+	  rho = rho_2;
+	} else {
+	  Rm = 5.8784;
+	  alfa = 0.882518;
+	  gamma = 3.335875 * 64.0 / 63.0;
+	}
+
+	bfactc = (gamma*gamma) / (A * Rm * alfa * H);
+	bfacta = (gamma*gamma) / (A * Rm * H);
+
+	if (ant1 != ant2) {
+	  // Cross-correlations
+	  vis *= Complex(bfactc);
+	} else {
+	  // Auto-correlations
+	  for (Int p=0; p<nCorr; p++) {
+	    if (corrProduct_p(0, p) == corrProduct_p(1, p)) {
+	      Bool tmpsave;
+	      Float *tmpptr;
+
+	      for (Int chan=0; chan<nChan; chan++)
+		tmp(chan) = bfacta * vis(p, chan).real();
+
+	      if (abs(tmp(0)) < 1e-20)
+		continue;
+
+	      // Extrapolate spectrum as this point has been thrown
+	      // away by the correlator.
+	      tmp(nChan) = 2 * tmp(nChan-1) - tmp(nChan-2);
+
+	      // Cosine transform to lag domain
+	      tmpptr = tmp.getStorage(tmpsave);
+	      FFTPack::cost(nChan + 1, tmpptr, workptr);
+	      tmp.putStorage(tmpptr, tmpsave);
+
+	      // Apply digital correction.
+	      for (Int chan = 1; chan<nChan; chan++) {
+		Float wt = 1.0 - ((Float)chan / nChan);
+		tmp(chan) = (wt * tmp(0)) * rho(tmp(chan) / (wt * tmp(0)));
+	      }
+	      tmp(nChan) = 0.0;
+
+	      // Cosine trandorm back to frequency domain
+	      tmpptr = tmp.getStorage(tmpsave);
+	      FFTPack::cost(nChan + 1, tmpptr, workptr);
+	      tmp.putStorage(tmpptr, tmpsave);
+
+	      for (Int chan=0; chan<nChan; chan++)
+		vis(p, chan) = tmp(chan) / (2*nChan);
+	    } else {
+	      for (Int chan=0; chan<nChan; chan++)
+		vis(p, chan) *= Complex(bfactc);
+	    }
+	  }
+	}
+      }
+
+      if (weightyp_p == "CORRELAT")
+	vis /= weightSpec;
+
       // fill in values for all the unused columns
       msc.feed1().put(putrow,0);
       msc.feed2().put(putrow,0);
@@ -2165,6 +2286,8 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   // fill the receptorAngle with defaults, just in case there is no AN table
   receptorAngle_p=0;
 
+  // Free FFTPack work buffer
+  work.putStorage(workptr, worksave);
 }
 
 // fill Observation table
@@ -2563,6 +2686,14 @@ void FITSIDItoMS1::fillFeedTable() {
     if(!antIdFromNo.isDefined(ii)){
       antIdFromNo.define(ii, antIdFromNo.ndefined()); // append assuming uniqueness
        *itsLog << LogIO::NORMAL << "   antenna_no " << ii << " -> antenna ID " << antIdFromNo(ii) << endl;
+    }
+  }
+
+  // record number of digitizer levels for each antenna
+  for (Int inRow=0; inRow<nAnt; inRow++) {
+    digiLevels.define(antIdFromNo(anNo(inRow)),digLev(inRow));
+    if (itsCorrelat == "DIFX" && digLev(inRow) != 2 && digLev(inRow) != 4) {
+      *itsLog << LogIO::SEVERE << "unsupported number of digitizer levels for ANTENNA_NO " << anNo(inRow) << LogIO::POST;
     }
   }
 
