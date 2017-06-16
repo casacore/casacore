@@ -35,6 +35,7 @@
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MeasurementSets/MSPointingColumns.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/tables/Tables/TableProxy.h>
 #include <map>
 
 namespace casacore {
@@ -821,11 +822,57 @@ private:
 
     static void _checkTolerance(const Double tol);
 
+    // high memory use, parallized version
     void _computeScanAndSubScanProperties(
         SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
         SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
         Bool showProgress
     ) const;
+/*
+    // low memory use, non-parallized version
+    void _computeScanAndSubScanPropertiesUsingMSIter(
+        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
+        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
+        Bool showProgress
+    ) const;
+    */
+
+    template <class T> static SHARED_PTR<Vector<T> > _getScalarColumn(
+        const Table& table, const String& colname
+    );
+
+    template <class T> static SHARED_PTR<Quantum<Vector<T> > > _getScalarQuantColumn(
+        const Table& table, const String& colname
+    );
+
+    static SHARED_PTR<Vector<Int> > _getScalarIntColumn(
+        TableProxy& table, const String& colname, Int beginRow, Int nrows
+    );
+
+    static SHARED_PTR<Vector<Double> > _getScalarDoubleColumn(
+        TableProxy& table, const String& colname, Int beginRow, Int nrows
+    );
+
+    static SHARED_PTR<Quantum<Vector<Double> > > _getScalarQuantDoubleColumn(
+        TableProxy& table, const String& colname, Int beginRow, Int nrows
+    );
+
+    void _mergeScanProps(
+        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
+        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
+        const std::vector<
+            pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
+        >&  props
+    ) const;
+
+
+/*
+    void _computeScanAndSubScanProperties2(
+        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
+        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
+        Bool showProgress
+    ) const;
+    */
 
     void _createScanRecords(
         Record& parent, const ArrayKey& arrayKey,
