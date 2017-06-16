@@ -121,7 +121,7 @@ public:
   // The only constructor is from a FitsInput.
   //
 
-  FITSIDItoMS1(FitsInput& in, const Int& obsType=0, const Bool& initFirstMain=True);
+  FITSIDItoMS1(FitsInput& in, const String& correlat, const Int& obsType=0, const Bool& initFirstMain=True);
 
   ~FITSIDItoMS1();
   
@@ -290,6 +290,7 @@ protected:
   Double startTime_p;
   Double lastTime_p;
   Int itsObsType;
+  String itsCorrelat;
   MeasurementSet ms_p;
   MSColumns* msc_p;
   static Bool firstMain;
@@ -303,6 +304,7 @@ protected:
   Int nStokes_p;
   Int nBand_p;
   static SimpleOrderedMap<Int,Int> antIdFromNo;
+  static SimpleOrderedMap<Int,Int> digiLevels;
 
   //
   //# Member Functions
