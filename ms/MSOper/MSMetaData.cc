@@ -35,14 +35,11 @@
 #include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
 #include <casacore/ms/MSOper/MSKeys.h>
 #include <casacore/ms/MeasurementSets/MSFieldColumns.h>
-#include <casacore/ms/MeasurementSets/MSIter.h>
 #include <casacore/ms/MeasurementSets/MSSpWindowColumns.h>
 #include <casacore/scimath/Mathematics/ClassicalStatistics.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/TaQL/TableParse.h>
-#include <casacore/tables/Tables/TableProxy.h>
-#include <casacore/tables/Tables/TableIter.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 
 #include <utility>
@@ -3533,186 +3530,28 @@ MSMetaData::SubScanProperties MSMetaData::getSubScanProperties(
     return getSubScanProperties(showProgress)->find(subScan)->second;
 }
 
-/*
-void MSMetaData::_computeScanAndSubScanPropertiesUsingMSIter(
-    SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
-    SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
-    Bool showProgress
-) const {
-    //map<ScanKey, ScanProperties> scanProps;
-    //map<SubScanKey, SubScanProperties> mysubscans;
-    map<SubScanKey, Double> exposureSum;
-    map<pair<SubScanKey, uInt>, Double> intervalSum;
-    ScanKey scanKey;
-    SubScanKey subScanKey;
-    pair<SubScanKey, uInt> subScanSpw;
-    // uInt row = beginRow;
-    ScalarQuantColumn<Double> col(
-        *_ms, MeasurementSet::columnName(MSMainEnums::EXPOSURE)
-    );
-    //const Unit& eunit = exposureTimes->getFullUnit();
-    const Unit& eunit(col.getUnits());
-    MSIter iter(*_ms);
-    for (iter.origin(); iter.more(); ++iter) {
-        scanKey.obsID = *oIter;
-        scanKey.arrayID = *arIter;
-        scanKey.scan = *scanIter;
-        Double half = *iIter/2;
-        uInt spw = ddIDToSpw[*dIter];
-        if (scanProps.find(scanKey) == scanProps.end()) {
-            // first time this scan has been encountered in this chunk
-            scanProps[scanKey].timeRange = std::make_pair(*tIter-half, *tIter+half);
-            scanProps[scanKey].times[spw] = std::set<Double>();
-            scanProps[scanKey].spwNRows[spw] = 1;
-        }
-        else {
-            pair<Double, Double>& timeRange = scanProps[scanKey].timeRange;
-            timeRange.first = min(timeRange.first, *tIter-half);
-            timeRange.second = max(timeRange.second, *tIter+half);
-            map<uInt, std::set<Double> >& times = scanProps[scanKey].times;
-            if (times.find(spw) == times.end()) {
-                times[spw] = std::set<Double>();
-                scanProps[scanKey].spwNRows[spw] = 1;
-            }
-            else {
-                ++scanProps[scanKey].spwNRows[spw];
-            }
-        }
-        scanProps[scanKey].times[spw].insert(*tIter);
-        subScanKey.obsID = *oIter;
-        subScanKey.arrayID = *arIter;
-        subScanKey.scan = *scanIter;
-        subScanKey.fieldID = *fIter;
-        Bool autocorr = *a1Iter == *a2Iter;
-        if (
-            mysubscans.find(subScanKey) == mysubscans.end()
-        ) {
-            // first time this subscan has been encountered in this chunk
-            SubScanProperties props;
-            props.acRows = autocorr ? 1 : 0;
-            props.xcRows = autocorr ? 0 : 1;
-            props.beginTime = *tIter;
-            props.endTime = *tIter;
-            props.firstExposureTime[*dIter].first = *tIter;
-            props.firstExposureTime[*dIter].second = Quantity(*eiter, eunit);
-            mysubscans[subScanKey] = props;
-            exposureSum[subScanKey] = *eiter;
-        }
-        else {
-            if (autocorr) {
-                ++mysubscans[subScanKey].acRows;
-            }
-            else {
-                ++mysubscans[subScanKey].xcRows;
-            }
-            mysubscans[subScanKey].beginTime = min(*tIter, mysubscans[subScanKey].beginTime);
-            mysubscans[subScanKey].endTime = max(*tIter, mysubscans[subScanKey].endTime);
-            _modifyFirstExposureTimeIfNecessary(
-                mysubscans[subScanKey].firstExposureTime, *dIter,
-                *tIter, *eiter, eunit
-            );
-            exposureSum[subScanKey] += *eiter;
-        }
-        subScanSpw.first = subScanKey;
-        subScanSpw.second = spw;
-        if (intervalSum.find(subScanSpw) == intervalSum.end()) {
-            intervalSum[subScanSpw] = *iIter;
-            mysubscans[subScanKey].spwNRows[spw] = 1;
-        }
-        else {
-            intervalSum[subScanSpw] += *iIter;
-            ++mysubscans[subScanKey].spwNRows[spw];
-        }
-        mysubscans[subScanKey].antennas.insert(*a1Iter);
-        mysubscans[subScanKey].antennas.insert(*a2Iter);
-        mysubscans[subScanKey].ddIDs.insert(*dIter);
-        mysubscans[subScanKey].spws.insert(spw);
-        mysubscans[subScanKey].stateIDs.insert(*stateIter);
-        std::map<Double, TimeStampProperties>& timeProps = mysubscans[subScanKey].timeProps;
-        if (timeProps.find(*tIter) == timeProps.end()) {
-            timeProps[*tIter].nrows = 1;
-        }
-        else {
-            ++timeProps[*tIter].nrows;
-        }
-        timeProps[*tIter].ddIDs.insert(*dIter);
-        ++tIter;
-        ++scanIter;
-        ++fIter;
-        ++dIter;
-        ++stateIter;
-        ++oIter;
-        ++arIter;
-        ++a1Iter;
-        ++a2Iter;
-        ++eiter;
-        ++iIter;
-        ++row;
-    }
-    map<SubScanKey, SubScanProperties>::iterator ssIter = mysubscans.begin();
-    map<SubScanKey, SubScanProperties>::iterator ssEnd = mysubscans.end();
-    for (; ssIter!=ssEnd; ++ssIter) {
-        SubScanProperties& props = ssIter->second;
-        props.meanExposureTime = Quantity(
-            exposureSum[ssIter->first]/(props.acRows + props.xcRows), eunit
-        );
-    }
-    const Unit& unit = intervalTimes->getFullUnit();
-    map<pair<SubScanKey, uInt>, Double>::const_iterator intSumIter = intervalSum.begin();
-    map<pair<SubScanKey, uInt>, Double>::const_iterator intSumEnd = intervalSum.end();
-    for (; intSumIter!=intSumEnd; ++intSumIter) {
-        const SubScanKey& ssKey = intSumIter->first.first;
-        const uInt& spw = intSumIter->first.second;
-        const Double& sum = intSumIter->second;
-        SubScanProperties& props = mysubscans[ssKey];
-        props.meanInterval[spw] = Quantity(sum/props.spwNRows[spw], unit);
-    }
-    return make_pair(scanProps, mysubscans);
-}
-*/
-
-template <class T> SHARED_PTR<Vector<T> > MSMetaData::_getScalarColumn(
-    const Table& table, const String& colname
+void MSMetaData::_getScalarIntColumn(
+    Vector<Int>& v, TableProxy& tp, const String& colname,
+    Int beginRow, Int nrows
 ) {
-    ScalarColumn<T> mycol(table, colname);
-    SHARED_PTR<Vector<T> > v(new Vector<T>(table.nrow()));
-    // return new mycol.getColumn();
-    mycol.getColumn(*v);
-    return v;
+    v = tp.getColumn(colname, beginRow, nrows, 1).asArrayInt();
 }
 
-template <class T> SHARED_PTR<Quantum<Vector<T> > > MSMetaData::_getScalarQuantColumn(
-    const Table& table, const String& colname
+void MSMetaData::_getScalarDoubleColumn(
+    Vector<Double>& v, TableProxy& tp, const String& colname,
+    Int beginRow, Int nrows
 ) {
-    ScalarQuantColumn<T> mycol(table, colname);
-    //SHARED_PTR<Quantum<Vector<T> > > v;
-    return mycol.getColumn();
-    //return v;
+    v = tp.getColumn(colname, beginRow, nrows, 1).asArrayDouble();
 }
 
-SHARED_PTR<Vector<Int> > MSMetaData::_getScalarIntColumn(
-    TableProxy& tp, const String& colname, Int beginRow, Int nrows
-) {
-    return SHARED_PTR<Vector<Int> >(
-        new Vector<Int>(tp.getColumn(colname, beginRow, nrows, 1).asArrayInt())
-    );
-}
-
-SHARED_PTR<Vector<Double> > MSMetaData::_getScalarDoubleColumn(
-    TableProxy& tp, const String& colname, Int beginRow, Int nrows
-) {
-    return SHARED_PTR<Vector<Double> >(
-        new Vector<Double>(tp.getColumn(colname, beginRow, nrows, 1).asArrayDouble())
-    );
-}
-
-SHARED_PTR<Quantum<Vector<Double> > > MSMetaData::_getScalarQuantDoubleColumn(
-    TableProxy& tp, const String& colname, Int beginRow, Int nrows
+void MSMetaData::_getScalarQuantDoubleColumn(
+        Quantum<Vector<Double> >& v, TableProxy& tp, const String& colname,
+        Int beginRow, Int nrows
 ) {
     ScalarQuantColumn<Double> mycol(tp.table(), colname);
-    Vector<Double> x = tp.getColumn(colname, beginRow, nrows, 1).asArrayDouble();
-    return SHARED_PTR<Quantum<Vector<Double> > >(
-        new Quantum<Vector<Double> >(x, mycol.getUnits())
+    v = Quantum<Vector<Double> >(
+        tp.getColumn(colname, beginRow, nrows, 1).asArrayDouble(),
+        mycol.getUnits()
     );
 }
 
@@ -3740,11 +3579,6 @@ void MSMetaData::_computeScanAndSubScanProperties(
     const static String ant2Name = MeasurementSet::columnName(MSMainEnums::ANTENNA2);
     const static String exposureName = MeasurementSet::columnName(MSMainEnums::EXPOSURE);
     const static String intervalName = MeasurementSet::columnName(MSMainEnums::INTERVAL);
-    //Block<Int> sortColumns(1);
-    // sortColumns[0] = MS::DATA_DESCRIPTION;
-    //sortColumns[0] = MS::TIME;
-   // MSIter iter(*_ms, sortColumns, 600, False);
-   // TableIterator iter(*_ms, timeName, TableIterator::Ascending, TableIterator::NoSort);
     TableProxy tp(*_ms);
     std::vector<
         pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
@@ -3758,61 +3592,27 @@ void MSMetaData::_computeScanAndSubScanProperties(
     );
     Int doneRows = 0;
     uInt msRows = _ms->nrow();
-    // for (iter.origin(); iter.more(); ++iter) {
-    // for (; ! iter.pastEnd(); iter.next()) {
     static const uInt rowsInChunk = 10000000;
     for (uInt row=0; row<msRows; row += rowsInChunk) {
-
-        //Table subt = iter.table();
-        // uInt nrows = subt.nrow();
-        // cout << "nrows " << nrows << endl;
-        //SHARED_PTR<Vector<Int> > scans = _getScalarColumn<Int>(subt, scanName);
-        //SHARED_PTR<Vector<Int> > fields = _getScalarColumn<Int>(subt, fieldName);
-        //SHARED_PTR<Vector<Int> > ddIDs = _getScalarColumn<Int>(subt, ddidName);
-        //SHARED_PTR<Vector<Int> > states = _getScalarColumn<Int>(subt, stateName);
-        //SHARED_PTR<Vector<Double> > times = _getScalarColumn<Double>(subt, timeName);
-        //SHARED_PTR<Vector<Int> > arrays = _getScalarColumn<Int>(subt, arrayName);
-        //SHARED_PTR<Vector<Int> > observations = _getScalarColumn<Int>(subt, obsName);
-        //SHARED_PTR<Vector<Int> > ant1 = _getScalarColumn<Int>(subt, ant1Name);
-        //SHARED_PTR<Vector<Int> > ant2 = _getScalarColumn<Int>(subt, ant2Name);
-        //SHARED_PTR<Quantum<Vector<Double> > > exposureTimes
-        //    = _getScalarQuantColumn<Double>(subt, exposureName);
-        //SHARED_PTR<Quantum<Vector<Double> > > intervalTimes
-        //    = _getScalarQuantColumn<Double>(subt, intervalName);
-
         uInt nrows = min(rowsInChunk, msRows - row);
-        SHARED_PTR<Vector<Int> > scans = _getScalarIntColumn(
-            tp, scanName, row, nrows
+        Vector<Int> scans, fields, ddIDs, states,
+            arrays, observations, ant1, ant2;
+        _getScalarIntColumn(scans, tp, scanName, row, nrows);
+        _getScalarIntColumn(fields, tp, fieldName, row, nrows);
+        _getScalarIntColumn(ddIDs, tp, ddidName, row, nrows);
+        _getScalarIntColumn(states, tp, stateName, row, nrows);
+        _getScalarIntColumn(arrays, tp, arrayName, row, nrows);
+        _getScalarIntColumn(observations, tp, obsName, row, nrows);
+        _getScalarIntColumn(ant1, tp, ant1Name, row, nrows);
+        _getScalarIntColumn(ant2, tp, ant2Name, row, nrows);
+        Vector<Double> times;
+        _getScalarDoubleColumn(times, tp, timeName, row, nrows);
+        Quantum<Vector<Double> > exposureTimes, intervalTimes;
+        _getScalarQuantDoubleColumn(
+            exposureTimes, tp, exposureName, row, nrows
         );
-        SHARED_PTR<Vector<Int> > fields = _getScalarIntColumn(
-            tp, fieldName, row, nrows
-        );
-        SHARED_PTR<Vector<Int> > ddIDs = _getScalarIntColumn(
-            tp, ddidName, row, nrows
-        );
-        SHARED_PTR<Vector<Int> > states = _getScalarIntColumn(
-            tp, stateName, row, nrows
-        );
-        SHARED_PTR<Vector<Double> > times = _getScalarDoubleColumn(
-            tp, timeName, row, nrows
-        );
-        SHARED_PTR<Vector<Int> > arrays = _getScalarIntColumn(
-            tp, arrayName, row, nrows
-        );
-        SHARED_PTR<Vector<Int> > observations = _getScalarIntColumn(
-            tp, obsName, row, nrows
-        );
-        SHARED_PTR<Vector<Int> > ant1 = _getScalarIntColumn(
-            tp, ant1Name, row, nrows
-        );
-        SHARED_PTR<Vector<Int> > ant2 = _getScalarIntColumn(
-            tp, ant2Name, row, nrows
-        );
-        SHARED_PTR<Quantum<Vector<Double> > > exposureTimes = _getScalarQuantDoubleColumn(
-            tp, exposureName, row, nrows
-        );
-        SHARED_PTR<Quantum<Vector<Double> > > intervalTimes = _getScalarQuantDoubleColumn(
-            tp, intervalName, row, nrows
+        _getScalarQuantDoubleColumn(
+            intervalTimes, tp, intervalName, row, nrows
         );
         uInt nchunks = min((uInt)1000, nrows);
         uInt chunkSize = nrows/nchunks;
@@ -3822,7 +3622,6 @@ void MSMetaData::_computeScanAndSubScanProperties(
         }
         pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> > *fut =
             new pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >[nchunks];
-        // uInt doneChunks = 0;
 #pragma omp parallel for
         for (uInt i=0; i<nchunks; ++i) {
             fut[i] = _getChunkSubScanProperties(
@@ -3835,71 +3634,12 @@ void MSMetaData::_computeScanAndSubScanProperties(
         props.insert(props.begin(), fut, fut+nchunks);
         delete [] fut;
         if (pm) {
-            // doneRows += subt.nrow()
             doneRows += nrows;
             pm->update(doneRows);
         }
     }
     _mergeScanProps(scanProps, subScanProps, props);
 }
-
-/*
-void MSMetaData::_computeScanAndSubScanProperties(
-    SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
-    SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
-    Bool showProgress
-) const {
-    uInt nrows = nRows();
-    SHARED_PTR<Vector<Int> > scans = _getScans();
-    SHARED_PTR<Vector<Int> > fields = _getFieldIDs();
-    SHARED_PTR<Vector<Int> > ddIDs = _getDataDescIDs();
-    SHARED_PTR<Vector<Int> > states = _getStateIDs();
-    SHARED_PTR<Vector<Double> > times = _getTimes();
-    SHARED_PTR<Vector<Int> > arrays = _getArrayIDs();
-    SHARED_PTR<Vector<Int> > observations = _getObservationIDs();
-    SHARED_PTR<Vector<Int> > ant1, ant2;
-    _getAntennas(ant1, ant2);
-    SHARED_PTR<Quantum<Vector<Double> > > exposureTimes = _getExposureTimes();
-    SHARED_PTR<Quantum<Vector<Double> > > intervalTimes = _getIntervals();
-    std::vector<uInt> ddIDToSpw = getDataDescIDToSpwMap();
-    uInt nchunks = min((uInt)1000, nrows);
-    uInt chunkSize = nrows/nchunks;
-    if (nrows % nchunks > 0) {
-        // integer division
-        nchunks = nrows/chunkSize + 1;
-    }
-    SHARED_PTR<ProgressMeter> pm;
-    if (showProgress || _showProgress) {
-        LogIO log;
-        const static String title = "Computing scan and subscan properties...";
-        log << LogOrigin("MSMetaData", __func__, WHERE)
-            << LogIO::NORMAL << title << LogIO::POST;
-        pm.reset(new ProgressMeter(0, nchunks, title));
-    }
-    pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> > *fut =
-        new pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >[nchunks];
-    uInt doneChunks = 0;
-#pragma omp parallel for
-    for (uInt i=0; i<nchunks; ++i) {
-        fut[i] = _getChunkSubScanProperties(
-            scans, fields, ddIDs, states, times, arrays,
-            observations, ant1, ant2, exposureTimes,
-            intervalTimes,  ddIDToSpw,  i * chunkSize,
-            std::min((i + 1) * chunkSize, nrows)
-        );
-#pragma omp critical(progresslock)
-        {
-            if (pm) {
-                ++doneChunks;
-                pm->update(doneChunks);
-            }
-        }
-    }
-    vector<pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> > >  props(fut, fut+nchunks);
-    delete [] fut;
-    _mergeScanProps(scanProps, subScanProps, props);
-}
-*/
 
 void MSMetaData::_mergeScanProps(
     SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
@@ -4060,7 +3800,6 @@ void MSMetaData::_mergeScanProps(
     }
 }
 
-
 void MSMetaData::_modifyFirstExposureTimeIfNecessary(
     FirstExposureTimeMap& current, const FirstExposureTimeMap& test
 ) {
@@ -4105,35 +3844,35 @@ void MSMetaData::_modifyFirstExposureTimeIfNecessary(
 
 pair<map<ScanKey, MSMetaData::ScanProperties>, map<SubScanKey, MSMetaData::SubScanProperties> >
 MSMetaData::_getChunkSubScanProperties(
-    SHARED_PTR<const Vector<Int> > scans, SHARED_PTR<const Vector<Int> > fields,
-    SHARED_PTR<const Vector<Int> > ddIDs, SHARED_PTR<const Vector<Int> > states,
-    SHARED_PTR<const Vector<Double> > times, SHARED_PTR<const Vector<Int> > arrays,
-    SHARED_PTR<const Vector<Int> > observations, SHARED_PTR<const Vector<Int> > ant1,
-    SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const Quantum<Vector<Double> > > exposureTimes,
-    SHARED_PTR<const Quantum<Vector<Double> > > intervalTimes, const vector<uInt>& ddIDToSpw, uInt beginRow,
+    const Vector<Int>& scans, const Vector<Int>& fields,
+    const Vector<Int>& ddIDs, const Vector<Int>& states,
+    const Vector<Double>& times, const Vector<Int>& arrays,
+    const Vector<Int>& observations, const Vector<Int>& ant1,
+    const Vector<Int>& ant2, const Quantum<Vector<Double> >& exposureTimes,
+    const Quantum<Vector<Double> >& intervalTimes, const vector<uInt>& ddIDToSpw, uInt beginRow,
     uInt endRow
 ) const {
-    VectorSTLIterator<Int> scanIter(*scans);
+    VectorSTLIterator<Int> scanIter(scans);
     scanIter += beginRow;
-    VectorSTLIterator<Int> a1Iter(*ant1);
+    VectorSTLIterator<Int> a1Iter(ant1);
     a1Iter += beginRow;
-    VectorSTLIterator<Int> a2Iter(*ant2);
+    VectorSTLIterator<Int> a2Iter(ant2);
     a2Iter += beginRow;
-    VectorSTLIterator<Int> fIter(*fields);
+    VectorSTLIterator<Int> fIter(fields);
     fIter += beginRow;
-    VectorSTLIterator<Int> dIter(*ddIDs);
+    VectorSTLIterator<Int> dIter(ddIDs);
     dIter += beginRow;
-    VectorSTLIterator<Int> stateIter(*states);
+    VectorSTLIterator<Int> stateIter(states);
     stateIter += beginRow;
-    VectorSTLIterator<Int> oIter(*observations);
+    VectorSTLIterator<Int> oIter(observations);
     oIter += beginRow;
-    VectorSTLIterator<Int> arIter(*arrays);
+    VectorSTLIterator<Int> arIter(arrays);
     arIter += beginRow;
-    VectorSTLIterator<Double> tIter(*times);
+    VectorSTLIterator<Double> tIter(times);
     tIter += beginRow;
-    VectorSTLIterator<Double> eiter(exposureTimes->getValue());
+    VectorSTLIterator<Double> eiter(exposureTimes.getValue());
     eiter += beginRow;
-    VectorSTLIterator<Double> iIter(intervalTimes->getValue());
+    VectorSTLIterator<Double> iIter(intervalTimes.getValue());
     iIter += beginRow;
     map<ScanKey, ScanProperties> scanProps;
     map<SubScanKey, SubScanProperties> mysubscans;
@@ -4143,7 +3882,7 @@ MSMetaData::_getChunkSubScanProperties(
     SubScanKey subScanKey;
     pair<SubScanKey, uInt> subScanSpw;
     uInt row = beginRow;
-    const Unit& eunit = exposureTimes->getFullUnit();
+    const Unit& eunit = exposureTimes.getFullUnit();
     while (row < endRow) {
         scanKey.obsID = *oIter;
         scanKey.arrayID = *arIter;
@@ -4248,7 +3987,7 @@ MSMetaData::_getChunkSubScanProperties(
             exposureSum[ssIter->first]/(props.acRows + props.xcRows), eunit
         );
     }
-    const Unit& unit = intervalTimes->getFullUnit();
+    const Unit& unit = intervalTimes.getFullUnit();
     map<pair<SubScanKey, uInt>, Double>::const_iterator intSumIter = intervalSum.begin();
     map<pair<SubScanKey, uInt>, Double>::const_iterator intSumEnd = intervalSum.end();
     for (; intSumIter!=intSumEnd; ++intSumIter) {
