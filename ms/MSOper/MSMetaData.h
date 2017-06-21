@@ -35,6 +35,7 @@
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MeasurementSets/MSPointingColumns.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/tables/Tables/TableProxy.h>
 #include <map>
 
 namespace casacore {
@@ -827,6 +828,29 @@ private:
         Bool showProgress
     ) const;
 
+    static void _getScalarIntColumn(
+        Vector<Int>& v, TableProxy& table, const String& colname,
+        Int beginRow, Int nrows
+    );
+
+    static void _getScalarDoubleColumn(
+        Vector<Double>& v, TableProxy& table, const String& colname,
+        Int beginRow, Int nrows
+    );
+
+    static void _getScalarQuantDoubleColumn(
+        Quantum<Vector<Double> >& v, TableProxy& table, const String& colname,
+        Int beginRow, Int nrows
+    );
+
+    void _mergeScanProps(
+        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
+        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
+        const std::vector<
+            pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
+        >&  props
+    ) const;
+
     void _createScanRecords(
         Record& parent, const ArrayKey& arrayKey,
         const std::map<SubScanKey, SubScanProperties>& subScanProps
@@ -877,12 +901,12 @@ private:
     // Uses openmp for parallel processing
     pair<std::map<ScanKey, ScanProperties>, std::map<SubScanKey, SubScanProperties> >
     _getChunkSubScanProperties(
-        SHARED_PTR<const Vector<Int> > scans, SHARED_PTR<const Vector<Int> > fields,
-        SHARED_PTR<const Vector<Int> > ddIDs, SHARED_PTR<const Vector<Int> > states,
-        SHARED_PTR<const Vector<Double> > times, SHARED_PTR<const Vector<Int> > arrays,
-        SHARED_PTR<const Vector<Int> > observations, SHARED_PTR<const Vector<Int> > ant1,
-        SHARED_PTR<const Vector<Int> > ant2, SHARED_PTR<const Quantum<Vector<Double> > > exposureTimes,
-        SHARED_PTR<const Quantum<Vector<Double> > > intervalTimes, const vector<uInt>& ddIDToSpw,
+        const Vector<Int>& scans, const Vector<Int>& fields,
+        const Vector<Int>& ddIDs, const Vector<Int>& states,
+        const Vector<Double>& times, const Vector<Int>& arrays,
+        const Vector<Int>& observations, const Vector<Int>& ant1,
+        const Vector<Int>& ant2, const Quantum<Vector<Double> >& exposureTimes,
+        const Quantum<Vector<Double> >& intervalTimes, const vector<uInt>& ddIDToSpw,
         uInt beginRow, uInt endRow
     ) const;
 
