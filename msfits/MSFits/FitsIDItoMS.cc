@@ -29,6 +29,7 @@
 #include <casacore/casa/Arrays/ArrayIO.h> 
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Arrays/ArrayPartMath.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Arrays/Cube.h>
 #include <casacore/casa/Arrays/IPosition.h> 
@@ -158,6 +159,7 @@ Double FITSIDItoMS1::rdate = 0.; // initialize the class variable rdate
 String FITSIDItoMS1::array_p = ""; // initialize the class variable array_p
 SimpleOrderedMap<Int,Int> FITSIDItoMS1::antIdFromNo(-1); // initialize the class variable antIdFromNo
 SimpleOrderedMap<Int,Int> FITSIDItoMS1::digiLevels(0); // initialize the class variable digiLevels
+Vector<Double> FITSIDItoMS1::effChBw;
 
 //	
 // Constructor
@@ -1584,6 +1586,7 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   // weight per visibility) if the FITS IDI data actually contains it
   if(uv_data_hasWeights_p){
     MS::addColumnToDesc(td, MS::WEIGHT_SPECTRUM, 2);
+    MS::addColumnToDesc(td, MS::SIGMA_SPECTRUM, 2);
   }
   
   if(mainTbl && useTSM) {
@@ -1821,9 +1824,8 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   //cout << "nChan=" << nChan << endl;
 
   Matrix<Complex> vis(nCorr,nChan);
-  Vector<Float> sigma(nCorr);
+  Matrix<Float> sigmaSpec(nCorr, nChan);
   Matrix<Float> weightSpec(nCorr, nChan);
-  Vector<Float> weight(nCorr);
 
   Vector<Float> tmp(nChan + 1);
   Vector<Float> work(3 * (nChan + 1) + 15);
@@ -2098,7 +2100,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 
 	  const Int p = corrIndex_p[pol];
 
- 	  if (visWeight < 0.0) {
+ 	  if (visWeight <= 0.0) {
 	    weightSpec(p, chan) = -visWeight;
 	    flag(p, chan) = True;
 	  } else {                            
@@ -2208,6 +2210,40 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       if (weightyp_p == "CORRELAT")
 	vis /= weightSpec;
 
+      // determine the spectralWindowId
+      Int spW = ifno;
+      if (iFreq>=0) {
+	memcpy(&spW, (static_cast<Int *>(data_addr[iFreq])), sizeof(Int));
+	spW *= (Int)tscal(iFreq);
+	spW += (Int)tzero(iFreq); 
+	spW--; // make 0-based
+	if (nIF_p>0) {
+	  spW *=nIF_p; 
+	  spW+=ifno;
+	}
+      }
+      if (spW!=lastSpW) {
+	msc.dataDescId().put(putrow,spW);
+	nSpW = max(nSpW, spW+1);
+	lastSpW=spW;
+      }
+
+      for (Int chan=0; chan<nChan; chan++) {
+	for (Int pol=0; pol<nCorr; pol++) {
+	  const Int p = corrIndex_p[pol];
+
+	  if (ant1 == ant2)
+	    weightSpec(p, chan) *= interval * effChBw(spW);
+	  else
+	    weightSpec(p, chan) *= 2 * interval * effChBw(spW);
+
+	  if (weightSpec(p, chan) > 0.0)
+	    sigmaSpec(p, chan) = 1.0f / sqrt(weightSpec(p, chan));
+	  else
+	    sigmaSpec(p, chan) = 1.0f;
+	}
+      }
+
       // fill in values for all the unused columns
       msc.feed1().put(putrow,0);
       msc.feed2().put(putrow,0);
@@ -2216,8 +2252,10 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       msc.observationId().put(putrow,0);
       msc.stateId().put(putrow,-1);
 
-      Vector<Float> tmp(nCorr); tmp=1.0;
+      Vector<Float> tmp(nCorr);
+      tmp=1.0;
       msc.sigma().put(putrow,tmp);
+      tmp=0.0;
       msc.weight().put(putrow,tmp);
 
       msc.interval().put(putrow,interval);
@@ -2225,17 +2263,17 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       msc.scanNumber().put(putrow,nScan);
 
       msc.data().put(putrow,vis);
-      // single channel case: make weight and weightSpectrum identical.
-      // multichannel case: weight should not be used.
-      if (nChan==1 || !uv_data_hasWeights_p) {
- 	const Vector<Float> weight(weightSpec.column(0).copy());
 
-	msc.weight().put(putrow,weight);
-      }
+      const Vector<Float> sigma = partialMedians(sigmaSpec, IPosition(1, 1));
+      const Vector<Float> weight = partialMedians(weightSpec, IPosition(1, 1));
+      msc.sigma().put(putrow,sigma);
+      msc.weight().put(putrow,weight);
 
       if(uv_data_hasWeights_p){
+	msc.sigmaSpectrum().put(putrow,sigmaSpec);
 	msc.weightSpectrum().put(putrow,weightSpec); 
       }
+
       msc.flag().put(putrow,flag);
       msc.flagCategory().put(putrow,flagCat);
 
@@ -2249,25 +2287,6 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       msc.timeCentroid().put(putrow,time+interval/2.);
       msc.uvw().put(putrow,uvw);
       
-      // determine the spectralWindowId
-      Int spW = ifno;
-      if (iFreq>=0) {
-        memcpy(&spW, (static_cast<Int *>(data_addr[iFreq])), sizeof(Int));
-        spW *= (Int)tscal(iFreq);
-        spW += (Int)tzero(iFreq); 
- 	spW--; // make 0-based
- 	if (nIF_p>0) {
- 	  spW *=nIF_p; 
- 	  spW+=ifno;
- 	}
-      }
-      if (spW!=lastSpW) {
- 	//msc.dataDescId().put(row,spW);
- 	msc.dataDescId().put(putrow,spW);
- 	nSpW = max(nSpW, spW+1);
- 	lastSpW=spW;
-      }
-    
       // store the sourceId 
       Int sourceId = 0;
       if (iSource>=0) {
@@ -2804,6 +2823,7 @@ void FITSIDItoMS1::fillSpectralWindowTable()
 
 
   Int nSpW = nIF_p;
+  effChBw.resize(nSpW);
 
   // The type of the column changes according to the number of entries
   if (nIF_p==1) {
@@ -2858,6 +2878,7 @@ void FITSIDItoMS1::fillSpectralWindowTable()
     for (Int i=0; i < nChan; i++) {
       chanFreq(i)= refFreq + (i+1-refChan) * chanBandwidth;
     }
+    effChBw(spw)=abs(chanBandwidth);
     resolution=abs(chanBandwidth);
     msSpW.chanFreq().put(spw,chanFreq);
     msSpW.chanWidth().put(spw,resolution);
