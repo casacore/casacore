@@ -65,13 +65,16 @@ int main()
 	Vector<Float> tarray(3); tarray(0) = 1; tarray(1) = 2; tarray(2) = 3;
 	myKeywords.define("tarray", tarray);
 	// make one a Matrix
-	Matrix<Double> mat(3,2);
+	Matrix<Double> mat(3,3);
 	mat(0,0) = 1;
 	mat(1,0) = 2;
 	mat(2,0) = 3;
 	mat(0,1) = 4;
 	mat(1,1) = 5;
 	mat(2,1) = 6;
+	mat(0,2) = 7;
+	mat(1,2) = 8;
+	mat(2,2) = 9;
 	myKeywords.define("ma", mat);
 	Vector<String> sarray(2);
 	sarray(0) = "Hello";

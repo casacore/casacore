@@ -85,7 +85,7 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
 {
     name = "";
 
-    if(fullName.contains("_")){ // assume new matrix syntax  ii_jj
+    if(fullName.contains("_")){ // assume new matrix syntax  ii_jj or i_j
       uInt where = 0;// Where the frst number starts
       while (where++ < fullName.length() && !isdigit(fullName[where])) {
 	; // Nothing
@@ -335,15 +335,20 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 		    String num;
  		    if (ndim == 2) {
 			if (name.length() > 2) name = name.before(2);
- 			// Form ii_jj name
+ 			// Form i_j name
 			Int nrow = in.shape(i)(0);
  			Int ii = k % nrow + 1;
  			Int jj = k / nrow + 1;
- 			ostringstream ostr;
- 			ostr << setfill('0') << setw(2) << ii
-			     << "_"
-			     << setfill('0') << setw(2) << jj;
- 			name += String(ostr);
+			ostringstream ostr;
+			if(nrow>9){
+			  ostr << setfill('0') << setw(2) << ii
+			       << "_"
+			       << setfill('0') << setw(2) << jj;
+			}
+			else{
+			  ostr << setw(1) << ii << "_" << setw(1) << jj;
+			}
+			name += String(ostr);
  		    } else {
 			ostringstream ostr;
 			ostr << k + 1;
@@ -492,6 +497,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
     // This fails with more than 99 axes.
     const Regex kw2D("^[a-z0-9]*[a-z]0[0-9][0-9]0[0-9][0-9]");
     const Regex kw2Dmodern("^[a-z][a-z]?[0-9][0-9]?[_][0-9][0-9]?");
+    const Regex kw2Dstandard("^[[a-z][a-z]?[0-9]?[_][0-9]?");
     const Regex crota("crota");
     const Regex trailing(" *$");
     const Regex cd("^cd[0-9]+[_][0-9]+");
@@ -548,21 +554,9 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
         }
 //
 
-	// without the cd check, cd1_2 and the like would appear as vector
-	// keywords.
-	if (key->isindexed() || (name.contains(kw1D) && !name.contains(cd))) {
-	    String base;
-	    Int num;
-	    if (key->isindexed()) {
-		base = name;
-		num = key->index();
-	    } else {
-		splitKW1D(base, num, name);
-	    }
-	    if (num < min1D(base)) {min1D(base) = num;}
-	    if (num > max1D(base)) {max1D(base) = num;}
-	} else if ((name.contains(kw2D) || name.contains(kw2Dmodern))
-                   && !name.contains(cd)) {
+
+	if ((name.contains(kw2Dstandard) || name.contains(kw2D) || name.contains(kw2Dmodern)) 
+            && !name.contains(cd)) {
 	    Int nrow, ncol;
 	    String base;
 	    if (!splitKW2D(base, nrow, ncol, name)) {
@@ -574,6 +568,18 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	    if (ncol < min2Dcol(base)) {min2Dcol(base) = ncol;}
 	    if (ncol > max2Dcol(base)) {max2Dcol(base) = ncol;}
         } 
+	else if ((key->isindexed() || name.contains(kw1D)) && !name.contains(cd)) {
+	    String base;
+	    Int num;
+	    if (key->isindexed()) {
+		base = name;
+		num = key->index();
+	    } else {
+		splitKW1D(base, num, name);
+	    }
+	    if (num < min1D(base)) {min1D(base) = num;}
+	    if (num > max1D(base)) {max1D(base) = num;}
+	}  
 	key = in.next();
     }
 
@@ -607,7 +613,161 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	}
 
 	// OK, it's a keyword we have to process
-	if (key->isindexed() || (fullName.contains(kw1D) && !fullName.contains(cd))){
+	if ((fullName.contains(kw2Dstandard) || fullName.contains(kw2D) ||
+	     fullName.contains(kw2Dmodern)) && !fullName.contains(cd)) {
+	    Int thisRow, thisCol;
+	    String base;
+	    splitKW2D(base, thisRow, thisCol, fullName);
+	    thisRow -= min2Drow(base);
+	    thisCol -= min2Dcol(base);
+	    Int fnum = out.fieldNumber(base);
+	    Int nrow = max2Drow(base)-min2Drow(base)+1;
+	    Int ncol = max2Dcol(base)-min2Dcol(base)+1;
+	    switch (key->type()) {
+	    case FITS::LOGICAL:
+		{
+		    if (fnum >= 0 && out.type(fnum) != TpArrayBool) {
+			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+			    "' because its type does not match already created" <<
+			    " field " << base << ". Continuing." << LogIO::POST;
+			break;
+		    }
+		    Matrix<Bool> mat;
+		    if (! out.isDefined(base)) {
+			mat.resize(nrow,ncol);
+			mat = False;
+		    } else {
+			out.get(base, mat);
+		    }
+		    mat(thisRow,thisCol) = key->asBool();
+		    out.define(base, mat);
+		}
+		break;
+	    case FITS::STRING : 
+		{
+		    if (fnum >= 0 && out.type(fnum) != TpArrayString) {
+			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+			    "' because its type does not match already created" <<
+			    " field " << base << ". Continuing." << LogIO::POST;
+			break;
+		    }
+		    Matrix<String> mat;
+		    if (! out.isDefined(base)) {
+			mat.resize(nrow,ncol);
+			mat = "";
+		    } else {
+			out.get(base, mat);
+		    }
+		    // I think its a bug that the FITS classes leave keywords
+		    // with trailing blank spaces, but they do.  Trailing blanks
+		    // are not significant in FITS keywords.
+		    // at any rate, we need to remove them.
+		    String tmp = key->asString();
+		    tmp.gsub(trailing, empty);
+		    mat(thisRow,thisCol) = tmp;
+		    out.define(base, mat);
+		}
+		break;
+	    case FITS::FLOAT :  // Convert to DOUBLE!!
+		{
+		    if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
+			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+			    "' because its type does not match already created" <<
+			    " field " << base << ". Continuing." << LogIO::POST;
+			break;
+		    }
+		    Matrix<Double> mat;
+		    if (! out.isDefined(base)) {
+			mat.resize(nrow,ncol);
+			mat = 0.0;
+		    } else {
+			out.get(base, mat);
+		    }
+		    mat(thisRow,thisCol) = key->asFloat();
+		    out.define(base, mat);
+		}
+		break;
+	    case FITS::DOUBLE : 
+		{
+		    if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
+			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+			    "' because its type does not match already created" <<
+			    " field " << base << ". Continuing." << LogIO::POST;
+			break;
+		    }
+		    Matrix<Double> mat;
+		    if (! out.isDefined(base)) {
+			mat.resize(nrow,ncol);
+			mat = 0.0;
+		    } else {
+			out.get(base, mat);
+		    }
+		    mat(thisRow,thisCol) = key->asDouble();
+		    out.define(base, mat);
+		}
+		break;
+	    case FITS::LONG : 
+		{
+		    if (fnum >= 0 && out.type(fnum) != TpArrayInt) {
+			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+			    "' because its type does not match already created" <<
+			    " field " << base << ". Continuing." << LogIO::POST;
+			break;
+		    }
+		    Matrix<Int> mat;
+		    if (! out.isDefined(base)) {
+			mat.resize(nrow,ncol);
+			mat = 0;
+		    } else {
+			out.get(base, mat);
+		    }
+		    mat(thisRow,thisCol) = key->asInt();
+		    out.define(base, mat);
+		}
+		break;
+	    case FITS::COMPLEX : 
+		{
+		    if (fnum >= 0 && out.type(fnum) != TpArrayComplex) {
+			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+			    "' because its type does not match already created" <<
+			    " field " << base << ". Continuing." << LogIO::POST;
+			break;
+		    }
+		    Matrix<Complex> mat;
+		    if (! out.isDefined(base)) {
+			mat.resize(nrow,ncol);
+			mat = Complex(0,0);
+		    } else {
+			out.get(base, mat);
+		    }
+		    mat(thisRow,thisCol) = key->asComplex();
+		    out.define(base, mat);
+		}
+		break;
+	    case FITS::DCOMPLEX : 
+		{
+		    if (fnum >= 0 && out.type(fnum) != TpArrayDComplex) {
+			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
+			    "' because its type does not match already created" <<
+			    " field " << base << ". Continuing." << LogIO::POST;
+			break;
+		    }
+		    Matrix<DComplex> mat;
+		    if (! out.isDefined(base)) {
+			mat.resize(nrow,ncol);
+			mat = DComplex(0,0);
+		    } else {
+			out.get(base, mat);
+		    }
+		    mat(thisRow,thisCol) = key->asDComplex();
+		    out.define(base, mat);
+		}
+		break;
+	    default:
+		os << LogIO::SEVERE << "Unknown type for keyword '" 
+		   << fullName << "'. Continuing." << LogIO::POST;
+	    }
+	} else if (key->isindexed() || (fullName.contains(kw1D) && !fullName.contains(cd))){
             String base;
 	    Int num;
 	    if (key->isindexed()) {
@@ -816,160 +976,6 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 			"' because the maximum permitted number " << nelm <<
 			" is already reached. Continuing." << LogIO::POST;
 		    }
-		}
-		break;
-	    default:
-		os << LogIO::SEVERE << "Unknown type for keyword '" 
-		   << fullName << "'. Continuing." << LogIO::POST;
-	    }
-	} else if (fullName.contains(kw2D) ||
-                   (fullName.contains(kw2Dmodern) && !fullName.contains(cd))) {
-	    Int thisRow, thisCol;
-	    String base;
-	    splitKW2D(base, thisRow, thisCol, fullName);
-	    thisRow -= min2Drow(base);
-	    thisCol -= min2Dcol(base);
-	    Int fnum = out.fieldNumber(base);
-	    Int nrow = max2Drow(base)-min2Drow(base)+1;
-	    Int ncol = max2Dcol(base)-min2Dcol(base)+1;
-	    switch (key->type()) {
-	    case FITS::LOGICAL:
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayBool) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<Bool> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = False;
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asBool();
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::STRING : 
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayString) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<String> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = "";
-		    } else {
-			out.get(base, mat);
-		    }
-		    // I think its a bug that the FITS classes leave keywords
-		    // with trailing blank spaces, but they do.  Trailing blanks
-		    // are not significant in FITS keywords.
-		    // at any rate, we need to remove them.
-		    String tmp = key->asString();
-		    tmp.gsub(trailing, empty);
-		    mat(thisRow,thisCol) = tmp;
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::FLOAT :  // Convert to DOUBLE!!
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<Double> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = 0.0;
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asFloat();
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::DOUBLE : 
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayDouble) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<Double> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = 0.0;
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asDouble();
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::LONG : 
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayInt) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<Int> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = 0;
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asInt();
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::COMPLEX : 
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayComplex) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<Complex> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = Complex(0,0);
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asComplex();
-		    out.define(base, mat);
-		}
-		break;
-	    case FITS::DCOMPLEX : 
-		{
-		    if (fnum >= 0 && out.type(fnum) != TpArrayDComplex) {
-			os << LogIO::SEVERE << "Ignoring field '" << fullName <<
-			    "' because its type does not match already created" <<
-			    " field " << base << ". Continuing." << LogIO::POST;
-			break;
-		    }
-		    Matrix<DComplex> mat;
-		    if (! out.isDefined(base)) {
-			mat.resize(nrow,ncol);
-			mat = DComplex(0,0);
-		    } else {
-			out.get(base, mat);
-		    }
-		    mat(thisRow,thisCol) = key->asDComplex();
-		    out.define(base, mat);
 		}
 		break;
 	    default:
