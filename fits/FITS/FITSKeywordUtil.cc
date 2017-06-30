@@ -340,7 +340,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  			Int ii = k % nrow + 1;
  			Int jj = k / nrow + 1;
 			ostringstream ostr;
-			if(nrow>9){
+			if(nrow>9){ // i.e. the indices have more than one digit
 			  ostr << setfill('0') << setw(2) << ii
 			       << "_"
 			       << setfill('0') << setw(2) << jj;
