@@ -259,6 +259,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       throw(MSSelectionTimeError("lower bound > upper bound"));
     }
     TableExprNode condition;
+    // edgeWidth < 0, edgeInclusive=F ==> T0~T1 syntax
+    // edgeWidth < 0, edgeInclusive=T ==> [T0~T1] syntax
+    // edgeWidth = N, edgeInclusive=T ==> N[T0~T1] syntax
     Float edgeWidth_l = (edgeWidth < 0.0) ? (edgeInclusive==True ? defaultExposure/2.0 : 0.0) : edgeWidth;
     if (!edgeInclusive) {
       condition = (columnAsTEN_p >= lowerBound &&
