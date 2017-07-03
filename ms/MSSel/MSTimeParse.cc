@@ -259,7 +259,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       throw(MSSelectionTimeError("lower bound > upper bound"));
     }
     TableExprNode condition;
-    Float edgeWidth_l = (edgeWidth < 0.0) ? defaultExposure/2.0 : edgeWidth;
+    Float edgeWidth_l = (edgeWidth < 0.0) ? (edgeInclusive==True ? defaultExposure/2.0 : 0.0) : edgeWidth;
     if (!edgeInclusive) {
       condition = (columnAsTEN_p >= lowerBound &&
 		   (columnAsTEN_p <= upperBound));
@@ -433,7 +433,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     timeList.resize(newShape,True);
     timeList(0,n0) = t0;//-4.68193e+09;
     timeList(1,n0) = t1;//-4.68193e+09;
-    if (dT > 0) timeList(2,n0) = dT;
+    if (dT >= 0) timeList(2,n0) = dT;
     else timeList(2,n0) = defaultExposure;
   }
 } //# NAMESPACE CASACORE - END
