@@ -265,7 +265,7 @@ int main() {
             AlwaysAssert(got.rms == expec.rms, AipsError);
             AlwaysAssert(near(got.stddev, expec.stddev), AipsError);
             AlwaysAssert(near(got.sum, expec.sum), AipsError);
-            AlwaysAssert(got.sumsq == expec.sumsq, AipsError);
+            AlwaysAssert(near(got.sumsq, expec.sumsq), AipsError);
             AlwaysAssert(near(got.variance, expec.variance), AipsError);
             AlwaysAssert(*got.max == *expec.max, AipsError);
             AlwaysAssert(*got.min == *expec.min, AipsError);

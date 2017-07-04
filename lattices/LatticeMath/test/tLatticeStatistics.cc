@@ -416,10 +416,10 @@ int main()
             AlwaysAssert(sum(pos) == expSum, AipsError);
             AlwaysAssert(npts(pos) == expNpts, AipsError);
             AlwaysAssert(mean(pos) == expMean, AipsError);
-            AlwaysAssert(near(sumsq(pos), expSumSq), AipsError);
+            AlwaysAssert(near(sumsq(pos), expSumSq, 1e-9), AipsError);
             AlwaysAssert(near(var(pos), expVar, 1e-10), AipsError);
             AlwaysAssert(near(sigma(pos), expSigma, 1e-11), AipsError);
-            AlwaysAssert(near(rms(pos), expRMS), AipsError);
+            AlwaysAssert(near(rms(pos), expRMS, 1e-10), AipsError);
             AlwaysAssert(mymin(pos) == DComplex(0, 0), AipsError);
             AlwaysAssert(mymax(pos) == DComplex(size-1, size-1), AipsError);
 
