@@ -485,7 +485,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    while (cunit(i).length() < 8) cunit(i) += " ";
 	}
 //
-	pc = cSys.linearTransform();
+	Matrix<Double> imageLT = cSys.linearTransform();
+	pc = imageLT;
+	// need to transpose to conform with FITSKeywordUtil
+	for(uInt i=0; i<imageLT.nrow(); i++){
+	  for(uInt j=0; j<imageLT.ncolumn(); j++){
+	    pc(i,j) = imageLT(j,i);
+	  }
+	}
 
 	return True;
     }
