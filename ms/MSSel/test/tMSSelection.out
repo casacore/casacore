@@ -17,7 +17,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -52,7 +52,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -88,7 +88,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -123,7 +123,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -159,7 +159,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -195,7 +195,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -230,7 +230,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -266,7 +266,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -301,7 +301,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -336,7 +336,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -372,7 +372,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -408,7 +408,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -444,7 +444,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -479,7 +479,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -514,7 +514,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -549,7 +549,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -590,7 +590,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -630,7 +630,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -670,7 +670,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -710,7 +710,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -754,7 +754,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -793,7 +793,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -838,7 +838,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -893,7 +893,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -936,7 +936,7 @@ StE: STATE Expr=
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -979,7 +979,7 @@ StE: STATE Expr=*PHASE*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -1022,7 +1022,7 @@ StE: STATE Expr=*OFF*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=
-	TE: Time         = Axis Lengths: [2, 0] []
+	TE: Time         = Axis Lengths: [3, 0] []
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
 	UVE: UV in meters = []
@@ -1065,9 +1065,10 @@ StE: STATE Expr=*OFF*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=
 	UVE: UVRange      = Axis Lengths: [2, 0] []
@@ -1111,9 +1112,10 @@ StE: STATE Expr=*OFF*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=>1000m
 	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
@@ -1160,9 +1162,10 @@ StE: STATE Expr=*OFF*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=>1000m:50%
 	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
@@ -1205,9 +1208,10 @@ StE: STATE Expr=*OFF*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=>1000m:50%
 	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
@@ -1250,9 +1254,10 @@ StE: STATE Expr=*OFF*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=>1000m:50%
 	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
@@ -1301,9 +1306,10 @@ StE: STATE Expr=*OFF*,*JUNK*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=>1000m:50%
 	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
@@ -1346,9 +1352,10 @@ StE: STATE Expr=*OFF*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=>1000m:50%
 	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
@@ -1391,9 +1398,10 @@ StE: STATE Expr=*OFF*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=>1000m:50%
 	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
@@ -1436,9 +1444,10 @@ StE: STATE Expr=0,100
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=>1000m:50%
 	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
@@ -1484,9 +1493,10 @@ StE: STATE Expr=*OFF*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=>1000m:50%
 	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
@@ -1529,9 +1539,10 @@ StE: STATE Expr=*OFF*
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=>1000m:50%
 	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
@@ -1574,9 +1585,10 @@ StE: STATE Expr=0,100
 AE: Array Expr=
 	AE: Array        = []
 TE: Time Expr=*+0:0:1
-	TE: Time         = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
 [4.91793e+09
- 4.91793e+09]
+ 4.91793e+09
+ 0]
 
 UVE: UVRange Expr=>1000m:50%
 	UVE: UVRange      = Axis Lengths: [2, 1]  (NB: Matrix in Row/Column order)
@@ -1600,4 +1612,133 @@ Number of selected rows: 0
 ###MSSelectionError: Spw Expression: No match found for 100, 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ###MSSelectionError: No match found for the antenna specificion [ID(s): [500]] 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BE: Baseline Expr=DA41&DV14
+	BE: Ant1         = [0]
+	BE: Ant2         = [9]
+	Baselines = 0 
+	            9 
+	            
+FE: Field Expr=
+	FE: Field        = []
+SE: SPW Expr=1
+	SE: SPW          = [1]
+	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 0, 63, 1]
+
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62903e+10, 8.43216e+10, -3.125e+07]
+
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=2014/09/20/10:38:0.9~2014/09/20/10:38:03.88
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
+[4.91793e+09
+ 4.91793e+09
+ 0]
+
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = 
+	PE: CorrMap      = 
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = [1]
+StateList    = []
+Number of selected rows: 2
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BE: Baseline Expr=DA41&DV14
+	BE: Ant1         = [0]
+	BE: Ant2         = [9]
+	Baselines = 0 
+	            9 
+	            
+FE: Field Expr=
+	FE: Field        = []
+SE: SPW Expr=1
+	SE: SPW          = [1]
+	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 0, 63, 1]
+
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62903e+10, 8.43216e+10, -3.125e+07]
+
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=[2014/09/20/10:38:1.1~2014/09/20/10:38:03.88]
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
+[4.91793e+09
+ 4.91793e+09
+ 0.96]
+
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = 
+	PE: CorrMap      = 
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = [1]
+StateList    = []
+Number of selected rows: 2
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BE: Baseline Expr=DA41&DV14
+	BE: Ant1         = [0]
+	BE: Ant2         = [9]
+	Baselines = 0 
+	            9 
+	            
+FE: Field Expr=
+	FE: Field        = []
+SE: SPW Expr=1
+	SE: SPW          = [1]
+	SE: Chan         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 0, 63, 1]
+
+	SE: Freq         = Axis Lengths: [1, 4]  (NB: Matrix in Row/Column order)
+[1, 8.62903e+10, 8.43216e+10, -3.125e+07]
+
+ScE: Scan Expr=
+	ScE: tScan         = []
+StE: STATE Expr=
+	StE: StateObsMode = []
+AE: Array Expr=
+	AE: Array        = []
+TE: Time Expr=0.04[2014/09/20/10:38:1.1~2014/09/20/10:38:03.88]
+	TE: Time         = Axis Lengths: [3, 1]  (NB: Matrix in Row/Column order)
+[4.91793e+09
+ 4.91793e+09
+ 0.04]
+
+UVE: UVRange Expr=
+	UVE: UVRange      = Axis Lengths: [2, 0] []
+	UVE: UV in meters = []
+OE: Observation Expr=
+	OE: ObservationIDList    = []
+PE: Poln Expr=
+	PE: PolMap       = 
+	PE: CorrMap      = 
+
+===========================================================
+DDIDs(Poln)  = []
+DDIDs(SPW)   = [1]
+StateList    = []
+Number of selected rows: 1
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
