@@ -2945,14 +2945,16 @@ map<SourceKey, MSMetaData::SourceProperties> MSMetaData::_getSourceInfo() const 
         key.spw = spw(i);
         props.name = name(i);
         if (restfreq.isDefined(i)) {
-            restfreq.get(i, rf);
-            props.restfreq.reset(new vector<MFrequency>(rf.tovector()));
+            // resize=True because the array lengths may differ
+            // from cell to cell, CAS-10409
+            restfreq.get(i, rf, True);
+            props.restfreq.reset(new std::vector<MFrequency>(rf.tovector()));
         }
         else {
             props.restfreq.reset();
         }
         if (transition.isDefined(i)) {
-            props.transition.reset(new vector<String>(transition(i).tovector()));
+            props.transition.reset(new std::vector<String>(transition(i).tovector()));
         }
         else {
             props.transition.reset();
