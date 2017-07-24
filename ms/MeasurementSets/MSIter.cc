@@ -302,7 +302,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
 }
 
 MSIter::MSIter(const MSIter& other)
-	: MSIter()
+	: nMS_p(0), storeSorted_p(False), allBeamOffsetsZero_p(True)
 {
     operator=(other);
 }
