@@ -142,7 +142,7 @@ void iterMS (double binwidth)
          << " a2=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
          << " time="
          << ROScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
-	 << " keyCh=" << msIter.keyChange()
+         << " keyCh=" << msIter.keyChange()
          << endl;
   }
 }
@@ -164,6 +164,67 @@ void iterMSMemory (double binwidth)
   }
 }
 
+
+void iter2MS (double binwidth)
+{
+  MeasurementSet ms("tMSIter_tmp.ms");
+  Block<int> sort(2);
+  sort[0] = MS::ANTENNA1;
+  sort[1] = MS::ANTENNA2;
+  MSIter msIter(ms, sort, binwidth, False);
+  unsigned i = 0;
+  for (msIter.origin(); msIter.more(); ++msIter) {
+    cout << "nrow=" << msIter.table().nrow()
+         << " a1=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
+         << " a2=" << ROScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
+         << " time="
+         << ROScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
+         << " keyCh=" << msIter.keyChange()
+         << endl;
+    if (++i == 4) {
+      cout << "=====" << endl;
+      MSIter msIter1 = msIter;
+      for (; msIter1.more(); ++msIter1) {
+        cout << "nrow=" << msIter1.table().nrow()
+             << " a1=" << ROScalarColumn<Int>(msIter1.table(), "ANTENNA1")(0)
+             << " a2=" << ROScalarColumn<Int>(msIter1.table(), "ANTENNA2")(0)
+             << " time="
+             << ROScalarColumn<double>(msIter1.table(), "TIME").getColumn() - 1e9
+             << " keyCh=" << msIter1.keyChange()
+             << endl;
+      }
+      cout << "=====" << endl;
+    }
+  }
+  cout << "=====" << endl;
+}
+
+void iter2MSMemory (double binwidth)
+{
+  MeasurementSet ms("tMSIter_tmp.ms");
+  Block<int> sort(2);
+  sort[0] = MS::ANTENNA1;
+  sort[1] = MS::ANTENNA2;
+  MSIter msIter(ms, sort, binwidth, False, False); // Use stored table in memory
+  MSIter msIter1(ms, sort, binwidth, False, False);
+  MSIter *it = &msIter;
+  unsigned i = 0;
+  for (it->origin(); it->more(); ++(*it)) {
+    cout << "nrow=" << it->table().nrow()
+         << " a1=" << ROScalarColumn<Int>(it->table(), "ANTENNA1")(0)
+         << " a2=" << ROScalarColumn<Int>(it->table(), "ANTENNA2")(0)
+         << " time="
+         << ROScalarColumn<double>(it->table(), "TIME").getColumn() - 1e9
+         << endl;
+    if (++i % 2 == 1) {
+      msIter1 = msIter;
+      it = &msIter1;
+    } else {
+      msIter = msIter1;
+      it = &msIter;
+    }
+  }
+}
 
 
 int main (int argc, char* argv[])
@@ -190,11 +251,16 @@ int main (int argc, char* argv[])
       iss >> binwidth;
     }
     createMS(nant, ntime, msinterval);
-    iterMS (binwidth);
-    iterMSMemory (binwidth);
+    iterMS(binwidth);
+    cout << "########" << endl;
+    iterMSMemory(binwidth);
+    cout << "########" << endl;
+    iter2MS(binwidth);
+    cout << "########" << endl;
+    iter2MSMemory(binwidth);
   } catch (std::exception& x) {
     cerr << "Unexpected exception: " << x.what() << endl;
     return 1;
-  } 
+  }
   return 0;
 }
