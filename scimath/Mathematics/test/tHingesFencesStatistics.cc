@@ -496,6 +496,38 @@ int main() {
             AlwaysAssert(sd.sumweights == 11.0, AipsError);
             AlwaysAssert(sd.sumsq == 195.25, AipsError);
             AlwaysAssert(near(sd.variance, variance), AipsError);
+
+            // test cloning gives same results
+            SHARED_PTR<
+                HingesFencesStatistics<
+                    Double, std::vector<Double>::const_iterator,
+                    std::vector<Bool>::const_iterator
+                >
+            > cs1(
+                dynamic_cast<
+                    HingesFencesStatistics<
+                        Double, std::vector<Double>::const_iterator,
+                        std::vector<Bool>::const_iterator
+                    >*
+                >(cs.clone())
+            );
+            StatsData<Double> sd1 = cs1->getStatistics();
+            AlwaysAssert(sd1.masked == sd.masked, AipsError);
+            AlwaysAssert(sd1.weighted == sd.weighted, AipsError);
+            AlwaysAssert(*sd1.max == *sd.max, AipsError);
+            AlwaysAssert(sd1.maxpos.first == sd.maxpos.first, AipsError);
+            AlwaysAssert(sd1.maxpos.second == sd.maxpos.second, AipsError);
+            AlwaysAssert(sd1.mean == sd.mean, AipsError);
+            AlwaysAssert(*sd1.min == *sd.min, AipsError);
+            AlwaysAssert(sd1.minpos.first == sd.minpos.first, AipsError);
+            AlwaysAssert(sd1.minpos.second == sd.minpos.second, AipsError);
+            AlwaysAssert(sd1.npts == sd.npts, AipsError);
+            AlwaysAssert(sd1.rms == sd.rms, AipsError);
+            AlwaysAssert(sd1.stddev == sd.stddev, AipsError);
+            AlwaysAssert(sd1.sum == sd.sum, AipsError);
+            AlwaysAssert(sd1.sumweights == sd.sumweights, AipsError);
+            AlwaysAssert(sd1.sumsq == sd.sumsq, AipsError);
+            AlwaysAssert(sd1.variance == sd.variance, AipsError);
         }
         {
             // integer weights and ranges

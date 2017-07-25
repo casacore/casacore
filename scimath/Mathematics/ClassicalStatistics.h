@@ -58,21 +58,24 @@ template <class T> class PtrHolder;
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator> 
 class ClassicalStatistics
-    : public StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator> {
+    : public StatisticsAlgorithm<CASA_STATP> {
 public:
 
     ClassicalStatistics();
 
     // copy semantics
-    ClassicalStatistics(const ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& cs);
+    ClassicalStatistics(const ClassicalStatistics<CASA_STATP>& cs);
 
     virtual ~ClassicalStatistics();
 
     // copy semantics
-    ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
-        const ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
+    ClassicalStatistics<CASA_STATP>& operator=(
+        const ClassicalStatistics<CASA_STATP>& other
     );
 
+    // Clone this instance
+    virtual StatisticsAlgorithm<CASA_STATP>* clone() const;
+    
     // get the algorithm that this object uses for computing stats
     virtual StatisticsData::ALGORITHM algorithm() const {
         return StatisticsData::CLASSICAL;
@@ -192,7 +195,7 @@ public:
     virtual void setCalculateAsAdded(Bool c);
 
     // An exception will be thrown if setCalculateAsAdded(True) has been called.
-    void setDataProvider(StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider);
+    void setDataProvider(StatsDataProvider<CASA_STATP> *dataProvider);
 
     void setStatsToCalculate(std::set<StatisticsData::STATS>& stats);
 

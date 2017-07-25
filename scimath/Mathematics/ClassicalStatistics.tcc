@@ -90,6 +90,11 @@ ClassicalStatistics<CASA_STATP>::operator=(
 }
 
 CASA_STATD
+StatisticsAlgorithm<CASA_STATP>* ClassicalStatistics<CASA_STATP>::clone() const {
+    return new ClassicalStatistics<CASA_STATP>(*this);
+}
+
+CASA_STATD
 AccumType ClassicalStatistics<CASA_STATP>::getMedian(
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
     CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
@@ -530,7 +535,7 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
             break;
         }
     }
-    vector<StatsData<AccumType> > xstats;
+    std::vector<StatsData<AccumType> > xstats;
     for (uInt i=0; i<nThreadsMax; ++i) {
         // in case no max/min was set, clear the nominal values
         // set above
@@ -903,7 +908,16 @@ void ClassicalStatistics<CASA_STATP>::_accumulate(
 CASA_STATD
 uInt ClassicalStatistics<CASA_STATP>::_nThreadsMax() const {
 #ifdef _OPENMP
-    return omp_get_max_threads();
+    if (omp_get_num_threads() > 1) {
+        // we are being called from an already parallized block of code,
+        // so we should not parallelize
+        return 1;
+    }
+    else {
+        // we are being called from a single threaded block of code,
+        // so parallelize
+        return omp_get_max_threads();
+    }
 #else
     return 1;
 #endif
@@ -941,7 +955,7 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
             ++iDesc;
         }
     }
-    vector<Bool> allSame(binDesc.size(), True);
+    std::vector<Bool> allSame(binDesc.size(), True);
     vector<vector<uInt64> > bins(binDesc.size());
     iDesc = bDesc;
     vector<vector<uInt64> >::iterator bBins = bins.begin();
@@ -964,15 +978,15 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
         ++iDesc;
     }
     _initIterators();
-    uInt nThreadsMax = _nThreadsMax();
-    PtrHolder<vector<vector<uInt64> > > tBins(
-        new vector<vector<uInt64> >[CACHE_PADDING*nThreadsMax], True
+    const uInt nThreadsMax = _nThreadsMax();
+    PtrHolder<std::vector<std::vector<uInt64> > > tBins(
+        new std::vector<std::vector<uInt64> >[CACHE_PADDING*nThreadsMax], True
     );
-    PtrHolder<vector<CountedPtr<AccumType> > > tSameVal(
-        new vector<CountedPtr<AccumType> >[CACHE_PADDING*nThreadsMax], True
+    PtrHolder<std::vector<CountedPtr<AccumType> > > tSameVal(
+        new std::vector<CountedPtr<AccumType> >[CACHE_PADDING*nThreadsMax], True
     );
     PtrHolder<vector<Bool> > tAllSame(
-        new vector<Bool>[CACHE_PADDING*nThreadsMax], True
+        new std::vector<Bool>[CACHE_PADDING*nThreadsMax], True
     );
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = CACHE_PADDING*tid;
@@ -1151,12 +1165,12 @@ void ClassicalStatistics<CASA_STATP>::_computeBins(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_createDataArray(
-    vector<AccumType>& ary
+    std::vector<AccumType>& ary
 ) {
     _initIterators();
-    uInt nThreadsMax = _nThreadsMax();
-    PtrHolder<vector<AccumType> > tAry(
-        new vector<AccumType>[CACHE_PADDING*nThreadsMax], True
+    const uInt nThreadsMax = _nThreadsMax();
+    PtrHolder<std::vector<AccumType> > tAry(
+        new std::vector<AccumType>[CACHE_PADDING*nThreadsMax], True
     );
     while (True) {
         _initLoopVars();
@@ -1189,7 +1203,7 @@ void ClassicalStatistics<CASA_STATP>::_createDataArray(
     }
     // merge the per-thread arrays
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
-        const vector<AccumType>& v = tAry[CACHE_PADDING*tid];
+        const std::vector<AccumType>& v = tAry[CACHE_PADDING*tid];
         ary.insert(ary.end(), v.begin(), v.end());
     }
 }
@@ -1261,12 +1275,13 @@ void ClassicalStatistics<CASA_STATP>::_computeDataArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_createDataArrays(
-    vector<vector<AccumType> >& arys, const vector<std::pair<AccumType, AccumType> >& includeLimits,
+    std::vector<std::vector<AccumType> >& arys,
+    const std::vector<std::pair<AccumType, AccumType> >& includeLimits,
     uInt64 maxCount
 ) {
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator bLimits = includeLimits.begin();
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator iLimits = bLimits;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = includeLimits.end();
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bLimits = includeLimits.begin();
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iLimits = bLimits;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = includeLimits.end();
     std::pair<AccumType, AccumType> prevLimits;
     while(iLimits != eLimits) {
         // sanity checks
@@ -1289,9 +1304,9 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
         ++iLimits;
     }
     _initIterators();
-    uInt nThreadsMax = _nThreadsMax();
-    PtrHolder<vector<vector<AccumType> > > tArys(
-        new vector<vector<AccumType> >[CACHE_PADDING*nThreadsMax], True
+    const uInt nThreadsMax = _nThreadsMax();
+    PtrHolder<std::vector<std::vector<AccumType> > > tArys(
+        new std::vector<std::vector<AccumType> >[CACHE_PADDING*nThreadsMax], True
     );
     PtrHolder<uInt64> tCurrentCount(
         new uInt64[CACHE_PADDING*nThreadsMax], True
@@ -1648,7 +1663,7 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
     AccumType& datamin, AccumType& datamax
 ) {
     _initIterators();
-    uInt nThreadsMax = _nThreadsMax();
+    const uInt nThreadsMax = _nThreadsMax();
     PtrHolder<CountedPtr<AccumType> > tmin(
         new CountedPtr<AccumType>[CACHE_PADDING*nThreadsMax], True
     );

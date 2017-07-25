@@ -90,6 +90,19 @@ int main() {
             StatsData<Double> sd = cs.getStatistics();
             AlwaysAssert(sd.npts == 104, AipsError);
             AlwaysAssert(*sd.max == 6, AipsError);
+            // test cloning gives same results
+            SHARED_PTR<
+                ChauvenetCriterionStatistics<
+                    Double, Double*, Bool*
+                >
+            > cs1(
+                dynamic_cast<
+                    ChauvenetCriterionStatistics<Double, Double*, Bool*>*
+                >(cs.clone())
+            ); 
+            StatsData<Double> sd1 = cs1->getStatistics();
+            AlwaysAssert(sd1.npts == 104, AipsError);
+            AlwaysAssert(*sd1.max == 6, AipsError);
         }
         {
             // zscore=3.5, iterate until converged
