@@ -73,6 +73,9 @@ public:
         const ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
     );
 
+    // Clone this instance
+    virtual StatisticsAlgorithm<CASA_STATP>* clone() const;
+    
     // get the algorithm that this object uses for computing stats
     virtual StatisticsData::ALGORITHM algorithm() const {
         return StatisticsData::CLASSICAL;

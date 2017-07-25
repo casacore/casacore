@@ -90,6 +90,11 @@ ClassicalStatistics<CASA_STATP>::operator=(
 }
 
 CASA_STATD
+StatisticsAlgorithm<CASA_STATP>* ClassicalStatistics<CASA_STATP>::clone() const {
+    return new ClassicalStatistics<CASA_STATP>(*this);
+}
+
+CASA_STATD
 AccumType ClassicalStatistics<CASA_STATP>::getMedian(
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
     CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,

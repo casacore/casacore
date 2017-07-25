@@ -58,6 +58,9 @@ public:
         const HingesFencesStatistics<CASA_STATP>& other
     );
 
+    // Clone this instance. Caller is responsible for deleting the returned pointer.
+    virtual StatisticsAlgorithm<CASA_STATP>* clone() const;
+    
     // get the algorithm that this object uses for computing stats
     virtual StatisticsData::ALGORITHM algorithm() const {
         return StatisticsData::HINGESFENCES;
