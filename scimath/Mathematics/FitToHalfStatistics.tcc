@@ -76,6 +76,11 @@ FitToHalfStatistics<CASA_STATP>::operator=(
 }
 
 CASA_STATD
+StatisticsAlgorithm<CASA_STATP>* FitToHalfStatistics<CASA_STATP>::clone() const {
+    return new FitToHalfStatistics<CASA_STATP>(*this);
+}
+
+CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedian(
     CountedPtr<uInt64> , CountedPtr<AccumType> ,
     CountedPtr<AccumType> , uInt , Bool , uInt64
