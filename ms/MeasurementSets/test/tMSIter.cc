@@ -184,7 +184,7 @@ void iter2MS (double binwidth)
     if (++i == 4) {
       cout << "=====" << endl;
       MSIter msIter1 = msIter;
-      for (; msIter1.more(); ++msIter1) {
+      for (msIter1.origin(); msIter1.more(); ++msIter1) {
         cout << "nrow=" << msIter1.table().nrow()
              << " a1=" << ROScalarColumn<Int>(msIter1.table(), "ANTENNA1")(0)
              << " a2=" << ROScalarColumn<Int>(msIter1.table(), "ANTENNA2")(0)

@@ -41,6 +41,9 @@ nrow=2 a1=0 a2=0 time=[150, 210] keyCh=TIME
 nrow=1 a1=0 a2=0 time=[270] keyCh=ANTENNA2
 nrow=2 a1=0 a2=1 time=[30, 90] keyCh=TIME
 =====
+nrow=2 a1=0 a2=0 time=[30, 90] keyCh=TIME
+nrow=2 a1=0 a2=0 time=[150, 210] keyCh=TIME
+nrow=1 a1=0 a2=0 time=[270] keyCh=ANTENNA2
 nrow=2 a1=0 a2=1 time=[30, 90] keyCh=TIME
 nrow=2 a1=0 a2=1 time=[150, 210] keyCh=TIME
 nrow=1 a1=0 a2=1 time=[270] keyCh=ANTENNA2
