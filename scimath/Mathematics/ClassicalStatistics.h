@@ -58,19 +58,19 @@ template <class T> class PtrHolder;
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator> 
 class ClassicalStatistics
-    : public StatisticsAlgorithm<AccumType, DataIterator, MaskIterator, WeightsIterator> {
+    : public StatisticsAlgorithm<CASA_STATP> {
 public:
 
     ClassicalStatistics();
 
     // copy semantics
-    ClassicalStatistics(const ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& cs);
+    ClassicalStatistics(const ClassicalStatistics<CASA_STATP>& cs);
 
     virtual ~ClassicalStatistics();
 
     // copy semantics
-    ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& operator=(
-        const ClassicalStatistics<AccumType, DataIterator, MaskIterator, WeightsIterator>& other
+    ClassicalStatistics<CASA_STATP>& operator=(
+        const ClassicalStatistics<CASA_STATP>& other
     );
 
     // Clone this instance
@@ -195,7 +195,13 @@ public:
     virtual void setCalculateAsAdded(Bool c);
 
     // An exception will be thrown if setCalculateAsAdded(True) has been called.
-    void setDataProvider(StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator> *dataProvider);
+    void setDataProvider(StatsDataProvider<CASA_STATP> *dataProvider);
+
+    // set the maximum number of threads. If 0, the object decides. This is useful if
+    // the calling from a parallelized loop to force only one thread to execute in
+    // the called method, because otherwise unexpected results may occur. If not compiled
+    // with openmp support, this has no effect; a single thread is always used.
+    void setMaxThreads(uInt nThreadsMax);
 
     void setStatsToCalculate(std::set<StatisticsData::STATS>& stats);
 
@@ -657,6 +663,7 @@ private:
     Int64 _idataset;
     Bool _calculateAsAdded, _doMaxMin, _doMedAbsDevMed, _mustAccumulate,
         _hasData;
+    uInt _nThreadsMax;
 
     // mutables, used to mitigate repeated code
     mutable typename vector<DataIterator>::const_iterator _dend, _diter;
@@ -811,8 +818,6 @@ private:
     // _npts will be used if it has been previously calculated. If not, the data sets will
     // be scanned to determine npts.
     std::set<uInt64> _medianIndices(CountedPtr<uInt64> knownNpts);
-
-    uInt _nThreadsMax() const;
 
     uInt _threadIdx() const;
 
