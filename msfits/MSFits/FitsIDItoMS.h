@@ -312,6 +312,7 @@ protected:
   Int nBand_p;
   static SimpleOrderedMap<Int,Int> antIdFromNo;
   static SimpleOrderedMap<Int,Int> digiLevels;
+  static Vector<Double> effChBw;
 
   //
   //# Member Functions
