@@ -65,6 +65,11 @@ HingesFencesStatistics<CASA_STATP>::operator=(
 }
 
 CASA_STATD
+StatisticsAlgorithm<CASA_STATP>* HingesFencesStatistics<CASA_STATP>::clone() const {
+    return new HingesFencesStatistics<CASA_STATP>(*this);
+}
+
+CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::reset() {
     _rangeIsSet = False;
     _hasRange = False;

@@ -61,6 +61,11 @@ ChauvenetCriterionStatistics<CASA_STATP>::operator=(
 }
 
 CASA_STATD
+StatisticsAlgorithm<CASA_STATP>* ChauvenetCriterionStatistics<CASA_STATP>::clone() const {
+    return new ChauvenetCriterionStatistics<CASA_STATP>(*this);
+}
+
+CASA_STATD
 void ChauvenetCriterionStatistics<CASA_STATP>::reset() {
     ConstrainedRangeStatistics<CASA_STATP>::reset();
     _rangeIsSet = False;
