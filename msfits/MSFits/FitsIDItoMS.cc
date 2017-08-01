@@ -2547,17 +2547,17 @@ void FITSIDItoMS1::fillAntennaTable()
      }
      if(name(i)==""){
        ant.name().put(row,String("ANT")+temps);
+       ant.station().put(row,arrnam+":"+temps);     
      }
      else{
        ant.name().put(row, name(i));
+       ant.station().put(row,name(i));
      }
      Vector<Float> tempf=offset(i);
      Vector<Double> tempd(3);
      for (Int j=0; j<3; j++) tempd[j]=tempf[j];
      ant.offset().put(row,tempd);
 
-     //ant.station().put(row,name(i));
-     ant.station().put(row,arrnam+":"+temps);     
      ant.type().put(row,"GROUND-BASED");
 
      // Do UVFITS-dependent position corrections:
