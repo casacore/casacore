@@ -23,13 +23,14 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: StIndArrAIO.cc 21051 2011-04-20 11:46:29Z gervandiepen $
 
 #include <casacore/tables/DataMan/StIndArrAIO.h>
 #include <casacore/tables/DataMan/StArrayFile.h>
 #include <casacore/tables/DataMan/StIndArray.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/IO/AipsIO.h>
+#include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/DataMan/DataManError.h>
@@ -48,6 +49,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 StManColumnIndArrayAipsIO::StManColumnIndArrayAipsIO (StManAipsIO* smptr,
 						      int dataType)
 : StManColumnAipsIO (smptr, dataType, True),
+  staioPtr_p    (smptr),
   seqnr_p       (smptr->uniqueNr()),
   shapeIsFixed_p(False),
   version_p     (2),
@@ -84,7 +86,7 @@ void StManColumnIndArrayAipsIO::openFile (ByteIO::OpenOption opt)
     //# For newer versions one file is maintained by the parent
     //# for all indirect columns.
     if (version_p > 1) {
-        iosfile_p = stmanPtr_p->openArrayFile (opt);
+        iosfile_p = staioPtr_p->openArrayFile (opt);
     } else {
         //# Open/create the file holding the arrays in the column.
         if (iosfile_p == 0) {
@@ -131,7 +133,7 @@ void StManColumnIndArrayAipsIO::setShape (uInt rownr, const IPosition& shape)
     }
     //# Put the new shape (if changed).
     //# When changed, put the file offset.
-    if (ptr->setShape (*iosfile_p, dtype_p, shape)) {
+    if (ptr->setShape (*iosfile_p, dtype(), shape)) {
 	putArrayPtr (rownr, ptr);
     }
 }
@@ -163,74 +165,202 @@ Bool StManColumnIndArrayAipsIO::canChangeShape() const
     { return (shapeIsFixed_p  ?  False : True); }
 
 
-Bool StManColumnIndArrayAipsIO::canAccessSlice (Bool& reask) const
+void StManColumnIndArrayAipsIO::getArrayV (uInt rownr, ArrayBase& arr)
 {
-    reask = False;
-    return True;
+  StIndArray* sia = getShape (rownr);
+  switch (dtype()) {
+  case TpBool:
+    sia->getArrayBoolV (*iosfile_p, static_cast<Array<Bool>*>(&arr));
+    break;
+  case TpUChar:
+    sia->getArrayuCharV (*iosfile_p, static_cast<Array<uChar>*>(&arr));
+    break;
+  case TpShort:
+    sia->getArrayShortV (*iosfile_p, static_cast<Array<Short>*>(&arr));
+    break;
+  case TpUShort:
+    sia->getArrayuShortV (*iosfile_p, static_cast<Array<uShort>*>(&arr));
+    break;
+  case TpInt:
+    sia->getArrayIntV (*iosfile_p, static_cast<Array<Int>*>(&arr));
+    break;
+  case TpUInt:
+    sia->getArrayuIntV (*iosfile_p, static_cast<Array<uInt>*>(&arr));
+    break;
+  case TpInt64:
+    sia->getArrayInt64V (*iosfile_p, static_cast<Array<Int64>*>(&arr));
+    break;
+  case TpFloat:
+    sia->getArrayfloatV (*iosfile_p, static_cast<Array<float>*>(&arr));
+    break;
+  case TpDouble:
+    sia->getArraydoubleV (*iosfile_p, static_cast<Array<double>*>(&arr));
+    break;
+  case TpComplex:
+    sia->getArrayComplexV (*iosfile_p, static_cast<Array<Complex>*>(&arr));
+    break;
+  case TpDComplex:
+    sia->getArrayDComplexV (*iosfile_p, static_cast<Array<DComplex>*>(&arr));
+    break;
+  case TpString:
+    sia->getArrayStringV (*iosfile_p, static_cast<Array<String>*>(&arr));
+    break;
+  default:
+    throw DataManInvDT ("StManColumnIndArrayAipsIO::getArrayV");
+  }
 }
 
-
-void StManColumnIndArrayAipsIO::getArrayfloatV (uInt rownr, Array<float>* arr)
+void StManColumnIndArrayAipsIO::putArrayV (uInt rownr,
+                                           const ArrayBase& arr)
 {
-    getShape(rownr)->getArrayfloatV (*iosfile_p, arr);
+  StIndArray* sia = getShape (rownr);
+  switch (dtype()) {
+  case TpBool:
+    sia->putArrayBoolV (*iosfile_p, static_cast<const Array<Bool>*>(&arr));
+    break;
+  case TpUChar:
+    sia->putArrayuCharV (*iosfile_p, static_cast<const Array<uChar>*>(&arr));
+    break;
+  case TpShort:
+    sia->putArrayShortV (*iosfile_p, static_cast<const Array<Short>*>(&arr));
+    break;
+  case TpUShort:
+    sia->putArrayuShortV (*iosfile_p, static_cast<const Array<uShort>*>(&arr));
+    break;
+  case TpInt:
+    sia->putArrayIntV (*iosfile_p, static_cast<const Array<Int>*>(&arr));
+    break;
+  case TpUInt:
+    sia->putArrayuIntV (*iosfile_p, static_cast<const Array<uInt>*>(&arr));
+    break;
+  case TpInt64:
+    sia->putArrayInt64V (*iosfile_p, static_cast<const Array<Int64>*>(&arr));
+    break;
+  case TpFloat:
+    sia->putArrayfloatV (*iosfile_p, static_cast<const Array<float>*>(&arr));
+    break;
+  case TpDouble:
+    sia->putArraydoubleV (*iosfile_p, static_cast<const Array<double>*>(&arr));
+    break;
+  case TpComplex:
+    sia->putArrayComplexV (*iosfile_p, static_cast<const Array<Complex>*>(&arr));
+    break;
+  case TpDComplex:
+    sia->putArrayDComplexV (*iosfile_p, static_cast<const Array<DComplex>*>(&arr));
+    break;
+  case TpString:
+    sia->putArrayStringV (*iosfile_p, static_cast<const Array<String>*>(&arr));
+    break;
+  default:
+    throw DataManInvDT ("StManColumnIndArrayAipsIO::putArrayV");
+  }
+  stmanPtr_p->setHasPut();
 }
 
-void StManColumnIndArrayAipsIO::putArrayfloatV (uInt rownr,
-						const Array<float>* arr)
+void StManColumnIndArrayAipsIO::getSliceV (uInt rownr, const Slicer& ns,
+                                           ArrayBase& arr)
 {
-    getShape(rownr)->putArrayfloatV (*iosfile_p, arr);
-    stmanPtr_p->setHasPut();
+  StIndArray* sia = getShape (rownr);
+  switch (dtype()) {
+  case TpBool:
+    sia->getSliceBoolV (*iosfile_p, ns, static_cast<Array<Bool>*>(&arr));
+    break;
+  case TpUChar:
+    sia->getSliceuCharV (*iosfile_p, ns, static_cast<Array<uChar>*>(&arr));
+    break;
+  case TpShort:
+    sia->getSliceShortV (*iosfile_p, ns, static_cast<Array<Short>*>(&arr));
+    break;
+  case TpUShort:
+    sia->getSliceuShortV (*iosfile_p, ns, static_cast<Array<uShort>*>(&arr));
+    break;
+  case TpInt:
+    sia->getSliceIntV (*iosfile_p, ns, static_cast<Array<Int>*>(&arr));
+    break;
+  case TpUInt:
+    sia->getSliceuIntV (*iosfile_p, ns, static_cast<Array<uInt>*>(&arr));
+    break;
+  case TpInt64:
+    sia->getSliceInt64V (*iosfile_p, ns, static_cast<Array<Int64>*>(&arr));
+    break;
+  case TpFloat:
+    sia->getSlicefloatV (*iosfile_p, ns, static_cast<Array<float>*>(&arr));
+    break;
+  case TpDouble:
+    sia->getSlicedoubleV (*iosfile_p, ns, static_cast<Array<double>*>(&arr));
+    break;
+  case TpComplex:
+    sia->getSliceComplexV (*iosfile_p, ns, static_cast<Array<Complex>*>(&arr));
+    break;
+  case TpDComplex:
+    sia->getSliceDComplexV (*iosfile_p, ns, static_cast<Array<DComplex>*>(&arr));
+    break;
+  case TpString:
+    sia->getSliceStringV (*iosfile_p, ns, static_cast<Array<String>*>(&arr));
+    break;
+  default:
+    throw DataManInvDT ("StManColumnIndArrayAipsIO::getSliceV");
+  }
 }
 
-void StManColumnIndArrayAipsIO::getSlicefloatV (uInt rownr, const Slicer& ns,
-						Array<float>* arr)
+void StManColumnIndArrayAipsIO::putSliceV (uInt rownr, const Slicer& ns,
+                                           const ArrayBase& arr)
 {
-    getShape(rownr)->getSlicefloatV (*iosfile_p, ns, arr);
+  StIndArray* sia = getShape (rownr);
+  switch (dtype()) {
+  case TpBool:
+    sia->putSliceBoolV (*iosfile_p, ns,
+                        static_cast<const Array<Bool>*>(&arr));
+    break;
+  case TpUChar:
+    sia->putSliceuCharV (*iosfile_p, ns,
+                         static_cast<const Array<uChar>*>(&arr));
+    break;
+  case TpShort:
+    sia->putSliceShortV (*iosfile_p, ns,
+                         static_cast<const Array<Short>*>(&arr));
+    break;
+  case TpUShort:
+    sia->putSliceuShortV (*iosfile_p, ns,
+                          static_cast<const Array<uShort>*>(&arr));
+    break;
+  case TpInt:
+    sia->putSliceIntV (*iosfile_p, ns,
+                       static_cast<const Array<Int>*>(&arr));
+    break;
+  case TpUInt:
+    sia->putSliceuIntV (*iosfile_p, ns,
+                        static_cast<const Array<uInt>*>(&arr));
+    break;
+  case TpInt64:
+    sia->putSliceInt64V (*iosfile_p, ns,
+                         static_cast<const Array<Int64>*>(&arr));
+    break;
+  case TpFloat:
+    sia->putSlicefloatV (*iosfile_p, ns,
+                         static_cast<const Array<float>*>(&arr));
+    break;
+  case TpDouble:
+    sia->putSlicedoubleV (*iosfile_p, ns,
+                          static_cast<const Array<double>*>(&arr));
+    break;
+  case TpComplex:
+    sia->putSliceComplexV (*iosfile_p, ns,
+                           static_cast<const Array<Complex>*>(&arr));
+    break;
+  case TpDComplex:
+    sia->putSliceDComplexV (*iosfile_p, ns,
+                            static_cast<const Array<DComplex>*>(&arr));
+    break;
+  case TpString:
+    sia->putSliceStringV (*iosfile_p, ns,
+                          static_cast<const Array<String>*>(&arr));
+    break;
+  default:
+    throw DataManInvDT ("StManColumnIndArrayAipsIO::putSliceV");
+  }
+  stmanPtr_p->setHasPut();
 }
-
-void StManColumnIndArrayAipsIO::putSlicefloatV (uInt rownr, const Slicer& ns,
-						const Array<float>* arr)
-{
-    getShape(rownr)->putSlicefloatV (*iosfile_p, ns, arr);
-    stmanPtr_p->setHasPut();
-}
-    
-
-#define STMANCOLUMNINDARRAYAIPSIO_GETPUT(T,NM) \
-void StManColumnIndArrayAipsIO::aips_name2(getArray,NM) (uInt rownr, \
-							 Array<T>* arr) \
-{ \
-    getShape(rownr)->aips_name2(getArray,NM) (*iosfile_p, arr); \
-} \
-void StManColumnIndArrayAipsIO::aips_name2(putArray,NM) (uInt rownr, \
-						         const Array<T>* arr) \
-{ \
-    getShape(rownr)->aips_name2(putArray,NM) (*iosfile_p, arr); \
-    stmanPtr_p->setHasPut(); \
-} \
-void StManColumnIndArrayAipsIO::aips_name2(getSlice,NM) \
-                             (uInt rownr, const Slicer& ns, Array<T>* arr) \
-{ \
-    getShape(rownr)->aips_name2(getSlice,NM) (*iosfile_p, ns, arr); \
-} \
-void StManColumnIndArrayAipsIO::aips_name2(putSlice,NM) \
-                        (uInt rownr, const Slicer& ns, const Array<T>* arr) \
-{ \
-    getShape(rownr)->aips_name2(putSlice,NM) (*iosfile_p, ns, arr); \
-    stmanPtr_p->setHasPut(); \
-}
-
-STMANCOLUMNINDARRAYAIPSIO_GETPUT(Bool,BoolV)
-STMANCOLUMNINDARRAYAIPSIO_GETPUT(uChar,uCharV)
-STMANCOLUMNINDARRAYAIPSIO_GETPUT(Short,ShortV)
-STMANCOLUMNINDARRAYAIPSIO_GETPUT(uShort,uShortV)
-STMANCOLUMNINDARRAYAIPSIO_GETPUT(Int,IntV)
-STMANCOLUMNINDARRAYAIPSIO_GETPUT(uInt,uIntV)
-//#//STMANCOLUMNINDARRAYAIPSIO_GETPUT(float,floatV)
-STMANCOLUMNINDARRAYAIPSIO_GETPUT(double,doubleV)
-STMANCOLUMNINDARRAYAIPSIO_GETPUT(Complex,ComplexV)
-STMANCOLUMNINDARRAYAIPSIO_GETPUT(DComplex,DComplexV)
-STMANCOLUMNINDARRAYAIPSIO_GETPUT(String,StringV)
 
 
 void StManColumnIndArrayAipsIO::remove (uInt rownr)
@@ -256,7 +386,7 @@ void StManColumnIndArrayAipsIO::deleteArray (uInt rownr)
 void StManColumnIndArrayAipsIO::putFile (uInt nrval, AipsIO& ios)
 {
     ios.putstart ("StManColumnIndArrayAipsIO", version_p);
-    ios << dtype_p;                    // for backward compatibility
+    ios << dtype();                    // for backward compatibility
     ios << seqnr_p;
     StManColumnAipsIO::putFile (nrval, ios);
     ios.putend();

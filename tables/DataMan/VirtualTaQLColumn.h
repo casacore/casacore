@@ -168,7 +168,6 @@ private:
   //# The same is true for getColumn.
 
   // Get the scalar value in the given row.
-  // The default implementation throws an "invalid operation" exception.
   // <group>
   virtual void getBoolV     (uInt rownr, Bool* dataPtr);
   virtual void getuCharV    (uInt rownr, uChar* dataPtr);
@@ -188,14 +187,25 @@ private:
   // is needed to be generic.
   // The array pointed to by dataPtr has to have the correct shape
   // (which is guaranteed by the ArrayColumn get function).
-  // The default implementation throws an "invalid operation" exception.
-  virtual void getArrayV (uInt rownr, void* dataPtr);
+  virtual void getArrayV (uInt rownr, ArrayBase& dataPtr);
 
   // Get the result.
-  IPosition getResult (uInt rownr, void* dataPtr);
+  IPosition getResult (uInt rownr, ArrayBase& dataPtr);
 
-  // Clear the result cache.
-  void clearCurResult();
+  // Get functions implemented by means of their DataMaangerColumn::dmGetXX
+  // counterparts.
+  // <group>
+  virtual void getScalarColumnV (ArrayBase& dataPtr);
+  virtual void getScalarColumnCellsV (const RefRows& rownrs,
+                                      ArrayBase& dataPtr);
+  virtual void getArrayColumnV (ArrayBase& data);
+  virtual void getArrayColumnCellsV (const RefRows& rownrs,
+                                     ArrayBase& data);
+  virtual void getSliceV (uInt rownr, const Slicer& slicer, ArrayBase& data);
+  virtual void getColumnSliceV (const Slicer& slicer, ArrayBase& data);
+  virtual void getColumnSliceCellsV (const RefRows& rownrs,
+                                     const Slicer& slicer, ArrayBase& data);
+  // </group>
 
 
   //# Now define the data members.
@@ -205,8 +215,8 @@ private:
   String         itsExpr;             //# TaQL expression
   TableExprNode* itsNode;             //# compiled TaQL expression
   Bool           itsTempWritable;
-  Int            itsCurRow;           //# Currently evaluated row
-  void*          itsCurResult;        //# result in itsCurRow
+  Int64          itsCurRow;           //# Currently evaluated row
+  ArrayBase*     itsCurResult;        //# result in itsCurRow
   IPosition      itsCurShape;         //# shape in itsCurRow
 };
 

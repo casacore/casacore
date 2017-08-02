@@ -1,4 +1,4 @@
-//# VirtScaCol.cc: Base virtual column data manager class
+//# VirtScaCol.tcc: Base virtual column data manager class
 //# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casacore/tables/DataMan/VirtScaCol.h>
+#include <casacore/tables/Tables/RefRows.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Utilities/ValTypeId.h>
 
@@ -41,10 +42,6 @@ VirtualScalarColumn<T>::~VirtualScalarColumn()
 {}
 
 template<class T>
-Bool VirtualScalarColumn<T>::isWritable() const
-    { return False; }
-
-template<class T>
 int VirtualScalarColumn<T>::dataType() const
     { return ValType::getType (static_cast<T*>(0)); }
 
@@ -54,18 +51,10 @@ String VirtualScalarColumn<T>::dataTypeId() const
     return valDataTypeId (static_cast<T*>(0));
 }
 
-template<class T>
-Bool VirtualScalarColumn<T>::canAccessScalarColumn (Bool& reask) const
-{
-    reask = False;
-    return True;
-}
-
 
 //# Implement the get/put functions via a macro.
 //# In principle they are not possible.
-//# The implementation is done using global functions iso. specializations
-//# to overcome the limitations of the SGI compiler (in May 1995).
+//# The implementation is done using global functions defined in the .h fie.
 #define VIRTUALSCALARCOLUMN_GETPUT(TP,NM) \
 template<class T> \
 void VirtualScalarColumn<T>::aips_name2(get,NM) (uInt rownr, TP* dataPtr) \
@@ -89,79 +78,78 @@ VIRTUALSCALARCOLUMN_GETPUT(String,StringV)
 
 template<class T>
 void VirtualScalarColumn<T>::getOtherV (uInt rownr, void* dataPtr)
-    { get (rownr, *(T*)dataPtr); }
+    { get (rownr, *static_cast<T*>(dataPtr)); }
 template<class T>
 void VirtualScalarColumn<T>::putOtherV (uInt rownr, const void* dataPtr)
-    { put (rownr, *(const T*)dataPtr); }
+    { put (rownr, *static_cast<const T*>(dataPtr)); }
 
 
-//# Implement the generic functions as typed functions.
+//# Now implement the default implementations of the column access functions.
 template<class T>
-void VirtualScalarColumn<T>::getScalarColumnV (void* dataPtr)
-    { getScalarColumn (*(Vector<T>*)dataPtr); }
-template<class T>
-void VirtualScalarColumn<T>::putScalarColumnV (const void* dataPtr)
-    { putScalarColumn (*(const Vector<T>*)dataPtr); }
-template<class T>
-uInt VirtualScalarColumn<T>::getBlockV (uInt rownr, uInt nrmax, void* dataPtr)
-    { return getBlock (rownr, nrmax, (T*)dataPtr); }
-template<class T>
-void VirtualScalarColumn<T>::putBlockV (uInt rownr, uInt nrmax, const void* dataPtr)
-    { putBlock (rownr, nrmax, (const T*)dataPtr); }
+void VirtualScalarColumn<T>::getScalarColumnV (ArrayBase& dataPtr)
+{
+  Vector<T>& vec = static_cast<Vector<T>&>(dataPtr);
+  uInt nr = vec.nelements();
+  for (uInt rownr=0; rownr<nr; ++rownr) {
+    get (rownr, vec[rownr]);
+  }
+}
 
+template<class T>
+void VirtualScalarColumn<T>::putScalarColumnV (const ArrayBase& dataPtr)
+{
+  const Vector<T>& vec = static_cast<const Vector<T>&>(dataPtr);
+  uInt nr = vec.nelements();
+  for (uInt rownr=0; rownr<nr; ++rownr) {
+    put (rownr, vec[rownr]);
+  }
+}
 
-//# Now implement the default implementations of the typed functions.
+template<class T>
+void VirtualScalarColumn<T>::getScalarColumnCellsV (const RefRows& rownrs,
+                                                    ArrayBase& dataPtr)
+{
+  Vector<T>& vec = static_cast<Vector<T>&>(dataPtr);
+  RefRowsSliceIter iter(rownrs);
+  uInt i=0;
+  while (! iter.pastEnd()) {
+    uInt rownr = iter.sliceStart();
+    uInt end   = iter.sliceEnd();
+    uInt incr  = iter.sliceIncr();
+    while (rownr <= end) {
+      getOtherV (rownr, &(vec[i]));
+      rownr += incr;
+      i++;
+    }
+    iter++;
+  }
+}
+
+template<class T>
+void VirtualScalarColumn<T>::putScalarColumnCellsV (const RefRows& rownrs,
+                                                    const ArrayBase& dataPtr)
+{
+  const Vector<T>& vec = static_cast<const Vector<T>&>(dataPtr);
+  RefRowsSliceIter iter(rownrs);
+  uInt i=0;
+  while (! iter.pastEnd()) {
+    uInt rownr = iter.sliceStart();
+    uInt end   = iter.sliceEnd();
+    uInt incr  = iter.sliceIncr();
+    while (rownr <= end) {
+      putOtherV (rownr, &(vec[i]));
+      rownr += incr;
+      i++;
+    }
+    iter++;
+  }
+}
 
 //# The default implementation of put throws an exception.
 template<class T>
 void VirtualScalarColumn<T>::put (uInt, const T&)
     { throwPut(); }
 
-//# The default implementation of get/putScalarColumn handles its data using
-//# get/putBlock.
-template<class T>
-void VirtualScalarColumn<T>::getScalarColumn (Vector<T>& vec)
-{
-    Bool deleteIt;
-    T* data = vec.getStorage (deleteIt);
-    uInt nrgot;
-    uInt rownr=0;
-    for (uInt nrtodo=vec.nelements(); nrtodo>0;) {
-        nrgot = getBlock (rownr, nrtodo, data);
-        nrtodo -= nrgot;
-        data   += nrgot;
-	rownr  += nrgot;
-    }
-    vec.putStorage (data, deleteIt);
-}
-template<class T>
-void VirtualScalarColumn<T>::putScalarColumn (const Vector<T>& vec)
-{
-    Bool deleteIt;
-    const T* data =vec.getStorage (deleteIt);
-    putBlock (0, vec.nelements(), data);
-    vec.freeStorage (data, deleteIt);
-}
-
-//# The default implementation of getBlock gets one value.
-//# The default implementation of putBlock puts one value at a time.
-template<class T>
-uInt VirtualScalarColumn<T>::getBlock (uInt rownr, uInt nrmax, T* dataPtr)
-{
-    if (nrmax > 0) {
-	get (rownr, *dataPtr);
-	return 1;
-    }
-    return 0;
-}
-template<class T>
-void VirtualScalarColumn<T>::putBlock (uInt rownr, uInt nrmax, const T* dataPtr)
-{
-    while (nrmax > 0) {
-	put (rownr++, *dataPtr++);
-	nrmax--;
-    }
-}
 
 } //# NAMESPACE CASACORE - END
 

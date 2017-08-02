@@ -37,7 +37,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class ColumnSet;
-template<class T> class ArrayColumnDesc;
+class ArrayColumnDescBase;
 class AipsIO;
 
 
@@ -90,43 +90,25 @@ class AipsIO;
 // ArrayColumn does that check.
 // </synopsis> 
 
-// <templating arg=T>
-//  <li> Default constructor
-//  <li> Copy constructor
-//  <li> Assignment operator
-// </templating>
-
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
 //   <li> support tiling
 // </todo>
 
 
-template<class T> class ArrayColumnData : public PlainColumn
+class ArrayColumnData : public PlainColumn
 {
 public:
 
     // Construct an array column object from the given description
     // in the given column set.
-    // This constructor is used by ArrayColumnDesc::makeColumn.
-    ArrayColumnData (const ArrayColumnDesc<T>*, ColumnSet*);
+    // This constructor is used by ArrayColumnDescBase::makeColumn.
+    ArrayColumnData (const ArrayColumnDescBase*, ColumnSet*);
 
     ~ArrayColumnData();
 
     // Ask the data manager if the shape of an existing array can be changed.
     virtual Bool canChangeShape() const;
-
-    // Ask if the data manager can handle a cell slice.
-    virtual Bool canAccessSlice (Bool& reask) const;
-
-    // Ask if the data manager can handle a column.
-    virtual Bool canAccessArrayColumn (Bool& reask) const;
-
-    // Ask if the data manager can handle some cells in a column.
-    virtual Bool canAccessArrayColumnCells (Bool& reask) const;
-
-    // Ask if the data manager can handle a column slice.
-    virtual Bool canAccessColumnSlice (Bool& reask) const;
 
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description (if defined).
@@ -166,82 +148,82 @@ public:
     Bool isDefined (uInt rownr) const;
 
     // Get the array from a particular cell.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void get (uInt rownr, void* arrayPtr) const;
+    void getArray (uInt rownr, ArrayBase& arrayPtr) const;
 
     // Get a slice of an N-dimensional array in a particular cell.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void getSlice (uInt rownr, const Slicer&, void* arrayPtr) const;
+    void getSlice (uInt rownr, const Slicer&, ArrayBase& arrayPtr) const;
 
     // Get the array of all values in a column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void getArrayColumn (void* arrayPtr) const;
+    void getArrayColumn (ArrayBase& arrayPtr) const;
 
     // Get the array of some values in a column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void getArrayColumnCells (const RefRows& rownrs, void* arrayPtr) const;
+    void getArrayColumnCells (const RefRows& rownrs, ArrayBase& arrayPtr) const;
 
     // Get subsections from all arrays in the column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void getColumnSlice (const Slicer&, void* arrayPtr) const;
+    void getColumnSlice (const Slicer&, ArrayBase& arrayPtr) const;
 
     // Get subsections from some arrays in the column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
     void getColumnSliceCells (const RefRows& rownrs, const Slicer&,
-			      void* arrayPtr) const;
+			      ArrayBase& arrayPtr) const;
 
     // Put the value in a particular cell.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void put (uInt rownr, const void* arrayPtr);
+    void putArray (uInt rownr, const ArrayBase& arrayPtr);
 
     // Put a slice of an N-dimensional array in a particular cell.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void putSlice (uInt rownr, const Slicer&, const void* arrayPtr);
+    void putSlice (uInt rownr, const Slicer&, const ArrayBase& arrayPtr);
 
     // Put the array of all values in the column.
     // If the column contains n-dim arrays, the source array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void putArrayColumn (const void* arrayPtr);
+    void putArrayColumn (const ArrayBase& arrayPtr);
 
     // Put the array of some values in the column.
     // If the column contains n-dim arrays, the source array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void putArrayColumnCells (const RefRows& rownrs, const void* arrayPtr);
+    void putArrayColumnCells (const RefRows& rownrs, const ArrayBase& arrayPtr);
 
     // Put into subsections of all table arrays in the column.
     // If the column contains n-dim arrays, the source array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
-    void putColumnSlice (const Slicer&, const void* arrayPtr);
+    void putColumnSlice (const Slicer&, const ArrayBase& arrayPtr);
 
     // Put into subsections of some table arrays in the column.
     // If the column contains n-dim arrays, the source array is (n+1)-dim.
     // The arrays in the column have to have the same shape in all cells.
-    // The length of the buffer pointed to by arrayPtr must match
+    // The length of the array given by ArrayBase must match
     // the actual length. This is checked by ArrayColumn.
     void putColumnSliceCells (const RefRows& rownrs, const Slicer&,
-			      const void* arrayPtr);
+			      const ArrayBase& arrayPtr);
 
     // Create a data manager column object for this column.
     void createDataManagerColumn();
@@ -249,18 +231,20 @@ public:
 
 private:
     // Pointer to column description.
-    const ArrayColumnDesc<T>* arrDescPtr_p;
+    const ArrayColumnDescBase* arrDescPtr_p;
     // Is the shape for all arrays in the columns defined.
     Bool shapeColDef_p;
     // Shape for all arrays in the column.
     IPosition shapeCol_p;
+    // Does the length of a string has to be checked?
+    Bool checkValueLength_p;
     
 
     // Copy constructor cannot be used.
-    ArrayColumnData (const ArrayColumnData<T>&);
+    ArrayColumnData (const ArrayColumnData&);
 
     // Assignment cannot be used.
-    ArrayColumnData<T>& operator= (const ArrayColumnData<T>&);
+    ArrayColumnData& operator= (const ArrayColumnData&);
 
     // Check if the shape of an array can be set and if it is set
     // correctly (i.e. if matching possible #dim in column description).
@@ -283,7 +267,4 @@ private:
 
 } //# NAMESPACE CASACORE - END
 
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/tables/Tables/ArrColData.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSMColumn.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef TABLES_MSMCOLUMN_H
 #define TABLES_MSMCOLUMN_H
@@ -145,72 +145,17 @@ public:
   void putStringV   (uInt rownr, const String* dataPtr);
   // </group>
 
-  // Get scalars from the given row on with a maximum of nrmax values.
-  // This can be used to get an entire column of scalars or to get
-  // a part of a column (for a cache for example).
-  // The buffer pointed to by dataPtr has to have the correct length
-  // (which is guaranteed by the ScalarColumn get function).
-  // <group>
-  uInt getBlockBoolV     (uInt rownr, uInt nrmax, Bool* dataPtr);
-  uInt getBlockuCharV    (uInt rownr, uInt nrmax, uChar* dataPtr);
-  uInt getBlockShortV    (uInt rownr, uInt nrmax, Short* dataPtr);
-  uInt getBlockuShortV   (uInt rownr, uInt nrmax, uShort* dataPtr);
-  uInt getBlockIntV      (uInt rownr, uInt nrmax, Int* dataPtr);
-  uInt getBlockuIntV     (uInt rownr, uInt nrmax, uInt* dataPtr);
-  uInt getBlockfloatV    (uInt rownr, uInt nrmax, float* dataPtr);
-  uInt getBlockdoubleV   (uInt rownr, uInt nrmax, double* dataPtr);
-  uInt getBlockComplexV  (uInt rownr, uInt nrmax, Complex* dataPtr);
-  uInt getBlockDComplexV (uInt rownr, uInt nrmax, DComplex* dataPtr);
-  uInt getBlockStringV   (uInt rownr, uInt nrmax, String* dataPtr);
-  // </group>
+  // Get all scalar values in the column.
+  // The vector given in <src>data</src> has to have the correct length
+  // (which is guaranteed by the ScalarColumn getColumn function).
+  // The default implementation throws an "invalid operation" exception.
+  virtual void getScalarColumnV (ArrayBase& data);
 
-  // Put nrmax scalars from the given row on.
-  // This can be used to put an entire column of scalars or to put
-  // a part of a column (for a cache for example).
-  // The buffer pointed to by dataPtr has to have the correct length
-  // (which is guaranteed by the ScalarColumn put function).
-  // <group>
-  void putBlockBoolV     (uInt rownr, uInt nrmax, const Bool* dataPtr);
-  void putBlockuCharV    (uInt rownr, uInt nrmax, const uChar* dataPtr);
-  void putBlockShortV    (uInt rownr, uInt nrmax, const Short* dataPtr);
-  void putBlockuShortV   (uInt rownr, uInt nrmax, const uShort* dataPtr);
-  void putBlockIntV      (uInt rownr, uInt nrmax, const Int* dataPtr);
-  void putBlockuIntV     (uInt rownr, uInt nrmax, const uInt* dataPtr);
-  void putBlockfloatV    (uInt rownr, uInt nrmax, const float* dataPtr);
-  void putBlockdoubleV   (uInt rownr, uInt nrmax, const double* dataPtr);
-  void putBlockComplexV  (uInt rownr, uInt nrmax, const Complex* dataPtr);
-  void putBlockDComplexV (uInt rownr, uInt nrmax, const DComplex* dataPtr);
-  void putBlockStringV   (uInt rownr, uInt nrmax, const String* dataPtr);
-  // </group>
-
-  // Get the scalar values in some cells of the column.
-  // The buffer pointed to by dataPtr has to have the correct length.
-  // (which is guaranteed by the ScalarColumn getColumnCells function).
-  // The default implementation loops through all rows.
-  // <group>
-  virtual void getScalarColumnCellsBoolV     (const RefRows& rownrs,
-					      Vector<Bool>* dataPtr);
-  virtual void getScalarColumnCellsuCharV    (const RefRows& rownrs,
-					      Vector<uChar>* dataPtr);
-  virtual void getScalarColumnCellsShortV    (const RefRows& rownrs,
-					      Vector<Short>* dataPtr);
-  virtual void getScalarColumnCellsuShortV   (const RefRows& rownrs,
-					      Vector<uShort>* dataPtr);
-  virtual void getScalarColumnCellsIntV      (const RefRows& rownrs,
-					      Vector<Int>* dataPtr);
-  virtual void getScalarColumnCellsuIntV     (const RefRows& rownrs,
-					      Vector<uInt>* dataPtr);
-  virtual void getScalarColumnCellsfloatV    (const RefRows& rownrs,
-					      Vector<float>* dataPtr);
-  virtual void getScalarColumnCellsdoubleV   (const RefRows& rownrs,
-					      Vector<double>* dataPtr);
-  virtual void getScalarColumnCellsComplexV  (const RefRows& rownrs,
-					      Vector<Complex>* dataPtr);
-  virtual void getScalarColumnCellsDComplexV (const RefRows& rownrs,
-					      Vector<DComplex>* dataPtr);
-  virtual void getScalarColumnCellsStringV   (const RefRows& rownrs,
-					      Vector<String>* dataPtr);
-  // </group>
+  // Put all scalar values in the column.
+  // The vector given in <src>data</src> has to have the correct length
+  // (which is guaranteed by the ScalarColumn putColumn function).
+  // The default implementation throws an "invalid operation" exception.
+  virtual void putScalarColumnV (const ArrayBase& data);
 
   // Add (newNrrow-oldNrrow) rows to the column.
   virtual void addRow (uInt newNrrow, uInt oldNrrow);
@@ -227,13 +172,22 @@ public:
   // This is used when a table gets created or opened.
   virtual void doCreate (uInt nrrow);
 
+  // Make it possible to write the column data.
+  // It is only used by derived classes.
+  virtual void putFile (uInt nrval, AipsIO&);
+
+  // Make it possible to read the column data.
+  // It is only used by derived classes.
+  virtual void getFile (uInt nrval, AipsIO&);
+
+  // Reopen the storage manager files for read/write.
+  virtual void reopenRW();
+
   // Check if the class invariants still hold.
   virtual Bool ok() const;
 
 protected:
   MSMBase* stmanPtr_p;
-  // The data type (for caching purposes).
-  int dtype_p;
   // The data is indirectly accessed via a pointer (for the derived classes).
   Bool  byPtr_p;
   // The number of allocated rows in the column.
@@ -248,12 +202,6 @@ protected:
   // Find the extension in which the row number is.
   // If the flag is true, it also sets the columnCache object.
   uInt findExt (uInt rownr, Bool setCache);
-
-  // Get the next extension.
-  // For the first iteration extnr should be zero.
-  // It returns the number of values in it until the maximum is reached.
-  // Zero means no more extensions.
-  uInt nextExt (void*& ext, uInt& extnr, uInt nrmax) const;
 
   // Allocate an extension with the data type of the column.
   void* allocData (uInt nrval, Bool byPtr);
@@ -272,7 +220,7 @@ protected:
   void removeData (void* datap, uInt inx, uInt nrvalAfter);
 
   // Initialize the data (after an open).
-  void initData (void* datap, uInt nrval);
+  virtual void initData (void* datap, uInt nrval);
 
   // Get the pointer for the given row.
   // This is for the derived classes like StManArrayColumnMemory.

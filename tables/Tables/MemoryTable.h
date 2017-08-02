@@ -225,7 +225,7 @@ public:
 
 
 private:
-  ColumnSet*     colSetPtr_p;        //# pointer to set of columns
+  CountedPtr<ColumnSet> colSetPtr_p;        //# pointer to set of columns
   TableLockData* lockPtr_p;          //# pointer to lock object
 
   // Copy constructor is forbidden, because copying a table requires

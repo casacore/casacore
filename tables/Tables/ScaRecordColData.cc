@@ -63,18 +63,6 @@ void ScalarRecordColumnData::createDataManagerColumn()
 }
 
 
-Bool ScalarRecordColumnData::canAccessScalarColumn (Bool& reask) const
-{
-    reask = False;
-    return True;
-}
-Bool ScalarRecordColumnData::canAccessScalarColumnCells (Bool& reask) const
-{
-    reask = False;
-    return True;
-}
-
-
 void ScalarRecordColumnData::initialize (uInt, uInt)
 {}	
 
@@ -91,9 +79,9 @@ void ScalarRecordColumnData::get (uInt rownr, void* val) const
     autoReleaseLock();
 }
 
-void ScalarRecordColumnData::getScalarColumn (void* val) const
+void ScalarRecordColumnData::getScalarColumn (ArrayBase& val) const
 {
-    Vector<TableRecord>& vec = *(Vector<TableRecord>*)val;
+    Vector<TableRecord>& vec = static_cast<Vector<TableRecord>&>(val);
     uInt nr = nrow();
     if (vec.nelements() != nr) {
 	throw (TableArrayConformanceError
@@ -107,9 +95,9 @@ void ScalarRecordColumnData::getScalarColumn (void* val) const
 }
 
 void ScalarRecordColumnData::getScalarColumnCells (const RefRows& rownrs,
-						   void* val) const
+						   ArrayBase& val) const
 {
-    Vector<TableRecord>& vec = *(Vector<TableRecord>*)val;
+    Vector<TableRecord>& vec = static_cast<Vector<TableRecord>&>(val);
     if (vec.nelements() != rownrs.nrow()) {
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::getColumnCells"));
@@ -138,9 +126,9 @@ void ScalarRecordColumnData::put (uInt rownr, const void* val)
     autoReleaseLock();
 }
 
-void ScalarRecordColumnData::putScalarColumn (const void* val)
+void ScalarRecordColumnData::putScalarColumn (const ArrayBase& val)
 {
-    const Vector<TableRecord>& vec = *(const Vector<TableRecord>*)val;
+    const Vector<TableRecord>& vec = static_cast<const Vector<TableRecord>&>(val);
     uInt nr = nrow();
     if (vec.nelements() != nr) {
 	throw (TableArrayConformanceError
@@ -154,9 +142,9 @@ void ScalarRecordColumnData::putScalarColumn (const void* val)
 }
 
 void ScalarRecordColumnData::putScalarColumnCells (const RefRows& rownrs,
-						   const void* val)
+						   const ArrayBase& val)
 {
-    const Vector<TableRecord>& vec = *(const Vector<TableRecord>*)val;
+    const Vector<TableRecord>& vec = static_cast<const Vector<TableRecord>&>(val);
     if (vec.nelements() != rownrs.nrow()) {
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::putColumnCells"));
@@ -186,7 +174,7 @@ void ScalarRecordColumnData::getRecord (uInt rownr, TableRecord& rec) const
 	IPosition shape = dataColPtr_p->shape (rownr);
 	AlwaysAssert (shape.nelements() == 1, AipsError);
 	Array<uChar> data(shape);
-	dataColPtr_p->getArrayV (rownr, &data);
+	dataColPtr_p->getArrayV (rownr, data);
 	Bool deleteIt;
 	const uChar* buf = data.getStorage (deleteIt);
 	MemoryIO memio (buf, shape(0));
@@ -204,14 +192,14 @@ void ScalarRecordColumnData::putRecord (uInt rownr, const TableRecord& rec)
     IPosition shape (1, Int(memio.length()));
     Vector<uChar> data(shape, (uChar*)(memio.getBuffer()), SHARE);
     dataColPtr_p->setShape (rownr, shape);
-    dataColPtr_p->putArrayV (rownr, &data);
+    dataColPtr_p->putArrayV (rownr, data);
 }
 
 
 void ScalarRecordColumnData::makeSortKey (Sort&,
 					  CountedPtr<BaseCompare>&,
 					  Int,
-					  const void*&)
+					  CountedPtr<ArrayBase>&)
 {
     throw (TableError ("Sorting on a column containing records "
 		       "is not possible"));
@@ -221,15 +209,10 @@ void ScalarRecordColumnData::makeRefSortKey (Sort&,
                                              CountedPtr<BaseCompare>&,
 					     Int,
 					     const Vector<uInt>&,
-					     const void*&)
+					     CountedPtr<ArrayBase>&)
 {
     throw (TableError ("Sorting on a column containing records "
 		       "is not possible"));
-}
-
-void ScalarRecordColumnData::freeSortKey (const void*& dataSave)
-{
-    dataSave = 0;
 }
 
 void ScalarRecordColumnData::allocIterBuf (void*&, void*&,

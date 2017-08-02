@@ -79,12 +79,12 @@ class Slicer;
 //   exception, so it is needed to implement them in the derived class.
 //  <li>
 //   In DataManagerColumn the functions get/putArrayV and get/putSliceV
-//   are defined, which have a void* data argument. This is necessary
+//   are defined, which have an ArrayBase& data argument. This is necessary
 //   to handle arbitrary data types in the non-templated base class
 //   DataManagerColumn.
 //   In this templated VirtualArrayColumn class, virtual functions
 //   get/putArray, get/putSlice, etc. have been defined. They cast
-//   the void* data argument to Array<T>&, so in a derived class no care
+//   the ArrayBase& data argument to Array<T>&, so in a derived class no care
 //   has to be taken for that cast.
 //   Furthermore a default implementation of the get/putSlice has been made.
 //   They get/put the entire array (using get/putArray) and access the
@@ -136,35 +136,17 @@ class Slicer;
 // </todo>
 
 
-template<class T>
-class VirtualArrayColumn : public DataManagerColumn
+class VirtualArrayColumnBase : public DataManagerColumn
 {
 public:
-
     // Create a column.
-    VirtualArrayColumn()
-	{;}
+    VirtualArrayColumnBase()
+        {}
 
-    // Frees up the storage.
-    virtual ~VirtualArrayColumn();
-
-    // Return the data type of the column.
-    virtual int dataType() const;
-
-    // Return the data type Id of the column.
-    virtual String dataTypeId() const;
+    virtual ~VirtualArrayColumnBase();
 
     // By default no data can be put in a virtual column.
     virtual Bool isWritable() const;
-
-    // The class can handle a get/putSlice.
-    virtual Bool canAccessSlice (Bool& reask) const;
-
-    // The class can handle a get/putArrayColumn.
-    virtual Bool canAccessArrayColumn (Bool& reask) const;
-
-    // The class can handle a get/putColumnSlice.
-    virtual Bool canAccessColumnSlice (Bool& reask) const;
 
 protected:
     // Set the shape of all arrays in the column.
@@ -189,6 +171,35 @@ protected:
     // By default it throws a "not possible" exception.
     virtual IPosition shape (uInt rownr);
 
+    // The scalar access functions throw an exception.
+    // <group>
+    virtual void getScalarColumnV (ArrayBase& dataPtr);
+    virtual void putScalarColumnV (const ArrayBase& dataPtr);
+    virtual void getScalarColumnCellsV (const RefRows& rownrs,
+					ArrayBase& dataPtr);
+    virtual void putScalarColumnCellsV (const RefRows& rownrs,
+					const ArrayBase& dataPtr);
+    // </group>
+};
+
+
+template<class T>
+class VirtualArrayColumn : public VirtualArrayColumnBase
+{
+public:
+    // Create a column.
+    VirtualArrayColumn()
+        {}
+
+    virtual ~VirtualArrayColumn();
+
+    // Return the data type of the column.
+    virtual int dataType() const;
+
+    // Return the data type Id of the column.
+    virtual String dataTypeId() const;
+
+protected:
     // Get the array value in the given row.
     // The data array has to have the correct shape
     // (which is guaranteed by the ArrayColumn::get function).
@@ -270,54 +281,54 @@ protected:
 private:
     // Implement the virtual functions defined in DataManagerColumn.
     // Get the array value in the given row.
-    void getArrayV (uInt rownr, void* dataPtr);
+    void getArrayV (uInt rownr, ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Put the array value into the given row.
-    void putArrayV (uInt rownr, const void* dataPtr);
+    void putArrayV (uInt rownr, const ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Get some array values in the column.
-    void getArrayColumnCellsV (const RefRows& rownrs, void* dataPtr);
+    void getArrayColumnCellsV (const RefRows& rownrs, ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Put some array values in the column.
-    void putArrayColumnCellsV (const RefRows& rownrs, const void* dataPtr);
+    void putArrayColumnCellsV (const RefRows& rownrs, const ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Get a section of the array in the given row.
-    void getSliceV (uInt rownr, const Slicer& slicer, void* dataPtr);
+    void getSliceV (uInt rownr, const Slicer& slicer, ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Put into a section of the array in the given row.
-    void putSliceV (uInt rownr, const Slicer& slicer, const void* dataPtr);
+    void putSliceV (uInt rownr, const Slicer& slicer, const ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Get an entire column.
-    void getArrayColumnV (void* dataPtr);
+    void getArrayColumnV (ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Put an entire column.
-    void putArrayColumnV (const void* dataPtr);
+    void putArrayColumnV (const ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Get a section of all arrays in the column.
-    void getColumnSliceV (const Slicer& slicer, void* dataPtr);
+    void getColumnSliceV (const Slicer& slicer, ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Put into section of all arrays in the column.
-    void putColumnSliceV (const Slicer& slicer, const void* dataPtr);
+    void putColumnSliceV (const Slicer& slicer, const ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Get a section of some arrays in the column.
     virtual void getColumnSliceCellsV (const RefRows& rownrs,
-				       const Slicer& slicer, void* dataPtr);
+				       const Slicer& slicer, ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Put into a section of some arrays in the column.
     virtual void putColumnSliceCellsV (const RefRows& rownrs,
 				       const Slicer& slicer,
-				       const void* dataPtr);
+				       const ArrayBase& dataPtr);
 
 
 private:

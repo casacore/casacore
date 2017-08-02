@@ -32,6 +32,7 @@
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/DataMan/CompressComplex.h>
 #include <casacore/tables/DataMan/TiledShapeStMan.h>
+#include <casacore/tables/DataMan/TiledStManAccessor.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/casa/Arrays/Cube.h>
@@ -120,6 +121,11 @@ void writeData (Bool isSD, Bool autoScale)
   for (i=0; i<3; i++) {
     source1.putSlice (5, Slicer(IPosition(3,0,i,0), IPosition(3,2,1,4)),
 		      arrf(IPosition(3,0,i,0), IPosition(3,1,i,3)));
+  }
+  {
+    tab.flush();
+    ROTiledStManAccessor acc(tab, "tileddata");
+    acc.showCacheStatistics (cout);
   }
 
   //# Do an erroneous thing.

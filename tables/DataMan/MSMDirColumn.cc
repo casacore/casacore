@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSMDirColumn.cc 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 
 #include <casacore/tables/DataMan/MSMDirColumn.h>
@@ -35,6 +35,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/Copy.h>
 #include <casacore/tables/DataMan/DataManError.h>
+#include <casacore/casa/string.h>                           // for memcpy
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -87,191 +88,45 @@ IPosition MSMDirColumn::shape (uInt)
   { return shape_p; }
 
 
-Bool MSMDirColumn::canAccessSlice (Bool& reask) const
+void MSMDirColumn::getArrayV (uInt rownr, ArrayBase& arr)
 {
-  reask = False;
-  return True;
-}
-Bool MSMDirColumn::canAccessArrayColumn (Bool& reask) const
-{
-  reask = False;
-  return True;
-}
-
-void MSMDirColumn::getArrayfloatV (uInt rownr, Array<float>* arr)
-{
-  Bool deleteIt;
-  float* data = arr->getStorage (deleteIt);
-  objcopy (data, (const float*)(getArrayPtr (rownr)), nrelem_p);
-  arr->putStorage (data, deleteIt);
-}
-void MSMDirColumn::putArrayfloatV (uInt rownr, const Array<float>* arr)
-{
-  Bool deleteIt;
-  const float* data = arr->getStorage (deleteIt);
-  objcopy ((float*)(getArrayPtr (rownr)), data, nrelem_p);
-  arr->freeStorage (data, deleteIt);
-}
-void MSMDirColumn::getSlicefloatV (uInt rownr, const Slicer& ns,
-				   Array<float>* arr)
-{
-  Array<float> tabarr (shape_p, (float*) (getArrayPtr (rownr)), SHARE);
-  IPosition blc, trc, inc;
-  ns.inferShapeFromSource (shape_p, blc, trc, inc);
-  *arr = tabarr(blc, trc, inc);
-}
-void MSMDirColumn::putSlicefloatV (uInt rownr, const Slicer& ns,
-				   const Array<float>* arr)
-{
-  Array<float> tabarr (shape_p, (float*) (getArrayPtr (rownr)), SHARE);
-  IPosition blc, trc, inc;
-  ns.inferShapeFromSource (shape_p, blc, trc, inc);
-  tabarr(blc, trc, inc) = *arr;
-}
-
-#define MSMARRCOLUMN_GETPUT(T,NM) \
-void MSMDirColumn::aips_name2(getArray,NM) (uInt rownr, Array<T>* arr) \
-{ \
-  Bool deleteIt; \
-  T* data = arr->getStorage (deleteIt); \
-  objcopy (data, (const T*)(getArrayPtr (rownr)), nrelem_p); \
-  arr->putStorage (data, deleteIt); \
-} \
-void MSMDirColumn::aips_name2(putArray,NM) (uInt rownr, const Array<T>* arr) \
-{ \
-  Bool deleteIt; \
-  const T* data = arr->getStorage (deleteIt); \
-  objcopy ((T*)(getArrayPtr (rownr)), data, nrelem_p); \
-  arr->freeStorage (data, deleteIt); \
-} \
-void MSMDirColumn::aips_name2(getSlice,NM) \
-                          (uInt rownr, const Slicer& ns, Array<T>* arr) \
-{ \
-  Array<T> tabarr (shape_p, (T*) (getArrayPtr (rownr)), SHARE); \
-  IPosition blc, trc, inc; \
-  ns.inferShapeFromSource (shape_p, blc, trc, inc); \
-  *arr = tabarr(blc, trc, inc); \
-} \
-void MSMDirColumn::aips_name2(putSlice,NM) \
-                          (uInt rownr, const Slicer& ns, const Array<T>* arr) \
-{ \
-  Array<T> tabarr (shape_p, (T*) (getArrayPtr (rownr)), SHARE); \
-  IPosition blc, trc, inc; \
-  ns.inferShapeFromSource (shape_p, blc, trc, inc); \
-  tabarr(blc, trc, inc) = *arr; \
-}
-
-MSMARRCOLUMN_GETPUT(Bool,BoolV)
-MSMARRCOLUMN_GETPUT(uChar,uCharV)
-MSMARRCOLUMN_GETPUT(Short,ShortV)
-MSMARRCOLUMN_GETPUT(uShort,uShortV)
-MSMARRCOLUMN_GETPUT(Int,IntV)
-MSMARRCOLUMN_GETPUT(uInt,uIntV)
-//#//MSMARRCOLUMN_GETPUT(float,floatV)
-MSMARRCOLUMN_GETPUT(double,doubleV)
-MSMARRCOLUMN_GETPUT(Complex,ComplexV)
-MSMARRCOLUMN_GETPUT(DComplex,DComplexV)
-MSMARRCOLUMN_GETPUT(String,StringV)
-
-
-void MSMDirColumn::getArrayColumnfloatV (Array<float>* arr)
-{
-  uInt nrmax = arr->shape()(arr->ndim()-1);
-  Bool deleteItTarget;
-  float* target = arr->getStorage (deleteItTarget);
-  uInt nr;
-  void* ext;
-  uInt extnr = 0;
-  while ((nr = nextExt (ext, extnr, nrmax))  >  0) {
-    const float** dpa = (const float**)ext;
-    for (uInt i=0; i<nr; i++) {
-      objcopy (target, *dpa, nrelem_p);
-      target += nrelem_p;
-      dpa++;
+    DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
+    Bool deleteIt;
+    void* data = arr.getVStorage (deleteIt);
+    if (dtype() == TpString) {
+      objcopy (static_cast<String*>(data),
+               static_cast<const String*>(getArrayPtr (rownr)),
+               nrelem_p);
+    } else {
+      memcpy (static_cast<char*>(data),
+              static_cast<const char*>(getArrayPtr (rownr)),
+              elemSize() * nrelem_p);
     }
-  }
-  arr->putStorage (target, deleteItTarget);
+    arr.putVStorage (data, deleteIt);
 }
-void MSMDirColumn::putArrayColumnfloatV (const Array<float>* arr)
+void MSMDirColumn::putArrayV (uInt rownr, const ArrayBase& arr)
 {
-  uInt nrmax = arr->shape()(arr->ndim()-1);
-  Bool deleteItTarget;
-  const float* target = arr->getStorage (deleteItTarget);
-  uInt nr;
-  void* ext;
-  uInt extnr = 0;
-  while ((nr = nextExt (ext, extnr, nrmax))  >  0) {
-    float** dpa = (float**)ext;
-    for (uInt i=0; i<nr; i++) {
-      objcopy (*dpa, target, nrelem_p);
-      target += nrelem_p;
-      dpa++;
+    DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
+    Bool deleteIt;
+    const void* data = arr.getVStorage (deleteIt);
+    if (dtype() == TpString) {
+      objcopy (static_cast<String*>(getArrayPtr (rownr)),
+               static_cast<const String*>(data),
+               nrelem_p);
+    } else {
+      memcpy (static_cast<char*>(getArrayPtr (rownr)),
+              static_cast<const char*>(data),
+              elemSize() * nrelem_p);
     }
-  }
-  arr->freeStorage (target, deleteItTarget);
+    arr.freeVStorage (data, deleteIt);
+    stmanPtr_p->setHasPut();
 }
-#define MSMARRCOLUMN_GETPUTCOLUMN(T,NM) \
-void MSMDirColumn::aips_name2(getArrayColumn,NM) (Array<T>* arr) \
-{ \
-  uInt nrmax = arr->shape()(arr->ndim()-1); \
-  Bool deleteItTarget; \
-  T* target = arr->getStorage (deleteItTarget); \
-  uInt nr; \
-  void* ext; \
-  uInt extnr = 0; \
-  while ((nr = nextExt (ext, extnr, nrmax))  >  0) { \
-    const T** dpa = (const T**)ext; \
-    for (uInt i=0; i<nr; i++) { \
-      objcopy (target, *dpa, nrelem_p); \
-      target += nrelem_p; \
-      dpa++; \
-    } \
-  } \
-  arr->putStorage (target, deleteItTarget); \
-} \
-void MSMDirColumn::aips_name2(putArrayColumn,NM) (const Array<T>* arr) \
-{ \
-  uInt nrmax = arr->shape()(arr->ndim()-1); \
-  Bool deleteItTarget; \
-  const T* target = arr->getStorage (deleteItTarget); \
-  uInt nr; \
-  void* ext; \
-  uInt extnr = 0; \
-  while ((nr = nextExt (ext, extnr, nrmax))  >  0) { \
-    T** dpa = (T**)ext; \
-    for (uInt i=0; i<nr; i++) { \
-      objcopy (*dpa, target, nrelem_p); \
-      target += nrelem_p; \
-      dpa++; \
-    } \
-  } \
-  arr->freeStorage (target, deleteItTarget); \
-}
-
-MSMARRCOLUMN_GETPUTCOLUMN(Bool,BoolV)
-MSMARRCOLUMN_GETPUTCOLUMN(uChar,uCharV)
-MSMARRCOLUMN_GETPUTCOLUMN(Short,ShortV)
-MSMARRCOLUMN_GETPUTCOLUMN(uShort,uShortV)
-MSMARRCOLUMN_GETPUTCOLUMN(Int,IntV)
-MSMARRCOLUMN_GETPUTCOLUMN(uInt,uIntV)
-//#//MSMARRCOLUMN_GETPUTCOLUMN(float,floatV)
-MSMARRCOLUMN_GETPUTCOLUMN(double,doubleV)
-MSMARRCOLUMN_GETPUTCOLUMN(Complex,ComplexV)
-MSMARRCOLUMN_GETPUTCOLUMN(DComplex,DComplexV)
-MSMARRCOLUMN_GETPUTCOLUMN(String,StringV)
-
 
 
 void MSMDirColumn::remove (uInt rownr)
 {
   deleteArray (rownr);
   MSMColumn::remove (rownr);
-}
-
-
-Bool MSMDirColumn::ok() const
-{
-  return MSMColumn::ok();
 }
 
 

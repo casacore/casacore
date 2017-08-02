@@ -64,53 +64,8 @@ VirtualTaQLColumn::VirtualTaQLColumn (const Record& spec)
 
 VirtualTaQLColumn::~VirtualTaQLColumn()
 {
-  if (itsCurResult != 0) {
-    clearCurResult();
-  }
+  delete itsCurResult;
   delete itsNode;
-}
-
-void VirtualTaQLColumn::clearCurResult()
-{
-  switch (itsDataType) {
-  case TpBool:
-    delete static_cast<Array<Bool>*>(itsCurResult);
-    break;
-  case TpUChar:
-    delete static_cast<Array<uChar>*>(itsCurResult);
-    break;
-  case TpShort:
-    delete static_cast<Array<Short>*>(itsCurResult);
-    break;
-  case TpUShort:
-    delete static_cast<Array<uShort>*>(itsCurResult);
-    break;
-  case TpInt:
-    delete static_cast<Array<Int>*>(itsCurResult);
-    break;
-  case TpUInt:
-    delete static_cast<Array<uInt>*>(itsCurResult);
-    break;
-  case TpFloat:
-    delete static_cast<Array<Float>*>(itsCurResult);
-    break;
-  case TpDouble:
-    delete static_cast<Array<Double>*>(itsCurResult);
-    break;
-  case TpComplex:
-    delete static_cast<Array<Complex>*>(itsCurResult);
-    break;
-  case TpDComplex:
-    delete static_cast<Array<DComplex>*>(itsCurResult);
-    break;
-  case TpString:
-    delete static_cast<Array<String>*>(itsCurResult);
-    break;
-  default:
-    throw DataManError ("VirtualTaQLColumn::clearResult - unknown data type");
-  }
-  itsCurResult = 0;
-  itsCurRow    = -1;
 }
 
 DataManager* VirtualTaQLColumn::clone() const
@@ -176,6 +131,7 @@ void VirtualTaQLColumn::prepare()
   case TpUShort:
   case TpInt:
   case TpUInt:
+  case TpInt64:
     exptype = TpInt;
     break;
   case TpFloat:
@@ -188,6 +144,47 @@ void VirtualTaQLColumn::prepare()
     throw DataManError ("VirtualTaQLColumn: "
 			"expression and column " + itsColumnName +
                         " data type mismatch");
+  }
+  // Create the correct array type.
+  switch (itsDataType) {
+  case TpBool:
+    itsCurResult = new Array<Bool>();
+    break;
+  case TpUChar:
+    itsCurResult = new Array<uChar>();
+    break;
+  case TpShort:
+    itsCurResult = new Array<Short>();
+    break;
+  case TpUShort:
+    itsCurResult = new Array<uShort>();
+    break;
+  case TpInt:
+    itsCurResult = new Array<Int>();
+    break;
+  case TpUInt:
+    itsCurResult = new Array<uInt>();
+    break;
+  case TpInt64:
+    itsCurResult = new Array<Int64>();
+    break;
+  case TpFloat:
+    itsCurResult = new Array<Float>();
+    break;
+  case TpDouble:
+    itsCurResult = new Array<Double>();
+    break;
+  case TpComplex:
+    itsCurResult = new Array<Complex>();
+    break;
+  case TpDComplex:
+    itsCurResult = new Array<DComplex>();
+    break;
+  case TpString:
+    itsCurResult = new Array<String>();
+    break;
+  default:
+    throw DataManError ("VirtualTaQLColumn::prepare - unknown data type");
   }
 }
 
@@ -244,8 +241,8 @@ IPosition VirtualTaQLColumn::shape (uInt rownr)
   if (shp.nelements() > 0) {
     return shp;
   }
-  if (Int(rownr) != itsCurRow) {
-    itsCurShape = getResult (rownr, itsCurResult);
+  if (Int64(rownr) != itsCurRow) {
+    itsCurShape = getResult (rownr, *itsCurResult);
     itsCurRow = rownr;
   }
   return itsCurShape;
@@ -302,74 +299,26 @@ void VirtualTaQLColumn::getStringV (uInt rownr, String* dataPtr)
   *dataPtr = itsNode->getString (rownr);
 }
 
-void VirtualTaQLColumn::getArrayV (uInt rownr, void* dataPtr)
+void VirtualTaQLColumn::getArrayV (uInt rownr, ArrayBase& dataPtr)
 {
   // Usually getShape is called before getArray.
   // To avoid double calculation of the same value, the result is cached
   // by getShape in itsCurResult (by getResult).
-  if (Int(rownr) != itsCurRow) {
+  if (Int64(rownr) != itsCurRow) {
     getResult (rownr, dataPtr);
     return;
   }
-  switch (itsDataType) {
-  case TpBool:
-    *static_cast<Array<Bool>*>(dataPtr) =
-      *static_cast<Array<Bool>*>(itsCurResult);
-    break;
-  case TpUChar:
-    *static_cast<Array<uChar>*>(dataPtr) =
-      *static_cast<Array<uChar>*>(itsCurResult);
-    break;
-  case TpShort:
-    *static_cast<Array<Short>*>(dataPtr) =
-      *static_cast<Array<Short>*>(itsCurResult);
-    break;
-  case TpUShort:
-    *static_cast<Array<uShort>*>(dataPtr) =
-      *static_cast<Array<uShort>*>(itsCurResult);
-    break;
-  case TpInt:
-    *static_cast<Array<Int>*>(dataPtr) =
-      *static_cast<Array<Int>*>(itsCurResult);
-    break;
-  case TpUInt:
-    *static_cast<Array<uInt>*>(dataPtr) =
-      *static_cast<Array<uInt>*>(itsCurResult);
-    break;
-  case TpFloat:
-    *static_cast<Array<Float>*>(dataPtr) =
-      *static_cast<Array<Float>*>(itsCurResult);
-    break;
-  case TpDouble:
-    *static_cast<Array<Double>*>(dataPtr) =
-      *static_cast<Array<Double>*>(itsCurResult);
-    break;
-  case TpComplex:
-    *static_cast<Array<Complex>*>(dataPtr) =
-      *static_cast<Array<Complex>*>(itsCurResult);
-    break;
-  case TpDComplex:
-    *static_cast<Array<DComplex>*>(dataPtr) =
-      *static_cast<Array<DComplex>*>(itsCurResult);
-    break;
-  case TpString:
-    *static_cast<Array<String>*>(dataPtr) =
-      *static_cast<Array<String>*>(itsCurResult);
-    break;
-  default:
-    throw DataManError ("VirtualTaQLColumn::getArrayV - unknown data type");
-  }
-  clearCurResult();
+  dataPtr.assignBase (*itsCurResult);
 }
 
-IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
+IPosition VirtualTaQLColumn::getResult (uInt rownr, ArrayBase& dataPtr)
 {
   IPosition shp;
   switch (itsDataType) {
   case TpBool:
     {
-      Array<Bool> arr =itsNode->getArrayBool (rownr);
-      Array<Bool>& out = *static_cast<Array<Bool>*>(dataPtr);
+      Array<Bool> arr = itsNode->getArrayBool (rownr);
+      Array<Bool>& out = static_cast<Array<Bool>&>(dataPtr);
       out.reference (arr);
       shp = out.shape();
       break;
@@ -377,7 +326,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   case TpUChar:
     {
       Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uChar>& out = *static_cast<Array<uChar>*>(dataPtr);
+      Array<uChar>& out = static_cast<Array<uChar>&>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);
       shp = out.shape();
@@ -386,7 +335,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   case TpShort:
     {
       Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<Short>& out = *static_cast<Array<Short>*>(dataPtr);
+      Array<Short>& out = static_cast<Array<Short>&>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);
       shp = out.shape();
@@ -395,7 +344,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   case TpUShort:
     {
       Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uShort>& out = *static_cast<Array<uShort>*>(dataPtr);
+      Array<uShort>& out = static_cast<Array<uShort>&>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);
       shp = out.shape();
@@ -404,7 +353,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   case TpInt:
     {
       Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<Int>& out = *static_cast<Array<Int>*>(dataPtr);
+      Array<Int>& out = static_cast<Array<Int>&>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);
       shp = out.shape();
@@ -413,7 +362,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   case TpUInt:
     {
       Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uInt>& out = *static_cast<Array<uInt>*>(dataPtr);
+      Array<uInt>& out = static_cast<Array<uInt>&>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);
       shp = out.shape();
@@ -422,7 +371,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   case TpFloat:
     {
       Array<Double> arr = itsNode->getArrayDouble (rownr);
-      Array<Float>& out = *static_cast<Array<Float>*>(dataPtr);
+      Array<Float>& out = static_cast<Array<Float>&>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);
       shp = out.shape();
@@ -431,7 +380,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   case TpDouble:
     {
       Array<Double> arr  = itsNode->getArrayDouble (rownr);
-      Array<Double>& out = *static_cast<Array<Double>*>(dataPtr);
+      Array<Double>& out = static_cast<Array<Double>&>(dataPtr);
       out.reference (arr);
       shp = out.shape();
       break;
@@ -439,7 +388,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   case TpComplex:
     {
       Array<DComplex> arr = itsNode->getArrayDComplex (rownr);
-      Array<Complex>& out = *static_cast<Array<Complex>*>(dataPtr);
+      Array<Complex>& out = static_cast<Array<Complex>&>(dataPtr);
       out.resize (arr.shape());
       convertArray (out, arr);
       shp = out.shape();
@@ -448,7 +397,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   case TpDComplex:
     {
       Array<DComplex> arr  = itsNode->getArrayDComplex (rownr);
-      Array<DComplex>& out = *static_cast<Array<DComplex>*>(dataPtr);
+      Array<DComplex>& out = static_cast<Array<DComplex>&>(dataPtr);
       out.reference (arr);
       shp = out.shape();
       break;
@@ -456,7 +405,7 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   case TpString:
     {
       Array<String> arr  = itsNode->getArrayString (rownr);
-      Array<String>& out = *static_cast<Array<String>*>(dataPtr);
+      Array<String>& out = static_cast<Array<String>&>(dataPtr);
       out.reference (arr);
       shp = out.shape();
       break;
@@ -466,6 +415,28 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, void* dataPtr)
   }
   return shp;
 }
+
+void VirtualTaQLColumn::getScalarColumnV (ArrayBase& data)
+  { dmGetScalarColumnV (data); }
+void VirtualTaQLColumn::getScalarColumnCellsV (const RefRows& rownrs,
+                                               ArrayBase& data)
+  { dmGetScalarColumnCellsV (rownrs, data); }
+void VirtualTaQLColumn::getArrayColumnV (ArrayBase& data)
+  { dmGetArrayColumnV (data); }
+void VirtualTaQLColumn::getArrayColumnCellsV (const RefRows& rownrs,
+                                              ArrayBase& data)
+  { dmGetArrayColumnCellsV (rownrs, data); }
+void VirtualTaQLColumn::getSliceV (uInt rownr,
+                                   const Slicer& slicer,
+                                   ArrayBase& data)
+  { dmGetSliceV (rownr, slicer, data); }
+void VirtualTaQLColumn::getColumnSliceV (const Slicer& slicer,
+                                         ArrayBase& data)
+  { dmGetColumnSliceV (slicer, data); }
+void VirtualTaQLColumn::getColumnSliceCellsV (const RefRows& rownrs,
+                                              const Slicer& slicer,
+                                              ArrayBase& data)
+  { dmGetColumnSliceCellsV (rownrs, slicer, data); }
 
 
 } //# NAMESPACE CASACORE - END

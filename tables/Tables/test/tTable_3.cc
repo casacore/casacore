@@ -107,11 +107,9 @@ void a (uInt nrrow)
 						     IPosition(1,nrrow-1)));
 	timer.show("range ISM");
 	for (i=0; i<nrrow-1; i++) {
-	    if (abv1(i) != i  ||  adv1(i) != Int(i/10)) {
-		cout << i << ',';
-	    }
+	    AlwaysAssertExit (abv1(i) == i);
+	    AlwaysAssertExit (adv1(i) == Int(i/10));
 	}
-	cout << endl;
     }
     {
 	Table rtab (tab(abv));
@@ -137,11 +135,9 @@ void a (uInt nrrow)
 	    }	
 	    timer.show("b");
 	    for (i=0; i<nrrow; i++) {
-		if (abv(i) != i  ||  adv(i) != Int(i/10)) {
-		    cout << i << ',';
-		}
+                AlwaysAssertExit (abv(i) == i);
+                AlwaysAssertExit (adv(i) == Int(i/10));
 	    }
-	    cout << endl;
 	}
 	{
 	    // Get entire column (minus last cell) to test range performance.
@@ -154,11 +150,9 @@ void a (uInt nrrow)
 							 IPosition(1,nrrow-1)));
 	    timer.show("cells/range ISM");
 	    for (i=0; i<nrrow-1; i++) {
-		if (abv1(i) != i  ||  adv1(i) != Int(i/10)) {
-		    cout << i << ',';
-		}
+                AlwaysAssertExit (abv1(i) == i);
+                AlwaysAssertExit (adv1(i) == Int(i/10));
 	    }
-	    cout << endl;
 	}
     }
 }
@@ -172,7 +166,7 @@ int main (int argc, const char* argv[])
 	}
 	cout << nrrow << " rows" << endl;
 	a (nrrow);
-    } catch (AipsError x) {
+    } catch (const AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 

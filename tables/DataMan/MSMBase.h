@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSMBase.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef TABLES_MSMBASE_H
 #define TABLES_MSMBASE_H
@@ -81,33 +81,38 @@ public:
   MSMBase (const String& storageManagerName, const Record&);
   // </group>
 
-  ~MSMBase();
+  virtual ~MSMBase();
 
   // Clone this object.
   // It does not clone MSMColumn objects possibly used.
-  DataManager* clone() const;
+  virtual DataManager* clone() const;
 
   // Get the type name of the data manager (i.e. MemoryStMan).
-  String dataManagerType() const;
+  virtual String dataManagerType() const;
 
   // Get the name given to this storage manager.
-  String dataManagerName() const;
+  virtual String dataManagerName() const;
+
+  // Set the hasPut_p flag. In this way the StManAipsIOColumn objects
+  // can indicate that data have been put.
+  void setHasPut()
+    { hasPut_p = True; }
 
   // Get the nr of rows in this storage manager.
   uInt nrow() const
     { return nrrow_p; }
 
   // Does the storage manager allow to add rows? (yes)
-  Bool canAddRow() const;
+  virtual Bool canAddRow() const;
 
   // Does the storage manager allow to delete rows? (yes)
-  Bool canRemoveRow() const;
+  virtual Bool canRemoveRow() const;
 
   // Does the storage manager allow to add columns? (yes)
-  Bool canAddColumn() const;
+  virtual Bool canAddColumn() const;
 
   // Does the storage manager allow to delete columns? (yes)
-  Bool canRemoveColumn() const;
+  virtual Bool canRemoveColumn() const;
 
   // Make the object from the string.
   // This function gets registered in the DataManager "constructor" map.
@@ -144,40 +149,40 @@ private:
   virtual void deleteManager();
 
   // Add rows to all columns.
-  void addRow (uInt nrrow);
+  virtual void addRow (uInt nrrow);
 
   // Delete a row from all columns.
-  void removeRow (uInt rownr);
+  virtual void removeRow (uInt rownr);
 
   // Create a column in the storage manager on behalf of a table column.
   // <group>
   // Create a scalar column.
-  DataManagerColumn* makeScalarColumn (const String& name, int dataType,
-				       const String& dataTypeID);
+  virtual DataManagerColumn* makeScalarColumn (const String& name, int dataType,
+                                               const String& dataTypeID);
   // Create a direct array column.
-  DataManagerColumn* makeDirArrColumn (const String& name, int dataType,
-				       const String& dataTypeID);
+  virtual DataManagerColumn* makeDirArrColumn (const String& name, int dataType,
+                                               const String& dataTypeID);
   // Create an indirect array column.
-  DataManagerColumn* makeIndArrColumn (const String& name, int dataType,
-				       const String& dataTypeID);
+  virtual DataManagerColumn* makeIndArrColumn (const String& name, int dataType,
+                                               const String& dataTypeID);
   // </group>
 
   // The MemoryStMan wants to do reallocateColumn.
-  Bool canReallocateColumns() const;
+  virtual Bool canReallocateColumns() const;
 
   // Reallocate the column object if it is part of this data manager.
   // It returns a pointer to the new column object.
   // It is used to replace an MSMIndColumn object for indirect array with
   // a fixed shape by an MSMDirColumn object.
-  DataManagerColumn* reallocateColumn (DataManagerColumn* column);
+  virtual DataManagerColumn* reallocateColumn (DataManagerColumn* column);
 
   // Add a column.
-  void addColumn (DataManagerColumn*);
+  virtual void addColumn (DataManagerColumn*);
 
   // Delete a column.
-  void removeColumn (DataManagerColumn*);
+  virtual void removeColumn (DataManagerColumn*);
 
-
+protected:
   // Name given by user to this storage manager.
   String stmanName_p;
   // The number of rows in the columns.
@@ -186,6 +191,8 @@ private:
   uInt   nrrowCreate_p;
   // The assembly of all columns.
   PtrBlock<MSMColumn*> colSet_p;
+  // Has anything been put since the last flush?
+  Bool   hasPut_p;
 };
 
 

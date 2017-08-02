@@ -278,77 +278,77 @@ void TableColumn::put (uInt thisRownr, const TableColumn& that,
       case TpBool:
         {
           Array<Bool> array(shape);
-          baseColPtr(that)->get (thatRownr, &array);
+          baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpUChar:
         {
           Array<uChar> array(shape);
-          baseColPtr(that)->get (thatRownr, &array);
+          baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpShort:
         {
           Array<Short> array(shape);
-          baseColPtr(that)->get (thatRownr, &array);
+          baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpUShort:
         {
           Array<uShort> array(shape);
-          baseColPtr(that)->get (thatRownr, &array);
+          baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpInt:
         {
           Array<Int> array(shape);
-          baseColPtr(that)->get (thatRownr, &array);
+          baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpUInt:
         {
           Array<uInt> array(shape);
-          baseColPtr(that)->get (thatRownr, &array);
+          baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpFloat:
         {
           Array<float> array(shape);
-          baseColPtr(that)->get (thatRownr, &array);
+          baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpDouble:
         {
           Array<double> array(shape);
-          baseColPtr(that)->get (thatRownr, &array);
+          baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpComplex:
         {
           Array<Complex> array(shape);
-          baseColPtr(that)->get (thatRownr, &array);
+          baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpDComplex:
         {
           Array<DComplex> array(shape);
-          baseColPtr(that)->get (thatRownr, &array);
+          baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpString:
         {
           Array<String> array(shape);
-          baseColPtr(that)->get (thatRownr, &array);
+          baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
@@ -359,67 +359,67 @@ void TableColumn::put (uInt thisRownr, const TableColumn& that,
       case TpBool:
         {
           Array<Bool> arr (vh.asArrayBool());
-          baseColPtr_p->put (thisRownr, &arr);
+          baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpUChar:
         {
           Array<uChar> arr (vh.asArrayuChar());
-          baseColPtr_p->put (thisRownr, &arr);
+          baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpShort:
         {
           Array<Short> arr (vh.asArrayShort());
-          baseColPtr_p->put (thisRownr, &arr);
+          baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpUShort:
         {
           Array<uShort> arr (vh.asArrayuShort());
-          baseColPtr_p->put (thisRownr, &arr);
+          baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpInt:
         {
           Array<Int> arr (vh.asArrayInt());
-          baseColPtr_p->put (thisRownr, &arr);
+          baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpUInt:
         {
           Array<uInt> arr (vh.asArrayuInt());
-          baseColPtr_p->put (thisRownr, &arr);
+          baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpFloat:
         {
           Array<Float> arr (vh.asArrayFloat());
-          baseColPtr_p->put (thisRownr, &arr);
+          baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpDouble:
         {
           Array<Double> arr (vh.asArrayDouble());
-          baseColPtr_p->put (thisRownr, &arr);
+          baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpComplex:
         {
           Array<Complex> arr (vh.asArrayComplex());
-          baseColPtr_p->put (thisRownr, &arr);
+          baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpDComplex:
         {
           Array<DComplex> arr (vh.asArrayDComplex());
-          baseColPtr_p->put (thisRownr, &arr);
+          baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpString:
         {
           Array<String> arr (vh.asArrayString());
-          baseColPtr_p->put (thisRownr, &arr);
+          baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       default:

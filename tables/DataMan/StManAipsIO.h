@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: StManAipsIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef TABLES_STMANAIPSIO_H
 #define TABLES_STMANAIPSIO_H
@@ -31,12 +31,13 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/tables/DataMan/DataManager.h>
-#include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/DataMan/MSMBase.h>
+#include <casacore/tables/DataMan/MSMColumn.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/IO/ByteIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -58,7 +59,7 @@ class StManArrayFile;
 
 // <prerequisite>
 //# Classes you should understand before using this one.
-//   <li> StManColumn
+//   <li> DataManagerColumn
 // </prerequisite>
 
 // <etymology>
@@ -103,7 +104,7 @@ class StManArrayFile;
 // </todo>
 
 
-class StManColumnAipsIO : public StManColumn
+class StManColumnAipsIO : public MSMColumn
 {
 public:
 
@@ -114,122 +115,6 @@ public:
     // Frees up the storage.
     virtual ~StManColumnAipsIO();
 
-    // Get a scalar value in the given row.
-    // The buffer pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the Scalar/ArrayColumn get function).
-    // <group>
-    void getBoolV     (uInt rownr, Bool* dataPtr);
-    void getuCharV    (uInt rownr, uChar* dataPtr);
-    void getShortV    (uInt rownr, Short* dataPtr);
-    void getuShortV   (uInt rownr, uShort* dataPtr);
-    void getIntV      (uInt rownr, Int* dataPtr);
-    void getuIntV     (uInt rownr, uInt* dataPtr);
-    void getfloatV    (uInt rownr, float* dataPtr);
-    void getdoubleV   (uInt rownr, double* dataPtr);
-    void getComplexV  (uInt rownr, Complex* dataPtr);
-    void getDComplexV (uInt rownr, DComplex* dataPtr);
-    void getStringV   (uInt rownr, String* dataPtr);
-    // </group>
-
-    // Put a scalar value into the given row.
-    // The buffer pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the Scalar/ArrayColumn put function).
-    // <group>
-    void putBoolV     (uInt rownr, const Bool* dataPtr);
-    void putuCharV    (uInt rownr, const uChar* dataPtr);
-    void putShortV    (uInt rownr, const Short* dataPtr);
-    void putuShortV   (uInt rownr, const uShort* dataPtr);
-    void putIntV      (uInt rownr, const Int* dataPtr);
-    void putuIntV     (uInt rownr, const uInt* dataPtr);
-    void putfloatV    (uInt rownr, const float* dataPtr);
-    void putdoubleV   (uInt rownr, const double* dataPtr);
-    void putComplexV  (uInt rownr, const Complex* dataPtr);
-    void putDComplexV (uInt rownr, const DComplex* dataPtr);
-    void putStringV   (uInt rownr, const String* dataPtr);
-    // </group>
-
-    // Get scalars from the given row on with a maximum of nrmax values.
-    // This can be used to get an entire column of scalars or to get
-    // a part of a column (for a cache for example).
-    // The buffer pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ScalarColumn get function).
-    // <group>
-    uInt getBlockBoolV     (uInt rownr, uInt nrmax, Bool* dataPtr);
-    uInt getBlockuCharV    (uInt rownr, uInt nrmax, uChar* dataPtr);
-    uInt getBlockShortV    (uInt rownr, uInt nrmax, Short* dataPtr);
-    uInt getBlockuShortV   (uInt rownr, uInt nrmax, uShort* dataPtr);
-    uInt getBlockIntV      (uInt rownr, uInt nrmax, Int* dataPtr);
-    uInt getBlockuIntV     (uInt rownr, uInt nrmax, uInt* dataPtr);
-    uInt getBlockfloatV    (uInt rownr, uInt nrmax, float* dataPtr);
-    uInt getBlockdoubleV   (uInt rownr, uInt nrmax, double* dataPtr);
-    uInt getBlockComplexV  (uInt rownr, uInt nrmax, Complex* dataPtr);
-    uInt getBlockDComplexV (uInt rownr, uInt nrmax, DComplex* dataPtr);
-    uInt getBlockStringV   (uInt rownr, uInt nrmax, String* dataPtr);
-    // </group>
-
-    // Put nrmax scalars from the given row on.
-    // This can be used to put an entire column of scalars or to put
-    // a part of a column (for a cache for example).
-    // The buffer pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ScalarColumn put function).
-    // <group>
-    void putBlockBoolV     (uInt rownr, uInt nrmax, const Bool* dataPtr);
-    void putBlockuCharV    (uInt rownr, uInt nrmax, const uChar* dataPtr);
-    void putBlockShortV    (uInt rownr, uInt nrmax, const Short* dataPtr);
-    void putBlockuShortV   (uInt rownr, uInt nrmax, const uShort* dataPtr);
-    void putBlockIntV      (uInt rownr, uInt nrmax, const Int* dataPtr);
-    void putBlockuIntV     (uInt rownr, uInt nrmax, const uInt* dataPtr);
-    void putBlockfloatV    (uInt rownr, uInt nrmax, const float* dataPtr);
-    void putBlockdoubleV   (uInt rownr, uInt nrmax, const double* dataPtr);
-    void putBlockComplexV  (uInt rownr, uInt nrmax, const Complex* dataPtr);
-    void putBlockDComplexV (uInt rownr, uInt nrmax, const DComplex* dataPtr);
-    void putBlockStringV   (uInt rownr, uInt nrmax, const String* dataPtr);
-    // </group>
-
-    // Get the scalar values in some cells of the column.
-    // The buffer pointed to by dataPtr has to have the correct length.
-    // (which is guaranteed by the ScalarColumn getColumnCells function).
-    // The default implementation loops through all rows.
-    // <group>
-    virtual void getScalarColumnCellsBoolV     (const RefRows& rownrs,
-						Vector<Bool>* dataPtr);
-    virtual void getScalarColumnCellsuCharV    (const RefRows& rownrs,
-						Vector<uChar>* dataPtr);
-    virtual void getScalarColumnCellsShortV    (const RefRows& rownrs,
-						Vector<Short>* dataPtr);
-    virtual void getScalarColumnCellsuShortV   (const RefRows& rownrs,
-						Vector<uShort>* dataPtr);
-    virtual void getScalarColumnCellsIntV      (const RefRows& rownrs,
-						Vector<Int>* dataPtr);
-    virtual void getScalarColumnCellsuIntV     (const RefRows& rownrs,
-						Vector<uInt>* dataPtr);
-    virtual void getScalarColumnCellsfloatV    (const RefRows& rownrs,
-						Vector<float>* dataPtr);
-    virtual void getScalarColumnCellsdoubleV   (const RefRows& rownrs,
-						Vector<double>* dataPtr);
-    virtual void getScalarColumnCellsComplexV  (const RefRows& rownrs,
-						Vector<Complex>* dataPtr);
-    virtual void getScalarColumnCellsDComplexV (const RefRows& rownrs,
-						Vector<DComplex>* dataPtr);
-    virtual void getScalarColumnCellsStringV   (const RefRows& rownrs,
-						Vector<String>* dataPtr);
-    // </group>
-
-    // Add (newNrrow-oldNrrow) rows to the column.
-    virtual void addRow (uInt newNrrow, uInt oldNrrow);
-
-    // Resize the data blocks.
-    // This adds an extension when needed.
-    void resize (uInt nrval);
-
-    // Remove the given row.
-    // If no rows remain in the extension, the extension is also removed.
-    virtual void remove (uInt rownr);
-
-    // Create the number of rows in a new table.
-    // This is used when a table gets created.
-    virtual void doCreate (uInt nrrow);
-
     // Write the column data into AipsIO.
     // It will successively write all extensions using putData.
     virtual void putFile (uInt nrval, AipsIO&);
@@ -238,53 +123,9 @@ public:
     // One extension gets allocated to hold all rows in the column.
     virtual void getFile (uInt nrval, AipsIO&);
 
-    // Reopen the storage manager files for read/write.
-    virtual void reopenRW();
-
-    // Check if the class invariants still hold.
-    virtual Bool ok() const;
-
 protected:
-    // The storage manager.
-    StManAipsIO* stmanPtr_p;
-    // The data type (for caching purposes).
-    int dtype_p;
-    // The data is indirectly accessed via a pointer (for the derived classes).
-    Bool  byPtr_p;
-    // The number of allocated rows in the column.
-    uInt  nralloc_p;
-    // The nr of extensions in use.
-    uInt  nrext_p;
-    // The assembly of all extensions (actually Block<T*>).
-    Block<void*> data_p;
-    // The cumulative nr of rows in all extensions.
-    Block<uInt>  ncum_p;
-
-    // Find the extension in which the row number is.
-    // If the flag is true, it also sets the columnCache object.
-    uInt findExt (uInt rownr, Bool setCache);
-
-    // Get the next extension.
-    // For the first iteration extnr should be zero.
-    // It returns the number of values in it until the maximum is reached.
-    // Zero means no more extensions.
-    uInt nextExt (void*& ext, uInt& extnr, uInt nrmax) const;
-
-    // Allocate an extension with the data type of the column.
-    void* allocData (uInt nrval, Bool byPtr);
-
-    // Delete all extensions.
-    // Possible underlying data (as used by StManArrayColumnAipsIO)
-    // will not be deleted and should have been deleted beforehand.
-    void deleteAll();
-
-    // Delete an extension.
-    void deleteData (void* datap, Bool byPtr);
-
-    // Remove an entry (i.e. a row) from an extension at the given index.
-    // It will do this by shifting the rest (nrvalAfter elements)
-    // one position to the left.
-    void removeData (void* datap, uInt inx, uInt nrvalAfter);
+    // initData does not do anything (only used in MSMColumn).
+    virtual void initData (void* datap, uInt nrval);
 
     // Put the data (nrval elements) in an extension (starting at datap)
     // into AipsIO.
@@ -294,14 +135,6 @@ protected:
     // plus the given index).
     virtual void getData (void* datap, uInt index, uInt nrval, AipsIO&,
 			  uInt version);
-
-    // Get the pointer for the given row.
-    // This is for the derived classes like StManArrayColumnAipsIO.
-    void* getArrayPtr (uInt rownr);
-
-    // Put the pointer for the given row.
-    // This is for the derived classes like StManArrayColumnAipsIO.
-    void putArrayPtr (uInt rownr, void* dataPtr);
 
 private:
     // Forbid copy constructor.
@@ -358,7 +191,7 @@ private:
 // </todo>
 
 
-class StManAipsIO : public DataManager
+class StManAipsIO : public MSMBase
 {
 public:
 
@@ -376,44 +209,20 @@ public:
     StManAipsIO (const String& storageManagerName, const Record&);
     // </group>
 
-    ~StManAipsIO();
+    virtual ~StManAipsIO();
 
     // Clone this object.
     // It does not clone StManAipsIOColumn objects possibly used.
-    DataManager* clone() const;
+    virtual DataManager* clone() const;
 
     // Get the type name of the data manager (i.e. StManAipsIO).
-    String dataManagerType() const;
-
-    // Get the name given to this storage manager.
-    String dataManagerName() const;
+    virtual String dataManagerType() const;
 
     // Get a unique column number for the column
     // (it is only unique for this storage manager).
     // This is used by StManIndArrayColumnAipsIO to create a unique file name.
     uInt uniqueNr()
 	{ return uniqnr_p++; }
-
-    // Get the nr of rows in this storage manager.
-    uInt nrow() const
-	{ return nrrow_p; }
-
-    // Set the hasPut_p flag. In this way the StManAipsIOColumn objects
-    // can indicate that data have been put.
-    void setHasPut()
-	{ hasPut_p = True; }
-
-    // Does the storage manager allow to add rows? (yes)
-    Bool canAddRow() const;
-
-    // Does the storage manager allow to delete rows? (yes)
-    Bool canRemoveRow() const;
-
-    // Does the storage manager allow to add columns? (yes)
-    Bool canAddColumn() const;
-
-    // Does the storage manager allow to delete columns? (yes)
-    Bool canRemoveColumn() const;
 
     // Make the object from the string.
     // This function gets registered in the DataManager "constructor" map.
@@ -456,12 +265,6 @@ private:
     // So clean up the things needed (e.g. delete files).
     virtual void deleteManager();
 
-    // Add rows to all columns.
-    void addRow (uInt nrrow);
-
-    // Delete a row from all columns.
-    void removeRow (uInt rownr);
-
     // Create a column in the storage manager on behalf of a table column.
     // <group>
     // Create a scalar column.
@@ -475,23 +278,9 @@ private:
 					 const String& dataTypeID);
     // </group>
 
-    // Add a column.
-    void addColumn (DataManagerColumn*);
 
-    // Delete a column.
-    void removeColumn (DataManagerColumn*);
-
-
-    // Name given by user to this storage manager.
-    String stmanName_p;
     // Unique nr for column in this storage manager.
-    uInt   uniqnr_p;
-    // The number of rows in the columns.
-    uInt   nrrow_p;
-    // The assembly of all columns.
-    PtrBlock<StManColumnAipsIO*>  colSet_p;
-    // Has anything been put since the last flush?
-    Bool   hasPut_p;
+    uInt uniqnr_p;
     // The file containing the indirect arrays.
     StManArrayFile* iosfile_p;
 };

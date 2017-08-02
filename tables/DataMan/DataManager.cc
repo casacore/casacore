@@ -1,4 +1,4 @@
-//# DataManager.cc: Storage manager for tables
+//# DataManager.cc: Abstract base class for a data manager
 //# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -28,6 +28,7 @@
 
 //# Includes
 #include <casacore/tables/DataMan/DataManager.h>
+#include <casacore/tables/DataMan/DataManagerColumn.h>
 #include <casacore/tables/DataMan/StManAipsIO.h>
 #include <casacore/tables/DataMan/StandardStMan.h>
 #include <casacore/tables/DataMan/IncrementalStMan.h>
@@ -45,7 +46,6 @@
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/PlainTable.h>
-#include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/DynLib.h>
@@ -345,232 +345,6 @@ DataManager* DataManager::unknownDataManager (const String& type,
                               " libraries used during the build of "
                               + type);
     return 0;
-}
-
-
-
-
-DataManagerColumn::~DataManagerColumn()
-{}
-
-void DataManagerColumn::setMaxLength (uInt)
-{}
-
-void DataManagerColumn::setShapeColumn (const IPosition&)
-{
-    throw DataManInvOper ("setShapeColumn only allowed for FixedShape arrays"
-                          " in column " + columnName());
-}
-
-void DataManagerColumn::setShape (uInt, const IPosition&)
-{
-    throw DataManInvOper("setShape only allowed for non-FixedShape arrays"
-                         " in column " + columnName());
-}
-
-void DataManagerColumn::setShapeTiled (uInt rownr, const IPosition& shape,
-				       const IPosition&)
-{
-    setShape (rownr, shape);
-}
-
-// By default the shape is defined (for scalars).
-Bool DataManagerColumn::isShapeDefined (uInt)
-{
-    return True;
-}
-
-// The default implementation of ndim is to use the shape.
-uInt DataManagerColumn::ndim (uInt rownr)
-{
-    return shape(rownr).nelements();
-}
-
-// The shape of the array in the given row.
-IPosition DataManagerColumn::shape (uInt)
-{
-    return IPosition(0);
-}
-
-// The tile shape of the array in the given row.
-IPosition DataManagerColumn::tileShape (uInt)
-{
-    return IPosition(0);
-}
-
-Bool DataManagerColumn::canChangeShape() const
-{
-    return False;
-}
-
-Bool DataManagerColumn::canAccessScalarColumn (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool DataManagerColumn::canAccessArrayColumn (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool DataManagerColumn::canAccessScalarColumnCells (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool DataManagerColumn::canAccessArrayColumnCells (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool DataManagerColumn::canAccessSlice (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool DataManagerColumn::canAccessColumnSlice (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-
-
-String DataManagerColumn::dataTypeId() const
-    { return String(); }
-
-Bool DataManagerColumn::isWritable() const
-    { return True; }
-
-void DataManagerColumn::throwGet() const
-    { throw (DataManInvOper ("DataManagerColumn::get not allowed in column "
-                             + columnName())); }
-void DataManagerColumn::throwPut() const
-    { throw (DataManInvOper ("DataManagerColumn::put not allowed in column "
-                             + columnName())); }
-
-
-#define DATAMANAGER_GETPUT(T,NM) \
-void DataManagerColumn::aips_name2(get,NM) (uInt, T*) \
-    { throwGet(); } \
-void DataManagerColumn::aips_name2(put,NM) (uInt, const T*) \
-    { throwPut(); }
-
-DATAMANAGER_GETPUT(Bool,BoolV)
-DATAMANAGER_GETPUT(uChar,uCharV)
-DATAMANAGER_GETPUT(Short,ShortV)
-DATAMANAGER_GETPUT(uShort,uShortV)
-DATAMANAGER_GETPUT(Int,IntV)
-DATAMANAGER_GETPUT(uInt,uIntV)
-DATAMANAGER_GETPUT(float,floatV)
-DATAMANAGER_GETPUT(double,doubleV)
-DATAMANAGER_GETPUT(Complex,ComplexV)
-DATAMANAGER_GETPUT(DComplex,DComplexV)
-DATAMANAGER_GETPUT(String,StringV)
-
-
-void DataManagerColumn::getOtherV (uInt, void*)
-{
-  throw (DataManInvOper ("DataManagerColumn::getOtherV not allowed"
-                         " in column " + columnName()));
-}
-void DataManagerColumn::putOtherV (uInt, const void*)
-{
-  throw (DataManInvOper ("DataManagerColumn::putOtherV not allowed"
-                         " in column " + columnName()));
-}
-
-void DataManagerColumn::getScalarColumnV (void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getScalarColumn not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::putScalarColumnV (const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putScalarColumn not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::getScalarColumnCellsV (const RefRows&, void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getScalarColumnCells not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::putScalarColumnCellsV (const RefRows&, const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putScalarColumnCells not allowed"
-                        " in column " + columnName()));
-}
-uInt DataManagerColumn::getBlockV (uInt, uInt, void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getBlock not allowed"
-                        " in column " + columnName()));
-  return 0;
-}
-void DataManagerColumn::putBlockV (uInt, uInt, const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putBlock not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::getArrayV (uInt, void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getArray not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::putArrayV (uInt, const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putArray not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::getArrayColumnV (void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getArrayColumn not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::putArrayColumnV (const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putArrayColumn not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::getArrayColumnCellsV (const RefRows&, void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getArrayColumnCells not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::putArrayColumnCellsV (const RefRows&, const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putArrayColumnCells not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::getSliceV (uInt, const Slicer&, void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getSlice not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::putSliceV (uInt, const Slicer&, const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putSlice not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::getColumnSliceV (const Slicer&, void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getColumnSlice not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::putColumnSliceV (const Slicer&, const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putColumnSlice not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::getColumnSliceCellsV (const RefRows&,
-					      const Slicer&, void*)
-{
-  throw (DataManInvOper("DataManagerColumn::getColumnSliceCells not allowed"
-                        " in column " + columnName()));
-}
-void DataManagerColumn::putColumnSliceCellsV (const RefRows&,
-					      const Slicer&, const void*)
-{
-  throw (DataManInvOper("DataManagerColumn::putColumnSliceCells not allowed"
-                        " in column " + columnName()));
 }
 
 

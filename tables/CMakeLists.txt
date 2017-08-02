@@ -24,7 +24,10 @@ foreach (src DataMan/DataManager.cc TaQL/UDFBase.cc)
 endforeach (src)
 
 add_library (casa_tables
+Tables/ArrayColumnBase.cc
 Tables/ArrayColumn_tmpl.cc
+Tables/ArrColData.cc
+Tables/ArrColDesc.cc
 Tables/ArrColDesc_tmpl.cc
 Tables/BaseColDesc.cc
 Tables/BaseColumn.cc
@@ -86,6 +89,7 @@ DataMan/DataManAccessor.cc
 DataMan/DataManError.cc
 DataMan/DataManInfo.cc
 DataMan/DataManager.cc
+DataMan/DataManagerColumn.cc
 DataMan/ForwardCol.cc
 DataMan/ForwardColRow.cc
 DataMan/ISMBase.cc
@@ -134,6 +138,8 @@ DataMan/TiledFileHelper.cc
 DataMan/TiledShapeStMan.cc
 DataMan/TiledStMan.cc
 DataMan/TiledStManAccessor.cc
+DataMan/VirtArrCol.cc
+DataMan/VirtScaCol.cc
 DataMan/VirtColEng.cc
 DataMan/VirtualTaQLColumn.cc
 TaQL/ExprAggrNode.cc
@@ -200,11 +206,11 @@ LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUT
 
 install (FILES
 Tables/ArrColData.h
-Tables/ArrColData.tcc
 Tables/ArrColDesc.h
 Tables/ArrColDesc.tcc
 Tables/ArrayColumn.h
 Tables/ArrayColumn.tcc
+Tables/ArrayColumnBase.h
 Tables/ArrayColumnFunc.h
 Tables/BaseColDesc.h
 Tables/BaseColumn.h
@@ -296,6 +302,7 @@ DataMan/DataManAccessor.h
 DataMan/DataManError.h
 DataMan/DataManInfo.h
 DataMan/DataManager.h
+DataMan/DataManagerColumn.h
 DataMan/ForwardCol.h
 DataMan/ForwardColRow.h
 DataMan/ISMBase.h

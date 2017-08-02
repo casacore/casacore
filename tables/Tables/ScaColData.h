@@ -103,65 +103,52 @@ public:
 
     ~ScalarColumnData();
 
-    // Ask if the data manager can handle a column.
-    Bool canAccessScalarColumn (Bool& reask) const;
-
-    // Ask if the data manager can handle some cells in a column.
-    Bool canAccessScalarColumnCells (Bool& reask) const;
-
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description.
-    void initialize (uInt startRownr, uInt endRownr);
+    virtual void initialize (uInt startRownr, uInt endRownr);
 
     // Test if the given cell contains a defined value.
-    Bool isDefined (uInt rownr) const;
+    virtual Bool isDefined (uInt rownr) const;
 
     // Get the value from a particular cell.
-    void get (uInt rownr, void*) const;
+    virtual void get (uInt rownr, void*) const;
 
     // Get the array of all values in the column.
     // The length of the buffer pointed to by dataPtr must match
     // the actual length. This is checked by ScalarColumn.
-    void getScalarColumn (void* dataPtr) const;
+    virtual void getScalarColumn (ArrayBase& dataPtr) const;
 
     // Get the array of some values in the column (on behalf of RefColumn).
     // The length of the buffer pointed to by dataPtr must match
     // the actual length. This is checked by ScalarColumn.
-    void getScalarColumnCells (const RefRows& rownrs, void* dataPtr) const;
+    virtual void getScalarColumnCells (const RefRows& rownrs,
+                                       ArrayBase& dataPtr) const;
 
     // Put the value in a particular cell.
     // The length of the buffer pointed to by dataPtr must match
     // the actual length. This is checked by ScalarColumn.
-    void put (uInt rownr, const void* dataPtr);
+    virtual void put (uInt rownr, const void* dataPtr);
 
     // Put the array of all values in the column.
     // The length of the buffer pointed to by dataPtr must match
     // the actual length. This is checked by ScalarColumn.
-    void putScalarColumn (const void* dataPtr);
+    virtual void putScalarColumn (const ArrayBase& dataPtr);
 
     // Put the array of some values in the column (on behalf on RefColumn).
     // The length of the buffer pointed to by dataPtr must match
     // the actual length. This is checked by ScalarColumn.
-    void putScalarColumnCells (const RefRows& rownrs, const void* dataPtr);
+    virtual void putScalarColumnCells (const RefRows& rownrs,
+                                       const ArrayBase& dataPtr);
 
-    // Add this column and its data to the Sort object.
-    // It may allocate some storage on the heap, which will be saved
-    // in the argument dataSave.
-    // The function freeSortKey must be called to free this storage.
-    // <thrown>
-    //   <li> TableInvSort
-    // </thrown>
+    // Add the sort key to the Sort object on behalf of the Table sort function.
     // <group>
-    void makeSortKey (Sort&, CountedPtr<BaseCompare>& cmpFunc, Int order,
-		      const void*& dataSave);
+    virtual void makeSortKey (Sort&, CountedPtr<BaseCompare>& cmpFunc, Int order,
+                              CountedPtr<ArrayBase>& dataSave);
     // Do it only for the given row numbers.
     void makeRefSortKey (Sort&, CountedPtr<BaseCompare>& cmpFunc, Int order,
-			 const Vector<uInt>& rownrs, const void*& dataSave);
+			 const Vector<uInt>& rownrs,
+                         CountedPtr<ArrayBase>& dataSave);
     // </group>
-
-    // Free storage on the heap allocated by makeSortkey().
-    // The pointer will be set to zero.
-    void freeSortKey (const void*& dataSave);
 
     // Allocate value buffers for the table iterator.
     // Also get a comparison object if undefined.

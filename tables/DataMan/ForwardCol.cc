@@ -388,74 +388,58 @@ Bool ForwardColumn::canChangeShape() const
 {
     return (colPtr_p == 0  ?  False : colPtr_p->canChangeShape());
 }
-Bool ForwardColumn::canAccessScalarColumn (Bool& reask) const
-{
-    return colPtr_p->canAccessScalarColumn (reask);
-}
-Bool ForwardColumn::canAccessArrayColumn (Bool& reask) const
-{
-    return colPtr_p->canAccessArrayColumn (reask);
-}
-Bool ForwardColumn::canAccessSlice (Bool& reask) const
-{
-    return colPtr_p->canAccessSlice (reask);
-}
-Bool ForwardColumn::canAccessColumnSlice (Bool& reask) const
-{
-    return colPtr_p->canAccessColumnSlice (reask);
-}
 
-void ForwardColumn::getArrayV (uInt rownr, void* dataPtr)
-    { colPtr_p->get (rownr, dataPtr); }
+void ForwardColumn::getArrayV (uInt rownr, ArrayBase& dataPtr)
+    { colPtr_p->getArray (rownr, dataPtr); }
 
-void ForwardColumn::getSliceV (uInt rownr, const Slicer& ns, void* dataPtr)
+void ForwardColumn::getSliceV (uInt rownr, const Slicer& ns, ArrayBase& dataPtr)
     { colPtr_p->getSlice (rownr, ns, dataPtr); }
 
-void ForwardColumn::getScalarColumnV (void* dataPtr)
+void ForwardColumn::getScalarColumnV (ArrayBase& dataPtr)
     { colPtr_p->getScalarColumn (dataPtr); }
 
-void ForwardColumn::getArrayColumnV (void* dataPtr)
+void ForwardColumn::getArrayColumnV (ArrayBase& dataPtr)
     { colPtr_p->getArrayColumn (dataPtr); }
 
-void ForwardColumn::getScalarColumnCellsV (const RefRows& rownrs, void* dataPtr)
+void ForwardColumn::getScalarColumnCellsV (const RefRows& rownrs, ArrayBase& dataPtr)
     { colPtr_p->getScalarColumnCells (rownrs, dataPtr); }
 
-void ForwardColumn::getArrayColumnCellsV (const RefRows& rownrs, void* dataPtr)
+void ForwardColumn::getArrayColumnCellsV (const RefRows& rownrs, ArrayBase& dataPtr)
     { colPtr_p->getArrayColumnCells (rownrs, dataPtr); }
 
-void ForwardColumn::getColumnSliceV (const Slicer& ns, void* dataPtr)
+void ForwardColumn::getColumnSliceV (const Slicer& ns, ArrayBase& dataPtr)
     { colPtr_p->getColumnSlice (ns, dataPtr); }
 
 void ForwardColumn::getColumnSliceCellsV (const RefRows& rownrs,
-                                          const Slicer& ns, void* dataPtr)
+                                          const Slicer& ns, ArrayBase& dataPtr)
     { colPtr_p->getColumnSliceCells (rownrs, ns, dataPtr); }
 
-void ForwardColumn::putArrayV (uInt rownr, const void* dataPtr)
-    { colPtr_p->put (rownr, dataPtr); }
+void ForwardColumn::putArrayV (uInt rownr, const ArrayBase& dataPtr)
+    { colPtr_p->putArray (rownr, dataPtr); }
 
 void ForwardColumn::putSliceV (uInt rownr, const Slicer& ns,
-			       const void* dataPtr)
+			       const ArrayBase& dataPtr)
     { colPtr_p->putSlice (rownr, ns, dataPtr); }
 
-void ForwardColumn::putScalarColumnV (const void* dataPtr)
+void ForwardColumn::putScalarColumnV (const ArrayBase& dataPtr)
     { colPtr_p->putScalarColumn (dataPtr); }
 
-void ForwardColumn::putArrayColumnV (const void* dataPtr)
+void ForwardColumn::putArrayColumnV (const ArrayBase& dataPtr)
     { colPtr_p->putArrayColumn (dataPtr); }
 
 void ForwardColumn::putScalarColumnCellsV (const RefRows& rownrs,
-                                           const void* dataPtr)
+                                           const ArrayBase& dataPtr)
     { colPtr_p->putScalarColumnCells (rownrs, dataPtr); }
 
 void ForwardColumn::putArrayColumnCellsV (const RefRows& rownrs,
-                                          const void* dataPtr)
+                                          const ArrayBase& dataPtr)
     { colPtr_p->putArrayColumnCells (rownrs, dataPtr); }
 
-void ForwardColumn::putColumnSliceV (const Slicer& ns, const void* dataPtr)
+void ForwardColumn::putColumnSliceV (const Slicer& ns, const ArrayBase& dataPtr)
     { colPtr_p->putColumnSlice (ns, dataPtr); }
 
 void ForwardColumn::putColumnSliceCellsV (const RefRows& rownrs,
-                                          const Slicer& ns, const void* dataPtr)
+                                          const Slicer& ns, const ArrayBase& dataPtr)
     { colPtr_p->putColumnSliceCells (rownrs, ns, dataPtr); }
 
 

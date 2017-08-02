@@ -253,14 +253,6 @@ public:
 private:
     // Check if the data type matches the column data type.
     void checkDataType() const;
-
-protected:
-    // Keep a switch to determine if an entire column can be accessed.
-    // True = yes;  False = no.
-    mutable Bool canAccessColumn_p;
-    // Keep a switch to know if access knowledge is permanent or has
-    // to be asked again the next time.
-    mutable Bool reaskAccessColumn_p;
 };
 
 

@@ -114,15 +114,6 @@ private:
     // This data manager cannot handle changing array shapes.
     Bool canChangeShape() const;
 
-    // This data manager cannot do get/putColumn.
-    Bool canAccessScalarColumn (Bool& reask) const;
-
-    // This data manager cannot do get/putColumn.
-    Bool canAccessArrayColumn (Bool& reask) const;
-
-    // This data manager cannot do get/putColumn.
-    Bool canAccessColumnSlice (Bool& reask) const;
-
     // Set the shape of an (indirect) array in the given row.
     // This throws an exception, because putting is not supported.
     void setShape (uInt rownr, const IPosition& shape);
@@ -175,26 +166,26 @@ private:
     void putOtherV    (uInt rownr, const void* dataPtr);
 
     // Get the array value in the given row.
-    // The argument dataPtr is in fact a Array<T>*, but a void*
+    // The argument dataPtr is in fact a Array<T>&, but a ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn get function).
-    void getArrayV (uInt rownr, void* dataPtr);
+    void getArrayV (uInt rownr, ArrayBase& dataPtr);
 
     // Put the array value into the given row.
     // This throws an exception, because putting is not supported.
-    void putArrayV (uInt rownr, const void* dataPtr);
+    void putArrayV (uInt rownr, const ArrayBase& dataPtr);
 
     // Get a section of the array in the given row.
-    // The argument dataPtr is in fact a Array<T>*, but a void*
+    // The argument dataPtr is in fact a Array<T>&, but a ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn getSlice function).
-    void getSliceV (uInt rownr, const Slicer& slicer, void* dataPtr);
+    void getSliceV (uInt rownr, const Slicer& slicer, ArrayBase& dataPtr);
 
     // Put into a section of the array in the given row.
     // This throws an exception, because putting is not supported.
-    void putSliceV (uInt rownr, const Slicer& slicer, const void* dataPtr);
+    void putSliceV (uInt rownr, const Slicer& slicer, const ArrayBase& dataPtr);
 
     // Convert the rownr to the rownr in the underlying table.
     uInt convertRownr (uInt rownr);

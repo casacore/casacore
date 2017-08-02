@@ -258,7 +258,7 @@ public:
     
     // Get the table description.
     const TableDesc& tableDesc() const
-	{ return (tdescPtr_p == 0  ?  makeTableDesc() : *tdescPtr_p); }
+        { return (tdescPtr_p.null()  ?  makeEmptyTableDesc() : *tdescPtr_p); }
 
     // Get the actual table description.
     virtual TableDesc actualTableDesc() const = 0;
@@ -479,7 +479,7 @@ protected:
     uInt           nrlink_p;            //# #references to this table
     uInt           nrrow_p;             //# #rows in this table
     uInt           nrrowToAdd_p;        //# #rows to be added
-    TableDesc*     tdescPtr_p;          //# Pointer to table description
+    CountedPtr<TableDesc> tdescPtr_p;   //# Pointer to table description
     String         name_p;              //# table name
     int            option_p;            //# Table constructor option
     Bool           noWrite_p;           //# False = do not write the table
@@ -572,7 +572,7 @@ private:
     // This is used if one asks for the description of a NullTable.
     // Creating an empty TableDesc in the NullTable takes too much time.
     // Furthermore it causes static initialization order problems.
-    const TableDesc& makeTableDesc() const;
+    const TableDesc& makeEmptyTableDesc() const;
 
     // Make the name absolute.
     // It first checks if the name contains valid characters (not only . and /).

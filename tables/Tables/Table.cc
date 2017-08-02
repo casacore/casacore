@@ -198,11 +198,7 @@ Table::Table (const Block<Table>& tables,
   isCounted_p      (True),
   lastModCounter_p (0)
 {
-    Block<BaseTable*> btab(tables.nelements());
-    for (uInt i=0; i<tables.nelements(); ++i) {
-      btab[i] = tables[i].baseTablePtr();
-    }
-    baseTabPtr_p = new ConcatTable (btab, subTables, subDirName);
+    baseTabPtr_p = new ConcatTable (tables, subTables, subDirName);
     baseTabPtr_p->link();
 }
 

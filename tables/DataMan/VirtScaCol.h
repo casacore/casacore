@@ -122,8 +122,45 @@ template<class T> class Vector;
 // </todo>
 
 
+class VirtualScalarColumnBase : public DataManagerColumn
+{
+public:
+    // Create a column.
+    VirtualScalarColumnBase()
+        {}
+
+    virtual ~VirtualScalarColumnBase();
+
+    // By default no data can be put in a virtual column.
+    virtual Bool isWritable() const;
+
+protected:
+    // The array access functions throw an exception.
+    // <group>
+    virtual void getArrayV (uInt rownr, ArrayBase& dataPtr);
+    virtual void putArrayV (uInt rownr, const ArrayBase& data);
+    virtual void getArrayColumnV (ArrayBase& data);
+    virtual void putArrayColumnV (const ArrayBase& data);
+    virtual void getArrayColumnCellsV (const RefRows& rownrs,
+				       ArrayBase& data);
+    virtual void putArrayColumnCellsV (const RefRows& rownrs,
+				       const ArrayBase& data);
+    virtual void getSliceV (uInt rownr, const Slicer& slicer, ArrayBase& data);
+    virtual void putSliceV (uInt rownr, const Slicer& slicer,
+			    const ArrayBase& data);
+    virtual void getColumnSliceV (const Slicer& slicer, ArrayBase& data);
+    virtual void putColumnSliceV (const Slicer& slicer, const ArrayBase& data);
+    virtual void getColumnSliceCellsV (const RefRows& rownrs,
+				       const Slicer& slicer, ArrayBase& data);
+    virtual void putColumnSliceCellsV (const RefRows& rownrs,
+				       const Slicer& slicer,
+				       const ArrayBase& data);
+    // </group>
+};
+
+
 template<class T>
-class VirtualScalarColumn : public DataManagerColumn
+class VirtualScalarColumn : public VirtualScalarColumnBase
 {
 public:
 
@@ -135,108 +172,72 @@ public:
     virtual ~VirtualScalarColumn();
 
     // Return the data type of the column.
-    int dataType() const;
+    virtual int dataType() const;
 
     // Return the data type Id of the column.
-    String dataTypeId() const;
+    virtual String dataTypeId() const;
 
-    // By default no data can be put in a virtual column.
-    virtual Bool isWritable() const;
-
-    // Get the scalar value in the given row.
+    // Let a derived class get the scalar value in the given row.
     virtual void get (uInt rownr, T& data) = 0;
 
-    // Put the scalar value into the given row.
+    // Let a derived class put the scalar value into the given row.
     // The default implementation throws an exception.
     virtual void put (uInt rownr, const T& data);
-
-protected:
-    // The class can handle a get/putScalarColumn.
-    Bool canAccessScalarColumn (Bool& reask) const;
-
-    // Get all scalar values in the column.
-    // The argument dataPtr is in fact a Vector<T>*, but a void*
-    // is needed to be generic.
-    // The vector pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ScalarColumn getColumn function).
-    virtual void getScalarColumn (Vector<T>& data);
-
-    // Put all scalar values in the column.
-    // The argument dataPtr is in fact a const Vector<T>*, but a const void*
-    // is needed to be generic.
-    // The vector pointed to by dataPtr has to have the correct length
-    // (which is guaranteed by the ScalarColumn putColumn function).
-    virtual void putScalarColumn (const Vector<T>& data);
-
-    // Get scalars from the given row on with a maximum of nrmax values.
-    // It returns the actual number of values got.
-    // This can be used to get an entire column of scalars or to get
-    // a part of a column (for a cache for example).
-    // The argument dataPtr is in fact a T*, but a void*
-    // is needed to be generic. It must have length nrmax.
-    virtual uInt getBlock (uInt rownr, uInt nrmax, T* dataPtr);
-
-    // Put nrmax scalars from the given row on.
-    // It returns the actual number of values put.
-    // This can be used to put an entire column of scalars or to put
-    // a part of a column (for a cache for example).
-    // The argument dataPtr is in fact a const T*, but a const void*
-    // is needed to be generic. It must have length nrmax.
-    virtual void putBlock (uInt rownr, uInt nrmax, const T* dataPtr);
-
 
 private:
     // Implement the virtual functions defined in DataManagerColumn.
     // Get the scalar value in the given row.
     // <group>
-    void getBoolV     (uInt rownr, Bool* dataPtr);
-    void getuCharV    (uInt rownr, uChar* dataPtr);
-    void getShortV    (uInt rownr, Short* dataPtr);
-    void getuShortV   (uInt rownr, uShort* dataPtr);
-    void getIntV      (uInt rownr, Int* dataPtr);
-    void getuIntV     (uInt rownr, uInt* dataPtr);
-    void getfloatV    (uInt rownr, float* dataPtr);
-    void getdoubleV   (uInt rownr, double* dataPtr);
-    void getComplexV  (uInt rownr, Complex* dataPtr);
-    void getDComplexV (uInt rownr, DComplex* dataPtr);
-    void getStringV   (uInt rownr, String* dataPtr);
+    virtual void getBoolV     (uInt rownr, Bool* dataPtr);
+    virtual void getuCharV    (uInt rownr, uChar* dataPtr);
+    virtual void getShortV    (uInt rownr, Short* dataPtr);
+    virtual void getuShortV   (uInt rownr, uShort* dataPtr);
+    virtual void getIntV      (uInt rownr, Int* dataPtr);
+    virtual void getuIntV     (uInt rownr, uInt* dataPtr);
+    virtual void getfloatV    (uInt rownr, float* dataPtr);
+    virtual void getdoubleV   (uInt rownr, double* dataPtr);
+    virtual void getComplexV  (uInt rownr, Complex* dataPtr);
+    virtual void getDComplexV (uInt rownr, DComplex* dataPtr);
+    virtual void getStringV   (uInt rownr, String* dataPtr);
     // This function is the get for all non-standard data types.
-    void getOtherV    (uInt rownr, void* dataPtr);
+    virtual  void getOtherV   (uInt rownr, void* dataPtr);
     // </group>
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Put the scalar value into the given row.
     // <group>
-    void putBoolV     (uInt rownr, const Bool* dataPtr);
-    void putuCharV    (uInt rownr, const uChar* dataPtr);
-    void putShortV    (uInt rownr, const Short* dataPtr);
-    void putuShortV   (uInt rownr, const uShort* dataPtr);
-    void putIntV      (uInt rownr, const Int* dataPtr);
-    void putuIntV     (uInt rownr, const uInt* dataPtr);
-    void putfloatV    (uInt rownr, const float* dataPtr);
-    void putdoubleV   (uInt rownr, const double* dataPtr);
-    void putComplexV  (uInt rownr, const Complex* dataPtr);
-    void putDComplexV (uInt rownr, const DComplex* dataPtr);
-    void putStringV   (uInt rownr, const String* dataPtr);
+    virtual void putBoolV     (uInt rownr, const Bool* dataPtr);
+    virtual void putuCharV    (uInt rownr, const uChar* dataPtr);
+    virtual void putShortV    (uInt rownr, const Short* dataPtr);
+    virtual void putuShortV   (uInt rownr, const uShort* dataPtr);
+    virtual void putIntV      (uInt rownr, const Int* dataPtr);
+    virtual void putuIntV     (uInt rownr, const uInt* dataPtr);
+    virtual void putfloatV    (uInt rownr, const float* dataPtr);
+    virtual void putdoubleV   (uInt rownr, const double* dataPtr);
+    virtual void putComplexV  (uInt rownr, const Complex* dataPtr);
+    virtual void putDComplexV (uInt rownr, const DComplex* dataPtr);
+    virtual void putStringV   (uInt rownr, const String* dataPtr);
     // This function is the put for all non-standard data types.
-    void putOtherV    (uInt rownr, const void* dataPtr);
+    virtual void putOtherV    (uInt rownr, const void* dataPtr);
     // </group>
 
-    // Implement the virtual functions defined in DataManagerColumn.
     // Get all scalar values in the column.
-    void getScalarColumnV (void* dataPtr);
+    // The default implementation loops over the rows.
+    virtual void getScalarColumnV (ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
     // Put all scalar values in the column.
-    void putScalarColumnV (const void* dataPtr);
+    // The default implementation loops over the rows.
+    virtual void putScalarColumnV (const ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Get scalars from the given row on with a maximum of nrmax values.
-    uInt getBlockV (uInt rownr, uInt nrmax, void* dataPtr);
+    // Get some scalar values in the column.
+    // The default implementation loops over the rows.
+    virtual void getScalarColumnCellsV (const RefRows& rownrs,
+					ArrayBase& dataPtr);
 
-    // Implement the virtual functions defined in DataManagerColumn.
-    // Put nrmax scalars from the given row on.
-    void putBlockV (uInt rownr, uInt nrmax, const void* dataPtr);
+    // Put some scalar values in the column.
+    // The default implementation loops over the rows.
+    virtual void putScalarColumnCellsV (const RefRows& rownrs,
+					const ArrayBase& dataPtr);
 
 private:
     // The object cannot be copied.

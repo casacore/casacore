@@ -59,40 +59,26 @@ SetupNewTable::SetupNewTable (const String& tableName,
 }
 
 SetupNewTable::SetupNewTable (const SetupNewTable& that)
-: newTable_p(0)
 {
     operator= (that);
 }
 
 SetupNewTable::~SetupNewTable()
-{
-    if (newTable_p != 0) {
-	if (--(newTable_p->count()) == 0) {
-	    delete newTable_p;
-	}
-    }
-}
+{}
 
 SetupNewTable& SetupNewTable::operator= (const SetupNewTable& that)
 {
-    if (newTable_p != 0) {
-	if (--(newTable_p->count()) == 0) {
-	    delete newTable_p;
-	}
-    }
     newTable_p = that.newTable_p;
-    if (newTable_p != 0) {
-	++(newTable_p->count());
-    }
     return *this;
 }
+
+
 
 SetupNewTableRep::SetupNewTableRep (const String& tableName,
 				    const String& tableDescName,
 				    Table::TableOption opt,
                                     const StorageOption& storageOpt)
-: count_p     (1),
-  tabName_p   (tableName),
+: tabName_p   (tableName),
   option_p    (opt),
   storageOpt_p(storageOpt),
   delete_p    (False),
@@ -110,8 +96,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
 				    const TableDesc& tableDesc,
 				    Table::TableOption opt,
                                     const StorageOption& storageOpt)
-: count_p     (1),
-  tabName_p   (tableName),
+: tabName_p   (tableName),
   option_p    (opt),
   storageOpt_p(storageOpt),
   delete_p    (False),
@@ -126,15 +111,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
 }
 
 SetupNewTableRep::~SetupNewTableRep()
-{
-    //# When the object is in use, the ColumnSet and table
-    //# description pointers are taken over by the PlainTable object.
-    //# So only delete them if not in use.
-    if (! isUsed()) {
-	delete tdescPtr_p;
-	delete colSetPtr_p;
-    }
-}
+{}
 
 
 void SetupNewTableRep::setup()
@@ -166,7 +143,7 @@ void SetupNewTableRep::setup()
     //# Check if all subtable descriptions exist.
     tdescPtr_p->checkSubTableDesc();
     //# Create a column set.
-    colSetPtr_p = new ColumnSet(tdescPtr_p, storageOpt_p);
+    colSetPtr_p = new ColumnSet(tdescPtr_p.get(), storageOpt_p);
 }
 
 
@@ -178,7 +155,7 @@ DataManager* SetupNewTableRep::getDataManager (const DataManager& dataMan)
     //# However, it is possible that the original was a temporary and
     //# that another original is allocated at the same address.
     //# So also test if the original is indeed cloned.
-    DataManager* dmp = (DataManager*) (dataManMap_p((void*)&dataMan));
+    DataManager* dmp = static_cast<DataManager*>(dataManMap_p((void*)&dataMan));
     if (dmp == 0  ||  dataMan.getClone() == 0) {
 	//# Not cloned yet, so clone it.
 	//# Add it to the map in the ColumnSet object.
@@ -209,12 +186,12 @@ void SetupNewTableRep::bindCreate (const Record& spec)
               sp = rec.subRecord ("SPEC");
             }
 	    Vector<String> cols (rec.asArrayString ("COLUMNS"));
-	    DataManager* dataMan = DataManager::getCtor(dmType) (dmGroup, sp);
+	    CountedPtr<DataManager> dataMan =
+              DataManager::getCtor(dmType) (dmGroup, sp);
 	    // Bind the columns to this data manager.
 	    for (uInt j=0; j<cols.nelements(); j++) {
 	        bindColumn (cols(j), *dataMan);
 	    }
-	    delete dataMan;
 	}
     }
 }

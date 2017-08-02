@@ -23,7 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id$
+//# $Id: MSMIndColumn.cc 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #include <casacore/tables/DataMan/MSMIndColumn.h>
 #include <casacore/casa/Arrays/Array.h>
@@ -32,6 +32,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/tables/DataMan/DataManError.h>
+#include <casacore/casa/string.h>                           // for memcpy
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -72,9 +73,8 @@ void MSMIndColumn::setShape (uInt rownr, const IPosition& shape)
     ptr->clear(dataType());
     delete ptr;
   }
-  // Create the shape and array together.
-  // Fiddle a bit to store the shape at the beginning.
-  ptr = new Data (shape, dataType());
+  // Create the array.
+  ptr = new Data (shape, dataType(), elemSize());
   putArrayPtr (rownr, ptr);
 }
 
@@ -84,10 +84,10 @@ MSMIndColumn::Data* MSMIndColumn::getShape (uInt rownr)
 {
   void* ptr = getArrayPtr(rownr);
   if (ptr == 0) {
-    throw DataManInvOper ("MSM: no array in row " +
-                          String::toString(rownr) +
-                          " in column " + columnName() +
-                          " of " + stmanPtr_p->fileName());
+    throw (DataManInvOper ("MSM: no array in row " +
+			   String::toString(rownr) +
+                           " in column " + columnName() +
+			   " of " + stmanPtr_p->fileName()));
   }
   return static_cast<Data*>(ptr);
 }
@@ -105,104 +105,164 @@ Bool MSMIndColumn::canChangeShape() const
   { return True; }
 
 
-Bool MSMIndColumn::canAccessSlice (Bool& reask) const
+void MSMIndColumn::getArrayV (uInt rownr, ArrayBase& arr)
 {
-  reask = False;
-  return True;
-}
-
-
-void MSMIndColumn::getArrayfloatV (uInt rownr, Array<float>* arr)
-{
-  float* ptr = static_cast<float*>(MSMINDCOLUMN_GETDATA(rownr)->data());
+  Data* data = getShape(rownr);   //# also checks if row contains data
+  DebugAssert (data->shape().isEqual (arr.shape()), AipsError);
   Bool deleteIt;
-  float* data = arr->getStorage (deleteIt);
-  objcopy (data, ptr, arr->nelements());
-  arr->putStorage (data, deleteIt);
+  void* arrData = arr.getVStorage (deleteIt);
+  if (dtype() == TpString) {
+    objcopy (static_cast<String*>(arrData),
+             static_cast<const String*>(data->data()),
+             arr.size());
+  } else {
+    memcpy (static_cast<char*>(arrData),
+            static_cast<const char*>(data->data()),
+            elemSize() * arr.size());
+  }
+  arr.putVStorage (arrData, deleteIt);
 }
 
-void MSMIndColumn::putArrayfloatV (uInt rownr, const Array<float>* arr)
+void MSMIndColumn::putArrayV (uInt rownr, const ArrayBase& arr)
 {
-  float* ptr = static_cast<float*>(MSMINDCOLUMN_GETDATA(rownr)->data());
+  Data* data = getShape(rownr);   //# also checks if row contains data
+  DebugAssert (shape(rownr).isEqual (arr.shape()), AipsError);
   Bool deleteIt;
-  const float* data = arr->getStorage (deleteIt);
-  objcopy (ptr, data, arr->nelements());
-  arr->freeStorage (data, deleteIt);
+  const void* arrData = arr.getVStorage (deleteIt);
+  if (dtype() == TpString) {
+    objcopy (static_cast<String*>(data->data()),
+             static_cast<const String*>(arrData),
+             arr.size());
+  } else {
+    memcpy (static_cast<char*>(data->data()),
+            static_cast<const char*>(arrData),
+            elemSize() * arr.size());
+  }
+  arr.freeVStorage (arrData, deleteIt);
 }
 
-void MSMIndColumn::getSlicefloatV (uInt rownr, const Slicer& ns,
-				   Array<float>* arr)
+void MSMIndColumn::getSliceV (uInt rownr, const Slicer& ns,
+                              ArrayBase& arr)
 {
-  Data* ptr = MSMINDCOLUMN_GETDATA(rownr);
-  const IPosition& shape = ptr->shape();
-  Array<float> tabarr (shape, static_cast<float*>(ptr->data()), SHARE);
+  Data* data = getShape(rownr);   //# also checks if row contains data
+  const IPosition& shp = data->shape();
   IPosition blc, trc, inc;
-  ns.inferShapeFromSource (shape, blc, trc, inc);
-  *arr = tabarr(blc, trc, inc);
+  ns.inferShapeFromSource (shp, blc, trc, inc);
+  switch (dtype()) {
+  case TpBool:
+    arr.assignBase (Array<Bool>(shp, static_cast<Bool*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  case TpUChar:
+    arr.assignBase (Array<uChar>(shp, static_cast<uChar*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  case TpShort:
+    arr.assignBase (Array<short>(shp, static_cast<short*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  case TpUShort:
+    arr.assignBase (Array<uShort>(shp, static_cast<uShort*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  case TpInt:
+    arr.assignBase (Array<Int>(shp, static_cast<Int*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  case TpUInt:
+    arr.assignBase (Array<uInt>(shp, static_cast<uInt*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  case TpInt64:
+    arr.assignBase (Array<Int64>(shp, static_cast<Int64*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  case TpFloat:
+    arr.assignBase (Array<float>(shp, static_cast<float*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  case TpDouble:
+    arr.assignBase (Array<double>(shp, static_cast<double*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  case TpComplex:
+    arr.assignBase (Array<Complex>(shp, static_cast<Complex*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  case TpDComplex:
+    arr.assignBase (Array<DComplex>(shp, static_cast<DComplex*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  case TpString:
+    arr.assignBase (Array<String>(shp, static_cast<String*>(data->data()), SHARE)
+                    (blc, trc, inc), False);
+    break;
+  default:
+    throw DataManInvDT ("MSMIndColumn::getSliceV");
+  }
 }
 
-void MSMIndColumn::putSlicefloatV (uInt rownr, const Slicer& ns,
-				   const Array<float>* arr)
+void MSMIndColumn::putSliceV (uInt rownr, const Slicer& ns,
+                              const ArrayBase& arr)
 {
-  Data* ptr = MSMINDCOLUMN_GETDATA(rownr);
-  const IPosition& shape = ptr->shape();
-  Array<float> tabarr (shape, static_cast<float*>(ptr->data()), SHARE);
+  Data* data = MSMINDCOLUMN_GETDATA(rownr);
+  const IPosition& shp = data->shape();
   IPosition blc, trc, inc;
-  ns.inferShapeFromSource (shape, blc, trc, inc);
-  tabarr(blc, trc, inc) = *arr;
+  ns.inferShapeFromSource (shp, blc, trc, inc);
+  switch (dtype()) {
+  case TpBool:
+    Array<Bool>(shp, static_cast<Bool*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  case TpUChar:
+    Array<uChar>(shp, static_cast<uChar*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  case TpShort:
+    Array<Short>(shp, static_cast<Short*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  case TpUShort:
+    Array<uShort>(shp, static_cast<uShort*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  case TpInt:
+    Array<Int>(shp, static_cast<Int*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  case TpUInt:
+    Array<uInt>(shp, static_cast<uInt*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  case TpInt64:
+    Array<Int64>(shp, static_cast<Int64*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  case TpFloat:
+    Array<float>(shp, static_cast<float*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  case TpDouble:
+    Array<double>(shp, static_cast<double*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  case TpComplex:
+    Array<Complex>(shp, static_cast<Complex*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  case TpDComplex:
+    Array<DComplex>(shp, static_cast<DComplex*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  case TpString:
+    Array<String>(shp, static_cast<String*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, False);
+    break;
+  default:
+    throw DataManInvDT ("MSMIndColumn::putSliceV");
+  }
 }
     
-
-#define MSMINDCOLUMN_GETPUT(T,NM) \
-void MSMIndColumn::aips_name2(getArray,NM) (uInt rownr, Array<T>* arr) \
-{ \
-  T* ptr = static_cast<T*>(MSMINDCOLUMN_GETDATA(rownr)->data()); \
-  Bool deleteIt; \
-  T* data = arr->getStorage (deleteIt); \
-  objcopy (data, ptr, arr->nelements()); \
-  arr->putStorage (data, deleteIt); \
-} \
-void MSMIndColumn::aips_name2(putArray,NM) (uInt rownr, const Array<T>* arr) \
-{ \
-  T* ptr = static_cast<T*>(MSMINDCOLUMN_GETDATA(rownr)->data()); \
-  Bool deleteIt; \
-  const T* data = arr->getStorage (deleteIt); \
-  objcopy (ptr, data, arr->nelements()); \
-  arr->freeStorage (data, deleteIt); \
-} \
-void MSMIndColumn::aips_name2(getSlice,NM) \
-                             (uInt rownr, const Slicer& ns, Array<T>* arr) \
-{ \
-  Data* ptr = MSMINDCOLUMN_GETDATA(rownr); \
-  const IPosition& shape = ptr->shape(); \
-  Array<T> tabarr (shape, static_cast<T*>(ptr->data()), SHARE); \
-  IPosition blc, trc, inc; \
-  ns.inferShapeFromSource (shape, blc, trc, inc); \
-  *arr = tabarr(blc, trc, inc); \
-} \
-void MSMIndColumn::aips_name2(putSlice,NM) \
-                        (uInt rownr, const Slicer& ns, const Array<T>* arr) \
-{ \
-  Data* ptr = MSMINDCOLUMN_GETDATA(rownr); \
-  const IPosition& shape = ptr->shape(); \
-  Array<T> tabarr (shape, static_cast<T*>(ptr->data()), SHARE); \
-  IPosition blc, trc, inc; \
-  ns.inferShapeFromSource (shape, blc, trc, inc); \
-  tabarr(blc, trc, inc) = *arr; \
-}
-
-MSMINDCOLUMN_GETPUT(Bool,BoolV)
-MSMINDCOLUMN_GETPUT(uChar,uCharV)
-MSMINDCOLUMN_GETPUT(Short,ShortV)
-MSMINDCOLUMN_GETPUT(uShort,uShortV)
-MSMINDCOLUMN_GETPUT(Int,IntV)
-MSMINDCOLUMN_GETPUT(uInt,uIntV)
-//#//MSMINDCOLUMN_GETPUT(float,floatV)
-MSMINDCOLUMN_GETPUT(double,doubleV)
-MSMINDCOLUMN_GETPUT(Complex,ComplexV)
-MSMINDCOLUMN_GETPUT(DComplex,DComplexV)
-MSMINDCOLUMN_GETPUT(String,StringV)
-
 
 void MSMIndColumn::remove (uInt rownr)
 {
@@ -214,7 +274,7 @@ void MSMIndColumn::remove (uInt rownr)
 void MSMIndColumn::deleteArray (uInt rownr)
 {
   Data* ptr = MSMINDCOLUMN_GETDATA(rownr);
-  // Make sure possible IPosition storage is removed.
+  // Remove the array for this row (if there).
   if (ptr != 0) {
     ptr->clear(dataType());
     delete ptr;
@@ -223,50 +283,15 @@ void MSMIndColumn::deleteArray (uInt rownr)
 
 
 
-MSMIndColumn::Data::Data (const IPosition& shape, int dtype)
+  MSMIndColumn::Data::Data (const IPosition& shape, int dtype, int elemSize)
 : shape_p (shape),
   data_p  (0)
 {
-  Int nelem = shape.product();
-  switch (dtype) {
-  case TpBool:
-    data_p = new Bool[nelem];
-    break;
-  case TpChar:
-    data_p = new Char[nelem];
-    break;
-  case TpUChar:
-    data_p = new uChar[nelem];
-    break;
-  case TpShort:
-    data_p = new Short[nelem];
-    break;
-  case TpUShort:
-    data_p = new uShort[nelem];
-    break;
-  case TpInt:
-    data_p = new Int[nelem];
-    break;
-  case TpUInt:
-    data_p = new uInt[nelem];
-    break;
-  case TpFloat:
-    data_p = new Float[nelem];
-    break;
-  case TpDouble:
-    data_p = new Double[nelem];
-    break;
-  case TpComplex:
-    data_p = new Complex[nelem];
-    break;
-  case TpDComplex:
-    data_p = new DComplex[nelem];
-    break;
-  case TpString:
+  Int64 nelem = shape.product();
+  if (dtype == TpString) {
     data_p = new String[nelem];
-    break;
-  default:
-    throw DataManInvDT("MSMIndColumn");
+  } else {
+    data_p = new char[nelem * elemSize];
   }
 }
 
@@ -279,45 +304,10 @@ MSMIndColumn::Data::~Data()
 
 void MSMIndColumn::Data::clear (int dtype)
 {
-  switch (dtype) {
-  case TpBool:
-    delete [] static_cast<Bool*>(data_p);
-    break;
-  case TpChar:
-    delete [] static_cast<Char*>(data_p);
-    break;
-  case TpUChar:
-    delete [] static_cast<uChar*>(data_p);
-    break;
-  case TpShort:
-    delete [] static_cast<Short*>(data_p);
-    break;
-  case TpUShort:
-    delete [] static_cast<uShort*>(data_p);
-    break;
-  case TpInt:
-    delete [] static_cast<Int*>(data_p);
-    break;
-  case TpUInt:
-    delete [] static_cast<uInt*>(data_p);
-    break;
-  case TpFloat:
-    delete [] static_cast<Float*>(data_p);
-    break;
-  case TpDouble:
-    delete [] static_cast<Double*>(data_p);
-    break;
-  case TpComplex:
-    delete [] static_cast<Complex*>(data_p);
-    break;
-  case TpDComplex:
-    delete [] static_cast<DComplex*>(data_p);
-    break;
-  case TpString:
+  if (dtype == TpString) {
     delete [] static_cast<String*>(data_p);
-    break;
-  default:
-    throw DataManInvDT("MSMIndColumn");
+  } else {
+    delete [] static_cast<char*>(data_p);
   }
   data_p = 0;
 }

@@ -201,36 +201,21 @@ Bool ForwardColumnIndexedRow::canChangeShape() const
 {
     return False;       // put is not supported
 }
-Bool ForwardColumnIndexedRow::canAccessScalarColumn (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool ForwardColumnIndexedRow::canAccessArrayColumn (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
-Bool ForwardColumnIndexedRow::canAccessColumnSlice (Bool& reask) const
-{
-    reask = False;
-    return False;
-}
 
-void ForwardColumnIndexedRow::getArrayV (uInt rownr, void* dataPtr)
-    { colPtr()->get (convertRownr(rownr), dataPtr); }
+void ForwardColumnIndexedRow::getArrayV (uInt rownr, ArrayBase& dataPtr)
+    { colPtr()->getArray (convertRownr(rownr), dataPtr); }
 
 void ForwardColumnIndexedRow::getSliceV (uInt rownr, const Slicer& ns,
-					 void* dataPtr)
+					 ArrayBase& dataPtr)
     { colPtr()->getSlice (convertRownr(rownr), ns, dataPtr); }
 
-void ForwardColumnIndexedRow::putArrayV (uInt, const void*)
+void ForwardColumnIndexedRow::putArrayV (uInt, const ArrayBase&)
 {
     throw (DataManInvOper
            ("putArray not supported by data manager ForwardColumnIndexedRow"));
 }
 
-void ForwardColumnIndexedRow::putSliceV (uInt, const Slicer&, const void*)
+void ForwardColumnIndexedRow::putSliceV (uInt, const Slicer&, const ArrayBase&)
 {
     throw (DataManInvOper
            ("putSlice not supported by data manager ForwardColumnIndexedRow"));

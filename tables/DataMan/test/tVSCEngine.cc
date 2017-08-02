@@ -37,6 +37,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/ScaColDesc.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/Tables/RefRows.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/tables/Tables/TableError.h>
@@ -59,7 +60,7 @@ int main ()
     try {
 	a();
 	b();
-    } catch (AipsError x) {
+    } catch (const AipsError& x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
     } 
@@ -99,7 +100,7 @@ void a() {
     newtab2.bindColumn ("x", engine);
 ///    try {
 ///	Table tab2(newtab2, 10);                // bound to incorrect column
-///    } catch (AipsError x) {
+///    } catch (const AipsError& x) {
 ///	cout << x.getMesg() << endl;
 ///    } 
 }
@@ -132,4 +133,12 @@ void b()
 		 << vecA(i).x() << " " << vecA(i).y() << endl;
 	}
     }
+    // Read a few rows.
+    Vector<uInt> rows(2);
+    rows[0] = 2;
+    rows[1] = 5;
+    Vector<VSCExample> vecRF = colA.getColumnCells(RefRows(rows));
+    AlwaysAssertExit (vecRF.size() == 2);
+    AlwaysAssertExit (vecRF[0] == VSCExample(2,3));
+    AlwaysAssertExit (vecRF[1] == VSCExample(5,6));
 }

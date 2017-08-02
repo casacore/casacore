@@ -39,7 +39,8 @@ MSMBase::MSMBase()
 : DataManager   (),
   nrrow_p       (0),
   nrrowCreate_p (0),
-  colSet_p      (0)
+  colSet_p      (0),
+  hasPut_p      (False)
 {}
 
 MSMBase::MSMBase (const String& storageManagerName)
@@ -47,7 +48,8 @@ MSMBase::MSMBase (const String& storageManagerName)
   stmanName_p   (storageManagerName),
   nrrow_p       (0),
   nrrowCreate_p (0),
-  colSet_p      (0)
+  colSet_p      (0),
+  hasPut_p      (False)
 {}
 
 MSMBase::MSMBase (const String& storageManagerName, const Record&)
@@ -55,7 +57,8 @@ MSMBase::MSMBase (const String& storageManagerName, const Record&)
   stmanName_p   (storageManagerName),
   nrrow_p       (0),
   nrrowCreate_p (0),
-  colSet_p      (0)
+  colSet_p      (0),
+  hasPut_p      (False)
 {}
 
 MSMBase::~MSMBase()
@@ -198,6 +201,7 @@ void MSMBase::addColumn (DataManagerColumn* colp)
   for (uInt i=0; i<ncolumn(); i++) {
     if (colp == colSet_p[i]) {
       colSet_p[i]->doCreate (nrrow_p);
+      setHasPut();
       return;
     }
   }
@@ -214,6 +218,7 @@ void MSMBase::removeColumn (DataManagerColumn* colp)
       for (uInt j=i; j<ncolumn(); j++) {
 	colSet_p[j] = colSet_p[j+1];
       }
+      setHasPut();
       return;
     }
   }
@@ -229,6 +234,7 @@ void MSMBase::addRow (uInt nr)
     colSet_p[i]->addRow (nrrow_p+nr, nrrow_p);
   }
   nrrow_p += nr;
+  setHasPut();
 }
 
 
@@ -238,6 +244,7 @@ void MSMBase::removeRow (uInt rownr)
     colSet_p[i]->remove (rownr);
   }
   nrrow_p--;
+  setHasPut();
 }
 
 
@@ -250,7 +257,7 @@ void MSMBase::create (uInt nrrow)
 {
   //# Do not add the required nr of rows yet.
   // It is done later in reallocateColumn to avoid that all row data
-  // have to be deleted and allocated again if a IndArrColumn is turned
+  // have to be deleted and allocated again if an IndArrColumn is turned
   // into a DirArrColumn.
   nrrowCreate_p = nrrow;
 }

@@ -43,35 +43,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ScalarColumn<T>::ScalarColumn()
-: TableColumn(),
-  canAccessColumn_p   (False),
-  reaskAccessColumn_p (True)
+: TableColumn()
 {}
 
 template<class T>
 ScalarColumn<T>::ScalarColumn (const Table& tab,
                                const String& columnName)
-: TableColumn (tab, columnName),
-  canAccessColumn_p   (False),
-  reaskAccessColumn_p (True)
+: TableColumn (tab, columnName)
 {
     checkDataType();
 }
 
 template<class T>
 ScalarColumn<T>::ScalarColumn (const TableColumn& column)
-: TableColumn (column),
-  canAccessColumn_p   (False),
-  reaskAccessColumn_p (True)
+: TableColumn (column)
 {
     checkDataType();
 }
 
 template<class T>
 ScalarColumn<T>::ScalarColumn (const ScalarColumn<T>& that)
-: TableColumn (that),
-  canAccessColumn_p   (that.canAccessColumn_p),
-  reaskAccessColumn_p (that.reaskAccessColumn_p)
+: TableColumn (that)
 {}
 
 template<class T>
@@ -92,8 +84,6 @@ void ScalarColumn<T>::reference (const ScalarColumn<T>& that)
 {
     if (this != &that) {
         TableColumn::reference (that);
-        canAccessColumn_p   = that.canAccessColumn_p;
-        reaskAccessColumn_p = that.reaskAccessColumn_p;
     }
 }
 
@@ -141,20 +131,8 @@ void ScalarColumn<T>::getColumn (Vector<T>& vec, Bool resize) const
 	    throw (TableConformanceError("ScalarColumn::getColumn"));
 	}
     }
-    //# Ask if we can access the column (if that is not known yet).
-    if (reaskAccessColumn_p) {
-	canAccessColumn_p = baseColPtr_p->canAccessScalarColumn
-	                                             (reaskAccessColumn_p);
-    }
-    //# Access the column if possible.
-    //# Otherwise fill the entire vector by looping through all cells.
-    if (canAccessColumn_p) {
-	baseColPtr_p->getScalarColumn (&vec);
-    }else{
-	for (uInt rownr=0; rownr<nrrow; rownr++) {
-	    baseColPtr_p->get (rownr, &(vec(rownr)));
-	}
-    }
+    // Get the column.
+    baseColPtr_p->getScalarColumn (vec);
 }
 
 
@@ -202,7 +180,7 @@ void ScalarColumn<T>::getColumnCells (const RefRows& rownrs,
 	    throw (TableConformanceError("ScalarColumn::getColumnCells"));
 	}
     }
-    baseColPtr_p->getScalarColumnCells (rownrs, &vec);
+    baseColPtr_p->getScalarColumnCells (rownrs, vec);
 }
 
 
@@ -231,20 +209,8 @@ void ScalarColumn<T>::putColumn (const Vector<T>& vec)
     if (vec.nelements() != nrrow) {
 	throw (TableConformanceError("ScalarColumn::putColumn(Vector&)"));
     }
-    //# Ask if we can access the column (if that is not known yet).
-    if (reaskAccessColumn_p) {
-	canAccessColumn_p = baseColPtr_p->canAccessScalarColumn
-	                                             (reaskAccessColumn_p);
-    }
-    //# Access the column if possible.
-    //# Otherwise put the entire vector by looping through all cells.
-    if (canAccessColumn_p) {
-	baseColPtr_p->putScalarColumn (&vec);
-    }else{
-	for (uInt rownr=0; rownr<nrrow; rownr++) {
-	    baseColPtr_p->put (rownr, &(vec(rownr)));
-	}
-    }
+    // Put the column.
+    baseColPtr_p->putScalarColumn (vec);
 }
 
 template<class T>
@@ -272,7 +238,7 @@ void ScalarColumn<T>::putColumnCells (const RefRows& rownrs,
     if (vec.nelements() != nrrow) {
 	throw (TableConformanceError("ScalarColumn::putColumnCells"));
     }
-    baseColPtr_p->putScalarColumnCells (rownrs, &vec);
+    baseColPtr_p->putScalarColumnCells (rownrs, vec);
 }
 
 

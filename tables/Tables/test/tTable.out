@@ -54,7 +54,8 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Expected exception: ScalarColumn::put: string value '12345678901' exceeds maximum length
-Expected exception: ArrayColumn::put for row 0 in column arr1: Table array conformance error
+Expected exception: ArrayColumn::put for row 0 in column arr1: Table
+array conformance error (shape=[0], expected [2, 3, 4])
 get layout in static way
 Table::getlayout #rows = 10
 TableDesc    version 1   (Directory **SCRATCH**)

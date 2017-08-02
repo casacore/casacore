@@ -609,34 +609,54 @@ void TSMDataColumn::putScalarColumnCellsfloatV (const RefRows& rownrs,
 
 void TSMDataColumn::getArrayColumnfloatV (Array<float>* dataPtr)
 {
+  Bool reask;
+  if (! stmanPtr_p->canAccessColumn(reask)) {
+    dmGetArrayColumnV (*dataPtr);
+  } else {
     Bool deleteIt;
     float* data = dataPtr->getStorage (deleteIt);
     accessColumn (data, False);
     dataPtr->putStorage (data, deleteIt);
+  }
 }
 void TSMDataColumn::putArrayColumnfloatV (const Array<float>* dataPtr)
 {
+  Bool reask;
+  if (! stmanPtr_p->canAccessColumn(reask)) {
+    dmPutArrayColumnV (*dataPtr);
+  } else {
     Bool deleteIt;
     const float* data = dataPtr->getStorage (deleteIt);
     accessColumn (data, True);
     dataPtr->freeStorage (data, deleteIt);
+  }
 }
 
 void TSMDataColumn::getColumnSlicefloatV (const Slicer& ns,
 					  Array<float>* dataPtr)
 {
+  Bool reask;
+  if (! stmanPtr_p->canAccessColumn(reask)) {
+    dmGetColumnSliceV (ns, *dataPtr);
+  } else {
     Bool deleteIt;
     float* data = dataPtr->getStorage (deleteIt);
     accessColumnSlice (ns, data, False);
     dataPtr->putStorage (data, deleteIt);
+  }
 }
 void TSMDataColumn::putColumnSlicefloatV (const Slicer& ns,
 					  const Array<float>* dataPtr)
 {
+  Bool reask;
+  if (! stmanPtr_p->canAccessColumn(reask)) {
+    dmPutColumnSliceV (ns, *dataPtr);
+  } else {
     Bool deleteIt;
     const float* data = dataPtr->getStorage (deleteIt);
     accessColumnSlice (ns, data, True);
     dataPtr->freeStorage (data, deleteIt);
+  }
 }
 
 
@@ -752,33 +772,53 @@ void TSMDataColumn::aips_name2(putScalarColumn,NM) (const Vector<T>* dataPtr) \
 } \
 void TSMDataColumn::aips_name2(getArrayColumn,NM) (Array<T>* dataPtr) \
 { \
+  Bool reask; \
+  if (! stmanPtr_p->canAccessColumn(reask)) { \
+    dmGetArrayColumnV (*dataPtr); \
+  } else { \
     Bool deleteIt; \
     T* data = dataPtr->getStorage (deleteIt); \
     accessColumn (data, False); \
     dataPtr->putStorage (data, deleteIt); \
+  } \
 } \
 void TSMDataColumn::aips_name2(putArrayColumn,NM) (const Array<T>* dataPtr) \
 { \
+  Bool reask; \
+  if (! stmanPtr_p->canAccessColumn(reask)) { \
+    dmPutArrayColumnV (*dataPtr); \
+  } else { \
     Bool deleteIt; \
     const T* data = dataPtr->getStorage (deleteIt); \
     accessColumn (data, True); \
     dataPtr->freeStorage (data, deleteIt ); \
+  } \
 } \
 void TSMDataColumn::aips_name2(getColumnSlice,NM) (const Slicer& ns, \
 						   Array<T>* dataPtr) \
 { \
+  Bool reask; \
+  if (! stmanPtr_p->canAccessColumn(reask)) { \
+    dmGetColumnSliceV (ns, *dataPtr); \
+  } else { \
     Bool deleteIt; \
     T* data = dataPtr->getStorage (deleteIt); \
     accessColumnSlice (ns, data, False); \
     dataPtr->putStorage (data, deleteIt); \
+  } \
 } \
 void TSMDataColumn::aips_name2(putColumnSlice,NM) (const Slicer& ns, \
 						   const Array<T>* dataPtr) \
 { \
+  Bool reask; \
+  if (! stmanPtr_p->canAccessColumn(reask)) { \
+    dmPutColumnSliceV (ns, *dataPtr); \
+  } else { \
     Bool deleteIt; \
     const T* data = dataPtr->getStorage (deleteIt); \
     accessColumnSlice (ns, data, True); \
     dataPtr->freeStorage (data, deleteIt); \
+  } \
 } \
 void TSMDataColumn::aips_name2(getScalarColumnCells,NM)(const RefRows& rownrs,\
 						        Vector<T>* dataPtr) \

@@ -54,7 +54,6 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 			const TableLock& lockOptions, int endianFormat,
                         const TSMOption& tsmOption)
 : BaseTable      (newtab.name(), newtab.option(), 0),
-  colSetPtr_p    (0),
   tableChanged_p (True),
   addToCache_p   (True),
   lockPtr_p      (0),
@@ -143,8 +142,6 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
   } catch (AipsError&) {
     delete lockPtr_p;
     lockPtr_p = 0;
-    delete colSetPtr_p;
-    colSetPtr_p = 0;
     throw;
   }
 }
@@ -156,7 +153,6 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
                         const TSMOption& tsmOption,
 			Bool addToCache, uInt locknr)
 : BaseTable      (tabname, opt, nrrow),
-  colSetPtr_p    (0),
   tableChanged_p (False),
   addToCache_p   (addToCache),
   lockPtr_p      (0),
@@ -227,7 +223,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     }
     //# Construct and read the ColumnSet object.
     //# This will also construct the various DataManager objects.
-    colSetPtr_p = new ColumnSet (tdescPtr_p);
+    colSetPtr_p = new ColumnSet (tdescPtr_p.get());
     colSetPtr_p->linkToTable (this);
     colSetPtr_p->linkToLockObject (lockPtr_p);
     if (version == 1) {
@@ -309,7 +305,6 @@ void PlainTable::closeObject()
     //# Trace if needed.
     TableTrace::traceClose (name_p);
     //# Delete everything.
-    delete colSetPtr_p;
     delete lockPtr_p;
 }
 
