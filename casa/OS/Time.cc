@@ -399,31 +399,29 @@ double Time::age() {
 
 uInt Time::seconds() {
   // return integral seconds after the minute [0,59]
-  return (uInt)(dseconds());
+  // accuracy of Time seconds is about 2e-5, so add a bit.
+  return (uInt)(dseconds() + 2e-5);
 }
 
 double Time::dseconds() {
   // return seconds after the minute [0,59]
-  double hour,min;
-
-  hour= mJulianDayfrac*24.0;
-  min= (hour-(int)hour)*60.0;
-
-  return ((min-(int)min)*60.0);
+  double hour = mJulianDayfrac*24.0;
+  double sec = (hour - hours()) * 3600. - minutes() * 60.;
+  return sec;
 }
 
 uInt Time::minutes() {
   // return minutes after the hour [0,59]
-  double hour;
-
-  hour= mJulianDayfrac*24.0;
-  return (uInt)((hour-(int)hour)*60.0);
+  double hour = mJulianDayfrac*24.0;
+  double min  = (hour - hours()) * 60.0;
+  // accuracy of Time second is about 2e-5, so add a bit.
+  return uInt(min + 2e-5/60.);
 }
 
 uInt Time::hours() {
   // return hours after the day [0,23]
-
-  return (uInt)(mJulianDayfrac*24.0);
+  // accuracy of Time second is 2e-5, so add a bit.
+  return uInt(mJulianDayfrac*24.0 + 2e-5/3600.);
 }
 
 uInt Time::dayOfMonth() {
