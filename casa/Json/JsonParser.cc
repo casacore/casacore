@@ -125,8 +125,48 @@ namespace casacore {
     for (String::size_type i=0; i<leng; ++i) {
       if (in[i] == '\\') {
         i++;
-      }
-      if (i < leng) {
+        if (i < leng) {
+          switch (in[i]) {
+          case 'b':
+            out += '\b';  // backspace
+            break;
+          case 'f':
+            out += '\f';  // formfeed
+            break;
+          case 'n':
+            out += '\n';  // newline
+            break;
+          case 'r':
+            out += '\r';  // carriage return
+            break;
+          case 't':
+            out += '\t';  // tab
+            break;
+          case 'u':
+            {
+              // unicode repr of control character
+              Bool ok = False;
+              if (i < leng+4) {
+                String hex("0X" + in.substr(i+1,4));
+                char* endPtr;
+                Int64 val = strtoll(hex.chars(), &endPtr, 0);
+                if (endPtr == hex.chars()+hex.size()  ||  val < 128) {
+                  out += char(val);
+                  i += 4;
+                  ok = True;
+                }
+              }
+              if (!ok) {
+                throw JsonError ("Invalid escaped control character " +
+                                 in.substr(i-1,6));
+              }
+            }
+            break;
+          default:
+            out += in[i];
+          }
+        }
+      } else {
         out += in[i];
       }
     }

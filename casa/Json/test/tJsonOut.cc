@@ -47,8 +47,8 @@ int main()
     Array<String> as(IPosition(2,2,2));
     as.data()[0] = "s0";
     as.data()[1] = "s1";
-    as.data()[2] = "s2";
-    as.data()[3] = "s3";
+    as.data()[2] = "s\n2";
+    as.data()[3] = "s\"3";
     os.write ("arrs", as, "comment1");
     os.write ("key1", true);
     os.write ("key2", 1, "comment2");
@@ -65,6 +65,8 @@ int main()
     os.write ("key6", Complex(-1,2));
     os.write ("key7", ValueHolder(DComplex(3,-4)));
     os.write ("key8", "string");
+    os.write ("key9", "\t str\\\"ing\n "); // str\"ing
+    os.write ("key10", String("ab") + char(1) + "cd");
     os.write ("null1", ValueHolder());     // null value
     os.write ("null2", floatNaN());        // null value
     os.write ("null3", doubleNaN());       // null value
