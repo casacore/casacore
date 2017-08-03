@@ -150,7 +150,7 @@ namespace casacore {
                 String hex("0X" + in.substr(i+1,4));
                 char* endPtr;
                 Int64 val = strtoll(hex.chars(), &endPtr, 0);
-                if (endPtr == hex.chars()+hex.size()  ||  val < 128) {
+                if (endPtr == hex.chars()+hex.size()  &&  val < 128) {
                   out += char(val);
                   i += 4;
                   ok = True;

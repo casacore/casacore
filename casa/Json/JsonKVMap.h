@@ -58,7 +58,7 @@ namespace casacore {
   // where a default value is used if the key is undefined.
   //
   // JsonKVMap is derived from std::map, so all its functions are available.
-  // Iterators to make standard iteration possible.
+  // Iterators make standard iteration possible.
   // </synopsis>
 
   // <motivation>
@@ -72,9 +72,11 @@ namespace casacore {
   class JsonKVMap: public std::map<String, JsonValue>
   {
   public:
+    // Define the iterator types.
     typedef std::map<String,JsonValue>::const_iterator const_iterator;
     typedef std::map<String,JsonValue>::iterator iterator;
 
+    // Construct an empty map.
     JsonKVMap();
       
     // Copy constructor (copy semantics)

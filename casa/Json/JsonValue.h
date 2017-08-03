@@ -63,19 +63,20 @@ namespace casacore {
   // JSON values can be nested in any way.
   // 
   // Internally scalar values are kept as Bool, Int64, Double, DComplex or
-  // String values, but the class has functions to obtain the value in any
-  // data type as long as it can be converted. Note that conversion from
-  // Int64 to Bool is supported.
+  // String values. The functions to obtain the value convert if possible.
+  // Note that conversion from Int64 to Bool is supported.
+  // The value can also be obtained as a ValueHolder object making it easier
+  // to use in other Casacore code.
   // Null is also a valid JsonValue. A null value can be obtained as a
-  // floating point value resulting in a NaN. For other types an exception
-  // is thrown.
+  // floating point value resulting in a NaN. It can also be obtained as a
+  // null ValueHolder. Getting it for other types results in an exception.
   //
   // It is possible to obtain the value as a multi-dimensional Array object
   // if the values are regular, thus if nested vectors have the same sizes.
   // The data type of an Array is the 'highest' data type of a value in it.
   //
-  // Normally a JsonValue objects is created by JsonParser and is the
-  // interface to obtain a value of a filed in a parsed JSON file.
+  // Normally a JsonValue object is created by JsonParser and is the
+  // interface to obtain a value of a field in a parsed JSON file.
   // However, users can create JsonValue objects as well.
   // </synopsis>
 
@@ -153,14 +154,16 @@ namespace casacore {
     IPosition vectorShape (const std::vector<JsonValue>& vec) const;
 
     // Get the value as a ValueHolder.
+    // A null value results in a null (empty) ValueHolder.
     // An exception is thrown if the value cannot be represented as such,
-    // because it a vector of differently typed values or nested vectors.
+    // because it is a vector of differently typed values or nested vectors.
     ValueHolder getValueHolder() const;
 
     // Get the value in the given data type.
     // Numeric data type promotion can be done as well as conversion of
     // integer to bool (0=False, other=True). An exception is thrown if
     // a mismatching data type is used.
+    // Note that a null value can only be obtained as double (giving NaN).
     // <group>
     Bool getBool() const;
     Int64 getInt() const;
