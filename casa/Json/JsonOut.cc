@@ -33,7 +33,9 @@
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/ValueHolder.h>
+#include <sstream>
 #include <iomanip>
+#include <ctype.h>    //# for iscntrl
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -265,9 +267,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsStream << '}';
   }
   void JsonOut::put (const char* value)
-    { itsStream << '"' << value << '"'; }
+    { itsStream << '"' << escapeString(value) << '"'; }
   void JsonOut::put (const String& value)
-    { itsStream << '"' << value << '"'; }
+    { itsStream << '"' << escapeString(value) << '"'; }
 
   void JsonOut::put (const Record& rec)
   {
@@ -290,10 +292,37 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     String out;
     out.reserve (in.size());
     for (size_t i=0; i<in.size(); ++i) {
-      if (in[i]== '"'  ||  in[i] == '\\') {
+      switch (in[i]) {
+      case '\b':
+        out.append ("\\b");  // backspace
+        break;
+      case '\f':
+        out.append ("\\f");  // formfeed
+        break;
+      case '\n':
+        out.append ("\\n");  // newline
+        break;
+      case '\r':
+        out.append ("\\r");  // carriage return
+        break;
+      case '\t':
+        out.append ("\\t");  // tab
+        break;
+      case '"':
+      case '\\':
         out.append ('\\');
+        out.append (in[i]);
+        break;
+      default:
+        if (iscntrl(in[i])) {
+          ostringstream oss;
+          oss << "\\u" << std::hex << std::uppercase << std::setfill('0')
+              << std::setw(4) << static_cast<int>(in[i]);
+          out.append (oss.str());
+        } else {
+          out.append (in[i]);
+        }
       }
-      out.append (in[i]);
     }
     return out;
   }

@@ -1,6 +1,6 @@
 # This defines the input for a file.
 {
-"keyx":"ab\"/cd", #comment
+"keyx":"ab\"/cd\n", #comment
 "keyy" : {"aa":1, "bb":2, #cc:3
         "dd":"'bc'"
        },
@@ -11,6 +11,7 @@
 "keyc":{"r":1,"i":2},
 "keydc":{"r":3.5,"i":-4.6},
 "keys":"string",
+"keys1":" str1 str2\u0020str3 ",  #\u0020 is a space
 "keybv":[true,false],
 "keyiv":[2,3,4,-5],
 "keyfv":[2e2, 0.2, 2.0, 2.2, 2.0e2, 0.2e+2, -2.2e-2],

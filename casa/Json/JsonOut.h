@@ -163,6 +163,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // A Complex value is written as a nested JSON structure
     // with fields r and i.
     // A string is enclosed in quotes and escaped where necessary.
+    // A NaN is written as a null value.
     // <br>These functions are meant for internal use by the 'write' function.
     // <group>
     template <typename T> void put (T value);
@@ -189,7 +190,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void putArray (const Array<T>& value, const String& indent,
                    Bool firstLine, Bool valueEndl);
 
-    // Escape a double quote and backslash in a string.
+    // Escape special characters (including control characters) in a string.
     static String escapeString (const String& in);
 
   private:
