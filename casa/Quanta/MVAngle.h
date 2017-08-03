@@ -334,12 +334,21 @@ class MVAngle {
   const MVAngle &binorm(Double norm);
   // Check if String unit
   static Bool unitString(UnitVal &uv, String &us, MUString &in);
+
   // Make res angle Quantity from string in angle/time-like format. In the
-  // case of String input, also quantities are recognised. chk checks eos
-  // <group> 
+  // case of String input, also quantities are recognised.
+  // chk=True means that the entire string should be consumed.
+  // throwExcp=True means that an exception is thrown in case of an error.
+  // <group>
   static Bool read(Quantity &res, const String &in, Bool chk=True);
   static Bool read(Quantity &res, MUString &in, Bool chk=True);
+  static Bool read(Quantity &res, const String &in, Bool chk, Bool throwExcp);
+  static Bool read(Quantity &res, MUString &in, Bool chk, Bool throwExcp);
   // </group>
+  // Handle a read error. An exception is thrown if indicated so.
+  // Otherwise in.pop() is called and False is returned.
+  static Bool handleReadError(MUString& in, Bool throwExcp);
+
   // Make co-angle (e.g. zenith distance from elevation)
   MVAngle coAngle() const;
   // Get value in given unit

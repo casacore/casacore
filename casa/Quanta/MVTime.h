@@ -361,10 +361,14 @@ class MVTime {
 
 //# General member functions
   // Make res time Quantity from string. The String version will accept
-  // a time/angle Quantity as well. The chk checks for eos
+  // a time/angle Quantity as well. It returns False in case of an error.
+  // chk=True means that the entire string should be consumed.
+  // throwExcp=True means that an exception is thrown in case of an error.
   // <group>
   static Bool read(Quantity &res, const String &in, Bool chk=True);
   static Bool read(Quantity &res, MUString &in, Bool chk=True);
+  static Bool read(Quantity &res, const String &in, Bool chk, Bool throwExcp);
+  static Bool read(Quantity &res, MUString &in, Bool chk, Bool throwExcp);
   // </group>
 // Get value of date/time (MJD) in given units
 // <group>

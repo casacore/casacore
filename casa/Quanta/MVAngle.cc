@@ -351,7 +351,19 @@ Bool MVAngle::unitString(UnitVal &uv, String &us, MUString &in) {
   return UnitVal::check(in.get(),uv);
 }
 
+Bool MVAngle::handleReadError(MUString& in, Bool throwExcp) {
+  if (throwExcp) {
+    throw AipsError("Invalid date/time '" + in.get(0) +
+                    "', invalid char about pos " + String::toString(in.getPtr()));
+  }
+  in.pop();
+  return False;
+}
+
 Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
+  return read (res, in, chk, False);
+}
+Bool MVAngle::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
   LogIO os(LogOrigin("MVAngle", "read()", WHERE));
   res = Quantity(0.0, "rad");
   in.skipBlank();
@@ -439,7 +451,7 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
     break;
 
   default:
-    in.pop(); return False;
+    return handleReadError (in, throwExcp);
     break;
 
   }
@@ -449,11 +461,16 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
 }
 
 Bool MVAngle::read(Quantity &res, const String &in, Bool chk) {
+  return read (res, in, chk, False);
+}
+Bool MVAngle::read(Quantity &res, const String &in, Bool chk, Bool throwExcp) {
   MUString tmp(in);		// Pointed non-const String
-  if (!MVAngle::read(res, tmp, chk)) {
+  if (!MVAngle::read(res, tmp, chk, throwExcp)) {
     Double r = tmp.getDouble();
     UnitVal u; String us;
-    if (!MVAngle::unitString(u,us,tmp)) return False;
+    if (!MVAngle::unitString(u,us,tmp)) {
+      return handleReadError(tmp, throwExcp);
+    }
     if (u == UnitVal::NODIM) {
       res = Quantity(r,"rad");
     } else if (u == UnitVal::ANGLE) {
@@ -461,7 +478,7 @@ Bool MVAngle::read(Quantity &res, const String &in, Bool chk) {
     } else if (u == UnitVal::TIME) {
       res = Quantity(Quantity(r/240.,us).getBaseValue(), "deg");
     } else {
-      return False;
+      return handleReadError (tmp, throwExcp);
     }
   }
   return True;

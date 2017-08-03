@@ -431,8 +431,10 @@ void MVTime::print(ostream &oss,
     }
 }
 
-
 Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
+  return read (res, in, chk, False);
+}
+Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
   static const String mon[12] = {
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"};
@@ -443,119 +445,129 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
   Double s = in.getSign();
   if (in.tSkipStringNC("today") || in.tSkipStringNC("now") ||
       in.testChar('/')) {
-    if (in.tSkipChar('/')) {
+    if (in.tSkipChar('/') || in.tSkipChar('-') || in.tSkipChar(' ')) {
       if (MVAngle::read(res, in, chk)) {
 	res = Quantity(res.get("deg").getValue()/360., "d");
 	res += Quantity(Double((Int) Time().modifiedJulianDay()),
 			"d");
-	in.unpush(); return True;
       } else {
-	in.pop(); return False;
-      }
-    }
-    res = Quantity(Time().modifiedJulianDay(), "d");
-    in.unpush(); return True;
-  }
-  Int r = in.getuInt();
-  Int mm =0;
-  Double dd = 0;
-  if (in.testChar('-') || in.testAlpha()) {
-    if (in.testChar('-')) in.skipChar();
-    if (in.testAlpha()) {
-      String amon(in.getAlpha());
-      if (amon.length() < 3) {
-	in.pop(); return False;
-      } else {
-	mm = MUString::minimaxNC(amon, 12, mon);
-	if (mm < 12) {
- 	  mm++;
-	} else {
-	  in.pop(); return False;
-	}
+	return MVAngle::handleReadError (in, throwExcp);
       }
     } else {
-      if (in.testChar('-')) {
-	mm = 1;
-      } else {
-	mm = in.getuInt();
-      }
-      if (!in.testChar('-')) {
-	in.pop(); return False;
-      }
-    }
-    in.skipChar('-');
-    Int dd2 = in.getuInt();
-    if (r > 1000) {		// New FITS format
-      dd = dd2;
-    } else {
-      if (dd2 < 50) {
-	dd2 += 2000;
-      } else if (dd2 < 100) {
-	dd2 += 1900;
-      }
-      dd = r;			// Swap day/year
-      r = dd2;
-    }    
-  } else if (in.testChar('/')) {
-    if (in.freqChar('/') > 1) {
-      in.skipChar();
-      if (in.testChar('/')) {
-	in.skipChar();
-	mm = 1;
-      } else {
-	mm = in.getuInt();
-	if (!in.tSkipChar('/')) {
-	  in.pop(); return False;
-	}
-      }
-      dd = in.getDouble();
-    } else {
-      tp = 1;
+      res = Quantity(Time().modifiedJulianDay(), "d");
     }
   } else {
-    in.pop(); return False;
-  }
-  if (in.tSkipChar('/') || in.tSkipChar('-') || in.tSkipChar(' ')) {
-    if (MVAngle::read(res, in, chk)) {
-      res = Quantity(res.get("deg").getValue()/360., "d");
-    } else {
-      in.pop(); return False;
-    }
-  } else if (in.tSkipChar('T')) {	// new FITS
-    if (MVAngle::read(res, in, False)) {
-      res = Quantity(res.get("deg").getValue()/360., "d");
-      if (in.testChar('+') || in.testChar('-')) {
-	Double s = in.getSign();
-	Double r = in.getuInt();
-	if (in.tSkipChar(':')) {
-	  r += Double(in.getuInt())/60.0;
-	}
-	res -= Quantity(s*r/24.0,"d");	// Time zone
-      } else if (! in.tSkipChar('Z')) {	// FITS UTC (old format)
-        if (chk) {
-          in.skipBlank();
-          if (!in.eos()) return False;	     // incorrect
+    Int r = in.getuInt();
+    Int mm = 0;
+    Double dd = 0;
+    if (in.testChar('-') || in.testAlpha()) {
+      if (in.testChar('-')) in.skipChar();
+      if (in.testAlpha()) {
+        String amon(in.getAlpha());
+        if (amon.length() < 3) {
+          return MVAngle::handleReadError (in, throwExcp);
+        } else {
+          mm = MUString::minimaxNC(amon, 12, mon);
+          if (mm < 12) {
+            mm++;
+          } else {
+            return MVAngle::handleReadError (in, throwExcp);
+          }
+        }
+      } else {
+        if (in.testChar('-')) {
+          mm = 1;
+        } else {
+          mm = in.getuInt();
+        }
+        if (!in.testChar('-')) {
+          return MVAngle::handleReadError (in, throwExcp);
         }
       }
+      in.skipChar('-');
+      Int dd2 = in.getuInt();
+      if (r > 1000) {		// New FITS format
+        dd = dd2;
+      } else {
+        if (dd2 < 50) {
+          dd2 += 2000;
+        } else if (dd2 < 100) {
+          dd2 += 1900;
+        }
+        dd = r;			// Swap day/year
+        r = dd2;
+      }    
+    } else if (in.testChar('/')) {
+      if (in.freqChar('/') > 1) {
+        in.skipChar();
+        if (in.testChar('/')) {
+          in.skipChar();
+          mm = 1;
+        } else {
+          mm = in.getuInt();
+          if (!in.tSkipChar('/')) {
+            return MVAngle::handleReadError (in, throwExcp);
+          }
+        }
+        dd = in.getDouble();
+      } else {
+        tp = 1;
+      }
     } else {
-      in.pop(); return False;
+      return MVAngle::handleReadError (in, throwExcp);
+    }
+    if (in.tSkipChar('/') || in.tSkipChar('-') || in.tSkipChar(' ')) {
+      if (MVAngle::read(res, in, chk)) {
+        res = Quantity(res.get("deg").getValue()/360., "d");
+      } else {
+        return MVAngle::handleReadError (in, throwExcp);
+      }
+    } else if (in.tSkipChar('T')) {	// new FITS
+      if (MVAngle::read(res, in, False)) {
+        res = Quantity(res.get("deg").getValue()/360., "d");
+        // Allow possible time zone as in ISO-8601
+        if (in.testChar('+') || in.testChar('-')) {
+          Double s = in.getSign();
+          Double r = in.getuInt();
+          if (in.tSkipChar(':')) {
+            r += Double(in.getuInt())/60.0;
+          }
+          res -= Quantity(s*r/24.0,"d");	// Time zone
+        } else {
+          in.tSkipChar('Z');	// accept FITS UTC (old format)
+        }
+      } else {
+        return MVAngle::handleReadError (in, throwExcp);
+      }
+    }
+    if (tp == 0) {
+      res += MVTime(r, mm, dd).get();
+    } else {
+      res += r;
     }
   }
-  if (tp == 0) {
-    res += MVTime(r, mm, dd).get();
-  } else {
-    res += r;
-  }
   res *= s;			// Sign
-  in.unpush(); return True;
+  if (chk) {
+    in.skipBlank();
+    if (!in.eos()) {
+      return MVAngle::handleReadError (in, throwExcp);  // not fully consumed
+    }
+  }
+  in.unpush();
+  return True;
 }
 
 Bool MVTime::read(Quantity &res, const String &in, Bool chk) {
+  return read (res, in, chk, False);
+}
+Bool MVTime::read(Quantity &res, const String &in, Bool chk, Bool throwExcp) {
   MUString tmp(in);		// Pointed non-const String
-  if (!MVTime::read(res, tmp, chk)) {
+  if (!MVTime::read(res, tmp, chk, throwExcp)) {
     Double r = tmp.getDouble();
     UnitVal u; String us;
-    if (!MVAngle::unitString(u,us,tmp)) return False;
+    if (!MVAngle::unitString(u,us,tmp)) {
+      return MVAngle::handleReadError (tmp, throwExcp);
+    }
     if (u == UnitVal::NODIM) {
       res = Quantity(r,"d");
     } else if (u == UnitVal::TIME) {
@@ -563,7 +575,7 @@ Bool MVTime::read(Quantity &res, const String &in, Bool chk) {
     } else if (u == UnitVal::ANGLE) {
       res = Quantity(Quantity(r/C::_2pi,us).getBaseValue(), "d");
     } else {
-      return False;
+      return MVAngle::handleReadError (tmp, throwExcp);
     }
   }
   return True;
