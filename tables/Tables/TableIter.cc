@@ -99,7 +99,7 @@ TableIterator& TableIterator::operator= (const TableIterator& iter)
 {
     delete tabIterPtr_p;
     tabIterPtr_p = 0;
-    subTable_p   = iter.subTable_p;
+    subTable_p   = Table();
     if (iter.tabIterPtr_p != 0) {
         tabIterPtr_p = iter.tabIterPtr_p->clone();
     }
@@ -124,6 +124,13 @@ void TableIterator::throwIfNull() const
 void TableIterator::next()
 {
     subTable_p = Table(tabIterPtr_p->next());
+}
+
+void
+TableIterator::copyState(const TableIterator &other)
+{
+    subTable_p   = other.subTable_p;
+    tabIterPtr_p->copyState(*other.tabIterPtr_p);
 }
 
 // Report Name of slowest column that changes at end of current iteration
