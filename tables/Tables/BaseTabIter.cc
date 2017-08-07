@@ -87,8 +87,6 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
 BaseTableIterator* BaseTableIterator::clone() const
 {
     BaseTableIterator* newbti = new BaseTableIterator (*this);
-    newbti->lastRow_p = lastRow_p;
-    newbti->keyChangeAtLastNext_p = keyChangeAtLastNext_p;
     return newbti;
 }
 
