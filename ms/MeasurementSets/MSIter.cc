@@ -323,6 +323,7 @@ MSIter::operator=(const MSIter& other)
   tabIter_p.resize(nMS_p);
   for (Int i = 0; i < nMS_p; ++i) {
     tabIter_p[i] = new TableIterator(*(other.tabIter_p[i]));
+    tabIter_p[i]->copyState(*other.tabIter_p[i]);
   }
   tabIterAtStart_p = other.tabIterAtStart_p;
   curMS_p = other.curMS_p;
