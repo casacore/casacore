@@ -104,6 +104,8 @@ public:
     // Return the next group.
     virtual BaseTable* next();
 
+    virtual void copyState(const BaseTableIterator &);
+
     // Report Name of slowest sort column that changed to 
     //  terminate the most recent call to next()
     //  Enables clients to sense iteration boundary properties

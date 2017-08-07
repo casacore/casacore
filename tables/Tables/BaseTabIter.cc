@@ -171,5 +171,12 @@ BaseTable* BaseTableIterator::next()
     return itp;
 }
 
+void
+BaseTableIterator::copyState(const BaseTableIterator &other)
+{
+  lastRow_p = other.lastRow_p;
+  keyChangeAtLastNext_p = other.keyChangeAtLastNext_p;
+}
+
 } //# NAMESPACE CASACORE - END
 
