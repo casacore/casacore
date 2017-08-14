@@ -203,6 +203,8 @@ public:
     void operator++(int);
     // </group>
 
+    void copyState(const TableIterator &);
+
     // Report Name of slowest column that changes at end of current iteration
     const String& keyChangeAtLastNext() const;
 

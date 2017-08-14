@@ -104,6 +104,8 @@ public:
     // Return the next group.
     virtual BaseTable* next();
 
+    virtual void copyState(const BaseTableIterator &);
+
     // Report Name of slowest sort column that changed to 
     //  terminate the most recent call to next()
     //  Enables clients to sense iteration boundary properties
@@ -115,8 +117,6 @@ protected:
     uInt                   lastRow_p;     //# last row used from reftab
     uInt                   nrkeys_p;      //# nr of columns in group
     String                 keyChangeAtLastNext_p;  //# name of column that terminated most recent next()
-    Block<void*>           lastVal_p;     //# last value per column
-    Block<void*>           curVal_p;      //# current value per column
     PtrBlock<BaseColumn*>  colPtr_p;      //# pointer to column objects
     Block<CountedPtr<BaseCompare> > cmpObj_p;  //# comparison object per column
 
@@ -128,6 +128,9 @@ private:
     // the envelope class TableIterator has reference semantics.
     // Declaring it private, makes it unusable.
     BaseTableIterator& operator= (const BaseTableIterator&);
+
+    Block<void*>           lastVal_p;     //# last value per column
+    Block<void*>           curVal_p;      //# current value per column
 };
 
 

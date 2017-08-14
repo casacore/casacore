@@ -50,10 +50,10 @@ BaseTableIterator::BaseTableIterator (BaseTable* btp,
 : lastRow_p (0),
   nrkeys_p  (keys.nelements()),
   keyChangeAtLastNext_p(""),
-  lastVal_p (keys.nelements()),
-  curVal_p  (keys.nelements()),
   colPtr_p  (keys.nelements()),
-  cmpObj_p  (cmp)
+  cmpObj_p  (cmp),
+  lastVal_p (keys.nelements()),
+  curVal_p  (keys.nelements())
 {
     // If needed sort the table in order of the iteration keys.
     // The passed in compare functions are for the iteration.
@@ -94,10 +94,10 @@ BaseTableIterator* BaseTableIterator::clone() const
 BaseTableIterator::BaseTableIterator (const BaseTableIterator& that)
 : lastRow_p (0),
   nrkeys_p  (that.nrkeys_p),
-  lastVal_p (that.nrkeys_p),
-  curVal_p  (that.nrkeys_p),
   colPtr_p  (that.colPtr_p),
-  cmpObj_p  (that.cmpObj_p)
+  cmpObj_p  (that.cmpObj_p),
+  lastVal_p (that.nrkeys_p),
+  curVal_p  (that.nrkeys_p)
 {
     // Get the pointers to the BaseColumn object.
     // Get a buffer to hold the current and last value per column.
@@ -167,6 +167,13 @@ BaseTable* BaseTableIterator::next()
     Vector<uInt>& rownrs = *(itp->rowStorage());
     sortTab_p->adjustRownrs (itp->nrow(), rownrs, False);
     return itp;
+}
+
+void
+BaseTableIterator::copyState(const BaseTableIterator &other)
+{
+  lastRow_p = other.lastRow_p;
+  keyChangeAtLastNext_p = other.keyChangeAtLastNext_p;
 }
 
 } //# NAMESPACE CASACORE - END

@@ -83,19 +83,18 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 }
 
 
-MSIter::MSIter():nMS_p(0),msc_p(0),storeSorted_p(False),allBeamOffsetsZero_p(True),
-  timeComp_p(0) {}
+MSIter::MSIter():nMS_p(0),storeSorted_p(False),allBeamOffsetsZero_p(True)
+{}
 
 MSIter::MSIter(const MeasurementSet& ms,
 	       const Block<Int>& sortColumns,
 	       Double timeInterval,
 	       Bool addDefaultSortColumns,
 	       Bool storeSorted)
-: msc_p(0),curMS_p(0),lastMS_p(-1),
+: curMS_p(0),lastMS_p(-1),
   storeSorted_p(storeSorted),
   interval_p(timeInterval),
-  allBeamOffsetsZero_p(True),
-  timeComp_p(0)
+  allBeamOffsetsZero_p(True)
 {
   bms_p.resize(1); 
   bms_p[0]=ms;
@@ -107,10 +106,9 @@ MSIter::MSIter(const Block<MeasurementSet>& mss,
 	       Double timeInterval,
 	       Bool addDefaultSortColumns,
 	       Bool storeSorted)
-: bms_p(mss),msc_p(0),curMS_p(0),lastMS_p(-1),
+: bms_p(mss),curMS_p(0),lastMS_p(-1),
   storeSorted_p(storeSorted),
-  interval_p(timeInterval),
-  timeComp_p(0)
+  interval_p(timeInterval)
 {
   construct(sortColumns,addDefaultSortColumns);
 }
@@ -222,7 +220,6 @@ void MSIter::construct(const Block<Int>& sortColumns,
   
   // now find the time column and set the compare function
   Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
-  timeComp_p = 0;
   for (uInt i=0; i<columns.nelements(); i++) {
     if (columns[i]==MS::columnName(MS::TIME)) {
       timeComp_p = new MSInterval(interval_p);
@@ -305,38 +302,88 @@ void MSIter::construct(const Block<Int>& sortColumns,
 }
 
 MSIter::MSIter(const MSIter& other)
+	: nMS_p(0), storeSorted_p(False), allBeamOffsetsZero_p(True)
 {
     operator=(other);
 }
 
 MSIter::~MSIter() 
 {
-  if (msc_p) delete msc_p;
   for (Int i=0; i<nMS_p; i++) delete tabIter_p[i];
 }
 
 MSIter& 
 MSIter::operator=(const MSIter& other) 
 {
-  if (this==&other) return *this;
-  This=(MSIter*)this;
-  bms_p=other.bms_p;
-  {for (Int i=0; i<nMS_p; i++) delete tabIter_p[i];}
-  nMS_p=other.nMS_p;
+  if (this == &other) return *this;
+  This = (MSIter*)this;
+  bms_p = other.bms_p;
+  for (Int i =0 ; i < nMS_p; ++i) delete tabIter_p[i];
+  nMS_p = other.nMS_p;
   tabIter_p.resize(nMS_p);
-  for (Int i=0; i<nMS_p; i++) {
-    tabIter_p[i]=new TableIterator(*(other.tabIter_p[i]));
+  for (Int i = 0; i < nMS_p; ++i) {
+    tabIter_p[i] = new TableIterator(*(other.tabIter_p[i]));
+    tabIter_p[i]->copyState(*other.tabIter_p[i]);
   }
-  tabIterAtStart_p=other.tabIterAtStart_p;
-  if (msc_p) delete msc_p;
-  msc_p=static_cast<ROMSColumns*>(0);
-  curMS_p=0;
-  lastMS_p=-1;
-  interval_p=other.interval_p;
-  //  origin();
+  tabIterAtStart_p = other.tabIterAtStart_p;
+  curMS_p = other.curMS_p;
+  lastMS_p = other.lastMS_p;
+  msc_p = other.msc_p;
+  curTable_p = tabIter_p[curMS_p]->table();
+  curArray_p = other.curArray_p;
+  lastArray_p = other.lastArray_p;
+  curSource_p = other.curSource_p;
+  curFieldName_p = other.curFieldName_p;
+  curSourceName_p = other.curSourceName_p;
+  curField_p = other.curField_p;
+  lastField_p = other.lastField_p;
+  curSpectralWindow_p = other.curSpectralWindow_p;
+  lastSpectralWindow_p = other.lastSpectralWindow_p;
+  curPolarizationId_p = other.curPolarizationId_p;
+  lastPolarizationId_p = other.lastPolarizationId_p;
+  curDataDescId_p = other.curDataDescId_p;
+  lastDataDescId_p = other.lastDataDescId_p;
+  more_p = other.more_p;
+  newMS_p = other.newMS_p;
+  newArray_p = other.newArray_p;
+  newField_p = other.newField_p;
+  newSpectralWindow_p = other.newSpectralWindow_p;
+  newPolarizationId_p = other.newPolarizationId_p;
+  newDataDescId_p = other.newDataDescId_p;
+  preselected_p = other.preselected_p;
+  timeDepFeed_p = other.timeDepFeed_p;
+  spwDepFeed_p = other.spwDepFeed_p;
+  checkFeed_p = other.checkFeed_p;
+  startChan_p = other.startChan_p;
+  storeSorted_p = other.storeSorted_p;
+  interval_p = other.interval_p;
+  preselectedChanStart_p = other.preselectedChanStart_p;
+  preselectednChan_p = other.preselectednChan_p;
+  colArray_p = other.colArray_p;
+  colDataDesc_p = other.colDataDesc_p;
+  colField_p = other.colField_p;
+  phaseCenter_p = other.phaseCenter_p;
+  receptorAnglesFeed0_p = other.receptorAnglesFeed0_p;
+  receptorAngles_p = other.receptorAngles_p;
+  CJonesFeed0_p = other.CJonesFeed0_p;
+  CJones_p = other.CJones_p;
+  antennaMounts_p = other.antennaMounts_p;
+  beamOffsets_p = other.beamOffsets_p;
+  allBeamOffsetsZero_p = other.allBeamOffsetsZero_p;
+  polFrame_p = other.polFrame_p;
+  freqCacheOK_p = other.freqCacheOK_p;
+  frequency_p = other.frequency_p;
+  frequency0_p = other.frequency0_p;
+  restFrequency_p = other.restFrequency_p;
+  telescopePosition_p = other.telescopePosition_p;
+  timeComp_p.reset(new MSInterval(interval_p));
   return *this;
 }
 
+MSIter *
+MSIter::clone() const {
+	return new MSIter(*this);
+}
 
 const MS& MSIter::ms(const uInt id) const {
 
@@ -497,11 +544,10 @@ const MFrequency& MSIter::restFrequency(Int line) const
 
 void MSIter::setMSInfo()
 {
-  newMS_p=(lastMS_p!=curMS_p);
+  newMS_p = (lastMS_p != curMS_p);
   if (newMS_p) {
-    lastMS_p=curMS_p;
+    lastMS_p = curMS_p;
     if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
-    if (msc_p) delete msc_p;
     msc_p = new ROMSColumns(bms_p[curMS_p]);
     // check to see if we are attached to a 'reference MS' with a 
     // DATA column that is a selection of the original DATA
@@ -513,12 +559,12 @@ void MSIter::setMSInfo()
       // get the selection
       Matrix<Int> selection;
       kws.get("CHANNEL_SELECTION",selection);
-      Int nSpw=selection.ncolumn();
+      Int nSpw = selection.ncolumn();
       preselectedChanStart_p.resize(nSpw);
       preselectednChan_p.resize(nSpw);
-      for (Int i=0; i<nSpw; i++) {
-	preselectedChanStart_p[i]=selection(0,i);
-	preselectednChan_p[i]=selection(1,i);
+      for (Int i = 0; i < nSpw; i++) {
+	preselectedChanStart_p[i] = selection(0,i);
+	preselectednChan_p[i] = selection(1,i);
       }
     }
 
