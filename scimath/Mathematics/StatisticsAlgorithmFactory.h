@@ -26,11 +26,11 @@
 #ifndef SCIMATH_STATSALGORITHMFACTORY_H
 #define SCIMATH_STATSALGORITHMFACTORY_H
 
-#include <casa/Utilities/CountedPtr.h>
-#include <scimath/Mathematics/FitToHalfStatisticsData.h>
-#include <scimath/Mathematics/NumericTraits.h>
-#include <scimath/Mathematics/StatisticsAlgorithm.h>
-#include <scimath/Mathematics/StatisticsData.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/scimath/Mathematics/FitToHalfStatisticsData.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
+#include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
+#include <casacore/scimath/Mathematics/StatisticsData.h>
 
 namespace casacore {
 
@@ -81,7 +81,7 @@ public:
     StatisticsData::ALGORITHM algorithm() const { return _algorithm; }
 
     // Throws an exception if the current configuration is not relevant
-    // to the Chauvenet/zscore algorithm 
+    // to the Chauvenet/zscore algorithm
     ChauvenetData chauvenetData() const;
 
     // Throws an exception if the current configuration is not relevant
