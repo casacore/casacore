@@ -3138,16 +3138,32 @@ Bool FITSIDItoMS1::fillSysCalTable()
 
   Int nVal=nrows();
   Bool dualPol=False;
+  Bool TSYSisScalar=False;
 
   Table tyTab = oldfullTable("");
   ROScalarColumn<Double> time(tyTab, "TIME");
   ROScalarColumn<Float> timeint(tyTab, "TIME_INTERVAL");
   ROScalarColumn<Int> anNo(tyTab, "ANTENNA_NO");
-  ROArrayColumn<Float> tsys_1(tyTab, "TSYS_1");
+  ROArrayColumn<Float> tsys_1;
   ROArrayColumn<Float> tsys_2;
-  if(tyTab.tableDesc().isColumn("TSYS_2")) {
-    tsys_2.attach(tyTab, "TSYS_2"); // this column is optional
-    dualPol=True;
+  ROScalarColumn<Float> tsys_1S;
+  ROScalarColumn<Float> tsys_2S;
+  try{
+    tsys_1.attach(tyTab, "TSYS_1");
+    if(tyTab.tableDesc().isColumn("TSYS_2")) {
+      tsys_2.attach(tyTab, "TSYS_2"); // this column is optional
+      dualPol=True;
+    }
+  }
+  catch(AipsError){
+    tsys_1S.attach(tyTab, "TSYS_1");
+    if(tyTab.tableDesc().isColumn("TSYS_2")) {
+      tsys_2S.attach(tyTab, "TSYS_2"); // this column is optional
+      dualPol=True;
+    }
+    TSYSisScalar=True;
+    *itsLog << LogIO::WARN << "Treating TSYS_1 and TSYS_2 columns in input SYSTEM_TEMPERATURE table as scalar,"
+	    << endl << " i.e. using same value for all bands." << LogIO::POST;
   }
   Vector<Float> tsys(dualPol ? 2 : 1);
 
@@ -3165,9 +3181,15 @@ Bool FITSIDItoMS1::fillSysCalTable()
       msSysCal.time().put(outRow,time(inRow)*C::day + rdate);
       msSysCal.interval().put(outRow,timeint(inRow)*C::day);
       msSysCal.spectralWindowId().put(outRow,inIF);
-      tsys(0)=tsys_1(inRow)(IPosition(1,inIF));
-      if (dualPol)
-	tsys(1)=tsys_2(inRow)(IPosition(1,inIF));
+      if (TSYSisScalar) {
+	tsys(0)=tsys_1S(inRow);
+	if (dualPol)
+	  tsys(1)=tsys_2S(inRow);
+      } else {
+	tsys(0)=tsys_1(inRow)(IPosition(1,inIF));
+	if (dualPol)
+	  tsys(1)=tsys_2(inRow)(IPosition(1,inIF));
+      }
       msSysCal.tsys().put(outRow,tsys);
     }
   }
