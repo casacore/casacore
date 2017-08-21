@@ -92,45 +92,45 @@ public:
 
   // Set the shape of the array in the given row and allocate the array
   // in the file.
-  void setShape (uInt rownr, const IPosition& shape);
+  void setShape (rownr_t rownr, const IPosition& shape);
 
   // Is the shape defined (i.e. is there an array) in this row?
-  Bool isShapeDefined (uInt rownr);
+  Bool isShapeDefined (rownr_t rownr);
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
-  uInt ndim (uInt rownr);
+  uInt ndim (rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // An zero-length IPosition is returned if there is no array.
-  IPosition shape (uInt rownr);
+  IPosition shape (rownr_t rownr);
 
   // This storage manager can handle changing array shapes.
   Bool canChangeShape() const;
 
   // Get an array value in the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn get function).
-  void getArrayV (uInt rownr, ArrayBase& dataPtr);
+  void getArrayV (rownr_t rownr, ArrayBase& arr);
 
   // Put an array value into the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn put function).
-  void putArrayV (uInt rownr, const ArrayBase& dataPtr);
+  void putArrayV (rownr_t rownr, const ArrayBase& arr);
 
   // Get a section of the array in the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn getSlice function).
-  void getSliceV (uInt rownr, const Slicer&, ArrayBase& dataPtr);
+  void getSliceV (rownr_t rownr, const Slicer&, ArrayBase& arr);
 
   // Put into a section of the array in the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn putSlice function).
-  void putSliceV (uInt rownr, const Slicer&, const ArrayBase& dataPtr);
+  void putSliceV (rownr_t rownr, const Slicer&, const ArrayBase& arr);
 
   // Remove the value in the given row.
   // This will result in lost file space.
-  void remove (uInt rownr);
+  void remove (rownr_t rownr);
 
 
 private:
@@ -156,14 +156,14 @@ private:
 
 
   // Delete the array in the given row.
-  void deleteArray (uInt rownr);
+  void deleteArray (rownr_t rownr);
 
   // Read the shape at the given row.
   // It throws an exception if undefined.
-  Data* getShape (uInt rownr);
+  Data* getShape (rownr_t rownr);
 
   // Get a pointer to the data array.
-  void* getDataPtr (uInt rownr)
+  void* getDataPtr (rownr_t rownr)
     { return (char*)(getShape(rownr)) + startSize_p; }
 
   // Forbid copy constructor.

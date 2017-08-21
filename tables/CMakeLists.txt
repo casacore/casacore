@@ -117,6 +117,7 @@ DataMan/StIndArrAIO.cc
 DataMan/StIndArray.cc
 DataMan/StManAipsIO.cc
 DataMan/StManColumn.cc
+DataMan/StManColumnBase.cc
 DataMan/StandardStMan.cc
 DataMan/StandardStManAccessor.cc
 DataMan/TSMColumn.cc
@@ -340,6 +341,7 @@ DataMan/StIndArrAIO.h
 DataMan/StIndArray.h
 DataMan/StManAipsIO.h
 DataMan/StManColumn.h
+DataMan/StManColumnBase.h
 DataMan/StandardStMan.h
 DataMan/StandardStManAccessor.h
 DataMan/TSMColumn.h
@@ -361,6 +363,8 @@ DataMan/TiledFileHelper.h
 DataMan/TiledShapeStMan.h
 DataMan/TiledStMan.h
 DataMan/TiledStManAccessor.h
+DataMan/VACEngine.h
+DataMan/VACEngine.tcc
 DataMan/VSCEngine.h
 DataMan/VSCEngine.tcc
 DataMan/VirtArrCol.h

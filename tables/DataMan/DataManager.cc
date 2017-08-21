@@ -92,13 +92,13 @@ Bool DataManager::isStorageManager() const
     { return True; }
 
 
-uInt DataManager::open1 (uInt nrrow, AipsIO& ios)
+rownr_t DataManager::open1 (rownr_t nrrow, AipsIO& ios)
 {
     open (nrrow, ios);
     return nrrow;
 }
 
-uInt DataManager::resync1 (uInt nrrow)
+rownr_t DataManager::resync1 (rownr_t nrrow)
 {
     resync (nrrow);
     return nrrow;
@@ -258,11 +258,11 @@ Bool DataManager::canRemoveColumn() const
 Bool DataManager::canRenameColumn() const
     { return True; }
 
-void DataManager::addRow (uInt)
+void DataManager::addRow (rownr_t)
     { throw DataManInvOper ("DataManager::addRow not allowed for "
                             "data manager type " + dataManagerType()); }
 
-void DataManager::removeRow (uInt)
+void DataManager::removeRow (rownr_t)
     { throw DataManInvOper ("DataManager::removeRow not allowed for "
                             "data manager type " + dataManagerType()); }
 

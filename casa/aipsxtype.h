@@ -38,10 +38,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 typedef long long Int64;
 typedef unsigned long long uInt64;
 
-//# All FITS code seems to assume longs are 4 bytes. Currently
-//# this corresponds to an "int" on all useful platforms.
+// All FITS code seems to assume longs are 4 bytes. Currently
+// this corresponds to an "int" on all useful platforms.
 typedef int FitsLong;
 
+// Define the type of a row number in a table.
+typedef uInt64 rownr_t;
+
+  
 } //# NAMESPACE CASACORE - END
 
 #endif

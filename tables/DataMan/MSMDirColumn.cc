@@ -47,8 +47,8 @@ MSMDirColumn::MSMDirColumn (MSMBase* smptr, int dataType)
 
 MSMDirColumn::~MSMDirColumn()
 {
-  uInt nr = stmanPtr_p->nrow();
-  for (uInt i=0; i<nr; i++) {
+  rownr_t nr = stmanPtr_p->nrow();
+  for (rownr_t i=0; i<nr; i++) {
     deleteArray (i);
   }
 }
@@ -61,7 +61,7 @@ void MSMDirColumn::setShapeColumn (const IPosition& shape)
 }
 
 
-void MSMDirColumn::addRow (uInt nrnew, uInt nrold)
+void MSMDirColumn::addRow (rownr_t nrnew, rownr_t nrold)
 {
   //# Extend data blocks if needed.
   MSMColumn::addRow (nrnew, nrold);
@@ -73,22 +73,22 @@ void MSMDirColumn::addRow (uInt nrnew, uInt nrold)
   }
 }
 
-void MSMDirColumn::doCreate (uInt nrrow)
+void MSMDirColumn::doCreate (rownr_t nrrow)
 {
   addRow (nrrow, 0);
-  for (uInt i=0; i<nrrow; i++) {
+  for (rownr_t i=0; i<nrrow; i++) {
     initData (getArrayPtr(i), nrelem_p);
   } 
 }
 
-uInt MSMDirColumn::ndim (uInt)
+uInt MSMDirColumn::ndim (rownr_t)
   { return shape_p.nelements(); }
 
-IPosition MSMDirColumn::shape (uInt)
+IPosition MSMDirColumn::shape (rownr_t)
   { return shape_p; }
 
 
-void MSMDirColumn::getArrayV (uInt rownr, ArrayBase& arr)
+void MSMDirColumn::getArrayV (rownr_t rownr, ArrayBase& arr)
 {
     DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
     Bool deleteIt;
@@ -104,7 +104,7 @@ void MSMDirColumn::getArrayV (uInt rownr, ArrayBase& arr)
     }
     arr.putVStorage (data, deleteIt);
 }
-void MSMDirColumn::putArrayV (uInt rownr, const ArrayBase& arr)
+void MSMDirColumn::putArrayV (rownr_t rownr, const ArrayBase& arr)
 {
     DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
     Bool deleteIt;
@@ -122,15 +122,104 @@ void MSMDirColumn::putArrayV (uInt rownr, const ArrayBase& arr)
     stmanPtr_p->setHasPut();
 }
 
+void MSMDirColumn::getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& arr)
+{
+  switch (dtype()) {
+  case TpBool:
+    doGetSlice (rownr, slicer, static_cast<Array<Bool>&>(arr));
+    break;
+  case TpUChar:
+    doGetSlice (rownr, slicer, static_cast<Array<uChar>&>(arr));
+    break;
+  case TpShort:
+    doGetSlice (rownr, slicer, static_cast<Array<Short>&>(arr));
+    break;
+  case TpUShort:
+    doGetSlice (rownr, slicer, static_cast<Array<uShort>&>(arr));
+    break;
+  case TpInt:
+    doGetSlice (rownr, slicer, static_cast<Array<Int>&>(arr));
+    break;
+  case TpUInt:
+    doGetSlice (rownr, slicer, static_cast<Array<uInt>&>(arr));
+    break;
+  case TpInt64:
+    doGetSlice (rownr, slicer, static_cast<Array<Int64>&>(arr));
+    break;
+  case TpFloat:
+    doGetSlice (rownr, slicer, static_cast<Array<Float>&>(arr));
+    break;
+  case TpDouble:
+    doGetSlice (rownr, slicer, static_cast<Array<Double>&>(arr));
+    break;
+  case TpComplex:
+    doGetSlice (rownr, slicer, static_cast<Array<Complex>&>(arr));
+    break;
+  case TpDComplex:
+    doGetSlice (rownr, slicer, static_cast<Array<DComplex>&>(arr));
+    break;
+  case TpString:
+    doGetSlice (rownr, slicer, static_cast<Array<String>&>(arr));
+    break;
+  default:
+    throw (DataManInvDT ("MSMDirColumn::getSlice"));
+  }
+}
 
-void MSMDirColumn::remove (uInt rownr)
+void MSMDirColumn::putSliceV (rownr_t rownr, const Slicer& slicer, const ArrayBase& arr)
+{
+  switch (dtype()) {
+  case TpBool:
+    doPutSlice (rownr, slicer, static_cast<const Array<Bool>&>(arr));
+    break;
+  case TpUChar:
+    doPutSlice (rownr, slicer, static_cast<const Array<uChar>&>(arr));
+    break;
+  case TpShort:
+    doPutSlice (rownr, slicer, static_cast<const Array<Short>&>(arr));
+    break;
+  case TpUShort:
+    doPutSlice (rownr, slicer, static_cast<const Array<uShort>&>(arr));
+    break;
+  case TpInt:
+    doPutSlice (rownr, slicer, static_cast<const Array<Int>&>(arr));
+    break;
+  case TpUInt:
+    doPutSlice (rownr, slicer, static_cast<const Array<uInt>&>(arr));
+    break;
+  case TpInt64:
+    doPutSlice (rownr, slicer, static_cast<const Array<Int64>&>(arr));
+    break;
+  case TpFloat:
+    doPutSlice (rownr, slicer, static_cast<const Array<Float>&>(arr));
+    break;
+  case TpDouble:
+    doPutSlice (rownr, slicer, static_cast<const Array<Double>&>(arr));
+    break;
+  case TpComplex:
+    doPutSlice (rownr, slicer, static_cast<const Array<Complex>&>(arr));
+    break;
+  case TpDComplex:
+    doPutSlice (rownr, slicer, static_cast<const Array<DComplex>&>(arr));
+    break;
+  case TpString:
+    doPutSlice (rownr, slicer, static_cast<const Array<String>&>(arr));
+    break;
+  default:
+    throw (DataManInvDT ("MSMDirColumn::getSlice"));
+  }
+  stmanPtr_p->setHasPut();
+}
+
+
+void MSMDirColumn::remove (rownr_t rownr)
 {
   deleteArray (rownr);
   MSMColumn::remove (rownr);
 }
 
 
-void MSMDirColumn::deleteArray (uInt rownr)
+void MSMDirColumn::deleteArray (rownr_t rownr)
 {
   void* datap = getArrayPtr (rownr);
   deleteData (datap, False);

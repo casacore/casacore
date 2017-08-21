@@ -164,52 +164,54 @@ private:
     void setShapeColumn (const IPosition& shape);
 
     // Set the shape of an (indirect) array in the given row.
-    void setShape (uInt rownr, const IPosition& shape);
+    void setShape (rownr_t rownr, const IPosition& shape);
 
     // Is the value shape defined in the given row?
-    Bool isShapeDefined (uInt rownr);
+    Bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the item in the given row.
-    uInt ndim (uInt rownr);
+    uInt ndim (rownr_t rownr);
 
     // Get the shape of the item in the given row.
-    IPosition shape (uInt rownr);
+    IPosition shape (rownr_t rownr);
 
     // Get the scalar value with a standard data type in the given row.
     // <group>
-    void getBoolV     (uInt rownr, Bool* dataPtr);
-    void getuCharV    (uInt rownr, uChar* dataPtr);
-    void getShortV    (uInt rownr, Short* dataPtr);
-    void getuShortV   (uInt rownr, uShort* dataPtr);
-    void getIntV      (uInt rownr, Int* dataPtr);
-    void getuIntV     (uInt rownr, uInt* dataPtr);
-    void getfloatV    (uInt rownr, float* dataPtr);
-    void getdoubleV   (uInt rownr, double* dataPtr);
-    void getComplexV  (uInt rownr, Complex* dataPtr);
-    void getDComplexV (uInt rownr, DComplex* dataPtr);
-    void getStringV   (uInt rownr, String* dataPtr);
+    void getBool     (rownr_t rownr, Bool* dataPtr);
+    void getuChar    (rownr_t rownr, uChar* dataPtr);
+    void getShort    (rownr_t rownr, Short* dataPtr);
+    void getuShort   (rownr_t rownr, uShort* dataPtr);
+    void getInt      (rownr_t rownr, Int* dataPtr);
+    void getuInt     (rownr_t rownr, uInt* dataPtr);
+    void getInt64    (rownr_t rownr, Int64* dataPtr);
+    void getfloat    (rownr_t rownr, float* dataPtr);
+    void getdouble   (rownr_t rownr, double* dataPtr);
+    void getComplex  (rownr_t rownr, Complex* dataPtr);
+    void getDComplex (rownr_t rownr, DComplex* dataPtr);
+    void getString   (rownr_t rownr, String* dataPtr);
     // </group>
 
     // Get the scalar value with a non-standard data type in the given row.
-    void getOtherV    (uInt rownr, void* dataPtr);
+    void getOther    (rownr_t rownr, void* dataPtr);
 
     // Put the scalar value with a standard data type into the given row.
     // <group>
-    void putBoolV     (uInt rownr, const Bool* dataPtr);
-    void putuCharV    (uInt rownr, const uChar* dataPtr);
-    void putShortV    (uInt rownr, const Short* dataPtr);
-    void putuShortV   (uInt rownr, const uShort* dataPtr);
-    void putIntV      (uInt rownr, const Int* dataPtr);
-    void putuIntV     (uInt rownr, const uInt* dataPtr);
-    void putfloatV    (uInt rownr, const float* dataPtr);
-    void putdoubleV   (uInt rownr, const double* dataPtr);
-    void putComplexV  (uInt rownr, const Complex* dataPtr);
-    void putDComplexV (uInt rownr, const DComplex* dataPtr);
-    void putStringV   (uInt rownr, const String* dataPtr);
+    void putBool     (rownr_t rownr, const Bool* dataPtr);
+    void putuChar    (rownr_t rownr, const uChar* dataPtr);
+    void putShort    (rownr_t rownr, const Short* dataPtr);
+    void putuShort   (rownr_t rownr, const uShort* dataPtr);
+    void putInt      (rownr_t rownr, const Int* dataPtr);
+    void putuInt     (rownr_t rownr, const uInt* dataPtr);
+    void putInt64    (rownr_t rownr, const Int64* dataPtr);
+    void putfloat    (rownr_t rownr, const float* dataPtr);
+    void putdouble   (rownr_t rownr, const double* dataPtr);
+    void putComplex  (rownr_t rownr, const Complex* dataPtr);
+    void putDComplex (rownr_t rownr, const DComplex* dataPtr);
+    void putString   (rownr_t rownr, const String* dataPtr);
     // </group>
 
     // Put the scalar value with a non-standard data type into the given row.
-    void putOtherV    (uInt rownr, const void* dataPtr);
+    void putOther    (rownr_t rownr, const void* dataPtr);
 
     // Get all scalar values in the column.
     // The argument dataPtr is in fact a Vector<T>&, but a ArrayBase&
@@ -246,28 +248,28 @@ private:
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn get function).
-    void getArrayV (uInt rownr, ArrayBase& dataPtr);
+    void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
 
     // Put the array value into the given row.
     // The argument dataPtr is in fact a const Array<T>&, but a const ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn put function).
-    void putArrayV (uInt rownr, const ArrayBase& dataPtr);
+    void putArrayV (rownr_t rownr, const ArrayBase& dataPtr);
 
     // Get a section of the array in the given row.
     // The argument dataPtr is in fact a Array<T>&, but a ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn getSlice function).
-    void getSliceV (uInt rownr, const Slicer& slicer, ArrayBase& dataPtr);
+    void getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& dataPtr);
 
     // Put into a section of the array in the given row.
     // The argument dataPtr is in fact a const Array<T>&, but a const ArrayBase&
     // is needed to be generic.
     // The array pointed to by dataPtr has to have the correct shape
     // (which is guaranteed by the ArrayColumn putSlice function).
-    void putSliceV (uInt rownr, const Slicer& slicer, const ArrayBase& dataPtr);
+    void putSliceV (rownr_t rownr, const Slicer& slicer, const ArrayBase& dataPtr);
 
     // Get all scalar values in the column.
     // The argument dataPtr is in fact a Vector<T>&, but a ArrayBase&
@@ -476,11 +478,11 @@ private:
 
     // Add rows to all columns.
     // This is not doing anything (but needed to override the default).
-    void addRow (uInt nrrow);
+    void addRow (rownr_t nrrow);
 
     // Delete a row from all columns.
     // This is not doing anything (but needed to override the default).
-    void removeRow (uInt rownr);
+    void removeRow (rownr_t rownr);
 
     // This data manager allows to add columns.
     Bool canAddColumn() const;
@@ -507,7 +509,7 @@ private:
     // Initialize the object for a new table.
     // It defines the column keywords containing the name of the
     // original table, which can be the parent of the referenced table.
-    void create (uInt initialNrrow);
+    void create (rownr_t initialNrrow);
 
     // Initialize the engine.
     // It gets the name of the original table(s) from the column keywords,

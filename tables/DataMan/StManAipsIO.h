@@ -117,15 +117,15 @@ public:
 
     // Write the column data into AipsIO.
     // It will successively write all extensions using putData.
-    virtual void putFile (uInt nrval, AipsIO&);
+    virtual void putFile (rownr_t nrval, AipsIO&);
 
     // Read the column data from AipsIO.
     // One extension gets allocated to hold all rows in the column.
-    virtual void getFile (uInt nrval, AipsIO&);
+    virtual void getFile (rownr_t nrval, AipsIO&);
 
 protected:
     // initData does not do anything (only used in MSMColumn).
-    virtual void initData (void* datap, uInt nrval);
+    virtual void initData (void* datap, rownr_t nrval);
 
     // Put the data (nrval elements) in an extension (starting at datap)
     // into AipsIO.
@@ -247,15 +247,15 @@ private:
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    virtual void create (uInt nrrow);
+    virtual void create (rownr_t nrrow);
 
     // Open the storage manager file for an existing table and read in
     // the data and let the StManColumnAipsIO objects read their data.
-    virtual void open (uInt nrrow, AipsIO&);
+    virtual void open (rownr_t nrrow, AipsIO&);
 
     // Resync the storage manager with the new file contents.
     // This is done by clearing the cache.
-    virtual void resync (uInt nrrow);
+    virtual void resync (rownr_t nrrow);
 
     // Reopen the storage manager files for read/write.
     virtual void reopenRW();

@@ -32,7 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/DataMan/MSMColumn.h>
-#include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Arrays/Array.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -76,69 +76,74 @@ public:
 
   // Add (newNrrow-oldNrrow) rows to the column.
   // Allocate the data arrays in these rows if the shape is fixed.
-  virtual void addRow (uInt newNrrow, uInt oldNrrow);
+  virtual void addRow (rownr_t newNrrow, rownr_t oldNrrow);
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
-  virtual uInt ndim (uInt rownr);
+  virtual uInt ndim (rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // An zero-length IPosition is returned if there is no array.
-  virtual IPosition shape (uInt rownr);
+  virtual IPosition shape (rownr_t rownr);
 
   // Get an array value in the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn get function).
-  virtual void getArrayV (uInt rownr, ArrayBase& dataPtr);
+  virtual void getArrayV (rownr_t rownr, ArrayBase& arr);
   
   // Put an array value into the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn put function).
-  virtual void putArrayV (uInt rownr, const ArrayBase& dataPtr);
+  virtual void putArrayV (rownr_t rownr, const ArrayBase& arr);
 
   // Get a section of the array in the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn getSlice function).
-  ///virtual void getSliceV (uInt rownr, const Slicer&, ArrayBase& dataPtr);
+  virtual void getSliceV (rownr_t rownr, const Slicer&, ArrayBase& arr);
 
   // Put into a section of the array in the given row.
-  // The buffer pointed to by dataPtr has to have the correct length
+  // The buffer given by <src>arr</src> has to have the correct length
   // (which is guaranteed by the ArrayColumn putSlice function).
-  ///virtual void putSliceV (uInt rownr, const Slicer&, const ArrayBase& dataPtr);
-
-  // Get all array values in the column.
-  // The buffer pointed to by dataPtr has to have the correct length
-  // (which is guaranteed by the ArrayColumn getColumn function).
-  ///void getArrayColumnV (ArrayBase& dataPtr);
-
-  // Put all arrays in the column.
-  // The buffer pointed to by dataPtr has to have the correct length
-  // (which is guaranteed by the ArrayColumn putColumn function).
-  ///void putArrayColumnV (const ArrayBase& dataPtr);
+  virtual void putSliceV (rownr_t rownr, const Slicer&, const ArrayBase& arr);
 
   // Remove the value in the given row.
-  void remove (uInt rownr);
+  void remove (rownr_t rownr);
 
   // Let the column create its arrays.
-  void doCreate (uInt nrrow);
+  void doCreate (rownr_t nrrow);
 
 private:
-  // The (unique) sequence number of the column.
-  uInt seqnr_p;
-  // The shape of the array.
-  IPosition shape_p;
-  // The nr of elements in the array.
-  uInt nrelem_p;
+  template<typename T>
+  inline void doGetSlice (rownr_t rownr, const Slicer& slicer, Array<T>& data)
+  {
+    Array<T> arr(shape_p, static_cast<T*>(getArrayPtr (rownr)), SHARE);
+    data = arr(slicer);
+  }
 
+  template<typename T>
+  inline void doPutSlice (rownr_t rownr, const Slicer& slicer, const Array<T>& data)
+  {
+    Array<T> arr(shape_p, static_cast<T*>(getArrayPtr (rownr)), SHARE);
+    arr(slicer) = data;
+  }
 
   // Delete the array in the given row.
-  void deleteArray (uInt rownr);
+  void deleteArray (rownr_t rownr);
 
   // Forbid copy constructor.
   MSMDirColumn (const MSMDirColumn&);
 
   // Forbid assignment.
   MSMDirColumn& operator= (const MSMDirColumn&);
+
+
+  // The (unique) sequence number of the column.
+  uInt seqnr_p;
+  // The shape of the array.
+  IPosition shape_p;
+  // The nr of elements in the array.
+  rownr_t nrelem_p;
+
 };
 
 

@@ -48,7 +48,7 @@ TSMCoordColumn::~TSMCoordColumn()
 {}
 
 
-void TSMCoordColumn::setShape (uInt rownr, const IPosition& shape)
+void TSMCoordColumn::setShape (rownr_t rownr, const IPosition& shape)
 {
     if (shape.nelements() != 1) {
 	throw (TSMError ("setShape of coordinate column " + columnName() +
@@ -104,7 +104,7 @@ void TSMCoordColumn::setShape (uInt rownr, const IPosition& shape)
     }
 }
 
-Bool TSMCoordColumn::isShapeDefined (uInt rownr)
+Bool TSMCoordColumn::isShapeDefined (rownr_t rownr)
 {
     //# The shape is defined when the shape is fixed, when
     //# a hypercube has been defined for this row or when the
@@ -120,7 +120,7 @@ Bool TSMCoordColumn::isShapeDefined (uInt rownr)
     
 }
 
-IPosition TSMCoordColumn::shape (uInt rownr)
+IPosition TSMCoordColumn::shape (rownr_t rownr)
 {
     //# Return the shape when it is fixed.
     if (shapeColumn().nelements() != 0) {
@@ -141,7 +141,7 @@ IPosition TSMCoordColumn::shape (uInt rownr)
 }
 
 
-void TSMCoordColumn::getfloatV (uInt rownr, float* dataPtr)
+void TSMCoordColumn::getfloat (rownr_t rownr, float* dataPtr)
 {
     // Get the hypercube the row is in.
     // It also gives the position of the row in the hypercube.
@@ -155,7 +155,7 @@ void TSMCoordColumn::getfloatV (uInt rownr, float* dataPtr)
     *dataPtr = (*field) (IPosition (1, position(axisNr_p)));
 }
 
-void TSMCoordColumn::putfloatV (uInt rownr, const float* dataPtr)
+void TSMCoordColumn::putfloat (rownr_t rownr, const float* dataPtr)
 {
     // Get the hypercube the row is in.
     // It also gives the position of the row in the hypercube.
@@ -193,14 +193,14 @@ void TSMCoordColumn::putArrayfloatV (uInt rownr, const Array<float>* dataPtr)
 
 
 #define TSMCOORDCOLUMN_GETPUT(T,NM) \
-void TSMCoordColumn::aips_name2(get,NM) (uInt rownr, T* dataPtr) \
+void TSMCoordColumn::aips_name2(get,T) (rownr_t rownr, T* dataPtr) \
 { \
     IPosition position; \
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, position); \
     RORecordFieldPtr<Array<T> > field (hypercube->valueRecord(),columnName());\
     *dataPtr = (*field) (IPosition (1, position(axisNr_p))); \
 } \
-void TSMCoordColumn::aips_name2(put,NM) (uInt rownr, const T* dataPtr) \
+void TSMCoordColumn::aips_name2(put,T) (rownr_t rownr, const T* dataPtr) \
 { \
     IPosition position; \
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, position); \

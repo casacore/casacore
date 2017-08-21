@@ -442,11 +442,11 @@ private:
 
     // Add rows to all columns.
     // The default implementation throws a "not possible" exception.
-    virtual void addRow (uInt nrrow);
+    virtual void addRow (rownr_t nrrow);
 
     // Delete a row from all columns.
     // The default implementation throws a "not possible" exception.
-    virtual void removeRow (uInt rownr);
+    virtual void removeRow (rownr_t rownr);
 
     // Add a column.
     // The default implementation throws a "not possible" exception.
@@ -470,13 +470,13 @@ private:
     virtual Bool flush (AipsIO& ios, Bool fsync) = 0;
 
     // Let the data manager initialize itself for a new table.
-    virtual void create (uInt nrrow) = 0;
+    virtual void create (rownr_t nrrow) = 0;
 
     // Let the data manager initialize itself for an existing table.
     // The AipsIO stream represents the main table file and must be
     // used by virtual column engines to retrieve the data stored
     // in the flush function.
-    virtual void open (uInt nrrow, AipsIO& ios) = 0;
+    virtual void open (rownr_t nrrow, AipsIO& ios) = 0;
 
     // Open as above.
     // The data manager can return the number of rows it thinks there are.
@@ -484,12 +484,12 @@ private:
     // data are written outside the table system, thus for which no rows
     // have been added.
     // <br>By default it calls open and returns <src>nrrow</src>.
-    virtual uInt open1 (uInt nrrow, AipsIO& ios);
+    virtual rownr_t open1 (rownr_t nrrow, AipsIO& ios);
 
     // Resync the data by rereading cached data from the file.
     // This is called when a lock is acquired on the file and it appears 
     // that data in this data manager has been changed by another process.
-    virtual void resync (uInt nrrow) = 0;
+    virtual void resync (rownr_t nrrow) = 0;
 
     // Resync as above.
     // The data manager can return the number of rows it thinks there are.
@@ -497,7 +497,7 @@ private:
     // data are written outside the table system, thus for which no rows
     // have been added.
     // <br>By default it calls resync and returns <src>nrrow</src>.
-    virtual uInt resync1 (uInt nrrow);
+    virtual rownr_t resync1 (rownr_t nrrow);
 
     // Let the data manager initialize itself further.
     // Prepare is called after create/open has been called for all

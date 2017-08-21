@@ -60,7 +60,7 @@ void StManColumnArrayAipsIO::setShapeColumn (const IPosition& shape)
 }
 
 
-void StManColumnArrayAipsIO::addRow (uInt nrnew, uInt nrold)
+void StManColumnArrayAipsIO::addRow (rownr_t nrnew, rownr_t nrold)
 {
   //# Extend data blocks if needed.
   MSMColumn::addRow (nrnew, nrold);
@@ -72,7 +72,7 @@ void StManColumnArrayAipsIO::addRow (uInt nrnew, uInt nrold)
   }
 }
 
-void StManColumnArrayAipsIO::doCreate (uInt nrrow)
+void StManColumnArrayAipsIO::doCreate (rownr_t nrrow)
 {
   addRow (nrrow, 0);
   for (uInt i=0; i<nrrow; i++) {
@@ -80,14 +80,14 @@ void StManColumnArrayAipsIO::doCreate (uInt nrrow)
   } 
 }
 
-uInt StManColumnArrayAipsIO::ndim (uInt)
+uInt StManColumnArrayAipsIO::ndim (rownr_t)
   { return shape_p.nelements(); }
 
-IPosition StManColumnArrayAipsIO::shape (uInt)
+IPosition StManColumnArrayAipsIO::shape (rownr_t)
   { return shape_p; }
 
 
-void StManColumnArrayAipsIO::getArrayV (uInt rownr, ArrayBase& arr)
+void StManColumnArrayAipsIO::getArrayV (rownr_t rownr, ArrayBase& arr)
 {
     DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
     Bool deleteIt;
@@ -103,7 +103,7 @@ void StManColumnArrayAipsIO::getArrayV (uInt rownr, ArrayBase& arr)
     }
     arr.putVStorage (data, deleteIt);
 }
-void StManColumnArrayAipsIO::putArrayV (uInt rownr, const ArrayBase& arr)
+void StManColumnArrayAipsIO::putArrayV (rownr_t rownr, const ArrayBase& arr)
 {
     DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
     Bool deleteIt;
@@ -122,14 +122,14 @@ void StManColumnArrayAipsIO::putArrayV (uInt rownr, const ArrayBase& arr)
 }
 
 
-void StManColumnArrayAipsIO::remove (uInt rownr)
+void StManColumnArrayAipsIO::remove (rownr_t rownr)
 {
   deleteArray (rownr);
   MSMColumn::remove (rownr);
 }
 
 
-void StManColumnArrayAipsIO::deleteArray (uInt rownr)
+void StManColumnArrayAipsIO::deleteArray (rownr_t rownr)
 {
     void* datap = getArrayPtr (rownr);
     deleteData (datap, False);
@@ -137,7 +137,7 @@ void StManColumnArrayAipsIO::deleteArray (uInt rownr)
 
 
 //# Write all data into AipsIO.
-void StManColumnArrayAipsIO::putFile (uInt nrval, AipsIO& ios)
+void StManColumnArrayAipsIO::putFile (rownr_t nrval, AipsIO& ios)
 {
     // Version 2 does not write dtype, shape and nelem anymore.
     // They are automatically set on reconstruction of the storage manager.
@@ -147,7 +147,7 @@ void StManColumnArrayAipsIO::putFile (uInt nrval, AipsIO& ios)
 }
 
 //# Read all data from AipsIO.
-void StManColumnArrayAipsIO::getFile (uInt nrval, AipsIO& ios)
+void StManColumnArrayAipsIO::getFile (rownr_t nrval, AipsIO& ios)
 {
     uInt version = ios.getstart ("StManColumnArrayAipsIO");
     if (version == 1) {

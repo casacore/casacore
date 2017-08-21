@@ -117,51 +117,51 @@ public:
   virtual void setMaxLength (uInt maxLength);
 
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim (uInt aRowNr);
+  virtual uInt ndim (rownr_t aRowNr);
   
   // Get the shape of the array in the given row.
-  virtual IPosition shape (uInt aRowNr);
+  virtual IPosition shape (rownr_t aRowNr);
   
   // Let the object initialize itself for a newly created table.
   // It is meant for a derived class.
-  virtual void doCreate (uInt aNrRows);
+  virtual void doCreate (rownr_t aNrRows);
 
   // Let the column object initialize itself for an existing table
   virtual void getFile (uInt aNrRows);
 
   // Resync the storage manager with the new file contents.
   // It resets the last rownr put.
-  void resync (uInt aNrRow);
+  void resync (rownr_t aNrRow);
   
   // Get the scalar value in the given row.
   // <group>
-  virtual void getBoolV     (uInt aRowNr, Bool* aDataPtr);
-  virtual void getuCharV    (uInt aRowNr, uChar* aDataPtr);
-  virtual void getShortV    (uInt aRowNr, Short* aDataPtr);
-  virtual void getuShortV   (uInt aRowNr, uShort* aDataPtr);
-  virtual void getIntV      (uInt aRowNr, Int* aDataPtr);
-  virtual void getuIntV     (uInt aRowNr, uInt* aDataPtr);
-  virtual void getfloatV    (uInt aRowNr, float* aDataPtr);
-  virtual void getdoubleV   (uInt aRowNr, double* aDataPtr);
-  virtual void getComplexV  (uInt aRowNr, Complex* aDataPtr);
-  virtual void getDComplexV (uInt aRowNr, DComplex* aDataPtr);
-  virtual void getStringV   (uInt aRowNr, String* aDataPtr);
+  virtual void getBool     (rownr_t aRowNr, Bool* aDataPtr);
+  virtual void getuChar    (rownr_t aRowNr, uChar* aDataPtr);
+  virtual void getShort    (rownr_t aRowNr, Short* aDataPtr);
+  virtual void getuShort   (rownr_t aRowNr, uShort* aDataPtr);
+  virtual void getInt      (rownr_t aRowNr, Int* aDataPtr);
+  virtual void getuInt     (rownr_t aRowNr, uInt* aDataPtr);
+  virtual void getfloat    (rownr_t aRowNr, float* aDataPtr);
+  virtual void getdouble   (rownr_t aRowNr, double* aDataPtr);
+  virtual void getComplex  (rownr_t aRowNr, Complex* aDataPtr);
+  virtual void getDComplex (rownr_t aRowNr, DComplex* aDataPtr);
+  virtual void getString   (rownr_t aRowNr, String* aDataPtr);
   // </group>
   
   // Put the scalar value in the given row.
   // It updates the cache if the row is contained in the cache.
   // <group>
-  virtual void putBoolV     (uInt aRowNr, const Bool* aDataPtr);
-  virtual void putuCharV    (uInt aRowNr, const uChar* aDataPtr);
-  virtual void putShortV    (uInt aRowNr, const Short* aDataPtr);
-  virtual void putuShortV   (uInt aRowNr, const uShort* aDataPtr);
-  virtual void putIntV      (uInt aRowNr, const Int* aDataPtr);
-  virtual void putuIntV     (uInt aRowNr, const uInt* aDataPtr);
-  virtual void putfloatV    (uInt aRowNr, const float* aDataPtr);
-  virtual void putdoubleV   (uInt aRowNr, const double* aDataPtr);
-  virtual void putComplexV  (uInt aRowNr, const Complex* aDataPtr);
-  virtual void putDComplexV (uInt aRowNr, const DComplex* aDataPtr);
-  virtual void putStringV   (uInt aRowNr, const String* aDataPtr);
+  virtual void putBool     (rownr_t aRowNr, const Bool* aDataPtr);
+  virtual void putuChar    (rownr_t aRowNr, const uChar* aDataPtr);
+  virtual void putShort    (rownr_t aRowNr, const Short* aDataPtr);
+  virtual void putuShort   (rownr_t aRowNr, const uShort* aDataPtr);
+  virtual void putInt      (rownr_t aRowNr, const Int* aDataPtr);
+  virtual void putuInt     (rownr_t aRowNr, const uInt* aDataPtr);
+  virtual void putfloat    (rownr_t aRowNr, const float* aDataPtr);
+  virtual void putdouble   (rownr_t aRowNr, const double* aDataPtr);
+  virtual void putComplex  (rownr_t aRowNr, const Complex* aDataPtr);
+  virtual void putDComplex (rownr_t aRowNr, const DComplex* aDataPtr);
+  virtual void putString   (rownr_t aRowNr, const String* aDataPtr);
   // </group>
   
   // Get the scalar values of the entire column.

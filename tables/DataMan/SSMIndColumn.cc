@@ -56,7 +56,7 @@ SSMIndColumn::~SSMIndColumn()
 void SSMIndColumn::setMaxLength (uInt)
 {}
 
-void SSMIndColumn::doCreate (uInt aNrRows)
+void SSMIndColumn::doCreate (rownr_t aNrRows)
 {
     // Initialize and create new file.
     itsIosFile = itsSSMPtr->openArrayFile (ByteIO::New);
@@ -106,7 +106,7 @@ void SSMIndColumn::setShapeColumn (const IPosition& aShape)
     isShapeFixed   = True;
 }
 
-void SSMIndColumn::setShape (uInt aRowNr, const IPosition& aShape)
+void SSMIndColumn::setShape (rownr_t aRowNr, const IPosition& aShape)
 {
   // Get the current entry. If none, make empty one.
   if (getArrayPtr (aRowNr) == 0) {
@@ -156,13 +156,13 @@ StIndArray* SSMIndColumn::getShape (uInt aRowNr)
     return aPtr;
 }
 
-Bool SSMIndColumn::isShapeDefined (uInt aRowNr)
+Bool SSMIndColumn::isShapeDefined (rownr_t aRowNr)
     { return (getArrayPtr(aRowNr) == 0  ?  False : True); }
 
-uInt SSMIndColumn::ndim (uInt aRowNr)
+uInt SSMIndColumn::ndim (rownr_t aRowNr)
     { return getShape(aRowNr)->shape().nelements(); }
 
-IPosition SSMIndColumn::shape (uInt aRowNr)
+IPosition SSMIndColumn::shape (rownr_t aRowNr)
     { return getShape(aRowNr)->shape(); }
 
 Bool SSMIndColumn::canChangeShape() const

@@ -227,7 +227,7 @@ void MSMBase::removeColumn (DataManagerColumn* colp)
                               " does not exist");
 }
 
-void MSMBase::addRow (uInt nr)
+void MSMBase::addRow (rownr_t nr)
 {
   //# Add the number of rows to each column.
   for (uInt i=0; i<ncolumn(); i++) {
@@ -238,7 +238,7 @@ void MSMBase::addRow (uInt nr)
 }
 
 
-void MSMBase::removeRow (uInt rownr)
+void MSMBase::removeRow (rownr_t rownr)
 {
   for (uInt i=0; i<ncolumn(); i++) {
     colSet_p[i]->remove (rownr);
@@ -253,7 +253,7 @@ Bool MSMBase::flush (AipsIO&, Bool)
   return False;
 }
 
-void MSMBase::create (uInt nrrow)
+void MSMBase::create (rownr_t nrrow)
 {
   //# Do not add the required nr of rows yet.
   // It is done later in reallocateColumn to avoid that all row data
@@ -262,7 +262,7 @@ void MSMBase::create (uInt nrrow)
   nrrowCreate_p = nrrow;
 }
 
-void MSMBase::open (uInt tabNrrow, AipsIO&)
+void MSMBase::open (rownr_t tabNrrow, AipsIO&)
 {
   nrrow_p = tabNrrow;
   //# Create the required nr of rows and initialize them.
@@ -271,7 +271,7 @@ void MSMBase::open (uInt tabNrrow, AipsIO&)
   }
 }
 
-void MSMBase::resync (uInt nrrow)
+void MSMBase::resync (rownr_t nrrow)
 {
   // Add or remove rows if it has changed.
   // Note that removing decreases the row number, so the same row number
@@ -279,8 +279,8 @@ void MSMBase::resync (uInt nrrow)
   if (nrrow > nrrow_p) {
     addRow (nrrow-nrrow_p);
   } else {
-    uInt nr=nrrow_p-nrrow;
-    for (uInt i=0; i<nr; i++) {
+    rownr_t nr=nrrow_p-nrrow;
+    for (rownr_t i=0; i<nr; i++) {
       removeRow (nrrow);
     }
   }

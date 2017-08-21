@@ -68,24 +68,24 @@ void VirtualArrayColumnBase::setShapeColumn (const IPosition&)
     throw DataManInvOper ("VirtualArrayColumn::setShapeColumn not possible"
                           " for column " + columnName());
 }
-void VirtualArrayColumnBase::setShape (uInt, const IPosition&)
+void VirtualArrayColumnBase::setShape (rownr_t, const IPosition&)
 {
     throw DataManInvOper ("VirtualArrayColumn::setShape not possible"
                           " for column " + columnName());
 }
-Bool VirtualArrayColumnBase::isShapeDefined (uInt)
+Bool VirtualArrayColumnBase::isShapeDefined (rownr_t)
 {
     throw DataManInvOper ("VirtualArrayColumn::isShapeDefined not possible"
                           " for column " + columnName());
     return False;
 }
-uInt VirtualArrayColumnBase::ndim (uInt)
+uInt VirtualArrayColumnBase::ndim (rownr_t)
 {
     throw DataManInvOper ("VirtualArrayColumn::ndim not possible"
                           " for column " + columnName());
     return 0;
 }
-IPosition VirtualArrayColumnBase::shape (uInt)
+IPosition VirtualArrayColumnBase::shape (rownr_t)
 {
     throw DataManInvOper ("VirtualArrayColumn::shape not possible"
                           " for column " + columnName());

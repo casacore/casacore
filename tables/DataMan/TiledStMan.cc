@@ -997,12 +997,12 @@ uInt TiledStMan::addedNrrow (const IPosition& shape, uInt incrInLastDim) const
 }
 
 
-void TiledStMan::open (uInt nrrow, AipsIO&)
+void TiledStMan::open (rownr_t nrrow, AipsIO&)
 {
     // Read the header info (for the first time).
     readHeader (nrrow, True);
 }
-void TiledStMan::resync (uInt nrrow)
+void TiledStMan::resync (rownr_t nrrow)
 {
     // Reread the header info.
     readHeader (nrrow, False);

@@ -190,7 +190,7 @@ public:
     uInt uniqueNr();
 
     // Get the number of rows in this storage manager.
-    uInt nrow() const;
+    rownr_t nrow() const;
 
     // Can the storage manager add rows? (yes)
     virtual Bool canAddRow() const;
@@ -255,15 +255,15 @@ private:
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    virtual void create (uInt nrrow);
+    virtual void create (rownr_t nrrow);
 
     // Open the storage manager file for an existing table, read in
     // the data, and let the ISMColumn objects read their data.
-    virtual void open (uInt nrrow, AipsIO&);
+    virtual void open (rownr_t nrrow, AipsIO&);
 
     // Resync the storage manager with the new file contents.
     // This is done by clearing the cache.
-    virtual void resync (uInt nrrow);
+    virtual void resync (rownr_t nrrow);
 
     // Reopen the storage manager files for read/write.
     virtual void reopenRW();
@@ -280,10 +280,10 @@ private:
     // Add rows to the storage manager.
     // Per column it extends the interval for which the last value written
     // is valid.
-    virtual void addRow (uInt nrrow);
+    virtual void addRow (rownr_t nrrow);
 
     // Delete a row from all columns.
-    virtual void removeRow (uInt rownr);
+    virtual void removeRow (rownr_t rownr);
 
     // Do the final addition of a column.
     // The <src>DataManagerColumn</src> object has already been created
@@ -394,7 +394,7 @@ inline uInt ISMBase::uniqueNr()
     return uniqnr_p++;
 }
 
-inline uInt ISMBase::nrow() const
+inline rownr_t ISMBase::nrow() const
 {
     return nrrow_p;
 }

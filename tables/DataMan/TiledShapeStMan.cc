@@ -192,7 +192,7 @@ void TiledShapeStMan::setupCheck (const TableDesc& tableDesc,
 }
 
 
-void TiledShapeStMan::create (uInt nrrow)
+void TiledShapeStMan::create (rownr_t nrrow)
 {
     // Set up the various things.
     setup(1);
@@ -246,7 +246,7 @@ void TiledShapeStMan::readHeader (uInt tabNrrow, Bool firstTime)
 }
 
 
-void TiledShapeStMan::addRow (uInt nrow)
+void TiledShapeStMan::addRow (rownr_t nrow)
 {
     uInt oldnrrow = nrrow_p;
     nrrow_p += nrow;

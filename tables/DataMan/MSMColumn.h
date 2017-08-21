@@ -31,8 +31,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/tables/DataMan/DataManager.h>
-#include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/DataMan/StManColumnBase.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Arrays/IPosition.h>
@@ -101,7 +100,7 @@ class MSMBase;
 // </todo>
 
 
-class MSMColumn: public StManColumn
+class MSMColumn: public StManColumnBase
 {
 public:
   // Create a column of the given type.
@@ -115,70 +114,68 @@ public:
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the Scalar/ArrayColumn get function).
   // <group>
-  void getBoolV     (uInt rownr, Bool* dataPtr);
-  void getuCharV    (uInt rownr, uChar* dataPtr);
-  void getShortV    (uInt rownr, Short* dataPtr);
-  void getuShortV   (uInt rownr, uShort* dataPtr);
-  void getIntV      (uInt rownr, Int* dataPtr);
-  void getuIntV     (uInt rownr, uInt* dataPtr);
-  void getfloatV    (uInt rownr, float* dataPtr);
-  void getdoubleV   (uInt rownr, double* dataPtr);
-  void getComplexV  (uInt rownr, Complex* dataPtr);
-  void getDComplexV (uInt rownr, DComplex* dataPtr);
-  void getStringV   (uInt rownr, String* dataPtr);
+  virtual void getBool     (rownr_t rownr, Bool* dataPtr);
+  virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
+  virtual void getShort    (rownr_t rownr, Short* dataPtr);
+  virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
+  virtual void getInt      (rownr_t rownr, Int* dataPtr);
+  virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
+  virtual void getfloat    (rownr_t rownr, float* dataPtr);
+  virtual void getdouble   (rownr_t rownr, double* dataPtr);
+  virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
+  virtual void getDComplex (rownr_t rownr, DComplex* dataPtr);
+  virtual void getString   (rownr_t rownr, String* dataPtr);
   // </group>
 
   // Put a scalar value into the given row.
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the Scalar/ArrayColumn put function).
   // <group>
-  void putBoolV     (uInt rownr, const Bool* dataPtr);
-  void putuCharV    (uInt rownr, const uChar* dataPtr);
-  void putShortV    (uInt rownr, const Short* dataPtr);
-  void putuShortV   (uInt rownr, const uShort* dataPtr);
-  void putIntV      (uInt rownr, const Int* dataPtr);
-  void putuIntV     (uInt rownr, const uInt* dataPtr);
-  void putfloatV    (uInt rownr, const float* dataPtr);
-  void putdoubleV   (uInt rownr, const double* dataPtr);
-  void putComplexV  (uInt rownr, const Complex* dataPtr);
-  void putDComplexV (uInt rownr, const DComplex* dataPtr);
-  void putStringV   (uInt rownr, const String* dataPtr);
+  virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
+  virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
+  virtual void putShort    (rownr_t rownr, const Short* dataPtr);
+  virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
+  virtual void putInt      (rownr_t rownr, const Int* dataPtr);
+  virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
+  virtual void putfloat    (rownr_t rownr, const float* dataPtr);
+  virtual void putdouble   (rownr_t rownr, const double* dataPtr);
+  virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
+  virtual void putDComplex (rownr_t rownr, const DComplex* dataPtr);
+  virtual void putString   (rownr_t rownr, const String* dataPtr);
   // </group>
 
   // Get all scalar values in the column.
   // The vector given in <src>data</src> has to have the correct length
   // (which is guaranteed by the ScalarColumn getColumn function).
-  // The default implementation throws an "invalid operation" exception.
   virtual void getScalarColumnV (ArrayBase& data);
 
   // Put all scalar values in the column.
   // The vector given in <src>data</src> has to have the correct length
   // (which is guaranteed by the ScalarColumn putColumn function).
-  // The default implementation throws an "invalid operation" exception.
   virtual void putScalarColumnV (const ArrayBase& data);
 
   // Add (newNrrow-oldNrrow) rows to the column.
-  virtual void addRow (uInt newNrrow, uInt oldNrrow);
+  virtual void addRow (rownr_t newNrrow, rownr_t oldNrrow);
 
   // Resize the data blocks.
   // This adds an extension when needed.
-  void resize (uInt nrval);
+  void resize (rownr_t nrval);
 
   // Remove the given row.
   // If no rows remain in the extension, the extension is also removed.
-  virtual void remove (uInt rownr);
+  virtual void remove (rownr_t rownr);
 
   // Create the number of rows in a new table.
   // This is used when a table gets created or opened.
-  virtual void doCreate (uInt nrrow);
+  virtual void doCreate (rownr_t nrrow);
 
   // Make it possible to write the column data.
   // It is only used by derived classes.
-  virtual void putFile (uInt nrval, AipsIO&);
+  virtual void putFile (rownr_t nrval, AipsIO&);
 
   // Make it possible to read the column data.
   // It is only used by derived classes.
-  virtual void getFile (uInt nrval, AipsIO&);
+  virtual void getFile (rownr_t nrval, AipsIO&);
 
   // Reopen the storage manager files for read/write.
   virtual void reopenRW();
@@ -189,22 +186,22 @@ public:
 protected:
   MSMBase* stmanPtr_p;
   // The data is indirectly accessed via a pointer (for the derived classes).
-  Bool  byPtr_p;
+  Bool     byPtr_p;
   // The number of allocated rows in the column.
-  uInt  nralloc_p;
+  rownr_t  nralloc_p;
   // The nr of extensions in use.
-  uInt  nrext_p;
+  uInt     nrext_p;
   // The assembly of all extensions (actually Block<T*>).
   Block<void*> data_p;
   // The cumulative nr of rows in all extensions.
-  Block<uInt>  ncum_p;
+  Block<rownr_t> ncum_p;
 
   // Find the extension in which the row number is.
   // If the flag is true, it also sets the columnCache object.
-  uInt findExt (uInt rownr, Bool setCache);
+  uInt findExt (rownr_t rownr, Bool setCache);
 
   // Allocate an extension with the data type of the column.
-  void* allocData (uInt nrval, Bool byPtr);
+  void* allocData (rownr_t nrval, Bool byPtr);
 
   // Delete all extensions.
   // Possible underlying data (as used by StManArrayColumnMemory)
@@ -217,18 +214,18 @@ protected:
   // Remove an entry (i.e. a row) from an extension at the given index.
   // It will do this by shifting the rest (nrvalAfter elements)
   // one position to the left.
-  void removeData (void* datap, uInt inx, uInt nrvalAfter);
+  void removeData (void* datap, rownr_t inx, rownr_t nrvalAfter);
 
   // Initialize the data (after an open).
-  virtual void initData (void* datap, uInt nrval);
+  virtual void initData (void* datap, rownr_t nrval);
 
   // Get the pointer for the given row.
   // This is for the derived classes like StManArrayColumnMemory.
-  void* getArrayPtr (uInt rownr);
+  void* getArrayPtr (rownr_t rownr);
 
   // Put the pointer for the given row.
   // This is for the derived classes like StManArrayColumnMemory.
-  void putArrayPtr (uInt rownr, void* dataPtr);
+  void putArrayPtr (rownr_t rownr, void* dataPtr);
 
 private:
   // Forbid copy constructor.

@@ -413,7 +413,7 @@ Table::EndianFormat Table::endianFormat() const
 
 Bool Table::isNativeDataType (DataType dtype)
 {
-    return StManColumn::isNativeDataType (dtype);
+    return StManColumnBase::isNativeDataType (dtype);
 }
 
 

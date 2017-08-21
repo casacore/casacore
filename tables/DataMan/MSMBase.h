@@ -99,7 +99,7 @@ public:
     { hasPut_p = True; }
 
   // Get the nr of rows in this storage manager.
-  uInt nrow() const
+  rownr_t nrow() const
     { return nrrow_p; }
 
   // Does the storage manager allow to add rows? (yes)
@@ -126,11 +126,11 @@ private:
   virtual Bool flush (AipsIO&, Bool fsync);
 
   // Let the storage manager create the nr of rows needed.
-  virtual void create (uInt nrrow);
+  virtual void create (rownr_t nrrow);
 
   // Open the storage manager file for an existing table.
   // It fills the rows with 0 values.
-  virtual void open (uInt nrrow, AipsIO&);
+  virtual void open (rownr_t nrrow, AipsIO&);
 
   // Let the data manager initialize itself further.
   // It creates nr of rows (given to create) if needed.
@@ -141,7 +141,7 @@ private:
   // It adds or removes rows as needed.
   // It cannot know which rows are deleted, so it always deletes
   // the last rows.
-  virtual void resync (uInt nrrow);
+  virtual void resync (rownr_t nrrow);
 
   // The data manager will be deleted (because all its columns are
   // requested to be deleted).
@@ -149,10 +149,10 @@ private:
   virtual void deleteManager();
 
   // Add rows to all columns.
-  virtual void addRow (uInt nrrow);
+  virtual void addRow (rownr_t nrrow);
 
   // Delete a row from all columns.
-  virtual void removeRow (uInt rownr);
+  virtual void removeRow (rownr_t rownr);
 
   // Create a column in the storage manager on behalf of a table column.
   // <group>
@@ -184,18 +184,16 @@ private:
 
 protected:
   // Name given by user to this storage manager.
-  String stmanName_p;
+  String  stmanName_p;
   // The number of rows in the columns.
-  uInt   nrrow_p;
+  rownr_t nrrow_p;
   // The number of rows in create().
-  uInt   nrrowCreate_p;
+  rownr_t nrrowCreate_p;
   // The assembly of all columns.
   PtrBlock<MSMColumn*> colSet_p;
   // Has anything been put since the last flush?
-  Bool   hasPut_p;
+  Bool    hasPut_p;
 };
-
-
 
 
 } //# NAMESPACE CASACORE - END

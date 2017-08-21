@@ -1,4 +1,4 @@
-//# dVSCEngine.h: Example virtual column engine to handle data type A
+//# dVACEngine.h: Example virtual column engine to handle data type A
 //# Copyright (C) 1994,1995,1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,28 +25,29 @@
 //#
 //# $Id$
 
-#ifndef TABLES_DVSCENGINE_H
-#define TABLES_DVSCENGINE_H
+#ifndef TABLES_DVACENGINE_H
+#define TABLES_DVACENGINE_H
 
 
 //# Includes
-#include <casacore/tables/DataMan/VSCEngine.h>
-#include <casacore/tables/Tables/ScalarColumn.h>
+#include <casacore/tables/DataMan/VACEngine.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
 
 
 #include <casacore/casa/namespace.h>
-class VSCExample
+class VACExample
 {
 public:
-    VSCExample(): x_p(0), y_p(0) {}
-    VSCExample(Int x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
-    VSCExample(const VSCExample& that): x_p(that.x_p), y_p(that.y_p), z_p(that.z_p) {}
+    VACExample(): x_p(0), y_p(0) {}
+    VACExample(Int x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
+    VACExample(const VACExample& that): x_p(that.x_p), y_p(that.y_p), z_p(that.z_p) {}
     static String dataTypeId()
-	{ return "VSCExample"; }
+	{ return "VACExample"; }
     Int x() const
 	{ return x_p; }
     float y() const
 	{ return y_p; }
+  
     const String& z() const
 	{ return z_p; }
     Int& x()
@@ -55,9 +56,9 @@ public:
 	{ return y_p; }
     String& z()
 	{ return z_p; }
-    int operator== (const VSCExample& that) const
+    int operator== (const VACExample& that) const
 	{ return x_p==that.x_p && y_p==that.y_p && z_p==that.z_p; }
-    int operator< (const VSCExample& that) const
+    int operator< (const VACExample& that) const
 	{ return x_p<that.x_p || (x_p==that.x_p && y_p<that.y_p) ||
             (x_p==that.x_p && y_p==that.y_p && z_p<that.z_p); }
 private:
@@ -68,7 +69,7 @@ private:
 
 
 // <summary>
-// Example virtual column engine to handle data type VSCExample
+// Example virtual column engine to handle data type VACExample
 // </summary>
 
 // <use visibility=export>
@@ -78,25 +79,25 @@ private:
 // <prerequisite>
 //# Classes you should understand before using this one.
 //   <li> VirtualColumnEngine
-//   <li> VirtualScalarColumn
+//   <li> VirtualArrayColumn
 // </prerequisite>
 
 // <synopsis> 
-// ExampleVSCEngine is an example showing how to use the templated
-// class VSCEngine to handle table data with an arbitrary type.
+// VACExampleVACEngine is an example showing how to use the templated
+// class VACEngine to handle table data with an arbitrary type.
 // Data of columns with the standard data types can directly be
 // stored using a storage manager, but data of column with non-standard
 // types have to be stored in another way.
 //
 // The normal way of doing this is to split the object of the non-standard
 // type into its elementary types.
-// This eample uses the class VSCExample as the data type to be handled.
+// This eample uses the class VACExample as the data type to be handled.
 // It consists of 2 data fields, which will transparently be stored in
 // 2 separate columns.
 // </synopsis> 
 
 
-class VSCExampleVSCEngine : public VSCEngine<VSCExample>
+class VACExampleVACEngine : public VACEngine<VACExample>
 {
 public:
 
@@ -104,34 +105,38 @@ public:
     // engine when a table is read back.
     // It is also used to construct an engine, which does not check
     // the source column name.
-    VSCExampleVSCEngine();
+    VACExampleVACEngine();
 
     // Construct the engine for the given source column and storing
     // the result in the given target columns for the data members
-    // x and y of class VSCExample.
-    VSCExampleVSCEngine (const String& sourceColumnName,
+    // x and y of class VACExample.
+    VACExampleVACEngine (const String& sourceColumnName,
 			 const String& xTargetColumnName,
 			 const String& yTargetColumnname,
 			 const String& zTargetColumnname);
 
     // Destructor is mandatory.
-    ~VSCExampleVSCEngine();
+    virtual ~VACExampleVACEngine();
 
     // Clone the object.
     DataManager* clone() const;
 
     // Store the target column names in the source column keywords.
-    void create (rownr_t);
+    virtual void create (rownr_t);
 
     // Prepare the engine by allocating column objects
     // for the target columns.
-    void prepare();
+    virtual void prepare();
+
+    virtual void setShape (rownr_t rownr, const IPosition& shape);
+    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual IPosition shape (rownr_t rownr);
 
     // Get the data from a row.
-    void get (rownr_t rownr, VSCExample& value);
+    virtual void getArray (rownr_t rownr, Array<VACExample>& value);
 
     // Put the data in a row.
-    void put (rownr_t rownr, const VSCExample& value);
+    virtual void putArray (rownr_t rownr, const Array<VACExample>& value);
 
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.
@@ -140,11 +145,11 @@ public:
 private:
     // Copy constructor is only used by clone().
     // (so it is made private).
-    VSCExampleVSCEngine (const VSCExampleVSCEngine&);
+    VACExampleVACEngine (const VACExampleVACEngine&);
 
     // Assignment is not needed and therefore forbidden
     // (so it is made private).
-    VSCExampleVSCEngine& operator= (const VSCExampleVSCEngine&);
+    VACExampleVACEngine& operator= (const VACExampleVACEngine&);
 
 
     // The target column names.
@@ -152,9 +157,9 @@ private:
     String yTargetName_p;
     String zTargetName_p;
     // Objects for the target columns.
-    ScalarColumn<Int>    colx;
-    ScalarColumn<float>  coly;
-    ScalarColumn<String> colz;
+    ArrayColumn<Int>    colx;
+    ArrayColumn<float>  coly;
+    ArrayColumn<String> colz;
 
 public:
     //*display 4

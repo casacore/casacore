@@ -1,5 +1,5 @@
-//# ColumnCache.cc: A caching object for a table column
-//# Copyright (C) 1997
+//# StManColumnBase.cc: Base storage manager column class
+//# Copyright (C) 1994,1995,1996,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,24 +27,56 @@
 
 
 //# Includes
-#include <casacore/tables/Tables/ColumnCache.h>
+#include <casacore/tables/DataMan/StManColumnBase.h>
+#include <casacore/casa/Utilities/DataType.h>
+#include <casacore/casa/Utilities/ValType.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/tables/DataMan/DataManError.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ColumnCache::ColumnCache()
-: itsIncr (1)
+StManColumnBase::StManColumnBase (int dataType)
+  : dtype_p (static_cast<DataType>(dataType))
 {
-    invalidate();
+    elemSize_p = ValType::getTypeSize (dtype_p);
 }
 
+StManColumnBase::~StManColumnBase()
+{}
 
-void ColumnCache::set (rownr_t startRow, rownr_t endRow, const void* dataPtr)
+int StManColumnBase::dataType() const
+    { return dtype_p; }
+
+Bool StManColumnBase::isNativeDataType (int dtype)
 {
-    itsStart = startRow;
-    itsEnd   = endRow;
-    itsData  = dataPtr;
+    switch (dtype) {
+    case TpBool:
+    case TpUChar:
+    case TpShort:
+    case TpUShort:
+    case TpInt:
+    case TpUInt:
+    case TpFloat:
+    case TpDouble:
+    case TpComplex:
+    case TpDComplex:
+    case TpString:
+    case TpArrayBool:
+    case TpArrayUChar:
+    case TpArrayShort:
+    case TpArrayUShort:
+    case TpArrayInt:
+    case TpArrayUInt:
+    case TpArrayFloat:
+    case TpArrayDouble:
+    case TpArrayComplex:
+    case TpArrayDComplex:
+    case TpArrayString:
+	return True;
+    }
+    return False;
 }
+
 
 } //# NAMESPACE CASACORE - END
-

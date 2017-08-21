@@ -97,7 +97,7 @@ DataManagerColumn* VirtualTaQLColumn::makeIndArrColumn (const String& name,
 }
 
 
-void VirtualTaQLColumn::create (uInt)
+void VirtualTaQLColumn::create (rownr_t)
 {
   // Define a keyword in the column telling the expression.
   itsTempWritable = True;
@@ -227,12 +227,12 @@ Bool VirtualTaQLColumn::isWritable() const
 }
 
 
-uInt VirtualTaQLColumn::ndim (uInt rownr)
+uInt VirtualTaQLColumn::ndim (rownr_t rownr)
 {
   return shape(rownr).nelements();
 }
 
-IPosition VirtualTaQLColumn::shape (uInt rownr)
+IPosition VirtualTaQLColumn::shape (rownr_t rownr)
 {
   if (!itsIsArray) {
     return IPosition();
@@ -248,165 +248,177 @@ IPosition VirtualTaQLColumn::shape (uInt rownr)
   return itsCurShape;
 }
 
-Bool VirtualTaQLColumn::isShapeDefined (uInt)
+Bool VirtualTaQLColumn::isShapeDefined (rownr_t)
 {
   return True;
 }
 
 
-void VirtualTaQLColumn::getBoolV (uInt rownr, Bool* dataPtr)
+void VirtualTaQLColumn::getBool (rownr_t rownr, Bool* dataPtr)
 {
   *dataPtr = itsNode->getBool (rownr);
 }
-void VirtualTaQLColumn::getuCharV (uInt rownr, uChar* dataPtr)
+void VirtualTaQLColumn::getuChar (rownr_t rownr, uChar* dataPtr)
 {
   *dataPtr = uChar(itsNode->getInt (rownr));
 }
-void VirtualTaQLColumn::getShortV (uInt rownr, Short* dataPtr)
+void VirtualTaQLColumn::getShort (rownr_t rownr, Short* dataPtr)
 {
   *dataPtr = Short(itsNode->getInt (rownr));
 }
-void VirtualTaQLColumn::getuShortV (uInt rownr, uShort* dataPtr)
+void VirtualTaQLColumn::getuShort (rownr_t rownr, uShort* dataPtr)
 {
   *dataPtr = uShort(itsNode->getInt (rownr));
 }
-void VirtualTaQLColumn::getIntV (uInt rownr, Int* dataPtr)
+void VirtualTaQLColumn::getInt (rownr_t rownr, Int* dataPtr)
 {
   *dataPtr = Int(itsNode->getInt (rownr));
 }
-void VirtualTaQLColumn::getuIntV (uInt rownr, uInt* dataPtr)
+void VirtualTaQLColumn::getuInt (rownr_t rownr, uInt* dataPtr)
 {
   *dataPtr = uInt(itsNode->getInt (rownr));
 }
-void VirtualTaQLColumn::getfloatV (uInt rownr, float* dataPtr)
+void VirtualTaQLColumn::getInt64 (rownr_t rownr, Int64* dataPtr)
+{
+  *dataPtr = itsNode->getInt (rownr);
+}
+void VirtualTaQLColumn::getfloat (rownr_t rownr, float* dataPtr)
 {
   *dataPtr = Float(itsNode->getDouble (rownr));
 }
-void VirtualTaQLColumn::getdoubleV (uInt rownr, double* dataPtr)
+void VirtualTaQLColumn::getdouble (rownr_t rownr, double* dataPtr)
 {
   *dataPtr = itsNode->getDouble (rownr);
 }
-void VirtualTaQLColumn::getComplexV (uInt rownr, Complex* dataPtr)
+void VirtualTaQLColumn::getComplex (rownr_t rownr, Complex* dataPtr)
 {
   *dataPtr = Complex(itsNode->getDComplex (rownr));
 }
-void VirtualTaQLColumn::getDComplexV (uInt rownr, DComplex* dataPtr)
+void VirtualTaQLColumn::getDComplex (rownr_t rownr, DComplex* dataPtr)
 {
   *dataPtr = itsNode->getDComplex (rownr);
 }
-void VirtualTaQLColumn::getStringV (uInt rownr, String* dataPtr)
+void VirtualTaQLColumn::getString (rownr_t rownr, String* dataPtr)
 {
   *dataPtr = itsNode->getString (rownr);
 }
 
-void VirtualTaQLColumn::getArrayV (uInt rownr, ArrayBase& dataPtr)
+void VirtualTaQLColumn::getArrayV (rownr_t rownr, ArrayBase& arr)
 {
   // Usually getShape is called before getArray.
   // To avoid double calculation of the same value, the result is cached
   // by getShape in itsCurResult (by getResult).
   if (Int64(rownr) != itsCurRow) {
-    getResult (rownr, dataPtr);
+    getResult (rownr, arr);
     return;
   }
-  dataPtr.assignBase (*itsCurResult);
+  arr.assignBase (*itsCurResult);
 }
 
-IPosition VirtualTaQLColumn::getResult (uInt rownr, ArrayBase& dataPtr)
+IPosition VirtualTaQLColumn::getResult (rownr_t rownr, ArrayBase& arr)
 {
   IPosition shp;
   switch (itsDataType) {
   case TpBool:
     {
-      Array<Bool> arr = itsNode->getArrayBool (rownr);
-      Array<Bool>& out = static_cast<Array<Bool>&>(dataPtr);
-      out.reference (arr);
+      Array<Bool> res = itsNode->getArrayBool (rownr);
+      Array<Bool>& out = static_cast<Array<Bool>&>(arr);
+      out.reference (res);
       shp = out.shape();
       break;
     }
   case TpUChar:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uChar>& out = static_cast<Array<uChar>&>(dataPtr);
-      out.resize (arr.shape());
-      convertArray (out, arr);
+      Array<Int64> res = itsNode->getArrayInt (rownr);
+      Array<uChar>& out = static_cast<Array<uChar>&>(arr);
+      out.resize (res.shape());
+      convertArray (out, res);
       shp = out.shape();
       break;
     }
   case TpShort:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<Short>& out = static_cast<Array<Short>&>(dataPtr);
-      out.resize (arr.shape());
-      convertArray (out, arr);
+      Array<Int64> res = itsNode->getArrayInt (rownr);
+      Array<Short>& out = static_cast<Array<Short>&>(arr);
+      out.resize (res.shape());
+      convertArray (out, res);
       shp = out.shape();
       break;
     }
   case TpUShort:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uShort>& out = static_cast<Array<uShort>&>(dataPtr);
-      out.resize (arr.shape());
-      convertArray (out, arr);
+      Array<Int64> res = itsNode->getArrayInt (rownr);
+      Array<uShort>& out = static_cast<Array<uShort>&>(arr);
+      out.resize (res.shape());
+      convertArray (out, res);
       shp = out.shape();
       break;
     }
   case TpInt:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<Int>& out = static_cast<Array<Int>&>(dataPtr);
-      out.resize (arr.shape());
-      convertArray (out, arr);
+      Array<Int64> res = itsNode->getArrayInt (rownr);
+      Array<Int>& out = static_cast<Array<Int>&>(arr);
+      out.resize (res.shape());
+      convertArray (out, res);
       shp = out.shape();
       break;
     }
   case TpUInt:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uInt>& out = static_cast<Array<uInt>&>(dataPtr);
-      out.resize (arr.shape());
-      convertArray (out, arr);
+      Array<Int64> res = itsNode->getArrayInt (rownr);
+      Array<uInt>& out = static_cast<Array<uInt>&>(arr);
+      out.resize (res.shape());
+      convertArray (out, res);
+      shp = out.shape();
+      break;
+    }
+  case TpInt64:
+    {
+      Array<Int64> res  = itsNode->getArrayInt (rownr);
+      Array<Int64>& out = static_cast<Array<Int64>&>(arr);
+      out.reference (res);
       shp = out.shape();
       break;
     }
   case TpFloat:
     {
-      Array<Double> arr = itsNode->getArrayDouble (rownr);
-      Array<Float>& out = static_cast<Array<Float>&>(dataPtr);
-      out.resize (arr.shape());
-      convertArray (out, arr);
+      Array<Double> res = itsNode->getArrayDouble (rownr);
+      Array<Float>& out = static_cast<Array<Float>&>(arr);
+      out.resize (res.shape());
+      convertArray (out, res);
       shp = out.shape();
       break;
     }
   case TpDouble:
     {
-      Array<Double> arr  = itsNode->getArrayDouble (rownr);
-      Array<Double>& out = static_cast<Array<Double>&>(dataPtr);
-      out.reference (arr);
+      Array<Double> res  = itsNode->getArrayDouble (rownr);
+      Array<Double>& out = static_cast<Array<Double>&>(arr);
+      out.reference (res);
       shp = out.shape();
       break;
     }
   case TpComplex:
     {
-      Array<DComplex> arr = itsNode->getArrayDComplex (rownr);
-      Array<Complex>& out = static_cast<Array<Complex>&>(dataPtr);
-      out.resize (arr.shape());
-      convertArray (out, arr);
+      Array<DComplex> res = itsNode->getArrayDComplex (rownr);
+      Array<Complex>& out = static_cast<Array<Complex>&>(arr);
+      out.resize (res.shape());
+      convertArray (out, res);
       shp = out.shape();
       break;
     }
   case TpDComplex:
     {
-      Array<DComplex> arr  = itsNode->getArrayDComplex (rownr);
-      Array<DComplex>& out = static_cast<Array<DComplex>&>(dataPtr);
-      out.reference (arr);
+      Array<DComplex> res  = itsNode->getArrayDComplex (rownr);
+      Array<DComplex>& out = static_cast<Array<DComplex>&>(arr);
+      out.reference (res);
       shp = out.shape();
       break;
     }
   case TpString:
     {
-      Array<String> arr  = itsNode->getArrayString (rownr);
-      Array<String>& out = static_cast<Array<String>&>(dataPtr);
-      out.reference (arr);
+      Array<String> res  = itsNode->getArrayString (rownr);
+      Array<String>& out = static_cast<Array<String>&>(arr);
+      out.reference (res);
       shp = out.shape();
       break;
     }
@@ -416,27 +428,27 @@ IPosition VirtualTaQLColumn::getResult (uInt rownr, ArrayBase& dataPtr)
   return shp;
 }
 
-void VirtualTaQLColumn::getScalarColumnV (ArrayBase& data)
-  { dmGetScalarColumnV (data); }
+void VirtualTaQLColumn::getScalarColumnV (ArrayBase& arr)
+  { getScalarColumnBase (arr); }
 void VirtualTaQLColumn::getScalarColumnCellsV (const RefRows& rownrs,
-                                               ArrayBase& data)
-  { dmGetScalarColumnCellsV (rownrs, data); }
-void VirtualTaQLColumn::getArrayColumnV (ArrayBase& data)
-  { dmGetArrayColumnV (data); }
+                                               ArrayBase& arr)
+  { getScalarColumnCellsBase (rownrs, arr); }
+void VirtualTaQLColumn::getArrayColumnV (ArrayBase& arr)
+  { getArrayColumnBase (arr); }
 void VirtualTaQLColumn::getArrayColumnCellsV (const RefRows& rownrs,
-                                              ArrayBase& data)
-  { dmGetArrayColumnCellsV (rownrs, data); }
-void VirtualTaQLColumn::getSliceV (uInt rownr,
+                                              ArrayBase& arr)
+  { getArrayColumnCellsBase (rownrs, arr); }
+void VirtualTaQLColumn::getSliceV (rownr_t rownr,
                                    const Slicer& slicer,
-                                   ArrayBase& data)
-  { dmGetSliceV (rownr, slicer, data); }
+                                   ArrayBase& arr)
+  { getSliceBase (rownr, slicer, arr); }
 void VirtualTaQLColumn::getColumnSliceV (const Slicer& slicer,
-                                         ArrayBase& data)
-  { dmGetColumnSliceV (slicer, data); }
+                                         ArrayBase& arr)
+  { getColumnSliceBase(slicer, arr); }
 void VirtualTaQLColumn::getColumnSliceCellsV (const RefRows& rownrs,
                                               const Slicer& slicer,
-                                              ArrayBase& data)
-  { dmGetColumnSliceCellsV (rownrs, slicer, data); }
+                                              ArrayBase& arr)
+  { getColumnSliceCellsBase (rownrs, slicer, arr); }
 
 
 } //# NAMESPACE CASACORE - END

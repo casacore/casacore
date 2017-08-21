@@ -115,17 +115,17 @@ public:
   virtual void setShapeColumn (const IPosition& aShape);
   
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim (uInt aRowNr);
+  virtual uInt ndim (rownr_t aRowNr);
   
   // Set the shape of the array in the given row and allocate the array
   // in the file.
-  void setShape (uInt aRowNr, const IPosition& aShape);
+  void setShape (rownr_t aRowNr, const IPosition& aShape);
   
   // Is the shape defined (i.e. is there an array) in this row?
-  virtual Bool isShapeDefined (uInt aRowNr);
+  virtual Bool isShapeDefined (rownr_t aRowNr);
   
   // Get the shape of the array in the given row.
-  virtual IPosition shape (uInt aRowNr);
+  virtual IPosition shape (rownr_t aRowNr);
   
   // This storage manager can handle changing array shapes.
   Bool canChangeShape() const;
@@ -232,7 +232,7 @@ public:
   // </group>
   
   // Let the column object create its array file.
-  virtual void doCreate (uInt aNrRows);
+  virtual void doCreate (rownr_t aNrRows);
 
   // Open an existing file.
   virtual void getFile (uInt aNrRows);

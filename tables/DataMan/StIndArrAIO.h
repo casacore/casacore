@@ -110,22 +110,22 @@ public:
 
     // Add (newNrrow-oldNrrow) rows to the column.
     // Allocate the data arrays in these rows if the shape is fixed.
-    virtual void addRow (uInt newNrrow, uInt oldNrrow);
+    virtual void addRow (rownr_t newNrrow, rownr_t oldNrrow);
 
     // Set the shape of the array in the given row and allocate the array
     // in the file.
-    virtual void setShape (uInt rownr, const IPosition& shape);
+    virtual void setShape (rownr_t rownr, const IPosition& shape);
 
     // Is the shape defined (i.e. is there an array) in this row?
-    virtual Bool isShapeDefined (uInt rownr);
+    virtual Bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the item in the given row.
     // 0 is returned if there is no array.
-    virtual uInt ndim (uInt rownr);
+    virtual uInt ndim (rownr_t rownr);
 
     // Get the shape of the array in the given row.
     // An zero-length IPosition is returned if there is no array.
-    virtual IPosition shape (uInt rownr);
+    virtual IPosition shape (rownr_t rownr);
 
     // This storage manager can handle changing array shapes
     // for non-FixedShape columns.
@@ -134,39 +134,39 @@ public:
     // Get an array value in the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn get function).
-    virtual void getArrayV (uInt rownr, ArrayBase& dataPtr);
+    virtual void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
 
     // Put an array value into the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn put function).
-    virtual void putArrayV (uInt rownr, const ArrayBase& dataPtr);
+    virtual void putArrayV (rownr_t rownr, const ArrayBase& dataPtr);
 
     // Get a section of the array in the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn getSlice function).
-    virtual void getSliceV (uInt rownr, const Slicer&, ArrayBase& dataPtr);
+    virtual void getSliceV (rownr_t rownr, const Slicer&, ArrayBase& dataPtr);
 
     // Put into a section of the array in the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn putSlice function).
-    virtual void putSliceV (uInt rownr, const Slicer&, const ArrayBase& dataPtr);
+    virtual void putSliceV (rownr_t rownr, const Slicer&, const ArrayBase& dataPtr);
 
     // Remove the value in the given row.
     // This will result in lost file space.
-    virtual void remove (uInt rownr);
+    virtual void remove (rownr_t rownr);
 
     // Let the column create its array file.
-    virtual void doCreate (uInt nrrow);
+    virtual void doCreate (rownr_t nrrow);
 
     // Write the data into AipsIO.
     // This will call StManColumnAipsIO::putFile which will in its turn
     // call putData in this class for each of its chunks of data.
-    virtual void putFile (uInt nrval, AipsIO&);
+    virtual void putFile (rownr_t nrval, AipsIO&);
 
     // Read the data from AipsIO.
     // This will call StManColumnAipsIO::getFile which will in its turn
     // call getData in this class for each of its chunks of data.
-    virtual void getFile (uInt nrval, AipsIO&);
+    virtual void getFile (rownr_t nrval, AipsIO&);
 
     // Reopen the storage manager files for read/write.
     virtual void reopenRW();
@@ -195,12 +195,12 @@ private:
     void openFile (ByteIO::OpenOption opt);
 
     // Delete the array in the given row.
-    void deleteArray (uInt rownr);
+    void deleteArray (rownr_t rownr);
 
     // Read the shape at the given row.
     // This will cache the information in the StIndArray
     // object for that row.
-    StIndArray* getShape (uInt rownr);
+    StIndArray* getShape (rownr_t rownr);
 
     // Put the data of a data block.
     // datap is an array of nrval pointers to StIndArray.

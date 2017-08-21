@@ -126,7 +126,7 @@ template<class T> class ScalarColumn;
 // ArrayColumn data (table, "virtualArray");
 // Array<double> someArray(IPosition(4,2,3,4));
 // someArray = 0;
-// for (uInt i=0, i<10; i++) {          // table will have 10 rows
+// for (rownr_t i=0, i<10; i++) {          // table will have 10 rows
 //     table.addRow();
 //     data.put (i, someArray)
 // }
@@ -225,7 +225,7 @@ private:
 
     // Initialize the object for a new table.
     // It defines the keywords containing the engine parameters.
-    void create (uInt initialNrrow);
+    void create (rownr_t initialNrrow);
 
     // Preparing consists of setting the writable switch and
     // adding the initial number of rows in case of create.
@@ -234,19 +234,19 @@ private:
 
     // Get an array in the given row.
     // This will scale and offset from the underlying array.
-    void getArray (uInt rownr, Array<VirtualType>& array);
+    void getArray (rownr_t rownr, Array<VirtualType>& array);
 
     // Put an array in the given row.
     // This will scale and offset to the underlying array.
-    void putArray (uInt rownr, const Array<VirtualType>& array);
+    void putArray (rownr_t rownr, const Array<VirtualType>& array);
 
     // Get a section of the array in the given row.
     // This will scale and offset from the underlying array.
-    void getSlice (uInt rownr, const Slicer& slicer, Array<VirtualType>& array);
+    void getSlice (rownr_t rownr, const Slicer& slicer, Array<VirtualType>& array);
 
     // Put into a section of the array in the given row.
     // This will scale and offset to the underlying array.
-    void putSlice (uInt rownr, const Slicer& slicer,
+    void putSlice (rownr_t rownr, const Slicer& slicer,
 		   const Array<VirtualType>& array);
 
     // Get an entire column.
@@ -305,10 +305,10 @@ private:
     ScalarColumn<VirtualType>* offsetColumn_p; //# column with offset value
 
     // Get the scale value for this row.
-    VirtualType getScale (uInt rownr);
+    VirtualType getScale (rownr_t rownr);
 
     // Get the offset value for this row.
-    VirtualType getOffset (uInt rownr);
+    VirtualType getOffset (rownr_t rownr);
 
 public:
     //*display 4

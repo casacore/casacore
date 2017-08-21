@@ -101,41 +101,41 @@ public:
 
   // Add (newNrrow-oldNrrow) rows to the column.
   // Allocate the data arrays in these rows if the shape is fixed.
-  virtual void addRow (uInt newNrrow, uInt oldNrrow);
+  virtual void addRow (rownr_t newNrrow, rownr_t oldNrrow);
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
-  virtual uInt ndim (uInt rownr);
+  virtual uInt ndim (rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // An zero-length IPosition is returned if there is no array.
-  virtual IPosition shape (uInt rownr);
+  virtual IPosition shape (rownr_t rownr);
 
   // Get an array value in the given row.
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the ArrayColumn get function).
-  virtual void getArrayV (uInt rownr, ArrayBase& dataPtr);
+  virtual void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
   
   // Put an array value into the given row.
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the ArrayColumn put function).
-  virtual void putArrayV (uInt rownr, const ArrayBase& dataPtr);
+  virtual void putArrayV (rownr_t rownr, const ArrayBase& dataPtr);
 
   // Remove the value in the given row.
-  virtual void remove (uInt rownr);
+  virtual void remove (rownr_t rownr);
 
   // Let the column create its arrays.
-  virtual void doCreate (uInt nrrow);
+  virtual void doCreate (rownr_t nrrow);
 
   // Write the data into AipsIO.
   // This will call StManColumnAipsIO::putFile which will in its turn
   // call putData in this class for each of its chunks of data.
-  virtual void putFile (uInt nrval, AipsIO&);
+  virtual void putFile (rownr_t nrval, AipsIO&);
 
   // Read the data from AipsIO.
   // This will call StManColumnAipsIO::getFile which will in its turn
   // call getData in this class for each of its chunks of data.
-  virtual void getFile (uInt nrval, AipsIO&);
+  virtual void getFile (rownr_t nrval, AipsIO&);
 
 private:
   // The (unique) sequence number of the column.
@@ -146,7 +146,7 @@ private:
   uInt nrelem_p;
 
   // Delete the array at the given index.
-  void deleteArray (uInt index);
+  void deleteArray (rownr_t index);
 
   // Put the data of a data block.
   // datap is an array of nrval pointers to arrays.
@@ -156,7 +156,7 @@ private:
   // datap is an array of pointers to arrays. nrval arrays will
   // be allocated and read starting at datap[index].
   virtual void getData (void* datap, uInt index, uInt nrval,
-                          AipsIO&, uInt version);
+                        AipsIO&, uInt version);
 
   // Forbid copy constructor.
   StManColumnArrayAipsIO (const StManColumnArrayAipsIO&);

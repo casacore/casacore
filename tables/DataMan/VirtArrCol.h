@@ -157,19 +157,19 @@ protected:
     // Set the shape of an array in the given row.
     // It is only called if the column contains indirect arrays.
     // By default it throws a "not possible" exception.
-    virtual void setShape (uInt rownr, const IPosition& shape);
+    virtual void setShape (rownr_t rownr, const IPosition& shape);
 
     // Is the value shape defined in the given row?
     // By default it throws a "not possible" exception.
-    virtual Bool isShapeDefined (uInt rownr);
+    virtual Bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the item in the given row.
     // By default it throws a "not possible" exception.
-    virtual uInt ndim (uInt rownr);
+    virtual uInt ndim (rownr_t rownr);
 
     // Get the shape of the item in the given row.
     // By default it throws a "not possible" exception.
-    virtual IPosition shape (uInt rownr);
+    virtual IPosition shape (rownr_t rownr);
 
     // The scalar access functions throw an exception.
     // <group>
@@ -203,27 +203,27 @@ protected:
     // Get the array value in the given row.
     // The data array has to have the correct shape
     // (which is guaranteed by the ArrayColumn::get function).
-    virtual void getArray (uInt rownr, Array<T>& data) = 0;
+    virtual void getArray (rownr_t rownr, Array<T>& data) = 0;
 
     // Put the array value into the given row.
     // The data array has to have the correct shape
     // (which is guaranteed by the ArrayColumn::put function).
     // By default it throws a "not possible" exception.
-    virtual void putArray (uInt rownr, const Array<T>& data);
+    virtual void putArray (rownr_t rownr, const Array<T>& data);
 
     // Get a section of the array in the given row.
     // The data array has to have the correct shape
     // (which is guaranteed by the ArrayColumn::getSlice function).
     // The default implementation gets the slice by getting the full
     // array first.
-    virtual void getSlice (uInt rownr, const Slicer& slicer, Array<T>& data);
+    virtual void getSlice (rownr_t rownr, const Slicer& slicer, Array<T>& data);
 
     // Put into a section of the array in the given row.
     // The data array has to have the correct shape
     // (which is guaranteed by the ArrayColumn::putSlice function).
     // The default implementation gets the slice by accessing the full
     // array.
-    virtual void putSlice (uInt rownr, const Slicer& slicer,
+    virtual void putSlice (rownr_t rownr, const Slicer& slicer,
 			   const Array<T>& data);
 
     // Get an entire column.
@@ -281,11 +281,11 @@ protected:
 private:
     // Implement the virtual functions defined in DataManagerColumn.
     // Get the array value in the given row.
-    void getArrayV (uInt rownr, ArrayBase& dataPtr);
+    void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Put the array value into the given row.
-    void putArrayV (uInt rownr, const ArrayBase& dataPtr);
+    void putArrayV (rownr_t rownr, const ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Get some array values in the column.
@@ -297,11 +297,11 @@ private:
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Get a section of the array in the given row.
-    void getSliceV (uInt rownr, const Slicer& slicer, ArrayBase& dataPtr);
+    void getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Put into a section of the array in the given row.
-    void putSliceV (uInt rownr, const Slicer& slicer, const ArrayBase& dataPtr);
+    void putSliceV (rownr_t rownr, const Slicer& slicer, const ArrayBase& dataPtr);
 
     // Implement the virtual functions defined in DataManagerColumn.
     // Get an entire column.

@@ -77,14 +77,15 @@ void a() {
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
     td.comment() = "A test of class TableDesc";
-    td.addColumn (ScalarColumnDesc<Int>   ("x"));
-    td.addColumn (ScalarColumnDesc<float> ("y"));
+    td.addColumn (ScalarColumnDesc<Int>    ("x"));
+    td.addColumn (ScalarColumnDesc<float>  ("y"));
+    td.addColumn (ScalarColumnDesc<String> ("z"));
     td.addColumn (ScalarColumnDesc<VSCExample> ("colA"));
 
     // Now create a new table from the description.
     SetupNewTable newtab("tVSCEngine_tmp.data", td, Table::New);
     // Create the virtual column engine with the target columns x and y.
-    VSCExampleVSCEngine engine ("colA", "x", "y");
+    VSCExampleVSCEngine engine ("colA", "x", "y", "z");
     newtab.bindColumn ("colA", engine);
     Table tab(newtab, 10);
 
@@ -92,45 +93,49 @@ void a() {
     ScalarColumn<VSCExample> colA (tab,"colA");
     uInt i;
     for (i=0; i<10; i++) {
-	colA.put (i, VSCExample(i,i+1));
+      colA.put (i, VSCExample(i,i+1, String::toString(i+2)));
     }
 
     //# Do an erroneous thing.
     SetupNewTable newtab2("tVSCEngine_tmp.dat2", td, Table::Scratch);
     newtab2.bindColumn ("x", engine);
-///    try {
-///	Table tab2(newtab2, 10);                // bound to incorrect column
-///    } catch (const AipsError& x) {
-///	cout << x.getMesg() << endl;
-///    } 
+    try {
+	Table tab2(newtab2, 10);                // bound to incorrect column
+    } catch (const AipsError& x) {
+        cout << "Expected exception: " << x.getMesg() << endl;
+    } 
 }
 
 void b()
 {
     // Read back the table.
     Table tab("tVSCEngine_tmp.data");
-    ScalarColumn<Int> colx (tab, "x");
-    ScalarColumn<float> coly (tab, "y");
+    ScalarColumn<Int>    colx (tab, "x");
+    ScalarColumn<float>  coly (tab, "y");
+    ScalarColumn<String> colz (tab, "z");
     ScalarColumn<VSCExample> colA(tab, "colA");
     Int valx;
     float valy;
+    String valz;
     VSCExample valA;
     Int i;
     for (i=0; i<10; i++) {
 	cout << "get row " << i << endl;
 	colx.get (i, valx);
 	coly.get (i, valy);
+	colz.get (i, valz);
 	colA.get (i, valA);
-	if (valx != i  ||  valy != i+1  ||  !(valA == VSCExample(i,i+1))) {
-	    cout << "error: " << valx << " " << valy << " "
-		 << valA.x() << " " << valA.y() << endl;
+        String expz = String::toString(i+2);
+	if (valx!=i || valy!=i+1 || valz!=expz || !(valA == VSCExample(i,i+1,expz))) {
+            cout << "error: " << valx << " " << valy << " " << valz << " "
+		 << valA.x() << " " << valA.y() << " " << valA.z() << endl;
 	}
     }
     Vector<VSCExample> vecA = colA.getColumn();
     for (i=0; i<10; i++) {
-	if (!(vecA(i) == VSCExample(i,i+1))) {
+      if (!(vecA(i) == VSCExample(i,i+1,String::toString(i+2)))) {
 	    cout << "error in vecA(" << i << "): "
-		 << vecA(i).x() << " " << vecA(i).y() << endl;
+		 << vecA(i).x() << " " << vecA(i).y() << vecA(i).z() << endl;
 	}
     }
     // Read a few rows.
@@ -139,6 +144,6 @@ void b()
     rows[1] = 5;
     Vector<VSCExample> vecRF = colA.getColumnCells(RefRows(rows));
     AlwaysAssertExit (vecRF.size() == 2);
-    AlwaysAssertExit (vecRF[0] == VSCExample(2,3));
-    AlwaysAssertExit (vecRF[1] == VSCExample(5,6));
+    AlwaysAssertExit (vecRF[0] == VSCExample(2,3,String::toString(4)));
+    AlwaysAssertExit (vecRF[1] == VSCExample(5,6,String::toString(7)));
 }

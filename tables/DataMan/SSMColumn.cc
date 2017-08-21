@@ -73,17 +73,17 @@ void SSMColumn::setMaxLength (uInt maxLength)
     init();
 }
 
-uInt SSMColumn::ndim (uInt)
+uInt SSMColumn::ndim (rownr_t)
 {
     return itsShape.nelements();
 }
 
-IPosition SSMColumn::shape (uInt)
+IPosition SSMColumn::shape (rownr_t)
 {
     return itsShape;
 }
 
-void SSMColumn::doCreate(uInt)
+void SSMColumn::doCreate(rownr_t)
 {
 }
 
@@ -139,7 +139,7 @@ void SSMColumn::deleteRow(uInt aRowNr)
 
   if (isBool  && aRowNr < anERow) {
     Bool aVal;
-    getBoolV(aRowNr,&aVal);
+    getBool(aRowNr,&aVal);
   }
 
   // first check if aRowNr is in cache, if not, fill cache
@@ -193,59 +193,59 @@ void SSMColumn::shiftRows(char* aValue, uInt aRowNr, uInt aSRow, uInt anERow)
 }
 
 
-void SSMColumn::getBoolV (uInt aRowNr, Bool* aValue)
+void SSMColumn::getBool (rownr_t aRowNr, Bool* aValue)
 {
   getValue(aRowNr);
   *aValue = static_cast<Bool*>(itsData)[aRowNr-columnCache().start()];
 }
-void SSMColumn::getuCharV (uInt aRowNr, uChar* aValue)
+void SSMColumn::getuChar (rownr_t aRowNr, uChar* aValue)
 {
   getValue(aRowNr);
   *aValue = static_cast<uChar*>(itsData)[aRowNr-columnCache().start()];
 }
-void SSMColumn::getShortV (uInt aRowNr, Short* aValue)
+void SSMColumn::getShort (rownr_t aRowNr, Short* aValue)
 {
   getValue(aRowNr);
   *aValue = static_cast<Short*>(itsData)[aRowNr-columnCache().start()];
 }
-void SSMColumn::getuShortV (uInt aRowNr, uShort* aValue)
+void SSMColumn::getuShort (rownr_t aRowNr, uShort* aValue)
 {
   getValue(aRowNr);
   *aValue = static_cast<uShort*>(itsData)[aRowNr-columnCache().start()];
 }
-void SSMColumn::getIntV (uInt aRowNr, Int* aValue)
+void SSMColumn::getInt (rownr_t aRowNr, Int* aValue)
 {
   getValue(aRowNr);
   *aValue = static_cast<Int*>(itsData)[aRowNr-columnCache().start()];
 }
-void SSMColumn::getuIntV (uInt aRowNr, uInt* aValue)
+void SSMColumn::getuInt (rownr_t aRowNr, uInt* aValue)
 {
   getValue(aRowNr);
   *aValue = static_cast<uInt*>(itsData)[aRowNr-columnCache().start()];
 }
-void SSMColumn::getfloatV (uInt aRowNr, float* aValue)
+void SSMColumn::getfloat (rownr_t aRowNr, float* aValue)
 {
   getValue(aRowNr);
   *aValue = static_cast<float*>(itsData)[aRowNr-columnCache().start()];
 }
-void SSMColumn::getdoubleV (uInt aRowNr, double* aValue)
+void SSMColumn::getdouble (rownr_t aRowNr, double* aValue)
 {
   getValue(aRowNr);
   *aValue = static_cast<double*>(itsData)[aRowNr-columnCache().start()];
 }
-void SSMColumn::getComplexV (uInt aRowNr, Complex* aValue)
+void SSMColumn::getComplex (rownr_t aRowNr, Complex* aValue)
 {
   getValue(aRowNr);
   *aValue = static_cast<Complex*>(itsData)[aRowNr-columnCache().start()];
 }
 
-void SSMColumn::getDComplexV (uInt aRowNr,DComplex* aValue)
+void SSMColumn::getDComplex (rownr_t aRowNr,DComplex* aValue)
 {
   getValue(aRowNr);
   *aValue = static_cast<DComplex*>(itsData)[aRowNr-columnCache().start()];
 }
 
-void SSMColumn::getStringV (uInt aRowNr, String* aValue)
+void SSMColumn::getString (rownr_t aRowNr, String* aValue)
 {
   if (itsMaxLen > 0) {
     // Allocate the maximum number of characters needed
@@ -316,7 +316,7 @@ void SSMColumn::getValue(uInt aRowNr)
   }
 }
 
-void SSMColumn::putBoolV (uInt aRowNr, const Bool* aValue)
+void SSMColumn::putBool (rownr_t aRowNr, const Bool* aValue)
 {
   uInt  aStartRow;
   uInt  anEndRow;
@@ -336,7 +336,7 @@ void SSMColumn::putBoolV (uInt aRowNr, const Bool* aValue)
       *aValue;
   }
 }
-void SSMColumn::putuCharV (uInt aRowNr, const uChar* aValue)
+void SSMColumn::putuChar (rownr_t aRowNr, const uChar* aValue)
 {
   putValue(aRowNr,aValue);
   if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
@@ -344,7 +344,7 @@ void SSMColumn::putuCharV (uInt aRowNr, const uChar* aValue)
       *aValue;
   }
 }
-void SSMColumn::putShortV (uInt aRowNr, const Short* aValue)
+void SSMColumn::putShort (rownr_t aRowNr, const Short* aValue)
 {
   putValue(aRowNr,aValue);
   if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
@@ -352,7 +352,7 @@ void SSMColumn::putShortV (uInt aRowNr, const Short* aValue)
       *aValue;
   }
 }
-void SSMColumn::putuShortV (uInt aRowNr, const uShort* aValue)
+void SSMColumn::putuShort (rownr_t aRowNr, const uShort* aValue)
 {
   putValue(aRowNr,aValue);
   if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
@@ -360,7 +360,7 @@ void SSMColumn::putuShortV (uInt aRowNr, const uShort* aValue)
       *aValue;
   }
 }
-void SSMColumn::putIntV (uInt aRowNr, const Int* aValue)
+void SSMColumn::putInt (rownr_t aRowNr, const Int* aValue)
 {
   putValue(aRowNr,aValue);
   if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
@@ -368,7 +368,7 @@ void SSMColumn::putIntV (uInt aRowNr, const Int* aValue)
       *aValue;
   }
 }
-void SSMColumn::putuIntV (uInt aRowNr, const uInt* aValue)
+void SSMColumn::putuInt (rownr_t aRowNr, const uInt* aValue)
 {
   putValue(aRowNr,aValue);
   if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
@@ -376,7 +376,7 @@ void SSMColumn::putuIntV (uInt aRowNr, const uInt* aValue)
       *aValue;
   }
 }
-void SSMColumn::putfloatV (uInt aRowNr, const float* aValue)
+void SSMColumn::putfloat (rownr_t aRowNr, const float* aValue)
 {
   putValue(aRowNr,aValue);
   if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
@@ -384,7 +384,7 @@ void SSMColumn::putfloatV (uInt aRowNr, const float* aValue)
       *aValue;
   }
 }
-void SSMColumn::putdoubleV (uInt aRowNr, const double* aValue)
+void SSMColumn::putdouble (rownr_t aRowNr, const double* aValue)
 {
   putValue(aRowNr,aValue);
   if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
@@ -392,7 +392,7 @@ void SSMColumn::putdoubleV (uInt aRowNr, const double* aValue)
       *aValue;
   }
 }
-void SSMColumn::putComplexV (uInt aRowNr, const Complex* aValue)
+void SSMColumn::putComplex (rownr_t aRowNr, const Complex* aValue)
 {
   putValue(aRowNr,aValue);
   if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
@@ -401,7 +401,7 @@ void SSMColumn::putComplexV (uInt aRowNr, const Complex* aValue)
   }
 }
 
-void SSMColumn::putDComplexV (uInt aRowNr, const DComplex* aValue)
+void SSMColumn::putDComplex (rownr_t aRowNr, const DComplex* aValue)
 {
   putValue(aRowNr,aValue);
   if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
@@ -410,7 +410,7 @@ void SSMColumn::putDComplexV (uInt aRowNr, const DComplex* aValue)
   }
 }
 
-void SSMColumn::putStringV (uInt aRowNr, const String* aValue)
+void SSMColumn::putString (rownr_t aRowNr, const String* aValue)
 {
   // Fixed length strings are written directly.
   if (itsMaxLen > 0) {
@@ -563,7 +563,7 @@ void SSMColumn::getScalarColumnDComplexV (Vector<DComplex>* aDataPtr)
 void SSMColumn::getScalarColumnStringV (Vector<String>* aDataPtr)
 {
   for (uInt i=0;i<aDataPtr->nelements(); i++) {
-    getStringV(i,&(*aDataPtr)(i));
+    getString(i,&(*aDataPtr)(i));
   }
 }
 
@@ -670,7 +670,7 @@ void SSMColumn::putScalarColumnDComplexV (const Vector<DComplex>* aDataPtr)
 void SSMColumn::putScalarColumnStringV (const Vector<String>* aDataPtr)
 {
   for (uInt i=0;i<aDataPtr->nelements(); i++) {
-    putStringV(i,&(*aDataPtr)(i));
+    putString(i,&(*aDataPtr)(i));
   }
 }
 
@@ -757,7 +757,7 @@ void SSMColumn::init()
   }
 }
 
-void SSMColumn::resync (uInt)
+void SSMColumn::resync (rownr_t)
 {
     // Invalidate the last value read.
     columnCache().invalidate();

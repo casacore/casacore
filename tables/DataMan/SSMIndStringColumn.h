@@ -101,19 +101,19 @@ public:
   virtual void putArrayStringV (uInt rownr, const Array<String>* dataPtr);
 
   // Set the shape of the array in the given row.
-  void setShape (uInt aRowNr, const IPosition& aShape);
+  void setShape (rownr_t aRowNr, const IPosition& aShape);
   
   // Get the shape of the array in the given row.
-  virtual IPosition shape (uInt aRowNr);
+  virtual IPosition shape (rownr_t aRowNr);
   
   // This storage manager can handle changing array shapes.
   Bool canChangeShape() const;
 
   // Is the shape defined (i.e. is there an array) in this row?
-  virtual Bool isShapeDefined (uInt aRowNr);
+  virtual Bool isShapeDefined (rownr_t aRowNr);
 
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim (uInt aRowNr);
+  virtual uInt ndim (rownr_t aRowNr);
 
 
 private:

@@ -46,7 +46,7 @@ SSMIndStringColumn::~SSMIndStringColumn()
 {
 }
 
-void SSMIndStringColumn::setShape (uInt aRowNr, const IPosition& aShape)
+void SSMIndStringColumn::setShape (rownr_t aRowNr, const IPosition& aShape)
 {
   DebugAssert(itsShape.nelements() == 0,AipsError);
   Int buf[3];
@@ -58,7 +58,7 @@ void SSMIndStringColumn::setShape (uInt aRowNr, const IPosition& aShape)
   putValue(aRowNr, buf);
 }
 
-IPosition SSMIndStringColumn::shape (uInt aRowNr)
+IPosition SSMIndStringColumn::shape (rownr_t aRowNr)
 {
   if (itsShape.nelements() != 0) {
     return itsShape;
@@ -85,7 +85,7 @@ Bool SSMIndStringColumn::canChangeShape() const
   return itsShape.nelements() ==0;
 }
 
-Bool SSMIndStringColumn::isShapeDefined (uInt aRowNr)
+Bool SSMIndStringColumn::isShapeDefined (rownr_t aRowNr)
 {
   if (itsShape.nelements() != 0) {
     return True;
@@ -97,7 +97,7 @@ Bool SSMIndStringColumn::isShapeDefined (uInt aRowNr)
 }
 
 
-uInt SSMIndStringColumn::ndim (uInt aRowNr)
+uInt SSMIndStringColumn::ndim (rownr_t aRowNr)
 {
   return shape(aRowNr).nelements();
 }

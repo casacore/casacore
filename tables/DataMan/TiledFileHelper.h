@@ -94,7 +94,7 @@ public:
   // <group>
   virtual DataManager* clone() const;
   virtual Bool flush (AipsIO&, Bool);
-  virtual void create (uInt);
+  virtual void create (rownr_t);
   virtual TSMCube* getHypercube (uInt);
   virtual TSMCube* getHypercube (uInt, IPosition&);
   virtual void readHeader (uInt, Bool);

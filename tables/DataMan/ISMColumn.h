@@ -127,11 +127,11 @@ public:
 
     // Get the dimensionality of the item in the given row.
     // This is the same for all rows.
-    virtual uInt ndim (uInt rownr);
+    virtual uInt ndim (rownr_t rownr);
 
     // Get the shape of the array in the given row.
     // This is the same for all rows.
-    virtual IPosition shape (uInt rownr);
+    virtual IPosition shape (rownr_t rownr);
 
     // Let the column object initialize itself for a newly created table.
     // This is meant for a derived class.
@@ -146,39 +146,39 @@ public:
 
     // Resync the storage manager with the new file contents.
     // It resets the last rownr put.
-    void resync (uInt nrrow);
+    void resync (rownr_t nrrow);
 
     // Let the column reopen its data files for read/write access.
     virtual void reopenRW();
 
     // Get a scalar value in the given row.
     // <group>
-    virtual void getBoolV     (uInt rownr, Bool* dataPtr);
-    virtual void getuCharV    (uInt rownr, uChar* dataPtr);
-    virtual void getShortV    (uInt rownr, Short* dataPtr);
-    virtual void getuShortV   (uInt rownr, uShort* dataPtr);
-    virtual void getIntV      (uInt rownr, Int* dataPtr);
-    virtual void getuIntV     (uInt rownr, uInt* dataPtr);
-    virtual void getfloatV    (uInt rownr, float* dataPtr);
-    virtual void getdoubleV   (uInt rownr, double* dataPtr);
-    virtual void getComplexV  (uInt rownr, Complex* dataPtr);
-    virtual void getDComplexV (uInt rownr, DComplex* dataPtr);
-    virtual void getStringV   (uInt rownr, String* dataPtr);
+    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
+    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
+    virtual void getShort    (rownr_t rownr, Short* dataPtr);
+    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
+    virtual void getInt      (rownr_t rownr, Int* dataPtr);
+    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
+    virtual void getfloat    (rownr_t rownr, float* dataPtr);
+    virtual void getdouble   (rownr_t rownr, double* dataPtr);
+    virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
+    virtual void getDComplex (rownr_t rownr, DComplex* dataPtr);
+    virtual void getString   (rownr_t rownr, String* dataPtr);
     // </group>
 
     // Put a scalar value in the given row.
     // <group>
-    virtual void putBoolV     (uInt rownr, const Bool* dataPtr);
-    virtual void putuCharV    (uInt rownr, const uChar* dataPtr);
-    virtual void putShortV    (uInt rownr, const Short* dataPtr);
-    virtual void putuShortV   (uInt rownr, const uShort* dataPtr);
-    virtual void putIntV      (uInt rownr, const Int* dataPtr);
-    virtual void putuIntV     (uInt rownr, const uInt* dataPtr);
-    virtual void putfloatV    (uInt rownr, const float* dataPtr);
-    virtual void putdoubleV   (uInt rownr, const double* dataPtr);
-    virtual void putComplexV  (uInt rownr, const Complex* dataPtr);
-    virtual void putDComplexV (uInt rownr, const DComplex* dataPtr);
-    virtual void putStringV   (uInt rownr, const String* dataPtr);
+    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
+    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
+    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
+    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
+    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
+    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
+    virtual void putfloat    (rownr_t rownr, const float* dataPtr);
+    virtual void putdouble   (rownr_t rownr, const double* dataPtr);
+    virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
+    virtual void putDComplex (rownr_t rownr, const DComplex* dataPtr);
+    virtual void putString   (rownr_t rownr, const String* dataPtr);
     // </group>
 
     // Get the scalar values in the entire column.
@@ -276,7 +276,7 @@ public:
 
     // Add (newNrrow-oldNrrow) rows to the column and initialize
     // the new rows when needed.
-    virtual void addRow (uInt newNrrow, uInt oldNrrow);
+    virtual void addRow (rownr_t newNrrow, rownr_t oldNrrow);
 
     // Remove the given row in the bucket from the column.
     void remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow,

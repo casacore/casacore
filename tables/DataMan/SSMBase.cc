@@ -673,7 +673,7 @@ Bool SSMBase::canRemoveColumn() const
 }
 
 
-void SSMBase::addRow (uInt aNrRows)
+void SSMBase::addRow (rownr_t aNrRows)
 {
   //make sure cache is available and filled (I need itsPtrIndex)
   getCache();
@@ -693,7 +693,7 @@ void SSMBase::addRow (uInt aNrRows)
   isDataChanged = True;
 }
 
-void SSMBase::removeRow (uInt aRowNr)
+void SSMBase::removeRow (rownr_t aRowNr)
 {
   uInt aNrCol = ncolumn();
   for (uInt j=0; j< aNrCol; j++) {
@@ -989,7 +989,7 @@ Bool SSMBase::flush (AipsIO& ios, Bool doFsync)
   return changed;
 }
 
-void SSMBase::resync (uInt aNrRows)
+void SSMBase::resync (rownr_t aNrRows)
 {
   itsNrRows = aNrRows;
   if (itsPtrIndex.nelements() != 0) {
@@ -1015,7 +1015,7 @@ void SSMBase::resync (uInt aNrRows)
   }
 }
 
-void SSMBase::create (uInt aNrRows)
+void SSMBase::create (rownr_t aNrRows)
 {
   init();
   recreate();
@@ -1023,7 +1023,7 @@ void SSMBase::create (uInt aNrRows)
   addRow (aNrRows);
 }
 
-void SSMBase::open (uInt aRowNr, AipsIO& ios)
+void SSMBase::open (rownr_t aRowNr, AipsIO& ios)
 {
   itsNrRows = aRowNr;
   ios.getstart ("SSM");

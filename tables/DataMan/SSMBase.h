@@ -315,15 +315,15 @@ private:
   
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
-  virtual void create (uInt aNrRows);
+  virtual void create (rownr_t aNrRows);
   
   // Open the storage manager file for an existing table, read in
   // the data, and let the SSMColumn objects read their data.
-  virtual void open (uInt aRowNr, AipsIO&);
+  virtual void open (rownr_t aRowNr, AipsIO&);
   
   // Resync the storage manager with the new file contents.
   // This is done by clearing the cache.
-  virtual void resync (uInt aRowNr);
+  virtual void resync (rownr_t aRowNr);
   
   // Reopen the storage manager files for read/write.
   virtual void reopenRW();
@@ -346,10 +346,10 @@ private:
   
   // Add rows to the storage manager.
   // Per column it extends number of rows.
-  virtual void addRow (uInt aNrRows);
+  virtual void addRow (rownr_t aNrRows);
   
   // Delete a row from all columns.
-  virtual void removeRow (uInt aRowNr);
+  virtual void removeRow (rownr_t aRowNr);
   
   // Do the final addition of a column.
   virtual void addColumn (DataManagerColumn*);
@@ -400,7 +400,7 @@ private:
   StManArrayFile* itsIosFile;
   
   // The number of rows in the columns.
-  uInt         itsNrRows;
+  rownr_t         itsNrRows;
   
   // Column offset
   Block<uInt> itsColumnOffset;

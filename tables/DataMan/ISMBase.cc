@@ -458,7 +458,7 @@ Bool ISMBase::canRemoveColumn() const
 }
 
 
-void ISMBase::addRow (uInt nrrow)
+void ISMBase::addRow (rownr_t nrrow)
 {
     getIndex().addRow (nrrow);
     uInt nrcol = ncolumn();
@@ -469,7 +469,7 @@ void ISMBase::addRow (uInt nrrow)
     dataChanged_p = True;
 }
 
-void ISMBase::removeRow (uInt rownr)
+void ISMBase::removeRow (rownr_t rownr)
 {
     // Get the bucket and interval to which the row belongs.
     uInt i;
@@ -589,7 +589,7 @@ Bool ISMBase::flush (AipsIO& ios, Bool fsync)
     return changed;
 }
 
-void ISMBase::resync (uInt nrrow)
+void ISMBase::resync (rownr_t nrrow)
 {
     nrrow_p = nrrow;
     if (index_p != 0) {
@@ -607,7 +607,7 @@ void ISMBase::resync (uInt nrrow)
     }
 }
 
-void ISMBase::create (uInt nrrow)
+void ISMBase::create (rownr_t nrrow)
 {
     init();
     recreate();
@@ -615,7 +615,7 @@ void ISMBase::create (uInt nrrow)
     addRow (nrrow);
 }
 
-void ISMBase::open (uInt tabNrrow, AipsIO& ios)
+void ISMBase::open (rownr_t tabNrrow, AipsIO& ios)
 {
     nrrow_p = tabNrrow;
     // Do not check the bucketsize for an existing table.

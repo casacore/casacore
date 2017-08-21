@@ -398,7 +398,7 @@ private:
     // This will only increase the number of rows. When a hypercube is
     // added or extended, it will be checked whether the number of rows
     // is sufficient.
-    void addRow (uInt nrrow);
+    void addRow (rownr_t nrrow);
 
     // Add a hypercube.
     // The number of rows in the table must be large enough to
@@ -431,7 +431,7 @@ private:
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    virtual void create (uInt nrrow);
+    virtual void create (rownr_t nrrow);
 
     // Read the header info.
     virtual void readHeader (uInt nrrow, Bool firstTime);

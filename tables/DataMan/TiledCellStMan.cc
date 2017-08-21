@@ -131,7 +131,7 @@ void TiledCellStMan::setupCheck (const TableDesc& tableDesc,
 }
 
 
-void TiledCellStMan::create (uInt nrrow)
+void TiledCellStMan::create (rownr_t nrrow)
 {
     // Set up the various things.
     setup(0);
@@ -178,7 +178,7 @@ void TiledCellStMan::readHeader (uInt tabNrrow, Bool firstTime)
 }
 
 
-void TiledCellStMan::addRow (uInt nrow)
+void TiledCellStMan::addRow (rownr_t nrow)
 {
     // Resize block when needed.
     uInt size = cubeSet_p.nelements();

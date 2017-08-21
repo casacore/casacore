@@ -101,14 +101,14 @@ public:
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ScalarColumn get function).
     // <group>
-    void getBoolV     (uInt rownr, Bool* dataPtr);
-    void getIntV      (uInt rownr, Int* dataPtr);
-    void getuIntV     (uInt rownr, uInt* dataPtr);
-    void getfloatV    (uInt rownr, float* dataPtr);
-    void getdoubleV   (uInt rownr, double* dataPtr);
-    void getComplexV  (uInt rownr, Complex* dataPtr);
-    void getDComplexV (uInt rownr, DComplex* dataPtr);
-    void getStringV   (uInt rownr, String* dataPtr);
+    void getBool     (rownr_t rownr, Bool* dataPtr);
+    void getInt      (rownr_t rownr, Int* dataPtr);
+    void getuInt     (rownr_t rownr, uInt* dataPtr);
+    void getfloat    (rownr_t rownr, float* dataPtr);
+    void getdouble   (rownr_t rownr, double* dataPtr);
+    void getComplex  (rownr_t rownr, Complex* dataPtr);
+    void getDComplex (rownr_t rownr, DComplex* dataPtr);
+    void getString   (rownr_t rownr, String* dataPtr);
     // </group>
 
     // Put a scalar value in the given row.
@@ -118,14 +118,14 @@ public:
     // been inserted by the TiledStMan::addHypercube function.
     // The put function is only there to be fully orthogonal.
     // <group>
-    void putBoolV     (uInt rownr, const Bool* dataPtr);
-    void putIntV      (uInt rownr, const Int* dataPtr);
-    void putuIntV     (uInt rownr, const uInt* dataPtr);
-    void putfloatV    (uInt rownr, const float* dataPtr);
-    void putdoubleV   (uInt rownr, const double* dataPtr);
-    void putComplexV  (uInt rownr, const Complex* dataPtr);
-    void putDComplexV (uInt rownr, const DComplex* dataPtr);
-    void putStringV   (uInt rownr, const String* dataPtr);
+    void putBool     (rownr_t rownr, const Bool* dataPtr);
+    void putInt      (rownr_t rownr, const Int* dataPtr);
+    void putuInt     (rownr_t rownr, const uInt* dataPtr);
+    void putfloat    (rownr_t rownr, const float* dataPtr);
+    void putdouble   (rownr_t rownr, const double* dataPtr);
+    void putComplex  (rownr_t rownr, const Complex* dataPtr);
+    void putDComplex (rownr_t rownr, const DComplex* dataPtr);
+    void putString   (rownr_t rownr, const String* dataPtr);
     // </group>
 
 private:

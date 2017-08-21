@@ -195,29 +195,29 @@ public:
 
     // Set the shape of an (variable-shaped) array in the given row.
     // By default it throws a "not possible" exception.
-    virtual void setShape (uInt rownr, const IPosition& shape);
+    virtual void setShape (rownr_t rownr, const IPosition& shape);
 
     // Set the shape and tile shape of an (variable-shaped) array
     // in the given row.
     // By default it ignores the tile shape (thus only sets the shape).
-    virtual void setShapeTiled (uInt rownr, const IPosition& shape,
+    virtual void setShapeTiled (rownr_t rownr, const IPosition& shape,
 				const IPosition& tileShape);
 
     // Is the value shape defined in the given row?
     // By default it returns True.
-    virtual Bool isShapeDefined (uInt rownr);
+    virtual Bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the item in the given row.
     // By default it returns shape(rownr).nelements().
-    virtual uInt ndim (uInt rownr);
+    virtual uInt ndim (rownr_t rownr);
 
     // Get the shape of the item in the given row.
     // By default it returns a zero-length IPosition (for a scalar value).
-    virtual IPosition shape (uInt rownr);
+    virtual IPosition shape (rownr_t rownr);
 
     // Get the tile shape of the item in the given row.
     // By default it returns a zero-length IPosition.
-    virtual IPosition tileShape (uInt rownr);
+    virtual IPosition tileShape (rownr_t rownr);
 
     // Can the data manager handle chaging the shape of an existing array?
     // Default is no.
@@ -233,101 +233,101 @@ public:
 
     // Get the scalar value in the given row.
     // These functions are non-virtual and are converted to their
-    // virtual getXXV equivalent to achieve that a derived templated class
+    // virtual getXX equivalent to achieve that a derived templated class
     // (such as VirtualScalarColumn) does not have to declare and implement
     // all these functions.
     // The compiler complains about hiding virtual functions if you do not
     // declare all virtual functions with the same name in a derived class.
     // <group>
-    void get (uInt rownr, Bool* dataPtr)
-	{ getBoolV (rownr, dataPtr); }
-    void get (uInt rownr, uChar* dataPtr)
-	{ getuCharV (rownr, dataPtr); }
-    void get (uInt rownr, Short* dataPtr)
-	{ getShortV (rownr, dataPtr); }
-    void get (uInt rownr, uShort* dataPtr)
-	{ getuShortV (rownr, dataPtr); }
-    void get (uInt rownr, Int* dataPtr)
-	{ getIntV (rownr, dataPtr); }
-    void get (uInt rownr, uInt* dataPtr)
-	{ getuIntV (rownr, dataPtr); }
-    void get (uInt rownr, Int64* dataPtr)
-	{ getInt64V (rownr, dataPtr); }
-    void get (uInt rownr, float* dataPtr)
-	{ getfloatV (rownr, dataPtr); } 
-   void get (uInt rownr, double* dataPtr)
-	{ getdoubleV (rownr, dataPtr); }
-    void get (uInt rownr, Complex* dataPtr)
-	{ getComplexV (rownr, dataPtr); }
-    void get (uInt rownr, DComplex* dataPtr)
-	{ getDComplexV (rownr, dataPtr); }
-    void get (uInt rownr, String* dataPtr)
-	{ getStringV (rownr, dataPtr); }
+    void get (rownr_t rownr, Bool* dataPtr)
+	{ getBool (rownr, dataPtr); }
+    void get (rownr_t rownr, uChar* dataPtr)
+	{ getuChar (rownr, dataPtr); }
+    void get (rownr_t rownr, Short* dataPtr)
+	{ getShort (rownr, dataPtr); }
+    void get (rownr_t rownr, uShort* dataPtr)
+	{ getuShort (rownr, dataPtr); }
+    void get (rownr_t rownr, Int* dataPtr)
+	{ getInt (rownr, dataPtr); }
+    void get (rownr_t rownr, uInt* dataPtr)
+	{ getuInt (rownr, dataPtr); }
+    void get (rownr_t rownr, Int64* dataPtr)
+	{ getInt64 (rownr, dataPtr); }
+    void get (rownr_t rownr, float* dataPtr)
+	{ getfloat (rownr, dataPtr); } 
+   void get (rownr_t rownr, double* dataPtr)
+	{ getdouble (rownr, dataPtr); }
+    void get (rownr_t rownr, Complex* dataPtr)
+	{ getComplex (rownr, dataPtr); }
+    void get (rownr_t rownr, DComplex* dataPtr)
+	{ getDComplex (rownr, dataPtr); }
+    void get (rownr_t rownr, String* dataPtr)
+	{ getString (rownr, dataPtr); }
     // This function is the get for all non-standard data types.
-    void get (uInt rownr, void* dataPtr)
-	{ getOtherV (rownr, dataPtr); }
+    void get (rownr_t rownr, void* dataPtr)
+	{ getOther (rownr, dataPtr); }
     // </group>
 
     // Put the scalar value into the given row.
     // These functions are non-virtual and are converted to their
-    // virtual putXXV equivalent to achieve that a derived templated class
+    // virtual putXX equivalent to achieve that a derived templated class
     // (such as VirtualScalarColumn) does not have to declare and implement
     // all these functions.
     // The compiler complains about hiding virtual functions if you do not
     // declare all virtual functions with the same name in a derived class.
     // <group>
-    void put (uInt rownr, const Bool* dataPtr)
-	{ putBoolV (rownr, dataPtr); }
-    void put (uInt rownr, const uChar* dataPtr)
-	{ putuCharV (rownr, dataPtr); }
-    void put (uInt rownr, const Short* dataPtr)
-	{ putShortV (rownr, dataPtr); }
-    void put (uInt rownr, const uShort* dataPtr)
-	{ putuShortV (rownr, dataPtr); }
-    void put (uInt rownr, const Int* dataPtr)
-	{ putIntV (rownr, dataPtr); }
-    void put (uInt rownr, const uInt* dataPtr)
-	{ putuIntV (rownr, dataPtr); }
-    void put (uInt rownr, const Int64* dataPtr)
-	{ putInt64V (rownr, dataPtr); }
-    void put (uInt rownr, const float* dataPtr)
-	{ putfloatV (rownr, dataPtr); }
-    void put (uInt rownr, const double* dataPtr)
-	{ putdoubleV (rownr, dataPtr); }
-    void put (uInt rownr, const Complex* dataPtr)
-	{ putComplexV (rownr, dataPtr); }
-    void put (uInt rownr, const DComplex* dataPtr)
-	{ putDComplexV (rownr, dataPtr); }
-    void put (uInt rownr, const String* dataPtr)
-	{ putStringV (rownr, dataPtr); }
+    void put (rownr_t rownr, const Bool* dataPtr)
+	{ putBool (rownr, dataPtr); }
+    void put (rownr_t rownr, const uChar* dataPtr)
+	{ putuChar (rownr, dataPtr); }
+    void put (rownr_t rownr, const Short* dataPtr)
+	{ putShort (rownr, dataPtr); }
+    void put (rownr_t rownr, const uShort* dataPtr)
+	{ putuShort (rownr, dataPtr); }
+    void put (rownr_t rownr, const Int* dataPtr)
+	{ putInt (rownr, dataPtr); }
+    void put (rownr_t rownr, const uInt* dataPtr)
+	{ putuInt (rownr, dataPtr); }
+    void put (rownr_t rownr, const Int64* dataPtr)
+	{ putInt64 (rownr, dataPtr); }
+    void put (rownr_t rownr, const float* dataPtr)
+	{ putfloat (rownr, dataPtr); }
+    void put (rownr_t rownr, const double* dataPtr)
+	{ putdouble (rownr, dataPtr); }
+    void put (rownr_t rownr, const Complex* dataPtr)
+	{ putComplex (rownr, dataPtr); }
+    void put (rownr_t rownr, const DComplex* dataPtr)
+	{ putDComplex (rownr, dataPtr); }
+    void put (rownr_t rownr, const String* dataPtr)
+	{ putString (rownr, dataPtr); }
     // This function is the put for all non-standard data types.
-    void put (uInt rownr, const void* dataPtr)
-	{ putOtherV (rownr, dataPtr); }
+    void put (rownr_t rownr, const void* dataPtr)
+	{ putOther (rownr, dataPtr); }
     // </group>
 
     // Get all scalar values in the column.
     // The vector given in <src>data</src> has to have the correct length
     // (which is guaranteed by the ScalarColumn getColumn function).
-    // The default implementation does a getXXV per row.
+    // The default implementation does a getXX per row.
     virtual void getScalarColumnV (ArrayBase& dataPtr);
 
     // Put all scalar values in the column.
     // The vector given in <src>data</src> has to have the correct length
     // (which is guaranteed by the ScalarColumn putColumn function).
-    // The default implementation does a putXXV per row.
+    // The default implementation does a putXX per row.
     virtual void putScalarColumnV (const ArrayBase& dataPtr);
 
     // Get some scalar values in the column.
     // The vector given in <src>data</src> has to have the correct length
     // (which is guaranteed by the ScalarColumn getColumn function).
-    // The default implementation does a getXXV per row.
+    // The default implementation does a getXX per row.
     virtual void getScalarColumnCellsV (const RefRows& rownrs,
 					ArrayBase& dataPtr);
 
     // Put some scalar values in the column.
     // The vector given in <src>data</src> has to have the correct length
     // (which is guaranteed by the ScalarColumn getColumn function).
-    // The default implementation does a putXXV per row.
+    // The default implementation does a putXX per row.
     virtual void putScalarColumnCellsV (const RefRows& rownrs,
 					const ArrayBase& dataPtr);
 
@@ -335,13 +335,13 @@ public:
     // The array given in <src>data</src> has to have the correct shape
     // (which is guaranteed by the ArrayColumn get function).
     // The default implementation throws an "invalid operation" exception.
-    virtual void getArrayV (uInt rownr, ArrayBase& dataPtr);
+    virtual void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
 
     // Put the array value into the given row.
     // The array given in <src>data</src> has to have the correct shape
     // (which is guaranteed by the ArrayColumn put function).
     // The default implementation throws an "invalid operation" exception.
-    virtual void putArrayV (uInt rownr, const ArrayBase& data);
+    virtual void putArrayV (rownr_t rownr, const ArrayBase& data);
 
     // Get all array values in the column.
     // The array given in <src>data</src> has to have the correct shape
@@ -373,13 +373,13 @@ public:
     // The array given in <src>data</src> has to have the correct shape
     // (which is guaranteed by the ArrayColumn getSlice function).
     // The default implementation does getArrayV and takes the slice.
-    virtual void getSliceV (uInt rownr, const Slicer& slicer, ArrayBase& data);
+    virtual void getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& data);
 
     // Put into a section of the array in the given row.
     // The array given in <src>data</src> has to have the correct shape
     // (which is guaranteed by the ArrayColumn putSlice function).
     // The default implementation does get/putArrayV and puts the slice.
-    virtual void putSliceV (uInt rownr, const Slicer& slicer,
+    virtual void putSliceV (rownr_t rownr, const Slicer& slicer,
 			    const ArrayBase& data);
 
     // Get a section of all arrays in the column.
@@ -429,59 +429,59 @@ protected:
     // Get the scalar value in the given row.
     // The default implementation throws an "invalid operation" exception.
     // <group>
-    virtual void getBoolV     (uInt rownr, Bool* dataPtr);
-    virtual void getuCharV    (uInt rownr, uChar* dataPtr);
-    virtual void getShortV    (uInt rownr, Short* dataPtr);
-    virtual void getuShortV   (uInt rownr, uShort* dataPtr);
-    virtual void getIntV      (uInt rownr, Int* dataPtr);
-    virtual void getuIntV     (uInt rownr, uInt* dataPtr);
-    virtual void getInt64V    (uInt rownr, Int64* dataPtr);
-    virtual void getfloatV    (uInt rownr, float* dataPtr);
-    virtual void getdoubleV   (uInt rownr, double* dataPtr);
-    virtual void getComplexV  (uInt rownr, Complex* dataPtr);
-    virtual void getDComplexV (uInt rownr, DComplex* dataPtr);
-    virtual void getStringV   (uInt rownr, String* dataPtr);
+    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
+    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
+    virtual void getShort    (rownr_t rownr, Short* dataPtr);
+    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
+    virtual void getInt      (rownr_t rownr, Int* dataPtr);
+    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
+    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
+    virtual void getfloat    (rownr_t rownr, float* dataPtr);
+    virtual void getdouble   (rownr_t rownr, double* dataPtr);
+    virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
+    virtual void getDComplex (rownr_t rownr, DComplex* dataPtr);
+    virtual void getString   (rownr_t rownr, String* dataPtr);
     // This function is the get for all non-standard data types.
-    virtual void getOtherV    (uInt rownr, void* dataPtr);
+    virtual void getOther    (rownr_t rownr, void* dataPtr);
     // </group>
 
     // Put the scalar value into the given row.
     // The default implementation throws an "invalid operation" exception.
     // <group>
-    virtual void putBoolV     (uInt rownr, const Bool* dataPtr);
-    virtual void putuCharV    (uInt rownr, const uChar* dataPtr);
-    virtual void putShortV    (uInt rownr, const Short* dataPtr);
-    virtual void putuShortV   (uInt rownr, const uShort* dataPtr);
-    virtual void putIntV      (uInt rownr, const Int* dataPtr);
-    virtual void putuIntV     (uInt rownr, const uInt* dataPtr);
-    virtual void putInt64V    (uInt rownr, const Int64* dataPtr);
-    virtual void putfloatV    (uInt rownr, const float* dataPtr);
-    virtual void putdoubleV   (uInt rownr, const double* dataPtr);
-    virtual void putComplexV  (uInt rownr, const Complex* dataPtr);
-    virtual void putDComplexV (uInt rownr, const DComplex* dataPtr);
-    virtual void putStringV   (uInt rownr, const String* dataPtr);
+    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
+    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
+    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
+    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
+    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
+    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
+    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
+    virtual void putfloat    (rownr_t rownr, const float* dataPtr);
+    virtual void putdouble   (rownr_t rownr, const double* dataPtr);
+    virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
+    virtual void putDComplex (rownr_t rownr, const DComplex* dataPtr);
+    virtual void putString   (rownr_t rownr, const String* dataPtr);
     // This function is the put for all non-standard data types.
-    virtual void putOtherV    (uInt rownr, const void* dataPtr);
+    virtual void putOther    (rownr_t rownr, const void* dataPtr);
     // </group>
 
     // The default implementations of get and put functions.
     // <group>
-    void dmGetScalarColumnV (ArrayBase& dataPtr);
-    void dmPutScalarColumnV (const ArrayBase& dataPtr);
-    void dmGetScalarColumnCellsV (const RefRows& rownrs, ArrayBase& dataPtr);
-    void dmPutScalarColumnCellsV (const RefRows& rownrs, const ArrayBase& dataPtr);
-    void dmGetArrayColumnV (ArrayBase& data);
-    void dmPutArrayColumnV (const ArrayBase& data);
-    void dmGetArrayColumnCellsV (const RefRows& rownrs, ArrayBase& data);
-    void dmPutArrayColumnCellsV (const RefRows& rownrs, const ArrayBase& data);
-    void dmGetSliceV (uInt rownr, const Slicer& slicer, ArrayBase& data);
-    void dmPutSliceV (uInt rownr, const Slicer& slicer, const ArrayBase& data);
-    void dmGetColumnSliceV (const Slicer& slicer, ArrayBase& data);
-    void dmPutColumnSliceV (const Slicer& slicer, const ArrayBase& data);
-    void dmGetColumnSliceCellsV (const RefRows& rownrs,
-                                 const Slicer& slicer, ArrayBase& data);
-    void dmPutColumnSliceCellsV (const RefRows& rownrs,
-                                 const Slicer& slicer, const ArrayBase& data);
+    void getScalarColumnBase (ArrayBase& dataPtr);
+    void putScalarColumnBase (const ArrayBase& dataPtr);
+    void getScalarColumnCellsBase (const RefRows& rownrs, ArrayBase& dataPtr);
+    void putScalarColumnCellsBase (const RefRows& rownrs, const ArrayBase& dataPtr);
+    void getArrayColumnBase (ArrayBase& data);
+    void putArrayColumnBase (const ArrayBase& data);
+    void getArrayColumnCellsBase (const RefRows& rownrs, ArrayBase& data);
+    void putArrayColumnCellsBase (const RefRows& rownrs, const ArrayBase& data);
+    void getSliceBase (rownr_t rownr, const Slicer& slicer, ArrayBase& data);
+    void putSliceBase (rownr_t rownr, const Slicer& slicer, const ArrayBase& data);
+    void getColumnSliceBase (const Slicer& slicer, ArrayBase& data);
+    void putColumnSliceBase (const Slicer& slicer, const ArrayBase& data);
+    void getColumnSliceCellsBase (const RefRows& rownrs,
+                                  const Slicer& slicer, ArrayBase& data);
+    void putColumnSliceCellsBase (const RefRows& rownrs,
+                                  const Slicer& slicer, const ArrayBase& data);
     // </group>
 
 private:
@@ -495,14 +495,14 @@ private:
 
     // Get a slice from the array in the given row.
     // It reads the full array in the possibly reshaped ArrayBase object.
-    void getSliceArr (uInt row, const Slicer& section,
+    void getSliceArr (rownr_t row, const Slicer& section,
                       CountedPtr<ArrayBase>& fullArr,
                       ArrayBase& arr);
 
     // Put a slice into the array in the given row.
     // It reads and writes the full array in the possibly reshaped ArrayBase
     // object.
-    void putSliceArr (uInt row, const Slicer& section,
+    void putSliceArr (rownr_t row, const Slicer& section,
                       CountedPtr<ArrayBase>& fullArr,
                       const ArrayBase& arr);
 

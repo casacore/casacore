@@ -55,14 +55,14 @@ StManColumnAipsIO::~StManColumnAipsIO()
 {}
 
 
-void StManColumnAipsIO::initData (void*, uInt)
+void StManColumnAipsIO::initData (void*, rownr_t)
 {}
 
 //# Write all data into AipsIO.
-void StManColumnAipsIO::putFile (uInt nrval, AipsIO& ios)
+void StManColumnAipsIO::putFile (rownr_t nrval, AipsIO& ios)
 {
     ios.putstart ("StManColumnAipsIO", 2);     // class version 2
-    ios << nrval;
+    ios << uInt(nrval);
     uInt nr;
     for (uInt i=1; i<=nrext_p; i++) {
 	nr = ncum_p[i] - ncum_p[i-1];
@@ -70,7 +70,7 @@ void StManColumnAipsIO::putFile (uInt nrval, AipsIO& ios)
 	    nr = nrval;
 	}
 	if (nr > 0) {
-	    ios << nr;
+            ios << nr;
 	    putData (data_p[i], nr, ios);
 	    nrval -= nr;
 	}
@@ -121,7 +121,7 @@ void StManColumnAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 
 
 //# Read all data from AipsIO.
-void StManColumnAipsIO::getFile (uInt nrval, AipsIO& ios)
+void StManColumnAipsIO::getFile (rownr_t nrval, AipsIO& ios)
 {
     uInt version = ios.getstart ("StManColumnAipsIO");
     uInt nr;
@@ -293,7 +293,7 @@ Bool StManAipsIO::flush (AipsIO&, Bool)
     ios << stmanName_p;                        // this is added in version 2
     ios << sequenceNr();
     ios << uniqnr_p;
-    ios << nrrow_p;
+    ios << uInt(nrrow_p);
     ios << ncolumn();
     for (i=0; i<ncolumn(); i++) {
 	ios << colSet_p[i]->dataType();
@@ -306,7 +306,7 @@ Bool StManAipsIO::flush (AipsIO&, Bool)
     return True;
 }
 
-void StManAipsIO::create (uInt nrrow)
+void StManAipsIO::create (rownr_t nrrow)
 {
     nrrow_p = nrrow;
     //# Let the column create something if needed.
@@ -316,11 +316,11 @@ void StManAipsIO::create (uInt nrrow)
     setHasPut();
 }
 
-void StManAipsIO::open (uInt tabNrrow, AipsIO&)
+void StManAipsIO::open (rownr_t tabNrrow, AipsIO&)
 {
     resync (tabNrrow);
 }
-void StManAipsIO::resync (uInt nrrow)
+void StManAipsIO::resync (rownr_t nrrow)
 {
     if (iosfile_p != 0) {
         iosfile_p->resync();
@@ -335,7 +335,8 @@ void StManAipsIO::resync (uInt nrrow)
     }
     ios >> snr;
     ios >> uniqnr_p;
-    ios >> nrrow_p;
+    ios >> nrc;
+    nrrow_p = nrc;
     ios >> nrc;
     if (snr != sequenceNr()  ||  nrc != ncolumn()) {
 	throw (DataManInternalError

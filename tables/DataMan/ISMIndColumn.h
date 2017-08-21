@@ -111,23 +111,23 @@ public:
     virtual Bool canAccessSlice (Bool& reask) const;
 
     // Add (newNrrow-oldNrrow) rows to the column.
-    virtual void addRow (uInt newNrrow, uInt oldNrrow);
+    virtual void addRow (rownr_t newNrrow, rownr_t oldNrrow);
 
     // Set the (fixed) shape of the arrays in the entire column.
     virtual void setShapeColumn (const IPosition& shape);
 
     // Get the dimensionality of the item in the given row.
-    virtual uInt ndim (uInt rownr);
+    virtual uInt ndim (rownr_t rownr);
 
     // Set the shape of the array in the given row and allocate the array
     // in the file.
-    void setShape (uInt rownr, const IPosition& shape);
+    void setShape (rownr_t rownr, const IPosition& shape);
 
     // Is the shape defined (i.e. is there an array) in this row?
-    virtual Bool isShapeDefined (uInt rownr);
+    virtual Bool isShapeDefined (rownr_t rownr);
 
     // Get the shape of the array in the given row.
-    virtual IPosition shape (uInt rownr);
+    virtual IPosition shape (rownr_t rownr);
 
     // This storage manager can handle changing array shapes.
     Bool canChangeShape() const;
@@ -232,7 +232,7 @@ public:
     virtual Bool flush (uInt nrrow, Bool fsync);
 
     // Resync the storage manager with the new file contents.
-    virtual void resync (uInt nrrow);
+    virtual void resync (rownr_t nrrow);
 
     // Let the column reopen its data files for read/write access.
     virtual void reopenRW();

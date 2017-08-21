@@ -59,8 +59,8 @@ StManColumnIndArrayAipsIO::StManColumnIndArrayAipsIO (StManAipsIO* smptr,
 //# Delete all objects created.
 StManColumnIndArrayAipsIO::~StManColumnIndArrayAipsIO()
 {
-    uInt nr = stmanPtr_p->nrow();
-    for (uInt i=0; i<nr; i++) {
+    rownr_t nr = stmanPtr_p->nrow();
+    for (rownr_t i=0; i<nr; i++) {
 	deleteArray (i);
     }
     if (version_p <= 1) {
@@ -73,7 +73,7 @@ StManColumnIndArrayAipsIO::~StManColumnIndArrayAipsIO()
 //# Compose the file name from the mother file name extended with
 //# the unique column sequence nr.
 //# Create the given nr of rows in it.
-void StManColumnIndArrayAipsIO::doCreate (uInt nrrow)
+void StManColumnIndArrayAipsIO::doCreate (rownr_t nrrow)
 {
     //# Create the file.
     openFile (ByteIO::New);
@@ -112,7 +112,7 @@ void StManColumnIndArrayAipsIO::setShapeColumn (const IPosition& shape)
 }
 
 
-void StManColumnIndArrayAipsIO::addRow (uInt nrnew, uInt nrold)
+void StManColumnIndArrayAipsIO::addRow (rownr_t nrnew, rownr_t nrold)
 {
     //# Extend data blocks if needed.
     StManColumnAipsIO::addRow (nrnew, nrold);
@@ -125,7 +125,7 @@ void StManColumnIndArrayAipsIO::addRow (uInt nrnew, uInt nrold)
 }
 
 
-void StManColumnIndArrayAipsIO::setShape (uInt rownr, const IPosition& shape)
+void StManColumnIndArrayAipsIO::setShape (rownr_t rownr, const IPosition& shape)
 {
     StIndArray* ptr = STMANINDGETBLOCK(rownr);
     if (ptr == 0) {
@@ -140,7 +140,7 @@ void StManColumnIndArrayAipsIO::setShape (uInt rownr, const IPosition& shape)
 
 //# Get the shape for the array (if any) in the given row.
 //# Read shape if not read yet.
-StIndArray* StManColumnIndArrayAipsIO::getShape (uInt rownr)
+StIndArray* StManColumnIndArrayAipsIO::getShape (rownr_t rownr)
 {
     StIndArray* ptr = STMANINDGETBLOCK(rownr);
     if (ptr == 0) {
@@ -152,20 +152,20 @@ StIndArray* StManColumnIndArrayAipsIO::getShape (uInt rownr)
     return ptr;
 }
 
-Bool StManColumnIndArrayAipsIO::isShapeDefined (uInt rownr)
+Bool StManColumnIndArrayAipsIO::isShapeDefined (rownr_t rownr)
     { return (STMANINDGETBLOCK(rownr) == 0  ?  False : True); }
 
-uInt StManColumnIndArrayAipsIO::ndim (uInt rownr)
+uInt StManColumnIndArrayAipsIO::ndim (rownr_t rownr)
     { return getShape(rownr)->shape().nelements(); }
 
-IPosition StManColumnIndArrayAipsIO::shape (uInt rownr)
+IPosition StManColumnIndArrayAipsIO::shape (rownr_t rownr)
     { return getShape(rownr)->shape(); }
 
 Bool StManColumnIndArrayAipsIO::canChangeShape() const
     { return (shapeIsFixed_p  ?  False : True); }
 
 
-void StManColumnIndArrayAipsIO::getArrayV (uInt rownr, ArrayBase& arr)
+void StManColumnIndArrayAipsIO::getArrayV (rownr_t rownr, ArrayBase& arr)
 {
   StIndArray* sia = getShape (rownr);
   switch (dtype()) {
@@ -210,7 +210,7 @@ void StManColumnIndArrayAipsIO::getArrayV (uInt rownr, ArrayBase& arr)
   }
 }
 
-void StManColumnIndArrayAipsIO::putArrayV (uInt rownr,
+void StManColumnIndArrayAipsIO::putArrayV (rownr_t rownr,
                                            const ArrayBase& arr)
 {
   StIndArray* sia = getShape (rownr);
@@ -257,7 +257,7 @@ void StManColumnIndArrayAipsIO::putArrayV (uInt rownr,
   stmanPtr_p->setHasPut();
 }
 
-void StManColumnIndArrayAipsIO::getSliceV (uInt rownr, const Slicer& ns,
+void StManColumnIndArrayAipsIO::getSliceV (rownr_t rownr, const Slicer& ns,
                                            ArrayBase& arr)
 {
   StIndArray* sia = getShape (rownr);
@@ -303,7 +303,7 @@ void StManColumnIndArrayAipsIO::getSliceV (uInt rownr, const Slicer& ns,
   }
 }
 
-void StManColumnIndArrayAipsIO::putSliceV (uInt rownr, const Slicer& ns,
+void StManColumnIndArrayAipsIO::putSliceV (rownr_t rownr, const Slicer& ns,
                                            const ArrayBase& arr)
 {
   StIndArray* sia = getShape (rownr);
@@ -363,7 +363,7 @@ void StManColumnIndArrayAipsIO::putSliceV (uInt rownr, const Slicer& ns,
 }
 
 
-void StManColumnIndArrayAipsIO::remove (uInt rownr)
+void StManColumnIndArrayAipsIO::remove (rownr_t rownr)
 {
     deleteArray (rownr);
     StManColumnAipsIO::remove (rownr);
@@ -376,14 +376,14 @@ Bool StManColumnIndArrayAipsIO::ok() const
 }
 
 
-void StManColumnIndArrayAipsIO::deleteArray (uInt rownr)
+void StManColumnIndArrayAipsIO::deleteArray (rownr_t rownr)
 {
     delete STMANINDGETBLOCK(rownr);
 }
 
 
 //# Write all data into AipsIO.
-void StManColumnIndArrayAipsIO::putFile (uInt nrval, AipsIO& ios)
+void StManColumnIndArrayAipsIO::putFile (rownr_t nrval, AipsIO& ios)
 {
     ios.putstart ("StManColumnIndArrayAipsIO", version_p);
     ios << dtype();                    // for backward compatibility
@@ -414,7 +414,7 @@ void StManColumnIndArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 
 
 //# Read all data from AipsIO.
-void StManColumnIndArrayAipsIO::getFile (uInt nrval, AipsIO& ios)
+void StManColumnIndArrayAipsIO::getFile (rownr_t nrval, AipsIO& ios)
 {
     int dtype;
     version_p = ios.getstart ("StManColumnIndArrayAipsIO");

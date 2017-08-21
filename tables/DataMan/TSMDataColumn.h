@@ -134,55 +134,55 @@ public:
     // Set the shape of the data array in the given row.
     // It will check if it matches already defined data and coordinates shapes.
     // It will define undefined data and coordinates shapes.
-    void setShape (uInt rownr, const IPosition& shape);
+    void setShape (rownr_t rownr, const IPosition& shape);
 
     // Set the shape and tile shape of the array in the given row.
     // It will check if it matches already defined data and coordinates shapes.
     // It will define undefined data and coordinates shapes.
     // The tile shape is adjusted to the array shape (size 0 gets set to 1;
     // size > cubesize gets set to the cubesize).
-    void setShapeTiled (uInt rownr, const IPosition& shape,
+    void setShapeTiled (rownr_t rownr, const IPosition& shape,
 			const IPosition& tileShape);
 
     // Is the value shape defined in the given row?
-    Bool isShapeDefined (uInt rownr);
+    Bool isShapeDefined (rownr_t rownr);
 
     // Get the shape of the item in the given row.
-    IPosition shape (uInt rownr);
+    IPosition shape (rownr_t rownr);
 
     // Get the tile shape of the item in the given row.
-    IPosition tileShape (uInt rownr);
+    IPosition tileShape (rownr_t rownr);
 
     // Get a scalar value in the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the Scalar/ArrayColumn get function).
     // <group>
-    void getBoolV     (uInt rownr, Bool* dataPtr);
-    void getuCharV    (uInt rownr, uChar* dataPtr);
-    void getShortV    (uInt rownr, Short* dataPtr);
-    void getuShortV   (uInt rownr, uShort* dataPtr);
-    void getIntV      (uInt rownr, Int* dataPtr);
-    void getuIntV     (uInt rownr, uInt* dataPtr);
-    void getfloatV    (uInt rownr, float* dataPtr);
-    void getdoubleV   (uInt rownr, double* dataPtr);
-    void getComplexV  (uInt rownr, Complex* dataPtr);
-    void getDComplexV (uInt rownr, DComplex* dataPtr);
+    void getBool     (rownr_t rownr, Bool* dataPtr);
+    void getuChar    (rownr_t rownr, uChar* dataPtr);
+    void getShort    (rownr_t rownr, Short* dataPtr);
+    void getuShort   (rownr_t rownr, uShort* dataPtr);
+    void getInt      (rownr_t rownr, Int* dataPtr);
+    void getuInt     (rownr_t rownr, uInt* dataPtr);
+    void getfloat    (rownr_t rownr, float* dataPtr);
+    void getdouble   (rownr_t rownr, double* dataPtr);
+    void getComplex  (rownr_t rownr, Complex* dataPtr);
+    void getDComplex (rownr_t rownr, DComplex* dataPtr);
     // </group>
 
     // Put a scalar value into the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the Scalar/ArrayColumn put function).
     // <group>
-    void putBoolV     (uInt rownr, const Bool* dataPtr);
-    void putuCharV    (uInt rownr, const uChar* dataPtr);
-    void putShortV    (uInt rownr, const Short* dataPtr);
-    void putuShortV   (uInt rownr, const uShort* dataPtr);
-    void putIntV      (uInt rownr, const Int* dataPtr);
-    void putuIntV     (uInt rownr, const uInt* dataPtr);
-    void putfloatV    (uInt rownr, const float* dataPtr);
-    void putdoubleV   (uInt rownr, const double* dataPtr);
-    void putComplexV  (uInt rownr, const Complex* dataPtr);
-    void putDComplexV (uInt rownr, const DComplex* dataPtr);
+    void putBool     (rownr_t rownr, const Bool* dataPtr);
+    void putuChar    (rownr_t rownr, const uChar* dataPtr);
+    void putShort    (rownr_t rownr, const Short* dataPtr);
+    void putuShort   (rownr_t rownr, const uShort* dataPtr);
+    void putInt      (rownr_t rownr, const Int* dataPtr);
+    void putuInt     (rownr_t rownr, const uInt* dataPtr);
+    void putfloat    (rownr_t rownr, const float* dataPtr);
+    void putdouble   (rownr_t rownr, const double* dataPtr);
+    void putComplex  (rownr_t rownr, const Complex* dataPtr);
+    void putDComplex (rownr_t rownr, const DComplex* dataPtr);
     // </group>
 
     // Get the array value in the given row.

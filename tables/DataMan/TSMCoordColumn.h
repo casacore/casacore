@@ -104,36 +104,36 @@ public:
     virtual ~TSMCoordColumn();
 
     // Set the shape of the coordinate vector in the given row.
-    void setShape (uInt rownr, const IPosition& shape);
+    void setShape (rownr_t rownr, const IPosition& shape);
 
     // Is the value shape defined in the given row?
-    Bool isShapeDefined (uInt rownr);
+    Bool isShapeDefined (rownr_t rownr);
 
     // Get the shape of the item in the given row.
-    IPosition shape (uInt rownr);
+    IPosition shape (rownr_t rownr);
 
     // Get a scalar value in the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the Scalar/ArrayColumn get function).
     // <group>
-    void getIntV      (uInt rownr, Int* dataPtr);
-    void getuIntV     (uInt rownr, uInt* dataPtr);
-    void getfloatV    (uInt rownr, float* dataPtr);
-    void getdoubleV   (uInt rownr, double* dataPtr);
-    void getComplexV  (uInt rownr, Complex* dataPtr);
-    void getDComplexV (uInt rownr, DComplex* dataPtr);
+    void getInt      (rownr_t rownr, Int* dataPtr);
+    void getuInt     (rownr_t rownr, uInt* dataPtr);
+    void getfloat    (rownr_t rownr, float* dataPtr);
+    void getdouble   (rownr_t rownr, double* dataPtr);
+    void getComplex  (rownr_t rownr, Complex* dataPtr);
+    void getDComplex (rownr_t rownr, DComplex* dataPtr);
     // </group>
 
     // Put a scalar value into the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the Scalar/ArrayColumn put function).
     // <group>
-    void putIntV      (uInt rownr, const Int* dataPtr);
-    void putuIntV     (uInt rownr, const uInt* dataPtr);
-    void putfloatV    (uInt rownr, const float* dataPtr);
-    void putdoubleV   (uInt rownr, const double* dataPtr);
-    void putComplexV  (uInt rownr, const Complex* dataPtr);
-    void putDComplexV (uInt rownr, const DComplex* dataPtr);
+    void putInt      (rownr_t rownr, const Int* dataPtr);
+    void putuInt     (rownr_t rownr, const uInt* dataPtr);
+    void putfloat    (rownr_t rownr, const float* dataPtr);
+    void putdouble   (rownr_t rownr, const double* dataPtr);
+    void putComplex  (rownr_t rownr, const Complex* dataPtr);
+    void putDComplex (rownr_t rownr, const DComplex* dataPtr);
     // </group>
 
     // Get the array value in the given row.

@@ -218,7 +218,7 @@ private:
     virtual IPosition defaultTileShape() const;
 
     // Add rows to the storage manager.
-    void addRow (uInt nrrow);
+    void addRow (rownr_t nrrow);
 
     // Get the hypercube in which the given row is stored.
     virtual TSMCube* getHypercube (uInt rownr);
@@ -237,7 +237,7 @@ private:
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
-    virtual void create (uInt nrrow);
+    virtual void create (rownr_t nrrow);
 
     // Read the header info.
     virtual void readHeader (uInt nrrow, Bool firstTime);

@@ -115,7 +115,7 @@ Bool TiledFileHelper::flush (AipsIO&, Bool)
   throw AipsError ("TileFileHelper::flush - not implemented");
   return False;
 }
-void TiledFileHelper::create (uInt)
+void TiledFileHelper::create (rownr_t)
 {
   throw AipsError ("TileFileHelper::create - not implemented");
 }

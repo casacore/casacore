@@ -102,7 +102,7 @@ Bool TiledColumnStMan::canAccessColumn (Bool& reask) const
 }
 
 
-void TiledColumnStMan::create (uInt nrrow)
+void TiledColumnStMan::create (rownr_t nrrow)
 {
     // Set up the various things.
     setup(1);
@@ -198,7 +198,7 @@ IPosition TiledColumnStMan::defaultTileShape() const
     return tileShape_p;
 }
 
-void TiledColumnStMan::addRow (uInt nrow)
+void TiledColumnStMan::addRow (rownr_t nrow)
 {
     cubeSet_p[0]->extend (nrow, emptyRecord, coordColSet_p[nrdim_p - 1]);
     nrrow_p += nrow;

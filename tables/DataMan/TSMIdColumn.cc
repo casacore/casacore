@@ -45,16 +45,16 @@ TSMIdColumn::TSMIdColumn (const TSMColumn& column)
 TSMIdColumn::~TSMIdColumn()
 {}
 
-void TSMIdColumn::getfloatV (uInt rownr, float* dataPtr)
+void TSMIdColumn::getfloat (rownr_t rownr, float* dataPtr)
 {
     // Get the hypercube the row is in.
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
     hypercube->valueRecord().get (columnName(), *dataPtr);
 }
-void TSMIdColumn::putfloatV (uInt rownr, const float* dataPtr)
+void TSMIdColumn::putfloat (rownr_t rownr, const float* dataPtr)
 {
     float value;
-    TSMIdColumn::getfloatV (rownr, &value);
+    TSMIdColumn::getfloat (rownr, &value);
     if (value != *dataPtr) {
 	throw TSMError ("TSMIdColumn::put: new value mismatches existing "
                         "in id column " + columnName());
@@ -63,30 +63,30 @@ void TSMIdColumn::putfloatV (uInt rownr, const float* dataPtr)
 
 
 
-#define TSMIDCOLUMN_GETPUT(T,NM) \
-void TSMIdColumn::aips_name2(get,NM) (uInt rownr, T* dataPtr) \
+#define TSMIDCOLUMN_GETPUT(T) \
+void TSMIdColumn::aips_name2(get,T) (rownr_t rownr, T* dataPtr) \
 { \
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr); \
     hypercube->valueRecord().get (columnName(), *dataPtr); \
 } \
-void TSMIdColumn::aips_name2(put,NM) (uInt rownr, const T* dataPtr) \
+void TSMIdColumn::aips_name2(put,T) (rownr_t rownr, const T* dataPtr) \
 { \
     T value; \
-    TSMIdColumn::aips_name2(get,NM) (rownr, &value); \
+    TSMIdColumn::aips_name2(get,T) (rownr, &value); \
     if (value != *dataPtr) { \
 	throw TSMError ("TSMIdColumn::put: new value mismatches existing" \
                         " in id column " + columnName()); \
     } \
 }
 
-TSMIDCOLUMN_GETPUT(Bool,BoolV)
-TSMIDCOLUMN_GETPUT(Int,IntV)
-TSMIDCOLUMN_GETPUT(uInt,uIntV)
-//#TSMIDCOLUMN_GETPUT(float,floatV)
-TSMIDCOLUMN_GETPUT(double,doubleV)
-TSMIDCOLUMN_GETPUT(Complex,ComplexV)
-TSMIDCOLUMN_GETPUT(DComplex,DComplexV)
-TSMIDCOLUMN_GETPUT(String,StringV)
+TSMIDCOLUMN_GETPUT(Bool)
+TSMIDCOLUMN_GETPUT(Int)
+TSMIDCOLUMN_GETPUT(uInt)
+//#TSMIDCOLUMN_GETPUT(float)
+TSMIDCOLUMN_GETPUT(double)
+TSMIDCOLUMN_GETPUT(Complex)
+TSMIDCOLUMN_GETPUT(DComplex)
+TSMIDCOLUMN_GETPUT(String)
 
 } //# NAMESPACE CASACORE - END
 

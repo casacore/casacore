@@ -42,13 +42,13 @@ Bool VirtualScalarColumnBase::isWritable() const
     { return False; }
 
 
-void VirtualScalarColumnBase::getArrayV (uInt, ArrayBase&)
+void VirtualScalarColumnBase::getArrayV (rownr_t, ArrayBase&)
 { 
     throw DataManInvOper ("VirtualScalarColumn::getArrayV not possible"
                           " for column " + columnName());
 }
 
-void VirtualScalarColumnBase::putArrayV (uInt, const ArrayBase&)
+void VirtualScalarColumnBase::putArrayV (rownr_t, const ArrayBase&)
 { 
     throw DataManInvOper ("VirtualScalarColumn::putArrayV not possible"
                           " for column " + columnName());
@@ -78,13 +78,13 @@ void VirtualScalarColumnBase::putArrayColumnCellsV (const RefRows&, const ArrayB
                           " for column " + columnName());
 }
 
-void VirtualScalarColumnBase::getSliceV (uInt, const Slicer&, ArrayBase&)
+void VirtualScalarColumnBase::getSliceV (rownr_t, const Slicer&, ArrayBase&)
 { 
     throw DataManInvOper ("VirtualScalarColumn::getSliceV not possible"
                           " for column " + columnName());
 }
 
-void VirtualScalarColumnBase::putSliceV (uInt, const Slicer&, const ArrayBase&)
+void VirtualScalarColumnBase::putSliceV (rownr_t, const Slicer&, const ArrayBase&)
 { 
     throw DataManInvOper ("VirtualScalarColumn::putSliceV not possible"
                           " for column " + columnName());

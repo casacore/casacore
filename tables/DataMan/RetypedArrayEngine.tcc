@@ -185,7 +185,7 @@ void RetypedArrayEngine<S,T>::prepare()
 }
 
 template<class S, class T>
-void RetypedArrayEngine<S,T>::create (uInt initialNrrow)
+void RetypedArrayEngine<S,T>::create (rownr_t initialNrrow)
 {
     BaseMappedArrayEngine<S,T>::create (initialNrrow);
     // Store the various parameters as keywords in this column.
@@ -208,7 +208,7 @@ void RetypedArrayEngine<S,T>::setShapeColumn (const IPosition& shape)
 }
 
 template<class S, class T>
-void RetypedArrayEngine<S,T>::setShape (uInt rownr, const IPosition& shape)
+void RetypedArrayEngine<S,T>::setShape (rownr_t rownr, const IPosition& shape)
 {
     //# Do not define the shape in the stored column when it has
     //# already been defined and matches the virtual shape.
@@ -224,13 +224,13 @@ void RetypedArrayEngine<S,T>::setShape (uInt rownr, const IPosition& shape)
 }
 
 template<class S, class T>
-uInt RetypedArrayEngine<S,T>::ndim (uInt rownr)
+uInt RetypedArrayEngine<S,T>::ndim (rownr_t rownr)
 {
     return column().ndim (rownr) - shape_p.nelements();
 }
 
 template<class S, class T>
-IPosition RetypedArrayEngine<S,T>::shape (uInt rownr)
+IPosition RetypedArrayEngine<S,T>::shape (rownr_t rownr)
 {
     // The virtual shape is the stored shape minus the first dimensions.
     IPosition storedShape = column().shape (rownr);
@@ -240,7 +240,7 @@ IPosition RetypedArrayEngine<S,T>::shape (uInt rownr)
 
 template<class S, class T>
 IPosition RetypedArrayEngine<S,T>::getStoredShape
-(uInt rownr, const IPosition& virtualShape)
+(rownr_t rownr, const IPosition& virtualShape)
 {
     //# Determine the element shape.
     //# If the stored is defined, take it from there.
@@ -279,11 +279,11 @@ IPosition RetypedArrayEngine<S,T>::checkShape (const Array<S>& source,
 	throw (DataManInvOper ("RetypedArrayEngine: stored/virtual"
 			       " dimensionalities are not appropriate"));
     }
-    uInt i;
     //# Determine and check the shape of the virtual elements in the target
     //# which are formed by the first axes in the stored.
     //# Their shape cannot be greater than the real virtual element shape.
     IPosition elemShape (shape_p.nelements());
+    uInt i;   //used later
     for (i=0; i<shape_p.nelements(); i++) {
 	if (tShape(i) > shape_p(i)) {
 	    throw (DataManInvOper

@@ -196,7 +196,7 @@ void ScaledComplexData<S,T>::registerClass()
 
 
 template<class S, class T>
-void ScaledComplexData<S,T>::create (uInt initialNrrow)
+void ScaledComplexData<S,T>::create (rownr_t initialNrrow)
 {
     BaseMappedArrayEngine<S,T>::create (initialNrrow);
     // Store the various parameters as keywords in this column.
@@ -251,19 +251,19 @@ void ScaledComplexData<S,T>::setShapeColumn (const IPosition& shape)
 }
 
 template<class S, class T>
-void ScaledComplexData<S,T>::setShape (uInt rownr, const IPosition& shape)
+void ScaledComplexData<S,T>::setShape (rownr_t rownr, const IPosition& shape)
 {
     BaseMappedArrayEngine<S,T>::setShape (rownr, storedShape(shape));
 }
 
 template<class S, class T>
-uInt ScaledComplexData<S,T>::ndim (uInt rownr)
+uInt ScaledComplexData<S,T>::ndim (rownr_t rownr)
 {
     return column().ndim (rownr) - 1;
 }
 
 template<class S, class T>
-IPosition ScaledComplexData<S,T>::shape (uInt rownr)
+IPosition ScaledComplexData<S,T>::shape (rownr_t rownr)
 {
     // The virtual shape is the stored shape minus the first dimensions.
     IPosition storedShape = column().shape (rownr);
@@ -272,7 +272,7 @@ IPosition ScaledComplexData<S,T>::shape (uInt rownr)
 
 
 template<class S, class T>
-S ScaledComplexData<S,T>::getScale (uInt rownr)
+S ScaledComplexData<S,T>::getScale (rownr_t rownr)
 {
     if (fixedScale_p) {
 	return scale_p;
@@ -280,7 +280,7 @@ S ScaledComplexData<S,T>::getScale (uInt rownr)
     return (*scaleColumn_p)(rownr);
 }
 template<class S, class T>
-S ScaledComplexData<S,T>::getOffset (uInt rownr)
+S ScaledComplexData<S,T>::getOffset (rownr_t rownr)
 {
     if (fixedOffset_p) {
 	return offset_p;
@@ -393,7 +393,7 @@ void ScaledComplexData<S,T>::scaleColumnOnGet (Array<S>& array,
     }else{
 	ArrayIterator<S> arrayIter (array, array.ndim() - 1);
 	ReadOnlyArrayIterator<T> targetIter (target, target.ndim() - 1);
-	uInt rownr = 0;
+	rownr_t rownr = 0;
 	while (! arrayIter.pastEnd()) {
 	    scaleOnGet (getScale(rownr), getOffset(rownr),
 			arrayIter.array(), targetIter.array());
@@ -413,7 +413,7 @@ void ScaledComplexData<S,T>::scaleColumnOnPut (const Array<S>& array,
     }else{
 	ReadOnlyArrayIterator<S> arrayIter (array, array.ndim() - 1);
 	ArrayIterator<T> targetIter (target, target.ndim() - 1);
-	uInt rownr = 0;
+	rownr_t rownr = 0;
 	while (! arrayIter.pastEnd()) {
 	    scaleOnPut (getScale(rownr), getOffset(rownr),
 			arrayIter.array(), targetIter.array());
@@ -436,9 +436,9 @@ void ScaledComplexData<S,T>::scaleCellsOnGet (Array<S>& array,
 	ReadOnlyArrayIterator<T> targetIter (target, target.ndim() - 1);
 	RefRowsSliceIter rowiter(rownrs);
 	while (! rowiter.pastEnd()) {
-	    uInt rownr = rowiter.sliceStart();
-	    uInt end = rowiter.sliceEnd();
-	    uInt incr = rowiter.sliceIncr();
+	    rownr_t rownr = rowiter.sliceStart();
+	    rownr_t end = rowiter.sliceEnd();
+	    rownr_t incr = rowiter.sliceIncr();
 	    // Iterate through the row numbers in the slice.
 	    while (rownr <= end) {
 	        scaleOnGet (getScale(rownr), getOffset(rownr),
@@ -465,9 +465,9 @@ void ScaledComplexData<S,T>::scaleCellsOnPut (const Array<S>& array,
 	ArrayIterator<T> targetIter (target, target.ndim() - 1);
 	RefRowsSliceIter rowiter(rownrs);
 	while (! rowiter.pastEnd()) {
-	    uInt rownr = rowiter.sliceStart();
-	    uInt end = rowiter.sliceEnd();
-	    uInt incr = rowiter.sliceIncr();
+	    rownr_t rownr = rowiter.sliceStart();
+	    rownr_t end = rowiter.sliceEnd();
+	    rownr_t incr = rowiter.sliceIncr();
 	    // Iterate through the row numbers in the slice.
 	    while (rownr <= end) {
 		scaleOnPut (getScale(rownr), getOffset(rownr),
@@ -484,14 +484,14 @@ void ScaledComplexData<S,T>::scaleCellsOnPut (const Array<S>& array,
 
 
 template<class S, class T>
-void ScaledComplexData<S,T>::getArray (uInt rownr, Array<S>& array)
+void ScaledComplexData<S,T>::getArray (rownr_t rownr, Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));
     column().get (rownr, target);
     scaleOnGet (getScale(rownr), getOffset(rownr), array, target);
 }
 template<class S, class T>
-void ScaledComplexData<S,T>::putArray (uInt rownr, const Array<S>& array)
+void ScaledComplexData<S,T>::putArray (rownr_t rownr, const Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));
     scaleOnPut (getScale(rownr), getOffset(rownr), array, target);
@@ -499,7 +499,7 @@ void ScaledComplexData<S,T>::putArray (uInt rownr, const Array<S>& array)
 }
 
 template<class S, class T>
-void ScaledComplexData<S,T>::getSlice (uInt rownr, const Slicer& slicer,
+void ScaledComplexData<S,T>::getSlice (rownr_t rownr, const Slicer& slicer,
 				       Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));
@@ -507,7 +507,7 @@ void ScaledComplexData<S,T>::getSlice (uInt rownr, const Slicer& slicer,
     scaleOnGet (getScale(rownr), getOffset(rownr), array, target);
 }
 template<class S, class T>
-void ScaledComplexData<S,T>::putSlice (uInt rownr, const Slicer& slicer,
+void ScaledComplexData<S,T>::putSlice (rownr_t rownr, const Slicer& slicer,
 				       const Array<S>& array)
 {
     Array<T> target(storedShape(array.shape()));

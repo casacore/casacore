@@ -51,8 +51,8 @@ MSMIndColumn::MSMIndColumn (MSMBase* smptr, int dataType)
 //# Delete all objects created.
 MSMIndColumn::~MSMIndColumn()
 {
-  uInt nr = stmanPtr_p->nrow();
-  for (uInt i=0; i<nr; i++) {
+  rownr_t nr = stmanPtr_p->nrow();
+  for (rownr_t i=0; i<nr; i++) {
     deleteArray (i);
   }
 }
@@ -62,7 +62,7 @@ void MSMIndColumn::setShapeColumn (const IPosition& shape)
   fixedShape_p = shape;
 }
 
-void MSMIndColumn::setShape (uInt rownr, const IPosition& shape)
+void MSMIndColumn::setShape (rownr_t rownr, const IPosition& shape)
 {
   // See if there is already a shape and if it matches.
   Data* ptr = MSMINDCOLUMN_GETDATA(rownr);
@@ -80,7 +80,7 @@ void MSMIndColumn::setShape (uInt rownr, const IPosition& shape)
 
 //# Get the shape for the array (if any) in the given row.
 //# Read shape if not read yet.
-MSMIndColumn::Data* MSMIndColumn::getShape (uInt rownr)
+MSMIndColumn::Data* MSMIndColumn::getShape (rownr_t rownr)
 {
   void* ptr = getArrayPtr(rownr);
   if (ptr == 0) {
@@ -92,20 +92,20 @@ MSMIndColumn::Data* MSMIndColumn::getShape (uInt rownr)
   return static_cast<Data*>(ptr);
 }
 
-Bool MSMIndColumn::isShapeDefined (uInt rownr)
+Bool MSMIndColumn::isShapeDefined (rownr_t rownr)
   { return (getArrayPtr(rownr) == 0  ?  False : True); }
 
-uInt MSMIndColumn::ndim (uInt rownr)
+uInt MSMIndColumn::ndim (rownr_t rownr)
   { return getShape(rownr)->shape().nelements(); }
 
-IPosition MSMIndColumn::shape (uInt rownr)
+IPosition MSMIndColumn::shape (rownr_t rownr)
   { return getShape(rownr)->shape(); }
 
 Bool MSMIndColumn::canChangeShape() const
   { return True; }
 
 
-void MSMIndColumn::getArrayV (uInt rownr, ArrayBase& arr)
+void MSMIndColumn::getArrayV (rownr_t rownr, ArrayBase& arr)
 {
   Data* data = getShape(rownr);   //# also checks if row contains data
   DebugAssert (data->shape().isEqual (arr.shape()), AipsError);
@@ -123,7 +123,7 @@ void MSMIndColumn::getArrayV (uInt rownr, ArrayBase& arr)
   arr.putVStorage (arrData, deleteIt);
 }
 
-void MSMIndColumn::putArrayV (uInt rownr, const ArrayBase& arr)
+void MSMIndColumn::putArrayV (rownr_t rownr, const ArrayBase& arr)
 {
   Data* data = getShape(rownr);   //# also checks if row contains data
   DebugAssert (shape(rownr).isEqual (arr.shape()), AipsError);
@@ -139,9 +139,10 @@ void MSMIndColumn::putArrayV (uInt rownr, const ArrayBase& arr)
             elemSize() * arr.size());
   }
   arr.freeVStorage (arrData, deleteIt);
+  stmanPtr_p->setHasPut();
 }
 
-void MSMIndColumn::getSliceV (uInt rownr, const Slicer& ns,
+void MSMIndColumn::getSliceV (rownr_t rownr, const Slicer& ns,
                               ArrayBase& arr)
 {
   Data* data = getShape(rownr);   //# also checks if row contains data
@@ -202,7 +203,7 @@ void MSMIndColumn::getSliceV (uInt rownr, const Slicer& ns,
   }
 }
 
-void MSMIndColumn::putSliceV (uInt rownr, const Slicer& ns,
+void MSMIndColumn::putSliceV (rownr_t rownr, const Slicer& ns,
                               const ArrayBase& arr)
 {
   Data* data = MSMINDCOLUMN_GETDATA(rownr);
@@ -261,17 +262,18 @@ void MSMIndColumn::putSliceV (uInt rownr, const Slicer& ns,
   default:
     throw DataManInvDT ("MSMIndColumn::putSliceV");
   }
+  stmanPtr_p->setHasPut();
 }
     
 
-void MSMIndColumn::remove (uInt rownr)
+void MSMIndColumn::remove (rownr_t rownr)
 {
   deleteArray (rownr);
   MSMColumn::remove (rownr);
 }
 
 
-void MSMIndColumn::deleteArray (uInt rownr)
+void MSMIndColumn::deleteArray (rownr_t rownr)
 {
   Data* ptr = MSMINDCOLUMN_GETDATA(rownr);
   // Remove the array for this row (if there).

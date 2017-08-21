@@ -101,9 +101,9 @@ Bool ForwardColumnEngine::canAddRow() const
 { return True; }
 Bool ForwardColumnEngine::canRemoveRow() const
 { return True; }
-void ForwardColumnEngine::addRow (uInt)
+void ForwardColumnEngine::addRow (rownr_t)
 {}
-void ForwardColumnEngine::removeRow (uInt)
+void ForwardColumnEngine::removeRow (rownr_t)
 {}
 
 
@@ -170,7 +170,7 @@ DataManagerColumn* ForwardColumnEngine::makeIndArrColumn (const String& name,
 }
 
 
-void ForwardColumnEngine::create (uInt)
+void ForwardColumnEngine::create (rownr_t)
 {
     baseCreate();
 }
@@ -372,16 +372,16 @@ void ForwardColumn::setShapeColumn (const IPosition& shape)
 	}
     }
 }
-void ForwardColumn::setShape (uInt rownr, const IPosition& shape)
+void ForwardColumn::setShape (rownr_t rownr, const IPosition& shape)
     { colPtr_p->setShape (rownr, shape); }
 
-uInt ForwardColumn::ndim (uInt rownr)
+uInt ForwardColumn::ndim (rownr_t rownr)
     { return colPtr_p->ndim (rownr); }
 
-IPosition ForwardColumn::shape(uInt rownr)
+IPosition ForwardColumn::shape(rownr_t rownr)
     { return colPtr_p->shape (rownr); }
 
-Bool ForwardColumn::isShapeDefined (uInt rownr)
+Bool ForwardColumn::isShapeDefined (rownr_t rownr)
     { return colPtr_p->isDefined (rownr); }
 
 Bool ForwardColumn::canChangeShape() const
@@ -389,10 +389,10 @@ Bool ForwardColumn::canChangeShape() const
     return (colPtr_p == 0  ?  False : colPtr_p->canChangeShape());
 }
 
-void ForwardColumn::getArrayV (uInt rownr, ArrayBase& dataPtr)
+void ForwardColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
     { colPtr_p->getArray (rownr, dataPtr); }
 
-void ForwardColumn::getSliceV (uInt rownr, const Slicer& ns, ArrayBase& dataPtr)
+void ForwardColumn::getSliceV (rownr_t rownr, const Slicer& ns, ArrayBase& dataPtr)
     { colPtr_p->getSlice (rownr, ns, dataPtr); }
 
 void ForwardColumn::getScalarColumnV (ArrayBase& dataPtr)
@@ -414,10 +414,10 @@ void ForwardColumn::getColumnSliceCellsV (const RefRows& rownrs,
                                           const Slicer& ns, ArrayBase& dataPtr)
     { colPtr_p->getColumnSliceCells (rownrs, ns, dataPtr); }
 
-void ForwardColumn::putArrayV (uInt rownr, const ArrayBase& dataPtr)
+void ForwardColumn::putArrayV (rownr_t rownr, const ArrayBase& dataPtr)
     { colPtr_p->putArray (rownr, dataPtr); }
 
-void ForwardColumn::putSliceV (uInt rownr, const Slicer& ns,
+void ForwardColumn::putSliceV (rownr_t rownr, const Slicer& ns,
 			       const ArrayBase& dataPtr)
     { colPtr_p->putSlice (rownr, ns, dataPtr); }
 
@@ -445,23 +445,24 @@ void ForwardColumn::putColumnSliceCellsV (const RefRows& rownrs,
 
 
 #define FORWARDCOLUMN_GETPUT(T,NM) \
-void ForwardColumn::aips_name2(get,NM) (uInt rownr, T* dataPtr) \
+void ForwardColumn::aips_name2(get,NM) (rownr_t rownr, T* dataPtr) \
     { colPtr_p->get (rownr, dataPtr); } \
-void ForwardColumn::aips_name2(put,NM) (uInt rownr, const T* dataPtr) \
+void ForwardColumn::aips_name2(put,NM) (rownr_t rownr, const T* dataPtr) \
     { colPtr_p->put (rownr, dataPtr); }
 
-FORWARDCOLUMN_GETPUT(Bool,BoolV)
-FORWARDCOLUMN_GETPUT(uChar,uCharV)
-FORWARDCOLUMN_GETPUT(Short,ShortV)
-FORWARDCOLUMN_GETPUT(uShort,uShortV)
-FORWARDCOLUMN_GETPUT(Int,IntV)
-FORWARDCOLUMN_GETPUT(uInt,uIntV)
-FORWARDCOLUMN_GETPUT(float,floatV)
-FORWARDCOLUMN_GETPUT(double,doubleV)
-FORWARDCOLUMN_GETPUT(Complex,ComplexV)
-FORWARDCOLUMN_GETPUT(DComplex,DComplexV)
-FORWARDCOLUMN_GETPUT(String,StringV)
-FORWARDCOLUMN_GETPUT(void,OtherV)
+FORWARDCOLUMN_GETPUT(Bool,Bool)
+FORWARDCOLUMN_GETPUT(uChar,uChar)
+FORWARDCOLUMN_GETPUT(Short,Short)
+FORWARDCOLUMN_GETPUT(uShort,uShort)
+FORWARDCOLUMN_GETPUT(Int,Int)
+FORWARDCOLUMN_GETPUT(uInt,uInt)
+FORWARDCOLUMN_GETPUT(Int64,Int64)
+FORWARDCOLUMN_GETPUT(float,float)
+FORWARDCOLUMN_GETPUT(double,double)
+FORWARDCOLUMN_GETPUT(Complex,Complex)
+FORWARDCOLUMN_GETPUT(DComplex,DComplex)
+FORWARDCOLUMN_GETPUT(String,String)
+FORWARDCOLUMN_GETPUT(void,Other)
 
 } //# NAMESPACE CASACORE - END
 

@@ -48,38 +48,38 @@ void DataManagerColumn::setShapeColumn (const IPosition&)
                           " in column " + columnName());
 }
 
-void DataManagerColumn::setShape (uInt, const IPosition&)
+void DataManagerColumn::setShape (rownr_t, const IPosition&)
 {
     throw DataManInvOper("setShape only allowed for non-FixedShape arrays"
                          " in column " + columnName());
 }
 
-void DataManagerColumn::setShapeTiled (uInt rownr, const IPosition& shape,
+void DataManagerColumn::setShapeTiled (rownr_t rownr, const IPosition& shape,
 				       const IPosition&)
 {
     setShape (rownr, shape);
 }
 
 // By default the shape is defined (for scalars).
-Bool DataManagerColumn::isShapeDefined (uInt)
+Bool DataManagerColumn::isShapeDefined (rownr_t)
 {
     return True;
 }
 
 // The default implementation of ndim is to use the shape.
-uInt DataManagerColumn::ndim (uInt rownr)
+uInt DataManagerColumn::ndim (rownr_t rownr)
 {
     return shape(rownr).nelements();
 }
 
 // The shape of the array in the given row.
-IPosition DataManagerColumn::shape (uInt)
+IPosition DataManagerColumn::shape (rownr_t)
 {
     return IPosition(0);
 }
 
 // The tile shape of the array in the given row.
-IPosition DataManagerColumn::tileShape (uInt)
+IPosition DataManagerColumn::tileShape (rownr_t)
 {
     return IPosition(0);
 }
@@ -103,116 +103,116 @@ void DataManagerColumn::throwPut() const
     { throw (DataManInvOper ("DataManagerColumn::put not allowed in column "
                              + columnName())); }
 
-void DataManagerColumn::getBoolV (uInt, Bool*)
+void DataManagerColumn::getBool (rownr_t, Bool*)
   { throwGet(); }
-void DataManagerColumn::getuCharV (uInt, uChar*)
+void DataManagerColumn::getuChar (rownr_t, uChar*)
   { throwGet(); }
-void DataManagerColumn::getShortV (uInt, Short*)
+void DataManagerColumn::getShort (rownr_t, Short*)
   { throwGet(); }
-void DataManagerColumn::getuShortV (uInt, uShort*)
+void DataManagerColumn::getuShort (rownr_t, uShort*)
   { throwGet(); }
-void DataManagerColumn::getIntV (uInt, Int*)
+void DataManagerColumn::getInt (rownr_t, Int*)
   { throwGet(); }
-void DataManagerColumn::getuIntV (uInt, uInt*)
+void DataManagerColumn::getuInt (rownr_t, uInt*)
   { throwGet(); }
-void DataManagerColumn::getInt64V (uInt, Int64*)
+void DataManagerColumn::getInt64 (rownr_t, Int64*)
   { throwGet(); }
-void DataManagerColumn::getfloatV (uInt, float*)
+void DataManagerColumn::getfloat (rownr_t, float*)
   { throwGet(); }
-void DataManagerColumn::getdoubleV (uInt, double*)
+void DataManagerColumn::getdouble (rownr_t, double*)
   { throwGet(); }
-void DataManagerColumn::getComplexV (uInt, Complex*)
+void DataManagerColumn::getComplex (rownr_t, Complex*)
   { throwGet(); }
-void DataManagerColumn::getDComplexV (uInt, DComplex*)
+void DataManagerColumn::getDComplex (rownr_t, DComplex*)
   { throwGet(); }
-void DataManagerColumn::getStringV (uInt, String*)
+void DataManagerColumn::getString (rownr_t, String*)
   { throwGet(); }
 
-void DataManagerColumn::putBoolV (uInt, const Bool*)
+void DataManagerColumn::putBool (rownr_t, const Bool*)
   { throwPut(); }
-void DataManagerColumn::putuCharV (uInt, const uChar*)
+void DataManagerColumn::putuChar (rownr_t, const uChar*)
   { throwPut(); }
-void DataManagerColumn::putShortV (uInt, const Short*)
+void DataManagerColumn::putShort (rownr_t, const Short*)
   { throwPut(); }
-void DataManagerColumn::putuShortV (uInt, const uShort*)
+void DataManagerColumn::putuShort (rownr_t, const uShort*)
   { throwPut(); }
-void DataManagerColumn::putIntV (uInt, const Int*)
+void DataManagerColumn::putInt (rownr_t, const Int*)
   { throwPut(); }
-void DataManagerColumn::putuIntV (uInt, const uInt*)
+void DataManagerColumn::putuInt (rownr_t, const uInt*)
   { throwPut(); }
-void DataManagerColumn::putInt64V (uInt, const Int64*)
+void DataManagerColumn::putInt64 (rownr_t, const Int64*)
   { throwPut(); }
-void DataManagerColumn::putfloatV (uInt, const float*)
+void DataManagerColumn::putfloat (rownr_t, const float*)
   { throwPut(); }
-void DataManagerColumn::putdoubleV (uInt, const double*)
+void DataManagerColumn::putdouble (rownr_t, const double*)
   { throwPut(); }
-void DataManagerColumn::putComplexV (uInt, const Complex*)
+void DataManagerColumn::putComplex (rownr_t, const Complex*)
   { throwPut(); }
-void DataManagerColumn::putDComplexV (uInt, const DComplex*)
+void DataManagerColumn::putDComplex (rownr_t, const DComplex*)
   { throwPut(); }
-void DataManagerColumn::putStringV (uInt, const String*)
+void DataManagerColumn::putString (rownr_t, const String*)
   { throwPut(); }
 
-void DataManagerColumn::getOtherV (uInt, void*)
+void DataManagerColumn::getOther (rownr_t, void*)
 {
-  throw (DataManInvOper ("DataManagerColumn::getOtherV not allowed"
+  throw (DataManInvOper ("DataManagerColumn::getOther not allowed"
                          " in column " + columnName()));
 }
-void DataManagerColumn::putOtherV (uInt, const void*)
+void DataManagerColumn::putOther (rownr_t, const void*)
 {
-  throw (DataManInvOper ("DataManagerColumn::putOtherV not allowed"
+  throw (DataManInvOper ("DataManagerColumn::putOther not allowed"
                          " in column " + columnName()));
 }
 
 // Define a macro to get or put a scalar column.
 // It gets the value for row i which might fill the ColumnCache.
 // If the cache gets filled, use it to get next values in a faster way.
-#define DATAMANAGERCOLUMN_GETCOL(T,NM) \
+#define DATAMANAGERCOLUMN_GETCOL(T) \
 { \
   Vector<T>& vec = static_cast<Vector<T>&>(arr); \
-  uInt nr = vec.nelements(); \
-  uInt rownr = 0; \
+  rownr_t nr = vec.nelements(); \
+  rownr_t rownr = 0; \
   while (rownr < nr) { \
-    aips_name2(get,NM) (rownr, &vec[rownr]); \
+    aips_name2(get,T) (rownr, &vec[rownr]); \
     rownr++; \
     if (rownr <= colCache_p.end()  &&  rownr > colCache_p.start()) { \
-      uInt last = std::min(nr-1, colCache_p.end()); \
-      uInt inx = (rownr - colCache_p.start()) * colCache_p.incr();  \
+      rownr_t last = std::min(nr-1, colCache_p.end()); \
+      rownr_t inx = (rownr - colCache_p.start()) * colCache_p.incr();  \
       const T* cptr = static_cast<const T*>(colCache_p.dataPtr()) + inx; \
-      for (uInt j=rownr; j<=last; ++j) { \
+      for (rownr_t j=rownr; j<=last; ++j) { \
         vec[rownr++] = *cptr; \
         cptr += colCache_p.incr(); \
       } \
     } \
   } \
 }
-#define DATAMANAGERCOLUMN_PUTCOL(T,NM) \
+#define DATAMANAGERCOLUMN_PUTCOL(T) \
 { \
   const Vector<T>& vec = static_cast<const Vector<T>&>(arr); \
-  uInt nr = vec.nelements(); \
-  for (uInt rownr=0; rownr<nr; ++rownr) { \
-    aips_name2(put,NM) (rownr, &vec[rownr]); \
+  rownr_t nr = vec.nelements(); \
+  for (rownr_t rownr=0; rownr<nr; ++rownr) { \
+    aips_name2(put,T) (rownr, &vec[rownr]); \
   } \
 }
-#define DATAMANAGERCOLUMN_GETCELLS(T,NM) \
+#define DATAMANAGERCOLUMN_GETCELLS(T) \
 { \
   Vector<T>& vec = static_cast<Vector<T>&>(arr); \
   if (rownrs.isSliced()) { \
     RefRowsSliceIter iter(rownrs); \
-    uInt i=0; \
+    rownr_t i=0; \
     while (! iter.pastEnd()) { \
-      uInt rownr = iter.sliceStart(); \
-      uInt end   = iter.sliceEnd(); \
-      uInt incr  = iter.sliceIncr(); \
+      rownr_t rownr = iter.sliceStart(); \
+      rownr_t end   = iter.sliceEnd(); \
+      rownr_t incr  = iter.sliceIncr(); \
       while (rownr <= end) { \
         if (rownr < colCache_p.start()  ||  rownr > colCache_p.end()) { \
-          aips_name2(get,NM) (rownr, &(vec[i])); \
+          aips_name2(get,T) (rownr, &(vec[i])); \
           i++; \
           rownr += incr; \
         } else { \
-          uInt inx = (rownr - colCache_p.start()) * colCache_p.incr(); \
+          rownr_t inx = (rownr - colCache_p.start()) * colCache_p.incr(); \
           const T* cptr = static_cast<const T*>(colCache_p.dataPtr()) + inx; \
-          uInt endrow = std::min (end, colCache_p.end()); \
+          rownr_t endrow = std::min (end, colCache_p.end()); \
           while (rownr <= endrow) { \
 	    vec[i++] = *cptr; \
             rownr += incr; \
@@ -224,19 +224,19 @@ void DataManagerColumn::putOtherV (uInt, const void*)
     } \
   } else { \
     const Vector<uInt>& rowvec = rownrs.rowVector(); \
-    uInt nr = rowvec.nelements(); \
+    rownr_t nr = rowvec.nelements(); \
     if (nr > 0) { \
       Bool delR; \
       const uInt* rows = rowvec.getStorage (delR); \
       const T* cptr = static_cast<const T*>(colCache_p.dataPtr()); \
-      uInt strow  = colCache_p.start(); \
-      uInt endrow = colCache_p.end(); \
-      for (uInt i=0; i<nr; ++i) { \
-	uInt rownr = rows[i]; \
+      rownr_t strow  = colCache_p.start(); \
+      rownr_t endrow = colCache_p.end(); \
+      for (rownr_t i=0; i<nr; ++i) { \
+	rownr_t rownr = rows[i]; \
         if (rownr >= strow  &&  rownr <= endrow) { \
 	  vec[i] = cptr[(rownr-strow)*colCache_p.incr()];       \
 	} else { \
-	  aips_name2(get,NM) (rownr, &(vec[i])); \
+	  aips_name2(get,T) (rownr, &(vec[i])); \
           cptr = static_cast<const T*>(colCache_p.dataPtr()); \
           strow  = colCache_p.start(); \
           endrow = colCache_p.end(); \
@@ -246,17 +246,17 @@ void DataManagerColumn::putOtherV (uInt, const void*)
     } \
   } \
 }
-#define DATAMANAGERCOLUMN_PUTCELLS(T,NM) \
+#define DATAMANAGERCOLUMN_PUTCELLS(T) \
 { \
   const Vector<T>& vec = static_cast<const Vector<T>&>(arr); \
   RefRowsSliceIter iter(rownrs);                 \
-  uInt i=0;                                      \
+  rownr_t i=0;                                      \
   while (! iter.pastEnd()) {                     \
-    uInt rownr = iter.sliceStart();              \
-    uInt end   = iter.sliceEnd();                \
-    uInt incr  = iter.sliceIncr();               \
+    rownr_t rownr = iter.sliceStart();              \
+    rownr_t end   = iter.sliceEnd();                \
+    rownr_t incr  = iter.sliceIncr();               \
     while (rownr <= end) {                       \
-      aips_name2(put,NM) (rownr, &(vec[i]));     \
+      aips_name2(put,T) (rownr, &(vec[i]));     \
       i++;                                       \
       rownr += incr;                             \
     }                                            \
@@ -264,129 +264,118 @@ void DataManagerColumn::putOtherV (uInt, const void*)
   iter++;                                        \
 }
 
-void DataManagerColumn::getScalarColumnV (ArrayBase&)
+void DataManagerColumn::getScalarColumnV (ArrayBase& arr)
 {
-  throw DataManError("getScalarColumnV not implemented"
-                     " for column " + columnName());
+  getScalarColumnBase (arr);
 }
-void DataManagerColumn::putScalarColumnV (const ArrayBase&)
+void DataManagerColumn::putScalarColumnV (const ArrayBase& arr)
 {
-  throw DataManError("putScalarColumnV not implemented"
-                     " for column " + columnName());
+  putScalarColumnBase (arr);
 }
-void DataManagerColumn::getScalarColumnCellsV (const RefRows&,
-                                               ArrayBase&)
+void DataManagerColumn::getScalarColumnCellsV (const RefRows& rows,
+                                               ArrayBase& arr)
 {
-  throw DataManError("getScalarColumnCellsV not implemented"
-                     " for column " + columnName());
+  getScalarColumnCellsBase (rows, arr);
 }
-void DataManagerColumn::putScalarColumnCellsV (const RefRows&,
-                                               const ArrayBase&)
+void DataManagerColumn::putScalarColumnCellsV (const RefRows& rows,
+                                               const ArrayBase& arr)
 {
-  throw DataManError("getScalarColumnCellsV not implemented"
-                     " for column " + columnName());
+  putScalarColumnCellsBase (rows, arr);
 }
-void DataManagerColumn::getArrayV (uInt, ArrayBase&)
+void DataManagerColumn::getArrayV (rownr_t, ArrayBase&)
 {
   throw DataManError("getArrayV not implemented"
                      " for column " + columnName());
 }
-void DataManagerColumn::putArrayV (uInt, const ArrayBase&)
+void DataManagerColumn::putArrayV (rownr_t, const ArrayBase&)
 {
   throw DataManError("putArrayV not implemented"
                      " for column " + columnName());
 }
-void DataManagerColumn::getArrayColumnV (ArrayBase&)
+void DataManagerColumn::getArrayColumnV (ArrayBase& arr)
 {
-  throw DataManError("getArrayColumnV not implemented"
-                     " for column " + columnName());
+  getArrayColumnBase (arr);
 }
-void DataManagerColumn::putArrayColumnV (const ArrayBase&)
+void DataManagerColumn::putArrayColumnV (const ArrayBase& arr)
 {
-  throw DataManError("putArrayColumnV not implemented"
-                     " for column " + columnName());
+  putArrayColumnBase (arr);
 }
-void DataManagerColumn::getArrayColumnCellsV (const RefRows&,
-                                              ArrayBase&)
+void DataManagerColumn::getArrayColumnCellsV (const RefRows& rows,
+                                              ArrayBase& arr)
 {
-  throw DataManError("getArrayColumnCellsV not implemented"
-                     " for column " + columnName());
+  getArrayColumnCellsBase (rows, arr);
 }
-void DataManagerColumn::putArrayColumnCellsV (const RefRows&,
-                                              const ArrayBase&)
+void DataManagerColumn::putArrayColumnCellsV (const RefRows& rows,
+                                              const ArrayBase& arr)
 {
-  throw DataManError("putArrayColumnCellsV not implemented"
-                     " for column " + columnName());
+  putArrayColumnCellsBase (rows, arr);
 }
-void DataManagerColumn::getSliceV (uInt, const Slicer&, ArrayBase&)
+void DataManagerColumn::getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& arr)
 {
-  throw DataManError("getSliceV not implemented"
-                     " for column " + columnName());
+  getSliceBase (rownr, slicer, arr);
 }
-void DataManagerColumn::putSliceV (uInt, const Slicer&,
-                                   const ArrayBase&)
+void DataManagerColumn::putSliceV (rownr_t rownr, const Slicer& slicer,
+                                   const ArrayBase& arr)
 {
-  throw DataManError("putSliceV not implemented"
-                     " for column " + columnName());
+  putSliceBase (rownr, slicer, arr);
 }
-void DataManagerColumn::getColumnSliceV (const Slicer&, ArrayBase&)
+void DataManagerColumn::getColumnSliceV (const Slicer& slicer, ArrayBase& arr)
 {
-  throw DataManError("getColumnSliceV not implemented"
-                     " for column " + columnName());
+  getColumnSliceBase (slicer, arr);
 }
-void DataManagerColumn::putColumnSliceV (const Slicer&, const ArrayBase&)
+void DataManagerColumn::putColumnSliceV (const Slicer& slicer, const ArrayBase& arr)
 {
-  throw DataManError("putColumnSliceV not implemented"
-                     " for column " + columnName());
+  putColumnSliceBase (slicer, arr);
 }
-void DataManagerColumn::getColumnSliceCellsV (const RefRows&,
-                                              const Slicer&, ArrayBase&)
+void DataManagerColumn::getColumnSliceCellsV (const RefRows& rows,
+                                              const Slicer& slicer, ArrayBase& arr)
 {
-  throw DataManError("getColumnSliceCellsV not implemented"
-                     " for column " + columnName());
+  getColumnSliceCellsBase (rows, slicer, arr);
 }
-void DataManagerColumn::putColumnSliceCellsV (const RefRows&,
-                                              const Slicer&, const ArrayBase&)
+void DataManagerColumn::putColumnSliceCellsV (const RefRows& rows,
+                                              const Slicer& slicer, const ArrayBase& arr)
 {
-  throw DataManError("putColumnSliceCellsV not implemented"
-                     " for column " + columnName());
+  putColumnSliceCellsBase (rows, slicer, arr);
 }
 
-void DataManagerColumn::dmGetScalarColumnV (ArrayBase& arr)
+void DataManagerColumn::getScalarColumnBase (ArrayBase& arr)
 {
   switch (dataType()) {
   case TpBool:
-    DATAMANAGERCOLUMN_GETCOL(Bool,BoolV)
+    DATAMANAGERCOLUMN_GETCOL(Bool)
     break;
   case TpUChar:
-    DATAMANAGERCOLUMN_GETCOL(uChar,uCharV)
+    DATAMANAGERCOLUMN_GETCOL(uChar)
     break;
   case TpShort:
-    DATAMANAGERCOLUMN_GETCOL(Short,ShortV)
+    DATAMANAGERCOLUMN_GETCOL(Short)
     break;
   case TpUShort:
-    DATAMANAGERCOLUMN_GETCOL(uShort,uShortV)
+    DATAMANAGERCOLUMN_GETCOL(uShort)
     break;
   case TpInt:
-    DATAMANAGERCOLUMN_GETCOL(Int,IntV)
+    DATAMANAGERCOLUMN_GETCOL(Int)
     break;
   case TpUInt:
-    DATAMANAGERCOLUMN_GETCOL(uInt,uIntV)
+    DATAMANAGERCOLUMN_GETCOL(uInt)
+    break;
+  case TpInt64:
+    DATAMANAGERCOLUMN_GETCOL(Int64)
     break;
   case TpFloat:
-    DATAMANAGERCOLUMN_GETCOL(float,floatV)
+    DATAMANAGERCOLUMN_GETCOL(float)
     break;
   case TpDouble:
-    DATAMANAGERCOLUMN_GETCOL(double,doubleV)
+    DATAMANAGERCOLUMN_GETCOL(double)
     break;
   case TpComplex:
-    DATAMANAGERCOLUMN_GETCOL(Complex,ComplexV)
+    DATAMANAGERCOLUMN_GETCOL(Complex)
     break;
   case TpDComplex:
-    DATAMANAGERCOLUMN_GETCOL(DComplex,DComplexV)
+    DATAMANAGERCOLUMN_GETCOL(DComplex)
     break;
   case TpString:
-    DATAMANAGERCOLUMN_GETCOL(String,StringV)
+    DATAMANAGERCOLUMN_GETCOL(String)
     break;
   default:
     throw (DataManInvOper("DataManagerColumn::getScalarColumnV not allowed"
@@ -394,41 +383,44 @@ void DataManagerColumn::dmGetScalarColumnV (ArrayBase& arr)
   }
 }
 
-void DataManagerColumn::dmPutScalarColumnV (const ArrayBase& arr)
+void DataManagerColumn::putScalarColumnBase (const ArrayBase& arr)
 {
   switch (dataType()) {
   case TpBool:
-    DATAMANAGERCOLUMN_PUTCOL(Bool,BoolV)
+    DATAMANAGERCOLUMN_PUTCOL(Bool)
     break;
   case TpUChar:
-    DATAMANAGERCOLUMN_PUTCOL(uChar,uCharV)
+    DATAMANAGERCOLUMN_PUTCOL(uChar)
     break;
   case TpShort:
-    DATAMANAGERCOLUMN_PUTCOL(Short,ShortV)
+    DATAMANAGERCOLUMN_PUTCOL(Short)
     break;
   case TpUShort:
-    DATAMANAGERCOLUMN_PUTCOL(uShort,uShortV)
+    DATAMANAGERCOLUMN_PUTCOL(uShort)
     break;
   case TpInt:
-    DATAMANAGERCOLUMN_PUTCOL(Int,IntV)
+    DATAMANAGERCOLUMN_PUTCOL(Int)
     break;
   case TpUInt:
-    DATAMANAGERCOLUMN_PUTCOL(uInt,uIntV)
+    DATAMANAGERCOLUMN_PUTCOL(uInt)
+    break;
+  case TpInt64:
+    DATAMANAGERCOLUMN_PUTCOL(Int64)
     break;
   case TpFloat:
-    DATAMANAGERCOLUMN_PUTCOL(float,floatV)
+    DATAMANAGERCOLUMN_PUTCOL(float)
     break;
   case TpDouble:
-    DATAMANAGERCOLUMN_PUTCOL(double,doubleV)
+    DATAMANAGERCOLUMN_PUTCOL(double)
     break;
   case TpComplex:
-    DATAMANAGERCOLUMN_PUTCOL(Complex,ComplexV)
+    DATAMANAGERCOLUMN_PUTCOL(Complex)
     break;
   case TpDComplex:
-    DATAMANAGERCOLUMN_PUTCOL(DComplex,DComplexV)
+    DATAMANAGERCOLUMN_PUTCOL(DComplex)
     break;
   case TpString:
-    DATAMANAGERCOLUMN_PUTCOL(String,StringV)
+    DATAMANAGERCOLUMN_PUTCOL(String)
     break;
   default:
     throw (DataManInvOper("DataManagerColumn::putScalarColumnV not allowed"
@@ -436,42 +428,45 @@ void DataManagerColumn::dmPutScalarColumnV (const ArrayBase& arr)
   }
 }
 
-void DataManagerColumn::dmGetScalarColumnCellsV (const RefRows& rownrs,
-                                                 ArrayBase& arr)
+void DataManagerColumn::getScalarColumnCellsBase (const RefRows& rownrs,
+                                                  ArrayBase& arr)
 {
   switch (dataType()) {
   case TpBool:
-    DATAMANAGERCOLUMN_GETCELLS(Bool,BoolV)
+    DATAMANAGERCOLUMN_GETCELLS(Bool)
     break;
   case TpUChar:
-    DATAMANAGERCOLUMN_GETCELLS(uChar,uCharV)
+    DATAMANAGERCOLUMN_GETCELLS(uChar)
     break;
   case TpShort:
-    DATAMANAGERCOLUMN_GETCELLS(Short,ShortV)
+    DATAMANAGERCOLUMN_GETCELLS(Short)
     break;
   case TpUShort:
-    DATAMANAGERCOLUMN_GETCELLS(uShort,uShortV)
+    DATAMANAGERCOLUMN_GETCELLS(uShort)
     break;
   case TpInt:
-    DATAMANAGERCOLUMN_GETCELLS(Int,IntV)
+    DATAMANAGERCOLUMN_GETCELLS(Int)
     break;
   case TpUInt:
-    DATAMANAGERCOLUMN_GETCELLS(uInt,uIntV)
+    DATAMANAGERCOLUMN_GETCELLS(uInt)
+    break;
+  case TpInt64:
+    DATAMANAGERCOLUMN_GETCELLS(Int64)
     break;
   case TpFloat:
-    DATAMANAGERCOLUMN_GETCELLS(float,floatV)
+    DATAMANAGERCOLUMN_GETCELLS(float)
     break;
   case TpDouble:
-    DATAMANAGERCOLUMN_GETCELLS(double,doubleV)
+    DATAMANAGERCOLUMN_GETCELLS(double)
     break;
   case TpComplex:
-    DATAMANAGERCOLUMN_GETCELLS(Complex,ComplexV)
+    DATAMANAGERCOLUMN_GETCELLS(Complex)
     break;
   case TpDComplex:
-    DATAMANAGERCOLUMN_GETCELLS(DComplex,DComplexV)
+    DATAMANAGERCOLUMN_GETCELLS(DComplex)
     break;
   case TpString:
-    DATAMANAGERCOLUMN_GETCELLS(String,StringV)
+    DATAMANAGERCOLUMN_GETCELLS(String)
     break;
   default:
     throw (DataManInvOper("DataManagerColumn::getScalarColumnCellsV not allowed"
@@ -479,42 +474,45 @@ void DataManagerColumn::dmGetScalarColumnCellsV (const RefRows& rownrs,
   }
 }
 
-void DataManagerColumn::dmPutScalarColumnCellsV (const RefRows& rownrs,
-                                                 const ArrayBase& arr)
+void DataManagerColumn::putScalarColumnCellsBase (const RefRows& rownrs,
+                                                  const ArrayBase& arr)
 {
   switch (dataType()) {
   case TpBool:
-    DATAMANAGERCOLUMN_PUTCELLS(Bool,BoolV)
+    DATAMANAGERCOLUMN_PUTCELLS(Bool)
     break;
   case TpUChar:
-    DATAMANAGERCOLUMN_PUTCELLS(uChar,uCharV)
+    DATAMANAGERCOLUMN_PUTCELLS(uChar)
     break;
   case TpShort:
-    DATAMANAGERCOLUMN_PUTCELLS(Short,ShortV)
+    DATAMANAGERCOLUMN_PUTCELLS(Short)
     break;
   case TpUShort:
-    DATAMANAGERCOLUMN_PUTCELLS(uShort,uShortV)
+    DATAMANAGERCOLUMN_PUTCELLS(uShort)
     break;
   case TpInt:
-    DATAMANAGERCOLUMN_PUTCELLS(Int,IntV)
+    DATAMANAGERCOLUMN_PUTCELLS(Int)
     break;
   case TpUInt:
-    DATAMANAGERCOLUMN_PUTCELLS(uInt,uIntV)
+    DATAMANAGERCOLUMN_PUTCELLS(uInt)
+    break; 
+  case TpInt64:
+    DATAMANAGERCOLUMN_PUTCELLS(Int64)
     break;
   case TpFloat:
-    DATAMANAGERCOLUMN_PUTCELLS(float,floatV)
+    DATAMANAGERCOLUMN_PUTCELLS(float)
     break;
   case TpDouble:
-    DATAMANAGERCOLUMN_PUTCELLS(double,doubleV)
+    DATAMANAGERCOLUMN_PUTCELLS(double)
     break;
   case TpComplex:
-    DATAMANAGERCOLUMN_PUTCELLS(Complex,ComplexV)
+    DATAMANAGERCOLUMN_PUTCELLS(Complex)
     break;
   case TpDComplex:
-    DATAMANAGERCOLUMN_PUTCELLS(DComplex,DComplexV)
+    DATAMANAGERCOLUMN_PUTCELLS(DComplex)
     break;
   case TpString:
-    DATAMANAGERCOLUMN_PUTCELLS(String,StringV)
+    DATAMANAGERCOLUMN_PUTCELLS(String)
     break;
   default:
     throw (DataManInvOper("DataManagerColumn::putScalarColumnCellsV not allowed"
@@ -522,34 +520,34 @@ void DataManagerColumn::dmPutScalarColumnCellsV (const RefRows& rownrs,
   }
 }
 
-void DataManagerColumn::dmGetArrayColumnV (ArrayBase& arr)
+void DataManagerColumn::getArrayColumnBase (ArrayBase& arr)
 {
   const IPosition& shp = arr.shape();
-  uInt nr = shp[shp.size() - 1];
+  rownr_t nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
   CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
-  for (uInt row=0; row<nr; ++row) {
+  for (rownr_t row=0; row<nr; ++row) {
     getArrayV (row, iter->getArray());
     iter->next();
   }
 }
-void DataManagerColumn::dmPutArrayColumnV (const ArrayBase& arr)
+void DataManagerColumn::putArrayColumnBase (const ArrayBase& arr)
 {
   const IPosition& shp = arr.shape();
-  uInt nr = shp[shp.size() - 1];
+  rownr_t nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
   CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
-  for (uInt row=0; row<nr; ++row) {
+  for (rownr_t row=0; row<nr; ++row) {
     putArrayV (row, iter->getArray());
     iter->next();
   }
 }
-void DataManagerColumn::dmGetArrayColumnCellsV (const RefRows& rows, ArrayBase& arr)
+void DataManagerColumn::getArrayColumnCellsBase (const RefRows& rows, ArrayBase& arr)
 {
   CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
-    for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
+    for (rownr_t row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
          row+=rowsIter.sliceIncr()) {
       DebugAssert (! iter->pastEnd(), AipsError);
       getArrayV (row, iter->getArray());
@@ -559,13 +557,13 @@ void DataManagerColumn::dmGetArrayColumnCellsV (const RefRows& rows, ArrayBase& 
   }
   DebugAssert (iter->pastEnd(), AipsError);
 }
-void DataManagerColumn::dmPutArrayColumnCellsV (const RefRows& rows,
-                                                const ArrayBase& arr)
+void DataManagerColumn::putArrayColumnCellsBase (const RefRows& rows,
+                                                 const ArrayBase& arr)
 {
   CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
-    for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
+    for (rownr_t row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
          row+=rowsIter.sliceIncr()) {
       DebugAssert (! iter->pastEnd(), AipsError);
       putArrayV (row, iter->getArray());
@@ -575,7 +573,7 @@ void DataManagerColumn::dmPutArrayColumnCellsV (const RefRows& rows,
   }
   DebugAssert (iter->pastEnd(), AipsError);
 }
-void DataManagerColumn::getSliceArr (uInt row, const Slicer& section,
+void DataManagerColumn::getSliceArr (rownr_t row, const Slicer& section,
                                      CountedPtr<ArrayBase>& fullArr,
                                      ArrayBase& arr)
 {
@@ -590,7 +588,7 @@ void DataManagerColumn::getSliceArr (uInt row, const Slicer& section,
     arr.assignBase (*(fullArr->getSection (section)));
   }
 }
-void DataManagerColumn::putSliceArr (uInt row, const Slicer& section,
+void DataManagerColumn::putSliceArr (rownr_t row, const Slicer& section,
                                      CountedPtr<ArrayBase>& fullArr,
                                      const ArrayBase& arr)
 {
@@ -606,52 +604,52 @@ void DataManagerColumn::putSliceArr (uInt row, const Slicer& section,
     putArrayV (row, *fullArr);
   }
 }
-void DataManagerColumn::dmGetSliceV (uInt row, const Slicer& section,
-                                     ArrayBase& arr)
+void DataManagerColumn::getSliceBase (rownr_t row, const Slicer& section,
+                                      ArrayBase& arr)
 {
   CountedPtr<ArrayBase> fullArr = arr.makeArray();
   getSliceArr (row, section, fullArr, arr);
 }
-void DataManagerColumn::dmPutSliceV (uInt row, const Slicer& section,
-                                     const ArrayBase& arr)
+void DataManagerColumn::putSliceBase (rownr_t row, const Slicer& section,
+                                      const ArrayBase& arr)
 {
   CountedPtr<ArrayBase> fullArr = arr.makeArray();
   putSliceArr (row, section, fullArr, arr);
 }
-void DataManagerColumn::dmGetColumnSliceV (const Slicer& section, ArrayBase& arr)
+void DataManagerColumn::getColumnSliceBase (const Slicer& section, ArrayBase& arr)
 {
   const IPosition& shp = arr.shape();
-  uInt nr = shp[shp.size() - 1];
+  rownr_t nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
   CountedPtr<ArrayBase> fullArr = arr.makeArray();
   CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
-  for (uInt row=0; row<nr; ++row) {
+  for (rownr_t row=0; row<nr; ++row) {
     getSliceArr (row, section, fullArr, iter->getArray());
     iter->next();
   }
 }
-void DataManagerColumn::dmPutColumnSliceV (const Slicer& section,
-                                           const ArrayBase& arr)
+void DataManagerColumn::putColumnSliceBase (const Slicer& section,
+                                            const ArrayBase& arr)
 {
   const IPosition& shp = arr.shape();
-  uInt nr = shp[shp.size() - 1];
+  rownr_t nr = shp[shp.size() - 1];
   DebugAssert (nr == nrow(), AipsError);
   CountedPtr<ArrayBase> fullArr = arr.makeArray();
   CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
-  for (uInt row=0; row<nr; ++row) {
+  for (rownr_t row=0; row<nr; ++row) {
     putSliceArr (row, section, fullArr, iter->getArray());
     iter->next();
   }
 }
-void DataManagerColumn::dmGetColumnSliceCellsV (const RefRows& rows,
-                                                const Slicer& section,
-                                                ArrayBase& arr)
+void DataManagerColumn::getColumnSliceCellsBase (const RefRows& rows,
+                                                 const Slicer& section,
+                                                 ArrayBase& arr)
 {
   CountedPtr<ArrayBase> fullArr = arr.makeArray();
   CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
-    for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
+    for (rownr_t row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
          row+=rowsIter.sliceIncr()) {
       DebugAssert (! iter->pastEnd(), AipsError);
       getSliceArr (row, section, fullArr, iter->getArray());
@@ -661,15 +659,15 @@ void DataManagerColumn::dmGetColumnSliceCellsV (const RefRows& rows,
   }
   DebugAssert (iter->pastEnd(), AipsError);
 }
-void DataManagerColumn::dmPutColumnSliceCellsV (const RefRows& rows,
-                                                const Slicer& section,
-                                                const ArrayBase& arr)
+void DataManagerColumn::putColumnSliceCellsBase (const RefRows& rows,
+                                                 const Slicer& section,
+                                                 const ArrayBase& arr)
 {
   CountedPtr<ArrayBase> fullArr = arr.makeArray();
   CountedPtr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
-    for (uInt row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
+    for (rownr_t row=rowsIter.sliceStart(); row<=rowsIter.sliceEnd();
          row+=rowsIter.sliceIncr()) {
       DebugAssert (! iter->pastEnd(), AipsError);
       putSliceArr (row, section, fullArr, iter->getArray());

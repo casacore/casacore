@@ -98,7 +98,7 @@ TableDesc tTableDesc_tmp   version 1   (Directory ./)
    #keywords=0
 
    Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
-   DataManager=ExampleDescVSCEngine/arr0
+   DataManager=ExampleDescVACEngine/arr0
    Comment = 
    #keywords=0
 
@@ -231,7 +231,7 @@ TableDesc tTableDesc_tmp   version 1   (Directory ./)
    #keywords=0
 
    Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
-   DataManager=ExampleDescVSCEngine/arr0
+   DataManager=ExampleDescVACEngine/arr0
    Comment = 
    #keywords=0
 
@@ -383,7 +383,7 @@ TableDesc OtherName   version O2   (Directory **SCRATCH**)
    #keywords=0
 
    Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
-   DataManager=ExampleDescVSCEngine/arr0
+   DataManager=ExampleDescVACEngine/arr0
    Comment = 
    #keywords=0
 
@@ -459,7 +459,7 @@ TableDesc tTableDesc_tmp   version 1   (Directory ./)
    #keywords=0
 
    Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
-   DataManager=ExampleDescVSCEngine/arr0
+   DataManager=ExampleDescVACEngine/arr0
    Comment = 
    #keywords=0
 
@@ -533,7 +533,7 @@ TableDesc OtherName   version O2   (Directory **SCRATCH**)
    #keywords=0
 
    Name=arr0   DataType=Other, ExampleDesc   Nrdim=-1   Shape=[]
-   DataManager=ExampleDescVSCEngine/arr0
+   DataManager=ExampleDescVACEngine/arr0
    Comment = 
    #keywords=0
 

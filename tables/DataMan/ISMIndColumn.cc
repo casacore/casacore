@@ -90,7 +90,7 @@ Bool ISMIndColumn::flush (uInt, Bool fsync)
 {
     return iosfile_p->flush (fsync);
 }
-void ISMIndColumn::resync (uInt nrrow)
+void ISMIndColumn::resync (rownr_t nrrow)
 {
     ISMColumn::resync (nrrow);
     if (stmanPtr_p->version() < 3) {
@@ -102,7 +102,7 @@ void ISMIndColumn::reopenRW()
     iosfile_p->reopenRW();
 }
 
-void ISMIndColumn::addRow (uInt, uInt oldNrrow)
+void ISMIndColumn::addRow (rownr_t, rownr_t oldNrrow)
 {
     // If the shape is fixed and if the first row is added, define
     // an array to have an array for all rows.
@@ -119,7 +119,7 @@ void ISMIndColumn::setShapeColumn (const IPosition& shape)
     shapeIsFixed_p = True;
 }
 
-void ISMIndColumn::setShape (uInt rownr, const IPosition& shape)
+void ISMIndColumn::setShape (rownr_t rownr, const IPosition& shape)
 {
     StIndArray* ptr = getArrayPtr (rownr);
     if (ptr != 0) {
@@ -188,13 +188,13 @@ StIndArray* ISMIndColumn::putShapeSliced (uInt rownr)
     return putArrayPtr (rownr, ptr->shape(), True);
 }
 
-Bool ISMIndColumn::isShapeDefined (uInt rownr)
+Bool ISMIndColumn::isShapeDefined (rownr_t rownr)
     { return (getArrayPtr(rownr) == 0  ?  False : True); }
 
-uInt ISMIndColumn::ndim (uInt rownr)
+uInt ISMIndColumn::ndim (rownr_t rownr)
     { return getShape(rownr)->shape().nelements(); }
 
-IPosition ISMIndColumn::shape (uInt rownr)
+IPosition ISMIndColumn::shape (rownr_t rownr)
     { return getShape(rownr)->shape(); }
 
 Bool ISMIndColumn::canChangeShape() const

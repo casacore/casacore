@@ -105,12 +105,12 @@ Bool TSMDataColumn::canChangeShape() const
     return stmanPtr_p->canChangeShape();
 }
 
-void TSMDataColumn::setShape (uInt rownr, const IPosition& shape)
+void TSMDataColumn::setShape (rownr_t rownr, const IPosition& shape)
 {
     setShapeTiled (rownr, shape, stmanPtr_p->defaultTileShape());
 }
 
-void TSMDataColumn::setShapeTiled (uInt rownr, const IPosition& shape,
+void TSMDataColumn::setShapeTiled (rownr_t rownr, const IPosition& shape,
 				   const IPosition& tileShape)
 {
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
@@ -137,7 +137,7 @@ void TSMDataColumn::setShapeTiled (uInt rownr, const IPosition& shape,
     }
 }
 
-Bool TSMDataColumn::isShapeDefined (uInt rownr)
+Bool TSMDataColumn::isShapeDefined (rownr_t rownr)
 {
     //# The shape is defined when the shape is fixed or when
     //# a hypercube has been defined for this row.
@@ -148,7 +148,7 @@ Bool TSMDataColumn::isShapeDefined (uInt rownr)
     return (hypercube->cubeShape().nelements() != 0);
 }
 
-IPosition TSMDataColumn::shape (uInt rownr)
+IPosition TSMDataColumn::shape (rownr_t rownr)
 {
     //# Return the shape when it is fixed.
     if (shapeColumn().nelements() != 0) {
@@ -170,7 +170,7 @@ IPosition TSMDataColumn::shape (uInt rownr)
     return shape;
 }
 
-IPosition TSMDataColumn::tileShape (uInt rownr)
+IPosition TSMDataColumn::tileShape (rownr_t rownr)
 {
     //# If no shape is defined, throw exception.
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
@@ -531,11 +531,11 @@ void TSMDataColumn::accessSlicedCells (TSMCube* hypercube,
 }
 
 
-void TSMDataColumn::getfloatV (uInt rownr, float* dataPtr)
+void TSMDataColumn::getfloat (rownr_t rownr, float* dataPtr)
 {
     accessCell (rownr, dataPtr, False);
 }
-void TSMDataColumn::putfloatV (uInt rownr, const float* dataPtr)
+void TSMDataColumn::putfloat (rownr_t rownr, const float* dataPtr)
 {
     accessCell (rownr, dataPtr, True);
 }
@@ -611,7 +611,7 @@ void TSMDataColumn::getArrayColumnfloatV (Array<float>* dataPtr)
 {
   Bool reask;
   if (! stmanPtr_p->canAccessColumn(reask)) {
-    dmGetArrayColumnV (*dataPtr);
+    getArrayColumnBase (*dataPtr);
   } else {
     Bool deleteIt;
     float* data = dataPtr->getStorage (deleteIt);
@@ -623,7 +623,7 @@ void TSMDataColumn::putArrayColumnfloatV (const Array<float>* dataPtr)
 {
   Bool reask;
   if (! stmanPtr_p->canAccessColumn(reask)) {
-    dmPutArrayColumnV (*dataPtr);
+    putArrayColumnBase (*dataPtr);
   } else {
     Bool deleteIt;
     const float* data = dataPtr->getStorage (deleteIt);
@@ -637,7 +637,7 @@ void TSMDataColumn::getColumnSlicefloatV (const Slicer& ns,
 {
   Bool reask;
   if (! stmanPtr_p->canAccessColumn(reask)) {
-    dmGetColumnSliceV (ns, *dataPtr);
+    getColumnSliceBase (ns, *dataPtr);
   } else {
     Bool deleteIt;
     float* data = dataPtr->getStorage (deleteIt);
@@ -650,7 +650,7 @@ void TSMDataColumn::putColumnSlicefloatV (const Slicer& ns,
 {
   Bool reask;
   if (! stmanPtr_p->canAccessColumn(reask)) {
-    dmPutColumnSliceV (ns, *dataPtr);
+    putColumnSliceBase (ns, *dataPtr);
   } else {
     Bool deleteIt;
     const float* data = dataPtr->getStorage (deleteIt);
@@ -724,11 +724,11 @@ void TSMDataColumn::putColumnSliceCellsfloatV (const RefRows& rownrs,
 
 
 #define TSMDATACOLUMN_GETPUT(T,NM) \
-void TSMDataColumn::aips_name2(get,NM) (uInt rownr, T* dataPtr) \
+void TSMDataColumn::aips_name2(get,T) (rownr_t rownr, T* dataPtr) \
 { \
     accessCell (rownr, dataPtr, False); \
 } \
-void TSMDataColumn::aips_name2(put,NM) (uInt rownr, const T* dataPtr) \
+void TSMDataColumn::aips_name2(put,T) (rownr_t rownr, const T* dataPtr) \
 { \
     accessCell (rownr, dataPtr, True); \
 } \
@@ -774,7 +774,7 @@ void TSMDataColumn::aips_name2(getArrayColumn,NM) (Array<T>* dataPtr) \
 { \
   Bool reask; \
   if (! stmanPtr_p->canAccessColumn(reask)) { \
-    dmGetArrayColumnV (*dataPtr); \
+    getArrayColumnBase (*dataPtr); \
   } else { \
     Bool deleteIt; \
     T* data = dataPtr->getStorage (deleteIt); \
@@ -786,7 +786,7 @@ void TSMDataColumn::aips_name2(putArrayColumn,NM) (const Array<T>* dataPtr) \
 { \
   Bool reask; \
   if (! stmanPtr_p->canAccessColumn(reask)) { \
-    dmPutArrayColumnV (*dataPtr); \
+    putArrayColumnBase (*dataPtr); \
   } else { \
     Bool deleteIt; \
     const T* data = dataPtr->getStorage (deleteIt); \
@@ -799,7 +799,7 @@ void TSMDataColumn::aips_name2(getColumnSlice,NM) (const Slicer& ns, \
 { \
   Bool reask; \
   if (! stmanPtr_p->canAccessColumn(reask)) { \
-    dmGetColumnSliceV (ns, *dataPtr); \
+    getColumnSliceBase (ns, *dataPtr); \
   } else { \
     Bool deleteIt; \
     T* data = dataPtr->getStorage (deleteIt); \
@@ -812,7 +812,7 @@ void TSMDataColumn::aips_name2(putColumnSlice,NM) (const Slicer& ns, \
 { \
   Bool reask; \
   if (! stmanPtr_p->canAccessColumn(reask)) { \
-    dmPutColumnSliceV (ns, *dataPtr); \
+    putColumnSliceBase (ns, *dataPtr); \
   } else { \
     Bool deleteIt; \
     const T* data = dataPtr->getStorage (deleteIt); \
