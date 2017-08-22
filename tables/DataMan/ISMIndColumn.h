@@ -107,9 +107,6 @@ public:
     // Frees up the storage.
     ~ISMIndColumn();
 
-    // It can handle access to a slice in a cell.
-    virtual Bool canAccessSlice (Bool& reask) const;
-
     // Add (newNrrow-oldNrrow) rows to the column.
     virtual void addRow (rownr_t newNrrow, rownr_t oldNrrow);
 

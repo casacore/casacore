@@ -171,22 +171,76 @@ void TSMCoordColumn::putfloat (rownr_t rownr, const float* dataPtr)
 }
 
 
-void TSMCoordColumn::getArrayfloatV (uInt rownr, Array<float>* dataPtr)
+void TSMCoordColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
 {
     // Get the hypercube the row is in.
     // It also gives the position of the row in the hypercube.
     IPosition position;
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, position);
-    hypercube->valueRecord().get (columnName(), *dataPtr);
+    switch (dtype()) {
+    case TpInt:
+      hypercube->valueRecord().toArray
+        (columnName(), static_cast<Array<Int>&>(dataPtr));
+      break;
+    case TpUInt:
+      hypercube->valueRecord().toArray
+        (columnName(), static_cast<Array<uInt>&>(dataPtr));
+      break;
+    case TpFloat:
+      hypercube->valueRecord().toArray
+        (columnName(), static_cast<Array<float>&>(dataPtr));
+      break;
+    case TpDouble:
+      hypercube->valueRecord().toArray
+        (columnName(), static_cast<Array<double>&>(dataPtr));
+      break;
+    case TpComplex:
+      hypercube->valueRecord().toArray
+        (columnName(), static_cast<Array<Complex>&>(dataPtr));
+      break;
+    case TpDComplex:
+      hypercube->valueRecord().toArray
+        (columnName(), static_cast<Array<DComplex>&>(dataPtr));
+      break;
+    default:
+      throw DataManInvDT ("TSMCoordColiumn::getArrayV");
+    }
 }
 
-void TSMCoordColumn::putArrayfloatV (uInt rownr, const Array<float>* dataPtr)
+void TSMCoordColumn::putArrayV (rownr_t rownr, const ArrayBase& dataPtr)
 {
     // Get the hypercube the row is in.
     // It also gives the position of the row in the hypercube.
     IPosition position;
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, position);
-    hypercube->rwValueRecord().define (columnName(), *dataPtr);
+    switch (dtype()) {
+    case TpInt:
+      hypercube->rwValueRecord().define
+        (columnName(), static_cast<const Array<Int>&>(dataPtr));
+      break;
+    case TpUInt:
+      hypercube->rwValueRecord().define
+        (columnName(), static_cast<const Array<uInt>&>(dataPtr));
+      break;
+    case TpFloat:
+      hypercube->rwValueRecord().define
+        (columnName(), static_cast<const Array<float>&>(dataPtr));
+      break;
+    case TpDouble:
+      hypercube->rwValueRecord().define
+        (columnName(), static_cast<const Array<double>&>(dataPtr));
+      break;
+    case TpComplex:
+      hypercube->rwValueRecord().define
+        (columnName(), static_cast<const Array<Complex>&>(dataPtr));
+      break;
+    case TpDComplex:
+      hypercube->rwValueRecord().define
+        (columnName(), static_cast<const Array<DComplex>&>(dataPtr));
+      break;
+    default:
+      throw DataManInvDT ("TSMCoordColiumn::putArrayV");
+    }
     stmanPtr_p->setDataChanged();
 }
 
@@ -206,19 +260,6 @@ void TSMCoordColumn::aips_name2(put,T) (rownr_t rownr, const T* dataPtr) \
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, position); \
     RecordFieldPtr<Array<T> > field (hypercube->rwValueRecord(),columnName()); \
     (*field) (IPosition (1, position(axisNr_p))) = *dataPtr; \
-    stmanPtr_p->setDataChanged(); \
-} \
-void TSMCoordColumn::aips_name2(getArray,NM) (uInt rownr, Array<T>* dataPtr) \
-{ \
-    IPosition position; \
-    TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, position); \
-    hypercube->valueRecord().get (columnName(), *dataPtr); \
-} \
-void TSMCoordColumn::aips_name2(putArray,NM) (uInt rownr, const Array<T>* dataPtr) \
-{ \
-    IPosition position; \
-    TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, position); \
-    hypercube->rwValueRecord().define (columnName(), *dataPtr); \
     stmanPtr_p->setDataChanged(); \
 }
 

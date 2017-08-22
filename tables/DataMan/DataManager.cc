@@ -107,7 +107,7 @@ rownr_t DataManager::resync1 (rownr_t nrrow)
 void DataManager::reopenRW()
 {}
 
-void DataManager::setMaximumCacheSize (uInt)
+void DataManager::setMaximumCacheSize (uInt64)
 {}
 
 void DataManager::showCacheStatistics (ostream&) const

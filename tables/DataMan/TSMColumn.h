@@ -30,7 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/DataMan/StManColumnBase.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/String.h>
 
@@ -94,7 +94,7 @@ class TSMIdColumn;
 //# </todo>
 
 
-class TSMColumn : public StManColumn
+class TSMColumn : public StManColumnBase
 {
 public:
 

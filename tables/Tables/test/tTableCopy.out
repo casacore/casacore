@@ -8,9 +8,9 @@ tTableCopy_tmp.newtbl/SUBTABLE
     NAME: String "StandardStMan"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      ActualCacheSize: Int64 2
       BUCKETSIZE: Int 640
-      PERSCACHESIZE: Int 2
+      PERSCACHESIZE: Int64 2
       IndexLength: Int 0
     }
     COLUMNS: String array with shape [4]
@@ -21,9 +21,9 @@ tTableCopy_tmp.newtbl/SUBTABLE
     NAME: String "StandardStMan"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      ActualCacheSize: Int64 2
       BUCKETSIZE: Int 640
-      PERSCACHESIZE: Int 2
+      PERSCACHESIZE: Int64 2
       IndexLength: Int 0
     }
     COLUMNS: String array with shape [4]
@@ -35,9 +35,9 @@ tTableCopy_tmp.newtbl/SUBTABLE
     NAME: String "StandardStMan"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      ActualCacheSize: Int64 2
       BUCKETSIZE: Int 640
-      PERSCACHESIZE: Int 2
+      PERSCACHESIZE: Int64 2
       IndexLength: Int 0
     }
     COLUMNS: String array with shape [3]
@@ -49,9 +49,9 @@ tTableCopy_tmp.newtbl/SUBTABLE
     NAME: String "StandardStMan"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      ActualCacheSize: Int64 2
       BUCKETSIZE: Int 640
-      PERSCACHESIZE: Int 2
+      PERSCACHESIZE: Int64 2
       IndexLength: Int 0
     }
     COLUMNS: String array with shape [2]
@@ -74,9 +74,9 @@ testCloneColumn ...
     NAME: String "SSM"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      ActualCacheSize: Int64 2
       BUCKETSIZE: Int 640
-      PERSCACHESIZE: Int 2
+      PERSCACHESIZE: Int64 2
       IndexLength: Int 0
     }
     COLUMNS: String array with shape [2]
@@ -87,10 +87,10 @@ testCloneColumn ...
     NAME: String "DATA_stm"
     SEQNR: uInt 1
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -137,10 +137,10 @@ testCloneColumn ...
     NAME: String "DATA1"
     SEQNR: uInt 2
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -187,10 +187,10 @@ testCloneColumn ...
     NAME: String "Data2StMan"
     SEQNR: uInt 3
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
       }
       SEQNR: uInt 3
@@ -204,10 +204,10 @@ testCloneColumn ...
     NAME: String "DATA3"
     SEQNR: uInt 4
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -254,9 +254,9 @@ testCloneColumn ...
     NAME: String "SCALAR3"
     SEQNR: uInt 5
     SPEC: {
-      ActualCacheSize: Int 2
+      ActualCacheSize: Int64 2
       BUCKETSIZE: Int 640
-      PERSCACHESIZE: Int 2
+      PERSCACHESIZE: Int64 2
       IndexLength: Int 0
     }
     COLUMNS: String array with shape [1]
@@ -269,9 +269,9 @@ testCloneColumn ...
     NAME: String "SSM"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      ActualCacheSize: Int64 2
       BUCKETSIZE: Int 640
-      PERSCACHESIZE: Int 2
+      PERSCACHESIZE: Int64 2
       IndexLength: Int 0
     }
     COLUMNS: String array with shape [2]
@@ -282,10 +282,10 @@ testCloneColumn ...
     NAME: String "DATA_stm"
     SEQNR: uInt 1
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [1]
@@ -331,10 +331,10 @@ testCloneColumn ...
     NAME: String "DATA1"
     SEQNR: uInt 2
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [1]
@@ -380,10 +380,10 @@ testCloneColumn ...
     NAME: String "Data2StMan"
     SEQNR: uInt 3
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
       }
       SEQNR: uInt 3
@@ -396,10 +396,10 @@ testCloneColumn ...
     NAME: String "DATA3"
     SEQNR: uInt 4
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [1]
@@ -445,9 +445,9 @@ testCloneColumn ...
     NAME: String "SCALAR3"
     SEQNR: uInt 5
     SPEC: {
-      ActualCacheSize: Int 2
+      ActualCacheSize: Int64 2
       BUCKETSIZE: Int 640
-      PERSCACHESIZE: Int 2
+      PERSCACHESIZE: Int64 2
       IndexLength: Int 0
     }
     COLUMNS: String array with shape [1]
@@ -460,9 +460,9 @@ testCloneColumn ...
     NAME: String "SSM"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      ActualCacheSize: Int64 2
       BUCKETSIZE: Int 640
-      PERSCACHESIZE: Int 2
+      PERSCACHESIZE: Int64 2
       IndexLength: Int 0
     }
     COLUMNS: String array with shape [2]
@@ -473,10 +473,10 @@ testCloneColumn ...
     NAME: String "DATA_stm"
     SEQNR: uInt 1
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -500,10 +500,10 @@ testCloneColumn ...
     NAME: String "DATA1"
     SEQNR: uInt 2
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -527,10 +527,10 @@ testCloneColumn ...
     NAME: String "Data2StMan"
     SEQNR: uInt 3
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -554,10 +554,10 @@ testCloneColumn ...
     NAME: String "DATA3"
     SEQNR: uInt 4
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      ActualMaxCacheSize: Int64 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
-      MAXIMUMCACHESIZE: Int 0
+      MAXIMUMCACHESIZE: Int64 0
       HYPERCUBES: {
         *1: {
           CubeShape: Int array with shape [2]
@@ -581,9 +581,9 @@ testCloneColumn ...
     NAME: String "SCALAR3"
     SEQNR: uInt 5
     SPEC: {
-      ActualCacheSize: Int 2
+      ActualCacheSize: Int64 2
       BUCKETSIZE: Int 640
-      PERSCACHESIZE: Int 2
+      PERSCACHESIZE: Int64 2
       IndexLength: Int 0
     }
     COLUMNS: String array with shape [1]

@@ -88,8 +88,7 @@ class Slicer;
 //   has to be taken for that cast.
 //   Furthermore a default implementation of the get/putSlice has been made.
 //   They get/put the entire array (using get/putArray) and access the
-//   required slice. For this purpose the function canAccessSlice has
-//   also been implemented.
+//   required slice.
 //   By default the get/putArray functions thrown an "invalid operation"
 //   exception, so they have to be implemented in the derived class.
 //  <li>
@@ -97,14 +96,11 @@ class Slicer;
 //   have been templated to get/putArrayColumn and get/putColumnSlice.
 //   The default implementation of these latter functions handle a
 //   column by looping through its individual cells.
-//   For this purpose the functions canAccessArrayColumn and
-//   canAccessColumnSlice have also been implemented.
 //  <li>
 //   Similarly the functions get/putArrayColumnCellsV and
 //   get/putColumnSliceCells have been templated to
 //   get/putArrayColumnCells and get/putColumnSliceCells.
-//   However, their implementations throw an exception and the function
-//   canAccessArrayColumnCells has not implemented (so defaults to False).
+//   However, their implementations throw an exception.
 //   However, it makes it possible that a derived class
 //   (like <linkto class=ScaledComplexData>ScaledComplexData</linkto>)
 //   can implement these functions.

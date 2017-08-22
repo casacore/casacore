@@ -204,9 +204,6 @@ public:
     // This includes the names of the template arguments.
     static String className();
 
-    // The engine can access column cells.
-    virtual Bool canAccessArrayColumnCells (Bool& reask) const;
-
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.
     // The automatically invoked registration function in DataManReg.cc

@@ -139,28 +139,12 @@ public:
     // Get the array value in the given row.
     // The array pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn get function).
-    // The default implementation thrown an "invalid operation exception".
-    // <group>
-    void getArrayIntV      (uInt rownr, Array<Int>* dataPtr);
-    void getArrayuIntV     (uInt rownr, Array<uInt>* dataPtr);
-    void getArrayfloatV    (uInt rownr, Array<float>* dataPtr);
-    void getArraydoubleV   (uInt rownr, Array<double>* dataPtr);
-    void getArrayComplexV  (uInt rownr, Array<Complex>* dataPtr);
-    void getArrayDComplexV (uInt rownr, Array<DComplex>* dataPtr);
-    // </group>
+    void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
 
     // Put the array value into the given row.
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the ArrayColumn put function).
-    // The default implementation thrown an "invalid operation exception".
-    // <group>
-    void putArrayIntV      (uInt rownr, const Array<Int>* dataPtr);
-    void putArrayuIntV     (uInt rownr, const Array<uInt>* dataPtr);
-    void putArrayfloatV    (uInt rownr, const Array<float>* dataPtr);
-    void putArraydoubleV   (uInt rownr, const Array<double>* dataPtr);
-    void putArrayComplexV  (uInt rownr, const Array<Complex>* dataPtr);
-    void putArrayDComplexV (uInt rownr, const Array<DComplex>* dataPtr);
-    // </group>
+    void putArrayV (rownr_t rownr, const ArrayBase& dataPtr);
 
 private:
     // The axis number of the coordinate.

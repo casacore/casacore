@@ -202,7 +202,7 @@ public:
 
     // Extend the last dimension of the cube with the given number.
     // The record can contain the coordinates of the elements added.
-    virtual void extend (uInt nr, const Record& coordValues,
+    virtual void extend (uInt64 nr, const Record& coordValues,
                          const TSMColumn* lastCoordColumn);
 
     // Extend the coordinates vector for the given coordinate
@@ -244,7 +244,7 @@ public:
                                const IPosition& windowStart,
                                const IPosition& windowLength,
                                const IPosition& axisPath,
-                               uInt maxCacheSize, uInt bucketSize);
+                               uInt64 maxCacheSize, uInt bucketSize);
     // </group>
 
     // Set the cache size for the given slice and access path.
@@ -267,9 +267,9 @@ public:
     // This means it will return the given cache size if smaller
     // than the maximum cache size. Otherwise the maximum is returned.
     // <group>
-    uInt validateCacheSize (uInt cacheSize) const;
-    static uInt validateCacheSize (uInt cacheSize, uInt maxSize,
-                                   uInt bucketSize);
+    uInt64 validateCacheSize (uInt64 cacheSize) const;
+    static uInt64 validateCacheSize (uInt64 cacheSize, uInt64 maxSize,
+                                     uInt bucketSize);
     // </group>
 
     // Determine if the user set the cache size (using setCacheSize).

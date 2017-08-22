@@ -138,8 +138,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  Cube<float> imageValues(IPosition(3,512,512,64));
 //  indgen (imageValues);
 //  // Write some data into the data columns.
-//  uInt i;
-//  for (i=0; i<4; i++) {
+//  for (uInt i=0; i<4; i++) {
 //      table.addRow();
 //	image.put (i, imageValues);
 //      ra.put (i, raValues);
@@ -175,7 +174,7 @@ public:
     // <group>
     TiledCellStMan (const String& hypercolumnName,
 		    const IPosition& defaultTileShape,
-		    uInt maximumCacheSize = 0);
+		    uInt64 maximumCacheSize = 0);
     TiledCellStMan (const String& hypercolumnName,
 		    const Record& spec);
     // </group>
@@ -193,7 +192,7 @@ public:
     Bool canChangeShape() const;
 
     // Set the shape and tile shape of the hypercube.
-    virtual void setShape (uInt rownr, TSMCube* hypercube,
+    virtual void setShape (rownr_t rownr, TSMCube* hypercube,
 			   const IPosition& shape,
 			   const IPosition& tileShape);
 
@@ -221,11 +220,11 @@ private:
     void addRow (rownr_t nrrow);
 
     // Get the hypercube in which the given row is stored.
-    virtual TSMCube* getHypercube (uInt rownr);
+    virtual TSMCube* getHypercube (rownr_t rownr);
 
     // Get the hypercube in which the given row is stored.
     // It also returns the position of the row in that hypercube.
-    virtual TSMCube* getHypercube (uInt rownr, IPosition& position);
+    virtual TSMCube* getHypercube (rownr_t rownr, IPosition& position);
 
     // Check if the hypercolumn definition fits this storage manager.
     virtual void setupCheck (const TableDesc& tableDesc,
@@ -240,7 +239,7 @@ private:
     virtual void create (rownr_t nrrow);
 
     // Read the header info.
-    virtual void readHeader (uInt nrrow, Bool firstTime);
+    virtual void readHeader (rownr_t nrrow, Bool firstTime);
 
 
     //# Declare the data members.

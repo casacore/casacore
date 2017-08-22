@@ -236,13 +236,6 @@ void ScaledComplexData<S,T>::prepare()
 }
 
 
-template<class S, class T>
-Bool ScaledComplexData<S,T>::canAccessArrayColumnCells (Bool& reask) const
-{
-    reask = False;
-    return True;
-}
-
 //# This function is called in case the virtual column has FixedShape arrays.
 template<class S, class T>
 void ScaledComplexData<S,T>::setShapeColumn (const IPosition& shape)

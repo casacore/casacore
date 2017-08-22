@@ -155,7 +155,7 @@ SSMBase::SSMBase (const String& aDataManName,
     }
   }
   if (spec.isDefined ("PERSCACHESIZE")) {
-    itsPersCacheSize = max(2, spec.asInt ("PERSCACHESIZE"));
+    itsPersCacheSize = max(2, spec.asInt64 ("PERSCACHESIZE"));
   }
 }
 
@@ -215,7 +215,7 @@ Record SSMBase::dataManagerSpec() const
 {
   Record rec = getProperties();
   rec.define ("BUCKETSIZE", Int(itsBucketSize));
-  rec.define ("PERSCACHESIZE", Int(itsPersCacheSize));
+  rec.define ("PERSCACHESIZE", Int64(itsPersCacheSize));
   rec.define ("IndexLength", Int(itsIndexLength));
   return rec;
 }
@@ -225,14 +225,14 @@ Record SSMBase::getProperties() const
   // Make sure the cache is initialized, so the header has certainly been read.
   const_cast<SSMBase*>(this)->getCache();
   Record rec;
-  rec.define ("ActualCacheSize", Int(itsCacheSize));
+  rec.define ("ActualCacheSize", Int64(itsCacheSize));
   return rec;
 }
 
 void SSMBase::setProperties (const Record& rec)
 {
   if (rec.isDefined("ActualCacheSize")) {
-    setCacheSize (rec.asInt("ActualCacheSize"), False);
+    setCacheSize (rec.asInt64("ActualCacheSize"), False);
   }
 }
 

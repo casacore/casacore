@@ -76,10 +76,9 @@ RetypedArrayEngine<S,T>::RetypedArrayEngine (const Record& spec)
     if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
         setNames (spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
 	if (spec.isDefined("SHAPE")) {
-	    Vector<Int> shp;
+	    Vector<Int64> shp;
 	    spec.get ("SHAPE", shp);
-	    shape_p.resize (shp.nelements());
-	    shape_p = IPosition(shp);
+	    shape_p.fill (shp.size(), shp.begin());
 	}
 	if (spec.isDefined("RECORD")) {
 	    record_p = spec.asRecord ("RECORD");
@@ -168,10 +167,8 @@ void RetypedArrayEngine<S,T>::prepare()
 {
     // Get the various parameters from keywords in this column.
     TableColumn thisCol (table(), virtualName());
-    Vector<Int> vector;
-    thisCol.keywordSet().get ("_RetypedArrayEngine_Shape", vector);
-    shape_p.resize (vector.nelements());
-    shape_p = IPosition (vector);
+    Vector<Int64> vec (thisCol.keywordSet().toArrayInt64("_RetypedArrayEngine_Shape"));
+    shape_p.fill (vec.size(), vec.begin());
     record_p = thisCol.keywordSet().subRecord ("_RetypedArrayEngine_Record");
     // Set the column shape in the base class (when needed).
     // This has to be dome before prepare in the base class is called.

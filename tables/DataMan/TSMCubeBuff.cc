@@ -124,7 +124,7 @@ void TSMCubeBuff::setShape (const IPosition& cubeShape,
   makeCache();
 }
 
-void TSMCubeBuff::extend (uInt nr, const Record& coordValues,
+void TSMCubeBuff::extend (uInt64 nr, const Record& coordValues,
                           const TSMColumn* lastCoordColumn)
 {
     if (!extensible_p) {

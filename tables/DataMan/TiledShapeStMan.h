@@ -163,8 +163,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  Cube<float> imageValues(IPosition(2,512,512));
 //  indgen (imageValues);
 //  // Write some data into the data columns.
-//  uInt i;
-//  for (i=0; i<64; i++) {
+//  for (uInt i=0; i<64; i++) {
 //      table.addRow();
 //      image.put (i, imageValues);
 //      ra.put (i, raValues);
@@ -197,7 +196,7 @@ public:
     // <group>
     TiledShapeStMan (const String& hypercolumnName,
 		     const IPosition& defaultTileShape,
-		     uInt maximumCacheSize = 0);
+		     uInt64 maximumCacheSize = 0);
     TiledShapeStMan (const String& hypercolumnName,
 		     const Record& spec);
     // </group>
@@ -216,8 +215,7 @@ public:
 
     // TiledShapeStMan can access a column if there are 2 hypercubes
     // and the first one is empty.
-    // reask is set to True (because next time things might be different).
-    virtual Bool canAccessColumn (Bool& reask) const;
+    virtual Bool canAccessColumn() const;
 
     // Test if only one hypercube is used by this storage manager.
     // If not, throw an exception. Otherwise return the hypercube.
@@ -227,7 +225,7 @@ public:
     // It is used when the first row in a new hypercube is written.
     // If needed it adds a dimension to the shape, which reflects the
     // row dimension. The tile shape in that dimension is by default 1.
-    virtual void setShape (uInt rownr, TSMCube* hypercube,
+    virtual void setShape (rownr_t rownr, TSMCube* hypercube,
 			   const IPosition& shape,
 			   const IPosition& tileShape);
 
@@ -266,7 +264,7 @@ private:
     // should match the coordinate and id column names.
     // The last dimension in the cube shape can be zero, indicating that
     // the hypercube is extensible.
-    void addHypercube (uInt rownr,
+    void addHypercube (rownr_t rownr,
 		       const IPosition& cubeShape,
 		       const IPosition& tileShape);
 
@@ -274,14 +272,14 @@ private:
     // the last dimension.
     // The record should contain the id values (to get the correct
     // hypercube) and optionally coordinate values for the elements added.
-    void extendHypercube (uInt rownr, uInt cubeNr);
+    void extendHypercube (rownr_t rownr, uInt cubeNr);
 
     // Get the hypercube in which the given row is stored.
-    virtual TSMCube* getHypercube (uInt rownr);
+    virtual TSMCube* getHypercube (rownr_t rownr);
 
     // Get the hypercube in which the given row is stored.
     // It also returns the position of the row in that hypercube.
-    virtual TSMCube* getHypercube (uInt rownr, IPosition& position);
+    virtual TSMCube* getHypercube (rownr_t rownr, IPosition& position);
 
     // Check if the hypercolumn definition fits this storage manager.
     virtual void setupCheck (const TableDesc& tableDesc,
@@ -296,14 +294,14 @@ private:
     virtual void create (rownr_t nrrow);
 
     // Read the header info.
-    virtual void readHeader (uInt nrrow, Bool firstTime);
+    virtual void readHeader (rownr_t nrrow, Bool firstTime);
 
     // Update the map of row numbers to cube number plus offset.
-    void updateRowMap (uInt cubeNr, uInt pos, uInt rownr);
+    void updateRowMap (uInt cubeNr, uInt pos, rownr_t rownr);
 
     // Extend the map of row numbers to cube number plus offset
     // will new empty entries.
-    void extendRowMap (uInt nrow);
+    void extendRowMap (rownr_t nrow);
 
 
     //# Declare the data members.

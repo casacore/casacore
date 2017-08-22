@@ -162,7 +162,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      }
 //
 //      // Store the target column names in the source column keywords.
-//      virtual void create (uInt)
+//      virtual void create (rownr_t)
 //      {
 //          TableColumn src (table(), sourceColumnName());
 //          src.keywordSet().keysString()("_xTargetName") = xTargetName_p;
@@ -185,14 +185,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      }
 //
 //      // Get the data from a row.
-//      virtual void get (uInt rownr, A& value)
+//      virtual void get (rownr_t rownr, A& value)
 //      {
 //          rocolx.get (rownr, value.x());
 //          rocoly.get (rownr, value.y());
 //      }
 //
 //      // Put the data in a row.
-//      virtual void put (uInt rownr, const A& value)
+//      virtual void put (rownr_t rownr, const A& value)
 //      {
 //          colx.put (rownr, value.x());
 //          coly.put (rownr, value.y());

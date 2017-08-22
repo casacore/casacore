@@ -336,7 +336,7 @@ public:
 
     // Set the maximum cache size (in bytes) to be used by a storage manager.
     // The default implementation does nothing.
-    virtual void setMaximumCacheSize (uInt nbytes);
+    virtual void setMaximumCacheSize (uInt64 nbytes);
 
     // Show the data manager's IO statistics. By default it does nothing.
     virtual void showCacheStatistics (std::ostream&) const;

@@ -201,13 +201,6 @@ Bool ISMIndColumn::canChangeShape() const
     { return (shapeIsFixed_p  ?  False : True); }
 
 
-Bool ISMIndColumn::canAccessSlice (Bool& reask) const
-{
-    reask = False;
-    return True;
-}
-
-
 StIndArray* ISMIndColumn::putArrayPtr (uInt rownr, const IPosition& shape,
 				       Bool copyData)
 {
