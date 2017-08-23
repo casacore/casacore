@@ -102,6 +102,7 @@ TableIterator& TableIterator::operator= (const TableIterator& iter)
     subTable_p   = Table();
     if (iter.tabIterPtr_p != 0) {
         tabIterPtr_p = iter.tabIterPtr_p->clone();
+        next();                        // get first subtable
     }
     return *this;
 }

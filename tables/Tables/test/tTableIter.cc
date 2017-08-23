@@ -195,6 +195,11 @@ void doiter3()
     Block<Int> orders(1);
     orders[0] = TableIterator::Ascending;
     TableIterator iter1(tab1, iv1, compObj, orders);
+
+    TableIterator iter2;
+    iter2 = iter1;
+    AlwaysAssertExit(iter2.table().nrow() == iter1.table().nrow());
+
     Int nr = 0;
     float l3 = -1;
     while (!iter1.pastEnd()) {
