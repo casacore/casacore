@@ -83,7 +83,7 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 }
 
 
-MSIter::MSIter():nMS_p(0),storeSorted_p(False),allBeamOffsetsZero_p(True)
+  MSIter::MSIter():nMS_p(0),storeSorted_p(False),prevFirstTimeStamp_p(-1.0), allBeamOffsetsZero_p(True)
 {}
 
 MSIter::MSIter(const MeasurementSet& ms,
@@ -93,7 +93,7 @@ MSIter::MSIter(const MeasurementSet& ms,
 	       Bool storeSorted)
 : curMS_p(0),lastMS_p(-1),
   storeSorted_p(storeSorted),
-  interval_p(timeInterval),
+  interval_p(timeInterval), prevFirstTimeStamp_p(-1.0),
   allBeamOffsetsZero_p(True)
 {
   bms_p.resize(1); 
@@ -108,7 +108,7 @@ MSIter::MSIter(const Block<MeasurementSet>& mss,
 	       Bool storeSorted)
 : bms_p(mss),curMS_p(0),lastMS_p(-1),
   storeSorted_p(storeSorted),
-  interval_p(timeInterval)
+  interval_p(timeInterval), prevFirstTimeStamp_p(-1.0)
 {
   construct(sortColumns,addDefaultSortColumns);
 }
@@ -377,6 +377,7 @@ MSIter::operator=(const MSIter& other)
   restFrequency_p = other.restFrequency_p;
   telescopePosition_p = other.telescopePosition_p;
   timeComp_p.reset(new MSInterval(interval_p));
+  prevFirstTimeStamp_p=other.prevFirstTimeStamp_p;
   return *this;
 }
 
@@ -766,30 +767,51 @@ void MSIter::setFieldInfo()
   newField_p=(lastField_p!=curField_p);
   if (newField_p) {
     lastField_p = curField_p;
-    This->phaseCenter_p=msc_p->field().phaseDirMeas(curField_p);
+  }
+}
+const String& MSIter::fieldName()  const { 
+  if(newField_p)
+    This->curFieldName_p = msc_p->field().name()(curField_p);
 
-    // Retrieve field name
-    curFieldName_p = msc_p->field().name()(curField_p);
-    curSource_p=msc_p->field().sourceId()(curField_p);
+  return curFieldName_p;
+}
 
+const String& MSIter::sourceName()  const { 
+  if(newField_p){
     // Retrieve source name, if specified.
-    curSourceName_p = "";
+    This->curSourceName_p = "";
     if (curSource_p >= 0 && !msc_p->source().sourceId().isNull()) {
       Vector<Int> sourceId=msc_p->source().sourceId().getColumn();
       uInt i=0;
       Bool found=False;
       while (i < sourceId.nelements() && !found) {
-	if (sourceId(i)==curSource_p) {
-	  found=True;
-	  curSourceName_p=msc_p->source().name()(i);
-	}
-	i++;
+    	if (sourceId(i)==curSource_p) {
+    	  found=True;
+    	  This->curSourceName_p=msc_p->source().name()(i);
+    	}
+    	i++;
       }
     }
   }
+  
+  return curSourceName_p;			
 }
-
-
+const MDirection& MSIter::phaseCenter() const {
+  if(msc_p){
+    Double firstTimeStamp=ROScalarColumn<Double>(curTable_p, MS::columnName(MS::TIME)).get(0);
+    if(newField_p || (firstTimeStamp != prevFirstTimeStamp_p)){
+      This->prevFirstTimeStamp_p=firstTimeStamp;
+      This->phaseCenter_p=msc_p->field().phaseDirMeas(curField_p, firstTimeStamp);
+      
+    }
+  }
+  return phaseCenter_p;
+}
+const MDirection MSIter::phaseCenter(const Int fldid, const Double timeStamp) const{
+  if(msc_p)
+    return msc_p->field().phaseDirMeas(fldid, timeStamp);
+  return phaseCenter_p;
+}
 void  MSIter::getSpwInFreqRange(Block<Vector<Int> >& spw, 
 				Block<Vector<Int> >& start, 
 				Block<Vector<Int> >& nchan, 
