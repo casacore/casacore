@@ -194,8 +194,12 @@ MSDerivedValues& MSDerivedValues::setAntennaMount(const Vector<String>& mount)
         mount_p(i)=2;
       } else if (mount(i)=="orbiting" || mount(i)=="ORBITING") {
         mount_p(i)=3;
+      } else if (mount(i)=="nasmyth-right" || mount(i)=="NASMYTH-RIGHT") {
+	mount_p(i)=4;
+      } else if (mount(i)=="nasmyth-left" || mount(i)=="NASMYTH-LEFT") {
+	mount_p(i)=5;
       } else {
-        mount_p(i)=4;
+        mount_p(i)=6;
       }
     }
   }
@@ -264,7 +268,8 @@ Double MSDerivedValues::parAngle()
   // all antennas & times since we just change the Frame
   Double pa=0;
 
-  if (mount_p(antenna_p)==0) {
+  if (mount_p(antenna_p)==0 || mount_p(antenna_p)==4 ||
+      mount_p(antenna_p)== 5) {
     // Now we can do the conversions using the machines
     mRADecInAzEl_p     = cRADecToAzEl_p();
     mHADecPoleInAzEl_p = cHADecToAzEl_p();
@@ -272,6 +277,14 @@ Double MSDerivedValues::parAngle()
     // Get the parallactic angle
     pa = mRADecInAzEl_p.getValue().
       positionAngle(mHADecPoleInAzEl_p.getValue());
+
+    if (mount_p(antenna_p)==4) {
+      // Right-handed Nasmyth
+      pa += mRADecInAzEl_p.getAngle().getValue()[1];
+    } else if (mount_p(antenna_p)==5) {
+      // Left-handed Nasmyth
+      pa -= mRADecInAzEl_p.getAngle().getValue()[1];
+    }
 
     // pa_p(iant)+= receptorAngle_p(iant);
     //#if (iant==0) 
@@ -287,6 +300,7 @@ Double MSDerivedValues::parAngle()
     message.priority(LogMessage::WARN);
     logSink.post(message);
   }
+
   return pa;
 }
 
