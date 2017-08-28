@@ -194,9 +194,9 @@ MSDerivedValues& MSDerivedValues::setAntennaMount(const Vector<String>& mount)
         mount_p(i)=2;
       } else if (mount(i)=="orbiting" || mount(i)=="ORBITING") {
         mount_p(i)=3;
-      } else if (mount(i)=="nasmyth-right" || mount(i)=="NASMYTH-RIGHT") {
+      } else if (mount(i)=="alt-az+nasmyth-r" || mount(i)=="ALT-AZ+NASMYTH-R") {
 	mount_p(i)=4;
-      } else if (mount(i)=="nasmyth-left" || mount(i)=="NASMYTH-LEFT") {
+      } else if (mount(i)=="alt-az+nasmyth-l" || mount(i)=="ALT-AZ+NASMYTH-L") {
 	mount_p(i)=5;
       } else {
         mount_p(i)=6;
@@ -300,7 +300,6 @@ Double MSDerivedValues::parAngle()
     message.priority(LogMessage::WARN);
     logSink.post(message);
   }
-
   return pa;
 }
 
