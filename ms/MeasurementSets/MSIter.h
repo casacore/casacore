@@ -255,12 +255,6 @@ public:
   // Return the current FieldId
   Int fieldId() const;
 
-  // Return the current Field Name
-  const String& fieldName() const;
-
-  // Return the current Source Name
-  const String& sourceName() const;
-
   // Return True if FieldId/Source has changed since last iteration
   Bool newField() const;
 
@@ -282,8 +276,6 @@ public:
   // Return True if polarization has changed since last iteration
   Bool newPolarizationId() const;
 
-  // Return the current phase center as MDirection
-  const MDirection& phaseCenter() const;
 
   // Return frame for polarization (returns PolFrame enum)
   Int polFrame() const;
@@ -357,6 +349,22 @@ public:
   // So better check wth numMS() before making the call
   const MS& ms(const uInt n) const;
 
+  //Returns the phasecenter for the first time stamp of the iteration
+  //The time is important for field tables that have polynomial or ephemerides 
+  //phasecenters, i.e time varying for a given field_id..
+  //If the iterator is set so as one iteration has more that 1 time stamp 
+  //then this version is correct only for fixed phasecenters
+  const MDirection& phaseCenter() const ;
+
+  //If the iterator is set so as one iteration has more that 1 value of time stamp 
+  // or fieldid 
+  //then the caller should use the phasecenter with field id and time explicitly
+  const MDirection phaseCenter(const Int fldID, const Double timeStamp) const ;
+  
+  //return FIELD table associated current fieldname and sourcename respectively
+  const String& fieldName() const; 
+  const String& sourceName() const; 
+
 protected:
   // handle the construction details
   void construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns);
@@ -401,9 +409,10 @@ protected:
   
   // columns
   ScalarColumn<Int> colArray_p, colDataDesc_p, colField_p;
-
-  //cache for access functions
+  
   MDirection phaseCenter_p;
+  Double prevFirstTimeStamp_p;
+  //cache for access functions
   Matrix<Double> receptorAnglesFeed0_p; // former receptorAngle_p,
                                    // temporary retained for compatibility
                                    // contain actually a reference to the
@@ -445,8 +454,6 @@ inline Int MSIter::msId() const { return curMS_p;}
 inline Int MSIter::numMS() const { return nMS_p;}
 inline Int MSIter::arrayId() const {return curArray_p;}
 inline Int MSIter::fieldId() const { return curField_p;}
-inline const String& MSIter::fieldName() const { return curFieldName_p;}
-inline const String& MSIter::sourceName() const { return curSourceName_p;}
 inline Int MSIter::spectralWindowId() const 
 { return curSpectralWindow_p;}
 inline Int MSIter::polarizationId() const {return curPolarizationId_p;}
@@ -454,8 +461,6 @@ inline Int MSIter::dataDescriptionId() const {return curDataDescId_p;}
 inline Bool MSIter::newPolarizationId() const { return newPolarizationId_p;}
 inline Bool MSIter::newDataDescriptionId() const { return newDataDescId_p;}
 inline Int MSIter::polFrame() const { return polFrame_p;}
-inline const MDirection& MSIter::phaseCenter() const 
-{ return phaseCenter_p; }
 inline const MPosition& MSIter::telescopePosition() const
 { return telescopePosition_p;}
 inline const Vector<SquareMatrix<Complex,2> >& MSIter::CJones() const  
