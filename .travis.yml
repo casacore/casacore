@@ -1,6 +1,5 @@
 language: cpp
 cache: ccache
-dist: precise
 
 os:
   - linux
