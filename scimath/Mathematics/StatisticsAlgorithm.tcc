@@ -26,11 +26,11 @@
 
 #ifndef SCIMATH_STATISTICSALGORITHM_TCC
 #define SCIMATH_STATISTICSALGORITHM_TCC
- 
+
 #include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
- 
+
 #include <casacore/casa/BasicSL/STLIO.h>
-#include <casa/Utilities/GenSort.h>
+#include <casacore/casa/Utilities/GenSort.h>
 
 namespace casacore {
 
