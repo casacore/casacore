@@ -42,7 +42,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 CountedPtr<LogSink::LsiIntermediate> *LogSink::global_sink_p = 0;
-Mutex LogSink::theirMutex;
 
 
 String LogSink::localId( ) {
@@ -318,11 +317,16 @@ void LogSink::flush (Bool global)
 
 void LogSink::createGlobalSink()
 {
-    ScopedMutexLock lock(theirMutex);
+    ScopedMutexLock lock(theirMutex( ));
     if ( ! LogSink::global_sink_p ) {
         LogSink::global_sink_p = new CountedPtr<LsiIntermediate> ();
         (* global_sink_p) = new LsiIntermediate (new StreamLogSink(LogMessage::NORMAL, &cerr));
     }
+}
+
+Mutex &LogSink::theirMutex( ) {
+    static Mutex mutex;
+    return mutex;
 }
 
 } //# NAMESPACE CASACORE - END
