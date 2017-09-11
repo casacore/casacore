@@ -90,6 +90,13 @@
   runCmd 40 "$casa_checktool" " ./tMSSelection ms=$MS baseline='(DV*,DA*)@(A1*,P*,S*)&(DV*)@(P*);!5;!11' stateobsmode='*OFF*' spw='0,1,100' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'";
   runCmd 41 "$casa_checktool" " ./tMSSelection ms=$MS baseline='0,1,2;500' stateobsmode='*OFF*' spw='ALMA*FULL*:85290~86290.305MHz' time='*+0:0:1' uvdist='>1000m:50%' poln='XX,YX' installeh='0'";
 
+  runCmd 42 "$casa_checktool" " ./tMSSelection ms=$MS baseline='DA41&DV14' spw='1' time='2014/09/20/10:38:0.9~2014/09/20/10:38:03.88' installeh='0'";
+  runCmd 43 "$casa_checktool" " ./tMSSelection ms=$MS baseline='DA41&DV14' spw='1' time='[2014/09/20/10:38:1.1~2014/09/20/10:38:03.88]' installeh='0'";
+  runCmd 44 "$casa_checktool" " ./tMSSelection ms=$MS baseline='DA41&DV14' spw='1' time='0.04[2014/09/20/10:38:1.1~2014/09/20/10:38:03.88]' installeh='0'";
+#Time Expr=2014/09/20/10:38:0.9~2014/09/20/10:38:03.88
+#Time Expr=[2014/09/20/10:38:1.10~2014/09/20/10:38:03.88]
+#Time Expr=0.04[2014/09/20/10:38:1.10~2014/09/20/10:38:03.88]
+
   #
   # Remove the test MS and any other cleanup required.
   #
