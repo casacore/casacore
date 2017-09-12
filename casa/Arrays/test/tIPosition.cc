@@ -40,6 +40,7 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <vector>
+#include <map>
 
 #include <casacore/casa/namespace.h>
 
@@ -460,6 +461,39 @@ int main()
   IPosition ipos(4,11,12,13,14);
   AlwaysAssertExit(ipos(IPosition(4, 0,2,1,3)) == IPosition(4, 11,13,12,14));
   AlwaysAssertExit(ipos(IPosition(3, 2,2,1)) == IPosition(3, 13,13,12));
+  {
+      // test IPOsitionComparator
+      IPosition ip0(2, 0);
+      IPosition ip1(2, 1);
+      IPosition ip2(3, 1);
+      IPosition ip3(2, 0, 1);
+      IPosition ip4(2, 1, 0);
+      // creating a map with IPosition keys without the comparator
+      // doesn't work as we would like
+      std::map<IPosition, Int> mymap;
+      mymap[ip0] = 0;
+      mymap[ip1] = 1;
+      Bool thrown = False;
+      try {
+          // throws exception because size not equal
+          mymap[ip2] = 2;
+      } catch (const AipsError& x) {
+          thrown = True;
+      }
+      AlwaysAssertExit(thrown);
+      mymap[ip3] = 3;
+      mymap[ip4] = 4;
+      // one would think the map now has four elements, but no, it only has two
+      AlwaysAssertExit(mymap.size() != 4);
+      // so use the comparator and things make sense
+      std::map<IPosition, Int, IPositionComparator> goodmap;
+      goodmap[ip0] = 0;
+      goodmap[ip1] = 1;
+      goodmap[ip2] = 2;
+      goodmap[ip3] = 3;
+      goodmap[ip4] = 4;
+      AlwaysAssertExit(goodmap.size() == 5);
+  }
   
   cout << "OK\n";
   return 0;

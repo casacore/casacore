@@ -85,6 +85,8 @@ public:
     IMAGECONCAT,
     // ImageExpr
     IMAGEEXPR,
+    // ComponentListImage, CASA
+    COMPLISTIMAGE,
     // Unknown
     UNKNOWN
    };
