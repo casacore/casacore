@@ -26,10 +26,10 @@
 
 #ifndef SCIMATH_STATISTICSALGORITHMFACTORY_TCC
 #define SCIMATH_STATISTICSALGORITHMFACTORY_TCC
- 
+
 #include <casacore/scimath/Mathematics/StatisticsAlgorithmFactory.h>
 
-#include <casa/Utilities/CountedPtr.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/scimath/Mathematics/ChauvenetCriterionStatistics.h>
 #include <casacore/scimath/Mathematics/ClassicalStatistics.h>
 #include <casacore/scimath/Mathematics/FitToHalfStatistics.h>

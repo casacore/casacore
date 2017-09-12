@@ -72,6 +72,7 @@ using namespace casacore;
 %type <node> upboundtimeexpr
 %type <node> lowboundtimeexpr
 %type <timeFields> yeartimeexpr
+%type <dval> LBRACKET
 %type <dval> wildFloat
 %type <ival> wildNumber
 %type <ival> tFields
@@ -92,6 +93,7 @@ using namespace casacore;
 #include <casacore/ms/MSSel/MSSelectionError.h>
   //  extern MSTimeParse *thisMSTParser;
   Bool MSTimeEdgeInclusiveRange=False;
+  Float MSTimeEdgeBuffer=-1.0;
   int MSTimeGramlex (YYSTYPE*);
   inline void MSTGgarbageCollector(const MEpoch* tval){if (tval) delete tval;}
   void splitSec(const Double& fsec, Int &sec, Int &milliSec) 
@@ -145,8 +147,11 @@ singletimeexpr: yeartimeexpr
 		  }
               ;
 
-brangetimeexpr: LSQBRACKET {MSTimeEdgeInclusiveRange=True;}  rangetimeexpr RSQBRACKET {$$=$3;MSTimeEdgeInclusiveRange=False;}
-              |            rangetimeexpr            {MSTimeEdgeInclusiveRange=False;$$=$1;}
+LBRACKET: LSQBRACKET {$$=-1.0;}
+        | FNUMBER LSQBRACKET {$$=$1;}
+
+brangetimeexpr: LBRACKET {MSTimeEdgeInclusiveRange=True;MSTimeEdgeBuffer=$1;}  rangetimeexpr RSQBRACKET {$$=$3;MSTimeEdgeInclusiveRange=False;MSTimeEdgeBuffer=-1.0;}
+              | rangetimeexpr            {MSTimeEdgeInclusiveRange=False;MSTimeEdgeBuffer=-1.0;$$=$1;}
 rangetimeexpr: yeartimeexpr DASH yeartimeexpr 
                  {
 		   MSTimeParse::thisMSTParser->setDefaults($1);
@@ -154,7 +159,7 @@ rangetimeexpr: yeartimeexpr DASH yeartimeexpr
 		   const MEpoch *t0=MSTimeParse::thisMSTParser->yearTimeConvert($1);
 		   const MEpoch *t1=MSTimeParse::thisMSTParser->yearTimeConvert($3);
 
-		   $$ = MSTimeParse::thisMSTParser->selectTimeRange(t0,t1,MSTimeEdgeInclusiveRange);
+		   $$ = MSTimeParse::thisMSTParser->selectTimeRange(t0,t1,MSTimeEdgeInclusiveRange,MSTimeEdgeBuffer);
 		   MSTGgarbageCollector(t0);
 		   MSTGgarbageCollector(t1);
 		 }
@@ -175,7 +180,7 @@ rangetimeexpr: yeartimeexpr DASH yeartimeexpr
 		   const MEpoch *t0=new MEpoch(MVEpoch(time0.modifiedJulianDay()));
 		   const MEpoch *t1=new MEpoch(MVEpoch(time1.modifiedJulianDay()));
 
-		   $$ = MSTimeParse::thisMSTParser->selectTimeRange(t0,t1,MSTimeEdgeInclusiveRange);
+		   $$ = MSTimeParse::thisMSTParser->selectTimeRange(t0,t1,MSTimeEdgeInclusiveRange,MSTimeEdgeBuffer);
 		   MSTGgarbageCollector(t0);
 		   MSTGgarbageCollector(t1);
 		 }

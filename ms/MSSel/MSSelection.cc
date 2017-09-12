@@ -738,7 +738,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	// generated so far to find the first logical row to use to get
 	// value of the wild-card fields in the time expression. 
 	//
-	selectedTimesList_p.resize(2,0);
+	selectedTimesList_p.resize(3,0);
 
 	const TableExprNode *timeNode = 0x0;
 	TableExprNode colAsTEN = msLike->col(msLike->columnName(MS::TIME));

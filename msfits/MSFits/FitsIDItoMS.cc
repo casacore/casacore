@@ -2536,7 +2536,8 @@ void FITSIDItoMS1::fillAntennaTable()
      case 1: mount="EQUATORIAL"; break;
      case 2: mount="X-Y"; break;
      case 3: mount="ORBITING"; break;
-     case 4: mount="BIZARRE"; break;
+     case 4: mount="ALT-AZ+NASMYTH-R"; break;
+     case 5: mount="ALT-AZ+NASMYTH-L"; break;
      default: mount="UNKNOWN"; break;
      }
      ant.flagRow().put(row,False);

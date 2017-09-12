@@ -46,7 +46,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MeasurementSet*  MSTimeParse::ms_p        = 0x0;
   TableExprNode*   MSTimeParse::otherTens_p = 0x0;
   Bool             MSTimeParse::defaultTimeComputed=False;
-  Matrix<Double>   MSTimeParse::timeList(2,0);
+  Matrix<Double>   MSTimeParse::timeList(3,0);
   TableExprNode MSTimeParse::columnAsTEN_p;
   MSSelectableMainColumn *MSTimeParse::mainColumn_p=0x0;
 
@@ -209,7 +209,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprNode condition = (abs(columnAsTEN_p - timeInSec) <= dT);
 
     //    TableExprNode condition = (abs(columnAsTEN_p - timeInSec) <= dT);
-    accumulateTimeList(timeInSec,timeInSec);
+    accumulateTimeList(timeInSec,timeInSec,dT);
 
     return addCondition(condition);
   }
@@ -259,15 +259,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       throw(MSSelectionTimeError("lower bound > upper bound"));
     }
     TableExprNode condition;
+    // edgeWidth < 0, edgeInclusive=F ==> T0~T1 syntax
+    // edgeWidth < 0, edgeInclusive=T ==> [T0~T1] syntax
+    // edgeWidth = N, edgeInclusive=T ==> N[T0~T1] syntax
+    Float edgeWidth_l = (edgeWidth < 0.0) ? (edgeInclusive==True ? defaultExposure/2.0 : 0.0) : edgeWidth;
     if (!edgeInclusive) {
       condition = (columnAsTEN_p >= lowerBound &&
 		   (columnAsTEN_p <= upperBound));
     } else {
-      Float edgeWidth_l = (edgeWidth < 0.0) ? defaultExposure/2.0 : edgeWidth;
       condition = (((columnAsTEN_p > lowerBound) || (abs(columnAsTEN_p - lowerBound) < edgeWidth_l)) &&
 		   ((columnAsTEN_p < upperBound) || (abs(columnAsTEN_p - upperBound) < edgeWidth_l)));
     }
-    accumulateTimeList(lowerBound, upperBound);
+    accumulateTimeList(lowerBound, upperBound, edgeWidth_l);
 
     return addCondition(condition);
   }
@@ -424,7 +427,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //-------------------------------------------------------------------
   //  
-  void MSTimeParse::accumulateTimeList(const Double t0, const Double t1)
+  void MSTimeParse::accumulateTimeList(const Double t0, const Double t1,
+				       const Double dT)
   {
     Int n0=timeList.shape()(1);
     IPosition newShape(timeList.shape());
@@ -432,5 +436,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     timeList.resize(newShape,True);
     timeList(0,n0) = t0;//-4.68193e+09;
     timeList(1,n0) = t1;//-4.68193e+09;
+    if (dT >= 0) timeList(2,n0) = dT;
+    else timeList(2,n0) = defaultExposure;
   }
 } //# NAMESPACE CASACORE - END

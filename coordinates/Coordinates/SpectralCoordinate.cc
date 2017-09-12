@@ -1293,10 +1293,11 @@ Bool SpectralCoordinate::near(const Coordinate& other,
          }
       }
    }
-
 // LinearXForm components
-
-   {
+//Tabular spectral coordinates with 1 channel has increment 0. by definition in TabularCoordinates !
+//so linear transform test is bound to fail so skip for that case
+   if( !(_tabular.ptr() && (_tabular->pixelValues()).nelements()==1))
+     {
       LinearXform thisVal(referencePixel(), increment(), linearTransform());
       LinearXform thatVal(sCoord.referencePixel(), sCoord.increment(), sCoord.linearTransform());
       if (!(thisVal.near(thatVal, excludeAxes))) {
