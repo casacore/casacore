@@ -907,16 +907,6 @@ void LatticeStatistics<T>::_doStatsLoop(
         slicer.setStart(curPos);
         slicer.setEnd(stepper.endPosition());
         subLat.setRegion(slicer);
-        if (
-            stepper.atStart() && ! progressMeter.null()
-            && ! nsetsIsLarge
-        ) {
-            uInt64 nelem = subLat.size();
-            uInt nSublatticeSteps = nelem > 4096*4096
-                ? nelem/subLat.advisedMaxPixels()
-                : 1;
-            progressMeter->init(nsets*nSublatticeSteps);
-        }
         if(subLat.isMasked()) {
             maskedLattDP.setLattice(subLat);
             dataProvider = &maskedLattDP;
@@ -924,6 +914,12 @@ void LatticeStatistics<T>::_doStatsLoop(
         else {
             lattDP.setLattice(subLat);
             dataProvider = &lattDP;
+        }
+        if (
+            stepper.atStart() && ! progressMeter.null()
+            && ! nsetsIsLarge
+        ) {
+            progressMeter->init(nsets*dataProvider->estimatedSteps());
         }
         sa->setDataProvider(dataProvider);
         stats = sa->getStatistics();
