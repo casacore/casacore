@@ -80,6 +80,13 @@ ImageOpener::ImageTypes ImageOpener::imageType (const String& name)
       if (info.type() == TableInfo::type(TableInfo::PAGEDIMAGE)) {
 	return AIPSPP;
       }
+      else if (info.type() == TableInfo::type(TableInfo::COMPONENTLIST)) {
+          TableDesc tableDesc;
+          Table::getLayout(tableDesc, name);
+          if (tableDesc.keywordSet().isDefined("coords")) {
+              return COMPLISTIMAGE;
+          }
+      }
     } else {
       if (File(name + "/header").isRegular()  &&
 	  File(name + "/image").isRegular()) {
