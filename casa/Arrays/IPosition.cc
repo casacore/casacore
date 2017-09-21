@@ -1162,5 +1162,24 @@ void IPosition::throwIndexError() const
     throw(AipsError("IPosition::operator() - index error"));
 }
 
+bool IPositionComparator::operator ()(const IPosition& lhs, const IPosition& rhs) const {
+    size_t lhsSize = lhs.size_p;
+    size_t rhsSize = rhs.size_p;
+    if (lhsSize == rhsSize) {
+        ssize_t *lp = lhs.data_p;
+        ssize_t *rp = rhs.data_p;
+        for (uInt i=0; i<lhsSize; ++i, ++lp, ++rp) {
+            if (*lp != *rp) {
+                return *lp < *rp;
+            }
+        }
+    }
+    else {
+        return lhsSize < rhsSize;
+    }
+    // same size and all elements equal, return False
+    return False;
+}
+
 } //# NAMESPACE CASACORE - END
 

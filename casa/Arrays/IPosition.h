@@ -118,6 +118,7 @@ template<class T> class Vector;
 
 class IPosition
 {
+    friend class IPositionComparator;
 public:
     enum {MIN_INT = -2147483647};
     // A zero-length IPosition.
@@ -413,6 +414,17 @@ private:
     // When the iposition is length BufferSize or less data is just buffer_p,
     // avoiding calls to new and delete.
     ssize_t *data_p;
+};
+
+class IPositionComparator : public std::binary_function<IPosition, IPosition, bool> {
+    // allows a way for IPosition to be used as keys in a std::map
+public:
+    // if sizes aren't equal, returns True if lhs.size() < rhs.size(), false
+    // otherwise. If sizes are equal, does an element by element comparison. The first
+    // corresponding elements that are not equal, returns True if the rhs element is
+    // less than the lhs element, False otherwise. Returns False if all elements are
+    // equal.
+    bool operator()(const IPosition& lhs, const IPosition& rhs) const;
 };
 
 // <summary>Arithmetic Operations for IPosition's</summary>
