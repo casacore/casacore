@@ -99,10 +99,10 @@ TableIterator& TableIterator::operator= (const TableIterator& iter)
 {
     delete tabIterPtr_p;
     tabIterPtr_p = 0;
-    subTable_p   = Table();
+    subTable_p = Table();
     if (iter.tabIterPtr_p != 0) {
         tabIterPtr_p = iter.tabIterPtr_p->clone();
-        next();                        // get first subtable
+        subTable_p = iter.table();
     }
     return *this;
 }
