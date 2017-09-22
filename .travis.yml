@@ -58,7 +58,6 @@ addons:
     - python-numpy
     - python3-numpy
 
-
 before_script:
   - ./.travis/before_script.sh
 
