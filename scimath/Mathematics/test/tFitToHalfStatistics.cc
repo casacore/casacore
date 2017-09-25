@@ -38,7 +38,7 @@
 
 int main() {
     try {
-        vector<Double> v0(5);
+        std::vector<Double> v0(5);
         v0[0] = 2;
         v0[1] = 1;
         v0[2] = 1.5;
@@ -88,6 +88,28 @@ int main() {
             AlwaysAssert(fh.getStatistic(
                 StatisticsData::RMS) == sqrt(sumsq/npts), AipsError
             );
+        }
+        {
+            // CAS-10760, test that setStatsToCalculate() works correctly
+            FitToHalfStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > fh(
+                FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
+            );
+            fh.setData(v0.begin(), v0.size());
+            std::set<StatisticsData::STATS> x;
+            x.insert(StatisticsData::VARIANCE);
+            fh.setStatsToCalculate(x);
+            StatsData<Double> sd = fh.getStatistics();
+            AlwaysAssert(! sd.masked, AipsError);
+            AlwaysAssert(! sd.weighted, AipsError);
+            Double variance = fh.getStatistic(StatisticsData::VARIANCE);
+            Double npts = 6;
+            Double nvariance = 3.94;
+            AlwaysAssert(near(variance, nvariance/(npts - 1)), AipsError);
+            Double mean = fh.getStatistic(StatisticsData::MEAN);
+            AlwaysAssert(near(mean, 13.2/6), AipsError);
         }
         {
             FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
