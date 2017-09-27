@@ -1,31 +1,20 @@
 language: cpp
 cache: ccache
 
-os:
-  - linux
-#  - osx
-
-compiler:
-  - clang
-  - gcc
-
 env:
   global:
     - CCACHE_COMPRESS=1
     - CCACHE_CPP2=yes
-  matrix:
-    - CXX11=True
-    - CXX11=False
 
 matrix:
-  exclude:
+  include:
     - os: linux
       compiler: gcc
       env: CXX11=True
     - os: linux
       compiler: clang
-      env: CXX11=False
-    - os: osx
+      env: CXX11=True
+    - os: linux
       compiler: gcc
       env: CXX11=False
     - os: osx
@@ -66,7 +55,9 @@ script:
   - ccache -s
   - ccache -z
   - make -j2
-  - env CTEST_OUTPUT_ON_FAILURE=1 make test
+  - if [ "$TRAVIS_OS_NAME" = osx ]; then TESTS_TO_SKIP="tConvert$"; else TESTS_TO_SKIP=""; fi
+    # Skip tConvert on OSX; boost-python can't be found on non-standard location
+  - env CTEST_OUTPUT_ON_FAILURE=1 ctest -E ${TESTS_TO_SKIP}
   - make install
   - ccache -s
 

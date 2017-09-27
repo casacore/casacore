@@ -20,17 +20,40 @@ else
   ccache -M 80M
 fi
 
+if [ "$TRAVIS_OS_NAME" = osx ]; then
+  PATH=$HOME/miniconda2/bin:$PATH
+  source activate testenv2
+  PYTHON2_EXECUTABLE=$HOME/miniconda2/bin/python
+  PYTHON3_EXECUTABLE=$HOME/miniconda3/bin/python
+  which python
+  python -c "import numpy as n; print (n.__version__); print(n.get_include());"
+  export PYTHONPATH=/Users/travis/miniconda2/envs/testenv2/lib/python2.7/site-packages:$PYTHONPATH
+  BUILD_PYTHON=On
+  BUILD_PYTHON3=Off
+  CMAKE_PREFIX_PATH=/Users/travis/miniconda2/envs/testenv2/lib
+  ls /Users/travis/miniconda2/envs/testenv2/lib
+else
+  PYTHON2_EXECUTABLE=/usr/bin/python2.7
+  PYTHON3_EXECUTABLE=/usr/bin/python3.4
+  BUILD_PYTHON=On
+  BUILD_PYTHON3=On
+  CMAKE_PREFIX_PATH=
+fi
+
+echo $PYTHONPATH
+echo $PATH
 CXX="ccache $CXX" cmake .. \
     -DUSE_FFTW3=ON \
     -DBUILD_TESTING=ON \
     -DUSE_OPENMP=OFF \
     -DUSE_HDF5=ON \
-    -DBUILD_PYTHON=ON \
-    -DPYTHON2_EXECUTABLE=/usr/bin/python2.7 \
-    -DPYTHON3_EXECUTABLE=/usr/bin/python3.4 \
-    -DBUILD_PYTHON3=ON \
+    -DBUILD_PYTHON=${BUILD_PYTHON} \
+    -DBUILD_PYTHON3=${BUILD_PYTHON3} \
+    -DCXX11=${CXX11} \
+    -DPYTHON2_EXECUTABLE=${PYTHON2_EXECUTABLE} \
+    -DPYTHON3_EXECUTABLE=${PYTHON3_EXECUTABLE} \
+    -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
     -DDATA_DIR=$PWD \
     -DSOFA_ROOT_DIR=$HOME \
-    -DCXX11=$CXX11 \
     -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/installed
 
