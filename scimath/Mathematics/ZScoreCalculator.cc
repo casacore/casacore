@@ -28,13 +28,17 @@
 #include <stdlib.h>
 
 #include <casacore/casa/BasicMath/Math.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casacore {
 
 std::map<uInt64, Double> ZScoreCalculator::_nptsToMaxZScore;
 
+Mutex ZScoreCalculator::_mutex;
+
 Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
-	if (_nptsToMaxZScore.empty()) {
+    ScopedMutexLock lock(_mutex);
+    if (_nptsToMaxZScore.empty()) {
 		// initialize the map
 		_nptsToMaxZScore[0] = 0.5;
 		_nptsToMaxZScore[1] = 1;
@@ -51,10 +55,11 @@ Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
 		_nptsToMaxZScore[6225098696ULL] = 6.5;
 		_nptsToMaxZScore[195341107722ULL] = 7;
 	}
-	if (_nptsToMaxZScore.find(npts) != _nptsToMaxZScore.end()) {
-		return _nptsToMaxZScore[npts];
+	std::map<uInt64, Double>::const_iterator iter = _nptsToMaxZScore.find(npts);   
+    if (iter != _nptsToMaxZScore.end()) {
+		return iter->second;
 	}
-	std::map<uInt64, Double>::const_iterator lowiter = _nptsToMaxZScore.begin();
+    std::map<uInt64, Double>::const_iterator lowiter = _nptsToMaxZScore.begin();
 	std::map<uInt64, Double>::const_iterator upiter = _nptsToMaxZScore.begin();
 	++upiter;
 	if (npts > _nptsToMaxZScore.rbegin()->first) {

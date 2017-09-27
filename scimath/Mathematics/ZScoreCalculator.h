@@ -35,6 +35,8 @@
 
 namespace casacore {
 
+class Mutex;
+
 /*
  * This class contains static methods related to z-scores. A z-score is the number of
  * standard deviations from the mean in a normal distribution.
@@ -56,6 +58,7 @@ public:
 
 private:
 	static std::map<uInt64, Double> _nptsToMaxZScore;
+	static Mutex _mutex;
 
 };
 
