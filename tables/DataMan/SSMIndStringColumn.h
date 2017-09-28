@@ -95,10 +95,10 @@ public:
 
   // Get an array value in the given row.
   // An exception is thrown if no array is defined in this row.
-  virtual void getArrayStringV (uInt rownr, Array<String>* dataPtr);
+  virtual void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
   
   // Put an array value in the given row.
-  virtual void putArrayStringV (uInt rownr, const Array<String>* dataPtr);
+  virtual void putArrayV (rownr_t rownr, const ArrayBase& dataPtr);
 
   // Set the shape of the array in the given row.
   void setShape (rownr_t aRowNr, const IPosition& aShape);

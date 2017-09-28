@@ -168,92 +168,14 @@ Bool StManColumnIndArrayAipsIO::canChangeShape() const
 void StManColumnIndArrayAipsIO::getArrayV (rownr_t rownr, ArrayBase& arr)
 {
   StIndArray* sia = getShape (rownr);
-  switch (dtype()) {
-  case TpBool:
-    sia->getArrayBoolV (*iosfile_p, static_cast<Array<Bool>*>(&arr));
-    break;
-  case TpUChar:
-    sia->getArrayuCharV (*iosfile_p, static_cast<Array<uChar>*>(&arr));
-    break;
-  case TpShort:
-    sia->getArrayShortV (*iosfile_p, static_cast<Array<Short>*>(&arr));
-    break;
-  case TpUShort:
-    sia->getArrayuShortV (*iosfile_p, static_cast<Array<uShort>*>(&arr));
-    break;
-  case TpInt:
-    sia->getArrayIntV (*iosfile_p, static_cast<Array<Int>*>(&arr));
-    break;
-  case TpUInt:
-    sia->getArrayuIntV (*iosfile_p, static_cast<Array<uInt>*>(&arr));
-    break;
-  case TpInt64:
-    sia->getArrayInt64V (*iosfile_p, static_cast<Array<Int64>*>(&arr));
-    break;
-  case TpFloat:
-    sia->getArrayfloatV (*iosfile_p, static_cast<Array<float>*>(&arr));
-    break;
-  case TpDouble:
-    sia->getArraydoubleV (*iosfile_p, static_cast<Array<double>*>(&arr));
-    break;
-  case TpComplex:
-    sia->getArrayComplexV (*iosfile_p, static_cast<Array<Complex>*>(&arr));
-    break;
-  case TpDComplex:
-    sia->getArrayDComplexV (*iosfile_p, static_cast<Array<DComplex>*>(&arr));
-    break;
-  case TpString:
-    sia->getArrayStringV (*iosfile_p, static_cast<Array<String>*>(&arr));
-    break;
-  default:
-    throw DataManInvDT ("StManColumnIndArrayAipsIO::getArrayV");
-  }
+  sia->getArrayV (*iosfile_p, arr, dtype());
 }
 
 void StManColumnIndArrayAipsIO::putArrayV (rownr_t rownr,
                                            const ArrayBase& arr)
 {
   StIndArray* sia = getShape (rownr);
-  switch (dtype()) {
-  case TpBool:
-    sia->putArrayBoolV (*iosfile_p, static_cast<const Array<Bool>*>(&arr));
-    break;
-  case TpUChar:
-    sia->putArrayuCharV (*iosfile_p, static_cast<const Array<uChar>*>(&arr));
-    break;
-  case TpShort:
-    sia->putArrayShortV (*iosfile_p, static_cast<const Array<Short>*>(&arr));
-    break;
-  case TpUShort:
-    sia->putArrayuShortV (*iosfile_p, static_cast<const Array<uShort>*>(&arr));
-    break;
-  case TpInt:
-    sia->putArrayIntV (*iosfile_p, static_cast<const Array<Int>*>(&arr));
-    break;
-  case TpUInt:
-    sia->putArrayuIntV (*iosfile_p, static_cast<const Array<uInt>*>(&arr));
-    break;
-  case TpInt64:
-    sia->putArrayInt64V (*iosfile_p, static_cast<const Array<Int64>*>(&arr));
-    break;
-  case TpFloat:
-    sia->putArrayfloatV (*iosfile_p, static_cast<const Array<float>*>(&arr));
-    break;
-  case TpDouble:
-    sia->putArraydoubleV (*iosfile_p, static_cast<const Array<double>*>(&arr));
-    break;
-  case TpComplex:
-    sia->putArrayComplexV (*iosfile_p, static_cast<const Array<Complex>*>(&arr));
-    break;
-  case TpDComplex:
-    sia->putArrayDComplexV (*iosfile_p, static_cast<const Array<DComplex>*>(&arr));
-    break;
-  case TpString:
-    sia->putArrayStringV (*iosfile_p, static_cast<const Array<String>*>(&arr));
-    break;
-  default:
-    throw DataManInvDT ("StManColumnIndArrayAipsIO::putArrayV");
-  }
+  sia->putArrayV (*iosfile_p, arr, dtype());
   stmanPtr_p->setHasPut();
 }
 
@@ -261,104 +183,14 @@ void StManColumnIndArrayAipsIO::getSliceV (rownr_t rownr, const Slicer& ns,
                                            ArrayBase& arr)
 {
   StIndArray* sia = getShape (rownr);
-  switch (dtype()) {
-  case TpBool:
-    sia->getSliceBoolV (*iosfile_p, ns, static_cast<Array<Bool>*>(&arr));
-    break;
-  case TpUChar:
-    sia->getSliceuCharV (*iosfile_p, ns, static_cast<Array<uChar>*>(&arr));
-    break;
-  case TpShort:
-    sia->getSliceShortV (*iosfile_p, ns, static_cast<Array<Short>*>(&arr));
-    break;
-  case TpUShort:
-    sia->getSliceuShortV (*iosfile_p, ns, static_cast<Array<uShort>*>(&arr));
-    break;
-  case TpInt:
-    sia->getSliceIntV (*iosfile_p, ns, static_cast<Array<Int>*>(&arr));
-    break;
-  case TpUInt:
-    sia->getSliceuIntV (*iosfile_p, ns, static_cast<Array<uInt>*>(&arr));
-    break;
-  case TpInt64:
-    sia->getSliceInt64V (*iosfile_p, ns, static_cast<Array<Int64>*>(&arr));
-    break;
-  case TpFloat:
-    sia->getSlicefloatV (*iosfile_p, ns, static_cast<Array<float>*>(&arr));
-    break;
-  case TpDouble:
-    sia->getSlicedoubleV (*iosfile_p, ns, static_cast<Array<double>*>(&arr));
-    break;
-  case TpComplex:
-    sia->getSliceComplexV (*iosfile_p, ns, static_cast<Array<Complex>*>(&arr));
-    break;
-  case TpDComplex:
-    sia->getSliceDComplexV (*iosfile_p, ns, static_cast<Array<DComplex>*>(&arr));
-    break;
-  case TpString:
-    sia->getSliceStringV (*iosfile_p, ns, static_cast<Array<String>*>(&arr));
-    break;
-  default:
-    throw DataManInvDT ("StManColumnIndArrayAipsIO::getSliceV");
-  }
+  sia->getSliceV (*iosfile_p, ns, arr, dtype());
 }
 
 void StManColumnIndArrayAipsIO::putSliceV (rownr_t rownr, const Slicer& ns,
                                            const ArrayBase& arr)
 {
   StIndArray* sia = getShape (rownr);
-  switch (dtype()) {
-  case TpBool:
-    sia->putSliceBoolV (*iosfile_p, ns,
-                        static_cast<const Array<Bool>*>(&arr));
-    break;
-  case TpUChar:
-    sia->putSliceuCharV (*iosfile_p, ns,
-                         static_cast<const Array<uChar>*>(&arr));
-    break;
-  case TpShort:
-    sia->putSliceShortV (*iosfile_p, ns,
-                         static_cast<const Array<Short>*>(&arr));
-    break;
-  case TpUShort:
-    sia->putSliceuShortV (*iosfile_p, ns,
-                          static_cast<const Array<uShort>*>(&arr));
-    break;
-  case TpInt:
-    sia->putSliceIntV (*iosfile_p, ns,
-                       static_cast<const Array<Int>*>(&arr));
-    break;
-  case TpUInt:
-    sia->putSliceuIntV (*iosfile_p, ns,
-                        static_cast<const Array<uInt>*>(&arr));
-    break;
-  case TpInt64:
-    sia->putSliceInt64V (*iosfile_p, ns,
-                         static_cast<const Array<Int64>*>(&arr));
-    break;
-  case TpFloat:
-    sia->putSlicefloatV (*iosfile_p, ns,
-                         static_cast<const Array<float>*>(&arr));
-    break;
-  case TpDouble:
-    sia->putSlicedoubleV (*iosfile_p, ns,
-                          static_cast<const Array<double>*>(&arr));
-    break;
-  case TpComplex:
-    sia->putSliceComplexV (*iosfile_p, ns,
-                           static_cast<const Array<Complex>*>(&arr));
-    break;
-  case TpDComplex:
-    sia->putSliceDComplexV (*iosfile_p, ns,
-                            static_cast<const Array<DComplex>*>(&arr));
-    break;
-  case TpString:
-    sia->putSliceStringV (*iosfile_p, ns,
-                          static_cast<const Array<String>*>(&arr));
-    break;
-  default:
-    throw DataManInvDT ("StManColumnIndArrayAipsIO::putSliceV");
-  }
+  sia->putSliceV (*iosfile_p, ns, arr, dtype());
   stmanPtr_p->setHasPut();
 }
 

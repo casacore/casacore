@@ -49,23 +49,40 @@ ISMIndex::~ISMIndex()
 
 void ISMIndex::get (AipsIO& os)
 {
-    os.getstart ("ISMIndex");
+    uInt version = os.getstart ("ISMIndex");
     os >> nused_p;
-    getBlock (os, rows_p);
+    if (version > 1) {
+      // stored as 64-bit
+      getBlock (os, rows_p);
+    } else {
+      // stored as 32-bit
+      Block<uInt> rows;
+      getBlock (os, rows);
+      rows_p.resize (rows.size());
+      std::copy (rows.begin(), rows.end(), rows_p.begin());
+    }
     getBlock (os, bucketNr_p);
     os.getend();
 }
 
 void ISMIndex::put (AipsIO& os)
 {
-    os.putstart ("ISMIndex", 1);
+    // If the last rownr fits in 32-bit, write as version 1 (thus 32-bit).
+    uInt version = (rows_p[nused_p] == uInt(rows_p[nused_p])  ?  1 : 2);
+    os.putstart ("ISMIndex", version);
     os << nused_p;
-    putBlock (os, rows_p, nused_p + 1);
+    if (version > 1) {
+      putBlock (os, rows_p, nused_p + 1);
+    } else {
+      Block<uInt> rows(rows_p.size());
+      std::copy (rows_p.begin(), rows_p.end(), rows.begin());
+      putBlock (os, rows, nused_p + 1);
+    }
     putBlock (os, bucketNr_p, nused_p);
     os.putend();
 }
 
-void ISMIndex::addBucketNr (uInt rownr, uInt bucketNr)
+void ISMIndex::addBucketNr (rownr_t rownr, uInt bucketNr)
 {
     if (nused_p >= bucketNr_p.nelements()) {
 	rows_p.resize (nused_p + 64 + 1);
@@ -83,12 +100,12 @@ void ISMIndex::addBucketNr (uInt rownr, uInt bucketNr)
     nused_p++;
 }
 
-void ISMIndex::addRow (uInt nrrow)
+void ISMIndex::addRow (rownr_t nrrow)
 {
     rows_p[nused_p] += nrrow;
 }
 
-Int ISMIndex::removeRow (uInt rownr)
+Int ISMIndex::removeRow (rownr_t rownr)
 {
     // Decrement the row number for all intervals after the row
     // to be removed.
@@ -114,7 +131,7 @@ Int ISMIndex::removeRow (uInt rownr)
     return emptyBucket;
 }
 
-uInt ISMIndex::getIndex (uInt rownr) const
+uInt ISMIndex::getIndex (rownr_t rownr) const
 {
     // If no exact match, the interval starts at the previous index.
     Bool found;
@@ -126,7 +143,7 @@ uInt ISMIndex::getIndex (uInt rownr) const
     return index;
 }
 
-uInt ISMIndex::getBucketNr (uInt rownr, uInt& bucketStartRow,
+uInt ISMIndex::getBucketNr (rownr_t rownr, rownr_t& bucketStartRow,
 			    uInt& bucketNrrow) const
 {
     uInt index = getIndex (rownr);
@@ -135,7 +152,7 @@ uInt ISMIndex::getBucketNr (uInt rownr, uInt& bucketStartRow,
     return bucketNr_p[index];
 }
 
-Bool ISMIndex::nextBucketNr (uInt& cursor, uInt& bucketStartRow,
+Bool ISMIndex::nextBucketNr (uInt& cursor, rownr_t& bucketStartRow,
 			     uInt& bucketNrrow, uInt& bucketNr) const
 {
     // When first time, get the index of the bucket containing the row.

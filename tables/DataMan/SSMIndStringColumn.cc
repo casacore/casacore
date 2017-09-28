@@ -102,11 +102,11 @@ uInt SSMIndStringColumn::ndim (rownr_t aRowNr)
   return shape(aRowNr).nelements();
 }
 
-void SSMIndStringColumn::getArrayStringV (uInt aRowNr,
-					  Array<String>* aDataPtr)
+void SSMIndStringColumn::getArrayV (rownr_t aRowNr,
+                                    ArrayBase& aDataPtr)
 {
   if (itsShape.nelements() != 0) {
-    SSMDirColumn::getArrayStringV(aRowNr,aDataPtr);
+    SSMDirColumn::getArrayV (aRowNr,aDataPtr);
   } else {
     Int buf[3];
     getRowValue(buf, aRowNr);
@@ -115,26 +115,25 @@ void SSMIndStringColumn::getArrayStringV (uInt aRowNr,
         ("SSMIndStringColumn::getArrayStringV: no array in row "
          + String::toString(aRowNr) + " in column " + columnName()
          + " of table " + itsSSMPtr->table().tableName());
-    } else {
-
-      itsSSMPtr->getStringHandler()->get(*aDataPtr, buf[0], buf[1], 
-					 buf[2], True);
     }
+    itsSSMPtr->getStringHandler()->get(static_cast<Array<String>&>(aDataPtr),
+                                       buf[0], buf[1], buf[2], True);
   }
 }
 
-void SSMIndStringColumn::putArrayStringV (uInt aRowNr,
-					  const Array<String>* aDataPtr)
+void SSMIndStringColumn::putArrayV (rownr_t aRowNr,
+                                    const ArrayBase& aDataPtr)
 {
   if (itsShape.nelements() != 0) {
-    SSMDirColumn::putArrayStringV(aRowNr,aDataPtr);
+    SSMDirColumn::putArrayV (aRowNr, aDataPtr);
   } else {
     Int buf[3];
     // Try to find out if this value was filled before, in that case we use
     // an overwrite.
     getRowValue(buf, aRowNr);
     itsSSMPtr->getStringHandler()->put(buf[0], buf[1], buf[2], 
-				       *aDataPtr, True);
+				       static_cast<const Array<String>&>(aDataPtr),
+                                       True);
     putValue(aRowNr, buf);
   }
 }

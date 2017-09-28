@@ -44,11 +44,11 @@ SSMDirColumn::~SSMDirColumn()
 void SSMDirColumn::setMaxLength (uInt)
 {}
 
-void SSMDirColumn::deleteRow(uInt aRowNr)
+void SSMDirColumn::deleteRow(rownr_t aRowNr)
 {
   char* aValue;
-  uInt  aSRow;
-  uInt  anERow;
+  rownr_t  aSRow;
+  rownr_t  anERow;
   aValue = itsSSMPtr->find (aRowNr, itsColNr, aSRow, anERow, columnName());
   
   if (aRowNr < anERow) {
@@ -57,9 +57,9 @@ void SSMDirColumn::deleteRow(uInt aRowNr)
     
     if (dataType() == TpBool) {
 
-      uInt anOffr = (aRowNr-aSRow+1) * itsNrCopy;
-      uInt anOfto = (aRowNr-aSRow) * itsNrCopy;
-      uInt nr = (anERow-aRowNr) * itsNrCopy;
+      uInt64 anOffr = (aRowNr-aSRow+1) * itsNrCopy;
+      uInt64 anOfto = (aRowNr-aSRow) * itsNrCopy;
+      uInt64 nr = (anERow-aRowNr) * itsNrCopy;
       Block<Bool> tmp(nr);
       Conversion::bitToBool (tmp.storage(), aValue + anOffr/8,
 			     anOffr%8, nr);
@@ -73,238 +73,77 @@ void SSMDirColumn::deleteRow(uInt aRowNr)
   }
 }
 
-void SSMDirColumn::getArrayBoolV     (uInt aRowNr, 
-				      Array<Bool>* aDataPtr)
+void SSMDirColumn::getArrayV (rownr_t aRowNr, ArrayBase& aDataPtr)
 {
   Bool deleteIt;
-  uInt  aStartRow;
-  uInt  anEndRow;
-  char* aValue;
-
-  Bool* data = aDataPtr->getStorage (deleteIt);
-
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
-                            columnName());
-
-  uInt anOff = (aRowNr-aStartRow) * itsNrCopy;
-
-  Conversion::bitToBool(data, aValue+ anOff/8, anOff%8, itsNrCopy);
-
-  aDataPtr->putStorage (data, deleteIt);
-}
-
-void SSMDirColumn::getArrayuCharV    (uInt aRowNr, 
-				      Array<uChar>* aDataPtr)
-{
-    Bool deleteIt;
-    uChar* data = aDataPtr->getStorage (deleteIt);
+  if (dtype() == TpBool) {
+    // Bools need to be converted from bits.
+    rownr_t aStartRow;
+    rownr_t anEndRow;
+    char*   aValue;
+    Array<Bool>& arr = static_cast<Array<Bool>&>(aDataPtr);
+    Bool* data = arr.getStorage (deleteIt);
+    aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                              columnName());
+    uInt64 anOff = (aRowNr-aStartRow) * itsNrCopy;
+    Conversion::bitToBool(data, aValue+ anOff/8, anOff%8, itsNrCopy);
+    arr.putStorage (data, deleteIt);
+  } else if (dtype() == TpString) {
+    // Strings are stored indirectly.
+    Int buf[3];
+    getRowValue(buf, aRowNr);
+    Array<String>& arr = static_cast<Array<String>&>(aDataPtr);
+    itsSSMPtr->getStringHandler()->get(arr, buf[0], buf[1], buf[2], False);
+  } else {
+    // Other types can be handled directly.
+    void* data = aDataPtr.getVStorage (deleteIt);
     getValue (aRowNr, data);
-    aDataPtr->putStorage (data, deleteIt);
+    aDataPtr.putVStorage (data, deleteIt);
+  }
 }
 
-void SSMDirColumn::getArrayShortV    (uInt aRowNr,
-				      Array<Short>* aDataPtr)
+void SSMDirColumn::getValue(rownr_t aRowNr, void* data)
 {
-    Bool deleteIt;
-    Short* data = aDataPtr->getStorage (deleteIt);
-    getValue (aRowNr, data);
-    aDataPtr->putStorage (data, deleteIt);
-}
-
-void SSMDirColumn::getArrayuShortV   (uInt aRowNr,
-				      Array<uShort>* aDataPtr)
-{
-    Bool deleteIt;
-    uShort* data = aDataPtr->getStorage (deleteIt);
-    getValue (aRowNr, data);
-    aDataPtr->putStorage (data, deleteIt);
-}
-
-void SSMDirColumn::getArrayIntV      (uInt aRowNr,
-				      Array<Int>* aDataPtr)
-{
-    Bool deleteIt;
-    Int* data = aDataPtr->getStorage (deleteIt);
-    getValue (aRowNr, data);
-    aDataPtr->putStorage (data, deleteIt);
-}
-
-void SSMDirColumn::getArrayuIntV     (uInt aRowNr,
-				      Array<uInt>* aDataPtr)
-{
-    Bool deleteIt;
-    uInt* data = aDataPtr->getStorage (deleteIt);
-    getValue (aRowNr, data);
-    aDataPtr->putStorage (data, deleteIt);
-}
-
-void SSMDirColumn::getArrayfloatV    (uInt aRowNr,
-				      Array<float>* aDataPtr)
-{
-    Bool deleteIt;
-    float* data = aDataPtr->getStorage (deleteIt);
-    getValue (aRowNr, data);
-    aDataPtr->putStorage (data, deleteIt);
-}
-
-void SSMDirColumn::getArraydoubleV   (uInt aRowNr,
-				      Array<double>* aDataPtr)
-{
-    Bool deleteIt;
-    double* data = aDataPtr->getStorage (deleteIt);
-    getValue (aRowNr, data);
-    aDataPtr->putStorage (data, deleteIt);
-}
-
-void SSMDirColumn::getArrayComplexV  (uInt aRowNr,
-				      Array<Complex>* aDataPtr)
-{
-    Bool deleteIt;
-    Complex* data = aDataPtr->getStorage (deleteIt);
-    getValue (aRowNr, data);
-    aDataPtr->putStorage (data, deleteIt);
-}
-
-void SSMDirColumn::getArrayDComplexV (uInt aRowNr,
-				      Array<DComplex>* aDataPtr)
-{
-    Bool deleteIt;
-    DComplex* data = aDataPtr->getStorage (deleteIt);
-    getValue (aRowNr, data);
-    aDataPtr->putStorage (data, deleteIt);
-}
-
-void SSMDirColumn::getArrayStringV (uInt aRowNr,
-				    Array<String>* aDataPtr)
-{
-  Int buf[3];
-  getRowValue(buf, aRowNr);
-  itsSSMPtr->getStringHandler()->get(*aDataPtr, buf[0], buf[1], buf[2],False);
-}
-
-void SSMDirColumn::getValue(uInt aRowNr, void* data)
-{
-  uInt  aStartRow;
-  uInt  anEndRow;
-  char* aValue;
+  rownr_t aStartRow;
+  rownr_t anEndRow;
+  char*   aValue;
   aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
                             columnName());
   itsReadFunc (data, aValue+(aRowNr-aStartRow)*itsExternalSizeBytes,
 	       itsNrCopy);
 }
 
-void SSMDirColumn::putArrayBoolV     (uInt aRowNr,
-				      const Array<Bool>* aDataPtr)
+void SSMDirColumn::putArrayV (rownr_t aRowNr, const ArrayBase& aDataPtr)
 {
   Bool deleteIt;
-  const Bool* data = aDataPtr->getStorage (deleteIt);
-
-  uInt  aStartRow;
-  uInt  anEndRow;
-  char* aValue;
-
-  aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
-                            columnName());
-
-  uInt anOff = (aRowNr-aStartRow) * itsNrCopy;
-
-  Conversion::boolToBit (aValue + anOff/8, data, anOff%8, itsNrCopy);
+  if (dtype() == TpBool) {
+    // Bools need to be converted from bits.
+    rownr_t aStartRow;
+    rownr_t anEndRow;
+    char*   aValue;
+    aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                              columnName());
+    uInt64 anOff = (aRowNr-aStartRow) * itsNrCopy;
+    const Array<Bool>& arr = static_cast<const Array<Bool>&>(aDataPtr);
+    const Bool* data = arr.getStorage (deleteIt);
+    Conversion::boolToBit (aValue + anOff/8, data, anOff%8, itsNrCopy);
+    arr.freeStorage (data, deleteIt);
+  } else if (dtype() == TpString) {
+    // Strings are stored indirectly.
+    Int buf[3];
+    getRowValue(buf, aRowNr);
+    const Array<String>& arr = static_cast<const Array<String>&>(aDataPtr);
+    itsSSMPtr->getStringHandler()->put(buf[0], buf[1], buf[2], arr, False);
+    putValue(aRowNr, buf);
+  } else {
+    // Other types can be handled directly.
+    const void* data = aDataPtr.getVStorage (deleteIt);
+    putValue (aRowNr, data);
+    aDataPtr.freeVStorage (data, deleteIt);
+  }
   itsSSMPtr->setBucketDirty();
-  aDataPtr->freeStorage (data, deleteIt);
 }
 
-void SSMDirColumn::putArrayuCharV    (uInt aRowNr,
-				      const Array<uChar>* aDataPtr)
-{
-    Bool deleteIt;
-    const uChar* data = aDataPtr->getStorage (deleteIt);
-    putValue (aRowNr, data);
-    aDataPtr->freeStorage (data, deleteIt);
-}
-
-void SSMDirColumn::putArrayShortV    (uInt aRowNr,
-				      const Array<Short>* aDataPtr)
-{
-    Bool deleteIt;
-    const Short* data = aDataPtr->getStorage (deleteIt);
-    putValue (aRowNr, data);
-    aDataPtr->freeStorage (data, deleteIt);
-}
-
-void SSMDirColumn::putArrayuShortV   (uInt aRowNr,
-				      const Array<uShort>* aDataPtr)
-{
-    Bool deleteIt;
-    const uShort* data = aDataPtr->getStorage (deleteIt);
-    putValue (aRowNr, data);
-    aDataPtr->freeStorage (data, deleteIt);
-}
-
-void SSMDirColumn::putArrayIntV      (uInt aRowNr,
-				      const Array<Int>* aDataPtr)
-{
-    Bool deleteIt;
-    const Int* data = aDataPtr->getStorage (deleteIt);
-    putValue (aRowNr, data);
-    aDataPtr->freeStorage (data, deleteIt);
-}
-
-void SSMDirColumn::putArrayuIntV     (uInt aRowNr,
-				      const Array<uInt>* aDataPtr)
-{
-    Bool deleteIt;
-    const uInt* data = aDataPtr->getStorage (deleteIt);
-    putValue (aRowNr, data);
-    aDataPtr->freeStorage (data, deleteIt);
-}
-
-void SSMDirColumn::putArrayfloatV    (uInt aRowNr,
-				      const Array<float>* aDataPtr)
-{
-    Bool deleteIt;
-    const float* data = aDataPtr->getStorage (deleteIt);
-    putValue (aRowNr, data);
-    aDataPtr->freeStorage (data, deleteIt);
-}
-
-void SSMDirColumn::putArraydoubleV   (uInt aRowNr,
-				      const Array<double>* aDataPtr)
-{
-    Bool deleteIt;
-    const double* data = aDataPtr->getStorage (deleteIt);
-    putValue (aRowNr, data);
-    aDataPtr->freeStorage (data, deleteIt);
-}
-
-void SSMDirColumn::putArrayComplexV  (uInt aRowNr,
-				      const Array<Complex>* aDataPtr)
-{
-    Bool deleteIt;
-    const Complex* data = aDataPtr->getStorage (deleteIt);
-    putValue (aRowNr, data);
-    aDataPtr->freeStorage (data, deleteIt);
-}
-
-void SSMDirColumn::putArrayDComplexV (uInt aRowNr,
-				      const Array<DComplex>* aDataPtr)
-{
-    Bool deleteIt;
-    const DComplex* data = aDataPtr->getStorage (deleteIt);
-    putValue (aRowNr, data);
-    aDataPtr->freeStorage (data, deleteIt);
-}
-
-void SSMDirColumn::putArrayStringV (uInt aRowNr,
-				    const Array<String>* aDataPtr)
-{
-  Int buf[3];
-  // Try to find out if this value was filled before, in that case we use
-  // an overwrite.
-  getRowValue(buf, aRowNr);
-  itsSSMPtr->getStringHandler()->put(buf[0], buf[1], buf[2], *aDataPtr,False);
-  putValue(aRowNr, buf);
-
-}
 
 } //# NAMESPACE CASACORE - END
 

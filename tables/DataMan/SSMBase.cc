@@ -54,7 +54,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
+SSMBase::SSMBase (Int aBucketSize, uInt64 aCacheSize)
 : DataManager          (),
   itsDataManName       ("SSM"),
   itsIosFile           (0),
@@ -62,7 +62,7 @@ SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
   itsCache             (0),
   itsFile              (0),
   itsStringHandler     (0),
-  itsPersCacheSize     (max(aCacheSize,2u)),
+  itsPersCacheSize     (std::max(aCacheSize,uInt64(2))),
   itsCacheSize         (0),
   itsNrBuckets         (0), 
   itsNrIdxBuckets      (0),
@@ -86,7 +86,7 @@ SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
 }
 
 SSMBase::SSMBase (const String& aDataManName,
-		  Int aBucketSize, uInt aCacheSize)
+		  Int aBucketSize, uInt64 aCacheSize)
 : DataManager          (),
   itsDataManName       (aDataManName),
   itsIosFile           (0),
@@ -94,7 +94,7 @@ SSMBase::SSMBase (const String& aDataManName,
   itsCache             (0),
   itsFile              (0),
   itsStringHandler     (0),
-  itsPersCacheSize     (max(aCacheSize,2u)),
+  itsPersCacheSize     (std::max(aCacheSize,uInt64(2))),
   itsCacheSize         (0),
   itsNrBuckets         (0), 
   itsNrIdxBuckets      (0),
@@ -140,7 +140,7 @@ SSMBase::SSMBase (const String& aDataManName,
   itsBucketRows        (0),
   isDataChanged        (False)
 { 
-  // Get bucketrows if defined.
+  // Get nr of rows per bucket if defined.
   if (spec.isDefined ("BUCKETROWS")) {
     itsBucketRows = spec.asInt ("BUCKETROWS");
   }
@@ -421,7 +421,13 @@ void SSMBase::readHeader()
   }
   anOs >> itsBucketSize;                // Size of the bucket
   anOs >> itsNrBuckets;                 // Initial Nr of Buckets
-  anOs >> itsPersCacheSize;             // Size of Persistent cache
+  if (version >= 4) {
+    anOs >> itsPersCacheSize;           // Size of Persistent cache
+  } else {
+    uInt tmp;
+    anOs >> tmp;
+    itsPersCacheSize = tmp;
+  }
   anOs >> itsFreeBucketsNr;             // Nr of Free Buckets
   anOs >> itsFirstFreeBucket;           // First Free Bucket nr
   anOs >> itsNrIdxBuckets;              // Nr of Buckets needed 4 Index
@@ -615,10 +621,16 @@ void SSMBase::writeIndex()
   itsFile->seek (0);
   AipsIO anOs (aTio);
   
-  // write a few items at the beginning of the file  AipsIO anOs (aTio);
+  // Write a few items at the beginning of the file  AipsIO anOs (aTio);
   // The endian switch is a new feature. So only put it if little endian
   // is used. In that way older software can read newer tables.
-  if (asBigEndian()) {
+  // Similarly for persistent cache size.
+  Bool as64 = False;
+  if (itsPersCacheSize != uInt(itsPersCacheSize)) {
+    as64 = True;
+    anOs.putstart("StandardStMan", 4);
+    anOs << asBigEndian();
+  } else if (asBigEndian()) {
     anOs.putstart("StandardStMan", 2);
   } else {
     anOs.putstart("StandardStMan", 3);
@@ -626,7 +638,11 @@ void SSMBase::writeIndex()
   }
   anOs << itsBucketSize;                // Size of the bucket
   anOs << aNrBuckets;                   // Present number of buckets
-  anOs << itsPersCacheSize;             // Size of Persistent cache
+  if (as64) {
+    anOs << itsPersCacheSize;           // Size of Persistent cache
+  } else {
+    anOs << uInt(itsPersCacheSize);     // Size of Persistent cache
+  }
   anOs << getCache().nFreeBucket();     // Nr of Free Buckets
   anOs << getCache().firstFreeBucket(); // First Free Bucket nr
   anOs << itsNrIdxBuckets;              // Nr buckets needed for index
@@ -747,7 +763,7 @@ void SSMBase::addColumn (DataManagerColumn* aColumn)
   uInt saveIndex=0;
   Int  saveOffset=-1; 
 
-  // Try if there is  freespace available where this column can fit (best fit)
+  // Try if there is freespace available where this column can fit (best fit)
   // For now we assume that a best fit will be :
   //                                             1) exact fit
   //                                             2) any fit
@@ -903,8 +919,8 @@ char* SSMBase::initCallBack (void* anOwner)
   return aBucket;
 }
 
-char* SSMBase::find(uInt aRowNr,     uInt aColNr, 
-		    uInt& aStartRow, uInt& anEndRow,
+char* SSMBase::find(rownr_t aRowNr,     uInt aColNr, 
+		    rownr_t& aStartRow, rownr_t& anEndRow,
                     const String& colName)
 {
  

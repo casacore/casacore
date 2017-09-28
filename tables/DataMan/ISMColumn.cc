@@ -42,15 +42,15 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ISMColumn::ISMColumn (ISMBase* parent, int dataType, uInt colnr)
-: StManColumn   (dataType),
-  stmanPtr_p    (parent),
-  fixedLength_p (0),
-  colnr_p       (colnr),
-  nrelem_p      (1),
-  startRow_p    (-1),
-  endRow_p      (-1),
-  lastValue_p   (0),
-  lastRowPut_p  (0)
+: StManColumnBase(dataType),
+  stmanPtr_p     (parent),
+  fixedLength_p  (0),
+  colnr_p        (colnr),
+  nrelem_p       (1),
+  startRow_p     (-1),
+  endRow_p       (-1),
+  lastValue_p    (0),
+  lastRowPut_p   (0)
 {
     //# The increment in the column cache is always 0,
     //# because multiple rows refer to the same value.
@@ -83,6 +83,9 @@ void ISMColumn::clear()
     case TpUInt:
 	delete [] (uInt*)lastValue_p;
 	break;
+    case TpInt64:
+	delete [] (Int64*)lastValue_p;
+	break;
     case TpFloat:
 	delete [] (float*)lastValue_p;
 	break;
@@ -98,6 +101,8 @@ void ISMColumn::clear()
     case TpString:
 	delete [] (String*)lastValue_p;
 	break;
+    default:
+	AlwaysAssert (0, AipsError);
     }
     lastValue_p = 0;
 }
@@ -138,7 +143,7 @@ void ISMColumn::remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow,
 #endif
 
     // Get bucket information needed to remove the data.
-    Block<uInt>& rowIndex = bucket->rowIndex (colnr_p);
+    Block<rownr_t>& rowIndex = bucket->rowIndex (colnr_p);
     Block<uInt>& offIndex = bucket->offIndex (colnr_p);
     uInt& nused = bucket->indexUsed (colnr_p);
     // Invalidate the last value read.
@@ -214,6 +219,13 @@ void ISMColumn::getuInt (rownr_t rownr, uInt* value)
     }
     *value = *(uInt*)lastValue_p;
 }
+void ISMColumn::getInt64 (rownr_t rownr, Int64* value)
+{
+    if (isLastValueInvalid (rownr)) {
+	getValue (rownr, lastValue_p, True);
+    }
+    *value = *(Int64*)lastValue_p;
+}
 void ISMColumn::getfloat (rownr_t rownr, float* value)
 {
     if (isLastValueInvalid (rownr)) {
@@ -250,137 +262,111 @@ void ISMColumn::getString (rownr_t rownr, String* value)
     *value = *(String*)lastValue_p;
 }
 
-void ISMColumn::getScalarColumnBoolV (Vector<Bool>* dataPtr)
+void ISMColumn::getScalarColumnV (ArrayBase& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
-    rownr_t rownr = 0;
-    while (rownr < nrrow) {
-	getBool (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(Bool*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnuCharV (Vector<uChar>* dataPtr)
-{
-    rownr_t nrrow = dataPtr->nelements();
-    rownr_t rownr = 0;
-    while (rownr < nrrow) {
-	getuChar (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(uChar*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnShortV (Vector<Short>* dataPtr)
-{
-    rownr_t nrrow = dataPtr->nelements();
-    rownr_t rownr = 0;
-    while (rownr < nrrow) {
-	getShort (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(Short*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnuShortV (Vector<uShort>* dataPtr)
-{
-    rownr_t nrrow = dataPtr->nelements();
-    rownr_t rownr = 0;
-    while (rownr < nrrow) {
-	getuShort (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(uShort*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnIntV (Vector<Int>* dataPtr)
-{
-    rownr_t nrrow = dataPtr->nelements();
-    rownr_t rownr = 0;
-    while (rownr < nrrow) {
-	getInt (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(Int*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnuIntV (Vector<uInt>* dataPtr)
-{
-    rownr_t nrrow = dataPtr->nelements();
-    rownr_t rownr = 0;
-    while (rownr < nrrow) {
-	getuInt (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(uInt*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnfloatV (Vector<float>* dataPtr)
-{
-    //# Note: using getStorage/putStorage is about 3 times faster
-    //# if the vector is consecutive, but it is slower if not.
-    rownr_t nrrow = dataPtr->nelements();
-    rownr_t rownr = 0;
-    while (rownr < nrrow) {
-	getfloat (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(float*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumndoubleV (Vector<double>* dataPtr)
-{
-    rownr_t nrrow = dataPtr->nelements();
-    rownr_t rownr = 0;
-    while (rownr < nrrow) {
-	getdouble (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(double*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnComplexV (Vector<Complex>* dataPtr)
-{
-    rownr_t nrrow = dataPtr->nelements();
-    rownr_t rownr = 0;
-    while (rownr < nrrow) {
-	getComplex (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(Complex*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnDComplexV (Vector<DComplex>* dataPtr)
-{
-    rownr_t nrrow = dataPtr->nelements();
-    rownr_t rownr = 0;
-    while (rownr < nrrow) {
-	getDComplex (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(DComplex*)lastValue_p;
-	}
-    }
-}
-void ISMColumn::getScalarColumnStringV (Vector<String>* dataPtr)
-{
-    rownr_t nrrow = dataPtr->nelements();
-    rownr_t rownr = 0;
-    while (rownr < nrrow) {
-	getString (rownr, &((*dataPtr)(rownr)));
-	for (rownr++; Int(rownr)<=endRow_p; rownr++) {
-	    (*dataPtr)(rownr) = *(String*)lastValue_p;
-	}
-    }
+  switch (dtype()) {
+  case TpBool:
+    getScaCol (static_cast<Vector<Bool>&>(dataPtr));
+    break;
+  case TpUChar:
+    getScaCol (static_cast<Vector<uChar>&>(dataPtr));
+    break;
+  case TpShort:
+    getScaCol (static_cast<Vector<Short>&>(dataPtr));
+    break;
+  case TpUShort:
+    getScaCol (static_cast<Vector<uShort>&>(dataPtr));
+    break;
+  case TpInt:
+    getScaCol (static_cast<Vector<Int>&>(dataPtr));
+    break;
+  case TpUInt:
+    getScaCol (static_cast<Vector<uInt>&>(dataPtr));
+    break;
+  case TpInt64:
+    getScaCol (static_cast<Vector<Int64>&>(dataPtr));
+    break;
+  case TpFloat:
+    getScaCol (static_cast<Vector<float>&>(dataPtr));
+    break;
+  case TpDouble:
+    getScaCol (static_cast<Vector<double>&>(dataPtr));
+    break;
+  case TpComplex:
+    getScaCol (static_cast<Vector<Complex>&>(dataPtr));
+    break;
+  case TpDComplex:
+    getScaCol (static_cast<Vector<DComplex>&>(dataPtr));
+    break;
+  case TpString:
+    getScaCol (static_cast<Vector<String>&>(dataPtr));
+    break;
+  default:
+    AlwaysAssert (0, AipsError);
+  }
 }
 
-#define ISMCOLUMN_GET(T,NM) \
-void ISMColumn::aips_name2(getScalarColumnCells,NM) \
-                                             (const RefRows& rownrs, \
-					      Vector<T>* values) \
+void ISMColumn::getScalarColumnCellsV (const RefRows& rows, ArrayBase& dataPtr)
+{
+  switch (dtype()) {
+  case TpBool:
+    getScaColCells (rows, static_cast<Vector<Bool>&>(dataPtr));
+    break;
+  case TpUChar:
+    getScaColCells (rows, static_cast<Vector<uChar>&>(dataPtr));
+    break;
+  case TpShort:
+    getScaColCells (rows, static_cast<Vector<Short>&>(dataPtr));
+    break;
+  case TpUShort:
+    getScaColCells (rows, static_cast<Vector<uShort>&>(dataPtr));
+    break;
+  case TpInt:
+    getScaColCells (rows, static_cast<Vector<Int>&>(dataPtr));
+    break;
+  case TpUInt:
+    getScaColCells (rows, static_cast<Vector<uInt>&>(dataPtr));
+    break;
+  case TpInt64:
+    getScaColCells (rows, static_cast<Vector<Int64>&>(dataPtr));
+    break;
+  case TpFloat:
+    getScaColCells (rows, static_cast<Vector<float>&>(dataPtr));
+    break;
+  case TpDouble:
+    getScaColCells (rows, static_cast<Vector<double>&>(dataPtr));
+    break;
+  case TpComplex:
+    getScaColCells (rows, static_cast<Vector<Complex>&>(dataPtr));
+    break;
+  case TpDComplex:
+    getScaColCells (rows, static_cast<Vector<DComplex>&>(dataPtr));
+    break;
+  case TpString:
+    getScaColCells (rows, static_cast<Vector<String>&>(dataPtr));
+    break;
+  default:
+    AlwaysAssert (0, AipsError);
+  }
+}
+
+#define ISMCOLUMN_GET(T) \
+void ISMColumn::getScaCol (Vector<T>& dataPtr) \
+{ \
+    rownr_t nrrow = dataPtr.nelements(); \
+    rownr_t rownr = 0; \
+    while (rownr < nrrow) { \
+        aips_name2(get,T) (rownr, &(dataPtr(rownr))); \
+	for (rownr++; Int64(rownr)<=endRow_p; rownr++) { \
+	    dataPtr(rownr) = *(T*)lastValue_p; \
+	} \
+    } \
+} \
+void ISMColumn::getScaColCells (const RefRows& rownrs, \
+                                Vector<T>& values) \
 { \
     Bool delV; \
-    T* value = values->getStorage (delV); \
+    T* value = values.getStorage (delV); \
     T* valptr = value; \
     const ColumnCache& cache = columnCache(); \
     if (rownrs.isSliced()) { \
@@ -430,24 +416,26 @@ void ISMColumn::aips_name2(getScalarColumnCells,NM) \
             rowvec.freeStorage (rows, delR); \
         } \
     } \
-    values->putStorage (value, delV); \
+    values.putStorage (value, delV); \
 }
-ISMCOLUMN_GET(Bool,BoolV)
-ISMCOLUMN_GET(uChar,uCharV)
-ISMCOLUMN_GET(Short,ShortV)
-ISMCOLUMN_GET(uShort,uShortV)
-ISMCOLUMN_GET(Int,IntV)
-ISMCOLUMN_GET(uInt,uIntV)
-ISMCOLUMN_GET(float,floatV)
-ISMCOLUMN_GET(double,doubleV)
-ISMCOLUMN_GET(Complex,ComplexV)
-ISMCOLUMN_GET(DComplex,DComplexV)
-ISMCOLUMN_GET(String,StringV)
+ISMCOLUMN_GET(Bool)
+ISMCOLUMN_GET(uChar)
+ISMCOLUMN_GET(Short)
+ISMCOLUMN_GET(uShort)
+ISMCOLUMN_GET(Int)
+ISMCOLUMN_GET(uInt)
+ISMCOLUMN_GET(Int64)
+ISMCOLUMN_GET(float)
+ISMCOLUMN_GET(double)
+ISMCOLUMN_GET(Complex)
+ISMCOLUMN_GET(DComplex)
+ISMCOLUMN_GET(String)
 
-void ISMColumn::getValue (uInt rownr, void* value, Bool setCache)
+void ISMColumn::getValue (rownr_t rownr, void* value, Bool setCache)
 {
     // Get the bucket with its row number boundaries.
-    uInt bucketStartRow, bucketNrrow;
+    rownr_t bucketStartRow;
+    uInt bucketNrrow;
     ISMBucket* bucket = stmanPtr_p->getBucket (rownr, bucketStartRow,
 					       bucketNrrow);
     // Get the interval in the bucket with its rownr boundaries.
@@ -488,6 +476,10 @@ void ISMColumn::putuInt (rownr_t rownr, const uInt* value)
 {
     putValue (rownr, value);
 }
+void ISMColumn::putInt64 (rownr_t rownr, const Int64* value)
+{
+    putValue (rownr, value);
+}
 void ISMColumn::putfloat (rownr_t rownr, const float* value)
 {
     putValue (rownr, value);
@@ -509,255 +501,165 @@ void ISMColumn::putString (rownr_t rownr, const String* value)
     putValue (rownr, value);
 }
 
-void ISMColumn::putScalarColumnBoolV (const Vector<Bool>* dataPtr)
+void ISMColumn::putScalarColumnV (const ArrayBase& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
+  switch (dtype()) {
+  case TpBool:
+    putScaCol (static_cast<const Vector<Bool>&>(dataPtr));
+    break;
+  case TpUChar:
+    putScaCol (static_cast<const Vector<uChar>&>(dataPtr));
+    break;
+  case TpShort:
+    putScaCol (static_cast<const Vector<Short>&>(dataPtr));
+    break;
+  case TpUShort:
+    putScaCol (static_cast<const Vector<uShort>&>(dataPtr));
+    break;
+  case TpInt:
+    putScaCol (static_cast<const Vector<Int>&>(dataPtr));
+    break;
+  case TpUInt:
+    putScaCol (static_cast<const Vector<uInt>&>(dataPtr));
+    break;
+  case TpInt64:
+    putScaCol (static_cast<const Vector<Int64>&>(dataPtr));
+    break;
+  case TpFloat:
+    putScaCol (static_cast<const Vector<float>&>(dataPtr));
+    break;
+  case TpDouble:
+    putScaCol (static_cast<const Vector<double>&>(dataPtr));
+    break;
+  case TpComplex:
+    putScaCol (static_cast<const Vector<Complex>&>(dataPtr));
+    break;
+  case TpDComplex:
+    putScaCol (static_cast<const Vector<DComplex>&>(dataPtr));
+    break;
+  case TpString:
+    putScaCol (static_cast<const Vector<String>&>(dataPtr));
+    break;
+  default:
+    AlwaysAssert (0, AipsError);
+  }
+}
+
+
+void ISMColumn::putScaCol (const Vector<Bool>& dataPtr)
+{
+    rownr_t nrrow = dataPtr.nelements();
     for (rownr_t i=0; i<nrrow; i++) {
-	putValue (i, &((*dataPtr)(i)));
+	putValue (i, &(dataPtr(i)));
     }
 }
-void ISMColumn::putScalarColumnuCharV (const Vector<uChar>* dataPtr)
+void ISMColumn::putScaCol (const Vector<uChar>& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
+    rownr_t nrrow = dataPtr.nelements();
     for (rownr_t i=0; i<nrrow; i++) {
-	putValue (i, &((*dataPtr)(i)));
+	putValue (i, &(dataPtr(i)));
     }
 }
-void ISMColumn::putScalarColumnShortV (const Vector<Short>* dataPtr)
+void ISMColumn::putScaCol (const Vector<Short>& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
+    rownr_t nrrow = dataPtr.nelements();
     for (rownr_t i=0; i<nrrow; i++) {
-	putValue (i, &((*dataPtr)(i)));
+	putValue (i, &(dataPtr(i)));
     }
 }
-void ISMColumn::putScalarColumnuShortV (const Vector<uShort>* dataPtr)
+void ISMColumn::putScaCol (const Vector<uShort>& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
+    rownr_t nrrow = dataPtr.nelements();
     for (rownr_t i=0; i<nrrow; i++) {
-	putValue (i, &((*dataPtr)(i)));
+	putValue (i, &(dataPtr(i)));
     }
 }
-void ISMColumn::putScalarColumnIntV (const Vector<Int>* dataPtr)
+void ISMColumn::putScaCol (const Vector<Int>& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
+    rownr_t nrrow = dataPtr.nelements();
     for (rownr_t i=0; i<nrrow; i++) {
-	putValue (i, &((*dataPtr)(i)));
+	putValue (i, &(dataPtr(i)));
     }
 }
-void ISMColumn::putScalarColumnuIntV (const Vector<uInt>* dataPtr)
+void ISMColumn::putScaCol (const Vector<uInt>& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
+    rownr_t nrrow = dataPtr.nelements();
     for (rownr_t i=0; i<nrrow; i++) {
-	putValue (i, &((*dataPtr)(i)));
+	putValue (i, &(dataPtr(i)));
     }
 }
-void ISMColumn::putScalarColumnfloatV (const Vector<float>* dataPtr)
+void ISMColumn::putScaCol (const Vector<Int64>& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
+    rownr_t nrrow = dataPtr.nelements();
     for (rownr_t i=0; i<nrrow; i++) {
-	putValue (i, &((*dataPtr)(i)));
+	putValue (i, &(dataPtr(i)));
     }
 }
-void ISMColumn::putScalarColumndoubleV (const Vector<double>* dataPtr)
+void ISMColumn::putScaCol (const Vector<float>& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
+    rownr_t nrrow = dataPtr.nelements();
     for (rownr_t i=0; i<nrrow; i++) {
-	putValue (i, &((*dataPtr)(i)));
+	putValue (i, &(dataPtr(i)));
     }
 }
-void ISMColumn::putScalarColumnComplexV (const Vector<Complex>* dataPtr)
+void ISMColumn::putScaCol (const Vector<double>& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
+    rownr_t nrrow = dataPtr.nelements();
     for (rownr_t i=0; i<nrrow; i++) {
-	putValue (i, &((*dataPtr)(i)));
+	putValue (i, &(dataPtr(i)));
     }
 }
-void ISMColumn::putScalarColumnDComplexV (const Vector<DComplex>* dataPtr)
+void ISMColumn::putScaCol (const Vector<Complex>& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
+    rownr_t nrrow = dataPtr.nelements();
     for (rownr_t i=0; i<nrrow; i++) {
-	putValue (i, &((*dataPtr)(i)));
+	putValue (i, &(dataPtr(i)));
     }
 }
-void ISMColumn::putScalarColumnStringV (const Vector<String>* dataPtr)
+void ISMColumn::putScaCol (const Vector<DComplex>& dataPtr)
 {
-    rownr_t nrrow = dataPtr->nelements();
+    rownr_t nrrow = dataPtr.nelements();
     for (rownr_t i=0; i<nrrow; i++) {
-	putValue (i, &((*dataPtr)(i)));
+	putValue (i, &(dataPtr(i)));
+    }
+}
+void ISMColumn::putScaCol (const Vector<String>& dataPtr)
+{
+    rownr_t nrrow = dataPtr.nelements();
+    for (rownr_t i=0; i<nrrow; i++) {
+	putValue (i, &(dataPtr(i)));
     }
 }
 
-void ISMColumn::getArrayBoolV (uInt rownr, Array<Bool>* value)
+void ISMColumn::getArrayV (rownr_t rownr, ArrayBase& value)
 {
     if (isLastValueInvalid (rownr)) {
 	getValue (rownr, lastValue_p, False);
     }
-    *value = Array<Bool> (shape_p, (Bool*)lastValue_p, SHARE);
-}
-
-void ISMColumn::putArrayBoolV (uInt rownr, const Array<Bool>* value)
-{
-    Bool deleteIt;
-    const Bool* data = value->getStorage (deleteIt);
-    putValue (rownr, data);
-    value->freeStorage (data, deleteIt);
-}
-void ISMColumn::getArrayuCharV (uInt rownr, Array<uChar>* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
+    if (dtype() == TpString) {
+      value.assignBase (Array<String> (shape_p, (String*)lastValue_p, SHARE));
+    } else {
+      Bool deleteIt;
+      void* vptr = value.getVStorage(deleteIt);
+      memcpy (vptr, lastValue_p, nrelem_p * typeSize_p);
+      value.putVStorage (vptr, deleteIt);
     }
-    *value = Array<uChar> (shape_p, (uChar*)lastValue_p, SHARE);
 }
 
-void ISMColumn::putArrayuCharV (uInt rownr, const Array<uChar>* value)
+void ISMColumn::putArrayV (rownr_t rownr, const ArrayBase& value)
 {
     Bool deleteIt;
-    const uChar* data = value->getStorage (deleteIt);
+    const void* data = value.getVStorage (deleteIt);
     putValue (rownr, data);
-    value->freeStorage (data, deleteIt);
-}
-void ISMColumn::getArrayShortV (uInt rownr, Array<Short>* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
-    }
-    *value = Array<Short> (shape_p, (Short*)lastValue_p, SHARE);
-}
-
-void ISMColumn::putArrayShortV (uInt rownr, const Array<Short>* value)
-{
-    Bool deleteIt;
-    const Short* data = value->getStorage (deleteIt);
-    putValue (rownr, data);
-    value->freeStorage (data, deleteIt);
-}
-void ISMColumn::getArrayuShortV (uInt rownr, Array<uShort>* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
-    }
-    *value = Array<uShort> (shape_p, (uShort*)lastValue_p, SHARE);
-}
-
-void ISMColumn::putArrayuShortV (uInt rownr, const Array<uShort>* value)
-{
-    Bool deleteIt;
-    const uShort* data = value->getStorage (deleteIt);
-    putValue (rownr, data);
-    value->freeStorage (data, deleteIt);
-}
-void ISMColumn::getArrayIntV (uInt rownr, Array<Int>* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
-    }
-    *value = Array<Int> (shape_p, (Int*)lastValue_p, SHARE);
-}
-
-void ISMColumn::putArrayIntV (uInt rownr, const Array<Int>* value)
-{
-    Bool deleteIt;
-    const Int* data = value->getStorage (deleteIt);
-    putValue (rownr, data);
-    value->freeStorage (data, deleteIt);
-}
-void ISMColumn::getArrayuIntV (uInt rownr, Array<uInt>* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
-    }
-    *value = Array<uInt> (shape_p, (uInt*)lastValue_p, SHARE);
-}
-
-void ISMColumn::putArrayuIntV (uInt rownr, const Array<uInt>* value)
-{
-    Bool deleteIt;
-    const uInt* data = value->getStorage (deleteIt);
-    putValue (rownr, data);
-    value->freeStorage (data, deleteIt);
-}
-void ISMColumn::getArrayfloatV (uInt rownr, Array<float>* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
-    }
-    *value = Array<float> (shape_p, (float*)lastValue_p, SHARE);
-}
-
-void ISMColumn::putArrayfloatV (uInt rownr, const Array<float>* value)
-{
-    Bool deleteIt;
-    const float* data = value->getStorage (deleteIt);
-    putValue (rownr, data);
-    value->freeStorage (data, deleteIt);
-}
-void ISMColumn::getArraydoubleV (uInt rownr, Array<double>* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
-    }
-    *value = Array<double> (shape_p, (double*)lastValue_p, SHARE);
-}
-
-void ISMColumn::putArraydoubleV (uInt rownr, const Array<double>* value)
-{
-    Bool deleteIt;
-    const double* data = value->getStorage (deleteIt);
-    putValue (rownr, data);
-    value->freeStorage (data, deleteIt);
-}
-void ISMColumn::getArrayComplexV (uInt rownr, Array<Complex>* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
-    }
-    *value = Array<Complex> (shape_p, (Complex*)lastValue_p, SHARE);
-}
-
-void ISMColumn::putArrayComplexV (uInt rownr, const Array<Complex>* value)
-{
-    Bool deleteIt;
-    const Complex* data = value->getStorage (deleteIt);
-    putValue (rownr, data);
-    value->freeStorage (data, deleteIt);
-}
-void ISMColumn::getArrayDComplexV (uInt rownr, Array<DComplex>* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
-    }
-    *value = Array<DComplex> (shape_p, (DComplex*)lastValue_p, SHARE);
-}
-
-void ISMColumn::putArrayDComplexV (uInt rownr, const Array<DComplex>* value)
-{
-    Bool deleteIt;
-    const DComplex* data = value->getStorage (deleteIt);
-    putValue (rownr, data);
-    value->freeStorage (data, deleteIt);
-}
-void ISMColumn::getArrayStringV (uInt rownr, Array<String>* value)
-{
-    if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
-    }
-    *value = Array<String> (shape_p, (String*)lastValue_p, SHARE);
-}
-
-void ISMColumn::putArrayStringV (uInt rownr, const Array<String>* value)
-{
-    Bool deleteIt;
-    const String* data = value->getStorage (deleteIt);
-    putValue (rownr, data);
-    value->freeStorage (data, deleteIt);
+    value.freeVStorage (data, deleteIt);
 }
 
 
-void ISMColumn::putValue (uInt rownr, const void* value)
+void ISMColumn::putValue (rownr_t rownr, const void* value)
 {
     // Get the bucket and interval to which the row belongs.
-    uInt bucketStartRow, bucketNrrow;
+    rownr_t bucketStartRow;
+    uInt bucketNrrow;
     ISMBucket* bucket = stmanPtr_p->getBucket (rownr, bucketStartRow,
 					       bucketNrrow);
     uInt bucketRownr = rownr - bucketStartRow;
@@ -775,7 +677,7 @@ void ISMColumn::putValue (uInt rownr, const void* value)
 #endif
 
     // Get bucket information needed to write the data.
-    Block<uInt>& rowIndex = bucket->rowIndex (colnr_p);
+    Block<rownr_t>& rowIndex = bucket->rowIndex (colnr_p);
     Block<uInt>& offIndex = bucket->offIndex (colnr_p);
     uInt& nused = bucket->indexUsed (colnr_p);
     // Determine if the new row is after the last row ever put for this column.
@@ -963,7 +865,7 @@ void ISMColumn::putValue (uInt rownr, const void* value)
     }
 }
 
-void ISMColumn::putFromRow (uInt rownr, const char* data, uInt lenData)
+void ISMColumn::putFromRow (rownr_t rownr, const char* data, uInt lenData)
 {
     // Skip the first bucket, because that is the one containing the
     // row just written.
@@ -1106,23 +1008,23 @@ Bool ISMColumn::addData (ISMBucket* bucket, uInt bucketStartRow,
 }
 
 #ifdef AIPS_TRACE
-void ISMColumn::handleCopy (uInt rownr, const char*)
+void ISMColumn::handleCopy (rownr_t rownr, const char*)
 {
     cout << "   handleCopy for row " << rownr
 	 << ", column " << colnr_p << endl;
 #else
-void ISMColumn::handleCopy (uInt, const char*)
+void ISMColumn::handleCopy (rownr_t, const char*)
 {
 #endif
 }
 
 #ifdef AIPS_TRACE
-void ISMColumn::handleRemove (uInt rownr, const char*)
+void ISMColumn::handleRemove (rownr_t rownr, const char*)
 {
     cout << "   handleRemove for row " << rownr
 	 << ", column " << colnr_p << endl;
 #else
-void ISMColumn::handleRemove (uInt, const char*)
+void ISMColumn::handleRemove (rownr_t, const char*)
 {
 #endif
 }
@@ -1226,6 +1128,14 @@ void ISMColumn::init()
 	    objset ((uInt*)lastValue_p, undef, nrelem_p);
 	}
 	break;
+    case TpInt64:
+	{
+	    compareFunc_p = ObjCompare<Int64>::compare;
+	    lastValue_p   = new Int64 [nrelem_p];
+	    Int64 undef = 0;
+	    objset ((Int64*)lastValue_p, undef, nrelem_p);
+	}
+	break;
     case TpFloat:
 	{
 	    compareFunc_p = ObjCompare<float>::compare;
@@ -1287,12 +1197,12 @@ void ISMColumn::doCreate (ISMBucket* bucket)
     bucket->addData (colnr_p, 0, 0, buffer, leng);
 }
 
-void ISMColumn::getFile (uInt nrrow)
+void ISMColumn::getFile (rownr_t nrrow)
 {
     init();
     lastRowPut_p = nrrow;
 }
-Bool ISMColumn::flush (uInt, Bool)
+Bool ISMColumn::flush (rownr_t, Bool)
 {
     return False;
 }
@@ -1315,12 +1225,26 @@ Conversion::ValueFunction* ISMColumn::getReaduInt (Bool asBigEndian)
     }
     return LECanonicalConversion::getToLocal (static_cast<uInt*>(0));
 }
+Conversion::ValueFunction* ISMColumn::getReadRownr (Bool asBigEndian)
+{
+    if (asBigEndian) {
+	return CanonicalConversion::getToLocal (static_cast<rownr_t*>(0));
+    }
+    return LECanonicalConversion::getToLocal (static_cast<rownr_t*>(0));
+}
 Conversion::ValueFunction* ISMColumn::getWriteuInt (Bool asBigEndian)
 {
     if (asBigEndian) {
 	return CanonicalConversion::getFromLocal (static_cast<uInt*>(0));
     }
     return LECanonicalConversion::getFromLocal (static_cast<uInt*>(0));
+}
+Conversion::ValueFunction* ISMColumn::getWriteRownr (Bool asBigEndian)
+{
+    if (asBigEndian) {
+	return CanonicalConversion::getFromLocal (static_cast<rownr_t*>(0));
+    }
+    return LECanonicalConversion::getFromLocal (static_cast<rownr_t*>(0));
 }
 
 

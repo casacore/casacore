@@ -92,14 +92,14 @@ void ROIncrementalStManAccessor::showBucketLayout (ostream& os) const
     dataManPtr_p->showBucketLayout (os);
 }
 
-Bool ROIncrementalStManAccessor::checkBucketLayout (uInt &offendingCursor,
-                                                    uInt &offendingBucketStartRow,
-                                                    uInt &offendingBucketNrow,
-                                                    uInt &offendingBucketNr,
-                                                    uInt &offendingCol,
-                                                    uInt &offendingIndex,
-                                                    uInt &offendingRow,
-                                                    uInt &offendingPrevRow) const
+Bool ROIncrementalStManAccessor::checkBucketLayout (uInt& offendingCursor,
+                                                    rownr_t& offendingBucketStartRow,
+                                                    uInt& offendingBucketNrow,
+                                                    uInt& offendingBucketNr,
+                                                    uInt& offendingCol,
+                                                    uInt& offendingIndex,
+                                                    rownr_t& offendingRow,
+                                                    rownr_t& offendingPrevRow) const
 {
   Bool ok;
   ok = dataManPtr_p->checkBucketLayout (offendingCursor,

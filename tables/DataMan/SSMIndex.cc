@@ -55,24 +55,47 @@ SSMIndex::~SSMIndex()
 
 void SSMIndex::get (AipsIO& anOs)
 {
-  anOs.getstart("SSMIndex");
+  uInt version = anOs.getstart("SSMIndex");
   anOs >> itsNUsed;
   anOs >> itsRowsPerBucket;
   anOs >> itsNrColumns;
   anOs >> itsFreeSpace;
-  getBlock (anOs, itsLastRow);
+  if (version == 1) {
+    Block<uInt> tmp;
+    getBlock (anOs, tmp);
+    itsLastRow.resize (tmp.size());
+    for (size_t i=0; i<tmp.size(); ++i) {
+      itsLastRow[i] = tmp[i];
+    }
+  } else {
+    getBlock (anOs, itsLastRow);
+  }
   getBlock (anOs, itsBucketNumber);
   anOs.getend();
 }
 
 void SSMIndex::put (AipsIO& anOs) const
 {
-  anOs.putstart("SSMIndex", 1);
+  // Try to be forward compatible by trying to write the row numbers as uInt.
+  uInt version = 1;
+  if (itsNUsed == 0  ||
+      (itsLastRow[itsNUsed-1] != uInt(itsLastRow[itsNUsed-1]))) {
+    version = 2;
+  }
+  anOs.putstart("SSMIndex", version);
   anOs << itsNUsed;
   anOs << itsRowsPerBucket;
   anOs << itsNrColumns;
   anOs << itsFreeSpace;
-  putBlock (anOs, itsLastRow, itsNUsed);
+  if (version == 1) {
+    Block<uInt> tmp(itsNUsed);
+    for (uInt i=0; i<itsNUsed; ++i) {
+      tmp[i] = itsLastRow[i];
+    }
+    putBlock (anOs, tmp);
+  } else {
+    putBlock (anOs, itsLastRow, itsNUsed);
+  }
   putBlock (anOs, itsBucketNumber, itsNUsed);
   anOs.putend();
 }
@@ -84,13 +107,13 @@ void SSMIndex::showStatistics (ostream& anOs) const
   anOs << "Rows Per bucket    : " << itsRowsPerBucket << endl;
   anOs << "Nr of Columns      : " << itsNrColumns << endl;   
   if (itsNrColumns > 0 ) {
-    for (uInt i=0;i < itsNUsed; i++) {
+    for (uInt i=0; i<itsNUsed; i++) {
       anOs << "BucketNr["<<i<<"]  : " << itsBucketNumber[i]
 	   << " - LastRow["<<i<<"]   : " << itsLastRow[i] << endl;
     }
 
     anOs << "Freespace entries: " << itsFreeSpace.ndefined() << endl;
-    for (uInt i=0;i < itsFreeSpace.ndefined(); i++) {
+    for (uInt i=0; i < itsFreeSpace.ndefined(); i++) {
       anOs << "Offset["<<i<<"]: " << itsFreeSpace.getKey(i) <<
 	"  -  nrBytes["<<i<<"]: " << itsFreeSpace.getVal(i) << endl;
     }
@@ -108,21 +131,21 @@ void SSMIndex::setNrColumns (Int aNrColumns, uInt aSizeUsed)
   }
 }
 
-void SSMIndex::addRow (uInt aNrRows)
+void SSMIndex::addRow (rownr_t aNrRows)
 {
-  uInt lastRow=0;
+  rownr_t lastRow=0;
   if (aNrRows == 0 ) {
     return;
   }
 
   if (itsNUsed > 0 ) {
     lastRow = itsLastRow[itsNUsed-1]+1;
-    uInt usedLast = lastRow;
+    rownr_t usedLast = lastRow;
     if (itsNUsed > 1) {
       usedLast -= itsLastRow[itsNUsed-2]+1;
     }
-    uInt fitLast = itsRowsPerBucket-usedLast;
-    uInt toAdd = min(fitLast, aNrRows);
+    uInt64 fitLast = itsRowsPerBucket-usedLast;
+    uInt64 toAdd = std::min(fitLast, aNrRows);
     
     itsLastRow[itsNUsed-1] += toAdd;
     aNrRows -= toAdd;
@@ -155,7 +178,7 @@ void SSMIndex::addRow (uInt aNrRows)
   
   while (aNrRows > 0) {
     itsBucketNumber[itsNUsed] =itsSSMPtr->getNewBucket();
-    uInt toAdd = min (aNrRows, itsRowsPerBucket);
+    uInt toAdd = std::min (aNrRows, uInt64(itsRowsPerBucket));
     lastRow += toAdd;
     aNrRows -= toAdd;
     itsLastRow[itsNUsed] = lastRow-1;
@@ -163,7 +186,7 @@ void SSMIndex::addRow (uInt aNrRows)
   }
 }
 
-Int SSMIndex::deleteRow (uInt aRowNr)
+Int SSMIndex::deleteRow (rownr_t aRowNr)
 {
   // Decrement the rowNrs of all the intervals after the row to be removed
   uInt anIndex = getIndex(aRowNr, String());
@@ -210,7 +233,7 @@ void SSMIndex::recreate()
 }
 
 
-uInt SSMIndex::getIndex (uInt aRowNumber, const String& colName) const
+uInt SSMIndex::getIndex (rownr_t aRowNumber, const String& colName) const
 {
   Bool isFound;
   uInt anIndex = binarySearchBrackets( isFound, itsLastRow, aRowNumber, 
@@ -304,8 +327,8 @@ void SSMIndex::addColumn (Int anOffset, uInt nbits)
   }
 }
 
-void SSMIndex::find (uInt aRowNumber, uInt& aBucketNr, 
-		     uInt& aStartRow, uInt& anEndRow,
+void SSMIndex::find (rownr_t aRowNumber, uInt& aBucketNr, 
+		     rownr_t& aStartRow, rownr_t& anEndRow,
                      const String& colName) const
 {
   uInt anIndex = getIndex(aRowNumber, colName);

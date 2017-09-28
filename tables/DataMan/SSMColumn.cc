@@ -42,7 +42,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SSMColumn::SSMColumn (SSMBase* aParent, int aDataType, uInt aColNr)
-: StManColumn    (aDataType),
+: StManColumnBase(aDataType),
   itsSSMPtr      (aParent),
   itsExternalSizeBytes(0),
   itsExternalSizeBits (0),
@@ -87,24 +87,24 @@ void SSMColumn::doCreate(rownr_t)
 {
 }
 
-void SSMColumn::getFile(uInt)
+void SSMColumn::getFile(rownr_t)
 {
 }
 
-void SSMColumn::addRow (uInt aNewNrRows, uInt, Bool doInit)
+void SSMColumn::addRow (rownr_t aNewNrRows, rownr_t, Bool doInit)
 {
   if (doInit  &&  dataType() == TpString) {
-    uInt aRowNr=0;
-    uInt aNrRows=aNewNrRows;
+    rownr_t aRowNr=0;
+    rownr_t aNrRows=aNewNrRows;
     
     while (aNrRows > 0) {
-      uInt  aStartRow;
-      uInt  anEndRow;
-      char* aValPtr;
+      rownr_t aStartRow;
+      rownr_t anEndRow;
+      char*   aValPtr;
       aValPtr = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
                                  columnName());
       aRowNr = anEndRow+1;
-      uInt aNr = anEndRow-aStartRow+1;
+      rownr_t aNr = anEndRow-aStartRow+1;
       aNrRows -= aNr;
       memset(aValPtr, 0, aNr * itsExternalSizeBytes);
       itsSSMPtr->setBucketDirty();
@@ -112,11 +112,11 @@ void SSMColumn::addRow (uInt aNewNrRows, uInt, Bool doInit)
   }
 }
 
-void SSMColumn::deleteRow(uInt aRowNr)
+void SSMColumn::deleteRow(rownr_t aRowNr)
 {
-  char* aValue;
-  uInt  aSRow;
-  uInt  anERow;
+  char*   aValue;
+  rownr_t aSRow;
+  rownr_t anERow;
   int aDT = dataType();
 
   if (aDT == TpString  &&  itsMaxLen == 0) {
@@ -144,20 +144,18 @@ void SSMColumn::deleteRow(uInt aRowNr)
 
   // first check if aRowNr is in cache, if not, fill cache
   // In both cases remove row from cache
-  uInt  aStartRow = columnCache().start();
-  uInt  anEndRow  = columnCache().end();
+  rownr_t aStartRow = columnCache().start();
+  rownr_t anEndRow  = columnCache().end();
 
   // Remove from cache if needed
   if (aRowNr >= aStartRow  &&  aRowNr <= anEndRow) {
     //  remove the row in itsData if not last
     if (aRowNr < anEndRow) {
-      char* aToPtr  = getDataPtr() + (aRowNr-aStartRow)
-	* itsLocalSize;
-      char* aFromPtr = getDataPtr() + (aRowNr+1-aStartRow)
-	* itsLocalSize;
+      char* aToPtr   = getDataPtr() + (aRowNr-aStartRow) * itsLocalSize;
+      char* aFromPtr = getDataPtr() + (aRowNr+1-aStartRow) * itsLocalSize;
 
       // decrement anEndrow
-      uInt aLength = (anEndRow - aRowNr) * itsLocalSize;
+      uInt64 aLength = (anEndRow - aRowNr) * itsLocalSize;
       memmove(aToPtr,aFromPtr,aLength);
     }
     // Fill cache again with actual itsData.
@@ -181,12 +179,13 @@ void SSMColumn::deleteRow(uInt aRowNr)
   }
 }
 
-void SSMColumn::shiftRows(char* aValue, uInt aRowNr, uInt aSRow, uInt anERow)
+void SSMColumn::shiftRows(char* aValue, rownr_t aRowNr,
+                          rownr_t aSRow, rownr_t anERow)
 {
   // Shift from aRrowNr on 1 to the left.
   char* aToPtr = aValue + (aRowNr-aSRow) * itsExternalSizeBytes;
   char* aFromPtr = aToPtr + itsExternalSizeBytes;
-  uInt aLength = (anERow - aRowNr) * itsExternalSizeBytes;
+  uInt64 aLength = (anERow - aRowNr) * itsExternalSizeBytes;
   memmove(aToPtr,aFromPtr,aLength);
   // Clear last entry (so a putString on a new row finds zeroes).
   memset (aToPtr + aLength, 0, itsExternalSizeBytes);
@@ -223,6 +222,11 @@ void SSMColumn::getuInt (rownr_t aRowNr, uInt* aValue)
   getValue(aRowNr);
   *aValue = static_cast<uInt*>(itsData)[aRowNr-columnCache().start()];
 }
+void SSMColumn::getInt64 (rownr_t aRowNr, Int64* aValue)
+{
+  getValue(aRowNr);
+  *aValue = static_cast<Int64*>(itsData)[aRowNr-columnCache().start()];
+}
 void SSMColumn::getfloat (rownr_t aRowNr, float* aValue)
 {
   getValue(aRowNr);
@@ -253,8 +257,8 @@ void SSMColumn::getString (rownr_t aRowNr, String* aValue)
     // Should be changed to use real Char*
     aValue->alloc(itsMaxLen+1);
     char* sp = const_cast<char*>(aValue->chars());
-    uInt  aStartRow;
-    uInt  anEndRow;
+    rownr_t aStartRow;
+    rownr_t anEndRow;
     char* buf = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
                                  columnName());
     itsReadFunc (sp, buf+(aRowNr-aStartRow)*itsExternalSizeBytes,
@@ -291,11 +295,11 @@ void SSMColumn::getString (rownr_t aRowNr, String* aValue)
   }
 }
 
-Char* SSMColumn::getRowValue(Int* data, uInt aRowNr)
+Char* SSMColumn::getRowValue(Int* data, rownr_t aRowNr)
 {
-  uInt  aStartRow;
-  uInt  anEndRow;
-  char* aValue;
+  rownr_t aStartRow;
+  rownr_t anEndRow;
+  char*   aValue;
   aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
                             columnName());
   itsReadFunc (data, aValue+(aRowNr-aStartRow)*itsExternalSizeBytes,
@@ -303,12 +307,12 @@ Char* SSMColumn::getRowValue(Int* data, uInt aRowNr)
   return aValue+(aRowNr-aStartRow)*itsExternalSizeBytes;
 }
 
-void SSMColumn::getValue(uInt aRowNr)
+void SSMColumn::getValue(rownr_t aRowNr)
 {
   if (aRowNr < columnCache().start()  ||  aRowNr > columnCache().end()) {
-    uInt  aStartRow;
-    uInt  anEndRow;
-    char* aValue;
+    rownr_t aStartRow;
+    rownr_t anEndRow;
+    char*   aValue;
     aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
                               columnName());
     itsReadFunc (getDataPtr(), aValue, (anEndRow-aStartRow+1) * itsNrCopy);
@@ -318,14 +322,14 @@ void SSMColumn::getValue(uInt aRowNr)
 
 void SSMColumn::putBool (rownr_t aRowNr, const Bool* aValue)
 {
-  uInt  aStartRow;
-  uInt  anEndRow;
-  char* aDummy;
+  rownr_t aStartRow;
+  rownr_t anEndRow;
+  char*   aDummy;
 
   aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
                             columnName());
 
-  uInt anOff    = aRowNr-aStartRow;
+  uInt64 anOff    = aRowNr-aStartRow;
 
   Conversion::boolToBit(aDummy+(anOff/8),
 			aValue,anOff%8,1);
@@ -376,6 +380,14 @@ void SSMColumn::putuInt (rownr_t aRowNr, const uInt* aValue)
       *aValue;
   }
 }
+void SSMColumn::putInt64 (rownr_t aRowNr, const Int64* aValue)
+{
+  putValue(aRowNr,aValue);
+  if (aRowNr >= columnCache().start()  &&  aRowNr <= columnCache().end()) {
+    static_cast<Int64*>(itsData)[aRowNr-columnCache().start()] = 
+      *aValue;
+  }
+}
 void SSMColumn::putfloat (rownr_t aRowNr, const float* aValue)
 {
   putValue(aRowNr,aValue);
@@ -414,10 +426,10 @@ void SSMColumn::putString (rownr_t aRowNr, const String* aValue)
 {
   // Fixed length strings are written directly.
   if (itsMaxLen > 0) {
-    uInt  aStartRow;
-    uInt  anEndRow;
-    char* aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
-                                    columnName());
+    rownr_t aStartRow;
+    rownr_t anEndRow;
+    char*   aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                                      columnName());
     itsWriteFunc (aDummy+(aRowNr-aStartRow)*itsExternalSizeBytes,
 		  aValue->chars(), min(itsMaxLen, aValue->length()+1));
     itsSSMPtr->setBucketDirty();
@@ -451,23 +463,23 @@ void SSMColumn::putString (rownr_t aRowNr, const String* aValue)
   }
 }
 
-void SSMColumn::putValue(uInt aRowNr, const void* aValue)
+void SSMColumn::putValue(rownr_t aRowNr, const void* aValue)
 {
-  uInt  aStartRow;
-  uInt  anEndRow;
-  char* aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
-                                  columnName());
+  rownr_t aStartRow;
+  rownr_t anEndRow;
+  char*   aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
+                                    columnName());
   itsWriteFunc (aDummy+(aRowNr-aStartRow)*itsExternalSizeBytes,
   		aValue, itsNrCopy);
   itsSSMPtr->setBucketDirty();
 }
 
-void SSMColumn::putValueShortString(uInt aRowNr, const void* aValue,
+void SSMColumn::putValueShortString(rownr_t aRowNr, const void* aValue,
 				    const String& string)
 {
-  uInt  aStartRow;
-  uInt  anEndRow;
-  char* aDummy;
+  rownr_t aStartRow;
+  rownr_t anEndRow;
+  char*   aDummy;
 
   aDummy = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
                             columnName());
@@ -479,215 +491,70 @@ void SSMColumn::putValueShortString(uInt aRowNr, const void* aValue,
   itsSSMPtr->setBucketDirty();
 }
 
-void SSMColumn::getScalarColumnBoolV     (Vector<Bool>* aDataPtr)
+void SSMColumn::getScalarColumnV (ArrayBase& aDataPtr)
 {
-  Bool deleteIt;
-  Bool* anArray=aDataPtr->getStorage(deleteIt);
-  getColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->putStorage(anArray,deleteIt);
-}
-
-void SSMColumn::getScalarColumnuCharV    (Vector<uChar>* aDataPtr)
-{
-  Bool deleteIt;
-  uChar* anArray=aDataPtr->getStorage(deleteIt);
-  getColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->putStorage(anArray,deleteIt);
-}
-
-void SSMColumn::getScalarColumnShortV    (Vector<Short>* aDataPtr)
-{
-  Bool deleteIt;
-  Short* anArray=aDataPtr->getStorage(deleteIt);
-  getColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->putStorage(anArray,deleteIt);
-
-}
-
-void SSMColumn::getScalarColumnuShortV   (Vector<uShort>* aDataPtr)
-{
-  Bool deleteIt;
-  uShort* anArray=aDataPtr->getStorage(deleteIt);
-  getColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->putStorage(anArray,deleteIt);
-}
-
-void SSMColumn::getScalarColumnIntV      (Vector<Int>* aDataPtr)
-{
-  Bool deleteIt;
-  Int* anArray=aDataPtr->getStorage(deleteIt);
-  getColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->putStorage(anArray,deleteIt);
-}
-
-void SSMColumn::getScalarColumnuIntV     (Vector<uInt>* aDataPtr)
-{
-  Bool deleteIt;
-  uInt* anArray=aDataPtr->getStorage(deleteIt);
-  getColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->putStorage(anArray,deleteIt);
-}
-
-void SSMColumn::getScalarColumnfloatV    (Vector<float>* aDataPtr)
-{
-  Bool deleteIt;
-  float* anArray=aDataPtr->getStorage(deleteIt);
-  getColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->putStorage(anArray,deleteIt);
-}
-
-void SSMColumn::getScalarColumndoubleV   (Vector<double>* aDataPtr)
-{
-  Bool deleteIt;
-  double* anArray=aDataPtr->getStorage(deleteIt);
-  getColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->putStorage(anArray,deleteIt);
-}
-
-void SSMColumn::getScalarColumnComplexV  (Vector<Complex>* aDataPtr)
-{
-  Bool deleteIt;
-  Complex* anArray=aDataPtr->getStorage(deleteIt);
-  getColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->putStorage(anArray,deleteIt);
-}
-
-void SSMColumn::getScalarColumnDComplexV (Vector<DComplex>* aDataPtr)
-{
-  Bool deleteIt;
-  DComplex* anArray=aDataPtr->getStorage(deleteIt);
-  getColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->putStorage(anArray,deleteIt);
-}
-
-void SSMColumn::getScalarColumnStringV (Vector<String>* aDataPtr)
-{
-  for (uInt i=0;i<aDataPtr->nelements(); i++) {
-    getString(i,&(*aDataPtr)(i));
+  if (dtype() == TpString) {
+    Vector<String>& vec = static_cast<Vector<String>&>(aDataPtr);
+    for (uInt64 i=0; i<aDataPtr.nelements(); i++) {
+      getString (i, &(vec[i]));
+    }
+  } else {
+    Bool deleteIt;
+    void* anArray = aDataPtr.getVStorage(deleteIt);
+    getColumnValue(anArray, aDataPtr.nelements());
+    aDataPtr.putVStorage(anArray, deleteIt);
   }
 }
 
-void SSMColumn::getColumnValue(void* anArray,uInt aNrRows)
+void SSMColumn::getColumnValue(void* anArray,rownr_t aNrRows)
 {
-  char* aDataPtr = static_cast<char*>(anArray);
-  uInt aRowNr=0;
-  Int rowsToDo = aNrRows;
+  char*   aDataPtr = static_cast<char*>(anArray);
+  rownr_t aRowNr=0;
+  rownr_t rowsToDo = aNrRows;
   
   while (rowsToDo > 0) {
-    uInt  aStartRow;
-    uInt  anEndRow;
-    char* aValue;
+    rownr_t aStartRow;
+    rownr_t anEndRow;
+    char*   aValue;
     aValue = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
                               columnName());
     aRowNr = anEndRow+1;
-    uInt aNr = anEndRow-aStartRow+1;
+    rownr_t aNr = anEndRow-aStartRow+1;
     rowsToDo -= aNr;
     itsReadFunc (aDataPtr, aValue, aNr * itsNrCopy);
     aDataPtr += aNr * itsLocalSize;
   }
 }
 
-void SSMColumn::putScalarColumnBoolV     (const Vector<Bool>* aDataPtr)
+void SSMColumn::putScalarColumnV (const ArrayBase& aDataPtr)
 {
-  Bool deleteIt;
-  const Bool* anArray=aDataPtr->getStorage(deleteIt);
-  putColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->freeStorage(anArray,deleteIt);
-}
-
-void SSMColumn::putScalarColumnuCharV    (const Vector<uChar>* aDataPtr)
-{
-  Bool deleteIt;
-  const uChar* anArray=aDataPtr->getStorage(deleteIt);
-  putColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->freeStorage(anArray,deleteIt);
-}
-
-void SSMColumn::putScalarColumnShortV    (const Vector<Short>* aDataPtr)
-{
-  Bool deleteIt;
-  const Short* anArray=aDataPtr->getStorage(deleteIt);
-  putColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->freeStorage(anArray,deleteIt);
-}
-
-void SSMColumn::putScalarColumnuShortV   (const Vector<uShort>* aDataPtr)
-{
-  Bool deleteIt;
-  const uShort* anArray=aDataPtr->getStorage(deleteIt);
-  putColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->freeStorage(anArray,deleteIt);
-}
-
-void SSMColumn::putScalarColumnIntV      (const Vector<Int>* aDataPtr)
-{
-  Bool deleteIt;
-  const Int* anArray=aDataPtr->getStorage(deleteIt);
-  putColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->freeStorage(anArray,deleteIt);
-}
-
-void SSMColumn::putScalarColumnuIntV     (const Vector<uInt>* aDataPtr)
-{
-  Bool deleteIt;
-  const uInt* anArray=aDataPtr->getStorage(deleteIt);
-  putColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->freeStorage(anArray,deleteIt);
-}
-
-void SSMColumn::putScalarColumnfloatV    (const Vector<float>* aDataPtr)
-{
-  Bool deleteIt;
-  const float* anArray=aDataPtr->getStorage(deleteIt);
-  putColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->freeStorage(anArray,deleteIt);
-}
-
-void SSMColumn::putScalarColumndoubleV   (const Vector<double>* aDataPtr)
-{
-  Bool deleteIt;
-  const double* anArray=aDataPtr->getStorage(deleteIt);
-  putColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->freeStorage(anArray,deleteIt);
-}
-
-void SSMColumn::putScalarColumnComplexV  (const Vector<Complex>* aDataPtr)
-{
-  Bool deleteIt;
-  const Complex* anArray=aDataPtr->getStorage(deleteIt);
-  putColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->freeStorage(anArray,deleteIt);
-}
-
-void SSMColumn::putScalarColumnDComplexV (const Vector<DComplex>* aDataPtr)
-{
-  Bool deleteIt;
-  const DComplex* anArray=aDataPtr->getStorage(deleteIt);
-  putColumnValue(anArray,aDataPtr->nelements());
-  aDataPtr->freeStorage(anArray,deleteIt);
-}
-
-void SSMColumn::putScalarColumnStringV (const Vector<String>* aDataPtr)
-{
-  for (uInt i=0;i<aDataPtr->nelements(); i++) {
-    putString(i,&(*aDataPtr)(i));
+  if (dtype() == TpString) {
+    const Vector<String>& vec = static_cast<const Vector<String>&>(aDataPtr);
+    for (uInt64 i=0 ; i<aDataPtr.nelements(); i++) {
+      putString (i, &(vec[i]));
+    }
+  } else {
+    Bool deleteIt;
+    const void* anArray = aDataPtr.getVStorage(deleteIt);
+    putColumnValue (anArray, aDataPtr.nelements());
+    aDataPtr.freeVStorage(anArray, deleteIt);
   }
 }
 
-void SSMColumn::putColumnValue(const void* anArray,uInt aNrRows)
+void SSMColumn::putColumnValue(const void* anArray,rownr_t aNrRows)
 {
   const char* aDataPtr = static_cast<const char*>(anArray);
-  uInt aRowNr=0;
-  Int rowsToDo=aNrRows;
+  rownr_t aRowNr=0;
+  rownr_t rowsToDo=aNrRows;
 
   while (rowsToDo > 0) {
-    uInt  aStartRow;
-    uInt  anEndRow;
-    char* aValPtr;
+    rownr_t aStartRow;
+    rownr_t anEndRow;
+    char*   aValPtr;
     aValPtr = itsSSMPtr->find (aRowNr, itsColNr, aStartRow, anEndRow,
                                columnName());
     aRowNr = anEndRow+1;
-    uInt aNr = anEndRow-aStartRow+1;
+    rownr_t aNr = anEndRow-aStartRow+1;
     rowsToDo -= aNr;
     itsWriteFunc (aValPtr, aDataPtr, aNr * itsNrCopy);
     aDataPtr += aNr * itsLocalSize;
@@ -702,7 +569,7 @@ void SSMColumn::removeColumn()
 {
   if (dataType() == TpString  &&  itsMaxLen == 0) {
     Int buf[3];
-    for (uInt i=0;i<itsSSMPtr->getNRow();i++) {
+    for (rownr_t i=0; i<itsSSMPtr->getNRow(); i++) {
       getRowValue(buf, i);
       if (buf[2] > 8 ) {
 	itsSSMPtr->getStringHandler()->remove(buf[0], buf[1], buf[2]);

@@ -160,12 +160,12 @@ class SSMBase: public DataManager
 public:
   // Create a Standard storage manager with default name SSM.
   explicit SSMBase (Int aBucketSize=0,
-		    uInt aCacheSize=1);
+		    uInt64 aCacheSize=1);
   
   // Create a Standard storage manager with the given name.
   explicit SSMBase (const String& aDataManName,
 		    Int aBucketSize=0,
-		    uInt aCacheSize=1);
+		    uInt64 aCacheSize=1);
   
   // Create a Standard storage manager with the given name.
   // The specifications are part of the record (as created by dataManagerSpec).
@@ -229,7 +229,7 @@ public:
   uInt getBucketSize() const;
   
   // Get the number of rows in this storage manager.
-  uInt getNRow() const;
+  rownr_t getNRow() const;
   
   // The storage manager can add rows.
   virtual Bool canAddRow() const;
@@ -267,8 +267,8 @@ public:
   // Find the bucket containing the column and row and return the pointer
   // to the beginning of the column data in that bucket.
   // It also fills in the start and end row for the column data.
-  char* find (uInt aRowNr,     uInt aColNr, 
-	      uInt& aStartRow, uInt& anEndRow,
+  char* find (rownr_t aRowNr,     uInt aColNr, 
+	      rownr_t& aStartRow, rownr_t& anEndRow,
               const String& colName);
 
   // Add a new bucket and get its bucket number.
@@ -421,10 +421,10 @@ private:
   SSMStringHandler* itsStringHandler;
 
   // The persistent cache size.
-  uInt itsPersCacheSize;
+  uInt64 itsPersCacheSize;
   
   // The actual cache size.
-  uInt itsCacheSize;
+  uInt64 itsCacheSize;
   
   // The initial number of buckets in the cache.
   uInt itsNrBuckets;
@@ -473,7 +473,7 @@ inline uInt SSMBase::getCacheSize() const
   return itsCacheSize;
 }
 
-inline uInt SSMBase::getNRow() const
+inline rownr_t SSMBase::getNRow() const
 {
   return itsNrRows;
 }
