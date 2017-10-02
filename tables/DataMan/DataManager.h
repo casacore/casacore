@@ -543,6 +543,11 @@ public:
     static DataManager* unknownDataManager (const String& dataManagerType,
 					    const Record& spec);
 
+    // Define the highest row number that can be represented as 32-bit.
+    // In principle it is the maximum uInt number, but for test purposes it
+    // can be reset (to a lower number).
+    static rownr_t MAXROWNR32;   //# set to 4294967295
+
 private:
     // Register a data manager constructor.
     static void unlockedRegisterCtor (const String& type,

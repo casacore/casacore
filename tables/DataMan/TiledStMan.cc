@@ -1049,7 +1049,7 @@ void TiledStMan::headerFilePut (AipsIO& headerFile, uInt64 nrCube)
     // is used. In that way older software can read newer tables.
     // Similarly, use older version if number of rows less than maxUint.
     Bool useNewVersion = False;
-    if (nrrow_p != uInt(nrrow_p)  ||
+    if (nrrow_p > MAXROWNR32  ||
         persMaxCacheSize_p != uInt(persMaxCacheSize_p)) {
       headerFile.putstart ("TiledStMan", 3);
       headerFile << asBigEndian();

@@ -78,8 +78,7 @@ void SSMIndex::put (AipsIO& anOs) const
 {
   // Try to be forward compatible by trying to write the row numbers as uInt.
   uInt version = 1;
-  if (itsNUsed == 0  ||
-      (itsLastRow[itsNUsed-1] != uInt(itsLastRow[itsNUsed-1]))) {
+  if (itsNUsed > 0  &&  itsLastRow[itsNUsed-1] > DataManager::MAXROWNR32) {
     version = 2;
   }
   anOs.putstart("SSMIndex", version);
@@ -178,7 +177,7 @@ void SSMIndex::addRow (rownr_t aNrRows)
   
   while (aNrRows > 0) {
     itsBucketNumber[itsNUsed] =itsSSMPtr->getNewBucket();
-    uInt toAdd = std::min (aNrRows, uInt64(itsRowsPerBucket));
+    uInt toAdd = std::min (aNrRows, rownr_t(itsRowsPerBucket));
     lastRow += toAdd;
     aNrRows -= toAdd;
     itsLastRow[itsNUsed] = lastRow-1;

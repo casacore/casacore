@@ -317,7 +317,7 @@ void ISMBucket::write (char* bucketStorage) const
     Bool use32 = True;
     for (uInt i=0; i<nrcol; i++) {
 	uInt nr = indexUsed_p[i];
-        if (nr > 0  &&  (*rowIndex_p[i])[nr-1] != uInt((*rowIndex_p[i])[nr-1])) {
+        if (nr > 0  &&  (*rowIndex_p[i])[nr-1] > DataManager::MAXROWNR32) {
           use32 = False;
           break;
         }

@@ -94,6 +94,7 @@ void putColumnTest();
 
 int main (int argc, const char* argv[])
 {
+  ///DataManager::MAXROWNR32 = 0;
     uInt aNr = 250;
     if (argc > 1) {
 	istringstream anIstr(argv[1]);

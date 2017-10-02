@@ -65,6 +65,7 @@ void f();
 
 int main (int argc, const char* argv[])
 {
+  ///  DataManager::MAXROWNR32 = 0;
     uInt nr = 1000;
     if (argc > 1) {
 	istringstream istr(argv[1]);

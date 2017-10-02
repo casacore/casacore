@@ -283,6 +283,7 @@ SimpleOrderedMap<String,DataManagerCtor>
         DataManager::theirRegisterMap (DataManager::unknownDataManager);
 MutexedInit DataManager::theirMutexedInit(doRegisterMainCtor, 0,
                                           Mutex::Recursive);
+rownr_t DataManager::MAXROWNR32 (4294967295);
 
 
 //# Register a mapping.

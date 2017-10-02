@@ -290,6 +290,8 @@ Bool StManAipsIO::flush (AipsIO&, Bool)
     ios.putstart ("StManAipsIO", 2);           // version 2
     //# Write the number of rows and columns and the column types.
     //# This is only done to check it when reading back.
+    //# Note that an AipsIO object cannot exceed 4 GB, so nrrow_p always
+    //# fits in 32 bits.
     ios << stmanName_p;                        // this is added in version 2
     ios << sequenceNr();
     ios << uniqnr_p;
