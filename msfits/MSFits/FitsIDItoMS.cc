@@ -2491,7 +2491,6 @@ void FITSIDItoMS1::fillAntennaTable()
    }
    else{
      if (arrnam=="ATCA") diameter=22.;
-     if (arrnam=="VLBA") diameter=25.;
      if (arrnam=="SMA")  diameter=6.;
      *itsLog << LogIO::WARN 
 	     << "ARRAY_GEOMETRY input table does not contain dish DIAMETER column.\n Will assume default diameter for TELESCOPE " 
