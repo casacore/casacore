@@ -338,6 +338,16 @@ void FitToHalfStatistics<CASA_STATP>::reset() {
 }
 
 CASA_STATD
+void FitToHalfStatistics<CASA_STATP>::setStatsToCalculate(
+    std::set<StatisticsData::STATS>& stats
+) {
+    if (! stats.empty() && _centerType == FitToHalfStatisticsData::CMEAN) {
+        stats.insert(StatisticsData::MEAN);
+    }
+    ClassicalStatistics<CASA_STATP>::setStatsToCalculate(stats);
+}
+
+CASA_STATD
 StatsData<AccumType> FitToHalfStatistics<CASA_STATP>::_getInitialStats() const {
     StatsData<AccumType> stats = initializeStatsData<AccumType>();
     stats.mean = _centerValue;

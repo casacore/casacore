@@ -146,13 +146,17 @@ public:
     uInt64 getNPts();
 
     // reset object to initial state. Clears all private fields including data,
-    // accumulators, global range. It does not affect the fence factor (_f), which was
-    // set at object construction.
+    // accumulators, global range. It does not affect the center type, center value,
+    // or which "side" to use which were set at construction.
     virtual void reset();
 
     // This class does not allow statistics to be calculated as datasets are added, so
     // an exception will be thrown if <src>c</src> is True.
     void setCalculateAsAdded(Bool c);
+
+    // Override base class method by requiring mean to be computed in addition to what is
+    // added in stats if the requested center value is CMEAN.
+    void setStatsToCalculate(std::set<StatisticsData::STATS>& stats);
 
 protected:
 
@@ -195,7 +199,6 @@ protected:
     void _updateDataProviderMaxMin(
         const StatsData<AccumType>& threadStats
     );  
-
     
     // <group>
     // has weights, but no mask, no ranges
