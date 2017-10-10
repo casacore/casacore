@@ -28,6 +28,7 @@
 #define LATTICES_LATTICESTATSDATAPROVIDER_TCC
 
 #include <casacore/lattices/LatticeMath/LatticeStatsDataProvider.h>
+#include <casacore/scimath/Mathematics/ClassicalStatistics.h>
 
 namespace casacore {
 
@@ -35,7 +36,7 @@ template <class T>
 LatticeStatsDataProvider<T>::LatticeStatsDataProvider()
 	: LatticeStatsDataProviderBase<T>(),
 	_iter(), _currentSlice(),
-	_currentPtr(0), _delData(False), _atEnd(False) {}
+	_currentPtr(0), _delData(False), _atEnd(False), _nMaxThreads(0) {}
 
 template <class T>
 LatticeStatsDataProvider<T>::LatticeStatsDataProvider(
@@ -117,6 +118,15 @@ const Bool* LatticeStatsDataProvider<T>::getMask() {
 }
 
 template <class T>
+uInt LatticeStatsDataProvider<T>::getNMaxThreads() const {
+#ifdef _OPENMP
+    return _nMaxThreads;
+#else
+    return 0;
+#endif
+}
+
+template <class T>
 Bool LatticeStatsDataProvider<T>::hasMask() const {
 	return False;
 }
@@ -147,6 +157,12 @@ void LatticeStatsDataProvider<T>::setLattice(
 		_currentSlice.assign(lattice.get());
 		_atEnd = False;
 	}
+#ifdef _OPENMP
+	_nMaxThreads = min(
+	    omp_get_max_threads(),
+	    lattice.size()/ClassicalStatisticsData::BLOCK_SIZE + 1
+	);
+#endif
 }
 
 template <class T>

@@ -1,4 +1,4 @@
-//# Copyright (C) 2014
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -22,26 +22,15 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
-#ifndef SCIMATH_STATSDATAPROVIDER_TCC
-#define SCIMATH_STATSDATAPROVIDER_TCC
 
-#include <casacore/scimath/Mathematics/StatsDataProvider.h>
+#include <casacore/scimath/Mathematics/ClassicalStatisticsData.h>
 
 namespace casacore {
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>::StatsDataProvider() {}
+const uInt ClassicalStatisticsData::CACHE_PADDING = 8;
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>::~StatsDataProvider() {}
-
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-uInt StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>::getNMaxThreads() const {
-    return 0;
-}
+const uInt ClassicalStatisticsData::BLOCK_SIZE = 4000;
 
 }
 
-#endif

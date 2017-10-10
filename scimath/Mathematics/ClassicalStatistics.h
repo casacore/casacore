@@ -675,9 +675,6 @@ private:
     mutable uInt _dataCount, _myStride;
     mutable uInt64 _myCount;
 
-    static const uInt CACHE_PADDING;
-    static const uInt BLOCK_SIZE;
-
     // tally the number of data points that fall into each bin provided by <src>binDesc</src>
     // Any points that are less than binDesc.minLimit or greater than
     // binDesc.minLimit + binDesc.nBins*binDesc.binWidth are not included in the counts. A data

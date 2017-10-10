@@ -66,6 +66,14 @@ public:
 	// Get the stride for the current mask (only called if hasMask() returns True).
 	virtual uInt getMaskStride() = 0;
 
+	// If OpenMP is enabled and statistics methods are not being called in a multi-threaded
+	// context, get maximum number of threads that should be used. If zero is returned,
+	// the statistics classes will use the maximum number of threads available to openmp.
+	// Returning less than that helps to decrease overhead used by statistics methods when the
+    // maximum number of threads available to openmp are unnecessary. The base class
+	// implmentation returns 0.
+	virtual uInt getNMaxThreads() const;
+
 	// Get the associated range(s) of the current dataset. Only called if hasRanges() returns True;
 	virtual DataRanges getRanges() = 0;
 

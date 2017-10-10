@@ -33,6 +33,7 @@
 
 #include <casacore/casa/Arrays/ArrayAccessor.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/OS/Timer.h>
 #include <casacore/coordinates/Coordinates/DirectionCoordinate.h>
 #include <casacore/coordinates/Coordinates/LinearCoordinate.h>
 #include <casacore/coordinates/Coordinates/SpectralCoordinate.h>
