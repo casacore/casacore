@@ -35,7 +35,8 @@ template <class T>
 MaskedLatticeStatsDataProvider<T>::MaskedLatticeStatsDataProvider()
 	: LatticeStatsDataProviderBase<T>(),
 	_iter(), /* _ary(), _mask(), */ _currentSlice(), _currentMaskSlice(),
-	_currentPtr(0), _currentMaskPtr(0), _delData(False), _delMask(False), _atEnd(False) {}
+	_currentPtr(0), _currentMaskPtr(0), _delData(False), _delMask(False),
+	_atEnd(False), _nMaxThreads(0) {}
 
 template <class T>
 MaskedLatticeStatsDataProvider<T>::MaskedLatticeStatsDataProvider(
@@ -126,6 +127,15 @@ const Bool* MaskedLatticeStatsDataProvider<T>::getMask() {
 }
 
 template <class T>
+uInt MaskedLatticeStatsDataProvider<T>::getNMaxThreads() const {
+#ifdef _OPENMP
+    return _nMaxThreads;
+#else
+    return 0;
+#endif
+}
+
+template <class T>
 Bool MaskedLatticeStatsDataProvider<T>::hasMask() const {
 	return True;
 }
@@ -157,6 +167,12 @@ void MaskedLatticeStatsDataProvider<T>::setLattice(
 		_currentMaskSlice.assign(lattice.getMask());
 		_atEnd = False;
 	}
+#ifdef _OPENMP
+    _nMaxThreads = min(
+        omp_get_max_threads(),
+        lattice.size()/ClassicalStatisticsData::BLOCK_SIZE + 1
+    );
+#endif
 }
 
 

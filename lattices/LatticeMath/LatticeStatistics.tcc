@@ -69,8 +69,6 @@
 #include <casacore/casa/stdlib.h>
 #include <casacore/casa/sstream.h>
 
-#include <casacore/casa/OS/Timer.h>
-
 #include <casacore/scimath/Mathematics/ChauvenetCriterionStatistics.h>
 #include <casacore/scimath/Mathematics/FitToHalfStatistics.h>
 #include <casacore/scimath/Mathematics/HingesFencesStatistics.h>
@@ -122,7 +120,6 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
    }
 }
 
-
 template <class T>
 LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
                                          Bool showProgress,
@@ -167,7 +164,6 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
    }
 }
 
-
 template <class T>
 LatticeStatistics<T>::LatticeStatistics(const LatticeStatistics<T> &other) 
 : pInLattice_p(0), pStoreLattice_p(0),
@@ -179,7 +175,6 @@ LatticeStatistics<T>::LatticeStatistics(const LatticeStatistics<T> &other)
 {
    operator=(other);
 }
-
 
 template <class T>
 LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T> &other)
@@ -805,13 +800,11 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
         timeNew = nsets*(_aNew + _bNew*nel);
         tryOldMethod = timeOld < timeNew;
     }
-    //Timer timer;
     Bool ranOldMethod = False;
     uInt ndim = shape.nelements();
     if (tryOldMethod) {
         // use older method for higher performance in the large loop count
         // regime
-        //timer.mark();
         minPos_p.resize(ndim);
         maxPos_p.resize(ndim);
         StatsTiledCollapser<T,AccumType> collapser(

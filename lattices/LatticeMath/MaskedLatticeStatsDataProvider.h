@@ -86,6 +86,9 @@ public:
 	// Get the associated mask of the current dataset. Only called if hasMask() returns True;
 	const Bool* getMask();
 
+	// returns something reasonable based on the lattice size.
+	uInt getNMaxThreads() const;
+
 	// Does the current data set have an associated mask?
 	Bool hasMask() const;
 
@@ -121,6 +124,7 @@ private:
 	const T* _currentPtr;
 	const Bool* _currentMaskPtr;
 	Bool _delData, _delMask, _atEnd;
+	uInt _nMaxThreads;
 
 	void _freeStorage();
 

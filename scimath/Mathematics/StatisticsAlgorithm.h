@@ -317,6 +317,10 @@ protected:
         return _dataProvider;
     }
 
+    const StatsDataProvider<CASA_STATP>* _getDataProvider() const {
+        return _dataProvider;
+    }
+
     const vector<uInt>& _getDataStrides() const { return _dataStrides; }
 
     const std::map<uInt, Bool>& _getIsIncludeRanges() const { return _isIncludeRanges; }
