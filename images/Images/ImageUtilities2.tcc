@@ -134,7 +134,14 @@ void ImageUtilities::copyMiscellaneous (ImageInterface<T>& out,
         out.setImageInfo(in.imageInfo());
     }
     out.setUnits(in.units());
-    out.appendLog(in.logger());
+    try {
+        out.appendLog(in.logger());
+    }
+    catch (const AipsError& x) {
+        LogIO log(LogOrigin("ImageUtilities", __func__, WHERE));
+        log << LogIO::WARN << "Error copying image history: "
+            << x.getMesg() << LogIO::POST;
+    }
     copyAttributes (out.attrHandler(True), in.roAttrHandler());
 }
 
