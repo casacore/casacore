@@ -170,7 +170,7 @@ void MaskedLatticeStatsDataProvider<T>::setLattice(
 #ifdef _OPENMP
     _nMaxThreads = min(
         omp_get_max_threads(),
-        lattice.size()/ClassicalStatisticsData::BLOCK_SIZE + 1
+        (Int)ceil((Float)lattice.size()/ClassicalStatisticsData::BLOCK_SIZE)
     );
 #endif
 }
