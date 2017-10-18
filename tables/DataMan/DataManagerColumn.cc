@@ -260,8 +260,8 @@ void DataManagerColumn::putOther (rownr_t, const void*)
       i++;                                       \
       rownr += incr;                             \
     }                                            \
+    iter++;                                      \
   }                                              \
-  iter++;                                        \
 }
 
 void DataManagerColumn::getScalarColumnV (ArrayBase& arr)
