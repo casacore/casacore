@@ -34,17 +34,17 @@ namespace casacore {
 
 template <class T>
 LatticeStatsDataProvider<T>::LatticeStatsDataProvider()
-	: LatticeStatsDataProviderBase<T>(),
-	_iter(), _currentSlice(),
-	_currentPtr(0), _delData(False), _atEnd(False), _nMaxThreads(0) {}
+    : LatticeStatsDataProviderBase<T>(),
+    _iter(), _currentSlice(),
+    _currentPtr(0), _delData(False), _atEnd(False), _nMaxThreads(0) {}
 
 template <class T>
 LatticeStatsDataProvider<T>::LatticeStatsDataProvider(
-	const Lattice<T>& lattice, uInt iteratorLimitBytes
+    const Lattice<T>& lattice, uInt iteratorLimitBytes
 ) : LatticeStatsDataProviderBase<T>(),
-	_iter(), _currentSlice(),
-	_currentPtr(0), _delData(False), _atEnd(False) {
-	setLattice(lattice, iteratorLimitBytes);
+    _iter(), _currentSlice(),
+    _currentPtr(0), _delData(False), _atEnd(False) {
+    setLattice(lattice, iteratorLimitBytes);
 }
 
 template <class T>
@@ -52,69 +52,69 @@ LatticeStatsDataProvider<T>::~LatticeStatsDataProvider() {}
 
 template <class T>
 void LatticeStatsDataProvider<T>::operator++() {
-	_freeStorage();
-	if (_iter.null()) {
-		_atEnd = True;
-	}
-	else {
-		++(*_iter);
-	}
-	this->_updateProgress();
+    _freeStorage();
+    if (_iter.null()) {
+        _atEnd = True;
+    }
+    else {
+        ++(*_iter);
+    }
+    this->_updateProgress();
 }
 
 template <class T>
 uInt LatticeStatsDataProvider<T>::estimatedSteps() const {
-	if (_iter.null()) {
-		return 1;
-	}
-	IPosition lattShape = _iter->latticeShape();
-	IPosition cursShape = _iter->cursor().shape();
-	uInt ndim = lattShape.size();
-	uInt count = 1;
-	for (uInt i=0; i<ndim; i++) {
-		uInt nsteps = lattShape[i]/cursShape[i];
-		if (lattShape[i] % cursShape[i] != 0) {
-			++nsteps;
-		}
-		count *= nsteps;
-	}
-	return count;
+    if (_iter.null()) {
+        return 1;
+    }
+    IPosition lattShape = _iter->latticeShape();
+    IPosition cursShape = _iter->cursor().shape();
+    uInt ndim = lattShape.size();
+    uInt count = 1;
+    for (uInt i=0; i<ndim; i++) {
+        uInt nsteps = lattShape[i]/cursShape[i];
+        if (lattShape[i] % cursShape[i] != 0) {
+            ++nsteps;
+        }
+        count *= nsteps;
+    }
+    return count;
 }
 
 template <class T>
 Bool LatticeStatsDataProvider<T>::atEnd() const {
-	if (_iter.null()) {
-		return _atEnd;
-	}
-	return _iter->atEnd();
+    if (_iter.null()) {
+        return _atEnd;
+    }
+    return _iter->atEnd();
 }
 
 template <class T>
 void LatticeStatsDataProvider<T>::finalize() {
-	_freeStorage();
-	LatticeStatsDataProviderBase<T>::finalize();
+    _freeStorage();
+    LatticeStatsDataProviderBase<T>::finalize();
 }
 
 template <class T>
 uInt64 LatticeStatsDataProvider<T>::getCount() {
-	if (_iter.null()) {
-		return _currentSlice.size();
-	}
-	return _iter->cursor().size();
+    if (_iter.null()) {
+        return _currentSlice.size();
+    }
+    return _iter->cursor().size();
 }
 
 template <class T>
 const T* LatticeStatsDataProvider<T>::getData() {
-	if (! _iter.null()) {
-		_currentSlice.assign(_iter->cursor());
-	}
-	_currentPtr = _currentSlice.getStorage(_delData);
-	return _currentPtr;
+    if (! _iter.null()) {
+        _currentSlice.assign(_iter->cursor());
+    }
+    _currentPtr = _currentSlice.getStorage(_delData);
+    return _currentPtr;
 }
 
 template <class T>
 const Bool* LatticeStatsDataProvider<T>::getMask() {
-	return NULL;
+    return NULL;
 }
 
 template <class T>
@@ -128,69 +128,69 @@ uInt LatticeStatsDataProvider<T>::getNMaxThreads() const {
 
 template <class T>
 Bool LatticeStatsDataProvider<T>::hasMask() const {
-	return False;
+    return False;
 }
 
 template <class T>
 void LatticeStatsDataProvider<T>::reset() {
-	LatticeStatsDataProviderBase<T>::reset();
-	if (! _iter.null()) {
-		_iter->reset();
-	}
+    LatticeStatsDataProviderBase<T>::reset();
+    if (! _iter.null()) {
+        _iter->reset();
+    }
 }
 
 template <class T>
 void LatticeStatsDataProvider<T>::setLattice(
-	const Lattice<T>& lattice, uInt iteratorLimitBytes
+    const Lattice<T>& lattice, uInt iteratorLimitBytes
 ) {
-	finalize();
-	if (lattice.size() > iteratorLimitBytes/sizeof(T)) {
-		TileStepper stepper(
-			lattice.shape(), lattice.niceCursorShape(
-				lattice.advisedMaxPixels()
-			)
-		);
-		_iter = new RO_LatticeIterator<T>(lattice, stepper);
-	}
-	else {
-		_iter = NULL;
-		_currentSlice.assign(lattice.get());
-		_atEnd = False;
-	}
+    finalize();
+    if (lattice.size() > iteratorLimitBytes/sizeof(T)) {
+        TileStepper stepper(
+            lattice.shape(), lattice.niceCursorShape(
+                lattice.advisedMaxPixels()
+            )
+        );
+        _iter = new RO_LatticeIterator<T>(lattice, stepper);
+    }
+    else {
+        _iter = NULL;
+        _currentSlice.assign(lattice.get());
+        _atEnd = False;
+    }
 #ifdef _OPENMP
-	_nMaxThreads = min(
-	    omp_get_max_threads(),
-	    lattice.size()/ClassicalStatisticsData::BLOCK_SIZE + 1
-	);
+    _nMaxThreads = min(
+        omp_get_max_threads(),
+        (Int)ceil((Float)lattice.size()/ClassicalStatisticsData::BLOCK_SIZE)
+    );
 #endif
 }
 
 template <class T>
 void LatticeStatsDataProvider<T>::updateMaxPos(
-	const std::pair<Int64, Int64>& maxpos
+    const std::pair<Int64, Int64>& maxpos
 ) {
-	IPosition p = toIPositionInArray(maxpos.second, _currentSlice.shape());
-	if (! _iter.null()) {
-		p += _iter->position();
-	}
-	this->_updateMaxPos(p);
+    IPosition p = toIPositionInArray(maxpos.second, _currentSlice.shape());
+    if (! _iter.null()) {
+        p += _iter->position();
+    }
+    this->_updateMaxPos(p);
 }
 
 template <class T>
 void LatticeStatsDataProvider<T>::updateMinPos(
-	const std::pair<Int64, Int64>& minpos
+    const std::pair<Int64, Int64>& minpos
 ) {
-	IPosition p = toIPositionInArray(minpos.second, _currentSlice.shape());
-	if (! _iter.null()) {
-		p += _iter->position();
-	}
-	this->_updateMinPos(p);
+    IPosition p = toIPositionInArray(minpos.second, _currentSlice.shape());
+    if (! _iter.null()) {
+        p += _iter->position();
+    }
+    this->_updateMinPos(p);
 }
 
 template <class T>
 void LatticeStatsDataProvider<T>::_freeStorage() {
-	_currentSlice.freeStorage (_currentPtr, _delData);
-	_delData = False;
+    _currentSlice.freeStorage (_currentPtr, _delData);
+    _delData = False;
 }
 }
 
