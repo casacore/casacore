@@ -1,3 +1,23 @@
+# 2.4.0
+
+## General
+- Bug fixes and improvements
+- This version can be used to compile CASA 5.0
+- Improved error checking when parsing dates/times (#619)
+- Statistics: allow data provider to specify number of threads (#645)
+
+## MS
+- Disable caching of MS main table columns (#597)
+- Properly copy the `SIGMA_SPECTRUM` column, if present (#599)
+- Implement getTimesForSpws (#600)
+
+## FITS and FITS-IDI
+- Implement digital corrections for DiFX/VLBA (#602)
+- Several improvements for WEIGHTS when reading FITS-IDI (#590, #608)
+- Parallactic angle calculation for Nasmyth mounts (#627)
+- Modernised matrix syntax in FITS files now follows standard 3.0 (#606)
+
+
 # 2.3.0
 
 ## General
