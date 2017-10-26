@@ -40,6 +40,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward Declarations
+  class ArrayBase;
   template<typename T> class Block;
 
   // <summary>
@@ -140,11 +141,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const IPosition& tileShape() const
       { return itsTileShape; }
 
+    // Get a section of data into the array.
+    // The array is resized if its shape does not match the slicer's shape.
+    // This is only possible if the array is empty or if resize=True.
+    // It is not checked if the data type of array and HDF5DataSet match.
+    void get (const Slicer&, ArrayBase& buf, Bool resize=False);
+    
     // Get a section of data.
     // The buffer must be large enough to hold the section.
     void get (const Slicer&, void* buf);
 
     // Put a section of data.
+    // The shape of the array and slicer must match.
+    // It is not checked if the data type of array and HDF5DataSet match.
+    void put (const Slicer&, const ArrayBase& buf);
+
+    // Put a section of data.
+    // The buffer must be large enough to hold the section.
     void put (const Slicer&, const void* buf);
 
     // Extend the dataset if an axis in the new shape is larger.
