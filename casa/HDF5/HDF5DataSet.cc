@@ -448,9 +448,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   DataType HDF5DataSet::getDataType (hid_t, const String&)
     { return TpOther; }
 
+  void HDF5DataSet::get (const Slicer&, ArrayBase&, Bool)
+  {}
+    
   void HDF5DataSet::get (const Slicer&, void*)
   {}
 
+  void HDF5DataSet::put (const Slicer&, const ArrayBase&)
+  {}
+  
   void HDF5DataSet::put (const Slicer&, const void*)
   {}
 
