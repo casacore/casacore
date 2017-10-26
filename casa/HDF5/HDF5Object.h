@@ -38,8 +38,8 @@
 #ifdef HAVE_HDF5
 # include <hdf5.h>
 #else 
-  typedef Int64 hid_t;
-  typedef uInt64 hsize_t;
+  typedef casacore::Int64 hid_t;
+  typedef casacore::uInt64 hsize_t;
 #endif
 
 
