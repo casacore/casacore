@@ -87,7 +87,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Create an option object.
     // The parameter values are described in the synopsis.
+    // The blocksize has to be given in bytes.
     // A size value -2 means reading that size from the aipsrc file.
+    // A size value -1 means use the default of 4*1024*1024.
     StorageOption (Option option=Aipsrc, Int blockSize=-2);
 
     // Fill the option in case Aipsrc or Default was given.
@@ -102,11 +104,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void setOption (Option option)
       { itsOption = option; }
 
-    // Get the block size.
+    // Get the block size (in bytes).
     uInt blockSize() const
       { return itsBlockSize; }
 
-    // Set the block size.
+    // Set the block size (in bytes).
     void setBlockSize (Int blockSize)
       { itsBlockSize = blockSize; }
 
