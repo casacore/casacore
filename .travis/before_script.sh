@@ -21,17 +21,24 @@ else
 fi
 
 if [ "$TRAVIS_OS_NAME" = osx ]; then
-  PATH=$HOME/miniconda2/bin:$PATH
-  source activate testenv2
-  PYTHON2_EXECUTABLE=$HOME/miniconda2/bin/python
-  PYTHON3_EXECUTABLE=$HOME/miniconda3/bin/python
+  PATH=$HOME/miniconda/bin:$PATH
+  source activate testenv
+  PYTHON2_EXECUTABLE=$HOME/miniconda/bin/python
+  PYTHON3_EXECUTABLE=$HOME/miniconda/bin/python
   which python
   python -c "import numpy as n; print (n.__version__); print(n.get_include());"
-  export PYTHONPATH=/Users/travis/miniconda2/envs/testenv2/lib/python2.7/site-packages:$PYTHONPATH
-  BUILD_PYTHON=On
-  BUILD_PYTHON3=Off
-  CMAKE_PREFIX_PATH=/Users/travis/miniconda2/envs/testenv2/lib
-  ls /Users/travis/miniconda2/envs/testenv2/lib
+  export PYTHONPATH=/Users/travis/miniconda/envs/testenv/lib/python${PYTHONVERSION}/site-packages:$PYTHONPATH
+  if [ "$PYTHONVERSION" = "2.7" ]; then
+    BUILD_PYTHON=On
+    BUILD_PYTHON3=Off
+  else
+    ln -s /Users/travis/miniconda/envs/testenv/lib/libboost_python-mt.dylib /Users/travis/miniconda/envs/testenv/lib/libboost_python3-mt.dylib
+    BUILD_PYTHON=Off
+    BUILD_PYTHON3=On
+  fi
+
+  CMAKE_PREFIX_PATH=/Users/travis/miniconda/envs/testenv/lib
+  ls /Users/travis/miniconda/envs/testenv/lib
 else
   PYTHON2_EXECUTABLE=/usr/bin/python2.7
   PYTHON3_EXECUTABLE=/usr/bin/python3.4
