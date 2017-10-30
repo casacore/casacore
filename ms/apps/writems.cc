@@ -81,7 +81,7 @@
 #include <fstream>
 #include <sstream>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 // This struct contains the data items needed to fill a spectral window in
@@ -1910,10 +1910,10 @@ String doOne (int seqnr, const String& msName)
 
 void doAll()
 {
-#ifdef _OPENMP
-#pragma omp parallel for schedule(dynamic)
-#endif
   Block<String> msnames(myNPart);
+  #ifdef _OPENMP
+  #pragma omp parallel for schedule(dynamic)
+  #endif
   for (int i=0; i<myNPart; ++i) {
     msnames[i] = doOne (i, myMsName);
   }
