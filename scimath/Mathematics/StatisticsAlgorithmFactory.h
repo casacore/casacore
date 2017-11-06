@@ -27,9 +27,9 @@
 #define SCIMATH_STATSALGORITHMFACTORY_H
 
 #include <casacore/casa/Utilities/CountedPtr.h>
-#include <casacore/scimath/Mathematics/FitToHalfStatisticsData.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
+#include <casacore/scimath/Mathematics/StatisticsAlgorithmFactoryData.h>
 #include <casacore/scimath/Mathematics/StatisticsData.h>
 
 namespace casacore {
@@ -41,18 +41,9 @@ class StatisticsAlgorithmFactory {
 
 public:
 
-    struct FitToHalfData {
-        FitToHalfStatisticsData::CENTER center;
-        // fit to half data portion to use
-        FitToHalfStatisticsData::USE_DATA side;
-        // fit to half center value (only relevent if center=CVALUE)
-        AccumType centerValue;
-    };
-
-    struct ChauvenetData {
-        Double zScore;
-        Int maxIter;
-    };
+    // to make copy() more straight forward to implement
+    template <class AccumType2, class DataIterator2, class MaskIterator2, class WeightsIterator2>
+    friend class StatisticsAlgorithmFactory;
 
     // upon construction, the object is configured to use the classical stats algorithm
     StatisticsAlgorithmFactory();
@@ -74,6 +65,16 @@ public:
     // configure to use Chauvenet's criterion
     void configureChauvenet(Double zscore=-1, Int maxIterations=-1);
 
+    // copy the data from this object to an object with different template types.
+    // Note that the AccumType of <src>other</src> must be the same as the AccumType
+    // of this object.
+    template <class DataIterator2, class MaskIterator2, class WeightsIterator2>
+    void copy(
+        StatisticsAlgorithmFactory<
+            AccumType, DataIterator2, MaskIterator2, WeightsIterator2
+        >& other
+    ) const;
+
     // Create a pointer to an object of a class derived from StatisticsAlgorithm
     // that reflects the current configuration
     CountedPtr<StatisticsAlgorithm<CASA_STATP> > createStatsAlgorithm() const;
@@ -82,7 +83,7 @@ public:
 
     // Throws an exception if the current configuration is not relevant
     // to the Chauvenet/zscore algorithm
-    ChauvenetData chauvenetData() const;
+    StatisticsAlgorithmFactoryData::ChauvenetData chauvenetData() const;
 
     // Throws an exception if the current configuration is not relevant
     // to the hinges-fences algorithm
@@ -90,7 +91,7 @@ public:
 
     // Throws an exception if the current configuration is not relevant
     // to the fit-to-half algorithm
-    FitToHalfData fitToHalfData() const;
+    StatisticsAlgorithmFactoryData::FitToHalfData<AccumType> fitToHalfData() const;
 
     // create a record from the current configuration that can be used
     // to create another object using the fromRecord() method.
@@ -104,8 +105,8 @@ private:
     StatisticsData::ALGORITHM _algorithm;
     // hinges-fences f factor
     Double _hf;
-    FitToHalfData _fitToHalfData;
-    ChauvenetData _chauvData;
+    StatisticsAlgorithmFactoryData::FitToHalfData<AccumType> _fitToHalfData;
+    StatisticsAlgorithmFactoryData::ChauvenetData _chauvData;
 
 };
 

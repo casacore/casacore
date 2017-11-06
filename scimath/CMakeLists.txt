@@ -298,6 +298,7 @@ Mathematics/StatisticsAlgorithm.h
 Mathematics/StatisticsAlgorithm.tcc
 Mathematics/StatisticsAlgorithmFactory.h
 Mathematics/StatisticsAlgorithmFactory.tcc
+Mathematics/StatisticsAlgorithmFactoryData.h
 Mathematics/StatisticsData.h
 Mathematics/StatisticsIncrementer.h
 Mathematics/StatisticsIncrementer.tcc

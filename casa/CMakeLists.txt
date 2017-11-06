@@ -151,6 +151,7 @@ OS/MemoryTrace.cc
 OS/ModcompConversion.cc
 OS/ModcompDataConversion.cc
 OS/Mutex.cc
+OS/OMP.cc
 OS/Path.cc
 OS/PrecTimer.cc
 OS/RawDataConversion.cc
@@ -522,6 +523,7 @@ OS/MemoryTrace.h
 OS/ModcompConversion.h
 OS/ModcompDataConversion.h
 OS/Mutex.h
+OS/OMP.h
 OS/Path.h
 OS/PrecTimer.h
 OS/RawDataConversion.h

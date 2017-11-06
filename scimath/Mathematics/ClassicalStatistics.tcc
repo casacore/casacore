@@ -30,15 +30,12 @@
 #include <casacore/scimath/Mathematics/ClassicalStatistics.h>
 
 #include <casacore/scimath/Mathematics/ClassicalStatisticsData.h>
+#include <casacore/casa/OS/OMP.h>
 #include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/scimath/Mathematics/StatisticsIncrementer.h>
 #include <casacore/scimath/Mathematics/StatisticsUtilities.h>
 
 #include <iomanip>
-
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 
 namespace casacore {
 
@@ -908,25 +905,19 @@ void ClassicalStatistics<CASA_STATP>::_accumulate(
 
 CASA_STATD
 uInt ClassicalStatistics<CASA_STATP>::_nThreadsMax() const {
+    uInt nthr = OMP::nMaxThreads();
 #ifdef _OPENMP
-    if (omp_get_num_threads() > 1) {
-        // we are being called from an already parallized block of code,
-        // so we should not parallelize
-        return 1;
-    }
-    // we are being called from a single threaded block of code,
-    // so parallelize
-    const StatsDataProvider<CASA_STATP> *dataProvider = this->_getDataProvider();
-    if (dataProvider) {
-        uInt n = dataProvider->getNMaxThreads();
-        if (n > 0) {
-            return n;
+    if (nthr > 1) {
+        const StatsDataProvider<CASA_STATP> *dataProvider = this->_getDataProvider();
+        if (dataProvider) {
+            uInt n = dataProvider->getNMaxThreads();
+            if (n > 0) {
+                return n;
+            }
         }
     }
-    return omp_get_max_threads();
-#else
-    return 1;
 #endif
+    return nthr;
 }
 
 CASA_STATD

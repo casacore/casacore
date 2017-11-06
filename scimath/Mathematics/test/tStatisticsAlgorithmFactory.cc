@@ -72,7 +72,7 @@ int main() {
             saf.createStatsAlgorithm()->algorithm() == StatisticsData::CHAUVENETCRITERION,
             AipsError
         );
-        StatisticsAlgorithmFactory<Double, Float*>::ChauvenetData cd = saf.chauvenetData();
+        StatisticsAlgorithmFactoryData::ChauvenetData cd = saf.chauvenetData();
         AlwaysAssert(
             cd.zScore == zscore, AipsError
         );
@@ -90,7 +90,7 @@ int main() {
             saf.createStatsAlgorithm()->algorithm() == StatisticsData::FITTOHALF,
             AipsError
         );
-        StatisticsAlgorithmFactory<Double, Float*>::FitToHalfData fd = saf.fitToHalfData();
+        StatisticsAlgorithmFactoryData::FitToHalfData<Double> fd = saf.fitToHalfData();
         AlwaysAssert(
             fd.center == center, AipsError
         );
