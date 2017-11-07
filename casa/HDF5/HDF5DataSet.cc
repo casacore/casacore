@@ -27,6 +27,7 @@
 
 #include <casacore/casa/HDF5/HDF5DataSet.h>
 #include <casacore/casa/HDF5/HDF5Error.h>
+#include <casacore/casa/Arrays/ArrayBase.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/BlockIO.h>
 #include <casacore/casa/BasicMath/Primes.h>
@@ -302,6 +303,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return HDF5DataType::getDataType (dtid);
   }
 
+  void HDF5DataSet::get (const Slicer& section, ArrayBase& arr, Bool resize)
+  {
+    const IPosition& shp = section.length();
+    if (! shp.isEqual (arr.shape())) {
+      if (resize  ||  arr.nelements() == 0) {
+        arr.resize (shp);
+      } else {
+        throw HDF5Error("Shape of slicer " + shp.toString() +
+                        " and array " + arr.shape().toString() +
+                        " mismatch in get of dataset " + getName());
+      }
+    }
+    Bool deleteIt;
+    void* buf = arr.getVStorage (deleteIt);
+    get (section, buf);
+    arr.putVStorage (buf, deleteIt);
+  }
+  
   void HDF5DataSet::get (const Slicer& section, void* buf)
   {
     // Define the data set selection.
@@ -310,7 +329,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Block<hsize_t> stride = fromShape(section.stride());
     if (H5Sselect_hyperslab (itsDSid, H5S_SELECT_SET, offset.storage(),
 			     stride.storage(), count.storage(), NULL) < 0) {
-      throw HDF5Error("invalid data set array selection");
+      throw HDF5Error("invalid array get selection for dataset " + getName());
     }
     // Define a data space for the memory buffer.
     HDF5HidDataSpace memspace (H5Screate_simple (count.size(),
@@ -319,15 +338,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     offset = 0;
     if (H5Sselect_hyperslab (memspace, H5S_SELECT_SET, offset.storage(),
 			     NULL, count.storage(), NULL) < 0) {
-      throw HDF5Error("setting slab of memory buffer");
+      throw HDF5Error("setting slab of memory buffer for dataset " + getName());
     }
     // Read the data.
     if (H5Dread (getHid(), itsDataType.getHidMem(), memspace, itsDSid,
 		 H5P_DEFAULT, buf) < 0) {
-      throw HDF5Error("reading slab from data set array");
+      throw HDF5Error("reading slab from data set array " + getName());
     }
   }
 
+  void HDF5DataSet::put (const Slicer& section, const ArrayBase& arr)
+  {
+    const IPosition& shp = section.length();
+    if (! shp.isEqual (arr.shape())) {
+      throw HDF5Error("Shape of slicer " + shp.toString() +
+                      " and array " + arr.shape().toString() +
+                      " mismatch in put of dataset " + getName());
+    }
+    Bool deleteIt;
+    const void* buf = arr.getVStorage (deleteIt);
+    put (section, buf);
+    arr.freeVStorage (buf, deleteIt);
+  }
+  
   void HDF5DataSet::put (const Slicer& section, const void* buf)
   {
     // Define the data set selection.
@@ -336,7 +369,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Block<hsize_t> stride = fromShape(section.stride());
     if (H5Sselect_hyperslab (itsDSid, H5S_SELECT_SET, offset.storage(),
 			     stride.storage(), count.storage(), NULL) < 0) {
-      throw HDF5Error("invalid data set array selection");
+      throw HDF5Error("invalid array put selection for datset " + getName());
     }
     // Define a data space for the memory buffer.
     HDF5HidDataSpace memspace (H5Screate_simple (count.size(),
@@ -345,12 +378,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     offset = 0;
     if (H5Sselect_hyperslab (memspace, H5S_SELECT_SET, offset.storage(),
 			     NULL, count.storage(), NULL) < 0) {
-      throw HDF5Error("setting slab of memory buffer");
+      throw HDF5Error("setting slab of memory buffer for dataset " + getName());
     }
     // Write the data.
     if (H5Dwrite (getHid(), itsDataType.getHidMem(), memspace, itsDSid,
 		  H5P_DEFAULT, buf) < 0) {
-      throw HDF5Error("writing slab into data set array");
+      throw HDF5Error("writing slab into data set array " + getName());
     }
   }
 
@@ -369,7 +402,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (ext) {
       Block<hsize_t> ls = fromShape (newShape);
       if (H5Dset_extent (getHid(), ls.storage()) < 0) {
-        throw HDF5Error("Could not extend data set");
+        throw HDF5Error("Could not extend data set " + getName());
       }
       itsShape = newShape;
       // The DataSpace has to be refreshed.
@@ -415,9 +448,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   DataType HDF5DataSet::getDataType (hid_t, const String&)
     { return TpOther; }
 
+  void HDF5DataSet::get (const Slicer&, ArrayBase&, Bool)
+  {}
+    
   void HDF5DataSet::get (const Slicer&, void*)
   {}
 
+  void HDF5DataSet::put (const Slicer&, const ArrayBase&)
+  {}
+  
   void HDF5DataSet::put (const Slicer&, const void*)
   {}
 

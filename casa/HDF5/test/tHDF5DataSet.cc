@@ -55,7 +55,7 @@ int main()
       AlwaysAssertExit (dset.getName() == "array");
       AlwaysAssertExit (dset.shape() == shape);
       AlwaysAssertExit (dset.tileShape() == shape);
-      dset.put (Slicer(IPosition(2,0), shape), iarr.data());
+      dset.put (Slicer(IPosition(2,0), shape), iarr);
       AlwaysAssertExit (HDF5DataSet::getDataType (file, "array") == TpInt);
     }
     {
@@ -68,7 +68,7 @@ int main()
       // Set the cache size in chunks.
       dset.setCacheSize (10);
       Array<Int> ires(shape);
-      dset.get (Slicer(IPosition(2,0), shape), ires.data());
+      dset.get (Slicer(IPosition(2,0), shape), ires);
       AlwaysAssertExit (allEQ(iarr, ires));
       Slicer section(IPosition(2,1), IPosition(2,2), IPosition(2,2));
       Array<Int> ires2(section.length());

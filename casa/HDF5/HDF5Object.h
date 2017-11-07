@@ -38,24 +38,12 @@
 #ifdef HAVE_HDF5
 # include <hdf5.h>
 #else 
-  typedef int                hid_t;
-  typedef unsigned long long hsize_t;
+  typedef casacore::Int64 hid_t;
+  typedef casacore::uInt64 hsize_t;
 #endif
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-  // Define 2 functions to check that hid_t and hsize_t are mapped correctly.
-  // They are called by the constructor, so the compiler will scream if
-  // incorrect.
-  // <group>
-  void throwInvHDF5();
-  inline void check_hid_t (int) {}
-  template<typename T> inline void check_hid_t (T) {throwInvHDF5();}
-  inline void check_hsize_t (unsigned long long) {}
-  template<typename T> inline void check_hsize_t (T) {throwInvHDF5();}
-  // </group>
-
 
   // <summary>
   // An abstract base class representing an HDF5 object
@@ -84,11 +72,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public: 
     // Default constructor sets to invalid hid.
     HDF5Object()
-    : itsHid(-1)
-    {
-      check_hid_t   (hid_t(0));
-      check_hsize_t (hsize_t(0));
-    }
+      : itsHid(-1)
+    {}
 
     // The destructor in a derived class should close the hid appropriately.
     virtual ~HDF5Object();
@@ -133,7 +118,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     //# Data members
-    hid_t  itsHid;
+    //# Define a union to ensure that the object always uses 64 bits, even
+    //# for older HDF5 versions where hid_t is a 32 bit integer.
+    union {
+      hid_t  itsHid;
+      Int64  itsDummyHid;
+    };
     String itsName;
 
   private:
