@@ -34,6 +34,8 @@
 #include <casacore/tables/TaQL/TableGram.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
 #include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/OS/Mutex.h>
 #include <map>
 
@@ -43,7 +45,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class TableExprNode;
 class TableExprNodeSet;
 class TableExprNodeSetElem;
-class RecordInterface;
 class Table;
 
 // <summary>
@@ -193,6 +194,32 @@ public:
     //# the other functions.
     static TableExprNode parse (const Table& table,
 				const String& expression);
+
+    // Evaluate an expression to the given type.
+    // The expression can contain variables; their names and values must be
+    // defined in the record.
+    // For double values it is possible to specify the desired unit.
+    // If the expression is a scalar value, the expr2Array functions will
+    // return an array with length 1.
+    // <group>
+    static Bool     expr2Bool    (const String& expr, const Record& vars=Record());
+    static Int64    expr2Int     (const String& expr, const Record& vars=Record());
+    static double   expr2Double  (const String& expr, const Record& vars=Record(),
+                                  const String& unit=String());
+    static DComplex expr2Complex (const String& expr, const Record& vars=Record());
+    static String   expr2String  (const String& expr, const Record& vars=Record());
+    static Array<Bool>     expr2ArrayBool    (const String& expr,
+                                              const Record& vars=Record());
+    static Array<Int64>    expr2ArrayInt     (const String& expr,
+                                              const Record& vars=Record());
+    static Array<double>   expr2ArrayDouble  (const String& expr,
+                                              const Record& vars=Record(),
+                                              const String& unit=String());
+    static Array<DComplex> expr2ArrayComplex (const String& expr,
+                                              const Record& vars=Record());
+    static Array<String>   expr2ArrayString  (const String& expr,
+                                              const Record& vars=Record());
+    // </group>
 
     // Create a TableExprNode from a literal.
     static TableExprNode handleLiteral (RecordGramVal*);

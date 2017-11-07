@@ -284,23 +284,27 @@ void LockFile::getInfo (MemoryIO& info)
 
 void LockFile::putInfo (const MemoryIO& info) const
 {
-    uInt infoLeng = ((MemoryIO&)info).length();
+    uInt infoLeng = const_cast<MemoryIO&>(info).length();
     if (itsLocker.fd() < 0  ||  !itsWritable  ||  infoLeng == 0) {
 	return;
     }
+    // Write the info into the lock file preceeded by its length.
     uChar buffer[1024];
     uInt leng = CanonicalConversion::fromLocal (buffer, infoLeng);
     if (infoLeng > 1024 - leng) {
+      // Too large for the buffer, so write length and info separately.
       traceLSEEK (itsLocker.fd(), SIZEREQID, SEEK_SET);
       AlwaysAssert (traceWRITE (itsLocker.fd(), (Char *)buffer, leng) ==
                     Int(leng), AipsError);
       AlwaysAssert (traceWRITE (itsLocker.fd(), (Char *)info.getBuffer(),
                                 infoLeng) == Int(infoLeng), AipsError);
     }else{
+      // Info fits in the buffer, so copy and do a single write.
       memcpy (buffer+leng, info.getBuffer(), infoLeng);
       AlwaysAssert (tracePWRITE (itsLocker.fd(), (Char *)buffer, leng+infoLeng,
                                  SIZEREQID) == Int(leng+infoLeng), AipsError);
     }
+    // Do an fsync to achieve NFS synchronization.
     fsync (itsLocker.fd());
 }
 

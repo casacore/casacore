@@ -192,10 +192,63 @@ void doIt()
 }
 
 
+// Test the expr2 functions.
+void testExpr2()
+{
+  Record vars;
+  AlwaysAssertExit (RecordGram::expr2Bool("T||F") == True);
+  AlwaysAssertExit (RecordGram::expr2Int("2*2") == 4);
+  AlwaysAssertExit (RecordGram::expr2Double("4") == 4);
+  AlwaysAssertExit (RecordGram::expr2Complex("4") == DComplex(4,0));
+  AlwaysAssertExit (RecordGram::expr2String("'ab'+'cd'") == "abcd")
+  AlwaysAssertExit (RecordGram::expr2Double("4 kHz", vars, "Hz") == 4000);
+  AlwaysAssertExit (RecordGram::expr2Double("1.2m", vars, "m") == 1.2);
+  Array<Bool> arrb;
+  Array<Int64> arri;
+  Array<double> arrd;
+  Array<DComplex> arrc;
+  Array<String> arrs;
+  vars.define ("i", 10);
+  vars.define ("s", "xy");
+  arrb = RecordGram::expr2ArrayBool("T", vars);
+  arri = RecordGram::expr2ArrayInt("i", vars);
+  arrd = RecordGram::expr2ArrayDouble("i cm", vars, "m");
+  arrc = RecordGram::expr2ArrayComplex("i + i*1i", vars);
+  arrs = RecordGram::expr2ArrayString("'str'", vars);
+  AlwaysAssertExit (arrb.shape() == IPosition(1,1)  &&
+                    arrb.data()[0] == True);
+  AlwaysAssertExit (arri.shape() == IPosition(1,1)  &&
+                    arri.data()[0] == 10);
+  AlwaysAssertExit (arrd.shape() == IPosition(1,1)  &&
+                    arrd.data()[0] == 0.1);
+  AlwaysAssertExit (arrc.shape() == IPosition(1,1)  &&
+                    arrc.data()[0] == DComplex(10,10));
+  AlwaysAssertExit (arrs.shape() == IPosition(1,1)  &&
+                    arrs.data()[0] == "str");
+  arrb.reference (RecordGram::expr2ArrayBool("[T,F]", vars));
+  arri.reference (RecordGram::expr2ArrayInt("[i,i+1]", vars));
+  arrd.reference (RecordGram::expr2ArrayDouble("[10cm, 10+2dm]", vars, "m"));
+  arrc.reference (RecordGram::expr2ArrayComplex("[i, i*1i]", vars));
+  arrs.reference (RecordGram::expr2ArrayString("['str', s]", vars));
+  AlwaysAssertExit (arrb.shape() == IPosition(1,2)  &&
+                    arrb.data()[0] == True  &&  arrb.data()[1] == False);
+  AlwaysAssertExit (arri.shape() == IPosition(1,2)  &&
+                    arri.data()[0] == 10  &&  arri.data()[1] == 11);
+  AlwaysAssertExit (arrd.shape() == IPosition(1,2)  &&
+                    arrd.data()[0] == 0.1  &&  arrd.data()[1] == 1.2);
+  AlwaysAssertExit (arrc.shape() == IPosition(1,2)  &&
+                    arrc.data()[0] == DComplex(10,0)  &&
+                    arrc.data()[1] == DComplex(0,10));
+  AlwaysAssertExit (arrs.shape() == IPosition(1,2)  &&
+                    arrs.data()[0] == "str"  &&  arrs.data()[1] == "xy");
+}
+
+
 int main()
 {
   try {
     doIt();
+    testExpr2();
   } catch (AipsError x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;

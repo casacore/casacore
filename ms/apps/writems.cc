@@ -38,6 +38,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/TaQL/RecordGram.h>
 
 #include <casacore/ms/MeasurementSets.h>
 #include <casacore/tables/DataMan/IncrementalStMan.h>
@@ -81,7 +82,7 @@
 #include <fstream>
 #include <sstream>
 
-using namespace casacore;
+using namespace casa;
 using namespace std;
 
 // This struct contains the data items needed to fill a spectral window in
@@ -1552,8 +1553,9 @@ Vector<int> myNPol;
 Vector<int> myNChan;
 int    myNTime;
 int    myNTimeField;
+int    myTileSizePol;
 int    myTileSizeFreq;
-int    myTileSize;     //# in KBytes
+int    myTileSize;     //# in bytes
 int    myNFlagBits;
 Vector<double> myStartFreq;
 Vector<double> myStepFreq;
@@ -1563,23 +1565,26 @@ String myMsName;
 String myAntennaTableName;
 String myFlagColumn;
 int    myUseMultiFile;      //# 0=not 1=multifile 2=multihdf5
-int    myMultiBlockSize;    //# in KBytes
+int    myMultiBlockSize;    //# in bytes
 bool   myWriteHDF5;
 
 
-IPosition formTileShape (int tileSize, int tileNFreq,
+IPosition formTileShape (int tileSize, int tileNPol, int tileNFreq,
                          const Vector<int>& npol,
                          const Vector<int>& nfreq)
 {
   // Determine the tile size to use.
   // Store all polarisations in a single tile.
   // Flags are stored as bits, so take care each tile has multiple of 8 flags.
+  int tsp = tileNPol;
   int tsf = tileNFreq;
   int ts  = tileSize;
+  if (tsp <= 0) {
+    tsp = max(npol);     // default is all polarizations
+  }
   if (tsf <= 0) {
     tsf = max(nfreq);     // default is all channels
   }
-  int tsp = max(npol);
   if (ts <= 0) {
     ts = 1024*1024;       // default is 1 MByte
   }
@@ -1596,12 +1601,29 @@ void showHelp()
   cout << "Use   writems -h   to see the possible parameters." << endl;
 }
 
+Int64 parmInt (Input& params, const String& name)
+{
+  return RecordGram::expr2Int (params.getString(name));
+}
+
+Array<Int64> parmArrayInt (Input& params, const String& name)
+{
+  return RecordGram::expr2ArrayInt (params.getString(name));
+}
+
+Array<double> parmArrayDouble (Input& params, const String& name,
+                               const String& unit=String())
+{
+  return RecordGram::expr2ArrayDouble (params.getString(name), Record(), unit);
+}
+
+
 bool readParms (int argc, char* argv[])
 {
   // enable input in no-prompt mode
   Input params(1);
   // define the input structure
-  params.version("2017Oct30GvD");
+  params.version("2017Oct31GvD");
   params.create ("nms", "0",
                  "Number of MeasurementSets to create (0 means 1 MS without suffix, >0 also creates MultiMS)",
                  "int");
@@ -1617,10 +1639,10 @@ bool readParms (int argc, char* argv[])
   params.create ("anttab", "",
                  "Name of the ANTENNA table giving the antenna parameters to use (zero/empty values if not given)",
                  "string");
-  params.create ("startfreq", "1e9",
+  params.create ("startfreq", "1 GHz",
                  "Start frequency (Hz) per spw (1 value counts on for other spws)",
                  "double");
-  params.create ("chanwidth", "1e6",
+  params.create ("chanwidth", "1 MHz",
                  "Channel frequency width (Hz) per spw (1 value applies to all spws)", 
                  "double");
   params.create ("starttime", "",
@@ -1669,10 +1691,13 @@ bool readParms (int argc, char* argv[])
                  "Name of the FlagBits column if nflagbits>0",
                  "string");
   params.create ("tilesize", "-1",
-                 "Size of data tiles (KBytes); default is 1024",
+                 "Size of data tiles (bytes); default is 1024*1024",
+                 "int");
+  params.create ("tilesizepol", "-1",
+                 "Number of polarizations in data tiles; default is all",
                  "int");
   params.create ("tilesizefreq", "-1",
-                 "Number of channels in data tiles; default is all channels",
+                 "Number of channels in data tiles; default is all",
                  "int");
   params.create ("multifile", "false",
                  "Use the MultiFile feature?",
@@ -1681,7 +1706,7 @@ bool readParms (int argc, char* argv[])
                  "Use the MultiHDF5 feature?",
                  "bool");
   params.create ("mfsize", "-1",
-                 "MultiFile/HDF5 block size (KBytes); default is tilesize",
+                 "MultiFile/HDF5 block size (bytes); default is tilesize",
                  "int");
   params.create ("ashdf5", "false",
                  "Write the data in HDF5 format",
@@ -1694,8 +1719,8 @@ bool readParms (int argc, char* argv[])
     showHelp();
     return false;
   }
-  myStepFreq  = Vector<double> (params.getDoubleArray ("chanwidth"));
-  myStartFreq = Vector<double> (params.getDoubleArray ("startfreq"));
+  myStepFreq  = Vector<double> (parmArrayDouble (params, "chanwidth", "Hz"));
+  myStartFreq = Vector<double> (parmArrayDouble (params, "startfreq", "Hz"));
   myStepTime  = params.getDouble ("timestep");
   String startTimeStr = params.getString ("starttime");
   Quantity qn;
@@ -1721,8 +1746,9 @@ bool readParms (int argc, char* argv[])
     myNPart = 1;
   }
   // Determine possible tile size. Default is no tiling.
-  myTileSizeFreq = params.getInt ("tilesizefreq");
-  myTileSize = params.getInt ("tilesize") * 1024;
+  myTileSizePol  = parmInt (params, "tilesizepol");
+  myTileSizeFreq = parmInt (params, "tilesizefreq");
+  myTileSize = parmInt (params, "tilesize");
   // Determine nr of bands per part (i.e., ms).
   AlwaysAssertExit (myNPart > 0);
   AlwaysAssertExit (myNBand > 0);
@@ -1785,7 +1811,7 @@ bool readParms (int argc, char* argv[])
   } else if (useMultiHDF5) {
     myUseMultiFile = 2;
   }
-  myMultiBlockSize      = params.getInt    ("mfsize") * 1024;
+  myMultiBlockSize      = params.getInt    ("mfsize");
   myWriteHDF5           = params.getBool   ("ashdf5");
   myFlagColumn          = params.getString ("flagcolumn");
   myNFlagBits           = params.getInt    ("nflagbits");
@@ -1813,16 +1839,15 @@ bool readParms (int argc, char* argv[])
 
 void showParms()
 {
-  cout << "writems parameters:" << endl;
   cout << " nms    = " << myNPart << "   " << myMsName << endl;
   int nant = myAntPos.ncolumn();
-  cout << " nant   = " << nant << "   (nbaseline = ";
+  cout << " nant   = " << nant << "   (";
   if (myWriteAutoCorr) {
     cout << nant*(nant+1) / 2;
   } else {
     cout << nant*(nant-1) / 2;
   }
-  cout << ')' << endl;
+  cout << " baselines)" << endl;
   cout << " nspw   = " << myNBand
        << "   (" << myNBand/myNPart << " per ms)" << endl;
   cout << " nfield = " << myRa.size();
@@ -1839,17 +1864,18 @@ void showParms()
   if (!myFlagColumn.empty()  &&  myNFlagBits > 0) {
     cout << " FLAG written as " << myNFlagBits << " bits per flag" << endl;
   }
-  IPosition tileShape = formTileShape(myTileSize, myTileSizeFreq,
+  IPosition tileShape = formTileShape(myTileSize, myTileSizePol, myTileSizeFreq,
                                       myNPol, myNChan);
-  int tileSize = tileShape.product() * 8 / 1024;
-  cout << " tilesize = " << tileSize << " KBytes" << endl;
+  int tileSize = tileShape.product() * 8;
+  cout << " data tileshape      = " << tileShape
+       <<   "  (tilesize = " << tileSize << " bytes)" << endl;
   if (!myWriteHDF5  &&  myUseMultiFile) {
     cout << " multi" << (myUseMultiFile==1 ? "file" : "hdf5");
     int multiBlockSize = myMultiBlockSize;
     if (multiBlockSize <= 0) {
       multiBlockSize = tileSize;
     }
-    cout << "    (blocksize = " << multiBlockSize << " KBytes)" << endl;
+    cout << "    (blocksize = " << multiBlockSize << " bytes)" << endl;
   }
 }
 
@@ -1877,7 +1903,8 @@ String doOne (int seqnr, const String& msName)
   } else {
     msmaker = new MSCreateCasa();
   }
-  IPosition dataTileShape = formTileShape (myTileSize, myTileSizeFreq,
+  IPosition dataTileShape = formTileShape (myTileSize, myTileSizePol,
+                                           myTileSizeFreq,
                                            myNPol, myNChan);
   myTileSize = dataTileShape.product() * 8;
   if (myMultiBlockSize < 0) {
@@ -1910,17 +1937,20 @@ String doOne (int seqnr, const String& msName)
 
 void doAll()
 {
+  int nthread = 1;
+#ifdef _OPENMP
+  nthread = omp_num_threads();
+#pragma omp parallel for schedule(dynamic)
+#endif
   Block<String> msnames(myNPart);
-  #ifdef _OPENMP
-  #pragma omp parallel for schedule(dynamic)
-  #endif
   for (int i=0; i<myNPart; ++i) {
     msnames[i] = doOne (i, myMsName);
   }
   if (myNPart == 1) {
     cout << "Created 1 MS part" << endl;
   } else {
-    cout << "Created " << myNPart << " MS parts" << endl;
+    cout << "Created " << myNPart << " MS parts in "
+         << nthread << " threads" << endl;
   }
   // Create the concatenated MS.
   if (!myDoSinglePart  &&  !myWriteHDF5) {

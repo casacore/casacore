@@ -138,9 +138,11 @@ public:
     // or throwIfNull function in case of doubt.
     TableIterator();
 
-    // Create a table iterator for the given table.
+    // Create a table iterator on the given column(s) for the given table.
     // Each iteration step results in a Table containing all
     // rows in which the values in each given column is equal.
+    // The column vector can be empty, resulting in a single iteration step
+    // giving the entire table.
     // An iteration order can be given; it defaults to Ascending.
     // Per column a compare object can be given to use other compare
     // functions than the standard ones defined in Compare.h.
