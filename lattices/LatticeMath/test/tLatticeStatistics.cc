@@ -46,9 +46,6 @@
 
 #include <casacore/casa/namespace.h>
 
-// debug
-#include <iomanip>
-
 void doitFloat(LogIO& os);
 void do1DFloat (const Vector<Float>& results,
                 const Vector<Bool>& hasResult, 
