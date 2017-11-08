@@ -70,6 +70,7 @@
 #include <casacore/casa/Quanta/MVPosition.h>
 #include <casacore/casa/Quanta/MVBaseline.h>
 #include <casacore/casa/OS/Time.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -82,7 +83,7 @@
 #include <fstream>
 #include <sstream>
 
-using namespace casa;
+using namespace casacore;
 using namespace std;
 
 // This struct contains the data items needed to fill a spectral window in
@@ -1548,6 +1549,8 @@ bool   myCreateImagerColumns;
 bool   myWriteRowWise;
 bool   myDoSinglePart;
 int    myNPart;
+int    myTotalNBand;
+int    myFirstBand;
 int    myNBand;
 Vector<int> myNPol;
 Vector<int> myNChan;
@@ -1601,9 +1604,9 @@ void showHelp()
   cout << "Use   writems -h   to see the possible parameters." << endl;
 }
 
-Int64 parmInt (Input& params, const String& name)
+Int64 parmInt (Input& params, const String& name, const Record& vars=Record())
 {
-  return RecordGram::expr2Int (params.getString(name));
+  return RecordGram::expr2Int (params.getString(name), vars);
 }
 
 Array<Int64> parmArrayInt (Input& params, const String& name)
@@ -1657,8 +1660,14 @@ bool readParms (int argc, char* argv[])
   params.create ("ntimefield", "0",
                  "Number of time steps per field (0=all fields for all times)",
                  "int");
+  params.create ("totalspw", "nspw",
+                 "Total number of spectral windows (to write in SPECTRAL_WINDOW)",
+                 "int");
+  params.create ("firstspw", "0",
+                 "First spectral window to write in this set of MSs",
+                 "int");
   params.create ("nspw", "1",
-                 "Number of spectral windows",
+                 "Number of spectral windows to write in this set of MSs",
                  "int");
   params.create ("npol", "4",
                  "Number of polarizations per spectral window; 1 value applies to all spws",
@@ -1735,7 +1744,12 @@ bool readParms (int argc, char* argv[])
     AlwaysAssertExit (MVAngle::read (qn, decStr[i], true));
     myDec.push_back (qn.getValue ("rad"));
   }
-  myNBand = params.getInt ("nspw");
+  myNBand      = params.getInt ("nspw");
+  // firstspw and totalspw can be an expression of nspw.
+  Record vars;
+  vars.define ("nspw", myNBand);
+  myFirstBand  = parmInt (params, "firstspw", vars);
+  myTotalNBand = parmInt (params, "totalspw", vars);
   myNChan = Vector<Int> (params.getIntArray ("nchan"));
   myNPol  = Vector<Int> (params.getIntArray ("npol"));
   myNTime = params.getInt ("ntime");
@@ -1751,7 +1765,7 @@ bool readParms (int argc, char* argv[])
   myTileSize = parmInt (params, "tilesize");
   // Determine nr of bands per part (i.e., ms).
   AlwaysAssertExit (myNPart > 0);
-  AlwaysAssertExit (myNBand > 0);
+  AlwaysAssertExit (myNBand > 0  &&  myTotalNBand > 0  &&  myNBand <= myTotalNBand);
   if (myNBand > myNPart) {
     // Multiple bands per part.
     AlwaysAssertExit (myNBand%myNPart == 0);
@@ -1762,37 +1776,37 @@ bool readParms (int argc, char* argv[])
     myNBand = myNPart;
   }
   AlwaysAssertExit (myNPol.size() == 1  ||
-                    myNPol.size() == uInt(myNBand));
-  if (myNPol.size() != uInt(myNBand)) {
+                    myNPol.size() == uInt(myTotalNBand));
+  if (myNPol.size() != uInt(myTotalNBand)) {
     int np = myNPol[0];
-    myNPol.resize (myNBand, True);
+    myNPol.resize (myTotalNBand, True);
     myNPol = np;
   }
   AlwaysAssertExit (myNChan.size() == 1  ||
-                    myNChan.size() == uInt(myNBand));
-  if (myNChan.size() != uInt(myNBand)) {
+                    myNChan.size() == uInt(myTotalNBand));
+  if (myNChan.size() != uInt(myTotalNBand)) {
     int nf = myNChan[0];
-    myNChan.resize (myNBand);
+    myNChan.resize (myTotalNBand);
     myNChan = nf;
   }
   // Determine start and step frequency per band.
   AlwaysAssertExit (myStepFreq.size() == 1  ||
-                    myStepFreq.size() == uInt(myNBand));
-  if (myStepFreq.size() != uInt(myNBand)) {
+                    myStepFreq.size() == uInt(myTotalNBand));
+  if (myStepFreq.size() != uInt(myTotalNBand)) {
     double f = myStepFreq[0];
-    myStepFreq.resize (myNBand, True);
+    myStepFreq.resize (myTotalNBand, True);
     myStepFreq = f;
   }
   AlwaysAssertExit (myStartFreq.size() == 1  ||
-                    myStartFreq.size() == uInt(myNBand));
-  if (myStartFreq.size() != uInt(myNBand)) {
-    myStartFreq.resize (myNBand, True);
-    for (int i=1; i<myNBand; ++i) {
+                    myStartFreq.size() == uInt(myTotalNBand));
+  if (myStartFreq.size() != uInt(myTotalNBand)) {
+    myStartFreq.resize (myTotalNBand, True);
+    for (int i=1; i<myTotalNBand; ++i) {
       myStartFreq[i] = (myStartFreq[i-1] + myNChan[i-1] * myStepFreq[i-1] +
                          0.5 * (myStepFreq[i] - myStepFreq[i-1]));
     }
   }
-  for (int i=0; i<myNBand; ++i) {
+  for (int i=0; i<myTotalNBand; ++i) {
     AlwaysAssertExit (myStepFreq[i] > 0);
     AlwaysAssertExit (myStartFreq[i] > 0);
   }
@@ -1839,25 +1853,27 @@ bool readParms (int argc, char* argv[])
 
 void showParms()
 {
-  cout << " nms    = " << myNPart << "   " << myMsName << endl;
+  cout << " nms      = " << myNPart << "   " << myMsName << endl;
   int nant = myAntPos.ncolumn();
-  cout << " nant   = " << nant << "   (";
+  cout << " nant     = " << nant << "   (";
   if (myWriteAutoCorr) {
     cout << nant*(nant+1) / 2;
   } else {
     cout << nant*(nant-1) / 2;
   }
   cout << " baselines)" << endl;
-  cout << " nspw   = " << myNBand
+  cout << " totalspw = " << myTotalNBand
+       << "   (firstspw = " << myFirstBand << ')' << endl;
+  cout << " nspw     = " << myNBand
        << "   (" << myNBand/myNPart << " per ms)" << endl;
-  cout << " nfield = " << myRa.size();
+  cout << " nfield   = " << myRa.size();
   if (myNTimeField > 0) {
     cout << "   (" << myNTimeField << "times per field)";
   }
   cout << endl;
-  cout << " ntime  = " << myNTime << endl;
-  cout << " nchan  = " << myNChan << endl;
-  cout << " npol   = " << myNPol << endl;
+  cout << " ntime    = " << myNTime << endl;
+  cout << " nchan    = " << myNChan << endl;
+  cout << " npol     = " << myNPol << endl;
   cout << " rowwise             = " << myWriteRowWise << endl;
   cout << " writeweightspectrum = " << myWriteWeightSpectrum << endl;
   cout << " createimagercolumns = " << myCreateImagerColumns << endl;
@@ -1914,7 +1930,7 @@ String doOne (int seqnr, const String& msName)
                  myWriteAutoCorr, myCalcUVW, myWriteWeightSpectrum,
                  myCreateImagerColumns,
                  myNPol, myNChan, myStartFreq, myStepFreq,
-                 seqnr*nbpp, nbpp,
+                 myFirstBand+seqnr*nbpp, nbpp,
                  myStartTime, myStepTime,
                  name, myAntennaTableName,
                  myNFlagBits, myFlagColumn, dataTileShape,

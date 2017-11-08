@@ -30,6 +30,9 @@
 #include <casacore/tables/TaQL/RecordGram.h>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
+#include <casacore/casa/Quanta/MVTime.h>
+#include <casacore/casa/OS/Time.h>
+#include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
 
@@ -200,7 +203,9 @@ void testExpr2()
   AlwaysAssertExit (RecordGram::expr2Int("2*2") == 4);
   AlwaysAssertExit (RecordGram::expr2Double("4") == 4);
   AlwaysAssertExit (RecordGram::expr2Complex("4") == DComplex(4,0));
-  AlwaysAssertExit (RecordGram::expr2String("'ab'+'cd'") == "abcd")
+  AlwaysAssertExit (RecordGram::expr2String("'ab'+'cd'") == "abcd");
+  AlwaysAssertExit (near (RecordGram::expr2Date("12Mar2017/12:34:56.7").second(),
+                          MVTime(Time(2017,3,12,12,34,56.7)).second()));
   AlwaysAssertExit (RecordGram::expr2Double("4 kHz", vars, "Hz") == 4000);
   AlwaysAssertExit (RecordGram::expr2Double("1.2m", vars, "m") == 1.2);
   Array<Bool> arrb;
@@ -208,6 +213,7 @@ void testExpr2()
   Array<double> arrd;
   Array<DComplex> arrc;
   Array<String> arrs;
+  Array<MVTime> arrm;
   vars.define ("i", 10);
   vars.define ("s", "xy");
   arrb = RecordGram::expr2ArrayBool("T", vars);
@@ -215,6 +221,7 @@ void testExpr2()
   arrd = RecordGram::expr2ArrayDouble("i cm", vars, "m");
   arrc = RecordGram::expr2ArrayComplex("i + i*1i", vars);
   arrs = RecordGram::expr2ArrayString("'str'", vars);
+  arrm = RecordGram::expr2ArrayDate("12Mar2017/12:34:56.7", vars);
   AlwaysAssertExit (arrb.shape() == IPosition(1,1)  &&
                     arrb.data()[0] == True);
   AlwaysAssertExit (arri.shape() == IPosition(1,1)  &&
@@ -225,11 +232,16 @@ void testExpr2()
                     arrc.data()[0] == DComplex(10,10));
   AlwaysAssertExit (arrs.shape() == IPosition(1,1)  &&
                     arrs.data()[0] == "str");
+  AlwaysAssertExit (arrm.shape() == IPosition(1,1)  &&
+                    near(arrm.data()[0].second(),
+                         MVTime(Time(2017,3,12,12,34,56.7)).second()));
   arrb.reference (RecordGram::expr2ArrayBool("[T,F]", vars));
   arri.reference (RecordGram::expr2ArrayInt("[i,i+1]", vars));
   arrd.reference (RecordGram::expr2ArrayDouble("[10cm, 10+2dm]", vars, "m"));
   arrc.reference (RecordGram::expr2ArrayComplex("[i, i*1i]", vars));
   arrs.reference (RecordGram::expr2ArrayString("['str', s]", vars));
+  arrm.reference (RecordGram::expr2ArrayDate("[12Mar2017/12:34:56.7, "
+                                             "12Mar2017/12:34:56.7 + 2d]"));
   AlwaysAssertExit (arrb.shape() == IPosition(1,2)  &&
                     arrb.data()[0] == True  &&  arrb.data()[1] == False);
   AlwaysAssertExit (arri.shape() == IPosition(1,2)  &&
@@ -241,6 +253,11 @@ void testExpr2()
                     arrc.data()[1] == DComplex(0,10));
   AlwaysAssertExit (arrs.shape() == IPosition(1,2)  &&
                     arrs.data()[0] == "str"  &&  arrs.data()[1] == "xy");
+  AlwaysAssertExit (arrm.shape() == IPosition(1,2)  &&
+                    near(arrm.data()[0].second(),
+                         MVTime(Time(2017,3,12,12,34,56.7)).second())  &&
+                    near(arrm.data()[1].second(),
+                         MVTime(Time(2017,3,14,12,34,56.7)).second()));
 }
 
 

@@ -57,8 +57,6 @@ int    myNChan;
 int    myCacheSizeData;
 int    myCacheSizeFlag;
 int    myCacheSizeWeight;
-Vector<int> myField;
-Vector<int> mySpw;
 String myMsName;
 String myBaselines;
 String mySelection;
@@ -97,12 +95,6 @@ bool readParms (int argc, char* argv[])
   params.create ("weightspectrum", "false",
                  "Read WEIGHT_SPECTRUM column?",
                  "bool");
-  params.create ("fields", "",
-                 "Fields to read ",
-                 "int vector");
-  params.create ("spw", "",
-                 "Spectral window numbers to read",
-                 "int vector");
   params.create ("npol", "0",
                  "Number of polarizations to read (0=all, 1=XX, 2=XX/YY)",
                  "int");
@@ -154,8 +146,6 @@ bool readParms (int argc, char* argv[])
   myChanSize  = params.getInt ("chansize");
   myNChan = params.getInt ("nchan");
   myNPol  = params.getInt ("npol");
-  mySpw   = Vector<Int>(params.getIntArray ("spw"));
-  myField = Vector<Int>(params.getIntArray ("fields"));
   myNPart = params.getInt ("nms");
   myDoSinglePart = (myNPart == 0);
   if (myDoSinglePart) {

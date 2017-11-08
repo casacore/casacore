@@ -200,6 +200,16 @@ String RecordGram::expr2String (const String& expr, const Record& vars)
   return result;
 }
 
+MVTime RecordGram::expr2Date (const String& expr, const Record& vars)
+{
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, expr));
+  // Evaluate.
+  MVTime result;
+  node.get (vars, result);
+  return result;
+}
+
 Array<Bool> RecordGram::expr2ArrayBool (const String& expr,
                                         const Record& vars)
 {
@@ -279,6 +289,23 @@ Array<String> RecordGram::expr2ArrayString (const String& expr,
   TableExprNode node (RecordGram::parse(vars, ex));
   // Evaluate.
   Array<String> result;
+  if (node.isScalar()) {
+    result.resize (IPosition(1,1));
+    node.get (vars, result.data()[0]);
+  } else {
+    node.get (vars, result);
+  }
+  return result;
+}
+
+Array<MVTime> RecordGram::expr2ArrayDate (const String& expr,
+                                          const Record& vars)
+{
+  String ex = expr;
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, ex));
+  // Evaluate.
+  Array<MVTime> result;
   if (node.isScalar()) {
     result.resize (IPosition(1,1));
     node.get (vars, result.data()[0]);

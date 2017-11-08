@@ -208,6 +208,7 @@ public:
                                   const String& unit=String());
     static DComplex expr2Complex (const String& expr, const Record& vars=Record());
     static String   expr2String  (const String& expr, const Record& vars=Record());
+    static MVTime   expr2Date    (const String& expr, const Record& vars=Record());
     static Array<Bool>     expr2ArrayBool    (const String& expr,
                                               const Record& vars=Record());
     static Array<Int64>    expr2ArrayInt     (const String& expr,
@@ -218,6 +219,8 @@ public:
     static Array<DComplex> expr2ArrayComplex (const String& expr,
                                               const Record& vars=Record());
     static Array<String>   expr2ArrayString  (const String& expr,
+                                              const Record& vars=Record());
+    static Array<MVTime>   expr2ArrayDate    (const String& expr,
                                               const Record& vars=Record());
     // </group>
 
