@@ -46,6 +46,7 @@ using namespace casacore;
 // Define the global variables shared between the main functions.
 bool   myReadWeightSpectrum;
 bool   myReadData;
+bool   myReadFloatData;
 bool   myReadFlag;
 bool   myReadRowWise;
 bool   myDoSinglePart;
@@ -87,7 +88,7 @@ bool readParms (int argc, char* argv[])
                  "Name of the MeasurementSet (suffix _p<i> is added if nms>0)",
                  "string");
   params.create ("data", "true",
-                 "Read DATA column?",
+                 "Read DATA or FLOAT_DATA column?",
                  "bool");
   params.create ("flag", "true",
                  "Read FLAG column?",
@@ -158,6 +159,7 @@ bool readParms (int argc, char* argv[])
   myBaselines          = params.getString ("baselines");
   mySelection          = params.getString ("selection");
   myReadData           = params.getBool   ("data");
+  myReadFloatData      = myReadData;
   myReadFlag           = params.getBool   ("flag");
   myReadWeightSpectrum = params.getBool   ("weightspectrum");
   myReadRowWise        = params.getBool   ("rowwise");
@@ -195,6 +197,12 @@ void showParms()
 {
   String name = makeMSName (0, myMsName);
   Table tab(name);
+  if (! tab.tableDesc().isColumn ("DATA")) {
+    myReadData = False;
+  }
+  if (! tab.tableDesc().isColumn ("FLOAT_DATA")) {
+    myReadFloatData = False;
+  }
   if (! tab.tableDesc().isColumn ("WEIGHT_SPECTRUM")) {
     myReadWeightSpectrum = False;
   }
@@ -230,12 +238,13 @@ void showParms()
   }
   cout << endl;
   cout << " ntime  = " << ntime << endl;
-  ROTiledStManAccessor acc(ms, "DATA", True);
+  ROTiledStManAccessor acc(ms, myReadData ? "DATA" : "FLOAT_DATA", True);
   IPosition dataShape = acc.hypercubeShape(0);
   cout << " nchan  = " << dataShape[1] << endl;
   cout << " npol   = " << dataShape[0] << endl;
   cout << " rowwise             = " << myReadRowWise << endl;
   cout << " readdata            = " << myReadData << endl;
+  cout << " readfloatdata       = " << myReadFloatData << endl;
   cout << " readflag            = " << myReadFlag << endl;
   cout << " readweightspectrum  = " << myReadWeightSpectrum << endl;
   cout << " data tileshape      = " << acc.tileShape(0)
@@ -262,13 +271,17 @@ void showParms()
 }
 
 void readRows (ArrayColumn<Complex>& dataCol,
+               ArrayColumn<float>& floatDataCol,
                ArrayColumn<Bool>& flagCol,
-               ArrayColumn<Float>& weightCol)
+               ArrayColumn<float>& weightCol)
 {
   if (myReadRowWise) {
-    for (Int64 row=0; row<dataCol.nrow(); ++row) {
+    for (Int64 row=0; row<flagCol.nrow(); ++row) {
       if (myReadData) {
         dataCol.get (row);
+      }
+      if (myReadFloatData) {
+        floatDataCol.get (row);
       }
       if (myReadFlag) {
         flagCol.get (row);
@@ -281,6 +294,9 @@ void readRows (ArrayColumn<Complex>& dataCol,
     if (myReadData) {
       dataCol.getColumn();
     }
+    if (myReadFloatData) {
+      floatDataCol.getColumn();
+    }
     if (myReadFlag) {
       flagCol.getColumn();
     }
@@ -291,14 +307,18 @@ void readRows (ArrayColumn<Complex>& dataCol,
 }
 
 void readRows (ArrayColumn<Complex>& dataCol,
+               ArrayColumn<float>& floatDataCol,
                ArrayColumn<Bool>& flagCol,
-               ArrayColumn<Float>& weightCol,
+               ArrayColumn<float>& weightCol,
                const Slicer& slicer)
 {
   if (myReadRowWise) {
-    for (Int64 row=0; row<dataCol.nrow(); ++row) {
+    for (Int64 row=0; row<flagCol.nrow(); ++row) {
       if (myReadData) {
         dataCol.getSlice (row, slicer);
+      }
+      if (myReadFloatData) {
+        floatDataCol.getSlice (row, slicer);
       }
       if (myReadFlag) {
         flagCol.getSlice (row, slicer);
@@ -310,6 +330,9 @@ void readRows (ArrayColumn<Complex>& dataCol,
   } else {
     if (myReadData) {
       dataCol.getColumn (slicer);
+    }
+    if (myReadFloatData) {
+      floatDataCol.getColumn (slicer);
     }
     if (myReadFlag) {
       flagCol.getColumn (slicer);
@@ -333,7 +356,7 @@ Int64 readSteps (MeasurementSet& ms, Int64& niter)
                       TableIterator::NoSort);
   while (!iter1.pastEnd()) {
     Table tab1 (iter1.table());
-    IPosition shape = ArrayColumn<Complex>(tab1, "DATA").shape(0);
+    IPosition shape = ArrayColumn<Bool>(tab1, "FLAG").shape(0);
     int lastchan = myStartChan + myNChan;
     if (myNChan == 0) {
       lastchan = shape[1];
@@ -347,13 +370,20 @@ Int64 readSteps (MeasurementSet& ms, Int64& niter)
                          TableIterator::NoSort);
       while (!iter2.pastEnd()) {
         Table tab2 (iter2.table());
-        ArrayColumn<Complex>  dataCol(tab2, "DATA");
-        ArrayColumn<Bool>     flagCol(tab2, "FLAG");
-        ArrayColumn<Float> weightCol;
+        ArrayColumn<Bool>  flagCol(tab2, "FLAG");
+        ArrayColumn<Complex> dataCol;
+        if (myReadData) {
+          dataCol.attach (tab2, "DATA");
+        }
+        ArrayColumn<float> floatDataCol;
+        if (myReadFloatData) {
+          floatDataCol.attach (tab2, "FLOAT_DATA");
+        }
+        ArrayColumn<float> weightCol;
         if (myReadWeightSpectrum) {
           weightCol.attach (tab2, "WEIGHT_SPECTRUM");
         }
-        IPosition shape = dataCol.shape(0);
+        IPosition shape = flagCol.shape(0);
         int lchan = fchan + chansize;
         if (fchan > 0  ||  lchan < shape[1]  ||  myNPol < shape[0]) {
           AlwaysAssert (fchan < shape[1], AipsError);
@@ -366,9 +396,9 @@ Int64 readSteps (MeasurementSet& ms, Int64& niter)
             npol = shape[0];
           }
           Slicer slicer(IPosition(2,0,fchan), IPosition(2,npol,nchan), stride);
-          readRows (dataCol, flagCol, weightCol, slicer);
+          readRows (dataCol, floatDataCol, flagCol, weightCol, slicer);
         } else {
-          readRows (dataCol, flagCol, weightCol);
+          readRows (dataCol, floatDataCol, flagCol, weightCol);
         }
         iter2.next();
         niter++;
@@ -385,18 +415,28 @@ void showCacheStatistics (const MeasurementSet& ms)
   // Ignore exceptions (because datamanagers might be called differently).
   try {
     if (myReadData) {
+      cout << "DATA: ";
       RODataManAccessor(ms, "DATA", True).showCacheStatistics (cout);
     }
   } catch (std::exception&) {
   }
   try {
+    if (myReadFloatData) {
+      cout << "FLOAT_DATA: ";
+      RODataManAccessor(ms, "FLOAT_DATA", True).showCacheStatistics (cout);
+    }
+  } catch (std::exception&) {
+  }
+  try {
     if (myReadFlag) {
+      cout << "FLAG: ";
       RODataManAccessor(ms, "FLAG", True).showCacheStatistics (cout);
     }
   } catch (std::exception&) {
   }
   try {
     if (myReadWeightSpectrum) {
+      cout << "WEIGHT_SPECTRUM: ";
       RODataManAccessor(ms, "WEIGHT_SPECTRUM", True).showCacheStatistics (cout);
     }
   } catch (std::exception&) {
@@ -426,6 +466,9 @@ void doOne (int seqnr, const String& msName, Int64& origNrow, Int64& selNrow)
   // Set cache sizes where applicable.
   if (myReadData) {
     setTSMCacheSize (tab, "DATA", myCacheSizeData);
+  }
+  if (myReadFloatData) {
+    setTSMCacheSize (tab, "FLOAT_DATA", myCacheSizeData);
   }
   if (myReadFlag) {
     setTSMCacheSize (tab, "FLAG", myCacheSizeFlag);
