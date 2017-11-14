@@ -140,9 +140,8 @@ public:
       { return _beams.size() == 1; }
 
     // Does this beam set contain multiple beams?
-    Bool hasMultiBeam() const {
-        return _beams.size() > 1;
-    }
+    Bool hasMultiBeam() const
+      { return _beams.size() > 1; }
 
     // Is the beam set empty?
     Bool empty() const
@@ -153,7 +152,7 @@ public:
     const IPosition& shape() const
       { return _beams.shape(); }
 
-    // Get the number of channels in the beam array. NOte that this will
+    // Get the number of channels in the beam array. Note that this will
     // always return a minimum of 1, even if nchan was specified as 0 on construction.
     uInt nchan() const
       { return _beams.shape()[0]; }
@@ -232,12 +231,14 @@ public:
     IPosition getMaxAreaBeamPosition() const
       { return _maxBeamPos; }
 
-    // Get the minimal, maximal, and median area beams and positions in the beam set matrix for
-    // the given stokes. If the stokes axis has length 1 in the beam matrix,
-    // it is valid for all stokes and no checking is done that <src>stokes</src> is valid;
-    // the requested beam for the entire beam set is simply returned in this case. If the
-    // number of stokes in the beam matrix is >1, checking is done that the specified value
-    // of <src>stokes</src> is valid and if not, an exception is thrown.
+    // Get the minimal, maximal, and median area beams and positions in the
+    // beam set matrix for the given stokes. If the stokes axis has length 1
+    // in the beam matrix, it is valid for all stokes and no checking is done
+    // that <src>stokes</src> is valid; the requested beam for the entire beam set
+    // is simply returned in this case.
+    // If the number of stokes in the beam matrix is >1, checking is done that
+    // the specified value of <src>stokes</src> is valid and if not, an exception
+    // is thrown.
     // <group>
     const GaussianBeam& getMinAreaBeamForPol(IPosition& pos,
                                              uInt stokes) const;
@@ -251,8 +252,9 @@ public:
 
     static const String& className();
 
-    // Get the beam that has the smallest minor axis. If multiple beams have the smallest minor axis,
-    // the beam in this subset with the smallest area will be returned.
+    // Get the beam that has the smallest minor axis. If multiple beams have
+    // the smallest minor axis, the beam in this subset with the smallest area
+    // will be returned.
     const GaussianBeam getSmallestMinorAxisBeam() const;
 
     // convert ImageBeamSet to and from record
@@ -264,9 +266,9 @@ public:
     // If verbose, log all beams, if not just summarize beam stats.
     void summarize(LogIO& log, Bool verbose, const CoordinateSystem& csys) const;
 
-    // Modify the beam set by rotating all beams counterclockwise through the specified angle.
-    // If unwrap=True, unwrap the new position angle(s) so that it falls in the range -90 to
-    // 90 degrees before setting it.
+    // Modify the beam set by rotating all beams counterclockwise through the
+    // specified angle. If unwrap=True, unwrap the new position angle(s) so that
+    // it falls in the range -90 to 90 degrees before setting it.
     void rotate(const Quantity& angle, Bool unwrap=False);
 
 private:
@@ -281,18 +283,21 @@ private:
 
     void _calculateAreas();
 
+    // Show the spectral info.
     static void _chanInfoToStream(
         ostream& os, const SpectralCoordinate *spCoord,
         const uInt chan, const uInt chanWidth, const uInt freqPrec,
         const uInt velWidth, const uInt velPrec
     );
 
+    // Show the beam info.
     static void _beamToStream(
         ostream& os, const GaussianBeam& beam,
         const Unit& unit
     );
 };
 
+// Show the beam set info.
 ostream &operator<<(ostream &os, const ImageBeamSet& beamSet);
 
 }

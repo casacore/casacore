@@ -276,8 +276,8 @@ String ImageInterface<T>::makeUniqueRegionName (const String& rootName,
 template<class T>
 void ImageInterface<T>::setImageInfoMember(const ImageInfo& info)
 {
+  info.checkBeamSet (coords_p, shape(), name());
   imageInfo_p = info;
-  imageInfo_p.checkBeamSet (coords_p, shape(), name());
 }    
 
 template<class T>
