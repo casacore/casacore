@@ -248,6 +248,25 @@ Bool ImageConcat<T>::setMiscInfo (const RecordInterface& newInfo)
 }
 
 template<class T>
+Bool ImageConcat<T>::setImageInfo (const ImageInfo& info)
+{
+  // Check the beamset and set the Imageinfo for the concat image.
+  this->setImageInfoMember (info);
+  // Set the ImageInfo in each individual image.
+  // If the ImageConcat and the BeamInfo are along the frequency or stokes axis,
+  // take the appropriate subset.
+  uInt ndone = 0;
+  for (uInt i=0; i<latticeConcat_p.nlattices(); ++i) {
+    ImageInterface<T>& img =
+      dynamic_cast<ImageInterface<T>&>(*(latticeConcat_p.lattice(i)));
+    ndone += img.rwImageInfo().setInfoSplitBeamSet (ndone, info, img.shape(), 
+                                                    img.coordinates(),
+                                                    latticeConcat_p.axis());
+  }
+  return True;
+}
+
+template<class T>
 Bool ImageConcat<T>::isPersistent() const
 {
   return ! fileName_p.empty();
@@ -282,14 +301,14 @@ void ImageConcat<T>::setImage (ImageInterface<T>& image, Bool relax)
   latticeConcat_p.setLattice(image);
 
   // Do the extra image stuff.  Most of it is coordinate rubbish.
-  // The ImageInfo comes from the first image only.
+  // The ImageInfo (except beams) comes from the first image only.
   // The miscInfo is merged from all images.
   isImage_p.resize(nIm+1,True);
   isImage_p(nIm) = True;
   if (nIm==0) {
     ImageInterface<T>::setCoordinateInfo(image.coordinates());
     this->setUnitMember (image.units());
-    this->setImageInfo (image.imageInfo());
+    this->setImageInfoMember (image.imageInfo());
     this->setMiscInfoMember (image.miscInfo());
     this->setCoordinates();
   } else {

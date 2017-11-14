@@ -159,6 +159,11 @@ public:
 // It can fail if, e.g., the directory to write to is not writable.
    virtual Bool setMiscInfo (const RecordInterface& newInfo);
 
+  // Set the ImageInfo in the super class ImageInterface and in each
+  // underlying image. If needed, its restoring beam is split along the
+  // frequency or polarisation axis and set in each underlying image.
+  virtual Bool setImageInfo(const ImageInfo& info);
+
 // Get the image type (returns name of derived class).
    virtual String imageType() const;
 
@@ -191,6 +196,10 @@ public:
 // Returns 0 if none yet set. 
    uInt imageDim() const
      { return latticeConcat_p.latticeDim(); }
+
+// Return a reference to the i-th image.
+  ImageInterface<T>& image(uInt i) const
+    { return dynamic_cast<ImageInterface<T>&>(*(latticeConcat_p.lattice(i))); }
 
 // Handle the (un)locking and syncing, etc.
 // <group>

@@ -289,7 +289,6 @@ public:
 
     // Check if the beam shape matches the coordinates.
     void checkBeamShape (uInt& nchan, uInt& npol,
-                         const ImageInfo& info,
                          const IPosition& shape,
                          const CoordinateSystem& csys) const;
 
@@ -308,6 +307,13 @@ public:
                        Bool relax,
                        LogIO& os);
 
+    // Reset the info and beamset of this image with the appropriate part of
+    // the beam set of the concat image it is part of.
+    // It returns the number of channels or polarizations handled.
+    uInt setInfoSplitBeamSet (uInt ndone, const ImageInfo& concatInfo,
+                              const IPosition& shape,
+                              const CoordinateSystem& csys, Int concatAxis);
+  
     // Concatenate the beam sets along the frequency axis.
     void concatFreqBeams (ImageBeamSet& beamsOut,
                           const ImageInfo& infoThat,
