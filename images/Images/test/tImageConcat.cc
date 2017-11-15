@@ -454,17 +454,17 @@ int main() {
     			  AlwaysAssert(beam == beam2, AipsError);
     		  }
     	  }
-		  AlwaysAssert(newsp.restFrequency() == restfreq1, AipsError);
+          AlwaysAssert(newsp.restFrequency() == restfreq1, AipsError);
 
 
     	  cout << "Noncontiguous spectral axis test concating 3 images - CAS-4319" << endl;
-		  Vector<Double> hfreqs(3);
-		  hfreqs[0] = 1.61e9;
-		  hfreqs[1] = 1.62e9;
-		  hfreqs[2] = 1.64e9;
-		  Double restfreq3 = 1.6e9;
-		  SpectralCoordinate sp3(MFrequency::LSRK, hfreqs, restfreq3);
-		  csys.replaceCoordinate(sp3, 1);
+          Vector<Double> hfreqs(3);
+          hfreqs[0] = 1.61e9;
+          hfreqs[1] = 1.62e9;
+          hfreqs[2] = 1.64e9;
+          Double restfreq3 = 1.6e9;
+          SpectralCoordinate sp3(MFrequency::LSRK, hfreqs, restfreq3);
+          csys.replaceCoordinate(sp3, 1);
     	  TempImage<Float> t3(TiledShape(IPosition(3, 1, 1, 3)), csys);
     	  ImageInfo info3 = t3.imageInfo();
     	  GaussianBeam beam3(Quantity(10, "arcsec"), Quantity(7, "arcsec"), Quantity(80, "deg"));
@@ -489,6 +489,75 @@ int main() {
     		  }
     	  }
     	  AlwaysAssert(newsp.restFrequency() == restfreq1, AipsError);
+
+          // Change the ImageInfo beams in the ConcatImage in various ways.
+          // First by setting a global beam.
+          GaussianBeam gbeam1(Quantity(12, "arcsec"), Quantity(5, "arcsec"),
+                              Quantity(75, "deg"));
+          ImageBeamSet bset1(gbeam1);
+          ImageInfo in1;
+          in1.setObjectName ("obj1");
+          in1.setImageType  (ImageInfo::Beam);
+          in1.setBeams (bset1);
+          concat.setImageInfo (in1);
+          AlwaysAssertExit (concat.imageInfo().objectName() == "obj1");
+          AlwaysAssertExit (concat.image(0).imageInfo().objectName() == "obj1");
+          AlwaysAssertExit (concat.image(1).imageInfo().objectName() == "obj1");
+          AlwaysAssertExit (concat.image(2).imageInfo().objectName() == "obj1");
+          AlwaysAssertExit (concat.imageInfo().imageType() == ImageInfo::Beam);
+          AlwaysAssertExit (concat.image(0).imageInfo().imageType() == ImageInfo::Beam);
+          AlwaysAssertExit (concat.image(1).imageInfo().imageType() == ImageInfo::Beam);
+          AlwaysAssertExit (concat.image(2).imageInfo().imageType() == ImageInfo::Beam);
+          AlwaysAssertExit (concat.imageInfo().nChannels() == 1);
+          AlwaysAssertExit (concat.imageInfo().restoringBeam() == gbeam1);
+          AlwaysAssertExit (concat.image(0).imageInfo().restoringBeam() == gbeam1);
+          AlwaysAssertExit (concat.image(1).imageInfo().restoringBeam() == gbeam1);
+          AlwaysAssertExit (concat.image(2).imageInfo().restoringBeam() == gbeam1);
+          // Now by setting individual beams (in total 10 channels).
+          GaussianBeam gbeam2a(Quantity(12, "arcsec"), Quantity(5, "arcsec"),
+                               Quantity(75, "deg"));
+          GaussianBeam gbeam2b(Quantity(13, "arcsec"), Quantity(6, "arcsec"),
+                               Quantity(76, "deg"));
+          GaussianBeam gbeam2c(Quantity(14, "arcsec"), Quantity(7, "arcsec"),
+                               Quantity(77, "deg"));
+          ImageBeamSet bset2(10,1);
+          for (uInt i=0; i<10; ++i) {
+            bset2.setBeam(i, 0, GaussianBeam(Quantity(i+5, "arcsec"),
+                                             Quantity(i+1, "arcsec"),
+                                             Quantity(i+60, "deg")));
+          }
+          ImageInfo in2;
+          in2.setBeams (bset2);
+          concat.setImageInfo (in2);
+          AlwaysAssertExit (concat.imageInfo().objectName() == "");
+          AlwaysAssertExit (concat.image(0).imageInfo().objectName() == "");
+          AlwaysAssertExit (concat.image(1).imageInfo().objectName() == "");
+          AlwaysAssertExit (concat.image(2).imageInfo().objectName() == "");
+          AlwaysAssertExit (concat.imageInfo().imageType() == ImageInfo::Intensity);
+          AlwaysAssertExit (concat.image(0).imageInfo().imageType() == ImageInfo::Intensity);
+          AlwaysAssertExit (concat.image(1).imageInfo().imageType() == ImageInfo::Intensity);
+          AlwaysAssertExit (concat.image(2).imageInfo().imageType() == ImageInfo::Intensity);
+          AlwaysAssertExit (concat.imageInfo().nChannels() == 10);
+          cout<<"nchan0="<<concat.image(0).imageInfo().nChannels() <<endl;
+          AlwaysAssertExit (concat.image(0).imageInfo().nChannels() == 4);
+          AlwaysAssertExit (concat.image(1).imageInfo().nChannels() == 3);
+          AlwaysAssertExit (concat.image(2).imageInfo().nChannels() == 3);
+          for (uInt i=0; i<4; ++i) {
+            AlwaysAssertExit (concat.image(0).imageInfo().getBeamSet()(i,0) ==
+                              GaussianBeam(Quantity(i+5, "arcsec"),
+                                           Quantity(i+1, "arcsec"),
+                                           Quantity(i+60, "deg")));
+            if (i < 3) {
+              AlwaysAssertExit (concat.image(1).imageInfo().getBeamSet()(i,0) ==
+                                GaussianBeam(Quantity(i+4+5, "arcsec"),
+                                             Quantity(i+4+1, "arcsec"),
+                                             Quantity(i+4+60, "deg")));
+              AlwaysAssertExit (concat.image(2).imageInfo().getBeamSet()(i,0) ==
+                                GaussianBeam(Quantity(i+7+5, "arcsec"),
+                                             Quantity(i+7+1, "arcsec"),
+                                             Quantity(i+7+60, "deg")));
+            }
+          }
     }
     {
     	cout << "*** single beams concat test with stokes, CAS-4423" << endl;

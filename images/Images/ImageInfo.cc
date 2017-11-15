@@ -656,23 +656,22 @@ void ImageInfo::checkBeamSet(
 	}
 }
 
-void ImageInfo::checkBeamShape (uInt& nchan, uInt& npol,
-                                const ImageInfo& info,
-                                const IPosition& shape,
-                                const CoordinateSystem& csys) const
+void ImageInfo::_checkBeamShape (uInt& nchan, uInt& npol,
+                                 const IPosition& shape,
+                                 const CoordinateSystem& csys) const
 {
   nchan = 0;
   if (csys.hasSpectralAxis()) {
     nchan = shape[csys.spectralAxisNumber()];
   }
-  AlwaysAssert (info.getBeamSet().nchan() == nchan  ||
-                info.getBeamSet().nchan() == 1, AipsError);
+  AlwaysAssert (getBeamSet().nchan() == nchan  ||
+                getBeamSet().nchan() == 1, AipsError);
   npol = 0;
   if (csys.hasPolarizationCoordinate()) {
     npol = shape[csys.polarizationAxisNumber()];
   }
-  AlwaysAssert (info.getBeamSet().nstokes() == npol  ||
-                info.getBeamSet().nstokes() == 1, AipsError);
+  AlwaysAssert (getBeamSet().nstokes() == npol  ||
+                getBeamSet().nstokes() == 1, AipsError);
 }
 
 void ImageInfo::combineBeams (const ImageInfo& infoThat,
@@ -684,14 +683,14 @@ void ImageInfo::combineBeams (const ImageInfo& infoThat,
                               Bool relax,
                               LogIO& os)
 {
-	ImageBeamSet beamSet;
+  ImageBeamSet beamSet;
   // Check if coord shape and beam shape match.
   uInt nchan1, npol1, nchan2, npol2;
   if (hasBeam()) {
-    checkBeamShape (nchan1, npol1, *this, shapeThis, csysThis);
+    this->_checkBeamShape (nchan1, npol1, shapeThis, csysThis);
   }
   if (infoThat.hasBeam()) {
-    checkBeamShape (nchan2, npol2, infoThat, shapeThat, csysThat);
+    infoThat._checkBeamShape (nchan2, npol2, shapeThat, csysThat);
   }
   // No beams if one info has no beams.
   if (hasBeam() != infoThat.hasBeam()) {
@@ -711,6 +710,37 @@ void ImageInfo::combineBeams (const ImageInfo& infoThat,
     }
   }
   _beams = beamSet;
+}
+
+uInt ImageInfo::setInfoSplitBeamSet (uInt ndone, const ImageInfo& concatInfo,
+                                     const IPosition& shape,
+                                     const CoordinateSystem& csys, Int concatAxis)
+{
+  // Copy the non-beam info.
+  _warnBeam     = concatInfo._warnBeam;
+  itsImageType  = concatInfo.itsImageType;
+  itsObjectName = concatInfo.itsObjectName;
+  // Copy the beam info, if needed part of it.
+  // If the concat is not freq nor stokes, the entire beam info can be copied.
+  // This is also the case if the beam axes have length 1.
+  // Otherwise part of the beamset has to be taken.
+  IPosition st(shape.size(), 0);
+  IPosition ss(shape);
+  st[concatAxis] = ndone;
+  if (csys.hasSpectralAxis()  &&
+      concatAxis == csys.spectralAxisNumber()  &&
+      concatInfo.getBeamSet().nchan() > 1) {
+    setBeams (concatInfo.getBeamSet().subset (Slicer(st, ss), csys));
+    return shape[concatAxis];
+  } else if (csys.hasPolarizationAxis()  &&
+             concatAxis == csys.polarizationAxisNumber()  &&
+             concatInfo.getBeamSet().nstokes() > 1) {
+    setBeams (concatInfo.getBeamSet().subset (Slicer(st, ss), csys));
+    return shape[concatAxis];
+  }
+  // Set to the entire beam set.
+  setBeams (concatInfo.getBeamSet());
+  return 1;
 }
 
 void ImageInfo::concatFreqBeams (ImageBeamSet& beamsOut,
