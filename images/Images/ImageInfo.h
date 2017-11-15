@@ -287,11 +287,6 @@ public:
                       const IPosition& shapeThis,
                       const IPosition& shapeThat);
 
-    // Check if the beam shape matches the coordinates.
-    void checkBeamShape (uInt& nchan, uInt& npol,
-                         const IPosition& shape,
-                         const CoordinateSystem& csys) const;
-
     // Combine beam sets for the concatenation of images and replace
     // the beamset in this object by the result.
     // If channel or stokes is the concatenation axis, that beam axis
@@ -356,6 +351,12 @@ private:
 
   // Set the restoring beam from the record.
   void _setRestoringBeam(const Record& inRecord);
+
+  // Check if the beam shape matches the coordinates.
+  // It sets nchan and npol to the values in the image shape.
+  void _checkBeamShape (uInt& nchan, uInt& npol,
+                       const IPosition& shape,
+                       const CoordinateSystem& csys) const;
 
   //# Data members
   ImageBeamSet _beams;
