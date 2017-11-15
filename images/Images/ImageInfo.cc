@@ -656,9 +656,9 @@ void ImageInfo::checkBeamSet(
 	}
 }
 
-void ImageInfo::checkBeamShape (uInt& nchan, uInt& npol,
-                                const IPosition& shape,
-                                const CoordinateSystem& csys) const
+void ImageInfo::_checkBeamShape (uInt& nchan, uInt& npol,
+                                 const IPosition& shape,
+                                 const CoordinateSystem& csys) const
 {
   nchan = 0;
   if (csys.hasSpectralAxis()) {
@@ -687,10 +687,10 @@ void ImageInfo::combineBeams (const ImageInfo& infoThat,
   // Check if coord shape and beam shape match.
   uInt nchan1, npol1, nchan2, npol2;
   if (hasBeam()) {
-    this->checkBeamShape (nchan1, npol1, shapeThis, csysThis);
+    this->_checkBeamShape (nchan1, npol1, shapeThis, csysThis);
   }
   if (infoThat.hasBeam()) {
-    infoThat.checkBeamShape (nchan2, npol2, shapeThat, csysThat);
+    infoThat._checkBeamShape (nchan2, npol2, shapeThat, csysThat);
   }
   // No beams if one info has no beams.
   if (hasBeam() != infoThat.hasBeam()) {
