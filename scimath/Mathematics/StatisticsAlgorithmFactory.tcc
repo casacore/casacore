@@ -73,6 +73,17 @@ CASA_STATD void StatisticsAlgorithmFactory<CASA_STATP>::configureChauvenet(
     _chauvData.maxIter= maxIterations;
 }
 
+CASA_STATD
+template <class DataIterator2, class MaskIterator2, class WeightsIterator2>
+void StatisticsAlgorithmFactory<CASA_STATP>::copy(StatisticsAlgorithmFactory<
+    AccumType, DataIterator2, MaskIterator2, WeightsIterator2
+>& other) const {
+    other._algorithm = _algorithm;
+    other._hf = _hf;
+    other._chauvData = _chauvData;
+    other._fitToHalfData = _fitToHalfData;
+}
+
 CASA_STATD CountedPtr<StatisticsAlgorithm<CASA_STATP> >
 StatisticsAlgorithmFactory<CASA_STATP>::createStatsAlgorithm() const {
     casacore::CountedPtr<StatisticsAlgorithm<CASA_STATP> > sa;
@@ -113,7 +124,7 @@ CASA_STATD Double StatisticsAlgorithmFactory<CASA_STATP>::hingesFencesFactor() c
     return _hf;
 }
 
-CASA_STATD typename StatisticsAlgorithmFactory<CASA_STATP>::FitToHalfData
+CASA_STATD StatisticsAlgorithmFactoryData::FitToHalfData<AccumType>
 StatisticsAlgorithmFactory<CASA_STATP>::fitToHalfData() const {
     ThrowIf(
         _algorithm != StatisticsData::FITTOHALF,
@@ -122,7 +133,7 @@ StatisticsAlgorithmFactory<CASA_STATP>::fitToHalfData() const {
     return _fitToHalfData;
 }
 
-CASA_STATD typename StatisticsAlgorithmFactory<CASA_STATP>::ChauvenetData
+CASA_STATD StatisticsAlgorithmFactoryData::ChauvenetData
 StatisticsAlgorithmFactory<CASA_STATP>::chauvenetData() const {
     ThrowIf(
         _algorithm != StatisticsData::CHAUVENETCRITERION,

@@ -55,6 +55,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class MaskedLattice;
+template <class T> class SubLattice;
 template <class T> class TempLattice;
 class IPosition;
 
@@ -199,7 +200,6 @@ template <class T> class LatticeStatistics : public LatticeStatsBase
 {
 
 public:
-
 
     typedef typename NumericTraits<T>::PrecisionType AccumType;
 
@@ -469,13 +469,7 @@ protected:
    virtual Bool listLayerStats (
              const Matrix<AccumType>& ord,
              ostringstream& rslt, Int zLayer); 
-/*
-// Gets labels for higher order axes and x axis.
-// dPos is the location of the start of the cursor in the
-// storage image for this row. 
-   virtual void getLabels(String& higherOrderLabel, String& xAxisLabel,
-                          const IPosition& dPos) const;
-*/
+
 // Given a location in the storage lattice, convert those locations on the   
 // non-statistics axis (the last one) and optionally account for the 
 // lattice subsectioning
@@ -530,7 +524,7 @@ private:
    std::map<String, uInt> _chauvIters;
 
    Double _aOld, _bOld, _aNew, _bNew;
-
+   
    void _setDefaultCoeffs() {
        // coefficients from timings run on PagedImages on
        // etacarinae.cv.nrao.edu (dmehring's development
@@ -544,12 +538,12 @@ private:
 // Summarize the statistics found over the entire lattice
    virtual void summStats();
 
-       virtual void displayStats(
-           AccumType nPts, AccumType sum, AccumType median,
-           AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean,
-           AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax,
-           AccumType q1, AccumType q3
-       );
+   virtual void displayStats(
+       AccumType nPts, AccumType sum, AccumType median,
+       AccumType medAbsDevMed, AccumType quartile, AccumType sumSq, AccumType mean,
+       AccumType var, AccumType rms, AccumType sigma, AccumType dMin, AccumType dMax,
+       AccumType q1, AccumType q3
+   );
 
 // Calculate statistic from storage lattice and return in an array
    Bool calculateStatistic (Array<AccumType>& slice, 
@@ -596,9 +590,41 @@ private:
    void _configureDataProviders(
            LatticeStatsDataProvider<T>& lattDP,
            MaskedLatticeStatsDataProvider<T>& maskedLattDP
-    ) const;
+   ) const;
 
    void _doStatsLoop(uInt nsets, CountedPtr<LattStatsProgress> progressMeter);
+
+   void _computeStatsUsingArrays(
+       SubLattice<T> subLat, CountedPtr<LattStatsProgress> progressMeter, /* uInt setSize */
+       const IPosition& cursorShape
+   );
+
+   void _computeStatsUsingLattDataProviders(
+       LatticeStepper& stepper, SubLattice<T> subLat, Slicer& slicer,
+       CountedPtr<LattStatsProgress> progressMeter, uInt nsets
+   );
+
+   IPosition _cursorShapeForArrayMethod(uInt setSize) const;
+
+   void _doComputationUsingArrays(
+       std::vector<
+           CountedPtr<
+               StatisticsAlgorithm<
+                   AccumType, typename Array<T>::const_iterator,
+                   Array<Bool>::const_iterator
+               >
+           >
+       >& sa, T& overallMin, T& overallMax, IPosition& arrayShape,
+       std::vector<Array<T> >& dataArray,
+       std::vector<Array<Bool> >& maskArray, std::vector<IPosition>& curPos,
+       uInt nArrays, uInt nthreads, const SubLattice<T>& subLat, Bool isChauv,
+       Bool isMasked, Bool isReal, CountedPtr<const DataRanges> range
+   );
+
+   void _fillStorageLattice(
+       T& currentMin, T& currentMax, const IPosition& curPos,
+       const StatsData<AccumType>& stats
+   );
 
    inline static AccumType _mean(const AccumType& sum, const AccumType& npts) {
        return npts <= 0 ? 0 : sum/npts;
@@ -607,6 +633,12 @@ private:
    inline static AccumType _rms(const AccumType& sumsq, const AccumType& npts) {
        return npts <= 0 ? 0 : sqrt(sumsq/npts);
    }
+
+   void _updateMinMaxPos(
+       T& overallMin, T& overallMax, T currentMin, T currentMax,
+       const IPosition& minPos, const IPosition& maxPos,
+       Bool atStart, const SubLattice<T>& subLat
+   );
 
 };
 

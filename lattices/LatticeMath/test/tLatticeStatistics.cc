@@ -45,6 +45,7 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
+
 void doitFloat(LogIO& os);
 void do1DFloat (const Vector<Float>& results,
                 const Vector<Bool>& hasResult, 
@@ -478,7 +479,6 @@ int main()
             AlwaysAssert(near(rms(pos), expRMS, 1e-8), AipsError);
             AlwaysAssert(mymin(pos) == (DComplex)include[0], AipsError);
             AlwaysAssert(mymax(pos) == (DComplex)include[1], AipsError);
-
             statsNew.setInExCludeRange(include, Vector<Complex>());
             statsNew.getStatistic(sum, LatticeStatsBase::SUM);
             statsNew.getStatistic(npts, LatticeStatsBase::NPTS);
