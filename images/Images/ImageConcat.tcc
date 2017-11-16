@@ -259,9 +259,14 @@ Bool ImageConcat<T>::setImageInfo (const ImageInfo& info)
   for (uInt i=0; i<latticeConcat_p.nlattices(); ++i) {
     ImageInterface<T>& img =
       dynamic_cast<ImageInterface<T>&>(*(latticeConcat_p.lattice(i)));
-    ndone += img.rwImageInfo().setInfoSplitBeamSet (ndone, info, img.shape(), 
+    ImageInfo& rwii = img.rwImageInfo();
+    ndone += rwii.setInfoSplitBeamSet (ndone, info, img.shape(),
                                                     img.coordinates(),
                                                     latticeConcat_p.axis());
+    if (img.isPersistent()) {
+        // setImageInfo() must be called for changes to be stored persistently
+        img.setImageInfo(rwii);
+    }
   }
   return True;
 }
