@@ -906,7 +906,6 @@ void ClassicalStatistics<CASA_STATP>::_accumulate(
 CASA_STATD
 uInt ClassicalStatistics<CASA_STATP>::_nThreadsMax() const {
     uInt nthr = OMP::nMaxThreads();
-#ifdef _OPENMP
     if (nthr > 1) {
         const StatsDataProvider<CASA_STATP> *dataProvider = this->_getDataProvider();
         if (dataProvider) {
@@ -916,7 +915,6 @@ uInt ClassicalStatistics<CASA_STATP>::_nThreadsMax() const {
             }
         }
     }
-#endif
     return nthr;
 }
 
@@ -1377,7 +1375,9 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
             break;
         }
     }
-    AlwaysAssert(currentCount == maxCount, AipsError);
+    ThrowIf(
+        currentCount != maxCount, "Accounting error"
+    );
     // merge the per-thread arrays
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
@@ -1644,23 +1644,38 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromS
         return ret;
     }
     else {
-        // bin contents are too large to be sorted in memory, this bin must be sub-binned
-        typename vector<std::pair<AccumType, AccumType> >::const_iterator bLimits = binLimits.begin();
-        typename vector<std::pair<AccumType, AccumType> >::const_iterator iLimits = bLimits;
-        typename vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = binLimits.end();
-        vector<typename StatisticsUtilities<AccumType>::BinDesc> binDesc;
-        while (iLimits != eLimits) {
-            // we want at least 1000 bins
-            nBins = max(nBins, (uInt64)1000);
-            typename StatisticsUtilities<AccumType>::BinDesc histogram;
-            _makeBins(
-                histogram, iLimits->first, iLimits->second,
-                nBins, False
-            );
-            binDesc.push_back(histogram);
-            ++iLimits;
+        static uInt maxLoopCount = 5;
+        uInt loopCount = 0;
+        // we want at least 1000 bins
+        nBins = max(nBins, (uInt64)1000);
+        while (True) {
+            // bin contents are too large to be sorted in memory, this bin must be sub-binned
+            typename vector<std::pair<AccumType, AccumType> >::const_iterator bLimits = binLimits.begin();
+            typename vector<std::pair<AccumType, AccumType> >::const_iterator iLimits = bLimits;
+            typename vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = binLimits.end();
+            vector<typename StatisticsUtilities<AccumType>::BinDesc> binDesc;
+            while (iLimits != eLimits) {
+                typename StatisticsUtilities<AccumType>::BinDesc histogram;
+                _makeBins(
+                    histogram, iLimits->first, iLimits->second,
+                    nBins, False
+                );
+                binDesc.push_back(histogram);
+                ++iLimits;
+            }
+            try {
+                return _dataFromMultipleBins(binDesc, maxArraySize, dataIndices, nBins);
+            }
+            catch (const AipsError& x) {
+                // reconfigure bins and try again. This happens very rarely.
+                ThrowIf(loopCount == maxLoopCount, "Tried 5 times, giving up");
+                LogIO log;
+                log << LogIO::WARN << "Accounting error, decrease number of bins from "
+                    << nBins << " to " << (0.9*nBins) << LogIO::POST;
+                nBins *= 0.9;
+                ++loopCount;
+            }
         }
-        return _dataFromMultipleBins(binDesc, maxArraySize, dataIndices, nBins);
     }
 }
 
