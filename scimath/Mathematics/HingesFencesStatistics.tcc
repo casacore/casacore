@@ -241,11 +241,11 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
-    const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<AccumType>& maxLimit
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_findBins(
@@ -263,12 +263,12 @@ void HingesFencesStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
-    const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<AccumType>& maxLimit
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_findBins(
@@ -286,12 +286,12 @@ void HingesFencesStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
-    const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<AccumType>& maxLimit
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_findBins(
@@ -309,13 +309,13 @@ void HingesFencesStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
-    const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<AccumType>& maxLimit
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_findBins(
@@ -333,12 +333,12 @@ void HingesFencesStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
-    const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<AccumType>& maxLimit
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_findBins(
@@ -356,12 +356,12 @@ void HingesFencesStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
-    const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<AccumType>& maxLimit
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_findBins(
@@ -379,13 +379,13 @@ void HingesFencesStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
-    const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<AccumType>& maxLimit
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_findBins(
@@ -405,12 +405,12 @@ void HingesFencesStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
-    const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<AccumType>& maxLimit
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_findBins(
@@ -581,7 +581,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_populateArray(
@@ -597,7 +597,7 @@ void HingesFencesStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
     if (_hasRange) {
@@ -616,7 +616,7 @@ void HingesFencesStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
     if (_hasRange) {
@@ -635,7 +635,7 @@ void HingesFencesStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -655,7 +655,7 @@ void HingesFencesStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride
 ) const {
     if (_hasRange) {
@@ -674,7 +674,7 @@ void HingesFencesStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -694,7 +694,7 @@ void HingesFencesStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
     if (_hasRange) {
@@ -713,7 +713,7 @@ void HingesFencesStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -733,8 +733,8 @@ void HingesFencesStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
@@ -752,9 +752,9 @@ void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
@@ -772,9 +772,9 @@ void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
@@ -792,10 +792,10 @@ void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
@@ -813,9 +813,9 @@ void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
@@ -833,10 +833,10 @@ void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
@@ -854,9 +854,9 @@ void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
@@ -874,10 +874,10 @@ void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_populateArrays(
@@ -895,7 +895,7 @@ void HingesFencesStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     uInt maxElements
 ) const {
     if (_hasRange) {
@@ -912,7 +912,7 @@ Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const DataRanges& ranges, Bool isInclude,
     uInt maxElements
 ) const {
@@ -930,7 +930,7 @@ Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     uInt maxElements
 ) const {
@@ -948,7 +948,7 @@ Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
@@ -968,7 +968,7 @@ Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
     uInt maxElements
 ) const {
@@ -986,7 +986,7 @@ Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
@@ -1004,7 +1004,7 @@ Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, uInt maxElements
 ) const {
@@ -1024,7 +1024,7 @@ Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool HingesFencesStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {

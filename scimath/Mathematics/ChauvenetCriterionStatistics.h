@@ -32,7 +32,6 @@
 #include <casacore/scimath/Mathematics/ConstrainedRangeStatistics.h>
 
 #include <set>
-#include <vector>
 #include <utility>
 
 namespace casacore {
