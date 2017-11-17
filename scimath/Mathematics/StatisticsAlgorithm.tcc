@@ -325,7 +325,7 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::reset() {
 }
 
 CASA_STATD std::map<uInt64, AccumType> StatisticsAlgorithm<CASA_STATP>::_valuesFromArray(
-    vector<AccumType>& myArray, const std::set<uInt64>& indices
+    std::vector<AccumType>& myArray, const std::set<uInt64>& indices
 ) {
     //uInt64 largestIdx = *indices.rbegin();
     uInt64 arySize = myArray.size();

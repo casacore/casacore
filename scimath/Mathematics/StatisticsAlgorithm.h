@@ -309,9 +309,9 @@ protected:
     // Default implementation does nothing.
     virtual void _addData() {}
 
-    const vector<Int64>& _getCounts() const { return _counts; }
+    const std::vector<Int64>& _getCounts() const { return _counts; }
 
-    const vector<DataIterator>& _getData() const { return _data; }
+    const std::vector<DataIterator>& _getData() const { return _data; }
 
     StatsDataProvider<CASA_STATP>* _getDataProvider() {
         return _dataProvider;
@@ -321,7 +321,7 @@ protected:
         return _dataProvider;
     }
 
-    const vector<uInt>& _getDataStrides() const { return _dataStrides; }
+    const std::vector<uInt>& _getDataStrides() const { return _dataStrides; }
 
     const std::map<uInt, Bool>& _getIsIncludeRanges() const { return _isIncludeRanges; }
 
@@ -349,34 +349,26 @@ protected:
         return _weights;
     }
 
-    /*
-    // get the zero-based indices of the specified quantiles in sorted dataset with npts
-    // number of good points. The returned map maps quantiles to indices.
-    static std::map<Double, uInt64> _indicesFromQuantiles(
-        uInt64 npts, const std::set<Double>& quantiles
-    );
-    */
-
     // The array can be changed by paritally sorting it up to the largest index. Return
     // a map of index to value in the sorted array.
     static std::map<uInt64, AccumType> _valuesFromArray(
-        vector<AccumType>& myArray, const std::set<uInt64>& indices
+        std::vector<AccumType>& myArray, const std::set<uInt64>& indices
     );
 
-    void _setSortedArray(const vector<AccumType>& v) { _sortedArray = v; }
+    void _setSortedArray(const std::vector<AccumType>& v) { _sortedArray = v; }
 
 private:
-    vector<DataIterator> _data;
+    std::vector<DataIterator> _data;
     // maps data to weights
     std::map<uInt, WeightsIterator> _weights;
     // maps data to masks
     std::map<uInt, MaskIterator> _masks;
-    vector<Int64> _counts;
-    vector<uInt> _dataStrides;
+    std::vector<Int64> _counts;
+    std::vector<uInt> _dataStrides;
     std::map<uInt, uInt> _maskStrides;
     std::map<uInt, Bool> _isIncludeRanges;
     std::map<uInt, DataRanges> _dataRanges;
-    vector<AccumType> _sortedArray;
+    std::vector<AccumType> _sortedArray;
     std::set<StatisticsData::STATS> _statsToCalculate, _unsupportedStats;
     StatsDataProvider<CASA_STATP> *_dataProvider;
 

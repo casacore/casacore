@@ -347,7 +347,7 @@ void ClassicalStatistics<CASA_STATP>::setStatsToCalculate(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_addData() {
-    this->_setSortedArray(vector<AccumType>());
+    this->_setSortedArray(std::vector<AccumType>());
     _getStatsData().median = NULL;
     _mustAccumulate = True;
     _hasData = True;
@@ -906,7 +906,6 @@ void ClassicalStatistics<CASA_STATP>::_accumulate(
 CASA_STATD
 uInt ClassicalStatistics<CASA_STATP>::_nThreadsMax() const {
     uInt nthr = OMP::nMaxThreads();
-#ifdef _OPENMP
     if (nthr > 1) {
         const StatsDataProvider<CASA_STATP> *dataProvider = this->_getDataProvider();
         if (dataProvider) {
@@ -916,7 +915,6 @@ uInt ClassicalStatistics<CASA_STATP>::_nThreadsMax() const {
             }
         }
     }
-#endif
     return nthr;
 }
 
@@ -931,13 +929,13 @@ uInt ClassicalStatistics<CASA_STATP>::_threadIdx() const {
 }
 
 CASA_STATD
-vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
-    vector<CountedPtr<AccumType> >& sameVal,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
+std::vector<std::vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
+    std::vector<CountedPtr<AccumType> >& sameVal,
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
 ) {
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bDesc = binDesc.begin();
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iDesc = bDesc;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eDesc = binDesc.end();
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bDesc = binDesc.begin();
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iDesc = bDesc;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eDesc = binDesc.end();
     if (binDesc.size() > 1) {
         // sanity check
         typename StatisticsUtilities<AccumType>::BinDesc prevDesc;
@@ -953,21 +951,21 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
         }
     }
     std::vector<Bool> allSame(binDesc.size(), True);
-    vector<vector<uInt64> > bins(binDesc.size());
+    std::vector<std::vector<uInt64> > bins(binDesc.size());
     iDesc = bDesc;
-    vector<vector<uInt64> >::iterator bBins = bins.begin();
-    vector<vector<uInt64> >::iterator iBins = bBins;
-    vector<vector<uInt64> >::iterator eBins = bins.end();
+    std::vector<std::vector<uInt64> >::iterator bBins = bins.begin();
+    std::vector<std::vector<uInt64> >::iterator iBins = bBins;
+    std::vector<std::vector<uInt64> >::iterator eBins = bins.end();
     while (iBins != eBins) {
-        *iBins = vector<uInt64>(iDesc->nBins, 0);
+        *iBins = std::vector<uInt64>(iDesc->nBins, 0);
         ++iDesc;
         ++iBins;
     }
-    sameVal = vector<CountedPtr<AccumType> >(binDesc.size(), NULL);
-    vector<AccumType> maxLimit(binDesc.size());
-    typename vector<AccumType>::iterator bMaxLimit = maxLimit.begin();
-    typename vector<AccumType>::iterator iMaxLimit = bMaxLimit;
-    typename vector<AccumType>::iterator eMaxLimit = maxLimit.end();
+    sameVal = std::vector<CountedPtr<AccumType> >(binDesc.size(), NULL);
+    std::vector<AccumType> maxLimit(binDesc.size());
+    typename std::vector<AccumType>::iterator bMaxLimit = maxLimit.begin();
+    typename std::vector<AccumType>::iterator iMaxLimit = bMaxLimit;
+    typename std::vector<AccumType>::iterator eMaxLimit = maxLimit.end();
     iDesc = bDesc;
     while(iMaxLimit != eMaxLimit) {
         *iMaxLimit = iDesc->minLimit + (AccumType)(iDesc->nBins)*(iDesc->binWidth);
@@ -986,7 +984,7 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
         ], True
     );
-    PtrHolder<vector<Bool> > tAllSame(
+    PtrHolder<std::vector<Bool> > tAllSame(
         new std::vector<Bool>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
         ], True
@@ -1037,29 +1035,29 @@ vector<vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_mergeResults(
-    vector<vector<uInt64> >& bins, vector<CountedPtr<AccumType> >& sameVal,
-    vector<Bool>& allSame, const PtrHolder<vector<vector<uInt64> > >& tBins,
-    const PtrHolder<vector<CountedPtr<AccumType> > >& tSameVal,
-    const PtrHolder<vector<Bool> >& tAllSame, uInt nThreadsMax
+    std::vector<std::vector<uInt64> >& bins, std::vector<CountedPtr<AccumType> >& sameVal,
+    std::vector<Bool>& allSame, const PtrHolder<std::vector<std::vector<uInt64> > >& tBins,
+    const PtrHolder<std::vector<CountedPtr<AccumType> > >& tSameVal,
+    const PtrHolder<std::vector<Bool> >& tAllSame, uInt nThreadsMax
 ) {
     // merge results from individual threads (tBins, tSameVal, tAllSame)
     // into single data structures (bins, sameVal, allSame)
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
-        vector<vector<uInt64> >::iterator iter;
-        vector<vector<uInt64> >::iterator end = bins.end();
-        typename vector<CountedPtr<AccumType> >::iterator siter;
-        typename vector<CountedPtr<AccumType> >::iterator send = sameVal.end();
-        vector<Bool>::iterator aiter;
+        std::vector<std::vector<uInt64> >::iterator iter;
+        std::vector<std::vector<uInt64> >::iterator end = bins.end();
+        typename std::vector<CountedPtr<AccumType> >::iterator siter;
+        typename std::vector<CountedPtr<AccumType> >::iterator send = sameVal.end();
+        std::vector<Bool>::iterator aiter;
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
-        vector<vector<uInt64> >::const_iterator titer = tBins[idx8].begin();
+        std::vector<std::vector<uInt64> >::const_iterator titer = tBins[idx8].begin();
         for (iter=bins.begin(); iter!=end; ++iter, ++titer) {
             std::transform(
                 iter->begin(), iter->end(), titer->begin(),
                 iter->begin(), std::plus<Int64>()
             );
         }
-        typename vector<CountedPtr<AccumType> >::const_iterator viter = tSameVal[idx8].begin();
-        vector<Bool>::const_iterator witer = tAllSame[idx8].begin();
+        typename std::vector<CountedPtr<AccumType> >::const_iterator viter = tSameVal[idx8].begin();
+        std::vector<Bool>::const_iterator witer = tAllSame[idx8].begin();
         for (
             siter=sameVal.begin(), aiter=allSame.begin(); siter!=send;
             ++siter, ++viter, ++aiter, ++witer
@@ -1096,11 +1094,11 @@ void ClassicalStatistics<CASA_STATP>::_mergeResults(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_computeBins(
-    vector<vector<uInt64> >& bins, vector<CountedPtr<AccumType> >& sameVal,
-    vector<Bool>& allSame, DataIterator dataIter, MaskIterator maskIter,
+    std::vector<std::vector<uInt64> >& bins, std::vector<CountedPtr<AccumType> >& sameVal,
+    std::vector<Bool>& allSame, DataIterator dataIter, MaskIterator maskIter,
     WeightsIterator weightsIter, uInt64 count,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
-    const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<AccumType>& maxLimit
 ) {
     if (_hasWeights) {
         if (_hasMask) {
@@ -1221,7 +1219,7 @@ void ClassicalStatistics<CASA_STATP>::_createDataArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_computeDataArray(
-    vector<AccumType>& ary, DataIterator dataIter,
+    std::vector<AccumType>& ary, DataIterator dataIter,
     MaskIterator maskIter, WeightsIterator weightsIter,
     uInt64 dataCount
 ) {
@@ -1377,13 +1375,42 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
             break;
         }
     }
-    AlwaysAssert(currentCount == maxCount, AipsError);
+    // CAS-10906 This appears to happen extemely rarely (one report in several years).
+    // To the best of my determination, it happens when the data iterator type and
+    // the AccumType are not the same (eg Float and Double, respectively), because
+    // the data are implicitly cast to AccumType. This slight value change at the data type
+    // precision level apparently can, in very rare instances, cause a data point that
+    // would fall exactly at the upper edge of a bin (and so under normal circumstances
+    // would not be included in that bin), to fall below the upper edge and so be erroneously
+    // be included in that bin, leading to an unexpected data point count in that bin. 
+    // The perfect solution would probably be not to do the casting and also make the bin limits
+    // the same type as the data type, but in practice this requires changes in many, many places
+    // in this code, and some of these changes may not be internally consistent. And in the end,
+    // I'm not 100% certain this would resolve the issue. The simplest solution for such an
+    // infrequently occurring problem is simply to change the binning configuration (which is
+    // already pretty arbitrary) so that the bin edges fall elsewhere and try again. This
+    // is what is done in _dataFromSingleBins() which catches this exception and then changes
+    // the binning configuration and tries again.
+    // Smarter binning at the outset might also help, for example, bins now have uniform widths,
+    // but most of the datasets we deal with have a pseudo Gaussian distribution. So, this issue
+    // is more likely to occur in densely populated bins (and in fact, the one report of this
+    // issue was tied to computing the median of such a distribution where the associated bin
+    // would have had (nearly) the largest number of points of all other bins. So, a binning
+    // configuration where bins are narrower near the distribution center so that the number of
+    // points per bin is about constant for all bins might make more sense. But again, that's a
+    // significant undertaking, and for a single event every few years, seems over engineering
+    // at this point, not to mention that such a configuration is potentially computationally
+    // expensive. In the end, this code may, at some very low probability, always be vulnerable
+    // to these types of machine precision issues. - dmehring 16nov2017
+    ThrowIf(
+        currentCount != maxCount, "Accounting error"
+    );
     // merge the per-thread arrays
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
-        typename vector<vector<AccumType> >::iterator iter = arys.begin();
-        typename vector<vector<AccumType> >::iterator end = arys.end();
-        typename vector<vector<AccumType> >::const_iterator titer = tArys[idx8].begin();
+        typename std::vector<std::vector<AccumType> >::iterator iter = arys.begin();
+        typename std::vector<std::vector<AccumType> >::iterator end = arys.end();
+        typename std::vector<std::vector<AccumType> >::const_iterator titer = tArys[idx8].begin();
         for (; iter!=end; ++iter, ++titer) {
             iter->insert(iter->end(), titer->begin(), titer->end());
         }
@@ -1392,10 +1419,10 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount,
     DataIterator dataIter, MaskIterator maskIter,
     WeightsIterator weightsIter, uInt64 dataCount,
-    const vector<std::pair<AccumType, AccumType> >& includeLimits,
+    const std::vector<std::pair<AccumType, AccumType> >& includeLimits,
     uInt64 maxCount
 ) {
     if (_hasWeights) {
@@ -1465,28 +1492,28 @@ void ClassicalStatistics<CASA_STATP>::_computeDataArrays(
 }
 
 CASA_STATD
-vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromMultipleBins(
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt64 maxArraySize,
-    const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
+std::vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromMultipleBins(
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, uInt64 maxArraySize,
+    const std::vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
     // dataIndices are relative to minimum bin minimum border
-    vector<CountedPtr<AccumType> > sameVal(binDesc.size(), NULL);
-    vector<vector<uInt64> > binCounts = _binCounts(sameVal, binDesc);
-    vector<std::set<uInt64> >::const_iterator bIdxSet = dataIndices.begin();
-    vector<std::set<uInt64> >::const_iterator iIdxSet = bIdxSet;
-    vector<std::set<uInt64> >::const_iterator eIdxSet = dataIndices.end();
-    typename vector<CountedPtr<AccumType> >::const_iterator bSameVal = sameVal.begin();
-    typename vector<CountedPtr<AccumType> >::const_iterator iSameVal = bSameVal;
-    vector<vector<uInt64> >::const_iterator bCountSet = binCounts.begin();
-    vector<vector<uInt64> >::const_iterator iCountSet = bCountSet;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bDesc = binDesc.begin();
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iDesc = bDesc;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eDesc = binDesc.end();
+    std::vector<CountedPtr<AccumType> > sameVal(binDesc.size(), NULL);
+    std::vector<std::vector<uInt64> > binCounts = _binCounts(sameVal, binDesc);
+    std::vector<std::set<uInt64> >::const_iterator bIdxSet = dataIndices.begin();
+    std::vector<std::set<uInt64> >::const_iterator iIdxSet = bIdxSet;
+    std::vector<std::set<uInt64> >::const_iterator eIdxSet = dataIndices.end();
+    typename std::vector<CountedPtr<AccumType> >::const_iterator bSameVal = sameVal.begin();
+    typename std::vector<CountedPtr<AccumType> >::const_iterator iSameVal = bSameVal;
+    std::vector<std::vector<uInt64> >::const_iterator bCountSet = binCounts.begin();
+    std::vector<std::vector<uInt64> >::const_iterator iCountSet = bCountSet;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bDesc = binDesc.begin();
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iDesc = bDesc;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eDesc = binDesc.end();
     std::map<AccumType, std::map<uInt64, AccumType> > histToIdxValMap;
-    vector<uInt64> vnpts;
-    vector<std::pair<AccumType, AccumType> > vlimits;
-    vector<std::set<uInt64> > vindices;
-    vector<std::map<uInt64, uInt64> > vNewToOld;
+    std::vector<uInt64> vnpts;
+    std::vector<std::pair<AccumType, AccumType> > vlimits;
+    std::vector<std::set<uInt64> > vindices;
+    std::vector<std::map<uInt64, uInt64> > vNewToOld;
     // This is necessary for accounting. Map the lower limit of
     // a single bin to the lower limit of its associated histogram
     std::map<AccumType, AccumType> binToHistogramMap;
@@ -1495,9 +1522,9 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromM
         std::set<uInt64>::const_iterator eIdx = iIdxSet->end();
         if (iSameVal->null()) {
             // values in this histogram are not all the same
-            vector<uInt64>::const_iterator bCounts = iCountSet->begin();
-            vector<uInt64>::const_iterator iCounts = bCounts;
-            vector<uInt64>::const_iterator eCounts = iCountSet->end();
+            std::vector<uInt64>::const_iterator bCounts = iCountSet->begin();
+            std::vector<uInt64>::const_iterator iCounts = bCounts;
+            std::vector<uInt64>::const_iterator eCounts = iCountSet->end();
             uInt64 dataCount = 0;
             uInt64 prevDataCount = 0;
             uInt64 loopCount = 0;
@@ -1549,13 +1576,13 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromM
         ++iDesc;
     }
     if (! vnpts.empty()) {
-        vector<std::map<uInt64, AccumType> > dataFromBins = _dataFromSingleBins(
+        std::vector<std::map<uInt64, AccumType> > dataFromBins = _dataFromSingleBins(
             vnpts, maxArraySize, vlimits, vindices, nBins
         );
-        typename vector<std::map<uInt64, AccumType> >::const_iterator iDataSet = dataFromBins.begin();
-        typename vector<std::map<uInt64, AccumType> >::const_iterator eDataSet = dataFromBins.end();
-        vector<std::map<uInt64, uInt64> >::iterator iNewToOld = vNewToOld.begin();
-        typename vector<std::pair<AccumType, AccumType> >::const_iterator iVLimits = vlimits.begin();
+        typename std::vector<std::map<uInt64, AccumType> >::const_iterator iDataSet = dataFromBins.begin();
+        typename std::vector<std::map<uInt64, AccumType> >::const_iterator eDataSet = dataFromBins.end();
+        std::vector<std::map<uInt64, uInt64> >::iterator iNewToOld = vNewToOld.begin();
+        typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iVLimits = vlimits.begin();
         while(iDataSet != eDataSet) {
             AccumType myHistKey = binToHistogramMap[iVLimits->first];
             std::map<uInt64, AccumType> mymap;
@@ -1573,7 +1600,7 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromM
             ++iVLimits;
         }
     }
-    vector<std::map<uInt64, AccumType> > ret;
+    std::vector<std::map<uInt64, AccumType> > ret;
     iDesc = bDesc;
     while (iDesc != eDesc) {
         ret.push_back(histToIdxValMap[iDesc->minLimit]);
@@ -1583,23 +1610,23 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromM
 }
 
 CASA_STATD
-vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromSingleBins(
-    const vector<uInt64>& binNpts, uInt64 maxArraySize,
-    const vector<std::pair<AccumType, AccumType> >& binLimits,
-    const vector<std::set<uInt64> >& dataIndices, uInt64 nBins
+std::vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromSingleBins(
+    const std::vector<uInt64>& binNpts, uInt64 maxArraySize,
+    const std::vector<std::pair<AccumType, AccumType> >& binLimits,
+    const std::vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
     uInt64 totalPts = std::accumulate(binNpts.begin(), binNpts.end(), 0);
     if (totalPts <= maxArraySize) {
         // contents of bin is small enough to be sorted in memory, so
         // get the bin limits and stuff the good points within those limits
         // in an array and sort it
-        vector<vector<AccumType> > dataArrays(binLimits.size(), vector<AccumType>(0));
+        std::vector<std::vector<AccumType> > dataArrays(binLimits.size(), std::vector<AccumType>(0));
         _createDataArrays(dataArrays, binLimits, totalPts);
-        vector<uInt64>::const_iterator bNpts = binNpts.begin();
-        vector<uInt64>::const_iterator iNpts = bNpts;
-        typename vector<vector<AccumType> >::iterator bArrays = dataArrays.begin();
-        typename vector<vector<AccumType> >::iterator iArrays = bArrays;
-        typename vector<vector<AccumType> >::iterator eArrays = dataArrays.end();
+        std::vector<uInt64>::const_iterator bNpts = binNpts.begin();
+        std::vector<uInt64>::const_iterator iNpts = bNpts;
+        typename std::vector<std::vector<AccumType> >::iterator bArrays = dataArrays.begin();
+        typename std::vector<std::vector<AccumType> >::iterator iArrays = bArrays;
+        typename std::vector<std::vector<AccumType> >::iterator eArrays = dataArrays.end();
         while (iArrays != eArrays) {
             ThrowIf(
                 iArrays->size() != *iNpts,
@@ -1614,10 +1641,10 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromS
         std::vector<std::set<uInt64> >::const_iterator iIdxSet = bIdxSet;
         std::vector<std::set<uInt64> >::const_iterator eIdxSet = dataIndices.end();
         iNpts = bNpts;
-        vector<std::map<uInt64, AccumType> > ret(binLimits.size());
-        typename vector<std::map<uInt64, AccumType> >::iterator bRet = ret.begin();
-        typename vector<std::map<uInt64, AccumType> >::iterator iRet = bRet;
-        // typename vector<std::map<uInt64, AccumType> >::iterator eRet = ret.end();
+        std::vector<std::map<uInt64, AccumType> > ret(binLimits.size());
+        typename std::vector<std::map<uInt64, AccumType> >::iterator bRet = ret.begin();
+        typename std::vector<std::map<uInt64, AccumType> >::iterator iRet = bRet;
+        // typename std::vector<std::map<uInt64, AccumType> >::iterator eRet = ret.end();
         iArrays = bArrays;
         while(iIdxSet != eIdxSet) {
             std::set<uInt64>::const_iterator initer = iIdxSet->begin();
@@ -1644,32 +1671,48 @@ vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_dataFromS
         return ret;
     }
     else {
-        // bin contents are too large to be sorted in memory, this bin must be sub-binned
-        typename vector<std::pair<AccumType, AccumType> >::const_iterator bLimits = binLimits.begin();
-        typename vector<std::pair<AccumType, AccumType> >::const_iterator iLimits = bLimits;
-        typename vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = binLimits.end();
-        vector<typename StatisticsUtilities<AccumType>::BinDesc> binDesc;
-        while (iLimits != eLimits) {
-            // we want at least 1000 bins
-            nBins = max(nBins, (uInt64)1000);
-            typename StatisticsUtilities<AccumType>::BinDesc histogram;
-            _makeBins(
-                histogram, iLimits->first, iLimits->second,
-                nBins, False
-            );
-            binDesc.push_back(histogram);
-            ++iLimits;
+        static uInt maxLoopCount = 5;
+        uInt loopCount = 0;
+        // we want at least 1000 bins
+        nBins = max(nBins, (uInt64)1000);
+        while (True) {
+            // bin contents are too large to be sorted in memory, this bin must be sub-binned
+            typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bLimits = binLimits.begin();
+            typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iLimits = bLimits;
+            typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = binLimits.end();
+            std::vector<typename StatisticsUtilities<AccumType>::BinDesc> binDesc;
+            while (iLimits != eLimits) {
+                typename StatisticsUtilities<AccumType>::BinDesc histogram;
+                _makeBins(
+                    histogram, iLimits->first, iLimits->second,
+                    nBins, False
+                );
+                binDesc.push_back(histogram);
+                ++iLimits;
+            }
+            try {
+                return _dataFromMultipleBins(binDesc, maxArraySize, dataIndices, nBins);
+            }
+            catch (const AipsError& x) {
+                // reconfigure bins and try again. This happens very rarely.
+                // See comment in _createDataArrays() at the source of the issue 
+                ThrowIf(loopCount == maxLoopCount, "Tried 5 times, giving up");
+                LogIO log;
+                log << LogIO::WARN << "Accounting error, decrease number of bins from "
+                    << nBins << " to " << (0.9*nBins) << LogIO::POST;
+                nBins *= 0.9;
+                ++loopCount;
+            }
         }
-        return _dataFromMultipleBins(binDesc, maxArraySize, dataIndices, nBins);
     }
 }
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_convertToAbsDevMedArray(
-    vector<AccumType>& myArray, AccumType median
+    std::vector<AccumType>& myArray, AccumType median
 ) {
-    typename vector<AccumType>::iterator iter = myArray.begin();
-    typename vector<AccumType>::iterator end = myArray.end();
+    typename std::vector<AccumType>::iterator iter = myArray.begin();
+    typename std::vector<AccumType>::iterator end = myArray.end();
     while (iter != end) {
         *iter = abs(*iter - median);
         ++iter;
@@ -1921,22 +1964,22 @@ Int64 ClassicalStatistics<CASA_STATP>::_doNpts() {
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
-    vector<vector<uInt64> >::iterator bCounts = binCounts.begin();
-    vector<vector<uInt64> >::iterator iCounts = bCounts;
-    typename vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
-    typename vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
-    vector<Bool>::iterator bAllSame = allSame.begin();
-    vector<Bool>::iterator iAllSame = bAllSame;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
-    typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
-    typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
+    std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
+    std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
+    typename std::vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
+    typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
+    std::vector<Bool>::iterator bAllSame = allSame.begin();
+    std::vector<Bool>::iterator iAllSame = bAllSame;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
+    typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     Int64 count = 0;
     while (count < nr) {
@@ -1949,23 +1992,23 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
-    vector<vector<uInt64> >::iterator bCounts = binCounts.begin();
-    vector<vector<uInt64> >::iterator iCounts = bCounts;
-    typename vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
-    typename vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
-    vector<Bool>::iterator bAllSame = allSame.begin();
-    vector<Bool>::iterator iAllSame = bAllSame;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
-    typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
-    typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
+    std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
+    std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
+    typename std::vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
+    typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
+    std::vector<Bool>::iterator bAllSame = allSame.begin();
+    std::vector<Bool>::iterator iAllSame = bAllSame;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
+    typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     Int64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -1986,23 +2029,23 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
-    vector<vector<uInt64> >::iterator bCounts = binCounts.begin();
-    vector<vector<uInt64> >::iterator iCounts = bCounts;
-    typename vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
-    typename vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
-    vector<Bool>::iterator bAllSame = allSame.begin();
-    vector<Bool>::iterator iAllSame = bAllSame;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
-    typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
-    typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
+    std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
+    std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
+    typename std::vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
+    typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
+    std::vector<Bool>::iterator bAllSame = allSame.begin();
+    std::vector<Bool>::iterator iAllSame = bAllSame;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
+    typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
@@ -2018,24 +2061,24 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
-    vector<vector<uInt64> >::iterator bCounts = binCounts.begin();
-    vector<vector<uInt64> >::iterator iCounts = bCounts;
-    typename vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
-    typename vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
-    vector<Bool>::iterator bAllSame = allSame.begin();
-    vector<Bool>::iterator iAllSame = bAllSame;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
-    typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
-    typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
+    std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
+    std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
+    typename std::vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
+    typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
+    std::vector<Bool>::iterator bAllSame = allSame.begin();
+    std::vector<Bool>::iterator iAllSame = bAllSame;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
+    typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     Int64 count = 0;
@@ -2057,23 +2100,23 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
-    vector<vector<uInt64> >::iterator bCounts = binCounts.begin();
-    vector<vector<uInt64> >::iterator iCounts = bCounts;
-    typename vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
-    typename vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
-    vector<Bool>::iterator bAllSame = allSame.begin();
-    vector<Bool>::iterator iAllSame = bAllSame;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
-    typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
-    typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
+    std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
+    std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
+    typename std::vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
+    typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
+    std::vector<Bool>::iterator bAllSame = allSame.begin();
+    std::vector<Bool>::iterator iAllSame = bAllSame;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
+    typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
@@ -2089,23 +2132,23 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
-    vector<vector<uInt64> >::iterator bCounts = binCounts.begin();
-    vector<vector<uInt64> >::iterator iCounts = bCounts;
-    typename vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
-    typename vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
-    vector<Bool>::iterator bAllSame = allSame.begin();
-    vector<Bool>::iterator iAllSame = bAllSame;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
-    typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
-    typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
+    std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
+    std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
+    typename std::vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
+    typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
+    std::vector<Bool>::iterator bAllSame = allSame.begin();
+    std::vector<Bool>::iterator iAllSame = bAllSame;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
+    typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
@@ -2128,24 +2171,24 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
-    vector<vector<uInt64> >::iterator bCounts = binCounts.begin();
-    vector<vector<uInt64> >::iterator iCounts = bCounts;
-    typename vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
-    typename vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
-    vector<Bool>::iterator bAllSame = allSame.begin();
-    vector<Bool>::iterator iAllSame = bAllSame;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
-    typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
-    typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
+    std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
+    std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
+    typename std::vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
+    typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
+    std::vector<Bool>::iterator bAllSame = allSame.begin();
+    std::vector<Bool>::iterator iAllSame = bAllSame;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
+    typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
@@ -2169,23 +2212,23 @@ void ClassicalStatistics<CASA_STATP>::_findBins(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_findBins(
-    vector<vector<uInt64> >& binCounts,
-    vector<CountedPtr<AccumType> >& sameVal, vector<Bool>& allSame,
+    std::vector<std::vector<uInt64> >& binCounts,
+    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const vector<AccumType>& maxLimit
+    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
-    vector<vector<uInt64> >::iterator bCounts = binCounts.begin();
-    vector<vector<uInt64> >::iterator iCounts = bCounts;
-    typename vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
-    typename vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
-    vector<Bool>::iterator bAllSame = allSame.begin();
-    vector<Bool>::iterator iAllSame = bAllSame;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
-    typename vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
-    typename vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
+    std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
+    std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
+    typename std::vector<CountedPtr<AccumType> >::iterator bSameVal = sameVal.begin();
+    typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
+    std::vector<Bool>::iterator bAllSame = allSame.begin();
+    std::vector<Bool>::iterator iAllSame = bAllSame;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
+    typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
@@ -2245,12 +2288,12 @@ std::map<uInt64, AccumType> ClassicalStatistics<CASA_STATP>::_indicesToValues(
         }
         return indexToValue;
     }
-    vector<std::set<uInt64> > vindices(1, indices);
+    std::vector<std::set<uInt64> > vindices(1, indices);
     AccumType pad = 1e-6*(mymax - mymin);
     std::pair<AccumType, AccumType> limits(mymin - pad, mymax + pad);
-    vector<std::pair<AccumType, AccumType> > vlimits(1, limits);
+    std::vector<std::pair<AccumType, AccumType> > vlimits(1, limits);
     uInt64 mynpts = knownNpts.null() ? getNPts() : *knownNpts;
-    vector<uInt64> vmynpts(1, mynpts);
+    std::vector<uInt64> vmynpts(1, mynpts);
     return _dataFromSingleBins(
         vmynpts, maxArraySize, vlimits, vindices, nBins
     )[0];
@@ -2264,12 +2307,12 @@ void ClassicalStatistics<CASA_STATP>::_initIterators() {
     }
     else {
         _dataCount = 0;
-        const vector<DataIterator>& data = this->_getData();
+        const std::vector<DataIterator>& data = this->_getData();
         _diter = data.begin();
         _dend = data.end();
-        const vector<uInt>& dataStrides = this->_getDataStrides();
+        const std::vector<uInt>& dataStrides = this->_getDataStrides();
         _dsiter = dataStrides.begin();
-        const vector<Int64>& counts = this->_getCounts();
+        const std::vector<Int64>& counts = this->_getCounts();
         _citer = counts.begin();
         _masks = this->_getMasks();
         _weights = this->_getWeights();
@@ -2366,7 +2409,7 @@ void ClassicalStatistics<CASA_STATP>::_initThreadVars(
 
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_isNptsSmallerThan(
-    vector<AccumType>& unsortedAry, uInt maxArraySize
+    std::vector<AccumType>& unsortedAry, uInt maxArraySize
 ) {
     _initIterators();
     Bool limitReached = False;
@@ -2665,7 +2708,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride
 ) const {
     Int64 count = 0;
     DataIterator datum = dataBegin;
@@ -2679,7 +2722,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
     Int64 count = 0;
@@ -2702,7 +2745,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
     Int64 count = 0;
@@ -2720,7 +2763,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -2746,7 +2789,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride
 ) const {
     DataIterator datum = dataBegin;
@@ -2764,7 +2807,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -2790,7 +2833,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
     DataIterator datum = dataBegin;
@@ -2809,7 +2852,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -2863,14 +2906,14 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
-    typename vector<vector<AccumType> >::iterator bArys = arys.begin();
-    typename vector<vector<AccumType> >::iterator iArys = bArys;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
+    typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
+    typename std::vector<std::vector<AccumType> >::iterator iArys = bArys;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     Int64 count = 0;
     DataIterator datum = dataBegin;
     while (count < nr) {
@@ -2883,15 +2926,15 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
-    typename vector<vector<AccumType> >::iterator bArys = arys.begin();
-    typename vector<vector<AccumType> >::iterator iArys = bArys;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
+    typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
+    typename std::vector<std::vector<AccumType> >::iterator iArys = bArys;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     Int64 count = 0;
     DataIterator datum = dataBegin;
     typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -2912,15 +2955,15 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
-    typename vector<vector<AccumType> >::iterator bArys = arys.begin();
-    typename vector<vector<AccumType> >::iterator iArys = bArys;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
+    typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
+    typename std::vector<std::vector<AccumType> >::iterator iArys = bArys;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     Int64 count = 0;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
@@ -2936,16 +2979,16 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
-    typename vector<vector<AccumType> >::iterator bArys = arys.begin();
-    typename vector<vector<AccumType> >::iterator iArys = bArys;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
+    typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
+    typename std::vector<std::vector<AccumType> >::iterator iArys = bArys;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     Int64 count = 0;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
@@ -2968,15 +3011,15 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
-    typename vector<vector<AccumType> >::iterator bArys = arys.begin();
-    typename vector<vector<AccumType> >::iterator iArys = bArys;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
+    typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
+    typename std::vector<std::vector<AccumType> >::iterator iArys = bArys;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
@@ -2992,16 +3035,16 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
-    typename vector<vector<AccumType> >::iterator bArys = arys.begin();
-    typename vector<vector<AccumType> >::iterator iArys = bArys;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
+    typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
+    typename std::vector<std::vector<AccumType> >::iterator iArys = bArys;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     Int64 count = 0;
@@ -3024,15 +3067,15 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
-    typename vector<vector<AccumType> >::iterator bArys = arys.begin();
-    typename vector<vector<AccumType> >::iterator iArys = bArys;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
+    typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
+    typename std::vector<std::vector<AccumType> >::iterator iArys = bArys;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
@@ -3049,16 +3092,16 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
-    vector<vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
-    const vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
+    const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
-    typename vector<vector<AccumType> >::iterator bArys = arys.begin();
-    typename vector<vector<AccumType> >::iterator iArys = bArys;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
-    typename vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
+    typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
+    typename std::vector<std::vector<AccumType> >::iterator iArys = bArys;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
+    typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
@@ -3082,7 +3125,7 @@ void ClassicalStatistics<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
     uInt maxElements
 ) const {
     if (ary.size() + nr > maxElements) {
@@ -3109,7 +3152,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const DataRanges& ranges, Bool isInclude,
     uInt maxElements
 ) const {
@@ -3135,7 +3178,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     uInt maxElements
 ) const {
@@ -3156,7 +3199,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
@@ -3184,7 +3227,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
     uInt maxElements
 ) const {
@@ -3205,7 +3248,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
@@ -3233,7 +3276,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin,
     const WeightsIterator& weightBegin, Int64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, uInt maxElements
 ) const {
@@ -3255,7 +3298,7 @@ Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool ClassicalStatistics<CASA_STATP>::_populateTestArray(
-    vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
@@ -3432,10 +3475,10 @@ Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
     // I need a little wiggle room, the caller can't make the maximum array size
     // ridiculously small
     maxArraySize = max(maxArraySize, (uInt64)1000);
-    vector<AccumType> myArray;
+    std::vector<AccumType> myArray;
     if (_doMedAbsDevMed && ! this->_getSortedArray().empty()) {
         // make a copy
-        vector<AccumType> pSorted = this->_getSortedArray();
+        std::vector<AccumType> pSorted = this->_getSortedArray();
         myArray = pSorted;
         _convertToAbsDevMedArray(myArray, *_getStatsData().median);
     }
@@ -3464,7 +3507,7 @@ Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
             // we have to calculate the number of good points
             if (! this->_getDataProvider()) {
                 // we first get an upper limit by adding up the counts
-                const vector<Int64>& counts = this->_getCounts();
+                const std::vector<Int64>& counts = this->_getCounts();
                 uInt64 nr = accumulate(counts.begin(), counts.end(), 0);
                 if (nr <= maxArraySize) {
                     // data can be sorted in memory
@@ -3489,7 +3532,7 @@ Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
             this->_setSortedArray(myArray);
         }
         else {
-            this->_setSortedArray(vector<AccumType>());
+            this->_setSortedArray(std::vector<AccumType>());
         }
     }
     return True;
