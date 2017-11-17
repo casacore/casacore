@@ -1375,6 +1375,33 @@ void ClassicalStatistics<CASA_STATP>::_createDataArrays(
             break;
         }
     }
+    // CAS-10906 This appears to happen extemely rarely (one report in several years).
+    // To the best of my determination, it happens when the data iterator type and
+    // the AccumType are not the same (eg Float and Double, respectively), because
+    // the data are implicitly cast to AccumType. This slight value change at the data type
+    // precision level apparently can, in very rare instances, cause a data point that
+    // would fall exactly at the upper edge of a bin (and so under normal circumstances
+    // would not be included in that bin), to fall below the upper edge and so be erroneously
+    // be included in that bin, leading to an unexpected data point count in that bin. 
+    // The perfect solution would probably be not to do the casting and also make the bin limits
+    // the same type as the data type, but in practice this requires changes in many, many places
+    // in this code, and some of these changes may not be internally consistent. And in the end,
+    // I'm not 100% certain this would resolve the issue. The simplest solution for such an
+    // infrequently occurring problem is simply to change the binning configuration (which is
+    // already pretty arbitrary) so that the bin edges fall elsewhere and try again. This
+    // is what is done in _dataFromSingleBins() which catches this exception and then changes
+    // the binning configuration and tries again.
+    // Smarter binning at the outset might also help, for example, bins now have uniform widths,
+    // but most of the datasets we deal with have a pseudo Gaussian distribution. So, this issue
+    // is more likely to occur in densely populated bins (and in fact, the one report of this
+    // issue was tied to computing the median of such a distribution where the associated bin
+    // would have had (nearly) the largest number of points of all other bins. So, a binning
+    // configuration where bins are narrower near the distribution center so that the number of
+    // points per bin is about constant for all bins might make more sense. But again, that's a
+    // significant undertaking, and for a single event every few years, seems over engineering
+    // at this point, not to mention that such a configuration is potentially computationally
+    // expensive. In the end, this code may, at some very low probability, always be vulnerable
+    // to these types of machine precision issues. - dmehring 16nov2017
     ThrowIf(
         currentCount != maxCount, "Accounting error"
     );
@@ -1668,6 +1695,7 @@ std::vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_data
             }
             catch (const AipsError& x) {
                 // reconfigure bins and try again. This happens very rarely.
+                // See comment in _createDataArrays() at the source of the issue 
                 ThrowIf(loopCount == maxLoopCount, "Tried 5 times, giving up");
                 LogIO log;
                 log << LogIO::WARN << "Accounting error, decrease number of bins from "
