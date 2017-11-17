@@ -263,10 +263,7 @@ Bool ImageConcat<T>::setImageInfo (const ImageInfo& info)
     ndone += rwii.setInfoSplitBeamSet (ndone, info, img.shape(),
                                                     img.coordinates(),
                                                     latticeConcat_p.axis());
-    if (img.isPersistent()) {
-        // setImageInfo() must be called for changes to be stored persistently
-        img.setImageInfo(rwii);
-    }
+    img.setImageInfo(rwii);
   }
   return True;
 }
