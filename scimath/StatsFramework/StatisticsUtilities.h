@@ -22,13 +22,12 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_STATISTICSUTILITIES_H
 #define SCIMATH_STATISTICSUTILITIES_H
 
 #include <casacore/casa/Exceptions/Error.h>
-#include <casacore/scimath/Mathematics/StatisticsTypes.h>
+#include <casacore/scimath/StatsFramework/StatisticsTypes.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/aips.h>
 

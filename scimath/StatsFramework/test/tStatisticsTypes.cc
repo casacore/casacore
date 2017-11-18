@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#include <casacore/scimath/Mathematics/StatisticsTypes.h>
+#include <casacore/scimath/StatsFramework/StatisticsTypes.h>
 
 #include <casacore/casa/Exceptions/Error.h>
 

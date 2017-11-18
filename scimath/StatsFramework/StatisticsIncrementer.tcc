@@ -22,12 +22,11 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_STATISTICSINCREMENTER_TCC
 #define SCIMATH_STATISTICSINCREMENTER_TCC
 
-#include <casacore/scimath/Mathematics/StatisticsIncrementer.h>
+#include <casacore/scimath/StatsFramework/StatisticsIncrementer.h>
 
 namespace casacore {
 

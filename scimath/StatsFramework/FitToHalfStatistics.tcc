@@ -27,9 +27,9 @@
 #ifndef SCIMATH_FITTOHALFSTATISTICS_TCC
 #define SCIMATH_FITTOHALFSTATISTICS_TCC
 
-#include <casacore/scimath/Mathematics/FitToHalfStatistics.h>
+#include <casacore/scimath/StatsFramework/FitToHalfStatistics.h>
 
-#include <casacore/scimath/Mathematics/StatisticsUtilities.h>
+#include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
 
 #include <iomanip>
 

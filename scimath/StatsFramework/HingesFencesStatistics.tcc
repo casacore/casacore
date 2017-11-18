@@ -27,10 +27,10 @@
 #ifndef SCIMATH_HINGESFENCESSTATISTICS_TCC
 #define SCIMATH_HINGESFENCESSTATISTICS_TCC
 
-#include <casacore/scimath/Mathematics/HingesFencesStatistics.h>
+#include <casacore/scimath/StatsFramework/HingesFencesStatistics.h>
 
-#include <casacore/scimath/Mathematics/StatisticsIncrementer.h>
-#include <casacore/scimath/Mathematics/StatisticsUtilities.h>
+#include <casacore/scimath/StatsFramework/StatisticsIncrementer.h>
+#include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
 
 #include <iomanip>
 

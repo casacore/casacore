@@ -22,16 +22,15 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_CHAUVENETCRITERIONSTATISTICS_TCC
 #define SCIMATH_CHAUVENETCRITERIONSTATISTICS_TCC
 
-#include <casacore/scimath/Mathematics/ChauvenetCriterionStatistics.h>
+#include <casacore/scimath/StatsFramework/ChauvenetCriterionStatistics.h>
 
-#include <casacore/scimath/Mathematics/StatisticsIncrementer.h>
-#include <casacore/scimath/Mathematics/StatisticsUtilities.h>
-#include <casacore/scimath/Mathematics/ZScoreCalculator.h>
+#include <casacore/scimath/StatsFramework/StatisticsIncrementer.h>
+#include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
+#include <casacore/scimath/StatsFramework/ZScoreCalculator.h>
 
 namespace casacore {
 

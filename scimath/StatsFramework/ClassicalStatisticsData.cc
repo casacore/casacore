@@ -24,7 +24,7 @@
 //#
 
 
-#include <casacore/scimath/Mathematics/ClassicalStatisticsData.h>
+#include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
 
 namespace casacore {
 

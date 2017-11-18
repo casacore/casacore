@@ -28,9 +28,9 @@
 
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
-#include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
-#include <casacore/scimath/Mathematics/StatisticsAlgorithmFactoryData.h>
-#include <casacore/scimath/Mathematics/StatisticsData.h>
+#include <casacore/scimath/StatsFramework/StatisticsAlgorithm.h>
+#include <casacore/scimath/StatsFramework/StatisticsAlgorithmFactoryData.h>
+#include <casacore/scimath/StatsFramework/StatisticsData.h>
 
 namespace casacore {
 

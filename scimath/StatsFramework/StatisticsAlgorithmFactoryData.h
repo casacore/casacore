@@ -26,7 +26,7 @@
 #ifndef SCIMATH_STATSALGORITHMFACTORYDATA_H
 #define SCIMATH_STATSALGORITHMFACTORYDATA_H
 
-#include <casacore/scimath/Mathematics/FitToHalfStatisticsData.h>
+#include <casacore/scimath/StatsFramework/FitToHalfStatisticsData.h>
 
 namespace casacore {
 

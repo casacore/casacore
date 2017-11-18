@@ -27,7 +27,7 @@
 #ifndef SCIMATH_STATSDATAPROVIDER_TCC
 #define SCIMATH_STATSDATAPROVIDER_TCC
 
-#include <casacore/scimath/Mathematics/StatsDataProvider.h>
+#include <casacore/scimath/StatsFramework/StatsDataProvider.h>
 
 namespace casacore {
 

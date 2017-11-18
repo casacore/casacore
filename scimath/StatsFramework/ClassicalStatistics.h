@@ -29,10 +29,10 @@
 
 #include <casacore/casa/aips.h>
 
-#include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
+#include <casacore/scimath/StatsFramework/StatisticsAlgorithm.h>
 
-#include <casacore/scimath/Mathematics/StatisticsTypes.h>
-#include <casacore/scimath/Mathematics/StatisticsUtilities.h>
+#include <casacore/scimath/StatsFramework/StatisticsTypes.h>
+#include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
 
 #include <set>
 #include <vector>

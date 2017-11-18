@@ -1,4 +1,3 @@
-//# tStatAcc.cc: Test program for class StatAcc
 //# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -23,11 +22,10 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: tStatAcc.cc 20329 2008-06-06 07:59:22Z gervandiepen $
 
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/Arrays.h>
-#include <casacore/scimath/Mathematics/HingesFencesStatistics.h>
+#include <casacore/scimath/StatsFramework/HingesFencesStatistics.h>
 #include <casacore/casa/Exceptions/Error.h>
 
 #include <vector>

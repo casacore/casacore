@@ -22,7 +22,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: $
 
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/Directory.h>
@@ -31,7 +30,7 @@
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Images/SubImage.h>
 
-#include <casacore/scimath/Mathematics/ClassicalStatistics.h>
+#include <casacore/scimath/StatsFramework/ClassicalStatistics.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/lattices/LatticeMath/LatticeStatsDataProvider.h>
 #include <casacore/lattices/LatticeMath/LatticeStatistics.h>

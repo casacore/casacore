@@ -22,9 +22,8 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: HostInfoDarwin.h 21521 2014-12-10 08:06:42Z gervandiepen $
 
-#include <casacore/scimath/Mathematics/ZScoreCalculator.h>
+#include <casacore/scimath/StatsFramework/ZScoreCalculator.h>
 #include <stdlib.h>
 
 #include <casacore/casa/BasicMath/Math.h>

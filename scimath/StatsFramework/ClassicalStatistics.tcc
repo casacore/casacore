@@ -32,8 +32,8 @@
 #include <casacore/scimath/Mathematics/ClassicalStatisticsData.h>
 #include <casacore/casa/OS/OMP.h>
 #include <casacore/casa/Utilities/PtrHolder.h>
-#include <casacore/scimath/Mathematics/StatisticsIncrementer.h>
-#include <casacore/scimath/Mathematics/StatisticsUtilities.h>
+#include <casacore/scimath/StatsFramework/StatisticsIncrementer.h>
+#include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
 
 #include <iomanip>
 

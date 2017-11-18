@@ -36,7 +36,7 @@
 #include <casacore/ms/MSOper/MSKeys.h>
 #include <casacore/ms/MeasurementSets/MSFieldColumns.h>
 #include <casacore/ms/MeasurementSets/MSSpWindowColumns.h>
-#include <casacore/scimath/Mathematics/ClassicalStatistics.h>
+#include <casacore/scimath/StatsFramework/ClassicalStatistics.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/TaQL/TableParse.h>

@@ -22,18 +22,17 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_STATISTICSALGORITHMFACTORY_TCC
 #define SCIMATH_STATISTICSALGORITHMFACTORY_TCC
 
-#include <casacore/scimath/Mathematics/StatisticsAlgorithmFactory.h>
+#include <casacore/scimath/StatsFramework/StatisticsAlgorithmFactory.h>
 
 #include <casacore/casa/Utilities/CountedPtr.h>
-#include <casacore/scimath/Mathematics/ChauvenetCriterionStatistics.h>
-#include <casacore/scimath/Mathematics/ClassicalStatistics.h>
-#include <casacore/scimath/Mathematics/FitToHalfStatistics.h>
-#include <casacore/scimath/Mathematics/HingesFencesStatistics.h>
+#include <casacore/scimath/StatsFramework/ChauvenetCriterionStatistics.h>
+#include <casacore/scimath/StatsFramework/ClassicalStatistics.h>
+#include <casacore/scimath/StatsFramework/FitToHalfStatistics.h>
+#include <casacore/scimath/StatsFramework/HingesFencesStatistics.h>
 
 namespace casacore {
 

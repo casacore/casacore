@@ -22,14 +22,13 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_CONSTRAINEDRANGESTATISTICS_TCC
 #define SCIMATH_CONSTRAINEDRANGESTATISTICS_TCC
 
-#include <casacore/scimath/Mathematics/ConstrainedRangeStatistics.h>
+#include <casacore/scimath/StatsFramework/ConstrainedRangeStatistics.h>
 
-#include <casacore/scimath/Mathematics/StatisticsUtilities.h>
+#include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
 
 #include <iomanip>
 

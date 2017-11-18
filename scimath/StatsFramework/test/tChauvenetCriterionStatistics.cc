@@ -27,7 +27,7 @@
 
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/Arrays.h>
-#include <casacore/scimath/Mathematics/ChauvenetCriterionStatistics.h>
+#include <casacore/scimath/StatsFramework/ChauvenetCriterionStatistics.h>
 #include <casacore/casa/Exceptions/Error.h>
 
 #include <vector>

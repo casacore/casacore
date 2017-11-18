@@ -28,7 +28,7 @@
 
 #include <casacore/casa/aips.h>
 
-#include <casacore/scimath/Mathematics/ConstrainedRangeStatistics.h>
+#include <casacore/scimath/StatsFramework/ConstrainedRangeStatistics.h>
 
 #include <set>
 #include <vector>

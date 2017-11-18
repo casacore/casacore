@@ -22,12 +22,11 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_STATISTICSALGORITHM_TCC
 #define SCIMATH_STATISTICSALGORITHM_TCC
 
-#include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
+#include <casacore/scimath/StatsFramework/StatisticsAlgorithm.h>
 
 #include <casacore/casa/BasicSL/STLIO.h>
 #include <casacore/casa/Utilities/GenSort.h>

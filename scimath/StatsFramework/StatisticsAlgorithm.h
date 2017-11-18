@@ -22,7 +22,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_STATSALGORITHM_H
 #define SCIMATH_STATSALGORITHM_H
@@ -30,9 +29,9 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
-#include <casacore/scimath/Mathematics/StatsDataProvider.h>
-#include <casacore/scimath/Mathematics/StatisticsData.h>
-#include <casacore/scimath/Mathematics/StatisticsTypes.h>
+#include <casacore/scimath/StatsFramework/StatsDataProvider.h>
+#include <casacore/scimath/StatsFramework/StatisticsData.h>
+#include <casacore/scimath/StatsFramework/StatisticsTypes.h>
 
 #include <map>
 #include <set>
