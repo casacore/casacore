@@ -27,9 +27,9 @@
 #ifndef SCIMATH_CLASSICALSTATISTICS_TCC
 #define SCIMATH_CLASSICALSTATISTICS_TCC
 
-#include <casacore/scimath/Mathematics/ClassicalStatistics.h>
+#include <casacore/scimath/StatsFramework/ClassicalStatistics.h>
 
-#include <casacore/scimath/Mathematics/ClassicalStatisticsData.h>
+#include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
 #include <casacore/casa/OS/OMP.h>
 #include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/scimath/StatsFramework/StatisticsIncrementer.h>

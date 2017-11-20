@@ -230,11 +230,7 @@ Mathematics/AutoDiffMath.tcc
 Mathematics/AutoDiffRep.h
 Mathematics/AutoDiffRep.tcc
 Mathematics/AutoDiffX.h
-Mathematics/ChauvenetCriterionStatistics.h
-Mathematics/ClassicalStatistics.h
-Mathematics/ClassicalStatisticsData.h
 Mathematics/Combinatorics.h
-Mathematics/ConstrainedRangeStatistics.h
 Mathematics/ConvolveGridder.h
 Mathematics/ConvolveGridder.tcc
 Mathematics/Convolver.h
@@ -244,13 +240,10 @@ Mathematics/DFTServer.tcc
 Mathematics/FFTPack.h
 Mathematics/FFTServer.h
 Mathematics/FFTW.h
-Mathematics/FitToHalfStatistics.h
-Mathematics/FitToHalfStatisticsData.h
 Mathematics/GaussianBeam.h
 Mathematics/Geometry.h
 Mathematics/Gridder.h
 Mathematics/Gridder.tcc
-Mathematics/HingesFencesStatistics.h
 Mathematics/HistAcc.h
 Mathematics/HistAcc.tcc
 Mathematics/Interpolate2D.h
@@ -287,17 +280,8 @@ Mathematics/SquareMatrix.h
 Mathematics/SquareMatrix.tcc
 Mathematics/StatAcc.h
 Mathematics/StatAcc.tcc
-Mathematics/StatsDataProvider.h
-Mathematics/StatisticsAlgorithm.h
-Mathematics/StatisticsAlgorithmFactory.h
-Mathematics/StatisticsAlgorithmFactoryData.h
-Mathematics/StatisticsData.h
-Mathematics/StatisticsIncrementer.h
-Mathematics/StatisticsTypes.h
-Mathematics/StatisticsUtilities.h
 Mathematics/VanVleck.h
 Mathematics/VectorKernel.h
-Mathematics/ZScoreCalculator.h
 DESTINATION include/casacore/scimath/Mathematics
 )
 
