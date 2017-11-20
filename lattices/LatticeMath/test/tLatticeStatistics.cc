@@ -40,7 +40,7 @@
 #include <casacore/lattices/LatticeMath/LatticeStatsBase.h>
 #include <casacore/lattices/Lattices/LatticeUtilities.h>
 #include <casacore/lattices/LRegions/LCSlicer.h>
-#include <casacore/scimath/Mathematics/ClassicalStatistics.h>
+#include <casacore/scimath/StatsFramework/ClassicalStatistics.h>
 
 #include <casacore/casa/iostream.h>
 

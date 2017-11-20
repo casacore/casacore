@@ -69,9 +69,9 @@
 #include <casacore/casa/stdlib.h>
 #include <casacore/casa/sstream.h>
 
-#include <casacore/scimath/Mathematics/ChauvenetCriterionStatistics.h>
-#include <casacore/scimath/Mathematics/FitToHalfStatistics.h>
-#include <casacore/scimath/Mathematics/HingesFencesStatistics.h>
+#include <casacore/scimath/StatsFramework/ChauvenetCriterionStatistics.h>
+#include <casacore/scimath/StatsFramework/FitToHalfStatistics.h>
+#include <casacore/scimath/StatsFramework/HingesFencesStatistics.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

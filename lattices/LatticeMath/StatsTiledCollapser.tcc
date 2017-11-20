@@ -26,7 +26,7 @@
 
 #include <casacore/lattices/LatticeMath/StatsTiledCollapser.h>
 
-#include <casacore/scimath/Mathematics/StatisticsUtilities.h>
+#include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
 
 namespace casacore {
 

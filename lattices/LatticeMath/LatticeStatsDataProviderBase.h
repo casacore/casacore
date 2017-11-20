@@ -27,7 +27,7 @@
 #ifndef LATTICES_LATTICESTATSDATAPROVIDERBASE_H
 #define LATTICES_LATTICESTATSDATAPROVIDERBASE_H
 
-#include <casacore/scimath/Mathematics/StatsDataProvider.h>
+#include <casacore/scimath/StatsFramework/StatsDataProvider.h>
 
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>

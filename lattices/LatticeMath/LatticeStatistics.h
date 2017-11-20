@@ -43,10 +43,10 @@
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Logging/LogIO.h>
-#include <casacore/scimath/Mathematics/FitToHalfStatisticsData.h>
-#include <casacore/scimath/Mathematics/StatisticsData.h>
-#include <casacore/scimath/Mathematics/StatisticsAlgorithm.h>
-#include <casacore/scimath/Mathematics/StatisticsAlgorithmFactory.h>
+#include <casacore/scimath/StatsFramework/FitToHalfStatisticsData.h>
+#include <casacore/scimath/StatsFramework/StatisticsData.h>
+#include <casacore/scimath/StatsFramework/StatisticsAlgorithm.h>
+#include <casacore/scimath/StatsFramework/StatisticsAlgorithmFactory.h>
 
 #include <vector>
 #include <list>

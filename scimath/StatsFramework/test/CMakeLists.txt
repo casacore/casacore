@@ -1,24 +1,12 @@
 set (tests
-dAutoDiff
-dSparseDiff
-tAutoDiff
-tCombinatorics
-tConvolver
-tFFTServer
-tFFTServer2
-tGaussianBeam
-tGeometry
-tHistAcc
-tInterpolateArray1D
-tMathFunc
-tMatrixMathLA
-tMedianSlider
-tSmooth
-tSparseDiff
-tStatAcc
-tVanVleck
-tVectorKernel
-tInterpolate2D
+tChauvenetCriterionStatistics
+tClassicalStatistics
+tFitToHalfStatistics
+tHingesFencesStatistics
+tStatisticsAlgorithmFactory
+tStatisticsTypes
+tStatisticsUtilities
+tZScoreCalculator
 )
 
 foreach (test ${tests})
