@@ -53,6 +53,8 @@ WHITE1    [ \t\n]
 WHITE     {WHITE1}*
 DIGIT     [0-9]
 INT       {DIGIT}+
+INT2      {DIGIT}{DIGIT}
+INT4      {INT2}{INT2}
 HEXINT    0[xX][0-9a-fA-F]+
 EXP       [DdEe][+-]?{INT}
 FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
@@ -62,22 +64,25 @@ TRUE      T|([Tt][Rr][Uu][Ee])
 FALSE     F|([Ff][Aa][Ll][Ss][Ee])
 FLINTUNIT {FLINT}[a-zA-Z]+
 
-MONTH     ("-"{INT}?"-")|("-"?[A-Za-z]+"-"?)
-DATEH     {INT}{MONTH}{INT}
-DATES     {INT}"/"{INT}?"/"{INT}
-DATE      {DATEH}|{DATES}
-DTIMEHM   {INT}[hH]({INT}?([mM]({FLINT})?)?)?
+MONTH     [A-Za-z]+
+DATEA     {INT}{MONTH}{INT}|{INT}"-"{MONTH}"-"{INT}
+DATEH     ({INT2}"-"{INT2}"-"{INT4})|({INT4}"-"{INT2}"-"{INT2})
+DATES     {INT4}"/"{INT2}"/"{INT2}
+DATE      {DATEA}|{DATEH}|{DATES}
+DTIMEH    {INT}[hH]({INT}?([mM]({FLINT})?)?)?
 DTIMEC    {INT}":"({INT}?(":"({FLINT})?)?)?
-DTIME     {DTIMEHM}|{DTIMEC}
-DATETIME  {DATE}([-/]{DTIME})?
+DTIME     {DTIMEH}|{DTIMEC}
+DATETIME  {DATE}([-/ ]{DTIME})?
 
+POSHM     {INT}[hH]{INT}[mM]{FLINT}?
 POSDM     {INT}[dD]{INT}[mM]{FLINT}?
-POSD      {INT}"."{INT}?"."{FLINT}?
-TIME      {DTIMEHM}|{POSDM}|{POSD}
+POSD      {INT}"."{INT}"."{FLINT}
+TIME      {POSHM}|{POSDM}|{POSD}
 /*
-     positions with colons cannot be allowed, because they interfere
-     with the interval syntax (and a starting slash is rather ambiguous).
-TIME      {DTIMEHM}|{TIMESL}|{TIMEU}|{POSDM}|{POSD}
+     positions/times with colons cannot be allowed, because they interfere
+     with the interval syntax. It is only possible when preceeded by a date.
+     Furthermore, a colon is sometimes also used for degrees (in declinations),
+     so it's better to stick to hms and dms.
 */
 
 QSTRING   \"[^\"\n]*\"
@@ -289,6 +294,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new RecordGramVal();
             RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 'f';
+	    lvalp->val->dval[0] = v;
 	    lvalp->val->str = unit;
 	    return LITERAL;
 	  }

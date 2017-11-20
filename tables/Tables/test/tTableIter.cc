@@ -52,6 +52,7 @@
 
 void credes();
 void cretab(uInt);
+void doiter0();
 void doiter1();
 void doiter2();
 void doiter3();
@@ -65,6 +66,7 @@ int main (int argc, const char* argv[])
     }
     credes();          // make description
     cretab(nr);        // create table (and write it)
+    doiter0();         // do no column iteration
     doiter1();         // do single column iteration
     doiter2();         // do two column iteration
     doiter3();         // do interval iteration
@@ -98,6 +100,32 @@ void cretab(uInt nr) {
 	col4.put (i, i+3);
     }
     cout << "Filling done" << endl;
+}
+
+void doiter0()
+{
+    Table t;
+    Table tab ("tTableIter_tmp.data");
+    Block<String> iv0;
+    TableIterator iter0(tab, iv0);
+    Int nr = 0;
+    while (!iter0.pastEnd()) {
+	t = iter0.table();
+        AlwaysAssertExit (t.nrow() == tab.nrow());
+	nr++;
+	iter0.next();
+    }
+    cout << "   #iter=" << nr << endl;
+
+    iter0.reset();
+    nr = 0;
+    while (!iter0.pastEnd()) {
+	t = iter0.table();
+        AlwaysAssertExit (t.nrow() == tab.nrow());
+	nr++;
+	iter0.next();
+    }
+    cout << "   #iter1=" << nr << endl;
 }
 
 void doiter1()

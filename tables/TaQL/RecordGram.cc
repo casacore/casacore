@@ -149,6 +149,173 @@ void RecordGramerror (const char*)
 }
 
 
+Bool RecordGram::expr2Bool (const String& expr, const Record& vars)
+{
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, expr));
+  // Evaluate.
+  Bool result;
+  node.get (vars, result);
+  return result;
+}
+
+Int64 RecordGram::expr2Int (const String& expr, const Record& vars)
+{
+  return Int64(expr2Double (expr, vars) + 0.0001);
+}
+
+double RecordGram::expr2Double (const String& expr, const Record& vars,
+                                const String& unit)
+{
+  String ex = expr;
+  if (! unit.empty()) {
+    // Convert to the given unit (e.g., 1.3 GHz to Hz).
+    ex = "(" + ex + ")" + unit;
+  }
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, ex));
+  // Evaluate.
+  double result;
+  node.get (vars, result);
+  return result;
+}
+
+DComplex RecordGram::expr2Complex (const String& expr, const Record& vars)
+{
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, expr));
+  // Evaluate.
+  DComplex result;
+  node.get (vars, result);
+  return result;
+}
+
+String RecordGram::expr2String (const String& expr, const Record& vars)
+{
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, expr));
+  // Evaluate.
+  String result;
+  node.get (vars, result);
+  return result;
+}
+
+MVTime RecordGram::expr2Date (const String& expr, const Record& vars)
+{
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, expr));
+  // Evaluate.
+  MVTime result;
+  node.get (vars, result);
+  return result;
+}
+
+Array<Bool> RecordGram::expr2ArrayBool (const String& expr,
+                                        const Record& vars)
+{
+  String ex = expr;
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, expr));
+  // Evaluate.
+  Array<Bool> result;
+  if (node.isScalar()) {
+    result.resize (IPosition(1,1));
+    node.get (vars, result.data()[0]);
+  } else {
+    node.get (vars, result);
+  }
+  return result;
+}
+
+Array<Int64> RecordGram::expr2ArrayInt (const String& expr,
+                                        const Record& vars)
+{
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, expr));
+  // Evaluate.
+  Array<Int64> result;
+  if (node.isScalar()) {
+    result.resize (IPosition(1,1));
+    node.get (vars, result.data()[0]);
+  } else {
+    node.get (vars, result);
+  }
+  return result;
+}
+
+Array<double> RecordGram::expr2ArrayDouble (const String& expr,
+                                            const Record& vars,
+                                            const String& unit)
+{
+  String ex = expr;
+  if (! unit.empty()) {
+    // Convert to the given unit (e.g., 1.3 GHz to Hz).
+    ex = "(" + ex + ")" + unit;
+  }
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, ex));
+  // Evaluate.
+  Array<double> result;
+  if (node.isScalar()) {
+    result.resize (IPosition(1,1));
+    node.get (vars, result.data()[0]);
+  } else {
+    node.get (vars, result);
+  }
+  return result;
+}
+
+Array<DComplex> RecordGram::expr2ArrayComplex (const String& expr,
+                                               const Record& vars)
+{
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, expr));
+  // Evaluate.
+  Array<DComplex> result;
+  if (node.isScalar()) {
+    result.resize (IPosition(1,1));
+    node.get (vars, result.data()[0]);
+  } else {
+    node.get (vars, result);
+  }
+  return result;
+}
+
+Array<String> RecordGram::expr2ArrayString (const String& expr,
+                                            const Record& vars)
+{
+  String ex = expr;
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, ex));
+  // Evaluate.
+  Array<String> result;
+  if (node.isScalar()) {
+    result.resize (IPosition(1,1));
+    node.get (vars, result.data()[0]);
+  } else {
+    node.get (vars, result);
+  }
+  return result;
+}
+
+Array<MVTime> RecordGram::expr2ArrayDate (const String& expr,
+                                          const Record& vars)
+{
+  String ex = expr;
+  // Convert expression to tree.
+  TableExprNode node (RecordGram::parse(vars, ex));
+  // Evaluate.
+  Array<MVTime> result;
+  if (node.isScalar()) {
+    result.resize (IPosition(1,1));
+    node.get (vars, result.data()[0]);
+  } else {
+    node.get (vars, result);
+  }
+  return result;
+}
+
+  
 TableExprNode RecordGram::parse (const RecordInterface& record,
 				 const String& expression)
 {
