@@ -487,7 +487,32 @@ Bool ImageConcat<T>::doGetMaskSlice (Array<Bool>& buffer,
 template <class T>
 IPosition ImageConcat<T>::doNiceCursorShape (uInt maxPixels) const
 {  
-   return latticeConcat_p.niceCursorShape(maxPixels);
+  //Return the smallest cursor shape along the non X-Y direction from the constituent images
+  if(nimages() > 0){
+    ///if image has 1 or  2 axes return cursor shape of first image
+    if(shape().nelements() <= 2)
+      return image(0).niceCursorShape(maxPixels);
+    Vector<Int> dirpixaxes, dirworldaxes;
+    Int coordaxis;
+    CoordinateUtil::findDirectionAxes(dirpixaxes, dirworldaxes,
+                                       coordaxis,
+				      coordinates());
+    Int64 minprod=INT64_MAX;
+    Int minimage=-1;
+    for (uInt k=0; k < nimages(); ++k){
+      IPosition curshape=image(k).niceCursorShape(maxPixels);
+      Int64 prod= curshape.product()/ Int64(curshape(dirpixaxes(0))*curshape(dirpixaxes(1)));
+      if(prod < minprod){
+	minprod=prod;
+	minimage=k;
+      }
+      return image(minimage).niceCursorShape(maxPixels);
+
+    }
+ 
+  }
+  return IPosition(0);
+
 }
  
    
