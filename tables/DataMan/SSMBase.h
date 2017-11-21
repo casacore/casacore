@@ -160,12 +160,12 @@ class SSMBase: public DataManager
 public:
   // Create a Standard storage manager with default name SSM.
   explicit SSMBase (Int aBucketSize=0,
-		    uInt64 aCacheSize=1);
+		    uInt aCacheSize=1);
   
   // Create a Standard storage manager with the given name.
   explicit SSMBase (const String& aDataManName,
 		    Int aBucketSize=0,
-		    uInt64 aCacheSize=1);
+		    uInt aCacheSize=1);
   
   // Create a Standard storage manager with the given name.
   // The specifications are part of the record (as created by dataManagerSpec).
@@ -421,10 +421,10 @@ private:
   SSMStringHandler* itsStringHandler;
 
   // The persistent cache size.
-  uInt64 itsPersCacheSize;
+  uInt itsPersCacheSize;
   
   // The actual cache size.
-  uInt64 itsCacheSize;
+  uInt itsCacheSize;
   
   // The initial number of buckets in the cache.
   uInt itsNrBuckets;

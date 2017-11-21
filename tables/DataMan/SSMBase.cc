@@ -54,7 +54,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-SSMBase::SSMBase (Int aBucketSize, uInt64 aCacheSize)
+SSMBase::SSMBase (Int aBucketSize, uInt aCacheSize)
 : DataManager          (),
   itsDataManName       ("SSM"),
   itsIosFile           (0),
@@ -62,7 +62,7 @@ SSMBase::SSMBase (Int aBucketSize, uInt64 aCacheSize)
   itsCache             (0),
   itsFile              (0),
   itsStringHandler     (0),
-  itsPersCacheSize     (std::max(aCacheSize,uInt64(2))),
+  itsPersCacheSize     (std::max(aCacheSize,uInt(2))),
   itsCacheSize         (0),
   itsNrBuckets         (0), 
   itsNrIdxBuckets      (0),
@@ -86,7 +86,7 @@ SSMBase::SSMBase (Int aBucketSize, uInt64 aCacheSize)
 }
 
 SSMBase::SSMBase (const String& aDataManName,
-		  Int aBucketSize, uInt64 aCacheSize)
+		  Int aBucketSize, uInt aCacheSize)
 : DataManager          (),
   itsDataManName       (aDataManName),
   itsIosFile           (0),
@@ -94,7 +94,7 @@ SSMBase::SSMBase (const String& aDataManName,
   itsCache             (0),
   itsFile              (0),
   itsStringHandler     (0),
-  itsPersCacheSize     (std::max(aCacheSize,uInt64(2))),
+  itsPersCacheSize     (std::max(aCacheSize,uInt(2))),
   itsCacheSize         (0),
   itsNrBuckets         (0), 
   itsNrIdxBuckets      (0),
@@ -155,7 +155,7 @@ SSMBase::SSMBase (const String& aDataManName,
     }
   }
   if (spec.isDefined ("PERSCACHESIZE")) {
-    itsPersCacheSize = max(2, spec.asInt64 ("PERSCACHESIZE"));
+    itsPersCacheSize = max(2, spec.asInt ("PERSCACHESIZE"));
   }
 }
 
@@ -215,7 +215,7 @@ Record SSMBase::dataManagerSpec() const
 {
   Record rec = getProperties();
   rec.define ("BUCKETSIZE", Int(itsBucketSize));
-  rec.define ("PERSCACHESIZE", Int64(itsPersCacheSize));
+  rec.define ("PERSCACHESIZE", Int(itsPersCacheSize));
   rec.define ("IndexLength", Int(itsIndexLength));
   return rec;
 }
@@ -225,14 +225,14 @@ Record SSMBase::getProperties() const
   // Make sure the cache is initialized, so the header has certainly been read.
   const_cast<SSMBase*>(this)->getCache();
   Record rec;
-  rec.define ("ActualCacheSize", Int64(itsCacheSize));
+  rec.define ("ActualCacheSize", Int(itsCacheSize));
   return rec;
 }
 
 void SSMBase::setProperties (const Record& rec)
 {
   if (rec.isDefined("ActualCacheSize")) {
-    setCacheSize (rec.asInt64("ActualCacheSize"), False);
+    setCacheSize (rec.asuInt("ActualCacheSize"), False);
   }
 }
 
@@ -421,13 +421,7 @@ void SSMBase::readHeader()
   }
   anOs >> itsBucketSize;                // Size of the bucket
   anOs >> itsNrBuckets;                 // Initial Nr of Buckets
-  if (version >= 4) {
-    anOs >> itsPersCacheSize;           // Size of Persistent cache
-  } else {
-    uInt tmp;
-    anOs >> tmp;
-    itsPersCacheSize = tmp;
-  }
+  anOs >> itsPersCacheSize;             // Size of Persistent cache
   anOs >> itsFreeBucketsNr;             // Nr of Free Buckets
   anOs >> itsFirstFreeBucket;           // First Free Bucket nr
   anOs >> itsNrIdxBuckets;              // Nr of Buckets needed 4 Index
@@ -598,7 +592,7 @@ void SSMBase::writeIndex()
     }    
     itsFirstIdxBucket = aNewBucket;
     // If the index fits in half a bucket, we might be able to use the other
-    // half when writying the index the next time.
+    // half when writing the index the next time.
     // Set the index offset variable accordingly.
     if (idxLength <= idxBucketSize/2) {
       itsIdxBucketOffset = aCLength;
@@ -624,13 +618,7 @@ void SSMBase::writeIndex()
   // Write a few items at the beginning of the file  AipsIO anOs (aTio);
   // The endian switch is a new feature. So only put it if little endian
   // is used. In that way older software can read newer tables.
-  // Similarly for persistent cache size.
-  Bool as64 = False;
-  if (itsPersCacheSize != uInt(itsPersCacheSize)) {
-    as64 = True;
-    anOs.putstart("StandardStMan", 4);
-    anOs << asBigEndian();
-  } else if (asBigEndian()) {
+  if (asBigEndian()) {
     anOs.putstart("StandardStMan", 2);
   } else {
     anOs.putstart("StandardStMan", 3);
@@ -638,11 +626,7 @@ void SSMBase::writeIndex()
   }
   anOs << itsBucketSize;                // Size of the bucket
   anOs << aNrBuckets;                   // Present number of buckets
-  if (as64) {
-    anOs << itsPersCacheSize;           // Size of Persistent cache
-  } else {
-    anOs << uInt(itsPersCacheSize);     // Size of Persistent cache
-  }
+  anOs << itsPersCacheSize;             // Size of Persistent cache
   anOs << getCache().nFreeBucket();     // Nr of Free Buckets
   anOs << getCache().firstFreeBucket(); // First Free Bucket nr
   anOs << itsNrIdxBuckets;              // Nr buckets needed for index
