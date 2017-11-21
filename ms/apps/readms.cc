@@ -39,6 +39,7 @@
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/Inputs/Input.h>
 #include <casacore/casa/OS/Timer.h>
+#include <casacore/casa/OS/OMP.h>
 
 using namespace casacore;
 
@@ -207,11 +208,13 @@ void showParms()
     myReadWeightSpectrum = False;
   }
   Block<String> parts = tab.getPartNames();
-  cout << " nms    = " << myNPart << "    " << myMsName;
+  cout << " nms      = " << myNPart << "    " << myMsName;
   if (parts.size() > 1) {
     cout << "   (MultiMS with " << parts.size() << " MSs)";
   }
   cout << endl;
+  cout << " nthread  = " << OMP::maxThreads() << endl;
+
   // Since all parts are the same, only use the first one to determine sizes.
   MeasurementSet ms(parts[0]);
   TableIterator iter(ms, "TIME", TableIterator::Ascending,
@@ -454,8 +457,9 @@ void setTSMCacheSize (const Table& tab, const String& columnName,
   }
 }
 
-void doOne (int seqnr, const String& msName, Int64& origNrow, Int64& selNrow)
+std::vector<Int64> doOne (int seqnr, const String& msName)
 {
+  vector<Int64> res(2);
   // Form the MS name.
   // If it contains %d, use that to fill in the seqnr.
   // Otherwise append _seqnr to the name (unless a single part is done).
@@ -477,7 +481,7 @@ void doOne (int seqnr, const String& msName, Int64& origNrow, Int64& selNrow)
     setTSMCacheSize (tab, "WEIGHT_SPECTRUM", myCacheSizeWeight);
   }
   // Set the cache sizes if needed.
-  origNrow = tab.nrow();
+  res[0] = tab.nrow();
   timer.show ("Opened MS " + name);
   timer.mark();
   // Do the selection (if given).
@@ -494,6 +498,7 @@ void doOne (int seqnr, const String& msName, Int64& origNrow, Int64& selNrow)
     timer.show ("selection");
     timer.mark();
   }
+  res[1] = tab.nrow();
   if (! mySortCols.empty()) {
     Block<String> keys(mySortCols.size());
     std::copy (mySortCols.begin(), mySortCols.end(), keys.begin());
@@ -501,7 +506,6 @@ void doOne (int seqnr, const String& msName, Int64& origNrow, Int64& selNrow)
     timer.show ("sort    ");
     timer.mark();
   }
-  selNrow = tab.nrow();
   MeasurementSet ms(tab);
   Int64 niter;
   Int64 nrow = readSteps (ms, niter);
@@ -510,22 +514,21 @@ void doOne (int seqnr, const String& msName, Int64& origNrow, Int64& selNrow)
   if (seqnr == 0) {
     showCacheStatistics (ms);
   }
+  return res;
 }
 
 void doAll()
 {
   Int64 nrow, selNrow;
-  int nthread = 1;
+  int nthread = OMP::maxThreads();
 #ifdef _OPENMP
-  nthread = omp_num_threads();
 #pragma omp parallel for schedule(dynamic)
 #endif
   for (int i=0; i<myNPart; ++i) {
-    Int64 nr, selnr;
-    doOne (i, myMsName, nr, selnr);
+    vector<Int64> res = doOne (i, myMsName);
     if (i == 0) {
-      nrow = nr;
-      selNrow = selnr;
+      nrow = res[0];
+      selNrow = res[1];
     }
   }
   if (myNPart == 1) {

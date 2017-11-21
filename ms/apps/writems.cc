@@ -70,6 +70,7 @@
 #include <casacore/casa/Quanta/MVPosition.h>
 #include <casacore/casa/Quanta/MVBaseline.h>
 #include <casacore/casa/OS/Time.h>
+#include <casacore/casa/OS/OMP.h>
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Utilities/Assert.h>
@@ -452,6 +453,8 @@ void MSCreate::init (const vector<double>& ra,
                      int   useMultiFile,
                      int   multiBlockSize)
 {
+  cout << "init " << msName << endl;
+  cout << spw<<' '<<nspw<<' '<<nfreq.size()<<' '<<npol.size()<<' '<<startFreq.size()<<' '<<stepFreq.size()<<endl;
   itsRa = ra;
   itsDec = dec;
   itsCalcUVW        = calcUVW;
@@ -1828,27 +1831,14 @@ bool readParms (int argc, char* argv[])
     myDec.push_back (qn.getValue ("rad"));
   }
   myNBand      = params.getInt ("nspw");
-  // firstspw and totalspw can be an expression of nspw.
-  Record vars;
-  vars.define ("nspw", myNBand);
-  myFirstBand  = parmInt (params, "firstspw", vars);
-  myTotalNBand = parmInt (params, "totalspw", vars);
-  myNChan = Vector<Int> (params.getIntArray ("nchan"));
-  myNPol  = Vector<Int> (params.getIntArray ("npol"));
-  myNTime = params.getInt ("ntime");
-  myNTimeField = params.getInt ("ntimefield");
   myNPart = params.getInt ("nms");
   myDoSinglePart = (myNPart == 0);
   if (myDoSinglePart) {
     myNPart = 1;
   }
-  // Determine possible tile size. Default is no tiling.
-  myTileSizePol  = parmInt (params, "tilesizepol");
-  myTileSizeFreq = parmInt (params, "tilesizefreq");
-  myTileSize = parmInt (params, "tilesize");
   // Determine nr of bands per part (i.e., ms).
   AlwaysAssertExit (myNPart > 0);
-  AlwaysAssertExit (myNBand > 0  &&  myTotalNBand > 0  &&  myNBand <= myTotalNBand);
+  AlwaysAssertExit (myNBand > 0);
   if (myNBand > myNPart) {
     // Multiple bands per part.
     AlwaysAssertExit (myNBand%myNPart == 0);
@@ -1858,6 +1848,20 @@ bool readParms (int argc, char* argv[])
     AlwaysAssertExit (myNPart%myNBand == 0);
     myNBand = myNPart;
   }
+  // firstspw and totalspw can be an expression of nspw.
+  Record vars;
+  vars.define ("nspw", myNBand);
+  myFirstBand  = parmInt (params, "firstspw", vars);
+  myTotalNBand = parmInt (params, "totalspw", vars);
+  AlwaysAssertExit (myTotalNBand >= myNBand);
+  myNChan = Vector<Int> (params.getIntArray ("nchan"));
+  myNPol  = Vector<Int> (params.getIntArray ("npol"));
+  myNTime = params.getInt ("ntime");
+  myNTimeField = params.getInt ("ntimefield");
+  // Determine possible tile size. Default is no tiling.
+  myTileSizePol  = parmInt (params, "tilesizepol");
+  myTileSizeFreq = parmInt (params, "tilesizefreq");
+  myTileSize = parmInt (params, "tilesize");
   AlwaysAssertExit (myNPol.size() == 1  ||
                     myNPol.size() == uInt(myTotalNBand));
   if (myNPol.size() != uInt(myTotalNBand)) {
@@ -1942,6 +1946,7 @@ bool readParms (int argc, char* argv[])
 void showParms()
 {
   cout << " nms      = " << myNPart << "   " << myMsName << endl;
+  cout << " nthread  = " << OMP::maxThreads() << endl;
   int nant = myAntPos.ncolumn();
   cout << " nant     = " << nant << "   (";
   if (myWriteFloatData) {
@@ -2019,6 +2024,7 @@ String doOne (int seqnr, const String& msName)
   if (myMultiBlockSize < 0) {
     myMultiBlockSize = myTileSize;
   }
+  cout << "making MS " << seqnr << endl;
   msmaker->init (myRa, myDec, myAntPos, myCalcUVW,
                  myWriteAutoCorr, myWriteFloatData, myWriteWeightSpectrum,
                  myCreateImagerColumns,
@@ -2029,6 +2035,7 @@ String doOne (int seqnr, const String& msName)
                  myNFlagBits, myFlagColumn, dataTileShape,
                  myUseMultiFile, myMultiBlockSize);
   // Close all subtables to reduce nr of open files.
+  cout << "made MS " << seqnr << endl;
   msmaker->closeSubTables();
   timer.show ("Created MS " + msName);
   timer.mark();
@@ -2046,12 +2053,11 @@ String doOne (int seqnr, const String& msName)
 
 void doAll()
 {
-  int nthread = 1;
-#ifdef _OPENMP
-  nthread = omp_num_threads();
-#pragma omp parallel for schedule(dynamic)
-#endif
+  int nthread = OMP::maxThreads();
   Block<String> msnames(myNPart);
+  //#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic)
+    //#endif
   for (int i=0; i<myNPart; ++i) {
     msnames[i] = doOne (i, myMsName);
   }

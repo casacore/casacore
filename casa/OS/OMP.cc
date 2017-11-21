@@ -25,18 +25,16 @@
 
 #include <casacore/casa/OS/OMP.h>
 
-#ifdef _OPENMP
-#include <omp.h>
-#endif
-
 namespace casacore {
+  namespace OMP {
 
-    uInt OMP::nMaxThreads() {
+    uInt nMaxThreads() {
 #ifdef _OPENMP
         return (omp_get_num_threads() > 1) ? 1 : omp_get_max_threads();
 #else
         return 1;
 #endif
-}
+    }
 
+  }
 }

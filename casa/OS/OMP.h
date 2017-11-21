@@ -27,24 +27,83 @@
 #define CASA_OS_OMP_H
 
 #include <casacore/casa/aips.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 namespace casacore {
+  namespace OMP {
 
-class OMP {
+    // Get the maximum number of threads.
+    // OpenMP sets it to the env.var. OMP_NUM_THREADS. If undefined, it is
+    // the number of cores.
+    // If OpenMP is not used, 1 is returned.
+    inline uInt maxThreads()
+    {
+#ifdef _OPENMP
+      return omp_get_max_threads();
+#else
+      return 1;
+#endif
+    }
+    // Backward 
+    uInt nMaxThreads();
 
-// <summary> 
-// OpenMP helper functions
-// </summary>
+    // Set the number of threads to use. Note it can be overridden
+    // for a parallel section by 'omp parallel num_threads(n)'.
+    // Nothing is done if OpenMP is not used.
+#ifdef _OPENMP
+    inline void setNumThreads (uInt n)
+      { omp_set_num_threads (n); }
+#else
+    inline void setNumThreads (uInt)
+      {}
+#endif
 
-public:
+    // Get the number of threads used in a parallel piece of code.
+    // If OpenMP is not used, 1 is returned.
+    inline uInt numThreads()
+    {
+#ifdef _OPENMP
+      return omp_get_num_threads();
+#else
+      return 1;
+#endif
+    }
 
-    // maximum number of available threads. If openmp is not enabled, returns 1. If openmp
-    // is enabled, then if being called from a single-threaded block, returns
-    // omp_get_max_threads(), if called from a multi-threaded block, returns 1.
-    static uInt nMaxThreads();
+    // Get the thread number (0 till numThreads).
+    // If OpenMP is not used, 0 is returned.
+    inline uInt threadNum()
+    {
+#ifdef _OPENMP
+      return omp_get_thread_num();
+#else
+      return 0;
+#endif
+    }
 
-};
+    // Set if nested parallel sections are possible or not.
+    // Nothing is done if OpenMP is not used.
+#ifdef _OPENMP
+    inline void setNested (Bool nest)
+      { omp_set_nested (nest); }
+#else
+    inline void setNested (Bool)
+      {}
+#endif
 
-}
+    // Test if nested parallel sections are possible.
+    // If OpenMP is not used, false is returned.
+    inline bool nested()
+    {
+#ifdef _OPENMP
+      return omp_get_nested();
+#else
+      return false;
+#endif
+    }
+
+  } // end namespace
+} // end namespace
 
 #endif
