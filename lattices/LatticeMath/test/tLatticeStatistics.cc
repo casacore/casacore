@@ -707,6 +707,23 @@ int main()
             AlwaysAssert(mymin(pos) == DComplex(1, 1), AipsError);
             AlwaysAssert(mymax(pos) == DComplex(399999, 399999), AipsError);
         }
+        {
+            // CAS-10938
+            cout << "test CAS-10938" << endl;
+            Array<Float> largeArray(IPosition(3, 4000, 4000, OMP::nMaxThreads() + 1));
+            ArrayLattice<Float> myLatt(largeArray);
+            SubLattice<Float> mySubLatt(myLatt);
+            LatticeStatistics<Float> lattStats(mySubLatt);
+            Vector<Int> axes(2, 0);
+            axes[1] = 1;
+            lattStats.setAxes(axes);
+            // ensure the stats framework code branch will be used
+            lattStats.configureClassical(1, 1, 0, 0);
+            Array<Double> npts;
+            // The fact that this call completes successfully is
+            // sufficient to verify the bug fix
+            AlwaysAssert(lattStats.getStatistic(npts, LatticeStatsBase::NPTS), AipsError);
+        }
     }
     catch (const AipsError& x) {
         cerr << "aipserror: error " << x.getMesg() << endl;
