@@ -745,7 +745,6 @@ void LatticeStatistics<T>::configureChauvenet(
 
 template <class T>
 Bool LatticeStatistics<T>::generateStorageLattice() {
-
     // Iterate through the lattice and generate the storage lattice
     // The shape of the storage lattice is n1, n2, ..., NACCUM
     // where n1, n2 etc are the display axes
@@ -764,7 +763,6 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
         storeLatticeShape, True, Int(LatticeStatsBase::NACCUM),
         displayAxes_p, shape
     );
-
     // Set the storage lattice tile shape to the tile shape of the
     // axes of the parent lattice from which it is created.
     // For the statistics axis, set the tile shape to NACCUM (small).
@@ -923,7 +921,10 @@ IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uInt setSize) const {
         chunkSize += sizeInt;
     }
     const uInt nIterToAccum = limit/chunkSize;
-
+    if (nIterToAccum == 0) {
+        // chunk size is too big, we cannot use this method
+        return IPosition(0);
+    }
     IPosition latShape = pInLattice_p->shape();
     const uInt nCursorAxes = cursorAxes_p.size();
     for (uInt i=0; i<nCursorAxes; ++i) {
@@ -1079,6 +1080,9 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
     ostringstream chos;
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(nthreads)
+#else
+    // squash compiler warning when not using openmp.
+    nthreads = 1;
 #endif
     for (uInt i=0; i<nArrays; ++i) {
 #ifdef _OPENMP
