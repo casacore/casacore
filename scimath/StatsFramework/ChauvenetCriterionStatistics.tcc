@@ -87,7 +87,7 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
         return;
     }
     uInt maxI = _maxIterations >= 0 ? _maxIterations : 1000;
-    uInt prevNpts = 0;
+    uInt64 prevNpts = 0;
     StatsData<AccumType> sd;
     while (_niter <= maxI) {
         if (_niter == 0) {
