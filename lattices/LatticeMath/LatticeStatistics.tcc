@@ -1399,15 +1399,7 @@ void LatticeStatistics<T>::generateRobust () {
         if (knownNpts) {
             // try to prevent multiple passes for
             // large images
-            if (*knownNpts > 1e10) {
-                nBins = 1e7;
-            }
-            else if (*knownNpts > 1e9) {
-                nBins = 1e6;
-            }
-            else if (*knownNpts > 1e8) {
-                nBins = 1e5;
-            }
+            nBins = max(nBins, *knownNpts/1000);
         }
         pStoreLattice_p->putAt(
             sa->getMedianAndQuantiles(
