@@ -1702,8 +1702,8 @@ std::vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_data
                 uInt64 nBinsPrev = nBins;
                 nBins *= (C::pi/3.0);
                 LogIO log;
-                log << LogIO::WARN << "Accounting error, decrease number of bins from "
-                    << nBinsPrev << " to " << nBins << LogIO::POST;
+                log << LogIO::WARN << "Accounting error, changing number of bins from "
+                    << nBinsPrev << " to " << nBins << " and recomputing." << LogIO::POST;
                 ++loopCount;
             }
         }
