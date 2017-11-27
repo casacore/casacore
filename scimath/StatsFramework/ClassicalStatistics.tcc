@@ -29,11 +29,12 @@
 
 #include <casacore/scimath/StatsFramework/ClassicalStatistics.h>
 
-#include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
+#include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/OS/OMP.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
+#include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
 #include <casacore/scimath/StatsFramework/StatisticsIncrementer.h>
 #include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
+#include <casacore/casa/Utilities/PtrHolder.h>
 
 #include <iomanip>
 
@@ -1697,10 +1698,12 @@ std::vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_data
                 // reconfigure bins and try again. This happens very rarely.
                 // See comment in _createDataArrays() at the source of the issue 
                 ThrowIf(loopCount == maxLoopCount, "Tried 5 times, giving up");
+                // increase nBins by an irrational multiplier slightly greater than 1
+                uInt64 nBinsPrev = nBins;
+                nBins *= (C::pi/3.0);
                 LogIO log;
-                log << LogIO::WARN << "Accounting error, decrease number of bins from "
-                    << nBins << " to " << (0.9*nBins) << LogIO::POST;
-                nBins *= 0.9;
+                log << LogIO::WARN << "Accounting error, changing number of bins from "
+                    << nBinsPrev << " to " << nBins << " and recomputing." << LogIO::POST;
                 ++loopCount;
             }
         }
