@@ -552,20 +552,23 @@ void MSIter::setMSInfo()
     msc_p = new ROMSColumns(bms_p[curMS_p]);
     // check to see if we are attached to a 'reference MS' with a 
     // DATA column that is a selection of the original DATA
-    const TableRecord & kws = (msc_p->data().isNull() ? 
-			 msc_p->floatData().keywordSet() :
-			 msc_p->data().keywordSet());
-    preselected_p = kws.isDefined("CHANNEL_SELECTION");
-    if (preselected_p) {
-      // get the selection
-      Matrix<Int> selection;
-      kws.get("CHANNEL_SELECTION",selection);
-      Int nSpw = selection.ncolumn();
-      preselectedChanStart_p.resize(nSpw);
-      preselectednChan_p.resize(nSpw);
-      for (Int i = 0; i < nSpw; i++) {
-	preselectedChanStart_p[i] = selection(0,i);
-	preselectednChan_p[i] = selection(1,i);
+    if(!msc_p->data().isNull() || !msc_p->floatData().isNull())
+    {
+      const TableRecord & kws = (msc_p->data().isNull() ?
+          msc_p->floatData().keywordSet() :
+          msc_p->data().keywordSet());
+      preselected_p = kws.isDefined("CHANNEL_SELECTION");
+      if (preselected_p) {
+        // get the selection
+        Matrix<Int> selection;
+        kws.get("CHANNEL_SELECTION",selection);
+        Int nSpw = selection.ncolumn();
+        preselectedChanStart_p.resize(nSpw);
+        preselectednChan_p.resize(nSpw);
+        for (Int i = 0; i < nSpw; i++) {
+          preselectedChanStart_p[i] = selection(0,i);
+          preselectednChan_p[i] = selection(1,i);
+        }
       }
     }
 
