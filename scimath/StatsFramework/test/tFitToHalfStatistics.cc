@@ -42,12 +42,15 @@ int main() {
         v0[2] = 1.5;
         v0[3] = 4;
         v0[4] = 2.5;
-        vector<Double> v1(3);
+        std::vector<Double> v1(3);
         v1[0] = 5;
         v1[1] = 8;
         v1[2] = 10;
         {
-            FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+            FitToHalfStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > fh(
                 FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
             );
             fh.setData(v0.begin(), v0.size());
@@ -1871,8 +1874,11 @@ int main() {
         }
         {
             // large array with all the same values, getMedianAndQuantile()
-            vector<Double> big(100000, 30);
-            FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+            std::vector<Double> big(100000, 30);
+            FitToHalfStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > fh(
                 FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
             );
             fh.addData(big.begin(), big.size());
@@ -1931,6 +1937,23 @@ int main() {
             AlwaysAssert(near(median, 4.0), AipsError);
             AlwaysAssert(near(quantileToValue[0.25], -49994.0), AipsError);
             AlwaysAssert(near(quantileToValue[0.75], 50000.0), AipsError);
+        }
+        {
+            // CAS-10760 fix for null set equivalent
+            FitToHalfStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > fh(
+                FitToHalfStatisticsData::CVALUE, FitToHalfStatisticsData::LE_CENTER
+            );
+            fh.addData(v0.begin(), v0.size());
+            StatsData<Double> sd = fh.getStatistics();
+            AlwaysAssert(sd.npts == 0, AipsError);
+            AlwaysAssert(sd.variance == 0, AipsError);
+            AlwaysAssert(sd.rms == 0, AipsError);
+            AlwaysAssert(sd.sum == 0, AipsError);
+            AlwaysAssert(! sd.max, AipsError);
+            AlwaysAssert(! sd.min, AipsError);
         }
     }
     catch (const AipsError& x) {

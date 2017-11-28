@@ -235,6 +235,7 @@ private:
     Bool _doMedAbsDevMed, _rangeIsSet;
     // these are the max and min for the real portion of the dataset
     CountedPtr<AccumType> _realMax, _realMin;
+    Bool _isNullSet;
 
     void _getRealMinMax(
             CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,

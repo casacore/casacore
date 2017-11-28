@@ -44,11 +44,10 @@ FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
     FitToHalfStatisticsData::CENTER centerType,
     FitToHalfStatisticsData::USE_DATA useData,
     AccumType centerValue
-)
-    : ConstrainedRangeStatistics<CASA_STATP>(),
+) : ConstrainedRangeStatistics<CASA_STATP>(),
       _centerType(centerType), _useLower(useData == FitToHalfStatisticsData::LE_CENTER), _centerValue(centerValue),
       _statsData(initializeStatsData<AccumType>()), _doMedAbsDevMed(False), _rangeIsSet(False),
-      _realMax(), _realMin() {
+      _realMax(), _realMin(), _isNullSet(False) {
     reset();
 }
 
@@ -72,6 +71,7 @@ FitToHalfStatistics<CASA_STATP>::operator=(
     _rangeIsSet = other._rangeIsSet;
     _realMax = other._realMax.null() ? NULL : new AccumType(*other._realMax);
     _realMin = other._realMin.null() ? NULL : new AccumType(*other._realMin);
+    _isNullSet = other._isNullSet;
     return *this;
 }
 
@@ -114,6 +114,10 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
 ) {
     if (_getStatsData().medAbsDevMed.null()) {
         _setRange();
+        ThrowIf(
+            _isNullSet,
+            "No data included using current configuration, cannot compute medianabsdevmed"
+        );
         // The number of points to hand to the base class is the number of real data points,
         // or exactly half of the total number of points
         CountedPtr<uInt64> realNPts = knownNpts.null()
@@ -162,6 +166,10 @@ void FitToHalfStatistics<CASA_STATP>::getMinMax(
 ) {
     if ( _getStatsData().min.null() || _getStatsData().max.null()) {
         _setRange();
+        ThrowIf(
+            _isNullSet,
+            "No data included using current configuration, cannot compute min and max"
+        );
         // This call returns the min and max of the real portion of the dataset
         ConstrainedRangeStatistics<CASA_STATP>::getMinMax(mymin, mymax);
         _realMin = new AccumType(mymin);
@@ -196,6 +204,10 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
         "knownNpts must be even for this class"
     );
     _setRange();
+    ThrowIf(
+        _isNullSet,
+        "No data included using current configuration, cannot compute quantiles"
+    );
     // fractions that exist in the virtual part of the dataset are determined from the
     // real fractions reflected about the center point.
     std::set<Double> realPortionFractions;
@@ -313,6 +325,9 @@ CASA_STATD
 uInt64 FitToHalfStatistics<CASA_STATP>::getNPts() {
     if (_getStatsData().npts == 0) {
         _setRange();
+        if (_isNullSet) {
+            return 0;
+        }
         // guard against subsequent calls multiplying by two
         _getStatsData().npts = 2*ConstrainedRangeStatistics<CASA_STATP>::getNPts();
     }
@@ -358,6 +373,9 @@ CASA_STATD
 StatsData<AccumType> FitToHalfStatistics<CASA_STATP>::_getStatistics() {
     ConstrainedRangeStatistics<CASA_STATP>::_getStatistics();
     StatsData<AccumType>& stats = _getStatsData();
+    if (stats.npts == 0) {
+        return copy(stats);
+    }
     stats.sum = stats.mean * stats.sumweights;
     if (_useLower) {
         stats.maxpos.first = -1;
@@ -387,9 +405,15 @@ void FitToHalfStatistics<CASA_STATP>::_setRange() {
     _getStatsData().median = new AccumType(_centerValue);
     AccumType mymin, mymax;
     cs.getMinMax(mymin, mymax);
-    CountedPtr<std::pair<AccumType, AccumType> > range = _useLower
-        ? new std::pair<AccumType, AccumType>(mymin, _centerValue)
-        : new std::pair<AccumType, AccumType>(_centerValue, mymax);
+    CountedPtr<std::pair<AccumType, AccumType> > range;
+    if (_useLower) {
+        range = new std::pair<AccumType, AccumType>(mymin, _centerValue);
+        _isNullSet = mymin > _centerValue;
+    }
+    else {
+        range = new std::pair<AccumType, AccumType>(_centerValue, mymax);
+        _isNullSet = mymax < _centerValue;
+    }
     ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
     _rangeIsSet = True;
 }
