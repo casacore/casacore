@@ -492,8 +492,9 @@ IPosition ImageConcat<T>::doNiceCursorShape (uInt maxPixels) const
   //Return the smallest cursor shape along the non X-Y direction from the constituent images
   if(nimages() > 0){
     ///if image has 1 or  2 axes return cursor shape of first image
-    if(shape().nelements() <= 2)
+    if(shape().nelements() <= 2){
       return image(0).niceCursorShape(maxPixels);
+    }
     Vector<Int> dirpixaxes, dirworldaxes;
     Int coordaxis;
     CoordinateUtil::findDirectionAxes(dirpixaxes, dirworldaxes,
@@ -508,10 +509,10 @@ IPosition ImageConcat<T>::doNiceCursorShape (uInt maxPixels) const
 	minprod=prod;
 	minimage=k;
       }
-      return image(minimage).niceCursorShape(maxPixels);
+   
 
     }
- 
+    return image(minimage).niceCursorShape(maxPixels);
   }
 
   return IPosition(0);
