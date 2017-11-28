@@ -523,13 +523,6 @@ private:
 
    Double _aOld, _bOld, _aNew, _bNew;
    
-   PtrHolder<
-       StatisticsAlgorithm<
-           AccumType, typename Array<T>::const_iterator,
-           Array<Bool>::const_iterator *
-       >
-   > _sa;
-
    void _setDefaultCoeffs() {
        // coefficients from timings run on PagedImages on
        // etacarinae.cv.nrao.edu (dmehring's development
@@ -554,6 +547,19 @@ private:
    Bool calculateStatistic (Array<AccumType>& slice, 
                             LatticeStatsBase::StatisticsTypes type,
                             Bool dropDeg);
+
+   template <class U, class V>
+   void _computeQuantiles(
+       AccumType& median, AccumType& medAbsDevMed, AccumType& q1, AccumType& q3,
+       CountedPtr<StatisticsAlgorithm<AccumType, U, V> > statsAlg,
+       uInt64 knownNpts, AccumType knownMin, AccumType knownMax
+   ) const;
+
+   template <class U, class V>
+   void _computeQuantilesForStatsFramework(
+        StatsData<AccumType>& stats, AccumType& q1, AccumType& q3,
+        CountedPtr<StatisticsAlgorithm<AccumType, U, V> > statsAlg
+   ) const;
 
 // Find the median per cursorAxes chunk
    void generateRobust (); 
@@ -628,7 +634,8 @@ private:
 
    void _fillStorageLattice(
        T& currentMin, T& currentMax, const IPosition& curPos,
-       const StatsData<AccumType>& stats
+       const StatsData<AccumType>& stats, Bool doQuantiles,
+       AccumType q1=0, AccumType q3=0
    );
 
    inline static AccumType _mean(const AccumType& sum, const AccumType& npts) {

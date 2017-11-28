@@ -32,6 +32,8 @@
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>
 
+#include <set>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 class IPosition;
@@ -172,6 +174,8 @@ enum StatisticsTypes {
 
 // Stretch a range by 10%
    static void stretchMinMax (Float& min, Float& max);
+
+   static std::set<Double> quartileFracs();
 };
 
 
