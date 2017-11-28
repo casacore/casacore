@@ -58,9 +58,9 @@ ClassicalStatistics<CASA_STATP>::ClassicalStatistics(
 ) : StatisticsAlgorithm<CASA_STATP>(cs),
     _statsData(cs._statsData),
     _idataset(cs._idataset),_calculateAsAdded(cs._calculateAsAdded),
-    _doMaxMin(cs._doMaxMin), _doMedAbsDevMed(cs._doMedAbsDevMed), _mustAccumulate(cs._mustAccumulate),
-    _hasData(cs._hasData) {
-}
+    _doMaxMin(cs._doMaxMin), _doMedAbsDevMed(cs._doMedAbsDevMed),
+    _mustAccumulate(cs._mustAccumulate),
+    _hasData(cs._hasData) {}
 
 CASA_STATD
 ClassicalStatistics<CASA_STATP>&

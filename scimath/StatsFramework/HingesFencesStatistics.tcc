@@ -22,7 +22,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_HINGESFENCESSTATISTICS_TCC
 #define SCIMATH_HINGESFENCESSTATISTICS_TCC
@@ -47,6 +46,13 @@ HingesFencesStatistics<CASA_STATP>::HingesFencesStatistics(
 }
 
 CASA_STATD
+HingesFencesStatistics<CASA_STATP>::HingesFencesStatistics(
+    const HingesFencesStatistics<CASA_STATP>& other
+) : ConstrainedRangeStatistics<CASA_STATP>(other), _f(other._f),
+    _rangeIsSet(other._rangeIsSet), _hasRange(other._hasRange) {}
+
+
+CASA_STATD
 HingesFencesStatistics<CASA_STATP>::~HingesFencesStatistics() {}
 
 CASA_STATD
@@ -57,7 +63,7 @@ HingesFencesStatistics<CASA_STATP>::operator=(
     if (this == &other) {
         return *this;
     }
-    ClassicalStatistics<CASA_STATP>::operator=(other);
+    ConstrainedRangeStatistics<CASA_STATP>::operator=(other);
     _f = other._f;
     _rangeIsSet = other._rangeIsSet;
     _hasRange = other._hasRange;

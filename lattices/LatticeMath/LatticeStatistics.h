@@ -61,7 +61,6 @@ class IPosition;
 
 #include <casacore/casa/iosstrfwd.h>
 
-
 // <summary>
 // Compute and display various statistics from a lattice
 // </summary>
@@ -194,7 +193,6 @@ class IPosition;
 //   <li> Implement plotting for complex lattices
 //   <li> Retrieve statistics at specified location of display axes
 // </todo>
-
 
 template <class T> class LatticeStatistics : public LatticeStatsBase
 {
@@ -525,6 +523,13 @@ private:
 
    Double _aOld, _bOld, _aNew, _bNew;
    
+   PtrHolder<
+       StatisticsAlgorithm<
+           AccumType, typename Array<T>::const_iterator,
+           Array<Bool>::const_iterator *
+       >
+   > _sa;
+
    void _setDefaultCoeffs() {
        // coefficients from timings run on PagedImages on
        // etacarinae.cv.nrao.edu (dmehring's development

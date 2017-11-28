@@ -46,11 +46,6 @@ public:
 
     virtual ~ConstrainedRangeStatistics();
 
-    // copy semantics
-    ConstrainedRangeStatistics<CASA_STATP>& operator=(
-        const ConstrainedRangeStatistics<CASA_STATP>& other
-    );
-
     // <group>
     // In the following group of methods, if the size of the composite dataset
     // is smaller than
@@ -147,6 +142,14 @@ public:
 protected:
 
     ConstrainedRangeStatistics();
+
+    // copy semantics
+    ConstrainedRangeStatistics(const ConstrainedRangeStatistics<CASA_STATP>& other);
+
+    // copy semantics
+    ConstrainedRangeStatistics<CASA_STATP>& operator=(
+        const ConstrainedRangeStatistics<CASA_STATP>& other
+    );
 
     // <group>
     // scan through the data set to determine the number of good (unmasked, weight > 0,

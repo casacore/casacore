@@ -56,6 +56,11 @@ public:
         AccumType value=0
     );
 
+    // copy semantics
+    FitToHalfStatistics(
+        const FitToHalfStatistics<CASA_STATP>& other
+    );
+
     virtual ~FitToHalfStatistics();
 
     // copy semantics

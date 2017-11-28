@@ -101,7 +101,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
   doneFullMinMax_p(False),
-  _saf(), _chauvIters() {
+  _saf(), _chauvIters(), _sa() {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);   
    range_p.resize(0);
@@ -144,7 +144,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
   doneFullMinMax_p(False),
-  _saf(), _chauvIters()
+  _saf(), _chauvIters(), _sa()
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);
@@ -168,7 +168,8 @@ template <class T>
 LatticeStatistics<T>::LatticeStatistics(const LatticeStatistics<T> &other) 
 : pInLattice_p(0), pStoreLattice_p(0),
   _saf(other._saf), _chauvIters(other._chauvIters),
-  _aOld(other._aOld), _bOld(other._bOld), _aNew(other._aNew), _bNew(other._bNew)
+  _aOld(other._aOld), _bOld(other._bOld), _aNew(other._aNew), _bNew(other._bNew),
+  _sa(NULL)
 //
 // Copy constructor.  Storage lattice is not copied.
 //
@@ -237,6 +238,8 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       _bNew = other._bNew;
       _aOld = other._aOld;
       _bOld = other._bOld;
+      // force regeneration of object
+      _sa.set(NULL);
    }
    return *this;
 }
@@ -301,14 +304,11 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
    return True;
 }
 
-
 template <class T>
 Bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include,
                                              const Vector<T>& exclude,
                                              Bool setMinMaxToInclude)
-//
 // Assign the desired exclude range
-//
 {
    if (!goodParameterStatus_p) {
       return False;
@@ -348,15 +348,16 @@ Bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include,
 
 // Signal that we have changed the pixel range and need a new storage lattice
    
-   if ( (saveNoInclude!=noInclude_p) ||
-        (saveNoExclude!=noExclude_p) ||
-        (saveFixedMinMax != fixedMinMax_p) ||
-        (saveRange.nelements() != range_p.nelements()) ||
-        (!allEQ(saveRange, range_p)) ) {
+   if (
+       saveNoInclude != noInclude_p || saveNoExclude != noExclude_p
+       || saveFixedMinMax != fixedMinMax_p
+       || saveRange.size() != range_p.size()
+       || !allEQ(saveRange, range_p)
+   ) {
       needStorageLattice_p = True;    
       doneFullMinMax_p = False;
+      _sa.set(NULL);
    }
-//
    return True;
 }
 
@@ -676,6 +677,7 @@ void LatticeStatistics<T>::configureClassical() {
     if (_saf.algorithm() != StatisticsData::CLASSICAL) {
         _saf.configureClassical();
         needStorageLattice_p = True;
+        _sa.set(NULL);
     }
     _setDefaultCoeffs();
 }
@@ -687,6 +689,7 @@ void LatticeStatistics<T>::configureClassical(
     if (_saf.algorithm() != StatisticsData::CLASSICAL) {
         _saf.configureClassical();
         needStorageLattice_p = True;
+        _sa.set(NULL);
     }
     _aOld = aOld;
     _bOld = bOld;
@@ -702,6 +705,7 @@ void LatticeStatistics<T>::configureHingesFences(Double f) {
     ) {
         _saf.configureHingesFences(f);
         needStorageLattice_p = True;
+        _sa.set(NULL);
     }
 }
 
@@ -724,6 +728,7 @@ void LatticeStatistics<T>::configureFitToHalf(
     if (reconfig) {
         _saf.configureFitToHalf(centerType, useData, centerValue);
         needStorageLattice_p = True;
+        _sa.set(NULL);
     }
 }
 
@@ -740,6 +745,7 @@ void LatticeStatistics<T>::configureChauvenet(
     if (reconfig) {
         _saf.configureChauvenet(zscore, maxIterations);
         needStorageLattice_p = True;
+        _sa.set(NULL);
     }
 }
 
@@ -1320,14 +1326,14 @@ void LatticeStatistics<T>::_fillStorageLattice(
 
 template <class T>
 void LatticeStatistics<T>::generateRobust () {
-    Bool showMsg = haveLogger_p && displayAxes_p.nelements()==0;
+    Bool showMsg = haveLogger_p && displayAxes_p.empty();
     if (showMsg) {
         os_p << LogIO::NORMAL << "Computing quantiles..." << LogIO::POST;
     }
-    const uInt nCursorAxes = cursorAxes_p.nelements();
+    const uInt nCursorAxes = cursorAxes_p.size();
     const IPosition latticeShape(pInLattice_p->shape());
     IPosition cursorShape(pInLattice_p->ndim(),1);
-    for (uInt i=0; i<nCursorAxes; i++) {
+    for (uInt i=0; i<nCursorAxes; ++i) {
         cursorShape(cursorAxes_p(i)) = latticeShape(cursorAxes_p(i));
     }
     IPosition axisPath = cursorAxes_p;
@@ -1337,7 +1343,6 @@ void LatticeStatistics<T>::generateRobust () {
     CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > sa;
     LatticeStatsDataProvider<T> lattDP;
     MaskedLatticeStatsDataProvider<T> maskedLattDP;
-
     IPosition curPos, pos, pos2, pos3, posQ1, posQ3,
         posNpts, posMax, posMin;
     Slicer slicer;
@@ -1371,12 +1376,9 @@ void LatticeStatistics<T>::generateRobust () {
             pStoreLattice_p->putAt(val, posQ3);
             continue;
         }
-
         posMax = locInStorageLattice(stepper.position(), LatticeStatsBase::MAX);
         posMin = locInStorageLattice(stepper.position(), LatticeStatsBase::MIN);
-
         quantiles.clear();
-
         slicer.setStart(curPos);
         slicer.setEnd(stepper.endPosition());
         subLat.setRegion(slicer);

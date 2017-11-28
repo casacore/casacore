@@ -55,6 +55,8 @@ public:
     // set zscore or Chauvenet's criterion is met (ie that there are no remaining outliers).
     ChauvenetCriterionStatistics(Double zscore=-1, Int maxIterations=0);
 
+    ChauvenetCriterionStatistics(const ChauvenetCriterionStatistics<CASA_STATP>& other);
+
     virtual ~ChauvenetCriterionStatistics();
 
     // copy semantics

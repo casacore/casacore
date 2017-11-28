@@ -38,10 +38,16 @@ namespace casacore {
 CASA_STATD
 ConstrainedRangeStatistics<CASA_STATP>::ConstrainedRangeStatistics()
     : ClassicalStatistics<CASA_STATP>(),
-     _range(), _doMedAbsDevMed(False) /*, _median()*/ /*, _npts(0),
-      _max(), _min(), _maxpos(-1, -1), _minpos(-1, -1) */ {
+     _range(), _doMedAbsDevMed(False) {
     reset();
 }
+
+CASA_STATD
+ConstrainedRangeStatistics<CASA_STATP>::ConstrainedRangeStatistics(
+    const ConstrainedRangeStatistics<CASA_STATP>& other
+) : ClassicalStatistics<CASA_STATP>(other), _range(other._range),
+    _doMedAbsDevMed(other._doMedAbsDevMed) {}
+
 
 CASA_STATD
 ConstrainedRangeStatistics<CASA_STATP>::~ConstrainedRangeStatistics() {}
@@ -57,7 +63,6 @@ ConstrainedRangeStatistics<CASA_STATP>::operator=(
     ClassicalStatistics<CASA_STATP>::operator=(other);
     _range = other._range;
     _doMedAbsDevMed = other._doMedAbsDevMed;
-    //_median = other._median.null() ? NULL : new AccumType(*other._median);
     return *this;
 }
 

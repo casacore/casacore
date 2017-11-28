@@ -22,7 +22,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_FITTOHALFSTATISTICS_TCC
 #define SCIMATH_FITTOHALFSTATISTICS_TCC
@@ -51,6 +50,16 @@ FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
       _realMax(), _realMin() {
     reset();
 }
+
+CASA_STATD
+FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
+    const FitToHalfStatistics<CASA_STATP>& other
+) : ConstrainedRangeStatistics<CASA_STATP>(other),
+    _centerType(other._centerType), _useLower(other._useLower),
+    _centerValue(other._centerValue), _statsData(copy(other._statsData)),
+    _doMedAbsDevMed(other._doMedAbsDevMed), _rangeIsSet(other._rangeIsSet),
+    _realMax(other._realMax.null() ? NULL : new AccumType(*other._realMax)),
+    _realMin(other._realMin.null() ? NULL : new AccumType(*other._realMin)) {}
 
 CASA_STATD
 FitToHalfStatistics<CASA_STATP>::~FitToHalfStatistics() {}
