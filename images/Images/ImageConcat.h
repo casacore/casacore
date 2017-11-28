@@ -240,9 +240,10 @@ public:
    virtual IPosition shape() const;
 
   
-// Return the best cursor shape.  This isn't very meaningful for an ImageConcat
-// Image since it isn't on disk !  But if you do copy it out, this is
-// what you should use.  The maxPixels aregument is ignored.   
+// Return the best cursor shape.  It will try to return the best cusrsor of the 
+//smallest constituent image along the non-direction axes (in order to minimize 
+//bouncing from one image to another while iterating which may involve lots of 
+//open and tempclose).  
    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
 // Do the actual get of the data.
