@@ -480,6 +480,9 @@ public:
     // This method ultimately just changes the input coordinate's linear transform matrix.
     virtual Coordinate* rotate(const Quantum<Double>& angle) const;
 
+    // Call wcsset on the wcs structure
+    static void set_wcs (::wcsprm& wcs);
+
 protected:
     // Default constructor. Make an empty coordinate.  Used by derived classes.
     Coordinate();
@@ -550,9 +553,6 @@ protected:
    void pcToXform (Matrix<Double>& xForm, const wcsprm& wcs) const;
    void xFormToPC (wcsprm& wcs, const Matrix<Double>& xForm) const;
    // </group>
-
-   // Call wcsset on the wcs structure
-   void set_wcs (wcsprm& wcs);
 
     // toMix ranges.  Should be set by derived class.
     Vector<Double> worldMin_p, worldMax_p;

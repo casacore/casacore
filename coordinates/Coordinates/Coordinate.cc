@@ -1241,6 +1241,11 @@ void Coordinate::xFormToPC (::wcsprm& wcs, const Matrix<Double>& xform) const
 
 void Coordinate::set_wcs (::wcsprm& wcs)
 {
+    // wcsset calls wcsunitse, which in turn calls wcsulexe, which is thread-unsafe.
+    // (in wcslib 5.17, the latest version at the time of writing, but probably
+    // in all previous versions as well). Thus, this call needs to be protected
+    static Mutex wcsset_mutex;
+    ScopedMutexLock lock(wcsset_mutex);
     if (int iret = wcsset(&wcs)) {
         String errmsg = "wcs wcsset_error: ";
         errmsg += wcsset_errmsg[iret];

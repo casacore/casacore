@@ -1793,15 +1793,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 
 
-
     void FITSCoordinateUtil::setWCS (::wcsprm& wcs) const
     {
-	if (int iret = wcsset(&wcs)) {
-	    String errmsg = "wcs wcsset_error: ";   
-	    errmsg += wcsset_errmsg[iret];
-	    throw(AipsError(errmsg));
-	}
-    }  
+        Coordinate::set_wcs(wcs);
+    }
 
 
     Bool FITSCoordinateUtil::getCDFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header) 

@@ -2340,12 +2340,7 @@ void SpectralCoordinate::makeWCS(::wcsprm& wcs, const String& ctype, Double refP
 
     
 // Fill in the wcs structure
-  
-    if (int iret = wcsset(&wcs)) {
-        String errmsg = "wcs wcsset_error: ";
-        errmsg += wcsset_errmsg[iret];
-        throw(AipsError(errmsg));
-    }
+    set_wcs(wcs);
 }
 
 
