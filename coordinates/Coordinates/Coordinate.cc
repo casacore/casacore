@@ -1294,7 +1294,7 @@ void Coordinate::copy_wcs(const ::wcsprm &src, ::wcsprm &dst)
 #if WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7
 	ScopedMutexLock lock(wcs_initsubcopy_mutex);
 #endif // WCSLIB_VERSION >= 5.7
-	if (int iret = wcssub(1, &src, nullptr, nullptr, &dst)) {
+	if (int iret = wcssub(1, &src, 0, 0, &dst)) {
 		String errmsg = "wcslib wcscopy error: ";
 		errmsg += wcsini_errmsg[iret];
 		throw(AipsError(errmsg));
