@@ -355,12 +355,7 @@ SpectralCoordinate::SpectralCoordinate (MFrequency::Types type, const ::wcsprm& 
 // Copy wcs structure
 
    wcs_p.flag = -1;
-   int err = wcscopy (1, &(wcs), &wcs_p);
-   if (err != 0) {
-      String errmsg = "wcs wcscopy_error: ";
-      errmsg += wcscopy_errmsg[err];
-      throw(AipsError(errmsg));
-   }
+   copy_wcs(wcs, wcs_p);
    set_wcs(wcs_p);
    to_hz_p = 1.0;
    to_m_p = 0.001;
@@ -2315,12 +2310,7 @@ void SpectralCoordinate::makeWCS(::wcsprm& wcs, const String& ctype, Double refP
                                  Double pc, Double restFreq)
 {
     wcs.flag = -1;
-    int iret = wcsini(1, 1, &wcs);
-    if (iret != 0) {
-        String errmsg = "wcs wcsini_error: ";
-        errmsg += wcsini_errmsg[iret];
-        throw(AipsError(errmsg));
-    }
+    init_wcs(wcs, 1);
 
 // Fill it in
 
@@ -2452,12 +2442,7 @@ void SpectralCoordinate::copy (const SpectralCoordinate &other) {
     	if (_tabular.ptr()) {
     		_tabular.reset(0);
     	}
-       int err = wcscopy (1, &(other.wcs_p), &wcs_p);
-       if (err != 0) {
-          String errmsg = "wcs wcscopy_error: ";
-          errmsg += wcscopy_errmsg[err];
-          throw(AipsError(errmsg));
-       }
+       copy_wcs(other.wcs_p, wcs_p);
        set_wcs(wcs_p);
     }
 

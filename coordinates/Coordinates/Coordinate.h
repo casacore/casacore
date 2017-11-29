@@ -483,6 +483,15 @@ public:
     // Call wcsset on the wcs structure
     static void set_wcs (::wcsprm& wcs);
 
+    // Call wcsini on the wcs structure
+    static void init_wcs (::wcsprm& wcs, int naxis);
+
+    // Call wcssub on the src/dst pair
+    static void sub_wcs(const ::wcsprm &src, int &nsub, int axes[], ::wcsprm &dst);
+
+    // Call wcssub on the src/dst pair with null nsub/axes
+    static void copy_wcs(const ::wcsprm &src, ::wcsprm &dst);
+
 protected:
     // Default constructor. Make an empty coordinate.  Used by derived classes.
     Coordinate();
