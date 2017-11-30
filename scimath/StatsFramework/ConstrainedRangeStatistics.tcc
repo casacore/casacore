@@ -123,7 +123,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::getMinMax(
     AccumType& mymin, AccumType& mymax
 ) {
     _setRange();
-    return ClassicalStatistics<CASA_STATP>::getMinMax(
+    ClassicalStatistics<CASA_STATP>::getMinMax(
         mymin, mymax
     );
 }
@@ -341,6 +341,15 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
                 datum, count, weight, mask, dataStride, maskStride
             );
         }
+}
+
+// non-virtual version of method
+CASA_STATD
+void ConstrainedRangeStatistics<CASA_STATP>::_setRange(
+    CountedPtr<std::pair<AccumType, AccumType> > r
+) {
+    this->_clearStats();
+    _range = r;
 }
 
 CASA_STATD

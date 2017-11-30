@@ -724,6 +724,29 @@ int main()
             // sufficient to verify the bug fix
             AlwaysAssert(lattStats.getStatistic(npts, LatticeStatsBase::NPTS), AipsError);
         }
+        {
+            Vector<Float> mydata(2);
+            mydata[0] = 0;
+            mydata[1] = 1;
+            ArrayLattice<Float> latt(mydata);
+            SubLattice<Float> subLatt(latt);
+            LatticeStatistics<Float> stats(subLatt);
+            cout << endl << "start bad" << endl;
+            stats.configureFitToHalf(
+                FitToHalfStatisticsData::CVALUE,
+                FitToHalfStatisticsData::LE_CENTER
+            );
+            stats.setComputeQuantiles(True);
+            Array<Double> v;
+            stats.getStatistic(v, LatticeStatsBase::MEAN, False);
+            AlwaysAssert(*v.begin() == 0, AipsError);
+            // fix for issue found in as part of CAS-10948 implementation
+            // successful completion of the call verifies the fix
+            stats.getStatistic(v, LatticeStatsBase::Q3, False);
+            AlwaysAssert(*v.begin() == 0, AipsError);
+            stats.getStatistic(v, LatticeStatsBase::Q1, False);
+            AlwaysAssert(*v.begin() == 0, AipsError);
+        }
     }
     catch (const AipsError& x) {
         cerr << "aipserror: error " << x.getMesg() << endl;

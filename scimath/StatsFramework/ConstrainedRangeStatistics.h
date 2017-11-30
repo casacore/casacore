@@ -507,7 +507,9 @@ protected:
     ) const;
     // </group>
 
-    inline void _setRange(CountedPtr<std::pair<AccumType, AccumType> > r) { this->_clearStats(); _range = r; }
+    // This method is purposefully non-virtual. Derived classes should override the
+    // version with no parameters.
+    void _setRange(CountedPtr<std::pair<AccumType, AccumType> > r);
 
     // derived classes need to implement how to set their respective range
     virtual void _setRange() = 0;

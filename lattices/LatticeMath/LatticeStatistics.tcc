@@ -302,6 +302,11 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
 }
 
 template <class T>
+void LatticeStatistics<T>::setComputeQuantiles(Bool b) {
+    doRobust_p = b;
+}
+
+template <class T>
 Bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include,
                                              const Vector<T>& exclude,
                                              Bool setMinMaxToInclude)
@@ -848,7 +853,7 @@ void LatticeStatistics<T>::_doStatsLoop(
 ) {
     maxPos_p.resize(0);
     minPos_p.resize(0);
-    const uInt nCursorAxes = cursorAxes_p.nelements();
+    const uInt nCursorAxes = cursorAxes_p.size();
     const IPosition latticeShape(pInLattice_p->shape());
     IPosition cursorShape(pInLattice_p->ndim(),1);
     for (uInt i=0; i<nCursorAxes; ++i) {
@@ -955,7 +960,9 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     T overallMin = 0;
     Bool isReal = whatType(&overallMax);
     const uInt nMaxThreads = OMP::nMaxThreads();
-    uInt nthreads = min(nMaxThreads, cursorShape.product());
+    IPosition displayAxes(displayAxes_p);
+    uInt nArraysMax = cursorShape.keepAxes(displayAxes).product();
+    uInt nSA = min(nMaxThreads, nArraysMax);
     StatisticsAlgorithmFactory<
         AccumType, typename Array<T>::const_iterator, Array<Bool>::const_iterator
     > saf2;
@@ -967,8 +974,8 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
                 Array<Bool>::const_iterator
             >
         >
-    > sa(nthreads);
-    for (uInt i=0; i<nthreads; ++i) {
+    > sa(nSA);
+    for (uInt i=0; i<nSA; ++i) {
         sa[i] = saf2.createStatsAlgorithm();
     }
     CountedPtr<DataRanges> range;
@@ -1008,10 +1015,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
         const Array<T>& chunk = latIter.cursor();
         IPosition chunkShape = chunk.shape();
         const Array<Bool> maskChunk = isMasked ? latIter.getMask() : Array<Bool>();
-        uInt nSets = 1;
-        for (uInt i=0; i<nDisplayAxes; ++i) {
-            nSets *= chunkShape[displayAxes_p[i]];
-        }
+        uInt nSets = chunkShape.keepAxes(displayAxes).product();
         if (dataArray.size() != nSets) {
             dataArray.resize(nSets);
             curPos.resize(nSets);
@@ -1049,10 +1053,11 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
                 }
             }
         }
-        uInt nthreads = min(nMaxThreads, chunkShape.product());
+        uInt nArrays = dataArray.size();
+        uInt nthreads = min(nMaxThreads, nArrays);
         _doComputationUsingArrays(
             sa, overallMin, overallMax, arrayShape, dataArray,
-            maskArray, curPos, dataArray.size(), nthreads,
+            maskArray, curPos, nthreads,
             subLat, isChauv, isMasked, isReal, range
         );
         if(! progressMeter.null()) {
@@ -1073,11 +1078,13 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
     >& sa, T& overallMin, T& overallMax, IPosition& arrayShape,
     std::vector<Array<T> >& dataArray,
     std::vector<Array<Bool> >& maskArray, std::vector<IPosition>& curPos,
-    uInt nArrays, uInt nthreads, const SubLattice<T>& subLat, Bool isChauv,
+    uInt nthreads, const SubLattice<T>& subLat, Bool isChauv,
     Bool isMasked, Bool isReal, CountedPtr<const DataRanges> range
 ) {
-    T currentMax = 0;
-    T currentMin = 0;
+    uInt nArrays = dataArray.size();
+    Bool fixedCurMinMax = (fixedMinMax_p && ! noInclude_p);
+    T currentMin = fixedCurMinMax ? range_p[0] : 0;
+    T currentMax = fixedCurMinMax ? range_p[1] : 0;
     std::vector<StatsData<AccumType> > statsArray(nArrays);
     std::vector<AccumType> q1(doRobust_p ? nArrays : 0);
     std::vector<AccumType> q3(doRobust_p ? nArrays : 0);
@@ -1096,7 +1103,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
         uInt tid = 0;
 #endif
         if (isMasked && maskArray[i].size() > 0) {
-            if (range.null()) {
+            if (! range) {
                 sa[tid]->setData(
                    dataArray[i].begin(), maskArray[i].begin(), dataArray[i].size()
                 );
@@ -1109,7 +1116,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
             }
         }
         else {
-            if (range.null()) {
+            if (! range) {
                 sa[tid]->setData(dataArray[i].begin(), dataArray[i].size());
             }
             else {
@@ -1142,6 +1149,10 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
         IPosition mypos = curPos[i];
         AccumType qq1 = doRobust_p ? q1[i] : 0;
         AccumType qq3 = doRobust_p ? q3[i] : 0;
+        if (! fixedCurMinMax) {
+            currentMin = stats.min.null() ? 0 : *stats.min;
+            currentMax = stats.max.null() ? 0 : *stats.max;
+        }
         _fillStorageLattice(
             currentMin, currentMax, mypos, stats, doRobust_p, qq1, qq3
         );
@@ -1179,8 +1190,9 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
     LatticeStepper& stepper, SubLattice<T> subLat, Slicer& slicer,
     CountedPtr<LattStatsProgress> progressMeter, uInt nsets
 ) {
-    T currentMax = 0;
-    T currentMin = 0;
+    Bool fixedCurMinMax = (fixedMinMax_p && ! noInclude_p);
+    T currentMin = fixedCurMinMax ? range_p[0] : 0;
+    T currentMax = fixedCurMinMax ? range_p[1] : 0;
     T overallMax = 0;
     T overallMin = 0;
     Bool isReal = whatType(&currentMax);
@@ -1223,16 +1235,15 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
             stepper.atStart() && ! progressMeter.null()
             && ! nsetsIsLarge
         ) {
-            progressMeter->init(nsets*dataProvider->estimatedSteps());
+            uInt mult = doRobust_p ? 2 : 1;
+            progressMeter->init(mult*nsets*dataProvider->estimatedSteps());
         }
         sa->setDataProvider(dataProvider);
         StatsData<AccumType> stats = sa->getStatistics();
-        if (doRobust_p) {
-            _computeQuantilesForStatsFramework(
-                stats, q1, q3, sa
-            );
+        if (! fixedCurMinMax) {
+            currentMin = stats.min.null() ? 0 : *stats.min;
+            currentMax = stats.max.null() ? 0 : *stats.max;
         }
-        _fillStorageLattice(currentMin, currentMax, curPos, stats, doRobust_p, q1, q3);
         if (isChauv) {
             ChauvenetCriterionStatistics<AccumType, const T*, const Bool*> *ch
                 = dynamic_cast<
@@ -1258,6 +1269,15 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
                 );
             }
         }
+        // quantile computation must come after minpos/maxpos update because the
+        // data provider is reset for the quantile computation and the min/max pos
+        // info is lost when that happens
+        if (doRobust_p) {
+            _computeQuantilesForStatsFramework(
+                stats, q1, q3, sa
+            );
+        }
+        _fillStorageLattice(currentMin, currentMax, curPos, stats, doRobust_p, q1, q3);
         if(! progressMeter.null() && nsetsIsLarge) {
             (*progressMeter)++;
         }
@@ -1306,7 +1326,7 @@ void LatticeStatistics<T>::_updateMinMaxPos(
 
 template <class T>
 void LatticeStatistics<T>::_fillStorageLattice(
-    T& currentMin, T& currentMax, const IPosition& curPos,
+    T currentMin, T currentMax, const IPosition& curPos,
     const StatsData<AccumType>& stats, Bool doQuantiles,
     AccumType q1, AccumType q3
 ) {
@@ -1316,10 +1336,6 @@ void LatticeStatistics<T>::_fillStorageLattice(
     for (uInt j=0; j<nDispAxes; ++j) {
         pos(j) = curPos(displayAxes_p(j));
     }
-    currentMax = (fixedMinMax_p && ! noInclude_p) ? range_p[1]
-        : stats.max.null() ? 0 : *stats.max;
-    currentMin = (fixedMinMax_p && ! noInclude_p) ? range_p[0]
-        : stats.min.null() ? 0 : *stats.min;
     std::map<LatticeStatsBase::StatisticsTypes, AccumType> statsMap;
     statsMap[MAX] = currentMax;
     statsMap[MIN] = currentMin;

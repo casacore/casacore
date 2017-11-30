@@ -417,6 +417,12 @@ public:
    // get number of iterations associated with Chauvenet criterion algorithm
    std::map<String, uInt> getChauvenetNiter() const { return _chauvIters; }
 
+   // should quantile-like stats (median, quartiles, medabsdevmed) be computed?
+   // When the stats framework is used, It is better to set this before computing
+   // any statistics, to avoid unnecessary duplicate creations of the
+   // stats data providers.
+   void setComputeQuantiles(Bool b);
+
 protected:
 
    LogIO os_p;
@@ -606,7 +612,7 @@ private:
    void _doStatsLoop(uInt nsets, CountedPtr<LattStatsProgress> progressMeter);
 
    void _computeStatsUsingArrays(
-       SubLattice<T> subLat, CountedPtr<LattStatsProgress> progressMeter, /* uInt setSize */
+       SubLattice<T> subLat, CountedPtr<LattStatsProgress> progressMeter, 
        const IPosition& cursorShape
    );
 
@@ -628,12 +634,12 @@ private:
        >& sa, T& overallMin, T& overallMax, IPosition& arrayShape,
        std::vector<Array<T> >& dataArray,
        std::vector<Array<Bool> >& maskArray, std::vector<IPosition>& curPos,
-       uInt nArrays, uInt nthreads, const SubLattice<T>& subLat, Bool isChauv,
+       uInt nthreads, const SubLattice<T>& subLat, Bool isChauv,
        Bool isMasked, Bool isReal, CountedPtr<const DataRanges> range
    );
 
    void _fillStorageLattice(
-       T& currentMin, T& currentMax, const IPosition& curPos,
+       T currentMin, T currentMax, const IPosition& curPos,
        const StatsData<AccumType>& stats, Bool doQuantiles,
        AccumType q1=0, AccumType q3=0
    );
