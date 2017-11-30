@@ -820,7 +820,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	return True;
     }
 
-    static Bool do_sub_wcs(const ::wcsprm& wcs, int &nsub, Block<int> &axes, ::wcsprm wcsDest, LogIO &os)
+    static Bool do_sub_wcs(const ::wcsprm& wcs, int &nsub, Block<int> &axes, ::wcsprm &wcsDest, LogIO &os)
     {
     	try {
     		Coordinate::sub_wcs(wcs, nsub, axes.storage(), wcsDest);
