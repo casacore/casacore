@@ -420,7 +420,9 @@ public:
    // should quantile-like stats (median, quartiles, medabsdevmed) be computed?
    // When the stats framework is used, It is better to set this before computing
    // any statistics, to avoid unnecessary duplicate creations of the
-   // stats data providers.
+   // stats algorithm objects. Unnecessary recreation of these is a performance
+   // bottleneck for iterative stats algorithms (eg Chauvenet), especially for
+   // large images (CAS-10947/10948).
    void setComputeQuantiles(Bool b);
 
 protected:
