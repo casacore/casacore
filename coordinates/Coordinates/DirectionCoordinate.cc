@@ -128,12 +128,7 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
 // Copy wcs structure
 
    wcs_p.flag = -1;
-   int err = wcscopy (1, &wcs, &wcs_p);
-   if (err != 0) {
-      String errmsg = "wcs wcscopy_error: ";
-      errmsg += wcscopy_errmsg[err];
-      throw(AipsError(errmsg));
-   } 
+   copy_wcs(wcs, wcs_p);
    set_wcs(wcs_p);
 
 // Make pixel coordinates 0-relative
@@ -2114,12 +2109,7 @@ void DirectionCoordinate::makeWCS(::wcsprm& wcs,  const Matrix<Double>& xform,
 //
 {
     wcs.flag = -1;
-    int iret = wcsini(1, 2, &wcs);
-    if (iret != 0) {
-        String errmsg = "wcs wcsini_error: ";
-        errmsg += wcsini_errmsg[iret];
-        throw(AipsError(errmsg));
-    }
+    init_wcs(wcs, 2);
 
 // Fill in PC matrix
 
@@ -2238,12 +2228,7 @@ void DirectionCoordinate::copy(const DirectionCoordinate &other)
     if (wcs_p.flag != -1) {
 	wcsfree (&wcs_p);
     }
-    int err = wcscopy (1, &(other.wcs_p), &wcs_p);
-    if (err != 0) {
-	String errmsg = "wcs wcscopy_error: ";
-	errmsg += wcscopy_errmsg[err];
-	throw(AipsError(errmsg));
-    } 
+    copy_wcs(other.wcs_p, wcs_p);
     set_wcs(wcs_p);
     
 // Machines
