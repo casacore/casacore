@@ -101,7 +101,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
   doneFullMinMax_p(False),
-  _saf(), _chauvIters() {
+  _saf(), _chauvIters(), _latticeStatsAlgortihm() {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);   
    range_p.resize(0);
@@ -144,7 +144,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
   doneFullMinMax_p(False),
-  _saf(), _chauvIters()
+  _saf(), _chauvIters(), _latticeStatsAlgortihm()
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);
@@ -168,7 +168,11 @@ template <class T>
 LatticeStatistics<T>::LatticeStatistics(const LatticeStatistics<T> &other) 
 : pInLattice_p(0), pStoreLattice_p(0),
   _saf(other._saf), _chauvIters(other._chauvIters),
-  _aOld(other._aOld), _bOld(other._bOld), _aNew(other._aNew), _bNew(other._bNew)
+  _aOld(other._aOld), _bOld(other._bOld), _aNew(other._aNew), _bNew(other._bNew),
+  _latticeStatsAlgortihm(
+      other._latticeStatsAlgortihm
+          ? new LatticeStatsAlgorithm(*other._latticeStatsAlgortihm) : NULL
+  )
 //
 // Copy constructor.  Storage lattice is not copied.
 //
@@ -237,6 +241,11 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       _bNew = other._bNew;
       _aOld = other._aOld;
       _bOld = other._bOld;
+      _latticeStatsAlgortihm.set(
+          other._latticeStatsAlgortihm
+              ? new LatticeStatsAlgorithm(*other._latticeStatsAlgortihm)
+              : NULL
+      );
    }
    return *this;
 }
@@ -746,6 +755,32 @@ void LatticeStatistics<T>::configureChauvenet(
 }
 
 template <class T>
+void LatticeStatistics<T>::forceUseStatsFrameworkUsingDataProviders() {
+    _latticeStatsAlgortihm.set(
+        new LatticeStatsAlgorithm(STATS_FRAMEWORK_DATA_PROVIDERS)
+    );
+}
+
+template <class T>
+void LatticeStatistics<T>::forceUseStatsFrameworkUsingArrays() {
+    _latticeStatsAlgortihm.set(
+        new LatticeStatsAlgorithm(STATS_FRAMEWORK_ARRAYS)
+    );
+}
+
+template <class T>
+void LatticeStatistics<T>::forceUseOldTiledApplyMethod() {
+    _latticeStatsAlgortihm.set(
+        new LatticeStatsAlgorithm(TILED_APPLY)
+    );
+}
+
+template <class T>
+void LatticeStatistics<T>::forceAllowCodeDecideWhichAlgortihmToUse() {
+    _latticeStatsAlgortihm.set(NULL);
+}
+
+template <class T>
 Bool LatticeStatistics<T>::generateStorageLattice() {
     // Iterate through the lattice and generate the storage lattice
     // The shape of the storage lattice is n1, n2, ..., NACCUM
@@ -793,16 +828,30 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     Double timeOld = 0;
     Double timeNew = 0;
     uInt nsets = pStoreLattice_p->size()/storeLatticeShape.getLast(1)[0];
-    Bool tryOldMethod = _saf.algorithm() == StatisticsData::CLASSICAL;
+    Bool forceTiledApply = _latticeStatsAlgortihm
+        && *_latticeStatsAlgortihm == TILED_APPLY;
+    ThrowIf(
+        forceTiledApply && _saf.algorithm() != StatisticsData::CLASSICAL,
+        "Tiled Apply method can only be run using the Classical Statistics algorithm"
+    );
+    Bool skipTiledApply =  _latticeStatsAlgortihm
+        && *_latticeStatsAlgortihm != TILED_APPLY;
+    Bool tryOldMethod = _saf.algorithm() == StatisticsData::CLASSICAL && ! skipTiledApply;
     if (tryOldMethod) {
-        uInt nel = pInLattice_p->size()/nsets;
-        timeOld = nsets*(_aOld + _bOld*nel);
-        timeNew = nsets*(_aNew + _bNew*nel);
-        tryOldMethod = timeOld < timeNew;
+        if (! forceTiledApply) {
+            uInt nel = pInLattice_p->size()/nsets;
+            timeOld = nsets*(_aOld + _bOld*nel);
+            timeNew = nsets*(_aNew + _bNew*nel);
+            tryOldMethod = timeOld < timeNew;
+        }
     }
     Bool ranOldMethod = False;
-    uInt ndim = shape.nelements();
+    uInt ndim = shape.size();
     if (tryOldMethod) {
+        if (forceTiledApply && haveLogger_p) {
+            os_p << LogIO::NORMAL
+                << "Forcing use of Tiled Apply method" << LogIO::POST;
+        }
         // use older method for higher performance in the large loop count
         // regime
         minPos_p.resize(ndim);
@@ -827,6 +876,11 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
             // if the data or mask arrays are not contiguous,
             // an exception will be thrown. Catch it here, so
             // _doStatsLoop() can be run instead.
+            ThrowIf(
+                forceTiledApply,
+                "Forced TileApply method, but underlying arrays are "
+                "non-contiguous, so it failed."
+            );
         }
         if (ranOldMethod && doRobust_p) {
             // Do "robust" (quantile) statistics separately if required.
@@ -876,14 +930,26 @@ void LatticeStatistics<T>::_doStatsLoop(
     );
     uInt nArrMaxThreads = min(nMaxThreads, nsets);
     Bool computed = False;
-    if (nArrMaxThreads >= nDPMaxThreads) {
+    Bool forceUsingArrays = _latticeStatsAlgortihm
+        && *_latticeStatsAlgortihm == STATS_FRAMEWORK_ARRAYS;
+    if (nArrMaxThreads >= nDPMaxThreads || forceUsingArrays) {
+        if (forceUsingArrays && haveLogger_p) {
+            os_p << LogIO::NORMAL
+                << "Forcing use of Stats Framework using Arrays method" << LogIO::POST;
+        }
         IPosition subCursorShape = _cursorShapeForArrayMethod(setSize);
-        if (subCursorShape.product() >= nDPMaxThreads) {
+        if (subCursorShape.product() >= nDPMaxThreads || forceUsingArrays) {
             _computeStatsUsingArrays(subLat, progressMeter, subCursorShape);
             computed = True;
         }
     }
-    if (! computed) {
+    Bool forceUsingDP = _latticeStatsAlgortihm
+        && *_latticeStatsAlgortihm == STATS_FRAMEWORK_DATA_PROVIDERS;
+    if (! computed || forceUsingDP) {
+        if (forceUsingDP && haveLogger_p) {
+            os_p << LogIO::NORMAL
+                << "Forcing use of Stats Framework using Data Providers method" << LogIO::POST;
+        }
         _computeStatsUsingLattDataProviders(
             stepper, subLat, slicer, progressMeter, nsets
         );

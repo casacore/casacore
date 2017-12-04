@@ -414,6 +414,19 @@ public:
            Double zscore=-1, Int maxIterations=-1
    );
 
+   // <group>
+   // The force* methods are really only for testing. They in general shouldn't
+   // be called in production code. The last one to be called will be the one to
+   // be attempted to be used.
+   void forceUseStatsFrameworkUsingDataProviders();
+
+   void forceUseStatsFrameworkUsingArrays();
+
+   void forceUseOldTiledApplyMethod();
+   // </group>
+
+   void forceAllowCodeDecideWhichAlgortihmToUse();
+
    // get number of iterations associated with Chauvenet criterion algorithm
    std::map<String, uInt> getChauvenetNiter() const { return _chauvIters; }
 
@@ -512,6 +525,12 @@ protected:
 
 private:
 
+   enum LatticeStatsAlgorithm {
+       STATS_FRAMEWORK_ARRAYS,
+       STATS_FRAMEWORK_DATA_PROVIDERS,
+       TILED_APPLY,
+   };
+
    const MaskedLattice<T>* pInLattice_p;
    SHARED_PTR<const MaskedLattice<T> > _inLatPtrMgr;
 
@@ -531,6 +550,9 @@ private:
 
    Double _aOld, _bOld, _aNew, _bNew;
    
+   // unset means let the code decide
+   PtrHolder<LatticeStatsAlgorithm> _latticeStatsAlgortihm;
+
    void _setDefaultCoeffs() {
        // coefficients from timings run on PagedImages on
        // etacarinae.cv.nrao.edu (dmehring's development
