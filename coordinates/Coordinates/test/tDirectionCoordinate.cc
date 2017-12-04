@@ -78,10 +78,40 @@ void doit8 ();
 void doit9 ();
 void doit10 ();
 
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+#include <thread>
+
+void _create_many_coordinates()
+{
+	// Simply copying a coordinate originally caused multithreading problems
+    for(size_t i = 0; i != 1000; i++) {
+        DirectionCoordinate d1;
+        DirectionCoordinate d2(d1);
+    }
+}
+
+void test_multithreaded_behaviour()
+{
+	std::cout << "*** Test multithreaded coordinate creation" << std::endl;
+	auto t1 = std::thread(_create_many_coordinates);
+	auto t2 = std::thread(_create_many_coordinates);
+	t1.join();
+	t2.join();
+}
+#endif // USE_THREADS && AIPS_CXX11
+
+
 
 
 int main()
 {
+
+#if defined(USE_THREADS) && defined(AIPS_CXX11)
+    {
+        test_multithreaded_behaviour();
+    }
+#endif // USE_THREADS && AIPS_CXX11
+
    try {
 
       Projection proj;

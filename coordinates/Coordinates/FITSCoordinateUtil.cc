@@ -820,6 +820,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	return True;
     }
 
+    static Bool do_sub_wcs(const ::wcsprm& wcs, int &nsub, Block<int> &axes, ::wcsprm &wcsDest, LogIO &os)
+    {
+    	try {
+    		Coordinate::sub_wcs(wcs, nsub, axes.storage(), wcsDest);
+    		return True;
+    	} catch (const AipsError &e) {
+    		os << LogIO::WARN << e.what() << LogIO::POST;
+    		return False;
+    	}
+    }
 
     Bool FITSCoordinateUtil::addDirectionCoordinate (CoordinateSystem& cSys, 
 						     Vector<Int>& dirAxes, 
@@ -829,23 +839,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Extract wcs structure pertaining to Direction Coordinate
 
-	int alloc = 1;                    // Allocate memory for output structures
 	int nsub = 2;
 	Block<int> axes(nsub);
 	axes[0] = WCSSUB_LONGITUDE;
 	axes[1] = WCSSUB_LATITUDE;
 //
 	::wcsprm wcsDest;
-        wcsInit (wcsDest);
-	int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
-//
-	Bool ok = True;
-	String errMsg;
-	if (ierr!=0) {
-	    errMsg = String("wcslib wcssub error: ") + wcssub_errmsg[ierr];
-	    os << LogIO::WARN << errMsg << LogIO::POST;
-	    ok = False;
-	}
+	wcsInit (wcsDest);
+	Bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
 
 // See if we found the Sky
 
@@ -862,6 +863,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Extract Direction system
 
 	    MDirection::Types dirSystem;
+	    String errMsg;
 	    if (!directionSystemFromWCS (os, dirSystem, errMsg, wcsDest)) {
 		os << LogIO::WARN << errMsg << LogIO::POST;
 		ok = False;
@@ -898,22 +900,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Extract wcs structure pertaining to Linear Coordinate
 
-	int alloc = 1;                    // Allocate memory for output structures
 	int nsub = 1;
 	Block<int> axes(wcs.naxis);
 	axes[0] = -(WCSSUB_LONGITUDE | WCSSUB_LATITUDE | WCSSUB_SPECTRAL | WCSSUB_STOKES);
 //
 	::wcsprm wcsDest;
-        wcsInit (wcsDest);
-	int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
+	wcsInit (wcsDest);
 //
-	Bool ok = True;
-	String errMsg;
-	if (ierr!=0) {
-	    errMsg = String("wcslib wcssub error: ") + wcssub_errmsg[ierr];
-	    os << LogIO::WARN << errMsg << LogIO::POST;
-	    ok = False;
-	}
+	Bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
 
 // See if we found the coordinate
 
@@ -980,17 +974,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	axes[0] = WCSSUB_STOKES;
 //
 	::wcsprm wcsDest;
-        wcsInit (wcsDest);
-	int alloc = 1;
-	int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
-//
-	Bool ok = True;
-	String errMsg;
-	if (ierr!=0) {
-	    errMsg = String("wcslib wcssub error: ") + wcssub_errmsg[ierr];
-	    os << LogIO::WARN << errMsg << LogIO::POST;
-	    ok = False;
-	}
+    wcsInit (wcsDest);
+    Bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
 
 // See if we found the axis
 
@@ -1043,28 +1028,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	axes[0] = WCSSUB_SPECTRAL;
 
 	::wcsprm wcsDest;
-        wcsInit (wcsDest);
-	int alloc = 1;
-	int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
+    wcsInit (wcsDest);
+    Bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
 
 	uInt nc = 1;
 	if(axes[0]-1<(Int)shape.nelements()){
 	  nc = shape(axes[0]-1); // the number of channels of the spectral axis
 	}
 
-	Bool ok = True;
-	String errMsg;
-	if (ierr!=0) {
-	    errMsg = String("wcslib wcssub error: ") + wcssub_errmsg[ierr];
-	    os << LogIO::WARN << errMsg << LogIO::POST;
-	    ok = False;
-	}
-
 	SpectralCoordinate::SpecType nativeSType = SpectralCoordinate::FREQ;
 
 	// See if we found the axis
 	if (ok && nsub==1) {
-	    
+
+	    String errMsg;
+
 	    // throws exception if wcsset() fails
 	    setWCS (wcsDest);
 
@@ -1793,15 +1771,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 
 
-
     void FITSCoordinateUtil::setWCS (::wcsprm& wcs) const
     {
-	if (int iret = wcsset(&wcs)) {
-	    String errmsg = "wcs wcsset_error: ";   
-	    errmsg += wcsset_errmsg[iret];
-	    throw(AipsError(errmsg));
-	}
-    }  
+        Coordinate::set_wcs(wcs);
+    }
 
 
     Bool FITSCoordinateUtil::getCDFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header) 

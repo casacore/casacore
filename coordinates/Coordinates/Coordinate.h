@@ -480,6 +480,18 @@ public:
     // This method ultimately just changes the input coordinate's linear transform matrix.
     virtual Coordinate* rotate(const Quantum<Double>& angle) const;
 
+    // Call wcsset on the wcs structure
+    static void set_wcs (::wcsprm& wcs);
+
+    // Call wcsini on the wcs structure
+    static void init_wcs (::wcsprm& wcs, int naxis);
+
+    // Call wcssub on the src/dst pair
+    static void sub_wcs(const ::wcsprm &src, int &nsub, int axes[], ::wcsprm &dst);
+
+    // Call wcssub on the src/dst pair with null nsub/axes
+    static void copy_wcs(const ::wcsprm &src, ::wcsprm &dst);
+
 protected:
     // Default constructor. Make an empty coordinate.  Used by derived classes.
     Coordinate();
@@ -550,9 +562,6 @@ protected:
    void pcToXform (Matrix<Double>& xForm, const wcsprm& wcs) const;
    void xFormToPC (wcsprm& wcs, const Matrix<Double>& xForm) const;
    // </group>
-
-   // Call wcsset on the wcs structure
-   void set_wcs (wcsprm& wcs);
 
     // toMix ranges.  Should be set by derived class.
     Vector<Double> worldMin_p, worldMax_p;

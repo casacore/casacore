@@ -135,12 +135,7 @@ LinearCoordinate::LinearCoordinate(const ::wcsprm& wcs, Bool oneRel)
 // Copy WCS structure.  Flag 1 means allocate memory 
 
    wcs_p.flag = -1;
-   int err = wcscopy (1, &(wcs), &wcs_p);
-   if (err != 0) {
-      String errmsg = "wcs wcscopy_error: ";
-      errmsg += wcscopy_errmsg[err];
-      throw(AipsError(errmsg));
-   }
+   copy_wcs(wcs, wcs_p);
    set_wcs(wcs_p);
 //
    for (Int i=0; i<wcs_p.naxis; i++) {
@@ -738,12 +733,7 @@ void LinearCoordinate::makeWCS (::wcsprm& wcs,
 // Set up wcs structure internals
 
     wcs.flag = -1;
-    int iret = wcsini(1, naxis, &wcs);
-    if (iret != 0) {
-        String errmsg = "wcs wcsini_error: ";
-        errmsg += wcsini_errmsg[iret];
-        throw(AipsError(errmsg));
-    }
+    init_wcs(wcs, naxis);
 
 // Assign values
 
@@ -769,12 +759,7 @@ void LinearCoordinate::copy(const LinearCoordinate &other)
    if (wcs_p.flag != -1) {
       wcsfree(&wcs_p);        
    }
-   int err = wcscopy (1, &(other.wcs_p), &wcs_p);
-   if (err != 0) {
-      String errmsg = "wcs wcscopy_error: ";
-      errmsg += wcscopy_errmsg[err];
-      throw(AipsError(errmsg));
-   }
+   copy_wcs(other.wcs_p, wcs_p);
    set_wcs(wcs_p);
 }
 

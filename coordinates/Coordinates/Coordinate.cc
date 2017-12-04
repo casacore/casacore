@@ -1241,11 +1241,64 @@ void Coordinate::xFormToPC (::wcsprm& wcs, const Matrix<Double>& xform) const
 
 void Coordinate::set_wcs (::wcsprm& wcs)
 {
+    // wcsset calls wcsunitse, which in turn calls wcsulexe, which is thread-unsafe.
+    // (in wcslib 5.17, the latest version at the time of writing, but probably
+    // in all previous versions as well). Thus, this call needs to be protected
+    static Mutex wcsset_mutex;
+    ScopedMutexLock lock(wcsset_mutex);
     if (int iret = wcsset(&wcs)) {
         String errmsg = "wcs wcsset_error: ";
         errmsg += wcsset_errmsg[iret];
         throw(AipsError(errmsg));
     }
+}
+
+#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
+// In wcslib >= 5.7 wcssub internally calls wcssnpv/wcssnps to temporarily
+// set two global variables to a particular value before calling wcsini, which
+// in turn reads their values; after wcsini returns wcssub sets the variables to
+// their previous values. This situation creates a race condition between
+// concurrent, independent calls to wcssub and wcsini. Thus, we serialize them
+// with this lock
+static Mutex wcs_initsubcopy_mutex;
+#endif // WCSLIB_VERSION >= 5.7
+
+void Coordinate::init_wcs(::wcsprm& wcs, int naxis)
+{
+#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
+    ScopedMutexLock lock(wcs_initsubcopy_mutex);
+#endif // WCSLIB_VERSION >= 5.7
+    if (int iret = wcsini(1, naxis, &wcs)) {
+        String errmsg = "wcs wcsini_error: ";
+        errmsg += wcsini_errmsg[iret];
+        throw(AipsError(errmsg));
+    }
+}
+
+void Coordinate::sub_wcs(const ::wcsprm &src, int &nsub, int axes[], ::wcsprm &dst)
+{
+	// see init_wcs
+#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
+    ScopedMutexLock lock(wcs_initsubcopy_mutex);
+#endif // WCSLIB_VERSION >= 5.7
+	if (int iret = wcssub(1, &src, &nsub, axes, &dst)) {
+		String errmsg = "wcslib wcssub error: ";
+		errmsg += wcsini_errmsg[iret];
+		throw(AipsError(errmsg));
+	}
+}
+
+void Coordinate::copy_wcs(const ::wcsprm &src, ::wcsprm &dst)
+{
+	// see init_wcs
+#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
+	ScopedMutexLock lock(wcs_initsubcopy_mutex);
+#endif // WCSLIB_VERSION >= 5.7
+	if (int iret = wcssub(1, &src, 0, 0, &dst)) {
+		String errmsg = "wcslib wcscopy error: ";
+		errmsg += wcsini_errmsg[iret];
+		throw(AipsError(errmsg));
+	}
 }
 
 } //# NAMESPACE CASACORE - END
