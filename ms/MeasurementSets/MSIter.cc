@@ -571,6 +571,8 @@ void MSIter::setMSInfo()
         }
       }
     }
+    else
+      preselected_p = false;
 
     // determine the reference frame position
     String observatory;
