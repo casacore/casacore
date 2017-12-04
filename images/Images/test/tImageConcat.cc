@@ -670,6 +670,41 @@ int main() {
         );
   
     }
+    {///Testing niceCursorShape 
+      	cout << "Testing niceCursorShape " << endl;
+	{
+	  ImageConcat<Float> concat(1);
+	  concat.setImage(im1, True);
+	  concat.setImage(im2, True);
+	  AlwaysAssert(concat.niceCursorShape() == im1.niceCursorShape(),
+		       AipsError);
+	 
+	}
+	{
+	  CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
+	  TempImage<Float> t0(TiledShape(IPosition(4, 50, 50, 1, 10)), csys, 0);
+	  TempImage<Float> t1(TiledShape(IPosition(4, 50, 50, 1, 5)), csys, 0);
+	  {
+	    ImageConcat<Float> concat(3);
+	    concat.setImage(t0, True);
+	    concat.setImage(t1, True);
+	     AlwaysAssert(concat.niceCursorShape() == t1.niceCursorShape(),
+			  AipsError);
+	  }
+	  //reverse order of concat
+	   {
+	    ImageConcat<Float> concat(3);
+	    concat.setImage(t1, True);
+	    concat.setImage(t0, True);
+	     AlwaysAssert(concat.niceCursorShape() == t1.niceCursorShape(),
+			  AipsError);
+	    
+	  }
+	  
+	}
+
+
+    }
   } catch(const AipsError& x) {
     cerr << x.getMesg() << endl;
     return 1;
