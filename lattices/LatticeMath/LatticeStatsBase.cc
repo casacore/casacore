@@ -180,7 +180,6 @@ void LatticeStatsBase::setStorageImageShape(IPosition& storeImageShape,
    }
 }
 
-
 void LatticeStatsBase::stretchMinMax (Float& dMin, 
                                       Float& dMax)
 {
@@ -204,7 +203,10 @@ void LatticeStatsBase::stretchMinMax (Float& dMin,
    }
 }
 
-
+std::set<Double> LatticeStatsBase::quartileFracs() {
+    const static Double fracs[] {0.25, 0.75};
+    return std::set<Double>(fracs, fracs+2);
+}
 
 } //# NAMESPACE CASACORE - END
 

@@ -42,6 +42,13 @@ ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(
     _zscore(zscore), _maxIterations(maxIterations), _rangeIsSet(False), _niter(0) {}
 
 CASA_STATD
+ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(
+    const ChauvenetCriterionStatistics<CASA_STATP>& other
+) : ConstrainedRangeStatistics<CASA_STATP>(other), _zscore(other._zscore),
+    _maxIterations(other._maxIterations), _rangeIsSet(other._rangeIsSet),
+    _niter(other._niter) {}
+
+CASA_STATD
 ChauvenetCriterionStatistics<CASA_STATP>::~ChauvenetCriterionStatistics() {}
 
 CASA_STATD
@@ -52,9 +59,10 @@ ChauvenetCriterionStatistics<CASA_STATP>::operator=(
     if (this == &other) {
         return *this;
     }
-    ClassicalStatistics<CASA_STATP>::operator=(other);
+    ConstrainedRangeStatistics<CASA_STATP>::operator=(other);
     _zscore = other._zscore;
     _maxIterations = other._maxIterations;
+    _rangeIsSet = other._rangeIsSet;
     _niter = other._niter;
     return *this;
 }

@@ -206,21 +206,6 @@ void MaskedLatticeStatsDataProvider<T>::_freeStorage() {
     _delMask = False;
 }
 
-/*
-template <class T>
-uInt MaskedLatticeStatsDataProvider<T>::_nsteps() const {
-    const IPosition trc = _iter.latticeShape() - 1;
-    uInt ndim = trc.size();
-    const IPosition blc(ndim, 0);
-    const IPosition tileShape = _iter.lattice().niceCursorShape();
-    uInt nsteps = 1;
-    for (uInt j=0; j<ndim; j++) {
-        nsteps *= 1 + trc(j)/tileShape(j) - blc(j)/tileShape(j);
-    }
-    return nsteps;
-}
-*/
-
 }
 
 

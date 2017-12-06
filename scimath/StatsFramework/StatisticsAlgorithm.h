@@ -299,7 +299,10 @@ public:
 protected:
     StatisticsAlgorithm();
 
-    // use copy semantics
+    // use copy semantics, except for the data provider which uses reference semantics
+    StatisticsAlgorithm(const StatisticsAlgorithm& other);
+
+    // use copy semantics, except for the data provider which uses reference semantics
     StatisticsAlgorithm<CASA_STATP>& operator=(
         const StatisticsAlgorithm<CASA_STATP>& other
     );

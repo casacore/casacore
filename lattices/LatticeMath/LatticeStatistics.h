@@ -61,7 +61,6 @@ class IPosition;
 
 #include <casacore/casa/iosstrfwd.h>
 
-
 // <summary>
 // Compute and display various statistics from a lattice
 // </summary>
@@ -194,7 +193,6 @@ class IPosition;
 //   <li> Implement plotting for complex lattices
 //   <li> Retrieve statistics at specified location of display axes
 // </todo>
-
 
 template <class T> class LatticeStatistics : public LatticeStatsBase
 {
@@ -416,8 +414,29 @@ public:
            Double zscore=-1, Int maxIterations=-1
    );
 
+   // <group>
+   // The force* methods are really only for testing. They in general shouldn't
+   // be called in production code. The last one to be called will be the one to
+   // be attempted to be used.
+   void forceUseStatsFrameworkUsingDataProviders();
+
+   void forceUseStatsFrameworkUsingArrays();
+
+   void forceUseOldTiledApplyMethod();
+   // </group>
+
+   void forceAllowCodeDecideWhichAlgortihmToUse();
+
    // get number of iterations associated with Chauvenet criterion algorithm
    std::map<String, uInt> getChauvenetNiter() const { return _chauvIters; }
+
+   // should quantile-like stats (median, quartiles, medabsdevmed) be computed?
+   // When the stats framework is used, It is better to set this before computing
+   // any statistics, to avoid unnecessary duplicate creations of the
+   // stats algorithm objects. Unnecessary recreation of these is a performance
+   // bottleneck for iterative stats algorithms (eg Chauvenet), especially for
+   // large images (CAS-10947/10948).
+   void setComputeQuantiles(Bool b);
 
 protected:
 
@@ -506,6 +525,12 @@ protected:
 
 private:
 
+   enum LatticeStatsAlgorithm {
+       STATS_FRAMEWORK_ARRAYS,
+       STATS_FRAMEWORK_DATA_PROVIDERS,
+       TILED_APPLY,
+   };
+
    const MaskedLattice<T>* pInLattice_p;
    SHARED_PTR<const MaskedLattice<T> > _inLatPtrMgr;
 
@@ -525,6 +550,9 @@ private:
 
    Double _aOld, _bOld, _aNew, _bNew;
    
+   // unset means let the code decide
+   PtrHolder<LatticeStatsAlgorithm> _latticeStatsAlgortihm;
+
    void _setDefaultCoeffs() {
        // coefficients from timings run on PagedImages on
        // etacarinae.cv.nrao.edu (dmehring's development
@@ -549,6 +577,19 @@ private:
    Bool calculateStatistic (Array<AccumType>& slice, 
                             LatticeStatsBase::StatisticsTypes type,
                             Bool dropDeg);
+
+   template <class U, class V>
+   void _computeQuantiles(
+       AccumType& median, AccumType& medAbsDevMed, AccumType& q1, AccumType& q3,
+       CountedPtr<StatisticsAlgorithm<AccumType, U, V> > statsAlg,
+       uInt64 knownNpts, AccumType knownMin, AccumType knownMax
+   ) const;
+
+   template <class U, class V>
+   void _computeQuantilesForStatsFramework(
+        StatsData<AccumType>& stats, AccumType& q1, AccumType& q3,
+        CountedPtr<StatisticsAlgorithm<AccumType, U, V> > statsAlg
+   ) const;
 
 // Find the median per cursorAxes chunk
    void generateRobust (); 
@@ -595,7 +636,7 @@ private:
    void _doStatsLoop(uInt nsets, CountedPtr<LattStatsProgress> progressMeter);
 
    void _computeStatsUsingArrays(
-       SubLattice<T> subLat, CountedPtr<LattStatsProgress> progressMeter, /* uInt setSize */
+       SubLattice<T> subLat, CountedPtr<LattStatsProgress> progressMeter, 
        const IPosition& cursorShape
    );
 
@@ -617,13 +658,14 @@ private:
        >& sa, T& overallMin, T& overallMax, IPosition& arrayShape,
        std::vector<Array<T> >& dataArray,
        std::vector<Array<Bool> >& maskArray, std::vector<IPosition>& curPos,
-       uInt nArrays, uInt nthreads, const SubLattice<T>& subLat, Bool isChauv,
+       uInt nthreads, const SubLattice<T>& subLat, Bool isChauv,
        Bool isMasked, Bool isReal, CountedPtr<const DataRanges> range
    );
 
    void _fillStorageLattice(
-       T& currentMin, T& currentMax, const IPosition& curPos,
-       const StatsData<AccumType>& stats
+       T currentMin, T currentMax, const IPosition& curPos,
+       const StatsData<AccumType>& stats, Bool doQuantiles,
+       AccumType q1=0, AccumType q3=0
    );
 
    inline static AccumType _mean(const AccumType& sum, const AccumType& npts) {

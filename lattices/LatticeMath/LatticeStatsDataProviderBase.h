@@ -46,8 +46,6 @@ template <class T> class LatticeStatsDataProviderBase
 
 public:
 
-	//typedef typename NumericTraits<T>::PrecisionType AccumType;
-
 	virtual ~LatticeStatsDataProviderBase();
 
 	// estimated number of steps to iterate through the the lattice
@@ -92,8 +90,6 @@ public:
 
 protected:
 	LatticeStatsDataProviderBase();
-
-	//virtual uInt _nsteps() const = 0;
 
 	void _updateMaxPos(const IPosition& maxPos) { _maxPos = maxPos; }
 

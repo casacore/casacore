@@ -46,11 +46,6 @@ public:
 
     virtual ~ConstrainedRangeStatistics();
 
-    // copy semantics
-    ConstrainedRangeStatistics<CASA_STATP>& operator=(
-        const ConstrainedRangeStatistics<CASA_STATP>& other
-    );
-
     // <group>
     // In the following group of methods, if the size of the composite dataset
     // is smaller than
@@ -147,6 +142,14 @@ public:
 protected:
 
     ConstrainedRangeStatistics();
+
+    // copy semantics
+    ConstrainedRangeStatistics(const ConstrainedRangeStatistics<CASA_STATP>& other);
+
+    // copy semantics
+    ConstrainedRangeStatistics<CASA_STATP>& operator=(
+        const ConstrainedRangeStatistics<CASA_STATP>& other
+    );
 
     // <group>
     // scan through the data set to determine the number of good (unmasked, weight > 0,
@@ -504,7 +507,9 @@ protected:
     ) const;
     // </group>
 
-    inline void _setRange(CountedPtr<std::pair<AccumType, AccumType> > r) { this->_clearStats(); _range = r; }
+    // This method is purposefully non-virtual. Derived classes should override the
+    // version with no parameters.
+    void _setRange(CountedPtr<std::pair<AccumType, AccumType> > r);
 
     // derived classes need to implement how to set their respective range
     virtual void _setRange() = 0;

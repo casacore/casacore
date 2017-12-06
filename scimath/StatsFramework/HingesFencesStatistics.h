@@ -50,6 +50,9 @@ public:
     // behavior as a ClassicalStatistics object
     HingesFencesStatistics(Double f=-1.0);
 
+    // copy semantics
+    HingesFencesStatistics(const HingesFencesStatistics<CASA_STATP>& other);
+
     virtual ~HingesFencesStatistics();
 
     // copy semantics

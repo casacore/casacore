@@ -22,7 +22,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_FITTOHALFSTATISTICS_TCC
 #define SCIMATH_FITTOHALFSTATISTICS_TCC
@@ -50,6 +49,16 @@ FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
       _realMax(), _realMin(), _isNullSet(False) {
     reset();
 }
+
+CASA_STATD
+FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
+    const FitToHalfStatistics<CASA_STATP>& other
+) : ConstrainedRangeStatistics<CASA_STATP>(other),
+    _centerType(other._centerType), _useLower(other._useLower),
+    _centerValue(other._centerValue), _statsData(copy(other._statsData)),
+    _doMedAbsDevMed(other._doMedAbsDevMed), _rangeIsSet(other._rangeIsSet),
+    _realMax(other._realMax.null() ? NULL : new AccumType(*other._realMax)),
+    _realMin(other._realMin.null() ? NULL : new AccumType(*other._realMin)) {}
 
 CASA_STATD
 FitToHalfStatistics<CASA_STATP>::~FitToHalfStatistics() {}
@@ -134,7 +143,7 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
 }
 
 CASA_STATD
-void FitToHalfStatistics<CASA_STATP>::_getRealMinMax(
+void FitToHalfStatistics<CASA_STATP>::_getMinMax(
         CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
     CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax
 ) {
@@ -164,7 +173,12 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::getMinMax(
     AccumType& mymin, AccumType& mymax
 ) {
-    if ( _getStatsData().min.null() || _getStatsData().max.null()) {
+    // do not do a _realMin/Max existence check in the if condition, because
+    // if  _getStatsData().min() and .max are not null, forcing this recalculation
+    // will likely give bogus results because _getStatsData().min/max are used higher
+    // up the inheritence chain and will now be set to the full (real + virtual) dataset
+    // min/max, not the real portion only min/max
+    if ( ! _getStatsData().min || ! _getStatsData().max) {
         _setRange();
         ThrowIf(
             _isNullSet,
@@ -172,6 +186,10 @@ void FitToHalfStatistics<CASA_STATP>::getMinMax(
         );
         // This call returns the min and max of the real portion of the dataset
         ConstrainedRangeStatistics<CASA_STATP>::getMinMax(mymin, mymax);
+        // note that _realMin and _realMax are also computed during the
+        // calculation of accumultated statistics, in _updateDataProviderMaxMin().
+        // if those have been done previously, this if block won't be entered so they
+        // will not be computed again here
         _realMin = new AccumType(mymin);
         _realMax = new AccumType(mymax);
         if (_useLower) {
@@ -187,6 +205,28 @@ void FitToHalfStatistics<CASA_STATP>::getMinMax(
         mymin = *_getStatsData().min;
         mymax = *_getStatsData().max;
     }
+}
+
+CASA_STATD
+void FitToHalfStatistics<CASA_STATP>::_getRealMinMax(
+    AccumType& realMin, AccumType& realMax
+) {
+    // if they exist, just return copies of them
+    if (! _realMin || ! _realMax) {
+        // real portion min/max not yet computed, they should be computed in getMinMax()
+        AccumType mymin, mymax;
+        getMinMax(mymin, mymax);
+        // should always be OK, but just to be sure, check
+        ThrowIf(
+            ! _realMin || ! _realMax,
+            "Logic Error: _realMin/_realMax not computed as they should have been, "
+            "please file a bug report which includes a pointer to the dataset you "
+            "used and your complete inputs"
+        );
+    }
+    // return copies
+    realMin = *_realMin;
+    realMax = *_realMax;
 }
 
 CASA_STATD
@@ -219,13 +259,11 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
     std::map<Double, AccumType> actual;
     for ( ; fiter != fend; ++fiter) {
         if (near(*fiter, 0.5)) {
-            if (_realMin.null() || _realMax.null()) {
-                AccumType mymin, mymax;
-                getMinMax(mymin, mymax);
-            }
+            AccumType realMin, realMax;
+            _getRealMinMax(realMin, realMax);
             actual[*fiter] = _useLower
-                ? *_realMax
-                : TWO*_centerValue - *_realMin;
+                ? realMax
+                : TWO*_centerValue - realMin;
             continue;
         }
         Bool isVirtualQ = (_useLower && *fiter > 0.5)
@@ -249,31 +287,25 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
             if (_useLower && (realIdx == allNPts/2 - 1)) {
                 // the actual index is the reflection of the maximum
                 // value of the real portion of the dataset
-                if (_realMax.null()) {
-                    AccumType mymin, mymax;
-                    getMinMax(mymin, mymax);
-                }
-                actual[*fiter] = TWO*_centerValue - *_realMax;
+                AccumType realMin, realMax;
+                _getRealMinMax(realMin, realMax);
+                actual[*fiter] = TWO*_centerValue - realMax;
                 continue;
             }
             else if (! _useLower && realIdx == 0) {
                 // the actual index is the reflection of the minimum
                 // value of the real portion ofthe dataset
-                if (_realMin.null()) {
-                    AccumType mymin, mymax;
-                    getMinMax(mymin, mymax);
-                }
-                actual[*fiter] = TWO*_centerValue - *_realMin;
+                AccumType realMin, realMax;
+                _getRealMinMax(realMin, realMax);
+                actual[*fiter] = TWO*_centerValue - realMin;
                 continue;
             }
             else {
                 freal = Double(realIdx + 1)/Double(allNPts/2);
                 if (freal == 1) {
-                    if (_realMin.null() || _realMax.null()) {
-                        AccumType mymin, mymax;
-                        getMinMax(mymin, mymax);
-                    }
-                    actual[*fiter] = *_getStatsData().min;
+                    AccumType mymin, mymax;
+                    getMinMax(mymin, mymax);
+                    actual[*fiter] = mymin;
                     continue;
                 }
             }
@@ -296,7 +328,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
     CountedPtr<uInt64> realNPts = knownNpts.null()
         ? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
     CountedPtr<AccumType> realMin, realMax;
-    _getRealMinMax(realMin, realMax, knownMin, knownMax);
+    _getMinMax(realMin, realMax, knownMin, knownMax);
     std::map<Double, AccumType> realPart = ConstrainedRangeStatistics<CASA_STATP>::getQuantiles(
         realPortionFractions, realNPts, realMin, realMax,
         binningThreshholdSizeBytes, persistSortedArray, nBins
@@ -349,6 +381,8 @@ void FitToHalfStatistics<CASA_STATP>::reset() {
     _doMedAbsDevMed = False;
     _statsData = initializeStatsData<AccumType>();
     _rangeIsSet = False;
+    _realMax.reset();
+    _realMin.reset();
     ConstrainedRangeStatistics<CASA_STATP>::reset();
 }
 
@@ -520,35 +554,36 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     const StatsData<AccumType>& threadStats
 ) {
+    // _realMin and _realMax are updated here during computation of accumulated
+    // stats, even if there isn't a data provider. It is better to do it here
+    // than in the accumulation methods, as the accumulation methods can be
+    // called (and usually are for CASA) in a multi-threaded context. So, the
+    // updates there would have to be put in omp critical blocks, thus impacting
+    // performance. So this isn't necessarily updating the data provider (ie if
+    // one doesn't exist) but it is necessary to do even if there isn't a data
+    // provider in a method that is always called in a single-thread context.
     StatsDataProvider<CASA_STATP> *dataProvider
         = this->_getDataProvider();
-    if (! dataProvider) {
-        return;
-    }    
-    // if there is a data provider, and the max and/or min updated,
-    // we have to update the data provider after each data set is
-    // processed, because the LatticeStatsDataProvider currently
-    // requires that.
     StatsData<AccumType>& stats = _getStatsData();
     uInt iDataset = this->_getIDataset();
-    if ( 
-        iDataset == threadStats.maxpos.first 
+    if (
+        iDataset == threadStats.maxpos.first
         && (stats.max.null() || *threadStats.max > *stats.max)
-    ) {  
+    ) {
         if (_realMax.null() || *threadStats.max > *_realMax) {
             _realMax = new AccumType(*threadStats.max);
-            if (! _useLower) {
+            if (dataProvider && ! _useLower) {
                 dataProvider->updateMaxPos(threadStats.maxpos);
             }
         }
     }
-    if ( 
-        iDataset == threadStats.minpos.first 
+    if (
+        iDataset == threadStats.minpos.first
         && (stats.min.null() || (*threadStats.min) < (*stats.min))
-    ) {  
-        if (_realMin.null() || (*threadStats.min) < (*_realMin)) {
+    ) {
+        if (_realMin.null() || (*threadStats.min) < *_realMin) {
             _realMin = new AccumType(*threadStats.min);
-            if (_useLower) {
+            if (dataProvider && _useLower) {
                 dataProvider->updateMinPos(threadStats.minpos);
             }
         }

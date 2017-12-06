@@ -38,8 +38,20 @@ CASA_STATD StatisticsAlgorithm<CASA_STATP>::StatisticsAlgorithm()
   _isIncludeRanges(), _dataRanges(), _sortedArray(), _statsToCalculate(),
   _unsupportedStats(), _dataProvider(NULL) {}
 
+CASA_STATD
+StatisticsAlgorithm<CASA_STATP>::StatisticsAlgorithm(const StatisticsAlgorithm& other)
+    : _data(other._data), _weights(other._weights), _masks(other._masks),
+      _counts(other._counts), _dataStrides(other._dataStrides),
+      _maskStrides(other._maskStrides),
+      _isIncludeRanges(other._isIncludeRanges), _dataRanges(other._dataRanges),
+      _sortedArray(other._sortedArray),
+      _statsToCalculate(other._statsToCalculate),
+      _unsupportedStats(other._unsupportedStats),
+      // WARN reference semantics
+      _dataProvider(other._dataProvider) {}
+
 CASA_STATD StatisticsAlgorithm<CASA_STATP>&
-StatisticsAlgorithm<CASA_STATP>::operator= (
+StatisticsAlgorithm<CASA_STATP>::operator=(
     const StatisticsAlgorithm<CASA_STATP>& other
 ) {
      if (this == &other) {
@@ -56,7 +68,7 @@ StatisticsAlgorithm<CASA_STATP>::operator= (
      _sortedArray = other._sortedArray;
      _statsToCalculate = other._statsToCalculate;
      _unsupportedStats = other._unsupportedStats;
-     // WARN reference sementics
+     // WARN reference semantics
      _dataProvider = other._dataProvider;
      return *this;
 }

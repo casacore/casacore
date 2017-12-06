@@ -101,7 +101,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
   doneFullMinMax_p(False),
-  _saf(), _chauvIters() {
+  _saf(), _chauvIters(), _latticeStatsAlgortihm() {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);   
    range_p.resize(0);
@@ -144,7 +144,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   showProgress_p(showProgress),
   forceDisk_p(forceDisk),
   doneFullMinMax_p(False),
-  _saf(), _chauvIters()
+  _saf(), _chauvIters(), _latticeStatsAlgortihm()
 {
    nxy_p.resize(0);
    statsToPlot_p.resize(0);
@@ -168,7 +168,11 @@ template <class T>
 LatticeStatistics<T>::LatticeStatistics(const LatticeStatistics<T> &other) 
 : pInLattice_p(0), pStoreLattice_p(0),
   _saf(other._saf), _chauvIters(other._chauvIters),
-  _aOld(other._aOld), _bOld(other._bOld), _aNew(other._aNew), _bNew(other._bNew)
+  _aOld(other._aOld), _bOld(other._bOld), _aNew(other._aNew), _bNew(other._bNew),
+  _latticeStatsAlgortihm(
+      other._latticeStatsAlgortihm
+          ? new LatticeStatsAlgorithm(*other._latticeStatsAlgortihm) : NULL
+  )
 //
 // Copy constructor.  Storage lattice is not copied.
 //
@@ -237,6 +241,11 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       _bNew = other._bNew;
       _aOld = other._aOld;
       _bOld = other._bOld;
+      _latticeStatsAlgortihm.set(
+          other._latticeStatsAlgortihm
+              ? new LatticeStatsAlgorithm(*other._latticeStatsAlgortihm)
+              : NULL
+      );
    }
    return *this;
 }
@@ -301,14 +310,16 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
    return True;
 }
 
+template <class T>
+void LatticeStatistics<T>::setComputeQuantiles(Bool b) {
+    doRobust_p = b;
+}
 
 template <class T>
 Bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include,
                                              const Vector<T>& exclude,
                                              Bool setMinMaxToInclude)
-//
 // Assign the desired exclude range
-//
 {
    if (!goodParameterStatus_p) {
       return False;
@@ -348,15 +359,15 @@ Bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include,
 
 // Signal that we have changed the pixel range and need a new storage lattice
    
-   if ( (saveNoInclude!=noInclude_p) ||
-        (saveNoExclude!=noExclude_p) ||
-        (saveFixedMinMax != fixedMinMax_p) ||
-        (saveRange.nelements() != range_p.nelements()) ||
-        (!allEQ(saveRange, range_p)) ) {
+   if (
+       saveNoInclude != noInclude_p || saveNoExclude != noExclude_p
+       || saveFixedMinMax != fixedMinMax_p
+       || saveRange.size() != range_p.size()
+       || !allEQ(saveRange, range_p)
+   ) {
       needStorageLattice_p = True;    
       doneFullMinMax_p = False;
    }
-//
    return True;
 }
 
@@ -744,6 +755,32 @@ void LatticeStatistics<T>::configureChauvenet(
 }
 
 template <class T>
+void LatticeStatistics<T>::forceUseStatsFrameworkUsingDataProviders() {
+    _latticeStatsAlgortihm.set(
+        new LatticeStatsAlgorithm(STATS_FRAMEWORK_DATA_PROVIDERS)
+    );
+}
+
+template <class T>
+void LatticeStatistics<T>::forceUseStatsFrameworkUsingArrays() {
+    _latticeStatsAlgortihm.set(
+        new LatticeStatsAlgorithm(STATS_FRAMEWORK_ARRAYS)
+    );
+}
+
+template <class T>
+void LatticeStatistics<T>::forceUseOldTiledApplyMethod() {
+    _latticeStatsAlgortihm.set(
+        new LatticeStatsAlgorithm(TILED_APPLY)
+    );
+}
+
+template <class T>
+void LatticeStatistics<T>::forceAllowCodeDecideWhichAlgortihmToUse() {
+    _latticeStatsAlgortihm.set(NULL);
+}
+
+template <class T>
 Bool LatticeStatistics<T>::generateStorageLattice() {
     // Iterate through the lattice and generate the storage lattice
     // The shape of the storage lattice is n1, n2, ..., NACCUM
@@ -791,16 +828,30 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
     Double timeOld = 0;
     Double timeNew = 0;
     uInt nsets = pStoreLattice_p->size()/storeLatticeShape.getLast(1)[0];
-    Bool tryOldMethod = _saf.algorithm() == StatisticsData::CLASSICAL;
+    Bool forceTiledApply = _latticeStatsAlgortihm
+        && *_latticeStatsAlgortihm == TILED_APPLY;
+    ThrowIf(
+        forceTiledApply && _saf.algorithm() != StatisticsData::CLASSICAL,
+        "Tiled Apply method can only be run using the Classical Statistics algorithm"
+    );
+    Bool skipTiledApply =  _latticeStatsAlgortihm
+        && *_latticeStatsAlgortihm != TILED_APPLY;
+    Bool tryOldMethod = _saf.algorithm() == StatisticsData::CLASSICAL && ! skipTiledApply;
     if (tryOldMethod) {
-        uInt nel = pInLattice_p->size()/nsets;
-        timeOld = nsets*(_aOld + _bOld*nel);
-        timeNew = nsets*(_aNew + _bNew*nel);
-        tryOldMethod = timeOld < timeNew;
+        if (! forceTiledApply) {
+            uInt nel = pInLattice_p->size()/nsets;
+            timeOld = nsets*(_aOld + _bOld*nel);
+            timeNew = nsets*(_aNew + _bNew*nel);
+            tryOldMethod = timeOld < timeNew;
+        }
     }
     Bool ranOldMethod = False;
-    uInt ndim = shape.nelements();
+    uInt ndim = shape.size();
     if (tryOldMethod) {
+        if (forceTiledApply && haveLogger_p) {
+            os_p << LogIO::NORMAL
+                << "Forcing use of Tiled Apply method" << LogIO::POST;
+        }
         // use older method for higher performance in the large loop count
         // regime
         minPos_p.resize(ndim);
@@ -825,14 +876,25 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
             // if the data or mask arrays are not contiguous,
             // an exception will be thrown. Catch it here, so
             // _doStatsLoop() can be run instead.
+            ThrowIf(
+                forceTiledApply,
+                "Forced TileApply method, but underlying arrays are "
+                "non-contiguous, so it failed."
+            );
+        }
+        if (ranOldMethod && doRobust_p) {
+            // Do "robust" (quantile) statistics separately if required.
+            // In the current method, we only call generateRobust()
+            // if the old tiled apply method was used to compute the
+            // accumulated stats. Quantile stats are now
+            // computed in concert with accumulated stats when
+            // the statistics framework is used (when _doStatsLoop()
+            // is called)
+            generateRobust();
         }
     }
     if (! ranOldMethod) {
         _doStatsLoop(nsets, pProgressMeter);
-    }
-    if (doRobust_p) {
-        // Do robust statistics separately as required.
-        generateRobust();
     }
     needStorageLattice_p = False;
     doneSomeGoodPoints_p = False;
@@ -845,7 +907,7 @@ void LatticeStatistics<T>::_doStatsLoop(
 ) {
     maxPos_p.resize(0);
     minPos_p.resize(0);
-    const uInt nCursorAxes = cursorAxes_p.nelements();
+    const uInt nCursorAxes = cursorAxes_p.size();
     const IPosition latticeShape(pInLattice_p->shape());
     IPosition cursorShape(pInLattice_p->ndim(),1);
     for (uInt i=0; i<nCursorAxes; ++i) {
@@ -868,14 +930,26 @@ void LatticeStatistics<T>::_doStatsLoop(
     );
     uInt nArrMaxThreads = min(nMaxThreads, nsets);
     Bool computed = False;
-    if (nArrMaxThreads >= nDPMaxThreads) {
+    Bool forceUsingArrays = _latticeStatsAlgortihm
+        && *_latticeStatsAlgortihm == STATS_FRAMEWORK_ARRAYS;
+    if (nArrMaxThreads >= nDPMaxThreads || forceUsingArrays) {
+        if (forceUsingArrays && haveLogger_p) {
+            os_p << LogIO::NORMAL
+                << "Forcing use of Stats Framework using Arrays method" << LogIO::POST;
+        }
         IPosition subCursorShape = _cursorShapeForArrayMethod(setSize);
-        if (subCursorShape.product() >= nDPMaxThreads) {
+        if (subCursorShape.product() >= nDPMaxThreads || forceUsingArrays) {
             _computeStatsUsingArrays(subLat, progressMeter, subCursorShape);
             computed = True;
         }
     }
-    if (! computed) {
+    Bool forceUsingDP = _latticeStatsAlgortihm
+        && *_latticeStatsAlgortihm == STATS_FRAMEWORK_DATA_PROVIDERS;
+    if (! computed || forceUsingDP) {
+        if (forceUsingDP && haveLogger_p) {
+            os_p << LogIO::NORMAL
+                << "Forcing use of Stats Framework using Data Providers method" << LogIO::POST;
+        }
         _computeStatsUsingLattDataProviders(
             stepper, subLat, slicer, progressMeter, nsets
         );
@@ -952,7 +1026,9 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     T overallMin = 0;
     Bool isReal = whatType(&overallMax);
     const uInt nMaxThreads = OMP::nMaxThreads();
-    uInt nthreads = min(nMaxThreads, cursorShape.product());
+    IPosition displayAxes(displayAxes_p);
+    uInt nArraysMax = cursorShape.keepAxes(displayAxes).product();
+    uInt nSA = min(nMaxThreads, nArraysMax);
     StatisticsAlgorithmFactory<
         AccumType, typename Array<T>::const_iterator, Array<Bool>::const_iterator
     > saf2;
@@ -964,8 +1040,8 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
                 Array<Bool>::const_iterator
             >
         >
-    > sa(nthreads);
-    for (uInt i=0; i<nthreads; ++i) {
+    > sa(nSA);
+    for (uInt i=0; i<nSA; ++i) {
         sa[i] = saf2.createStatsAlgorithm();
     }
     CountedPtr<DataRanges> range;
@@ -1005,10 +1081,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
         const Array<T>& chunk = latIter.cursor();
         IPosition chunkShape = chunk.shape();
         const Array<Bool> maskChunk = isMasked ? latIter.getMask() : Array<Bool>();
-        uInt nSets = 1;
-        for (uInt i=0; i<nDisplayAxes; ++i) {
-            nSets *= chunkShape[displayAxes_p[i]];
-        }
+        uInt nSets = chunkShape.keepAxes(displayAxes).product();
         if (dataArray.size() != nSets) {
             dataArray.resize(nSets);
             curPos.resize(nSets);
@@ -1046,10 +1119,11 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
                 }
             }
         }
-        uInt nthreads = min(nMaxThreads, chunkShape.product());
+        uInt nArrays = dataArray.size();
+        uInt nthreads = min(nMaxThreads, nArrays);
         _doComputationUsingArrays(
             sa, overallMin, overallMax, arrayShape, dataArray,
-            maskArray, curPos, dataArray.size(), nthreads,
+            maskArray, curPos, nthreads,
             subLat, isChauv, isMasked, isReal, range
         );
         if(! progressMeter.null()) {
@@ -1070,12 +1144,16 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
     >& sa, T& overallMin, T& overallMax, IPosition& arrayShape,
     std::vector<Array<T> >& dataArray,
     std::vector<Array<Bool> >& maskArray, std::vector<IPosition>& curPos,
-    uInt nArrays, uInt nthreads, const SubLattice<T>& subLat, Bool isChauv,
+    uInt nthreads, const SubLattice<T>& subLat, Bool isChauv,
     Bool isMasked, Bool isReal, CountedPtr<const DataRanges> range
 ) {
-    T currentMax = 0;
-    T currentMin = 0;
+    uInt nArrays = dataArray.size();
+    Bool fixedCurMinMax = (fixedMinMax_p && ! noInclude_p);
+    T currentMin = fixedCurMinMax ? range_p[0] : 0;
+    T currentMax = fixedCurMinMax ? range_p[1] : 0;
     std::vector<StatsData<AccumType> > statsArray(nArrays);
+    std::vector<AccumType> q1(doRobust_p ? nArrays : 0);
+    std::vector<AccumType> q3(doRobust_p ? nArrays : 0);
     std::vector<uInt> chauvIterArray(isChauv ? nArrays : 0);
     ostringstream chos;
 #ifdef _OPENMP
@@ -1091,7 +1169,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
         uInt tid = 0;
 #endif
         if (isMasked && maskArray[i].size() > 0) {
-            if (range.null()) {
+            if (! range) {
                 sa[tid]->setData(
                    dataArray[i].begin(), maskArray[i].begin(), dataArray[i].size()
                 );
@@ -1104,7 +1182,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
             }
         }
         else {
-            if (range.null()) {
+            if (! range) {
                 sa[tid]->setData(dataArray[i].begin(), dataArray[i].size());
             }
             else {
@@ -1114,6 +1192,11 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
             }
         }
         statsArray[i] = sa[tid]->getStatistics();
+        if (doRobust_p) {
+            _computeQuantilesForStatsFramework(
+                statsArray[i], q1[i], q3[i], sa[tid]
+            );
+        }
         if (isChauv) {
             ChauvenetCriterionStatistics<
                 AccumType, typename Array<T>::const_iterator,
@@ -1130,7 +1213,15 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
     for (uInt i=0; i<nArrays; ++i) {
         StatsData<AccumType> stats = statsArray[i];
         IPosition mypos = curPos[i];
-        _fillStorageLattice(currentMin, currentMax, mypos, stats);
+        AccumType qq1 = doRobust_p ? q1[i] : 0;
+        AccumType qq3 = doRobust_p ? q3[i] : 0;
+        if (! fixedCurMinMax) {
+            currentMin = stats.min.null() ? 0 : *stats.min;
+            currentMax = stats.max.null() ? 0 : *stats.max;
+        }
+        _fillStorageLattice(
+            currentMin, currentMax, mypos, stats, doRobust_p, qq1, qq3
+        );
         if (isChauv) {
             chos.str("");
             chos << mypos;
@@ -1165,8 +1256,9 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
     LatticeStepper& stepper, SubLattice<T> subLat, Slicer& slicer,
     CountedPtr<LattStatsProgress> progressMeter, uInt nsets
 ) {
-    T currentMax = 0;
-    T currentMin = 0;
+    Bool fixedCurMinMax = (fixedMinMax_p && ! noInclude_p);
+    T currentMin = fixedCurMinMax ? range_p[0] : 0;
+    T currentMax = fixedCurMinMax ? range_p[1] : 0;
     T overallMax = 0;
     T overallMin = 0;
     Bool isReal = whatType(&currentMax);
@@ -1190,6 +1282,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
     CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > sa
         = _saf.createStatsAlgorithm();
     Bool isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
+    AccumType q1, q3;
     for (stepper.reset(); ! stepper.atEnd(); stepper++) {
         curPos = stepper.position();
         slicer.setStart(curPos);
@@ -1208,10 +1301,15 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
             stepper.atStart() && ! progressMeter.null()
             && ! nsetsIsLarge
         ) {
-            progressMeter->init(nsets*dataProvider->estimatedSteps());
+            uInt mult = doRobust_p ? 2 : 1;
+            progressMeter->init(mult*nsets*dataProvider->estimatedSteps());
         }
         sa->setDataProvider(dataProvider);
-        _fillStorageLattice(currentMin, currentMax, curPos, sa->getStatistics());
+        StatsData<AccumType> stats = sa->getStatistics();
+        if (! fixedCurMinMax) {
+            currentMin = stats.min.null() ? 0 : *stats.min;
+            currentMax = stats.max.null() ? 0 : *stats.max;
+        }
         if (isChauv) {
             ChauvenetCriterionStatistics<AccumType, const T*, const Bool*> *ch
                 = dynamic_cast<
@@ -1237,6 +1335,15 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
                 );
             }
         }
+        // quantile computation must come after minpos/maxpos update because the
+        // data provider is reset for the quantile computation and the min/max pos
+        // info is lost when that happens
+        if (doRobust_p) {
+            _computeQuantilesForStatsFramework(
+                stats, q1, q3, sa
+            );
+        }
+        _fillStorageLattice(currentMin, currentMax, curPos, stats, doRobust_p, q1, q3);
         if(! progressMeter.null() && nsetsIsLarge) {
             (*progressMeter)++;
         }
@@ -1285,8 +1392,9 @@ void LatticeStatistics<T>::_updateMinMaxPos(
 
 template <class T>
 void LatticeStatistics<T>::_fillStorageLattice(
-    T& currentMin, T& currentMax, const IPosition& curPos,
-    const StatsData<AccumType>& stats
+    T currentMin, T currentMax, const IPosition& curPos,
+    const StatsData<AccumType>& stats, Bool doQuantiles,
+    AccumType q1, AccumType q3
 ) {
     const uInt ndim = pStoreLattice_p->ndim();
     IPosition pos(ndim,0);
@@ -1294,10 +1402,6 @@ void LatticeStatistics<T>::_fillStorageLattice(
     for (uInt j=0; j<nDispAxes; ++j) {
         pos(j) = curPos(displayAxes_p(j));
     }
-    currentMax = (fixedMinMax_p && ! noInclude_p) ? range_p[1]
-        : stats.max.null() ? 0 : *stats.max;
-    currentMin = (fixedMinMax_p && ! noInclude_p) ? range_p[0]
-        : stats.min.null() ? 0 : *stats.min;
     std::map<LatticeStatsBase::StatisticsTypes, AccumType> statsMap;
     statsMap[MAX] = currentMax;
     statsMap[MIN] = currentMin;
@@ -1306,6 +1410,13 @@ void LatticeStatistics<T>::_fillStorageLattice(
     statsMap[SUM] = stats.sum;
     statsMap[SUMSQ] = stats.sumsq;
     statsMap[VARIANCE] = stats.variance;
+    if (doQuantiles) {
+        statsMap[MEDIAN] = *stats.median;
+        statsMap[MEDABSDEVMED] = *stats.medAbsDevMed;
+        statsMap[Q1] = q1;
+        statsMap[Q3] = q3;
+        statsMap[QUARTILE] = q3 - q1;
+    }
     typename std::map<LatticeStatsBase::StatisticsTypes, AccumType>::const_iterator iter
         = statsMap.begin();
     typename std::map<LatticeStatsBase::StatisticsTypes, AccumType>::const_iterator end
@@ -1320,38 +1431,33 @@ void LatticeStatistics<T>::_fillStorageLattice(
 
 template <class T>
 void LatticeStatistics<T>::generateRobust () {
-    Bool showMsg = haveLogger_p && displayAxes_p.nelements()==0;
+    Bool showMsg = haveLogger_p && displayAxes_p.empty();
     if (showMsg) {
         os_p << LogIO::NORMAL << "Computing quantiles..." << LogIO::POST;
     }
-    const uInt nCursorAxes = cursorAxes_p.nelements();
+    const uInt nCursorAxes = cursorAxes_p.size();
     const IPosition latticeShape(pInLattice_p->shape());
     IPosition cursorShape(pInLattice_p->ndim(),1);
-    for (uInt i=0; i<nCursorAxes; i++) {
+    for (uInt i=0; i<nCursorAxes; ++i) {
         cursorShape(cursorAxes_p(i)) = latticeShape(cursorAxes_p(i));
     }
     IPosition axisPath = cursorAxes_p;
     axisPath.append(displayAxes_p);
     LatticeStepper stepper(latticeShape, cursorShape, axisPath);
-    std::set<Double> fractions;
     CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > sa;
     LatticeStatsDataProvider<T> lattDP;
     MaskedLatticeStatsDataProvider<T> maskedLattDP;
-
     IPosition curPos, pos, pos2, pos3, posQ1, posQ3,
         posNpts, posMax, posMin;
     Slicer slicer;
     SubLattice<T> subLat;
-    std::map<Double, AccumType> quantiles;
-    CountedPtr<uInt64> knownNpts;
-    CountedPtr<AccumType> knownMax, knownMin;
-    static const uInt maxArraySizeBytes = 1e8;
-    fractions.insert(0.25);
-    fractions.insert(0.75);
+    uInt64 knownNpts;
+    AccumType knownMax, knownMin;
     sa = _saf.createStatsAlgorithm();
     _configureDataProviders(lattDP, maskedLattDP);
     slicer = Slicer(stepper.position(), stepper.endPosition(), Slicer::endIsLast);
     subLat = SubLattice<T>(*pInLattice_p, slicer);
+    AccumType median, medAbsDevMed, q1, q3;
     for (stepper.reset(); ! stepper.atEnd(); stepper++) {
         curPos = stepper.position();
         pos = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDIAN);
@@ -1360,8 +1466,8 @@ void LatticeStatistics<T>::generateRobust () {
         posQ1 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q1);
         posQ3 = locInStorageLattice(stepper.position(), LatticeStatsBase::Q3);
         posNpts = locInStorageLattice(stepper.position(), LatticeStatsBase::NPTS);
-        knownNpts = new uInt64((uInt64)abs(pStoreLattice_p->getAt(posNpts)));
-        if (*knownNpts == 0) {
+        knownNpts = (uInt64)abs(pStoreLattice_p->getAt(posNpts));
+        if (knownNpts == 0) {
             // Stick zero in storage lattice (it's not initialized)
             static const AccumType val(0);
             pStoreLattice_p->putAt(val, pos);
@@ -1371,12 +1477,8 @@ void LatticeStatistics<T>::generateRobust () {
             pStoreLattice_p->putAt(val, posQ3);
             continue;
         }
-
         posMax = locInStorageLattice(stepper.position(), LatticeStatsBase::MAX);
         posMin = locInStorageLattice(stepper.position(), LatticeStatsBase::MIN);
-
-        quantiles.clear();
-
         slicer.setStart(curPos);
         slicer.setEnd(stepper.endPosition());
         subLat.setRegion(slicer);
@@ -1388,33 +1490,70 @@ void LatticeStatistics<T>::generateRobust () {
             lattDP.setLattice(subLat);
             sa->setDataProvider(&lattDP);
         }
-        // computing the median and the quartiles simultaneously minimizes
-        // the number of necessary data scans, as opposed to first calling
-        // getMedian() and getQuartiles() separately
-        knownMin = new AccumType(pStoreLattice_p->getAt(posMin));
-        knownMax = new AccumType(pStoreLattice_p->getAt(posMax));
-        Int64 nBins = 10000;
-        if (knownNpts) {
-            // try to prevent multiple passes for
-            // large images
-            nBins = max(nBins, *knownNpts/1000);
-        }
-        pStoreLattice_p->putAt(
-            sa->getMedianAndQuantiles(
-                quantiles, fractions, knownNpts, knownMin, knownMax,
-                maxArraySizeBytes, False, nBins
-            ),
-            pos
+        knownMin = pStoreLattice_p->getAt(posMin);
+        knownMax = pStoreLattice_p->getAt(posMax);
+        _computeQuantiles(
+            median, medAbsDevMed, q1, q3, sa,
+            knownNpts, knownMin, knownMax
         );
-        pStoreLattice_p->putAt(
-            sa->getMedianAbsDevMed(
-                knownNpts, knownMin, knownMax, maxArraySizeBytes,
-                False, nBins
-            ), pos2
+        pStoreLattice_p->putAt(median, pos);
+        pStoreLattice_p->putAt(medAbsDevMed, pos2);
+        pStoreLattice_p->putAt(q3 - q1, pos3);
+        pStoreLattice_p->putAt(q1, posQ1);
+        pStoreLattice_p->putAt(q3, posQ3);
+    }
+}
+
+template <class T>
+template <class U, class V>
+void LatticeStatistics<T>::_computeQuantiles(
+    AccumType& median, AccumType& medAbsDevMed, AccumType& q1, AccumType& q3,
+    CountedPtr<StatisticsAlgorithm<AccumType, U, V> > statsAlg,
+    uInt64 knownNpts, AccumType knownMin, AccumType knownMax
+) const {
+    static const std::set<Double> fracs = quartileFracs();
+    std::map<Double, AccumType> quantiles;
+    static const uInt maxArraySizeBytes = 1e8;
+    // try to prevent multiple passes for
+    // large images
+    uInt64 nBins = max((uInt64)10000, knownNpts/1000);
+    // computing the median and the quartiles simultaneously minimizes
+    // the number of necessary data scans, as opposed to first calling
+    // getMedian() and getQuartiles() separately
+    CountedPtr<uInt64> npts(new uInt64(knownNpts));
+    CountedPtr<AccumType> mymin(new AccumType(knownMin));
+    CountedPtr<AccumType> mymax(new AccumType(knownMax));
+    median = statsAlg->getMedianAndQuantiles(
+        quantiles, fracs, npts, mymin, mymax,
+        maxArraySizeBytes, False, nBins
+    );
+    q1 = quantiles[0.25];
+    q3 = quantiles[0.75];
+    medAbsDevMed = statsAlg->getMedianAbsDevMed(
+        npts, mymin, mymax, maxArraySizeBytes, False, nBins
+    );
+}
+
+template <class T>
+template <class U, class V>
+      void LatticeStatistics<T>::_computeQuantilesForStatsFramework(
+      StatsData<AccumType>& stats, AccumType& q1, AccumType& q3,
+      CountedPtr<StatisticsAlgorithm<AccumType, U, V> > statsAlg
+) const {
+    if (stats.npts > 0) {
+        AccumType median, medAbsDevMed;
+        _computeQuantiles(
+            median, medAbsDevMed, q1, q3, statsAlg,
+            stats.npts, *stats.min, *stats.max
         );
-        pStoreLattice_p->putAt(quantiles[0.75] - quantiles[0.25], pos3);
-        pStoreLattice_p->putAt(quantiles[0.25], posQ1);
-        pStoreLattice_p->putAt(quantiles[0.75], posQ3);
+        stats.median.reset(new AccumType(median));
+        stats.medAbsDevMed.reset(new AccumType(medAbsDevMed));
+    }
+    else {
+        stats.median.reset(new AccumType(0));
+        stats.medAbsDevMed.reset(new AccumType(0));
+        q1 = 0;
+        q3 = 0;
     }
 }
 
@@ -1434,7 +1573,6 @@ void LatticeStatistics<T>::_configureDataProviders(
         }
     }
 }
-
 
 template <class T>
 void LatticeStatistics<T>::listMinMax(ostringstream& osMin,
@@ -2207,7 +2345,6 @@ void LatticeStatistics<T>::minMax (Bool& none,
    }
 }
 
-
 template <class T>
 Bool LatticeStatistics<T>::display()
 
@@ -2297,32 +2434,6 @@ Bool LatticeStatistics<T>::display()
    return True;
 }
 
-// virtual functions
-/*
-template <class T>
-void LatticeStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPosition& dPos) const
-//
-// Get labels for top of plot and listing for the higher order axes
-// and get the label for the X-axis when plotting
-//
-{
-   ostringstream oss0;
-   oss0 << "Axis " << displayAxes_p(0)+1 << " (pixels)";
-   xLabel = oss0.str();
-//
-   const uInt n = displayAxes_p.nelements();
-   hLabel =String("");
-   if (n > 1) {
-      ostringstream oss;
-      for (uInt j=1; j<n; j++) {
-         oss <<  "Axis " << displayAxes_p(j)+1 << "=" 
-             << locInLattice(dPos,True)(j)+1;
-         if (j < n-1) oss << ", ";
-      }
-      hLabel = String(oss);
-   }
-}
-*/
 template <class T>
 Bool LatticeStatistics<T>::retrieveStorageStatistic(Array<AccumType>& slice, 
                                                     const LatticeStatsBase::StatisticsTypes type,

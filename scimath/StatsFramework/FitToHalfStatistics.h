@@ -56,6 +56,11 @@ public:
         AccumType value=0
     );
 
+    // copy semantics
+    FitToHalfStatistics(
+        const FitToHalfStatistics<CASA_STATP>& other
+    );
+
     virtual ~FitToHalfStatistics();
 
     // copy semantics
@@ -237,12 +242,18 @@ private:
     CountedPtr<AccumType> _realMax, _realMin;
     Bool _isNullSet;
 
-    void _getRealMinMax(
-            CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
+    // get the min max of the entire (real + virtual) data set. Only used for quantile
+    // computation
+    void _getMinMax(
+        CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
         CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax
     );
 
+    // get the min/max of the real portion only of the dataset
+    void _getRealMinMax(AccumType& realMin, AccumType& realMax);
+
     void _setRange();
+
 };
 
 }

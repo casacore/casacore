@@ -1633,7 +1633,10 @@ int main() {
         }
         {
             // getQuantile(), no weights, no mask, no ranges
-            FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> fh(
+            FitToHalfStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > fh(
                 FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::LE_CENTER
             );
             // mean is 4.25
@@ -1660,8 +1663,10 @@ int main() {
             q = fh.getQuantile(0.9);
             AlwaysAssert(q == 7, AipsError);
 
-
-            fh = FitToHalfStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator>(
+            fh = FitToHalfStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            >(
                 FitToHalfStatisticsData::CMEAN, FitToHalfStatisticsData::GE_CENTER
             );
             // mean is 4.25
