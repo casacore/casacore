@@ -190,7 +190,8 @@ class Euler
 
 private:
 //# Data
-    typedef std::pair<Vector<Double> *, Vector<Int> *> DataArrays;
+    typedef std::pair<casacore::CountedPtr<Vector<Double> >, 
+                      casacore::CountedPtr<Vector<Int> > > DataArrays;
 // data container
     DataArrays data;
 // vector with 3 Euler angles (data.first)
@@ -207,7 +208,8 @@ private:
     DataArrays get_arrays();
     void return_arrays(DataArrays array);
 #if defined(AIPS_CXX11) && !defined(__APPLE__)
-    static thread_local DataArrays arrays[50];
+    static const size_t max_array_cache = 50;
+    static thread_local std::vector<DataArrays> arrays;
     static thread_local size_t available;
 #endif
 };
