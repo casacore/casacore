@@ -59,10 +59,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // It is possible to specify the storage type and block size using aipsrc.
 // The aipsrc variables are:
 // <ul>
-//  <li> <src>tables.storage.type</src>. The (case-insensitive) value can be
+//  <li> <src>table.storage.option</src>. The (case-insensitive) value can be
 //       'multifile' or 'multihdf5'.
 //       Another value means the old way (separate files).
-//  <li> <src>tables.storage.blocksize</src> gives the default blocksize to be
+//  <li> <src>table.storage.blocksize</src> gives the default blocksize to be
 //       used for the multifile and multihdf5 option.
 // </ul>
 // </synopsis>
