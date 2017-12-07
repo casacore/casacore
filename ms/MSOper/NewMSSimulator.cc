@@ -288,7 +288,7 @@ NewMSSimulator::NewMSSimulator(const String& MSName) :
   }
 
   // Now we can create the MeasurementSet and add the (empty) subtables
-  ms_p=new MeasurementSet(newMS,0);
+  ms_p = casacore::CountedPtr<MeasurementSet>(new MeasurementSet(newMS,0));
   ms_p->createDefaultSubtables(Table::New);
 
   // add the SOURCE table  [copied from SimpleSimulator]
@@ -350,7 +350,7 @@ NewMSSimulator::NewMSSimulator(MeasurementSet& theMS) :
 
   defaults();
 
-  ms_p = new MeasurementSet(theMS);
+  ms_p = casacore::CountedPtr<MeasurementSet>(new MeasurementSet(theMS));
 
   os << "Opening MeasurementSet " << ms_p->tableName() << " with " << ms_p->nrow() << " rows" << LogIO::POST;
   dataWritten_p=ms_p->nrow();
@@ -694,7 +694,7 @@ void NewMSSimulator::initFields(const String& sourceName,
 
 }
 
-MeasurementSet *
+casacore::CountedPtr<MeasurementSet>
 NewMSSimulator::getMs () const
 {
     return ms_p;
@@ -1052,11 +1052,6 @@ bool NewMSSimulator::getFeedMode(String& mode)
 
 NewMSSimulator::~NewMSSimulator() 
 {
-
-  if(ms_p)
-    delete ms_p;
-  ms_p=0;
-
 }
 
 

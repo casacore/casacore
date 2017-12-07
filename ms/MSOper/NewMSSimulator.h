@@ -30,6 +30,7 @@
 
 
 //# Includes
+#include <memory>
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -213,7 +214,7 @@ public:
                const String& observername="CASA simulator",
                const String& projectname="CASA simulation");
 
-  MeasurementSet * getMs () const;
+  casacore::CountedPtr<MeasurementSet> getMs () const;
 
 
 private:
@@ -237,7 +238,7 @@ private:
   Int lastSpWID_p;
   Int lastNchan_p;
 
-  MeasurementSet* ms_p;
+  casacore::CountedPtr<MeasurementSet> ms_p;
 
   TiledDataStManAccessor dataAcc_p, scratchDataAcc_p, sigmaAcc_p, flagAcc_p;
 
