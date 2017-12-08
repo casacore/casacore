@@ -200,6 +200,32 @@ void doiter3()
     iter2 = iter1;
     AlwaysAssertExit(iter2.table().nrow() == iter1.table().nrow());
 
+    // Test that copied new iterator gives the same number of rows
+    int iter1count = 0;
+    while(!iter1.pastEnd()) { iter1.next(); iter1count++; }
+    int iter2count = 0;
+    while(!iter2.pastEnd()) { iter2.next(); iter2count++; }
+    AlwaysAssertExit(iter1count == iter2count);
+    iter1.reset();
+    iter2.reset();
+
+    // Test that copied new iterator does not copy the state
+    iter1.next();
+    iter1.next(); // Advance iter1 by two, so state changes
+    iter1count = 0;
+    iter2 = iter1; // iter2 should be 'clean' and iterate 2 more than iter1
+    TableIterator iter3 = iter1;
+    iter3.copyState(iter1); // iter3 should iterate as much as iter1
+    while(!iter1.pastEnd()) { iter1.next(); iter1count++; }
+    iter2count = 0;
+    while(!iter2.pastEnd()) { iter2.next(); iter2count++; }
+    AlwaysAssertExit(iter2count == iter1count + 2);
+    int iter3count = 0;
+    while(!iter3.pastEnd()) { iter3.next(); iter3count++; }
+    AlwaysAssertExit(iter3count == iter1count);
+
+    iter1.reset();
+
     Int nr = 0;
     float l3 = -1;
     while (!iter1.pastEnd()) {
