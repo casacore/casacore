@@ -4,6 +4,7 @@ tMSKeys
 tMSMetaData
 tMSReader
 tMSSummary
+tNewMSSimulator
 )
 
 foreach (test ${tests})
