@@ -952,29 +952,30 @@ std::vector<std::vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
         }
     }
     std::vector<Bool> allSame(binDesc.size(), True);
+    // the elements in the outer vector are histograms. The elements in the inner
+    // vector are the bins in the corresponding histograms. The Int64 elements
+    // are the number of data points in those bins
     std::vector<std::vector<uInt64> > bins(binDesc.size());
-    iDesc = bDesc;
-    std::vector<std::vector<uInt64> >::iterator bBins = bins.begin();
-    std::vector<std::vector<uInt64> >::iterator iBins = bBins;
+    std::vector<std::vector<uInt64> >::iterator iBins = bins.begin();
     std::vector<std::vector<uInt64> >::iterator eBins = bins.end();
-    while (iBins != eBins) {
+    // initialize all bin counts to 0
+    for (iDesc = bDesc; iBins!=eBins; ++iBins, ++iDesc) {
         *iBins = std::vector<uInt64>(iDesc->nBins, 0);
-        ++iDesc;
-        ++iBins;
     }
+    // same val indicates if all values in a histogram (the vector elements) are the same
     sameVal = std::vector<CountedPtr<AccumType> >(binDesc.size(), NULL);
+    // maxLimit are the maximum limits for each histogram. set them here.
     std::vector<AccumType> maxLimit(binDesc.size());
-    typename std::vector<AccumType>::iterator bMaxLimit = maxLimit.begin();
-    typename std::vector<AccumType>::iterator iMaxLimit = bMaxLimit;
+    typename std::vector<AccumType>::iterator iMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::iterator eMaxLimit = maxLimit.end();
-    iDesc = bDesc;
-    while(iMaxLimit != eMaxLimit) {
+    for (iDesc=bDesc; iMaxLimit!=eMaxLimit; ++iMaxLimit, ++iDesc) {
         *iMaxLimit = iDesc->minLimit + (AccumType)(iDesc->nBins)*(iDesc->binWidth);
-        ++iMaxLimit;
-        ++iDesc;
     }
     _initIterators();
     const uInt nThreadsMax = _nThreadsMax();
+    // The PtrHolders hold references to C arrays of length
+    // ClassicalStatisticsData::CACHE_PADDING*nThreadsMax.
+    // Only every CACHE_PADDING*nth element will be populated
     PtrHolder<std::vector<std::vector<uInt64> > > tBins(
         new std::vector<std::vector<uInt64> >[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
