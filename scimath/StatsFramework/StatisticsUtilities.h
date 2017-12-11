@@ -140,18 +140,6 @@ public:
 	// point. The actual point is accumulated, as is a "virtual" point that is
 	// symmetric about the specified center. Of course, the trivial relationship
 	// that the mean is the specified center is used to simplify things.
-	/*
-	inline static void accumulateSym (
-		Double& npts, AccumType& sum, const AccumType& datum, const AccumType& center
-	);
-	*/
-
-	/*
-	inline static void waccumulateSym (
-		Double& npts, AccumType& sumweights, AccumType& wsum,
-		const AccumType& datum, const AccumType& weight, const AccumType& center
-	);
-	*/
 
 	inline static void accumulateSym (
 		Double& npts, AccumType& nvariance,
@@ -197,6 +185,13 @@ public:
 		typename DataRanges::const_iterator endRange, Bool isInclude
 	);
 
+
+    // The array can be changed by partially sorting it up to the largest index. Return
+    // a map of index to value in the sorted array.
+    static std::map<uInt64, AccumType> indicesToValues(
+        std::vector<AccumType>& myArray, const std::set<uInt64>& indices
+    );
+
     // use two statistics sets to get the statistics set that would
     // result in combining the two data sets used to produce the
     // individual statistics sets. The quantile related stats are
@@ -204,7 +199,7 @@ public:
     // the resultant quantiles from the information provided; only
     // the aggregate statistics make sense.
     static StatsData<AccumType> combine(
-        const vector<StatsData<AccumType> >& stats
+        const std::vector<StatsData<AccumType> >& stats
     );
 
 private:

@@ -29,7 +29,6 @@
 #include <casacore/scimath/StatsFramework/StatisticsAlgorithm.h>
 
 #include <casacore/casa/BasicSL/STLIO.h>
-#include <casacore/casa/Utilities/GenSort.h>
 
 namespace casacore {
 
@@ -333,36 +332,6 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::reset() {
     _maskStrides.clear();
     _sortedArray.clear();
     _dataProvider = NULL;
-}
-
-CASA_STATD std::map<uInt64, AccumType> StatisticsAlgorithm<CASA_STATP>::_valuesFromArray(
-    std::vector<AccumType>& myArray, const std::set<uInt64>& indices
-) {
-    //uInt64 largestIdx = *indices.rbegin();
-    uInt64 arySize = myArray.size();
-    ThrowIf(
-        *indices.rbegin() >= arySize,
-        "Logic Error: Index " + String::toString(*indices.rbegin()) + " is too large. "
-        "The sorted array has size " + String::toString(arySize)
-    );
-    std::map<uInt64, AccumType> indexToValuesMap;
-    std::set<uInt64>::const_iterator initer = indices.begin();
-    std::set<uInt64>::const_iterator inend = indices.end();
-    Int64 lastIndex = 0;
-    while(initer != inend) {
-        GenSort<AccumType>::kthLargest(
-            &myArray[lastIndex], arySize - lastIndex, *initer - lastIndex
-        );
-        lastIndex = *initer;
-        ++initer;
-    }
-    std::set<uInt64>::const_iterator iter = indices.begin();
-    std::set<uInt64>::const_iterator end = indices.end();
-    while (iter != end) {
-        indexToValuesMap[*iter] = myArray[*iter];
-        ++iter;
-    }
-    return indexToValuesMap;
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::_throwIfDataProviderDefined() const {

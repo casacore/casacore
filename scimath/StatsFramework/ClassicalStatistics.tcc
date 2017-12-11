@@ -3527,7 +3527,7 @@ Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
             }
         }
     }
-    values = StatisticsAlgorithm<CASA_STATP>::_valuesFromArray(
+    values = StatisticsUtilities<AccumType>::indicesToValues(
         myArray, indices
     );
     if (! _doMedAbsDevMed) {

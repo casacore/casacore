@@ -28,6 +28,8 @@
 
 #include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
 
+#include <casacore/casa/Utilities/GenSort.h>
+
 #include <iostream>
 
 namespace casacore {
@@ -165,17 +167,6 @@ Bool StatisticsUtilities<AccumType>::doMin(
 	return False;
 }
 
-/*
-#define _NLINEARSYM \
-	npts += 2; \
-	sum += 2*center; \
-
-#define _WLINEARSYM \
-	npts += 2; \
-	sumweights += 2*weight; \
-	wsum += 2*weight*center; \
-*/
-
 #define _NQUADSYM \
 	npts += 2; \
 	AccumType reflect = TWO*center - datum; \
@@ -260,8 +251,38 @@ Bool StatisticsUtilities<AccumType>::includeDatum(
 }
 
 template <class AccumType>
+std::map<uInt64, AccumType> StatisticsUtilities<AccumType>::indicesToValues(
+    std::vector<AccumType>& myArray, const std::set<uInt64>& indices
+) {
+    uInt64 arySize = myArray.size();
+    ThrowIf(
+        *indices.rbegin() >= arySize,
+        "Logic Error: Index " + String::toString(*indices.rbegin()) + " is too large. "
+        "The sorted array has size " + String::toString(arySize)
+    );
+    std::map<uInt64, AccumType> indexToValuesMap;
+    std::set<uInt64>::const_iterator initer = indices.begin();
+    std::set<uInt64>::const_iterator inend = indices.end();
+    Int64 lastIndex = 0;
+    while(initer != inend) {
+        GenSort<AccumType>::kthLargest(
+            &myArray[lastIndex], arySize - lastIndex, *initer - lastIndex
+        );
+        lastIndex = *initer;
+        ++initer;
+    }
+    std::set<uInt64>::const_iterator iter = indices.begin();
+    std::set<uInt64>::const_iterator end = indices.end();
+    while (iter != end) {
+        indexToValuesMap[*iter] = myArray[*iter];
+        ++iter;
+    }
+    return indexToValuesMap;
+}
+
+template <class AccumType>
 StatsData<AccumType> StatisticsUtilities<AccumType>::combine(
-    const vector<StatsData<AccumType> >& stats
+    const std::vector<StatsData<AccumType> >& stats
 ) {
     StatsData<AccumType> res = initializeStatsData<AccumType>();
     typename vector<StatsData<AccumType> >::const_iterator iter = stats.begin();
@@ -308,8 +329,6 @@ StatsData<AccumType> StatisticsUtilities<AccumType>::combine(
     return res;
 }
 
-
 }
-
 
 #endif

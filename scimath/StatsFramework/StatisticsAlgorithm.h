@@ -351,12 +351,6 @@ protected:
         return _weights;
     }
 
-    // The array can be changed by paritally sorting it up to the largest index. Return
-    // a map of index to value in the sorted array.
-    static std::map<uInt64, AccumType> _valuesFromArray(
-        std::vector<AccumType>& myArray, const std::set<uInt64>& indices
-    );
-
     void _setSortedArray(const std::vector<AccumType>& v) { _sortedArray = v; }
 
 private:
