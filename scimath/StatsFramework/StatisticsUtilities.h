@@ -36,6 +36,8 @@
 
 namespace casacore {
 
+template <class T> class PtrHolder;
+
 // Various statistics related methods for the statistics framework.
 
 template <class AccumType> class StatisticsUtilities {
@@ -172,6 +174,9 @@ public:
 		const AccumType& center
 	);
 
+    // convert in place by taking the absolute value of the difference of the std::vector and the median
+    inline static void convertToAbsDevMedArray(std::vector<AccumType>& myArray, AccumType median);
+
 	// </group>
 	// This does the obvious conversions. The Complex and DComplex versions
 	// (implemented after the class definition) are used solely to permit compilation. In general, these versions should
@@ -190,6 +195,22 @@ public:
     // a map of index to value in the sorted array.
     static std::map<uInt64, AccumType> indicesToValues(
         std::vector<AccumType>& myArray, const std::set<uInt64>& indices
+    );
+
+    // If <src>allowPad</src> is True, then pad the lower side of the lowest bin and the
+    // higher side of the highest bin so that minData and maxData do not fall on the edge
+    // of their respective bins. If false, no padding so that minData and maxData are also
+    // exactly the histogram abscissa limits.
+    static void makeBins(
+        BinDesc& bins, AccumType minData, AccumType maxData,
+        uInt maxBins, Bool allowPad
+    );
+
+    static void mergeResults(
+        std::vector<std::vector<uInt64> >& bins, std::vector<CountedPtr<AccumType> >& sameVal,
+        std::vector<Bool>& allSame, const PtrHolder<std::vector<std::vector<uInt64> > >& tBins,
+        const PtrHolder<std::vector<CountedPtr<AccumType> > >& tSameVal,
+        const PtrHolder<std::vector<Bool> >& tAllSame, uInt nThreadsMax
     );
 
     // use two statistics sets to get the statistics set that would

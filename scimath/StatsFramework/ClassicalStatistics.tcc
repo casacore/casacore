@@ -1029,69 +1029,10 @@ std::vector<std::vector<uInt64> > ClassicalStatistics<CASA_STATP>::_binCounts(
             break;
         }
     }
-    _mergeResults(
+    StatisticsUtilities<AccumType>::mergeResults(
         bins, sameVal, allSame, tBins, tSameVal, tAllSame, nThreadsMax
     );
     return bins;
-}
-
-CASA_STATD
-void ClassicalStatistics<CASA_STATP>::_mergeResults(
-    std::vector<std::vector<uInt64> >& bins, std::vector<CountedPtr<AccumType> >& sameVal,
-    std::vector<Bool>& allSame, const PtrHolder<std::vector<std::vector<uInt64> > >& tBins,
-    const PtrHolder<std::vector<CountedPtr<AccumType> > >& tSameVal,
-    const PtrHolder<std::vector<Bool> >& tAllSame, uInt nThreadsMax
-) {
-    // merge results from individual threads (tBins, tSameVal, tAllSame)
-    // into single data structures (bins, sameVal, allSame)
-    for (uInt tid=0; tid<nThreadsMax; ++tid) {
-        std::vector<std::vector<uInt64> >::iterator iter;
-        std::vector<std::vector<uInt64> >::iterator end = bins.end();
-        typename std::vector<CountedPtr<AccumType> >::iterator siter;
-        typename std::vector<CountedPtr<AccumType> >::iterator send = sameVal.end();
-        std::vector<Bool>::iterator aiter;
-        uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
-        std::vector<std::vector<uInt64> >::const_iterator titer = tBins[idx8].begin();
-        for (iter=bins.begin(); iter!=end; ++iter, ++titer) {
-            std::transform(
-                iter->begin(), iter->end(), titer->begin(),
-                iter->begin(), std::plus<Int64>()
-            );
-        }
-        typename std::vector<CountedPtr<AccumType> >::const_iterator viter = tSameVal[idx8].begin();
-        std::vector<Bool>::const_iterator witer = tAllSame[idx8].begin();
-        for (
-            siter=sameVal.begin(), aiter=allSame.begin(); siter!=send;
-            ++siter, ++viter, ++aiter, ++witer
-        ) {
-            if (! *aiter) {
-                // won't have the same values, do nothing
-            }
-            if (*witer && *aiter) {
-                if (
-                    viter->null()
-                    || (! siter->null() && *(*siter) == *(*viter))
-                ) {
-                    // no unflagged values in this chunk or both
-                    // have the all the same values, do nothing
-                }
-                else if (siter->null()) {
-                    siter->reset(new AccumType(*(*viter)));
-                }
-                else {
-                    // both are not null, and they do not have
-                    // the same values
-                    siter->reset();
-                    *aiter = False;
-                }
-            }
-            else {
-                // *aiter = True, *witer = False, all values are not the same
-                siter->reset();
-                *aiter = False;
-            }
-        }
-    }
 }
 
 CASA_STATD
@@ -1685,7 +1626,7 @@ std::vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_data
             std::vector<typename StatisticsUtilities<AccumType>::BinDesc> binDesc;
             while (iLimits != eLimits) {
                 typename StatisticsUtilities<AccumType>::BinDesc histogram;
-                _makeBins(
+                StatisticsUtilities<AccumType>::makeBins(
                     histogram, iLimits->first, iLimits->second,
                     nBins, False
                 );
@@ -1708,18 +1649,6 @@ std::vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_data
                 ++loopCount;
             }
         }
-    }
-}
-
-CASA_STATD
-void ClassicalStatistics<CASA_STATP>::_convertToAbsDevMedArray(
-    std::vector<AccumType>& myArray, AccumType median
-) {
-    typename std::vector<AccumType>::iterator iter = myArray.begin();
-    typename std::vector<AccumType>::iterator end = myArray.end();
-    while (iter != end) {
-        *iter = abs(*iter - median);
-        ++iter;
     }
 }
 
@@ -2492,26 +2421,6 @@ Bool ClassicalStatistics<CASA_STATP>::_isNptsSmallerThan(
     }
     _getStatsData().npts = unsortedAry.size();
     return True;
-}
-
-CASA_STATD
-void ClassicalStatistics<CASA_STATP>::_makeBins(
-    typename StatisticsUtilities<AccumType>::BinDesc& bins, AccumType minData, AccumType maxData, uInt maxBins, Bool allowPad
-) {
-
-    bins.nBins = maxBins;
-    bins.minLimit = minData;
-    AccumType maxLimit = maxData;
-    if (allowPad) {
-        AccumType pad = (maxData - minData)/1e3;
-        if (pad == (AccumType)0) {
-            // try to handle Int like AccumTypes
-            pad = AccumType(1);
-        }
-        bins.minLimit -= pad;
-        maxLimit += pad;
-    }
-    bins.binWidth = (maxLimit - bins.minLimit)/(AccumType)bins.nBins;
 }
 
 #define _minMaxCode \
@@ -3484,7 +3393,9 @@ Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
         // make a copy
         std::vector<AccumType> pSorted = this->_getSortedArray();
         myArray = pSorted;
-        _convertToAbsDevMedArray(myArray, *_getStatsData().median);
+        StatisticsUtilities<AccumType>::convertToAbsDevMedArray(
+            myArray, *_getStatsData().median
+        );
     }
     if (! _doMedAbsDevMed) {
         myArray = this->_getSortedArray();

@@ -720,9 +720,6 @@ private:
         WeightsIterator weightsIter, uInt64 count
     );
 
-    // convert in place by taking the absolute value of the difference of the std::vector and the median
-    static void _convertToAbsDevMedArray(std::vector<AccumType>& myArray, AccumType median);
-
     // Create an unsorted array of the complete data set. If <src>includeLimits</src> is specified,
     // only points within those limits (including min but excluding max, as per definition of bins),
     // are included.
@@ -786,22 +783,6 @@ private:
     // <src>maxArraySize</src>. If so, <src>arrayToSort</src> will contain the unsorted
     // data values. If not, this std::vector will be empty.
     Bool _isNptsSmallerThan(std::vector<AccumType>& arrayToSort, uInt maxArraySize);
-
-    // If <src>allowPad</src> is True, then pad the lower side of the lowest bin and the
-    // higher side of the highest bin so that minData and maxData do not fall on the edge
-    // of their respective bins. If false, no padding so that minData and maxData are also
-    // exactly the histogram abscissa limits.
-    static void _makeBins(
-        typename StatisticsUtilities<AccumType>::BinDesc& bins, AccumType minData, AccumType maxData, uInt maxBins,
-        Bool allowPad
-    );
-
-    static void _mergeResults(
-        std::vector<std::vector<uInt64> >& bins, std::vector<CountedPtr<AccumType> >& sameVal,
-        std::vector<Bool>& allSame, const PtrHolder<std::vector<std::vector<uInt64> > >& tBins,
-        const PtrHolder<std::vector<CountedPtr<AccumType> > >& tSameVal,
-        const PtrHolder<std::vector<Bool> >& tAllSame, uInt nThreadsMax
-    );
 
     // get the index (for odd npts) or indices (for even npts) of the median of the sorted array.
     // If knownNpts is not null, it will be used and must be correct. If it is null, the value of
