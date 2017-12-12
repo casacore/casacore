@@ -283,6 +283,9 @@ SimpleOrderedMap<String,DataManagerCtor>
         DataManager::theirRegisterMap (DataManager::unknownDataManager);
 MutexedInit DataManager::theirMutexedInit(doRegisterMainCtor, 0,
                                           Mutex::Recursive);
+// Define the nr of rows fitting in a uInt which is used by the data
+// managers. Test programs can set it to a lower value to test storing
+// 64-bit rownrs without the need of having very large tables.
 rownr_t DataManager::MAXROWNR32 (4294967295);
 
 
