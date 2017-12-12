@@ -199,6 +199,7 @@ System/AipsrcValue2.cc
 System/AipsrcVBool.cc
 System/AipsrcVString.cc
 System/AppInfo.cc
+System/AppState.cc
 System/Casarc.cc
 System/Choice.cc
 System/ObjectID.cc
@@ -579,6 +580,7 @@ System/AipsrcValue.tcc
 System/AipsrcVector.h
 System/AipsrcVector.tcc
 System/AppInfo.h
+System/AppState.h
 System/Casarc.h
 System/Choice.h
 System/ObjectID.h
