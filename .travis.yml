@@ -17,12 +17,12 @@ matrix:
     - os: linux
       compiler: gcc
       env: CXX11=False
-    - os: osx
-      compiler: clang
-      env: CXX11=True PYTHONVERSION=2.7
-    - os: osx
-      compiler: clang
-      env: CXX11=True PYTHONVERSION=3.4
+#    - os: osx
+#      compiler: clang
+#      env: CXX11=True PYTHONVERSION=2.7
+#    - os: osx
+#      compiler: clang
+#      env: CXX11=True PYTHONVERSION=3.4
 
 sudo: false
 
