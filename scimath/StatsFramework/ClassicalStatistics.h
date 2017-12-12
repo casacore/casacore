@@ -22,7 +22,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_CLASSICALSTATS_H
 #define SCIMATH_CLASSICALSTATS_H
@@ -182,7 +181,7 @@ public:
 
     // Has any data been added to this object? Will return False if the object has
     // been reset and no data have been added afterward.
-    Bool hasData() const  { return _hasData; }
+    // Bool hasData() const  { return _hasData; }
 
     // reset object to initial state. Clears all private fields including data,
     // accumulators, etc.
@@ -355,7 +354,7 @@ protected:
     
     AccumType _getStatistic(StatisticsData::STATS stat);
 
-    StatsData<AccumType> _getStatistics();
+    virtual StatsData<AccumType> _getStatistics();
 
     // retreive stats structure. Allows derived classes to maintain their own
     // StatsData structs.
@@ -655,8 +654,8 @@ protected:
 private:
     StatsData<AccumType> _statsData;
     Int64 _idataset;
-    Bool _calculateAsAdded, _doMaxMin, _doMedAbsDevMed, _mustAccumulate,
-        _hasData;
+    Bool _calculateAsAdded, _doMaxMin, _doMedAbsDevMed, _mustAccumulate /*,
+        _hasData */;
 
     // mutables, used to mitigate repeated code
     mutable typename std::vector<DataIterator>::const_iterator _dend, _diter;

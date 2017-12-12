@@ -306,6 +306,8 @@ StatsFramework/StatisticsAlgorithmFactory.h
 StatsFramework/StatisticsAlgorithmFactory.tcc
 StatsFramework/StatisticsAlgorithmFactoryData.h
 StatsFramework/StatisticsData.h
+StatsFramework/StatisticsDataset.h
+StatsFramework/StatisticsDataset.tcc
 StatsFramework/StatisticsIncrementer.h
 StatsFramework/StatisticsIncrementer.tcc
 StatsFramework/StatisticsTypes.h

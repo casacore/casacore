@@ -60,8 +60,8 @@ ClassicalStatistics<CASA_STATP>::ClassicalStatistics(
     _statsData(cs._statsData),
     _idataset(cs._idataset),_calculateAsAdded(cs._calculateAsAdded),
     _doMaxMin(cs._doMaxMin), _doMedAbsDevMed(cs._doMedAbsDevMed),
-    _mustAccumulate(cs._mustAccumulate),
-    _hasData(cs._hasData) {}
+    _mustAccumulate(cs._mustAccumulate) /*,
+    _hasData(cs._hasData) */ {}
 
 CASA_STATD
 ClassicalStatistics<CASA_STATP>&
@@ -78,7 +78,7 @@ ClassicalStatistics<CASA_STATP>::operator=(
     _doMaxMin = other._doMaxMin;
     _doMedAbsDevMed = other._doMedAbsDevMed;
     _mustAccumulate = other._mustAccumulate;
-    _hasData = other._hasData;
+    // _hasData = other._hasData;
     return *this;
 }
 
@@ -328,7 +328,7 @@ void ClassicalStatistics<CASA_STATP>::setDataProvider(
         "setCalculateAsAdded(False), and then set the data provider"
     );
     StatisticsAlgorithm<CASA_STATP>::setDataProvider(dataProvider);
-    _hasData = True;
+    //_hasData = True;
 }
 
 CASA_STATD
@@ -351,8 +351,9 @@ void ClassicalStatistics<CASA_STATP>::_addData() {
     this->_setSortedArray(std::vector<AccumType>());
     _getStatsData().median = NULL;
     _mustAccumulate = True;
-    _hasData = True;
+    // _hasData = True;
     if (_calculateAsAdded) {
+        // just need to call it, don't need the return value here
         _getStatistics();
         StatisticsAlgorithm<CASA_STATP>::reset();
     }
@@ -362,7 +363,7 @@ CASA_STATD
 void ClassicalStatistics<CASA_STATP>::reset() {
     _clearStats();
     StatisticsAlgorithm<CASA_STATP>::reset();
-    _hasData = False;
+    // _hasData = False;
 }
 
 CASA_STATD
@@ -453,16 +454,16 @@ AccumType ClassicalStatistics<CASA_STATP>::_getStatistic(
                 return qs[0.75] - qs[0.25];
             }
         default:
-        AccumType value;
-        Record r = toRecord(_getStatistics());
-        String statString = StatisticsData::toString(stat);
-        ThrowIf(
-            ! r.isDefined(statString),
-            "Logic Error: stat " + statString + " is not defined. "
-            "Please file a defect report"
-        );
-        r.get(statString, value);
-        return value;
+            AccumType value;
+            Record r = toRecord(_getStatistics());
+            String statString = StatisticsData::toString(stat);
+            ThrowIf(
+                ! r.isDefined(statString),
+                "Logic Error: stat " + statString + " is not defined. "
+                "Please file a defect report"
+            );
+            r.get(statString, value);
+            return value;
     }
 }
 
@@ -2234,7 +2235,9 @@ std::map<uInt64, AccumType> ClassicalStatistics<CASA_STATP>::_indicesToValues(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_initIterators() {
-    ThrowIf(! _hasData, "No data sets have been added");
+    // ThrowIf(! _hasData, "No data sets have been added");
+    ThrowIf(this->_getDataset().empty(), "No data sets have been added");
+
     if (this->_getDataProvider()) {
         this->_getDataProvider()->reset();
     }

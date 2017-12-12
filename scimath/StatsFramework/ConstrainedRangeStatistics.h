@@ -275,7 +275,7 @@ protected:
 
     AccumType _getStatistic(StatisticsData::STATS stat);
 
-    StatsData<AccumType> _getStatistics();
+    virtual StatsData<AccumType> _getStatistics();
 
     inline Bool _isInRange(const AccumType& datum) const;
 

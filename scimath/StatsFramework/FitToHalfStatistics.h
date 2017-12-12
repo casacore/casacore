@@ -166,7 +166,7 @@ protected:
 
     virtual StatsData<AccumType> _getInitialStats() const;
 
-    StatsData<AccumType> _getStatistics();
+    virtual StatsData<AccumType> _getStatistics();
 
     inline StatsData<AccumType>& _getStatsData() { return _statsData; }
 

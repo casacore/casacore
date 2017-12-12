@@ -393,7 +393,7 @@ void FitToHalfStatistics<CASA_STATP>::setStatsToCalculate(
     if (! stats.empty() && _centerType == FitToHalfStatisticsData::CMEAN) {
         stats.insert(StatisticsData::MEAN);
     }
-    ClassicalStatistics<CASA_STATP>::setStatsToCalculate(stats);
+    ConstrainedRangeStatistics<CASA_STATP>::setStatsToCalculate(stats);
 }
 
 CASA_STATD
