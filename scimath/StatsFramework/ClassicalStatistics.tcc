@@ -22,7 +22,6 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_CLASSICALSTATISTICS_TCC
 #define SCIMATH_CLASSICALSTATISTICS_TCC
@@ -60,8 +59,7 @@ ClassicalStatistics<CASA_STATP>::ClassicalStatistics(
     _statsData(cs._statsData),
     _idataset(cs._idataset),_calculateAsAdded(cs._calculateAsAdded),
     _doMaxMin(cs._doMaxMin), _doMedAbsDevMed(cs._doMedAbsDevMed),
-    _mustAccumulate(cs._mustAccumulate) /*,
-    _hasData(cs._hasData) */ {}
+    _mustAccumulate(cs._mustAccumulate) {}
 
 CASA_STATD
 ClassicalStatistics<CASA_STATP>&
@@ -78,7 +76,6 @@ ClassicalStatistics<CASA_STATP>::operator=(
     _doMaxMin = other._doMaxMin;
     _doMedAbsDevMed = other._doMedAbsDevMed;
     _mustAccumulate = other._mustAccumulate;
-    // _hasData = other._hasData;
     return *this;
 }
 
@@ -305,7 +302,7 @@ void ClassicalStatistics<CASA_STATP>::setCalculateAsAdded(
     Bool c
 ) {
     ThrowIf (
-        this->_getDataProvider() && c,
+        this->_getDataset().getDataProvider() && c,
         "Logic Error: It is nonsensical to call " + String(__func__) + " method "
         "with a True value if one is using a data provider"
     );
@@ -328,7 +325,6 @@ void ClassicalStatistics<CASA_STATP>::setDataProvider(
         "setCalculateAsAdded(False), and then set the data provider"
     );
     StatisticsAlgorithm<CASA_STATP>::setDataProvider(dataProvider);
-    //_hasData = True;
 }
 
 CASA_STATD
@@ -351,7 +347,6 @@ void ClassicalStatistics<CASA_STATP>::_addData() {
     this->_setSortedArray(std::vector<AccumType>());
     _getStatsData().median = NULL;
     _mustAccumulate = True;
-    // _hasData = True;
     if (_calculateAsAdded) {
         // just need to call it, don't need the return value here
         _getStatistics();
@@ -363,7 +358,6 @@ CASA_STATD
 void ClassicalStatistics<CASA_STATP>::reset() {
     _clearStats();
     StatisticsAlgorithm<CASA_STATP>::reset();
-    // _hasData = False;
 }
 
 CASA_STATD
@@ -676,7 +670,7 @@ Bool ClassicalStatistics<CASA_STATP>::_increment(Bool includeIDataset) {
     if (includeIDataset) {
         ++_idataset;
     }
-    StatsDataProvider<CASA_STATP> *dataProvider = this->_getDataProvider();
+    StatsDataProvider<CASA_STATP> *dataProvider = this->_getDataset().getDataProvider();
     if (dataProvider) {
         ++(*dataProvider);
         if (dataProvider->atEnd()) {
@@ -699,7 +693,7 @@ Bool ClassicalStatistics<CASA_STATP>::_increment(Bool includeIDataset) {
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_accumNpts(
     uInt64& npts,
-    const DataIterator& /*dataBegin*/, Int64 nr, uInt /*dataStride*/
+    const DataIterator&, Int64 nr, uInt
 ) const {
     npts += nr;
 }
@@ -909,7 +903,7 @@ CASA_STATD
 uInt ClassicalStatistics<CASA_STATP>::_nThreadsMax() const {
     uInt nthr = OMP::nMaxThreads();
     if (nthr > 1) {
-        const StatsDataProvider<CASA_STATP> *dataProvider = this->_getDataProvider();
+        const StatsDataProvider<CASA_STATP> *dataProvider = this->_getDataset().getDataProvider();
         if (dataProvider) {
             uInt n = dataProvider->getNMaxThreads();
             if (n > 0) {
@@ -1588,7 +1582,6 @@ std::vector<std::map<uInt64, AccumType> > ClassicalStatistics<CASA_STATP>::_data
         std::vector<std::map<uInt64, AccumType> > ret(binLimits.size());
         typename std::vector<std::map<uInt64, AccumType> >::iterator bRet = ret.begin();
         typename std::vector<std::map<uInt64, AccumType> >::iterator iRet = bRet;
-        // typename std::vector<std::map<uInt64, AccumType> >::iterator eRet = ret.end();
         iArrays = bArrays;
         while(iIdxSet != eIdxSet) {
             std::set<uInt64>::const_iterator initer = iIdxSet->begin();
@@ -2235,25 +2228,24 @@ std::map<uInt64, AccumType> ClassicalStatistics<CASA_STATP>::_indicesToValues(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_initIterators() {
-    // ThrowIf(! _hasData, "No data sets have been added");
     ThrowIf(this->_getDataset().empty(), "No data sets have been added");
-
-    if (this->_getDataProvider()) {
-        this->_getDataProvider()->reset();
+    StatsDataProvider<CASA_STATP> *dataProvider = this->_getDataset().getDataProvider();
+    if (dataProvider) {
+        dataProvider->reset();
     }
     else {
         _dataCount = 0;
-        const std::vector<DataIterator>& data = this->_getData();
+        const std::vector<DataIterator>& data = this->_getDataset().getData();
         _diter = data.begin();
         _dend = data.end();
-        const std::vector<uInt>& dataStrides = this->_getDataStrides();
+        const std::vector<uInt>& dataStrides = this->_getDataset().getDataStrides();
         _dsiter = dataStrides.begin();
-        const std::vector<Int64>& counts = this->_getCounts();
+        const std::vector<Int64>& counts = this->_getDataset().getCounts();
         _citer = counts.begin();
-        _masks = this->_getMasks();
-        _weights = this->_getWeights();
-        _ranges = this->_getRanges();
-        _isIncludeRanges = this->_getIsIncludeRanges();
+        _masks = this->_getDataset().getMasks();
+        _weights = this->_getDataset().getWeights();
+        _ranges = this->_getDataset().getRanges();
+        _isIncludeRanges = this->_getDataset().getIsIncludeRanges();
     }
     _hasRanges = False;
     _myRanges.clear();
@@ -2265,7 +2257,7 @@ void ClassicalStatistics<CASA_STATP>::_initIterators() {
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_initLoopVars() {
     StatsDataProvider<CASA_STATP> *dataProvider
-        = this->_getDataProvider();
+        = this->_getDataset().getDataProvider();
     if (dataProvider) {
         _myData = dataProvider->getData();
         _myCount = dataProvider->getCount();
@@ -2299,7 +2291,7 @@ void ClassicalStatistics<CASA_STATP>::_initLoopVars() {
         _hasMask = maskI != _masks.end();
         if (_hasMask) {
             _myMask = maskI->second;
-            _maskStride = this->_getMaskStrides().find(_dataCount)->second;
+            _maskStride = this->_getDataset().getMaskStrides().find(_dataCount)->second;
         }
         _hasWeights = _weights.find(_dataCount) != _weights.end();
         if (_hasWeights) {
@@ -2819,7 +2811,6 @@ void ClassicalStatistics<CASA_STATP>::_populateArray(
         } \
     }
 
-
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_populateArrays(
     std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
@@ -3245,8 +3236,7 @@ CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     const StatsData<AccumType>& threadStats
 ) {
-    StatsDataProvider<CASA_STATP> *dataProvider
-        = this->_getDataProvider();
+    StatsDataProvider<CASA_STATP> *dataProvider = this->_getDataset().getDataProvider();
     if (! dataProvider) {
         return;
     }
@@ -3258,7 +3248,7 @@ void ClassicalStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     Bool same = &threadStats == &stats;
     if (
         _idataset == threadStats.maxpos.first 
-        && (stats.max.null() || *threadStats.max > *stats.max)
+        && (! stats.max || *threadStats.max > *stats.max)
     ) {
         if (! same) {
             // make certain to make a copy, do not assign
@@ -3270,7 +3260,7 @@ void ClassicalStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     }
     if (
         _idataset == threadStats.minpos.first 
-        && (stats.min.null() || (*threadStats.min) < (*stats.min))
+        && (! stats.min || (*threadStats.min) < (*stats.min))
     ) {
         if (! same) {
             // make certain to make a copy of the value, do not assign
@@ -3423,9 +3413,9 @@ Bool ClassicalStatistics<CASA_STATP>::_valuesFromSortedArray(
         }
         else {
             // we have to calculate the number of good points
-            if (! this->_getDataProvider()) {
+            if (! this->_getDataset().getDataProvider()) {
                 // we first get an upper limit by adding up the counts
-                const std::vector<Int64>& counts = this->_getCounts();
+                const std::vector<Int64>& counts = this->_getDataset().getCounts();
                 uInt64 nr = accumulate(counts.begin(), counts.end(), 0);
                 if (nr <= maxArraySize) {
                     // data can be sorted in memory

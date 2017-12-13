@@ -563,7 +563,7 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     // one doesn't exist) but it is necessary to do even if there isn't a data
     // provider in a method that is always called in a single-thread context.
     StatsDataProvider<CASA_STATP> *dataProvider
-        = this->_getDataProvider();
+        = this->_getDataset().getDataProvider();
     StatsData<AccumType>& stats = _getStatsData();
     uInt iDataset = this->_getIDataset();
     if (

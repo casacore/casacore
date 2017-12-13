@@ -260,6 +260,6 @@ private:
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/StatsFramework/FitToHalfStatistics.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif 
 
 #endif

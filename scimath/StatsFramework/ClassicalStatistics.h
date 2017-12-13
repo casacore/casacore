@@ -654,8 +654,7 @@ protected:
 private:
     StatsData<AccumType> _statsData;
     Int64 _idataset;
-    Bool _calculateAsAdded, _doMaxMin, _doMedAbsDevMed, _mustAccumulate /*,
-        _hasData */;
+    Bool _calculateAsAdded, _doMaxMin, _doMedAbsDevMed, _mustAccumulate;
 
     // mutables, used to mitigate repeated code
     mutable typename std::vector<DataIterator>::const_iterator _dend, _diter;
@@ -809,6 +808,6 @@ private:
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/StatsFramework/ClassicalStatistics.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif 
 
 #endif

@@ -308,29 +308,9 @@ protected:
     // Default implementation does nothing.
     virtual void _addData() {}
 
-    const std::vector<Int64>& _getCounts() const { return _dataset.getCounts(); }
-
-    const std::vector<DataIterator>& _getData() const { return _dataset.getData(); }
-
-    const StatisticsDataset<CASA_STATP> _getDataset() { return _dataset; }
-
-    StatsDataProvider<CASA_STATP>* _getDataProvider() {
-        return _dataset.getDataProvider();
-    }
-
-    const StatsDataProvider<CASA_STATP>* _getDataProvider() const {
-        return _dataset.getDataProvider();
-    }
-
-    const std::vector<uInt>& _getDataStrides() const { return _dataset.getDataStrides(); }
-
-    const std::map<uInt, Bool>& _getIsIncludeRanges() const { return _dataset.getIsIncludeRanges(); }
-
-    const std::map<uInt, MaskIterator> _getMasks() const { return _dataset.getMasks(); }
-
-    const std::map<uInt, uInt>& _getMaskStrides() const { return _dataset.getMaskStrides(); }
-
-    const std::map<uInt, DataRanges>& _getRanges() const { return _dataset.getRanges(); }
+    const StatisticsDataset<CASA_STATP>& _getDataset() const { return _dataset; }
+    
+    StatisticsDataset<CASA_STATP>& _getDataset() { return _dataset; }
 
     virtual AccumType _getStatistic(StatisticsData::STATS stat) = 0;
 
@@ -346,36 +326,15 @@ protected:
         return _unsupportedStats;
     }
 
-    const std::map<uInt, WeightsIterator>& _getWeights() const {
-        return _dataset.getWeights();
-    }
-
     void _setSortedArray(const std::vector<AccumType>& v) { _sortedArray = v; }
 
 private:
-    /*
-    std::vector<DataIterator> _data;
-    // maps data to weights
-    std::map<uInt, WeightsIterator> _weights;
-    // maps data to masks
-    std::map<uInt, MaskIterator> _masks;
-    std::vector<Int64> _counts;
-    std::vector<uInt> _dataStrides;
-    std::map<uInt, uInt> _maskStrides;
-    std::map<uInt, Bool> _isIncludeRanges;
-    std::map<uInt, DataRanges> _dataRanges;
-    */
     std::vector<AccumType> _sortedArray;
     std::set<StatisticsData::STATS> _statsToCalculate, _unsupportedStats;
-    //StatsDataProvider<CASA_STATP> *_dataProvider;
     StatisticsDataset<AccumType, DataIterator, MaskIterator, WeightsIterator> _dataset;
     Bool _resetDataset;
 
-    //void _throwIfDataProviderDefined() const;
-
     void _resetExceptDataset();
-
-
 
 };
 
