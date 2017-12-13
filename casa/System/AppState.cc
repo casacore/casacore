@@ -33,19 +33,21 @@ namespace casacore {
 
 AppState *AppStateSource::user_state = 0;
 
+struct FOR_GCC_4_8_DEFECTS {
+    std::string operator( )(std::string s, std::string dir) {
+        if ( s.size( ) > 0 ) return s;
+        struct stat statbuf;
+        std::string path = dir + "/" + needle;
+        return stat( path.c_str( ), &statbuf ) == 0 ? path : s;
+    }
+    std::string needle;
+};
+
 std::string AppState::resolve(const std::string &subdir) const {
     struct stat statbuf;
     if ( stat( subdir.c_str( ), &statbuf ) == 0 ) return subdir;
 
-    struct {
-        std::string operator( )(std::string s, std::string dir) {
-            if ( s.size( ) > 0 ) return s;
-            struct stat statbuf;
-            std::string path = dir + "/" + needle;
-            return stat( path.c_str( ), &statbuf ) == 0 ? path : s;
-        }
-        std::string needle;
-    } in_lieu_of_lambda = { subdir };
+    FOR_GCC_4_8_DEFECTS in_lieu_of_lambda = { subdir };
 
     const std::list<std::string> &casadata = dataPath( );
     std::string result = std::accumulate( casadata.begin( ), casadata.end( ), std::string( ), in_lieu_of_lambda );

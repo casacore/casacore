@@ -25,11 +25,12 @@
 //#
 //# $Id$
 
-#ifndef CASACORE_APPSTATE_H
-#define CASACORE_APPSTATE_H
+#ifndef CASA_APPSTATE_H
+#define CASA_APPSTATE_H
 #include <string>
 #include <list>
 #include <casacore/casa/aips.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casacore {
 
@@ -49,9 +50,9 @@ namespace casacore {
 // allow applications initialize casacore's state without resorting to
 // environment variables. This is done by creating an object whose
 // class is derived from this base class, and then initializing the
-// AppStateStore with the newly created object. After initialization,
-// the AppStateStore takes ownership of the object. Please see the
-// documentation for AppStateStore for more information.
+// AppStateSource with the newly created object. After initialization,
+// the AppStateSource takes ownership of the object. Please see the
+// documentation for AppStateSource for more information.
 // </synopsis>
 
 class AppState {
@@ -88,7 +89,7 @@ public:
 // primarly of static functions. An external application configures
 // casacore by calling the initialize(...) member function passing in
 // a pointer to an object which is derived from the AppState base class.
-// AppStateStore takes ownership of the provided pointer.
+// AppStateSource takes ownership of the provided pointer.
 //
 // When casacore no longer depends on compilers whose standard is older
 // than C++11, the raw pointers here should be changed to
@@ -125,6 +126,8 @@ class AppStateSource {
 public:
 
     static void initialize(AppState *init) {
+        static Mutex mutex_p;
+        ScopedMutexLock lock(mutex_p);
         if ( user_state ) delete user_state;
         user_state = init;
     }
