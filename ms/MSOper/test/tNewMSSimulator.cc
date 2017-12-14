@@ -26,6 +26,7 @@
 //# $Id$
 
 #define _POSIX_C_SOURCE 200809L //For mkdtemp(), stpcpy(), nftw()
+#include <casacore/casa/aips.h>
 #include <ftw.h>
 #include <stdio.h>
 #if defined(AIPS_CXX11)  
