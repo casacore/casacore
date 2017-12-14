@@ -36,7 +36,7 @@ class MyState: public AppState {
 
     public:
         MyState( const std::list<std::string> &init ) : my_path(init) { }
-        const std::list<std::string> &dataPath( ) const { return my_path; }
+        std::list<std::string> dataPath( ) const { return my_path; }
         bool initialized( ) const { return true; }
 
     private:

@@ -62,7 +62,7 @@ public:
     virtual std::string resolve(const std::string &filename) const;
 
     // get the list of directories in the data path...
-    virtual const std::list<std::string> &dataPath( ) const {
+    virtual std::list<std::string> dataPath( ) const {
         static std::list<std::string> result;
         return result;
     }
