@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export LD_LIBRARY_PATH=../..:${LD_LIBRARY_PATH}
+export DYLD_LIBRARY_PATH=../..:${DYLD_LIBRARY_PATH}
+
+$casa_checktool ./azel jupiter dwl "2016-06-28 19:54"
