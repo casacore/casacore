@@ -31,8 +31,20 @@
 namespace casacore {
 
 // Representation of a statistics dataset used in statistics framework calculatations.
+//
+// This class is used internally by StatisticsAlgorithm and its derived classes.
+// There should be no need for an API developer to make direct use of this class. It
+// encapsulates the data-related portions of StatisticsAlgorithm and derived classes.
+// To add and set data or to set a data provider, one should call the relevant methods
+// in StatisticsAlgorithm which have been left unchanged for the convenience of the
+// API developer. Those methods call the analogous methods in this class (and the
+// methods in StatisticsAlgorithm also do necessary bookkeeping for the
+// StatisticsAlgorithm and derived objects).
 
-template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
+template <
+    class AccumType, class DataIterator, class MaskIterator=const Bool *,
+    class WeightsIterator=DataIterator
+>
 class StatisticsDataset {
 
 public:
