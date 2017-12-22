@@ -159,7 +159,6 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::reset() {
     _range = NULL;
     _doMedAbsDevMed = False;
-    //_median = NULL;
     ClassicalStatistics<CASA_STATP>::reset();
 }
 CASA_STATD

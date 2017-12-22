@@ -166,7 +166,7 @@ protected:
 
     virtual StatsData<AccumType> _getInitialStats() const;
 
-    StatsData<AccumType> _getStatistics();
+    virtual StatsData<AccumType> _getStatistics();
 
     inline StatsData<AccumType>& _getStatsData() { return _statsData; }
 
@@ -260,6 +260,6 @@ private:
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/StatsFramework/FitToHalfStatistics.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif 
 
 #endif

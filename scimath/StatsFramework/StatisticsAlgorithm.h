@@ -31,15 +31,12 @@
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/scimath/StatsFramework/StatsDataProvider.h>
 #include <casacore/scimath/StatsFramework/StatisticsData.h>
+#include <casacore/scimath/StatsFramework/StatisticsDataset.h>
 #include <casacore/scimath/StatsFramework/StatisticsTypes.h>
 
 #include <map>
 #include <set>
 #include <vector>
-
-// because the template signature has become unwieldy
-#define CASA_STATD template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-#define CASA_STATP AccumType, DataIterator, MaskIterator, WeightsIterator
 
 namespace casacore {
 
@@ -125,48 +122,48 @@ public:
     // of a data range, it is considered good (included) if <src>isInclude</src> is True, and it is
     // considered bad (excluded) if <src>isInclude</src> is False.
 
-    virtual void addData(
+    void addData(
         const DataIterator& first, uInt nr, uInt dataStride=1,
         Bool nrAccountsForStride=False
     );
 
-    virtual void addData(
+    void addData(
         const DataIterator& first, uInt nr,
         const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
         Bool nrAccountsForStride=False
     );
 
-    virtual void addData(
+    void addData(
         const DataIterator& first, const MaskIterator& maskFirst,
         uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False, uInt maskStride=1
     );
 
-    virtual void addData(
+    void addData(
         const DataIterator& first, const MaskIterator& maskFirst,
         uInt nr, const DataRanges& dataRanges,
         Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
         uInt maskStride=1
     );
 
-    virtual void addData(
+    void addData(
         const DataIterator& first, const WeightsIterator& weightFirst,
         uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False
     );
 
-    virtual void addData(
+    void addData(
         const DataIterator& first, const WeightsIterator& weightFirst,
         uInt nr, const DataRanges& dataRanges,
         Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False
     );
 
-    virtual void addData(
+    void addData(
         const DataIterator& first, const WeightsIterator& weightFirst,
         const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
         Bool nrAccountsForStride=False,
         uInt maskStride=1
     );
 
-    virtual void addData(
+    void addData(
         const DataIterator& first, const WeightsIterator& weightFirst,
         const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
         Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
@@ -238,48 +235,48 @@ public:
     // setdata() clears any current datasets or data provider and then adds the specified data set as
     // the first dataset in the (possibly new) set of data sets for which statistics are
     // to be calculated. See addData() for parameter meanings.
-    virtual void setData(const DataIterator& first, uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False);
+    void setData(const DataIterator& first, uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False);
 
-    virtual void setData(
+    void setData(
         const DataIterator& first, uInt nr,
         const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
         Bool nrAccountsForStride=False
     );
 
-    virtual void setData(
+    void setData(
         const DataIterator& first, const MaskIterator& maskFirst,
         uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False,
         uInt maskStride=1
     );
 
-    virtual void setData(
+    void setData(
         const DataIterator& first, const MaskIterator& maskFirst,
         uInt nr, const DataRanges& dataRanges,
         Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
         uInt maskStride=1
     );
 
-    virtual void setData(
+    void setData(
         const DataIterator& first, const WeightsIterator& weightFirst,
         uInt nr, uInt dataStride=1,
         Bool nrAccountsForStride=False
     );
 
-    virtual void setData(
+    void setData(
         const DataIterator& first, const WeightsIterator& weightFirst,
         uInt nr, const DataRanges& dataRanges,
         Bool isInclude=True, uInt dataStride=1,
         Bool nrAccountsForStride=False
     );
 
-    virtual void setData(
+    void setData(
         const DataIterator& first, const WeightsIterator& weightFirst,
         const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
         Bool nrAccountsForStride=False,
         uInt maskStride=1
     );
 
-    virtual void setData(
+    void setData(
         const DataIterator& first, const WeightsIterator& weightFirst,
         const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
         Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
@@ -311,27 +308,9 @@ protected:
     // Default implementation does nothing.
     virtual void _addData() {}
 
-    const std::vector<Int64>& _getCounts() const { return _counts; }
-
-    const std::vector<DataIterator>& _getData() const { return _data; }
-
-    StatsDataProvider<CASA_STATP>* _getDataProvider() {
-        return _dataProvider;
-    }
-
-    const StatsDataProvider<CASA_STATP>* _getDataProvider() const {
-        return _dataProvider;
-    }
-
-    const std::vector<uInt>& _getDataStrides() const { return _dataStrides; }
-
-    const std::map<uInt, Bool>& _getIsIncludeRanges() const { return _isIncludeRanges; }
-
-    const std::map<uInt, MaskIterator> _getMasks() const { return _masks; }
-
-    const std::map<uInt, uInt>& _getMaskStrides() const { return _maskStrides; }
-
-    const std::map<uInt, DataRanges>& _getRanges() const { return _dataRanges; }
+    const StatisticsDataset<CASA_STATP>& _getDataset() const { return _dataset; }
+    
+    StatisticsDataset<CASA_STATP>& _getDataset() { return _dataset; }
 
     virtual AccumType _getStatistic(StatisticsData::STATS stat) = 0;
 
@@ -347,34 +326,16 @@ protected:
         return _unsupportedStats;
     }
 
-    const std::map<uInt, WeightsIterator>& _getWeights() const {
-        return _weights;
-    }
-
-    // The array can be changed by paritally sorting it up to the largest index. Return
-    // a map of index to value in the sorted array.
-    static std::map<uInt64, AccumType> _valuesFromArray(
-        std::vector<AccumType>& myArray, const std::set<uInt64>& indices
-    );
-
     void _setSortedArray(const std::vector<AccumType>& v) { _sortedArray = v; }
 
 private:
-    std::vector<DataIterator> _data;
-    // maps data to weights
-    std::map<uInt, WeightsIterator> _weights;
-    // maps data to masks
-    std::map<uInt, MaskIterator> _masks;
-    std::vector<Int64> _counts;
-    std::vector<uInt> _dataStrides;
-    std::map<uInt, uInt> _maskStrides;
-    std::map<uInt, Bool> _isIncludeRanges;
-    std::map<uInt, DataRanges> _dataRanges;
     std::vector<AccumType> _sortedArray;
     std::set<StatisticsData::STATS> _statsToCalculate, _unsupportedStats;
-    StatsDataProvider<CASA_STATP> *_dataProvider;
+    StatisticsDataset<AccumType, DataIterator, MaskIterator, WeightsIterator> _dataset;
+    Bool _resetDataset;
 
-    void _throwIfDataProviderDefined() const;
+    void _resetExceptDataset();
+
 };
 
 }

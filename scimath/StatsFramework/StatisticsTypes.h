@@ -32,6 +32,11 @@
 #include <utility>
 #include <vector>
 
+
+// because the template signature has become unwieldy
+#define CASA_STATD template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+#define CASA_STATP AccumType, DataIterator, MaskIterator, WeightsIterator
+
 namespace casacore {
 
 class Record;
