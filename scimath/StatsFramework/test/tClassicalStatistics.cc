@@ -36,19 +36,22 @@
 
 int main() {
     try {
-        vector<Double> v0(5);
+        std::vector<Double> v0(5);
         v0[0] = 2;
         v0[1] = 1;
         v0[2] = 1.5;
         v0[3] = 3;
         v0[4] = 2.5;
-        vector<Double> v1(3);
+        std::vector<Double> v1(3);
         v1[0] = 5;
         v1[1] = 8;
         v1[2] = 10;
         Double k[] = {1.5, 1, 2, 3, 2.5};
         {
-            ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+            ClassicalStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > cs;
             cs.setData(v0.begin(), v0.size());
             StatsData<Double> sd = cs.getStatistics();
             AlwaysAssert(! sd.masked, AipsError);
@@ -61,7 +64,6 @@ int main() {
             AlwaysAssert(sd.minpos.first == 0, AipsError);
             AlwaysAssert(sd.minpos.second == 1, AipsError);
             AlwaysAssert(sd.npts == 5, AipsError);
-            cout << "rms " << sd.rms << endl;
             AlwaysAssert(sd.rms == sqrt(22.5/5.0), AipsError);
             AlwaysAssert(sd.stddev == sqrt(0.625), AipsError);
             AlwaysAssert(sd.sum == 10, AipsError);
@@ -123,7 +125,10 @@ int main() {
         }
         {
             // two datasets
-            ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+            ClassicalStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > cs;
             cs.setData(v0.begin(), v0.size());
             cs.addData(v1.begin(), v1.size());
             StatsData<Double> sd = cs.getStatistics();
@@ -198,17 +203,20 @@ int main() {
         }
         {
             // Test accumulating as datasets are added.
-            vector<Double> t0(5);
+            std::vector<Double> t0(5);
             t0[0] = 1.5;
             t0[1] = 1;
             t0[2] = 2;
             t0[3] = 3;
             t0[4] = 2.5;
-            vector<Double> t1(3);
+            std::vector<Double> t1(3);
             t1[0] = 5;
             t1[1] = 8;
             t1[2] = 10;
-            ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+            ClassicalStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > cs;
             cs.setCalculateAsAdded(False);
             cs.setData(t0.begin(), t0.size());
             std::fill(t0.begin(), t0.begin()+t0.size(), 0);
@@ -274,7 +282,10 @@ int main() {
         }
         {
             // two datasets, stride = 2,1
-            ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
+            ClassicalStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > cs;
             cs.setData(v0.begin(), v0.size(), 2);
             cs.addData(v1.begin(), v1.size());
             StatsData<Double> sd = cs.getStatistics();
@@ -297,8 +308,10 @@ int main() {
         }
         {
             // data ranges
-            ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
-            vector<std::pair<Double, Double> > r0(1);
+            ClassicalStatistics<
+                Double, std::vector<Double>::const_iterator, std::vector<Bool>::const_iterator
+            > cs;
+            std::vector<std::pair<Double, Double> > r0(1);
             r0[0].first = 5;
             r0[0].second = -5;
             Bool expectedFail = False;
@@ -311,7 +324,7 @@ int main() {
             AlwaysAssert(expectedFail, AipsError);
             r0[0].first = 2.4;
             r0[0].second = 6;
-            vector<std::pair<Double, Double> > r1(2);
+            std::vector<std::pair<Double, Double> > r1(2);
             r1[0].first = 9;
             r1[0].second = 11;
             r1[1].first = 2;
@@ -1825,27 +1838,67 @@ int main() {
         }
         {
             // large array, getMinMax()
-            ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
-            vector<Double> big(1e7);
+            ClassicalStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > cs;
+            std::vector<Double> big(1e7);
             uInt count = 0;
-            vector<Double>::iterator iter = big.begin();
-            vector<Double>::iterator end = big.end();
+            std::vector<Double>::iterator iter = big.begin();
+            std::vector<Double>::iterator end = big.end();
             for (; iter!=end; ++iter, ++count) {
                 *iter = count;
             }
             cs.addData(big.begin(), big.size());
             Double mymin, mymax;
-            cout << "start big" << endl;
             cs.getMinMax(mymin, mymax);
             AlwaysAssert(mymin == 0, AipsError);
             AlwaysAssert(mymax == big.size()-1, AipsError);
             // do it again, but shuffle the elements
             random_shuffle(big.begin(), big.end());
-            ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs1;
+            ClassicalStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > cs1;
             cs1.addData(big.begin(), big.size());
             cs1.getMinMax(mymin, mymax);
             AlwaysAssert(mymin == 0, AipsError);
             AlwaysAssert(mymax == big.size()-1, AipsError);
+        }
+        {
+            // tests for getNPts()
+            uInt n = 6;
+            uInt size[] = {5000, 80000, 6500, 100000, 19256, 7482};
+            std::vector<std::vector<Double> > data(n);
+            ClassicalStatistics<
+                Double, std::vector<Double>::const_iterator,
+                std::vector<Bool>::const_iterator
+            > cs;
+            uInt64 expec = 0;
+            for (uInt i=0; i<n; ++i) {
+                uInt s = size[i];
+                expec += s;
+                data[i].resize(s);
+                std::fill(data[i].begin(), data[i].begin()+s, 0);
+                cs.addData(data[i].begin(), s);
+            }
+            AlwaysAssert(cs.getNPts() == expec, AipsError);
+            cs.reset();
+            std::vector<Bool> mask3(size[3]);
+            std::fill(mask3.begin(), mask3.begin()+size[3], False);
+            mask3[1000] = True;
+            mask3[1500] = True;
+            expec -= (size[3] - 2);
+            for (uInt i=0; i<n; ++i) {
+                uInt s = size[i];
+                if (i == 3) {
+                    cs.addData(data[i].begin(), mask3.begin(), s);
+                }
+                else {
+                    cs.addData(data[i].begin(), s);
+                }
+            }
+            AlwaysAssert(cs.getNPts() == expec, AipsError);
         }
     }
     catch (const AipsError& x) {
