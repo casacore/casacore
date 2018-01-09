@@ -1784,73 +1784,118 @@ void ClassicalStatistics<CASA_STATP>::_computeMinMax(
 CASA_STATD
 Int64 ClassicalStatistics<CASA_STATP>::_doNpts() {
     _initIterators();
-    uInt64 npts = 0;
+    const uInt nThreadsMax = _nThreadsMax();
+    PtrHolder<uInt64> npts(
+        new uInt64[
+            ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
+        ], True
+    );
+    for (uInt tid=0; tid<nThreadsMax; ++tid) {
+        uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
+        npts[idx8] = 0;
+    }
     while (True) {
         _initLoopVars();
-        if (_hasWeights) {
-            if (_hasMask) {
-                if (_hasRanges) {
-                    _accumNpts(
-                        npts, _myData, _myWeights, _myCount, _myStride,
-                        _myMask, _maskStride, _myRanges, _myIsInclude
-                    );
-                }
-                else {
-                    _accumNpts(
-                        npts, _myData, _myWeights, _myCount,
-                        _myStride, _myMask, _maskStride
-                    );
-                }
-            }
-            else if (_hasRanges) {
-                _accumNpts(
-                    npts, _myData, _myWeights, _myCount,
-                    _myStride, _myRanges, _myIsInclude
-                );
-            }
-            else {
-                // has weights, but no mask nor ranges
-                _accumNpts(
-                    npts, _myData, _myWeights, _myCount, _myStride
-                );
-            }
-        }
-        else if (_hasMask) {
-            // this data set has no weights, but does have a mask
-            if (_hasRanges) {
-                _accumNpts(
-                    npts, _myData, _myCount, _myStride, _myMask,
-                    _maskStride, _myRanges, _myIsInclude
-                );
-            }
-            else {
-                _accumNpts(
-                    npts, _myData, _myCount,
-                    _myStride, _myMask, _maskStride
-                );
-            }
-        }
-        else if (_hasRanges) {
-            // this data set has no weights no mask, but does have a set of ranges
-            // associated with it
-            _accumNpts(
-                npts, _myData, _myCount,
-                _myStride, _myRanges, _myIsInclude
+        uInt nBlocks, nthreads;
+        uInt64 extra;
+        PtrHolder<DataIterator> dataIter;
+        PtrHolder<MaskIterator> maskIter;
+        PtrHolder<WeightsIterator> weightsIter;
+        PtrHolder<uInt64> offset;
+        _initThreadVars(
+            nBlocks, extra, nthreads, dataIter,
+            maskIter, weightsIter, offset, nThreadsMax
+        );
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(nthreads)
+#endif
+        for (uInt i=0; i<nBlocks; ++i) {
+            uInt idx8 = _threadIdx();
+            uInt64 dataCount = _myCount - offset[idx8] < ClassicalStatisticsData::BLOCK_SIZE
+                ? extra : ClassicalStatisticsData::BLOCK_SIZE;
+            _computeNpts(
+                npts[idx8], dataIter[idx8], maskIter[idx8],
+                weightsIter[idx8], dataCount
             );
-        }
-        else {
-            // simplest case, this data set has no weights, no mask, nor any ranges associated
-            // with it.
-            _accumNpts(
-                npts, _myData, _myCount, _myStride
+            _incrementThreadIters(
+                dataIter[idx8], maskIter[idx8], weightsIter[idx8],
+                offset[idx8], nthreads
             );
         }
         if (_increment(False)) {
             break;
         }
     }
-    ThrowIf (npts == 0, "No valid data found");
-    return npts;
+    uInt myNpts = 0;
+    for (uInt i=0; i<nThreadsMax; ++i) {
+        uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
+        myNpts += npts[idx8];
+    }
+    ThrowIf (myNpts == 0, "No valid data found");
+    return myNpts;
+}
+
+CASA_STATD
+void ClassicalStatistics<CASA_STATP>::_computeNpts(
+    uInt64& npts, DataIterator dataIter, MaskIterator maskIter,
+    WeightsIterator weightsIter, uInt64 dataCount
+) {
+    if (_hasWeights) {
+        if (_hasMask) {
+            if (_hasRanges) {
+                _accumNpts(
+                    npts, dataIter, weightsIter, dataCount, _myStride,
+                    maskIter, _maskStride, _myRanges, _myIsInclude
+                );
+            }
+            else {
+                _accumNpts(
+                    npts, dataIter, weightsIter, dataCount,
+                    _myStride, maskIter, _maskStride
+                );
+            }
+        }
+        else if (_hasRanges) {
+            _accumNpts(
+                npts, dataIter, weightsIter, dataCount,
+                _myStride, _myRanges, _myIsInclude
+            );
+        }
+        else {
+            // has weights, but no mask nor ranges
+            _accumNpts(
+                npts, dataIter, weightsIter, dataCount, _myStride
+            );
+        }
+    }
+    else if (_hasMask) {
+        // this data set has no weights, but does have a mask
+        if (_hasRanges) {
+            _accumNpts(
+                npts, dataIter, dataCount, _myStride, maskIter,
+                _maskStride, _myRanges, _myIsInclude
+            );
+        }
+        else {
+            _accumNpts(
+                npts, dataIter, dataCount,
+                _myStride, maskIter, _maskStride
+            );
+        }
+    }
+    else if (_hasRanges) {
+        // this data set has no weights no mask, but does have a set of ranges
+        // associated with it
+        _accumNpts(
+            npts, dataIter, dataCount,
+            _myStride, _myRanges, _myIsInclude
+        );
+    }
+    else {
+        // simplest case, this data set has no weights, no mask, nor any ranges associated
+        // with it.
+        _accumNpts(npts, dataIter, dataCount, _myStride);
+    }
 }
 
 // Tried making this into an inline method, but performance decreased by 20 - 25% when
