@@ -28,11 +28,15 @@
 
 #include <casacore/scimath/StatsFramework/StatisticsDataset.h>
 
+#include <casacore/casa/Utilities/PtrHolder.h>
+#include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
+
 namespace casacore {
 
 CASA_STATD StatisticsDataset<CASA_STATP>::StatisticsDataset()
     : _data(), _weights(), _masks(), _counts(), _dataStrides(), _maskStrides(),
-      _isIncludeRanges(), _dataRanges(), _dataProvider(NULL)
+      _isIncludeRanges(), _dataRanges(), _dataProvider(NULL), _idataset(0),
+      _dataCount(0)
 {}
 
 CASA_STATD
@@ -42,7 +46,7 @@ StatisticsDataset<CASA_STATP>::StatisticsDataset(const StatisticsDataset& other)
       _maskStrides(other._maskStrides),
       _isIncludeRanges(other._isIncludeRanges), _dataRanges(other._dataRanges),
       // WARN reference semantics
-      _dataProvider(other._dataProvider) {}
+      _dataProvider(other._dataProvider), _idataset(0), _dataCount(0) {}
 
 CASA_STATD StatisticsDataset<CASA_STATP>::~StatisticsDataset() {}
 
@@ -63,6 +67,7 @@ StatisticsDataset<CASA_STATP>::operator=(
      _dataRanges = other._dataRanges;
      // WARN reference semantics
      _dataProvider = other._dataProvider;
+     _idataset = other._idataset;
      return *this;
 }
 
@@ -178,6 +183,163 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
 
 CASA_STATD Bool StatisticsDataset<CASA_STATP>::empty() const {
     return ! _dataProvider && _data.empty();
+}
+
+CASA_STATD
+Bool StatisticsDataset<CASA_STATP>::increment(Bool includeIDataset) {
+    if (includeIDataset) {
+        ++_idataset;
+    }
+    if (_dataProvider) {
+        ++(*_dataProvider);
+        if (_dataProvider->atEnd()) {
+            _dataProvider->finalize();
+            return True;
+        }
+    }
+    else {
+        ++_diter;
+        if (_diter == _dend) {
+            return True;
+        }
+        ++_citer;
+        ++_dsiter;
+        ++_dataCount;
+    }
+    return False;
+}
+
+CASA_STATD
+void StatisticsDataset<CASA_STATP>::incrementThreadIters(
+    DataIterator& dataIter, MaskIterator& maskIter,
+    WeightsIterator& weightsIter, uInt64& offset, uInt nthreads
+) const {
+    uInt increment = nthreads*ClassicalStatisticsData::BLOCK_SIZE*_chunk.dataStride;
+    if (offset+increment >= _chunk.count*_chunk.dataStride) {
+        // necessary because in some cases std::advance will segfault
+        // if advanced past the end of the data structure
+        return;
+    }
+    std::advance(dataIter, increment);
+    if (_chunk.weights) {
+        std::advance(weightsIter, increment);
+    }
+    if (_chunk.mask) {
+        std::advance(
+            maskIter,
+            nthreads*ClassicalStatisticsData::BLOCK_SIZE*_chunk.mask->second
+        );
+    }
+    offset += increment;
+}
+
+CASA_STATD
+void StatisticsDataset<CASA_STATP>::initIterators() {
+    ThrowIf(empty(), "No data sets have been added");
+    if (_dataProvider) {
+        _dataProvider->reset();
+    }
+    else {
+        _dataCount = 0;
+        _diter = _data.begin();
+        _dend = _data.end();
+        _dsiter = _dataStrides.begin();
+        _citer = _counts.begin();
+    }
+    _chunk.ranges.clear();
+    _chunk.mask.clear();
+    _chunk.weights.clear();
+}
+
+CASA_STATD
+const typename StatisticsDataset<CASA_STATP>::ChunkData&
+StatisticsDataset<CASA_STATP>::initLoopVars() {
+    if (_dataProvider) {
+        _chunk.data = _dataProvider->getData();
+        _chunk.count = _dataProvider->getCount();
+        _chunk.dataStride = _dataProvider->getStride();
+        _chunk.ranges.set(
+            _dataProvider->hasRanges()
+            ? new std::pair<DataRanges, Bool>(
+                _dataProvider->getRanges(), _dataProvider->isInclude()
+            )
+            : NULL
+        );
+        _chunk.mask.set(
+            _dataProvider->hasMask()
+            ? new std::pair<MaskIterator, uInt>(
+                _dataProvider->getMask(), _dataProvider->getMaskStride()
+            )
+            : NULL
+        );
+        _chunk.weights.set(
+            _dataProvider->hasWeights()
+            ? new WeightsIterator(_dataProvider->getWeights()) : NULL
+        );
+    }
+    else {
+        _chunk.data = *_diter;
+        _chunk.count = *_citer;
+        _chunk.dataStride = *_dsiter;
+        typename std::map<uInt, DataRanges>::const_iterator rangeI = _dataRanges.find(_dataCount);
+        _chunk.ranges.set(
+            rangeI == _dataRanges.end() ? NULL
+            : new std::pair<DataRanges, Bool>(
+                rangeI->second, _isIncludeRanges.find(_dataCount)->second
+            )
+        );
+        typename std::map<uInt, MaskIterator>::const_iterator maskI = _masks.find(_dataCount);
+        _chunk.mask.set(
+            maskI == _masks.end() ? NULL
+            : new std::pair<MaskIterator, uInt>(
+                maskI->second, _maskStrides.find(_dataCount)->second
+            )
+        );
+        _chunk.weights.set(
+            _weights.find(_dataCount) == _weights.end()
+            ? NULL
+            : new WeightsIterator(_weights.find(_dataCount)->second)
+        );
+
+    }
+    return _chunk;
+}
+
+CASA_STATD
+void StatisticsDataset<CASA_STATP>::initThreadVars(
+    uInt& nBlocks, uInt64& extra, uInt& nthreads, PtrHolder<DataIterator>& dataIter,
+    PtrHolder<MaskIterator>& maskIter, PtrHolder<WeightsIterator>& weightsIter,
+    PtrHolder<uInt64>& offset, uInt nThreadsMax
+) const {
+    uInt n = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
+    dataIter.set(new DataIterator[n], True);
+    maskIter.set(new MaskIterator[n], True);
+    weightsIter.set(new WeightsIterator[n], True);
+    offset.set(new uInt64[n], True);
+    nBlocks = _chunk.count/ClassicalStatisticsData::BLOCK_SIZE;
+    extra = _chunk.count % ClassicalStatisticsData::BLOCK_SIZE;
+    if (extra > 0) {
+        ++nBlocks;
+    }
+    nthreads = min(nThreadsMax, nBlocks);
+    for (uInt tid=0; tid<nthreads; ++tid) {
+        // advance the per-thread iterators to their correct starting
+        // locations
+        uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
+        dataIter[idx8] = _chunk.data;
+        offset[idx8] = tid*ClassicalStatisticsData::BLOCK_SIZE*_chunk.dataStride;
+        std::advance(dataIter[idx8], offset[idx8]);
+        if (_chunk.weights) {
+            weightsIter[idx8] = *_chunk.weights;
+        }
+        if (_chunk.mask) {
+            maskIter[idx8] = _chunk.mask->first;
+            std::advance(
+                maskIter[idx8],
+                tid*ClassicalStatisticsData::BLOCK_SIZE*_chunk.mask->second
+            );
+        }
+    }
 }
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::reset() {
