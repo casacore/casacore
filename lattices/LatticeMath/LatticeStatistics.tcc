@@ -1301,7 +1301,12 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
             stepper.atStart() && ! progressMeter.null()
             && ! nsetsIsLarge
         ) {
-            uInt mult = doRobust_p ? 2 : 1;
+            // if _doRobust_p = True, one scan for accumulated stats
+            // + one scan for median and quantiles + one scan for
+            // medabsdevmed = at least 3. In practice this can be more
+            // because there can be multiple scans for median/quantiles
+            // and medabsdevmed for large data sets.
+            uInt mult = doRobust_p ? 3 : 1;
             progressMeter->init(mult*nsets*dataProvider->estimatedSteps());
         }
         sa->setDataProvider(dataProvider);
