@@ -565,7 +565,7 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     StatsDataProvider<CASA_STATP> *dataProvider
         = this->_getDataset().getDataProvider();
     StatsData<AccumType>& stats = _getStatsData();
-    uInt iDataset = this->_getIDataset();
+    const Int64 iDataset = this->_getDataset().iDataset();
     if (
         iDataset == threadStats.maxpos.first
         && (stats.max.null() || *threadStats.max > *stats.max)
