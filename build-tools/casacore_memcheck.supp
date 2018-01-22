@@ -27,10 +27,17 @@
    fun:_ZN4casa9FiledesIO5writeExPKv
 }
 {
-   Casacore-write-not-fully-initialized-buffer-FilebufIO
+   Casacore-write-not-fully-initialized-buffer-FilebufIO-dbg
    Memcheck:Param
    write(buf)
    fun:__write_nocancel
+   fun:_ZN4casa9FilebufIO11writeBufferExPKcx
+}
+{
+   Casacore-write-not-fully-initialized-buffer-FilebufIO-opt
+   Memcheck:Param
+   write(buf)
+   fun:???
    fun:_ZN4casa9FilebufIO11writeBufferExPKcx
 }
 
@@ -56,5 +63,14 @@
    fun:malloc
    fun:nss_parse_service-list
    fun:__nss_database_lookup
+}
+
+# OpenMP with glibc-2.2.5 seems to give a pthread leak
+{
+   openmp-pthread-leak
+   Memcheck:Leak
+   fun:calloc
+   fun:_dl_allocate_tls
+   fun:pthread_create@@GLIBC_2.2.5
 }
 

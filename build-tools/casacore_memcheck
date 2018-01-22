@@ -26,3 +26,4 @@ if test "$errors" != "" -o "$deflost" != "" -o "$poslost" != "" -o "$openfds" !=
 then
     cat ${pgm}_tmp.valgrind >> $pgm.checktool.valgrind
 fi
+rm ${pgm}_tmp.valgrind

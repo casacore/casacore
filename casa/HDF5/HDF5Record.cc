@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <casacore/casa/HDF5/HDF5Record.h>
-#include <casacore/casa/HDF5/HDF5DataSet.h>
+#include <casacore/casa/HDF5/HDF5DataType.h>
 #include <casacore/casa/HDF5/HDF5Group.h>
 #include <casacore/casa/HDF5/HDF5HidMeta.h>
 #include <casacore/casa/HDF5/HDF5Error.h>
@@ -91,7 +91,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       if (rank == 0) {
 	readScalar (id, dtid, name, rec);
       } else {
-	readArray (id, dtid, HDF5DataSet::toShape(shp), name, rec);
+	readArray (id, dtid, HDF5DataType::toShape(shp), name, rec);
       }
     }
     // Now read all subrecords.
@@ -144,7 +144,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       break;
     case H5T_COMPOUND:
       {
-	if (H5Tget_nmembers(dtid) == 2) {
+	if (HDF5DataType::isComplex(dtid)) {
 	  if (sz == sizeof(Complex)) {
 	    readSca<Complex> (attrId, name, rec);
 	  } else {
@@ -152,7 +152,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    readSca<DComplex> (attrId, name, rec);
 	  }
 	} else {
-	  AlwaysAssert (H5Tget_nmembers(dtid)==3, AipsError);
+	  AlwaysAssert (HDF5DataType::isEmptyArray(dtid), AipsError);
 	  readEmptyArray (attrId, name, rec);
 	}
       }
@@ -207,7 +207,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       break;
     case H5T_COMPOUND:
       {
-	AlwaysAssert (H5Tget_nmembers(dtid)==2, AipsError);
+	AlwaysAssert (HDF5DataType::isComplex(dtid), AipsError);
 	if (sz == sizeof(Complex)) {
 	  readArr<Complex> (attrId, shape, name, rec);
 	} else {
@@ -227,9 +227,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void HDF5Record::readEmptyArray (hid_t attrId,
 				   const String& name, RecordInterface& rec)
   {
-    // Initialize to satisfy compiler; HDF5DataType does not use them.
-    Int values[] = {0,0,0};
-    HDF5DataType dtype(values[1], values[2]);
+    Int values[3];
+    HDF5DataType dtype(0, 0);
     read (attrId, values, dtype);
     Int rank = values[1];
     Int dt   = values[2];
@@ -450,11 +449,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     int rank = shape.nelements();
     if (shape.product() == 0) {
       writeEmptyArray (groupHid, name, rank,
-		       HDF5DataType::getDataType(dtype.getHidFile()));
+		       HDF5DataType::getDataType(dtype.getHidMem()));
       return;
     }
     // Create the data space for the array.
-    Block<hsize_t> ls = HDF5DataSet::fromShape (shape);
+    Block<hsize_t> ls = HDF5DataType::fromShape (shape);
     HDF5HidDataSpace dsid (H5Screate_simple(rank, ls.storage(), NULL));
     AlwaysAssert (dsid.getHid()>=0, AipsError);
     // Create the attribute.
@@ -502,7 +501,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Create the data space for the array.
     int rank = shape.nelements();
-    Block<hsize_t> ls = HDF5DataSet::fromShape (shape);
+    Block<hsize_t> ls = HDF5DataType::fromShape (shape);
     HDF5HidDataSpace dsid (H5Screate_simple(rank, ls.storage(), NULL));
     AlwaysAssert (dsid.getHid()>=0, AipsError);
     // Create the attribute.

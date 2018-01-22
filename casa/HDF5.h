@@ -1,4 +1,4 @@
-//# HDF5.h: Classes binding casa to the HDF5 C API
+//# HDF5.h: Classes binding casacore to the HDF5 C API
 //# Copyright (C) 2008
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -43,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <module>
 //
 // <summary>
-// Classes binding casa to the HDF5 C API
+// Classes binding casacore to the HDF5 C API
 // </summary>
 
 // <prerequisite>
@@ -66,11 +66,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //       (the so-called hid-s) is handled in an automatic and
 //       exception-safe way.
 //  <li> The overwhelming and rather hard to use HDF5 C API is hidden.
-//  <li> The standard casa data types (scalars and arrays) are fully supported.
+//  <li> The standard casacore data types (scalars and arrays) are supported.
 //       Because HDF5 does not support empty strings, they are transparantly
 //       replaced by the value '__empty__'.
-//       Unfortunately HDF5 does not support empty arrays, thus they cannot
-//       be stored.
+//       Also HDF5 does not support empty arrays, thus they are stored
+//       in a special way using a special compound value.
 //  <li> A Record is stored as a group. Its values (scalars and arrays)
 //       are stored as attributes, while nested records are stored as
 //       nested groups.
@@ -78,21 +78,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> Complex values are stored as compounds of two real values.
 //  <li> Large arrays can be stored in HDF5 DataSets with an optional tile size
 //       (chunk size in HDF5 terminology). The array axes are reversed (fully
-//       transparantly) because HDF5 uses C-order, while casa Arrays use
+//       transparantly) because HDF5 uses C-order, while casacore Arrays use
 //       Fortran-order.
 //  <li> Automatic printing of HDF5 messages is disabled. All errors are
 //       thrown as exceptions (AipsError or derived from it).
 // </ul>
 //
-// The following classes are available:
+// The following interface classes are available:
 // <ul>
 //  <li> HDF5File opens or creates an HDF5 file and closes it automatically.
 //       Furthermore it has a function to test if a file is in HDF5 format.
+//  <li> HDF5DataType defines the HDF5 memory and file data type. It supports
+//       the basic data types, complex, string, arrays and compounds.
 //  <li> HDF5Record reads or writes a Record as a group in an HDF5 object.
 //  <li> HDF5DataSet opens or creates a possible tiled data set in an HDF5
 //       object. The array can be read or written in parts.
-//       Currently the only data types supported are Bool, Int, Float, Double,
-//       Complex, and DComplex.
+//       It can be created of any HDF5DataType.
 //  <li> HDF5Group opens, creates, or removes a group in an HDF5 object.
 // </ul>
 // Note that HDF5Object forms the base class of HDF5File, HDF5Group, and
@@ -102,18 +103,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // can be used directly in any HDF5 function.
 //
 // Because of HDF5 resource management the objects (e.g. HDF5File) cannot
-// be copied. However, they can be used in shared pointers (like casa's
-// CountedPtr or boost's shared_ptr).
+// be copied. However, they can be used in shared pointers (like casacore's
+// CountedPtr or std::shared_ptr).
 // <br>
 // Internally the classes use HDF5HidMeta.h which does the resource management
 // for HDF5 meta data like attributes, property lists, etc..
 //
 // <note>
 // All HDF5 classes and all their functions are compiled, but it depends on
-// the setting of HAVE_HDF5 how. If not set, all these functions are merely stubs
-// and the class constructors throw an exception when used.
+// the setting of HAVE_HDF5 how. If not set, all these functions are merely
+// stubs and the class constructors throw an exception when used.
 // The function <src>HDF5Object::hasHDF5Support()</src> tells if HDF5 is used.
-// See the casacore build instructions at casacore.googlecode.com
+// See the casacore build instructions at github.com/casacore/casacore
 // for more information.
 // </note>
 // </synopsis>
@@ -125,17 +126,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <motivation>
 // HDF5 offers a C++ interface. However, this interface is still quite complex
 // and is too much C-oriented.
-// Furthermore there was the need to support the casa data types, in particular
-// reversal of array axes was needed.
+// Furthermore there was the need to support the casacore data types,
+// in particular complex. The reversal of array axes was also needed.
 // </motivation>
 
 // <todo asof="2008/03/13">
-//  <li> Make it possible to store empty arrays (e.g. as a compound of a
-//       scalar (defining its type) and a vector (defining its shape).
 //  <li> Set the optimal data set chunk cache size from a given access pattern.
-//       The current problem is that you can only set the cache size at the
-//       HDF5 file level, not at the data set level. Furthermore, setting
-//       the cache size requires that the file is closed first.
+//       The current problem is that setting the cache size requires that
+//       the file is closed first.
 //       For the time being a fixed cache size of 16 MB is used instead of
 //       the default 1 MB.
 // </todo>

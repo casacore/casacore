@@ -108,9 +108,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Construct from given hid.
     HDF5HidDataType (hid_t hid)
       : itsHid(hid) {}
+    // Copy constructor makes a deep copy.
+    HDF5HidDataType (const HDF5HidDataType& that);
     // The destructor closes the hid.
     ~HDF5HidDataType()
       { close(); }
+    // Assignment makes a deep copy.
+    HDF5HidDataType& operator= (const HDF5HidDataType& that);
     // Close the hid if valid.
     void close();
     // Put hid in it. If it already contains a hid, it will be closed.
@@ -123,11 +127,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     operator hid_t() const
       { return itsHid; }
   private:
-    // Copy constructor cannot be used.
-    HDF5HidDataType (const HDF5HidDataType& that);
-    // Assignment cannot be used.
-    HDF5HidDataType& operator= (const HDF5HidDataType& that);
-
     hid_t itsHid;
   };
 

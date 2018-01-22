@@ -58,28 +58,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <synopsis>
   // This class wraps the HDF5 functions to create and open a data set.
-  // It is meant to be used in class HDF5Array, but can be used in itself
+  // It is meant to be used in class HDF5Lattice, but can be used in itself
   // as well.
-  // Only a limited number of data types are supported.
-  // They are: boolean (stored as chars), 4-byte integer, and single and
-  // double precision real and complex.
+  // A dataset of any HDF5DataType (including compound types) can be created.
+  // For a limited number of data types special constructors exist which
+  // create the appropriate HDF5DataType themselves.
   // <br>
-  // The data set has a fixed shape, thus cannot be extended nor resized.
-  // It can be stored in a tiled (chunked) way by specifying the tile shape
-  // when creating it.
+  // A data set can be created extendible by defining the appropriate
+  // axis with length 0, whereafter the extend function can be used to
+  // extend the data set.
+  // The data can be stored in a tiled (chunked) way by specifying the tile
+  // shape when creating it.
+  // <br>
+  // When opening an existing data set, it is checked if the given data type
+  // matches the data set's data type. For a compound data type, it only
+  // checks if its size matches; it does not check if the fields match.
   // <br>
   // It is possible to read or write a section of the data set by using an
   // appropriate Slicer object. Note that the Slicer object must be fully
   // filled; it does not infer missing info from the array shape.
   // <p>
-  // Casacore arrays are in Fortran order, while HDF5 uses C order.
+  // Note that Casacore arrays are in Fortran order, while HDF5 uses C order.
   // Therefore array axes are reversed, thus axes in shapes, slicers, etc.
   // </synopsis> 
 
   // <motivation>
   // It was overkill to use the HDF5 C++ interface. Instead little wrappers
   // have been written. HDF5DataSet can be embedded in a shared pointer making
-  // it possible to share an HDF5 data set amongst various HDF5Array objects
+  // it possible to share an HDF5 data set amongst various HDF5Lattice objects
   // and close (i.e. destruct) the HDF5 data set object when needed.
   // </motivation>
 
@@ -94,6 +100,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
 		 const IPosition& tileShape, const uChar*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
+		 const IPosition& tileShape, const Short*);
+    HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
 		 const IPosition& tileShape, const Int*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
 		 const IPosition& tileShape, const Int64*);
@@ -105,6 +113,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		 const IPosition& tileShape, const Complex*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
 		 const IPosition& tileShape, const DComplex*);
+    HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
+		 const IPosition& tileShape, const HDF5DataType&);
     // </group>
 
     // Open an existing HDF5 data set in the given hid (file or group).
@@ -112,16 +122,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // <group>
     HDF5DataSet (const HDF5Object&, const String&, const Bool*);
     HDF5DataSet (const HDF5Object&, const String&, const uChar*);
+    HDF5DataSet (const HDF5Object&, const String&, const Short*);
     HDF5DataSet (const HDF5Object&, const String&, const Int*);
     HDF5DataSet (const HDF5Object&, const String&, const Int64*);
     HDF5DataSet (const HDF5Object&, const String&, const Float*);
     HDF5DataSet (const HDF5Object&, const String&, const Double*);
     HDF5DataSet (const HDF5Object&, const String&, const Complex*);
     HDF5DataSet (const HDF5Object&, const String&, const DComplex*);
+    HDF5DataSet (const HDF5Object&, const String&, const HDF5DataType&);
     // </group>
 
     // The destructor closes the HDF5 dataset object.
-    ~HDF5DataSet();
+    virtual ~HDF5DataSet();
 
     // Close the hid if valid.
     virtual void close();
@@ -163,19 +175,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Extend the dataset if an axis in the new shape is larger.
     void extend (const IPosition& shape);
 
-    // Helper functions to convert shapes.
-    // It reverses the axes, because HDF5 uses C-order.
-    // <group>
-    static Block<hsize_t> fromShape (const IPosition& shape);
-    static IPosition toShape (const Block<hsize_t>& b);
-    // </group>
-
-  private:
-    // Copy constructor cannot be used.
-    HDF5DataSet (const HDF5DataSet& that);
-    // Assignment cannot be used.
-    HDF5DataSet& operator= (const HDF5DataSet& that);
-
+  protected:
     // Create the data set.
     void create (const HDF5Object&, const String&,
 		 const IPosition& shape, const IPosition& tileShape);
@@ -185,6 +185,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Close the dataset (but not other hids).
     void closeDataSet();
+
+  private:
+    // Copy constructor cannot be used.
+    HDF5DataSet (const HDF5DataSet& that);
+    // Assignment cannot be used.
+    HDF5DataSet& operator= (const HDF5DataSet& that);
 
     HDF5HidDataSpace   itsDSid;        //# data space id
     HDF5HidProperty    itsPLid;        //# create property list id

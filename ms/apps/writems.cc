@@ -78,6 +78,8 @@
 
 #include <casacore/casa/HDF5/HDF5File.h>
 #include <casacore/casa/HDF5/HDF5Group.h>
+#include <casacore/casa/HDF5/HDF5Record.h>
+#include <casacore/casa/HDF5/HDF5DataType.h>
 #include <casacore/casa/HDF5/HDF5DataSet.h>
 
 #include <iostream>
@@ -89,7 +91,6 @@ using namespace std;
 
 // This struct contains the data items needed to fill a spectral window in
 // the main table in HDF5.
-// It resembles the MSMainColumn class.
 struct HDF5Spw {
   CountedPtr<HDF5Group> spw;
   CountedPtr<HDF5DataSet> data;
@@ -97,27 +98,55 @@ struct HDF5Spw {
   CountedPtr<HDF5DataSet> modelData;
   CountedPtr<HDF5DataSet> corrData;
   CountedPtr<HDF5DataSet> flag;
-  CountedPtr<HDF5DataSet> weight;
   CountedPtr<HDF5DataSet> weightSpectrum;
-  CountedPtr<HDF5DataSet> antenna1;
-  CountedPtr<HDF5DataSet> antenna2;
-  CountedPtr<HDF5DataSet> time;
-  CountedPtr<HDF5DataSet> timeCentroid;
-  CountedPtr<HDF5DataSet> interval;
-  CountedPtr<HDF5DataSet> exposure;
-  CountedPtr<HDF5DataSet> arrayId;
-  CountedPtr<HDF5DataSet> fieldId;
-  CountedPtr<HDF5DataSet> dataDescId;
-  CountedPtr<HDF5DataSet> uvw;
-  CountedPtr<HDF5DataSet> stateId;
-  CountedPtr<HDF5DataSet> flagRow;
-  CountedPtr<HDF5DataSet> feed1;
-  CountedPtr<HDF5DataSet> feed2;
-  CountedPtr<HDF5DataSet> processorId;
-  CountedPtr<HDF5DataSet> scanNumber;
-  CountedPtr<HDF5DataSet> observationId;
-  CountedPtr<HDF5DataSet> sigma;
+  CountedPtr<HDF5DataSet> metaData;
 };
+
+struct HDF5MetaData
+{
+  double time;
+  double timeCentroid;
+  double interval;
+  double exposure;
+  double uvw[3];
+  float weight[4];
+  float sigma[4];
+  Int antenna1;
+  Int antenna2;
+  Int arrayId;
+  Int fieldId;
+  Int dataDescId;
+  Int stateId;
+  Int flagRow;
+  Int feed1;
+  Int feed2;
+  Int processorId;
+  Int scanNumber;
+  Int observationId;
+
+  HDF5MetaData()
+    : time(0),
+      timeCentroid(0),
+      interval(0),
+      exposure(0),
+      //      uvw ({0,0,0}),   // only possible in C++11
+      //weight ({1,1,1,1}),
+      //sigma ({1,1,1,1}),
+      antenna1(0),
+      antenna2(0),
+      arrayId(0),
+      fieldId(0),
+      dataDescId(0),
+      stateId(0),
+      flagRow(False),
+      feed1(0),
+      feed2(0),
+      processorId(0),
+      scanNumber(0),
+      observationId(0)
+  {}
+};
+
 
 // <synopsis>
 // Class for creating and filling one or more MeasurementSets.
@@ -153,7 +182,7 @@ public:
              const Vector<int>& nfreq,
              const Vector<double>& startFreq,
              const Vector<double>& stepFreq,
-             int spw, int nspw,
+             int spw, int nspw, int ntimeField,
              double startTime,
              double stepTime,
              const String& msName,
@@ -219,7 +248,7 @@ private:
   // </group>
 
   // Create the MS and fill its subtables as much as possible.
-  virtual void createMS (const String& msName,
+  virtual void createMS (const String& msName, int ntimeField,
                          int useMultiFile, int multiBlockSize,
                          bool createImagerColumns,
                          const String& flagColumn, int flagBits) = 0;
@@ -301,7 +330,7 @@ private:
   // </group>
 
   // Create the MS and fill its subtables as much as possible.
-  virtual void createMS (const String& msName,
+  virtual void createMS (const String& msName, int ntimeField,
                          int useMultiFile, int multiBlockSize,
                          bool createImagerColumns,
                          const String& flagColumn, int flagBits);
@@ -309,6 +338,9 @@ private:
   // Close all subtables to limit the nr of open files.
   // This can be done once all subtables have been written.
   virtual void closeSubTables();
+
+  // Write the never changing columns only once.
+  void writeSimpleMainColumns();
 
   // Update the times in various subtables at the end of the observation.
   virtual void updateTimes();
@@ -385,7 +417,7 @@ private:
   // </group>
 
   // Create the MS and fill its subtables as much as possible.
-  virtual void createMS (const String& msName,
+  virtual void createMS (const String& msName, int ntimeField,
                          int useMultiFile, int multiBlockSize,
                          bool createImagerColumns,
                          const String& flagColumn, int flagBits);
@@ -413,8 +445,12 @@ private:
   virtual void fillState();
   // </group>
 
+  // Create the HDF5 meta data type.
+  void makeMetaType();
+
   //# Define the data.
   Int64                itsNrRow;
+  HDF5DataType         itsMetaType;
   CountedPtr<HDF5File> itsFile;
   vector<HDF5Spw>      itsSpws;
 };
@@ -442,7 +478,7 @@ void MSCreate::init (const vector<double>& ra,
                      const Vector<int>& nfreq,
                      const Vector<double>& startFreq,
                      const Vector<double>& stepFreq,
-                     int spw, int nspw,
+                     int spw, int nspw, int ntimeField,
                      double startTime,
                      double stepTime,
                      const String& msName,
@@ -453,8 +489,6 @@ void MSCreate::init (const vector<double>& ra,
                      int   useMultiFile,
                      int   multiBlockSize)
 {
-  cout << "init " << msName << endl;
-  cout << spw<<' '<<nspw<<' '<<nfreq.size()<<' '<<npol.size()<<' '<<startFreq.size()<<' '<<stepFreq.size()<<endl;
   itsRa = ra;
   itsDec = dec;
   itsCalcUVW        = calcUVW;
@@ -493,7 +527,7 @@ void MSCreate::init (const vector<double>& ra,
     itsPhaseDir[i] = MDirection(radec, MDirection::J2000);
   }
   // Create the MS.
-  createMS (msName, useMultiFile, multiBlockSize,
+  createMS (msName, ntimeField, useMultiFile, multiBlockSize, 
             createImagerColumns, flagColumn, nflagBits);
   // Fill the baseline vector for each antenna pair.
   fillBaseLines (antPos);
@@ -588,7 +622,7 @@ MSCreateCasa::~MSCreateCasa()
 }
 
 
-void MSCreateCasa::createMS (const String& msName,
+void MSCreateCasa::createMS (const String& msName, int ntimeField,
                              int useMultiFile, int multiBlockSize,
                              bool createImagerColumns,
                              const String& flagColumn, int nflagBits)
@@ -663,8 +697,12 @@ void MSCreateCasa::createMS (const String& msName,
   IncrementalStMan incrStMan("ISMData", ts);
   newTab.bindAll (incrStMan);
   StandardStMan stanStMan("SSMData", ts);
+  newTab.bindColumn(MS::columnName(MS::TIME), stanStMan);
+  newTab.bindColumn(MS::columnName(MS::TIME_CENTROID), stanStMan);
   newTab.bindColumn(MS::columnName(MS::ANTENNA1), stanStMan);
   newTab.bindColumn(MS::columnName(MS::ANTENNA2), stanStMan);
+  newTab.bindColumn(MS::columnName(MS::DATA_DESC_ID), stanStMan);
+  newTab.bindColumn(MS::columnName(MS::FIELD_ID), stanStMan);
   newTab.bindColumn(MS::columnName(MS::UVW), stanStMan);
   // Use a TiledColumnStMan or TiledShapeStMan for the data and flags.
   if (itsNSpw == 1) {
@@ -736,6 +774,13 @@ void MSCreateCasa::createMS (const String& msName,
   // Do this after the creation of optional subtables,
   // so the MS will know about those optional sutables.
   itsMS.createDefaultSubtables (Table::New);
+  // Store some attributes defining nr of baselines and fields.
+  Record rec;
+  rec.define ("NAntenna", itsNrAnt);
+  rec.define ("NBaseline", nbaselines());
+  rec.define ("NField", int(itsRa.size()));
+  rec.define ("NTimeField", ntimeField);
+  itsMS.rwKeywordSet().defineRecord ("ATTR", rec);
 }
 
 void MSCreateCasa::closeSubTables()
@@ -1108,9 +1153,30 @@ void MSCreateCasa::addRows (int nbasel, int nfield)
   itsMS.addRow (nrow);
 }
 
+void MSCreateCasa::writeSimpleMainColumns()
+{
+  // Columns with the same val everywhere and IncrStMan. Write once in row 0.
+  itsMSCol->feed1().put(0, 0);
+  itsMSCol->feed2().put(0, 0);
+  itsMSCol->processorId().put(0, 0);
+  itsMSCol->scanNumber().put(0, 0);
+  itsMSCol->arrayId().put(0, 0);
+  itsMSCol->observationId().put(0, 0);
+  itsMSCol->stateId().put(0, 0);
+  itsMSCol->interval().put(0, itsStepTime);
+  itsMSCol->exposure().put(0, itsStepTime);
+  itsMSCol->flagRow().put(0, False);
+  Vector<float> ones(4, 1.0f);
+  itsMSCol->weight().put(0, ones);
+  itsMSCol->sigma().put(0, ones);
+}
+
 void MSCreateCasa::writeTimeStepRows (int band, int field,
                                       const vector<Vector<Double> >& antuvw)
 {
+  if (itsNrRow == 0) {
+    writeSimpleMainColumns();
+  }
   // Find the shape of the data array in each table row.
   IPosition shape(2, itsNPol[band], itsNFreq[band]);
   Array<Bool> defFlags(shape, False);
@@ -1151,25 +1217,13 @@ void MSCreateCasa::writeTimeStepRows (int band, int field,
       if (itsWriteWeightSpectrum) {
         itsMSCol->weightSpectrum().put(itsNrRow, weightSpectrum);
       }            
-      itsMSCol->flagRow().put (itsNrRow, False);
       itsMSCol->time().put (itsNrRow, time);
+      itsMSCol->timeCentroid().put (itsNrRow, time);
       itsMSCol->antenna1().put (itsNrRow, j);
       itsMSCol->antenna2().put (itsNrRow, i);
-      itsMSCol->feed1().put (itsNrRow, 0);
-      itsMSCol->feed2().put (itsNrRow, 0);
       itsMSCol->dataDescId().put (itsNrRow, band);
-      itsMSCol->processorId().put (itsNrRow, 0);
       itsMSCol->fieldId().put (itsNrRow, field);
-      itsMSCol->interval().put (itsNrRow, itsStepTime);
-      itsMSCol->exposure().put (itsNrRow, itsStepTime);
-      itsMSCol->timeCentroid().put (itsNrRow, time);
-      itsMSCol->scanNumber().put (itsNrRow, 0);
-      itsMSCol->arrayId().put (itsNrRow, 0);
-      itsMSCol->observationId().put (itsNrRow, 0);
-      itsMSCol->stateId().put (itsNrRow, 0);
       itsMSCol->uvw().put (itsNrRow, myuvw);
-      itsMSCol->weight().put (itsNrRow, weight);
-      itsMSCol->sigma().put (itsNrRow, sigma);
       itsNrRow++;
     }
   }
@@ -1178,6 +1232,9 @@ void MSCreateCasa::writeTimeStepRows (int band, int field,
 void MSCreateCasa::writeTimeStepSpw (int band, int field,
                                      const vector<Vector<Double> >& antuvw)
 {
+  if (itsNrRow == 0) {
+    writeSimpleMainColumns();
+  }
   int nrbasel = nbaselines();
   // Find the shape of the data array in each table row.
   IPosition shape(3, itsNPol[band], itsNFreq[band], nrbasel);
@@ -1214,31 +1271,16 @@ void MSCreateCasa::writeTimeStepSpw (int band, int field,
   itsMSCol->flag().putColumnCells(rows, Array<Bool>(shape, False));
   if (itsWriteWeightSpectrum) {
     itsMSCol->weightSpectrum().putColumnCells(rows, Array<float>(shape, 1));
-  }            
-  itsMSCol->flagRow().putColumnCells (rows, Vector<Bool>(nrbasel, False));
+  }
   itsMSCol->time().putColumnCells (rows, times);
   itsMSCol->timeCentroid().putColumnCells (rows, times);
-  times = itsStepTime;
-  itsMSCol->interval().putColumnCells (rows, times);
-  itsMSCol->exposure().putColumnCells (rows, times);
   itsMSCol->antenna1().putColumnCells (rows, vecint);
   itsMSCol->antenna2().putColumnCells (rows, vecint2);
-  vecint = 0;
-  itsMSCol->feed1().putColumnCells (rows, vecint);
-  itsMSCol->feed2().putColumnCells (rows, vecint);
-  itsMSCol->processorId().putColumnCells (rows, vecint);
-  itsMSCol->scanNumber().putColumnCells (rows, vecint);
-  itsMSCol->arrayId().putColumnCells (rows, vecint);
-  itsMSCol->observationId().putColumnCells (rows, vecint);
-  itsMSCol->stateId().putColumnCells (rows, vecint);
   vecint = band;
   itsMSCol->dataDescId().putColumnCells (rows, vecint);
   vecint = field;
   itsMSCol->fieldId().putColumnCells (rows, vecint);
   itsMSCol->uvw().putColumnCells (rows, myuvw);
-  Matrix<float> ones(itsNPol[band], nrbasel, 1);
-  itsMSCol->weight().putColumnCells (rows, ones);
-  itsMSCol->sigma().putColumnCells (rows, ones);
   itsNrRow += nrbasel;
 }
 
@@ -1298,13 +1340,16 @@ void MSCreateCasa::showCacheStatistics() const
 
 MSCreateHDF5::MSCreateHDF5()
   : itsNrRow (0)
-{}
+{
+  // Create the meta data type.
+  makeMetaType();
+}
 
 MSCreateHDF5::~MSCreateHDF5()
 {
 }
 
-void MSCreateHDF5::createMS (const String& msName,
+void MSCreateHDF5::createMS (const String& msName, int ntimeField,
                              int /*useMultiFile*/, int /*multiBlockSize*/,
                              bool createImagerColumns,
                              const String& /*flagColumn*/, int /*nflagBits*/)
@@ -1313,78 +1358,101 @@ void MSCreateHDF5::createMS (const String& msName,
   // Create the file.
   itsFile = new HDF5File(msName, ByteIO::New);
   int nrbasel = nbaselines();
+  // Store some attributes defining nr of baselines and fields.
+  Record rec;
+  rec.define ("NAntenna", itsNrAnt);
+  rec.define ("NBaseline", nrbasel);
+  rec.define ("NField", int(itsRa.size()));
+  rec.define ("NTimeField", ntimeField);
   // Create a group per spectral window.
   for (int band=itsSpw; band<itsSpw+itsNSpw; ++band) {
     HDF5Spw spw;
     spw.spw = new HDF5Group(*itsFile, "SPW_"+String::toString(band));
+    // Write the attributes.
+    HDF5Record::writeRecord (*(spw.spw), "ATTR", rec);
     // Create the data in the spw.
     IPosition shape(3, itsNPol[band], itsNFreq[band], 0);
-    IPosition shape2(2, itsNPol[band], 0);
     IPosition shape1(1, 0);
-    IPosition tileShape1(1, 100*nrbasel);
-    IPosition tileShape2(2, itsNPol[band], 100*nrbasel);
-    IPosition tileShapeu(2, 3, 100*nrbasel);
+    IPosition tileShape1(1, nrbasel);
+    uInt freqPerTile = itsDataTileShape[1];
+    uInt cacheSize = (itsNFreq[band] + freqPerTile - 1) / freqPerTile;
+    cout << "HDF5 cacheSize = " << cacheSize << endl;
     if (itsWriteFloatData) {
       spw.floatData = new HDF5DataSet (*spw.spw, "FLOAT_DATA", shape,
                                        itsDataTileShape, (float*)0);
+      spw.floatData->setCacheSize (cacheSize);
     } else {
       spw.data = new HDF5DataSet (*spw.spw, "DATA", shape,
                                   itsDataTileShape, (Complex*)0);
+      spw.data->setCacheSize (cacheSize);
     }
     IPosition tileShape(itsDataTileShape);
     tileShape[2] *= 8;
     spw.flag = new HDF5DataSet (*spw.spw, "FLAG", shape, tileShape,
                                 (Bool*)0);
+    spw.flag->setCacheSize (cacheSize);
     if (itsWriteWeightSpectrum) {
       spw.weightSpectrum = new HDF5DataSet (*spw.spw, "WEIGHT_SPECTRUM", shape,
                                             itsDataTileShape, (float*)0);
+      spw.weightSpectrum->setCacheSize (cacheSize);
     }
-    spw.weight = new HDF5DataSet (*spw.spw, "WEIGHT", shape2,
-                                  tileShape2, (float*)0);
-    spw.sigma = new HDF5DataSet (*spw.spw, "SIGMA", shape2,
-                                  tileShape2, (float*)0);
-    spw.antenna1 = new HDF5DataSet (*spw.spw, "ANTENNA1", shape1,
-                                    tileShape1, (Int*)0);
-    spw.antenna2 = new HDF5DataSet (*spw.spw, "ANTENNA2", shape1,
-                                    tileShape1, (Int*)0);
-    spw.arrayId = new HDF5DataSet (*spw.spw, "ARRAY_ID", shape1,
-                                  tileShape1, (Int*)0);
-    spw.fieldId = new HDF5DataSet (*spw.spw, "FIELD_ID", shape1,
-                                  tileShape1, (Int*)0);
-    spw.processorId = new HDF5DataSet (*spw.spw, "PROCESSOR_ID", shape1,
-                                  tileShape1, (Int*)0);
-    spw.stateId = new HDF5DataSet (*spw.spw, "STATE_ID", shape1,
-                                  tileShape1, (Int*)0);
-    spw.feed1 = new HDF5DataSet (*spw.spw, "FEED1", shape1,
-                                  tileShape1, (Int*)0);
-    spw.feed2 = new HDF5DataSet (*spw.spw, "FEED2", shape1,
-                                  tileShape1, (Int*)0);
-    spw.dataDescId = new HDF5DataSet (*spw.spw, "DATA_DESC_ID", shape1,
-                                      tileShape1, (Int*)0);
-    spw.observationId = new HDF5DataSet (*spw.spw, "OBSERVATION_ID", shape1,
-                                         tileShape1, (Int*)0);
-    spw.scanNumber = new HDF5DataSet (*spw.spw, "SCAN_NUMBER", shape1,
-                                  tileShape1, (Int*)0);
-    spw.time = new HDF5DataSet (*spw.spw, "TIME", shape1,
-                                  tileShape1, (double*)0);
-    spw.timeCentroid = new HDF5DataSet (*spw.spw, "TIME_CENTROID", shape1,
-                                  tileShape1, (double*)0);
-    spw.interval = new HDF5DataSet (*spw.spw, "INTERVAL", shape1,
-                                  tileShape1, (double*)0);
-    spw.exposure = new HDF5DataSet (*spw.spw, "EXPOSURE", shape1,
-                                  tileShape1, (double*)0);
-    spw.uvw = new HDF5DataSet (*spw.spw, "UVW", IPosition(2,3,0),
-                               tileShapeu, (double*)0);
-    spw.flagRow = new HDF5DataSet (*spw.spw, "FLAG_ROW", shape1,
-                                  tileShape1, (bool*)0);
+    spw.metaData = new HDF5DataSet (*spw.spw, "METADATA", shape1,
+                                    tileShape1, itsMetaType);
     if (createImagerColumns) {
       spw.modelData = new HDF5DataSet (*spw.spw, "MODEL_DATA", shape, tileShape,
                                        (Complex*)0);
       spw.corrData = new HDF5DataSet (*spw.spw, "CORRECTED_DATA", shape, tileShape,
                                       (Complex*)0);
+      // Not written, so no need to set their cache sizes.
     }
     itsSpws.push_back (spw);
   }
+}
+
+void MSCreateHDF5::makeMetaType()
+{
+  // Push the fields in the same order as defined in the HDF5MetaData struct.
+  vector<HDF5DataType> types;
+  vector<String> names;
+  types.push_back (HDF5DataType((double*)0));
+  names.push_back ("time");
+  types.push_back (HDF5DataType((double*)0));
+  names.push_back ("timeCentroid");
+  types.push_back (HDF5DataType((double*)0));
+  names.push_back ("interval");
+  types.push_back (HDF5DataType((double*)0));
+  names.push_back ("exposure");
+  types.push_back (HDF5DataType (HDF5DataType((double*)0), IPosition(1,3)));
+  names.push_back ("uvw");
+  types.push_back (HDF5DataType (HDF5DataType((float*)0), IPosition(1,4)));
+  names.push_back ("weight");
+  types.push_back (HDF5DataType (HDF5DataType((float*)0), IPosition(1,4)));
+  names.push_back ("sigma");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("antenna1");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("antenna2");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("arrayId");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("fieldId");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("dataDescId");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("stateId");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("flagRow");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("feed1");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("feed2");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("processorId");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("scanNumber");
+  types.push_back (HDF5DataType((Int*)0));
+  names.push_back ("observationId");
+  itsMetaType = HDF5DataType (names, types);
 }
 
 void MSCreateHDF5::addRows (int nbasel, int nfield)
@@ -1393,8 +1461,6 @@ void MSCreateHDF5::addRows (int nbasel, int nfield)
   for (int band=itsSpw; band<itsSpw+itsNSpw; ++band) {
     // Define the new shape of the data arrays.
     IPosition newShape3(3, itsNPol[band], itsNFreq[band], itsNrRow+nrow);
-    IPosition newShape2(2, itsNPol[band], itsNrRow+nrow);
-    IPosition newShapeu(2, 3, itsNrRow+nrow);
     IPosition newShape1(1, itsNrRow+nrow);
     // Extend the data arrays.
     itsSpws[band].data->extend (newShape3);
@@ -1402,25 +1468,7 @@ void MSCreateHDF5::addRows (int nbasel, int nfield)
     if (itsWriteWeightSpectrum) {
       itsSpws[band].weightSpectrum->extend (newShape3);
     }
-    itsSpws[band].flagRow->extend (newShape1);
-    itsSpws[band].time->extend (newShape1);
-    itsSpws[band].timeCentroid->extend (newShape1);
-    itsSpws[band].interval->extend (newShape1);
-    itsSpws[band].exposure->extend (newShape1);
-    itsSpws[band].antenna1->extend (newShape1);
-    itsSpws[band].antenna2->extend (newShape1);
-    itsSpws[band].feed1->extend (newShape1);
-    itsSpws[band].feed2->extend (newShape1);
-    itsSpws[band].processorId->extend (newShape1);
-    itsSpws[band].scanNumber->extend (newShape1);
-    itsSpws[band].arrayId->extend (newShape1);
-    itsSpws[band].observationId->extend (newShape1);
-    itsSpws[band].stateId->extend (newShape1);
-    itsSpws[band].dataDescId->extend (newShape1);
-    itsSpws[band].fieldId->extend (newShape1);
-    itsSpws[band].weight->extend (newShape2);
-    itsSpws[band].sigma->extend (newShape2);
-    itsSpws[band].uvw->extend (newShapeu);
+    itsSpws[band].metaData->extend (newShape1);
   }
 }
 
@@ -1430,35 +1478,34 @@ void MSCreateHDF5::writeTimeStepSpw (int band, int field,
   int nrbasel = nbaselines();
   // Get the time.
   Double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
-  Vector<double> times(nrbasel, time);
-  // Fill ANTENNA1, ASNTENNA2 and UVW arrays.
-  Vector<int> vecint(nrbasel);
-  Vector<int> vecint2(nrbasel);
-  Matrix<double> myuvw(3, nrbasel, 0);
+  // Fill meta data.
+  Vector<HDF5MetaData> meta(nrbasel);
   RefRows rows (itsNrRow, itsNrRow+nrbasel-1);
-  VectorIterator<double> uvwiter(myuvw);
   int inx=0;
   for (int j=0; j<itsNrAnt; ++j) {
     int st = (itsWriteAutoCorr ? j : j+1);
     int end= (itsWriteFloatData ? j+1 : itsNrAnt);
     for (int i=st; i<end; ++i) {
-      vecint[inx] = j;
-      vecint2[inx] = i;
+      meta[inx].antenna1 = j;
+      meta[inx].antenna2 = i;
+      Vector<double> uvw (antuvw[i] - antuvw[j]);
+      for (int i=0; i<3; ++i) meta[inx].uvw[i] = uvw[i];
+      for (int i=0; i<4; ++i) meta[inx].weight[i] = 1;
+      for (int i=0; i<4; ++i) meta[inx].sigma[i] = 1;
+      meta[inx].time = time;
+      meta[inx].timeCentroid = time;
+      meta[inx].interval = itsStepTime;
+      meta[inx].exposure = itsStepTime;
+      meta[inx].dataDescId = band;
+      meta[inx].fieldId = field;
       inx++;
-      if (itsCalcUVW) {
-        uvwiter.vector() = antuvw[i] - antuvw[j];
-        uvwiter.next();
-      }
     }
   }
   // Define the shape of the data arrays.
   IPosition shape3(3, itsNPol[band], itsNFreq[band], nrbasel);
-  IPosition shape2(2, itsNPol[band], nrbasel);
   IPosition shape1(1, nrbasel);
   // Define the slicers to put the data arrays.
   Slicer slicer3(IPosition(3,0,0,itsNrRow), shape3);
-  Slicer slicer2(IPosition(2,0,itsNrRow), shape2);
-  Slicer sliceru(IPosition(2,0,itsNrRow), myuvw.shape());
   Slicer slicer1(IPosition(1,itsNrRow), shape1);
   // Put the data.
   if (itsWriteFloatData) {
@@ -1474,30 +1521,7 @@ void MSCreateHDF5::writeTimeStepSpw (int band, int field,
   if (itsWriteWeightSpectrum) {
     itsSpws[band].weightSpectrum->put (slicer3, Array<float>(shape3, 1));
   }            
-  itsSpws[band].flagRow->put (slicer1, Vector<Bool>(nrbasel, False));
-  itsSpws[band].time->put (slicer1, times);
-  itsSpws[band].timeCentroid->put (slicer1, times);
-  times = itsStepTime;
-  itsSpws[band].interval->put (slicer1, times);
-  itsSpws[band].exposure->put (slicer1, times);
-  itsSpws[band].antenna1->put (slicer1, vecint);
-  itsSpws[band].antenna2->put (slicer1, vecint2);
-  vecint = 0;
-  itsSpws[band].feed1->put (slicer1, vecint);
-  itsSpws[band].feed2->put (slicer1, vecint);
-  itsSpws[band].processorId->put (slicer1, vecint);
-  itsSpws[band].scanNumber->put (slicer1, vecint);
-  itsSpws[band].arrayId->put (slicer1, vecint);
-  itsSpws[band].observationId->put (slicer1, vecint);
-  itsSpws[band].stateId->put (slicer1, vecint);
-  vecint = band;
-  itsSpws[band].dataDescId->put (slicer1, vecint);
-  vecint = field;
-  itsSpws[band].fieldId->put (slicer1, vecint);
-  itsSpws[band].uvw->put (sliceru, myuvw);
-  Matrix<float> ones(itsNPol[band], nrbasel, 1);
-  itsSpws[band].weight->put (slicer2, ones);
-  itsSpws[band].sigma->put (slicer2, ones);
+  itsSpws[band].metaData->put (slicer1, meta);
   // Increase nr of rows.
   itsNrRow += nrbasel;
 }
@@ -1528,23 +1552,26 @@ void MSCreateHDF5::writeTimeStepRows (int band, int field,
     weightSpectrum = 1;
   }
   Double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
-  Matrix<double> myuvw(3, 1, 0);
-  Vector<Int> vecint(1);
-  Vector<double> vectime(1, time);
-  Vector<double> vecinterval(1, itsStepTime);
-  Vector<Bool> vecfalse(1, False);
+  // Fill meta data.
+  Vector<HDF5MetaData> meta(1);
+  for (int i=0; i<4; ++i) meta[0].weight[i] = 1;
+  for (int i=0; i<4; ++i) meta[0].sigma[i] = 1;
+  meta[0].time = time;
+  meta[0].timeCentroid = time;
+  meta[0].interval = itsStepTime;
+  meta[0].exposure = itsStepTime;
+  meta[0].dataDescId = band;
+  meta[0].fieldId = field;
   // Define the slicers to put the data arrays.
   for (int j=0; j<itsNrAnt; ++j) {
     int st = (itsWriteAutoCorr ? j : j+1);
     int end= (itsWriteFloatData ? j+1 : itsNrAnt);
     for (int i=st; i<end; ++i) {
       Slicer slicer3(IPosition(3,0,0,itsNrRow), shape3);
-      Slicer slicer2(IPosition(2,0,itsNrRow), shape2);
-      Slicer sliceru(IPosition(2,0,itsNrRow), shapeu);
       Slicer slicer1(IPosition(1,itsNrRow), shape1);
-      myuvw(0,0) = antuvw[i][0] - antuvw[j][0];
-      myuvw(1,0) = antuvw[i][1] - antuvw[j][1];
-      myuvw(2,0) = antuvw[i][2] - antuvw[j][2];
+      meta[0].uvw[0] = antuvw[i][0] - antuvw[j][0];
+      meta[0].uvw[1] = antuvw[i][1] - antuvw[j][1];
+      meta[0].uvw[2] = antuvw[i][2] - antuvw[j][2];
       if (itsWriteFloatData) {
         itsSpws[band].floatData->put (slicer3, defFloatData);
       } else {
@@ -1553,31 +1580,10 @@ void MSCreateHDF5::writeTimeStepRows (int band, int field,
       itsSpws[band].flag->put (slicer3, defFlags);
       if (itsWriteWeightSpectrum) {
         itsSpws[band].weightSpectrum->put (slicer3, Array<float>(shape3, 1));
-      }            
-      itsSpws[band].flagRow->put (slicer1, vecfalse);
-      itsSpws[band].time->put (slicer1, vectime);
-      itsSpws[band].timeCentroid->put (slicer1, vectime);
-      itsSpws[band].interval->put (slicer1, vecinterval);
-      itsSpws[band].exposure->put (slicer1, vecinterval);
-      vecint[0] = j;
-      itsSpws[band].antenna1->put (slicer1, vecint);
-      vecint[0] = i;
-      itsSpws[band].antenna2->put (slicer1, vecint);
-      vecint[0] = 0;
-      itsSpws[band].feed1->put (slicer1, vecint);
-      itsSpws[band].feed2->put (slicer1, vecint);
-      itsSpws[band].processorId->put (slicer1, vecint);
-      itsSpws[band].scanNumber->put (slicer1, vecint);
-      itsSpws[band].arrayId->put (slicer1, vecint);
-      itsSpws[band].observationId->put (slicer1, vecint);
-      itsSpws[band].stateId->put (slicer1, vecint);
-      vecint[0] = band;
-      itsSpws[band].dataDescId->put (slicer1, vecint);
-      vecint[0] = field;
-      itsSpws[band].fieldId->put (slicer1, vecint);
-      itsSpws[band].uvw->put (sliceru, myuvw);
-      itsSpws[band].weight->put (slicer2, weightsigma);
-      itsSpws[band].sigma->put (slicer2, weightsigma);
+      }
+      meta[0].antenna1 = j;
+      meta[0].antenna2 = i;
+      itsSpws[band].metaData->put (slicer1, meta);
       itsNrRow++;
     }
   }
@@ -2024,18 +2030,16 @@ String doOne (int seqnr, const String& msName)
   if (myMultiBlockSize < 0) {
     myMultiBlockSize = myTileSize;
   }
-  cout << "making MS " << seqnr << endl;
   msmaker->init (myRa, myDec, myAntPos, myCalcUVW,
                  myWriteAutoCorr, myWriteFloatData, myWriteWeightSpectrum,
                  myCreateImagerColumns,
                  myNPol, myNChan, myStartFreq, myStepFreq,
-                 myFirstBand+seqnr*nbpp, nbpp,
+                 myFirstBand+seqnr*nbpp, nbpp, myNTimeField,
                  myStartTime, myStepTime,
                  name, myAntennaTableName,
                  myNFlagBits, myFlagColumn, dataTileShape,
                  myUseMultiFile, myMultiBlockSize);
   // Close all subtables to reduce nr of open files.
-  cout << "made MS " << seqnr << endl;
   msmaker->closeSubTables();
   timer.show ("Created MS " + msName);
   timer.mark();
@@ -2055,9 +2059,9 @@ void doAll()
 {
   int nthread = OMP::maxThreads();
   Block<String> msnames(myNPart);
-  //#ifdef _OPENMP
+#ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic)
-    //#endif
+#endif
   for (int i=0; i<myNPart; ++i) {
     msnames[i] = doOne (i, myMsName);
   }
