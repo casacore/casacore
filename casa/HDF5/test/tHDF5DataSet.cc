@@ -27,7 +27,7 @@
 
 #include <casacore/casa/HDF5/HDF5DataSet.h>
 #include <casacore/casa/HDF5/HDF5File.h>
-#include <casacore/casa/Arrays/Array.h>
+#include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
@@ -35,6 +35,66 @@
 #include <casacore/casa/Exceptions/Error.h>
  
 using namespace casacore;
+
+// Make a compound of a Complex, Int and Float[2].
+struct Data {
+  Complex f1;
+  Int     f2;
+  Float   f3[2];
+};
+
+void testCompound()
+{
+  std::vector<String> names(3);
+  std::vector<HDF5DataType> types(3);
+  names[0] = "f1";
+  names[1] = "f2";
+  names[2] = "f3";
+  types[0] = HDF5DataType((Complex*)0);
+  types[1] = HDF5DataType((Int*)0);
+  types[2] = HDF5DataType(HDF5DataType((Float*)0), IPosition(1,2));
+  HDF5DataType dtcom(names, types);
+  IPosition shape(1,3);
+  {
+    // Create the file.
+    HDF5File file("tHDF5DataSet_tmp", ByteIO::New);
+    // Create a data set in it.
+    IPosition ts(1,3);
+    HDF5DataSet dset(file, "array", shape, ts, dtcom);
+    AlwaysAssertExit (dset.getName() == "array");
+    AlwaysAssertExit (dset.shape() == shape);
+    AlwaysAssertExit (dset.tileShape() == shape);
+    AlwaysAssertExit (HDF5DataSet::getDataType (file, "array") == TpRecord);
+    // Put 3 rows.
+    for (int i=0; i<3; ++i) {
+      Vector<Data> data(1);;
+      data[0].f1 = Complex(i-10., i+10.);
+      data[0].f2 = i;
+      data[0].f3[0] = i+100.;
+      data[0].f3[1] = i-100.;
+      dset.put (Slicer(IPosition(1,i), IPosition(1,1)), data);
+    }
+  }
+  {
+    // Open the file and data set.
+    HDF5File file("tHDF5DataSet_tmp", ByteIO::Old);
+    HDF5DataSet dset(file, "array", dtcom);
+    AlwaysAssertExit (dset.getName() == "array");
+    AlwaysAssertExit (dset.shape() == shape);
+    AlwaysAssertExit (dset.tileShape() == shape);
+    // Set the cache size in chunks.
+    dset.setCacheSize (10);
+    Array<Data> ires(shape);
+    dset.get (Slicer(IPosition(1,0), shape), ires);
+    AlwaysAssertExit (Int(ires.size()) == shape.product());
+    for (uInt i=0; i<ires.size(); ++i) {
+      AlwaysAssertExit (near(ires.data()[i].f1, Complex(i-10., i+10.)));
+      AlwaysAssertExit (ires.data()[i].f2 == Int(i));
+      AlwaysAssertExit (ires.data()[i].f3[0] == i+100.);
+      AlwaysAssertExit (ires.data()[i].f3[1] == i-100.);
+    }
+  }
+}
 
 int main()
 {
@@ -51,8 +111,11 @@ int main()
       // Create the file.
       HDF5File file("tHDF5DataSet_tmp", ByteIO::New);
       // Create a data set in it.
-      HDF5DataSet dset(file, "array", shape, ts, (Int*)0);
+      HDF5DataSet dset(file, "array", IPosition(2,0,shape[1]), ts, (Int*)0);
       AlwaysAssertExit (dset.getName() == "array");
+      AlwaysAssertExit (dset.shape() == IPosition(2,0,shape[1]));
+      AlwaysAssertExit (dset.tileShape() == shape);
+      dset.extend (shape);
       AlwaysAssertExit (dset.shape() == shape);
       AlwaysAssertExit (dset.tileShape() == shape);
       dset.put (Slicer(IPosition(2,0), shape), iarr);
@@ -99,6 +162,8 @@ int main()
       AlwaysAssertExit (dset.shape() == shape);
       AlwaysAssertExit (dset.tileShape() == shape);
     }
+    // Test a compound data type.
+    testCompound();
 
   } catch (AipsError& x) {
     cout << "Unexpected exception: " << x.what() << endl;

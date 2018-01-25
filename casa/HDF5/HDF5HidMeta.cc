@@ -26,10 +26,24 @@
 //# $Id$
 
 #include <casacore/casa/HDF5/HDF5HidMeta.h>
+#include <casacore/casa/HDF5/HDF5Object.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #ifdef HAVE_HDF5
+
+  HDF5HidDataType::HDF5HidDataType (const HDF5HidDataType& that)
+    : itsHid(H5Tcopy(that.itsHid))
+  {}
+
+  HDF5HidDataType&HDF5HidDataType:: operator= (const HDF5HidDataType& that)
+  {
+    if (this != &that) {
+      close();
+      itsHid = H5Tcopy(that.itsHid);
+    }
+    return *this;
+  }
 
   void HDF5HidProperty::close()
   {
@@ -56,6 +70,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 #else
+
+  HDF5HidDataType::HDF5HidDataType (const HDF5HidDataType&)
+  {}
+
+  HDF5HidDataType& HDF5HidDataType::operator= (const HDF5HidDataType&)
+  { return *this; }
 
   void HDF5HidProperty::close()
   {}

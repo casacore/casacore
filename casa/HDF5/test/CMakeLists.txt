@@ -1,6 +1,7 @@
 set (tests
 tHDF5
 tHDF5DataSet
+tHDF5DataType
 tHDF5File
 tHDF5Record
 )

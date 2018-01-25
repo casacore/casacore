@@ -65,7 +65,7 @@ Array<Int> arri()
 Array<uInt> arrui()
 {
   Array<uInt> arrui(IPosition(1,5));
-  indgen(arrui);
+  indgen(arrui, 32768u*65536u);
   return arrui;
 }
 Array<Int64> arri64()
