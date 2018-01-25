@@ -8,6 +8,13 @@ pgmpath=`cd $pgmpath > /dev/null 2>&1  &&  pwd`
 pgm=$1
 shift
 
+# Exit if valgrind does not exist.
+which valgrind > /dev/null 2>&1
+if [ $? != 0 ]; then
+    echo "*** memcheck of $pgm cannot be done; valgrind cannot be found ***" 1>&2
+    exit 1
+fi
+
 # Use valgrind's memcheck tool on a program.
 # Filter out possible errors to give an overview.
 rm -f ${pgm}_tmp.valgrind
@@ -26,4 +33,4 @@ if test "$errors" != "" -o "$deflost" != "" -o "$poslost" != "" -o "$openfds" !=
 then
     cat ${pgm}_tmp.valgrind >> $pgm.checktool.valgrind
 fi
-rm ${pgm}_tmp.valgrind
+rm -f ${pgm}_tmp.valgrind
