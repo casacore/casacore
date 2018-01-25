@@ -1253,7 +1253,7 @@ void Coordinate::set_wcs (::wcsprm& wcs)
     }
 }
 
-#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
+//#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
 // In wcslib >= 5.7 wcssub internally calls wcssnpv/wcssnps to temporarily
 // set two global variables to a particular value before calling wcsini, which
 // in turn reads their values; after wcsini returns wcssub sets the variables to
@@ -1261,13 +1261,13 @@ void Coordinate::set_wcs (::wcsprm& wcs)
 // concurrent, independent calls to wcssub and wcsini. Thus, we serialize them
 // with this lock
 static Mutex wcs_initsubcopy_mutex;
-#endif // WCSLIB_VERSION >= 5.7
+//#endif // WCSLIB_VERSION >= 5.7
 
 void Coordinate::init_wcs(::wcsprm& wcs, int naxis)
 {
-#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
+//#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
     ScopedMutexLock lock(wcs_initsubcopy_mutex);
-#endif // WCSLIB_VERSION >= 5.7
+//#endif // WCSLIB_VERSION >= 5.7
     if (int iret = wcsini(1, naxis, &wcs)) {
         String errmsg = "wcs wcsini_error: ";
         errmsg += wcsini_errmsg[iret];
@@ -1278,9 +1278,9 @@ void Coordinate::init_wcs(::wcsprm& wcs, int naxis)
 void Coordinate::sub_wcs(const ::wcsprm &src, int &nsub, int axes[], ::wcsprm &dst)
 {
 	// see init_wcs
-#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
+//#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
     ScopedMutexLock lock(wcs_initsubcopy_mutex);
-#endif // WCSLIB_VERSION >= 5.7
+//#endif // WCSLIB_VERSION >= 5.7
 	if (int iret = wcssub(1, &src, &nsub, axes, &dst)) {
 		String errmsg = "wcslib wcssub error: ";
 		errmsg += wcsini_errmsg[iret];
@@ -1291,9 +1291,9 @@ void Coordinate::sub_wcs(const ::wcsprm &src, int &nsub, int axes[], ::wcsprm &d
 void Coordinate::copy_wcs(const ::wcsprm &src, ::wcsprm &dst)
 {
 	// see init_wcs
-#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
+//#if (WCSLIB_VERSION_MAJOR == 5 && WCSLIB_VERSION_MINOR >= 7) || WCSLIB_VERSION_MAJOR > 5
 	ScopedMutexLock lock(wcs_initsubcopy_mutex);
-#endif // WCSLIB_VERSION >= 5.7
+//#endif // WCSLIB_VERSION >= 5.7
 	if (int iret = wcssub(1, &src, 0, 0, &dst)) {
 		String errmsg = "wcslib wcscopy error: ";
 		errmsg += wcsini_errmsg[iret];
