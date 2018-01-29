@@ -43,10 +43,15 @@ FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
     FitToHalfStatisticsData::CENTER centerType,
     FitToHalfStatisticsData::USE_DATA useData,
     AccumType centerValue
-) : ConstrainedRangeStatistics<CASA_STATP>(),
-      _centerType(centerType), _useLower(useData == FitToHalfStatisticsData::LE_CENTER), _centerValue(centerValue),
-      _statsData(initializeStatsData<AccumType>()), _doMedAbsDevMed(False), _rangeIsSet(False),
-      _realMax(), _realMin(), _isNullSet(False) {
+) : ConstrainedRangeStatistics<CASA_STATP>(
+        CountedPtr<ConstrainedRangeQuantileComputer<CASA_STATP> >(
+            new ConstrainedRangeQuantileComputer<CASA_STATP>(&this->_getDataset()))
+        ),
+      _centerType(centerType),
+      _useLower(useData == FitToHalfStatisticsData::LE_CENTER),
+      _centerValue(centerValue),
+      _statsData(initializeStatsData<AccumType>()), _doMedAbsDevMed(False),
+      _rangeIsSet(False), _realMax(), _realMin(), _isNullSet(False), _range(NULL) {
     reset();
 }
 
@@ -58,7 +63,8 @@ FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
     _centerValue(other._centerValue), _statsData(copy(other._statsData)),
     _doMedAbsDevMed(other._doMedAbsDevMed), _rangeIsSet(other._rangeIsSet),
     _realMax(other._realMax.null() ? NULL : new AccumType(*other._realMax)),
-    _realMin(other._realMin.null() ? NULL : new AccumType(*other._realMin)) {}
+    _realMin(other._realMin.null() ? NULL : new AccumType(*other._realMin)),
+    _isNullSet(False), _range(other._range) {}
 
 CASA_STATD
 FitToHalfStatistics<CASA_STATP>::~FitToHalfStatistics() {}
@@ -81,6 +87,7 @@ FitToHalfStatistics<CASA_STATP>::operator=(
     _realMax = other._realMax.null() ? NULL : new AccumType(*other._realMax);
     _realMin = other._realMin.null() ? NULL : new AccumType(*other._realMin);
     _isNullSet = other._isNullSet;
+    _range = other._range;
     return *this;
 }
 
@@ -94,10 +101,13 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedian(
     CountedPtr<uInt64> , CountedPtr<AccumType> ,
     CountedPtr<AccumType> , uInt , Bool , uInt64
 ) {
-    if (_getStatsData().median.null()) {
-        _getStatsData().median = new AccumType(_centerValue);
+    CountedPtr<AccumType> median = _getStatsData().median;
+    if (! median) {
+        median = new AccumType(_centerValue);
+        _getStatsData().median = median;
+        this->_getQuantileComputer()->setMedian(median);
     }
-    return *_getStatsData().median;
+    return *median;
 }
 
 CASA_STATD
@@ -121,7 +131,7 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
     CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
     Bool persistSortedArray, uInt64 nBins
 ) {
-    if (_getStatsData().medAbsDevMed.null()) {
+    if (! _getStatsData().medAbsDevMed) {
         _setRange();
         ThrowIf(
             _isNullSet,
@@ -132,6 +142,9 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
         CountedPtr<uInt64> realNPts = knownNpts.null()
             ? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
         CountedPtr<AccumType> realMin, realMax;
+        // need to set the mdian in the quantile computer object here. The getMedian() call
+        // will do that, so we don't need to capture the return value
+        getMedian();
         _getStatsData().medAbsDevMed = new AccumType(
             ConstrainedRangeStatistics<CASA_STATP>::getMedianAbsDevMed(
                 realNPts, knownMin, knownMax, binningThreshholdSizeBytes,
@@ -187,7 +200,7 @@ void FitToHalfStatistics<CASA_STATP>::getMinMax(
         // This call returns the min and max of the real portion of the dataset
         ConstrainedRangeStatistics<CASA_STATP>::getMinMax(mymin, mymax);
         // note that _realMin and _realMax are also computed during the
-        // calculation of accumultated statistics, in _updateDataProviderMaxMin().
+        // calculation of accumulated statistics, in _updateDataProviderMaxMin().
         // if those have been done previously, this if block won't be entered so they
         // will not be computed again here
         _realMin = new AccumType(mymin);
@@ -430,6 +443,17 @@ void FitToHalfStatistics<CASA_STATP>::_setRange() {
         return;
     }
     ClassicalStatistics<CASA_STATP> cs(*this);
+    // if FitToHalfStatisticsData::CMEDIAN, the quantile computer object in the cs
+    // object will use the ConstrainedRangeQuantile methods, which is not what we
+    // want here. Se we have to explicitly ensure that the cs object uses a bona-fide
+    // ClassicalStatisticsQuantileComputer object for computation of the median. From
+    // a pedantic POV, the dataset used should be the same (as in the same memory
+    // address) as in the cs object, but in this case a copy will suffice and it does
+    // not require making ClassicalStatistics::_getQuantileComputer() public.
+    CountedPtr<ClassicalQuantileComputer<CASA_STATP> > qComputer(
+        new ClassicalQuantileComputer<CASA_STATP>(&this->_getDataset())
+    );
+    cs.setQuantileComputer(qComputer);
     if (_centerType == FitToHalfStatisticsData::CMEAN || _centerType == FitToHalfStatisticsData::CMEDIAN) {
         _centerValue = _centerType == FitToHalfStatisticsData::CMEAN
             ? cs.getStatistic(StatisticsData::MEAN)
@@ -437,24 +461,28 @@ void FitToHalfStatistics<CASA_STATP>::_setRange() {
     }
     _getStatsData().mean = _centerValue;
     _getStatsData().median = new AccumType(_centerValue);
+    this->_getQuantileComputer()->setMedian(_getStatsData().median);
     AccumType mymin, mymax;
     cs.getMinMax(mymin, mymax);
-    CountedPtr<std::pair<AccumType, AccumType> > range;
     if (_useLower) {
-        range = new std::pair<AccumType, AccumType>(mymin, _centerValue);
+        _range = new std::pair<AccumType, AccumType>(mymin, _centerValue);
         _isNullSet = mymin > _centerValue;
     }
     else {
-        range = new std::pair<AccumType, AccumType>(_centerValue, mymax);
+        _range = new std::pair<AccumType, AccumType>(_centerValue, mymax);
         _isNullSet = mymax < _centerValue;
     }
-    ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
+    // median must be set after _setRange(_range) call, because
+    // the _setRange() call clears stats (and therefore will clear
+    // the median if it is set prior to that call)
+    ConstrainedRangeStatistics<CASA_STATP>::_setRange(_range);
+    this->_getQuantileComputer()->setMedian(_getStatsData().median);
     _rangeIsSet = True;
 }
 
 // use a define to ensure code is compiled inline
 #define _unweightedStatsCodeFH \
-    if (this->_isInRange(*datum)) { \
+    if (*datum >= _range->first && *datum <= _range->second) { \
         StatisticsUtilities<AccumType>::accumulateSym( \
             stats.npts, stats.nvariance, stats.sumsq, *stats.min, *stats.max, stats.minpos, \
             stats.maxpos, *datum, location, _centerValue \
@@ -588,11 +616,11 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
             }
         }
     }
-}  
+}
 
 // use #define to ensure code is compiled inline
 #define _weightedStatsCodeFH \
-    if (this->_isInRange(*datum)) { \
+    if (*datum >= _range->first && *datum <= _range->second) { \
         StatisticsUtilities<AccumType>::waccumulateSym( \
             stats.npts, stats.sumweights, stats.nvariance, \
             stats.sumsq, *stats.min, *stats.max, stats.minpos, stats.maxpos, *datum, \

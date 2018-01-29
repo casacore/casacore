@@ -33,12 +33,12 @@
 namespace casacore {
 
 CASA_STATD StatisticsAlgorithm<CASA_STATP>::StatisticsAlgorithm()
-: _sortedArray(), _statsToCalculate(),
+: _statsToCalculate(),
   _unsupportedStats(), _resetDataset(True) {}
 
 CASA_STATD
 StatisticsAlgorithm<CASA_STATP>::StatisticsAlgorithm(const StatisticsAlgorithm& other)
-    : _sortedArray(other._sortedArray), _statsToCalculate(other._statsToCalculate),
+    : _statsToCalculate(other._statsToCalculate),
       _unsupportedStats(other._unsupportedStats), _dataset(other._dataset),
       _resetDataset(other._resetDataset) {}
 
@@ -49,7 +49,6 @@ StatisticsAlgorithm<CASA_STATP>::operator=(
      if (this == &other) {
          return *this;
      }
-     _sortedArray = other._sortedArray;
      _statsToCalculate = other._statsToCalculate;
      _unsupportedStats = other._unsupportedStats;
      _dataset = other._dataset;
@@ -139,10 +138,6 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
         dataStride, nrAccountsForStride, maskStride
     );
     _addData();
-}
-
-CASA_STATD void StatisticsAlgorithm<CASA_STATP>::deleteSortedArray() {
-    _sortedArray.clear();
 }
 
 CASA_STATD AccumType StatisticsAlgorithm<CASA_STATP>::getQuantile(
@@ -287,7 +282,6 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::setDataProvider(
 }
 
 CASA_STATD void StatisticsAlgorithm<CASA_STATP>::reset() {
-    _sortedArray.clear();
     if (_resetDataset) {
         _dataset.reset();
     }

@@ -38,6 +38,8 @@ namespace casacore {
 
 template <class T> class PtrHolder;
 
+CASA_STATD class StatsDataProvider;
+
 // Various statistics related methods for the statistics framework.
 
 template <class AccumType> class StatisticsUtilities {
@@ -119,7 +121,6 @@ public:
 		LocationType& minpos, LocationType& maxpos,
 		const AccumType& datum, const AccumType& weight, const LocationType& location
 	);
-
 	// </group>
 
 	// <group>
@@ -142,7 +143,6 @@ public:
 	// point. The actual point is accumulated, as is a "virtual" point that is
 	// symmetric about the specified center. Of course, the trivial relationship
 	// that the mean is the specified center is used to simplify things.
-
 	inline static void accumulateSym (
 		Double& npts, AccumType& nvariance,
 		AccumType& sumsq, const AccumType& datum, const AccumType& center
@@ -176,11 +176,11 @@ public:
 
     // convert in place by taking the absolute value of the difference of the std::vector and the median
     inline static void convertToAbsDevMedArray(std::vector<AccumType>& myArray, AccumType median);
-
 	// </group>
+
 	// This does the obvious conversions. The Complex and DComplex versions
-	// (implemented after the class definition) are used solely to permit compilation. In general, these versions should
-	// never actually be called
+	// (implemented after the class definition) are used solely to permit
+    // compilation. In general, these versions should never actually be called
 	inline static Int getInt(const AccumType& v) {
 		return (Int)v;
 	}
@@ -197,10 +197,10 @@ public:
         std::vector<AccumType>& myArray, const std::set<uInt64>& indices
     );
 
-    // If <src>allowPad</src> is True, then pad the lower side of the lowest bin and the
-    // higher side of the highest bin so that minData and maxData do not fall on the edge
-    // of their respective bins. If false, no padding so that minData and maxData are also
-    // exactly the histogram abscissa limits.
+    // If <src>allowPad</src> is True, then pad the lower side of the lowest
+    // bin and the higher side of the highest bin so that minData and maxData
+    // do not fall on the edge of their respective bins. If false, no padding
+    // so that minData and maxData are also exactly the histogram abscissa limits.
     static void makeBins(
         BinDesc& bins, AccumType minData, AccumType maxData,
         uInt maxBins, Bool allowPad
@@ -223,6 +223,11 @@ public:
         const std::vector<StatsData<AccumType> >& stats
     );
 
+    template <class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
+    static uInt nThreadsMax(const StatsDataProvider<CASA_STATP> *const dataProvider);
+
+    static uInt threadIdx();
+
 private:
 
 	const static AccumType TWO;
@@ -231,6 +236,7 @@ private:
 
 };
 
+// <group>
 // The Complex and DComplex versions
 // are used solely to permit compilation. In general, these versions should
 // never actually be called
@@ -243,7 +249,9 @@ template<>
 inline Int StatisticsUtilities<casacore::DComplex>::getInt(const casacore::DComplex&) {
 	ThrowCc("Logic Error: This version for complex data types should never be called");
 }
+// </group>
 
+// for use in debugging
 template <class T>
 ostream &operator<<(ostream &os, const typename StatisticsUtilities<T>::BinDesc &desc) {
 	os << "min limit " << desc.minLimit << " bin width " << desc.binWidth

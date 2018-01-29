@@ -41,6 +41,10 @@ namespace casacore {
 // The specified center point is therefore the mean and median of the resulting
 // distribution, and the total number of points is exactly twice the number of real
 // data points that are included.
+//
+// This class uses a ConstrainedRangeQuantileComputer object for computing quantile-
+// like statistics. See class documentation for StatisticsAlgorithm for details
+// regarding QuantileComputer classes.
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
 class FitToHalfStatistics
@@ -85,10 +89,9 @@ public:
 
     // <group>
     // In the following group of methods, if the size of the composite dataset
-    // is smaller than
-    // <src>binningThreshholdSizeBytes</src>, the composite dataset
-    // will be (perhaps partially) sorted and persisted in memory during the
-    // call. In that case, and if <src>persistSortedArray</src> is True, this
+    // is smaller than <src>binningThreshholdSizeBytes</src>, the composite
+    // dataset will be (perhaps partially) sorted and persisted in memory during
+    // the call. In that case, and if <src>persistSortedArray</src> is True, this
     // sorted array will remain in memory after the call and will be used on
     // subsequent calls of this method when <src>binningThreshholdSizeBytes</src>
     // is greater than the size of the composite dataset. If
@@ -98,20 +101,20 @@ public:
     // dataset will be sorted from scratch. Values which are not included due to
     // non-unity strides, are not included in any specified ranges, are masked,
     // or have associated weights of zero are not considered as dataset members
-    // for quantile computations.
-    // If one has a priori information regarding
-    // the number of points (npts) and/or the minimum and maximum values of the data
-    // set, these can be supplied to improve performance. Note however, that if these
-    // values are not correct, the resulting median
-    // and/or quantile values will also not be correct (although see the following notes regarding
+    // for quantile computations. If one has a priori information regarding
+    // the number of points (npts) and/or the minimum and maximum values of the
+    // data set, these can be supplied to improve performance. Note however, that
+    // if these values are not correct, the resulting median and/or quantile values
+    // will also not be correct (although see the following notes regarding
     // max/min). Note that if this object has already had getStatistics()
-    // called, and the min and max were calculated, there is no need to pass these values in
-    // as they have been stored internally and used (although passing them in shouldn't hurt
-    // anything). If provided, npts, the number of points falling in the specified ranges which are
-    // not masked and have weights > 0, should be exactly correct. <src>min</src> can be less than
-    // the true minimum, and <src>max</src> can be greater than the True maximum, but for best
-    // performance, these should be as close to the actual min and max as possible.
-
+    // called, and the min and max were calculated, there is no need to pass these
+    // values in as they have been stored internally and will be used (although
+    // passing them explicitly shouldn't hurt anything). If provided, npts, the
+    // number of points falling in the specified ranges which are not masked and
+    // have weights > 0, should be correct. <src>min</src> can be less than
+    // the true minimum, and <src>max</src> can be greater than the True maximum,
+    // but for best performance, these should be as close to the actual min and
+    // max as possible (and ideally the actual min/max values of the data set).
     AccumType getMedianAndQuantiles(
         std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
         CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
@@ -241,9 +244,13 @@ private:
     // these are the max and min for the real portion of the dataset
     CountedPtr<AccumType> _realMax, _realMin;
     Bool _isNullSet;
+    // This is used for convenience and performance. It should always
+    // be the same as the _range value used in the base
+    // ConstrainedRangeStatistics object
+    CountedPtr<std::pair<AccumType, AccumType> > _range;
 
-    // get the min max of the entire (real + virtual) data set. Only used for quantile
-    // computation
+    // get the min max of the entire (real + virtual) data set. Only
+    // used for quantile computation
     void _getMinMax(
         CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
         CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax

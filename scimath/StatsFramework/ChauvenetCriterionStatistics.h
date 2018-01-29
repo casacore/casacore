@@ -39,8 +39,12 @@ namespace casacore {
 // iteratively calculates statistics by discarding outliers on the basis of Chauvenet's
 // criterion, until the specified maximum number of iterations is reached, or the final
 // iteration results in no additional points being discarded.
-// Alternatively, one can specify a z score which indicates the number of standard deviations
+// Alternatively, one can specify a z-score which indicates the number of standard deviations
 // beyond which to discard points, which is held fixed while iterating.
+//
+// When instantiated, objects of this class use a ConstrainedRangeQuantileComputer
+// object for computing quantile-like statistics. See class documentation for
+// StatisticsAlgorithm for details of QuantileComputer classes.
 
 template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator>
 class ChauvenetCriterionStatistics
