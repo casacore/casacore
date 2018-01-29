@@ -216,20 +216,20 @@ template<class T> Array<T> Array<T>::copy(ArrayInitPolicy policy) const
 template<class T> void Array<T>::copyToContiguousStorage(T *storage, Array<T> const & src, ArrayInitPolicy policy)
 {
     if (src.contiguousStorage()) {
-        if (policy == ArrayInitPolicy::NO_INIT) {
+        if (policy == ArrayInitPolicies::NO_INIT) {
             objcopyctor(storage, src.begin_p, src.nels_p);
         } else {
             objcopy(storage, src.begin_p, src.nels_p);
         }
     } else if (src.ndim() == 1) {
-        if (policy == ArrayInitPolicy::NO_INIT) {
+        if (policy == ArrayInitPolicies::NO_INIT) {
             objcopyctor(storage, src.begin_p, src.length_p(0), 1U, src.inc_p(0));
         } else {
             objcopy(storage, src.begin_p, src.length_p(0), 1U, src.inc_p(0));
         }
     } else if (src.length_p(0) == 1  &&  src.ndim() == 2) {
         // Special case which can be quite common (e.g. row in a matrix).
-        if (policy == ArrayInitPolicy::NO_INIT) {
+        if (policy == ArrayInitPolicies::NO_INIT) {
             objcopyctor(storage, src.begin_p, src.length_p(1), 1U,
                     src.originalLength_p(0) * src.inc_p(1));
         } else {
@@ -240,7 +240,7 @@ template<class T> void Array<T>::copyToContiguousStorage(T *storage, Array<T> co
         // If not many elements on a line, it's better to use this loop.
         T* ptr = storage;
         const_iterator iterend = src.end();
-        if (policy == ArrayInitPolicy::NO_INIT) {
+        if (policy == ArrayInitPolicies::NO_INIT) {
             try {
                 for (const_iterator iter = src.begin(); iter != iterend;
                         ++iter) {
@@ -266,7 +266,7 @@ template<class T> void Array<T>::copyToContiguousStorage(T *storage, Array<T> co
         IPosition index(src.ndim());
         size_t count = 0;
         size_t const size = src.length_p(0);
-        if (policy == ArrayInitPolicy::NO_INIT) {
+        if (policy == ArrayInitPolicies::NO_INIT) {
             try {
                 while (!ai.pastEnd()) {
                     index = ai.pos();
@@ -303,7 +303,7 @@ template<class T> void Array<T>::copyToContiguousStorage(T *storage, Array<T> co
 template<class T> Array<T> Array<T>::copy(ArrayInitPolicy policy, Allocator_private::BulkAllocator<T> *allocator) const
 {
     DebugAssert(ok(), ArrayError);
-    DebugAssert(policy == ArrayInitPolicy::INIT
+    DebugAssert(policy == ArrayInitPolicies::INIT
             || allocator != Allocator_private::get_allocator<typename NewDelAllocator<T>::type>(),
             ArrayError);
 
@@ -369,7 +369,7 @@ template<class T> Array<T> &Array<T>::operator=(const Array<T> &other)
 	}
     } else {
 	// Array was empty; make a new copy and reference it.
-	Array<T> tmp (other.copy(ArrayInitPolicy::NO_INIT, nonNewDelAllocator()));
+	Array<T> tmp (other.copy(ArrayInitPolicies::NO_INIT, nonNewDelAllocator()));
 	reference (tmp);
     }
     return *this;
@@ -570,7 +570,7 @@ template<class T> void Array<T>::unique()
 	return;
     }
     // OK, we know we are going to need to copy.
-    Array<T> tmp (copy(ArrayInitPolicy::NO_INIT, nonNewDelAllocator()));
+    Array<T> tmp (copy(ArrayInitPolicies::NO_INIT, nonNewDelAllocator()));
     reference (tmp);
 }
 
@@ -983,7 +983,7 @@ template<class T> T *Array<T>::getStorage(Bool &deleteIt)
     }
     // ok - copy it
     try {
-        copyToContiguousStorage(storage, *this, ArrayInitPolicy::NO_INIT);
+        copyToContiguousStorage(storage, *this, ArrayInitPolicies::NO_INIT);
     } catch (...) {
         nonNewDelAllocator()->deallocate(storage, nelements());
         throw;
@@ -1095,7 +1095,7 @@ void Array<T>::takeStorage(const IPosition &shape, T *storage,
     case COPY:
         if (data_p.null() || data_p.nrefs() > 1
                 || data_p->nelements() != new_nels) {
-            data_p = new Block<T>(new_nels, ArrayInitPolicy::NO_INIT,
+            data_p = new Block<T>(new_nels, ArrayInitPolicies::NO_INIT,
                     allocator.getAllocator());
             data_p->construct(0, new_nels, storage);
         } else {

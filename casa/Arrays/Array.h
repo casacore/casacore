@@ -196,7 +196,7 @@ public:
     // initialize elements before they are referred, especially when <src>T</src> is such type like <src>std::string</src>.
     // <srcblock>
     //   IPosition shape(1, 10);
-    //   Array<Int> ai(shape, ArrayInitPolicy::NO_INIT);
+    //   Array<Int> ai(shape, ArrayInitPolicies::NO_INIT);
     //   size_t nread = fread(ai.data(), sizeof(Int), ai.nelements(), fp);
     // </srcblock>
     Array(const IPosition &shape, ArrayInitPolicy initPolicy);
@@ -338,7 +338,7 @@ public:
     // which likely would be simpler to understand. (Should copy() 
     // be deprecated and removed?)
     //
-    Array<T> copy(ArrayInitPolicy policy = ArrayInitPolicy::NO_INIT) const;                         // Make a copy of this
+    Array<T> copy(ArrayInitPolicy policy = ArrayInitPolicies::NO_INIT) const;                         // Make a copy of this
 
     // This function copies the matching part of from array to this array.
     // The matching part is the part with the minimum size for each axis.
@@ -891,7 +891,7 @@ private:
     Allocator_private::BulkAllocator<T> *nonNewDelAllocator() const;
 protected:
     static ArrayInitPolicy defaultArrayInitPolicy() {
-        return Block<T>::init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT;
+        return Block<T>::init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT;
     }
     // pre/post processing hook of takeStorage() for subclasses.
     virtual void preTakeStorage(const IPosition &) {}

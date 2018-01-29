@@ -83,7 +83,7 @@ template<class T> Vector<T>::Vector(const IPosition& len, const T &initialValue)
 }
 
 template<class T> Vector<T>::Vector(const Block<T> &other, Int64 nr)
-: Array<T>(IPosition(1, other.nelements()), ArrayInitPolicy::INIT)
+: Array<T>(IPosition(1, other.nelements()), ArrayInitPolicies::INIT)
 {
     initVector (other, nr);
     DebugAssert(ok(), ArrayError);

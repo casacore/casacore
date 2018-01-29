@@ -30,7 +30,7 @@
 
 namespace casacore {
 
-ArrayInitPolicy const ArrayInitPolicy::NO_INIT = ArrayInitPolicy(false);
-ArrayInitPolicy const ArrayInitPolicy::INIT = ArrayInitPolicy(true);
+constexpr ArrayInitPolicy ArrayInitPolicies::NO_INIT;
+constexpr ArrayInitPolicy ArrayInitPolicies::INIT;
 
 }

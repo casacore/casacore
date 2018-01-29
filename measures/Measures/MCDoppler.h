@@ -1,5 +1,5 @@
 //# MCDoppler.h: MDoppler conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,1999,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2002,2018
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -145,12 +145,9 @@ private:
   static uInt ToRef_p[N_Routes][3];
   // Transition matrix
   static uInt FromTo_p[MDoppler::N_Types][MDoppler::N_Types];
-  // Mutex for thread-safety.
-  static MutexedInit theirMutexedInit;
 
   // Fill the global state in a thread-safe way.
-  static void fillState()
-    { theirMutexedInit.exec(); }
+  static void fillState(){ }
   
   //# Member functions
   
@@ -177,10 +174,23 @@ private:
 		 const MConvertBase &mc);
   
 private:
+  friend class MCDoppler_initializer;
   // Fill the global state in a thread-safe way.
   static void doFillState (void*);  
 };
 
+static class MCDoppler_initializer {
+ public:
+    MCDoppler_initializer( ) {
+        if ( ! initialized ) {
+            initialized = true;
+            MutexedInit init(MCDoppler::doFillState);
+            init.exec( );
+        }
+    }
+ private:
+    static bool initialized;
+} _local_static_MCDoppler_init;
 
 } //# NAMESPACE CASACORE - END
 

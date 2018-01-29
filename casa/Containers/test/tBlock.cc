@@ -125,11 +125,11 @@ void doit()
       bi.resize(91UL, True, True);
       AlwaysAssertExit(9876 == bi[44]);
       AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
-      bi.resize(89UL, True, False, ArrayInitPolicy::INIT);
+      bi.resize(89UL, True, False, ArrayInitPolicies::INIT);
       AlwaysAssertExit(0 == bi[0] && 0 == bi[30]);
       AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
       p = bi.storage();
-      bi.resize(87UL, False, True, ArrayInitPolicy::NO_INIT);
+      bi.resize(87UL, False, True, ArrayInitPolicies::NO_INIT);
       AlwaysAssertExit(p == bi.storage());
       AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
       bi.resize(105UL);
@@ -138,7 +138,7 @@ void doit()
     {
       LifecycleChecker::clear();
       {
-        Block<LifecycleChecker> b(200, ArrayInitPolicy::INIT);
+        Block<LifecycleChecker> b(200, ArrayInitPolicies::INIT);
       }
       AlwaysAssertExit(200 <= LifecycleChecker::ctor_count);
       AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
@@ -147,7 +147,7 @@ void doit()
       LifecycleChecker::clear();
       LifecycleChecker::ctor_error_trigger = 10;
       try {
-        Block<LifecycleChecker> b(20, ArrayInitPolicy::INIT);
+        Block<LifecycleChecker> b(20, ArrayInitPolicies::INIT);
         AlwaysAssertExit(False);
       } catch (...) {
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
@@ -157,8 +157,8 @@ void doit()
       LifecycleChecker::clear();
       LifecycleChecker::ctor_error_trigger = 20 + 5;
       try {
-        Block<LifecycleChecker> b(20, ArrayInitPolicy::INIT);
-        b.resize(15, True, True, ArrayInitPolicy::NO_INIT);
+        Block<LifecycleChecker> b(20, ArrayInitPolicies::INIT);
+        b.resize(15, True, True, ArrayInitPolicies::NO_INIT);
         AlwaysAssertExit(False);
       } catch (...) {
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
@@ -168,8 +168,8 @@ void doit()
       LifecycleChecker::clear();
       LifecycleChecker::ctor_error_trigger = 20 + 5;
       try {
-        Block<LifecycleChecker> b(20, ArrayInitPolicy::INIT);
-        b.resize(15, True, True, ArrayInitPolicy::INIT);
+        Block<LifecycleChecker> b(20, ArrayInitPolicies::INIT);
+        b.resize(15, True, True, ArrayInitPolicies::INIT);
         AlwaysAssertExit(False);
       } catch (...) {
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
@@ -179,8 +179,8 @@ void doit()
       LifecycleChecker::clear();
       LifecycleChecker::ctor_error_trigger = 10 + 5;
       try {
-        Block<LifecycleChecker> b(10, ArrayInitPolicy::INIT);
-        b.resize(15, True, True, ArrayInitPolicy::NO_INIT);
+        Block<LifecycleChecker> b(10, ArrayInitPolicies::INIT);
+        b.resize(15, True, True, ArrayInitPolicies::NO_INIT);
         AlwaysAssertExit(False);
       } catch (...) {
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
@@ -190,8 +190,8 @@ void doit()
       LifecycleChecker::clear();
       LifecycleChecker::ctor_error_trigger = 10 + 10 + 3;
       try {
-        Block<LifecycleChecker> b(10, ArrayInitPolicy::INIT);
-        b.resize(15, True, True, ArrayInitPolicy::NO_INIT);
+        Block<LifecycleChecker> b(10, ArrayInitPolicies::INIT);
+        b.resize(15, True, True, ArrayInitPolicies::NO_INIT);
       } catch (...) {
         AlwaysAssertExit(False);
       }
@@ -201,8 +201,8 @@ void doit()
       LifecycleChecker::clear();
       LifecycleChecker::ctor_error_trigger = 10 + 10 + 3;
       try {
-        Block<LifecycleChecker> b(10, ArrayInitPolicy::INIT);
-        b.resize(15, True, True, ArrayInitPolicy::INIT);
+        Block<LifecycleChecker> b(10, ArrayInitPolicies::INIT);
+        b.resize(15, True, True, ArrayInitPolicies::INIT);
         AlwaysAssertExit(False);
       } catch (...) {
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
@@ -211,7 +211,7 @@ void doit()
     {
       LifecycleChecker::clear();
       {
-        Block<LifecycleChecker> b(200, ArrayInitPolicy::NO_INIT, AllocSpec<NewDelAllocator<LifecycleChecker> >::value);
+        Block<LifecycleChecker> b(200, ArrayInitPolicies::NO_INIT, AllocSpec<NewDelAllocator<LifecycleChecker> >::value);
       }
       AlwaysAssertExit(200 <= LifecycleChecker::ctor_count);
       AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
@@ -220,7 +220,7 @@ void doit()
     {
       LifecycleChecker::clear();
       {
-        Block<LifecycleChecker> b(200, ArrayInitPolicy::NO_INIT, AllocSpec<AlignedAllocator<LifecycleChecker, 32> >::value);
+        Block<LifecycleChecker> b(200, ArrayInitPolicies::NO_INIT, AllocSpec<AlignedAllocator<LifecycleChecker, 32> >::value);
       }
       AlwaysAssertExit(0 == LifecycleChecker::ctor_count);
       AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);
@@ -228,7 +228,7 @@ void doit()
     {
       LifecycleChecker::clear();
       {
-        Block<LifecycleChecker> b(200, ArrayInitPolicy::INIT);
+        Block<LifecycleChecker> b(200, ArrayInitPolicies::INIT);
       }
       AlwaysAssertExit(200 <= LifecycleChecker::ctor_count);
       AlwaysAssertExit(200 <= LifecycleChecker::dtor_count);

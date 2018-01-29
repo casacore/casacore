@@ -267,7 +267,7 @@ public:
   explicit Block(size_t n) :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), used_p(
           n), destroyPointer(True), keep_allocator_p(False) {
-    init(init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
+    init(init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
 
   // Create a Block with the given number of points. The values in Block
@@ -276,7 +276,7 @@ public:
   Block(size_t n, AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
           True), keep_allocator_p(False) {
-    init(init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
+    init(init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
 
   // Create a Block with the given number of points. The values in Block
@@ -304,7 +304,7 @@ public:
   Block(size_t n, T const &val) :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), used_p(
           n), destroyPointer(True), keep_allocator_p(False) {
-    init(ArrayInitPolicy::NO_INIT);
+    init(ArrayInitPolicies::NO_INIT);
     try {
       allocator_p->construct(array, get_size(), val);
     } catch (...) {
@@ -319,7 +319,7 @@ public:
   Block(size_t n, T const &val, AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
           True), keep_allocator_p(False) {
-    init(ArrayInitPolicy::NO_INIT);
+    init(ArrayInitPolicies::NO_INIT);
     try {
       allocator_p->construct(array, get_size(), val);
     } catch (...) {
@@ -364,7 +364,7 @@ public:
   Block(const Block<T> &other) :
       allocator_p(other.allocator_p), used_p(other.size()), destroyPointer(
           True), keep_allocator_p(False) {
-    init(ArrayInitPolicy::NO_INIT);
+    init(ArrayInitPolicies::NO_INIT);
 
     try {
       //objcopy(array, other.array, get_size());
@@ -381,7 +381,7 @@ public:
   Block<T> &operator=(const Block<T> &other) {
     if (&other != this) {
       T *old = array;
-      this->resize(other.size(), True, False, ArrayInitPolicy::NO_INIT);
+      this->resize(other.size(), True, False, ArrayInitPolicies::NO_INIT);
       if (array == old) {
         objcopy(array, other.array, get_size());
       } else {
@@ -423,7 +423,7 @@ public:
   // <group>
   void resize(size_t n, Bool forceSmaller = False, Bool copyElements = True) {
     resize(n, forceSmaller, copyElements,
-        init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
+        init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
   void resize(size_t n, Bool forceSmaller, Bool copyElements,
       ArrayInitPolicy initPolicy) {
@@ -459,7 +459,7 @@ public:
         }
         start = nmin;
       }
-      if (initPolicy == ArrayInitPolicy::INIT) {
+      if (initPolicy == ArrayInitPolicies::INIT) {
         try {
           allocator_p->construct(&tp[start], n - start);
         } catch (...) {
@@ -490,7 +490,7 @@ public:
   // <group>
   void remove(size_t whichOne, Bool forceSmaller = True) {
     remove(whichOne, forceSmaller,
-        init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
+        init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
   void remove(size_t whichOne, Bool forceSmaller, ArrayInitPolicy initPolicy) {
     if (whichOne >= get_size()) {
@@ -505,7 +505,7 @@ public:
     if (forceSmaller == True) {
       T *tp = n > 0 ? allocator_p->allocate(n) : 0;
       traceAlloc(array, n);
-      if (initPolicy == ArrayInitPolicy::INIT && n > 0) {
+      if (initPolicy == ArrayInitPolicies::INIT && n > 0) {
         try {
           allocator_p->construct(tp, n);
         } catch (...) {
@@ -725,7 +725,7 @@ public:
   Block(size_t n, Allocator_private::AllocSpec<T> allocator) :
       allocator_p(allocator.allocator), used_p(n), destroyPointer(
           True), keep_allocator_p(False) {
-    init(init_anyway() ? ArrayInitPolicy::INIT : ArrayInitPolicy::NO_INIT);
+    init(init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
   Block(size_t n, T *&storagePointer, Bool takeOverStorage,
           Allocator_private::BulkAllocator<T> *allocator) :
@@ -764,7 +764,7 @@ public:
     if (get_capacity() > 0) {
       array = allocator_p->allocate(get_capacity());
       traceAlloc(array, get_capacity());
-      if (initPolicy == ArrayInitPolicy::INIT) {
+      if (initPolicy == ArrayInitPolicies::INIT) {
         try {
           allocator_p->construct(array, get_size());
         } catch (...) {
