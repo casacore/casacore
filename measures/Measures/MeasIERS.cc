@@ -399,7 +399,7 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
       const std::list<std::string> &state_path = AppStateSource::fetch( ).dataPath( );
       if ( state_path.size( ) > 0 ) {
         String mdir;
-        for ( std::list<std::string>::const_iterator it=state_path.begin(); it != state_path.end(); ++it ) {
+        for ( std::list<std::string>::const_iterator it=state_path.begin(); ! found && it != state_path.end(); ++it ) {
           for (Int i=0; i<2; i++) {
             Path mpath = Path(*it + "/" + (std::string) path[i]);
             ldir = mpath.absoluteName()+"/";
