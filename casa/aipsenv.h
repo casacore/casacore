@@ -130,7 +130,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #if defined(AIPS_LINUX)
 #undef AIPS_LINUX
 #endif
-#if defined(__linux)
+#if defined(__linux__)
 #define AIPS_LINUX
 #endif
 
