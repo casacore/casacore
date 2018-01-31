@@ -282,8 +282,8 @@ HOSTINFO_IMPLEMENT_MEMBERS
 #else
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Int HostInfo::numCPUs( ) { return 0; }
-ptrdiff_t HostInfo::memoryTotal( ) { return -1; }
+Int HostInfo::numCPUs(bool) { return 0; }
+ptrdiff_t HostInfo::memoryTotal(bool) { return -1; }
 ptrdiff_t HostInfo::memoryUsed( )  { return -1; }
 ptrdiff_t HostInfo::memoryFree( )  { return -1; }
 ptrdiff_t HostInfo::swapTotal( )   { return -1; }
