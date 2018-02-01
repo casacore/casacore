@@ -241,8 +241,9 @@ std::vector<std::vector<uInt64> > ClassicalQuantileComputer<CASA_STATP>::_binCou
     typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iDesc = bDesc;
     typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eDesc = binDesc.end();
     if (binDesc.size() > 1) {
+        // initialize only to squash compiler warning
+        typename StatisticsUtilities<AccumType>::BinDesc prevDesc = *bDesc;
         // sanity check
-        typename StatisticsUtilities<AccumType>::BinDesc prevDesc;
         while (iDesc != eDesc) {
             if (iDesc != bDesc) {
                 ThrowIf (

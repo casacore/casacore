@@ -223,7 +223,7 @@ public:
         const std::vector<StatsData<AccumType> >& stats
     );
 
-    template <class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
+    template <class DataIterator, class MaskIterator, class WeightsIterator>
     static uInt nThreadsMax(const StatsDataProvider<CASA_STATP> *const dataProvider);
 
     static uInt threadIdx();
