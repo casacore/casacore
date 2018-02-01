@@ -38,7 +38,11 @@ CASA_STATD
 ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(
     Double zscore, Int maxIterations
 )
-  : ConstrainedRangeStatistics<CASA_STATP>(),
+  : ConstrainedRangeStatistics<CASA_STATP>(
+        CountedPtr<ConstrainedRangeQuantileComputer<CASA_STATP> >(
+            new ConstrainedRangeQuantileComputer<CASA_STATP>(&this->_getDataset())
+        )
+    ),
     _zscore(zscore), _maxIterations(maxIterations), _rangeIsSet(False), _niter(0) {}
 
 CASA_STATD
@@ -84,8 +88,9 @@ void ChauvenetCriterionStatistics<CASA_STATP>::setCalculateAsAdded(
     Bool c
 ) {
     ThrowIf(
-        c, "ChauvenetCriterionStatistics does not support calculating statistics "
-        "incrementally as data sets are added"
+        c,
+        "ChauvenetCriterionStatistics does not support calculating "
+        "statistics incrementally as data sets are added"
     );
 }
 

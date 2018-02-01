@@ -23,8 +23,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#ifndef SCIMATH_STATSALGORITHM_H
-#define SCIMATH_STATSALGORITHM_H
+#ifndef SCIMATH_STATISTICSALGORITHM_H
+#define SCIMATH_STATISTICSALGORITHM_H
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -43,61 +43,93 @@ namespace casacore {
 // Base class of statistics algorithm class hierarchy.
 
 // The default implementation is such that statistics are only calculated when
-// getStatistic() or getStatistics() is called. Until then, the iterators which
-// point to the beginning of data sets, masks, etc. are held in memory. Thus,
+// methods that actually compute statistics are called. Until then, the iterators
+// which point to the beginning of data sets, masks, etc. are held in memory. Thus,
 // the caller must keep all data sets available for the statistics object until
 // these methods are called, and of course, if the actual data values are changed
 // between adding data and calculating statistics, the updated values are used when
 // calculating statistics. Derived classes may override this behavior.
 //
 // PRECISION CONSIDERATIONS
-// Many statistics are computed via accumulators. This can lead to precision issues,
-// especially for large datasets. For this reason, it is highly recommended that the
-// data type one uses as the AccumType be of higher precision, if possible, than the
-// data type pointed to by input iterator. So for example, if one has a data set of
-// Float values (to which the InputIterator type points to), then one should use type
-// Double for the AccumType. In this case, the Float data values will be converted to
-// Doubles before they are accumulated.
+// Many statistics are computed via accumulators. This can lead to precision
+// issues, especially for large datasets. For this reason, it is highly recommended
+// that the data type one uses as the AccumType be of higher precision, if
+// possible, than the data type pointed to by input iterator. So for example, if
+// one has a data set of Float values (to which the InputIterator type points to),
+// then one should use type Double for the AccumType. In this case, the Float data
+// values will be converted to Doubles before they are accumulated.
 //
 // METHODS OF PROVIDING DATA
 // Data may be provided in one of two mutually exclusive ways. The first way is
-// simpler, and that is to use the setData()/addData() methods. Calling setData() will
-// clear any previous data that was added via these methods or via a data provider (see
-// below). Calling addData() subsequently to setData() will add a data set to the set
-// of data sets on which statistics will be calculated. In order for this to work
-// correctly, the iterators which are passed into these methods must still be valid when
-// statistics are calculated (although note that some derived classes allow certain
-// statistics to be updated as data sets are added via these methods. See specific
-// classes for details).
+// simpler, and that is to use the setData()/addData() methods. Calling setData()
+// will clear any previous data that was added via these methods or via a data
+// provider (see below). Calling addData() subsequently after having called
+// setData() will add a data set to the set of data sets on which statistics will
+// be calculated. In order for this to work correctly, the iterators which are
+// passed into these methods must still be valid when statistics are calculated
+// (although note that some derived classes allow certain statistics to be updated
+// as data sets are added via these methods. See specific classes for details).
 //
-// The second way to provide data is via a data provider. This takes the form of
-// a derived class of StatsDataProvider, in which various methods are implemented for
-// retrieving various information about the data sets. Such an interface is necessary for
-// data which does not easily lend itself to be provided via the setData()/addData()
-// methods. For example, in the case of iterating through a lattice, a lattice iterator
-// will overwrite the memory location of the previous chunk of data with the current chunk
-// of data. Therefore, if one does not wish to load data from the entire lattice into
-// memory (which is why LatticeIterator was designed in this way), one must the
-// LatticeStatsDataProvider class, which the statistics framework will use to iteratate
-// through the lattice, only keeping one chunk of the data of the lattice in memory at one
-// time.
+// The second way to provide data is via an object derived from class
+// StatsDataProvider, in which methods are implemented for retrieving various
+// information about the data sets to be included. Such an interface is necessary
+// for data structures which do not easily lend themselves to be provided via the
+// setData()/addData() methods. For example, in the case of iterating through a
+// Lattice, a lattice iterator will overwrite the memory location of the previous
+// chunk of data with the current chunk of data. Therefore, if one does not wish
+// to load data from the entire lattice into memory (which is why LatticeIterator
+// was designed to have the behavior it does), one must use the
+// LatticeStatsDataProvider class, which the statistics framework will use to
+// iterate through the lattice, only keeping one chunk of the data of the lattice
+// in memory any given moment.
+//
+// STORAGE OF DATA
+// In order to reduce maintenance costs, the accounting details of the data sets
+// are maintained in a StatisticsDataset object. This object is held in at the
+// StatisticsAlgorithm level in the _dataset private field of this class when a
+// derived class is instantiated. A StatisticsDataset object should never need
+// to be explicitly instantiated by an API developer.
 //
 // QUANTILES
 // A quantile is a value contained in a data set, such that, it has a zero-based
-// index of ceil(q*n)-1 in the equivalent ordered dataset, where 0 < q < 1 specifies
-// the fractional location within the ordered dataset and n is the total number of elements.
-// Note that, for a dataset with an odd number of elements, the median is the same as
-// the quantile value when q = 0.5. However, there is no such correspondance between the
-// median in a dataset with an even number of elements, since the median in that case is
-// given by the mean of the elements of zero-based indeces n/2-1 and n/2 in the equivalent
-// ordered dataset. Thus, in the case of a dataset with an even number of values, the
-// median may not even exist in the dataset, while a quantile value must exist in the
-// dataset.  Note when calculating quantile values, a dataset that does not fall in
-// specified dataset ranges, is not included via a stride specification, is masked, or
-// has a weight of zero is not considered a member of the dataset for the pruposes of
-// quantile calculations.
+// index of ceil(q*n)-1 in the equivalent ordered dataset, where 0 < q < 1
+// specifies the fractional location within the ordered dataset and n is the total
+// number of valid elements. Note that, for a dataset with an odd number of
+// elements, the median is the same as the quantile value when q = 0.5. However,
+// there is no such correspondence between the median in a dataset with an even
+// number of elements, since the median in that case is given by the mean of the
+// elements of zero-based indices n/2-1 and n/2 in the equivalent ordered dataset.
+// Thus, in the case of a dataset with an even number of values, the median may
+// not even exist in the dataset, while a generic quantile value must exist in the
+// dataset by definition. Note when calculating quantile values, a dataset that
+// does not fall in specified dataset ranges, is not included via a stride
+// specification, is masked, or has a weight of zero, is not considered a member
+// of the dataset for the purposes of quantile calculations.
+//
+// CLASS ORGANIZATION
+// In general, in the StatsFramework class hierarchy, classes derived from
+// StatisticsAlgorithm and its descendants contain methods which calculate the
+// relevant statistics which are computed via accumulation. These classes also
+// contain the top level methods for computing the quantile-like statistics, for
+// the convenience of the API developer. Derived classes of StatisticsAlgorithm
+// normally will have a private field which is an object that contains methods
+// which compute the various quantile-like statistics. These so-called
+// QuantileComputer classes have been created to reduce maintainability costs;
+// because putting all the code into single class files was becoming unwieldy.
+// The concrete QuantileComputer classes are ultimately derived from
+// StatisticsAlgorithmQuantileComputer, which is the virtual base class of this
+// hierarchy. StatisticsAlgorithm objects do not contain a
+// StatisticsAlgorithmQuantileComputer private field, since StatisticsAlgorithm
+// is also a virtual base class and hence no actual statistics are computed
+// within it. The design is such that the only classes an API developer should
+// over instantiate are the derived classes of StatisticsAlgorithm; the
+// QuantileComputer classes should never be explicitly instantiated in code
+// which uses the StatsFramework API.
 
-template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
+template <
+    class AccumType, class DataIterator, class MaskIterator=const Bool *,
+    class WeightsIterator=DataIterator
+>
 class StatisticsAlgorithm {
 
 public:
@@ -173,9 +205,6 @@ public:
 
     // get the algorithm that this object uses for computing stats
     virtual StatisticsData::ALGORITHM algorithm() const = 0;
-
-    // delete any (partially) sorted array
-    void deleteSortedArray();
 
     virtual AccumType getMedian(
         CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
@@ -300,8 +329,8 @@ protected:
     StatisticsAlgorithm(const StatisticsAlgorithm& other);
 
     // use copy semantics, except for the data provider which uses reference semantics
-    StatisticsAlgorithm<CASA_STATP>& operator=(
-        const StatisticsAlgorithm<CASA_STATP>& other
+    StatisticsAlgorithm& operator=(
+        const StatisticsAlgorithm& other
     );
 
     // Allows derived classes to do things after data is set or added.
@@ -320,18 +349,13 @@ protected:
         return _statsToCalculate;
     }
 
-    std::vector<AccumType>& _getSortedArray() { return _sortedArray; }
-
     virtual const std::set<StatisticsData::STATS>& _getUnsupportedStatistics() const {
         return _unsupportedStats;
     }
 
-    void _setSortedArray(const std::vector<AccumType>& v) { _sortedArray = v; }
-
 private:
-    std::vector<AccumType> _sortedArray;
     std::set<StatisticsData::STATS> _statsToCalculate, _unsupportedStats;
-    StatisticsDataset<AccumType, DataIterator, MaskIterator, WeightsIterator> _dataset;
+    StatisticsDataset<CASA_STATP> _dataset;
     Bool _resetDataset;
 
     void _resetExceptDataset();

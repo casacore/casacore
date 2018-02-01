@@ -528,7 +528,7 @@ private:
    enum LatticeStatsAlgorithm {
        STATS_FRAMEWORK_ARRAYS,
        STATS_FRAMEWORK_DATA_PROVIDERS,
-       TILED_APPLY,
+       TILED_APPLY
    };
 
    const MaskedLattice<T>* pInLattice_p;

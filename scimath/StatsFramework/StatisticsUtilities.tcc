@@ -28,6 +28,7 @@
 
 #include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
 
+#include <casacore/casa/OS/OMP.h>
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
@@ -258,6 +259,7 @@ void StatisticsUtilities<AccumType>::convertToAbsDevMedArray(
 ) {
     typename std::vector<AccumType>::iterator iter = myArray.begin();
     typename std::vector<AccumType>::iterator end = myArray.end();
+    // I bet there's a nifty way to do this in one line in C++11
     for (; iter!=end; ++iter) {
         *iter = abs(*iter - median);
     }
@@ -419,6 +421,33 @@ StatsData<AccumType> StatisticsUtilities<AccumType>::combine(
         res.weighted = iter->weighted || res.weighted;
     }
     return res;
+}
+
+template <class AccumType>
+template <class DataIterator, class MaskIterator, class WeightsIterator>
+uInt StatisticsUtilities<AccumType>::nThreadsMax(
+    const StatsDataProvider<CASA_STATP> *const dataProvider
+) {
+    uInt nthr = OMP::nMaxThreads();
+    if (nthr > 1) {
+        if (dataProvider) {
+            uInt n = dataProvider->getNMaxThreads();
+            if (n > 0) {
+                return n;
+            }
+        }
+    }
+    return nthr;
+}
+
+template <class AccumType>
+uInt StatisticsUtilities<AccumType>::threadIdx() {
+#ifdef _OPENMP
+    uInt tid = omp_get_thread_num();
+#else
+    uInt tid = 0;
+#endif
+    return tid * ClassicalStatisticsData::CACHE_PADDING;
 }
 
 }
