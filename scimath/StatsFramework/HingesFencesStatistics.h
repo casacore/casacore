@@ -188,6 +188,58 @@ protected:
     ) const;
 
     // <group>
+    // Sometimes we want the min, max, and npts all in one scan.
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const MaskIterator& maskBegin, uInt maskStride
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
+        Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+        const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    ) const;
+    // </group>
+
+    // <group>
     // no weights, no mask, no ranges
     void _unweightedStats(
         StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,

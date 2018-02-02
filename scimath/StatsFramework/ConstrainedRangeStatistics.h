@@ -269,6 +269,58 @@ protected:
     ) const;
     // </group>
 
+    // <group>
+    // Sometimes we want the min, max, and npts all in one scan.
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const MaskIterator& maskBegin, uInt maskStride
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
+        Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+        const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    ) const;
+    // </group>
+
     // This method is purposefully non-virtual. Derived classes should override the
     // version with no parameters.
     void _setRange(CountedPtr<std::pair<AccumType, AccumType> > r);

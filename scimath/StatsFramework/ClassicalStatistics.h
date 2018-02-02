@@ -164,11 +164,16 @@ public:
     );
     // </group>
 
+    // <group>
     // scan the dataset(s) that have been added, and find the min and max.
     // This method may be called even if setStatsToCaclulate has been called and
     // MAX and MIN has been excluded. If setCalculateAsAdded(True) has previously been
     // called after this object has been (re)initialized, an exception will be thrown.
+    // The second version also determines npts in the same scan.
     virtual void getMinMax(AccumType& mymin, AccumType& mymax);
+
+    virtual void getMinMaxNpts(uInt64& npts, AccumType& mymin, AccumType& mymax);
+    // </group>
 
     // scan the dataset(s) that have been added, and find the number of good points.
     // This method may be called even if setStatsToCaclulate has been called and
@@ -278,9 +283,6 @@ protected:
 
     void _clearStats();
 
-    // scan dataset(s) to find min and max
-    void _doMinMax(AccumType& vmin, AccumType& vmax);
-
     Bool _getDoMaxMin() const { return _doMaxMin; }
 
     virtual StatsData<AccumType> _getInitialStats() const;
@@ -341,6 +343,58 @@ protected:
 
     virtual void _minMax(
         CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightBegin,
+        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    ) const;
+    // </group>
+
+    // <group>
+    // Sometimes we want the min, max, and npts all in one scan.
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const MaskIterator& maskBegin, uInt maskStride
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
+        Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+        const DataRanges& ranges, Bool isInclude
+    ) const;
+
+    virtual void _minMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
     ) const;
@@ -423,6 +477,13 @@ private:
         const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
     );
 
+    void _computeMinMaxNpts(
+        uInt64& npts, CountedPtr<AccumType>& mymax, CountedPtr<AccumType>& mymin,
+        DataIterator dataIter, MaskIterator maskIter,
+        WeightsIterator weightsIter, uInt64 dataCount,
+        const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
+    );
+
     void _computeNpts(
         uInt64& npts, DataIterator dataIter, MaskIterator maskIter,
         WeightsIterator weightsIter, uInt64 dataCount,
@@ -436,7 +497,12 @@ private:
         const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
     );
 
-    Int64 _doNpts();
+    // scan dataset(s) to find min and max
+    void _doMinMax(AccumType& vmin, AccumType& vmax);
+
+    uInt64 _doMinMaxNpts(AccumType& vmin, AccumType& vmax);
+
+    uInt64 _doNpts();
 
     // for quantile computations, if necessary, determines npts, min, max to send
     // to quantile calculator methods
