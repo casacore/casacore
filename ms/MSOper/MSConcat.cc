@@ -345,7 +345,10 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   if(!antIndexTrivial){
     copyPointingB(otherMS.pointing(), newAntIndices);
   }
-  
+
+  // SYSCAL
+  copySysCal(otherMS.sysCal(), newAntIndices);
+
   /////////////////////////////////////////////////////
 
   // copying all subtables over to otherMS
@@ -1050,6 +1053,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
     itsMS.pointing().removeRow(delrows); 
   }
 
+  // SYSCAL
+  if(!copySysCal(otherMS.sysCal(), newAntIndices)){
+    log << LogIO::WARN << "Could not merge SysCal subtables " << LogIO::POST ;
+  }
+
 
   //////////////////////////////////////////////////////
 
@@ -1728,6 +1736,70 @@ Bool MSConcat::copyPointingB(MSPointing& otherPoint,const
   }
     return True;
 
+}
+
+
+Bool MSConcat::copySysCal(const MSSysCal& otherSysCal,
+			  const Block<uInt>& newAntIndices){
+
+  LogIO os(LogOrigin("MSConcat", "copySysCal"));
+
+  Bool itsSysCalNull = (itsMS.sysCal().isNull() || (itsMS.sysCal().nrow() == 0));
+  Bool otherSysCalNull = (otherSysCal.isNull() || (otherSysCal.nrow() == 0));
+
+  if(itsSysCalNull && otherSysCalNull){ // neither of the two MSs do have valid syscal tables
+    os << LogIO::NORMAL << "No valid syscal tables present. Result won't have one either." << LogIO::POST;
+    return True;
+  }
+  else if(itsSysCalNull && !otherSysCalNull){
+    os << LogIO::WARN << itsMS.tableName() << " does not have a valid syscal table," << endl
+       << "  the MS to be appended, however, has one. Result won't have one." 
+       << LogIO::POST;
+    return False;
+  }
+
+  MSSysCal& sysCal=itsMS.sysCal();
+  Int actualRow=sysCal.nrow()-1;
+  Int origNRow=actualRow+1;
+  Int rowToBeAdded=otherSysCal.nrow();
+  TableRow sysCalRow(sysCal);
+  const ROTableRow otherSysCalRow(otherSysCal);
+  for (Int k=0; k < rowToBeAdded; ++k){
+    ++actualRow;
+    sysCal.addRow();
+    sysCalRow.put(actualRow, otherSysCalRow.get(k, True));
+  }
+
+  //Now reassigning antennas to the new indices of the ANTENNA table
+
+  if(rowToBeAdded > 0){
+    MSSysCalColumns sysCalCol(sysCal);
+    // check antenna IDs
+    Vector<Int> antennaIDs=sysCalCol.antennaId().getColumn();
+    Bool idsOK = True;
+    Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      if(antennaIDs[k] < 0 || antennaIDs[k] > maxID){
+	idsOK = False;
+	break;
+      }
+    }
+    if(!idsOK){
+      os << LogIO::WARN 
+	 << "Found invalid antenna ids in the SYSCAL table; the SYSCAL table will be emptied as it is inconsistent" 
+	 << LogIO::POST;
+      Vector<uInt> rowtodel(sysCal.nrow());
+      indgen(rowtodel);
+      sysCal.removeRow(rowtodel);
+      return False;
+    }
+
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      sysCalCol.antennaId().put(k, newAntIndices[antennaIDs[k]]);
+    }
+  }
+
+  return True;
 }
 
 

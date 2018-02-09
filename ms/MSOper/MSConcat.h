@@ -123,6 +123,7 @@ private:
   Bool checkEphIdInField(const ROMSFieldColumns& otherFldCol) const;
   Bool copyPointing(const MSPointing& otherPoint, const Block<uInt>& newAntIndices);
   Bool copyPointingB(MSPointing& otherPoint, const Block<uInt>& newAntIndices);
+  Bool copySysCal(const MSSysCal& otherSysCal, const Block<uInt>& newAndIndices);
   Int copyObservation(const MSObservation& otherObs, const Bool remRedunObsId=True);
                              // by default remove redundant observation table rows
   Block<uInt> copyAntennaAndFeed(const MSAntenna& otherAnt,
