@@ -538,6 +538,7 @@ public:
   void addTable (Int tabnr, const String& name,
 		 const Table& table,
 		 const String& shorthand,
+                 Bool addToFromList,
 		 const vector<const Table*> tempTables,
 		 const vector<TableParseSelect*>& stack);
 
@@ -781,9 +782,10 @@ private:
   Int64 evalIntScaExpr (const TableExprNode& expr) const;
 
   // Find a table for the given shorthand.
+  // Optionally the WITH tables are searched as well.
   // If no shorthand is given, the first table is returned (if there).
   // If not found, a null Table object is returned.
-  Table findTable (const String& shorthand) const;
+  Table findTable (const String& shorthand, Bool doWith) const;
 
   // Handle the selection of a wildcarded column name.
   void handleWildColumn (Int stringType, const String& name);
@@ -867,9 +869,10 @@ private:
   CommandType commandType_p;
   //# Table description for a series of column descriptions.
   TableDesc tableDesc_p;
-  //# Vector of TableParse objects.
+  //# Vector of TableParse objects (from WITH and FROM clause).
   //# This is needed for the functions above, otherwise they have no
   //# way to communicate.
+  vector<TableParse> withTables_p;
   vector<TableParse> fromTables_p;
   //# Block of selected column names (new name in case of select).
   Block<String> columnNames_p;

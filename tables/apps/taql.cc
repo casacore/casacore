@@ -595,7 +595,7 @@ Table doCommand (bool printCommand, bool printSelect, bool printMeas,
     String s = str.substr(spos, epos-spos);
     s.downcase();
     showHelp = (s=="show" || s=="help");
-    addComm = !(s=="select" || s=="update" || s=="insert" ||
+    addComm = !(s=="with" || s=="select" || s=="update" || s=="insert" ||
                 s=="calc" || s=="delete" || s=="count"  || 
                 s=="create" || s=="createtable" ||
                 s=="alter" || s=="altertable" ||

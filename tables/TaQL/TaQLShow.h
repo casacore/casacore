@@ -56,17 +56,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </prerequisite>
 
 // <synopsis>
-// The result of parsing a TaQL command is stored in TaQLNode objects.
-// Each part of the command can have its own specialized
-// <linkto class=TaQLNodeRep>TaQLNodeRep</linkto> object, which forms
-// the letter in the TaQLNode envelope.
-// <br>The actual scanning/parsing of the command is done using flex/bison
-// as defined in the TableGram files.
+// TaQLShow::getInfo is called by the TaQL help (or show) command.
+// It returns a string (with newlines) containing the requested help info.
+//
+// Note that a command like 'help func mscal' command calls the getInfo function in
+// the dynamically loaded mscal UDF library.
 // </synopsis> 
 
 // <motivation>
-// The letter-envelope idiom (counted pointer) makes if much easier
-// to keep track of memory, especially in the case of exceptions.
+// It is nice if the user can get online TaQL help.
 // </motivation>
 
 class TaQLShow

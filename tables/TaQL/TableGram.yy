@@ -55,6 +55,7 @@ The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
 %token CALC
 %token CREATETAB
 %token ALTERTAB
+%token WITH
 %token FROM
 %token WHERE
 %token GROUPBY
@@ -133,9 +134,9 @@ The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
 %type <nodeselect> alttabcomm
 %type <nodeselect> tfcommand
 %type <nodeselect> subquery
-%type <nodeselect> selrow
 %type <node> selcol
 %type <node> normcol
+%type <nodelist> withpart
 %type <nodelist> tables
 %type <nodelist> tabconc
 %type <nodelist> concsub
@@ -162,10 +163,8 @@ The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
 %type <nodelist> colspecl
 %type <nodelist> showlist
 %type <nodelist> showflds
-%type <node> updrow
 %type <nodelist> updlist
 %type <node> updexpr
-%type <node> insrow
 %type <nodelist> insclist
 %type <node> insvalue
 %type <nodelist> insparts
@@ -302,7 +301,7 @@ command:   selcomm
              { TaQLNode::theirNode = *$1; }
          ;
 
-showcomm:   SHOW showlist {
+showcomm:  SHOW showlist {
                $$ = new TaQLNode(new TaQLShowNodeRep (*$2));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
@@ -314,6 +313,7 @@ showlist:  {   /* no list */
            }
          | showflds
              { $$ = $1; }
+         ;
 
 showflds:  showflds tabname {
                $$ = $1;
@@ -359,32 +359,34 @@ subquery:  LPAREN selcomm RPAREN {
 	   }
          ;
 
-selcomm:   SELECT selrow {
-               $$ = $2;
-           }
+withpart:  /* no WITH part */
+           { $$ = new TaQLMultiNode(); }
+         | WITH tables
+           { $$ = $2; }
+         ;
 
-selrow:    selcol FROM tables whexpr groupby having order limitoff given dminfo {
+selcomm:   withpart SELECT selcol FROM tables whexpr groupby having order limitoff given dminfo {
                $$ = new TaQLQueryNode(
-                    new TaQLSelectNodeRep (*$1, *$3, 0, *$4, *$5, *$6,
+                    new TaQLSelectNodeRep (*$3, *$1, *$5, 0, *$6, *$7, *$8,
+					   *$9, *$10, *$11, *$12));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | withpart SELECT selcol into FROM tables whexpr groupby having order limitoff dminfo {
+               $$ = new TaQLQueryNode(
+		    new TaQLSelectNodeRep (*$3, *$1, *$6, 0, *$7, *$8, *$9,
+					   *$10, *$11, *$4, *$12));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | withpart SELECT selcol whexpr groupby having order limitoff given dminfo {
+               $$ = new TaQLQueryNode(
+                    new TaQLSelectNodeRep (*$3, *$1, *$4, *$5, *$6,
 					   *$7, *$8, *$9, *$10));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | selcol into FROM tables whexpr groupby having order limitoff dminfo {
+         | withpart SELECT selcol into whexpr groupby having order limitoff dminfo {
                $$ = new TaQLQueryNode(
-		    new TaQLSelectNodeRep (*$1, *$4, 0, *$5, *$6, *$7,
-					   *$8, *$9, *$2, *$10));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
-         | selcol whexpr groupby having order limitoff given dminfo {
-               $$ = new TaQLQueryNode(
-                    new TaQLSelectNodeRep (*$1, *$2, *$3, *$4,
-					   *$5, *$6, *$7, *$8));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
-         | selcol into whexpr groupby having order limitoff dminfo {
-               $$ = new TaQLQueryNode(
-		    new TaQLSelectNodeRep (*$1, *$3, *$4, *$5,
-					   *$6, *$7, *$2, *$8));
+		    new TaQLSelectNodeRep (*$3, *$1, *$5, *$6, *$7,
+					   *$8, *$9, *$4, *$10));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
@@ -409,27 +411,23 @@ normcol:   columns {
                     new TaQLColumnsNodeRep (False, *$1));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
+         ;
 
-countcomm: COUNT normcol FROM tables whexpr {
+countcomm: withpart COUNT normcol FROM tables whexpr {
 	       $$ = new TaQLQueryNode(
-                    new TaQLCountNodeRep (*$2, *$4, *$5));
+                    new TaQLCountNodeRep (*$1, *$3, *$5, *$6));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
 
-updcomm:   UPDATE updrow {
-               $$ = $2;
-           }
-         ;
-
-updrow:    tables UPDSET updlist FROM tables whexpr order limitoff {
+updcomm:   withpart UPDATE tables UPDSET updlist FROM tables whexpr order limitoff {
                $$ = new TaQLNode(
-                    new TaQLUpdateNodeRep (*$1, *$3, *$5, *$6, *$7, *$8));
+                    new TaQLUpdateNodeRep (*$1, *$3, *$5, *$7, *$8, *$9, *$10));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | tables UPDSET updlist whexpr order limitoff {
+         | withpart UPDATE tables UPDSET updlist whexpr order limitoff {
                $$ = new TaQLNode(
-		    new TaQLUpdateNodeRep (*$1, *$3, 0, *$4, *$5, *$6));
+                    new TaQLUpdateNodeRep (*$1, *$3, *$5, 0, *$6, *$7, *$8));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
@@ -468,7 +466,6 @@ updexpr:   NAME EQASS orexpr {
                                             $4->getString(), *$7));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         ;
          | LPAREN NAME COMMA NAME RPAREN LBRACKET subscripts RBRACKET EQASS orexpr {
 	       $$ = new TaQLNode(
                     new TaQLUpdExprNodeRep ($2->getString(),
@@ -477,38 +474,33 @@ updexpr:   NAME EQASS orexpr {
            }
          ;
 
-inscomm:   INSERT insrow {
-               $$ = $2;
-           }
-         ;
-
-insrow:    INTO tables insclist selcomm {
+inscomm:   withpart INSERT INTO tables insclist selcomm {
                /* insert with SELECT command */
-	       $4->setNoExecute();
+	       $6->setNoExecute();
 	       $$ = new TaQLNode(
-                    new TaQLInsertNodeRep (*$2, *$3, *$4, TaQLNode()));
+                    new TaQLInsertNodeRep (*$1, *$4, *$5, *$6, TaQLNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | INTO tables insclist insvalue {
+         | withpart INSERT INTO tables insclist insvalue {
                /* insert in SQL style */
 	       $$ = new TaQLNode(
-                    new TaQLInsertNodeRep (*$2, *$3, *$4, TaQLNode()));
+                    new TaQLInsertNodeRep (*$1, *$4, *$5, *$6, TaQLNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | LIMIT orexpr INTO tables insclist insvalue {
+         | withpart INSERT LIMIT orexpr INTO tables insclist insvalue {
 	       $$ = new TaQLNode(
-                    new TaQLInsertNodeRep (*$4, *$5, *$6, *$2));
+                    new TaQLInsertNodeRep (*$1, *$6, *$7, *$8, *$4));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | INTO tables insclist insvalue LIMIT orexpr {
+         | withpart INSERT INTO tables insclist insvalue LIMIT orexpr {
 	       $$ = new TaQLNode(
-                    new TaQLInsertNodeRep (*$2, *$3, *$4, *$6));
+                    new TaQLInsertNodeRep (*$1, *$4, *$5, *$6, *$8));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | INTO tables UPDSET updlist {
+         | withpart INSERT INTO tables UPDSET updlist {
                /* insert in update style */
 	       $$ = new TaQLNode(
-                    new TaQLInsertNodeRep (*$2, *$4));
+                    new TaQLInsertNodeRep (*$1, *$4, *$6));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
@@ -540,6 +532,7 @@ insparts:  insparts COMMA inspart {
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	       $$->add (*$1);
            }
+         ;
 
 inspart:   LBRACKET insvlist RBRACKET {
                $$ = $2;
@@ -561,57 +554,58 @@ insvlist:  insvlist COMMA orexpr {
            }
          ;
 
-delcomm:   DELETE FROM tables whexpr order limitoff {
+delcomm:   withpart DELETE FROM tables whexpr order limitoff {
 	       $$ = new TaQLNode(
-                    new TaQLDeleteNodeRep (*$3, *$4, *$5, *$6));
+                    new TaQLDeleteNodeRep (*$1, *$4, *$5, *$6, *$7));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
 
-calccomm:  CALC FROM tables CALC orexpr {
+calccomm:  withpart CALC FROM tables CALC orexpr {
 	       $$ = new TaQLNode(
-                    new TaQLCalcNodeRep (*$3, *$5,
+                    new TaQLCalcNodeRep (*$1, *$4, *$6,
                                          TaQLNode(), TaQLNode(), TaQLNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | CALC orexpr {
+         | withpart CALC orexpr {
                TaQLMultiNode tabNode((TaQLMultiNodeRep*)0);
 	       $$ = new TaQLNode(
-               new TaQLCalcNodeRep (tabNode, *$2,
+               new TaQLCalcNodeRep (*$1, tabNode, *$3,
                                     TaQLNode(), TaQLNode(), TaQLNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | CALC orexpr FROM tables whexpr order limitoff {
+         | withpart CALC orexpr FROM tables whexpr order limitoff {
 	       $$ = new TaQLNode(
-                    new TaQLCalcNodeRep (*$4, *$2, *$5, *$6, *$7));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
-
-cretabcomm: CREATETAB tabnmtyp colspecs nrowspec dminfo {
-	       $$ = new TaQLQueryNode(
-                    new TaQLCreTabNodeRep (*$2, *$3, *$4, *$5));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
-          | CREATETAB tabnmtyp LPAREN colspecs RPAREN nrowspec dminfo {
-	       $$ = new TaQLQueryNode(
-                    new TaQLCreTabNodeRep (*$2, *$4, *$6, *$7));
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
-          | CREATETAB tabnmtyp LBRACKET colspecs RBRACKET nrowspec dminfo {
-	       $$ = new TaQLQueryNode(
-                    new TaQLCreTabNodeRep (*$2, *$4, *$6, *$7));
+                    new TaQLCalcNodeRep (*$1, *$5, *$3, *$6, *$7, *$8));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
 
-alttabcomm: ALTERTAB tabalias altlist {
-               $$ = new TaQLQueryNode(
-                    new TaQLAltTabNodeRep (*$2, TaQLMultiNode(), *$3));
+cretabcomm: withpart CREATETAB tabnmtyp colspecs nrowspec dminfo {
+	       $$ = new TaQLQueryNode(
+                    new TaQLCreTabNodeRep (*$1, *$3, *$4, *$5, *$6));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-           | ALTERTAB tabalias FROM tables altlist {
+          | withpart CREATETAB tabnmtyp LPAREN colspecs RPAREN nrowspec dminfo {
+	       $$ = new TaQLQueryNode(
+                    new TaQLCreTabNodeRep (*$1, *$3, *$5, *$7, *$8));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+          | withpart CREATETAB tabnmtyp LBRACKET colspecs RBRACKET nrowspec dminfo {
+	       $$ = new TaQLQueryNode(
+                    new TaQLCreTabNodeRep (*$1, *$3, *$5, *$7, *$8));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         ;
+
+alttabcomm: withpart ALTERTAB tabalias altlist {
                $$ = new TaQLQueryNode(
-                    new TaQLAltTabNodeRep (*$2, *$4, *$5));
+                    new TaQLAltTabNodeRep (*$1, *$3, TaQLMultiNode(), *$4));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+           | withpart ALTERTAB tabalias FROM tables altlist {
+               $$ = new TaQLQueryNode(
+                    new TaQLAltTabNodeRep (*$1, *$3, *$5, *$6));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
@@ -736,6 +730,7 @@ setkey:   namefld EQASS keyval {
 	       TaQLNode::theirNodesCreated.push_back ($$);
                delete $3;
            }
+         ;
 
 copykeys:  copykeys COMMA copykey {
                $$ = $1;
@@ -746,6 +741,7 @@ copykeys:  copykeys COMMA copykey {
 	       TaQLNode::theirNodesCreated.push_back ($$);
                $$->add (*$1);
            }
+         ;
 
 copykey:   namefld EQASS namefld asdtype {
 	       $$ = new TaQLNode(
@@ -753,6 +749,7 @@ copykey:   namefld EQASS namefld asdtype {
                                           $3->getString(), $4->getString()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
+         ;
 
 keyval:    srecval {
                $$ = $1;
@@ -760,6 +757,7 @@ keyval:    srecval {
          | brackval {
                $$ = $1;
            }
+         ;
 
 brackval:  LBRACKET recexpr RBRACKET {
 	       $$ = new TaQLRecFldNodeRep ("", *$2, "");
@@ -774,6 +772,7 @@ brackval:  LBRACKET recexpr RBRACKET {
                /* empty vector of the given datatype */
                $$ = new TaQLRecFldNodeRep ("", TaQLNode(), $4->getString());
            }
+         ;
 
 dminfo:    {   /* no datamans */
                $$ = new TaQLMultiNode();
@@ -974,6 +973,7 @@ columns:   {   /* no column names given (thus take all) */
          | collist {
                $$ = $1;
            }
+         ;
 
 collist:   colexpr {
                $$ = new TaQLMultiNode(False);
@@ -1068,6 +1068,7 @@ colspecs:  {   /* no column specifications given */
          | colspecl {
                $$ = $1;
            }
+         ;
 
 colspecl: colspec {
                $$ = new TaQLMultiNode(False);
@@ -1831,6 +1832,7 @@ colonrangeinterval: colonrange {
                     new TaQLIndexNodeRep (*$1, 0, *$4));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
+         ;
 
 colonrangeindex: colonrange {
                $$ = $1;
@@ -1850,6 +1852,7 @@ colonrangeindex: colonrange {
                     (*$1, TaQLConstNode(new TaQLConstNodeRep(Int64(Slicer::MimicSource))), *$4));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
+         ;
 
 colonrange: arithexpr COLON arithexpr {
 	       $$ = new TaQLNode(

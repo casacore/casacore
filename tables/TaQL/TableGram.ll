@@ -59,6 +59,7 @@
 */
 WHITE1    [ \t\n]
 WHITE     {WHITE1}*
+NONWHITE  [^ \t\n]+
 COMMENT   "#".*
 DIGIT     [0-9]
 INT       {DIGIT}+
@@ -107,6 +108,7 @@ EXCEPT    ([Ee][Xx][Cc][Ee][Pp][Tt])|([Mm][Ii][Nn][Uu][Ss])
 STYLE     [Uu][Ss][Ii][Nn][Gg]{WHITE}[Ss][Tt][Yy][Ll][Ee]{WHITE1}
 TIMEWORD  [Tt][Ii][Mm][Ee]
 SHOW      ([Ss][Hh][Oo][Ww])|([Hh][Ee][Ll][Pp])
+WITH      [Ww][Ii][Tt][Hh]
 SELECT    [Ss][Ee][Ll][Ee][Cc][Tt]
 UPDATE    [Uu][Pp][Dd][Aa][Tt][Ee]
 INSERT    [Ii][Nn][Ss][Ee][Rr][Tt]
@@ -206,8 +208,8 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
     serves as a shorthand for possible later use in the field name.
     A table name can be given in the FROM part and in the giving PART.
     These are indicated by the FROM/GIVING/CRETABstate, because a table name
-    can contain special characters like -. In the FROMstate a table name
-    can also be $nnn indicating a temporary table.
+    can contain special characters like -.
+    A table name can also be $nnn indicating a temporary table.
     In a subquery care must be taken that the state is switched back to
     EXPRstate, because a FROM can be the last part in a subquery and
     because a set can be specified in the GIVING part.
@@ -216,7 +218,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
     ) and ] indicate the end of subquery.
  */
 
- /* In SHOW command any word (such as SELECT) is allowed */
+ /* In the SHOW command any word (such as SELECT) is allowed */
 <SHOWstate>{NAME} {
             tableGramPosition() += yyleng;
             lvalp->val = new TaQLConstNode(
@@ -340,6 +342,11 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
 	    return DMINFO;
+	  }
+{WITH}    {
+            tableGramPosition() += yyleng;
+            BEGIN(FROMstate);
+	    return WITH;
 	  }
 {FROM}    {
             tableGramPosition() += yyleng;
@@ -680,8 +687,8 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	    return FLDNAME;
 	  }
 
- /* A temporary table number can be given in the FROM clause */
-<FROMstate>{TEMPTAB} {
+ /* A temporary table number */
+{TEMPTAB} {
             tableGramPosition() += yyleng;
             Int64 ival = atoi(TableGramtext+1);
             lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (ival));
@@ -700,9 +707,14 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 
  /* Whitespace is skipped */
 {WHITE}   { tableGramPosition() += yyleng; }
+<SHOWstate>{WHITE}   { tableGramPosition() += yyleng; }
 
  /* Comment is skipped */
 {COMMENT} { tableGramPosition() += yyleng; }
+<SHOWstate>{COMMENT} { tableGramPosition() += yyleng; }
+
+ /* Any other non-white character is an error for SHOW */
+<SHOWstate>{NONWHITE} { throw TableInvExpr ("Invalid character used in SHOW command"); }
 
  /* An unterminated string is an error */
 {USTRING} { throw (TableInvExpr ("Unterminated string")); }

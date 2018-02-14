@@ -63,8 +63,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  show oper(ators)                  available operators",
     "  show sets                         how to specify sets and intervals",
     "  show const(ants)                  how to specify constant scalars and arrays",
-    "  show datatypes  (dtype)           the names of supported data types",
-    "  show tableoptions  (tabopt)       the possible table options",
+    "  show datatypes     (or dtype)     the names of supported data types",
+    "  show tableoptions  (or tabopt)    the possible table options",
+    "  show dminfo                       how to specify datamanager info",
     "  show functions [type] [subtype]   available functions",
     "       possible types: math, logical, conv(ersion), datetime, string",
     "                       array, reduce, astro, misc, aggr(egate)",
@@ -77,6 +78,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "       If a unit is given as kind, all corresponding units are shown.",
     "       Note that TaQL can convert between ANGLE and TIME.",
     "",
+    "A command can be followed by ; and/or by #anycomment (that are ignored).",
     "See http://casacore.github.io/casacore-notes/199.html for a full",
     "description of TaQL."
   };
@@ -123,7 +125,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "Alter a table (add/rename/remove columns/keywords; add rows).",
     "  ALTER TABLE table",
-    "    [ADD COLUMN [column_specs] [DMINFO datamanagers]",
+    "    [ADD COLUMN [column_specs] [DMINFO datamanagers]]",
     "    [RENAME COLUMN old TO new, old TO new, ...]",
     "    [DROP COLUMN col, col, ...]",
     "    [SET KEYWORD key=value, key=value, ...]",
@@ -135,12 +137,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "Count number of rows per group (subset of SELECT/GROUPBY).",
     "  COUNT [column_list] FROM table_list [WHERE ...]",
     "",
+    "All commands can be preceeded by 'WITH table-list' having temporary tables.",
     "Use 'show command <command>' for more information about a command.",
     "    'show expr(essions)'     for more information about forming expressions.",
     "See http://casacore.github.io/casacore-notes/199.html for full info.",
   };
 
   const char* selectHelp[] = {
+    "  [WITH table_list]",
     "SELECT",
     "  [[DISTINCT] expression_list]",
     "  [INTO table [AS options]]",
@@ -153,17 +157,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  [GIVING table [AS options] | set]",
     "  [DMINFO datamanagers]",
     "",
+    "WITH table_list",
+    "  Optional list of temporary tables to factor out multiply used subqueries.",
+    "  E.g.,    WITH [select from some.tab WHERE expr] AS t1",
+    "  creates a temporary table that can be used as table 't1' further down.",
+    "",
     "[DISTINCT] expression-list",
     "  Optional list of expressions (possibly containing aggregate functions).",
     "  An expression can be followed by 'AS newname [datatype]' to define a name for",
     "  the resulting column and its data type (defaults to the expression type).",
     "   Possible data types: B, U1, I2, U2, I4, U4, R4, R8, C4, C8, S, EPOCH",
     "   Use 'show datatypes' to get more information about the possible data types.",
+    "  A masked array expression can be stored in 2 columns like",
+    "      expression AS (datacolumn,maskcolumn) [datatype]",
+    "  where datatype applies to the datacolumn (the maskcolumn is always Bool).",
     "  A regex (see 'show constants') can be used at any place in the expression-list",
     "  to include or exclude columns.",
     "    For example:   !~p/*DATA/    to exclude all columns ending in DATA",
     "  DISTINCT (or UNIQUE) removes output rows with equal values.",
-    "  If nothing given, all columns of the first table are selected.",
+    "  If no expression-list is given, all columns of the first table are selected.",
     "",
     "INTO table [AS options]",
     "  Name of resulting table; if not given, no output table is created.",
@@ -175,7 +187,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    STORAGE   = SEPFILE,MULTIFILE,MULTIHDF5,DEFAULT,AIPSRC  default AIPSRC",
     "    BLOCKSIZE = <n>",
     "    OVERWRITE = T|F                                         default T",
-    "   Use 'show tableoptions' to get more information about the possible options.",
+    "  Use 'show tableoptions' to get more information about the possible options.",
     "",
     "FROM table_list",
     "  One or more input tables to use. Each table can be followed by a",
@@ -228,10 +240,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  which can be used to define the result of a nested query.",
     "",
     "DMINFO datamanagers",
-    "  can be used by expert users to define data managers for the output columns."
+    "  can be used by expert users to define data managers for the output columns.",
+    "  Use 'show dminfo' for more information."
   };
 
   const char* calcHelp[] = {
+    "  [WITH table_list]",
     "CALC expression [FROM table_list]",
     "",
     "This command evaluates the given expression, which can contain columns from",
@@ -241,53 +255,186 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   const char* updateHelp[] = {
-    "UPDATE table_list",
+    "  [WITH table_list]",
+    "UPDATE",
+    "  table_list",
     "  SET update_list",
     "  [FROM table_list]",
     "  [WHERE expression]",
     "  [ORDERBY [DISTINCT] [ASC|DESC] sort_list]",
     "  [LIMIT expression] [OFFSET expression]",
     "",
-    "This command makes it possible to update values in selected rows and columns",
-    "of the first table in the table list.",
-    ""
+    "table_list",
+    "  The first table in the table_list is updated. More tables can be given to be",
+    "  used in expressions, but preferably these tables are given in the FROM part.",
+    "",
+    "SET update_list",
+    "  The update_list looks like:",
+    "    COLUMN=expression, COLUMN=expression, ...",
+    "  COLUMN is the name of the column to be updated with the expression value.",
+    "  If the column contains scalars, the expression must be a scalar.",
+    "  Arrays in columns can be set in various ways:",
+    "  - If set to a scalar, all array elements in the column are set to the scalar.",
+    "  - If set to an array, each array is replaced by the new one, possibly with a",
+    "    different shape.",
+    "  It is possible to update part of an array by slicing and/or masking it like:",
+    "    COLUMN[start:end:step]   or   COLUMN[mask]",
+    "  If a mask is used, only array values with a True mask value will be updated.",
+    "  It is possible to apply slicing and masking in succession (in any order).",
+    "  Array and mask can be updated jointly like",
+    "    (DATACOLUMN,MASKCOLUMN)=expression",
+    "  if expression is a masked array.",
+    "  Slicing and masking can only be applied to both of them like:",
+    "    (COLUMN,MASKCOLUMN)[start:end:step]   or   (COLUMN,MASKCOLUMN)[mask]",
+    "",
+    "FROM table_list",
+    "  Extra tables used in expressions (can also be given in the first table_list).",
+    "  A table can be any type (as in the FROM clause of the SELECT command).",
+    "",
+    "WHERE, ORDERBY, LIMIT, OFFSET",
+    "  Using these clauses (similar to SELECT) a subset of the table can be updated."
   };
 
   const char* insertHelp[] = {
+    "  [WITH table_list]",
     "INSERT INTO table_list SET column=expr, column=expr, ...",
-    "INSERT INTO table_list [(column_list)] VALUES (expr_list)",
+    "  Add one row.",
+    "INSERT INTO table_list [(column_list)] VALUES (expr_list),(expr_list),... [LIMIT n]",
+    "  Add n rows.",
     "INSERT INTO table_list [(column_list)] SELECT_command",
-    "'show command insert' not implemented yet"
+    "  Add selected rows from another (or same) table.",
+    "",
+    "table_list",
+    "  Rows are added to the first table in the list. More tables can be given",
+    "  to be used in expressions. Any table form can be used as in SELECT FROM.",
+    "",
+    "SET column=expr, column=expr, ...",
+    "  Specify the column values in the new row in the same way as for UPDATE.",
+    "",
+    "(column_list)",
+    "  Specify the column names (enclosed in parentheses).",
+    "  The form (DATACOLUMN,MASKCOLUMN) can be used to store a masked array.",
+    "  If (column_list) is omitted, it defaults to all stored columns in the table.",
+    "",
+    "(expr_list)",
+    "  List of expressions separated by commas enclosed in parentheses.",
+    "  Each expr_list is a row to be added.",
+    "",
+    "LIMIT expression",
+    "  defines the number of rows to add. It defaults to the number of (expr_list)",
+    "  given. If different, it iterates through the expr_lists as needed.",
+    "",
+    "SELECT_command",
+    "  The rows resulting from the SELECT command are added.",
+    "  The resulting column names and data types have to match the column_list,",
+    "  but their order can differ."
   };
 
   const char* deleteHelp[] = {
+    "  [WITH table_list]",
     "DELETE FROM table_list",
     "  [WHERE ...] [ORDERBY ...] [LIMIT ...] [OFFSET ...]",
-    "'show command' delete' not implemented yet"
+    "",
+    "table_list",
+    "  Rows matching the selection criteria are removed from the first table",
+    "  in the table_list. More tables can be given to be used in expressions.",
+    "",
+    "WHERE, ORDERBY, LIMIT, OFFSET",
+    "  Only rows matching these selection criteria are removed.",
+    "  See 'help command select' for a brief description of these clauses."
   };
 
   const char* createHelp[] = {
+    "  [WITH table_list]",
     "CREATE TABLE table [AS options]",
     "  [column_specs]",
-    "  [LIMIT ...]",
+    "  [LIMIT expression]",
     "  [DMINFO datamanagers]",
-    "'show command create' not implemented yet"
+    "",
+    "table [AS options]",
+    "  The name of the table to create followed by optional table options",
+    "  controlling how the table is created.",
+    "  Possible options:",
+    "    ENDIAN    = BIG,LITTLE,LOCAL,AIPSRC                     default AIPSRC",
+    "    STORAGE   = SEPFILE,MULTIFILE,MULTIHDF5,DEFAULT,AIPSRC  default AIPSRC",
+    "    BLOCKSIZE = <n>",
+    "    OVERWRITE = T|F                                         default T",
+    "  Use 'show tableoptions' to get more information about the possible options.",
+    "",
+    "column_specs",
+    "  A list of column specifications separated by commas. Each one looks like:",
+    "      name datatype [prop_list]",
+    "  name       Name of the column.",
+    "  datatype   Data type (B, U1, I2, U2, I4, U4, R4, R8, C4, C8, S, EPOCH).",
+    "             Use 'show datatypes' for more information about data types.",
+    "  prop_list  Optional key=value list of other properties. Enclose in square",
+    "             brackets if multiple key=value pairs are given.",
+    "      NDIM=n              dimensionality",
+    "      SHAPE=[n1,n2,...]   fixed shape; NDIM must match if also given",
+    "      UNIT='string'       unit of values in the column",
+    "      COMMENT='string'    comment string describing the column",
+    "",
+    "LIMIT expression",
+    "  Number of rows in the new table. No rows if omitted.",
+    "",
+    "DMINFO datamanagers",
+    "  can be used by expert users to define data managers for the columns.",
+    "  Use 'show dminfo' for more information."
   };
 
   const char* alterHelp[] = {
-    "ALTER TABLE table",
-    "  [ADD COLUMN [column_specs] [DMINFO datamanagers]",
-    "  [RENAME COLUMN old TO new, old TO new, ...]",
-    "  [DROP COLUMN col, col, ...]",
-    "  [SET KEYWORD key=value, key=value, ...]",
-    "  [COPY KEYWORD key=other, key=other, ...]",
-    "  [RENAME KEYWORD old TO new, old TO new, ...]",
-    "  [DROP KEYWORD key, key, ...]",
-    "  [ADD ROW nrow]",
-    "'show command alter' not implemented yet"
+    "  [WITH table_list]",
+    "ALTER TABLE table subcommand1 subcommand2 ...",
+    "  Alter the table with the given name.",
+    "  One or more of the following subcommands can be given.",
+    "",
+    "ADD COLUMN [column_specs] [DMINFO datamanagers]",
+    "  Add one or more columns to the table.",
+    "  Use 'show command create' to see the syntax for the arguments.",
+    "",
+    "COPY COLUMN old TO new [AS dtype] [SET [expr]], old TO new ...",
+    "  Copy a column to another column getting the same description and data manager.",
+    "  AS dtype can be given to change the data type (See 'show datatypes' for types).",
+    "  SET tells that the column has to be filled. If no expression is given, the",
+    "  column is filled with a copy of the source column. Otherwise each cell in",
+    "  the column is filled with the expression. If the column contains arrays and",
+    "  the expression is a scalar, the source column arrays are used and filled",
+    "  with the scalar value.",
+    "",
+    "RENAME COLUMN old TO new, old TO new, ...",
+    "  Rename one or more columns.",
+    "",
+    "DROP COLUMN col, col, ...",
+    "  Remove one or more columns.",
+    "",
+    "SET KEYWORD key=value [AS dtype], key=value [AS dtype], ...",
+    "  Add or reset one or more table and/or column keyword values.",
+    "  A column keyword name must be preceeded by the column name like col::key.",
+    "  Nested keyword names can be used (e.g., col::key.subkey.fld)",
+    "  The value can be any expression, also an empty array given as [].",
+    "  A data type can be given, which defaults to the expression data type.",
+    "  Use 'show datatypes' to see the possible data types.",
+    "  The value cannot be a record, but an empty record can be given as [=].",
+    "",
+    "COPY KEYWORD key=other, key=other, ...",
+    "  Copy the value of a table and/or column keyword to a new keyword.",
+    "  The keyword can be a nested one, thus a field in a record value.",
+    "  The value can be anything, also a record.",
+    "",
+    "RENAME KEYWORD old TO new, old TO new, ...",
+    "  Rename one or more table and/or column keywords, possibly nested ones.",
+    "  The new name cannot be qualified with a column or nested keyword name,",
+    "  thus renaming cannot be done across columns or so.",
+    "",
+    "DROP KEYWORD key, key, ...",
+    "  Remove one or more table and/or column keywords, possibly nested ones.",
+    "",
+    "ADD ROW expression",
+    "  The expression gives the number of rows to be added to the table."
   };
 
   const char* countHelp[] = {
+    "  [WITH table_list]",
     "COUNT [column_list] FROM table_list [WHERE expression]",
     "",
     "After having done the WHERE selection, it counts the number of rows",
@@ -379,6 +526,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "               - or space can be used instead of /",
     "  regex      p/globpattern/ or f/regex/ or m/regex/ (same as f/.*regex.*/)", 
     "               used with operator ~ or !~",
+    "               % or @ can also be used as regex delimiter",
     "",
     "N-dim array of those data types (except regex) like:",
     "             [1,2,3] (1-dim)  or  [[1,2,3],[4,5e3,6]] (2-dim)",
@@ -446,6 +594,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  OVERWRITE=T|F overwrite an existing table? Default is T"
       };
 
+  const char* dminfoHelp[] = {
+    "DMINFO [NAME=name, TYPE=type, SPEC=[...] COLUMNS=[col1, col2, ...]], ...",
+    "  defines the data managers to be used by columns. It is a comma separated",
+    "  list of key=value definitions enclosed in square brackets.",
+    "    NAME=name      defines the unique data manager name.",
+    "    TYPE=type      defines the type; StandardStMan, TiledShapeStMan, etc.",
+    "    COLUMNS=[...]  is a comma separated list of the names of the columns to",
+    "                   be stored with this data manager.",
+    "    SPEC=[...]     is a datamanager-specific key=value list defining the",
+    "                   data manager parameters. If not given, defaults are used.",
+    "        Tiled storage managers:",
+    "            DEFAULTTILESHAPE   default tile shape (in Fortran order!!)",
+    "            MAXCACHESIZE       maximum tile cache size (0=no limit)",
+    "        IncrementalStMan:",
+    "            BUCKETSIZE         size of bucket (in bytes)",
+    "        StandardStMan:",
+    "            BUCKETSIZE         size of bucket in bytes",
+    "         or BUCKETROWS         size of bucket in rows",
+    "        VirtualTaQLColumn:",
+    "            TAQLCALCEXPR       expression (using other columns)",
+    "        BitFlagsEngine:",
+    "            SOURCENAME         name of the boolean source column",
+    "            TARGETNAME         name of the integer target column",
+    "            ReadMask           integer defining flags to use on read",
+    "         or ReadMaskKeys       vector with flag names to use on read",
+    "            WriteMask          integer defining flags to use on write",
+    "         or WriteMaskKeys      vector with flag names to use on write",
+    "  For example:",
+    "    dminfo [NAME='ISM1',TYPE='IncrementalStMan',COLUMNS=['col1']],",
+    "           [NAME='SSM1',TYPE='StandardStMan',",
+    "            SPEC=[BUCKETSIZE=1000],COLUMNS=['col2','col3']]",
+    "  defines 2 data managers (one for col1 and the other for col2 and col3)."
+  };
+
   const char* setHelp[] = {
     "A set is a series of values, ranges and/or intervals enclosed in brackets.",
     "Often the IN operator is used on a set, but a set can also be used as an array.",
@@ -454,9 +636,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "Numeric data types can be mixed; the 'highest' type is used.",
     "",
     "A range is a series of values written as start:end:step",
-    "  'start' can be left out and defaults to 0",
-    "  'end'   can be left out making it unbounded (till infinity)",
-    "  ':step' can be left out and defaults to 1",
+    "  'start' can be omitted and defaults to 0",
+    "  'end'   can be omitted making it unbounded (till infinity)",
+    "  ':step' can be omitted and defaults to 1",
     "start and end can be integer, double, or datetime",
     "step must be integer or double and can be negative (as in Python)",
     "",
@@ -686,7 +868,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  double  VARIANCE (real)      variance",
     "  double  STDDEV   (real)      standard deviation",
     "  double  AVDEV    (real)      average deviation",
-    "  double  RMS      (real)      root-mean-squares",
+    "  double  RMS      (real)      root-mean-square",
     "  double  MEDIAN   (real)      median (the middle element)",
     "  double  FRACTILE (real, fraction)   element at given fraction"
   };
@@ -730,7 +912,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   const char* aggrFuncHelp[] = {
     "Aggregate functions operating per group (using GROUPBY)",
     "",
-    "The following functions results in a scalar value",
+    "The following functions result in a scalar value",
     "  int     GCOUNT()              number of rows                aka GCOUNT(*)",
     "  int     GCOUNT (columnname)   number of rows for which the column has a value",
     "  anytype GFIRST    (anytype)   first value in the group",
@@ -748,16 +930,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  double  GVARIANCE (real)      variance",
     "  double  GSTDDEV   (real)      standard deviation",
     "  double  GAVDEV    (real)      average deviation",
-    "  double  GRMS      (real)      root-mean-squares",
+    "  double  GRMS      (real)      root-mean-square",
     "  double  GMEDIAN   (real)      median (the middle element)",
     "  double  GFRACTILE (real, fraction)   element at given fraction",
     "",
-    "The following functions results in an array and operate element by element",
+    "The following functions result in an array and operate element by element",
     "  GANYS       GALLS       GNTRUES     GNFALSES",
     "  GSUMS       GSUMSQRS    GPRODUCTS   GMINS       GMAXS",
     "  GMEANS      GVARIANCES  GSTDDEVS    GAVDEVS     GRMSS",
     "",
-    "The following functions results in a scalar value",
+    "The following functions result in an array",
     "  double  GHIST  (data, nbin, start, end)   histogram of the data",
     "  anytype GSTACK (anytype)    stack the data to an array      aka GAGGR"
   };
@@ -856,6 +1038,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else if (cmd == "tabopt"  ||  cmd == "tableoption"  ||
                cmd == "tableoptions") {
       return getHelp (taboptHelp);
+    } else if (cmd == "dminfo") {
+      return getHelp (dminfoHelp);
     } else if (cmd == "set"  ||  cmd == "interval"  ||
                cmd == "sets"  ||  cmd == "intervals") {
       return getHelp (setHelp);
@@ -977,10 +1161,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       String ftype;
       if (parts.size() > 2) ftype = parts[2];
       operands.add (TableExprNodeSetElem(ftype));
+      // Make a node for the UDF library given by type to use its help function.
+      // It takes an argument (which can be empty).
       TableExprNode node = TableExprNode::newUDFNode (type+".help",
                                                       operands,
                                                       Table(), style);
-      return node.getString(0);
+      return node.getString(0);   // get the UDF help info as a string
     } catch (const std::exception&) {
       return type + " is an unknown type in 'show functions <type>'\n"
         "  (maybe an unknown UDF library)\n";
