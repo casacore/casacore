@@ -47,6 +47,7 @@ public:
 
     // implemented algorithms
     enum ALGORITHM {
+        BIWEIGHT,
         CHAUVENETCRITERION,
         CLASSICAL,
         FITTOHALF,

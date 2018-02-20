@@ -110,6 +110,19 @@ int main() {
             AipsError
         );
         AlwaysAssert(saf.hingesFencesFactor() == hf, AipsError);
+
+        maxIter = 22;
+        Double c = 15.2;
+        saf2.configureBiweight(maxIter, c);
+        r = saf2.toRecord();
+        saf = StatisticsAlgorithmFactory<Double, Float*>::fromRecord(r);
+        AlwaysAssert(
+            saf.createStatsAlgorithm()->algorithm() == StatisticsData::BIWEIGHT,
+            AipsError
+        );
+        StatisticsAlgorithmFactoryData::BiweightData bd = saf.biweightData();
+        AlwaysAssert(bd.maxIter == maxIter, AipsError);
+        AlwaysAssert(bd.c == c, AipsError);
 	}
 	catch (const AipsError& x) {
 		cout << x.getMesg() << endl;

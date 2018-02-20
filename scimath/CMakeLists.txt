@@ -286,6 +286,8 @@ DESTINATION include/casacore/scimath/Mathematics
 )
 
 install (FILES
+StatsFramework/BiweightStatistics.h
+StatsFramework/BiweightStatistics.tcc
 StatsFramework/ChauvenetCriterionStatistics.h
 StatsFramework/ChauvenetCriterionStatistics.tcc
 StatsFramework/ClassicalStatistics.h

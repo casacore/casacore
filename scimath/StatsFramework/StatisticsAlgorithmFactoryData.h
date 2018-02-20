@@ -36,6 +36,11 @@ class StatisticsAlgorithmFactoryData {
 
 public:
 
+    struct BiweightData {
+        Int maxIter;
+        Double c;
+    };
+
     template <class AccumType> struct FitToHalfData {
         FitToHalfStatisticsData::CENTER center;
         // fit to half data portion to use

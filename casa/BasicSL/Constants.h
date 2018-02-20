@@ -411,7 +411,11 @@ namespace C {
   // e**gamma
   extern const Double etogamma;
   // </group>
-  
+ 
+  // statistics related
+  // 1/(Phi^(-1)(3/4), see https://en.wikipedia.org/wiki/Median_absolute_deviation#Relation_to_standard_deviation
+  extern const Double probit_3_4;
+
   //#--------------------------------------------------------------------
   //# Mathematical constants
   //#--------------------------------------------------------------------

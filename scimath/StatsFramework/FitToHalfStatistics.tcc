@@ -493,10 +493,10 @@ void FitToHalfStatistics<CASA_STATP>::_setRange() {
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
     StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, Int64 nr, uInt dataStride
+    const DataIterator& dataBegin, uInt64 nr, uInt dataStride
 ) {
     DataIterator datum = dataBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
         _unweightedStatsCodeFH
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
@@ -509,11 +509,11 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
     StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) {
     DataIterator datum = dataBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -534,12 +534,12 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
     StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) {
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
         if (*mask) {
             _unweightedStatsCodeFH
@@ -554,13 +554,13 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
     StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
 ) {
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -632,11 +632,11 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    Int64 nr, uInt dataStride
+    uInt64 nr, uInt dataStride
 ) {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
         if (*weight > 0) {
             _weightedStatsCodeFH
@@ -652,11 +652,11 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -679,13 +679,13 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
 ) {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -708,12 +708,12 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _weightedStatsCodeFH

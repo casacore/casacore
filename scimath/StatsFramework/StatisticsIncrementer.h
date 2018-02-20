@@ -46,34 +46,34 @@ public:
 	// <src> loopCount is always incremented by one, independent of the values
 	// of <src>dataStride</src> and <src>maskStride</src>
 	inline static void increment(
-		DataIterator& datum, Int64& loopCount, Bool unityStride, uInt dataStride
+		DataIterator& datum, uInt64& loopCount, Bool unityStride, uInt dataStride
 	);
 
 	inline static void increment(
-		DataIterator& datum, Int64& loopCount, WeightsIterator& weight,
+		DataIterator& datum, uInt64& loopCount, WeightsIterator& weight,
 		Bool unityStride, uInt dataStride
 	);
 
 	inline static void increment(
-		DataIterator& datum, Int64& loopCount, MaskIterator& mask,
+		DataIterator& datum, uInt64& loopCount, MaskIterator& mask,
 		Bool unityStride, uInt dataStride, uInt maskStride
 	);
 
 	inline static void increment(
-		DataIterator& datum, Int64& loopCount,
+		DataIterator& datum, uInt64& loopCount,
 		WeightsIterator& weight, MaskIterator& mask,
 		Bool unityStride, uInt dataStride, uInt maskStride
 	);
 
     inline static void increment(
-        DataIterator& datum, Int64& loopCount, uInt dataStride
+        DataIterator& datum, uInt64& loopCount, uInt dataStride
     ) {
         std::advance(datum, dataStride);
         ++loopCount;
     }
 
     inline static void increment(
-        DataIterator& datum, Int64& loopCount,
+        DataIterator& datum, uInt64& loopCount,
         WeightsIterator& weight, uInt dataStride
     ) {
         std::advance(datum, dataStride);
@@ -82,7 +82,7 @@ public:
     }
 
     inline static void increment(
-        DataIterator& datum, Int64& loopCount, MaskIterator& mask,
+        DataIterator& datum, uInt64& loopCount, MaskIterator& mask,
         uInt dataStride, uInt maskStride
     ) {
         std::advance(datum, dataStride);
@@ -91,7 +91,7 @@ public:
     }
 
     inline static void increment(
-        DataIterator& datum, Int64& loopCount,
+        DataIterator& datum, uInt64& loopCount,
         WeightsIterator& weight, MaskIterator& mask,
         uInt dataStride, uInt maskStride
     ) {

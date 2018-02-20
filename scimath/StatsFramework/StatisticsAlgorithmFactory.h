@@ -50,6 +50,8 @@ public:
 
     ~StatisticsAlgorithmFactory();
 
+    void configureBiweight(Int maxIter=3, Double c=6.0);
+
     void configureClassical();
 
     // configure to use fit to half algorithm.
@@ -82,6 +84,10 @@ public:
     StatisticsData::ALGORITHM algorithm() const { return _algorithm; }
 
     // Throws an exception if the current configuration is not relevant
+    // to the Biweight algorithm
+    StatisticsAlgorithmFactoryData::BiweightData biweightData() const;
+
+    // Throws an exception if the current configuration is not relevant
     // to the Chauvenet/zscore algorithm
     StatisticsAlgorithmFactoryData::ChauvenetData chauvenetData() const;
 
@@ -105,6 +111,7 @@ private:
     StatisticsData::ALGORITHM _algorithm;
     // hinges-fences f factor
     Double _hf;
+    StatisticsAlgorithmFactoryData::BiweightData _biweightData;
     StatisticsAlgorithmFactoryData::FitToHalfData<AccumType> _fitToHalfData;
     StatisticsAlgorithmFactoryData::ChauvenetData _chauvData;
 

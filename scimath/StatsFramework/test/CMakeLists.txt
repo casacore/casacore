@@ -1,4 +1,5 @@
 set (tests
+tBiweightStatistics
 tChauvenetCriterionStatistics
 tClassicalStatistics
 tFitToHalfStatistics

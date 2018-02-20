@@ -1064,7 +1064,7 @@ CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<std::vector<uInt64> >& binCounts,
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
-    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -1079,7 +1079,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
          _findBinCode
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
@@ -1092,7 +1092,7 @@ CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<std::vector<uInt64> >& binCounts,
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
-    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
     const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
@@ -1108,7 +1108,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1129,7 +1129,7 @@ CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<std::vector<uInt64> >& binCounts,
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
-    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
@@ -1146,7 +1146,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
         if (*mask) {
             _findBinCode
@@ -1161,7 +1161,7 @@ CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<std::vector<uInt64> >& binCounts,
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
-    const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude,
     const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
@@ -1179,7 +1179,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1201,7 +1201,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<std::vector<uInt64> >& binCounts,
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    Int64 nr, uInt dataStride,
+    uInt64 nr, uInt dataStride,
     const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -1217,7 +1217,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
         if (*weight > 0) {
             _findBinCode
@@ -1233,7 +1233,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<std::vector<uInt64> >& binCounts,
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
+    uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
     const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -1249,7 +1249,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1272,7 +1272,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<std::vector<uInt64> >& binCounts,
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
     const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
@@ -1290,7 +1290,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1313,7 +1313,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<std::vector<uInt64> >& binCounts,
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -1330,7 +1330,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _findBinCode
@@ -1348,9 +1348,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
-    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr, uInt dataStride
 ) const {
-    Int64 count = 0;
+    uInt64 count = 0;
     DataIterator datum = dataBegin;
     while (count < nr) {
         _populateArrayCode1
@@ -1362,10 +1362,10 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
-    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
     uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
-    Int64 count = 0;
+    uInt64 count = 0;
     DataIterator datum = dataBegin;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
@@ -1386,9 +1386,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
     std::vector<AccumType>& ary, const DataIterator& dataBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
-    Int64 count = 0;
+    uInt64 count = 0;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     while (count < nr) {
@@ -1403,11 +1403,11 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
-    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
-    Int64 count = 0;
+    uInt64 count = 0;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -1430,11 +1430,11 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
     std::vector<AccumType>& ary, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride
+    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
         if (*weight > 0) {
             _populateArrayCode1
@@ -1448,12 +1448,12 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
     std::vector<AccumType>& ary, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
+    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1474,12 +1474,12 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
     std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _populateArrayCode1
@@ -1493,13 +1493,13 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
     std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1545,7 +1545,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArray(
 
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
-    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
@@ -1553,7 +1553,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
-    Int64 count = 0;
+    uInt64 count = 0;
     DataIterator datum = dataBegin;
     while (count < nr) {
         _populateArraysCode
@@ -1565,7 +1565,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
-    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
     uInt dataStride, const DataRanges& ranges, Bool isInclude,
     const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
@@ -1574,7 +1574,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
-    Int64 count = 0;
+    uInt64 count = 0;
     DataIterator datum = dataBegin;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
@@ -1595,7 +1595,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
@@ -1603,7 +1603,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
-    Int64 count = 0;
+    uInt64 count = 0;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     while (count < nr) {
@@ -1618,7 +1618,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
-    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
+    std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
     const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
@@ -1628,7 +1628,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bIncludeLimits = includeLimits.begin();
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iIncludeLimits = bIncludeLimits;
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
-    Int64 count = 0;
+    uInt64 count = 0;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -1651,7 +1651,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
+    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
     const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
@@ -1661,7 +1661,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
         if (*weight > 0) {
             _populateArraysCode
@@ -1675,7 +1675,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
+    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
     const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
@@ -1686,7 +1686,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eIncludeLimits = includeLimits.end();
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1707,7 +1707,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
     typename std::vector<std::vector<AccumType> >::iterator bArys = arys.begin();
@@ -1718,7 +1718,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _populateArraysCode
@@ -1732,7 +1732,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
     const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
 ) const {
@@ -1744,7 +1744,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1764,13 +1764,13 @@ void ClassicalQuantileComputer<CASA_STATP>::_populateArrays(
 
 CASA_STATD
 Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
-    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     uInt maxElements
 ) const {
     if (ary.size() + nr > maxElements) {
         return True;
     }
-    Int64 count = 0;
+    uInt64 count = 0;
     DataIterator datum = dataBegin;
     while (count < nr) {
         ary.push_back(_doMedAbsDevMed ? abs((AccumType)*datum - _myMedian) : *datum);
@@ -1791,11 +1791,11 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
-    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
     uInt dataStride, const DataRanges& ranges, Bool isInclude,
     uInt maxElements
 ) const {
-    Int64 count = 0;
+    uInt64 count = 0;
     uInt npts = ary.size();
     DataIterator datum = dataBegin;
     typename DataRanges::const_iterator beginRange = ranges.begin();
@@ -1818,10 +1818,10 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
 CASA_STATD
 Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     std::vector<AccumType>& ary, const DataIterator& dataBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     uInt maxElements
 ) const {
-    Int64 count = 0;
+    uInt64 count = 0;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     uInt npts = ary.size();
@@ -1838,11 +1838,11 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
 
 CASA_STATD
 Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
-    std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+    std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
     uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
-    Int64 count = 0;
+    uInt64 count = 0;
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
     uInt npts = ary.size();
@@ -1867,12 +1867,12 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
 CASA_STATD
 Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     std::vector<AccumType>& ary, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
+    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
     uInt maxElements
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     uInt npts = ary.size();
     while (count < nr) {
         if (*weight > 0) {
@@ -1888,12 +1888,12 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
 CASA_STATD
 Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     std::vector<AccumType>& ary, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
+    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     uInt npts = ary.size();
@@ -1916,13 +1916,13 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
 CASA_STATD
 Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     std::vector<AccumType>& ary, const DataIterator& dataBegin,
-    const WeightsIterator& weightBegin, Int64 nr, uInt dataStride,
+    const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, uInt maxElements
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     uInt npts = ary.size();
     while (count < nr) {
         if (*mask && *weight > 0) {
@@ -1938,13 +1938,13 @@ Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
 CASA_STATD
 Bool ClassicalQuantileComputer<CASA_STATP>::_populateTestArray(
     std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-    Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude, uInt maxElements
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightBegin;
     MaskIterator mask = maskBegin;
-    Int64 count = 0;
+    uInt64 count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     uInt npts = ary.size();
