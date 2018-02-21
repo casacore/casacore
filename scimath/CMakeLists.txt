@@ -30,6 +30,7 @@ Mathematics/SCSL.cc
 Mathematics/SquareMatrix2.cc
 Mathematics/VectorKernel.cc
 Mathematics/VanVleck.cc
+StatsFramework/BiweightStatisticsData.cc
 StatsFramework/ClassicalStatisticsData.cc
 StatsFramework/StatisticsData.cc
 StatsFramework/ZScoreCalculator.cc
@@ -288,6 +289,7 @@ DESTINATION include/casacore/scimath/Mathematics
 install (FILES
 StatsFramework/BiweightStatistics.h
 StatsFramework/BiweightStatistics.tcc
+StatsFramework/BiweightStatisticsData.h
 StatsFramework/ChauvenetCriterionStatistics.h
 StatsFramework/ChauvenetCriterionStatistics.tcc
 StatsFramework/ClassicalStatistics.h

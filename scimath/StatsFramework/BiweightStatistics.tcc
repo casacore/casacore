@@ -28,6 +28,7 @@
 
 #include <casacore/scimath/StatsFramework/BiweightStatistics.h>
 
+#include <casacore/scimath/StatsFramework/BiweightStatisticsData.h>
 #include <casacore/scimath/StatsFramework/ClassicalQuantileComputer.h>
 
 namespace casacore {
@@ -40,19 +41,7 @@ BiweightStatistics<CASA_STATP>::BiweightStatistics(Int maxNiter, Double c)
     : ClassicalStatistics<CASA_STATP>(),
     _c(c), _niter(0), _maxNiter(maxNiter), _location(0),
     _scale(0), _range(), _npts(0) {
-    // FIXME this should be moved to a static data structure.
-    std::set<StatisticsData::STATS> stats;
-    stats.insert(StatisticsData::RMS);
-    stats.insert(StatisticsData::SUM);
-    stats.insert(StatisticsData::SUMSQ);
-    stats.insert(StatisticsData::SUMWEIGHTS);
-    stats.insert(StatisticsData::VARIANCE);
-    stats.insert(StatisticsData::MEDIAN);
-    stats.insert(StatisticsData::MEDABSDEVMED);
-    stats.insert(StatisticsData::FIRST_QUARTILE);
-    stats.insert(StatisticsData::THIRD_QUARTILE);
-    stats.insert(StatisticsData::INNER_QUARTILE_RANGE);
-    this->_setUnsupportedStatistics(stats);
+    this->_setUnsupportedStatistics(BiweightStatisticsData::getUnsupportedStats());
 }
 
 CASA_STATD

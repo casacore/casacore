@@ -201,24 +201,6 @@ public:
 
     typedef typename NumericTraits<T>::PrecisionType AccumType;
 
-    // DEPRECATED. WILL BE REMOVED, USE scimath/Mathematics/StatisticsAlgorithmFactory
-    // instead
-    struct AlgConf {
-        StatisticsData::ALGORITHM algorithm;
-        // hinges-fences f factor
-        Double hf;
-        // fit to have center type
-        FitToHalfStatisticsData::CENTER ct;
-        // fit to half data portion to use
-        FitToHalfStatisticsData::USE_DATA ud;
-        // fit to half center value
-        AccumType cv;
-        // Chauvenet zscore
-        Double zs;
-        // Chauvenet max iterations
-        Int mi;
-    };
-
 // Constructor takes the lattice and a <src>LogIO</src> object for logging.
 // You can specify whether you want to see progress meters or not.
 // You can force the storage lattice to be disk based, otherwise
@@ -375,6 +357,13 @@ public:
 // Did we construct with a logger ?
    Bool hasLogger () const {return haveLogger_p;};
 
+   // The configure methods return True if reconfiguration is actually
+   // necessary (ie if the underlying storage lattice needs to be recomputed).
+   // If no reconfiguration is necessary, False is returned.
+
+   // configure to use biweight algorithm.
+   Bool configureBiweight(Int maxIter, Double c);
+
    // configure object to use Classical Statistics
    // The time, t_x, it takes to compute classical statistics using algorithm x, can
    // be modeled by
@@ -394,23 +383,23 @@ public:
    // coeffecients that is important
    // The version that takes no parameters uses the default values of the coefficients;
    // <group>
-   void configureClassical();
+   Bool configureClassical();
 
-   void configureClassical(Double aOld, Double bOld, Double aNew, Double bNew);
+   Bool configureClassical(Double aOld, Double bOld, Double aNew, Double bNew);
    // </group>
 
    // configure to use fit to half algorithm.
-   void configureFitToHalf(
+   Bool configureFitToHalf(
            FitToHalfStatisticsData::CENTER centerType=FitToHalfStatisticsData::CMEAN,
            FitToHalfStatisticsData::USE_DATA useData=FitToHalfStatisticsData::LE_CENTER,
            AccumType centerValue=0
    );
 
    // configure to use hinges-fences algorithm
-   void configureHingesFences(Double f);
+   Bool configureHingesFences(Double f);
 
    // configure to use Chauvenet's criterion
-   void configureChauvenet(
+   Bool configureChauvenet(
            Double zscore=-1, Int maxIterations=-1
    );
 

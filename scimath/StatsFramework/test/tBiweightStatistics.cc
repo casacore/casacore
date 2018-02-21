@@ -78,7 +78,7 @@ int main() {
                     break;
                 }
                 try {
-                    Double s = bws.getStatistic(stat);
+                    bws.getStatistic(stat);
                 }
                 catch (const AipsError& x) {
                     thrown = True;
@@ -239,7 +239,7 @@ int main() {
                     break;
                 }
                 try {
-                    Double s = bw1.getStatistic(stat);
+                    bw1.getStatistic(stat);
                 }
                 catch (const AipsError& x) {
                     thrown = True;

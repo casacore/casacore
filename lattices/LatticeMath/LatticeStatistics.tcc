@@ -439,6 +439,43 @@ template <class T> Bool LatticeStatistics<T>::getStatistic(
     LatticeStatsBase::StatisticsTypes type,
     Bool dropDeg
 ) {
+    if (_saf.algorithm() == StatisticsData::BIWEIGHT) {
+        ThrowIf(
+            type == LatticeStatsBase::FLUX,
+            "The biweight algorithm does not support"
+            "computation of the flux"
+        );
+        ThrowIf(
+            type == LatticeStatsBase::RMS,
+            "The biweight algorithm does not support"
+            "computation of the rms"
+        );
+        ThrowIf(
+            type == LatticeStatsBase::SUM,
+            "The biweight algorithm does not support"
+            "computation of the sum"
+        );
+        ThrowIf(
+            type == LatticeStatsBase::SUMSQ,
+            "The biweight algorithm does not support"
+            "computation of the sum of squres"
+        );
+        ThrowIf(
+            type == LatticeStatsBase::VARIANCE,
+            "The biweight algorithm does not support"
+            "computation of the variance"
+        );
+        ThrowIf(
+            type == LatticeStatsBase::MEDIAN
+            || type == LatticeStatsBase::MEDABSDEVMED
+            || type == LatticeStatsBase::QUARTILE
+            || type == LatticeStatsBase::Q1
+            || type == LatticeStatsBase::Q3,
+            "The biweight algorithm does not support"
+            "computation of quantile or quantile-like values"
+        );
+
+    }
    if (!goodParameterStatus_p) {
      return False;
    }
@@ -470,6 +507,9 @@ template <class T> Bool LatticeStatistics<T>::getStatistic(
    } else if (type==LatticeStatsBase::MAX) {
       return retrieveStorageStatistic(stats, MAX, dropDeg);
    } else if (type==LatticeStatsBase::MEAN) {
+        if (_saf.algorithm() == StatisticsData::BIWEIGHT) {
+            return retrieveStorageStatistic(stats, MEAN, dropDeg);
+        }
        // we prefer to calculate the mean rather than use the accumulated value
               // because the accumulated value may include accumulated finite precision errors
          // return retrieveStorageStatistic(stats, MEAN, dropDeg);
@@ -477,7 +517,7 @@ template <class T> Bool LatticeStatistics<T>::getStatistic(
    } else if (type==LatticeStatsBase::VARIANCE) {
           return retrieveStorageStatistic(stats, VARIANCE, dropDeg);
    } else if (type==LatticeStatsBase::SIGMA) {
-      return calculateStatistic (stats, SIGMA, dropDeg);
+      retrieveStorageStatistic(stats, SIGMA, dropDeg);
    } else if (type==LatticeStatsBase::RMS) {
       return calculateStatistic (stats, RMS, dropDeg);
    } else if (type==LatticeStatsBase::FLUX) {
@@ -516,7 +556,6 @@ Bool LatticeStatistics<T>::getStats(
         stats.resize(0);
         return  True;
     }
-    stats(SIGMA) = sqrt(stats(VARIANCE));
     stats(RMS) =  _rms(stats(SUMSQ), n);
     stats(FLUX) = 0;
     if (_canDoFlux()) {
@@ -532,6 +571,11 @@ Bool LatticeStatistics<T>::getStats(
 template <class T>
 Bool LatticeStatistics<T>::getMinMaxPos(IPosition& minPos, IPosition& maxPos)
 {
+    ThrowIf(
+        _saf.algorithm() == StatisticsData::BIWEIGHT,
+        "The biweight algorithm does not support "
+        "computing minimum and maximum positions"
+    );
    if (!goodParameterStatus_p) {
      return False; 
    }
@@ -647,19 +691,6 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
            return False;
        }
    }
-   else if (type==SIGMA) {
-       Array<AccumType> variance;
-       retrieveStorageStatistic (variance, VARIANCE, dropDeg);
-       ReadOnlyVectorIterator<AccumType> varianceIt(variance);
-       while (!nPtsIt.pastEnd()) {
-          for (uInt i=0; i<n1; i++) {
-              sliceIt.vector()(i) = sqrt(varianceIt.vector()(i));
-          }
-          nPtsIt.next();
-          varianceIt.next();
-          sliceIt.next();
-       }
-    }
     else if (type==RMS) {
        retrieveStorageStatistic (sumSq, SUMSQ, dropDeg);
        ReadOnlyVectorIterator<AccumType> sumSqIt(sumSq);
@@ -683,41 +714,65 @@ Bool LatticeStatistics<T>::calculateStatistic (Array<AccumType>& slice,
 }
 
 template <class T>
-void LatticeStatistics<T>::configureClassical() {
-    if (_saf.algorithm() != StatisticsData::CLASSICAL) {
-        _saf.configureClassical();
+Bool LatticeStatistics<T>::configureBiweight(Int maxIter, Double c) {
+    Bool reconfig = _saf.algorithm() != StatisticsData::BIWEIGHT;
+    if (! reconfig) {
+        StatisticsAlgorithmFactoryData::BiweightData data
+        = _saf.biweightData();
+        reconfig = maxIter != data.maxIter || ! near(c, data.c);
+    }
+    if (reconfig) {
+        _saf.configureBiweight(maxIter, c);
         needStorageLattice_p = True;
     }
-    _setDefaultCoeffs();
+    return reconfig;
 }
 
 template <class T>
-void LatticeStatistics<T>::configureClassical(
-    Double aOld, Double bOld, Double aNew, Double bNew
-) {
+Bool LatticeStatistics<T>::configureClassical() {
+    Bool reconfig = False;
     if (_saf.algorithm() != StatisticsData::CLASSICAL) {
         _saf.configureClassical();
         needStorageLattice_p = True;
+        reconfig = True;
+    }
+    _setDefaultCoeffs();
+    return reconfig;
+}
+
+template <class T>
+Bool LatticeStatistics<T>::configureClassical(
+    Double aOld, Double bOld, Double aNew, Double bNew
+) {
+    Bool reconfig = False;
+    if (_saf.algorithm() != StatisticsData::CLASSICAL) {
+        _saf.configureClassical();
+        needStorageLattice_p = True;
+        reconfig = True;
     }
     _aOld = aOld;
     _bOld = bOld;
     _aNew = aNew;
     _bNew = bNew;
+    return reconfig;
 }
 
 template <class T>
-void LatticeStatistics<T>::configureHingesFences(Double f) {
+Bool LatticeStatistics<T>::configureHingesFences(Double f) {
+    Bool reconfig = False;
     if (
         _saf.algorithm() != StatisticsData::HINGESFENCES
         || ! near(f, _saf.hingesFencesFactor())
     ) {
         _saf.configureHingesFences(f);
         needStorageLattice_p = True;
+        reconfig = True;
     }
+    return reconfig;
 }
 
 template <class T>
-void LatticeStatistics<T>::configureFitToHalf(
+Bool LatticeStatistics<T>::configureFitToHalf(
     FitToHalfStatisticsData::CENTER centerType,
     FitToHalfStatisticsData::USE_DATA useData,
     AccumType centerValue
@@ -736,10 +791,11 @@ void LatticeStatistics<T>::configureFitToHalf(
         _saf.configureFitToHalf(centerType, useData, centerValue);
         needStorageLattice_p = True;
     }
+    return reconfig;
 }
 
 template <class T>
-void LatticeStatistics<T>::configureChauvenet(
+Bool LatticeStatistics<T>::configureChauvenet(
     Double zscore, Int maxIterations
 ) {
     Bool reconfig = _saf.algorithm() != StatisticsData::CHAUVENETCRITERION;
@@ -752,6 +808,7 @@ void LatticeStatistics<T>::configureChauvenet(
         _saf.configureChauvenet(zscore, maxIterations);
         needStorageLattice_p = True;
     }
+    return reconfig;
 }
 
 template <class T>
@@ -861,7 +918,7 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
             fixedMinMax_p
         );
         Int newOutAxis = pStoreLattice_p->ndim()-1;
-        SubLattice<AccumType> outLatt (*pStoreLattice_p, True);
+        SubLattice<AccumType> outLatt(*pStoreLattice_p, True);
         try {
             LatticeApply<T,AccumType>::tiledApply(
                 outLatt, *pInLattice_p,
@@ -1415,6 +1472,7 @@ void LatticeStatistics<T>::_fillStorageLattice(
     statsMap[SUM] = stats.sum;
     statsMap[SUMSQ] = stats.sumsq;
     statsMap[VARIANCE] = stats.variance;
+    statsMap[SIGMA] = stats.stddev;
     if (doQuantiles) {
         statsMap[MEDIAN] = *stats.median;
         statsMap[MEDABSDEVMED] = *stats.medAbsDevMed;
