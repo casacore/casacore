@@ -32,7 +32,7 @@ namespace casacore {
 
 template <class DataIterator, class MaskIterator, class WeightsIterator>
 void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-	DataIterator& datum, Int64& loopCount, Bool, uInt dataStride
+	DataIterator& datum, uInt64& loopCount, Bool, uInt dataStride
 ) {
     std::advance(datum, dataStride);
 	++loopCount;
@@ -40,7 +40,7 @@ void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increme
 
 template <class DataIterator, class MaskIterator, class WeightsIterator>
 void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-	DataIterator& datum, Int64& loopCount, WeightsIterator& weight,
+	DataIterator& datum, uInt64& loopCount, WeightsIterator& weight,
 	Bool, uInt dataStride
 ) {
     std::advance(datum, dataStride);
@@ -50,7 +50,7 @@ void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increme
 
 template <class DataIterator, class MaskIterator, class WeightsIterator>
 void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-	DataIterator& datum, Int64& loopCount, WeightsIterator& weight,
+	DataIterator& datum, uInt64& loopCount, WeightsIterator& weight,
 	MaskIterator& mask, Bool, uInt dataStride, uInt maskStride
 ) {
     std::advance(datum, dataStride);
@@ -61,7 +61,7 @@ void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increme
 
 template <class DataIterator, class MaskIterator, class WeightsIterator>
 void StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
-	DataIterator& datum, Int64& loopCount, MaskIterator& mask,
+	DataIterator& datum, uInt64& loopCount, MaskIterator& mask,
 	Bool, uInt dataStride, uInt maskStride
 ) {
     std::advance(datum, dataStride);

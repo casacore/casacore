@@ -229,6 +229,7 @@ public:
         uInt64 nBins=10000
     ) = 0;
 
+    // Purposefully not virtual. Derived classes should not implement.
     AccumType getQuantile(
         Double quantile, CountedPtr<uInt64> knownNpts=NULL,
         CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
@@ -244,8 +245,9 @@ public:
         uInt64 nBins=10000
     ) = 0;
 
-    // get the value of the specified statistic
-    virtual AccumType getStatistic(StatisticsData::STATS stat);
+    // get the value of the specified statistic. Purposefully not virtual.
+    // Derived classes should not implement.
+    AccumType getStatistic(StatisticsData::STATS stat);
 
     // certain statistics such as max and min have locations in the dataset
     // associated with them. This method gets those locations. The first value
@@ -255,16 +257,21 @@ public:
     // location in the data set, independent of the dataStride value.
     virtual std::pair<Int64, Int64> getStatisticIndex(StatisticsData::STATS stat) = 0;
 
-    virtual StatsData<AccumType> getStatistics();
+    // Return statistics. Purposefully not virtual. Derived classes should not implement.
+    StatsData<AccumType> getStatistics();
 
     // reset this object by clearing data.
     virtual void reset();
 
     // <group>
-    // setdata() clears any current datasets or data provider and then adds the specified data set as
-    // the first dataset in the (possibly new) set of data sets for which statistics are
-    // to be calculated. See addData() for parameter meanings.
-    void setData(const DataIterator& first, uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False);
+    // setdata() clears any current datasets or data provider and then adds the specified
+    // data set as the first dataset in the (possibly new) set of data sets for which
+    // statistics are to be calculated. See addData() for parameter meanings.
+    // These methods are purposefully not virtual. Derived classes should not implement.
+    void setData(
+        const DataIterator& first, uInt nr, uInt dataStride=1,
+        Bool nrAccountsForStride=False
+    );
 
     void setData(
         const DataIterator& first, uInt nr,
@@ -313,9 +320,11 @@ public:
     );
     // </group>
 
-    // instead of settng and adding data "by hand", set the data provider that will provide
-    // all the data sets. Calling this method will clear any other data sets that have
-    // previously been set or added.
+    // instead of setting and adding data "by hand", set the data provider
+    // that will provide all the data sets. Calling this method will clear
+    // any other data sets that have previously been set or added. Method
+    // is virtual to allow derived classes to carry out any necessary
+    // specialized accounting when resetting the data provider.
     virtual void setDataProvider(StatsDataProvider<CASA_STATP> *dataProvider);
 
     // Provide guidance to algorithms by specifying a priori which statistics the
@@ -337,9 +346,13 @@ protected:
     // Default implementation does nothing.
     virtual void _addData() {}
 
+    // <group>
+    // These methods are purposefully not virtual. Derived classes should
+    // not implement.
     const StatisticsDataset<CASA_STATP>& _getDataset() const { return _dataset; }
     
     StatisticsDataset<CASA_STATP>& _getDataset() { return _dataset; }
+    // </group>
 
     virtual AccumType _getStatistic(StatisticsData::STATS stat) = 0;
 
@@ -351,6 +364,12 @@ protected:
 
     virtual const std::set<StatisticsData::STATS>& _getUnsupportedStatistics() const {
         return _unsupportedStats;
+    }
+
+    // Derived classes should normally call this in their constructors, if
+    // applicable.
+    void _setUnsupportedStatistics(const std::set<StatisticsData::STATS>& stats) {
+        _unsupportedStats = stats;
     }
 
 private:

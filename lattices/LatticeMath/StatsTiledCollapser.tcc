@@ -52,6 +52,7 @@ void StatsTiledCollapser<T,U>::initAccumulator (uInt64 n1, uInt64 n3) {
    _npts = new Block<Double>(n1*n3);
    _mean = new Block<U>(n1*n3);
    _variance = new Block<U>(n1*n3);
+   _sigma = new Block<U>(n1*n3);
    _nvariance = new Block<U>(n1*n3);
 
    _min = new Block<T>(n1*n3);
@@ -62,6 +63,7 @@ void StatsTiledCollapser<T,U>::initAccumulator (uInt64 n1, uInt64 n3) {
    _npts->set(0);
    _mean->set(0);
    _variance->set(0);
+   _sigma->set(0);
    _nvariance->set(0);
 
    _min->set(0);
@@ -90,6 +92,7 @@ void StatsTiledCollapser<T,U>::process (
     T& dataMax = (*_max)[index];
     U& mean = (*_mean)[index];
     U& variance = (*_variance)[index];
+    U& sigma = (*_sigma)[index];
     U& nvariance = (*_nvariance)[index];
 
     // If these are != -1 after the accumulating, then
@@ -97,7 +100,7 @@ void StatsTiledCollapser<T,U>::process (
     Int64 minLoc = -1;
     Int64 maxLoc = -1;
 
-    vector<std::pair<U, U> > ranges;
+    std::vector<std::pair<U, U> > ranges;
     Bool isInclude = False;
     Bool hasRange = _include || _exclude;
     if (hasRange) {
@@ -181,6 +184,7 @@ void StatsTiledCollapser<T,U>::process (
         }
     }
     variance = nPts > 1 ? nvariance/(nPts - 1) : 0;
+    sigma = sqrt(variance);
 
     // Update overall min and max location.  These are never updated
     // if fixedMinMax is true.  These values are only meaningful for
@@ -223,6 +227,7 @@ void StatsTiledCollapser<T,U>::endAccumulator(
     _convertNPts(nPtsPtr, _npts, nptsComplex);
     U* meanPtr = _mean->storage();
     U* variancePtr = _variance->storage();
+    U* sigmaPtr = _sigma->storage();
     const T* minPtr = _min->storage();
     const T* maxPtr = _max->storage();
     uInt64 i, j;
@@ -247,6 +252,10 @@ void StatsTiledCollapser<T,U>::endAccumulator(
        resptr = resptr_root + (Int(LatticeStatsBase::VARIANCE) * _n1);
        objcopy (resptr, variancePtr, _n1);
        variancePtr += _n1;
+
+       resptr = resptr_root + (Int(LatticeStatsBase::SIGMA) * _n1);
+       objcopy (resptr, sigmaPtr, _n1);
+       sigmaPtr += _n1;
 
        resptr = resptr_root + (Int(LatticeStatsBase::MIN) * _n1);
        for (j=0; j<_n1; ++j) {

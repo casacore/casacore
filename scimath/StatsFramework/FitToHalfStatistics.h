@@ -163,7 +163,7 @@ public:
 
     // Override base class method by requiring mean to be computed in addition to what is
     // added in stats if the requested center value is CMEAN.
-    void setStatsToCalculate(std::set<StatisticsData::STATS>& stats);
+    virtual void setStatsToCalculate(std::set<StatisticsData::STATS>& stats);
 
 protected:
 
@@ -179,25 +179,25 @@ protected:
     // no weights, no mask, no ranges
     void _unweightedStats(
         StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-        const DataIterator& dataBegin, Int64 nr, uInt dataStride
+        const DataIterator& dataBegin, uInt64 nr, uInt dataStride
     );
 
     // no weights, no mask
     void _unweightedStats(
         StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude
     );
 
     void _unweightedStats(
         StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride
     );
 
     void _unweightedStats(
         StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
     );
@@ -212,25 +212,25 @@ protected:
     void _weightedStats(
         StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        Int64 nr, uInt dataStride
+        uInt64 nr, uInt dataStride
     );
 
     void _weightedStats(
         StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+        uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
     );
 
     void _weightedStats(
         StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
     );
 
     void _weightedStats(
         StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
     );
     // </group>

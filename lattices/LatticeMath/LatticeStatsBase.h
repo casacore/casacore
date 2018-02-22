@@ -131,7 +131,12 @@ enum StatisticsTypes {
 
 // The total number of accumulation image items (not for general use:
 // note that the accumulation items MUST come first in this enum)
-   NACCUM = VARIANCE+1
+// dmehring changed from VARIANCE+1 to SIGMA+1 because the standard
+// deviation should be stored rather than taking the square root of
+// the same value multiple times. Not to mention the biweight
+// algorithm does not compute the variance, so that the standard
+// deviation must be explicitly stored for it.
+   NACCUM = SIGMA + 1
 };
 
 // Helper function to convert a String containing a list of desired statistics to

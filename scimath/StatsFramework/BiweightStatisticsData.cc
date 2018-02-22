@@ -23,43 +23,30 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 
-#ifndef SCIMATH_STATSALGORITHMFACTORYDATA_H
-#define SCIMATH_STATSALGORITHMFACTORYDATA_H
-
-#include <casacore/scimath/StatsFramework/FitToHalfStatisticsData.h>
+#include <casacore/scimath/StatsFramework/BiweightStatisticsData.h>
 
 namespace casacore {
 
-// define data structures used by tatisticsAlgorithmFactory
+std::set<StatisticsData::STATS> BiweightStatisticsData::_unsupportedStats
+    = std::set<StatisticsData::STATS>();
 
-class StatisticsAlgorithmFactoryData {
+Mutex BiweightStatisticsData::_mutex;
 
-public:
-
-    struct BiweightData {
-        Int maxIter;
-        Double c;
-    };
-
-    template <class AccumType> struct FitToHalfData {
-        FitToHalfStatisticsData::CENTER center;
-        // fit to half data portion to use
-        FitToHalfStatisticsData::USE_DATA side;
-        // fit to half center value (only relevent if center=CVALUE)
-        AccumType centerValue;
-    };
-
-    struct ChauvenetData {
-        Double zScore;
-        Int maxIter;
-    };
-
-    ~StatisticsAlgorithmFactoryData() {};
-
-private:
-    StatisticsAlgorithmFactoryData() {};
-};
-
+std::set<StatisticsData::STATS> BiweightStatisticsData::getUnsupportedStats() {
+    ScopedMutexLock sc(_mutex);
+    if (_unsupportedStats.empty()) {
+        _unsupportedStats.insert(StatisticsData::RMS);
+        _unsupportedStats.insert(StatisticsData::SUM);
+        _unsupportedStats.insert(StatisticsData::SUMSQ);
+        _unsupportedStats.insert(StatisticsData::SUMWEIGHTS);
+        _unsupportedStats.insert(StatisticsData::VARIANCE);
+        _unsupportedStats.insert(StatisticsData::MEDIAN);
+        _unsupportedStats.insert(StatisticsData::MEDABSDEVMED);
+        _unsupportedStats.insert(StatisticsData::FIRST_QUARTILE);
+        _unsupportedStats.insert(StatisticsData::THIRD_QUARTILE);
+        _unsupportedStats.insert(StatisticsData::INNER_QUARTILE_RANGE);
+    }
+    return _unsupportedStats;
 }
 
-#endif
+}

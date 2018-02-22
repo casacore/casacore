@@ -160,7 +160,7 @@ private:
 
     CountedPtr<Block<Double> > _npts;
     CountedPtr<Block<U> > _sum, _sumSq,
-        _mean, _variance, _nvariance;
+        _mean, _variance, _nvariance, _sigma;
     CountedPtr<Block<T> > _min, _max;
     CountedPtr<Block<Bool> > _initMinMax;
 

@@ -29,6 +29,7 @@
 #include <casacore/scimath/StatsFramework/StatisticsAlgorithmFactory.h>
 
 #include <casacore/casa/Utilities/CountedPtr.h>
+#include <casacore/scimath/StatsFramework/BiweightStatistics.h>
 #include <casacore/scimath/StatsFramework/ChauvenetCriterionStatistics.h>
 #include <casacore/scimath/StatsFramework/ClassicalStatistics.h>
 #include <casacore/scimath/StatsFramework/FitToHalfStatistics.h>
@@ -41,6 +42,15 @@ CASA_STATD StatisticsAlgorithmFactory<CASA_STATP>::StatisticsAlgorithmFactory() 
 }
 
 CASA_STATD StatisticsAlgorithmFactory<CASA_STATP>::~StatisticsAlgorithmFactory() {}
+
+CASA_STATD
+void StatisticsAlgorithmFactory<CASA_STATP>::configureBiweight(
+    Int maxIter, Double c
+) {
+    _algorithm = StatisticsData::BIWEIGHT;
+    _biweightData.maxIter = maxIter;
+    _biweightData.c = c;
+}
 
 CASA_STATD
 void StatisticsAlgorithmFactory<CASA_STATP>::configureClassical() {
@@ -81,12 +91,18 @@ void StatisticsAlgorithmFactory<CASA_STATP>::copy(StatisticsAlgorithmFactory<
     other._hf = _hf;
     other._chauvData = _chauvData;
     other._fitToHalfData = _fitToHalfData;
+    other._biweightData = _biweightData;
 }
 
 CASA_STATD CountedPtr<StatisticsAlgorithm<CASA_STATP> >
 StatisticsAlgorithmFactory<CASA_STATP>::createStatsAlgorithm() const {
     casacore::CountedPtr<StatisticsAlgorithm<CASA_STATP> > sa;
     switch (_algorithm) {
+    case StatisticsData::BIWEIGHT:
+        sa = new BiweightStatistics<CASA_STATP>(
+            _biweightData.maxIter, _biweightData.c
+        );
+        return sa;
     case StatisticsData::CLASSICAL:
         sa = new ClassicalStatistics<CASA_STATP>();
         return sa;
@@ -110,9 +126,18 @@ StatisticsAlgorithmFactory<CASA_STATP>::createStatsAlgorithm() const {
     default:
         ThrowCc(
             "Logic Error: Unhandled algorithm "
-                + String::toString(_algorithm)
+            + String::toString(_algorithm)
         );
     }
+}
+
+CASA_STATD StatisticsAlgorithmFactoryData::BiweightData
+StatisticsAlgorithmFactory<CASA_STATP>::biweightData() const {
+    ThrowIf(
+        _algorithm != StatisticsData::BIWEIGHT,
+        "Object is currently not configured to use the biweight algorithm"
+    );
+    return _biweightData;
 }
 
 CASA_STATD Double StatisticsAlgorithmFactory<CASA_STATP>::hingesFencesFactor() const {
@@ -145,6 +170,10 @@ CASA_STATD Record StatisticsAlgorithmFactory<CASA_STATP>::toRecord() const {
     Record r;
     r.define("algorithm", _algorithm);
     switch (_algorithm) {
+    case StatisticsData::BIWEIGHT:
+        r.define("max_iter", _biweightData.maxIter);
+        r.define("c", _biweightData.c);
+        return r;
     case StatisticsData::CLASSICAL:
         // nothing else to add
         return r;
@@ -183,6 +212,9 @@ StatisticsAlgorithmFactory<CASA_STATP>::fromRecord(const Record& r) {
     if (dt == TpString) {
         String rAlg = r.asString(fieldNum);
         rAlg.downcase();
+        if (rAlg.startsWith("b")) {
+            algorithm = StatisticsData::BIWEIGHT;
+        }
         if (rAlg.startsWith("cl")) {
             algorithm = StatisticsData::CLASSICAL;
         }
@@ -207,6 +239,14 @@ StatisticsAlgorithmFactory<CASA_STATP>::fromRecord(const Record& r) {
     }
     StatisticsAlgorithmFactory<CASA_STATP> saf;
     switch (algorithm) {
+    case StatisticsData::BIWEIGHT: {
+        ThrowIf(! r.isDefined("c"), "field 'c' is not defined");
+        ThrowIf(! r.isDefined("max_iter"), "field 'max_iter' is not defined");
+        Double c = r.asDouble("c");
+        Int maxIter = r.asInt("max_iter");
+        saf.configureBiweight(maxIter, c);
+        return saf;
+    }
     case StatisticsData::CLASSICAL:
         return saf;
     case StatisticsData::HINGESFENCES: {

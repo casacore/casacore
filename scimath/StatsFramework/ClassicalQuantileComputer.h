@@ -107,7 +107,7 @@ protected:
     virtual void _findBins(
         std::vector<std::vector<uInt64> >& binCounts,
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
-        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
         const std::vector<AccumType>& maxLimit
     ) const;
@@ -115,7 +115,7 @@ protected:
     virtual void _findBins(
         std::vector<std::vector<uInt64> >& binCounts,
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
-        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude,
         const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
     ) const;
@@ -123,7 +123,7 @@ protected:
     virtual void _findBins(
         std::vector<std::vector<uInt64> >& binCounts,
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
-        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
     ) const;
@@ -131,7 +131,7 @@ protected:
     virtual void _findBins(
         std::vector<std::vector<uInt64> >& binCounts,
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
-        const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
         Bool isInclude,
         const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
@@ -141,7 +141,7 @@ protected:
         std::vector<std::vector<uInt64> >& binCounts,
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        Int64 nr, uInt dataStride,
+        uInt64 nr, uInt dataStride,
         const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
     ) const ;
 
@@ -149,7 +149,7 @@ protected:
         std::vector<std::vector<uInt64> >& binCounts,
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        Int64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
+        uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
         const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
     ) const;
 
@@ -157,7 +157,7 @@ protected:
         std::vector<std::vector<uInt64> >& binCounts,
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
         const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
     ) const;
@@ -166,7 +166,7 @@ protected:
         std::vector<std::vector<uInt64> >& binCounts,
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
     ) const;
     // </group>
@@ -175,24 +175,24 @@ protected:
     // populate an unsorted array with valid data.
     // no weights, no mask, no ranges
     virtual void _populateArray(
-        std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr, uInt dataStride
+        std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr, uInt dataStride
     ) const;
 
     // ranges
     virtual void _populateArray(
-        std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+        std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _populateArray(
         std::vector<AccumType>& ary, const DataIterator& dataBegin,
-        Int64 nr, uInt dataStride, const MaskIterator& maskBegin,
+        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride
     ) const;
 
     // mask and ranges
     virtual void _populateArray(
-        std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+        std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
@@ -200,27 +200,27 @@ protected:
     // weights
     virtual void _populateArray(
         std::vector<AccumType>& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride
+        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
     ) const;
 
     // weights and ranges
     virtual void _populateArray(
         std::vector<AccumType>& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
+        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     // weights and mask
     virtual void _populateArray(
         std::vector<AccumType>& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, Int64 nr, uInt dataStride,
+        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride
     ) const;
 
     // weights, mask, ranges
     virtual void _populateArray(
         std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
     // </group>
@@ -232,27 +232,27 @@ protected:
     // the method will return with no further processing.
     // no weights, no mask, no ranges
     virtual void _populateArrays(
-        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr, uInt dataStride,
+        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
 
     // ranges
     virtual void _populateArrays(
-        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
+        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const DataRanges& ranges, Bool isInclude,
         const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
 
     virtual void _populateArrays(
         std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
-        Int64 nr, uInt dataStride, const MaskIterator& maskBegin,
+        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride,
         const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
 
     // mask and ranges
     virtual void _populateArrays(
-        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, Int64 nr,
+        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
         const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
@@ -261,14 +261,14 @@ protected:
     // weights
     virtual void _populateArrays(
         std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
+        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
         const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
 
     // weights and ranges
     virtual void _populateArrays(
         std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
+        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude,
         const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
@@ -276,7 +276,7 @@ protected:
     // weights and mask
     virtual void _populateArrays(
         std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, Int64 nr, uInt dataStride,
+        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
@@ -284,7 +284,7 @@ protected:
     // weights, mask, ranges
     virtual void _populateArrays(
         std::vector<std::vector<AccumType> >& arys, uInt64& currentCount, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
         const std::vector<std::pair<AccumType, AccumType> > &includeLimits, uInt64 maxCount
     ) const;
@@ -294,12 +294,12 @@ protected:
     // no weights, no mask, no ranges
     virtual Bool _populateTestArray(
         std::vector<AccumType>& ary, const DataIterator& dataBegin,
-        Int64 nr, uInt dataStride, uInt maxElements
+        uInt64 nr, uInt dataStride, uInt maxElements
     ) const;
 
     // ranges
     virtual Bool _populateTestArray(
-        std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+        std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const DataRanges& ranges, Bool isInclude,
         uInt maxElements
     ) const;
@@ -307,13 +307,13 @@ protected:
     // mask
     virtual Bool _populateTestArray(
         std::vector<AccumType>& ary, const DataIterator& dataBegin,
-        Int64 nr, uInt dataStride, const MaskIterator& maskBegin,
+        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride, uInt maxElements
     ) const;
 
     // mask and ranges
     virtual Bool _populateTestArray(
-        std::vector<AccumType>& ary, const DataIterator& dataBegin, Int64 nr,
+        std::vector<AccumType>& ary, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude, uInt maxElements
     ) const;
@@ -321,21 +321,21 @@ protected:
     // weights
     virtual Bool _populateTestArray(
         std::vector<AccumType>& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, Int64 nr, uInt dataStride,
+        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
         uInt maxElements
     ) const;
 
     // weights and ranges
     virtual Bool _populateTestArray(
         std::vector<AccumType>& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, Int64 nr, uInt dataStride,
+        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude, uInt maxElements
     ) const;
 
     // weights and mask
     virtual Bool _populateTestArray(
         std::vector<AccumType>& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, Int64 nr,
+        const WeightsIterator& weightBegin, uInt64 nr,
         uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride, uInt maxElements
     ) const;
@@ -343,7 +343,7 @@ protected:
     // weights, mask, ranges
     virtual Bool _populateTestArray(
         std::vector<AccumType>& ary, const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        Int64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
         uInt maxElements
     ) const;

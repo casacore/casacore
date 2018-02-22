@@ -68,6 +68,8 @@ const Double C::gamma 		=  0.577215664901532860606512;
 const Double C::lngamma 	= -0.549539312981644822337662;
 const Double C::etogamma	=  1.7810724179901979852;
 
+// statistics related
+const Double C::probit_3_4 = 1.482602218505602;
 
 //----------------------------------------------------------------------------
 // Machine constants
