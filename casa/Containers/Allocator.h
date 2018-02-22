@@ -70,10 +70,16 @@ private:
 };
 
 struct ArrayInitPolicies {
+#if defined(AIPS_CXX11)
     // Don't initialize elements in the array. (The array will be explicitly filled with values other than the default value.)
     static constexpr ArrayInitPolicy NO_INIT = ArrayInitPolicy(false);
     // Initialize all elements in the array with the default value.
     static constexpr ArrayInitPolicy INIT = ArrayInitPolicy(true);
+#else
+    static const ArrayInitPolicy NO_INIT;
+    // Initialize all elements in the array with the default value.
+    static const ArrayInitPolicy INIT;
+#endif
 };
 
 #if __cplusplus < 201103L
