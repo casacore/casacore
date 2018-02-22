@@ -1051,54 +1051,54 @@ size_t LifecycleChecker::assign_error_trigger = std::numeric_limits<size_t>::max
 void newCubeTest()
 {
     {
-        Cube<Int> c(IPosition(3, 2, 2, 2), ArrayInitPolicy::NO_INIT);
+        Cube<Int> c(IPosition(3, 2, 2, 2), ArrayInitPolicies::NO_INIT);
     }
     {
-        Cube<Int> c(2UL, 2UL, 2UL, ArrayInitPolicy::NO_INIT);
+        Cube<Int> c(2UL, 2UL, 2UL, ArrayInitPolicies::NO_INIT);
     }
     {
         IPosition shape(3, 2, 2, 2);
         Int *values = new Int[shape.product()];
         Cube<Int> c(shape, values, COPY, DefaultAllocator<Int>::value);
         delete[] values;
-        c.resize(IPosition(3, 2, 3, 2), False, ArrayInitPolicy::NO_INIT);
-        c.resize(2, 4, 4, False, ArrayInitPolicy::NO_INIT);
+        c.resize(IPosition(3, 2, 3, 2), False, ArrayInitPolicies::NO_INIT);
+        c.resize(2, 4, 4, False, ArrayInitPolicies::NO_INIT);
     }
 }
 
 void newMatrixTest()
 {
     {
-        Matrix<Int> c(IPosition(2, 2, 2), ArrayInitPolicy::NO_INIT);
+        Matrix<Int> c(IPosition(2, 2, 2), ArrayInitPolicies::NO_INIT);
     }
     {
-        Matrix<Int> c(2UL, 2UL, ArrayInitPolicy::NO_INIT);
+        Matrix<Int> c(2UL, 2UL, ArrayInitPolicies::NO_INIT);
     }
     {
         IPosition shape(2, 2, 2);
         Int *values = new Int[shape.product()];
         Matrix<Int> c(shape, values, COPY, DefaultAllocator<Int>::value);
         delete[] values;
-        c.resize(IPosition(2, 2, 3), False, ArrayInitPolicy::NO_INIT);
-        c.resize(4, 4, False, ArrayInitPolicy::NO_INIT);
+        c.resize(IPosition(2, 2, 3), False, ArrayInitPolicies::NO_INIT);
+        c.resize(4, 4, False, ArrayInitPolicies::NO_INIT);
     }
 }
 
 void newVectorTest()
 {
     {
-        Vector<Int> c(IPosition(1, 2), ArrayInitPolicy::NO_INIT);
+        Vector<Int> c(IPosition(1, 2), ArrayInitPolicies::NO_INIT);
     }
     {
-        Vector<Int> c(2UL, ArrayInitPolicy::NO_INIT);
+        Vector<Int> c(2UL, ArrayInitPolicies::NO_INIT);
     }
     {
         IPosition shape(1, 2);
         Int *values = new Int[shape.product()];
         Vector<Int> c(shape, values, COPY, DefaultAllocator<Int>::value);
         delete[] values;
-        c.resize(IPosition(1, 3), False, ArrayInitPolicy::NO_INIT);
-        c.resize(4, False, ArrayInitPolicy::NO_INIT);
+        c.resize(IPosition(1, 3), False, ArrayInitPolicies::NO_INIT);
+        c.resize(4, False, ArrayInitPolicies::NO_INIT);
     }
 }
 
@@ -1109,7 +1109,7 @@ void newInterfaceTest()
     newVectorTest();
     {
         for (size_t i = 0; i < 200; ++i) {
-            Array<Int> ai(IPosition(2, 2, 3), ArrayInitPolicy::NO_INIT);
+            Array<Int> ai(IPosition(2, 2, 3), ArrayInitPolicies::NO_INIT);
             intptr_t addr = (intptr_t)ai.data();
             AlwaysAssertExit(addr % DefaultAllocator<Int>::type::alignment == 0);
         }
@@ -1157,7 +1157,7 @@ void newInterfaceTest()
         {
             Array<LifecycleChecker> a;
             a.takeStorage(shape, ptr, SHARE);
-            a.resize(IPosition(2, 3, 3), False, ArrayInitPolicy::INIT);
+            a.resize(IPosition(2, 3, 3), False, ArrayInitPolicies::INIT);
         }
         delete[] ptr;
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
@@ -1167,7 +1167,7 @@ void newInterfaceTest()
         {
             Array<LifecycleChecker> a;
             a.takeStorage(shape, ptr, TAKE_OVER);
-            a.resize(IPosition(2, 3, 3), True, ArrayInitPolicy::INIT);
+            a.resize(IPosition(2, 3, 3), True, ArrayInitPolicies::INIT);
         }
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
 
@@ -1217,7 +1217,7 @@ void newInterfaceTest()
         {
             Array<LifecycleChecker> a;
             a.takeStorage(shape, ptr, SHARE, DefaultAllocator<LifecycleChecker>::value);
-            a.resize(IPosition(2, 3, 3), False, ArrayInitPolicy::INIT);
+            a.resize(IPosition(2, 3, 3), False, ArrayInitPolicies::INIT);
         }
         for (size_t i = 0; i < nelems; ++i) {
             defAlloc.destroy(&ptr[i]);
@@ -1233,7 +1233,7 @@ void newInterfaceTest()
         {
             Array<LifecycleChecker> a;
             a.takeStorage(shape, ptr, TAKE_OVER, DefaultAllocator<LifecycleChecker>::value);
-            a.resize(IPosition(2, 3, 3), True, ArrayInitPolicy::INIT);
+            a.resize(IPosition(2, 3, 3), True, ArrayInitPolicies::INIT);
         }
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
 
@@ -1286,14 +1286,14 @@ void newInterfaceTest()
         IPosition const shape(2, 2, 3);
         LifecycleChecker::clear();
         {
-            Array<LifecycleChecker> a(shape, ArrayInitPolicy::NO_INIT);
+            Array<LifecycleChecker> a(shape, ArrayInitPolicies::NO_INIT);
         }
         AlwaysAssertExit(LifecycleChecker::ctor_count == 0);
         AlwaysAssertExit(LifecycleChecker::dtor_count == (size_t)shape.product());
 
         LifecycleChecker::clear();
         {
-            Array<LifecycleChecker> a(shape, ArrayInitPolicy::INIT);
+            Array<LifecycleChecker> a(shape, ArrayInitPolicies::INIT);
         }
         AlwaysAssertExit(LifecycleChecker::ctor_count == (size_t)shape.product());
         AlwaysAssertExit(LifecycleChecker::dtor_count == (size_t)shape.product());
@@ -1301,7 +1301,7 @@ void newInterfaceTest()
         {
             Array<LifecycleChecker> a;
             LifecycleChecker::clear();
-            a.resize(shape, False, ArrayInitPolicy::NO_INIT);
+            a.resize(shape, False, ArrayInitPolicies::NO_INIT);
         }
         AlwaysAssertExit(LifecycleChecker::ctor_count == 0);
         AlwaysAssertExit(LifecycleChecker::dtor_count == (size_t )shape.product());
@@ -1309,7 +1309,7 @@ void newInterfaceTest()
         {
             Array<LifecycleChecker> a;
             LifecycleChecker::clear();
-            a.resize(shape, False, ArrayInitPolicy::INIT);
+            a.resize(shape, False, ArrayInitPolicies::INIT);
         }
         AlwaysAssertExit(LifecycleChecker::ctor_count == (size_t )shape.product());
         AlwaysAssertExit(LifecycleChecker::dtor_count == (size_t )shape.product());

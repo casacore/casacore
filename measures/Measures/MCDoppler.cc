@@ -1,5 +1,5 @@
-//# MCDoppler.cc: MDoppler conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,2000
+//# MCDoppler.cc: MDoppler conversion routines
+//# Copyright (C) 1995,1996,1997,1998,2000,2018
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,16 +32,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
 uInt MCDoppler::ToRef_p[N_Routes][3] = {
-    {MDoppler::RADIO,	MDoppler::RATIO,	0}, 
+    {MDoppler::RADIO,	MDoppler::RATIO,	0},
     {MDoppler::Z,	MDoppler::RATIO,	0},
     {MDoppler::BETA,	MDoppler::RATIO,	0},
     {MDoppler::GAMMA,	MDoppler::RATIO,	0},
-    {MDoppler::RATIO,	MDoppler::RADIO,	0}, 
+    {MDoppler::RATIO,	MDoppler::RADIO,	0},
     {MDoppler::RATIO,	MDoppler::Z,		0},
     {MDoppler::RATIO,	MDoppler::BETA,		0},
     {MDoppler::RATIO,	MDoppler::GAMMA,	0} };
 uInt MCDoppler::FromTo_p[MDoppler::N_Types][MDoppler::N_Types];
-MutexedInit MCDoppler::theirMutexedInit (MCDoppler::doFillState);
+bool MCDoppler_initializer::initialized = false;
 
 //# Constructors
 MCDoppler::MCDoppler() {
@@ -58,7 +58,7 @@ MCDoppler::~MCDoppler() {
 //# Member functions
 
 void MCDoppler::getConvert(MConvertBase &mc,
-			   const MRBase &inref, 
+			   const MRBase &inref,
 			   const MRBase &outref) {
 
   Int iin  = inref.getType();
@@ -81,7 +81,7 @@ void MCDoppler::initConvert(uInt which, MConvertBase &mc) {
   if (False) initConvert(which, mc);	// Stop warning
 
   switch (which) {
-    
+
   default:
     break;
   }
@@ -101,13 +101,13 @@ void MCDoppler::doConvert(MVDoppler &in,
 			  const MConvertBase &mc) {
 
   if (False) {inref.getType(); outref.getType(); } // to stop warning
-    
+
   Double t = (Double) in;
 
   for (Int i=0; i<mc.nMethod(); i++) {
 
     switch (mc.getMethod(i)) {
-	
+
     case RADIO_RATIO:
       t = 1- t;
       break;
@@ -160,4 +160,3 @@ String MCDoppler::showState() {
 }
 
 } //# NAMESPACE CASACORE - END
-
