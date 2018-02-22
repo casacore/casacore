@@ -55,7 +55,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // ArrayInitPolicy is used in functions where an array is allocated/resized.
 // </synopsis>
 class ArrayInitPolicy {
-friend class foobar;
 public:
   Bool operator ==(ArrayInitPolicy const &other) {
     return init == other.init;
@@ -65,7 +64,11 @@ public:
   }
 private:
   Bool init;
+#if defined(AIPS_CXX11)
   explicit constexpr ArrayInitPolicy(bool v): init(v) {}
+#else
+  explicit ArrayInitPolicy(bool v): init(v) {}
+#endif
   friend struct ArrayInitPolicies;
 };
 
