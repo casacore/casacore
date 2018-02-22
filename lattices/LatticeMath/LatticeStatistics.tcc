@@ -434,12 +434,17 @@ Bool LatticeStatistics<T>::getConvertedStatistic (Array<T>& stats,
 }
 
 
+template <class T>
+StatisticsData::ALGORITHM LatticeStatistics<T>::_getAlgorithm() const {
+    return _saf.algorithm();
+}
+
 template <class T> Bool LatticeStatistics<T>::getStatistic(
     Array<AccumType>& stats,
     LatticeStatsBase::StatisticsTypes type,
     Bool dropDeg
 ) {
-    if (_saf.algorithm() == StatisticsData::BIWEIGHT) {
+    if (_getAlgorithm() == StatisticsData::BIWEIGHT) {
         ThrowIf(
             type == LatticeStatsBase::FLUX,
             "The biweight algorithm does not support"
@@ -2741,7 +2746,8 @@ void LatticeStatistics<T>::summStats ()
    pos(0) = VARIANCE;
    AccumType  var = stats(pos);
    AccumType  rms = _rms(sumSq, nPts);
-   AccumType  sigma = sqrt(var);
+   pos(0) = SIGMA;
+   AccumType  sigma = stats(pos);
 
    pos(0) = MIN;
    AccumType  dMin = stats(pos);

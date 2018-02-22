@@ -448,6 +448,7 @@ void ImageStatistics<T>::displayStats(
         messages.push_back(oss.str());
         oss.str("");
     }
+    Bool doBiweight = this->_getAlgorithm() == StatisticsData::BIWEIGHT;
     if (LattStatsSpecialize::hasSomePoints(nPts)) {
         oss << "         -- number of points [npts]:                " << nPts;
         messages.push_back(oss.str());
@@ -482,13 +483,15 @@ void ImageStatistics<T>::displayStats(
             messages.push_back(oss.str());
             oss.str("");
         }
-        oss << "         -- Sum of pixel values [sum]:               " << sum << " " << sbunit;
-        messages.push_back(oss.str());
-        oss.str("");
-        oss << "         -- Sum of squared pixel values [sumsq]:     " << sumSq
+        if (! doBiweight) {
+            oss << "         -- Sum of pixel values [sum]:               " << sum << " " << sbunit;
+            messages.push_back(oss.str());
+            oss.str("");
+            oss << "         -- Sum of squared pixel values [sumsq]:     " << sumSq
                 << " " << bunitSquared;
-        messages.push_back(oss.str());
-        oss.str("");
+            messages.push_back(oss.str());
+            oss.str("");
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -501,18 +504,22 @@ void ImageStatistics<T>::displayStats(
                 << sbunit;
         messages.push_back(oss.str());
         oss.str("");
-        oss << "        -- Variance of the pixel values :           " << var << " "
+        if (! doBiweight) {
+            oss << "        -- Variance of the pixel values :           " << var << " "
                 << sbunit;
-        messages.push_back(oss.str());
-        oss.str("");
+            messages.push_back(oss.str());
+            oss.str("");
+        }
         oss << "        -- Standard deviation of the Mean [sigma]:  " << sigma << " "
-                << sbunit;
+            << sbunit;
         messages.push_back(oss.str());
         oss.str("");
-        oss << "        -- Root mean square [rms]:                  " << rms << " "
+        if (! doBiweight) {
+            oss << "        -- Root mean square [rms]:                  " << rms << " "
                 << sbunit;
-        messages.push_back(oss.str());
-        oss.str("");
+            messages.push_back(oss.str());
+            oss.str("");
+        }
         if (_showRobust) {
             oss << "        -- Median of the pixel values [median]:     " << median <<
                 " " << sbunit;

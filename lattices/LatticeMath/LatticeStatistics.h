@@ -512,6 +512,8 @@ protected:
            IPosition& storagePos, const IPosition& latticePos
    );
 
+   StatisticsData::ALGORITHM _getAlgorithm() const;
+
 private:
 
    enum LatticeStatsAlgorithm {
