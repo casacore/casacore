@@ -319,7 +319,7 @@ int main() {
             // isn't set by this algorithm
             AlwaysAssert(sd.maxpos.first == -1, AipsError);
             AlwaysAssert(sd.maxpos.second == -1, AipsError);
-            Double expMean = 3.98374161662;
+            Double expMean = 3.97415612639;
             AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
             AlwaysAssert(*sd.min == 1, AipsError);
             AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -327,7 +327,7 @@ int main() {
             AlwaysAssert(sd.npts == 8, AipsError);
             // not computed
             AlwaysAssert(sd.rms == 0, AipsError);
-            Double expStdev = 3.43755912819;
+            Double expStdev = 3.43760003872;
             AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
             AlwaysAssert(sd.sum == 0, AipsError);
             AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -369,7 +369,7 @@ int main() {
                     bw.getStatistic(StatisticsData::STDDEV), expStdev, eps
                 ), AipsError
             );
-            AlwaysAssert(bw.getNiter() == 3, AipsError);
+            AlwaysAssert(bw.getNiter() == 2, AipsError);
             // Now reverse the order that the datasets were added. results
             // should be the same except for min and max dataset locations
             bw.setData(v1.begin(), v1.size());
@@ -429,7 +429,7 @@ int main() {
                     bw.getStatistic(StatisticsData::STDDEV), expStdev, eps
                 ), AipsError
             );
-            AlwaysAssert(bw.getNiter() == 3, AipsError);
+            AlwaysAssert(bw.getNiter() == 2, AipsError);
         }
         {
             // Test accumulating as datasets are added.
@@ -447,7 +447,7 @@ int main() {
             // isn't set by this algorithm
             AlwaysAssert(sd.maxpos.first == -1, AipsError);
             AlwaysAssert(sd.maxpos.second == -1, AipsError);
-            Double expMean = 3.98374161662;
+            Double expMean = 3.97415612639;
             AlwaysAssert(near(sd.mean, expMean, eps), AipsError);
             AlwaysAssert(*sd.min == 1, AipsError);
             AlwaysAssert(sd.minpos.first == -1, AipsError);
@@ -455,7 +455,7 @@ int main() {
             AlwaysAssert(sd.npts == 8, AipsError);
             // not computed
             AlwaysAssert(sd.rms == 0, AipsError);
-            Double expStdev = 3.43755912819;
+            Double expStdev = 3.43760003872;
             AlwaysAssert(near(sd.stddev, expStdev, eps), AipsError);
             AlwaysAssert(sd.sum == 0, AipsError);
             AlwaysAssert(sd.sumsq == 0, AipsError);
@@ -473,7 +473,7 @@ int main() {
                     bw.getStatistic(StatisticsData::STDDEV), expStdev, eps
                 ), AipsError
             );
-            AlwaysAssert(bw.getNiter() == 3, AipsError);
+            AlwaysAssert(bw.getNiter() == 2, AipsError);
             Bool thrown = False;
             try {
                 bw.setCalculateAsAdded(True);

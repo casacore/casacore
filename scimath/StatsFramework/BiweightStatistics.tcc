@@ -440,7 +440,7 @@ void BiweightStatistics<CASA_STATP>::_computeStats() {
             );
             _doScale();
             if (
-                abs(prevScale - _scale) < epsilon
+                abs(1 - _scale/prevScale) < epsilon
                 || _niter == _maxNiter
             ) {
                 break;

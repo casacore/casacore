@@ -28,10 +28,7 @@
 
 #include <casacore/casa/aips.h>
 
-// #include <casacore/scimath/StatsFramework/ConstrainedRangeStatistics.h>
-
 #include <casacore/scimath/StatsFramework/ClassicalStatistics.h>
-
 
 #include <set>
 #include <vector>
@@ -87,7 +84,7 @@ namespace casacore {
 //    iterations (a configurable parameter) is reached. The convergence criterion
 //    is given by
 //
-//    abs(s_bi - s_bi,prev) < 0.03 * sqrt(0.5/(n - 1))
+//    abs(1 - s_bi/s_bi,prev) < 0.03 * sqrt(0.5/(n - 1))
 //
 //    where s_bi,prev is the value of the scale computed in the previous iteration.
 //

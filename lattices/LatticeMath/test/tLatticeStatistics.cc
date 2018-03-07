@@ -411,9 +411,9 @@ int main()
             stats.getStatistic(v, LatticeStatsBase::NPTS, False);
             AlwaysAssert(near(*v.begin(), 1000.0), AipsError);
             stats.getStatistic(v, LatticeStatsBase::MEAN, False);
-            AlwaysAssert(near(*v.begin(), 471.030691945, 1e-6), AipsError);
+            AlwaysAssert(near(*v.begin(), 471.024223013, 3e-5), AipsError);
             stats.getStatistic(v, LatticeStatsBase::SIGMA, False);
-            AlwaysAssert(near(*v.begin(), 461.238725862, 1e-6), AipsError);
+            AlwaysAssert(near(*v.begin(), 461.243958957, 2e-5), AipsError);
         }
         {
             cout << "test stats for complex value lattice using old and new methods" << endl;
