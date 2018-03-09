@@ -244,13 +244,18 @@ TableParseSelect::~TableParseSelect()
 
 //# Construct a TableParse object and add it to the container.
 void TableParseSelect::addTable (Int tabnr, const String& name,
-				 const Table& ftab,
-				 const String& shorthand,
-				 const vector<const Table*> tempTables,
-				 const vector<TableParseSelect*>& stack)
+                                 const Table& ftab,
+                                 const String& shorthand,
+                                 Bool addToFromList,
+                                 const vector<const Table*> tempTables,
+                                 const vector<TableParseSelect*>& stack)
 {
   Table table = makeTable (tabnr, name, ftab, shorthand, tempTables, stack);
-  fromTables_p.push_back (TableParse(table, shorthand));
+  if (addToFromList) {
+    fromTables_p.push_back (TableParse(table, shorthand));
+  } else {
+    withTables_p.push_back (TableParse(table, shorthand));
+  }
 }
 
 Table TableParseSelect::makeTable (Int tabnr, const String& name,
@@ -284,12 +289,12 @@ Table TableParseSelect::makeTable (Int tabnr, const String& name,
       table = tableKey (name, shand, columnName, fieldNames, stack);
     } else {
       // If no or equal shorthand is given, try to see if the
-      // given name is already used as a shorthand.
+      // given name is already used as a shorthand (also in the WITH tables).
       // If so, take the table of that shorthand.
       Bool foundSH = False;
       if (shorthand.empty()  ||  name == shorthand) {
 	for (Int i=stack.size()-1; i>=0; i--) {
-	  Table tab = stack[i]->findTable (name);
+	  Table tab = stack[i]->findTable (name, True);
 	  if (! tab.isNull()) {
 	    table = tab;
 	    foundSH = True;
@@ -318,9 +323,9 @@ Table TableParseSelect::tableKey (const String& name,
 				  const Vector<String>& fieldNames,
 				  const vector<TableParseSelect*>& stack)
 {
-  //# Try to find the given shorthand on all levels.
+  //# Try to find the given shorthand on all levels (also the WITH tables).
   for (Int i=stack.size()-1; i>=0; i--) {
-    Table tab = stack[i]->findTable (shorthand);
+    Table tab = stack[i]->findTable (shorthand, True);
     if (! tab.isNull()) {
       Table result = findTableKey (tab, columnName, fieldNames);
       if (! result.isNull()) {
@@ -477,7 +482,7 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
   return isKey;
 }
 
-Table TableParseSelect::findTable (const String& shorthand) const
+Table TableParseSelect::findTable (const String& shorthand, Bool doWith) const
 {
   //# If no shorthand given, take first table (if there).
   if (shorthand.empty()) {
@@ -488,6 +493,13 @@ Table TableParseSelect::findTable (const String& shorthand) const
     for (uInt i=0; i<fromTables_p.size(); i++) {
       if (fromTables_p[i].test (shorthand)) {
 	return fromTables_p[i].table();
+      }
+    }
+    if (doWith) {
+      for (uInt i=0; i<withTables_p.size(); i++) {
+        if (withTables_p[i].test (shorthand)) {
+          return withTables_p[i].table();
+        }
       }
     }
   }
@@ -505,10 +517,10 @@ TableExprNode TableParseSelect::handleKeyCol (const String& name, Bool tryProj)
   Bool hasKey = splitName (shand, columnName, fieldNames, name, True, False,
                            False);
   //# Use first table if there is no shorthand given.
-  //# Otherwise find the table.
-  Table tab = findTable (shand);
+  //# Otherwise find the table at the current level (no WITH tables).
+  Table tab = findTable (shand, False);
   if (tab.isNull()) {
-    throw (TableInvExpr("Shorthand " + shand + " has not been defined"));
+    throw (TableInvExpr("Shorthand " + shand + " has not been defined in FROM clause"));
     return 0;
   }
   //# If :: is not given, we have a column or keyword.
@@ -1017,11 +1029,7 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
   //# No functions have to be ignored.
   Vector<Int> ignoreFuncs;
   // Use a default table if no one available.
-  // This can only happen in the PCALC case.
   if (fromTables_p.size() == 0) {
-    if (commandType_p != PCALC) {
-      throw TableInvExpr("No table given");
-    }
     return makeFuncNode (this, name, arguments, ignoreFuncs, Table(), style);
   }
   TableExprNode node = makeFuncNode (this, name, arguments, ignoreFuncs,
@@ -1045,7 +1053,7 @@ TableExprNode TableParseSelect::makeUDFNode (TableParseSelect* sel,
     Vector<String> parts = stringToVector (name, '.');
     if (parts.size() > 2) {
       // At least 3 parts; see if the first part is a table shorthand.
-      Table tab = sel->findTable (parts[0]);
+      Table tab = sel->findTable (parts[0], False);
       if (! tab.isNull()) {
         udf = TableExprNode::newUDFNode (name.substr(parts[0].size() + 1),
                                          arguments, tab, style);
@@ -1079,7 +1087,7 @@ TableExprNode TableParseSelect::makeFuncNode
   Vector<String> parts = stringToVector (name, '.');
   if (sel  &&  parts.size() == 2) {
     // See if xx is a shorthand. If so, use that table.
-    Table tab = sel->findTable (parts[0]);
+    Table tab = sel->findTable (parts[0], False);
     if (! tab.isNull()) {
       table = tab;
       name = parts[1];
@@ -1322,7 +1330,7 @@ void TableParseSelect::handleWildColumn (Int stringType, const String& name)
       shorthand += '.';
     }
     // Find all matching columns.
-    Table tab = findTable(String());
+    Table tab = findTable(String(), False);
     Vector<String> columns = tab.tableDesc().columnNames();
     Int nr = 0;
     for (uInt i=0; i<columns.size(); ++i) {
@@ -1788,9 +1796,9 @@ TableRecord& TableParseSelect::findKeyword (const String& name,
   String shand, columnName;
   Vector<String> fieldNames;
   splitName (shand, columnName, fieldNames, name, True, True, False);
-  Table tab = findTable (shand);
+  Table tab = findTable (shand, False);
   if (tab.isNull()) {
-    throw (TableInvExpr("Shorthand " + shand + " has not been defined"));
+    throw (TableInvExpr("Shorthand " + shand + " has not been defined in FROM clause"));
   }
   TableRecord* rec;
   String fullName;
@@ -2088,10 +2096,10 @@ void TableParseSelect::makeTableNoFrom (const vector<TableParseSelect*>& stack)
   } else if (endrow_p > 0) {
     nrow = endrow_p;
   }
-  // Add a temp table with no columns and some rows.
+  // Add a temp table with no columns and some rows to the FROM list.
   Table tab(Table::Memory);
   tab.addRow(nrow);
-  addTable (-1, String(), tab, String(), std::vector<const Table*>(), stack);
+  addTable (-1, String(), tab, String(), True, std::vector<const Table*>(), stack);
 }
 
 void TableParseSelect::handleAddRow (const TableExprNode& expr)

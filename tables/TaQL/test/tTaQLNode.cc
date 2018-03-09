@@ -1,4 +1,4 @@
-//# tTaQLNode.cc: This program tests table commands using TaQLNode
+//# tTaQLNode.cc: This program tests parsing of table commands using TaQLNode
 //# Copyright (C) 2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -34,14 +34,13 @@
 #include <casacore/casa/namespace.h>
 
 // <summary>
-// Test program for table commands from user interface
+// Test program for parsing of table commands using TaQLNode
 // </summary>
 
 // This program tests table commands with an SQL-like grammar.
-// The grammar is scanned and parsed using the flex/bison file TableGram.l/y
-// and with the help of the class TableParse.
+// The grammar is scanned and parsed using the flex/bison file TableGram.ll/yy
+// and with the help of the class TaQLNode.
 // It ask for commands until a "q" is given.
-// When columns are selected, it will show their contents.
 
 
 void seltab (const String&);
@@ -87,7 +86,7 @@ void seltab (const String& str)
   cout << str << endl;
   TaQLNode node;
   try {
-    // Parse and execute the command.
+    // Parse the command.
     node = TaQLNode::parse (str);
   } catch (AipsError& x) {
     cout << x.getMesg() << endl;
@@ -99,7 +98,7 @@ void seltab (const String& str)
   // Now see if parsing the result gives the same result.
   TaQLNode node1;
   try {
-    // Parse and execute the command.
+    // Parse the command.
     node1 = TaQLNode::parse (oss.str());
   } catch (AipsError& x) {
     cout << x.getMesg() << endl;

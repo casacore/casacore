@@ -323,3 +323,6 @@ $casa_checktool ./tTableGram 'select col1 from tTableGram_tmp.tst2'
 $casa_checktool ./tTableGram 'select gcount() from [tTableGram_tmp.tst,tTableGram_tmp.tst],[tTableGram_tmp.tst,tTableGram_tmp.tst,tTableGram_tmp.tst]'
 $casa_checktool ./tTableGram 'select gcount() from [tTableGram_tmp.tst,tTableGram_tmp.tst]'
 $casa_checktool ./tTableGram 'select gcount() from [tTableGram_tmp.tst as t1,tTableGram_tmp.tst as t2,[[tTableGram_tmp.tst,tTableGram_tmp.tst] as t3] as t4] as t5'
+
+# Try the WITH clause.
+$casa_checktool ./tTableGram 'with [tTableGram_tmp.tst,tTableGram_tmp.tst] t1 calc ([select gcount() from t1] + [select gcount() from tTableGram_tmp.tst] + [with [t1,t1] as t2 select gcount() from t2])[0]'

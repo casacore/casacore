@@ -163,7 +163,7 @@ private:
   TaQLNodeResult handleSelect (const TaQLSelectNodeRep& node, Bool doExec);
 
   // Handle a MultiNode containing table info.
-  void handleTables (const TaQLMultiNode&);
+  void handleTables (const TaQLMultiNode&, Bool addToFromList=True);
 
   // Make a ConcatTable from a nested set of tables.
   Table makeConcatTable (const TaQLMultiNodeRep& node);
