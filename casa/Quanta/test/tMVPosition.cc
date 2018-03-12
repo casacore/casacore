@@ -31,6 +31,71 @@
 #include <casacore/casa/Quanta/RotMatrix.h>
 
 #include <casacore/casa/namespace.h>
+#include <list>
+#if defined(AIPS_CXX11) && !defined(__APPLE__)
+#include <thread>
+#include <mutex>
+#endif
+
+void test_parallel();
+void test_parallel_openmp();
+
+void test_parallel()
+{
+
+#if defined(AIPS_CXX11) && !defined(__APPLE__)
+  double sum = 0;
+  static const size_t thread_max = 50;
+  static const size_t loop_max = 50 * 2; //50 is the value for max_cache_array inside MVPosition
+  std::vector<std::thread> threads(thread_max);
+  std::mutex sum_mutex;
+  for(size_t i = 0; i < thread_max ; ++i)
+  {
+     threads[i] = std::thread([&sum, &sum_mutex]()
+       {
+         MVPosition positions[loop_max];
+         double part_sum = 0;
+         for(size_t j = 0; j < loop_max ; ++j)
+         {
+           positions[j] = MVPosition();
+           positions[j](2) = j;
+           part_sum += positions[j](2);
+         }
+         std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+         std::lock_guard<std::mutex> lock(sum_mutex);
+         sum += part_sum;
+       });
+  }
+
+  std::for_each(threads.begin(),threads.end(),[](std::thread& x){x.join();});
+  AlwaysAssertExit(sum == thread_max * loop_max*(loop_max-1)/2); //Arithmetic series
+#endif
+}
+
+void test_parallel_openmp()
+{
+
+  double sum = 0;
+  static const size_t thread_max = 50;
+  static const size_t loop_max = 50 * 2; //50 is the value for max_cache_array inside MVPosition
+#ifdef _OPENMP
+#pragma omp parallel for reduction(+:sum)
+#endif
+  for(size_t i = 0; i < thread_max ; ++i)
+  {  
+    MVPosition positions[loop_max];
+    double part_sum = 0;
+    for(size_t j = 0; j < loop_max ; ++j)
+    { 
+      positions[j] = MVPosition();
+      (positions[j])(2) = j;
+      part_sum += (positions[j])(2);
+    }
+    sum += part_sum;
+  }
+  AlwaysAssertExit(sum == thread_max * loop_max*(loop_max-1)/2); //Arithmetic series
+}
+
 
 int main ()
 {
@@ -65,6 +130,9 @@ int main ()
     AlwaysAssertExit(pos(1) == 60);
     AlwaysAssertExit(pos(2) == 72);
     AlwaysAssertExit(pos2 == pos);
+
+    test_parallel(); 
+
   } catch (AipsError& x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
