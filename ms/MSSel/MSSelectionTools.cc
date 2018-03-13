@@ -150,7 +150,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     catch (AipsError& x)
       {
 	if (mymss==NULL) delete mss;
-	throw(x);
+	throw;
       }
 
     if (mymss==NULL) delete mss;
@@ -238,7 +238,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     catch (AipsError& x)
       {
 	if (mymss == NULL) delete mss;
-	throw(x);
+	throw;
       }
     if (mymss == NULL) delete mss;
     return rstat;
