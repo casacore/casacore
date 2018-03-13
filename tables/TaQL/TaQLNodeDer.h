@@ -69,12 +69,13 @@ public:
 	     CTString =4,
 	     CTTime   =5};
   explicit TaQLConstNodeRep (Bool value);
-  explicit TaQLConstNodeRep (Int64 value, Bool isTableName=False);
+  explicit TaQLConstNodeRep (Int64 value);
   explicit TaQLConstNodeRep (Double value);
   explicit TaQLConstNodeRep (Double value, const String& unit);
   explicit TaQLConstNodeRep (DComplex value);
   explicit TaQLConstNodeRep (const String& value, Bool isTableName=False);
   explicit TaQLConstNodeRep (const MVTime& value);
+  explicit TaQLConstNodeRep (Int64 value, const String& subTableName);
   virtual ~TaQLConstNodeRep();
   void setIsTableName()
     { itsIsTableName = True; }

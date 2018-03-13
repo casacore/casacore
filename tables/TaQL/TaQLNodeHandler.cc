@@ -323,8 +323,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       TaQLConstNodeRep* tabnm = (TaQLConstNodeRep*)(node.itsTable.getRep());
       if (tabnm->itsType == TaQLConstNodeRep::CTInt) {
 	hrval->setInt (tabnm->itsIValue);
+        // Do not use getString, because for a temptable the type is Int,
+        // but the string can contain a subtable name.
+        hrval->setString (tabnm->itsSValue);
       } else {
-	hrval->setString (tabnm->getString());
+        hrval->setString (tabnm->getString());
       }
     } else {
       TaQLNodeResult res = visitNode (node.itsTable);

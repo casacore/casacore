@@ -276,12 +276,27 @@ Table TableParseSelect::makeTable (Int tabnr, const String& name,
       throw (TableInvExpr ("Invalid temporary table number given"));
     }
     table = *(tempTables[tabnr]);
+    // See if $i is followed by a subtable specification by splitting the name.
+    // Note that $i is part of the name and is (unfortunately) regarded as a
+    // column name if no column name is given.
+    String shand, columnName;
+    Vector<String> fieldNames;
+    if (splitName (shand, columnName, fieldNames, name, False, False, True)) {
+      if (shand.empty()) {
+        columnName = String();
+      }
+      Table result = findTableKey (table, columnName, fieldNames);
+      if (result.isNull()) {
+        throw TableInvExpr (name + " is an unknown (sub)table");
+      }
+      table = result;
+    }
   } else if (! ftab.isNull()) {
     //# The table is a temporary table (from a select clause).
     table = ftab;
   } else {
     //# The table name is a string.
-    //# When the name contains ::, it is a keyword in a table at an outer
+    //# If the name contains ::, it is a table keyword in a table at an outer
     //# SELECT statement.
     String shand, columnName;
     Vector<String> fieldNames;
@@ -430,7 +445,7 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
 	shorthand = scNames(0);
 	columnName = scNames(1);
 	break;
-      case 1:
+      case 1:\
 	columnName = scNames(0);
 	break;
       default:
@@ -1297,25 +1312,24 @@ void TableParseSelect::handleWildColumn (Int stringType, const String& name)
   Bool caseInsensitive = ((stringType & 1) != 0);
   Bool negate          = ((stringType & 2) != 0);
   Regex regex;
+  int shInx = -1;
   // See if the wildcarded name has a table shorthand in it.
-  // That is not really handled yet.
-  // It should be done in a future TaQL version (supporting joins).
   String shorthand;
   if (name[0] == 'p') {
     if (!negate) {
-      int j = str.index('.');
-      if (j >= 0) {
-	shorthand = str.before(j);
-	str       = str.after(j);
+      shInx = str.index('.');
+      if (shInx >= 0) {
+	shorthand = str.before(shInx);
+	str       = str.after(shInx);
       }
     }
     regex = Regex::fromPattern (str);
   } else {
     if (!negate) {
-      int j = str.index("\\.");
-      if (j >= 0) {
-	shorthand = str.before(j);
-	str       = str.after(j+1);
+      shInx = str.index("\\.");
+      if (shInx >= 0) {
+	shorthand = str.before(shInx);
+	str       = str.after(shInx+1);
       }
     }
     if (name[0] == 'f') {
@@ -1325,13 +1339,17 @@ void TableParseSelect::handleWildColumn (Int stringType, const String& name)
     }
   }
   if (!negate) {
+    // Find all matching columns.
+    Table tab = findTable(shorthand, False);
+    if (tab.isNull()) {
+      throw TableInvExpr("Shorthand " + shorthand + " in wildcarded column " +
+                         name + " not defined in FROM clause");
+    }
+    Vector<String> columns = tab.tableDesc().columnNames();
     // Add back the delimiting . if a shorthand is given.
-    if (! shorthand.empty()) {
+    if (shInx >= 0) {
       shorthand += '.';
     }
-    // Find all matching columns.
-    Table tab = findTable(String(), False);
-    Vector<String> columns = tab.tableDesc().columnNames();
     Int nr = 0;
     for (uInt i=0; i<columns.size(); ++i) {
       String col = columns[i];
@@ -1798,7 +1816,7 @@ TableRecord& TableParseSelect::findKeyword (const String& name,
   splitName (shand, columnName, fieldNames, name, True, True, False);
   Table tab = findTable (shand, False);
   if (tab.isNull()) {
-    throw (TableInvExpr("Shorthand " + shand + " has not been defined in FROM clause"));
+    throw (TableInvExpr("Shorthand " + shand + " not defined in FROM clause"));
   }
   TableRecord* rec;
   String fullName;

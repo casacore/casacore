@@ -39,23 +39,21 @@
 #define YY_DECL int TableGramlex (YYSTYPE* lvalp)
 %}
 
-/* states */
+/* States to distinguish how some tokens are recognized */
 %s STYLEstate
 %s EXPRstate
 %s GIVINGstate
 %s FROMstate
 %s CRETABstate
-/* exclusive state */
+/* Exclusive state meaning that tokens are only recognized in that state */
 %x SHOWstate
 
-/* The order in the following list is important, since, for example,
-   the word "giving" must be recognized as GIVING and not as NAME.
-   Similarly, an alphanumeric string must be recognized as NAME
-   and not as NAMETAB or NAMEFLD.
-   Complex values can be given as:   FLOATi
+/* Define all tokens recognized by flex.
+   Imaginary part of a Complex value can be given as:   FLOATi
           where i is the letter i or j (in lowercase only).
    In a NAME the backslash can be used to escape special characters like -.
    In that way a name like DATE-OBS can be given as DATE\-OBS.
+   Comment is from # till the end of the command.
 */
 WHITE1    [ \t\n]
 WHITE     {WHITE1}*
@@ -75,33 +73,37 @@ FALSE     F|([Ff][Aa][Ll][Ss][Ee])
 FLINTUNIT {FLINT}[a-zA-Z]+
 
 MONTH     [A-Za-z]+
-DATEA     {INT}{MONTH}{INT}|{INT}"-"{MONTH}"-"{INT}
+/* Date with numeric month must have 2 digits in day and month and 4 in year.
+   Can be DMY or YMD with - or / as delimiter. */
 DATEH     ({INT2}"-"{INT2}"-"{INT4})|({INT4}"-"{INT2}"-"{INT2})
 DATES     {INT4}"/"{INT2}"/"{INT2}
+/* Date with alphabetic month has more freedom in day and year */
+DATEA     {INT}{MONTH}{INT}|{INT}"-"{MONTH}"-"{INT}
 DATE      {DATEA}|{DATEH}|{DATES}
+/* Time part of a datetime can use h/m or : */
 DTIMEH    {INT}[hH]({INT}?([mM]({FLINT})?)?)?
 DTIMEC    {INT}":"({INT}?(":"({FLINT})?)?)?
 DTIME     {DTIMEH}|{DTIMEC}
+/* - / or space can be used as separator between date and time */
 DATETIME  {DATE}([-/ ]{DTIME})?
 
+/* Sky position as HMS or DMS; dots can be used instead of DMS (as MVAngle allows).
+   Positions/times with colons cannot be allowed, because they interfere
+   with the interval syntax. It is only possible when preceeded by a date. */
 POSHM     {INT}[hH]{INT}[mM]{FLINT}?
 POSDM     {INT}[dD]{INT}[mM]{FLINT}?
 POSD      {INT}"."{INT}"."{FLINT}
 TIME      {POSHM}|{POSDM}|{POSD}
-/*
-     positions/times with colons cannot be allowed, because they interfere
-     with the interval syntax. It is only possible when preceeded by a date.
-     Furthermore, a colon is sometimes also used for degrees (in declinations),
-     so it's better to stick to hms and dms.
-*/
 
-
+/* Strings can be quoted using single or double quotes */
 QSTRING   \"[^\"\n]*\"
 ASTRING   \'[^\'\n]*\'
+/* Recognize a quoted string without an end-quote (to give an error message) */
 UQSTRING   \"[^\"\n]*\n
 UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
+/* Recognize all reserved words (can be a mix of lowercase and uppercase) */
 UNION     [Uu][Nn][Ii][Oo][Nn]
 INTERSECT [Ii][Nn][Tt][Ee][Rr][Ss][Ee][Cc][Tt]
 EXCEPT    ([Ee][Xx][Cc][Ee][Pp][Tt])|([Mm][Ii][Nn][Uu][Ss])
@@ -126,6 +128,8 @@ COUNTALL  [Gg]{COUNT}{WHITE}"("{WHITE}"*"?{WHITE}")"
 CALC      [Cc][Aa][Ll][Cc]
 CREATETAB [Cc][Rr][Ee][Aa][Tt][Ee]{WHITE}[Tt][Aa][Bb][Ll][Ee]{WHITE1}
 ALTERTAB  [Aa][Ll][Tt][Ee][Rr]{WHITE}[Tt][Aa][Bb][Ll][Ee]{WHITE1}
+/* Optionally the ALTER TABLE subcommands can be separated by commas;
+   they need a space after the subcommand name. */
 ADDCOL    ,?{WHITE}{ADD}{WHITE}{COLUMN}{WHITE1}
 RENAMECOL ,?{WHITE}{RENAME}{WHITE}{COLUMN}{WHITE1}
 DROPCOL   ,?{WHITE}{DROP}{WHITE}{COLUMN}{WHITE1}
@@ -170,12 +174,25 @@ OR        [Oo][Rr]
 XOR       [Xx][Oo][Rr]
 NOT       [Nn][Oo][Tt]
 ALL       [Aa][Ll][Ll]
+/* To distinguish keyword ALL from function ALL, the latter has a parenthesis */
 ALLFUNC   {ALL}{WHITE}"("
+/* A basic name is alphanumeric (and underscores) or is escaped with a backslash */
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
+/* A field name is a name with dots or double colons */
 NAMEFLD   ({NAME}".")?{NAME}?("::")?{NAME}("."{NAME})*
-TEMPTAB   [$]{INT}
+/* A temporary table name can be followed by field names */
+TEMPTAB   [$]{INT}(("."{NAME})?"::"{NAME}("."{NAME})*)?
+/* A table name can contain about every character
+   (but is recognized in specific states only) */
 NAMETAB   ([A-Za-z0-9_./+\-~$@:]|(\\.))+
+/* A UDFlib synonym */
 UDFLIBSYN {NAME}{WHITE}"="{WHITE}{NAME}
+/* A regular expression can be delimited by / % or @ optionall=y followed by i
+   to indicate case-insensitive matching.
+     m is a partial match (match if part of string matches the regex)
+     f is a full match
+     p is a pattern match (glob-style pattern)
+*/
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
 REGEX3    m@[^@]+@
@@ -189,16 +206,18 @@ PATT2     p%[^%]+%
 PATT3     p@[^@]+@
 PATT      {PATT1}|{PATT2}|{PATT3}
 PATTEX    ({REGEX}|{FREGEX}|{PATT})i?
+/* String distance is similar; has options b i and nn (distance) in any order */
 DIST1     d\/[^/]+\/
 DIST2     d%[^%]+%
 DIST3     d@[^@]+@
 DISTOPT   [bi]*{INT}?[bi]*
 DISTEX    ({DIST1}|{DIST2}|{DIST3}){DISTOPT}
+/* Part of the pattern is the operator */
 OPERREX   "!"?"~"
 PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 
 %%
- /* The command to be analyzed is:
+ /* The command to be analyzed is something like:
         SELECT column-list FROM table-list WHERE expression
                           ORDER BY column-list GIVING table
     The WHERE, ORDER BY, and GIVING parts are optional.
@@ -209,13 +228,27 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
     A table name can be given in the FROM part and in the giving PART.
     These are indicated by the FROM/GIVING/CRETABstate, because a table name
     can contain special characters like -.
-    A table name can also be $nnn indicating a temporary table.
+    A table name can also be $nnn indicating a temporary table. It can optionally
+    be followed by :: and the name of a subtable of that temporary table.
     In a subquery care must be taken that the state is switched back to
     EXPRstate, because a FROM can be the last part in a subquery and
     because a set can be specified in the GIVING part.
     This is done by setting the state when parentheses or square brackets
     are found. ( and [ indicate the beginning of a set(subquery).
     ) and ] indicate the end of subquery.
+
+    The order in the following list is important, since, for example,
+    the word "giving" must be recognized as GIVING and not as NAME.
+    Similarly, an alphanumeric string must be recognized as NAME
+    and not as NAMETAB or NAMEFLD.
+
+    TableGramText is the char* pointer giving the start of the token recognized.
+    yyleng gives the length of the token recognized by flex.
+    tableGramPosition() is an Int& keeping track of the position in the command
+    string for error reporting in TableGram.cc.
+    Note that lvalp is defined at the beginning of this file as the argument
+    to TableGramlex (in the YY_DECL definition). The possible lvalp fields
+    (such as lvalp->val) are defined in the union in TableGram.yy.
  */
 
  /* In the SHOW command any word (such as SELECT) is allowed */
@@ -654,9 +687,10 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
  /* In the FROM clause a shorthand (for a table) can be given.
     In the WHERE and ORDERBY clause a function name can be given.
     Note that this rule could also be done by NAMEFLD. However, in the
-    future :: and . will be operators instead of parts of the name.
+    future :: and . might be be operators instead of parts of the name.
     ALL is a special name, because it can also be used instead of DISTINCT
     in the SELECT clause (note that ALL is also a function name).
+    So recognize ALL followed by a parenthesis as a function name.
  */
 {ALLFUNC} {
   /* will not work for e.g. select all (1+2)*3, but nothing to do about it */
@@ -687,11 +721,12 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	    return FLDNAME;
 	  }
 
- /* A temporary table number */
+ /* A temporary table number possibly followed by a subtable name*/
 {TEMPTAB} {
             tableGramPosition() += yyleng;
             Int64 ival = atoi(TableGramtext+1);
-            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (ival));
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (ival, tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return TABNAME;
 	  }
