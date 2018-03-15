@@ -1669,7 +1669,7 @@ simexpr:   inxexpr
 inxexpr:   simbexpr {
                $$ = $1;
            }
-         | simbexpr LBRACKET subscripts RBRACKET {
+         | inxexpr LBRACKET subscripts RBRACKET {
 	       $$ = new TaQLNode(
 	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_INDEX, *$1, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
