@@ -1335,7 +1335,14 @@ void TableParseSelect::handleWildColumn (Int stringType, const String& name)
     if (name[0] == 'f') {
       regex = Regex(str);
     } else {
-      regex = Regex(".*(" + str + ").*");
+      // For regex type m prepend and append .* unless begin or end regex is given.
+      if (str.size() > 0  &&  str[0] != '^') {
+        str = ".*" + str;
+      }
+      if (str.size() > 0  &&  str[str.size()-1] != '$') {
+        str = str + ".*";
+      }
+      regex = Regex(str);
     }
   }
   if (!negate) {
