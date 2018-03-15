@@ -176,6 +176,8 @@ echo "testing some erroneous commands ..."
 
 echo ""
 echo "testing calc ..."
+$casa_checktool ./tTableGram 'calc mean([1:6][[1:6] > 3][[1:6]>1])'  #chained subscripts
+$casa_checktool ./tTableGram 'calc 1 km m cm'                        # chained units
 $casa_checktool ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab+1]])'
 $casa_checktool ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab,ac,ab:ac]])'
 $casa_checktool ./tTableGram 'calc from $1 calc sum([select ab from $1]);tTableGram_tmp.tab'

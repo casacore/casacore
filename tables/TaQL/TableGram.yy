@@ -1656,16 +1656,23 @@ arithexpr: simexpr {
 	   }
          ;
 
-/* A (sub)expression can be followed by a unit */
+/* A (sub)expression can be followed by a unit
+   Note that in the second rule using inxexpr instead of simexpr has the effect
+   that units cannot be chained (such as 3 km m)
+*/
 simexpr:   inxexpr
                { $$ = $1; }
-         | inxexpr unit {
+         | simexpr unit {
 	       $$ = new TaQLNode(
                     new TaQLUnitNodeRep ($2->getString(), *$1));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
 
+/* An array can be indexed with subscripts or mask
+   Note that in the second rule using simbexpr instead of inxexpr has the effect
+   that brackets operators cannot be chained (such as DATA[FLAG][,0])
+*/
 inxexpr:   simbexpr {
                $$ = $1;
            }
