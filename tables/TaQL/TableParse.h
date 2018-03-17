@@ -388,7 +388,8 @@ public:
     PCOUNT,
     PCALC,
     PCRETAB,
-    PALTTAB
+    PALTTAB,
+    PSHOW
   };
 
   enum GroupAggrType {
@@ -606,6 +607,9 @@ public:
 
   // An exception is thrown if the node uses an aggregate function.
   static void checkAggrFuncs (const TableExprNode& node);
+
+  // Show the structure of fromTables_p[0] using the options given in parts[2:].
+  String getTableInfo (const Vector<String>& parts, const TaQLStyle& style);
 
   // Split a name into its parts (shorthand, column and field names).
   // True is returned if the name contained a keyword part.

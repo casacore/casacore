@@ -335,7 +335,7 @@ showlist:  {   /* no list */
          ;
 
 /* This is the standard Bison way to define a list.
-   First the addition to a list; secondly the initial list.
+   First the addition to a list; thereafter the initial list.
  */
 showflds:  showflds tabname {
                $$ = $1;

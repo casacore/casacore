@@ -730,6 +730,14 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return TABNAME;
 	  }
+<SHOWstate>{TEMPTAB} {
+            tableGramPosition() += yyleng;
+            Int64 ival = atoi(TableGramtext+1);
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (ival, tableGramRemoveEscapes (TableGramtext)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
+	    return TABNAME;
+	  }
 
  /* A table file name can be given in the UPDATE, FROM, GIVING, CRETAB clause */
 <FROMstate,CRETABstate,GIVINGstate,SHOWstate>{NAMETAB} {

@@ -4022,6 +4022,51 @@ Int TableParseSelect::testGroupAggr (vector<TableExprNodeRep*>& aggr) const
   return res;
 }
 
+String TableParseSelect::getTableInfo (const Vector<String>& parts,
+                                       const TaQLStyle& style)
+{
+  Bool showdm = False;
+  Bool showcol = True;
+  Bool showsub = False;
+  Bool sortcol = False;
+  Bool tabkey = False;
+  Bool colkey = False;
+  for (uInt i=2; i<parts.size(); ++i) {
+    String opt(parts[i]);
+    opt.downcase();
+    Bool fop = True;
+    if (opt.size() > 2   &&  opt.substr(0,2) == "no") {
+      fop = False;
+      opt = opt.substr(2);
+    }
+    if (opt == "dm") {
+      showdm = fop;
+    } else if (opt == "col") {
+      showcol = fop;
+    } else if (opt == "sort") {
+      sortcol = fop;
+    } else if (opt == "key") {
+      tabkey = fop;
+      colkey = fop;
+    } else if (opt == "tabkey") {
+      tabkey = fop;
+    } else if (opt == "colkey") {
+      colkey = fop;
+    } else if (opt == "recur") {
+      showsub = fop;
+    } else {
+      throw AipsError (parts[i] + " is an unknown show table option; use: "
+                       "dm col sort key colkey recur");
+    }
+  }
+  std::ostringstream os;
+  fromTables_p[0].table().showStructure (os, showdm, showcol, showsub,
+                                         sortcol, style.isCOrder());
+  fromTables_p[0].table().showKeywords (os, showsub, tabkey, colkey);
+  return os.str();
+}
+
+
 void TableParseSelect::show (ostream& os) const
 {
   if (! node_p.isNull()) {
