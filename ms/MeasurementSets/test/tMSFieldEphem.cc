@@ -233,6 +233,8 @@ int main() {
 	// cout << "phasedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << pDir.getAngle(Unit("deg")) << endl;
 	MDirection rDir = msfc.referenceDirMeas(row, mjds);
 	// cout << "referencedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << rDir.getAngle(Unit("deg")) << endl;
+	MDirection eDir = msfc.ephemerisDirMeas(row, mjds);
+	// cout << "ephemerisdir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << eDir.getAngle(Unit("deg")) << endl;
 
 	MDirection expected(Quantity(-54.3855, "deg"), Quantity(-19.8873, "deg"), MDirection::APP);
 	MVDirection expDir(expected.getAngle());
@@ -243,6 +245,8 @@ int main() {
 	AlwaysAssertExit(pDir.type()==expected.type());
 	AlwaysAssertExit(expDir.separation(MVDirection(rDir.getAngle()))<Quantity(1/3600., "deg").getValue("rad"));
 	AlwaysAssertExit(rDir.type()==expected.type());
+	AlwaysAssertExit(expDir.separation(MVDirection(eDir.getAngle()))<Quantity(1/3600., "deg").getValue("rad"));
+	AlwaysAssertExit(eDir.type()==expected.type());
       }      
 
       Vector<Double> dirb(2); dirb(0)=Quantity(1.,"deg").getValue("rad"), dirb(1)=dirb(0)/2.;
@@ -263,9 +267,12 @@ int main() {
 	// cout << "phasedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << pDir.getAngle(Unit("deg")) << endl;
 	MDirection rDir = msfc.referenceDirMeas(row, mjds);
 	// cout << "referencedir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << rDir.getAngle(Unit("deg")) << endl;
+	MDirection eDir = msfc.ephemerisDirMeas(row, mjds);
+	// cout << "ephemerisdir for row " << row << ", MJD-50802. " << mjds/86400.-50802. << ": " << eDir.getAngle(Unit("deg")) << endl;
 
 	MVDirection original(Quantity(305.6145129, "deg"),
 			     Quantity(-19.8873316, "deg"));
+	MDirection unalteredExpected(original, MDirection::TOPO);
 	original.shift(dirb(0), dirb(1), True);
 	MDirection expected(original, MDirection::TOPO);
 
@@ -273,6 +280,7 @@ int main() {
  	//		    Quantity(-19.88733167+dirb(1)*180./3.14159265, "deg"), 
  	//		    MDirection::TOPO);
 	MVDirection expDir(expected.getAngle());
+	MVDirection unalteredExpDir(unalteredExpected.getAngle());
 
 	// cout << "separation " << expDir.separation(MVDirection(dDir.getAngle()), "deg") << endl;
 
@@ -285,6 +293,9 @@ int main() {
 	// cout << "types " << rDir.getRef() << " " << expected.getRef() << endl;
 
 	AlwaysAssertExit(rDir.getRef().getType()  == expected.getRef().getType() );
+	AlwaysAssertExit(unalteredExpDir.separation(MVDirection(eDir.getAngle()))<Quantity(1/3600., "deg").getValue("rad"));
+	AlwaysAssertExit(eDir.type()==expected.type());
+
       }      
       // add one row with GEO ephemeris 
       ms.field().addRow();

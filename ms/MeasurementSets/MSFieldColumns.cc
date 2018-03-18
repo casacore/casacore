@@ -126,6 +126,22 @@ MDirection ROMSFieldColumns::referenceDirMeas(Int row, Double interTime) const
   }
 }
 
+MDirection ROMSFieldColumns::ephemerisDirMeas(Int row, Double interTime) const
+{
+  Int npoly = numPoly()(row);
+  if(npoly>0){
+    return MSFieldColumns::interpolateDirMeas(referenceDirMeasCol()(row), 
+					      npoly,
+					      interTime, time()(row));
+  }
+  else{
+    const MDirection zeroDir = MDirection(Quantity(0, "deg"), Quantity(0, "deg"));
+    return extractDirMeas(zeroDir,
+			  measCometIndex(row),
+			  interTime, timeMeas()(row));
+  }
+}
+
 
 MRadialVelocity ROMSFieldColumns::radVelMeas(Int row, Double interTime) const
 {
