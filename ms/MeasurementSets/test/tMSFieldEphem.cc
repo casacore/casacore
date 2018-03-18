@@ -214,6 +214,10 @@ int main() {
 	Double mjds = 50802.75*86400.;
 	MDirection dDir = msfc.delayDirMeas(row, mjds);
 	// cout << "position for row " << row << ", MJD " << mjds/86400. << ": " << dDir.getAngle(Unit("deg")) << endl;
+	MDirection rDir = msfc.referenceDirMeas(row, mjds);
+	MDirection eDir = msfc.ephemerisDirMeas(row, mjds);
+	MVDirection expDir(rDir.getAngle());
+	AlwaysAssertExit(expDir.separation(MVDirection(eDir.getAngle()))<Quantity(0.001/3600., "deg").getValue("rad"));
       }
 
       // add one row with ephemeris 
