@@ -320,12 +320,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue;
     TaQLNodeResult res(hrval);
     if (node.itsTable.nodeType() == TaQLNode_Const) {
-      TaQLConstNodeRep* tabnm = (TaQLConstNodeRep*)(node.itsTable.getRep());
-      if (tabnm->itsType == TaQLConstNodeRep::CTInt) {
-	hrval->setInt (tabnm->itsIValue);
-      } else {
-	hrval->setString (tabnm->getString());
-      }
+      handleTableName (hrval, node.itsTable);
     } else {
       TaQLNodeResult res = visitNode (node.itsTable);
       hrval->setTable (getHR(res).getTable());
@@ -903,6 +898,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return TaQLNodeResult();
   }
 
+  void TaQLNodeHandler::handleTableName (TaQLNodeHRValue* hrval,
+                                         const TaQLNode& node)
+  {
+    AlwaysAssert (node.nodeType() == TaQLNode_Const, AipsError);
+    TaQLConstNodeRep* tabnm = (TaQLConstNodeRep*)(node.getRep());
+    if (tabnm->itsType == TaQLConstNodeRep::CTInt) {
+      hrval->setInt (tabnm->itsIValue);
+      // Do not use getString, because for a temptable the type is Int,
+      // but the string can contain a subtable name.
+      hrval->setString (tabnm->itsSValue);
+    } else {
+      hrval->setString (tabnm->getString());
+    }
+  }
+
   void TaQLNodeHandler::handleTables (const TaQLMultiNode& node, Bool addToFromList)
   {
     if (! node.isValid()) {
@@ -974,20 +984,45 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TaQLNodeResult TaQLNodeHandler::visitShowNode
   (const TaQLShowNodeRep& node)
   {
+    String info;
+    Bool doInfo = True;
     Vector<String> parts;
     if (node.itsNames.isValid()) {
-      const std::vector<TaQLNode>& names = node.itsNames.getMultiRep()->itsNodes;
-      parts.resize (names.size());
-      for (uInt i=0; i<names.size(); ++i) {
-        TaQLNodeResult result = visitNode (names[i]);
-        const TaQLNodeHRValue& res = getHR(result);
-        parts[i] = res.getExpr().getString(0);
+      const std::vector<TaQLNode>& nodes = node.itsNames.getMultiRep()->itsNodes;
+      parts.resize (nodes.size());
+      TaQLNodeResult result = visitNode (nodes[0]);
+      const TaQLNodeHRValue& res = getHR(result);
+      parts[0] = res.getExpr().getString(0);
+      parts[0].downcase();
+      if (parts[0] == "table"  &&  nodes.size() > 1) {
+        TableParseSelect* curSel = pushStack (TableParseSelect::PSHOW);
+        TaQLNodeHRValue res;
+        handleTableName (&res, nodes[1]);
+        curSel->addTable (res.getInt(), res.getString(), res.getTable(),
+                          res.getAlias(), True, itsTempTables, itsStack);
+        parts[1] = res.getString();
+        for (uInt i=2; i<nodes.size(); ++i) {
+          TaQLNodeResult result = visitNode (nodes[i]);
+          const TaQLNodeHRValue& res = getHR(result);
+          parts[i] = res.getExpr().getString(0);
+        }
+        info = curSel->getTableInfo (parts, node.style());
+        doInfo = False;
+        popStack();
+      } else {
+        for (uInt i=1; i<nodes.size(); ++i) {
+          TaQLNodeResult result = visitNode (nodes[i]);
+          const TaQLNodeHRValue& res = getHR(result);
+          parts[i] = res.getExpr().getString(0);
+        }
       }
     }
-    String info = "\n" + TaQLShow::getInfo (parts, node.style());
+    if (doInfo) {
+      info = "\n" + TaQLShow::getInfo (parts, node.style());
+    }
     TaQLNodeHRValue* hr = new TaQLNodeHRValue();
-    hr->setExpr (TableExprNode(info));
     hr->setString ("show");
+    hr->setExpr (TableExprNode(info));
     return hr;
   }
 

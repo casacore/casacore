@@ -500,6 +500,10 @@ select ab from $1;tTableGram_tmp.tab
  7
  8
  9
+select ab from $1::subtab;tTableGram_tmp.tab
+
+Caught an exception: Error in TaQL command: 'select ab from $1::subtab'
+  Error in select expression: $1::subtab is an unknown (sub)table
 select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad]
     has been executed
     select result of 4 rows
@@ -584,6 +588,13 @@ Caught an exception: Error in TaQL command: 'select from tTableGram_tmp.tab t0, 
   Error in select expression: Nr of rows (5) in table column t1.ab differs from column t0.ab (10)
 
 testing calc ...
+calc mean([1:6][[1:6] > 3][[1:6]>1])
+    has been executed
+[1]
+calc 1 km m cm
+    has been executed
+Unit: cm
+[100000]
 calc sum([select from tTableGram_tmp.tab giving [ab+1]])
     has been executed
 [55]

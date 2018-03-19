@@ -162,6 +162,10 @@ private:
   // Optionally the command is not executed (needed for the EXISTS operator).
   TaQLNodeResult handleSelect (const TaQLSelectNodeRep& node, Bool doExec);
 
+  // Handle a table name or temptable number in the given node
+  // and put it in the value result.
+  void handleTableName (TaQLNodeHRValue* hrval, const TaQLNode& node);
+  
   // Handle a MultiNode containing table info.
   void handleTables (const TaQLMultiNode&, Bool addToFromList=True);
 

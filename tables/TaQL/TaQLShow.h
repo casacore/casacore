@@ -72,12 +72,11 @@ class TaQLShow
 public:
   static String getInfo (const Vector<String>& parts,
                          const TaQLStyle& style);
-  static String showTable (const Vector<String>& parts,
-                           const TaQLStyle& style);
+  static String showTable (const Vector<String>& parts);
   static String showCommand (const String& cmd);
   static String showFuncs (const String& type,
-                         const Vector<String>& parts,
-                         const TaQLStyle& style);
+                           const Vector<String>& parts,
+                           const TaQLStyle& style);
   static void showUnitKind (std::ostream& os, const UnitVal& kind,
                             const std::map<String, UnitName>& units);
   static String showUnits (const String& type);

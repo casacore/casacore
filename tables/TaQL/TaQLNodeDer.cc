@@ -54,10 +54,10 @@ TaQLConstNodeRep::TaQLConstNodeRep (Bool value)
     itsIsTableName (False),
     itsBValue      (value)
 {}
-TaQLConstNodeRep::TaQLConstNodeRep (Int64 value, Bool isTableName)
+TaQLConstNodeRep::TaQLConstNodeRep (Int64 value)
   : TaQLNodeRep (TaQLNode_Const),
     itsType        (CTInt),
-    itsIsTableName (isTableName),
+    itsIsTableName (False),
     itsIValue      (value),
     itsRValue      (value),
     itsCValue      (value, 0.) 
@@ -98,6 +98,15 @@ TaQLConstNodeRep::TaQLConstNodeRep (const MVTime& value)
     itsCValue      (value, 0.),
     itsTValue      (value)
 {}
+TaQLConstNodeRep::TaQLConstNodeRep (Int64 value, const String& subTableName)
+  : TaQLNodeRep (TaQLNode_Const),
+    itsType        (CTInt),
+    itsIsTableName (True),
+    itsIValue      (value),
+    itsRValue      (value),
+    itsCValue      (value, 0.),
+    itsSValue      (subTableName)
+{}
 TaQLConstNodeRep::~TaQLConstNodeRep()
 {}
 const String& TaQLConstNodeRep::getString() const
@@ -125,9 +134,10 @@ void TaQLConstNodeRep::show (std::ostream& os) const
     break;
   case CTInt:
     if (itsIsTableName) {
-      os << '$';
+      os << itsSValue;       // tablename (including $i)
+    } else {
+      os << itsIValue;
     }
-    os << itsIValue;
     break;
   case CTReal:
     os << std::setprecision(16) << itsRValue;
@@ -165,6 +175,9 @@ void TaQLConstNodeRep::save (AipsIO& aio) const
     break;
   case CTInt:
     aio << itsIValue;
+    if (itsIsTableName) {
+      aio << itsSValue;
+    }
     break;
   case CTReal:
     aio << itsRValue;
@@ -197,7 +210,13 @@ TaQLConstNodeRep* TaQLConstNodeRep::restore (AipsIO& aio)
     {
       Int64 value;
       aio >> value;
-      return new TaQLConstNodeRep (value, isTableName);
+      if (isTableName) {
+        String name;
+        aio >> name;
+        return new TaQLConstNodeRep (value, name);
+      } else {
+        return new TaQLConstNodeRep (value);
+      }
     }
   case CTReal:
     {

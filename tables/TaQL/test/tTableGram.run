@@ -145,7 +145,9 @@ $casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab where sum(ntrues
 
 $casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5)==0,[2:4]))'
 
+# Note that the table after ; serves as temptable for $1.
 $casa_checktool ./tTableGram 'select ab from $1;tTableGram_tmp.tab'
+$casa_checktool ./tTableGram 'select ab from $1::subtab;tTableGram_tmp.tab'
 
 $casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad]'
 $casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab where anycone([ab,ab],[2rad,2rad],1rad)'
@@ -174,6 +176,8 @@ echo "testing some erroneous commands ..."
 
 echo ""
 echo "testing calc ..."
+$casa_checktool ./tTableGram 'calc mean([1:6][[1:6] > 3][[1:6]>1])'  #chained subscripts
+$casa_checktool ./tTableGram 'calc 1 km m cm'                        # chained units
 $casa_checktool ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab+1]])'
 $casa_checktool ./tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab,ac,ab:ac]])'
 $casa_checktool ./tTableGram 'calc from $1 calc sum([select ab from $1]);tTableGram_tmp.tab'

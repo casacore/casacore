@@ -38,9 +38,11 @@ using namespace casacore;
 The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
 - '(orexpr' can be the start of a set or be a subexpression.
 - '[name'   can be the start of a set or subquery or be a record value.
+Expect them, so bison does not generate an error message.
 */
 %expect 2
 
+/* Define the terminals (tokens returned by flex), if needed with their type */
 %token STYLE
 %token TIMING
 %token SHOW
@@ -113,6 +115,8 @@ The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
 %token EMPTYOPEN
 %token CLOSEDEMPTY
 %token EMPTYCLOSED
+
+/* Define all non-terminals with their '$$ return type' */
 %type <val> literal
 %type <val> asdtype
 %type <nodename> tabname
@@ -148,7 +152,7 @@ The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
 %type <node> having
 %type <node> order
 %type <node> limitoff
-%type <nodelist> tabnmtyps
+%type <nodelist> tabnmopts
 %type <node> tabnmtyp
 %type <node> given
 %type <node> into
@@ -225,10 +229,12 @@ The grammar has 2 shift/reduce conflicts which are resolved in a correct way.
 %nonassoc NOT
 %right POWER
 
-/* Alas you cannot use objects in a union, so pointers have to be used.
-   This is causing problems in cleaning up in case of a parse error.
-   Hence a vector (in TaQLNode) is used to keep track of the nodes created.
-   They are deleted at the end of the parsing.
+/*
+Define the possible $$ value types.
+Alas you cannot use objects in a union, so pointers have to be used.
+They are not deleted automatically. Hence a vector (in TaQLNode) is used to keep
+track of the nodes created. They are deleted at the end of the parsing,
+also in case everything goes well since copies are used in the parse tree.
 */
 %union {
 TaQLConstNode* val;
@@ -242,17 +248,26 @@ TaQLRecFldNodeRep* noderecfldrep;
 
 %{
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-Bool theFromQueryDone;           /* for flex for knowing how to handle a , */
+Bool theFromQueryDone;           /* for flex to know how to handle a , */
 } //# NAMESPACE CASACORE - END
 int TableGramlex (YYSTYPE*);
 %}
 
+
+/*
+Now define the parser by defining all non-terminal rules.
+The code belonging to a rule is executed if the entire rule is reconized
+by bison. The code builds a parse tree using the classes defined in 
+TaQLNodeDer.h. That tree is traversed and execuited by TaQLNodeHandler.
+Note that $$ is the 'return value'. $1, $2, etc. are the rule arguments.
+*/
 %%
 /* A command can optionally be ended with a semicolon */
 topcomm:   topcomm1
          | topcomm1 SEMICOL
          ;
 
+/* A command can be preceeded by the TIME keyword and style arguments */
 topcomm1:  command
          | sttimcoms command
          ;
@@ -268,6 +283,7 @@ sttimcoms: TIMING
              { TaQLNode::theirStyle.setTiming (True); }
          ;
 
+/* Multiple STYLE commands can be given */
 stylecoms: stylecoms stylecomm
          | stylecomm
          ;
@@ -275,6 +291,7 @@ stylecoms: stylecoms stylecomm
 stylecomm: STYLE stylelist
          ;
 
+/* A style can consist of multiple keywords and UDFLIB synonyms */
 stylelist: stylelist COMMA NAME
              { TaQLNode::theirStyle.set ($3->getString()); }
          | NAME
@@ -285,6 +302,7 @@ stylelist: stylelist COMMA NAME
              { TaQLNode::theirStyle.defineSynonym ($1->getString()); }
          ;
 
+/* The possible TaQL commands; nestedcomm can be used in a nested FROM */
 command:   selcomm
              { TaQLNode::theirNode = *$1; }
          | updcomm
@@ -301,6 +319,7 @@ command:   selcomm
              { TaQLNode::theirNode = *$1; }
          ;
 
+/* The SHOW (or HELP) can have a list of names */
 showcomm:  SHOW showlist {
                $$ = new TaQLNode(new TaQLShowNodeRep (*$2));
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -315,6 +334,9 @@ showlist:  {   /* no list */
              { $$ = $1; }
          ;
 
+/* This is the standard Bison way to define a list.
+   First the addition to a list; thereafter the initial list.
+ */
 showflds:  showflds tabname {
                $$ = $1;
                $$->add (*$2);
@@ -336,6 +358,8 @@ nestedcomm: countcomm
              { $$ = $1; }
          ;
 
+/* A nested FROM command is a subquery or one of the other commands
+   enclosed in parentheses or square brackets */
 tfcommand: subquery {
                $$ = $1;
 	   }
@@ -349,6 +373,7 @@ tfcommand: subquery {
 	   }
          ;
 
+/* A subquery must be enclosed in parentheses or square brackets */
 subquery:  LPAREN selcomm RPAREN {
                $$ = $2;
 	       $$->setBrackets();
@@ -359,12 +384,15 @@ subquery:  LPAREN selcomm RPAREN {
 	   }
          ;
 
+/* WITH table-list is optional */
 withpart:  /* no WITH part */
            { $$ = new TaQLMultiNode(); }
          | WITH tables
            { $$ = $2; }
          ;
 
+/* The SELECT command; note that many parts are optional which is handled
+   in the rule of that part. The FROM part being optional is handled here. */
 selcomm:   withpart SELECT selcol FROM tables whexpr groupby having order limitoff given dminfo {
                $$ = new TaQLQueryNode(
                     new TaQLSelectNodeRep (*$3, *$1, *$5, 0, *$6, *$7, *$8,
@@ -391,6 +419,7 @@ selcomm:   withpart SELECT selcol FROM tables whexpr groupby having order limito
            }
          ;
 
+/* The column list can be preceeded by ALL or DISTINCT */
 selcol:    normcol {
                $$ = $1;
            }
@@ -413,6 +442,7 @@ normcol:   columns {
            }
          ;
 
+/* The COUNT command */
 countcomm: withpart COUNT normcol FROM tables whexpr {
 	       $$ = new TaQLQueryNode(
                     new TaQLCountNodeRep (*$1, *$3, *$5, *$6));
@@ -420,6 +450,7 @@ countcomm: withpart COUNT normcol FROM tables whexpr {
            }
          ;
 
+/* The UPDATE command */
 updcomm:   withpart UPDATE tables UPDSET updlist FROM tables whexpr order limitoff {
                $$ = new TaQLNode(
                     new TaQLUpdateNodeRep (*$1, *$3, *$5, *$7, *$8, *$9, *$10));
@@ -432,6 +463,7 @@ updcomm:   withpart UPDATE tables UPDSET updlist FROM tables whexpr order limito
            }
          ;
 
+/* The list of columns to be updated with their value expressions */
 updlist:   updlist COMMA updexpr {
                $$ = $1;
                $$->add (*$3);
@@ -443,6 +475,8 @@ updlist:   updlist COMMA updexpr {
            }
          ;
 
+/* An array column to be updated can have a range and mask.
+   Furthermore, a value and mask column can be assigned (from a masked array) */
 updexpr:   NAME EQASS orexpr {
 	       $$ = new TaQLNode(
                     new TaQLUpdExprNodeRep ($1->getString(), "", *$3));
@@ -474,6 +508,7 @@ updexpr:   NAME EQASS orexpr {
            }
          ;
 
+/* INSERT can be used in multiple ways */
 inscomm:   withpart INSERT INTO tables insclist selcomm {
                /* insert with SELECT command */
 	       $6->setNoExecute();
@@ -505,6 +540,8 @@ inscomm:   withpart INSERT INTO tables insclist selcomm {
            }
          ;
 
+/* The optional INSERT column list must be enclosed in parentheses or
+   square brackets */
 insclist:  {   /* no insert column-list */   
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -523,6 +560,8 @@ insvalue:  VALUES insparts {
            }
          ;
 
+/* The value list for the columns to be inserted can have multiple values,
+   one for each row to be added */
 insparts:  insparts COMMA inspart {
                $$ = $1;
 	       $$->add (*$3);
@@ -534,6 +573,8 @@ insparts:  insparts COMMA inspart {
            }
          ;
 
+/* Each row to be inserted has a list of values whose size should match
+   the columns to be inserted */
 inspart:   LBRACKET insvlist RBRACKET {
                $$ = $2;
            }
@@ -554,6 +595,7 @@ insvlist:  insvlist COMMA orexpr {
            }
          ;
 
+/* The DELETE command */
 delcomm:   withpart DELETE FROM tables whexpr order limitoff {
 	       $$ = new TaQLNode(
                     new TaQLDeleteNodeRep (*$1, *$4, *$5, *$6, *$7));
@@ -561,6 +603,7 @@ delcomm:   withpart DELETE FROM tables whexpr order limitoff {
            }
          ;
 
+/* The CALC command can calculate a single expression */
 calccomm:  withpart CALC FROM tables CALC orexpr {
 	       $$ = new TaQLNode(
                     new TaQLCalcNodeRep (*$1, *$4, *$6,
@@ -581,6 +624,7 @@ calccomm:  withpart CALC FROM tables CALC orexpr {
            }
          ;
 
+/* The CREATE TABLE command has a few flavours */
 cretabcomm: withpart CREATETAB tabnmtyp colspecs nrowspec dminfo {
 	       $$ = new TaQLQueryNode(
                     new TaQLCreTabNodeRep (*$1, *$3, *$4, *$5, *$6));
@@ -598,6 +642,7 @@ cretabcomm: withpart CREATETAB tabnmtyp colspecs nrowspec dminfo {
            }
          ;
 
+/* The ALTER TABLE command */
 alttabcomm: withpart ALTERTAB tabalias altlist {
                $$ = new TaQLQueryNode(
                     new TaQLAltTabNodeRep (*$1, *$3, TaQLMultiNode(), *$4));
@@ -610,6 +655,7 @@ alttabcomm: withpart ALTERTAB tabalias altlist {
            }
          ;
 
+/* The ALTER TABLE commands consists of one or more subcommands */
 altlist:   altlist altcomm {
                $$ = $1;
 	       $$->add (*$2);
@@ -622,7 +668,8 @@ altlist:   altlist altcomm {
            }
          ;
 
-altcomm:   ADDCOL colspecs dminfo {
+/* The ALTER TABLE subcommands */
+altcomm:   ADDCOL colspecl dminfo {
                $$ = new TaQLNode (
                     new TaQLAddColNodeRep(*$2, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -664,6 +711,7 @@ altcomm:   ADDCOL colspecs dminfo {
            }
          ;
 
+/* RENAME COLUMN subcommand can rename multiple columns */
 rencols:   rencols COMMA NAME TO NAME {
                $$ = $1;
                $$->add (new TaQLKeyColNodeRep ($3->getString()));
@@ -678,6 +726,7 @@ rencols:   rencols COMMA NAME TO NAME {
            }
          ;
 
+/* DROP COLUMN subcommand can remove multiple columns */
 dropcols:  dropcols COMMA NAME {
                $$ = $1;
                $$->add (new TaQLKeyColNodeRep ($3->getString()));
@@ -689,6 +738,7 @@ dropcols:  dropcols COMMA NAME {
            }
          ;
 
+/* RENAME COLUMN subcommand can rename multiple columns */
 renkeys:   renkeys COMMA namefld TO NAME {
                $$ = $1;
                $$->add (new TaQLKeyColNodeRep ($3->getString()));
@@ -703,6 +753,7 @@ renkeys:   renkeys COMMA namefld TO NAME {
            }
          ;
 
+/* DROP KEYWORD subcommand can remove multiple keywords */
 dropkeys:  dropkeys COMMA namefld {
                $$ = $1;
                $$->add (new TaQLKeyColNodeRep ($3->getString()));
@@ -714,6 +765,7 @@ dropkeys:  dropkeys COMMA namefld {
            }
          ;
 
+/* SET KEYWORD subcommand can set multiple keywords */
 setkeys:   setkeys COMMA setkey {
                $$ = $1;
                $$->add (*$3);
@@ -732,6 +784,7 @@ setkey:   namefld EQASS keyval {
            }
          ;
 
+/* COPY KEYWORD subcommand can copy multiple keywords */
 copykeys:  copykeys COMMA copykey {
                $$ = $1;
                $$->add (*$3);
@@ -743,6 +796,7 @@ copykeys:  copykeys COMMA copykey {
            }
          ;
 
+/* A copied keyword can get another data type */
 copykey:   namefld EQASS namefld asdtype {
 	       $$ = new TaQLNode(
                     new TaQLRecFldNodeRep($1->getString(),
@@ -759,6 +813,7 @@ keyval:    srecval {
            }
          ;
 
+/* Keyword values using square brackets */
 brackval:  LBRACKET recexpr RBRACKET {
 	       $$ = new TaQLRecFldNodeRep ("", *$2, "");
            }
@@ -769,11 +824,12 @@ brackval:  LBRACKET recexpr RBRACKET {
                $$ = new TaQLRecFldNodeRep ("", empty, "");
            }
          | LBRACKET RBRACKET AS NAME {
-               /* empty vector of the given datatype */
+               /* empty vector of the datatype given by NAME */
                $$ = new TaQLRecFldNodeRep ("", TaQLNode(), $4->getString());
            }
          ;
 
+/* The DataManager info (used by various commands) */
 dminfo:    {   /* no datamans */
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -783,6 +839,7 @@ dminfo:    {   /* no datamans */
            }
          ;
 
+/* A (non-empty) list of expressions */
 exprlist:  exprlist COMMA orexpr {
                $$ = $1;
 	       $$->add (*$3);
@@ -794,6 +851,8 @@ exprlist:  exprlist COMMA orexpr {
            }
          ;
 
+/* There does not need to be a GROUPBY clause.
+   GROUPBY ROLLUP is not implemented (yet) */
 groupby:   {   /* no groupby */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -810,6 +869,7 @@ groupby:   {   /* no groupby */
 	   }
          ;
 
+/* There does not need to be a HAVING clause. */
 having:    {   /* no having */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -819,6 +879,11 @@ having:    {   /* no having */
 	   }
          ;
 
+/* There does not need to be an ORDERBY clause.
+   If there, the default sort order can be given first, which can
+   be given per expression as well.
+   ASCENDING (or DESCENDING) and DISTINCT can be given in either order.
+*/
 order:     {   /* no sort */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -865,6 +930,11 @@ order:     {   /* no sort */
 	   }
          ;
 
+/* There does not need to be a LIMIT/OFFSET clause.
+   LIMIT can be given as a start:end:step range in which case OFFSET
+   cannot be given. Otherwise LIMIT and/or OFFSET take a single value
+   and can be given in either order.
+*/
 limitoff:  {   /* no limit,offset */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -896,17 +966,18 @@ limitoff:  {   /* no limit,offset */
 	   }
          ;
 
+/* The optional table name and options when creating a table */
 tabnmtyp:  tabname {
 	       $$ = new TaQLNode(
                     new TaQLGivingNodeRep ($1->getString(), TaQLMultiNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-         | tabname AS tabnmtyps {
+         | tabname AS tabnmopts {
 	       $$ = new TaQLNode(
                     new TaQLGivingNodeRep ($1->getString(), *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-         | AS tabnmtyps {
+         | AS tabnmopts {
 	       $$ = new TaQLNode(
                     new TaQLGivingNodeRep ("", *$2));
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -917,7 +988,7 @@ tabnmtyp:  tabname {
                     new TaQLGivingNodeRep ($1->getString(), TaQLMultiNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-         | tabname LIKE tabname AS tabnmtyps {
+         | tabname LIKE tabname AS tabnmopts {
 	       $$ = new TaQLNode(
                     new TaQLGivingNodeRep ($1->getString(), *$5));
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -927,7 +998,7 @@ tabnmtyp:  tabname {
                     new TaQLGivingNodeRep ($1->getString(), TaQLMultiNode()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-         | tabname FROM tabname AS tabnmtyps {
+         | tabname FROM tabname AS tabnmopts {
 	       $$ = new TaQLNode(
                     new TaQLGivingNodeRep ($1->getString(), *$5));
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -935,7 +1006,8 @@ tabnmtyp:  tabname {
 */
          ;
 
-tabnmtyps: NAME {  /* PLAIN_BIG, etc. for backward compatibility */
+/* The table creation options specified as a bracketed keyword=value list */
+tabnmopts: NAME {  /* PLAIN_BIG, etc. for backward compatibility */
                TaQLNode val(new TaQLConstNodeRep (True));
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -946,7 +1018,8 @@ tabnmtyps: NAME {  /* PLAIN_BIG, etc. for backward compatibility */
                $$ = $2;
 	   }
          ;
-  
+
+/* The optional GIVING clause can result in a table or a set */
 given:     {   /* no result */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -961,12 +1034,14 @@ given:     {   /* no result */
 	   }
          ;
 
+/* If INTO instead of GIVING is used, the only result can be a table */
 into:      INTO tabnmtyp {
                $$ = $2;
 	   }
          ;
 
-columns:   {   /* no column names given (thus take all) */
+/* The optional list of columns in the SELECT clause */
+columns:   {   /* no columns given (thus take all) */
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
@@ -975,6 +1050,7 @@ columns:   {   /* no column names given (thus take all) */
            }
          ;
 
+/* List of columns */
 collist:   colexpr {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -986,6 +1062,12 @@ collist:   colexpr {
 	   }
          ;
 
+/* A selected column is an expression optionally followed by its name
+   and possibly data type. To handle a masked array, two column names
+   can be given (one for the value and one for the mask). Note that the
+   data type applies to the value column (since the mask is Bool).
+   It is also possible to use wildcards in the column list.
+*/
 colexpr:   orexpr {
 	       $$ = new TaQLNode(
                     new TaQLColNodeRep (*$1, "", "", ""));
@@ -1002,7 +1084,7 @@ colexpr:   orexpr {
                                         $6->getString(), ""));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | orexpr AS NAME NAME {
+         | orexpr AS NAME NAME {   /* name and data type */
 	       $$ = new TaQLNode(
 	            new TaQLColNodeRep (*$1, $3->getString(),
                                         "", $4->getString()));
@@ -1019,6 +1101,10 @@ colexpr:   orexpr {
            }
          ;
 
+/* A wildcard in a SELECT clause can be * or a regex.
+   * means all columns of the input table. A regex (with includes ~ or !~)
+   can be used to exclude (or include) columns.
+*/
 wildcol:   TIMES {          /* SELECT * FROM ... */
                TaQLRegexNode p (new TaQLRegexNodeRep ("~p/*/"));
                $$ = new TaQLNode (new TaQLColNodeRep (p, "", "", ""));
@@ -1030,6 +1116,11 @@ wildcol:   TIMES {          /* SELECT * FROM ... */
            }
          ;
 
+/* The column list for an INSERT command. Similar to the SELECT clause,
+   two names can be given for a masked array.
+   Note that a data type cannot be given, since the specified columns
+   must exist, thus already have a data type.
+*/
 nmcolumns: NAME {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1052,6 +1143,7 @@ nmcolumns: NAME {
 	   }
          ;
 
+/* In CREATE TABLE the LIMIT clause can be used to specify #rows */
 nrowspec:  {   /* no nrows given */
                $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1061,6 +1153,7 @@ nrowspec:  {   /* no nrows given */
 	   }
          ;
 
+/* Optional column specifications can be given in CREATE TABLE */
 colspecs:  {   /* no column specifications given */
                $$ = new TaQLMultiNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1070,6 +1163,7 @@ colspecs:  {   /* no column specifications given */
            }
          ;
 
+/* A non-empty list of column specifications (also for ADD COLUMN) */
 colspecl: colspec {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1081,6 +1175,10 @@ colspecl: colspec {
 	   }
          ;
 
+/* The specification of a column consists of a name, data type and
+   possibly a bracketed key=value list for properties such as NDIM, etc.
+   A single property can be given as a non-bracketed key=value.
+*/
 colspec:   NAME NAME {
 	       $$ = new TaQLNode(
 		    new TaQLColSpecNodeRep($1->getString(), $2->getString(),
@@ -1125,6 +1223,7 @@ colspec:   NAME NAME {
 */
          ;
 
+/* A list of tables with optional aliases. */
 tables:    tabalias {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1140,6 +1239,8 @@ tables:    tabalias {
    This is not the case if another type of name is given, so in that case
    there is no alias.
    Hence the 2 cases have to be handled differently.
+   Note that the alias can be given with or without AS. It can also be
+   given in a reversed way using IN (which is OQL syntax).
 */
 tabalias:  NAME {                          /* table name is also alias */
 	       $1->setIsTableName();
@@ -1152,7 +1253,7 @@ tabalias:  NAME {                          /* table name is also alias */
 	            new TaQLTableNodeRep(*$1, ""));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | tfnamen NAME {
+         | tfnamen NAME {                  /* table name and alias */
 	       $2->setIsTableName();
 	       $$ = new TaQLNode(
 	            new TaQLTableNodeRep(*$1, $2->getString()));
@@ -1170,6 +1271,7 @@ tabalias:  NAME {                          /* table name is also alias */
            }
          ;
 
+/* General table specification */
 tfnamen:   tfname {
                $$ = $1;
            }
@@ -1179,6 +1281,13 @@ tfnamen:   tfname {
            }
          ;
 
+/* Slightly more specific table specification.
+   The tabalias rule above needs a separate line for NAME, therefore this rule
+   does not include it.
+   The table can be a subquery, table name, or table concatenation.
+   With table concatenation it is possible to specify the subtables to
+   concatenate and the GIVING/INTO to make the concat table persistent.
+*/
 tfname:    tfcommand {
 	       theFromQueryDone = True;
 	       $1->setFromExecute();
@@ -1194,6 +1303,7 @@ tfname:    tfcommand {
            }
          ;
 
+/* Subtable concatenation is optional */
 concsub:   {    /* no SUBTABLES */
                 $$ = new TaQLMultiNode();
                 TaQLNode::theirNodesCreated.push_back ($$);
@@ -1203,6 +1313,7 @@ concsub:   {    /* no SUBTABLES */
            }
          ;
 
+/* A list of subtables to concatenate */
 concslist: NAME {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1216,6 +1327,7 @@ concslist: NAME {
 	   }
          ;
 
+/* Concat table persistency using GIVING or INTO is optional */
 concinto:  {   /* no GIVING */
                $$ = new TaQLConstNode(new TaQLConstNodeRep(String()));
                TaQLNode::theirNodesCreated.push_back ($$);
@@ -1228,6 +1340,7 @@ concinto:  {   /* no GIVING */
           }
          ;
 
+/* A table name can contain various characters, possibly using a quoted literal */
 stabname:  TABNAME {
 	       $1->setIsTableName();
                $$ = $1;
@@ -1242,6 +1355,7 @@ stabname:  TABNAME {
            }
          ;
 
+/* A general table name also includes an aplhanumeric name */
 tabname:   NAME {
 	       $1->setIsTableName();
                $$ = $1;
@@ -1251,6 +1365,7 @@ tabname:   NAME {
            }
          ;
 
+/* A list of table names and possible aliases for concatenation */
 tabconc:   tabalias {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1262,6 +1377,7 @@ tabconc:   tabalias {
            }
 	 ;
 
+/* WHERE is optional */
 whexpr:    {   /* no selection */
 	       $$ = new TaQLNode();
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1271,6 +1387,7 @@ whexpr:    {   /* no selection */
 	   }
 	 ;
 
+/* Multiple ORs can be used (OR has lowest precedence) */
 orexpr:    andexpr {
 	       $$ = $1;
            }
@@ -1281,6 +1398,7 @@ orexpr:    andexpr {
 	   }
          ;
 
+/* Multiple ANDs can be used (AND has higher precedence) */
 andexpr:   relexpr {
 	       $$ = $1;
            }
@@ -1291,6 +1409,7 @@ andexpr:   relexpr {
 	   }
          ;
 
+/* All possible logical expressions */
 relexpr:   arithexpr {
 	       $$ = $1;
            }
@@ -1329,7 +1448,7 @@ relexpr:   arithexpr {
 	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_NE, *$1, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-         | arithexpr EQNEAR arithexpr {
+         | arithexpr EQNEAR arithexpr {     /* ~= means function NEAR */
    	       TaQLMultiNode set(False);
                set.add (*$1);
                set.add (*$3);
@@ -1337,7 +1456,7 @@ relexpr:   arithexpr {
                $$ = new TaQLNode (new TaQLFuncNodeRep("NEAR", set));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-         | arithexpr NENEAR arithexpr {
+         | arithexpr NENEAR arithexpr {     /* !~= means NOT function NEAR */
    	       TaQLMultiNode set(False);
                set.add (*$1);
                set.add (*$3);
@@ -1347,7 +1466,7 @@ relexpr:   arithexpr {
                     new TaQLUnaryNodeRep (TaQLUnaryNodeRep::U_NOT, ref));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-         | arithexpr REGEX {
+         | arithexpr REGEX {     /* REGEX also contains operator ~ or !~ */
 	       $$ = new TaQLNode(TaQLBinaryNodeRep::handleRegex (*$1, *$2));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
@@ -1359,7 +1478,7 @@ relexpr:   arithexpr {
 	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_EQ, *$1, ref));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-         | arithexpr ILIKE arithexpr {
+         | arithexpr ILIKE arithexpr {     /* case-insensitive LIKE */
    	       TaQLMultiNode mn1(False);
                mn1.add (*$1);
                TaQLNode tn1 (new TaQLFuncNodeRep("LOWER", mn1));
@@ -1395,7 +1514,7 @@ relexpr:   arithexpr {
 	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_NE, tn1, ref));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-         | EXISTS subquery {
+         | EXISTS subquery {     /* is subquery result non-empty */
 	       $2->setNoExecute();
 	       $$ = new TaQLNode(
 	            new TaQLUnaryNodeRep (TaQLUnaryNodeRep::U_EXISTS, *$2));
@@ -1464,6 +1583,7 @@ relexpr:   arithexpr {
            }
          ;
 
+/* All possible numeric expressions */
 arithexpr: simexpr {
 	       $$= $1;
            }
@@ -1536,44 +1656,56 @@ arithexpr: simexpr {
 	   }
          ;
 
+/* A (sub)expression can be followed by a unit
+   Note that in the second rule using inxexpr instead of simexpr has the effect
+   that units cannot be chained (such as 3 km m)
+*/
 simexpr:   inxexpr
                { $$ = $1; }
-         | inxexpr unit {
+         | simexpr unit {
 	       $$ = new TaQLNode(
                     new TaQLUnitNodeRep ($2->getString(), *$1));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
 
+/* An array can be indexed with subscripts or mask
+   Note that in the second rule using simbexpr instead of inxexpr has the effect
+   that brackets operators cannot be chained (such as DATA[FLAG][,0])
+*/
 inxexpr:   simbexpr {
                $$ = $1;
            }
-         | simbexpr LBRACKET subscripts RBRACKET {
+         | inxexpr LBRACKET subscripts RBRACKET {
 	       $$ = new TaQLNode(
 	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_INDEX, *$1, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          ;
 
-simbexpr:  LPAREN orexpr RPAREN
+/* A subexpression, function, column, literal or set.
+   Note that the COUNT function has a separate line because COUNT is also a keyword.
+   COUNTALL has a somewhat special syntax which is recognized in flex.
+*/
+simbexpr:  LPAREN orexpr RPAREN     /* subexpression in parentheses */
                { $$ = $2; }
-         | namefld LPAREN elemlist RPAREN {
+         | namefld LPAREN elemlist RPAREN {     /* function */
 	       $$ = new TaQLNode(
                     new TaQLFuncNodeRep ($1->getString(), *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
-         | COUNT LPAREN elemlist RPAREN {
+         | COUNT LPAREN elemlist RPAREN {     /* COUNT function */
 	       $$ = new TaQLNode(
                     new TaQLFuncNodeRep ("COUNT", *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | COUNTALL {
-	       $$ = new TaQLNode(
+	       $$ = new TaQLNode(     /* COUNT(*) function */
                     new TaQLFuncNodeRep ("COUNTALL"));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | namefld {
-	       $$ = new TaQLNode(
+	       $$ = new TaQLNode(     /* column name */
                     new TaQLKeyColNodeRep ($1->getString()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
@@ -1585,6 +1717,7 @@ simbexpr:  LPAREN orexpr RPAREN
 	   }
          ;
 
+/* Column name or keyword name (possibly with alias) */
 namefld:   NAME {            /* simple name */
                $$ = $1;
            }
@@ -1593,6 +1726,7 @@ namefld:   NAME {            /* simple name */
            }
          ;
 
+/* Simple unit or compund unit enclosed in quotes */
 unit:      namefld {
                $$ = $1;
            }
@@ -1601,6 +1735,7 @@ unit:      namefld {
            }
          ;
 
+/* A numeric or boolean literal or a string literal (in quotes) */
 literal:   LITERAL {
 	       $$ = $1;
 	   }
@@ -1609,6 +1744,8 @@ literal:   LITERAL {
 	   }
          ;
 
+/* A set is is a series of values enclosed in brackets or parentheses.
+   It can also be the result of a subquery. */
 set:       LBRACKET elems RBRACKET {
                $2->setIsSetOrArray();
                $$ = $2;
@@ -1622,6 +1759,7 @@ set:       LBRACKET elems RBRACKET {
            }
          ;
 
+/* A possibly empty list of values */
 elemlist:  elems {
                $$ = $1;
 	       $$->setPPFix("", "");
@@ -1632,6 +1770,7 @@ elemlist:  elems {
            }
          ;
 
+/* A non-empty list of values */
 elems:     elems COMMA elem {
                $$ = $1;
 	       $$->add (*$3);
@@ -1644,6 +1783,7 @@ elems:     elems COMMA elem {
 	   }
          ;
 
+/* A value in a set can be an expression or a range specification */
 elem:      orexpr {
                $$ = $1;
 	   }
@@ -1652,6 +1792,7 @@ elem:      orexpr {
            }
          ;
 
+/* A range in a set requires an extra MultiNode */
 singlerange: range {
 	       $$ = new TaQLMultiNode(True);
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1659,6 +1800,12 @@ singlerange: range {
            }
          ;
 
+/* A range can be a discrete strt:end:step range or a continuous interval.
+   The latter can be specified in two ways: using angle brackets
+   and braces or using the =:= notation (where = can also be <).
+   Angle brackets indicate an open side, others a closed side.
+   It is possible to leave out the start or end value (meaning - or +infinity).
+*/
 range:     colonrangeinterval {
                $$ = $1;
            }
@@ -1764,6 +1911,10 @@ range:     colonrangeinterval {
            }
          ;
 
+/* Array subscripts indicate a single value or a range of values per axis.
+   An array subscript can be left out (indicating entire axis), but the
+   comma has to be present.
+   A single subscript can be a mask for a masked array. */
 subscripts: subscripts COMMA subsrange {
                $$ = $1;
 	       $$->add (*$3);
@@ -1794,6 +1945,8 @@ subscripts: subscripts COMMA subsrange {
 	   }
          ;
 
+/* A single subscript can be a single element in a vector, but also an array
+   giving a boolean mask. Hence it accepts an orexpr instead of arithexpr. */
 subsingle: orexpr {
 	       $$ = new TaQLNode(
                     new TaQLIndexNodeRep (*$1, 0, 0));
@@ -1804,6 +1957,7 @@ subsingle: orexpr {
 	   }
          ;
 
+/* An array axis subscript is a single value or a range */
 subsrange: arithexpr {
 	       $$ = new TaQLNode(
                     new TaQLIndexNodeRep (*$1, 0, 0));
@@ -1814,6 +1968,10 @@ subsrange: arithexpr {
 	   }
          ;
 
+/* A range interval is a start:end:step specification where all parts are
+   optional. An array index slice is similar, but requires a different
+   representation of an unspecified end. Hence they share the range
+   specifications except those with an unspefied end. */
 colonrangeinterval: colonrange {
                $$ = $1;
            }
@@ -1834,6 +1992,8 @@ colonrangeinterval: colonrange {
            }
          ;
 
+/* An array axis slice is the colonrange below extended with the possibility.
+   of an unspecified end which is represented as Slicer::MimicSource. */
 colonrangeindex: colonrange {
                $$ = $1;
            }
@@ -1854,6 +2014,8 @@ colonrangeindex: colonrange {
            }
          ;
 
+/* Each part in a start:end:step range is optional as well as
+   the last colon if end and/or step is not given. */
 colonrange: arithexpr COLON arithexpr {
 	       $$ = new TaQLNode(
                     new TaQLIndexNodeRep (*$1, *$3, 0));
@@ -1891,6 +2053,7 @@ colonrange: arithexpr COLON arithexpr {
            }
          ;
 
+/* A list of expressions to sort on (each with optional ASC or DESC) */
 sortlist : sortlist COMMA sortexpr {
                $$ = $1;
                $$->add (*$3);
@@ -1902,6 +2065,7 @@ sortlist : sortlist COMMA sortexpr {
 	   }
          ;
 
+/* A sort expression can have ASCENDING or DESCENDING */
 sortexpr : orexpr {
 	       $$ = new TaQLNode(
                     new TaQLSortKeyNodeRep (TaQLSortKeyNodeRep::None, *$1));
@@ -1919,6 +2083,7 @@ sortexpr : orexpr {
            }
          ;
 
+/* A list of DataManager specifications */
 dmlist:   dmelem {
                $$ = new TaQLMultiNode(False);
 	       TaQLNode::theirNodesCreated.push_back ($$);
@@ -1929,14 +2094,16 @@ dmlist:   dmelem {
                $$->add (*$3);
 	   }
          ;
-           
+
+/* A DataManager specification is a record (list of key=value) */
 dmelem:    LBRACKET recexpr RBRACKET {
 	       $$ = new TaQLNode(
                     new TaQLRecFldNodeRep ("", *$2, ""));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          ;
-           
+
+/* A list of general record field definitions (key=value) */
 recexpr:   recexpr COMMA recfield {
                $$->add (*$3);
 	   }
@@ -1948,6 +2115,7 @@ recexpr:   recexpr COMMA recfield {
 	   }
          ;
 
+/* A general key=value can have a simple or (nested) record value */
 recfield:  srecfield {
                $$ = $1;
            }
@@ -1956,6 +2124,7 @@ recfield:  srecfield {
            }
          ;
 
+/* A simple key=value (having an optional data type specification) */
 srecfield: NAME EQASS srecval {
                $$ = new TaQLNode(
                     new TaQLRecFldNodeRep ($1->getString(), *$3));
@@ -1964,10 +2133,12 @@ srecfield: NAME EQASS srecval {
            }
          ;
 
+/* A record value has an optional data type */
 srecval:   orexpr asdtype {
 	       $$ = new TaQLRecFldNodeRep ("", *$1, $2->getString());
            }
 
+/* A record value being a record in itself */
 rrecfield: NAME EQASS brackval {
 	       $$ = new TaQLNode(
                     new TaQLRecFldNodeRep ($1->getString(), *$3));
@@ -1976,6 +2147,7 @@ rrecfield: NAME EQASS brackval {
            }
          ;
 
+/* An optional data type */
 asdtype:   {   /* no datatype */
                $$ = new TaQLConstNode(new TaQLConstNodeRep(String()));
 	       TaQLNode::theirNodesCreated.push_back ($$);

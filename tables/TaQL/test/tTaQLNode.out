@@ -195,6 +195,15 @@ SELECT ab FROM tTaQLNode_tmp.tab WHERE ALL(anys((fmod(sums(arr1,1),5))=(0),[2:4]
 select ab from $1
 SELECT ab FROM $1
 
+select ab from $1::ANTENNA
+SELECT ab FROM $1::ANTENNA
+
+select ab from $1::key
+SELECT ab FROM $1::key
+
+select ab from $1.col::key.kb.kc
+SELECT ab FROM $1.col::key.kb.kc
+
 select ab from tTaQLNode_tmp.tab where [ab,ab] incone [2 rad,2rad,1rad]
 SELECT ab FROM tTaQLNode_tmp.tab WHERE anyCone([ab,ab],[(2)'rad',(2)'rad',(1)'rad'])
 

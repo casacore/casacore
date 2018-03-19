@@ -276,12 +276,27 @@ Table TableParseSelect::makeTable (Int tabnr, const String& name,
       throw (TableInvExpr ("Invalid temporary table number given"));
     }
     table = *(tempTables[tabnr]);
+    // See if $i is followed by a subtable specification by splitting the name.
+    // Note that $i is part of the name and is (unfortunately) regarded as a
+    // column name if no column name is given.
+    String shand, columnName;
+    Vector<String> fieldNames;
+    if (splitName (shand, columnName, fieldNames, name, False, False, True)) {
+      if (shand.empty()) {
+        columnName = String();
+      }
+      Table result = findTableKey (table, columnName, fieldNames);
+      if (result.isNull()) {
+        throw TableInvExpr (name + " is an unknown (sub)table");
+      }
+      table = result;
+    }
   } else if (! ftab.isNull()) {
     //# The table is a temporary table (from a select clause).
     table = ftab;
   } else {
     //# The table name is a string.
-    //# When the name contains ::, it is a keyword in a table at an outer
+    //# If the name contains ::, it is a table keyword in a table at an outer
     //# SELECT statement.
     String shand, columnName;
     Vector<String> fieldNames;
@@ -430,7 +445,7 @@ Bool TableParseSelect::splitName (String& shorthand, String& columnName,
 	shorthand = scNames(0);
 	columnName = scNames(1);
 	break;
-      case 1:
+      case 1:\
 	columnName = scNames(0);
 	break;
       default:
@@ -1297,41 +1312,51 @@ void TableParseSelect::handleWildColumn (Int stringType, const String& name)
   Bool caseInsensitive = ((stringType & 1) != 0);
   Bool negate          = ((stringType & 2) != 0);
   Regex regex;
+  int shInx = -1;
   // See if the wildcarded name has a table shorthand in it.
-  // That is not really handled yet.
-  // It should be done in a future TaQL version (supporting joins).
   String shorthand;
   if (name[0] == 'p') {
     if (!negate) {
-      int j = str.index('.');
-      if (j >= 0) {
-	shorthand = str.before(j);
-	str       = str.after(j);
+      shInx = str.index('.');
+      if (shInx >= 0) {
+	shorthand = str.before(shInx);
+	str       = str.after(shInx);
       }
     }
     regex = Regex::fromPattern (str);
   } else {
     if (!negate) {
-      int j = str.index("\\.");
-      if (j >= 0) {
-	shorthand = str.before(j);
-	str       = str.after(j+1);
+      shInx = str.index("\\.");
+      if (shInx >= 0) {
+	shorthand = str.before(shInx);
+	str       = str.after(shInx+1);
       }
     }
     if (name[0] == 'f') {
       regex = Regex(str);
     } else {
-      regex = Regex(".*(" + str + ").*");
+      // For regex type m prepend and append .* unless begin or end regex is given.
+      if (str.size() > 0  &&  str[0] != '^') {
+        str = ".*" + str;
+      }
+      if (str.size() > 0  &&  str[str.size()-1] != '$') {
+        str = str + ".*";
+      }
+      regex = Regex(str);
     }
   }
   if (!negate) {
+    // Find all matching columns.
+    Table tab = findTable(shorthand, False);
+    if (tab.isNull()) {
+      throw TableInvExpr("Shorthand " + shorthand + " in wildcarded column " +
+                         name + " not defined in FROM clause");
+    }
+    Vector<String> columns = tab.tableDesc().columnNames();
     // Add back the delimiting . if a shorthand is given.
-    if (! shorthand.empty()) {
+    if (shInx >= 0) {
       shorthand += '.';
     }
-    // Find all matching columns.
-    Table tab = findTable(String(), False);
-    Vector<String> columns = tab.tableDesc().columnNames();
     Int nr = 0;
     for (uInt i=0; i<columns.size(); ++i) {
       String col = columns[i];
@@ -1798,7 +1823,7 @@ TableRecord& TableParseSelect::findKeyword (const String& name,
   splitName (shand, columnName, fieldNames, name, True, True, False);
   Table tab = findTable (shand, False);
   if (tab.isNull()) {
-    throw (TableInvExpr("Shorthand " + shand + " has not been defined in FROM clause"));
+    throw (TableInvExpr("Shorthand " + shand + " not defined in FROM clause"));
   }
   TableRecord* rec;
   String fullName;
@@ -3996,6 +4021,51 @@ Int TableParseSelect::testGroupAggr (vector<TableExprNodeRep*>& aggr) const
   }
   return res;
 }
+
+String TableParseSelect::getTableInfo (const Vector<String>& parts,
+                                       const TaQLStyle& style)
+{
+  Bool showdm = False;
+  Bool showcol = True;
+  Bool showsub = False;
+  Bool sortcol = False;
+  Bool tabkey = False;
+  Bool colkey = False;
+  for (uInt i=2; i<parts.size(); ++i) {
+    String opt(parts[i]);
+    opt.downcase();
+    Bool fop = True;
+    if (opt.size() > 2   &&  opt.substr(0,2) == "no") {
+      fop = False;
+      opt = opt.substr(2);
+    }
+    if (opt == "dm") {
+      showdm = fop;
+    } else if (opt == "col") {
+      showcol = fop;
+    } else if (opt == "sort") {
+      sortcol = fop;
+    } else if (opt == "key") {
+      tabkey = fop;
+      colkey = fop;
+    } else if (opt == "tabkey") {
+      tabkey = fop;
+    } else if (opt == "colkey") {
+      colkey = fop;
+    } else if (opt == "recur") {
+      showsub = fop;
+    } else {
+      throw AipsError (parts[i] + " is an unknown show table option; use: "
+                       "dm col sort key colkey recur");
+    }
+  }
+  std::ostringstream os;
+  fromTables_p[0].table().showStructure (os, showdm, showcol, showsub,
+                                         sortcol, style.isCOrder());
+  fromTables_p[0].table().showKeywords (os, showsub, tabkey, colkey);
+  return os.str();
+}
+
 
 void TableParseSelect::show (ostream& os) const
 {
