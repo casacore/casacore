@@ -27,7 +27,6 @@
 
 #ifndef LATTICES_LATTICEAPPLY_H
 #define LATTICES_LATTICEAPPLY_H
- 
 
 //# Includes
 #include <casacore/casa/aips.h>
@@ -44,7 +43,6 @@ template <class T> class MaskedLattice;
 class LatticeProgress;
 class IPosition;
 class LatticeRegion;
-
 
 // <summary>
 // Optimally iterate through a Lattice and apply provided function object
@@ -173,6 +171,7 @@ public:
 				LineCollapser<T,U>& collapser,
 				uInt collapseAxis,
 				LatticeProgress* tellProgress = 0);
+
     static void lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut, 
 				const MaskedLattice<T>& latticeIn,
 				const LatticeRegion& region,
@@ -247,9 +246,11 @@ private:
 			      const IPosition& shapeOut,
 			      const IPosition& collapseAxes,
 			      Int newOutAxis);
+
+    static IPosition _chunkShape(
+        uInt axis, const MaskedLattice<T>& latticeIn
+    );
 };
-
-
 
 } //# NAMESPACE CASACORE - END
 

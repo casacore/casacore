@@ -28,9 +28,9 @@
 #ifndef LATTICES_LATTICEAPPLY_TCC
 #define LATTICES_LATTICEAPPLY_TCC
 
-
 #include <casacore/lattices/Lattices/SubLattice.h>
 #include <casacore/lattices/Lattices/LatticeStepper.h>
+#include <casacore/lattices/Lattices/MaskedLatticeIterator.h>
 #include <casacore/lattices/LatticeMath/LineCollapser.h>
 #include <casacore/lattices/LatticeMath/TiledCollapser.h>
 #include <casacore/lattices/LatticeMath/LatticeProgress.h>
@@ -47,7 +47,6 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
-
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -215,8 +214,6 @@ void LatticeApply<T,U>::lineApply (MaskedLattice<U>& latticeOut,
     if (tellProgress != 0) tellProgress->done();
 }
 
-
-
 template <class T, class U>
 void LatticeApply<T,U>::lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut,
 				      const MaskedLattice<T>& latticeIn,
@@ -224,141 +221,147 @@ void LatticeApply<T,U>::lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut,
 				      uInt collapseAxis,
 				      LatticeProgress* tellProgress)
 {
-// First verify that all the output lattices have the same shape and tile shape
-
-    uInt i;
+    // First verify that all the output lattices have the same shape and tile shape
     const uInt nOut = latticeOut.nelements();
     AlwaysAssert(nOut > 0, AipsError);
     const IPosition shape(latticeOut[0]->shape());
     const uInt outDim = shape.nelements();
-    for (i=1; i<nOut; ++i) {
-	AlwaysAssert(latticeOut[i]->shape() == shape, AipsError);
+    for (uInt i=1; i<nOut; ++i) {
+        AlwaysAssert(latticeOut[i]->shape() == shape, AipsError);
     }
-
-// Make veracity check on input and first output lattice
-// and work out map to translate input and output axes.
-
-    IPosition ioMap = prepare (latticeIn.shape(), shape,
-			       IPosition(1,collapseAxis), -1);
-
-// Does the input has a mask?
-// If not, can the collapser handle a null mask.
-
-    Bool useMask = latticeIn.isMasked();
-    if (!useMask) {
-	useMask =  (! collapser.canHandleNullMask());
-    }
-
-// Input lines are extracted with the TiledLineStepper.
-
     const IPosition& inShape = latticeIn.shape();
-    IPosition inTileShape = latticeIn.niceCursorShape();
-    TiledLineStepper inNav(inShape, inTileShape, collapseAxis);
-    RO_LatticeIterator<T> inIter(latticeIn, inNav);
-
-    const IPosition blc = IPosition(inShape.nelements(), 0);
-    const IPosition trc = inShape - 1;
-    const IPosition inc = IPosition(inShape.nelements(), 1);
-    const IPosition len = inShape;
     IPosition outPos(outDim, 0);
     IPosition outShape(outDim, 1);
-    for (i=0; i<outDim; ++i) {
-	if (ioMap(i) >= 0) {
-	    outShape(i) = len(ioMap(i));
-	}
+    // Does the input has a mask?
+    // If not, can the collapser handle a null mask.
+    Bool useMask = latticeIn.isMasked()
+        ? True : (! collapser.canHandleNullMask());
+    const uInt inNDim = inShape.size();
+    const IPosition displayAxes = IPosition::makeAxisPath(inNDim).otherAxes(
+        inNDim, IPosition(1, collapseAxis)
+    );
+    const uInt nDisplayAxes = displayAxes.size();
+    Vector<U> result(nOut);
+    Vector<Bool> resultMask(nOut);
+    // read in larger chunks than before, because that was very
+    // Inefficient and brought NRAO cluster to a snail's pace,
+    // and then do the accounting for the input lines in memory
+    IPosition chunkSliceStart(inNDim, 0);
+    IPosition chunkSliceEnd = chunkSliceStart;
+    chunkSliceEnd[collapseAxis] = inShape[collapseAxis] - 1;
+    const IPosition chunkSliceEndAtChunkIterBegin = chunkSliceEnd;
+    IPosition chunkShapeInit = _chunkShape(collapseAxis, latticeIn);
+    LatticeStepper myStepper(inShape, chunkShapeInit, LatticeStepper::RESIZE);
+    RO_MaskedLatticeIterator<T> latIter(latticeIn, myStepper);
+    IPosition curPos;
+    static const Vector<Bool> noMask;
+    if (tellProgress) {
+        uInt nExpectedIters = inShape.product()/chunkShapeInit.product();
+        tellProgress->init(nExpectedIters);
     }
-
-// Set the number of expected steps.
-// This is the number of lines to process.
-// Also give the number of resulting output pixels per line, so the
-// collapser can it.
-
-    Int nLine = outShape.product();
-    Int nResult = shape.product() / nLine;
-    AlwaysAssert (nResult==1, AipsError);
-    collapser.init (nResult);
-    if (tellProgress != 0) tellProgress->init (nLine);
-
-// Iterate through all the lines.
-// Per tile the lines (in the collapseAxis) direction are
-// assembled into a single array, which is put thereafter.
-
-    while (!inIter.atEnd()) {
-
-// Calculate output buffer shape. Has to be done inside the loop
-// as the tile shape may not fit integrally into the lattice.
-// It takes care of blc, trc, and inc.
-
-	IPosition pos = inIter.position();
-	for (uInt j=0; j<outDim; ++j) {
-	    if (ioMap(j) >= 0) {
-		i = ioMap(j);
-		uInt stPos = (pos(j) - blc(j)) % inc(j); 
-		if (stPos != 0) {
-		    stPos = inc(j) - stPos;
-		}
-		Int sz = inTileShape(i) - pos(i) % inTileShape(i);
-		sz = min (sz, 1 + trc(i) - pos(i)) - stPos;
-		AlwaysAssert (sz > 0, AipsError);
-		outShape(j) = (sz + inc(i) - 1) / inc(i);
-		outPos(j) = (pos(i) - blc(i)) / inc(i);
-	    }
-	}
-//      cout << outShape << " put at " << outPos << endl;
-	
-// Put the collapsed lines into the output buffer
-// The buffer contains nOut arrays (and is filled that way).
-	
-	uInt n = outShape.product();
-	Block<U> block(n*nOut);
-	Block<Bool> blockMask(n*nOut);
-	U* data = block.storage();
-	Bool* dataMask = blockMask.storage();
-	Vector<U> result(nOut);
-	Vector<Bool> resultMask(nOut);
-	for (i=0; i<n; ++i) {
-	    DebugAssert (! inIter.atEnd(), AipsError);
-	    const IPosition pos (inIter.position());
-	    Vector<Bool> mask;
-	    if (useMask) {
-		// Casting const away is innocent.
-		// Remove degenerate axes to get a 1D array.
-		Array<Bool> tmp;
-		((MaskedLattice<T>&)latticeIn).getMaskSlice
-                          (tmp, Slicer(pos, inIter.cursorShape()), True);
-		mask.reference (tmp);
-	    }
-	    collapser.multiProcess (result, resultMask,
-				    inIter.vectorCursor(), mask, pos);
-	    DebugAssert (result.nelements() == nOut, AipsError);
-	    U* datap = data+i;
-	    Bool* dataMaskp = dataMask+i;
-	    for (uInt j=0; j<nOut; ++j) {
-		*datap = result(j);
-		datap += n;
-		*dataMaskp = resultMask(j);
-		dataMaskp += n;
-	    }
-	    ++inIter;
-	    if (tellProgress != 0) tellProgress->nstepsDone (inIter.nsteps());
-	}
-
-// Write the arrays (one in each output lattice).
-
-	for (uInt k=0; k<nOut; ++k) {
-	    Array<U> tmp (outShape, data + k*n, SHARE);
-	    latticeOut[k]->putSlice (tmp, outPos);
-	    if (latticeOut[k]->hasPixelMask()) {
-	        Lattice<Bool>& maskOut = latticeOut[k]->pixelMask();
-		if (maskOut.isWritable()) {
-		    Array<Bool> tmpMask (outShape, dataMask + k*n, SHARE);
-		    maskOut.putSlice (tmpMask, outPos);
-		}
-	    }
-	}
+    uInt nDone = 0;
+    for (latIter.reset(); ! latIter.atEnd(); ++latIter) {
+        const IPosition cp = latIter.position();
+        const Array<T>& chunk = latIter.cursor();
+        IPosition chunkShape = chunk.shape();
+        const Array<Bool> maskChunk = useMask ? latIter.getMask() : Array<Bool>();
+        chunkSliceStart = 0;
+        chunkSliceEnd = chunkSliceEndAtChunkIterBegin;
+        IPosition resultArrayShape = chunkShape;
+        resultArrayShape[collapseAxis] = 1;
+        vector<Array<U> > resultArray(nOut, Array<U>(resultArrayShape));
+        vector<Array<Bool> > resultArrayMask(nOut, Array<Bool>(resultArrayShape));
+        Bool done = False;
+        while (! done) {
+            Vector<T> data(chunk(chunkSliceStart, chunkSliceEnd));
+            Vector<Bool> mask = useMask
+                ? Vector<Bool>(maskChunk(chunkSliceStart, chunkSliceEnd))
+                : noMask;
+            curPos = cp + chunkSliceStart;
+            collapser.multiProcess(result, resultMask, data, mask, curPos);
+            for (uInt k=0; k<nOut; ++k) {
+                resultArray[k](chunkSliceStart) = result[k];
+                resultArrayMask[k](chunkSliceStart) = resultMask[k];
+            }
+            done = True;
+            for (uInt k=0; k<nDisplayAxes; ++k) {
+                uInt dax = displayAxes[k];
+                if (chunkSliceStart[dax] < chunkShape[dax] - 1) {
+                    ++chunkSliceStart[dax];
+                    ++chunkSliceEnd[dax];
+                    done = False;
+                    break;
+                }
+                else {
+                    chunkSliceStart[dax] = 0;
+                    chunkSliceEnd[dax] = 0;
+                }
+            }
+        }
+        // put the result arrays in the output lattices
+        for (uInt k=0; k<nOut; ++k) {
+            IPosition outpos = inNDim == outDim
+                ? cp : cp.removeAxes(IPosition(1, collapseAxis));
+            Bool keepAxis = resultArray[k].ndim() == latticeOut[k]->ndim();
+            if (! keepAxis) {
+                resultArray[k].removeDegenerate(displayAxes);
+            }
+            latticeOut[k]->putSlice(resultArray[k], outpos);
+            if (latticeOut[k]->hasPixelMask()) {
+                Lattice<Bool>& maskOut = latticeOut[k]->pixelMask();
+                if (maskOut.isWritable()) {
+                    if (! keepAxis) {
+                        resultArrayMask[k].removeDegenerate(displayAxes);
+                    }
+                    maskOut.putSlice (resultArrayMask[k], outpos);
+                }
+            }
+        }
+        if (tellProgress != 0) {
+            ++nDone;
+            tellProgress->nstepsDone(nDone);
+        }
     }
-    if (tellProgress != 0) tellProgress->done();
+    if (tellProgress != 0) {
+        tellProgress->done();
+    }
 }
+
+template <class T, class U>
+IPosition LatticeApply<T,U>::_chunkShape(
+    uInt axis, const MaskedLattice<T>& latticeIn
+) {
+    uInt ndim = latticeIn.ndim();
+    IPosition chunkShape(ndim, 1);
+    IPosition latShape = latticeIn.shape();
+    uInt nPixColAxis = latShape[axis];
+    chunkShape[axis] = nPixColAxis;
+    // arbitrary, but reasonable, max memory limit in bytes for storing arrays in bytes
+    static const uInt limit = 2e7;
+    static const uInt sizeT = sizeof(T);
+    static const uInt sizeBool = sizeof(Bool);
+    uInt chunkMult = latticeIn.isMasked() ? sizeT + sizeBool : sizeT;
+    uInt subChunkSize = chunkMult*nPixColAxis;
+    // integer division
+    const uInt maxChunkSize = limit/subChunkSize;
+    if (maxChunkSize <= 1) {
+        // can only go row by row
+        return chunkShape;
+    }
+    uInt x = maxChunkSize;
+    for (uInt i=0; i<ndim; ++i) {
+        if (i != axis) {
+            chunkShape[i] = min(x, latShape[i]);
+            // integer division
+            x /= chunkShape[i];
+            if (x == 0) {
+                break;
+            }
+        }
+    }
+    return chunkShape;
+}
+
 
 
 template <class T, class U>
