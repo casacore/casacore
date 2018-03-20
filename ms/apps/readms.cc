@@ -280,7 +280,7 @@ void showParms()
   }
   cout << endl;
   cout << " ntime     = " << ntime << endl;
-  ROTiledStManAccessor acc(ms, myReadData ? "DATA" : "FLOAT_DATA", True);
+  ROTiledStManAccessor acc(ms, ms.tableDesc().isColumn("DATA") ? "DATA" : "FLOAT_DATA", True);
   IPosition dataShape = acc.hypercubeShape(0);
   cout << " nchan     = " << dataShape[1] << endl;
   cout << " startchan = " << myStartChan << endl;
@@ -417,7 +417,8 @@ Int64 readNoIter (MeasurementSet& tab, Int64& niter)
   for (int fchan=myStartChan; fchan<lastchan; fchan+=chansize) {
     int lchan = fchan + chansize;
     for (Int64 row=0; row<tab.nrow(); row+=ntoread) {
-      Slicer rowRange(IPosition(1,row), IPosition(1,ntoread));
+      Slicer rowRange(IPosition(1,row),
+                      IPosition(1,min(ntoread, tab.nrow()-row)));
       if (fchan > 0  ||  lchan < shape[1]  ||  myNPol < shape[0]) {
         AlwaysAssert (fchan < shape[1], AipsError);
         int nchan = std::min(lchan, int(shape[1])) - fchan;
@@ -431,16 +432,16 @@ Int64 readNoIter (MeasurementSet& tab, Int64& niter)
         Slicer slicer(IPosition(2,0,fchan),
                       IPosition(2,npol,nchan), stride);
         // Read the data per time step.
-        if (myReadData) dataCol.getColumnRange (rowRange, slicer, data);
-        if (myReadFloatData) floatDataCol.getColumnRange (rowRange, slicer, floatData);
-        if (myReadFlag) flagCol.getColumnRange (rowRange, slicer, flags);
-        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange (rowRange, slicer, weights);
+        if (myReadData) dataCol.getColumnRange (rowRange, slicer, data, True);
+        if (myReadFloatData) floatDataCol.getColumnRange (rowRange, slicer, floatData, True);
+        if (myReadFlag) flagCol.getColumnRange (rowRange, slicer, flags, True);
+        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange (rowRange, slicer, weights, True);
         niter++;
       } else {
-        if (myReadData) dataCol.getColumnRange (rowRange, data);
-        if (myReadFloatData) floatDataCol.getColumnRange (rowRange, floatData);
-        if (myReadFlag) flagCol.getColumnRange (rowRange, flags);
-        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange (rowRange, weights);
+        if (myReadData) dataCol.getColumnRange (rowRange, data, True);
+        if (myReadFloatData) floatDataCol.getColumnRange (rowRange, floatData, True);
+        if (myReadFlag) flagCol.getColumnRange (rowRange, flags, True);
+        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange (rowRange, weights, True);
         niter++;
       }
     }
@@ -478,11 +479,11 @@ Int64 readSteps (MeasurementSet& ms, Int64& niter)
       chansize = shape[1] - myStartChan;
     }
     for (int fchan=myStartChan; fchan<lastchan; fchan+=chansize) {
-      TableIterator iter2(tab1, itercols1, TableIterator::Ascending,
-                         TableIterator::NoSort);
+      TableIterator iter2(tab1, itercols2, TableIterator::Ascending,
+                          TableIterator::NoSort);
       while (!iter2.pastEnd()) {
         Table tab2 (iter2.table());
-        ArrayColumn<Bool>  flagCol(tab2, "FLAG");
+        ArrayColumn<Bool> flagCol(tab2, "FLAG");
         ArrayColumn<Complex> dataCol;
         if (myReadData) {
           dataCol.attach (tab2, "DATA");
