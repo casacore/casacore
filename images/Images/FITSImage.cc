@@ -339,7 +339,13 @@ ImageInterface<Float>* FITSImage::cloneII() const
 
 String FITSImage::imageType() const
 {
-   return "FITSImage";
+   return className();
+}
+
+String FITSImage::className()
+{
+    static const string x = "FITSImage";
+    return x;
 }
 
 Bool FITSImage::isMasked() const

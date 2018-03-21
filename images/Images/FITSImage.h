@@ -144,6 +144,10 @@ public:
   // Get the image type (returns FITSImage).
   virtual String imageType() const;
 
+  // returns "FITSImage". Added so callers don't require an object to get
+  // the image type.
+  static String className();
+
   // Function which changes the shape of the FITSImage.
   // Throws an exception as FITSImage is not writable.
   virtual void resize(const TiledShape& newShape);
