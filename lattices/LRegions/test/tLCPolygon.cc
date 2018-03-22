@@ -235,8 +235,23 @@ int main()
             AlwaysAssertExit (*pP3 == p3);
             delete pP3;
 	}
+	{
+	    // verify fix for CAS-11230
+	    Vector<Float> x(4, 1e-10);
+	    x[1] = 127;
+	    x[2] = 127;
+	    Vector<Float> y(4, 1e-10);
+	    y[2] = 127;
+	    y[3] = 127;
+	    IPosition latticeShape(2, 128, 128);
+	    LCPolygon poly(x, y, latticeShape);
+	    Slicer sl = poly.boundingBox();
+	    // was IPosiiton(2, 1) before fix
+	    AlwaysAssert(sl.start() == IPosition(2, 0), AipsError);
+        AlwaysAssert(sl.end() == IPosition(2, 127), AipsError);
+	}
 
-    } catch (AipsError x) {
+    } catch (const AipsError& x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
 	return 1;
     } 

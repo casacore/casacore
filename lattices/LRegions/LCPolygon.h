@@ -183,6 +183,9 @@ private:
     // The returned value is never > maxEnd.
     Int truncateEnd (Float v, Int maxEnd);
 
+    // takes into account when one value is zero and the other is absolutely (as
+    // opposed to relatively) near zero.
+    static Bool _isNear(Float val1, Float val2);
     
     Vector<Float> itsX;
     Vector<Float> itsY;

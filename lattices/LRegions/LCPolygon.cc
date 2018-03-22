@@ -111,8 +111,8 @@ Bool LCPolygon::operator== (const LCRegion& other) const
     const Float* pY2 = that.itsY.getStorage (deleteY2);
     Bool result = True;
     for (uInt i=0; i<itsX.nelements(); i++) {
-	if (!near (pX1[i], pX2[i])
-	||  !near (pY1[i], pY2[i])) {
+	if (!_isNear (pX1[i], pX2[i])
+	||  !_isNear (pY1[i], pY2[i])) {
 	    result = False;
 	    break;
 	}
@@ -185,7 +185,7 @@ Int LCPolygon::truncateStart (Float v)
 {
   Int res;
   Float vt = floor(v+0.1);
-  if (near(vt, v))  {
+  if (_isNear(vt, v))  {
     res = static_cast<Int>(v+0.1);
   } else {
     res = static_cast<Int>(v+1);
@@ -193,12 +193,16 @@ Int LCPolygon::truncateStart (Float v)
   return std::max (res, 0);
 }
 
+Bool LCPolygon::_isNear(Float val1, Float val2) {
+    return val1 == 0 || val2 == 0 ? nearAbs(val1, val2) : near(val1, val2);
+}
+
 // Truncate end such that edge is taken if very close to a pixel point.
 Int LCPolygon::truncateEnd (Float v, Int maxEnd)
 {
   Int res;
   Float vt = floor(v+0.1);
-  if (near(vt, v))  {
+  if (_isNear(vt, v))  {
     res = static_cast<Int>(v+0.1);
   } else {
     res = static_cast<Int>(v);
@@ -219,7 +223,7 @@ void LCPolygon::defineBox()
 	throw AipsError ("LCPolygon - can only be used as a 2-dim region");
     }
     // If the last point is not equal to the first one, add it.
-    if (!near (itsX[nrp-1], itsX[0])  ||  !near(itsY[nrp-1], itsY[0])) {
+    if (!_isNear (itsX[nrp-1], itsX[0])  ||  !_isNear(itsY[nrp-1], itsY[0])) {
 	itsX.resize (nrp+1, True);
 	itsY.resize (nrp+1, True);
 	nrp++;
@@ -314,11 +318,11 @@ void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
   // is used in the slope-calculation loop.
   Int prev = -1;
   for (i=0; i<nrline; i++) {
-    if (near (ptrY[i], ptrY[i+1])) {
+    if (_isNear (ptrY[i], ptrY[i+1])) {
       dir[i] = 0;                         // vertical line
       // Fill vertical line if on pixel.
       Int y = static_cast<Int>(ptrY[i]);
-      if (y >= blcy  &&  y < ny+blcy  &&  near(Float(y), ptrY[i])) {
+      if (y >= blcy  &&  y < ny+blcy  &&  _isNear(Float(y), ptrY[i])) {
         Int xs, xe;
         if (ptrX[i] < ptrX[i+1]) {
           xs = truncateStart (ptrX[i] - blcx);
@@ -366,7 +370,7 @@ void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
         // Calculate the crossing point if yf is inside the line segment.
         if ((yf > ptrY[i]  &&  yf < ptrY[i+1])
         ||  (yf < ptrY[i]  &&  yf > ptrY[i+1])
-        ||  near(yf, ptrY[i])  ||  near(yf, ptrY[i+1])) {
+        ||  _isNear(yf, ptrY[i])  ||  _isNear(yf, ptrY[i+1])) {
           Float cr = a[i] * yf + b[i] - blcx;
           take = True;
           // If a polygon point is a pixel point (in y), always
@@ -374,7 +378,7 @@ void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
           // Do not count the starting point if the direction has
           // not changed with respect to the previous non-vertical
           // line segment.
-          if (near (yf, ptrY[i])) {
+          if (_isNear (yf, ptrY[i])) {
             if (dir[i] != 1) {
               take = False;
             }
