@@ -48,10 +48,6 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 
-// debug
-#include <casacore/casa/BasicSL/STLIO.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
-
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T, class U>
