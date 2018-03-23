@@ -48,6 +48,10 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 
+// debug
+#include <casacore/casa/BasicSL/STLIO.h>
+#include <casacore/casa/Arrays/ArrayIO.h>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T, class U>
@@ -269,8 +273,15 @@ void LatticeApply<T,U>::lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut,
         chunkSliceEnd = chunkSliceEndAtChunkIterBegin;
         IPosition resultArrayShape = chunkShape;
         resultArrayShape[collapseAxis] = 1;
-        vector<Array<U> > resultArray(nOut, Array<U>(resultArrayShape));
-        vector<Array<Bool> > resultArrayMask(nOut, Array<Bool>(resultArrayShape));
+        std::vector<Array<U> > resultArray(nOut);
+        std::vector<Array<Bool> > resultArrayMask(nOut);
+        // need to initialize this way rather than doing it in the constructor,
+        // because using a single Array in the constructor means that all Arrays
+        // in the vector reference the same Array.
+        for (uInt k=0; k<nOut; k++) {
+            resultArray[k] = Array<U>(resultArrayShape);
+            resultArrayMask[k] = Array<Bool>(resultArrayShape);
+        }
         Bool done = False;
         while (! done) {
             Vector<T> data(chunk(chunkSliceStart, chunkSliceEnd));
