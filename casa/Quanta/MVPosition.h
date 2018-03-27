@@ -279,16 +279,7 @@ protected:
   Double getLat(Double ln) const;
   //# Data
   // Position vector (in m)
-  Vector<Double> & xyz;
-  
-  Vector<Double> * get_array();
-  void return_array(Vector<Double> * array);
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
-  static const size_t max_vector_cache = 50;
-  static thread_local std::vector<std::unique_ptr<Vector<Double>>> arrays;
-  static thread_local size_t available;
-#endif
-
+  Vector<Double> xyz;
 };
 
 //# Global functions
