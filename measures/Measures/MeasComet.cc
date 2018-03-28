@@ -49,7 +49,7 @@ MeasComet::MeasComet() :
   mtype_p(MDirection::APP), // default, if the keyword obsloc is not defined, is apparent geocentric
   msgDone_p(False), tp_p(),
   haveDiskLongLat_p(false),
-  ncols_p(5)
+  ncols_p(5), hasPosrefsys_p(false),  posrefsystype_p(MDirection::APP)
 {
   String path;
   if (Aipsrc::find(path, String("measures.comet.file"))) initMeas(path);
@@ -63,7 +63,7 @@ MeasComet::MeasComet(const String &path) :
   mtype_p(MDirection::APP),
   msgDone_p(False), tp_p(path),
   haveDiskLongLat_p(false),
-  ncols_p(5)
+  ncols_p(5), hasPosrefsys_p(false),  posrefsystype_p(MDirection::APP)
 {
   initMeas(path);
   for (uInt i=0; i<2; i++) lnr_p[i] = -1;
@@ -76,7 +76,7 @@ MeasComet::MeasComet(const Table &tabin, const String &path) :
   mtype_p(MDirection::APP),
   msgDone_p(False), tp_p(path),
   haveDiskLongLat_p(false),
-  ncols_p(5)
+  ncols_p(5), hasPosrefsys_p(false),  posrefsystype_p(MDirection::APP)
 {
   initMeas(path, &tabin);
   for (uInt i=0; i<2; i++) lnr_p[i] = -1;
@@ -89,7 +89,7 @@ MeasComet::MeasComet(const MeasComet &other) :
   mtype_p(MDirection::APP),
   msgDone_p(False), tp_p(other.tp_p),
   haveDiskLongLat_p(other.haveDiskLongLat_p),
-  ncols_p(other.ncols_p)
+  ncols_p(other.ncols_p), hasPosrefsys_p(other.hasPosrefsys_p),  posrefsystype_p(other.posrefsystype_p)
 {
   initMeas(other.tp_p);
   for (uInt i=0; i<2; i++) lnr_p[i] = -1;
@@ -129,6 +129,14 @@ Double MeasComet::getEnd() const {
 Int MeasComet::nelements() const {
   return nrow_p;
 }
+ 
+  Bool MeasComet::hasPosrefsys() const {
+    return hasPosrefsys_p;
+  }
+  MDirection::Types MeasComet::getPosrefsysType() const {
+
+    return posrefsystype_p;
+  }
 
 Bool MeasComet::get(MVPosition &returnValue, Double date) const {
   if(!fillMeas(date)){
@@ -271,6 +279,8 @@ Bool MeasComet::initMeas(const String &which, const Table *tabin) {
 	     << kws.asString("posrefsys")
              << " - possible are J2000, B1950, APP, ICRS, TOPO" << LogIO::POST;
 	}
+	posrefsystype_p=mtype_p;
+	hasPosrefsys_p=true;
       } else if (kws.asDouble("GeoDist") != 0.0){
 	mtype_p = MDirection::TOPO;
       }
