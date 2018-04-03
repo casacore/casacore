@@ -184,6 +184,11 @@ class MeasComet {
   // Convenience function that returns the absolute path to the ephemeris table
   // connected to the MeasComet object
   String getTablePath();
+  ////Comet table has posrefsys defined
+  Bool hasPosrefsys() const;
+  ///Get the posrefsys dir type
+  MDirection::Types getPosrefsysType() const;
+  
 
  private:
   
@@ -254,6 +259,8 @@ class MeasComet {
   Bool haveTriedExtras_p;
   Double temperature_p;
   Double mean_rad_p;
+  Bool hasPosrefsys_p;
+  MDirection::Types posrefsystype_p;
 };
 
 //# Inline Implementations

@@ -33,6 +33,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/measures/Measures/MCDirection.h>
 #include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/measures/Measures/MeasComet.h>
 #include <casacore/casa/Quanta/MVPosition.h>
 #include <casacore/measures/Measures/Nutation.h>
 #include <casacore/measures/Measures/MeasTable.h>
@@ -132,7 +133,20 @@ void MCDirection::getConvert(MConvertBase &mc,
 	  mc.addFrameType(MeasFrame::POSITION);
 	  mc.addMethod(MCDirection::R_COMET);
 	  initConvert(MCDirection::R_COMET, mc);
-	  iin = MDirection::APP;
+	  /////have to do this copy as inref and outref are const 
+	  ////if they were not then  could pass them directly to cometframe 
+	  const MeasRef<MDirection>& inrefMR=dynamic_cast<const MeasRef<MDirection>&>(inref);
+	  const MeasRef<MDirection>& outrefMR=dynamic_cast<const MeasRef<MDirection>&>(outref);
+	  MeasRef<MDirection> incopy(inrefMR);
+	  MeasRef<MDirection> outcopy(outrefMR);
+	  MeasFrame cometframe=MDirection::Ref::frameComet(incopy, outcopy);
+	  ////////////
+	  if( cometframe.comet() &&  (cometframe.comet()->hasPosrefsys())){
+	    iin=cometframe.comet()->getPosrefsysType();
+	  }
+	  else{
+	    iin = MDirection::APP;
+	  }
 	}
       }
       if (oplan) iout = MDirection::J2000;
@@ -289,7 +303,6 @@ void MCDirection::doConvert(MVDirection &in,
   measMath.initFrame(inref, outref);
   
   for (Int i=0; i<mc.nMethod(); i++) {
-    
     switch (mc.getMethod(i)) {
  
     case HADEC_ITRF:
@@ -574,6 +587,7 @@ void MCDirection::doConvert(MVDirection &in,
       if (!MDirection::Ref::frameComet(inref, outref).
 	  getComet(*MVPOS1)) {
 	throw(AipsError("No or outside range comet table specified"));
+	
       }
       MVPOS1->adjust(lengthP);
       in = *MVPOS1;
