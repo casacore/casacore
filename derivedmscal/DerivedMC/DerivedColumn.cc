@@ -57,6 +57,10 @@ namespace casacore {
   {
     return IPosition(1,2);
   }
+  Bool HaDecColumn::isShapeDefined (uInt)
+  {
+    return True;
+  }
   void HaDecColumn::getArray (uInt rowNr, Array<Double>& data)
   {
     itsEngine->getHaDec (itsAntNr, rowNr, data);
@@ -67,6 +71,10 @@ namespace casacore {
   IPosition AzElColumn::shape (uInt)
   {
     return IPosition(1,2);
+  }
+  Bool AzElColumn::isShapeDefined (uInt)
+  {
+    return True;
   }
   void AzElColumn::getArray (uInt rowNr, Array<Double>& data)
   {
@@ -79,6 +87,10 @@ namespace casacore {
   {
     return IPosition(1,2);
   }
+  Bool ItrfColumn::isShapeDefined (uInt)
+  {
+    return True;
+  }
   void ItrfColumn::getArray (uInt rowNr, Array<Double>& data)
   {
     itsEngine->getItrf (itsAntNr, rowNr, data);
@@ -89,6 +101,10 @@ namespace casacore {
   IPosition UVWJ2000Column::shape (uInt)
   {
     return IPosition(1,3);
+  }
+  Bool UVWJ2000Column::isShapeDefined (uInt)
+  {
+    return True;
   }
   void UVWJ2000Column::getArray (uInt rowNr, Array<Double>& data)
   {

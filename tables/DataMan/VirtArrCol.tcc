@@ -322,21 +322,17 @@ Bool VirtualArrayColumn<T>::isShapeDefined (uInt)
 {
     throw DataManInvOper ("VirtualArrayColumn::isShapeDefined not possible"
                           " for column " + columnName());
-    return False;
 }
 template<class T>
-uInt VirtualArrayColumn<T>::ndim (uInt)
+uInt VirtualArrayColumn<T>::ndim (uInt rownr)
 {
-    throw DataManInvOper ("VirtualArrayColumn::ndim not possible"
-                          " for column " + columnName());
-    return 0;
+    return shape(rownr).size();
 }
 template<class T>
 IPosition VirtualArrayColumn<T>::shape (uInt)
 {
     throw DataManInvOper ("VirtualArrayColumn::shape not possible"
                           " for column " + columnName());
-    return IPosition(0);
 }
 
 } //# NAMESPACE CASACORE - END

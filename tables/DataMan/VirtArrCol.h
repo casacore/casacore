@@ -182,7 +182,7 @@ protected:
     virtual Bool isShapeDefined (uInt rownr);
 
     // Get the dimensionality of the item in the given row.
-    // By default it throws a "not possible" exception.
+    // By default it returns the length of the shape of that row.
     virtual uInt ndim (uInt rownr);
 
     // Get the shape of the item in the given row.
