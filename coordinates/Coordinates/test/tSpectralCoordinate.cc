@@ -1087,7 +1087,7 @@ SpectralCoordinate makeNonLinearCoordinate (MFrequency::Types type,
 
 Double velInc (Double dF, Double f0, MDoppler::Types velType)
 {
-   Double c = QC::c.getValue(Unit("km/s"));
+   Double c = QC::c( ).getValue(Unit("km/s"));
    if (velType==MDoppler::RADIO) {
       return -c * dF / f0;
    }

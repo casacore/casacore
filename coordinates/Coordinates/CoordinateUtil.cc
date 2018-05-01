@@ -140,7 +140,7 @@ void CoordinateUtil::addFreqAxis(CoordinateSystem & coords)
                   1415E6,                         // ref. freq. = 1415MHz
                   1E3,                            // 1 kHz bandwidth/channel
                   0.0,                            // channel 0 is the ref.
-                              QC::HI.getValue(Unit("Hz")));   // HI
+                              QC::HI( ).getValue(Unit("Hz")));   // HI
   coords.addCoordinate(freqAxis);
 }
 

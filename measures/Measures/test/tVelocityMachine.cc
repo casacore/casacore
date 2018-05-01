@@ -67,7 +67,7 @@ int main() {
     
     MFrequency::Ref frqref(MFrequency::LSRK);
     MDoppler::Ref velref(MDoppler::RADIO);
-    MVFrequency restfrq(QC::HI);
+    MVFrequency restfrq(QC::HI( ));
     cout << "Rest freq: "  << restfrq.get("GHz") << endl;
 
     VelocityMachine vm(frqref, Unit("GHz"), restfrq, velref, Unit("km/s"),

@@ -37,6 +37,7 @@
 #include <casacore/coordinates/Coordinates/ObsInfo.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/measures/Measures/MDoppler.h>
+#include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -903,7 +904,7 @@ private:
 
     const static String _class;
     static Mutex _mapInitMutex;
-    static map<String, String> _friendlyAxisMap;
+    static std::map<String, String> _friendlyAxisMap;
 
     static void _initFriendlyAxisMap();
 

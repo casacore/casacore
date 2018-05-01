@@ -38,7 +38,7 @@
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
-
+#include <casacore/casa/Quanta/UnitMap.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

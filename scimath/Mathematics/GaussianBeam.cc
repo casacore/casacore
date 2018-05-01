@@ -116,13 +116,13 @@ Double GaussianBeam::getPA(const Unit& u, const Bool unwrap) const {
 }
 
 Quantity GaussianBeam::_unwrap(const Quantity& pa) {
-    if (pa > QC::qTurn || pa <= -QC::qTurn) {
+    if (pa > QC::qTurn( ) || pa <= -QC::qTurn( )) {
         Quantity upa((fmod(pa.getValue("deg"), 180)), "deg");
-        if (upa > QC::qTurn) {
-            upa -= QC::hTurn;
+        if (upa > QC::qTurn( )) {
+            upa -= QC::hTurn( );
         }
-        else if (upa <= -QC::qTurn) {
-            upa += QC::hTurn;
+        else if (upa <= -QC::qTurn( )) {
+            upa += QC::hTurn( );
         }
         upa.convert(pa.getUnit());
         return upa;

@@ -443,7 +443,7 @@ int main()
     	  AlwaysAssertExit (ok);
     	  cerr << "Frequency set to: " << wavelength << endl;
     	  const SpectralCoordinate &sCoo3 = csys.spectralCoordinate(coordinate);
-    	  AlwaysAssertExit(near(QC::c.getValue()/1.0e-03, sCoo3.restFrequency(), 1.0e-8));
+    	  AlwaysAssertExit(near(QC::c( ).getValue()/1.0e-03, sCoo3.restFrequency(), 1.0e-8));
     	  cerr << "The input was verified" << endl;
 
       }

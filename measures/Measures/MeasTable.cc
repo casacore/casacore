@@ -3041,7 +3041,7 @@ void MeasTable::doInitLines (void*)
     row.get(i);
     lineNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
     linePos(i) = MFrequency(MVFrequency(Quantity(*(rfp[0]), "GHz")), mr);
-    if (lineNams(i) == "HI") linePos(i) = MFrequency(QC::HI, mr);
+    if (lineNams(i) == "HI") linePos(i) = MFrequency(QC::HI( ), mr);
   }
 }
 

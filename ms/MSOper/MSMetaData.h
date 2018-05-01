@@ -847,7 +847,7 @@ private:
         SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
         SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
         const std::vector<
-            pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
+            std::pair<std::map<ScanKey, ScanProperties>, std::map<SubScanKey, SubScanProperties> >
         >&  props
     ) const;
 
@@ -874,13 +874,13 @@ private:
     // if _scanProps has been generated, just return it. If the caller has
     // configured the object to generate _scanProps at some point, this call will
     // generate it. Otherwise, the returned object contains a null pointer.
-    SHARED_PTR<const map<ScanKey, ScanProperties> > _generateScanPropsIfWanted() const;
+    SHARED_PTR<const std::map<ScanKey, ScanProperties> > _generateScanPropsIfWanted() const;
 
     // if _subScanProperties has been generated, just return it. If
     // the caller has configured the object to generate _subScanPropertiess
     // at some point, this call will generate it. Otherwise, the returned object
     // contains a null pointer.
-    SHARED_PTR<const map<SubScanKey, SubScanProperties> >
+    SHARED_PTR<const std::map<SubScanKey, SubScanProperties> >
     _generateSubScanPropsIfWanted() const;
 
     vector<String> _getAntennaNames(
@@ -899,7 +899,7 @@ private:
     std::map<ArrayKey, std::set<SubScanKey> > _getArrayKeysToSubScanKeys() const;
 
     // Uses openmp for parallel processing
-    pair<std::map<ScanKey, ScanProperties>, std::map<SubScanKey, SubScanProperties> >
+    std::pair<std::map<ScanKey, ScanProperties>, std::map<SubScanKey, SubScanProperties> >
     _getChunkSubScanProperties(
         const Vector<Int>& scans, const Vector<Int>& fields,
         const Vector<Int>& ddIDs, const Vector<Int>& states,
