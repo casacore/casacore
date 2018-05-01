@@ -100,6 +100,7 @@ namespace casacore {
     {}
     virtual ~HaDecColumn();
     virtual IPosition shape (uInt rownr);
+    virtual Bool isShapeDefined (uInt rownr);
     virtual void getArray (uInt rowNr, Array<Double>& data);
   private:
     MSCalEngine* itsEngine;
@@ -118,6 +119,7 @@ namespace casacore {
     {}
     virtual ~AzElColumn();
     virtual IPosition shape (uInt rownr);
+    virtual Bool isShapeDefined (uInt rownr);
     virtual void getArray (uInt rowNr, Array<Double>& data);
   private:
     MSCalEngine* itsEngine;
@@ -136,6 +138,7 @@ namespace casacore {
     {}
     virtual ~ItrfColumn();
     virtual IPosition shape (uInt rownr);
+    virtual Bool isShapeDefined (uInt rownr);
     virtual void getArray (uInt rowNr, Array<Double>& data);
   private:
     MSCalEngine* itsEngine;
@@ -153,6 +156,7 @@ namespace casacore {
     {}
     virtual ~UVWJ2000Column();
     virtual IPosition shape (uInt rownr);
+    virtual Bool isShapeDefined (uInt rownr);
     virtual void getArray (uInt rowNr, Array<Double>& data);
   private:
     MSCalEngine* itsEngine;

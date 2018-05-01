@@ -60,6 +60,9 @@ void check (MSDerivedValues& mdv,
   Vector<double> mazel = mdv.azel().getValue().get();
   Vector<double> tazel = azel(rownr);
   AlwaysAssertExit (allNear(mazel, tazel, 1e-10));
+  AlwaysAssertExit (azel.shape(rownr) == IPosition(1,2));
+  AlwaysAssertExit (azel.ndim(rownr) == 1);
+  AlwaysAssertExit (azel.isDefined(rownr));
 }
 
 void check (MSDerivedValues& mdv,
@@ -72,6 +75,9 @@ void check (MSDerivedValues& mdv,
   check (mdv, rownr, ha, last, azel);
   Vector<double> titrf = itrf(rownr);
   cout << titrf << endl;
+  AlwaysAssertExit (itrf.shape(rownr) == IPosition(1,2));
+  AlwaysAssertExit (itrf.ndim(rownr) == 1);
+  AlwaysAssertExit (itrf.isDefined(rownr));
 }
 
 void check (MSDerivedValues& mdv,
@@ -99,6 +105,12 @@ void check (uInt rownr,
     }
     AlwaysAssertExit (allNear (uvwJ2000(rownr), uvw(rownr), 1e-5));
   }
+  AlwaysAssertExit (uvw.shape(rownr) == IPosition(1,3));
+  AlwaysAssertExit (uvw.ndim(rownr) == 1);
+  AlwaysAssertExit (uvw.isDefined(rownr));
+  AlwaysAssertExit (uvwJ2000.shape(rownr) == IPosition(1,3));
+  AlwaysAssertExit (uvwJ2000.ndim(rownr) == 1);
+  AlwaysAssertExit (uvwJ2000.isDefined(rownr));
 }
 
 int main(int argc, char* argv[])
