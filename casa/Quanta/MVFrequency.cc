@@ -213,8 +213,8 @@ Double MVFrequency::makeF(Double v, const Unit &dt, Bool rev) const{
   static const UnitVal Energy = UnitVal::MASS*UnitVal::LENGTH*UnitVal::LENGTH/
     UnitVal::TIME/UnitVal::TIME;
   static const UnitVal Impuls = UnitVal::MASS*UnitVal::LENGTH;
-  static const Double LVel = (QC::c).getBaseValue();
-  static const Double Planck = (QC::h).getBaseValue();
+  static const Double LVel = QC::c( ).getBaseValue();
+  static const Double Planck = QC::h( ).getBaseValue();
   Double x;
   if (dt.getValue() == UnitVal::TIME) {
     return (1.0/dt.getValue().getFac()/v);

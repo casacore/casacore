@@ -34,6 +34,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+// static initialization
+unsigned long unit_map_initialize_::count = 0;
+
 // Initialize statics.
 Mutex UnitMap::fitsMutex;
 

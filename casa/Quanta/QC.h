@@ -33,7 +33,6 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Quanta/Quantum.h>
-#include <casacore/casa/Quanta/UnitMap.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -89,67 +88,67 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 //
 //    // vel of light
-//    static Quantum<Double> c;
+//    Quantum<Double> c( );
 //
 //    // Gravitational constant
-//    static Quantum<Double> G;
+//    Quantum<Double> G( );
 //
 //    // Planck
-//    static Quantum<Double> h;
+//    Quantum<Double> h( );
 //
 //    // HI line
-//    static Quantum<Double> HI;
+//    Quantum<Double> HI( );
 //
 //    // Gas constant
-//    static Quantum<Double> R;
+//    Quantum<Double> R( );
 //
 //    // Avogadro
-//    static Quantum<Double> NA;
+//    Quantum<Double> NA( );
 //
 //    // electron charge
-//    static Quantum<Double> e;
+//    Quantum<Double> e( );
 //
 //    // proton mass
-//    static Quantum<Double> mp;
+//    Quantum<Double> mp( );
 //
 //    // mp/me
-//    static Quantum<Double> mp_me;
+//    Quantum<Double> mp_me( );
 //
 //    // permeability vacuum
-//    static Quantum<Double> mu0;
+//    Quantum<Double> mu0( );
 //
 //    // permittivity vacuum
-//    static Quantum<Double> epsilon0;
+//    Quantum<Double> epsilon0( );
 //
 //    // Boltzmann
-//    static Quantum<Double> k;
+//    Quantum<Double> k( );
 //
 //    // Faraday
-//    static Quantum<Double> F;
+//    Quantum<Double> F( );
 //
 //    // mass electron
-//    static Quantum<Double> me;
+//    Quantum<Double> me( );
 //
 //    // radius electron
-//    static Quantum<Double> re;
+//    Quantum<Double> re( );
 //
 //    // Bohr's radius
-//    static Quantum<Double> a0;
+//    Quantum<Double> a0( );
 //
 //    // Solar radius
-//    static Quantum<Double> R0;
+//    Quantum<Double> R0( );
 //
 //    // IAU Gaussian grav. const **2
-//    static Quantum<Double> k2;
+//    Quantum<Double> k2( );
 //
 //    // quarter turn = 90 degrees = pi/2 radians
-//    static Quantum<Double> qTurn;
+//    Quantum<Double> qTurn( );
 //
 //    // half turn = 180 degrees = pi radians
-//    static Quantum<Double> hTurn;
+//    Quantum<Double> hTurn( );
 //
 //    // full turn = 360 degrees = 2pi radians
-//    static Quantum<Double> fTurn;
+//    Quantum<Double> fTurn( );
 //
 // </srcblock>
 
@@ -168,129 +167,134 @@ public:
 //# change above to the documentation of the public data members.
 
     // vel of light
-    static Quantum<Double> c;
+    inline static const Quantum<Double> &c( ) {
+        static Quantum<Double> result(C::c,"m/s");
+        return result;
+    }
 
     // Gravitational constant
-    static Quantum<Double> G;
+    inline static const Quantum<Double> &G( ) {
+        static Quantum<Double> result(6.67259e-11,"N.m2/kg2");
+        return result;
+    }
 
     // Planck
-    static Quantum<Double> h;
+    inline static const Quantum<Double> &h( ) {
+        static Quantum<Double> result(6.6260755e-34,"J.s");
+        return result;
+    }
 
     // HI line
-    static Quantum<Double> HI;
+    inline static const Quantum<Double> &HI( ) {
+        static Quantum<Double> result(1420.405751786, "MHz");
+        return result;
+    }
 
     // Gas constant
-    static Quantum<Double> R;
+    inline static Quantum<Double> &R( ) {
+        static Quantum<Double> result(8.314510,"J/K/mol");
+        return result;
+    }
 
     // Avogadro
-    static Quantum<Double> NA;
+    inline static const Quantum<Double> &NA( ) {
+        static Quantum<Double> result(6.0221367e+23,"mol-1");
+        return result;
+    }
 
     // electron charge
-    static Quantum<Double> e;
+    inline static const Quantum<Double> &e( ) {
+        static Quantum<Double> result(1.60217733e-19,"C");
+        return result;
+    }
 
     // proton mass
-    static Quantum<Double> mp;
+    inline static const Quantum<Double> &mp( ) {
+        static Quantum<Double> result(1.6726231e-27,"kg");
+        return result;
+    }
 
     // mp/me
-    static Quantum<Double> mp_me;
+    inline static const Quantum<Double> &mp_me( ) {
+        static Quantum<Double> result(1836.152701,"");
+        return result;
+    }
 
     // permeability vacuum
-    static Quantum<Double> mu0;
+    inline static const Quantum<Double> &mu0( ) {
+        static Quantum<Double> result(4.0e-7*C::pi,"H/m");
+        return result;
+    }
 
     // permittivity vacuum
-    static Quantum<Double> epsilon0;
+    inline static const Quantum<Double> &epsilon0( ) {
+        static Quantum<Double> result(1.0/(4.0e-7*C::pi*C::c*C::c),"F/m");
+        return result;
+    }
 
     // Boltzmann
-    static Quantum<Double> k;
+    inline static const Quantum<Double> &k( ) {
+        static Quantum<Double> result(8.314510/6.0221367e+23,"J/K");
+        return result;
+    }
 
     // Faraday
-    static Quantum<Double> F;
+    inline static const Quantum<Double> &F( ) {
+        static Quantum<Double> result(6.0221367e+23*1.60217733e-19,"C/mol");
+        return result;
+    }
 
     // mass electron
-    static Quantum<Double> me;
+    inline static const Quantum<Double> &me( ) {
+        static Quantum<Double> result(1.6726231e-27/1836.152701,"kg");
+        return result;
+    }
 
     // radius electron
-    static Quantum<Double> re;
+    inline static const Quantum<Double> &re( ) {
+        static Quantum<Double> result(2.8179e-15,"m");
+        return result;
+    }
 
     // Bohr's radius
-    static Quantum<Double> a0;
+    inline static const Quantum<Double> &a0( ) {
+        static Quantum<Double> result(5.2918e-11,"m");
+        return result;
+    }
 
     // Solar radius
-    static Quantum<Double> R0;
+    inline static const Quantum<Double> &R0( ) {
+        static Quantum<Double> result(6.9599e+08,"m");
+        return result;
+    }
+    
 
     // IAU Gaussian grav. const **2
-    static Quantum<Double> k2;
+    inline static const Quantum<Double> &k2( ) {
+        const Double IAU_k=0.01720209895;
+        static Quantum<Double> result(IAU_k*IAU_k,"AU3/d2/S0");
+        return result;
+    }
 
     // quarter turn = 90 degrees = pi/2 radians
-    static Quantum<Double> qTurn;
+    inline static const Quantum<Double> &qTurn( ) {
+        static Quantum<Double> result(90.0, "deg");
+        return result;
+    }
 
     // half turn = 180 degrees = pi radians
-    static Quantum<Double> hTurn;
-
+    inline static const Quantum<Double> &hTurn( ) {
+        static Quantum<Double> result(180.0, "deg");
+        return result;
+    }
+    
     // full turn = 360 degrees = 2pi radians
-    static Quantum<Double> fTurn;
+    inline static const Quantum<Double> &fTurn( ) {
+        static Quantum<Double> result(360.0, "deg");
+        return result;
+    }
 
-private:
-// This function is used, in conjunction with the
-// <linkto class=QC_init>QC_init</linkto>
-// class to force construction of statics (see ARM 3.4).
-    static void init();
 };
-
-
-// <summary>
-// Class used to force construction of <linkto class=QC>QC</linkto>.
-// </summary>
-
-// <synopsis>
-// A static object of this class is used to make sure that
-// <linkto class=QC>QC</linkto>
-// is constructed before it is needed, and therefore that its static data
-// members are defined.  See Meyers, p. 47.
-// </synopsis>
-
-// <use visibility=local>
-
-// <linkfrom anchor="QC_init" classes="QC">
-//   <here>QC_init</here> --
-// Class used to force construction of <linkto class=QC>QC</linkto>.
-// </linkfrom>
-
-class QC_init {
-  public:
-    QC_init();
-    ~QC_init();
-  private:
-    static uShort count;
-};
-
-// <summary>
-// Object used to force construction of <linkto class=QC>QC</linkto>.
-// </summary>
-
-// <synopsis>
-// This static object of the <linkto class=QC_init>QC_init</linkto>
-// class is used to make sure that
-// <linkto class=QC>QC</linkto>
-// is constructed before it is needed, and therefore that its static data
-// members are defined.  See Meyers, p. 47.
-// </synopsis>
-
-// <use visibility=local>
-
-// <linkfrom anchor="QC initialization object" classes="QC QC_init">
-//   <here>QC initialization object</here> --
-// Object used to force construction of <linkto class=QC>QC</linkto>.
-// </linkfrom>
-
-// <group name="QC initialization object">
-
-static QC_init qc_init;
-
-// </group>
-
-//# Inline Implementations
-
 
 } //# NAMESPACE CASACORE - END
 
