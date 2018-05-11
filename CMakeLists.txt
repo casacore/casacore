@@ -101,11 +101,7 @@ if( CASA_BUILD )
    set(USE_OPENMP ON)
    set(USE_THREADS ON)
    set(UseCasacoreNamespace 1) # Force casacore routines to live in casacore rather than casa namespace
-   ###
-   ### after CASA switches from ASAP to libsakura, CASA will no longer
-   ### use casacore's python module and it will no longer use boost...
-   ###
-   set(BUILD_PYTHON ON)
+   set(BUILD_PYTHON OFF)
    set(Boost_NO_BOOST_CMAKE 1)
    if (EXISTS "/opt/casa/02/include/python2.7")
       ### RHEL7
