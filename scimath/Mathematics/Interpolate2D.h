@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/BasicSL/Complex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -147,6 +148,35 @@ class Interpolate2D {
                const Matrix<Double> &data, 
                const Matrix<Bool> &mask) const;
   // </group>
+
+  // Do one Complex interpolation, supply Matrix/Array and mask (True is good),
+  // and pixel coordinate.  Returns False if coordinate out of range or data
+  // are masked.  No shape integrity checking is done (see above). The real
+  // and imaginary parts are treated independently (see CAS-11375).
+  // <group>
+  Bool interp (Complex &result,
+               const Vector<Double> &where,
+               const Matrix<Complex> &data) const;
+  Bool interp (Complex &result,
+               const Vector<Double> &where,
+               const Matrix<Complex> &data,
+               const Matrix<Bool> &mask) const;
+  // </group>
+
+  // Do one DComplex interpolation, supply Matrix/Array and mask (True is good),
+  // and pixel coordinate.  Returns False if coordinate out of range or data
+  // are masked.  No shape integrity checking is done (see above). The real
+  // and imaginary parts are treated independently (see CAS-11375).
+  // <group>
+  Bool interp (DComplex &result,
+               const Vector<Double> &where,
+               const Matrix<DComplex> &data) const;
+  Bool interp (DComplex &result,
+               const Vector<Double> &where,
+               const Matrix<DComplex> &data,
+               const Matrix<Bool> &mask) const;
+  // </group>
+
   // Do two linear interpolations simultaneously. The second call is direct.
   // The first call transfers to the second call. It is assumed that the
   // structure (shape, steps) of the mask and data files are the same.
@@ -225,8 +255,7 @@ class Interpolate2D {
   void bcucof (Double c[4][4], const Double y[4],
 	       const Double y1[4], 
                const Double y2[4], const Double y12[4]) const;
-  //
-  
+
   // Typedefs for function pointers
   typedef Bool(Interpolate2D::*FuncPtrFloat)
     (Float &result, 

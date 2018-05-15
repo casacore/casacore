@@ -32,7 +32,6 @@
 
 #include <casacore/casa/namespace.h>
 
-
 int main() {
     try {
         AlwaysAssert(Interpolate2D::stringToMethod("l") ==
@@ -74,10 +73,8 @@ int main() {
         results[1] = 9.552; // Cubic
         results[2] = 9.473654921656; // Lanczos
         results[3] = 9.; // Nearest
-
+        Bool ok;
         for (uInt method=0; method<methods.size(); ++method) {
-          Bool ok;
-
           Float result_f;
           Interpolate2D myInterp(Interpolate2D::stringToMethod(methods[method]));
 
@@ -90,8 +87,34 @@ int main() {
           AlwaysAssert(ok==True, AipsError);
           AlwaysAssert(near(result_d, results[method], 1.e-9), AipsError);
         }
+
+        // complex value interpolation, CAS-11375
+        Matrix<Complex> matt_c(10,10);
+        Matrix<DComplex> matt_dc(10,10);
+        vector<DComplex> cresults(results.size());
+        for (uInt i=0; i<results.size(); ++i) {
+            cresults[i] = DComplex(results[i], 2*results[i]);
+        }
+        for (uInt i=0; i<10; ++i) {
+            for (uInt j=0; j<10; ++j) {
+                uInt v = i + j;
+                matt_c(i,j) = Complex(v, 2*v);
+                matt_dc(i,j) = DComplex(v, 2*v);
+            }
+        }
+        for (uInt method=0; method<methods.size(); ++method) {
+            Complex result_c;
+            Interpolate2D myInterp(Interpolate2D::stringToMethod(methods[method]));
+            ok = myInterp.interp(result_c, where, matt_c);
+            AlwaysAssert(ok, AipsError);
+            AlwaysAssert(near(result_c, (Complex)cresults[method]), AipsError);
+            DComplex result_dc;
+            ok = myInterp.interp(result_dc, where, matt_dc);
+            AlwaysAssert(ok, AipsError);
+            AlwaysAssert(near(result_dc, cresults[method]), AipsError);
+        }
     }
-    catch (AipsError x) {
+    catch (const AipsError& x) {
         cout << x.getMesg() << endl;
         cout << "FAIL" << endl;
         return 1;
