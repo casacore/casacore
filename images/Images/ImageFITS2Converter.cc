@@ -1025,9 +1025,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (!ii.toFITS (error, header)) {
       return False;
     }
-    //
-    header.define("COMMENT1", ""); // inserts spaces
-    // I should FITS-ize the units
+    
+    //header.define("COMMENT1", ""); // inserts spaces
 
     header.define("BUNIT", image.units().getName().chars());
     header.setComment("BUNIT", "Brightness (pixel) unit");
