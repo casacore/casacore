@@ -29,6 +29,7 @@
 
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicSL/String.h>
@@ -100,7 +101,6 @@ Bool Interpolate2D::interp(Float &result,
 
 // Double versions
 
-
 Bool Interpolate2D::interp(Double &result, 
                            const Vector<Double> &where, 
                            const Matrix<Double> &data) const {
@@ -115,6 +115,88 @@ Bool Interpolate2D::interp(Double &result,
                            const Matrix<Bool> &mask) const {
   const Matrix<Bool>* maskPtr = &mask;
   return ((*this).*itsFuncPtrDouble)(result, where, data, maskPtr);
+}
+
+// Complex versions
+Bool Interpolate2D::interp(
+    Complex &result, const Vector<Double> &where,
+    const Matrix<Complex> &data
+) const {
+    Float realRes, imagRes;
+    Matrix<Float> realData = (Matrix<Float>)real(data);
+    Matrix<Float> imagData = (Matrix<Float>)imag(data);
+    const Matrix<Bool>* maskPtr(0);
+    Bool realFunc = ((*this).*itsFuncPtrFloat)(realRes, where, realData, maskPtr);
+    if (! realFunc) {
+        return False;
+    }
+    Bool imagFunc = ((*this).*itsFuncPtrFloat)(imagRes, where, imagData, maskPtr);
+    if (! imagFunc) {
+        return False;
+    }
+    result = Complex(realRes, imagRes);
+    return True;
+}
+
+Bool Interpolate2D::interp(
+    Complex &result, const Vector<Double> &where,
+    const Matrix<Complex> &data, const Matrix<Bool> &mask
+) const {
+    Float realRes, imagRes;
+    Matrix<Float> realData = (Matrix<Float>)real(data);
+    Matrix<Float> imagData = (Matrix<Float>)imag(data);
+    const Matrix<Bool>* maskPtr = &mask;
+    Bool realFunc = ((*this).*itsFuncPtrFloat)(realRes, where, realData, maskPtr);
+    if (! realFunc) {
+        return False;
+    }
+    Bool imagFunc = ((*this).*itsFuncPtrFloat)(imagRes, where, imagData, maskPtr);
+    if (! imagFunc) {
+        return False;
+    }
+    result = Complex(realRes, imagRes);
+    return True;
+}
+
+// DComplex versions
+Bool Interpolate2D::interp(
+    DComplex &result, const Vector<Double> &where,
+    const Matrix<DComplex> &data
+) const {
+    Double realRes, imagRes;
+    Matrix<Double> realData = (Matrix<Double>)real(data);
+    Matrix<Double> imagData = (Matrix<Double>)imag(data);
+    const Matrix<Bool>* maskPtr(0);
+    Bool realFunc = ((*this).*itsFuncPtrDouble)(realRes, where, realData, maskPtr);
+    if (! realFunc) {
+        return False;
+    }
+    Bool imagFunc = ((*this).*itsFuncPtrDouble)(imagRes, where, imagData, maskPtr);
+    if (! imagFunc) {
+        return False;
+    }
+    result = DComplex(realRes, imagRes);
+    return True;
+}
+
+Bool Interpolate2D::interp(
+    DComplex &result, const Vector<Double> &where,
+    const Matrix<DComplex> &data, const Matrix<Bool> &mask
+) const {
+    Double realRes, imagRes;
+    Matrix<Double> realData = (Matrix<Double>)real(data);
+    Matrix<Double> imagData = (Matrix<Double>)imag(data);
+    const Matrix<Bool>* maskPtr = &mask;
+    Bool realFunc = ((*this).*itsFuncPtrDouble)(realRes, where, realData, maskPtr);
+    if (! realFunc) {
+        return False;
+    }
+    Bool imagFunc = ((*this).*itsFuncPtrDouble)(imagRes, where, imagData, maskPtr);
+    if (! imagFunc) {
+        return False;
+    }
+    result = DComplex(realRes, imagRes);
+    return True;
 }
 
 // Double version with two identicals and mask
