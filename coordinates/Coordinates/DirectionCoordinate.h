@@ -331,6 +331,10 @@ public:
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel, Bool useConversionFrame=True) const;
+
+    // <src>world</src> values must have units equivalent to the world axis
+    // units. If the coordinate has a conversion layer, the world coordinates
+    // must be supplied in the conversion frame.
     virtual Bool toPixel(Vector<Double> &pixel, 
 			 const Vector<Double> &world) const;
     // </group>
@@ -719,9 +723,6 @@ private:
     // Return unit conversion vector for converting to current units
     const Vector<Double> toCurrentFactors () const;
 
-    static Double _longitudeDifference(const Quantity& longAngleDifference,
-                                       const Quantity& latitude,
-                                       const Quantity& longitudePixelIncrement);
 };
 
 } //# NAMESPACE CASACORE - END
