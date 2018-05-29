@@ -826,9 +826,11 @@ DirectionCoordinate DirectionCoordinate::convert(
     // directions, take the dot product of the unit vector which lies along the
     // positive y-axis and the unit vector which lies along the direction of
     // positive longitude in the conversion frame, which simplifies to
-    // cos(angle) = y_frame. Use the latitude-like coordinate rather than
-    // the longitude like coordinate so we don't have to deal with cos(latitude)
+    // cos(angle) = yFrame. Use the latitude-like coordinate rather than the
+    // longitude like coordinate so we don't have to deal with cos(latitude)
     // factors.
+    // TODO I suspect this can probably done in fewer lines of code by making
+    // use of direction cosines to which MDirection objects have access.
     Vector<Quantity> offsetValNewFrameQ = refValNewFrameQ.copy();
     offsetValNewFrameQ[1] += Quantity(1, "arcsec");
     Vector<Double> offsetValNewFrame(2);
@@ -845,12 +847,12 @@ DirectionCoordinate DirectionCoordinate::convert(
     incQ[1] = Quantity(inc[1], units[1]);
     Double pixLengthInArcSec = incQ[1].getValue("arcsec");
     Double signX = sign(offsetPixel[0] - refPix[0]);
-    Double y_frame = (offsetPixel[1] - refPix[1])*pixLengthInArcSec;
-    Double angleInRad = acos(y_frame);
+    Double yFrame = (offsetPixel[1] - refPix[1])*pixLengthInArcSec;
+    Double angleInRad = acos(yFrame);
     // get the quadrant right
     if (signX > 0) {
-        // we have to rotate counter-clockwise to align ref frame axes
-        // with cardinal directions
+        // we have to rotate counter-clockwise to align
+        // ref frame axes with the pixel axes
         angleInRad = -angleInRad;
     }
     angle = Quantity(angleInRad, "rad");
