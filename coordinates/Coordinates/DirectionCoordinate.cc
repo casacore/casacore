@@ -809,7 +809,6 @@ DirectionCoordinate DirectionCoordinate::convert(
         "Coordinate rotation can only be performed on a coordinate that has "
         "square pixels"
     );
-    cout << std::setprecision(10) << endl;
     DirectionCoordinate myClone(*this);
     myClone.setReferenceConversion(directionType);
     Vector<Double> refPix = myClone.referencePixel();
