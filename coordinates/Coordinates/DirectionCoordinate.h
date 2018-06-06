@@ -593,6 +593,14 @@ public:
     // position are not supported. The <src>angle</src> parameter is the angle
     // through which this coordinate had to be rotated clockwise to produce the
     // new coordinate.
+    // NOTE: The angle returned is Double precision. However, in general,
+    // converting the returned coordinate back to the original frame produces an
+    // angle that is slightly different by the negative angle of the original
+    // conversion. This difference is often in the fifth digit, suggesting that
+    // at least one of the method calls in the implementation is not perfectly
+    // symmetric between coordinate frames. So, in general, until and unless
+    // that underlying precision issue is resolved, one should only consider
+    // the precision of the returned angle good to about five digits.
     DirectionCoordinate convert(
         Quantity& angle, MDirection::Types directionType
     ) const;

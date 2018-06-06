@@ -809,45 +809,66 @@ DirectionCoordinate DirectionCoordinate::convert(
         "Coordinate rotation can only be performed on a coordinate that has "
         "square pixels"
     );
+    // create the rotated coordinate
+    Matrix<Double> xform(2, 2, 0);
+    xform.diagonal() = 1.0;
+    Vector<Double> refPix = referencePixel();
+    Vector<Double> inc = increment();
+    Vector<Quantity> incQ(2);
+    incQ[0] = Quantity(inc[0], units_p[0]);
+    incQ[1] = Quantity(inc[1], units_p[1]);
     DirectionCoordinate myClone(*this);
     myClone.setReferenceConversion(directionType);
-    Vector<Double> refPix = myClone.referencePixel();
     Vector<Double> refValNewFrame;
     ThrowIf(
         ! myClone.toWorld(refValNewFrame, refPix, True),
         "Unable to convert reference pixel to world value of new frame"
     );
-    Vector<String> units = myClone.worldAxisUnits();
     Vector<Quantity> refValNewFrameQ(2);
-    refValNewFrameQ[0] = Quantity(refValNewFrame[0], units[0]);
-    refValNewFrameQ[1] = Quantity(refValNewFrame[1], units[1]);
-    // to get the angle that the conversion ref frame makes with the cardinal
-    // directions, take the dot product of the unit vector which lies along the
-    // positive y-axis and the unit vector which lies along the direction of
-    // positive longitude in the conversion frame, which simplifies to
-    // cos(angle) = yFrame. Use the latitude-like coordinate rather than the
-    // longitude like coordinate so we don't have to deal with cos(latitude)
-    // factors.
-    // TODO I suspect this can probably done in fewer lines of code by making
-    // use of direction cosines to which MDirection objects have access.
+    refValNewFrameQ[0] = Quantity(refValNewFrame[0], units_p[0]);
+    refValNewFrameQ[1] = Quantity(refValNewFrame[1], units_p[1]);
+    DirectionCoordinate converted(
+        directionType, projection_p, refValNewFrameQ[0], refValNewFrameQ[1],
+        incQ[0], incQ[1], xform, refPix[0], refPix[1]
+    );
+    // Determine the rotation angle. This is useful for knowing how much to
+    // rotate beams, etc.
+    // zero the reference pixel to avoid precision loss by potentially needing
+    // to subtract two large numbers that differ beyond less than 1
+    ThrowIf(
+        ! myClone.setReferencePixel(Vector<Double>(2, 0)),
+        "Failed to zero reference pixel in temporary coordinate"
+    );
+    // make the increment and units more friendly for this computation
+    ThrowIf(
+        ! myClone.setWorldAxisUnits(Vector<String>(2, "arcsec")),
+        "Failed to set world axis units in temporary coordinate"
+    );
+    Vector<Double> cloneInc(2, 1);
+    for (uInt i=0; i<2; ++i) {
+        if (sign(inc[i] < 0)) {
+            cloneInc[i] = -1;
+        }
+    }
+    myClone.setIncrement(cloneInc);
+    // To get the angle that the conversion ref frame makes with the pixel axes,
+    // get the pixel coordinates of an offset of 1 arcsec along the positive
+    // latitude axis of the new frame. Use the latitude-like coordinate rather
+    // than the longitude like coordinate so we don't have to deal with
+    // cos(latitude) factors.
     Vector<Quantity> offsetValNewFrameQ = refValNewFrameQ.copy();
     offsetValNewFrameQ[1] += Quantity(1, "arcsec");
     Vector<Double> offsetValNewFrame(2);
-    offsetValNewFrame[0] = offsetValNewFrameQ[0].getValue(units[0]);
-    offsetValNewFrame[1] = offsetValNewFrameQ[1].getValue(units[1]);
+    offsetValNewFrame[0] = offsetValNewFrameQ[0].getValue("arcsec");
+    offsetValNewFrame[1] = offsetValNewFrameQ[1].getValue("arcsec");
     Vector<Double> offsetPixel;
     ThrowIf(
         ! myClone.toPixel(offsetPixel, offsetValNewFrame),
         "Unable to convert offset world value to offset pixel value"
     );
-    Vector<Double> inc = myClone.increment();
-    Vector<Quantity> incQ(2);
-    incQ[0] = Quantity(inc[0], units[0]);
-    incQ[1] = Quantity(inc[1], units[1]);
-    Double pixLengthInArcSec = incQ[1].getValue("arcsec");
-    Double signX = sign(offsetPixel[0] - refPix[0]);
-    Double yFrame = (offsetPixel[1] - refPix[1])*pixLengthInArcSec;
-    Double angleInRad = acos(yFrame);
+    Double signX = sign(offsetPixel[0]);
+    Double yFrame = offsetPixel[1];
+    Double angleInRad = acos(yFrame/sqrt(sum(offsetPixel*offsetPixel)));
     // get the quadrant right
     if (signX > 0) {
         // we have to rotate counter-clockwise to align
@@ -855,13 +876,6 @@ DirectionCoordinate DirectionCoordinate::convert(
         angleInRad = -angleInRad;
     }
     angle = Quantity(angleInRad, "rad");
-    // create the rotated coordinate
-    Matrix<Double> xform(2, 2, 0);
-    xform.diagonal() = 1.0;
-    DirectionCoordinate converted(
-        directionType, projection_p, refValNewFrameQ[0], refValNewFrameQ[1],
-        incQ[0], incQ[1], xform, refPix[0], refPix[1]
-    );
     return converted;
 }
 

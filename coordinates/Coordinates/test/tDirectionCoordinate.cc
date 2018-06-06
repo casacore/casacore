@@ -435,60 +435,60 @@ int main()
     	  cout << "*** inc " << converted.increment() << endl;
 
     	  std::map<std::pair<Int, Int>, Double> expAngle;
-    	  expAngle[std::pair<Int, Int>(0, -80)] = -165.671945049;
-    	  expAngle[std::pair<Int, Int>(0, -60)] = -159.27462533;
-    	  expAngle[std::pair<Int, Int>(0, -40)] = -136.460308958;
-    	  expAngle[std::pair<Int, Int>(0, -20)] = -56.3735576703;
-    	  expAngle[std::pair<Int, Int>(0, 0)] = -23.4765392007;
-    	  expAngle[std::pair<Int, Int>(0, 20)] = -15.2723730466;
-    	  expAngle[std::pair<Int, Int>(0, 40)] = -12.3154098461;
-    	  expAngle[std::pair<Int, Int>(0, 60)] = -11.4300654725;
-    	  expAngle[std::pair<Int, Int>(0, 80)] = -11.9731097153;
-    	  expAngle[std::pair<Int, Int>(4, -80)] = 128.396640366;
-    	  expAngle[std::pair<Int, Int>(4, -60)] = 114.425157125;
-    	  expAngle[std::pair<Int, Int>(4, -40)] = 93.4931148185;
-    	  expAngle[std::pair<Int, Int>(4, -20)] = 71.2513119691;
-    	  expAngle[std::pair<Int, Int>(4, 0)] = 55.0478993276;
-    	  expAngle[std::pair<Int, Int>(4, 20)] = 45.7489389673;
-    	  expAngle[std::pair<Int, Int>(4, 40)] = 41.4591248093;
-    	  expAngle[std::pair<Int, Int>(4, 60)] = 40.9322172256;
-    	  expAngle[std::pair<Int, Int>(4, 80)] = 44.0076343611;
-    	  expAngle[std::pair<Int, Int>(8, -80)] = 68.3558866211;
-    	  expAngle[std::pair<Int, Int>(8, -60)] = 61.8454920223;
-    	  expAngle[std::pair<Int, Int>(8, -40)] = 58.6597824059;
-    	  expAngle[std::pair<Int, Int>(8, -20)] = 58.6453211287;
-    	  expAngle[std::pair<Int, Int>(8, 0)] = 61.8011464623;
-    	  expAngle[std::pair<Int, Int>(8, 20)] = 68.2801187868;
-    	  expAngle[std::pair<Int, Int>(8, 40)] = 78.0039934355;
-    	  expAngle[std::pair<Int, Int>(8, 60)] = 89.9432896965;
-    	  expAngle[std::pair<Int, Int>(8, 80)] = 101.893486573;
-    	  expAngle[std::pair<Int, Int>(12, -80)] = 11.9819617279;
-    	  expAngle[std::pair<Int, Int>(12, -60)] = 11.4362406818;
-    	  expAngle[std::pair<Int, Int>(12, -40)] = 12.3219540396;
-    	  expAngle[std::pair<Int, Int>(12, -20)] = 15.2790892455;
-    	  expAngle[std::pair<Int, Int>(12, 0)] = 23.4826198306;
-    	  expAngle[std::pair<Int, Int>(12, 20)] = 56.3763028774;
-    	  expAngle[std::pair<Int, Int>(12, 40)] = 136.455983946;
-    	  expAngle[std::pair<Int, Int>(12, 60)] = 159.270465683;
-    	  expAngle[std::pair<Int, Int>(12, 80)] = 165.665381668;
-    	  expAngle[std::pair<Int, Int>(16, -80)] = -44.0101055783;
-    	  expAngle[std::pair<Int, Int>(16, -60)] = -40.9336959896;
-    	  expAngle[std::pair<Int, Int>(16, -40)] = -41.4605542834;
-    	  expAngle[std::pair<Int, Int>(16, -20)] = -45.7502557579;
-    	  expAngle[std::pair<Int, Int>(16, 0)] = -55.0488744615;
-    	  expAngle[std::pair<Int, Int>(16, 20)] = -71.2516725849;
-    	  expAngle[std::pair<Int, Int>(16, 40)] = -93.4927697483;
-    	  expAngle[std::pair<Int, Int>(16, 60)] = -114.424332879;
-    	  expAngle[std::pair<Int, Int>(16, 80)] = -128.39467607;
-    	  expAngle[std::pair<Int, Int>(20, -80)] = -101.894994638;
-    	  expAngle[std::pair<Int, Int>(20, -60)] = -89.9439510246;
-    	  expAngle[std::pair<Int, Int>(20, -40)] = -78.0046852374;
-    	  expAngle[std::pair<Int, Int>(20, -20)] = -68.2808547723;
-    	  expAngle[std::pair<Int, Int>(20, 0)] = -61.801786541;
-    	  expAngle[std::pair<Int, Int>(20, 20)] = -58.6457142175;
-    	  expAngle[std::pair<Int, Int>(20, 40)] = -58.659815574;
-    	  expAngle[std::pair<Int, Int>(20, 60)] = -61.8450589614;
-    	  expAngle[std::pair<Int, Int>(20, 80)] = -68.3542628937;
+    	  expAngle[std::pair<Int, Int>(0, -80)] = -165.6685;
+    	  expAngle[std::pair<Int, Int>(0, -60)] = -159.2723;
+    	  expAngle[std::pair<Int, Int>(0, -40)] = -136.4582;
+    	  expAngle[std::pair<Int, Int>(0, -20)] = -56.3755;
+    	  expAngle[std::pair<Int, Int>(0, 0)] = -23.4799;
+    	  expAngle[std::pair<Int, Int>(0, 20)] = -15.2759;
+    	  expAngle[std::pair<Int, Int>(0, 40)] = -12.3187;
+    	  expAngle[std::pair<Int, Int>(0, 60)] = -11.4330;
+    	  expAngle[std::pair<Int, Int>(0, 80)] = -11.9771;
+    	  expAngle[std::pair<Int, Int>(4, -80)] = 128.3963;
+    	  expAngle[std::pair<Int, Int>(4, -60)] = 114.4249;
+    	  expAngle[std::pair<Int, Int>(4, -40)] = 93.4931;
+    	  expAngle[std::pair<Int, Int>(4, -20)] = 71.2517;
+    	  expAngle[std::pair<Int, Int>(4, 0)] = 55.0487;
+    	  expAngle[std::pair<Int, Int>(4, 20)] = 45.7499;
+    	  expAngle[std::pair<Int, Int>(4, 40)] = 41.4601;
+    	  expAngle[std::pair<Int, Int>(4, 60)] = 40.9331;
+    	  expAngle[std::pair<Int, Int>(4, 80)] = 44.0085;
+    	  expAngle[std::pair<Int, Int>(8, -80)] = 68.3558;
+    	  expAngle[std::pair<Int, Int>(8, -60)] = 61.8454;
+    	  expAngle[std::pair<Int, Int>(8, -40)] = 58.6596;
+    	  expAngle[std::pair<Int, Int>(8, -20)] = 58.6451;
+    	  expAngle[std::pair<Int, Int>(8, 0)] = 61.8010;
+    	  expAngle[std::pair<Int, Int>(8, 20)] = 68.2800;
+    	  expAngle[std::pair<Int, Int>(8, 40)] = 78.0039;
+    	  expAngle[std::pair<Int, Int>(8, 60)] = 89.9433;
+    	  expAngle[std::pair<Int, Int>(8, 80)] = 101.8935;
+    	  expAngle[std::pair<Int, Int>(12, -80)] = 11.9780;
+    	  expAngle[std::pair<Int, Int>(12, -60)] = 11.4334;
+    	  expAngle[std::pair<Int, Int>(12, -40)] = 12.3187;
+    	  expAngle[std::pair<Int, Int>(12, -20)] = 15.2756;
+    	  expAngle[std::pair<Int, Int>(12, 0)] = 23.4792;
+    	  expAngle[std::pair<Int, Int>(12, 20)] = 56.3744;
+    	  expAngle[std::pair<Int, Int>(12, 40)] = 136.4581;
+    	  expAngle[std::pair<Int, Int>(12, 60)] = 159.2728;
+    	  expAngle[std::pair<Int, Int>(12, 80)] = 165.6688;
+    	  expAngle[std::pair<Int, Int>(16, -80)] = -44.0092;
+    	  expAngle[std::pair<Int, Int>(16, -60)] = -40.9328;
+    	  expAngle[std::pair<Int, Int>(16, -40)] = -41.4595;
+    	  expAngle[std::pair<Int, Int>(16, -20)] = -45.7493;
+    	  expAngle[std::pair<Int, Int>(16, 0)] = -55.0481;
+    	  expAngle[std::pair<Int, Int>(16, 20)] = -71.2513;
+    	  expAngle[std::pair<Int, Int>(16, 40)] = -93.4928;
+    	  expAngle[std::pair<Int, Int>(16, 60)] = -114.4246;
+    	  expAngle[std::pair<Int, Int>(16, 80)] = -128.3950;
+    	  expAngle[std::pair<Int, Int>(20, -80)] = -101.8949;
+    	  expAngle[std::pair<Int, Int>(20, -60)] = -89.9440;
+    	  expAngle[std::pair<Int, Int>(20, -40)] = -78.0048;
+    	  expAngle[std::pair<Int, Int>(20, -20)] = -68.2810;
+    	  expAngle[std::pair<Int, Int>(20, 0)] = -61.8020;
+    	  expAngle[std::pair<Int, Int>(20, 20)] = -58.6459;
+    	  expAngle[std::pair<Int, Int>(20, 40)] = -58.6600;
+    	  expAngle[std::pair<Int, Int>(20, 60)] = -61.8452;
+    	  expAngle[std::pair<Int, Int>(20, 80)] = -68.3544;
     	  // test various points around the sky
     	  for (Int ha=0; ha<24; ha+=4) {
     	      for (Int dec=-80; dec<85; dec+=20) {
@@ -519,7 +519,23 @@ int main()
     	          AlwaysAssert(
     	              near(
     	                  angle.getValue("deg"),
-    	                  expAngle[std::pair<Int, Int>(ha, dec)], 1e-8
+    	                  expAngle[std::pair<Int, Int>(ha, dec)], 1e-4
+    	              ), AipsError
+    	          );
+    	          DirectionCoordinate backToJ2000 = toGalactic.convert(
+    	              angle, MDirection::J2000
+    	          );
+    	          Vector<Double> newJ2000RefVal = backToJ2000.referenceValue();
+    	          if (newJ2000RefVal[0] < -0.1) {
+    	              newJ2000RefVal[0] += 2*C::pi;
+    	          }
+    	          AlwaysAssert(
+    	              allNearAbs(newJ2000RefVal, j2000RefVal, 1e-9), AipsError
+    	          );
+    	          AlwaysAssert(
+    	              near(
+    	                  angle.getValue("deg"),
+    	                  -expAngle[std::pair<Int, Int>(ha, dec)], 1e-4
     	              ), AipsError
     	          );
     	      }
