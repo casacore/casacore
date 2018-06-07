@@ -46,14 +46,14 @@ void test_parallel()
 #if defined(USE_THREADS) && defined(AIPS_CXX11) && !defined(__APPLE__)
   double sum = 0;
   static const size_t thread_max = 50;
-  static const size_t loop_max = 50 * 2; //50 is the value for max_cache_array inside MVPosition
+  static const size_t loop_max = 50 * 2; 
   std::vector<std::thread> threads(thread_max);
   std::mutex sum_mutex;
   for(size_t i = 0; i < thread_max ; ++i)
   {
      threads[i] = std::thread([&sum, &sum_mutex]()
        {
-         MVPosition positions[loop_max];
+         std::unique_ptr<MVPosition[]> positions (new MVPosition[loop_max]);
          double part_sum = 0;
          for(size_t j = 0; j < loop_max ; ++j)
          {

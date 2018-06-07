@@ -38,43 +38,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Euler class
 
-// simplistic Vector(3) cache to reduce allocation overhead for temporaries
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
-thread_local size_t Euler::available = 0;
-thread_local std::vector<Euler::DataArrays> Euler::arrays(max_array_cache);
-#endif
-
-Euler::DataArrays Euler::get_arrays()
-{
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
-  if (available > 0) {
-    return arrays[--available];
-  }
-#endif
-  return std::make_pair(casacore::CountedPtr<Vector<Double> >(new Vector<Double>(3)), 
-                        casacore::CountedPtr<Vector<Int> >(new Vector<Int>(3)));
-}
-
-void Euler::return_arrays(Euler::DataArrays array)
-{
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
-  if (available < max_array_cache &&
-		  array.first->size() == 3 && array.second->size() == 3 &&
-		  array.first->nrefs() == 1 && array.second->nrefs() == 1) {
-    arrays[available++] = array;
-    return;
-  }
-#endif
-}
-
 //# Constructors
-Euler::Euler() : data(get_arrays()), euler(*data.first), axes(*data.second) {
+Euler::Euler() : euler(3), axes(3) {
     euler = Double(0.0);
     indgen(axes,1,1);
 }
 
 Euler::Euler(const Euler &other) : 
-data(get_arrays()), euler(*data.first), axes(*data.second) {
+  euler(3), axes(3) {
     euler = other.euler;
     axes = other.axes;
 }
@@ -88,7 +59,7 @@ Euler &Euler::operator=(const Euler &other) {
 }
 
 Euler::Euler(Double in0, Double in1, Double in2) : 
-data(get_arrays()), euler(*data.first), axes(*data.second) {
+euler(3), axes(3) {
     euler(0) = in0;
     euler(1) = in1;
     euler(2) = in2;
@@ -98,7 +69,7 @@ data(get_arrays()), euler(*data.first), axes(*data.second) {
 
 Euler::Euler(Double in0, uInt ax0, Double in1, uInt ax1, Double in2,
 	     uInt ax2) : 
-data(get_arrays()), euler(*data.first), axes(*data.second) {
+  euler(3), axes(3) {
     DebugAssert(ax0 <= 3 && ax1 <=3 && ax2 <=3, AipsError);
     euler(0) = in0;
     euler(1) = in1;
@@ -109,7 +80,7 @@ data(get_arrays()), euler(*data.first), axes(*data.second) {
 }
 
 Euler::Euler(const Quantity &in0) :
-data(get_arrays()), euler(*data.first), axes(*data.second) {
+  euler(3), axes(3) {
     euler(0) = Euler::makeRad(in0);
     euler(1) = 0;
     euler(2) = 0;
@@ -117,7 +88,7 @@ data(get_arrays()), euler(*data.first), axes(*data.second) {
 }
 
 Euler::Euler(const Quantity &in0, const Quantity &in1) :
-data(get_arrays()), euler(*data.first), axes(*data.second) {
+  euler(3), axes(3) {
     euler(0) = Euler::makeRad(in0);
     euler(1) = Euler::makeRad(in1);
     euler(2) = 0;
@@ -125,7 +96,7 @@ data(get_arrays()), euler(*data.first), axes(*data.second) {
 }
 
 Euler::Euler(const Quantity &in0, const Quantity &in1, const Quantity &in2) :
-data(get_arrays()), euler(*data.first), axes(*data.second) {
+  euler(3), axes(3) {
     euler(0) = Euler::makeRad(in0);
     euler(1) = Euler::makeRad(in1);
     euler(2) = Euler::makeRad(in2);
@@ -133,7 +104,7 @@ data(get_arrays()), euler(*data.first), axes(*data.second) {
 }
 
 Euler::Euler(const Quantity &in0, uInt ax0) :
-data(get_arrays()), euler(*data.first), axes(*data.second) {
+  euler(3), axes(3) {
     DebugAssert(ax0 <= 3, AipsError);
     euler(0) = Euler::makeRad(in0);
     euler(1) = 0;
@@ -143,7 +114,7 @@ data(get_arrays()), euler(*data.first), axes(*data.second) {
     axes(2) = 0;
 }
 Euler::Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1) :
-data(get_arrays()), euler(*data.first), axes(*data.second) {
+  euler(3), axes(3) {
     DebugAssert(ax0 <= 3 && ax1 <=3, AipsError);
     euler(0) = Euler::makeRad(in0);
     euler(1) = Euler::makeRad(in1);
@@ -154,7 +125,7 @@ data(get_arrays()), euler(*data.first), axes(*data.second) {
 }
 Euler::Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1,
 	     const Quantity &in2, uInt ax2) :
-data(get_arrays()), euler(*data.first), axes(*data.second) {
+  euler(3), axes(3) {
     DebugAssert(ax0 <= 3 && ax1 <=3 && ax2 <=3, AipsError);
     euler(0) = Euler::makeRad(in0);
     euler(1) = Euler::makeRad(in1);
@@ -165,7 +136,7 @@ data(get_arrays()), euler(*data.first), axes(*data.second) {
 }
 
 Euler::Euler(const Quantum<Vector<Double> > &in) :
-data(get_arrays()), euler(*data.first), axes(*data.second) {
+ euler(3), axes(3) {
     Int i;
     Vector<Double> tmp = Euler::makeRad(in);
     Int j=tmp.size(); j=min(j,3);
@@ -179,7 +150,7 @@ data(get_arrays()), euler(*data.first), axes(*data.second) {
 }
 
 Euler::Euler(const Quantum<Vector<Double> > &in, const Vector<uInt> &ax) :
-data(get_arrays()), euler(*data.first), axes(*data.second) {
+  euler(3), axes(3) {
     Vector<Double> tmp = Euler::makeRad(in);
     Int j=tmp.size(); j=min(j,3); Int i=ax.size(); j=min(j,i);
     for (i=0; i<j; i++) {
@@ -195,7 +166,6 @@ data(get_arrays()), euler(*data.first), axes(*data.second) {
 
 //# Destructor
 Euler::~Euler() {
-  return_arrays(data);
 }
 
 //# Operators

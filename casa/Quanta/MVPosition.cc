@@ -46,44 +46,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 const Double MVPosition::loLimit = 743.568;
 const Double MVPosition::hiLimit = 743.569;
 
-// simplistic vector(3) cache to reduce allocation overhead for temporaries
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
-thread_local size_t MVPosition::available = 0;
-thread_local std::vector<std::unique_ptr<Vector<Double>>> MVPosition::arrays(max_vector_cache);
-#endif
-
-Vector<Double> * MVPosition::get_array()
-{
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
-  if (available > 0) {
-      return arrays[--available].release();
-  }
-#endif
-  return new Vector<Double>(3);
-}
-
-void MVPosition::return_array(Vector<Double> * array)
-{
-#if defined(AIPS_CXX11) && !defined(__APPLE__)
-  if (available < max_vector_cache &&
-		  array->size() == 3 &&
-		  array->nrefs() == 1) {
-      arrays[available++].reset(array);
-    return;
-  }
-#endif
-  delete array;
-}
-
 //# Constructors
 MVPosition::MVPosition() :
-  xyz(*get_array()) {
-    xyz = Double(0.0);
+  xyz(3)
+{
+  xyz = Double(0.0);
 }
 
 MVPosition::MVPosition(const MVPosition &other) : 
   MeasValue(),
-  xyz(*get_array())
+  xyz(3)
 {
   xyz = other.xyz;
 }
@@ -96,27 +68,30 @@ MVPosition &MVPosition::operator=(const MVPosition &other) {
 }
 
 MVPosition::MVPosition(Double in) :
-	xyz(*get_array()) {
-    xyz = Double(0.0);
-    xyz(2) = in;
-  }
+  xyz(3)
+{
+  xyz = Double(0.0);
+  xyz(2) = in;
+}
 
 MVPosition::MVPosition(const Quantity &l) :
-  xyz(*get_array()) {
-    xyz = Double(0.0);
-    l.assure(UnitVal::LENGTH);
-    xyz(2) = l.getBaseValue();
-  }
+  xyz(3)
+{
+  xyz = Double(0.0);
+  l.assure(UnitVal::LENGTH);
+  xyz(2) = l.getBaseValue();
+}
 
 MVPosition::MVPosition(Double in0, Double in1, Double in2) : 
-	xyz(*get_array()) {
-    xyz(0) = in0;
-    xyz(1) = in1;
-    xyz(2) = in2;
-  }
+  xyz(3) 
+{
+  xyz(0) = in0;
+  xyz(1) = in1;
+  xyz(2) = in2;
+}
 
 MVPosition::MVPosition(const Quantity &l, Double angle0, Double angle1) : 
-  xyz(*get_array()) {
+  xyz(3) {
   Double loc = std::cos(angle1);
   xyz(0) = std::cos(angle0)*loc;
   xyz(1) = std::sin(angle0)*loc;
@@ -129,7 +104,7 @@ MVPosition::MVPosition(const Quantity &l, Double angle0, Double angle1) :
 
 MVPosition::MVPosition(const Quantity &l, const Quantity &angle0, 
 		       const Quantity &angle1) : 
-  xyz(*get_array()) {
+  xyz(3) {
   Double loc = (cos(angle1)).getValue();
   xyz(0) = ((cos(angle0)).getValue()) * loc;
   xyz(1) = ((sin(angle0)).getValue()) * loc;
@@ -142,7 +117,7 @@ MVPosition::MVPosition(const Quantity &l, const Quantity &angle0,
 }
 
 MVPosition::MVPosition(const Quantum<Vector<Double> > &angle) :
-  xyz(*get_array()) {
+  xyz(3) {
   uInt i; i = angle.getValue().nelements();
   if (i > 3 ) {
     throw (AipsError("Illegeal vector length in MVPosition constructor"));
@@ -168,7 +143,7 @@ MVPosition::MVPosition(const Quantum<Vector<Double> > &angle) :
 
 MVPosition::MVPosition(const Quantity &l, 
 		       const Quantum<Vector<Double> > &angle) :
-	xyz(*get_array()) {
+  xyz(3) {
     uInt i; i = angle.getValue().nelements();
     if (i > 3 ) {
       throw (AipsError("Illegal vector length in MVPosition constructor"));
@@ -195,7 +170,7 @@ MVPosition::MVPosition(const Quantity &l,
   }
 
 MVPosition::MVPosition(const Vector<Double> &other) :
-	xyz(*get_array()) {
+  xyz(3) {
     uInt i; i = other.nelements();
     if (i > 3 ) {
       throw (AipsError("Illegal vector length in MVPosition constructor"));
@@ -219,7 +194,7 @@ MVPosition::MVPosition(const Vector<Double> &other) :
   }
 
 MVPosition::MVPosition(const Vector<Quantity> &other) :
-  xyz(*get_array()) {
+  xyz(3) {
   if (!putValue(other)) {
     throw (AipsError("Illegal quantum vector in MVPosition constructor"));
   }
@@ -228,7 +203,6 @@ MVPosition::MVPosition(const Vector<Quantity> &other) :
 //# Destructor
 MVPosition::~MVPosition()
 {
-  return_array(&xyz);
 }
 
 //# Operators
