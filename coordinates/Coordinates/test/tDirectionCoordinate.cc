@@ -433,6 +433,113 @@ int main()
     	  cout << "*** b " << worldb << endl;
     	  //cout << "*** c " << worldc << endl;
     	  cout << "*** inc " << converted.increment() << endl;
+
+    	  std::map<std::pair<Int, Int>, Double> expAngle;
+    	  expAngle[std::pair<Int, Int>(0, -80)] = -165.6685;
+    	  expAngle[std::pair<Int, Int>(0, -60)] = -159.2723;
+    	  expAngle[std::pair<Int, Int>(0, -40)] = -136.4582;
+    	  expAngle[std::pair<Int, Int>(0, -20)] = -56.3755;
+    	  expAngle[std::pair<Int, Int>(0, 0)] = -23.4799;
+    	  expAngle[std::pair<Int, Int>(0, 20)] = -15.2759;
+    	  expAngle[std::pair<Int, Int>(0, 40)] = -12.3187;
+    	  expAngle[std::pair<Int, Int>(0, 60)] = -11.4330;
+    	  expAngle[std::pair<Int, Int>(0, 80)] = -11.9771;
+    	  expAngle[std::pair<Int, Int>(4, -80)] = 128.3963;
+    	  expAngle[std::pair<Int, Int>(4, -60)] = 114.4249;
+    	  expAngle[std::pair<Int, Int>(4, -40)] = 93.4931;
+    	  expAngle[std::pair<Int, Int>(4, -20)] = 71.2517;
+    	  expAngle[std::pair<Int, Int>(4, 0)] = 55.0487;
+    	  expAngle[std::pair<Int, Int>(4, 20)] = 45.7499;
+    	  expAngle[std::pair<Int, Int>(4, 40)] = 41.4601;
+    	  expAngle[std::pair<Int, Int>(4, 60)] = 40.9331;
+    	  expAngle[std::pair<Int, Int>(4, 80)] = 44.0085;
+    	  expAngle[std::pair<Int, Int>(8, -80)] = 68.3558;
+    	  expAngle[std::pair<Int, Int>(8, -60)] = 61.8454;
+    	  expAngle[std::pair<Int, Int>(8, -40)] = 58.6596;
+    	  expAngle[std::pair<Int, Int>(8, -20)] = 58.6451;
+    	  expAngle[std::pair<Int, Int>(8, 0)] = 61.8010;
+    	  expAngle[std::pair<Int, Int>(8, 20)] = 68.2800;
+    	  expAngle[std::pair<Int, Int>(8, 40)] = 78.0039;
+    	  expAngle[std::pair<Int, Int>(8, 60)] = 89.9433;
+    	  expAngle[std::pair<Int, Int>(8, 80)] = 101.8935;
+    	  expAngle[std::pair<Int, Int>(12, -80)] = 11.9780;
+    	  expAngle[std::pair<Int, Int>(12, -60)] = 11.4334;
+    	  expAngle[std::pair<Int, Int>(12, -40)] = 12.3187;
+    	  expAngle[std::pair<Int, Int>(12, -20)] = 15.2756;
+    	  expAngle[std::pair<Int, Int>(12, 0)] = 23.4792;
+    	  expAngle[std::pair<Int, Int>(12, 20)] = 56.3744;
+    	  expAngle[std::pair<Int, Int>(12, 40)] = 136.4581;
+    	  expAngle[std::pair<Int, Int>(12, 60)] = 159.2728;
+    	  expAngle[std::pair<Int, Int>(12, 80)] = 165.6688;
+    	  expAngle[std::pair<Int, Int>(16, -80)] = -44.0092;
+    	  expAngle[std::pair<Int, Int>(16, -60)] = -40.9328;
+    	  expAngle[std::pair<Int, Int>(16, -40)] = -41.4595;
+    	  expAngle[std::pair<Int, Int>(16, -20)] = -45.7493;
+    	  expAngle[std::pair<Int, Int>(16, 0)] = -55.0481;
+    	  expAngle[std::pair<Int, Int>(16, 20)] = -71.2513;
+    	  expAngle[std::pair<Int, Int>(16, 40)] = -93.4928;
+    	  expAngle[std::pair<Int, Int>(16, 60)] = -114.4246;
+    	  expAngle[std::pair<Int, Int>(16, 80)] = -128.3950;
+    	  expAngle[std::pair<Int, Int>(20, -80)] = -101.8949;
+    	  expAngle[std::pair<Int, Int>(20, -60)] = -89.9440;
+    	  expAngle[std::pair<Int, Int>(20, -40)] = -78.0048;
+    	  expAngle[std::pair<Int, Int>(20, -20)] = -68.2810;
+    	  expAngle[std::pair<Int, Int>(20, 0)] = -61.8020;
+    	  expAngle[std::pair<Int, Int>(20, 20)] = -58.6459;
+    	  expAngle[std::pair<Int, Int>(20, 40)] = -58.6600;
+    	  expAngle[std::pair<Int, Int>(20, 60)] = -61.8452;
+    	  expAngle[std::pair<Int, Int>(20, 80)] = -68.3544;
+    	  // test various points around the sky
+    	  for (Int ha=0; ha<24; ha+=4) {
+    	      for (Int dec=-80; dec<85; dec+=20) {
+    	          DirectionCoordinate j2000(
+    	              MDirection::J2000, p, Quantity(ha*15, "deg"),
+    	              Quantity(dec, "deg"), Quantity(-1, "arcsec"),
+    	              Quantity(1, "arcsec"), xform, 100, 100
+    	          );
+    	          units = j2000.worldAxisUnits();
+    	          Vector<Double> j2000RefVal = j2000.referenceValue();
+    	          MDirection j2000RefDir(
+    	              Quantity(j2000RefVal[0], units[0]),
+    	              Quantity(j2000RefVal[1], units[1]),
+    	              MDirection::J2000
+    	          );
+    	          DirectionCoordinate toGalactic = j2000.convert(
+    	              angle, MDirection::GALACTIC
+    	          );
+    	          AlwaysAssert(
+    	              allEQ(toGalactic.worldAxisUnits(), units), AipsError
+    	          );
+    	          AlwaysAssert(
+    	              allEQ(toGalactic.linearTransform(), xform), AipsError
+    	          );
+    	          AlwaysAssert(
+    	              toGalactic.projection().type() == p.type(), AipsError
+    	          );
+    	          AlwaysAssert(
+    	              near(
+    	                  angle.getValue("deg"),
+    	                  expAngle[std::pair<Int, Int>(ha, dec)], 1e-4
+    	              ), AipsError
+    	          );
+    	          DirectionCoordinate backToJ2000 = toGalactic.convert(
+    	              angle, MDirection::J2000
+    	          );
+    	          Vector<Double> newJ2000RefVal = backToJ2000.referenceValue();
+    	          if (newJ2000RefVal[0] < -0.1) {
+    	              newJ2000RefVal[0] += 2*C::pi;
+    	          }
+    	          AlwaysAssert(
+    	              allNearAbs(newJ2000RefVal, j2000RefVal, 1e-9), AipsError
+    	          );
+    	          AlwaysAssert(
+    	              near(
+    	                  angle.getValue("deg"),
+    	                  -expAngle[std::pair<Int, Int>(ha, dec)], 1e-4
+    	              ), AipsError
+    	          );
+    	      }
+    	  }
       }
       {
     	  cout << "*** test hasSquarePixels()" << endl;

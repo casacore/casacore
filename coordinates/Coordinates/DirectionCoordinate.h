@@ -331,6 +331,10 @@ public:
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel, Bool useConversionFrame=True) const;
+
+    // <src>world</src> values must have units equivalent to the world axis
+    // units. If the coordinate has a conversion layer, the world coordinates
+    // must be supplied in the conversion frame.
     virtual Bool toPixel(Vector<Double> &pixel, 
 			 const Vector<Double> &world) const;
     // </group>
@@ -579,19 +583,27 @@ public:
     // get the pixel area.
     Quantity getPixelArea() const;
 
-    // Convert this coordinate to another reference frame by rotating it
-    // about the reference pixel so the the axes of the new reference frame
-    // are aligned along the cardinal directions (left-right, up-down).
-    // The reference pixel remains the same and the conversion is
-    // exact for the reference pixel and in general becomes less accurate
-    // as distance from reference pixel increases. The latitude like and
-    // the longitude like pixel increments are preserved.
+    // Convert this coordinate to another reference frame by rotating it about
+    // the reference pixel so the the axes of the new reference frame are
+    // aligned along the current pixel axes. The reference pixel remains the
+    // same and the conversion is exact for the reference pixel and in general
+    // becomes less accurate as distance from reference pixel increases. The
+    // latitude like and the longitude like pixel increments are preserved.
     // Conversions for which require extra information such as epoch and
     // position are not supported. The <src>angle</src> parameter is the angle
-    // through which this coordinate had to be rotated clockwise to produce
-    // the new coordinate.
-    DirectionCoordinate convert(Quantity& angle,
-                                MDirection::Types directionType) const;
+    // through which this coordinate had to be rotated clockwise to produce the
+    // new coordinate.
+    // NOTE: The angle returned is Double precision. However, in general,
+    // converting the returned coordinate back to the original frame produces an
+    // angle that is slightly different by the negative angle of the original
+    // conversion. This difference is often in the fifth digit, suggesting that
+    // at least one of the method calls in the implementation is not perfectly
+    // symmetric between coordinate frames. So, in general, until and unless
+    // that underlying precision issue is resolved, one should only consider
+    // the precision of the returned angle good to about five digits.
+    DirectionCoordinate convert(
+        Quantity& angle, MDirection::Types directionType
+    ) const;
 
     // Set the projection.
     void setProjection(const Projection&);
@@ -719,9 +731,6 @@ private:
     // Return unit conversion vector for converting to current units
     const Vector<Double> toCurrentFactors () const;
 
-    static Double _longitudeDifference(const Quantity& longAngleDifference,
-                                       const Quantity& latitude,
-                                       const Quantity& longitudePixelIncrement);
 };
 
 } //# NAMESPACE CASACORE - END
