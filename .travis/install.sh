@@ -8,8 +8,8 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
   wget https://repo.continuum.io/miniconda/Miniconda${MAJORPYTHONVERSION}-latest-MacOSX-x86_64.sh -O miniconda.sh;
 
   brew update >/dev/null
-  brew tap homebrew/science
-  brew install cfitsio wcslib fftw hdf5 ccache
+  brew cask uninstall oclint
+  brew install fftw hdf5 ccache
 
   bash miniconda.sh -b -p $HOME/miniconda
   export PATH="$HOME/miniconda/bin:$PATH"
@@ -18,7 +18,7 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
   conda update -q conda
   conda config --add channels conda-forge
   conda info -a
-  conda create -q -n testenv python=${PYTHONVERSION} numpy
+  conda create -q -n testenv python=${PYTHONVERSION} numpy wcslib cfitsio
   source activate testenv
   conda install -q -y -c meznom boost-python
 fi
