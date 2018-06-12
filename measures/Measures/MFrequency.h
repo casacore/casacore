@@ -315,7 +315,7 @@ class MFrequency : public MeasBase<MVFrequency, MeasRef<MFrequency> > {
   // </group>
   
   // Make a rest frequency using a Doppler velocity
-  MFrequency toRest(const MDoppler &dop);
+  MFrequency toRest(const MDoppler &dop) const;
   // For local use only
   static MFrequency toRest(const Measure &in, const Measure &dop);
   

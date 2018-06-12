@@ -77,7 +77,7 @@ public:
     // Turn a constant array with one element into a scalar.
     // It returns a zero pointer if not possible.
     // The default implementation returns 0.
-    virtual TableExprNodeRep* makeConstantScalar();
+    virtual TENShPtr makeConstantScalar();
 
     // Validate the given index against the array's shape.
     // Treat a negative as an index from the end (a la python) and replace it.
@@ -217,7 +217,7 @@ public:
     ~TableExprNodeArrayColumn();
 
     // This node represents a table column.
-    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
   
     // Do not apply the selection.
     virtual void disableApplySelection();
@@ -726,7 +726,7 @@ public:
 
     // Check if the index values match the dimensionality and shape
     // of fixed-shaped array.
-    void checkIndexValues (const TableExprNodeRep* arrayNode);
+    void checkIndexValues (const TENShPtr& arrayNode);
 
     // Get the Slicer value for a constant index.
     const Slicer& getConstantSlicer() const;
@@ -755,7 +755,7 @@ protected:
     void fillSlicer (const TableExprId& id);
 
     // Get the shape of the node involved. Reverse axes if needed.
-    IPosition getNodeShape (const TableExprNodeRep* arrayNode) const;
+    IPosition getNodeShape (const TENShPtr& arrayNode) const;
 };
 
 
@@ -786,42 +786,43 @@ protected:
 class TableExprNodeArrayPart : public TableExprNodeArray
 {
 public:
-    TableExprNodeArrayPart (TableExprNodeRep* arrayNode, TableExprNodeIndex*);
+    TableExprNodeArrayPart (const TENShPtr& arrayNode,
+                            const TENShPtr& indexNode);
     ~TableExprNodeArrayPart();
 
     // Show the node.
-    void show (ostream& os, uInt indent) const;
+    virtual void show (ostream& os, uInt indent) const;
 
-    Bool     getBool     (const TableExprId& id);
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
-    DComplex getDComplex (const TableExprId& id);
-    String   getString   (const TableExprId& id);
-    MVTime   getDate     (const TableExprId& id);
+    virtual Bool     getBool     (const TableExprId& id);
+    virtual Int64    getInt      (const TableExprId& id);
+    virtual Double   getDouble   (const TableExprId& id);
+    virtual DComplex getDComplex (const TableExprId& id);
+    virtual String   getString   (const TableExprId& id);
+    virtual MVTime   getDate     (const TableExprId& id);
 
-    MArray<Bool>     getArrayBool     (const TableExprId& id);
-    MArray<Int64>    getArrayInt      (const TableExprId& id);
-    MArray<Double>   getArrayDouble   (const TableExprId& id);
-    MArray<DComplex> getArrayDComplex (const TableExprId& id);
-    MArray<String>   getArrayString   (const TableExprId& id);
-    MArray<MVTime>   getArrayDate     (const TableExprId& id);
+    virtual MArray<Bool>     getArrayBool     (const TableExprId& id);
+    virtual MArray<Int64>    getArrayInt      (const TableExprId& id);
+    virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
+    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
+    virtual MArray<String>   getArrayString   (const TableExprId& id);
+    virtual MArray<MVTime>   getArrayDate     (const TableExprId& id);
 
     // Get the data type of this column (if possible).
     // It returns with a False status when the index is not constant
     // (that means that the index can vary with row number).
-    Bool getColumnDataType (DataType&) const;
+    virtual Bool getColumnDataType (DataType&) const;
 
-    Array<Bool>     getColumnBool (const Vector<uInt>& rownrs);
-    Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs);
-    Array<Short>    getColumnShort (const Vector<uInt>& rownrs);
-    Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
-    Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
-    Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
-    Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
-    Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
-    Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);
-    Array<DComplex> getColumnDComplex (const Vector<uInt>& rownrs);
-    Array<String>   getColumnString (const Vector<uInt>& rownrs);
+    virtual Array<Bool>     getColumnBool (const Vector<uInt>& rownrs);
+    virtual Array<uChar>    getColumnuChar (const Vector<uInt>& rownrs);
+    virtual Array<Short>    getColumnShort (const Vector<uInt>& rownrs);
+    virtual Array<uShort>   getColumnuShort (const Vector<uInt>& rownrs);
+    virtual Array<Int>      getColumnInt (const Vector<uInt>& rownrs);
+    virtual Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs);
+    virtual Array<Float>    getColumnFloat (const Vector<uInt>& rownrs);
+    virtual Array<Double>   getColumnDouble (const Vector<uInt>& rownrs);
+    virtual Array<Complex>  getColumnComplex (const Vector<uInt>& rownrs);
+    virtual Array<DComplex> getColumnDComplex (const Vector<uInt>& rownrs);
+    virtual Array<String>   getColumnString (const Vector<uInt>& rownrs);
 
     // Get the index node.
     const TableExprNodeIndex* getIndexNode() const;
@@ -831,7 +832,7 @@ public:
     const TableExprNodeArrayColumn* getColumnNode() const;
 
 private:
-    TableExprNodeIndex*       indexNode_p;
+    TableExprNodeIndex*       inxNode_p;
     TableExprNodeArray*       arrNode_p;
     TableExprNodeArrayColumn* colNode_p;   //# 0 if arrNode is no arraycolumn
 }; 
@@ -862,7 +863,7 @@ inline const TableColumn& TableExprNodeArrayColumn::getColumn() const
 
 inline const TableExprNodeIndex* TableExprNodeArrayPart::getIndexNode() const
 { 
-    return indexNode_p;
+    return inxNode_p;
 }
 
 inline const TableExprNodeArrayColumn*

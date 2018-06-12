@@ -66,14 +66,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprAggrNodeArray (TableExprFuncNode::FunctionType,
                             NodeDataType, ValueType,
                             const TableExprNodeSet& source,
+                            const vector<TENShPtr>& nodes,
+                            const Block<Int>& dtypeOper,
                             const TaQLStyle& style);
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
+    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
 
     // Get the operand node.
-    TableExprNodeRep* operand()
-    { return (operands().empty()  ?  0 : operands()[0]); }
+    TENShPtr operand()
+    { return (operands().empty()  ?  TENShPtr() : operands()[0]); }
 
     // Create the correct aggregate function object.
     virtual CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();

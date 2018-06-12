@@ -33,6 +33,7 @@
 #include <casacore/tables/TaQL/ExprNodeRep.h>
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
+#include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/OS/Mutex.h>
 #include <casacore/casa/stdmap.h>
@@ -104,6 +105,8 @@ namespace casacore {
   //                        (operands(), 0, operands().size()));</src>
   //        </ul>
   //        See class TableExprFuncNode for more info about these functions.
+  //    <li>Optionally define attributes as a Record object. They can be used
+  //        by UDFs to tell something more about the type of value.
   //    <li>Optionally define if the result is a constant value using
   //        <src>setConstant</src>. It means that the function is not
   //        dependent on the row number in the table being queried.
@@ -265,6 +268,10 @@ namespace casacore {
     const String& getUnit() const
       { return itsUnit; }
 
+    // Get the attributes.
+    const Record& getAttributes() const
+      { return itsAttributes; }
+
     // Get the nodes in the function operands representing an aggregate function.
     void getAggrNodes (vector<TableExprNodeRep*>& aggr);
 
@@ -278,7 +285,7 @@ namespace casacore {
 
   protected:
     // Get the operands.
-    PtrBlock<TableExprNodeRep*>& operands()
+    std::vector<TENShPtr>& operands()
       { return itsOperands; }
 
     // Set the data type.
@@ -300,6 +307,11 @@ namespace casacore {
     // class, the result has no unit.
     void setUnit (const String& unit);
 
+    // Set the attributes of the result.
+    // If this function is not called by the setup function of the derived
+    // class, the result has no attributes.
+    void setAttributes (const Record& attributes);
+
     // Define if the result is constant (e.g. if all arguments are constant).
     // If this function is not called by the setup function of the derived
     // class, the result is not constant.
@@ -320,7 +332,7 @@ namespace casacore {
     static void registerUDF (const String& name, MakeUDFObject* func);
 
     // Initialize the function object.
-    void init (const PtrBlock<TableExprNodeRep*>& arg,
+    void init (const std::vector<TENShPtr>& arg,
                const Table& table, const TaQLStyle&);
 
     // Get the data type.
@@ -359,11 +371,12 @@ namespace casacore {
 
   private:
     //# Data members.
-    PtrBlock<TableExprNodeRep*>    itsOperands;
+    std::vector<TENShPtr>          itsOperands;
     TableExprNodeRep::NodeDataType itsDataType;
     Int                            itsNDim;
     IPosition                      itsShape;
     String                         itsUnit;
+    Record                         itsAttributes;
     Bool                           itsIsConstant;
     Bool                           itsIsAggregate;
     Bool                           itsApplySelection;

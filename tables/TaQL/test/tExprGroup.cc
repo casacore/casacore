@@ -67,7 +67,7 @@ void check (const TableExprNode& expr,
   cout << "Test " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
-    (dynamic_cast<const TableExprAggrNode&>(*expr.getNodeRep()));
+    (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
@@ -89,7 +89,7 @@ void check (const TableExprNode& expr,
   cout << "Test " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
-    (dynamic_cast<const TableExprAggrNode&>(*expr.getNodeRep()));
+    (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
@@ -111,7 +111,7 @@ void check (const TableExprNode& expr,
   cout << "Test " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
-    (dynamic_cast<const TableExprAggrNode&>(*expr.getNodeRep()));
+    (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
@@ -133,7 +133,7 @@ void check (const TableExprNode& expr,
   cout << "Test " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
-    (dynamic_cast<const TableExprAggrNode&>(*expr.getNodeRep()));
+    (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
@@ -155,7 +155,7 @@ void checkLazy (const TableExprNode& expr,
   cout << "Test lazy " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
-    (dynamic_cast<const TableExprAggrNode&>(*expr.getNodeRep()));
+    (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   TableExprGroupExprId funcid(0);
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);

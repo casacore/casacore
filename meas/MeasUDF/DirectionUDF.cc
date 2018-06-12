@@ -86,7 +86,7 @@ namespace casacore {
     } else if (itsType == ITRF) {
       itsRefType = MDirection::ITRF;
     } else {
-      itsEngine.handleDirType (operands()[0]);
+      itsEngine.handleMeasType (operands()[0], True);
       itsRefType = itsEngine.refType();
       argnr = 1;
     }
@@ -94,7 +94,8 @@ namespace casacore {
     if (operands().size() <= argnr) {
       throw AipsError ("No direction given in a MEAS function");
     }
-    itsEngine.handleDirection (operands(), argnr, itsRiseSet);
+    itsEngine.handleDirection (operands(), argnr, itsRiseSet,
+                               itsType==DIRCOS);
     // Handle possible Epoch arguments.
     if (operands().size() > argnr) {
       itsEpochEngine.handleEpoch (operands(), argnr);
@@ -127,6 +128,7 @@ namespace casacore {
     }
     setUnit (itsEngine.unit().getName());
     setConstant (itsEngine.isConstant());
+    setAttributes (itsEngine.makeAttributes (itsRefType, itsType));
   }
 
   Double DirectionUDF::getDouble (const TableExprId& id)

@@ -52,6 +52,7 @@ class TableExprNodeIndex;
 class TableColumn;
 class AipsIO;
 template<class T> class Vector;
+template<class T> class ArrayColumn;
 
 
 // <summary>
@@ -630,7 +631,7 @@ private:
   // <br> bit 0:  on = groupby is given
   // <br> bit 1:  on = aggregate functions are given
   // <br> bit 2:  on = only select count(*) aggregate function is given
-  Int testGroupAggr (vector<TableExprNodeRep*>& aggr) const;
+  Int testGroupAggr (std::vector<TableExprNodeRep*>& aggr) const;
 
   // Get the aggregate functions used in SELECT and HAVING.
   vector<TableExprNodeRep*> getAggrNodes() const;
@@ -703,7 +704,7 @@ private:
 
   // Do the groupby/aggregate step and return its result.
   CountedPtr<TableExprGroupResult> doGroupby
-  (bool showTimings, vector<TableExprNodeRep*> aggrNodes,
+  (bool showTimings, const std::vector<TableExprNodeRep*> aggrNodes,
    Int groupAggrUsed);
 
   // Do the HAVING step.
@@ -715,7 +716,7 @@ private:
 
   // Do a full groupby/aggregate step.
   CountedPtr<TableExprGroupResult> doGroupByAggr
-  (const vector<TableExprNodeRep*>& aggrNodes);
+  (const std::vector<TableExprNodeRep*>& aggrNodes);
 
   // Do the sort step.
   void doSort (Bool showTimings);
@@ -802,7 +803,8 @@ private:
 		      const String& dmType, const String& dmGroup,
 		      const String& comment,
                       const TableRecord& keywordSet,
-		      const String& unitName);
+		      const Vector<String>& unitName,
+                      const Record& attributes);
 
   // Find the names of all stored columns in a table.
   Block<String> getStoredColumns (const Table& tab) const;
@@ -829,7 +831,7 @@ private:
   // a single groupby key is given.
   // This offers much faster map access then doGroupByAggrMultiple.
   template<typename T>
-  vector<CountedPtr<TableExprGroupFuncSet> > doGroupByAggrSingleKey
+  std::vector<CountedPtr<TableExprGroupFuncSet> > doGroupByAggrSingleKey
   (const vector<TableExprNodeRep*>& aggrNodes)
   {
     // We have to group the data according to the (possibly empty) groupby.
@@ -866,7 +868,7 @@ private:
 
   // Create the set of aggregate functions and groupby keys in case
   // multiple keys are given.
-  vector<CountedPtr<TableExprGroupFuncSet> > doGroupByAggrMultipleKeys
+  std::vector<CountedPtr<TableExprGroupFuncSet> > doGroupByAggrMultipleKeys
   (const vector<TableExprNodeRep*>& aggrNodes);
 
   //# Command type.

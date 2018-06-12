@@ -142,7 +142,7 @@ const MeasFrame &MeasRef<Ms>::framePosition(MRBase &ref1,
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().position()) {
   } else {
-    throw(AipsError("No MeasFrame specified for conversion of " + 
+    throw(AipsError("No MeasFrame position specified for conversion of " + 
 		    Ms::showMe()));
   }
   return ref2.getFrame();
@@ -155,7 +155,7 @@ const MeasFrame &MeasRef<Ms>::frameEpoch(MRBase &ref1,
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().epoch()) {
   } else {
-    throw(AipsError("No MeasFrame specified for conversion of " + 
+    throw(AipsError("No MeasFrame epoch specified for conversion of " + 
 		    Ms::showMe()));
   }
   return ref2.getFrame();
@@ -168,7 +168,7 @@ const MeasFrame &MeasRef<Ms>::frameDirection(MRBase &ref1,
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().direction()) {
   } else {
-    throw(AipsError("No MeasFrame specified for conversion of " + 
+    throw(AipsError("No MeasFrame direction specified for conversion of " + 
 		    Ms::showMe()));
   }
   return ref2.getFrame();
@@ -194,7 +194,7 @@ const MeasFrame &MeasRef<Ms>::frameComet(MRBase &ref1,
     return ref1.getFrame();
   } else if (!ref2.empty() && ref2.getFrame().comet()) {
   } else {
-    throw(AipsError("No MeasFrame specified for conversion of " + 
+    throw(AipsError("No MeasFrame comet specified for conversion of " + 
 		    Ms::showMe()));
   }
   return ref2.getFrame();

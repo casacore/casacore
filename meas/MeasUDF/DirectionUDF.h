@@ -31,13 +31,9 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/meas/MeasUDF/DirectionEngine.h>
+#include <casacore/meas/MeasUDF/EpochEngine.h>
+#include <casacore/meas/MeasUDF/PositionEngine.h>
 #include <casacore/tables/TaQL/UDFBase.h>
-#include <casacore/tables/TaQL/ExprNode.h>
-#include <casacore/measures/Measures/MDirection.h>
-#include <casacore/measures/Measures/MPosition.h>
-#include <casacore/measures/Measures/MEpoch.h>
-#include <casacore/measures/Measures/MCDirection.h>
-#include <casacore/measures/Measures/MeasConvert.h>
 
 namespace casacore {
 

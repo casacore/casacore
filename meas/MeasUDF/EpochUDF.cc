@@ -50,7 +50,7 @@ namespace casacore {
       itsRefType = MEpoch::LAST;
       itsSidFrac = True;
     } else {
-      itsEngine.handleEpochType (operands()[0], True);
+      itsEngine.handleMeasType (operands()[0], True);
       itsRefType = itsEngine.refType();
       itsSidFrac = itsEngine.sidFrac();
       argnr = 1;
@@ -62,7 +62,7 @@ namespace casacore {
     itsEngine.handleEpoch (operands(), argnr);
     // Handle possible Position arguments.
     if (operands().size() > argnr) {
-      itsPositionEngine.handlePosition (0, operands(), argnr);
+      itsPositionEngine.handlePosition (1, operands(), argnr);
       itsEngine.setPositionEngine (itsPositionEngine);
     }
     if (operands().size() > argnr) {
@@ -83,6 +83,7 @@ namespace casacore {
     }
     setUnit (itsEngine.unit().getName());
     setConstant (itsEngine.isConstant());
+    setAttributes (itsEngine.makeAttributes (itsRefType));
   }
 
   Double EpochUDF::getDouble (const TableExprId& id)
