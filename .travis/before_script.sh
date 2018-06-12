@@ -37,8 +37,8 @@ if [ "$TRAVIS_OS_NAME" = osx ]; then
     BUILD_PYTHON3=On
   fi
 
-  CMAKE_PREFIX_PATH=/Users/travis/miniconda/envs/testenv/lib
-  ls /Users/travis/miniconda/envs/testenv/lib
+  CMAKE_PREFIX_PATH=/Users/travis/miniconda/envs/testenv/
+  ls /Users/travis/miniconda/envs/testenv/
 else
   PYTHON2_EXECUTABLE=/usr/bin/python2.7
   PYTHON3_EXECUTABLE=/usr/bin/python3.4
