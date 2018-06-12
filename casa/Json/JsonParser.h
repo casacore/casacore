@@ -82,6 +82,8 @@ namespace casacore {
 
   // <motivation>
   // JSON is a commonly used interchange format.
+  // However, commonly available parsers do not support data type Complex. Also, comments
+  // are often not supported (alas standard Json does not allow comments).
   // </motivation>
 
   //# <todo asof="1996/03/10">

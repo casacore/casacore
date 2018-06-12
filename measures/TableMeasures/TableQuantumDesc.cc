@@ -128,8 +128,9 @@ TableQuantumDesc* TableQuantumDesc::reconstruct (const TableDesc& td,
       Vector<String> unitNames = columnKeyset.asArrayString(fnr);
       p = new TableQuantumDesc(td, columnName, unitNames);
     } else {
-      throw(AipsError("TableQuantum::reconstruct; Not a Quantum"
-		      " column: " + columnName));
+      // A measure such as Doppler does not have units, but uses
+      // a single empty unit for easier processing in other classes.
+      p = new TableQuantumDesc(td, columnName, Vector<String>(1));
     }
   }
   return p;

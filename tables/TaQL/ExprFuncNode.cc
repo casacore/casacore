@@ -51,51 +51,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
 				      ValueType vtype,
 				      const TableExprNodeSet& source,
+                                      const vector<TENShPtr>& nodes,
+                                      const Block<Int>& dtypeOper,
                                       const Table& table)
 : TableExprNodeMulti (dtype, vtype, OtFunc, source),
   funcType_p         (ftype),
   argDataType_p      (dtype),
   scale_p            (1),
   table_p            (table)
-{}
+{
+  // Fill child nodes as needed. It also fills operands_p.
+  fillChildNodes (nodes, dtypeOper);
+  // Set the unit for some functions.
+  fillUnits();
+  // Some functions on a variable can already give a constant result.
+  tryToConst();
+}
 
 TableExprFuncNode::~TableExprFuncNode()
 {}
 
-// Fill the children pointers of a node.
-// Also reduce the tree if possible by combining constants.
-// If one of the nodes is a constant, convert its type if
-// it does not match the other one.
-TableExprNodeRep* TableExprFuncNode::fillNode
-                                   (TableExprFuncNode* thisNode,
-				    PtrBlock<TableExprNodeRep*>& nodes,
-				    const Block<Int>& dtypeOper)
+void TableExprFuncNode::fillUnits()
 {
-    // Fill child nodes as needed. It also fills operands_p.
-    fillChildNodes (thisNode, nodes, dtypeOper);
-    // Set the unit for some functions.
-    Double scale = fillUnits (thisNode, thisNode->operands_p,
-                              thisNode->funcType());
-    thisNode->setScale (scale);
-    // Some functions on a variable can already give a constant result.
-    thisNode->tryToConst();
-    if (thisNode->operands_p.nelements() > 0) {
-	return convertNode (thisNode, True);
-    }
-    return thisNode;
-}
-
-Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
-                                     PtrBlock<TableExprNodeRep*>& nodes,
-                                     FunctionType func)
-{
-  Double scale = 1;
-  if (func == cFUNC) {
-    node->setUnit ("m/s");
+  if (funcType_p == cFUNC) {
+    setUnit ("m/s");
   }
-  if (nodes.nelements() > 0) {
-    const Unit& childUnit = nodes[0]->unit();
-    switch (func) {
+  if (operands_p.size() > 0) {
+    const Unit& childUnit = operands_p[0]->unit();
+    switch (funcType_p) {
     case asinFUNC:
     case acosFUNC:
     case atanFUNC:
@@ -103,16 +86,16 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case timeFUNC:
     case argFUNC:
       // These functions return radians.
-      node->setUnit ("rad");
+      setUnit ("rad");
       break;
     case mjdFUNC:
       // These functions return days.
-      node->setUnit ("d");
+      setUnit ("d");
       break;
     case mjdtodateFUNC:
       // These functions require days.
       if (! childUnit.empty()) {
-        TableExprNodeUnit::adaptUnit (nodes[0], "d");
+        TableExprNodeUnit::adaptUnit (operands_p[0], "d");
       }
       break;
     case absFUNC:
@@ -181,7 +164,7 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case gmedianFUNC:
     case gfractileFUNC:
       // These functions return the same unit as their child.
-      node->setUnit (childUnit);
+      setUnit (childUnit);
       break;
     case normFUNC:
     case squareFUNC:
@@ -198,13 +181,13 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
      // These functions return the square of their child.
       if (! childUnit.empty()) {
         Quantity q(1., childUnit);
-        node->setUnit ((q*q).getFullUnit());
+        setUnit ((q*q).getFullUnit());
       }
       break;
     case cubeFUNC:
       if (! childUnit.empty()) {
         Quantity q(1., childUnit);
-        node->setUnit ((q*q*q).getFullUnit());
+        setUnit ((q*q*q).getFullUnit());
       }
       break;
     case sqrtFUNC:
@@ -213,8 +196,8 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
         Quantity q(1., childUnit);
         Quantity qs(sqrt(q));
         // sqrt result is always in SI units, so scaling might be involved.
-        scale = qs.getValue();
-        node->setUnit (qs.getFullUnit());
+        scale_p = qs.getValue();
+        setUnit (qs.getFullUnit());
       }
       break;
     case sinFUNC:
@@ -225,28 +208,28 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case hdmsFUNC:
       // These functions return no unit, but their child must be in radians.
       if (! childUnit.empty()) {
-        TableExprNodeUnit::adaptUnit (nodes[0], "rad");
+        TableExprNodeUnit::adaptUnit (operands_p[0], "rad");
       }
       break;
     case iifFUNC:
-      node->setUnit (makeEqualUnits (nodes, 1, nodes.nelements()));
+      setUnit (makeEqualUnits (operands_p, 1, operands_p.size()));
       break;
     case complexFUNC:
     case minFUNC:
     case maxFUNC:
-      node->setUnit (makeEqualUnits (nodes, 0, nodes.nelements()));
+      setUnit (makeEqualUnits (operands_p, 0, operands_p.size()));
       break;
     case near2FUNC:
     case nearabs2FUNC:
     case near3FUNC:
-      makeEqualUnits (nodes, 0, 2);
+      makeEqualUnits (operands_p, 0, 2);
       break;
     case nearabs3FUNC:
-      makeEqualUnits (nodes, 0, 3);
+      makeEqualUnits (operands_p, 0, 3);
       break;
     case angdistFUNC:
     case angdistxFUNC:
-      node->setUnit ("rad");
+      setUnit ("rad");
       // fall through
     case conesFUNC:
     case cones3FUNC:
@@ -254,8 +237,8 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
     case anycone3FUNC:
     case findconeFUNC:
     case findcone3FUNC:
-      for (uInt i=0; i<nodes.nelements(); ++i) {
-        TableExprNodeUnit::adaptUnit (nodes[i], "rad");
+      for (uInt i=0; i<operands_p.size(); ++i) {
+        TableExprNodeUnit::adaptUnit (operands_p[i], "rad");
       }
       break;
     default:
@@ -263,12 +246,10 @@ Double TableExprFuncNode::fillUnits (TableExprNodeRep* node,
       break;
     }
   }
-  return scale;
 }
 
-const Unit& TableExprFuncNode::makeEqualUnits
-                             (PtrBlock<TableExprNodeRep*>& nodes,
-			      uInt starg, uInt endarg)
+const Unit& TableExprFuncNode::makeEqualUnits (vector<TENShPtr>& nodes,
+                                               uInt starg, uInt endarg)
 {
   // These functions have multiple children, which must have the same unit.
   // The first real unit is chosen as the result unit.
@@ -288,64 +269,61 @@ const Unit& TableExprFuncNode::makeEqualUnits
 }
 
 // Fill the children pointers of a node.
-void TableExprFuncNode::fillChildNodes (TableExprFuncNode* thisNode,
-					PtrBlock<TableExprNodeRep*>& nodes,
+void TableExprFuncNode::fillChildNodes (const vector<TENShPtr>& nodes,
 					const Block<Int>& dtypeOper)
 {
-    uInt i;
-    // Copy block of children.
-    // Determine if common argument type is Int, Double or Complex.
-    // (this is used by some functions like near and norm).
-    thisNode->operands_p.resize (nodes.nelements());
-    thisNode->argDataType_p = NTInt;
-    for (i=0; i<nodes.nelements(); i++) {
-	thisNode->operands_p[i] = nodes[i]->link();
-	if (nodes[i]->dataType() == NTDouble
-          &&  thisNode->argDataType_p != NTComplex) {
-	    thisNode->argDataType_p = NTDouble;
-	} else if (nodes[i]->dataType() == NTComplex) {
-	    thisNode->argDataType_p = NTComplex;
-	}
+  // Copy block of children.
+  // Determine if common argument type is Int, Double or Complex.
+  // (this is used by some functions like near and norm).
+  operands_p.resize (nodes.size());
+  argDataType_p = NTInt;
+  for (uInt i=0; i<nodes.size(); i++) {
+    operands_p[i] = nodes[i];
+    if (nodes[i]->dataType() == NTDouble
+        &&  argDataType_p != NTComplex) {
+      argDataType_p = NTDouble;
+    } else if (nodes[i]->dataType() == NTComplex) {
+      argDataType_p = NTComplex;
     }
-    // Convert String to Date if needed
-    for (i=0; i<nodes.nelements(); i++) {
-	if (dtypeOper[i] == NTDate) {
-            if (nodes[i]->dataType() == NTString) {
-                TableExprNode dNode = datetime (thisNode->operands_p[i]);
-                unlink (thisNode->operands_p[i]);
-                thisNode->operands_p[i] = getRep (dNode)->link();
-            } else if (nodes[i]->dataType() == NTDouble) {
-                TableExprNode dNode = mjdtodate (thisNode->operands_p[i]);
-                unlink (thisNode->operands_p[i]);
-                thisNode->operands_p[i] = getRep (dNode)->link();
-            }
-        }
+  }
+  // Convert String to Date if needed
+  for (uInt i=0; i<nodes.size(); i++) {
+    if (dtypeOper[i] == NTDate) {
+      if (nodes[i]->dataType() == NTString) {
+        TableExprNode dNode = datetime (operands_p[i]);
+        operands_p[i] = dNode.getRep();
+      } else if (nodes[i]->dataType() == NTDouble  ||
+                 nodes[i]->dataType() == NTInt) {
+        TableExprNode dNode = mjdtodate (operands_p[i]);
+        operands_p[i] = dNode.getRep();
+      }
     }
+  }
 }
 
 void TableExprFuncNode::tryToConst()
 {
-    switch (funcType_p) {
-    case ndimFUNC:
-	if (operands_p[0]->ndim() >= 0) {
-	    exprtype_p = Constant;
-	}
-	break;
-    case nelemFUNC:
-    case isdefFUNC:
-    case isnullFUNC:
-	if (operands_p[0]->ndim() == 0
-        ||  operands_p[0]->shape().nelements() > 0  ) {
-	    exprtype_p = Constant;
-	}
-	break;
-    case iscolFUNC:
-    case iskeyFUNC:
-        exprtype_p = Constant;
-        break;
-    default:
-	break;
+  switch (funcType_p) {
+  case ndimFUNC:
+    if (operands_p[0]->ndim() >= 0) {
+      exprtype_p = Constant;
     }
+    break;
+  case nelemFUNC:
+  case isdefFUNC:
+  case isnullFUNC:
+    if (operands_p[0]->ndim() == 0
+        ||  operands_p[0]->shape().size() > 0  ) {
+      exprtype_p = Constant;
+    }
+    break;
+  case iscolFUNC:
+  case iskeyFUNC:
+    exprtype_p = Constant;
+    break;
+  default:
+    break;
+  }
 }
 
 Bool TableExprFuncNode::getBool (const TableExprId& id)
@@ -604,7 +582,7 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
       {
         // Return fixed dimensionality if available.
         Int64 nrdim = operands_p[0]->ndim();
-	return (nrdim >= 0  ?  nrdim : operands_p[0]->shape(id).nelements());
+	return (nrdim >= 0  ?  nrdim : operands_p[0]->shape(id).size());
       }
     case nelemFUNC:
 	return (operands_p[0]->valueType() == VTScalar  ?
@@ -1093,7 +1071,7 @@ MVTime TableExprFuncNode::getDate (const TableExprId& id)
 }
 
 void TableExprFuncNode::getPrintFormat (String& fmt, Int& width, Int& prec,
-                                        const PtrBlock<TableExprNodeRep*>& operands,
+                                        const vector<TENShPtr>& operands,
                                         const TableExprId& id)
 {
   width = 0;
@@ -1298,7 +1276,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
                                  (Block<Int>& dtypeOper,
 				  ValueType& resVT, Block<Int>&,
 				  FunctionType fType,
-				  PtrBlock<TableExprNodeRep*>& nodes)
+				  vector<TENShPtr>& nodes)
 {
     uInt i;
     // The default returned value type is a scalar.
@@ -1507,7 +1485,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	    }
 	}
 	// Check if first argument has correct type.
-	PtrBlock<TableExprNodeRep*> nodeTmp(1);
+	vector<TENShPtr> nodeTmp(1);
 	nodeTmp[0] = nodes[0];
 	Block<Int> dtypeTmp;    // Gets filled in by checkDT
 	dtout = checkDT (dtypeTmp, dtin, dtout, nodeTmp);
@@ -1519,7 +1497,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
                 (nodes[i]->dataType() != NTInt  &&
                  nodes[i]->dataType() != NTDouble)) {
 	      throw TableInvExpr ("2nd argument of function FRACTILE "
-				  "has to be an real scalar");
+				  "has to be a real scalar");
 	    }
 	  }
 	}
@@ -1534,7 +1512,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         // Check if an optional arg (voor expand) is an Int.
         if (nodes.size() == axarg+optarg+1) {
           if (nodes[axarg+optarg]->dataType() != NTInt) {
-            throw TableInvExpr ("The 3rd argument of RESIZE"
+            throw TableInvExpr ("3rd argument of function RESIZE"
                                 " has to be integer");
           }
         }
@@ -1546,7 +1524,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     // The following functions accept scalars and arrays.
     // They return an array if one of the input arguments is an array.
     // If a function has no arguments, it results in a scalar.
-    for (i=0; i< nodes.nelements(); i++) {
+    for (i=0; i< nodes.size(); i++) {
         ValueType vt = nodes[i]->valueType();
 	if (vt == VTArray) {
 	    resVT = vt;
@@ -1745,7 +1723,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     {
 	checkNumOfArg (3, 3, nodes);
 	// Check if tolerance has a Real value.
-	PtrBlock<TableExprNodeRep*> nodeTol(1);
+	vector<TENShPtr> nodeTol(1);
 	nodeTol[0] = nodes[2];
 	checkDT (dtypeOper, NTReal, NTBool, nodeTol);
 	return checkDT (dtypeOper, NTNumeric, NTBool, nodes);
@@ -1777,9 +1755,9 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case iifFUNC:
       {
 	checkNumOfArg (3, 3, nodes);
-	PtrBlock<TableExprNodeRep*> nodeCond(1);
+	vector<TENShPtr> nodeCond(1);
 	nodeCond[0] = nodes[0];
-	PtrBlock<TableExprNodeRep*> nodeArg(2);
+	vector<TENShPtr> nodeArg(2);
 	nodeArg[0] = nodes[1];
 	nodeArg[1] = nodes[2];
 	Block<Int> dtypeTmp;
@@ -1795,7 +1773,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	break;
     }
     // The following functions accept scalars only (or no arguments).
-    for (i=0; i< nodes.nelements(); i++) {
+    for (i=0; i< nodes.size(); i++) {
 	if (nodes[i]->valueType() != VTScalar) {
 	    throw TableInvExpr ("Function nr " + String::toString(fType) +
                                 " has to have a scalar argument");

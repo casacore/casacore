@@ -318,6 +318,8 @@ public:
     // Constructor
     TableExprFuncNode (FunctionType, NodeDataType, ValueType,
 		       const TableExprNodeSet& source,
+                       const vector<TENShPtr>& nodes,
+                       const Block<Int>& dtypeOper,
                        const Table& = Table());
 
     // Destructor
@@ -342,31 +344,17 @@ public:
 				       ValueType& resVT,
 				       Block<Int>& vtypeOper,
 				       FunctionType,
-				       PtrBlock<TableExprNodeRep*>&);
+				       std::vector<TENShPtr>&);
 
     // Fill the result unit in the node.
     // Adapt the children nodes if their units need to be converted.
     // It returns a possible scale factor in case result unit is SI (for sqrt).
-    static Double fillUnits (TableExprNodeRep* node,
-                             PtrBlock<TableExprNodeRep*>& nodes,
-                             FunctionType func);
-
-    // Link the children to the node and convert the children
-    // to constants if possible. Also convert the node to
-    // constant if possible.
-    static TableExprNodeRep* fillNode (TableExprFuncNode* thisNode,
-				       PtrBlock<TableExprNodeRep*>& nodes,
-				       const Block<Int>& dtypeOper);
+    void fillUnits();
 
     // Link the children to the node and convert the children
     // to constants if possible.
-    static void fillChildNodes (TableExprFuncNode* thisNode,
-				PtrBlock<TableExprNodeRep*>& nodes,
-				const Block<Int>& dtypeOper);
-
-    // Set unit scale factor (needed for sqrt).
-    void setScale (Double scale)
-        { scale_p = scale; }
+    void fillChildNodes (const vector<TENShPtr>& nodes,
+                         const Block<Int>& dtypeOper);
 
     // Get possible unit scale factor (needed for sqrt).
     Double getScale() const
@@ -374,9 +362,9 @@ public:
 
     // Some functions to be used by TableExprNodeFuncArray.
     // <group>
-    const PtrBlock<TableExprNodeRep*>& operands() const
+    const std::vector<TENShPtr>& operands() const
         { return operands_p; }
-    PtrBlock<TableExprNodeRep*>& rwOperands()
+    std::vector<TENShPtr>& rwOperands()
         { return operands_p; }
     FunctionType funcType() const
         { return funcType_p; }
@@ -386,7 +374,7 @@ public:
 
     // Get the possible print format, width, and/or precision.
     static void getPrintFormat (String& fmt, Int& width, Int& prec,
-                                const PtrBlock<TableExprNodeRep*>& operands,
+                                const std::vector<TENShPtr>& operands,
                                 const TableExprId& id);
 
     // Convert the date and/or time to a string.
@@ -445,7 +433,7 @@ private:
 
     // Make the units of nodes from <src>starg</src> till <src>endarg</src>
     // equal. Return the unit found.
-    static const Unit& makeEqualUnits (PtrBlock<TableExprNodeRep*>& nodes,
+    static const Unit& makeEqualUnits (std::vector<TENShPtr>& nodes,
 				       uInt starg, uInt endarg);
 
     //# Data members.

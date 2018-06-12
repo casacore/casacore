@@ -39,8 +39,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TableExprAggrNodeArray::TableExprAggrNodeArray
   (TableExprFuncNode::FunctionType ftype,
    NodeDataType dtype, ValueType vtype,
-   const TableExprNodeSet& source, const TaQLStyle& style)
-    : TableExprFuncNodeArray (ftype, dtype, vtype, source, style)
+   const TableExprNodeSet& source,
+   const vector<TENShPtr>& nodes,
+   const Block<Int>& dtypeOper,
+   const TaQLStyle& style)
+   : TableExprFuncNodeArray (ftype, dtype, vtype, source,
+                             nodes, dtypeOper, style)
   {
     // Always treat an aggregate as a variable expression.
     // Otherwise if might be treated as constant and evaluated immediately

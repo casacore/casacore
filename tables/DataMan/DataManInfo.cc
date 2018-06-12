@@ -28,6 +28,8 @@
 
 //# Includes
 #include <casacore/tables/DataMan/DataManInfo.h>
+#include <casacore/tables/DataMan/DataManAccessor.h>
+#include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/casa/Containers/Record.h>
@@ -267,6 +269,26 @@ void DataManInfo::setTiledStMan (Record& dminfo, const Vector<String>& columns,
     dminfo.defineRecord (dminfo.nfields(), dm);
   }
 }
+
+void DataManInfo::showDataManStats (const Table& tab, ostream& os)
+{
+  Record dmInfo = tab.dataManagerInfo();
+  // Loop through all data managers.
+  // Not all of them might have a name, so use the first column in
+  // each of them to construct the Accessor object.
+  for (uInt i=0; i<dmInfo.nfields(); ++i) {
+    String col = dmInfo.subRecord(i).asArrayString("COLUMNS").data()[0];
+    RODataManAccessor acc(tab, col, True);
+    os << "  Statistics for column " << col << " e.a.: ";
+    Int64 pos = os.tellp();
+    acc.showCacheStatistics (os);
+    if (os.tellp() == pos) {
+      // Nothing written, thus end the line.
+      os << endl;
+    }
+  }
+}
+
 
 } //# NAMESPACE CASACORE - END
 

@@ -1,4 +1,11 @@
 set (tests
+ tPositionEngine
+ tEpochEngine
+ tDirectionEngine
+ tEarthMagneticEngine
+ tFrequencyEngine
+ tRadialVelocityEngine
+ tDopplerEngine
  tmeas
 )
 

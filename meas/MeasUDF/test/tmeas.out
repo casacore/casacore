@@ -40,6 +40,36 @@ Direction conversion functions:
   MEAS.DIRCOS (type, direction [,epoch, position])
        as DIR returning 3 direction cosines instead of 2 angles
        DIRECTIONCOSINE is a synonym for DIRCOS
+EarthMagnetic conversion functions:
+  MEAS.EM (type, em, epoch, position)   convert em value to given type as xyz
+       EARTHMAGNETIC and EMXYZ are synonyms for EM
+  MEAS.EMANG (type, em, epoch, position)    convert and return as angles
+       EMANGLES is a synonym for EMANG
+  MEAS.EMLEN (type, em, epoch, position)    convert and return as flux density
+       EMLENGTH is a synonym for EMLEN
+  MEAS.IGRF (type, height, direction, epoch, position)    IGRF model value
+       IGRFXYZ is a synonym for IGRF
+  MEAS.IGRFANG (t, h, d, e, p)              IGRF model angles in ITRF
+       IGRFANGLES is a synonym for IGRFANG
+  MEAS.IGRFLEN (t, h, d, e, p)              IGRF model flux density 
+       IGRFLENGTH is a synonym for IGRFLEN
+  MEAS.IGRFLOS (h, d, e, p)                 IGRF value along line-of-sight
+  MEAS.IGRFLONG (h, d, e, p)                longitude of calculation point
+Frequency conversion functions:
+  MEAS.FREQ (type, freq, radvel, direction, epoch, position)   convert to given type
+           Instead of freq, a period or wavelength can be given (requires a unit)
+           radvel is only needed when converting to/from rest frequencies
+       FREQUENCY is a synonym for FREQ
+  MEAS.REST (freq, radvel, direction, epoch, position)         convert to rest freq
+  MEAS.REST (freq, doppler)                                    convert to rest freq
+       RESTFREQ and RESTFREQUENCY are synonyms for REST
+  MEAS.SHIFTFREQ (freq, doppler)                               shift frequencies
+       SHIFT and SHIFTFREQUENCY are synonyms for SHIFTFREQ
+       It can also be used to shift rest frequencies
+RadialVelocity conversion functions:
+  MEAS.RADVEL (type, radvel, direction, epoch, position)    convert to given type
+  MEAS.RADVEL (type, doppler)                               calc from doppler
+       RV and RADIALVELOCITY are synonyms for RADVEL
 
 Unit: m
 [2.99486, 0.346737, 3.98881]

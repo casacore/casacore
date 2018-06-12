@@ -30,6 +30,7 @@
 #include <casacore/tables/TaQL/ExprDerNode.h>
 #include <casacore/tables/TaQL/ExprMathNode.h>
 #include <casacore/tables/TaQL/ExprLogicNode.h>
+#include <casacore/tables/TaQL/ExprConeNode.h>
 #include <casacore/tables/TaQL/ExprFuncNode.h>
 #include <casacore/tables/TaQL/ExprAggrNode.h>
 #include <casacore/tables/TaQL/ExprUDFNode.h>
@@ -62,229 +63,178 @@ TableExprNode::TableExprNode() : node_p(0)
 TableExprNode::TableExprNode (const Bool& val)
 {
     node_p = new TableExprNodeConstBool (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Int64& val)
 {
     node_p = new TableExprNodeConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Int& val)
 {
     node_p = new TableExprNodeConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const uInt& val)
 {
     node_p = new TableExprNodeConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Float& val)
 {
     node_p = new TableExprNodeConstDouble (Double (val));
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Double& val)
 {
     node_p = new TableExprNodeConstDouble (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Complex& val)
 {
     node_p = new TableExprNodeConstDComplex (DComplex(val));
-    node_p->link();
 }
 TableExprNode::TableExprNode (const DComplex& val)
 {
     node_p = new TableExprNodeConstDComplex (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const String& val)
 {
     node_p = new TableExprNodeConstString (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const std::string& val)
 {
     node_p = new TableExprNodeConstString (String(val));
-    node_p->link();
 }
 TableExprNode::TableExprNode (const char* val)
 {
     node_p = new TableExprNodeConstString (String(val));
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Regex& val)
 {
     node_p = new TableExprNodeConstRegex (TaqlRegex(val));
-    node_p->link();
 }
 TableExprNode::TableExprNode (const StringDistance& val)
 {
     node_p = new TableExprNodeConstRegex (TaqlRegex(val));
-    node_p->link();
 }
 TableExprNode::TableExprNode (const TaqlRegex& val)
 {
     node_p = new TableExprNodeConstRegex (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MVTime& val)
 {
     node_p = new TableExprNodeConstDate (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<Bool>& val)
 {
     node_p = new TableExprNodeArrayConstBool (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<uChar>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<Short>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<uShort>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<Int>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<uInt>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<Float>& val)
 {
     node_p = new TableExprNodeArrayConstDouble (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<Double>& val)
 {
     node_p = new TableExprNodeArrayConstDouble (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<Complex>& val)
 {
     node_p = new TableExprNodeArrayConstDComplex (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<DComplex>& val)
 {
     node_p = new TableExprNodeArrayConstDComplex (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<String>& val)
 {
     node_p = new TableExprNodeArrayConstString (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const Array<MVTime>& val)
 {
     node_p = new TableExprNodeArrayConstDate (val);
-    node_p->link();
 }
 
 TableExprNode::TableExprNode (const MArray<Bool>& val)
 {
     node_p = new TableExprNodeArrayConstBool (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MArray<uChar>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MArray<Short>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MArray<uShort>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MArray<Int>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MArray<uInt>& val)
 {
     node_p = new TableExprNodeArrayConstInt (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MArray<Float>& val)
 {
     node_p = new TableExprNodeArrayConstDouble (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MArray<Double>& val)
 {
     node_p = new TableExprNodeArrayConstDouble (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MArray<Complex>& val)
 {
     node_p = new TableExprNodeArrayConstDComplex (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MArray<DComplex>& val)
 {
     node_p = new TableExprNodeArrayConstDComplex (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MArray<String>& val)
 {
     node_p = new TableExprNodeArrayConstString (val);
-    node_p->link();
 }
 TableExprNode::TableExprNode (const MArray<MVTime>& val)
 {
     node_p = new TableExprNodeArrayConstDate (val);
-    node_p->link();
 }
 
-TableExprNode::TableExprNode (TableExprNodeRep* node)
-: node_p (node->link())
+TableExprNode::TableExprNode (const TENShPtr& node)
+: node_p (node)
 {}
 
 TableExprNode::TableExprNode (const TableExprNode& node)
 : node_p (node.node_p)
-{
-    if (node_p) {
-        node_p->link();
-    }
-}
+{}
 
 TableExprNode& TableExprNode::operator= (const TableExprNode& that)
 {
-    if (this != &that) {
-	TableExprNodeRep::unlink (node_p);
-	node_p = that.node_p;
-	if (node_p) {
-	    node_p->link();
-	}
-    }
+    node_p = that.node_p;
     return *this;
 }
 
 //# Destructor.
 TableExprNode::~TableExprNode ()
-{
-    TableExprNodeRep::unlink (node_p);
-}
+{}
 
 TableExprNode operator&& (const TableExprNode& left,
 			  const TableExprNode& right)
@@ -308,7 +258,7 @@ TableExprNode TableExprNode::in (const TableExprNodeSet& set,
     // An empty set never matches.
     // Note it makes it possible to use an empty set that has
     // no data type yet.
-    if (set.nelements() == 0) {
+    if (set.size() == 0) {
         return TableExprNode(False);
     }
     set.checkEqualDataTypes();
@@ -352,76 +302,81 @@ void TableExprNode::throwInvDT (const String& message)
     { throw (TableInvExpr ("invalid operand data type; " + message)); }
 
 
-TableExprNodeRep* TableExprNode::newPlus (TableExprNodeRep* right) const
+TENShPtr TableExprNode::setBinaryNodeInfo (TableExprNodeBinary* tsnptr,
+                                           const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtPlus);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+  TENShPtr shPtr(tsnptr);
+  tsnptr->setChildren (node_p, right);
+  return TableExprNodeRep::replaceConstNode (shPtr);
+}
+
+TENShPtr TableExprNode::newPlus (const TENShPtr& right) const
+{
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtPlus);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodePlusInt (node));
+	    tsnptr = new TableExprNodePlusInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodePlusDouble (node));
+	    tsnptr = new TableExprNodePlusDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodePlusDComplex (node));
+	    tsnptr = new TableExprNodePlusDComplex (node);
 	    break;
 	case TableExprNodeRep::NTString:
-	    tsnptr.reset (new TableExprNodePlusString (node));
+	    tsnptr = new TableExprNodePlusString (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-	    tsnptr.reset (new TableExprNodePlusDate (node));
+	    tsnptr = new TableExprNodePlusDate (node);
 	    break;
-	default:
+        default:
 	    throwInvDT("in scalar operator+");
-	}
+        }
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeArrayPlusInt (node));
+	    tsnptr = new TableExprNodeArrayPlusInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeArrayPlusDouble (node));
+	    tsnptr = new TableExprNodeArrayPlusDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeArrayPlusDComplex (node));
+	    tsnptr = new TableExprNodeArrayPlusDComplex (node);
 	    break;
 	case TableExprNodeRep::NTString:
-	    tsnptr.reset (new TableExprNodeArrayPlusString (node));
+	    tsnptr = new TableExprNodeArrayPlusString (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-	    tsnptr.reset (new TableExprNodeArrayPlusDate (node));
+	    tsnptr = new TableExprNodeArrayPlusDate (node);
 	    break;
 	default:
 	    throwInvDT("in array operator+");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newMinus (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newMinus (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtMinus);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtMinus);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-          tsnptr.reset (new TableExprNodeMinusInt (node));
+          tsnptr = new TableExprNodeMinusInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-          tsnptr.reset (new TableExprNodeMinusDouble (node));
+          tsnptr = new TableExprNodeMinusDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-          tsnptr.reset (new TableExprNodeMinusDComplex (node));
+          tsnptr = new TableExprNodeMinusDComplex (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-          tsnptr.reset (new TableExprNodeMinusDate (node));
+          tsnptr = new TableExprNodeMinusDate (node);
 	    break;
 	default:
 	    throwInvDT("in scalar operator-");
@@ -429,42 +384,39 @@ TableExprNodeRep* TableExprNode::newMinus (TableExprNodeRep* right) const
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-            tsnptr.reset (new TableExprNodeArrayMinusInt (node));
+            tsnptr = new TableExprNodeArrayMinusInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-            tsnptr.reset (new TableExprNodeArrayMinusDouble (node));
+            tsnptr = new TableExprNodeArrayMinusDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-            tsnptr.reset (new TableExprNodeArrayMinusDComplex (node));
+            tsnptr = new TableExprNodeArrayMinusDComplex (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-            tsnptr.reset (new TableExprNodeArrayMinusDate (node));
+            tsnptr = new TableExprNodeArrayMinusDate (node);
 	    break;
 	default:
 	    throwInvDT("in array operator-");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newTimes (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newTimes (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtTimes);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtTimes);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeTimesInt (node));
+	    tsnptr = new TableExprNodeTimesInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeTimesDouble (node));
+	    tsnptr = new TableExprNodeTimesDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeTimesDComplex (node));
+	    tsnptr = new TableExprNodeTimesDComplex (node);
 	    break;
 	default:
 	    throwInvDT("in scalar operator*");
@@ -472,38 +424,35 @@ TableExprNodeRep* TableExprNode::newTimes (TableExprNodeRep* right) const
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeArrayTimesInt (node));
+	    tsnptr = new TableExprNodeArrayTimesInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeArrayTimesDouble (node));
+	    tsnptr = new TableExprNodeArrayTimesDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeArrayTimesDComplex (node));
+	    tsnptr = new TableExprNodeArrayTimesDComplex (node);
 	    break;
 	default:
 	    throwInvDT("in array operator*");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newDivide (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newDivide (const TENShPtr& right) const
 {
     // Note that (as in python3) integer division is exact and results in
     // a double.
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtDivide);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtDivide);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeDivideDouble (node));
+	    tsnptr = new TableExprNodeDivideDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeDivideDComplex (node));
+	    tsnptr = new TableExprNodeDivideDComplex (node);
 	    break;
 	default:
 	    throwInvDT("in scalar operator/");
@@ -511,33 +460,30 @@ TableExprNodeRep* TableExprNode::newDivide (TableExprNodeRep* right) const
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeArrayDivideDouble (node));
+	    tsnptr = new TableExprNodeArrayDivideDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-            tsnptr.reset (new TableExprNodeArrayDivideDComplex (node));
+            tsnptr = new TableExprNodeArrayDivideDComplex (node);
 	    break;
 	default:
 	    throwInvDT("in array operator/");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newModulo (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newModulo (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtModulo);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtModulo);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeModuloInt (node));
+	    tsnptr = new TableExprNodeModuloInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeModuloDouble (node));
+	    tsnptr = new TableExprNodeModuloDouble (node);
 	    break;
 	default:
 	    throwInvDT("no real operands in modulo (%)");
@@ -545,30 +491,27 @@ TableExprNodeRep* TableExprNode::newModulo (TableExprNodeRep* right) const
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeArrayModuloInt (node));
+	    tsnptr = new TableExprNodeArrayModuloInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeArrayModuloDouble (node));
+	    tsnptr = new TableExprNodeArrayModuloDouble (node);
 	    break;
 	default:
 	    throwInvDT("no real operands in modulo (%)");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newBitAnd (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newBitAnd (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtBitAnd);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtBitAnd);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeBitAndInt (node));
+	    tsnptr = new TableExprNodeBitAndInt (node);
 	    break;
 	default:
 	    throwInvDT("no integer operands in bitand (&)");
@@ -576,27 +519,24 @@ TableExprNodeRep* TableExprNode::newBitAnd (TableExprNodeRep* right) const
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeArrayBitAndInt (node));
+	    tsnptr = new TableExprNodeArrayBitAndInt (node);
 	    break;
 	default:
 	    throwInvDT("no integer operands in bitand (&)");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newBitOr (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newBitOr (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtBitOr);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtBitOr);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeBitOrInt (node));
+	    tsnptr = new TableExprNodeBitOrInt (node);
 	    break;
 	default:
 	    throwInvDT("no integer operands in bitor (|)");
@@ -604,27 +544,24 @@ TableExprNodeRep* TableExprNode::newBitOr (TableExprNodeRep* right) const
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeArrayBitOrInt (node));
+	    tsnptr = new TableExprNodeArrayBitOrInt (node);
 	    break;
 	default:
 	    throwInvDT("no integer operands in bitor (|)");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newBitXor (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newBitXor (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtBitXor);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtBitXor);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeBitXorInt (node));
+	    tsnptr = new TableExprNodeBitXorInt (node);
 	    break;
 	default:
 	    throwInvDT("no integer operands in bitxor (^)");
@@ -632,45 +569,42 @@ TableExprNodeRep* TableExprNode::newBitXor (TableExprNodeRep* right) const
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeArrayBitXorInt (node));
+	    tsnptr = new TableExprNodeArrayBitXorInt (node);
 	    break;
 	default:
 	    throwInvDT("no integer operands in bitxor (^)");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newEQ (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newEQ (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtEQ);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtEQ);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTBool:
-	    tsnptr.reset (new TableExprNodeEQBool (node));
+	    tsnptr = new TableExprNodeEQBool (node);
 	    break;
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeEQInt (node));
+	    tsnptr = new TableExprNodeEQInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeEQDouble (node));
+	    tsnptr = new TableExprNodeEQDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeEQDComplex (node));
+	    tsnptr = new TableExprNodeEQDComplex (node);
 	    break;
 	case TableExprNodeRep::NTString:
-	    tsnptr.reset (new TableExprNodeEQString (node));
+	    tsnptr = new TableExprNodeEQString (node);
 	    break;
 	case TableExprNodeRep::NTRegex:
-	    tsnptr.reset (new TableExprNodeEQRegex (node));
+	    tsnptr = new TableExprNodeEQRegex (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-	    tsnptr.reset (new TableExprNodeEQDate (node));
+	    tsnptr = new TableExprNodeEQDate (node);
 	    break;
 	default:
 	    throwInvDT("in scalar operator==");
@@ -678,63 +612,60 @@ TableExprNodeRep* TableExprNode::newEQ (TableExprNodeRep* right) const
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTBool:
-	    tsnptr.reset (new TableExprNodeArrayEQBool (node));
+	    tsnptr = new TableExprNodeArrayEQBool (node);
 	    break;
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeArrayEQInt (node));
+	    tsnptr = new TableExprNodeArrayEQInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeArrayEQDouble (node));
+	    tsnptr = new TableExprNodeArrayEQDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeArrayEQDComplex (node));
+	    tsnptr = new TableExprNodeArrayEQDComplex (node);
 	    break;
 	case TableExprNodeRep::NTString:
-	    tsnptr.reset (new TableExprNodeArrayEQString (node));
+	    tsnptr = new TableExprNodeArrayEQString (node);
 	    break;
 	case TableExprNodeRep::NTRegex:
-	    tsnptr.reset (new TableExprNodeArrayEQRegex (node));
+	    tsnptr = new TableExprNodeArrayEQRegex (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-	    tsnptr.reset (new TableExprNodeArrayEQDate (node));
+	    tsnptr = new TableExprNodeArrayEQDate (node);
 	    break;
 	default:
 	    throwInvDT("in array operator==");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newNE (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newNE (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtNE);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtNE);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTBool:
-	    tsnptr.reset (new TableExprNodeNEBool (node));
+	    tsnptr = new TableExprNodeNEBool (node);
 	    break;
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeNEInt (node));
+	    tsnptr = new TableExprNodeNEInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeNEDouble (node));
+	    tsnptr = new TableExprNodeNEDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeNEDComplex (node));
+	    tsnptr = new TableExprNodeNEDComplex (node);
 	    break;
 	case TableExprNodeRep::NTString:
-	    tsnptr.reset (new TableExprNodeNEString (node));
+	    tsnptr = new TableExprNodeNEString (node);
 	    break;
 	case TableExprNodeRep::NTRegex:
-	    tsnptr.reset (new TableExprNodeNERegex (node));
+	    tsnptr = new TableExprNodeNERegex (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-	    tsnptr.reset (new TableExprNodeNEDate (node));
+	    tsnptr = new TableExprNodeNEDate (node);
 	    break;
 	default:
 	    throwInvDT("in scalar operator<> (!=)");
@@ -742,57 +673,54 @@ TableExprNodeRep* TableExprNode::newNE (TableExprNodeRep* right) const
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTBool:
-	    tsnptr.reset (new TableExprNodeArrayNEBool (node));
+	    tsnptr = new TableExprNodeArrayNEBool (node);
 	    break;
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeArrayNEInt (node));
+	    tsnptr = new TableExprNodeArrayNEInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeArrayNEDouble (node));
+	    tsnptr = new TableExprNodeArrayNEDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeArrayNEDComplex (node));
+	    tsnptr = new TableExprNodeArrayNEDComplex (node);
 	    break;
 	case TableExprNodeRep::NTString:
-	    tsnptr.reset (new TableExprNodeArrayNEString (node));
+	    tsnptr = new TableExprNodeArrayNEString (node);
 	    break;
 	case TableExprNodeRep::NTRegex:
-	    tsnptr.reset (new TableExprNodeArrayNERegex (node));
+	    tsnptr = new TableExprNodeArrayNERegex (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-	    tsnptr.reset (new TableExprNodeArrayNEDate (node));
+	    tsnptr = new TableExprNodeArrayNEDate (node);
 	    break;
 	default:
 	    throwInvDT("in array operator<> (!=)");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newGT (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newGT (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtGT);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtGT);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeGTInt (node));
+	    tsnptr = new TableExprNodeGTInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeGTDouble (node));
+	    tsnptr = new TableExprNodeGTDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeGTDComplex (node));
+	    tsnptr = new TableExprNodeGTDComplex (node);
 	    break;
 	case TableExprNodeRep::NTString:
-	    tsnptr.reset (new TableExprNodeGTString (node));
+	    tsnptr = new TableExprNodeGTString (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-	    tsnptr.reset (new TableExprNodeGTDate (node));
+	    tsnptr = new TableExprNodeGTDate (node);
 	    break;
 	default:
 	    throwInvDT("in scalar operator>");
@@ -800,51 +728,48 @@ TableExprNodeRep* TableExprNode::newGT (TableExprNodeRep* right) const
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-            tsnptr.reset (new TableExprNodeArrayGTInt (node));
+            tsnptr = new TableExprNodeArrayGTInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeArrayGTDouble (node));
+	    tsnptr = new TableExprNodeArrayGTDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeArrayGTDComplex (node));
+	    tsnptr = new TableExprNodeArrayGTDComplex (node);
 	    break;
 	case TableExprNodeRep::NTString:
-	    tsnptr.reset (new TableExprNodeArrayGTString (node));
+	    tsnptr = new TableExprNodeArrayGTString (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-	    tsnptr.reset (new TableExprNodeArrayGTDate (node));
+	    tsnptr = new TableExprNodeArrayGTDate (node);
 	    break;
 	default:
 	    throwInvDT("in array operator>");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newGE (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newGE (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtGE);
-    SPtrHolder<TableExprNodeBinary> tsnptr;
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtGE);
+    TableExprNodeBinary* tsnptr=0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeGEInt (node));
+	    tsnptr = new TableExprNodeGEInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeGEDouble (node));
+	    tsnptr = new TableExprNodeGEDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeGEDComplex (node));
+	    tsnptr = new TableExprNodeGEDComplex (node);
 	    break;
 	case TableExprNodeRep::NTString:
-	    tsnptr.reset (new TableExprNodeGEString (node));
+	    tsnptr = new TableExprNodeGEString (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-	    tsnptr.reset (new TableExprNodeGEDate (node));
+	    tsnptr = new TableExprNodeGEDate (node);
 	    break;
 	default:
 	    throwInvDT("in scalar operator>=");
@@ -852,49 +777,48 @@ TableExprNodeRep* TableExprNode::newGE (TableExprNodeRep* right) const
     }else{
 	switch (node.dataType()) {
 	case TableExprNodeRep::NTInt:
-	    tsnptr.reset (new TableExprNodeArrayGEInt (node));
+	    tsnptr = new TableExprNodeArrayGEInt (node);
 	    break;
 	case TableExprNodeRep::NTDouble:
-	    tsnptr.reset (new TableExprNodeArrayGEDouble (node));
+	    tsnptr = new TableExprNodeArrayGEDouble (node);
 	    break;
 	case TableExprNodeRep::NTComplex:
-	    tsnptr.reset (new TableExprNodeArrayGEDComplex (node));
+	    tsnptr = new TableExprNodeArrayGEDComplex (node);
 	    break;
 	case TableExprNodeRep::NTString:
-	    tsnptr.reset (new TableExprNodeArrayGEString (node));
+	    tsnptr = new TableExprNodeArrayGEString (node);
 	    break;
 	case TableExprNodeRep::NTDate:
-	    tsnptr.reset (new TableExprNodeArrayGEDate (node));
+	    tsnptr = new TableExprNodeArrayGEDate (node);
 	    break;
 	default:
 	    throwInvDT("in array operator>=");
 	}
     }
-    TableExprNodeRep* nptr = TableExprNodeBinary::fillNode
-      (tsnptr.ptr(), node_p, right, True);
-    tsnptr.release();
-    return nptr;
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
 
-TableExprNodeRep* TableExprNode::newIN (TableExprNodeRep* right,
-                                        const TaQLStyle& style) const
+TENShPtr TableExprNode::newIN (const TENShPtr& right,
+                               const TaQLStyle& style) const
 {
     TableExprNodeRep::ValueType vtRight = right->valueType();
     if (vtRight == TableExprNodeRep::VTScalar) {
       return newEQ (right);
     } else if (vtRight == TableExprNodeRep::VTArray) {
-      TableExprNodeSet* set = dynamic_cast<TableExprNodeSet*>(right);
+      TableExprNodeSet* set =
+        dynamic_cast<TableExprNodeSet*>(right.get());
       if (set) {
-        if (set->isSingle()  &&  set->nelements() == 1  &&
+        if (set->isSingle()  &&  set->size() == 1  &&
             ! set->hasArrays()) {
-          TableExprNodeRep* snode = (*set)[0].start();
+          TENShPtr snode = (*set)[0].start();
           return newEQ (snode);
         }
       } else {
-        TableExprNodeArray* arr = dynamic_cast<TableExprNodeArray*>(right);
+        TableExprNodeArray* arr =
+          dynamic_cast<TableExprNodeArray*>(right.get());
         if (arr) {
-          TableExprNodeRep* sca = arr->makeConstantScalar();
+          TENShPtr sca = arr->makeConstantScalar();
           if (sca) {
             return newEQ (sca);
           }
@@ -967,13 +891,13 @@ TableExprNodeRep* TableExprNode::newIN (TableExprNodeRep* right,
 	    throwInvDT("in array IN-operator");
 	}
     }
-    return TableExprNodeBinary::fillNode (tsnptr, node_p, right, True);
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newOR (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newOR (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtOR);
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtOR);
     TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
@@ -992,13 +916,13 @@ TableExprNodeRep* TableExprNode::newOR (TableExprNodeRep* right) const
 	    throwInvDT("no Bool operands in logical OR (||)");
 	}
     }
-    return TableExprNodeBinary::fillNode (tsnptr, node_p, right, True);
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
-TableExprNodeRep* TableExprNode::newAND (TableExprNodeRep* right) const
+TENShPtr TableExprNode::newAND (const TENShPtr& right) const
 {
-    TableExprNodeRep node = TableExprNodeBinary::getTypes
-                                (*node_p, *right, TableExprNodeRep::OtAND);
+    TableExprNodeRep node = TableExprNodeBinary::getCommonTypes
+                                (node_p, right, TableExprNodeRep::OtAND);
     TableExprNodeBinary* tsnptr = 0;
     if (node.valueType() == TableExprNodeRep::VTScalar) {
 	switch (node.dataType()) {
@@ -1017,7 +941,7 @@ TableExprNodeRep* TableExprNode::newAND (TableExprNodeRep* right) const
 	    throwInvDT("no Bool operators in logical AND (&&)");
 	}
     }
-    return TableExprNodeBinary::fillNode (tsnptr, node_p, right, True);
+    return setBinaryNodeInfo (tsnptr, right);
 }
 
 
@@ -1037,7 +961,7 @@ TableExprNode TableExprNode::operator- () const
     }else{
 	tsnptr = new TableExprNodeArrayMIN (*node_p);
     }
-    return TableExprNodeBinary::fillNode (tsnptr, node_p, 0, True);
+    return setBinaryNodeInfo (tsnptr);
 }
 
 TableExprNode TableExprNode::operator! () const
@@ -1051,7 +975,7 @@ TableExprNode TableExprNode::operator! () const
     }else{
 	tsnptr = new TableExprNodeArrayNOT (*node_p);
     }
-    return TableExprNodeBinary::fillNode (tsnptr, node_p, 0, True);
+    return setBinaryNodeInfo (tsnptr);
 }
 
 TableExprNode TableExprNode::operator~ () const
@@ -1065,7 +989,7 @@ TableExprNode TableExprNode::operator~ () const
     }else{
 	tsnptr = new TableExprNodeArrayBitNegate (*node_p);
     }
-    return TableExprNodeBinary::fillNode (tsnptr, node_p, 0, True);
+    return setBinaryNodeInfo (tsnptr);
 }
 
 
@@ -1078,10 +1002,10 @@ TableExprNode TableExprNode::newColumnNode (const Table& table,
 {
     //# Get the column description. This throws an exception if
     //# the name is not a column.
-    TableExprNodeRep* tsnptr = 0;
+    TENShPtr tsnptr = 0;
     const ColumnDesc& coldes = table.tableDesc().columnDesc (name);
     TableColumn col(table, name);
-    if (fieldNames.nelements() > 0  &&  coldes.dataType() != TpRecord) {
+    if (fieldNames.size() > 0  &&  coldes.dataType() != TpRecord) {
 	throw (TableInvExpr ("Column " + name + " does not contain records, "
 			     "so no subfields can be given for it"));
     }
@@ -1124,7 +1048,7 @@ TableExprNode TableExprNode::newColumnNode (const Table& table,
 	    throw (TableInvExpr (name, "unknown data type"));
 	}
     } else if (coldes.isScalar()) {
-	if (coldes.dataType() == TpRecord  &&  fieldNames.nelements() == 0) {
+	if (coldes.dataType() == TpRecord  &&  fieldNames.size() == 0) {
 	    throw (TableInvExpr ("Column " + name + " contains records, "
 			     "so subfields have to be given for it"));
 	}
@@ -1146,7 +1070,7 @@ TableRecord* TableExprNode::findLastKeyRec (const TableRecord& keyset,
 {
     const TableRecord* ksPtr = &keyset;
     // All field names, except last one, should be records.
-    uInt last = fieldNames.nelements() - 1;
+    uInt last = fieldNames.size() - 1;
     fullName.clear();
     Int fieldnr = 0;
     for (uInt i=0; i<last; i++) {
@@ -1172,7 +1096,7 @@ TableRecord* TableExprNode::findLastKeyRec (const TableRecord& keyset,
 TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
 					  const Vector<String>& fieldNames)
 {
-    TableExprNodeRep* tsnptr = 0;
+    TENShPtr tsnptr = 0;
     String fullName;
     const TableRecord* ks = findLastKeyRec (keyset, fieldNames, fullName);
     String name = fieldNames[fieldNames.size() - 1];
@@ -1341,15 +1265,15 @@ TableExprNode TableExprNode::newFunctionNode
 				  const Table& table,
 				  const TaQLStyle& style)
 {
-    // Convert the set to a PtrBlock of the values in the set elements.
+    // Convert the set to a vector of the values in the set elements.
     // This requires that the set has single values.
     if (! set.isSingle()) {
 	throw (TableInvExpr ("A function parameter cannot be an interval"));
     }
-    uInt npar = set.nelements();
-    PtrBlock<TableExprNodeRep*> par(npar);
+    uInt npar = set.size();
+    vector<TENShPtr> par(npar);
     for (uInt i=0; i<npar; i++) {
-	par[i] = const_cast<TableExprNodeRep*>(set[i].start());
+	par[i] = set[i].start();
     }
     // rownrFUNC, rowidFUNC and randomFUNC are special, because they
     // need their own objects and the table.
@@ -1372,37 +1296,30 @@ TableExprNode TableExprNode::newFunctionNode
     TableExprNodeRep::NodeDataType resDT;
     Block<Int> dtypeOper;
     Block<Int> vtypeOper;
+    TENShPtr fnode;
+    // Create new function node depending on the type.
     if (ftype >= TableExprFuncNode::FirstAggrFunc) {
       resDT = TableExprAggrNode::checkOperands (dtypeOper, resVT, ftype, par);
-      // Create new function node and fill it.
+      // Create new aggregate function node and fill it.
       if (resVT == TableExprNodeRep::VTScalar) {
-        TableExprFuncNode* fnode = new TableExprAggrNode (ftype, resDT,
-                                                          resVT, set);
-	return TableExprFuncNode::fillNode (fnode, par, dtypeOper);
+        fnode = new TableExprAggrNode (ftype, resDT, resVT, set,
+                                       par, dtypeOper);
+      } else {
+        fnode = new TableExprAggrNodeArray (ftype, resDT, resVT, set,
+                                            par, dtypeOper, style);
       }
-      TableExprFuncNodeArray* fnode = new TableExprAggrNodeArray
-        (ftype, resDT, resVT, set, style);
-      return TableExprFuncNodeArray::fillNode (fnode, par, dtypeOper);
-    }
-    resDT = TableExprFuncNode::checkOperands (dtypeOper, resVT, vtypeOper,
-					      ftype, par);
-    // Create new function node and fill it.
-    // Keep it temporarily in SPtrHolder for destruction on exception.
-    TableExprNode res;
-    if (resVT == TableExprNodeRep::VTScalar) {
-        TableExprFuncNode* fnode = new TableExprFuncNode (ftype, resDT,
-							  resVT, set, table);
-        SPtrHolder<TableExprFuncNode> fnodeHold(fnode);
-	res = TableExprFuncNode::fillNode (fnode, par, dtypeOper);
-        fnodeHold.release();
     } else {
-        TableExprFuncNodeArray* fnode = new TableExprFuncNodeArray
-          (ftype, resDT, resVT, set, style);
-        SPtrHolder<TableExprFuncNodeArray> fnodeHold(fnode);
-        res = TableExprFuncNodeArray::fillNode (fnode, par, dtypeOper);
-        fnodeHold.release();
+      resDT = TableExprFuncNode::checkOperands (dtypeOper, resVT, vtypeOper,
+                                                ftype, par);
+      if (resVT == TableExprNodeRep::VTScalar) {
+        fnode = new TableExprFuncNode (ftype, resDT, resVT, set,
+                                       par, dtypeOper, table);
+      } else {
+        fnode = new TableExprFuncNodeArray (ftype, resDT, resVT, set,
+                                            par, dtypeOper, style);
+      }
     }
-    return res;
+    return TableExprNodeRep::replaceConstNode (fnode);
 }
 
 TableExprNode TableExprNode::newUDFNode (const String& name,
@@ -1412,15 +1329,15 @@ TableExprNode TableExprNode::newUDFNode (const String& name,
 {
     // Create the correct UDF object. An exception is thrown if unknown.
     SPtrHolder<UDFBase> udf(UDFBase::createUDF (name, style));
-    // Convert the set to a PtrBlock of the values in the set elements.
+    // Convert the set to a vector of the values in the set elements.
     // This requires that the set has single values.
     if (! set.isSingle()) {
 	throw (TableInvExpr ("A function parameter cannot be an interval"));
     }
-    uInt npar = set.nelements();
-    PtrBlock<TableExprNodeRep*> par(npar);
+    uInt npar = set.size();
+    vector<TENShPtr> par(npar);
     for (uInt i=0; i<npar; i++) {
-        par[i] = const_cast<TableExprNodeRep*>(set[i].start());
+        par[i] = set[i].start();
     }
     udf->init (par, table, style);
     if (udf->ndim() == 0) {
@@ -1456,15 +1373,15 @@ TableExprNode TableExprNode::newConeNode
 				  const TableExprNodeSet& set,
 				  uInt origin)
 {
-    // Convert the set to a PtrBlock of the values in the set elements.
+    // Convert the set to a vector of the values in the set elements.
     // This requires that the set has single values.
     if (! set.isSingle()) {
 	throw (TableInvExpr ("A function parameter cannot be an interval"));
     }
-    uInt npar = set.nelements();
-    PtrBlock<TableExprNodeRep*> par(npar);
+    uInt npar = set.size();
+    vector<TENShPtr> par(npar);
     for (uInt i=0; i<npar; i++) {
-	par[i] = const_cast<TableExprNodeRep*>(set[i].start());
+	par[i] = set[i].start();
     }
     // Check all the operands and get the resulting data type and value type
     // of the function.
@@ -1476,14 +1393,15 @@ TableExprNode TableExprNode::newConeNode
     resDT = TableExprConeNode::checkOperands (dtypeOper, resVT, vtypeOper,
 					      ftype, par);
     // Create new function node and fill it.
+    TENShPtr fnode;
     if (resVT == TableExprNodeRep::VTScalar) {
-      TableExprConeNode* fnode = new TableExprConeNode (ftype, resDT,
-                                                        set, origin);
-      return TableExprConeNode::fillNode (fnode, par, dtypeOper);
+      fnode = new TableExprConeNode (ftype, resDT, set,
+                                     par, dtypeOper, origin);
+    } else {
+      fnode = new TableExprConeNodeArray (ftype, resDT, set,
+                                          par, dtypeOper, origin);
     }
-    TableExprConeNodeArray* fnode = new TableExprConeNodeArray (ftype, resDT,
-                                                                set, origin);
-    return TableExprConeNodeArray::fillNode (fnode, par, dtypeOper);
+    return TableExprNodeRep::replaceConstNode (fnode);
 }
 
 TableExprNode TableExprNode::newArrayPartNode (const TableExprNode& arrayNode,
@@ -1495,15 +1413,9 @@ TableExprNode TableExprNode::newArrayPartNode (const TableExprNode& arrayNode,
 	throw (TableInvExpr ("Indexing can only be done on arrays"));
     }
     // Create new Index node and fill it.
-    // Check the index bounds as far as possible.
-    SPtrHolder<TableExprNodeIndex>
-                     inodep (new TableExprNodeIndex (indices, style));
-    inodep->checkIndexValues (arrayNode.node_p);
-    TableExprNodeIndex* inode = inodep.transfer();
-    TableExprNodeBinary* anode = new TableExprNodeArrayPart (arrayNode.node_p,
-							     inode);
-    return TableExprNodeBinary::fillNode (anode, arrayNode.node_p,
-					  inode, False, False);
+    TENShPtr inode(new TableExprNodeIndex (indices, style));
+    TENShPtr anode(new TableExprNodeArrayPart (arrayNode.node_p, inode));
+    return anode;
 }
 
 void TableExprNode::adaptUnit (const Unit& unit)
@@ -1514,19 +1426,19 @@ void TableExprNode::adaptUnit (const Unit& unit)
 TableExprNode TableExprNode::newRownrNode (const Table& table,
 					   uInt origin)
 {
-    TableExprNodeRep* tsnptr = new TableExprNodeRownr (table, origin);
+    TENShPtr tsnptr = new TableExprNodeRownr (table, origin);
     return tsnptr;
 }
 
 TableExprNode TableExprNode::newRowidNode (const Table& table)
 {
-    TableExprNodeRep* tsnptr = new TableExprNodeRowid (table);
+    TENShPtr tsnptr = new TableExprNodeRowid (table);
     return tsnptr;
 }
 
 TableExprNode TableExprNode::newRandomNode (const Table& table)
 {
-    TableExprNodeRep* tsnptr = new TableExprNodeRandom (table);
+    TENShPtr tsnptr = new TableExprNodeRandom (table);
     return tsnptr;
 }
 

@@ -305,7 +305,7 @@ MFrequency MFrequency::fromDoppler(const Measure &dop,
 		    type);
 }
 
-MFrequency MFrequency::toRest(const MDoppler &dop) {
+MFrequency MFrequency::toRest(const MDoppler &dop) const {
     Double t = MDoppler::Convert(dop, MDoppler::BETA)().getValue();
     t = (1-t)/(1+t);
     return MFrequency(MVFrequency(data.getValue() / sqrt(t)),
