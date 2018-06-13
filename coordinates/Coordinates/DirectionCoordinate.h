@@ -589,18 +589,14 @@ public:
     // same and the conversion is exact for the reference pixel and in general
     // becomes less accurate as distance from reference pixel increases. The
     // latitude like and the longitude like pixel increments are preserved.
-    // Conversions for which require extra information such as epoch and
-    // position are not supported. The <src>angle</src> parameter is the angle
-    // through which this coordinate had to be rotated clockwise to produce the
-    // new coordinate.
-    // NOTE: The angle returned is Double precision. However, in general,
-    // converting the returned coordinate back to the original frame produces an
-    // angle that is slightly different by the negative angle of the original
-    // conversion. This difference is often in the fifth digit, suggesting that
-    // at least one of the method calls in the implementation is not perfectly
-    // symmetric between coordinate frames. So, in general, until and unless
-    // that underlying precision issue is resolved, one should only consider
-    // the precision of the returned angle good to about five digits.
+    // Conversions which require extra information such as epoch and position
+    // are not supported. The <src>angle</src> parameter is the angle between
+    // the new coordinate and the pixel coordinate, measured clockwise from the
+    // positive y-axis of the new coordinate to the positive y-axis of the pixel
+    // coordinate; ie, it is the clockwise angle through which the current world
+    // coordinate would have to be rotated so that the new coordinate's axes
+    // would be parallel to the pixel axes. The accuracy of the returned angle
+    // is good to at least 7 digits.
     DirectionCoordinate convert(
         Quantity& angle, MDirection::Types directionType
     ) const;
