@@ -840,8 +840,9 @@ DirectionCoordinate DirectionCoordinate::convert(
         "Failed to zero reference pixel in temporary coordinate"
     );
     // make the increment and units more friendly for this computation
+    static const String unit = "deg";
     ThrowIf(
-        ! myClone.setWorldAxisUnits(Vector<String>(2, "arcsec")),
+        ! myClone.setWorldAxisUnits(Vector<String>(2, unit)),
         "Failed to set world axis units in temporary coordinate"
     );
     Vector<Double> cloneInc(2, 1);
@@ -857,22 +858,31 @@ DirectionCoordinate DirectionCoordinate::convert(
     // than the longitude like coordinate so we don't have to deal with
     // cos(latitude) factors.
     Vector<Quantity> offsetValNewFrameQ = refValNewFrameQ.copy();
-    offsetValNewFrameQ[1] += Quantity(1, "arcsec");
+    // avoid offsetting over the poles by offsetting north if the refval is
+    // south of the equator, offset south if refval is north of or on equator
+    Bool offsetNorth = refValNewFrame[1] < 0;
+    offsetValNewFrameQ[1] += Quantity(offsetNorth ? 1 : -1, unit);
     Vector<Double> offsetValNewFrame(2);
-    offsetValNewFrame[0] = offsetValNewFrameQ[0].getValue("arcsec");
-    offsetValNewFrame[1] = offsetValNewFrameQ[1].getValue("arcsec");
+    offsetValNewFrame[0] = offsetValNewFrameQ[0].getValue(unit);
+    offsetValNewFrame[1] = offsetValNewFrameQ[1].getValue(unit);
     Vector<Double> offsetPixel;
     ThrowIf(
         ! myClone.toPixel(offsetPixel, offsetValNewFrame),
         "Unable to convert offset world value to offset pixel value"
     );
+    if (! offsetNorth) {
+        offsetPixel = -offsetPixel;
+    }
     Double signX = sign(offsetPixel[0]);
     Double yFrame = offsetPixel[1];
+    // Remember that acos never returns a negative value
     Double angleInRad = acos(yFrame/sqrt(sum(offsetPixel*offsetPixel)));
     // get the quadrant right
     if (signX > 0) {
-        // we have to rotate counter-clockwise to align
-        // ref frame axes with the pixel axes
+        // we have to rotate the world coordinate counter-clockwise to align
+        // new ref frame world axes with the pixel axes. Our convention in this
+        // implementation is that a postive angle represents a clockwise
+        // rotation (which was probably an unfortunate choice)
         angleInRad = -angleInRad;
     }
     angle = Quantity(angleInRad, "rad");
