@@ -80,6 +80,7 @@ AccumType ClassicalQuantileComputer<CASA_STATP>::getMedian(
     AccumType mymax, uInt binningThreshholdSizeBytes,
     Bool persistSortedArray, uInt64 nBins
 ) {
+    cout << "getMedian mymin/mymax " << mymin << " " << mymax << endl;
     CountedPtr<AccumType> median = this->_getMedian();
     if (! median) {
         std::set<uInt64> indices = _medianIndices(mynpts);
@@ -235,19 +236,19 @@ void ClassicalQuantileComputer<CASA_STATP>::reset() {
 CASA_STATD
 std::vector<std::vector<uInt64> > ClassicalQuantileComputer<CASA_STATP>::_binCounts(
     std::vector<CountedPtr<AccumType> >& sameVal,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
+    const std::vector<StatsHistogram<AccumType> >& hist
 ) {
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iDesc = bDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eDesc = binDesc.end();
-    if (binDesc.size() > 1) {
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bDesc = hist.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator iDesc = bDesc;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator eDesc = hist.end();
+    if (hist.size() > 1) {
         // initialize only to squash compiler warning
-        typename StatisticsUtilities<AccumType>::BinDesc prevDesc = *bDesc;
+        StatsHistogram<AccumType> prevDesc = *bDesc;
         // sanity check
         while (iDesc != eDesc) {
             if (iDesc != bDesc) {
                 ThrowIf (
-                    iDesc->minLimit <= prevDesc.minLimit,
+                    iDesc->getMinHistLimit() <= prevDesc.getMinHistLimit(),
                     "Logic Error: histograms are not monotonically increasing"
                 );
             }
@@ -255,25 +256,25 @@ std::vector<std::vector<uInt64> > ClassicalQuantileComputer<CASA_STATP>::_binCou
             ++iDesc;
         }
     }
-    std::vector<Bool> allSame(binDesc.size(), True);
+    std::vector<Bool> allSame(hist.size(), True);
     // the elements in the outer vector are histograms. The elements in the inner
     // vector are the bins in the corresponding histograms. The Int64 elements
     // are the number of data points in those bins
-    std::vector<std::vector<uInt64> > bins(binDesc.size());
+    std::vector<std::vector<uInt64> > bins(hist.size());
     std::vector<std::vector<uInt64> >::iterator iBins = bins.begin();
     std::vector<std::vector<uInt64> >::iterator eBins = bins.end();
     // initialize all bin counts to 0
     for (iDesc = bDesc; iBins!=eBins; ++iBins, ++iDesc) {
-        *iBins = std::vector<uInt64>(iDesc->nBins, 0);
+        *iBins = std::vector<uInt64>(iDesc->getNBins(), 0);
     }
     // same val indicates if all values in a histogram (the vector elements) are the same
-    sameVal = std::vector<CountedPtr<AccumType> >(binDesc.size(), NULL);
+    sameVal = std::vector<CountedPtr<AccumType> >(hist.size(), NULL);
     // maxLimit are the maximum limits for each histogram. set them here.
-    std::vector<AccumType> maxLimit(binDesc.size());
+    std::vector<AccumType> maxLimit(hist.size());
     typename std::vector<AccumType>::iterator iMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::iterator eMaxLimit = maxLimit.end();
     for (iDesc=bDesc; iMaxLimit!=eMaxLimit; ++iMaxLimit, ++iDesc) {
-        *iMaxLimit = iDesc->minLimit + (AccumType)(iDesc->nBins)*(iDesc->binWidth);
+        *iMaxLimit = iDesc->getMaxHistLimit();
     }
     StatisticsDataset<CASA_STATP>* ds = this->_getDataset();
     ds->initIterators();
@@ -326,7 +327,7 @@ std::vector<std::vector<uInt64> > ClassicalQuantileComputer<CASA_STATP>::_binCou
             _computeBins(
                 tBins[idx8], tSameVal[idx8], tAllSame[idx8],
                 dataIter[idx8], maskIter[idx8], weightsIter[idx8],
-                dataCount, binDesc, maxLimit, chunk
+                dataCount, hist, maxLimit, chunk
             );
             ds->incrementThreadIters(
                 dataIter[idx8], maskIter[idx8], weightsIter[idx8],
@@ -348,7 +349,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_computeBins(
     std::vector<std::vector<uInt64> >& bins, std::vector<CountedPtr<AccumType> >& sameVal,
     std::vector<Bool>& allSame, DataIterator dataIter, MaskIterator maskIter,
     WeightsIterator weightsIter, uInt64 count,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<StatsHistogram<AccumType> >& hist,
     const std::vector<AccumType>& maxLimit,
     const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
 ) {
@@ -358,14 +359,14 @@ void ClassicalQuantileComputer<CASA_STATP>::_computeBins(
                 _findBins(
                     bins, sameVal, allSame, dataIter, weightsIter, count,
                     chunk.dataStride, maskIter, chunk.mask->second, chunk.ranges->first,
-                    chunk.ranges->second, binDesc, maxLimit
+                    chunk.ranges->second, hist, maxLimit
                 );
             }
             else {
                 _findBins(
                     bins, sameVal, allSame, dataIter, weightsIter,
                     count, chunk.dataStride, maskIter, chunk.mask->second,
-                    binDesc, maxLimit
+                    hist, maxLimit
                 );
             }
         }
@@ -373,14 +374,14 @@ void ClassicalQuantileComputer<CASA_STATP>::_computeBins(
             _findBins(
                 bins, sameVal, allSame, dataIter, weightsIter, count,
                 chunk.dataStride, chunk.ranges->first, chunk.ranges->second,
-                binDesc, maxLimit
+                hist, maxLimit
             );
         }
         else {
             // has weights, but no mask nor ranges
             _findBins(
                 bins, sameVal, allSame, dataIter, weightsIter,
-                count, chunk.dataStride, binDesc, maxLimit
+                count, chunk.dataStride, hist, maxLimit
             );
         }
     }
@@ -390,13 +391,13 @@ void ClassicalQuantileComputer<CASA_STATP>::_computeBins(
             _findBins(
                 bins, sameVal, allSame, dataIter, count, chunk.dataStride,
                 maskIter, chunk.mask->second, chunk.ranges->first,
-                chunk.ranges->second, binDesc, maxLimit
+                chunk.ranges->second, hist, maxLimit
             );
         }
         else {
             _findBins(
                 bins, sameVal, allSame, dataIter, count, chunk.dataStride,
-                maskIter, chunk.mask->second, binDesc, maxLimit
+                maskIter, chunk.mask->second, hist, maxLimit
             );
         }
     }
@@ -405,7 +406,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_computeBins(
         // associated with it
         _findBins(
             bins, sameVal, allSame, dataIter, count, chunk.dataStride,
-            chunk.ranges->first, chunk.ranges->second, binDesc, maxLimit
+            chunk.ranges->first, chunk.ranges->second, hist, maxLimit
         );
     }
     else {
@@ -413,7 +414,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_computeBins(
         // with it. No filtering of the data is necessary.
         _findBins(
             bins, sameVal, allSame, dataIter,
-            count, chunk.dataStride, binDesc, maxLimit
+            count, chunk.dataStride, hist, maxLimit
         );
     }
 }
@@ -753,14 +754,18 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArrays(
     }
 }
 
+// TODO for better clarity, a struct composed of hist and dataIndices should
+// be made to more clearly indicate that those vectors are tied together
+// TODO make nBins (everywhere) a uInt rather than a uInt64. If we ever need
+// more than 2 billion bins, something is very wrong.
 CASA_STATD std::vector<std::map<uInt64, AccumType> >
 ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<StatsHistogram<AccumType> >& hist,
     uInt64 maxArraySize, const std::vector<std::set<uInt64> >& dataIndices, uInt64 nBins
 ) {
     // dataIndices are relative to minimum bin minimum border
-    std::vector<CountedPtr<AccumType> > sameVal(binDesc.size(), NULL);
-    std::vector<std::vector<uInt64> > binCounts = _binCounts(sameVal, binDesc);
+    std::vector<CountedPtr<AccumType> > sameVal(hist.size(), NULL);
+    std::vector<std::vector<uInt64> > binCounts = _binCounts(sameVal, hist);
     std::vector<std::set<uInt64> >::const_iterator bIdxSet = dataIndices.begin();
     std::vector<std::set<uInt64> >::const_iterator iIdxSet = bIdxSet;
     std::vector<std::set<uInt64> >::const_iterator eIdxSet = dataIndices.end();
@@ -768,9 +773,9 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
     typename std::vector<CountedPtr<AccumType> >::const_iterator iSameVal = bSameVal;
     std::vector<std::vector<uInt64> >::const_iterator bCountSet = binCounts.begin();
     std::vector<std::vector<uInt64> >::const_iterator iCountSet = bCountSet;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iDesc = bDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bDesc = hist.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator iDesc = bDesc;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator eDesc = hist.end();
     std::map<AccumType, std::map<uInt64, AccumType> > histToIdxValMap;
     std::vector<uInt64> vnpts;
     std::vector<std::pair<AccumType, AccumType> > vlimits;
@@ -779,9 +784,11 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
     // This is necessary for accounting. Map the lower limit of
     // a single bin to the lower limit of its associated histogram
     std::map<AccumType, AccumType> binToHistogramMap;
+    // loop over sets of data indices
     while (iIdxSet != eIdxSet) {
         std::set<uInt64>::const_iterator iIdx = iIdxSet->begin();
         std::set<uInt64>::const_iterator eIdx = iIdxSet->end();
+        const std::vector<AccumType>& maxBinLims = iDesc->getMaxBinLimits();
         if (iSameVal->null()) {
             // values in this histogram are not all the same
             std::vector<uInt64>::const_iterator bCounts = iCountSet->begin();
@@ -790,14 +797,20 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
             uInt64 dataCount = 0;
             uInt64 prevDataCount = 0;
             uInt64 loopCount = 0;
+            // loop over data indices pertaining to a single histogram
             while (iIdx != eIdx) {
                 ThrowIf(iCounts == eCounts, "Logic Error: ran out of bins, accounting error");
                 dataCount += *iCounts;
                 if (*iIdx < dataCount) {
                     // datum at index exists in current bin
-                    std::pair<AccumType, AccumType> binLimits;
-                    binLimits.first = iDesc->minLimit + (AccumType)loopCount*(iDesc->binWidth);
-                    binLimits.second = binLimits.first + iDesc->binWidth;
+                    std::pair<AccumType, AccumType> histLimits;
+                    if (loopCount == 0) {
+                        histLimits.first = iDesc->getMinHistLimit();
+                    }
+                    else {
+                        histLimits.first = maxBinLims[loopCount - 1];
+                    }
+                    histLimits.second = maxBinLims[loopCount];
                     std::set<uInt64> newDataIndices;
                     std::map<uInt64, uInt64> newToOld;
                     while(iIdx != eIdx && *iIdx < dataCount) {
@@ -811,11 +824,11 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
                     }
                     vNewToOld.push_back(newToOld);
                     vnpts.push_back(*iCounts);
-                    vlimits.push_back(binLimits);
+                    vlimits.push_back(histLimits);
                     // because multiple single bins can be in the same histogram,
                     // we need to keep track of which bins belong to which histogram
                     // for accounting below
-                    binToHistogramMap[binLimits.first] = iDesc->minLimit;
+                    binToHistogramMap[histLimits.first] = iDesc->getMinHistLimit();
                     vindices.push_back(newDataIndices);
                 }
                 prevDataCount = dataCount;
@@ -830,7 +843,7 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
                 mymap[*iIdx] = *(*iSameVal);
                 ++iIdx;
             }
-            histToIdxValMap[iDesc->minLimit] = mymap;
+            histToIdxValMap[iDesc->getMinHistLimit()] = mymap;
         }
         ++iIdxSet;
         ++iSameVal;
@@ -865,7 +878,7 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
     std::vector<std::map<uInt64, AccumType> > ret;
     iDesc = bDesc;
     while (iDesc != eDesc) {
-        ret.push_back(histToIdxValMap[iDesc->minLimit]);
+        ret.push_back(histToIdxValMap[iDesc->getMinHistLimit()]);
         ++iDesc;
     }
     return ret;
@@ -874,87 +887,79 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
 CASA_STATD std::vector<std::map<uInt64, AccumType> >
 ClassicalQuantileComputer<CASA_STATP>::_dataFromSingleBins(
     const std::vector<uInt64>& binNpts, uInt64 maxArraySize,
-    const std::vector<std::pair<AccumType, AccumType> >& binLimits,
-    const std::vector<std::set<uInt64> >& dataIndices, uInt64 nBins
+    const std::vector<LimitPair>& binLimits,
+    const std::vector<IndexSet>& dataIndices, uInt64 nBins
 ) {
     uInt64 totalPts = std::accumulate(binNpts.begin(), binNpts.end(), 0);
     if (totalPts <= maxArraySize) {
         // contents of bin is small enough to be sorted in memory, so
         // get the bin limits and stuff the good points within those limits
         // in an array and sort it
-        std::vector<std::vector<AccumType> > dataArrays(binLimits.size(), std::vector<AccumType>(0));
+        std::vector<DataArray> dataArrays(binLimits.size(), DataArray(0));
         _createDataArrays(dataArrays, binLimits, totalPts);
-        std::vector<uInt64>::const_iterator bNpts = binNpts.begin();
-        std::vector<uInt64>::const_iterator iNpts = bNpts;
-        typename std::vector<std::vector<AccumType> >::iterator bArrays = dataArrays.begin();
-        typename std::vector<std::vector<AccumType> >::iterator iArrays = bArrays;
-        typename std::vector<std::vector<AccumType> >::iterator eArrays = dataArrays.end();
-        while (iArrays != eArrays) {
+        std::vector<uInt64>::const_iterator iNpts = binNpts.begin();
+        typename std::vector<DataArray>::iterator iArrays = dataArrays.begin();
+        typename std::vector<DataArray>::iterator eArrays = dataArrays.end();
+        for (; iArrays != eArrays; ++iArrays, ++iNpts) {
             ThrowIf(
                 iArrays->size() != *iNpts,
-                "Logic Error: data array has " + String::toString(iArrays->size())
-                + " elements but it should have " + String::toString(*iNpts)
-                + ". Please file a bug report and include your dataset and your inputs"
+                "Logic Error: data array has "
+                + String::toString(iArrays->size()) + " elements but it should "
+                + "have " + String::toString(*iNpts)   + ". Please file a bug "
+                + "report and include your dataset and your inputs"
             );
-            ++iArrays;
-            ++iNpts;
         }
-        std::vector<std::set<uInt64> >::const_iterator bIdxSet = dataIndices.begin();
-        std::vector<std::set<uInt64> >::const_iterator iIdxSet = bIdxSet;
-        std::vector<std::set<uInt64> >::const_iterator eIdxSet = dataIndices.end();
-        iNpts = bNpts;
-        std::vector<std::map<uInt64, AccumType> > ret(binLimits.size());
-        typename std::vector<std::map<uInt64, AccumType> >::iterator bRet = ret.begin();
-        typename std::vector<std::map<uInt64, AccumType> >::iterator iRet = bRet;
-        iArrays = bArrays;
-        while(iIdxSet != eIdxSet) {
-            std::set<uInt64>::const_iterator initer = iIdxSet->begin();
-            std::set<uInt64>::const_iterator inend = iIdxSet->end();
-            uInt prevIdx = 0;
-            while (initer != inend) {
+        std::vector<IndexSet>::const_iterator iIdxSet = dataIndices.begin();
+        std::vector<IndexSet>::const_iterator eIdxSet = dataIndices.end();
+        iNpts = binNpts.begin();
+        std::vector<IndexValueMap> ivMaps(binLimits.size());
+        typename std::vector<IndexValueMap>::iterator iIVMaps = ivMaps.begin();
+        iArrays = dataArrays.begin();
+        for(; iIdxSet != eIdxSet; ++iIdxSet, ++iNpts, ++iArrays, ++iIVMaps) {
+            IndexSet::const_iterator initer = iIdxSet->begin();
+            IndexSet::const_iterator inend = iIdxSet->end();
+            uInt64 prevIdx = 0;
+            for (; initer != inend; ++initer) {
                 ThrowIf(
                     *initer >= *iNpts,
-                    "Logic Error: aryIdx " + String::toString(*initer) + " is too large. "
-                    "It should be no larger than " + String::toString(*iNpts-1)
-                    + ". Please file a defect report and include your dataset and your inputs"
+                    "Logic Error: aryIdx " + String::toString(*initer)
+                    + " is too large. It should be no larger than "
+                    + String::toString(*iNpts-1) + ". Please file a defect "
+                    + "report and include your dataset and your inputs"
                 );
-                (*iRet)[*initer] = GenSort<AccumType>::kthLargest(
+                (*iIVMaps)[*initer] = GenSort<AccumType>::kthLargest(
                     &((*iArrays)[prevIdx]), *iNpts - prevIdx, *initer - prevIdx
                 );
                 prevIdx = *initer;
-                ++initer;
             }
-            ++iIdxSet;
-            ++iNpts;
-            ++iArrays;
-            ++iRet;
         }
-        return ret;
+        return ivMaps;
     }
     else {
+        // number of points is too large to fit in an array to be sorted, so
+        // rebin those points into smaller bins
         static uInt maxLoopCount = 5;
         uInt loopCount = 0;
         // we want at least 1000 bins
         nBins = max(nBins, (uInt64)1000);
         while (True) {
             // bin contents are too large to be sorted in memory, this bin must be sub-binned
-            typename std::vector<std::pair<AccumType, AccumType> >::const_iterator bLimits = binLimits.begin();
+            typename std::vector<LimitPair>::const_iterator bLimits = binLimits.begin();
             typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iLimits = bLimits;
             typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = binLimits.end();
-            std::vector<typename StatisticsUtilities<AccumType>::BinDesc> binDesc;
+            std::vector<StatsHistogram<AccumType> > hist;
             while (iLimits != eLimits) {
-                typename StatisticsUtilities<AccumType>::BinDesc histogram;
-                StatisticsUtilities<AccumType>::makeBins(
-                    histogram, iLimits->first, iLimits->second,
-                    nBins, False
+                StatsHistogram<AccumType> histogram(
+                    iLimits->first, iLimits->second, nBins
                 );
-                binDesc.push_back(histogram);
+                hist.push_back(histogram);
                 ++iLimits;
             }
             try {
-                return _dataFromMultipleBins(binDesc, maxArraySize, dataIndices, nBins);
+                return _dataFromMultipleBins(hist, maxArraySize, dataIndices, nBins);
             }
             catch (const AipsError& x) {
+                // TODO this now appears to be fixed, hopefully.
                 // reconfigure bins and try again. This happens very rarely.
                 // See comment in _createDataArrays() at the source of the issue
                 ThrowIf(loopCount == maxLoopCount, "Tried 5 times, giving up");
@@ -1000,7 +1005,12 @@ std::map<uInt64, AccumType> ClassicalQuantileComputer<CASA_STATP>::_indicesToVal
         return indexToValue;
     }
     std::vector<std::set<uInt64> > vindices(1, indices);
-    AccumType pad = 1e-6*(mymax - mymin);
+    // Avoiding having exceptions thrown over a wide range of use cases is
+    // surprisingly dependent on the padding factor. 1e-2 seems a reasonable
+    // setting to prevent this. It probably should not be set lower than this,
+    // unless the factor is made dependent on the use case parameters eg,
+    // the mymax - mymin difference.
+    AccumType pad = 1e-2*(mymax - mymin);
     std::pair<AccumType, AccumType> limits(mymin - pad, mymax + pad);
     std::vector<std::pair<AccumType, AccumType> > vlimits(1, limits);
     std::vector<uInt64> vmynpts(1, mynpts);
@@ -1029,16 +1039,20 @@ std::set<uInt64> ClassicalQuantileComputer<CASA_STATP>::_medianIndices(
 // the better choice from a performance standpoint.
 #define _findBinCode \
     AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - _myMedian) : *datum; \
-    if (myDatum >= bBinDesc->minLimit && myDatum < *maxLimit.rbegin()) { \
+    /* TODO should now be able to get maxLimit directly from the last histogram */ \
+    if (myDatum >= bhist->getMinHistLimit() && myDatum < *maxLimit.rbegin()) { \
+        /* datum may fall in one of the histograms */ \
         iCounts = bCounts; \
         iSameVal = bSameVal; \
         iAllSame = bAllSame; \
-        iBinDesc = bBinDesc; \
+        ihist = bhist; \
         iMaxLimit = bMaxLimit; \
-        while (iBinDesc != eBinDesc) { \
-            if (myDatum >= iBinDesc->minLimit && myDatum < *iMaxLimit) { \
-                AccumType idx = (myDatum - iBinDesc->minLimit)/iBinDesc->binWidth; \
-                ++(*iCounts)[StatisticsUtilities<AccumType>::getInt(idx)]; \
+        /* loop over histograms */ \
+        while (ihist != ehist) { \
+            if (myDatum >= ihist->getMinHistLimit() && myDatum < *iMaxLimit) { \
+                /* datum falls within the current histogram */ \
+                uInt idx = ihist->getIndex(myDatum); \
+                ++(*iCounts)[idx]; \
                 if (*iAllSame) { \
                     if (iSameVal->null()) { \
                         *iSameVal = new AccumType(myDatum); \
@@ -1055,7 +1069,7 @@ std::set<uInt64> ClassicalQuantileComputer<CASA_STATP>::_medianIndices(
             ++iCounts; \
             ++iSameVal; \
             ++iAllSame; \
-            ++iBinDesc; \
+            ++ihist; \
             ++iMaxLimit; \
         } \
     }
@@ -1065,7 +1079,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<std::vector<uInt64> >& binCounts,
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+    const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
     std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
@@ -1073,9 +1087,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bhist = hist.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ihist = bhist;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ehist = hist.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -1094,7 +1108,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+    const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
     std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
@@ -1102,9 +1116,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bhist = hist.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ihist = bhist;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ehist = hist.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -1131,7 +1145,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+    const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
     std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
@@ -1139,9 +1153,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bhist = hist.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ihist = bhist;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ehist = hist.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -1164,7 +1178,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+    const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
     std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
@@ -1172,9 +1186,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bhist = hist.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ihist = bhist;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ehist = hist.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -1202,7 +1216,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+    const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
     std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
@@ -1210,9 +1224,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bhist = hist.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ihist = bhist;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ehist = hist.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -1234,7 +1248,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+    const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
     std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
@@ -1242,9 +1256,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bhist = hist.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ihist = bhist;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ehist = hist.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -1274,7 +1288,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+    const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
     std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
@@ -1282,9 +1296,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bhist = hist.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ihist = bhist;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ehist = hist.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -1314,7 +1328,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+    const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
     std::vector<std::vector<uInt64> >::iterator iCounts = bCounts;
@@ -1322,9 +1336,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bhist = hist.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ihist = bhist;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator ehist = hist.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;

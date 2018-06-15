@@ -295,13 +295,12 @@ std::map<uInt64, AccumType> StatisticsUtilities<AccumType>::indicesToValues(
     return indexToValuesMap;
 }
 
+/*
 template <class AccumType>
-void StatisticsUtilities<AccumType>::makeBins(
-    BinDesc& bins, AccumType minData, AccumType maxData,
-    uInt maxBins, Bool allowPad
+StatsHistogram<AccumType> StatisticsUtilities<AccumType>::makeHistogram(
+    AccumType minData, AccumType maxData, uInt64 nBins, Bool allowPad
 ) {
-    bins.nBins = maxBins;
-    bins.minLimit = minData;
+    AccumType minLimit = minData;
     AccumType maxLimit = maxData;
     if (allowPad) {
         AccumType pad = (maxData - minData)/1e3;
@@ -309,11 +308,13 @@ void StatisticsUtilities<AccumType>::makeBins(
             // try to handle Int like AccumTypes
             pad = AccumType(1);
         }
-        bins.minLimit -= pad;
+        minLimit -= pad;
         maxLimit += pad;
     }
-    bins.binWidth = (maxLimit - bins.minLimit)/(AccumType)bins.nBins;
+    AccumType binWidth = (maxLimit - minLimit)/(AccumType)nBins;
+    return StatsHistogram<AccumType>(minLimit, binWidth, nBins);
 }
+*/
 
 template <class AccumType>
 void StatisticsUtilities<AccumType>::mergeResults(

@@ -41,7 +41,13 @@ namespace casacore {
 template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator> 
 class ClassicalQuantileComputer
     : public StatisticsAlgorithmQuantileComputer<CASA_STATP> {
+
 public:
+
+    typedef std::pair<AccumType, AccumType> LimitPair;
+    typedef std::map<uInt64, AccumType> IndexValueMap;
+    typedef std::set<uInt64> IndexSet;
+    typedef std::vector<AccumType> DataArray;
 
     ClassicalQuantileComputer(StatisticsDataset<CASA_STATP>* dataset);
 
@@ -101,14 +107,14 @@ protected:
 
     // <group>
     // Get the counts of data within the specified histogram bins. The number of
-    // arrays within binCounts will be equal to the number of histograms in <src>binDesc</src>.
+    // arrays within binCounts will be equal to the number of histograms in <src>hist</src>.
     // Each array within <src>binCounts</src> will have the same number of elements as the
-    // number of bins in its corresponding histogram in <src>binDesc</src>.
+    // number of bins in its corresponding histogram in <src>hist</src>.
     virtual void _findBins(
         std::vector<std::vector<uInt64> >& binCounts,
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+        const std::vector<StatsHistogram<AccumType> >& hist,
         const std::vector<AccumType>& maxLimit
     ) const;
 
@@ -117,7 +123,7 @@ protected:
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
@@ -125,7 +131,7 @@ protected:
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
@@ -134,7 +140,7 @@ protected:
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
         Bool isInclude,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
@@ -142,7 +148,7 @@ protected:
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
     ) const ;
 
     virtual void _findBins(
@@ -150,7 +156,7 @@ protected:
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
@@ -159,7 +165,7 @@ protected:
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
@@ -167,7 +173,7 @@ protected:
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& hist, const std::vector<AccumType>& maxLimit
     ) const;
     // </group>
 
@@ -371,22 +377,22 @@ private:
     // disallow default constructor
     ClassicalQuantileComputer();
 
-    // tally the number of data points that fall into each bin provided by <src>binDesc</src>
-    // Any points that are less than binDesc.minLimit or greater than
-    // binDesc.minLimit + binDesc.nBins*binDesc.binWidth are not included in the counts. A data
+    // tally the number of data points that fall into each bin provided by <src>hist</src>
+    // Any points that are less than hist.minLimit or greater than
+    // hist.minLimit + hist.nBins*hist.binWidth are not included in the counts. A data
     // point that falls exactly on a bin boundary is considered to be in the higher index bin.
     // <src>sameVal</src> will be non-null if all the good values in the histogram range are the
     // same. In that case, the value held will be the value of each of those data points.
     std::vector<std::vector<uInt64> > _binCounts(
         std::vector<CountedPtr<AccumType> >& sameVal,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc
+        const std::vector<StatsHistogram<AccumType> >& hist
     );
 
     void _computeBins(
         std::vector<std::vector<uInt64> >& bins, std::vector<CountedPtr<AccumType> >& sameVal,
         std::vector<Bool>& allSame, DataIterator dataIter, MaskIterator maskIter,
         WeightsIterator weightsIter, uInt64 count,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+        const std::vector<StatsHistogram<AccumType> >& hist,
         const std::vector<AccumType>& maxLimit,
         const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
     );
@@ -418,15 +424,15 @@ private:
         uInt64 maxCount
     );
 
-    // extract data from multiple histograms given by <src>binDesc</src>.
+    // extract data from multiple histograms given by <src>hist</src>.
     // <src>dataIndices</src> represent the indices of the sorted arrays of values to
     // extract. There should be exactly one set of data indices to extract for each
     // supplied histogram. The data indices are relative to the minimum value of the minimum
     // bin in their repsective histograms. The ordering of the maps in the returned std::vector represent
-    // the ordering of histograms in <src>binDesc</src>. <src>binDesc</src> should contain
+    // the ordering of histograms in <src>hist</src>. <src>hist</src> should contain
     // non-overlapping histograms and the histograms should be specified in ascending order.
     std::vector<std::map<uInt64, AccumType> > _dataFromMultipleBins(
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+        const std::vector<StatsHistogram<AccumType> >& hist,
         uInt64 maxArraySize, const std::vector<std::set<uInt64> >& dataIndices,
         uInt64 nBins
     );

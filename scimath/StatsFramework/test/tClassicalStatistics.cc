@@ -1736,7 +1736,7 @@ int main() {
         vector<Double>::iterator end = bigData.end();
         uInt64 count = 0;
         while(iter != end) {
-            *iter = count % 2 == 0 ? (Float)count : -Float(count*count);
+            *iter = count % 2 == 0 ? Double(count) : -Double(count*count);
             ++iter;
             ++count;
         }
@@ -1747,9 +1747,10 @@ int main() {
             ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
             cs.setData(bigData.begin(), bigData.size());
             // enforce a small internal array size so binning algorithm is used
+            cout << endl << "**** begin broken test" << endl;
             Double median = cs.getMedian(NULL, NULL, NULL, 100);
+            cout << "median " << median << endl;
             AlwaysAssert(median == -0.5, AipsError);
-
         }
         {
             // getMedian() with mask, but no weights or ranges, using binning
