@@ -45,6 +45,7 @@ class ClassicalQuantileComputer
 public:
 
     typedef std::pair<AccumType, AccumType> LimitPair;
+    typedef typename std::vector<LimitPair>::const_iterator LimitPairVectorIter;
     typedef std::map<uInt64, AccumType> IndexValueMap;
     typedef std::set<uInt64> IndexSet;
     typedef std::vector<AccumType> DataArray;
@@ -69,14 +70,14 @@ public:
     virtual AccumType getMedian(
         uInt64 mynpts, AccumType mymin, AccumType mymax,
         uInt binningThreshholdSizeBytes,
-        Bool persistSortedArray, uInt64 nBins
+        Bool persistSortedArray, uInt nBins
     );
 
     // get the median of the absolute deviation about the median of the data.
     virtual AccumType getMedianAbsDevMed(
         uInt64 mynpts, AccumType mymin, AccumType mymax,
         uInt binningThreshholdSizeBytes, Bool persistSortedArray,
-        uInt64 nBins
+        uInt nBins
     );
 
     // If one needs to compute both the median and QuantileComputer values, it is better to call
@@ -89,7 +90,7 @@ public:
         std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
         uInt64 mynpts, AccumType mymin, AccumType mymax,
         uInt binningThreshholdSizeBytes, Bool persistSortedArray,
-        uInt64 nBins
+        uInt nBins
     );
 
     // Get the specified Quantiles. <src>fractions</src> must be between 0 and 1,
@@ -97,7 +98,7 @@ public:
     virtual std::map<Double, AccumType> getQuantiles(
         const std::set<Double>& fractions, uInt64 mynpts, AccumType mymin,
         AccumType mymax, uInt binningThreshholdSizeBytes,
-        Bool persistSortedArray, uInt64 nBins
+        Bool persistSortedArray, uInt nBins
     );
 
     // reset the private fields
@@ -434,20 +435,20 @@ private:
     std::vector<std::map<uInt64, AccumType> > _dataFromMultipleBins(
         const std::vector<StatsHistogram<AccumType> >& hist,
         uInt64 maxArraySize, const std::vector<std::set<uInt64> >& dataIndices,
-        uInt64 nBins
+        uInt nBins
     );
 
     std::vector<std::map<uInt64, AccumType> > _dataFromSingleBins(
         const std::vector<uInt64>& binNpts, uInt64 maxArraySize,
         const std::vector<std::pair<AccumType, AccumType> >& binLimits,
-        const std::vector<std::set<uInt64> >& dataIndices, uInt64 nBins
+        const std::vector<std::set<uInt64> >& dataIndices, uInt nBins
     );
 
     // get the values for the specified indices in the sorted array of all good data
     std::map<uInt64, AccumType> _indicesToValues(
         uInt64 mynpts, AccumType mymin, AccumType mymax, uInt64 maxArraySize,
         const std::set<uInt64>& dataIndices, Bool persistSortedArray,
-        uInt64 nBins
+        uInt nBins
     );
 
     // get the index (for odd npts) or indices (for even npts) of the median of the sorted array.

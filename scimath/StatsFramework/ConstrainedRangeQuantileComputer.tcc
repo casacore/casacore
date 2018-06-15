@@ -78,7 +78,7 @@ CASA_STATD
 AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedian(
     uInt64 mynpts, AccumType mymin, AccumType mymax,
     uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     CountedPtr<AccumType> median = this->_getMedian();
     if (! median) {
@@ -97,7 +97,7 @@ CASA_STATD
 AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
     uInt64 mynpts, AccumType mymin,
     AccumType mymax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     CountedPtr<AccumType> medabsdevmed = this->_getMedianAbsDevMedian();
     if (! medabsdevmed) {

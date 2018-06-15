@@ -78,7 +78,7 @@ CASA_STATD
 AccumType ClassicalQuantileComputer<CASA_STATP>::getMedian(
     uInt64 mynpts, AccumType mymin,
     AccumType mymax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     cout << "getMedian mymin/mymax " << mymin << " " << mymax << endl;
     CountedPtr<AccumType> median = this->_getMedian();
@@ -106,7 +106,7 @@ CASA_STATD
 AccumType ClassicalQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
     uInt64 mynpts, AccumType mymin, AccumType mymax,
     uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     CountedPtr<AccumType> medAbsDevMed = this->_getMedianAbsDevMedian();
     if (! medAbsDevMed) {
@@ -145,7 +145,7 @@ CASA_STATD
 AccumType ClassicalQuantileComputer<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
     uInt64 mynpts, AccumType mymin, AccumType mymax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     std::set<uInt64> medianIndices;
     quantiles.clear();
@@ -192,7 +192,7 @@ CASA_STATD
 std::map<Double, AccumType> ClassicalQuantileComputer<CASA_STATP>::getQuantiles(
     const std::set<Double>& fractions, uInt64 mynpts, AccumType mymin,
     AccumType mymax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     if (fractions.empty()) {
         return std::map<Double, AccumType>();
@@ -761,7 +761,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArrays(
 CASA_STATD std::vector<std::map<uInt64, AccumType> >
 ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
     const std::vector<StatsHistogram<AccumType> >& hist,
-    uInt64 maxArraySize, const std::vector<std::set<uInt64> >& dataIndices, uInt64 nBins
+    uInt64 maxArraySize, const std::vector<std::set<uInt64> >& dataIndices, uInt nBins
 ) {
     // dataIndices are relative to minimum bin minimum border
     std::vector<CountedPtr<AccumType> > sameVal(hist.size(), NULL);
@@ -888,7 +888,7 @@ CASA_STATD std::vector<std::map<uInt64, AccumType> >
 ClassicalQuantileComputer<CASA_STATP>::_dataFromSingleBins(
     const std::vector<uInt64>& binNpts, uInt64 maxArraySize,
     const std::vector<LimitPair>& binLimits,
-    const std::vector<IndexSet>& dataIndices, uInt64 nBins
+    const std::vector<IndexSet>& dataIndices, uInt nBins
 ) {
     uInt64 totalPts = std::accumulate(binNpts.begin(), binNpts.end(), 0);
     if (totalPts <= maxArraySize) {
@@ -938,47 +938,47 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromSingleBins(
     else {
         // number of points is too large to fit in an array to be sorted, so
         // rebin those points into smaller bins
-        static uInt maxLoopCount = 5;
-        uInt loopCount = 0;
+        // static uInt maxLoopCount = 5;
+        // uInt loopCount = 0;
         // we want at least 1000 bins
-        nBins = max(nBins, (uInt64)1000);
-        while (True) {
-            // bin contents are too large to be sorted in memory, this bin must be sub-binned
-            typename std::vector<LimitPair>::const_iterator bLimits = binLimits.begin();
-            typename std::vector<std::pair<AccumType, AccumType> >::const_iterator iLimits = bLimits;
-            typename std::vector<std::pair<AccumType, AccumType> >::const_iterator eLimits = binLimits.end();
+        nBins = max(nBins, (uInt)1000);
+        // while (True) {
+            LimitPairVectorIter iLimits = binLimits.begin();
+            LimitPairVectorIter eLimits = binLimits.end();
             std::vector<StatsHistogram<AccumType> > hist;
-            while (iLimits != eLimits) {
+            for (; iLimits != eLimits; ++iLimits) {
                 StatsHistogram<AccumType> histogram(
                     iLimits->first, iLimits->second, nBins
                 );
                 hist.push_back(histogram);
-                ++iLimits;
             }
             try {
-                return _dataFromMultipleBins(hist, maxArraySize, dataIndices, nBins);
+                return _dataFromMultipleBins(
+                    hist, maxArraySize, dataIndices, nBins
+                );
             }
             catch (const AipsError& x) {
                 // TODO this now appears to be fixed, hopefully.
                 // reconfigure bins and try again. This happens very rarely.
                 // See comment in _createDataArrays() at the source of the issue
-                ThrowIf(loopCount == maxLoopCount, "Tried 5 times, giving up");
+                // ThrowIf(loopCount == maxLoopCount, "Tried 5 times, giving up");
                 // increase nBins by an irrational multiplier slightly greater than 1
-                uInt64 nBinsPrev = nBins;
-                nBins *= (C::pi/3.0);
-                LogIO log;
-                log << LogIO::WARN << "Accounting error, changing number of bins from "
-                    << nBinsPrev << " to " << nBins << " and recomputing." << LogIO::POST;
-                ++loopCount;
+                // uInt nBinsPrev = nBins;
+                // nBins *= (C::pi/3.0);
+                // LogIO log;
+                // log << LogIO::WARN << "Accounting error, changing number of bins from "
+                 //   << nBinsPrev << " to " << nBins << " and recomputing." << LogIO::POST;
+                // ++loopCount;
+                ThrowCc("Binning accounting error");
             }
-        }
+        // }
     }
 }
 
 CASA_STATD
 std::map<uInt64, AccumType> ClassicalQuantileComputer<CASA_STATP>::_indicesToValues(
     uInt64 mynpts, AccumType mymin, AccumType mymax, uInt64 maxArraySize,
-    const std::set<uInt64>& indices, Bool persistSortedArray, uInt64 nBins
+    const IndexSet& indices, Bool persistSortedArray, uInt nBins
 ) {
     std::map<uInt64, AccumType> indexToValue;
     if (
@@ -997,22 +997,22 @@ std::map<uInt64, AccumType> ClassicalQuantileComputer<CASA_STATP>::_indicesToVal
     }
     if (mymax == mymin) {
         // data set values are all the same
-        std::set<uInt64>::const_iterator iter = indices.begin();
-        std::set<uInt64>::const_iterator end = indices.end();
+        IndexSet::const_iterator iter = indices.begin();
+        IndexSet::const_iterator end = indices.end();
         for(; iter!=end; ++iter) {
             indexToValue[*iter] = mymin;
         }
         return indexToValue;
     }
-    std::vector<std::set<uInt64> > vindices(1, indices);
+    std::vector<IndexSet> vindices(1, indices);
     // Avoiding having exceptions thrown over a wide range of use cases is
     // surprisingly dependent on the padding factor. 1e-2 seems a reasonable
     // setting to prevent this. It probably should not be set lower than this,
     // unless the factor is made dependent on the use case parameters eg,
     // the mymax - mymin difference.
     AccumType pad = 1e-2*(mymax - mymin);
-    std::pair<AccumType, AccumType> limits(mymin - pad, mymax + pad);
-    std::vector<std::pair<AccumType, AccumType> > vlimits(1, limits);
+    LimitPair limits(mymin - pad, mymax + pad);
+    std::vector<LimitPair> vlimits(1, limits);
     std::vector<uInt64> vmynpts(1, mynpts);
     return _dataFromSingleBins(
         vmynpts, maxArraySize, vlimits, vindices, nBins

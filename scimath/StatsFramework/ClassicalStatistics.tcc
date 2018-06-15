@@ -111,7 +111,7 @@ CASA_STATD
 AccumType ClassicalStatistics<CASA_STATP>::getMedian(
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
     CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     cout << "knownMin/Max " << knownMin << " "  << knownMax << endl;
     if (_getStatsData().median) {
@@ -166,7 +166,7 @@ CASA_STATD
 AccumType ClassicalStatistics<CASA_STATP>::getMedianAbsDevMed(
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
     CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     if (_getStatsData().medAbsDevMed) {
         return *_getStatsData().medAbsDevMed;
@@ -191,7 +191,7 @@ AccumType ClassicalStatistics<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
     CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     uInt64 mynpts;
     AccumType mymin, mymax;
@@ -282,7 +282,7 @@ CASA_STATD
 std::map<Double, AccumType> ClassicalStatistics<CASA_STATP>::getQuantiles(
     const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts,
     CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
+    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     ThrowIf(
         _calculateAsAdded,

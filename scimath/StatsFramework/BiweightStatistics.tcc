@@ -89,7 +89,7 @@ StatisticsAlgorithm<CASA_STATP>* BiweightStatistics<CASA_STATP>::clone() const {
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedian(
     CountedPtr<uInt64>, CountedPtr<AccumType>,
-    CountedPtr<AccumType>, uInt, Bool, uInt64
+    CountedPtr<AccumType>, uInt, Bool, uInt
 ) {
     ThrowCc(
         "The biweight algorithm does not "
@@ -102,7 +102,7 @@ AccumType BiweightStatistics<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>&, const std::set<Double>&,
     CountedPtr<uInt64>, CountedPtr<AccumType>,
     CountedPtr<AccumType>, uInt, Bool,
-    uInt64
+    uInt
 ) {
     ThrowCc(
         "The biweight algorithm does not support "
@@ -113,7 +113,7 @@ AccumType BiweightStatistics<CASA_STATP>::getMedianAndQuantiles(
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedianAbsDevMed(
     CountedPtr<uInt64>, CountedPtr<AccumType>,
-    CountedPtr<AccumType>, uInt, Bool, uInt64
+    CountedPtr<AccumType>, uInt, Bool, uInt
 ) {
     ThrowCc(
         "The biweight algorithm does not support computation "
@@ -131,7 +131,7 @@ CASA_STATD
 std::map<Double, AccumType> BiweightStatistics<CASA_STATP>::getQuantiles(
     const std::set<Double>&, CountedPtr<uInt64>,
     CountedPtr<AccumType>, CountedPtr<AccumType>,
-    uInt, Bool, uInt64
+    uInt, Bool, uInt
 ) {
     ThrowCc(
         "The biweight algorithm does not support "

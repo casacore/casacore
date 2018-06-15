@@ -198,16 +198,6 @@ public:
         std::vector<AccumType>& myArray, const std::set<uInt64>& indices
     );
 
-    /*
-    // If <src>allowPad</src> is True, then pad the lower side of the lowest
-    // bin and the higher side of the highest bin so that minData and maxData
-    // do not fall on the edge of their respective bins. If false, no padding
-    // so that minData and maxData are also exactly the histogram abscissa limits.
-    static StatsHistogram<AccumType> makeHistogram(
-        AccumType minData, AccumType maxData, uInt64 nBins, Bool allowPad
-    );
-    */
-
     static void mergeResults(
         std::vector<std::vector<uInt64> >& bins, std::vector<CountedPtr<AccumType> >& sameVal,
         std::vector<Bool>& allSame, const PtrHolder<std::vector<std::vector<uInt64> > >& tBins,

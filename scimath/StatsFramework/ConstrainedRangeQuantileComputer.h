@@ -66,14 +66,14 @@ public:
     virtual AccumType getMedian(
         uInt64 mynpts, AccumType mymin, AccumType mymax,
         uInt binningThreshholdSizeBytes,
-        Bool persistSortedArray, uInt64 nBins
+        Bool persistSortedArray, uInt nBins
     );
 
     // get the median of the absolute deviation about the median of the data.
     virtual AccumType getMedianAbsDevMed(
         uInt64 mynpts, AccumType mymin, AccumType mymax,
         uInt binningThreshholdSizeBytes, Bool persistSortedArray,
-        uInt64 nBins
+        uInt nBins
     );
 
     void setRange(const std::pair<AccumType, AccumType>& r) {
