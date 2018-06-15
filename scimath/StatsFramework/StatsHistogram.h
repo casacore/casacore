@@ -46,17 +46,15 @@ namespace casacore {
 template <class AccumType> class StatsHistogram {
 public:
 
-    // Construct a histogram by specifying its minimum value, its maximum value
-    // and the number of desired bins. No padding of the min/max values is done
+    // Construct a histogram by specifying its minimum and maximum values and
+    // the number of desired bins. No padding of the min/max values is done
     // internally, so the caller should do that prior to construction if
-    // necessary. The number of resulting bins may be slightly less than
-    // requested, because precision issues, particularly for small bin widths,
-    // can result in the need for fewer bins than requested when the vector of
-    // maximum bin values is filled.
+    // necessary.
     StatsHistogram(AccumType minLimit, AccumType maxLimit, uInt nBins);
 
     ~StatsHistogram();
 
+    // get the binWidth.
     AccumType getBinWidth() const;
 
     // get the index of the bin containing the specified value
@@ -71,6 +69,7 @@ public:
     // The minimum edge of the histogram
     AccumType getMinHistLimit() const;
 
+    // get the number of bins
     uInt getNBins() const;
 
 private:

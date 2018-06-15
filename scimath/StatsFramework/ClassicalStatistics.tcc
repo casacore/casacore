@@ -113,7 +113,6 @@ AccumType ClassicalStatistics<CASA_STATP>::getMedian(
     CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
     Bool persistSortedArray, uInt nBins
 ) {
-    cout << "knownMin/Max " << knownMin << " "  << knownMax << endl;
     if (_getStatsData().median) {
         return *_getStatsData().median;
     }

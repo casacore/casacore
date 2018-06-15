@@ -42,13 +42,14 @@ template <class AccumType, class DataIterator, class MaskIterator=const Bool*, c
 class ClassicalQuantileComputer
     : public StatisticsAlgorithmQuantileComputer<CASA_STATP> {
 
-public:
-
     typedef std::pair<AccumType, AccumType> LimitPair;
     typedef typename std::vector<LimitPair>::const_iterator LimitPairVectorIter;
     typedef std::map<uInt64, AccumType> IndexValueMap;
     typedef std::set<uInt64> IndexSet;
     typedef std::vector<AccumType> DataArray;
+    typedef std::vector<uInt64> BinCountArray;
+
+public:
 
     ClassicalQuantileComputer(StatisticsDataset<CASA_STATP>* dataset);
 

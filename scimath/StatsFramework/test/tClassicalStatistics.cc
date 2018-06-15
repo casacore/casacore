@@ -1747,9 +1747,7 @@ int main() {
             ClassicalStatistics<Double, vector<Double>::const_iterator, vector<Bool>::const_iterator> cs;
             cs.setData(bigData.begin(), bigData.size());
             // enforce a small internal array size so binning algorithm is used
-            cout << endl << "**** begin broken test" << endl;
             Double median = cs.getMedian(NULL, NULL, NULL, 100);
-            cout << "median " << median << endl;
             AlwaysAssert(median == -0.5, AipsError);
         }
         {

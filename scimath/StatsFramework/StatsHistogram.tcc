@@ -43,49 +43,17 @@ StatsHistogram<AccumType>::StatsHistogram(
 ) : _binWidth(0), _minHistLimit(minLimit), _maxHistLimit(maxLimit),
     _nBins(nBins), _maxBinLimits(nBins) {
     ThrowIf (minLimit > maxLimit, "minData must be less than max data");
-    /*
-    // pad the min and max histogram values to avoid truncation do to precision
-    // issues
-    AccumType pad = (maxData - minData)/1e3;
-    if (pad == (AccumType)0) {
-        // try to handle Int like AccumTypes
-        pad = AccumType(1);
-    }
-    _minHistLimit -= pad;
-    _maxHistLimit += pad;
-    */
     _binWidth = (_maxHistLimit - _minHistLimit)/(AccumType)nBins;
     // in case of AccumType = Int, this can happen even if max and min are
     // different.
     ThrowIf(_binWidth == AccumType(0), "Histogram bin width is 0");
-    typename std::vector<AccumType>::iterator iter = _maxBinLimits.begin();
-    typename std::vector<AccumType>::iterator end = _maxBinLimits.end();
-    // set the first value outside the loop
-    *iter = _minHistLimit + _binWidth;
-    AccumType prev = *iter;
-    ++iter;
-    for (; iter != end; ++iter) {
-        *iter = prev + _binWidth;
-        if (*iter > _maxHistLimit) {
-            // due to precision issues, sometimes we exceed maxLimit before
-            // reaching nBins
-            *iter = _maxHistLimit;
-            if (iter != end - 1) {
-                // remove any unused elements and recompute _nBins
-                _maxBinLimits.erase(iter + 1, end);
-                _nBins = _maxBinLimits.size();
-            }
-            break;
+    uInt j = 1;
+    for_each(
+        _maxBinLimits.begin(), _maxBinLimits.end(), [&] (AccumType& val) {
+            val = _minHistLimit + _binWidth * (AccumType)(j);
+            ++j;
         }
-        prev = *iter;
-    }
-    /*
-    cout << "this spec " << *this << endl;
-    for (Int i= 10; i > 0; --i) {
-        cout << "last bin " << -i << ": " << _maxBinLimits[_nBins - (i + 1)]
-            << ", " << _maxBinLimits[_nBins - i] << endl;
-    }
-    */
+    );
 }
 
 template <class AccumType> StatsHistogram<AccumType>::~StatsHistogram() {}
@@ -100,19 +68,19 @@ uInt StatsHistogram<AccumType>::getIndex(AccumType value) const {
     // we do not explicitly check if the value is within the histogram,
     // because the caller has already done that
     // estimate the index
-    uInt idx = _getUInt((value - _minHistLimit)/_binWidth);
-    AccumType mymin = idx == 0 ? _minHistLimit : _maxBinLimits[idx - 1];
+    auto idx = _getUInt((value - _minHistLimit)/_binWidth);
+    auto mymin = idx == 0 ? _minHistLimit : _maxBinLimits[idx - 1];
     if (value >= mymin && value < _maxBinLimits[idx]) {
         return idx;
     }
-    // did find in initial guessed bin, test in some bins greater than and
-    // less than idx. It tests out to 100, but in practice, if this needs to
+    // did not find in initial guessed bin, test in some bins greater than and
+    // less than idx. It tests out to 10, but in practice, if this needs to
     // be done, the value is in a bin that is only one or two bins from the
     // idx bin. Start at a diff of 1, as we've already tested a diff of 0.
-    for (uInt i=1; i<100; ++i) {
+    for (uInt i=1; i<10; ++i) {
         // check bin above idx
-        uInt upIdx = idx + i;
-        Bool tried = False;
+        auto upIdx = idx + i;
+        auto tried = False;
         if (upIdx < _nBins) {
             if (
                 value >= _maxBinLimits[upIdx - 1]
@@ -125,7 +93,7 @@ uInt StatsHistogram<AccumType>::getIndex(AccumType value) const {
         // check bin below idx
         // avoid uInt underflow
         if (i <= idx) {
-            uInt downIdx = idx - i;
+            auto downIdx = idx - i;
             mymin = downIdx == 0 ? _minHistLimit : _maxBinLimits[downIdx - 1];
             if (value >= mymin && value < _maxBinLimits[downIdx]) {
                 return downIdx;
@@ -143,7 +111,6 @@ uInt StatsHistogram<AccumType>::getIndex(AccumType value) const {
     os << "Histogram spec " << *this << endl;
     os << "Guessed index " << idx << " with limits " << mymin << ", "
         << _maxBinLimits[idx] << endl;
-    // cout << os.str() << endl;
     ThrowCc(os.str());
 }
 
