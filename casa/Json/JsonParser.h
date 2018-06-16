@@ -108,7 +108,7 @@ namespace casacore {
     static int& position()
       { return theirPosition; }
       
-    // Remove all possible escape characters and convert as needed (including \uxxxx).
+    // Remove all possible escape characters and convert as needed (including <src>\uxxxx</src>).
     static String removeEscapes (const String& in);
       
     // Let the parser set the final KeyValueMap.

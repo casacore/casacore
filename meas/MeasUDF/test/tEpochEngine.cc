@@ -65,6 +65,24 @@ void testScalar()
     AlwaysAssertExit (node.unit().getName() == "d");
     AlwaysAssertExit (near(value, sca1, 1e-8));
   }
+  {
+    TableExprNode node(tableCommand
+                       ("calc "
+                        "meas.epoch('ut1', 50217.625d,'UTC')d").node());
+    AlwaysAssertExit (node.getNodeRep()->isConstant());
+    Double sca1 = node.getDouble(0);
+    AlwaysAssertExit (node.unit().getName() == "d");
+    AlwaysAssertExit (sca1 - 50217.625 != 0);
+  }
+  {
+    TableExprNode node(tableCommand
+                       ("calc meas.epoch('utc',"
+                        "meas.epoch('ut1', 50217.625d,'UTC'))d").node());
+    AlwaysAssertExit (node.getNodeRep()->isConstant());
+    Double sca1 = node.getDouble(0);
+    AlwaysAssertExit (node.unit().getName() == "d");
+    AlwaysAssertExit (near(50217.625, sca1, 1e-10));
+  }
 }
 
 void testArray()
@@ -141,28 +159,50 @@ void testColumn()
   // Convert a few epochs from UTC.
   // Note that the columns have the same values as the arrays above.
   // They are filled in tEpochEngine.run.
+  // Use a column with POS in deg.
   TableExprNode node1(tableCommand
                       ("using style python calc meas.epoch('F_LAST',"
                        "TIME,POS1)d "
                        "from tEpochEngine_tmp.tab").node());
+  // Use a column with POS in xyz.
   TableExprNode node2(tableCommand
                       ("using style python calc meas.epoch('F_LAST',"
                        "TIME,POS2)d "
                        "from tEpochEngine_tmp.tab").node());
+  // Use a nested MEAS function.
+  TableExprNode node3(tableCommand
+                      ("calc meas.epoch ('UTC', meas.epoch('F_LAST',"
+                       "TIME,POS2), POS2)d "
+                       "from tEpochEngine_tmp.tab").node());
+  // Now use a column expression, so reftype must be given.
+  TableExprNode node4(tableCommand
+                      ("using style python calc meas.epoch('F_LAST',"
+                       "TIME-0,'UTC',POS1)d "
+                       "from tEpochEngine_tmp.tab").node());
   AlwaysAssertExit (node1.nrow() == 3  &&  node2.nrow() == 3);
+  AlwaysAssertExit (! node1.getNodeRep()->isConstant());
+  AlwaysAssertExit (! node2.getNodeRep()->isConstant());
+  AlwaysAssertExit (! node3.getNodeRep()->isConstant());
+  AlwaysAssertExit (! node4.getNodeRep()->isConstant());
   AlwaysAssertExit (node1.isScalar());
   AlwaysAssertExit (node2.isScalar());
+  AlwaysAssertExit (node3.isScalar());
+  AlwaysAssertExit (node4.isScalar());
   for (uInt i=0; i<3; ++i) {
     ///cout << "taql=" << node1.getArrayDouble(i) << endl;
     ///cout << "taql=" << node2.getArrayDouble(i) << endl;
     Double sca1 = node1.getDouble(i);
     Double sca2 = node2.getDouble(i);
+    Double sca3 = node3.getDouble(i);
+    Double sca4 = node4.getDouble(i);
     double epn = MEpoch::Convert
       (epo[i],
        MEpoch::Ref(MEpoch::LAST, MeasFrame(pos[i])))()
       .getValue().get();
     AlwaysAssertExit (near(epn, sca1, 1e-8));
     AlwaysAssertExit (near(epn, sca2, 1e-8));
+    AlwaysAssertExit (near(epo[i].getValue().get(), sca3, 1e-8));
+    AlwaysAssertExit (near(epn, sca4, 1e-8));
   }
 }
 
@@ -196,6 +236,8 @@ void testErr()
   nsucc += checkErr("using style python calc meas.last('23-may-2005')");
   nsucc += checkErr("using style python calc meas.epoch('XYZ')");
   nsucc += checkErr("using style python calc meas.epoch(POS1) "
+                    "from tEpochEngine_tmp.tab");
+  nsucc += checkErr("using style python calc meas.epoch('ut1',TIME+0) "
                     "from tEpochEngine_tmp.tab");
   AlwaysAssertExit(nsucc == 0);
 }

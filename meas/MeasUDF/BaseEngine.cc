@@ -40,6 +40,7 @@ namespace casacore {
     // Set to shape if not empty.
     if (size > 0) {
       itsIsConst = True;
+      itsShape.resize (0);
       itsShape = shapeConstants;
       // Prepend with extra axis if needed.
       if (nvalues > 0) {
