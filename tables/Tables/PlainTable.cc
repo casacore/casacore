@@ -613,8 +613,8 @@ TableRecord& PlainTable::rwKeywordSet()
     tableChanged_p = True;
     return rec;
 }
-    
-    
+
+
 
 //# Get a column object.
 BaseColumn* PlainTable::getColumn (uInt columnIndex) const

@@ -73,6 +73,7 @@ option (USE_HDF5 "Build HDF5 " NO)
 option (USE_FFTW3 "Use FFTW instead of FFTPack" NO)
 option (USE_THREADS "Use Mutex thread synchronization" NO)
 option (USE_OPENMP "Use OpenMP threading" NO)
+option (USE_MPI "Use MPI for parallel IO" NO)
 option (USE_STACKTRACE "Show stacktrace in case of exception" NO)
 option (CASA_BUILD "Building in the CASA (http://casa.nrao.edu) environment" NO)
 
@@ -408,6 +409,10 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
    set(CASACORE_ARCH_LIBS ${CASACORE_ARCH_LIBS} -L${INTEL_LIB_PATH} -limf -lsvml -lirng -lintlc -lifport -lifcore -liomp5)
 endif()
 
+if(USE_MPI)
+    find_package(MPI COMPONENTS C REQUIRED)
+endif(USE_MPI)
+
 if(USE_OPENMP)
     set (USE_THREADS YES)
     find_package (OpenMP)
@@ -520,6 +525,7 @@ message (STATUS "CMAKE_INSTALL_NAME_DIR  = ${CMAKE_INSTALL_NAME_DIR}")
 message (STATUS "ENABLE_TABLELOCKING ... = ${ENABLE_TABLELOCKING}")
 message (STATUS "USE_THREADS ........... = ${USE_THREADS}")
 message (STATUS "USE_OPENMP ............ = ${USE_OPENMP}")
+message (STATUS "USE_MPI ............... = ${USE_MPI}")
 message (STATUS "USE_STACKTRACE ........ = ${USE_STACKTRACE}")
 message (STATUS "CMAKE_CXX_COMPILER .... = ${CMAKE_CXX_COMPILER}")
 message (STATUS "CMAKE_CXX_FLAGS ....... = ${CMAKE_CXX_FLAGS}")
@@ -565,6 +571,7 @@ endif (BUILD_PYTHON3)
 #  USE_FFTW3                     NO
 #  USE_THREADS                   NO
 #  USE_OPENMP                    NO
+#  USE_MPI                       NO
 #  USE_STACKTRACE                NO
 #  DATA_DIR                      ${CMAKE_INSTALL_PREFIX}/share/casacore/data
 #  MODULE                        all

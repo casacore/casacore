@@ -70,12 +70,12 @@ class MemoryIO;
 // RefTable, which is a view on a PlainTable.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // PlainTable is a table consisting of a keyword set and a number of
 // filled and virtual columns. The table control information and the
 // keyword set is stored in an AipsIO file. The data in the filled columns
 // are stored separately by storage managers.
-// </synopsis> 
+// </synopsis>
 
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
