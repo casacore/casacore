@@ -72,13 +72,16 @@ namespace casacore {
   void MeasEngine<M>::handleMeasArray (const TENShPtr& operand)
   {
     itsInUnit = operand->unit();
+    itsNDim  = operand->ndim();
+    itsShape = operand->shape();
     if ((!operand->isReal())  ||
         (operand->valueType() != TableExprNodeRep::VTScalar  &&
          operand->valueType() != TableExprNodeRep::VTArray)) {
       throw AipsError (M::showMe() + " value given in a MEAS function "
                        "must be a numeric scalar or array");
     }
-    // See if the operand has MeasUDF attributes.
+    // See if the operand has MeasUDF attributes, which is the case if the
+    // operand is a MEAS function itself.
     // If so, they define the reference and value type.
     // Note that the same field names are used as in TableMeasures.
     if (operand->attributes().isDefined("MEASINFO")) {
@@ -92,7 +95,6 @@ namespace casacore {
       }
       AlwaysAssert (M::getType(itsRefType, ref), AipsError);
       setValueType (valueType);
-      return;
     }
     // Let inherited classes derive attributes as needed.
     deriveAttr (operand->unit(), 0);
@@ -127,12 +129,6 @@ namespace casacore {
     }
     if (tabCol) {
       // Try if the column contains measures.
-      if (scaNode) {
-        itsNDim = 0;
-      } else {
-        itsNDim  = operand->ndim();
-        itsShape = operand->shape();
-      }
       if (TableMeasDescBase::hasMeasures (*tabCol)) {
         TableMeasColumn measTmp(tabCol->table(),
                                 tabCol->columnDesc().name());

@@ -133,8 +133,10 @@ void testScalar()
                               veciter1.vector(), 1e-8));
     AlwaysAssertExit (near(npos.getLength().getValue(),
                            arr2, 1e-8));
-    //    AlwaysAssertExit (allNear(npos.getAngle().getValue(),
-    //                        veciter3.vector()(Slice(0,2)), 1e-8));
+    AlwaysAssertExit (near(npos.getAngle().getValue()[0],
+                           arr3.data()[0], 1e-8));
+    AlwaysAssertExit (near(npos.getAngle().getValue()[1],
+                           arr3.data()[1], 1e-8));
     AlwaysAssertExit (near(npos.getLength().getValue(),
                            arr3.data()[2], 1e-8));
   }
@@ -159,6 +161,34 @@ void testScalar()
                               veciter1.vector(), 1e-8));
     AlwaysAssertExit (near(npos.getLength().getValue(),
                            arr2, 1e-8));
+  }
+  {
+    // Test a nested meas.position function.
+    TableExprNode node1(tableCommand
+                        ("calc meas.itrfllh (meas.itrfxyz ("
+                         "6.60417deg, 52.8deg, 10m, 'WGS84'))").node());
+    TableExprNode node2(tableCommand
+                        ("calc meas.itrfxyz (meas.itrfllh ("
+                         "6.60417deg, 52.8deg, 10m, 'WGS84'))").node());
+    AlwaysAssertExit (node1.getNodeRep()->isConstant());
+    AlwaysAssertExit (node2.getNodeRep()->isConstant());
+    Array<Double> arr1 = node1.getArrayDouble(0);
+    Array<Double> arr2 = node2.getArrayDouble(0);
+    AlwaysAssertExit (arr1.shape() == IPosition(1,3));
+    AlwaysAssertExit (arr2.shape() == IPosition(1,3));
+    VectorIterator<Double> veciter1(arr1);
+    VectorIterator<Double> veciter2(arr2);
+    ///cout << "taql=" << arr1 << endl;
+    AlwaysAssertExit (node1.unit().getName().empty());
+    AlwaysAssertExit (node2.unit().getName() == "m");
+    AlwaysAssertExit (near(npos.getAngle().getValue()[0],
+                           arr1.data()[0], 1e-8));
+    AlwaysAssertExit (near(npos.getAngle().getValue()[1],
+                           arr1.data()[1], 1e-8));
+    AlwaysAssertExit (near(npos.getLength().getValue(),
+                           arr1.data()[2], 1e-8));
+    AlwaysAssertExit (allNear(npos.getValue(),
+                              veciter2.vector(), 1e-8));
   }
 }
 

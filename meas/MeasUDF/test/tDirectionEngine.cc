@@ -88,7 +88,6 @@ void testScalar (Bool asDirCos)
   }
   {
     Vector<Double> dir;
-    VectorIterator<Double> dirvec(dir);
     if (asDirCos) {
       dir = MDirection::Convert
         (coord, MDirection::Ref(MDirection::J2000))()
@@ -111,6 +110,29 @@ void testScalar (Bool asDirCos)
     AlwaysAssertExit (allNear(dir, veciter.vector(), 1e-8));
   }
   {
+    // Test a nested meas. function.
+    Vector<Double> dir;
+    if (asDirCos) {
+      dir = coord.getValue().getValue();
+    } else {
+      dir = coord.getValue().getAngle("deg").getValue();
+    }
+    ///cout << "meas=" << dir << endl;
+    String funcStr  = (asDirCos ? "dircos('b1950'," : "b1950(");
+    String funcStr2 = (!asDirCos ? "dircos('galactic'," : "galactic(");
+    TableExprNode node(tableCommand
+                       ("calc meas." + funcStr +
+                        "meas." + funcStr2 + 
+                        "[185.425833deg, 31.799167deg],"
+                        "'B1950'))deg").node());
+    AlwaysAssertExit (node.getNodeRep()->isConstant());
+    Array<Double> arr1 = node.getArrayDouble(0);
+    VectorIterator<Double> veciter(arr1);
+    ///cout << "diff=" << dir-veciter.vector() << endl;
+    AlwaysAssertExit (allNear(dir, veciter.vector(), 1e-8));
+  }
+  {
+    // Test ZENITH.
     TableExprNode node1(tableCommand
                         ("calc meas.azel([0,0,1], 'AZEL')deg").node());
     TableExprNode node2(tableCommand
