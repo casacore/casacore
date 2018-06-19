@@ -10,19 +10,14 @@ matrix:
   include:
     - os: linux
       compiler: gcc
-      env: CXX11=True
     - os: linux
       compiler: clang
-      env: CXX11=True
-    - os: linux
-      compiler: gcc
-      env: CXX11=False
     - os: osx
       compiler: clang
-      env: CXX11=True PYTHONVERSION=2.7
+      env: PYTHONVERSION=2.7
     - os: osx
       compiler: clang
-      env: CXX11=True PYTHONVERSION=3.4
+      env: PYTHONVERSION=3.4
 
 sudo: false
 

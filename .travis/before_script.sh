@@ -13,12 +13,7 @@ cd build
 wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar
 tar zxvf WSRT_Measures.ztar
 
-# no extern templates makes the build a lot larger
-if [ "$CXX11" = "False" ]; then
-  ccache -M 160M
-else
-  ccache -M 80M
-fi
+ccache -M 80M
 
 if [ "$TRAVIS_OS_NAME" = osx ]; then
   PATH=$HOME/miniconda/bin:$PATH
@@ -56,7 +51,6 @@ CXX="ccache $CXX" cmake .. \
     -DUSE_HDF5=ON \
     -DBUILD_PYTHON=${BUILD_PYTHON} \
     -DBUILD_PYTHON3=${BUILD_PYTHON3} \
-    -DCXX11=${CXX11} \
     -DPYTHON2_EXECUTABLE=${PYTHON2_EXECUTABLE} \
     -DPYTHON3_EXECUTABLE=${PYTHON3_EXECUTABLE} \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \

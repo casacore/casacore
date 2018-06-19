@@ -67,7 +67,6 @@ option (ENABLE_SHARED "Build shared libraries" YES)
 option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
 # By default do not use HDF5, FFTW3, threads
-option (CXX11 "Compile as C++11 if possible" YES)
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
 option (USE_HDF5 "Build HDF5 " NO)
 option (USE_FFTW3 "Use FFTW instead of FFTPack" NO)
@@ -149,7 +148,6 @@ if (ENABLE_SHARED)
         set(CMAKE_MACOSX_RPATH TRUE)
     endif (ENABLE_RPATH)
 	if( CASA_BUILD )
-		set(CXX11 ON)
 		option(NO_SOVERSION "Build shared libraries without version information" NO)
 		if( NOT NO_SOVERSION )
 			set( epochdelta 1385614800 )
@@ -214,18 +212,12 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 # Detect if the compiler supports C++11 if we want to use it.
-if (CXX11)
-    check_cxx_compiler_flag(-std=c++11 HAS_CXX11)
-    if (HAS_CXX11)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    else()
-      if (CASA_BUILD)
-        message(FATAL_ERROR "CASA_BUILD requires a c++11 compatible compiler")
-      else()
-        message(FATAL_ERROR "C++11 build was requested but the compiler does not support -std=c++11")
-      endif()
-    endif()
-endif()
+check_cxx_compiler_flag(-std=c++11 HAS_CXX11)
+if (HAS_CXX11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+else()
+    message(FATAL_ERROR "Casacore build requires a c++11 compatible compiler")
+endif (HAS_CXX11)
 
 # use faster fortran rules for complex operations, removes restoring complex
 # infinities if naive computation results in NAN + NAN * I
@@ -523,7 +515,6 @@ message (STATUS "USE_OPENMP ............ = ${USE_OPENMP}")
 message (STATUS "USE_STACKTRACE ........ = ${USE_STACKTRACE}")
 message (STATUS "CMAKE_CXX_COMPILER .... = ${CMAKE_CXX_COMPILER}")
 message (STATUS "CMAKE_CXX_FLAGS ....... = ${CMAKE_CXX_FLAGS}")
-message (STATUS "C++11 support ......... = ${CXX11}")
 message (STATUS "DATA directory ........ = ${DATA_DIR}")
 message (STATUS "DL library? ........... = ${DL_LIBRARIES}")
 message (STATUS "Pthreads library? ..... = ${PTHREADS_LIBRARIES}")
@@ -559,7 +550,6 @@ endif (BUILD_PYTHON3)
 #  BUILD_PYTHON                  NO
 #  ENABLE_SHARED                 YES
 #  ENABLE_RPATH                  YES
-#  CXX11                         YES
 #  ENABLE_TABLELOCKING           YES
 #  USE_HDF5                      NO
 #  USE_FFTW3                     NO
