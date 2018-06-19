@@ -157,7 +157,7 @@ void MSWeather::init()
 		  "Flag for average column density of electrons","","");
 	// PRESSURE
 	colMapDef(PRESSURE, "PRESSURE", TpFloat,
-		  "Ambient atmospheric pressure","Pa","");
+		  "Ambient atmospheric pressure","hPa","");
 	// PRESSURE_FLAG
 	colMapDef(PRESSURE_FLAG, "PRESSURE_FLAG", TpBool,
 		  "Flag for ambient atmospheric pressure","","");
