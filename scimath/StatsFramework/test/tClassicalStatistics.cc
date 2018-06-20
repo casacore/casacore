@@ -1736,7 +1736,7 @@ int main() {
         vector<Double>::iterator end = bigData.end();
         uInt64 count = 0;
         while(iter != end) {
-            *iter = count % 2 == 0 ? (Float)count : -Float(count*count);
+            *iter = count % 2 == 0 ? Double(count) : -Double(count*count);
             ++iter;
             ++count;
         }
@@ -1749,7 +1749,6 @@ int main() {
             // enforce a small internal array size so binning algorithm is used
             Double median = cs.getMedian(NULL, NULL, NULL, 100);
             AlwaysAssert(median == -0.5, AipsError);
-
         }
         {
             // getMedian() with mask, but no weights or ranges, using binning

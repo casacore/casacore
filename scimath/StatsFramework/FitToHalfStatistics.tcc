@@ -99,7 +99,7 @@ StatisticsAlgorithm<CASA_STATP>* FitToHalfStatistics<CASA_STATP>::clone() const 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedian(
     CountedPtr<uInt64> , CountedPtr<AccumType> ,
-    CountedPtr<AccumType> , uInt , Bool , uInt64
+    CountedPtr<AccumType> , uInt , Bool , uInt
 ) {
     CountedPtr<AccumType> median = _getStatsData().median;
     if (! median) {
@@ -115,7 +115,7 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
     CountedPtr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
+    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     // The median is trivial, we just need to compute the quantiles
     quantileToValue = getQuantiles(
@@ -129,7 +129,7 @@ CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
     CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     if (! _getStatsData().medAbsDevMed) {
         _setRange();
@@ -246,7 +246,7 @@ CASA_STATD
 std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
     const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts,
     CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
+    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     ThrowIf(
         *fractions.begin() <= 0 || *fractions.rbegin() >= 1,

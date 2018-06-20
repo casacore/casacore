@@ -84,7 +84,7 @@ public:
     AccumType getMedian(
         CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
         CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt64 nBins=10000
+        Bool persistSortedArray=False, uInt nBins=10000
     );
 
     // <group>
@@ -120,7 +120,7 @@ public:
         CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
         CountedPtr<AccumType> knownMax=NULL,
         uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-        uInt64 nBins=10000
+        uInt nBins=10000
     );
 
     // get the median of the absolute deviation about the median of the data.
@@ -128,7 +128,7 @@ public:
         CountedPtr<uInt64> knownNpts=NULL,
         CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
         uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-        uInt64 nBins=10000
+        uInt nBins=10000
     );
 
     // Get the specified quantiles. <src>fractions</src> must be between 0 and 1,
@@ -137,7 +137,7 @@ public:
         const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts=NULL,
         CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
         uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-        uInt64 nBins=10000
+        uInt nBins=10000
     );
     // </group>
 

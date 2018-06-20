@@ -209,7 +209,7 @@ public:
     virtual AccumType getMedian(
         CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
         CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt64 nBins=10000
+        Bool persistSortedArray=False, uInt nBins=10000
     ) = 0;
 
     // The return value is the median; the quantiles are returned in the <src>quantileToValue</src> map.
@@ -218,7 +218,7 @@ public:
         CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
         CountedPtr<AccumType> knownMax=NULL,
         uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-        uInt64 nBins=10000
+        uInt nBins=10000
     ) = 0;
 
     // get the median of the absolute deviation about the median of the data.
@@ -226,7 +226,7 @@ public:
         CountedPtr<uInt64> knownNpts=NULL,
         CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
         uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-        uInt64 nBins=10000
+        uInt nBins=10000
     ) = 0;
 
     // Purposefully not virtual. Derived classes should not implement.
@@ -234,7 +234,7 @@ public:
         Double quantile, CountedPtr<uInt64> knownNpts=NULL,
         CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
         uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt64 nBins=10000
+        Bool persistSortedArray=False, uInt nBins=10000
     );
 
     // get a map of quantiles to values.
@@ -242,7 +242,7 @@ public:
         const std::set<Double>& quantiles, CountedPtr<uInt64> npts=NULL,
         CountedPtr<AccumType> min=NULL, CountedPtr<AccumType> max=NULL,
         uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-        uInt64 nBins=10000
+        uInt nBins=10000
     ) = 0;
 
     // get the value of the specified statistic. Purposefully not virtual.

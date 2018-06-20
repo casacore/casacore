@@ -78,7 +78,7 @@ CASA_STATD
 AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedian(
     uInt64 mynpts, AccumType mymin, AccumType mymax,
     uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     CountedPtr<AccumType> median = this->_getMedian();
     if (! median) {
@@ -97,7 +97,7 @@ CASA_STATD
 AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
     uInt64 mynpts, AccumType mymin,
     AccumType mymax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     CountedPtr<AccumType> medabsdevmed = this->_getMedianAbsDevMedian();
     if (! medabsdevmed) {
@@ -129,16 +129,16 @@ AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
 #define _findBinCodeCR \
     if (*datum >= _range.first && *datum <= _range.second) { \
         AccumType myDatum = _doMedAbsDevMed ? abs((AccumType)*datum - _myMedian) : *datum; \
-        if (myDatum >= bBinDesc->minLimit && myDatum < *maxLimit.rbegin()) { \
+        if (myDatum >= bBinDesc->getMinHistLimit() && myDatum < *maxLimit.rbegin()) { \
             iCounts = bCounts; \
             iSameVal = bSameVal; \
             iAllSame = bAllSame; \
             iBinDesc = bBinDesc; \
             iMaxLimit = bMaxLimit; \
             while (iBinDesc != eBinDesc) { \
-                if (myDatum >= iBinDesc->minLimit && myDatum < *iMaxLimit) { \
-                    AccumType idx = (myDatum - iBinDesc->minLimit)/iBinDesc->binWidth; \
-                    ++(*iCounts)[StatisticsUtilities<AccumType>::getInt(idx)]; \
+                if (myDatum >= iBinDesc->getMinHistLimit() && myDatum < *iMaxLimit) { \
+                    uInt idx = iBinDesc->getIndex(myDatum); \
+                    ++(*iCounts)[idx]; \
                     if (*iAllSame) { \
                         if (iSameVal->null()) { \
                             *iSameVal = new AccumType(myDatum); \
@@ -166,7 +166,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<std::vector<uInt64> >& binCounts,
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<StatsHistogram<AccumType> >& binDesc,
     const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -175,9 +175,9 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator eBinDesc = binDesc.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -196,7 +196,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<StatsHistogram<AccumType> >& binDesc,
     const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -205,9 +205,9 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator  bAllSame = allSame.begin();
     std::vector<Bool>::iterator  iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator eBinDesc = binDesc.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -234,7 +234,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<StatsHistogram<AccumType> >& binDesc,
     const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -243,9 +243,9 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator eBinDesc = binDesc.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -268,7 +268,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<StatsHistogram<AccumType> >& binDesc,
     const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -277,9 +277,9 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator eBinDesc = binDesc.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -307,7 +307,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<StatsHistogram<AccumType> >& binDesc,
     const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -316,9 +316,9 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator eBinDesc = binDesc.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -340,7 +340,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<StatsHistogram<AccumType> >& binDesc,
     const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -349,9 +349,9 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator eBinDesc = binDesc.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -381,7 +381,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<StatsHistogram<AccumType> >& binDesc,
     const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -390,9 +390,9 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator eBinDesc = binDesc.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;
@@ -422,7 +422,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+    const std::vector<StatsHistogram<AccumType> >& binDesc,
     const std::vector<AccumType>& maxLimit
 ) const {
     std::vector<std::vector<uInt64> >::iterator bCounts = binCounts.begin();
@@ -431,9 +431,9 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     typename std::vector<CountedPtr<AccumType> >::iterator iSameVal = bSameVal;
     std::vector<Bool>::iterator bAllSame = allSame.begin();
     std::vector<Bool>::iterator iAllSame = bAllSame;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator bBinDesc = binDesc.begin();
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator iBinDesc = bBinDesc;
-    typename std::vector<typename StatisticsUtilities<AccumType>::BinDesc>::const_iterator eBinDesc = binDesc.end();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator bBinDesc = binDesc.begin();
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator iBinDesc = bBinDesc;
+    typename std::vector<StatsHistogram<AccumType> >::const_iterator eBinDesc = binDesc.end();
     typename std::vector<AccumType>::const_iterator bMaxLimit = maxLimit.begin();
     typename std::vector<AccumType>::const_iterator iMaxLimit = bMaxLimit;
     DataIterator datum = dataBegin;

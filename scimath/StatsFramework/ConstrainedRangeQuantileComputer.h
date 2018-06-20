@@ -66,14 +66,14 @@ public:
     virtual AccumType getMedian(
         uInt64 mynpts, AccumType mymin, AccumType mymax,
         uInt binningThreshholdSizeBytes,
-        Bool persistSortedArray, uInt64 nBins
+        Bool persistSortedArray, uInt nBins
     );
 
     // get the median of the absolute deviation about the median of the data.
     virtual AccumType getMedianAbsDevMed(
         uInt64 mynpts, AccumType mymin, AccumType mymax,
         uInt binningThreshholdSizeBytes, Bool persistSortedArray,
-        uInt64 nBins
+        uInt nBins
     );
 
     void setRange(const std::pair<AccumType, AccumType>& r) {
@@ -87,7 +87,7 @@ protected:
         std::vector<std::vector<uInt64> >& binCounts,
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc,
+        const std::vector<StatsHistogram<AccumType> >& binDesc,
         const std::vector<AccumType>& maxLimit
     ) const;
 
@@ -96,7 +96,7 @@ protected:
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& binDesc, const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
@@ -104,7 +104,7 @@ protected:
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& binDesc, const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
@@ -113,7 +113,7 @@ protected:
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
         Bool isInclude,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& binDesc, const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
@@ -121,7 +121,7 @@ protected:
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& binDesc, const std::vector<AccumType>& maxLimit
     ) const ;
 
     virtual void _findBins(
@@ -129,7 +129,7 @@ protected:
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& binDesc, const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
@@ -138,7 +138,7 @@ protected:
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& binDesc, const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
@@ -146,7 +146,7 @@ protected:
         std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-        const std::vector<typename StatisticsUtilities<AccumType>::BinDesc>& binDesc, const std::vector<AccumType>& maxLimit
+        const std::vector<StatsHistogram<AccumType> >& binDesc, const std::vector<AccumType>& maxLimit
     ) const;
     // </group>
 

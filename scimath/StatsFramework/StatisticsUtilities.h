@@ -28,6 +28,7 @@
 
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/scimath/StatsFramework/StatisticsTypes.h>
+#include <casacore/scimath/StatsFramework/StatsHistogram.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/aips.h>
 
@@ -45,6 +46,7 @@ CASA_STATD class StatsDataProvider;
 template <class AccumType> class StatisticsUtilities {
 public:
 
+    /*
 	// description of a regularly spaced bins with the first bin having lower limit
 	// of minLimit and having nBins equally spaced bins of width binWidth, so that
 	// the upper limit of the last bin is given by minLimit + nBins*binWidth
@@ -52,7 +54,13 @@ public:
 		AccumType binWidth;
 		AccumType minLimit;
 		uInt nBins;
+		// Carrying along the bin boundaries is necessary because precision
+		// issues of different ways of computing them can cause discrepancies,
+		// leading to accounting errors. These values are the max limits for
+		// each bin.
+		std::vector<AccumType> maxLimits;
 	};
+	*/
 
 	~StatisticsUtilities() {}
 
@@ -178,13 +186,6 @@ public:
     inline static void convertToAbsDevMedArray(std::vector<AccumType>& myArray, AccumType median);
 	// </group>
 
-	// This does the obvious conversions. The Complex and DComplex versions
-	// (implemented after the class definition) are used solely to permit
-    // compilation. In general, these versions should never actually be called
-	inline static Int getInt(const AccumType& v) {
-		return (Int)v;
-	}
-
 	inline static Bool includeDatum(
 		const AccumType& datum, typename DataRanges::const_iterator beginRange,
 		typename DataRanges::const_iterator endRange, Bool isInclude
@@ -195,15 +196,6 @@ public:
     // a map of index to value in the sorted array.
     static std::map<uInt64, AccumType> indicesToValues(
         std::vector<AccumType>& myArray, const std::set<uInt64>& indices
-    );
-
-    // If <src>allowPad</src> is True, then pad the lower side of the lowest
-    // bin and the higher side of the highest bin so that minData and maxData
-    // do not fall on the edge of their respective bins. If false, no padding
-    // so that minData and maxData are also exactly the histogram abscissa limits.
-    static void makeBins(
-        BinDesc& bins, AccumType minData, AccumType maxData,
-        uInt maxBins, Bool allowPad
     );
 
     static void mergeResults(
@@ -235,22 +227,7 @@ private:
 	StatisticsUtilities() {}
 
 };
-
-// <group>
-// The Complex and DComplex versions
-// are used solely to permit compilation. In general, these versions should
-// never actually be called
-template<>
-inline Int StatisticsUtilities<casacore::Complex>::getInt(const casacore::Complex&) {
-	ThrowCc("This version for complex data types should never be called");
-}
-
-template<>
-inline Int StatisticsUtilities<casacore::DComplex>::getInt(const casacore::DComplex&) {
-	ThrowCc("Logic Error: This version for complex data types should never be called");
-}
-// </group>
-
+/*
 // for use in debugging
 template <class T>
 ostream &operator<<(ostream &os, const typename StatisticsUtilities<T>::BinDesc &desc) {
@@ -258,6 +235,7 @@ ostream &operator<<(ostream &os, const typename StatisticsUtilities<T>::BinDesc 
 		<< " nbins " << desc.nBins;
 	return os;
 }
+*/
 
 }
 

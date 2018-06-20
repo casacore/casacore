@@ -139,7 +139,7 @@ public:
     virtual AccumType getMedian(
         CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
         CountedPtr<AccumType> knownMax=NULL, uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt64 nBins=10000
+        Bool persistSortedArray=False, uInt nBins=10000
     );
 
     virtual AccumType getMedianAndQuantiles(
@@ -147,21 +147,21 @@ public:
         CountedPtr<uInt64> knownNpts=NULL, CountedPtr<AccumType> knownMin=NULL,
         CountedPtr<AccumType> knownMax=NULL,
         uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-        uInt64 nBins=10000
+        uInt nBins=10000
     );
 
     virtual AccumType getMedianAbsDevMed(
         CountedPtr<uInt64> knownNpts=NULL,
         CountedPtr<AccumType> knownMin=NULL, CountedPtr<AccumType> knownMax=NULL,
         uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-        uInt64 nBins=10000
+        uInt nBins=10000
     );
 
     virtual std::map<Double, AccumType> getQuantiles(
         const std::set<Double>& quantiles, CountedPtr<uInt64> npts=NULL,
         CountedPtr<AccumType> min=NULL, CountedPtr<AccumType> max=NULL,
         uInt binningThreshholdSizeBytes=4096*4096, Bool persistSortedArray=False,
-        uInt64 nBins=10000
+        uInt nBins=10000
     );
 
     virtual std::pair<Int64, Int64> getStatisticIndex(StatisticsData::STATS stat);

@@ -143,7 +143,7 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
 CASA_STATD AccumType StatisticsAlgorithm<CASA_STATP>::getQuantile(
     Double quantile, CountedPtr<uInt64> knownNpts,
     CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
+    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     std::set<Double> qs;
     qs.insert(quantile);

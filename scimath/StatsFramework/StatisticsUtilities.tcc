@@ -296,26 +296,6 @@ std::map<uInt64, AccumType> StatisticsUtilities<AccumType>::indicesToValues(
 }
 
 template <class AccumType>
-void StatisticsUtilities<AccumType>::makeBins(
-    BinDesc& bins, AccumType minData, AccumType maxData,
-    uInt maxBins, Bool allowPad
-) {
-    bins.nBins = maxBins;
-    bins.minLimit = minData;
-    AccumType maxLimit = maxData;
-    if (allowPad) {
-        AccumType pad = (maxData - minData)/1e3;
-        if (pad == (AccumType)0) {
-            // try to handle Int like AccumTypes
-            pad = AccumType(1);
-        }
-        bins.minLimit -= pad;
-        maxLimit += pad;
-    }
-    bins.binWidth = (maxLimit - bins.minLimit)/(AccumType)bins.nBins;
-}
-
-template <class AccumType>
 void StatisticsUtilities<AccumType>::mergeResults(
     std::vector<std::vector<uInt64> >& bins, std::vector<CountedPtr<AccumType> >& sameVal,
     std::vector<Bool>& allSame, const PtrHolder<std::vector<std::vector<uInt64> > >& tBins,

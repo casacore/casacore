@@ -73,7 +73,7 @@ CASA_STATD
 AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedian(
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
     CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     if (! this->_getStatsData().median) {
         _setRange();
@@ -93,7 +93,7 @@ CASA_STATD
 AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedianAbsDevMed(
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
     CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt64 nBins
+    Bool persistSortedArray, uInt nBins
 ) {
     _setRange();
     AccumType medabsdevmed = ClassicalStatistics<CASA_STATP>::getMedianAbsDevMed(
@@ -108,7 +108,7 @@ AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>& quantileToValue, const std::set<Double>& quantiles,
     CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
     CountedPtr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
+    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     _setRange();
     return ClassicalStatistics<CASA_STATP>::getMedianAndQuantiles(
@@ -135,7 +135,7 @@ CASA_STATD
 std::map<Double, AccumType> ConstrainedRangeStatistics<CASA_STATP>::getQuantiles(
     const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts,
     CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt64 nBins
+    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     _setRange();
     return ClassicalStatistics<CASA_STATP>::getQuantiles(

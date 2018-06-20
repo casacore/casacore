@@ -326,6 +326,8 @@ StatsFramework/StatisticsTypes.h
 StatsFramework/StatisticsTypes.tcc
 StatsFramework/StatisticsUtilities.h
 StatsFramework/StatisticsUtilities.tcc
+StatsFramework/StatsHistogram.tcc
+StatsFramework/StatsHistogram.h
 StatsFramework/ZScoreCalculator.h
 DESTINATION include/casacore/scimath/StatsFramework
 )
