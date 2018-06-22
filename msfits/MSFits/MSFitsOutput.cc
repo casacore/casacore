@@ -2539,7 +2539,7 @@ Bool MSFitsOutput::writeWX(FitsOutput *output, const MeasurementSet &ms) {
         }
         if (hasPressure) {
             //covert whatever units to mbar
-        	*pressure = weatherColumns.pressureQuant()(i).getValue(Unit("mbar"));
+            *pressure = weatherColumns.pressureQuant()(i).getValue(Unit("mbar"));
         } else {
             *pressure = 0.0;
         }
