@@ -108,17 +108,14 @@ public:
    void set (Random::Types type,
              const Vector<Double>& parameters);
 
-// Add noise of given type to lattice.  For Complex, the
+// Add noise of given type to lattice.  For complex types, the
 // noise is added to real and imaginary separately.
 // Any mask is ignored when adding the noise. I.e.
 // noise is added to masked pixels.
 // <group>
-   void add (MaskedLattice<Float>& lattice);
-   void add (MaskedLattice<Complex>& lattice);
-   void add (Lattice<Float>& lattice);
-   void add (Lattice<Complex>& lattice);
+   template <class T> void add (Lattice<T>& lattice);
+   template <class T> void add (MaskedLattice<T>& lattice);
 // </group>
-
 private:
 
    Random::Types itsType;
@@ -131,6 +128,8 @@ private:
 // <group>
    void addNoiseToArray (Array<Float>& data);
    void addNoiseToArray (Array<Complex>& data);
+   void addNoiseToArray (Array<Double>& data);
+   void addNoiseToArray (Array<DComplex>& data);
 // </group>
 
 // Make noise generator
@@ -139,5 +138,9 @@ private:
 
 
 } //# NAMESPACE CASACORE - END
+
+#ifndef CASACORE_NO_AUTO_TEMPLATES
+#include <casacore/lattices/LatticeMath/LatticeAddNoise2.tcc>
+#endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif

@@ -135,6 +135,7 @@ LatticeMath/CLInterpolator2D.h
 LatticeMath/CLInterpolator2D.tcc
 LatticeMath/Fit2D.h
 LatticeMath/LatticeAddNoise.h
+LatticeMath/LatticeAddNoise2.tcc
 LatticeMath/LatticeApply.h
 LatticeMath/LatticeApply.tcc
 LatticeMath/LatticeCleanProgress.h
