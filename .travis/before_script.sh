@@ -56,6 +56,5 @@ CXX="ccache $CXX" cmake .. \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
     -DDATA_DIR=$PWD \
     -DSOFA_ROOT_DIR=$HOME \
-    -DUseCasacoreNamespace=True \
     -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/installed
 
