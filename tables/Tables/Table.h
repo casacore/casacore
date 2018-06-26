@@ -289,6 +289,25 @@ public:
     Table (SetupNewTable&, const TableLock& lockOptions,
 	   uInt nrrow = 0, Bool initialize = False,
 	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
+#ifdef HAVE_MPI
+    explicit Table (MPI_Comm mpiComm, TableType, EndianFormat = Table::AipsrcEndian,
+                    const TSMOption& = TSMOption());
+    explicit Table (MPI_Comm mpiComm, SetupNewTable&, uInt nrrow = 0, Bool initialize = False,
+		    EndianFormat = Table::AipsrcEndian,
+                    const TSMOption& = TSMOption());
+    Table (MPI_Comm mpiComm, SetupNewTable&, TableType,
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
+    Table (MPI_Comm mpiComm, SetupNewTable&, TableType, const TableLock& lockOptions,
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
+    Table (MPI_Comm mpiComm, SetupNewTable&, TableLock::LockOption,
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
+    Table (MPI_Comm mpiComm, SetupNewTable&, const TableLock& lockOptions,
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
+#endif
     // </group>
 
     // Create a table object as the virtual concatenation of
@@ -1100,9 +1119,6 @@ private:
     // Sort the columns if needed.
     void showColumnInfo (ostream& os, const TableDesc&, uInt maxNameLength,
                          const Array<String>& columnNames, Bool sort) const;
-#ifdef HAVE_MPI
-    MPI_Comm mpiComm = MPI_COMM_WORLD;
-#endif
 };
 
 

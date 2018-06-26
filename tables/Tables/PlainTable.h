@@ -94,6 +94,12 @@ public:
 		const TableLock& lockOptions, int endianFormat,
                 const TSMOption& tsmOption);
 
+#ifdef HAVE_MPI
+    PlainTable (MPI_Comm mpiComm, SetupNewTable&, uInt nrrow, Bool initialize,
+		const TableLock& lockOptions, int endianFormat,
+                const TSMOption& tsmOption);
+#endif
+
     // Construct the object for an existing table.
     // It opens the table file, reads the table control information
     // and creates and initializes the required storage managers.

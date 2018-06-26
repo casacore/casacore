@@ -39,6 +39,10 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/IO/FileLocker.h>
 
+#ifdef HAVE_MPI
+#include <mpi.h>
+#endif
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
@@ -79,7 +83,7 @@ class AipsIO;
 // BaseTable is the (abstract) base class for different kind of tables.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // BaseTables defines many virtual functions, which are actually
 // implemented in the underlying table classes like PlainTable and
 // RefTable. Other functions like sort and select are implemented
@@ -88,7 +92,7 @@ class AipsIO;
 // The functions in BaseTable and its derived classes can only be
 // used by the table system classes. All user access is via the
 // envelope class Table, which references (counted) BaseTable.
-// </synopsis> 
+// </synopsis>
 
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
@@ -102,6 +106,10 @@ public:
 
     // Initialize the object.
     BaseTable (const String& tableName, int tableOption, uInt nrrow);
+
+#ifdef HAVE_MPI
+    BaseTable (MPI_Comm mpiComm, const String& tableName, int tableOption, uInt nrrow);
+#endif
 
     virtual ~BaseTable();
 
@@ -240,7 +248,7 @@ public:
     // Get the table option.
     int tableOption() const
 	{ return option_p; }
-    
+
     // Mark the table for delete.
     // This means that the underlying table gets deleted when it is
     // actually destructed.
@@ -255,7 +263,7 @@ public:
     // Test if the table is marked for delete.
     Bool isMarkedForDelete() const
 	{ return delete_p; }
-    
+
     // Get the table description.
     const TableDesc& tableDesc() const
 	{ return (tdescPtr_p == 0  ?  makeTableDesc() : *tdescPtr_p); }
@@ -577,6 +585,10 @@ private:
     // Make the name absolute.
     // It first checks if the name contains valid characters (not only . and /).
     String makeAbsoluteName (const String& name) const;
+
+#ifdef HAVE_MPI
+    MPI_Comm       itsMpiComm;          //# mpi communicator for parallel I/O
+#endif
 };
 
 

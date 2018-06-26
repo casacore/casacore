@@ -90,7 +90,7 @@ Table::Table (const String& name, const TableLock& lockOptions,
 {
   open (name, "", option, lockOptions, tsmOpt);
 }
-    
+
   Table::Table (const String& name, const String& type, TableOption option,
                 const TSMOption& tsmOpt)
 : baseTabPtr_p     (0),
@@ -99,7 +99,7 @@ Table::Table (const String& name, const TableLock& lockOptions,
 {
   open (name, type, option, TableLock(), tsmOpt);
 }
-    
+
 Table::Table (const String& name, const String& type,
 	      const TableLock& lockOptions, TableOption option,
               const TSMOption& tsmOpt)
@@ -190,6 +190,95 @@ Table::Table (SetupNewTable& newtab, const TableLock& lockOptions,
 				   endianFormat, tsmOpt);
     baseTabPtr_p->link();
 }
+
+#ifdef HAVE_MPI
+
+Table::Table (MPI_Comm mpiComm, Table::TableType type, Table::EndianFormat endianFormat,
+                const TSMOption& tsmOpt)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    SetupNewTable newtab("", TableDesc(), Table::Scratch);
+    if (type == Table::Memory) {
+        baseTabPtr_p = new MemoryTable (newtab, 0, False);
+    } else {
+        baseTabPtr_p = new PlainTable (mpiComm, newtab, 0, False,
+				       TableLock(), endianFormat, tsmOpt);
+    }
+    baseTabPtr_p->link();
+}
+
+Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, uInt nrrow, Bool initialize,
+	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    baseTabPtr_p = new PlainTable (mpiComm, newtab, nrrow, initialize,
+				   TableLock(), endianFormat, tsmOpt);
+    baseTabPtr_p->link();
+}
+
+Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type,
+	      uInt nrrow, Bool initialize,
+	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    if (type == Table::Memory) {
+        baseTabPtr_p = new MemoryTable (newtab, nrrow, initialize);
+    } else {
+        baseTabPtr_p = new PlainTable (mpiComm, newtab, nrrow, initialize,
+				       TableLock(), endianFormat, tsmOpt);
+    }
+    baseTabPtr_p->link();
+}
+
+Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, Table::TableType type,
+	      const TableLock& lockOptions,
+	      uInt nrrow, Bool initialize,
+	      Table::EndianFormat endianFormat, const TSMOption& tsmOpt)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    if (type == Table::Memory) {
+        baseTabPtr_p = new MemoryTable (newtab, nrrow, initialize);
+    } else {
+        baseTabPtr_p = new PlainTable (mpiComm, newtab, nrrow, initialize,
+				       lockOptions, endianFormat, tsmOpt);
+    }
+    baseTabPtr_p->link();
+}
+
+Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, TableLock::LockOption lockOption,
+	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat,
+              const TSMOption& tsmOpt)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    baseTabPtr_p = new PlainTable (mpiComm, newtab, nrrow, initialize,
+				   TableLock(lockOption),
+				   endianFormat, tsmOpt);
+    baseTabPtr_p->link();
+}
+
+Table::Table (MPI_Comm mpiComm, SetupNewTable& newtab, const TableLock& lockOptions,
+	      uInt nrrow, Bool initialize, Table::EndianFormat endianFormat,
+              const TSMOption& tsmOpt)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    baseTabPtr_p = new PlainTable (mpiComm, newtab, nrrow, initialize, lockOptions,
+				   endianFormat, tsmOpt);
+    baseTabPtr_p->link();
+}
+
+#endif
 
 Table::Table (const Block<Table>& tables,
 	      const Block<String>& subTables,
@@ -568,7 +657,7 @@ BaseTable* Table::makeBaseTable (const String& name, const String& type,
     }
     return baseTabPtr;
 }
-	
+
 BaseTable* Table::lookCache (const String& name, int tableOption,
 			     const TableLock& lockOptions)
 {
@@ -910,7 +999,7 @@ Bool Table::isReadable (const String& tableName, Bool throwIf)
             throw;
         }
 	valid = False;
-    } 
+    }
     return valid;
 }
 //# Test if table exists and is writable.
@@ -1018,7 +1107,7 @@ void Table::showKeywords (ostream& ios, Bool showSubTables,
     }
   }
 }
-  
+
 void Table::showKeywordSets (ostream& ios,
                              Bool showTabKey, Bool showColKey,
                              Int maxVal) const

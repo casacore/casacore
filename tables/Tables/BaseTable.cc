@@ -87,6 +87,36 @@ BaseTable::BaseTable (const String& name, int option, uInt nrrow)
     }
 }
 
+#ifdef HAVE_MPI
+BaseTable::BaseTable (MPI_Comm mpiComm, const String& name, int option, uInt nrrow)
+: nrlink_p    (0),
+  nrrow_p     (nrrow),
+  nrrowToAdd_p(0),
+  tdescPtr_p  (0),
+  name_p      (name),
+  option_p    (option),
+  noWrite_p   (False),
+  delete_p    (False),
+  madeDir_p   (True),
+  itsTraceId  (-1),
+  itsMpiComm  (mpiComm)
+{
+    if (name_p.empty()) {
+	name_p = File::newUniqueName ("", "tab").originalName();
+    }
+    // Make name absolute in case a chdir is done in e.g. Python.
+    name_p = makeAbsoluteName (name_p);
+    if (option_p == Table::Scratch) {
+	option_p = Table::New;
+    }
+    // Mark initially a new table for delete.
+    // When the construction ends successfully, it can be unmarked.
+    if (option_p == Table::New  ||  option_p == Table::NewNoReplace) {
+	markForDelete (False, "");
+	madeDir_p = False;
+    }
+}
+#endif
 
 BaseTable::~BaseTable()
 {
@@ -161,7 +191,11 @@ void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
 Bool BaseTable::makeTableDir()
 {
 #ifdef HAVE_MPI
-    return false;
+    int rank;
+    MPI_Comm_rank(itsMpiComm, &rank);
+    if(rank > 0){
+        return false;
+    }
 #endif
     //# Exit if the table directory has already been created.
     if (madeDir_p) {
@@ -218,7 +252,11 @@ Bool BaseTable::makeTableDir()
 Bool BaseTable::openedForWrite() const
 {
 #ifdef HAVE_MPI
-    return false;
+    int rank;
+    MPI_Comm_rank(itsMpiComm, &rank);
+    if(rank > 0){
+        return false;
+    }
 #endif
     AlwaysAssert (!isNull(), AipsError);
     return (option_p==Table::Old || option_p==Table::Delete  ?  False : True);

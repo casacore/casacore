@@ -53,7 +53,11 @@ TableCache PlainTable::theirTableCache;
 PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 			const TableLock& lockOptions, int endianFormat,
                         const TSMOption& tsmOption)
+#ifdef HAVE_MPI
+: BaseTable      (MPI_COMM_WORLD, newtab.name(), newtab.option(), 0),
+#else
 : BaseTable      (newtab.name(), newtab.option(), 0),
+#endif
   colSetPtr_p    (0),
   tableChanged_p (True),
   addToCache_p   (True),
@@ -149,6 +153,106 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
   }
 }
 
+#ifdef HAVE_MPI
+PlainTable::PlainTable (MPI_Comm mpiComm, SetupNewTable& newtab, uInt nrrow, Bool initialize,
+			const TableLock& lockOptions, int endianFormat,
+                        const TSMOption& tsmOption)
+: BaseTable      (mpiComm, newtab.name(), newtab.option(), 0),
+  colSetPtr_p    (0),
+  tableChanged_p (True),
+  addToCache_p   (True),
+  lockPtr_p      (0),
+  tsmOption_p    (tsmOption)
+{
+  try {
+    // Determine and set the endian option.
+    setEndian (endianFormat);
+    // Replace default TSM option for new table.
+    tsmOption_p.fillOption (True);
+    // Set initially to no write in destructor.
+    // At the end it is reset. In this way nothing is written if
+    // an exception is thrown during initialization.
+    noWrite_p  = True;
+    //# Check if another Table was already constructed using this
+    //# SetupNewTable (which is invalid).
+    if (newtab.isUsed()) {
+	throw (TableInvOper
+	             ("SetupNewTable object already used for another Table"));
+    }
+    //# Check if a table with this name is not in the table cache.
+    if (tableCache()(name_p) != 0) {
+        // OK it's in the cache but is it really there?
+        if(File(name_p).exists()){
+	   throw (TableInvOper ("SetupNewTable " + name_p +
+			     " is already opened (is in the table cache)"));
+        } else {
+          tableCache().remove (name_p);
+        }
+    }
+    //# If the table already exists, exit if it is in use.
+    if (Table::isReadable (name_p)) {
+	TableLockData tlock (TableLock (TableLock::UserLocking, 0));
+	tlock.makeLock (name_p, False, FileLocker::Write);
+	if (tlock.isMultiUsed()) {
+	    throw (TableError ("Table " + name_p + " cannot be created; "
+			       "it is in use in another process"));
+	}
+    }
+    //# Create the data managers for unbound columns.
+    //# Check if there are no data managers with equal names.
+    newtab.handleUnbound();
+    newtab.columnSetPtr()->checkDataManagerNames (name_p);
+    //# Get the data from the SetupNewTable object.
+    //# Set SetupNewTable object to in use.
+    tdescPtr_p  = newtab.tableDescPtr();
+    colSetPtr_p = newtab.columnSetPtr();
+    colSetPtr_p->linkToTable (this);
+    newtab.setInUse();
+    //# Create the table directory (and possibly delete existing files)
+    //# as needed.
+    makeTableDir();
+    //# Create the lock object.
+    //# When needed, it sets a permanent write lock.
+    //# Acquire a write lock.
+    lockPtr_p = new TableLockData (lockOptions, releaseCallBack, this);
+    lockPtr_p->makeLock (name_p, True, FileLocker::Write);
+    lockPtr_p->acquire (0, FileLocker::Write, 1);
+    colSetPtr_p->linkToLockObject (lockPtr_p);
+    //# Initialize the data managers.
+    Table tab(this, False);
+    nrrowToAdd_p = nrrow;
+    colSetPtr_p->initDataManagers (nrrow, bigEndian_p, tsmOption_p, tab);
+    //# Initialize the columns if needed.
+    if (initialize  &&  nrrow > 0) {
+	colSetPtr_p->initialize (0, nrrow-1);
+    }
+    //# Nrrow_p has to be set here, otherwise data managers may use the
+    //# incorrect number of rows (similar behaviour as in function addRow).
+    nrrowToAdd_p = 0;
+    nrrow_p = nrrow;
+    //# Release the write lock if UserLocking is used.
+    if (lockPtr_p->option() == TableLock::UserLocking) {
+	lockPtr_p->release();
+    }
+    //# Unmark for delete when needed.
+    if (! newtab.isMarkedForDelete()) {
+	unmarkForDelete (True, "");
+    }
+    //# The destructor can (in principle) write.
+    noWrite_p = False;
+    //# Add it to the table cache.
+    tableCache().define (name_p, this);
+    //# Trace if needed.
+    itsTraceId = TableTrace::traceTable (name_p, 'n');
+  } catch (AipsError&) {
+    delete lockPtr_p;
+    lockPtr_p = 0;
+    delete colSetPtr_p;
+    colSetPtr_p = 0;
+    throw;
+  }
+}
+#endif
 
 PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
 			const String& type, uInt nrrow, int opt,
