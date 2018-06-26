@@ -38,7 +38,6 @@
 #include <casacore/casa/BasicMath/Random.h> 
 #include <casacore/casa/BasicSL/String.h>
 
-
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LatticeAddNoise::LatticeAddNoise()
@@ -92,73 +91,54 @@ void LatticeAddNoise::set (Random::Types type,
    itsParameters = parameters;
    makeDistribution();
 }
- 
-void LatticeAddNoise::add (MaskedLattice<Float>& lattice)
-{
-   if (!itsNoise) {
-      LogIO os(LogOrigin("LatticeAddNoise", "add", WHERE));
-      os << "You have not yet called function 'set'" << LogIO::EXCEPTION;
-   }
-//
-   LatticeIterator<Float> it(lattice);
-   for (it.reset(); !it.atEnd(); it++) {
-      addNoiseToArray(it.rwCursor());
-   }
-}
-
-void LatticeAddNoise::add (MaskedLattice<Complex>& lattice)
-{
-   if (!itsNoise) {
-      LogIO os(LogOrigin("LatticeAddNoise", "add", WHERE));
-      os << "You have not yet called function 'set'" << LogIO::EXCEPTION;
-   }
-//
-   LatticeIterator<Complex> it(lattice);
-   for (it.reset(); !it.atEnd(); it++) {
-      addNoiseToArray(it.rwCursor());
-   }
-}
-
-void LatticeAddNoise::add (Lattice<Float>& lattice)
-{
-   SubLattice<Float> ml(lattice, True);
-   add(ml);
-}
-
-void LatticeAddNoise::add (Lattice<Complex>& lattice)
-{
-   SubLattice<Complex> ml(lattice, True);
-   add(ml);
-}
-
- 
 
 // Private
 
 void LatticeAddNoise::addNoiseToArray (Array<Float>& data) 
 {
    Bool deleteIt;
-   Float* p = data.getStorage(deleteIt);
-   for (uInt i=0; i<data.nelements(); i++) {
-      p[i] += (*itsNoise)();
-   }
+   auto* p = data.getStorage(deleteIt);
+   std::for_each(p, p + data.nelements(), [&](Float& datum) {
+       datum += (*itsNoise)();
+   });
+   data.putStorage(p, deleteIt);
+}
+
+void LatticeAddNoise::addNoiseToArray (Array<Double>& data)
+{
+   Bool deleteIt;
+   auto* p = data.getStorage(deleteIt);
+   std::for_each(p, p + data.nelements(), [&](Double& datum) {
+       datum += (*itsNoise)();
+   });
    data.putStorage(p, deleteIt);
 }
 
 void LatticeAddNoise::addNoiseToArray (Array<Complex>& data) 
 {
    Bool deleteIt;
-   Complex* p = data.getStorage(deleteIt);
+   auto* p = data.getStorage(deleteIt);
    Float rr, ii;
-   for (uInt i=0; i<data.nelements(); i++) {
+   std::for_each(p, p + data.nelements(), [&](Complex& datum) {
+       // Add noise to real and imag separately
+       rr = real(datum) + (*itsNoise)();
+       ii = imag(datum) + (*itsNoise)();
+       datum = Complex(rr,ii);
+   });
+   data.putStorage(p, deleteIt);
+}
 
-// Add noise to real and imag separately
-
-      rr = real(p[i]) + (*itsNoise)();
-      ii = imag(p[i]) + (*itsNoise)();
-//
-      p[i] = Complex(rr,ii);
-   }
+void LatticeAddNoise::addNoiseToArray (Array<DComplex>& data)
+{
+   Bool deleteIt;
+   auto* p = data.getStorage(deleteIt);
+   Double rr, ii;
+   std::for_each(p, p + data.nelements(), [&](DComplex& datum) {
+       // Add noise to real and imag separately
+       rr = real(datum) + (*itsNoise)();
+       ii = imag(datum) + (*itsNoise)();
+       datum = Complex(rr,ii);
+   });
    data.putStorage(p, deleteIt);
 }
 
