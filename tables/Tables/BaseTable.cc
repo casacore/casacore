@@ -160,6 +160,9 @@ void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
 
 Bool BaseTable::makeTableDir()
 {
+#ifdef HAVE_MPI
+    return false;
+#endif
     //# Exit if the table directory has already been created.
     if (madeDir_p) {
 	return False;
@@ -214,6 +217,9 @@ Bool BaseTable::makeTableDir()
 
 Bool BaseTable::openedForWrite() const
 {
+#ifdef HAVE_MPI
+    return false;
+#endif
     AlwaysAssert (!isNull(), AipsError);
     return (option_p==Table::Old || option_p==Table::Delete  ?  False : True);
 }
@@ -354,7 +360,7 @@ void BaseTable::prepareCopyRename (const String& newName,
 	if (tableOption == Table::Update) {
             throw (TableNoFile(newName));
 	}
-    }   
+    }
 }
 
 //# Rename a table.

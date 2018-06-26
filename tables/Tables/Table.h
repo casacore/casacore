@@ -37,6 +37,10 @@
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Utilities/Sort.h>
 
+#ifdef HAVE_MPI
+#include <mpi.h>
+#endif
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
@@ -553,7 +557,7 @@ public:
                        Bool showTabKey=True,
                        Bool showColKey=False,
                        Int maxVal=25) const;
-  
+
     // Show the table and/or column keywords of this table.
     // Maximum <src>maxVal> values of Arrays will be shown.
     void showKeywordSets (std::ostream&,
@@ -726,7 +730,7 @@ public:
 
     // Test if the table is marked for delete.
     Bool isMarkedForDelete() const;
-    
+
     // Get the number of rows.
     // It is unsynchronized meaning that it will not check if another
     // process updated the table, thus possible increased the number of rows.
@@ -1096,6 +1100,9 @@ private:
     // Sort the columns if needed.
     void showColumnInfo (ostream& os, const TableDesc&, uInt maxNameLength,
                          const Array<String>& columnNames, Bool sort) const;
+#ifdef HAVE_MPI
+    MPI_Comm mpiComm = MPI_COMM_WORLD;
+#endif
 };
 
 
