@@ -187,7 +187,7 @@ ${BISON_TableGram_OUTPUTS}
 ${FLEX_TableGram_OUTPUTS}
 )
 
-if(USE_MPI)
+if(MPI_FOUND)
     target_compile_definitions(casa_tables PRIVATE HAVE_MPI)
     target_link_libraries(casa_tables casa_casa ${CASACORE_ARCH_LIBS} MPI::MPI_C)
 else()

@@ -192,9 +192,13 @@ Bool BaseTable::makeTableDir()
 {
 #ifdef HAVE_MPI
     int rank;
-    MPI_Comm_rank(itsMpiComm, &rank);
-    if(rank > 0){
-        return false;
+    int mpi_initialized;
+    MPI_Initialized(&mpi_initialized);
+    if(mpi_initialized){
+        MPI_Comm_rank(itsMpiComm, &rank);
+        if(rank > 0){
+            return false;
+        }
     }
 #endif
     //# Exit if the table directory has already been created.
@@ -253,9 +257,13 @@ Bool BaseTable::openedForWrite() const
 {
 #ifdef HAVE_MPI
     int rank;
-    MPI_Comm_rank(itsMpiComm, &rank);
-    if(rank > 0){
-        return false;
+    int mpi_initialized;
+    MPI_Initialized(&mpi_initialized);
+    if(mpi_initialized){
+        MPI_Comm_rank(itsMpiComm, &rank);
+        if(rank > 0){
+            return false;
+        }
     }
 #endif
     AlwaysAssert (!isNull(), AipsError);
