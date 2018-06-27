@@ -60,63 +60,46 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The constructor of the derived class should call unmarkForDelete
 // when the construction ended succesfully.
 BaseTable::BaseTable (const String& name, int option, uInt nrrow)
-: nrlink_p    (0),
-  nrrow_p     (nrrow),
-  nrrowToAdd_p(0),
-  tdescPtr_p  (0),
-  name_p      (name),
-  option_p    (option),
-  noWrite_p   (False),
-  delete_p    (False),
-  madeDir_p   (True),
-  itsTraceId  (-1)
 {
-    if (name_p.empty()) {
-	name_p = File::newUniqueName ("", "tab").originalName();
-    }
-    // Make name absolute in case a chdir is done in e.g. Python.
-    name_p = makeAbsoluteName (name_p);
-    if (option_p == Table::Scratch) {
-	option_p = Table::New;
-    }
-    // Mark initially a new table for delete.
-    // When the construction ends successfully, it can be unmarked.
-    if (option_p == Table::New  ||  option_p == Table::NewNoReplace) {
-	markForDelete (False, "");
-	madeDir_p = False;
-    }
+    BaseTableCommon(name, option, nrrow);
 }
 
 #ifdef HAVE_MPI
 BaseTable::BaseTable (MPI_Comm mpiComm, const String& name, int option, uInt nrrow)
-: nrlink_p    (0),
-  nrrow_p     (nrrow),
-  nrrowToAdd_p(0),
-  tdescPtr_p  (0),
-  name_p      (name),
-  option_p    (option),
-  noWrite_p   (False),
-  delete_p    (False),
-  madeDir_p   (True),
-  itsTraceId  (-1),
-  itsMpiComm  (mpiComm)
+    :itsMpiComm  (mpiComm)
 {
+    BaseTableCommon(name, option, nrrow);
+}
+#endif
+
+void BaseTable::BaseTableCommon (const String& name, int option, uInt nrrow)
+{
+    nrlink_p = 0;
+    nrrow_p = nrrow;
+    nrrowToAdd_p = 0;
+    tdescPtr_p = 0;
+    name_p = name;
+    option_p = option;
+    noWrite_p = False;
+    delete_p = False;
+    madeDir_p = True;
+    itsTraceId = -1;
+
     if (name_p.empty()) {
-	name_p = File::newUniqueName ("", "tab").originalName();
+        name_p = File::newUniqueName ("", "tab").originalName();
     }
     // Make name absolute in case a chdir is done in e.g. Python.
     name_p = makeAbsoluteName (name_p);
     if (option_p == Table::Scratch) {
-	option_p = Table::New;
+        option_p = Table::New;
     }
     // Mark initially a new table for delete.
     // When the construction ends successfully, it can be unmarked.
     if (option_p == Table::New  ||  option_p == Table::NewNoReplace) {
-	markForDelete (False, "");
-	madeDir_p = False;
+        markForDelete (False, "");
+        madeDir_p = False;
     }
 }
-#endif
 
 BaseTable::~BaseTable()
 {

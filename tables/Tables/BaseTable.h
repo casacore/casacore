@@ -108,8 +108,12 @@ public:
     BaseTable (const String& tableName, int tableOption, uInt nrrow);
 
 #ifdef HAVE_MPI
+    // MPI version of the constructor
     BaseTable (MPI_Comm mpiComm, const String& tableName, int tableOption, uInt nrrow);
 #endif
+
+    // Common code shared by the MPI constructor and non-MPI constructor
+    void BaseTableCommon (const String& tableName, int tableOption, uInt nrrow);
 
     virtual ~BaseTable();
 
@@ -587,7 +591,10 @@ private:
     String makeAbsoluteName (const String& name) const;
 
 #ifdef HAVE_MPI
-    MPI_Comm       itsMpiComm;          //# mpi communicator for parallel I/O
+    // MPI communicator for parallel I/O
+    // Set the default to MPI_COMM_WORLD to keep the compatibility for
+    // non-MPI apps to work with the MPI-enabled casacore build.
+    MPI_Comm itsMpiComm = MPI_COMM_WORLD;
 #endif
 };
 
