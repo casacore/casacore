@@ -161,14 +161,21 @@ struct casacore_allocator: public std11_allocator<T> {
   }
 
   pointer allocate(size_type elements, const void* = 0) {
-    if (elements > this->max_size()) {
-      throw std::bad_alloc();
-    }
     void *memptr = 0;
-    int result = posix_memalign(&memptr, ALIGNMENT, sizeof(T) * elements);
-    if (result != 0) {
-      throw std::bad_alloc();
+    try {
+        if (elements > this->max_size()) {
+            throw std::bad_alloc();
+        }
+        int result = posix_memalign(&memptr, ALIGNMENT, sizeof(T) * elements);
+        if (result != 0) {
+            throw std::bad_alloc();
+        }
+    } 
+    catch (const std::bad_alloc& ba) {
+        std::cerr << "Couldn't allocate memory. Caught bad_alloc: " << ba.what() <<  std::endl;
+        exit (EXIT_FAILURE);
     }
+
     return static_cast<pointer>(memptr);
   }
 
