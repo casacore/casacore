@@ -133,7 +133,7 @@ public:
     // Clone this instance
     virtual StatisticsAlgorithm<CASA_STATP>* clone() const;
 
-    // <gropu>
+    // <group>
     // these statistics are not supported. The methods, which override
     // the virtual ancestor versions, throw exceptions.
     virtual AccumType getMedian(

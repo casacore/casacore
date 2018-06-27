@@ -43,8 +43,6 @@ namespace casacore {
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
 
-// <prerequisite/>
-
 // <synopsis>
 // This class is the base class for casacore state. Its purpose is to
 // allow applications initialize casacore's state without resorting to
@@ -80,8 +78,6 @@ public:
 
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
-// <prerequisite/>
 
 // <synopsis>
 // This class allows packages which use casacore to configure casacore

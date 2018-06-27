@@ -30,102 +30,120 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include<casacore/meas/MeasUDF/EpochEngine.h>
-#include<casacore/meas/MeasUDF/PositionEngine.h>
-#include <casacore/tables/TaQL/ExprNode.h>
+#include<casacore/meas/MeasUDF/MeasEngine.h>
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/measures/Measures/MCDirection.h>
 #include <casacore/measures/Measures/MeasConvert.h>
-#include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
 
 namespace casacore {
 
-// <summary>
-// Engine for TaQL UDF Direction conversions
-// </summary>
+  //# Forward declarations
+  class EpochEngine;
+  class PositionEngine;
 
-// <use visibility=export>
+  
+  // <summary>
+  // Engine for TaQL UDF Direction conversions
+  // </summary>
 
-// <reviewed reviewer="" date="" tests="tMeas.cc">
-// </reviewed>
+  // <use visibility=export>
 
-// <prerequisite>
-//# Classes you should understand before using this one.
-//   <li> EngineBase
-// </prerequisite>
+  // <reviewed reviewer="" date="" tests="tMeas.cc">
+  // </reviewed>
 
-// <synopsis>
-// DirectionEngine defines Engines (user defined functions) that can be used
-// in TaQL to convert Measures for directions.
-// In this way such derived values appear to be ordinary TaQL functions.
-//
-// In TaQL these functions can be called like:
-// <srcblock>
-//   meas.dir ('APP', 'MOON', date(), [1e6m,1e6m,1e6m], 'WGS84')
-// </srcblock>
-// <ul>
-//  <li>
-//  <src>toref</src> is a single constant string.
-//  <li>
-// <src>pos</src> can have various value types. A single numeric array is
-// a series of RA,DEC in J2000. If given as a set, the last argument of the
-// set can be the reference types of the values in the set. The values can
-// be strings (indicating planetary objects) or value pairs giving lon,lat.
-// The default reference type is J2000. 
-// </ul>
-// All such functions return data with type double and unit radian.
-//
-// Futhermore, it is possible to get the rise/set date/time of a source given
-// the source direction, position on earth, and date. These functions
-// return data with type double and unit d (day).
-// If the source is visible all day, the rise time is 0 and set time is 1.
-// If the source is not visible at all, the rise time is 1 and set time is 0.
-// For example:
-//   meas.riseset ('SUN', date(), 'WSRT')
+  // <prerequisite>
+  //# Classes you should understand before using this one.
+  //   <li> EngineBase
+  // </prerequisite>
 
-// Directions can be given like:
-//    [x1,y1,z1,x2,y2,z2,...], fromRef
-//    [lon1,lat1,lon2,lat2,...], fromRef
-//    [lon1,lat1,lon2,lat2,...], [h1,h2,...], fromRef
-// where fromRef is the reference type optionally followed by _xxx
-// where xxx can be 'xyz' or 'll' to specify if the values are given as xyz
-// or as lon,lat.
-// If xxx is not given, it will be derived from the unit type of the values
-// (length means xyz, angle means lon,lat with default height is 0).
-// If xxx nor units are given, 3 values means xyz and 2 values means lon,lat.
-// If heights are also given, xxx must be 'll' if it is also given.
-//
-// A direction can also be a table column which usually knows its type.
-// It can also be an expression (e.g. DIRECTION[0,]) which also knows the type.
-// </synopsis>
+  // <synopsis>
+  // DirectionEngine defines Engines (user defined functions) that can be
+  // used in TaQL to convert Measures for directions.
+  // In this way such derived values appear to be ordinary TaQL functions.
+  //
+  // In TaQL these functions can be called like:
+  // <srcblock>
+  //   meas.dir    (toref, directions, epochs, positions)
+  //   meas.j2000  (directions, epochs, positions)
+  //   meas.dircos (toref, directions, epochs, positions)
+  //   meas.riset  (directions, epochs, positions)
+  // </srcblock>
+  // The first two result in angles, the third in direction cosines, while
+  // the fourth returns the rise/set time of sources as datetimes.
+  // Note that the second form is a shorthand for
+  // <src>meas.dir('j2000', ...)</src>. There are more such functions.
+  // The exact number of arguments depends on how they are specified.
+  // <ul>
+  //  <li> <src>toref</src> is a single constant string defining the 
+  //       reference frame to convert to. Note it should be omitted for
+  //       the functions (e.g., meas.j2000) with an implicit destination
+  //       reference frame.
+  //  <li> <src>directions</src> is one or more directions which can be
+  //       given in several ways.
+  //   <ul>
+  //    <li> An array of directions, each 2 angles or 3 directions cosines.
+  //         It can be given as a single list or a multi-dim array. The choice
+  //         between angles and direction cosines is based on the size of the
+  //         first dimension. If divisible by 2, it is angles, by 3 is
+  //         direction cosines, otherwise an error. Thus a list of 6 elements
+  //         defines 3 directions with 2 angles each (default in radians).
+  //         <br>It can be followed by a string defining the source
+  //         reference frame. It defaults to 'J2000'.
+  //    <li> If a single constant direction is used, it can be given as
+  //         2 (for angles) or 3 (for direction cosines) scalar values,
+  //         followed by the optional source reference frame.
+  //    <li> The name of a column in a table or a subset of it such as
+  //         <src>DELAY_DIR[0,]</src>. Often this is a TableMeasures column
+  //         which is recognized as such, also its source reference frame.
+  //         If such a column is given as part of an expression, it will not
+  //         be recognized as a TableMeasures column and its reference frame
+  //         should be given.
+  //    <li> As a list of (case-insensitive) names of known sources
+  //         such as 'CasA' or 'SUN'.
+  //   </ul>
+  //  <li> <src>epochs</src> can be given as shown in class EpochEngine.
+  //  <li> <src>positions</src> can be given as shown in class PositionEngine.
+  // </ul>
+  // Note that epochs and positions are only needed if required by the
+  // conversion from source reference frame to destination reference frame.
+  // For example, J2000 to/from APP needs them, but not J2000 to/from B1950.
+  //
+  // The result of the function is an array with shape [2|3,dir,epoch,pos]
+  // where the last 3 elements are the shapes of these arguments. They are
+  // omitted if all of them have length 1.
+  //
+  // Futhermore, it is possible to get the rise/set date/time of a source
+  // given the source direction, date and position on earth. These functions
+  // return data with type double and unit d (day).
+  // If the source is visible all day, the rise time is 0 and set time 1.
+  // If the source is not visible at all, the rise time is 1 and set time 0.
+  // For the sun and the moon it is possible to add a suffix to the name
+  // telling if and which edge and twilight should be used. For the sun and
+  // moon the default is -UR (the upper edge with refraction correction).
+  // </synopsis>
 
-// <motivation>
-// It makes it possible to handle measures in TaQL.
-// </motivation>
+  // <example>
+  // <srcblock>
+  // // Get rise/set time of the upper edge of the sun in the coming month
+  // // at the WSRT site.
+  //   meas.riseset ('SUN', date()+[0:31], 'WSRT')
+  // // Get the apparent coordinates of CasA for the given date and position.
+  //   meas.dircos ('APP', 'CasA', 12mar2015, [52deg,5deg])
+  // // Get the J2000 coordinates (in degrees) of CygA.
+  //   meas.j2000 ('cyga') deg
+  // </srcblock>
+  // </example>
 
-  class DirectionEngine
+  // <motivation>
+  // It makes it possible to easily handle measures in TaQL.
+  // </motivation>
+
+  class DirectionEngine: public MeasEngine<MDirection>
   {
   public:
     DirectionEngine();
 
-    // Get the reference type.
-    MDirection::Types refType() const
-      { return itsRefType; } 
-
-    // Get the shape.
-    const IPosition& shape() const
-      { return itsShape; }
-
-    // Get the dimensionality.
-    Int ndim() const
-      { return itsNDim; }
-
-    // Tell if the expression is constant.
-    Bool isConstant() const;
-
-    // Get the unit.
-    const Unit& unit() const
-      { return itsUnit; }  
+    virtual ~DirectionEngine();
 
     // Get the values.
     // The first Bool tells if rise/set times have to be calculated.
@@ -138,11 +156,8 @@ namespace casacore {
 
     // Handle the argument(s) giving the input directions and reference type.
     // The direction can be a column in a table.
-    void handleDirection (PtrBlock<TableExprNodeRep*>& args,
-                          uInt& argnr, Bool riseSet);
-
-    // Handle a direction reference type.
-    void handleDirType (TableExprNodeRep* operand);
+    void handleDirection (const std::vector<TENShPtr>& args,
+                          uInt& argnr, Bool riseSet, Bool asDirCos);
 
     // Set the MeasConvert object.
     void setConverter (MDirection::Types toType);
@@ -156,13 +171,12 @@ namespace casacore {
     void setPositionEngine (PositionEngine& engine);
 
   private:
-    void handleScalars (TableExprNodeRep* e1, TableExprNodeRep* e2);
-    void handleNames (TableExprNodeRep* operand);
-    void handleDirArray (TableExprNodeRep*& operand);
-    void handleConstant (TableExprNodeRep* operand);
-    void handleValues (TableExprNode& operand,
-                       const TableExprId& id,
-                       Array<MDirection>& directions);
+    void handleScalars (const TENShPtr& e1, const TENShPtr& e2,
+                        const TENShPtr& e3);
+    void handleNames (const TENShPtr& operand);
+    virtual void handleValues (TableExprNode& operand,
+                               const TableExprId& id,
+                               Array<MDirection>& directions);
 
     // Calucate the rise and set time of a source for a given position and
     // epoch. Argument <src>h</src> defines the possible edge of sun/moon.
@@ -179,16 +193,9 @@ namespace casacore {
                      double* rise, double* set);
 
     //# Data members.
-    IPosition                       itsShape;
-    Int                             itsNDim;
-    Unit                            itsUnit;
     MeasFrame                       itsFrame;       //# frame used by converter
     MDirection::Convert             itsConverter;
-    Array<MDirection>               itsConstants;
     Vector<Double>                  itsH;           //# diff for sun or moon
-    MDirection::Types               itsRefType;
-    TableExprNode                   itsExprNode;
-    ArrayMeasColumn<MDirection>     itsMeasCol;
     EpochEngine*                    itsEpochEngine;
     PositionEngine*                 itsPositionEngine;
   };

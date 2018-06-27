@@ -34,15 +34,15 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-TableExprNodeUnit::TableExprNodeUnit (TableExprNodeRep& child,
+TableExprNodeUnit::TableExprNodeUnit (const TENShPtr& child,
 				      const Unit& unit)
-: TableExprNodeBinary (child.dataType(), child, OtUndef)
+: TableExprNodeBinary (child->dataType(), *child, OtUndef)
 {
     // Units imply conversion, thus result cannot be integer.
     if (dtype_p == NTInt) {
         dtype_p = NTDouble;
     }
-    lnode_p  = child.link();
+    lnode_p  = child;
     factor_p = set (*this, child, unit);
 }
 
@@ -50,26 +50,26 @@ TableExprNodeUnit::~TableExprNodeUnit()
 {}
 
 Double TableExprNodeUnit::set (TableExprNodeRep& parent,
-			       const TableExprNodeRep& child,
+			       const TENShPtr& child,
 			       const Unit& unit)
 {
   Double factor = 1;
   if (unit.empty()) {
-    parent.setUnit (child.unit());
+    parent.setUnit (child->unit());
   } else {
-    if (! child.unit().empty()) {
+    if (! child->unit().empty()) {
       // Conversion is only possible between units of the same type
       // and between time/angle.
       UnitVal type1 = unit.getValue();
-      UnitVal type2 = child.unit().getValue();
+      UnitVal type2 = child->unit().getValue();
       if (! (type1 == type2  
              || (type1 == UnitVal::ANGLE  &&  type2 == UnitVal::TIME)
              || (type2 == UnitVal::ANGLE  &&  type1 == UnitVal::TIME))) {
 	throw TableInvExpr ("Units " + unit.getName() + " and " +
-			    child.unit().getName() + " do not conform");
+			    child->unit().getName() + " do not conform");
       }
       // Get conversion factor.
-      Quantity q(1., child.unit());
+      Quantity q(1., child->unit());
       factor = q.getValue (unit);
     }
     parent.setUnit (unit);
@@ -77,8 +77,8 @@ Double TableExprNodeUnit::set (TableExprNodeRep& parent,
   return factor;
 }
 
-TableExprNodeRep* TableExprNodeUnit::useUnit (TableExprNodeRep* const node,
-					      const Unit& unit)
+TENShPtr TableExprNodeUnit::useUnit (const TENShPtr& node,
+                                     const Unit& unit)
 {
   // No conversion needed if a unit is empty.
   // However, always set the node's unit to the new unit.
@@ -93,35 +93,30 @@ TableExprNodeRep* TableExprNodeUnit::useUnit (TableExprNodeRep* const node,
     return node;
   }
   // Create a unit conversion node for a scalar or array.
-  TableExprNodeBinary* tsnptr;
+  TENShPtr tsnptr;
   if (node->valueType() == VTScalar) {
-    tsnptr = new TableExprNodeUnit (*node, unit);
+    tsnptr = new TableExprNodeUnit (node, unit);
   } else {
-    tsnptr = new TableExprNodeArrayUnit (*node, unit);
+    tsnptr = new TableExprNodeArrayUnit (node, unit);
   }
   if (tsnptr->getUnitFactor() == 1.) {
     // Units are the same, so no conversion needed.
-    delete tsnptr;
     return node;
   }
   return tsnptr;
 }
 
-void TableExprNodeUnit::adaptUnit (TableExprNodeRep*& node,
+void TableExprNodeUnit::adaptUnit (TENShPtr& node,
 				   const Unit& unit)
 {
   // See if a conversion is needed.
   // If so, adapt the reference counts and replace it.
-  TableExprNodeRep* nnode = useUnit (node, unit);
-  if (nnode != node) {
-    unlink (node);
-    node = nnode->link();
-  }
+  node = useUnit (node, unit);
 }
 
-Unit TableExprNodeUnit::adaptUnits (TableExprNodeRep*& node1,
-				    TableExprNodeRep*& node2,
-				    TableExprNodeRep*& node3)
+Unit TableExprNodeUnit::adaptUnits (TENShPtr& node1,
+				    TENShPtr& node2,
+				    TENShPtr& node3)
 {
   // Find unit to be used.
   Unit unit;
@@ -150,15 +145,15 @@ DComplex TableExprNodeUnit::getDComplex (const TableExprId& id)
 
 
 
-TableExprNodeArrayUnit::TableExprNodeArrayUnit (TableExprNodeRep& child,
+TableExprNodeArrayUnit::TableExprNodeArrayUnit (const TENShPtr& child,
 						const Unit& unit)
-: TableExprNodeArray (child, child.dataType(), OtUndef)
+: TableExprNodeArray (*child, child->dataType(), OtUndef)
 {
   // Units imply conversion, thus result cannot be integer.
   if (dtype_p == NTInt) {
     dtype_p = NTDouble;
   }
-  lnode_p  = child.link();
+  lnode_p  = child;
   factor_p = TableExprNodeUnit::set (*this, child, unit);
 }
 

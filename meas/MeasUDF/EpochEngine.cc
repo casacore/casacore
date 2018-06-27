@@ -26,31 +26,18 @@
 //# $Id$
 
 #include <casacore/meas/MeasUDF/EpochEngine.h>
-#include <casacore/tables/Tables/TableRecord.h>
-#include <casacore/tables/TaQL/ExprUnitNode.h>
-#include <casacore/tables/TaQL/ExprNodeSet.h>
-#include <casacore/tables/TaQL/ExprDerNode.h>
-//#include <casacore/tables/TaQL/ExprNode.h>
-#include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/meas/MeasUDF/PositionEngine.h>
 
 namespace casacore {
 
   EpochEngine::EpochEngine()
-    : itsNDim           (-1),
-      itsRefType        (MEpoch::N_Types),
-      itsPositionEngine (0)
+    : itsPositionEngine (0)
   {}
 
-  Bool EpochEngine::isConstant() const
-  {
-    Bool isConst = itsConstants.size() > 0;
-    if (isConst && itsPositionEngine) {
-      isConst = itsPositionEngine->isConstant();
-    }
-    return isConst;
-  }
+  EpochEngine::~EpochEngine()
+  {}
 
-  void EpochEngine::handleEpoch (PtrBlock<TableExprNodeRep*>& args,
+  void EpochEngine::handleEpoch (vector<TENShPtr>& args,
                                  uInt& argnr)
   {
     // Initialize type to unknown.
@@ -58,12 +45,19 @@ namespace casacore {
     // Convert a string epoch argument to a date.
     if (args[argnr]->dataType() == TableExprNodeRep::NTString) {
       TableExprNode dNode = datetime (args[argnr]);
-      TableExprNodeRep::unlink (args[argnr]);
-      args[argnr] = const_cast<TableExprNodeRep*>(dNode.getNodeRep())->link();
+      args[argnr] = dNode.getRep();
     }
     // Check if the value is a date or double.
-    if (!args[argnr]->isReal()  &&
-        args[argnr]->dataType() != TableExprNodeRep::NTDate) {
+    // If double, its unit should match days.
+    if (args[argnr]->isReal()) {
+      if (! args[argnr]->unit().empty()  &&
+          args[argnr]->unit() != Unit("d")) {  // It tests if unit type conforms!!
+        throw AipsError("Invalid unit used for an epoch in a MEAS function");
+      }
+    } else if (args[argnr]->dataType() == TableExprNodeRep::NTDate) {
+      TableExprNode dNode = mjd(args[argnr]);  // convert date to double
+      args[argnr] = dNode.getRep();
+    } else {
       throw AipsError ("Invalid epoch given in a MEAS function");
     }
     // Values can be given as [t1,t2,...],reftype
@@ -71,202 +65,39 @@ namespace casacore {
     // See if there is a reference type.
     if (args.size() > nargnr  &&
         args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-      if (handleEpochType (args[nargnr], False)) {
+      if (handleMeasType (args[nargnr], False)) {
         nargnr++;
       }
     }
-    handleEpochArray (args[argnr]);
+    // Handle the epoch values.
+    handleMeasArray (args[argnr]);
     // Skip the arguments handled.
     argnr = nargnr;
     // Determine the output unit, shape, and ndim.
-    itsUnit = "s";
-    // Fill ndim if unknown and if shape is known.
-    if (itsNDim < 0  &&  itsShape.size() > 0) {
-      itsNDim = itsShape.size();
-    }
-    if (itsShape.size() > 0) {
-      // time has 1 value
-      itsShape[0] = 1;
-    }
+    itsOutUnit = "s";
+    // Set shape, etc. for constants.
+    adaptForConstant (itsConstants.shape());
   }
 
-  Bool EpochEngine::handleEpochType (TableExprNodeRep* operand,
-                                     Bool doThrow)
+  String EpochEngine::stripMeasType (const String& type)
   {
-    if (operand->dataType() != TableExprNodeRep::NTString  ||
-        operand->valueType() != TableExprNodeRep::VTScalar  ||
-        !operand->isConstant()) {
-      if (doThrow) {
-        throw AipsError ("An epoch type given in a MEAS function "
-                         "must be a constant scalar string");
-      }
-      return False;
-    }
+    String str(type);
     itsSidFrac = False;
-    String str = operand->getString(0);
-    str.upcase();
+    // F_ (or F-) indicates a full time, thus no sidereal fraction.
     if (str.size() >= 2  &&  str[0] == 'F'  &&
         (str[1] == '-' || str[1] == '_')) {
       str = str.substr(2);
     } else if (str.size() >= 4  &&  str[2] == 'S'  &&  str[3] == 'T') {
       itsSidFrac = True;
     }
-    MEpoch::Types refType;
-    Bool fnd = MEpoch::getType (refType, str);
-    if (fnd) {
-      itsRefType = refType;
-    } else if (doThrow) {
-      throw AipsError ("Unknown epoch reference type " + str +
-                       " given in a MEAS function");
-    }
-    return fnd;
-  }
-
-  void EpochEngine::handleEpochArray (TableExprNodeRep* operand)
-  {
-    if ((!operand->isReal()  &&
-         operand->dataType() != TableExprNodeRep::NTDate)  ||
-        (operand->valueType() != TableExprNodeRep::VTScalar  &&
-         operand->valueType() != TableExprNodeRep::VTArray)) {
-      throw AipsError ("An epoch given in a MEAS function "
-                       "must be a numeric, string, or datetime scalar or array");
-    }
-    if (operand->isConstant()) {
-      handleConstant (operand);
-      return;
-    }
-    // Try if the argument is a column.
-    // If found, try to handle it as a TableMeasures column.
-    const TableColumn* tabCol = 0;
-    Bool directCol = True;
-    const TableExprNodeColumn* scaNode =
-      dynamic_cast<TableExprNodeColumn*>(operand);
-    if (scaNode) {
-      tabCol = &(scaNode->getColumn());
-    } else {
-      const TableExprNodeArrayColumn* colNode =
-        dynamic_cast<TableExprNodeArrayColumn*>(operand);
-      if (colNode) {
-        tabCol = &(colNode->getColumn());
-      } else {
-        // The node is an expression, not a column.
-        directCol = False;
-        // Try if the node is an array part of a column.
-        TableExprNodeArrayPart* partNode =
-          dynamic_cast<TableExprNodeArrayPart*>(operand);
-        if (partNode) {
-          colNode = partNode->getColumnNode();
-          tabCol  = &(colNode->getColumn());
-        }
-      }
-    }
-    if (tabCol) {
-      // Try if the column contains measures.
-      if (scaNode) {
-        itsNDim = 0;
-      } else {
-        itsNDim  = tabCol->ndimColumn();
-        itsShape = tabCol->shapeColumn();
-      }
-      if (TableMeasDescBase::hasMeasures (*tabCol)) {
-        TableMeasColumn measTmp(tabCol->table(),
-                                tabCol->columnDesc().name());
-        // Check the measure is an MEpoch.
-        AlwaysAssert(measTmp.measDesc().type() == MEpoch::showMe(),
-                     AipsError);
-        // Get and check the node's refType if it is fixed.
-        MEpoch::Types nodeRefType = MEpoch::N_Types;
-        if (! (measTmp.measDesc().isRefCodeVariable()  ||
-               measTmp.measDesc().hasOffset())) {
-          uInt refCode = measTmp.measDesc().getRefCode();
-          nodeRefType = static_cast<MEpoch::Types>(refCode);
-          if (itsRefType != MEpoch::N_Types  &&  nodeRefType != itsRefType) {
-            throw AipsError ("Given MEpoch reference type " +
-                             String::toString(itsRefType) +
-                             " mismatches type " +
-                             String::toString(nodeRefType) + " of column " +
-                             tabCol->columnDesc().name());
-          }
-          itsRefType = nodeRefType;
-        }
-        // A direct column can directly be accessed using TableMeasures.
-        if (directCol) {
-          if (scaNode) {
-            itsMeasScaCol.attach (tabCol->table(),
-                                  tabCol->columnDesc().name());
-          } else {
-            itsMeasArrCol.attach (tabCol->table(),
-                                  tabCol->columnDesc().name());
-          }
-          return;
-        }
-        // It is a part, so we cannot use TableMeasures.
-        // If the reference type is variable, the user should index the result
-        // of the meas.epoch function.
-        if (nodeRefType == MEpoch::N_Types) {
-            throw AipsError ("Column " + tabCol->columnDesc().name() +
-                             ", which has a variable reference frame, "
-                             "is used in a MEAS function with slicing. "
-                             "The slicing should be done after the function "
-                             "like 'meas.epoch('UTC',TIMES)[0:3]'");
-        }
-      }
-    }
-    if (itsMeasScaCol.isNull()  &&  itsMeasArrCol.isNull()) {
-      if (itsRefType == MEpoch::N_Types) {
-        throw AipsError("No reference type given for a non-constant MEAS "
-                        "function epoch argument");
-      }
-      // Convert expression from date to double if needed.
-      itsExprNode = TableExprNode(operand);
-      if (operand->dataType() == TableExprNodeRep::NTDate) {
-        itsExprNode = mjd(itsExprNode);
-      }
-    }
-  }
-
-  void EpochEngine::handleConstant (TableExprNodeRep* operand)
-  {
-    // Get unit (default seconds).
-    Unit unit = operand->unit();
-    if (unit.empty()) {
-      unit = "s";
-    }
-    // Get values (as doubles or dates).
-    Array<Double> epochs;
-    if (operand->isReal()) {
-      epochs.reference (operand->getDoubleAS(0).array());
-    } else {
-      unit = "s";
-      Array<MVTime> dates = operand->getDateAS(0).array();
-      epochs.resize (dates.shape());
-      for (uInt i=0; i<dates.size(); ++i) {
-        epochs.data()[i] = dates.data()[i].second();
-      }
-    }
-    // Use default reference type UTC if not given.
-    if (itsRefType == MEpoch::N_Types) {
-      itsRefType = MEpoch::UTC;
-    }
-    Vector<Double> epVec(epochs.reform(IPosition(1,epochs.size())));
-    itsConstants.resize (epochs.size());
-    for (uInt i=0; i<itsConstants.size(); ++i) {
-      itsConstants[i] = MEpoch(Quantity(epVec[i], unit), itsRefType);
-    }
+    return str;
   }
 
   void EpochEngine::setPositionEngine (PositionEngine& engine)
   {
     AlwaysAssert (itsPositionEngine == 0, AipsError);
     itsPositionEngine = &engine;
-    uInt ndim = engine.ndim();
-    IPosition shape = engine.shape();
-    if (ndim > 0  &&  itsNDim > 0) {
-      itsNDim += ndim;
-    }
-    if (!shape.empty()  &&  !itsShape.empty()) {
-      itsShape.append (shape);
-    }
+    extendBase (engine, True);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MPosition());
   }
@@ -278,6 +109,41 @@ namespace casacore {
     itsSidFrac   = sidFrac;
   }
 
+  void EpochEngine::handleValues (TableExprNode& operand,
+                                  const TableExprId& id,
+                                  Array<MEpoch>& epochs)
+  {
+    // Get unit (default seconds).
+    Unit unit = operand.unit();
+    if (unit.empty()) {
+      unit = "s";
+    }
+    // Get values (as doubles or dates).
+    Array<Double> values;
+    if (operand.getNodeRep()->isReal()) {
+      values.reference (operand.getDoubleAS(id).array());
+    } else {
+      unit = "s";
+      Array<MVTime> dates = operand.getDateAS(id).array();
+      values.resize (dates.shape());
+      for (uInt i=0; i<dates.size(); ++i) {
+        values.data()[i] = dates.data()[i].second();
+      }
+    }
+    // Use default reference type UTC if not given.
+    if (itsRefType == MEpoch::N_Types) {
+      itsRefType = MEpoch::UTC;
+    }
+    epochs.resize (values.shape());
+    Bool delIt;
+    const Double* valVec = values.getStorage (delIt);
+    MEpoch* epVec = epochs.data();
+    for (uInt i=0; i<epochs.size(); ++i) {
+      epVec[i] = MEpoch(Quantity(valVec[i], unit), itsRefType);
+    }
+    values.freeStorage (valVec, delIt);
+  }
+  
   Array<MEpoch> EpochEngine::getEpochs (const TableExprId& id)
   {
     if (itsConstants.size() > 0) {
@@ -288,17 +154,8 @@ namespace casacore {
     } else if (!itsMeasArrCol.isNull()) {
       return itsMeasArrCol(id.rownr());
     }
-    Array<Double> values = itsExprNode.getDoubleAS(id).array();
-    Array<MEpoch> epochs(values.shape());
-    Unit unit = itsExprNode.unit();
-    if (unit.empty()) {
-      unit = "s";
-    }
-    Quantity q(0, unit);
-    for (uInt i=0; i<values.size(); ++i) {
-      q.setValue (values.data()[i]);
-      epochs.data()[i] = MEpoch(q, itsRefType);
-    }
+    Array<MEpoch> epochs;
+    handleValues (itsExprNode, id, epochs);
     return epochs;
   }
 
@@ -320,15 +177,15 @@ namespace casacore {
       }
       out.resize (shape);
       double* outPtr = out.data();
-      for (Array<MEpoch>::const_contiter resIter = res.cbegin();
-           resIter != res.cend(); ++resIter) {
-        itsConverter.setModel (*resIter);
-        for (Array<MPosition>::const_contiter posIter = pos.cbegin();
+      for (Array<MPosition>::const_contiter posIter = pos.cbegin();
            posIter != pos.cend(); ++posIter) {
-          // Convert to desired reference type.
-          if (itsPositionEngine) {
-            itsFrame.resetPosition (*posIter);
-          }
+        // Convert to desired reference type.
+        if (itsPositionEngine) {
+          itsFrame.resetPosition (*posIter);
+        }
+        for (Array<MEpoch>::const_contiter resIter = res.cbegin();
+             resIter != res.cend(); ++resIter) {
+          itsConverter.setModel (*resIter);
           MEpoch ep = itsConverter();
           // Convert to seconds.
           // Possibly strip day from sidereal times.

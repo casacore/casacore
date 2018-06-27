@@ -70,7 +70,10 @@ class TableExprConeNode : public TableExprFuncNode
 public:
   // Constructor
   TableExprConeNode (FunctionType, NodeDataType,
-		     const TableExprNodeSet& source, uInt origin);
+		     const TableExprNodeSet& source,
+                     const vector<TENShPtr>& nodes,
+                     const Block<Int>& dtypeOper,
+                     uInt origin);
 
   // Destructor
   ~TableExprConeNode();
@@ -89,29 +92,12 @@ public:
 				     ValueType& resVT,
 				     Block<Int>& vtypeOper,
 				     FunctionType,
-				     PtrBlock<TableExprNodeRep*>&);
-
-  // Link the children to the node and convert the children
-  // to constants if possible. Also convert the node to
-  // constant if possible.
-  static TableExprNodeRep* fillNode (TableExprConeNode* thisNode,
-				     PtrBlock<TableExprNodeRep*>& nodes,
-				     const Block<Int>& dtypeOper);
-
-  // Link the children to the node and convert the children
-  // to constants if possible.
-  static void fillChildNodes (TableExprConeNode* thisNode,
-			      PtrBlock<TableExprNodeRep*>& nodes,
-			      const Block<Int>& dtypeOper);
+				     const std::vector<TENShPtr>&);
 
 private:
-  // Try if the function gives a constant result.
-  // If so, set the expression type to Constant.
-  void tryToConst();
-
   // Find the number of elements in an argument.
   // It returns -1 if unknown.
-  static Int findNelem (const TableExprNodeRep* node);
+  static Int findNelem (const TENShPtr& node);
 
 
   uInt origin_p;
@@ -125,7 +111,10 @@ class TableExprConeNodeArray : public TableExprFuncNodeArray
 public:
   // Constructor
   TableExprConeNodeArray (TableExprFuncNode::FunctionType, NodeDataType,
-                          const TableExprNodeSet& source, uInt origin);
+                          const TableExprNodeSet& source,
+                          const vector<TENShPtr>& nodes,
+                          const Block<Int>& dtypeOper,
+                          uInt origin);
 
   // Destructor
   ~TableExprConeNodeArray();
@@ -136,25 +125,7 @@ public:
   MArray<Int64> getArrayInt  (const TableExprId& id);
   // </group>
 
-  // Link the children to the node and convert the children
-  // to constants if possible. Also convert the node to
-  // constant if possible.
-  static TableExprNodeRep* fillNode (TableExprConeNodeArray* thisNode,
-				     PtrBlock<TableExprNodeRep*>& nodes,
-				     const Block<Int>& dtypeOper);
-
-  // Link the children to the node and convert the children
-  // to constants if possible.
-  static void fillChildNodes (TableExprConeNodeArray* thisNode,
-			      PtrBlock<TableExprNodeRep*>& nodes,
-			      const Block<Int>& dtypeOper);
-
 private:
-  // Try if the function gives a constant result.
-  // If so, set the expression type to Constant.
-  void tryToConst();
-
-
   uInt origin_p;
 };
 

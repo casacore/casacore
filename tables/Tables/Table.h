@@ -555,7 +555,7 @@ public:
                        Int maxVal=25) const;
   
     // Show the table and/or column keywords of this table.
-    // Maximum <src>maxVal> values of Arrays will be shown.
+    // Maximum <src>maxVal</src> values of Arrays will be shown.
     void showKeywordSets (std::ostream&,
                           Bool showTabKey, Bool showColKey,
                           Int maxVal) const;
