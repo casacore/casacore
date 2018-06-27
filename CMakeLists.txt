@@ -99,7 +99,6 @@ if( CASA_BUILD )
    set(USE_FFTW3 ON)
    set(USE_OPENMP ON)
    set(USE_THREADS ON)
-   set(UseCasacoreNamespace 1) # Force casacore routines to live in casacore rather than casa namespace
    set(BUILD_PYTHON OFF)
    set(Boost_NO_BOOST_CMAKE 1)
    if (EXISTS "/opt/casa/02/include/python2.7")
@@ -166,15 +165,11 @@ else()
     option (BUILD_SHARED_LIBS "" NO)
 endif (ENABLE_SHARED)
 
-if (UseCasacoreNamespace)
-
-    add_definitions (-DUseCasacoreNamespace)
-    message (STATUS "Using namespace casacore.")
-
+if (UseCasaNamespace)
+    add_definitions (-DUseCasaNamespace)
+    message (STATUS "Using namespace casa. This will be deprecated at some point.")
 else ()
-
-    message (STATUS "Namespace casacore 'merged' into namespace casa.")
-
+    message (STATUS "Using namespace casacore.")
 endif ()
 
 # Define the compiler flags to be used.

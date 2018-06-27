@@ -31,7 +31,7 @@
 // For temporary backward namespace compatibility, use casa as alias for casacore.
 //# Note: namespace casa = casacore; does not work for forward declarations.
 
-#if ! defined (UseCasacoreNamespace)
+#if defined (UseCasaNamespace)
 #   define casacore casa
 #endif
 
