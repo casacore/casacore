@@ -217,8 +217,8 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
   LatticeStepper ls(modelShape, sliceShape);
   for (ls.reset(); !ls.atEnd(); ls++) {
     const Slicer sl(ls.position(), sliceShape);
-    const SubLattice<Float> modelSlice(model, sl);
-    SubLattice<Float> resultSlice(result, sl, True);
+    const SubLattice<T> modelSlice(model, sl);
+    SubLattice<T> resultSlice(result, sl, True);
     if (doPadding) {
       pad(*resultPtr, modelSlice);
     } else {
@@ -392,11 +392,11 @@ makeXfr(const Lattice<T> & psf) {
     itsXfr = new TempLattice<typename NumericTraits<T>::ConjugateType>(XFRShape, 
 								   maxLatSize);
     if (itsFFTShape == itsPsfShape) { // no need to pad the psf
-      LatticeFFT::rcfft(*itsXfr, psf, True, doFast_p); 
+        LatticeFFT::rcfft(*itsXfr, psf, True, doFast_p);
     } else { // need to pad the psf 
       TempLattice<T> paddedPsf(itsFFTShape, maxLatSize);
       pad(paddedPsf, psf);
-      LatticeFFT::rcfft(*itsXfr, paddedPsf, True, doFast_p); 
+      LatticeFFT::rcfft(*itsXfr, paddedPsf, True, doFast_p);
     }
   }
   // Only cache the psf if it cannot be reconstructed from the transfer
