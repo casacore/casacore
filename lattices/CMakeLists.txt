@@ -16,7 +16,6 @@ Lattices/TiledShape.cc
 LatticeMath/Fit2D.cc
 LatticeMath/LatticeAddNoise.cc
 LatticeMath/LatticeCleanProgress.cc
-LatticeMath/LatticeFFT.cc
 LatticeMath/LatticeFit.cc
 LatticeMath/LatticeHistProgress.cc
 LatticeMath/LatticeHistSpecialize.cc
@@ -144,6 +143,7 @@ LatticeMath/LatticeCleaner.tcc
 LatticeMath/LatticeConvolver.h
 LatticeMath/LatticeConvolver.tcc
 LatticeMath/LatticeFFT.h
+LatticeMath/LatticeFFT.tcc
 LatticeMath/LatticeFit.h
 LatticeMath/LatticeFractile.h
 LatticeMath/LatticeFractile.tcc

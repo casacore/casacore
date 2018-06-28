@@ -1,3 +1,6 @@
+#ifndef LATTICES_LATTICEFFT_TCC
+#define LATTICES_LATTICEFFT_TCC
+
 // -*- C++ -*-
 //# LatticeFFT.cc: functions for doing FFT's on Lattices.
 //# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
@@ -46,7 +49,8 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
+template <class ComplexType> void LatticeFFT::cfft2d(
+   Lattice<ComplexType>& cLattice, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();
   DebugAssert(ndim > 1, AipsError);
   const IPosition& latticeShape = cLattice.shape();
@@ -57,14 +61,14 @@ void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   // use 1/8 of memory for FFT of a plane at most 
   //Long cacheSize = (HostInfo::memoryTotal()/(sizeof(Complex)*8))*1024;
   //use memory Free  and use a quarter of that
-  Long cacheSize = (HostInfo::memoryFree()/(sizeof(Complex)*4))*1024;
+  Long cacheSize = (HostInfo::memoryFree()/(sizeof(ComplexType)*4))*1024;
 
   // For small transforms, we do everything in one plane
   if (((Long)(nx)*(Long)(ny)) <= cacheSize) {
     const IPosition cursorShape(2, nx, ny);
     LatticeStepper ls(latticeShape, cursorShape);
-    LatticeIterator<Complex> li(cLattice, ls);
-    FFTServer<Float,Complex> ffts(cursorShape);
+    LatticeIterator<ComplexType> li(cLattice, ls);
+    FFTServer<typename NumericTraits<ComplexType>::ConjugateType,ComplexType> ffts(cursorShape);
     for (li.reset(); !li.atEnd(); li++) {
       ffts.fft(li.rwMatrixCursor(), toFrequency);
     }
@@ -76,50 +80,20 @@ void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   }
 }
 
-void LatticeFFT::cfft2d(Lattice<DComplex>& cLattice, const Bool toFrequency) {
-  const uInt ndim = cLattice.ndim();
-  DebugAssert(ndim > 1, AipsError);
-  const IPosition& latticeShape = cLattice.shape();
-  const uInt maxPixels = cLattice.advisedMaxPixels();
-  IPosition slabShape = cLattice.niceCursorShape(maxPixels);
-  const uInt nx = slabShape(0) = latticeShape(0);
-  const uInt ny = slabShape(1) = latticeShape(1);
-  // use 1/8 of memory for FFT of a plane at most 
-  //Long cacheSize = (HostInfo::memoryTotal()/(sizeof(Complex)*8))*1024;
-  //use memory Free  and use a quarter of that
-  Long cacheSize = (HostInfo::memoryFree()/(sizeof(DComplex)*4))*1024;
 
-
-  // For small transforms, we do everything in one plane
-  if (((Long)(nx)*(Long)(ny)) <= cacheSize) {
-    const IPosition cursorShape(2, nx, ny);
-    LatticeStepper ls(latticeShape, cursorShape);
-    LatticeIterator<DComplex> li(cLattice, ls);
-    FFTServer<Double,DComplex> ffts(cursorShape);
-    for (li.reset(); !li.atEnd(); li++) {
-      ffts.fft(li.rwMatrixCursor(), toFrequency);
-    }
-  } // For large transforms , we do line by line FFT's
-  else {
-    Vector<Bool> whichAxes(ndim, False);
-    whichAxes(0) = whichAxes(1) = True;
-    LatticeFFT::cfft(cLattice, whichAxes, toFrequency);
-  }
-}
-
-void LatticeFFT::cfft(Lattice<Complex>& cLattice,
+template <class ComplexType> void LatticeFFT::cfft(Lattice<ComplexType>& cLattice,
 		     const Vector<Bool>& whichAxes, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();
   DebugAssert(ndim > 0, AipsError);
   DebugAssert(ndim == whichAxes.nelements(), AipsError);
-  FFTServer<Float,Complex> ffts;
+  FFTServer<typename NumericTraits<ComplexType>::ConjugateType,ComplexType> ffts;
   const IPosition latticeShape = cLattice.shape();
   const IPosition tileShape = cLattice.niceCursorShape();
 
   for (uInt dim = 0; dim < ndim; dim++) {
     if (whichAxes(dim) == True) {
       TiledLineStepper ts(latticeShape, tileShape, dim);
-      LatticeIterator<Complex> li(cLattice, ts);
+      LatticeIterator<ComplexType> li(cLattice, ts);
       for (li.reset(); !li.atEnd(); li++) {
 	ffts.fft(li.rwVectorCursor(), toFrequency);
       }
@@ -127,19 +101,19 @@ void LatticeFFT::cfft(Lattice<Complex>& cLattice,
   }
 }
 
-void LatticeFFT::cfft0(Lattice<Complex>& cLattice,
+template <class ComplexType> void LatticeFFT::cfft0(Lattice<ComplexType>& cLattice,
 		       const Vector<Bool>& whichAxes, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();
   DebugAssert(ndim > 0, AipsError);
   DebugAssert(ndim == whichAxes.nelements(), AipsError);
-  FFTServer<Float,Complex> ffts;
+  FFTServer<typename NumericTraits<ComplexType>::ConjugateType,ComplexType> ffts;
   const IPosition latticeShape = cLattice.shape();
   const IPosition tileShape = cLattice.niceCursorShape();
 
   for (uInt dim = 0; dim < ndim; dim++) {
     if (whichAxes(dim) == True) {
       TiledLineStepper ts(latticeShape, tileShape, dim);
-      LatticeIterator<Complex> li(cLattice, ts);
+      LatticeIterator<ComplexType> li(cLattice, ts);
       for (li.reset(); !li.atEnd(); li++) {
 	ffts.fft0(li.rwVectorCursor(), toFrequency);
       }
@@ -147,37 +121,16 @@ void LatticeFFT::cfft0(Lattice<Complex>& cLattice,
   }
 }
 
-void LatticeFFT::cfft(Lattice<DComplex>& cLattice,
-		     const Vector<Bool>& whichAxes, const Bool toFrequency) {
-  const uInt ndim = cLattice.ndim();
-  DebugAssert(ndim > 0, AipsError);
-  DebugAssert(ndim == whichAxes.nelements(), AipsError);
-  FFTServer<Double,DComplex> ffts;
-  const IPosition latticeShape = cLattice.shape();
-  const IPosition tileShape = cLattice.niceCursorShape();
-
-  for (uInt dim = 0; dim < ndim; dim++) {
-    if (whichAxes(dim) == True) {
-      TiledLineStepper ts(latticeShape, tileShape, dim);
-      LatticeIterator<DComplex> li(cLattice, ts);
-      for (li.reset(); !li.atEnd(); li++) {
-	ffts.fft(li.rwVectorCursor(), toFrequency);
-      }
-    }
-  }
-}
-
-void LatticeFFT::cfft(Lattice<Complex>& cLattice, const Bool toFrequency) {
+template <class ComplexType> void LatticeFFT::cfft(
+    Lattice<ComplexType>& cLattice, const Bool toFrequency
+) {
   const Vector<Bool> whichAxes(cLattice.ndim(), True);
   LatticeFFT::cfft(cLattice, whichAxes, toFrequency);
 }
 
-void LatticeFFT::cfft(Lattice<DComplex>& cLattice, const Bool toFrequency) {
-  const Vector<Bool> whichAxes(cLattice.ndim(), True);
-  LatticeFFT::cfft(cLattice, whichAxes, toFrequency);
-}
-
-void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in, 
+template <class ComplexType> void LatticeFFT::rcfft(
+    Lattice<ComplexType>& out,
+    const Lattice<typename NumericTraits<ComplexType>::ConjugateType>& in,
 		       const Vector<Bool>& whichAxes, const Bool doShift,
 		       Bool doFast){
   const uInt ndim = in.ndim();
@@ -195,27 +148,23 @@ void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in,
   DebugAssert(firstAxis < ndim, AipsError); // At least one axis must be given
   outShape(firstAxis) = (outShape(firstAxis)+2)/2;
   DebugAssert(outShape.isEqual(out.shape()), AipsError);
-//   if (outShape.product() == 1) {
-//     const IPosition origin(ndim, 0);
-//     Float val = in.getAt(origin);
-//     out.set(Complex(val, 0));
-//     return;
-//   }
 
   const IPosition tileShape = out.niceCursorShape();
-  TempLattice<Float> inlocal(TiledShape(in.shape(), tileShape));
+  TempLattice<typename NumericTraits<ComplexType>::ConjugateType> inlocal(
+      TiledShape(in.shape(), tileShape)
+  );
   inlocal.put(in.get());
-  FFTServer<Float,Complex> ffts;
+  FFTServer<typename NumericTraits<ComplexType>::ConjugateType,ComplexType> ffts;
 
     {
       for (uInt dim = 0; dim < ndim; dim++) {
 	if (whichAxes(dim) == True) {
 	  if (dim == firstAxis) { 
 	    if (inShape(dim) != 1) { // Do real->complex Transforms
-	      LatticeIterator<Float> inIter(inlocal, 
+	      LatticeIterator<typename NumericTraits<ComplexType>::ConjugateType> inIter(inlocal,
 					       TiledLineStepper(inShape,
 								tileShape,dim));
-	      LatticeIterator<Complex> outIter(out,
+	      LatticeIterator<ComplexType> outIter(out,
 					       TiledLineStepper(outShape,
 								tileShape,dim));
 	      for (inIter.reset(), outIter.reset();
@@ -234,12 +183,12 @@ void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 		}
 	      }
 	    } else { // just copy the data
-	      out.copyData(LatticeExpr<Complex>(in));
+	      out.copyData(LatticeExpr<ComplexType>(in));
 	    }
 	  }
 	  else { // Do complex->complex transforms
 	    if (inShape(dim) != 1) { 
-	      LatticeIterator<Complex> iter(out,
+	      LatticeIterator<ComplexType> iter(out,
 					    TiledLineStepper(outShape,
 							     tileShape, dim));
 	      for (iter.reset(); !iter.atEnd(); iter++) {
@@ -263,7 +212,9 @@ void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 //
 // ----------------MYRCFFT--------------------------------------
 //
-void LatticeFFT::myrcfft(Lattice<Complex>& out, const Lattice<Float>& in, 
+template <class ComplexType> void LatticeFFT::myrcfft(
+    Lattice<ComplexType>& out,
+    const Lattice<typename NumericTraits<ComplexType>::ConjugateType>& in,
 		     const Vector<Bool>& whichAxes, const Bool doShift){
 
   //  cerr << "####myrcfft" << endl;
@@ -283,45 +234,35 @@ void LatticeFFT::myrcfft(Lattice<Complex>& out, const Lattice<Float>& in,
   outShape(firstAxis) = (outShape(firstAxis)+2)/2;
   DebugAssert(outShape.isEqual(out.shape()), AipsError);
 
-  // outShape(0) = (inShape(0)+2)/2;
-  //  outShape(1) = 2*(inShape(1)/2+1);
-
-//   if (outShape.product() == 1) {
-//     const IPosition origin(ndim, 0);
-//     Float val = in.getAt(origin);
-//     out.set(Complex(val, 0));
-//     return;
-//   }
-
   const IPosition tileShape = out.niceCursorShape();
-  FFTServer<Float,Complex> ffts;
+  FFTServer<typename NumericTraits<ComplexType>::ConjugateType,ComplexType> ffts;
 
     {
       for (uInt dim = 0; dim < ndim; dim++) {
 	if (whichAxes(dim) == True) {
 	  if (dim == firstAxis) { 
 	    if (inShape(dim) != 1) { // Do real->complex Transforms
-	      RO_LatticeIterator<Float> inIter(in, 
+	      RO_LatticeIterator<typename NumericTraits<ComplexType>::ConjugateType> inIter(in,
 					       TiledLineStepper(inShape,tileShape,dim));
-	      LatticeIterator<Complex> outIter(out,
+	      LatticeIterator<ComplexType> outIter(out,
 					       TiledLineStepper(outShape,tileShape,dim));
 	      for (inIter.reset(), outIter.reset();
 		   !inIter.atEnd() && !outIter.atEnd(); inIter++, outIter++) {
 		if (doShift) {
 		  //		  ffts.myfft(outIter.woVectorCursor(), inIter.vectorCursor());
-		  ffts.flip((Vector<Float> &)inIter.vectorCursor(),True,False);
+		  ffts.flip((Vector<typename NumericTraits<ComplexType>::ConjugateType> &)inIter.vectorCursor(),True,False);
 		  ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
 		} else {
 		  ffts.fft0(outIter.woVectorCursor(), inIter.vectorCursor());
 		}
 	      }
 	    } else { // just copy the data
-	      out.copyData(LatticeExpr<Complex>(in));
+	      out.copyData(LatticeExpr<ComplexType>(in));
 	    }
 	  }
 	  else { // Do complex->complex transforms
 	    if (inShape(dim) != 1) { 
-	      LatticeIterator<Complex> iter(out,
+	      LatticeIterator<ComplexType> iter(out,
 					    TiledLineStepper(outShape, tileShape, dim));
 	      for (iter.reset(); !iter.atEnd(); iter++) {
 		if (doShift) {
@@ -341,24 +282,29 @@ void LatticeFFT::myrcfft(Lattice<Complex>& out, const Lattice<Float>& in,
 //
 //-------------------------------------------------------------------------
 //
-void LatticeFFT::rcfft(Lattice<Complex>& out, const Lattice<Float>& in, 
+template <class ComplexType> void LatticeFFT::rcfft(
+    Lattice<ComplexType>& out,
+    const Lattice<typename NumericTraits<ComplexType>::ConjugateType>& in,
 		     const Bool doShift, Bool doFast){
   const Vector<Bool> whichAxes(in.ndim(), True);
   LatticeFFT::rcfft(out, in, whichAxes, doShift, doFast);
 }
-void LatticeFFT::myrcfft(Lattice<Complex>& out, const Lattice<Float>& in, 
+template <class ComplexType> void LatticeFFT::myrcfft(
+    Lattice<ComplexType>& out,
+    const Lattice<typename NumericTraits<ComplexType>::ConjugateType>& in,
 		     const Bool doShift){
   const Vector<Bool> whichAxes(in.ndim(), True);
   LatticeFFT::myrcfft(out, in, whichAxes, doShift);
 }
 
-void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in, 
+template <class ComplexType> void LatticeFFT::crfft(
+    Lattice<typename NumericTraits<ComplexType>::ConjugateType>& out,
+    Lattice<ComplexType>& in,
 		       const Vector<Bool>& whichAxes, const Bool doShift, 
 		       Bool doFast){
   const uInt ndim = in.ndim();
   DebugAssert(ndim > 0, AipsError);
   DebugAssert(ndim == whichAxes.nelements(), AipsError);
-
   // find the required shape of the output Array
   const IPosition inShape = in.shape();
   IPosition outShape = in.shape();
@@ -377,9 +323,8 @@ void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in,
 //     out.set(val.re);
 //     return;
 //   }
-
   const IPosition tileShape = in.niceCursorShape();
-  FFTServer<Float,Complex> ffts;
+  FFTServer<typename NumericTraits<ComplexType>::ConjugateType,ComplexType> ffts;
 
   uInt dim = ndim;
   while (dim != 0) {
@@ -387,7 +332,7 @@ void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in,
     if (whichAxes(dim) == True) {
       if (dim != firstAxis) { // Do complex->complex Transforms
 	if (inShape(dim) != 1) { // no need to do anything unless len > 1
-	  LatticeIterator<Complex> iter(in, TiledLineStepper(inShape,
+	  LatticeIterator<ComplexType> iter(in, TiledLineStepper(inShape,
 							     tileShape, dim));
 	  for (iter.reset(); !iter.atEnd(); iter++) {
 	    if (doShift) {
@@ -398,7 +343,6 @@ void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in,
 	      else{
 	      //	      ffts.fft(iter.rwVectorCursor(), 2, False);
 	      ffts.fft(iter.rwVectorCursor(),False);
-
 	      }
 	    } else {
 	      ffts.fft0(iter.rwVectorCursor(), False);
@@ -407,10 +351,10 @@ void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in,
 	}
       } else { // the first axis is treated specially
 	if (inShape(dim) != 1) { // Do complex->real transforms
-	  RO_LatticeIterator<Complex> inIter(in, 
+	  RO_LatticeIterator<ComplexType> inIter(in,
 					     TiledLineStepper(inShape,
 							      tileShape, dim));
-	  LatticeIterator<Float> outIter(out, 
+	  LatticeIterator<typename NumericTraits<ComplexType>::ConjugateType> outIter(out,
 					 TiledLineStepper(outShape,
 							  tileShape, dim));
 	  for (inIter.reset(), outIter.reset(); 
@@ -427,22 +371,26 @@ void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in,
 	    }
 	  }
 	} else { // just copy the data truncating the imaginary parts.
-	  out.copyData(LatticeExpr<Float>(real(in)));
+	  out.copyData(LatticeExpr<typename NumericTraits<ComplexType>::ConjugateType>(real(in)));
 	}
       }
     }
   }
 }
 
-void LatticeFFT::crfft(Lattice<Float>& out, Lattice<Complex>& in, 
+template <class ComplexType> void LatticeFFT::crfft(
+    Lattice<typename NumericTraits<ComplexType>::ConjugateType>& out,
+    Lattice<ComplexType>& in,
 		       const Bool doShift, Bool doFast){
   const Vector<Bool> whichAxes(in.ndim(), True);
   LatticeFFT::crfft(out, in, whichAxes, doShift, doFast);
 }
 
-void LatticeFFT::crfft(Lattice<Float>& out, const Lattice<Complex>& in,
+template <class ComplexType> void LatticeFFT::crfft(
+    Lattice<typename NumericTraits<ComplexType>::ConjugateType>& out,
+    const Lattice<ComplexType>& in,
 		       const Bool doShift, Bool doFast){
- TempLattice<Complex> inCopy(in.shape());
+ TempLattice<ComplexType> inCopy(in.shape());
  inCopy.copyData(in);
  LatticeFFT::crfft(out, inCopy, doShift, doFast);
 }
@@ -452,3 +400,4 @@ void LatticeFFT::crfft(Lattice<Float>& out, const Lattice<Complex>& in,
 
 } //# NAMESPACE CASACORE - END
 
+#endif
