@@ -61,7 +61,7 @@ template <class ComplexType> void LatticeFFT::cfft2d(
   // use 1/8 of memory for FFT of a plane at most 
   //Long cacheSize = (HostInfo::memoryTotal()/(sizeof(Complex)*8))*1024;
   //use memory Free  and use a quarter of that
-  Long cacheSize = (HostInfo::memoryFree()/(sizeof(Complex)*4))*1024;
+  Long cacheSize = (HostInfo::memoryFree()/(sizeof(ComplexType)*4))*1024;
 
   // For small transforms, we do everything in one plane
   if (((Long)(nx)*(Long)(ny)) <= cacheSize) {
@@ -123,13 +123,6 @@ template <class ComplexType> void LatticeFFT::cfft0(Lattice<ComplexType>& cLatti
 
 template <class ComplexType> void LatticeFFT::cfft(
     Lattice<ComplexType>& cLattice, const Bool toFrequency
-) {
-  const Vector<Bool> whichAxes(cLattice.ndim(), True);
-  LatticeFFT::cfft(cLattice, whichAxes, toFrequency);
-}
-
-template <class ComplexType> void LatticeFFT::cfft(
-    Lattice<DComplex>& cLattice, const Bool toFrequency
 ) {
   const Vector<Bool> whichAxes(cLattice.ndim(), True);
   LatticeFFT::cfft(cLattice, whichAxes, toFrequency);

@@ -78,8 +78,6 @@ public:
   // N-D in-place complex->complex FFT. Only transform over selected
   // dimensions. Iterate over the others. whichAxes must be the same length as
   // the number of dimensions in the Lattice otherwise an AipsError is thrown.
-    template <class ComplexType> static void cfft(Lattice<DComplex> & cLattice,
-  		  const Vector<Bool> & whichAxes, const Bool toFrequency=True);
     template <class ComplexType> static void cfft(Lattice<ComplexType> & cLattice,
   		  const Vector<Bool> & whichAxes, const Bool toFrequency=True);
 
@@ -88,9 +86,6 @@ public:
   		  const Vector<Bool> & whichAxes, const Bool toFrequency=True);
 
   // N-D in-place complex->complex FFT. Transform over all axes.
-    template <class ComplexType> static void cfft(
-        Lattice<DComplex> & cLattice, const Bool toFrequency=True
-    );
     template <class ComplexType> static void cfft(
         Lattice<ComplexType> & cLattice, const Bool toFrequency=True
     );
