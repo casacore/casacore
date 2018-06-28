@@ -718,7 +718,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else {
       handleWhere (node.itsValues);
       TableExprNode expr = topStack()->getNode();
-      if (! expr.getRep()->isConstant()) {
+      if (! expr.getNodeRep()->isConstant()) {
         error = "must be constant";
       } else {
         switch (expr.dataType()) {

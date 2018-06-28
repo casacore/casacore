@@ -85,22 +85,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Constructor.
     TableExprAggrNode (FunctionType, NodeDataType, ValueType,
-		       const TableExprNodeSet& source,
-                       const vector<TENShPtr>& nodes,
-                       const Block<Int>& dtypeOper);
+		       const TableExprNodeSet& source);
 
     // Check the operands of the aggregate function and return the
     // result's data type.
     static NodeDataType checkOperands (Block<Int>& dtypeOper,
                                        ValueType& resVT, FunctionType ftype,
-                                       std::vector<TENShPtr>& nodes);
+                                       PtrBlock<TableExprNodeRep*>& nodes);
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
+    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
 
     // Get the operand node.
-    TENShPtr operand()
-      { return (operands().empty()  ?  TENShPtr() : operands()[0]); }
+    TableExprNodeRep* operand()
+      { return (operands().empty()  ?  0 : operands()[0]); }
 
     // Create the correct aggregate function object.
     // It is also kept in case it is a lazy aggregate function.

@@ -770,7 +770,7 @@ void doSetBool()
   AlwaysAssertExit (set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
-  AlwaysAssertExit (set.size() == 2);
+  AlwaysAssertExit (set.nelements() == 2);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasBool (0, True));
   AlwaysAssertExit (!set.hasBool (0, False));
@@ -784,7 +784,7 @@ void doSetInt()
   AlwaysAssertExit (set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
-  AlwaysAssertExit (set.size() == 1);
+  AlwaysAssertExit (set.nelements() == 1);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasInt (0, 1));
   AlwaysAssertExit (!set.hasInt (0, 2));
@@ -795,7 +795,7 @@ void doSetInt()
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
-  AlwaysAssertExit (set.size() == 2);
+  AlwaysAssertExit (set.nelements() == 2);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasInt (0, 1));
   AlwaysAssertExit (!set.hasInt (0, 2));
@@ -805,7 +805,7 @@ void doSetInt()
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
-  AlwaysAssertExit (set.size() == 3);
+  AlwaysAssertExit (set.nelements() == 3);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasInt (0, 1));
   AlwaysAssertExit (!set.hasInt (0, 2));
@@ -821,7 +821,7 @@ void doSetDouble()
   AlwaysAssertExit (set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
-  AlwaysAssertExit (set.size() == 1);
+  AlwaysAssertExit (set.nelements() == 1);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasDouble (0, 1));
   AlwaysAssertExit (!set.hasDouble (0, 2));
@@ -832,7 +832,7 @@ void doSetDouble()
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
-  AlwaysAssertExit (set.size() == 2);
+  AlwaysAssertExit (set.nelements() == 2);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasDouble (0, 1));
   AlwaysAssertExit (!set.hasDouble (0, 2));
@@ -842,7 +842,7 @@ void doSetDouble()
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
-  AlwaysAssertExit (set.size() == 3);
+  AlwaysAssertExit (set.nelements() == 3);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasDouble (0, 1));
   AlwaysAssertExit (!set.hasDouble (0, 2));
@@ -859,7 +859,7 @@ void doSetDComplex()
   AlwaysAssertExit (set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
-  AlwaysAssertExit (set.size() == 2);
+  AlwaysAssertExit (set.nelements() == 2);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasDComplex (0, DComplex(1,2)));
   AlwaysAssertExit (!set.hasDComplex (0, DComplex(1,3)));
@@ -873,7 +873,7 @@ void doSetString()
   AlwaysAssertExit (set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
-  AlwaysAssertExit (set.size() == 1);
+  AlwaysAssertExit (set.nelements() == 1);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasString (0, "ger"));
   AlwaysAssertExit (!set.hasString (0, "Ger"));
@@ -883,7 +883,7 @@ void doSetString()
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (!set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
-  AlwaysAssertExit (set.size() == 2);
+  AlwaysAssertExit (set.nelements() == 2);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasString (0, "ger"));
   AlwaysAssertExit (!set.hasString (0, "Ger"));
@@ -893,7 +893,7 @@ void doSetString()
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (!set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
-  AlwaysAssertExit (set.size() == 3);
+  AlwaysAssertExit (set.nelements() == 3);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasString (0, "ger"));
   AlwaysAssertExit (!set.hasString (0, "Ger"));
@@ -909,7 +909,7 @@ void doSetDate()
   AlwaysAssertExit (set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
-  AlwaysAssertExit (set.size() == 1);
+  AlwaysAssertExit (set.nelements() == 1);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasDouble (0, 1));
   AlwaysAssertExit (!set.hasDouble (0, 2));
@@ -920,7 +920,7 @@ void doSetDate()
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
-  AlwaysAssertExit (set.size() == 2);
+  AlwaysAssertExit (set.nelements() == 2);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasDouble (0, 1));
   AlwaysAssertExit (!set.hasDouble (0, 2));
@@ -930,7 +930,7 @@ void doSetDate()
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
-  AlwaysAssertExit (set.size() == 3);
+  AlwaysAssertExit (set.nelements() == 3);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasDouble (0, 1));
   AlwaysAssertExit (!set.hasDouble (0, 2));
@@ -945,7 +945,7 @@ void doIPosition()
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
   AlwaysAssertExit (set.dataType() == TableExprNodeRep::NTInt);
-  AlwaysAssertExit (set.size() == 3);
+  AlwaysAssertExit (set.nelements() == 3);
   AlwaysAssertExit (!set.hasArrays());
   AlwaysAssertExit (set.hasInt (0, 4));
   AlwaysAssertExit (set.hasInt (0, 5));
@@ -967,7 +967,7 @@ void doSlicer()
     AlwaysAssertExit (set.isDiscrete());
     AlwaysAssertExit (set.isBounded());
     AlwaysAssertExit (set.dataType() == TableExprNodeRep::NTInt);
-    AlwaysAssertExit (set.size() == 2);
+    AlwaysAssertExit (set.nelements() == 2);
     AlwaysAssertExit (!set.hasArrays());
     AlwaysAssertExit (set[0].start()->getInt(0) == 1);
     AlwaysAssertExit (set[0].end()->getInt(0) == 10);
@@ -992,7 +992,7 @@ void doSlicer()
     AlwaysAssertExit (set.isDiscrete());
     AlwaysAssertExit (set.isBounded());
     AlwaysAssertExit (set.dataType() == TableExprNodeRep::NTInt);
-    AlwaysAssertExit (set.size() == 2);
+    AlwaysAssertExit (set.nelements() == 2);
     AlwaysAssertExit (!set.hasArrays());
     AlwaysAssertExit (set[0].start() == 0);
     cout << set[0].end()->getInt(0) << endl;
@@ -1011,7 +1011,7 @@ void doEmpty()
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
   AlwaysAssertExit (set.dataType() == TableExprNodeRep::NTNumeric);
-  AlwaysAssertExit (set.size() == 0);
+  AlwaysAssertExit (set.nelements() == 0);
   AlwaysAssertExit (!set.hasArrays());
 }
 

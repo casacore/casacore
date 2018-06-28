@@ -26,36 +26,47 @@
 //# $Id$
 
 #include <casacore/meas/MeasUDF/DirectionEngine.h>
-#include <casacore/meas/MeasUDF/EpochEngine.h>
-#include <casacore/meas/MeasUDF/PositionEngine.h>
+#include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/tables/TaQL/ExprUnitNode.h>
+#include <casacore/tables/TaQL/ExprNodeSet.h>
+//#include <casacore/measures/Measures/MCEpoch.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
 
 namespace casacore {
 
   DirectionEngine::DirectionEngine()
-    : itsEpochEngine    (0),
+    : itsNDim           (-1),
+      itsRefType        (MDirection::N_Types),
+      itsEpochEngine    (0),
       itsPositionEngine (0)
   {}
 
-  DirectionEngine::~DirectionEngine()
-  {}
+  Bool DirectionEngine::isConstant() const
+  {
+    Bool isConst = itsConstants.size() > 0;
+    if (isConst && itsEpochEngine) {
+      isConst = itsEpochEngine->isConstant();
+    }
+    if (isConst && itsPositionEngine) {
+      isConst = itsPositionEngine->isConstant();
+    }
+    return isConst;
+  }
 
-  void DirectionEngine::handleDirection (const vector<TENShPtr>& args,
-                                         uInt& argnr, Bool riseSet,
-                                         Bool asDirCos)
+  void DirectionEngine::handleDirection (PtrBlock<TableExprNodeRep*>& args,
+                                         uInt& argnr, Bool riseSet)
   {
     // Initialize to unknown reference type.
     itsRefType = MDirection::N_Types;
     // Normally directions must be given in an array, but a single one
-    // can be 2 or 3 scalars.
+    // can be 2 scalars.
     uInt nargnr = argnr+1;
     Bool asScalar = False;
-    TENShPtr scalar3;
     // A string means that object names (e.g. MOON) are given.
     if (args[argnr]->dataType() == TableExprNodeRep::NTString) {
       handleNames (args[argnr]);
     } else {
-      if (! args[argnr]->isReal()) {
+      if (args[argnr]->dataType() != TableExprNodeRep::NTDouble) {
         throw AipsError("Invalid direction given in a MEAS function");
       }
       if (args.size() > nargnr  &&
@@ -65,85 +76,80 @@ namespace casacore {
           args[nargnr]->valueType() == TableExprNodeRep::VTScalar) {
         asScalar = True;
         nargnr++;
-        // See if given as 3 scalars xyz (direction cosines).
-        if (args.size() > nargnr  &&
-            args[nargnr]->isReal()  &&
-            args[nargnr]->valueType() == TableExprNodeRep::VTScalar) {
-          scalar3 = args[nargnr];
-          nargnr++;
-        }
       }
       // See if a reference type is given.
       if (args.size() > nargnr  &&
           args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-        if (handleMeasType (args[nargnr], False)) {
-          nargnr++;
-        }
+        handleDirType (args[nargnr]);
+        nargnr++;
       }
-      // Process as scalars or as array.
+      // Process as two scalars or as array.
       if (asScalar) {
-        handleScalars (args[argnr], args[argnr+1], scalar3);
+        handleScalars (args[argnr], args[argnr+1]);
       } else {
-        handleMeasArray (args[argnr]);
-        if (itsMeasArrCol.isNull()) {
-          // Set or convert the operand's unit to radian.
-          TENShPtr operand(args[argnr]);
-          TableExprNodeUnit::adaptUnit (operand, "rad");
-          itsExprNode = operand;
-        }
+        handleDirArray (args[argnr]);
       }
     }
     // Skip the arguments handled.
     argnr = nargnr;
-    // Set shape, etc. for constants.
-    adaptForConstant (itsConstants.shape(), asDirCos ? 3:2);
+    // Set shape for constants.
+    if (itsConstants.size() > 0) {
+      if (itsConstants.size() > 1) {
+        itsShape = itsConstants.shape();
+      }
+      itsShape.prepend (IPosition(1,2));
+    }
     // Determine the output unit, shape, and ndim.
     if (riseSet) {
-      itsOutUnit = "d";
-    } else if (!asDirCos) {
-      itsOutUnit = "rad";
+      itsUnit = "d";
+    } else {
+      itsUnit = "rad";
+    }
+    // Fill ndim if unknown and if shape is known.
+    if (itsNDim < 0  &&  itsShape.size() > 0) {
+      itsNDim = itsShape.size();
     }
   }
 
-  void DirectionEngine::handleScalars (const TENShPtr& e1,
-                                       const TENShPtr& e2,
-                                       const TENShPtr& e3)
+  void DirectionEngine::handleDirType (TableExprNodeRep* operand)
   {
-    if (! (e1->isConstant()  &&  e2->isConstant())  ||
-        (e3  &&  !e3->isConstant())) {
+    if (operand->dataType() != TableExprNodeRep::NTString  ||
+        operand->valueType() != TableExprNodeRep::VTScalar  ||
+        !operand->isConstant()) {
+      throw AipsError ("A direction type given in a MEAS function "
+                       "must be a constant scalar string");
+    }
+    String str = operand->getString(0);
+    Bool fnd = MDirection::getType (itsRefType, str);
+    if (!fnd) {
+      throw AipsError ("Unknown direction reference type " + str +
+                       " given in a MEAS function");
+    }
+  }
+
+  void DirectionEngine::handleScalars (TableExprNodeRep* e1,
+                                       TableExprNodeRep* e2)
+  {
+    if (! (e1->isConstant()  &&  e2->isConstant())) {
       throw AipsError ("Scalar values given as direction in a MEAS function "
                        "must be constant values");
     }
     double v1 = e1->getDouble(0);
     double v2 = e2->getDouble(0);
-    double v3 = 0;
     Unit u1 = e1->unit();
     Unit u2 = e2->unit();
-    if (e3) {
-      v3 = e3->getDouble(0);
-      if (! (u1.empty()  &&  u2.empty()  &&  e3->unit().empty())) {
-        throw AipsError ("Directions given as x,y,z in a MEAS function "
-                         "cannot have units");
-      }
-    } else {
-      if (u1.empty()) u1 = "rad";
-      if (u2.empty()) u2 = "rad";
-    }
+    if (u1.empty()) u1 = "rad";
+    if (u2.empty()) u2 = "rad";
     if (itsRefType == MDirection::N_Types) {
-      itsRefType = MDirection::J2000;             // default reftype
+      itsRefType = MDirection::J2000;
     }
     itsConstants.resize (IPosition(1,1));
-    if (e3) {
-      itsConstants.data()[0] = MDirection(MVDirection(v1, v2, v3),
-                                          itsRefType);
-    } else {
-      itsConstants.data()[0] = MDirection(Quantity(v1, u1),
-                                          Quantity(v2, u2),
-                                          itsRefType);
-    }
+    itsConstants.data()[0] = MDirection(Quantity(v1, u1),
+                                        Quantity(v2, u2),
+                                        itsRefType);
   }
 
-  void DirectionEngine::handleNames (const TENShPtr& operand)
+  void DirectionEngine::handleNames (TableExprNodeRep* operand)
   {
     if (! operand->isConstant()) {
       throw AipsError ("Object names given as directions in a MEAS function "
@@ -157,8 +163,6 @@ namespace casacore {
       name.upcase();
       itsH[i] = 0;
       if (name.substr(0,3) == "SUN") {
-        // Determine which part of the sun has to be used for rise/set times.
-        // The offset in itsH is first given in degrees.
         String ext(name.substr(3));
         name = "SUN";
         itsH[i] = -0.833;      // default is -UR
@@ -217,61 +221,135 @@ namespace casacore {
     }
   }
 
+  void DirectionEngine::handleDirArray (TableExprNodeRep*& operand)
+  {
+    if (!operand->isReal()  ||
+        operand->valueType() != TableExprNodeRep::VTArray) {
+      throw AipsError ("A single double argument given as direction in a "
+                       "MEAS function must be a double array of values");
+    }
+    // Set or convert the operand's unit to radian.
+    TableExprNodeUnit::adaptUnit (operand, "rad") ;
+    // Handle possibly given constants.
+    if (operand->isConstant()) {
+      handleConstant (operand);
+      return;
+    }
+    // Try if the argument is a column.
+    // If so, try to handle it as a TableMeasures column.
+    const TableExprNodeArrayColumn* colNode =
+      dynamic_cast<TableExprNodeArrayColumn*>(operand);
+    Bool directCol = True;
+    if (!colNode) {
+      // The node is an expression, not a column.
+      directCol = False;
+      // Try if the node is an array part of a column.
+      TableExprNodeArrayPart* partNode =
+        dynamic_cast<TableExprNodeArrayPart*>(operand);
+      if (partNode) {
+        colNode = partNode->getColumnNode();
+      }
+    }
+    if (colNode) {
+      // Try if the column contains measures.
+      const TableColumn& tabCol = colNode->getColumn();
+      itsShape = tabCol.shapeColumn();
+      itsNDim  = tabCol.ndimColumn();
+      if (TableMeasDescBase::hasMeasures (tabCol)) {
+        ArrayMeasColumn<MDirection> measTmp(tabCol.table(),
+                                              tabCol.columnDesc().name());
+        // Get and check the node's refType if it is fixed.
+        MDirection::Types nodeRefType = MDirection::N_Types;
+        if (! (measTmp.measDesc().isRefCodeVariable()  ||
+               measTmp.measDesc().hasOffset())) {
+          uInt refCode = measTmp.measDesc().getRefCode();
+          nodeRefType = static_cast<MDirection::Types>(refCode);
+          if (itsRefType != MDirection::N_Types  &&  nodeRefType != itsRefType) {
+            throw AipsError ("Given MDirection reference type " +
+                             String::toString(itsRefType) +
+                             " mismatches type " +
+                             String::toString(nodeRefType) + " of column " +
+                             tabCol.columnDesc().name());
+          }
+          itsRefType = nodeRefType;
+        }
+        // A direct column can directly be accessed using TableMeasures.
+        if (directCol) {
+          itsMeasCol.reference (measTmp);
+          return;
+        }
+        // It is a part, so we cannot use TableMeasures.
+        // If the reference type is variable, the user should index after
+        // the meas.pos function.
+        if (nodeRefType == MDirection::N_Types) {
+          throw AipsError ("Column " + tabCol.columnDesc().name() +
+                           ", which has a variable reference frame, "
+                           "is used in a MEAS function with slicing. "
+                           "The slicing should be done after the function "
+                           "like 'meas.pos('ITRF',DIRECTION)[0:3]'");
+        }
+      }
+    }
+    if (itsMeasCol.isNull()) {
+      if (itsRefType == MDirection::N_Types) {
+        throw AipsError("No reference type given for a non-constant MEAS "
+                        "function direction argument");
+      }
+      itsExprNode = operand;
+    }
+  }
+
+  void DirectionEngine::handleConstant (TableExprNodeRep* operand)
+  {
+    AlwaysAssert (operand->valueType() != TableExprNodeRep::VTSet, AipsError);
+    if (itsRefType == MDirection::N_Types) {
+      itsRefType = MDirection::J2000;
+    }
+    TableExprNode node(operand);
+    handleValues (node, 0, itsConstants);
+  }
+
   void DirectionEngine::handleValues (TableExprNode& operand,
                                       const TableExprId& id,
                                       Array<MDirection>& directions)
   {
     Array<Double> values = operand.getArrayDouble(id);
     IPosition shape = values.shape();
-    int nrv = 0;
-    Unit unit(operand.unit());
-    if (shape[0] % 2 == 0) {
-      nrv = 2;
-      if (unit.empty()) {
-        unit = "rad";
-      }
-    } else if (shape[0] % 3 == 0) {
-      nrv = 3;
-      if (! unit.empty()) {
-        throw AipsError ("Directions given as x,y,z in a MEAS function "
-                         "cannot have units");
-      }
-    } else {
+    if (shape[0] % 2 != 0) {
       throw AipsError ("Number of values in a direction in a MEAS function "
-                       "should be a multiple of 2 or 3");
+                       "should be a multiple of 2");
     }
     IPosition dirShape;
-    if (shape[0] == nrv  &&  shape.size() > 1) {
+    if (shape[0] == 2  &&  shape.size() > 1) {
       dirShape = shape.getLast (shape.size() - 1);
     } else {
       dirShape = shape;
-      dirShape[0] /= nrv;
+      dirShape[0] /= 2;
     }
     directions.resize (dirShape);
-    Quantity q1(0, unit);
-    Quantity q2(0, unit);
-    Bool delIt;
-    const Double* valVec = values.getStorage (delIt);
+    Quantity q1(0, operand.unit());
+    Quantity q2(0, operand.unit());
+    Double* valVec = values.data();
     MDirection* dirVec = directions.data();
     for (uInt i=0; i<directions.size(); ++i) {
-      if (nrv == 2) {
-        q1.setValue (valVec[i*2]);
-        q2.setValue (valVec[i*2+1]);
-        dirVec[i] = MDirection(q1, q2, itsRefType);
-      } else {
-        dirVec[i] = MDirection(MVDirection(valVec[i*3], valVec[i*3+1],
-                                           valVec[i*3+2]),
-                               itsRefType);
-      }
+      q1.setValue (valVec[i*2]);
+      q2.setValue (valVec[i*2+1]);
+      dirVec[i] = MDirection(q1, q2, itsRefType);
     }
-    values.freeStorage (valVec, delIt);
   }
 
   void DirectionEngine::setEpochEngine (EpochEngine& engine)
   {
     AlwaysAssert (itsEpochEngine == 0, AipsError);
     itsEpochEngine = &engine;
-    extendBase (engine, False);
+    uInt ndim = engine.ndim();
+    IPosition shape = engine.shape();
+    if (ndim > 0  &&  itsNDim > 0) {
+      itsNDim += ndim;
+    }
+    if (!shape.empty()  &&  !itsShape.empty()) {
+      itsShape.append (shape);
+    }
     // Define the frame part, so it can be reset later.
     itsFrame.set (MEpoch());
   }
@@ -280,7 +358,14 @@ namespace casacore {
   {
     AlwaysAssert (itsPositionEngine == 0, AipsError);
     itsPositionEngine = &engine;
-    extendBase (engine, True);
+    uInt ndim = engine.ndim();
+    IPosition shape = engine.shape();
+    if (ndim > 0  &&  itsNDim > 0) {
+      itsNDim += ndim;
+    }
+    if (!shape.empty()  &&  !itsShape.empty()) {
+      itsShape.append (shape);
+    }
     // Define the frame part, so it can be reset later.
     itsFrame.set (MPosition());
   }
@@ -296,8 +381,8 @@ namespace casacore {
     if (itsConstants.size() > 0) {
       return itsConstants;
     }
-    if (!itsMeasArrCol.isNull()) {
-      return itsMeasArrCol(id.rownr());
+    if (!itsMeasCol.isNull()) {
+      return itsMeasCol(id.rownr());
     }
     Array<MDirection> directions;
     handleValues (itsExprNode, id, directions);
@@ -322,41 +407,45 @@ namespace casacore {
     // Convert the direction to the given type for all epochs and positions.
     Array<Double> out;
     if (res.size() > 0  &&  eps.size() > 0  &&  pos.size() > 0) {
+      IPosition shape;
+      if (res.size() > 1) {
+        shape = res.shape();
+      }
       // 2 or 3 values per MDirection
-      IPosition shape(1, asDirCos ? 3:2);
-      // Only add the other axes if one of them has multiple values.
-      if (res.size() > 1  ||  eps.size() > 1  ||  pos.size() > 1) {
-        shape.append (res.shape());
+      shape.prepend (IPosition(1, asDirCos ? 3:2));
+      if (eps.size() > 1) {
         shape.append (eps.shape());
+      }
+      if (pos.size() > 1) {
         shape.append (pos.shape());
       }
       out.resize (shape);
       double* outPtr = out.data();
-      for (Array<MPosition>::const_contiter posIter = pos.cbegin();
-           posIter != pos.cend(); ++posIter) {
-        // Convert to desired position.
-        if (itsPositionEngine) {
-          itsFrame.resetPosition (*posIter);
-        }
+      uInt hIndex = 0;
+      for (Array<MDirection>::const_contiter resIter = res.cbegin();
+           resIter != res.cend(); ++resIter, ++hIndex) {
+        itsConverter.setModel (*resIter);
         for (Array<MEpoch>::const_contiter epsIter = eps.cbegin();
            epsIter != eps.cend(); ++epsIter) {
           // Convert to desired epoch.
           if (itsEpochEngine) {
             itsFrame.resetEpoch (*epsIter);
           }
-          uInt hIndex = 0;
-          for (Array<MDirection>::const_contiter resIter = res.cbegin();
-               resIter != res.cend(); ++resIter, ++hIndex) {
+          for (Array<MPosition>::const_contiter posIter = pos.cbegin();
+               posIter != pos.cend(); ++posIter) {
+            // Convert to desired position.
+            if (itsPositionEngine) {
+              itsFrame.resetPosition (*posIter);
+            }
             if (riseSet) {
               calcRiseSet (*resIter, *posIter, *epsIter,
                            (hIndex<itsH.size() ? itsH[hIndex] : 0),
                            outPtr[0], outPtr[1]);
               outPtr += 2;
             } else {
-              itsConverter.setModel (*resIter);
               MDirection mdir = itsConverter();
               if (asDirCos) {
-                // Get direction cosines.
+                // Get angles as radians.
                 Vector<Double> md (mdir.getValue().getValue());
                 *outPtr++ = md[0];
                 *outPtr++ = md[1];

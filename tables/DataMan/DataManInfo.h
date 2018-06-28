@@ -37,7 +37,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations.
 class TableDesc;
-class Table;
 class Record;
 
 
@@ -115,9 +114,6 @@ public:
   // Adjust the data manager types and groups and the
   // hypercolumn definitions to the actual data manager info.
   static void adjustDesc (TableDesc& tabDesc, const Record& dminfo);
-
-  // Show the Table IO statistics.
-  static void showDataManStats (const Table&, ostream&);
 };
 
 

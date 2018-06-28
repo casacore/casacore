@@ -392,7 +392,7 @@ Bool TableExprNodeNOT::getBool (const TableExprId& id)
 void TableExprNodeEQDouble::ranges (Block<TableExprRange>& blrange)
 {
     Double dval = 0;
-    TENShPtr tsncol = 0;
+    TableExprNodeRep* tsncol = 0;
     //# We can store a range if there is a scalar column and constant
     //# (left or right).
     if (lnode_p->operType()  == TableExprNodeRep::OtColumn
@@ -411,7 +411,7 @@ void TableExprNodeEQDouble::ranges (Block<TableExprRange>& blrange)
     //# Now create a range (if possible).
     //# The cast is harmless, since it is surely that object type.
     TableExprNodeRep::createRange (blrange,
-				   dynamic_cast<TableExprNodeColumn*>(tsncol.get()),
+				   dynamic_cast<TableExprNodeColumn*>(tsncol),
 				   dval, dval);
 }
 
@@ -419,7 +419,7 @@ void TableExprNodeGEDouble::ranges (Block<TableExprRange>& blrange)
 {
     Double st = 0;
     Double end = 0;
-    TENShPtr tsncol = 0;
+    TableExprNodeRep* tsncol = 0;
     //# We can store a range if there is a scalar column and constant
     //# (left or right).
     if (lnode_p->operType()  == TableExprNodeRep::OtColumn
@@ -440,7 +440,7 @@ void TableExprNodeGEDouble::ranges (Block<TableExprRange>& blrange)
     //# Now create a range (if possible).
     //# The cast is harmless, since it is surely that object type.
     TableExprNodeRep::createRange (blrange,
-				   dynamic_cast<TableExprNodeColumn*>(tsncol.get()),
+				   dynamic_cast<TableExprNodeColumn*>(tsncol),
 				   st, end);
 }
 
@@ -448,7 +448,7 @@ void TableExprNodeGTDouble::ranges (Block<TableExprRange>& blrange)
 {
     Double st = 0;
     Double end = 0;
-    TENShPtr tsncol = 0;
+    TableExprNodeRep* tsncol = 0;
     //# We can store a range if there is a scalar column and constant
     //# (left or right).
     if (lnode_p->operType()  == TableExprNodeRep::OtColumn
@@ -469,7 +469,7 @@ void TableExprNodeGTDouble::ranges (Block<TableExprRange>& blrange)
     //# Now create a range (if possible).
     //# The cast is harmless, since it is surely that object type.
     TableExprNodeRep::createRange (blrange,
-				   dynamic_cast<TableExprNodeColumn*>(tsncol.get()),
+				   dynamic_cast<TableExprNodeColumn*>(tsncol),
 				   st, end);
 }
 

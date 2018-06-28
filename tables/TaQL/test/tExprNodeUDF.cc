@@ -124,7 +124,7 @@ int main()
       TableExprNodeSet set;
       set.add (TableExprNodeSetElem(node1));
       TableExprNode node2(TableExprNode::newUDFNode ("Test.UDFAggr", set, tab));
-      TableExprNodeRep* rep = const_cast<TableExprNodeRep*>(node2.getRep().get());
+      TableExprNodeRep* rep = const_cast<TableExprNodeRep*>(node2.getNodeRep());
       vector<TableExprNodeRep*> aggrNodes;
       rep->getAggrNodes (aggrNodes);
       AlwaysAssertExit (aggrNodes.size() == 1);

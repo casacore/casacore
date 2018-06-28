@@ -61,13 +61,9 @@ namespace casacore {
     virtual String getString (const TableExprId& id);
 
     // Show the possible functions.
-    static void showFuncsPosition       (std::ostream&, Bool showTypes);
-    static void showFuncsEpoch          (std::ostream&, Bool showTypes);
-    static void showFuncsDirection      (std::ostream&, Bool showTypes);
-    static void showFuncsEarthMagnetic  (std::ostream&, Bool showTypes);
-    static void showFuncsFrequency      (std::ostream&, Bool showTypes);
-    static void showFuncsDoppler        (std::ostream&, Bool showTypes);
-    static void showFuncsRadialVelocity (std::ostream&, Bool showTypes);
+    static void showFuncsPosition  (std::ostream&, Bool showTypes);
+    static void showFuncsEpoch     (std::ostream&, Bool showTypes);
+    static void showFuncsDirection (std::ostream&, Bool showTypes);
   };
 }
 

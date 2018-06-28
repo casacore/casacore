@@ -382,7 +382,7 @@ Bool MVEarthMagnetic::putValue(const Vector<Quantum<Double> > &in) {
     if (in(1).check(testUnit) &&
 	in(2).check(testUnit)) {
       for (uInt j = 0; j<i; j++) {
-	xyz(j) = in(j).get("nT").getValue();
+	xyz(j) = in(j).getBaseValue();
       }
     } else if (in(1).check(UnitVal::ANGLE) &&
 	       in(2).check(UnitVal::ANGLE)) {

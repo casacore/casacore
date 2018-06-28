@@ -39,20 +39,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TableExprAggrNode::TableExprAggrNode (FunctionType ftype,
                                         NodeDataType dtype,
                                         ValueType vtype,
-                                        const TableExprNodeSet& source,
-                                        const vector<TENShPtr>& nodes,
-                                        const Block<Int>& dtypeOper)
-    : TableExprFuncNode (ftype, dtype, vtype, source, nodes, dtypeOper, Table())
+                                        const TableExprNodeSet& source)
+    : TableExprFuncNode (ftype, dtype, vtype, source)
   {
     // Always treat an aggregate as a variable expression.
-    // Otherwise it might be treated as constant and evaluated immediately
+    // Otherwise if might be treated as constant and evaluated immediately
     // which cannot be done.
     exprtype_p = Variable;
   }
 
   TableExprFuncNode::NodeDataType TableExprAggrNode::checkOperands
   (Block<Int>& dtypeOper, ValueType& resVT, FunctionType ftype,
-   vector<TENShPtr>& nodes)
+   PtrBlock<TableExprNodeRep*>& nodes)
   {
     if (ftype >= FirstAggrArrayFunc  &&  ftype < LastAggrArrayFunc  &&
         nodes.size() > 0  &&  nodes[0]->valueType() != VTArray) {

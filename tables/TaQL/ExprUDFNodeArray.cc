@@ -45,9 +45,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else {
       exprtype_p = Variable;
     }
-    // Set the unit and attributes (is also fine if undefined).
+    // Set the unit (is also fine if undefined).
     setUnit (Unit(udf->getUnit()));
-    setAttributes (udf->getAttributes());
   }
 
   TableExprUDFNodeArray::~TableExprUDFNodeArray()

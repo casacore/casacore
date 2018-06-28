@@ -385,10 +385,8 @@ subquery:  LPAREN selcomm RPAREN {
          ;
 
 /* WITH table-list is optional */
-withpart:  {   /* no WITH part */
-               $$ = new TaQLMultiNode();
-	       TaQLNode::theirNodesCreated.push_back ($$);
-           }
+withpart:  /* no WITH part */
+           { $$ = new TaQLMultiNode(); }
          | WITH tables
            { $$ = $2; }
          ;

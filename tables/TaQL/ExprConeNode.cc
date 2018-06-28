@@ -37,16 +37,37 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprConeNode::TableExprConeNode (FunctionType ftype, NodeDataType dtype,
 				      const TableExprNodeSet& source,
-                                      const vector<TENShPtr>& nodes,
-                                      const Block<Int>& dtypeOper,
 				      uInt origin)
-  : TableExprFuncNode (ftype, dtype, VTScalar, source,
-                       nodes, dtypeOper, Table()),
-    origin_p          (origin)
+: TableExprFuncNode (ftype, dtype, VTScalar, source),
+  origin_p          (origin)
 {}
 
 TableExprConeNode::~TableExprConeNode()
 {}
+
+// Fill the children pointers of a node.
+// Also reduce the tree if possible by combining constants.
+// When one of the nodes is a constant, convert its type if
+// it does not match the other one.
+TableExprNodeRep* TableExprConeNode::fillNode
+                                   (TableExprConeNode* thisNode,
+				    PtrBlock<TableExprNodeRep*>& nodes,
+				    const Block<Int>& dtypeOper)
+{
+  return TableExprFuncNode::fillNode (thisNode, nodes, dtypeOper);
+}
+
+// Fill the children pointers of a node.
+void TableExprConeNode::fillChildNodes (TableExprConeNode* thisNode,
+					PtrBlock<TableExprNodeRep*>& nodes,
+					const Block<Int>& dtypeOper)
+{
+  TableExprFuncNode::fillChildNodes (thisNode, nodes, dtypeOper);
+}
+
+void TableExprConeNode::tryToConst()
+{
+}
 
 Bool TableExprConeNode::getBool (const TableExprId& id)
 {
@@ -294,7 +315,7 @@ TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
                                  (Block<Int>& dtypeOper,
 				  ValueType& resVT, Block<Int>&,
 				  FunctionType fType,
-				  const vector<TENShPtr>& nodes)
+				  PtrBlock<TableExprNodeRep*>& nodes)
 {
   int nrarg = 3;
   switch (fType) {
@@ -348,18 +369,18 @@ TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
   }
 }
 
-Int TableExprConeNode::findNelem (const TENShPtr& node)
+Int TableExprConeNode::findNelem (const TableExprNodeRep* node)
 {
   Int nelem = -1;
   if (node->valueType() == VTSet) {
-    const TableExprNodeSet* set =
-      dynamic_cast<const TableExprNodeSet*>(node.get());
+    const TableExprNodeSet* set = dynamic_cast<const TableExprNodeSet*>(node);
     AlwaysAssert (set, AipsError);
-    TENShPtr arr = set->setOrArray();
+    TableExprNodeRep* arr = set->setOrArray();
     if (arr->valueType() != VTArray) {
       throw TableInvExpr ("CONES argument is a non-array set");
     }
     nelem = arr->shape().product();
+    delete arr;
   } else {
     nelem = node->shape().product();
   }
@@ -371,18 +392,39 @@ Int TableExprConeNode::findNelem (const TENShPtr& node)
 TableExprConeNodeArray::TableExprConeNodeArray (TableExprFuncNode::FunctionType ftype,
                                                 NodeDataType dtype,
                                                 const TableExprNodeSet& source,
-                                                const vector<TENShPtr>& nodes,
-                                                const Block<Int>& dtypeOper,
                                                 uInt origin)
-  : TableExprFuncNodeArray (ftype, dtype, VTArray, source,
-                            nodes, dtypeOper, TaQLStyle()),
-    origin_p               (origin)
+  : TableExprFuncNodeArray (ftype, dtype, VTArray, source, TaQLStyle()),
+  origin_p               (origin)
 {
   ndim_p = -1;
 }
 
 TableExprConeNodeArray::~TableExprConeNodeArray()
 {}
+
+// Fill the children pointers of a node.
+// Also reduce the tree if possible by combining constants.
+// When one of the nodes is a constant, convert its type if
+// it does not match the other one.
+TableExprNodeRep* TableExprConeNodeArray::fillNode
+                                   (TableExprConeNodeArray* thisNode,
+				    PtrBlock<TableExprNodeRep*>& nodes,
+				    const Block<Int>& dtypeOper)
+{
+  return TableExprFuncNodeArray::fillNode (thisNode, nodes, dtypeOper);
+}
+
+// Fill the children pointers of a node.
+void TableExprConeNodeArray::fillChildNodes (TableExprConeNodeArray* thisNode,
+                                             PtrBlock<TableExprNodeRep*>& nodes,
+                                             const Block<Int>& dtypeOper)
+{
+  TableExprFuncNode::fillChildNodes (thisNode->getChild(), nodes, dtypeOper);
+}
+
+void TableExprConeNodeArray::tryToConst()
+{
+}
 
 MArray<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
 {

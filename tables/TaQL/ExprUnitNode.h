@@ -61,30 +61,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class TableExprNodeUnit : public TableExprNodeBinary
 {
 public:
-  // Construct from the given child node and unit.
-  TableExprNodeUnit (const TENShPtr& child, const Unit& unit);
+  // Constrcut from the given child node and unit.
+  TableExprNodeUnit (TableExprNodeRep& child, const Unit& unit);
 
   ~TableExprNodeUnit();
 
   // Calculate the conversion factor and return it.
   // It is static to be useful for TableExprNodeArrayFunc as well.
   static Double set (TableExprNodeRep& parent,
-		     const TENShPtr& child,
+		     const TableExprNodeRep& child,
 		     const Unit& unit);
 
   // Create a new node if unit conversion is needed.
   // Otherwise return the current node.
-  static TENShPtr useUnit (const TENShPtr& node,
-                           const Unit& unit);
+  static TableExprNodeRep* useUnit (TableExprNodeRep* const node,
+				    const Unit& unit);
 
   // Use <src>useUnit</src> to see if a conversion is needed.
   // If so, adapt the reference counts and replace the node.
-  static void adaptUnit (TENShPtr& node, const Unit& unit);
+  static void adaptUnit (TableExprNodeRep*& node, const Unit& unit);
 
   // Find the unit to be used and adapt the nodes to it.
-  static Unit adaptUnits (TENShPtr& node1,
-			  TENShPtr& node2,
-			  TENShPtr& node3);
+  static Unit adaptUnits (TableExprNodeRep*& node1,
+			  TableExprNodeRep*& node2,
+			  TableExprNodeRep*& node3);
 
   // Get the unit factor.
   virtual Double getUnitFactor() const;
@@ -122,7 +122,7 @@ private:
 class TableExprNodeArrayUnit : public TableExprNodeArray
 {
 public:
-  TableExprNodeArrayUnit (const TENShPtr& child, const Unit& unit);
+  TableExprNodeArrayUnit (TableExprNodeRep& child, const Unit& unit);
   ~TableExprNodeArrayUnit();
   virtual Double getUnitFactor() const;
   virtual MArray<Double>   getArrayDouble   (const TableExprId& id);

@@ -29,10 +29,6 @@
 #include <casacore/meas/MeasUDF/PositionUDF.h>
 #include <casacore/meas/MeasUDF/EpochUDF.h>
 #include <casacore/meas/MeasUDF/DirectionUDF.h>
-#include <casacore/meas/MeasUDF/EarthMagneticUDF.h>
-#include <casacore/meas/MeasUDF/FrequencyUDF.h>
-#include <casacore/meas/MeasUDF/RadialVelocityUDF.h>
-#include <casacore/meas/MeasUDF/DopplerUDF.h>
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/tables/TaQL/TaQLShow.h>
 #include <casacore/casa/Utilities/GenSort.h>
@@ -53,14 +49,12 @@ void register_meas()
   UDFBase::registerUDF ("meas.POS",           PositionUDF::makePOS);
   UDFBase::registerUDF ("meas.POSITION",      PositionUDF::makePOS);
   UDFBase::registerUDF ("meas.ITRFXYZ",       PositionUDF::makeITRFXYZ);
-  UDFBase::registerUDF ("meas.ITRFLLH",       PositionUDF::makeITRFLLH);
   UDFBase::registerUDF ("meas.ITRFLL",        PositionUDF::makeITRFLL);
   UDFBase::registerUDF ("meas.ITRFLONLAT",    PositionUDF::makeITRFLL);
   UDFBase::registerUDF ("meas.ITRFH",         PositionUDF::makeITRFH);
   UDFBase::registerUDF ("meas.ITRFHEIGHT",    PositionUDF::makeITRFH);
   UDFBase::registerUDF ("meas.WGS",           PositionUDF::makeWGSXYZ);
   UDFBase::registerUDF ("meas.WGSXYZ",        PositionUDF::makeWGSXYZ);
-  UDFBase::registerUDF ("meas.WGSLLH",        PositionUDF::makeWGSLLH);
   UDFBase::registerUDF ("meas.WGSLL",         PositionUDF::makeWGSLL);
   UDFBase::registerUDF ("meas.WGSLONLAT",     PositionUDF::makeWGSLL);
   UDFBase::registerUDF ("meas.WGSH",          PositionUDF::makeWGSH);
@@ -90,34 +84,6 @@ void register_meas()
   UDFBase::registerUDF ("meas.ITRFDIRECTION", DirectionUDF::makeITRF);
   UDFBase::registerUDF ("meas.RISET",         DirectionUDF::makeRISESET);
   UDFBase::registerUDF ("meas.RISESET",       DirectionUDF::makeRISESET);
-  UDFBase::registerUDF ("meas.EM",            EarthMagneticUDF::makeEMXYZ);
-  UDFBase::registerUDF ("meas.EARTHMAGNETIC", EarthMagneticUDF::makeEMXYZ);
-  UDFBase::registerUDF ("meas.EMXYZ",         EarthMagneticUDF::makeEMXYZ);
-  UDFBase::registerUDF ("meas.EMANG",         EarthMagneticUDF::makeEMANG);
-  UDFBase::registerUDF ("meas.EMANGLES",      EarthMagneticUDF::makeEMANG);
-  UDFBase::registerUDF ("meas.EMLEN",         EarthMagneticUDF::makeEMLEN);
-  UDFBase::registerUDF ("meas.EMLENGTH",      EarthMagneticUDF::makeEMLEN);
-  UDFBase::registerUDF ("meas.IGRF",          EarthMagneticUDF::makeIGRFXYZ);
-  UDFBase::registerUDF ("meas.IGRFXYZ",       EarthMagneticUDF::makeIGRFXYZ);
-  UDFBase::registerUDF ("meas.IGRFANG",       EarthMagneticUDF::makeIGRFANG);
-  UDFBase::registerUDF ("meas.IGRFANGLES",    EarthMagneticUDF::makeIGRFANG);
-  UDFBase::registerUDF ("meas.IGRFLEN",       EarthMagneticUDF::makeIGRFLEN);
-  UDFBase::registerUDF ("meas.IGRFLENGTH",    EarthMagneticUDF::makeIGRFLEN);
-  UDFBase::registerUDF ("meas.IGRFLOS",       EarthMagneticUDF::makeIGRFLOS);
-  UDFBase::registerUDF ("meas.IGRFLONG",      EarthMagneticUDF::makeIGRFLONG);
-  UDFBase::registerUDF ("meas.FREQ",          FrequencyUDF::makeFREQ);
-  UDFBase::registerUDF ("meas.FREQUENCY",     FrequencyUDF::makeFREQ);
-  UDFBase::registerUDF ("meas.REST",          FrequencyUDF::makeREST);
-  UDFBase::registerUDF ("meas.RESTFREQ",      FrequencyUDF::makeREST);
-  UDFBase::registerUDF ("meas.RESTFREQUENCY", FrequencyUDF::makeREST);
-  UDFBase::registerUDF ("meas.SHIFT",         FrequencyUDF::makeSHIFT);
-  UDFBase::registerUDF ("meas.SHIFTFREQ",     FrequencyUDF::makeSHIFT);
-  UDFBase::registerUDF ("meas.SHIFTFREQUENCY",FrequencyUDF::makeSHIFT);
-  UDFBase::registerUDF ("meas.RV",            RadialVelocityUDF::makeRADVEL);
-  UDFBase::registerUDF ("meas.RADVEL",        RadialVelocityUDF::makeRADVEL);
-  UDFBase::registerUDF ("meas.RADIALVELOCITY",RadialVelocityUDF::makeRADVEL);
-  UDFBase::registerUDF ("meas.DOPPLER",       DopplerUDF::makeDOPPLER);
-  UDFBase::registerUDF ("meas.REDSHIFT",      DopplerUDF::makeDOPPLER);
 }
 
 
@@ -210,73 +176,6 @@ namespace casacore {
     }
   }
 
-  void HelpMeasUDF::showFuncsEarthMagnetic (ostream& os, Bool showTypes)
-  {
-    os << "EarthMagnetic conversion functions:" << endl;
-    os << "  MEAS.EM (type, em, epoch, position)   convert em value to given type as xyz" << endl;
-    os << "       EARTHMAGNETIC and EMXYZ are synonyms for EM" << endl;
-    os << "  MEAS.EMANG (type, em, epoch, position)    convert and return as angles" << endl;
-    os << "       EMANGLES is a synonym for EMANG" << endl;
-    os << "  MEAS.EMLEN (type, em, epoch, position)    convert and return as flux density" << endl;
-    os << "       EMLENGTH is a synonym for EMLEN" << endl;
-    os << "  MEAS.IGRF (type, height, direction, epoch, position)    IGRF model value" << endl;
-    os << "       IGRFXYZ is a synonym for IGRF" << endl;
-    os << "  MEAS.IGRFANG (t, h, d, e, p)              IGRF model angles in ITRF" << endl;
-    os << "       IGRFANGLES is a synonym for IGRFANG" << endl;
-    os << "  MEAS.IGRFLEN (t, h, d, e, p)              IGRF model flux density " << endl;
-    os << "       IGRFLENGTH is a synonym for IGRFLEN" << endl;
-    os << "  MEAS.IGRFLOS (h, d, e, p)                 IGRF value along line-of-sight" << endl;
-    os << "  MEAS.IGRFLONG (h, d, e, p)                longitude of calculation point" << endl;
-    if (showTypes) {
-      os << endl;
-      os << TaQLShow::showMeasTypes ("earthmagnetic");
-    }
-  }
-
-  void HelpMeasUDF::showFuncsFrequency (ostream& os, Bool showTypes)
-  {
-    os << "Frequency conversion functions:" << endl;
-    os << "  MEAS.FREQ (type, freq, radvel, direction, epoch, position)   convert to given type" << endl;
-    os << "           Instead of freq, a period or wavelength can be given (requires a unit)" << endl;
-    os << "           radvel is only needed when converting to/from rest frequencies" << endl;
-    os << "       FREQUENCY is a synonym for FREQ" << endl;
-    os << "  MEAS.REST (freq, radvel, direction, epoch, position)         convert to rest freq" << endl;
-    os << "  MEAS.REST (freq, doppler)                                    convert to rest freq" << endl;
-    os << "       RESTFREQ and RESTFREQUENCY are synonyms for REST" << endl;
-    os << "  MEAS.SHIFTFREQ (freq, doppler)                               shift frequencies" << endl;
-    os << "       SHIFT and SHIFTFREQUENCY are synonyms for SHIFTFREQ" << endl;
-    os << "       It can also be used to shift rest frequencies" << endl;
-    if (showTypes) {
-      os << endl;
-      os << TaQLShow::showMeasTypes ("frequency");
-    }
-  }
-
-  void HelpMeasUDF::showFuncsRadialVelocity (ostream& os, Bool showTypes)
-  {
-    os << "RadialVelocity conversion functions:" << endl;
-    os << "  MEAS.RADVEL (type, radvel, direction, epoch, position)    convert to given type" << endl;
-    os << "  MEAS.RADVEL (type, doppler)                               calc from doppler" << endl;
-    os << "       RV and RADIALVELOCITY are synonyms for RADVEL" << endl;
-    if (showTypes) {
-      os << endl;
-      os << TaQLShow::showMeasTypes ("radialvelocity");
-    }
-  }
-
-  void HelpMeasUDF::showFuncsDoppler (ostream& os, Bool showTypes)
-  {
-    os << "Doppler conversion functions:" << endl;
-    os << "  MEAS.DOPPLER (type, doppler)               convert to given type" << endl;
-    os << "  MEAS.DOPPLER (type, radvel)                calc from radial velocity" << endl;
-    os << "  MEAS.DOPPLER (type, freq, restfreq)        calc from frequency" << endl;
-    os << "       REDSHIFT is a synonym for DOPPLER" << endl;
-    if (showTypes) {
-      os << endl;
-      os << TaQLShow::showMeasTypes ("doppler");
-    }
-  }
-
 
   UDFBase* HelpMeasUDF::makeHELP (const String&)
     { return new HelpMeasUDF(); }
@@ -309,33 +208,16 @@ namespace casacore {
       showFuncsEpoch (os, False);
       os << endl;
       showFuncsDirection (os, False);
-      os << endl;
-      showFuncsEarthMagnetic (os, False);
-      os << endl;
-      showFuncsFrequency (os, False);
-      os << endl;
-      showFuncsRadialVelocity (os, False);
-      os << endl;
-      showFuncsDoppler (os, False);
     } else if (type == "position"  ||  type == "pos") {
       showFuncsPosition (os, True);
     } else if (type == "epoch") {
       showFuncsEpoch (os, True);
     } else if (type == "direction"  ||  type == "dir") {
       showFuncsDirection (os, True);
-    } else if (type == "earthmagnetic"  ||  type == "em") {
-      showFuncsEarthMagnetic (os, True);
-    } else if (type == "frequency"  ||  type == "freq") {
-      showFuncsFrequency (os, True);
-    } else if (type == "radialvelocity"  ||  type == "radvel"  ||  type == "rv") {
-      showFuncsRadialVelocity (os, True);
-    } else if (type == "doppler") {
-      showFuncsDoppler (os, True);
     }
     if (os.str().empty()) {
       os << type
-         << " is an unknown meas subtype; use pos(ition), epoch, dir(ection),"
-         << " earthmagnetic (em), freq(uency) or radialvelocity (radvel)"
+         << " is an unknown meas subtype; use pos(ition), epoch or dir(ection)"
          << endl;
     } else {
       os << endl << "See also section 'Special Measures functions'"

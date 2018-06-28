@@ -27,25 +27,25 @@
 
 #include <casacore/meas/MeasUDF/PositionEngine.h>
 #include <casacore/measures/Measures/MeasTable.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/TaQL/ExprUnitNode.h>
+#include <casacore/tables/TaQL/ExprNodeSet.h>
+#include <casacore/casa/Arrays/ArrayUtil.h>
 
 namespace casacore {
 
   PositionEngine::PositionEngine()
-    : itsValueType (0)
-  {}
-
-  PositionEngine::~PositionEngine()
+    : itsNDim      (-1),
+      itsRefType   (MPosition::N_Types),
+      itsValueType (0)
   {}
 
   void PositionEngine::handlePosition (Int toValueType,
-                                       const std::vector<TENShPtr>& args,
+                                       PtrBlock<TableExprNodeRep*>& args,
                                        uInt& argnr)
   {
-    // Handle the input position values and possibly type.
-    // Set values to unknown, because they might have been set by
-    // handleMeasType (called from PositionUDF).
+    // Types are unknown.
     itsRefType    = MPosition::N_Types;
-    itsInUnit     = "";
     itsValueType  = 0;
     uInt nargnr   = argnr+1;
     Bool asScalar = False;
@@ -56,233 +56,190 @@ namespace casacore {
       if (!args[argnr]->isReal()) {
         throw AipsError ("Invalid position given in a MEAS function");
       }
-      // Normally positions must be given in an array, but a single constant
-      // one can be 1, 2 or 3 scalars.
-      TENShPtr node2;
-      TENShPtr node3;
-      if (args.size() > argnr  &&
+    // Normally positions must be given in an array, but a single one
+    // can be 2 or 3 scalars.
+      if (args.size() > nargnr  &&
           args[argnr]->isReal()  &&
-          args[argnr]->valueType() == TableExprNodeRep::VTScalar) {
+          args[argnr]->valueType() == TableExprNodeRep::VTScalar  &&
+          args[nargnr]->isReal()  &&
+          args[nargnr]->valueType() == TableExprNodeRep::VTScalar) {
         asScalar = True;
-        if (args.size() > nargnr  &&
-            args[nargnr]->isReal()  &&
-            args[nargnr]->valueType() == TableExprNodeRep::VTScalar) {
-          node2 = args[nargnr];
-          nargnr++;
-        }
-      }
-      // See if there is a node giving height(s) (or z in case of scalars).
-      if (args.size() > nargnr  &&  args[nargnr]->isReal()) {
-        node3 = args[nargnr];
         nargnr++;
       }
-      uInt nval = nargnr-argnr;
+      // See if there is a node giving height(s).
+      TableExprNodeRep* heightNode=0;
+      if (args.size() > nargnr  &&  args[nargnr]->isReal()) {
+        heightNode = args[nargnr];
+        nargnr++;
+      }
       // See if there is a reference type.
       if (args.size() > nargnr  &&
           args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-        handleMeasType (args[nargnr], True);
+        handlePosType (args[nargnr]);
         nargnr++;
       }
-      // Process as scalars or as array.
+      // Process as 2 or 3 scalars or as array.
       if (asScalar) {
-        handleScalars (args[argnr], node2, node3, nval);
+        handleScalars (args[argnr], args[argnr+1], heightNode);
       } else {
         // Get the position arguments.
-        if (node3) {
+        if (heightNode) {
           // For time being, heights can only be given as constants.
-          handlePosArray (args[argnr], node3);
+          handlePosArray (args[argnr], heightNode);
         } else {
-          // There is a single argument; handle it.
-          handleMeasArray (args[argnr]);
+          handlePosArray (args[argnr]);
         }
       }
     }
     // Skip the arguments handled.
     argnr = nargnr;
     // Determine the output unit, shape, and ndim.
+    itsOutUnit = "m";
     if (toValueType == 2) {
       itsOutUnit = "rad";          // angles
-    } else if (toValueType > 0) {
-      itsOutUnit = "m";            // xyz or height
     }
-    adaptForConstant (itsConstants.shape(), abs(toValueType));
+    if (itsConstants.size() > 0) {
+      if (itsConstants.size() > 1) {
+        itsShape = itsConstants.shape();
+      }
+      itsShape.prepend (IPosition(1,3));
+    }
+    // If returning height, we use one dimension less.
+    if (toValueType == 1) {
+      if (itsShape.size() > 0) {
+        IPosition outShape = itsShape.getLast (itsShape.size() - 1);
+        itsShape.resize (outShape.size());
+        itsShape = outShape;
+      }
+    } else if (itsShape.size() > 0) {
+      // Set correct nr of output values per position.
+      itsShape[0] = toValueType;
+    }
+    // Fill ndim if unknown and if shape is known.
+    if (itsNDim < 0  &&  itsShape.size() > 0) {
+      itsNDim = itsShape.size();
+    }
   }
 
-
-  String PositionEngine::stripMeasType (const String& typex)
+  void PositionEngine::handlePosType (TableExprNodeRep* operand)
   {
-    itsValueType = 0;
-    String type(typex);
-    unsigned lens = type.size();
-    const char* suffices[] = {"XYZ", "LLH", "LL", "LONLAT", "H", "HEIGHT"};
-    const char* units[]    = {"m",   "",    "rad","rad",    "m", "m"};
-    int vtypes[]           = {3,     -3,    2,     2,       1,   1};
-    for (unsigned i=0; i<sizeof(vtypes)/sizeof(int); ++i) {
-      String suf(suffices[i]);
-      if (lens > suf.size()  &&  type.substr(lens-suf.size()) == suf) {
-        itsValueType = vtypes[i];
-        itsInUnit = units[i];
-        type = type.substr(0, lens-suf.size());
-        break;
-      }
+    if (operand->dataType() != TableExprNodeRep::NTString  ||
+        operand->valueType() != TableExprNodeRep::VTScalar  ||
+        !operand->isConstant()) {
+      throw AipsError ("A position type given in a MEAS function "
+                       "must be a constant scalar string");
     }
-    return type;
-  }
-
-  void PositionEngine::deriveAttr (const Unit& unit, Int nval)
-  {
-    // This function checks and sets attributes.
-    // There are two attributes (itsInUnit and itsValueType) which can be
-    // defined or undefined. If defined, it is checked if an attribute
-    // matches the other attribute. If undefined, it is set if possible.
-    // First set itsValueType if needed.
-    if (itsValueType == 0) {
-      itsValueType = nval;
-    } else if (itsValueType == 2  &&  nval == 3) {
-      // If given reftype defines LL, accept an height as well.
-      itsValueType = -3;
-      itsInUnit    = "";
-    } else if (nval != 0  &&  nval != abs(itsValueType)) {
-      throw AipsError("The nr of position values in a MEAS function does not "
-                      "match the reference type suffix");
-    }
-    // Set itsInUnit if a value unit is given. Check if it conforms.
-    if (! unit.empty()) {
-      if (! itsInUnit.empty()) {
-        // Check if the unit given in a position value matches.
-        if (itsInUnit != unit) {
-          throw AipsError("Unit of a position in a MEAS function does not "
-                          "match the reference type suffix");
-        }
-      }
-      itsInUnit = unit;
-    }
-    // Derive itsValueType from unit if needed and possible.
-    if (itsValueType == 0  &&  !itsInUnit.empty()) {
-      if (itsInUnit == Unit("rad")) {
-        itsValueType = 2;    // lon,lat
-      } else if (itsInUnit == Unit("m")) {
-        itsValueType = 3;    // xyz
-      }
-    }
-    // Derive the unit from itsValueType if needed and possible.
-    if (itsInUnit.empty()) {
-      if (itsValueType == 2) {
-        itsInUnit = "rad";       // must be lon,lat
-      } else if (itsValueType > 0) {
-        itsInUnit = "m";         // can be h or xyz
-      }
-    }
-    // Check the nr of values against the unit.
-    // Set nr of values if undefined.
-    if (itsInUnit.empty()) {
-      if (itsValueType < 0) {
-        // Use rad for lon,lat; height is accessed differently.
-        itsInUnit = "rad";
-      }
+    // Get value and possible suffix (value type).
+    String str = operand->getString(0);
+    str.upcase();
+    int lens = str.size();
+    if (lens > 3  &&  str.substr(lens-3,3) == "XYZ") {
+      itsValueType = 3;
+      str = str.substr(0,lens-3);
+    } else if (lens > 2  &&  str.substr(lens-2,2) == "LL") {
+      itsValueType = 2;
+      str = str.substr(0,lens-2);
+    } else if (lens > 6  &&  str.substr(lens-6,6) == "LONLAT") {
+      itsValueType = 2;
+      str = str.substr(0,lens-6);
+    } else if (lens > 1  &&  str.substr(lens-1,1) == "H") {
+      itsValueType = 1;
+      str = str.substr(0,lens-1);
+    } else if (lens > 6  &&  str.substr(lens-6,6) == "HEIGHT") {
+      itsValueType = 1;
+      str = str.substr(0,lens-6);
     } else {
-      if (itsValueType < 0) {
-        throw AipsError("A position in a MEAS function given as llh "
-                        "should not have a unit");
-      }
-      if (itsInUnit == Unit("m")) {
-        if (itsValueType == 2) {
-          throw AipsError("For unit m 1 or 3 position values should be given "
-                          "in a MEAS function");
-        }
-      } else if (itsInUnit == Unit("rad")) {
-        if (itsValueType != 2) {
-          throw AipsError("For unit deg 2 position values should be given "
-                          "in a MEAS function");
-        }
+      itsValueType = 0;
+    }
+    // Get reference type.
+    if (! MPosition::getType (itsRefType, str)) {
+      throw AipsError ("Unknown position reference type and/or suffix " + str +
+                       " given in a MEAS function");
+    }
+  }
+
+  void PositionEngine::makeDefaults (const Unit& unit)
+  {
+    // Check if the unit is length or angle.
+    itsInUnit = unit;
+    int valueType = 0;
+    if (! itsInUnit.empty()) {
+      Quantity q(1., itsInUnit);
+      if (q.isConform ("m")) {
+        valueType = 3;
+      } else if (q.isConform ("rad")) {
+        valueType = 2;
       } else {
         throw AipsError ("Invalid unit given for a position value"
                          " in a MEAS function (no length or angle)");
       }
     }
-    // Check if itsValueType is defined.
+    // Use derived value type if not given.
     if (itsValueType == 0) {
-      throw AipsError("The value type of a position in a MEAS function is "
-                      "unknown; use a proper unit or reference type suffix");
+      itsValueType = valueType;
+    } else if (valueType > 0  &&  valueType != itsValueType) {
+      throw AipsError ("Value unit " + unit.getName() + " mismatches type "
+                       " suffix for a position in a MEAS function");
     }
     // Use default reference type if not given.
-    if (itsRefType == MPosition::N_Types)  {
-      if (itsValueType == 3) {
-        itsRefType = MPosition::ITRF;
-      } else {
-        itsRefType = MPosition::WGS84;
-      }
+    if (itsValueType == 3) {
+      if (itsRefType == MPosition::N_Types) itsRefType = MPosition::ITRF;
+      if (itsInUnit.empty()) itsInUnit = "m";
+    } else {
+      if (itsRefType == MPosition::N_Types) itsRefType = MPosition::WGS84;
+      if (itsInUnit.empty()) itsInUnit = "rad";
+    }
+    if (itsRefType == MPosition::N_Types  ||
+        !(itsValueType == 2  ||  itsValueType == 3)) {
+      throw AipsError ("A position in a MEAS function is given "
+                       "without a valid reference type or suffix or unit");
     }
   }
 
-  void PositionEngine::setValueType (Int valueType)
+  void PositionEngine::handleScalars (TableExprNodeRep* e1,
+                                      TableExprNodeRep* e2,
+                                      TableExprNodeRep* heightNode)
   {
-    itsValueType = valueType;
-  }
-
-  void PositionEngine::handleScalars (const TENShPtr& e1,
-                                      const TENShPtr& e2,
-                                      const TENShPtr& e3,
-                                      Int nval)
-  {
-    if (! e1->isConstant()  ||
-        (e2  &&  ! e2->isConstant())  ||
-        (e3  &&  ! (e3->isConstant()  &&
-                    e3->valueType() == TableExprNodeRep::VTScalar))) {
+    if (! (e1->isConstant()  &&  e2->isConstant())  ||
+        (heightNode  &&
+         ! (heightNode->isConstant()  &&
+            heightNode->valueType() == TableExprNodeRep::VTScalar))) {
       throw AipsError ("Scalar values given as position in a MEAS function "
                        "must be constant values");
     }
-    Unit unit = e1->unit();
-    if (unit.empty()  &&  e2) {
-      unit = e2->unit();
-    }
-    // Make sure llh is handled correctly if a unit is used.
-    if (nval == 3  &&  itsValueType != 2  &&  unit == Unit("rad")) {
-      itsValueType = -3;
-      unit = "";
-    }
-    deriveAttr (unit, nval);
+    makeDefaults (e1->unit());
+    double vh = 0;
     double v1 = e1->getDouble(0);
-    double v2 = 0;
-    double v3 = 0;
+    double v2 = e2->getDouble(0);
+    Unit uh("m");
     Unit u1 = e1->unit();
-    Unit u2;
-    Unit u3;
-    if (e2) {
-      v2 = e2->getDouble(0);
-      u2 = e2->unit();
-    }
-    if (e3) {
-      v3 = e3->getDouble(0);
-      u3 = e3->unit();
-    }
+    Unit u2 = e2->unit();
     if (u1.empty()) u1 = itsInUnit;
     if (u2.empty()) u2 = itsInUnit;
-    if (u3.empty()) u3 = "m";
     itsConstants.resize (IPosition(1,1));
-    itsConstants.data()[0] = makePosition(Quantity(v1, u1),
-                                          Quantity(v2, u2),
-                                          Quantity(v3, u3));
+    if (heightNode) {
+      vh = heightNode->getDouble(0);
+      uh = heightNode->unit();
+      if (uh.empty()) uh = "m";
+    }
+    itsConstants.data()[0] = makePosition(Quantity(vh, uh),
+                                          Quantity(v1, u1),
+                                          Quantity(v2, u2));
   }
 
-  MPosition PositionEngine::makePosition (const Quantity& q1,
-                                          const Quantity& q2,
-                                          const Quantity& q3) const
+  MPosition PositionEngine::makePosition (const Quantity& qh,
+                                          const Quantity& q1,
+                                          const Quantity& q2) const
   {
-    if (itsValueType == 1) {
-      // Height; towards pole.
-      return MPosition (MVPosition(q1), itsRefType);
-    } else if (itsValueType == 3) {
-      // xyz.
+    if (itsValueType == 3) {
       Unit m("m");
       return MPosition (MVPosition(q1.getValue(m), q2.getValue(m),
-                                   q3.getValue(m)), itsRefType);
+                                   qh.getValue(m)), itsRefType);
     }
-    // height,lon,lat
-    return MPosition (q3, q1, q2, itsRefType);
+    return MPosition (qh, q1, q2, itsRefType);
   }
 
-  void PositionEngine::handleObservatory (const TENShPtr& operand)
+  void PositionEngine::handleObservatory (TableExprNodeRep* operand)
   {
     // For the time being the observatory names have to be constants.
     // In the future, it could be a table column.
@@ -300,17 +257,18 @@ namespace casacore {
     }
   }
 
-  /*
-  void PositionEngine::handlePosArray (const TENShPtr& operand)
+  void PositionEngine::handlePosArray (TableExprNodeRep*& operand)
   {
     if (!operand->isReal()  ||
         operand->valueType() != TableExprNodeRep::VTArray) {
       throw AipsError ("A single double argument given as position in a "
                        "MEAS function must be a double array of values "
-                       "defining x,y,z or lon,lat or height");
+                       "defining x,y,z or lon,lat");
     }
     // Use defaults for reference and value type if not given.
-    deriveAttr (operand->unit(), 0);
+    makeDefaults (operand->unit());
+    // Set or convert the operands's unit to radian or meter.
+    TableExprNodeUnit::adaptUnit (operand, itsInUnit);
     // Handle possibly given constants.
     if (operand->isConstant()) {
       handleConstant (operand);
@@ -319,14 +277,14 @@ namespace casacore {
     // Try if the argument is a column.
     // If found, try to handle it as a TableMeasures column.
     const TableExprNodeArrayColumn* colNode =
-      dynamic_cast<TableExprNodeArrayColumn*>(operand.get());
+      dynamic_cast<TableExprNodeArrayColumn*>(operand);
     Bool directCol = True;
     if (!colNode) {
       // The node is an expression, not a column.
       directCol = False;
       // Try if the node is an array part of a column.
       TableExprNodeArrayPart* partNode =
-        dynamic_cast<TableExprNodeArrayPart*>(operand.get());
+        dynamic_cast<TableExprNodeArrayPart*>(operand);
       if (partNode) {
         colNode = partNode->getColumnNode();
       }
@@ -344,7 +302,15 @@ namespace casacore {
         if (! (measTmp.measDesc().isRefCodeVariable()  ||
                measTmp.measDesc().hasOffset())) {
           uInt refCode = measTmp.measDesc().getRefCode();
-          itsRefType = static_cast<MPosition::Types>(refCode);
+          nodeRefType = static_cast<MPosition::Types>(refCode);
+          if (itsRefType != MPosition::N_Types  &&  nodeRefType != itsRefType) {
+            throw AipsError ("Given MPosition reference type " +
+                             String::toString(itsRefType) +
+                             " mismatches type " +
+                             String::toString(nodeRefType) + " of column " +
+                             tabCol.columnDesc().name());
+          }
+          itsRefType = nodeRefType;
         }
         // A direct column can directly be accessed using TableMeasures.
         if (directCol) {
@@ -371,10 +337,9 @@ namespace casacore {
       itsExprNode = operand;
     }
   }
-  */
-  
-  void PositionEngine::handlePosArray (const TENShPtr& anglesNode,
-                                       const TENShPtr& heightNode)
+
+  void PositionEngine::handlePosArray (TableExprNodeRep* anglesNode,
+                                       TableExprNodeRep* heightNode)
   {
     if (!anglesNode->isReal()  ||
         anglesNode->valueType() != TableExprNodeRep::VTArray  ||
@@ -390,7 +355,7 @@ namespace casacore {
                        "given as xyz, while heights are used");
     }
     Array<Double> angles = anglesNode->getArrayDouble(0).array();
-    if (angles.empty()  ||  angles.shape()[0] %2 != 0) {
+    if (angles.size() %2 != 0) {
       throw AipsError ("Angles given as position in a MEAS function must "
                        "be a constant double array of multiple of 2 values");
     }
@@ -409,7 +374,7 @@ namespace casacore {
     if (itsRefType == MPosition::N_Types) {
       itsRefType = MPosition::WGS84;
     }
-    itsConstants.resize (height.shape());
+    itsConstants.resize (IPosition(1, hVec.size()));
     for (uInt i=0; i<hVec.size(); ++i) {
       itsConstants.data()[i] = MPosition (Quantity(hVec[i], hUnit),
                                           Quantity(aVec[2*i], aUnit),
@@ -418,46 +383,48 @@ namespace casacore {
     }
   }
 
+  void PositionEngine::handleConstant (TableExprNodeRep* operand)
+  {
+    AlwaysAssert (operand->valueType() != TableExprNodeRep::VTSet, AipsError);
+    TableExprNode node(operand);
+    handleValues (node, 0, itsConstants);
+  }
+
   void PositionEngine::handleValues (TableExprNode& operand,
                                      const TableExprId& id,
                                      Array<MPosition>& positions)
   {
     Array<Double> values = operand.getArrayDouble(id);
-    uInt nrv = abs(itsValueType);
     const IPosition& shape = values.shape();
-    if (shape[0] % nrv != 0) {
+    if (shape[0] % itsValueType != 0) {
       throw AipsError ("Number of values in a position in a MEAS function "
-                         "should be a multiple of " +
-                       String::toString(nrv));
+                       "should be a multiple of " +
+                       String::toString(itsValueType));
     }
     IPosition posShape;
-    if (shape[0] == nrv  &&  shape.size() > 1) {
+    if (shape[0] == itsValueType  &&  shape.size() > 1) {
       posShape = shape.getLast (shape.size() - 1);
     } else {
       posShape = shape;
-      posShape[0] /= nrv;
+      posShape[0] /= itsValueType;
     }
     positions.resize (posShape);
+    Quantity qh(0, itsInUnit);
     Quantity q1(0, itsInUnit);
     Quantity q2(0, itsInUnit);
-    Quantity q3(0, itsInUnit);
-    if (itsValueType != 1  &&  itsValueType != 3) {
-      q3 = Quantity(0, "m");
+    if (itsValueType != 3) {
+      qh = Quantity(0, "m");
     }
-    Bool delIt;
-    const Double* valVec = values.getStorage (delIt);
+    Double* dirVec = values.data();
     MPosition* posVec = positions.data();
     for (uInt i=0; i<positions.size(); ++i) {
-      q1.setValue (valVec[i*nrv]);
-      if (nrv > 1) {
-        q2.setValue (valVec[i*nrv+1]);
-        if (nrv == 3) {
-          q3.setValue (valVec[i*nrv+2]);
-        }
+      q1.setValue (dirVec[i*itsValueType]);
+      q2.setValue (dirVec[i*itsValueType+1]);
+      if (itsValueType == 3) {
+        qh.setValue (dirVec[i*itsValueType+2]);
       }
-      posVec[i] = makePosition(q1, q2, q3);
+      posVec[i] = makePosition(qh, q1, q2);
     }
-    values.freeStorage (valVec, delIt);
   }
 
   Array<MPosition> PositionEngine::getPositions (const TableExprId& id)
@@ -465,8 +432,8 @@ namespace casacore {
     if (itsConstants.size() > 0) {
       return itsConstants;
     }
-    if (!itsMeasArrCol.isNull()) {
-      return itsMeasArrCol(id.rownr());
+    if (!itsMeasCol.isNull()) {
+      return itsMeasCol(id.rownr());
     }
     // Read from expression.
     Array<MPosition> pos;
@@ -501,16 +468,11 @@ namespace casacore {
         if (toValueType == 1) {
           // Get as height.
           out.data()[i] = pos.getValue().getLength().getValue();
-        } else if (toValueType == -3) {
-          Vector<Double> ang = pos.getValue().getAngle().getValue();
-          out.data()[i*3]   = ang[0];
-          out.data()[i*3+1] = ang[1];
-          out.data()[i*3+2] = pos.getValue().getLength().getValue();;
         } else {
           if (toValueType == 3) {
             // Get as xyz.
             outIter.vector() = pos.getValue().getValue();
-          } else if (toValueType == 2) {
+          } else {
             // Get as lon,lat.
             outIter.vector() = pos.getValue().getAngle().getValue();
           }

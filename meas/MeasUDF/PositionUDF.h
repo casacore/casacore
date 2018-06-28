@@ -32,7 +32,11 @@
 #include <casacore/casa/aips.h>
 #include <casacore/meas/MeasUDF/PositionEngine.h>
 #include <casacore/tables/TaQL/UDFBase.h>
+#include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/measures/Measures/MPosition.h>
+#include <casacore/measures/Measures/MCPosition.h>
+#include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
 
 namespace casacore {
 
@@ -82,19 +86,16 @@ namespace casacore {
   {
   public:
     // Define the possible function types.
-    enum FuncType {POS, ITRFXYZ, ITRFLLH, ITRFLL, ITRFH,
-                   WGSXYZ, WGSLLH, WGSLL, WGSH};
+    enum FuncType {POS, ITRFXYZ, ITRFLL, ITRFH, WGSXYZ, WGSLL, WGSH};
 
     explicit PositionUDF (FuncType);
 
     // Function to create an object.
     static UDFBase* makePOS     (const String&);
     static UDFBase* makeITRFXYZ (const String&);
-    static UDFBase* makeITRFLLH (const String&);
     static UDFBase* makeITRFLL  (const String&);
     static UDFBase* makeITRFH   (const String&);
     static UDFBase* makeWGSXYZ  (const String&);
-    static UDFBase* makeWGSLLH  (const String&);
     static UDFBase* makeWGSLL   (const String&);
     static UDFBase* makeWGSH    (const String&);
 

@@ -3,25 +3,16 @@
 #
 
 add_library (casa_meas
-MeasUDF/BaseEngine.cc
 MeasUDF/PositionEngine.cc
 MeasUDF/PositionUDF.cc
 MeasUDF/EpochEngine.cc
 MeasUDF/EpochUDF.cc
 MeasUDF/DirectionUDF.cc
 MeasUDF/DirectionEngine.cc
-MeasUDF/EarthMagneticUDF.cc
-MeasUDF/EarthMagneticEngine.cc
-MeasUDF/FrequencyUDF.cc
-MeasUDF/FrequencyEngine.cc
-MeasUDF/RadialVelocityUDF.cc
-MeasUDF/RadialVelocityEngine.cc
-MeasUDF/DopplerUDF.cc
-MeasUDF/DopplerEngine.cc
 MeasUDF/Register.cc
 )
 
-target_link_libraries (casa_meas casa_measures)
+target_link_libraries (casa_meas casa_measures ${CASACORE_ARCH_LIBS})
 
 install (TARGETS casa_meas
 RUNTIME DESTINATION bin
@@ -31,23 +22,12 @@ LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUT
 )
 
 install (FILES
-MeasUDF/BaseEngine.h
-MeasUDF/MeasEngine.h
-MeasUDF/MeasEngine.tcc
 MeasUDF/PositionUDF.h
 MeasUDF/PositionEngine.h
 MeasUDF/EpochUDF.h
 MeasUDF/EpochEngine.h
 MeasUDF/DirectionUDF.h
 MeasUDF/DirectionEngine.h
-MeasUDF/EarthMagneticUDF.h
-MeasUDF/EarthMagneticEngine.h
-MeasUDF/FrequencyUDF.h
-MeasUDF/FrequencyEngine.h
-MeasUDF/RadialVelocityUDF.h
-MeasUDF/RadialVelocityEngine.h
-MeasUDF/DopplerUDF.h
-MeasUDF/DopplerEngine.h
 MeasUDF/Register.h
 DESTINATION include/casacore/meas/MeasUDF
 )

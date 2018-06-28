@@ -32,6 +32,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <casacore/casa/stdvector.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 

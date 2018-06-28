@@ -868,10 +868,8 @@ Table Table::operator! () const
 Bool Table::isReadable (const String& tableName, Bool throwIf)
 {
     String tabName = Path(tableName).absoluteName();
-    // First see if it is in the table cache. By doing so a new table
-    // does not need to exist on disk yet.
     if (PlainTable::tableCache()(tabName)) {
-      return True;
+        return True;
     }
     //# Check if the table directory exists.
     File dir(tabName);

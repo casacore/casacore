@@ -37,6 +37,7 @@
 #include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/casa/stdvector.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -96,12 +97,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const TableExprGroupResult& result() const
       { return *itsResult; }
 
-    // Get the magic value (to check if correct).
+    // Get the magic value (to check if it correct).
     uInt getMagicValue() const
       { return itsMagicValue; }
 
-    // Cast a TableExprId object to TableExprIdAggr. It checks if the cast
-    // is correct by checking the magic value.
+    // Cast a TableExprId object to TableExprIdAggr. It check if the cast
+    // if correct by checking the magic value.
     static const TableExprIdAggr& cast (const TableExprId& id)
     {
       const TableExprIdAggr& idAggr = reinterpret_cast<const TableExprIdAggr&>(id);
