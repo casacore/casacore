@@ -303,7 +303,7 @@ public:
     ~TableExprNodeColumn();
 
     // This node represents a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
+    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
   
     // Do not apply the selection.
     virtual void disableApplySelection();

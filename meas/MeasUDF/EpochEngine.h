@@ -30,17 +30,16 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include<casacore/meas/MeasUDF/MeasEngine.h>
+#include<casacore/meas/MeasUDF/PositionEngine.h>
+#include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/measures/Measures/MCEpoch.h>
 #include <casacore/measures/Measures/MeasConvert.h>
+#include <casacore/measures/TableMeasures/ScalarMeasColumn.h>
+#include <casacore/measures/TableMeasures/ArrayMeasColumn.h>
 
 namespace casacore {
 
-  //# Forward declarations
-  class PositionEngine;
-
-  
 // <summary>
 // Engine for TaQL UDF Epoch conversions
 // </summary>
@@ -87,16 +86,33 @@ namespace casacore {
 // It makes it possible to handle measures in TaQL.
 // </motivation>
 
-  class EpochEngine: public MeasEngine<MEpoch>
+  class EpochEngine
   {
   public:
     EpochEngine();
 
-    virtual ~EpochEngine();
+    // Get the reference type.
+    MEpoch::Types refType() const
+      { return itsRefType; } 
 
     // Tell if the fraction has to be used for sidereal times.
     Bool sidFrac() const
       { return itsSidFrac; }
+
+    // Get the shape.
+    const IPosition& shape() const
+      { return itsShape; }
+
+    // Get the dimensionality.
+    Int ndim() const
+      { return itsNDim; }
+
+    // Tell if the expression is constant.
+    Bool isConstant() const;
+
+    // Get the unit.
+    const Unit& unit() const
+      { return itsUnit; }  
 
     // Get the values.
     Array<Double> getArrayDouble (const TableExprId& id);
@@ -106,8 +122,14 @@ namespace casacore {
 
     // Handle the argument(s) giving the input epochs and reference type.
     // The epoch can be a column in a table.
-    void handleEpoch (std::vector<TENShPtr>& args,
+    void handleEpoch (PtrBlock<TableExprNodeRep*>& args,
                       uInt& argnr);
+
+    // Handle a epoch reference type.
+    // If the reference type is invalid, an exception is only thrown
+    // if <src>doThrow=True</src>. In this way a string argument can
+    // be an observatory name for a position.
+    Bool handleEpochType (TableExprNodeRep* operand, Bool doThrow);
 
     // Set the MeasConvert object.
     void setConverter (MEpoch::Types toType, Bool sidFrac);
@@ -117,16 +139,21 @@ namespace casacore {
     void setPositionEngine (PositionEngine& engine);
 
   private:
-    // Strip a possible prefix from the epoch type.
-    virtual String stripMeasType (const String& type);
-    virtual void handleValues (TableExprNode& operand,
-                               const TableExprId& id,
-                               Array<MEpoch>& epochs);
+    void handleEpochArray (TableExprNodeRep* operand);
+    void handleConstant (TableExprNodeRep* operand);
 
-  //# Data members.
+    //# Data members.
+    IPosition                   itsShape;
+    Int                         itsNDim;
+    Unit                        itsUnit;
     Bool                        itsSidFrac;    //# T = fraction for sidereal 
     MeasFrame                   itsFrame;      //# frame used by converter
     MEpoch::Convert             itsConverter;
+    Vector<MEpoch>              itsConstants;
+    MEpoch::Types               itsRefType;
+    TableExprNode               itsExprNode;
+    ScalarMeasColumn<MEpoch>    itsMeasScaCol;
+    ArrayMeasColumn<MEpoch>     itsMeasArrCol;
     PositionEngine*             itsPositionEngine;
   };
 

@@ -82,8 +82,6 @@ namespace casacore {
 
   // <motivation>
   // JSON is a commonly used interchange format.
-  // However, commonly available parsers do not support data type Complex. Also, comments
-  // are often not supported (alas standard Json does not allow comments).
   // </motivation>
 
   //# <todo asof="1996/03/10">
@@ -108,7 +106,7 @@ namespace casacore {
     static int& position()
       { return theirPosition; }
       
-    // Remove all possible escape characters and convert as needed (including <src>\uxxxx</src>).
+    // Remove all possible escape characters and convert as needed (including \uxxxx).
     static String removeEscapes (const String& in);
       
     // Let the parser set the final KeyValueMap.

@@ -32,7 +32,6 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/TaQLNodeRep.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/OS/Mutex.h>
 #include <vector>
 #include <iostream>
@@ -84,22 +83,23 @@ class TaQLNode
 public:
   // Default constructor.
   TaQLNode()
-    {}
+    : itsRep(0) {}
 
   // Construct for given letter. It takes over the pointer.
   TaQLNode (TaQLNodeRep* rep)
-    { itsRep = rep; }
+    { itsRep = TaQLNodeRep::link (rep); }
 
   // Copy constructor (reference semantics).
   TaQLNode (const TaQLNode& that)
-    { itsRep = that.itsRep; }
+    { itsRep = TaQLNodeRep::link (that.itsRep); }
 
   // Assignment (reference semantics).
   TaQLNode& operator= (const TaQLNode& that)
     { if (this != &that) {
-	itsRep = that.itsRep;
+        TaQLNodeRep::unlink (itsRep);
+	itsRep = TaQLNodeRep::link (that.itsRep);
       }
-      return *this;
+    return *this;
     }
 
   // Get the TaQL style.
@@ -108,7 +108,7 @@ public:
 
   // Destructor deletes the letter if no more references.
   ~TaQLNode()
-    {}
+    { TaQLNodeRep::unlink (itsRep); }
 
   // Parse a TaQL command and return the result.
   // An exception is thrown in case of parse errors.
@@ -124,7 +124,7 @@ public:
 
   // Get read access to the letter.
   const TaQLNodeRep* getRep() const
-    { return itsRep.get(); }
+    { return itsRep; }
 
   // Let the visitor visit the node.
   // If no node, return an empty result.
@@ -142,12 +142,9 @@ public:
   // </group>
 
 protected:
-  CountedPtr<TaQLNodeRep> itsRep;
-
+  TaQLNodeRep* itsRep;
 private:
-  // Delete all nodes that were created by the parser.
   static void clearNodesCreated();
-
 public:
   // Helper functions for save/restore of tree.
   // <group>

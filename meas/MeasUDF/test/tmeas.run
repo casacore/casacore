@@ -13,6 +13,6 @@ $casa_checktool ../../../tables/apps/taql 'str(meas.dircos("ITRF", "SUN", 10Aug2
 $casa_checktool ../../../tables/apps/taql 'str(meas.riseset("SUN", 10Aug2010/13:12:11, "WSRT"))'
 
 # Check if all dates are correct.
-$casa_checktool ../../../tables/apps/taql "any(array(date(meas.riseset(['SUN'],1jan10+[0:366],[5d0m, 52d0m])),[366,2]) != transpose(array(date(1jan2010+[0:366]),2,366)))"
+$casa_checktool ../../../tables/apps/taql "any(date(meas.riseset(['SUN'],1jan10+[0:366],[5d0m, 52d0m])) != transpose(array(date(1jan2010+[0:366]),2,366)))"
 # Show the rise/set times for the year.
-$casa_checktool ../../../tables/apps/taql "transpose(array(time(meas.riseset(['SUN'],1jan10+[0:366],[4d53m22, 52d22m26])), [366,2]))"
+$casa_checktool ../../../tables/apps/taql "transpose(time(meas.riseset(['SUN'],1jan10+[0:366],[4d53m22, 52d22m26])))"

@@ -124,6 +124,20 @@ public:
 
   virtual ~TaQLNodeRep();
 
+  // Increment the reference count.
+  static TaQLNodeRep* link (TaQLNodeRep* rep)
+  {
+    if (rep) ++rep->itsCount;
+    return rep;
+  }
+
+  // Decrement the reference count.
+  // Delete the letter if no more references.
+  static void unlink (TaQLNodeRep* rep)
+  {
+    if (rep  &&  --rep->itsCount == 0) delete rep;
+  }
+
   // Get the node type of the derived class.
   char nodeType() const
     { return itsNodeType; }
@@ -151,6 +165,7 @@ private:
   TaQLNodeRep& operator= (const TaQLNodeRep&);
   // </group>
 
+  int       itsCount;
   char      itsNodeType;
   TaQLStyle itsStyle;
 };

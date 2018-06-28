@@ -35,7 +35,4 @@ int main()
   HelpMeasUDF::showFuncsPosition (std::cout, False);
   HelpMeasUDF::showFuncsEpoch (std::cout, False);
   HelpMeasUDF::showFuncsDirection (std::cout, False);
-  HelpMeasUDF::showFuncsEarthMagnetic (std::cout, False);
-  HelpMeasUDF::showFuncsFrequency (std::cout, False);
-  HelpMeasUDF::showFuncsRadialVelocity (std::cout, False);
 }

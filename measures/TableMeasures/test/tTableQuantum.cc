@@ -373,10 +373,10 @@ int main (int argc, const char* argv[])
 	// test attaching a bogus quantum column
 	try {
 	  // create with a real column but not a quantum column
-          // It will succeed because the QuantumDesc does not require a unit.
 	  ArrayQuantColumn<Double> testCol(qtab, "BogusQuantCol");
 	} catch (AipsError x) {
-	  cout << "Exception should not occur" << endl;
+	  cout << "Exception should report not a quantum column...\n";
+	  cout << x.getMesg() << endl;
 	} 
       }
       if (tmpCol.isNull()) {

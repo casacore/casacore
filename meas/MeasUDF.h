@@ -49,8 +49,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <synopsis>
 // This module extends TaQL (the Table Query Language) with functions handling
-// measures. Currently it can handle MDirection, MEpoch, MPosition, MFrequency,
-// MRadialVelocity, MDoppler and MEarthMagnetic.
+// measures. Currently it can handle directions, epochs, and positions.
 //
 // These functions make it possible to convert one or more measures from
 // one reference type and frame to another. For example, to convert a
@@ -84,7 +83,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </synopsis> 
 //
 // <motivation>
-// It is very handy to be able to convert measures in tools that
+// It is very handy to be able to convert emasures in tools that
 // deal with various table columns (e.g. TaQL, TablePlot, pyrap).
 // </motivation>
 

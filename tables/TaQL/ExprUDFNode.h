@@ -88,10 +88,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return itsUDF->isAggregate(); }
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
+    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
 
     // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep* >& cols);
+    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
   
     // Do not apply the selection.
     virtual void disableApplySelection();

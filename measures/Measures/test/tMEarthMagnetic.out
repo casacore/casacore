@@ -78,34 +78,34 @@ Testing all conversions forward/backward
 All forward/backward Magnetic conversions: ok
 --------------------------------------
 Exercise all MVEarthMagnetic function
-putValue:       [23 G, 23 G, 23 G], [2.3e+06, 2.3e+06, 2.3e+06]
+putValue:       [23 G, 23 G, 23 G], [0.0023, 0.0023, 0.0023]
 earthMagneticAngle:  -1.47878
 earthMagneticAngle:  -84.7277 deg
-get:            [3.98372e+06, 0.785398, 0.61548]
-getRecordValue: [2.3e+06 nT, 2.3e+06 nT, 2.3e+06 nT]
+get:            [0.00398372, 0.785398, 0.61548]
+getRecordValue: [0.0023 nT, 0.0023 nT, 0.0023 nT]
 separation:     3.14159
 separation:     180 deg
-crossProduct:   [5.3148e+10, 3.84996e+10, -9.16477e+10]
+crossProduct:   [53.148, 38.4996, -91.6477]
 getAngle:       [0.785398, 0.61548] rad
 getAngle:       [45, 35.2644] deg
-getlength:      39.8372 G
-radius:         3.98372e+06
+getlength:      3.98372e-08 G
+radius:         0.00398372
 putVector:      [30, 40, 0], [30, 40, 0]
-VQ constructor: [2.3e+06, 2.3e+06, 2.3e+06]
+VQ constructor: [0.0023, 0.0023, 0.0023]
 Q constructor:  [0, 0, 0.005]
 QV constructor: [0.57735, 0.57735, 0.57735]
 QV constructor: [0.00196299, 0.00196299, 0.00196299]
 V constructor:  [30, 40, 0]
 D constructor:  [0, 0, 78]
-operator+:      [2.30003e+06, 2.30004e+06, 2.3e+06]
-operator-:      [-2.29997e+06, -2.29996e+06, -2.3e+06]
-operator-pre-:  [-2.3e+06, -2.3e+06, -2.3e+06]
-operator*:      [2.3e+06, 1.97536e+06, 2.58418e+06]
-operator*:      [4.6e+06, 4.6e+06, 4.6e+06]
+operator+:      [30.0023, 40.0023, 0.0023]
+operator-:      [29.9977, 39.9977, -0.0023]
+operator-pre-:  [-0.0023, -0.0023, -0.0023]
+operator*:      [0.0023, 0.00197536, 0.00258418]
+operator*:      [0.0046, 0.0046, 0.0046]
 assure:         ok
 getLength:      50 nT
 operator*:      2500
-operator*       1.61e+08
+operator*       0.161
 operator*:      2500
 clone:          [30, 40, 0]
 getVector:      [30, 40, 0]

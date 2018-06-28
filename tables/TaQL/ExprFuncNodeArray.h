@@ -74,18 +74,16 @@ public:
     TableExprFuncNodeArray (TableExprFuncNode::FunctionType,
 			    NodeDataType, ValueType,
 			    const TableExprNodeSet& source,
-                            const vector<TENShPtr>& nodes,
-                            const Block<Int>& dtypeOper,
 			    const TaQLStyle&);
 
     // Destructor
     ~TableExprFuncNodeArray();
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
+    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
 
     // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
+    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
   
     // 'get' Functions to get the desired result of a function
     // <group>
@@ -103,17 +101,23 @@ public:
     const TableExprFuncNode* getChild() const
       { return &node_p; }
 
+    // Link the children to the node and convert the children
+    // to constants if possible. Also convert the node to
+    // constant if possible.
+    static TableExprNodeRep* fillNode (TableExprFuncNodeArray* thisNode,
+				       PtrBlock<TableExprNodeRep*>& nodes,
+				       const Block<Int>& dtypeOper);
+
 protected:
     // Try if the function gives a constant result.
     // If so, set the expression type to Constant.
-    // Get possible constant arguments like axes.
     void tryToConst();
 
     // Some functions to be used by TableExprNodeFuncArray.
     // <group>
-    const std::vector<TENShPtr>& operands() const
+    const PtrBlock<TableExprNodeRep*>& operands() const
         { return node_p.operands(); }
-    std::vector<TENShPtr>& rwOperands()
+    PtrBlock<TableExprNodeRep*>& rwOperands()
         { return node_p.rwOperands(); }
     TableExprFuncNode::FunctionType funcType() const
         { return node_p.funcType(); }
@@ -122,6 +126,10 @@ protected:
     // </group>
 
 private:
+    // Set unit scale factor (needed for sqrt).
+    void setScale (Double scale)
+        { node_p.setScale (scale); }
+
     // Get the collapse axes for the partial functions.
     // It compares the values with the #dim and removes them if too high.
     // axarg gives the argument nr of the axes.

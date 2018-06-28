@@ -108,9 +108,7 @@ MDirection MDirection::makeMDirection (const String& sourceName)
     // Make it case-insensitive.
     String name(sourceName);
     name.upcase();
-    if (name == "ZENITH") {
-      return MDirection (MVDirection(), MDirection::AZEL);
-    } else if (name == "CASA") {
+    if (name == "CASA") {
       mvdir = MVDirection (6.123487680622104,  1.0265153995604648);
     } else if (name == "CYGA") {
       mvdir = MVDirection (5.233686575770755,  0.7109409582180791);

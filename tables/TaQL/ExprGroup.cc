@@ -96,7 +96,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     itsKeys.reserve (nodes.size());
     for (uInt i=0; i<nodes.size(); ++i) {
-      addKey (nodes[i].getRep()->dataType());
+      addKey (nodes[i].getNodeRep()->dataType());
     }
   }
 
@@ -171,11 +171,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (node) {
       TableExprAggrNode* snode = dynamic_cast<TableExprAggrNode*>(node);
       if (snode) {
-        itsOperand = snode->operand().get();
+        itsOperand = snode->operand();
       } else {
         TableExprAggrNodeArray* anode = dynamic_cast<TableExprAggrNodeArray*>(node);
         if (anode) {
-          itsOperand = anode->operand().get();
+          itsOperand = anode->operand();
         } else {
           TableExprUDFNode* unode = dynamic_cast<TableExprUDFNode*>(node);
           AlwaysAssert (unode  &&  unode->isAggregate(), AipsError);

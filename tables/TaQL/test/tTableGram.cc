@@ -223,7 +223,7 @@ void showExpr(const TableExprNode& expr)
   // Print the index if possible.
   // Get internal node.
   const TableExprNodeArrayPart* nodePtr =
-    dynamic_cast<const TableExprNodeArrayPart*>(expr.getRep().get());
+               dynamic_cast<const TableExprNodeArrayPart*>(expr.getNodeRep());
   if (nodePtr != 0) {
     // The node represents a part of an array; get its index node.
     const TableExprNodeIndex* inxNode = nodePtr->getIndexNode();

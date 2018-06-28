@@ -32,7 +32,8 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TaQLNodeRep::TaQLNodeRep (int nodeType)
-: itsNodeType (nodeType),
+: itsCount    (0),
+  itsNodeType (nodeType),
   itsStyle    (TaQLNode::theirStyle)
 {}
 

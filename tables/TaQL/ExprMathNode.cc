@@ -94,9 +94,9 @@ void TableExprNodePlusDate::handleUnits()
     }
 }
 MVTime TableExprNodePlusDate::getDate(const TableExprId& id)
-    { return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
+{ return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
 Double TableExprNodePlusDate::getDouble(const TableExprId& id)
-    { return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
+{ return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
 
 
 TableExprNodeMinus::TableExprNodeMinus (NodeDataType dt,
