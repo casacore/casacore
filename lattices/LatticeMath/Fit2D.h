@@ -183,27 +183,32 @@ public:
     // This function does not interact with the addModel function.
     // Returns a zero length vector if it fails to make an estimate.
     //<group>
-    Vector<Double> estimate(Fit2D::Types type,
-			    const MaskedLattice<Float>& data);
-    Vector<Double> estimate(Fit2D::Types type, const Lattice<Float>& data);
-    Vector<Double> estimate(Fit2D::Types type, const Array<Float>& data);
-    Vector<Double> estimate(Fit2D::Types type, const Array<Float>& data,
-                            const Array<Bool>& mask);
+    template<class T> Vector<Double> estimate(Fit2D::Types type,
+                const MaskedLattice<T>& data);
+    template<class T> Vector<Double> estimate(
+        Fit2D::Types type, const Lattice<T>& data
+    );
+    template<class T> Vector<Double> estimate(
+        Fit2D::Types type, const Array<T>& data
+    );
+    template<class T> Vector<Double> estimate(
+        Fit2D::Types type, const Array<T>& data, const Array<Bool>& mask
+    );
     //</group>
 
     // Do the fit.  Returns an enum value to tell you what happened if the fit failed
     // for some reasons.  A message can also be found with function errorMessage if 
     // the fit was not successful.  For Array(i,j) i is x and j is y
     //<group>
-    Fit2D::ErrorTypes fit(const MaskedLattice<Float>& data, 
-                          const Lattice<Float>& sigma);
-    Fit2D::ErrorTypes fit(const Lattice<Float>& data, 
-                          const Lattice<Float>& sigma);
-    Fit2D::ErrorTypes fit(const Array<Float>& data, 
-                          const Array<Float>& sigma);
-    Fit2D::ErrorTypes fit(const Array<Float>& data,
+    template <class T> Fit2D::ErrorTypes fit(const MaskedLattice<T>& data,
+                          const Lattice<T>& sigma);
+    template <class T> Fit2D::ErrorTypes fit(const Lattice<T>& data,
+                          const Lattice<T>& sigma);
+    template <class T> Fit2D::ErrorTypes fit(const Array<T>& data,
+                          const Array<T>& sigma);
+    template <class T> Fit2D::ErrorTypes fit(const Array<T>& data,
                           const Array<Bool>& mask, 
-                          const Array<Float>& sigma);
+                          const Array<T>& sigma);
     //</group>
 
     // Find the residuals to the fit. xOffset and yOffset allow one to provide a data
@@ -213,6 +218,8 @@ public:
     // of the grid of pixels that was fit. A negative yOffset value means the supplied data
     // array represents a grid that has an x axis that is below the x axis of the grid of pixels
     // that was fit.
+    // NOTE these may need to be templated at some point in the future. My
+    // current need does not require they be templated. - dmehring 29jun2018
     //<group>
     Fit2D::ErrorTypes residual(
     	Array<Float>& resid, Array<Float>& model,
@@ -275,7 +282,7 @@ private:
    mutable LogIO itsLogger;
    Bool itsValid, itsValidSolution, itsHasSigma;
    Bool itsInclude;
-   Vector<Float> itsPixelRange;
+   Vector<Double> itsPixelRange;
    CompoundFunction<AutoDiff<Double> > itsFunction;
    NonLinearFitLM<Double> itsFitter;
    Vector<Double> itsSolution;
@@ -302,17 +309,20 @@ private:
    Vector<Double> getParams(uInt which) const;
    void setParams(const Vector<Double>& params, uInt which);
 
-   Bool includeIt (Float value, const Vector<Float>& range, 
+   Bool includeIt (Double value, const Vector<Double>& range,
                    Int includeIt) const;
 
-   Bool selectData (Matrix<Double>& pos, Vector<Double>& values,
-                    Vector<Double>& weights,  const Array<Float>& pixels,
-                    const Array<Bool>& mask, const Array<Float>& sigma);
+   template <class T> Bool selectData (
+       Matrix<Double>& pos, Vector<Double>& values,
+       Vector<Double>& weights,  const Array<T>& pixels,
+       const Array<Bool>& mask, const Array<T>& sigma
+   );
+
    void piRange (Double& pa) const;
 
 };
 
-inline Bool Fit2D::includeIt (Float value, const Vector<Float>& range, 
+inline Bool Fit2D::includeIt (Double value, const Vector<Double>& range,
                               Int includeIt) const
 {
    if (includeIt==0) return True;
@@ -326,10 +336,11 @@ inline Bool Fit2D::includeIt (Float value, const Vector<Float>& range,
    return False;
 }
 
-
-
-
 } //# NAMESPACE CASACORE - END
+
+#ifndef CASACORE_NO_AUTO_TEMPLATES
+#include <casacore/lattices/LatticeMath/Fit2D2.tcc>
+#endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif
 
