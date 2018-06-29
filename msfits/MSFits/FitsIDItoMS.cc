@@ -3199,14 +3199,175 @@ Bool FITSIDItoMS1::fillSysCalTable()
 
 Bool FITSIDItoMS1::fillFlagCmdTable()
 {
-
   *itsLog << LogOrigin("FitsIDItoMS()", "fillFlagCmdTable");
-  //MSFlagCmdColumns& msFlagCmd(msc_p->flagCmd());
-  *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
-  return False;
+  MSFlagCmdColumns& msFlagCmd(msc_p->flagCmd());
 
+  ConstFitsKeywordList& kwl = kwlist();
+  const FitsKeyword* fkw;
+  String kwname;
+  kwl.first();
+  Int noSTKD = 0;
+  Int firstSTK = -1;
+  while ((fkw = kwl.next())){
+    kwname = fkw->name();
+    if (kwname == "NO_STKD") {
+      noSTKD = fkw->asInt();
+      //cout << kwname << "=" << noSTKD << endl;
+    }
+    if (kwname == "STK_1") {
+      firstSTK = fkw->asInt();
+      //cout << kwname << "=" << firstSTK << endl;
+    }
+  }
+
+  const char *stokes[] = { "RR", "LL", "RL", "LR", "XX", "YY", "XY", "YX" };
+  if (firstSTK >= 0 || noSTKD < 1 || noSTKD > 4 || firstSTK - noSTKD < -9) {
+    *itsLog << LogIO::SEVERE << "Unsupported stokes STK_1 " << firstSTK
+	    << "NO_STKD" << noSTKD << LogIO::EXCEPTION;
+  }
+
+  Int nVal=nrows();
+
+  Table flagTab = oldfullTable("");
+  ROScalarColumn<Int> srcid(flagTab, "SOURCE_ID");
+  ROScalarColumn<Int> array(flagTab, "ARRAY");
+  ROArrayColumn<Int> ants(flagTab, "ANTS");
+  ROScalarColumn<Int> fqid(flagTab, "FREQID");
+  ROArrayColumn<Float> timerang(flagTab, "TIMERANG");
+  Bool BANDSisScalar = False;
+  ROArrayColumn<Int> bands;
+  ROScalarColumn<Int> bandsS;
+  ROArrayColumn<Int> chans(flagTab, "CHANS");
+  ROArrayColumn<Int> pflags(flagTab, "PFLAGS");
+  ROScalarColumn<String> reason(flagTab, "REASON");
+  ROScalarColumn<Int> severity(flagTab, "SEVERITY");
+
+  try {
+    bands.attach(flagTab, "BANDS");
+  }
+  catch(AipsError x){
+    bandsS.attach(flagTab, "BANDS");
+    BANDSisScalar = True;
+  }
+
+  Int outRow=-1;
+  for (Int inRow=0; inRow<nVal; inRow++) {
+    // Check whether flag specification is supported; skip row if it isn't.
+    if (array(inRow) != 0) {
+      *itsLog << LogIO::SEVERE << "Flagging by array number not supported"
+	      << LogIO::POST;
+      continue;
+    }
+    if (fqid(inRow) != -1 && fqid(inRow) != 0) {
+      *itsLog << LogIO::SEVERE << "Flagging by frequency setup not supported"
+	      << LogIO::POST;
+      continue;
+    }
+
+    // Check antenna numbers; fail if there are inconsistencies.
+    Int ant1 = ants(inRow)(IPosition(1, 0));
+    Int ant2 = ants(inRow)(IPosition(1, 1));
+    if (ant1 != 0 && !antIdFromNo.isDefined(ant1)) {
+    	*itsLog << LogIO::SEVERE << "No mapping for antenna "
+				<< ant1 << LogIO::EXCEPTION;
+    }
+    if (ant2 != 0 && !antIdFromNo.isDefined(ant2)) {
+    	*itsLog << LogIO::SEVERE << "No mapping for antenna "
+				<< ant2 << LogIO::EXCEPTION;
+    }
+
+    // Check channel numbers; fail if there are inconsistencies.
+    Int chan1 = chans(inRow)(IPosition(1, 0));
+    Int chan2 = chans(inRow)(IPosition(1, 1));
+    if (chan1 > chan2 || chan1 < -1 || chan2 < -1) {
+    	*itsLog << LogIO::SEVERE << "incorrect channel range "
+		<< chan1 << "-" << chan2 <<  LogIO::EXCEPTION;
+    }
+
+    ms_p.flagCmd().addRow(); outRow++;
+    Double time = (timerang(inRow)(IPosition(1, 0)) + timerang(inRow)(IPosition(1, 1))) / 2;
+    Double interval = timerang(inRow)(IPosition(1, 1)) - timerang(inRow)(IPosition(1, 0));
+    msFlagCmd.time().put(outRow, time * C::day + rdate);
+    msFlagCmd.interval().put(outRow, interval * C::day);
+    msFlagCmd.type().put(outRow, "FLAG");
+    msFlagCmd.reason().put(outRow, reason(inRow));
+    msFlagCmd.level().put(outRow, 0);
+    msFlagCmd.severity().put(outRow, severity(inRow));
+    msFlagCmd.applied().put(outRow, 0);
+
+    // Build command string
+    ostringstream cmd;
+
+    // antenna selection
+    ant1 = (ant1 == 0) ? -1 : antIdFromNo(ant1);
+    ant2 = (ant2 == 0) ? -1 : antIdFromNo(ant2);
+    if (ant1 != -1) {
+      cmd << "antenna='" << ant1;
+      if (ant2 != -1)
+	cmd << "&" << ant2;
+      cmd << "'";
+    }
+
+    // field selection
+    if (srcid(inRow) != 0) {
+      if (cmd.str().size() > 0)
+	cmd << " ";
+      cmd << "field='" << srcid(inRow) - 1 << "'";
+    }
+
+    // spw selection
+    ostringstream spw;
+    Vector<Int> bandsV;
+    Bool needSpw = False;
+    if (BANDSisScalar)
+      bandsV = Vector<Int>(1, bandsS(inRow));
+    else
+      bandsV = bands(inRow);
+    for (int band = 0; band < bandsV.shape()(0); band++) {
+      if (bandsV[band]) {
+	if (spw.str().size() > 0)
+	  spw << ",";
+	spw << band;
+      } else {
+	needSpw = True;
+      }
+    }
+    if (!needSpw)
+      spw.str("*");
+    if (needSpw || chan1 > 0) {
+      if (cmd.str().size() > 0)
+	cmd << " ";
+      cmd << "spw='" << spw.str();
+      if (chan1 > 0) {
+	cmd << ":"<< chan1 - 1 << "~" << chan2 - 1 << "'";
+      }
+      cmd << "'";
+    }
+
+    // correlation selection
+    ostringstream corr;
+    Vector<Int> pflagsV = pflags(inRow);
+    Bool needCorr = False;
+    for (int stk = 0; stk < noSTKD; stk++) {
+      if (pflagsV[stk]) {
+	if (corr.str().size())
+	  corr << ",";
+	corr << stokes[stk - firstSTK - 1];
+      } else {
+	needCorr = True;
+      }
+    }
+    if (needCorr) {
+      if (cmd.str().size() > 0)
+	cmd << " ";
+      cmd << "correlation='" << corr.str() << "'";
+    }
+
+    msFlagCmd.command().put(outRow, cmd.str());
+  }
+
+  return True;
 }
-
 
 Bool FITSIDItoMS1::fillWeatherTable()
 {
