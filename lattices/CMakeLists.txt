@@ -133,6 +133,7 @@ LatticeMath/CLIPNearest2D.tcc
 LatticeMath/CLInterpolator2D.h
 LatticeMath/CLInterpolator2D.tcc
 LatticeMath/Fit2D.h
+LatticeMath/Fit2D2.tcc
 LatticeMath/LatticeAddNoise.h
 LatticeMath/LatticeAddNoise2.tcc
 LatticeMath/LatticeApply.h
