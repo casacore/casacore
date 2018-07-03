@@ -175,9 +175,10 @@ Bool BaseTable::makeTableDir()
 {
 #ifdef HAVE_MPI
     int rank;
-    int mpi_initialized;
+    int mpi_initialized, mpi_finalized;
     MPI_Initialized(&mpi_initialized);
-    if(mpi_initialized){
+    MPI_Finalized(&mpi_finalized);
+    if(mpi_initialized == true && mpi_finalized == false){
         MPI_Comm_rank(itsMpiComm, &rank);
         if(rank > 0){
             return false;
@@ -240,10 +241,10 @@ Bool BaseTable::openedForWrite() const
 {
 #ifdef HAVE_MPI
     int rank;
-    int mpi_initialized;
+    int mpi_initialized, mpi_finalized;
     MPI_Initialized(&mpi_initialized);
-    if(mpi_initialized){
-        MPI_Comm_rank(itsMpiComm, &rank);
+    MPI_Finalized(&mpi_finalized);
+    if(mpi_initialized == true && mpi_finalized == false){
         if(rank > 0){
             return false;
         }
