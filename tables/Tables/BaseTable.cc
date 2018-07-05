@@ -174,7 +174,7 @@ void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
 Bool BaseTable::makeTableDir()
 {
 #ifdef HAVE_MPI
-    int rank;
+    int rank = 0;
     int mpi_initialized, mpi_finalized;
     MPI_Initialized(&mpi_initialized);
     MPI_Finalized(&mpi_finalized);
@@ -191,8 +191,10 @@ Bool BaseTable::makeTableDir()
     }
     //# Check option.
     if (!openedForWrite()) {
+#ifndef HAVE_MPI
 	throw (TableInvOpt ("BaseTable::makeTableDir",
 			    "must be Table::New, NewNoReplace or Update"));
+#endif
     }
     //# Check if the table directory name already exists
     //# and is a directory indeed.
@@ -240,7 +242,7 @@ Bool BaseTable::makeTableDir()
 Bool BaseTable::openedForWrite() const
 {
 #ifdef HAVE_MPI
-    int rank;
+    int rank = 0;
     int mpi_initialized, mpi_finalized;
     MPI_Initialized(&mpi_initialized);
     MPI_Finalized(&mpi_finalized);
