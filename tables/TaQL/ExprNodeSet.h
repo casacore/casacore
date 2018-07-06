@@ -371,6 +371,8 @@ public:
 
     // Get the number of elements.
     uInt size() const;
+    // For backward compatibility.
+    uInt nelements() const {return size();}
 
     // Get the i-th element.
     const TableExprNodeSetElem& operator[] (uInt index) const;
