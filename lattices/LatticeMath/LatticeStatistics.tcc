@@ -393,7 +393,7 @@ Bool LatticeStatistics<T>::setNewLattice(
    }
    T* dummy = 0;
    DataType latticeType = whatType(dummy);
-   if (latticeType !=TpFloat && latticeType!=TpComplex) {
+   if (latticeType != TpFloat && latticeType != TpComplex && latticeType != TpDouble) {
       ostringstream oss;
       oss << "Statistics cannot yet be evaluated from lattices of type : " << latticeType << endl;
       error_p = oss.str();

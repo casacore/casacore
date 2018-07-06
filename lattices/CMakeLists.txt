@@ -168,6 +168,7 @@ LatticeMath/LatticeTwoPtCorr.h
 LatticeMath/LatticeTwoPtCorr.tcc
 LatticeMath/LattStatsProgress.h
 LatticeMath/LattStatsSpecialize.h
+LatticeMath/LattStatsSpecialize2.tcc
 LatticeMath/LineCollapser.h
 LatticeMath/LineCollapser.tcc
 LatticeMath/MaskedLatticeStatsDataProvider.h
