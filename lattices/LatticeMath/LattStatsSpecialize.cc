@@ -335,75 +335,6 @@ Bool LattStatsSpecialize::hasSomePoints (DComplex npts)
 }
 
 Bool LattStatsSpecialize::setIncludeExclude (String& errorMessage, 
-                                             Vector<Float>& range,
-                                             Bool& noInclude,
-                                             Bool& noExclude,
-                                             const Vector<Float>& include,
-                                             const Vector<Float>& exclude)
-
-//  
-// Take the user's data inclusion and exclusion data ranges and
-// generate the range and Booleans to say what sort it is
-//
-// Inputs:
-//   include   Include range given by user. Zero length indicates
-//             no include range   
-//   exclude   Exclude range given by user. As above.
-// Outputs:
-//   noInclude If True user did not give an include range
-//   noExclude If True user did not give an exclude range
-//   range     A pixel value selection range.  Will be resized to
-//             zero length if both noInclude and noExclude are True
-//   Bool      True if successfull, will fail if user tries to give too
-//             many values for includeB or excludeB, or tries to give
-//             values for both
-{      
-   noInclude = True;
-   range.resize(0);
-   if (include.nelements() == 0) {
-     ;
-   } else if (include.nelements() == 1) {
-      range.resize(2);
-      range(0) = -abs(include(0));
-      range(1) =  abs(include(0));
-      noInclude = False;
-   } else if (include.nelements() == 2) {
-      range.resize(2);
-      range(0) = min(include(0),include(1));
-      range(1) = max(include(0),include(1));
-      noInclude = False;
-   } else {
-      errorMessage = String("Too many elements for argument include");
-      return False;
-   }
-//   
-   noExclude = True;
-   if (exclude.nelements() == 0) {
-      ;
-   } else if (exclude.nelements() == 1) {
-      range.resize(2);
-      range(0) = -abs(exclude(0));
-      range(1) =  abs(exclude(0));
-      noExclude = False;
-   } else if (exclude.nelements() == 2) {
-      range.resize(2);
-      range(0) = min(exclude(0),exclude(1));
-      range(1) = max(exclude(0),exclude(1));
-      noExclude = False; 
-   } else {
-      errorMessage = String("Too many elements for argument exclude");
-      return False;
-   }
-   if (!noInclude && !noExclude) {
-      errorMessage = String("You can only give one of arguments include or exclude");
-      return False;
-   }  
-   return True;   
-}
- 
-
-
-Bool LattStatsSpecialize::setIncludeExclude (String& errorMessage, 
                                              Vector<Complex>& range,
                                              Bool& noInclude,
                                              Bool& noExclude,
@@ -412,12 +343,12 @@ Bool LattStatsSpecialize::setIncludeExclude (String& errorMessage,
 
 {      
    Vector<Float> rangeReal;
-   Bool okReal = LattStatsSpecialize::setIncludeExclude (errorMessage, rangeReal, noInclude, noExclude,
+   Bool okReal = LattStatsSpecialize::setIncludeExclude<Float> (errorMessage, rangeReal, noInclude, noExclude,
                                                          real(include), real(exclude));
    if (!okReal) return False;
 //
    Vector<Float> rangeImag;
-   Bool okImag = LattStatsSpecialize::setIncludeExclude (errorMessage, rangeImag, noInclude, noExclude,
+   Bool okImag = LattStatsSpecialize::setIncludeExclude<Float> (errorMessage, rangeImag, noInclude, noExclude,
                                                          imag(include), imag(exclude));
    if (!okImag) return False;
 //

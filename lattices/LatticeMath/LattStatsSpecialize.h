@@ -72,7 +72,7 @@ public:
 	// !!! WARNING !!!
 	// BOTH accumulate() METHODS ARE DEPRECATED AND NO LONGER USED BY CASACORE NOR
 	// CASA. THESE METHODS WILL BE REMOVED IN THE NEAR FUTURE. PLEASE MODIFY EXISTING
-	// CODE WHICH USES THEM. CURRENT STATISTIC CLASSES MAY BE FOUND IN scimath/Mathematics.
+	// CODE WHICH USES THEM. CURRENT STATISTIC CLASSES MAY BE FOUND IN scimath/StatsFramework.
 
    // in this version we maintain a running mean and variance to avoid catastrophic round-off
    // issues that can happen in some cases, CAS-2226. Removing old versions in which these
@@ -131,12 +131,12 @@ public:
 //
    static Float getNodeScalarValue(const LatticeExprNode& node, Float);
    static Complex getNodeScalarValue(const LatticeExprNode& node, Complex);
-//
-   static Bool setIncludeExclude (String& errorMessage,
-                                  Vector<Float>& range,
+
+   template <class T> static Bool setIncludeExclude (String& errorMessage,
+                                  Vector<T>& range,
                                   Bool& noInclude, Bool& noExclude,
-                                  const Vector<Float>& include,  
-                                  const Vector<Float>& exclude);
+                                  const Vector<T>& include,
+                                  const Vector<T>& exclude);
    static Bool setIncludeExclude (String& errorMessage,
                                   Vector<Complex>& range,
                                   Bool& noInclude, Bool& noExclude,
@@ -151,6 +151,10 @@ public:
 
 
 } //# NAMESPACE CASACORE - END
+
+#ifndef CASACORE_NO_AUTO_TEMPLATES
+#include <casacore/lattices/LatticeMath/LattStatsSpecialize2.tcc>
+#endif //# CASACORE_NO_AUTO_TEMPLATES
 
 #endif
 
