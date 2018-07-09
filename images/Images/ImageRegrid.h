@@ -35,6 +35,7 @@
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/measures/Measures/MFrequency.h>
 #include <casacore/scimath/Mathematics/Interpolate2D.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <set>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -311,7 +312,7 @@ public:
                               const IPosition& outPos, const IPosition& cursorShape);
 
   // Make regridding coordinate grid for this axis
-   void make1DCoordinateGrid (Block<Float>& xOut,
+   void make1DCoordinateGrid (Block<typename NumericTraits<T>::BaseType>& xOut,
                               Vector<Bool>& failed,
                               Bool& allFailed,
                               Bool& allGood,
@@ -324,7 +325,8 @@ public:
 
 
   // Make replication coordinate grid for this axis
-   void make1DCoordinateGrid (Block<Float>& xOut, Float pixelScale) const;
+   void make1DCoordinateGrid (Block<typename NumericTraits<T>::BaseType>& xOut,
+           typename NumericTraits<T>::BaseType pixelScale) const;
 
   // Regrid 1 axis
   void regrid1D (MaskedLattice<T>& outLattice,

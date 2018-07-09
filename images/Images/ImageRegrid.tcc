@@ -1704,7 +1704,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 
    const uInt nLine = outShape(outPixelAxis);
    Vector<Bool> failed(nLine);
-   Block<Float> outX(nLine);
+   Block<typename NumericTraits<T>::BaseType> outX(nLine);
    Bool allFailed = False;
    Bool allGood = True;
 //
@@ -1732,10 +1732,10 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 // Generate vector of input X values for interpolator
 
    const uInt nIn = inShape(inPixelAxis);
-   Block<Float> inX(nIn);
+   Block<typename NumericTraits<T>::BaseType> inX(nIn);
    if (itsShowLevel>0) cerr << "inX = ";
    for (uInt i=0; i<nIn; i++) {
-      inX[i] = Float(i);
+      inX[i] = i;
       if (itsShowLevel>0) cerr << inX[i] << ",";
    }
    if (itsShowLevel>0) cerr << endl;
@@ -1776,20 +1776,20 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 
 // Set interpolator method
 
-   InterpolateArray1D<Float,Float>::InterpolationMethod method1D =
-        InterpolateArray1D<Float,Float>::linear;
+   auto method1D =
+        InterpolateArray1D<typename NumericTraits<T>::BaseType, T>::linear;
    if (method==Interpolate2D::NEAREST) {
-      method1D = InterpolateArray1D<Float,Float>::nearestNeighbour;
+      method1D = InterpolateArray1D<typename NumericTraits<T>::BaseType, T>::nearestNeighbour;
       if (itsShowLevel>0) {
          cerr << "Method = nearest" << endl;
       }
    } else if (method==Interpolate2D::LINEAR) {
-      method1D = InterpolateArray1D<Float,Float>::linear;
+      method1D = InterpolateArray1D<typename NumericTraits<T>::BaseType, T>::linear;
       if (itsShowLevel>0) {
          cerr << "Method = linear" << endl;
       }
    } else if (method==Interpolate2D::CUBIC) {
-      method1D = InterpolateArray1D<Float,Float>::spline;
+      method1D = InterpolateArray1D<typename NumericTraits<T>::BaseType, T>::spline;
       if (itsShowLevel>0) {
          cerr << "Method = cubic spline" << endl;
       }
@@ -1841,14 +1841,14 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 //
       if (allGood) {
          if (outIsMasked) {
-            InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
+            InterpolateArray1D<typename NumericTraits<T>::BaseType, T>::interpolate(outIter.rwVectorCursor(),
                                                      outMaskIterPtr->
 						     rwVectorCursor(),
                                                      outX, inX, inY, inMask,
                                                      method1D, goodIsTrue,
 						     extrapolate);
          } else {
-            InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
+            InterpolateArray1D<typename NumericTraits<T>::BaseType, T>::interpolate(outIter.rwVectorCursor(),
                                                      dummyOutMask,
                                                      outX, inX, inY, inMask,
                                                      method1D, goodIsTrue,
@@ -1859,7 +1859,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 // AND the coordinate conversion success vector and the input mask
 
          if (outIsMasked) {
-            InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
+            InterpolateArray1D<typename NumericTraits<T>::BaseType, T>::interpolate(outIter.rwVectorCursor(),
                                                      outMaskIterPtr->
 						     rwVectorCursor(),
                                                      outX, inX, inY, 
@@ -1867,7 +1867,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
                                                      method1D, goodIsTrue,
 						     extrapolate);
          } else {
-            InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
+            InterpolateArray1D<typename NumericTraits<T>::BaseType, T>::interpolate(outIter.rwVectorCursor(),
                                                      dummyOutMask,
                                                      outX, inX, inY, 
                                                     (failed && inMask),
@@ -1893,7 +1893,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 
 
 template<class T>
-void ImageRegrid<T>::make1DCoordinateGrid (Block<Float>& outX,
+void ImageRegrid<T>::make1DCoordinateGrid (Block<typename NumericTraits<T>::BaseType>& outX,
                                            Vector<Bool>& failed,
                                            Bool& allFailed,
                                            Bool& allGood,
@@ -1991,13 +1991,13 @@ void ImageRegrid<T>::make1DCoordinateGrid (Block<Float>& outX,
 
 
 template<class T>
-void ImageRegrid<T>::make1DCoordinateGrid (Block<Float>& outX,
-                                           Float pixelScale) const
+void ImageRegrid<T>::make1DCoordinateGrid (Block<typename NumericTraits<T>::BaseType>& outX,
+                                           typename NumericTraits<T>::BaseType pixelScale) const
 {
    Float oX = -0.5 + (1.0/2/pixelScale);
    const uInt nLine = outX.nelements();
    for (uInt i=0; i<nLine; i++) {
-      outX[i]  = (Float(i) / pixelScale) + oX;
+      outX[i]  = (typename NumericTraits<T>::BaseType(i) / pixelScale) + oX;
    }
 }
 
