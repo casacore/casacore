@@ -150,6 +150,7 @@ LatticeMath/LatticeFractile.h
 LatticeMath/LatticeFractile.tcc
 LatticeMath/LatticeHistProgress.h
 LatticeMath/LatticeHistSpecialize.h
+LatticeMath/LatticeHistSpecialize2.tcc
 LatticeMath/LatticeHistograms.h
 LatticeMath/LatticeHistograms.tcc
 LatticeMath/LatticeMathUtil.h

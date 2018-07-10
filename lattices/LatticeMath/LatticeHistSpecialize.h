@@ -28,10 +28,10 @@
 #ifndef LATTICES_LATTICEHISTSPECIALIZE_H
 #define LATTICES_LATTICEHISTSPECIALIZE_H
 
-
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/Complex.h>
+#include <casacore/scimath/Mathematics/NumericTraits.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -71,16 +71,16 @@ class LatticeHistSpecialize
 {
 public:
 // Make historgam cumulative
-   static void makeCumulative (Vector<Float>& counts,
-                               Float& yMax, uInt nBins,
-                               Float scale);
+   template <class T> static void makeCumulative (Vector<T>& counts,
+                               T& yMax, uInt nBins,
+                               typename NumericTraits<T>::BaseType scale);
    static void makeCumulative (Vector<Complex>& counts,
                                Complex& yMax, uInt nBins,
                                Float scale);
 
 // Make histogram logarithmic
-   static void makeLogarithmic (Vector<Float>& counts,
-                                Float& yMax,
+   template <class T> static void makeLogarithmic (Vector<T>& counts,
+                                T& yMax,
                                 uInt nBins);
    static void makeLogarithmic (Vector<Complex>& counts,
                                 Complex& yMax,
@@ -104,10 +104,10 @@ public:
                     uInt whereLabel, uInt ci, Bool page);
 
 // Process data chunk creating histogram.
-   static void process(
-		   const Float* pInData, const Bool* pInMask,
-		   Block<Float>* pHist, const Vector<Float>& clip,
-		   Float binWidth, uInt offset, uInt nrval,
+   template <class T> static void process(
+		   const T* pInData, const Bool* pInMask,
+		   Block<T>* pHist, const Vector<T>& clip,
+		   T binWidth, uInt offset, uInt nrval,
 		   uInt nBins, uInt dataIncr, uInt maskIncr
    );
 //
@@ -140,5 +140,9 @@ private:
 
 
 } //# NAMESPACE CASACORE - END
+
+#ifndef CASACORE_NO_AUTO_TEMPLATES
+#include <casacore/lattices/LatticeMath/LatticeHistSpecialize2.tcc>
+#endif 
 
 #endif

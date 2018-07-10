@@ -458,7 +458,7 @@ Bool LatticeHistograms<T>::setNewLattice(const MaskedLattice<T>& lattice)
 
    T* dummy = 0;
    DataType latticeType = whatType(dummy);
-   if (latticeType !=TpFloat && latticeType != TpComplex) {
+   if (latticeType !=TpFloat && latticeType != TpComplex && latticeType != TpDouble) {
       ostringstream oss;
       oss << "Lattices of type " << latticeType << " are not currently supported" << endl;
       error_p = String(oss);
@@ -873,8 +873,11 @@ void LatticeHistograms<T>::extractOneHistogram (T& linearSum,
 
 // Make histogram cumulative if desired
       
-   if (doCumu_p) LatticeHistSpecialize::makeCumulative (counts, linearYMax, nBins, 1.0);
-          
+   if (doCumu_p) {
+       LatticeHistSpecialize::makeCumulative(
+           counts, linearYMax, nBins, typename NumericTraits<T>::BaseType(1.0)
+       );
+   }       
 
 // Make histogram logarithmic if desired
          
