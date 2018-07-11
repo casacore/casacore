@@ -91,7 +91,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <motivation>
   // Sometimes a very large MeasurementSet is split into multiple smaller ones
-  // using the time axis. Using ConcatTable they can still b viewed as a
+  // using the time axis. Using ConcatTable they can still be viewed as a
   // single MS. The SYSCAL subtable is split in time as well, thus it has
   // to be possible to concatenate that one as well.
   // <note>An MS split in subband could be concatenated as well provided that
@@ -353,6 +353,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Check if the column can be added, thus does not exist yet.
     void checkAddColumn (const String& name, Bool addToParent);
+
+    // Add a column, with internal bookeeping (columns map).
+    void addConcatCol (const ColumnDesc& cd);
+    // Add multiple columns, with internal bookeeping (columns map).
+    void addConcatCol (const TableDesc& tdesc);
 
     //# Data members
     Block<String>     subTableNames_p;

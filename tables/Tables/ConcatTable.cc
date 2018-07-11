@@ -501,7 +501,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const String& name = tdescPtr_p->columnDesc(columnIndex).name();
     return colMap_p(name);
   }
-    
+
+  void ConcatTable::addConcatCol (const ColumnDesc& columnDesc)
+  {
+    ColumnDesc& cd = tdescPtr_p->addColumn(columnDesc);
+    colMap_p.define(cd.name(), cd.makeConcatColumn(this));
+    changed_p = True;
+  }
+
+  void ConcatTable::addConcatCol (const TableDesc& tdesc)
+  {
+    for (uInt i=0; i<tdesc.ncolumn(); ++i) {
+        addConcatCol(tdesc[i]);
+    }
+  }
 
 void ConcatTable::checkAddColumn (const String& name, Bool addToParent)
 {
@@ -518,15 +531,15 @@ void ConcatTable::checkAddColumn (const String& name, Bool addToParent)
   }
 }
 
-
 void ConcatTable::addColumn (const ColumnDesc& columnDesc, Bool addToParent)
 {
   checkAddColumn (columnDesc.name(), addToParent);
   for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
     baseTabPtr_p[i]->addColumn (columnDesc, addToParent);
   }
-  tdescPtr_p->addColumn (columnDesc);
+  addConcatCol (columnDesc);
 }
+
 void ConcatTable::addColumn (const ColumnDesc& columnDesc,
                              const String& dataManager, Bool byName,
                              Bool addToParent)
@@ -535,8 +548,9 @@ void ConcatTable::addColumn (const ColumnDesc& columnDesc,
   for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
     baseTabPtr_p[i]->addColumn (columnDesc, dataManager, byName, addToParent); 
   }
-  tdescPtr_p->addColumn (columnDesc);
+  addConcatCol (columnDesc);
 }
+
 void ConcatTable::addColumn (const ColumnDesc& columnDesc,
                              const DataManager& dataManager,
                              Bool addToParent)
@@ -545,8 +559,9 @@ void ConcatTable::addColumn (const ColumnDesc& columnDesc,
   for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
     baseTabPtr_p[i]->addColumn (columnDesc,dataManager, addToParent);
   }
-  tdescPtr_p->addColumn (columnDesc);
+  addConcatCol (columnDesc);
 }
+
 void ConcatTable::addColumn (const TableDesc& tableDesc,
                              const DataManager& dataManager,
                              Bool addToParent)
@@ -560,9 +575,7 @@ void ConcatTable::addColumn (const TableDesc& tableDesc,
   for (uInt i=0; i<baseTabPtr_p.nelements(); ++i) {
     baseTabPtr_p[i]->addColumn (tableDesc, dataManager, addToParent);
   }
-  for (uInt i=0; i<tableDesc.ncolumn(); ++i) {
-    tdescPtr_p->addColumn (tableDesc[i]);
-  }
+  addConcatCol(tableDesc);
 }
 
   //# Rows and columns cannot be removed and renamed.
