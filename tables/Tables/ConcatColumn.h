@@ -137,6 +137,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Get the shape of an array in a particular cell.
     virtual IPosition shape (uInt rownr) const;
 
+    // Get the tile shape of an array in a particular cell.
+    virtual IPosition tileShape (uInt rownr) const;
+
     // It can change shape if the underlying column can.
     virtual Bool canChangeShape() const;
 
