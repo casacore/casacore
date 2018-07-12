@@ -221,10 +221,11 @@ public:
     // NOTE these may need to be templated at some point in the future. My
     // current need does not require they be templated. - dmehring 29jun2018
     //<group>
-    Fit2D::ErrorTypes residual(
-    	Array<Float>& resid, Array<Float>& model,
-    	const Array<Float>& data, Int xOffset=0, int yOffset=0
+    template <class T> Fit2D::ErrorTypes residual(
+    	Array<T>& resid, Array<T>& model,
+    	const Array<T>& data, Int xOffset=0, int yOffset=0
     ) const;
+
     Fit2D::ErrorTypes residual(Array<Float>& resid, Array<Float>& model,
                                const MaskedLattice<Float>& data);
     Fit2D::ErrorTypes residual(Array<Float>& resid, Array<Float>& model,
@@ -283,16 +284,16 @@ private:
    Bool itsValid, itsValidSolution, itsHasSigma;
    Bool itsInclude;
    Vector<Double> itsPixelRange;
-   CompoundFunction<AutoDiff<Double> > itsFunction;
+   CompoundFunction<AutoDiff<Double>> itsFunction;
    NonLinearFitLM<Double> itsFitter;
    Vector<Double> itsSolution;
    Vector<Double> itsErrors;
    Double itsChiSquared;
    String itsErrorMessage;
    uInt itsNumberPoints;
-//
+
    Vector<uInt> itsTypeList;
-//
+
    Fit2D::ErrorTypes fitData(const Vector<Double>& values,
                              const Matrix<Double>& pos,
                              const Vector<Double>& sigma);
