@@ -399,6 +399,11 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
       mssub.rename (itsMSOut+"/SYSCAL",Table::New);
       msmain.rwKeywordSet().defineTable("SYSCAL",mssub);
     }
+    if (subTableName(isub)=="FLAG") {
+      Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/FLAG_CMD",Table::Update);
+      mssub.rename (itsMSOut+"/FLAG_CMD",Table::New);
+      msmain.rwKeywordSet().defineTable("FLAG_CMD",mssub);
+    }
     if (subTableName(isub)=="WEATHER") {
       Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/WEATHER",Table::Update);
       mssub.rename (itsMSOut+"/WEATHER",Table::New);
