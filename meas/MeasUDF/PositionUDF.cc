@@ -37,12 +37,16 @@ namespace casacore {
     { return new PositionUDF (POS); }
   UDFBase* PositionUDF::makeITRFXYZ (const String&)
     { return new PositionUDF (ITRFXYZ); }
+  UDFBase* PositionUDF::makeITRFLLH (const String&)
+    { return new PositionUDF (ITRFLLH); }
   UDFBase* PositionUDF::makeITRFLL (const String&)
     { return new PositionUDF (ITRFLL); }
   UDFBase* PositionUDF::makeITRFH (const String&)
     { return new PositionUDF (ITRFH); }
   UDFBase* PositionUDF::makeWGSXYZ (const String&)
     { return new PositionUDF (WGSXYZ); }
+  UDFBase* PositionUDF::makeWGSLLH (const String&)
+    { return new PositionUDF (WGSLLH); }
   UDFBase* PositionUDF::makeWGSLL (const String&)
     { return new PositionUDF (WGSLL); }
   UDFBase* PositionUDF::makeWGSH (const String&)
@@ -51,9 +55,9 @@ namespace casacore {
   void PositionUDF::setup (const Table&, const TaQLStyle&)
   {
     if (operands().size() < 1) {
-      throw AipsError ("No arguments given in MEAS.POS function");
+      throw AipsError ("No arguments given in a MEAS.POS function");
     }
-    // Get the reference and value type.
+    // Get the 'to' reference and value type.
     // Determine the argnr of the position.
     uInt argnr = 0;
     if (itsType == ITRFXYZ) {
@@ -62,12 +66,18 @@ namespace casacore {
     } else if (itsType == ITRFLL) {
       itsRefType   = MPosition::ITRF;
       itsValueType = 2;
+    } else if (itsType == ITRFLLH) {
+      itsRefType   = MPosition::ITRF;
+      itsValueType = -3;
     } else if (itsType == ITRFH) {
       itsRefType   = MPosition::ITRF;
       itsValueType = 1;
     } else if (itsType == WGSXYZ) {
       itsRefType   = MPosition::WGS84;
       itsValueType = 3;
+    } else if (itsType == WGSLLH) {
+      itsRefType   = MPosition::WGS84;
+      itsValueType = -3;
     } else if (itsType == WGSLL) {
       itsRefType   = MPosition::WGS84;
       itsValueType = 2;
@@ -75,7 +85,7 @@ namespace casacore {
       itsRefType   = MPosition::WGS84;
       itsValueType = 1;
     } else {
-      itsEngine.handlePosType (operands()[0]);
+      itsEngine.handleMeasType (operands()[0], True);
       itsRefType   = itsEngine.refType();
       itsValueType = itsEngine.valueType();
       argnr = 1;
@@ -99,13 +109,14 @@ namespace casacore {
       if (shape.product() == 1) {
         setNDim (0);                  // scalar
       } else {
-        setShape (itsEngine.shape());
+        setShape (shape);
       }
     } else {
       setNDim (itsEngine.ndim());
     }
     setUnit (itsEngine.unit().getName());
     setConstant (itsEngine.isConstant());
+    setAttributes (itsEngine.makeAttributes (itsRefType, itsValueType));
   }
 
   Double PositionUDF::getDouble (const TableExprId& id)
@@ -115,7 +126,8 @@ namespace casacore {
 
   MArray<Double> PositionUDF::getArrayDouble (const TableExprId& id)
   {
-    return MArray<Double>(itsEngine.getArrayDouble (id, itsRefType, itsValueType));
+    return MArray<Double>(itsEngine.getArrayDouble (id, itsRefType,
+                                                    itsValueType));
   }
 
 } //end namespace

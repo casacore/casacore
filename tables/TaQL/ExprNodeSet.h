@@ -127,10 +127,10 @@ public:
     void show (ostream& os, uInt indent) const;
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
+    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
   
     // Get the nodes representing a table column.
-    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
   
     // Is it a discrete set element.
     Bool isDiscrete() const;
@@ -148,9 +148,9 @@ public:
     // Note that the pointer returned can be zero indicating that that
     // value was not given.
     // <group>
-    TableExprNodeRep* start() const;
-    TableExprNodeRep* end() const;
-    TableExprNodeRep* increment() const;
+    const TENShPtr& start() const;
+    const TENShPtr& end() const;
+    const TENShPtr& increment() const;
     // </group>
 
     // Fill a vector with the value(s) from this element by appending them
@@ -210,17 +210,17 @@ private:
     // Construct an element from the given parts and take over their pointers.
     // It is used by evaluate to construct an element in a rather cheap way.
     TableExprNodeSetElem (const TableExprNodeSetElem& that,
-			  TableExprNodeRep* start, TableExprNodeRep* end,
-			  TableExprNodeRep* incr);
+			  const TENShPtr& start, const TENShPtr& end,
+			  const TENShPtr& incr);
 
     // Setup the object for a continuous interval.
     void setup (Bool isLeftClosed, const TableExprNode* start,
 		const TableExprNode* end, Bool isRightClosed);
 
 
-    TableExprNodeRep* itsStart;
-    TableExprNodeRep* itsEnd;
-    TableExprNodeRep* itsIncr;
+    TENShPtr itsStart;
+    TENShPtr itsEnd;
+    TENShPtr itsIncr;
     Bool itsEndExcl;
     Bool itsLeftClosed;
     Bool itsRightClosed;
@@ -246,19 +246,24 @@ inline Bool TableExprNodeSetElem::isRightClosed() const
 {
     return itsRightClosed;
 }
-inline TableExprNodeRep* TableExprNodeSetElem::start() const
+inline const TENShPtr& TableExprNodeSetElem::start() const
 {
     return itsStart;
 }
-inline TableExprNodeRep* TableExprNodeSetElem::end() const
+inline const TENShPtr& TableExprNodeSetElem::end() const
 {
     return itsEnd;
 }
-inline TableExprNodeRep* TableExprNodeSetElem::increment() const
+inline const TENShPtr& TableExprNodeSetElem::increment() const
 {
     return itsIncr;
 }
 
+
+
+//# Define a macro to cast an itsElems to a TableExprNodeSetElem*.
+#define castItsElem(i) static_cast<TableExprNodeSetElem*>(itsElems[i].get())
+#define castSetElem(shptr) static_cast<TableExprNodeSetElem*>(shptr.get())
 
 
 // <summary>
@@ -321,7 +326,7 @@ public:
     // (i.e. Slicer::MimicSource used) in the <src>Slicer</src> object.
     TableExprNodeSet (const Slicer&);
 
-    // Construct a set with n*set.nelements() elements where n is the number
+    // Construct a set with n*set.size() elements where n is the number
     // of rows.
     // Element i is constructed by evaluating the input element
     // for row rownr[i].
@@ -341,10 +346,10 @@ public:
     void show (ostream& os, uInt indent) const;
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
+    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
   
     // Get the nodes representing a table column.
-    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
   
     // Check if the data type of the set elements are the same.
     // If not, an exception is thrown.
@@ -365,7 +370,9 @@ public:
     Bool isBounded() const;
 
     // Get the number of elements.
-    uInt nelements() const;
+    uInt size() const;
+    // For backward compatibility.
+    uInt nelements() const {return size();}
 
     // Get the i-th element.
     const TableExprNodeSetElem& operator[] (uInt index) const;
@@ -375,7 +382,7 @@ public:
 
     // Try to convert the set to an array.
     // If not possible, a copy of the set is returned.
-    TableExprNodeRep* setOrArray() const;
+    TENShPtr setOrArray() const;
 
     template<typename T>
     MArray<T> toArray (const TableExprId& id) const;
@@ -419,30 +426,27 @@ private:
     // A copy of a TableExprNodeSet cannot be made.
     TableExprNodeSet& operator= (const TableExprNodeSet&);
 
-    // Delete all set elements in itsElems.
-    void deleteElems();
-
     // Convert the const set to an array.
-    TableExprNodeRep* toConstArray() const;
+    TENShPtr toConstArray() const;
 
     // Get the array in a templated way.
     // <group>
-    void getArray (MArray<Bool>& marr, TableExprNodeRep* node,
+    void getArray (MArray<Bool>& marr, const TENShPtr& node,
                            const TableExprId& id) const
       { marr.reference (node->getArrayBool (id)); }
-    void getArray (MArray<Int64>& marr, TableExprNodeRep* node,
+    void getArray (MArray<Int64>& marr, const TENShPtr& node,
                             const TableExprId& id) const
       { marr.reference (node->getArrayInt (id)); }
-    void getArray (MArray<Double>& marr, TableExprNodeRep* node,
+    void getArray (MArray<Double>& marr, const TENShPtr& node,
                              const TableExprId& id) const
       { marr.reference (node->getArrayDouble (id)); }
-    void getArray (MArray<DComplex>& marr, TableExprNodeRep* node,
+    void getArray (MArray<DComplex>& marr, const TENShPtr& node,
                                const TableExprId& id) const
       { marr.reference (node->getArrayDComplex (id)); }
-    void getArray (MArray<String>& marr, TableExprNodeRep* node,
+    void getArray (MArray<String>& marr, const TENShPtr& node,
                              const TableExprId& id) const
       { marr.reference (node->getArrayString (id)); }
-    void getArray (MArray<MVTime>& marr, TableExprNodeRep* node,
+    void getArray (MArray<MVTime>& marr, const TENShPtr& node,
                              const TableExprId& id) const
       { marr.reference (node->getArrayDate (id)); }
     // </group>
@@ -465,7 +469,7 @@ private:
     void setFindFunc (Bool isLeftClosed, Bool isRightClosed);
     // </group>
 
-    std::vector<TableExprNodeSetElem*> itsElems;
+    std::vector<TENShPtr> itsElems;
     Bool itsSingle;
     Bool itsDiscrete;
     Bool itsBounded;       //# Set is discrete and all starts/ends are defined
@@ -489,14 +493,14 @@ inline Bool TableExprNodeSet::isBounded() const
 {
     return itsBounded;
 }
-inline uInt TableExprNodeSet::nelements() const
+inline uInt TableExprNodeSet::size() const
 {
     return itsElems.size();
 }
 inline const TableExprNodeSetElem&
                            TableExprNodeSet::operator[] (uInt index) const
 {
-    return *(itsElems[index]);
+    return *castItsElem(index);
 }
 
 
@@ -505,11 +509,11 @@ MArray<T> TableExprNodeSet::toArray (const TableExprId& id) const
 {
   // TODO: align possible units
     DebugAssert (itsBounded, AipsError);
-    Int64 n = nelements();
+    Int64 n = size();
     if (hasArrays()) {
       // Handle a nested array; this is done recursively.
       MArray<T> marr;
-      getArray (marr, itsElems[0]->start(), id);
+      getArray (marr, castItsElem(0)->start(), id);
       if (marr.isNull()) return marr;
       Array<T> result (marr.array());
       Array<Bool> mask (marr.mask());
@@ -528,7 +532,7 @@ MArray<T> TableExprNodeSet::toArray (const TableExprId& id) const
         s[naxes]++;
         e[naxes]++;
         MArray<T> marr;
-        getArray (marr, itsElems[i]->start(), id);
+        getArray (marr, castItsElem(i)->start(), id);
         if (marr.isNull()) return marr;
         if (! marr.shape().isEqual (iter.array().shape())) {
           throw TableInvExpr("Shapes of nested arrays do not match");
@@ -546,11 +550,11 @@ MArray<T> TableExprNodeSet::toArray (const TableExprId& id) const
       }
       return MArray<T>(result, mask);
     } else {
-      Int64 n = nelements();
+      Int64 n = size();
       Int64 cnt = 0;
       Vector<T> result (n);
       for (Int64 i=0; i<n; i++) {
-        itsElems[i]->fillVector (result, cnt, id);
+        castItsElem(i)->fillVector (result, cnt, id);
       }
       result.resize (cnt, True);
       return MArray<T>(result);

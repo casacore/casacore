@@ -991,19 +991,71 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    SUPERGAL    supergalactic coordinates",
     "    ITRF        coordinates wrt ITRF Earth frame",
     "    TOPO        apparent topocentric position",
-    "    ICRS        International Celestial Reference System",
+    "    ICRS        International Celestial Reference System"
+  };
+
+  const char* earthMagneticHelp[] = {
+    "EarthMagnetic types:",
+    "    IGRF        IGRF model",
+    "    J2000       mean equator and equinox at J2000.0 (FK5)",
+    "    JNAT        geocentric natural frame",
+    "    JMEAN       mean equator and equinox at frame epoch",
+    "    JTRUE       true equator and equinox at frame epoch",
+    "    APP         apparent geocentric position",
+    "    B1950       mean epoch and ecliptic at B1950.0",
+    "    B1950_VLA   mean epoch(1979.9)) and ecliptic at B1950.0",
+    "    BMEAN       mean equator and equinox at frame epoch",
+    "    BTRUE       true equator and equinox at frame epoch",
+    "    HADEC       topocentric hourangle and declination",
+    "    AZEL        topocentric Azimuth and Elevation (N through E)",
+    "    AZELNE      topocentric Azimuth and Elevation (N through E)",
+    "    AZELSW      topocentric Azimuth and Elevation (S through W)",
+    "    AZELGEO     geodetic Azimuth and Elevation (N through E)",
+    "    AZELNEGEO   geodetic Azimuth and Elevation (N through E)",
+    "    AZELSWGEO   geodetic Azimuth and Elevation (S through W)",
+    "    ECLIPTIC    ecliptic for J2000 equator and equinox",
+    "    MECLIPTIC   ecliptic for mean equator of date",
+    "    TECLIPTIC   ecliptic for true equator of date",
+    "    GALACTIC    galactic coordinates",
+    "    SUPERGAL    supergalactic coordinates",
+    "    ITRF        coordinates wrt ITRF Earth frame",
+    "    TOPO        apparent topocentric position",
+    "    ICRS        International Celestial Reference System"
   };
 
   const char* frequencyHelp[] = {
-    "'show meastype frequency' not implemented yet"
+    "Frequency types",
+    "    REST     Rest frequency",
+    "    LSRD     Local Standard of Rest (J2000) - dynamical definition (IAU, [9,12,7] km/s in galactic coordinates)",
+    "    LSRK     LSR as kinematical (radio) definition - 20.0 km/s in direction ra,dec = [270,+30] deg (B1900.0)",
+    "    BARY     Barycentric (J2000)",
+    "    GEO      Geocentric",
+    "    TOPO     Topocentric",
+    "    GALACTO  Galacto centric (with rotation of 220 km/s in direction l,b = [90,0] deg",
+    "    LGROUP   Local group velocity -- 308km/s towards l,b = [105,-7] deg (F. Ghigo)",
+    "    CMB      CMB velocity -- 369.5km/s towards l,b = [264.4, 48.4] deg (F. Ghigo)"
+  };
+
+  const char* radialVelocityHelp[] = {
+    "'RadialVelocity types",
+    "    LSRD     Local Standard of Rest (J2000) - dynamical definition (IAU, [9,12,7] km/s in galactic coordinates)",
+    "    LSRK     LSR as kinematical (radio) definition - 20.0 km/s in direction ra,dec = [270,+30] deg (B1900.0)",
+    "    BARY     Barycentric (J2000)",
+    "    GEO      Geocentric",
+    "    TOPO     Topocentric",
+    "    GALACTO  Galacto centric (with rotation of 220 km/s in direction l,b = [90,0] deg",
+    "    LGROUP   Local group velocity -- 308km/s towards l,b = [105,-7] deg (F. Ghigo)",
+    "    CMB      CMB velocity -- 369.5km/s towards l,b = [264.4, 48.4] deg (F. Ghigo)"
   };
 
   const char* dopplerHelp[] = {
-    "'show meastype doppler' not implemented yet"
-  };
-
-  const char* radVelHelp[] = {
-    "'show meastype radialvelocity' not implemented yet"
+    "Doppler types (with F = f/f0, the frequency ratio)",
+    "    Z, OPTICAL      -1 + 1/F",
+    "    RATIO           F",
+    "    RADIO           1  - F",
+    "    BETA, TRUE      (1 - F**2)/(1 + F**2)",
+    "    RELATIVISTIC = BETA (= v/c)",
+    "    GAMMA           (1 + F**2)/2F"
   };
 
 
@@ -1196,24 +1248,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return getHelp (positionHelp) +
         getHelp (epochHelp) +
         getHelp (directionHelp) +
-        ///getHelp (frequencyHelp) +
-        ///getHelp (dopplerHelp) +
-        ///getHelp (radVelHelp) +
-        "\nSee also 'show functions meas pos|epoch|dir\n";
-      /// "\nSee also 'show functions meas "
-      /// "pos|epoch|dir|freq|doppler|radvel\n";
+        getHelp (earthMagneticHelp) +
+        getHelp (frequencyHelp) +
+        getHelp (radialVelocityHelp) +
+        getHelp (dopplerHelp) +
+        "\nSee also 'show functions meas "
+        "pos|epoch|dir|em|freq|radvel|doppler\n";
     } else if (type == "pos"  ||  type == "position") {
       return getHelp (positionHelp);
     } else if (type == "epoch") {
       return getHelp (epochHelp);
     } else if (type == "dir"  ||  type == "direction") {
       return getHelp (directionHelp);
+    } else if (type == "em"  ||  type == "earthmagnetic") {
+      return getHelp (earthMagneticHelp);
     } else if (type == "freq"  ||  type == "frequency") {
       return getHelp (frequencyHelp);
+    } else if (type == "rv"  ||  type == "radvel"  ||  type == "radialvelocity") {
+      return getHelp (radialVelocityHelp);
     } else if (type == "doppler") {
       return getHelp (dopplerHelp);
-    } else if (type == "radvel"  ||  type == "radialvelocity") {
-      return getHelp (radVelHelp);
     }
     throw AipsError (type +
                      " is an unknown type for command "

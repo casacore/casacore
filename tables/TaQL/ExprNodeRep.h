@@ -34,6 +34,7 @@
 #include <casacore/tables/TaQL/TableExprId.h>
 #include <casacore/tables/TaQL/ExprRange.h>
 #include <casacore/tables/TaQL/MArray.h>
+#include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Quanta/MVTime.h>
 #include <casacore/casa/Quanta/Unit.h>
@@ -41,6 +42,7 @@
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Utilities/StringDistance.h>
 #include <casacore/casa/iosfwd.h>
+#include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -49,6 +51,10 @@ class TableExprNode;
 class TableExprNodeColumn;
 class TableExprGroupFuncBase;
 template<class T> class Block;
+
+//# Define a shared pointer to the Rep class.
+class TableExprNodeRep;
+typedef CountedPtr<TableExprNodeRep> TENShPtr;
 
 
 // <summary>
@@ -217,13 +223,6 @@ public:
     // The destructor deletes all the underlying TableExprNode objects.
     virtual ~TableExprNodeRep();
 
-    // Link to this object, i.e. increase its reference count.
-    TableExprNodeRep* link();
-
-    // Unlink from the given object.
-    // If its reference count is zero, delete it.
-    static void unlink (TableExprNodeRep*);
-
     // Do not apply the selection.
     virtual void disableApplySelection();
 
@@ -236,14 +235,14 @@ public:
     virtual Double getUnitFactor() const;
 
     // Throw an exception if an aggregate function is used in
-    // the expression node.
-    static void checkAggrFuncs (const TableExprNodeRep* node);
+    // the expression node or its children.
+    void checkAggrFuncs();
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
+    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
   
     // Get the nodes representing a table column.
-    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
   
     // Create the correct immediate aggregate function object.
     // The default implementation throws an exception, because it should
@@ -416,6 +415,12 @@ public:
     // It also sets the datatype to NTDouble if it is NTInt.
     void setUnit (const Unit& unit);
 
+    // Get the attributes.
+    const Record& attributes() const;
+
+    // Set the attributes.
+    void setAttributes (const Record&);
+  
     // Get the fixed dimensionality (same for all rows).
     Int ndim() const;
 
@@ -441,6 +446,9 @@ public:
     const Table& table() const;
     // </group>
 
+    // Replace a node with a constant expression by node with its value.
+    static TENShPtr replaceConstNode (const TENShPtr& node);
+
     // Let a set node convert itself to the given unit.
     // The default implementation does nothing.
     virtual void adaptSetUnits (const Unit&);
@@ -459,7 +467,6 @@ public:
     static String typeString (ValueType);
 
 protected:
-    uInt              count_p;       //# Reference count
     Table             table_p;       //# Table from which node is "derived"
     NodeDataType      dtype_p;       //# data type of the operation
     ValueType         vtype_p;       //# value type of the result
@@ -470,45 +477,42 @@ protected:
                                      //# -1 = variable dimensionality
     IPosition         shape_p;       //# Fixed shape of node values
     Unit              unit_p;        //# Unit of the values
+    Record            attributes_p;  //# Possible attributes (for UDFs)
 
     // Get the shape for the given row.
     virtual const IPosition& getShape (const TableExprId& id);
 
-    // Get pointer to REPresentation object.
-    // This is used by derived classes.
-    static TableExprNodeRep* getRep (TableExprNode&);
-
-    // When one of the children is a constant, convert its data type
-    // to that of the other operand. This avoids that conversions are
-    // done for each get.
+    // If one of the children is a constant, convert its data type
+    // to that of the other operand (if appropriate).
+    // This avoids that conversions are done for each get.
     // The default implementation does nothing.
     virtual void convertConstChild();
 
     // Check if this node uses the same table pointer.
     // Fill the Table object if it is still null.
     // <group>
-    void checkTablePtr (const TableExprNodeRep* node);
-    static void checkTablePtr (Table& table,
-			       const TableExprNodeRep* node);
+    void checkTablePtr (const TENShPtr& node);
+    static void checkTablePtr (Table& table, const TENShPtr& node);
     // </group>
 
     // Set expression type to Variable if node is Variable.
     // <group>
-    void fillExprType (const TableExprNodeRep* node);
-    static void fillExprType (ExprType&, const TableExprNodeRep* node);
+    void fillExprType (const TENShPtr& node);
+    static void fillExprType (ExprType&, const TENShPtr& node);
     // </group>
 
-    // When the node is constant, it is evaluated and replaced by
+    // If the node is constant, it is evaluated and replaced by
     // the appropriate TableExprNodeConst object.
     // If not constant, it calls the virtual ConvertConstChild function
-    // which can convert a constant child when appropriate.
-    static TableExprNodeRep* convertNode (TableExprNodeRep* thisNode,
-					  Bool convertConstType);
+    // which can convert a constant child if appropriate.
+    static TENShPtr convertNode (const TENShPtr& thisNode,
+                                 Bool convertConstType);
 
 private:
     // A copy of a TableExprNodeRep cannot be made.
     TableExprNodeRep& operator= (const TableExprNodeRep&);
 };
+
 
 
 
@@ -529,7 +533,7 @@ private:
 
 // <etymology>
 // TableExprNodeBinary is a node in the table expression tree
-// representing a binary node (i.e. having 2 operands).
+// representing a binary node (i.e. having up to 2 operands).
 // </etymology>
 
 // <synopsis> 
@@ -564,10 +568,10 @@ public:
     virtual void show (ostream&, uInt indent) const;
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
+    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
   
     // Get the nodes representing a table column.
-    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
   
     // Check the data types and get the common one.
     static NodeDataType getDT (NodeDataType leftDtype,
@@ -575,46 +579,41 @@ public:
 			       OperType operType);
 
     // Check the data and value types and get the common one.
-    static TableExprNodeRep getTypes (const TableExprNodeRep& left,
-				      const TableExprNodeRep& right,
-				      OperType operType);
+    static TableExprNodeRep getCommonTypes (const TENShPtr& left,
+                                            const TENShPtr& right,
+                                            OperType operType);
 
-    // Link the children to the node and convert the children
-    // to constants if needed and possible. Also convert the node to
-    // constant if possible.
-    // The operand data types can be adapted as needed.
-    static TableExprNodeRep* fillNode (TableExprNodeBinary* thisNode,
-				       TableExprNodeRep* left,
-				       TableExprNodeRep* right,
-				       Bool convertConstType,
-                                       Bool adaptDataType=True);
+    // Set the children.
+    // If needed, their properties like data type and unit are adapted.
+    void setChildren (const TENShPtr& left, const TENShPtr& right,
+                      Bool adapt=True);
 
     // Handle the units of the children and possibly set the parent's unit.
     // The default implementation make the units of the children equal and
     // set the parent unit to that unit if the parent is not a Bool value.
     virtual void handleUnits();
 
-    // When one of the children is a constant, convert its data type
+    // If one of the children is a constant, convert its data type
     // to that of the other operand. This avoids that conversions are
     // done for each get.
-    void convertConstChild();
+    void adaptDataTypes();
 
     // Get the child nodes.
     // <group>
-    const TableExprNodeRep* getLeftChild() const
+    const TENShPtr& getLeftChild() const
         { return lnode_p; }
-    const TableExprNodeRep* getRightChild() const
+    const TENShPtr& getRightChild() const
         { return rnode_p; }
     // </group>
 
 protected:
     // Make the units equal.
     // Replace the right node if needed.
-    static const Unit& makeEqualUnits (TableExprNodeRep* left,
-				       TableExprNodeRep*& right);
+    static const Unit& makeEqualUnits (const TENShPtr& left,
+				       TENShPtr& right);
 
-    TableExprNodeRep* lnode_p;     //# left operand
-    TableExprNodeRep* rnode_p;     //# right operand
+    TENShPtr lnode_p;     //# left operand
+    TENShPtr rnode_p;     //# right operand
 };
 
 
@@ -671,29 +670,29 @@ public:
     virtual void show (ostream&, uInt indent) const;
 
     // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (vector<TableExprNodeRep*>& aggr);
+    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
 
     // Get the nodes representing a table column.
-    virtual void getColumnNodes (vector<TableExprNodeRep*>& cols);
+    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
   
     // Check number of arguments
     // low <= number_of_args <= high
     // It throws an exception if wrong number of arguments.
     static uInt checkNumOfArg (uInt low, uInt high,
-			       const PtrBlock<TableExprNodeRep*>& nodes);
+			       const std::vector<TENShPtr>& nodes);
     
     // Get the child nodes.
-    const PtrBlock<TableExprNodeRep*>& getChildren() const
+    const std::vector<TENShPtr>& getChildren() const
       { return operands_p; }
 
     // Check datatype of nodes and return output type.
     // It also sets the expected data type of the operands (from dtIn).
     static NodeDataType checkDT (Block<Int>& dtypeOper,
 				 NodeDataType dtIn, NodeDataType dtOut,
-				 const PtrBlock<TableExprNodeRep*>& nodes);
+				 const std::vector<TENShPtr>& nodes);
 
 protected:
-    PtrBlock<TableExprNodeRep*> operands_p;
+    std::vector<TENShPtr> operands_p;
 };
 
 
@@ -729,6 +728,12 @@ inline Bool TableExprNodeRep::isConstant() const
 inline const Unit& TableExprNodeRep::unit() const
     { return unit_p; }
 
+inline const Record& TableExprNodeRep::attributes() const
+    { return attributes_p; }
+
+inline void TableExprNodeRep::setAttributes (const Record& attributes)
+    { attributes_p = attributes; }
+
 //# Get the fixed dimensionality of the node.
 inline Int TableExprNodeRep::ndim() const
     { return ndim_p; }
@@ -743,17 +748,10 @@ inline Table& TableExprNodeRep::table()
 inline const Table& TableExprNodeRep::table() const
     { return table_p; }
 
-inline void TableExprNodeRep::checkTablePtr (const TableExprNodeRep* node)
+inline void TableExprNodeRep::checkTablePtr (const TENShPtr& node)
     { checkTablePtr (table_p, node); }
-inline void TableExprNodeRep::fillExprType (const TableExprNodeRep* node)
+inline void TableExprNodeRep::fillExprType (const TENShPtr& node)
     { fillExprType (exprtype_p, node); }
-
-//# Link to the node.
-inline TableExprNodeRep* TableExprNodeRep::link()
-{
-    count_p++;
-    return this;
-}
 
 
 } //# NAMESPACE CASACORE - END

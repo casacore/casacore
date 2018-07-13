@@ -247,7 +247,7 @@ TaQLMultiNode::TaQLMultiNode()
 TaQLMultiNode::TaQLMultiNode (Bool isSetOrArray)
   : TaQLNode(new TaQLMultiNodeRep(isSetOrArray))
 {
-  itsNRep = (TaQLMultiNodeRep*)(TaQLNode::itsRep);
+  itsNRep = (TaQLMultiNodeRep*)(TaQLNode::itsRep.get());
 }
 
 TaQLMultiNode::TaQLMultiNode (TaQLMultiNodeRep* rep)

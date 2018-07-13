@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Create a table with 4 columns containing doppler, radvel, freq and restfreq.
+# Define the measure keywords for them.
+../../../tables/apps/taql "create table tDopplerEngine_tmp.tab DOPPCOL R8, RVCOL R8 [shape=[2], unit='m/s'], FREQ R8 [unit='GHz'], RESTFREQ R8 [unit='MHz']"
+../../../tables/apps/taql "alter table tDopplerEngine_tmp.tab set keyword DOPPCOL::MEASINFO=[type='doppler',Ref='RADIO'], RVCOL::MEASINFO=[type='radialvelocity',Ref='BARY'], FREQ::MEASINFO=[type='frequency',Ref='LSRK']"
+../../../tables/apps/taql 'insert into tDopplerEngine_tmp.tab (DOPPCOL,RVCOL,FREQ,RESTFREQ) values
+ (0.5, [2e5, 3e5], 0.2, 1425.445),
+ (0.6, [3e5, 2e5], 0.3, 4874.157)'
+
+$casa_checktool ./tDopplerEngine

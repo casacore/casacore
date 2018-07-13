@@ -33,9 +33,9 @@
 #include <casacore/tables/TaQL/ExprNodeRep.h>
 #include <casacore/tables/TaQL/ExprRange.h>
 #include <casacore/tables/TaQL/ExprFuncNode.h>
-#include <casacore/tables/TaQL/ExprConeNode.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
 #include <casacore/tables/TaQL/MArray.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
@@ -47,7 +47,9 @@ class String;
 class Regex;
 class StringDistance;
 class Unit;
+class Record;
 class TableRecord;
+class TableExprNodeBinary;
 class TableExprNodeSet;
 template<class T> class Block;
 template<class T> class Array;
@@ -613,10 +615,6 @@ class TableExprNode;
 
 class TableExprNode
 {
-    //# Define the next 2 classes as friends to get the node_p.
-    friend class TableExprNodeRep;
-    friend class TableParse;
-
     //# Define the operations we allow.
     //# Note that the arguments are defined as const. This is necessary
     //# because the compiler generates temporaries when converting a constant
@@ -934,8 +932,14 @@ public:
     TableExprNode (const MArray<MVTime>& value);
     // </group>
 
-    // Construct a node from a node representation.
-    TableExprNode (TableExprNodeRep*);
+    // Construct a node from a node representation shared pointer
+    // which increments the reference count.
+    TableExprNode (const TENShPtr&);
+
+    // Construct from a node representation. It takes over the pointer, so the
+    // object gets deleted automatically.
+    TableExprNode (TableExprNodeRep* rep)
+      : node_p(TENShPtr(rep)) {}
 
     // copy constructor (reference semantics).
     TableExprNode (const TableExprNode&);
@@ -948,7 +952,7 @@ public:
 
     // Does the node contain no actual node?
     Bool isNull() const
-      { return node_p == 0; }
+      { return !node_p; }
 
     // Do not apply the selection.
     void disableApplySelection()
@@ -962,6 +966,10 @@ public:
     // Get the unit of the expression.
     const Unit& unit() const
       { return node_p->unit(); }
+
+    // Get the attributes of the expression.
+    const Record& attributes() const
+      { return node_p->attributes(); }
 
     // Get the data type of the expression.
     // Currently the only possible values are TpBool, TpInt, TpDouble,
@@ -1078,7 +1086,6 @@ public:
     // Create a column node on behalf of the Table class.
     // For builtin data types another type of node is created than
     // for other data types.
-    // isArray indicates if the column should be an array column.
     static TableExprNode newColumnNode (const Table& tab,
 					const String& name,
 					const Vector<String>& fieldNames);
@@ -1160,42 +1167,44 @@ public:
 					   const TableExprNodeSet& indices,
 					   const TaQLStyle& = TaQLStyle(0));
  
-    // returns const pointer to the representation-object of it
+    // returns const pointer to the underlying TableExprNodeRep object.
+    const TENShPtr& getRep() const;
     const TableExprNodeRep* getNodeRep() const;
 
     // Adapt the unit of the expression to the given unit (if not empty).
     void adaptUnit (const Unit&);
 
 private:
-    // returns non-const pointer to the representation-object of it
-    TableExprNodeRep* getRep();
+    // Put the new binary node object in a shared pointer.
+    // Set the node's info and adapt the children if needed.
+    // If the node is constant, it is evaluated and returned as result.
+    TENShPtr setBinaryNodeInfo (TableExprNodeBinary* tsnptr,
+                                const TENShPtr& right=TENShPtr()) const;
 
-    // convert Block of TableExprNode to PtrBlock of TableExprNodeRep*.
-    static PtrBlock<TableExprNodeRep*> convertBlockTEN
-                                             (Block<TableExprNode>& nodes);
+    // convert Block of TableExprNode to vector of TENShPtr.
+    static std::vector<TENShPtr> convertBlockTEN (Block<TableExprNode>& nodes);
 
     // Construct a new node for the given operation.
     // <group>
-    TableExprNodeRep* newPlus   (TableExprNodeRep* right) const;
-    TableExprNodeRep* newMinus  (TableExprNodeRep* right) const;
-    TableExprNodeRep* newTimes  (TableExprNodeRep* right) const;
-    TableExprNodeRep* newDivide (TableExprNodeRep* right) const;
-    TableExprNodeRep* newModulo (TableExprNodeRep* right) const;
-    TableExprNodeRep* newBitAnd (TableExprNodeRep* right) const;
-    TableExprNodeRep* newBitOr  (TableExprNodeRep* right) const;
-    TableExprNodeRep* newBitXor (TableExprNodeRep* right) const;
-    TableExprNodeRep* newEQ     (TableExprNodeRep* right) const;
-    TableExprNodeRep* newNE     (TableExprNodeRep* right) const;
-    TableExprNodeRep* newGE     (TableExprNodeRep* right) const;
-    TableExprNodeRep* newGT     (TableExprNodeRep* right) const;
-    TableExprNodeRep* newIN     (TableExprNodeRep* right,
-                                 const TaQLStyle&) const;
-    TableExprNodeRep* newOR     (TableExprNodeRep* right) const;
-    TableExprNodeRep* newAND    (TableExprNodeRep* right) const;
+    TENShPtr newPlus   (const TENShPtr& right) const;
+    TENShPtr newMinus  (const TENShPtr& right) const;
+    TENShPtr newTimes  (const TENShPtr& right) const;
+    TENShPtr newDivide (const TENShPtr& right) const;
+    TENShPtr newModulo (const TENShPtr& right) const;
+    TENShPtr newBitAnd (const TENShPtr& right) const;
+    TENShPtr newBitOr  (const TENShPtr& right) const;
+    TENShPtr newBitXor (const TENShPtr& right) const;
+    TENShPtr newEQ     (const TENShPtr& right) const;
+    TENShPtr newNE     (const TENShPtr& right) const;
+    TENShPtr newGE     (const TENShPtr& right) const;
+    TENShPtr newGT     (const TENShPtr& right) const;
+    TENShPtr newIN     (const TENShPtr& right, const TaQLStyle&) const;
+    TENShPtr newOR     (const TENShPtr& right) const;
+    TENShPtr newAND    (const TENShPtr& right) const;
     // </group>
 
     // The actual (counted referenced) representation of a node.
-    TableExprNodeRep* node_p;
+    TENShPtr node_p;
 };
 
 
@@ -2165,13 +2174,13 @@ inline void TableExprNode::show (ostream& os) const
 {
     node_p->show (os, 0);
 }
-inline const TableExprNodeRep* TableExprNode::getNodeRep() const
+inline const TENShPtr& TableExprNode::getRep() const
 {
     return node_p;
 }
-inline TableExprNodeRep* TableExprNode::getRep()
+inline const TableExprNodeRep* TableExprNode::getNodeRep() const
 {
-    return node_p;
+    return node_p.get();
 }
 
 

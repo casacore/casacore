@@ -260,7 +260,7 @@ namespace casacore {
     }
   }
 
-  void UDFMSCal::setupDir (TableExprNodeRep*& operand)
+  void UDFMSCal::setupDir (TENShPtr& operand)
   {
     // Make sure the operand is a constant double array
     // or a single string (e.g. MOON).
@@ -316,7 +316,7 @@ namespace casacore {
   }
 
   void UDFMSCal::setupWvls (const Table& table,
-                            PtrBlock<TableExprNodeRep*>& operands,
+                            vector<TENShPtr>& operands,
                             uInt nargMax)
   {
     // There must be at least 1 argument (data).
@@ -352,7 +352,7 @@ namespace casacore {
   }
 
   void UDFMSCal::setupStokes (const Table& table,
-                              PtrBlock<TableExprNodeRep*>& operands)
+                              vector<TENShPtr>& operands)
   {
     // There must be at least 1 argument (data).
     if (operands.size() == 0  ||  operands.size() > 3) {
@@ -429,7 +429,7 @@ namespace casacore {
   }
 
   void UDFMSCal::setupSelection (const Table& table,
-                                 PtrBlock<TableExprNodeRep*>& operands)
+                                 vector<TENShPtr>& operands)
   {
     // There must be 1 argument (scalar string).
     if (operands.size() != 1) {
@@ -605,7 +605,7 @@ namespace casacore {
   }
 
   void UDFMSCal::setupGetValue (const Table& table,
-                                PtrBlock<TableExprNodeRep*>& operands)
+                                vector<TENShPtr>& operands)
   {
     int idinx = 0;
     // See if subtable and column name have to be given explicitly as the

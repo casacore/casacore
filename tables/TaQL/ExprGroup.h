@@ -247,8 +247,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncBase& operator= (const TableExprGroupFuncBase&);
   protected:
     //# Data member
-    TableExprNodeRep* itsNode;
-    TableExprNodeRep* itsOperand;
+    TableExprNodeRep* itsNode;      // refers the node (not owned)
+    TableExprNodeRep* itsOperand;   // refers the operand (not owned)
     uInt              itsSeqnr;
   };
 

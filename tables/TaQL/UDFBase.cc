@@ -48,19 +48,15 @@ namespace casacore {
   {}
 
   UDFBase::~UDFBase()
-  {
-    for (uInt i=0; i<itsOperands.size(); ++i) {
-      TableExprNodeRep::unlink (itsOperands[i]);
-    }
-  }
+  {}
 
-  void UDFBase::init (const PtrBlock<TableExprNodeRep*>& operands,
+  void UDFBase::init (const vector<TENShPtr>& operands,
                       const Table& table, const TaQLStyle& style)
   {
     // Link to the operands.
     itsOperands.resize (operands.size());
     for (uInt i=0; i<operands.size(); ++i) {
-      itsOperands[i] = operands[i]->link();
+      itsOperands[i] = operands[i];
     }
     setup (table, style);
     if (itsDataType == TableExprNodeRep::NTAny) {
@@ -111,6 +107,11 @@ namespace casacore {
   void UDFBase::setUnit (const String& unit)
   {
     itsUnit = unit;
+  }
+
+  void UDFBase::setAttributes (const Record& attributes)
+  {
+    itsAttributes = attributes;
   }
 
   void UDFBase::setConstant (Bool isConstant)
@@ -228,8 +229,11 @@ namespace casacore {
       unk = " (=" + fname + ')';
     }
     throw TableInvExpr ("TaQL function " + sfname + unk +
-                        " is unknown\n"
-                        "  Check (DY)LD_LIBRARY_PATH matches the"
+                        " is unknown" + 
+                        "\n  Library " + libname + " was successfully loaded; "
+                        "taql 'show func " + libname + "' shows its functions"
+                        "\n  Maybe check if (DY)LD_LIBRARY_PATH and "
+                        "CASACORE_LDPATH match the"
                         " libraries used during the build of " + libname);
   }
 

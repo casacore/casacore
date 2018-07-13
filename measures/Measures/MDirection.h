@@ -283,7 +283,8 @@ public:
 //# Destructor
     virtual ~MDirection();
 
-// Make an MDirection object given the name of a moving source (SUN, etc.)
+// Make an MDirection object given the case-insensitive name of a
+// moving source (ZENITH, SUN, etc.),
 // or of a known standard source (CygA, etc.).
     static MDirection makeMDirection(const String& sourceName);
 

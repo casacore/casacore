@@ -210,22 +210,22 @@ namespace casacore {
   private:
     // Setup the Stokes conversion.
     void setupStokes (const Table& table,
-                      PtrBlock<TableExprNodeRep*>& operands);
+                      std::vector<TENShPtr>& operands);
 
     // Setup the baseline selection.
     void setupSelection (const Table& table,
-                         PtrBlock<TableExprNodeRep*>& operands);
+                         std::vector<TENShPtr>& operands);
 
     // Setup direction conversion if a direction is explicitly given.
-    void setupDir (TableExprNodeRep*& operand);
+    void setupDir (TENShPtr& operand);
 
     // Setup getting column values from a subtable.
     void setupGetValue (const Table& table,
-                        PtrBlock<TableExprNodeRep*>& operands);
+                        std::vector<TENShPtr>& operands);
 
     // Setup getting the wavelength information.
     void setupWvls (const Table& table,
-                    PtrBlock<TableExprNodeRep*>& operands,
+                    std::vector<TENShPtr>& operands,
                     uInt nargMax);
 
     // Get the rownr in the subtable for GetValue.

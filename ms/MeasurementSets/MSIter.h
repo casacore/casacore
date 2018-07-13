@@ -154,8 +154,8 @@ private:
 // </motivation>
 //
 // <todo>
-// multiple observatories in a single MS are not handled correctly (need to
-// sort on observation id and check observatory name to set position frame)
+// <li> multiple observatories in a single MS are not handled correctly (need to
+//      sort on observation id and check observatory name to set position frame)
 // </todo>
 
 class MSIter
