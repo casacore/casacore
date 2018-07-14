@@ -30,6 +30,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/TableCopy.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Arrays/Cube.h>
@@ -49,6 +50,50 @@
 // <summary>
 // Test program for class tConcatTable
 // </summary>
+
+void doAddColumn(const Table &tab)
+{
+  // Add a column.
+  Table tabrw(tab);
+  tabrw.reopenRW();
+
+  uInt nrows = tab.nrow();
+  AlwaysAssertExit(!tabrw.canAddRow());
+
+  auto newName = "new_col";
+  tabrw.addColumn (ScalarColumnDesc<Int>(newName));
+  AlwaysAssertExit(tab.tableDesc().isColumn(newName));
+  AlwaysAssertExit(nullptr != tabrw.findDataManager(newName, true));
+
+  AlwaysAssertExit(!tabrw.hasDataChanged());
+  // this is not currently supported in ConcatTable
+  AlwaysAssertExit(!tabrw.canRenameColumn(newName));
+  AlwaysAssertExit(!tabrw.canRemoveColumn(newName));
+  AlwaysAssertExit(!tabrw.canRemoveRow());
+
+  // fillColumnData will trigger TableColumn constructors, getColumn(), shape() etc.
+  // operations which might fail if the ConcatTable, ConcatColumn internal state is not
+  // consistent.
+  Int val = 44;
+  TableCopy::fillColumnData(tabrw, newName, val);
+  AlwaysAssertExit(!tabrw.hasDataChanged());
+  AlwaysAssertExit(nrows == tabrw.nrow());
+  ScalarColumn<Int> filled(tabrw, newName);
+  AlwaysAssertExit(val == filled(0));
+
+  auto newArrName = "new_arr_col";
+  auto srcName = "arr3";
+  tabrw.addColumn(ArrayColumnDesc<float>(newArrName));
+  float fval = 0.3f;
+  TableCopy::fillColumnData(tabrw, newArrName, fval, tab, srcName, false);
+  AlwaysAssertExit(!tabrw.hasDataChanged());
+  AlwaysAssertExit(nrows == tabrw.nrow());
+  ArrayColumn<float> filledArr(tabrw, newArrName);
+  AlwaysAssertExit(filledArr.shape(0) == TableColumn(tab, srcName).shape(0));
+  Cube<float> arrval(IPosition(3,2,3,4));
+  filledArr.get(0, arrval);
+  AlwaysAssertExit(allEQ(fval, arrval));
+}
 
 void doIt (const Table& tab)
 {
@@ -255,11 +300,8 @@ void doIt (const Table& tab)
   }
   ScalarColumn<Int> expr2ab(expr2tab, "ab");
   cout << expr2ab.getColumn() << endl;
-  // Add a column.
-  Table tabrw(tab);
-  tabrw.reopenRW();
-  tabrw.addColumn (ScalarColumnDesc<Int>("newcol"));
-  AlwaysAssertExit (tab.tableDesc().isColumn ("newcol"));
+
+  doAddColumn(tab);
 }
 
 void doIt1 (const String& tableName)

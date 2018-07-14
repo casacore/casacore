@@ -119,6 +119,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return refColPtr_p[tableNr]->shape (tabRownr);
   }
 
+  IPosition ConcatColumn::tileShape(uInt rownr) const
+  {
+    uInt tableNr, tabRownr;
+    refTabPtr_p->rows().mapRownr (tableNr, tabRownr, rownr);
+    return refColPtr_p[tableNr]->tileShape (tabRownr);
+  }
+
   Bool ConcatColumn::isDefined (uInt rownr) const
   {
     uInt tableNr, tabRownr;
