@@ -738,6 +738,9 @@ private:
 		      Int64 rownr, Int64 nrow, Int64 incr,
 		      const String& caller);
 
+  // Make an empty array (with 1 axis) of the correct datatype.
+  ValueHolder makeEmptyArray (DataType dtype);
+
   // Get values from the column.
   // Nrow<0 means till the end of the column.
   ValueHolder getValueFromTable (const String& colName, 

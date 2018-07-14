@@ -2093,18 +2093,49 @@ Int TableProxy::checkRowColumn (Table& table,
 }
 
 
+ValueHolder TableProxy::makeEmptyArray (DataType dtype)
+{
+  IPosition shape(1,0);
+  switch (dtype) {
+  case TpBool:
+    return ValueHolder(Array<Bool>(shape));
+  case TpUChar:
+    return ValueHolder(Array<uChar>(shape));
+  case TpShort:
+    return ValueHolder(Array<Short>(shape));
+  case TpUShort:
+    return ValueHolder(Array<uShort>(shape));
+  case TpInt:
+    return ValueHolder(Array<Int>(shape));
+  case TpUInt:
+    return ValueHolder(Array<uInt>(shape));
+  case TpFloat:
+    return ValueHolder(Array<Float>(shape));
+  case TpDouble:
+    return ValueHolder(Array<Double>(shape));
+  case TpComplex:
+    return ValueHolder(Array<Complex>(shape));
+  case TpDComplex:
+    return ValueHolder(Array<DComplex>(shape));
+  case TpString:
+    return ValueHolder(Array<String>(shape));
+  default:
+    throw TableError ("TableProxy::getCell/Column: Unknown scalar type");
+  }
+}
+
 ValueHolder TableProxy::getValueFromTable (const String& colName,
 					   Int rownr, Int nrow,
 					   Int incr,
 					   Bool isCell)
 {
   // Exit immediately if no rows have to be done.
-  if (nrow == 0) {
-    return ValueHolder();
-  }
   const ColumnDesc& cdesc = table_p.tableDesc().columnDesc(colName);
   Bool isScalar = cdesc.isScalar();
   DataType dtype = cdesc.dataType();
+  if (nrow == 0) {
+    return makeEmptyArray (dtype);
+  }
   if (isScalar) {
     switch (dtype) {
     case TpBool: 
@@ -2363,6 +2394,9 @@ void TableProxy::getValueFromTable (const String& colName,
   if (isScalar && isCell) {
     throw TableError("A scalar value cannot be read into a python variable");
   }
+  if (nrow == 0) {
+    return;
+  }
   switch (vh.dataType()) {
   case TpArrayBool:
     {
@@ -2510,7 +2544,7 @@ ValueHolder TableProxy::getValueSliceFromTable (const String& colName,
   }
   // Exit immediately if no rows have to be done.
   if (nrow == 0) {
-    return ValueHolder();
+    return makeEmptyArray (cdesc.dataType());
   }
   switch(cdesc.dataType()) {
   case TpBool:
@@ -2651,6 +2685,9 @@ void TableProxy::getValueSliceFromTable (const String& colName,
   if (! cdesc.isArray()) {
     throw TableError ("TableProxy::getColumnSlice: column " +
 		      String(colName) + " is not an array column");
+  }
+  if (nrow == 0) {
+    return;
   }
   DataType dtype = cdesc.dataType();
   switch (vh.dataType()) {
