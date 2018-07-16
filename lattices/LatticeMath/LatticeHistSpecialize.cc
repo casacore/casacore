@@ -49,45 +49,6 @@ uInt LatticeHistSpecialize::bin(Float datum, Float dmin, Float width, uInt nBins
    return min(nBins-1, uInt((datum-dmin)/width));
 }
 
-
-void LatticeHistSpecialize::process(
-	const Float* pInData, const Bool* pInMask,
-	Block<Float>* pHist, const Vector<Float>& clip,
-	Float binWidth, uInt offset,
-	uInt nrval, uInt nBins,
-	uInt dataIncr, uInt maskIncr
-) {
-   Float datum;
-   uInt rBin;
-   uInt index;
-//
-   if (pInMask==0) {
-      for (uInt i=0; i<nrval; i++) {
-         datum = *pInData;
-         if (LattStatsSpecialize::usePixelInc(clip(0), clip(1), datum) > 0.5) {
-            rBin = bin(datum, clip(0), binWidth, nBins);
-            index = rBin + offset;
-            Float& hist = (*pHist)[index];
-            hist += 1.0;
-         }
-         pInData += dataIncr;
-      }
-   } else {
-      for (uInt i=0; i<nrval; i++) {
-         datum = *pInData;
-         if (*pInMask &&
-             (LattStatsSpecialize::usePixelInc(clip(0), clip(1), datum) > 0.5)) {
-            rBin = bin(datum, clip(0), binWidth, nBins);
-            index = rBin + offset;
-            Float& hist = (*pHist)[index];
-            hist += 1.0;
-         }
-         pInData += dataIncr;
-         pInMask += maskIncr;
-      }
-   }
-}
-
 void LatticeHistSpecialize::process(
 	const Complex* pInData, const Bool* pInMask,
 	Block<Complex>* pHist, const Vector<Complex>& clip,
@@ -146,7 +107,6 @@ void LatticeHistSpecialize::process(
    }
 }
 
-
 void LatticeHistSpecialize::makeGauss(uInt& nGPts, Float& gMax,
                                      Vector<Float>& gX, Vector<Float>& gY,
                                      Float dMean, Float dSigma,
@@ -194,18 +154,6 @@ void LatticeHistSpecialize::makeGauss(uInt& nGPts, Float& gMax,
    if (doLog) makeLogarithmic (gY, gMax, nGPts);
 }     
 
-      
-void LatticeHistSpecialize::makeCumulative (Vector<Float>& counts,
-                                           Float& yMax, uInt nBins, 
-                                           Float scale)
-{  
-   counts(0) = scale * counts(0);
-   for (uInt i=1; i<nBins; i++) {
-      counts(i) = counts(i)*scale + counts(i-1);
-   }
-   yMax = counts(nBins-1);
-}  
-
 void LatticeHistSpecialize::makeCumulative (Vector<Complex>& counts,
                                            Complex& yMax, uInt nBins, 
                                            Float scale)
@@ -221,17 +169,6 @@ void LatticeHistSpecialize::makeCumulative (Vector<Complex>& counts,
    }
    yMax = counts(nBins-1);
 }  
-
-void LatticeHistSpecialize::makeLogarithmic (Vector<Float>& counts,
-                                            Float& yMax,
-                                            uInt nBins)
-{
-   yMax = 0.0;
-   for (uInt i=0; i<nBins; i++) {
-     if (counts(i) > 0.0) counts(i) = log10(counts(i));
-     yMax = max(yMax, counts(i));
-   }
-}
 
 void LatticeHistSpecialize::makeLogarithmic (Vector<Complex>& counts,
                                             Complex& yMax,
@@ -379,8 +316,6 @@ void LatticeHistSpecialize::plotHist (const Vector<Float>& x,
     }
 }
 
-
-
 Float LatticeHistSpecialize::setBinWidth (Float dmin, Float dmax, uInt nBins)
 {
    Float width = (dmax - dmin) / Float(nBins); 
@@ -396,9 +331,4 @@ Complex LatticeHistSpecialize::setBinWidth (Complex dmin, Complex dmax, uInt nBi
                   setBinWidth(imag(dmin), imag(dmax), nBins));
 }
 
-
-
-
-
 } //# NAMESPACE CASACORE - END
-
