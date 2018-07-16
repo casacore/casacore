@@ -188,6 +188,7 @@ ${FLEX_TableGram_OUTPUTS}
 )
 
 if(MPI_FOUND)
+    add_definitions(-DOMPI_SKIP_MPICXX -DMPICH_SKIP_MPICXX)
     target_compile_definitions(casa_tables PRIVATE HAVE_MPI)
     target_link_libraries(casa_tables casa_casa ${CASACORE_ARCH_LIBS} MPI::MPI_C)
 else()
