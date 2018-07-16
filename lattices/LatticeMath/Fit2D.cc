@@ -266,58 +266,6 @@ uInt Fit2D::nParameters(Fit2D::Types type)
    return n;
 }
 
-Fit2D::ErrorTypes Fit2D::residual(
-		Array<Float>& resid, Array<Float>& model,
-        const Array<Float>& data, Int xOffset, int yOffset
-) const {
-   ThrowIf(
-      ! itsValid,
-      "No models have been set - use function addModel"
-   );
-   if (!itsValidSolution) {
-      return Fit2D::FAILED;
-   }
-
-   ThrowIf(data.ndim() !=2, "Array must be 2-dimensional");
-   IPosition shape = data.shape();
-
-   if (resid.nelements() ==0) {
-       resid.resize(shape);
-   } else {
-       ThrowIf(
-          ! shape.isEqual(resid.shape()),
-          "Residual and pixel arrays must be the same shape"
-       );
-   }
-   if (model.nelements() ==0) {
-       model.resize(shape);
-   }
-   else {
-       ThrowIf(
-    	!shape.isEqual(model.shape()),
-          "Residual and pixel arrays must "
-       );
-    }
-
-// Create a functional with the solution (no axis conversion
-// necessary because functional interface takes axial ratio)
-
-   PtrHolder<Function<AutoDiff<Double> > > sumFunction(itsFunction.clone());
-   for (uInt i=0; i<itsSolution.nelements(); i++) {
-	   (*sumFunction)[i] = itsSolution[i];
-   }
-   IPosition loc(2);
-   for (Int j=0; j<shape(1); j++) {
-     loc(1) = j;
-      for (Int i=0; i<shape(0); i++) {
-         loc(0) = i;
-         model(loc) = (*sumFunction)(Double(i + xOffset), Double(j + yOffset)).value();
-         resid(loc) = data(loc) - model(loc);
-      }
-   }
-   return Fit2D::OK;
-}
-
 Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid, Array<Float>& model,
                                   const MaskedLattice<Float>& data)
 {

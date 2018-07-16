@@ -311,6 +311,59 @@ template <class T> Fit2D::ErrorTypes Fit2D::fit(const Array<T>& data,
 
 }
 
+template <class T> Fit2D::ErrorTypes Fit2D::residual(
+        Array<T>& resid, Array<T>& model,
+        const Array<T>& data, Int xOffset, int yOffset
+) const {
+   ThrowIf(
+      ! itsValid,
+      "No models have been set - use function addModel"
+   );
+   if (!itsValidSolution) {
+      return Fit2D::FAILED;
+   }
+
+   ThrowIf(data.ndim() !=2, "Array must be 2-dimensional");
+   IPosition shape = data.shape();
+
+   if (resid.nelements() ==0) {
+       resid.resize(shape);
+   } else {
+       ThrowIf(
+          ! shape.isEqual(resid.shape()),
+          "Residual and pixel arrays must be the same shape"
+       );
+   }
+   if (model.nelements() ==0) {
+       model.resize(shape);
+   }
+   else {
+       ThrowIf(
+        !shape.isEqual(model.shape()),
+          "Residual and pixel arrays must "
+       );
+    }
+
+// Create a functional with the solution (no axis conversion
+// necessary because functional interface takes axial ratio)
+
+   std::unique_ptr<Function<AutoDiff<Double>>> sumFunction(itsFunction.clone());
+   for (uInt i=0; i<itsSolution.nelements(); i++) {
+       (*sumFunction)[i] = itsSolution[i];
+   }
+   IPosition loc(2);
+   for (Int j=0; j<shape(1); j++) {
+     loc(1) = j;
+      for (Int i=0; i<shape(0); i++) {
+         loc(0) = i;
+         model(loc) = (*sumFunction)(Double(i + xOffset), Double(j + yOffset)).value();
+         resid(loc) = data(loc) - model(loc);
+      }
+   }
+   return Fit2D::OK;
+}
+
+
 template <class T> Bool Fit2D::selectData(
     Matrix<Double>& pos, Vector<Double>& values, Vector<Double>& weights,
     const Array<T>& pixels, const Array<Bool>& mask, const Array<T>& sigma
