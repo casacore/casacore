@@ -35,14 +35,14 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSHistoryHandler::MSHistoryHandler(MeasurementSet& ms, String app){
+MSHistoryHandler::MSHistoryHandler(MeasurementSet& ms, const String& app){
   histTable_p = ms.history();
   msHistCol_p= new MSHistoryColumns(histTable_p);
   application_p=app;
 }
 
 
-MSHistoryHandler &MSHistoryHandler::operator=(MSHistoryHandler& other){
+MSHistoryHandler &MSHistoryHandler::operator=(const MSHistoryHandler& other){
 
   if(this != &other){
     histTable_p=other.histTable_p;
@@ -55,14 +55,14 @@ MSHistoryHandler &MSHistoryHandler::operator=(MSHistoryHandler& other){
 
 
 MSHistoryHandler::~MSHistoryHandler(){
+  histTable_p.flush();
   delete msHistCol_p;
-
 }
 
-void MSHistoryHandler::addMessage(MeasurementSet& ms, String message,
-				  String app,
-				  String cliComm, 
-				  String origin){
+void MSHistoryHandler::addMessage(MeasurementSet& ms, const String& message,
+				  const String& app,
+				  const String& cliComm,
+				  const String& origin){
 
   if (message.length() == 0 && cliComm.length() == 0) {
     // No need to record an entry.
@@ -94,8 +94,8 @@ void MSHistoryHandler::addMessage(MeasurementSet& ms, String message,
 
 
 
-void MSHistoryHandler::addMessage(String message, String cliComm, 
-				  String origin){
+void MSHistoryHandler::addMessage(const String& message, const String& cliComm,
+				  const String& origin){
 
   if (message.length() == 0 && cliComm.length() == 0) {
     // No need to record an entry.
@@ -121,10 +121,9 @@ void MSHistoryHandler::addMessage(String message, String cliComm,
   msHistCol_p->cliCommand().put(row, cliseq);
   cliseq[0]="";
   msHistCol_p->appParams().put(row, cliseq);
-  histTable_p.flush();
 }
 
-void MSHistoryHandler::addMessage(LogSinkInterface& sink, String cliComm){
+void MSHistoryHandler::addMessage(LogSinkInterface& sink, const String& cliComm){
 
   Int row = histTable_p.nrow();
   uInt newrows = sink.nelements();
@@ -155,15 +154,14 @@ void MSHistoryHandler::addMessage(LogSinkInterface& sink, String cliComm){
   }
 
   sink.clearLocally();
-  histTable_p.flush();
 }
 
-void MSHistoryHandler::addMessage(LogIO& os, String cliComm){
+void MSHistoryHandler::addMessage(LogIO& os, const String& cliComm){
 
   addMessage(os.localSink(), cliComm);
 }
 
-void MSHistoryHandler::cliCommand(String& cliComm){
+void MSHistoryHandler::cliCommand(const String& cliComm){
   String m("");
   String o("MSHistoryHandler::cliCommand()");
   this->addMessage(m,cliComm,o);
@@ -199,7 +197,6 @@ void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
  msHistCol_p->appParams().put(row, dum);
 
  sink.clearLocally();
- histTable_p.flush();
 }
 
 } //# NAMESPACE CASACORE - END

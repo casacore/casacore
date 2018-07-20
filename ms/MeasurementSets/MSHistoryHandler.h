@@ -48,8 +48,8 @@ class LogSinkInterface;
 // </etymology>
 // <synopsis>
 // This class provides access to the MS history via single method calls
-// A couple of the simple methods are independent and can be called without 
-// constructing.  
+// One of the methods is static and can be called on a MeasurementSet without
+// constructing any MSHistoryHandler objects.
 // </synopsis>
 
 class MSHistoryHandler
@@ -57,9 +57,9 @@ class MSHistoryHandler
 
  public: 
   //Construct the history handler from an ms
-  MSHistoryHandler(MeasurementSet& ms, String app="");
+  MSHistoryHandler(MeasurementSet& ms, const String &app="");
 
-  MSHistoryHandler &operator=(MSHistoryHandler &other);
+  MSHistoryHandler &operator=(const MSHistoryHandler &other);
   // Destructor
   ~MSHistoryHandler();
 
@@ -68,20 +68,21 @@ class MSHistoryHandler
   //Add a string message
 
   // This method does not need construction ...can be called explicitly 
-  //
-  static void addMessage(MeasurementSet& ms, String message,
-	     String app="",
-	     String cliComm="", 
-	     String origin="");
+  // it flushes the history table of the ms
+  static void addMessage(MeasurementSet& ms, const String& message,
+	     const String& app="",
+	     const String& cliComm="",
+	     const String& origin="");
 
-  // Add message and/or CLI command to the history table
-  void addMessage(String message, String cliComm="", String origin="");
+  // Add message and/or CLI command to the history table. It does not flush the table (the
+  // destructor will flush).
+  void addMessage(const String& message, const String& cliComm="", const String& origin="");
   // In this version the LogIO object need to have a valid LogSink with 
   // messages in it. 
-  void addMessage(LogIO& message, String cliComm="");
-  void addMessage(LogSinkInterface& sink, String cliComm="");
+  void addMessage(LogIO& message, const String& cliComm="");
+  void addMessage(LogSinkInterface& sink, const String& cliComm="");
 
-  void cliCommand(String& cliComm);
+  void cliCommand(const String& cliComm);
   void cliCommand(LogIO& cliComm);
   void cliCommand(LogSinkInterface& sink);
 
