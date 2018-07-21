@@ -57,9 +57,9 @@ class MSHistoryHandler
 
  public: 
   //Construct the history handler from an ms
-  MSHistoryHandler(MeasurementSet& ms, String app="");
+  MSHistoryHandler(MeasurementSet& ms, const String &app="");
 
-  MSHistoryHandler &operator=(MSHistoryHandler &other);
+  MSHistoryHandler &operator=(const MSHistoryHandler &other);
   // Destructor
   ~MSHistoryHandler();
 
@@ -69,20 +69,20 @@ class MSHistoryHandler
 
   // This method does not need construction ...can be called explicitly 
   // it flushes the history table of the ms
-  static void addMessage(MeasurementSet& ms, String message,
-	     String app="",
-	     String cliComm="", 
-	     String origin="");
+  static void addMessage(MeasurementSet& ms, const String& message,
+	     const String& app="",
+	     const String& cliComm="",
+	     const String& origin="");
 
   // Add message and/or CLI command to the history table. It does not flush the table (the
   // destructor will flush).
-  void addMessage(String message, String cliComm="", String origin="");
+  void addMessage(const String& message, const String& cliComm="", const String& origin="");
   // In this version the LogIO object need to have a valid LogSink with 
   // messages in it. 
-  void addMessage(LogIO& message, String cliComm="");
-  void addMessage(LogSinkInterface& sink, String cliComm="");
+  void addMessage(LogIO& message, const String& cliComm="");
+  void addMessage(LogSinkInterface& sink, const String& cliComm="");
 
-  void cliCommand(String& cliComm);
+  void cliCommand(const String& cliComm);
   void cliCommand(LogIO& cliComm);
   void cliCommand(LogSinkInterface& sink);
 
