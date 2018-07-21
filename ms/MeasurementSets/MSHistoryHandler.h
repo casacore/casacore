@@ -48,8 +48,8 @@ class LogSinkInterface;
 // </etymology>
 // <synopsis>
 // This class provides access to the MS history via single method calls
-// A couple of the simple methods are independent and can be called without 
-// constructing.  
+// One of the methods is static and can be called on a MeasurementSet without
+// constructing any MSHistoryHandler objects.
 // </synopsis>
 
 class MSHistoryHandler
@@ -68,13 +68,14 @@ class MSHistoryHandler
   //Add a string message
 
   // This method does not need construction ...can be called explicitly 
-  //
+  // it flushes the history table of the ms
   static void addMessage(MeasurementSet& ms, String message,
 	     String app="",
 	     String cliComm="", 
 	     String origin="");
 
-  // Add message and/or CLI command to the history table
+  // Add message and/or CLI command to the history table. It does not flush the table (the
+  // destructor will flush).
   void addMessage(String message, String cliComm="", String origin="");
   // In this version the LogIO object need to have a valid LogSink with 
   // messages in it. 

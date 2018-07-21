@@ -55,6 +55,7 @@ MSHistoryHandler &MSHistoryHandler::operator=(MSHistoryHandler& other){
 
 
 MSHistoryHandler::~MSHistoryHandler(){
+  histTable_p.flush();
   delete msHistCol_p;
 
 }
@@ -121,7 +122,6 @@ void MSHistoryHandler::addMessage(String message, String cliComm,
   msHistCol_p->cliCommand().put(row, cliseq);
   cliseq[0]="";
   msHistCol_p->appParams().put(row, cliseq);
-  histTable_p.flush();
 }
 
 void MSHistoryHandler::addMessage(LogSinkInterface& sink, String cliComm){
@@ -155,7 +155,6 @@ void MSHistoryHandler::addMessage(LogSinkInterface& sink, String cliComm){
   }
 
   sink.clearLocally();
-  histTable_p.flush();
 }
 
 void MSHistoryHandler::addMessage(LogIO& os, String cliComm){
@@ -199,7 +198,6 @@ void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
  msHistCol_p->appParams().put(row, dum);
 
  sink.clearLocally();
- histTable_p.flush();
 }
 
 } //# NAMESPACE CASACORE - END
