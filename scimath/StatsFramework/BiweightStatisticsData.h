@@ -31,18 +31,21 @@
 #include <casacore/casa/OS/Mutex.h>
 #include <casacore/scimath/StatsFramework/StatisticsData.h>
 
+#include <set>
+
 namespace casacore {
 
 class BiweightStatisticsData {
 
 public:
+
+    BiweightStatisticsData() = delete;
+
+    BiweightStatisticsData(const BiweightStatisticsData& other) = delete;
+
     static std::set<StatisticsData::STATS> getUnsupportedStats();
 
 private:
-
-    BiweightStatisticsData();
-
-    BiweightStatisticsData(const BiweightStatisticsData& other);
 
     static std::set<StatisticsData::STATS> _unsupportedStats;
     static Mutex _mutex;

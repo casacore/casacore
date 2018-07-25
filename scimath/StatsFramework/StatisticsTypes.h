@@ -36,6 +36,7 @@
 // because the template signature has become unwieldy
 #define CASA_STATD template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
 #define CASA_STATP AccumType, DataIterator, MaskIterator, WeightsIterator
+#define CASA_STATQ DataIterator, MaskIterator, WeightsIterator
 
 namespace casacore {
 
@@ -43,10 +44,12 @@ class Record;
 template <class T> class CountedPtr;
 
 // Commonly used types in statistics framework.
+#define DataArray std::vector<AccumType>
+#define DataRanges std::vector<std::pair<AccumType, AccumType>>
+#define IncludeLimits std::vector<std::pair<AccumType, AccumType>>
 
-#define DataRanges std::vector<std::pair<AccumType, AccumType> >
-
-typedef std::pair<Int64, Int64> LocationType;
+using BinCountArray = std::vector<uInt64>;
+using LocationType = std::pair<Int64, Int64>;
 
 template <class AccumType> struct StatsData {
 	Bool masked;

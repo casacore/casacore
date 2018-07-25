@@ -34,17 +34,16 @@ namespace casacore {
 
 class ClassicalStatisticsData {
 public:
+
+    ClassicalStatisticsData() = delete;
+
+    ClassicalStatisticsData(const ClassicalStatisticsData&) = delete;
+
     static const uInt CACHE_PADDING;
 
     static const uInt BLOCK_SIZE;
 
     ~ClassicalStatisticsData() {}
-
-private:
-    // disable default constructors 
-    ClassicalStatisticsData() {}
-    
-    ClassicalStatisticsData(const ClassicalStatisticsData& ) {}
 
 };
 

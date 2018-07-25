@@ -30,6 +30,8 @@
 
 #include <casacore/scimath/StatsFramework/BiweightStatisticsData.h>
 #include <casacore/scimath/StatsFramework/ClassicalQuantileComputer.h>
+#include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
+#include <casacore/scimath/StatsFramework/StatisticsDataset.h>
 
 namespace casacore {
 
@@ -39,19 +41,18 @@ CASA_STATD const AccumType BiweightStatistics<CASA_STATP>::FIVE = 5;
 CASA_STATD
 BiweightStatistics<CASA_STATP>::BiweightStatistics(Int maxNiter, Double c)
     : ClassicalStatistics<CASA_STATP>(),
-    _c(c), _niter(0), _maxNiter(maxNiter), _location(0),
-    _scale(0), _range(), _npts(0) {
-    this->_setUnsupportedStatistics(BiweightStatisticsData::getUnsupportedStats());
+    _c(c), _maxNiter(maxNiter) {
+    this->_setUnsupportedStatistics(
+        BiweightStatisticsData::getUnsupportedStats()
+    );
 }
 
 CASA_STATD
 BiweightStatistics<CASA_STATP>::BiweightStatistics(
     const BiweightStatistics<CASA_STATP>& other
-) : ClassicalStatistics<CASA_STATP>(other), _c(other._c),
-    _niter(other._niter), _maxNiter(other._maxNiter),
-    _location(other._location), _scale(other._scale),
-    _range(other._range),
-    _npts(other._npts) {}
+) : ClassicalStatistics<CASA_STATP>(other), _c(other._c), _niter(other._niter),
+    _maxNiter(other._maxNiter), _location(other._location),
+    _scale(other._scale), _range(other._range), _npts(other._npts) {}
 
 CASA_STATD
 BiweightStatistics<CASA_STATP>::~BiweightStatistics() {}
@@ -68,8 +69,7 @@ BiweightStatistics<CASA_STATP>& BiweightStatistics<CASA_STATP>::operator=(
         _location = other._location;
         _scale = other._scale;
         _range = other._range
-            ? new std::pair<AccumType, AccumType>(*other._range)
-            : NULL;
+            ? new std::pair<AccumType, AccumType>(*other._range) : nullptr;
         _range = other._range;
         _npts = other._npts;
     }
@@ -92,28 +92,25 @@ AccumType BiweightStatistics<CASA_STATP>::getMedian(
     CountedPtr<AccumType>, uInt, Bool, uInt
 ) {
     ThrowCc(
-        "The biweight algorithm does not "
-        "support computation of the median"
+        "The biweight algorithm does not support computation of the median"
     );
 }
 
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedianAndQuantiles(
-    std::map<Double, AccumType>&, const std::set<Double>&,
-    CountedPtr<uInt64>, CountedPtr<AccumType>,
-    CountedPtr<AccumType>, uInt, Bool,
-    uInt
+    std::map<Double, AccumType>&, const std::set<Double>&, CountedPtr<uInt64>,
+    CountedPtr<AccumType>, CountedPtr<AccumType>, uInt, Bool, uInt
 ) {
     ThrowCc(
-        "The biweight algorithm does not support "
-        "computation of the median nor quantile values"
+        "The biweight algorithm does not support computation "
+        "of the median nor quantile values"
     );
 }
 
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedianAbsDevMed(
-    CountedPtr<uInt64>, CountedPtr<AccumType>,
-    CountedPtr<AccumType>, uInt, Bool, uInt
+    CountedPtr<uInt64>, CountedPtr<AccumType>, CountedPtr<AccumType>,
+    uInt, Bool, uInt
 ) {
     ThrowCc(
         "The biweight algorithm does not support computation "
@@ -129,13 +126,11 @@ Int BiweightStatistics<CASA_STATP>::getNiter() const {
 
 CASA_STATD
 std::map<Double, AccumType> BiweightStatistics<CASA_STATP>::getQuantiles(
-    const std::set<Double>&, CountedPtr<uInt64>,
-    CountedPtr<AccumType>, CountedPtr<AccumType>,
-    uInt, Bool, uInt
+    const std::set<Double>&, CountedPtr<uInt64>, CountedPtr<AccumType>,
+    CountedPtr<AccumType>, uInt, Bool, uInt
 ) {
     ThrowCc(
-        "The biweight algorithm does not support "
-        "computation of quantile values"
+        "The biweight algorithm does not support computation of quantile values"
     );
 }
 
@@ -178,9 +173,9 @@ void BiweightStatistics<CASA_STATP>::reset() {
 
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_computeLocationAndScaleSums(
-    AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4,
-    AccumType& ww_4u2, DataIterator dataIter, MaskIterator maskIter,
-    WeightsIterator weightsIter, uInt64 dataCount,
+    AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
+    DataIterator dataIter, MaskIterator maskIter, WeightsIterator weightsIter,
+    uInt64 dataCount,
     const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
 ) {
     if (chunk.weights) {
@@ -189,32 +184,29 @@ void BiweightStatistics<CASA_STATP>::_computeLocationAndScaleSums(
             this->_getStatsData().masked = True;
             if (chunk.ranges) {
                 _locationAndScaleSums(
-                    sxw2, sw2, sx_M2w4, ww_4u2,
-                    dataIter, weightsIter, dataCount, chunk.dataStride,
-                    maskIter, chunk.mask->second, chunk.ranges->first,
-                    chunk.ranges->second
+                    sxw2, sw2, sx_M2w4, ww_4u2, dataIter, weightsIter,
+                    dataCount, chunk.dataStride, maskIter, chunk.mask->second,
+                    chunk.ranges->first, chunk.ranges->second
                 );
             }
             else {
                 _locationAndScaleSums(
-                    sxw2, sw2, sx_M2w4, ww_4u2,
-                    dataIter, weightsIter, dataCount, chunk.dataStride,
-                    maskIter, chunk.mask->second
+                    sxw2, sw2, sx_M2w4, ww_4u2, dataIter, weightsIter,
+                    dataCount, chunk.dataStride, maskIter, chunk.mask->second
                 );
             }
         }
         else if (chunk.ranges) {
             _locationAndScaleSums(
-                sxw2, sw2, sx_M2w4, ww_4u2,
-                dataIter, weightsIter, dataCount, chunk.dataStride,
-                chunk.ranges->first, chunk.ranges->second
+                sxw2, sw2, sx_M2w4, ww_4u2, dataIter, weightsIter, dataCount,
+                chunk.dataStride, chunk.ranges->first, chunk.ranges->second
             );
         }
         else {
             // has weights, but no mask nor ranges
             _locationAndScaleSums(
-                sxw2, sw2, sx_M2w4, ww_4u2,
-                dataIter, weightsIter, dataCount, chunk.dataStride
+                sxw2, sw2, sx_M2w4, ww_4u2, dataIter, weightsIter,
+                dataCount, chunk.dataStride
             );
         }
     }
@@ -223,17 +215,15 @@ void BiweightStatistics<CASA_STATP>::_computeLocationAndScaleSums(
         // this data set has no weights, but does have a mask
         if (chunk.ranges) {
             _locationAndScaleSums(
-                sxw2, sw2, sx_M2w4, ww_4u2,
-                dataIter, dataCount, chunk.dataStride, maskIter,
-                chunk.mask->second, chunk.ranges->first,
-                chunk.ranges->second
+                sxw2, sw2, sx_M2w4, ww_4u2, dataIter, dataCount,
+                chunk.dataStride, maskIter, chunk.mask->second,
+                chunk.ranges->first, chunk.ranges->second
             );
         }
         else {
             _locationAndScaleSums(
-                sxw2, sw2, sx_M2w4, ww_4u2,
-                dataIter, dataCount, chunk.dataStride, maskIter,
-                chunk.mask->second
+                sxw2, sw2, sx_M2w4, ww_4u2, dataIter, dataCount,
+                chunk.dataStride, maskIter, chunk.mask->second
             );
         }
     }
@@ -241,17 +231,16 @@ void BiweightStatistics<CASA_STATP>::_computeLocationAndScaleSums(
         // this data set has no weights no mask, but does have a set of ranges
         // associated with it
         _locationAndScaleSums(
-            sxw2, sw2, sx_M2w4, ww_4u2,
-            dataIter, dataCount, chunk.dataStride,
+            sxw2, sw2, sx_M2w4, ww_4u2, dataIter, dataCount, chunk.dataStride,
             chunk.ranges->first, chunk.ranges->second
         );
     }
     else {
-        // simplest case, this data set has no weights, no mask, nor any ranges associated
-        // with it, and its stride is 1. No filtering of the data is necessary.
+        // simplest case, this data set has no weights, no mask, nor any ranges
+        // associated with it, and its stride is 1. No filtering of the data is
+        // necessary.
         _locationAndScaleSums(
-            sxw2, sw2, sx_M2w4, ww_4u2,
-            dataIter, dataCount, chunk.dataStride
+            sxw2, sw2, sx_M2w4, ww_4u2, dataIter, dataCount, chunk.dataStride
         );
     }
 }
@@ -285,15 +274,13 @@ void BiweightStatistics<CASA_STATP>::_computeLocationSums(
         else if (chunk.ranges) {
             _locationSums(
                 sxw2, sw2, dataIter, weightsIter, dataCount,
-                chunk.dataStride, chunk.ranges->first,
-                chunk.ranges->second
+                chunk.dataStride, chunk.ranges->first, chunk.ranges->second
             );
         }
         else {
             // has weights, but no mask nor ranges
             _locationSums(
-                sxw2, sw2, dataIter, weightsIter,
-                dataCount, chunk.dataStride
+                sxw2, sw2, dataIter, weightsIter, dataCount, chunk.dataStride
             );
         }
     }
@@ -302,9 +289,8 @@ void BiweightStatistics<CASA_STATP>::_computeLocationSums(
         // this data set has no weights, but does have a mask
         if (chunk.ranges) {
             _locationSums(
-                sxw2, sw2, dataIter, dataCount,
-                chunk.dataStride, maskIter, chunk.mask->second,
-                chunk.ranges->first, chunk.ranges->second
+                sxw2, sw2, dataIter, dataCount, chunk.dataStride, maskIter,
+                chunk.mask->second, chunk.ranges->first, chunk.ranges->second
             );
         }
         else {
@@ -323,8 +309,9 @@ void BiweightStatistics<CASA_STATP>::_computeLocationSums(
         );
     }
     else {
-        // simplest case, this data set has no weights, no mask, nor any ranges associated
-        // with it, and its stride is 1. No filtering of the data is necessary.
+        // simplest case, this data set has no weights, no mask, nor any ranges
+        // associated with it, and its stride is 1. No filtering of the data is
+        // necessary.
         _locationSums(
             sxw2, sw2, dataIter, dataCount, chunk.dataStride
         );
@@ -356,8 +343,7 @@ void BiweightStatistics<CASA_STATP>::_computeScaleSums(
         else if (chunk.ranges) {
             _scaleSums(
                 sx_M2w4, ww_4u2, dataIter, weightsIter, dataCount,
-                chunk.dataStride, chunk.ranges->first,
-                chunk.ranges->second
+                chunk.dataStride, chunk.ranges->first, chunk.ranges->second
             );
         }
         else {
@@ -393,14 +379,14 @@ void BiweightStatistics<CASA_STATP>::_computeScaleSums(
         );
     }
     else {
-        // simplest case, this data set has no weights, no mask, nor any ranges associated
-        // with it, and its stride is 1. No filtering of the data is necessary.
+        // simplest case, this data set has no weights, no mask, nor any ranges
+        // associated with it, and its stride is 1. No filtering of the data is
+        // necessary.
         _scaleSums(
             sx_M2w4, ww_4u2, dataIter, dataCount, chunk.dataStride
         );
     }
 }
-
 
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_computeStats() {
@@ -410,9 +396,8 @@ void BiweightStatistics<CASA_STATP>::_computeStats() {
     _npts = cs.getNPts();
     ThrowIf (
         _npts <= 1,
-        "npts is " + String::toString(_npts)
-        + ". There must be at least two points to "
-        "compute the biweight location and scale"
+        "npts is " + String::toString(_npts) + ". There must be at least two "
+        "points to compute the biweight location and scale"
     );
     StatsData<AccumType>& stats = this->_getStatsData();
     stats.npts = _npts;
@@ -432,9 +417,9 @@ void BiweightStatistics<CASA_STATP>::_computeStats() {
         for (_niter=1; _niter <= _maxNiter; ++_niter) {
             prevScale = _scale;
             _doLocation();
-            // The range must be reset after the location has
-            // been computed in this iteration. note that spread
-            // doesn't change after the _location computation
+            // The range must be reset after the location has been computed in
+            // this iteration. note that spread doesn't change after the
+            // _location computation
             _range = std::pair<AccumType, AccumType>(
                 _location - spread, _location + spread
             );
@@ -477,7 +462,7 @@ void BiweightStatistics<CASA_STATP>::_doLocation() {
     }
     const uInt& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
     while (True) {
-        const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk = ds.initLoopVars();
+        const auto& chunk = ds.initLoopVars();
         uInt nBlocks, nthreads;
         uInt64 extra;
         PtrHolder<DataIterator> dataIter;
@@ -536,7 +521,7 @@ void BiweightStatistics<CASA_STATP>::_doScale() {
     }
     const uInt& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
     while (True) {
-        const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk = ds.initLoopVars();
+        const auto& chunk = ds.initLoopVars();
         uInt nBlocks, nthreads;
         uInt64 extra;
         PtrHolder<DataIterator> dataIter;
@@ -601,7 +586,7 @@ void BiweightStatistics<CASA_STATP>::_doLocationAndScale() {
     }
     const uInt& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
     while (True) {
-        const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk = ds.initLoopVars();
+        const auto& chunk = ds.initLoopVars();
         uInt nBlocks, nthreads;
         uInt64 extra;
         PtrHolder<DataIterator> dataIter;
@@ -620,9 +605,9 @@ void BiweightStatistics<CASA_STATP>::_doLocationAndScale() {
             uInt64 dataCount = chunk.count - offset[idx8] < blockSize
                 ? extra : blockSize;
             _computeLocationAndScaleSums(
-                tsxw2[idx8], tsw2[idx8], tsx_M2w4[idx8],
-                tww_4u2[idx8], dataIter[idx8], maskIter[idx8],
-                weightsIter[idx8], dataCount, chunk
+                tsxw2[idx8], tsw2[idx8], tsx_M2w4[idx8], tww_4u2[idx8],
+                dataIter[idx8], maskIter[idx8], weightsIter[idx8], dataCount,
+                chunk
             );
             ds.incrementThreadIters(
                 dataIter[idx8], maskIter[idx8], weightsIter[idx8],
