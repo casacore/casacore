@@ -41,18 +41,21 @@ namespace casacore {
 CASA_STATD
 ClassicalStatistics<CASA_STATP>::ClassicalStatistics()
     : StatisticsAlgorithm<CASA_STATP>(),
-      _qComputer(
-          new ClassicalQuantileComputer<CASA_STATP>(
-              &this->_getDataset()
-          )
-      ) {
+    _statsData(initializeStatsData<AccumType>()),
+    _qComputer(
+        new ClassicalQuantileComputer<CASA_STATP>(
+            &this->_getDataset()
+        )
+    ) {
     reset();
 }
 
 CASA_STATD
 ClassicalStatistics<CASA_STATP>::ClassicalStatistics(
-    CountedPtr<ClassicalQuantileComputer<CASA_STATP> > qc
-) : StatisticsAlgorithm<CASA_STATP>(), _qComputer(qc) {
+    CountedPtr<ClassicalQuantileComputer<CASA_STATP>> qc
+) : StatisticsAlgorithm<CASA_STATP>(),
+    _statsData(initializeStatsData<AccumType>()),
+    _qComputer(qc) {
     reset();
 }
 

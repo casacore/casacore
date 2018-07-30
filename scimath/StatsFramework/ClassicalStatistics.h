@@ -219,7 +219,7 @@ public:
     // of ClassicalStatistics. Purposefully non-virtual. Derived classes should
     // not implement.
     void setQuantileComputer(
-        CountedPtr<ClassicalQuantileComputer<CASA_STATP> > qc
+        CountedPtr<ClassicalQuantileComputer<CASA_STATP>> qc
     ) {
         _qComputer = qc;
     }
@@ -489,10 +489,10 @@ protected:
     // </group>
 
 private:
-    StatsData<AccumType> _statsData{initializeStatsData<AccumType>()};
+    StatsData<AccumType> _statsData;
     Bool _calculateAsAdded{False}, _doMaxMin{True}, _mustAccumulate{False};
 
-    CountedPtr<ClassicalQuantileComputer<CASA_STATP> > _qComputer;
+    CountedPtr<ClassicalQuantileComputer<CASA_STATP>> _qComputer{};
 
     void _computeMinMax(
         CountedPtr<AccumType>& mymax, CountedPtr<AccumType>& mymin,
