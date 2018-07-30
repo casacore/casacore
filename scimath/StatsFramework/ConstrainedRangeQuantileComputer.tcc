@@ -30,17 +30,10 @@
 
 namespace casacore {
 
-// The default constructor is disallowed
-CASA_STATD
-ConstrainedRangeQuantileComputer<CASA_STATP>::ConstrainedRangeQuantileComputer()
-    : ClassicalQuantileComputer<CASA_STATP>(NULL), _doMedAbsDevMed(False),
-      _myMedian(0), _range() {}
-
 CASA_STATD
 ConstrainedRangeQuantileComputer<CASA_STATP>::ConstrainedRangeQuantileComputer(
     StatisticsDataset<CASA_STATP>* dataset
-) : ClassicalQuantileComputer<CASA_STATP>(dataset), _doMedAbsDevMed(False),
-    _myMedian(0), _range() {}
+) : ClassicalQuantileComputer<CASA_STATP>(dataset) {}
 
 
 CASA_STATD

@@ -35,31 +35,41 @@
 
 namespace casacore {
 
-// Class to calculate statistics using the so-called Chauvenet criterion. This method
-// iteratively calculates statistics by discarding outliers on the basis of Chauvenet's
-// criterion, until the specified maximum number of iterations is reached, or the final
-// iteration results in no additional points being discarded.
-// Alternatively, one can specify a z-score which indicates the number of standard deviations
-// beyond which to discard points, which is held fixed while iterating.
+// Class to calculate statistics using the so-called Chauvenet criterion. This
+// method iteratively calculates statistics by discarding outliers on the basis
+// of Chauvenet's criterion, until the specified maximum number of iterations is
+// reached, or the final iteration results in no additional points being
+// discarded. Alternatively, one can specify a z-score which indicates the
+// number of standard deviations beyond which to discard points, which is held
+// fixed while iterating.
 //
-// When instantiated, objects of this class use a ConstrainedRangeQuantileComputer
-// object for computing quantile-like statistics. See class documentation for
-// StatisticsAlgorithm for details of QuantileComputer classes.
+// When instantiated, objects of this class use a
+// ConstrainedRangeQuantileComputer object for computing quantile-like
+// statistics. See class documentation for StatisticsAlgorithm for details of
+// QuantileComputer classes.
 
-template <class AccumType, class DataIterator, class MaskIterator=const Bool*, class WeightsIterator=DataIterator>
+template <
+    class AccumType, class DataIterator, class MaskIterator=const Bool*,
+    class WeightsIterator=DataIterator
+>
 class ChauvenetCriterionStatistics
     : public ConstrainedRangeStatistics<CASA_STATP> {
 public:
 
-    // If <src>zscore</src> is not negative, use that value to discard outliers beyond
-    // zscore standard deviations from the mean, and compute statistics based on the
-    // remaining data. If <src>zscore</src> is negative, use Chauvenet's Criterion to
-    // determine which outliers to discard. <src>maxIterations</src> is the maximum
-    // number of iterations to use before stopping. If negative, continue iterating until the
-    // set zscore or Chauvenet's criterion is met (ie that there are no remaining outliers).
+    ChauvenetCriterionStatistics() = delete;
+
+    // If <src>zscore</src> is not negative, use that value to discard outliers
+    // beyond zscore standard deviations from the mean, and compute statistics
+    // based on the remaining data. If <src>zscore</src> is negative, use
+    // Chauvenet's Criterion to determine which outliers to discard.
+    // <src>maxIterations</src> is the maximum number of iterations to use
+    // before stopping. If negative, continue iterating until the set zscore or
+    // Chauvenet's criterion is met (ie that there are no remaining outliers).
     ChauvenetCriterionStatistics(Double zscore=-1, Int maxIterations=0);
 
-    ChauvenetCriterionStatistics(const ChauvenetCriterionStatistics<CASA_STATP>& other);
+    ChauvenetCriterionStatistics(
+        const ChauvenetCriterionStatistics<CASA_STATP>& other
+    );
 
     virtual ~ChauvenetCriterionStatistics();
 
@@ -77,12 +87,12 @@ public:
     };
 
     // reset object to initial state. Clears all private fields including data,
-    // accumulators, global range. It does not affect the fence factor (_f), which was
-    // set at object construction.
+    // accumulators, global range. It does not affect the fence factor (_f),
+    // which was set at object construction.
     virtual void reset();
 
-    // This class does not allow statistics to be calculated as datasets are added, so
-    // an exception will be thrown if <src>c</src> is True.
+    // This class does not allow statistics to be calculated as datasets are
+    // added, so an exception will be thrown if <src>c</src> is True.
     void setCalculateAsAdded(Bool c);
 
     // get the number of iterations
@@ -90,10 +100,10 @@ public:
 
 private:
 
-    Double _zscore;
-    Int _maxIterations;
-    Bool _rangeIsSet;
-    uInt _niter;
+    Double _zscore{-1};
+    Int _maxIterations{0};
+    Bool _rangeIsSet{False};
+    uInt _niter{0};
 
     void _setRange();
 };
@@ -102,6 +112,6 @@ private:
 
 #ifndef CASACORE_NO_AUTO_TEMPLATES
 #include <casacore/scimath/StatsFramework/ChauvenetCriterionStatistics.tcc>
-#endif //# CASACORE_NO_AUTO_TEMPLATES
+#endif
 
 #endif
