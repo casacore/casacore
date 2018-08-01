@@ -28,10 +28,13 @@
 
 #include <casacore/scimath/StatsFramework/BiweightStatistics.h>
 
+#include <casacore/casa/aipsxtype.h>
 #include <casacore/scimath/StatsFramework/BiweightStatisticsData.h>
 #include <casacore/scimath/StatsFramework/ClassicalQuantileComputer.h>
 #include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
 #include <casacore/scimath/StatsFramework/StatisticsDataset.h>
+
+#include <utility>
 
 namespace casacore {
 
