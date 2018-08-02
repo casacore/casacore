@@ -46,9 +46,15 @@ addons:
     - python3-numpy
 
 before_script:
+  # Work around travis problem with shell-session-update on OSX
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then unset -f cd; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then shell_session_update() { :; }; fi
   - ./.travis/before_script.sh
 
 script:
+  # Work around travis problem with shell-session-update on OSX
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then unset -f cd; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then shell_session_update() { :; }; fi
   - cd ${TRAVIS_BUILD_DIR}/build
   - ccache -s
   - ccache -z
