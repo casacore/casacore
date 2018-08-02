@@ -37,6 +37,10 @@
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Utilities/Sort.h>
 
+#ifdef HAVE_MPI
+#include <mpi.h>
+#endif
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
@@ -285,6 +289,25 @@ public:
     Table (SetupNewTable&, const TableLock& lockOptions,
 	   uInt nrrow = 0, Bool initialize = False,
 	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
+#ifdef HAVE_MPI
+    explicit Table (MPI_Comm mpiComm, TableType, EndianFormat = Table::AipsrcEndian,
+                    const TSMOption& = TSMOption());
+    explicit Table (MPI_Comm mpiComm, SetupNewTable&, uInt nrrow = 0, Bool initialize = False,
+		    EndianFormat = Table::AipsrcEndian,
+                    const TSMOption& = TSMOption());
+    Table (MPI_Comm mpiComm, SetupNewTable&, TableType,
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
+    Table (MPI_Comm mpiComm, SetupNewTable&, TableType, const TableLock& lockOptions,
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
+    Table (MPI_Comm mpiComm, SetupNewTable&, TableLock::LockOption,
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
+    Table (MPI_Comm mpiComm, SetupNewTable&, const TableLock& lockOptions,
+	   uInt nrrow = 0, Bool initialize = False,
+	   EndianFormat = Table::AipsrcEndian, const TSMOption& = TSMOption());
+#endif
     // </group>
 
     // Create a table object as the virtual concatenation of
@@ -553,7 +576,7 @@ public:
                        Bool showTabKey=True,
                        Bool showColKey=False,
                        Int maxVal=25) const;
-  
+
     // Show the table and/or column keywords of this table.
     // Maximum <src>maxVal</src> values of Arrays will be shown.
     void showKeywordSets (std::ostream&,
@@ -726,7 +749,7 @@ public:
 
     // Test if the table is marked for delete.
     Bool isMarkedForDelete() const;
-    
+
     // Get the number of rows.
     // It is unsynchronized meaning that it will not check if another
     // process updated the table, thus possible increased the number of rows.

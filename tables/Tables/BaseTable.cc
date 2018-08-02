@@ -60,33 +60,46 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The constructor of the derived class should call unmarkForDelete
 // when the construction ended succesfully.
 BaseTable::BaseTable (const String& name, int option, uInt nrrow)
-: nrlink_p    (0),
-  nrrow_p     (nrrow),
-  nrrowToAdd_p(0),
-  tdescPtr_p  (0),
-  name_p      (name),
-  option_p    (option),
-  noWrite_p   (False),
-  delete_p    (False),
-  madeDir_p   (True),
-  itsTraceId  (-1)
 {
+    BaseTableCommon(name, option, nrrow);
+}
+
+#ifdef HAVE_MPI
+BaseTable::BaseTable (MPI_Comm mpiComm, const String& name, int option, uInt nrrow)
+    :itsMpiComm  (mpiComm)
+{
+    BaseTableCommon(name, option, nrrow);
+}
+#endif
+
+void BaseTable::BaseTableCommon (const String& name, int option, uInt nrrow)
+{
+    nrlink_p = 0;
+    nrrow_p = nrrow;
+    nrrowToAdd_p = 0;
+    tdescPtr_p = 0;
+    name_p = name;
+    option_p = option;
+    noWrite_p = False;
+    delete_p = False;
+    madeDir_p = True;
+    itsTraceId = -1;
+
     if (name_p.empty()) {
-	name_p = File::newUniqueName ("", "tab").originalName();
+        name_p = File::newUniqueName ("", "tab").originalName();
     }
     // Make name absolute in case a chdir is done in e.g. Python.
     name_p = makeAbsoluteName (name_p);
     if (option_p == Table::Scratch) {
-	option_p = Table::New;
+        option_p = Table::New;
     }
     // Mark initially a new table for delete.
     // When the construction ends successfully, it can be unmarked.
     if (option_p == Table::New  ||  option_p == Table::NewNoReplace) {
-	markForDelete (False, "");
-	madeDir_p = False;
+        markForDelete (False, "");
+        madeDir_p = False;
     }
 }
-
 
 BaseTable::~BaseTable()
 {
@@ -160,14 +173,28 @@ void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
 
 Bool BaseTable::makeTableDir()
 {
+#ifdef HAVE_MPI
+    int rank = 0;
+    int mpi_initialized, mpi_finalized;
+    MPI_Initialized(&mpi_initialized);
+    MPI_Finalized(&mpi_finalized);
+    if(mpi_initialized == true && mpi_finalized == false){
+        MPI_Comm_rank(itsMpiComm, &rank);
+        if(rank > 0){
+            return false;
+        }
+    }
+#endif
     //# Exit if the table directory has already been created.
     if (madeDir_p) {
 	return False;
     }
     //# Check option.
     if (!openedForWrite()) {
+#ifndef HAVE_MPI
 	throw (TableInvOpt ("BaseTable::makeTableDir",
 			    "must be Table::New, NewNoReplace or Update"));
+#endif
     }
     //# Check if the table directory name already exists
     //# and is a directory indeed.
@@ -214,6 +241,17 @@ Bool BaseTable::makeTableDir()
 
 Bool BaseTable::openedForWrite() const
 {
+#ifdef HAVE_MPI
+    int rank = 0;
+    int mpi_initialized, mpi_finalized;
+    MPI_Initialized(&mpi_initialized);
+    MPI_Finalized(&mpi_finalized);
+    if(mpi_initialized == true && mpi_finalized == false){
+        if(rank > 0){
+            return false;
+        }
+    }
+#endif
     AlwaysAssert (!isNull(), AipsError);
     return (option_p==Table::Old || option_p==Table::Delete  ?  False : True);
 }
@@ -354,7 +392,7 @@ void BaseTable::prepareCopyRename (const String& newName,
 	if (tableOption == Table::Update) {
             throw (TableNoFile(newName));
 	}
-    }   
+    }
 }
 
 //# Rename a table.

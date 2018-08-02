@@ -70,12 +70,12 @@ class MemoryIO;
 // RefTable, which is a view on a PlainTable.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // PlainTable is a table consisting of a keyword set and a number of
 // filled and virtual columns. The table control information and the
 // keyword set is stored in an AipsIO file. The data in the filled columns
 // are stored separately by storage managers.
-// </synopsis> 
+// </synopsis>
 
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
@@ -91,8 +91,20 @@ public:
     // all storage managers. The given number of rows is stored in
     // the table and initialized if the flag is set.
     PlainTable (SetupNewTable&, uInt nrrow, Bool initialize,
-		const TableLock& lockOptions, int endianFormat,
-                const TSMOption& tsmOption);
+            const TableLock& lockOptions, int endianFormat,
+            const TSMOption& tsmOption);
+
+#ifdef HAVE_MPI
+    // MPI version of the constructor
+    PlainTable (MPI_Comm mpiComm, SetupNewTable&, uInt nrrow,
+            Bool initialize, const TableLock& lockOptions,
+            int endianFormat, const TSMOption& tsmOption);
+#endif
+
+    // Common part of the constructor shared by MPI and non-MPI
+    void PlainTableCommon (SetupNewTable&, uInt nrrow, Bool initialize,
+            const TableLock& lockOptions, int endianFormat,
+            const TSMOption& tsmOption);
 
     // Construct the object for an existing table.
     // It opens the table file, reads the table control information
