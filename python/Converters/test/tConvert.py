@@ -183,7 +183,7 @@ if __name__ == "__main__":
 
     import numpy as NUM
     from distutils.version import LooseVersion
-    if LooseVersion(NUM.version.version) > LooseVersion("1.13"):
+    if LooseVersion(NUM.version.version) >= LooseVersion("1.14"):
         NUM.set_printoptions(legacy="1.13")
     t = tConvert();
     print "Doing numpy/array test ..."
