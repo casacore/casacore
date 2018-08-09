@@ -57,13 +57,13 @@ const AccumType StatisticsUtilities<AccumType>::TWO = AccumType(2);
 
 #define _NQUAD \
 	sumsq += datum*datum; \
-	AccumType prevMean = mean; \
+	auto prevMean = mean; \
 	_NLINEAR \
 	nvariance += (datum - prevMean)*(datum - mean);
 
 #define _WQUAD \
 	wsumsq += weight*datum*datum; \
-	AccumType prevMean = wmean; \
+	auto prevMean = wmean; \
 	_WLINEAR \
 	wnvariance += weight*(datum - prevMean)*(datum - wmean);
 
@@ -104,9 +104,9 @@ template <class AccumType> void StatisticsUtilities<AccumType>::accumulate (
 }
 
 template <class AccumType> void StatisticsUtilities<AccumType>::waccumulate (
-	Double& npts, AccumType& sumweights, AccumType& wsum,
-	AccumType& wmean, AccumType& wnvariance, AccumType& wsumsq,
-	const AccumType& datum, const AccumType& weight
+	Double& npts, AccumType& sumweights, AccumType& wsum, AccumType& wmean,
+	AccumType& wnvariance, AccumType& wsumsq, const AccumType& datum,
+	const AccumType& weight
 ) {
 	_WQUAD
 }
@@ -114,9 +114,9 @@ template <class AccumType> void StatisticsUtilities<AccumType>::waccumulate (
 template <class AccumType> template <class LocationType>
 void StatisticsUtilities<AccumType>::accumulate (
 	Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
-	AccumType& sumsq, AccumType& datamin,
-	AccumType& datamax, LocationType& minpos, LocationType& maxpos,
-	const AccumType& datum, const LocationType& location
+	AccumType& sumsq, AccumType& datamin, AccumType& datamax,
+	LocationType& minpos, LocationType& maxpos, const AccumType& datum,
+	const LocationType& location
 ) {
 	_NQUAD
 	_MAXMIN
@@ -125,9 +125,9 @@ void StatisticsUtilities<AccumType>::accumulate (
 template <class AccumType> template <class LocationType, class DataType>
 void StatisticsUtilities<AccumType>::accumulate (
     Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
-    AccumType& sumsq, DataType& datamin,
-    DataType& datamax, LocationType& minpos, LocationType& maxpos,
-    const DataType& datum, const LocationType& location
+    AccumType& sumsq, DataType& datamin, DataType& datamax,
+    LocationType& minpos, LocationType& maxpos, const DataType& datum,
+    const LocationType& location
 ) {
     _NQUAD
     _MAXMIN
@@ -135,10 +135,11 @@ void StatisticsUtilities<AccumType>::accumulate (
 
 template <class AccumType> template <class LocationType>
 void StatisticsUtilities<AccumType>::waccumulate (
-	Double& npts, AccumType& sumweights, AccumType& wsum, AccumType& wmean, AccumType& wnvariance,
-	AccumType& wsumsq, AccumType& datamin, AccumType& datamax,
-	LocationType& minpos, LocationType& maxpos,
-	const AccumType& datum, const AccumType& weight, const LocationType& location
+	Double& npts, AccumType& sumweights, AccumType& wsum, AccumType& wmean,
+	AccumType& wnvariance, AccumType& wsumsq, AccumType& datamin,
+	AccumType& datamax, LocationType& minpos, LocationType& maxpos,
+	const AccumType& datum, const AccumType& weight,
+	const LocationType& location
 ) {
 	_WQUAD
 	_MAXMIN
@@ -172,17 +173,17 @@ Bool StatisticsUtilities<AccumType>::doMin(
 
 #define _NQUADSYM \
 	npts += 2; \
-	AccumType reflect = TWO*center - datum; \
+	auto reflect = TWO*center - datum; \
 	sumsq += datum*datum + reflect*reflect; \
-	AccumType diff = datum - center; \
+	auto diff = datum - center; \
 	nvariance += TWO*diff*diff;
 
 #define _WQUADSYM \
 	npts += 2; \
 	sumweights += TWO*weight; \
-	AccumType reflect = TWO*center - datum; \
+	auto reflect = TWO*center - datum; \
 	wsumsq += weight*(datum*datum + reflect*reflect); \
-	AccumType diff = datum - center; \
+	auto diff = datum - center; \
 	wnvariance += TWO*weight*diff*diff;
 
 #define _MAXMINSYM \
@@ -202,25 +203,26 @@ Bool StatisticsUtilities<AccumType>::doMin(
 	}
 
 template <class AccumType> void StatisticsUtilities<AccumType>::accumulateSym (
-	Double& npts, AccumType& nvariance,
-	AccumType& sumsq, const AccumType& datum, const AccumType& center
+	Double& npts, AccumType& nvariance, AccumType& sumsq,
+	const AccumType& datum, const AccumType& center
 ) {
 	_NQUADSYM
 }
 
 template <class AccumType> void StatisticsUtilities<AccumType>::waccumulateSym (
-	Double& npts, AccumType& sumweights, AccumType& wnvariance, AccumType& wsumsq,
-	const AccumType& datum, const AccumType& weight, const AccumType& center
+	Double& npts, AccumType& sumweights, AccumType& wnvariance,
+	AccumType& wsumsq, const AccumType& datum, const AccumType& weight,
+	const AccumType& center
 ) {
 	_WQUADSYM
 }
 
 template <class AccumType> template <class LocationType>
 void StatisticsUtilities<AccumType>::accumulateSym (
-	Double& npts, AccumType& nvariance,
-	AccumType& sumsq, AccumType& datamin,
+	Double& npts, AccumType& nvariance, AccumType& sumsq, AccumType& datamin,
 	AccumType& datamax, LocationType& minpos, LocationType& maxpos,
-	const AccumType& datum, const LocationType& location, const AccumType& center
+	const AccumType& datum, const LocationType& location,
+	const AccumType& center
 ) {
 	_NQUADSYM
 	_MAXMINSYM
@@ -230,8 +232,8 @@ template <class AccumType> template <class LocationType>
 void StatisticsUtilities<AccumType>::waccumulateSym (
 	Double& npts, AccumType& sumweights, AccumType& wnvariance,
 	AccumType& wsumsq, AccumType& datamin, AccumType& datamax,
-	LocationType& minpos, LocationType& maxpos,
-	const AccumType& datum, const AccumType& weight, const LocationType& location,
+	LocationType& minpos, LocationType& maxpos, const AccumType& datum,
+	const AccumType& weight, const LocationType& location,
 	const AccumType& center
 ) {
 	_WQUADSYM
@@ -243,163 +245,167 @@ Bool StatisticsUtilities<AccumType>::includeDatum(
     const AccumType& datum, typename DataRanges::const_iterator beginRange,
     typename DataRanges::const_iterator endRange, Bool isInclude
 ) {
-    typename DataRanges::const_iterator riter = beginRange;
-    while (riter != endRange) {
-        if (datum >= (*riter).first && datum <= (*riter).second) {
+    // can't use a lambda because the loop can end early via return
+    for (auto iter=beginRange; iter!=endRange; ++iter) {
+        if (datum >= iter->first && datum <= iter->second) {
             return isInclude;
         }
-        ++riter;
     }
     return ! isInclude;
 }
 
 template <class AccumType>
 void StatisticsUtilities<AccumType>::convertToAbsDevMedArray(
-    std::vector<AccumType>& myArray, AccumType median
+    DataArray& myArray, AccumType median
 ) {
-    typename std::vector<AccumType>::iterator iter = myArray.begin();
-    typename std::vector<AccumType>::iterator end = myArray.end();
-    // I bet there's a nifty way to do this in one line in C++11
-    for (; iter!=end; ++iter) {
-        *iter = abs(*iter - median);
-    }
+    for_each(myArray.begin(), myArray.end(), [median](AccumType& datum) {
+        datum = abs(datum - median);
+    });
 }
 
 template <class AccumType>
 std::map<uInt64, AccumType> StatisticsUtilities<AccumType>::indicesToValues(
-    std::vector<AccumType>& myArray, const std::set<uInt64>& indices
+    DataArray& myArray, const std::set<uInt64>& indices
 ) {
-    uInt64 arySize = myArray.size();
+    auto arySize = myArray.size();
     ThrowIf(
         *indices.rbegin() >= arySize,
-        "Logic Error: Index " + String::toString(*indices.rbegin()) + " is too large. "
-        "The sorted array has size " + String::toString(arySize)
+        "Logic Error: Index " + String::toString(*indices.rbegin()) + " is too "
+        "large. The sorted array has size " + String::toString(arySize)
     );
     std::map<uInt64, AccumType> indexToValuesMap;
-    std::set<uInt64>::const_iterator initer = indices.begin();
-    std::set<uInt64>::const_iterator inend = indices.end();
-    Int64 lastIndex = 0;
-    while(initer != inend) {
+    uInt64 lastIndex = 0;
+    for_each(
+        indices.cbegin(), indices.cend(),
+        [&myArray, &lastIndex, &arySize](uInt64 index) {
         GenSort<AccumType>::kthLargest(
-            &myArray[lastIndex], arySize - lastIndex, *initer - lastIndex
+            &myArray[lastIndex], arySize - lastIndex, index - lastIndex
         );
-        lastIndex = *initer;
-        ++initer;
-    }
-    std::set<uInt64>::const_iterator iter = indices.begin();
-    std::set<uInt64>::const_iterator end = indices.end();
-    while (iter != end) {
-        indexToValuesMap[*iter] = myArray[*iter];
-        ++iter;
-    }
+        lastIndex = index;
+    });
+    for_each(
+        indices.cbegin(), indices.cend(),
+        [&myArray, &indexToValuesMap](uInt64 index) {
+        indexToValuesMap[index] = myArray[index];
+    });
     return indexToValuesMap;
 }
 
 template <class AccumType>
 void StatisticsUtilities<AccumType>::mergeResults(
-    std::vector<std::vector<uInt64> >& bins, std::vector<CountedPtr<AccumType> >& sameVal,
-    std::vector<Bool>& allSame, const PtrHolder<std::vector<std::vector<uInt64> > >& tBins,
-    const PtrHolder<std::vector<CountedPtr<AccumType> > >& tSameVal,
-    const PtrHolder<std::vector<Bool> >& tAllSame, uInt nThreadsMax
+    std::vector<BinCountArray>& bins,
+    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    const PtrHolder<std::vector<BinCountArray>>& tBins,
+    const PtrHolder<std::vector<CountedPtr<AccumType>>>& tSameVal,
+    const PtrHolder<std::vector<Bool>>& tAllSame, uInt nThreadsMax
 ) {
     // merge results from individual threads (tBins, tSameVal, tAllSame)
     // into single data structures (bins, sameVal, allSame)
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
-        std::vector<std::vector<uInt64> >::iterator iter;
-        std::vector<std::vector<uInt64> >::iterator end = bins.end();
-        typename std::vector<CountedPtr<AccumType> >::iterator siter;
-        typename std::vector<CountedPtr<AccumType> >::iterator send = sameVal.end();
-        std::vector<Bool>::iterator aiter;
-        uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
-        std::vector<std::vector<uInt64> >::const_iterator titer = tBins[idx8].begin();
-        for (iter=bins.begin(); iter!=end; ++iter, ++titer) {
+        auto idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
+        auto titer = tBins[idx8].cbegin();
+        for_each(bins.begin(), bins.end(), [&titer](BinCountArray& bcArray) {
             std::transform(
-                iter->begin(), iter->end(), titer->begin(),
-                iter->begin(), std::plus<Int64>()
+                bcArray.begin(), bcArray.end(), titer->begin(),
+                bcArray.begin(), std::plus<Int64>()
             );
-        }
-        typename std::vector<CountedPtr<AccumType> >::const_iterator viter = tSameVal[idx8].begin();
-        std::vector<Bool>::const_iterator witer = tAllSame[idx8].begin();
-        for (
-            siter=sameVal.begin(), aiter=allSame.begin(); siter!=send;
-            ++siter, ++viter, ++aiter, ++witer
-        ) {
+            ++titer;
+        });
+        //typename std::vector<CountedPtr<AccumType> >::iterator siter;
+        //auto send = sameVal.end();
+        std::vector<Bool>::iterator aiter = allSame.begin();
+        auto viter = tSameVal[idx8].cbegin();
+        auto witer = tAllSame[idx8].cbegin();
+        for_each(
+            sameVal.begin(), sameVal.end(),
+            [&aiter, &viter, &witer](CountedPtr<AccumType>& svalue) {
             if (! *aiter) {
                 // won't have the same values, do nothing
             }
             if (*witer && *aiter) {
                 if (
                     viter->null()
-                    || (! siter->null() && *(*siter) == *(*viter))
+                    || (! svalue.null() && *svalue == *(*viter))
                 ) {
                     // no unflagged values in this chunk or both
                     // have the all the same values, do nothing
                 }
-                else if (siter->null()) {
-                    siter->reset(new AccumType(*(*viter)));
+                else if (svalue.null()) {
+                    svalue.reset(new AccumType(*(*viter)));
                 }
                 else {
-                    // both are not null, and they do not have
-                    // the same values
-                    siter->reset();
+                    // both are not null, and they do not have the same values
+                    svalue.reset();
                     *aiter = False;
                 }
             }
             else {
                 // *aiter = True, *witer = False, all values are not the same
-                siter->reset();
+                svalue.reset();
                 *aiter = False;
             }
-        }
+            ++aiter;
+            ++viter;
+            ++witer;
+        });
     }
 }
 
 template <class AccumType>
 StatsData<AccumType> StatisticsUtilities<AccumType>::combine(
-    const std::vector<StatsData<AccumType> >& stats
+    const std::vector<StatsData<AccumType>>& stats
 ) {
-    StatsData<AccumType> res = initializeStatsData<AccumType>();
-    typename std::vector<StatsData<AccumType> >::const_iterator iter = stats.begin();
-    typename std::vector<StatsData<AccumType> >::const_iterator end = stats.end();
+    auto n = stats.size();
+    auto res = n == 1 ? stats[0] : initializeStatsData<AccumType>();
+    if (n == 0) {
+        // null set
+        return res;
+    }
     static const AccumType zero = 0;
     static const AccumType one = 1;
-    for (; iter!=end; ++iter) {
-        if (! iter->max.null()) {
-            if (res.max.null() || *(iter->max) > *res.max) {
-                res.max = iter->max;
-                res.maxpos = iter->maxpos;
+    if (n > 1) {
+        for_each(
+            stats.cbegin(), stats.cend(),
+            [&res](const StatsData<AccumType>& s) {
+            if (! s.max.null() && (res.max.null() || *(s.max) > *res.max)) {
+                // pointer copy
+                res.max = s.max;
+                res.maxpos = s.maxpos;
             }
-        }
-        if (! iter->min.null()) {
-            if (res.min.null() || *(iter->min) < *res.min) {
-                res.min = iter->min;
-                res.minpos = iter->minpos;
+            if (! s.min.null() && (res.min.null() || *(s.min) < *res.min)) {
+                // pointer copy
+                res.min = s.min;
+                res.minpos = s.minpos;
             }
-        }
-        AccumType sumweights = iter->sumweights + res.sumweights;
-        AccumType mean = sumweights == zero ? zero
-            : (iter->sumweights*iter->mean + res.sumweights*res.mean)/sumweights;
-        AccumType nvariance = zero;
-        if (sumweights > zero) {
-            AccumType diff1 = iter->mean - mean;
-            AccumType diff2 = res.mean - mean;
-            nvariance = iter->nvariance + res.nvariance
-                + iter->sumweights*diff1*diff1
-                + res.sumweights*diff2*diff2;
-        }
-        res.masked = iter->masked || res.masked;
-        res.mean = mean;
-        res.npts = iter->npts + res.npts;
-        res.nvariance = nvariance;
-        res.sum = iter->sum + res.sum;
-        res.sumsq = iter->sumsq + res.sumsq;
-        res.sumweights = sumweights;
-        res.variance = res.sumweights > one
-            ? nvariance/(res.sumweights - one) : 0;
-        res.rms = sqrt(res.sumsq/res.sumweights);
-        res.stddev = sqrt(res.variance);
-        res.weighted = iter->weighted || res.weighted;
+            auto sumweights = s.sumweights + res.sumweights;
+            auto mean = sumweights == zero ? zero
+                : (s.sumweights*s.mean + res.sumweights*res.mean)/sumweights;
+            auto nvariance = zero;
+            if (sumweights > zero) {
+                auto diff1 = s.mean - mean;
+                auto diff2 = res.mean - mean;
+                nvariance = s.nvariance + res.nvariance
+                    + s.sumweights*diff1*diff1 + res.sumweights*diff2*diff2;
+            }
+            res.masked = s.masked || res.masked;
+            res.mean = mean;
+            res.npts += s.npts;
+            res.nvariance = nvariance;
+            res.sum += s.sum;
+            res.sumsq += s.sumsq;
+            res.sumweights = sumweights;
+            res.weighted = s.weighted || res.weighted;
+        });
     }
+    // In the n = 1 case, the stats which are computed from other stats are
+    // not guaranteed to be in stats[0], so compute and fill them here, also
+    // compute them for the n > 1 case
+    // in any reasonable statistical dataset, sumsq should be zero if
+    // sumweights is 0
+    res.variance = res.sumweights > one
+        ? res.nvariance/(res.sumweights - one) : 0;
+    res.rms = res.sumweights == zero ? zero : sqrt(res.sumsq/res.sumweights);
+    res.stddev = sqrt(res.variance);
     return res;
 }
 
@@ -408,13 +414,11 @@ template <class DataIterator, class MaskIterator, class WeightsIterator>
 uInt StatisticsUtilities<AccumType>::nThreadsMax(
     const StatsDataProvider<CASA_STATP> *const dataProvider
 ) {
-    uInt nthr = OMP::nMaxThreads();
-    if (nthr > 1) {
-        if (dataProvider) {
-            uInt n = dataProvider->getNMaxThreads();
-            if (n > 0) {
-                return n;
-            }
+    auto nthr = OMP::nMaxThreads();
+    if (nthr > 1 && dataProvider) {
+        auto n = dataProvider->getNMaxThreads();
+        if (n > 0) {
+            return n;
         }
     }
     return nthr;

@@ -28,6 +28,8 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicMath/Math.h>
 
+#include <algorithm>
+
 namespace casacore {
 
 String StatisticsData::toString(STATS stat) {
@@ -40,8 +42,6 @@ String StatisticsData::toString(STATS stat) {
         return "min";
     case NPTS:
         return "npts";
-    //case QUANTILE:
-        //    return "quantile";
     case RMS:
         return "rms";
     case STDDEV:
@@ -67,7 +67,7 @@ String StatisticsData::toString(STATS stat) {
     default:
         ThrowCc(
             "Logic error: Unhandled value in switch statement"
-                + String::toString(stat)
+            + String::toString(stat)
         );
     }
 }
@@ -76,18 +76,17 @@ std::map<Double, uInt64> StatisticsData::indicesFromFractions(
     uInt64 npts, const std::set<Double>& fractions
 ) {
     std::map<Double, uInt64> fractionToIndexMap;
-    std::set<Double>::const_iterator fiter = fractions.begin();
-    std::set<Double>::const_iterator fend = fractions.end();
-    while (fiter != fend) {
-        Double idxWRT1 = *fiter * npts;
-        Double myfloor = floor(idxWRT1);
+    for_each(
+        fractions.cbegin(), fractions.cend(),
+        [&fractionToIndexMap, &npts](Double q) {
+        auto idxWRT1 = q * npts;
+        auto myfloor = floor(idxWRT1);
         if (near(idxWRT1, myfloor)) {
             // prevent rounding due to finite machine precision
             idxWRT1 = myfloor;
         }
-        fractionToIndexMap[*fiter] = ((uInt64)ceil(idxWRT1) - 1);
-        ++fiter;
-    }
+        fractionToIndexMap[q] = ((uInt64)ceil(idxWRT1) - 1);
+    });
     return fractionToIndexMap;
 }
 

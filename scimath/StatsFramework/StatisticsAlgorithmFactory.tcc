@@ -37,11 +37,13 @@
 
 namespace casacore {
 
-CASA_STATD StatisticsAlgorithmFactory<CASA_STATP>::StatisticsAlgorithmFactory() {
+CASA_STATD
+StatisticsAlgorithmFactory<CASA_STATP>::StatisticsAlgorithmFactory() {
     configureClassical();
 }
 
-CASA_STATD StatisticsAlgorithmFactory<CASA_STATP>::~StatisticsAlgorithmFactory() {}
+CASA_STATD
+StatisticsAlgorithmFactory<CASA_STATP>::~StatisticsAlgorithmFactory() {}
 
 CASA_STATD
 void StatisticsAlgorithmFactory<CASA_STATP>::configureBiweight(
@@ -60,8 +62,7 @@ void StatisticsAlgorithmFactory<CASA_STATP>::configureClassical() {
 CASA_STATD
 void StatisticsAlgorithmFactory<CASA_STATP>::configureFitToHalf(
     FitToHalfStatisticsData::CENTER centerType,
-    FitToHalfStatisticsData::USE_DATA useData,
-    AccumType centerValue
+    FitToHalfStatisticsData::USE_DATA useData, AccumType centerValue
 ) {
     _algorithm = StatisticsData::FITTOHALF;
     _fitToHalfData.center = centerType;
@@ -69,7 +70,8 @@ void StatisticsAlgorithmFactory<CASA_STATP>::configureFitToHalf(
     _fitToHalfData.centerValue = centerValue;
 }
 
-CASA_STATD void StatisticsAlgorithmFactory<CASA_STATP>::configureHingesFences(Double f) {
+CASA_STATD
+void StatisticsAlgorithmFactory<CASA_STATP>::configureHingesFences(Double f) {
     _algorithm = StatisticsData::HINGESFENCES;
     _hf = f;
 }
@@ -84,9 +86,11 @@ CASA_STATD void StatisticsAlgorithmFactory<CASA_STATP>::configureChauvenet(
 
 CASA_STATD
 template <class DataIterator2, class MaskIterator2, class WeightsIterator2>
-void StatisticsAlgorithmFactory<CASA_STATP>::copy(StatisticsAlgorithmFactory<
-    AccumType, DataIterator2, MaskIterator2, WeightsIterator2
->& other) const {
+void StatisticsAlgorithmFactory<CASA_STATP>::copy(
+    StatisticsAlgorithmFactory<
+        AccumType, DataIterator2, MaskIterator2, WeightsIterator2
+    >& other
+) const {
     other._algorithm = _algorithm;
     other._hf = _hf;
     other._chauvData = _chauvData;
@@ -96,37 +100,30 @@ void StatisticsAlgorithmFactory<CASA_STATP>::copy(StatisticsAlgorithmFactory<
 
 CASA_STATD CountedPtr<StatisticsAlgorithm<CASA_STATP> >
 StatisticsAlgorithmFactory<CASA_STATP>::createStatsAlgorithm() const {
-    casacore::CountedPtr<StatisticsAlgorithm<CASA_STATP> > sa;
     switch (_algorithm) {
     case StatisticsData::BIWEIGHT:
-        sa = new BiweightStatistics<CASA_STATP>(
+        return new BiweightStatistics<CASA_STATP>(
             _biweightData.maxIter, _biweightData.c
         );
-        return sa;
     case StatisticsData::CLASSICAL:
-        sa = new ClassicalStatistics<CASA_STATP>();
-        return sa;
+        return new ClassicalStatistics<CASA_STATP>();
     case StatisticsData::HINGESFENCES: {
-        sa = new HingesFencesStatistics<CASA_STATP>(_hf);
-        return sa;
+        return new HingesFencesStatistics<CASA_STATP>(_hf);
     }
     case StatisticsData::FITTOHALF: {
-        sa = new FitToHalfStatistics<CASA_STATP>(
+        return new FitToHalfStatistics<CASA_STATP>(
             _fitToHalfData.center, _fitToHalfData.side,
             _fitToHalfData.centerValue
         );
-        return sa;
     }
     case StatisticsData::CHAUVENETCRITERION: {
-        sa = new ChauvenetCriterionStatistics<CASA_STATP>(
+        return new ChauvenetCriterionStatistics<CASA_STATP>(
             _chauvData.zScore, _chauvData.maxIter
         );
-        return sa;
     }
     default:
         ThrowCc(
-            "Logic Error: Unhandled algorithm "
-            + String::toString(_algorithm)
+            "Logic Error: Unhandled algorithm " + String::toString(_algorithm)
         );
     }
 }
@@ -140,7 +137,8 @@ StatisticsAlgorithmFactory<CASA_STATP>::biweightData() const {
     return _biweightData;
 }
 
-CASA_STATD Double StatisticsAlgorithmFactory<CASA_STATP>::hingesFencesFactor() const {
+CASA_STATD
+Double StatisticsAlgorithmFactory<CASA_STATP>::hingesFencesFactor() const {
     ThrowIf(
         _algorithm != StatisticsData::HINGESFENCES,
         "Object is currently not configured to use the hinges-fences algorithm"
@@ -161,7 +159,8 @@ CASA_STATD StatisticsAlgorithmFactoryData::ChauvenetData
 StatisticsAlgorithmFactory<CASA_STATP>::chauvenetData() const {
     ThrowIf(
         _algorithm != StatisticsData::CHAUVENETCRITERION,
-        "Object is currently not configured to use the chauvenet/zscore algorithm"
+        "Object is currently not configured to use "
+        "the chauvenet/zscore algorithm"
     );
     return _chauvData;
 }
@@ -196,8 +195,7 @@ CASA_STATD Record StatisticsAlgorithmFactory<CASA_STATP>::toRecord() const {
     }
     default:
         ThrowCc(
-            "Logic Error: Unhandled algorithm "
-                + String::toString(_algorithm)
+            "Logic Error: Unhandled algorithm " + String::toString(_algorithm)
         );
     }
 }
@@ -242,8 +240,8 @@ StatisticsAlgorithmFactory<CASA_STATP>::fromRecord(const Record& r) {
     case StatisticsData::BIWEIGHT: {
         ThrowIf(! r.isDefined("c"), "field 'c' is not defined");
         ThrowIf(! r.isDefined("max_iter"), "field 'max_iter' is not defined");
-        Double c = r.asDouble("c");
-        Int maxIter = r.asInt("max_iter");
+        auto c = r.asDouble("c");
+        auto maxIter = r.asInt("max_iter");
         saf.configureBiweight(maxIter, c);
         return saf;
     }
@@ -256,7 +254,7 @@ StatisticsAlgorithmFactory<CASA_STATP>::fromRecord(const Record& r) {
     }
     case StatisticsData::FITTOHALF: {
         ThrowIf(! r.isDefined("center"), "field 'center' is not defined");
-        FitToHalfStatisticsData::CENTER center = (FitToHalfStatisticsData::CENTER)r.asInt("center");
+        auto center = (FitToHalfStatisticsData::CENTER)r.asInt("center");
         AccumType centerValue = 0;
         if (center == FitToHalfStatisticsData::CVALUE) {
             ThrowIf (
@@ -266,22 +264,21 @@ StatisticsAlgorithmFactory<CASA_STATP>::fromRecord(const Record& r) {
             r.get("center_value", centerValue);
         }
         ThrowIf(! r.isDefined("side"), "field 'side' is not defined");
-        FitToHalfStatisticsData::USE_DATA side = (FitToHalfStatisticsData::USE_DATA)r.asInt("side");
+        auto side = (FitToHalfStatisticsData::USE_DATA)r.asInt("side");
         saf.configureFitToHalf(center, side, centerValue);
         return saf;
     }
     case StatisticsData::CHAUVENETCRITERION: {
         ThrowIf(! r.isDefined("zscore"), "field 'zscore' is not defined");
         ThrowIf(! r.isDefined("max_iter"), "field 'max_iter' is not defined");
-        Double zscore = r.asDouble("zscore");
-        Int maxIter = r.asInt("max_iter");
+        auto zscore = r.asDouble("zscore");
+        auto maxIter = r.asInt("max_iter");
         saf.configureChauvenet(zscore, maxIter);
         return saf;
     }
     default:
         ThrowCc(
-            "Logic Error: Unhandled algorithm "
-            + String::toString(algorithm)
+            "Logic Error: Unhandled algorithm " + String::toString(algorithm)
         );
     }
 }

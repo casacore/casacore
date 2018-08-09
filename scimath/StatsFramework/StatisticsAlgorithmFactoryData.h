@@ -41,6 +41,8 @@ public:
         Double c;
     };
 
+    StatisticsAlgorithmFactoryData() = delete;
+
     template <class AccumType> struct FitToHalfData {
         FitToHalfStatisticsData::CENTER center;
         // fit to half data portion to use
@@ -56,8 +58,6 @@ public:
 
     ~StatisticsAlgorithmFactoryData() {};
 
-private:
-    StatisticsAlgorithmFactoryData() {};
 };
 
 }

@@ -39,12 +39,12 @@ template <class AccumType>
 StatsData<AccumType> initializeStatsData() {
 	StatsData<AccumType> init = {
 		False,
-		NULL,
+		nullptr,
 		std::pair<Int64, Int64>(-1, -1),
 		0,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
+		nullptr,
 		std::pair<Int64, Int64>(-1, -1),
 		0,
 		0,

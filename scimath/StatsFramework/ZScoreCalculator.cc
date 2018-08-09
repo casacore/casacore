@@ -54,25 +54,25 @@ Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
         _nptsToMaxZScore[6225098696ULL] = 6.5;
         _nptsToMaxZScore[195341107722ULL] = 7;
     }
-    std::map<uInt64, Double>::const_iterator iter = _nptsToMaxZScore.find(npts);   
+    auto iter = _nptsToMaxZScore.find(npts);
     if (iter != _nptsToMaxZScore.end()) {
         return iter->second;
     }
-    std::map<uInt64, Double>::const_iterator lowiter = _nptsToMaxZScore.begin();
-    std::map<uInt64, Double>::const_iterator upiter = _nptsToMaxZScore.begin();
+    auto lowiter = _nptsToMaxZScore.cbegin();
+    auto upiter = lowiter;
     ++upiter;
     if (npts > _nptsToMaxZScore.rbegin()->first) {
-        Double zscoreMax = _nptsToMaxZScore.rbegin()->second;
-        Double z = zscoreMax + 0.5;
+        auto zscoreMax = _nptsToMaxZScore.rbegin()->second;
+        auto z = zscoreMax + 0.5;
         while (True) {
-            uInt64 nptsmin = zscoreToNpts(z);
+            auto nptsmin = zscoreToNpts(z);
             if (nptsmin >= npts) {
                 _nptsToMaxZScore[nptsmin] = z;
                 if (nptsmin == npts) {
                     return z;
                 }
                 else {
-                    uInt increment = _nptsToMaxZScore.size() - 2;
+                    auto increment = _nptsToMaxZScore.size() - 2;
                     advance(lowiter, increment);
                     advance(upiter, increment);
                     break;
@@ -82,7 +82,8 @@ Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
         }
     }
     else {
-        Int distance = _nptsToMaxZScore.size()/2;
+        // distance must be an Int
+        Int distance(_nptsToMaxZScore.size()/2);
         while (True) {
             advance(lowiter, distance);
             advance(upiter, distance);
@@ -94,15 +95,14 @@ Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
                 distance = 1;
             }
             distance = lowiter->first > npts
-                ? -std::abs(distance)
-                : std::abs(distance);
+                ? -std::abs(distance) : std::abs(distance);
         }
     }
-    Double lz = lowiter->second;
-    Double uz = upiter->second;
-    Double z = (lz + uz)/2;
+    auto lz = lowiter->second;
+    auto uz = upiter->second;
+    auto z = (lz + uz)/2;
     while (True) {
-        uInt64 nptsmin = zscoreToNpts(z);
+        auto nptsmin = zscoreToNpts(z);
         if (_nptsToMaxZScore.size() < 1000000) {
             _nptsToMaxZScore[nptsmin] = z;
         }

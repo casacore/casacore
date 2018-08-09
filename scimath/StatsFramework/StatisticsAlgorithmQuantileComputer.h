@@ -45,6 +45,8 @@ class StatisticsAlgorithmQuantileComputer {
 
 public:
 
+    StatisticsAlgorithmQuantileComputer() = delete;
+
     virtual ~StatisticsAlgorithmQuantileComputer();
 
     // clone this object by returning a pointer to a copy
@@ -71,24 +73,28 @@ public:
 
 protected:
 
-    // ds should be the dataset object held in the StatisticsAlgorithm object. The
-    // QuantileComputer calculator object should never hold its own version of a dataset object.
-    // The algorithm object (caller of this method) is always responsible for deleting
-    // the passed object, usually upon its destruction.
+    // ds should be the dataset object held in the StatisticsAlgorithm object.
+    // The QuantileComputer calculator object should never hold its own version
+    // of a dataset object. The algorithm object (caller of this method) is
+    // always responsible for deleting the passed object, usually upon its
+    // destruction.
     StatisticsAlgorithmQuantileComputer(StatisticsDataset<CASA_STATP>* ds);
 
-    // use copy semantics.
-    // statistics algorithm object's responsibility to set the _dataset object in the new
-    // QuantileComputer calculator object upon a copy. The underlying _dataset object in the new
-    // stats calculator object should be a reference to the new _dataset object in the
-    // copied statistics algorithm object.
-    StatisticsAlgorithmQuantileComputer(const StatisticsAlgorithmQuantileComputer& other);
+    // use copy semantics. statistics algorithm object's responsibility to set
+    // the _dataset object in the new QuantileComputer calculator object upon a
+    // copy. The underlying _dataset object in the new stats calculator object
+    // should be a reference to the new _dataset object in the copied statistics
+    // algorithm object.
+    StatisticsAlgorithmQuantileComputer(
+        const StatisticsAlgorithmQuantileComputer& other
+    );
 
-    // use copy semantics. The _dataset object is not copied. It is the associated
-    // statistics algorithm object's responsibility to set the _dataset object in the
-    // new QuantileComputer calculator object upon an assignment. The underlying _dataset
-    // object in the new stats calculator object should be a reference to that in the
-    // newly assigned statistics algorithm object.
+    // use copy semantics. The _dataset object is not copied. It is the
+    // associated statistics algorithm object's responsibility to set the
+    // _dataset object in the new QuantileComputer calculator object upon an
+    // assignment. The underlying _dataset object in the new stats calculator
+    // object should be a reference to that in the newly assigned statistics
+    // algorithm object.
     StatisticsAlgorithmQuantileComputer& operator=(
         const StatisticsAlgorithmQuantileComputer& other
     );
@@ -97,20 +103,21 @@ protected:
 
     CountedPtr<AccumType> _getMedian() const { return _median; }
 
-    CountedPtr<AccumType> _getMedianAbsDevMedian() const { return _medAbsDevMed; }
+    CountedPtr<AccumType> _getMedianAbsDevMedian() const {
+        return _medAbsDevMed;
+    }
 
-    void _setMedianAbsDevMedian(CountedPtr<AccumType> medAbsDevMed) { _medAbsDevMed = medAbsDevMed; }
+    void _setMedianAbsDevMedian(CountedPtr<AccumType> medAbsDevMed) {
+        _medAbsDevMed = medAbsDevMed;
+    }
 
 private:
-    std::vector<AccumType> _sortedArray;
+    std::vector<AccumType> _sortedArray{};
     // This pointer references the (non-pointer) object
     // in the associated non-QuantileComputer computer object,
     // so this should not be wrapped in a smart pointer.
-    StatisticsDataset<CASA_STATP>* _dataset;
-    CountedPtr<AccumType> _median, _medAbsDevMed;
-
-    // forbid default constructor.
-    StatisticsAlgorithmQuantileComputer();
+    StatisticsDataset<CASA_STATP>* _dataset{nullptr};
+    CountedPtr<AccumType> _median{}, _medAbsDevMed{};
 
 };
 

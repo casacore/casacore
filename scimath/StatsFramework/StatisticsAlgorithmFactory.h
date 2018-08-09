@@ -34,18 +34,25 @@
 
 namespace casacore {
 
-// Allows a common way for configuring and creating stats algorithm objects
+// Provides a single interface for creation of stats algorithm objects
 
-template <class AccumType, class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
+template <
+    class AccumType, class DataIterator, class MaskIterator=const Bool *,
+    class WeightsIterator=DataIterator
+>
 class StatisticsAlgorithmFactory {
 
 public:
 
     // to make copy() more straight forward to implement
-    template <class AccumType2, class DataIterator2, class MaskIterator2, class WeightsIterator2>
+    template <
+        class AccumType2, class DataIterator2, class MaskIterator2,
+        class WeightsIterator2
+    >
     friend class StatisticsAlgorithmFactory;
 
-    // upon construction, the object is configured to use the classical stats algorithm
+    // upon construction, the object is configured to use the classical stats
+    // algorithm
     StatisticsAlgorithmFactory();
 
     ~StatisticsAlgorithmFactory();
@@ -56,9 +63,10 @@ public:
 
     // configure to use fit to half algorithm.
     void configureFitToHalf(
-        FitToHalfStatisticsData::CENTER centerType=FitToHalfStatisticsData::CMEAN,
-        FitToHalfStatisticsData::USE_DATA useData=FitToHalfStatisticsData::LE_CENTER,
-        AccumType centerValue=0
+        FitToHalfStatisticsData::CENTER centerType
+        =FitToHalfStatisticsData::CMEAN,
+        FitToHalfStatisticsData::USE_DATA useData
+        =FitToHalfStatisticsData::LE_CENTER, AccumType centerValue=0
     );
 
     // configure to use hinges-fences algorithm
@@ -67,9 +75,9 @@ public:
     // configure to use Chauvenet's criterion
     void configureChauvenet(Double zscore=-1, Int maxIterations=-1);
 
-    // copy the data from this object to an object with different template types.
-    // Note that the AccumType of <src>other</src> must be the same as the AccumType
-    // of this object.
+    // copy the data from this object to an object with different template
+    // types. Note that the AccumType of <src>other</src> must be the same as
+    // the AccumType of this object.
     template <class DataIterator2, class MaskIterator2, class WeightsIterator2>
     void copy(
         StatisticsAlgorithmFactory<
@@ -79,7 +87,7 @@ public:
 
     // Create a pointer to an object of a class derived from StatisticsAlgorithm
     // that reflects the current configuration
-    CountedPtr<StatisticsAlgorithm<CASA_STATP> > createStatsAlgorithm() const;
+    CountedPtr<StatisticsAlgorithm<CASA_STATP>> createStatsAlgorithm() const;
 
     StatisticsData::ALGORITHM algorithm() const { return _algorithm; }
 
@@ -97,7 +105,8 @@ public:
 
     // Throws an exception if the current configuration is not relevant
     // to the fit-to-half algorithm
-    StatisticsAlgorithmFactoryData::FitToHalfData<AccumType> fitToHalfData() const;
+    StatisticsAlgorithmFactoryData::FitToHalfData<AccumType>
+    fitToHalfData() const;
 
     // create a record from the current configuration that can be used
     // to create another object using the fromRecord() method.

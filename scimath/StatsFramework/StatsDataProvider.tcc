@@ -31,14 +31,11 @@
 
 namespace casacore {
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>::StatsDataProvider() {}
+CASA_STATD StatsDataProvider<CASA_STATP>::StatsDataProvider() {}
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>::~StatsDataProvider() {}
+CASA_STATD StatsDataProvider<CASA_STATP>::~StatsDataProvider() {}
 
-template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
-uInt StatsDataProvider<AccumType, DataIterator, MaskIterator, WeightsIterator>::getNMaxThreads() const {
+CASA_STATD uInt StatsDataProvider<CASA_STATP>::getNMaxThreads() const {
     return 0;
 }
 

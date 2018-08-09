@@ -31,39 +31,22 @@
 
 namespace casacore {
 
-// Utility functions used for incrementing pointers in a data set used by the stats framework.
+// Utility functions used for incrementing pointers in a data set used by the
+// stats framework.
 
-template <class DataIterator, class MaskIterator=const Bool *, class WeightsIterator=DataIterator>
-class StatisticsIncrementer {
+template <
+    class DataIterator, class MaskIterator=const Bool *,
+    class WeightsIterator=DataIterator
+> class StatisticsIncrementer {
 public:
+
+    StatisticsIncrementer() = delete;
 
 	~StatisticsIncrementer() {}
 
 	//<group>
-	// NOTE versions with <src>unityStride</src> are deprecated, but left for
-	// backward compatibility. Use versions without <src>unityStride</src> for
-	// new code (and update existing code to use new versions).
-	// <src> loopCount is always incremented by one, independent of the values
-	// of <src>dataStride</src> and <src>maskStride</src>
-	inline static void increment(
-		DataIterator& datum, uInt64& loopCount, Bool unityStride, uInt dataStride
-	);
-
-	inline static void increment(
-		DataIterator& datum, uInt64& loopCount, WeightsIterator& weight,
-		Bool unityStride, uInt dataStride
-	);
-
-	inline static void increment(
-		DataIterator& datum, uInt64& loopCount, MaskIterator& mask,
-		Bool unityStride, uInt dataStride, uInt maskStride
-	);
-
-	inline static void increment(
-		DataIterator& datum, uInt64& loopCount,
-		WeightsIterator& weight, MaskIterator& mask,
-		Bool unityStride, uInt dataStride, uInt maskStride
-	);
+	// <src>loopCount</src> is always incremented by one, independent of the
+	// value of <src>dataStride</src> and <src>maskStride</src>
 
     inline static void increment(
         DataIterator& datum, uInt64& loopCount, uInt dataStride
@@ -91,9 +74,8 @@ public:
     }
 
     inline static void increment(
-        DataIterator& datum, uInt64& loopCount,
-        WeightsIterator& weight, MaskIterator& mask,
-        uInt dataStride, uInt maskStride
+        DataIterator& datum, uInt64& loopCount, WeightsIterator& weight,
+        MaskIterator& mask, uInt dataStride, uInt maskStride
     ) {
         std::advance(datum, dataStride);
         std::advance(weight, dataStride);
@@ -102,16 +84,8 @@ public:
     }
 	// </group>
 
-private:
-	// Just static methods, disallow constructor
-	StatisticsIncrementer() {}
-
 };
 
 }
-
-#ifndef CASACORE_NO_AUTO_TEMPLATES
-#include <casacore/scimath/StatsFramework/StatisticsIncrementer.tcc>
-#endif
 
 #endif
