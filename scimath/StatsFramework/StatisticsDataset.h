@@ -279,7 +279,7 @@ private:
     std::vector<Int64>::const_iterator _citer{};
     std::vector<uInt>::const_iterator _dsiter{};
     uInt _dataCount{0};
-    ChunkData _chunk{};
+    ChunkData _chunk;
 
     void _throwIfDataProviderDefined() const;
 };

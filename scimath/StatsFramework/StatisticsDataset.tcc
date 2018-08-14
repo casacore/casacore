@@ -42,7 +42,7 @@ StatisticsDataset<CASA_STATP>::StatisticsDataset(const StatisticsDataset& other)
       _maskStrides(other._maskStrides),
       _isIncludeRanges(other._isIncludeRanges), _dataRanges(other._dataRanges),
       // WARN reference semantics
-      _dataProvider(other._dataProvider), _idataset(0), _dataCount(0) {}
+      _dataProvider(other._dataProvider), _idataset(0), _dataCount(0), _chunk() {}
 
 CASA_STATD StatisticsDataset<CASA_STATP>::~StatisticsDataset() {}
 
