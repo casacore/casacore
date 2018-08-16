@@ -30,25 +30,22 @@
 
 namespace casacore {
 
-// The default constructor should never be called
-CASA_STATD StatisticsAlgorithmQuantileComputer<CASA_STATP>::StatisticsAlgorithmQuantileComputer()
-    : _sortedArray(), _dataset(), _median(), _medAbsDevMed() {}
+CASA_STATD StatisticsAlgorithmQuantileComputer<CASA_STATP>
+::StatisticsAlgorithmQuantileComputer(StatisticsDataset<CASA_STATP>* ds)
+  : _dataset(ds) {}
 
-CASA_STATD StatisticsAlgorithmQuantileComputer<CASA_STATP>::StatisticsAlgorithmQuantileComputer(
-    StatisticsDataset<CASA_STATP>* ds
-) : _sortedArray(), _dataset(ds), _median(), _medAbsDevMed() {}
-
-CASA_STATD StatisticsAlgorithmQuantileComputer<CASA_STATP>::~StatisticsAlgorithmQuantileComputer() {}
+CASA_STATD StatisticsAlgorithmQuantileComputer<CASA_STATP>
+::~StatisticsAlgorithmQuantileComputer() {}
 
 // explicitly set _dataset to NULL, this needs to be
 // set by the caller upon a copy
-CASA_STATD
-StatisticsAlgorithmQuantileComputer<CASA_STATP>::StatisticsAlgorithmQuantileComputer(
+CASA_STATD StatisticsAlgorithmQuantileComputer<CASA_STATP>
+::StatisticsAlgorithmQuantileComputer(
     const StatisticsAlgorithmQuantileComputer& other
-) : _sortedArray(other._sortedArray), _dataset(NULL),
-    _median(other._median ? new AccumType(*other._median) : NULL),
+) : _sortedArray(other._sortedArray), _dataset(nullptr),
+    _median(other._median ? new AccumType(*other._median) : nullptr),
     _medAbsDevMed(
-        other._medAbsDevMed ? new AccumType(*other._medAbsDevMed) : NULL
+        other._medAbsDevMed ? new AccumType(*other._medAbsDevMed) : nullptr
     ) {}
 
 CASA_STATD StatisticsAlgorithmQuantileComputer<CASA_STATP>&
@@ -61,15 +58,16 @@ StatisticsAlgorithmQuantileComputer<CASA_STATP>::operator=(
      _sortedArray = other._sortedArray;
      // explicitly set to NULL, this needs to be
      // set by the caller upon assignment
-     _dataset = NULL;
-     _median.reset(other._median ? new AccumType(*other._median) : NULL);
+     _dataset = nullptr;
+     _median.reset(other._median ? new AccumType(*other._median) : nullptr);
      _medAbsDevMed.reset(
-         other._medAbsDevMed ? new AccumType(*other._medAbsDevMed) : NULL
+         other._medAbsDevMed ? new AccumType(*other._medAbsDevMed) : nullptr
      );
      return *this;
 }
 
-CASA_STATD void StatisticsAlgorithmQuantileComputer<CASA_STATP>::deleteSortedArray() {
+CASA_STATD
+void StatisticsAlgorithmQuantileComputer<CASA_STATP>::deleteSortedArray() {
     _sortedArray.clear();
 }
 

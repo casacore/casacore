@@ -34,7 +34,10 @@
 
 
 // because the template signature has become unwieldy
-#define CASA_STATD template <class AccumType, class DataIterator, class MaskIterator, class WeightsIterator>
+#define CASA_STATD template < \
+    class AccumType, class DataIterator, class MaskIterator, \
+    class WeightsIterator \
+>
 #define CASA_STATP AccumType, DataIterator, MaskIterator, WeightsIterator
 #define CASA_STATQ DataIterator, MaskIterator, WeightsIterator
 

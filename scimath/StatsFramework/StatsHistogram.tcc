@@ -33,23 +33,20 @@
 
 namespace casacore {
 
-template <class AccumType> StatsHistogram<AccumType>::StatsHistogram()
-    : _binWidth(0), _maxHistLimit(0), _minHistLimit(0), _nBins(0),
-      _maxBinLimits(0) {}
-
 template <class AccumType>
 StatsHistogram<AccumType>::StatsHistogram(
     AccumType minLimit, AccumType maxLimit, uInt nBins
 ) : _binWidth(0), _minHistLimit(minLimit), _maxHistLimit(maxLimit),
     _nBins(nBins), _maxBinLimits(nBins) {
-    ThrowIf (minLimit > maxLimit, "minData must be less than max data");
+    ThrowIf (minLimit > maxLimit, "minLimit must be less than maxLimit");
     _binWidth = (_maxHistLimit - _minHistLimit)/(AccumType)nBins;
     // in case of AccumType = Int, this can happen even if max and min are
-    // different.
+    // different. One would hope that AccumType=Int would never be used, but
+    // just in case. The check incurs a negligible performance hit.
     ThrowIf(_binWidth == AccumType(0), "Histogram bin width is 0");
     uInt j = 1;
     for_each(
-        _maxBinLimits.begin(), _maxBinLimits.end(), [&] (AccumType& val) {
+        _maxBinLimits.begin(), _maxBinLimits.end(), [&j, this] (AccumType& val) {
             val = _minHistLimit + _binWidth * (AccumType)(j);
             ++j;
         }
@@ -75,8 +72,9 @@ uInt StatsHistogram<AccumType>::getIndex(AccumType value) const {
     }
     // did not find in initial guessed bin, test in some bins greater than and
     // less than idx. It tests out to 10, but in practice, if this needs to
-    // be done, the value is in a bin that is only one or two bins from the
-    // idx bin. Start at a diff of 1, as we've already tested a diff of 0.
+    // be done, the value, in the vast majority of cases, is in a bin that is
+    // only one or two bins from the idx bin. Start at a diff of 1, as we've
+    // already tested a diff of 0.
     for (uInt i=1; i<10; ++i) {
         // check bin above idx
         auto upIdx = idx + i;
@@ -130,8 +128,7 @@ AccumType StatsHistogram<AccumType>::getMinHistLimit() const {
     return _minHistLimit;
 }
 
-template <class AccumType>
-uInt StatsHistogram<AccumType>::getNBins() const {
+template <class AccumType> uInt StatsHistogram<AccumType>::getNBins() const {
     return _nBins;
 }
 

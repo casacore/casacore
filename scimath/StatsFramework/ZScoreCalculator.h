@@ -37,21 +37,21 @@ namespace casacore {
 
 class Mutex;
 
-/*
- * This class contains static methods related to z-scores. A z-score is the number of
- * standard deviations from the mean in a normal distribution.
- */
+// This class contains static methods related to z-scores. A z-score is the
+// number of standard deviations from the mean in a normal distribution.
 
 class ZScoreCalculator {
 public:
+
+    ZScoreCalculator() = delete;
 
     // compute the maximum expected zscore given the number of points
     // in a sample.
     static Double getMaxZScore(uInt64 npts);
 
-    // Get the minimum number of points in a Gaussian distribution, such that the
-    // probability that the maximum of the distribution having the specified zscore
-    // is 0.5. <src>zscore</src> should be non-negative.
+    // Get the minimum number of points in a Gaussian distribution, such that
+    // the probability that the maximum of the distribution having the specified
+    // zscore is 0.5. <src>zscore</src> should be non-negative.
     static inline uInt64 zscoreToNpts(Double zscore) {
         return (uInt64)(0.5/erfc(zscore/sqrt(2)));
     }

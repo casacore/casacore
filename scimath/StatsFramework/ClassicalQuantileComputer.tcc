@@ -152,10 +152,9 @@ AccumType ClassicalQuantileComputer<CASA_STATP>::getMedianAndQuantiles(
     auto indices = medianIndices;
     for_each(
         quantileToIndex.cbegin(), quantileToIndex.cend(),
-        [&](const std::pair<Double, uInt64>& mypair) {
-            indices.insert(mypair.second);
-        }
-    );
+        [&indices](const std::pair<Double, uInt64>& mypair) {
+        indices.insert(mypair.second);
+    });
     auto indexToValue = _indicesToValues(
         mynpts, mymin, mymax, binningThreshholdSizeBytes/sizeof(AccumType),
         indices, persistSortedArray, nBins
@@ -173,7 +172,9 @@ AccumType ClassicalQuantileComputer<CASA_STATP>::getMedianAndQuantiles(
         );
         this->setMedian(median);
     }
-    for_each(fractions.cbegin(), fractions.cend(), [&](Double q) {
+    for_each(
+        fractions.cbegin(), fractions.cend(),
+        [&quantiles, &indexToValue, &quantileToIndex](Double q) {
         quantiles[q] = indexToValue[quantileToIndex[q]];
     });
     return *median;
@@ -202,7 +203,7 @@ std::map<Double, AccumType> ClassicalQuantileComputer<CASA_STATP>::getQuantiles(
     std::set<uInt64> uniqueIndices;
     for_each(
         quantileToIndex.cbegin(), quantileToIndex.cend(),
-        [&](const std::pair<Double, uInt64>& mypair) {
+        [&uniqueIndices](const std::pair<Double, uInt64>& mypair) {
         uniqueIndices.insert(mypair.second);
     });
     auto indexToValue = _indicesToValues(
@@ -212,7 +213,8 @@ std::map<Double, AccumType> ClassicalQuantileComputer<CASA_STATP>::getQuantiles(
     std::map<Double, AccumType> quantileToValue;
     for_each(
         quantileToIndex.cbegin(), quantileToIndex.cend(),
-        [&](const std::pair<Double, uInt64>& mypair) {
+        [&quantileToValue, &indexToValue]
+        (const std::pair<Double, uInt64>& mypair) {
         quantileToValue[mypair.first] = indexToValue[mypair.second];
     });
     return quantileToValue;
@@ -254,7 +256,7 @@ ClassicalQuantileComputer<CASA_STATP>::_binCounts(
     std::vector<std::vector<uInt64>> bins(hist.size());
     // initialize all bin counts to 0
     iDesc = bDesc;
-    for_each(bins.begin(), bins.end(), [&](std::vector<uInt64>& hist) {
+    for_each(bins.begin(), bins.end(), [&iDesc](std::vector<uInt64>& hist) {
         hist = std::vector<uInt64>(iDesc->getNBins(), 0);
         ++iDesc;
     });
@@ -264,7 +266,7 @@ ClassicalQuantileComputer<CASA_STATP>::_binCounts(
     // maxLimit are the maximum limits for each histogram. set them here.
     std::vector<AccumType> maxLimit(hist.size());
     iDesc = bDesc;
-    for_each(maxLimit.begin(), maxLimit.end(), [&](AccumType& myMax) {
+    for_each(maxLimit.begin(), maxLimit.end(), [&iDesc](AccumType& myMax) {
         myMax = iDesc->getMaxHistLimit();
         ++iDesc;
     });
@@ -617,7 +619,8 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArrays(
     auto first = True;
     for_each(
         includeLimits.cbegin(), includeLimits.cend(),
-        [&](const std::pair<AccumType, AccumType>& limitPair) {
+        [&first, &prevLimits]
+         (const std::pair<AccumType, AccumType>& limitPair) {
         if (limitPair.first >= limitPair.second) {
             ostringstream os;
             os << "Logic Error: bin limits are nonsensical: " << limitPair;
@@ -712,7 +715,9 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArrays(
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
         auto titer = tArys[idx8].cbegin();
-        for_each(arys.begin(), arys.end(), [&](std::vector<AccumType>& ary) {
+        for_each(
+            arys.begin(), arys.end(),
+            [&titer](std::vector<AccumType>& ary) {
             ary.insert(ary.end(), titer->cbegin(), titer->cend());
             ++titer;
         });
@@ -741,72 +746,75 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
     std::map<AccumType, AccumType> binToHistogramMap;
     // loop over sets of data indices
     for_each(
-        dataIndices.cbegin(), dataIndices.cend(), [&](const IndexSet& idxSet) {
-            auto iIdx = idxSet.cbegin();
-            auto eIdx = idxSet.cend();
-            const auto& maxBinLims = iDesc->getMaxBinLimits();
-            if (iSameVal->null()) {
-                // values in this histogram are not all the same
-                auto iCounts = iCountSet->cbegin();
-                auto eCounts = iCountSet->cend();
-                uInt64 dataCount = 0;
-                uInt64 prevDataCount = 0;
-                uInt64 loopCount = 0;
-                // loop over data indices pertaining to a single histogram
-                // this cannot be made into a for_each loop, because iIdx can be
-                // incremented multiple times inside the loop
-                while (iIdx != eIdx) {
-                    ThrowIf(
-                        iCounts == eCounts,
-                        "Logic Error: ran out of bins, accounting error"
-                    );
-                    dataCount += *iCounts;
-                    if (*iIdx < dataCount) {
-                        // datum at index exists in current bin
-                        LimitPair histLimits;
-                        histLimits.first = loopCount == 0
-                            ? iDesc->getMinHistLimit()
-                            : maxBinLims[loopCount - 1];
-                        histLimits.second = maxBinLims[loopCount];
-                        IndexSet newDataIndices;
-                        std::map<uInt64, uInt64> newToOld;
-                        while(iIdx != eIdx && *iIdx < dataCount) {
-                            // this loop takes into account that multiple
-                            // indices could fall in the same bin
-                            uInt64 oldIdx = *iIdx;
-                            uInt64 newIdx = oldIdx - prevDataCount;
-                            newDataIndices.insert(newIdx);
-                            newToOld[newIdx] = oldIdx;
-                            ++iIdx;
-                        }
-                        vNewToOld.push_back(newToOld);
-                        vnpts.push_back(*iCounts);
-                        vlimits.push_back(histLimits);
-                        // because multiple single bins can be in the same
-                        // histogram, we need to keep track of which bins belong
-                        // to which histogram for accounting below
-                        binToHistogramMap[histLimits.first]
-                            = iDesc->getMinHistLimit();
-                        vindices.push_back(newDataIndices);
+        dataIndices.cbegin(), dataIndices.cend(), [
+            &iSameVal, &iDesc, &iCountSet, &vNewToOld, &vnpts, &vlimits,
+            &binToHistogramMap, &vindices, &histToIdxValMap
+        ](const IndexSet& idxSet) {
+        auto iIdx = idxSet.cbegin();
+        auto eIdx = idxSet.cend();
+        const auto& maxBinLims = iDesc->getMaxBinLimits();
+        if (iSameVal->null()) {
+            // values in this histogram are not all the same
+            auto iCounts = iCountSet->cbegin();
+            auto eCounts = iCountSet->cend();
+            uInt64 dataCount = 0;
+            uInt64 prevDataCount = 0;
+            uInt64 loopCount = 0;
+            // loop over data indices pertaining to a single histogram
+            // this cannot be made into a for_each loop, because iIdx can be
+            // incremented multiple times inside the loop
+            while (iIdx != eIdx) {
+                ThrowIf(
+                    iCounts == eCounts,
+                    "Logic Error: ran out of bins, accounting error"
+                );
+                dataCount += *iCounts;
+                if (*iIdx < dataCount) {
+                    // datum at index exists in current bin
+                    LimitPair histLimits;
+                    histLimits.first = loopCount == 0
+                        ? iDesc->getMinHistLimit() : maxBinLims[loopCount - 1];
+                    histLimits.second = maxBinLims[loopCount];
+                    IndexSet newDataIndices;
+                    std::map<uInt64, uInt64> newToOld;
+                    while(iIdx != eIdx && *iIdx < dataCount) {
+                        // this loop takes into account that multiple
+                        // indices could fall in the same bin
+                        uInt64 oldIdx = *iIdx;
+                        uInt64 newIdx = oldIdx - prevDataCount;
+                        newDataIndices.insert(newIdx);
+                        newToOld[newIdx] = oldIdx;
+                        ++iIdx;
                     }
-                    prevDataCount = dataCount;
-                    ++iCounts;
-                    ++loopCount;
+                    vNewToOld.push_back(newToOld);
+                    vnpts.push_back(*iCounts);
+                    vlimits.push_back(histLimits);
+                    // because multiple single bins can be in the same
+                    // histogram, we need to keep track of which bins belong
+                    // to which histogram for accounting below
+                    binToHistogramMap[histLimits.first]
+                        = iDesc->getMinHistLimit();
+                    vindices.push_back(newDataIndices);
                 }
+                prevDataCount = dataCount;
+                ++iCounts;
+                ++loopCount;
             }
-            else {
-                // values in this histogram are all the same
-                IndexValueMap mymap;
-                for_each(idxSet.cbegin(), idxSet.cend(), [&](uInt64 index) {
-                    mymap[index] = *(*iSameVal);
-               });
-                histToIdxValMap[iDesc->getMinHistLimit()] = mymap;
-            }
-            ++iSameVal;
-            ++iCountSet;
-            ++iDesc;
         }
-    );
+        else {
+            // values in this histogram are all the same
+            IndexValueMap mymap;
+            for_each(
+                idxSet.cbegin(), idxSet.cend(), [&mymap, &iSameVal]
+                (uInt64 index) {
+                mymap[index] = *(*iSameVal);
+            });
+            histToIdxValMap[iDesc->getMinHistLimit()] = mymap;
+        }
+        ++iSameVal;
+        ++iCountSet;
+        ++iDesc;
+    });
     if (! vnpts.empty()) {
         auto dataFromBins = _dataFromSingleBins(
             vnpts, maxArraySize, vlimits, vindices, nBins
@@ -815,30 +823,28 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
         auto iVLimits = vlimits.cbegin();
         for_each(
             dataFromBins.cbegin(), dataFromBins.cend(),
-            [&](const IndexValueMap& idxValMap) {
-                auto myHistKey = binToHistogramMap[iVLimits->first];
-                IndexValueMap mymap;
-                for_each(
-                    idxValMap.cbegin(), idxValMap.cend(),
-                    [&](const std::pair<Int64, AccumType>& mypair) {
-                        auto newIdx = mypair.first;
-                        auto oldIdx = iNewToOld->find(newIdx)->second;
-                        mymap[oldIdx] = mypair.second;
-                    }
-                );
-                histToIdxValMap[myHistKey].insert(mymap.begin(), mymap.end());
-                ++iNewToOld;
-                ++iVLimits;
-            }
-        );
+            [&iVLimits, &binToHistogramMap, &iNewToOld, &histToIdxValMap]
+             (const IndexValueMap& idxValMap) {
+            auto myHistKey = binToHistogramMap[iVLimits->first];
+            IndexValueMap mymap;
+            for_each(
+                idxValMap.cbegin(), idxValMap.cend(), [&iNewToOld, &mymap]
+                 (const std::pair<Int64, AccumType>& mypair) {
+                auto newIdx = mypair.first;
+                auto oldIdx = iNewToOld->find(newIdx)->second;
+                mymap[oldIdx] = mypair.second;
+            });
+            histToIdxValMap[myHistKey].insert(mymap.begin(), mymap.end());
+            ++iNewToOld;
+            ++iVLimits;
+        });
     }
     std::vector<IndexValueMap> ret;
     for_each(
-        hist.cbegin(), hist.cend(),
-        [&](const StatsHistogram<AccumType>& myhist) {
-            ret.push_back(histToIdxValMap[myhist.getMinHistLimit()]);
-        }
-    );
+        hist.cbegin(), hist.cend(), [&ret, &histToIdxValMap]
+         (const StatsHistogram<AccumType>& myhist) {
+        ret.push_back(histToIdxValMap[myhist.getMinHistLimit()]);
+    });
     return ret;
 }
 
@@ -858,43 +864,43 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromSingleBins(
         auto iNpts = binNpts.cbegin();
         for_each(
             dataArrays.cbegin(), dataArrays.cend(),
-            [&](const DataArray& ary) {
-                ThrowIf(
-                    ary.size() != *iNpts,
-                    "Logic Error: data array has "
-                    + String::toString(ary.size()) + " elements but it should "
-                    + "have " + String::toString(*iNpts) + ". Please file a "
-                    + "bug report and include your dataset and your inputs"
-                );
-                ++iNpts;
-            }
-        );
+            [&iNpts](const DataArray& ary) {
+            ThrowIf(
+                ary.size() != *iNpts,
+                "Logic Error: data array has " + String::toString(ary.size())
+                + " elements but it should have " + String::toString(*iNpts)
+                + ". Please file a bug report and include your dataset and "
+                "your inputs"
+            );
+            ++iNpts;
+        });
         iNpts = binNpts.begin();
         std::vector<IndexValueMap> ivMaps(binLimits.size());
         typename std::vector<IndexValueMap>::iterator iIVMaps = ivMaps.begin();
         auto iArrays = dataArrays.begin();
         for_each (
             dataIndices.cbegin(), dataIndices.cend(),
-            [&](const IndexSet& idxSet) {
-                uInt64 prevIdx = 0;
-                for_each(idxSet.cbegin(), idxSet.cend(), [&](uInt64 idx) {
-                    ThrowIf(
-                        idx >= *iNpts,
-                        "Logic Error: aryIdx " + String::toString(idx)
-                        + " is too large. It should be no larger than "
-                        + String::toString(*iNpts-1) + ". Please file a defect "
-                        + "report and include your dataset and your inputs"
-                    );
-                    (*iIVMaps)[idx] = GenSort<AccumType>::kthLargest(
-                        &((*iArrays)[prevIdx]), *iNpts - prevIdx, idx - prevIdx
-                    );
-                    prevIdx = idx;
-                });
-                ++iNpts;
-                ++iArrays;
-                ++iIVMaps;
-            }
-        );
+            [&iIVMaps, &iNpts, &iArrays](const IndexSet& idxSet) {
+            uInt64 prevIdx = 0;
+            for_each(
+                idxSet.cbegin(), idxSet.cend(),
+                [&iNpts, &iIVMaps, &iArrays, &prevIdx](uInt64 idx) {
+                ThrowIf(
+                    idx >= *iNpts,
+                    "Logic Error: aryIdx " + String::toString(idx) + " is too "
+                    "large. It should be no larger than "
+                    + String::toString(*iNpts-1) + ". Please file a defect "
+                    + "report and include your dataset and your inputs"
+                );
+                (*iIVMaps)[idx] = GenSort<AccumType>::kthLargest(
+                    &((*iArrays)[prevIdx]), *iNpts - prevIdx, idx - prevIdx
+                );
+                prevIdx = idx;
+            });
+            ++iNpts;
+            ++iArrays;
+            ++iIVMaps;
+        });
         return ivMaps;
     }
     else {
@@ -905,13 +911,12 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromSingleBins(
         std::vector<StatsHistogram<AccumType>> hist;
         for_each(
             binLimits.cbegin(), binLimits.cend(),
-            [&](const LimitPair& myLimits) {
-                StatsHistogram<AccumType> histogram(
-                    myLimits.first, myLimits.second, nBins
-                );
-                hist.push_back(histogram);
-            }
-        );
+            [&hist, &nBins](const LimitPair& myLimits) {
+            StatsHistogram<AccumType> histogram(
+                myLimits.first, myLimits.second, nBins
+            );
+            hist.push_back(histogram);
+        });
         try {
             return _dataFromMultipleBins(
                 hist, maxArraySize, dataIndices, nBins
@@ -945,7 +950,9 @@ ClassicalQuantileComputer<CASA_STATP>::_indicesToValues(
     }
     if (mymax == mymin) {
         // data set values are all the same
-        for_each(indices.cbegin(), indices.cend(), [&](uInt64 idx) {
+        for_each(
+            indices.cbegin(), indices.cend(),
+            [&indexToValue, mymin](uInt64 idx) {
             indexToValue[idx] = mymin;
         });
         return indexToValue;

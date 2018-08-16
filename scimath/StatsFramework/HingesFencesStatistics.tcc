@@ -42,8 +42,7 @@ HingesFencesStatistics<CASA_STATP>::HingesFencesStatistics(
         CountedPtr<HingesFencesQuantileComputer<CASA_STATP> >(
             new HingesFencesQuantileComputer<CASA_STATP>(&this->_getDataset())
         )
-    ), _f(f),
-    _rangeIsSet(False), _hasRange(False) {
+    ), _f(f) {
     reset();
 }
 
@@ -72,7 +71,8 @@ HingesFencesStatistics<CASA_STATP>::operator=(
 }
 
 CASA_STATD
-StatisticsAlgorithm<CASA_STATP>* HingesFencesStatistics<CASA_STATP>::clone() const {
+StatisticsAlgorithm<CASA_STATP>*
+HingesFencesStatistics<CASA_STATP>::clone() const {
     return new HingesFencesStatistics<CASA_STATP>(*this);
 }
 
@@ -88,16 +88,14 @@ void HingesFencesStatistics<CASA_STATP>::setCalculateAsAdded(
     Bool c
 ) {
     ThrowIf(
-        c,
-        "HingesFencesStatistics does not support calculating "
+        c, "HingesFencesStatistics does not support calculating "
         "statistics incrementally as data sets are added"
     );
 }
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride
+    uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
@@ -113,8 +111,7 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+    uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
     if (_hasRange) {
@@ -131,8 +128,7 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+    uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) const {
     if (_hasRange) {
@@ -149,8 +145,7 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+    uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
 ) const {
@@ -170,9 +165,8 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts,
-    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride
+    uInt64& npts, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
@@ -188,61 +182,57 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts,
-    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
-) const {
-    if (_hasRange) {
-        ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
-            npts, dataBegin, weightsBegin, nr,
-            dataStride, ranges, isInclude
-        );
-    }
-    else {
-        ClassicalStatistics<CASA_STATP>::_accumNpts(
-            npts, dataBegin, weightsBegin, nr,
-            dataStride, ranges, isInclude
-        );
-    }
-}
-
-CASA_STATD
-void HingesFencesStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts,
-    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
+    uInt64& npts, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
-            npts, dataBegin, weightsBegin, nr,
-            dataStride, maskBegin, maskStride, ranges, isInclude
+            npts, dataBegin, weightsBegin, nr, dataStride, ranges, isInclude
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_accumNpts(
-            npts, dataBegin, weightsBegin, nr,
-            dataStride, maskBegin, maskStride, ranges, isInclude
+            npts, dataBegin, weightsBegin, nr, dataStride, ranges, isInclude
         );
     }
 }
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts,
-    const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    uInt64& npts, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
+    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
+    Bool isInclude
 ) const {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
-            npts, dataBegin, weightsBegin, nr,
-            dataStride, maskBegin, maskStride
+            npts, dataBegin, weightsBegin, nr, dataStride,
+            maskBegin, maskStride, ranges, isInclude
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_accumNpts(
-            npts, dataBegin, weightsBegin, nr,
-            dataStride, maskBegin, maskStride
+            npts, dataBegin, weightsBegin, nr, dataStride,
+            maskBegin, maskStride, ranges, isInclude
+        );
+    }
+}
+
+CASA_STATD
+void HingesFencesStatistics<CASA_STATP>::_accumNpts(
+    uInt64& npts, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
+    const MaskIterator& maskBegin, uInt maskStride
+) const {
+    if (_hasRange) {
+        ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
+            npts, dataBegin, weightsBegin, nr, dataStride, maskBegin, maskStride
+        );
+    }
+    else {
+        ClassicalStatistics<CASA_STATP>::_accumNpts(
+            npts, dataBegin, weightsBegin, nr, dataStride, maskBegin, maskStride
         );
     }
 }
@@ -566,17 +556,19 @@ void HingesFencesStatistics<CASA_STATP>::_setRange() {
         quantiles.insert(0.75);
         ClassicalStatistics<CASA_STATP> cs(*this);
         std::map<Double, AccumType> quartiles = cs.getQuantiles(quantiles);
-        //ClassicalStatistics<CASA_STATP>::_clearStats();
-        AccumType iqr = quartiles[0.75] - quartiles[0.25];
-        CountedPtr<std::pair<AccumType, AccumType> > range = new std::pair<AccumType, AccumType>(
-            quartiles[0.25] - _f*iqr, quartiles[0.75] + _f*iqr
-        );
+        auto iqr = quartiles[0.75] - quartiles[0.25];
+        CountedPtr<std::pair<AccumType, AccumType>> range
+            = new std::pair<AccumType, AccumType>(
+                quartiles[0.25] - _f*iqr, quartiles[0.75] + _f*iqr
+            );
         ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
     }
     _rangeIsSet = True;
-    HingesFencesQuantileComputer<CASA_STATP>* qc
-        = (HingesFencesQuantileComputer<CASA_STATP> *)this->_getQuantileComputer().get();
-    qc->setHasRange(_hasRange);
+    (
+        (HingesFencesQuantileComputer<CASA_STATP> *)(
+            this->_getQuantileComputer().get()
+        )
+    )->setHasRange(_hasRange);
 }
 
 CASA_STATD
@@ -604,14 +596,12 @@ void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-            stats, ngood, location,
-            dataBegin, nr, dataStride, ranges, isInclude
+            stats, ngood, location, dataBegin, nr, dataStride, ranges, isInclude
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_unweightedStats(
-            stats, ngood, location,
-            dataBegin, nr, dataStride, ranges, isInclude
+            stats, ngood, location, dataBegin, nr, dataStride, ranges, isInclude
         );
     }
 }
@@ -624,14 +614,14 @@ void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-            stats, ngood, location,
-            dataBegin, nr, dataStride, maskBegin, maskStride
+            stats, ngood, location, dataBegin, nr,
+            dataStride, maskBegin, maskStride
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_unweightedStats(
-            stats, ngood, location,
-            dataBegin, nr, dataStride, maskBegin, maskStride
+            stats, ngood, location, dataBegin, nr,
+            dataStride, maskBegin, maskStride
         );
     }
 }
@@ -645,14 +635,14 @@ void HingesFencesStatistics<CASA_STATP>::_unweightedStats(
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-            stats, ngood, location, dataBegin,
-            nr, dataStride, maskBegin, maskStride, ranges, isInclude
+            stats, ngood, location, dataBegin, nr, dataStride,
+            maskBegin, maskStride, ranges, isInclude
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_unweightedStats(
-            stats, ngood, location, dataBegin,
-            nr, dataStride, maskBegin, maskStride, ranges, isInclude
+            stats, ngood, location, dataBegin, nr, dataStride,
+            maskBegin, maskStride, ranges, isInclude
         );
     }
 }
@@ -665,14 +655,12 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-            stats, location,
-            dataBegin, weightsBegin, nr, dataStride
+            stats, location, dataBegin, weightsBegin, nr, dataStride
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_weightedStats(
-            stats, location, 
-            dataBegin, weightsBegin, nr, dataStride
+            stats, location,  dataBegin, weightsBegin, nr, dataStride
         );
     }
 }
@@ -685,14 +673,14 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-            stats, location, dataBegin,
-            weightsBegin, nr, dataStride, ranges, isInclude
+            stats, location, dataBegin, weightsBegin,
+            nr, dataStride, ranges, isInclude
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_weightedStats(
-            stats, location, dataBegin,
-            weightsBegin, nr, dataStride, ranges, isInclude
+            stats, location, dataBegin, weightsBegin,
+            nr, dataStride, ranges, isInclude
         );
     }
 }
@@ -706,14 +694,14 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-            stats, location, dataBegin, weightsBegin,
-            nr, dataStride, maskBegin, maskStride, ranges, isInclude
+            stats, location, dataBegin, weightsBegin, nr, dataStride,
+            maskBegin, maskStride, ranges, isInclude
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_weightedStats(
-            stats, location, dataBegin, weightsBegin,
-            nr, dataStride, maskBegin, maskStride, ranges, isInclude
+            stats, location, dataBegin, weightsBegin, nr, dataStride,
+            maskBegin, maskStride, ranges, isInclude
         );
     }
 }
@@ -726,14 +714,14 @@ void HingesFencesStatistics<CASA_STATP>::_weightedStats(
 ) {
     if (_hasRange) {
         ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
-            stats, location, dataBegin,
-            weightsBegin, nr, dataStride, maskBegin, maskStride
+            stats, location, dataBegin, weightsBegin,
+            nr, dataStride, maskBegin, maskStride
         );
     }
     else {
         ClassicalStatistics<CASA_STATP>::_weightedStats(
-            stats, location, dataBegin,
-            weightsBegin, nr, dataStride, maskBegin, maskStride
+            stats, location, dataBegin, weightsBegin,
+            nr, dataStride, maskBegin, maskStride
         );
     }
 }

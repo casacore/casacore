@@ -37,10 +37,8 @@ namespace casacore {
 
 class String;
 
-/*
- * This class simply defines the enum of supported statistics types
- * in the statistics framework.
- */
+// This class defines the enum of supported statistics types in the statistics
+// framework.
 
 class StatisticsData {
 public:

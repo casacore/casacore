@@ -321,7 +321,6 @@ StatsFramework/StatisticsData.h
 StatsFramework/StatisticsDataset.h
 StatsFramework/StatisticsDataset.tcc
 StatsFramework/StatisticsIncrementer.h
-StatsFramework/StatisticsIncrementer.tcc
 StatsFramework/StatisticsTypes.h
 StatsFramework/StatisticsTypes.tcc
 StatsFramework/StatisticsUtilities.h
