@@ -28,6 +28,8 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/Tables/Table.h>
+#include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/tables/Tables/ScaRecordColDesc.h>
 #include <casacore/tables/Tables/ScaColDesc.h>
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ScalarColumn.h>
@@ -41,6 +43,7 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/Arrays/ArrayIO.h>
+#include <casacore/casa/OS/File.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
@@ -92,6 +95,79 @@ void info(const Table aTable);
 // put/putColumn cache test
 void putColumnTest();
 
+// Test writing and updating an indirect array.
+void testInd()
+{
+  cout << endl << "testInd ..." << endl;
+  String tabName = "tStandardStMan_tmp.tabind";
+  Array<Int> arr1(IPosition(2,3,4));
+  Array<Int> arr2(IPosition(2,3,5));
+  indgen(arr1);
+  indgen(arr2);
+  {
+    TableDesc td;
+    td.addColumn (ArrayColumnDesc<Int>("col1"));
+    SetupNewTable newt(tabName, td, Table::New);
+    Table tab(newt, 2);
+    ArrayColumn<Int> col(tab, "col1");
+    col.put (0, arr1);
+    col.put (1, arr2);
+    AlwaysAssertExit (allEQ (col(0), arr1));
+    AlwaysAssertExit (allEQ (col(1), arr2));
+  }
+  File file(tabName + "/table.f0i");
+  cout << "size " << file.size() << endl;
+  // Write differently sized arrays.
+  for (int i=0; i<4; ++i) {
+    Table tab(tabName, Table::Update);
+    ArrayColumn<Int> col(tab, "col1");
+    col.put (i%2, arr2);
+    col.put ((i+1)%2, arr1);
+    tab.flush();
+    AlwaysAssertExit (allEQ (col((i+1)%2), arr1));
+    AlwaysAssertExit (allEQ (col(i%2), arr2));
+    cout << "size " << file.size() << endl;
+  }
+}
+
+void testInd2()
+{
+  cout << endl << "testInd2 ..." << endl;
+  String tabName = "tStandardStMan_tmp.tabind2";
+  String colName = "Test";
+  TableRecord rec;
+  rec.define("j","x");
+  {
+    // set up a new table
+    TableDesc td;
+    td.addColumn(ScalarRecordColumnDesc(colName));
+    SetupNewTable newtab(tabName, td, Table::New);
+    Table tab(newtab, TableLock::AutoLocking, 1, false);
+    ScalarColumn<TableRecord> recCol;
+    recCol.attach(tab, colName);
+    recCol.put(0, rec);
+    TableRecord rec1;
+    recCol.get(0, rec1);
+    cout << "nrow " << tab.nrow() << endl;
+    cout << "rec1 " << rec1;
+  }
+  File file(tabName + "/table.f0i");
+  cout << "size " << file.size() << endl;
+  for (uInt i=0; i<4; ++i) {
+    // overwrite the record with the identical record multiple times.
+    Table tab(tabName, TableLock(TableLock::AutoLocking), Table::Update);
+    ScalarColumn<TableRecord> recCol;
+    recCol.attach(tab, colName);
+    recCol.put(0, rec);
+    TableRecord rec1;
+    recCol.get(0, rec1);
+    tab.flush();
+    cout << "nrow " << tab.nrow() << endl;
+    cout << "rec1 " << rec1;
+    cout << "size " << file.size() << endl;
+  }
+}
+
 int main (int argc, const char* argv[])
 {
     uInt aNr = 250;
@@ -135,6 +211,10 @@ int main (int argc, const char* argv[])
 	}
 	deleteRows      (aNewNrRows);
 
+        // Test if writing an indirect array multiple times does not
+        // increase the file size.
+        testInd();
+        testInd2();
 
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
@@ -597,19 +677,3 @@ void putColumnTest()
   ab.putColumn(ab.getColumn() + 1);
   AlwaysAssertExit (ab(5) == 4);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
