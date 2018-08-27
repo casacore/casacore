@@ -113,6 +113,7 @@ void SSMIndColumn::setShape (uInt aRowNr, const IPosition& aShape)
   if (aPtr == 0) {
     itsIndArray = StIndArray(0);
   } else {
+    // Note that getArrayPtr sets itsIndArray (which is equal to aPtr).
     aPtr->getShape (*itsIosFile);
   }
   // put the new shape (if changed)
