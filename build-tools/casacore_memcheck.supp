@@ -1,4 +1,5 @@
 # This file contains the valgrind errors to be suppressed for casacore.
+# Where needed, it has lines for namespace casa and casacore.
 
 # Very often libc gives an invalid free error at exit.
 {
@@ -12,33 +13,60 @@
 
 # putenv takes over the pointer, but valgrind does not notice.
 {
-   Class-EnvVar-putenv-takes-over-pointer
+   Class-EnvVar-putenv-takes-over-pointer-4
    Memcheck:Leak
    fun:_Znam
    fun:_ZN4casa19EnvironmentVariable3setERKNS_6StringES3_
 }
+{
+   Class-EnvVar-putenv-takes-over-pointer-8
+   Memcheck:Leak
+   fun:_Znam
+   fun:_ZN8casacore19EnvironmentVariable3setERKNS_6StringES3_
+}
 
 # Casacore's IO sometimes uses uninitialized fill characters.
 {
-   Casacore-write-not-fully-initialized-buffer-LargeFilebufIO
+   Casacore-write-not-fully-initialized-buffer-LargeFilebufIO-4
    Memcheck:Param
    write(buf)
    fun:__write_nocancel
    fun:_ZN4casa9FiledesIO5writeExPKv
 }
 {
-   Casacore-write-not-fully-initialized-buffer-FilebufIO-dbg
+   Casacore-write-not-fully-initialized-buffer-LargeFilebufIO-8
+   Memcheck:Param
+   write(buf)
+   fun:__write_nocancel
+   fun:_ZN8casacore9FiledesIO5writeExPKv
+}
+{
+   Casacore-write-not-fully-initialized-buffer-FilebufIO-dbg4
    Memcheck:Param
    write(buf)
    fun:__write_nocancel
    fun:_ZN4casa9FilebufIO11writeBufferExPKcx
 }
 {
-   Casacore-write-not-fully-initialized-buffer-FilebufIO-opt
+   Casacore-write-not-fully-initialized-buffer-FilebufIO-dbg8
+   Memcheck:Param
+   write(buf)
+   fun:__write_nocancel
+   fun:_ZN8casacore9FilebufIO11writeBufferExPKcx
+}
+{
+   Casacore-write-not-fully-initialized-buffer-FilebufIO-opt4
    Memcheck:Param
    write(buf)
    fun:???
    fun:_ZN4casa9FilebufIO11writeBufferExPKcx
+}
+{
+   Casacore-write-not-fully-initialized-buffer-FilebufIO-opt8
+   Memcheck:Param
+   write(buf)
+   fun:???
+   fun:_ZN8casacore9FilebufIO11writeBufferExPKcx
 }
 
 # The function strlen is optimized by testing multiple byte simultaneously.
