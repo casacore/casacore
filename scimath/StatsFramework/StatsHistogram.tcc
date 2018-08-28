@@ -77,7 +77,7 @@ uInt StatsHistogram<AccumType>::getIndex(AccumType value) const {
     // less than idx. It tests out to 10, but in practice, if this needs to
     // be done, the value is in a bin that is only one or two bins from the
     // idx bin. Start at a diff of 1, as we've already tested a diff of 0.
-    for (uInt i=1; i<10; ++i) {
+    for (uInt i=1; i<100; ++i) {
         // check bin above idx
         auto upIdx = idx + i;
         auto tried = False;
