@@ -38,7 +38,7 @@
 #ifdef HAVE_HDF5
 # include <hdf5.h>
 #else 
-  typedef casacore::Int64 hid_t;
+  typedef int64_t hid_t;
   typedef casacore::uInt64 hsize_t;
 #endif
 
@@ -122,7 +122,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# for older HDF5 versions where hid_t is a 32 bit integer.
     union {
       hid_t  itsHid;
-      Int64  itsDummyHid;
+      int64_t  itsDummyHid;
     };
     String itsName;
 
