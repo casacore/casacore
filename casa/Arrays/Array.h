@@ -931,7 +931,6 @@ protected:
 
 
 //# Declare extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class Array<Bool>;
   extern template class Array<Char>;
   extern template class Array<uChar>;
@@ -945,7 +944,6 @@ protected:
   extern template class Array<Complex>;
   extern template class Array<DComplex>;
   extern template class Array<String>;
-#endif
 
 }//#End casa namespace
 

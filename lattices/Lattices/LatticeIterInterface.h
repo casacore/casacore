@@ -326,9 +326,7 @@ inline IPosition LatticeIterInterface<T>::cursorShape() const
 }
 
 //# Declare extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class LatticeIterInterface<Float>;
-#endif
 
 
 } //# NAMESPACE CASACORE - END

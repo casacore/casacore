@@ -1219,16 +1219,14 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
     std::vector<uInt> chauvIterArray(isChauv ? nArrays : 0);
     ostringstream chos;
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(nthreads)
-#else
-    // squash compiler warning when not using openmp.
-    nthreads = 1;
+# pragma omp parallel for num_threads(nthreads)
 #endif
+    uInt tid = nthreads;     // to avoid compiler warning not using nthreads
     for (uInt i=0; i<nArrays; ++i) {
 #ifdef _OPENMP
-        uInt tid = omp_get_thread_num();
+        tid = omp_get_thread_num();
 #else
-        uInt tid = 0;
+        tid = 0;
 #endif
         if (isMasked && maskArray[i].size() > 0) {
             if (! range) {

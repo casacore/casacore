@@ -1,5 +1,5 @@
 //# MeasJPL.h: Interface to JPL DE tables
-//# Copyright (C) 1996,1997,1998,1999,2002
+//# Copyright (C) 1996,1997,1998,1999,2002,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -193,7 +193,7 @@ public:
   static Bool getConst(Double &res, MeasJPL::Files which,
 		       const String &nam);
 
-  // Close the set of JPL tables only
+  // Close the set of JPL tables only. Only call it last at end of program.
   static void closeMeas();
 
 private:
@@ -211,8 +211,8 @@ private:
   
   //# General member functions
   // Initialise tables
-  static Bool initMeas(MeasJPL::Files which);
-  static Bool doInitMeas(MeasJPL::Files which);
+  static Bool initMeasOnce(MeasJPL::Files which);
+  static void doInitMeas(MeasJPL::Files which);
   // Get a pointer to the data for the given date. It reads the data if needed.
   static const Double* fillMeas(Double &intv, MeasJPL::Files which,
                                 const MVEpoch &utf);
@@ -222,8 +222,10 @@ private:
 			const Double buf[]);
 
   //# Data members
-  // Measured data readable
-  static volatile Bool needInit[N_Files];
+  // Object to ensure safe multi-threaded lazy single initialization
+  static CallOnce theirCallOnce[N_Files];
+  // Mutex for thread-safety (other than initialization).
+  static Mutex theirMutex;
   // Tables present
   static Table t[N_Files];
   // Data column descriptor
@@ -248,8 +250,6 @@ private:
   static Double emrat[N_Files];
   static Double cn[N_Files][N_Codes];
   // </group>
-  // Mutex for thread-safety.
-  static Mutex theirMutex;
 };
 
 //# Inline Implementations

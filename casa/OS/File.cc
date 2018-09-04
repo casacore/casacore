@@ -43,8 +43,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-uInt File::uniqueSeqnr_p = 0;      // Initialization
-Mutex File::theirMutex;
+std::atomic<uInt> File::uniqueSeqnr_p(0);
 
 
 File::File () 
@@ -255,11 +254,7 @@ Path File::newUniqueName (const String& directory, const String& prefix)
     // create an new unique name 
     char str[32];
     // fill str with the pid and the unique number
-    uInt seqnr;
-    {
-      ScopedMutexLock lock(theirMutex); 
-      seqnr = uniqueSeqnr_p++;
-    }
+    uInt seqnr = uniqueSeqnr_p.fetch_add(1);
     sprintf (str, "%i_%i", Int(getpid()), seqnr);
     if (directory.empty()  ||  directory.lastchar() == '/') {
 	return Path (directory + prefix + str);

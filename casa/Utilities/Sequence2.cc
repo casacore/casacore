@@ -29,13 +29,19 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-uInt uIntSequence::num = 0;
-Mutex uIntSequence::theirMutex;
+#if defined(USE_THREADS)
+std::atomic<uInt> uIntSequence::next(1); // start at 1 to stay in sync with RegSequence
+#else
+uInt uIntSequence::next = 1;
+#endif
 
 uInt uIntSequence::SgetNext()
 {
-  ScopedMutexLock lock(theirMutex);
-  return ++num;
+#if defined(USE_THREADS)
+  return next.fetch_add(1);
+#else
+  return next++;
+#endif
 }
 
 } //# NAMESPACE CASACORE - END

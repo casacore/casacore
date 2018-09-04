@@ -194,13 +194,13 @@ public:
   // Throw an exception if the object is null.
   void throwIfNull() const;
 
-  // get the column as a Quantum<Vector<T> >. If <src>unit</src> is
+  // Get the column as a Quantum<Vector<T> >. If <src>unit</src> is
   // not empty, the returned Quantum will have that unit. Else if
   // the units are variable, the values in the returned Vector
   // have been converted to the unit of the 0th row entry. Otherwise,
   // the units of the returned Quantum are the units specified in
   // the column descriptor.
-  SHARED_PTR<Quantum<Vector<T> > > getColumn(const Unit& unit="") const;
+  std::shared_ptr<Quantum<Vector<T> > > getColumn(const Unit& unit="") const;
 
 protected:
   //# Quantum column's units (if units not variable)

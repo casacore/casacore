@@ -29,7 +29,6 @@
 #include <casacore/casa/Arrays/Vector.h>
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
 namespace casacore {
   template class Vector<Bool>;
   template class Vector<Char>;
@@ -44,4 +43,3 @@ namespace casacore {
   template class Vector<DComplex>;
   template class Vector<String>;
 }
-#endif

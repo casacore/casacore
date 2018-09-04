@@ -382,9 +382,7 @@ public:
 };
 
 //# Declare extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class ImageRegrid<Float>;
-#endif
 
 } //# NAMESPACE CASACORE - END
 

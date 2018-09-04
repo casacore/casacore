@@ -31,13 +31,12 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
   template class ArrayMeasColumn<MDirection>;
   template class ScalarMeasColumn<MPosition>;
   template class ScalarMeasColumn<MEpoch>;
   template class ArrayQuantColumn<Double>;
   template class ScalarQuantColumn<Double>;
-#endif
+
 
 ROMSColumns::ROMSColumns(const MeasurementSet& ms):
   ROMSMainColumns(ms),

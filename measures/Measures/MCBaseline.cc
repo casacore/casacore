@@ -86,11 +86,11 @@ uInt MCBaseline::ToRef_p[N_Routes][3] = {
   {MBaseline::ICRS,		MBaseline::J2000,	0},
   {MBaseline::J2000,		MBaseline::ICRS,	0} };
 uInt MCBaseline::FromTo_p[MBaseline::N_Types][MBaseline::N_Types];
-MutexedInit MCBaseline::theirMutexedInit (MCBaseline::doFillState);
+CallOnce0 MCBaseline::theirInitOnce;
 
 //# Constructors
 MCBaseline::MCBaseline() : measMath() {
-  fillState();
+  theirInitOnce(doFillState);
 }
 
 //# Destructor
@@ -447,13 +447,13 @@ void MCBaseline::doConvert(MVBaseline &in,
 }
 
 String MCBaseline::showState() {
-  fillState();
+  theirInitOnce(doFillState);
   return MCBase::showState(MCBaseline::FromTo_p[0],
 			   MBaseline::N_Types, MCBaseline::N_Routes,
 			   MCBaseline::ToRef_p);
 }
 
-void MCBaseline::doFillState (void*) {
+void MCBaseline::doFillState() {
   MBaseline::checkMyTypes();
   MCBase::makeState(FromTo_p[0], MBaseline::N_Types, N_Routes, ToRef_p);
 }

@@ -48,9 +48,7 @@
 int main()
 {
   try {
-#ifdef _OPENMP
 #pragma omp parallel for
-#endif
     for (int dd=0; dd<4; ++dd) {
       const MVEpoch dat = 51116 + dd*33;
       ostringstream ostr;
@@ -99,10 +97,7 @@ int main()
       }
     }
 
-    // Use ifdef to avoid compiler warning.
-#ifdef _OPENMP
 #pragma omp parallel for
-#endif
     for (int dd=0; dd<4; ++dd) {
       const MVEpoch dat = 51116 + dd*33;
       ostringstream ostr;

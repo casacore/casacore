@@ -60,12 +60,12 @@ uInt MCEpoch::ToRef_p[N_Routes][3] = {
   {MEpoch::TCB,		MEpoch::TDB,	0} };
 
 uInt MCEpoch::FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
-MutexedInit MCEpoch::theirMutexedInit (MCEpoch::doFillState);
+CallOnce0 MCEpoch::theirInitOnce;
 
 //# Constructors
 MCEpoch::MCEpoch() :
   NUTATFROM(0), NUTATTO(0) {
-    fillState();
+    theirInitOnce(doFillState);
 }
 
 //# Destructor
@@ -304,13 +304,13 @@ void MCEpoch::doConvert(MVEpoch &in,
 }
   
 String MCEpoch::showState() {
-  fillState();
+  theirInitOnce(doFillState);
   return MCBase::showState(MCEpoch::FromTo_p[0],
                            MEpoch::N_Types, MCEpoch::N_Routes,
                            MCEpoch::ToRef_p);
 }
   
-void MCEpoch::doFillState (void*) {
+void MCEpoch::doFillState() {
   MEpoch::checkMyTypes();
   MCBase::makeState(FromTo_p[0], MEpoch::N_Types, N_Routes, ToRef_p);
 }

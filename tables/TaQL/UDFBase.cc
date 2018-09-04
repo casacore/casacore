@@ -167,6 +167,7 @@ namespace casacore {
   {
     String fname(name);
     fname.downcase();
+
     ScopedMutexLock lock(theirMutex);
     map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
     if (iter == theirRegistry.end()) {
@@ -184,10 +185,14 @@ namespace casacore {
   {
     String fname(name);
     fname.downcase();
-    // Try to find the function.
-    map<String,MakeUDFObject*>::iterator iter = theirRegistry.find (fname);
-    if (iter != theirRegistry.end()) {
-      return iter->second (fname);
+    map<String,MakeUDFObject*>::iterator iter;
+    {
+      ScopedMutexLock lock(theirMutex);
+      // Try to find the function.
+      iter = theirRegistry.find (fname);
+      if (iter != theirRegistry.end()) {
+        return iter->second (fname);
+      }
     }
     String sfname(fname);
     // Split name in library and function name.
@@ -199,6 +204,7 @@ namespace casacore {
       libname = fname.substr(0,j);
       libname = style.findSynonym (libname);
       fname   = libname + fname.substr(j);
+
       ScopedMutexLock lock(theirMutex);
       // See if the library is already loaded.
       iter = theirRegistry.find (libname);

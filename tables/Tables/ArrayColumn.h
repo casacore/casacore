@@ -607,7 +607,6 @@ private:
 
 
 //# Explicitly instantiate these templates in ArrayColumn_tmpl.cc
-#ifdef AIPS_CXX11
   extern template class ArrayColumn<Bool>;
   extern template class ArrayColumn<Char>;
   extern template class ArrayColumn<Short>;
@@ -619,7 +618,6 @@ private:
   extern template class ArrayColumn<Complex>;
   extern template class ArrayColumn<DComplex>;
   extern template class ArrayColumn<String>;
-#endif
 
 
 } //# NAMESPACE CASACORE - END

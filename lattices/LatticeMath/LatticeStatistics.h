@@ -523,7 +523,7 @@ private:
    };
 
    const MaskedLattice<T>* pInLattice_p;
-   SHARED_PTR<const MaskedLattice<T> > _inLatPtrMgr;
+   std::shared_ptr<const MaskedLattice<T> > _inLatPtrMgr;
 
    CountedPtr<TempLattice<AccumType> > pStoreLattice_p;
    Vector<Int> nxy_p, statsToPlot_p;
@@ -676,9 +676,7 @@ private:
 };
 
 //# Declare extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class LatticeStatistics<Float>;
-#endif
 
 
 } //# NAMESPACE CASA - END

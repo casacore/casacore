@@ -29,9 +29,7 @@
 #include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
 namespace casacore {
     template class Array<Quantum<Double > >;
 
 }
-#endif

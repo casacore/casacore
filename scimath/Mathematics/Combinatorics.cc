@@ -39,6 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         // Make updating the cache thread-safe.
         // After acquiring a lock, test again if an update needs to be done
         // because another thread might have done it in the mean time.
+        // Need C++11 or later to implement double checked locking correctly.
         ScopedMutexLock lock(theirMutex);
         if (n >= _factorialCacheSize) {
           // Create a new cache vector.

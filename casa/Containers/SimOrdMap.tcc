@@ -100,6 +100,8 @@ SimpleOrderedMap<K,V>& SimpleOrderedMap<K,V>::operator=
         kvblk.resize (that.nrused, False, False);
     }
     nrused = that.nrused;
+    nrincr = that.nrincr;
+    DefaultVal = that.DefaultVal;
     copyBlock (that);
     return *this;
 }

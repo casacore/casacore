@@ -1,5 +1,5 @@
 //# Error.h: Base class for all Casacore errors
-//# Copyright (C) 1993,1994,1995,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1999,2000,2001,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,6 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/OS/Mutex.h>
 #include <exception>
 #include <sys/types.h>
 
@@ -55,10 +54,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #ifdef NDEBUG
 #define AssertCc(c) ((void)0)
 #else
-#define AssertCc(c) { if (! (c)) {casacore::AipsError::throwIf (casacore::True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
+#define AssertCc(c) { if (AIPS_UNLIKELY(! (c))) {casacore::AipsError::throwIf (casacore::True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
 #endif
 
-#define AssertAlways(c) { if (! (c)) {casacore::AipsError::throwIf (casacore::True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
+#define AssertAlways(c) { if (AIPS_UNLIKELY(! (c))) {casacore::AipsError::throwIf (casacore::True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
 
 #define WarnCc(m)\
 {\
@@ -72,7 +71,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define AssertOrWarn(c,m) ((void)0)
 #else
 #define AssertOrWarn(c,m)\
-{ if (! (c)) {\
+{ if (AIPS_UNLIKELY(! (c))) {\
     WarnCc (m);\
   }\
 }
@@ -87,11 +86,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #endif
 
 // Throw an AipsError exception if the condition is true.
-#define ThrowIf(c,m) {if (c) {casacore::AipsError::throwIf (casacore::True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
+#define ThrowIf(c,m) {if (AIPS_UNLIKELY(c)) {casacore::AipsError::throwIf (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
 
 // Throw an AipsError exception if the system error code is not 0.
 // It adds the message for that error code to the exception text.
-#define ThrowIfError(c,m) {if (c) {casacore::AipsError::throwIfError (casacore::True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
+#define ThrowIfError(c,m) {if (AIPS_UNLIKELY(c)) {casacore::AipsError::throwIfError (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
 
 // Repackage and rethrow an AipsError exception.
 #define Rethrow(e,m) {throw casacore::AipsError::repackageAipsError ((e),(m),__FILE__,__LINE__, __PRETTY_FUNCTION__);}
@@ -494,6 +493,23 @@ public:
 };
 
 
+// <summary>Initialization error, typically of static data shared between objects</summary>
+// <use visibility=export>
+//
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
+//
+// <synopsis>
+// This error indicates that some initialization has failed. It is preferable
+// to throw this in an initX() function called by std::call_once() or similar
+// over returning a bool or other result variable.
+// </synopsis>
+//
+// <todo asof="">
+// </todo>
+
+class InitError : public AipsError {
+};
 
 } //# NAMESPACE CASACORE - END
 

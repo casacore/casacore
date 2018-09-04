@@ -152,33 +152,52 @@ void testNormal()
   mutex.unlock();
 }
 
-void testMutexedInitFunc (void* arg)
+
+static int callOnceCount;
+void testCallOnceFunc()
 {
-  int* count = static_cast<int*>(arg);
+  callOnceCount++;
+}
+
+void testCallOnceFunc(int *count)
+{
   (*count)++;
 }
 
 // Test serially.
-void testMutexedInitSerial()
+void testCallOnceSerial()
 {
-  int count=0;
-  MutexedInit safeInit (testMutexedInitFunc, &count);
-  for (int i=0; i<16; ++i) {
-    safeInit.exec();
+  callOnceCount = 0;
+  CallOnce0 safeInit0;
+  for (int i=0; i<64; ++i) {
+    safeInit0(testCallOnceFunc);
+  }
+  AlwaysAssertExit (callOnceCount==1);
+
+  int count = 0;
+  CallOnce safeInit;
+  for (int i=0; i<64; ++i) {
+    safeInit(testCallOnceFunc, &count);
   }
   AlwaysAssertExit (count==1);
 }
 
 // Test parallel.
-void testMutexedInitParallel()
+void testCallOnceParallel()
 {
-  int count=0;
-  MutexedInit safeInit (testMutexedInitFunc, &count);
-#ifdef _OPENMP
+  callOnceCount = 0;
+  CallOnce0 safeInit0;
 #pragma omp parallel for
-#endif
-  for (int i=0; i<16; ++i) {
-    safeInit.exec();
+  for (int i=0; i<64; ++i) {
+    safeInit0(testCallOnceFunc);
+  }
+  AlwaysAssertExit (callOnceCount==1);
+
+  int count = 0;
+  CallOnce safeInit;
+#pragma omp parallel for
+  for (int i=0; i<64; ++i) {
+    safeInit(testCallOnceFunc, &count);
   }
   AlwaysAssertExit (count==1);
 }
@@ -187,12 +206,12 @@ void testMutexedInitParallel()
 int main()
 {
   try {
-    testMutexedInitSerial();
+    testCallOnceSerial();
 #ifdef USE_THREADS
     testErrorCheck();
     testRecursive();
     testNormal();
-    testMutexedInitParallel();
+    testCallOnceParallel();
 #endif
   } catch (AipsError& x) {
     cout << "Caught an exception: " << x.getMesg() << endl;

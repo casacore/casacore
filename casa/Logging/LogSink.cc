@@ -1,5 +1,5 @@
 //# LogSink.cc: Distribute LogMessages to their destination(s)
-//# Copyright (C) 1996,1999,2001,2003
+//# Copyright (C) 1996,1999,2001,2003,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,6 +42,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 CountedPtr<LogSink::LsiIntermediate> *LogSink::global_sink_p = 0;
+CallOnce0 LogSink::theirCallOnce;
 
 
 String LogSink::localId( ) {
@@ -56,9 +57,7 @@ LogSink::LogSink(LogMessage::Priority filter, Bool nullSink)
   : LogSinkInterface(LogFilter(filter)),
     useGlobalSink_p (True)
 {
-    if ( ! LogSink::global_sink_p ) {
-        createGlobalSink();
-    }
+    theirCallOnce(createGlobalSink);
     local_ref_to_global_p = *LogSink::global_sink_p;
 
     if (nullSink) {
@@ -73,9 +72,7 @@ LogSink::LogSink(const LogFilterInterface &filter, Bool nullSink)
   : LogSinkInterface(filter),
     useGlobalSink_p (True)
 {
-    if ( ! LogSink::global_sink_p ) {
-        createGlobalSink();
-    }
+    theirCallOnce(createGlobalSink);
     local_ref_to_global_p = *LogSink::global_sink_p;
 
     if (nullSink) {
@@ -92,9 +89,7 @@ LogSink::LogSink(LogMessage::Priority filter, ostream *os,
     local_sink_p(new StreamLogSink(LogFilter(LogMessage::DEBUGGING), os)),
     useGlobalSink_p (useGlobalSink)
 {
-    if ( ! LogSink::global_sink_p ) {
-        createGlobalSink();
-    }
+    theirCallOnce(createGlobalSink);
     local_ref_to_global_p = *LogSink::global_sink_p;
 
     AlwaysAssert(! local_sink_p.null(), AipsError);
@@ -106,9 +101,7 @@ LogSink::LogSink(const LogFilterInterface &filter, ostream *os,
     local_sink_p(new StreamLogSink(LogFilter(LogMessage::DEBUGGING), os)),
     useGlobalSink_p (useGlobalSink)
 {
-    if ( ! LogSink::global_sink_p ) {
-        createGlobalSink();
-    }
+    theirCallOnce(createGlobalSink);
     local_ref_to_global_p = *LogSink::global_sink_p;
 
     AlwaysAssert(! local_sink_p.null(), AipsError);
@@ -120,9 +113,7 @@ LogSink::LogSink (const LogFilterInterface &filter,
     local_sink_p(sink),
     useGlobalSink_p (True)
 {
-    if ( ! LogSink::global_sink_p ) {
-        createGlobalSink();
-    }
+    theirCallOnce(createGlobalSink);
     local_ref_to_global_p = *LogSink::global_sink_p;
 }
 
@@ -130,9 +121,7 @@ LogSink::LogSink(const LogSink &other)
   : LogSinkInterface(other), local_sink_p(other.local_sink_p),
     useGlobalSink_p (other.useGlobalSink_p)
 {
-    if ( ! LogSink::global_sink_p ) {
-        createGlobalSink();
-    }
+    theirCallOnce(createGlobalSink);
     local_ref_to_global_p = *LogSink::global_sink_p;
 }
 
@@ -268,18 +257,14 @@ Bool LogSink::nullGlobalSink( )
 
 LogSinkInterface &LogSink::globalSink()
 {
-    if ( ! LogSink::global_sink_p ) {
-        createGlobalSink();
-    }
+    theirCallOnce(createGlobalSink);
     return ***global_sink_p;
 }
 
 void LogSink::globalSink(LogSinkInterface *&fromNew)
 {
-    if ( ! LogSink::global_sink_p ) {
-        createGlobalSink();
-    }
-    (* global_sink_p)->replace(fromNew);
+    theirCallOnce(createGlobalSink);
+    (* global_sink_p)->replace(fromNew); // racy with use of global_sink_p as noted in .h
     fromNew = 0;
     AlwaysAssert(!(*global_sink_p).null(), AipsError);
 }
@@ -317,16 +302,8 @@ void LogSink::flush (Bool global)
 
 void LogSink::createGlobalSink()
 {
-    ScopedMutexLock lock(theirMutex( ));
-    if ( ! LogSink::global_sink_p ) {
-        LogSink::global_sink_p = new CountedPtr<LsiIntermediate> ();
-        (* global_sink_p) = new LsiIntermediate (new StreamLogSink(LogMessage::NORMAL, &cerr));
-    }
-}
-
-Mutex &LogSink::theirMutex( ) {
-    static Mutex mutex;
-    return mutex;
+    LogSink::global_sink_p = new CountedPtr<LsiIntermediate> ();
+    (* global_sink_p) = new LsiIntermediate (new StreamLogSink(LogMessage::NORMAL, &cerr));
 }
 
 } //# NAMESPACE CASACORE - END

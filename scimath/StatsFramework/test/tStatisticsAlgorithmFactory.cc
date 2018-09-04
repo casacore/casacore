@@ -29,9 +29,6 @@
 
 #include <casacore/casa/namespace.h>
 
-#if __cplusplus < 201103L
-#  define nullptr NULL
-#endif
 
 int main() {
     try {

@@ -40,8 +40,6 @@ ColumnDescSet::ColumnDescSet()
 : cols_p   (ColumnDesc()),
   colSeq_p (0)
 {
-    //# Register the main DataManagers if not done yet.
-    DataManager::registerMainCtor();
 }
 
 ColumnDescSet::ColumnDescSet (const ColumnDescSet& that)

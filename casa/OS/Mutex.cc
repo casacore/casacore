@@ -1,5 +1,5 @@
 //# Mutex.cc: Classes to handle mutexes and (un)locking
-//# Copyright (C) 2011
+//# Copyright (C) 2011,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,12 +26,6 @@
 //# $Id$
 
 #include <casacore/casa/OS/Mutex.h>
-#include <errno.h>
-#include <casacore/casa/Exceptions/Error.h>
-
-//# Define a macro to cast the void* to pthread_mutex_t*.
-#define ITSMUTEX \
-  (static_cast<pthread_mutex_t*>(itsMutex))
 
 namespace casacore {
 
@@ -61,92 +55,43 @@ namespace casacore {
       break;
     }
     // Create the mutex.
-    itsMutex = new pthread_mutex_t;
     int error;
     if (ptype == PTHREAD_MUTEX_DEFAULT) {
-      error = pthread_mutex_init (ITSMUTEX, 0);
-      if (error != 0) throw SystemCallError ("pthread_mutex_init",error);
+      error = pthread_mutex_init (&itsMutex, 0);
+      if (error != 0) {
+        throw SystemCallError ("pthread_mutex_init",error);
+      }
     } else {
+      // Note: if after the first call any call throws, we leak resources.
       pthread_mutexattr_t attr;
       error = pthread_mutexattr_init (&attr);
-      if (error != 0) throw SystemCallError ("pthread_mutexattr_init",error);
+      if (error != 0) {
+        throw SystemCallError ("pthread_mutexattr_init",error);
+      }
       error = pthread_mutexattr_settype (&attr, ptype);
-      if (error != 0) throw SystemCallError ("pthread_mutexattr_settype",error);
-      error = pthread_mutex_init (ITSMUTEX, &attr);
-      if (error != 0) throw SystemCallError ("pthread_mutex_init",error);
+      if (error != 0) {
+        throw SystemCallError ("pthread_mutexattr_settype",error);
+      }
+      error = pthread_mutex_init (&itsMutex, &attr);
+      if (error != 0) {
+        throw SystemCallError ("pthread_mutex_init",error);
+      }
       // The attribute can be destroyed right after the init.
       error = pthread_mutexattr_destroy (&attr);
-      if (error != 0) throw SystemCallError ("pthread_mutexattr_destroy",error);
+      if (error != 0) {
+        throw SystemCallError ("pthread_mutexattr_destroy",error);
+      }
     }
   }
 
   Mutex::~Mutex()
   {
-    int error = pthread_mutex_destroy (ITSMUTEX);
-    if (error != 0) throw SystemCallError ("pthread_mutex_destroy", error);
-    delete ITSMUTEX;
-  }
-
-  void Mutex::lock()
-  {
-    int error = pthread_mutex_lock (ITSMUTEX);
-    if (error != 0) throw SystemCallError ("pthread_mutex_lock", error);
-  }
-
-  void Mutex::unlock()
-  {
-    int error = pthread_mutex_unlock (ITSMUTEX);
-    if (error != 0) throw SystemCallError ("pthread_mutex_unlock", error);
-  }
-
-  Bool Mutex::trylock()
-  {
-    int error = pthread_mutex_trylock(ITSMUTEX);
-    switch (error) {
-    case 0:
-      return True;
-    case EBUSY:
-    case EDEADLK: // returned by error_check mutexes
-      return False;
-    default:
-      throw SystemCallError ("pthread_mutex_trylock", error);
+    int error = pthread_mutex_destroy (&itsMutex);
+    if (error != 0) {
+      throw SystemCallError ("pthread_mutex_destroy", error);
     }
   }
-
-#else
-
-  Mutex::Mutex (Mutex::Type)
-    : itsMutex(0) {}
-  Mutex::~Mutex()
-  {}
-  void Mutex::lock()
-  {}
-  void Mutex::unlock()
-  {}
-  Bool Mutex::trylock()
-  { return True; }
 
 #endif
-
-
-  MutexedInit::MutexedInit (InitFunc* func, void* arg, Mutex::Type type)
-    : itsMutex  (type),
-      itsFunc   (func),
-      itsArg    (arg),
-      itsDoExec (True)
-  {}
-
-  void MutexedInit::doExec()
-  {
-    // The exec function said we have to execute the initializion function.
-    // Obtain a lock and test the flag again to see if another thread hasn't
-    // executed the function in the mean time.
-    ScopedMutexLock locker(itsMutex);
-    if (itsDoExec) {
-      itsFunc (itsArg);
-      itsDoExec = False;
-    }
-  }
-
 
 } // namespace casacore

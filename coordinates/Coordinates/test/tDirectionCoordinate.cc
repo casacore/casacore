@@ -78,7 +78,7 @@ void doit8 ();
 void doit9 ();
 void doit10 ();
 
-#if defined(USE_THREADS) && defined(AIPS_CXX11)
+#if defined(USE_THREADS)
 #include <thread>
 
 void _create_many_coordinates()
@@ -98,7 +98,7 @@ void test_multithreaded_behaviour()
 	t1.join();
 	t2.join();
 }
-#endif // USE_THREADS && AIPS_CXX11
+#endif // USE_THREADS
 
 
 
@@ -106,11 +106,11 @@ void test_multithreaded_behaviour()
 int main()
 {
 
-#if defined(USE_THREADS) && defined(AIPS_CXX11)
+#if defined(USE_THREADS)
     {
         test_multithreaded_behaviour();
     }
-#endif // USE_THREADS && AIPS_CXX11
+#endif // USE_THREADS
 
    try {
 
