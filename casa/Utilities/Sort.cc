@@ -346,7 +346,9 @@ uInt Sort::parSort (int nthr, uInt nrrec, uInt* inx) const
   int step = nrrec/nthr;
   for (int i=0; i<nthr; ++i) tinx[i] = i*step;
   tinx[nthr] = nrrec;
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
   for (int i=0; i<nthr; ++i) {
     int nparts = 1;
     index[tinx[i]] = tinx[i];
@@ -398,7 +400,9 @@ void Sort::merge (uInt* inx, uInt* tmp, uInt nrrec, uInt* index,
   // if the last part is in the same buffer.
   uInt* last = inx + index[np-1];
   while (np > 1) {
+#ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic)
+#endif
     for (int i=0; i<np; i+=2) {
       if (i < np-1) {
         // Merge 2 subsequent parts of the array.

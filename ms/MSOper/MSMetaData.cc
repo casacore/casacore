@@ -3624,7 +3624,9 @@ void MSMetaData::_computeScanAndSubScanProperties(
         }
         pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> > *fut =
             new pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >[nchunks];
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
         for (uInt i=0; i<nchunks; ++i) {
             fut[i] = _getChunkSubScanProperties(
                 scans, fields, ddIDs, states, times, arrays,

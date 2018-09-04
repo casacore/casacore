@@ -187,7 +187,9 @@ void testCallOnceParallel()
 {
   callOnceCount = 0;
   CallOnce0 safeInit0;
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
   for (int i=0; i<64; ++i) {
     safeInit0(testCallOnceFunc);
   }
@@ -195,7 +197,9 @@ void testCallOnceParallel()
 
   int count = 0;
   CallOnce safeInit;
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
   for (int i=0; i<64; ++i) {
     safeInit(testCallOnceFunc, &count);
   }

@@ -270,7 +270,9 @@ uInt GenSort<T>::parSort (T* data, uInt nr, Sort::Order ord, int opt,
   int step = nr/nthr;
   for (int i=0; i<nthr; ++i) tinx[i] = i*step;
   tinx[nthr] = nr;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads(nthr)
+#endif
   for (int i=0; i<nthr; ++i) {
     int nparts = 1;
     index[tinx[i]] = tinx[i];
@@ -352,7 +354,9 @@ T* GenSort<T>::merge (T* data, T* tmp, uInt nr, uInt* index,
   // if the last part is in the same buffer.
   T* last = data + index[np-1];
   while (np > 1) {
+#ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic)
+#endif
     for (int i=0; i<np; i+=2) {
       if (i < np-1) {
         // Merge 2 subsequent parts of the array.
@@ -614,7 +618,9 @@ uInt GenSortIndirect<T>::parSort (uInt* inx, const T* data, uInt nr,
   int step = nr/nthr;
   for (int i=0; i<nthr; ++i) tinx[i] = i*step;
   tinx[nthr] = nr;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads(nthr)
+#endif
   for (int i=0; i<nthr; ++i) {
     int nparts = 1;
     index[tinx[i]] = tinx[i];
@@ -682,7 +688,9 @@ uInt* GenSortIndirect<T>::merge (const T* data, uInt* inx, uInt* tmp, uInt nr,
   // if the last part is in the same buffer.
   uInt* last = inx + index[np-1];
   while (np > 1) {
+#ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic)
+#endif
     for (int i=0; i<np; i+=2) {
       if (i < np-1) {
         // Merge 2 subsequent parts of the array.
