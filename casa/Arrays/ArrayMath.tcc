@@ -1430,14 +1430,18 @@ template<class T>
 void expandArray (Array<T>& out, const Array<T>& in,
                   const IPosition& alternate)
 {
-  IPosition mult;
-  IPosition alt = checkExpandArray (mult, in.shape(), out.shape(),
-                                    alternate);
+  IPosition mult, inshp, outshp;
+  IPosition alt = checkExpandArray (mult, inshp,
+                                    in.shape(), out.shape(), alternate);
+  Array<T> incp(in);
+  if (in.ndim() < inshp.size()) {
+    incp.reference (in.reform(inshp));
+  }
   // Make sure output is contiguous.
   Bool deleteIt;
   T* outPtr = out.getStorage (deleteIt);
-  expandRecursive (in.ndim()-1, in.shape(), mult, in.steps(),
-                   in.data(), outPtr, alt);
+  expandRecursive (out.ndim()-1, inshp, mult, incp.steps(),
+                   incp.data(), outPtr, alt);
   out.putStorage (outPtr, deleteIt);
 }
 
@@ -1448,6 +1452,7 @@ T* expandRecursive (int axis, const IPosition& shp, const IPosition& mult,
 {
   if (axis == 0) {
     if (alternate[0]) {
+      // Copy as 1,2,3 1,2,3, etc.
       for (uInt j=0; j<mult[0]; ++j) {
         const T* pin = in;
         for (uInt i=0; i<shp[0]; ++i) {
@@ -1456,6 +1461,7 @@ T* expandRecursive (int axis, const IPosition& shp, const IPosition& mult,
         }
       }
     } else {
+      // Copy as 1,1,1 2,2,2 etc.
       for (uInt i=0; i<shp[0]; ++i) {
         for (uInt j=0; j<mult[0]; ++j) {
           *out++ = *in;

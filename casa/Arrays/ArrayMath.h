@@ -885,7 +885,8 @@ template<class T> Array<T> square(const Array<T> &val);
 // Returns an array where every element is cubed.
 template<class T> Array<T> cube(const Array<T> &val);
 
-// Expand the values of an array. The arrays must have the same dimensionality.
+// Expand the values of an array. The arrays can have different dimensionalities.
+// Missing input axes have length 1; missing output axes are discarded.
 // The length of each axis in the input array must be <= the length of the
 // corresponding axis in the output array and divide evenly.
 // For each axis <src>mult</src> is set to output/input.
@@ -894,7 +895,7 @@ template<class T> Array<T> cube(const Array<T> &val);
 // as '1 1 2 2 3 3'  or  alternately as '1 2 3 1 2 3'
 // This choice can be made for each axis; a value 0 means linearly,
 // another value means alternately. If the length of alternate is less than
-// the dimensionality of the arrays, the missing ones default to 0.
+// the dimensionality of the output array, the missing ones default to 0.
 template<class T> void expandArray (Array<T>& out, const Array<T>& in,
                                     const IPosition& alternate=IPosition());
 // Helper function for expandArray using recursion for each axis.
@@ -904,7 +905,8 @@ T* expandRecursive (int axis, const IPosition& shp, const IPosition& mult,
                     const T* in, T* out, const IPosition& alternate);
 // Check array shapes for expandArray. It returns the alternate argument,
 // where possibly missing values are appended (as 0).
-IPosition checkExpandArray (IPosition& mult,
+// It fills in mult and inshp (with possibly missing axes of length 1) and outshp.
+IPosition checkExpandArray (IPosition& mult, IPosition& inshp,
                             const IPosition& inShape,
                             const IPosition& outShape,
                             const IPosition& alternate);

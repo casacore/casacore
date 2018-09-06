@@ -1868,19 +1868,19 @@ inline TableExprNode fractile (const TableExprNode& node,
 }
 inline TableExprNode any (const TableExprNode& node)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::anyFUNC, node);
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arranyFUNC, node);
 }
 inline TableExprNode all (const TableExprNode& node)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::allFUNC, node);
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrallFUNC, node);
 }
 inline TableExprNode ntrue (const TableExprNode& node)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::ntrueFUNC, node);
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrntrueFUNC, node);
 }
 inline TableExprNode nfalse (const TableExprNode& node)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalseFUNC, node);
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrnfalseFUNC, node);
 }
 inline TableExprNode sums (const TableExprNode& array,
 			   const TableExprNodeSet& axes)
@@ -1958,25 +1958,25 @@ inline TableExprNode fractiles (const TableExprNode& array,
 inline TableExprNode anys (const TableExprNode& array,
 			   const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::anysFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arranysFUNC,
 					   array, axes);
 }
 inline TableExprNode alls (const TableExprNode& array,
 			   const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::allsFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrallsFUNC,
 					   array, axes);
 }
 inline TableExprNode ntrues (const TableExprNode& array,
 			     const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::ntruesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrntruesFUNC,
 					   array, axes);
 }
 inline TableExprNode nfalses (const TableExprNode& array,
 			      const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrnfalsesFUNC,
 					   array, axes);
 }
 inline TableExprNode runningMin (const TableExprNode& node,

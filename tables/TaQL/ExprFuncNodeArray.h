@@ -131,9 +131,12 @@ private:
     // Remove axes exceeding ndim.
     IPosition removeAxes (const IPosition& axes, Int ndim) const;
 
-    // Get the shape for the array function.
+    // Get the shape for the array, boxed and running functions.
+    // If an axis length < 0, the corresponding main shape axis (if present)
+    // is used.
     // axarg gives the argument nr of the shape.
-    const IPosition& getArrayShape (const TableExprId& id, uInt axarg=1);
+    const IPosition& getArrayShape (const TableExprId& id,
+                                    uInt axarg=1);
 
     // Get the transpose order of the array axes.
     IPosition getOrder (const TableExprId& id, Int ndim);
@@ -146,6 +149,11 @@ private:
     // Set the alternate value expandAlt_p for array expand and return it.
     const IPosition& getAlternate (const TableExprId& id);
 
+    // Adjust the resize shape by replacing negative axes with the
+    // original axis (if present) or 1.
+    IPosition adjustShape (const IPosition& shape,
+                           const IPosition& origShape) const;
+  
     // Templated fucntion to resize/expand an array.
     template<typename T>
     MArray<T> TEFResize (const MArray<T>& arr, const TableExprId& id);

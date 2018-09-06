@@ -271,7 +271,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MArray<T> TableExprFuncNodeArray::TEFResize (const MArray<T>& arr,
                                                const TableExprId& id)
   {
-    const IPosition& shp = getArrayShape(id);
+    IPosition shp = adjustShape (getArrayShape(id), arr.shape());
     const IPosition& alt = getAlternate(id);
     if (alt.empty()) {
       Array<T> res(shp, T());
@@ -350,10 +350,10 @@ void TableExprFuncNodeArray::tryToConst()
     case TableExprFuncNode::arravdevsFUNC:
     case TableExprFuncNode::arrrmssFUNC:
     case TableExprFuncNode::arrmediansFUNC:
-    case TableExprFuncNode::anysFUNC:
-    case TableExprFuncNode::allsFUNC:
-    case TableExprFuncNode::ntruesFUNC:
-    case TableExprFuncNode::nfalsesFUNC:
+    case TableExprFuncNode::arranysFUNC:
+    case TableExprFuncNode::arrallsFUNC:
+    case TableExprFuncNode::arrntruesFUNC:
+    case TableExprFuncNode::arrnfalsesFUNC:
         if (operands()[axarg]->isConstant()) {
 	    ipos_p = getAxes (0, -1, axarg);
 	    constAxes_p = True;
@@ -373,7 +373,7 @@ void TableExprFuncNodeArray::tryToConst()
         // fall through
     case TableExprFuncNode::arrayFUNC:
         if (operands()[axarg]->isConstant()) {
-	    getArrayShape (0, axarg);
+          getArrayShape (0, axarg);            // fills ipos_p
 	    constAxes_p = True;
 	}
         break;
@@ -470,8 +470,8 @@ IPosition TableExprFuncNodeArray::removeAxes (const IPosition& axes,
   return newAxes;
 }
 			   
-const IPosition& TableExprFuncNodeArray::getArrayShape(const TableExprId& id,
-						       uInt axarg)
+const IPosition& TableExprFuncNodeArray::getArrayShape (const TableExprId& id,
+                                                        uInt axarg)
 {
   // Get the shape if not constant.
   if (!constAxes_p) {
@@ -597,6 +597,23 @@ const IPosition& TableExprFuncNodeArray::getAlternate (const TableExprId& id)
     }
   }
   return expandAlt_p;
+}
+
+IPosition TableExprFuncNodeArray::adjustShape (const IPosition& shape,
+                                               const IPosition& origShape) const
+{
+  // Set axis < 0 to original shape (if present) or 1.
+  IPosition shp(shape);
+  for (uInt i=0; i<shp.size(); ++i) {
+    if (shp[i] < 0) {
+      if (i < origShape.size()) {
+        shp[i] = origShape[i];
+      } else {
+        shp[i] = 1;
+      }
+    }
+  }
+  return shp;
 }
 
 
@@ -740,12 +757,12 @@ MArray<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
 			    operands()[1]->getArrayDComplex(id),
 			    operands()[2]->getDouble(id));
 	}
-    case TableExprFuncNode::anysFUNC:
+    case TableExprFuncNode::arranysFUNC:
       {
 	MArray<Bool> arr (operands()[0]->getArrayBool(id));
 	return partialAnys (arr, getAxes(id, arr.ndim()));
       }
-    case TableExprFuncNode::allsFUNC:
+    case TableExprFuncNode::arrallsFUNC:
       {
 	MArray<Bool> arr (operands()[0]->getArrayBool(id));
 	return partialAlls (arr, getAxes(id, arr.ndim()));
@@ -1113,6 +1130,21 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
 	return partialMaxs (arr, getAxes(id, arr.ndim()));
       }
+    case TableExprFuncNode::runsumFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return slidingSums (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::runproductFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return slidingProducts (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::runsumsqrFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return slidingSumSqrs (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::runminFUNC:
       {
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
@@ -1123,17 +1155,32 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
 	return slidingMaxs (arr, getArrayShape(id));
       }
+    case TableExprFuncNode::boxsumFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return boxedSums (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxproductFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return boxedProducts (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxsumsqrFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return boxedSumSqrs (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::boxminFUNC:
       {
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
-	return boxedMins (arr, getAxes(id, arr.ndim()));
+	return boxedMins (arr, getArrayShape(id));
       }
     case TableExprFuncNode::boxmaxFUNC:
       {
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
-	return boxedMaxs (arr, getAxes(id, arr.ndim()));
+	return boxedMaxs (arr, getArrayShape(id));
       }
-    case TableExprFuncNode::ntruesFUNC:
+    case TableExprFuncNode::arrntruesFUNC:
       {
 	MArray<Bool> arr (operands()[0]->getArrayBool(id));
 	MArray<uInt> res(partialNTrue (arr, getAxes(id, arr.ndim())));
@@ -1141,10 +1188,42 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
 	convertArray (resd, res.array());
 	return MArray<Int64> (resd, res);
       }
-    case TableExprFuncNode::nfalsesFUNC:
+    case TableExprFuncNode::runntrueFUNC:
+      {
+	MArray<Bool> arr (operands()[0]->getArrayBool(id));
+	MArray<uInt> res(slidingNTrue (arr, getArrayShape(id)));
+	Array<Int64> resd(res.shape());
+	convertArray (resd, res.array());
+	return MArray<Int64> (resd, res);
+      }
+    case TableExprFuncNode::boxntrueFUNC:
+      {
+	MArray<Bool> arr (operands()[0]->getArrayBool(id));
+	MArray<uInt> res(boxedNTrue (arr, getArrayShape(id)));
+	Array<Int64> resd(res.shape());
+	convertArray (resd, res.array());
+	return MArray<Int64> (resd, res);
+      }
+    case TableExprFuncNode::arrnfalsesFUNC:
       {
 	MArray<Bool> arr (operands()[0]->getArrayBool(id));
 	MArray<uInt> res(partialNFalse (arr, getAxes(id, arr.ndim())));
+	Array<Int64> resd(res.shape());
+	convertArray (resd, res.array());
+	return MArray<Int64> (resd, res);
+      }
+    case TableExprFuncNode::runnfalseFUNC:
+      {
+	MArray<Bool> arr (operands()[0]->getArrayBool(id));
+	MArray<uInt> res(slidingNFalse (arr, getArrayShape(id)));
+	Array<Int64> resd(res.shape());
+	convertArray (resd, res.array());
+	return MArray<Int64> (resd, res);
+      }
+    case TableExprFuncNode::boxnfalseFUNC:
+      {
+	MArray<Bool> arr (operands()[0]->getArrayBool(id));
+	MArray<uInt> res(boxedNFalse (arr, getArrayShape(id)));
 	Array<Int64> resd(res.shape());
 	convertArray (resd, res.array());
 	return MArray<Int64> (resd, res);
@@ -1484,6 +1563,21 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 				 getAxes(id, arr.ndim(), 2),
 				 operands()[1]->getDouble(id));
       }
+    case TableExprFuncNode::runsumFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingSums (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::runproductFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingProducts (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::runsumsqrFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingSumSqrs (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::runminFUNC:
       {
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
@@ -1523,7 +1617,28 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
       {
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return slidingMedians (arr, getArrayShape(id));
-    }
+      }
+    case TableExprFuncNode::runfractileFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingFractiles (arr, getArrayShape(id, 2),
+                                 operands()[1]->getDouble(id));
+      }
+    case TableExprFuncNode::boxsumFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedSums (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxproductFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedProducts (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxsumsqrFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedSumSqrs (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::boxminFUNC:
       {
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
@@ -1563,7 +1678,13 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
       {
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return boxedMedians (arr, getArrayShape(id));
-    }
+      }
+    case TableExprFuncNode::boxfractileFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedFractiles (arr, getArrayShape(id, 2),
+                               operands()[1]->getDouble(id));
+      }
     case TableExprFuncNode::arrayFUNC:
       {
         IPosition shp (getArrayShape(id));
@@ -1803,15 +1924,45 @@ MArray<DComplex> TableExprFuncNodeArray::getArrayDComplex
 	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return partialSums (arr, getAxes(id, arr.ndim()));
       }
+    case TableExprFuncNode::runsumFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return slidingSums (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxsumFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return boxedSums (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::arrproductsFUNC:
       {
 	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return partialProducts (arr, getAxes(id, arr.ndim()));
       }
+    case TableExprFuncNode::runproductFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return slidingProducts (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxproductFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return boxedProducts (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::arrsumsqrsFUNC:
       {
 	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return partialSums (arr*arr, getAxes(id, arr.ndim()));
+      }
+    case TableExprFuncNode::runsumsqrFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return slidingSumSqrs (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxsumsqrFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return boxedSumSqrs (arr, getArrayShape(id));
       }
     case TableExprFuncNode::arrmeansFUNC:
       {
