@@ -86,11 +86,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #endif
 
 // Throw an AipsError exception if the condition is true.
-#define ThrowIf(c,m) {if (AIPS_UNLIKELY(c)) {casacore::AipsError::throwIf (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
+#define ThrowIf(c,m) {if (AIPS_UNLIKELY(c)) {casacore::AipsError::throwIf (casacore::True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
 
 // Throw an AipsError exception if the system error code is not 0.
 // It adds the message for that error code to the exception text.
-#define ThrowIfError(c,m) {if (AIPS_UNLIKELY(c)) {casacore::AipsError::throwIfError (True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
+#define ThrowIfError(c,m) {if (AIPS_UNLIKELY(c)) {casacore::AipsError::throwIfError (casacore::True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
 
 // Repackage and rethrow an AipsError exception.
 #define Rethrow(e,m) {throw casacore::AipsError::repackageAipsError ((e),(m),__FILE__,__LINE__, __PRETTY_FUNCTION__);}
