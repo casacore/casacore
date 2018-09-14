@@ -31,7 +31,6 @@
 #include <algorithm>
 #include <iterator>
 #include <iomanip>
-#include <set>
 
 namespace casacore {
 
