@@ -7,6 +7,7 @@ tHingesFencesStatistics
 tStatisticsAlgorithmFactory
 tStatisticsTypes
 tStatisticsUtilities
+tStatsHistogram
 tZScoreCalculator
 )
 
