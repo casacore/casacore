@@ -349,6 +349,9 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   // SYSCAL
   copySysCal(otherMS.sysCal(), newAntIndices);
 
+  // WEATHER
+  copyWeather(otherMS.weather(), newAntIndices);
+
   /////////////////////////////////////////////////////
 
   // copying all subtables over to otherMS
@@ -1056,6 +1059,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   // SYSCAL
   if(!copySysCal(otherMS.sysCal(), newAntIndices)){
     log << LogIO::WARN << "Could not merge SysCal subtables " << LogIO::POST ;
+  }
+
+  // WEATHER
+  if(!copyWeather(otherMS.weather(), newAntIndices)){
+    log << LogIO::WARN << "Could not merge Weather subtables " << LogIO::POST ;
   }
 
 
@@ -1796,6 +1804,69 @@ Bool MSConcat::copySysCal(const MSSysCal& otherSysCal,
 
     for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
       sysCalCol.antennaId().put(k, newAntIndices[antennaIDs[k]]);
+    }
+  }
+
+  return True;
+}
+
+Bool MSConcat::copyWeather(const MSWeather& otherWeather,
+			   const Block<uInt>& newAntIndices){
+
+  LogIO os(LogOrigin("MSConcat", "copyWeather"));
+
+  Bool itsWeatherNull = (itsMS.weather().isNull() || (itsMS.weather().nrow() == 0));
+  Bool otherWeatherNull = (otherWeather.isNull() || (otherWeather.nrow() == 0));
+
+  if(itsWeatherNull && otherWeatherNull){ // neither of the two MSs do have valid syscal tables
+    os << LogIO::NORMAL << "No valid weather tables present. Result won't have one either." << LogIO::POST;
+    return True;
+  }
+  else if(itsWeatherNull && !otherWeatherNull){
+    os << LogIO::WARN << itsMS.tableName() << " does not have a valid weather table," << endl
+       << "  the MS to be appended, however, has one. Result won't have one." 
+       << LogIO::POST;
+    return False;
+  }
+
+  MSWeather& weather=itsMS.weather();
+  Int actualRow=weather.nrow()-1;
+  Int origNRow=actualRow+1;
+  Int rowToBeAdded=otherWeather.nrow();
+  TableRow weatherRow(weather);
+  const ROTableRow otherWeatherRow(otherWeather);
+  for (Int k=0; k < rowToBeAdded; ++k){
+    ++actualRow;
+    weather.addRow();
+    weatherRow.put(actualRow, otherWeatherRow.get(k, True));
+  }
+
+  //Now reassigning antennas to the new indices of the ANTENNA table
+
+  if(rowToBeAdded > 0){
+    MSWeatherColumns weatherCol(weather);
+    // check antenna IDs
+    Vector<Int> antennaIDs=weatherCol.antennaId().getColumn();
+    Bool idsOK = True;
+    Int maxID = static_cast<Int>(newAntIndices.nelements()) - 1;
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      if(antennaIDs[k] < 0 || antennaIDs[k] > maxID){
+	idsOK = False;
+	break;
+      }
+    }
+    if(!idsOK){
+      os << LogIO::WARN 
+	 << "Found invalid antenna ids in the WEATHER table; the WEATHER table will be emptied as it is inconsistent" 
+	 << LogIO::POST;
+      Vector<uInt> rowtodel(weather.nrow());
+      indgen(rowtodel);
+      weather.removeRow(rowtodel);
+      return False;
+    }
+
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      weatherCol.antennaId().put(k, newAntIndices[antennaIDs[k]]);
     }
   }
 
