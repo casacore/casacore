@@ -2060,3 +2060,27 @@ Col-11: Int
 []
 Col-10: String
 []
+
+testInd ...
+size 152
+size 284
+size 420
+size 556
+size 692
+
+testInd2 ...
+nrow 1
+rec1   j: String "x"
+size 99
+nrow 1
+rec1   j: String "x"
+size 99
+nrow 1
+rec1   j: String "x"
+size 99
+nrow 1
+rec1   j: String "x"
+size 99
+nrow 1
+rec1   j: String "x"
+size 99

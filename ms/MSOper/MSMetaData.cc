@@ -2918,12 +2918,13 @@ std::shared_ptr<const Quantum<Vector<Double > > > MSMetaData::getSourceTimes() c
     return col;
 }
 
-map<SourceKey, MSMetaData::SourceProperties> MSMetaData::_getSourceInfo() const {
+map<SourceKey, MSMetaData::SourceProperties>
+MSMetaData::_getSourceInfo() const {
     // this method is responsible for setting _sourceInfo
     if (! _sourceInfo.empty()) {
         return _sourceInfo;
     }
-    String colName = MSSource::columnName(MSSource::SOURCE_ID);
+    auto colName = MSSource::columnName(MSSource::SOURCE_ID);
     ROScalarColumn<Int> id(_ms->source(), colName);
     colName = MSSource::columnName(MSSource::SPECTRAL_WINDOW_ID);
     ROScalarColumn<Int> spw(_ms->source(), colName);
@@ -2934,8 +2935,8 @@ map<SourceKey, MSMetaData::SourceProperties> MSMetaData::_getSourceInfo() const 
     colName = MSSource::columnName(MSSource::TRANSITION);
     ROArrayColumn<String> transition(_ms->source(), colName);
     map<SourceKey, SourceProperties> mymap;
-    uInt nrows = _ms->source().nrow();
-    Vector<MFrequency> rf;
+    auto nrows = _ms->source().nrow();
+    Array<MFrequency> rf;
     SourceKey key;
     SourceProperties props;
     static const Unit emptyUnit;
@@ -2948,13 +2949,17 @@ map<SourceKey, MSMetaData::SourceProperties> MSMetaData::_getSourceInfo() const 
             // resize=True because the array lengths may differ
             // from cell to cell, CAS-10409
             restfreq.get(i, rf, True);
-            props.restfreq.reset(new std::vector<MFrequency>(rf.tovector()));
+            props.restfreq.reset(
+                new std::vector<MFrequency>(rf.tovector())
+            );
         }
         else {
             props.restfreq.reset();
         }
         if (transition.isDefined(i)) {
-            props.transition.reset(new std::vector<String>(transition(i).tovector()));
+            props.transition.reset(
+                new std::vector<String>(transition(i).tovector())
+            );
         }
         else {
             props.transition.reset();
@@ -2966,22 +2971,24 @@ map<SourceKey, MSMetaData::SourceProperties> MSMetaData::_getSourceInfo() const 
         "Too few source keys found, there are duplicate SOURCE table keys"
     );
     // this is a reasonable approximation for now
-    uInt mysize = nrows*(2*sizeof(uInt) + sizeof(Double) + 30);
+    auto mysize = nrows*(2*sizeof(uInt) + sizeof(Double) + 30);
     if (_cacheUpdated(mysize)) {
         _sourceInfo = mymap;
     }
     return mymap;
 }
 
-map<SourceKey, std::shared_ptr<vector<MFrequency> > > MSMetaData::getRestFrequencies() const {
-    map<SourceKey, SourceProperties> mymap = _getSourceInfo();
-    map<SourceKey, std::shared_ptr<vector<MFrequency> > > ret;
-    map<SourceKey, SourceProperties>::const_iterator iter = mymap.begin();
-    map<SourceKey, SourceProperties>::const_iterator end = mymap.end();
-    while (iter != end) {
-        ret[iter->first] = iter->second.restfreq;
-        ++iter;
+
+map<SourceKey, std::shared_ptr<vector<MFrequency>>>
+MSMetaData::getRestFrequencies() const {
+    auto mymap = _getSourceInfo();
+    map<SourceKey, std::shared_ptr<vector<MFrequency>>> ret;
+    for_each(
+        mymap.cbegin(), mymap.cend(),
+        [&ret] (const std::pair<SourceKey, SourceProperties>& val) {
+        ret[val.first] = val.second.restfreq;
     }
+    );
     return ret;
 }
 

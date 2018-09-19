@@ -28,6 +28,7 @@
 
 #include <casacore/scimath/StatsFramework/StatsHistogram.h>
 
+#include <algorithm>
 #include <iterator>
 #include <iomanip>
 
@@ -46,7 +47,8 @@ StatsHistogram<AccumType>::StatsHistogram(
     ThrowIf(_binWidth == AccumType(0), "Histogram bin width is 0");
     uInt j = 1;
     for_each(
-        _maxBinLimits.begin(), _maxBinLimits.end(), [&j, this] (AccumType& val) {
+        _maxBinLimits.begin(), _maxBinLimits.end(), [&j, this]
+        (AccumType& val) {
             val = _minHistLimit + _binWidth * (AccumType)(j);
             ++j;
         }
@@ -70,42 +72,46 @@ uInt StatsHistogram<AccumType>::getIndex(AccumType value) const {
     if (value >= mymin && value < _maxBinLimits[idx]) {
         return idx;
     }
-    // did not find in initial guessed bin, test in some bins greater than and
-    // less than idx. It tests out to 10, but in practice, if this needs to
-    // be done, the value, in the vast majority of cases, is in a bin that is
-    // only one or two bins from the idx bin. Start at a diff of 1, as we've
-    // already tested a diff of 0.
-    for (uInt i=1; i<10; ++i) {
-        // check bin above idx
-        auto upIdx = idx + i;
-        auto tried = False;
-        if (upIdx < _nBins) {
-            if (
-                value >= _maxBinLimits[upIdx - 1]
-                    && value < _maxBinLimits[upIdx]
-            ) {
-                return upIdx;
-            }
-            tried = True;
+    auto higher = value >= _maxBinLimits[idx];
+    Int testIdx = higher ? idx + 1 : idx - 1;
+    // should never happen, but check just in case...
+    if (higher) {
+        ThrowIf(testIdx >= (Int)_nBins, "testIdx >= nBins");
+    }
+    else {
+        ThrowIf(testIdx < 0, "testIdx < 0");
+    }
+    Int minIdx = higher ? idx : testIdx;
+    Int maxIdx = higher ? testIdx : idx;
+    // we must first establish a bin index
+    // range which includes the target value
+    _minMaxIdxRange(minIdx, maxIdx, value, higher);
+    // bin index limits established, so now do binary search to find the
+    // correct bin
+    while (True) {
+        ThrowIf(maxIdx < minIdx, "Logic Error: maxIdx < minIdx");
+        // integer division
+        testIdx = (minIdx + maxIdx)/2;
+        if (
+            value >= _maxBinLimits[testIdx - 1]
+            && value < _maxBinLimits[testIdx]
+        ) {
+            // bin found
+            return testIdx;
         }
-        // check bin below idx
-        // avoid uInt underflow
-        if (i <= idx) {
-            auto downIdx = idx - i;
-            mymin = downIdx == 0 ? _minHistLimit : _maxBinLimits[downIdx - 1];
-            if (value >= mymin && value < _maxBinLimits[downIdx]) {
-                return downIdx;
-            }
-            tried = True;
+        // the = part is important, for machine precision issues if the mean
+        // binwidth is very small, since some (but not all) bins for all
+        // intents and purposes may have zero width. See eg CAS-11828
+        if (value >= _maxBinLimits[testIdx - 1]) {
+            minIdx = testIdx + 1;
         }
-        if (! tried) {
-            // idx +/- i are both outside histogram, so exit loop
-            break;
+        else {
+            maxIdx = testIdx - 1;
         }
     }
     ostringstream os;
-    os << std::setprecision(10) << "Unable to locate bin containing value "
-        << value << endl;
+    os << std::setprecision(20) << "Logic Error: Unable to locate bin "
+        << "containing value " << value << endl;
     os << "Histogram spec " << *this << endl;
     os << "Guessed index " << idx << " with limits " << mymin << ", "
         << _maxBinLimits[idx] << endl;
@@ -130,6 +136,50 @@ AccumType StatsHistogram<AccumType>::getMinHistLimit() const {
 
 template <class AccumType> uInt StatsHistogram<AccumType>::getNBins() const {
     return _nBins;
+}
+
+template <class AccumType> void StatsHistogram<AccumType>::_minMaxIdxRange(
+    Int& minIdx, Int& maxIdx, AccumType value, Bool higher
+) const {
+    Int mult = 2;
+    while(True) {
+        auto mymin = minIdx == 0 ? _minHistLimit : _maxBinLimits[minIdx - 1];
+        if (value >= mymin && value < _maxBinLimits[maxIdx - 1]) {
+            // limits established
+            return;
+        }
+        mult *= 2;
+        if (higher) {
+            minIdx = maxIdx + 1;
+            if (minIdx >= (Int)_nBins) {
+                minIdx = _nBins - 1;
+                maxIdx = minIdx;
+                // minIdx can't get any larger, so return
+                return;
+            }
+            maxIdx = minIdx + mult;
+            if (maxIdx >= (Int)_nBins) {
+                maxIdx = _nBins - 1;
+                // maxIdx can't get any larger, so return
+                return;
+            }
+        }
+        else {
+            maxIdx = minIdx - 1;
+            if (maxIdx <= 0) {
+                maxIdx = 0;
+                minIdx = 0;
+                // maxIdx can't get any smaller, so return
+                return;
+            }
+            minIdx = maxIdx - mult;
+            if (minIdx < 0) {
+                minIdx = 0;
+                // minIdx can't get any smaller, so return
+                return;
+            }
+        }
+    }
 }
 
 }

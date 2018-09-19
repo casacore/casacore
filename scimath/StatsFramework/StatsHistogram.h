@@ -28,6 +28,7 @@
 
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/aips.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 #include <iostream>
 #include <casacore/casa/iosfwd.h>
@@ -88,6 +89,10 @@ private:
     inline static uInt _getUInt(const AccumType& v) {
         return (uInt)v;
     }
+
+    void _minMaxIdxRange(
+        Int& minIdx, Int& maxIdx, AccumType value, Bool higher
+    ) const;
 
 };
 
