@@ -31,15 +31,9 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/scimath/Mathematics/AutoDiffRep.h>
-#include <casacore/casa/Containers/ObjectPool.h>
-#include <casacore/casa/OS/Mutex.h>
+#include <casacore/casa/Arrays/Vector.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward declarations
-template <class T> class Vector;
-template <class T> class AutoDiff;
 
 // <summary>
 // Class that computes partial derivatives by automatic differentiation.
@@ -304,7 +298,7 @@ template <class T> class AutoDiff {
   // Assign one to another.
   AutoDiff<T> &operator=(const AutoDiff<T> &other);
 
-  // Assignment operators
+  // In-place mathematical operators
   // <group>
   void operator*=(const AutoDiff<T> &other);
   void operator/=(const AutoDiff<T> &other);
@@ -316,64 +310,42 @@ template <class T> class AutoDiff {
   void operator-=(const T other);
   // </group>
 
-  // Returns the pointer to the structure of value and derivatives.
-  // <group>
-  AutoDiffRep<T> *theRep() { return rep_p; }
-  const AutoDiffRep<T> *theRep() const { return rep_p; }
-  // </group>
-
   // Returns the value of the function
   // <group>
-  T &value() { return rep_p->val_p; }
-  const T &value() const { return rep_p->val_p; }
+  T &value() { return val_p; }
+  const T &value() const { return val_p; }
   // </group>
   
   // Returns a vector of the derivatives of an AutoDiff
   // <group>
-  Vector<T> derivatives() const;
+  const Vector<T>& derivatives() const {return grad_p; }
+  Vector<T>& derivatives() {return grad_p; }
   void derivatives(Vector<T> &res) const;
   // </group>
   
   // Returns a specific derivative. The second set does not check for
   // a valid which; the first set does through Vector addressing.
   // <group>
-  T &derivative(uInt which) { return rep_p->grad_p(which); }
-  const T &derivative(uInt which) const { return rep_p->grad_p(which); }
-  T &deriv(uInt which) { return rep_p->grad_p[which]; }
-  const T &deriv(uInt which) const { return rep_p->grad_p[which]; }
+  T &derivative(uInt which) { return grad_p(which); }
+  const T &derivative(uInt which) const { return grad_p(which); }
+  T &deriv(uInt which) { return grad_p[which]; }
+  const T &deriv(uInt which) const { return grad_p[which]; }
   // </group>
   
   // Return total number of derivatives
-  uInt nDerivatives() const { return rep_p->nd_p; }
+  uInt nDerivatives() const { return nd_p; }
   
   // Is it a constant, i.e., with zero derivatives?
-  Bool isConstant() const { return rep_p->nd_p == 0; }
+  Bool isConstant() const { return nd_p == 0; }
 
-  // Indicate that we are going to use a temporary value for the last time
-  // (e.g. at the of a function returning by value). This way superfluous
-  // copying can be circumvented.
-  const AutoDiff<T> &ref() { rep_p->nocopy_p = True; return *this; }
-  
  private:
   //# Data
-  // Pool of data blocks
-  static ObjectPool<AutoDiffRep<T>, uInt> theirPool;
-  // Mutex for thread-safe access to theirPool.
-  static Mutex theirMutex;
-  // Value representation
-  AutoDiffRep<T> *rep_p;
-
-  //# Methods
-  // Release a struct of value and derivative data
-  void release() {
-    if (!rep_p->nocopy_p) {
-      ScopedMutexLock locker(theirMutex);
-      theirPool.release(rep_p, rep_p->nd_p);
-    } else {
-      rep_p->nocopy_p = False;
-    }
-  }
-
+  // The function value
+  T val_p;
+  // The number of derivatives
+  uInt nd_p;
+  // The derivatives
+  Vector<T> grad_p;
 };
 
 

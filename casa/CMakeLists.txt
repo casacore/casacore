@@ -367,8 +367,6 @@ Containers/Map.h
 Containers/Map.tcc
 Containers/MapIO.h
 Containers/MapIO.tcc
-Containers/ObjectPool.h
-Containers/ObjectPool.tcc
 Containers/ObjectStack.h
 Containers/ObjectStack.tcc
 Containers/OrderedMap.h
@@ -379,8 +377,6 @@ Containers/OrdMapIO.h
 Containers/OrdMapIO.tcc
 Containers/OrdPairIO.h
 Containers/OrdPairIO.tcc
-Containers/PoolStack.h
-Containers/PoolStack.tcc
 Containers/Queue.h
 Containers/Queue.tcc
 Containers/RecordDesc.h
