@@ -94,15 +94,15 @@ struct casacore_allocator: public std11_allocator<T> {
   casacore_allocator() throw () {
   }
 
-  casacore_allocator(const casacore_allocator&other) throw()
+  casacore_allocator(const casacore_allocator&other) noexcept
   :Super(other) {
   }
 
   template<typename TOther>
-  casacore_allocator(const casacore_allocator<TOther>&) throw() {
+  casacore_allocator(const casacore_allocator<TOther>&) noexcept {
   }
 
-  ~casacore_allocator() throw() {
+  ~casacore_allocator() noexcept {
   }
 
   pointer allocate(size_type elements, const void* = 0) {
@@ -149,18 +149,18 @@ struct new_del_allocator: public std11_allocator<T> {
   struct rebind {
     typedef new_del_allocator<TOther> other;
   };
-  new_del_allocator() throw() {
+  new_del_allocator() noexcept {
   }
 
-  new_del_allocator(const new_del_allocator&other) throw()
+  new_del_allocator(const new_del_allocator&other) noexcept
   :Super(other) {
   }
 
   template<typename TOther>
-  new_del_allocator(const new_del_allocator<TOther>&) throw() {
+  new_del_allocator(const new_del_allocator<TOther>&) noexcept {
   }
 
-  ~new_del_allocator() throw() {
+  ~new_del_allocator() noexcept {
   }
 
   pointer allocate(size_type elements, const void* = 0) {

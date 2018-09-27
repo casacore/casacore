@@ -31,10 +31,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 const String InvalidSerializationError::preamble("Invalid function description in record: ");
 
-FunctionFactoryError::~FunctionFactoryError() throw() { }
-UnrecognizedFunctionError::~UnrecognizedFunctionError( ) throw() { }
-InvalidSerializationError::~InvalidSerializationError() throw() { }
-FieldNotFoundError::~FieldNotFoundError() throw() { }
+FunctionFactoryError::~FunctionFactoryError() noexcept { }
+UnrecognizedFunctionError::~UnrecognizedFunctionError( ) noexcept { }
+InvalidSerializationError::~InvalidSerializationError() noexcept { }
+FieldNotFoundError::~FieldNotFoundError() noexcept { }
 
 } //# NAMESPACE CASACORE - END
 

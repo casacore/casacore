@@ -36,7 +36,7 @@ MSSelectionError::MSSelectionError (Category c)
 MSSelectionError::MSSelectionError (const String& str,Category c)
   : AipsError(str,c), hasMessage(False)
 {}
-MSSelectionError::~MSSelectionError () throw()
+MSSelectionError::~MSSelectionError () noexcept
 {}
 
 void MSSelectionError::addMessage(String& mesg)
@@ -70,19 +70,19 @@ String constructMessage(const Int pos, const String& command)
 MSSelectionNullSelection::MSSelectionNullSelection (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionNullSelection::~MSSelectionNullSelection () throw()
+MSSelectionNullSelection::~MSSelectionNullSelection () noexcept
 {}
 
 MSSelectionNullExpr::MSSelectionNullExpr (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionNullExpr::~MSSelectionNullExpr () throw()
+MSSelectionNullExpr::~MSSelectionNullExpr () noexcept
 {}
 
 MSSelectionNullTEN::MSSelectionNullTEN (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionNullTEN::~MSSelectionNullTEN () throw()
+MSSelectionNullTEN::~MSSelectionNullTEN () noexcept
 {}
 //
 //------------------------Time selection expression parser exceptions----------------
@@ -90,13 +90,13 @@ MSSelectionNullTEN::~MSSelectionNullTEN () throw()
 MSSelectionTimeError::MSSelectionTimeError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionTimeError::~MSSelectionTimeError () throw()
+MSSelectionTimeError::~MSSelectionTimeError () noexcept
 {}
 
 MSSelectionTimeParseError::MSSelectionTimeParseError (const String& str,Category c)
 : MSSelectionTimeError(str,c)
 {}
-MSSelectionTimeParseError::~MSSelectionTimeParseError () throw()
+MSSelectionTimeParseError::~MSSelectionTimeParseError () noexcept
 {}
 //
 //------------------------Baseline selection expression parser exceptions------------
@@ -104,13 +104,13 @@ MSSelectionTimeParseError::~MSSelectionTimeParseError () throw()
 MSSelectionAntennaError::MSSelectionAntennaError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionAntennaError::~MSSelectionAntennaError () throw()
+MSSelectionAntennaError::~MSSelectionAntennaError () noexcept
 {}
 
 MSSelectionAntennaParseError::MSSelectionAntennaParseError (const String& str,Category c)
 : MSSelectionAntennaError(str,c)
 {}
-MSSelectionAntennaParseError::~MSSelectionAntennaParseError () throw()
+MSSelectionAntennaParseError::~MSSelectionAntennaParseError () noexcept
 {}
 
 //
@@ -119,20 +119,20 @@ MSSelectionAntennaParseError::~MSSelectionAntennaParseError () throw()
 MSSelectionFieldError::MSSelectionFieldError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionFieldError::~MSSelectionFieldError () throw()
+MSSelectionFieldError::~MSSelectionFieldError () noexcept
 {}
 
 MSSelectionFieldParseError::MSSelectionFieldParseError (const String& str,Category c)
 : MSSelectionFieldError(str,c)
 {}
-MSSelectionFieldParseError::~MSSelectionFieldParseError () throw()
+MSSelectionFieldParseError::~MSSelectionFieldParseError () noexcept
 {}
 
 MSSelectionFieldWarning::MSSelectionFieldWarning (const String& str,Category c)
 : MSSelectionFieldError(str,c)
 {}
 
-MSSelectionFieldWarning::~MSSelectionFieldWarning () throw()
+MSSelectionFieldWarning::~MSSelectionFieldWarning () noexcept
 {}
 //
 //------------------------UVDist selection expression parser exceptions--------------
@@ -140,13 +140,13 @@ MSSelectionFieldWarning::~MSSelectionFieldWarning () throw()
 MSSelectionUvDistError::MSSelectionUvDistError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionUvDistError::~MSSelectionUvDistError () throw()
+MSSelectionUvDistError::~MSSelectionUvDistError () noexcept
 {}
 
 MSSelectionUvDistParseError::MSSelectionUvDistParseError (const String& str,Category c)
 : MSSelectionUvDistError(str,c)
 {}
-MSSelectionUvDistParseError::~MSSelectionUvDistParseError () throw()
+MSSelectionUvDistParseError::~MSSelectionUvDistParseError () noexcept
 {}
 //
 //------------------------SPW selection expression parser exceptions-----------------
@@ -154,19 +154,19 @@ MSSelectionUvDistParseError::~MSSelectionUvDistParseError () throw()
 MSSelectionSpwError::MSSelectionSpwError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionSpwError::~MSSelectionSpwError () throw()
+MSSelectionSpwError::~MSSelectionSpwError () noexcept
 {}
 
 MSSelectionSpwParseError::MSSelectionSpwParseError (const String& str,Category c)
 : MSSelectionSpwError(str,c)
 {}
-MSSelectionSpwParseError::~MSSelectionSpwParseError () throw()
+MSSelectionSpwParseError::~MSSelectionSpwParseError () noexcept
 {}
 MSSelectionSpwWarning::MSSelectionSpwWarning (const String& str,Category c)
 : MSSelectionSpwError(str,c)
 {}
 
-MSSelectionSpwWarning::~MSSelectionSpwWarning () throw()
+MSSelectionSpwWarning::~MSSelectionSpwWarning () noexcept
 {}
 //
 //------------------------Scan selection expression parser exceptions----------------
@@ -174,13 +174,13 @@ MSSelectionSpwWarning::~MSSelectionSpwWarning () throw()
 MSSelectionScanError::MSSelectionScanError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionScanError::~MSSelectionScanError () throw()
+MSSelectionScanError::~MSSelectionScanError () noexcept
 {}
 
 MSSelectionScanParseError::MSSelectionScanParseError (const String& str,Category c)
 : MSSelectionScanError(str,c)
 {}
-MSSelectionScanParseError::~MSSelectionScanParseError () throw()
+MSSelectionScanParseError::~MSSelectionScanParseError () noexcept
 {}
 //
 //------------------------Sub-array selection expression parser exceptions-----------
@@ -188,13 +188,13 @@ MSSelectionScanParseError::~MSSelectionScanParseError () throw()
 MSSelectionArrayError::MSSelectionArrayError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionArrayError::~MSSelectionArrayError () throw()
+MSSelectionArrayError::~MSSelectionArrayError () noexcept
 {}
 
 MSSelectionArrayParseError::MSSelectionArrayParseError (const String& str,Category c)
 : MSSelectionArrayError(str,c)
 {}
-MSSelectionArrayParseError::~MSSelectionArrayParseError () throw()
+MSSelectionArrayParseError::~MSSelectionArrayParseError () noexcept
 {}
 //
 //-----------------------------------------------------------------------------------
@@ -202,13 +202,13 @@ MSSelectionArrayParseError::~MSSelectionArrayParseError () throw()
 MSSelectionPolnError::MSSelectionPolnError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionPolnError::~MSSelectionPolnError () throw()
+MSSelectionPolnError::~MSSelectionPolnError () noexcept
 {}
 
 MSSelectionPolnParseError::MSSelectionPolnParseError (const String& str,Category c)
 : MSSelectionPolnError(str,c)
 {}
-MSSelectionPolnParseError::~MSSelectionPolnParseError () throw()
+MSSelectionPolnParseError::~MSSelectionPolnParseError () noexcept
 {}
 
 //
@@ -217,13 +217,13 @@ MSSelectionPolnParseError::~MSSelectionPolnParseError () throw()
 MSSelectionStateError::MSSelectionStateError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionStateError::~MSSelectionStateError () throw()
+MSSelectionStateError::~MSSelectionStateError () noexcept
 {}
 
 MSSelectionStateParseError::MSSelectionStateParseError (const String& str,Category c)
 : MSSelectionStateError(str,c)
 {}
-MSSelectionStateParseError::~MSSelectionStateParseError () throw()
+MSSelectionStateParseError::~MSSelectionStateParseError () noexcept
 {}
 
 //
@@ -232,13 +232,13 @@ MSSelectionStateParseError::~MSSelectionStateParseError () throw()
 MSSelectionObservationError::MSSelectionObservationError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionObservationError::~MSSelectionObservationError () throw()
+MSSelectionObservationError::~MSSelectionObservationError () noexcept
 {}
 
 MSSelectionObservationParseError::MSSelectionObservationParseError (const String& str,Category c)
 : MSSelectionObservationError(str,c)
 {}
-MSSelectionObservationParseError::~MSSelectionObservationParseError () throw()
+MSSelectionObservationParseError::~MSSelectionObservationParseError () noexcept
 {}
 
 //
@@ -247,13 +247,13 @@ MSSelectionObservationParseError::~MSSelectionObservationParseError () throw()
 MSSelectionFeedError::MSSelectionFeedError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
-MSSelectionFeedError::~MSSelectionFeedError () throw()
+MSSelectionFeedError::~MSSelectionFeedError () noexcept
 {}
 
 MSSelectionFeedParseError::MSSelectionFeedParseError (const String& str,Category c)
 : MSSelectionFeedError(str,c)
 {}
-MSSelectionFeedParseError::~MSSelectionFeedParseError () throw()
+MSSelectionFeedParseError::~MSSelectionFeedParseError () noexcept
 {}
 
 } //# NAMESPACE CASACORE - END

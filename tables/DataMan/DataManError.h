@@ -57,7 +57,7 @@ public:
     DataManError ();
     // Construct with given message.
     DataManError (const String& message);
-    ~DataManError () throw();
+    ~DataManError () noexcept;
 };
 
 
@@ -77,7 +77,7 @@ class DataManInternalError : public DataManError {
 public:
     // Add given message to string "Internal Table DataManager error: ".
     DataManInternalError (const String& message);
-    ~DataManInternalError () throw();
+    ~DataManInternalError () noexcept;
 };
 
 
@@ -98,7 +98,7 @@ public:
     // This constructor generates a message that a data manager
     // with the given name is unknown (i.e. not registered).
     DataManUnknownCtor (const String& columnName);
-    ~DataManUnknownCtor () throw();
+    ~DataManUnknownCtor () noexcept;
 };
 
 
@@ -121,7 +121,7 @@ public:
     DataManInvDT ();
     // Put the name of the offending column in the "invalid data type" message.
     DataManInvDT (const String& columnName);
-    ~DataManInvDT () throw();
+    ~DataManInvDT () noexcept;
 };
 
 
@@ -147,7 +147,7 @@ public:
     DataManInvOper ();
     // Add given message to string "Invalid DataMan operation: ".
     DataManInvOper (const String& message);
-    ~DataManInvOper () throw();
+    ~DataManInvOper () noexcept;
 };
 
 
@@ -169,7 +169,7 @@ public:
     // Issue a message containing the column name.
     DataManUnknownVirtualColumn (const String& columnName,
 				 const String& engineName);
-    ~DataManUnknownVirtualColumn () throw();
+    ~DataManUnknownVirtualColumn () noexcept;
 };
 
 
@@ -191,7 +191,7 @@ class TSMError : public DataManError {
 public:
     // Issue the message prefixed by "TiledStMan: ".
     TSMError (const String& message);
-    ~TSMError () throw();
+    ~TSMError () noexcept;
 };
 
 

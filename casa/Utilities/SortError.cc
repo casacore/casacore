@@ -36,31 +36,31 @@ SortError::SortError (Category c) : AipsError("Sort error",c)
 SortError::SortError (const String& str,Category c) :
                             AipsError(str,c)
 { ; }
-SortError::~SortError () throw()
+SortError::~SortError () noexcept
 { ; }
 
 
 SortInvDT::SortInvDT (Category c) : SortError ("Invalid sort data type",c)
 { ; }
-SortInvDT::~SortInvDT () throw()
+SortInvDT::~SortInvDT () noexcept
 { ; }
 
 
 SortInvIncr::SortInvIncr (Category c) : SortError ("Sort increment < key Incr",c)
 { ; }
-SortInvIncr::~SortInvIncr () throw()
+SortInvIncr::~SortInvIncr () noexcept
 { ; }
 
 
 SortNoData::SortNoData (Category c) : SortError ("No data array given to constructor",c)
 { ; }
-SortNoData::~SortNoData () throw()
+SortNoData::~SortNoData () noexcept
 { ; }
 
 
 SortInvOpt::SortInvOpt (Category c) : SortError ("Invalid sort option given",c)
 { ; }
-SortInvOpt::~SortInvOpt () throw()
+SortInvOpt::~SortInvOpt () noexcept
 { ; }
 
 } //# NAMESPACE CASACORE - END

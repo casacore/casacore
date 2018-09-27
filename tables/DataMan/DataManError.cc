@@ -37,21 +37,21 @@ DataManError::DataManError ()
 DataManError::DataManError (const String& str)
 : AipsError("Table DataManager error: " + str)
 { ; }
-DataManError::~DataManError () throw()
+DataManError::~DataManError () noexcept
 { ; }
 
 
 DataManInternalError::DataManInternalError (const String& str)
 : DataManError("Internal error: " + str)
 { ; }
-DataManInternalError::~DataManInternalError () throw()
+DataManInternalError::~DataManInternalError () noexcept
 { ; }
 
 
 DataManUnknownCtor::DataManUnknownCtor (const String& msg)
 : DataManError(msg)
 {}
-DataManUnknownCtor::~DataManUnknownCtor () throw()
+DataManUnknownCtor::~DataManUnknownCtor () noexcept
 {}
 
 
@@ -61,7 +61,7 @@ DataManInvDT::DataManInvDT ()
 DataManInvDT::DataManInvDT (const String& name)
 : DataManError ("Invalid data type when accessing column " + name)
 { ; }
-DataManInvDT::~DataManInvDT () throw()
+DataManInvDT::~DataManInvDT () noexcept
 { ; }
 
 
@@ -71,7 +71,7 @@ DataManInvOper::DataManInvOper ()
 DataManInvOper::DataManInvOper (const String& s)
 : DataManError ("Invalid operation: " + s)
 { ; }
-DataManInvOper::~DataManInvOper () throw()
+DataManInvOper::~DataManInvOper () noexcept
 { ; }
 
 
@@ -81,14 +81,14 @@ DataManUnknownVirtualColumn::DataManUnknownVirtualColumn
 : DataManError ("column " + columnName +
 		" is unknown to virtual column engine " + engineName)
 { ; }
-DataManUnknownVirtualColumn::~DataManUnknownVirtualColumn () throw()
+DataManUnknownVirtualColumn::~DataManUnknownVirtualColumn () noexcept
 { ; }
 
 
 TSMError::TSMError (const String& s)
 : DataManError ("TiledStMan: " + s)
 { ; }
-TSMError::~TSMError () throw()
+TSMError::~TSMError () noexcept
 { ; }
 
 } //# NAMESPACE CASACORE - END

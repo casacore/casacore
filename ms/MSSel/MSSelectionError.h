@@ -64,7 +64,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void addMessage(String& message);
     void reset() {message="";}
     MSSelectionError (const String& message,Category c=GENERAL);
-    ~MSSelectionError () throw();
+    ~MSSelectionError () noexcept;
     Bool hasMessage;
   };
   //
@@ -73,7 +73,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class MSSelectionNullSelection : public MSSelectionError {
   public:
     MSSelectionNullSelection (const String& message, Category c=GENERAL);
-    ~MSSelectionNullSelection () throw();
+    ~MSSelectionNullSelection () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -81,7 +81,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class MSSelectionNullExpr : public MSSelectionError {
   public:
     MSSelectionNullExpr (const String& message, Category c=GENERAL);
-    ~MSSelectionNullExpr () throw();
+    ~MSSelectionNullExpr () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class MSSelectionNullTEN : public MSSelectionError {
   public:
     MSSelectionNullTEN (const String& message, Category c=GENERAL);
-    ~MSSelectionNullTEN () throw();
+    ~MSSelectionNullTEN () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -98,13 +98,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Add given message to string "MSSelection time error: ".
     MSSelectionTimeError (const String& message,Category c=GENERAL);
-    ~MSSelectionTimeError () throw();
+    ~MSSelectionTimeError () noexcept;
   };
   
   class MSSelectionTimeParseError: public MSSelectionTimeError {
   public:
     MSSelectionTimeParseError (const String& message,Category c=GENERAL);
-    ~MSSelectionTimeParseError () throw();
+    ~MSSelectionTimeParseError () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -113,7 +113,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Add given message to string "MSSelection time error: ".
     MSSelectionAntennaError (const String& message,Category c=GENERAL);
-    ~MSSelectionAntennaError () throw();
+    ~MSSelectionAntennaError () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -122,7 +122,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class MSSelectionAntennaParseError: public MSSelectionAntennaError {
   public:
     MSSelectionAntennaParseError (const String& message,Category c=GENERAL);
-    ~MSSelectionAntennaParseError () throw();
+    ~MSSelectionAntennaParseError () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -131,7 +131,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Add given message to string "MSSelection time error: ".
     MSSelectionFieldError (const String& message,Category c=GENERAL);
-    ~MSSelectionFieldError () throw();
+    ~MSSelectionFieldError () noexcept;
   };
   
   //
@@ -140,7 +140,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class MSSelectionFieldParseError: public MSSelectionFieldError {
   public:
     MSSelectionFieldParseError (const String& message,Category c=GENERAL);
-    ~MSSelectionFieldParseError () throw();
+    ~MSSelectionFieldParseError () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -148,7 +148,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class MSSelectionFieldWarning: public MSSelectionFieldError {
   public:
     MSSelectionFieldWarning (const String& message,Category c=GENERAL);
-    ~MSSelectionFieldWarning () throw();
+    ~MSSelectionFieldWarning () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -157,13 +157,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Add given message to string "MSSelection time error: ".
     MSSelectionUvDistError (const String& message,Category c=GENERAL);
-    ~MSSelectionUvDistError () throw();
+    ~MSSelectionUvDistError () noexcept;
   };
   
   class MSSelectionUvDistParseError: public MSSelectionUvDistError {
   public:
     MSSelectionUvDistParseError (const String& message,Category c=GENERAL);
-    ~MSSelectionUvDistParseError () throw();
+    ~MSSelectionUvDistParseError () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -172,19 +172,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Add given message to string "MSSelection time error: ".
     MSSelectionSpwError (const String& message,Category c=GENERAL);
-    ~MSSelectionSpwError () throw();
+    ~MSSelectionSpwError () noexcept;
   };
   
   class MSSelectionSpwParseError: public MSSelectionSpwError {
   public:
     MSSelectionSpwParseError (const String& message,Category c=GENERAL);
-    ~MSSelectionSpwParseError () throw();
+    ~MSSelectionSpwParseError () noexcept;
   };
 
   class MSSelectionSpwWarning: public MSSelectionSpwError {
   public:
     MSSelectionSpwWarning (const String& message,Category c=GENERAL);
-    ~MSSelectionSpwWarning () throw();
+    ~MSSelectionSpwWarning () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -193,19 +193,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Add given message to string "MSSelection time error: ".
     MSSelectionScanError (const String& message,Category c=GENERAL);
-    ~MSSelectionScanError () throw();
+    ~MSSelectionScanError () noexcept;
   };
   
   class MSSelectionScanParseError: public MSSelectionScanError {
   public:
     MSSelectionScanParseError (const String& message,Category c=GENERAL);
-    ~MSSelectionScanParseError () throw();
+    ~MSSelectionScanParseError () noexcept;
   };
 
   class MSSelectionScanWarning: public MSSelectionScanError {
   public:
     MSSelectionScanWarning (const String& message,Category c=GENERAL);
-    ~MSSelectionScanWarning () throw();
+    ~MSSelectionScanWarning () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -214,19 +214,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Add given message to string "MSSelection time error: ".
     MSSelectionArrayError (const String& message,Category c=GENERAL);
-    ~MSSelectionArrayError () throw();
+    ~MSSelectionArrayError () noexcept;
   };
   
   class MSSelectionArrayParseError: public MSSelectionArrayError {
   public:
     MSSelectionArrayParseError (const String& message,Category c=GENERAL);
-    ~MSSelectionArrayParseError () throw();
+    ~MSSelectionArrayParseError () noexcept;
   };
 
   class MSSelectionArrayWarning: public MSSelectionArrayError {
   public:
     MSSelectionArrayWarning (const String& message,Category c=GENERAL);
-    ~MSSelectionArrayWarning () throw();
+    ~MSSelectionArrayWarning () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -235,19 +235,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Add given message to string "MSSelection time error: ".
     MSSelectionPolnError (const String& message,Category c=GENERAL);
-    ~MSSelectionPolnError () throw();
+    ~MSSelectionPolnError () noexcept;
   };
   
   class MSSelectionPolnParseError: public MSSelectionPolnError {
   public:
     MSSelectionPolnParseError (const String& message,Category c=GENERAL);
-    ~MSSelectionPolnParseError () throw();
+    ~MSSelectionPolnParseError () noexcept;
   };
 
   class MSSelectionPolnWarning: public MSSelectionPolnError {
   public:
     MSSelectionPolnWarning (const String& message,Category c=GENERAL);
-    ~MSSelectionPolnWarning () throw();
+    ~MSSelectionPolnWarning () noexcept;
   };
 
   //
@@ -257,19 +257,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Add given message to string "MSSelection time error: ".
     MSSelectionStateError (const String& message,Category c=GENERAL);
-    ~MSSelectionStateError () throw();
+    ~MSSelectionStateError () noexcept;
   };
   
   class MSSelectionStateParseError: public MSSelectionStateError {
   public:
     MSSelectionStateParseError (const String& message,Category c=GENERAL);
-    ~MSSelectionStateParseError () throw();
+    ~MSSelectionStateParseError () noexcept;
   };
 
   class MSSelectionStateWarning: public MSSelectionStateError {
   public:
     MSSelectionStateWarning (const String& message,Category c=GENERAL);
-    ~MSSelectionStateWarning () throw();
+    ~MSSelectionStateWarning () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -278,19 +278,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Add given message to string "MSSelection time error: ".
     MSSelectionObservationError (const String& message,Category c=GENERAL);
-    ~MSSelectionObservationError () throw();
+    ~MSSelectionObservationError () noexcept;
   };
   
   class MSSelectionObservationParseError: public MSSelectionObservationError {
   public:
     MSSelectionObservationParseError (const String& message,Category c=GENERAL);
-    ~MSSelectionObservationParseError () throw();
+    ~MSSelectionObservationParseError () noexcept;
   };
 
   class MSSelectionObservationWarning: public MSSelectionObservationError {
   public:
     MSSelectionObservationWarning (const String& message,Category c=GENERAL);
-    ~MSSelectionObservationWarning () throw();
+    ~MSSelectionObservationWarning () noexcept;
   };
   //
   //-------------------------------------------------------------------
@@ -299,13 +299,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Add given message to string "MSSelection time error: ".
     MSSelectionFeedError (const String& message,Category c=GENERAL);
-    ~MSSelectionFeedError () throw();
+    ~MSSelectionFeedError () noexcept;
   };
   
   class MSSelectionFeedParseError: public MSSelectionFeedError {
   public:
     MSSelectionFeedParseError (const String& message,Category c=GENERAL);
-    ~MSSelectionFeedParseError () throw();
+    ~MSSelectionFeedParseError () noexcept;
   };
 
   //

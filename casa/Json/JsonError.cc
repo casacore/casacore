@@ -34,7 +34,7 @@ namespace casacore
     : AipsError ("Json error: " + message)
   {}
 
-  JsonError::~JsonError() throw()
+  JsonError::~JsonError() noexcept
   {}
 
 } // end namespace

@@ -41,7 +41,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class IterError : public AipsError {
 public:
   IterError(const char *msg = 0, Category c=BOUNDARY);      // normal constructor
-  ~IterError () throw();
+  ~IterError () noexcept;
 };
 
 // <summary>Iteration Boundary error class</summary>
@@ -51,7 +51,7 @@ public:
 class IterBoundaryError : public IterError {
 public:
   IterBoundaryError(const char *msg = 0, Category c=BOUNDARY);      // normal constructor
-  ~IterBoundaryError () throw();
+  ~IterBoundaryError () noexcept;
 };
 
 // <summary>Iteration initialization error</summary>
@@ -61,7 +61,7 @@ public:
 class IterInitError : public IterError {
 public:
   IterInitError(const char *msg = 0, Category c=INITIALIZATION);      // normal constructor
-  ~IterInitError () throw();
+  ~IterInitError () noexcept;
 };
 
 // <summary>Invalide iteration error class</summary>
@@ -71,7 +71,7 @@ public:
 class InvalidIterError : public IterError {
 public:
   InvalidIterError(const char *msg = 0, Category c=GENERAL);      // normal constructor
-  ~InvalidIterError () throw();
+  ~InvalidIterError () noexcept;
 };
 
 

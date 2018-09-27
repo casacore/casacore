@@ -58,7 +58,7 @@ public:
     TableError (Category c=GENERAL);
     // Construct with given message.
     TableError (const String& message,Category c=GENERAL);
-    ~TableError () throw();
+    ~TableError () noexcept;
 };
 
 
@@ -78,7 +78,7 @@ class TableInternalError : public TableError {
 public:
     // Add given message to string "Internal Table error: ".
     TableInternalError (const String& message,Category c=GENERAL);
-    ~TableInternalError () throw();
+    ~TableInternalError () noexcept;
 };
 
 
@@ -102,7 +102,7 @@ public:
     // or description with the given name already exists.
     // The given message is appended to it.
     TableDuplFile (const String& name, const String& message,Category c=INVALID_ARGUMENT);
-    ~TableDuplFile () throw();
+    ~TableDuplFile () noexcept;
 };
 
 
@@ -122,7 +122,7 @@ public:
     // This constructor generates a message telling that the a table
     // or description with the given name does not exist.
     TableNoFile (const String& name,Category c=INVALID_ARGUMENT);
-    ~TableNoFile () throw();
+    ~TableNoFile () noexcept;
 };
 
 
@@ -142,7 +142,7 @@ class TableDescNoName : public TableError {
 public:
     // The default constructor generates the message.
     TableDescNoName (Category c=INITIALIZATION);
-    ~TableDescNoName () throw();
+    ~TableDescNoName () noexcept;
 };
 
 
@@ -163,7 +163,7 @@ public:
     // has been given. The class name is either Table or TableDesc.
     // The given message will be appended to the total message.
     TableInvOpt (const String& className, const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvOpt () throw();
+    ~TableInvOpt () noexcept;
 };
 
 
@@ -182,7 +182,7 @@ public:
     // This constructor generates a message telling that the 
     // table directory with the given name does not exist.
     TableNoDir (const String& name,Category c=INVALID_ARGUMENT);
-    ~TableNoDir () throw();
+    ~TableNoDir () noexcept;
 };
 
 // <summary>
@@ -201,7 +201,7 @@ public:
     // This constructor generates a message telling that the a table
     // or datription file does not exist.
     TableNoDatFile (const String& filename,Category c=INVALID_ARGUMENT);
-    ~TableNoDatFile () throw();
+    ~TableNoDatFile () noexcept;
 };
 
 
@@ -224,7 +224,7 @@ public:
     TableInvType (const String& tablename,
                   const String& typeIn, const String& typeFile,
                   Category c=CONFORMANCE);
-    ~TableInvType () throw();
+    ~TableInvType () noexcept;
 };
 
 
@@ -246,7 +246,7 @@ public:
     // This constructor generates a message that the column
     // with the given name has an invalid description.
     TableInvColumnDesc (const String& columnName, const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvColumnDesc () throw();
+    ~TableInvColumnDesc () noexcept;
 };
 
 
@@ -268,7 +268,7 @@ public:
     // This constructor generates a message that the hypercolumn
     // with the given name has an invalid description.
     TableInvHyperDesc (const String& hypercolumnName, const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvHyperDesc () throw();
+    ~TableInvHyperDesc () noexcept;
 };
 
 
@@ -290,7 +290,7 @@ public:
     // This constructor generates a message that the class with the
     // given name is unknown (not registered).
     TableUnknownDesc (const String& name,Category c=INITIALIZATION);
-    ~TableUnknownDesc () throw();
+    ~TableUnknownDesc () noexcept;
 };
 
 
@@ -314,7 +314,7 @@ public:
     TableInvDT (Category c=CONFORMANCE);
     // Put the name of the offending column in the "invalid data type" message.
     TableInvDT (const String& columName,Category c=CONFORMANCE);
-    ~TableInvDT () throw();
+    ~TableInvDT () noexcept;
 };
 
 
@@ -339,7 +339,7 @@ public:
     TableInvOper (Category c=INVALID_ARGUMENT);
     // Add given message to string "Invalid Table operation: ".
     TableInvOper (const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvOper () throw();
+    ~TableInvOper () noexcept;
 };
 
 
@@ -362,7 +362,7 @@ public:
     // This constructor appends ": Table array conformance error"
     // to the given message.
     TableArrayConformanceError (const String& message,Category c=CONFORMANCE);
-    ~TableArrayConformanceError () throw();
+    ~TableArrayConformanceError () noexcept;
 };
 
 
@@ -385,7 +385,7 @@ public:
     // This constructor appends ": Table conformance error (#rows mismatch)"
     // to the given message.
     TableConformanceError (const String& message,Category c=CONFORMANCE);
-    ~TableConformanceError () throw();
+    ~TableConformanceError () noexcept;
 };
 
 
@@ -408,7 +408,7 @@ public:
     // This constructor appends the given message to the "invalid sort"
     // message.
     TableInvSort (const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvSort () throw();
+    ~TableInvSort () noexcept;
 };
 
 
@@ -430,7 +430,7 @@ class TableInvLogic : public TableError {
 public:
     // The default constructor generates the message.
     TableInvLogic (Category c=INVALID_ARGUMENT);
-    ~TableInvLogic () throw();
+    ~TableInvLogic () noexcept;
 };
 
 
@@ -453,7 +453,7 @@ public:
     // This constructor generates a message containing the name of
     // the offending column. It appends the given message.
     TableInvExpr (const String& columnName, const String& message,Category c=INVALID_ARGUMENT);
-    ~TableInvExpr () throw();
+    ~TableInvExpr () noexcept;
 };
 
 
@@ -472,7 +472,7 @@ class TableVectorNonConform : public TableError {
 public:
     // The default constructor generates the message.
     TableVectorNonConform (Category c=CONFORMANCE);
-    ~TableVectorNonConform () throw();
+    ~TableVectorNonConform () noexcept;
 };
 
 
@@ -494,7 +494,7 @@ public:
     TableParseError (const String& commandString,
                      int pos=-1, const String& token=String(),
                      Category c=INVALID_ARGUMENT);
-    ~TableParseError () throw();
+    ~TableParseError () noexcept;
   // Get error position or token.
   int pos() const
     {return itsPos; }
@@ -523,7 +523,7 @@ public:
     // This constructor generates a message containing the table command.
     TableGramError (int pos, const String& token,
                     Category c=INVALID_ARGUMENT);
-    ~TableGramError () throw();
+    ~TableGramError () noexcept;
   // Get error position or token.
   int pos() const
     {return itsPos; }

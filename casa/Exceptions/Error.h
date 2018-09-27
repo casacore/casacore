@@ -143,7 +143,7 @@ public:
   //
   // Simply returns the stored error message.
   //
-  virtual const char* what() const throw()
+  virtual const char* what() const noexcept
     { return(message.c_str()); }
   const String &getMesg() const
     { return(message); }
@@ -169,7 +169,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~AipsError() throw();
+  ~AipsError() noexcept;
 
   // Get or clear the stacktrace info.
   // <group>
@@ -250,7 +250,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~AllocError() throw();
+  ~AllocError() noexcept;
 
 };
 
@@ -291,7 +291,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~IndexError() throw();
+  ~IndexError() noexcept;
 };
 
 
@@ -333,7 +333,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~indexError() throw();
+  ~indexError() noexcept;
 };
 
 
@@ -373,7 +373,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~DuplError() throw();
+  ~DuplError() noexcept;
 };
 
 
@@ -416,7 +416,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~duplError() throw();
+  ~duplError() noexcept;
 };
 
 
@@ -442,7 +442,7 @@ public:
                    uInt lineNumber, Category c=GENERAL);
 
   // Destructor which does nothing.
-  ~SystemCallError() throw();
+  ~SystemCallError() noexcept;
 
   // Get the errno.
   int error() const
@@ -489,7 +489,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~AbortError() throw();
+  ~AbortError() noexcept;
 };
 
 

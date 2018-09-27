@@ -163,7 +163,7 @@ namespace casacore {
   };
 
 
-  // <summary>Wrapper around pthread_once() and its flag type and init value.
+  // <summary>Wrapper around std::call_once
   // </summary>
   // <use visibility=export>
   //
@@ -174,25 +174,11 @@ namespace casacore {
   // Ease correct lazy initialization of static data in the easy cases.
   // <br>
   // Often data needs to be initialized once and accessed many times. To do
-  // this in a thread-safe way, a mutex is expensive, and double-checked
-  // locking (as well as 'static' function scope inits) can only be written
-  // correctly portably from C++11 on. Prefer to use C++11 std::call_once().
-  // Instead, resort to pthread_once(). Unlike std::call_once() it cannot
-  // call with args or return values (can use C++11 lambda to do it) and does
-  // not do stack unwinding (although glibc built with -fexceptions does it).
-  //
-  // Restrictions with any once call primitive (C++11, C11, pthread, boost)
-  // are that the called function cannot safely call itself (recursion),
-  // and that the flag should not (or cannot) be reset (meaning of 'once').
-  // Note that if the function and flag reside in a (dynamically) loaded
-  // library and you load (and unload) it more than once, then the function
-  // can be called multiple times.
-  //
-  // Note that non-constant (i.e. dynamic) initialization of a static decl
-  // in a function is not guaranteed thread-safe before C++11 (although GCC
-  // and Clang make it so). This is hard to get right, since Mutex and CallOnce
-  // itself have the same issue. (One could declare a static smart ptr.)
-  // We resort to C++11 guarantees and depend on GCC/Clang/... for pre-C++11.
+  // this in a thread-safe way, a mutex is expensive, and basic double-checked
+  // locking is not fully thread-safe.
+  // The C++ function std::call_once offers the required functionality.
+  // The classes CallOnce and CallOnce0 are a little wrappers around this
+  // function to call it with 0 or 1 argument.
   // </synopsis>
   //
   // <example>

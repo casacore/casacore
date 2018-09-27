@@ -65,7 +65,7 @@ public:
     ArrayError(const Char *m,Category c=GENERAL);
     // Initialize with the supplied message.
     ArrayError(const String &m,Category c=GENERAL);
-    ~ArrayError() throw();
+    ~ArrayError() noexcept;
 };
 
 
@@ -91,7 +91,7 @@ public:
     // of the array and a supplied message.
     ArrayIndexError(const IPosition &index, const IPosition &shape, 
 		    const Char *m="ArrayIndexError",Category c=BOUNDARY);
-    ~ArrayIndexError() throw();
+    ~ArrayIndexError() noexcept;
     // The out-of-bounds index.
     IPosition index() const;
     // The shape of the violated array.
@@ -120,7 +120,7 @@ public:
     ArrayConformanceError(const Char *m,Category c=CONFORMANCE);
     // Initialize with a supplied message.
     ArrayConformanceError(const String &m,Category c=CONFORMANCE);
-    ~ArrayConformanceError() throw();
+    ~ArrayConformanceError() noexcept;
 };
 
 
@@ -137,7 +137,7 @@ public:
     // Define the two (presumably different) messages and optionally
     // supply a message.
     ArrayNDimError(Int dim1, Int dim2, const Char *m="ArrayNDimError",Category c=CONFORMANCE);
-    ~ArrayNDimError() throw();
+    ~ArrayNDimError() noexcept;
     // Return the stored dimensions. NB modifies arguments.
     void ndims(Int &dim1, Int &dim2) const; // modifies arguments
 private:
@@ -159,7 +159,7 @@ public:
     // and an optional supplied message.
     ArrayShapeError(const IPosition &shape1, const IPosition &shape2,
 		     const Char *m="ArrayShapeError",Category c=CONFORMANCE);
-    ~ArrayShapeError() throw();
+    ~ArrayShapeError() noexcept;
     // Get back the stored shapes. NB modifies arguments.
     void shapes(IPosition &, IPosition &) const;  // modifies arguments
 private:
@@ -182,7 +182,7 @@ public:
     ArrayIteratorError(const Char *m,Category c=BOUNDARY);
     // Initialize with the supplied message
     ArrayIteratorError(const String &m,Category c=BOUNDARY);
-    ~ArrayIteratorError() throw();
+    ~ArrayIteratorError() noexcept;
 };
 
 
@@ -198,7 +198,7 @@ public:
     ArraySlicerError(Category c=GENERAL);
     // Initialize with ArraySlicerError plus the supplied message
     ArraySlicerError(const String &m,Category c=GENERAL);
-    ~ArraySlicerError() throw();
+    ~ArraySlicerError() noexcept;
 };
 
 

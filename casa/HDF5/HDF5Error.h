@@ -59,7 +59,7 @@ public:
   HDF5Error (Category c=GENERAL);
   // Construct with given message.
   HDF5Error (const String& message, Category c=GENERAL);
-  ~HDF5Error() throw();
+  ~HDF5Error() noexcept;
 };
 
 

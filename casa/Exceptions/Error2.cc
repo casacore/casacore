@@ -71,7 +71,7 @@ AipsError::AipsError (const String &msg, const String& filename,
   AddStackTrace ();
 }
 
-AipsError::~AipsError() throw()
+AipsError::~AipsError() noexcept
 {}
 
 
@@ -186,15 +186,15 @@ AipsError AipsError::repackageAipsError (AipsError& error,
 
 
 
-AllocError::~AllocError() throw()
+AllocError::~AllocError() noexcept
 {}
 
 
-IndexError::~IndexError() throw()
+IndexError::~IndexError() noexcept
 {}
 
 
-DuplError::~DuplError() throw()
+DuplError::~DuplError() noexcept
 {}
 
 
@@ -210,7 +210,7 @@ SystemCallError::SystemCallError (int error, const String &msg,
                filename, lineNumber, c),
     itsError (error)
 {}
-SystemCallError::~SystemCallError() throw()
+SystemCallError::~SystemCallError() noexcept
 {}
 String SystemCallError::errorMessage(int error)
 {
@@ -249,7 +249,7 @@ AbortError::AbortError(const String &str,Category c)
 #endif
 }
 
-AbortError::~AbortError() throw()
+AbortError::~AbortError() noexcept
 {}
 
 } //# NAMESPACE CASACORE - END
