@@ -192,7 +192,7 @@ public:
 
     std::set<String> getIntentsForSubScan(const SubScanKey& subScan) const;
 
-    SHARED_PTR<const std::map<SubScanKey, std::set<String> > > getSubScanToIntentsMap() const;
+    std::shared_ptr<const std::map<SubScanKey, std::set<String> > > getSubScanToIntentsMap() const;
 
     // get all intents, in no particular (nor guaranteed) order.
     std::set<String> getIntents() const;
@@ -235,7 +235,7 @@ public:
     vector<Int> getSourceTableSourceIDs() const;
 
     // SOURCE.TIME
-    SHARED_PTR<const Quantum<Vector<Double> > > getSourceTimes() const;
+    std::shared_ptr<const Quantum<Vector<Double> > > getSourceTimes() const;
 
     // get a set of spectral windows for which the specified <src>intent</src>
     // applies.
@@ -246,7 +246,7 @@ public:
 
     uInt nRows(CorrelationType cType);
 
-    SHARED_PTR<const std::map<SubScanKey, uInt> > getNRowMap(CorrelationType type) const;
+    std::shared_ptr<const std::map<SubScanKey, uInt> > getNRowMap(CorrelationType type) const;
 
     uInt nRows(
         CorrelationType cType, Int arrayID, Int observationID,
@@ -286,7 +286,7 @@ public:
     std::map<Int, std::set<uInt> > getFieldsToSpwsMap() const;
 
     // get rest frequencies from the SOURCE table
-    std::map<SourceKey, SHARED_PTR<vector<MFrequency> > > getRestFrequencies() const;
+    std::map<SourceKey, std::shared_ptr<vector<MFrequency> > > getRestFrequencies() const;
 
     // get the set of spectral windows for the specified scan.
     std::set<uInt> getSpwsForScan(const ScanKey& scan) const;
@@ -305,7 +305,7 @@ public:
 
     // get the transitions from the SOURCE table. If there are no transitions
     // for a particular key, the shared ptr contains the null ptr.
-    std::map<SourceKey, SHARED_PTR<vector<String> > > getTransitions() const;
+    std::map<SourceKey, std::shared_ptr<vector<String> > > getTransitions() const;
 
     // get the number of antennas in the ANTENNA table
     uInt nAntennas() const;
@@ -349,7 +349,7 @@ public:
     std::pair<Double, Double> getTimeRangeForScan(const ScanKey& scanKey) const;
 
     // get the map of scans to time ranges.
-    SHARED_PTR<const std::map<ScanKey, std::pair<Double,Double> > > getScanToTimeRangeMap() const;
+    std::shared_ptr<const std::map<ScanKey, std::pair<Double,Double> > > getScanToTimeRangeMap() const;
 
     // get the stateIDs associated with the specified scan. If obsID and/or arrayID
     // is negative, all observation IDs and/or array IDs will be used.
@@ -499,7 +499,7 @@ public:
         const SubScanKey& subScan, Bool showProgress=False
     ) const;
 
-    SHARED_PTR<const std::map<SubScanKey, SubScanProperties> > getSubScanProperties(
+    std::shared_ptr<const std::map<SubScanKey, SubScanProperties> > getSubScanProperties(
         Bool showProgress=False
     ) const;
 
@@ -708,8 +708,8 @@ private:
     // represents non-primary key data for a SOURCE table row
     struct SourceProperties {
         String name;
-        SHARED_PTR<vector<MFrequency> > restfreq;
-        SHARED_PTR<vector<String> > transition;
+        std::shared_ptr<vector<MFrequency> > restfreq;
+        std::shared_ptr<vector<String> > transition;
     };
 
     // The general pattern is that a mutable gets set only once, on demand, when its
@@ -729,8 +729,8 @@ private:
     mutable std::map<Int, std::set<Int> >    _fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap;
     mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
     mutable std::map<String, std::set<uInt> > _antennaNameToIDMap;
-    mutable SHARED_PTR<const std::map<ScanKey, ScanProperties> > _scanProperties;
-    mutable SHARED_PTR<const std::map<SubScanKey, SubScanProperties> > _subScanProperties;
+    mutable std::shared_ptr<const std::map<ScanKey, ScanProperties> > _scanProperties;
+    mutable std::shared_ptr<const std::map<SubScanKey, SubScanProperties> > _subScanProperties;
 
     mutable std::map<String, std::set<Int> > _intentToFieldIDMap;
     mutable std::map<String, std::set<ScanKey> > _intentToScansMap;
@@ -739,10 +739,10 @@ private:
     mutable std::set<String> _uniqueIntents;
     mutable std::set<Int>  _uniqueFieldIDs, _uniqueStateIDs, _uniqueAntennaIDs;
     mutable std::set<uInt> _avgSpw, _tdmSpw, _fdmSpw, _wvrSpw, _sqldSpw, _uniqueDataDescIDs;
-    mutable SHARED_PTR<std::map<SubScanKey, uInt> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
-    mutable SHARED_PTR<std::map<Int, uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
+    mutable std::shared_ptr<std::map<SubScanKey, uInt> > _subScanToNACRowsMap, _subScanToNXCRowsMap;
+    mutable std::shared_ptr<std::map<Int, uInt> > _fieldToNACRowsMap, _fieldToNXCRowsMap;
     mutable std::map<ScanKey, std::set<String> > _scanToIntentsMap;
-    mutable SHARED_PTR<const std::map<SubScanKey, std::set<String> > > _subScanToIntentsMap;
+    mutable std::shared_ptr<const std::map<SubScanKey, std::set<String> > > _subScanToIntentsMap;
     mutable vector<std::set<String> > _stateToIntentsMap, _spwToIntentsMap, _fieldToIntentsMap;
     mutable vector<SpwProperties> _spwInfo;
     mutable vector<std::set<Int> > _spwToFieldIDsMap, _obsToArraysMap;
@@ -754,12 +754,12 @@ private:
     mutable vector<vector<Int> > _corrTypes;
     mutable vector<Array<Int> >_corrProds;
 
-    mutable SHARED_PTR<std::map<ScanKey, std::set<Double> > > _scanToTimesMap;
+    mutable std::shared_ptr<std::map<ScanKey, std::set<Double> > > _scanToTimesMap;
     std::map<String, std::set<uInt> > _intentToSpwsMap;
     mutable std::map<String, std::set<Double> > _intentToTimesMap;
 
-    SHARED_PTR<std::map<Int, std::set<Double> > > _fieldToTimesMap;
-    SHARED_PTR<std::map<Double, std::set<Int> > > _timeToFieldsMap;
+    std::shared_ptr<std::map<Int, std::set<Double> > > _fieldToTimesMap;
+    std::shared_ptr<std::map<Double, std::set<Int> > > _timeToFieldsMap;
 
     mutable vector<MPosition> _observatoryPositions, _antennaPositions;
     mutable vector<QVD > _antennaOffsets;
@@ -767,8 +767,8 @@ private:
     Matrix<Bool> _uniqueBaselines;
     Quantity _exposureTime;
     mutable Double _nUnflaggedACRows, _nUnflaggedXCRows;
-    mutable SHARED_PTR<vector<Double> > _unflaggedFieldNACRows, _unflaggedFieldNXCRows;
-    mutable SHARED_PTR<std::map<SubScanKey, Double> > _unflaggedSubScanNACRows, _unflaggedSubScanNXCRows;
+    mutable std::shared_ptr<vector<Double> > _unflaggedFieldNACRows, _unflaggedFieldNXCRows;
+    mutable std::shared_ptr<std::map<SubScanKey, Double> > _unflaggedSubScanNACRows, _unflaggedSubScanNXCRows;
     const String _taqlTableName;
     const vector<const Table*> _taqlTempTable;
 
@@ -789,8 +789,8 @@ private:
     mutable vector<std::pair<Quantity, Quantity> > _properMotions;
 
     mutable std::map<SourceKey, SourceProperties> _sourceInfo;
-    mutable SHARED_PTR<std::set<Int> > _ephemFields;
-    mutable SHARED_PTR<const Quantum<Vector<Double> > > _sourceTimes;
+    mutable std::shared_ptr<std::set<Int> > _ephemFields;
+    mutable std::shared_ptr<const Quantum<Vector<Double> > > _sourceTimes;
 
     // disallow copy constructor and = operator
     MSMetaData(const MSMetaData&);
@@ -823,8 +823,8 @@ private:
     static void _checkTolerance(const Double tol);
 
     void _computeScanAndSubScanProperties(
-        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
-        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
+        std::shared_ptr<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
+        std::shared_ptr<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
         Bool showProgress
     ) const;
 
@@ -844,8 +844,8 @@ private:
     );
 
     void _mergeScanProps(
-        SHARED_PTR<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
-        SHARED_PTR<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
+        std::shared_ptr<std::map<ScanKey, MSMetaData::ScanProperties> >& scanProps,
+        std::shared_ptr<std::map<SubScanKey, MSMetaData::SubScanProperties> >& subScanProps,
         const std::vector<
             std::pair<std::map<ScanKey, ScanProperties>, std::map<SubScanKey, SubScanProperties> >
         >&  props
@@ -874,13 +874,13 @@ private:
     // if _scanProps has been generated, just return it. If the caller has
     // configured the object to generate _scanProps at some point, this call will
     // generate it. Otherwise, the returned object contains a null pointer.
-    SHARED_PTR<const std::map<ScanKey, ScanProperties> > _generateScanPropsIfWanted() const;
+    std::shared_ptr<const std::map<ScanKey, ScanProperties> > _generateScanPropsIfWanted() const;
 
     // if _subScanProperties has been generated, just return it. If
     // the caller has configured the object to generate _subScanPropertiess
     // at some point, this call will generate it. Otherwise, the returned object
     // contains a null pointer.
-    SHARED_PTR<const std::map<SubScanKey, SubScanProperties> >
+    std::shared_ptr<const std::map<SubScanKey, SubScanProperties> >
     _generateSubScanPropsIfWanted() const;
 
     vector<String> _getAntennaNames(
@@ -890,11 +890,11 @@ private:
     vector<MPosition> _getAntennaPositions() const;
 
     void _getAntennas(
-        SHARED_PTR<Vector<Int> >& ant1,
-        SHARED_PTR<Vector<Int> >& ant2
+        std::shared_ptr<Vector<Int> >& ant1,
+        std::shared_ptr<Vector<Int> >& ant2
     ) const;
 
-    SHARED_PTR<Vector<Int> > _getArrayIDs() const;
+    std::shared_ptr<Vector<Int> > _getArrayIDs() const;
 
     std::map<ArrayKey, std::set<SubScanKey> > _getArrayKeysToSubScanKeys() const;
 
@@ -910,14 +910,14 @@ private:
         uInt beginRow, uInt endRow
     ) const;
 
-    SHARED_PTR<Vector<Int> > _getDataDescIDs() const;
+    std::shared_ptr<Vector<Int> > _getDataDescIDs() const;
 
     // get the field IDs of ephemeris objects
-    SHARED_PTR<std::set<Int> > _getEphemFieldIDs() const;
+    std::shared_ptr<std::set<Int> > _getEphemFieldIDs() const;
 
-    SHARED_PTR<Quantum<Vector<Double> > > _getExposureTimes() const;
+    std::shared_ptr<Quantum<Vector<Double> > > _getExposureTimes() const;
 
-    SHARED_PTR<Vector<Int> > _getFieldIDs() const;
+    std::shared_ptr<Vector<Int> > _getFieldIDs() const;
 
     // If there are no intents, then fieldToIntentsMap will be of length
     // nFields() and all of its entries will be the empty set, and
@@ -943,27 +943,27 @@ private:
     );
 
     void _getFieldsAndTimesMaps(
-        SHARED_PTR<std::map<Int, std::set<Double> > >& fieldToTimesMap,
-        SHARED_PTR<std::map<Double, std::set<Int> > >& timesToFieldMap
+        std::shared_ptr<std::map<Int, std::set<Double> > >& fieldToTimesMap,
+        std::shared_ptr<std::map<Double, std::set<Int> > >& timesToFieldMap
     );
 
-    SHARED_PTR<ArrayColumn<Bool> > _getFlags() const;
+    std::shared_ptr<ArrayColumn<Bool> > _getFlags() const;
 
     std::map<String, std::set<Double> > _getIntentsToTimesMap() const;
 
-    SHARED_PTR<Quantum<Vector<Double> > > _getIntervals() const;
+    std::shared_ptr<Quantum<Vector<Double> > > _getIntervals() const;
 
-    SHARED_PTR<Vector<Int> > _getObservationIDs() const;
+    std::shared_ptr<Vector<Int> > _getObservationIDs() const;
 
-    SHARED_PTR<Vector<Int> > _getScans() const;
+    std::shared_ptr<Vector<Int> > _getScans() const;
 
     vector<std::set<String> > _getSpwToIntentsMap();
 
-    SHARED_PTR<Vector<Int> > _getStateIDs() const;
+    std::shared_ptr<Vector<Int> > _getStateIDs() const;
 
-    SHARED_PTR<Vector<Double> > _getTimes() const;
+    std::shared_ptr<Vector<Double> > _getTimes() const;
 
-    //SHARED_PTR<std::map<Double, TimeStampProperties> > _getTimeStampProperties() const;
+    //std::shared_ptr<std::map<Double, TimeStampProperties> > _getTimeStampProperties() const;
 
     Bool _hasIntent(const String& intent) const;
 
@@ -998,14 +998,14 @@ private:
 
     void _getRowStats(
         uInt& nACRows, uInt& nXCRows,
-        SHARED_PTR<std::map<SubScanKey, uInt> >& scanToNACRowsMap,
-        SHARED_PTR<std::map<SubScanKey, uInt> >& scanToNXCRowsMap,
-        SHARED_PTR<std::map<Int, uInt> >& fieldToNACRowsMap,
-        SHARED_PTR<std::map<Int, uInt> >& fieldToNXCRowsMap
+        std::shared_ptr<std::map<SubScanKey, uInt> >& scanToNACRowsMap,
+        std::shared_ptr<std::map<SubScanKey, uInt> >& scanToNXCRowsMap,
+        std::shared_ptr<std::map<Int, uInt> >& fieldToNACRowsMap,
+        std::shared_ptr<std::map<Int, uInt> >& fieldToNXCRowsMap
     ) const;
 
     // get scan properties
-    SHARED_PTR<const std::map<ScanKey, MSMetaData::ScanProperties> > _getScanProperties(
+    std::shared_ptr<const std::map<ScanKey, MSMetaData::ScanProperties> > _getScanProperties(
         Bool showProgress
     ) const;
 
@@ -1036,7 +1036,7 @@ private:
 
     std::map<ScanKey, std::set<SubScanKey> > _getScanToSubScansMap() const;
 
-    SHARED_PTR<std::map<ScanKey, std::set<Double> > > _getScanToTimesMap() const;
+    std::shared_ptr<std::map<ScanKey, std::set<Double> > > _getScanToTimesMap() const;
 
     std::map<SourceKey, SourceProperties> _getSourceInfo() const;
 
@@ -1064,13 +1064,13 @@ private:
     vector<String> _getStationNames();
 
     void _getSubScansAndIntentsMaps(
-        SHARED_PTR<const std::map<SubScanKey, std::set<String> > >& subScanToIntentsMap,
+        std::shared_ptr<const std::map<SubScanKey, std::set<String> > >& subScanToIntentsMap,
         std::map<String, std::set<SubScanKey> >& intentToSubScansMap
     ) const;
 
     void _getScanAndSubScanProperties(
-        SHARED_PTR<const std::map<ScanKey, ScanProperties> >& scanProps,
-        SHARED_PTR<const std::map<SubScanKey, SubScanProperties> >& subScanProps,
+        std::shared_ptr<const std::map<ScanKey, ScanProperties> >& scanProps,
+        std::shared_ptr<const std::map<SubScanKey, SubScanProperties> >& subScanProps,
         Bool showProgress
     ) const;
 
@@ -1081,10 +1081,10 @@ private:
 
     void _getUnflaggedRowStats(
         Double& nACRows, Double& nXCRows,
-        SHARED_PTR<std::map<SubScanKey, Double> >& subScanToNACRowsMap,
-        SHARED_PTR<std::map<SubScanKey, Double> >& subScanToNXCRowsMap,
-        SHARED_PTR<vector<Double> >& fieldToNACRowsMap,
-        SHARED_PTR<vector<Double> >& fieldToNXCRowsMap
+        std::shared_ptr<std::map<SubScanKey, Double> >& subScanToNACRowsMap,
+        std::shared_ptr<std::map<SubScanKey, Double> >& subScanToNXCRowsMap,
+        std::shared_ptr<vector<Double> >& fieldToNACRowsMap,
+        std::shared_ptr<vector<Double> >& fieldToNXCRowsMap
     ) const;
 
     void _getUnflaggedRowStats(
@@ -1136,7 +1136,7 @@ private:
 
     static std::map<Int, uInt> _toUIntMap(const Vector<Int>& v);
 
-    template <class T> SHARED_PTR<Vector<T> > _getMainScalarColumn(
+    template <class T> std::shared_ptr<Vector<T> > _getMainScalarColumn(
         MSMainEnums::PredefinedColumns col
     ) const;
 

@@ -29,9 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <ftw.h>
 #include <stdio.h>
-#if defined(AIPS_CXX11)  
 #include <random>
-#endif
 #include <string>
 #include <casacore/ms/MSOper/NewMSSimulator.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
@@ -139,7 +137,6 @@ void test_NewMSSimulator_Constructors()
  */
 void test_NewMSSimulator_RandomAntenna()
 {
-#if defined(AIPS_CXX11)  
   std::mt19937 rng;
   
   int nAntMax = 10;
@@ -171,5 +168,4 @@ void test_NewMSSimulator_RandomAntenna()
     auto ms = simulatorTester.simulator_p->getMs();
     
   }
-#endif  
 }

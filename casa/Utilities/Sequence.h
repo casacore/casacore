@@ -74,8 +74,11 @@ public:
     // </group>
 
 private:
-    static uInt num;
-    static Mutex theirMutex;
+#if defined(USE_THREADS)
+    static std::atomic<uInt> next;
+#else
+    static uInt next;
+#endif
 };
 
 

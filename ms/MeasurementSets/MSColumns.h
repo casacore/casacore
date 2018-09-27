@@ -317,13 +317,11 @@ private:
 };
 
 //# Declare extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class ArrayMeasColumn<MDirection>;
   extern template class ScalarMeasColumn<MPosition>;
   extern template class ScalarMeasColumn<MEpoch>;
   extern template class ArrayQuantColumn<Double>;
   extern template class ScalarQuantColumn<Double>;
-#endif
 
 } //# NAMESPACE CASACORE - END
 

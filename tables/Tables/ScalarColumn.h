@@ -265,7 +265,6 @@ protected:
 
 
 //# Explicitly instantiate these templates in ScalarColumn_tmpl.cc
-#ifdef AIPS_CXX11
   extern template class ScalarColumn<Bool>;
   extern template class ScalarColumn<Char>;
   extern template class ScalarColumn<Short>;
@@ -277,7 +276,6 @@ protected:
   extern template class ScalarColumn<Complex>;
   extern template class ScalarColumn<DComplex>;
   extern template class ScalarColumn<String>;
-#endif
 
 
 } //# NAMESPACE CASACORE - END

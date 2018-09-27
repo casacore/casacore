@@ -50,7 +50,7 @@ namespace casacore
     // Construct the error object with the given message.
     JsonError (const String& message);
 
-    ~JsonError() throw();
+    ~JsonError() noexcept;
   };
 
 } // end namespace

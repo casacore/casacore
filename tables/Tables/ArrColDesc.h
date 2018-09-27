@@ -281,7 +281,6 @@ protected:
 
 
 //# Explicitly instantiate these templates in ArrColDesc_tmpl.cc
-#ifdef AIPS_CXX11
   extern template class ArrayColumnDesc<Bool>;
   extern template class ArrayColumnDesc<Char>;
   extern template class ArrayColumnDesc<Short>;
@@ -293,7 +292,6 @@ protected:
   extern template class ArrayColumnDesc<Complex>;
   extern template class ArrayColumnDesc<DComplex>;
   extern template class ArrayColumnDesc<String>;
-#endif
 
 
 } //# NAMESPACE CASACORE - END

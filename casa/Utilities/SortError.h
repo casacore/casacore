@@ -49,7 +49,7 @@ class SortError : public AipsError {
 public:
     SortError (Category c=GENERAL);
     SortError (const String&,Category c=GENERAL);
-    ~SortError () throw();
+    ~SortError () noexcept;
 };
 
 
@@ -65,7 +65,7 @@ public:
 class SortInvDT : public SortError {
 public:
     SortInvDT (Category c=INVALID_ARGUMENT);
-    ~SortInvDT () throw();
+    ~SortInvDT () noexcept;
 };
 
 // <summary> Invalid increment used for this sort key </summary>
@@ -81,7 +81,7 @@ public:
 class SortInvIncr : public SortError {
 public:
     SortInvIncr (Category c=INVALID_ARGUMENT);
-    ~SortInvIncr () throw();
+    ~SortInvIncr () noexcept;
 };
 
 // <summary> No data array given to Sort constructor. </summary>
@@ -96,7 +96,7 @@ public:
 class SortNoData : public SortError {
 public:
     SortNoData (Category c=INITIALIZATION);
-    ~SortNoData () throw();
+    ~SortNoData () noexcept;
 };
 
 // <summary> Invalid sort option given to routine dosort. </summary>
@@ -111,7 +111,7 @@ public:
 class SortInvOpt : public SortError {
 public:
     SortInvOpt (Category c=INVALID_ARGUMENT);
-    ~SortInvOpt () throw();
+    ~SortInvOpt () noexcept;
 };
 
 

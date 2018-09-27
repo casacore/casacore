@@ -29,12 +29,16 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-uInt RegSequence::num = 0;
-Mutex RegSequence::theirMutex;
+// Handed out sequence starts at 1 as Register.cc uses 0 as default initializer
+// and we want to simply use fetch_add(), which returns the previous value.
+#if defined(USE_THREADS)
+std::atomic<uInt> RegSequence::next(1);
+#else // !USE_THREADS
+uInt RegSequence::next = 1;
+#endif
 
 uInt RegSequence::getNext() {
-  ScopedMutexLock lock(theirMutex);
-  return ++num;
+  return RegSequence::SgetNext();
 }
 
 } //# NAMESPACE CASACORE - END

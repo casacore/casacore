@@ -283,23 +283,74 @@ private:
     static const DComplex undefdcomplex;
     static const String   undefstring  ;
 
-    static const String strbool;
-    static const String strchar;
-    static const String struchar;
-    static const String strshort;
-    static const String strushort;
-    static const String strint;
-    static const String struint;
-    static const String strint64;
-    static const String strfloat;
-    static const String strdouble;
-    static const String strcomplex;
-    static const String strdcomplex;
-    static const String strstring;
-    static const String strrecord;
-    static const String strtable;
-    static const String strother;
-    static const String strunknown;
+    static const String &strbool( ) {
+        static String result("Bool    ");
+        return result;
+    }
+    static const String &strchar( ) {
+        static String result("Char    ");
+        return result;
+    }
+    static const String &struchar( ) {
+        static String result("uChar   ");
+        return result;
+    }
+    static const String &strshort( ) {
+        static String result("Short   ");
+        return result;
+    }
+    static const String &strushort( ) {
+        static String result("uShort  ");
+        return result;
+    }
+    static const String &strint( ) {
+        static String result("Int     ");
+        return result;
+    }
+    static const String &struint( ) {
+        static String result("uInt    ");
+        return result;
+    }
+    static const String &strint64( ) {
+        static String result("Int64   ");
+        return result;
+    }
+    static const String &strfloat( ) {
+        static String result("float   ");
+        return result;
+    }
+    static const String &strdouble( ) {
+        static String result("double  ");
+        return result;
+    }
+    static const String &strcomplex( ) {
+        static String result("Complex ");
+        return result;
+    }
+    static const String &strdcomplex( ) {
+        static String result("DComplex");
+        return result;
+    }
+    static const String &strstring( ) {
+        static String result("String  ");
+        return result;
+    }
+    static const String &strrecord( ) {
+        static String result("Record  ");
+        return result;
+    }
+    static const String &strtable( ) {
+        static String result("Table   ");
+        return result;
+    }
+    static const String &strother( ) {
+        static String result("Other   ");
+        return result;
+    }
+    static const String &strunknown( ) {
+        static String result("unknown ");
+        return result;
+    }
     //
     // This class is not meant to be constructed.
     //
@@ -397,35 +448,35 @@ inline DataType ValType::getType (const void*)
     {return TpOther;}
 
 inline const String& ValType::getTypeStr (const Bool*)
-    {return strbool;}
+    {return strbool();}
 inline const String& ValType::getTypeStr (const Char*)
-    {return strchar;}
+    {return strchar();}
 inline const String& ValType::getTypeStr (const uChar*)
-    {return struchar;}
+    {return struchar();}
 inline const String& ValType::getTypeStr (const Short*)
-    {return strshort;}
+    {return strshort();}
 inline const String& ValType::getTypeStr (const uShort*)
-    {return strushort;}
+    {return strushort();}
 inline const String& ValType::getTypeStr (const Int*)
-    {return strint;}
+    {return strint();}
 inline const String& ValType::getTypeStr (const uInt*)
-    {return struint;}
+    {return struint();}
 inline const String& ValType::getTypeStr (const Int64*)
-    {return strint64;}
+    {return strint64();}
 inline const String& ValType::getTypeStr (const float*)
-    {return strfloat;}
+    {return strfloat();}
 inline const String& ValType::getTypeStr (const double*)
-    {return strdouble;}
+    {return strdouble();}
 inline const String& ValType::getTypeStr (const Complex*)
-    {return strcomplex;}
+    {return strcomplex();}
 inline const String& ValType::getTypeStr (const DComplex*)
-    {return strdcomplex;}
+    {return strdcomplex();}
 inline const String& ValType::getTypeStr (const String*)
-    {return strstring;}
+    {return strstring();}
 inline const String& ValType::getTypeStr (const TableRecord*)
-    {return strrecord;}
+    {return strrecord();}
 inline const String& ValType::getTypeStr (const void*)
-    {return strother;}
+    {return strother();}
 
 inline void ValType::put (AipsIO& ios, const Bool* value)
     {ios << *value;}

@@ -41,12 +41,12 @@ uInt MCPosition::ToRef_p[N_Routes][3] = {
   {MPosition::ITRF,	MPosition::WGS84,	0},
   {MPosition::WGS84,	MPosition::ITRF,	0} };
 uInt MCPosition::FromTo_p[MPosition::N_Types][MPosition::N_Types];
-MutexedInit MCPosition::theirMutexedInit (MCPosition::doFillState);
+CallOnce0 MCPosition::theirInitOnce;
 
 //# Constructors
 MCPosition::MCPosition() :
   DVEC1(0) {
-    fillState();
+    theirInitOnce(doFillState);
 }
 
 //# Destructor
@@ -178,13 +178,13 @@ void MCPosition::doConvert(MVPosition &in,
 }
 
 String MCPosition::showState() {
-  fillState();
+  theirInitOnce(doFillState);
   return MCBase::showState(MCPosition::FromTo_p[0],
 			   MPosition::N_Types, MCPosition::N_Routes,
 			   MCPosition::ToRef_p);
 }
 
-void MCPosition::doFillState (void*) {
+void MCPosition::doFillState() {
   MPosition::checkMyTypes();
   MCBase::makeState(FromTo_p[0], MPosition::N_Types, N_Routes, ToRef_p);
 }

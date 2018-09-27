@@ -39,11 +39,6 @@
 #include <cstdlib>
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-#if __cplusplus < 201103L && ! defined(noexcept)
-# define noexcept throw()
-# define CASA_UNDEF_noexcept
-#endif
-
 #ifndef CASA_DEFAULT_ALIGNMENT
 # define CASA_DEFAULT_ALIGNMENT (32UL) // AVX/AVX2 alignment
 #endif
@@ -64,67 +59,20 @@ public:
   }
 private:
   Bool init;
-#if defined(AIPS_CXX11)
   explicit constexpr ArrayInitPolicy(bool v): init(v) {}
-#else
-  explicit ArrayInitPolicy(bool v): init(v) {}
-#endif
   friend struct ArrayInitPolicies;
 };
 
 struct ArrayInitPolicies {
-#if defined(AIPS_CXX11)
     // Don't initialize elements in the array. (The array will be explicitly filled with values other than the default value.)
     static constexpr ArrayInitPolicy NO_INIT = ArrayInitPolicy(false);
     // Initialize all elements in the array with the default value.
     static constexpr ArrayInitPolicy INIT = ArrayInitPolicy(true);
-#else
-    static const ArrayInitPolicy NO_INIT;
-    // Initialize all elements in the array with the default value.
-    static const ArrayInitPolicy INIT;
-#endif
 };
 
-#if __cplusplus < 201103L
-template<typename T>
-struct std11_allocator: public std::allocator<T> {
-  typedef std::allocator<T> Super;
-  typedef typename Super::size_type size_type;
-  typedef typename Super::difference_type difference_type;
-  typedef typename Super::pointer pointer;
-  typedef typename Super::const_pointer const_pointer;
-  typedef typename Super::reference reference;
-  typedef typename Super::const_reference const_reference;
-  typedef typename Super::value_type value_type;
-
-  template<typename TOther>
-  struct rebind {
-    typedef std11_allocator<TOther> other;
-  };
-  void construct(pointer ptr) {
-    ::new(static_cast<void *>(ptr)) T();
-  }
-  void construct(pointer ptr, const_reference val) {
-    Super::construct(ptr, val);
-  }
-};
-
-template<typename T>
-inline bool operator==(const std11_allocator<T>&,
-    const std11_allocator<T>&) {
-  return true;
-}
-
-template<typename T>
-inline bool operator!=(const std11_allocator<T>&,
-    const std11_allocator<T>&) {
-  return false;
-}
-
-#else
 template<typename T>
 using std11_allocator = std::allocator<T>;
-#endif
+
 
 template<typename T, size_t ALIGNMENT = CASA_DEFAULT_ALIGNMENT>
 struct casacore_allocator: public std11_allocator<T> {
@@ -136,11 +84,8 @@ struct casacore_allocator: public std11_allocator<T> {
   typedef typename Super::reference reference;
   typedef typename Super::const_reference const_reference;
   typedef typename Super::value_type value_type;
-#if __cplusplus < 201103L
-  enum {alignment = ALIGNMENT};
-#else
+
   static constexpr size_t alignment = ALIGNMENT;
-#endif
 
   template<typename TOther>
   struct rebind {
@@ -228,12 +173,6 @@ struct new_del_allocator: public std11_allocator<T> {
   void deallocate(pointer ptr, size_type) {
     delete[] ptr;
   }
-#if __cplusplus < 201103L
-    void construct(pointer ptr, const_reference value) {
-        *ptr = value;   // because *ptr was already contructed by new[].
-    }
-    void construct(pointer) {} // do nothing because new T[] does
-#else
   template<typename U, typename... Args>
   void construct(U *, Args&&... ) {} // do nothing because new T[] does
   template<typename U>
@@ -248,7 +187,6 @@ struct new_del_allocator: public std11_allocator<T> {
   void construct(U *ptr, U const &value) {
       *ptr = value;     // because *ptr was already contructed by new[].
   }
-#endif
 
   template<typename U>
   void destroy(U *) {} // do nothing because delete[] will do.
@@ -490,10 +428,6 @@ struct AllocSpec {
 template<typename T>
 AllocSpec<T> const AllocSpec<T>::value = AllocSpec<T>();
 
-#if defined(CASA_UNDEF_noexcept)
-# undef noexcept
-# undef CASA_UNDEF_noexcept
-#endif
 
 } //# NAMESPACE CASACORE - END
 

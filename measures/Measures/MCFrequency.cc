@@ -54,13 +54,13 @@ uInt MCFrequency::ToRef_p[N_Routes][3] = {
   {MFrequency::REST,	MFrequency::LSRK,	3},
   {MFrequency::LSRK,	MFrequency::REST,	3} };
 uInt MCFrequency::FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
-MutexedInit MCFrequency::theirMutexedInit (MCFrequency::doFillState);
+CallOnce0 MCFrequency::theirInitOnce;
 
 
 //# Constructors
 MCFrequency::MCFrequency() :
   MVPOS1(0), MVDIR1(0), ABERFROM(0), ABERTO(0) {
-    fillState();
+    theirInitOnce(doFillState);
 }
 
 //# Destructor
@@ -353,13 +353,13 @@ void MCFrequency::doConvert(MVFrequency &in,
 }
 
 String MCFrequency::showState() {
-  fillState();
+  theirInitOnce(doFillState);
   return MCBase::showState(MCFrequency::FromTo_p[0],
 			   MFrequency::N_Types, MCFrequency::N_Routes,
 			   MCFrequency::ToRef_p);
 }
 
-void MCFrequency::doFillState (void*) {
+void MCFrequency::doFillState() {
   MFrequency::checkMyTypes();
   MCBase::makeState(FromTo_p[0], MFrequency::N_Types, N_Routes, ToRef_p);
 }

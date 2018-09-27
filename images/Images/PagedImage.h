@@ -462,11 +462,10 @@ protected:
 
 
 //# Declare extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class PagedImage<Float>;
   extern template class PagedImage<Complex>;
-#endif
 
+  
 
 } //# NAMESPACE CASACORE - END
 

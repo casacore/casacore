@@ -91,13 +91,13 @@ uInt MCDirection::ToRef_p[N_Routes][3] = {
   {MDirection::ICRS,		MDirection::J2000,	0},
   {MDirection::J2000,		MDirection::ICRS,	0} };
 uInt MCDirection::FromTo_p[MDirection::N_Types][MDirection::N_Types];
-MutexedInit MCDirection::theirMutexedInit (MCDirection::doFillState);
+CallOnce0 MCDirection::theirInitOnce;
 
 //# Constructors
 MCDirection::MCDirection() :
   MVPOS1(0), MVPOS2(0), MVPOS3(0),
   VEC61(0), VEC62(0), VEC63(0), measMath() {
-    fillState();
+    theirInitOnce(doFillState);
 }
 
 //# Destructor
@@ -602,13 +602,13 @@ void MCDirection::doConvert(MVDirection &in,
 }
 
 String MCDirection::showState() {
-  fillState();
+  theirInitOnce(doFillState);
   return MCBase::showState(MCDirection::FromTo_p[0],
 			   MDirection::N_Types, MCDirection::N_Routes,
 			   MCDirection::ToRef_p);
 }
 
-void MCDirection::doFillState (void*) {
+void MCDirection::doFillState() {
   MDirection::checkMyTypes();
   MCBase::makeState(FromTo_p[0],  MDirection::N_Types, N_Routes, ToRef_p);
 }

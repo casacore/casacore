@@ -668,10 +668,8 @@ void PagedArray<T>::doReopen() const
 }
 
 //# Declare extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class PagedArray<Float>;
   extern template class PagedArray<Complex>;
-#endif
 
 
 } //# NAMESPACE CASACORE - END

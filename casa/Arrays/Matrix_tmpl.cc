@@ -30,7 +30,6 @@
 #include <casacore/casa/Arrays/MatrixMath.h>
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
 namespace casacore {
   template class Matrix<Bool>;
   template class Matrix<Float>;
@@ -38,4 +37,3 @@ namespace casacore {
   template class Matrix<Complex>;
   template class Matrix<DComplex>;
 }
-#endif

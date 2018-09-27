@@ -332,6 +332,8 @@ public:
   // FITS unit list inclusion
   static Bool doneFITS;
   static Mutex fitsMutex;
+  // Object to ensure safe multi-threaded lazy single initialization
+  static CallOnce0 theirCallOnce;
   
   //# member functions
   // Get the name of a FITS unit

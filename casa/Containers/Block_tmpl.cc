@@ -29,7 +29,6 @@
 #include <casacore/casa/Containers/Block.h>
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
 namespace casacore {
   template class Block<Bool>;
   template class Block<Char>;
@@ -45,4 +44,3 @@ namespace casacore {
   template class Block<String>;
   template class Block<void*>;
 }
-#endif

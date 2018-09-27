@@ -506,9 +506,9 @@ int main (int argc, const char* argv[])
     {
         // test ScalarQuantColumn::getColumn()
         ScalarQuantColumn<Double> col(qtab, "ScaQuantDouble"); 
-        SHARED_PTR<Quantum<Vector<Double> > > v = col.getColumn();
+        std::shared_ptr<Quantum<Vector<Double> > > v = col.getColumn();
         AlwaysAssert(v->getValue().size() == 5, AipsError);
-        SHARED_PTR<Quantum<Vector<Double> > > w = col.getColumn("rad");
+        std::shared_ptr<Quantum<Vector<Double> > > w = col.getColumn("rad");
         AlwaysAssert(w->getValue().size() == 5, AipsError);
         Double frac = C::pi/180;
         for (uInt i=0; i<5; ++i) {
@@ -517,9 +517,9 @@ int main (int argc, const char* argv[])
             );
         }
         ScalarQuantColumn<Complex> ccol(qtab, "ScaQuantComplex");
-        SHARED_PTR<Quantum<Vector<Complex> > > x = ccol.getColumn(); 
+        std::shared_ptr<Quantum<Vector<Complex> > > x = ccol.getColumn(); 
         AlwaysAssert(x->getValue().size() == 5, AipsError);
-        SHARED_PTR<Quantum<Vector<Complex> > > y = ccol.getColumn("rad"); 
+        std::shared_ptr<Quantum<Vector<Complex> > > y = ccol.getColumn("rad"); 
         for (uInt i=0; i<5; ++i) {
             AlwaysAssert(
                 near(y->getValue()[i], frac*x->getValue()[i]), AipsError

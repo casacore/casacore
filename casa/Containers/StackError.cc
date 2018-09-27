@@ -34,7 +34,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 EmptyStackError::EmptyStackError (const char *msg,Category c) : 
           AipsError(msg ? msg : "Invalid operation on an empty Stack.",c) {}
 
-EmptyStackError::~EmptyStackError () throw()
+EmptyStackError::~EmptyStackError () noexcept
 { ; }
 
 } //# NAMESPACE CASACORE - END

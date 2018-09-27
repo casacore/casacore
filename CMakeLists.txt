@@ -28,7 +28,7 @@ set(CPACK_PACKAGE_NAME "casacore")
 set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
 
 set(CPACK_PACKAGE_CONTACT "Malte Marquarding") #required
-set(CPACK_PACKAGE_VENDOR "casacore.googlecode.com")
+set(CPACK_PACKAGE_VENDOR "https://github.com/casacore/casacore")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Astronomical data processing library")
 
 string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE) 
@@ -318,6 +318,14 @@ endif (BUILD_PYTHON3)
 
 # Determine which external packages to use.
 include (CTest)
+
+# Decrease test timeout. Valgrind times are excessive and need much more.
+#set (CTEST_TEST_TIMEOUT 150 CACHE STRING
+#    "Maximum ctest -S time allowed before CTest will kill the test." FORCE)
+# Already a cache var. It can be overridden using ctest --timeout N
+#set (DART_TESTING_TIMEOUT 150 CACHE STRING
+#    "Maximum ctest time allowed before CTest will kill the test." FORCE)
+
 find_package (DL)
 find_package (Readline)
 find_package (SOFA)
@@ -414,7 +422,8 @@ if(USE_OPENMP)
     else (OPENMP_FOUND)
         message(WARNING "Cannot fullfill USE_OPENMP, compiler does not support it")
     endif (OPENMP_FOUND)
-endif(USE_OPENMP)
+endif()
+
 # Thread support?
 if(USE_THREADS)
     set(_errmsg "FIXME: Don't know how to enable thread support for ")
@@ -442,6 +451,16 @@ if(USE_THREADS)
             message(FATAL_ERROR "${_errmsg} (${CMAKE_C_COMPILER_ID}): ${CMAKE_CXX_COMPILER}")
         endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     endif(CMAKE_COMPILER_IS_GNUCXX)
+else()
+    # Compile with -fno-threadsafe-statics if supp to reduce some thread safety overhead.
+    check_cxx_compiler_flag(-fno-threadsafe-statics HAS_CXX_NO_THREADSAFE_STATICS)
+    if (HAS_CXX_NO_THREADSAFE_STATICS)
+        set(CMAKE_CXX_FLAGS "-fno-threadsafe-statics ${CMAKE_CXX_FLAGS}")
+    endif()
+    check_c_compiler_flag(-fno-threadsafe-statics HAS_C_NO_THREADSAFE_STATICS)
+    if (HAS_C_NO_THREADSAFE_STATICS)
+        set(CMAKE_C_FLAGS "-fno-threadsafe-statics ${CMAKE_C_FLAGS}")
+    endif()
 endif(USE_THREADS)
 
 # Set default DATA_DIR if undefined.
@@ -548,7 +567,8 @@ if (BUILD_PYTHON3)
 endif (BUILD_PYTHON3)
 
 # List of build variables and defaults.
-#  BUILD_PYTHON                  NO
+#  BUILD_PYTHON                  YES
+#  BUILD_PYTHON3                 NO
 #  ENABLE_SHARED                 YES
 #  ENABLE_RPATH                  YES
 #  ENABLE_TABLELOCKING           YES

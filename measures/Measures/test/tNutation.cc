@@ -35,9 +35,7 @@ void doIt (int nthr, int n)
 {
   double incr = 1./nthr;
   // Do nutation a number of times, if possible in parallel.
-#ifdef _OPENMP
 #pragma omp parallel for
-#endif
   for (int i=0; i<nthr; ++i) {
     Double dat = 51116 + i*incr;
     ostringstream ostr;

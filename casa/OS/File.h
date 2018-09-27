@@ -31,9 +31,8 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/OS/Path.h>
-#include <casacore/casa/OS/Mutex.h>
 #include <casacore/casa/BasicSL/String.h>
-
+#include <atomic>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -304,8 +303,7 @@ private:
     // Full pathname of the file.
     Path itsPath;
     // A sequence number to generate unique file names.
-    static uInt uniqueSeqnr_p;
-    static Mutex theirMutex;
+    static std::atomic<uInt> uniqueSeqnr_p;
 };
 
 

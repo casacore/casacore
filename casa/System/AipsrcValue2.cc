@@ -35,12 +35,11 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
-    template class AipsrcValue<Bool>;
-    template class AipsrcValue<Int>;
-    template class AipsrcValue<Double>;
-    template class AipsrcValue<String>;
-#endif
+  template class AipsrcValue<Bool>;
+  template class AipsrcValue<Int>;
+  template class AipsrcValue<Double>;
+  template class AipsrcValue<String>;
+
 
 template <> 
 Bool AipsrcValue<String>::find(String &value,

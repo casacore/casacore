@@ -496,7 +496,7 @@ int main() {
             AlwaysAssert(near(sd.variance, variance), AipsError);
 
             // test cloning gives same results
-            SHARED_PTR<
+            std::shared_ptr<
                 HingesFencesStatistics<
                     Double, std::vector<Double>::const_iterator,
                     std::vector<Bool>::const_iterator

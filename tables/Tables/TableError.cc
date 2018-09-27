@@ -35,14 +35,14 @@ TableError::TableError (Category c)
 TableError::TableError (const String& str,Category c)
 : AipsError(str,c)
 {}
-TableError::~TableError () throw()
+TableError::~TableError () noexcept
 {}
 
 
 TableInternalError::TableInternalError (const String& str,Category c)
 : TableError("Internal Table error: " + str,c)
 {}
-TableInternalError::~TableInternalError () throw()
+TableInternalError::~TableInternalError () noexcept
 {}
 
 
@@ -52,7 +52,7 @@ TableDuplFile::TableDuplFile (const String& name,Category c)
 TableDuplFile::TableDuplFile (const String& name, const String& msg,Category c)
 : TableError("Table " + name + " already exists" + msg,c)
 {}
-TableDuplFile::~TableDuplFile () throw()
+TableDuplFile::~TableDuplFile () noexcept
 {}
 
 
@@ -60,14 +60,14 @@ TableNoFile::TableNoFile (const String& name,Category c)
 : TableError(name.empty()  ?  String("No table name given at open") :
 	                      "Table " + name + " does not exist",c)
 {}
-TableNoFile::~TableNoFile () throw()
+TableNoFile::~TableNoFile () noexcept
 {}
 
 
 TableNoDir::TableNoDir (const String& name,Category c)
 : TableError(name + " is not a directory",c)
 {}
-TableNoDir::~TableNoDir () throw()
+TableNoDir::~TableNoDir () noexcept
 {}
 
 
@@ -75,21 +75,21 @@ TableNoDatFile::TableNoDatFile (const String& filename,Category c)
 : TableError(filename.empty() ? String("No table name given at open") :
 	                      "Table file " + filename + " does not exist",c)
 {}
-TableNoDatFile::~TableNoDatFile () throw()
+TableNoDatFile::~TableNoDatFile () noexcept
 {}
 
 
 TableDescNoName::TableDescNoName (Category c)
 : TableError ("No name for table description",c)
 {}
-TableDescNoName::~TableDescNoName () throw()
+TableDescNoName::~TableDescNoName () noexcept
 {}
 
 
 TableInvOpt::TableInvOpt (const String& cl, const String& str, Category c)
 : TableError ("Invalid " + cl + " option: " + str,c)
 {}
-TableInvOpt::~TableInvOpt () throw()
+TableInvOpt::~TableInvOpt () noexcept
 {}
 
 
@@ -98,28 +98,28 @@ TableInvType::TableInvType (const String& tableName,
 : TableError ("Table file " + tableName + "is incorrect: Expected type "
               + tpin + ", found " + tpfil, c)
 {}
-TableInvType::~TableInvType () throw()
+TableInvType::~TableInvType () noexcept
 {}
 
 
 TableInvColumnDesc::TableInvColumnDesc (const String& name, const String& msg,Category c)
 : TableError("Invalid description of column " + name + ": " + msg,c)
 {}
-TableInvColumnDesc::~TableInvColumnDesc () throw()
+TableInvColumnDesc::~TableInvColumnDesc () noexcept
 {}
 
 
 TableInvHyperDesc::TableInvHyperDesc (const String& name, const String& msg,Category c)
 : TableError("Invalid description of hypercolumn " + name + ": " + msg,c)
 {}
-TableInvHyperDesc::~TableInvHyperDesc () throw()
+TableInvHyperDesc::~TableInvHyperDesc () noexcept
 {}
 
 
 TableUnknownDesc::TableUnknownDesc (const String& name,Category c)
 : TableError("ColumnDesc class " + name + " unknown to ColumnDesc::register",c)
 {}
-TableUnknownDesc::~TableUnknownDesc () throw()
+TableUnknownDesc::~TableUnknownDesc () noexcept
 {}
 
 
@@ -129,7 +129,7 @@ TableInvDT::TableInvDT (Category c)
 TableInvDT::TableInvDT (const String& name,Category c)
 : TableError ("Invalid Table data type when accessing column" + name,c)
 {}
-TableInvDT::~TableInvDT () throw()
+TableInvDT::~TableInvDT () noexcept
 {}
 
 
@@ -139,21 +139,21 @@ TableInvOper::TableInvOper (Category c)
 TableInvOper::TableInvOper (const String& s,Category c)
 : TableError ("Invalid Table operation: " + s,c)
 {}
-TableInvOper::~TableInvOper () throw()
+TableInvOper::~TableInvOper () noexcept
 {}
 
 
 TableArrayConformanceError::TableArrayConformanceError (const String& s,Category c)
 : TableError (s + ": Table array conformance error",c)
 {}
-TableArrayConformanceError::~TableArrayConformanceError () throw()
+TableArrayConformanceError::~TableArrayConformanceError () noexcept
 {}
 
 
 TableConformanceError::TableConformanceError (const String& s,Category c)
 : TableError (s + ": Table conformance error (#rows mismatch)",c)
 {}
-TableConformanceError::~TableConformanceError () throw()
+TableConformanceError::~TableConformanceError () noexcept
 {}
 
 
@@ -163,14 +163,14 @@ TableInvSort::TableInvSort (Category c)
 TableInvSort::TableInvSort (const String& s,Category c)
 : TableError ("Invalid table sort: " + s,c)
 {}
-TableInvSort::~TableInvSort () throw()
+TableInvSort::~TableInvSort () noexcept
 {}
 
 
 TableInvLogic::TableInvLogic (Category c)
 : TableError ("Tables in logical operation have different roots",c)
 {}
-TableInvLogic::~TableInvLogic () throw()
+TableInvLogic::~TableInvLogic () noexcept
 {}
 
 
@@ -180,14 +180,14 @@ TableInvExpr::TableInvExpr (const String& str,Category c)
 TableInvExpr::TableInvExpr (const String& name, const String& str,Category c)
 : TableError ("Error in select expression: column " + name + " is invalid; " + str,c)
 {}
-TableInvExpr::~TableInvExpr () throw()
+TableInvExpr::~TableInvExpr () noexcept
 {}
 
 
 TableVectorNonConform::TableVectorNonConform (Category c)
 : TableError ("Shapes of table vectors are not conformant",c)
 {}
-TableVectorNonConform::~TableVectorNonConform () throw()
+TableVectorNonConform::~TableVectorNonConform () noexcept
 {}
 
 
@@ -197,7 +197,7 @@ TableParseError::TableParseError (const String& s, int pos,
   itsPos   (pos),
   itsToken (token)
 {}
-TableParseError::~TableParseError () throw()
+TableParseError::~TableParseError () noexcept
 {}
 
 
@@ -207,7 +207,7 @@ TableGramError::TableGramError (int pos, const String& token, Category c)
   itsPos   (pos),
   itsToken (token)
 {}
-TableGramError::~TableGramError () throw()
+TableGramError::~TableGramError () noexcept
 {}
 
 } //# NAMESPACE CASACORE - END

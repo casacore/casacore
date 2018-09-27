@@ -578,7 +578,7 @@ int main() {
             );
 
             // test cloning gives same results
-            SHARED_PTR<
+            std::shared_ptr<
                 FitToHalfStatistics<
                     Double, std::vector<Double>::const_iterator,
                     std::vector<Bool>::const_iterator

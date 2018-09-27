@@ -47,7 +47,7 @@ indexError<t>::indexError( t oI, const String &str, Category c )
 {}
 
 template<class t>
-indexError<t>::~indexError() throw()
+indexError<t>::~indexError() noexcept
 {}
 
 
@@ -64,7 +64,7 @@ duplError<t>::duplError(t oI, const String &str,Category c)
 {}
 
 template<class t>
-duplError<t>::~duplError() throw()
+duplError<t>::~duplError() noexcept
 {}
 
 

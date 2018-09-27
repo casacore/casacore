@@ -99,7 +99,6 @@ int main()
       }
     }
 
-    // Use ifdef to avoid compiler warning.
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif

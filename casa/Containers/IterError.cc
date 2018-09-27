@@ -34,14 +34,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 IterError::IterError (const char *msg,Category c) : 
           AipsError(msg ? msg : "Iterator Error.",c) {}
 
-IterError::~IterError () throw()
+IterError::~IterError () noexcept
 { ; }
 
 // The normal constructor when throwing the exception.
 IterBoundaryError::IterBoundaryError (const char *msg,Category c) : 
           IterError(msg ? msg : "Iterator boundaries exceeded.",c) {}
 
-IterBoundaryError::~IterBoundaryError () throw()
+IterBoundaryError::~IterBoundaryError () noexcept
 { ; }
 
 
@@ -49,14 +49,14 @@ IterBoundaryError::~IterBoundaryError () throw()
 IterInitError::IterInitError (const char *msg,Category c) : 
           IterError(msg ? msg : "Iterator initialization error.",c) {}
 
-IterInitError::~IterInitError () throw()
+IterInitError::~IterInitError () noexcept
 { ; }
 
 // The normal constructor when throwing the exception.
 InvalidIterError::InvalidIterError (const char *msg,Category c) : 
           IterError(msg ? msg : "Use of invalid iterator.",c) {}
 
-InvalidIterError::~InvalidIterError () throw()
+InvalidIterError::~InvalidIterError () noexcept
 { ; }
 
 } //# NAMESPACE CASACORE - END

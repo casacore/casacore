@@ -31,7 +31,6 @@
 #include <casacore/casa/Arrays/MaskedArray.h>
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
 namespace casacore {
   template class Array<Bool>;
   template class Array<Char>;
@@ -47,4 +46,3 @@ namespace casacore {
   template class Array<DComplex>;
   template class Array<String>;
 }
-#endif

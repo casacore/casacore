@@ -38,6 +38,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Define the statics.
+  CallOnce0 TableTrace::theirCallOnce;
   Mutex TableTrace::theirMutex;
   std::ofstream TableTrace::theirTraceFile;
   std::ostream* TableTrace::theirStream = 0;
@@ -50,9 +51,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   int TableTrace::traceTable (const String& tableName, char oper)
   {
     // Open trace file if not done yet.
-    if (theirDoTrace == 0) {
-      initTracing();
-    }
+    theirCallOnce(initTracing);
     int tabid = -1;
     if (theirDoTrace > 0) {
       ScopedMutexLock locker(theirMutex);
@@ -80,9 +79,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableTrace::traceClose (const String& tableName)
   {
-    if (theirDoTrace == 0) {
-      initTracing();
-    }
+    theirCallOnce(initTracing);
     if (theirDoTrace > 0) {
       ScopedMutexLock locker(theirMutex);
       int tabid = findTable (tableName);
@@ -99,9 +96,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableTrace::traceFile (int tabid, const String& oper)
   {
-    if (theirDoTrace == 0) {
-      initTracing();
-    }
+    theirCallOnce(initTracing);
     if (theirDoTrace > 0) {
       writeTraceFirst (tabid, '*'+oper+'*', 't');
       *theirStream << endl;
@@ -110,9 +105,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableTrace::traceRefTable (const String& parentName, char oper)
   {
-    if (theirDoTrace == 0) {
-      initTracing();
-    }
+    theirCallOnce(initTracing);
     if (theirDoTrace > 1) {
       int tabid = findTable (parentName);
       writeTraceFirst (tabid, "*reftable*", oper);
@@ -122,9 +115,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   int TableTrace::traceColumn (const ColumnDesc& cd)
   {
-    if (theirDoTrace == 0) {
-      initTracing();
-    }
+    theirCallOnce(initTracing);
     int traceCol = 0;
     if (theirOper > 0) {
       // First test if all scalar, array, or record columns are traced.
@@ -274,11 +265,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableTrace::initTracing()
   {
-    ScopedMutexLock locker(theirMutex);
-    if (theirDoTrace != 0) {
-      // Already initialized in another thread.
-      return;
-    }
     // Set initially to no tracing.
     theirDoTrace = -1;
     // Get the file name.

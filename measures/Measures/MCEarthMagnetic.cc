@@ -85,12 +85,12 @@ uInt MCEarthMagnetic::ToRef_p[N_Routes][3] = {
   {MEarthMagnetic::J2000,		MEarthMagnetic::ICRS,		0} };
 uInt MCEarthMagnetic::
 FromTo_p[MEarthMagnetic::N_Types][MEarthMagnetic::N_Types];
-MutexedInit MCEarthMagnetic::theirMutexedInit (MCEarthMagnetic::doFillState);
+CallOnce0 MCEarthMagnetic::theirInitOnce;
 
 //# Constructors
 MCEarthMagnetic::MCEarthMagnetic() :
   MVPOS1(0), EFIELD(0), measMath() {
-    fillState();
+    theirInitOnce(doFillState);
 }
 
 //# Destructor
@@ -489,13 +489,13 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
 }
 
 String MCEarthMagnetic::showState() {
-  fillState();
+  theirInitOnce(doFillState);
   return MCBase::showState(MCEarthMagnetic::FromTo_p[0],
 			   MEarthMagnetic::N_Types, MCEarthMagnetic::N_Routes,
 			   MCEarthMagnetic::ToRef_p);
 }
 
-void MCEarthMagnetic::doFillState (void*) {
+void MCEarthMagnetic::doFillState() {
   MEarthMagnetic::checkMyTypes();
   MCBase::makeState(FromTo_p[0], MEarthMagnetic::N_Types, N_Routes, ToRef_p);
 }

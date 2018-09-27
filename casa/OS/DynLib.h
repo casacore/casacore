@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
 
     // Load the dynamic library. It is tried with prefixes <src>prefix</src>
-    // and "lib" (in that oder) and with suffix ".so" or ".dylib" (for Apple).
+    // and "lib" (in that order) and with suffix ".so" or ".dylib" (for Apple).
     // No library version number is used.
     // If not loaded successfully, an exception is thrown.
     // <br>If a non-empty funcName is given, that function is looked up and

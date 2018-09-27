@@ -69,11 +69,11 @@ int main() {
             fitsfile = datadir + "regression/unittest/uvfits/casa_4.6_vla.uvfits";
             String msfile = "rotated_positions.ms";
             removeIfNecessary(msfile);
-            SHARED_PTR<MSFitsInput> reader(new MSFitsInput(msfile, fitsfile));
+            std::shared_ptr<MSFitsInput> reader(new MSFitsInput(msfile, fitsfile));
             reader->rotateAntennaPositions(True);
             reader->readFitsFile();
             MeasurementSet ms(msfile);
-            SHARED_PTR<MSMetaData> md(new MSMetaData(&ms, 50));
+            std::shared_ptr<MSMetaData> md(new MSMetaData(&ms, 50));
             vector<MPosition> pos = md->getAntennaPositions(vector<uInt>(1, 0));
             Vector<Double> expec(3);
             expec[0] = -1601145.65187839;

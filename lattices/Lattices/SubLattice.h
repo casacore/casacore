@@ -339,10 +339,8 @@ private:
 };
 
 //# Declare extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class SubLattice<Bool>;
   extern template class SubLattice<Float>;
-#endif
 
 
 } //# NAMESPACE CASACORE - END

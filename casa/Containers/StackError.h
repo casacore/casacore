@@ -40,7 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class EmptyStackError : public AipsError {
 public:
   EmptyStackError(const char *msg = 0,Category c=BOUNDARY);      // normal constructor
-  ~EmptyStackError () throw();
+  ~EmptyStackError () noexcept;
 };
 
 
