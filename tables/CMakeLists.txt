@@ -187,15 +187,27 @@ ${BISON_TableGram_OUTPUTS}
 ${FLEX_TableGram_OUTPUTS}
 )
 
+target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS})
+
 if(MPI_FOUND)
     add_definitions(-DOMPI_SKIP_MPICXX -DMPICH_SKIP_MPICXX)
     target_compile_definitions(casa_tables PRIVATE HAVE_MPI)
-    target_link_libraries(casa_tables casa_casa ${CASACORE_ARCH_LIBS} MPI::MPI_C)
-else()
-    target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS})
-endif()
-
-
+    target_link_libraries(casa_tables MPI::MPI_C)
+    if(ADIOS2_FOUND)
+        target_sources(casa_tables PRIVATE
+            DataMan/Adios2StMan.cc
+            DataMan/Adios2StManColumn.cc
+            )
+        target_compile_definitions(casa_tables PRIVATE HAVE_ADIOS2)
+        target_include_directories(casa_tables PRIVATE ${ADIOS2_INCLUDE_DIRS})
+        target_link_libraries(casa_tables ${ADIOS2_LIBRARIES})
+        install (FILES
+            DataMan/Adios2StMan.h
+            DataMan/Adios2StManColumn.h
+            DESTINATION include/casacore/tables/DataMan
+            )
+    endif(ADIOS2_FOUND)
+endif(MPI_FOUND)
 
 add_subdirectory (apps)
 
