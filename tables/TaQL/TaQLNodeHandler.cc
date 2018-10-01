@@ -107,7 +107,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       break;
     case TaQLConstNodeRep::CTTime:
       expr = TableExprNode(node.itsTValue);
-      expr.useUnit ("d");
       break;
     }
     if (! node.getUnit().empty()) {

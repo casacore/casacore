@@ -226,9 +226,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MArray<T> TEFMASKrepl (const MArray<T>& arr, const TENShPtr& operand2,
                          const TableExprId& id, Bool maskValue)
   {
-    if (!arr.hasMask()) {
-      return arr;
-    }
     MArray<T> res(arr);
     MArray<T> arr2;
     T val2;
@@ -251,17 +248,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       data2 = arr2.array().getStorage (del2);
       incr2 = 1;
     }
-    data1 = res.array().getStorage (del1);
-    mask1 = arr.mask().getStorage (delm);
-    for (size_t i=0; i<arr.size(); ++i, data2+=incr2) {
-      if (mask1[i] == maskValue) {
-        data1[i] = *data2;
+    if (!arr.hasMask()) {
+      if (!maskValue) {
+        if (incr2 == 0) {
+          res.array() = val2;
+        } else {
+          res.array() = arr2.array();
+        }
       }
-    }
-    res.array().putStorage (data1, del1);
-    arr.mask().freeStorage (mask1, delm);
-    if (incr2 > 0) {
-      arr2.array().freeStorage (data2, del2);
+    } else {
+      data1 = res.array().getStorage (del1);
+      mask1 = arr.mask().getStorage (delm);
+      for (size_t i=0; i<arr.size(); ++i, data2+=incr2) {
+        if (mask1[i] == maskValue) {
+          data1[i] = *data2;
+        }
+      }
+      res.array().putStorage (data1, del1);
+      arr.mask().freeStorage (mask1, delm);
+      if (incr2 > 0) {
+        arr2.array().freeStorage (data2, del2);
+      }
     }
     return res;
   }
@@ -614,6 +621,30 @@ IPosition TableExprFuncNodeArray::adjustShape (const IPosition& shape,
     }
   }
   return shp;
+}
+
+MArray<Double> TableExprFuncNodeArray::angdistx (const MArray<Double>& a1,
+                                                 const MArray<Double>& a2) const
+{
+  Array<Double>::const_iterator end1 = a1.array().end();
+  Array<Double>::const_iterator end2 = a2.array().end();
+  Array<Double> result(IPosition(2, a1.size()/2, a2.size()/2));
+  Double* res = result.data();
+  for (Array<Double>::const_iterator p2 = a2.array().begin();
+       p2!=end2; ++p2) {
+    Double ra2     = *p2;
+    ++p2;
+    Double sindec2 = sin(*p2);
+    Double cosdec2 = cos(*p2);
+    for (Array<Double>::const_iterator p1 = a1.array().begin();
+         p1!=end1; ++p1) {
+      Double ra1 = *p1;
+      ++p1;
+      *res++ = acos (sin(*p1)*sindec2 + cos(*p1)*cosdec2*cos(ra1-ra2));
+    }
+  }
+  /// deal with possible mask
+  return MArray<Double>(result);
 }
 
 
@@ -1751,52 +1782,53 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
       {
         MArray<Double> a1 = operands()[0]->getArrayDouble(id);
         MArray<Double> a2 = operands()[1]->getArrayDouble(id);
+        if (!(a1.size() %2 == 0  &&  a2.size() %2 == 0)) {
+          throw TableInvExpr ("Arguments of angdist function must have a "
+                              "multiple of 2 values");
+        }
         // Treat an array of size 2 as scalar, so allow scalar-array operations
         // which is handled by angdistxFUNC.
-        if (a1.size() != 2  &&  a2.size() != 2) {
-          if (a1.size() != a2.size()) {
-            throw TableInvExpr ("Arguments of angdist function must have "
-                                "equal length");
+        if (a1.size() == 2  ||  a2.size() == 2) {
+          return angdistx (a1, a2);
+        }
+        if (a1.size() != a2.size()) {
+          throw TableInvExpr ("Arguments of angdist function must have "
+                              "equal length");
+        }
+        Array<Double> result(IPosition(1, a1.size()/2));
+        Double* res = result.data();
+        Array<Double>::const_iterator p2   = a2.array().begin();
+        Array<Double>::const_iterator end1 = a1.array().end();
+        for (Array<Double>::const_iterator p1 = a1.array().begin();
+             p1!=end1; ++p1) {
+          Double ra1 = *p1;
+          ++p1;
+          Double ra2 = *p2;
+          ++p2;
+          *res++ = acos (sin(*p1)*sin(*p2) + cos(*p1)*cos(*p2)*cos(ra1-ra2));
+          ++p2;
+        }
+        // Reduce possible masks by combining every 2 values.
+        Array<Bool> mask;
+        if (a1.hasMask()) {
+          partialArrayMath (mask,
+                            a1.mask().reform(IPosition(2, 2, a1.size()/2)),
+                            IPosition(1,0),
+                            AnyFunc<Bool>());
+        }
+        if (a2.hasMask()) {
+          Array<Bool> mask2;
+          partialArrayMath (mask2,
+                            a2.mask().reform(IPosition(2, 2, a2.size()/2)),
+                            IPosition(1,0),
+                            AnyFunc<Bool>());
+          if (mask.empty()) {
+            mask.reference (mask2);
+          } else {
+            mask.reference (mask || mask2);
           }
-          if (a1.size() %2 != 0) {
-            throw TableInvExpr ("Arguments of angdist function must have a "
-                                "multiple of 2 values");
-          }
-          Array<Double> result(IPosition(1, a1.size()/2));
-          Double* res = result.data();
-          Array<Double>::const_iterator p2   = a2.array().begin();
-          Array<Double>::const_iterator end1 = a1.array().end();
-          for (Array<Double>::const_iterator p1 = a1.array().begin();
-               p1!=end1; ++p1) {
-            Double ra1 = *p1;
-            ++p1;
-            Double ra2 = *p2;
-            ++p2;
-            *res++ = acos (sin(*p1)*sin(*p2) + cos(*p1)*cos(*p2)*cos(ra1-ra2));
-            ++p2;
-          }
-          // Reduce possible masks by combining every 2 values.
-          Array<Bool> mask;
-          if (a1.hasMask()) {
-            partialArrayMath (mask,
-                              a1.mask().reform(IPosition(2, 2, a1.size()/2)),
-                              IPosition(1,0),
-                              AnyFunc<Bool>());
-          }
-          if (a2.hasMask()) {
-            Array<Bool> mask2;
-            partialArrayMath (mask2,
-                              a2.mask().reform(IPosition(2, 2, a2.size()/2)),
-                              IPosition(1,0),
-                              AnyFunc<Bool>());
-            if (mask.empty()) {
-              mask.reference (mask2);
-            } else {
-              mask.reference (mask || mask2);
-            }
-          }
-          return MArray<Double> (result, mask);
-        }  // fall through if either array has size 2
+        }
+        return MArray<Double> (result, mask);
       }
     case TableExprFuncNode::angdistxFUNC:
       {
@@ -1806,25 +1838,8 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
           throw TableInvExpr ("Arguments of angdistx function must have a "
                               "multiple of 2 values");
         }
-        Array<Double>::const_iterator end1 = a1.array().end();
-        Array<Double>::const_iterator end2 = a2.array().end();
-        Array<Double> result(IPosition(2, a1.size()/2, a2.size()/2));
-        Double* res = result.data();
-        for (Array<Double>::const_iterator p2 = a2.array().begin();
-             p2!=end2; ++p2) {
-          Double ra2     = *p2;
-          ++p2;
-          Double sindec2 = sin(*p2);
-          Double cosdec2 = cos(*p2);
-          for (Array<Double>::const_iterator p1 = a1.array().begin();
-               p1!=end1; ++p1) {
-            Double ra1 = *p1;
-            ++p1;
-            *res++ = acos (sin(*p1)*sindec2 + cos(*p1)*cosdec2*cos(ra1-ra2));
-          }
-        }
-        /// deal with possible mask
-        return MArray<Double>(result);
+        return angdistx (a1, a2);
+
       }
     case TableExprFuncNode::datetimeFUNC:
     case TableExprFuncNode::mjdtodateFUNC:

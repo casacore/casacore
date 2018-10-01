@@ -55,7 +55,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
     {
       Array<double> srcArr  = operands()[0]->getArrayDouble(id).array();
       if (srcArr.nelements() != 2) {
-	throw TableInvExpr("First ANYCONE argument must have 2 values");
+	throw TableInvExpr("First ANYCONE argument must have multiple of 2 values");
       }
       Array<double> coneArr = operands()[1]->getArrayDouble(id).array();
       if (coneArr.nelements() % 3 != 0) {
@@ -86,7 +86,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
     {
       Array<double> srcArr  = operands_p[0]->getArrayDouble(id).array();
       if (srcArr.nelements() != 2) {
-	throw TableInvExpr("First CONES argument must have 2 values");
+	throw TableInvExpr("First CONES argument must have multiple of 2 values");
       }
       Array<double> coneArr = operands_p[1]->getArrayDouble(id).array();
       if (coneArr.nelements() != 3) {
@@ -111,7 +111,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
     {
       Array<double> srcArr  = operands()[0]->getArrayDouble(id).array();
       if (srcArr.nelements() != 2) {
-	throw TableInvExpr("First ANYCONE argument must have 2 values");
+	throw TableInvExpr("First ANYCONE argument must have multiple of 2 values");
       }
       Array<double> coneArr = operands()[1]->getArrayDouble(id).array();
       if (coneArr.nelements() % 2 != 0) {
@@ -165,7 +165,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
       Array<double> srcArr  = operands()[0]->getArrayDouble(id).array();
       if (srcArr.nelements() != 2) {
 	throw TableInvExpr("First CONES argument "
-			   "must have 2 values");
+			   "must have multiple of 2 values");
       }
       Array<double> coneArr = operands()[1]->getArrayDouble(id).array();
       if (coneArr.nelements() % 2 != 0) {
@@ -201,7 +201,7 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
       Array<double> srcArr  = operands()[0]->getArrayDouble(id).array();
       if (srcArr.nelements() != 2) {
 	throw TableInvExpr("First FINDCONE argument "
-			   "must have 2 values");
+			   "must have multiple of 2 values");
       }
       Array<double> coneArr = operands()[1]->getArrayDouble(id).array();
       if (coneArr.nelements() % 3 != 0) {
@@ -233,7 +233,7 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
       Array<double> srcArr  = operands()[0]->getArrayDouble(id).array();
       if (srcArr.nelements() != 2) {
 	throw TableInvExpr("First FINDCONE argument "
-			   "must have 2 values");
+			   "must have multiple 2 values");
       }
       Array<double> coneArr = operands()[1]->getArrayDouble(id).array();
       if (coneArr.nelements() % 2 != 0) {
@@ -283,7 +283,7 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
       return res;
     }
   default:
-    throw (TableInvExpr ("TableExprConeNode::getDouble, "
+    throw (TableInvExpr ("TableExprConeNode::getInt, "
 			 "unknown function"));
   }
   return 0;
@@ -426,7 +426,7 @@ MArray<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
   case TableExprFuncNode::cones3FUNC:
     {
       Array<double> srcArr  = operands()[0]->getArrayDouble(id).array();
-      if (srcArr.nelements() != 2) {
+      if (srcArr.nelements() % 2 != 0) {
 	throw TableInvExpr("First CONES3 argument "
 			   "must have multiple of 2 values");
       }
@@ -549,15 +549,14 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
       }
       // Radius can be a single value or an array.
       int nrrad = 1;
-      double radval;
-      const double* rad = 0;
       Array<double> radArr;
       if ( operands()[2]->valueType() == VTArray) {
 	radArr = operands()[2]->getArrayDouble(id).array();
 	nrrad = radArr.nelements();
       } else {
-	radval = operands()[2]->getDouble(id);
-	rad = &radval;
+        radArr.resize(IPosition(1,1));
+	radArr.data()[0] = operands()[2]->getDouble(id);
+        nrrad = 1;
       }
       // The result shape is the source array shape.
       IPosition shpc = srcArr.shape();
@@ -571,9 +570,7 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
       Bool deleteSrc, deleteCone, deleteRad;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
-      if (rad != &radval) {
-	rad = radArr.getStorage (deleteRad);
-      }
+      const double* rad = radArr.getStorage (deleteRad);
       Array<Int64> resArr(shp);
       Int64* res = resArr.data();
       for (uInt j=0; j<srcArr.nelements(); j+=2) {
@@ -583,11 +580,10 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
 	for (uInt i=0; i<coneArr.nelements(); i+=2) {
 	  const double raCone  = cone[i];
 	  const double decCone = cone[i+1];
-	  const double radius  = cone[i+2];
 	  double dist = sin(decCone) * sin(dec) +
 	                cos(decCone) * cos(dec) * cos(raCone-ra);
 	  for (Int k=0; k<nrrad; k++) {
-	    if (cos(radius) <= dist) {
+	    if (cos(rad[k]) <= dist) {
 	      *res = origin_p + k + nrrad*i/2;
 	      break;
 	    }
@@ -598,13 +594,11 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
       }
       srcArr.freeStorage (src, deleteSrc);
       coneArr.freeStorage (cone, deleteCone);
-      if (rad != &radval) {
-	radArr.freeStorage (rad, deleteRad);
-      }
+      radArr.freeStorage (rad, deleteRad);
       return MArray<Int64>(resArr);
     }
   default:
-    throw (TableInvExpr ("TableExprConeNodeArray::getArrayDouble, "
+    throw (TableInvExpr ("TableExprConeNodeArray::getArrayInt, "
 			 "unknown function"));
   }
 }

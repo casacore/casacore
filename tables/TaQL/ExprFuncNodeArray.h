@@ -154,9 +154,13 @@ private:
     IPosition adjustShape (const IPosition& shape,
                            const IPosition& origShape) const;
   
-    // Templated fucntion to resize/expand an array.
+    // Templated function to resize/expand an array.
     template<typename T>
     MArray<T> TEFResize (const MArray<T>& arr, const TableExprId& id);
+
+    // The angular distance between each pair of the arguments.
+    MArray<Double> angdistx (const MArray<Double>& a1,
+                             const MArray<Double>& a2) const;
 
 
     //# Data members

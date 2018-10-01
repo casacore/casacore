@@ -980,6 +980,7 @@ String TableExprFuncNode::getString (const TableExprId& id)
         Int64 st = operands_p[1]->getInt (id);
         if (st < 0) st += str.size();
         if (st < 0) st = 0;
+        if (st > Int64(str.size())) st = str.size();
         Int64 sz = String::npos;
         if (operands_p.size() > 2) {
           sz = std::max (Int64(0), operands_p[2]->getInt (id));
@@ -1609,7 +1610,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
           if (nodes[i]->valueType() != VTScalar
               ||  nodes[i]->dataType() != NTInt) {
             throw TableInvExpr ("2nd and optional 3rd argument of function "
-                                " SUBSTR have to be integer scalars");
+                                "SUBSTR have to be integer scalars");
           }
         }
 	dtypeOper.resize (nodes.size());
@@ -1626,7 +1627,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
             ||  (nodes[1]->dataType() != NTString  &&
                  nodes[1]->dataType() != NTRegex)) {
           throw TableInvExpr ("2nd argument of function REPLACE "
-                              "has to be a string or regex scalar");
+                              "has to be a string or regex");
         }
         if (nodes.size() == 3) {
           if (nodes[2]->valueType() != VTScalar
@@ -1696,7 +1697,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
                nodes[1]->dataType() != NTInt)  ||
               nodes[1]->valueType() != VTScalar) {
             throw TableInvExpr ("2nd argument of function STRING "
-                                "has to be a scalar string or int value");
+                                "has to be a scalar string or real value");
           }
         }
 	dtypeOper.resize (nodes.size());
@@ -1778,6 +1779,10 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	vector<TENShPtr> nodeTol(1);
 	nodeTol[0] = nodes[2];
 	checkDT (dtypeOper, NTReal, NTBool, nodeTol);
+	if (nodes[2]->valueType() != VTScalar) {
+	    throw TableInvExpr ("3rd argument of function NEAR and NEARABS "
+				"has to be a scalar");
+	}
 	return checkDT (dtypeOper, NTNumeric, NTBool, nodes);
     }
     case powFUNC:
@@ -1816,7 +1821,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	checkDT (dtypeTmp, NTBool, NTBool, nodeCond);
 	dtypeOper.resize(3);
 	dtypeOper[0] = dtypeTmp[0];
-	NodeDataType dt = checkDT (dtypeTmp, NTAny, NTAny, nodeArg);
+        // Do not allow automatic conversion to date/time.
+	NodeDataType dt = checkDT (dtypeTmp, NTAny, NTAny, nodeArg, False);
 	dtypeOper[1] = dtypeTmp[0];
 	dtypeOper[2] = dtypeTmp[1];
 	return dt;

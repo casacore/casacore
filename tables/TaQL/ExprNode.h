@@ -1014,7 +1014,8 @@ public:
     Bool     getBool     (const TableExprId& id) const;
     Int64    getInt      (const TableExprId& id) const;
     Double   getDouble   (const TableExprId& id) const;
-    DComplex getDComplex (const TableExprId& id) const;
+    DComplex getDComplex (const TableExprId& id) const; 
+    MVTime   getDate     (const TableExprId& id) const;
     String   getString   (const TableExprId& id) const;
     Array<Bool>     getArrayBool     (const TableExprId& id) const;
     Array<Int64>    getArrayInt      (const TableExprId& id) const;
@@ -1275,6 +1276,8 @@ inline Double TableExprNode::getDouble (const TableExprId& id) const
     { return node_p->getDouble (id); }
 inline DComplex TableExprNode::getDComplex (const TableExprId& id) const
     { return node_p->getDComplex (id); }
+inline MVTime TableExprNode::getDate (const TableExprId& id) const
+    { return node_p->getDate (id); }
 inline String TableExprNode::getString (const TableExprId& id) const
     { return node_p->getString (id); }
 inline Array<Bool> TableExprNode::getArrayBool (const TableExprId& id) const

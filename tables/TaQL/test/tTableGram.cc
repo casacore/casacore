@@ -291,6 +291,13 @@ void showExpr(const TableExprNode& expr)
 	  cout << arr.array();
 	  break;
 	}
+      case TpInt:
+	{
+	  MArray<Int64> arr;
+	  expr.get (i, arr);
+	  cout << arr.array();
+	  break;
+	}
       case TpDouble:
 	{
 	  MArray<Double> arr;
