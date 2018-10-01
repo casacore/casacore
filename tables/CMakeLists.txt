@@ -200,7 +200,7 @@ if(MPI_FOUND)
             )
         target_compile_definitions(casa_tables PRIVATE HAVE_ADIOS2)
         target_include_directories(casa_tables PRIVATE ${ADIOS2_INCLUDE_DIRS})
-        target_link_libraries(casa_tables ${ADIOS2_LIBRARIES})
+        target_link_libraries(casa_tables ${ADIOS2_LIBRARIES} MPI::MPI_C)
         install (FILES
             DataMan/Adios2StMan.h
             DataMan/Adios2StManColumn.h

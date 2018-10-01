@@ -52,6 +52,11 @@
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/stdio.h>                     // for sprintf
 
+#ifdef HAVE_MPI
+#ifdef HAVE_ADIOS2
+#include <casacore/tables/DataMan/Adios2StMan.h>
+#endif
+#endif
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -175,7 +180,7 @@ void DataManager::checkDataType (const DataManagerColumn* colPtr,
 {
     if (dataType != colPtr->dataType()) {
 	throw (DataManInvDT ("Column " + columnName +
-                             " has data type " + 
+                             " has data type " +
                              String::toString(colPtr->dataTypeId()) +
                              "; expected " + String::toString(dataTypeId)));
     }
@@ -206,7 +211,7 @@ Bool DataManager::canReallocateColumns() const
     { return False; }
 DataManagerColumn* DataManager::reallocateColumn (DataManagerColumn* column)
     { return column; }
-    
+
 
 
 //# Compose the keyword name from the given name appended with the
@@ -339,7 +344,7 @@ DataManagerCtor DataManager::getCtor (const String& type)
 DataManager* DataManager::unknownDataManager (const String& type,
 					      const Record&)
 {
-    throw DataManUnknownCtor ("Data Manager class " + type + 
+    throw DataManUnknownCtor ("Data Manager class " + type +
                               " is not registered\n"
                               "  Check (DY)LD_LIBRARY_PATH matches the"
                               " libraries used during the build of "
@@ -590,6 +595,11 @@ void DataManager::doRegisterMainCtor (void*)
   unlockedRegisterCtor ("TiledColumnStMan", TiledColumnStMan::makeObject);
   unlockedRegisterCtor ("TiledShapeStMan", TiledShapeStMan::makeObject);
   unlockedRegisterCtor ("MemoryStMan", MemoryStMan::makeObject);
+#ifdef HAVE_MPI
+#ifdef HAVE_ADIOS2
+  unlockedRegisterCtor ("Adios2StMan", Adios2StMan::makeObject);
+#endif
+#endif
   unlockedRegisterCtor (CompressFloat::className(),
                         CompressFloat::makeObject);
   unlockedRegisterCtor (CompressComplex::className(),
