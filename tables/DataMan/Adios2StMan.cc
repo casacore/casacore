@@ -173,7 +173,7 @@ void Adios2StMan::addRow(uInt /*aNrRows*/) {}
 void Adios2StMan::create(uInt aNrRows)
 {
     itsOpenMode = 'w';
-    itsNrRows = aNrRows;
+    itsRows = aNrRows;
     itsAdiosEngine = std::make_shared<adios2::Engine>(
         itsAdiosIO->Open(fileName(), adios2::Mode::Write));
     for (uInt i = 0; i < ncolumn(); ++i)
@@ -186,7 +186,7 @@ void Adios2StMan::create(uInt aNrRows)
 void Adios2StMan::open(uInt aNrRows, AipsIO &ios)
 {
     itsOpenMode = 'r';
-    itsNrRows = aNrRows;
+    itsRows = aNrRows;
     itsAdiosEngine = std::make_shared<adios2::Engine>(
         itsAdiosIO->Open(fileName(), adios2::Mode::Read));
     for (uInt i = 0; i < ncolumn(); ++i)
@@ -199,7 +199,7 @@ void Adios2StMan::open(uInt aNrRows, AipsIO &ios)
     ios >> itsDataManName;
     ios >> itsStManColumnType;
     ios.getend();
-    itsNrRows = aNrRows;
+    itsRows = aNrRows;
 }
 
 void Adios2StMan::deleteManager() {}
@@ -289,7 +289,7 @@ DataManagerColumn *Adios2StMan::makeColumnCommon(const String &name,
     return aColumn;
 }
 
-uInt Adios2StMan::getNrRows() { return itsNrRows; }
+uInt Adios2StMan::getNrRows() { return itsRows; }
 
 void Adios2StMan::resync(uInt /*aNrRows*/) {}
 

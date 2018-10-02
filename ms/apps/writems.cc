@@ -76,6 +76,12 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
+#ifdef HAVE_MPI
+#ifdef HAVE_ADIOS2
+#include <casacore/tables/DataMan/Adios2StMan.h>
+#endif
+#endif
+
 #include <casacore/casa/HDF5/HDF5File.h>
 #include <casacore/casa/HDF5/HDF5Group.h>
 #include <casacore/casa/HDF5/HDF5Record.h>
@@ -147,6 +153,41 @@ struct HDF5MetaData
   {}
 };
 
+// Define the global variables shared between the main functions.
+vector<double> myRa;
+vector<double> myDec;
+Matrix<double> myAntPos;
+bool   myCalcUVW;
+bool   myWriteAutoCorr;
+bool   myWriteFloatData;
+bool   myWriteWeightSpectrum;
+bool   myCreateImagerColumns;
+bool   myWriteRowWise;
+bool   myDoSinglePart;
+int    myNPart;
+int    myTotalNBand;
+int    myFirstBand;
+int    myNBand;
+Vector<int> myNPol;
+Vector<int> myNChan;
+int    myNTime;
+int    myNTimeField;
+int    myTileSizePol;
+int    myTileSizeFreq;
+int    myTileSize;     //# in bytes
+int    myNFlagBits;
+Vector<double> myStartFreq;
+Vector<double> myStepFreq;
+double myStartTime;
+double myStepTime;
+String myMsName;
+String myAntennaTableName;
+String myFlagColumn;
+int    myUseMultiFile;      //# 0=not 1=multifile 2=multihdf5
+int    myMultiBlockSize;    //# in bytes
+bool   myWriteHDF5;
+bool   myUseAdios2;
+
 
 // <synopsis>
 // Class for creating and filling one or more MeasurementSets.
@@ -160,7 +201,7 @@ class MSCreate
 {
 public:
   MSCreate();
-  
+
   // Initialize and construct the MS with a given name.
   // The timeStep (in sec) is used by the write function
   // to calculate the time from the starting time and the timeCounter.
@@ -230,7 +271,7 @@ public:
 
   // Flush and fsync the MS.
   virtual void flush() = 0;
-  
+
   // Return the nr of rows in the MS.
   virtual Int64 nrow() const = 0;
 
@@ -239,7 +280,7 @@ public:
 
   // Get the number of baselines.
   int nbaselines() const;
-  
+
 private:
   // Forbid copy constructor and assignment by making them private.
   // <group>
@@ -314,14 +355,14 @@ public:
   // Flush and fsync the MS.
   virtual void flush()
     { itsMS.flush(True); }
-  
+
   // Return the nr of rows in the MS.
   virtual Int64 nrow() const
     { return itsMS.nrow(); }
 
   // Show the cache statistics.
   virtual void showCacheStatistics() const;
-  
+
 private:
   // Forbid copy constructor and assignment by making them private.
   // <group>
@@ -402,13 +443,13 @@ public:
 
   // Flush and fsync the MS.
   virtual void flush();
-  
+
   // Return the nr of rows in the MS.
   virtual Int64 nrow() const;
 
   // Show the cache statistics.
   virtual void showCacheStatistics() const;
-  
+
 private:
   // Forbid copy constructor and assignment by making them private.
   // <group>
@@ -527,7 +568,7 @@ void MSCreate::init (const vector<double>& ra,
     itsPhaseDir[i] = MDirection(radec, MDirection::J2000);
   }
   // Create the MS.
-  createMS (msName, ntimeField, useMultiFile, multiBlockSize, 
+  createMS (msName, ntimeField, useMultiFile, multiBlockSize,
             createImagerColumns, flagColumn, nflagBits);
   // Fill the baseline vector for each antenna pair.
   fillBaseLines (antPos);
@@ -694,78 +735,89 @@ void MSCreateCasa::createMS (const String& msName, int ntimeField,
     stopt = StorageOption (StorageOption::MultiHDF5, multiBlockSize);
   }
   SetupNewTable newTab(msName, td, Table::New, stopt);
-  IncrementalStMan incrStMan("ISMData", ts);
-  newTab.bindAll (incrStMan);
-  StandardStMan stanStMan("SSMData", ts);
-  newTab.bindColumn(MS::columnName(MS::TIME), stanStMan);
-  newTab.bindColumn(MS::columnName(MS::TIME_CENTROID), stanStMan);
-  newTab.bindColumn(MS::columnName(MS::ANTENNA1), stanStMan);
-  newTab.bindColumn(MS::columnName(MS::ANTENNA2), stanStMan);
-  newTab.bindColumn(MS::columnName(MS::DATA_DESC_ID), stanStMan);
-  newTab.bindColumn(MS::columnName(MS::FIELD_ID), stanStMan);
-  newTab.bindColumn(MS::columnName(MS::UVW), stanStMan);
-  // Use a TiledColumnStMan or TiledShapeStMan for the data and flags.
-  if (itsNSpw == 1) {
-    TiledColumnStMan tiledData("TiledData", itsDataTileShape);
-    if (itsWriteFloatData) {
-      newTab.bindColumn(MS::columnName(MS::FLOAT_DATA), tiledData);
-    } else {
-      newTab.bindColumn(MS::columnName(MS::DATA), tiledData);
-    }
-  } else {
-    TiledShapeStMan tiledData("TiledData", itsDataTileShape);
-    if (itsWriteFloatData) {
-      newTab.bindColumn(MS::columnName(MS::FLOAT_DATA), tiledData);
-    } else {
-      newTab.bindColumn(MS::columnName(MS::DATA), tiledData);
-    }
+  if(myUseAdios2){
+#ifdef HAVE_ADIOS2
+    Adios2StMan a2man;
+    newTab.bindAll (a2man);
+#else
+    throw(std::runtime_error("ADIOS 2 is not built."));
+#endif
   }
-  // Create the FLAG column.
-  // Only needed if bit flags engine is not used.
-  String dmName = "TiledFlag";
-  if (nflagBits <= 1) {
-    IPosition tileShape(itsDataTileShape);
-    tileShape[2] *= 8;
+  else{
+    IncrementalStMan incrStMan("ISMData", ts);
+    newTab.bindAll (incrStMan);
+    StandardStMan stanStMan("SSMData", ts);
+    newTab.bindColumn(MS::columnName(MS::TIME), stanStMan);
+    newTab.bindColumn(MS::columnName(MS::TIME_CENTROID), stanStMan);
+    newTab.bindColumn(MS::columnName(MS::ANTENNA1), stanStMan);
+    newTab.bindColumn(MS::columnName(MS::ANTENNA2), stanStMan);
+    newTab.bindColumn(MS::columnName(MS::DATA_DESC_ID), stanStMan);
+    newTab.bindColumn(MS::columnName(MS::FIELD_ID), stanStMan);
+    newTab.bindColumn(MS::columnName(MS::UVW), stanStMan);
+    // Use a TiledColumnStMan or TiledShapeStMan for the data and flags.
     if (itsNSpw == 1) {
-      TiledColumnStMan tiledFlag(dmName, tileShape);
-      newTab.bindColumn(MS::columnName(MS::FLAG), tiledFlag);
-    } else {
-      TiledShapeStMan tiledFlag(dmName, tileShape);
-      newTab.bindColumn(MS::columnName(MS::FLAG), tiledFlag);
-    }
-    dmName = "TiledFlagBits";
-  } else {
-    // Create the flag bits column.
-    if (itsNSpw == 1) {
-      TiledColumnStMan tiledFlagBits(dmName, itsDataTileShape);
-      newTab.bindColumn(flagColumn, tiledFlagBits);
-    } else {
-      TiledShapeStMan tiledFlagBits(dmName, itsDataTileShape);
-      newTab.bindColumn(flagColumn, tiledFlagBits);
-    }
-    if (nflagBits > 1) {
-      // Map the flag bits column to the FLAG column.
-      if (nflagBits == 8) {
-        BitFlagsEngine<uChar> fbe(MS::columnName(MS::FLAG), flagColumn);
-        newTab.bindColumn(MS::columnName(MS::FLAG), fbe);
-      } else if (nflagBits == 16) {
-        BitFlagsEngine<Short> fbe(MS::columnName(MS::FLAG), flagColumn);
-        newTab.bindColumn(MS::columnName(MS::FLAG), fbe);
+      TiledColumnStMan tiledData("TiledData", itsDataTileShape);
+      if (itsWriteFloatData) {
+        newTab.bindColumn(MS::columnName(MS::FLOAT_DATA), tiledData);
       } else {
-        BitFlagsEngine<Int> fbe(MS::columnName(MS::FLAG), flagColumn);
-        newTab.bindColumn(MS::columnName(MS::FLAG), fbe);
+        newTab.bindColumn(MS::columnName(MS::DATA), tiledData);
+      }
+    } else {
+      TiledShapeStMan tiledData("TiledData", itsDataTileShape);
+      if (itsWriteFloatData) {
+        newTab.bindColumn(MS::columnName(MS::FLOAT_DATA), tiledData);
+      } else {
+        newTab.bindColumn(MS::columnName(MS::DATA), tiledData);
+      }
+    }
+    // Create the FLAG column.
+    // Only needed if bit flags engine is not used.
+    String dmName = "TiledFlag";
+    if (nflagBits <= 1) {
+      IPosition tileShape(itsDataTileShape);
+      tileShape[2] *= 8;
+      if (itsNSpw == 1) {
+        TiledColumnStMan tiledFlag(dmName, tileShape);
+        newTab.bindColumn(MS::columnName(MS::FLAG), tiledFlag);
+      } else {
+        TiledShapeStMan tiledFlag(dmName, tileShape);
+        newTab.bindColumn(MS::columnName(MS::FLAG), tiledFlag);
+      }
+      dmName = "TiledFlagBits";
+    } else {
+      // Create the flag bits column.
+      if (itsNSpw == 1) {
+        TiledColumnStMan tiledFlagBits(dmName, itsDataTileShape);
+        newTab.bindColumn(flagColumn, tiledFlagBits);
+      } else {
+        TiledShapeStMan tiledFlagBits(dmName, itsDataTileShape);
+        newTab.bindColumn(flagColumn, tiledFlagBits);
+      }
+      if (nflagBits > 1) {
+        // Map the flag bits column to the FLAG column.
+        if (nflagBits == 8) {
+          BitFlagsEngine<uChar> fbe(MS::columnName(MS::FLAG), flagColumn);
+          newTab.bindColumn(MS::columnName(MS::FLAG), fbe);
+        } else if (nflagBits == 16) {
+          BitFlagsEngine<Short> fbe(MS::columnName(MS::FLAG), flagColumn);
+          newTab.bindColumn(MS::columnName(MS::FLAG), fbe);
+        } else {
+          BitFlagsEngine<Int> fbe(MS::columnName(MS::FLAG), flagColumn);
+          newTab.bindColumn(MS::columnName(MS::FLAG), fbe);
+        }
+      }
+    }
+    if (itsWriteWeightSpectrum) {
+      if (itsNSpw == 1) {
+        TiledColumnStMan tiledWSpec("TiledWeightSpectrum", itsDataTileShape);
+        newTab.bindColumn(MS::columnName(MS::WEIGHT_SPECTRUM), tiledWSpec);
+      } else {
+        TiledShapeStMan tiledWSpec("TiledWeightSpectrum", itsDataTileShape);
+        newTab.bindColumn(MS::columnName(MS::WEIGHT_SPECTRUM), tiledWSpec);
       }
     }
   }
-  if (itsWriteWeightSpectrum) {
-    if (itsNSpw == 1) {
-      TiledColumnStMan tiledWSpec("TiledWeightSpectrum", itsDataTileShape);
-      newTab.bindColumn(MS::columnName(MS::WEIGHT_SPECTRUM), tiledWSpec);
-    } else {
-      TiledShapeStMan tiledWSpec("TiledWeightSpectrum", itsDataTileShape);
-      newTab.bindColumn(MS::columnName(MS::WEIGHT_SPECTRUM), tiledWSpec);
-    }
-  }
+
   // Create the MS and its subtables.
   // Get access to its columns.
   itsMS = MeasurementSet(newTab);
@@ -1216,7 +1268,7 @@ void MSCreateCasa::writeTimeStepRows (int band, int field,
       itsMSCol->flag().put(itsNrRow, defFlags);
       if (itsWriteWeightSpectrum) {
         itsMSCol->weightSpectrum().put(itsNrRow, weightSpectrum);
-      }            
+      }
       itsMSCol->time().put (itsNrRow, time);
       itsMSCol->timeCentroid().put (itsNrRow, time);
       itsMSCol->antenna1().put (itsNrRow, j);
@@ -1322,7 +1374,7 @@ void MSCreateCasa::addImagerColumns()
     Matrix<Int> selection(2, msSpW.nrow());
     // Fill in default selection (all bands and channels).
     selection.row(0) = 0;    //start
-    selection.row(1) = msSpW.numChan().getColumn(); 
+    selection.row(1) = msSpW.numChan().getColumn();
     ArrayColumn<Complex> mcd(itsMS, colName);
     mcd.rwKeywordSet().define ("CHANNEL_SELECTION",selection);
   }
@@ -1520,7 +1572,7 @@ void MSCreateHDF5::writeTimeStepSpw (int band, int field,
   itsSpws[band].flag->put (slicer3, Array<Bool>(shape3, False));
   if (itsWriteWeightSpectrum) {
     itsSpws[band].weightSpectrum->put (slicer3, Array<float>(shape3, 1));
-  }            
+  }
   itsSpws[band].metaData->put (slicer1, meta);
   // Increase nr of rows.
   itsNrRow += nrbasel;
@@ -1622,40 +1674,6 @@ Int64 MSCreateHDF5::nrow() const
 
 
 
-// Define the global variables shared between the main functions.
-vector<double> myRa;
-vector<double> myDec;
-Matrix<double> myAntPos;
-bool   myCalcUVW;
-bool   myWriteAutoCorr;
-bool   myWriteFloatData;
-bool   myWriteWeightSpectrum;
-bool   myCreateImagerColumns;
-bool   myWriteRowWise;
-bool   myDoSinglePart;
-int    myNPart;
-int    myTotalNBand;
-int    myFirstBand;
-int    myNBand;
-Vector<int> myNPol;
-Vector<int> myNChan;
-int    myNTime;
-int    myNTimeField;
-int    myTileSizePol;
-int    myTileSizeFreq;
-int    myTileSize;     //# in bytes
-int    myNFlagBits;
-Vector<double> myStartFreq;
-Vector<double> myStepFreq;
-double myStartTime;
-double myStepTime;
-String myMsName;
-String myAntennaTableName;
-String myFlagColumn;
-int    myUseMultiFile;      //# 0=not 1=multifile 2=multihdf5
-int    myMultiBlockSize;    //# in bytes
-bool   myWriteHDF5;
-
 
 IPosition formTileShape (int tileSize, int tileNPol, int tileNFreq,
                          bool writeFloatData,
@@ -1735,7 +1753,7 @@ bool readParms (int argc, char* argv[])
                  "Start frequency (Hz) per spw (1 value counts on for other spws)",
                  "double");
   params.create ("chanwidth", "1 MHz",
-                 "Channel frequency width (Hz) per spw (1 value applies to all spws)", 
+                 "Channel frequency width (Hz) per spw (1 value applies to all spws)",
                  "double");
   params.create ("starttime", "",
                  "Start time (e.g., 23Mar2016/12:00:00)",
@@ -1811,6 +1829,9 @@ bool readParms (int argc, char* argv[])
                  "int");
   params.create ("ashdf5", "false",
                  "Write the data in HDF5 format",
+                 "bool");
+  params.create ("useadios2", "false",
+                 "Use Adios2StMan for all columns",
                  "bool");
   // Fill the input structure from the command line.
   params.readArguments (argc, argv);
@@ -1910,7 +1931,7 @@ bool readParms (int argc, char* argv[])
   if (myWriteFloatData) {
     myWriteAutoCorr = True;
   }
-  
+
   myCalcUVW             = params.getBool   ("calcuvw");
   myWriteWeightSpectrum = params.getBool   ("weightspectrum");
   myCreateImagerColumns = params.getBool   ("imagercolumns");
@@ -1925,6 +1946,7 @@ bool readParms (int argc, char* argv[])
   }
   myMultiBlockSize      = params.getInt    ("mfsize");
   myWriteHDF5           = params.getBool   ("ashdf5");
+  myUseAdios2           = params.getBool   ("useadios2");
   myFlagColumn          = params.getString ("flagcolumn");
   myNFlagBits           = params.getInt    ("nflagbits");
   // Get the station info from the given antenna table.
@@ -2081,6 +2103,9 @@ void doAll()
 
 int main (int argc, char** argv)
 {
+#ifdef HAVE_MPI
+    MPI_Init(0,0);
+#endif
   try {
     if (readParms (argc, argv)) {
       showParms();
@@ -2088,7 +2113,13 @@ int main (int argc, char** argv)
     }
   } catch (std::exception& ex) {
     cerr << "Unexpected exception in " << argv[0] << ": " << ex.what() << endl;
+#ifdef HAVE_MPI
+    MPI_Finalize();
+#endif
     return 1;
   }
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
