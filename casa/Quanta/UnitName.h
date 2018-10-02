@@ -38,14 +38,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Forward Declarations
-
-//# Constants
-// <note role=warning>
-// SUN compiler does not accept non-simple default arguments
-// </note>
-static const String EmptyString="";
-
 // <summary>
 // handles physical units
 // </summary>
@@ -78,13 +70,13 @@ static const String EmptyString="";
 // The UnitName class defines new basic, tagged units. If, e.g., for one
 // reason or another you want, in addition to the standard defined SI and
 // customary units, to define a unit with a name 'KPH' to stand for the
-// composite SI unit 'km/s', it can be done by creating a UnitName, and
+// composite SI unit 'km/hr', it can be done by creating a UnitName, and
 // mapping it to the UnitMap lists.
 // <note role=tip> The UnitMap::putUser can also be used without creating a UnitName
 // first
 // </note>
 // <srcblock>
-// UnitName myKPH( "KPH", UnitVal(3.6,"km/ks"));
+// UnitName myKPH( "KPH", UnitVal(3.6,"km/ks"));    // note ks = kilosecond
 // UnitMap::putUser(myKPH);
 // </srcblock>
 //
@@ -121,10 +113,6 @@ static const String EmptyString="";
 //
 //# // <motivation>
 //# // </motivation>
-//
-// <todo asof="941110">
-//   <li> Some inlining (did not work first go)
-// </todo>
 
 class UnitName {
 //# friends
@@ -141,9 +129,9 @@ public:
 
 // Construct from different parts
 // <group>
-    UnitName(const String &tag, const UnitVal &kind,
-	      const String &name = EmptyString);
-    UnitName(const Unit &tag, const String &name = EmptyString);
+    UnitName(const String &nameTag, const UnitVal &kind,
+             const String &fullName = String());
+    UnitName(const Unit &unit, const String &fullName = String());
 // </group>
 
 
@@ -156,13 +144,16 @@ public:
 
 //# General member functions
 // Get definition value of the unit
-    const UnitVal &getVal() const;
+    const UnitVal &getVal() const
+      { return basicKind; }
 
 // Get the name tag of the defined unit
-    const String &getName() const;
+    const String &getName() const
+      { return basicTag; }
 
 // Get the full name of the defined unit
-    const String &getFullName() const;
+    const String &getFullName() const
+      { return basicName; }
 
 private:
 //# Data members

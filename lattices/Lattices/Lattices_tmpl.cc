@@ -32,7 +32,6 @@
 #include <casacore/lattices/Lattices/SubLattice.h>
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
 namespace casacore {
   template class LatticeIterInterface<Float>;
   template class LatticeStatistics<Float>;
@@ -43,4 +42,3 @@ namespace casacore {
   template class SubLattice<Bool>;
   template class SubLattice<Float>;
 }
-#endif

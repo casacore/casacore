@@ -37,11 +37,7 @@
 #include <casacore/casa/Containers/Allocator.h>
 #include <cstddef>                  // for ptrdiff_t
 #include <algorithm> // for std:min/max
-#if __cplusplus < 201103L
-#include <cwchar>
-#else
 #include <type_traits>
-#endif
 
 //# For index checking
 #if defined(AIPS_ARRAY_INDEX_CHECK)
@@ -127,47 +123,6 @@ protected:
 
 template<typename T> class Block;
 
-#if __cplusplus < 201103L
-
-template<typename T>
-class Block_internal_IsFundamental {
-  template<typename U> friend class Block;
-  enum {value = 0};
-};
-
-template<typename T>
-class Block_internal_IsPointer {
-  template<typename U> friend class Block;
-  enum {value = 0};
-};
-
-#define CASA_TMP_939727(x) template<> class Block_internal_IsFundamental<x> { template<typename U> friend class Block; enum { value = 1 }; }
-CASA_TMP_939727(void);
-/*
-CASA_TMP_939727(char16_t);
-CASA_TMP_939727(char32_t);
-*/
-CASA_TMP_939727(bool);
-CASA_TMP_939727(wchar_t);
-CASA_TMP_939727(signed char);
-CASA_TMP_939727(unsigned char);
-CASA_TMP_939727(float);
-CASA_TMP_939727(double);
-CASA_TMP_939727(long double);
-#define CASA_TMP_939727_int(x) CASA_TMP_939727(x); CASA_TMP_939727(unsigned x)
-CASA_TMP_939727_int(int);
-CASA_TMP_939727_int(long int);
-CASA_TMP_939727_int(long long int);
-#undef CASA_TMP_939727_int
-#undef CASA_TMP_939727
-
-template<typename T>
-class Block_internal_IsPointer<T *> {
-  template<typename U> friend class Block;
-  enum { value = 1 };
-};
-
-#else // __cplusplus < 201103L
 
 template<typename T>
 class Block_internal_IsFundamental {
@@ -180,8 +135,6 @@ class Block_internal_IsPointer {
   template<typename U> friend class Block;
   static constexpr int value = static_cast<int>(std::is_pointer<T>::value);
 };
-
-#endif // __cplusplus < 201103L
 
 
 
@@ -894,7 +847,6 @@ public:
 
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class Block<Bool>;
   extern template class Block<Char>;
   extern template class Block<Short>;
@@ -908,7 +860,6 @@ public:
   extern template class Block<DComplex>;
   extern template class Block<String>;
   extern template class Block<void*>;
-#endif
 
 
 } //# NAMESPACE CASACORE - END

@@ -29,13 +29,21 @@
 #define CASA_REGISTER_TCC
 
 #include <casacore/casa/Utilities/Register.h>
+#include <casacore/casa/OS/Mutex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+static inline void RegisterHelper(uInt *typeId) {
+  *typeId = RegSequence::SgetNext();
+}
+
+// Could be done at compile-time, but take easy road to thread-safety, since custom RTTI has to go anyway.
 template<class t> uInt Register(const t *) {
-  static uInt type = 0;
-  if (!type) type = RegSequence::SgetNext();
-  return type;
+  static uInt typeId;
+  static CallOnce callOnce;
+  // None of the call once primitives deals with return values, so use a helper.
+  callOnce(RegisterHelper, &typeId);
+  return typeId;
 }
 
 } //# NAMESPACE CASACORE - END

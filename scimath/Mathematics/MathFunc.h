@@ -56,7 +56,7 @@ public:
     MathFuncError(const Char *m)   : AipsError(m) {}
     MathFuncError(const String &m) : AipsError(m) {}
 
-    virtual ~MathFuncError() throw() {}
+    virtual ~MathFuncError() noexcept {}
 };
 
 // <summary>

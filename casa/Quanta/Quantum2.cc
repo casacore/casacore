@@ -35,9 +35,8 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Define extern templates for often used types.
-#ifdef AIPS_CXX11
   template class Quantum<Double>;
-#endif
+
 
 istream &operator>> (istream &is, Quantity &ku)
 {

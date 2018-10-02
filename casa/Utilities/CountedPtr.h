@@ -29,20 +29,8 @@
 #define CASA_COUNTEDPTR_H
 
 #include <casacore/casa/aips.h>
-
-#if (defined(AIPS_CXX11) || (defined(__APPLE_CC__) && __APPLE_CC__ > 5621))
 #include <memory>
-#define SHARED_PTR std::shared_ptr
-#define DYNAMIC_POINTER_CAST std::dynamic_pointer_cast
-#define CONST_POINTER_CAST std::const_pointer_cast
-#define STATIC_POINTER_CAST std::static_pointer_cast
-#else
-#include <tr1/memory>
-#define SHARED_PTR std::tr1::shared_ptr
-#define DYNAMIC_POINTER_CAST std::tr1::dynamic_pointer_cast
-#define CONST_POINTER_CAST std::tr1::const_pointer_cast
-#define STATIC_POINTER_CAST std::tr1::static_pointer_cast
-#endif
+
 
 namespace casacore { //#Begin casa namespace
 
@@ -132,7 +120,7 @@ public:
     {}
 
     // Create from a shared_ptr.
-    CountedPtr (const SHARED_PTR<t>& rep)
+    CountedPtr (const std::shared_ptr<t>& rep)
       : pointerRep_p (rep)
     {}
 
@@ -223,13 +211,13 @@ public:
     // <group>
     template<typename U>
     CountedPtr<U> static_ptr_cast() const
-      { return CountedPtr<U> (STATIC_POINTER_CAST<U> (pointerRep_p)); }
+  { return CountedPtr<U> (std::static_pointer_cast<U> (pointerRep_p)); }
     template<typename U>
     CountedPtr<U> const_ptr_cast() const
-      { return CountedPtr<U> (CONST_POINTER_CAST<U> (pointerRep_p)); }
+  { return CountedPtr<U> (std::const_pointer_cast<U> (pointerRep_p)); }
     template<typename U>
     CountedPtr<U> dynamic_ptr_cast() const
-      { return CountedPtr<U> (DYNAMIC_POINTER_CAST<U> (pointerRep_p)); }
+  { return CountedPtr<U> (std::dynamic_pointer_cast<U> (pointerRep_p)); }
     // </group>
 
     // Sometimes it is useful to know if there is more than one
@@ -251,7 +239,7 @@ private:
     // Make all types of CountedPtr a friend for the templated operator=.
     template<typename TP> friend class CountedPtr;
 
-    typedef SHARED_PTR<t> PointerRep;
+    typedef std::shared_ptr<t> PointerRep;
 
     PointerRep pointerRep_p;
 };

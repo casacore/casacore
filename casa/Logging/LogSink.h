@@ -1,5 +1,5 @@
 //# LogSink.h: Distribute LogMessages to their destination(s)
-//# Copyright (C) 1996,2000,2001,2003
+//# Copyright (C) 1996,2000,2001,2003,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -246,7 +246,8 @@ public:
 
   // Get/set the global sink or check if the global sink is null. The global
   // sink defaults to using <src>cerr</src>. Generally applications code
-  // shouldn't change the global sink.
+  // shouldn't change the global sink. More so, calling globalSink(fromNew)
+  // while using the global sink is not thread-safe. And fromNew is set to 0.
   // <group>
   static LogSinkInterface &globalSink();
   static void globalSink (LogSinkInterface *&fromNew);
@@ -299,13 +300,13 @@ private:
   // Prepare for postThenThrow function.
   void preparePostThenThrow(const LogMessage &message, const AipsError& x) ;
 
-  // Create the global sink (attached to cerr).
+  // Create the global sink (attached to cerr). Always called using theirCallOnce.
   static void createGlobalSink();
 
   //# Data members.
   CountedPtr<LogSinkInterface> local_sink_p;
   static CountedPtr<LsiIntermediate> * global_sink_p;
-  static Mutex &theirMutex( );
+  static CallOnce0 theirCallOnce;
 
   // The following is a reference to the global sink. It is created to
   // ensure that the global sink is not destroyed before the last local

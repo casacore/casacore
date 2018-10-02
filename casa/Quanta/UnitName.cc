@@ -67,18 +67,6 @@ UnitName &UnitName::operator=(const UnitName &other) {
     return *this;
 }
 
-const UnitVal &UnitName::getVal() const {
-    return(basicKind);
-}
-
-const String &UnitName::getName() const {
-    return (basicTag);
-}
-
-const String &UnitName::getFullName() const {
-    return (basicName);
-}
-
 ostream& operator<< (ostream &os, const UnitName &name) {
     static String FillString("                                ");
     Int i=os.precision();

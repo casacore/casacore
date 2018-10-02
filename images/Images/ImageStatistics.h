@@ -179,7 +179,7 @@ private:
 
    LogIO os_p;
    const ImageInterface<T>* pInImage_p;
-   SHARED_PTR<const ImageInterface<T> > _inImPtrMgr;
+   std::shared_ptr<const ImageInterface<T> > _inImPtrMgr;
    IPosition blc_;
    Int precision_;
    Bool _showRobust, _recordMessages, _listStats;
@@ -258,9 +258,7 @@ public:
 };
 
 //# Declare extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class ImageStatistics<Float>;
-#endif
 
 
 } //# NAMESPACE CASACORE - END

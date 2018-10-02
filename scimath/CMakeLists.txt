@@ -228,8 +228,6 @@ Mathematics/AutoDiffIO.h
 Mathematics/AutoDiffIO.tcc
 Mathematics/AutoDiffMath.h
 Mathematics/AutoDiffMath.tcc
-Mathematics/AutoDiffRep.h
-Mathematics/AutoDiffRep.tcc
 Mathematics/AutoDiffX.h
 Mathematics/Combinatorics.h
 Mathematics/ConvolveGridder.h

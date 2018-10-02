@@ -101,7 +101,7 @@ public:
                          const String& fileName);
 
   template<class T>
-  static SHARED_PTR<ImageInterface<T> > openImage (const String& fileName);
+  static std::shared_ptr<ImageInterface<T> > openImage (const String& fileName);
 //  </group>
 
 // Copy MiscInfo, ImageInfo, brightness unit and logger (history) from in to out

@@ -490,7 +490,7 @@ Vector<String> Directory::shellExpand (const Vector<String>& files, Bool stripPa
 
 #ifndef __APPLE__
 #include <sys/vfs.h>
-#include <linux//nfs_fs.h>
+#include <linux/nfs_fs.h>
 #else
 #include <sys/param.h>
 #include <sys/mount.h>

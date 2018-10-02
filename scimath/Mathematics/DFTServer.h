@@ -58,7 +58,7 @@ public:
    DFTError(const Char *m) : AipsError(m) {}
    DFTError(const String &m) : AipsError(m) {}
 
-   virtual ~DFTError() throw() {}
+   virtual ~DFTError() noexcept {}
 };
 
 // <summary>

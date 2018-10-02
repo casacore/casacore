@@ -56,65 +56,46 @@ const DComplex       ValType::undefdcomplex  (-C::mindouble, -C::mindouble);
 const String         ValType::undefstring    ("");
 
 
-const String ValType::strbool        = "Bool    ";
-const String ValType::strchar        = "Char    ";
-const String ValType::struchar       = "uChar   ";
-const String ValType::strshort       = "Short   ";
-const String ValType::strushort      = "uShort  ";
-const String ValType::strint         = "Int     ";
-const String ValType::struint        = "uInt    ";
-const String ValType::strint64       = "Int64   ";
-const String ValType::strfloat       = "float   ";
-const String ValType::strdouble      = "double  ";
-const String ValType::strcomplex     = "Complex ";
-const String ValType::strdcomplex    = "DComplex";
-const String ValType::strstring      = "String  ";
-const String ValType::strrecord      = "Record  ";
-const String ValType::strtable       = "Table   ";
-const String ValType::strother       = "Other   ";
-const String ValType::strunknown     = "unknown ";
-
-
 //# Get the name of the data type.
 const String& ValType::getTypeStr (DataType dt)
 {
     switch (dt) {
     case TpBool:
-	return strbool;
+	return strbool();
     case TpChar:
-	return strchar;
+	return strchar();
     case TpUChar:
-	return struchar;
+	return struchar();
     case TpShort:
-	return strshort;
+	return strshort();
     case TpUShort:
-	return strushort;
+	return strushort();
     case TpInt:
-	return strint;
+	return strint();
     case TpUInt:
-	return struint;
+	return struint();
     case TpInt64:
-	return strint64;
+	return strint64();
     case TpFloat:
-	return strfloat;
+	return strfloat();
     case TpDouble:
-	return strdouble;
+	return strdouble();
     case TpComplex:
-	return strcomplex;
+	return strcomplex();
     case TpDComplex:
-	return strdcomplex;
+	return strdcomplex();
     case TpString:
-	return strstring;
+	return strstring();
     case TpRecord:
-	return strrecord;
+	return strrecord();
     case TpTable:
-	return strtable;
+	return strtable();
     case TpOther:
-	return strother;
+	return strother();
     default:
 	break;
     }
-    return strunknown;
+    return strunknown();
 }
 
 

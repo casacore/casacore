@@ -429,10 +429,8 @@ void Lattice<Bool>::handleMathTo (Lattice<Bool>&, int) const
   { throwBoolMath(); }
 
 //# Declare extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class Lattice<Float>;
   extern template class Lattice<Complex>;
-#endif
 
 
 } //# NAMESPACE CASACORE - END

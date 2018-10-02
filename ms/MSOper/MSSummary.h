@@ -104,7 +104,7 @@ public:
    MSSummary (const MeasurementSet* ms, const String msname, Float maxCacheMB = 50.0);
 
    // construct the object using an MSMetaDataObject
-   MSSummary (SHARED_PTR<MSMetaData> msmd);
+   MSSummary (std::shared_ptr<MSMetaData> msmd);
 
 // Destructor
   ~MSSummary();
@@ -178,7 +178,7 @@ public:
 private:
 // Pointer to MS
    const MeasurementSet* pMS;
-   SHARED_PTR<MSMetaData> _msmd;
+   std::shared_ptr<MSMetaData> _msmd;
 
 // Formatting strings
    const String dashlin1, dashlin2;

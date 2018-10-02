@@ -29,7 +29,6 @@
 #include <casacore/tables/Tables/ScaColDesc.h>
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
 namespace casacore {
   template class ScalarColumnDesc<Bool>;
   template class ScalarColumnDesc<Char>;
@@ -43,4 +42,3 @@ namespace casacore {
   template class ScalarColumnDesc<DComplex>;
   template class ScalarColumnDesc<String>;
 }
-#endif

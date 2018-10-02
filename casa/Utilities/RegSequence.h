@@ -30,7 +30,6 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/Sequence.h>
-#include <casacore/casa/OS/Mutex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -57,12 +56,21 @@ public:
     // Get the next <src>uInt</src> value in the sequence (thread-safe).
     // <group>
     uInt getNext();
-    static uInt SgetNext() {return ++num;}
+    static uInt SgetNext() {
+#if defined(USE_THREADS)
+      return next.fetch_add(1);
+#else
+      return next++;
+#endif
+    }
     // </group>
 
 private:
-    static uInt num;
-    static Mutex theirMutex;
+#if defined(USE_THREADS)
+    static std::atomic<uInt> next;
+#else
+    static uInt next;
+#endif
 };
 
 

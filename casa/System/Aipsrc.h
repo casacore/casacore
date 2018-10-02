@@ -1,5 +1,5 @@
 //# Aipsrc.h: Class to read the casa general resource files
-//# Copyright (C) 1995,1996,1997,1998,1999,2002,2004
+//# Copyright (C) 1995,1996,1997,1998,1999,2002,2004,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -324,9 +324,15 @@ public:
   static const String &aipsHome();
   // </group>
   
-  // The <src>reRead()</src> function, will reinitialise the static maps and read the
-  // aipsrc files again. It could be useful in some interactive or multi-processor 
-  // circumstances. <src>lastRead()</src> returns the time last reRead.
+  // The <src>reRead()</src> function will reinitialise the static maps and read
+  // the aipsrc files again. It could be useful in some interactive circumstances.
+  // Note: Calling <src>reRead()</src> while using the static maps is not (thread-)safe.
+  // (Getting it right is a lot of work, but why apply settings while processing?)
+  // Note: casa_measures MeasTable.cc reads its <src>iau2000_reg</src> and
+  // <src>iau2000a_reg</src> upon first uses. Those cached values are not re-read,
+  // but only influence what <src>useIAU2000()</src> and <src>useIAU2000A()</src> return.
+  //
+  // <src>lastRead()</src> returns the time last reRead.
   // <group>
   static void reRead();
   static Double lastRead();
@@ -367,8 +373,9 @@ public:
 
 protected:
   // Actual find function
-  static Bool find(String &value, const String &keyword,
-		   uInt start);
+  static Bool find(String &value, const String &keyword, uInt start);
+  // Actual find function to use during parse() without recursing into parse()
+  static Bool findNoParse(String &value, const String &keyword, uInt start);
   // The registration function
   static uInt registerRC(const String &keyword, Block<String> &nlst);
   // Actual saving
@@ -376,9 +383,8 @@ protected:
   
 private:
   //# Data
-  static Mutex theirMutex;
-  // Indicate files read
-  static volatile Bool doInit;
+  // Object to ensure safe multi-threaded lazy single initialization
+  static CallOnce0 theirCallOnce;
   // Last time data was (re)read
   static Double lastParse; 
   // List of values belonging to keywords found
@@ -412,9 +418,9 @@ private:
   // </group>
 
   //# General member functions
-  // Read in the aipsrc files, returning the number of lines found
+  // Read in the aipsrc files. Always called using theirCallOnce (except for reRead()).
   // <group>
-  static void parse(Bool force=False);
+  static void parse();
   static void doParse(String &fileList);
   // </group>
   
@@ -428,8 +434,8 @@ private:
   // Locate the right keyword in the static maps
   static Bool matchKeyword(uInt &where, const String &keyword,
 			   uInt start);
-  // Fill in root, arch, site, host and home, and return requested nam
-  static const String &fillAips(const String &nam);
+  // Fill in root, arch, site, host and home
+  static void fillAips();
 };
 
 

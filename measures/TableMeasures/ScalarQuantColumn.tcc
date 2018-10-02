@@ -235,8 +235,8 @@ void ScalarQuantColumn<T>::put (uInt rownr, const Quantum<T>& q)
 }
 
 template<class T>
-SHARED_PTR<Quantum<Vector<T> > > ScalarQuantColumn<T>::getColumn(const Unit& unit) const {
-    SHARED_PTR<Quantum<Vector<T> > > qv;
+std::shared_ptr<Quantum<Vector<T> > > ScalarQuantColumn<T>::getColumn(const Unit& unit) const {
+    std::shared_ptr<Quantum<Vector<T> > > qv;
     if ((itsUnitsCol && itsUnitsCol->nrow() > 0) || ! unit.empty()) {
         Unit unitOut;
         if (! unit.empty()) {

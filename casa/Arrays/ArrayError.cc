@@ -38,7 +38,7 @@ ArrayError::ArrayError(const Char *m,Category c) : AipsError(m,c) {}
 
 ArrayError::ArrayError(const String &m,Category c) : AipsError(m,c) {}
 
-ArrayError::~ArrayError() throw(){}
+ArrayError::~ArrayError() noexcept{}
 
 
 
@@ -57,7 +57,7 @@ ArrayIndexError::ArrayIndexError(const IPosition &in,
     // Nothing
 }
 
-ArrayIndexError::~ArrayIndexError() throw(){}
+ArrayIndexError::~ArrayIndexError() noexcept{}
 
 IPosition ArrayIndexError::index() const
 {
@@ -81,7 +81,7 @@ ArrayConformanceError::ArrayConformanceError(const Char *m,Category c) : ArrayEr
 
 ArrayConformanceError::ArrayConformanceError(const String &m,Category c) : ArrayError(m,c) {}
 
-ArrayConformanceError::~ArrayConformanceError() throw(){}
+ArrayConformanceError::~ArrayConformanceError() noexcept{}
 
 
 
@@ -92,7 +92,7 @@ ArrayNDimError::ArrayNDimError(Int ndim1, Int ndim2, const Char *m,Category c)
   r2(ndim2)
 {}
 
-ArrayNDimError::~ArrayNDimError() throw(){}
+ArrayNDimError::~ArrayNDimError() noexcept{}
 
 void ArrayNDimError::ndims(Int &ndim1, Int &ndim2) const
 {
@@ -111,7 +111,7 @@ ArrayShapeError::ArrayShapeError(const IPosition &s1, const IPosition & s2,
     // Nothing
 }
 
-ArrayShapeError::~ArrayShapeError() throw(){}
+ArrayShapeError::~ArrayShapeError() noexcept{}
 
 void ArrayShapeError::shapes(IPosition &shape1, IPosition &shape2) const
 {
@@ -126,7 +126,7 @@ ArrayIteratorError::ArrayIteratorError(const Char *m,Category c) : ArrayError(m,
 
 ArrayIteratorError::ArrayIteratorError(const String &m,Category c) : ArrayError(m,c) {}
 
-ArrayIteratorError::~ArrayIteratorError() throw(){}
+ArrayIteratorError::~ArrayIteratorError() noexcept{}
 
 
 
@@ -135,7 +135,7 @@ ArraySlicerError::ArraySlicerError(Category c) : ArrayError("Slicer error",c) {}
 ArraySlicerError::ArraySlicerError(const String &m,Category c)
 : ArrayError("Slicer error:" + m,c) {}
 
-ArraySlicerError::~ArraySlicerError() throw(){}
+ArraySlicerError::~ArraySlicerError() noexcept{}
 
 } //# NAMESPACE CASACORE - END
 

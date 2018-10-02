@@ -1206,7 +1206,11 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
     >& sa, T& overallMin, T& overallMax, IPosition& arrayShape,
     std::vector<Array<T> >& dataArray,
     std::vector<Array<Bool> >& maskArray, std::vector<IPosition>& curPos,
-    uInt nthreads, const SubLattice<T>& subLat, Bool isChauv,
+    uInt
+#ifdef _OPENMP
+         nthreads
+#endif
+                 , const SubLattice<T>& subLat, Bool isChauv,
     Bool isMasked, Bool isReal, CountedPtr<const DataRanges> range
 ) {
     uInt nArrays = dataArray.size();
@@ -1219,10 +1223,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
     std::vector<uInt> chauvIterArray(isChauv ? nArrays : 0);
     ostringstream chos;
 #ifdef _OPENMP
-#pragma omp parallel for num_threads(nthreads)
-#else
-    // squash compiler warning when not using openmp.
-    nthreads = 1;
+# pragma omp parallel for num_threads(nthreads)
 #endif
     for (uInt i=0; i<nArrays; ++i) {
 #ifdef _OPENMP

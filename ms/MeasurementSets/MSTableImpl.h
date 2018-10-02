@@ -38,7 +38,6 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/Arrays/Vector.h>
-#include <casacore/casa/OS/Mutex.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -167,10 +166,6 @@ public:
 			       const Block<String>& writableColumns);
     // Initialize all MeasurementSet static mappings
     static void init();
-    
-private:
-    static Mutex initialized_mutex;
-    static Bool initialized_p;
 };
 
 

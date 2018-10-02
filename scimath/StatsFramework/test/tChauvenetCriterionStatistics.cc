@@ -91,7 +91,7 @@ int main() {
             AlwaysAssert(sd.npts == 104, AipsError);
             AlwaysAssert(*sd.max == 6, AipsError);
             // test cloning gives same results
-            SHARED_PTR<
+            std::shared_ptr<
                 ChauvenetCriterionStatistics<
                     Double, Double*, Bool*
                 >

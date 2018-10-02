@@ -71,8 +71,7 @@ class Combinatorics {
   // Get n!
   static uInt factorial(const uInt n)
   {
-    //# This test is thread-safe.
-    if (n >= _factorialCacheSize) fillCache(n);
+    fillCache(n);
     return _factorialCache[n];
   }
   

@@ -242,20 +242,16 @@ Bool AipsrcValue<String>::find(String &value,
 			       const String &keyword,
 			       const Unit &defun, const Unit &resun);
 
-#define AipsrcValue_Bool AipsrcValue
 
 // <summary> Specialization of AipsrcValue for Bool </summary>
 
 // <synopsis>
-// <note role=warning>
-// The name <src>AipsrcValue_Bool</src> is only for cxx2html
-// documentation problems. Use <src>AipsrcValue</src> in your code.</note>
 // </synopsis>
 
-template <> class AipsrcValue_Bool<Bool> : public Aipsrc {
+template <> class AipsrcValue<Bool> : public Aipsrc {
 public:
-  AipsrcValue_Bool();
-  ~AipsrcValue_Bool();
+  AipsrcValue();
+  ~AipsrcValue();
   static Bool find(Bool &value, const String &keyword);
   static Bool find(Bool &value, const String &keyword, const Bool &deflt);
   static uInt registerRC(const String &keyword, const Bool &deflt);
@@ -263,23 +259,20 @@ public:
   static void set(uInt keyword, const Bool &deflt);
   static void save(uInt keyword);
 private:
-  static AipsrcValue_Bool myp_p;
+  static AipsrcValue myp_p;
   static Mutex theirMutex;
   Block<Bool> tlst;
   Block<String> ntlst;
-  AipsrcValue_Bool<Bool> &operator=(const AipsrcValue_Bool<Bool> &other);
-  AipsrcValue_Bool(const AipsrcValue_Bool<Bool> &other);
+  AipsrcValue<Bool> &operator=(const AipsrcValue<Bool> &other);
+  AipsrcValue(const AipsrcValue<Bool> &other);
 };
 
-#undef AipsrcValue_Bool
 
 //# Declare extern templates for often used types.
-#ifdef AIPS_CXX11
   extern template class AipsrcValue<Bool>;
   extern template class AipsrcValue<Int>;
   extern template class AipsrcValue<Double>;
   extern template class AipsrcValue<String>;
-#endif
 
 } //# NAMESPACE CASACORE - END
 

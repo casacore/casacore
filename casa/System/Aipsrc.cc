@@ -1,5 +1,5 @@
 //# Aipsrc.cc: Class to read the aipsrc general resource files 
-//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003,2004
+//# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003,2004,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,8 +49,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 Bool Aipsrc::matchKeyword(uInt &where,  const String &keyword,
 			  uInt start) {
-  if (doInit) parse();
- 
   for (uInt i=start; i<keywordPattern.nelements(); i++) {
      if (keyword.contains(Regex(keywordPattern[i]))) {
        where = i;
@@ -63,6 +61,13 @@ Bool Aipsrc::matchKeyword(uInt &where,  const String &keyword,
 Bool Aipsrc::find(String &value,	
 		  const String &keyword,
 		  uInt start) {
+  theirCallOnce(parse);
+  return findNoParse(value, keyword, start);
+}
+
+Bool Aipsrc::findNoParse(String &value,
+                         const String &keyword,
+                         uInt start) {
   uInt keyInMap;
   if (matchKeyword(keyInMap, keyword, start)) {
     value = keywordValue[keyInMap];
@@ -182,7 +187,7 @@ Bool Aipsrc::findDir(String& foundDir, const String& lastPart,
 }
 
 void Aipsrc::reRead() {
-  parse(True);
+  parse(); // i.e. bypass theirCallOnce(parse)
 }
 
 Double Aipsrc::lastRead() {
@@ -190,74 +195,79 @@ Double Aipsrc::lastRead() {
 }
 
 const Block<String> &Aipsrc::values() {
-  if (doInit) parse();
+  theirCallOnce(parse);
   return keywordValue;
 }
 
 const Block<String> &Aipsrc::patterns() {
-  if (doInit) parse();
+  theirCallOnce(parse);
   return keywordPattern;
 }
 
-const String &Aipsrc::fillAips(const String &nam) {
-  if (!filled) {
-    uhome = EnvironmentVariable::get("HOME");
-    if (uhome.empty())
-      throw(AipsError(String("The HOME environment variable has not been set") +
-		      "\n\t(see system administrator)"));
- 
-    String aipsPath;
-    if (extAipsPath.empty()) {
-      aipsPath = EnvironmentVariable::get("CASAPATH");
-      if (aipsPath.empty()) {
-        aipsPath = EnvironmentVariable::get("AIPSPATH");
-      }
-    } else { 
-      aipsPath = extAipsPath;
-    }
-    // Set the path to home if not defined in any way.
-    if (aipsPath.empty()) {
-      setAipsPath(uhome);
-      aipsPath = extAipsPath;
-    }
-    Int n = aipsPath.freq(' ') + aipsPath.freq('	') + 4;
-    String *newdir = new String[n];
-    n = split(aipsPath, newdir, n, Regex("[ 	]"));
-    // Cater for non-existing fields
-    for (Int i=n; i<4; i++) newdir[i] = "UnKnOwN";
-    root = newdir[0];
-    arch = root + "/" + newdir[1];
-    site = arch + "/" + newdir[2];
-    host = site + "/" + newdir[3];
-    delete [] newdir;
-    filled = True;
+void Aipsrc::fillAips() {
+  uhome = EnvironmentVariable::get("HOME");
+  if (uhome.empty()) {
+    throw AipsError(String("The HOME environment variable has not been set"
+                           "\n\t(see system administrator)"));
   }
-  return nam;
+ 
+  String aipsPath;
+  if (extAipsPath.empty()) {
+    aipsPath = EnvironmentVariable::get("CASAPATH");
+    if (aipsPath.empty()) {
+      aipsPath = EnvironmentVariable::get("AIPSPATH");
+    }
+  } else {
+    aipsPath = extAipsPath;
+  }
+  // Set the path to home if not defined in any way.
+  if (aipsPath.empty()) {
+    setAipsPath(uhome);
+    aipsPath = extAipsPath;
+  }
+  Int n = aipsPath.freq(' ') + aipsPath.freq('	') + 4;
+  String *newdir = new String[n];
+  n = split(aipsPath, newdir, n, Regex("[ 	]"));
+  // Cater for non-existing fields
+  for (Int i=n; i<4; i++) {
+    newdir[i] = "UnKnOwN";
+  }
+  root = newdir[0];
+  arch = root + "/" + newdir[1];
+  site = arch + "/" + newdir[2];
+  host = site + "/" + newdir[3];
+  delete [] newdir;
 }
   
-  void Aipsrc::setAipsPath(const String &path) {
-    if (extAipsPath.empty()) extAipsPath = path + " ";
+void Aipsrc::setAipsPath(const String &path) {
+  if (extAipsPath.empty()) {
+    extAipsPath = path + " ";
   }
+}
 
 const String &Aipsrc::aipsRoot() {
-  return fillAips(root);
+  theirCallOnce(parse);
+  return root;
 }
 
 const String &Aipsrc::aipsArch() {
-  return fillAips(arch);
+  theirCallOnce(parse);
+  return arch;
 }
 
 const String &Aipsrc::aipsSite() {
-  return fillAips(site);
+  theirCallOnce(parse);
+  return site;
 }
 
 const String &Aipsrc::aipsHost() {
-  return fillAips(host);
+  theirCallOnce(parse);
+  return host;
 }
 
 const String &Aipsrc::aipsHome() {
-  if (doInit) parse();
-  return fillAips(home);
+  theirCallOnce(parse);
+  return home;
 }
 
 uInt Aipsrc::registerRC(const String &keyword, Block<String> &nlst) {
@@ -345,7 +355,8 @@ void Aipsrc::save(uInt keyword, const Vector<String> &tname) {
 void Aipsrc::save(const String keyword, const String val) {
   static uInt nv_r = Aipsrc::registerRC("user.aipsrc.edit.keep", "5");
   static String editTxt = "# Edited at ";
-  String filn(Aipsrc::fillAips(uhome) + "/.aipsrc");
+  theirCallOnce(parse);
+  String filn(uhome + "/.aipsrc");
   String filno(filn + ".old");
   RegularFile fil(filn);
   RegularFile filo(filno);
@@ -394,36 +405,33 @@ void Aipsrc::save(const String keyword, const String val) {
   delete [] buf;
 }
   
-void Aipsrc::parse(Bool force) {
-  // Thread-safety. Note that when the lock is acquired,
-  // parse might have been done already in another thread.
-  ScopedMutexLock lock(theirMutex);
-  if (doInit || force) {
-    // Refill basic data
-    filled = False;
-    // If defined use setting of CASARCFILES. Make sure it's ended by a colon.
-    String filelist = EnvironmentVariable::get("CASARCFILES");
-    if (! filelist.empty()) {
-      filelist += ':';
-    } else {
-      // Otherwise use CASAPATH.
-      // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
-      filelist = fillAips(uhome) + String("/.casarc:");
-      filelist += fillAips(uhome) + String("/.casa/rc:");
-      filelist += fillAips(uhome) + String("/.aipsrc:");
-      filelist += (root + String("/.aipsrc:"));
-      filelist += (host + String("/aipsrc:"));
-      filelist += (site + String("/aipsrc:"));
-      filelist += (arch + String("/aipsrc:"));
-    }
-    doParse(filelist);
-    doInit = False;		 // Indicate parse done (before call to find)
-    String x;
-    if (find(x, String("user.aipsdir"), String("/aips++"))) {
-      home = x;
-    } else {
-      home = uhome + x;
-    }
+void Aipsrc::parse() {
+  // Refill basic data
+  fillAips();
+
+  // If defined, use setting of CASARCFILES. Make sure it ends with a colon.
+  String filelist = EnvironmentVariable::get("CASARCFILES");
+  if (! filelist.empty()) {
+    filelist += ':';
+  } else {
+    // Otherwise use CASAPATH.
+    // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
+    filelist  = uhome + String("/.casarc:");
+    filelist += uhome + String("/.casa/rc:");
+    filelist += uhome + String("/.aipsrc:");
+    filelist += (root + String("/.aipsrc:"));
+    filelist += (host + String("/aipsrc:"));
+    filelist += (site + String("/aipsrc:"));
+    filelist += (arch + String("/aipsrc:"));
+  }
+  doParse(filelist);
+
+  String x;
+  // Use findNoParse() variant to avoid recursion back into parse().
+  if (findNoParse(x, String("user.aipsdir"), 0)) {
+    home = x;
+  } else {
+    home = uhome + "/aips++";
   }
 }
 
@@ -518,7 +526,7 @@ void Aipsrc::show() {
 }
 
 void Aipsrc::show(ostream &oStream) {
-  if (doInit) parse();
+  theirCallOnce(parse);
   String nam;
   const String gs00(".*");
   const String gs01("*");
@@ -623,8 +631,7 @@ Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
 
   // Static Initializations -- Only really want to read the files once
 
-  Mutex Aipsrc::theirMutex;
-  volatile Bool Aipsrc::doInit = True;
+  CallOnce0 Aipsrc::theirCallOnce;
   Double Aipsrc::lastParse = 0;
   Block<String> Aipsrc::keywordPattern(0);
   Block<String> Aipsrc::keywordValue(0);

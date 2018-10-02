@@ -33,7 +33,6 @@
 #include <casacore/images/Images/SubImage.h>
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
 namespace casacore {
   template class PagedImage<Float>;
   template class PagedImage<Complex>;
@@ -46,4 +45,3 @@ namespace casacore {
   template class SubImage<Float>;
   template class SubImage<Complex>;
 }
-#endif

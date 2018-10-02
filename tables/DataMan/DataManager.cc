@@ -1,5 +1,5 @@
 //# DataManager.cc: Storage manager for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2016
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -285,33 +285,28 @@ void DataManager::removeColumn (DataManagerColumn*)
 // Use a recursive mutex, because loading from a shared library can cause
 // a nested lock.
 SimpleOrderedMap<String,DataManagerCtor>
-        DataManager::theirRegisterMap (DataManager::unknownDataManager);
-MutexedInit DataManager::theirMutexedInit(doRegisterMainCtor, 0,
-                                          Mutex::Recursive);
-
+        DataManager::theirRegisterMap(initRegisterMap());
+Mutex DataManager::theirMutex(Mutex::Recursive);
 
 //# Register a mapping.
 void DataManager::registerCtor (const String& type, DataManagerCtor func)
 {
-    ScopedMutexLock lock(theirMutexedInit.mutex());
-    unlockedRegisterCtor (type, func);
+    ScopedMutexLock lock(theirMutex);
+    theirRegisterMap.define(type, func);
 }
 
 //# Test if the data manager is registered.
 Bool DataManager::isRegistered (const String& type)
 {
-    ScopedMutexLock lock(theirMutexedInit.mutex());
-    if (theirRegisterMap.isDefined(type)) {
-	return True;
-    }
-    return False;
+    ScopedMutexLock lock(theirMutex);
+    return theirRegisterMap.isDefined(type);
 }
 
 //# Get a data manager constructor.
 //# Return default function if the data manager is undefined.
 DataManagerCtor DataManager::getCtor (const String& type)
 {
-    ScopedMutexLock lock(theirMutexedInit.mutex());
+    ScopedMutexLock lock(theirMutex);
     DataManagerCtor* fp = theirRegisterMap.isDefined (type);
     if (fp) {
         return *fp;
@@ -579,45 +574,47 @@ void DataManagerColumn::putColumnSliceCellsV (const RefRows&,
 }
 
 
-
-
-
 //# Register all mappings of the names of classes derived from
 //# DataManager to a static function calling the default constructor.
 //# The class name is the name as returned by the function dataManagerType.
-void DataManager::doRegisterMainCtor (void*)
+// No locking since private and only called by ctor of static member init.
+SimpleOrderedMap<String,DataManagerCtor> DataManager::initRegisterMap()
 {
-  unlockedRegisterCtor ("StManAipsIO", StManAipsIO::makeObject);
-  unlockedRegisterCtor ("StandardStMan", StandardStMan::makeObject);
-  unlockedRegisterCtor ("IncrementalStMan", IncrementalStMan::makeObject);
-  unlockedRegisterCtor ("TiledDataStMan", TiledDataStMan::makeObject);
-  unlockedRegisterCtor ("TiledCellStMan", TiledCellStMan::makeObject);
-  unlockedRegisterCtor ("TiledColumnStMan", TiledColumnStMan::makeObject);
-  unlockedRegisterCtor ("TiledShapeStMan", TiledShapeStMan::makeObject);
-  unlockedRegisterCtor ("MemoryStMan", MemoryStMan::makeObject);
+  SimpleOrderedMap<String,DataManagerCtor> regMap(DataManager::unknownDataManager);
+
+  theirRegisterMap.define("StManAipsIO",      StManAipsIO::makeObject);
+  theirRegisterMap.define("StandardStMan",    StandardStMan::makeObject);
+  theirRegisterMap.define("IncrementalStMan", IncrementalStMan::makeObject);
+  theirRegisterMap.define("TiledDataStMan",   TiledDataStMan::makeObject);
+  theirRegisterMap.define("TiledCellStMan",   TiledCellStMan::makeObject);
+  theirRegisterMap.define("TiledColumnStMan", TiledColumnStMan::makeObject);
+  theirRegisterMap.define("TiledShapeStMan",  TiledShapeStMan::makeObject);
+  theirRegisterMap.define("MemoryStMan",      MemoryStMan::makeObject);
 #ifdef HAVE_MPI
 #ifdef HAVE_ADIOS2
-  unlockedRegisterCtor ("Adios2StMan", Adios2StMan::makeObject);
+  theirRegisterMap.define("Adios2StMan",      Adios2StMan::makeObject);
 #endif
 #endif
-  unlockedRegisterCtor (CompressFloat::className(),
-                        CompressFloat::makeObject);
-  unlockedRegisterCtor (CompressComplex::className(),
-                        CompressComplex::makeObject);
-  unlockedRegisterCtor (CompressComplexSD::className(),
-                        CompressComplexSD::makeObject);
-  unlockedRegisterCtor (MappedArrayEngine<Complex,DComplex>::className(),
-                        MappedArrayEngine<Complex,DComplex>::makeObject);
-  unlockedRegisterCtor (ForwardColumnEngine::className(),
-                        ForwardColumnEngine::makeObject);
-  unlockedRegisterCtor (VirtualTaQLColumn::className(),
-                        VirtualTaQLColumn::makeObject);
-  unlockedRegisterCtor (BitFlagsEngine<uChar>::className(),
-                        BitFlagsEngine<uChar>::makeObject);
-  unlockedRegisterCtor (BitFlagsEngine<Short>::className(),
-                        BitFlagsEngine<Short>::makeObject);
-  unlockedRegisterCtor (BitFlagsEngine<Int>::className(),
-                        BitFlagsEngine<Int>::makeObject);
+  theirRegisterMap.define(CompressFloat::className(),
+                          CompressFloat::makeObject);
+  theirRegisterMap.define(CompressComplex::className(),
+                          CompressComplex::makeObject);
+  theirRegisterMap.define(CompressComplexSD::className(),
+                          CompressComplexSD::makeObject);
+  theirRegisterMap.define(MappedArrayEngine<Complex,DComplex>::className(),
+                          MappedArrayEngine<Complex,DComplex>::makeObject);
+  theirRegisterMap.define(ForwardColumnEngine::className(),
+                          ForwardColumnEngine::makeObject);
+  theirRegisterMap.define(VirtualTaQLColumn::className(),
+                          VirtualTaQLColumn::makeObject);
+  theirRegisterMap.define(BitFlagsEngine<uChar>::className(),
+                          BitFlagsEngine<uChar>::makeObject);
+  theirRegisterMap.define(BitFlagsEngine<Short>::className(),
+                          BitFlagsEngine<Short>::makeObject);
+  theirRegisterMap.define(BitFlagsEngine<Int>::className(),
+                          BitFlagsEngine<Int>::makeObject);
+
+  return regMap;
 }
 
 } //# NAMESPACE CASACORE - END

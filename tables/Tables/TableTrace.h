@@ -155,7 +155,7 @@ public:
 
 private:
   // Initialize the tracing mechanism which should be done only once.
-  static void initTracing();
+  static void initTracing(); // always called using theirCallOnce
   static void initOper();
   static void initColumn();
 
@@ -174,6 +174,7 @@ private:
                           const IPosition& inc);
 
   //# Data members
+  static CallOnce0           theirCallOnce;  //# for thread-safe lazy init
   static Mutex               theirMutex;
   static std::ofstream       theirTraceFile;
   static std::ostream*       theirStream;

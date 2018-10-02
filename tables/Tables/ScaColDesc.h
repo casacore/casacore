@@ -246,7 +246,6 @@ private:
 
 
 //# Explicitly instantiate these templates in ScaColDesc_tmpl.cc
-#ifdef AIPS_CXX11
   extern template class ScalarColumnDesc<Bool>;
   extern template class ScalarColumnDesc<Char>;
   extern template class ScalarColumnDesc<Short>;
@@ -258,7 +257,6 @@ private:
   extern template class ScalarColumnDesc<Complex>;
   extern template class ScalarColumnDesc<DComplex>;
   extern template class ScalarColumnDesc<String>;
-#endif
 
 
 } //# NAMESPACE CASACORE - END

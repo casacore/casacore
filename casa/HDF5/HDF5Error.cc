@@ -35,7 +35,7 @@ HDF5Error::HDF5Error (Category c)
 HDF5Error::HDF5Error (const String& str, Category c)
 : AipsError("HDF5 error: " + str, c)
 {}
-HDF5Error::~HDF5Error () throw()
+HDF5Error::~HDF5Error () noexcept
 {}
 
 } //# NAMESPACE CASACORE - END

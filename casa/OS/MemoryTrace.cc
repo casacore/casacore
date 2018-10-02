@@ -265,7 +265,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #include <dlfcn.h>
 #include <stdlib.h>
  
-void* malloc(size_t size) throw()
+void* malloc(size_t size) noexcept
 {
   if (size == 0) {
     return NULL;
@@ -290,7 +290,7 @@ void* malloc(size_t size) throw()
   return addr;
 }
 
-void free(void* addr) throw()
+void free(void* addr) noexcept
 {
   if (addr == NULL) {
     return;

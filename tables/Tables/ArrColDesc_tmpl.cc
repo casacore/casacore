@@ -29,7 +29,6 @@
 #include <casacore/tables/Tables/ArrColDesc.h>
 
 //# Instantiate extern templates for often used types.
-#ifdef AIPS_CXX11
 namespace casacore {
   template class ArrayColumnDesc<Bool>;
   template class ArrayColumnDesc<Char>;
@@ -43,4 +42,3 @@ namespace casacore {
   template class ArrayColumnDesc<DComplex>;
   template class ArrayColumnDesc<String>;
 }
-#endif

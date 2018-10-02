@@ -5,11 +5,9 @@ tHashMap
 tHashMapIO
 tHashMapIter
 tList
-tObjectPool
 tObjectStack
 tOrdMap2
 tOrdMap
-tPoolStack
 tQueue
 tRecord
 tRecordDesc

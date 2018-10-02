@@ -37,7 +37,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class FunctionFactoryError : public AipsError {
 public:
     FunctionFactoryError(const String& message,Category c=GENERAL) : AipsError(message,c) {}
-    virtual ~FunctionFactoryError() throw();
+    virtual ~FunctionFactoryError() noexcept;
 };
 
 class UnrecognizedFunctionError : public FunctionFactoryError {
@@ -49,7 +49,7 @@ public:
 	FunctionFactoryError(String("Unrecognized function: ") + name,c), 
 	fname(name) 
     {}
-    virtual ~UnrecognizedFunctionError() throw();
+    virtual ~UnrecognizedFunctionError() noexcept;
 
     const String& getName() { return fname; }
 
@@ -65,7 +65,7 @@ public:
     InvalidSerializationError(const String& reason,Category c=GENERAL) : 
 	FunctionFactoryError(preamble + reason,c), reas(reason) {}
 
-    virtual ~InvalidSerializationError() throw();
+    virtual ~InvalidSerializationError() noexcept;
     const String& getReason() { return reas; } 
 
     static const String preamble;
@@ -80,7 +80,7 @@ public:
 	InvalidSerializationError(String("No ") + field + " defined",c),
 	fname(field)
     {}
-    virtual ~FieldNotFoundError() throw();
+    virtual ~FieldNotFoundError() noexcept;
 
 private:
     String fname;

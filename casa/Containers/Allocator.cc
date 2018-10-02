@@ -30,12 +30,7 @@
 
 namespace casacore {
 
-#if defined(AIPS_CXX11)
-constexpr ArrayInitPolicy ArrayInitPolicies::NO_INIT;
-constexpr ArrayInitPolicy ArrayInitPolicies::INIT;
-#else
-ArrayInitPolicy const ArrayInitPolicies::NO_INIT = ArrayInitPolicy(false);
-ArrayInitPolicy const ArrayInitPolicies::INIT = ArrayInitPolicy(true);
-#endif
+  constexpr ArrayInitPolicy ArrayInitPolicies::NO_INIT;
+  constexpr ArrayInitPolicy ArrayInitPolicies::INIT;
 
 }

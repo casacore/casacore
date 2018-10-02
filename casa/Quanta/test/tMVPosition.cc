@@ -32,7 +32,7 @@
 
 #include <casacore/casa/namespace.h>
 #include <list>
-#if defined(USE_THREADS) && defined(AIPS_CXX11) && !defined(__APPLE__)
+#if defined(USE_THREADS)
 #include <thread>
 #include <mutex>
 #endif
@@ -43,7 +43,7 @@ void test_parallel_openmp();
 void test_parallel()
 {
 
-#if defined(USE_THREADS) && defined(AIPS_CXX11) && !defined(__APPLE__)
+#if defined(USE_THREADS)
   double sum = 0;
   static const size_t thread_max = 50;
   static const size_t loop_max = 50 * 2; 
