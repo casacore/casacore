@@ -18,6 +18,9 @@ matrix:
     - os: osx
       compiler: clang
       env: PYTHONVERSION=3.4
+  allow_failures:
+    - os: osx
+      env: PYTHONVERSION=3.4
 
 sudo: false
 
