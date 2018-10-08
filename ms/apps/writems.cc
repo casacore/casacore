@@ -2071,7 +2071,7 @@ String doOne (int seqnr, const String& msName)
   msmaker->flush();
   timer.show ("Wrote " + String::toString(msmaker->nrow()) + " rows into MS "
               + msName);
-  if (seqnr == 0) {
+  if (seqnr == 0 && !myUseAdios2) {
     msmaker->showCacheStatistics();
   }
   return name;

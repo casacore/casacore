@@ -38,8 +38,6 @@ Adios2StManColumn::Adios2StManColumn(
     :StManColumn(aDataType),
     itsStManPtr(aParent),
     itsColumnName(aColName),
-    itsCasaShape(0),
-    itsCasaDataType(aDataType),
     itsAdiosIO(aAdiosIO)
 {
 }
@@ -51,6 +49,7 @@ String Adios2StManColumn::getColumnName()
 
 void Adios2StManColumn::setShapeColumn(const IPosition &aShape)
 {
+    isShapeFixed = true;
     itsCasaShape = aShape;
     itsAdiosShape.resize(aShape.size() + 1);
     itsAdiosStart.resize(aShape.size() + 1);
@@ -63,19 +62,39 @@ void Adios2StManColumn::setShapeColumn(const IPosition &aShape)
     }
 }
 
-IPosition Adios2StManColumn::shape(uInt /*aRowNr*/)
+IPosition Adios2StManColumn::shape(uInt aRowNr)
 {
-    return itsCasaShape;
+    if(isShapeFixed)
+    {
+        return itsCasaShape;
+    }
+    else
+    {
+        auto shape = itsCasaShapes.find(aRowNr);
+        if(shape != itsCasaShapes.end())
+        {
+            return shape->second;
+        }
+        else
+        {
+            /*
+            throw(std::runtime_error("Shape not defined for Column "
+                        + static_cast<std::string>(itsColumnName)
+                        + " Row " + std::to_string(aRowNr)));
+                        */
+            return IPosition();
+        }
+    }
 }
 
-int Adios2StManColumn::getDataTypeSize()
+Bool Adios2StManColumn::canChangeShape() const
 {
-    return itsDataTypeSize;
+    return !isShapeFixed;
 }
 
-int Adios2StManColumn::getDataType()
+void Adios2StManColumn::setShape (uInt aRowNr, const IPosition& aShape)
 {
-    return itsCasaDataType;
+    itsCasaShapes[aRowNr] = aShape;
 }
 
 void Adios2StManColumn::putBoolV(uInt rownr, const Bool *dataPtr)

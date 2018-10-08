@@ -30,8 +30,10 @@
 
 #include "Adios2StMan.h"
 
+#include <unordered_map>
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/Tables/RefRows.h>
 
 namespace casacore
 {
@@ -45,6 +47,8 @@ public:
                         char aOpenMode) = 0;
     virtual void setShapeColumn(const IPosition &aShape);
     virtual IPosition shape(uInt aRowNr);
+    Bool canChangeShape() const;
+    void setShape (uInt aRowNr, const IPosition& aShape);
 
     int getDataTypeSize();
     int getDataType();
@@ -85,10 +89,9 @@ protected:
     Adios2StMan *itsStManPtr;
 
     String itsColumnName;
-    char itsColumnType; // 's'-scalar, 'd'-direct array, 'i'-indirect array
     IPosition itsCasaShape;
-    int itsDataTypeSize;
-    int itsCasaDataType;
+    std::unordered_map<uInt, IPosition> itsCasaShapes;
+    Bool isShapeFixed = false;
 
     std::shared_ptr<adios2::IO> itsAdiosIO;
     std::shared_ptr<adios2::Engine> itsAdiosEngine;
@@ -135,6 +138,18 @@ public:
         const T *data = (reinterpret_cast<const Array<T> *>(dataPtr))->getStorage(deleteIt);
         itsAdiosEngine->Put(itsAdiosVariable, data);
         (reinterpret_cast<const Array<T> *>(dataPtr))->freeStorage(reinterpret_cast<const T *&>(data), deleteIt);
+    }
+
+    virtual void putArrayColumnCellsV (const RefRows& rownrs, const void* dataPtr)
+    {
+        if(rownrs.isSliced())
+        {
+            rownrs.convert();
+        }
+        for(const auto i : rownrs.rowVector())
+        {
+            putArrayV(i, dataPtr);
+        }
     }
 
     virtual void putScalarV(uInt rownr, const void *dataPtr)
