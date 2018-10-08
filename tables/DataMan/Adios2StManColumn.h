@@ -41,8 +41,7 @@ class Adios2StManColumn : public StManColumn
 public:
     Adios2StManColumn(Adios2StMan *aParent, int aDataType, String aColName, std::shared_ptr<adios2::IO> aAdiosIO);
 
-    virtual void create(uInt aNrRows,
-                        std::shared_ptr<adios2::Engine> aAdiosEngine,
+    virtual void create(std::shared_ptr<adios2::Engine> aAdiosEngine,
                         char aOpenMode) = 0;
     virtual void setShapeColumn(const IPosition &aShape);
     virtual IPosition shape(uInt aRowNr);
@@ -94,9 +93,9 @@ protected:
     std::shared_ptr<adios2::IO> itsAdiosIO;
     std::shared_ptr<adios2::Engine> itsAdiosEngine;
     std::string itsAdiosDataType;
-    adios2::Dims itsAdiosShape;
-    adios2::Dims itsAdiosStart;
-    adios2::Dims itsAdiosCount;
+    adios2::Dims itsAdiosShape = {std::numeric_limits<uInt>::max()};
+    adios2::Dims itsAdiosStart = {0};
+    adios2::Dims itsAdiosCount = {1};
 }; // class Adios2StManColumn
 
 
@@ -104,43 +103,47 @@ template <class T>
 class Adios2StManColumnT : public Adios2StManColumn
 {
 public:
-    Adios2StManColumnT(Adios2StMan *aParent, int aDataType, String aColName, std::shared_ptr<adios2::IO> aAdiosIO)
+
+    Adios2StManColumnT(
+            Adios2StMan *aParent,
+            int aDataType,
+            String aColName,
+            std::shared_ptr<adios2::IO> aAdiosIO)
     : Adios2StManColumn(aParent, aDataType, aColName, aAdiosIO)
     {
     }
-    void create(uInt aNrRows, std::shared_ptr<adios2::Engine> aAdiosEngine,
-                char aOpenMode)
+
+    void create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode)
     {
-        itsAdiosShape[0] = aNrRows;
         itsAdiosEngine = aAdiosEngine;
         itsAdiosVariable = itsAdiosIO->InquireVariable<T>(itsColumnName);
         if (!itsAdiosVariable && aOpenMode == 'w')
         {
             itsAdiosVariable = itsAdiosIO->DefineVariable<T>(
-                itsColumnName, itsAdiosShape, itsAdiosStart,
+                itsColumnName,
+                itsAdiosShape,
+                itsAdiosStart,
                 itsAdiosCount);
         }
     }
+
     virtual void putArrayV(uInt rownr, const void *dataPtr)
     {
         Bool deleteIt;
         itsAdiosStart[0] = rownr;
-        itsAdiosVariable.SetSelection(
-            {itsAdiosStart, itsAdiosCount});
-        const T *data =
-            (reinterpret_cast<const Array<T> *>(dataPtr))->getStorage(deleteIt);
+        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+        const T *data = (reinterpret_cast<const Array<T> *>(dataPtr))->getStorage(deleteIt);
         itsAdiosEngine->Put(itsAdiosVariable, data);
-        (reinterpret_cast<const Array<T> *>(dataPtr))
-            ->freeStorage(reinterpret_cast<const T *&>(data), deleteIt);
+        (reinterpret_cast<const Array<T> *>(dataPtr))->freeStorage(reinterpret_cast<const T *&>(data), deleteIt);
     }
+
     virtual void putScalarV(uInt rownr, const void *dataPtr)
     {
         itsAdiosStart[0] = rownr;
-        itsAdiosVariable.SetSelection(
-            {itsAdiosStart, itsAdiosCount});
-        itsAdiosEngine->Put(itsAdiosVariable,
-                            reinterpret_cast<const T *>(dataPtr));
+        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+        itsAdiosEngine->Put(itsAdiosVariable, reinterpret_cast<const T *>(dataPtr));
     }
+
     virtual void getArrayV(uInt aRowNr, void *dataPtr)
     {
         itsAdiosStart[0] = aRowNr;
@@ -156,6 +159,7 @@ public:
         itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
         reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
     }
+
     virtual void getSliceV(uInt aRowNr, const Slicer &ns, void *dataPtr)
     {
         itsAdiosStart[0] = aRowNr;
@@ -171,6 +175,7 @@ public:
         itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
         reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
     }
+
     virtual void getArrayColumnV(void *dataPtr)
     {
         for(auto &i:itsAdiosStart){
@@ -182,6 +187,7 @@ public:
         itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
         reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
     }
+
     virtual void getColumnSliceV(const Slicer &ns, void *dataPtr)
     {
         itsAdiosStart[0] = 0;
@@ -197,6 +203,7 @@ public:
         itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
         reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
     }
+
     virtual void getScalarV(uInt aRowNr, void *data)
     {
         itsAdiosStart[0] = aRowNr;

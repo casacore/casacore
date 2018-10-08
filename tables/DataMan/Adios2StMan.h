@@ -84,7 +84,6 @@ public:
 private:
     String itsDataManName = "Adios2StMan";
     uInt itsRows;
-    uInt itsRowsPerVariable = 100;
     int itsStManColumnType;
     PtrBlock<Adios2StManColumn *> itsColumnPtrBlk;
 

@@ -30,7 +30,11 @@
 namespace casacore
 {
 
-Adios2StManColumn::Adios2StManColumn(Adios2StMan *aParent, int aDataType, String aColName, std::shared_ptr<adios2::IO> aAdiosIO)
+Adios2StManColumn::Adios2StManColumn(
+        Adios2StMan *aParent,
+        int aDataType,
+        String aColName,
+        std::shared_ptr<adios2::IO> aAdiosIO)
     :StManColumn(aDataType),
     itsStManPtr(aParent),
     itsColumnName(aColName),
@@ -38,14 +42,12 @@ Adios2StManColumn::Adios2StManColumn(Adios2StMan *aParent, int aDataType, String
     itsCasaDataType(aDataType),
     itsAdiosIO(aAdiosIO)
 {
-    itsAdiosShape.resize(1);
-    itsAdiosStart.resize(1);
-    itsAdiosCount.resize(1);
-    itsAdiosCount[0] = 1;
-    itsAdiosShape[0] = itsStManPtr->getNrRows();
 }
 
-String Adios2StManColumn::getColumnName() { return itsColumnName; }
+String Adios2StManColumn::getColumnName()
+{
+    return itsColumnName;
+}
 
 void Adios2StManColumn::setShapeColumn(const IPosition &aShape)
 {
@@ -59,16 +61,22 @@ void Adios2StManColumn::setShapeColumn(const IPosition &aShape)
         itsAdiosCount[i] = itsCasaShape[i - 1];
         itsAdiosStart[i] = 0;
     }
-    itsAdiosStart[0] = 0;
-    itsAdiosCount[0] = 1;
 }
 
-IPosition Adios2StManColumn::shape(uInt /*aRowNr*/) { return itsCasaShape; }
+IPosition Adios2StManColumn::shape(uInt /*aRowNr*/)
+{
+    return itsCasaShape;
+}
 
-int Adios2StManColumn::getDataTypeSize() { return itsDataTypeSize; }
+int Adios2StManColumn::getDataTypeSize()
+{
+    return itsDataTypeSize;
+}
 
-int Adios2StManColumn::getDataType() { return itsCasaDataType; }
-
+int Adios2StManColumn::getDataType()
+{
+    return itsCasaDataType;
+}
 
 void Adios2StManColumn::putBoolV(uInt rownr, const Bool *dataPtr)
 {

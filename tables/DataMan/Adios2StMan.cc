@@ -168,7 +168,10 @@ DataManager *Adios2StMan::clone() const
 
 String Adios2StMan::dataManagerType() const { return itsDataManName; }
 
-void Adios2StMan::addRow(uInt /*aNrRows*/) {}
+void Adios2StMan::addRow(uInt aNrRows)
+{
+    itsRows += aNrRows;
+}
 
 void Adios2StMan::create(uInt aNrRows)
 {
@@ -178,7 +181,7 @@ void Adios2StMan::create(uInt aNrRows)
         itsAdiosIO->Open(fileName(), adios2::Mode::Write));
     for (uInt i = 0; i < ncolumn(); ++i)
     {
-        itsColumnPtrBlk[i]->create(aNrRows, itsAdiosEngine, itsOpenMode);
+        itsColumnPtrBlk[i]->create(itsAdiosEngine, itsOpenMode);
     }
     itsAdiosEngine->BeginStep();
 }
@@ -191,7 +194,7 @@ void Adios2StMan::open(uInt aNrRows, AipsIO &ios)
         itsAdiosIO->Open(fileName(), adios2::Mode::Read));
     for (uInt i = 0; i < ncolumn(); ++i)
     {
-        itsColumnPtrBlk[i]->create(aNrRows, itsAdiosEngine, itsOpenMode);
+        itsColumnPtrBlk[i]->create(itsAdiosEngine, itsOpenMode);
     }
     itsAdiosEngine->BeginStep();
 
