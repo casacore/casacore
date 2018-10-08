@@ -905,8 +905,14 @@ T* expandRecursive (int axis, const IPosition& shp, const IPosition& mult,
                     const T* in, T* out, const IPosition& alternate);
 // Check array shapes for expandArray. It returns the alternate argument,
 // where possibly missing values are appended (as 0).
-// It fills in mult and inshp (with possibly missing axes of length 1) and outshp.
-IPosition checkExpandArray (IPosition& mult, IPosition& inshp,
+// It fills in mult and inshp (with possibly missing axes of length 1).
+// <br><code>inShape</code> defines the shape of the input array.
+// <br><code>outShape</code> defines the shape of the output array.
+// <br><code>alternate</code> tells per axis if value expansion uses alternation.
+// <br><code>newInShape</code> is the input shape with new axes (of length 1) added as needed
+// <br><code>mult</code> is the multiplication (expansion) factor per output axis
+// Returned is the alternation per output axis; new axes have value 0 (linear expansion)
+IPosition checkExpandArray (IPosition& mult, IPosition& newInShape,
                             const IPosition& inShape,
                             const IPosition& outShape,
                             const IPosition& alternate);
