@@ -2104,7 +2104,7 @@ void doAll()
 int main (int argc, char** argv)
 {
 #ifdef HAVE_MPI
-    MPI_Init(0,0);
+  MPI_Init(0,0);
 #endif
   try {
     if (readParms (argc, argv)) {
@@ -2113,9 +2113,6 @@ int main (int argc, char** argv)
     }
   } catch (std::exception& ex) {
     cerr << "Unexpected exception in " << argv[0] << ": " << ex.what() << endl;
-#ifdef HAVE_MPI
-    MPI_Finalize();
-#endif
     return 1;
   }
 #ifdef HAVE_MPI

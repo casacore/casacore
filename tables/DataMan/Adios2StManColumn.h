@@ -136,7 +136,7 @@ public:
         itsAdiosStart[0] = rownr;
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
         const T *data = (reinterpret_cast<const Array<T> *>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Put(itsAdiosVariable, data);
+        itsAdiosEngine->Put(itsAdiosVariable, data, adios2::Mode::Sync);
         (reinterpret_cast<const Array<T> *>(dataPtr))->freeStorage(reinterpret_cast<const T *&>(data), deleteIt);
     }
 
@@ -156,7 +156,7 @@ public:
     {
         itsAdiosStart[0] = rownr;
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        itsAdiosEngine->Put(itsAdiosVariable, reinterpret_cast<const T *>(dataPtr));
+        itsAdiosEngine->Put(itsAdiosVariable, reinterpret_cast<const T *>(dataPtr), adios2::Mode::Sync);
     }
 
     virtual void getArrayV(uInt aRowNr, void *dataPtr)
@@ -173,6 +173,18 @@ public:
         T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
         itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
         reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+    }
+
+    virtual void getArrayColumnCellsV (const RefRows& rownrs, void* dataPtr)
+    {
+        if(rownrs.isSliced())
+        {
+            rownrs.convert();
+        }
+        for(const auto i : rownrs.rowVector())
+        {
+            getArrayV(i, dataPtr);
+        }
     }
 
     virtual void getSliceV(uInt aRowNr, const Slicer &ns, void *dataPtr)
