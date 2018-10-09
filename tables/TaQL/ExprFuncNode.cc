@@ -85,8 +85,10 @@ void TableExprFuncNode::fillUnits()
     case atan2FUNC:
     case timeFUNC:
     case argFUNC:
-      // These functions return radians.
-      setUnit ("rad");
+      // These functions return radians (if operand is not complex).
+      if (operands_p[0]->dataType() != NTComplex) {
+        setUnit ("rad");
+      }
       break;
     case mjdFUNC:
       // These functions return days.
@@ -108,6 +110,8 @@ void TableExprFuncNode::fillUnits()
     case fmodFUNC:
     case arrsumFUNC:
     case arrsumsFUNC:
+    case runsumFUNC:
+    case boxsumFUNC:
     case arrminFUNC:
     case arrminsFUNC:
     case runminFUNC:
@@ -138,6 +142,8 @@ void TableExprFuncNode::fillUnits()
     case boxmedianFUNC:
     case arrfractileFUNC:
     case arrfractilesFUNC:
+    case runfractileFUNC:
+    case boxfractileFUNC:
     case arrayFUNC:
     case transposeFUNC:
     case resizeFUNC:
@@ -170,6 +176,8 @@ void TableExprFuncNode::fillUnits()
     case squareFUNC:
     case arrsumsqrFUNC:
     case arrsumsqrsFUNC:
+    case runsumsqrFUNC:
+    case boxsumsqrFUNC:
     case gsumsqrFUNC:
     case gsumsqrsFUNC:
     case arrvarianceFUNC:
@@ -207,6 +215,7 @@ void TableExprFuncNode::fillUnits()
     case dmsFUNC:
     case hdmsFUNC:
       // These functions return no unit, but their child must be in radians.
+      // Note that in case of DComplex argument there is no unit.
       if (! childUnit.empty()) {
         TableExprNodeUnit::adaptUnit (operands_p[0], "rad");
       }
@@ -342,12 +351,12 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
         return (operands_p[0]->getDouble(id) != 0);
       }
       return string2Bool (operands_p[0]->getString(id));
-    case anyFUNC:
+    case arranyFUNC:
         if (operands_p[0]->valueType() == VTArray) {
             return anyTrue (operands_p[0]->getArrayBool(id));
 	}
 	return operands_p[0]->getBool (id);
-    case allFUNC:
+    case arrallFUNC:
         if (operands_p[0]->valueType() == VTArray) {
             return allTrue (operands_p[0]->getArrayBool(id));
 	}
@@ -568,12 +577,12 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
 	    Int64 val = operands_p[0]->getInt(id);
 	    return val * val;
 	}
-    case ntrueFUNC:
+    case arrntrueFUNC:
         if (operands_p[0]->valueType() == VTArray) {
             return ntrue (operands_p[0]->getArrayBool (id));
 	}
 	return (operands_p[0]->getBool(id)  ?  1 : 0);
-    case nfalseFUNC:
+    case arrnfalseFUNC:
         if (operands_p[0]->valueType() == VTArray) {
             return nfalse (operands_p[0]->getArrayBool (id));
 	}
@@ -871,6 +880,19 @@ DComplex TableExprFuncNode::getDComplex (const TableExprId& id)
 	}
 	return val0;
       }
+    case asinFUNC:
+	return asin  (operands_p[0]->getDComplex(id));
+    case acosFUNC:
+	return acos  (operands_p[0]->getDComplex(id));
+    case atanFUNC:
+	return atan  (operands_p[0]->getDComplex(id));
+    case tanFUNC:
+	return tan   (operands_p[0]->getDComplex(id));
+    case tanhFUNC:
+	return tanh  (operands_p[0]->getDComplex(id));
+    case atan2FUNC:
+	return atan2 (operands_p[0]->getDComplex(id),
+                      operands_p[1]->getDComplex(id));
     case complexFUNC:
         // A single argument is always a string.
         if (operands_p.size() == 1) {
@@ -958,6 +980,7 @@ String TableExprFuncNode::getString (const TableExprId& id)
         Int64 st = operands_p[1]->getInt (id);
         if (st < 0) st += str.size();
         if (st < 0) st = 0;
+        if (st > Int64(str.size())) st = str.size();
         Int64 sz = String::npos;
         if (operands_p.size() > 2) {
           sz = std::max (Int64(0), operands_p[2]->getInt (id));
@@ -1313,12 +1336,12 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case arrsumsqrFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
-    case anyFUNC:
-    case allFUNC:
+    case arranyFUNC:
+    case arrallFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTBool, NTBool, nodes);
-    case ntrueFUNC:
-    case nfalseFUNC:
+    case arrntrueFUNC:
+    case arrnfalseFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTBool, NTInt, nodes);
     case nelemFUNC:
@@ -1382,7 +1405,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     default:
 	break;
     }
-    // The following functions accept one array or scalar and a set of
+    // The following functions accept one array and a set of
     // one or more scalars.
     // They return an array.
     switch (fType) {
@@ -1398,10 +1421,13 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case arrrmssFUNC:
     case arrmediansFUNC:
     case arrfractilesFUNC:
-    case anysFUNC:
-    case allsFUNC:
-    case ntruesFUNC:
-    case nfalsesFUNC:
+    case arranysFUNC:
+    case arrallsFUNC:
+    case arrntruesFUNC:
+    case arrnfalsesFUNC:
+    case runsumFUNC:
+    case runproductFUNC:
+    case runsumsqrFUNC:
     case runminFUNC:
     case runmaxFUNC:
     case runmeanFUNC:
@@ -1410,8 +1436,14 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case runavdevFUNC:
     case runrmsFUNC:
     case runmedianFUNC:
+    case runfractileFUNC:
     case runanyFUNC:
     case runallFUNC:
+    case runntrueFUNC:
+    case runnfalseFUNC:
+    case boxsumFUNC:
+    case boxproductFUNC:
+    case boxsumsqrFUNC:
     case boxminFUNC:
     case boxmaxFUNC:
     case boxmeanFUNC:
@@ -1420,8 +1452,11 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case boxavdevFUNC:
     case boxrmsFUNC:
     case boxmedianFUNC:
+    case boxfractileFUNC:
     case boxanyFUNC:
     case boxallFUNC:
+    case boxntrueFUNC:
+    case boxnfalseFUNC:
     case arrayFUNC:
     case transposeFUNC:
     case diagonalFUNC:
@@ -1436,8 +1471,22 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	case arrsumsFUNC:
 	case arrproductsFUNC:
 	case arrsumsqrsFUNC:
+	case runsumFUNC:
+	case runproductFUNC:
+	case runsumsqrFUNC:
+	case boxsumFUNC:
+	case boxproductFUNC:
+	case boxsumsqrFUNC:
 	    dtin = dtout = NTNumeric;
 	    break;
+        case arrminsFUNC:
+        case arrmaxsFUNC:
+        case runminFUNC:
+        case runmaxFUNC:
+        case boxminFUNC:
+        case boxmaxFUNC:
+            dtin = dtout = NTReal;
+            break;
         case arrmeansFUNC:
         case runmeanFUNC:
         case boxmeanFUNC:
@@ -1445,18 +1494,24 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
             dtout = NTDouCom;
             break;
 	case arrfractilesFUNC:
+	case runfractileFUNC:
+	case boxfractileFUNC:
 	    axarg = 2;
 	    break;
-	case anysFUNC:
-	case allsFUNC:
+	case arranysFUNC:
+	case arrallsFUNC:
 	case runanyFUNC:
 	case runallFUNC:
 	case boxanyFUNC:
 	case boxallFUNC:
 	    dtin = dtout = NTBool;
 	    break;
-	case ntruesFUNC:
-	case nfalsesFUNC:
+	case arrntruesFUNC:
+	case arrnfalsesFUNC:
+	case runntrueFUNC:
+	case runnfalseFUNC:
+	case boxntrueFUNC:
+	case boxnfalseFUNC:
 	    dtin = NTBool;
             dtout = NTInt;
 	    break;
@@ -1555,7 +1610,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
           if (nodes[i]->valueType() != VTScalar
               ||  nodes[i]->dataType() != NTInt) {
             throw TableInvExpr ("2nd and optional 3rd argument of function "
-                                " SUBSTR have to be integer scalars");
+                                "SUBSTR have to be integer scalars");
           }
         }
 	dtypeOper.resize (nodes.size());
@@ -1572,7 +1627,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
             ||  (nodes[1]->dataType() != NTString  &&
                  nodes[1]->dataType() != NTRegex)) {
           throw TableInvExpr ("2nd argument of function REPLACE "
-                              "has to be a string or regex scalar");
+                              "has to be a string or regex");
         }
         if (nodes.size() == 3) {
           if (nodes[2]->valueType() != VTScalar
@@ -1642,7 +1697,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
                nodes[1]->dataType() != NTInt)  ||
               nodes[1]->valueType() != VTScalar) {
             throw TableInvExpr ("2nd argument of function STRING "
-                                "has to be a scalar string or int value");
+                                "has to be a scalar string or real value");
           }
         }
 	dtypeOper.resize (nodes.size());
@@ -1668,6 +1723,11 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case log10FUNC:
     case sqrtFUNC:
     case conjFUNC:
+    case asinFUNC:
+    case acosFUNC:
+    case atanFUNC:
+    case tanFUNC:
+    case tanhFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTNumeric, NTDouCom, nodes);
     case squareFUNC:
@@ -1690,13 +1750,6 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case imagFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTNumeric, NTDouble, nodes);
-    case asinFUNC:
-    case acosFUNC:
-    case atanFUNC:
-    case tanFUNC:
-    case tanhFUNC:
-	checkNumOfArg (1, 1, nodes);
-	return checkDT (dtypeOper, NTReal, NTDouble, nodes);
     case signFUNC:
     case roundFUNC:
     case floorFUNC:
@@ -1726,6 +1779,10 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	vector<TENShPtr> nodeTol(1);
 	nodeTol[0] = nodes[2];
 	checkDT (dtypeOper, NTReal, NTBool, nodeTol);
+	if (nodes[2]->valueType() != VTScalar) {
+	    throw TableInvExpr ("3rd argument of function NEAR and NEARABS "
+				"has to be a scalar");
+	}
 	return checkDT (dtypeOper, NTNumeric, NTBool, nodes);
     }
     case powFUNC:
@@ -1764,7 +1821,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	checkDT (dtypeTmp, NTBool, NTBool, nodeCond);
 	dtypeOper.resize(3);
 	dtypeOper[0] = dtypeTmp[0];
-	NodeDataType dt = checkDT (dtypeTmp, NTAny, NTAny, nodeArg);
+        // Do not allow automatic conversion to date/time.
+	NodeDataType dt = checkDT (dtypeTmp, NTAny, NTAny, nodeArg, False);
 	dtypeOper[1] = dtypeTmp[0];
 	dtypeOper[2] = dtypeTmp[1];
 	return dt;

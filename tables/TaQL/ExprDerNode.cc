@@ -342,7 +342,10 @@ void TableExprNodeRowid::applySelection (const Vector<uInt>& rownrs)
 Int64 TableExprNodeRowid::getInt (const TableExprId& id)
 {
     AlwaysAssert (id.byRow(), AipsError);
-    return rownrs_p[id.rownr()];
+    if (id.rownr() < Int64(rownrs_p.size())) {
+      return rownrs_p[id.rownr()];
+    }
+    return 0;
 }
 
 

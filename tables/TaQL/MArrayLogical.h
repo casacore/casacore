@@ -475,7 +475,10 @@ namespace casacore {
     if (a.isNull()) {
       return MArray<uInt>();
     } else if (! a.hasMask()) {
-      return MArray<uInt>(slidingNTrue (a.array(), halfBoxSize, fillEdge));
+      Array<uInt> res;
+      slidingArrayMath (res, a.array(), halfBoxSize,
+                        NTrueFunc<T,uInt>(), fillEdge);
+      return MArray<uInt>(res);
     }
     MArray<uInt> res;
     slidingArrayMath (res, a, halfBoxSize, MNTrueFunc<T,uInt>(), fillEdge);
@@ -489,7 +492,10 @@ namespace casacore {
     if (a.isNull()) {
       return MArray<uInt>();
     } else if (! a.hasMask()) {
-      return MArray<uInt>(slidingNFalse (a.array(), halfBoxSize, fillEdge));
+      Array<uInt> res;
+      slidingArrayMath (res, a.array(), halfBoxSize,
+                        NFalseFunc<T,uInt>(), fillEdge);
+      return MArray<uInt>(res);
     }
     MArray<uInt> res;
     slidingArrayMath (res, a, halfBoxSize, MNFalseFunc<T,uInt>(), fillEdge);
@@ -536,7 +542,9 @@ namespace casacore {
     if (a.isNull()) {
       return MArray<uInt>();
     } else if (! a.hasMask()) {
-      return MArray<uInt>(boxedNTrue (a.array(), boxSize));
+      Array<uInt> res;
+      boxedArrayMath (res, a.array(), boxSize, NTrueFunc<T,uInt>());
+      return MArray<uInt>(res);
     }
     MArray<uInt> res;
     boxedArrayMath (res, a, boxSize, MNTrueFunc<T,uInt>());
@@ -550,7 +558,9 @@ namespace casacore {
     if (a.isNull()) {
       return MArray<uInt>();
     } else if (! a.hasMask()) {
-      return MArray<uInt>(boxedNFalse (a.array(), boxSize));
+      Array<uInt> res;
+      boxedArrayMath (res, a.array(), boxSize, NFalseFunc<T,uInt>());
+      return MArray<uInt>(res);
     }
     MArray<uInt> res;
     boxedArrayMath (res, a, boxSize, MNFalseFunc<T,uInt>());

@@ -471,6 +471,26 @@ void testExpand()
   out=-1;
   expandArray (out, mat1, IPosition(3,1,0,0));
   AlwaysAssertExit (allEQ (out, mat2));
+  // Test input ndim > output ndim.
+  {
+    Array<Int> out1(IPosition(1,8));
+    expandArray (out1, mat1, IPosition(3,1,0,0));
+    VectorIterator<Int> iter(mat2);
+    AlwaysAssertExit (allEQ (out1, iter.vector()));
+  }
+  // Test output ndim > output ndim.
+  {
+    Array<Int> out1(IPosition(5,8,6,2,3,2));
+    expandArray (out1, mat1, IPosition(1,1));
+    ArrayIterator<Int> iter(out1, 3);
+    int niter=0;
+    while (! iter.pastEnd()) {
+      AlwaysAssertExit (allEQ (iter.array(), mat2));
+      iter.next();
+      niter++;
+    }
+    AlwaysAssertExit (niter==6);
+  }
 }
 
 // Instantiate the macro-ed functions.

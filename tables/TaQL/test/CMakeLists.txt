@@ -29,6 +29,7 @@ tRecordGram
 tRecordGramTable
 tTableExprData
 tTableGram
+tTableGramFunc
 tTaQLNode
 )
 

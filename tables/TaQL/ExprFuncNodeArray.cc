@@ -226,9 +226,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MArray<T> TEFMASKrepl (const MArray<T>& arr, const TENShPtr& operand2,
                          const TableExprId& id, Bool maskValue)
   {
-    if (!arr.hasMask()) {
-      return arr;
-    }
     MArray<T> res(arr);
     MArray<T> arr2;
     T val2;
@@ -251,17 +248,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       data2 = arr2.array().getStorage (del2);
       incr2 = 1;
     }
-    data1 = res.array().getStorage (del1);
-    mask1 = arr.mask().getStorage (delm);
-    for (size_t i=0; i<arr.size(); ++i, data2+=incr2) {
-      if (mask1[i] == maskValue) {
-        data1[i] = *data2;
+    if (!arr.hasMask()) {
+      if (!maskValue) {
+        if (incr2 == 0) {
+          res.array() = val2;
+        } else {
+          res.array() = arr2.array();
+        }
       }
-    }
-    res.array().putStorage (data1, del1);
-    arr.mask().freeStorage (mask1, delm);
-    if (incr2 > 0) {
-      arr2.array().freeStorage (data2, del2);
+    } else {
+      data1 = res.array().getStorage (del1);
+      mask1 = arr.mask().getStorage (delm);
+      for (size_t i=0; i<arr.size(); ++i, data2+=incr2) {
+        if (mask1[i] == maskValue) {
+          data1[i] = *data2;
+        }
+      }
+      res.array().putStorage (data1, del1);
+      arr.mask().freeStorage (mask1, delm);
+      if (incr2 > 0) {
+        arr2.array().freeStorage (data2, del2);
+      }
     }
     return res;
   }
@@ -271,7 +278,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MArray<T> TableExprFuncNodeArray::TEFResize (const MArray<T>& arr,
                                                const TableExprId& id)
   {
-    const IPosition& shp = getArrayShape(id);
+    IPosition shp = adjustShape (getArrayShape(id), arr.shape());
     const IPosition& alt = getAlternate(id);
     if (alt.empty()) {
       Array<T> res(shp, T());
@@ -350,10 +357,10 @@ void TableExprFuncNodeArray::tryToConst()
     case TableExprFuncNode::arravdevsFUNC:
     case TableExprFuncNode::arrrmssFUNC:
     case TableExprFuncNode::arrmediansFUNC:
-    case TableExprFuncNode::anysFUNC:
-    case TableExprFuncNode::allsFUNC:
-    case TableExprFuncNode::ntruesFUNC:
-    case TableExprFuncNode::nfalsesFUNC:
+    case TableExprFuncNode::arranysFUNC:
+    case TableExprFuncNode::arrallsFUNC:
+    case TableExprFuncNode::arrntruesFUNC:
+    case TableExprFuncNode::arrnfalsesFUNC:
         if (operands()[axarg]->isConstant()) {
 	    ipos_p = getAxes (0, -1, axarg);
 	    constAxes_p = True;
@@ -373,7 +380,7 @@ void TableExprFuncNodeArray::tryToConst()
         // fall through
     case TableExprFuncNode::arrayFUNC:
         if (operands()[axarg]->isConstant()) {
-	    getArrayShape (0, axarg);
+          getArrayShape (0, axarg);            // fills ipos_p
 	    constAxes_p = True;
 	}
         break;
@@ -470,8 +477,8 @@ IPosition TableExprFuncNodeArray::removeAxes (const IPosition& axes,
   return newAxes;
 }
 			   
-const IPosition& TableExprFuncNodeArray::getArrayShape(const TableExprId& id,
-						       uInt axarg)
+const IPosition& TableExprFuncNodeArray::getArrayShape (const TableExprId& id,
+                                                        uInt axarg)
 {
   // Get the shape if not constant.
   if (!constAxes_p) {
@@ -597,6 +604,47 @@ const IPosition& TableExprFuncNodeArray::getAlternate (const TableExprId& id)
     }
   }
   return expandAlt_p;
+}
+
+IPosition TableExprFuncNodeArray::adjustShape (const IPosition& shape,
+                                               const IPosition& origShape) const
+{
+  // Set axis < 0 to original shape (if present) or 1.
+  IPosition shp(shape);
+  for (uInt i=0; i<shp.size(); ++i) {
+    if (shp[i] < 0) {
+      if (i < origShape.size()) {
+        shp[i] = origShape[i];
+      } else {
+        shp[i] = 1;
+      }
+    }
+  }
+  return shp;
+}
+
+MArray<Double> TableExprFuncNodeArray::angdistx (const MArray<Double>& a1,
+                                                 const MArray<Double>& a2) const
+{
+  Array<Double>::const_iterator end1 = a1.array().end();
+  Array<Double>::const_iterator end2 = a2.array().end();
+  Array<Double> result(IPosition(2, a1.size()/2, a2.size()/2));
+  Double* res = result.data();
+  for (Array<Double>::const_iterator p2 = a2.array().begin();
+       p2!=end2; ++p2) {
+    Double ra2     = *p2;
+    ++p2;
+    Double sindec2 = sin(*p2);
+    Double cosdec2 = cos(*p2);
+    for (Array<Double>::const_iterator p1 = a1.array().begin();
+         p1!=end1; ++p1) {
+      Double ra1 = *p1;
+      ++p1;
+      *res++ = acos (sin(*p1)*sindec2 + cos(*p1)*cosdec2*cos(ra1-ra2));
+    }
+  }
+  /// deal with possible mask
+  return MArray<Double>(result);
 }
 
 
@@ -740,12 +788,12 @@ MArray<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
 			    operands()[1]->getArrayDComplex(id),
 			    operands()[2]->getDouble(id));
 	}
-    case TableExprFuncNode::anysFUNC:
+    case TableExprFuncNode::arranysFUNC:
       {
 	MArray<Bool> arr (operands()[0]->getArrayBool(id));
 	return partialAnys (arr, getAxes(id, arr.ndim()));
       }
-    case TableExprFuncNode::allsFUNC:
+    case TableExprFuncNode::arrallsFUNC:
       {
 	MArray<Bool> arr (operands()[0]->getArrayBool(id));
 	return partialAlls (arr, getAxes(id, arr.ndim()));
@@ -1113,6 +1161,21 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
 	return partialMaxs (arr, getAxes(id, arr.ndim()));
       }
+    case TableExprFuncNode::runsumFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return slidingSums (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::runproductFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return slidingProducts (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::runsumsqrFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return slidingSumSqrs (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::runminFUNC:
       {
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
@@ -1123,17 +1186,32 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
 	return slidingMaxs (arr, getArrayShape(id));
       }
+    case TableExprFuncNode::boxsumFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return boxedSums (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxproductFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return boxedProducts (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxsumsqrFUNC:
+      {
+	MArray<Int64> arr (operands()[0]->getArrayInt(id));
+	return boxedSumSqrs (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::boxminFUNC:
       {
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
-	return boxedMins (arr, getAxes(id, arr.ndim()));
+	return boxedMins (arr, getArrayShape(id));
       }
     case TableExprFuncNode::boxmaxFUNC:
       {
 	MArray<Int64> arr (operands()[0]->getArrayInt(id));
-	return boxedMaxs (arr, getAxes(id, arr.ndim()));
+	return boxedMaxs (arr, getArrayShape(id));
       }
-    case TableExprFuncNode::ntruesFUNC:
+    case TableExprFuncNode::arrntruesFUNC:
       {
 	MArray<Bool> arr (operands()[0]->getArrayBool(id));
 	MArray<uInt> res(partialNTrue (arr, getAxes(id, arr.ndim())));
@@ -1141,10 +1219,42 @@ MArray<Int64> TableExprFuncNodeArray::getArrayInt (const TableExprId& id)
 	convertArray (resd, res.array());
 	return MArray<Int64> (resd, res);
       }
-    case TableExprFuncNode::nfalsesFUNC:
+    case TableExprFuncNode::runntrueFUNC:
+      {
+	MArray<Bool> arr (operands()[0]->getArrayBool(id));
+	MArray<uInt> res(slidingNTrue (arr, getArrayShape(id)));
+	Array<Int64> resd(res.shape());
+	convertArray (resd, res.array());
+	return MArray<Int64> (resd, res);
+      }
+    case TableExprFuncNode::boxntrueFUNC:
+      {
+	MArray<Bool> arr (operands()[0]->getArrayBool(id));
+	MArray<uInt> res(boxedNTrue (arr, getArrayShape(id)));
+	Array<Int64> resd(res.shape());
+	convertArray (resd, res.array());
+	return MArray<Int64> (resd, res);
+      }
+    case TableExprFuncNode::arrnfalsesFUNC:
       {
 	MArray<Bool> arr (operands()[0]->getArrayBool(id));
 	MArray<uInt> res(partialNFalse (arr, getAxes(id, arr.ndim())));
+	Array<Int64> resd(res.shape());
+	convertArray (resd, res.array());
+	return MArray<Int64> (resd, res);
+      }
+    case TableExprFuncNode::runnfalseFUNC:
+      {
+	MArray<Bool> arr (operands()[0]->getArrayBool(id));
+	MArray<uInt> res(slidingNFalse (arr, getArrayShape(id)));
+	Array<Int64> resd(res.shape());
+	convertArray (resd, res.array());
+	return MArray<Int64> (resd, res);
+      }
+    case TableExprFuncNode::boxnfalseFUNC:
+      {
+	MArray<Bool> arr (operands()[0]->getArrayBool(id));
+	MArray<uInt> res(boxedNFalse (arr, getArrayShape(id)));
 	Array<Int64> resd(res.shape());
 	convertArray (resd, res.array());
 	return MArray<Int64> (resd, res);
@@ -1484,6 +1594,21 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 				 getAxes(id, arr.ndim(), 2),
 				 operands()[1]->getDouble(id));
       }
+    case TableExprFuncNode::runsumFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingSums (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::runproductFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingProducts (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::runsumsqrFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingSumSqrs (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::runminFUNC:
       {
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
@@ -1523,7 +1648,28 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
       {
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return slidingMedians (arr, getArrayShape(id));
-    }
+      }
+    case TableExprFuncNode::runfractileFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingFractiles (arr, getArrayShape(id, 2),
+                                 operands()[1]->getDouble(id));
+      }
+    case TableExprFuncNode::boxsumFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedSums (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxproductFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedProducts (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxsumsqrFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedSumSqrs (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::boxminFUNC:
       {
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
@@ -1563,7 +1709,13 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
       {
 	MArray<Double> arr (operands()[0]->getArrayDouble(id));
 	return boxedMedians (arr, getArrayShape(id));
-    }
+      }
+    case TableExprFuncNode::boxfractileFUNC:
+      {
+	MArray<Double> arr (operands()[0]->getArrayDouble(id));
+	return boxedFractiles (arr, getArrayShape(id, 2),
+                               operands()[1]->getDouble(id));
+      }
     case TableExprFuncNode::arrayFUNC:
       {
         IPosition shp (getArrayShape(id));
@@ -1630,52 +1782,53 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
       {
         MArray<Double> a1 = operands()[0]->getArrayDouble(id);
         MArray<Double> a2 = operands()[1]->getArrayDouble(id);
+        if (!(a1.size() %2 == 0  &&  a2.size() %2 == 0)) {
+          throw TableInvExpr ("Arguments of angdist function must have a "
+                              "multiple of 2 values");
+        }
         // Treat an array of size 2 as scalar, so allow scalar-array operations
         // which is handled by angdistxFUNC.
-        if (a1.size() != 2  &&  a2.size() != 2) {
-          if (a1.size() != a2.size()) {
-            throw TableInvExpr ("Arguments of angdist function must have "
-                                "equal length");
+        if (a1.size() == 2  ||  a2.size() == 2) {
+          return angdistx (a1, a2);
+        }
+        if (a1.size() != a2.size()) {
+          throw TableInvExpr ("Arguments of angdist function must have "
+                              "equal length");
+        }
+        Array<Double> result(IPosition(1, a1.size()/2));
+        Double* res = result.data();
+        Array<Double>::const_iterator p2   = a2.array().begin();
+        Array<Double>::const_iterator end1 = a1.array().end();
+        for (Array<Double>::const_iterator p1 = a1.array().begin();
+             p1!=end1; ++p1) {
+          Double ra1 = *p1;
+          ++p1;
+          Double ra2 = *p2;
+          ++p2;
+          *res++ = acos (sin(*p1)*sin(*p2) + cos(*p1)*cos(*p2)*cos(ra1-ra2));
+          ++p2;
+        }
+        // Reduce possible masks by combining every 2 values.
+        Array<Bool> mask;
+        if (a1.hasMask()) {
+          partialArrayMath (mask,
+                            a1.mask().reform(IPosition(2, 2, a1.size()/2)),
+                            IPosition(1,0),
+                            AnyFunc<Bool>());
+        }
+        if (a2.hasMask()) {
+          Array<Bool> mask2;
+          partialArrayMath (mask2,
+                            a2.mask().reform(IPosition(2, 2, a2.size()/2)),
+                            IPosition(1,0),
+                            AnyFunc<Bool>());
+          if (mask.empty()) {
+            mask.reference (mask2);
+          } else {
+            mask.reference (mask || mask2);
           }
-          if (a1.size() %2 != 0) {
-            throw TableInvExpr ("Arguments of angdist function must have a "
-                                "multiple of 2 values");
-          }
-          Array<Double> result(IPosition(1, a1.size()/2));
-          Double* res = result.data();
-          Array<Double>::const_iterator p2   = a2.array().begin();
-          Array<Double>::const_iterator end1 = a1.array().end();
-          for (Array<Double>::const_iterator p1 = a1.array().begin();
-               p1!=end1; ++p1) {
-            Double ra1 = *p1;
-            ++p1;
-            Double ra2 = *p2;
-            ++p2;
-            *res++ = acos (sin(*p1)*sin(*p2) + cos(*p1)*cos(*p2)*cos(ra1-ra2));
-            ++p2;
-          }
-          // Reduce possible masks by combining every 2 values.
-          Array<Bool> mask;
-          if (a1.hasMask()) {
-            partialArrayMath (mask,
-                              a1.mask().reform(IPosition(2, 2, a1.size()/2)),
-                              IPosition(1,0),
-                              AnyFunc<Bool>());
-          }
-          if (a2.hasMask()) {
-            Array<Bool> mask2;
-            partialArrayMath (mask2,
-                              a2.mask().reform(IPosition(2, 2, a2.size()/2)),
-                              IPosition(1,0),
-                              AnyFunc<Bool>());
-            if (mask.empty()) {
-              mask.reference (mask2);
-            } else {
-              mask.reference (mask || mask2);
-            }
-          }
-          return MArray<Double> (result, mask);
-        }  // fall through if either array has size 2
+        }
+        return MArray<Double> (result, mask);
       }
     case TableExprFuncNode::angdistxFUNC:
       {
@@ -1685,25 +1838,8 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
           throw TableInvExpr ("Arguments of angdistx function must have a "
                               "multiple of 2 values");
         }
-        Array<Double>::const_iterator end1 = a1.array().end();
-        Array<Double>::const_iterator end2 = a2.array().end();
-        Array<Double> result(IPosition(2, a1.size()/2, a2.size()/2));
-        Double* res = result.data();
-        for (Array<Double>::const_iterator p2 = a2.array().begin();
-             p2!=end2; ++p2) {
-          Double ra2     = *p2;
-          ++p2;
-          Double sindec2 = sin(*p2);
-          Double cosdec2 = cos(*p2);
-          for (Array<Double>::const_iterator p1 = a1.array().begin();
-               p1!=end1; ++p1) {
-            Double ra1 = *p1;
-            ++p1;
-            *res++ = acos (sin(*p1)*sindec2 + cos(*p1)*cosdec2*cos(ra1-ra2));
-          }
-        }
-        /// deal with possible mask
-        return MArray<Double>(result);
+        return angdistx (a1, a2);
+
       }
     case TableExprFuncNode::datetimeFUNC:
     case TableExprFuncNode::mjdtodateFUNC:
@@ -1803,15 +1939,45 @@ MArray<DComplex> TableExprFuncNodeArray::getArrayDComplex
 	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return partialSums (arr, getAxes(id, arr.ndim()));
       }
+    case TableExprFuncNode::runsumFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return slidingSums (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxsumFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return boxedSums (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::arrproductsFUNC:
       {
 	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return partialProducts (arr, getAxes(id, arr.ndim()));
       }
+    case TableExprFuncNode::runproductFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return slidingProducts (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxproductFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return boxedProducts (arr, getArrayShape(id));
+      }
     case TableExprFuncNode::arrsumsqrsFUNC:
       {
 	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return partialSums (arr*arr, getAxes(id, arr.ndim()));
+      }
+    case TableExprFuncNode::runsumsqrFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return slidingSumSqrs (arr, getArrayShape(id));
+      }
+    case TableExprFuncNode::boxsumsqrFUNC:
+      {
+	MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	return boxedSumSqrs (arr, getArrayShape(id));
       }
     case TableExprFuncNode::arrmeansFUNC:
       {
