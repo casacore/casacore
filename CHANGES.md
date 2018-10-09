@@ -1,3 +1,29 @@
+# 2.5.0
+
+## General
+- Building with C++11 is now required
+- Improved thread-safety of statics (#775)
+- Improve statistics code (#785, #776, #662, #663)
+
+## Tables
+- Avoid growing the size of tables when overwriting data (#768)
+- TaQL support for radial velocity, earth magnetic field and Doppler (#750)
+- Added performance tests for tables (#658)
+
+# Measurement Set
+- Improvements to MSConcat (#779, #701)
+- Better handling of FITS-IDI flag history (#748)
+-
+
+# Images
+- Better support for double precision images (#752, #751)
+
+ 
+# 2.4.1
+
+## General
+- This release fixes a bug where TableIterator would skip a row
+
 # 2.4.0
 
 ## General
