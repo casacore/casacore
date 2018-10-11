@@ -140,25 +140,6 @@ public:
         (reinterpret_cast<const Array<T> *>(dataPtr))->freeStorage(reinterpret_cast<const T *&>(data), deleteIt);
     }
 
-    virtual void putArrayColumnCellsV (const RefRows& rownrs, const void* dataPtr)
-    {
-        if(rownrs.isSliced())
-        {
-            rownrs.convert();
-        }
-        for(const auto i : rownrs.rowVector())
-        {
-            putArrayV(i, dataPtr);
-        }
-    }
-
-    virtual void putScalarV(uInt rownr, const void *dataPtr)
-    {
-        itsAdiosStart[0] = rownr;
-        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        itsAdiosEngine->Put(itsAdiosVariable, reinterpret_cast<const T *>(dataPtr), adios2::Mode::Sync);
-    }
-
     virtual void getArrayV(uInt aRowNr, void *dataPtr)
     {
         itsAdiosStart[0] = aRowNr;
@@ -173,6 +154,34 @@ public:
         T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
         itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
         reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
+    }
+
+    virtual void putScalarV(uInt rownr, const void *dataPtr)
+    {
+        itsAdiosStart[0] = rownr;
+        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+        itsAdiosEngine->Put(itsAdiosVariable, reinterpret_cast<const T *>(dataPtr), adios2::Mode::Sync);
+    }
+
+    virtual void getScalarV(uInt aRowNr, void *data)
+    {
+        itsAdiosStart[0] = aRowNr;
+        itsAdiosCount[0] = 1;
+        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+        itsAdiosEngine->Get<T>(itsAdiosVariable, reinterpret_cast<T *>(data),
+                               adios2::Mode::Sync);
+    }
+
+    virtual void putArrayColumnCellsV (const RefRows& rownrs, const void* dataPtr)
+    {
+        if(rownrs.isSliced())
+        {
+            rownrs.convert();
+        }
+        for(const auto i : rownrs.rowVector())
+        {
+            putArrayV(i, dataPtr);
+        }
     }
 
     virtual void getArrayColumnCellsV (const RefRows& rownrs, void* dataPtr)
@@ -229,15 +238,6 @@ public:
         T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
         itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
         reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
-    }
-
-    virtual void getScalarV(uInt aRowNr, void *data)
-    {
-        itsAdiosStart[0] = aRowNr;
-        itsAdiosCount[0] = 1;
-        itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        itsAdiosEngine->Get<T>(itsAdiosVariable, reinterpret_cast<T *>(data),
-                               adios2::Mode::Sync);
     }
 
 private:

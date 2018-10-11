@@ -137,10 +137,6 @@ void Adios2StManColumn::putDComplexV(uInt rownr, const DComplex *dataPtr)
 {
     putScalarV(rownr, dataPtr);
 }
-void Adios2StManColumn::putStringV(uInt rownr, const String *dataPtr)
-{
-    putScalarV(rownr, dataPtr);
-}
 
 void Adios2StManColumn::getBoolV(uInt rownr, Bool *dataPtr)
 {
@@ -182,9 +178,36 @@ void Adios2StManColumn::getDComplexV(uInt rownr, DComplex *dataPtr)
 {
     getScalarV(rownr, dataPtr);
 }
+
+// string
+
+void Adios2StManColumn::putStringV(uInt rownr, const String *dataPtr)
+{
+    std::string variableName = static_cast<std::string>(itsColumnName) + std::to_string(rownr);
+    adios2::Variable<std::string> v = itsAdiosIO->InquireVariable<std::string>(variableName);
+    if (!v)
+    {
+        v = itsAdiosIO->DefineVariable<std::string>(
+                variableName,
+                itsAdiosShape,
+                itsAdiosStart,
+                itsAdiosCount);
+    }
+}
 void Adios2StManColumn::getStringV(uInt rownr, String *dataPtr)
 {
-    getScalarV(rownr, dataPtr);
 }
+
+template<>
+void Adios2StManColumnT<std::string>::create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode)
+{
+    itsAdiosEngine = aAdiosEngine;
+}
+
+template<>
+void Adios2StManColumnT<std::string>::putArrayV(uInt rownr, const void *dataPtr)
+{
+}
+
 
 }
