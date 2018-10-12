@@ -46,12 +46,6 @@
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/stdio.h>
 
-#ifdef HAVE_MPI
-#ifdef HAVE_ADIOS2
-#include <casacore/tables/DataMan/Adios2StMan.h>
-#endif
-#endif
-
 #include <casacore/casa/namespace.h>
 // <summary>
 // Test program for the various storage managers.
@@ -688,16 +682,6 @@ int main (int argc, const char* argv[])
     doTest (nrrow, st2);
     IncrementalStMan st3(max(bucketSize,1000u), False);
     doTest (nrrow, st3);
-#ifdef HAVE_MPI
-    MPI_Init(0,0);
-#ifdef HAVE_ADIOS2
-    {
-        Adios2StMan st4;
-        doTest (nrrow, st4);
-    }
-#endif
-    MPI_Finalize();
-#endif
   } catch (AipsError x) {
     cout << "Caught an exception: " << x.getMesg() << endl;
     return 1;

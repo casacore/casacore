@@ -209,5 +209,9 @@ void Adios2StManColumnT<std::string>::putArrayV(uInt rownr, const void *dataPtr)
 {
 }
 
+template<>
+void Adios2StManColumnT<std::string>::getArrayV(uInt rownr, void *dataPtr)
+{
+}
 
 }

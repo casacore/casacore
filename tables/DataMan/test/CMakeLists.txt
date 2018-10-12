@@ -17,6 +17,8 @@ tSSMAddRemove
 tSSMStringHandler
 tStandardStMan
 tStArrayFile
+tStMan
+tStMan1
 tTiledBool
 tTiledCellStM_1
 tTiledCellStMan
@@ -35,8 +37,7 @@ tVSCEngine
 )
 
 set (tests_mpi
-tStMan
-tStMan1
+    tAdios2StMan
 )
 
 # Some test sources include a test .h file.
@@ -49,17 +50,17 @@ foreach (test ${tests})
     add_dependencies(check ${test})
 endforeach (test)
 
-foreach (test ${tests_mpi})
-    add_executable (${test} ${test}.cc)
-    target_link_libraries (${test} casa_tables)
-    if(MPI_FOUND)
-        target_compile_definitions(${test} PRIVATE HAVE_MPI)
-        target_link_libraries(${test} MPI::MPI_C)
-        if(ADIOS2_FOUND)
+if(MPI_FOUND)
+    if(ADIOS2_FOUND)
+        foreach (test ${tests_mpi})
+            add_executable (${test} ${test}.cc)
+            target_link_libraries (${test} casa_tables)
+            target_compile_definitions(${test} PRIVATE HAVE_MPI)
             target_compile_definitions(${test} PRIVATE HAVE_ADIOS2)
-            target_link_libraries(${test} ${ADIOS2_LIBRARIES} MPI::MPI_C)
-        endif(ADIOS2_FOUND)
-    endif(MPI_FOUND)
-    add_test (${test} ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
-    add_dependencies(check ${test})
-endforeach (test)
+            target_link_libraries(${test} MPI::MPI_C)
+            target_link_libraries(${test} ${ADIOS2_LIBRARIES})
+            add_test (${test} ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
+            add_dependencies(check ${test})
+        endforeach (test)
+    endif(ADIOS2_FOUND)
+endif(MPI_FOUND)
