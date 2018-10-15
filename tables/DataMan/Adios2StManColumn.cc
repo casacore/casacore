@@ -54,11 +54,11 @@ void Adios2StManColumn::setShapeColumn(const IPosition &aShape)
     itsAdiosShape.resize(aShape.size() + 1);
     itsAdiosStart.resize(aShape.size() + 1);
     itsAdiosCount.resize(aShape.size() + 1);
-    for (size_t i = 1; i < itsCasaShape.size() + 1; ++i)
+    for (size_t i = 0; i < aShape.size(); ++i)
     {
-        itsAdiosShape[i] = itsCasaShape[i - 1];
-        itsAdiosCount[i] = itsCasaShape[i - 1];
-        itsAdiosStart[i] = 0;
+        itsAdiosShape[i + 1] = aShape[aShape.size() - i - 1];
+        itsAdiosCount[i + 1] = aShape[aShape.size() - i - 1];
+        itsAdiosStart[i + 1] = 0;
     }
 }
 
@@ -187,13 +187,10 @@ void Adios2StManColumn::putStringV(uInt rownr, const String *dataPtr)
     adios2::Variable<std::string> v = itsAdiosIO->InquireVariable<std::string>(variableName);
     if (!v)
     {
-        v = itsAdiosIO->DefineVariable<std::string>(
-                variableName,
-                itsAdiosShape,
-                itsAdiosStart,
-                itsAdiosCount);
+        v = itsAdiosIO->DefineVariable<std::string>(variableName);
     }
 }
+
 void Adios2StManColumn::getStringV(uInt rownr, String *dataPtr)
 {
 }

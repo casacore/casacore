@@ -33,16 +33,11 @@
 #include <casacore/tables/Tables/ArrColDesc.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/casa/namespace.h>
-#include <mpi.h>
 
-int mpiRank, mpiSize;
-std::string filename = "test.table";
-uInt rows = 100;
-IPosition array_pos = IPosition(2,5,6);
 
 template<class T>
 void GenData(Array<T> &arr, uInt row){
-    arr = row + 1;
+    indgen(arr, static_cast<T>(row));
 }
 
 template<class T>
@@ -50,12 +45,39 @@ void GenData(T &arr, uInt row){
     arr = row + 1;
 }
 
-int doWrite(){
+template<class T>
+void VerifyArrayColumn(Table &table, std::string column, uInt rows, IPosition array_pos)
+{
+    ROArrayColumn<T> array_column(table, column);
+    for(uInt i=0; i<rows; ++i)
+    {
+        Array<T> arr_read = array_column.get(i);
+        Array<T> arr_gen(array_pos);
+        GenData(arr_gen, i);
+        AlwaysAssertExit (arr_read.nelements() == arr_gen.nelements());
+        for(size_t j=0; j<arr_read.nelements(); ++j)
+        {
+            AlwaysAssertExit (arr_read.data()[j] == arr_gen.data()[j]);
+        }
+    }
+}
 
-    Adios2StMan *stman = new Adios2StMan(MPI_COMM_WORLD);
+template<class T>
+void VerifyScalarColumn(Table &table, std::string column, uInt rows)
+{
+    ROScalarColumn<T> scalar_column(table, column);
+    for(uInt i=0; i<rows; ++i)
+    {
+        T scalar_read = scalar_column.get(i);
+        T scalar_gen;
+        GenData(scalar_gen, i);
+        AlwaysAssertExit (scalar_gen == scalar_read);
+    }
+}
 
-    int NrRows = mpiSize;
+void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
 
+    Adios2StMan stman(MPI_COMM_WORLD);
 
     TableDesc td("", "1", TableDesc::Scratch);
     td.addColumn (ScalarColumnDesc<Bool>("scalar_Bool"));
@@ -81,30 +103,30 @@ int doWrite(){
     td.addColumn (ArrayColumnDesc<DComplex>("array_DComplex", array_pos, ColumnDesc::FixedShape));
 
     SetupNewTable newtab(filename, td, Table::New);
-    newtab.bindAll(*stman);
-    Table *tab = new Table(MPI_COMM_WORLD, newtab, NrRows);
+    newtab.bindAll(stman);
+    Table tab(MPI_COMM_WORLD, newtab, rows);
 
-    ScalarColumn<Bool> scalar_Bool (*tab, "scalar_Bool");
-    ScalarColumn<uChar> scalar_uChar (*tab, "scalar_uChar");
-    ScalarColumn<Short> scalar_Short (*tab, "scalar_Short");
-    ScalarColumn<uShort> scalar_uShort (*tab, "scalar_uShort");
-    ScalarColumn<Int> scalar_Int (*tab, "scalar_Int");
-    ScalarColumn<uInt> scalar_uInt (*tab, "scalar_uInt");
-    ScalarColumn<Float> scalar_Float (*tab, "scalar_Float");
-    ScalarColumn<Double> scalar_Double (*tab, "scalar_Double");
-    ScalarColumn<Complex> scalar_Complex (*tab, "scalar_Complex");
-    ScalarColumn<DComplex> scalar_DComplex (*tab, "scalar_DComplex");
+    ScalarColumn<Bool> scalar_Bool (tab, "scalar_Bool");
+    ScalarColumn<uChar> scalar_uChar (tab, "scalar_uChar");
+    ScalarColumn<Short> scalar_Short (tab, "scalar_Short");
+    ScalarColumn<uShort> scalar_uShort (tab, "scalar_uShort");
+    ScalarColumn<Int> scalar_Int (tab, "scalar_Int");
+    ScalarColumn<uInt> scalar_uInt (tab, "scalar_uInt");
+    ScalarColumn<Float> scalar_Float (tab, "scalar_Float");
+    ScalarColumn<Double> scalar_Double (tab, "scalar_Double");
+    ScalarColumn<Complex> scalar_Complex (tab, "scalar_Complex");
+    ScalarColumn<DComplex> scalar_DComplex (tab, "scalar_DComplex");
 
-    ArrayColumn<Bool> array_Bool (*tab, "array_Bool");
-    ArrayColumn<uChar> array_uChar (*tab, "array_uChar");
-    ArrayColumn<Short> array_Short (*tab, "array_Short");
-    ArrayColumn<uShort> array_uShort (*tab, "array_uShort");
-    ArrayColumn<Int> array_Int (*tab, "array_Int");
-    ArrayColumn<uInt> array_uInt (*tab, "array_uInt");
-    ArrayColumn<Float> array_Float (*tab, "array_Float");
-    ArrayColumn<Double> array_Double (*tab, "array_Double");
-    ArrayColumn<Complex> array_Complex (*tab, "array_Complex");
-    ArrayColumn<DComplex> array_DComplex (*tab, "array_DComplex");
+    ArrayColumn<Bool> array_Bool (tab, "array_Bool");
+    ArrayColumn<uChar> array_uChar (tab, "array_uChar");
+    ArrayColumn<Short> array_Short (tab, "array_Short");
+    ArrayColumn<uShort> array_uShort (tab, "array_uShort");
+    ArrayColumn<Int> array_Int (tab, "array_Int");
+    ArrayColumn<uInt> array_uInt (tab, "array_uInt");
+    ArrayColumn<Float> array_Float (tab, "array_Float");
+    ArrayColumn<Double> array_Double (tab, "array_Double");
+    ArrayColumn<Complex> array_Complex (tab, "array_Complex");
+    ArrayColumn<DComplex> array_DComplex (tab, "array_DComplex");
 
     Array<Bool> arr_Bool(array_pos);
     Array<Char> arr_Char(array_pos);
@@ -175,79 +197,122 @@ int doWrite(){
         array_Complex.put(i, arr_Complex);
         array_DComplex.put(i, arr_DComplex);
     }
-
-    delete tab;
-    delete stman;
-
-    return 0;
 }
 
-template<class T>
-void VerifyArrayColumn(Table &table, std::string column)
-{
-    ROArrayColumn<T> array_column(table, column);
-    for(uInt i=0; i<rows; ++i)
-    {
-        Array<T> arr_read = array_column.get(i);
-        Array<T> arr_gen(array_pos);
-        GenData(arr_gen, i);
-        AlwaysAssertExit (arr_read.nelements() == arr_gen.nelements());
-        for(size_t j=0; j<arr_read.nelements(); ++j)
-        {
-            AlwaysAssertExit (arr_read.data()[j] == arr_gen.data()[j]);
-        }
-    }
-}
-
-template<class T>
-void VerifyScalarColumn(Table &table, std::string column)
-{
-    ROScalarColumn<T> scalar_column(table, column);
-    for(uInt i=0; i<rows; ++i)
-    {
-        T scalar_read = scalar_column.get(i);
-        T scalar_gen;
-        GenData(scalar_gen, i);
-        AlwaysAssertExit (scalar_gen == scalar_read);
-    }
-}
-
-void doRead(){
-
+void doReadScalar(std::string filename, uInt rows){
     Table casa_table(filename);
+    VerifyScalarColumn<Bool>(casa_table, "scalar_Bool", rows);
+    VerifyScalarColumn<uChar>(casa_table, "scalar_uChar", rows);
+    VerifyScalarColumn<Short>(casa_table, "scalar_Short", rows);
+    VerifyScalarColumn<uShort>(casa_table, "scalar_uShort", rows);
+    VerifyScalarColumn<Int>(casa_table, "scalar_Int", rows);
+    VerifyScalarColumn<uInt>(casa_table, "scalar_uInt", rows);
+    VerifyScalarColumn<Float>(casa_table, "scalar_Float", rows);
+    VerifyScalarColumn<Double>(casa_table, "scalar_Double", rows);
+    VerifyScalarColumn<Complex>(casa_table, "scalar_Complex", rows);
+    VerifyScalarColumn<DComplex>(casa_table, "scalar_DComplex", rows);
+}
 
-    VerifyArrayColumn<Bool>(casa_table, "array_Bool");
-    VerifyArrayColumn<uChar>(casa_table, "array_uChar");
-    VerifyArrayColumn<Short>(casa_table, "array_Short");
-    VerifyArrayColumn<uShort>(casa_table, "array_uShort");
-    VerifyArrayColumn<Int>(casa_table, "array_Int");
-    VerifyArrayColumn<uInt>(casa_table, "array_uInt");
-    VerifyArrayColumn<Float>(casa_table, "array_Float");
-    VerifyArrayColumn<Double>(casa_table, "array_Double");
-    VerifyArrayColumn<Complex>(casa_table, "array_Complex");
-    VerifyArrayColumn<DComplex>(casa_table, "array_DComplex");
+void doReadArray(std::string filename, uInt rows, IPosition array_pos){
+    Table casa_table(filename);
+    VerifyArrayColumn<Bool>(casa_table, "array_Bool", rows, array_pos);
+    VerifyArrayColumn<uChar>(casa_table, "array_uChar", rows, array_pos);
+    VerifyArrayColumn<Short>(casa_table, "array_Short", rows, array_pos);
+    VerifyArrayColumn<uShort>(casa_table, "array_uShort", rows, array_pos);
+    VerifyArrayColumn<Int>(casa_table, "array_Int", rows, array_pos);
+    VerifyArrayColumn<uInt>(casa_table, "array_uInt", rows, array_pos);
+    VerifyArrayColumn<Float>(casa_table, "array_Float", rows, array_pos);
+    VerifyArrayColumn<Double>(casa_table, "array_Double", rows, array_pos);
+    VerifyArrayColumn<Complex>(casa_table, "array_Complex", rows, array_pos);
+    VerifyArrayColumn<DComplex>(casa_table, "array_DComplex", rows, array_pos);
+}
 
-    VerifyScalarColumn<Bool>(casa_table, "scalar_Bool");
-    VerifyScalarColumn<uChar>(casa_table, "scalar_uChar");
-    VerifyScalarColumn<Short>(casa_table, "scalar_Short");
-    VerifyScalarColumn<uShort>(casa_table, "scalar_uShort");
-    VerifyScalarColumn<Int>(casa_table, "scalar_Int");
-    VerifyScalarColumn<uInt>(casa_table, "scalar_uInt");
-    VerifyScalarColumn<Float>(casa_table, "scalar_Float");
-    VerifyScalarColumn<Double>(casa_table, "scalar_Double");
-    VerifyScalarColumn<Complex>(casa_table, "scalar_Complex");
-    VerifyScalarColumn<DComplex>(casa_table, "scalar_DComplex");
+void doWriteColumnSlice(std::string filename, uInt rows, IPosition array_pos){
+
+    Adios2StMan stman(MPI_COMM_WORLD);
+
+    TableDesc td("", "1", TableDesc::Scratch);
+    td.addColumn (ArrayColumnDesc<Bool>("array_Bool", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<uChar>("array_uChar", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<Short>("array_Short", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<uShort>("array_uShort", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<Int>("array_Int", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<uInt>("array_uInt", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<Float>("array_Float", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<Double>("array_Double", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<Complex>("array_Complex", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<DComplex>("array_DComplex", array_pos, ColumnDesc::FixedShape));
+
+    SetupNewTable newtab(filename, td, Table::New);
+    newtab.bindAll(stman);
+    Table tab(MPI_COMM_WORLD, newtab, rows);
+
+    ArrayColumn<Bool> array_Bool (tab, "array_Bool");
+    ArrayColumn<uChar> array_uChar (tab, "array_uChar");
+    ArrayColumn<Short> array_Short (tab, "array_Short");
+    ArrayColumn<uShort> array_uShort (tab, "array_uShort");
+    ArrayColumn<Int> array_Int (tab, "array_Int");
+    ArrayColumn<uInt> array_uInt (tab, "array_uInt");
+    ArrayColumn<Float> array_Float (tab, "array_Float");
+    ArrayColumn<Double> array_Double (tab, "array_Double");
+    ArrayColumn<Complex> array_Complex (tab, "array_Complex");
+    ArrayColumn<DComplex> array_DComplex (tab, "array_DComplex");
+
+    Array<Bool> arr_Bool(array_pos);
+    Array<Char> arr_Char(array_pos);
+    Array<uChar> arr_uChar(array_pos);
+    Array<Short> arr_Short(array_pos);
+    Array<uShort> arr_uShort(array_pos);
+    Array<Int> arr_Int(array_pos);
+    Array<uInt> arr_uInt(array_pos);
+    Array<Float> arr_Float(array_pos);
+    Array<Double> arr_Double(array_pos);
+    Array<Complex> arr_Complex(array_pos);
+    Array<DComplex> arr_DComplex(array_pos);
+
+    for(uInt i=0; i<rows; ++i)
+    {
+        GenData(arr_Bool, i);
+        GenData(arr_uChar, i);
+        GenData(arr_Short, i);
+        GenData(arr_uShort, i);
+        GenData(arr_Int, i);
+        GenData(arr_uInt, i);
+        GenData(arr_Float, i);
+        GenData(arr_Double, i);
+        GenData(arr_Complex, i);
+        GenData(arr_DComplex, i);
+
+        array_Bool.put(i, arr_Bool);
+        array_uChar.put(i, arr_uChar);
+        array_Short.put(i, arr_Short);
+        array_uShort.put(i, arr_uShort);
+        array_Int.put(i, arr_Int);
+        array_uInt.put(i, arr_uInt);
+        array_Float.put(i, arr_Float);
+        array_Double.put(i, arr_Double);
+        array_Complex.put(i, arr_Complex);
+        array_DComplex.put(i, arr_DComplex);
+    }
+}
+
+void doReadColumnSlice(std::string filename, uInt rows, IPosition array_pos){
 
 }
 
 int main(int argc, char **argv){
 
     MPI_Init(&argc,&argv);
-    MPI_Comm_rank(MPI_COMM_WORLD, &mpiRank);
-    MPI_Comm_size(MPI_COMM_WORLD, &mpiSize);
 
-    doWrite();
-    doRead();
+    uInt rows = 10;
+    IPosition array_pos = IPosition(2,5,6);
+
+    doWriteDefault("default.table", rows, array_pos);
+    doReadScalar("default.table", rows);
+    doReadArray("default.table", rows, array_pos);
+
+    doWriteColumnSlice("putColumnSlice.table", rows, array_pos);
+    doReadArray("putColumnSlice.table", rows, array_pos);
 
     MPI_Finalize();
 }
