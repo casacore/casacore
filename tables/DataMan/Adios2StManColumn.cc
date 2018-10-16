@@ -181,6 +181,13 @@ void Adios2StManColumn::getDComplexV(uInt rownr, DComplex *dataPtr)
 
 // string
 
+template<>
+void Adios2StManColumnT<std::string>::create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode)
+{
+    itsAdiosEngine = aAdiosEngine;
+    itsAdiosOpenMode = aOpenMode;
+}
+
 void Adios2StManColumn::putStringV(uInt rownr, const String *dataPtr)
 {
     std::string variableName = static_cast<std::string>(itsColumnName) + std::to_string(rownr);
@@ -189,26 +196,51 @@ void Adios2StManColumn::putStringV(uInt rownr, const String *dataPtr)
     {
         v = itsAdiosIO->DefineVariable<std::string>(variableName);
     }
+    itsAdiosEngine->Put(v, reinterpret_cast<const std::string *>(dataPtr), adios2::Mode::Sync);
 }
 
 void Adios2StManColumn::getStringV(uInt rownr, String *dataPtr)
 {
-}
-
-template<>
-void Adios2StManColumnT<std::string>::create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode)
-{
-    itsAdiosEngine = aAdiosEngine;
+    std::string variableName = static_cast<std::string>(itsColumnName) + std::to_string(rownr);
+    adios2::Variable<std::string> v = itsAdiosIO->InquireVariable<std::string>(variableName);
+    if (v)
+    {
+        itsAdiosEngine->Get(v, reinterpret_cast<std::string *>(dataPtr), adios2::Mode::Sync);
+    }
 }
 
 template<>
 void Adios2StManColumnT<std::string>::putArrayV(uInt rownr, const void *dataPtr)
 {
+    String combined;
+    Bool deleteIt;
+    const String *data = (reinterpret_cast<const Array<String> *>(dataPtr))->getStorage(deleteIt);
+    for(auto &i : *(reinterpret_cast<const Array<String> *>(dataPtr)))
+    {
+        combined = combined + i + itsStringArrayBarrier;
+    }
+    (reinterpret_cast<const Array<String> *>(dataPtr))->freeStorage(reinterpret_cast<const String *&>(data), deleteIt);
+    putStringV(rownr, &combined);
 }
 
 template<>
 void Adios2StManColumnT<std::string>::getArrayV(uInt rownr, void *dataPtr)
 {
+    String combined;
+    getStringV(rownr, &combined);
+    Bool deleteIt;
+    String *data = (reinterpret_cast<Array<String>*>(dataPtr))->getStorage(deleteIt);
+    size_t pos = 0;
+    for(auto &i : *(reinterpret_cast<Array<String> *>(dataPtr)))
+    {
+        size_t found = combined.find(itsStringArrayBarrier, pos);
+        if(found != std::string::npos)
+        {
+            i = combined.substr(pos, found - pos);
+            pos = found + itsStringArrayBarrier.length();
+        }
+    }
+    reinterpret_cast<Array<String>*>(dataPtr)->putStorage(reinterpret_cast<String *&>(data), deleteIt);
 }
 
-}
+} // namespace casacore

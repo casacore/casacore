@@ -41,8 +41,20 @@ void GenData(Array<T> &arr, uInt row){
 }
 
 template<class T>
-void GenData(T &arr, uInt row){
-    arr = row + 1;
+void GenData(T &sca, uInt row){
+    sca = row + 1;
+}
+
+void GenData(String &str, uInt row){
+    str = "string for Row " + std::to_string(row);
+}
+
+void GenData(Array<String> &str, uInt row){
+    size_t s=0;
+    for(auto &i : str){
+        i = "string for Row " + std::to_string(row) + " Element " + std::to_string(s);
+        ++s;
+    }
 }
 
 template<class T>
@@ -57,6 +69,8 @@ void VerifyArrayColumn(Table &table, std::string column, uInt rows, IPosition ar
         AlwaysAssertExit (arr_read.nelements() == arr_gen.nelements());
         for(size_t j=0; j<arr_read.nelements(); ++j)
         {
+            std::cout << "read: " << arr_read.data()[j] << std::endl;
+            std::cout << "gen:" << arr_gen.data()[j] << std::endl;
             AlwaysAssertExit (arr_read.data()[j] == arr_gen.data()[j]);
         }
     }
@@ -90,6 +104,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
     td.addColumn (ScalarColumnDesc<Double>("scalar_Double"));
     td.addColumn (ScalarColumnDesc<Complex>("scalar_Complex"));
     td.addColumn (ScalarColumnDesc<DComplex>("scalar_DComplex"));
+    td.addColumn (ScalarColumnDesc<String>("scalar_String"));
 
     td.addColumn (ArrayColumnDesc<Bool>("array_Bool", array_pos, ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<uChar>("array_uChar", array_pos, ColumnDesc::FixedShape));
@@ -101,6 +116,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
     td.addColumn (ArrayColumnDesc<Double>("array_Double", array_pos, ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<Complex>("array_Complex", array_pos, ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<DComplex>("array_DComplex", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<String>("array_String", array_pos, ColumnDesc::FixedShape));
 
     SetupNewTable newtab(filename, td, Table::New);
     newtab.bindAll(stman);
@@ -116,6 +132,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
     ScalarColumn<Double> scalar_Double (tab, "scalar_Double");
     ScalarColumn<Complex> scalar_Complex (tab, "scalar_Complex");
     ScalarColumn<DComplex> scalar_DComplex (tab, "scalar_DComplex");
+    ScalarColumn<String> scalar_String (tab, "scalar_String");
 
     ArrayColumn<Bool> array_Bool (tab, "array_Bool");
     ArrayColumn<uChar> array_uChar (tab, "array_uChar");
@@ -127,6 +144,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
     ArrayColumn<Double> array_Double (tab, "array_Double");
     ArrayColumn<Complex> array_Complex (tab, "array_Complex");
     ArrayColumn<DComplex> array_DComplex (tab, "array_DComplex");
+    ArrayColumn<String> array_String (tab, "array_String");
 
     Array<Bool> arr_Bool(array_pos);
     Array<Char> arr_Char(array_pos);
@@ -139,6 +157,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
     Array<Double> arr_Double(array_pos);
     Array<Complex> arr_Complex(array_pos);
     Array<DComplex> arr_DComplex(array_pos);
+    Array<String> arr_String(array_pos);
 
     Bool sca_Bool;
     uChar sca_uChar;
@@ -150,20 +169,10 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
     Double sca_Double;
     Complex sca_Complex;
     DComplex sca_DComplex;
+    String sca_String;
 
     for(uInt i=0; i<rows; ++i)
     {
-        GenData(arr_Bool, i);
-        GenData(arr_uChar, i);
-        GenData(arr_Short, i);
-        GenData(arr_uShort, i);
-        GenData(arr_Int, i);
-        GenData(arr_uInt, i);
-        GenData(arr_Float, i);
-        GenData(arr_Double, i);
-        GenData(arr_Complex, i);
-        GenData(arr_DComplex, i);
-
         GenData(sca_Bool, i);
         GenData(sca_uChar, i);
         GenData(sca_Short, i);
@@ -174,6 +183,19 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
         GenData(sca_Double, i);
         GenData(sca_Complex, i);
         GenData(sca_DComplex, i);
+        GenData(sca_String, i);
+
+        GenData(arr_Bool, i);
+        GenData(arr_uChar, i);
+        GenData(arr_Short, i);
+        GenData(arr_uShort, i);
+        GenData(arr_Int, i);
+        GenData(arr_uInt, i);
+        GenData(arr_Float, i);
+        GenData(arr_Double, i);
+        GenData(arr_Complex, i);
+        GenData(arr_DComplex, i);
+        GenData(arr_String, i);
 
         scalar_Bool.put (i, sca_Bool);
         scalar_uChar.put (i, sca_uChar);
@@ -185,6 +207,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
         scalar_Double.put (i, sca_Double);
         scalar_Complex.put (i, sca_Complex);
         scalar_DComplex.put (i, sca_DComplex);
+        scalar_String.put (i, sca_String);
 
         array_Bool.put(i, arr_Bool);
         array_uChar.put(i, arr_uChar);
@@ -196,6 +219,7 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
         array_Double.put(i, arr_Double);
         array_Complex.put(i, arr_Complex);
         array_DComplex.put(i, arr_DComplex);
+        array_String.put(i, arr_String);
     }
 }
 
@@ -211,6 +235,7 @@ void doReadScalar(std::string filename, uInt rows){
     VerifyScalarColumn<Double>(casa_table, "scalar_Double", rows);
     VerifyScalarColumn<Complex>(casa_table, "scalar_Complex", rows);
     VerifyScalarColumn<DComplex>(casa_table, "scalar_DComplex", rows);
+    VerifyScalarColumn<String>(casa_table, "scalar_String", rows);
 }
 
 void doReadArray(std::string filename, uInt rows, IPosition array_pos){
@@ -225,94 +250,19 @@ void doReadArray(std::string filename, uInt rows, IPosition array_pos){
     VerifyArrayColumn<Double>(casa_table, "array_Double", rows, array_pos);
     VerifyArrayColumn<Complex>(casa_table, "array_Complex", rows, array_pos);
     VerifyArrayColumn<DComplex>(casa_table, "array_DComplex", rows, array_pos);
-}
-
-void doWriteColumnSlice(std::string filename, uInt rows, IPosition array_pos){
-
-    Adios2StMan stman(MPI_COMM_WORLD);
-
-    TableDesc td("", "1", TableDesc::Scratch);
-    td.addColumn (ArrayColumnDesc<Bool>("array_Bool", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<uChar>("array_uChar", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<Short>("array_Short", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<uShort>("array_uShort", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<Int>("array_Int", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<uInt>("array_uInt", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<Float>("array_Float", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<Double>("array_Double", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<Complex>("array_Complex", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<DComplex>("array_DComplex", array_pos, ColumnDesc::FixedShape));
-
-    SetupNewTable newtab(filename, td, Table::New);
-    newtab.bindAll(stman);
-    Table tab(MPI_COMM_WORLD, newtab, rows);
-
-    ArrayColumn<Bool> array_Bool (tab, "array_Bool");
-    ArrayColumn<uChar> array_uChar (tab, "array_uChar");
-    ArrayColumn<Short> array_Short (tab, "array_Short");
-    ArrayColumn<uShort> array_uShort (tab, "array_uShort");
-    ArrayColumn<Int> array_Int (tab, "array_Int");
-    ArrayColumn<uInt> array_uInt (tab, "array_uInt");
-    ArrayColumn<Float> array_Float (tab, "array_Float");
-    ArrayColumn<Double> array_Double (tab, "array_Double");
-    ArrayColumn<Complex> array_Complex (tab, "array_Complex");
-    ArrayColumn<DComplex> array_DComplex (tab, "array_DComplex");
-
-    Array<Bool> arr_Bool(array_pos);
-    Array<Char> arr_Char(array_pos);
-    Array<uChar> arr_uChar(array_pos);
-    Array<Short> arr_Short(array_pos);
-    Array<uShort> arr_uShort(array_pos);
-    Array<Int> arr_Int(array_pos);
-    Array<uInt> arr_uInt(array_pos);
-    Array<Float> arr_Float(array_pos);
-    Array<Double> arr_Double(array_pos);
-    Array<Complex> arr_Complex(array_pos);
-    Array<DComplex> arr_DComplex(array_pos);
-
-    for(uInt i=0; i<rows; ++i)
-    {
-        GenData(arr_Bool, i);
-        GenData(arr_uChar, i);
-        GenData(arr_Short, i);
-        GenData(arr_uShort, i);
-        GenData(arr_Int, i);
-        GenData(arr_uInt, i);
-        GenData(arr_Float, i);
-        GenData(arr_Double, i);
-        GenData(arr_Complex, i);
-        GenData(arr_DComplex, i);
-
-        array_Bool.put(i, arr_Bool);
-        array_uChar.put(i, arr_uChar);
-        array_Short.put(i, arr_Short);
-        array_uShort.put(i, arr_uShort);
-        array_Int.put(i, arr_Int);
-        array_uInt.put(i, arr_uInt);
-        array_Float.put(i, arr_Float);
-        array_Double.put(i, arr_Double);
-        array_Complex.put(i, arr_Complex);
-        array_DComplex.put(i, arr_DComplex);
-    }
-}
-
-void doReadColumnSlice(std::string filename, uInt rows, IPosition array_pos){
-
+    VerifyArrayColumn<String>(casa_table, "array_String", rows, array_pos);
 }
 
 int main(int argc, char **argv){
 
     MPI_Init(&argc,&argv);
 
-    uInt rows = 10;
+    uInt rows = 100;
     IPosition array_pos = IPosition(2,5,6);
 
     doWriteDefault("default.table", rows, array_pos);
     doReadScalar("default.table", rows);
     doReadArray("default.table", rows, array_pos);
-
-    doWriteColumnSlice("putColumnSlice.table", rows, array_pos);
-    doReadArray("putColumnSlice.table", rows, array_pos);
 
     MPI_Finalize();
 }

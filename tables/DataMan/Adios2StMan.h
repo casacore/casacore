@@ -87,7 +87,7 @@ private:
     int itsStManColumnType;
     PtrBlock<Adios2StManColumn *> itsColumnPtrBlk;
 
-    std::shared_ptr<adios2::ADIOS> itsAdios;
+    adios2::ADIOS itsAdios;
     std::shared_ptr<adios2::IO> itsAdiosIO;
     std::shared_ptr<adios2::Engine> itsAdiosEngine;
 

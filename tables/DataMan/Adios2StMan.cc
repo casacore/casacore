@@ -39,7 +39,9 @@ std::vector<adios2::Params> Adios2StMan::itsAdiosTransportParamsVec;
 #ifdef HAVE_MPI
 MPI_Comm Adios2StMan::itsMpiComm = MPI_COMM_WORLD;
 
-Adios2StMan::Adios2StMan(MPI_Comm mpiComm) : DataManager()
+Adios2StMan::Adios2StMan(MPI_Comm mpiComm)
+    : DataManager(),
+    itsAdios(mpiComm, true)
 {
     itsUsingMpi = true;
     itsMpiComm = mpiComm;
@@ -98,24 +100,8 @@ void Adios2StMan::Adios2StManCommon(
     itsAdiosEngineParams = engineParams;
     itsAdiosTransportParamsVec = transportParams;
 
-    if (Adios2StMan::itsUsingMpi)
-    {
-#ifdef HAVE_MPI
-        itsAdios =
-            std::make_shared<adios2::ADIOS>(Adios2StMan::itsMpiComm, true);
-#else
-        throw(std::runtime_error("Adios2StMan using MPI but HAVE_MPI is not "
-                                 "defined. This should never happen"));
-        itsAdios = std::make_shared<adios2::ADIOS>(true);
-#endif
-    }
-    else
-    {
-        itsAdios = std::make_shared<adios2::ADIOS>(true);
-    }
-
     itsAdiosIO =
-        std::make_shared<adios2::IO>(itsAdios->DeclareIO("Adios2StMan"));
+        std::make_shared<adios2::IO>(itsAdios.DeclareIO("Adios2StMan"));
 
     if (itsAdiosEngineType.empty() == false)
     {

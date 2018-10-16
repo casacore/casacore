@@ -95,6 +95,7 @@ protected:
 
     std::shared_ptr<adios2::IO> itsAdiosIO;
     std::shared_ptr<adios2::Engine> itsAdiosEngine;
+    char itsAdiosOpenMode;
     std::string itsAdiosDataType;
     adios2::Dims itsAdiosShape = {std::numeric_limits<uInt>::max()};
     adios2::Dims itsAdiosStart = {0};
@@ -119,6 +120,7 @@ public:
     void create(std::shared_ptr<adios2::Engine> aAdiosEngine, char aOpenMode)
     {
         itsAdiosEngine = aAdiosEngine;
+        itsAdiosOpenMode = aOpenMode;
         itsAdiosVariable = itsAdiosIO->InquireVariable<T>(itsColumnName);
         if (!itsAdiosVariable && aOpenMode == 'w')
         {
@@ -168,8 +170,7 @@ public:
         itsAdiosStart[0] = aRowNr;
         itsAdiosCount[0] = 1;
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
-        itsAdiosEngine->Get<T>(itsAdiosVariable, reinterpret_cast<T *>(data),
-                               adios2::Mode::Sync);
+        itsAdiosEngine->Get<T>(itsAdiosVariable, reinterpret_cast<T *>(data), adios2::Mode::Sync);
     }
 
     virtual void putArrayColumnCellsV (const RefRows& rownrs, const void* dataPtr)
@@ -178,9 +179,9 @@ public:
         {
             rownrs.convert();
         }
-        for(const auto i : rownrs.rowVector())
+        for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
         {
-            putArrayV(i, dataPtr);
+            putArrayV(rownrs.rowVector()[i], reinterpret_cast<const char*>(dataPtr) + i * itsCasaShape.nelements() * sizeof(T));
         }
     }
 
@@ -190,9 +191,9 @@ public:
         {
             rownrs.convert();
         }
-        for(const auto i : rownrs.rowVector())
+        for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
         {
-            getArrayV(i, dataPtr);
+            getArrayV(rownrs.rowVector()[i], reinterpret_cast<char*>(dataPtr) + i * itsCasaShape.nelements() * sizeof(T));
         }
     }
 
@@ -242,6 +243,7 @@ public:
 
 private:
     adios2::Variable<T> itsAdiosVariable;
+    const String itsStringArrayBarrier = "ADIOS2BARRIER";
 }; // class Adios2StManColumnT
 
 } // namespace casacore
