@@ -134,17 +134,23 @@ public:
 
     virtual void putArrayV(uInt rownr, const void *dataPtr)
     {
-        Bool deleteIt;
         itsAdiosStart[0] = rownr;
+        itsAdiosCount[0] = 1;
+        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
+        {
+            itsAdiosStart[i] = 0;
+            itsAdiosCount[i] = itsAdiosShape[i];
+        }
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+        Bool deleteIt;
         const T *data = (reinterpret_cast<const Array<T> *>(dataPtr))->getStorage(deleteIt);
         itsAdiosEngine->Put(itsAdiosVariable, data, adios2::Mode::Sync);
         (reinterpret_cast<const Array<T> *>(dataPtr))->freeStorage(reinterpret_cast<const T *&>(data), deleteIt);
     }
 
-    virtual void getArrayV(uInt aRowNr, void *dataPtr)
+    virtual void getArrayV(uInt rownr, void *dataPtr)
     {
-        itsAdiosStart[0] = aRowNr;
+        itsAdiosStart[0] = rownr;
         itsAdiosCount[0] = 1;
         for (size_t i = 1; i < itsAdiosShape.size(); ++i)
         {
@@ -154,7 +160,7 @@ public:
         itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
         Bool deleteIt;
         T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
-        itsAdiosEngine->Get<T>(itsAdiosVariable, data,adios2::Mode::Sync);
+        itsAdiosEngine->Get<T>(itsAdiosVariable, data, adios2::Mode::Sync);
         reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
     }
 
@@ -179,10 +185,21 @@ public:
         {
             rownrs.convert();
         }
+        Bool deleteIt;
+        const T *data = (reinterpret_cast<const Array<T> *>(dataPtr))->getStorage(deleteIt);
+        itsAdiosCount[0] = 1;
+        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
+        {
+            itsAdiosStart[i] = 0;
+            itsAdiosCount[i] = itsAdiosShape[i];
+        }
         for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
         {
-            putArrayV(rownrs.rowVector()[i], reinterpret_cast<const char*>(dataPtr) + i * itsCasaShape.nelements() * sizeof(T));
+            itsAdiosStart[0] = rownrs.rowVector()[i];
+            itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+            itsAdiosEngine->Put(itsAdiosVariable, data + i * itsCasaShape.nelements(), adios2::Mode::Sync);
         }
+        (reinterpret_cast<const Array<T> *>(dataPtr))->freeStorage(reinterpret_cast<const T *&>(data), deleteIt);
     }
 
     virtual void getArrayColumnCellsV (const RefRows& rownrs, void* dataPtr)
@@ -191,10 +208,21 @@ public:
         {
             rownrs.convert();
         }
+        Bool deleteIt;
+        T *data = (reinterpret_cast<Array<T>*>(dataPtr))->getStorage(deleteIt);
+        itsAdiosCount[0] = 1;
+        for (size_t i = 1; i < itsAdiosShape.size(); ++i)
+        {
+            itsAdiosStart[i] = 0;
+            itsAdiosCount[i] = itsAdiosShape[i];
+        }
         for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
         {
-            getArrayV(rownrs.rowVector()[i], reinterpret_cast<char*>(dataPtr) + i * itsCasaShape.nelements() * sizeof(T));
+            itsAdiosStart[0] = rownrs.rowVector()[i];
+            itsAdiosVariable.SetSelection({itsAdiosStart, itsAdiosCount});
+            itsAdiosEngine->Get(itsAdiosVariable, data + i * itsCasaShape.nelements(), adios2::Mode::Sync);
         }
+        reinterpret_cast<Array<T>*>(dataPtr)->putStorage(reinterpret_cast<T *&>(data), deleteIt);
     }
 
     virtual void getSliceV(uInt aRowNr, const Slicer &ns, void *dataPtr)
