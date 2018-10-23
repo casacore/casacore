@@ -191,7 +191,13 @@ void MSSpectralWindow::init()
 		"Hz","");
       // TOTAL_BANDWIDTH
       colMapDef(TOTAL_BANDWIDTH, "TOTAL_BANDWIDTH", TpDouble,
-		"The total bandwidth for this window","Hz","");
+        "The total bandwidth for this window","Hz","");
+      // SDM_WINDOW_FUNCTION
+      colMapDef(SDM_WINDOW_FUNCTION, "SDM_WINDOW_FUNCTION", TpString,
+        "The correlator windowing function","","");
+      // SDM_NUM_BIN
+      colMapDef(SDM_NUM_BIN, "SDM_NUM_BIN", TpInt,
+        "The correlator windowing binning","","");
       // PredefinedKeywords
       
       // init requiredTableDesc

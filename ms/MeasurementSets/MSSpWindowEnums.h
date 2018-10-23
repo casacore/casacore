@@ -134,8 +134,14 @@ public:
     // May point to optional RECEIVER table <BR>
     // Int
     RECEIVER_ID,
+    // The window function used in some correlator setups, like ALMA and VLA in WIDAR mode.
+    // String
+    SDM_WINDOW_FUNCTION,
+    // The number of bins used by the windowing function (SDM_WINDOW_FUNCTION) in some correlator setups
+    // Int
+    SDM_NUM_BIN,
     // Not a column, but just a final enum specifying the number of enums.
-    NUMBER_PREDEFINED_COLUMNS=RECEIVER_ID
+    NUMBER_PREDEFINED_COLUMNS=SDM_NUM_BIN
     };
   
     // Keywords with a predefined meaning

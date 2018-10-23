@@ -131,6 +131,8 @@ public:
   const ROScalarColumn<Int>& bbcSideband() const {return bbcSideband_p;}
   const ROScalarColumn<Int>& dopplerId() const {return dopplerId_p;}
   const ROScalarColumn<Int>& receiverId() const {return receiverId_p;}
+  const ROScalarColumn<String>& sdmWindowFunction() const {return sdmWindowFunction_p;}
+  const ROScalarColumn<Int>& sdmNumBin() const {return sdmNumBin_p;}
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
@@ -228,6 +230,8 @@ private:
   ROScalarColumn<Int> bbcSideband_p;
   ROScalarColumn<Int> dopplerId_p;
   ROScalarColumn<Int> receiverId_p;
+  ROScalarColumn<String> sdmWindowFunction_p;
+  ROScalarColumn<Int> sdmNumBin_p;
 
   //# Access to Measure columns
   ROArrayMeasColumn<MFrequency> chanFreqMeas_p;
@@ -324,6 +328,8 @@ public:
   ScalarColumn<Int>& bbcSideband() {return bbcSideband_p;}
   ScalarColumn<Int>& dopplerId() {return dopplerId_p;}
   ScalarColumn<Int>& receiverId() {return receiverId_p;}
+  ScalarColumn<String>& sdmWindowFunction() {return sdmWindowFunction_p;}
+  ScalarColumn<Int>& sdmNumBin() {return sdmNumBin_p;}
   // </group>
 
   // Read-only access to required columns
@@ -388,6 +394,10 @@ public:
     return ROMSSpWindowColumns::dopplerId();}
   const ROScalarColumn<Int>& receiverId() const {
     return ROMSSpWindowColumns::receiverId();}
+  const ROScalarColumn<String>& sdmWindowFunction() const {
+    return ROMSSpWindowColumns::sdmWindowFunction();}
+  const ROScalarColumn<Int>& sdmNumBin() const {
+    return ROMSSpWindowColumns::sdmNumBin();}
   // </group>
 
 protected:
@@ -429,6 +439,8 @@ private:
   ScalarColumn<Int> bbcSideband_p;
   ScalarColumn<Int> dopplerId_p;
   ScalarColumn<Int> receiverId_p;
+  ScalarColumn<String> sdmWindowFunction_p;
+  ScalarColumn<Int> sdmNumBin_p;
 
   //# Access to Measure columns
   ArrayMeasColumn<MFrequency> chanFreqMeas_p;

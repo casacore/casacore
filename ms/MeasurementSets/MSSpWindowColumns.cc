@@ -93,6 +93,8 @@ ROMSSpWindowColumns(const MSSpectralWindow& msSpWindow):
   bbcSideband_p(),
   dopplerId_p(),
   receiverId_p(),
+  sdmWindowFunction_p(),
+  sdmNumBin_p(),
   chanFreqMeas_p(msSpWindow, MSSpectralWindow::
 		 columnName(MSSpectralWindow::CHAN_FREQ)),
   refFrequencyMeas_p(msSpWindow, MSSpectralWindow::
@@ -320,6 +322,8 @@ ROMSSpWindowColumns::ROMSSpWindowColumns():
   bbcSideband_p(),
   dopplerId_p(),
   receiverId_p(),
+  sdmWindowFunction_p(),
+  sdmNumBin_p(),
   chanFreqMeas_p(),
   refFrequencyMeas_p(),
   chanFreqQuant_p(),
@@ -402,6 +406,12 @@ attachOptionalCols(const MSSpectralWindow& msSpWindow)
   const String& receiverId=
     MSSpectralWindow::columnName(MSSpectralWindow::RECEIVER_ID);
   if (cds.isDefined(receiverId)) receiverId_p.attach(msSpWindow,receiverId);
+  const String& sdmWindowFunction=
+    MSSpectralWindow::columnName(MSSpectralWindow::SDM_WINDOW_FUNCTION);
+  if (cds.isDefined(sdmWindowFunction)) sdmWindowFunction_p.attach(msSpWindow,sdmWindowFunction);
+  const String& sdmNumBin=
+    MSSpectralWindow::columnName(MSSpectralWindow::SDM_NUM_BIN);
+  if (cds.isDefined(sdmNumBin)) sdmNumBin_p.attach(msSpWindow,sdmNumBin);
 }
 
 Bool ROMSSpWindowColumns::
@@ -599,6 +609,8 @@ MSSpWindowColumns::MSSpWindowColumns(MSSpectralWindow& msSpWindow):
   bbcSideband_p(),
   dopplerId_p(),
   receiverId_p(),
+  sdmWindowFunction_p(),
+  sdmNumBin_p(),
   chanFreqMeas_p(msSpWindow, MSSpectralWindow::
 		 columnName(MSSpectralWindow::CHAN_FREQ)),
   refFrequencyMeas_p(msSpWindow, MSSpectralWindow::
@@ -643,6 +655,8 @@ MSSpWindowColumns::MSSpWindowColumns():
   bbcSideband_p(),
   dopplerId_p(),
   receiverId_p(),
+  sdmWindowFunction_p(),
+  sdmNumBin_p(),
   chanFreqMeas_p(),
   refFrequencyMeas_p(),
   chanFreqQuant_p(),
@@ -726,6 +740,12 @@ attachOptionalCols(MSSpectralWindow& msSpWindow)
   const String& receiverId=
     MSSpectralWindow::columnName(MSSpectralWindow::RECEIVER_ID);
   if (cds.isDefined(receiverId)) receiverId_p.attach(msSpWindow,receiverId);
+  const String& sdmWindowFunction=
+    MSSpectralWindow::columnName(MSSpectralWindow::SDM_WINDOW_FUNCTION);
+  if (cds.isDefined(sdmWindowFunction)) sdmWindowFunction_p.attach(msSpWindow,sdmWindowFunction);
+  const String& sdmNumBin=
+    MSSpectralWindow::columnName(MSSpectralWindow::SDM_NUM_BIN);
+  if (cds.isDefined(sdmNumBin)) sdmNumBin_p.attach(msSpWindow,sdmNumBin);
 }
 
 
