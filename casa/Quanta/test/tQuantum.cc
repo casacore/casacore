@@ -208,7 +208,9 @@ try {
     } 
     
     try {
-        A<D;
+        // put in conditional so result is used,
+        // so compiler won't emit warning of unused result
+        if(A<D) {}
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
     } 
