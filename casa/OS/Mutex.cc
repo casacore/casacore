@@ -84,7 +84,9 @@ namespace casacore {
     }
   }
 
-  Mutex::~Mutex()
+ // declaring noexcept(false) to squash compiler warning, although note
+ // that it is usually a bad idea for destructors to throw exceptions
+ Mutex::~Mutex() noexcept(false)
   {
     int error = pthread_mutex_destroy (&itsMutex);
     if (error != 0) {

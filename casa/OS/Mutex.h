@@ -70,7 +70,9 @@ namespace casacore {
     Mutex (Type type=Auto);
 
     // Destroy the mutex.
-    ~Mutex();
+    // declaring noexcept(false) to squash compiler warning, although note
+    // that it is usually a bad idea for destructors to throw exceptions
+    ~Mutex() noexcept(false);
 
     // Lock the mutex. It blocks until it can get exclusive access to the lock.
     void lock()
