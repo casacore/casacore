@@ -29,6 +29,7 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/TableError.h>
+#include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Arrays/Vector.h>
 
@@ -69,13 +70,17 @@ Bool NullTable::isMultiUsed (Bool) const
 const StorageOption& NullTable::storageOption() const
 {
   throwError ("storageOption");
-  return storageOption();          // to satisfy compiler
+  // to satisfy compiler, explicitly construct new object, don't call function
+  // recursively or compiler will still complain about infinite recursion
+  return *std::unique_ptr<StorageOption>(new StorageOption());          
 }
 
 const TableLock& NullTable::lockOptions() const
 {
   throwError ("lockOptions");
-  return lockOptions();          // to satisfy compiler
+  // to satisfy compiler, explicitly construct new object, don't call function
+  // recursively or compiler will still complain about infinite recursion
+  return *std::unique_ptr<TableLock>(new TableLock());          
 }
 
 void NullTable::mergeLock (const TableLock&)
@@ -132,25 +137,33 @@ void NullTable::deepCopy (const String&, const Record&,
 TableDesc NullTable::actualTableDesc() const
 {
   throwError ("actualTableDesc");
-  return actualTableDesc();       // to satisfy compiler
+  // to satisfy compiler, explicitly construct new object, don't call function
+  // recursively or compiler will still complain about infinite recursion
+  return TableDesc();          
 }
 
 Record NullTable::dataManagerInfo() const
 {
   throwError ("dataManagerInfo");
-  return dataManagerInfo();       // to satisfy compiler
+  // to satisfy compiler, explicitly construct new object, don't call function
+  // recursively or compiler will still complain about infinite recursion
+  return Record();          
 }
 
 TableRecord& NullTable::keywordSet()
 {
   throwError ("keywordSet");
-  return keywordSet();            // to satisfy compiler
+  // to satisfy compiler, explicitly construct new object, don't call function
+  // recursively or compiler will still complain about infinite recursion
+  return *std::unique_ptr<TableRecord>(new TableRecord());
 }
 
 TableRecord& NullTable::rwKeywordSet()
 {
   throwError ("rwKeywordSet");
-  return rwKeywordSet();          // to satisfy compiler
+  // to satisfy compiler, explicitly construct new object, don't call function
+  // recursively or compiler will still complain about infinite recursion
+  return *std::unique_ptr<TableRecord>(new TableRecord());
 }
 
 BaseColumn* NullTable::getColumn (uInt) const

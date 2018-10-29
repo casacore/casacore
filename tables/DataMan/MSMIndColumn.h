@@ -199,7 +199,8 @@ private:
   class Data {
   public:
     Data (const IPosition& shape, int dtype);
-    ~Data();
+    // explicitly specify noexcept to squash compiler warning
+    ~Data() noexcept(false);
     void clear (int dtype);
     const IPosition& shape() const {return shape_p;}
     void* data() {return data_p;}
