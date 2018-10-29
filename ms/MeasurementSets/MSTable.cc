@@ -26,7 +26,6 @@
 //# $Id$
 
 #include <casacore/ms/MeasurementSets/MSTable.h>
-#include <casacore/ms/MeasurementSets/MSTable.tcc>
 #include <casacore/ms/MeasurementSets/MSAntennaEnums.h>
 #include <casacore/ms/MeasurementSets/MSDataDescEnums.h>
 #include <casacore/ms/MeasurementSets/MSDopplerEnums.h>
