@@ -14,11 +14,12 @@ if (POLICY CMP0048)
 endif()
 
 set(PROJECT_VERSION_MAJOR 2)
-set(PROJECT_VERSION_MINOR 4)
-set(PROJECT_VERSION_PATCH 1)
-set(PROJECT_VERSION_REVISION 1)
+set(PROJECT_VERSION_MINOR 5)
+set(PROJECT_VERSION_PATCH 0)
 set(PROJECT_VERSION 
   "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
+
+SET(PROJECT_SOVERSION 3)
 
 SET(NO_SOVERSION FALSE CACHE BOOL "do not add version information to shared libraries")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -30,28 +31,6 @@ set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
 set(CPACK_PACKAGE_CONTACT "Malte Marquarding") #required
 set(CPACK_PACKAGE_VENDOR "https://github.com/casacore/casacore")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Astronomical data processing library")
-
-string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE) 
-find_program(DPKG_PROGRAM dpkg DOC "dpkg program of Debian-based systems") 
-if(DPKG_PROGRAM) 
-  execute_process( 
-    COMMAND ${DPKG_PROGRAM} --print-architecture 
-    OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE 
-    OUTPUT_STRIP_TRAILING_WHITESPACE 
-  ) 
-  set( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_LOWERCASE}-dev_${PROJECT_VERSION}-${PROJECT_VERSION_REVISION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")   
-
-else() 
-  set(CPACK_PACKAGE_FILE_NAME 
-"${CPACK_PACKAGE_NAME_LOWERCASE}_${PROJECT_VERSION}-${PROJECT_VERSION_REVISION}_${CMAKE_SYSTEM_NAME}") 
-endif() 
-
-# debian specific
-set(CPACK_DEBIAN_PACKAGE_NAME "casacore-dev")
-set(CPACK_DEBIAN_PACKAGE_SECTION "science")
-set(CPACK_DEBIAN_PACKAGE_PRIORITY "extra")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcfitsio3, libgfortran3")
-include(CPack)
 
 enable_language (Fortran)
 
@@ -495,8 +474,8 @@ if (casa_soversion)
     set (LIB_SOVERSION "${casa_soversion}")
     set (CMAKE_INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib" )
 else( )
-    set (LIB_VERSION "${PROJECT_VERSION}")
-    set (LIB_SOVERSION "${PROJECT_VERSION_MAJOR}")
+    set (LIB_VERSION "${PROJECT_SOVERSION}")
+    set (LIB_SOVERSION "${PROJECT_SOVERSION}")
 endif( )
 
 # Add the modules to be built.
