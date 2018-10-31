@@ -283,9 +283,8 @@ Bool TableExprNodeGEDate::getBool (const TableExprId& id)
 
 
 TableExprNodeINInt::TableExprNodeINInt (const TableExprNodeRep& node,
-                                        Bool doTracing)
-: TableExprNodeBinary (NTBool, node, OtIN),
-  itsDoTracing (doTracing)
+                                        Bool)
+: TableExprNodeBinary (NTBool, node, OtIN)
 {}
 void TableExprNodeINInt::convertConstChild()
 {
