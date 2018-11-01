@@ -374,7 +374,7 @@ String RecordDescRep::makeName (Int whichField) const
 String RecordDescRep::uniqueName (const String& name) const
 {
     String newName = name;
-    char strc[8];      // should be plenty large...
+    char strc[16];      // should be plenty large...
     int n = 0;
     while (fieldNumber(newName) >= 0) {
 	++n;

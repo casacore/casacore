@@ -1037,7 +1037,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
   const char* radialVelocityHelp[] = {
-    "'RadialVelocity types",
+    "RadialVelocity types",
     "    LSRD     Local Standard of Rest (J2000) - dynamical definition (IAU, [9,12,7] km/s in galactic coordinates)",
     "    LSRK     LSR as kinematical (radio) definition - 20.0 km/s in direction ra,dec = [270,+30] deg (B1900.0)",
     "    BARY     Barycentric (J2000)",
