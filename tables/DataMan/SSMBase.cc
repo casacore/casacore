@@ -225,14 +225,14 @@ Record SSMBase::getProperties() const
   // Make sure the cache is initialized, so the header has certainly been read.
   const_cast<SSMBase*>(this)->getCache();
   Record rec;
-  rec.define ("ActualCacheSize", Int(itsCacheSize));
+  rec.define ("MaxCacheSize", Int(itsCacheSize));
   return rec;
 }
 
 void SSMBase::setProperties (const Record& rec)
 {
-  if (rec.isDefined("ActualCacheSize")) {
-    setCacheSize (rec.asInt("ActualCacheSize"), False);
+  if (rec.isDefined("MaxCacheSize")) {
+    setCacheSize (rec.asInt("MaxCacheSize"), False);
   }
 }
 

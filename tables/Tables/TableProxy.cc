@@ -898,8 +898,8 @@ Record TableProxy::getProperties (const String& name, Bool byColumn)
   return acc.getProperties();
 }
 
-void TableProxy::setProperties (const String& name, Bool byColumn,
-                                const Record& properties)
+void TableProxy::setProperties (const String& name, const Record& properties,
+                                Bool byColumn)
 {
   RODataManAccessor acc (table_p, name, byColumn);
   acc.setProperties (properties);
