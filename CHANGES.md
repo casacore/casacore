@@ -1,4 +1,4 @@
-# 2.5.0
+# 3.0
 
 ## General
 - Building with C++11 is now required
@@ -10,13 +10,19 @@
 - TaQL support for radial velocity, earth magnetic field and Doppler (#750)
 - Added performance tests for tables (#658)
 
-# Measurement Set
+## Measurement Set
 - Improvements to MSConcat (#779, #701)
 - Better handling of FITS-IDI flag history (#748)
--
 
-# Images
+
+## Images
 - Better support for double precision images (#752, #751)
+
+
+## Other
+
+- A full list of changes can be found on the [issue tracker](https://github.com/casacore/casacore/milestone/8?closed=1).
+
 
  
 # 2.4.1
