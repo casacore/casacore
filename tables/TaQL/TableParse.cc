@@ -3317,6 +3317,9 @@ Table TableParseSelect::doProject
 {
   Timer timer;
   Table tabp;
+  // doProjectExpr might have been done for some columns, so clear first to avoid
+  // they are calculated twice.
+  update_p.clear();
   if (nrSelExprUsed_p > 0) {
     // Expressions used, so make a real table.
     tabp = doProjectExpr (False, groups);

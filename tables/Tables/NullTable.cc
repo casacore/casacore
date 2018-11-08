@@ -52,239 +52,203 @@ Bool NullTable::isNull() const
 
 void NullTable::reopenRW()
 {
-  throwError ("reopenRW");
+  throw makeError ("reopenRW");
 }
 
 Bool NullTable::asBigEndian() const
 {
-  throwError ("asBigEndian");
-  return True;
+  throw makeError ("asBigEndian");
 }
 
 Bool NullTable::isMultiUsed (Bool) const
 {
-  throwError ("isMultiUsed");
-  return False;
+  throw makeError ("isMultiUsed");
 }
 
 const StorageOption& NullTable::storageOption() const
 {
-  throwError ("storageOption");
-  // to satisfy compiler, explicitly construct new object, don't call function
-  // recursively or compiler will still complain about infinite recursion
-  return *std::unique_ptr<StorageOption>(new StorageOption());          
+  throw makeError ("storageOption");
 }
 
 const TableLock& NullTable::lockOptions() const
 {
-  throwError ("lockOptions");
-  // to satisfy compiler, explicitly construct new object, don't call function
-  // recursively or compiler will still complain about infinite recursion
-  return *std::unique_ptr<TableLock>(new TableLock());          
+  throw makeError ("lockOptions");
 }
 
 void NullTable::mergeLock (const TableLock&)
 {
-  throwError ("mergeLoc");
+  throw makeError ("mergeLoc");
 }
 
 Bool NullTable::hasLock (FileLocker::LockType) const
 {
-  throwError ("hasLock");
-  return False;
+  throw makeError ("hasLock");
 }
 
 Bool NullTable::lock (FileLocker::LockType, uInt)
 {
-  throwError ("lock");
-  return False;
+  throw makeError ("lock");
 }
 
 void NullTable::unlock()
 {
-  throwError ("unlock");
+  throw makeError ("unlock");
 }
 
 void NullTable::flush (Bool, Bool)
 {
-  throwError ("flush");
+  throw makeError ("flush");
 }
 
 void NullTable::resync()
 {
-  throwError ("resync");
+  throw makeError ("resync");
 }
 
 uInt NullTable::getModifyCounter() const
 {
-  throwError ("getModifyCounter");
-  return 0;
+  throw makeError ("getModifyCounter");
 }
 
 Bool NullTable::isWritable() const
 {
-  throwError ("isWritable");
-  return False;
+  throw makeError ("isWritable");
 }
 
 void NullTable::deepCopy (const String&, const Record&,
                           const StorageOption&, int, Bool,
 			  int, Bool) const
 {
-  throwError ("deepCopy");
+  throw makeError ("deepCopy");
 }
 
 TableDesc NullTable::actualTableDesc() const
 {
-  throwError ("actualTableDesc");
-  // to satisfy compiler, explicitly construct new object, don't call function
-  // recursively or compiler will still complain about infinite recursion
-  return TableDesc();          
+  throw makeError ("actualTableDesc");
 }
 
 Record NullTable::dataManagerInfo() const
 {
-  throwError ("dataManagerInfo");
-  // to satisfy compiler, explicitly construct new object, don't call function
-  // recursively or compiler will still complain about infinite recursion
-  return Record();          
+  throw makeError ("dataManagerInfo");
 }
 
 TableRecord& NullTable::keywordSet()
 {
-  throwError ("keywordSet");
-  // to satisfy compiler, explicitly construct new object, don't call function
-  // recursively or compiler will still complain about infinite recursion
-  return *std::unique_ptr<TableRecord>(new TableRecord());
+  throw makeError ("keywordSet");
 }
 
 TableRecord& NullTable::rwKeywordSet()
 {
-  throwError ("rwKeywordSet");
-  // to satisfy compiler, explicitly construct new object, don't call function
-  // recursively or compiler will still complain about infinite recursion
-  return *std::unique_ptr<TableRecord>(new TableRecord());
+  throw makeError ("rwKeywordSet");
 }
 
 BaseColumn* NullTable::getColumn (uInt) const
 {
-  throwError ("getColumn");
-  return 0;
+  throw makeError ("getColumn");
 }
 
 BaseColumn* NullTable::getColumn (const String&) const
 {
-  throwError ("getColumn");
-  return 0;
+  throw makeError ("getColumn");
 }
 
 Bool NullTable::canAddRow() const
 {
-  throwError ("canAddRow");
-  return False;
+  throw makeError ("canAddRow");
 }
 
 void NullTable::addRow (uInt, Bool)
 {
-  throwError ("addRow");
+  throw makeError ("addRow");
 }
 
 Bool NullTable::canRemoveRow() const
 {
-  throwError ("canRemoveRow");
-  return False;
+  throw makeError ("canRemoveRow");
 }
 
 void NullTable::removeRow (uInt)
 {
-  throwError ("removeRow");
+  throw makeError ("removeRow");
 }
 
 DataManager* NullTable::findDataManager (const String&, Bool) const
 {
-  throwError ("findDataManager");
-  return 0;
+  throw makeError ("findDataManager");
 }
 
 void NullTable::addColumn (const ColumnDesc&, Bool)
 {
-  throwError ("addColumn");
+  throw makeError ("addColumn");
 }
 
 void NullTable::addColumn (const ColumnDesc&,
 			   const String&, Bool, Bool)
 {
-  throwError ("addColumn");
+  throw makeError ("addColumn");
 }
 
 void NullTable::addColumn (const ColumnDesc&,
 			   const DataManager&, Bool)
 {
-  throwError ("addColumn");
+  throw makeError ("addColumn");
 }
 
 void NullTable::addColumn (const TableDesc& ,
 			   const DataManager&, Bool)
 {
-  throwError ("addColumn");
+  throw makeError ("addColumn");
 }
 
 Bool NullTable::canRemoveColumn (const Vector<String>&) const
 {
-  throwError ("canRemoveColumn");
-  return False;
+  throw makeError ("canRemoveColumn");
 }
 
 void NullTable::removeColumn (const Vector<String>&)
 {
-  throwError ("removeColumn");
+  throw makeError ("removeColumn");
 }
 
 Bool NullTable::canRenameColumn (const String&) const
 {
-  throwError ("canRenameColumn");
-  return False;
+  throw makeError ("canRenameColumn");
 }
 
 void NullTable::renameColumn (const String&, const String&)
 {
-  throwError ("renameColumn");
+  throw makeError ("renameColumn");
 }
 
 void NullTable::renameHypercolumn (const String&, const String&)
 {
-  throwError ("renameHypercolumn");
+  throw makeError ("renameHypercolumn");
 }
 
 Vector<uInt> NullTable::rowNumbers() const
 {
-  throwError ("rowNumbers");
-  return Vector<uInt>();
+  throw makeError ("rowNumbers");
 }
 
 BaseTable* NullTable::root()
 {
-  throwError ("root");
-  return 0;
+  throw makeError ("root");
 }
 
 Bool NullTable::rowOrder() const
 {
-  throwError ("rowOrde");
-  return False;
+  throw makeError ("rowOrde");
 }
 
 Vector<uInt>* NullTable::rowStorage()
 {
-  throwError ("rowStorage");
-  return 0;
+  throw makeError ("rowStorage");
 }
 
 Bool NullTable::adjustRownrs (uInt, Vector<uInt>&,
 			      Bool) const
 {
-  throwError ("adjustRownrs");
-  return False;
+  throw makeError ("adjustRownrs");
 }
 
 BaseTable* NullTable::doSort (PtrBlock<BaseColumn*>&,
@@ -292,20 +256,19 @@ BaseTable* NullTable::doSort (PtrBlock<BaseColumn*>&,
 			      const Block<Int>&,
 			      int)
 {
-  throwError ("doSort");
-  return 0;
+  throw makeError ("doSort");
 }
 
 void NullTable::renameSubTables (const String&,
 				 const String&)
 {
-  throwError ("renameSubTables");
+  throw makeError ("renameSubTables");
 }
 
 
-void NullTable::throwError (const String& name) const
+TableError NullTable::makeError (const String& name) const
 {
-  throw TableError ("NullTable::" + name + " - Table object is empty");
+  return TableError ("NullTable::" + name + " - Table object is empty");
 }
 
 } //# NAMESPACE CASACORE - END

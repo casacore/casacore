@@ -297,7 +297,7 @@ void TableExprFuncNode::fillChildNodes (const vector<TENShPtr>& nodes,
   }
   // Convert String to Date if needed
   for (uInt i=0; i<nodes.size(); i++) {
-    if (dtypeOper[i] == NTDate) {
+    if (i < dtypeOper.size()  &&  dtypeOper[i] == NTDate) {
       if (nodes[i]->dataType() == NTString) {
         TableExprNode dNode = datetime (operands_p[i]);
         operands_p[i] = dNode.getRep();
