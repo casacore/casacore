@@ -1729,30 +1729,34 @@ void MSSummary::listTables (LogIO& os, Bool verbose) const
     // Do things on this side
     // whether verbose or not
     os << "Tables";
-    if (!verbose) os << "(rows)";            os << ":";
+    if (!verbose) os << "(rows)";
+    os << ":";
     if (!verbose) os << "   (-1 = table absent)";
     os << endl;
     for (uInt i=0; i<18; i++) {
         if (verbose) {
             os.output().setf(ios::left, ios::adjustfield);
             os.output().width(3);
-        }                        os << "   ";
+        }
+        os << "   ";
         if (verbose) {
             os.output().width(20);
-        }                        os << tableStrings(i);
+        }
+        os << tableStrings(i);
         if (verbose && tableRows(i)>0) {
             os.output().setf(ios::right, ios::adjustfield);
             os.output().width(8);
         }
         if (!verbose) os << "(";
-        if (!verbose || tableRows(i)>0)        os << tableRows(i);
+        if (!verbose || tableRows(i)>0) os << tableRows(i);
         if (!verbose) os << ")";
         if (verbose) {
             os.output().setf(ios::left, ios::adjustfield);
-            os.output().width(10);    os << rowStrings(i);
+            os.output().width(10);
+            os << rowStrings(i);
             os << endl;
         }
-        else {if ((i%5)==0) os << endl;}
+        else if ((i%5)==0) os << endl;
     }
     os << LogIO::POST;
 }
