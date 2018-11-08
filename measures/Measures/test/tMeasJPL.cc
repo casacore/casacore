@@ -75,8 +75,8 @@ int main()
       os << "Venus:      " << val << endl;
       for (uInt i=0; i<3; i++) {
         mvd1(i) = val(i);
-        mvd1.adjust();
       }
+      mvd1.adjust();
       os << "Venus:      " << mvd1 << endl;
       MeasJPL::get(val, MeasJPL::DE200, MeasJPL::EARTH, dat);
       os << "Earth:      " << val << endl;
