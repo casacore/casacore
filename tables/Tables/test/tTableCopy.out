@@ -8,7 +8,7 @@ tTableCopy_tmp.newtbl/SUBTABLE
     NAME: String "StandardStMan"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      MaxCacheSize: Int 2
       BUCKETSIZE: Int 640
       PERSCACHESIZE: Int 2
       IndexLength: Int 0
@@ -21,7 +21,7 @@ tTableCopy_tmp.newtbl/SUBTABLE
     NAME: String "StandardStMan"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      MaxCacheSize: Int 2
       BUCKETSIZE: Int 640
       PERSCACHESIZE: Int 2
       IndexLength: Int 0
@@ -35,7 +35,7 @@ tTableCopy_tmp.newtbl/SUBTABLE
     NAME: String "StandardStMan"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      MaxCacheSize: Int 2
       BUCKETSIZE: Int 640
       PERSCACHESIZE: Int 2
       IndexLength: Int 0
@@ -49,7 +49,7 @@ tTableCopy_tmp.newtbl/SUBTABLE
     NAME: String "StandardStMan"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      MaxCacheSize: Int 2
       BUCKETSIZE: Int 640
       PERSCACHESIZE: Int 2
       IndexLength: Int 0
@@ -74,7 +74,7 @@ testCloneColumn ...
     NAME: String "SSM"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      MaxCacheSize: Int 2
       BUCKETSIZE: Int 640
       PERSCACHESIZE: Int 2
       IndexLength: Int 0
@@ -87,7 +87,7 @@ testCloneColumn ...
     NAME: String "DATA_stm"
     SEQNR: uInt 1
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -137,7 +137,7 @@ testCloneColumn ...
     NAME: String "DATA1"
     SEQNR: uInt 2
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -187,7 +187,7 @@ testCloneColumn ...
     NAME: String "Data2StMan"
     SEQNR: uInt 3
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -204,7 +204,7 @@ testCloneColumn ...
     NAME: String "DATA3"
     SEQNR: uInt 4
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -254,7 +254,7 @@ testCloneColumn ...
     NAME: String "SCALAR3"
     SEQNR: uInt 5
     SPEC: {
-      ActualCacheSize: Int 2
+      MaxCacheSize: Int 2
       BUCKETSIZE: Int 640
       PERSCACHESIZE: Int 2
       IndexLength: Int 0
@@ -269,7 +269,7 @@ testCloneColumn ...
     NAME: String "SSM"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      MaxCacheSize: Int 2
       BUCKETSIZE: Int 640
       PERSCACHESIZE: Int 2
       IndexLength: Int 0
@@ -282,7 +282,7 @@ testCloneColumn ...
     NAME: String "DATA_stm"
     SEQNR: uInt 1
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -331,7 +331,7 @@ testCloneColumn ...
     NAME: String "DATA1"
     SEQNR: uInt 2
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -380,7 +380,7 @@ testCloneColumn ...
     NAME: String "Data2StMan"
     SEQNR: uInt 3
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -396,7 +396,7 @@ testCloneColumn ...
     NAME: String "DATA3"
     SEQNR: uInt 4
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -445,7 +445,7 @@ testCloneColumn ...
     NAME: String "SCALAR3"
     SEQNR: uInt 5
     SPEC: {
-      ActualCacheSize: Int 2
+      MaxCacheSize: Int 2
       BUCKETSIZE: Int 640
       PERSCACHESIZE: Int 2
       IndexLength: Int 0
@@ -460,7 +460,7 @@ testCloneColumn ...
     NAME: String "SSM"
     SEQNR: uInt 0
     SPEC: {
-      ActualCacheSize: Int 2
+      MaxCacheSize: Int 2
       BUCKETSIZE: Int 640
       PERSCACHESIZE: Int 2
       IndexLength: Int 0
@@ -473,7 +473,7 @@ testCloneColumn ...
     NAME: String "DATA_stm"
     SEQNR: uInt 1
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -500,7 +500,7 @@ testCloneColumn ...
     NAME: String "DATA1"
     SEQNR: uInt 2
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -527,7 +527,7 @@ testCloneColumn ...
     NAME: String "Data2StMan"
     SEQNR: uInt 3
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -554,7 +554,7 @@ testCloneColumn ...
     NAME: String "DATA3"
     SEQNR: uInt 4
     SPEC: {
-      ActualMaxCacheSize: Int 0
+      MaxCacheSize: Int 0
       DEFAULTTILESHAPE: Int array with shape [2]
         [8, 2]
       MAXIMUMCACHESIZE: Int 0
@@ -581,7 +581,7 @@ testCloneColumn ...
     NAME: String "SCALAR3"
     SEQNR: uInt 5
     SPEC: {
-      ActualCacheSize: Int 2
+      MaxCacheSize: Int 2
       BUCKETSIZE: Int 640
       PERSCACHESIZE: Int 2
       IndexLength: Int 0

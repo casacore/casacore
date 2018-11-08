@@ -179,14 +179,14 @@ Record ISMBase::getProperties() const
   // Make sure the cache is initialized, so the header has certainly been read.
   const_cast<ISMBase*>(this)->getCache();
   Record rec;
-  rec.define ("ActualCacheSize", Int(cacheSize_p));
+  rec.define ("MaxCacheSize", Int(cacheSize_p));
   return rec;
 }
 
 void ISMBase::setProperties (const Record& rec)
 {
-  if (rec.isDefined("ActualCacheSize")) {
-    setCacheSize (rec.asInt("ActualCacheSize"), False);
+  if (rec.isDefined("MaxCacheSize")) {
+    setCacheSize (rec.asInt("MaxCacheSize"), False);
   }
 }
 
