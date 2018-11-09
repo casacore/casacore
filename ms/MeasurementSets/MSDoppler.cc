@@ -122,9 +122,9 @@ MSDoppler::MSDoppler(const MSDoppler &other)
     // verify that other is valid
     if (&other != this) 
         addVelDef();
-	if (! validate(this->tableDesc()))
-	    throw (AipsError("MSDoppler(const MSDoppler &) - "
-			     "table is not a valid MSDoppler"));
+    if (! validate(this->tableDesc()))
+        throw (AipsError("MSDoppler(const MSDoppler &) - "
+                        "table is not a valid MSDoppler"));
 }
 
 MSDoppler::~MSDoppler()

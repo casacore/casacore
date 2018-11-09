@@ -765,7 +765,9 @@ int HeaderDataUnit::skip(uInt n) {
 	return (fin ? fin->skip(hdu_type,n) : 0); }
 //=============================================================================
 int HeaderDataUnit::skip() {
-	if (fin) fin->skip_all(hdu_type); return 0; }
+	if (fin) fin->skip_all(hdu_type);
+	return 0;
+}
 //=============================================================================
 int HeaderDataUnit::write_hdr(FitsOutput &f) {	
 	if(f.write_hdr(kwlist_,hdu_type,data_type,fits_data_size,fits_item_size)){

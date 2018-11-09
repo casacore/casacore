@@ -129,7 +129,7 @@ the issue tracker on github.
 
 If you have patches please open a pull request. Your contributions are more
 than welcome! But to maintain a high code quality we have written a [contribution
-manual](https://github.com/casacore/casacore/blob/master/CONTRIB.md), please read
+manual](https://github.com/casacore/casacore/blob/master/CONTRIBUTING.md), please read
 that first.
 
 
