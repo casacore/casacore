@@ -66,11 +66,11 @@ option (ENABLE_SHARED "Build shared libraries" YES)
 
 option (ENABLE_RPATH "Include rpath in executables and shared libraries" YES)
 
-# By default do not use HDF5, FFTW3, threads
+# By default do not use HDF5, FFTW3
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
 option (USE_HDF5 "Build HDF5 " NO)
 option (USE_FFTW3 "Use FFTW instead of FFTPack" NO)
-option (USE_THREADS "Use Mutex thread synchronization" NO)
+option (USE_THREADS "Use Mutex thread synchronization" YES)
 option (USE_OPENMP "Use OpenMP threading" NO)
 option (USE_MPI "Use MPI for parallel IO" NO)
 option (USE_STACKTRACE "Show stacktrace in case of exception" NO)
@@ -574,7 +574,7 @@ endif (BUILD_PYTHON3)
 #  ENABLE_TABLELOCKING           YES
 #  USE_HDF5                      NO
 #  USE_FFTW3                     NO
-#  USE_THREADS                   NO
+#  USE_THREADS                   YES
 #  USE_OPENMP                    NO
 #  USE_MPI                       NO
 #  USE_STACKTRACE                NO
