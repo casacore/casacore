@@ -102,7 +102,7 @@ public:
     nftw(msName_p.c_str(), removeFile, 64, FTW_DEPTH | FTW_PHYS);
   }
 
-  std::auto_ptr<casacore::NewMSSimulator> simulator_p;
+  std::unique_ptr<casacore::NewMSSimulator> simulator_p;
   std::string msName_p; 
 
 };

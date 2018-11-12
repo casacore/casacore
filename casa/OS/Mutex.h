@@ -215,10 +215,22 @@ namespace casacore {
   {
   public:
     CallOnce0()
-    { }
+    {
+#ifndef USE_THREADS
+      itsFlag = True;
+#endif
+    }
 
     void operator()(void (*fn)()) {
+      //# call_once does not work properly without threads.
+#ifdef USE_THREADS
       std::call_once(itsFlag, fn);
+#else
+      if (itsFlag) {
+        fn();
+        itsFlag = False;
+      }
+#endif
     }
 
 private:
@@ -227,7 +239,11 @@ private:
     // Forbid assignment.
     CallOnce0& operator= (const CallOnce0&);
 
+#ifdef USE_THREADS
     std::once_flag itsFlag;
+#else
+    Bool itsFlag;
+#endif
   };
 
   // CallOnce: func has one arg.
@@ -236,11 +252,22 @@ private:
   {
   public:
     CallOnce()
-    { }
+    {
+#ifndef USE_THREADS
+      itsFlag = True;
+#endif
+    }
 
     template<typename T>
     void operator()(void (*fn)(T), T t) {
+#ifdef USE_THREADS
       std::call_once(itsFlag, fn, t);
+#else
+      if (itsFlag) {
+        fn(t);
+        itsFlag = False;
+      }
+#endif
     }
 
   private:
@@ -249,7 +276,11 @@ private:
     // Forbid assignment.
     CallOnce& operator= (const CallOnce&);
 
+#ifdef USE_THREADS
     std::once_flag itsFlag;
+#else
+    Bool itsFlag;
+#endif
   };
 
 } // namespace casacore
