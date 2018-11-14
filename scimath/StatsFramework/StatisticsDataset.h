@@ -26,7 +26,7 @@
 #ifndef SCIMATH_STATISTICSDATASET_H
 #define SCIMATH_STATISTICSDATASET_H
 
-#include <casa/aips.h>
+#include <casacore/casa/aips.h>
 
 #include <casacore/scimath/StatsFramework/StatisticsTypes.h>
 

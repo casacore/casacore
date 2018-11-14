@@ -31,6 +31,12 @@
 #include <casacore/casa/aips.h>
 #include <memory>
 
+//# Define the old names for backward compatibility.
+#define SHARED_PTR std::shared_ptr
+#define DYNAMIC_POINTER_CAST std::dynamic_pointer_cast
+#define CONST_POINTER_CAST std::const_pointer_cast
+#define STATIC_POINTER_CAST std::static_pointer_cast
+
 
 namespace casacore { //#Begin casa namespace
 

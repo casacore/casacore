@@ -798,12 +798,12 @@ public:
 class TableExprNodeINInt : public TableExprNodeBinary
 {
 public:
+    // <src>doTracing</src> is not used.
     TableExprNodeINInt (const TableExprNodeRep&, Bool doTracing=False);
     virtual ~TableExprNodeINInt();
     virtual void convertConstChild();
     virtual Bool getBool (const TableExprId& id);
 private:
-    Bool        itsDoTracing;
     // If the right node is constant it is converted to a set
     std::set<Int64> itsIndexSet;
 };

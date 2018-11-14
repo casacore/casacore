@@ -324,28 +324,33 @@ Array<DComplex> RealToComplex(const Array<Double> &rarray)
 
 
 IPosition checkExpandArray (IPosition& mult,
+                            IPosition& inshp,
                             const IPosition& inShape,
                             const IPosition& outShape,
                             const IPosition& alternate)
 {
-  if (inShape.size() == 0  ||  inShape.size() != outShape.size()) {
-    throw ArrayError("expandArray: input and output array must have the "
-                     "same dimensionality and cannot be empty");
+  if (inShape.size() == 0) {
+    throw ArrayError("expandArray: input array cannot be empty");
   }
-  mult.resize (inShape.size());
-  IPosition alt(inShape.size(), 0);
-  for (uInt i=0; i<inShape.size(); ++i) {
-    if (inShape[i] <= 0  ||  inShape[i] > outShape[i]  ||
-        outShape[i] % inShape[i] != 0) {
+  mult.resize (outShape.size());
+  inshp.resize (outShape.size());
+  inshp = 1;                             // missing axes have length 1
+  IPosition alt(outShape.size(), 0);
+  for (uInt i=0; i<outShape.size(); ++i) {
+    if (i < inShape.size()) {
+      inshp[i] = inShape[i];
+    }
+    if (inshp[i] <= 0  ||  inshp[i] > outShape[i]  ||
+        outShape[i] % inshp[i] != 0) {
       throw ArrayError("expandArray: length of each input array axis must "
                        "be <= output axis and divide evenly");
     }
-    mult[i] = outShape[i] / inShape[i];
     // Note that for an input length 1, linear and alternate come to the same.
     // Linear is faster, so use that if possible.
-    if (i < alternate.size()  &&  inShape[i] > 1) {
+    if (i < alternate.size()  &&  inshp[i] > 1) {
       alt[i] = alternate[i];
     }
+    mult[i] = outShape[i] / inshp[i];
   }
   return alt;
 }

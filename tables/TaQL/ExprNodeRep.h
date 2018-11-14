@@ -687,9 +687,11 @@ public:
 
     // Check datatype of nodes and return output type.
     // It also sets the expected data type of the operands (from dtIn).
+    // Conversion of Int,Double.String to Date is by default possible.
     static NodeDataType checkDT (Block<Int>& dtypeOper,
 				 NodeDataType dtIn, NodeDataType dtOut,
-				 const std::vector<TENShPtr>& nodes);
+				 const std::vector<TENShPtr>& nodes,
+                                 Bool dateConv=True);
 
 protected:
     std::vector<TENShPtr> operands_p;

@@ -32,6 +32,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/BaseTable.h>
+#include <casacore/tables/Tables/TableError.h>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -52,13 +53,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <etymology>
 // NullTable represents a null table object, i.e. a Table object without
-// an underlying table..
+// an underlying table.
 // </etymology>
 
 // <synopsis> 
-// Nullable is used to represent a null table.
+// NullTable is used to represent a null table.
 // The default Table constructor used to a create a null pointer
-// which results in core dumps when the Table object is actually used.
+// which resulted in core dumps when the Table object was actually used.
 // The NullTable object makes it possible to catch such cases
 // and throw an appropriate exception.
 // </synopsis> 
@@ -148,8 +149,8 @@ private:
   // Declaring it private, makes it unusable.
   NullTable& operator= (const NullTable&);
 
-  // Throw an exception with the name of the function.
-  void throwError (const String& name) const;
+  // Make an exception message with the name of the function.
+  TableError makeError (const String& name) const;
 };
 
 

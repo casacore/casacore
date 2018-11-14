@@ -270,7 +270,8 @@ MSMIndColumn::Data::Data (const IPosition& shape, int dtype)
   }
 }
 
-MSMIndColumn::Data::~Data()
+// explicitly specify noexcept to squash compiler warning
+MSMIndColumn::Data::~Data() noexcept(false)
 {
   if (data_p != 0) {
     throw DataManInternalError("MSMIndColumn::dtor: data array not deleted");

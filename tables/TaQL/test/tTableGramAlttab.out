@@ -13,11 +13,11 @@ Structure of table tTableGramAlttab_tmp.tab2
 0 rows, 2 columns in an endian format (using 2 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
-    ActualCacheSize=1 PERSCACHESIZE=1
+    MaxCacheSize=1 PERSCACHESIZE=1
   col1 Int      shape=[2,3] unit=[m]
 
  StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
-    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=118
   col2 Bool     scalar
 alter table tTableGramAlttab_tmp.tab2/subtab ADD COLUMN colxyz S SET KEYWORD colxyz::skey="newval", tabk=4 as I2
     has been executed
@@ -29,7 +29,7 @@ Structure of table tTableGramAlttab_tmp.tab2/subtab
 0 rows, 1 columns in an endian format (using 1 data managers)
 
  StandardStMan file=table.f0  name=SSM  bucketsize=384
-    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=118
   colxyz String   scalar
 
 Keywords of main table 
@@ -51,11 +51,11 @@ Structure of table tTableGramAlttab_tmp.tab2
 0 rows, 2 columns in an endian format (using 2 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
-    ActualCacheSize=1 PERSCACHESIZE=1
+    MaxCacheSize=1 PERSCACHESIZE=1
   col1 Int      shape=[2,3] unit=[m]
 
  StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
-    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=118
   col2 Bool     scalar
 
  SubTables:
@@ -87,11 +87,11 @@ Structure of table tTableGramAlttab_tmp.tab2
 0 rows, 2 columns in an endian format (using 2 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
-    ActualCacheSize=1 PERSCACHESIZE=1
+    MaxCacheSize=1 PERSCACHESIZE=1
   col1 Int      shape=[2,3] unit=[m]
 
  StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
-    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=118
   col2 Bool     scalar
 
  SubTables:
@@ -158,11 +158,11 @@ Structure of table tTableGramAlttab_tmp.tab2
 0 rows, 2 columns in an endian format (using 2 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
-    ActualCacheSize=1 PERSCACHESIZE=1
+    MaxCacheSize=1 PERSCACHESIZE=1
   col1 Int      shape=[2,3] unit=[m]
 
  StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
-    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=118
   col2 Bool     scalar
 
 Keywords of main table 
@@ -227,15 +227,15 @@ Structure of table tTableGramAlttab_tmp.tab2
 0 rows, 4 columns in an endian format (using 3 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
-    ActualCacheSize=1 PERSCACHESIZE=1
+    MaxCacheSize=1 PERSCACHESIZE=1
   col1  Int      shape=[2,3] unit=[m]
 
  StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
-    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=118
   col2  Bool     scalar
 
  StandardStMan file=table.f2  name=SSM  bucketsize=260
-    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=118
   col1a Int      shape=[2,3] unit=[m]
   col2a Bool     scalar
 
@@ -249,15 +249,15 @@ Structure of table tTableGramAlttab_tmp.tab2
 0 rows, 4 columns in an endian format (using 3 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
-    ActualCacheSize=1 PERSCACHESIZE=1
+    MaxCacheSize=1 PERSCACHESIZE=1
   col1  Int      shape=[2,3] unit=[m]
 
  StandardStMan file=table.f1  name=StandardStMan  bucketsize=128
-    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=118
   col2  Bool     scalar
 
  StandardStMan file=table.f2  name=SSM  bucketsize=260
-    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=118
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=118
   col1b Int      shape=[2,3] unit=[m]
   col2b Bool     scalar
 alter table tTableGramAlttab_tmp.tab2 DELETE COLUMN col1b,col2 ,ADDrows 4 +5, set keyword col1::emvec=[] as R4
@@ -270,11 +270,11 @@ Structure of table tTableGramAlttab_tmp.tab2
 9 rows, 2 columns in an endian format (using 2 data managers)
 
  IncrementalStMan file=table.f0  name=ISM1  bucketsize=16384
-    ActualCacheSize=1 PERSCACHESIZE=1
+    MaxCacheSize=1 PERSCACHESIZE=1
   col1  Int      shape=[2,3] unit=[m]
 
  StandardStMan file=table.f2  name=SSM  bucketsize=260
-    ActualCacheSize=2 PERSCACHESIZE=2 IndexLength=134
+    MaxCacheSize=2 PERSCACHESIZE=2 IndexLength=134
   col2b Bool     scalar
 
 Keywords of main table 

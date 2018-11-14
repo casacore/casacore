@@ -310,14 +310,14 @@ Record TiledStMan::dataManagerSpec() const
 Record TiledStMan::getProperties() const
 {
     Record rec;
-    rec.define ("ActualMaxCacheSize", Int(maxCacheSize_p));
+    rec.define ("MaxCacheSize", Int(maxCacheSize_p));
     return rec;
 }
 
 void TiledStMan::setProperties (const Record& rec)
 {
-    if (rec.isDefined("ActualMaxCacheSize")) {
-        setMaximumCacheSize (rec.asInt("ActualCacheSize"));
+    if (rec.isDefined("MaxCacheSize")) {
+        setMaximumCacheSize (rec.asInt("MaxCacheSize"));
     }
 }
 

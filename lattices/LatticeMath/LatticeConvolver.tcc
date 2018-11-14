@@ -145,8 +145,14 @@ operator=(const LatticeConvolver<T> & other) {
 template<class T> LatticeConvolver<T>::
 ~LatticeConvolver()
 {
-  if(itsPsf) delete itsPsf; itsPsf=0;
-  if(itsXfr) delete itsXfr; itsXfr=0;
+  if(itsPsf) {
+    delete itsPsf;
+    itsPsf = 0;
+  }
+  if(itsXfr) {
+    delete itsXfr;
+    itsXfr = 0;
+  }
 }
 
 template<class T> void LatticeConvolver<T>::
@@ -388,7 +394,10 @@ makeXfr(const Lattice<T> & psf) {
     IPosition XFRShape = itsFFTShape;
     XFRShape(0) = (XFRShape(0)+2)/2;
     //    XFRShape(1) = (XFRShape(1)/2+1)*2;
-    if(itsXfr) delete itsXfr; itsXfr=0;
+    if(itsXfr) {
+      delete itsXfr;
+      itsXfr = 0;
+    }
     itsXfr = new TempLattice<typename NumericTraits<T>::ConjugateType>(XFRShape, 
 								   maxLatSize);
     if (itsFFTShape == itsPsfShape) { // no need to pad the psf
@@ -402,12 +411,18 @@ makeXfr(const Lattice<T> & psf) {
   // Only cache the psf if it cannot be reconstructed from the transfer
   // function.
   if (itsFFTShape < itsPsfShape) {
-    if(itsPsf) delete itsPsf; itsPsf=0;
+    if(itsPsf) {
+      delete itsPsf;
+      itsPsf = 0;
+    }
     itsPsf = new TempLattice<T>(itsPsfShape, 1); // Prefer to put this on disk
     itsPsf->copyData(psf);
     itsCachedPsf = True;
   } else {
-    if(itsPsf) delete itsPsf; itsPsf=0;
+    if(itsPsf) {
+      delete itsPsf;
+      itsPsf = 0;
+    }
     itsPsf = new TempLattice<T>();
     itsCachedPsf = False;
   }

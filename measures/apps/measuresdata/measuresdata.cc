@@ -391,7 +391,7 @@ struct tableProperties {
 
 // Types that can be specified
 const String intypes[][2] = {
-  { "ALL", 		"IERS IGRF"}, //-- JPL IGRF"},
+  { "ALL", 		"IERS IGRF JPL"},
   { "IERS", 		"TAI_UTC EOP Predict"},
   { "EOP",		"IERSeop97 IERSeop2000"},
   { "Predict",		"IERSpredict IERSpredict2000"},
@@ -756,6 +756,13 @@ String blockIntToString(Block<Int> yn) {
   return out;
 }
 
+uInt StringToUInt(String s) {
+  uInt out;
+  istringstream ss(s);
+  ss >> out;
+  return out;
+}
+
 // Get today's MJD
 Double today_mjd() { return (floor(today_now())); }
 
@@ -845,6 +852,14 @@ Bool testu_table(const tableProperties &tprop, inputValues &inVal) {
       if (dget_tversion(tab) < tprop.version) { // A new program version
 	inVal.forcedel = True;
 	inVal.noup = False;
+      } else if (String(inVal.type, 0, 2) == String("DE")) {
+	uInt uyr = MVTime(inVal.lastmjd).year();
+        if (uyr < inVal.derange[1]) {
+	  // this only guarantees there will be /some/ data from derange[1]
+	  // but it looks like the DE ascii files finish in December of
+	  // the expected year so it should be ok.
+	  inVal.noup = False;
+	}
       } else if (tab->nrow() && tprop.updper != 0.0 && 
 		 today_mjd()-vsdate_mjd(tab) >= tprop.updper) {
 	inVal.noup = False;		// Update period passed
@@ -1405,28 +1420,46 @@ Bool IGRF(tableProperties &tprop, inputValues &inVal) {
 //*************************************************************************//
 
 // Fill JPL planetary tables
+const uInt DE_FN_INC = 20; // DE ascii files are for 20 year intervals
 Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   /// cout << "--- JPL tables cannot be created yet ----" << endl;;;
   ///return True;;;
   // Test if to update
   if (testu_table(tprop, inVal) && inVal.noup) return True;
  
+  uInt uyr; // value will be set from data file name
   // Check if header present
   Path hpath(tprop.vinfo[0]);
   if (hpath.isValid() && File(hpath).exists() && File(hpath).isReadable()) {
-    tprop.fileAddress[2] = tprop.vinfo[1];
-    tprop.fileAddress[2].replace(4, 4, uIntToString(1960)); ////
+    if (inVal.in == tprop.vinfo[0]) {
+      // "in" is the header file
+      // (first time after header retreival)
+      tprop.fileAddress[2] = tprop.vinfo[1];
+      Int de_syear = Int(inVal.derange[0]) / DE_FN_INC * DE_FN_INC;
+      tprop.fileAddress[2].replace(4, 4, uIntToString(de_syear));
+      return True;
+    } else {
+      // "in" is a data file
+      Path dpath(inVal.in);
+      if (dpath.isValid() && File(dpath).exists() && File(dpath).isReadable()) {
+        // file data file is present; output the next one to be retrieved
+        String syr(inVal.in.substr(4,4));
+        uyr = StringToUInt(syr);
+        tprop.fileAddress[2] = tprop.vinfo[1];
+        tprop.fileAddress[2].replace(4, 4, uIntToString(uyr + DE_FN_INC));
+      } // data file present
+    } // working with data file
   } else {
     tprop.fileAddress[2] = tprop.vinfo[0];
     return True;				// Get header first
   };
 
   // Dates
-  Int stdat = Int(MVTime(1960, 1, 1).day());
+  Int stdat = Int(MVTime(uyr, 1, 1).day());
 
   // Check if in present and to be used
-  if (inVal.testOnly || !inVal.x__fn ||
-      tprop.fileAddress[2] != inVal.in) return True;
+  if (inVal.testOnly || !inVal.x__fn)
+      return True;
 
   // Read header
   if (!(hpath.isValid() && File(hpath).exists() && File(hpath).isReadable())) {
@@ -1565,7 +1598,10 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
 
   // Fill table
   tab->keywordSet().get("MJD0", tprop.MJD0);
-  if (tprop.MJD0 <= 0) tprop.MJD0 = ((stdat-stepo)/incepo-1)*incepo + stepo;
+  if (tprop.MJD0 <= 0) {
+	  Int istepo(stepo);
+	  tprop.MJD0 = ((stdat-istepo)/incepo-1)*incepo + istepo;
+  }
   tab->rwKeywordSet().define("MJD0", tprop.MJD0);
   tprop.dMJD = incepo;
   tab->rwKeywordSet().define("dMJD", tprop.dMJD);
@@ -1577,19 +1613,20 @@ Bool JPLDE(tableProperties &tprop, inputValues &inVal) {
   tcd.rwKeywordSet().define("Columns", 13);
   tcd.rwKeywordSet().define("Description", pttA); ///
   // Data
+  uInt row_nr = tab->nrow();
   tab->addRow(allmjd.size());
   for (uInt i=0; i<allmjd.size(); ++i) {
-    tprop.columns[0]->putScalar(i, allmjd[i]);
+    tprop.columns[0]->putScalar(row_nr + i, allmjd[i]);
     Vector<Double> colA(allcol[i]);
-    static_cast<ArrayColumn<Double>*>(tprop.columns[1])->put(i, colA);
+    static_cast<ArrayColumn<Double>*>(tprop.columns[1])->put(row_nr + i, colA);
   };
   rmColumns(tab,tprop);
 
   // Ready
   close_table(tprop.tnam, tab, 0.0001);
 
-// OK
-return True;
+  // OK
+  return True;
 }
 
 //*************************************************************************//

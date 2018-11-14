@@ -561,8 +561,8 @@ public:
   Record getProperties (const String& name, Bool byColumn);
 
   // Set the properties of a data manager given by column or data manager name.
-  void setProperties (const String& name, Bool byColumn,
-                      const Record& properties);
+  void setProperties (const String& name, const Record& properties,
+                      Bool byColumn);
 
   // Get the table description of the table.
   // It returns a record containing the description.

@@ -719,14 +719,26 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::arrsumFUNC;
   } else if (funcName == "sums") {
     ftype = TableExprFuncNode::arrsumsFUNC;
+  } else if (funcName == "runningsum") {
+    ftype = TableExprFuncNode::runsumFUNC;
+  } else if (funcName == "boxedsum") {
+    ftype = TableExprFuncNode::boxsumFUNC;
   } else if (funcName == "product") {
     ftype = TableExprFuncNode::arrproductFUNC;
   } else if (funcName == "products") {
     ftype = TableExprFuncNode::arrproductsFUNC;
+  } else if (funcName == "runningproduct") {
+    ftype = TableExprFuncNode::runproductFUNC;
+  } else if (funcName == "boxedproduct") {
+    ftype = TableExprFuncNode::boxproductFUNC;
   } else if (funcName == "sumsqr"  ||  funcName == "sumsquare") {
     ftype = TableExprFuncNode::arrsumsqrFUNC;
   } else if (funcName == "sumsqrs"  ||  funcName == "sumsquares") {
     ftype = TableExprFuncNode::arrsumsqrsFUNC;
+  } else if (funcName == "runningsumsqr"  ||  funcName == "runningsumsquare") {
+    ftype = TableExprFuncNode::runsumsqrFUNC;
+  } else if (funcName == "boxedsumsqr"  ||  funcName == "boxedsumsquare") {
+    ftype = TableExprFuncNode::boxsumsqrFUNC;
   } else if (funcName == "mins") {
     ftype = TableExprFuncNode::arrminsFUNC;
   } else if (funcName == "runningmin") {
@@ -791,30 +803,42 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::arrfractileFUNC;
   } else if (funcName == "fractiles") {
     ftype = TableExprFuncNode::arrfractilesFUNC;
+  } else if (funcName == "runningfractile") {
+    ftype = TableExprFuncNode::runfractileFUNC;
+  } else if (funcName == "boxedfractile") {
+    ftype = TableExprFuncNode::boxfractileFUNC;
   } else if (funcName == "any") {
-    ftype = TableExprFuncNode::anyFUNC;
+    ftype = TableExprFuncNode::arranyFUNC;
   } else if (funcName == "anys") {
-    ftype = TableExprFuncNode::anysFUNC;
+    ftype = TableExprFuncNode::arranysFUNC;
   } else if (funcName == "runningany") {
     ftype = TableExprFuncNode::runanyFUNC;
   } else if (funcName == "boxedany") {
     ftype = TableExprFuncNode::boxanyFUNC;
   } else if (funcName == "all") {
-    ftype = TableExprFuncNode::allFUNC;
+    ftype = TableExprFuncNode::arrallFUNC;
   } else if (funcName == "alls") {
-    ftype = TableExprFuncNode::allsFUNC;
+    ftype = TableExprFuncNode::arrallsFUNC;
   } else if (funcName == "runningall") {
     ftype = TableExprFuncNode::runallFUNC;
   } else if (funcName == "boxedall") {
     ftype = TableExprFuncNode::boxallFUNC;
   } else if (funcName == "ntrue") {
-    ftype = TableExprFuncNode::ntrueFUNC;
+    ftype = TableExprFuncNode::arrntrueFUNC;
   } else if (funcName == "ntrues") {
-    ftype = TableExprFuncNode::ntruesFUNC;
+    ftype = TableExprFuncNode::arrntruesFUNC;
+  } else if (funcName == "runningntrue") {
+    ftype = TableExprFuncNode::runntrueFUNC;
+  } else if (funcName == "boxedntrue") {
+    ftype = TableExprFuncNode::boxntrueFUNC;
   } else if (funcName == "nfalse") {
-    ftype = TableExprFuncNode::nfalseFUNC;
+    ftype = TableExprFuncNode::arrnfalseFUNC;
   } else if (funcName == "nfalses") {
-    ftype = TableExprFuncNode::nfalsesFUNC;
+    ftype = TableExprFuncNode::arrnfalsesFUNC;
+  } else if (funcName == "runningnfalse") {
+    ftype = TableExprFuncNode::runnfalseFUNC;
+  } else if (funcName == "boxednfalse") {
+    ftype = TableExprFuncNode::boxnfalseFUNC;
   } else if (funcName == "array") {
     ftype = TableExprFuncNode::arrayFUNC;
   } else if (funcName == "transpose") {
@@ -1123,6 +1147,8 @@ TableExprNode TableParseSelect::makeFuncNode
     uInt axarg = 1;
     switch (ftype) {
     case TableExprFuncNode::arrfractilesFUNC:
+    case TableExprFuncNode::runfractileFUNC:
+    case TableExprFuncNode::boxfractileFUNC:
       axarg = 2;    // fall through!!
     case TableExprFuncNode::arrsumsFUNC:
     case TableExprFuncNode::arrproductsFUNC:
@@ -1135,10 +1161,13 @@ TableExprNode TableParseSelect::makeFuncNode
     case TableExprFuncNode::arravdevsFUNC:
     case TableExprFuncNode::arrrmssFUNC:
     case TableExprFuncNode::arrmediansFUNC:
-    case TableExprFuncNode::anysFUNC:
-    case TableExprFuncNode::allsFUNC:
-    case TableExprFuncNode::ntruesFUNC:
-    case TableExprFuncNode::nfalsesFUNC:
+    case TableExprFuncNode::arranysFUNC:
+    case TableExprFuncNode::arrallsFUNC:
+    case TableExprFuncNode::arrntruesFUNC:
+    case TableExprFuncNode::arrnfalsesFUNC:
+    case TableExprFuncNode::runsumFUNC:
+    case TableExprFuncNode::runproductFUNC:
+    case TableExprFuncNode::runsumsqrFUNC:
     case TableExprFuncNode::runminFUNC:
     case TableExprFuncNode::runmaxFUNC:
     case TableExprFuncNode::runmeanFUNC:
@@ -1149,6 +1178,11 @@ TableExprNode TableParseSelect::makeFuncNode
     case TableExprFuncNode::runmedianFUNC:
     case TableExprFuncNode::runanyFUNC:
     case TableExprFuncNode::runallFUNC:
+    case TableExprFuncNode::runntrueFUNC:
+    case TableExprFuncNode::runnfalseFUNC:
+    case TableExprFuncNode::boxsumFUNC:
+    case TableExprFuncNode::boxproductFUNC:
+    case TableExprFuncNode::boxsumsqrFUNC:
     case TableExprFuncNode::boxminFUNC:
     case TableExprFuncNode::boxmaxFUNC:
     case TableExprFuncNode::boxmeanFUNC:
@@ -1159,6 +1193,8 @@ TableExprNode TableParseSelect::makeFuncNode
     case TableExprFuncNode::boxmedianFUNC:
     case TableExprFuncNode::boxanyFUNC:
     case TableExprFuncNode::boxallFUNC:
+    case TableExprFuncNode::boxntrueFUNC:
+    case TableExprFuncNode::boxnfalseFUNC:
     case TableExprFuncNode::arrayFUNC:
     case TableExprFuncNode::transposeFUNC:
     case TableExprFuncNode::diagonalFUNC:
@@ -3281,6 +3317,9 @@ Table TableParseSelect::doProject
 {
   Timer timer;
   Table tabp;
+  // doProjectExpr might have been done for some columns, so clear first to avoid
+  // they are calculated twice.
+  update_p.clear();
   if (nrSelExprUsed_p > 0) {
     // Expressions used, so make a real table.
     tabp = doProjectExpr (False, groups);

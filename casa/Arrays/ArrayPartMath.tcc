@@ -940,7 +940,7 @@ void boxedArrayMath (Array<RES>& result,
   fillBoxedShape (shape, boxShape, fullBoxShape, resShape);
   result.resize (resShape);
   DebugAssert (result.contiguousStorage(), AipsError);
-  T* res = result.data();
+  RES* res = result.data();
   // Loop through all data and assemble as needed.
   IPosition blc(ndim, 0);
   IPosition trc(fullBoxShape-1);

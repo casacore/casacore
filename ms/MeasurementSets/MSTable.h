@@ -316,7 +316,21 @@ protected:
 
 } //# NAMESPACE CASACORE - END
 
-//# #ifndef CASACORE_NO_AUTO_TEMPLATES
-//# #include <casacore/ms/MeasurementSets/MSTable.tcc>
-//# #endif //# CASACORE_NO_AUTO_TEMPLATES
+// The CASACORE_NO_AUTO_TEMPLATES block had been commented out, and it's not clear
+// why it was since this is the standard pattern used in practically every other
+// case like this. Furthermore, when it was commented out, the CLANG compiler
+// produced copious warnings of the form:
+// /Users/dmehring/casa/casa-git/casacore/ms/MeasurementSets/MSFreqOffset.cc:128:11: warning: instantiation of variable 'casacore::MSTable<casacore::MSFreqOffsetEnums::PredefinedColumns, casacore::MSFreqOffsetEnums::PredefinedKeywords>::columnMap_p' required here, but no definition is available [-Wundefined-var-template]
+//    if (! columnMap_p.ndefined()) {
+//                  ^
+//                      /Users/dmehring/casa/casa-git/casacore/casacore/ms/MeasurementSets/MSTable.h:272:42: note: forward declaration of template entity is here 
+//                          static SimpleOrderedMap<Int, String> columnMap_p;
+//                                                           ^
+//                                                               /Users/dmehring/casa/casa-git/casacore/ms/MeasurementSets/MSFreqOffset.cc:128:11: note: add an explicit instantiation declaration to suppress this warning if 'casacore::MSTable<casacore::MSFreqOffsetEnums::PredefinedColumns, casacore::MSFreqOffsetEnums::PredefinedKeywords>::columnMap_p' is explicitly instantiated in another translation unit
+//                                                                   if (! columnMap_p.ndefined()) {
+//
+// which are no longer emitted when this standard template include block is present
+#ifndef CASACORE_NO_AUTO_TEMPLATES
+#include <casacore/ms/MeasurementSets/MSTable.tcc>
+#endif //# CASACORE_NO_AUTO_TEMPLATES
 #endif

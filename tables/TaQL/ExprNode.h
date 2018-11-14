@@ -1014,7 +1014,8 @@ public:
     Bool     getBool     (const TableExprId& id) const;
     Int64    getInt      (const TableExprId& id) const;
     Double   getDouble   (const TableExprId& id) const;
-    DComplex getDComplex (const TableExprId& id) const;
+    DComplex getDComplex (const TableExprId& id) const; 
+    MVTime   getDate     (const TableExprId& id) const;
     String   getString   (const TableExprId& id) const;
     Array<Bool>     getArrayBool     (const TableExprId& id) const;
     Array<Int64>    getArrayInt      (const TableExprId& id) const;
@@ -1275,6 +1276,8 @@ inline Double TableExprNode::getDouble (const TableExprId& id) const
     { return node_p->getDouble (id); }
 inline DComplex TableExprNode::getDComplex (const TableExprId& id) const
     { return node_p->getDComplex (id); }
+inline MVTime TableExprNode::getDate (const TableExprId& id) const
+    { return node_p->getDate (id); }
 inline String TableExprNode::getString (const TableExprId& id) const
     { return node_p->getString (id); }
 inline Array<Bool> TableExprNode::getArrayBool (const TableExprId& id) const
@@ -1868,19 +1871,19 @@ inline TableExprNode fractile (const TableExprNode& node,
 }
 inline TableExprNode any (const TableExprNode& node)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::anyFUNC, node);
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arranyFUNC, node);
 }
 inline TableExprNode all (const TableExprNode& node)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::allFUNC, node);
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrallFUNC, node);
 }
 inline TableExprNode ntrue (const TableExprNode& node)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::ntrueFUNC, node);
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrntrueFUNC, node);
 }
 inline TableExprNode nfalse (const TableExprNode& node)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalseFUNC, node);
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrnfalseFUNC, node);
 }
 inline TableExprNode sums (const TableExprNode& array,
 			   const TableExprNodeSet& axes)
@@ -1958,25 +1961,25 @@ inline TableExprNode fractiles (const TableExprNode& array,
 inline TableExprNode anys (const TableExprNode& array,
 			   const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::anysFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arranysFUNC,
 					   array, axes);
 }
 inline TableExprNode alls (const TableExprNode& array,
 			   const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::allsFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrallsFUNC,
 					   array, axes);
 }
 inline TableExprNode ntrues (const TableExprNode& array,
 			     const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::ntruesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrntruesFUNC,
 					   array, axes);
 }
 inline TableExprNode nfalses (const TableExprNode& array,
 			      const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrnfalsesFUNC,
 					   array, axes);
 }
 inline TableExprNode runningMin (const TableExprNode& node,

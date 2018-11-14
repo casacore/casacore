@@ -866,7 +866,7 @@ namespace casacore {
   T fractile(const MArray<T> &a, Float fraction, Bool sorted=False,
              Bool inPlace=False)
   {
-    // The normal median function needs at least one element, so shortcut.
+    // The normal fractile function needs at least one element, so shortcut.
     if (a.empty()) return T();
     if (! a.hasMask()) return fractile(a.array(), fraction, sorted, inPlace);
     Block<T> buf(a.size());

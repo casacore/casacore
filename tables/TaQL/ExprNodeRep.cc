@@ -1056,7 +1056,8 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
 				    (Block<Int>& dtypeOper,
 				     NodeDataType dtIn,
 				     NodeDataType dtOut,
-				     const vector<TENShPtr>& nodes)
+				     const vector<TENShPtr>& nodes,
+                                     Bool dateConv)
 {
     uInt nelem = nodes.size();
     dtypeOper.resize (nelem);
@@ -1108,9 +1109,9 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
     } else {
 	// Data types of the nodes must match dtIn
 	for (i=0; i<nelem; i++) {
-	    // Double or String to Date conversion is possible.
+	    // Double or String to Date conversion can be possible.
 	    if (nodes[i]->dataType() != dtIn) {
-                if (dtIn == NTDate) {
+                if (dateConv  &&  dtIn == NTDate) {
                     if (nodes[i]->dataType() != NTString  &&
                         nodes[i]->dataType() != NTDouble  &&
                         nodes[i]->dataType() != NTInt) {

@@ -185,7 +185,7 @@ void ReadAsciiTable::getTypes (const IPosition& shape,
 	    }
 	}
 	string1++;
-	char name[16];
+	char name[24];
 	i++;
 	sprintf (name, " Column%i", i);
 	strcpy (string2, name);

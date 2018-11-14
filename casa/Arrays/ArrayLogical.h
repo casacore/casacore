@@ -445,13 +445,17 @@ public:
   virtual Bool operator() (const Array<T>& arr) const { return anyTrue(arr); }
 };
 
-template<typename T> class NTrueFunc : public ArrayFunctorBase<T,uInt> {
+template<typename T, typename RES=size_t>
+class NTrueFunc : public ArrayFunctorBase<T,RES> {
 public:
-  virtual uInt operator() (const Array<T>& arr) const { return ntrue(arr); }
+  virtual ~NTrueFunc() {}
+  virtual RES operator() (const Array<T>& arr) const { return ntrue(arr); }
 };
-template<typename T> class NFalseFunc : public ArrayFunctorBase<T,uInt> {
+template<typename T, typename RES=size_t>
+class NFalseFunc : public ArrayFunctorBase<T,RES> {
 public:
-  virtual uInt operator() (const Array<T>& arr) const { return nfalse(arr); }
+  virtual ~NFalseFunc() {}
+  virtual RES operator() (const Array<T>& arr) const { return nfalse(arr); }
 };
 // </group>
 
