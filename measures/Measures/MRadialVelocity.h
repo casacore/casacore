@@ -176,8 +176,6 @@ class MRadialVelocity : public MeasBase<MVRadialVelocity, MeasRef<MRadialVelocit
   // Measure table Columns (e.g., MRadialVelocity::ScalarColumn)
   typedef ScalarMeasColumn<MRadialVelocity> ScalarColumn;
   typedef ArrayMeasColumn<MRadialVelocity> ArrayColumn;
-  // Reference enum Types (included originally for gcc 2.95)  
-  typedef WHATEVER_SUN_TYPEDEF(MRadialVelocity) Types Types;
   
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

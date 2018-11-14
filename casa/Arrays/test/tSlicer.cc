@@ -165,7 +165,7 @@ void a()
     cout << (ns4==ns3) << endl;
     cout << (ns4==ns50) << endl;
 
-    // Do some erronous constructions.
+    // Do some erroneous constructions.
     try {
 	Slicer ns(IPosition(2,0,0), IPosition(3,0,0,0));
     }catch (AipsError x) {                   // different lengths
@@ -203,7 +203,7 @@ void a()
 	 << blc << trc << inc << endl;
     cout << ns90.ndim() << ns90.start() << ns90.end() << ns90.stride()
 	 << ns90.length() << endl;
-    // Do some erronous infers.
+    // Do some erroneous infers.
     try {
 	ns90.inferShapeFromSource (shape, blc, trc, inc);
     }catch (AipsError x) {                   // shape length invalid

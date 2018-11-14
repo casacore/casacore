@@ -113,11 +113,11 @@ namespace casacore {
       " hourangle of ANTENNA1" << endl;
     os << "  double MSCAL.HA2()            "
       " hourangle of ANTENNA2" << endl;
-    os << "  double MSCAL.HADEC()          "
+    os << "  doublearray MSCAL.HADEC()          "
       " hourangle/declination of array center" << endl;
-    os << "  double MSCAL.HADEC1()         "
+    os << "  doublearray MSCAL.HADEC1()         "
       " hourangle/declination of ANTENNA1" << endl;
-    os << "  double MSCAL.HADEC2()         "
+    os << "  doublearray MSCAL.HADEC2()         "
       " hourangle/declination of ANTENNA2" << endl;
     os << "  doublearray MSCAL.AZEL()      "
       " azimuth/elevation of array center" << endl;

@@ -259,7 +259,7 @@ public:
 
     // Fill the TableRecord from the given Record.
     // The fields are appended to the TableRecord.
-    // It is the opposite of toRecord, so a String containg 'Table: '
+    // It is the opposite of toRecord, so a String containing 'Table: '
     // is handled as a Table (if it exists).
     void fromRecord (const Record& rec);
 

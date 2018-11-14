@@ -169,8 +169,6 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
   // Measure table Columns (e.g., MDoppler::ScalarColumn)
   typedef ScalarMeasColumn<MDoppler> ScalarColumn;
   typedef ArrayMeasColumn<MDoppler> ArrayColumn;
-  // Reference enum Types (included originally for gcc 2.95)  
-  typedef WHATEVER_SUN_TYPEDEF(MDoppler) Types Types;
 
   //# Constructors
   // <note role=tip> In the following constructors and other functions, all 

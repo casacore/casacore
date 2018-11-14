@@ -87,7 +87,7 @@ void doIt (Bool doExcp)
                                              "tRegularFile_tmp/isFile");
     
 
-    // Do an erronous create.
+    // Do an erroneous create.
     if (doExcp) {
 	try {
 	    risFile.create (False);                         // already exists

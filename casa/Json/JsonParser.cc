@@ -48,6 +48,7 @@
 #pragma GCC diagnostic ignored "-Wpragmas"
 #pragma GCC diagnostic ignored "-Wdeprecated-register"
 #pragma GCC diagnostic ignored "-Wsign-compare"
+
 #include "JsonGram.ycc"                  // bison output
 #ifdef YY_NULL
 # undef YY_NULL

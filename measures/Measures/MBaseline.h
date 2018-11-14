@@ -139,8 +139,6 @@ class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline> > {
   // Measure table Columns (e.g., MBaseline::ScalarColumn)
   typedef ScalarMeasColumn<MBaseline> ScalarColumn;
   typedef ArrayMeasColumn<MBaseline> ArrayColumn;
-  // Reference enum Types (included originally for gcc 2.95)  
-  typedef WHATEVER_SUN_TYPEDEF(MBaseline) Types Types;
 
 //# Constructors
 // <note role=tip> In the following constructors and other functions, all 

@@ -218,31 +218,6 @@ public:
 
     // </group>
 
-    // Remove a column from a table
-    // No exception is thrown if this invalidates the table
-    // in order to permit more complex operations with invalid
-    // intermediate states
-    void removeColumn(const String & columnName)
-    {
-	Table::removeColumn(columnName);
-    }
-
-    // Remove columns from a table
-    void removeColumn(const Vector<String>& columnNames)
-    {
-	Table::removeColumn(columnNames);
-    }
-
-    // Rename a column
-    // No exception is thrown if this invalidates the table
-    // in order to permit more complex operations with invalid
-    // intermediate states
-    void renameColumn(const String & newName,
-		      const String & oldName)
-    {
-	Table::renameColumn(newName, oldName);
-    }
-
 protected:
     // These constructors mirror the Table ones
     // <group name=tableLikeConstructors>

@@ -80,7 +80,7 @@ void doIt()
     cout << "    -> " << sln.start() << ' ' << sln.length() << ' '
 	 << sln.stride() << "  shp: " << shp << endl;
   }
-  // Do some erronous constructions.
+  // Do some erroneous constructions.
   try {
     ExtendSpecifier spec (IPosition(1,1), IPosition(1,1),
 			  IPosition(), IPosition());

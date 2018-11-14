@@ -34,11 +34,7 @@
 
 //# Forward declarations
 //template <class T, class U> class vector; 
-#if defined(WHATEVER_VECTOR_FORWARD_DEC)
-WHATEVER_VECTOR_FORWARD_DEC;
-#else
 #include <casacore/casa/stdvector.h>
-#endif
 
 namespace casacore { //#Begin namespace casacore
 

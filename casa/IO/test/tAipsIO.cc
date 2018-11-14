@@ -76,7 +76,7 @@ void doit (Bool doExcp)
     io.close();
     io.open("tAipsIO_tmp.data");
     doIO (doExcp, False, io);
-    // Now do some open calls; some of them are erronous which are caught.
+    // Now do some open calls; some of them are erroneous which are caught.
     // Delete the file in case it exists.
     if (doExcp) {
 	doTry (io);
@@ -90,7 +90,7 @@ void doit (Bool doExcp)
     io.close();
     io.open("tAipsIO_tmp.data", ByteIO::Old, 1024, &mfile);
     doIO (doExcp, False, io);
-    // Now do some open calls; some of them are erronous which are caught.
+    // Now do some open calls; some of them are erroneous which are caught.
     // Delete the file in case it exists.
     if (doExcp) {
 	doTry (io);

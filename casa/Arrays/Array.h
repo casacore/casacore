@@ -39,11 +39,8 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/ostream.h>
 #include <iterator>
-#if defined(WHATEVER_VECTOR_FORWARD_DEC)
-WHATEVER_VECTOR_FORWARD_DEC;
-#else
 #include <casacore/casa/stdvector.h>
-#endif
+
 
 namespace casacore { //#Begin casa namespace
 //# Forward Declarations
